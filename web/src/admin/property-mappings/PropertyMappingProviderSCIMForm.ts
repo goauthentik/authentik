@@ -1,7 +1,7 @@
 import "#elements/CodeMirror";
 import "#elements/forms/HorizontalFormElement";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { BasePropertyMappingForm } from "#admin/property-mappings/BasePropertyMappingForm";
 
@@ -12,19 +12,19 @@ import { customElement } from "lit/decorators.js";
 @customElement("ak-property-mapping-provider-scim-form")
 export class PropertyMappingProviderSCIMForm extends BasePropertyMappingForm<SCIMMapping> {
     loadInstance(pk: string): Promise<SCIMMapping> {
-        return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsProviderScimRetrieve({
+        return aki(PropertymappingsApi).propertymappingsProviderScimRetrieve({
             pmUuid: pk,
         });
     }
 
     async send(data: SCIMMapping): Promise<SCIMMapping> {
         if (this.instance) {
-            return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsProviderScimUpdate({
+            return aki(PropertymappingsApi).propertymappingsProviderScimUpdate({
                 pmUuid: this.instance.pk,
                 sCIMMappingRequest: data,
             });
         }
-        return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsProviderScimCreate({
+        return aki(PropertymappingsApi).propertymappingsProviderScimCreate({
             sCIMMappingRequest: data,
         });
     }

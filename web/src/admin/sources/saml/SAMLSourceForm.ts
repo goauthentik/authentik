@@ -12,7 +12,7 @@ import "#elements/utils/TimeDeltaHelp";
 
 import { propertyMappingsProvider, propertyMappingsSelector } from "./SAMLSourceFormHelpers.js";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { type AkCryptoCertificateSearch } from "#admin/common/ak-crypto-certificate-search";
 import { iconHelperText, placeholderHelperText } from "#admin/helperText";
@@ -56,20 +56,20 @@ export class SAMLSourceForm extends BaseSourceForm<SAMLSource> {
     }
 
     async loadInstance(pk: string): Promise<SAMLSource> {
-        return new SourcesApi(DEFAULT_CONFIG).sourcesSamlRetrieve({
+        return aki(SourcesApi).sourcesSamlRetrieve({
             slug: pk,
         });
     }
 
     async send(data: SAMLSource): Promise<SAMLSource> {
         if (this.instance) {
-            return new SourcesApi(DEFAULT_CONFIG).sourcesSamlUpdate({
+            return aki(SourcesApi).sourcesSamlUpdate({
                 slug: this.instance.slug,
                 sAMLSourceRequest: data,
             });
         }
 
-        return new SourcesApi(DEFAULT_CONFIG).sourcesSamlCreate({
+        return aki(SourcesApi).sourcesSamlCreate({
             sAMLSourceRequest: data,
         });
     }

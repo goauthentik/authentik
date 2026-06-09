@@ -2,7 +2,7 @@ import "#elements/CodeMirror";
 import "#elements/forms/HorizontalFormElement";
 import "#components/ak-switch-input";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { ModelForm } from "#elements/forms/ModelForm";
 
@@ -21,7 +21,7 @@ export class ServiceConnectionKubernetesForm extends ModelForm<
     string
 > {
     loadInstance(pk: string): Promise<KubernetesServiceConnection> {
-        return new OutpostsApi(DEFAULT_CONFIG).outpostsServiceConnectionsKubernetesRetrieve({
+        return aki(OutpostsApi).outpostsServiceConnectionsKubernetesRetrieve({
             uuid: pk,
         });
     }
@@ -34,12 +34,12 @@ export class ServiceConnectionKubernetesForm extends ModelForm<
 
     async send(data: KubernetesServiceConnection): Promise<KubernetesServiceConnection> {
         if (this.instance) {
-            return new OutpostsApi(DEFAULT_CONFIG).outpostsServiceConnectionsKubernetesUpdate({
+            return aki(OutpostsApi).outpostsServiceConnectionsKubernetesUpdate({
                 uuid: this.instance.pk || "",
                 kubernetesServiceConnectionRequest: data,
             });
         }
-        return new OutpostsApi(DEFAULT_CONFIG).outpostsServiceConnectionsKubernetesCreate({
+        return aki(OutpostsApi).outpostsServiceConnectionsKubernetesCreate({
             kubernetesServiceConnectionRequest: data,
         });
     }

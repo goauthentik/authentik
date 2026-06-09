@@ -15,7 +15,7 @@ import "#admin/applications/ak-provider-table";
 import "#admin/applications/components/ak-backchannel-input";
 import "#admin/applications/components/ak-provider-search-input";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { ModelForm } from "#elements/forms/ModelForm";
 import { WithCapabilitiesConfig } from "#elements/mixins/capabilities";
@@ -38,7 +38,7 @@ import { ifDefined } from "lit/directives/if-defined.js";
  */
 @customElement("ak-application-form")
 export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Application, string>) {
-    #api = new CoreApi(DEFAULT_CONFIG);
+    #api = aki(CoreApi);
 
     public static override verboseName = msg("Application");
     public static override verboseNamePlural = msg("Applications");

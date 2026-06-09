@@ -5,7 +5,7 @@ import "#admin/endpoints/connectors/gdtc/GoogleChromeConnectorForm";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { IconEditButtonByTagName, ModalInvokerButton } from "#elements/dialogs";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
@@ -39,9 +39,7 @@ export class ConnectorsListPage extends TablePage<Connector> {
     public override checkbox = true;
 
     protected override async apiEndpoint(): Promise<PaginatedResponse<Connector>> {
-        return new EndpointsApi(DEFAULT_CONFIG).endpointsConnectorsList(
-            await this.defaultEndpointConfig(),
-        );
+        return aki(EndpointsApi).endpointsConnectorsList(await this.defaultEndpointConfig());
     }
 
     protected override row(item: Connector): SlottedTemplateResult[] {
@@ -67,12 +65,12 @@ export class ConnectorsListPage extends TablePage<Connector> {
                 return [{ key: msg("Name"), value: item.name }];
             }}
             .usedBy=${(item: Connector) => {
-                return new EndpointsApi(DEFAULT_CONFIG).endpointsConnectorsUsedByList({
+                return aki(EndpointsApi).endpointsConnectorsUsedByList({
                     connectorUuid: item.connectorUuid!,
                 });
             }}
             .delete=${(item: Connector) => {
-                return new EndpointsApi(DEFAULT_CONFIG).endpointsConnectorsDestroy({
+                return aki(EndpointsApi).endpointsConnectorsDestroy({
                     connectorUuid: item.connectorUuid!,
                 });
             }}

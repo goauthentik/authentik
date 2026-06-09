@@ -3,7 +3,7 @@ import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
@@ -36,7 +36,7 @@ export class SSFProviderStreamList extends Table<SSFStream> {
     static styles: CSSResult[] = [...super.styles, PFDescriptionList];
 
     async apiEndpoint(): Promise<PaginatedResponse<SSFStream>> {
-        return new SsfApi(DEFAULT_CONFIG).ssfStreamsList({
+        return aki(SsfApi).ssfStreamsList({
             provider: this.providerId,
             ...(await this.defaultEndpointConfig()),
             pageSize: 10,
@@ -49,7 +49,7 @@ export class SSFProviderStreamList extends Table<SSFStream> {
             object-label=${msg("Stream(s)")}
             .objects=${this.selectedElements}
             .delete=${(item: SSFStream) => {
-                return new SsfApi(DEFAULT_CONFIG).ssfStreamsDestroy({
+                return aki(SsfApi).ssfStreamsDestroy({
                     uuid: item.pk,
                 });
             }}
