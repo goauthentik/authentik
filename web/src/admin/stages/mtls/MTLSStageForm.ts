@@ -5,7 +5,7 @@ import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/Radio";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { certificateProvider, certificateSelector } from "#admin/brands/Certificates";
 import { BaseStageForm } from "#admin/stages/BaseStageForm";
@@ -26,19 +26,19 @@ import { ifDefined } from "lit/directives/if-defined.js";
 @customElement("ak-stage-mtls-form")
 export class MTLSStageForm extends BaseStageForm<MutualTLSStage> {
     loadInstance(pk: string): Promise<MutualTLSStage> {
-        return new StagesApi(DEFAULT_CONFIG).stagesMtlsRetrieve({
+        return aki(StagesApi).stagesMtlsRetrieve({
             stageUuid: pk,
         });
     }
 
     async send(data: MutualTLSStage): Promise<MutualTLSStage> {
         if (this.instance) {
-            return new StagesApi(DEFAULT_CONFIG).stagesMtlsUpdate({
+            return aki(StagesApi).stagesMtlsUpdate({
                 stageUuid: this.instance.pk || "",
                 mutualTLSStageRequest: data,
             });
         }
-        return new StagesApi(DEFAULT_CONFIG).stagesMtlsCreate({
+        return aki(StagesApi).stagesMtlsCreate({
             mutualTLSStageRequest: data,
         });
     }

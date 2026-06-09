@@ -464,9 +464,7 @@ export class CaptchaStage
             rest.some((C) => C !== GReCaptchaController)
         ) {
             this.#logger.debug(
-                `Other CAPTCHA providers were also available: ${rest
-                    .map((C) => C?.globalName ?? "unknown")
-                    .join(", ")}`,
+                `Other CAPTCHA providers were also available: ${rest.map((C) => C?.globalName ?? "unknown").join(", ")}`,
             );
         }
 

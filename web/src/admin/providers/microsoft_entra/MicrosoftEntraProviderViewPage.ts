@@ -12,7 +12,7 @@ import "#components/sync/SyncStatusCard";
 import "#elements/tasks/ScheduleList";
 import "#elements/tasks/TaskList";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { EVENT_REFRESH } from "#common/constants";
 
 import { AKElement } from "#elements/Base";
@@ -65,7 +65,7 @@ export class MicrosoftEntraProviderViewPage extends AKElement {
     }
 
     fetchProvider(id: number) {
-        new ProvidersApi(DEFAULT_CONFIG)
+        aki(ProvidersApi)
             .providersMicrosoftEntraRetrieve({ id })
             .then((prov) => (this.provider = prov));
     }
@@ -216,9 +216,7 @@ export class MicrosoftEntraProviderViewPage extends AKElement {
                 >
                     <ak-sync-status-card
                         .fetch=${() => {
-                            return new ProvidersApi(
-                                DEFAULT_CONFIG,
-                            ).providersMicrosoftEntraSyncStatusRetrieve({
+                            return aki(ProvidersApi).providersMicrosoftEntraSyncStatusRetrieve({
                                 id: this.provider?.pk || 0,
                             });
                         }}

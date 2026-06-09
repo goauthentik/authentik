@@ -5,7 +5,7 @@ import "#elements/forms/Radio";
 import "#elements/forms/SearchSelect/index";
 import "#components/ak-switch-input";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { DataProvision, DualSelectPair } from "#elements/ak-dual-select/types";
 
@@ -32,7 +32,7 @@ import { customElement } from "lit/decorators.js";
 @customElement("ak-stage-authenticator-webauthn-form")
 export class AuthenticatorWebAuthnStageForm extends BaseStageForm<AuthenticatorWebAuthnStage> {
     async loadInstance(pk: string): Promise<AuthenticatorWebAuthnStage> {
-        return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorWebauthnRetrieve({
+        return aki(StagesApi).stagesAuthenticatorWebauthnRetrieve({
             stageUuid: pk,
         });
     }
@@ -42,12 +42,12 @@ export class AuthenticatorWebAuthnStageForm extends BaseStageForm<AuthenticatorW
             data.authenticatorAttachment = null;
         }
         if (this.instance) {
-            return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorWebauthnUpdate({
+            return aki(StagesApi).stagesAuthenticatorWebauthnUpdate({
                 stageUuid: this.instance.pk || "",
                 authenticatorWebAuthnStageRequest: data,
             });
         }
-        return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorWebauthnCreate({
+        return aki(StagesApi).stagesAuthenticatorWebauthnCreate({
             authenticatorWebAuthnStageRequest: data,
         });
     }
@@ -229,7 +229,7 @@ export class AuthenticatorWebAuthnStageForm extends BaseStageForm<AuthenticatorW
                     >
                         <ak-dual-select-provider
                             .provider=${(page: number, search?: string): Promise<DataProvision> => {
-                                return new StagesApi(DEFAULT_CONFIG)
+                                return aki(StagesApi)
                                     .stagesAuthenticatorWebauthnDeviceTypesList({
                                         page: page,
                                         search: search,
@@ -266,9 +266,7 @@ export class AuthenticatorWebAuthnStageForm extends BaseStageForm<AuthenticatorW
                                 if (query !== undefined) {
                                     args.search = query;
                                 }
-                                const flows = await new FlowsApi(DEFAULT_CONFIG).flowsInstancesList(
-                                    args,
-                                );
+                                const flows = await aki(FlowsApi).flowsInstancesList(args);
                                 return flows.results;
                             }}
                             .renderElement=${(flow: Flow): string => {
