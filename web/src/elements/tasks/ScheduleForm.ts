@@ -4,7 +4,7 @@ import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/ModalForm";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { ModelForm } from "#elements/forms/ModelForm";
 
@@ -18,7 +18,7 @@ import { ifDefined } from "lit/directives/if-defined.js";
 @customElement("ak-schedule-form")
 export class ScheduleForm extends ModelForm<Schedule, string> {
     async loadInstance(pk: string): Promise<Schedule> {
-        return new TasksApi(DEFAULT_CONFIG).tasksSchedulesRetrieve({
+        return aki(TasksApi).tasksSchedulesRetrieve({
             id: pk,
         });
     }
@@ -35,7 +35,7 @@ export class ScheduleForm extends ModelForm<Schedule, string> {
             return;
         }
 
-        return new TasksApi(DEFAULT_CONFIG).tasksSchedulesUpdate({
+        return aki(TasksApi).tasksSchedulesUpdate({
             id: this.instance.id,
             scheduleRequest: data,
         });

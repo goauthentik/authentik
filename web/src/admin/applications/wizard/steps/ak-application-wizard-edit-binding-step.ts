@@ -8,7 +8,7 @@ import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/ak-search-select-ez";
 import "#elements/forms/SearchSelect/index";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import {
     createPassFailOptions,
     PolicyBindingCheckTarget,
@@ -100,7 +100,7 @@ export class ApplicationWizardEditBindingStep extends ApplicationWizardStep<Poli
             case PolicyBindingCheckTarget.Policy:
                 return {
                     fetchObjects: async (query) => {
-                        const policies = await new PoliciesApi(DEFAULT_CONFIG).policiesAllList(
+                        const policies = await aki(PoliciesApi).policiesAllList(
                             withQuery(query, {
                                 ordering: "name",
                             }),
@@ -117,7 +117,7 @@ export class ApplicationWizardEditBindingStep extends ApplicationWizardStep<Poli
             case PolicyBindingCheckTarget.Group:
                 return {
                     fetchObjects: async (query) => {
-                        const groups = await new CoreApi(DEFAULT_CONFIG).coreGroupsList(
+                        const groups = await aki(CoreApi).coreGroupsList(
                             withQuery(query, {
                                 ordering: "name",
                                 includeUsers: false,
@@ -133,7 +133,7 @@ export class ApplicationWizardEditBindingStep extends ApplicationWizardStep<Poli
             case PolicyBindingCheckTarget.User:
                 return {
                     fetchObjects: async (query) => {
-                        const users = await new CoreApi(DEFAULT_CONFIG).coreUsersList(
+                        const users = await aki(CoreApi).coreUsersList(
                             withQuery(query, {
                                 ordering: "username",
                             }),

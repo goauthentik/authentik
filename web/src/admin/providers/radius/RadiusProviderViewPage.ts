@@ -7,7 +7,7 @@ import "#elements/Tabs";
 import "#elements/buttons/ModalButton";
 import "#elements/buttons/SpinnerButton/index";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { EVENT_REFRESH } from "#common/constants";
 
 import { AKElement } from "#elements/Base";
@@ -56,7 +56,7 @@ export class RadiusProviderViewPage extends AKElement {
     }
 
     fetchProvider(id: number) {
-        new ProvidersApi(DEFAULT_CONFIG)
+        aki(ProvidersApi)
             .providersRadiusRetrieve({ id })
             .then((prov) => (this.provider = prov));
     }

@@ -7,7 +7,7 @@ import "#elements/tasks/TaskList";
 import "#elements/tasks/TaskStatus";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { EVENT_REFRESH } from "#common/constants";
 
 import { PaginatedResponse, Table, TableColumn, Timestamp } from "#elements/table/Table";
@@ -54,7 +54,7 @@ export class ScheduleList extends Table<Schedule> {
                 : this.showOnlyStandalone
                   ? true
                   : undefined;
-        return new TasksApi(DEFAULT_CONFIG).tasksSchedulesList({
+        return aki(TasksApi).tasksSchedulesList({
             ...(await this.defaultEndpointConfig()),
             relObjContentTypeAppLabel: this.relObjAppLabel,
             relObjContentTypeModel: this.relObjModel,
@@ -119,7 +119,7 @@ export class ScheduleList extends Table<Schedule> {
             html`<ak-action-button
                     class="pf-m-plain"
                     .apiRequest=${() => {
-                        return new TasksApi(DEFAULT_CONFIG)
+                        return aki(TasksApi)
                             .tasksSchedulesSendCreate({
                                 id: item.id,
                             })
