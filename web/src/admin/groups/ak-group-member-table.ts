@@ -1,7 +1,7 @@
 import "#components/ak-status-label";
 import "#elements/buttons/SpinnerButton/index";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { PaginatedResponse, Table, TableColumn, Timestamp } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
@@ -57,7 +57,7 @@ export class GroupMemberSelectTable extends Table<User> {
             .with("active", () => ({ isActive: true }))
             .exhaustive();
 
-        return new CoreApi(DEFAULT_CONFIG).coreUsersList({
+        return aki(CoreApi).coreUsersList({
             ...(await this.defaultEndpointConfig()),
             ...userListRequestFilter,
             includeGroups: false,

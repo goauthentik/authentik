@@ -1,6 +1,6 @@
 import "#elements/forms/SearchSelect/index";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { AKElement } from "#elements/Base";
 import type { HorizontalFormElement } from "#elements/forms/HorizontalFormElement";
@@ -132,7 +132,9 @@ export abstract class FlowSearch<T extends Flow> extends CustomListenerElement(A
             ...(query ? { search: query } : {}),
         };
 
-        return new FlowsApi(DEFAULT_CONFIG).flowsInstancesList(args).then((flows) => flows.results);
+        return aki(FlowsApi)
+            .flowsInstancesList(args)
+            .then((flows) => flows.results);
     };
 
     /**

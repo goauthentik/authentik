@@ -7,7 +7,7 @@ import "#elements/forms/ModalForm";
 import "#user/user-settings/tokens/UserTokenForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { intentToLabel } from "#common/labels";
 import { formatElapsedTime } from "#common/temporal";
 
@@ -45,7 +45,7 @@ export class UserTokenList extends Table<Token> {
             currentUser = session ? session.user : null;
         }
 
-        return new CoreApi(DEFAULT_CONFIG).coreTokensList({
+        return aki(CoreApi).coreTokensList({
             ...(await this.defaultEndpointConfig()),
             managed: "",
             // The user might have access to other tokens that aren't for their user
@@ -146,7 +146,7 @@ export class UserTokenList extends Table<Token> {
             .objects=${this.selectedElements}
             .metadata=${(item: Token) => [{ key: msg("Identifier"), value: item.identifier }]}
             .delete=${(item: Token) =>
-                new CoreApi(DEFAULT_CONFIG).coreTokensDestroy({
+                aki(CoreApi).coreTokensDestroy({
                     identifier: item.identifier,
                 })}
         >

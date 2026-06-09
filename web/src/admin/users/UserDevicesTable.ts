@@ -1,6 +1,6 @@
 import "#elements/forms/DeleteBulkForm";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { createPaginatedResponse } from "#common/api/responses";
 import { deviceTypeName } from "#common/labels";
 import { SentryIgnoredError } from "#common/sentry/index";
@@ -23,7 +23,7 @@ export class UserDeviceTable extends Table<Device> {
     clearOnRefresh = true;
 
     async apiEndpoint(): Promise<PaginatedResponse<Device>> {
-        return new AuthenticatorsApi(DEFAULT_CONFIG)
+        return aki(AuthenticatorsApi)
             .authenticatorsAdminAllList({
                 user: this.userId,
             })
@@ -42,7 +42,7 @@ export class UserDeviceTable extends Table<Device> {
     ];
 
     async deleteWrapper(device: Device) {
-        const api = new AuthenticatorsApi(DEFAULT_CONFIG);
+        const api = aki(AuthenticatorsApi);
         switch (device.type) {
             case "authentik_stages_authenticator_duo.DuoDevice":
                 return api.authenticatorsAdminDuoDestroy({ id: parseInt(device.pk, 10) });

@@ -2,7 +2,7 @@ import "#admin/stages/invitation/InvitationSendEmailForm";
 import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { writeToClipboard } from "#common/clipboard";
 
 import { AKElement } from "#elements/Base";
@@ -74,7 +74,7 @@ export class InvitationListLink extends AKElement {
                         }}
                     >
                         ${until(
-                            new StagesApi(DEFAULT_CONFIG)
+                            aki(StagesApi)
                                 .stagesInvitationStagesList({
                                     ordering: "name",
                                     noFlows: false,
