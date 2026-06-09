@@ -95,6 +95,10 @@ At this point, enter a username and click **Save Search Attribute Settings and Q
 
 ## OIDC configuration
 
+:::warning
+Development of the OIDC plugin has ended. It is not guaranteed to work on newer versions of Jellyfin, and does not receive patches or security updates.
+:::
+
 ### authentik configuration
 
 **Provider Settings**
