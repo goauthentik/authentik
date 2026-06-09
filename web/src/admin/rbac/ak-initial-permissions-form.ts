@@ -5,7 +5,7 @@ import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/index";
 import "#components/ak-text-input";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { PFSize } from "#common/enums";
 
 import { DataProvision, DualSelectPair } from "#elements/ak-dual-select/types";
@@ -44,7 +44,7 @@ export class InitialPermissionsForm extends ModelForm<InitialPermissions, string
     public override size = PFSize.XLarge;
 
     loadInstance(pk: string): Promise<InitialPermissions> {
-        return new RbacApi(DEFAULT_CONFIG).rbacInitialPermissionsRetrieve({
+        return aki(RbacApi).rbacInitialPermissionsRetrieve({
             id: Number(pk),
         });
     }
@@ -57,12 +57,12 @@ export class InitialPermissionsForm extends ModelForm<InitialPermissions, string
 
     async send(data: InitialPermissions): Promise<InitialPermissions> {
         if (this.instance?.pk) {
-            return new RbacApi(DEFAULT_CONFIG).rbacInitialPermissionsPartialUpdate({
+            return aki(RbacApi).rbacInitialPermissionsPartialUpdate({
                 id: this.instance.pk,
                 patchedInitialPermissionsRequest: data,
             });
         }
-        return new RbacApi(DEFAULT_CONFIG).rbacInitialPermissionsCreate({
+        return aki(RbacApi).rbacInitialPermissionsCreate({
             initialPermissionsRequest: data,
         });
     }
@@ -87,7 +87,7 @@ export class InitialPermissionsForm extends ModelForm<InitialPermissions, string
                         if (query !== undefined) {
                             args.search = query;
                         }
-                        const roles = await new RbacApi(DEFAULT_CONFIG).rbacRolesList(args);
+                        const roles = await aki(RbacApi).rbacRolesList(args);
                         return roles.results;
                     }}
                     .renderElement=${(role: Role): string => {
@@ -113,7 +113,7 @@ export class InitialPermissionsForm extends ModelForm<InitialPermissions, string
             <ak-form-element-horizontal label=${msg("Permissions")} name="permissions">
                 <ak-dual-select-provider
                     .provider=${(page: number, search?: string): Promise<DataProvision> => {
-                        return new RbacApi(DEFAULT_CONFIG)
+                        return aki(RbacApi)
                             .rbacPermissionsList({
                                 page: page,
                                 search: search,

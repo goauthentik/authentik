@@ -4,7 +4,7 @@ import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/Radio";
 import "#elements/forms/SearchSelect/index";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { ModelForm } from "#elements/forms/ModelForm";
 import { SlottedTemplateResult } from "#elements/types";
@@ -55,7 +55,7 @@ export class RoleObjectPermissionForm extends ModelForm<RoleAssignData, number> 
 
     async load(): Promise<void> {
         const [appLabel, modelName] = (this.model || "").split(".");
-        this.modelPermissions = await new RbacApi(DEFAULT_CONFIG).rbacPermissionsList({
+        this.modelPermissions = await aki(RbacApi).rbacPermissionsList({
             contentTypeModel: modelName,
             contentTypeAppLabel: appLabel,
             ordering: "codename",
@@ -73,7 +73,7 @@ export class RoleObjectPermissionForm extends ModelForm<RoleAssignData, number> 
     send(data: RoleAssignData): Promise<unknown> {
         const [app, _model] = this.model?.split(".") || "";
 
-        return new RbacApi(DEFAULT_CONFIG).rbacPermissionsAssignedByRolesAssign({
+        return aki(RbacApi).rbacPermissionsAssignedByRolesAssign({
             uuid: data.role,
             permissionAssignRequest: {
                 permissions: Object.keys(data.permissions)
@@ -106,7 +106,7 @@ export class RoleObjectPermissionForm extends ModelForm<RoleAssignData, number> 
                             if (query !== undefined) {
                                 args.search = query;
                             }
-                            const roles = await new RbacApi(DEFAULT_CONFIG).rbacRolesList(args);
+                            const roles = await aki(RbacApi).rbacRolesList(args);
                             return roles.results;
                         }}
                         .renderElement=${(role: Role): string => {

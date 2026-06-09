@@ -1,7 +1,7 @@
 import "#elements/CodeMirror";
 import "#elements/forms/HorizontalFormElement";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { BasePropertyMappingForm } from "#admin/property-mappings/BasePropertyMappingForm";
 
@@ -12,19 +12,19 @@ import { customElement } from "lit/decorators.js";
 @customElement("ak-property-mapping-notification-form")
 export class PropertyMappingNotification extends BasePropertyMappingForm<NotificationWebhookMapping> {
     loadInstance(pk: string): Promise<NotificationWebhookMapping> {
-        return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsNotificationRetrieve({
+        return aki(PropertymappingsApi).propertymappingsNotificationRetrieve({
             pmUuid: pk,
         });
     }
 
     async send(data: NotificationWebhookMapping): Promise<NotificationWebhookMapping> {
         if (this.instance) {
-            return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsNotificationUpdate({
+            return aki(PropertymappingsApi).propertymappingsNotificationUpdate({
                 pmUuid: this.instance.pk,
                 notificationWebhookMappingRequest: data,
             });
         }
-        return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsNotificationCreate({
+        return aki(PropertymappingsApi).propertymappingsNotificationCreate({
             notificationWebhookMappingRequest: data,
         });
     }
