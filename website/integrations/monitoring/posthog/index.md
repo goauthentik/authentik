@@ -4,6 +4,8 @@ sidebar_label: PostHog
 support_level: community
 ---
 
+import SAMLProvider20265Warning from "../../\_saml-provider-2026-5-warning.mdx";
+
 ## What is PostHog?
 
 > PostHog is an all-in-one developer platform that provides product analytics, web analytics, session replay, error tracking, feature flags, experimentation, surveys, a data warehouse, and a customer data platform.
@@ -64,6 +66,8 @@ PostHog requires a permanent ID attribute named `name_id`. PostHog can use the m
         ```
 
 ### Create an application and provider in authentik
+
+<SAMLProvider20265Warning />
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **New Application** to create an application and provider pair. (Alternatively, you can first create a provider separately, then create the application and connect it with the provider.)

@@ -2,7 +2,7 @@ import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/index";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { RenderFlowOption } from "#admin/flows/utils";
 import { BaseStageForm } from "#admin/stages/BaseStageForm";
@@ -24,19 +24,19 @@ import { customElement } from "lit/decorators.js";
 @customElement("ak-stage-authenticator-totp-form")
 export class AuthenticatorTOTPStageForm extends BaseStageForm<AuthenticatorTOTPStage> {
     loadInstance(pk: string): Promise<AuthenticatorTOTPStage> {
-        return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorTotpRetrieve({
+        return aki(StagesApi).stagesAuthenticatorTotpRetrieve({
             stageUuid: pk,
         });
     }
 
     async send(data: AuthenticatorTOTPStage): Promise<AuthenticatorTOTPStage> {
         if (this.instance) {
-            return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorTotpUpdate({
+            return aki(StagesApi).stagesAuthenticatorTotpUpdate({
                 stageUuid: this.instance.pk || "",
                 authenticatorTOTPStageRequest: data,
             });
         }
-        return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorTotpCreate({
+        return aki(StagesApi).stagesAuthenticatorTotpCreate({
             authenticatorTOTPStageRequest: data,
         });
     }
@@ -104,9 +104,7 @@ export class AuthenticatorTOTPStageForm extends BaseStageForm<AuthenticatorTOTPS
                                 if (query !== undefined) {
                                     args.search = query;
                                 }
-                                const flows = await new FlowsApi(DEFAULT_CONFIG).flowsInstancesList(
-                                    args,
-                                );
+                                const flows = await aki(FlowsApi).flowsInstancesList(args);
                                 return flows.results;
                             }}
                             .renderElement=${(flow: Flow): string => {

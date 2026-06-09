@@ -23,12 +23,6 @@ export interface PatchedGroupPlexSourceConnectionRequest {
      * @type {string}
      * @memberof PatchedGroupPlexSourceConnectionRequest
      */
-    group?: string;
-    /**
-     *
-     * @type {string}
-     * @memberof PatchedGroupPlexSourceConnectionRequest
-     */
     source?: string;
     /**
      *
@@ -61,7 +55,6 @@ export function PatchedGroupPlexSourceConnectionRequestFromJSONTyped(
         return json;
     }
     return {
-        group: json["group"] == null ? undefined : json["group"],
         source: json["source"] == null ? undefined : json["source"],
         identifier: json["identifier"] == null ? undefined : json["identifier"],
     };
@@ -82,7 +75,6 @@ export function PatchedGroupPlexSourceConnectionRequestToJSONTyped(
     }
 
     return {
-        group: value["group"],
         source: value["source"],
         identifier: value["identifier"],
     };

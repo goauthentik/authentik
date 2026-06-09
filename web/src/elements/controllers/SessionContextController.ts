@@ -1,4 +1,4 @@
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { type APIResult, isAPIResultReady } from "#common/api/responses";
 import { globalAK } from "#common/global";
 import { applyThemeChoice, formatColorScheme } from "#common/theme";
@@ -180,7 +180,7 @@ export class SessionContextController extends ReactiveContextController<APIResul
                 group,
                 weight,
                 action: async () => {
-                    await new CoreApi(DEFAULT_CONFIG).coreUsersImpersonateEndRetrieve();
+                    await aki(CoreApi).coreUsersImpersonateEndRetrieve();
                     window.location.reload();
                 },
             });

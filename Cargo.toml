@@ -51,7 +51,7 @@ pin-project-lite = "= 0.2.17"
 pyo3 = "= 0.28.3"
 pyo3-build-config = "= 0.28.3"
 regex = "= 1.12.3"
-reqwest = { version = "= 0.13.3", features = [
+reqwest = { version = "= 0.13.4", features = [
   "form",
   "json",
   "multipart",
@@ -59,7 +59,7 @@ reqwest = { version = "= 0.13.3", features = [
   "rustls",
   "stream",
 ] }
-reqwest-middleware = { version = "= 0.5.1", features = [
+reqwest-middleware = { version = "= 0.5.2", features = [
   "form",
   "json",
   "multipart",
@@ -78,7 +78,7 @@ sentry = { version = "= 0.48.2", default-features = false, features = [
   "tracing",
 ] }
 serde = { version = "= 1.0.228", features = ["derive"] }
-serde_json = "= 1.0.149"
+serde_json = "= 1.0.150"
 serde_repr = "= 0.1.20"
 serde_with = { version = "= 3.20.0", default-features = false, features = [
   "base64",
@@ -112,7 +112,7 @@ tracing-subscriber = { version = "= 0.3.23", features = [
   "tracing-log",
 ] }
 url = "= 2.5.8"
-uuid = { version = "= 1.23.1", features = ["serde", "v4"] }
+uuid = { version = "= 1.23.2", features = ["serde", "v4"] }
 which = "= 8.0.2"
 
 ak-axum = { package = "authentik-axum", version = "2026.8.0-rc1", path = "./packages/ak-axum" }

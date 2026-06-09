@@ -20,12 +20,6 @@
 export interface PatchedUserOAuthSourceConnectionRequest {
     /**
      *
-     * @type {number}
-     * @memberof PatchedUserOAuthSourceConnectionRequest
-     */
-    user?: number;
-    /**
-     *
      * @type {string}
      * @memberof PatchedUserOAuthSourceConnectionRequest
      */
@@ -73,7 +67,6 @@ export function PatchedUserOAuthSourceConnectionRequestFromJSONTyped(
         return json;
     }
     return {
-        user: json["user"] == null ? undefined : json["user"],
         source: json["source"] == null ? undefined : json["source"],
         identifier: json["identifier"] == null ? undefined : json["identifier"],
         accessToken: json["access_token"] == null ? undefined : json["access_token"],
@@ -96,7 +89,6 @@ export function PatchedUserOAuthSourceConnectionRequestToJSONTyped(
     }
 
     return {
-        user: value["user"],
         source: value["source"],
         identifier: value["identifier"],
         access_token: value["accessToken"],

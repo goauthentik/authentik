@@ -11,7 +11,7 @@ import "#elements/Tabs";
 import "#elements/buttons/ModalButton";
 import "#elements/buttons/SpinnerButton/index";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { EVENT_REFRESH } from "#common/constants";
 
 import { AKElement } from "#elements/Base";
@@ -64,7 +64,7 @@ export class RACProviderViewPage extends AKElement {
     }
 
     protected fetchProvider(id: number) {
-        return new ProvidersApi(DEFAULT_CONFIG)
+        return aki(ProvidersApi)
             .providersRacRetrieve({ id })
             .then((prov) => (this.provider = prov));
     }
