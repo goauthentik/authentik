@@ -5,7 +5,7 @@ import "#elements/forms/SearchSelect/index";
 
 import type { InvitationWizardState } from "./types";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { WizardPage } from "#elements/wizard/WizardPage";
 
@@ -78,7 +78,7 @@ export class InvitationWizardFlowStep extends WizardPage {
         this.loading = true;
 
         try {
-            const stages = await new StagesApi(DEFAULT_CONFIG).stagesInvitationStagesList({
+            const stages = await aki(StagesApi).stagesInvitationStagesList({
                 noFlows: false,
             });
 

@@ -19,7 +19,7 @@ import {
     propertyMappingsSelector,
 } from "./SCIMProviderFormHelpers.js";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import {
     CompatibilityModeEnum,
@@ -59,7 +59,7 @@ export function renderAuthOAuth(provider?: Partial<SCIMProvider>, _errors: Valid
                     if (query !== undefined) {
                         args.search = query;
                     }
-                    const sources = await new SourcesApi(DEFAULT_CONFIG).sourcesOauthList(args);
+                    const sources = await aki(SourcesApi).sourcesOauthList(args);
                     return sources.results;
                 }}
                 .renderElement=${(source: OAuthSource): string => {

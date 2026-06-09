@@ -1,7 +1,7 @@
 import "#components/ak-text-input";
 import "#elements/forms/HorizontalFormElement";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { PFSize } from "#common/enums";
 
 import { ModelForm } from "#elements/forms/ModelForm";
@@ -27,7 +27,7 @@ export class DeviceAccessGroupForm extends WithBrandConfig(ModelForm<DeviceAcces
     public override size = PFSize.Small;
 
     protected override loadInstance(pk: string): Promise<DeviceAccessGroup> {
-        return new EndpointsApi(DEFAULT_CONFIG).endpointsDeviceAccessGroupsRetrieve({
+        return aki(EndpointsApi).endpointsDeviceAccessGroupsRetrieve({
             pbmUuid: pk,
         });
     }
@@ -40,13 +40,13 @@ export class DeviceAccessGroupForm extends WithBrandConfig(ModelForm<DeviceAcces
 
     protected override async send(data: DeviceAccessGroup): Promise<DeviceAccessGroup> {
         if (this.instance) {
-            return new EndpointsApi(DEFAULT_CONFIG).endpointsDeviceAccessGroupsPartialUpdate({
+            return aki(EndpointsApi).endpointsDeviceAccessGroupsPartialUpdate({
                 pbmUuid: this.instance.pbmUuid,
                 patchedDeviceAccessGroupRequest: data,
             });
         }
 
-        return new EndpointsApi(DEFAULT_CONFIG).endpointsDeviceAccessGroupsCreate({
+        return aki(EndpointsApi).endpointsDeviceAccessGroupsCreate({
             deviceAccessGroupRequest: data as unknown as DeviceAccessGroupRequest,
         });
     }

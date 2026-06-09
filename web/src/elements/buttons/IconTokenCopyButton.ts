@@ -1,4 +1,4 @@
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { IconCopyButton } from "#elements/buttons/IconCopyButton";
 import { SlottedTemplateResult } from "#elements/types";
@@ -16,7 +16,7 @@ export function IconTokenCopyButton(identifier?: string | null): SlottedTemplate
                 return Promise.resolve(new Blob([""], { type: "text/plain" }));
             }
 
-            return new CoreApi(DEFAULT_CONFIG)
+            return aki(CoreApi)
                 .coreTokensViewKeyRetrieve({ identifier })
                 .then((tokenView) => new Blob([tokenView.key], { type: "text/plain" }));
         };

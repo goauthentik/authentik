@@ -13,7 +13,7 @@ import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { formatDisambiguatedUserDisplayName } from "#common/users";
 
 import { IconEditButton, renderModal } from "#elements/dialogs";
@@ -71,14 +71,14 @@ export class AddRelatedUserForm extends Form<{ users: number[] }> {
         await Promise.all(
             data.users.map((userPk) => {
                 if (this.targetGroup) {
-                    return new CoreApi(DEFAULT_CONFIG).coreGroupsAddUserCreate({
+                    return aki(CoreApi).coreGroupsAddUserCreate({
                         groupUuid: this.targetGroup.pk,
                         userAccountRequest: {
                             pk: userPk,
                         },
                     });
                 } else if (this.targetRole) {
-                    return new RbacApi(DEFAULT_CONFIG).rbacRolesAddUserCreate({
+                    return aki(RbacApi).rbacRolesAddUserCreate({
                         uuid: this.targetRole.pk,
                         // TODO: Rename this.
                         userAccountSerializerForRoleRequest: {
@@ -198,7 +198,7 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
     }
 
     protected async apiEndpoint(): Promise<PaginatedResponse<User>> {
-        const users = await new CoreApi(DEFAULT_CONFIG).coreUsersList({
+        const users = await aki(CoreApi).coreUsersList({
             ...(await this.defaultEndpointConfig()),
             ...(this.targetGroup && { groupsByPk: [this.targetGroup.pk] }),
             ...(this.targetRole && { rolesByPk: [this.targetRole.pk] }),
@@ -244,7 +244,7 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
             }}
             .delete=${(item: User) => {
                 if (this.targetGroup) {
-                    return new CoreApi(DEFAULT_CONFIG).coreGroupsRemoveUserCreate({
+                    return aki(CoreApi).coreGroupsRemoveUserCreate({
                         groupUuid: this.targetGroup.pk,
                         userAccountRequest: {
                             pk: item.pk,
@@ -252,7 +252,7 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
                     });
                 }
                 if (this.targetRole) {
-                    return new RbacApi(DEFAULT_CONFIG).rbacRolesRemoveUserCreate({
+                    return aki(RbacApi).rbacRolesRemoveUserCreate({
                         uuid: this.targetRole.pk,
                         userAccountSerializerForRoleRequest: {
                             pk: item.pk,

@@ -4,7 +4,7 @@ import "#components/ak-text-input";
 import "#elements/forms/FormGroup";
 import "#elements/CodeMirror";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { ModelForm } from "#elements/forms/ModelForm";
 
@@ -17,7 +17,7 @@ import { customElement } from "lit/decorators.js";
 @customElement("ak-endpoints-connector-gdtc-form")
 export class GoogleChromeConnectorForm extends ModelForm<GoogleChromeConnector, string> {
     loadInstance(pk: string): Promise<GoogleChromeConnector> {
-        return new EndpointsApi(DEFAULT_CONFIG).endpointsGoogleChromeConnectorsRetrieve({
+        return aki(EndpointsApi).endpointsGoogleChromeConnectorsRetrieve({
             connectorUuid: pk,
         });
     }
@@ -30,12 +30,12 @@ export class GoogleChromeConnectorForm extends ModelForm<GoogleChromeConnector, 
 
     async send(data: GoogleChromeConnector): Promise<GoogleChromeConnector> {
         if (this.instance) {
-            return new EndpointsApi(DEFAULT_CONFIG).endpointsGoogleChromeConnectorsPartialUpdate({
+            return aki(EndpointsApi).endpointsGoogleChromeConnectorsPartialUpdate({
                 connectorUuid: this.instance.connectorUuid!,
                 patchedGoogleChromeConnectorRequest: data,
             });
         }
-        return new EndpointsApi(DEFAULT_CONFIG).endpointsGoogleChromeConnectorsCreate({
+        return aki(EndpointsApi).endpointsGoogleChromeConnectorsCreate({
             googleChromeConnectorRequest: data,
         });
     }
