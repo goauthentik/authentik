@@ -52664,10 +52664,9 @@ components:
     ProviderTypeEnum:
       enum:
       - apple
+      - discord
       - openidconnect
       - entraid
-      - azuread
-      - discord
       - facebook
       - github
       - gitlab
