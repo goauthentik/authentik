@@ -1,6 +1,6 @@
 import "#user/user-settings/details/stages/prompt/PromptStage";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { APIError, parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
 import { globalAK } from "#common/global";
 import { MessageLevel } from "#common/messages";
@@ -66,7 +66,7 @@ export class UserSettingsFlowExecutor
         // @ts-expect-error Component is too generic for Typescript here.
         payload.component = this.challenge.component;
         this.loading = true;
-        return new FlowsApi(DEFAULT_CONFIG)
+        return aki(FlowsApi)
             .flowsExecutorSolve({
                 flowSlug: this.flowSlug || "",
                 query: window.location.search.substring(1),
@@ -106,7 +106,7 @@ export class UserSettingsFlowExecutor
     async nextChallenge(): Promise<void> {
         this.loading = true;
 
-        return new FlowsApi(DEFAULT_CONFIG)
+        return aki(FlowsApi)
             .flowsExecutorGet({
                 flowSlug: this.flowSlug || "",
                 query: window.location.search.substring(1),

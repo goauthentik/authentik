@@ -1,6 +1,6 @@
 import "#elements/EmptyState";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { Diagram } from "#elements/Diagram";
 
@@ -15,7 +15,7 @@ export class FlowDiagram extends Diagram {
 
     refreshHandler = (): void => {
         this.diagram = undefined;
-        new FlowsApi(DEFAULT_CONFIG)
+        aki(FlowsApi)
             .flowsInstancesDiagramRetrieve({
                 slug: this.flowSlug || "",
             })

@@ -2,7 +2,7 @@ import "#elements/forms/FormGroup";
 import "#components/ak-switch-input";
 import "#elements/forms/HorizontalFormElement";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { BasePolicyForm } from "#admin/policies/BasePolicyForm";
 
@@ -33,7 +33,7 @@ export class PasswordPolicyForm extends BasePolicyForm<PasswordPolicy> {
     }
 
     async loadInstance(pk: string): Promise<PasswordPolicy> {
-        const policy = await new PoliciesApi(DEFAULT_CONFIG).policiesPasswordRetrieve({
+        const policy = await aki(PoliciesApi).policiesPasswordRetrieve({
             policyUuid: pk,
         });
         this.showStatic = policy.checkStaticRules || false;
@@ -44,12 +44,12 @@ export class PasswordPolicyForm extends BasePolicyForm<PasswordPolicy> {
 
     async send(data: PasswordPolicy): Promise<PasswordPolicy> {
         if (this.instance) {
-            return new PoliciesApi(DEFAULT_CONFIG).policiesPasswordUpdate({
+            return aki(PoliciesApi).policiesPasswordUpdate({
                 policyUuid: this.instance.pk || "",
                 passwordPolicyRequest: data,
             });
         }
-        return new PoliciesApi(DEFAULT_CONFIG).policiesPasswordCreate({
+        return aki(PoliciesApi).policiesPasswordCreate({
             passwordPolicyRequest: data,
         });
     }

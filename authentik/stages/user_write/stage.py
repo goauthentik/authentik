@@ -30,7 +30,7 @@ PLAN_CONTEXT_USER_PATH = "user_path"
 
 
 class UserWriteStageView(StageView):
-    """Finalise Enrollment flow by creating a user object."""
+    """Finalize Enrollment flow by creating a user object."""
 
     def __init__(self, executor: FlowExecutorView, **kwargs):
         super().__init__(executor, **kwargs)

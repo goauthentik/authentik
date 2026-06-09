@@ -4,6 +4,7 @@ sidebar_label: Anthropic
 support_level: community
 ---
 
+import SAMLProvider20265Warning from "../../_saml-provider-2026-5-warning.mdx";
 import TabItem from "@theme/TabItem";
 import Tabs from "@theme/Tabs";
 
@@ -87,6 +88,8 @@ Create SAML property mappings for the attributes that WorkOS expects from the id
             ```
 
 ### Create an application and provider in authentik
+
+<SAMLProvider20265Warning />
 
 1. Log in to authentik as an administrator.
 2. Navigate to **Applications** > **Applications** and click **New Application** to create an application and provider pair.
