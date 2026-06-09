@@ -67,7 +67,7 @@ Recommended values:
 - **Public key**: public Cap endpoint for the site key path, for example `https://cap.example.com/site-key/`
 - **Private key**: Cap secret key
 - **Interactive**: enabled
-- **JS URL**: `https://cdn.jsdelivr.net/npm/cap-widget`
+- **JS URL**: self-hosted Cap widget asset, for example `https://cap.example.com/assets/widget.js`. If you use a CDN, pin a reviewed release such as `https://cdn.jsdelivr.net/npm/cap-widget@<version>` instead of the unversioned package URL. See [Cap releases](https://github.com/tiagozip/cap/releases).
 - **API URL**: Cap verification endpoint, for example `https://cap.example.com/site-key/siteverify`
 - **Request content type**: JSON
 

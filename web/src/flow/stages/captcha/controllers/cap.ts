@@ -2,6 +2,10 @@ import { CaptchaController } from "#flow/stages/captcha/controllers/CaptchaContr
 
 import { html } from "lit";
 
+export function isCapWidgetURL(url: URL): boolean {
+    return url.pathname.includes("cap-widget") || url.pathname.endsWith("/assets/widget.js");
+}
+
 export class CapController extends CaptchaController {
     public static readonly globalName = "cap-widget";
 
@@ -12,7 +16,7 @@ export class CapController extends CaptchaController {
     }
 
     public static override matchesURL(url: URL): boolean {
-        return url.pathname.includes("cap-widget");
+        return isCapWidgetURL(url);
     }
 
     public interactive = () => {

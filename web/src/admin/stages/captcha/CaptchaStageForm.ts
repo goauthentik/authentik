@@ -296,9 +296,13 @@ export class CaptchaStageForm extends BaseStageForm<CaptchaStage> {
                     type="url"
                     value="${ifDefined(formValues.jsUrl)}"
                     required
-                    help=${msg(
-                        "URL to fetch the CAPTCHA JavaScript library from. Automatically set based on provider selection but can be customized.",
-                    )}
+                    help=${this.selectedProvider === "cap"
+                        ? msg(
+                              "For Cap, prefer the self-hosted widget asset, for example https://cap.example.com/assets/widget.js. If using a CDN, pin a reviewed release.",
+                          )
+                        : msg(
+                              "URL to fetch the CAPTCHA JavaScript library from. Automatically set based on provider selection but can be customized.",
+                          )}
                 ></ak-text-input>
                 <ak-text-input
                     label=${msg("API Verification URL")}

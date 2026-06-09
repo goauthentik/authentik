@@ -12,7 +12,7 @@ import { AKFormErrors, ErrorProp } from "#components/ak-field-errors";
 import { FlowUserDetails } from "#flow/FormStatic";
 import { BaseStage } from "#flow/stages/base";
 import Styles from "#flow/stages/captcha/CaptchaStage.css";
-import { CapController } from "#flow/stages/captcha/controllers/cap";
+import { CapController, isCapWidgetURL } from "#flow/stages/captcha/controllers/cap";
 import {
     CaptchaController,
     CaptchaControllerConstructor,
@@ -197,7 +197,8 @@ export class CaptchaStage
         if (this.challenge?.interactive) {
             // Cap renders its own framed widget, so the generic iframe loading shimmer looks like
             // an extra CAPTCHA box flashing behind it.
-            const isCapChallenge = this.challenge.jsUrl.includes("cap-widget");
+            const isCapChallenge =
+                URL.canParse(this.challenge.jsUrl) && isCapWidgetURL(new URL(this.challenge.jsUrl));
 
             return html`
                 <iframe

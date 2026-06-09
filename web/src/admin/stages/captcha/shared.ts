@@ -147,7 +147,7 @@ export const CAPTCHA_PROVIDERS = {
             msg("Cap is a self-hostable CAPTCHA server that uses proof-of-work challenges.", {
                 id: "captcha.providers.cap.description",
             }),
-        jsUrl: "https://cdn.jsdelivr.net/npm/cap-widget",
+        jsUrl: "https://cap.example.com/assets/widget.js",
         apiUrl: "https://cap.example.com/site-key/siteverify",
         requestContentType: "application/json",
         interactive: true,
@@ -192,6 +192,15 @@ export function deriveCapSiteVerifyURL(endpoint: string): string | null {
  * This allows the form to show the correct provider in the dropdown when editing
  * an existing CAPTCHA stage. Falls back to "custom" if no match is found.
  */
+function isCapWidgetURL(jsUrl?: string | null): boolean {
+    if (!jsUrl || !URL.canParse(jsUrl)) {
+        return false;
+    }
+
+    const { pathname } = new URL(jsUrl);
+    return pathname.includes("cap-widget") || pathname.endsWith("/assets/widget.js");
+}
+
 export function detectProviderFromInstance(stage?: CaptchaStage | null): CaptchaProviderKey {
     if (!stage) return "custom";
 
@@ -200,7 +209,7 @@ export function detectProviderFromInstance(stage?: CaptchaStage | null): Captcha
 
         if (
             key === "cap" &&
-            stage.jsUrl?.includes("cap-widget") &&
+            isCapWidgetURL(stage.jsUrl) &&
             stage.requestContentType === preset.requestContentType
         ) {
             return key;
