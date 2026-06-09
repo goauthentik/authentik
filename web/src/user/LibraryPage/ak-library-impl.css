@@ -18,6 +18,10 @@
     gap: var(--pf-global--spacer--xs);
     container-type: inline-size;
 
+    @media (width < 800px) {
+        row-gap: var(--pf-global--spacer--md);
+    }
+
     .pf-c-page__title {
         margin: 0;
         flex: 1 1 auto;
@@ -32,14 +36,22 @@
             width: 1.5rem;
             height: 1.5rem;
         }
+
+        @container (width < 800px) {
+            margin-inline: 0;
+        }
+
+        @media (width < 768px) {
+            display: none;
+        }
     }
 
     search {
         display: flex;
-        flex: 0 0 36ch;
+        flex: 0 0 45ch;
 
-        @container (width < 650px) {
-            flex: 1 1 36ch;
+        @container (width < 800px) {
+            flex: 1 1 45ch;
 
             &::part(search-input) {
                 font-size: var(--pf-global--FontSize--md);
