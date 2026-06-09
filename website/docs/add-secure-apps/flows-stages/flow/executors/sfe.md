@@ -1,6 +1,5 @@
 ---
 title: Simplified flow executor
-authentik_version: "2024.6.1"
 ---
 
 A simplified web-based flow executor that authentik automatically uses for older browsers that do not support modern web technologies.

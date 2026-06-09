@@ -2,7 +2,7 @@ import "#components/ak-text-input";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/index";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { groupBy } from "#common/utils";
 
 import { Form } from "#elements/forms/Form";
@@ -33,7 +33,7 @@ export class UserResetEmailForm extends Form<UserRecoveryEmailRequest> {
     }
 
     async send(data: UserRecoveryEmailRequest): Promise<void> {
-        return new CoreApi(DEFAULT_CONFIG).coreUsersRecoveryEmailCreate({
+        return aki(CoreApi).coreUsersRecoveryEmailCreate({
             id: this.user.pk,
             userRecoveryEmailRequest: data,
         });
@@ -54,7 +54,7 @@ export class UserResetEmailForm extends Form<UserRecoveryEmailRequest> {
                         if (query !== undefined) {
                             args.search = query;
                         }
-                        const stages = await new StagesApi(DEFAULT_CONFIG).stagesEmailList(args);
+                        const stages = await aki(StagesApi).stagesEmailList(args);
                         return stages.results;
                     }}
                     .groupBy=${(items: Stage[]) => {

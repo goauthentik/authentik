@@ -6,7 +6,7 @@ import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/Radio";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { ModelForm } from "#elements/forms/ModelForm";
 import { WithCapabilitiesConfig } from "#elements/mixins/capabilities";
@@ -41,7 +41,7 @@ export class FlowForm extends WithCapabilitiesConfig(ModelForm<Flow, string>) {
     public static override verboseName = msg("Flow");
     public static override verboseNamePlural = msg("Flows");
 
-    #api = new FlowsApi(DEFAULT_CONFIG);
+    #api = aki(FlowsApi);
 
     protected override async loadInstance(pk: string): Promise<Flow> {
         return this.#api.flowsInstancesRetrieve({

@@ -5,7 +5,7 @@ import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 import "#elements/EmptyState";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { createPaginatedResponse } from "#common/api/responses";
 import { docLink } from "#common/global";
 
@@ -43,7 +43,7 @@ export class FileListPage extends WithCapabilitiesConfig(TablePage<FileItem>) {
     public order: FileListOrderKey = "name";
 
     async apiEndpoint(): Promise<PaginatedResponse<FileItem>> {
-        const api = new AdminApi(DEFAULT_CONFIG);
+        const api = aki(AdminApi);
         // Cast necessary: API returns File objects but we only use name, url, and mimeType properties
         const items = (await api.adminFileList({
             usage: UsageEnum.Media,
@@ -77,12 +77,12 @@ export class FileListPage extends WithCapabilitiesConfig(TablePage<FileItem>) {
                 ];
             }}
             .usedBy=${(item: FileItem) => {
-                return new AdminApi(DEFAULT_CONFIG).adminFileUsedByList({
+                return aki(AdminApi).adminFileUsedByList({
                     name: item.name,
                 });
             }}
             .delete=${(item: FileItem) => {
-                return new AdminApi(DEFAULT_CONFIG).adminFileDestroy({
+                return aki(AdminApi).adminFileDestroy({
                     name: item.name,
                     usage: UsageEnum.Media,
                 });

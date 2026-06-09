@@ -4,6 +4,8 @@ sidebar_label: OneUptime
 support_level: community
 ---
 
+import SAMLProvider20265Warning from "../../\_saml-provider-2026-5-warning.mdx";
+
 ## What is OneUptime?
 
 > OneUptime is an open-source observability and incident management platform that provides infrastructure monitoring, incident management, status pages, and APM.
@@ -54,6 +56,8 @@ OneUptime currently supports the RSA-based SAML signature methods `RSA-SHA1`, `R
     - **Reply URL (Assertion Consumer Service URL)**
 
 ## Create an application and provider in authentik
+
+<SAMLProvider20265Warning />
 
 To support the integration of OneUptime with authentik, you need an application/provider pair in authentik that uses the values provided by OneUptime.
 

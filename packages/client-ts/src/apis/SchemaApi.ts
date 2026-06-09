@@ -12,7 +12,8 @@
  * Do not edit the class manually.
  */
 
-import type { FormatEnum, LangEnum } from "../models/index";
+import { type FormatEnum } from "../models/FormatEnum";
+import { type LangEnum } from "../models/LangEnum";
 import * as runtime from "../runtime";
 
 export interface SchemaRetrieveRequest {
