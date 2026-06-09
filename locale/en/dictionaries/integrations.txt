@@ -9,6 +9,7 @@ Budibase
 Doki
 Doku
 dokuwiki
+Dozzle
 Engomo
 Espo
 espocrm

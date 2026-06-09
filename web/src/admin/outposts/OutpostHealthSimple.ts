@@ -1,6 +1,6 @@
 import "#elements/Spinner";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { EVENT_REFRESH } from "#common/constants";
 import { formatElapsedTime } from "#common/temporal";
 
@@ -37,7 +37,7 @@ export class OutpostHealthSimpleElement extends AKElement {
 
     firstUpdated(): void {
         if (!this.outpostId) return;
-        new OutpostsApi(DEFAULT_CONFIG)
+        aki(OutpostsApi)
             .outpostsInstancesHealthList({
                 uuid: this.outpostId,
             })
