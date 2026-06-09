@@ -4,6 +4,9 @@ sidebar_label: OpenCloud
 support_level: community
 ---
 
+import TabItem from "@theme/TabItem";
+import Tabs from "@theme/Tabs";
+
 ## What is OpenCloud?
 
 > OpenCloud is an open-source content collaboration platform for storing, syncing, and sharing files, built on the Infinite Scale (oCIS) architecture.
@@ -20,9 +23,6 @@ The following placeholders are used in this guide:
 This guide covers integrating authentik with the [`opencloud-compose`](https://github.com/opencloud-eu/opencloud-compose) Docker deployment. OpenCloud only supports authentication via OpenID Connect (OIDC).
 
 Choose your setup below. The **Web only** tab logs in through the browser. The **Web, desktop & mobile** tab also enables the native sync clients, which each use a distinct client ID and require some extra issuer configuration.
-
-import TabItem from "@theme/TabItem";
-import Tabs from "@theme/Tabs";
 
 <Tabs
   defaultValue="web"
@@ -70,10 +70,6 @@ WEBFINGER_WEB_OIDC_CLIENT_ID=web
 WEBFINGER_WEB_OIDC_CLIENT_SCOPES=openid profile email
 ```
 
-:::info
-`WEBFINGER_WEB_OIDC_CLIENT_ID` is required as the Web UI reads its client ID from WebFinger, and login will not start if it is empty.
-:::
-
 Create `custom/authentik-roles.yml` to assign every user the default role:
 
 ```yaml
@@ -85,7 +81,7 @@ services:
             GRAPH_ASSIGN_DEFAULT_USER_ROLE: "true"
 ```
 
-Then reboot your docker containers.
+Then reboot your Docker containers.
 
 ## Configuration verification
 
@@ -175,7 +171,7 @@ services:
             GRAPH_ASSIGN_DEFAULT_USER_ROLE: "true"
 ```
 
-Then reboot your docker containers.
+Then reboot your Docker containers.
 
 ## Configuration verification
 
