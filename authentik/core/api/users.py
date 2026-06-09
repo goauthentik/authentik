@@ -65,10 +65,6 @@ from authentik.api.search.fields import (
 from authentik.api.validation import validate
 from authentik.blueprints.v1.importer import SERIALIZER_CONTEXT_BLUEPRINT
 from authentik.brands.models import Brand
-from authentik.core.account_selection import (
-    get_known_account_users,
-    serialize_account_selection_user,
-)
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import (
     JSONDictField,
@@ -91,6 +87,10 @@ from authentik.core.models import (
     User,
     UserTypes,
     default_token_duration,
+)
+from authentik.core.user_selection import (
+    get_user_selection_users,
+    serialize_user_selection_user,
 )
 from authentik.endpoints.connectors.agent.auth import AgentAuth
 from authentik.events.models import Event, EventAction
@@ -455,8 +455,8 @@ class UserSelfSerializer(ModelSerializer):
         }
 
 
-class AccountSelectionUserSerializer(PassiveSerializer):
-    """Browser-local account that can be selected from the UI."""
+class UserSelectionUserSerializer(PassiveSerializer):
+    """Browser-local user that can be selected from the UI."""
 
     uid = CharField(read_only=True)
     username = CharField(read_only=True)
@@ -464,6 +464,7 @@ class AccountSelectionUserSerializer(PassiveSerializer):
     email = CharField(read_only=True, allow_blank=True)
     avatar = CharField(read_only=True)
     is_current = BooleanField(read_only=True)
+    authentication = CharField(read_only=True)
 
 
 class SessionUserSerializer(PassiveSerializer):
@@ -473,7 +474,7 @@ class SessionUserSerializer(PassiveSerializer):
 
     user = UserSelfSerializer()
     original = UserSelfSerializer(required=False)
-    accounts = AccountSelectionUserSerializer(many=True)
+    accounts = UserSelectionUserSerializer(many=True)
 
 
 class UserPasswordSetSerializer(PassiveSerializer):
@@ -812,16 +813,16 @@ class UserViewSet(
                     status=500,
                 )
 
-    def _serialize_account_selection_user(self, user: User) -> dict[str, Any]:
-        """Serialize an account remembered by this browser."""
-        return serialize_account_selection_user(self.request, user)
+    def _serialize_user_selection_user(self, user: User) -> dict[str, Any]:
+        """Serialize a user remembered by this browser."""
+        return serialize_user_selection_user(self.request, user)
 
-    def _get_account_selection_users(self) -> list[User]:
-        """Return active known accounts, including the current session user first."""
-        current_account = []
+    def _get_user_selection_users(self) -> list[User]:
+        """Return known users, including the current session user first."""
+        current_user = []
         if self.request.user.is_authenticated:
-            current_account.append(self.request.user.uuid.hex)
-        return get_known_account_users(self.request, current_account)
+            current_user.append(self.request.user.uuid.hex)
+        return get_user_selection_users(self.request, current_user)
 
     @extend_schema(responses={200: SessionUserSerializer(many=False)})
     @action(
@@ -838,8 +839,8 @@ class UserViewSet(
             data={
                 "user": UserSelfSerializer(instance=request.user, context=context).data,
                 "accounts": [
-                    self._serialize_account_selection_user(user)
-                    for user in self._get_account_selection_users()
+                    self._serialize_user_selection_user(user)
+                    for user in self._get_user_selection_users()
                 ],
             }
         )

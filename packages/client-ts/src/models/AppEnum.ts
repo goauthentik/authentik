@@ -63,7 +63,7 @@ export const AppEnum = {
     AuthentikStagesAuthenticatorTotp: "authentik.stages.authenticator_totp",
     AuthentikStagesAuthenticatorValidate: "authentik.stages.authenticator_validate",
     AuthentikStagesAuthenticatorWebauthn: "authentik.stages.authenticator_webauthn",
-    AuthentikStagesAccountSelection: "authentik.stages.account_selection",
+    AuthentikStagesUserSelection: "authentik.stages.user_selection",
     AuthentikStagesCaptcha: "authentik.stages.captcha",
     AuthentikStagesConsent: "authentik.stages.consent",
     AuthentikStagesDeny: "authentik.stages.deny",

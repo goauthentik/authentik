@@ -18,7 +18,6 @@ import (
 
 // FlowChallengeResponseRequest - struct for FlowChallengeResponseRequest
 type FlowChallengeResponseRequest struct {
-	AccountSelectionChallengeResponseRequest        *AccountSelectionChallengeResponseRequest
 	AppleChallengeResponseRequest                   *AppleChallengeResponseRequest
 	AuthenticatorDuoChallengeResponseRequest        *AuthenticatorDuoChallengeResponseRequest
 	AuthenticatorEmailChallengeResponseRequest      *AuthenticatorEmailChallengeResponseRequest
@@ -45,13 +44,7 @@ type FlowChallengeResponseRequest struct {
 	RedirectChallengeResponseRequest                *RedirectChallengeResponseRequest
 	TelegramChallengeResponseRequest                *TelegramChallengeResponseRequest
 	UserLoginChallengeResponseRequest               *UserLoginChallengeResponseRequest
-}
-
-// AccountSelectionChallengeResponseRequestAsFlowChallengeResponseRequest is a convenience function that returns AccountSelectionChallengeResponseRequest wrapped in FlowChallengeResponseRequest
-func AccountSelectionChallengeResponseRequestAsFlowChallengeResponseRequest(v *AccountSelectionChallengeResponseRequest) FlowChallengeResponseRequest {
-	return FlowChallengeResponseRequest{
-		AccountSelectionChallengeResponseRequest: v,
-	}
+	UserSelectionChallengeResponseRequest           *UserSelectionChallengeResponseRequest
 }
 
 // AppleChallengeResponseRequestAsFlowChallengeResponseRequest is a convenience function that returns AppleChallengeResponseRequest wrapped in FlowChallengeResponseRequest
@@ -236,6 +229,13 @@ func UserLoginChallengeResponseRequestAsFlowChallengeResponseRequest(v *UserLogi
 	}
 }
 
+// UserSelectionChallengeResponseRequestAsFlowChallengeResponseRequest is a convenience function that returns UserSelectionChallengeResponseRequest wrapped in FlowChallengeResponseRequest
+func UserSelectionChallengeResponseRequestAsFlowChallengeResponseRequest(v *UserSelectionChallengeResponseRequest) FlowChallengeResponseRequest {
+	return FlowChallengeResponseRequest{
+		UserSelectionChallengeResponseRequest: v,
+	}
+}
+
 // Unmarshal JSON data into one of the pointers in the struct
 func (dst *FlowChallengeResponseRequest) UnmarshalJSON(data []byte) error {
 	var err error
@@ -327,18 +327,6 @@ func (dst *FlowChallengeResponseRequest) UnmarshalJSON(data []byte) error {
 		} else {
 			dst.TelegramChallengeResponseRequest = nil
 			return fmt.Errorf("failed to unmarshal FlowChallengeResponseRequest as TelegramChallengeResponseRequest: %s", err.Error())
-		}
-	}
-
-	// check if the discriminator value is 'ak-stage-account-selection'
-	if jsonDict["component"] == "ak-stage-account-selection" {
-		// try to unmarshal JSON data into AccountSelectionChallengeResponseRequest
-		err = json.Unmarshal(data, &dst.AccountSelectionChallengeResponseRequest)
-		if err == nil {
-			return nil // data stored in dst.AccountSelectionChallengeResponseRequest, return on the first match
-		} else {
-			dst.AccountSelectionChallengeResponseRequest = nil
-			return fmt.Errorf("failed to unmarshal FlowChallengeResponseRequest as AccountSelectionChallengeResponseRequest: %s", err.Error())
 		}
 	}
 
@@ -546,6 +534,18 @@ func (dst *FlowChallengeResponseRequest) UnmarshalJSON(data []byte) error {
 		}
 	}
 
+	// check if the discriminator value is 'ak-stage-user-selection'
+	if jsonDict["component"] == "ak-stage-user-selection" {
+		// try to unmarshal JSON data into UserSelectionChallengeResponseRequest
+		err = json.Unmarshal(data, &dst.UserSelectionChallengeResponseRequest)
+		if err == nil {
+			return nil // data stored in dst.UserSelectionChallengeResponseRequest, return on the first match
+		} else {
+			dst.UserSelectionChallengeResponseRequest = nil
+			return fmt.Errorf("failed to unmarshal FlowChallengeResponseRequest as UserSelectionChallengeResponseRequest: %s", err.Error())
+		}
+	}
+
 	// check if the discriminator value is 'xak-flow-frame'
 	if jsonDict["component"] == "xak-flow-frame" {
 		// try to unmarshal JSON data into FrameChallengeResponseRequest
@@ -575,10 +575,6 @@ func (dst *FlowChallengeResponseRequest) UnmarshalJSON(data []byte) error {
 
 // Marshal data from the first non-nil pointers in the struct to JSON
 func (src FlowChallengeResponseRequest) MarshalJSON() ([]byte, error) {
-	if src.AccountSelectionChallengeResponseRequest != nil {
-		return json.Marshal(&src.AccountSelectionChallengeResponseRequest)
-	}
-
 	if src.AppleChallengeResponseRequest != nil {
 		return json.Marshal(&src.AppleChallengeResponseRequest)
 	}
@@ -683,6 +679,10 @@ func (src FlowChallengeResponseRequest) MarshalJSON() ([]byte, error) {
 		return json.Marshal(&src.UserLoginChallengeResponseRequest)
 	}
 
+	if src.UserSelectionChallengeResponseRequest != nil {
+		return json.Marshal(&src.UserSelectionChallengeResponseRequest)
+	}
+
 	return nil, nil // no data in oneOf schemas
 }
 
@@ -691,10 +691,6 @@ func (obj *FlowChallengeResponseRequest) GetActualInstance() interface{} {
 	if obj == nil {
 		return nil
 	}
-	if obj.AccountSelectionChallengeResponseRequest != nil {
-		return obj.AccountSelectionChallengeResponseRequest
-	}
-
 	if obj.AppleChallengeResponseRequest != nil {
 		return obj.AppleChallengeResponseRequest
 	}
@@ -799,16 +795,16 @@ func (obj *FlowChallengeResponseRequest) GetActualInstance() interface{} {
 		return obj.UserLoginChallengeResponseRequest
 	}
 
+	if obj.UserSelectionChallengeResponseRequest != nil {
+		return obj.UserSelectionChallengeResponseRequest
+	}
+
 	// all schemas are nil
 	return nil
 }
 
 // Get the actual instance value
 func (obj FlowChallengeResponseRequest) GetActualInstanceValue() interface{} {
-	if obj.AccountSelectionChallengeResponseRequest != nil {
-		return *obj.AccountSelectionChallengeResponseRequest
-	}
-
 	if obj.AppleChallengeResponseRequest != nil {
 		return *obj.AppleChallengeResponseRequest
 	}
@@ -911,6 +907,10 @@ func (obj FlowChallengeResponseRequest) GetActualInstanceValue() interface{} {
 
 	if obj.UserLoginChallengeResponseRequest != nil {
 		return *obj.UserLoginChallengeResponseRequest
+	}
+
+	if obj.UserSelectionChallengeResponseRequest != nil {
+		return *obj.UserSelectionChallengeResponseRequest
 	}
 
 	// all schemas are nil

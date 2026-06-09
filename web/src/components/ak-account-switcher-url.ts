@@ -1,32 +1,32 @@
-export interface AccountSelectionURLUser {
+export interface UserSelectionURLUser {
     email?: string;
     uid?: string;
     username?: string;
 }
 
 export interface AuthenticationFlowURLConfig {
-    account?: AccountSelectionURLUser;
-    accountSelectionFlow?: string | null;
+    account?: UserSelectionURLUser;
+    userSelectionFlow?: string | null;
     apiBase: string;
     next: string;
 }
 
 export function buildAuthenticationFlowURL({
     account,
-    accountSelectionFlow,
+    userSelectionFlow,
     apiBase,
     next,
 }: AuthenticationFlowURLConfig): string {
     const query = new URLSearchParams({ next });
     const loginHint = account?.email || account?.username;
 
-    if (account?.uid && accountSelectionFlow) {
-        query.set("account_uid", account.uid);
-        return `${apiBase}if/flow/${accountSelectionFlow}/?${query.toString()}`;
+    if (account?.uid && userSelectionFlow) {
+        query.set("user_uid", account.uid);
+        return `${apiBase}if/flow/${userSelectionFlow}/?${query.toString()}`;
     }
 
     if (!account?.uid) {
-        query.set("add_account", "true");
+        query.delete("user_uid");
     }
 
     if (loginHint) {

@@ -8,7 +8,7 @@ export function RenderFlowOption(flow: Flow): string {
 
 const designationToLabel = {
     [FlowDesignationEnum.Authentication]: msg("Authentication"),
-    [FlowDesignationEnum.AccountSelection]: msg("Account selection"),
+    [FlowDesignationEnum.UserSelection]: msg("User selection"),
     [FlowDesignationEnum.Authorization]: msg("Authorization"),
     [FlowDesignationEnum.Enrollment]: msg("Enrollment"),
     [FlowDesignationEnum.Invalidation]: msg("Invalidation"),

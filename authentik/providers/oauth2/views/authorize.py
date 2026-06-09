@@ -32,12 +32,12 @@ from authentik.common.oauth.constants import (
     TOKEN_TYPE,
     UI_LOCALES,
 )
-from authentik.core.account_selection import (
-    QS_ACCOUNT_UID,
-    get_known_account_users,
-    start_account_selection_flow_response,
-)
 from authentik.core.models import Application
+from authentik.core.user_selection import (
+    QS_USER_UID,
+    get_user_selection_users,
+    start_user_selection_flow_response,
+)
 from authentik.events.models import Event, EventAction
 from authentik.events.signals import get_login_event
 from authentik.flows.challenge import (
@@ -390,12 +390,12 @@ class AuthorizationFlowInitView(PolicyAccessView):
         self.application = self.provider.application
 
     def modify_flow_context(self, flow: Flow, context: dict[str, Any]) -> dict[str, Any]:
-        selected_account_uid = self.request.GET.get(QS_ACCOUNT_UID)
+        selected_user_uid = self.request.GET.get(QS_USER_UID)
         if QS_LOGIN_HINT in self.request.GET and (
             PROMPT_SELECT_ACCOUNT not in self.params.prompt
             or (
                 self.request.user.is_authenticated
-                and selected_account_uid == self.request.user.uuid.hex
+                and selected_user_uid == self.request.user.uuid.hex
             )
         ):
             context[PLAN_CONTEXT_PENDING_USER_IDENTIFIER] = self.request.GET.get(QS_LOGIN_HINT)
@@ -420,19 +420,22 @@ class AuthorizationFlowInitView(PolicyAccessView):
         if self.has_fresh_login_event(login_uid):
             self.request.session.pop(SESSION_KEY_LAST_LOGIN_UID, None)
 
-    def should_show_account_selection(self, login_uid: str) -> bool:
-        """Check if the authorization flow should prompt for an account choice."""
+    def should_show_user_selection(self, login_uid: str) -> bool:
+        """Check if the authorization flow should prompt for a user choice."""
         if PROMPT_NONE in self.params.prompt or PROMPT_LOGIN in self.params.prompt:
             return False
         if self.has_fresh_login_event(login_uid):
             return False
         if (
             self.request.user.is_authenticated
-            and self.request.GET.get(QS_ACCOUNT_UID) == self.request.user.uuid.hex
+            and self.request.GET.get(QS_USER_UID) == self.request.user.uuid.hex
         ):
             return False
-        account_users = get_known_account_users(self.request, [self.request.user.uuid.hex])
-        return PROMPT_SELECT_ACCOUNT in self.params.prompt or len(account_users) > 1
+        current_user = []
+        if self.request.user.is_authenticated:
+            current_user.append(self.request.user.uuid.hex)
+        users = get_user_selection_users(self.request, current_user)
+        return PROMPT_SELECT_ACCOUNT in self.params.prompt or len(users) > 1
 
     def handle_no_permission(self) -> HttpResponse:
         response = super().handle_no_permission()
@@ -440,11 +443,11 @@ class AuthorizationFlowInitView(PolicyAccessView):
             return response
         if SESSION_KEY_LAST_LOGIN_UID in self.request.session:
             return response
-        account_users = get_known_account_users(self.request)
-        if not account_users:
+        users = get_user_selection_users(self.request)
+        if not users:
             return response
         return (
-            start_account_selection_flow_response(
+            start_user_selection_flow_response(
                 self.request,
                 self.request.get_full_path(),
                 getattr(self, "application", None),
@@ -531,7 +534,7 @@ class AuthorizationFlowInitView(PolicyAccessView):
         if self.needs_fresh_login_event(login_uid):
             self.request.session[SESSION_KEY_LAST_LOGIN_UID] = login_uid
             return self.handle_no_permission()
-        show_account_selection = self.should_show_account_selection(login_uid)
+        show_user_selection = self.should_show_user_selection(login_uid)
         self.cleanup_fresh_login_event(login_uid)
         scope_descriptions = UserInfoView().get_scope_descriptions(
             self.params.scope, self.params.provider
@@ -555,8 +558,8 @@ class AuthorizationFlowInitView(PolicyAccessView):
             )
         except FlowNonApplicableException:
             return self.handle_no_permission_authenticated()
-        if show_account_selection:
-            response = start_account_selection_flow_response(
+        if show_user_selection:
+            response = start_user_selection_flow_response(
                 self.request,
                 self.request.get_full_path(),
                 self.application,

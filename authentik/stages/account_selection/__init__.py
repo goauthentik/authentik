@@ -1,1 +1,0 @@
-"""authentik account selection stage."""

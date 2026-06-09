@@ -68,13 +68,13 @@ pub async fn core_brands_list(
     client_certificates: Option<Vec<uuid::Uuid>>,
     default: Option<bool>,
     domain: Option<&str>,
-    flow_account_selection: Option<&str>,
     flow_authentication: Option<&str>,
     flow_device_code: Option<&str>,
     flow_invalidation: Option<&str>,
     flow_lockdown: Option<&str>,
     flow_recovery: Option<&str>,
     flow_unenrollment: Option<&str>,
+    flow_user_selection: Option<&str>,
     flow_user_settings: Option<&str>,
     ordering: Option<&str>,
     page: Option<i32>,
@@ -91,13 +91,13 @@ pub async fn core_brands_list(
     let p_query_client_certificates = client_certificates;
     let p_query_default = default;
     let p_query_domain = domain;
-    let p_query_flow_account_selection = flow_account_selection;
     let p_query_flow_authentication = flow_authentication;
     let p_query_flow_device_code = flow_device_code;
     let p_query_flow_invalidation = flow_invalidation;
     let p_query_flow_lockdown = flow_lockdown;
     let p_query_flow_recovery = flow_recovery;
     let p_query_flow_unenrollment = flow_unenrollment;
+    let p_query_flow_user_selection = flow_user_selection;
     let p_query_flow_user_settings = flow_user_settings;
     let p_query_ordering = ordering;
     let p_query_page = page;
@@ -149,9 +149,6 @@ pub async fn core_brands_list(
     if let Some(ref param_value) = p_query_domain {
         req_builder = req_builder.query(&[("domain", &param_value.to_string())]);
     }
-    if let Some(ref param_value) = p_query_flow_account_selection {
-        req_builder = req_builder.query(&[("flow_account_selection", &param_value.to_string())]);
-    }
     if let Some(ref param_value) = p_query_flow_authentication {
         req_builder = req_builder.query(&[("flow_authentication", &param_value.to_string())]);
     }
@@ -169,6 +166,9 @@ pub async fn core_brands_list(
     }
     if let Some(ref param_value) = p_query_flow_unenrollment {
         req_builder = req_builder.query(&[("flow_unenrollment", &param_value.to_string())]);
+    }
+    if let Some(ref param_value) = p_query_flow_user_selection {
+        req_builder = req_builder.query(&[("flow_user_selection", &param_value.to_string())]);
     }
     if let Some(ref param_value) = p_query_flow_user_settings {
         req_builder = req_builder.query(&[("flow_user_settings", &param_value.to_string())]);

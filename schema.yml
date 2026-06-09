@@ -3158,11 +3158,6 @@ paths:
         schema:
           type: string
       - in: query
-        name: flow_account_selection
-        schema:
-          type: string
-          format: uuid
-      - in: query
         name: flow_authentication
         schema:
           type: string
@@ -3189,6 +3184,11 @@ paths:
           format: uuid
       - in: query
         name: flow_unenrollment
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: flow_user_selection
         schema:
           type: string
           format: uuid
@@ -27160,386 +27160,6 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
-  /stages/account_selection/selection/:
-    get:
-      operationId: stages_account_selection_selection_list
-      description: AccountSelectionStage viewset.
-      parameters:
-      - $ref: '#/components/parameters/QueryName'
-      - $ref: '#/components/parameters/QueryPaginationOrdering'
-      - $ref: '#/components/parameters/QueryPaginationPage'
-      - $ref: '#/components/parameters/QueryPaginationPageSize'
-      - $ref: '#/components/parameters/QuerySearch'
-      tags:
-      - stages
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PaginatedAccountSelectionStageList'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-    post:
-      operationId: stages_account_selection_selection_create
-      description: AccountSelectionStage viewset.
-      tags:
-      - stages
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/AccountSelectionStageRequest'
-        required: true
-      security:
-      - authentik: []
-      responses:
-        '201':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/AccountSelectionStage'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-  /stages/account_selection/selection/{stage_uuid}/:
-    get:
-      operationId: stages_account_selection_selection_retrieve
-      description: AccountSelectionStage viewset.
-      parameters:
-      - in: path
-        name: stage_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Account Selection Stage.
-        required: true
-      tags:
-      - stages
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/AccountSelectionStage'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-    put:
-      operationId: stages_account_selection_selection_update
-      description: AccountSelectionStage viewset.
-      parameters:
-      - in: path
-        name: stage_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Account Selection Stage.
-        required: true
-      tags:
-      - stages
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/AccountSelectionStageRequest'
-        required: true
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/AccountSelectionStage'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-    patch:
-      operationId: stages_account_selection_selection_partial_update
-      description: AccountSelectionStage viewset.
-      parameters:
-      - in: path
-        name: stage_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Account Selection Stage.
-        required: true
-      tags:
-      - stages
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedAccountSelectionStageRequest'
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/AccountSelectionStage'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-    delete:
-      operationId: stages_account_selection_selection_destroy
-      description: AccountSelectionStage viewset.
-      parameters:
-      - in: path
-        name: stage_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Account Selection Stage.
-        required: true
-      tags:
-      - stages
-      security:
-      - authentik: []
-      responses:
-        '204':
-          description: No response body
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-  /stages/account_selection/selection/{stage_uuid}/used_by/:
-    get:
-      operationId: stages_account_selection_selection_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: stage_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Account Selection Stage.
-        required: true
-      tags:
-      - stages
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-  /stages/account_selection/switch/:
-    get:
-      operationId: stages_account_selection_switch_list
-      description: AccountSwitchStage viewset.
-      parameters:
-      - $ref: '#/components/parameters/QueryName'
-      - $ref: '#/components/parameters/QueryPaginationOrdering'
-      - $ref: '#/components/parameters/QueryPaginationPage'
-      - $ref: '#/components/parameters/QueryPaginationPageSize'
-      - $ref: '#/components/parameters/QuerySearch'
-      tags:
-      - stages
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PaginatedAccountSwitchStageList'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-    post:
-      operationId: stages_account_selection_switch_create
-      description: AccountSwitchStage viewset.
-      tags:
-      - stages
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/AccountSwitchStageRequest'
-        required: true
-      security:
-      - authentik: []
-      responses:
-        '201':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/AccountSwitchStage'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-  /stages/account_selection/switch/{stage_uuid}/:
-    get:
-      operationId: stages_account_selection_switch_retrieve
-      description: AccountSwitchStage viewset.
-      parameters:
-      - in: path
-        name: stage_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Account Switch Stage.
-        required: true
-      tags:
-      - stages
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/AccountSwitchStage'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-    put:
-      operationId: stages_account_selection_switch_update
-      description: AccountSwitchStage viewset.
-      parameters:
-      - in: path
-        name: stage_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Account Switch Stage.
-        required: true
-      tags:
-      - stages
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/AccountSwitchStageRequest'
-        required: true
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/AccountSwitchStage'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-    patch:
-      operationId: stages_account_selection_switch_partial_update
-      description: AccountSwitchStage viewset.
-      parameters:
-      - in: path
-        name: stage_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Account Switch Stage.
-        required: true
-      tags:
-      - stages
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedAccountSwitchStageRequest'
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/AccountSwitchStage'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-    delete:
-      operationId: stages_account_selection_switch_destroy
-      description: AccountSwitchStage viewset.
-      parameters:
-      - in: path
-        name: stage_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Account Switch Stage.
-        required: true
-      tags:
-      - stages
-      security:
-      - authentik: []
-      responses:
-        '204':
-          description: No response body
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-  /stages/account_selection/switch/{stage_uuid}/used_by/:
-    get:
-      operationId: stages_account_selection_switch_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: stage_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Account Switch Stage.
-        required: true
-      tags:
-      - stages
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
   /stages/all/:
     get:
       operationId: stages_all_list
@@ -33354,6 +32974,196 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+  /stages/user_selection/selection/:
+    get:
+      operationId: stages_user_selection_selection_list
+      description: UserSelectionStage viewset.
+      parameters:
+      - $ref: '#/components/parameters/QueryName'
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
+      tags:
+      - stages
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedUserSelectionStageList'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    post:
+      operationId: stages_user_selection_selection_create
+      description: UserSelectionStage viewset.
+      tags:
+      - stages
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserSelectionStageRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserSelectionStage'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /stages/user_selection/selection/{stage_uuid}/:
+    get:
+      operationId: stages_user_selection_selection_retrieve
+      description: UserSelectionStage viewset.
+      parameters:
+      - in: path
+        name: stage_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this User Selection Stage.
+        required: true
+      tags:
+      - stages
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserSelectionStage'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    put:
+      operationId: stages_user_selection_selection_update
+      description: UserSelectionStage viewset.
+      parameters:
+      - in: path
+        name: stage_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this User Selection Stage.
+        required: true
+      tags:
+      - stages
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserSelectionStageRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserSelectionStage'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    patch:
+      operationId: stages_user_selection_selection_partial_update
+      description: UserSelectionStage viewset.
+      parameters:
+      - in: path
+        name: stage_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this User Selection Stage.
+        required: true
+      tags:
+      - stages
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedUserSelectionStageRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserSelectionStage'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    delete:
+      operationId: stages_user_selection_selection_destroy
+      description: UserSelectionStage viewset.
+      parameters:
+      - in: path
+        name: stage_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this User Selection Stage.
+        required: true
+      tags:
+      - stages
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /stages/user_selection/selection/{stage_uuid}/used_by/:
+    get:
+      operationId: stages_user_selection_selection_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: stage_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this User Selection Stage.
+        required: true
+      tags:
+      - stages
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
   /stages/user_write/:
     get:
       operationId: stages_user_write_list
@@ -34395,203 +34205,6 @@ components:
             flow should not require authentication since the user's session is deleted.
       required:
       - name
-    AccountSelectionChallenge:
-      type: object
-      description: Challenge for selecting a browser-local account.
-      properties:
-        flow_info:
-          $ref: '#/components/schemas/ContextualFlowInfo'
-        component:
-          type: string
-          default: ak-stage-account-selection
-        response_errors:
-          type: object
-          additionalProperties:
-            type: array
-            items:
-              $ref: '#/components/schemas/ErrorDetail'
-        application_name:
-          type: string
-        accounts:
-          type: array
-          items:
-            $ref: '#/components/schemas/AccountSelectionChallengeUser'
-      required:
-      - accounts
-      - application_name
-    AccountSelectionChallengeResponseActionEnum:
-      enum:
-      - continue
-      - login
-      - switch
-      type: string
-    AccountSelectionChallengeResponseRequest:
-      type: object
-      description: Account selection response.
-      properties:
-        component:
-          type: string
-          minLength: 1
-          default: ak-stage-account-selection
-        action:
-          $ref: '#/components/schemas/AccountSelectionChallengeResponseActionEnum'
-        selected_account:
-          type: string
-      required:
-      - action
-    AccountSelectionChallengeUser:
-      type: object
-      description: Account shown by the account selection stage.
-      properties:
-        uid:
-          type: string
-        username:
-          type: string
-        name:
-          type: string
-        email:
-          type: string
-        avatar:
-          type: string
-        is_current:
-          type: boolean
-        is_hint:
-          type: boolean
-      required:
-      - avatar
-      - email
-      - is_current
-      - is_hint
-      - name
-      - uid
-      - username
-    AccountSelectionStage:
-      type: object
-      description: AccountSelectionStage serializer.
-      properties:
-        pk:
-          type: string
-          format: uuid
-          readOnly: true
-          title: Stage uuid
-        name:
-          type: string
-        component:
-          type: string
-          description: Get object type so that we know how to edit the object
-          readOnly: true
-        verbose_name:
-          type: string
-          description: Return object's verbose_name
-          readOnly: true
-        verbose_name_plural:
-          type: string
-          description: Return object's plural verbose_name
-          readOnly: true
-        meta_model_name:
-          type: string
-          description: Return internal model name
-          readOnly: true
-        flow_set:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlowSet'
-          readOnly: true
-      required:
-      - component
-      - flow_set
-      - meta_model_name
-      - name
-      - pk
-      - verbose_name
-      - verbose_name_plural
-    AccountSelectionStageRequest:
-      type: object
-      description: AccountSelectionStage serializer.
-      properties:
-        name:
-          type: string
-          minLength: 1
-      required:
-      - name
-    AccountSelectionUser:
-      type: object
-      description: Browser-local account that can be selected from the UI.
-      properties:
-        uid:
-          type: string
-          readOnly: true
-        username:
-          type: string
-          readOnly: true
-        name:
-          type: string
-          readOnly: true
-        email:
-          type: string
-          readOnly: true
-        avatar:
-          type: string
-          readOnly: true
-        is_current:
-          type: boolean
-          readOnly: true
-      required:
-      - avatar
-      - email
-      - is_current
-      - name
-      - uid
-      - username
-    AccountSwitchStage:
-      type: object
-      description: AccountSwitchStage serializer.
-      properties:
-        pk:
-          type: string
-          format: uuid
-          readOnly: true
-          title: Stage uuid
-        name:
-          type: string
-        component:
-          type: string
-          description: Get object type so that we know how to edit the object
-          readOnly: true
-        verbose_name:
-          type: string
-          description: Return object's verbose_name
-          readOnly: true
-        verbose_name_plural:
-          type: string
-          description: Return object's plural verbose_name
-          readOnly: true
-        meta_model_name:
-          type: string
-          description: Return internal model name
-          readOnly: true
-        flow_set:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlowSet'
-          readOnly: true
-      required:
-      - component
-      - flow_set
-      - meta_model_name
-      - name
-      - pk
-      - verbose_name
-      - verbose_name_plural
-    AccountSwitchStageRequest:
-      type: object
-      description: AccountSwitchStage serializer.
-      properties:
-        name:
-          type: string
-          minLength: 1
-      required:
-      - name
     AgentAuthenticationResponse:
       type: object
       description: Base serializer class which doesn't implement create/update methods
@@ -34899,7 +34512,7 @@ components:
       - authentik.stages.authenticator_totp
       - authentik.stages.authenticator_validate
       - authentik.stages.authenticator_webauthn
-      - authentik.stages.account_selection
+      - authentik.stages.user_selection
       - authentik.stages.captcha
       - authentik.stages.consent
       - authentik.stages.deny
@@ -36707,7 +36320,7 @@ components:
           type: string
           format: uuid
           nullable: true
-        flow_account_selection:
+        flow_user_selection:
           type: string
           format: uuid
           nullable: true
@@ -36787,7 +36400,7 @@ components:
           type: string
           format: uuid
           nullable: true
-        flow_account_selection:
+        flow_user_selection:
           type: string
           format: uuid
           nullable: true
@@ -37128,7 +36741,6 @@ components:
     ChallengeTypes:
       oneOf:
       - $ref: '#/components/schemas/AccessDeniedChallenge'
-      - $ref: '#/components/schemas/AccountSelectionChallenge'
       - $ref: '#/components/schemas/AppleLoginChallenge'
       - $ref: '#/components/schemas/AuthenticatorDuoChallenge'
       - $ref: '#/components/schemas/AuthenticatorEmailChallenge'
@@ -37158,11 +36770,11 @@ components:
       - $ref: '#/components/schemas/ShellChallenge'
       - $ref: '#/components/schemas/TelegramLoginChallenge'
       - $ref: '#/components/schemas/UserLoginChallenge'
+      - $ref: '#/components/schemas/UserSelectionChallenge'
       discriminator:
         propertyName: component
         mapping:
           ak-stage-access-denied: '#/components/schemas/AccessDeniedChallenge'
-          ak-stage-account-selection: '#/components/schemas/AccountSelectionChallenge'
           ak-source-oauth-apple: '#/components/schemas/AppleLoginChallenge'
           ak-stage-authenticator-duo: '#/components/schemas/AuthenticatorDuoChallenge'
           ak-stage-authenticator-email: '#/components/schemas/AuthenticatorEmailChallenge'
@@ -37192,6 +36804,7 @@ components:
           xak-flow-shell: '#/components/schemas/ShellChallenge'
           ak-source-telegram: '#/components/schemas/TelegramLoginChallenge'
           ak-stage-user-login: '#/components/schemas/UserLoginChallenge'
+          ak-stage-user-selection: '#/components/schemas/UserSelectionChallenge'
     ClientTypeEnum:
       enum:
       - confidential
@@ -37787,7 +37400,7 @@ components:
           type: string
         flow_user_settings:
           type: string
-        flow_account_selection:
+        flow_user_selection:
           type: string
         flow_device_code:
           type: string
@@ -40021,7 +39634,6 @@ components:
       - title
     FlowChallengeResponseRequest:
       oneOf:
-      - $ref: '#/components/schemas/AccountSelectionChallengeResponseRequest'
       - $ref: '#/components/schemas/AppleChallengeResponseRequest'
       - $ref: '#/components/schemas/AuthenticatorDuoChallengeResponseRequest'
       - $ref: '#/components/schemas/AuthenticatorEmailChallengeResponseRequest'
@@ -40048,10 +39660,10 @@ components:
       - $ref: '#/components/schemas/RedirectChallengeResponseRequest'
       - $ref: '#/components/schemas/TelegramChallengeResponseRequest'
       - $ref: '#/components/schemas/UserLoginChallengeResponseRequest'
+      - $ref: '#/components/schemas/UserSelectionChallengeResponseRequest'
       discriminator:
         propertyName: component
         mapping:
-          ak-stage-account-selection: '#/components/schemas/AccountSelectionChallengeResponseRequest'
           ak-source-oauth-apple: '#/components/schemas/AppleChallengeResponseRequest'
           ak-stage-authenticator-duo: '#/components/schemas/AuthenticatorDuoChallengeResponseRequest'
           ak-stage-authenticator-email: '#/components/schemas/AuthenticatorEmailChallengeResponseRequest'
@@ -40078,6 +39690,7 @@ components:
           xak-flow-redirect: '#/components/schemas/RedirectChallengeResponseRequest'
           ak-source-telegram: '#/components/schemas/TelegramChallengeResponseRequest'
           ak-stage-user-login: '#/components/schemas/UserLoginChallengeResponseRequest'
+          ak-stage-user-selection: '#/components/schemas/UserSelectionChallengeResponseRequest'
     FlowDesignationEnum:
       enum:
       - authentication
@@ -40087,7 +39700,7 @@ components:
       - unenrollment
       - recovery
       - stage_configuration
-      - account_selection
+      - user_selection
       type: string
     FlowDiagram:
       type: object
@@ -44078,8 +43691,7 @@ components:
       - authentik_stages_authenticator_validate.authenticatorvalidatestage
       - authentik_stages_authenticator_webauthn.authenticatorwebauthnstage
       - authentik_stages_authenticator_webauthn.webauthndevice
-      - authentik_stages_account_selection.accountselectionstage
-      - authentik_stages_account_selection.accountswitchstage
+      - authentik_stages_user_selection.userselectionstage
       - authentik_stages_captcha.captchastage
       - authentik_stages_consent.consentstage
       - authentik_stages_deny.denystage
@@ -45565,36 +45177,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/AccountLockdownStage'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
-      required:
-      - autocomplete
-      - pagination
-      - results
-    PaginatedAccountSelectionStageList:
-      type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/AccountSelectionStage'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
-      required:
-      - autocomplete
-      - pagination
-      - results
-    PaginatedAccountSwitchStageList:
-      type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/AccountSwitchStage'
         autocomplete:
           $ref: '#/components/schemas/Autocomplete'
       required:
@@ -47836,6 +47418,21 @@ components:
       - autocomplete
       - pagination
       - results
+    PaginatedUserSelectionStageList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserSelectionStage'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
     PaginatedUserSourceConnectionList:
       type: object
       properties:
@@ -48395,20 +47992,6 @@ components:
           nullable: true
           description: Flow to redirect users to after self-service lockdown. This
             flow should not require authentication since the user's session is deleted.
-    PatchedAccountSelectionStageRequest:
-      type: object
-      description: AccountSelectionStage serializer.
-      properties:
-        name:
-          type: string
-          minLength: 1
-    PatchedAccountSwitchStageRequest:
-      type: object
-      description: AccountSwitchStage serializer.
-      properties:
-        name:
-          type: string
-          minLength: 1
     PatchedAgentConnectorRequest:
       type: object
       properties:
@@ -48860,7 +48443,7 @@ components:
           type: string
           format: uuid
           nullable: true
-        flow_account_selection:
+        flow_user_selection:
           type: string
           format: uuid
           nullable: true
@@ -52190,6 +51773,13 @@ components:
           type: string
           format: uuid
         identifier:
+          type: string
+          minLength: 1
+    PatchedUserSelectionStageRequest:
+      type: object
+      description: UserSelectionStage serializer.
+      properties:
+        name:
           type: string
           minLength: 1
     PatchedUserSourceConnectionRequest:
@@ -56576,7 +56166,7 @@ components:
         accounts:
           type: array
           items:
-            $ref: '#/components/schemas/AccountSelectionUser'
+            $ref: '#/components/schemas/UserSelectionUser'
       required:
       - accounts
       - user
@@ -58936,6 +58526,160 @@ components:
       required:
       - identifier
       - source
+    UserSelectionChallenge:
+      type: object
+      description: Challenge for selecting a browser-local user.
+      properties:
+        flow_info:
+          $ref: '#/components/schemas/ContextualFlowInfo'
+        component:
+          type: string
+          default: ak-stage-user-selection
+        response_errors:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              $ref: '#/components/schemas/ErrorDetail'
+        application_name:
+          type: string
+        accounts:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserSelectionChallengeUser'
+      required:
+      - accounts
+      - application_name
+    UserSelectionChallengeResponseActionEnum:
+      enum:
+      - continue
+      - login
+      type: string
+    UserSelectionChallengeResponseRequest:
+      type: object
+      description: User selection response.
+      properties:
+        component:
+          type: string
+          minLength: 1
+          default: ak-stage-user-selection
+        action:
+          $ref: '#/components/schemas/UserSelectionChallengeResponseActionEnum'
+        selected_user:
+          type: string
+      required:
+      - action
+    UserSelectionChallengeUser:
+      type: object
+      description: User shown by the user selection stage.
+      properties:
+        uid:
+          type: string
+        username:
+          type: string
+        name:
+          type: string
+        email:
+          type: string
+        avatar:
+          type: string
+        is_current:
+          type: boolean
+        is_hint:
+          type: boolean
+        authentication:
+          type: string
+      required:
+      - authentication
+      - avatar
+      - email
+      - is_current
+      - is_hint
+      - name
+      - uid
+      - username
+    UserSelectionStage:
+      type: object
+      description: UserSelectionStage serializer.
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Stage uuid
+        name:
+          type: string
+        component:
+          type: string
+          description: Get object type so that we know how to edit the object
+          readOnly: true
+        verbose_name:
+          type: string
+          description: Return object's verbose_name
+          readOnly: true
+        verbose_name_plural:
+          type: string
+          description: Return object's plural verbose_name
+          readOnly: true
+        meta_model_name:
+          type: string
+          description: Return internal model name
+          readOnly: true
+        flow_set:
+          type: array
+          items:
+            $ref: '#/components/schemas/FlowSet'
+          readOnly: true
+      required:
+      - component
+      - flow_set
+      - meta_model_name
+      - name
+      - pk
+      - verbose_name
+      - verbose_name_plural
+    UserSelectionStageRequest:
+      type: object
+      description: UserSelectionStage serializer.
+      properties:
+        name:
+          type: string
+          minLength: 1
+      required:
+      - name
+    UserSelectionUser:
+      type: object
+      description: Browser-local user that can be selected from the UI.
+      properties:
+        uid:
+          type: string
+          readOnly: true
+        username:
+          type: string
+          readOnly: true
+        name:
+          type: string
+          readOnly: true
+        email:
+          type: string
+          readOnly: true
+        avatar:
+          type: string
+          readOnly: true
+        is_current:
+          type: boolean
+          readOnly: true
+        authentication:
+          type: string
+          readOnly: true
+      required:
+      - authentication
+      - avatar
+      - email
+      - is_current
+      - name
+      - uid
+      - username
     UserSelf:
       type: object
       description: User Serializer for information a user can retrieve about themselves

@@ -75,8 +75,8 @@ export const StageEntries: readonly StageEntry[] = [
         fetch: () => import("#flow/providers/oauth2/DeviceCodeFinish"),
     },
     {
-        stage: "ak-stage-account-selection",
-        fetch: () => import("#flow/stages/account_selection/AccountSelectionStage"),
+        stage: "ak-stage-user-selection",
+        fetch: () => import("#flow/stages/user_selection/UserSelectionStage"),
     },
     {
         stage: "ak-provider-saml-native-logout",

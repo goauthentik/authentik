@@ -15,8 +15,6 @@ use crate::models;
 pub enum ChallengeTypes {
     #[serde(rename = "ak-stage-access-denied")]
     AkStageAccessDenied(models::AccessDeniedChallenge),
-    #[serde(rename = "ak-stage-account-selection")]
-    AkStageAccountSelection(models::AccountSelectionChallenge),
     #[serde(rename = "ak-source-oauth-apple")]
     AkSourceOauthApple(models::AppleLoginChallenge),
     #[serde(rename = "ak-stage-authenticator-duo")]
@@ -75,6 +73,8 @@ pub enum ChallengeTypes {
     AkSourceTelegram(models::TelegramLoginChallenge),
     #[serde(rename = "ak-stage-user-login")]
     AkStageUserLogin(models::UserLoginChallenge),
+    #[serde(rename = "ak-stage-user-selection")]
+    AkStageUserSelection(models::UserSelectionChallenge),
 }
 
 impl Default for ChallengeTypes {

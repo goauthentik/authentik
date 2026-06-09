@@ -17,11 +17,6 @@ import {
     AccessDeniedChallengeFromJSONTyped,
     AccessDeniedChallengeToJSON,
 } from "./AccessDeniedChallenge";
-import type { AccountSelectionChallenge } from "./AccountSelectionChallenge";
-import {
-    AccountSelectionChallengeFromJSONTyped,
-    AccountSelectionChallengeToJSON,
-} from "./AccountSelectionChallenge";
 import type { AppleLoginChallenge } from "./AppleLoginChallenge";
 import { AppleLoginChallengeFromJSONTyped, AppleLoginChallengeToJSON } from "./AppleLoginChallenge";
 import type { AuthenticatorDuoChallenge } from "./AuthenticatorDuoChallenge";
@@ -125,6 +120,11 @@ import {
 } from "./TelegramLoginChallenge";
 import type { UserLoginChallenge } from "./UserLoginChallenge";
 import { UserLoginChallengeFromJSONTyped, UserLoginChallengeToJSON } from "./UserLoginChallenge";
+import type { UserSelectionChallenge } from "./UserSelectionChallenge";
+import {
+    UserSelectionChallengeFromJSONTyped,
+    UserSelectionChallengeToJSON,
+} from "./UserSelectionChallenge";
 
 /**
  * @type ChallengeTypes
@@ -140,7 +140,6 @@ export type ChallengeTypes =
     | ({ component: "ak-source-plex" } & PlexAuthenticationChallenge)
     | ({ component: "ak-source-telegram" } & TelegramLoginChallenge)
     | ({ component: "ak-stage-access-denied" } & AccessDeniedChallenge)
-    | ({ component: "ak-stage-account-selection" } & AccountSelectionChallenge)
     | ({ component: "ak-stage-authenticator-duo" } & AuthenticatorDuoChallenge)
     | ({ component: "ak-stage-authenticator-email" } & AuthenticatorEmailChallenge)
     | ({ component: "ak-stage-authenticator-sms" } & AuthenticatorSMSChallenge)
@@ -160,6 +159,7 @@ export type ChallengeTypes =
     | ({ component: "ak-stage-prompt" } & PromptChallenge)
     | ({ component: "ak-stage-session-end" } & SessionEndChallenge)
     | ({ component: "ak-stage-user-login" } & UserLoginChallenge)
+    | ({ component: "ak-stage-user-selection" } & UserSelectionChallenge)
     | ({ component: "xak-flow-frame" } & FrameChallenge)
     | ({ component: "xak-flow-redirect" } & RedirectChallenge)
     | ({ component: "xak-flow-shell" } & ShellChallenge);
@@ -207,10 +207,6 @@ export function ChallengeTypesFromJSONTyped(
         case "ak-stage-access-denied":
             return Object.assign({}, AccessDeniedChallengeFromJSONTyped(json, true), {
                 component: "ak-stage-access-denied",
-            } as const);
-        case "ak-stage-account-selection":
-            return Object.assign({}, AccountSelectionChallengeFromJSONTyped(json, true), {
-                component: "ak-stage-account-selection",
             } as const);
         case "ak-stage-authenticator-duo":
             return Object.assign({}, AuthenticatorDuoChallengeFromJSONTyped(json, true), {
@@ -288,6 +284,10 @@ export function ChallengeTypesFromJSONTyped(
             return Object.assign({}, UserLoginChallengeFromJSONTyped(json, true), {
                 component: "ak-stage-user-login",
             } as const);
+        case "ak-stage-user-selection":
+            return Object.assign({}, UserSelectionChallengeFromJSONTyped(json, true), {
+                component: "ak-stage-user-selection",
+            } as const);
         case "xak-flow-frame":
             return Object.assign({}, FrameChallengeFromJSONTyped(json, true), {
                 component: "xak-flow-frame",
@@ -348,10 +348,6 @@ export function ChallengeTypesToJSONTyped(
         case "ak-stage-access-denied":
             return Object.assign({}, AccessDeniedChallengeToJSON(value), {
                 component: "ak-stage-access-denied",
-            } as const);
-        case "ak-stage-account-selection":
-            return Object.assign({}, AccountSelectionChallengeToJSON(value), {
-                component: "ak-stage-account-selection",
             } as const);
         case "ak-stage-authenticator-duo":
             return Object.assign({}, AuthenticatorDuoChallengeToJSON(value), {
@@ -428,6 +424,10 @@ export function ChallengeTypesToJSONTyped(
         case "ak-stage-user-login":
             return Object.assign({}, UserLoginChallengeToJSON(value), {
                 component: "ak-stage-user-login",
+            } as const);
+        case "ak-stage-user-selection":
+            return Object.assign({}, UserSelectionChallengeToJSON(value), {
+                component: "ak-stage-user-selection",
             } as const);
         case "xak-flow-frame":
             return Object.assign({}, FrameChallengeToJSON(value), {

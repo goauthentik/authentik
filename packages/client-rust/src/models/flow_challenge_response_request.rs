@@ -13,8 +13,6 @@ use crate::models;
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 #[serde(tag = "component")]
 pub enum FlowChallengeResponseRequest {
-    #[serde(rename = "ak-stage-account-selection")]
-    AkStageAccountSelection(models::AccountSelectionChallengeResponseRequest),
     #[serde(rename = "ak-source-oauth-apple")]
     AkSourceOauthApple(models::AppleChallengeResponseRequest),
     #[serde(rename = "ak-stage-authenticator-duo")]
@@ -67,10 +65,12 @@ pub enum FlowChallengeResponseRequest {
     AkSourceTelegram(models::TelegramChallengeResponseRequest),
     #[serde(rename = "ak-stage-user-login")]
     AkStageUserLogin(models::UserLoginChallengeResponseRequest),
+    #[serde(rename = "ak-stage-user-selection")]
+    AkStageUserSelection(models::UserSelectionChallengeResponseRequest),
 }
 
 impl Default for FlowChallengeResponseRequest {
     fn default() -> Self {
-        Self::AkStageAccountSelection(Default::default())
+        Self::AkSourceOauthApple(Default::default())
     }
 }

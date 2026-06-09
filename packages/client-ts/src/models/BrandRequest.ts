@@ -95,7 +95,7 @@ export interface BrandRequest {
      * @type {string}
      * @memberof BrandRequest
      */
-    flowAccountSelection?: string | null;
+    flowUserSelection?: string | null;
     /**
      *
      * @type {string}
@@ -169,8 +169,8 @@ export function BrandRequestFromJSONTyped(json: any, ignoreDiscriminator: boolea
         flowUnenrollment: json["flow_unenrollment"] == null ? undefined : json["flow_unenrollment"],
         flowUserSettings:
             json["flow_user_settings"] == null ? undefined : json["flow_user_settings"],
-        flowAccountSelection:
-            json["flow_account_selection"] == null ? undefined : json["flow_account_selection"],
+        flowUserSelection:
+            json["flow_user_selection"] == null ? undefined : json["flow_user_selection"],
         flowDeviceCode: json["flow_device_code"] == null ? undefined : json["flow_device_code"],
         flowLockdown: json["flow_lockdown"] == null ? undefined : json["flow_lockdown"],
         defaultApplication:
@@ -207,7 +207,7 @@ export function BrandRequestToJSONTyped(
         flow_recovery: value["flowRecovery"],
         flow_unenrollment: value["flowUnenrollment"],
         flow_user_settings: value["flowUserSettings"],
-        flow_account_selection: value["flowAccountSelection"],
+        flow_user_selection: value["flowUserSelection"],
         flow_device_code: value["flowDeviceCode"],
         flow_lockdown: value["flowLockdown"],
         default_application: value["defaultApplication"],

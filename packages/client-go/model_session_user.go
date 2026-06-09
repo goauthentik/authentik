@@ -21,9 +21,9 @@ var _ MappedNullable = &SessionUser{}
 
 // SessionUser Response for the /user/me endpoint, returns the currently active user (as `user` property) and, if this user is being impersonated, the original user in the `original` property.
 type SessionUser struct {
-	User                 UserSelf               `json:"user"`
-	Original             *UserSelf              `json:"original,omitempty"`
-	Accounts             []AccountSelectionUser `json:"accounts"`
+	User                 UserSelf            `json:"user"`
+	Original             *UserSelf           `json:"original,omitempty"`
+	Accounts             []UserSelectionUser `json:"accounts"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -33,7 +33,7 @@ type _SessionUser SessionUser
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewSessionUser(user UserSelf, accounts []AccountSelectionUser) *SessionUser {
+func NewSessionUser(user UserSelf, accounts []UserSelectionUser) *SessionUser {
 	this := SessionUser{}
 	this.User = user
 	this.Accounts = accounts
@@ -105,9 +105,9 @@ func (o *SessionUser) SetOriginal(v UserSelf) {
 }
 
 // GetAccounts returns the Accounts field value
-func (o *SessionUser) GetAccounts() []AccountSelectionUser {
+func (o *SessionUser) GetAccounts() []UserSelectionUser {
 	if o == nil {
-		var ret []AccountSelectionUser
+		var ret []UserSelectionUser
 		return ret
 	}
 
@@ -116,7 +116,7 @@ func (o *SessionUser) GetAccounts() []AccountSelectionUser {
 
 // GetAccountsOk returns a tuple with the Accounts field value
 // and a boolean to check if the value has been set.
-func (o *SessionUser) GetAccountsOk() ([]AccountSelectionUser, bool) {
+func (o *SessionUser) GetAccountsOk() ([]UserSelectionUser, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -124,7 +124,7 @@ func (o *SessionUser) GetAccountsOk() ([]AccountSelectionUser, bool) {
 }
 
 // SetAccounts sets field value
-func (o *SessionUser) SetAccounts(v []AccountSelectionUser) {
+func (o *SessionUser) SetAccounts(v []UserSelectionUser) {
 	o.Accounts = v
 }
 

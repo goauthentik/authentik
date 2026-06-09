@@ -63,7 +63,7 @@ class BrandSerializer(ModelSerializer):
             "flow_recovery",
             "flow_unenrollment",
             "flow_user_settings",
-            "flow_account_selection",
+            "flow_user_selection",
             "flow_device_code",
             "flow_lockdown",
             "default_application",
@@ -118,7 +118,7 @@ class CurrentBrandSerializer(PassiveSerializer):
     flow_recovery = CharField(source="flow_recovery.slug", required=False)
     flow_unenrollment = CharField(source="flow_unenrollment.slug", required=False)
     flow_user_settings = CharField(source="flow_user_settings.slug", required=False)
-    flow_account_selection = CharField(source="flow_account_selection.slug", required=False)
+    flow_user_selection = CharField(source="flow_user_selection.slug", required=False)
     flow_device_code = CharField(source="flow_device_code.slug", required=False)
     flow_lockdown = CharField(source="flow_lockdown.slug", required=False)
 
@@ -157,7 +157,7 @@ class BrandViewSet(UsedByMixin, ModelViewSet):
         "flow_recovery",
         "flow_unenrollment",
         "flow_user_settings",
-        "flow_account_selection",
+        "flow_user_selection",
         "flow_device_code",
         "flow_lockdown",
         "web_certificate",

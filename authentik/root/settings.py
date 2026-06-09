@@ -120,7 +120,7 @@ TENANT_APPS = [
     "authentik.stages.authenticator_totp",
     "authentik.stages.authenticator_validate",
     "authentik.stages.authenticator_webauthn",
-    "authentik.stages.account_selection",
+    "authentik.stages.user_selection",
     "authentik.stages.captcha",
     "authentik.stages.consent",
     "authentik.stages.deny",

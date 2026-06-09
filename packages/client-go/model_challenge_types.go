@@ -19,7 +19,6 @@ import (
 // ChallengeTypes - struct for ChallengeTypes
 type ChallengeTypes struct {
 	AccessDeniedChallenge            *AccessDeniedChallenge
-	AccountSelectionChallenge        *AccountSelectionChallenge
 	AppleLoginChallenge              *AppleLoginChallenge
 	AuthenticatorDuoChallenge        *AuthenticatorDuoChallenge
 	AuthenticatorEmailChallenge      *AuthenticatorEmailChallenge
@@ -49,19 +48,13 @@ type ChallengeTypes struct {
 	ShellChallenge                   *ShellChallenge
 	TelegramLoginChallenge           *TelegramLoginChallenge
 	UserLoginChallenge               *UserLoginChallenge
+	UserSelectionChallenge           *UserSelectionChallenge
 }
 
 // AccessDeniedChallengeAsChallengeTypes is a convenience function that returns AccessDeniedChallenge wrapped in ChallengeTypes
 func AccessDeniedChallengeAsChallengeTypes(v *AccessDeniedChallenge) ChallengeTypes {
 	return ChallengeTypes{
 		AccessDeniedChallenge: v,
-	}
-}
-
-// AccountSelectionChallengeAsChallengeTypes is a convenience function that returns AccountSelectionChallenge wrapped in ChallengeTypes
-func AccountSelectionChallengeAsChallengeTypes(v *AccountSelectionChallenge) ChallengeTypes {
-	return ChallengeTypes{
-		AccountSelectionChallenge: v,
 	}
 }
 
@@ -268,6 +261,13 @@ func UserLoginChallengeAsChallengeTypes(v *UserLoginChallenge) ChallengeTypes {
 	}
 }
 
+// UserSelectionChallengeAsChallengeTypes is a convenience function that returns UserSelectionChallenge wrapped in ChallengeTypes
+func UserSelectionChallengeAsChallengeTypes(v *UserSelectionChallenge) ChallengeTypes {
+	return ChallengeTypes{
+		UserSelectionChallenge: v,
+	}
+}
+
 // Unmarshal JSON data into one of the pointers in the struct
 func (dst *ChallengeTypes) UnmarshalJSON(data []byte) error {
 	var err error
@@ -371,18 +371,6 @@ func (dst *ChallengeTypes) UnmarshalJSON(data []byte) error {
 		} else {
 			dst.AccessDeniedChallenge = nil
 			return fmt.Errorf("failed to unmarshal ChallengeTypes as AccessDeniedChallenge: %s", err.Error())
-		}
-	}
-
-	// check if the discriminator value is 'ak-stage-account-selection'
-	if jsonDict["component"] == "ak-stage-account-selection" {
-		// try to unmarshal JSON data into AccountSelectionChallenge
-		err = json.Unmarshal(data, &dst.AccountSelectionChallenge)
-		if err == nil {
-			return nil // data stored in dst.AccountSelectionChallenge, return on the first match
-		} else {
-			dst.AccountSelectionChallenge = nil
-			return fmt.Errorf("failed to unmarshal ChallengeTypes as AccountSelectionChallenge: %s", err.Error())
 		}
 	}
 
@@ -614,6 +602,18 @@ func (dst *ChallengeTypes) UnmarshalJSON(data []byte) error {
 		}
 	}
 
+	// check if the discriminator value is 'ak-stage-user-selection'
+	if jsonDict["component"] == "ak-stage-user-selection" {
+		// try to unmarshal JSON data into UserSelectionChallenge
+		err = json.Unmarshal(data, &dst.UserSelectionChallenge)
+		if err == nil {
+			return nil // data stored in dst.UserSelectionChallenge, return on the first match
+		} else {
+			dst.UserSelectionChallenge = nil
+			return fmt.Errorf("failed to unmarshal ChallengeTypes as UserSelectionChallenge: %s", err.Error())
+		}
+	}
+
 	// check if the discriminator value is 'xak-flow-frame'
 	if jsonDict["component"] == "xak-flow-frame" {
 		// try to unmarshal JSON data into FrameChallenge
@@ -657,10 +657,6 @@ func (dst *ChallengeTypes) UnmarshalJSON(data []byte) error {
 func (src ChallengeTypes) MarshalJSON() ([]byte, error) {
 	if src.AccessDeniedChallenge != nil {
 		return json.Marshal(&src.AccessDeniedChallenge)
-	}
-
-	if src.AccountSelectionChallenge != nil {
-		return json.Marshal(&src.AccountSelectionChallenge)
 	}
 
 	if src.AppleLoginChallenge != nil {
@@ -779,6 +775,10 @@ func (src ChallengeTypes) MarshalJSON() ([]byte, error) {
 		return json.Marshal(&src.UserLoginChallenge)
 	}
 
+	if src.UserSelectionChallenge != nil {
+		return json.Marshal(&src.UserSelectionChallenge)
+	}
+
 	return nil, nil // no data in oneOf schemas
 }
 
@@ -789,10 +789,6 @@ func (obj *ChallengeTypes) GetActualInstance() interface{} {
 	}
 	if obj.AccessDeniedChallenge != nil {
 		return obj.AccessDeniedChallenge
-	}
-
-	if obj.AccountSelectionChallenge != nil {
-		return obj.AccountSelectionChallenge
 	}
 
 	if obj.AppleLoginChallenge != nil {
@@ -911,6 +907,10 @@ func (obj *ChallengeTypes) GetActualInstance() interface{} {
 		return obj.UserLoginChallenge
 	}
 
+	if obj.UserSelectionChallenge != nil {
+		return obj.UserSelectionChallenge
+	}
+
 	// all schemas are nil
 	return nil
 }
@@ -919,10 +919,6 @@ func (obj *ChallengeTypes) GetActualInstance() interface{} {
 func (obj ChallengeTypes) GetActualInstanceValue() interface{} {
 	if obj.AccessDeniedChallenge != nil {
 		return *obj.AccessDeniedChallenge
-	}
-
-	if obj.AccountSelectionChallenge != nil {
-		return *obj.AccountSelectionChallenge
 	}
 
 	if obj.AppleLoginChallenge != nil {
@@ -1039,6 +1035,10 @@ func (obj ChallengeTypes) GetActualInstanceValue() interface{} {
 
 	if obj.UserLoginChallenge != nil {
 		return *obj.UserLoginChallenge
+	}
+
+	if obj.UserSelectionChallenge != nil {
+		return *obj.UserSelectionChallenge
 	}
 
 	// all schemas are nil

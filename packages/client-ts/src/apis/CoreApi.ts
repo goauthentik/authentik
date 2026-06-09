@@ -251,13 +251,13 @@ export interface CoreBrandsListRequest {
     clientCertificates?: Array<string>;
     _default?: boolean;
     domain?: string;
-    flowAccountSelection?: string;
     flowAuthentication?: string;
     flowDeviceCode?: string;
     flowInvalidation?: string;
     flowLockdown?: string;
     flowRecovery?: string;
     flowUnenrollment?: string;
+    flowUserSelection?: string;
     flowUserSettings?: string;
     ordering?: string;
     page?: number;
@@ -2190,10 +2190,6 @@ export class CoreApi extends runtime.BaseAPI {
             queryParameters["domain"] = requestParameters["domain"];
         }
 
-        if (requestParameters["flowAccountSelection"] != null) {
-            queryParameters["flow_account_selection"] = requestParameters["flowAccountSelection"];
-        }
-
         if (requestParameters["flowAuthentication"] != null) {
             queryParameters["flow_authentication"] = requestParameters["flowAuthentication"];
         }
@@ -2216,6 +2212,10 @@ export class CoreApi extends runtime.BaseAPI {
 
         if (requestParameters["flowUnenrollment"] != null) {
             queryParameters["flow_unenrollment"] = requestParameters["flowUnenrollment"];
+        }
+
+        if (requestParameters["flowUserSelection"] != null) {
+            queryParameters["flow_user_selection"] = requestParameters["flowUserSelection"];
         }
 
         if (requestParameters["flowUserSettings"] != null) {

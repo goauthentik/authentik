@@ -11,8 +11,8 @@ from django.utils.translation import gettext as _
 from jwt import PyJWTError, decode, encode
 from rest_framework.fields import BooleanField, CharField
 
-from authentik.core.account_selection import append_account_selection_hint, remember_account
 from authentik.core.models import AuthenticatedSession, Session, User
+from authentik.core.user_selection import append_user_selection_hint, remember_user
 from authentik.events.middleware import audit_ignore
 from authentik.flows.challenge import ChallengeResponse, WithUserInfoChallenge
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, PLAN_CONTEXT_REDIRECT
@@ -105,7 +105,7 @@ class UserLoginStageView(ChallengeStageView):
         delta = timedelta_from_string(self.executor.current_stage.remember_device)
         response = self.executor.stage_ok()
         if delta.total_seconds() < 1:
-            return remember_account(response, self.request, user)
+            return remember_user(response, self.request, user)
         expiry = datetime.now() + delta
         cookie_payload = {
             "sub": user.uid,
@@ -120,7 +120,7 @@ class UserLoginStageView(ChallengeStageView):
             domain=settings.SESSION_COOKIE_DOMAIN,
             samesite=settings.SESSION_COOKIE_SAMESITE,
         )
-        return remember_account(response, self.request, user)
+        return remember_user(response, self.request, user)
 
     def is_known_device(self, user: User):
         """Returns `True` if the login happened on a "known" device, by the same user."""
@@ -184,10 +184,10 @@ class UserLoginStageView(ChallengeStageView):
             ).exclude(session_key=self.request.session.session_key).delete()
         next_url = self.request.session.get(SESSION_KEY_GET, {}).get(NEXT_ARG_NAME)
         if next_url:
-            self.executor.plan.context[PLAN_CONTEXT_REDIRECT] = append_account_selection_hint(
+            self.executor.plan.context[PLAN_CONTEXT_REDIRECT] = append_user_selection_hint(
                 next_url,
                 user,
             )
         if remember is None:
             return self.set_known_device_cookie(user)
-        return remember_account(self.executor.stage_ok(), self.request, user)
+        return remember_user(self.executor.stage_ok(), self.request, user)

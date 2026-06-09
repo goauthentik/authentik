@@ -78,7 +78,7 @@ class FlowDesignation(models.TextChoices):
     UNRENOLLMENT = "unenrollment"
     RECOVERY = "recovery"
     STAGE_CONFIGURATION = "stage_configuration"
-    ACCOUNT_SELECTION = "account_selection"
+    USER_SELECTION = "user_selection"
 
 
 class Stage(SerializerModel):

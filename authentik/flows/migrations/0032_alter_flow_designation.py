@@ -22,7 +22,7 @@ class Migration(migrations.Migration):
                     ("unenrollment", "Unrenollment"),
                     ("recovery", "Recovery"),
                     ("stage_configuration", "Stage Configuration"),
-                    ("account_selection", "Account Selection"),
+                    ("user_selection", "User Selection"),
                 ],
                 help_text="Decides what this Flow is used for. For example, the Authentication flow is redirect to when an un-authenticated user visits authentik.",
                 max_length=100,

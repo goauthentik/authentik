@@ -12,7 +12,7 @@ import { isDefaultAvatar } from "#elements/utils/images";
 import { buildAuthenticationFlowURL } from "#components/ak-account-switcher-url";
 import Styles from "#components/ak-account-switcher.css";
 
-import type { AccountSelectionUser } from "@goauthentik/api";
+import type { UserSelectionUser } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html } from "lit";
@@ -22,26 +22,26 @@ import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFDropdown from "@patternfly/patternfly/components/Dropdown/dropdown.css";
 
 @customElement("ak-account-switcher")
-export class AccountSwitcher extends WithSession(AKElement) {
+export class UserSwitcher extends WithSession(AKElement) {
     static styles = [PFButton, PFDropdown, Styles];
 
-    protected get accounts(): AccountSelectionUser[] {
+    protected get accounts(): UserSelectionUser[] {
         if (!isAPIResultReady(this.session)) {
             return [];
         }
         return this.session.accounts ?? [];
     }
 
-    protected authenticationFlowURL(account?: AccountSelectionUser): string {
+    protected authenticationFlowURL(account?: UserSelectionUser): string {
         return buildAuthenticationFlowURL({
             account,
-            accountSelectionFlow: globalAK().brand.flowAccountSelection,
+            userSelectionFlow: globalAK().brand.flowUserSelection,
             apiBase: globalAK().api.base,
             next: `${window.location.pathname}${window.location.search}${window.location.hash}`,
         });
     }
 
-    protected renderAvatar(account?: Pick<AccountSelectionUser, "avatar">): SlottedTemplateResult {
+    protected renderAvatar(account?: Pick<UserSelectionUser, "avatar">): SlottedTemplateResult {
         if (account?.avatar && !isDefaultAvatar(account.avatar)) {
             return html`<span part="avatar">
                 <img part="avatar-image" src=${account.avatar} alt="" />
@@ -52,7 +52,7 @@ export class AccountSwitcher extends WithSession(AKElement) {
         </span>`;
     }
 
-    protected renderAccount(account: AccountSelectionUser): SlottedTemplateResult {
+    protected renderAccount(account: UserSelectionUser): SlottedTemplateResult {
         const label = account.name || account.username;
         const description = account.email || account.username;
         const content = html`
@@ -161,6 +161,6 @@ export class AccountSwitcher extends WithSession(AKElement) {
 
 declare global {
     interface HTMLElementTagNameMap {
-        "ak-account-switcher": AccountSwitcher;
+        "ak-account-switcher": UserSwitcher;
     }
 }

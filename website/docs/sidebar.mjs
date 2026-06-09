@@ -325,13 +325,13 @@ const items = [
                             "add-secure-apps/flows-stages/stages/account_lockdown/index",
                             {
                                 type: "category",
-                                label: "Account selection",
+                                label: "User selection",
                                 link: {
                                     type: "doc",
-                                    id: "add-secure-apps/flows-stages/stages/account_selection/index",
+                                    id: "add-secure-apps/flows-stages/stages/user_selection/index",
                                 },
                                 items: [
-                                    "add-secure-apps/flows-stages/stages/account_selection/configuration",
+                                    "add-secure-apps/flows-stages/stages/user_selection/configuration",
                                 ],
                             },
                             "add-secure-apps/flows-stages/stages/authenticator_duo/index",

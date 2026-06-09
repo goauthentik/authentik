@@ -28,7 +28,7 @@ const (
 	FLOWDESIGNATIONENUM_UNENROLLMENT        FlowDesignationEnum = "unenrollment"
 	FLOWDESIGNATIONENUM_RECOVERY            FlowDesignationEnum = "recovery"
 	FLOWDESIGNATIONENUM_STAGE_CONFIGURATION FlowDesignationEnum = "stage_configuration"
-	FLOWDESIGNATIONENUM_ACCOUNT_SELECTION   FlowDesignationEnum = "account_selection"
+	FLOWDESIGNATIONENUM_USER_SELECTION      FlowDesignationEnum = "user_selection"
 )
 
 // All allowed values of FlowDesignationEnum enum
@@ -40,7 +40,7 @@ var AllowedFlowDesignationEnumEnumValues = []FlowDesignationEnum{
 	"unenrollment",
 	"recovery",
 	"stage_configuration",
-	"account_selection",
+	"user_selection",
 }
 
 func (v *FlowDesignationEnum) UnmarshalJSON(src []byte) error {

@@ -20,7 +20,7 @@ entries:
   - model: authentik_blueprints.metaapplyblueprint
     attrs:
       identifiers:
-        name: Default - Account selection flow
+        name: Default - User selection flow
       required: false
   - attrs:
       flow_authentication:
@@ -29,8 +29,8 @@ entries:
         !Find [authentik_flows.flow, [slug, default-invalidation-flow]]
       flow_user_settings:
         !Find [authentik_flows.flow, [slug, default-user-settings-flow]]
-      flow_account_selection:
-        !Find [authentik_flows.flow, [slug, default-account-selection-flow]]
+      flow_user_selection:
+        !Find [authentik_flows.flow, [slug, default-user-selection-flow]]
     identifiers:
       domain: authentik-default
       default: true
