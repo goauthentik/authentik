@@ -3,7 +3,7 @@ import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/index";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { docLink } from "#common/global";
 
 import { BasePolicyForm } from "#admin/policies/BasePolicyForm";
@@ -25,7 +25,7 @@ import { ifDefined } from "lit/directives/if-defined.js";
 @customElement("ak-policy-event-matcher-form")
 export class EventMatcherPolicyForm extends BasePolicyForm<EventMatcherPolicy> {
     override loadInstance(pk: string): Promise<EventMatcherPolicy> {
-        return new PoliciesApi(DEFAULT_CONFIG).policiesEventMatcherRetrieve({
+        return aki(PoliciesApi).policiesEventMatcherRetrieve({
             policyUuid: pk,
         });
     }
@@ -37,12 +37,12 @@ export class EventMatcherPolicyForm extends BasePolicyForm<EventMatcherPolicy> {
         if (data.app?.toString() === "") data.app = null;
         if (data.model?.toString() === "") data.model = null;
         if (this.instance) {
-            return new PoliciesApi(DEFAULT_CONFIG).policiesEventMatcherUpdate({
+            return aki(PoliciesApi).policiesEventMatcherUpdate({
                 policyUuid: this.instance.pk || "",
                 eventMatcherPolicyRequest: data,
             });
         }
-        return new PoliciesApi(DEFAULT_CONFIG).policiesEventMatcherCreate({
+        return aki(PoliciesApi).policiesEventMatcherCreate({
             eventMatcherPolicyRequest: data,
         });
     }
@@ -96,9 +96,7 @@ export class EventMatcherPolicyForm extends BasePolicyForm<EventMatcherPolicy> {
                     <ak-form-element-horizontal label=${msg("Action")} name="action">
                         <ak-search-select
                             .fetchObjects=${async (query?: string): Promise<TypeCreate[]> => {
-                                const items = await new EventsApi(
-                                    DEFAULT_CONFIG,
-                                ).eventsEventsActionsList();
+                                const items = await aki(EventsApi).eventsEventsActionsList();
                                 return items.filter((item) =>
                                     query
                                         ? item.name.toLowerCase().includes(query.toLowerCase())
@@ -140,7 +138,7 @@ export class EventMatcherPolicyForm extends BasePolicyForm<EventMatcherPolicy> {
                     <ak-form-element-horizontal label=${msg("App")} name="app">
                         <ak-search-select
                             .fetchObjects=${async (query?: string): Promise<App[]> => {
-                                const items = await new AdminApi(DEFAULT_CONFIG).adminAppsList();
+                                const items = await aki(AdminApi).adminAppsList();
                                 return items.filter((item) =>
                                     query ? item.name.includes(query) : true,
                                 );
@@ -166,7 +164,7 @@ export class EventMatcherPolicyForm extends BasePolicyForm<EventMatcherPolicy> {
                     <ak-form-element-horizontal label=${msg("Model")} name="model">
                         <ak-search-select
                             .fetchObjects=${async (query?: string): Promise<App[]> => {
-                                const items = await new AdminApi(DEFAULT_CONFIG).adminModelsList();
+                                const items = await aki(AdminApi).adminModelsList();
                                 return items
                                     .filter((item) => (query ? item.name.includes(query) : true))
                                     .sort((a, b) => {

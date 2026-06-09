@@ -4,7 +4,7 @@ import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/index";
 import "#components/ak-text-input";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { PFSize } from "#common/enums";
 
 import { ModelForm } from "#elements/forms/ModelForm";
@@ -24,7 +24,7 @@ export class RoleForm extends ModelForm<Role, string> {
     public override size = PFSize.Medium;
 
     loadInstance(pk: string): Promise<Role> {
-        return new RbacApi(DEFAULT_CONFIG).rbacRolesRetrieve({
+        return aki(RbacApi).rbacRolesRetrieve({
             uuid: pk,
         });
     }
@@ -37,12 +37,12 @@ export class RoleForm extends ModelForm<Role, string> {
 
     async send(data: Role): Promise<Role> {
         if (this.instance?.pk) {
-            return new RbacApi(DEFAULT_CONFIG).rbacRolesPartialUpdate({
+            return aki(RbacApi).rbacRolesPartialUpdate({
                 uuid: this.instance.pk,
                 patchedRoleRequest: data,
             });
         }
-        return new RbacApi(DEFAULT_CONFIG).rbacRolesCreate({
+        return aki(RbacApi).rbacRolesCreate({
             roleRequest: data,
         });
     }

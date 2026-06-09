@@ -1,4 +1,4 @@
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { writeToClipboard } from "#common/clipboard";
 import { parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
 import { MessageLevel } from "#common/messages";
@@ -46,7 +46,7 @@ export class AKTokenCopyButton extends BaseTaskButton<null> {
         }
 
         // Safari permission hack.
-        const data = new CoreApi(DEFAULT_CONFIG)
+        const data = aki(CoreApi)
             .coreTokensViewKeyRetrieve({ identifier })
             .then((tokenView) => new Blob([tokenView.key], { type: "text/plain" }));
 
