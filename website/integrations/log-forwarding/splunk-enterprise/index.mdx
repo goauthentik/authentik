@@ -31,7 +31,7 @@ This documentation lists only the settings that you need to change from their de
 The HEC URL for JSON events is:
 
 ```text
-https://splunk.company:8088/services/collector/event
+https://splunk.company/services/collector/event
 ```
 
 If you publish HEC through a load balancer or reverse proxy, use the externally reachable HEC URL instead.
@@ -86,7 +86,7 @@ Create a webhook body mapping that formats authentik notifications for the Splun
     - **Transport Name**: choose a descriptive name, for example `Splunk HEC`.
     - **Send once**: enable this option.
     - **Mode**: select **Webhook (generic)**.
-    - **Webhook URL**: set to the Splunk HEC event endpoint, for example `https://splunk.company:8088/services/collector/event`.
+    - **Webhook URL**: set to the Splunk HEC event endpoint, for example `https://splunk.company/services/collector/event`.
     - **Webhook Body Mapping**: select the Splunk HEC body mapping.
     - **Webhook Header Mapping**: select the Splunk HEC headers mapping.
 3. Click **Create Notification Transport**.
