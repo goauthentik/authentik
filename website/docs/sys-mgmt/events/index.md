@@ -22,4 +22,4 @@ The event retention setting is configured in the **System > Settings** area of t
 
 If you want to forward these events to another application, forward the log output of all authentik containers. Every event creation is logged with the log level "info". For this configuration, it is also recommended to set the internal retention time period to a short time frame (for example, `days=1`).
 
-If you want to forward selected authentik events through a webhook notification transport, see [Forward events to Splunk Enterprise](./splunk-forwarding.mdx) for an example using Splunk HTTP Event Collector.
+If you want to forward authentik events to another system, see [Log forwarding](./log-forwarding.mdx).
