@@ -93,9 +93,10 @@ export class UserSwitcher extends WithSession(AKElement) {
         if (!currentUser) {
             return null;
         }
+        const accounts = this.accounts;
         const displayName =
             formatUserDisplayName(currentUser, this.uiConfig) || currentUser.username;
-        const currentAccount = this.accounts.find((account) => account.isCurrent);
+        const currentAccount = accounts.find((account) => account.isCurrent);
 
         return html`<div part="container">
             <ak-dropdown class="pf-c-dropdown" part="switcher">
@@ -123,8 +124,8 @@ export class UserSwitcher extends WithSession(AKElement) {
                     aria-labelledby="account-switcher-toggle"
                     tabindex="-1"
                 >
-                    ${this.accounts.map((account) => this.renderAccount(account))}
-                    ${this.accounts.length
+                    ${accounts.map((account) => this.renderAccount(account))}
+                    ${accounts.length
                         ? html`<li class="pf-c-dropdown__separator" role="separator"></li>`
                         : null}
                     <li role="presentation">
