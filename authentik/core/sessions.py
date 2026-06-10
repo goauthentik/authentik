@@ -48,12 +48,22 @@ class SessionStore(SessionBase):
             return True
         return constant_time_compare(authenticated_session.browser_key, self._browser_key or "")
 
+    def _session_queryset(self):
+        """Return the session queryset with account-selection relations loaded."""
+        return self.model.objects.select_related(
+            "authenticatedsession",
+            "authenticatedsession__user",
+        )
+
+    def _clear_invalid_session(self, exc: Exception) -> None:
+        """Clear the active session key after a missing or rejected session load."""
+        if isinstance(exc, SuspiciousOperation):
+            LOGGER.warning(str(exc))
+        self._session_key = None
+
     def _get_session_from_db(self):
         try:
-            session = self.model.objects.select_related(
-                "authenticatedsession",
-                "authenticatedsession__user",
-            ).get(
+            session = self._session_queryset().get(
                 session_key=self.session_key,
                 expires__gt=timezone.now(),
             )
@@ -61,16 +71,11 @@ class SessionStore(SessionBase):
                 raise SuspiciousOperation("Session denied: browser cookie missing or mismatched")
             return session
         except (self.model.DoesNotExist, SuspiciousOperation) as exc:
-            if isinstance(exc, SuspiciousOperation):
-                LOGGER.warning(str(exc))
-            self._session_key = None
+            self._clear_invalid_session(exc)
 
     async def _aget_session_from_db(self):
         try:
-            session = await self.model.objects.select_related(
-                "authenticatedsession",
-                "authenticatedsession__user",
-            ).aget(
+            session = await self._session_queryset().aget(
                 session_key=self.session_key,
                 expires__gt=timezone.now(),
             )
@@ -78,9 +83,7 @@ class SessionStore(SessionBase):
                 raise SuspiciousOperation("Session denied: browser cookie missing or mismatched")
             return session
         except (self.model.DoesNotExist, SuspiciousOperation) as exc:
-            if isinstance(exc, SuspiciousOperation):
-                LOGGER.warning(str(exc))
-            self._session_key = None
+            self._clear_invalid_session(exc)
 
     def encode(self, session_dict):
         return pickle.dumps(session_dict, protocol=pickle.HIGHEST_PROTOCOL)
