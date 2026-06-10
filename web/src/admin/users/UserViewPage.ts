@@ -8,6 +8,8 @@ import "#admin/users/UserChart";
 import "#admin/users/UserForm";
 import "#admin/users/UserImpersonateForm";
 import "#admin/users/UserPasswordForm";
+import "#admin/users/oauth/UserAccessTokenList";
+import "#admin/users/oauth/UserRefreshTokenList";
 import "#components/DescriptionList";
 import "#components/ak-object-attributes-card";
 import "#components/ak-status-label";
@@ -18,8 +20,6 @@ import "#elements/Tabs";
 import "#elements/buttons/ActionButton/ak-action-button";
 import "#elements/buttons/SpinnerButton/ak-spinner-button";
 import "#elements/forms/ModalForm";
-import "#elements/oauth/UserAccessTokenList";
-import "#elements/oauth/UserRefreshTokenList";
 import "#elements/user/SessionList";
 import "#elements/user/UserConsentList";
 import "#elements/user/UserReputationList";
@@ -27,7 +27,7 @@ import "#elements/user/sources/SourceSettings";
 import "./UserDevicesTable.js";
 import "#elements/ak-mdx/ak-mdx";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { AKRefreshEvent } from "#common/events";
 import { userTypeToLabel } from "#common/labels";
 import {
@@ -75,7 +75,7 @@ import PFSizing from "@patternfly/patternfly/utilities/Sizing/sizing.css";
 export class UserViewPage extends WithLicenseSummary(
     WithLocale(WithBrandConfig(WithCapabilitiesConfig(WithSession(AKElement)))),
 ) {
-    #api = new CoreApi(DEFAULT_CONFIG);
+    #api = aki(CoreApi);
 
     @property({ type: Number, useDefault: true })
     public userId: number | null = null;

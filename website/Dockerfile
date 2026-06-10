@@ -1,4 +1,4 @@
-FROM --platform=${BUILDPLATFORM} docker.io/library/node:25.9.0-trixie@sha256:7a99c607c2a73ea54f8c554d10bc790569fb7d1173638d5a9f56a23923fe2f87 AS docs-builder
+FROM --platform=${BUILDPLATFORM} docker.io/library/node:26.3.0-trixie@sha256:e3ffe0cbaeebdcddbfe1ee7bca9b564a92863a8386d5b99a3d72677b3667b61d AS docs-builder
 
 ENV NODE_ENV=production
 
@@ -17,7 +17,8 @@ RUN --mount=type=bind,target=/work/package.json,src=./package.json \
     node ./scripts/node/setup-corepack.mjs --force && \
     node ./scripts/node/lint-runtime.mjs ./website
 
-RUN --mount=type=bind,target=/work/package.json,src=./package.json \
+RUN --mount=type=bind,target=/work/.npmrc,src=./.npmrc \
+    --mount=type=bind,target=/work/package.json,src=./package.json \
     --mount=type=bind,target=/work/package-lock.json,src=./package-lock.json \
     --mount=type=bind,target=/work/scripts/node/,src=./scripts/node/ \
     --mount=type=bind,target=/work/packages/logger-js/,src=./packages/logger-js/ \
@@ -47,7 +48,7 @@ COPY ./SECURITY.md /work/
 RUN  --mount=type=bind,target=/work/packages/docusaurus-config/,src=./packages/docusaurus-config/ \
     corepack npm run build -w docs
 
-FROM docker.io/library/nginx:1.29-trixie@sha256:1881968aff6f7cdcc4b888c00a11f4ce241ad7ec957e0cb4a9e19e93a3ff87ea
+FROM docker.io/library/nginx:1.31.1-trixie@sha256:5aca99593157f4ae539a5dec1092a0ad8762f8e2eb1789085a13a0f5622369f6
 LABEL org.opencontainers.image.authors="Authentik Security Inc." \
     org.opencontainers.image.source="https://github.com/goauthentik/authentik" \
     org.opencontainers.image.description="authentik product documentation" \

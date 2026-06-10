@@ -4,6 +4,8 @@ sidebar_label: OneUptime
 support_level: community
 ---
 
+import SAMLProvider20265Warning from "../../\_saml-provider-2026-5-warning.mdx";
+
 ## What is OneUptime?
 
 > OneUptime is an open-source observability and incident management platform that provides infrastructure monitoring, incident management, status pages, and APM.
@@ -55,6 +57,8 @@ OneUptime currently supports the RSA-based SAML signature methods `RSA-SHA1`, `R
 
 ## Create an application and provider in authentik
 
+<SAMLProvider20265Warning />
+
 To support the integration of OneUptime with authentik, you need an application/provider pair in authentik that uses the values provided by OneUptime.
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
@@ -67,7 +71,7 @@ To support the integration of OneUptime with authentik, you need an application/
         - Under **Advanced protocol settings**:
             - Set the **Signing Certificate** to the same certificate that you downloaded earlier.
             - Set **NameID Property Mapping** to `authentik default SAML Mapping: Email`.
-    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 3. Click **Submit** to save the new application and provider.
 
 :::info NameID mapping

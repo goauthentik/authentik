@@ -8,7 +8,7 @@ import "#elements/wizard/FormWizardPage";
 import "#elements/wizard/TypeCreateWizardPage";
 import "#elements/wizard/Wizard";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { CreateWizard } from "#elements/wizard/CreateWizard";
 import { TypeCreateWizardPageLayouts } from "#elements/wizard/TypeCreateWizardPage";
@@ -20,7 +20,7 @@ import { customElement } from "@lit/reactive-element/decorators/custom-element.j
 
 @customElement("ak-provider-wizard")
 export class AKProviderWizard extends CreateWizard {
-    #api = new ProvidersApi(DEFAULT_CONFIG);
+    #api = aki(ProvidersApi);
 
     public static override verboseName = msg("Provider");
     public static override verboseNamePlural = msg("Providers");

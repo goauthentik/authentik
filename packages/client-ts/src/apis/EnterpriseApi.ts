@@ -12,26 +12,20 @@
  * Do not edit the class manually.
  */
 
-import type {
-    InstallID,
-    License,
-    LicenseForecast,
-    LicenseRequest,
-    LicenseSummary,
-    PaginatedLicenseList,
-    PatchedLicenseRequest,
-    UsedBy,
-} from "../models/index";
+import { type InstallID, InstallIDFromJSON } from "../models/InstallID";
+import { type License, LicenseFromJSON } from "../models/License";
+import { type LicenseForecast, LicenseForecastFromJSON } from "../models/LicenseForecast";
+import { type LicenseRequest, LicenseRequestToJSON } from "../models/LicenseRequest";
+import { type LicenseSummary, LicenseSummaryFromJSON } from "../models/LicenseSummary";
 import {
-    InstallIDFromJSON,
-    LicenseForecastFromJSON,
-    LicenseFromJSON,
-    LicenseRequestToJSON,
-    LicenseSummaryFromJSON,
+    type PaginatedLicenseList,
     PaginatedLicenseListFromJSON,
+} from "../models/PaginatedLicenseList";
+import {
+    type PatchedLicenseRequest,
     PatchedLicenseRequestToJSON,
-    UsedByFromJSON,
-} from "../models/index";
+} from "../models/PatchedLicenseRequest";
+import { type UsedBy, UsedByFromJSON } from "../models/UsedBy";
 import * as runtime from "../runtime";
 
 export interface EnterpriseLicenseCreateRequest {
@@ -167,7 +161,7 @@ export class EnterpriseApi extends runtime.BaseAPI {
 
         let urlPath = `/enterprise/license/{license_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"license_uuid"}}`,
+            "{license_uuid}",
             encodeURIComponent(String(requestParameters["licenseUuid"])),
         );
 
@@ -407,7 +401,7 @@ export class EnterpriseApi extends runtime.BaseAPI {
 
         let urlPath = `/enterprise/license/{license_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"license_uuid"}}`,
+            "{license_uuid}",
             encodeURIComponent(String(requestParameters["licenseUuid"])),
         );
 
@@ -476,7 +470,7 @@ export class EnterpriseApi extends runtime.BaseAPI {
 
         let urlPath = `/enterprise/license/{license_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"license_uuid"}}`,
+            "{license_uuid}",
             encodeURIComponent(String(requestParameters["licenseUuid"])),
         );
 
@@ -612,7 +606,7 @@ export class EnterpriseApi extends runtime.BaseAPI {
 
         let urlPath = `/enterprise/license/{license_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"license_uuid"}}`,
+            "{license_uuid}",
             encodeURIComponent(String(requestParameters["licenseUuid"])),
         );
 
@@ -677,7 +671,7 @@ export class EnterpriseApi extends runtime.BaseAPI {
 
         let urlPath = `/enterprise/license/{license_uuid}/used_by/`;
         urlPath = urlPath.replace(
-            `{${"license_uuid"}}`,
+            "{license_uuid}",
             encodeURIComponent(String(requestParameters["licenseUuid"])),
         );
 
