@@ -180,7 +180,7 @@ class UserSelectionStageView(ChallengeStageView):
     def select_user(self, selected_user_uid: str) -> HttpResponse:
         """Continue as the current user, switch to a live session of the selected user,
         or fall back to authenticating as them."""
-        accounts_by_id = {account.user.uuid.hex: account for account in self.get_accounts()}
+        accounts_by_id = {account.uid: account for account in self.get_accounts()}
         selected = accounts_by_id.get(selected_user_uid)
         if not selected:
             LOGGER.warning("selected user is not known", selected_user=selected_user_uid)

@@ -49,6 +49,11 @@ class SelectableUser:
     switchable_session: AuthenticatedSession | None = None
 
     @property
+    def uid(self) -> str:
+        """Stable public identifier used by user-selection callers."""
+        return self.user.uuid.hex
+
+    @property
     def authentication(self) -> UserSelectionAuthentication:
         """Return whether selecting this user can continue without authentication."""
         if self.is_current or self.switchable_session is not None:
@@ -92,15 +97,17 @@ def get_selectable_accounts(request: HttpRequest) -> list[SelectableUser]:
     users: dict[str, SelectableUser] = {}
     can_switch_sessions = request.user.is_authenticated
     if request.user.is_authenticated:
-        users[request.user.uuid.hex] = SelectableUser(request.user, is_current=True)
+        current_user = SelectableUser(request.user, is_current=True)
+        users[current_user.uid] = current_user
     for session in get_browser_sessions(request):
+        selectable = SelectableUser(
+            session.user,
+            is_current=False,
+            switchable_session=session if can_switch_sessions else None,
+        )
         users.setdefault(
-            session.user.uuid.hex,
-            SelectableUser(
-                session.user,
-                is_current=False,
-                switchable_session=session if can_switch_sessions else None,
-            ),
+            selectable.uid,
+            selectable,
         )
     return list(users.values())
 
@@ -113,7 +120,7 @@ def serialize_selectable_user(
     """Serialize a selectable user for user selection surfaces."""
     user = selectable.user
     data = {
-        "uid": user.uuid.hex,
+        "uid": selectable.uid,
         "username": user.username,
         "name": user.name,
         "email": user.email,
