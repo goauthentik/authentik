@@ -118,6 +118,8 @@ def _craft_jwt(payload: dict, private_key, algorithm: str, headers: dict) -> str
 
     segments.append(base64.urlsafe_b64encode(signature).rstrip(b"="))
     return b".".join(segments).decode()
+
+class TestJWKThumbprint(TestCase):
     """Test JWK thumbprint computation"""
 
     def test_ec_thumbprint(self):
@@ -360,6 +362,16 @@ class TestDPoPValidator(TestCase):
         with self.assertRaises(DPoPError) as cm:
             self.validator.validate(proof, expected_htm="POST", expected_htu=self.htu)
         self.assertIn("jwk", str(cm.exception).lower())
+
+    def test_cnf_strips_extra_jwk_members(self):
+        """Test that any claims in the JWK not covered by the JKT are removed"""
+        builder = DPoPProofBuilder()
+        builder.jwk["jku"] = "https://attacker.example/keys"
+        builder.jwk["alg"] = "RS256"
+        result = self.validator.validate(
+            builder.build(htu=self.htu), expected_htm="POST", expected_htu=self.htu
+        )
+        self.assertEqual(set(result), {"crv", "kty", "x", "y"})
 
     def test_jti_replay_rejected(self):
         """Test that reusing the same jti is rejected"""

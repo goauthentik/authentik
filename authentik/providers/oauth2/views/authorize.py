@@ -286,6 +286,15 @@ class OAuthAuthorizationParams:
                 self.state,
                 "dpop_jkt is required when bound_key scope is requested",
             )
+        # dpop_jkt should only be set if requesting the key binding scope 
+        if SCOPE_BOUND_KEY not in self.scope and self.dpop_jkt:
+            raise AuthorizeError(
+                self.redirect_uri,
+                "invalid_request",
+                self.grant_type,
+                self.state,
+                "dpop_jkt is set when bound_key scope is not requested",
+            )
 
     def check_dpop_jkt(self):
         """Validate dpop_jkt format if provided.

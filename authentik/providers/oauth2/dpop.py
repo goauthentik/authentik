@@ -42,6 +42,15 @@ DPOP_SUPPORTED_ALGS = {
     "PS512",
 }
 
+# Required JWK members per RFC 7638, by key type. These are exactly the
+# members the thumbprint is computed over, so a JWK rebuilt from only these
+# has the same thumbprint and carries no additional user supplied extra 
+# claims (kid, alg, use, key_ops, x5c, x5u, jku, or unknown members).
+JWK_REQUIRED_CLAIMS = {
+    "EC": ("crv", "kty", "x", "y"),
+    "RSA": ("e", "kty", "n"),
+}
+
 # JTI replay protection window in seconds
 DPOP_JTI_REPLAY_WINDOW = int(CONFIG.get("providers.oauth2.dpop_jti_replay_window", 120))
 
@@ -62,6 +71,18 @@ def code_sha256(value: str) -> str:
     """Compute c_s256: BASE64URL(SHA256(ASCII(value)))"""
     digest = hashlib.sha256(value.encode("ascii")).digest()
     return base64.urlsafe_b64encode(digest).rstrip(b"=").decode("ascii")
+
+
+def canonical_public_jwk(jwk: dict) -> dict:
+    """Return a JWK containing only the RFC 7638 required public members."""
+    kty = jwk.get("kty")
+    members = JWK_REQUIRED_CLAIMS.get(kty)
+    if members is None:
+        raise DPoPError(f"Cannot canonicalize JWK of type {kty}")
+    missing = [m for m in members if m not in jwk]
+    if missing:
+        raise DPoPError(f"JWK missing required members: {missing}")
+    return {m: jwk[m] for m in members}
 
 
 class DPoPError(Exception):
@@ -107,6 +128,9 @@ class DPoPValidator:
             raise DPoPError("Missing jwk in DPoP header")
 
         self._validate_jwk(jwk)
+
+        # Removes any claim not hashed in the JKT 
+        jwk = canonical_public_jwk(jwk)
 
         alg = header.get("alg")
         if not alg:
