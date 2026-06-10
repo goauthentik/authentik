@@ -12,7 +12,7 @@ The stage has one responsibility:
 
 - **User Selection stage**: shows the current account and other live accounts for the same browser.
 
-Selecting the current account continues the flow. When the request is already authenticated, selecting another live account switches the active browser session to that account. When the browser is signed out, selecting a browser-local account starts the default authentication flow with that account pre-filled.
+Selecting the current account continues the flow. When the request is already authenticated, selecting another live account switches the active browser session to that account. When the request is signed out, selecting a browser-local account starts the default authentication flow with that account pre-filled.
 
 authentik includes a default user-selection flow and assigns it to the default brand. The flow is used by the user interface account switcher, by OpenID Connect requests with `prompt=select_account`, and by OpenID Connect requests where the browser has multiple live accounts.
 

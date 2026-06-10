@@ -12,7 +12,7 @@ title: Configure user selection stages
 
 User selection stages should be bound to a flow with the **User Selection** designation.
 
-A typical user-selection flow contains a single User Selection stage. The stage lists active sessions bound to the same browser and lets the user continue with one of them.
+A typical user-selection flow contains a single User Selection stage. The stage lists active sessions bound to the same browser. If the request is already authenticated, the user can continue with the current account or switch to another live browser-local session. If the request is signed out, selecting an account starts normal authentication with that account pre-filled.
 
 ## Brand integration
 
@@ -30,7 +30,7 @@ The account switcher needs the brand flow to be configured so it has a specific 
 
 When a flow starts with a login hint, authentik places the matching browser-local account first. The hint does not authenticate the account by itself; the user must still choose the account. If the browser is already authenticated, authentik can switch to another live session for that browser. If the browser is signed out, authentik starts normal authentication with the hinted account pre-filled.
 
-OpenID Connect providers can trigger this behavior with `prompt=select_account`. They can also send `login_hint` to suggest which browser-local account should appear first.
+OpenID Connect clients can trigger this behavior with `prompt=select_account`. They can also send `login_hint` to suggest which browser-local account should appear first.
 
 ### Adding another account
 
