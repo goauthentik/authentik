@@ -2,7 +2,7 @@ import "#elements/buttons/Dropdown";
 
 import { isAPIResultReady } from "#common/api/responses";
 import { globalAK } from "#common/global";
-import { formatUserDisplayName } from "#common/users";
+import { formatUserDisplayName, formatUserSecondaryIdentifier } from "#common/users";
 
 import { AKElement } from "#elements/Base";
 import { WithSession } from "#elements/mixins/session";
@@ -52,19 +52,9 @@ export class UserSwitcher extends WithSession(AKElement) {
         </span>`;
     }
 
-    protected getAccountDescription(account: UserSelectionUser, label: string): string {
-        if (account.email && account.email !== label) {
-            return account.email;
-        }
-        if (account.username && account.username !== label) {
-            return account.username;
-        }
-        return "";
-    }
-
     protected renderAccount(account: UserSelectionUser): SlottedTemplateResult {
         const label = account.name || account.username;
-        const description = this.getAccountDescription(account, label);
+        const description = formatUserSecondaryIdentifier(account, label);
         const content = html`
             <span class="pf-c-dropdown__menu-item-main" part="item">
                 ${this.renderAvatar(account)}

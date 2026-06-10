@@ -1,6 +1,7 @@
 import "#flow/components/ak-flow-card";
 
 import { docLink } from "#common/global";
+import { formatUserSecondaryIdentifier } from "#common/users";
 
 import { BaseStage } from "#flow/stages/base";
 import Styles from "#flow/stages/user_selection/UserSelectionStage.css";
@@ -33,19 +34,9 @@ export class UserSelectionStage extends BaseStage<
         });
     };
 
-    protected getAccountMeta(account: UserSelectionChallengeUser, label: string): string {
-        if (account.email && account.email !== label) {
-            return account.email;
-        }
-        if (account.username && account.username !== label) {
-            return account.username;
-        }
-        return "";
-    }
-
     protected renderAccount(account: UserSelectionChallengeUser): TemplateResult {
         const label = account.name || account.username || account.email;
-        const secondary = this.getAccountMeta(account, label);
+        const secondary = formatUserSecondaryIdentifier(account, label);
         return html`<button
             type="button"
             class="pf-c-button pf-m-secondary account-button ${account.isHint
