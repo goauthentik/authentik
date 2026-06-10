@@ -11,13 +11,15 @@ from structlog.stdlib import get_logger
 
 from authentik.common.oauth.constants import QS_LOGIN_HINT
 from authentik.core.api.utils import PassiveSerializer
-from authentik.core.models import Application, User
+from authentik.core.models import Application, AuthenticatedSession, User
+from authentik.core.sessions import SessionStore
 from authentik.core.user_selection import (
     PLAN_CONTEXT_USER_SELECTION_LOGIN_HINT,
     PLAN_CONTEXT_USER_SELECTION_USER_UID,
     QS_USER_UID,
     append_user_selection_hint,
-    get_user_selection_users,
+    get_selectable_users,
+    get_switchable_session,
     serialize_user_selection_user,
     user_matches_hint,
 )
@@ -25,6 +27,7 @@ from authentik.flows.challenge import Challenge, ChallengeResponse
 from authentik.flows.planner import PLAN_CONTEXT_APPLICATION, PLAN_CONTEXT_REDIRECT, FlowPlan
 from authentik.flows.stage import ChallengeStageView
 from authentik.flows.views.executor import NEXT_ARG_NAME, SESSION_KEY_GET
+from authentik.root.middleware import ClientIPMiddleware
 
 LOGGER = get_logger()
 COMPONENT = "ak-stage-user-selection"
@@ -70,11 +73,8 @@ class UserSelectionStageView(ChallengeStageView):
         return cast(FlowPlan, self.executor.plan)
 
     def get_users(self, hint: str = "") -> list[User]:
-        """Get known users for this browser session in display order."""
-        current_user = []
-        if self.request.user.is_authenticated:
-            current_user.append(self.request.user.uuid.hex)
-        users = get_user_selection_users(self.request, current_user)
+        """Get the users of this browser's live sessions in display order."""
+        users = get_selectable_users(self.request)
         if not hint:
             return users
         return sorted(users, key=lambda user: not user_matches_hint(user, hint))
@@ -160,8 +160,27 @@ class UserSelectionStageView(ChallengeStageView):
             )
         return self.executor.stage_ok()
 
+    def switch_to_session(self, target: AuthenticatedSession) -> HttpResponse:
+        """Make the target login this browser's active session. The session cookie is
+        reissued by the session middleware from the swapped request.session."""
+        next_url = append_user_selection_hint(self.get_next_url(), target.user)
+        self.executor.cancel()
+        # The flow ends here, on the old session; persist the cancellation before
+        # detaching from it, as the middleware only saves the swapped-in session.
+        self.request.session.save()
+        self.request.session = SessionStore(
+            target.session.session_key,
+            last_ip=ClientIPMiddleware.get_client_ip(self.request),
+            last_user_agent=self.request.META.get("HTTP_USER_AGENT", ""),
+            browser_key=self.request.browser_key,
+        )
+        self.request.session.modified = True
+        self.request.user = target.user
+        return redirect(next_url)
+
     def select_user(self, selected_user_uid: str) -> HttpResponse:
-        """Continue as the current user or authenticate as the selected user."""
+        """Continue as the current user, switch to a live session of the selected user,
+        or fall back to authenticating as them."""
         users_by_id = {user.uuid.hex: user for user in self.get_users()}
         selected_user = users_by_id.get(selected_user_uid)
         if not selected_user:
@@ -169,6 +188,8 @@ class UserSelectionStageView(ChallengeStageView):
             return self.executor.stage_invalid()
         if self.request.user.is_authenticated and selected_user.pk == self.request.user.pk:
             return self.continue_current_user(selected_user)
+        if target := get_switchable_session(self.request, selected_user):
+            return self.switch_to_session(target)
         return self.redirect_to_login(selected_user)
 
     def challenge_valid(self, response: ChallengeResponse) -> HttpResponse:

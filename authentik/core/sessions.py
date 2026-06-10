@@ -6,6 +6,7 @@ from django.contrib.auth import BACKEND_SESSION_KEY, HASH_SESSION_KEY, SESSION_K
 from django.contrib.sessions.backends.db import SessionStore as SessionBase
 from django.core.exceptions import SuspiciousOperation
 from django.utils import timezone
+from django.utils.crypto import constant_time_compare
 from django.utils.functional import cached_property
 from structlog.stdlib import get_logger
 
@@ -15,8 +16,14 @@ LOGGER = get_logger()
 
 
 class SessionStore(SessionBase):
-    def __init__(self, session_key=None, last_ip=None, last_user_agent=""):
+    # Default for `browser_key` distinguishing trusted internal loads (which skip browser
+    # binding entirely) from loads on behalf of a browser request, where the middleware
+    # always passes the request's browser cookie value (or None if absent).
+    UNBOUND = object()
+
+    def __init__(self, session_key=None, last_ip=None, last_user_agent="", browser_key=UNBOUND):
         super().__init__(session_key)
+        self._browser_key = browser_key
         self._create_kwargs = {
             "last_ip": last_ip or ClientIPMiddleware.default_ip,
             "last_user_agent": last_user_agent,
@@ -32,15 +39,27 @@ class SessionStore(SessionBase):
     def model_fields(self):
         return [k.value for k in self.model.Keys]
 
+    def _browser_binding_valid(self, session) -> bool:
+        """Sessions bound to a browser may only be loaded with that browser's cookie"""
+        if self._browser_key is self.UNBOUND:
+            return True
+        authenticated_session = getattr(session, "authenticatedsession", None)
+        if authenticated_session is None or authenticated_session.browser_key is None:
+            return True
+        return constant_time_compare(authenticated_session.browser_key, self._browser_key or "")
+
     def _get_session_from_db(self):
         try:
-            return self.model.objects.select_related(
+            session = self.model.objects.select_related(
                 "authenticatedsession",
                 "authenticatedsession__user",
             ).get(
                 session_key=self.session_key,
                 expires__gt=timezone.now(),
             )
+            if not self._browser_binding_valid(session):
+                raise SuspiciousOperation("Session denied: browser cookie missing or mismatched")
+            return session
         except (self.model.DoesNotExist, SuspiciousOperation) as exc:
             if isinstance(exc, SuspiciousOperation):
                 LOGGER.warning(str(exc))
@@ -48,13 +67,16 @@ class SessionStore(SessionBase):
 
     async def _aget_session_from_db(self):
         try:
-            return await self.model.objects.select_related(
+            session = await self.model.objects.select_related(
                 "authenticatedsession",
                 "authenticatedsession__user",
             ).aget(
                 session_key=self.session_key,
                 expires__gt=timezone.now(),
             )
+            if not self._browser_binding_valid(session):
+                raise SuspiciousOperation("Session denied: browser cookie missing or mismatched")
+            return session
         except (self.model.DoesNotExist, SuspiciousOperation) as exc:
             if isinstance(exc, SuspiciousOperation):
                 LOGGER.warning(str(exc))

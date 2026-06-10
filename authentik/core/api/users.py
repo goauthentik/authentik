@@ -89,7 +89,7 @@ from authentik.core.models import (
     default_token_duration,
 )
 from authentik.core.user_selection import (
-    get_user_selection_users,
+    get_selectable_users,
     serialize_user_selection_user,
 )
 from authentik.endpoints.connectors.agent.auth import AgentAuth
@@ -813,17 +813,6 @@ class UserViewSet(
                     status=500,
                 )
 
-    def _serialize_user_selection_user(self, user: User) -> dict[str, Any]:
-        """Serialize a user remembered by this browser."""
-        return serialize_user_selection_user(self.request, user)
-
-    def _get_user_selection_users(self) -> list[User]:
-        """Return known users, including the current session user first."""
-        current_user = []
-        if self.request.user.is_authenticated:
-            current_user.append(self.request.user.uuid.hex)
-        return get_user_selection_users(self.request, current_user)
-
     @extend_schema(responses={200: SessionUserSerializer(many=False)})
     @action(
         url_path="me",
@@ -839,8 +828,8 @@ class UserViewSet(
             data={
                 "user": UserSelfSerializer(instance=request.user, context=context).data,
                 "accounts": [
-                    self._serialize_user_selection_user(user)
-                    for user in self._get_user_selection_users()
+                    serialize_user_selection_user(request._request, user)
+                    for user in get_selectable_users(request._request)
                 ],
             }
         )

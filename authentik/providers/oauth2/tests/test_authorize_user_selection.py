@@ -10,8 +10,8 @@ from django.urls import reverse
 from authentik.common.oauth.constants import PROMPT_SELECT_ACCOUNT, QS_LOGIN_HINT
 from authentik.core.models import Application
 from authentik.core.tests.user_selection import (
+    create_browser_session,
     create_test_user_selection_flow,
-    remember_known_users,
 )
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
 from authentik.core.user_selection import QS_USER_UID, append_user_selection_hint
@@ -104,7 +104,6 @@ class TestAuthorizeUserSelection(OAuthTestCase):
         self.create_provider(flow)
         user = create_test_admin_user()
         self.client.force_login(user)
-        remember_known_users(self, user)
 
         response = self.client.get(
             reverse("authentik_providers_oauth2:authorize"),
@@ -125,15 +124,15 @@ class TestAuthorizeUserSelection(OAuthTestCase):
         self.assertEqual(challenge_response.json()["component"], "ak-stage-user-selection")
         self.assertEqual(challenge_response.json()["accounts"][0]["username"], user.username)
 
-    def test_known_users_show_user_selection_by_default(self):
-        """Test multiple remembered browser users show the user selection stage."""
+    def test_multiple_sessions_show_user_selection_by_default(self):
+        """Test multiple live browser logins show the user selection stage."""
         flow = create_test_flow()
         user_selection_flow, _ = create_test_user_selection_flow()
         self.create_provider(flow)
         user = create_test_admin_user()
         other_user = create_test_admin_user("other-user")
         self.client.force_login(user)
-        remember_known_users(self, user, other_user)
+        create_browser_session(self, other_user)
 
         response = self.client.get(
             reverse("authentik_providers_oauth2:authorize"),
@@ -155,15 +154,15 @@ class TestAuthorizeUserSelection(OAuthTestCase):
             [user.username, other_user.username],
         )
 
-    def test_selecting_other_user_requests_authentication(self):
-        """Test selecting a remembered non-current user requires normal authentication."""
+    def test_selecting_other_user_switches_session(self):
+        """Test selecting another live login switches sessions and returns to authorize."""
         flow = create_test_flow()
         user_selection_flow, _ = create_test_user_selection_flow()
         self.create_provider(flow)
         user = create_test_admin_user()
         other_user = create_test_admin_user("other-user")
         self.client.force_login(user)
-        remember_known_users(self, user, other_user)
+        target = create_browser_session(self, other_user)
         current_session_cookie = self.client.cookies[settings.SESSION_COOKIE_NAME].value
 
         response = self.client.get(
@@ -193,16 +192,44 @@ class TestAuthorizeUserSelection(OAuthTestCase):
 
         self.assertEqual(selection_response.json()["component"], "xak-flow-redirect")
         redirect = selection_response.json()["to"]
-        self.assertEqual(urlparse(redirect).path, reverse("authentik_flows:default-authentication"))
-        parsed = parse_qs(urlparse(redirect).query)
-        self.assertEqual(parsed[QS_LOGIN_HINT], [other_user.email])
-        authorize_url = parsed["next"][0]
-        authorize_query = parse_qs(urlparse(authorize_url).query)
+        self.assertEqual(urlparse(redirect).path, reverse("authentik_providers_oauth2:authorize"))
+        authorize_query = parse_qs(urlparse(redirect).query)
         self.assertEqual(authorize_query[QS_USER_UID], [other_user.uuid.hex])
         self.assertEqual(
             self.client.cookies[settings.SESSION_COOKIE_NAME].value,
+            target.session.session_key,
+        )
+        self.assertNotEqual(
+            self.client.cookies[settings.SESSION_COOKIE_NAME].value,
             current_session_cookie,
         )
+        me_response = self.client.get(reverse("authentik_api:user-me"))
+        self.assertEqual(me_response.json()["user"]["username"], other_user.username)
+        # Returning to authorize with the selected user must not re-prompt for selection
+        response = self.client.get(redirect)
+        self.assertEqual(response.status_code, 302)
+        self.assertNotIn(user_selection_flow.slug, response.url)
+
+    def test_signed_out_browser_is_offered_selection(self):
+        """Test a signed-out browser with live logins is sent to the chooser, not login."""
+        flow = create_test_flow()
+        user_selection_flow, _ = create_test_user_selection_flow()
+        self.create_provider(flow)
+        other_user = create_test_admin_user("other-user")
+        create_browser_session(self, other_user)
+
+        response = self.client.get(
+            reverse("authentik_providers_oauth2:authorize"),
+            data={
+                "response_type": "code",
+                "client_id": "test",
+                "state": generate_id(),
+                "redirect_uri": "foo://localhost",
+            },
+        )
+
+        self.assertEqual(response.status_code, 302)
+        self.assertIn(user_selection_flow.slug, response.url)
 
     def test_prompt_select_account_ignores_login_hint(self):
         """Test prompt=select_account suggests but doesn't auto-select the login_hint user."""
@@ -212,7 +239,7 @@ class TestAuthorizeUserSelection(OAuthTestCase):
         user = create_test_admin_user()
         other_user = create_test_admin_user("other-user")
         self.client.force_login(user)
-        remember_known_users(self, user, other_user)
+        create_browser_session(self, other_user)
 
         response = self.client.get(
             reverse("authentik_providers_oauth2:authorize"),

@@ -1,55 +1,37 @@
-"""Helpers for browser-local user selection."""
+"""Helpers for selecting between the sessions a browser holds.
 
-from collections.abc import Iterable
-from dataclasses import dataclass
-from datetime import timedelta
+Every login creates its own Session/AuthenticatedSession pair; all pairs created by the
+same browser share the AuthenticatedSession.browser_key stamped from the browser cookie
+(see authentik.root.middleware). These helpers list those logins and decide whether the
+browser may switch to one of them without re-authenticating.
+"""
+
 from enum import StrEnum
 from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
 
-from django.conf import settings
-from django.contrib.auth.models import AnonymousUser
-from django.core.signing import BadSignature, SignatureExpired, dumps, loads
+from django.db.models import QuerySet
 from django.http import HttpRequest, HttpResponse
 from django.urls import reverse
+from django.utils import timezone
 
 from authentik.common.oauth.constants import QS_LOGIN_HINT
-from authentik.core.models import User
+from authentik.core.models import AuthenticatedSession, User
 from authentik.flows.exceptions import FlowNonApplicableException
 from authentik.flows.models import Flow, FlowDesignation
 from authentik.flows.planner import PLAN_CONTEXT_APPLICATION, PLAN_CONTEXT_REDIRECT, FlowPlanner
 from authentik.lib.avatars import get_avatar
 from authentik.policies.engine import PolicyEngine
 
-COOKIE_NAME_KNOWN_USERS = "authentik_users"
-KNOWN_USERS_MAX = 5
-KNOWN_USERS_AGE = int(timedelta(days=365).total_seconds())
 QS_USER_UID = "user_uid"
 PLAN_CONTEXT_USER_SELECTION_USER_UID = "user_selection_user_uid"
 PLAN_CONTEXT_USER_SELECTION_LOGIN_HINT = "user_selection_login_hint"
 
 
 class UserSelectionAuthentication(StrEnum):
-    """How strongly the current browser request is authenticated as a remembered user."""
+    """Whether selecting the user switches to a live session or requires authentication."""
 
     AUTHENTICATED = "authenticated"
     REMEMBERED = "remembered"
-
-
-@dataclass(frozen=True)
-class KnownUser:
-    """Browser-local user reference."""
-
-    uid: str
-
-
-def _coerce_known_user(raw_user: object) -> KnownUser | None:
-    """Parse remembered-user cookie entries."""
-    if not isinstance(raw_user, dict):
-        return None
-    uid = raw_user.get("uid")
-    if not isinstance(uid, str):
-        return None
-    return KnownUser(uid=uid)
 
 
 def user_matches_hint(user: User, hint: str) -> bool:
@@ -59,11 +41,45 @@ def user_matches_hint(user: User, hint: str) -> bool:
 
 def _is_current_user(request: HttpRequest, user: User) -> bool:
     """Return true when the request is authenticated as the given user."""
+    return request.user.is_authenticated and user.pk == request.user.pk
+
+
+def get_browser_sessions(request: HttpRequest) -> QuerySet[AuthenticatedSession]:
+    """Live logins created by this browser, most recently used first."""
+    browser_key = getattr(request, "browser_key", None)
+    if not browser_key:
+        return AuthenticatedSession.objects.none()
     return (
-        request.user.is_authenticated
-        and not isinstance(request.user, AnonymousUser)
-        and user.pk == request.user.pk
+        AuthenticatedSession.objects.filter(
+            browser_key=browser_key,
+            session__expires__gt=timezone.now(),
+            user__is_active=True,
+        )
+        .select_related("session", "user")
+        .order_by("-session__last_used")
     )
+
+
+def get_selectable_users(request: HttpRequest) -> list[User]:
+    """Users this browser can select between, current user first, one entry per user."""
+    users: dict[str, User] = {}
+    if request.user.is_authenticated:
+        users[request.user.uuid.hex] = request.user
+    for session in get_browser_sessions(request):
+        users.setdefault(session.user.uuid.hex, session.user)
+    return list(users.values())
+
+
+def get_switchable_session(request: HttpRequest, user: User) -> AuthenticatedSession | None:
+    """Return the browser's most recently used live session for the given user, if the
+    request may switch to it without re-authenticating.
+
+    Switching requires an authenticated request on top of the browser cookie: a browser
+    that is signed out of all accounts (or an attacker holding only the browser cookie)
+    has to present credentials again."""
+    if not request.user.is_authenticated:
+        return None
+    return get_browser_sessions(request).filter(user=user).first()
 
 
 def serialize_user_selection_user(
@@ -71,8 +87,9 @@ def serialize_user_selection_user(
     user: User,
     hint: str | None = None,
 ) -> dict[str, object]:
-    """Serialize a browser-local user for user selection surfaces."""
+    """Serialize a selectable user for user selection surfaces."""
     is_current = _is_current_user(request, user)
+    switchable = is_current or get_switchable_session(request, user) is not None
     data = {
         "uid": user.uuid.hex,
         "username": user.username,
@@ -82,50 +99,13 @@ def serialize_user_selection_user(
         "is_current": is_current,
         "authentication": (
             UserSelectionAuthentication.AUTHENTICATED
-            if is_current
+            if switchable
             else UserSelectionAuthentication.REMEMBERED
         ),
     }
     if hint is not None:
         data["is_hint"] = bool(hint and user_matches_hint(user, hint))
     return data
-
-
-def get_known_users(request: HttpRequest) -> list[KnownUser]:
-    """Return remembered users from the signed browser cookie."""
-    raw_users = request.COOKIES.get(COOKIE_NAME_KNOWN_USERS)
-    if not raw_users:
-        return []
-    try:
-        users = loads(raw_users, max_age=KNOWN_USERS_AGE)
-    except BadSignature, SignatureExpired, TypeError, ValueError:
-        return []
-    if not isinstance(users, list):
-        return []
-    known_users = []
-    seen_users = set()
-    for raw_user in users:
-        user = _coerce_known_user(raw_user)
-        if not user or user.uid in seen_users:
-            continue
-        seen_users.add(user.uid)
-        known_users.append(user)
-        if len(known_users) >= KNOWN_USERS_MAX:
-            break
-    return known_users
-
-
-def get_user_selection_users(
-    request: HttpRequest,
-    extra_users: Iterable[str] = (),
-) -> list[User]:
-    """Return active remembered users in browser-local order."""
-    known_user_ids = list(
-        dict.fromkeys([*extra_users, *(user.uid for user in get_known_users(request))])
-    )[:KNOWN_USERS_MAX]
-    users = User.objects.filter(uuid__in=known_user_ids, is_active=True).exclude_anonymous()
-    users_by_id = {user.uuid.hex: user for user in users}
-    return [users_by_id[user_id] for user_id in known_user_ids if user_id in users_by_id]
 
 
 def get_user_selection_flow(request: HttpRequest) -> Flow | None:
@@ -186,29 +166,3 @@ def start_user_selection_flow_response(
     except FlowNonApplicableException:
         return None
     return plan.to_redirect(request, flow)
-
-
-def remember_user(response: HttpResponse, request: HttpRequest, user: User) -> HttpResponse:
-    """Remember a user as selectable on this browser without authenticating as them."""
-    existing_users = [
-        known_user for known_user in get_known_users(request) if known_user.uid != user.uuid.hex
-    ]
-    users = [KnownUser(uid=user.uuid.hex), *existing_users][:KNOWN_USERS_MAX]
-    payload = [{"uid": known_user.uid} for known_user in users]
-    cookie_kwargs = {
-        "path": settings.SESSION_COOKIE_PATH,
-        "domain": settings.SESSION_COOKIE_DOMAIN,
-        "secure": settings.SESSION_COOKIE_SECURE,
-        "httponly": True,
-        "samesite": settings.SESSION_COOKIE_SAMESITE,
-    }
-    if request.session.get_expire_at_browser_close():
-        response.set_cookie(COOKIE_NAME_KNOWN_USERS, dumps(payload), **cookie_kwargs)
-    else:
-        response.set_cookie(
-            COOKIE_NAME_KNOWN_USERS,
-            dumps(payload),
-            max_age=KNOWN_USERS_AGE,
-            **cookie_kwargs,
-        )
-    return response

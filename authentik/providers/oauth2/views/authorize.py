@@ -35,7 +35,7 @@ from authentik.common.oauth.constants import (
 from authentik.core.models import Application
 from authentik.core.user_selection import (
     QS_USER_UID,
-    get_user_selection_users,
+    get_selectable_users,
     start_user_selection_flow_response,
 )
 from authentik.events.models import Event, EventAction
@@ -401,50 +401,29 @@ class AuthorizationFlowInitView(PolicyAccessView):
             context[PLAN_CONTEXT_PENDING_USER_IDENTIFIER] = self.request.GET.get(QS_LOGIN_HINT)
         return super().modify_flow_context(flow, context)
 
-    def needs_fresh_login_event(self, login_uid: str) -> bool:
-        """Check if the authorization request needs the authentication flow to run."""
-        previous_login_uid = self.request.session.get(SESSION_KEY_LAST_LOGIN_UID)
-        if previous_login_uid and login_uid != previous_login_uid:
-            return False
-        if PROMPT_LOGIN in self.params.prompt:
-            return True
-        return PROMPT_SELECT_ACCOUNT in self.params.prompt and previous_login_uid == login_uid
-
-    def has_fresh_login_event(self, login_uid: str) -> bool:
-        """Check if a previous forced login completed and should satisfy this request."""
-        previous_login_uid = self.request.session.get(SESSION_KEY_LAST_LOGIN_UID)
-        return bool(previous_login_uid and login_uid != previous_login_uid)
-
-    def cleanup_fresh_login_event(self, login_uid: str) -> None:
-        """Clear the re-authentication marker after a new login event exists."""
-        if self.has_fresh_login_event(login_uid):
-            self.request.session.pop(SESSION_KEY_LAST_LOGIN_UID, None)
-
-    def should_show_user_selection(self, login_uid: str) -> bool:
+    def should_show_user_selection(self) -> bool:
         """Check if the authorization flow should prompt for a user choice."""
         if PROMPT_NONE in self.params.prompt or PROMPT_LOGIN in self.params.prompt:
-            return False
-        if self.has_fresh_login_event(login_uid):
             return False
         if (
             self.request.user.is_authenticated
             and self.request.GET.get(QS_USER_UID) == self.request.user.uuid.hex
         ):
+            # The user just picked this account in the selection flow
             return False
-        current_user = []
-        if self.request.user.is_authenticated:
-            current_user.append(self.request.user.uuid.hex)
-        users = get_user_selection_users(self.request, current_user)
-        return PROMPT_SELECT_ACCOUNT in self.params.prompt or len(users) > 1
+        if PROMPT_SELECT_ACCOUNT in self.params.prompt:
+            return True
+        return len(get_selectable_users(self.request)) > 1
 
     def handle_no_permission(self) -> HttpResponse:
+        """Offer the account chooser to signed-out browsers that still have live logins."""
         response = super().handle_no_permission()
         if PROMPT_NONE in self.params.prompt or PROMPT_LOGIN in self.params.prompt:
             return response
         if SESSION_KEY_LAST_LOGIN_UID in self.request.session:
+            # A re-authentication (max_age/prompt=login) is in progress; don't divert it
             return response
-        users = get_user_selection_users(self.request)
-        if not users:
+        if not get_selectable_users(self.request):
             return response
         return (
             start_user_selection_flow_response(
@@ -529,13 +508,17 @@ class AuthorizationFlowInitView(PolicyAccessView):
                 # in case this request has both max_age and prompt=login
                 self.request.session[SESSION_KEY_LAST_LOGIN_UID] = login_uid
                 return self.handle_no_permission()
-        # If prompt=login or prompt=select_account, we need to run the authentication
-        # flow regardless. Check if we're not already doing the re-authentication.
-        if self.needs_fresh_login_event(login_uid):
-            self.request.session[SESSION_KEY_LAST_LOGIN_UID] = login_uid
-            return self.handle_no_permission()
-        show_user_selection = self.should_show_user_selection(login_uid)
-        self.cleanup_fresh_login_event(login_uid)
+        # If prompt=login, we need to re-authenticate the user regardless
+        # Check if we're not already doing the re-authentication
+        if PROMPT_LOGIN in self.params.prompt:
+            # No previous login UID saved, so save the current uid and trigger
+            # re-login, or previous login UID matches current one, so no re-login happened yet
+            if (
+                SESSION_KEY_LAST_LOGIN_UID not in self.request.session
+                or login_uid == self.request.session[SESSION_KEY_LAST_LOGIN_UID]
+            ):
+                self.request.session[SESSION_KEY_LAST_LOGIN_UID] = login_uid
+                return self.handle_no_permission()
         scope_descriptions = UserInfoView().get_scope_descriptions(
             self.params.scope, self.params.provider
         )
@@ -558,7 +541,7 @@ class AuthorizationFlowInitView(PolicyAccessView):
             )
         except FlowNonApplicableException:
             return self.handle_no_permission_authenticated()
-        if show_user_selection:
+        if self.should_show_user_selection():
             response = start_user_selection_flow_response(
                 self.request,
                 self.request.get_full_path(),
