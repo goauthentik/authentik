@@ -6,6 +6,8 @@ import { Diagram } from "#elements/Diagram";
 
 import { FlowsApi } from "@goauthentik/api";
 
+import { observes } from "@patternfly/pfe-core/decorators/observes.js";
+
 import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-flow-diagram")
@@ -13,6 +15,7 @@ export class FlowDiagram extends Diagram {
     @property({ type: String, useDefault: true })
     public flowSlug: string | null = null;
 
+    @observes("flowSlug")
     protected refresh(): void {
         aki(FlowsApi)
             .flowsInstancesDiagramRetrieve({
