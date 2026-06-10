@@ -5,6 +5,7 @@ support_level: community
 authentik_version: 2026.5
 ---
 
+import SAMLProvider20265Warning from "../../_saml-provider-2026-5-warning.mdx";
 import TabItem from "@theme/TabItem";
 import Tabs from "@theme/Tabs";
 
@@ -84,6 +85,8 @@ To confirm that authentik is properly configured with Absorb LMS, log out and th
 To integrate authentik with Absorb LMS via SAML, you will need to create an application and provider pair in authentik.
 
 ### Create an application and provider in authentik
+
+<SAMLProvider20265Warning />
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.

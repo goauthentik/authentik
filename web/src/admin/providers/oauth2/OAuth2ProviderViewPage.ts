@@ -10,7 +10,7 @@ import "#elements/ak-mdx/index";
 import "#elements/buttons/ModalButton";
 import "#elements/buttons/SpinnerButton/index";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { EVENT_REFRESH } from "#common/constants";
 
 import { AKElement } from "#elements/Base";
@@ -80,7 +80,7 @@ export function LogoutMethodToLabel(method?: OAuth2ProviderLogoutMethodEnum): st
 export class OAuth2ProviderViewPage extends AKElement {
     @property({ type: Number })
     set providerID(value: number) {
-        new ProvidersApi(DEFAULT_CONFIG)
+        aki(ProvidersApi)
             .providersOauth2Retrieve({
                 id: value,
             })
@@ -123,7 +123,7 @@ export class OAuth2ProviderViewPage extends AKElement {
     }
 
     fetchPreview(): void {
-        new ProvidersApi(DEFAULT_CONFIG)
+        aki(ProvidersApi)
             .providersOauth2PreviewUserRetrieve({
                 id: this.provider?.pk || 0,
                 forUser: this.previewUser?.pk,
@@ -144,7 +144,7 @@ export class OAuth2ProviderViewPage extends AKElement {
                     id="page-overview"
                     aria-label="${msg("Overview")}"
                     @activate=${() => {
-                        new ProvidersApi(DEFAULT_CONFIG)
+                        aki(ProvidersApi)
                             .providersOauth2SetupUrlsRetrieve({
                                 id: this.provider?.pk || 0,
                             })
@@ -438,9 +438,7 @@ export class OAuth2ProviderViewPage extends AKElement {
                                             if (query !== undefined) {
                                                 args.search = query;
                                             }
-                                            const users = await new CoreApi(
-                                                DEFAULT_CONFIG,
-                                            ).coreUsersList(args);
+                                            const users = await aki(CoreApi).coreUsersList(args);
                                             return users.results;
                                         }}
                                         .renderElement=${(user: User): string => {

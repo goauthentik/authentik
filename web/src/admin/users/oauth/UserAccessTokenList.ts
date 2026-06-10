@@ -3,7 +3,7 @@ import "#elements/chips/Chip";
 import "#elements/chips/ChipGroup";
 import "#elements/forms/DeleteBulkForm";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { PaginatedResponse, Table, TableColumn, Timestamp } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
@@ -26,7 +26,7 @@ export class UserOAuthAccessTokenList extends Table<TokenModel> {
     static styles: CSSResult[] = [...super.styles, PFFlex];
 
     async apiEndpoint(): Promise<PaginatedResponse<TokenModel>> {
-        return new Oauth2Api(DEFAULT_CONFIG).oauth2AccessTokensList({
+        return aki(Oauth2Api).oauth2AccessTokensList({
             ...(await this.defaultEndpointConfig()),
             user: this.userId,
         });
@@ -61,12 +61,12 @@ export class UserOAuthAccessTokenList extends Table<TokenModel> {
             object-label=${msg("Access Tokens(s)")}
             .objects=${this.selectedElements}
             .usedBy=${(item: ExpiringBaseGrantModel) => {
-                return new Oauth2Api(DEFAULT_CONFIG).oauth2AccessTokensUsedByList({
+                return aki(Oauth2Api).oauth2AccessTokensUsedByList({
                     id: item.pk,
                 });
             }}
             .delete=${(item: ExpiringBaseGrantModel) => {
-                return new Oauth2Api(DEFAULT_CONFIG).oauth2AccessTokensDestroy({
+                return aki(Oauth2Api).oauth2AccessTokensDestroy({
                     id: item.pk,
                 });
             }}

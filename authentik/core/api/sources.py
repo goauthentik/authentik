@@ -133,6 +133,7 @@ class UserSourceConnectionSerializer(SourceSerializer):
             "last_updated",
         ]
         extra_kwargs = {
+            "user": {"read_only": True},
             "created": {"read_only": True},
             "last_updated": {"read_only": True},
         }
@@ -173,6 +174,7 @@ class GroupSourceConnectionSerializer(SourceSerializer):
             "last_updated",
         ]
         extra_kwargs = {
+            "group": {"read_only": True},
             "created": {"read_only": True},
             "last_updated": {"read_only": True},
         }
