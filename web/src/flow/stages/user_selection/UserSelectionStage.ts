@@ -33,10 +33,19 @@ export class UserSelectionStage extends BaseStage<
         });
     };
 
+    protected getAccountMeta(account: UserSelectionChallengeUser, label: string): string {
+        if (account.email && account.email !== label) {
+            return account.email;
+        }
+        if (account.username && account.username !== label) {
+            return account.username;
+        }
+        return "";
+    }
+
     protected renderAccount(account: UserSelectionChallengeUser): TemplateResult {
         const label = account.name || account.username || account.email;
-        const secondary =
-            account.email && account.email !== label ? account.email : account.username;
+        const secondary = this.getAccountMeta(account, label);
         return html`<button
             type="button"
             class="pf-c-button pf-m-secondary account-button ${account.isHint
