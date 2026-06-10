@@ -4,7 +4,7 @@ import "#elements/forms/HorizontalFormElement";
 
 import type { InvitationWizardState } from "./types";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import {
     parseAPIResponseError,
     pluckErrorDetail,
@@ -97,7 +97,7 @@ export class InvitationWizardDetailsStep extends WizardPage {
 
         if (wizardState.needsFlow) {
             try {
-                const result = await new ManagedApi(DEFAULT_CONFIG).managedBlueprintsImportCreate({
+                const result = await aki(ManagedApi).managedBlueprintsImportCreate({
                     path: MINIMAL_BLUEPRINT_PATH,
                     context: JSON.stringify({
                         flow_name: wizardState.newFlowName,
@@ -119,7 +119,7 @@ export class InvitationWizardDetailsStep extends WizardPage {
                 }
 
                 const slugToLookup = wizardState.newFlowSlug!;
-                const flows = await new FlowsApi(DEFAULT_CONFIG).flowsInstancesList({
+                const flows = await aki(FlowsApi).flowsInstancesList({
                     slug: slugToLookup,
                 });
                 const createdFlow = flows.results[0];
@@ -143,9 +143,7 @@ export class InvitationWizardDetailsStep extends WizardPage {
 
         try {
             const flowPk = wizardState.createdFlowPk || wizardState.selectedFlowPk || undefined;
-            const invitation = await new StagesApi(
-                DEFAULT_CONFIG,
-            ).stagesInvitationInvitationsCreate({
+            const invitation = await aki(StagesApi).stagesInvitationInvitationsCreate({
                 invitationRequest: {
                     name: wizardState.invitationName!,
                     expires: wizardState.invitationExpires

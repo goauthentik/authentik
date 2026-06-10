@@ -20,7 +20,7 @@ import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { IconEditButtonByTagName, modalInvoker } from "#elements/dialogs";
 import { IconPermissionButton } from "#elements/dialogs/components/IconPermissionButton";
@@ -57,7 +57,7 @@ export class PropertyMappingListPage extends TablePage<PropertyMapping> {
     protected hideManaged = getURLParam<boolean>("hideManaged", true);
 
     protected override async apiEndpoint(): Promise<PaginatedResponse<PropertyMapping>> {
-        return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsAllList({
+        return aki(PropertymappingsApi).propertymappingsAllList({
             ...(await this.defaultEndpointConfig()),
             managedIsnull: this.hideManaged ? true : undefined,
         });
@@ -75,12 +75,12 @@ export class PropertyMappingListPage extends TablePage<PropertyMapping> {
             object-label=${msg("Property Mapping(s)")}
             .objects=${this.selectedElements}
             .usedBy=${(item: PropertyMapping) => {
-                return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsAllUsedByList({
+                return aki(PropertymappingsApi).propertymappingsAllUsedByList({
                     pmUuid: item.pk,
                 });
             }}
             .delete=${(item: PropertyMapping) => {
-                return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsAllDestroy({
+                return aki(PropertymappingsApi).propertymappingsAllDestroy({
                     pmUuid: item.pk,
                 });
             }}

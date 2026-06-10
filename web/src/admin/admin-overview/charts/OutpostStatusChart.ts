@@ -1,6 +1,6 @@
 import "#elements/forms/ConfirmationForm";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { AKChart } from "#elements/charts/Chart";
 import { actionToColor } from "#elements/charts/EventChart";
@@ -34,7 +34,7 @@ export class OutpostStatusChart extends AKChart<SummarizedSyncStatus[]> {
     }
 
     async apiRequest(): Promise<SummarizedSyncStatus[]> {
-        const api = new OutpostsApi(DEFAULT_CONFIG);
+        const api = aki(OutpostsApi);
         const outposts = await api.outpostsInstancesList({});
         const outpostStats: SummarizedSyncStatus[] = [];
         await Promise.all(

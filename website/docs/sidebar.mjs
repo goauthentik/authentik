@@ -209,6 +209,7 @@ const items = [
                             id: "add-secure-apps/providers/proxy/index",
                         },
                         items: [
+                            "add-secure-apps/providers/proxy/create-proxy-provider",
                             "add-secure-apps/providers/proxy/custom_headers",
                             "add-secure-apps/providers/proxy/header_authentication",
                             {
@@ -737,6 +738,7 @@ const items = [
                     "sys-mgmt/events/event-actions",
                 ],
             },
+            "sys-mgmt/akql",
             "sys-mgmt/certificates",
             "sys-mgmt/settings",
             "sys-mgmt/service-accounts",

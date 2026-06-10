@@ -13001,10 +13001,9 @@
                     "type": "string",
                     "enum": [
                         "apple",
+                        "discord",
                         "openidconnect",
                         "entraid",
-                        "azuread",
-                        "discord",
                         "facebook",
                         "github",
                         "gitlab",

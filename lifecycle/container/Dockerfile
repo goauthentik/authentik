@@ -41,7 +41,7 @@ RUN npm run build && \
     npm run build:sfe
 
 # Stage: Build go proxy
-FROM --platform=${BUILDPLATFORM} docker.io/library/golang:1.26.3-trixie@sha256:0f6b034c99663ea8957e7dae99124e37374cbe7fcb5b5646f19b185f8f976279 AS go-builder
+FROM --platform=${BUILDPLATFORM} docker.io/library/golang:1.26.4-trixie@sha256:0dcba0d95dbfb072e9917a106b9e07d7cc298097dc83e9307056ef1889de654d AS go-builder
 
 ARG TARGETOS
 ARG TARGETARCH
@@ -118,7 +118,7 @@ RUN cat /root/.rustup/settings.toml
 # Stage: Download uv
 FROM ghcr.io/astral-sh/uv:0.11.19@sha256:b46b03ddfcfbf8f547af7e9eaefdf8a39c8cebcba7c98858d3162bd28cf536f6 AS uv
 # Stage: Base python image
-FROM ghcr.io/goauthentik/fips-python:3.14.5-slim-trixie-fips@sha256:b332680f098882472bc13d5452b7b348bf8e7ef4400588d85aca41acde77c1f4 AS python-base
+FROM ghcr.io/goauthentik/fips-python:3.14.5-slim-trixie-fips@sha256:ede0a006a873bfd3e66fd0e56827bc8e46ea75341e1a6a35dae6edd6ad6be691 AS python-base
 
 ENV VENV_PATH="/ak-root/.venv" \
     PATH="/lifecycle:/ak-root/.venv/bin:$PATH" \

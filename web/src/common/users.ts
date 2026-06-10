@@ -1,4 +1,4 @@
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { isResponseErrorLike } from "#common/errors/network";
 import { UIConfig, UserDisplay } from "#common/ui/config";
 
@@ -162,7 +162,7 @@ export function redirectToAuthFlow(nextPathname = "/flows/-/default/authenticati
  * Start account lockdown and follow the returned flow link.
  */
 export async function startAccountLockdown(user?: number): Promise<void> {
-    const response = await new CoreApi(DEFAULT_CONFIG).coreUsersAccountLockdownCreate({
+    const response = await aki(CoreApi).coreUsersAccountLockdownCreate({
         userAccountLockdownRequest: user !== undefined ? { user } : {},
     });
     if (response.link) {
@@ -180,7 +180,7 @@ export async function startAccountLockdown(user?: number): Promise<void> {
  * @category Session
  */
 export async function me(requestInit?: RequestInit): Promise<SessionUser> {
-    return new CoreApi(DEFAULT_CONFIG)
+    return aki(CoreApi)
         .coreUsersMeRetrieve(requestInit)
         .catch(async (error: unknown) => {
             if (isResponseErrorLike(error)) {
