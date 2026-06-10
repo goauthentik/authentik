@@ -34,7 +34,6 @@ from authentik.common.oauth.constants import (
 )
 from authentik.core.models import Application
 from authentik.core.user_selection import (
-    QS_USER_UID,
     get_selectable_accounts,
     request_selected_current_user,
     start_user_selection_flow_response,
