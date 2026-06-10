@@ -140,7 +140,7 @@ From the authentik Admin Dashboard:
       :::info
       use the explicit flow if user consents are required
       :::
-    - **Redirect URIs / Origins** (`Authorization`): `auth.providerRedirectURI`
+    - **Redirect URIs / Origins** (`Strict` `Authorization`): `auth.providerRedirectURI`
     - **Signing Key**: authentik Self-signed Certificate
       :::info
       The certificate is used for signing JWT tokens; if you change it after the integration do not forget to update your SharePoint Trusted Certificate.

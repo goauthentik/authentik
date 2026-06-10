@@ -38,8 +38,6 @@ To support the integration of Zot with authentik, you need to create an applicat
             - `Strict` `Authorization`: `https://zot.company/zot/auth/callback/oidc`.
         - **Signing Key**: select any available signing key.
     - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
-    - Add a **Redirect URI** of type `Strict` `Authorization` as `https://zot.company/zot/auth/callback/oidc`.
-    - Select any available signing key.
 - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 
 3. Click **Submit** to save the new application and provider.

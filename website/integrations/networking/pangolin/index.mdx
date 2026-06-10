@@ -33,7 +33,7 @@ To support the integration of Pangolin with authentik, you need to create an app
     - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
         - Note the **Client ID**, and **Client Secret** values because they will be required later.
-        - Temporarily set the `Authorization` **Redirect URI** to `https://temp.temp`.
+        - Temporarily add a **Redirect URI** of type `Strict` `Authorization` as `https://temp.temp`.
         - Select any available signing key.
     - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 
@@ -61,7 +61,7 @@ To support the integration of Pangolin with authentik, you need to create an app
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Providers** and click the **Edit** icon of the newly created Pangolin provider.
-3. Set the `Authorization` **Redirect URI** to the value taken from Pangolin (e.g. `https://pangolin.company/auth/idp/<identity-provider-number>/oidc/callback`).
+3. Add a **Redirect URI** of type `Strict` `Authorization` as the value taken from Pangolin (e.g. `https://pangolin.company/auth/idp/<identity-provider-number>/oidc/callback`).
 4. Click **Update**.
 
 ## Configuration verification
