@@ -21,6 +21,7 @@ from authentik.core.user_selection import (
     SelectableUser,
     append_user_selection_hint,
     get_selectable_accounts,
+    get_user_login_hint,
     serialize_selectable_user,
     user_matches_hint,
 )
@@ -142,7 +143,7 @@ class UserSelectionStageView(ChallengeStageView):
             ),
         }
         if selected_user:
-            query[QS_LOGIN_HINT] = selected_user.email or selected_user.username
+            query[QS_LOGIN_HINT] = get_user_login_hint(selected_user)
         url = reverse("authentik_flows:default-authentication")
         self.executor.cancel()  # type: ignore[no-untyped-call]
         return redirect(f"{url}?{urlencode(query)}")

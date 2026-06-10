@@ -70,6 +70,11 @@ def user_matches_hint(user: User, hint: str) -> bool:
     return hint in {user.uuid.hex, user.email, user.username}
 
 
+def get_user_login_hint(user: User) -> str:
+    """Return the preferred login hint for a selected user."""
+    return user.email or user.username
+
+
 def request_selected_current_user(request: HttpRequest) -> bool:
     """Return true when the request carries the selected active account."""
     selected_user_uid = request.GET.get(QS_USER_UID)
@@ -169,7 +174,7 @@ def append_user_selection_hint(url: str, user: User) -> str:
     query.extend(
         [
             (QS_USER_UID, user.uuid.hex),
-            (QS_LOGIN_HINT, user.email or user.username),
+            (QS_LOGIN_HINT, get_user_login_hint(user)),
         ]
     )
     return urlunsplit(parts._replace(query=urlencode(query)))
