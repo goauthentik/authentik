@@ -400,23 +400,27 @@ class AuthorizationFlowInitView(PolicyAccessView):
 
     def should_show_user_selection(self) -> bool:
         """Check if the authorization flow should prompt for a user choice."""
-        if PROMPT_NONE in self.params.prompt or PROMPT_LOGIN in self.params.prompt:
-            return False
-        if request_selected_current_user(self.request):
-            # The user just picked this account in the selection flow
+        if not self.can_start_user_selection():
             return False
         if PROMPT_SELECT_ACCOUNT in self.params.prompt:
             return True
         return len(get_selectable_accounts(self.request)) > 1
 
+    def can_start_user_selection(self) -> bool:
+        """Return whether this authorize request may start an interactive account chooser."""
+        if PROMPT_NONE in self.params.prompt or PROMPT_LOGIN in self.params.prompt:
+            return False
+        if request_selected_current_user(self.request):
+            # The user just picked this account in the selection flow
+            return False
+        return True
+
     def handle_no_permission(self) -> HttpResponse:
         """Offer the account chooser to signed-out browsers that still have live logins."""
-        if PROMPT_NONE in self.params.prompt or PROMPT_LOGIN in self.params.prompt:
+        if not self.can_start_user_selection():
             return super().handle_no_permission()
         if SESSION_KEY_LAST_LOGIN_UID in self.request.session:
             # A re-authentication (max_age/prompt=login) is in progress; don't divert it
-            return super().handle_no_permission()
-        if request_selected_current_user(self.request):
             return super().handle_no_permission()
         if get_selectable_accounts(self.request):
             response = start_user_selection_flow_response(
