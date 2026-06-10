@@ -1,6 +1,7 @@
 """Device flow views"""
 
 from urllib.parse import urlencode
+from re import fullmatch
 
 from django.http import HttpRequest, HttpResponse
 from django.urls import reverse
@@ -11,6 +12,8 @@ from django.views.decorators.csrf import csrf_exempt
 from rest_framework.throttling import AnonRateThrottle
 from structlog.stdlib import get_logger
 
+
+from authentik.common.oauth.constants import SCOPE_BOUND_KEY
 from authentik.core.models import Application
 from authentik.lib.config import CONFIG
 from authentik.lib.utils.time import timedelta_from_string
@@ -64,6 +67,15 @@ class DeviceView(View):
             self.scopes = self.scopes.intersection(default_scope_names)
 
         self.dpop_jkt = self.request.POST.get("dpop_jkt")
+        if self.dpop_jkt and not fullmatch(r"^[A-Za-z0-9_-]{43}$", self.dpop_jkt):
+                    raise DeviceCodeError("dpop_jkt must be a base64url-encoded SHA-256 JWK thumbprint")
+        
+        # Key binding requires dpop_jkt at authorization time
+        if SCOPE_BOUND_KEY in self.scope and not self.dpop_jkt:
+            raise DeviceCodeError("dpop_jkt is required when bound_key scope is requested")
+        # dpop_jkt should only be set if requesting the key binding scope 
+        if SCOPE_BOUND_KEY not in self.scope and self.dpop_jkt:
+            raise DeviceCodeError("dpop_jkt is set when bound_key scope is not requested")
 
     def dispatch(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         throttle = AnonRateThrottle()

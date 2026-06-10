@@ -3,11 +3,13 @@
 import base64
 import hashlib
 import json
+import re
 import time
 from hmac import compare_digest
 from typing import Any
 from urllib.parse import urlparse
 
+from cryptography.hazmat.primitives.asymmetric.rsa import RSAPublicKey
 from django.core.cache import cache
 from django.db import DatabaseError, transaction
 from jwt import PyJWK, decode as jwt_decode
@@ -28,6 +30,8 @@ DPOP_JWT_TYPE = "dpop+jwt"
 
 # Supported asymmetric key types for DPoP
 DPOP_SUPPORTED_KTYS = {"EC", "RSA"}
+
+DPOP_SUPPORTED_EC_CURVES = {"P-256", "P-384", "P-521"}
 
 # Supported asymmetric signature algorithms for DPoP
 DPOP_SUPPORTED_ALGS = {
@@ -63,7 +67,7 @@ CACHE_KEY_DPOP_JTI = "authentik_providers_oauth2_dpop_jti_%s"
 
 def jwk_thumbprint(jwk: dict) -> str:
     """Compute the SHA-256 JWK Thumbprint per RFC 7638"""
-    key = JWK.from_json(json.dumps(jwk))
+    key = PyJWK.from_dict(jwk)
     return key.thumbprint()
 
 
@@ -207,14 +211,14 @@ class DPoPValidator:
             raise DPoPError(f"Unsupported JWK kty for DPoP: {kty}")
 
         if kty == "RSA":
-            # n is base64url-encoded big-endian modulus
-            n = jwk.get("n", "")
-            # len(base64url(n)) * 6 bits ≈ key size; 342 chars ≈ 2048 bits
-            if len(n) < 342:
-                raise DPoPError("RSA key is too small for DPoP (minimum 2048 bits)")
+            key = PyJWK.from_dict(jwk)
+            if isinstance(key.key, RSAPublicKey) and key.key.key_size < 2048:
+                raise DPoPError("RSA key too small for DPoP (minimum 2048 bits)")
+            if isinstance(key.key, RSAPublicKey) and key.key.key_size > 8192:
+                raise DPoPError("RSA key too large for DPoP")
         elif kty == "EC":
             crv = jwk.get("crv")
-            if crv not in {"P-256", "P-384", "P-521"}:
+            if crv not in DPOP_SUPPORTED_EC_CURVES:
                 raise DPoPError(f"Unsupported EC curve for DPoP: {crv}")
 
         private_fields = {"d", "p", "q", "dp", "dq", "qi"}

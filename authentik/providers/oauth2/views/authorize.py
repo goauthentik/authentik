@@ -297,12 +297,7 @@ class OAuthAuthorizationParams:
             )
 
     def check_dpop_jkt(self):
-        """Validate dpop_jkt format if provided.
-
-        Must be called after check_redirect_uri() so that self.redirect_uri
-        has been validated against the provider's allowed list before it is
-        used in any AuthorizeError redirect.
-        """
+        """Validate dpop_jkt format if provided."""
         if self.dpop_jkt and not fullmatch(r"^[A-Za-z0-9_-]{43}$", self.dpop_jkt):
             raise AuthorizeError(
                 self.redirect_uri,
