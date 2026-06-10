@@ -184,7 +184,7 @@ class UserSelectionStageView(ChallengeStageView):
             LOGGER.warning("selected user is not known", selected_user=selected_user_uid)
             return self.executor.stage_invalid()
         selected_user = selected.user
-        if self.request.user.is_authenticated and selected_user.pk == self.request.user.pk:
+        if selected.is_current:
             return self.continue_current_user(selected_user)
         if selected.switchable_session:
             return self.switch_to_session(selected.switchable_session)
