@@ -1,0 +1,262 @@
+---
+title: Integrate with Absorb LMS
+sidebar_label: Absorb LMS
+support_level: community
+authentik_version: 2026.5
+---
+
+import SAMLProvider20265Warning from "../../_saml-provider-2026-5-warning.mdx";
+import TabItem from "@theme/TabItem";
+import Tabs from "@theme/Tabs";
+
+## What is Absorb LMS?
+
+> Absorb LMS is a cloud-based learning management system used by organizations to deliver, track, and manage employee, partner, and customer training. It lets you create or import courses, assign them to different audiences, and report on learner progress and compliance from a centralized portal.
+>
+> -- https://www.absorblms.com/
+
+## Preparation
+
+The following placeholders are used in this guide:
+
+- `company.myabsorb.com` is the FQDN of the Absorb LMS deployment.
+- `authentik.company` is the FQDN of the authentik installation.
+
+:::info
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
+
+authentik can be integrated with Absorb LMS to provider authentication through OIDC or SAML. You can optionally configure authentik to provision users to Absorb LMS via SCIM. Select your preferred option below:
+
+<Tabs
+defaultValue="oidc"
+values={[
+{ label: "OIDC", value: "oidc" },
+{ label: "SAML", value: "saml" },
+{ label: "SCIM", value: "scim" },
+]}>
+<TabItem value="oidc">
+
+## authentik configuration
+
+To integrate authentik with Absorb LMS via OIDC, you will need to create an application and provider pair in authentik.
+
+### Create an application and provider in authentik
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
+    - **Choose a Provider type**: select **OAuth2/OIDC Provider** as the provider type.
+    - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+        - Take note of the **Client ID** and **Client Secret** values as these will be required in the next section.
+        - Set a `Strict` Redirect URI to `https://company.myabsorb.com/account/openidconnect`
+        - Select any available **Signing key**.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications in a user's **Application Dashboard**.
+
+3. Click **Create Application**.
+
+## Absorb LMS configuration
+
+1. Log in to the Absorb LMS Admin Dashboard (`company.myabsorb.com/admin/dashboard`) as an administrator.
+2. Click the account icon in the top right, and then click **Portal Settings**.
+3. In the right-hand sidebar, click **Manage SSO Settings**.
+4. Under **SSO Configurations**, click **Manage**, click **Add SSO Configuration**, and set the following values:
+    - **Name**: `authentik`.
+    - **Method**: `Open ID Connect`.
+5. Click **Next** and set the following values:
+    - **Client Identifier**: Client ID from authentik
+    - **Client Secret**: Client Secret from authentik
+    - **Issuer URL**: `https://authentik.company/application/o/<application_slug>/`
+    - **Authorization Endpoint URL**: `https://authentik.company/application/o/authorize/`
+    - **Token Endpoint URL**: `https://authentik.company/application/o/token/`
+    - **Logout URL** _(optional)_: `https://authentik.company/application/o/<application_slug>/end-session/`
+6. Click **Next**, toggle **Automatically Redirect** to enabled, and select an **Assigned Route** from the dropdown.
+7. Click **Save**.
+
+## Configuration verification
+
+To confirm that authentik is properly configured with Absorb LMS, log out and then log back in via the Absorb LMS user portal. You will be redirected to authentik, and once authenticated you will be logged in to the portal.
+
+  </TabItem>
+  <TabItem value="saml">
+
+## authentik configuration
+
+To integrate authentik with Absorb LMS via SAML, you will need to create an application and provider pair in authentik.
+
+### Create an application and provider in authentik
+
+<SAMLProvider20265Warning />
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
+    - **Choose a Provider type**: select **SAML Provider** as the provider type.
+    - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+        - Set **ACS URL** to `https://company.myabsorb.com/api/rest/v2/authentication/saml`
+        - Set **Audience** to `https://company.myabsorb.com`
+        - Under **Advanced Protocol Settings**:
+            - Select any available **Signing Certificate**.
+            - Set **NameID Property Mapping** to `authentik default SAML Mapping: Username`
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications in a user's **Application Dashboard**.
+
+3. Click **Create Application**.
+
+## Absorb LMS configuration
+
+1. Log in to the Absorb LMS Admin Dashboard (`company.myabsorb.com/admin/dashboard`) as an administrator.
+2. Click the account icon in the top right, and then click **Portal Settings**.
+3. In the right-hand sidebar, click **Manage SSO Settings**.
+4. Under **SSO Configurations**, click **Manage**, click **Add SSO Configuration**, and set the following values:
+    - Set **Name** to `authentik`.
+    - Set **Method** to `SAML`.
+    - Set **Mode** to one of the three following values:
+        - `Identity Provider Initiated` - Users log in to Absorb LMS from authentik.
+        - `Service Provider Initiated` - Users attempting to log in to Absorb LMS are directed to authentik for authentication.
+5. Click **Next** and set the following values:
+    - **Key**: paste the contents of your certificate from authentik
+    - **ID Property**: `Username`
+    - **Signature Type**: `SHA256`
+    - **Login URL**: `https://authentik.company/application/saml/<application_slug>/sso/binding/post/`
+6. Click **Next** and then select an **Assigned Route** from the dropdown.
+   If you selected `Identity Provider Initiated`, enable the **Automatically Redirect** option.
+7. Click **Save**.
+
+## Configuration verification
+
+To confirm that authentik is properly configured with Absorb LMS, log out and then log back in via the Absorb LMS user portal. You will be redirected to authentik, and once authenticated you will be logged in to the portal.
+
+  </TabItem>
+  <TabItem value="scim">
+
+## SCIM provisioning _(optional)_
+
+authentik can also optionally be integrated with Absorb LMS via SCIM for user provisioning. This can be done in conjunction with the OIDC or SAML integration, or configured on its own.
+
+### Absorb LMS SCIM configuration
+
+1. Log in to the Absorb LMS Admin Dashboard (`company.myabsorb.com/admin/dashboard`) as an administrator.
+2. Click the account icon in the top right, and then click **Portal Settings**.
+3. In the right-hand sidebar, click **Manage SSO Settings**.
+4. Under **SCIM Settings** click **Manage**.
+5. Take note of the **SCIM OAuth Client ID** and **SCIM OAuth Client Secret**. These values will be required later.
+6. Select a **Default Department**. This is the department that users will be provisioned to in Absorb LMS.
+7. Click **Save**.
+
+### authentik SCIM configuration
+
+To configure authentik as a SCIM provider for Absorb LMS, you will need to create an OAuth Source, a SCIM Provider Property Mapping, and a SCIM Provider in authentik.
+
+#### Create an OAuth Source
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Directory** > **Federation and Social login** and click **New Source**.
+3. Select **OpenID OAuth Source** as the Source type and click **Next**.
+4. Set the following required values:
+    - **Source Name**: provide a name for the OAuth source
+    - **Slug**: provide a slug for the OAuth source or use the auto-generated slug
+    - **Consumer key**: the `SCIM OAuth Client ID` from Absorb LMS
+    - **Consumer secret**: the `SCIM OAuth Client Secret` from Absorb LMS
+    - **Scopes**: `offline_access`
+    - Under **URL Settings**:
+        - **Authorization URL**: `https://company.myabsorb.com/scim/v2/oauth/authorize`
+        - **Access Token URL**: `https://company.myabsorb.com/scim/v2/oauth/token`
+        - Set **Authorization code authentication method** to `Include the client ID and secret as request parameters`.
+
+5. Click **Create**.
+
+#### Create SCIM Provider Property Mapping
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Customization** > **Property Mappings** and click **New Property Mapping**.
+3. Select **SCIM Provider Property Mapping** as the Property Mapping type and click **Next**.
+4. Set the following required values:
+    - **Mapping Name**: `Absorb LMS SCIM Mapping`
+    - **Expression**:
+
+        ```python showLineNumbers
+        givenName, familyName = request.user.name, " "
+        formatted = request.user.name + " "
+        # This default sets givenName to the name before the first space
+        # and the remainder as family name
+        # if the user's name has no space the givenName is the entire name
+        # (this might cause issues with some SCIM implementations)
+        if " " in request.user.name:
+            givenName, _, familyName = request.user.name.partition(" ")
+            formatted = request.user.name
+
+        locale = request.user.locale()
+        if locale == "":
+            locale = None
+
+        emails = []
+        if request.user.email != "":
+            emails = [{
+                "value": request.user.email,
+                "type": "work",
+                "primary": True,
+            }]
+
+        return {
+            "userName": request.user.username,
+            "name": {
+                "givenName": givenName,
+                "familyName": familyName,
+            },
+            "active": request.user.is_active,
+            "emails": emails,
+            "phoneNumbers": [
+                {
+                    "primary": True,
+                    # Enter the name of the attribute that you've stored
+                    # the user's phone number under e.g. "phone"
+                    "value": request.user.attributes.get("phone"),
+                    "type": "work",
+                }
+            ],
+        }
+        ```
+
+    :::note Phone attribute
+    Ensure that you update the phone attribute to match the attribute name used in your users’ attributes.
+    :::
+
+5. Click **Create**.
+
+#### Create a SCIM Provider
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Applications** > **Providers** and click **New Provider** to open the provider wizard.
+    - **Choose a Provider type**: select **SCIM Provider** as the provider type.
+    - **Configure the Provider**: provide a name for the provider, and the following required configurations.
+        - **URL**: `https://company.myabsorb.com/scim/v2`
+        - **Authentication Mode**: `OAuth (Interactive)`
+        - **OAuth Source**: select the OAuth Source you created in the previous section
+        - **Group Filter**: select the group that contains users that should be provisioned to Absorb LMS
+        - Under **Attribute mapping**, remove the selected **User Property Mapping**, and replace it with `Absorb LMS SCIM Mapping`.
+
+3. Click **Create**.
+4. On the **Overview** tab of the SCIM provider, click the **(Re-)authenticate** button at the top right.
+5. You should be redirected to Absorb LMS for authentication. Log in as an Absorb LMS administrator and approve the connection.
+6. On the **Overview** tab of the SCIM provider, the **OAuth Status** should now show as `Authenticated`.
+   This step is only required when initially configuring the SCIM provider.
+
+#### Set SCIM Provider as backchannel provider
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Applications** > **Applications** and click the name of your Absorb LMS application.
+3. Click the plus (+) icon next to **Backchannel Providers** and select the SCIM provider that you created in the previous section.
+4. Click **Save Changes**.
+
+## Configuration verification
+
+To confirm that authentik SCIM is properly configured with Absorb LMS, verify that users within the selected group are being provisioned in Absorb LMS.
+
+If not, check the logs of SCIM provisioning tasks on the **Overview** tab of your SCIM provider.
+
+  </TabItem>
+</Tabs>
+
+## Resources
+
+- [Absorb LMS Help Center](https://support.absorblms.com/hc/en-us)

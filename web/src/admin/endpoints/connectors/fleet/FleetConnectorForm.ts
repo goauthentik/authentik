@@ -3,7 +3,7 @@ import "#components/ak-switch-input";
 import "#components/ak-text-input";
 import "#elements/forms/FormGroup";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { ModelForm } from "#elements/forms/ModelForm";
 
@@ -16,7 +16,7 @@ import { customElement } from "lit/decorators.js";
 @customElement("ak-endpoints-connector-fleet-form")
 export class FleetConnectorForm extends ModelForm<FleetConnector, string> {
     loadInstance(pk: string): Promise<FleetConnector> {
-        return new EndpointsApi(DEFAULT_CONFIG).endpointsFleetConnectorsRetrieve({
+        return aki(EndpointsApi).endpointsFleetConnectorsRetrieve({
             connectorUuid: pk,
         });
     }
@@ -29,12 +29,12 @@ export class FleetConnectorForm extends ModelForm<FleetConnector, string> {
 
     async send(data: FleetConnector): Promise<FleetConnector> {
         if (this.instance) {
-            return new EndpointsApi(DEFAULT_CONFIG).endpointsFleetConnectorsPartialUpdate({
+            return aki(EndpointsApi).endpointsFleetConnectorsPartialUpdate({
                 connectorUuid: this.instance.connectorUuid!,
                 patchedFleetConnectorRequest: data,
             });
         }
-        return new EndpointsApi(DEFAULT_CONFIG).endpointsFleetConnectorsCreate({
+        return aki(EndpointsApi).endpointsFleetConnectorsCreate({
             fleetConnectorRequest: data as unknown as FleetConnectorRequest,
         });
     }

@@ -9,7 +9,7 @@ import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 import "#admin/lifecycle/LifecyclePreviewBanner";
 import "#components/ak-switch-input";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
@@ -41,7 +41,7 @@ export class ReviewListPage extends TablePage<LifecycleIteration> {
     showOnlyMine = false;
 
     async apiEndpoint(): Promise<PaginatedResponse<LifecycleIteration>> {
-        return new LifecycleApi(DEFAULT_CONFIG).lifecycleIterationsListOpen({
+        return aki(LifecycleApi).lifecycleIterationsListOpen({
             ...(await this.defaultEndpointConfig()),
             userIsReviewer: this.showOnlyMine || undefined,
         });
