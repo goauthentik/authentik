@@ -5,12 +5,14 @@ from unittest.mock import patch
 from django.core import mail
 from django.core.mail.backends.locmem import EmailBackend
 from django.core.management import call_command
-from django.test import TestCase
+from django.test import TestCase, override_settings
 
 from authentik.core.tests.utils import create_test_admin_user
 from authentik.stages.email.models import EmailStage
+from authentik.stages.email.tests import STATICFILES_DIRS
 
 
+@override_settings(STATICFILES_DIRS=STATICFILES_DIRS)
 class TestEmailManagementCommands(TestCase):
     """Test email management commands"""
 

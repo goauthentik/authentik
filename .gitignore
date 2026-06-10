@@ -41,7 +41,7 @@ eggs/
 .eggs/
 lib64/
 parts/
-dist/
+/web/dist/
 out/
 sdist/
 var/

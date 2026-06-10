@@ -57,6 +57,10 @@ class EmailStageView(ChallengeStageView):
 
     response_class = EmailChallengeResponse
 
+    def get_domain(self):
+        host = self.request.get_host()
+        return host.split(":", 1)[0]
+
     def get_full_url(self, **kwargs) -> str:
         """Get full URL to be used in template"""
         base_url = reverse(
@@ -123,6 +127,7 @@ class EmailStageView(ChallengeStageView):
                 template_name=current_stage.template,
                 template_context={
                     "url": self.get_full_url(**{QS_KEY_TOKEN: token.key}),
+                    "domain": self.get_domain(),
                     "user": pending_user,
                     "expires": token.expires,
                     "token": token.key,

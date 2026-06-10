@@ -8,7 +8,7 @@ from django.core.mail.backends.locmem import EmailBackend
 from django.core.mail.backends.smtp import EmailBackend as SMTPEmailBackend
 from django.db.utils import IntegrityError
 from django.template.exceptions import TemplateDoesNotExist
-from django.test import TestCase
+from django.test import TestCase, override_settings
 from django.urls import reverse
 from django.utils.timezone import now
 
@@ -24,9 +24,11 @@ from authentik.stages.authenticator_email.api import (
 )
 from authentik.stages.authenticator_email.models import AuthenticatorEmailStage, EmailDevice
 from authentik.stages.authenticator_email.stage import PLAN_CONTEXT_EMAIL_DEVICE
+from authentik.stages.email.tests import STATICFILES_DIRS
 from authentik.stages.email.utils import TemplateEmailMessage
 
 
+@override_settings(STATICFILES_DIRS=STATICFILES_DIRS)
 class TestAuthenticatorEmailStage(FlowTestCase):
     """Test Email Authenticator stage"""
 

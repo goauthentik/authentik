@@ -1,8 +1,13 @@
 """template function tests"""
 
+from django.template import Context
 from django.test import TestCase
 
-from authentik.stages.email.templatetags.authentik_stages_email import inline_static_binary
+from authentik.stages.email.templatetags.authentik_stages_email import (
+    AttachmentType,
+    attach_image,
+    inline_static_binary,
+)
 
 
 class TestTemplateTags(TestCase):
@@ -26,3 +31,18 @@ class TestTemplateTags(TestCase):
         """Test inlining binary textfile"""
         result = inline_static_binary("robots.txt")
         self.assertEqual(result, "data:text/plain;base64,VXNlci1hZ2VudDogKgpEaXNhbGxvdzogLwo=")
+
+    def test_attach_image(self):
+        """Test attaching image"""
+        ctx = Context({"domain": "localhost", "attachments": {}})
+        result = attach_image(ctx, "src/assets/images/user_default.png")
+        self.assertEqual(result, "cid:attach_0@localhost")
+        self.assertEqual(
+            ctx["attachments"],
+            {
+                "src/assets/images/user_default.png": {
+                    "content_id": "attach_0@localhost",
+                    "type": AttachmentType.IMAGE,
+                }
+            },
+        )
