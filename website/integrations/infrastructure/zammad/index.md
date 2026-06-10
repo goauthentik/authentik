@@ -102,7 +102,7 @@ To support the integration of Zammad with authentik, you need to create an appli
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
         - Set the **Client type** to `Public`.
         - Take note of the **Client ID** and **slug** values because they will be required later.
-        - Set the **Redirect URIs/Origins** to `Strict` / `https://zammad.company/auth/openid_connect/callback`.
+        - Set the **Redirect URIs/Origins** to `Strict` `Authorization` / `https://zammad.company/auth/openid_connect/callback`.
         - Select a **Signing Key**.
         - Under **Advanced protocol settings**, set **Subject mode** to **Based on the User's Email**.
     - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.

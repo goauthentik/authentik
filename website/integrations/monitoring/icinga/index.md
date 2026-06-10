@@ -37,7 +37,7 @@ To support the integration of Icinga Web 2 with authentik, you need to create an
     - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
     - **Configure Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
         - Note the **Client ID** and **Client Secret** values because they will be required later.
-        - Set a `Strict` redirect URI to `https://icinga.company/icingaweb2/oidc/authentication/realm?name=authentik`.
+        - Set a `Strict` `Authorization` redirect URI to `https://icinga.company/icingaweb2/oidc/authentication/realm?name=authentik`.
         - Select any available signing key.
     - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 

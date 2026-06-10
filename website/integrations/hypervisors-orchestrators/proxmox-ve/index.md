@@ -38,7 +38,7 @@ To support the integration of Proxmox with authentik, you need to create an appl
 - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
 - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
     - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
-    - Set a `Strict` redirect URI to `https://proxmox.company:8006`.
+    - Set a `Strict` `Authorization` redirect URI to `https://proxmox.company:8006`.
     - Select any available signing key.
     - Ensure that encryption is disabled.
     - Under **Advanced protocol settings**:

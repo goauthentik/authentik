@@ -38,7 +38,7 @@ To support the integration of Zipline with authentik, you need to create an appl
 - **Choose a Provider type**: Select **OAuth2/OpenID Connect** as the provider type.
 - **Configure the Provider**: Provide a name (or accept the auto-provided name), choose the authorization flow for this provider, and configure the following required settings:
     - Note the **Client ID** and **Client Secret** values because they will be required later.
-    - Set a `Strict` redirect URI to `https://zipline.company/api/auth/oauth/oidc`.
+    - Set a `Strict` `Authorization` redirect URI to `https://zipline.company/api/auth/oauth/oidc`.
     - Select any available signing key.
     - Under **Advanced protocol settings** > **Scopes**, add `authentik default OAuth Mapping: OpenID 'offline_access'` to the **Selected Scopes** list.
 - **Configure Bindings** _(optional)_: Create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.

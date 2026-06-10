@@ -43,9 +43,9 @@ Choose your setup below. The **Web only** tab logs in through the browser. The *
         - **Client type**: `Public`
         - **Client ID**: `web`
         - **Redirect URIs**:
-            - Strict: `https://opencloud.company/oidc-callback.html`
-            - Strict: `https://opencloud.company/oidc-silent-redirect.html`
-            - Strict: `https://opencloud.company/`
+            - `Strict` `Authorization`: `https://opencloud.company/oidc-callback.html`
+            - `Strict` `Authorization`: `https://opencloud.company/oidc-silent-redirect.html`
+            - `Strict` `Authorization`: `https://opencloud.company/`
         - **Signing Key**: select any available key.
         - **Scopes**: `openid`, `profile`, `email`.
 3. Click **Submit**.
@@ -112,12 +112,12 @@ With GLOBAL issuer mode enabled, tokens use an issuer of `iss = https://authenti
 
 Repeat these steps for **each** of the four clients (Web, Desktop, Android, and iOS), using the per-client values from the table below.
 
-| Client  | Client ID          | Redirect URIs                                                                               |
-| ------- | ------------------ | ------------------------------------------------------------------------------------------- |
-| Web     | `web`              | Strict: `https://opencloud.company/oidc-callback.html`, `…/oidc-silent-redirect.html`, `…/` |
-| Desktop | `OpenCloudDesktop` | Regex: `http://127.0.0.1(:[0-9]+)?(/.*)?` and `http://localhost(:[0-9]+)?(/.*)?`            |
-| Android | `OpenCloudAndroid` | Strict: `oc://android.opencloud.eu`                                                         |
-| iOS     | `OpenCloudIOS`     | Strict: `oc://ios.opencloud.eu`                                                             |
+| Client  | Client ID          | Redirect URIs                                                                                                 |
+| ------- | ------------------ | ------------------------------------------------------------------------------------------------------------- |
+| Web     | `web`              | `Strict` `Authorization`: `https://opencloud.company/oidc-callback.html`, `…/oidc-silent-redirect.html`, `…/` |
+| Desktop | `OpenCloudDesktop` | `Regex` `Authorization`: `http://127.0.0.1(:[0-9]+)?(/.*)?` and `http://localhost(:[0-9]+)?(/.*)?`            |
+| Android | `OpenCloudAndroid` | `Strict` `Authorization`: `oc://android.opencloud.eu`                                                         |
+| iOS     | `OpenCloudIOS`     | `Strict` `Authorization`: `oc://ios.opencloud.eu`                                                             |
 
 1. Log in to authentik as an administrator and open the Admin interface.
 2. Navigate to **Applications** > **Applications** and click **New Application**.

@@ -35,7 +35,7 @@ To support the integration of Harbor with authentik, you need to create an appli
 - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
     - **Protocol Settings**:
         - **Redirect URI**:
-            - Strict: `https://harbor.company/c/oidc/callback`.
+            - `Strict` `Authorization`: `https://harbor.company/c/oidc/callback`.
         - **Signing Key**: select any available signing key.
     - **Advanced Protocol Settings**:
         - **Scopes**: add `authentik default OAuth Mapping: OpenID 'offline_access'` to **Selected Scopes**.

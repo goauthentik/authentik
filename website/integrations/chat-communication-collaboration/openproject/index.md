@@ -61,7 +61,7 @@ OpenProject requires a first and last name for each user. By default authentik o
     - **Protocol settings**:
         - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
         - **Redirect URI**:
-            - Strict: `https://openproject.company/auth/oidc-authentik/callback`
+            - `Strict` `Authorization`: `https://openproject.company/auth/oidc-authentik/callback`
         - **Signing key**: select any available signing key.
     - **Advanced protocol settings**:
         - **Scopes**:

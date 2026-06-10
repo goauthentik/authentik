@@ -59,7 +59,7 @@ Technitium DNS uses the `roles` claim to map SSO users to local groups. Create a
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
         - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
         - Set **Client type** to `Confidential`.
-        - Set a `Strict` redirect URI to `https://technitium.company/sso/callback`.
+        - Set a `Strict` `Authorization` redirect URI to `https://technitium.company/sso/callback`.
         - Select any available signing key.
         - Ensure that the `openid`, `email`, and `profile` scopes are selected. Remove the `email` scope if you prefer usernames to use the preferred username claim instead of the email address.
         - Under **Advanced protocol settings** > **Selected Scopes**, add the scope mapping that you created in the previous section.

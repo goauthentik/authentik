@@ -43,8 +43,8 @@ To support the integration of Omnissa Workspace ONE Access with authentik, you n
         - Note the **Client ID** and **Client Secret** values because they will be required later.
         - **Protocol Settings**:
             - **Redirect URI**:
-                - Strict: the redirect URI you noted in the Omnissa Workspace ONE Access pre-configuration step.
-                - Strict: `awgb://oauth2`. This URI is used by the Workspace ONE mobile applications.
+                - `Strict` `Authorization`: the redirect URI you noted in the Omnissa Workspace ONE Access pre-configuration step.
+                - `Strict` `Authorization`: `awgb://oauth2`. This URI is used by the Workspace ONE mobile applications.
             - **Signing Key**: select any available signing key.
     - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 

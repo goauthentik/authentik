@@ -25,7 +25,7 @@ To support the integration of Seerr with authentik, you need to create an applic
     - **Choose a Provider type**: OAuth2/OpenID
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and any required configurations.
         - Note the **Client ID** and **Client Secret** values because they will be required later.
-        - Set a `Strict` redirect URI to `https://seerr.company/login`.
+        - Set a `Strict` `Authorization` redirect URI to `https://seerr.company/login`.
         - Select any available signing key.
     - **Configure Bindings** _(optional):_ you can create a [binding](https://docs.goauthentik.io/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user’s **Application Dashboard** page.
 

@@ -33,7 +33,7 @@ To support the integration of KitchenOwl with authentik, you need to create an a
     - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
         - Note the **Client ID**, **Client Secret** values because they will be required later.
-        - Create two `Strict` redirect URIs and set them to `https://kitchenowl.company/signin/redirect` and `kitchenowl:/signin/redirect`.
+        - Create two `Strict` `Authorization` redirect URIs and set them to `https://kitchenowl.company/signin/redirect` and `kitchenowl:/signin/redirect`.
 
 3. Click **Submit** to save the new application and provider.
 
