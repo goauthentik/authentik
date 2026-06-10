@@ -11,7 +11,7 @@ import { customElement, property } from "lit/decorators.js";
 @customElement("ak-flow-diagram")
 export class FlowDiagram extends Diagram {
     @property({ type: String, useDefault: true })
-    flowSlug: string | null = null;
+    public flowSlug: string | null = null;
 
     protected refresh(): void {
         aki(FlowsApi)
