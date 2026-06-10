@@ -24,6 +24,39 @@ Endpoint to list, create, update and delete groups.
 
 There are also `/v2/ServiceProviderConfig` and `/v2/ResourceTypes`, which are used by SCIM-enabled applications to find out which features authentik supports.
 
+## Trust model and security
+
+The SCIM source Bearer token is a **high-trust provisioning credential**. Anyone who can use the token can manage users and groups through the SCIM endpoints for that source. Treat it like a secret with roughly the same sensitivity as an administrative provisioning integration, not like a narrowly scoped API key.
+
+By default, authentik applies the following behavior for inbound SCIM requests:
+
+### User and group correlation
+
+On create and update, authentik may **correlate** SCIM resources to **existing** directory objects in the same tenant:
+
+- **Users** are matched by `userName` across the entire tenant, not only users already linked to this SCIM source.
+- **Groups** are matched by `displayName` (mapped to the group `name`) across the entire tenant, not only groups already linked to this SCIM source.
+
+If a matching object exists, the SCIM source adopts and updates that object.
+
+### Group membership
+
+Group `members` operations accept **any user UUID in the tenant**. authentik does not require that member users were originally created by, or are exclusively managed by, the same SCIM source.
+
+### Deprovisioning (DELETE)
+
+SCIM **DELETE** on a user or group removes the **underlying authentik `User` or `Group` object**, not only the SCIM source link. This applies to correlated objects as well as objects created through SCIM.
+
+### Default bootstrap layout
+
+Fresh installs create a superuser group named **`authentik Admins`** (`is_superuser=true`) and an initial admin user. Because group correlation is tenant-wide, a SCIM token holder can interact with that group if they use the same `displayName`, including changing membership or deleting the group after correlating to it.
+
+### Recommendations
+
+- Restrict network access to SCIM endpoints where possible.
+- Rotate and revoke SCIM tokens when an IdP integration is decommissioned.
+- Do not share SCIM tokens across untrusted systems.
+
 ## SCIM source property mappings
 
 See the [overview](../../property-mappings/index.md) for information on how property mappings work.
