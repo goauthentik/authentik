@@ -70,10 +70,10 @@ class DeviceView(View):
             raise DeviceCodeError("dpop_jkt must be a base64url-encoded SHA-256 JWK thumbprint")
 
         # Key binding requires dpop_jkt at authorization time
-        if SCOPE_BOUND_KEY in self.scope and not self.dpop_jkt:
+        if SCOPE_BOUND_KEY in self.scopes and not self.dpop_jkt:
             raise DeviceCodeError("dpop_jkt is required when bound_key scope is requested")
-        # dpop_jkt should only be set if requesting the key binding scope
-        if SCOPE_BOUND_KEY not in self.scope and self.dpop_jkt:
+        # dpop_jkt should only be set if requesting the key binding scope 
+        if SCOPE_BOUND_KEY not in self.scopes and self.dpop_jkt:
             raise DeviceCodeError("dpop_jkt is set when bound_key scope is not requested")
 
     def dispatch(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
