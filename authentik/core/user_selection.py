@@ -105,7 +105,7 @@ def get_selectable_accounts(request: HttpRequest) -> list[SelectableUser]:
     """Users this browser can select between, current user first, one entry per user."""
     users: dict[str, SelectableUser] = {}
     can_switch_sessions = request.user.is_authenticated
-    if request.user.is_authenticated:
+    if can_switch_sessions:
         current_user = SelectableUser(request.user, is_current=True)
         users[current_user.uid] = current_user
     for session in get_browser_sessions(request):
