@@ -80,27 +80,24 @@ class UserSelectionStageView(ChallengeStageView):
             return accounts
         return sorted(accounts, key=lambda account: not user_matches_hint(account.user, hint))
 
+    def get_selection_value(self, context_key: str, query_key: str) -> str:
+        """Return a user-selection value from the active plan, request, or saved GET state."""
+        context_value = self.plan.context.get(context_key)
+        if isinstance(context_value, str):
+            return context_value
+        request_value = self.request.GET.get(query_key)
+        if isinstance(request_value, str):
+            return request_value
+        session_value = self.request.session.get(SESSION_KEY_GET, {}).get(query_key)
+        return session_value if isinstance(session_value, str) else ""
+
     def get_hint(self) -> str:
         """Return a suggested user identifier from the flow context or query."""
-        hint = self.plan.context.get(PLAN_CONTEXT_USER_SELECTION_LOGIN_HINT)
-        if isinstance(hint, str):
-            return hint
-        request_hint = self.request.GET.get(QS_LOGIN_HINT)
-        if isinstance(request_hint, str):
-            return request_hint
-        session_hint = self.request.session.get(SESSION_KEY_GET, {}).get(QS_LOGIN_HINT)
-        return session_hint if isinstance(session_hint, str) else ""
+        return self.get_selection_value(PLAN_CONTEXT_USER_SELECTION_LOGIN_HINT, QS_LOGIN_HINT)
 
     def get_requested_user_uid(self) -> str:
         """Return an explicitly requested user UID from the flow context or query."""
-        user_uid = self.plan.context.get(PLAN_CONTEXT_USER_SELECTION_USER_UID)
-        if isinstance(user_uid, str):
-            return user_uid
-        request_user_uid = self.request.GET.get(QS_USER_UID)
-        if isinstance(request_user_uid, str):
-            return request_user_uid
-        session_user_uid = self.request.session.get(SESSION_KEY_GET, {}).get(QS_USER_UID)
-        return session_user_uid if isinstance(session_user_uid, str) else ""
+        return self.get_selection_value(PLAN_CONTEXT_USER_SELECTION_USER_UID, QS_USER_UID)
 
     def get_challenge(self) -> UserSelectionChallenge:
         """Show the current user and remembered users for this browser."""
