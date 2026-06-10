@@ -26,6 +26,10 @@ from authentik.policies.engine import PolicyEngine
 QS_USER_UID = "user_uid"
 PLAN_CONTEXT_USER_SELECTION_USER_UID = "user_selection_user_uid"
 PLAN_CONTEXT_USER_SELECTION_LOGIN_HINT = "user_selection_login_hint"
+USER_SELECTION_QUERY_CONTEXT = (
+    (QS_USER_UID, PLAN_CONTEXT_USER_SELECTION_USER_UID),
+    (QS_LOGIN_HINT, PLAN_CONTEXT_USER_SELECTION_LOGIN_HINT),
+)
 
 
 class UserSelectionAuthentication(StrEnum):
@@ -183,10 +187,9 @@ def start_user_selection_flow_response(
     context = {
         PLAN_CONTEXT_REDIRECT: next_url,
     }
-    if user_uid := request.GET.get(QS_USER_UID):
-        context[PLAN_CONTEXT_USER_SELECTION_USER_UID] = user_uid
-    if login_hint := request.GET.get(QS_LOGIN_HINT):
-        context[PLAN_CONTEXT_USER_SELECTION_LOGIN_HINT] = login_hint
+    for query_key, context_key in USER_SELECTION_QUERY_CONTEXT:
+        if value := request.GET.get(query_key):
+            context[context_key] = value
     if application:
         context[PLAN_CONTEXT_APPLICATION] = application
     planner = FlowPlanner(flow)
