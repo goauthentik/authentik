@@ -12,6 +12,7 @@ from authentik.common.oauth.constants import QS_LOGIN_HINT
 from authentik.core.tests.user_selection import (
     create_browser_session,
     create_test_user_selection_flow,
+    flow_executor_url,
 )
 from authentik.core.tests.utils import create_test_admin_user, create_test_user
 
@@ -75,9 +76,9 @@ class TestUsersAPIUserSelection(APITestCase):
         target = create_browser_session(self, self.user)
         current_session_cookie = self.client.cookies[settings.SESSION_COOKIE_NAME].value
 
-        self.client.get(reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}))
+        self.client.get(flow_executor_url(flow))
         response = self.client.post(
-            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
+            flow_executor_url(flow),
             data=json_dumps(
                 {
                     "component": "ak-stage-user-selection",
@@ -106,15 +107,13 @@ class TestUsersAPIUserSelection(APITestCase):
         flow, _ = create_test_user_selection_flow()
         create_browser_session(self, self.user)
 
-        challenge = self.client.get(
-            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug})
-        )
+        challenge = self.client.get(flow_executor_url(flow))
         self.assertEqual(
             [account["authentication"] for account in challenge.json()["accounts"]],
             ["remembered"],
         )
         response = self.client.post(
-            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
+            flow_executor_url(flow),
             data=json_dumps(
                 {
                     "component": "ak-stage-user-selection",
@@ -140,9 +139,9 @@ class TestUsersAPIUserSelection(APITestCase):
         self.client.force_login(self.admin)
         create_browser_session(self, self.user)
 
-        self.client.get(reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}))
+        self.client.get(flow_executor_url(flow))
         response = self.client.post(
-            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
+            flow_executor_url(flow),
             data=json_dumps(
                 {
                     "component": "ak-stage-user-selection",
@@ -163,7 +162,7 @@ class TestUsersAPIUserSelection(APITestCase):
         create_browser_session(self, self.user)
 
         response = self.client.get(
-            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
+            flow_executor_url(flow),
             data={QS_LOGIN_HINT: self.user.email},
         )
 

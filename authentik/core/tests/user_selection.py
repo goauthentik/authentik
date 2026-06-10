@@ -1,5 +1,6 @@
 """Test helpers for browser session selection."""
 
+from django.urls import reverse
 from django.utils.crypto import get_random_string
 
 from authentik.core.models import AuthenticatedSession, Session, User
@@ -26,6 +27,11 @@ def create_test_user_selection_flow(
     selection_stage = UserSelectionStage.objects.create(name=generate_id())
     FlowStageBinding.objects.create(target=flow, stage=selection_stage, order=10)
     return flow, selection_stage
+
+
+def flow_executor_url(flow: Flow) -> str:
+    """Return the API flow executor URL for a test flow."""
+    return reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug})
 
 
 def set_browser_key(test_case) -> str:

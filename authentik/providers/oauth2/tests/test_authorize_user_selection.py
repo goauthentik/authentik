@@ -12,6 +12,7 @@ from authentik.core.models import Application
 from authentik.core.tests.user_selection import (
     create_browser_session,
     create_test_user_selection_flow,
+    flow_executor_url,
 )
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
 from authentik.core.user_selection import QS_USER_UID, append_user_selection_hint
@@ -132,9 +133,7 @@ class TestAuthorizeUserSelection(OAuthTestCase):
 
         self.assertEqual(response.status_code, 302)
         self.assertIn(user_selection_flow.slug, response.url)
-        challenge_response = self.client.get(
-            reverse("authentik_api:flow-executor", kwargs={"flow_slug": user_selection_flow.slug})
-        )
+        challenge_response = self.client.get(flow_executor_url(user_selection_flow))
         self.assertEqual(challenge_response.json()["component"], "ak-stage-user-selection")
         self.assertEqual(challenge_response.json()["accounts"][0]["username"], user.username)
 
@@ -160,9 +159,7 @@ class TestAuthorizeUserSelection(OAuthTestCase):
 
         self.assertEqual(response.status_code, 302)
         self.assertIn(user_selection_flow.slug, response.url)
-        challenge_response = self.client.get(
-            reverse("authentik_api:flow-executor", kwargs={"flow_slug": user_selection_flow.slug})
-        )
+        challenge_response = self.client.get(flow_executor_url(user_selection_flow))
         self.assertEqual(
             [account["username"] for account in challenge_response.json()["accounts"]],
             [user.username, other_user.username],
@@ -189,11 +186,9 @@ class TestAuthorizeUserSelection(OAuthTestCase):
             },
         )
         self.assertIn(user_selection_flow.slug, response.url)
-        self.client.get(
-            reverse("authentik_api:flow-executor", kwargs={"flow_slug": user_selection_flow.slug})
-        )
+        self.client.get(flow_executor_url(user_selection_flow))
         selection_response = self.client.post(
-            reverse("authentik_api:flow-executor", kwargs={"flow_slug": user_selection_flow.slug}),
+            flow_executor_url(user_selection_flow),
             data=json_dumps(
                 {
                     "component": "ak-stage-user-selection",
@@ -271,9 +266,7 @@ class TestAuthorizeUserSelection(OAuthTestCase):
         self.assertIn(user_selection_flow.slug, response.url)
         plan = self.client.session.get(SESSION_KEY_PLAN)
         self.assertNotIn(PLAN_CONTEXT_PENDING_USER_IDENTIFIER, plan.context)
-        challenge_response = self.client.get(
-            reverse("authentik_api:flow-executor", kwargs={"flow_slug": user_selection_flow.slug})
-        )
+        challenge_response = self.client.get(flow_executor_url(user_selection_flow))
         accounts = challenge_response.json()["accounts"]
         self.assertEqual(accounts[0]["username"], other_user.username)
         self.assertTrue(accounts[0]["is_hint"])
