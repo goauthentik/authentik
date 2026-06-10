@@ -194,12 +194,10 @@ class UserSelectionStageView(ChallengeStageView):
         user_response = cast(UserSelectionChallengeResponse, response)
         action = user_response.validated_data["action"]
         selected_user_uid = user_response.validated_data.get("selected_user", "")
+        if selected_user_uid:
+            return self.select_user(selected_user_uid)
         if action == "continue":
-            if selected_user_uid:
-                return self.select_user(selected_user_uid)
             if self.request.user.is_authenticated:
                 return self.continue_current_user(cast(User, self.request.user))
             return self.executor.stage_invalid()
-        if selected_user_uid:
-            return self.select_user(selected_user_uid)
         return self.redirect_to_login()
