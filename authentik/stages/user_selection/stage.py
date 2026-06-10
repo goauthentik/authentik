@@ -17,6 +17,7 @@ from authentik.core.user_selection import (
     PLAN_CONTEXT_USER_SELECTION_LOGIN_HINT,
     PLAN_CONTEXT_USER_SELECTION_USER_UID,
     QS_USER_UID,
+    USER_SELECTION_AUTHENTICATION_CHOICES,
     SelectableUser,
     append_user_selection_hint,
     get_selectable_accounts,
@@ -43,7 +44,7 @@ class UserSelectionChallengeUser(PassiveSerializer):
     avatar = CharField()
     is_current = BooleanField()
     is_hint = BooleanField()
-    authentication = CharField()
+    authentication = ChoiceField(choices=USER_SELECTION_AUTHENTICATION_CHOICES)
 
 
 class UserSelectionChallenge(Challenge):

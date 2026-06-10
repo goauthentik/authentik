@@ -28,7 +28,7 @@ pub struct UserSelectionChallengeUser {
     #[serde(rename = "is_hint")]
     pub is_hint: bool,
     #[serde(rename = "authentication")]
-    pub authentication: String,
+    pub authentication: models::UserSelectionAuthenticationEnum,
 }
 
 impl UserSelectionChallengeUser {
@@ -41,7 +41,7 @@ impl UserSelectionChallengeUser {
         avatar: String,
         is_current: bool,
         is_hint: bool,
-        authentication: String,
+        authentication: models::UserSelectionAuthenticationEnum,
     ) -> UserSelectionChallengeUser {
         UserSelectionChallengeUser {
             uid,

@@ -22,7 +22,7 @@ Each brand can select a user-selection flow. When configured, authentik uses the
 - OpenID Connect authorization requests with `prompt=select_account`;
 - OpenID Connect authorization requests where the browser has multiple live accounts.
 
-If no brand flow is configured, authentik falls back to the first applicable flow with the **User Selection** designation.
+The account switcher needs the brand flow to be configured so it has a specific flow to open. Server-started account selection, such as OpenID Connect account selection, falls back to the first applicable flow with the **User Selection** designation if the brand does not configure one.
 
 ## Notes
 

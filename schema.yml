@@ -58519,6 +58519,11 @@ components:
       required:
       - identifier
       - source
+    UserSelectionAuthenticationEnum:
+      enum:
+      - authenticated
+      - remembered
+      type: string
     UserSelectionChallenge:
       type: object
       description: Challenge for selecting a browser-local user.
@@ -58581,7 +58586,7 @@ components:
         is_hint:
           type: boolean
         authentication:
-          type: string
+          $ref: '#/components/schemas/UserSelectionAuthenticationEnum'
       required:
       - authentication
       - avatar
@@ -58663,7 +58668,8 @@ components:
           type: boolean
           readOnly: true
         authentication:
-          type: string
+          allOf:
+          - $ref: '#/components/schemas/UserSelectionAuthenticationEnum'
           readOnly: true
       required:
       - authentication

@@ -21,13 +21,13 @@ var _ MappedNullable = &UserSelectionUser{}
 
 // UserSelectionUser Browser-local user that can be selected from the UI.
 type UserSelectionUser struct {
-	Uid                  string `json:"uid"`
-	Username             string `json:"username"`
-	Name                 string `json:"name"`
-	Email                string `json:"email"`
-	Avatar               string `json:"avatar"`
-	IsCurrent            bool   `json:"is_current"`
-	Authentication       string `json:"authentication"`
+	Uid                  string                          `json:"uid"`
+	Username             string                          `json:"username"`
+	Name                 string                          `json:"name"`
+	Email                string                          `json:"email"`
+	Avatar               string                          `json:"avatar"`
+	IsCurrent            bool                            `json:"is_current"`
+	Authentication       UserSelectionAuthenticationEnum `json:"authentication"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -37,7 +37,7 @@ type _UserSelectionUser UserSelectionUser
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewUserSelectionUser(uid string, username string, name string, email string, avatar string, isCurrent bool, authentication string) *UserSelectionUser {
+func NewUserSelectionUser(uid string, username string, name string, email string, avatar string, isCurrent bool, authentication UserSelectionAuthenticationEnum) *UserSelectionUser {
 	this := UserSelectionUser{}
 	this.Uid = uid
 	this.Username = username
@@ -202,9 +202,9 @@ func (o *UserSelectionUser) SetIsCurrent(v bool) {
 }
 
 // GetAuthentication returns the Authentication field value
-func (o *UserSelectionUser) GetAuthentication() string {
+func (o *UserSelectionUser) GetAuthentication() UserSelectionAuthenticationEnum {
 	if o == nil {
-		var ret string
+		var ret UserSelectionAuthenticationEnum
 		return ret
 	}
 
@@ -213,7 +213,7 @@ func (o *UserSelectionUser) GetAuthentication() string {
 
 // GetAuthenticationOk returns a tuple with the Authentication field value
 // and a boolean to check if the value has been set.
-func (o *UserSelectionUser) GetAuthenticationOk() (*string, bool) {
+func (o *UserSelectionUser) GetAuthenticationOk() (*UserSelectionAuthenticationEnum, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -221,7 +221,7 @@ func (o *UserSelectionUser) GetAuthenticationOk() (*string, bool) {
 }
 
 // SetAuthentication sets field value
-func (o *UserSelectionUser) SetAuthentication(v string) {
+func (o *UserSelectionUser) SetAuthentication(v UserSelectionAuthenticationEnum) {
 	o.Authentication = v
 }
 

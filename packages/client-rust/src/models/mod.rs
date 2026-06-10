@@ -230,6 +230,8 @@ pub mod user_login_challenge;
 pub use self::user_login_challenge::UserLoginChallenge;
 pub mod user_login_challenge_response_request;
 pub use self::user_login_challenge_response_request::UserLoginChallengeResponseRequest;
+pub mod user_selection_authentication_enum;
+pub use self::user_selection_authentication_enum::UserSelectionAuthenticationEnum;
 pub mod user_selection_challenge;
 pub use self::user_selection_challenge::UserSelectionChallenge;
 pub mod user_selection_challenge_response_action_enum;

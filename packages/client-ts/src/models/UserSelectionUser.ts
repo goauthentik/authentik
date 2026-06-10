@@ -12,6 +12,9 @@
  * Do not edit the class manually.
  */
 
+import type { UserSelectionAuthenticationEnum } from "./UserSelectionAuthenticationEnum";
+import { UserSelectionAuthenticationEnumFromJSON } from "./UserSelectionAuthenticationEnum";
+
 /**
  * Browser-local user that can be selected from the UI.
  * @export
@@ -56,10 +59,10 @@ export interface UserSelectionUser {
     readonly isCurrent: boolean;
     /**
      *
-     * @type {string}
+     * @type {UserSelectionAuthenticationEnum}
      * @memberof UserSelectionUser
      */
-    readonly authentication: string;
+    readonly authentication: UserSelectionAuthenticationEnum;
 }
 
 /**
@@ -94,7 +97,7 @@ export function UserSelectionUserFromJSONTyped(
         email: json["email"],
         avatar: json["avatar"],
         isCurrent: json["is_current"],
-        authentication: json["authentication"],
+        authentication: UserSelectionAuthenticationEnumFromJSON(json["authentication"]),
     };
 }
 

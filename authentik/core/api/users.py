@@ -89,6 +89,7 @@ from authentik.core.models import (
     default_token_duration,
 )
 from authentik.core.user_selection import (
+    USER_SELECTION_AUTHENTICATION_CHOICES,
     get_selectable_accounts,
     serialize_selectable_user,
 )
@@ -464,7 +465,10 @@ class UserSelectionUserSerializer(PassiveSerializer):
     email = CharField(read_only=True, allow_blank=True)
     avatar = CharField(read_only=True)
     is_current = BooleanField(read_only=True)
-    authentication = CharField(read_only=True)
+    authentication = ChoiceField(
+        choices=USER_SELECTION_AUTHENTICATION_CHOICES,
+        read_only=True,
+    )
 
 
 class SessionUserSerializer(PassiveSerializer):

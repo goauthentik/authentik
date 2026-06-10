@@ -21,14 +21,14 @@ var _ MappedNullable = &UserSelectionChallengeUser{}
 
 // UserSelectionChallengeUser User shown by the user selection stage.
 type UserSelectionChallengeUser struct {
-	Uid                  string `json:"uid"`
-	Username             string `json:"username"`
-	Name                 string `json:"name"`
-	Email                string `json:"email"`
-	Avatar               string `json:"avatar"`
-	IsCurrent            bool   `json:"is_current"`
-	IsHint               bool   `json:"is_hint"`
-	Authentication       string `json:"authentication"`
+	Uid                  string                          `json:"uid"`
+	Username             string                          `json:"username"`
+	Name                 string                          `json:"name"`
+	Email                string                          `json:"email"`
+	Avatar               string                          `json:"avatar"`
+	IsCurrent            bool                            `json:"is_current"`
+	IsHint               bool                            `json:"is_hint"`
+	Authentication       UserSelectionAuthenticationEnum `json:"authentication"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -38,7 +38,7 @@ type _UserSelectionChallengeUser UserSelectionChallengeUser
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewUserSelectionChallengeUser(uid string, username string, name string, email string, avatar string, isCurrent bool, isHint bool, authentication string) *UserSelectionChallengeUser {
+func NewUserSelectionChallengeUser(uid string, username string, name string, email string, avatar string, isCurrent bool, isHint bool, authentication UserSelectionAuthenticationEnum) *UserSelectionChallengeUser {
 	this := UserSelectionChallengeUser{}
 	this.Uid = uid
 	this.Username = username
@@ -228,9 +228,9 @@ func (o *UserSelectionChallengeUser) SetIsHint(v bool) {
 }
 
 // GetAuthentication returns the Authentication field value
-func (o *UserSelectionChallengeUser) GetAuthentication() string {
+func (o *UserSelectionChallengeUser) GetAuthentication() UserSelectionAuthenticationEnum {
 	if o == nil {
-		var ret string
+		var ret UserSelectionAuthenticationEnum
 		return ret
 	}
 
@@ -239,7 +239,7 @@ func (o *UserSelectionChallengeUser) GetAuthentication() string {
 
 // GetAuthenticationOk returns a tuple with the Authentication field value
 // and a boolean to check if the value has been set.
-func (o *UserSelectionChallengeUser) GetAuthenticationOk() (*string, bool) {
+func (o *UserSelectionChallengeUser) GetAuthenticationOk() (*UserSelectionAuthenticationEnum, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -247,7 +247,7 @@ func (o *UserSelectionChallengeUser) GetAuthenticationOk() (*string, bool) {
 }
 
 // SetAuthentication sets field value
-func (o *UserSelectionChallengeUser) SetAuthentication(v string) {
+func (o *UserSelectionChallengeUser) SetAuthentication(v UserSelectionAuthenticationEnum) {
 	o.Authentication = v
 }
 

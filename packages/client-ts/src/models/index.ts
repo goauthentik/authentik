@@ -860,6 +860,7 @@ export * from "./UserRecoveryLinkRequest";
 export * from "./UserRequest";
 export * from "./UserSAMLSourceConnection";
 export * from "./UserSAMLSourceConnectionRequest";
+export * from "./UserSelectionAuthenticationEnum";
 export * from "./UserSelectionChallenge";
 export * from "./UserSelectionChallengeResponseActionEnum";
 export * from "./UserSelectionChallengeResponseRequest";

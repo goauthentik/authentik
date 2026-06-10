@@ -12,6 +12,12 @@
  * Do not edit the class manually.
  */
 
+import type { UserSelectionAuthenticationEnum } from "./UserSelectionAuthenticationEnum";
+import {
+    UserSelectionAuthenticationEnumFromJSON,
+    UserSelectionAuthenticationEnumToJSON,
+} from "./UserSelectionAuthenticationEnum";
+
 /**
  * User shown by the user selection stage.
  * @export
@@ -62,10 +68,10 @@ export interface UserSelectionChallengeUser {
     isHint: boolean;
     /**
      *
-     * @type {string}
+     * @type {UserSelectionAuthenticationEnum}
      * @memberof UserSelectionChallengeUser
      */
-    authentication: string;
+    authentication: UserSelectionAuthenticationEnum;
 }
 
 /**
@@ -104,7 +110,7 @@ export function UserSelectionChallengeUserFromJSONTyped(
         avatar: json["avatar"],
         isCurrent: json["is_current"],
         isHint: json["is_hint"],
-        authentication: json["authentication"],
+        authentication: UserSelectionAuthenticationEnumFromJSON(json["authentication"]),
     };
 }
 
@@ -128,6 +134,6 @@ export function UserSelectionChallengeUserToJSONTyped(
         avatar: value["avatar"],
         is_current: value["isCurrent"],
         is_hint: value["isHint"],
-        authentication: value["authentication"],
+        authentication: UserSelectionAuthenticationEnumToJSON(value["authentication"]),
     };
 }

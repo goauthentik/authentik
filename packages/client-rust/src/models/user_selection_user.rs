@@ -26,7 +26,7 @@ pub struct UserSelectionUser {
     #[serde(rename = "is_current")]
     pub is_current: bool,
     #[serde(rename = "authentication")]
-    pub authentication: String,
+    pub authentication: models::UserSelectionAuthenticationEnum,
 }
 
 impl UserSelectionUser {
@@ -38,7 +38,7 @@ impl UserSelectionUser {
         email: String,
         avatar: String,
         is_current: bool,
-        authentication: String,
+        authentication: models::UserSelectionAuthenticationEnum,
     ) -> UserSelectionUser {
         UserSelectionUser {
             uid,

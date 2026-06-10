@@ -35,6 +35,11 @@ class UserSelectionAuthentication(StrEnum):
     REMEMBERED = "remembered"
 
 
+USER_SELECTION_AUTHENTICATION_CHOICES = tuple(
+    (choice.value, choice.name) for choice in UserSelectionAuthentication
+)
+
+
 @dataclass(frozen=True, slots=True)
 class SelectableUser:
     """A user the browser knows about, plus the current request's ability to use it."""
