@@ -1,7 +1,7 @@
 import "#elements/CodeMirror";
 import "#elements/forms/HorizontalFormElement";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { BasePropertyMappingForm } from "#admin/property-mappings/BasePropertyMappingForm";
 
@@ -14,19 +14,19 @@ export class PropertyMappingSourceOAuthForm extends BasePropertyMappingForm<OAut
     protected override docLink = "/users-sources/sources/property-mappings/expressions";
 
     loadInstance(pk: string): Promise<OAuthSourcePropertyMapping> {
-        return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsSourceOauthRetrieve({
+        return aki(PropertymappingsApi).propertymappingsSourceOauthRetrieve({
             pmUuid: pk,
         });
     }
 
     async send(data: OAuthSourcePropertyMapping): Promise<OAuthSourcePropertyMapping> {
         if (this.instance) {
-            return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsSourceOauthUpdate({
+            return aki(PropertymappingsApi).propertymappingsSourceOauthUpdate({
                 pmUuid: this.instance.pk,
                 oAuthSourcePropertyMappingRequest: data,
             });
         }
-        return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsSourceOauthCreate({
+        return aki(PropertymappingsApi).propertymappingsSourceOauthCreate({
             oAuthSourcePropertyMappingRequest: data,
         });
     }

@@ -4,6 +4,8 @@ sidebar_label: macmon NAC
 support_level: community
 ---
 
+import SAMLProvider20265Warning from "../../\_saml-provider-2026-5-warning.mdx";
+
 ## What is macmon NAC?
 
 > macmon NAC is a network access control platform that provides visibility, policy enforcement, and automated responses for devices connecting to your network.
@@ -26,6 +28,8 @@ This documentation lists only the settings that you need to change from their de
 To support the integration of macmon NAC with authentik, you need to create an application/provider pair in authentik.
 
 ### Create an application and provider in authentik
+
+<SAMLProvider20265Warning />
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.

@@ -80,4 +80,12 @@ For backward compatibility with older browsers that do not support hints, authen
 
 **Prevent duplicate devices** can only be enforced when the authenticator exposes a unique attestation certificate.
 
-If **Device type restrictions** are enabled, authentik can also allow the special built-in type `authentik: Unknown devices` for authenticators whose AAGUID is not otherwise known.
+### Device type restrictions
+
+**Device type restrictions** are an allowlist for WebAuthn registration. When no device types are selected, authentik allows any WebAuthn authenticator that the browser and authenticator can register. When one or more device types are selected, authentik only allows registration when the authenticator returns an AAGUID that matches one of the selected entries.
+
+The available device-type entries are populated from the [FIDO Alliance Metadata Service](https://fidoalliance.org/metadata/) data and additional AAGUID metadata bundled with the authentik release. This lets you restrict enrollment to specific hardware families or passkey providers listed in that metadata.
+
+If you select specific device types, newly added metadata entries are not allowed automatically. Review this allowlist after authentik upgrades if your compliance policy should include newly recognized authenticators.
+
+authentik also includes the special device-type `authentik: Unknown devices`. Select it only when you want to allow authenticators that return an AAGUID that is not present in authentik's device-type metadata. Authenticators that do not return an AAGUID cannot satisfy a device-type restriction.

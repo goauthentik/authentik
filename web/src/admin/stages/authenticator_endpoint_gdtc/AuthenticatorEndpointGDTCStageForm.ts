@@ -2,7 +2,7 @@ import "#elements/CodeMirror";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { BaseStageForm } from "#admin/stages/BaseStageForm";
 
@@ -17,19 +17,19 @@ import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 @customElement("ak-stage-authenticator-endpoint-gdtc-form")
 export class AuthenticatorEndpointGDTCStageForm extends BaseStageForm<AuthenticatorEndpointGDTCStage> {
     loadInstance(pk: string): Promise<AuthenticatorEndpointGDTCStage> {
-        return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorEndpointGdtcRetrieve({
+        return aki(StagesApi).stagesAuthenticatorEndpointGdtcRetrieve({
             stageUuid: pk,
         });
     }
 
     async send(data: AuthenticatorEndpointGDTCStage): Promise<AuthenticatorEndpointGDTCStage> {
         if (this.instance) {
-            return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorEndpointGdtcPartialUpdate({
+            return aki(StagesApi).stagesAuthenticatorEndpointGdtcPartialUpdate({
                 stageUuid: this.instance.pk || "",
                 patchedAuthenticatorEndpointGDTCStageRequest: data,
             });
         }
-        return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorEndpointGdtcCreate({
+        return aki(StagesApi).stagesAuthenticatorEndpointGdtcCreate({
             authenticatorEndpointGDTCStageRequest: data,
         });
     }

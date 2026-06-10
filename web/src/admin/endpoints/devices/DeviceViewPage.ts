@@ -8,7 +8,7 @@ import "#admin/endpoints/devices/facts/DeviceGroupTable";
 import "#admin/endpoints/devices/DeviceEvents";
 import "#elements/Tabs";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { APIError, parseAPIResponseError } from "#common/errors/network";
 
 import { AKElement } from "#elements/Base";
@@ -48,7 +48,7 @@ export class DeviceViewPage extends AKElement {
     static styles: CSSResult[] = [PFCard, PFPage, PFGrid, PFStack, PFButton, PFDescriptionList];
 
     protected fetchDevice(id: string) {
-        new EndpointsApi(DEFAULT_CONFIG)
+        aki(EndpointsApi)
             .endpointsDevicesRetrieve({ deviceUuid: id })
             .then((dev) => {
                 this.device = dev;

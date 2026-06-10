@@ -18,8 +18,8 @@ export class AkPagination extends CustomEmitterElement<DualSelectEventType>(AKEl
         css`
             :host([theme="dark"]) {
                 .pf-c-pagination__nav-control .pf-c-button {
-                    color: var(--pf-c-button--m-plain--disabled--Color);
-                    --pf-c-button--disabled--Color: var(--pf-c-button--m-plain--Color);
+                    color: var(--pf-c-button--m-plain--Color);
+                    --pf-c-button--disabled--Color: var(--pf-c-button--m-plain--disabled--Color);
                 }
 
                 .pf-c-pagination__nav-control .pf-c-button:disabled {
