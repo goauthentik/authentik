@@ -25,10 +25,6 @@ export function buildAuthenticationFlowURL({
         return `${apiBase}if/flow/${userSelectionFlow}/?${query.toString()}`;
     }
 
-    if (!account?.uid) {
-        query.delete("user_uid");
-    }
-
     if (loginHint) {
         query.set("login_hint", loginHint);
     }
