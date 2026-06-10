@@ -1,6 +1,5 @@
 """Test OAuth authorize user selection behavior."""
 
-from json import dumps as json_dumps
 from urllib.parse import parse_qs, urlparse
 
 from django.conf import settings
@@ -13,6 +12,7 @@ from authentik.core.tests.user_selection import (
     create_browser_session,
     create_test_user_selection_flow,
     flow_executor_url,
+    select_user_response,
 )
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
 from authentik.core.user_selection import QS_USER_UID, append_user_selection_hint
@@ -189,13 +189,7 @@ class TestAuthorizeUserSelection(OAuthTestCase):
         self.client.get(flow_executor_url(user_selection_flow))
         selection_response = self.client.post(
             flow_executor_url(user_selection_flow),
-            data=json_dumps(
-                {
-                    "component": "ak-stage-user-selection",
-                    "action": "continue",
-                    "selected_user": other_user.uuid.hex,
-                }
-            ),
+            data=select_user_response(other_user),
             content_type="application/json",
         )
 

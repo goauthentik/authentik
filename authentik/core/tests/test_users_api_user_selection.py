@@ -1,6 +1,5 @@
 """Test user API user selection behavior."""
 
-from json import dumps as json_dumps
 from urllib.parse import parse_qs, urlparse
 
 from django.conf import settings
@@ -13,6 +12,7 @@ from authentik.core.tests.user_selection import (
     create_browser_session,
     create_test_user_selection_flow,
     flow_executor_url,
+    select_user_response,
 )
 from authentik.core.tests.utils import create_test_admin_user, create_test_user
 
@@ -79,13 +79,7 @@ class TestUsersAPIUserSelection(APITestCase):
         self.client.get(flow_executor_url(flow))
         response = self.client.post(
             flow_executor_url(flow),
-            data=json_dumps(
-                {
-                    "component": "ak-stage-user-selection",
-                    "action": "continue",
-                    "selected_user": self.user.uuid.hex,
-                }
-            ),
+            data=select_user_response(self.user),
             content_type="application/json",
         )
 
@@ -114,13 +108,7 @@ class TestUsersAPIUserSelection(APITestCase):
         )
         response = self.client.post(
             flow_executor_url(flow),
-            data=json_dumps(
-                {
-                    "component": "ak-stage-user-selection",
-                    "action": "continue",
-                    "selected_user": self.user.uuid.hex,
-                }
-            ),
+            data=select_user_response(self.user),
             content_type="application/json",
         )
 
@@ -142,13 +130,7 @@ class TestUsersAPIUserSelection(APITestCase):
         self.client.get(flow_executor_url(flow))
         response = self.client.post(
             flow_executor_url(flow),
-            data=json_dumps(
-                {
-                    "component": "ak-stage-user-selection",
-                    "action": "continue",
-                    "selected_user": self.admin.uuid.hex,
-                }
-            ),
+            data=select_user_response(self.admin),
             content_type="application/json",
         )
 

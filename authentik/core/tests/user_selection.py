@@ -1,5 +1,7 @@
 """Test helpers for browser session selection."""
 
+from json import dumps as json_dumps
+
 from django.urls import reverse
 from django.utils.crypto import get_random_string
 
@@ -32,6 +34,17 @@ def create_test_user_selection_flow(
 def flow_executor_url(flow: Flow) -> str:
     """Return the API flow executor URL for a test flow."""
     return reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug})
+
+
+def select_user_response(user: User) -> str:
+    """Return a serialized user-selection response for selecting a user."""
+    return json_dumps(
+        {
+            "component": "ak-stage-user-selection",
+            "action": "continue",
+            "selected_user": user.uuid.hex,
+        }
+    )
 
 
 def set_browser_key(test_case) -> str:
