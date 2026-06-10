@@ -52,15 +52,25 @@ export class UserSwitcher extends WithSession(AKElement) {
         </span>`;
     }
 
+    protected getAccountDescription(account: UserSelectionUser, label: string): string {
+        if (account.email && account.email !== label) {
+            return account.email;
+        }
+        if (account.username && account.username !== label) {
+            return account.username;
+        }
+        return "";
+    }
+
     protected renderAccount(account: UserSelectionUser): SlottedTemplateResult {
         const label = account.name || account.username;
-        const description = account.email || account.username;
+        const description = this.getAccountDescription(account, label);
         const content = html`
             <span class="pf-c-dropdown__menu-item-main" part="item">
                 ${this.renderAvatar(account)}
                 <span part="labels">
                     <span part="name">${label}</span>
-                    <span part="description">${description}</span>
+                    ${description ? html`<span part="description">${description}</span>` : null}
                 </span>
                 ${account.isCurrent
                     ? html`<i class="fas fa-check" part="current-indicator" aria-hidden="true"></i>`
