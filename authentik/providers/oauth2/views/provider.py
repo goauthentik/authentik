@@ -18,18 +18,17 @@ from authentik.common.oauth.constants import (
     GRANT_TYPE_REFRESH_TOKEN,
     PKCE_METHOD_PLAIN,
     PKCE_METHOD_S256,
-    SCOPE_BOUND_KEY,
     SCOPE_OPENID,
 )
 from authentik.core.expression.exceptions import PropertyMappingExpressionException
 from authentik.core.models import Application
+from authentik.providers.oauth2.dpop import DPOP_SUPPORTED_ALGS
 from authentik.providers.oauth2.models import (
     OAuth2Provider,
     ResponseMode,
     ResponseTypes,
     ScopeMapping,
 )
-from authentik.providers.oauth2.dpop import DPOP_SUPPORTED_ALGS
 from authentik.providers.oauth2.utils import cors_allow
 
 LOGGER = get_logger()

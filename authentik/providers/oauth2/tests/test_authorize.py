@@ -9,7 +9,12 @@ from django.utils import translation
 from django.utils.timezone import now
 
 from authentik.blueprints.tests import apply_blueprint
-from authentik.common.oauth.constants import SCOPE_BOUND_KEY, SCOPE_OFFLINE_ACCESS, SCOPE_OPENID, TOKEN_TYPE
+from authentik.common.oauth.constants import (
+    SCOPE_BOUND_KEY,
+    SCOPE_OFFLINE_ACCESS,
+    SCOPE_OPENID,
+    TOKEN_TYPE,
+)
 from authentik.core.models import Application
 from authentik.core.tests.utils import create_test_admin_user, create_test_brand, create_test_flow
 from authentik.events.models import Event, EventAction

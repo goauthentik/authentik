@@ -286,7 +286,7 @@ class OAuthAuthorizationParams:
                 self.state,
                 "dpop_jkt is required when bound_key scope is requested",
             )
-        # dpop_jkt should only be set if requesting the key binding scope 
+        # dpop_jkt should only be set if requesting the key binding scope
         if SCOPE_BOUND_KEY not in self.scope and self.dpop_jkt:
             raise AuthorizeError(
                 self.redirect_uri,

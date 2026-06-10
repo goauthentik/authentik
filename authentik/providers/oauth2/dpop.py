@@ -2,20 +2,17 @@
 
 import base64
 import hashlib
-import json
-import re
 import time
 from hmac import compare_digest
-from typing import Any
 from urllib.parse import urlparse
 
 from cryptography.hazmat.primitives.asymmetric.rsa import RSAPublicKey
 from django.core.cache import cache
 from django.db import DatabaseError, transaction
-from jwt import PyJWK, decode as jwt_decode
+from jwt import PyJWK
+from jwt import decode as jwt_decode
 from jwt import decode_complete as jwt_decode_complete
 from jwt.exceptions import InvalidTokenError, PyJWTError
-from jwcrypto.jwk import JWK
 from structlog.stdlib import get_logger
 
 from authentik.lib.config import CONFIG
@@ -48,7 +45,7 @@ DPOP_SUPPORTED_ALGS = {
 
 # Required JWK members per RFC 7638, by key type. These are exactly the
 # members the thumbprint is computed over, so a JWK rebuilt from only these
-# has the same thumbprint and carries no additional user supplied extra 
+# has the same thumbprint and carries no additional user supplied extra
 # claims (kid, alg, use, key_ops, x5c, x5u, jku, or unknown members).
 JWK_REQUIRED_CLAIMS = {
     "EC": ("crv", "kty", "x", "y"),
@@ -133,7 +130,7 @@ class DPoPValidator:
 
         self._validate_jwk(jwk)
 
-        # Removes any claim not hashed in the JKT 
+        # Removes any claim not hashed in the JKT
         jwk = canonical_public_jwk(jwk)
 
         alg = header.get("alg")
@@ -145,24 +142,19 @@ class DPoPValidator:
         try:
             key = PyJWK.from_dict(jwk)
             payload = jwt_decode(
-                dpop_proof, key.key, algorithms=[alg],
-                options={"verify_iat": False}
+                dpop_proof, key.key, algorithms=[alg], options={"verify_iat": False}
             )
         except (PyJWTError, InvalidTokenError) as exc:
             raise DPoPError("DPoP proof signature verification failed") from exc
 
         if payload.get("htm") != expected_htm:
-            raise DPoPError(
-                f"DPoP htm mismatch: expected {expected_htm}, got {payload.get('htm')}"
-            )
+            raise DPoPError(f"DPoP htm mismatch: expected {expected_htm}, got {payload.get('htm')}")
 
         payload_htu = payload.get("htu")
         if not payload_htu:
             raise DPoPError("DPoP proof missing htu claim")
         if not self._htu_matches(payload_htu, expected_htu):
-            raise DPoPError(
-                f"DPoP htu mismatch: expected {expected_htu}, got {payload_htu}"
-            )
+            raise DPoPError(f"DPoP htu mismatch: expected {expected_htu}, got {payload_htu}")
 
         iat = payload.get("iat")
         if not isinstance(iat, int):

@@ -1,13 +1,12 @@
 """Test OpenID Connect Key Binding for Device Authorization flow"""
 
-from base64 import b64decode, b64encode
+from base64 import b64encode
 from json import dumps, loads
 
 from django.urls import reverse
 from django.utils import timezone
 from jwt import decode as jwt_decode
 from jwt import decode_complete as jwt_decode_complete
-import jwt
 
 from authentik.blueprints.tests import apply_blueprint
 from authentik.common.oauth.constants import (
@@ -49,7 +48,9 @@ class TestKeyBindingDevice(OAuthTestCase):
             signing_key=self.keypair,
         )
         self.provider.property_mappings.set(ScopeMapping.objects.all())
-        self.app = Application.objects.create(name=generate_id(), slug="test", provider=self.provider)
+        self.app = Application.objects.create(
+            name=generate_id(), slug="test", provider=self.provider
+        )
         self.user = create_test_admin_user()
         self.dpop_builder = DPoPProofBuilder()
         self.token_url = "http://testserver/application/o/token/"
@@ -78,7 +79,9 @@ class TestKeyBindingDevice(OAuthTestCase):
         self.assertIn("id_token", body)
         self.assertIn("refresh_token", body)
 
-        id_token_payload = jwt_decode(body["id_token"], "", options={"verify_signature": False}, algorithms=["ES256"])
+        id_token_payload = jwt_decode(
+            body["id_token"], "", options={"verify_signature": False}, algorithms=["ES256"]
+        )
         id_token_header = jwt_decode_complete(
             body["id_token"], "", options={"verify_signature": False}, algorithms=["ES256"]
         )["header"]
@@ -162,5 +165,7 @@ class TestKeyBindingDevice(OAuthTestCase):
         )
         self.assertEqual(response.status_code, 200)
         body = loads(response.content.decode())
-        id_token_payload = jwt_decode(body["id_token"], "", options={"verify_signature": False}, algorithms=["ES256"])
+        id_token_payload = jwt_decode(
+            body["id_token"], "", options={"verify_signature": False}, algorithms=["ES256"]
+        )
         self.assertIn("cnf", id_token_payload)

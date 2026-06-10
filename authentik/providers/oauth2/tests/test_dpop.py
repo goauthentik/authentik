@@ -5,7 +5,6 @@ import hashlib
 import json
 import time
 
-from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric.ec import (
     SECP256R1,
     EllipticCurvePrivateKey,
@@ -32,16 +31,8 @@ class DPoPProofBuilder:
         self.private_key = private_key
         self.public_key = private_key.public_key()
         nums = self.public_key.public_numbers()
-        self.x = (
-            base64.urlsafe_b64encode(nums.x.to_bytes(32, "big"))
-            .rstrip(b"=")
-            .decode()
-        )
-        self.y = (
-            base64.urlsafe_b64encode(nums.y.to_bytes(32, "big"))
-            .rstrip(b"=")
-            .decode()
-        )
+        self.x = base64.urlsafe_b64encode(nums.x.to_bytes(32, "big")).rstrip(b"=").decode()
+        self.y = base64.urlsafe_b64encode(nums.y.to_bytes(32, "big")).rstrip(b"=").decode()
         self.jwk = {"kty": "EC", "crv": "P-256", "x": self.x, "y": self.y}
 
     def build(
@@ -106,11 +97,11 @@ def _craft_jwt(payload: dict, private_key, algorithm: str, headers: dict) -> str
     elif algorithm in ("RS256", "PS256"):
         signature = private_key.sign(
             signing_input,
-            padding.PSS(
-                mgf=padding.MGF1(hashes.SHA256()), salt_length=padding.PSS.MAX_LENGTH
-            )
-            if algorithm.startswith("PS")
-            else padding.PKCS1v15(),
+            (
+                padding.PSS(mgf=padding.MGF1(hashes.SHA256()), salt_length=padding.PSS.MAX_LENGTH)
+                if algorithm.startswith("PS")
+                else padding.PKCS1v15()
+            ),
             hashes.SHA256(),
         )
     else:
@@ -118,6 +109,7 @@ def _craft_jwt(payload: dict, private_key, algorithm: str, headers: dict) -> str
 
     segments.append(base64.urlsafe_b64encode(signature).rstrip(b"="))
     return b".".join(segments).decode()
+
 
 class TestJWKThumbprint(TestCase):
     """Test JWK thumbprint computation"""
@@ -165,16 +157,18 @@ class TestComputeCS256(TestCase):
     def test_code_sha256(self):
         """Test c_s256 matches expected BASE64URL(SHA256(ASCII(value)))"""
         value = "SplxlOBeZQQYbYS6WxSbIA"
-        expected = base64.urlsafe_b64encode(
-            hashlib.sha256(value.encode("ascii")).digest()
-        ).rstrip(b"=").decode("ascii")
+        expected = (
+            base64.urlsafe_b64encode(hashlib.sha256(value.encode("ascii")).digest())
+            .rstrip(b"=")
+            .decode("ascii")
+        )
         self.assertEqual(code_sha256(value), expected)
 
     def test_code_sha256_empty(self):
         """Test c_s256 with empty string"""
-        expected = base64.urlsafe_b64encode(
-            hashlib.sha256(b"").digest()
-        ).rstrip(b"=").decode("ascii")
+        expected = (
+            base64.urlsafe_b64encode(hashlib.sha256(b"").digest()).rstrip(b"=").decode("ascii")
+        )
         self.assertEqual(code_sha256(""), expected)
 
 
@@ -195,7 +189,11 @@ class TestDPoPValidator(TestCase):
         c_s256 = code_sha256("test-code")
         proof = self.builder.build(c_s256=c_s256)
         result = self.validator.validate(
-            proof, expected_htm="POST", expected_htu=self.htu, expected_jkt=self.builder.jkt, expected_c_s256=c_s256
+            proof,
+            expected_htm="POST",
+            expected_htu=self.htu,
+            expected_jkt=self.builder.jkt,
+            expected_c_s256=c_s256,
         )
         self.assertEqual(result["kty"], "EC")
         self.assertEqual(result["crv"], "P-256")
@@ -304,7 +302,10 @@ class TestDPoPValidator(TestCase):
         proof = self.builder.build(c_s256="wrong-hash")
         with self.assertRaises(DPoPError) as cm:
             self.validator.validate(
-                proof, expected_htm="POST", expected_htu=self.htu, expected_c_s256=code_sha256("correct-code")
+                proof,
+                expected_htm="POST",
+                expected_htu=self.htu,
+                expected_c_s256=code_sha256("correct-code"),
             )
         self.assertIn("c_s256", str(cm.exception).lower())
 
@@ -323,7 +324,10 @@ class TestDPoPValidator(TestCase):
         proof = self.builder.build(htu=self.htu)
         with self.assertRaises(DPoPError) as cm:
             self.validator.validate(
-                proof, expected_htm="POST", expected_htu=self.htu, expected_c_s256=code_sha256("some-code")
+                proof,
+                expected_htm="POST",
+                expected_htu=self.htu,
+                expected_c_s256=code_sha256("some-code"),
             )
         self.assertIn("c_s256", str(cm.exception).lower())
 
