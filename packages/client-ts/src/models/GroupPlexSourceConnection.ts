@@ -32,7 +32,7 @@ export interface GroupPlexSourceConnection {
      * @type {string}
      * @memberof GroupPlexSourceConnection
      */
-    group: string;
+    readonly group: string;
     /**
      *
      * @type {string}
@@ -110,7 +110,7 @@ export function GroupPlexSourceConnectionToJSON(json: any): GroupPlexSourceConne
 export function GroupPlexSourceConnectionToJSONTyped(
     value?: Omit<
         GroupPlexSourceConnection,
-        "pk" | "source_obj" | "created" | "last_updated"
+        "pk" | "group" | "source_obj" | "created" | "last_updated"
     > | null,
     ignoreDiscriminator: boolean = false,
 ): any {
@@ -119,7 +119,6 @@ export function GroupPlexSourceConnectionToJSONTyped(
     }
 
     return {
-        group: value["group"],
         source: value["source"],
         identifier: value["identifier"],
     };

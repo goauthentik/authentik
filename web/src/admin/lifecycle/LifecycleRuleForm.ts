@@ -9,7 +9,7 @@ import "#components/ak-radio-input";
 import "#components/ak-number-input";
 import "#components/ak-switch-input";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { DataProvision, DualSelectPair } from "#elements/ak-dual-select/types";
 import { ModelForm } from "#elements/forms/ModelForm";
@@ -91,9 +91,9 @@ export class LifecycleRuleForm extends ModelForm<LifecycleRule, string, Lifecycl
     #reviewerGroupsSelectRef = createRef<SearchSelect<Group>>();
     #reviewerUsersSelectRef = createRef<SearchSelect<Group>>();
 
-    #coreApi = new CoreApi(DEFAULT_CONFIG);
-    #lifecycleApi = new LifecycleApi(DEFAULT_CONFIG);
-    #rbacApi = new RbacApi(DEFAULT_CONFIG);
+    #coreApi = aki(CoreApi);
+    #lifecycleApi = aki(LifecycleApi);
+    #rbacApi = aki(RbacApi);
 
     @state()
     protected selectedContentType: ContentTypeEnum = ContentTypeEnum.AuthentikCoreApplication;

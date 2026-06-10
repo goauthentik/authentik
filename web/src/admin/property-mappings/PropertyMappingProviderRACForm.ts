@@ -3,7 +3,7 @@ import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/Radio";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { docLink } from "#common/global";
 
 import type { RadioOption } from "#elements/forms/Radio";
@@ -37,19 +37,19 @@ export const staticSettingOptions: RadioOption<string | undefined>[] = [
 @customElement("ak-property-mapping-provider-rac-form")
 export class PropertyMappingProviderRACForm extends BasePropertyMappingForm<RACPropertyMapping> {
     loadInstance(pk: string): Promise<RACPropertyMapping> {
-        return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsProviderRacRetrieve({
+        return aki(PropertymappingsApi).propertymappingsProviderRacRetrieve({
             pmUuid: pk,
         });
     }
 
     async send(data: RACPropertyMapping): Promise<RACPropertyMapping> {
         if (this.instance) {
-            return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsProviderRacUpdate({
+            return aki(PropertymappingsApi).propertymappingsProviderRacUpdate({
                 pmUuid: this.instance.pk,
                 rACPropertyMappingRequest: data,
             });
         }
-        return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsProviderRacCreate({
+        return aki(PropertymappingsApi).propertymappingsProviderRacCreate({
             rACPropertyMappingRequest: data,
         });
     }
