@@ -6,6 +6,7 @@ same browser share the AuthenticatedSession.browser_key stamped from the browser
 browser may switch to one of them without re-authenticating.
 """
 
+from dataclasses import dataclass
 from enum import StrEnum
 from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
 
@@ -14,7 +15,7 @@ from django.http import HttpRequest, HttpResponse
 from django.urls import reverse
 from django.utils import timezone
 
-from authentik.common.oauth.constants import QS_LOGIN_HINT
+from authentik.common.oauth.constants import PROMPT_SELECT_ACCOUNT, QS_LOGIN_HINT
 from authentik.core.models import AuthenticatedSession, User
 from authentik.flows.exceptions import FlowNonApplicableException
 from authentik.flows.models import Flow, FlowDesignation
@@ -34,14 +35,35 @@ class UserSelectionAuthentication(StrEnum):
     REMEMBERED = "remembered"
 
 
+@dataclass(frozen=True, slots=True)
+class SelectableUser:
+    """A user the browser knows about, plus the current request's ability to use it."""
+
+    user: User
+    is_current: bool
+    switchable_session: AuthenticatedSession | None = None
+
+    @property
+    def authentication(self) -> UserSelectionAuthentication:
+        """Return whether selecting this user can continue without authentication."""
+        if self.is_current or self.switchable_session is not None:
+            return UserSelectionAuthentication.AUTHENTICATED
+        return UserSelectionAuthentication.REMEMBERED
+
+
 def user_matches_hint(user: User, hint: str) -> bool:
     """Check whether a user matches the supplied login hint."""
     return hint in {user.uuid.hex, user.email, user.username}
 
 
-def _is_current_user(request: HttpRequest, user: User) -> bool:
-    """Return true when the request is authenticated as the given user."""
-    return request.user.is_authenticated and user.pk == request.user.pk
+def request_selected_current_user(request: HttpRequest) -> bool:
+    """Return true when the request carries the selected active account."""
+    selected_user_uid = request.GET.get(QS_USER_UID)
+    return bool(
+        request.user.is_authenticated
+        and selected_user_uid
+        and selected_user_uid == request.user.uuid.hex
+    )
 
 
 def get_browser_sessions(request: HttpRequest) -> QuerySet[AuthenticatedSession]:
@@ -60,48 +82,39 @@ def get_browser_sessions(request: HttpRequest) -> QuerySet[AuthenticatedSession]
     )
 
 
-def get_selectable_users(request: HttpRequest) -> list[User]:
+def get_selectable_accounts(request: HttpRequest) -> list[SelectableUser]:
     """Users this browser can select between, current user first, one entry per user."""
-    users: dict[str, User] = {}
+    users: dict[str, SelectableUser] = {}
+    can_switch_sessions = request.user.is_authenticated
     if request.user.is_authenticated:
-        users[request.user.uuid.hex] = request.user
+        users[request.user.uuid.hex] = SelectableUser(request.user, is_current=True)
     for session in get_browser_sessions(request):
-        users.setdefault(session.user.uuid.hex, session.user)
+        users.setdefault(
+            session.user.uuid.hex,
+            SelectableUser(
+                session.user,
+                is_current=False,
+                switchable_session=session if can_switch_sessions else None,
+            ),
+        )
     return list(users.values())
 
 
-def get_switchable_session(request: HttpRequest, user: User) -> AuthenticatedSession | None:
-    """Return the browser's most recently used live session for the given user, if the
-    request may switch to it without re-authenticating.
-
-    Switching requires an authenticated request on top of the browser cookie: a browser
-    that is signed out of all accounts (or an attacker holding only the browser cookie)
-    has to present credentials again."""
-    if not request.user.is_authenticated:
-        return None
-    return get_browser_sessions(request).filter(user=user).first()
-
-
-def serialize_user_selection_user(
+def serialize_selectable_user(
     request: HttpRequest,
-    user: User,
+    selectable: SelectableUser,
     hint: str | None = None,
 ) -> dict[str, object]:
     """Serialize a selectable user for user selection surfaces."""
-    is_current = _is_current_user(request, user)
-    switchable = is_current or get_switchable_session(request, user) is not None
+    user = selectable.user
     data = {
         "uid": user.uuid.hex,
         "username": user.username,
         "name": user.name,
         "email": user.email,
         "avatar": get_avatar(user, request),
-        "is_current": is_current,
-        "authentication": (
-            UserSelectionAuthentication.AUTHENTICATED
-            if switchable
-            else UserSelectionAuthentication.REMEMBERED
-        ),
+        "is_current": selectable.is_current,
+        "authentication": selectable.authentication,
     }
     if hint is not None:
         data["is_hint"] = bool(hint and user_matches_hint(user, hint))
@@ -127,11 +140,16 @@ def append_user_selection_hint(url: str, user: User) -> str:
     parts = urlsplit(url)
     if parts.path != reverse("authentik_providers_oauth2:authorize"):
         return url
-    query = [
-        (key, value)
-        for key, value in parse_qsl(parts.query, keep_blank_values=True)
-        if key not in {QS_USER_UID, QS_LOGIN_HINT}
-    ]
+    query = []
+    for key, value in parse_qsl(parts.query, keep_blank_values=True):
+        if key in {QS_USER_UID, QS_LOGIN_HINT}:
+            continue
+        if key == "prompt":
+            prompts = [prompt for prompt in value.split() if prompt != PROMPT_SELECT_ACCOUNT]
+            if prompts:
+                query.append((key, " ".join(prompts)))
+            continue
+        query.append((key, value))
     query.extend(
         [
             (QS_USER_UID, user.uuid.hex),

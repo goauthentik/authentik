@@ -89,8 +89,8 @@ from authentik.core.models import (
     default_token_duration,
 )
 from authentik.core.user_selection import (
-    get_selectable_users,
-    serialize_user_selection_user,
+    get_selectable_accounts,
+    serialize_selectable_user,
 )
 from authentik.endpoints.connectors.agent.auth import AgentAuth
 from authentik.events.models import Event, EventAction
@@ -828,8 +828,8 @@ class UserViewSet(
             data={
                 "user": UserSelfSerializer(instance=request.user, context=context).data,
                 "accounts": [
-                    serialize_user_selection_user(request._request, user)
-                    for user in get_selectable_users(request._request)
+                    serialize_selectable_user(request._request, selectable)
+                    for selectable in get_selectable_accounts(request._request)
                 ],
             }
         )

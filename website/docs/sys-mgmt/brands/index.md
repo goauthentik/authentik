@@ -47,6 +47,7 @@ You can explicitly select, in your instance's Brand settings, the _default flows
 - **Recovery flow**: if set, the user can access an option to recover their login credentials.
 - **Unenrollment flow**: if set, users are able to unenroll themselves using this flow. If no flow is set, option is not shown.
 - **User settings flow**: if set, users are able to configure details of their profile.
+- **User selection flow**: if set, users can choose between browser-local accounts from the account switcher and from OpenID Connect account-selection prompts.
 - **Device code flow**: if set, the OAuth Device Code profile can be used, and the selected flow will be used to enter the code.
 
 If a default flow is _not_ set in the brand, then authentik selects any flow that:

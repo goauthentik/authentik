@@ -17,10 +17,10 @@ from authentik.core.user_selection import (
     PLAN_CONTEXT_USER_SELECTION_LOGIN_HINT,
     PLAN_CONTEXT_USER_SELECTION_USER_UID,
     QS_USER_UID,
+    SelectableUser,
     append_user_selection_hint,
-    get_selectable_users,
-    get_switchable_session,
-    serialize_user_selection_user,
+    get_selectable_accounts,
+    serialize_selectable_user,
     user_matches_hint,
 )
 from authentik.flows.challenge import Challenge, ChallengeResponse
@@ -72,12 +72,12 @@ class UserSelectionStageView(ChallengeStageView):
         """Return the active flow plan."""
         return cast(FlowPlan, self.executor.plan)
 
-    def get_users(self, hint: str = "") -> list[User]:
-        """Get the users of this browser's live sessions in display order."""
-        users = get_selectable_users(self.request)
+    def get_accounts(self, hint: str = "") -> list[SelectableUser]:
+        """Get this browser's selectable accounts in display order."""
+        accounts = get_selectable_accounts(self.request)
         if not hint:
-            return users
-        return sorted(users, key=lambda user: not user_matches_hint(user, hint))
+            return accounts
+        return sorted(accounts, key=lambda account: not user_matches_hint(account.user, hint))
 
     def get_hint(self) -> str:
         """Return a suggested user identifier from the flow context or query."""
@@ -105,14 +105,15 @@ class UserSelectionStageView(ChallengeStageView):
         """Show the current user and remembered users for this browser."""
         application = self.plan.context.get(PLAN_CONTEXT_APPLICATION, Application())
         hint = self.get_hint()
-        users = [
-            serialize_user_selection_user(self.request, user, hint) for user in self.get_users(hint)
+        accounts = [
+            serialize_selectable_user(self.request, account, hint)
+            for account in self.get_accounts(hint)
         ]
         return UserSelectionChallenge(
             data={
                 "component": COMPONENT,
                 "application_name": application.name,
-                "accounts": users,
+                "accounts": accounts,
             }
         )
 
@@ -181,15 +182,16 @@ class UserSelectionStageView(ChallengeStageView):
     def select_user(self, selected_user_uid: str) -> HttpResponse:
         """Continue as the current user, switch to a live session of the selected user,
         or fall back to authenticating as them."""
-        users_by_id = {user.uuid.hex: user for user in self.get_users()}
-        selected_user = users_by_id.get(selected_user_uid)
-        if not selected_user:
+        accounts_by_id = {account.user.uuid.hex: account for account in self.get_accounts()}
+        selected = accounts_by_id.get(selected_user_uid)
+        if not selected:
             LOGGER.warning("selected user is not known", selected_user=selected_user_uid)
             return self.executor.stage_invalid()
+        selected_user = selected.user
         if self.request.user.is_authenticated and selected_user.pk == self.request.user.pk:
             return self.continue_current_user(selected_user)
-        if target := get_switchable_session(self.request, selected_user):
-            return self.switch_to_session(target)
+        if selected.switchable_session:
+            return self.switch_to_session(selected.switchable_session)
         return self.redirect_to_login(selected_user)
 
     def challenge_valid(self, response: ChallengeResponse) -> HttpResponse:

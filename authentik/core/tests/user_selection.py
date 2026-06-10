@@ -5,6 +5,8 @@ from django.utils.crypto import get_random_string
 from authentik.core.models import AuthenticatedSession, Session, User
 from authentik.core.sessions import SessionStore
 from authentik.core.tests.utils import create_test_brand, create_test_flow
+from authentik.events.models import Event, EventAction
+from authentik.events.signals import SESSION_LOGIN_EVENT
 from authentik.flows.models import Flow, FlowDesignation, FlowStageBinding
 from authentik.lib.generators import generate_id
 from authentik.root.middleware import BROWSER_KEY_LENGTH, COOKIE_NAME_BROWSER
@@ -39,8 +41,12 @@ def set_browser_key(test_case) -> str:
 def create_browser_session(test_case, user: User) -> AuthenticatedSession:
     """Create a live login for the given user, bound to the test client's browser cookie."""
     browser_key = set_browser_key(test_case)
+    login_event = Event.new(EventAction.LOGIN).set_user(user)
+    login_event.save()
     store = SessionStore()
     store.create()
+    store[SESSION_LOGIN_EVENT] = login_event
+    store.save()
     return AuthenticatedSession.objects.create(
         session=Session.objects.get(session_key=store.session_key),
         user=user,

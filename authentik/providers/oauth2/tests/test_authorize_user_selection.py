@@ -64,6 +64,20 @@ class TestAuthorizeUserSelection(OAuthTestCase):
         self.assertEqual(parsed[QS_USER_UID], [user.uuid.hex])
         self.assertEqual(parsed[QS_LOGIN_HINT], [user.email])
 
+    def test_append_user_selection_hint_removes_select_account_prompt(self):
+        """Test returned authorize URLs don't keep prompting for account selection."""
+        user = create_test_admin_user()
+        authorize_url = (
+            reverse("authentik_providers_oauth2:authorize")
+            + "?prompt=select_account%20consent&scope=openid"
+        )
+
+        hinted_url = append_user_selection_hint(authorize_url, user)
+
+        parsed = parse_qs(urlparse(hinted_url).query)
+        self.assertEqual(parsed["prompt"], ["consent"])
+        self.assertEqual(parsed[QS_USER_UID], [user.uuid.hex])
+
     def test_prompt_select_account(self):
         """Test prompt=select_account parsing."""
         OAuth2Provider.objects.create(

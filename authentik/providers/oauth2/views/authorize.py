@@ -35,7 +35,8 @@ from authentik.common.oauth.constants import (
 from authentik.core.models import Application
 from authentik.core.user_selection import (
     QS_USER_UID,
-    get_selectable_users,
+    get_selectable_accounts,
+    request_selected_current_user,
     start_user_selection_flow_response,
 )
 from authentik.events.models import Event, EventAction
@@ -390,13 +391,9 @@ class AuthorizationFlowInitView(PolicyAccessView):
         self.application = self.provider.application
 
     def modify_flow_context(self, flow: Flow, context: dict[str, Any]) -> dict[str, Any]:
-        selected_user_uid = self.request.GET.get(QS_USER_UID)
         if QS_LOGIN_HINT in self.request.GET and (
             PROMPT_SELECT_ACCOUNT not in self.params.prompt
-            or (
-                self.request.user.is_authenticated
-                and selected_user_uid == self.request.user.uuid.hex
-            )
+            or request_selected_current_user(self.request)
         ):
             context[PLAN_CONTEXT_PENDING_USER_IDENTIFIER] = self.request.GET.get(QS_LOGIN_HINT)
         return super().modify_flow_context(flow, context)
@@ -405,34 +402,31 @@ class AuthorizationFlowInitView(PolicyAccessView):
         """Check if the authorization flow should prompt for a user choice."""
         if PROMPT_NONE in self.params.prompt or PROMPT_LOGIN in self.params.prompt:
             return False
-        if (
-            self.request.user.is_authenticated
-            and self.request.GET.get(QS_USER_UID) == self.request.user.uuid.hex
-        ):
+        if request_selected_current_user(self.request):
             # The user just picked this account in the selection flow
             return False
         if PROMPT_SELECT_ACCOUNT in self.params.prompt:
             return True
-        return len(get_selectable_users(self.request)) > 1
+        return len(get_selectable_accounts(self.request)) > 1
 
     def handle_no_permission(self) -> HttpResponse:
         """Offer the account chooser to signed-out browsers that still have live logins."""
-        response = super().handle_no_permission()
         if PROMPT_NONE in self.params.prompt or PROMPT_LOGIN in self.params.prompt:
-            return response
+            return super().handle_no_permission()
         if SESSION_KEY_LAST_LOGIN_UID in self.request.session:
             # A re-authentication (max_age/prompt=login) is in progress; don't divert it
-            return response
-        if not get_selectable_users(self.request):
-            return response
-        return (
-            start_user_selection_flow_response(
+            return super().handle_no_permission()
+        if request_selected_current_user(self.request):
+            return super().handle_no_permission()
+        if get_selectable_accounts(self.request):
+            response = start_user_selection_flow_response(
                 self.request,
                 self.request.get_full_path(),
                 getattr(self, "application", None),
             )
-            or response
-        )
+            if response:
+                return response
+        return super().handle_no_permission()
 
     def modify_policy_request(self, request: PolicyRequest) -> PolicyRequest:
         request.context["oauth_scopes"] = self.params.scope
