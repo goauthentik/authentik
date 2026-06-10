@@ -127,14 +127,11 @@ class UserSelectionStageView(ChallengeStageView):
         next_url = self.plan.context.get(PLAN_CONTEXT_REDIRECT)
         if isinstance(next_url, str) and next_url:
             return next_url
+        fallback_url = reverse("authentik_core:root-redirect")
         session_next_url = self.request.session.get(SESSION_KEY_GET, {}).get(
-            NEXT_ARG_NAME, reverse("authentik_core:root-redirect")
+            NEXT_ARG_NAME, fallback_url
         )
-        return (
-            session_next_url
-            if isinstance(session_next_url, str)
-            else reverse("authentik_core:root-redirect")
-        )
+        return session_next_url if isinstance(session_next_url, str) else fallback_url
 
     def redirect_to_login(self, selected_user: User | None = None) -> HttpResponse:
         """Start normal authentication for the selected user."""
