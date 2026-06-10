@@ -150,9 +150,10 @@ class UserSelectionStageView(ChallengeStageView):
 
     def continue_current_user(self, selected_user: User) -> HttpResponse:
         """Continue the flow as the already-authenticated selected user."""
-        if PLAN_CONTEXT_REDIRECT in self.plan.context:
+        next_url = self.plan.context.get(PLAN_CONTEXT_REDIRECT)
+        if isinstance(next_url, str) and next_url:
             self.plan.context[PLAN_CONTEXT_REDIRECT] = append_user_selection_hint(
-                self.plan.context[PLAN_CONTEXT_REDIRECT],
+                next_url,
                 selected_user,
             )
         return self.executor.stage_ok()
