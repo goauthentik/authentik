@@ -1,98 +1,82 @@
 import "#elements/EmptyState";
 
-import { EVENT_REFRESH } from "#common/constants";
-import { DOM_PURIFY_STRICT } from "#common/purify";
-import { ThemeChangeEvent } from "#common/theme";
+import { AKRefreshEvent } from "#common/events";
+import { loadMermaid } from "#common/mermaid";
 
 import { AKElement } from "#elements/Base";
+import { listen } from "#elements/decorators/listen";
+import Styles from "#elements/Diagram.css";
+import { EmptyState } from "#elements/EmptyState";
+import { SlottedTemplateResult } from "#elements/types";
 
-import { UiThemeEnum } from "@goauthentik/api";
-
-import mermaid, { MermaidConfig } from "mermaid";
-
-import { css, CSSResult, html, TemplateResult } from "lit";
+import { CSSResult, PropertyValues } from "lit";
+import { guard } from "lit-html/directives/guard.js";
 import { customElement, property } from "lit/decorators.js";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
 import { until } from "lit/directives/until.js";
 
 @customElement("ak-diagram")
 export class Diagram extends AKElement {
-    @property({ attribute: false })
-    diagram?: string;
+    static styles: CSSResult[] = [Styles];
 
-    refreshHandler = (): void => {
+    #diagram = "";
+    @property({ attribute: false, useDefault: true })
+    public get diagram(): string {
+        return this.#diagram || this.textContent.trim() || "";
+    }
+
+    public set diagram(value: string) {
+        const previous = this.#diagram;
+        this.#diagram = value.trim();
+
+        this.requestUpdate("diagram", previous);
+    }
+
+    @listen(AKRefreshEvent, {
+        target: window,
+    })
+    protected syncDiagramContent = (): void => {
         if (!this.textContent) return;
         this.diagram = this.textContent;
     };
 
-    handlerBound = false;
-
-    static styles: CSSResult[] = [
-        css`
-            :host {
-                display: flex;
-                justify-content: center;
-            }
-        `,
-    ];
-
-    config: MermaidConfig;
+    loadingPlaceholder: EmptyState;
 
     constructor() {
         super();
-        this.config = {
-            // The type definition for this says number
-            // but the example use strings
-            // and numbers don't work
-            logLevel: "fatal",
-            startOnLoad: false,
-            flowchart: {
-                curve: "linear",
-            },
-            htmlLabels: false,
-            securityLevel: "strict",
-            dompurifyConfig: DOM_PURIFY_STRICT,
-        };
-        mermaid.initialize(this.config);
+        this.loadingPlaceholder = new EmptyState();
+        this.loadingPlaceholder.loading = true;
     }
 
-    firstUpdated(): void {
-        if (this.handlerBound) return;
-        window.addEventListener(EVENT_REFRESH, this.refreshHandler);
-        this.addEventListener(ThemeChangeEvent.eventName, ((ev: CustomEvent<UiThemeEnum>) => {
-            if (ev.detail === UiThemeEnum.Dark) {
-                this.config.theme = "dark";
-            } else {
-                this.config.theme = "default";
+    protected firstUpdated(changedProperties: PropertyValues<this>): void {
+        super.firstUpdated(changedProperties);
+        this.syncDiagramContent();
+    }
+
+    protected renderMermaid(): Promise<SlottedTemplateResult> {
+        return loadMermaid(this.activeTheme).then((mermaid) => {
+            if (!this.diagram) {
+                return null;
             }
-            mermaid.initialize(this.config);
-        }) as EventListener);
-        this.handlerBound = true;
-        this.refreshHandler();
-    }
 
-    disconnectedCallback(): void {
-        super.disconnectedCallback();
-        window.removeEventListener(EVENT_REFRESH, this.refreshHandler);
-    }
+            return mermaid.render("diagram", this.diagram).then((result) => {
+                result.bindFunctions?.(this.renderRoot as HTMLElement);
 
-    render(): TemplateResult {
-        this.querySelectorAll("*").forEach((el) => {
-            try {
-                el.remove();
-            } catch {
-                console.debug(`authentik/diagram: failed to remove element ${el}`);
-            }
+                return unsafeHTML(result.svg);
+            });
         });
-        if (!this.diagram) {
-            return html`<ak-empty-state loading></ak-empty-state>`;
-        }
-        return html`${until(
-            mermaid.render("graph", this.diagram).then((r) => {
-                r.bindFunctions?.(this.shadowRoot as unknown as Element);
-                return unsafeHTML(r.svg);
-            }),
-        )}`;
+    }
+
+    protected override render(): SlottedTemplateResult {
+        const { diagram, loadingPlaceholder, activeTheme } = this;
+
+        return guard([diagram, activeTheme], () => {
+            if (!diagram) {
+                return loadingPlaceholder;
+            }
+
+            return until(this.renderMermaid(), loadingPlaceholder);
+        });
     }
 }
 

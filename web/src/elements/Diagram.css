@@ -1,0 +1,41 @@
+:host {
+    --ak-mermaid-message-text: var(--pf-c-content--Color);
+
+    display: flex;
+    justify-content: center;
+}
+
+svg#diagram {
+    .node {
+        rect,
+        circle,
+        ellipse,
+        polygon,
+        path {
+            fill: var(--pf-global--BackgroundColor--300);
+        }
+    }
+
+    .rect {
+        fill: var(
+            --ak-mermaid-box-background-color,
+            var(--pf-global--BackgroundColor--light-300)
+        ) !important;
+    }
+
+    .messageText {
+        stroke-width: 4;
+        fill: var(--ak-mermaid-message-text) !important;
+        paint-order: stroke;
+    }
+}
+
+/* #region Dark Theme */
+
+:host([theme="dark"]) {
+    --ak-mermaid-message-text: var(--ak-dark-foreground);
+    --ak-mermaid-box-background-color: var(--ak-dark-background-lighter);
+    --ak-table-stripe-background: var(--pf-global--BackgroundColor--dark-200);
+}
+
+/* #endregion */

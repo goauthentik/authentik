@@ -10,20 +10,18 @@ import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-flow-diagram")
 export class FlowDiagram extends Diagram {
-    @property()
-    flowSlug?: string;
+    @property({ type: String, useDefault: true })
+    flowSlug: string | null = null;
 
-    refreshHandler = (): void => {
-        this.diagram = undefined;
+    protected refresh(): void {
         aki(FlowsApi)
             .flowsInstancesDiagramRetrieve({
                 slug: this.flowSlug || "",
             })
             .then((data) => {
                 this.diagram = data.diagram;
-                this.requestUpdate();
             });
-    };
+    }
 }
 
 declare global {
