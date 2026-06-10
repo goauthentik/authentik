@@ -102,7 +102,7 @@ Every application that you add to authentik requires a provider, which is used t
           authorization, etc.
     - **Protocol settings**: provide the following required configurations:
         - Note the **Client ID**, **Client Secret**, and **Slug** values because they will be required later when you configure Grafana to use authentik.
-        - Set the **Redirect URI** as a `Strict` `Authorization` redirect to `https://grafana.company/login/generic_oauth`.
+        - Add a **Redirect URI** of type `Strict` `Authorization` as `https://grafana.company/login/generic_oauth`.
             - <strong className="tip">TIP</strong>: The Redirect URI is where a user is directed to,
               as soon as authentik's authorization flow is successfully completed.
     - **Grant Types** (required): Select at least one [grant type](../../add-secure-apps/providers/oauth2/#oauth-20-flows-and-grant-types) that the provider can use.

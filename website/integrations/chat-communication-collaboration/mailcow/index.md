@@ -56,7 +56,7 @@ Repeat these steps for all users that need to use the Mailcow integration.
     - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
         - Note the **Client ID** and **Client Secret** values because they will be required later.
-        - Set a `Strict` `Authorization` **redirect URI** to `https://mailcow.company`.
+        - Add a **Redirect URI** of type `Strict` `Authorization` as `https://mailcow.company`.
         - Select any available signing key.
         - Under **Advanced protocol settings**:
             - Remove the `authentik default OAuth Mapping: OpenID 'email'` scope from **Selected Scopes**.

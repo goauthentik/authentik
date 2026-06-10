@@ -53,7 +53,7 @@ Vaultwarden requires the email scope to return either `email_verified: True` or 
     - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
         - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
-        - Set a `Strict` `Authorization` **redirect URI** to `https://vaultwarden.company/identity/connect/oidc-signin`.
+        - Add a **Redirect URI** of type `Strict` `Authorization` as `https://vaultwarden.company/identity/connect/oidc-signin`.
         - Select any available signing key.
         - Under **Advanced protocol settings**:
             - Set **Access token validity** to more than 5 minutes.

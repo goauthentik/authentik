@@ -51,7 +51,7 @@ To support the integration of Observium with authentik, you need to create an ap
 - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
 - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
     - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
-    - Set a `Strict` `Authorization` **redirect URI** to `https://observium.company/secure/redirect_uri`. Note that the Redirect URI can be anything, as long as it does not point to existing content.
+    - Add a **Redirect URI** of type `Strict` `Authorization` as `https://observium.company/secure/redirect_uri`. Note that the Redirect URI can be anything, as long as it does not point to existing content.
     - Select any available signing key.
 - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 

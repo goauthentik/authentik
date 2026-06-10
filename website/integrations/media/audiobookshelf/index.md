@@ -33,7 +33,7 @@ To support the integration of Audiobookshelf with authentik, you need to create 
     - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
         - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
-        - Add two `Strict` `Authorization` **redirect URIs**:
+        - Add two **Redirect URIs** of type `Strict` `Authorization`:
             - `https://audiobookshelf.company/auth/openid/callback`
             - `https://audiobookshelf.company/auth/openid/mobile-redirect`
         - Select any available signing key.

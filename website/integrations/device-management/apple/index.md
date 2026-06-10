@@ -160,7 +160,7 @@ You will need to create an [OAuth2/OpenID Provider](/docs/add-secure-apps/provid
     - **Choose a Provider type**: select **OAuth2/OpenID Provider** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
         - Note the **Client ID** and **Client Secret** values because they will be required later.
-        - Set a `Strict` `Authorization` **redirect URI** to `https://gsa-ws.apple.com/grandslam/GsService2/acs`.
+        - Add a **Redirect URI** of type `Strict` `Authorization` as `https://gsa-ws.apple.com/grandslam/GsService2/acs`.
         - Select any available signing key.
         - Under **Advanced protocol settings**, in addition to the default scopes, add the four following **Selected Scopes** to the provider.
             - `Apple Business Manager ssf.manage`

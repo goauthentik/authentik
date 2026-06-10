@@ -38,7 +38,7 @@ To support the integration of Drupal with authentik, you need to create an appli
 - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. The **slug** will be used in URLs and should match the `drupal-slug` placeholder defined earlier.
 - **Choose a Provider type**: select **OAuth2/OpenID Provider** as the provider type.
 - **Configure the Provider**: provide a name (or accept the auto-provided name), and configure the following required settings:
-    - Set a `Strict` `Authorization` **redirect URI** to `https://drupal.company/openid-connect/generic`.
+    - Add a **Redirect URI** of type `Strict` `Authorization` as `https://drupal.company/openid-connect/generic`.
 - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 
 3. Click **Submit** to save the new application and provider.

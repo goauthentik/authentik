@@ -33,7 +33,7 @@ To support the integration of mailcow Logs Viewer with authentik, you need to cr
     - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
         - Note the **Client ID**, **Client Secret**, and **application slug** values because they will be required later.
-        - Set a `Strict` `Authorization` **redirect URI** to `https://mailcow-logs-viewer.company/api/auth/callback`.
+        - Add a **Redirect URI** of type `Strict` `Authorization` as `https://mailcow-logs-viewer.company/api/auth/callback`.
         - Select any available signing key.
     - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 

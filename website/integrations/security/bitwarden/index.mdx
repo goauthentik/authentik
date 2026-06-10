@@ -55,14 +55,14 @@ To support the integration of Bitwarden with authentik, you need to create an ap
         - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
         - Add the redirect URIs for your Bitwarden deployment:
             - For Bitwarden Cloud US:
-                - Set a `Strict` `Authorization` **redirect URI** to `https://sso.bitwarden.com/oidc-signin`.
-                - Set a `Strict` `Post Logout` **redirect URI** to `https://sso.bitwarden.com/oidc-signedout`.
+                - Add a **Redirect URI** of type `Strict` `Authorization` as `https://sso.bitwarden.com/oidc-signin`.
+                - Add a **Redirect URI** of type `Strict` `Post Logout` as `https://sso.bitwarden.com/oidc-signedout`.
             - For Bitwarden Cloud EU:
-                - Set a `Strict` `Authorization` **redirect URI** to `https://sso.bitwarden.eu/oidc-signin`.
-                - Set a `Strict` `Post Logout` **redirect URI** to `https://sso.bitwarden.eu/oidc-signedout`.
+                - Add a **Redirect URI** of type `Strict` `Authorization` as `https://sso.bitwarden.eu/oidc-signin`.
+                - Add a **Redirect URI** of type `Strict` `Post Logout` as `https://sso.bitwarden.eu/oidc-signedout`.
             - For self-hosted Bitwarden:
-                - Set a `Strict` `Authorization` **redirect URI** to `https://bitwarden.company/sso/oidc-signin`.
-                - Set a `Strict` `Post Logout` **redirect URI** to `https://bitwarden.company/sso/oidc-signedout`.
+                - Add a **Redirect URI** of type `Strict` `Authorization` as `https://bitwarden.company/sso/oidc-signin`.
+                - Add a **Redirect URI** of type `Strict` `Post Logout` as `https://bitwarden.company/sso/oidc-signedout`.
         - Select any available **Signing Key**.
     - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 
