@@ -40,7 +40,7 @@ Refer to [Email scope verification](/docs/add-secure-apps/providers/oauth2/index
 - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
 - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
     - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
-    - Set a `Strict` `Authorization` redirect URI to `https://komga.company/login/oauth2/code/authentik`.
+    - Set a `Strict` `Authorization` **redirect URI** to `https://komga.company/login/oauth2/code/authentik`.
     - Select any available signing key.
     - **Advanced protocol settings** > **Scopes**:
         - Add `OAuth Mapping: OpenID 'email' with "email_verified"` to the **Selected Scopes**.

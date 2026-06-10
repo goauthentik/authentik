@@ -36,7 +36,7 @@ If you want to manage Dashy administrator access through authentik, create or ch
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
         - Note the **Client ID** and **slug** values because they will be required later.
         - Set the **Client type** to `Public`. Dashy runs entirely in the browser and does not store a client secret.
-        - Create two `Strict` `Authorization` redirect URIs:
+        - Create two `Strict` `Authorization` **redirect URIs**:
             - `https://dashy.company`
             - `https://dashy.company/`
         - Select any available signing key.

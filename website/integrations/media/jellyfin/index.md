@@ -102,7 +102,7 @@ At this point, enter a username and click **Save Search Attribute Settings and Q
 In authentik under **Providers**, create an OAuth2/OpenID Provider with these settings:
 
 - Name: `jellyfin`
-- `Authorization` Redirect URI: `https://jellyfin.company/sso/OID/redirect/authentik`
+- `Authorization` **Redirect URI**: `https://jellyfin.company/sso/OID/redirect/authentik`
 
 Everything else is up to you, just make sure to grab the client ID and the client secret!
 

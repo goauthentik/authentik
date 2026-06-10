@@ -40,7 +40,7 @@ To support the integration of Personio with authentik, you need to create an app
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
         - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
         - Set the **Client type** to `Confidential`.
-        - Add two `Strict` `Authorization` redirect URIs:
+        - Add two `Strict` `Authorization` **redirect URIs**:
             - The **Callback URLs/Redirect URIs** value from Personio.
             - `https://login.personio.com/login/callback`
         - Select any available signing key.

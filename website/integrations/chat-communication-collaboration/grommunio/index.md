@@ -39,7 +39,7 @@ grommunio-web expects Keycloak-compatible OIDC endpoints. Because authentik does
     - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
     - **Configure the Provider**: provide a name, the authorization flow to use, and the following required configurations.
         - Note the **Client ID** and **Client Secret** values because they will be required later.
-        - Set a `Strict` `Authorization` redirect URI to `https://grommunio.company/web`.
+        - Set a `Strict` `Authorization` **redirect URI** to `https://grommunio.company/web`.
         - Set **Signing Key** to an available RSA key.
         - Under **Advanced protocol settings**:
             - Add the `authentik default OAuth Mapping: OpenID 'offline_access'` scope to **Selected Scopes**.

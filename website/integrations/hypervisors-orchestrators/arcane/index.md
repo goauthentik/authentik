@@ -53,7 +53,7 @@ Arcane either requires the email scope to return a `true` value for whether the 
     - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
         - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
-        - Set a `Strict` `Authorization` redirect URI to `https://arcane.company/auth/oidc/callback`.
+        - Set a `Strict` `Authorization` **redirect URI** to `https://arcane.company/auth/oidc/callback`.
         - Select any available signing key.
         - Under **Advanced protocol settings**:
             - Remove the `authentik default OAuth Mapping: OpenID 'email'` scope, and add the custom scope mapping you created above.

@@ -35,7 +35,7 @@ To support the integration of 1Password with authentik, you need to create an ap
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
         - Set **Client Type** to `Public`.
         - Note the **Client ID** and **slug** values because they will be required later.
-        - Add two `Strict` `Authorization` redirect URIs and set them to `https://your-domain.1password.com/sso/oidc/redirect/` and `onepassword://sso/oidc/redirect`.
+        - Add two `Strict` `Authorization` **redirect URIs** and set them to `https://your-domain.1password.com/sso/oidc/redirect/` and `onepassword://sso/oidc/redirect`.
         - Select any available **Signing Key**.
     - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page. If you add a SCIM provider as a backchannel provider later, only users who can view this application are synchronized.
 

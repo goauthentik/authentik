@@ -33,7 +33,7 @@ To support the integration of Immich with authentik, you need to create an appli
     - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
         - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
-        - Add three `Strict` `Authorization` redirect URIs and set them to `app.immich:///oauth-callback`, `https://immich.company/auth/login`, and `https://immich.company/user-settings`.
+        - Add three `Strict` `Authorization` **redirect URIs** and set them to `app.immich:///oauth-callback`, `https://immich.company/auth/login`, and `https://immich.company/user-settings`.
         - Select any available signing key.
     - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
     - **Configure Launch URL** _(optional)_: set the [Launch URL](/docs/add-secure-apps/applications/#appearance) to `https://immich.company/auth/login?autoLaunch=1` to allow automatic login to Immich when clicking the application from within authentik.

@@ -58,7 +58,7 @@ To support the integration of Home Assistant with authentik, you need to create 
     - Choose a **Provider Type**: select **OAuth2/OpenID Connect** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
         - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
-        - Set a `Strict` `Authorization` redirect URI to `https://hass.company/auth/openid/callback`.
+        - Set a `Strict` `Authorization` **redirect URI** to `https://hass.company/auth/openid/callback`.
         - Select any available signing key (to use the RS256 `id_token_signing_alg`)
     - Configure Bindings (optional): you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 
@@ -109,7 +109,7 @@ To support the integration of Home Assistant with authentik, you need to create 
     - Choose a **Provider Type**: select **OAuth2/OpenID Connect** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
         - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
-        - Set a `Strict` `Authorization` redirect URI to `https://hass.company/auth/oidc/callback`.
+        - Set a `Strict` `Authorization` **redirect URI** to `https://hass.company/auth/oidc/callback`.
         - Select any available signing key (to use the RS256 `id_token_signing_alg`)
     - Configure Bindings (optional): you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 

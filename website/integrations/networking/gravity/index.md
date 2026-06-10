@@ -38,7 +38,7 @@ To support the integration of Gravity with authentik, you need to create an appl
 - **Choose a Provider type**: Select **OAuth2/OpenID Connect** as the provider type.
 - **Configure the Provider**: Provide a name (or accept the auto-provided name), choose the authorization flow for this provider, and configure the following required settings:
     - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
-    - Set a `Strict` `Authorization` redirect URI to `https://gravity.company/auth/oidc/callback`.
+    - Set a `Strict` `Authorization` **redirect URI** to `https://gravity.company/auth/oidc/callback`.
     - Select any available signing key.
 - **Configure Bindings** _(optional)_: Create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 

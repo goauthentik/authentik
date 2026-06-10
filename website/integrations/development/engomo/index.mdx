@@ -46,7 +46,7 @@ To support the integration of Engomo with authentik, you need to create an appli
 - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
     - Note the **Client ID** and **slug** values because they will be required later.
     - Set the **Client type** to `Public`.
-    - Add two `Strict` `Authorization` redirect URIs and set them to `https://engomo.company/auth` and `com.engomo.engomo://callback/`.
+    - Add two `Strict` `Authorization` **redirect URIs** and set them to `https://engomo.company/auth` and `com.engomo.engomo://callback/`.
     - Select any available signing key.
     - Under **Advanced protocol settings**, add the scope you just created to the list of available scopes.
 - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
