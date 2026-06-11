@@ -4,6 +4,8 @@ sidebar_label: Komga
 support_level: community
 ---
 
+import RedirectURI20265Note from "../../\_redirect-uri-2026-5-note.mdx";
+
 ## What is Komga?
 
 > Komga is an open-source comic and manga server that lets users organize, read, and stream their digital comic collections with ease.
@@ -22,6 +24,8 @@ This documentation lists only the settings that you need to change from their de
 :::
 
 ## authentik configuration
+
+<RedirectURI20265Note />
 
 To support the integration of Komga with authentik, you need to create an application/provider pair in authentik.
 

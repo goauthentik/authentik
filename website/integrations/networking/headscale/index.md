@@ -4,6 +4,8 @@ sidebar_label: Headscale
 support_level: community
 ---
 
+import RedirectURI20265Note from "../../\_redirect-uri-2026-5-note.mdx";
+
 ## What is Headscale?
 
 > Headscale is an open source alternative to the Tailscale coordination server and can be self-hosted for a single tailnet. Headscale is a re-implemented version of the Tailscale coordination server, developed independently and completely separate from Tailscale, with its own independent community of users and developers.
@@ -22,6 +24,8 @@ This documentation lists only the settings that you need to change from their de
 :::
 
 ## authentik configuration
+
+<RedirectURI20265Note />
 
 To support the integration of Headscale with authentik, you need to create an application/provider pair in authentik.
 

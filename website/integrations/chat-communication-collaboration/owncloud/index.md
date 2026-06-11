@@ -4,6 +4,8 @@ sidebar_label: ownCloud
 support_level: community
 ---
 
+import RedirectURI20265Note from "../../\_redirect-uri-2026-5-note.mdx";
+
 ## What is ownCloud?
 
 > ownCloud is a free and open-source software project for content collaboration and sharing and syncing of files.
@@ -22,6 +24,8 @@ This guide focuses on deploying ownCloud installations using Docker. If you depl
 :::
 
 ## authentik configuration
+
+<RedirectURI20265Note />
 
 To support the integration of ownCloud with authentik, you need to create multiple application/provider pairs in authentik. A different pair is required for the Web UI, Desktop application, Android application, and iOS application.
 

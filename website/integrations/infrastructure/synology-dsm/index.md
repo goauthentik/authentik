@@ -4,6 +4,8 @@ sidebar_label: Synology DSM (DiskStation Manager)
 support_level: community
 ---
 
+import RedirectURI20265Note from "../../\_redirect-uri-2026-5-note.mdx";
+
 ## What is Synology DSM?
 
 > Synology Inc. is a Taiwanese corporation that specializes in network-attached storage (NAS) appliances. Synology's line of NAS is known as the DiskStation for desktop models, FlashStation for all-flash models, and RackStation for rack-mount models. Synology's products are distributed worldwide and localized in several languages.
@@ -26,6 +28,8 @@ This documentation lists only the settings that you need to change from their de
 :::
 
 ## authentik configuration
+
+<RedirectURI20265Note />
 
 To support the integration of Synology DSM with authentik, you need to create an application/provider pair in authentik.
 

@@ -4,6 +4,8 @@ sidebar_label: DigitalOcean
 support_level: community
 ---
 
+import RedirectURI20265Note from "../../\_redirect-uri-2026-5-note.mdx";
+
 ## What is DigitalOcean?
 
 > DigitalOcean is a cloud infrastructure provider that offers developers simple, scalable virtual servers (droplets), managed databases, and other cloud services to deploy and manage applications efficiently.
@@ -21,6 +23,8 @@ This documentation lists only the settings that you need to change from their de
 :::
 
 ## authentik configuration
+
+<RedirectURI20265Note />
 
 To support the integration of DigitalOcean with authentik, you need to create a scope mapping, an application/provider pair, and application entitlements for the DigitalOcean roles that users should receive.
 

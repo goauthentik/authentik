@@ -4,6 +4,8 @@ sidebar_label: Coder
 support_level: community
 ---
 
+import RedirectURI20265Note from "../../\_redirect-uri-2026-5-note.mdx";
+
 ## What is Coder?
 
 > Coder is an open-source platform that provides browser-based cloud development environments, enabling developers and teams to securely write, edit, and manage code remotely without the need for local setup.
@@ -22,6 +24,8 @@ This documentation lists only the settings that you need to change from their de
 :::
 
 ## authentik configuration
+
+<RedirectURI20265Note />
 
 To support the integration of Coder with authentik, you need to create an application/provider pair in authentik.
 

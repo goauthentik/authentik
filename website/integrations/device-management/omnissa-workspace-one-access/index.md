@@ -4,6 +4,8 @@ sidebar_label: Omnissa Workspace ONE Access
 support_level: community
 ---
 
+import RedirectURI20265Note from "../../\_redirect-uri-2026-5-note.mdx";
+
 ## What is Omnissa Workspace ONE Access?
 
 > Omnissa Workspace ONE Access, now Omnissa Access, is the identity and access service for the Omnissa Workspace ONE platform. It provides single sign-on, access policies, and identity federation for applications and devices, and can delegate authentication to external identity providers such as authentik.
@@ -30,6 +32,8 @@ This documentation lists only the settings that you need to change from their de
 You can leave the form open in another browser tab while configuring authentik.
 
 ## authentik configuration
+
+<RedirectURI20265Note />
 
 To support the integration of Omnissa Workspace ONE Access with authentik, you need to create an application/provider pair in authentik.
 

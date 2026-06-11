@@ -4,6 +4,8 @@ sidebar_label: pgAdmin
 support_level: community
 ---
 
+import RedirectURI20265Note from "../../\_redirect-uri-2026-5-note.mdx";
+
 ## What is pgAdmin?
 
 > pgAdmin is a management tool for PostgreSQL and derivative relational databases such as EnterpriseDB's EDB Advanced Server. It may be run either as a web or desktop application.
@@ -26,6 +28,8 @@ This documentation lists only the settings that you need to change from their de
 :::
 
 ## authentik configuration
+
+<RedirectURI20265Note />
 
 To support the integration of pgAdmin with authentik, you need to create an application/provider pair in authentik.
 

@@ -4,6 +4,8 @@ sidebar_label: Karakeep
 support_level: community
 ---
 
+import RedirectURI20265Note from "../../\_redirect-uri-2026-5-note.mdx";
+
 ## What is Karakeep?
 
 > A self-hostable bookmark-everything app (links, notes and images) with AI-based automatic tagging and full-text search.
@@ -22,6 +24,8 @@ This documentation lists only the settings that you need to change from their de
 :::
 
 ## authentik configuration
+
+<RedirectURI20265Note />
 
 To support the integration of Karakeep with authentik, you need to create an application/provider pair in authentik.
 

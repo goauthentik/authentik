@@ -4,6 +4,8 @@ sidebar_label: Plesk
 support_level: community
 ---
 
+import RedirectURI20265Note from "../../\_redirect-uri-2026-5-note.mdx";
+
 ## What is Plesk?
 
 > Plesk is a web hosting platform with a control panel that helps manage servers, applications, and websites through a comprehensive graphical user interface. It provides tools for web professionals, IT administrators, and hosting companies to simplify the process of hosting and managing websites.
@@ -26,6 +28,8 @@ Replace these placeholders in the guide with your values:
 - `authentik.company`: The FQDN of your authentik installation
 
 ## authentik configuration
+
+<RedirectURI20265Note />
 
 To support the integration of Plesk with authentik, you need to create an application/provider pair in authentik.
 

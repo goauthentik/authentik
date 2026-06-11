@@ -4,6 +4,8 @@ sidebar_label: Drupal
 support_level: community
 ---
 
+import RedirectURI20265Note from "../../\_redirect-uri-2026-5-note.mdx";
+
 ## What is Drupal?
 
 > Drupal is a free and open-source content management system written in PHP and
@@ -27,6 +29,8 @@ There are many different modules for Drupal that allow you to set up SSO using d
 :::
 
 ## authentik configuration
+
+<RedirectURI20265Note />
 
 To support the integration of Drupal with authentik, you need to create an application/provider pair in authentik.
 

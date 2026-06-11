@@ -4,6 +4,8 @@ sidebar_label: Gitea
 support_level: community
 ---
 
+import RedirectURI20265Note from "../../\_redirect-uri-2026-5-note.mdx";
+
 ## What is Gitea?
 
 > Gitea is a community managed lightweight code hosting solution written in Go. It is published under the MIT license.
@@ -22,6 +24,8 @@ This documentation lists only the settings that you need to change from their de
 :::
 
 ## authentik configuration
+
+<RedirectURI20265Note />
 
 To support the integration of Gitea with authentik, you need to create an application/provider pair in authentik.
 

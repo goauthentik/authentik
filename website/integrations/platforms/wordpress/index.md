@@ -4,6 +4,8 @@ sidebar_label: WordPress
 support_level: community
 ---
 
+import RedirectURI20265Note from "../../\_redirect-uri-2026-5-note.mdx";
+
 ## What is WordPress?
 
 > WordPress is an open source publishing platform used to create websites, blogs, and other web content.
@@ -26,6 +28,8 @@ This documentation lists only the settings that you need to change from their de
 :::
 
 ## authentik configuration
+
+<RedirectURI20265Note />
 
 To support the integration of WordPress with authentik, you need to create an application/provider pair in authentik.
 

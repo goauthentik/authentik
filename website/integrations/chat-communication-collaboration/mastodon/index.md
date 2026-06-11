@@ -4,6 +4,8 @@ sidebar_label: Mastodon
 support_level: community
 ---
 
+import RedirectURI20265Note from "../../\_redirect-uri-2026-5-note.mdx";
+
 ## What is Mastodon?
 
 > Mastodon is free and open-source software for running self-hosted social networking services. It has microblogging features similar to Twitter
@@ -22,6 +24,8 @@ This documentation lists only the settings that you need to change from their de
 :::
 
 ## authentik configuration
+
+<RedirectURI20265Note />
 
 To support the integration of Mastodon with authentik, you need to create an application/provider pair in authentik.
 

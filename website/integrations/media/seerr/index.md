@@ -4,6 +4,8 @@ sidebar_label: Seerr
 support_level: community
 ---
 
+import RedirectURI20265Note from "../../\_redirect-uri-2026-5-note.mdx";
+
 ## What is Seerr?
 
 > Seerr (previously Jellyseerr) is a free and open source application for managing requests in your media library. It integrates with media servers like Jellyfin, Plex, and Emby, and services such as Sonarr and Radarr.
@@ -16,6 +18,8 @@ support_level: community
 - `authentik.company` is the FQDN of the authentik installation.
 
 ## authentik configuration
+
+<RedirectURI20265Note />
 
 To support the integration of Seerr with authentik, you need to create an application/provider pair in authentik.
 

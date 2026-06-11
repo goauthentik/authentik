@@ -4,6 +4,8 @@ sidebar_label: Observium
 support_level: community
 ---
 
+import RedirectURI20265Note from "../../\_redirect-uri-2026-5-note.mdx";
+
 ## What is Observium?
 
 > Observium is a network monitoring and management platform that provides real-time insight into network health and performance.
@@ -39,6 +41,8 @@ apt install ./libapache2-mod-auth-openidc_2.4.15.7-1.bookworm_amd64.deb
 ```
 
 ## authentik configuration
+
+<RedirectURI20265Note />
 
 To support the integration of Observium with authentik, you need to create an application/provider pair in authentik.
 

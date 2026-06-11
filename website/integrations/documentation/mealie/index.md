@@ -4,6 +4,8 @@ sidebar_label: Mealie
 support_level: community
 ---
 
+import RedirectURI20265Note from "../../\_redirect-uri-2026-5-note.mdx";
+
 ## What is Mealie?
 
 > Mealie is a self-hosted recipe manager and meal planner. Easily add recipes by providing the URL and Mealie will automatically import the relevant data or add a family recipe with the UI editor.
@@ -22,6 +24,8 @@ This documentation lists only the settings that you need to change from their de
 :::
 
 ## authentik configuration
+
+<RedirectURI20265Note />
 
 To support the integration of Mealie with authentik, you need to create an application/provider pair in authentik.
 

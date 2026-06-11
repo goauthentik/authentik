@@ -4,6 +4,8 @@ sidebar_label: Node-RED
 support_level: community
 ---
 
+import RedirectURI20265Note from "../../\_redirect-uri-2026-5-note.mdx";
+
 ## What is Node-RED?
 
 > Node-RED is a programming tool for wiring together hardware devices, APIs and online services in new and interesting ways.
@@ -28,6 +30,8 @@ This documentation lists only the settings that you need to change from their de
 :::
 
 ## authentik configuration
+
+<RedirectURI20265Note />
 
 To support the integration of Node-RED with authentik, you need to create an application/provider pair in authentik.
 

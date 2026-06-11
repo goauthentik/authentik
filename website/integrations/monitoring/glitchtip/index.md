@@ -4,6 +4,8 @@ sidebar_label: Glitchtip
 support_level: community
 ---
 
+import RedirectURI20265Note from "../../\_redirect-uri-2026-5-note.mdx";
+
 ## What is Glitchtip?
 
 > Bugs are inevitable in web development. The important thing is to catch them when they appear. With GlitchTip, you can rest easy knowing that if your web app throws an error or goes down, you will be notified immediately. GlitchTip combines error tracking and uptime monitoring in one open-source package to keep you and your team fully up-to-date on the status of your projects.
@@ -22,6 +24,8 @@ This documentation lists only the settings that you need to change from their de
 :::
 
 ## authentik configuration
+
+<RedirectURI20265Note />
 
 To support the integration of Glitchtip with authentik, you need to create an application/provider pair in authentik.
 

@@ -4,6 +4,8 @@ sidebar_label: HedgeDoc
 support_level: community
 ---
 
+import RedirectURI20265Note from "../../\_redirect-uri-2026-5-note.mdx";
+
 ## What is HedgeDoc?
 
 > HedgeDoc lets you create real-time collaborative markdown notes.
@@ -22,6 +24,8 @@ This documentation lists only the settings that you need to change from their de
 :::
 
 ## authentik configuration
+
+<RedirectURI20265Note />
 
 To support the integration of HedgeDoc with authentik, you need to create an application/provider pair in authentik.
 

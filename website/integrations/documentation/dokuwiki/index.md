@@ -4,6 +4,8 @@ sidebar_label: DokuWiki
 support_level: community
 ---
 
+import RedirectURI20265Note from "../../\_redirect-uri-2026-5-note.mdx";
+
 ## What is DokuWiki?
 
 > DokuWiki is an open source wiki application licensed under GPLv2 and written in the PHP programming language. It works on plain text files and thus does not need a database. Its syntax is similar to the one used by MediaWiki and it is often recommended as a more lightweight, easier to customize alternative to MediaWiki.
@@ -22,6 +24,8 @@ This documentation lists only the settings that you need to change from their de
 :::
 
 ## authentik configuration
+
+<RedirectURI20265Note />
 
 To support the integration of DokuWiki with authentik, you need to create an application/provider pair in authentik.
 

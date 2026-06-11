@@ -4,6 +4,8 @@ sidebar_label: Xen Orchestra
 support_level: community
 ---
 
+import RedirectURI20265Note from "../../\_redirect-uri-2026-5-note.mdx";
+
 ## What is Xen Orchestra?
 
 > Xen Orchestra provides a user friendly web interface for every Xen based hypervisor (XenServer, xcp-ng, etc.).
@@ -27,6 +29,8 @@ This documentation lists only the settings that you need to change from their de
 :::
 
 ## authentik configuration
+
+<RedirectURI20265Note />
 
 To support the integration of Xen Orchestra with authentik, you need to create an application/provider pair in authentik.
 

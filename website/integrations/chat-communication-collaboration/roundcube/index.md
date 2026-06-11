@@ -4,6 +4,8 @@ sidebar_label: Roundcube
 support_level: community
 ---
 
+import RedirectURI20265Note from "../../\_redirect-uri-2026-5-note.mdx";
+
 ## What is Roundcube?
 
 > Roundcube is a browser-based multilingual IMAP client with an application-like user interface. It provides the full functionality you expect from an email client, including MIME support, address book, folder manipulation, message searching and spell checking.
@@ -28,6 +30,8 @@ This documentation lists only the settings that you need to change from their de
 :::
 
 ## authentik configuration
+
+<RedirectURI20265Note />
 
 To support the integration of Roundcube with authentik, you need to create an application/provider pair in authentik.
 

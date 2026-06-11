@@ -4,6 +4,8 @@ sidebar_label: Home Assistant
 support_level: community
 ---
 
+import RedirectURI20265Note from "../../\_redirect-uri-2026-5-note.mdx";
+
 <!-- spellchecker:ignore christiaangoossens -->
 
 ## What is Home Assistant?
@@ -46,6 +48,8 @@ values={[
 <TabItem value="cav_openid">
 
 ## authentik configuration
+
+<RedirectURI20265Note />
 
 To support the integration of Home Assistant with authentik, you need to create an application/provider pair in authentik.
 

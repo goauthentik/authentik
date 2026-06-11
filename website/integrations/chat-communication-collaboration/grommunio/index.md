@@ -4,6 +4,8 @@ sidebar_label: grommunio
 support_level: community
 ---
 
+import RedirectURI20265Note from "../../\_redirect-uri-2026-5-note.mdx";
+
 <!-- spellchecker:ignore gromox -->
 
 ## What is grommunio?
@@ -24,6 +26,8 @@ This documentation lists only the settings that you need to change from their de
 :::
 
 ## authentik configuration
+
+<RedirectURI20265Note />
 
 To integrate authentik with grommunio, you will need to create an application and provider pair in authentik.
 

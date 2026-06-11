@@ -4,6 +4,8 @@ sidebar_label: Terrakube
 support_level: community
 ---
 
+import RedirectURI20265Note from "../../\_redirect-uri-2026-5-note.mdx";
+
 ## What is Terrakube?
 
 > Terrakube is an open-source collaboration platform designed for managing remote Infrastructure-as-Code (IaC) operations with Terraform. It serves as an alternative to proprietary tools like Terraform Enterprise.
@@ -22,6 +24,8 @@ This documentation lists only the settings that you need to change from their de
 :::
 
 ## authentik configuration
+
+<RedirectURI20265Note />
 
 To support the integration of Terrakube with authentik, you need to create an application/provider pair in authentik.
 

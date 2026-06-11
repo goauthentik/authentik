@@ -4,6 +4,7 @@ sidebar_label: Zammad
 support_level: community
 ---
 
+import RedirectURI20265Note from "../../\_redirect-uri-2026-5-note.mdx";
 import SAMLProvider20265Warning from "../../\_saml-provider-2026-5-warning.mdx";
 import TabItem from "@theme/TabItem";
 import Tabs from "@theme/Tabs";
@@ -39,6 +40,8 @@ values={[
 <TabItem value="saml">
 
 ## authentik configuration
+
+<RedirectURI20265Note />
 
 To support the integration of Zammad with authentik, you need to create an application/provider pair in authentik.
 

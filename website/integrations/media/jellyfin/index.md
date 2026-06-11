@@ -4,6 +4,8 @@ sidebar_label: Jellyfin
 support_level: community
 ---
 
+import RedirectURI20265Note from "../../\_redirect-uri-2026-5-note.mdx";
+
 ## What is Jellyfin?
 
 > Jellyfin is a free and open source media management and streaming platform for movies, TV shows, and music.
@@ -94,6 +96,8 @@ At this point, enter a username and click **Save Search Attribute Settings and Q
 2. Log out, and log in with an LDAP user. Username **must** be used; logging in with email will not work.
 
 ## OIDC configuration
+
+<RedirectURI20265Note />
 
 ### authentik configuration
 

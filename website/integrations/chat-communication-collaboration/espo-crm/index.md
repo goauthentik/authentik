@@ -4,6 +4,8 @@ sidebar_label: EspoCRM
 support_level: community
 ---
 
+import RedirectURI20265Note from "../../\_redirect-uri-2026-5-note.mdx";
+
 ## What is EspoCRM?
 
 > EspoCRM is a CRM (customer relationship management) web application that allows users to store, visualize, and analyze their company's business-related relationships such as opportunities, people, businesses, and projects.
@@ -26,6 +28,8 @@ This documentation lists only the settings that you need to change from their de
 :::
 
 ## authentik configuration
+
+<RedirectURI20265Note />
 
 To support the integration of EspoCRM with authentik, you need to create an application/provider pair in authentik.
 

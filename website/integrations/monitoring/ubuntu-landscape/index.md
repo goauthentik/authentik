@@ -4,6 +4,8 @@ sidebar_label: Ubuntu Landscape
 support_level: community
 ---
 
+import RedirectURI20265Note from "../../\_redirect-uri-2026-5-note.mdx";
+
 ## What is Ubuntu Landscape?
 
 > Landscape is a systems management tool developed by Canonical. It can be run on-premises or in the cloud depending on the needs of the user. It is primarily designed for use with Ubuntu derivatives such as Desktop, Server, and Core.
@@ -28,6 +30,8 @@ This documentation lists only the settings that you need to change from their de
 Landscape uses the OpenID Connect protocol for single sign-on.
 
 ## authentik configuration
+
+<RedirectURI20265Note />
 
 To support the integration of Landscape with authentik, you need to create an application/provider pair in authentik.
 

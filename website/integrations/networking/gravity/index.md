@@ -4,6 +4,8 @@ sidebar_label: Gravity
 support_level: community
 ---
 
+import RedirectURI20265Note from "../../\_redirect-uri-2026-5-note.mdx";
+
 ## What is Gravity?
 
 > Gravity is a fully-replicated DNS, DHCP, and TFTP server powered by [etcd](https://etcd.io/), offering features like built-in caching, ad/privacy blocking, automatic DNS registration, and metric tracking.
@@ -26,6 +28,8 @@ Gravity automatically triggers SSO authentication when configured. To prevent th
 :::
 
 ## authentik configuration
+
+<RedirectURI20265Note />
 
 To support the integration of Gravity with authentik, you need to create an application/provider pair in authentik.
 

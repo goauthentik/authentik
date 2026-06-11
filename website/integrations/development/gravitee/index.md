@@ -4,6 +4,8 @@ sidebar_label: Gravitee
 support_level: community
 ---
 
+import RedirectURI20265Note from "../../\_redirect-uri-2026-5-note.mdx";
+
 ## What is Gravitee?
 
 > Gravitee.io API Management is a flexible, lightweight and blazing-fast Open Source solution that helps your organization control who, when and how users access your APIs.
@@ -24,6 +26,8 @@ This documentation lists only the settings that you need to change from their de
 :::
 
 ## authentik configuration
+
+<RedirectURI20265Note />
 
 To support the integration of Gravitee with authentik, you need to create an application/provider pair in authentik.
 

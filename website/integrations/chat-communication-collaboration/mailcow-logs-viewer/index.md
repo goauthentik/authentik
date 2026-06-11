@@ -4,6 +4,8 @@ sidebar_label: mailcow Logs Viewer
 support_level: community
 ---
 
+import RedirectURI20265Note from "../../\_redirect-uri-2026-5-note.mdx";
+
 ## What is mailcow Logs Viewer?
 
 > A modern, self-hosted dashboard for monitoring, analyzing, and managing your mailcow mail server. Track email delivery, investigate spam, manage quarantine, detect bounce-based abuse, and validate DNS configurations, all from a single interface.
@@ -22,6 +24,8 @@ This documentation lists only the settings that you need to change from their de
 :::
 
 ## authentik configuration
+
+<RedirectURI20265Note />
 
 To support the integration of mailcow Logs Viewer with authentik, you need to create an application/provider pair in authentik.
 

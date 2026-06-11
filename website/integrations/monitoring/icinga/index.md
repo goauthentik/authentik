@@ -4,6 +4,8 @@ sidebar_label: Icinga Web 2
 support_level: community
 ---
 
+import RedirectURI20265Note from "../../\_redirect-uri-2026-5-note.mdx";
+
 ## What is Icinga Web 2?
 
 > Icinga Web 2 is the next-generation web interface for the Icinga monitoring stack. It provides a flexible UI to view monitoring states, drill into problems, and integrate with the Icinga 2 backend.
@@ -26,6 +28,8 @@ This documentation lists only the settings that you need to change from their de
 :::
 
 ## authentik configuration
+
+<RedirectURI20265Note />
 
 To support the integration of Icinga Web 2 with authentik, you need to create an application/provider pair in authentik.
 

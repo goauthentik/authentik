@@ -4,6 +4,8 @@ sidebar_label: KitchenOwl
 support_level: community
 ---
 
+import RedirectURI20265Note from "../../\_redirect-uri-2026-5-note.mdx";
+
 ## What is KitchenOwl?
 
 > KitchenOwl is a smart self-hosted grocery list and recipe manager. Easily add items to your shopping list before you go shopping. You can also create recipes and set up meal plans to help you organize your cooking.
@@ -22,6 +24,8 @@ This documentation lists only the settings that you need to change from their de
 :::
 
 ## authentik configuration
+
+<RedirectURI20265Note />
 
 To support the integration of KitchenOwl with authentik, you need to create an application/provider pair in authentik.
 

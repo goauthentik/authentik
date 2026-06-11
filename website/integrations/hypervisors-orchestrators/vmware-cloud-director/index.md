@@ -4,6 +4,8 @@ sidebar_label: VMware Cloud Director
 support_level: community
 ---
 
+import RedirectURI20265Note from "../../\_redirect-uri-2026-5-note.mdx";
+
 ## What is VMware Cloud Director?
 
 > VMware Cloud Director is a platform that enables service providers and enterprises to create multi-tenant virtual data centers (VDCs) from underlying VMware vSphere infrastructure. It supports self-service resource provisioning, secure tenant isolation, and management of compute, storage, and networking via web portals and APIs.
@@ -20,6 +22,8 @@ This documentation lists only the settings that you need to change from their de
 :::
 
 ## authentik configuration
+
+<RedirectURI20265Note />
 
 To support the integration of VMware Cloud Director with authentik, you need to create an application/provider pair in authentik.
 

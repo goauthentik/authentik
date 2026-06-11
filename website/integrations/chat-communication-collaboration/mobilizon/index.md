@@ -4,6 +4,8 @@ sidebar_label: Mobilizon
 support_level: community
 ---
 
+import RedirectURI20265Note from "../../\_redirect-uri-2026-5-note.mdx";
+
 ## What is Mobilizon?
 
 > Gather, organize and mobilize yourselves with a convivial, ethical, and emancipating tool. https://joinmobilizon.org
@@ -22,6 +24,8 @@ This documentation lists only the settings that you need to change from their de
 :::
 
 ## authentik configuration
+
+<RedirectURI20265Note />
 
 To support the integration of Mobilizon with authentik, you need to create an application/provider pair in authentik.
 

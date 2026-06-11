@@ -4,6 +4,8 @@ sidebar_label: Matrix Synapse
 support_level: community
 ---
 
+import RedirectURI20265Note from "../../\_redirect-uri-2026-5-note.mdx";
+
 ## What is Matrix Synapse?
 
 > Matrix is an open source project that publishes the Matrix open standard for secure, decentralized, real-time communication, and its Apache licensed reference implementations.
@@ -22,6 +24,8 @@ This documentation lists only the settings that you need to change from their de
 :::
 
 ## authentik configuration
+
+<RedirectURI20265Note />
 
 To support the integration of Matrix Synapse with authentik, you need to create an application/provider pair in authentik.
 

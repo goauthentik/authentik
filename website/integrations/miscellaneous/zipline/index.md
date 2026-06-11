@@ -4,6 +4,8 @@ sidebar_label: Zipline
 support_level: community
 ---
 
+import RedirectURI20265Note from "../../\_redirect-uri-2026-5-note.mdx";
+
 ## What is Zipline?
 
 > Zipline is a self-hostable file upload server designed for easy file sharing, supporting tools like ShareX and Flameshot, with features such as simplified setup and extensive customization options.
@@ -26,6 +28,8 @@ This guide is compatible with Zipline [version `v4.0.0`](https://github.com/dice
 :::
 
 ## authentik configuration
+
+<RedirectURI20265Note />
 
 To support the integration of Zipline with authentik, you need to create an application/provider pair in authentik.
 

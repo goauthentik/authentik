@@ -4,6 +4,8 @@ sidebar_label: Homarr
 support_level: community
 ---
 
+import RedirectURI20265Note from "../../\_redirect-uri-2026-5-note.mdx";
+
 ## What is Homarr?
 
 > A sleek, modern dashboard that puts all of your apps and services at your fingertips. Control everything in one convenient location. Seamlessly integrates with the apps you've added, providing you with valuable information.
@@ -22,6 +24,8 @@ This documentation lists only the settings that you need to change from their de
 :::
 
 ## authentik configuration
+
+<RedirectURI20265Note />
 
 To support the integration of Homarr with authentik, you need to create an application/provider pair in authentik.
 

@@ -4,6 +4,8 @@ sidebar_label: mailcow
 support_level: community
 ---
 
+import RedirectURI20265Note from "../../\_redirect-uri-2026-5-note.mdx";
+
 ## What is mailcow?
 
 > mailcow is a Dockerized, open-source groupware and email suite based on Docker. It relies on many well-known and long-used components, which, when combined, result in a comprehensive email server solution.
@@ -26,6 +28,8 @@ This documentation lists only the settings that you need to change from their de
 :::
 
 ## authentik configuration
+
+<RedirectURI20265Note />
 
 To support the integration of mailcow with authentik, you need to create a property mapping, set the `email_verified` attribute on required users, and create an application/provider pair in authentik.
 

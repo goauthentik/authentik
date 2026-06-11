@@ -4,6 +4,8 @@ sidebar_label: What's Up Docker
 support_level: community
 ---
 
+import RedirectURI20265Note from "../../\_redirect-uri-2026-5-note.mdx";
+
 ## What is What's Up Docker?
 
 > What's Up Docker (WUD) is an easy-to-use tool that alerts you whenever a new version of your Docker containers is released.
@@ -22,6 +24,8 @@ This documentation lists only the settings that you need to change from their de
 :::
 
 ## authentik configuration
+
+<RedirectURI20265Note />
 
 To support the integration of What's Up Docker with authentik, you need to create an application/provider pair in authentik.
 

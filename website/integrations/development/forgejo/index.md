@@ -4,6 +4,8 @@ sidebar_label: Forgejo
 support_level: community
 ---
 
+import RedirectURI20265Note from "../../\_redirect-uri-2026-5-note.mdx";
+
 ## What is Forgejo?
 
 > Forgejo is a lightweight, self‑hosted alternative to GitHub/GitLab, with a strong emphasis on community governance and open development.
@@ -22,6 +24,8 @@ This documentation lists only the settings that you need to change from their de
 :::
 
 ## authentik configuration
+
+<RedirectURI20265Note />
 
 To support the integration of Forgejo with authentik, you need to create an application/provider pair in authentik.
 

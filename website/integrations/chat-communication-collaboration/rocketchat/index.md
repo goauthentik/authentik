@@ -4,6 +4,8 @@ sidebar_label: Rocket.chat
 support_level: community
 ---
 
+import RedirectURI20265Note from "../../\_redirect-uri-2026-5-note.mdx";
+
 ## What is Rocket.chat?
 
 > Rocket.Chat is an open-source fully customizable communications platform developed in JavaScript for organizations with high standards of data protection. It is licensed under the MIT License with some other licenses mixed in. See [Rocket.chat GitHub](https://github.com/RocketChat/Rocket.Chat/blob/develop/LICENSE) for licensing information.
@@ -26,6 +28,8 @@ This documentation lists only the settings that you need to change from their de
 :::
 
 ## authentik configuration
+
+<RedirectURI20265Note />
 
 To support the integration of Rocket.chat with authentik, you need to create an application/provider pair in authentik.
 

@@ -4,6 +4,8 @@ sidebar_label: Zot
 support_level: community
 ---
 
+import RedirectURI20265Note from "../../\_redirect-uri-2026-5-note.mdx";
+
 ## What is Zot?
 
 > Zot is an OCI-native container registry for distributing container images and OCI artifacts.
@@ -22,6 +24,8 @@ This documentation lists only the settings that you need to change from their de
 :::
 
 ## authentik configuration
+
+<RedirectURI20265Note />
 
 To support the integration of Zot with authentik, you need to create an application/provider pair in authentik.
 

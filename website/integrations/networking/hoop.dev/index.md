@@ -4,6 +4,8 @@ sidebar_label: Hoop.dev
 support_level: community
 ---
 
+import RedirectURI20265Note from "../../\_redirect-uri-2026-5-note.mdx";
+
 ## What is Hoop.dev?
 
 > Hoop.dev is an access gateway for databases and servers with AI-powered automations that eliminate cumbersome access policies and break-glass workflows without compromising security.
@@ -22,6 +24,8 @@ This documentation lists only the settings that you need to change from their de
 :::
 
 ## authentik configuration
+
+<RedirectURI20265Note />
 
 To support the integration of Hoop.dev with authentik, you need to create an application/provider pair in authentik.
 

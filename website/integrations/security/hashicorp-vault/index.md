@@ -4,6 +4,8 @@ sidebar_label: HashiCorp Vault
 support_level: authentik
 ---
 
+import RedirectURI20265Note from "../../\_redirect-uri-2026-5-note.mdx";
+
 ## What is HashiCorp Vault?
 
 > HashiCorp Vault secures, stores, and controls access to tokens, passwords, certificates, encryption keys, and other sensitive data.
@@ -22,6 +24,8 @@ This documentation lists only the settings that you need to change from their de
 :::
 
 ## authentik configuration
+
+<RedirectURI20265Note />
 
 To support the integration of HashiCorp Vault with authentik, you need to create an application and provider pair in authentik.
 

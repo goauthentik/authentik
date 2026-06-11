@@ -4,6 +4,8 @@ sidebar_label: Personio
 support_level: community
 ---
 
+import RedirectURI20265Note from "../../\_redirect-uri-2026-5-note.mdx";
+
 ## What is Personio?
 
 > Personio is an HR software platform for managing core HR processes such as recruiting, onboarding, payroll, time tracking, and performance management.
@@ -21,6 +23,8 @@ This documentation lists only the settings that you need to change from their de
 :::
 
 ## authentik configuration
+
+<RedirectURI20265Note />
 
 To support the integration of Personio with authentik, you need to create an application/provider pair in authentik.
 

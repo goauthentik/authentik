@@ -13,6 +13,8 @@ authentik_enterprise: true
 authentik_preview: true
 ---
 
+import RedirectURI20265Note from "../../\_redirect-uri-2026-5-note.mdx";
+
 ## What is Apple Business Manager?
 
 > Apple Business Manager is a web-based portal for IT administrators, managers, and procurement professionals to manage devices and automate device enrollment.
@@ -70,6 +72,8 @@ Be aware that Apple Business Manager imposes the following restrictions on feder
   :::
 
 ## authentik configuration
+
+<RedirectURI20265Note />
 
 The workflow to configure authentik as an identity provider for Apple Business Manager involves creating scope mappings, signing keys, a Shared Signals Framework provider, and an OIDC provider/application pair.
 

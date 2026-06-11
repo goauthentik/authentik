@@ -4,6 +4,8 @@ sidebar_label: Wiki.js
 support_level: community
 ---
 
+import RedirectURI20265Note from "../../\_redirect-uri-2026-5-note.mdx";
+
 ## What is Wiki.js?
 
 > Wiki.js is a wiki engine running on Node.js and written in JavaScript. It is free software released under the Affero GNU General Public License. It is available as a self-hosted solution or using "single-click" install on the DigitalOcean and AWS marketplace.
@@ -32,6 +34,8 @@ In Wiki.js, navigate to the _Authentication_ section in the _Administration_ int
 Add a _Generic OpenID Connect / OAuth2_ strategy and take note of the _Callback URL / Redirect URI_ in the _Configuration Reference_ section at the bottom.
 
 ## authentik configuration
+
+<RedirectURI20265Note />
 
 To support the integration of Wiki.js with authentik, you need to create an application/provider pair in authentik.
 

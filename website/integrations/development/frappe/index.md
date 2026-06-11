@@ -4,6 +4,8 @@ sidebar_label: Frappe
 support_level: community
 ---
 
+import RedirectURI20265Note from "../../\_redirect-uri-2026-5-note.mdx";
+
 :::info
 These instructions apply to all projects in the Frappe Family, including ERPNext.
 :::
@@ -27,6 +29,8 @@ This documentation only lists the settings that have been changed from their def
 :::
 
 ## authentik configuration
+
+<RedirectURI20265Note />
 
 To support the integration of Frappe with authentik, you need to create an application/provider pair in authentik.
 
