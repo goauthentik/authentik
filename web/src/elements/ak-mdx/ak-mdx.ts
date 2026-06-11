@@ -3,7 +3,7 @@ import "#elements/Diagram/ak-diagram";
 import "#elements/ak-mdx/components/ak-md-a";
 
 import { globalAK } from "#common/global";
-import { BrandedHTMLPolicy, CompiledMarkdownTrustPolicy, sanitizeHTML } from "#common/purify";
+import { BrandedHTMLPolicy, CompiledMarkdownSanitizePolicy, sanitizeHTML } from "#common/purify";
 
 import { compileRuntimeMarkdown } from "#elements/ak-mdx/markdown";
 import Styles from "#elements/ak-mdx/styles.css";
@@ -88,10 +88,13 @@ export class AKMDX extends AKElement {
     }
 
     /**
-     * URL mode: HTML comes from our build-time pipeline. It may contain
-     * custom-element tags (`<ak-alert>`, `<ak-md-a>`) that DOMPurify's
-     * default tag list would strip, so we route it through a Trusted
-     * Types policy that passes the input through unmodified.
+     * URL mode: HTML comes from our build-time pipeline. `replacers` may
+     * splice dynamic, sometimes admin-controlled, values into it (see
+     * `ProxyProviderViewPage`), so the post-replacer string is routed
+     * through {@linkcode CompiledMarkdownSanitizePolicy} — a DOMPurify
+     * policy that preserves the custom elements our pipeline emits
+     * (`<ak-alert>`, `<ak-md-a>`, `<ak-diagram>`) while stripping anything
+     * a replacer could have injected.
      */
     async #hydrateFromURL(url: string): Promise<SlottedTemplateResult> {
         const { relBase } = globalAK().api;
@@ -107,7 +110,7 @@ export class AKMDX extends AKElement {
             this.dataset.publicDirectory = module.publicDirectory;
         }
 
-        const trustedHTML = CompiledMarkdownTrustPolicy.createHTML(
+        const trustedHTML = CompiledMarkdownSanitizePolicy.createHTML(
             this.#applyReplacers(module.content),
         );
 
