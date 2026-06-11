@@ -147,6 +147,12 @@ TENANT_CREATION_FAKES_MIGRATIONS = True
 TENANT_BASE_SCHEMA = "template"
 PUBLIC_SCHEMA_NAME = CONFIG.get("postgresql.default_schema")
 
+# Issue `SET search_path` only when the schema actually changes for a given
+# connection instead of before every cursor. Roughly halves statement count on
+# request hot paths. Requires a stable PG session — safe behind a transaction
+# pooler only if the LISTEN/lock subsystems are routed via ``postgresql.direct.*``.
+TENANT_LIMIT_SET_CALLS = True
+
 GUARDIAN_GROUP_MODEL = "authentik_core.Group"
 GUARDIAN_ROLE_MODEL = "authentik_rbac.Role"
 
