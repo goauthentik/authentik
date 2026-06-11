@@ -175,9 +175,6 @@ Alternatively, you can use an existing key if you have one available.
 
 :::tip Keep your text editor ready
 
-<<<<<<< HEAD
-authentik will automatically generate the **Client ID** and **Client Secret** values for the new provider. You'll need these values when configuring Apple Business Manager.
-=======
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Providers** and click **New Provider** to open the provider wizard.
     - **Choose a Provider type**: select **OAuth2/OpenID Provider** as the provider type.
@@ -190,7 +187,6 @@ authentik will automatically generate the **Client ID** and **Client Secret** va
             - `Apple Business Manager ssf.read`
             - `Apple Business Manager profile`
             - `authentik default OAuth Mapping: OpenID 'offline_access'`
->>>>>>> 783859d3c8 (websites/integrations: specify redirect uri of type authorization or post logout (#22981))
 
 You can always find your provider's generated values by navigating to **Providers**, selecting the provider by name, and clicking the **Edit** button.
 

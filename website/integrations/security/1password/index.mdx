@@ -38,15 +38,9 @@ To support the integration of 1Password with authentik, you need to create an ap
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
         - Set **Client type** to `Public`.
         - Note the **Client ID** and **slug** values because they will be required later.
-<<<<<<< HEAD
-        - Set two `Strict` redirect URIs to `https://<1password_company_domain>.1password.com/sso/oidc/redirect/` and `onepassword://sso/oidc/redirect`.
+        - Add two **Redirect URIs** of type `Strict` `Authorization` as `https://<1password_company_domain>.1password.com/sso/oidc/redirect/` and `onepassword://sso/oidc/redirect`.
         - Select any available signing key.
     - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
-=======
-        - Add two **Redirect URIs** of type `Strict` `Authorization` as `https://your-domain.1password.com/sso/oidc/redirect/` and `onepassword://sso/oidc/redirect`.
-        - Select any available **Signing Key**.
-    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page. If you add a SCIM provider as a backchannel provider later, only users who can view this application are synchronized.
->>>>>>> 783859d3c8 (websites/integrations: specify redirect uri of type authorization or post logout (#22981))
 
 3. Click **Submit** to save the new application and provider.
 

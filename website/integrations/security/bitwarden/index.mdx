@@ -4,11 +4,7 @@ sidebar_label: Bitwarden
 support_level: community
 ---
 
-<<<<<<< HEAD
-=======
 import RedirectURI20265Note from "../../_redirect-uri-2026-5-note.mdx";
-import SAMLProvider20265Warning from "../../_saml-provider-2026-5-warning.mdx";
->>>>>>> 783859d3c8 (websites/integrations: specify redirect uri of type authorization or post logout (#22981))
 import TabItem from "@theme/TabItem";
 import Tabs from "@theme/Tabs";
 
@@ -47,7 +43,8 @@ You can configure Bitwarden to use either OIDC or SAML; this guide explains both
 
 ## authentik configuration
 
-<<<<<<< HEAD
+<RedirectURI20265Note />
+
 To support the integration of Bitwarden with authentik, you need to create a property mapping and an application/provider pair in authentik.
 
 ### Create a property mapping
@@ -73,11 +70,6 @@ Bitwarden requires a first and last name for every user. However, authentik, by 
         ```
 
 3. Click **Finish** to save the property mapping.
-=======
-<RedirectURI20265Note />
-
-To support the integration of Bitwarden with authentik, you need to create an application/provider pair in authentik.
->>>>>>> 783859d3c8 (websites/integrations: specify redirect uri of type authorization or post logout (#22981))
 
 ### Create an application and provider in authentik
 
@@ -87,27 +79,13 @@ To support the integration of Bitwarden with authentik, you need to create an ap
     - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
         - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
-<<<<<<< HEAD
-        - Set a `Strict` redirect URI to:
+        - Add a **Redirect URI** of type `Strict` `Authorization`:
             - `https://sso.bitwarden.com/oidc-signin` for non-EU-based SaaS Bitwarden.
             - `https://sso.bitwarden.eu/oidc-signin` for EU-based SaaS Bitwarden.
             - `https://bitwarden.company/oidc-signin` for self-hosted Bitwarden.
         - Select any available signing key.
         - Under **Advanced protocol settings**, **Selected Scopes**:
             - Remove `authentik default OAuth Mapping: OpenID 'profile'` and add the property mapping that you created.
-=======
-        - Add the redirect URIs for your Bitwarden deployment:
-            - For Bitwarden Cloud US:
-                - Add a **Redirect URI** of type `Strict` `Authorization` as `https://sso.bitwarden.com/oidc-signin`.
-                - Add a **Redirect URI** of type `Strict` `Post Logout` as `https://sso.bitwarden.com/oidc-signedout`.
-            - For Bitwarden Cloud EU:
-                - Add a **Redirect URI** of type `Strict` `Authorization` as `https://sso.bitwarden.eu/oidc-signin`.
-                - Add a **Redirect URI** of type `Strict` `Post Logout` as `https://sso.bitwarden.eu/oidc-signedout`.
-            - For self-hosted Bitwarden:
-                - Add a **Redirect URI** of type `Strict` `Authorization` as `https://bitwarden.company/sso/oidc-signin`.
-                - Add a **Redirect URI** of type `Strict` `Post Logout` as `https://bitwarden.company/sso/oidc-signedout`.
-        - Select any available **Signing Key**.
->>>>>>> 783859d3c8 (websites/integrations: specify redirect uri of type authorization or post logout (#22981))
     - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 
 3. Click **Submit** to save the new application and provider.
