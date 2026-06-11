@@ -4,6 +4,12 @@ sidebar_label: Nextcloud
 support_level: community
 ---
 
+<<<<<<< HEAD
+=======
+import RedirectURI20265Note from "../../_redirect-uri-2026-5-note.mdx";
+import SAMLProvider20265Warning from "../../_saml-provider-2026-5-warning.mdx";
+
+>>>>>>> 783859d3c8 (websites/integrations: specify redirect uri of type authorization or post logout (#22981))
 ## What is Nextcloud?
 
 > Nextcloud is a suite of client-server software for creating and using file hosting services. Nextcloud is free and open-source, which means that anyone is allowed to install and operate it on their own private server devices.
@@ -113,6 +119,8 @@ To connect to an existing Nextcloud user, set the `nextcloud_user_id` attribute 
 :::
 
 ## Create an application and provider in authentik
+
+<RedirectURI20265Note />
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)

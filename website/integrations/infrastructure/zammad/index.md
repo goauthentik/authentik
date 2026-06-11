@@ -4,6 +4,11 @@ sidebar_label: Zammad
 support_level: community
 ---
 
+<<<<<<< HEAD
+=======
+import RedirectURI20265Note from "../../\_redirect-uri-2026-5-note.mdx";
+import SAMLProvider20265Warning from "../../\_saml-provider-2026-5-warning.mdx";
+>>>>>>> 783859d3c8 (websites/integrations: specify redirect uri of type authorization or post logout (#22981))
 import TabItem from "@theme/TabItem";
 import Tabs from "@theme/Tabs";
 
@@ -38,6 +43,8 @@ values={[
 <TabItem value="saml">
 
 ## authentik configuration
+
+<RedirectURI20265Note />
 
 To support the integration of Zammad with authentik, you need to create an application/provider pair in authentik.
 
@@ -99,7 +106,7 @@ To support the integration of Zammad with authentik, you need to create an appli
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
         - Set the **Client type** to `Public`.
         - Take note of the **Client ID** and **slug** values because they will be required later.
-        - Set the **Redirect URIs/Origins** to `Strict` / `https://zammad.company/auth/openid_connect/callback`.
+        - Add a **Redirect URI** of type `Strict` `Authorization` as `https://zammad.company/auth/openid_connect/callback`.
         - Select a **Signing Key**.
         - Under **Advanced protocol settings**, set **Subject mode** to **Based on the User's Email**.
     - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
