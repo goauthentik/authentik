@@ -62,6 +62,8 @@ Cap is a self-hostable CAPTCHA server that uses proof-of-work challenges.
 
 See https://trycap.dev/guide/.
 
+authentik supports Cap's default widget. The floating widget is not supported.
+
 Recommended values:
 
 - **Public key**: public Cap endpoint for the site key path, for example `https://cap.example.com/site-key/`
