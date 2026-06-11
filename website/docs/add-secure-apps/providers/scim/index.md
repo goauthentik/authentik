@@ -8,13 +8,7 @@ A SCIM provider requires a SCIM base URL for the endpoint and an authentication 
 
 SCIM providers in authentik always serve as [backchannel providers](../../applications/manage_apps.mdx#backchannel-providers), which are used in addition to the main provider that supplies SSO authentication. A backchannel provider is used for an application that requires backend authentication, directory synchronization, or other additional authentication needs.
 
-## Set up a SCIM provider
-
-Many applications use SCIM together with another SSO protocol such as OAuth/OIDC or SAML. For example, you can create an application and provider pair for Slack by using SAML for authentication and SCIM for provisioning. For this setup, use the following workflow:
-
-1. [Create](../../applications/manage_apps.mdx#create-an-application-and-provider-pair) the application and provider pair.
-2. [Create](../../applications/manage_apps.mdx#backchannel-providers) the SCIM backchannel provider.
-3. Edit the application, and in the **Backchannel Providers** field add the SCIM provider that you created.
+For instructions on creating a SCIM provider, refer to the [Create a SCIM provider](./create-scim-provider.md) documentation.
 
 ## Authentication modes
 
@@ -23,12 +17,6 @@ In authentik, there are two ways to authenticate SCIM requests:
 - **Static token** provided by the application. This is the default authentication mode.
 - **OAuth token** that authentik retrieves from a specified source and uses for authentication.
 
-When you create a new SCIM provider, select the **Authentication Mode** that the application supports.
-
-![Creating a SCIM provider](./scim_oauth.png)
-
-For either mode, enter the SCIM base **URL** for the endpoint.
-
 ### Static token
 
 When the authentication mode is set to **Static token**, authentik sends the token provided by the application with outgoing SCIM requests to authenticate each request.
@@ -36,6 +24,12 @@ When the authentication mode is set to **Static token**, authentik sends the tok
 ### OAuth token :ak-enterprise
 
 When you configure a SCIM provider to use OAuth for authentication, authentik generates short-lived tokens through an OAuth flow and sends them to the SCIM endpoint. This offers improved security and control compared with a static token.
+
+authentik supports two types of SCIM OAuth authentication:
+
+- **Silent OAuth** – The system obtains or refreshes access tokens automatically, without any administrator interaction. This is the typical approach used for ongoing SCIM provisioning.
+
+- **Interactive OAuth** – During setup, an administrator is required to authorize the connection before the SCIM integration can obtain its initial token. authentik then stores a refresh token, and provisioning then runs in the background without further admin interaction.
 
 You can also add additional token request parameters such as `grant_type`, `subject_token`, or `client_assertion`.
 

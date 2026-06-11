@@ -6110,10 +6110,6 @@ doesn't pass when either or both of the selected options are equal or above the 
   <source>Optionally restrict which WebAuthn device types may be used. When no device types are selected, all devices are allowed.</source>
   <target>Facoltativamente limitare quali tipi di dispositivi WebAuthn possono essere utilizzati. Quando non vengono selezionati tipi di dispositivi, tutti i dispositivi sono consentiti.</target>
 </trans-unit>
-<trans-unit id="s11274960b13cf21a">
-  <source>This restriction only applies to devices created in authentik 2024.4 or later.</source>
-  <target>Questa restrizione si applica solo ai dispositivi creati in authentik 2024.4 o versione successiva.</target>
-</trans-unit>
 <trans-unit id="s24bce955914b1f0a">
   <source>Stage used to configure a WebAuthn authenticator (i.e. Yubikey, FaceID/Windows Hello).</source>
   <target>Fase utilizzato per configurare un autenticatore WebAuthn (ovvero Yubikey, FaceId/Windows Hello).</target>
