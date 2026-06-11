@@ -112,6 +112,7 @@
         "@lit/reactive-element": "^2.1.2",
         "@lit/task": "^1.0.3",
         "@mdx-js/mdx": "^3.1.1",
+        "@mermaid-js/layout-elk": "^0.2.1",
         "@mrmarble/djangoql-completion": "^0.8.3",
         "@open-wc/lit-helpers": "^0.7.0",
         "@openlayers-elements/core": "^0.4.0",
@@ -212,14 +213,10 @@
     ],
     "wireit": {
         "build": {
-            "#comment": [
-                "`npm run build` and `npm run watch` are the most common ",
-                "commands you should be using when working on the front end",
-                "The files and output spec here expect you to use `npm run build --watch` ",
-                "instead of `npm run watch`. The former is more comprehensive, but ",
-                "the latter is faster."
-            ],
             "command": "${NODE_RUNNER} scripts/build-web.mjs",
+            "dependencies": [
+                "build-locales"
+            ],
             "files": [
                 "src/**/*.{css,jpg,png,ts,js,json}",
                 "!src/**/*.stories.ts",
@@ -239,8 +236,12 @@
                 "./dist/poly-*.js.map",
                 "./dist/styles/**"
             ],
-            "dependencies": [
-                "build-locales"
+            "#comment": [
+                "`npm run build` and `npm run watch` are the most common ",
+                "commands you should be using when working on the front end",
+                "The files and output spec here expect you to use `npm run build --watch` ",
+                "instead of `npm run watch`. The former is more comprehensive, but ",
+                "the latter is faster."
             ],
             "env": {
                 "NODE_RUNNER": {
@@ -255,9 +256,6 @@
                 "build-locales"
             ]
         },
-        "locales:repair": {
-            "command": "prettier --write ./src/locale-codes.ts"
-        },
         "lint:components": {
             "command": "lit-analyzer src"
         },
@@ -269,6 +267,9 @@
         },
         "lit-analyse": {
             "command": "lit-analyzer src"
+        },
+        "locales:repair": {
+            "command": "prettier --write ./src/locale-codes.ts"
         },
         "precommit": {
             "command": "prettier --write .",
