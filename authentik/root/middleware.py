@@ -29,6 +29,27 @@ ACR_AUTHENTIK_SESSION = "goauthentik.io/core/default"
 SIGNING_HASH = sha512(settings.SECRET_KEY.encode()).hexdigest()
 
 
+def _can_skip_vary_cookie(request: HttpRequest, response: HttpResponse) -> bool:
+    """Return True when the response is safe to share across cookieless clients
+    without including ``Cookie`` in its ``Vary`` header.
+
+    Django's ``SessionMiddleware`` adds ``Vary: Cookie`` whenever the session
+    is marked ``accessed``, which happens transitively whenever the request
+    flow touches ``request.user``. On anonymous-cookieless flood paths the
+    view explicitly sets ``Cache-Control: public``, which signals that the
+    response is deterministic for any cookieless visitor — adding
+    ``Vary: Cookie`` would defeat that signal at shared caches.
+
+    Requires BOTH no incoming cookie AND ``Cache-Control: public`` on the
+    response, so a misconfigured view can never accidentally drop
+    ``Vary: Cookie`` from a response that should keep it.
+    """
+    if settings.SESSION_COOKIE_NAME in request.COOKIES:
+        return False
+    cache_control = response.get("Cache-Control", "")
+    return "public" in cache_control.lower()
+
+
 class SessionMiddleware(UpstreamSessionMiddleware):
     """Dynamically set SameSite depending if the upstream connection is TLS or not"""
 
@@ -113,7 +134,7 @@ class SessionMiddleware(UpstreamSessionMiddleware):
             )
             patch_vary_headers(response, ("Cookie",))
         else:
-            if accessed:
+            if accessed and not _can_skip_vary_cookie(request, response):
                 patch_vary_headers(response, ("Cookie",))
             if (modified or settings.SESSION_SAVE_EVERY_REQUEST) and not empty:
                 if request.session.get_expire_at_browser_close():

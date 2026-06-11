@@ -54,6 +54,7 @@ from authentik.flows.planner import (
     FlowPlanner,
 )
 from authentik.flows.stage import AccessDeniedStage, StageView
+from authentik.lib.http_cache import anonymous_redirect_cache_control
 from authentik.lib.sentry import SentryIgnoredException, should_ignore_exception
 from authentik.lib.utils.reflection import all_subclasses, class_to_path
 from authentik.lib.utils.urls import is_url_absolute, redirect_with_qs
@@ -538,7 +539,14 @@ class ToDefaultFlow(View):
                     flow_slug=flow.slug,
                 )
                 del self.request.session[SESSION_KEY_PLAN]
-        return redirect_with_qs("authentik_core:if-flow", request.GET, flow_slug=flow.slug)
+        response = redirect_with_qs("authentik_core:if-flow", request.GET, flow_slug=flow.slug)
+        # The redirect target for a cookieless request is deterministic per
+        # (host, designation) — depends only on the brand's flow slug. Mark
+        # the response as publicly cacheable so edge caches absorb flood
+        # traffic against this step.
+        if settings.SESSION_COOKIE_NAME not in request.COOKIES:
+            response["Cache-Control"] = anonymous_redirect_cache_control()
+        return response
 
 
 def to_stage_response(request: HttpRequest, source: HttpResponse) -> HttpResponse:
