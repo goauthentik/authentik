@@ -175,14 +175,24 @@ class DatabaseCache(BaseCache):
         CacheEntry.objects.truncate()
 
     def keys(self, keys_pattern: str, version: int | None = None) -> list[str]:
-        keys_pattern = self.make_key(keys_pattern.replace("*", ".*"), version=version)
+        """Return cache keys matching a glob pattern (``*`` wildcard).
 
-        return [
-            self.reverse_key_func(key)
-            for key in CacheEntry.objects.filter(
-                cache_key__regex=keys_pattern,
-            ).values_list(
-                "cache_key",
-                flat=True,
-            )
-        ]
+        Simple ``prefix*`` patterns use Django's ``__startswith`` lookup
+        (``LIKE 'prefix%'``), which can be answered by a B-tree index on
+        ``cache_key`` and is dramatically cheaper than the regex path even
+        without one. No-wildcard patterns reduce to primary-key equality.
+        Complex patterns (wildcards in non-suffix position, multiple
+        wildcards) fall back to ``__regex``.
+        """
+        wildcard_count = keys_pattern.count("*")
+        if wildcard_count == 0:
+            key = self.make_key(keys_pattern, version=version)
+            qs = CacheEntry.objects.filter(cache_key=key)
+        elif wildcard_count == 1 and keys_pattern.endswith("*"):
+            prefix = self.make_key(keys_pattern[:-1], version=version)
+            qs = CacheEntry.objects.filter(cache_key__startswith=prefix)
+        else:
+            regex = self.make_key(keys_pattern.replace("*", ".*"), version=version)
+            qs = CacheEntry.objects.filter(cache_key__regex=regex)
+
+        return [self.reverse_key_func(key) for key in qs.values_list("cache_key", flat=True)]
