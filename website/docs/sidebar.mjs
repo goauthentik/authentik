@@ -931,6 +931,7 @@ const items = [
                     "developer-docs/setup/full-dev-environment",
                     "developer-docs/setup/frontend-dev-environment",
                     "developer-docs/setup/debugging",
+                    "developer-docs/setup/database-seeding",
                 ],
             },
             {
