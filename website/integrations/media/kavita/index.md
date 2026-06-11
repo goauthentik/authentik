@@ -35,8 +35,8 @@ To support the integration of Kavita with authentik, you need to create an appli
         - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
         - Add a **Redirect URI** of type `Strict` `Authorization` as `https://kavita.company/signin-oidc`
         - Add a **Redirect URI** of type `Strict` `Post Logout` as `https://kavita.company/signout-callback-oidc`
-          **Logout URI**: `https://kavita.company/signout-oidc`
-          **Logout Method**: `Front-channel`
+        - **Logout URI**: `https://kavita.company/signout-oidc`
+        - **Logout Method**: `Front-channel`
         - Select any available signing key.
     - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 
