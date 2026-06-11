@@ -25,7 +25,7 @@ pub struct LdapOutpostConfig {
     /// Get slug for unbind flow, defaulting to brand's default flow.
     #[serde(rename = "unbind_flow_slug", deserialize_with = "Option::deserialize")]
     pub unbind_flow_slug: Option<String>,
-    /// Prioritise backchannel slug over direct application slug
+    /// Prioritize backchannel slug over direct application slug
     #[serde(rename = "application_slug")]
     pub application_slug: String,
     #[serde(

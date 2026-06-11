@@ -7,7 +7,7 @@ import "#elements/tasks/TaskList";
 import "#components/ak-status-label";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { PFColor } from "#elements/Label";
 import { PaginatedResponse, TableColumn, Timestamp } from "#elements/table/Table";
@@ -41,9 +41,7 @@ export class DataExportListPage extends TablePage<DataExport> {
     static styles = [...TablePage.styles, PFDescriptionList];
 
     async apiEndpoint(): Promise<PaginatedResponse<DataExport>> {
-        return new ReportsApi(DEFAULT_CONFIG).reportsExportsList(
-            await this.defaultEndpointConfig(),
-        );
+        return aki(ReportsApi).reportsExportsList(await this.defaultEndpointConfig());
     }
 
     protected columns: TableColumn[] = [
@@ -67,7 +65,7 @@ export class DataExportListPage extends TablePage<DataExport> {
                 ];
             }}
             .delete=${(item: DataExport) => {
-                return new ReportsApi(DEFAULT_CONFIG).reportsExportsDestroy({
+                return aki(ReportsApi).reportsExportsDestroy({
                     id: item.id,
                 });
             }}
@@ -87,7 +85,7 @@ export class DataExportListPage extends TablePage<DataExport> {
             Timestamp(item.requestedOn),
             html`${item.completed
                 ? html`<ak-label color=${PFColor.Green}>${msg("Finished")}</ak-label>`
-                : html`<ak-label color=${PFColor.Grey}>${msg("Queued")}</ak-label>`}`,
+                : html`<ak-label color=${PFColor.Gray}>${msg("Queued")}</ak-label>`}`,
             item.completed && item.fileUrl
                 ? html`<div>
                       <a href="${item.fileUrl}">

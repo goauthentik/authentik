@@ -13,7 +13,7 @@ import "#elements/utils/TimeDeltaHelp";
 
 import { propertyMappingsProvider, propertyMappingsSelector } from "./RACProviderFormHelpers.js";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { ModelForm } from "#elements/forms/ModelForm";
 
@@ -31,7 +31,7 @@ import { ifDefined } from "lit/directives/if-defined.js";
 @customElement("ak-provider-rac-form")
 export class RACProviderFormPage extends ModelForm<RACProvider, number> {
     async loadInstance(pk: number): Promise<RACProvider> {
-        return new ProvidersApi(DEFAULT_CONFIG).providersRacRetrieve({
+        return aki(ProvidersApi).providersRacRetrieve({
             id: pk,
         });
     }
@@ -45,12 +45,12 @@ export class RACProviderFormPage extends ModelForm<RACProvider, number> {
 
     async send(data: RACProvider): Promise<RACProvider> {
         if (this.instance) {
-            return new ProvidersApi(DEFAULT_CONFIG).providersRacUpdate({
+            return aki(ProvidersApi).providersRacUpdate({
                 id: this.instance.pk,
                 rACProviderRequest: data,
             });
         }
-        return new ProvidersApi(DEFAULT_CONFIG).providersRacCreate({
+        return aki(ProvidersApi).providersRacCreate({
             rACProviderRequest: data,
         });
     }

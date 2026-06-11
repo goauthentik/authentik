@@ -1,7 +1,7 @@
 import "#elements/CodeMirror";
 import "#elements/forms/HorizontalFormElement";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { BasePropertyMappingForm } from "#admin/property-mappings/BasePropertyMappingForm";
 
@@ -14,19 +14,19 @@ export class PropertyMappingSourceKerberosForm extends BasePropertyMappingForm<K
     protected override docLink = "/users-sources/sources/property-mappings/expressions";
 
     loadInstance(pk: string): Promise<KerberosSourcePropertyMapping> {
-        return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsSourceKerberosRetrieve({
+        return aki(PropertymappingsApi).propertymappingsSourceKerberosRetrieve({
             pmUuid: pk,
         });
     }
 
     async send(data: KerberosSourcePropertyMapping): Promise<KerberosSourcePropertyMapping> {
         if (this.instance) {
-            return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsSourceKerberosUpdate({
+            return aki(PropertymappingsApi).propertymappingsSourceKerberosUpdate({
                 pmUuid: this.instance.pk,
                 kerberosSourcePropertyMappingRequest: data,
             });
         }
-        return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsSourceKerberosCreate({
+        return aki(PropertymappingsApi).propertymappingsSourceKerberosCreate({
             kerberosSourcePropertyMappingRequest: data,
         });
     }

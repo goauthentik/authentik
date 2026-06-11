@@ -1,4 +1,4 @@
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { DualSelectPair, DualSelectPairSource } from "#elements/ak-dual-select/types";
 
@@ -12,7 +12,7 @@ const providerToSelect = (provider: OAuth2Provider): DualSelectPair<OAuth2Provid
 ];
 
 export async function oauth2ProvidersProvider(page = 1, search = "") {
-    const oauthProviders = await new ProvidersApi(DEFAULT_CONFIG).providersOauth2List({
+    const oauthProviders = await aki(ProvidersApi).providersOauth2List({
         ordering: "name",
         pageSize: 20,
         search: search.trim(),
@@ -33,7 +33,7 @@ export function oauth2ProvidersSelector(
     }
 
     const fetchOauth2Providers: DualSelectPairSource = async () => {
-        const oauthSources = new ProvidersApi(DEFAULT_CONFIG);
+        const oauthSources = aki(ProvidersApi);
         const mappings = await Promise.allSettled(
             instanceProviders.map((instanceId) =>
                 oauthSources.providersOauth2Retrieve({ id: instanceId }),

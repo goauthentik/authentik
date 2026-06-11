@@ -95,6 +95,8 @@
 /security/2023-06-cure53                                    /security/audits-and-certs/2023-06-cure53 301!
 /security/CVE-*                                             /security/cves/CVE-:splat 301!
 /security/GHSA-*                                            /security/cves/GHSA-:splat 301!
+/security/cves/GHSA-xp7f-xjjx-gwm8                          /security/cves/CVE-2026-49448
+/security/cves/GHSA-wr38-7xg8-fqxr                          /security/cves/CVE-2026-49443
 #endregion
 
 #region Troubleshooting

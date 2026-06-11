@@ -11,6 +11,8 @@ However, any flow can be executed via an API from anywhere, in fact that is what
 Because the flow executor stores its state in the HTTP Session, so you need to ensure that cookies between flow executor requests are persisted.
 :::
 
+When a flow execution starts, authentik creates a [flow plan](/docs/add-secure-apps/flows-stages/flow/planner/) for the current session. The flow executor advances through that plan as each stage completes.
+
 :::info
 Note that the HTTP session must be obtained as a cookie before `GET /api/v3/flows/executor/:slug` can be called. If you are using a JWT for authentication, you first have to obtain a session cookie via `GET /api/v3/flows/instances/:slug/execute/` before requesting `GET /api/v3/flows/executor/:slug`.
 :::
