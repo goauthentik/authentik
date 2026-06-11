@@ -37,7 +37,8 @@ To support the integration of Apache Guacamole with authentik, you need to creat
 - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
 - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
     - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
-    - Set a `Strict` redirect URI to `https://guacamole.company/`. If you have configured [Apache Tomcat](https://tomcat.apache.org/) to run Apache Guacamole on a subpath, you will need to update this value accordingly.
+    - Add a **Redirect URI** of type `Strict` `Authorization` as `https://guacamole.company/`. If you have configured [Apache Tomcat](https://tomcat.apache.org/) to run Apache Guacamole on a subpath, you will need to update this value accordingly.
+    - Add a **Redirect URI** of type `Strict` `Post Logout` as `https://guacamole.company/`. If you have configured [Apache Tomcat](https://tomcat.apache.org/) to run Apache Guacamole on a subpath, you will need to update this value accordingly.
     - Select any available signing key.
     - Note that Apache Guacamole does not support session tokens longer than 300 minutes (5 hours).
 - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
@@ -69,6 +70,8 @@ Docker containers are typically configured using environment variables. To ensur
     OPENID_REDIRECT_URI=https://guacamole.company/
     OPENID_USERNAME_CLAIM_TYPE=preferred_username
     OPENID_ENABLED=true
+    OPENID-LOGOUT-ENDPOINT=https://authentik.company/application/o/<application_slug>/end-session/
+    OPENID-POST-LOGOUT-REDIRECT-URI=https://guacamole.company/
     ```
 
 You must also add one of the following variables, depending on your desired behavior:
@@ -107,6 +110,8 @@ Additionally, ensure your `guacamole.properties` file (typically located in `/et
     openid-redirect-uri=https://guacamole.company/
     openid-username-claim-type=preferred_username
     openid-enabled=true
+    openid-logout-endpoint=https://authentik.company/application/o/<application_slug>/end-session/
+    openid-post-logout-redirect-uri=https://guacamole.company/
     ```
 
 You must also add one of the following settings depending on your desired behavior:
