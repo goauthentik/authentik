@@ -54,7 +54,7 @@ To support the integration of Kavita with authentik, you need to create an appli
     - **Require Verified Emails**: disable this setting.
 4. Click **Save**.
 
-You must restart your Kavita instance for these changes to take effect.
+Restart your Kavita instance for these changes to take effect.
 
 ## Configuration verification
 
