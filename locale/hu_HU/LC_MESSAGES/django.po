@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-22 00:36+0000\n"
+"POT-Creation-Date: 2026-06-11 00:42+0000\n"
 "PO-Revision-Date: 2025-12-01 19:09+0000\n"
 "Last-Translator: Gyula Kiss <kiss@indi.hu>, 2026\n"
 "Language-Team: Hungarian (Hungary) (https://app.transifex.com/authentik/teams/119923/hu_HU/)\n"
@@ -3779,14 +3779,6 @@ msgstr "Google OAuth forrás"
 #: authentik/sources/oauth/models.py
 msgid "Google OAuth Sources"
 msgstr "Google OAuth források"
-
-#: authentik/sources/oauth/models.py
-msgid "Azure AD OAuth Source"
-msgstr "Azure AD OAuth forrás"
-
-#: authentik/sources/oauth/models.py
-msgid "Azure AD OAuth Sources"
-msgstr "Azure AD OAuth források"
 
 #: authentik/sources/oauth/models.py
 msgid "Entra ID OAuth Source"
