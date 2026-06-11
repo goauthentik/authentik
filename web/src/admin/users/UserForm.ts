@@ -6,7 +6,7 @@ import "#components/ak-text-input";
 import "#components/ak-radio-input";
 import "#components/ak-switch-input";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { DefaultUIConfig } from "#common/ui/config";
 
 import { ModelForm } from "#elements/forms/ModelForm";
@@ -47,8 +47,8 @@ const UserTypeOptions: readonly RadioOption<UserTypeEnum>[] = [
 ];
 @customElement("ak-user-form")
 export class UserForm extends ModelForm<User, number> {
-    #coreAPI = new CoreApi(DEFAULT_CONFIG);
-    #rbacAPI = new RbacApi(DEFAULT_CONFIG);
+    #coreAPI = aki(CoreApi);
+    #rbacAPI = aki(RbacApi);
 
     public static override verboseName = msg("User");
     public static override verboseNamePlural = msg("Users");

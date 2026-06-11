@@ -6328,10 +6328,6 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
   <source>Optionally restrict which WebAuthn device types may be used. When no device types are selected, all devices are allowed.</source>
   <target>Valinnaisesti voit rajoittaa, mitä WebAuthn-laitetyyppejä voidaan käyttää. Jos mitään tyyppiä ei ole valittu, kaiken tyyppiset laitteet sallitaan.</target>
 </trans-unit>
-<trans-unit id="s11274960b13cf21a">
-  <source>This restriction only applies to devices created in authentik 2024.4 or later.</source>
-  <target>Tämä rajoitus koskee vain laitteita, jotka on luotu authentik 2024.4 tai uudemmalla versiolla.</target>
-</trans-unit>
 <trans-unit id="s24bce955914b1f0a">
   <source>Stage used to configure a WebAuthn authenticator (i.e. Yubikey, FaceID/Windows Hello).</source>
   <target>Vaihe, jolla määritellään WebAuthn-todentaja (esim. Yubikey, FaceID/Windows Hello).</target>

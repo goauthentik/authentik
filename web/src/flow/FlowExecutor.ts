@@ -10,7 +10,7 @@ import { FlowMultitabController } from "./controllers/FlowMultitabController";
 import { FlowWebsocketClientController } from "./controllers/FlowWebsocketClientController";
 import Styles from "./FlowExecutor.css" with { type: "bundled-text" };
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { APIError, parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
 import { globalAK } from "#common/global";
 import { configureSentry } from "#common/sentry/index";
@@ -159,7 +159,7 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
     constructor() {
         configureSentry();
         super();
-        this.#api = new FlowsApi(DEFAULT_CONFIG);
+        this.#api = aki(FlowsApi);
         this.addController(this.#flowIframeMessageController);
         this.addController(this.#flowMultitabController);
         this.addController(this.#flowWebsocketClientController);

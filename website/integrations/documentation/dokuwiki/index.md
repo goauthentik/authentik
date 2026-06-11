@@ -35,7 +35,8 @@ To support the integration of DokuWiki with authentik, you need to create an app
 - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
 - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
     - Note the **Client ID** and **Client Secret** values because they will be required later.
-    - Set a `Strict` redirect URI to `https://dokuwiki.company/doku.php`.
+    - Add a **Redirect URI** of type `Strict` `Authorization` as `https://dokuwiki.company/doku.php`.
+    - Add a **Redirect URI** of type `Strict` `Post Logout` as `https://dokuwiki.company/doku.php`.
     - Select any available signing key.
     - Under **Advanced protocol settings**, add the following OAuth mapping under **Scopes**: `authentik default OAuth Mapping: OpenID 'offline_access'`
 - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
@@ -68,6 +69,7 @@ For **oauthgeneric**:
 - Set `plugin»oauthgeneric»authurl` to `https://authentik.company/application/o/authorize/`
 - Set `plugin»oauthgeneric»tokenurl` to `https://authentik.company/application/o/token/`
 - Set `plugin»oauthgeneric»userurl` to `https://authentik.company/application/o/userinfo/`
+- Set `plugin»oauthgeneric»logouturl` to `https://authentik.company/application/o/end-session/`
 - Set `plugin»oauthgeneric»authmethod` to `Bearer Header`
 - Set `plugin»oauthgeneric»scopes` to `email, openid, profile, offline_access`
 - Select `plugin»oauthgeneric»needs-state`
@@ -75,6 +77,7 @@ For **oauthgeneric**:
 - Set `plugin»oauthgeneric»json-name` to `name`
 - Set `plugin»oauthgeneric»json-mail` to `email`
 - Set `plugin»oauthgeneric»json-grps` to`groups`
+- Set `plugin»oauthgeneric»color ` to `#fd4b2d`
 
 ![](./dokuwiki_oauth_generic.png)
 

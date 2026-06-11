@@ -52,7 +52,7 @@ export interface LDAPOutpostConfig {
      */
     readonly unbindFlowSlug: string | null;
     /**
-     * Prioritise backchannel slug over direct application slug
+     * Prioritize backchannel slug over direct application slug
      * @type {string}
      * @memberof LDAPOutpostConfig
      */

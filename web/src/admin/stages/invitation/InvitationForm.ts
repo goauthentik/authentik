@@ -5,7 +5,7 @@ import "#elements/CodeMirror";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/index";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { dateTimeLocal } from "#common/temporal";
 
 import { ModelForm } from "#elements/forms/ModelForm";
@@ -24,7 +24,7 @@ export class InvitationForm extends ModelForm<Invitation, string> {
     public static override verboseNamePlural = msg("Invitations");
 
     loadInstance(pk: string): Promise<Invitation> {
-        return new StagesApi(DEFAULT_CONFIG).stagesInvitationInvitationsRetrieve({
+        return aki(StagesApi).stagesInvitationInvitationsRetrieve({
             inviteUuid: pk,
         });
     }
@@ -37,12 +37,12 @@ export class InvitationForm extends ModelForm<Invitation, string> {
 
     async send(data: Invitation): Promise<Invitation> {
         if (this.instance) {
-            return new StagesApi(DEFAULT_CONFIG).stagesInvitationInvitationsUpdate({
+            return aki(StagesApi).stagesInvitationInvitationsUpdate({
                 inviteUuid: this.instance.pk || "",
                 invitationRequest: data,
             });
         }
-        return new StagesApi(DEFAULT_CONFIG).stagesInvitationInvitationsCreate({
+        return aki(StagesApi).stagesInvitationInvitationsCreate({
             invitationRequest: data,
         });
     }

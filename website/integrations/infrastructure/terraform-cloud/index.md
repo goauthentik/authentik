@@ -4,6 +4,8 @@ sidebar_label: Terraform Cloud
 support_level: community
 ---
 
+import SAMLProvider20265Warning from "../../\_saml-provider-2026-5-warning.mdx";
+
 ## What is Terraform Cloud?
 
 > Terraform Cloud is a managed SaaS platform by HashiCorp that enables teams to collaborate on infrastructure-as-code by running, storing state, enforcing policies, and automating workflows for Terraform configurations.
@@ -25,6 +27,8 @@ This documentation lists only the settings that you need to change from their de
 To support the integration of Terraform with authentik, you need to create an application/provider pair in authentik.
 
 ### Create an application and provider in authentik
+
+<SAMLProvider20265Warning />
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.

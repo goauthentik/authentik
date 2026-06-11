@@ -6379,10 +6379,6 @@ doesn't pass when either or both of the selected options are equal or above the 
   <source>Optionally restrict which WebAuthn device types may be used. When no device types are selected, all devices are allowed.</source>
   <target>可选的 WebAuthn 可用设备类型限制。如果未选择设备类型，则允许所有设备。</target>
 </trans-unit>
-<trans-unit id="s11274960b13cf21a">
-  <source>This restriction only applies to devices created in authentik 2024.4 or later.</source>
-  <target>此限制仅适用于在 authentik 2024.4 或更新版本中创建的设备。</target>
-</trans-unit>
 <trans-unit id="s24bce955914b1f0a">
   <source>Stage used to configure a WebAuthn authenticator (i.e. Yubikey, FaceID/Windows Hello).</source>
   <target>用来配置 WebAuthn 身份验证器（即 Yubikey、FaceID/Windows Hello）的阶段。</target>

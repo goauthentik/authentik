@@ -14,7 +14,7 @@ import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { userTypeToLabel } from "#common/labels";
 import { DefaultUIConfig } from "#common/ui/config";
 import { formatUserDisplayName } from "#common/users";
@@ -80,7 +80,7 @@ export class UserListPage extends WithLicenseSummary(
         `,
     ];
 
-    #api = new CoreApi(DEFAULT_CONFIG);
+    #api = aki(CoreApi);
 
     public override expandable = true;
     public override checkbox = true;

@@ -4,6 +4,8 @@ sidebar_label: Stripe
 support_level: community
 ---
 
+import SAMLProvider20265Warning from "../../_saml-provider-2026-5-warning.mdx";
+
 ## What is Stripe?
 
 > Stripe is a financial infrastructure platform that enables businesses to accept online and in-person payments, embed financial services, and build custom revenue models.
@@ -50,6 +52,8 @@ Use a group attribute to define the Stripe role that authentik sends for each us
 7. Click **Add existing user**, select the user that needs Stripe access, and click **Add**.
 
 ### Create a property mapping
+
+<SAMLProvider20265Warning />
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Customization** > **Property Mappings** and click **Create**.

@@ -7,7 +7,7 @@ import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { intentToLabel } from "#common/labels";
 
 import { IconTokenCopyButton } from "#elements/buttons/IconTokenCopyButton";
@@ -44,7 +44,7 @@ export class TokenListPage extends TablePage<Token> {
     public override order = "expires";
 
     protected override async apiEndpoint(): Promise<PaginatedResponse<Token>> {
-        return new CoreApi(DEFAULT_CONFIG).coreTokensList(await this.defaultEndpointConfig());
+        return aki(CoreApi).coreTokensList(await this.defaultEndpointConfig());
     }
 
     protected columns: TableColumn[] = [
@@ -65,12 +65,12 @@ export class TokenListPage extends TablePage<Token> {
                 return [{ key: msg("Identifier"), value: item.identifier }];
             }}
             .usedBy=${(item: Token) => {
-                return new CoreApi(DEFAULT_CONFIG).coreTokensUsedByList({
+                return aki(CoreApi).coreTokensUsedByList({
                     identifier: item.identifier,
                 });
             }}
             .delete=${(item: Token) => {
-                return new CoreApi(DEFAULT_CONFIG).coreTokensDestroy({
+                return aki(CoreApi).coreTokensDestroy({
                     identifier: item.identifier,
                 });
             }}
