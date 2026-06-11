@@ -37,9 +37,10 @@ To support the integration of Audiobookshelf with authentik, you need to create 
     - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
         - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
-        - Add two **Redirect URIs** of type `Strict` `Authorization`:
-            - `https://audiobookshelf.company/auth/openid/callback`
-            - `https://audiobookshelf.company/auth/openid/mobile-redirect`
+        - Add three **Redirect URIs**:
+            - `Strict` `Authorization` `https://audiobookshelf.company/auth/openid/callback`
+            - `Strict` `Authorization` `https://audiobookshelf.company/auth/openid/mobile-redirect`
+            - `Strict` `Post Logout` `https://audiobookshelf.company/login`
         - Select any available signing key.
     - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 
@@ -57,6 +58,7 @@ To support the integration of Audiobookshelf with authentik, you need to create 
     - **Token URL**: `https://authentik.company/application/o/token/`
     - **User Info URL**: `https://authentik.company/application/o/userinfo/`
     - **JWKS URL**: `https://authentik.company/application/o/<application_slug>/jwks/`
+    - **Logout URL**: `https://auth.yoursite.com/application/o/<application_slug>/end-session/`
     - **Signing Algorithm**: `RS256`
     - **Allow Mobile Redirect URLs**: `https://audiobookshelf.company/auth/openid/mobile-redirect`
     - **Match existing users by**: `username`
