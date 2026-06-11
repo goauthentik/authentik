@@ -37,7 +37,7 @@ To support the integration of Oracle Cloud with authentik, you need to create an
     - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
     - Set a `Strict` redirect URI to `https://tenant.identity.oraclecloud.com/oauth2/v1/social/callback`.
     - Select any available signing key.
-- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 
 3. Click **Submit** to save the new application and provider.
 
@@ -68,7 +68,7 @@ To integrate authentik with Oracle Cloud, you must configure authentik as a soci
 
 ## Configuration verification
 
-To confirm that authentik is correctly configured with Oracle Cloud, log out of your current session. Then, try signing in by either selecting the application's icon in the User Library or by going directly to the Oracle Cloud login page, depending on your setup. On the login page, click **authentik**. You'll be redirected to authentik, and after a successful login, automatically signed in to Oracle Cloud.
+To confirm that authentik is correctly configured with Oracle Cloud, log out of your current session. Then, try signing in by either selecting the application's icon in the Application Dashboard or by going directly to the Oracle Cloud login page, depending on your setup. On the login page, click **authentik**. You'll be redirected to authentik, and after a successful login, automatically signed in to Oracle Cloud.
 
 ## Resources
 

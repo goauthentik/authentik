@@ -2,6 +2,7 @@ import {
     DigestAlgorithmEnum,
     KeyTypeEnum,
     SAMLBindingsEnum,
+    SAMLLogoutMethods,
     SignatureAlgorithmEnum,
 } from "@goauthentik/api";
 
@@ -21,6 +22,38 @@ export const spBindingOptions = toOptions([
     [msg("Redirect"), SAMLBindingsEnum.Redirect, true],
     [msg("Post"), SAMLBindingsEnum.Post],
 ]);
+
+export function logoutMethodLabel(method?: SAMLLogoutMethods | string): string {
+    switch (method) {
+        case SAMLLogoutMethods.FrontchannelIframe:
+            return msg("Front-channel (Iframe)");
+        case SAMLLogoutMethods.FrontchannelNative:
+            return msg("Front-channel (Native)");
+        case SAMLLogoutMethods.Backchannel:
+            return msg("Back-channel (POST)");
+        default:
+            return method ?? "";
+    }
+}
+
+export function logoutMethodOptions(hasPostBinding: boolean) {
+    return [
+        {
+            label: logoutMethodLabel(SAMLLogoutMethods.FrontchannelIframe),
+            value: SAMLLogoutMethods.FrontchannelIframe,
+            default: true,
+        },
+        {
+            label: logoutMethodLabel(SAMLLogoutMethods.FrontchannelNative),
+            value: SAMLLogoutMethods.FrontchannelNative,
+        },
+        {
+            label: logoutMethodLabel(SAMLLogoutMethods.Backchannel),
+            value: SAMLLogoutMethods.Backchannel,
+            disabled: !hasPostBinding,
+        },
+    ];
+}
 
 export const digestAlgorithmOptions = toOptions([
     ["SHA1", DigestAlgorithmEnum.HttpWwwW3Org200009Xmldsigsha1],

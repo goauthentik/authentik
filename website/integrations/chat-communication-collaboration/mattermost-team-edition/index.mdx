@@ -4,6 +4,7 @@ sidebar_label: Mattermost Team Edition
 support_level: community
 ---
 
+import SAMLProvider20265Warning from "../../_saml-provider-2026-5-warning.mdx";
 import TabItem from "@theme/TabItem";
 import Tabs from "@theme/Tabs";
 
@@ -86,7 +87,7 @@ The following `id` property mapping is optional. If omitted, Mattermost will gen
         - Set a `Strict` redirect URI to `https://mattermost.company/signup/gitlab/complete`.
         - Select any available signing key.
         - Under **Advanced protocol settings**, add the scopes you just created to the list of selected scopes.
-    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 
 3. Click **Submit** to save the new application and provider.
 
@@ -154,6 +155,8 @@ To support the integration of Mattermost with authentik via SAML, you need to up
 
 ### Create an application and provider in authentik
 
+<SAMLProvider20265Warning />
+
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **New Application** to create an application and provider pair.
     - **Application**: provide a descriptive name (e.g., `Mattermost`), an optional group for the type of application, and the policy engine mode. Take note of the **slug** as it will be required later.
@@ -166,7 +169,7 @@ To support the integration of Mattermost with authentik via SAML, you need to up
             - Enable **Sign responses**.
             - Set the **Verification Certificate** to the Mattermost certificate you uploaded earlier.
             - Set the **Encryption Certificate** to the Mattermost certificate you uploaded earlier.
-    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 
 3. Click **Submit** to save the new application and provider.
 

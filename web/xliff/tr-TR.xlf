@@ -1192,9 +1192,6 @@
 <trans-unit id="s972540f502b0f4dc">
   <source>Application Name</source>
 </trans-unit>
-<trans-unit id="s704091f8e3dbd721">
-  <source>The name displayed in the application library.</source>
-</trans-unit>
 <trans-unit id="s91f70424f5d5d23e">
   <source>Slug</source>
   <target>Kısa İsim</target>
@@ -2239,9 +2236,6 @@
 </trans-unit>
 <trans-unit id="s24d7ac2fc280ca5e">
   <source>Authenticate SCIM requests using a static token.</source>
-</trans-unit>
-<trans-unit id="s0e1641692e0dac94">
-  <source>OAuth</source>
 </trans-unit>
 <trans-unit id="s1c34cb0a4cccc041">
   <source>Authenticate SCIM requests using OAuth.</source>
@@ -5950,10 +5944,6 @@ Belirlenen seçeneklerden biri veya her ikisi de eşiğe eşit veya eşiğin üz
   <source>Optionally restrict which WebAuthn device types may be used. When no device types are selected, all devices are allowed.</source>
   <target>İsteğe bağlı olarak, hangi WebAuthn cihaz türlerinin kullanılabileceğini kısıtlayın. Hiçbir cihaz türü seçilmediğinde, tüm cihazlara izin verilir.</target>
 </trans-unit>
-<trans-unit id="s11274960b13cf21a">
-  <source>This restriction only applies to devices created in authentik 2024.4 or later.</source>
-  <target>Bu kısıtlama yalnızca authentik 2024.4 veya sonraki sürümlerde oluşturulan cihazlar için geçerlidir.</target>
-</trans-unit>
 <trans-unit id="s24bce955914b1f0a">
   <source>Stage used to configure a WebAuthn authenticator (i.e. Yubikey, FaceID/Windows Hello).</source>
   <target>Bir WebAuthn kimlik doğrulayıcısını yapılandırmak için kullanılan sahne alanı (ör. Yubikey, FaceID/Windows Hello).</target>
@@ -8555,9 +8545,6 @@ Gruplara/kullanıcılara yapılan bağlamalar, etkinliğin kullanıcısına kar�
 <trans-unit id="s3b4ad8abf4f08c35">
   <source>Hide managed roles</source>
 </trans-unit>
-<trans-unit id="s7dcfe418b8d601f6">
-  <source>Flags allow you to enable new functionality and behaviour in authentik early.</source>
-</trans-unit>
 <trans-unit id="s8aa73079812f56b2">
   <source>Refresh other flow tabs upon authentication</source>
 </trans-unit>
@@ -9484,12 +9471,6 @@ Gruplara/kullanıcılara yapılan bağlamalar, etkinliğin kullanıcısına kar�
 <trans-unit id="sdfe21d69a2da53f4">
   <source>e.g. my-application</source>
 </trans-unit>
-<trans-unit id="s96d43986e69a9db8">
-  <source>The publisher is shown in the application library.</source>
-</trans-unit>
-<trans-unit id="s4107487a961394e2">
-  <source>The description is shown in the application library and may provide additional information about the application to end users.</source>
-</trans-unit>
 <trans-unit id="sfafe0cba4a679e37">
   <source>Select Groups</source>
 </trans-unit>
@@ -10294,15 +10275,6 @@ Gruplara/kullanıcılara yapılan bağlamalar, etkinliğin kullanıcısına kar�
 <trans-unit id="s4fd2fe9adfd426e9">
   <source>Select an option...</source>
 </trans-unit>
-<trans-unit id="s4a45bb66596356ce">
-  <source>Choose <x id="0" equiv-text="${this.verboseName}"/> Type</source>
-</trans-unit>
-<trans-unit id="sdec65ee663d8a048">
-  <source>Choose type</source>
-</trans-unit>
-<trans-unit id="s32db18dac74db6c3">
-  <source><x id="0" equiv-text="${entityLabel}"/> Details</source>
-</trans-unit>
 <trans-unit id="s195ea6447a6b5486">
   <source>Cancel wizard</source>
 </trans-unit>
@@ -10415,9 +10387,6 @@ Gruplara/kullanıcılara yapılan bağlamalar, etkinliğin kullanıcısına kar�
 </trans-unit>
 <trans-unit id="s2b9ad6a5bc47ea5d">
   <source>Create or bind...</source>
-</trans-unit>
-<trans-unit id="s9ec971c7789af83a">
-  <source>Bind New Stage</source>
 </trans-unit>
 <trans-unit id="s0bc6ba00a01970db">
   <source>Select the type of stage you want to create.</source>
@@ -10705,15 +10674,6 @@ Gruplara/kullanıcılara yapılan bağlamalar, etkinliğin kullanıcısına kar�
 <trans-unit id="s02b73793e5b4e1ba">
   <source>This flag is deprecated.</source>
 </trans-unit>
-<trans-unit id="s8655c52824caac63">
-  <source>If checked, the launch URL will open in a new browser tab or window from the user's application library.</source>
-</trans-unit>
-<trans-unit id="s9eda7101f63a8652">
-  <source>Hide from My applications</source>
-</trans-unit>
-<trans-unit id="s30f30e9c42594a33">
-  <source>If checked, this application will not be shown on the user's My applications page.</source>
-</trans-unit>
 <trans-unit id="sc98037ccab57d329">
   <source>No preference: the browser may offer any available authenticator</source>
 </trans-unit>
@@ -10831,12 +10791,6 @@ Gruplara/kullanıcılara yapılan bağlamalar, etkinliğin kullanıcısına kar�
 <trans-unit id="se2f00b2619675217">
   <source>Failed to load element</source>
 </trans-unit>
-<trans-unit id="s1cf2298d92c327a6">
-  <source>My Applications</source>
-</trans-unit>
-<trans-unit id="s2656433a3b1f7e86">
-  <source>My applications</source>
-</trans-unit>
 <trans-unit id="sac974f7c36f0c5c1">
   <source>SAML Endpoint</source>
 </trans-unit>
@@ -10860,6 +10814,84 @@ Gruplara/kullanıcılara yapılan bağlamalar, etkinliğin kullanıcısına kar�
 </trans-unit>
 <trans-unit id="s3162a5abea92514e">
   <source>View Credentials</source>
+</trans-unit>
+<trans-unit id="s7cbd6ddbb3cdbda4">
+  <source>OAuth (Silent)</source>
+</trans-unit>
+<trans-unit id="sf74719393c9d600b">
+  <source>OAuth (Interactive)</source>
+</trans-unit>
+<trans-unit id="s364366c872ccd349">
+  <source>Authenticate SCIM requests using OAuth, interactively authorized.</source>
+</trans-unit>
+<trans-unit id="s67dbb822a17bf6fc">
+  <source>OAuth Token last updated</source>
+</trans-unit>
+<trans-unit id="sb586db2f11959745">
+  <source>OAuth Token expires</source>
+</trans-unit>
+<trans-unit id="s4011de0d7365d106">
+  <source>OAuth Status</source>
+</trans-unit>
+<trans-unit id="s169a1a1dce3987b8">
+  <source>Authenticated</source>
+</trans-unit>
+<trans-unit id="s02e7dfce69646f50">
+  <source>No token saved</source>
+</trans-unit>
+<trans-unit id="sde2c41117de5db9d">
+  <source>(Re-)authenticate</source>
+</trans-unit>
+<trans-unit id="s13c4adf0d185f12e">
+  <source>OAuth Callback URL</source>
+</trans-unit>
+<trans-unit id="s2736fa38f8fb1b04">
+  <source>The name displayed in the Application Dashboard.</source>
+</trans-unit>
+<trans-unit id="sb8bbbd3b5cd45ad2">
+  <source>If checked, the launch URL will open in a new browser tab or window from the user's Application Dashboard.</source>
+</trans-unit>
+<trans-unit id="s55272b9955f1d985">
+  <source>Hide from Application Dashboard</source>
+</trans-unit>
+<trans-unit id="s4e8256e5793952d7">
+  <source>If checked, this application will not be shown on the user's Application Dashboard.</source>
+</trans-unit>
+<trans-unit id="s7d9707524fb7e539">
+  <source>The publisher is shown in the Application Dashboard.</source>
+</trans-unit>
+<trans-unit id="sf04a246ad842c3cf">
+  <source>The description is shown in the Application Dashboard and may provide additional information about the application to end users.</source>
+</trans-unit>
+<trans-unit id="s88c83ac92bfb1f6c">
+  <source>You've logged out of <x id="0" equiv-text="${challenge.applicationName}"/>. You can log out of your authentik account.</source>
+</trans-unit>
+<trans-unit id="sa5c3a21cbc762ce9">
+  <source>You've logged out of <x id="0" equiv-text="${challenge.applicationName}"/>.</source>
+</trans-unit>
+<trans-unit id="s92c038a5e1dade49">
+  <source>Application Dashboard</source>
+</trans-unit>
+<trans-unit id="s633e3919f46a8cd3">
+  <source>View details of role "<x id="0" equiv-text="${item.name}"/>"</source>
+</trans-unit>
+<trans-unit id="sc1fc93e04011152f">
+  <source>New Stage</source>
+</trans-unit>
+<trans-unit id="wizard.step.choose-type.generic">
+  <source>Choose type</source>
+  <note from="lit-localize">Generic label for the initial step in the creation wizard where the type of the entity being created is selected, used when no singular entity name is provided.</note>
+</trans-unit>
+<trans-unit id="wizard.step.choose-type">
+  <source>Choose <x id="0" equiv-text="${this.verboseName}"/> Type</source>
+  <note from="lit-localize">Label for the initial step in the creation wizard where the type of the entity being created is selected. The placeholder {entity} is replaced with the singular name of the entity, for example 'Choose User Type' or 'Choose Group Type'.</note>
+</trans-unit>
+<trans-unit id="wizard.step.details">
+  <source><x id="0" equiv-text="${entityLabel}"/> Details</source>
+  <note from="lit-localize">Label for the step in the creation wizard where the details of the entity being created are filled in. The placeholder {entity} is replaced with the name of the entity type, for example 'User Details' or 'Group Details'.</note>
+</trans-unit>
+<trans-unit id="sd1b98c71ea0d603b">
+  <source>Flags allow you to enable new functionality and behavior in authentik early.</source>
 </trans-unit>
 </body>
 </file>

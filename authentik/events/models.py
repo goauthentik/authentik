@@ -258,6 +258,7 @@ class Event(SerializerModel, ExpiringModel):
             action=EventAction.CONFIGURATION_WARNING,
             context__deprecation=identifier,
         )
+        cause = str(cause)
         if cause:
             query &= Q(context__cause=cause)
         if Event.objects.filter(query).exists():
@@ -360,7 +361,7 @@ class NotificationTransport(TasksModel, SerializerModel):
         default=None,
         on_delete=models.SET_DEFAULT,
         help_text=_(
-            "When set, the selected ceritifcate is used to "
+            "When set, the selected certificate is used to "
             "validate the certificate of the webhook server."
         ),
     )

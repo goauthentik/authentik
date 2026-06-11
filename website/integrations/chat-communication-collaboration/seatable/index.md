@@ -4,6 +4,8 @@ sidebar_label: SeaTable
 support_level: community
 ---
 
+import SAMLProvider20265Warning from "../../\_saml-provider-2026-5-warning.mdx";
+
 ## What is SeaTable?
 
 > SeaTable is a no-code database and app builder platform that provides a web-based, spreadsheet-like interface for organizing data, building apps, and automating workflows. It is designed to function as a collaborative database with features like tables, views, forms, and permissions.
@@ -31,6 +33,8 @@ To support the integration of SeaTable with authentik, you need to create an app
 
 ### Create an application and provider in authentik
 
+<SAMLProvider20265Warning />
+
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
     - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
@@ -40,7 +44,7 @@ To support the integration of SeaTable with authentik, you need to create an app
         - Set the **ACS URL** to `https://seatable.company/saml/acs/`.
         - Set the **Audience** to `https://seatable.company/saml/metadata/`.
         - Under **Advanced protocol settings**, set an available **Signing certificate**.
-    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 
 3. Click **Submit** to save the new application and provider.
 

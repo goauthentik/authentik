@@ -2,7 +2,7 @@ import "#elements/chips/Chip";
 import "#elements/chips/ChipGroup";
 import "#elements/forms/DeleteBulkForm";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { PaginatedResponse, Table, TableColumn, Timestamp } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
@@ -19,7 +19,7 @@ export class UserConsentList extends Table<UserConsent> {
     userId?: number;
 
     async apiEndpoint(): Promise<PaginatedResponse<UserConsent>> {
-        return new CoreApi(DEFAULT_CONFIG).coreUserConsentList({
+        return aki(CoreApi).coreUserConsentList({
             ...(await this.defaultEndpointConfig()),
             user: this.userId,
         });
@@ -55,12 +55,12 @@ export class UserConsentList extends Table<UserConsent> {
                 ];
             }}
             .usedBy=${(item: UserConsent) => {
-                return new CoreApi(DEFAULT_CONFIG).coreUserConsentUsedByList({
+                return aki(CoreApi).coreUserConsentUsedByList({
                     id: item.pk,
                 });
             }}
             .delete=${(item: UserConsent) => {
-                return new CoreApi(DEFAULT_CONFIG).coreUserConsentDestroy({
+                return aki(CoreApi).coreUserConsentDestroy({
                     id: item.pk,
                 });
             }}

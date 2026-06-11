@@ -4,6 +4,7 @@ sidebar_label: Omada Controller
 support_level: community
 ---
 
+import SAMLProvider20265Warning from "../../_saml-provider-2026-5-warning.mdx";
 import TabItem from "@theme/TabItem";
 import Tabs from "@theme/Tabs";
 
@@ -93,6 +94,8 @@ Omada can't handle a user being in multiple roles. Therefore, ensure that a user
 
 ### Create an application and provider in authentik
 
+<SAMLProvider20265Warning />
+
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **New Application** to create an application and provider pair. (Alternatively you can first create a provider separately, and then create the application and connect it with the provider.)
     - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
@@ -117,7 +120,7 @@ Omada can't handle a user being in multiple roles. Therefore, ensure that a user
                     - `surname`
                     - `omada_usergroup_name`
                     - `username`
-    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 
 3. Click **Submit** to save the new application and provider.
 
@@ -182,7 +185,7 @@ Run the following command:
 
 ## Configuration verification
 
-To verify that authentik is correctly integrated with Omada Controller, first log out of Omada Controller. Log in to authentik and click on the Omada Controller application in the application dashboard, and you should then be redirected to the Omada Controller dashboard.
+To verify that authentik is correctly integrated with Omada Controller, first log out of Omada Controller. Log in to authentik and click on the Omada Controller application in the Application Dashboard, and you should then be redirected to the Omada Controller dashboard.
 
 ## Resources
 

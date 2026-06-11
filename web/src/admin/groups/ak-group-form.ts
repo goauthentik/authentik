@@ -8,7 +8,7 @@ import "#elements/forms/SearchSelect/index";
 import "#components/ak-text-input";
 import "#components/ak-switch-input";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { DataProvision, DualSelectPair } from "#elements/ak-dual-select/types";
 import { ModelForm } from "#elements/forms/ModelForm";
@@ -47,7 +47,7 @@ export class GroupForm extends ModelForm<Group, string> {
     public static verboseNamePlural = msg("Groups");
 
     #fetchGroups = (page: number, search?: string): Promise<DataProvision> => {
-        return new CoreApi(DEFAULT_CONFIG)
+        return aki(CoreApi)
             .coreGroupsList({
                 page: page,
                 search: search,
@@ -60,7 +60,7 @@ export class GroupForm extends ModelForm<Group, string> {
             });
     };
     #fetchRoles = (page: number, search?: string): Promise<DataProvision> => {
-        return new RbacApi(DEFAULT_CONFIG)
+        return aki(RbacApi)
             .rbacRolesList({
                 page: page,
                 search: search,
@@ -74,7 +74,7 @@ export class GroupForm extends ModelForm<Group, string> {
     };
 
     loadInstance(pk: string): Promise<Group> {
-        return new CoreApi(DEFAULT_CONFIG).coreGroupsRetrieve({
+        return aki(CoreApi).coreGroupsRetrieve({
             groupUuid: pk,
             includeUsers: false,
             includeParents: true,
@@ -90,13 +90,13 @@ export class GroupForm extends ModelForm<Group, string> {
     async send(data: Group): Promise<Group> {
         data.attributes ??= {};
         if (this.instance?.pk) {
-            return new CoreApi(DEFAULT_CONFIG).coreGroupsPartialUpdate({
+            return aki(CoreApi).coreGroupsPartialUpdate({
                 groupUuid: this.instance.pk,
                 patchedGroupRequest: data,
             });
         }
         data.users = [];
-        return new CoreApi(DEFAULT_CONFIG).coreGroupsCreate({
+        return aki(CoreApi).coreGroupsCreate({
             groupRequest: data,
         });
     }

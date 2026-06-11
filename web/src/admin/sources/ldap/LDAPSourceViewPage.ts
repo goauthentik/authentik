@@ -3,14 +3,14 @@ import "#admin/sources/ldap/LDAPSourceConnectivity";
 import "#admin/sources/ldap/LDAPSourceUserList";
 import "#admin/sources/ldap/LDAPSourceGroupList";
 import "#admin/events/ObjectChangelog";
+import "#components/sync/SyncStatusCard";
 import "#elements/CodeMirror";
 import "#elements/Tabs";
 import "#elements/buttons/ActionButton/index";
 import "#elements/buttons/SpinnerButton/index";
-import "#elements/sync/SyncStatusCard";
 import "#elements/tasks/ScheduleList";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { EVENT_REFRESH } from "#common/constants";
 
 import { AKElement } from "#elements/Base";
@@ -39,7 +39,7 @@ import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 export class LDAPSourceViewPage extends AKElement {
     @property({ type: String })
     set sourceSlug(slug: string) {
-        new SourcesApi(DEFAULT_CONFIG)
+        aki(SourcesApi)
             .sourcesLdapRetrieve({
                 slug: slug,
             })
@@ -124,9 +124,7 @@ export class LDAPSourceViewPage extends AKElement {
                             <ak-sync-status-card
                                 .fetch=${() => {
                                     if (!this.source) return Promise.reject();
-                                    return new SourcesApi(
-                                        DEFAULT_CONFIG,
-                                    ).sourcesLdapSyncStatusRetrieve({
+                                    return aki(SourcesApi).sourcesLdapSyncStatusRetrieve({
                                         slug: this.source.slug,
                                     });
                                 }}

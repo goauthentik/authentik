@@ -83,8 +83,7 @@ class EndSessionView(PolicyAccessView):
                     "id_token_hint_decode_failed"
                 ) from None
 
-        # Validate post_logout_redirect_uri against registered URIs
-        if request_redirect_uri:
+        if request_redirect_uri and self.provider.post_logout_redirect_uris:
             # OIDC Certification: id_token_hint required with post_logout_redirect_uri
             if not id_token_hint:
                 raise TokenError("invalid_request").with_cause("id_token_hint_missing")
