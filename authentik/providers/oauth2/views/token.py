@@ -713,7 +713,6 @@ class TokenView(View):
     def _add_cnf_to_id_token(self, id_token: IDToken) -> None:
         """Add cnf claim to ID Token when key binding is active"""
         if self.params.dpop_jwk is not None:
-
             id_token.cnf = {"jwk": self.params.dpop_jwk}
 
     def create_code_response(self) -> dict[str, Any]:

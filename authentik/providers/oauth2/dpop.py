@@ -2,25 +2,21 @@
 
 import base64
 import hashlib
+import re
 import time
 from hmac import compare_digest
 from urllib.parse import urlparse
 
 from cryptography.hazmat.primitives.asymmetric.rsa import RSAPublicKey
 from django.core.cache import cache
-from django.db import DatabaseError, transaction
 from jwt import PyJWK
 from jwt import decode as jwt_decode
 from jwt import decode_complete as jwt_decode_complete
 from jwt.exceptions import InvalidTokenError, PyJWTError
 from structlog.stdlib import get_logger
 
-from authentik.lib.config import CONFIG
-
 LOGGER = get_logger()
 
-# Clock skew tolerance in seconds for `iat` validation
-DPOP_IAT_CLOCK_SKEW = 60
 
 # DPoP JWT type header value
 DPOP_JWT_TYPE = "dpop+jwt"
@@ -33,6 +29,8 @@ DPOP_SUPPORTED_EC_CURVES = {"P-256", "P-384", "P-521"}
 # RSA key size limits for DPoP (bits)
 DPOP_RSA_MIN_KEY_SIZE = 2048
 DPOP_RSA_MAX_KEY_SIZE = 8192
+
+DPOP_JKT_RE = re.compile(r"^[A-Za-z0-9_-]{43}$")
 
 # Supported asymmetric signature algorithms for DPoP
 DPOP_SUPPORTED_ALGS = {
@@ -56,11 +54,14 @@ JWK_REQUIRED_CLAIMS = {
     "RSA": ("e", "kty", "n"),
 }
 
-# JTI replay protection window in seconds
-DPOP_JTI_REPLAY_WINDOW = int(CONFIG.get("providers.oauth2.dpop_jti_replay_window", 180))
+# Clock skew tolerance in seconds for `iat` validation
+DPOP_IAT_CLOCK_SKEW = 60
 
-# Maximum allowed JTI length
-DPOP_JTI_MAX_LENGTH = 256
+# JTI replay protection window in seconds. Must cover the iat validity window
+# (DPOP_IAT_CLOCK_SKEW) so a proof can never fall out of the replay cache
+# while still being iat fresh. To avoid edge cases we use 
+# 3 * DPOP_IAT_CLOCK_SKEW rather than 2 * DPOP_IAT_CLOCK_SKEW.
+DPOP_JTI_REPLAY_WINDOW = 3 * DPOP_IAT_CLOCK_SKEW
 
 # Cache key template for tracked JTIs
 CACHE_KEY_DPOP_JTI = "authentik_providers_oauth2_dpop_jti_%s"
@@ -71,6 +72,9 @@ def jwk_thumbprint(jwk: dict) -> str:
     key = PyJWK.from_dict(jwk)
     return key.thumbprint()
 
+def is_valid_jkt(value: str) -> bool:
+    """True if value is a well-formed base64url SHA-256 JWK thumbprint."""
+    return bool(DPOP_JKT_RE.fullmatch(value))
 
 def code_sha256(value: str) -> str:
     """Compute c_s256: BASE64URL(SHA256(ASCII(value)))"""
@@ -186,13 +190,13 @@ class DPoPValidator:
         jti = payload.get("jti")
         if not jti:
             raise DPoPError("DPoP proof missing jti claim")
-        if len(jti) > DPOP_JTI_MAX_LENGTH:
-            raise DPoPError("DPoP proof jti too large")
 
         return jti
 
     def _check_jti_replay(self, jti: str) -> None:
         """Check if the jti has been seen before (replay protection)."""
+
+        # Only store the hash of the JTI to prevent memory-exhaustion attacks (recommended by RFC 9449 11.1)
         jti_hash = hashlib.sha256(jti.encode("utf-8")).hexdigest()
         cache_key = CACHE_KEY_DPOP_JTI % jti_hash
         if not cache.add(cache_key, True, timeout=DPOP_JTI_REPLAY_WINDOW):

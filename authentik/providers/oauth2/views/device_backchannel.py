@@ -1,6 +1,5 @@
 """Device flow views"""
 
-from re import fullmatch
 from urllib.parse import urlencode
 
 from django.http import HttpRequest, HttpResponse
@@ -16,6 +15,7 @@ from authentik.common.oauth.constants import SCOPE_BOUND_KEY
 from authentik.core.models import Application
 from authentik.lib.config import CONFIG
 from authentik.lib.utils.time import timedelta_from_string
+from authentik.providers.oauth2.dpop import is_valid_jkt
 from authentik.providers.oauth2.errors import DeviceCodeError
 from authentik.providers.oauth2.models import DeviceToken, GrantType, OAuth2Provider, ScopeMapping
 from authentik.providers.oauth2.utils import TokenResponse, extract_client_auth
@@ -66,7 +66,7 @@ class DeviceView(View):
             self.scopes = self.scopes.intersection(default_scope_names)
 
         self.dpop_jkt = self.request.POST.get("dpop_jkt")
-        if self.dpop_jkt and not fullmatch(r"^[A-Za-z0-9_-]{43}$", self.dpop_jkt):
+        if self.dpop_jkt and not is_valid_jkt(self.dpop_jkt):
             raise DeviceCodeError("dpop_jkt must be a base64url-encoded SHA-256 JWK thumbprint")
 
         # Key binding requires dpop_jkt at authorization time

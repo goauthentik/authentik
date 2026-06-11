@@ -48,6 +48,7 @@ from authentik.lib.utils.time import timedelta_from_string
 from authentik.lib.views import bad_request_message
 from authentik.policies.types import PolicyRequest
 from authentik.policies.views import PolicyAccessView, RequestValidationError
+from authentik.providers.oauth2.dpop import is_valid_jkt
 from authentik.providers.oauth2.errors import (
     AuthorizeError,
     ClientIdError,
@@ -298,7 +299,7 @@ class OAuthAuthorizationParams:
 
     def check_dpop_jkt(self):
         """Validate dpop_jkt format if provided."""
-        if self.dpop_jkt and not fullmatch(r"^[A-Za-z0-9_-]{43}$", self.dpop_jkt):
+        if self.dpop_jkt and not is_valid_jkt(self.dpop_jkt):
             raise AuthorizeError(
                 self.redirect_uri,
                 "invalid_request",

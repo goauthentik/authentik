@@ -388,14 +388,6 @@ class TestDPoPValidator(TestCase):
         self.validator.validate(proof1, expected_htm="POST", expected_htu=self.htu)
         self.validator.validate(proof2, expected_htm="POST", expected_htu=self.htu)
 
-    def test_jti_too_large(self):
-        """Test rejection when jti exceeds maximum length"""
-        large_jti = "x" * 257
-        proof = self.builder.build(htu=self.htu, jti=large_jti)
-        with self.assertRaises(DPoPError) as cm:
-            self.validator.validate(proof, expected_htm="POST", expected_htu=self.htu)
-        self.assertIn("too large", str(cm.exception).lower())
-
     def test_symmetric_alg_rejected(self):
         """Test rejection when alg header claims a symmetric algorithm"""
         payload = {
