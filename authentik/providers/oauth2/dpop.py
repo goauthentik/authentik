@@ -195,15 +195,7 @@ class DPoPValidator:
         """Check if the jti has been seen before (replay protection)."""
         jti_hash = hashlib.sha256(jti.encode("utf-8")).hexdigest()
         cache_key = CACHE_KEY_DPOP_JTI % jti_hash
-        # Use atomic add to prevent TOCTOU race.  Wrap in a savepoint so
-        # that cache backends which raise IntegrityError on duplicate keys
-        # do not abort the outer transaction.
-        try:
-            with transaction.atomic():
-                added = cache.add(cache_key, True, timeout=DPOP_JTI_REPLAY_WINDOW)
-        except DatabaseError:
-            added = False
-        if not added:
+        if not cache.add(cache_key, True, timeout=DPOP_JTI_REPLAY_WINDOW):
             raise DPoPError("DPoP proof jti replay detected")
 
     def _validate_optional_claims(
