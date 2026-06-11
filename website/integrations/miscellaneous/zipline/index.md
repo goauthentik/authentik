@@ -4,6 +4,8 @@ sidebar_label: Zipline
 support_level: community
 ---
 
+import RedirectURI20265Note from "../../\_redirect-uri-2026-5-note.mdx";
+
 ## What is Zipline?
 
 > Zipline is a self-hostable file upload server designed for easy file sharing, supporting tools like ShareX and Flameshot, with features such as simplified setup and extensive customization options.
@@ -27,6 +29,8 @@ This guide is compatible with Zipline [version `v4.0.0`](https://github.com/dice
 
 ## authentik configuration
 
+<RedirectURI20265Note />
+
 To support the integration of Zipline with authentik, you need to create an application/provider pair in authentik.
 
 ### Create an application and provider in authentik
@@ -38,7 +42,7 @@ To support the integration of Zipline with authentik, you need to create an appl
 - **Choose a Provider type**: Select **OAuth2/OpenID Connect** as the provider type.
 - **Configure the Provider**: Provide a name (or accept the auto-provided name), choose the authorization flow for this provider, and configure the following required settings:
     - Note the **Client ID** and **Client Secret** values because they will be required later.
-    - Set a `Strict` redirect URI to `https://zipline.company/api/auth/oauth/oidc`.
+    - Add a **Redirect URI** of type `Strict` `Authorization` as `https://zipline.company/api/auth/oauth/oidc`.
     - Select any available signing key.
     - Under **Advanced protocol settings** > **Scopes**, add `authentik default OAuth Mapping: OpenID 'offline_access'` to the **Selected Scopes** list.
 - **Configure Bindings** _(optional)_: Create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
