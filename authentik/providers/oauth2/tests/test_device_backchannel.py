@@ -207,3 +207,60 @@ class TesOAuth2DeviceBackchannel(OAuthTestCase):
         self.assertIsNotNone(token)
         self.assertEqual(token.dpop_jkt, dpop_jkt)
         self.assertIn(SCOPE_BOUND_KEY, token.scope)
+
+    @apply_blueprint("system/providers-oauth2.yaml")
+    def test_device_dpop_jkt_without_bound_key_rejected(self):
+        """dpop_jkt without bound_key scope must 400, not 500"""
+        self.provider.property_mappings.set(
+            ScopeMapping.objects.filter(
+                managed__in=["goauthentik.io/providers/oauth2/scope-openid"]
+            )
+        )
+        creds = b64encode(f"{self.provider.client_id}:".encode()).decode()
+        res = self.client.post(
+            reverse("authentik_providers_oauth2:device"),
+            HTTP_AUTHORIZATION=f"Basic {creds}",
+            data={
+                "scope": SCOPE_OPENID,
+                "dpop_jkt": "n4bQgYhMfWWaL-qgxVrQFaO_TxsrC4Is0V1sFbDwCgg",
+            },
+        )
+        self.assertEqual(res.status_code, 400)
+
+    @apply_blueprint("system/providers-oauth2.yaml")
+    def test_device_bound_key_without_dpop_jkt_rejected(self):
+        """bound_key scope without dpop_jkt must 400"""
+        self.provider.property_mappings.set(
+            ScopeMapping.objects.filter(
+                managed__in=[
+                    "goauthentik.io/providers/oauth2/scope-openid",
+                    "goauthentik.io/providers/oauth2/scope-bound_key",
+                ]
+            )
+        )
+        creds = b64encode(f"{self.provider.client_id}:".encode()).decode()
+        res = self.client.post(
+            reverse("authentik_providers_oauth2:device"),
+            HTTP_AUTHORIZATION=f"Basic {creds}",
+            data={"scope": f"{SCOPE_OPENID} {SCOPE_BOUND_KEY}"},
+        )
+        self.assertEqual(res.status_code, 400)
+
+    @apply_blueprint("system/providers-oauth2.yaml")
+    def test_device_malformed_dpop_jkt_rejected(self):
+        """Malformed dpop_jkt must 400"""
+        self.provider.property_mappings.set(
+            ScopeMapping.objects.filter(
+                managed__in=[
+                    "goauthentik.io/providers/oauth2/scope-openid",
+                    "goauthentik.io/providers/oauth2/scope-bound_key",
+                ]
+            )
+        )
+        creds = b64encode(f"{self.provider.client_id}:".encode()).decode()
+        res = self.client.post(
+            reverse("authentik_providers_oauth2:device"),
+            HTTP_AUTHORIZATION=f"Basic {creds}",
+            data={"scope": f"{SCOPE_OPENID} {SCOPE_BOUND_KEY}", "dpop_jkt": "nope"},
+        )
+        self.assertEqual(res.status_code, 400)

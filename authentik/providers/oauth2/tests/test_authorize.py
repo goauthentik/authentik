@@ -859,3 +859,71 @@ class TestAuthorize(OAuthTestCase):
             response.url,
             f"foo://localhost?code={code.code}&state={state}",
         )
+
+    def test_dpop_jkt_without_bound_key_rejected(self):
+        """dpop_jkt supplied without bound_key scope must be rejected, not 500"""
+        provider = OAuth2Provider.objects.create(
+            name=generate_id(),
+            client_id="test-dpop-nobk",
+            authorization_flow=create_test_flow(),
+            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://local.invalid/Foo")],
+            grant_types=[GrantType.AUTHORIZATION_CODE],
+        )
+        request = self.factory.get(
+            "/",
+            data={
+                "response_type": "code",
+                "client_id": provider.client_id,
+                "redirect_uri": "http://local.invalid/Foo",
+                "scope": SCOPE_OPENID,
+                "dpop_jkt": "n4bQgYhMfWWaL-qgxVrQFaO_TxsrC4Is0V1sFbDwCgg",
+            },
+        )
+        with self.assertRaises(AuthorizeError) as cm:
+            OAuthAuthorizationParams.from_request(request)
+        self.assertEqual(cm.exception.error, "invalid_request")
+
+    def test_bound_key_without_dpop_jkt_rejected(self):
+        """bound_key scope without dpop_jkt must be rejected"""
+        provider = OAuth2Provider.objects.create(
+            name=generate_id(),
+            client_id="test-bk-nojkt",
+            authorization_flow=create_test_flow(),
+            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://local.invalid/Foo")],
+            grant_types=[GrantType.AUTHORIZATION_CODE],
+        )
+        request = self.factory.get(
+            "/",
+            data={
+                "response_type": "code",
+                "client_id": provider.client_id,
+                "redirect_uri": "http://local.invalid/Foo",
+                "scope": f"{SCOPE_OPENID} {SCOPE_BOUND_KEY}",
+            },
+        )
+        with self.assertRaises(AuthorizeError) as cm:
+            OAuthAuthorizationParams.from_request(request)
+        self.assertEqual(cm.exception.error, "invalid_request")
+
+    def test_malformed_dpop_jkt_rejected(self):
+        """dpop_jkt that isn't a 43-char base64url thumbprint must be rejected"""
+        provider = OAuth2Provider.objects.create(
+            name=generate_id(),
+            client_id="test-bad-jkt",
+            authorization_flow=create_test_flow(),
+            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://local.invalid/Foo")],
+            grant_types=[GrantType.AUTHORIZATION_CODE],
+        )
+        request = self.factory.get(
+            "/",
+            data={
+                "response_type": "code",
+                "client_id": provider.client_id,
+                "redirect_uri": "http://local.invalid/Foo",
+                "scope": f"{SCOPE_OPENID} {SCOPE_BOUND_KEY}",
+                "dpop_jkt": "too-short",
+            },
+        )
+        with self.assertRaises(AuthorizeError) as cm:
+            OAuthAuthorizationParams.from_request(request)
+        self.assertEqual(cm.exception.error, "invalid_request")
