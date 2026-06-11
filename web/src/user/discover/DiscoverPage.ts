@@ -15,6 +15,7 @@ import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
+import { aki } from "#common/api/client";
 
 @customElement("ak-discovery")
 export class DiscoverPage extends AKElement {
@@ -26,13 +27,7 @@ export class DiscoverPage extends AKElement {
     public override connectedCallback(): void {
         super.connectedCallback();
 
-        new CoreApi(DEFAULT_CONFIG)
-            .coreApplicationsList({
-                superuserFullList: true,
-            })
-            .then((apps) => {
-                this.apps = apps;
-            });
+        aki(CoreApi).coreApplicationsRequestableList({}).then(apps => this.apps = apps);
     }
 
     render() {

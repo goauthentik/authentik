@@ -28,6 +28,7 @@ from authentik.core.api.utils import ModelSerializer, ThemedUrlsSerializer
 from authentik.core.apps import AppAccessWithoutBindings
 from authentik.core.models import Application, User
 from authentik.events.logs import LogEventSerializer, capture_logs
+from authentik.lib.utils.reflection import ConditionalInheritance
 from authentik.policies.api.exec import PolicyTestResultSerializer
 from authentik.policies.engine import ListPolicyEngine, PolicyEngine
 from authentik.policies.types import CACHE_PREFIX, PolicyResult
@@ -128,7 +129,11 @@ class ApplicationSerializer(ModelSerializer):
         }
 
 
-class ApplicationViewSet(UsedByMixin, ModelViewSet):
+class ApplicationViewSet(
+    ConditionalInheritance("authentik.pam.api.apps.ApplicationsRequestableMixin"),
+    UsedByMixin,
+    ModelViewSet,
+):
     """Application Viewset"""
 
     queryset = (

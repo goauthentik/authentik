@@ -233,9 +233,9 @@ class PolicyEngine:
         return self.result.passing
 
 
-class ListPolicyEngine:
+class ListPolicyEngine[T: PolicyBindingModel]:
 
-    def __init__(self, objs: QuerySet[PolicyBindingModel]):
+    def __init__(self, objs: QuerySet[T]):
         self.qs = objs
         self.empty_result = True
 
@@ -244,5 +244,6 @@ class ListPolicyEngine:
             engine = PolicyEngine(obj, request.user, request)
             engine.empty_result = self.empty_result
             engine.build()
+            print(engine.result)
             if engine.passing:
                 yield obj
