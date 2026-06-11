@@ -12,6 +12,12 @@
  * Do not edit the class manually.
  */
 
+import type { RequestContentTypeEnum } from "./RequestContentTypeEnum";
+import {
+    RequestContentTypeEnumFromJSON,
+    RequestContentTypeEnumToJSON,
+} from "./RequestContentTypeEnum";
+
 /**
  * CaptchaStage Serializer
  * @export
@@ -48,6 +54,12 @@ export interface PatchedCaptchaStageRequest {
      * @memberof PatchedCaptchaStageRequest
      */
     apiUrl?: string;
+    /**
+     *
+     * @type {RequestContentTypeEnum}
+     * @memberof PatchedCaptchaStageRequest
+     */
+    requestContentType?: RequestContentTypeEnum;
     /**
      *
      * @type {boolean}
@@ -100,6 +112,10 @@ export function PatchedCaptchaStageRequestFromJSONTyped(
         privateKey: json["private_key"] == null ? undefined : json["private_key"],
         jsUrl: json["js_url"] == null ? undefined : json["js_url"],
         apiUrl: json["api_url"] == null ? undefined : json["api_url"],
+        requestContentType:
+            json["request_content_type"] == null
+                ? undefined
+                : RequestContentTypeEnumFromJSON(json["request_content_type"]),
         interactive: json["interactive"] == null ? undefined : json["interactive"],
         scoreMinThreshold:
             json["score_min_threshold"] == null ? undefined : json["score_min_threshold"],
@@ -128,6 +144,7 @@ export function PatchedCaptchaStageRequestToJSONTyped(
         private_key: value["privateKey"],
         js_url: value["jsUrl"],
         api_url: value["apiUrl"],
+        request_content_type: RequestContentTypeEnumToJSON(value["requestContentType"]),
         interactive: value["interactive"],
         score_min_threshold: value["scoreMinThreshold"],
         score_max_threshold: value["scoreMaxThreshold"],
