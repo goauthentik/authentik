@@ -24,7 +24,8 @@ export class MermaidThemeAdapter {
      *
      * @param cssProperty The CSS custom property name to read.
      * @param fallback Color used when the property is unset or empty.
-     * @returns A `#rrggbb` string, or `"transparent"` for fully transparent values.
+     *
+     * @returns A hex color code string, or `"transparent"` for fully transparent values.
      */
     public readHexColorVariable = (cssProperty: string, fallback = "#ff0000"): string => {
         if (!this.ctx) {
@@ -67,8 +68,8 @@ export class MermaidThemeAdapter {
         const { readHexColorVariable: read, readSurface } = this;
 
         const surface = readSurface("--pf-global--palette--purple-50", "#ffffff");
-        const surfaceAlt = "red" || readSurface("--pf-global--palette--blue-50", surface);
-        const surfaceDark = "green" || readSurface("--pf-global--palette--black-200", surfaceAlt);
+        const surfaceAlt = readSurface("--pf-global--palette--blue-50", surface);
+        const surfaceDark = readSurface("--pf-global--palette--black-200", surfaceAlt);
 
         const textBase = read("--pf-global--palette--purple-700");
         const textSecondary = read(
