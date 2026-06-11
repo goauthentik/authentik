@@ -1,12 +1,13 @@
 import "#elements/EmptyState";
 
 import { AKRefreshEvent } from "#common/events";
-import { loadMermaid } from "#common/mermaid";
 
 import { AKElement } from "#elements/Base";
 import { listen } from "#elements/decorators/listen";
-import Styles from "#elements/Diagram.css";
+import Styles from "#elements/Diagram/ak-diagram.css";
 import { EmptyState } from "#elements/EmptyState";
+import MermaidStyles from "#elements/mermaid/mermaid.css";
+import { loadMermaid } from "#elements/mermaid/utils";
 import { SlottedTemplateResult } from "#elements/types";
 
 import { CSSResult, PropertyValues } from "lit";
@@ -17,7 +18,7 @@ import { until } from "lit/directives/until.js";
 
 @customElement("ak-diagram")
 export class Diagram extends AKElement {
-    static styles: CSSResult[] = [Styles];
+    static styles: CSSResult[] = [MermaidStyles, Styles];
 
     #diagram = "";
     @property({ attribute: false, useDefault: true })
@@ -59,7 +60,7 @@ export class Diagram extends AKElement {
                 return null;
             }
 
-            return mermaid.render("diagram", this.diagram).then((result) => {
+            return mermaid.render(`mermaid-svg-${this.localName}`, this.diagram).then((result) => {
                 result.bindFunctions?.(this.renderRoot as HTMLElement);
 
                 return unsafeHTML(result.svg);

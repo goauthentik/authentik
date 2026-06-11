@@ -2,7 +2,7 @@ import "#elements/EmptyState";
 
 import { aki } from "#common/api/client";
 
-import { Diagram } from "#elements/Diagram";
+import { Diagram } from "#elements/Diagram/ak-diagram";
 
 import { FlowsApi } from "@goauthentik/api";
 

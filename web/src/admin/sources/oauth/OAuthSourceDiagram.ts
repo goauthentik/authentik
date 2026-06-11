@@ -1,4 +1,4 @@
-import { Diagram } from "#elements/Diagram";
+import { Diagram } from "#elements/Diagram/ak-diagram";
 
 import { UserMatchingModeToLabel } from "#admin/sources/oauth/utils";
 
