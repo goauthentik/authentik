@@ -9917,6 +9917,19 @@
                     "format": "uuid",
                     "title": "Uuid"
                 },
+                "policy_engine_mode": {
+                    "type": "string",
+                    "enum": [
+                        "all",
+                        "any"
+                    ],
+                    "title": "Policy engine mode"
+                },
+                "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Name"
+                },
                 "min_reviewers": {
                     "type": "integer",
                     "minimum": 0,

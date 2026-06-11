@@ -27,7 +27,23 @@ import {
     type PaginatedPersonaList,
     PaginatedPersonaListFromJSON,
 } from "../models/PaginatedPersonaList";
+import {
+    type PaginatedPolicyBindingModelRequestRuleList,
+    PaginatedPolicyBindingModelRequestRuleListFromJSON,
+} from "../models/PaginatedPolicyBindingModelRequestRuleList";
+import {
+    type PatchedPolicyBindingModelRequestRuleRequest,
+    PatchedPolicyBindingModelRequestRuleRequestToJSON,
+} from "../models/PatchedPolicyBindingModelRequestRuleRequest";
 import { type Persona, PersonaFromJSON } from "../models/Persona";
+import {
+    type PolicyBindingModelRequestRule,
+    PolicyBindingModelRequestRuleFromJSON,
+} from "../models/PolicyBindingModelRequestRule";
+import {
+    type PolicyBindingModelRequestRuleRequest,
+    PolicyBindingModelRequestRuleRequestToJSON,
+} from "../models/PolicyBindingModelRequestRuleRequest";
 import * as runtime from "../runtime";
 
 export interface PamGrantRequestsCreateRequest {
@@ -67,6 +83,37 @@ export interface PamPersonasListRequest {
 
 export interface PamPersonasRetrieveRequest {
     id: number;
+}
+
+export interface PamRequestRulesCreateRequest {
+    policyBindingModelRequestRuleRequest: PolicyBindingModelRequestRuleRequest;
+}
+
+export interface PamRequestRulesDestroyRequest {
+    uuid: string;
+}
+
+export interface PamRequestRulesListRequest {
+    name?: string;
+    ordering?: string;
+    page?: number;
+    pageSize?: number;
+    pbmPbmUuid?: string;
+    search?: string;
+}
+
+export interface PamRequestRulesPartialUpdateRequest {
+    uuid: string;
+    patchedPolicyBindingModelRequestRuleRequest?: PatchedPolicyBindingModelRequestRuleRequest;
+}
+
+export interface PamRequestRulesRetrieveRequest {
+    uuid: string;
+}
+
+export interface PamRequestRulesUpdateRequest {
+    uuid: string;
+    policyBindingModelRequestRuleRequest: PolicyBindingModelRequestRuleRequest;
 }
 
 /**
@@ -573,6 +620,410 @@ export class PamApi extends runtime.BaseAPI {
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<Persona> {
         const response = await this.pamPersonasRetrieveRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for pamRequestRulesCreate without sending the request
+     */
+    async pamRequestRulesCreateRequestOpts(
+        requestParameters: PamRequestRulesCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["policyBindingModelRequestRuleRequest"] == null) {
+            throw new runtime.RequiredError(
+                "policyBindingModelRequestRuleRequest",
+                'Required parameter "policyBindingModelRequestRuleRequest" was null or undefined when calling pamRequestRulesCreate().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters["Content-Type"] = "application/json";
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/pam/request_rules/`;
+
+        return {
+            path: urlPath,
+            method: "POST",
+            headers: headerParameters,
+            query: queryParameters,
+            body: PolicyBindingModelRequestRuleRequestToJSON(
+                requestParameters["policyBindingModelRequestRuleRequest"],
+            ),
+        };
+    }
+
+    /**
+     */
+    async pamRequestRulesCreateRaw(
+        requestParameters: PamRequestRulesCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PolicyBindingModelRequestRule>> {
+        const requestOptions = await this.pamRequestRulesCreateRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PolicyBindingModelRequestRuleFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     */
+    async pamRequestRulesCreate(
+        requestParameters: PamRequestRulesCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PolicyBindingModelRequestRule> {
+        const response = await this.pamRequestRulesCreateRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for pamRequestRulesDestroy without sending the request
+     */
+    async pamRequestRulesDestroyRequestOpts(
+        requestParameters: PamRequestRulesDestroyRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["uuid"] == null) {
+            throw new runtime.RequiredError(
+                "uuid",
+                'Required parameter "uuid" was null or undefined when calling pamRequestRulesDestroy().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/pam/request_rules/{uuid}/`;
+        urlPath = urlPath.replace("{uuid}", encodeURIComponent(String(requestParameters["uuid"])));
+
+        return {
+            path: urlPath,
+            method: "DELETE",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     */
+    async pamRequestRulesDestroyRaw(
+        requestParameters: PamRequestRulesDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
+        const requestOptions = await this.pamRequestRulesDestroyRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.VoidApiResponse(response);
+    }
+
+    /**
+     */
+    async pamRequestRulesDestroy(
+        requestParameters: PamRequestRulesDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
+        await this.pamRequestRulesDestroyRaw(requestParameters, initOverrides);
+    }
+
+    /**
+     * Creates request options for pamRequestRulesList without sending the request
+     */
+    async pamRequestRulesListRequestOpts(
+        requestParameters: PamRequestRulesListRequest,
+    ): Promise<runtime.RequestOpts> {
+        const queryParameters: any = {};
+
+        if (requestParameters["name"] != null) {
+            queryParameters["name"] = requestParameters["name"];
+        }
+
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
+        }
+
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
+        }
+
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
+        }
+
+        if (requestParameters["pbmPbmUuid"] != null) {
+            queryParameters["pbm__pbm_uuid"] = requestParameters["pbmPbmUuid"];
+        }
+
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/pam/request_rules/`;
+
+        return {
+            path: urlPath,
+            method: "GET",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     */
+    async pamRequestRulesListRaw(
+        requestParameters: PamRequestRulesListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PaginatedPolicyBindingModelRequestRuleList>> {
+        const requestOptions = await this.pamRequestRulesListRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedPolicyBindingModelRequestRuleListFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     */
+    async pamRequestRulesList(
+        requestParameters: PamRequestRulesListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PaginatedPolicyBindingModelRequestRuleList> {
+        const response = await this.pamRequestRulesListRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for pamRequestRulesPartialUpdate without sending the request
+     */
+    async pamRequestRulesPartialUpdateRequestOpts(
+        requestParameters: PamRequestRulesPartialUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["uuid"] == null) {
+            throw new runtime.RequiredError(
+                "uuid",
+                'Required parameter "uuid" was null or undefined when calling pamRequestRulesPartialUpdate().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters["Content-Type"] = "application/json";
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/pam/request_rules/{uuid}/`;
+        urlPath = urlPath.replace("{uuid}", encodeURIComponent(String(requestParameters["uuid"])));
+
+        return {
+            path: urlPath,
+            method: "PATCH",
+            headers: headerParameters,
+            query: queryParameters,
+            body: PatchedPolicyBindingModelRequestRuleRequestToJSON(
+                requestParameters["patchedPolicyBindingModelRequestRuleRequest"],
+            ),
+        };
+    }
+
+    /**
+     */
+    async pamRequestRulesPartialUpdateRaw(
+        requestParameters: PamRequestRulesPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PolicyBindingModelRequestRule>> {
+        const requestOptions =
+            await this.pamRequestRulesPartialUpdateRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PolicyBindingModelRequestRuleFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     */
+    async pamRequestRulesPartialUpdate(
+        requestParameters: PamRequestRulesPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PolicyBindingModelRequestRule> {
+        const response = await this.pamRequestRulesPartialUpdateRaw(
+            requestParameters,
+            initOverrides,
+        );
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for pamRequestRulesRetrieve without sending the request
+     */
+    async pamRequestRulesRetrieveRequestOpts(
+        requestParameters: PamRequestRulesRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["uuid"] == null) {
+            throw new runtime.RequiredError(
+                "uuid",
+                'Required parameter "uuid" was null or undefined when calling pamRequestRulesRetrieve().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/pam/request_rules/{uuid}/`;
+        urlPath = urlPath.replace("{uuid}", encodeURIComponent(String(requestParameters["uuid"])));
+
+        return {
+            path: urlPath,
+            method: "GET",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     */
+    async pamRequestRulesRetrieveRaw(
+        requestParameters: PamRequestRulesRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PolicyBindingModelRequestRule>> {
+        const requestOptions = await this.pamRequestRulesRetrieveRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PolicyBindingModelRequestRuleFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     */
+    async pamRequestRulesRetrieve(
+        requestParameters: PamRequestRulesRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PolicyBindingModelRequestRule> {
+        const response = await this.pamRequestRulesRetrieveRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for pamRequestRulesUpdate without sending the request
+     */
+    async pamRequestRulesUpdateRequestOpts(
+        requestParameters: PamRequestRulesUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["uuid"] == null) {
+            throw new runtime.RequiredError(
+                "uuid",
+                'Required parameter "uuid" was null or undefined when calling pamRequestRulesUpdate().',
+            );
+        }
+
+        if (requestParameters["policyBindingModelRequestRuleRequest"] == null) {
+            throw new runtime.RequiredError(
+                "policyBindingModelRequestRuleRequest",
+                'Required parameter "policyBindingModelRequestRuleRequest" was null or undefined when calling pamRequestRulesUpdate().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters["Content-Type"] = "application/json";
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/pam/request_rules/{uuid}/`;
+        urlPath = urlPath.replace("{uuid}", encodeURIComponent(String(requestParameters["uuid"])));
+
+        return {
+            path: urlPath,
+            method: "PUT",
+            headers: headerParameters,
+            query: queryParameters,
+            body: PolicyBindingModelRequestRuleRequestToJSON(
+                requestParameters["policyBindingModelRequestRuleRequest"],
+            ),
+        };
+    }
+
+    /**
+     */
+    async pamRequestRulesUpdateRaw(
+        requestParameters: PamRequestRulesUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PolicyBindingModelRequestRule>> {
+        const requestOptions = await this.pamRequestRulesUpdateRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PolicyBindingModelRequestRuleFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     */
+    async pamRequestRulesUpdate(
+        requestParameters: PamRequestRulesUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PolicyBindingModelRequestRule> {
+        const response = await this.pamRequestRulesUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
 }

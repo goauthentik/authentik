@@ -11202,6 +11202,166 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+  /pam/request_rules/:
+    get:
+      operationId: pam_request_rules_list
+      parameters:
+      - $ref: '#/components/parameters/QueryName'
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - in: query
+        name: pbm__pbm_uuid
+        schema:
+          type: string
+          format: uuid
+      - $ref: '#/components/parameters/QuerySearch'
+      tags:
+      - pam
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedPolicyBindingModelRequestRuleList'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    post:
+      operationId: pam_request_rules_create
+      tags:
+      - pam
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PolicyBindingModelRequestRuleRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PolicyBindingModelRequestRule'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /pam/request_rules/{uuid}/:
+    get:
+      operationId: pam_request_rules_retrieve
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this policy binding model request rule.
+        required: true
+      tags:
+      - pam
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PolicyBindingModelRequestRule'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    put:
+      operationId: pam_request_rules_update
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this policy binding model request rule.
+        required: true
+      tags:
+      - pam
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PolicyBindingModelRequestRuleRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PolicyBindingModelRequestRule'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    patch:
+      operationId: pam_request_rules_partial_update
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this policy binding model request rule.
+        required: true
+      tags:
+      - pam
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedPolicyBindingModelRequestRuleRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PolicyBindingModelRequestRule'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    delete:
+      operationId: pam_request_rules_destroy
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this policy binding model request rule.
+        required: true
+      tags:
+      - pam
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
   /policies/all/:
     get:
       operationId: policies_all_list
@@ -46635,6 +46795,21 @@ components:
       - autocomplete
       - pagination
       - results
+    PaginatedPolicyBindingModelRequestRuleList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/PolicyBindingModelRequestRule'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
     PaginatedPolicyList:
       type: object
       properties:
@@ -50517,6 +50692,35 @@ components:
           type: string
           minLength: 1
           description: Plex token used to check friends
+    PatchedPolicyBindingModelRequestRuleRequest:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+        policy_engine_mode:
+          $ref: '#/components/schemas/PolicyEngineMode'
+        name:
+          type: string
+          minLength: 1
+        min_reviewers:
+          type: integer
+          maximum: 32767
+          minimum: 0
+        min_reviewers_is_per_group:
+          type: boolean
+        pbm:
+          type: string
+          format: uuid
+        reviewer_groups:
+          type: array
+          items:
+            type: string
+            format: uuid
+        reviewers:
+          type: array
+          items:
+            type: integer
     PatchedPolicyBindingRequest:
       type: object
       description: PolicyBinding Serializer
@@ -52479,6 +52683,69 @@ components:
       - policy_obj
       - target
       - user_obj
+    PolicyBindingModelRequestRule:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+        policy_engine_mode:
+          $ref: '#/components/schemas/PolicyEngineMode'
+        name:
+          type: string
+        min_reviewers:
+          type: integer
+          maximum: 32767
+          minimum: 0
+        min_reviewers_is_per_group:
+          type: boolean
+        pbm:
+          type: string
+          format: uuid
+        reviewer_groups:
+          type: array
+          items:
+            type: string
+            format: uuid
+        reviewers:
+          type: array
+          items:
+            type: integer
+      required:
+      - name
+      - pbm
+    PolicyBindingModelRequestRuleRequest:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+        policy_engine_mode:
+          $ref: '#/components/schemas/PolicyEngineMode'
+        name:
+          type: string
+          minLength: 1
+        min_reviewers:
+          type: integer
+          maximum: 32767
+          minimum: 0
+        min_reviewers_is_per_group:
+          type: boolean
+        pbm:
+          type: string
+          format: uuid
+        reviewer_groups:
+          type: array
+          items:
+            type: string
+            format: uuid
+        reviewers:
+          type: array
+          items:
+            type: integer
+      required:
+      - name
+      - pbm
     PolicyBindingRequest:
       type: object
       description: PolicyBinding Serializer

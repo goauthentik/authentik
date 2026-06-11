@@ -29,7 +29,7 @@ from authentik.core.apps import AppAccessWithoutBindings
 from authentik.core.models import Application, User
 from authentik.events.logs import LogEventSerializer, capture_logs
 from authentik.policies.api.exec import PolicyTestResultSerializer
-from authentik.policies.engine import PolicyEngine
+from authentik.policies.engine import ListPolicyEngine, PolicyEngine
 from authentik.policies.types import CACHE_PREFIX, PolicyResult
 from authentik.rbac.filters import ObjectFilter
 
@@ -168,18 +168,13 @@ class ApplicationViewSet(UsedByMixin, ModelViewSet):
     def _get_allowed_applications(
         self, paginated_apps: Iterator[Application], user: User | None = None
     ) -> list[Application]:
-        applications = []
         request = self.request._request
         if user:
             request = copy(request)
             request.user = user
-        for application in paginated_apps:
-            engine = PolicyEngine(application, request.user, request)
-            engine.empty_result = AppAccessWithoutBindings.get()
-            engine.build()
-            if engine.passing:
-                applications.append(application)
-        return applications
+        engine = ListPolicyEngine(paginated_apps)
+        engine.empty_result = AppAccessWithoutBindings.get()
+        return list(engine.evaluate_for(request.user, request))
 
     def _expand_applications(self, applications: list[Application]) -> QuerySet[Application]:
         """

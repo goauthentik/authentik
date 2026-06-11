@@ -20,7 +20,7 @@ class Persona(ExpiringModel, User):
 
     @staticmethod
     def create_for_user(user: User) -> Persona:
-        return Persona.objects.create(username=f"", name=user.name, parent=user)
+        return Persona.objects.create(username="", name=user.name, parent=user)
 
 
 class Grant(ExpiringModel, CreatedUpdatedModel):
@@ -98,11 +98,14 @@ class GrantRequestTarget(models.Model):
         return f"Grant Request-target {self.request_id} to {self.target_id}"
 
 
-class PolicyBindingModelRequestRule(SerializerModel, CreatedUpdatedModel):
+class PolicyBindingModelRequestRule(SerializerModel, CreatedUpdatedModel, PolicyBindingModel):
 
     uuid = models.UUIDField(default=uuid4, primary_key=True)
 
-    pbm = models.ForeignKey(PolicyBindingModel, on_delete=models.CASCADE)
+    name = models.TextField()
+    pbm = models.ForeignKey(
+        PolicyBindingModel, on_delete=models.CASCADE, related_name="request_rules"
+    )
 
     reviewer_groups = models.ManyToManyField("authentik_core.Group", blank=True)
     min_reviewers = models.PositiveSmallIntegerField(default=1)
