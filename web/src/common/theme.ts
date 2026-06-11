@@ -261,26 +261,29 @@ declare global {
  * @param hint The color scheme hint to use.
  * @param doc The document to apply the theme to.
  */
-export const applyDocumentTheme = ((currentUITheme = resolveUITheme(), doc = document): void => {
+export const applyDocumentTheme = ((
+    currentUITheme = resolveUITheme(),
+    ownerDocument = document,
+): void => {
     console.debug(`authentik/theme (document): want to switch to ${currentUITheme} theme`);
 
-    const { themeChoice } = doc.documentElement.dataset;
+    const { themeChoice } = ownerDocument.documentElement.dataset;
 
     if (themeChoice && themeChoice !== "auto") {
         console.debug(
             `authentik/theme (document): skipping theme application due to explicit choice (${themeChoice})`,
         );
 
-        doc.dispatchEvent(new ThemeChangeEvent(themeChoice));
+        ownerDocument.dispatchEvent(new ThemeChangeEvent(themeChoice));
 
         return;
     }
 
-    doc.documentElement.dataset.theme = currentUITheme;
+    ownerDocument.documentElement.dataset.theme = currentUITheme;
 
     console.debug(`authentik/theme (document): switching to ${currentUITheme} theme`);
 
-    doc.dispatchEvent(new ThemeChangeEvent(currentUITheme));
+    ownerDocument.dispatchEvent(new ThemeChangeEvent(currentUITheme));
 }) satisfies UIThemeListener;
 
 /**
