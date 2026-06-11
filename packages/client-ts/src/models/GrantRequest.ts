@@ -12,6 +12,8 @@
  * Do not edit the class manually.
  */
 
+import type { PartialUser } from "./PartialUser";
+import { PartialUserFromJSON } from "./PartialUser";
 import type { RequestStatus } from "./RequestStatus";
 import { RequestStatusFromJSON, RequestStatusToJSON } from "./RequestStatus";
 
@@ -23,34 +25,16 @@ import { RequestStatusFromJSON, RequestStatusToJSON } from "./RequestStatus";
 export interface GrantRequest {
     /**
      *
-     * @type {string}
-     * @memberof GrantRequest
-     */
-    uuid?: string;
-    /**
-     *
      * @type {Date}
      * @memberof GrantRequest
      */
     readonly created: Date;
     /**
      *
-     * @type {Date}
+     * @type {PartialUser}
      * @memberof GrantRequest
      */
-    readonly lastUpdated: Date;
-    /**
-     *
-     * @type {Date}
-     * @memberof GrantRequest
-     */
-    expires?: Date | null;
-    /**
-     *
-     * @type {boolean}
-     * @memberof GrantRequest
-     */
-    expiring?: boolean;
+    readonly createdBy: PartialUser;
     /**
      *
      * @type {{ [key: string]: any; }}
@@ -59,28 +43,28 @@ export interface GrantRequest {
     data?: { [key: string]: any };
     /**
      *
+     * @type {Date}
+     * @memberof GrantRequest
+     */
+    expires?: Date | null;
+    /**
+     *
      * @type {RequestStatus}
      * @memberof GrantRequest
      */
     status?: RequestStatus;
     /**
      *
-     * @type {number}
-     * @memberof GrantRequest
-     */
-    createdBy: number;
-    /**
-     *
-     * @type {number}
-     * @memberof GrantRequest
-     */
-    fulfilledBy?: number | null;
-    /**
-     *
      * @type {Array<string>}
      * @memberof GrantRequest
      */
     readonly targets: Array<string>;
+    /**
+     *
+     * @type {string}
+     * @memberof GrantRequest
+     */
+    uuid?: string;
 }
 
 /**
@@ -88,7 +72,6 @@ export interface GrantRequest {
  */
 export function instanceOfGrantRequest(value: object): value is GrantRequest {
     if (!("created" in value) || value["created"] === undefined) return false;
-    if (!("lastUpdated" in value) || value["lastUpdated"] === undefined) return false;
     if (!("createdBy" in value) || value["createdBy"] === undefined) return false;
     if (!("targets" in value) || value["targets"] === undefined) return false;
     return true;
@@ -103,16 +86,13 @@ export function GrantRequestFromJSONTyped(json: any, ignoreDiscriminator: boolea
         return json;
     }
     return {
-        uuid: json["uuid"] == null ? undefined : json["uuid"],
         created: new Date(json["created"]),
-        lastUpdated: new Date(json["last_updated"]),
-        expires: json["expires"] == null ? undefined : new Date(json["expires"]),
-        expiring: json["expiring"] == null ? undefined : json["expiring"],
+        createdBy: PartialUserFromJSON(json["created_by"]),
         data: json["data"] == null ? undefined : json["data"],
+        expires: json["expires"] == null ? undefined : new Date(json["expires"]),
         status: json["status"] == null ? undefined : RequestStatusFromJSON(json["status"]),
-        createdBy: json["created_by"],
-        fulfilledBy: json["fulfilled_by"] == null ? undefined : json["fulfilled_by"],
         targets: json["targets"],
+        uuid: json["uuid"] == null ? undefined : json["uuid"],
     };
 }
 
@@ -121,7 +101,7 @@ export function GrantRequestToJSON(json: any): GrantRequest {
 }
 
 export function GrantRequestToJSONTyped(
-    value?: Omit<GrantRequest, "created" | "last_updated" | "targets"> | null,
+    value?: Omit<GrantRequest, "created" | "created_by" | "targets"> | null,
     ignoreDiscriminator: boolean = false,
 ): any {
     if (value == null) {
@@ -129,12 +109,9 @@ export function GrantRequestToJSONTyped(
     }
 
     return {
-        uuid: value["uuid"],
-        expires: value["expires"] == null ? value["expires"] : value["expires"].toISOString(),
-        expiring: value["expiring"],
         data: value["data"],
+        expires: value["expires"] == null ? value["expires"] : value["expires"].toISOString(),
         status: RequestStatusToJSON(value["status"]),
-        created_by: value["createdBy"],
-        fulfilled_by: value["fulfilledBy"],
+        uuid: value["uuid"],
     };
 }

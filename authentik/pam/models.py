@@ -18,6 +18,10 @@ class Persona(ExpiringModel, User):
 
     parent = models.ForeignKey(User, on_delete=models.CASCADE, related_name="personas")
 
+    @staticmethod
+    def create_for_user(user: User) -> Persona:
+        return Persona.objects.create(username=f"", name=user.name, parent=user)
+
 
 class Grant(ExpiringModel, CreatedUpdatedModel):
     """Grant for a persona to access `target`, given after manual/automatic approval."""
@@ -92,3 +96,21 @@ class GrantRequestTarget(models.Model):
 
     def __str__(self):
         return f"Grant Request-target {self.request_id} to {self.target_id}"
+
+
+class PolicyBindingModelRequestRule(SerializerModel, CreatedUpdatedModel):
+
+    uuid = models.UUIDField(default=uuid4, primary_key=True)
+
+    pbm = models.ForeignKey(PolicyBindingModel, on_delete=models.CASCADE)
+
+    reviewer_groups = models.ManyToManyField("authentik_core.Group", blank=True)
+    min_reviewers = models.PositiveSmallIntegerField(default=1)
+    min_reviewers_is_per_group = models.BooleanField(default=False)
+    reviewers = models.ManyToManyField("authentik_core.User", blank=True)
+
+    @property
+    def serializer(self):
+        from authentik.pam.api.request_rule import PolicyBindingModelRequestRuleSerializer
+
+        return PolicyBindingModelRequestRuleSerializer

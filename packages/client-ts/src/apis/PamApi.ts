@@ -40,7 +40,7 @@ export interface PamGrantRequestsDestroyRequest {
 
 export interface PamGrantRequestsFulfillCreateRequest {
     uuid: string;
-    grantRequestRequest: GrantRequestRequest;
+    grantRequestRequest?: GrantRequestRequest;
 }
 
 export interface PamGrantRequestsListRequest {
@@ -202,13 +202,6 @@ export class PamApi extends runtime.BaseAPI {
             throw new runtime.RequiredError(
                 "uuid",
                 'Required parameter "uuid" was null or undefined when calling pamGrantRequestsFulfillCreate().',
-            );
-        }
-
-        if (requestParameters["grantRequestRequest"] == null) {
-            throw new runtime.RequiredError(
-                "grantRequestRequest",
-                'Required parameter "grantRequestRequest" was null or undefined when calling pamGrantRequestsFulfillCreate().',
             );
         }
 

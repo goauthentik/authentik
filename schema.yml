@@ -11121,7 +11121,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/GrantRequestRequest'
-        required: true
       security:
       - authentik: []
       responses:
@@ -40613,43 +40612,35 @@ components:
     GrantRequest:
       type: object
       properties:
-        uuid:
-          type: string
-          format: uuid
         created:
           type: string
           format: date-time
           readOnly: true
-        last_updated:
-          type: string
-          format: date-time
+        created_by:
+          allOf:
+          - $ref: '#/components/schemas/PartialUser'
           readOnly: true
+        data:
+          type: object
+          additionalProperties: {}
         expires:
           type: string
           format: date-time
           nullable: true
-        expiring:
-          type: boolean
-        data:
-          type: object
-          additionalProperties: {}
         status:
           $ref: '#/components/schemas/RequestStatus'
-        created_by:
-          type: integer
-        fulfilled_by:
-          type: integer
-          nullable: true
         targets:
           type: array
           items:
             type: string
             format: uuid
           readOnly: true
+        uuid:
+          type: string
+          format: uuid
       required:
       - created
       - created_by
-      - last_updated
       - targets
     GrantRequestCreateRequest:
       type: object
@@ -40665,27 +40656,18 @@ components:
     GrantRequestRequest:
       type: object
       properties:
-        uuid:
-          type: string
-          format: uuid
+        data:
+          type: object
+          additionalProperties: {}
         expires:
           type: string
           format: date-time
           nullable: true
-        expiring:
-          type: boolean
-        data:
-          type: object
-          additionalProperties: {}
         status:
           $ref: '#/components/schemas/RequestStatus'
-        created_by:
-          type: integer
-        fulfilled_by:
-          type: integer
-          nullable: true
-      required:
-      - created_by
+        uuid:
+          type: string
+          format: uuid
     GrantTypesEnum:
       enum:
       - authorization_code
@@ -43689,6 +43671,7 @@ components:
       - authentik_outposts.outpost
       - authentik_pam.persona
       - authentik_pam.grantrequest
+      - authentik_pam.policybindingmodelrequestrule
       - authentik_policies_dummy.dummypolicy
       - authentik_policies_event_matcher.eventmatcherpolicy
       - authentik_policies_expiry.passwordexpirypolicy

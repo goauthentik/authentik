@@ -23,10 +23,10 @@ import { RequestStatusFromJSON, RequestStatusToJSON } from "./RequestStatus";
 export interface GrantRequestRequest {
     /**
      *
-     * @type {string}
+     * @type {{ [key: string]: any; }}
      * @memberof GrantRequestRequest
      */
-    uuid?: string;
+    data?: { [key: string]: any };
     /**
      *
      * @type {Date}
@@ -35,41 +35,22 @@ export interface GrantRequestRequest {
     expires?: Date | null;
     /**
      *
-     * @type {boolean}
-     * @memberof GrantRequestRequest
-     */
-    expiring?: boolean;
-    /**
-     *
-     * @type {{ [key: string]: any; }}
-     * @memberof GrantRequestRequest
-     */
-    data?: { [key: string]: any };
-    /**
-     *
      * @type {RequestStatus}
      * @memberof GrantRequestRequest
      */
     status?: RequestStatus;
     /**
      *
-     * @type {number}
+     * @type {string}
      * @memberof GrantRequestRequest
      */
-    createdBy: number;
-    /**
-     *
-     * @type {number}
-     * @memberof GrantRequestRequest
-     */
-    fulfilledBy?: number | null;
+    uuid?: string;
 }
 
 /**
  * Check if a given object implements the GrantRequestRequest interface.
  */
 export function instanceOfGrantRequestRequest(value: object): value is GrantRequestRequest {
-    if (!("createdBy" in value) || value["createdBy"] === undefined) return false;
     return true;
 }
 
@@ -85,13 +66,10 @@ export function GrantRequestRequestFromJSONTyped(
         return json;
     }
     return {
-        uuid: json["uuid"] == null ? undefined : json["uuid"],
-        expires: json["expires"] == null ? undefined : new Date(json["expires"]),
-        expiring: json["expiring"] == null ? undefined : json["expiring"],
         data: json["data"] == null ? undefined : json["data"],
+        expires: json["expires"] == null ? undefined : new Date(json["expires"]),
         status: json["status"] == null ? undefined : RequestStatusFromJSON(json["status"]),
-        createdBy: json["created_by"],
-        fulfilledBy: json["fulfilled_by"] == null ? undefined : json["fulfilled_by"],
+        uuid: json["uuid"] == null ? undefined : json["uuid"],
     };
 }
 
@@ -108,12 +86,9 @@ export function GrantRequestRequestToJSONTyped(
     }
 
     return {
-        uuid: value["uuid"],
-        expires: value["expires"] == null ? value["expires"] : value["expires"].toISOString(),
-        expiring: value["expiring"],
         data: value["data"],
+        expires: value["expires"] == null ? value["expires"] : value["expires"].toISOString(),
         status: RequestStatusToJSON(value["status"]),
-        created_by: value["createdBy"],
-        fulfilled_by: value["fulfilledBy"],
+        uuid: value["uuid"],
     };
 }

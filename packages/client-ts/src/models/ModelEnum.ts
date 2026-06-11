@@ -46,6 +46,7 @@ export const ModelEnum = {
     AuthentikOutpostsOutpost: "authentik_outposts.outpost",
     AuthentikPamPersona: "authentik_pam.persona",
     AuthentikPamGrantrequest: "authentik_pam.grantrequest",
+    AuthentikPamPolicybindingmodelrequestrule: "authentik_pam.policybindingmodelrequestrule",
     AuthentikPoliciesDummyDummypolicy: "authentik_policies_dummy.dummypolicy",
     AuthentikPoliciesEventMatcherEventmatcherpolicy:
         "authentik_policies_event_matcher.eventmatcherpolicy",
