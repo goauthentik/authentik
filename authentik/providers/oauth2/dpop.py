@@ -57,7 +57,7 @@ JWK_REQUIRED_CLAIMS = {
 }
 
 # JTI replay protection window in seconds
-DPOP_JTI_REPLAY_WINDOW = int(CONFIG.get("providers.oauth2.dpop_jti_replay_window", 120))
+DPOP_JTI_REPLAY_WINDOW = int(CONFIG.get("providers.oauth2.dpop_jti_replay_window", 180))
 
 # Maximum allowed JTI length
 DPOP_JTI_MAX_LENGTH = 256
