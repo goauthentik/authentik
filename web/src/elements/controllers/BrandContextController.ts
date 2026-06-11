@@ -1,4 +1,4 @@
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { ReactiveContextController } from "#elements/controllers/ReactiveContextController";
 import { BrandingContext, BrandingMixin } from "#elements/mixins/branding";
@@ -26,7 +26,7 @@ export class BrandingContextController extends ReactiveContextController<Current
     }
 
     protected apiEndpoint(requestInit?: RequestInit) {
-        return new CoreApi(DEFAULT_CONFIG).coreBrandsCurrentRetrieve(requestInit);
+        return aki(CoreApi).coreBrandsCurrentRetrieve(requestInit);
     }
 
     protected doRefresh(brand: CurrentBrand) {

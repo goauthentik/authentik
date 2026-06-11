@@ -3,7 +3,7 @@ import "#components/ak-text-input";
 import "#elements/CodeMirror";
 import "#elements/forms/HorizontalFormElement";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { ModelForm } from "#elements/forms/ModelForm";
 
@@ -23,7 +23,7 @@ export class CryptoCertificateForm extends ModelForm<CertificateKeyPair, string>
     public static override submittingVerb = msg("Importing");
 
     loadInstance(pk: string): Promise<CertificateKeyPair> {
-        return new CryptoApi(DEFAULT_CONFIG).cryptoCertificatekeypairsRetrieve({
+        return aki(CryptoApi).cryptoCertificatekeypairsRetrieve({
             kpUuid: pk,
         });
     }
@@ -36,12 +36,12 @@ export class CryptoCertificateForm extends ModelForm<CertificateKeyPair, string>
 
     async send(data: CertificateKeyPair): Promise<CertificateKeyPair> {
         if (this.instance) {
-            return new CryptoApi(DEFAULT_CONFIG).cryptoCertificatekeypairsPartialUpdate({
+            return aki(CryptoApi).cryptoCertificatekeypairsPartialUpdate({
                 kpUuid: this.instance.pk || "",
                 patchedCertificateKeyPairRequest: data,
             });
         }
-        return new CryptoApi(DEFAULT_CONFIG).cryptoCertificatekeypairsCreate({
+        return aki(CryptoApi).cryptoCertificatekeypairsCreate({
             certificateKeyPairRequest: data as unknown as CertificateKeyPairRequest,
         });
     }

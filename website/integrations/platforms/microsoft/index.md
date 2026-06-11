@@ -5,7 +5,9 @@ support_level: community
 toc_max_heading_level: 5
 ---
 
-## What is Microsoft 365?
+import SAMLProvider20265Warning from "../../\_saml-provider-2026-5-warning.mdx";
+
+## What is Microsoft365?
 
 > Microsoft 365 is the cloud productivity platform that delivers Office applications, Teams collaboration, and identity services from Microsoft's global infrastructure.
 >
@@ -109,6 +111,8 @@ If MFA is configured in Microsoft 365, then you also need to create a property m
 3. Click **Finish** to save the property mapping.
 
 ### 4. Create an application and provider in authentik
+
+<SAMLProvider20265Warning />
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.

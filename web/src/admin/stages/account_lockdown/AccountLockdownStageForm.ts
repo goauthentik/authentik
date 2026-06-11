@@ -3,7 +3,7 @@ import "#admin/common/ak-flow-search/ak-flow-search";
 import "#components/ak-switch-input";
 import "#components/ak-text-input";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { SlottedTemplateResult } from "#elements/types";
 import { ifPresent } from "#elements/utils/attributes";
@@ -18,7 +18,7 @@ import { customElement } from "lit/decorators.js";
 
 @customElement("ak-stage-account-lockdown-form")
 export class AccountLockdownStageForm extends BaseStageForm<AccountLockdownStage> {
-    #api = new StagesApi(DEFAULT_CONFIG);
+    #api = aki(StagesApi);
 
     protected override loadInstance(pk: string): Promise<AccountLockdownStage> {
         return this.#api.stagesAccountLockdownRetrieve({ stageUuid: pk });

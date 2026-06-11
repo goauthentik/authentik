@@ -9,7 +9,7 @@ import "#elements/buttons/ModalButton";
 import "#elements/buttons/SpinnerButton/index";
 import "#elements/tasks/TaskList";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { EVENT_REFRESH } from "#common/constants";
 
 import { AKElement } from "#elements/Base";
@@ -39,7 +39,7 @@ import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 export class SSFProviderViewPage extends AKElement {
     @property({ type: Number })
     set providerID(value: number) {
-        new ProvidersApi(DEFAULT_CONFIG)
+        aki(ProvidersApi)
             .providersSsfRetrieve({
                 id: value,
             })

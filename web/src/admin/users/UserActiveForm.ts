@@ -1,7 +1,7 @@
 import "#elements/buttons/SpinnerButton/index";
 import "#elements/forms/FormGroup";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { formatDisambiguatedUserDisplayName } from "#common/users";
 
 import { modalInvoker } from "#elements/dialogs";
@@ -24,7 +24,7 @@ export class UserActivationToggleForm extends WithLocale(DestructiveModelForm<Us
     public static override verboseName = msg("User");
     public static override verboseNamePlural = msg("Users");
 
-    protected coreAPI = new CoreApi(DEFAULT_CONFIG);
+    protected coreAPI = aki(CoreApi);
 
     protected override send(): Promise<unknown> {
         if (!this.instance) {

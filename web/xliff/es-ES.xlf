@@ -6153,10 +6153,6 @@ El valor de este campo se compara con el atributo de pertenencia del usuario.</t
   <source>Optionally restrict which WebAuthn device types may be used. When no device types are selected, all devices are allowed.</source>
   <target>Opcionalmente, restrinja los tipos de dispositivos WebAuthn que se pueden usar. Si no se selecciona ningún tipo de dispositivo, se permiten todos.</target>
 </trans-unit>
-<trans-unit id="s11274960b13cf21a">
-  <source>This restriction only applies to devices created in authentik 2024.4 or later.</source>
-  <target>Esta restricción solo se aplica a dispositivos creados en authentik 2024.4 o posterior.</target>
-</trans-unit>
 <trans-unit id="s24bce955914b1f0a">
   <source>Stage used to configure a WebAuthn authenticator (i.e. Yubikey, FaceID/Windows Hello).</source>
   <target>Etapa utilizada para configurar un autenticador WebAuthn (es decir, Yubikey, FaceID/Windows Hello).</target>
@@ -8848,9 +8844,6 @@ Las vinculaciones a grupos/usuarios se verifican en función del usuario del eve
 <trans-unit id="s3b4ad8abf4f08c35">
   <source>Hide managed roles</source>
 </trans-unit>
-<trans-unit id="s7dcfe418b8d601f6">
-  <source>Flags allow you to enable new functionality and behaviour in authentik early.</source>
-</trans-unit>
 <trans-unit id="s8aa73079812f56b2">
   <source>Refresh other flow tabs upon authentication</source>
 </trans-unit>
@@ -11195,6 +11188,9 @@ Las vinculaciones a grupos/usuarios se verifican en función del usuario del eve
 <trans-unit id="wizard.step.details">
   <source><x id="0" equiv-text="${entityLabel}"/> Details</source>
   <note from="lit-localize">Label for the step in the creation wizard where the details of the entity being created are filled in. The placeholder {entity} is replaced with the name of the entity type, for example 'User Details' or 'Group Details'.</note>
+</trans-unit>
+<trans-unit id="sd1b98c71ea0d603b">
+  <source>Flags allow you to enable new functionality and behavior in authentik early.</source>
 </trans-unit>
 </body>
 </file>
