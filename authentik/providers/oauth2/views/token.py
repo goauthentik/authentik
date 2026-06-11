@@ -56,6 +56,7 @@ from authentik.events.signals import get_login_event
 from authentik.flows.planner import PLAN_CONTEXT_APPLICATION
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.policies.engine import PolicyEngine
+from authentik.providers.oauth2.dpop import DPoPError, DPoPValidator, code_sha256
 from authentik.providers.oauth2.errors import DeviceCodeError, TokenError, UserAuthError
 from authentik.providers.oauth2.id_token import IDToken
 from authentik.providers.oauth2.models import (
@@ -68,7 +69,6 @@ from authentik.providers.oauth2.models import (
     RefreshToken,
     ScopeMapping,
 )
-from authentik.providers.oauth2.dpop import DPoPError, DPoPValidator, code_sha256
 from authentik.providers.oauth2.utils import (
     TokenResponse,
     cors_allow,
@@ -713,7 +713,6 @@ class TokenView(View):
     def _add_cnf_to_id_token(self, id_token: IDToken) -> None:
         """Add cnf claim to ID Token when key binding is active"""
         if self.params.dpop_jwk is not None:
-            
 
             id_token.cnf = {"jwk": self.params.dpop_jwk}
 

@@ -30,6 +30,10 @@ DPOP_SUPPORTED_KTYS = {"EC", "RSA"}
 
 DPOP_SUPPORTED_EC_CURVES = {"P-256", "P-384", "P-521"}
 
+# RSA key size limits for DPoP (bits)
+DPOP_RSA_MIN_KEY_SIZE = 2048
+DPOP_RSA_MAX_KEY_SIZE = 8192
+
 # Supported asymmetric signature algorithms for DPoP
 DPOP_SUPPORTED_ALGS = {
     "ES256",
@@ -111,8 +115,19 @@ class DPoPValidator:
         :return: The validated public key JWK dict
         :raises DPoPError: If validation fails
         """
+        header = self._extract_header(dpop_proof)
+        jwk = self._get_and_validate_jwk(header)
+        jwk = canonical_public_jwk(jwk)
+        alg = self._get_and_validate_alg(header)
+        payload = self._verify_signature(dpop_proof, jwk, alg)
+        jti = self._validate_payload_claims(payload, expected_htm, expected_htu)
+        self._check_jti_replay(jti)
+        self._validate_optional_claims(payload, expected_c_s256, expected_jkt, jwk)
+        return jwk
+
+    def _extract_header(self, dpop_proof: str) -> dict:
+        """Extract and return the unverified JOSE header."""
         try:
-            # Extract the protected JOSE header (compact serialization has no unprotected header)
             unverified = jwt_decode_complete(
                 dpop_proof,
                 options={"verify_signature": False, "verify_exp": False, "verify_iat": False},
@@ -123,30 +138,35 @@ class DPoPValidator:
 
         if header.get("typ") != DPOP_JWT_TYPE:
             raise DPoPError(f"Invalid DPoP typ header: {header.get('typ')}")
+        return header
 
+    def _get_and_validate_jwk(self, header: dict) -> dict:
+        """Extract jwk from header and validate it."""
         jwk = header.get("jwk")
         if not isinstance(jwk, dict):
             raise DPoPError("Missing jwk in DPoP header")
-
         self._validate_jwk(jwk)
+        return jwk
 
-        # Removes any claim not hashed in the JKT
-        jwk = canonical_public_jwk(jwk)
-
+    def _get_and_validate_alg(self, header: dict) -> str:
+        """Extract and validate the alg header."""
         alg = header.get("alg")
         if not alg:
             raise DPoPError("Missing alg in DPoP header")
         if alg not in DPOP_SUPPORTED_ALGS:
             raise DPoPError(f"Unsupported DPoP algorithm: {alg}")
+        return alg
 
+    def _verify_signature(self, dpop_proof: str, jwk: dict, alg: str) -> dict:
+        """Verify the DPoP proof signature and return the payload."""
         try:
             key = PyJWK.from_dict(jwk)
-            payload = jwt_decode(
-                dpop_proof, key.key, algorithms=[alg], options={"verify_iat": False}
-            )
+            return jwt_decode(dpop_proof, key.key, algorithms=[alg], options={"verify_iat": False})
         except (PyJWTError, InvalidTokenError) as exc:
             raise DPoPError("DPoP proof signature verification failed") from exc
 
+    def _validate_payload_claims(self, payload: dict, expected_htm: str, expected_htu: str) -> str:
+        """Validate htm, htu, iat, jti claims. Return the jti value."""
         if payload.get("htm") != expected_htm:
             raise DPoPError(f"DPoP htm mismatch: expected {expected_htm}, got {payload.get('htm')}")
 
@@ -169,6 +189,10 @@ class DPoPValidator:
         if len(jti) > DPOP_JTI_MAX_LENGTH:
             raise DPoPError("DPoP proof jti too large")
 
+        return jti
+
+    def _check_jti_replay(self, jti: str) -> None:
+        """Check if the jti has been seen before (replay protection)."""
         jti_hash = hashlib.sha256(jti.encode("utf-8")).hexdigest()
         cache_key = CACHE_KEY_DPOP_JTI % jti_hash
         # Use atomic add to prevent TOCTOU race.  Wrap in a savepoint so
@@ -182,6 +206,14 @@ class DPoPValidator:
         if not added:
             raise DPoPError("DPoP proof jti replay detected")
 
+    def _validate_optional_claims(
+        self,
+        payload: dict,
+        expected_c_s256: str | None,
+        expected_jkt: str | None,
+        jwk: dict,
+    ) -> None:
+        """Validate optional c_s256 and jkt claims if expected."""
         if expected_c_s256 is not None:
             proof_c_s256 = payload.get("c_s256")
             if proof_c_s256 is None:
@@ -194,8 +226,6 @@ class DPoPValidator:
             if not compare_digest(thumbprint, expected_jkt):
                 raise DPoPError("DPoP proof JWK thumbprint mismatch")
 
-        return jwk
-
     def _validate_jwk(self, jwk: dict) -> None:
         """Ensure the JWK is a public asymmetric key without private material"""
         kty = jwk.get("kty")
@@ -204,9 +234,9 @@ class DPoPValidator:
 
         if kty == "RSA":
             key = PyJWK.from_dict(jwk)
-            if isinstance(key.key, RSAPublicKey) and key.key.key_size < 2048:
+            if isinstance(key.key, RSAPublicKey) and key.key.key_size < DPOP_RSA_MIN_KEY_SIZE:
                 raise DPoPError("RSA key too small for DPoP (minimum 2048 bits)")
-            if isinstance(key.key, RSAPublicKey) and key.key.key_size > 8192:
+            if isinstance(key.key, RSAPublicKey) and key.key.key_size > DPOP_RSA_MAX_KEY_SIZE:
                 raise DPoPError("RSA key too large for DPoP")
         elif kty == "EC":
             crv = jwk.get("crv")

@@ -35,7 +35,7 @@ class DPoPProofBuilder:
         self.y = base64.urlsafe_b64encode(nums.y.to_bytes(32, "big")).rstrip(b"=").decode()
         self.jwk = {"kty": "EC", "crv": "P-256", "x": self.x, "y": self.y}
 
-    def build(
+    def build(  # noqa: PLR0913
         self,
         htm: str = "POST",
         htu: str = "https://server.example.com/token",
@@ -333,13 +333,6 @@ class TestDPoPValidator(TestCase):
 
     def test_symmetric_key_rejected(self):
         """Test rejection of symmetric keys"""
-        payload = {
-            "htm": "POST",
-            "htu": self.htu,
-            "iat": int(time.time()),
-            "jti": "test-jti-003",
-        }
-
         with self.assertRaises(DPoPError) as cm:
             self.validator._validate_jwk({"kty": "oct", "k": "foo"})
         self.assertIn("Unsupported", str(cm.exception))
