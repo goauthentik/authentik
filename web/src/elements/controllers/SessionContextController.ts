@@ -5,6 +5,7 @@ import { applyThemeChoice, formatColorScheme } from "#common/theme";
 import { createUIConfig, DefaultUIConfig } from "#common/ui/config";
 import { autoDetectLanguage } from "#common/ui/locale/utils";
 import { me } from "#common/users";
+import { AKSessionAuthenticatedEvent } from "#common/ws/events";
 
 import {
     CommandPaletteState,
@@ -191,6 +192,10 @@ export class SessionContextController extends ReactiveContextController<APIResul
 
     public override hostConnected() {
         this.logger.debug("Host connected, refreshing session");
+        this.registerRefreshEvent();
+        window.addEventListener(AKSessionAuthenticatedEvent.eventName, this.refresh, {
+            signal: this.hostAbortController?.signal,
+        });
         this.refresh();
     }
 
