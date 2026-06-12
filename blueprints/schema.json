@@ -15105,6 +15105,14 @@
                     "minLength": 1,
                     "title": "Api url"
                 },
+                "request_content_type": {
+                    "type": "string",
+                    "enum": [
+                        "application/x-www-form-urlencoded",
+                        "application/json"
+                    ],
+                    "title": "Request content type"
+                },
                 "interactive": {
                     "type": "boolean",
                     "title": "Interactive"

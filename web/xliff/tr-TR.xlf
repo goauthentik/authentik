@@ -5944,10 +5944,6 @@ Belirlenen seçeneklerden biri veya her ikisi de eşiğe eşit veya eşiğin üz
   <source>Optionally restrict which WebAuthn device types may be used. When no device types are selected, all devices are allowed.</source>
   <target>İsteğe bağlı olarak, hangi WebAuthn cihaz türlerinin kullanılabileceğini kısıtlayın. Hiçbir cihaz türü seçilmediğinde, tüm cihazlara izin verilir.</target>
 </trans-unit>
-<trans-unit id="s11274960b13cf21a">
-  <source>This restriction only applies to devices created in authentik 2024.4 or later.</source>
-  <target>Bu kısıtlama yalnızca authentik 2024.4 veya sonraki sürümlerde oluşturulan cihazlar için geçerlidir.</target>
-</trans-unit>
 <trans-unit id="s24bce955914b1f0a">
   <source>Stage used to configure a WebAuthn authenticator (i.e. Yubikey, FaceID/Windows Hello).</source>
   <target>Bir WebAuthn kimlik doğrulayıcısını yapılandırmak için kullanılan sahne alanı (ör. Yubikey, FaceID/Windows Hello).</target>
