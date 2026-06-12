@@ -40,6 +40,17 @@ class TestSessionBrowserBinding(TestCase):
 
         self.assertEqual(response.status_code, 403)
 
+    def test_bound_session_rejects_stale_current_marker(self):
+        """Test a browser-bound session doesn't load after another account is selected"""
+        target = create_browser_session(self, self.user)
+        target.is_current = False
+        target.save(update_fields=["is_current"])
+        self.client.cookies[settings.SESSION_COOKIE_NAME] = target.session.session_key
+
+        response = self.client.get(reverse("authentik_api:user-me"))
+
+        self.assertEqual(response.status_code, 403)
+
     def test_unbound_session_loads_without_browser_cookie(self):
         """Test sessions without a browser binding (e.g. pre-existing ones) keep working"""
         self.client.force_login(self.user)

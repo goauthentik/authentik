@@ -3,6 +3,7 @@
 from typing import Any, cast
 from urllib.parse import urlencode
 
+from django.contrib.auth.models import AnonymousUser
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import redirect
 from django.urls import reverse
@@ -11,25 +12,29 @@ from structlog.stdlib import get_logger
 
 from authentik.common.oauth.constants import QS_LOGIN_HINT
 from authentik.core.api.utils import PassiveSerializer
-from authentik.core.models import Application, AuthenticatedSession, User
+from authentik.core.models import Application, User
 from authentik.core.sessions import SessionStore
 from authentik.core.user_selection import (
     PLAN_CONTEXT_USER_SELECTION_LOGIN_HINT,
     PLAN_CONTEXT_USER_SELECTION_USER_UID,
     QS_USER_UID,
-    USER_SELECTION_AUTHENTICATION_CHOICES,
     SelectableUser,
     append_user_selection_hint,
+    build_account_switch_context,
     get_selectable_accounts,
     get_user_login_hint,
+    mark_browser_sessions_not_current,
     serialize_selectable_user,
     user_matches_hint,
 )
 from authentik.flows.challenge import Challenge, ChallengeResponse
+from authentik.flows.models import Flow, FlowDesignation, in_memory_stage
 from authentik.flows.planner import PLAN_CONTEXT_APPLICATION, PLAN_CONTEXT_REDIRECT, FlowPlan
 from authentik.flows.stage import ChallengeStageView
-from authentik.flows.views.executor import NEXT_ARG_NAME, SESSION_KEY_GET
+from authentik.flows.views.executor import NEXT_ARG_NAME, SESSION_KEY_GET, SESSION_KEY_PLAN
 from authentik.root.middleware import ClientIPMiddleware
+from authentik.stages.redirect.models import RedirectMode
+from authentik.stages.redirect.stage import RedirectStageView
 
 LOGGER = get_logger()
 COMPONENT = "ak-stage-user-selection"
@@ -45,7 +50,6 @@ class UserSelectionChallengeUser(PassiveSerializer):
     avatar = CharField()
     is_current = BooleanField()
     is_hint = BooleanField()
-    authentication = ChoiceField(choices=USER_SELECTION_AUTHENTICATION_CHOICES)
 
 
 class UserSelectionChallenge(Challenge):
@@ -135,7 +139,7 @@ class UserSelectionStageView(ChallengeStageView):
         return session_next_url if isinstance(session_next_url, str) else fallback_url
 
     def redirect_to_login(self, selected_user: User | None = None) -> HttpResponse:
-        """Start normal authentication for the selected user."""
+        """Start normal authentication without account-switch context."""
         next_url = self.get_next_url()
         query = {
             NEXT_ARG_NAME: (
@@ -148,6 +152,63 @@ class UserSelectionStageView(ChallengeStageView):
         self.executor.cancel()  # type: ignore[no-untyped-call]
         return redirect(f"{url}?{urlencode(query)}")
 
+    def get_authentication_flow(self) -> Flow | None:
+        """Return the flow account switches should authenticate through."""
+        brand_flow = getattr(self.request.brand, "flow_account_switch", None)
+        if brand_flow:
+            return brand_flow
+        brand_flow = getattr(self.request.brand, "flow_authentication", None)
+        if brand_flow:
+            return brand_flow
+        return (
+            Flow.objects.filter(designation=FlowDesignation.AUTHENTICATION)
+            .order_by("slug")
+            .first()
+        )
+
+    def detach_flow_session(self) -> None:
+        """Move the in-progress flow to a new anonymous session."""
+        old_session = self.request.session
+        flow_get = old_session.get(SESSION_KEY_GET)
+        if SESSION_KEY_PLAN in old_session:
+            del old_session[SESSION_KEY_PLAN]
+        old_session.save()
+        self.request.session = SessionStore(
+            last_ip=ClientIPMiddleware.get_client_ip(self.request),
+            last_user_agent=self.request.META.get("HTTP_USER_AGENT", ""),
+            browser_key=getattr(self.request, "browser_key", None),
+        )
+        self.request.user = AnonymousUser()
+        if flow_get is not None:
+            self.request.session[SESSION_KEY_GET] = flow_get
+
+    def redirect_to_account_switch_authentication(self, selected: SelectableUser) -> HttpResponse:
+        """Authenticate the selected account through the configured authentication flow."""
+        if not selected.authenticated_session:
+            LOGGER.warning("selected user has no browser-bound authenticated session")
+            return self.executor.stage_invalid()
+        authentication_flow = self.get_authentication_flow()
+        if not authentication_flow:
+            LOGGER.warning("no authentication flow found for account switch")
+            return self.executor.stage_invalid()
+        self.plan.context.update(build_account_switch_context(self.request, selected))
+        self.plan.context[PLAN_CONTEXT_REDIRECT] = append_user_selection_hint(
+            self.get_next_url(),
+            selected.user,
+        )
+        self.plan.insert_stage(
+            in_memory_stage(
+                RedirectStageView,
+                keep_context=True,
+                mode=RedirectMode.FLOW,
+                target_flow=authentication_flow,
+            ),
+            index=1,
+        )
+        mark_browser_sessions_not_current(self.request)
+        self.detach_flow_session()
+        return self.executor.stage_ok()
+
     def continue_current_user(self, selected_user: User) -> HttpResponse:
         """Continue the flow as the already-authenticated selected user."""
         next_url = self.plan.context.get(PLAN_CONTEXT_REDIRECT)
@@ -158,27 +219,8 @@ class UserSelectionStageView(ChallengeStageView):
             )
         return self.executor.stage_ok()
 
-    def switch_to_session(self, target: AuthenticatedSession) -> HttpResponse:
-        """Make the target login this browser's active session. The session cookie is
-        reissued by the session middleware from the swapped request.session."""
-        next_url = append_user_selection_hint(self.get_next_url(), target.user)
-        self.executor.cancel()
-        # The flow ends here, on the old session; persist the cancellation before
-        # detaching from it, as the middleware only saves the swapped-in session.
-        self.request.session.save()
-        self.request.session = SessionStore(
-            target.session.session_key,
-            last_ip=ClientIPMiddleware.get_client_ip(self.request),
-            last_user_agent=self.request.META.get("HTTP_USER_AGENT", ""),
-            browser_key=self.request.browser_key,
-        )
-        self.request.session.modified = True
-        self.request.user = target.user
-        return redirect(next_url)
-
     def select_user(self, selected_user_uid: str) -> HttpResponse:
-        """Continue as the current user, switch to a live session of the selected user,
-        or fall back to authenticating as them."""
+        """Continue as the current user or authenticate as the selected browser-local user."""
         accounts_by_id = {account.uid: account for account in self.get_accounts()}
         selected = accounts_by_id.get(selected_user_uid)
         if not selected:
@@ -187,9 +229,7 @@ class UserSelectionStageView(ChallengeStageView):
         selected_user = selected.user
         if selected.is_current:
             return self.continue_current_user(selected_user)
-        if selected.switchable_session:
-            return self.switch_to_session(selected.switchable_session)
-        return self.redirect_to_login(selected_user)
+        return self.redirect_to_account_switch_authentication(selected)
 
     def challenge_valid(self, response: ChallengeResponse) -> HttpResponse:
         """Continue as the current user or authenticate as another user."""

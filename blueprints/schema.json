@@ -5180,6 +5180,11 @@
                     "format": "uuid",
                     "title": "Flow user selection"
                 },
+                "flow_account_switch": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Flow account switch"
+                },
                 "flow_device_code": {
                     "type": "string",
                     "format": "uuid",

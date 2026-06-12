@@ -12,12 +12,6 @@
  * Do not edit the class manually.
  */
 
-import type { UserSelectionAuthenticationEnum } from "./UserSelectionAuthenticationEnum";
-import {
-    UserSelectionAuthenticationEnumFromJSON,
-    UserSelectionAuthenticationEnumToJSON,
-} from "./UserSelectionAuthenticationEnum";
-
 /**
  * User shown by the user selection stage.
  * @export
@@ -66,12 +60,6 @@ export interface UserSelectionChallengeUser {
      * @memberof UserSelectionChallengeUser
      */
     isHint: boolean;
-    /**
-     *
-     * @type {UserSelectionAuthenticationEnum}
-     * @memberof UserSelectionChallengeUser
-     */
-    authentication: UserSelectionAuthenticationEnum;
 }
 
 /**
@@ -87,7 +75,6 @@ export function instanceOfUserSelectionChallengeUser(
     if (!("avatar" in value) || value["avatar"] === undefined) return false;
     if (!("isCurrent" in value) || value["isCurrent"] === undefined) return false;
     if (!("isHint" in value) || value["isHint"] === undefined) return false;
-    if (!("authentication" in value) || value["authentication"] === undefined) return false;
     return true;
 }
 
@@ -110,7 +97,6 @@ export function UserSelectionChallengeUserFromJSONTyped(
         avatar: json["avatar"],
         isCurrent: json["is_current"],
         isHint: json["is_hint"],
-        authentication: UserSelectionAuthenticationEnumFromJSON(json["authentication"]),
     };
 }
 
@@ -134,6 +120,5 @@ export function UserSelectionChallengeUserToJSONTyped(
         avatar: value["avatar"],
         is_current: value["isCurrent"],
         is_hint: value["isHint"],
-        authentication: UserSelectionAuthenticationEnumToJSON(value["authentication"]),
     };
 }

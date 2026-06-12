@@ -3158,6 +3158,11 @@ paths:
         schema:
           type: string
       - in: query
+        name: flow_account_switch
+        schema:
+          type: string
+          format: uuid
+      - in: query
         name: flow_authentication
         schema:
           type: string
@@ -36318,6 +36323,10 @@ components:
           type: string
           format: uuid
           nullable: true
+        flow_account_switch:
+          type: string
+          format: uuid
+          nullable: true
         flow_device_code:
           type: string
           format: uuid
@@ -36395,6 +36404,10 @@ components:
           format: uuid
           nullable: true
         flow_user_selection:
+          type: string
+          format: uuid
+          nullable: true
+        flow_account_switch:
           type: string
           format: uuid
           nullable: true
@@ -37399,6 +37412,8 @@ components:
         flow_user_settings:
           type: string
         flow_user_selection:
+          type: string
+        flow_account_switch:
           type: string
         flow_device_code:
           type: string
@@ -48445,6 +48460,10 @@ components:
           type: string
           format: uuid
           nullable: true
+        flow_account_switch:
+          type: string
+          format: uuid
+          nullable: true
         flow_device_code:
           type: string
           format: uuid
@@ -56167,12 +56186,7 @@ components:
           $ref: '#/components/schemas/UserSelf'
         original:
           $ref: '#/components/schemas/UserSelf'
-        accounts:
-          type: array
-          items:
-            $ref: '#/components/schemas/UserSelectionUser'
       required:
-      - accounts
       - user
     Settings:
       type: object
@@ -58530,11 +58544,6 @@ components:
       required:
       - identifier
       - source
-    UserSelectionAuthenticationEnum:
-      enum:
-      - authenticated
-      - remembered
-      type: string
     UserSelectionChallenge:
       type: object
       description: Challenge for selecting a browser-local user.
@@ -58596,10 +58605,7 @@ components:
           type: boolean
         is_hint:
           type: boolean
-        authentication:
-          $ref: '#/components/schemas/UserSelectionAuthenticationEnum'
       required:
-      - authentication
       - avatar
       - email
       - is_current
@@ -58656,40 +58662,6 @@ components:
           minLength: 1
       required:
       - name
-    UserSelectionUser:
-      type: object
-      description: Browser-local user that can be selected from the UI.
-      properties:
-        uid:
-          type: string
-          readOnly: true
-        username:
-          type: string
-          readOnly: true
-        name:
-          type: string
-          readOnly: true
-        email:
-          type: string
-          readOnly: true
-        avatar:
-          type: string
-          readOnly: true
-        is_current:
-          type: boolean
-          readOnly: true
-        authentication:
-          allOf:
-          - $ref: '#/components/schemas/UserSelectionAuthenticationEnum'
-          readOnly: true
-      required:
-      - authentication
-      - avatar
-      - email
-      - is_current
-      - name
-      - uid
-      - username
     UserSelf:
       type: object
       description: User Serializer for information a user can retrieve about themselves

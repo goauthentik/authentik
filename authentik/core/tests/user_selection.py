@@ -23,8 +23,10 @@ def create_test_user_selection_flow(
     """Create a user-selection flow with a picker stage."""
     flow = create_test_flow(FlowDesignation.USER_SELECTION)
     if bind_to_brand:
+        authentication_flow = create_test_flow(FlowDesignation.AUTHENTICATION)
         brand = create_test_brand()
         brand.flow_user_selection = flow
+        brand.flow_account_switch = authentication_flow
         brand.save()
     selection_stage = UserSelectionStage.objects.create(name=generate_id())
     FlowStageBinding.objects.create(target=flow, stage=selection_stage, order=10)

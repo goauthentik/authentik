@@ -2,7 +2,6 @@
 
 from urllib.parse import parse_qs, urlparse
 
-from django.conf import settings
 from django.test import RequestFactory
 from django.urls import reverse
 
@@ -15,7 +14,12 @@ from authentik.core.tests.user_selection import (
     select_user_response,
 )
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
-from authentik.core.user_selection import QS_USER_UID, append_user_selection_hint
+from authentik.core.user_selection import (
+    PLAN_CONTEXT_ACCOUNT_SWITCH,
+    QS_USER_UID,
+    append_user_selection_hint,
+)
+from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, PLAN_CONTEXT_REDIRECT
 from authentik.flows.stage import PLAN_CONTEXT_PENDING_USER_IDENTIFIER
 from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.lib.generators import generate_id
@@ -165,8 +169,8 @@ class TestAuthorizeUserSelection(OAuthTestCase):
             [user.username, other_user.username],
         )
 
-    def test_selecting_other_user_switches_session(self):
-        """Test selecting another live login switches sessions and returns to authorize."""
+    def test_selecting_other_user_starts_account_switch_authentication(self):
+        """Test selecting another browser-local login starts account-switch authentication."""
         flow = create_test_flow()
         user_selection_flow, _ = create_test_user_selection_flow()
         self.create_provider(flow)
@@ -174,7 +178,6 @@ class TestAuthorizeUserSelection(OAuthTestCase):
         other_user = create_test_admin_user("other-user")
         self.client.force_login(user)
         target = create_browser_session(self, other_user)
-        current_session_cookie = self.client.cookies[settings.SESSION_COOKIE_NAME].value
 
         response = self.client.get(
             reverse("authentik_providers_oauth2:authorize"),
@@ -193,25 +196,14 @@ class TestAuthorizeUserSelection(OAuthTestCase):
             content_type="application/json",
         )
 
-        self.assertEqual(selection_response.json()["component"], "xak-flow-redirect")
-        redirect = selection_response.json()["to"]
-        self.assertEqual(urlparse(redirect).path, reverse("authentik_providers_oauth2:authorize"))
-        authorize_query = parse_qs(urlparse(redirect).query)
-        self.assertEqual(authorize_query[QS_USER_UID], [other_user.uuid.hex])
-        self.assertEqual(
-            self.client.cookies[settings.SESSION_COOKIE_NAME].value,
-            target.session.session_key,
-        )
-        self.assertNotEqual(
-            self.client.cookies[settings.SESSION_COOKIE_NAME].value,
-            current_session_cookie,
-        )
-        me_response = self.client.get(reverse("authentik_api:user-me"))
-        self.assertEqual(me_response.json()["user"]["username"], other_user.username)
-        # Returning to authorize with the selected user must not re-prompt for selection
-        response = self.client.get(redirect)
-        self.assertEqual(response.status_code, 302)
-        self.assertNotIn(user_selection_flow.slug, response.url)
+        self.assertEqual(selection_response.status_code, 302)
+        self.assertIn("/api/v3/flows/executor/", urlparse(selection_response.url).path)
+        plan = self.client.session[SESSION_KEY_PLAN]
+        self.assertTrue(plan.context[PLAN_CONTEXT_ACCOUNT_SWITCH])
+        self.assertEqual(plan.context[PLAN_CONTEXT_PENDING_USER].pk, other_user.pk)
+        self.assertIn("user_uid=", plan.context[PLAN_CONTEXT_REDIRECT])
+        target.refresh_from_db()
+        self.assertFalse(target.is_current)
 
     def test_signed_out_browser_is_offered_selection(self):
         """Test a signed-out browser with live logins is sent to the chooser, not login."""

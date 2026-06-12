@@ -88,11 +88,6 @@ from authentik.core.models import (
     UserTypes,
     default_token_duration,
 )
-from authentik.core.user_selection import (
-    USER_SELECTION_AUTHENTICATION_CHOICES,
-    get_selectable_accounts,
-    serialize_selectable_user,
-)
 from authentik.endpoints.connectors.agent.auth import AgentAuth
 from authentik.events.models import Event, EventAction
 from authentik.flows.exceptions import FlowNonApplicableException
@@ -456,21 +451,6 @@ class UserSelfSerializer(ModelSerializer):
         }
 
 
-class UserSelectionUserSerializer(PassiveSerializer):
-    """Browser-local user that can be selected from the UI."""
-
-    uid = CharField(read_only=True)
-    username = CharField(read_only=True)
-    name = CharField(read_only=True, allow_blank=True)
-    email = CharField(read_only=True, allow_blank=True)
-    avatar = CharField(read_only=True)
-    is_current = BooleanField(read_only=True)
-    authentication = ChoiceField(
-        choices=USER_SELECTION_AUTHENTICATION_CHOICES,
-        read_only=True,
-    )
-
-
 class SessionUserSerializer(PassiveSerializer):
     """Response for the /user/me endpoint, returns the currently active user (as `user` property)
     and, if this user is being impersonated, the original user in the `original` property.
@@ -478,7 +458,6 @@ class SessionUserSerializer(PassiveSerializer):
 
     user = UserSelfSerializer()
     original = UserSelfSerializer(required=False)
-    accounts = UserSelectionUserSerializer(many=True)
 
 
 class UserPasswordSetSerializer(PassiveSerializer):
@@ -829,13 +808,7 @@ class UserViewSet(
         """Get information about current user"""
         context = {"request": request}
         serializer = SessionUserSerializer(
-            data={
-                "user": UserSelfSerializer(instance=request.user, context=context).data,
-                "accounts": [
-                    serialize_selectable_user(request._request, selectable)
-                    for selectable in get_selectable_accounts(request._request)
-                ],
-            }
+            data={"user": UserSelfSerializer(instance=request.user, context=context).data}
         )
         if SESSION_KEY_IMPERSONATE_USER in request._request.session:
             serializer.initial_data["original"] = UserSelfSerializer(

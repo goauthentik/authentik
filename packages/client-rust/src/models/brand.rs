@@ -79,6 +79,13 @@ pub struct Brand {
     )]
     pub flow_user_selection: Option<Option<uuid::Uuid>>,
     #[serde(
+        rename = "flow_account_switch",
+        default,
+        with = "::serde_with::rust::double_option",
+        skip_serializing_if = "Option::is_none"
+    )]
+    pub flow_account_switch: Option<Option<uuid::Uuid>>,
+    #[serde(
         rename = "flow_device_code",
         default,
         with = "::serde_with::rust::double_option",
@@ -136,6 +143,7 @@ impl Brand {
             flow_unenrollment: None,
             flow_user_settings: None,
             flow_user_selection: None,
+            flow_account_switch: None,
             flow_device_code: None,
             flow_lockdown: None,
             default_application: None,

@@ -21,14 +21,13 @@ var _ MappedNullable = &UserSelectionChallengeUser{}
 
 // UserSelectionChallengeUser User shown by the user selection stage.
 type UserSelectionChallengeUser struct {
-	Uid                  string                          `json:"uid"`
-	Username             string                          `json:"username"`
-	Name                 string                          `json:"name"`
-	Email                string                          `json:"email"`
-	Avatar               string                          `json:"avatar"`
-	IsCurrent            bool                            `json:"is_current"`
-	IsHint               bool                            `json:"is_hint"`
-	Authentication       UserSelectionAuthenticationEnum `json:"authentication"`
+	Uid                  string `json:"uid"`
+	Username             string `json:"username"`
+	Name                 string `json:"name"`
+	Email                string `json:"email"`
+	Avatar               string `json:"avatar"`
+	IsCurrent            bool   `json:"is_current"`
+	IsHint               bool   `json:"is_hint"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -38,7 +37,7 @@ type _UserSelectionChallengeUser UserSelectionChallengeUser
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewUserSelectionChallengeUser(uid string, username string, name string, email string, avatar string, isCurrent bool, isHint bool, authentication UserSelectionAuthenticationEnum) *UserSelectionChallengeUser {
+func NewUserSelectionChallengeUser(uid string, username string, name string, email string, avatar string, isCurrent bool, isHint bool) *UserSelectionChallengeUser {
 	this := UserSelectionChallengeUser{}
 	this.Uid = uid
 	this.Username = username
@@ -47,7 +46,6 @@ func NewUserSelectionChallengeUser(uid string, username string, name string, ema
 	this.Avatar = avatar
 	this.IsCurrent = isCurrent
 	this.IsHint = isHint
-	this.Authentication = authentication
 	return &this
 }
 
@@ -227,30 +225,6 @@ func (o *UserSelectionChallengeUser) SetIsHint(v bool) {
 	o.IsHint = v
 }
 
-// GetAuthentication returns the Authentication field value
-func (o *UserSelectionChallengeUser) GetAuthentication() UserSelectionAuthenticationEnum {
-	if o == nil {
-		var ret UserSelectionAuthenticationEnum
-		return ret
-	}
-
-	return o.Authentication
-}
-
-// GetAuthenticationOk returns a tuple with the Authentication field value
-// and a boolean to check if the value has been set.
-func (o *UserSelectionChallengeUser) GetAuthenticationOk() (*UserSelectionAuthenticationEnum, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.Authentication, true
-}
-
-// SetAuthentication sets field value
-func (o *UserSelectionChallengeUser) SetAuthentication(v UserSelectionAuthenticationEnum) {
-	o.Authentication = v
-}
-
 func (o UserSelectionChallengeUser) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -268,7 +242,6 @@ func (o UserSelectionChallengeUser) ToMap() (map[string]interface{}, error) {
 	toSerialize["avatar"] = o.Avatar
 	toSerialize["is_current"] = o.IsCurrent
 	toSerialize["is_hint"] = o.IsHint
-	toSerialize["authentication"] = o.Authentication
 
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
@@ -289,7 +262,6 @@ func (o *UserSelectionChallengeUser) UnmarshalJSON(data []byte) (err error) {
 		"avatar",
 		"is_current",
 		"is_hint",
-		"authentication",
 	}
 
 	allProperties := make(map[string]interface{})
@@ -326,7 +298,6 @@ func (o *UserSelectionChallengeUser) UnmarshalJSON(data []byte) (err error) {
 		delete(additionalProperties, "avatar")
 		delete(additionalProperties, "is_current")
 		delete(additionalProperties, "is_hint")
-		delete(additionalProperties, "authentication")
 		o.AdditionalProperties = additionalProperties
 	}
 

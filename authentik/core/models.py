@@ -1370,8 +1370,9 @@ class AuthenticatedSession(SerializerModel):
 
     # Value of the browser cookie that groups all logins created by the same browser.
     # Sessions without it (pre-existing ones, or sessions created outside a browser
-    # context) can never be listed or switched to through the browser cookie.
+    # context) can never be listed for browser-local account selection.
     browser_key = models.CharField(max_length=64, null=True, db_index=True)
+    is_current = models.BooleanField(default=True)
 
     @property
     def serializer(self) -> type[Serializer]:
@@ -1395,8 +1396,12 @@ class AuthenticatedSession(SerializerModel):
             request.session.session_key
         ):
             return None
+        browser_key = SessionMiddleware.ensure_browser_key(request)
+        if browser_key:
+            AuthenticatedSession.objects.filter(browser_key=browser_key).update(is_current=False)
         return AuthenticatedSession(
             session=Session.objects.filter(session_key=request.session.session_key).first(),
             user=user,
-            browser_key=SessionMiddleware.ensure_browser_key(request),
+            browser_key=browser_key,
+            is_current=True,
         )

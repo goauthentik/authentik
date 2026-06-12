@@ -25,6 +25,11 @@ urlpatterns = [
         ToDefaultFlow.as_view(designation=FlowDesignation.INVALIDATION),
         name="default-invalidation",
     ),
+    path(
+        "-/default/user-selection/",
+        ToDefaultFlow.as_view(designation=FlowDesignation.USER_SELECTION),
+        name="default-user-selection",
+    ),
     path("-/cancel/", CancelView.as_view(), name="cancel"),
     path(
         "-/configure/<uuid:stage_uuid>/",

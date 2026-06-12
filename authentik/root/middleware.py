@@ -32,8 +32,8 @@ SIGNING_HASH = sha512(settings.SECRET_KEY.encode()).hexdigest()
 
 # Opaque identifier for the browser itself, which groups all sessions created by it.
 # Unlike the session cookie it survives logins and logouts, so the sessions bound to it
-# (AuthenticatedSession.browser_key) can be listed and switched between.
-COOKIE_NAME_BROWSER = "authentik_browser"
+# (AuthenticatedSession.browser_key) can be listed and offered for account selection.
+COOKIE_NAME_BROWSER = "authentik_account_selection"
 BROWSER_KEY_LENGTH = 32
 BROWSER_COOKIE_AGE = int(timedelta(days=365).total_seconds())
 

@@ -5,29 +5,35 @@ export interface UserSelectionURLUser {
 }
 
 export interface AuthenticationFlowURLConfig {
-    account?: UserSelectionURLUser;
-    userSelectionFlow?: string | null;
     apiBase: string;
     next: string;
 }
 
-export function buildAuthenticationFlowURL({
+export interface AccountSwitchFlowURLConfig extends AuthenticationFlowURLConfig {
+    account: UserSelectionURLUser;
+    userSelectionFlow?: string | null;
+}
+
+export function buildAccountSwitchFlowURL({
     account,
     userSelectionFlow,
     apiBase,
     next,
-}: AuthenticationFlowURLConfig): string {
+}: AccountSwitchFlowURLConfig): string | null {
+    if (!account.uid) {
+        return null;
+    }
+    const query = new URLSearchParams({
+        next,
+        user_uid: account.uid,
+    });
+    if (!userSelectionFlow) {
+        return `${apiBase}flows/-/default/user-selection/?${query.toString()}`;
+    }
+    return `${apiBase}if/flow/${userSelectionFlow}/?${query.toString()}`;
+}
+
+export function buildAuthenticationFlowURL({ apiBase, next }: AuthenticationFlowURLConfig): string {
     const query = new URLSearchParams({ next });
-    const loginHint = account?.email || account?.username;
-
-    if (account?.uid && userSelectionFlow) {
-        query.set("user_uid", account.uid);
-        return `${apiBase}if/flow/${userSelectionFlow}/?${query.toString()}`;
-    }
-
-    if (loginHint) {
-        query.set("login_hint", loginHint);
-    }
-
     return `${apiBase}flows/-/default/authentication/?${query.toString()}`;
 }

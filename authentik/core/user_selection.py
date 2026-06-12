@@ -1,13 +1,12 @@
-"""Helpers for selecting between the sessions a browser holds.
+"""Helpers for selecting between accounts remembered by a browser.
 
 Every login creates its own Session/AuthenticatedSession pair; all pairs created by the
 same browser share the AuthenticatedSession.browser_key stamped from the browser cookie
-(see authentik.root.middleware). These helpers list those logins and decide whether the
-browser may switch to one of them without re-authenticating.
+(see authentik.root.middleware). These helpers list those logins and prepare the context
+used when a selected account must authenticate through the configured flow.
 """
 
 from dataclasses import dataclass
-from enum import StrEnum
 from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
 
 from django.db.models import QuerySet
@@ -19,50 +18,40 @@ from authentik.common.oauth.constants import PROMPT_SELECT_ACCOUNT, QS_LOGIN_HIN
 from authentik.core.models import AuthenticatedSession, User
 from authentik.flows.exceptions import FlowNonApplicableException
 from authentik.flows.models import Flow, FlowDesignation
-from authentik.flows.planner import PLAN_CONTEXT_APPLICATION, PLAN_CONTEXT_REDIRECT, FlowPlanner
+from authentik.flows.planner import (
+    PLAN_CONTEXT_APPLICATION,
+    PLAN_CONTEXT_PENDING_USER,
+    PLAN_CONTEXT_REDIRECT,
+    FlowPlanner,
+)
+from authentik.flows.stage import PLAN_CONTEXT_PENDING_USER_IDENTIFIER
 from authentik.lib.avatars import get_avatar
 from authentik.policies.engine import PolicyEngine
 
 QS_USER_UID = "user_uid"
 PLAN_CONTEXT_USER_SELECTION_USER_UID = "user_selection_user_uid"
 PLAN_CONTEXT_USER_SELECTION_LOGIN_HINT = "user_selection_login_hint"
+PLAN_CONTEXT_ACCOUNT_SWITCH = "is_account_switch"
+PLAN_CONTEXT_ACCOUNT_SWITCH_CURRENT_USER = "account_switch_current_user"
+PLAN_CONTEXT_ACCOUNT_SWITCH_AUTHENTICATED_SESSION = "account_switch_authenticated_session"
 USER_SELECTION_QUERY_CONTEXT = (
     (QS_USER_UID, PLAN_CONTEXT_USER_SELECTION_USER_UID),
     (QS_LOGIN_HINT, PLAN_CONTEXT_USER_SELECTION_LOGIN_HINT),
 )
 
 
-class UserSelectionAuthentication(StrEnum):
-    """Whether selecting the user switches to a live session or requires authentication."""
-
-    AUTHENTICATED = "authenticated"
-    REMEMBERED = "remembered"
-
-
-USER_SELECTION_AUTHENTICATION_CHOICES = tuple(
-    (choice.value, choice.name) for choice in UserSelectionAuthentication
-)
-
-
 @dataclass(frozen=True, slots=True)
 class SelectableUser:
-    """A user the browser knows about, plus the current request's ability to use it."""
+    """A user the browser knows about."""
 
     user: User
     is_current: bool
-    switchable_session: AuthenticatedSession | None = None
+    authenticated_session: AuthenticatedSession | None = None
 
     @property
     def uid(self) -> str:
         """Stable public identifier used by user-selection callers."""
         return self.user.uuid.hex
-
-    @property
-    def authentication(self) -> UserSelectionAuthentication:
-        """Return whether selecting this user can continue without authentication."""
-        if self.is_current or self.switchable_session is not None:
-            return UserSelectionAuthentication.AUTHENTICATED
-        return UserSelectionAuthentication.REMEMBERED
 
 
 def user_matches_hint(user: User, hint: str) -> bool:
@@ -104,21 +93,32 @@ def get_browser_sessions(request: HttpRequest) -> QuerySet[AuthenticatedSession]
 def get_selectable_accounts(request: HttpRequest) -> list[SelectableUser]:
     """Users this browser can select between, current user first, one entry per user."""
     users: dict[str, SelectableUser] = {}
-    can_switch_sessions = request.user.is_authenticated
-    if can_switch_sessions:
-        current_user = SelectableUser(request.user, is_current=True)
-        users[current_user.uid] = current_user
     for session in get_browser_sessions(request):
         selectable = SelectableUser(
             session.user,
             is_current=False,
-            switchable_session=session if can_switch_sessions else None,
+            authenticated_session=session,
         )
         users.setdefault(
             selectable.uid,
             selectable,
         )
-    return list(users.values())
+    if request.user.is_authenticated:
+        current_session = next(
+            (
+                account.authenticated_session
+                for account in users.values()
+                if account.user.pk == request.user.pk and account.authenticated_session
+            ),
+            None,
+        )
+        current_user = SelectableUser(
+            request.user,
+            is_current=True,
+            authenticated_session=current_session,
+        )
+        users[current_user.uid] = current_user
+    return sorted(users.values(), key=lambda account: not account.is_current)
 
 
 def serialize_selectable_user(
@@ -135,11 +135,37 @@ def serialize_selectable_user(
         "email": user.email,
         "avatar": get_avatar(user, request),
         "is_current": selectable.is_current,
-        "authentication": selectable.authentication,
     }
     if hint is not None:
         data["is_hint"] = bool(hint and user_matches_hint(user, hint))
     return data
+
+
+def build_account_switch_context(
+    request: HttpRequest,
+    selected: SelectableUser,
+) -> dict[str, object]:
+    """Return flow context for authenticating as a browser-local account."""
+    context: dict[str, object] = {
+        PLAN_CONTEXT_ACCOUNT_SWITCH: True,
+        PLAN_CONTEXT_PENDING_USER: selected.user,
+        PLAN_CONTEXT_PENDING_USER_IDENTIFIER: get_user_login_hint(selected.user),
+    }
+    if request.user.is_authenticated:
+        context[PLAN_CONTEXT_ACCOUNT_SWITCH_CURRENT_USER] = request.user
+    if selected.authenticated_session:
+        context[PLAN_CONTEXT_ACCOUNT_SWITCH_AUTHENTICATED_SESSION] = (
+            selected.authenticated_session
+        )
+    return context
+
+
+def mark_browser_sessions_not_current(request: HttpRequest) -> None:
+    """Clear the current-session marker for this browser before switching accounts."""
+    browser_key = getattr(request, "browser_key", None)
+    if not browser_key:
+        return
+    AuthenticatedSession.objects.filter(browser_key=browser_key).update(is_current=False)
 
 
 def get_user_selection_flow(request: HttpRequest) -> Flow | None:

@@ -1,6 +1,5 @@
 import "#elements/buttons/Dropdown";
 
-import { isAPIResultReady } from "#common/api/responses";
 import { globalAK } from "#common/global";
 import { formatUserDisplayName, formatUserSecondaryIdentifier } from "#common/users";
 
@@ -9,10 +8,17 @@ import { WithSession } from "#elements/mixins/session";
 import type { SlottedTemplateResult } from "#elements/types";
 import { isDefaultAvatar } from "#elements/utils/images";
 
-import { buildAuthenticationFlowURL } from "#components/ak-account-switcher-url";
+import {
+    accountFromUser,
+    type BrowserLocalAccount,
+    readStoredAccounts,
+    writeStoredAccounts,
+} from "#components/ak-account-switcher-storage";
+import {
+    buildAccountSwitchFlowURL,
+    buildAuthenticationFlowURL,
+} from "#components/ak-account-switcher-url";
 import Styles from "#components/ak-account-switcher.css";
-
-import type { UserSelectionUser } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html } from "lit";
@@ -25,23 +31,43 @@ import PFDropdown from "@patternfly/patternfly/components/Dropdown/dropdown.css"
 export class UserSwitcher extends WithSession(AKElement) {
     static styles = [PFButton, PFDropdown, Styles];
 
-    protected get accounts(): UserSelectionUser[] {
-        if (!isAPIResultReady(this.session)) {
-            return [];
+    protected get accounts(): BrowserLocalAccount[] {
+        const currentUser = this.currentUser;
+        if (!currentUser) {
+            return readStoredAccounts();
         }
-        return this.session.accounts ?? [];
+        const currentAccount = accountFromUser(currentUser);
+        const accounts = [
+            currentAccount,
+            ...readStoredAccounts()
+                .filter((account) => account.uid !== currentAccount.uid)
+                .map((account) => ({ ...account, isCurrent: false })),
+        ];
+        writeStoredAccounts(accounts);
+        return accounts;
     }
 
-    protected authenticationFlowURL(account?: UserSelectionUser): string {
-        return buildAuthenticationFlowURL({
+    protected nextURL(): string {
+        return `${window.location.pathname}${window.location.search}${window.location.hash}`;
+    }
+
+    protected accountSwitchFlowURL(account: BrowserLocalAccount): string | null {
+        return buildAccountSwitchFlowURL({
             account,
             userSelectionFlow: globalAK().brand.flowUserSelection,
             apiBase: globalAK().api.base,
-            next: `${window.location.pathname}${window.location.search}${window.location.hash}`,
+            next: this.nextURL(),
         });
     }
 
-    protected renderAvatar(account?: Pick<UserSelectionUser, "avatar">): SlottedTemplateResult {
+    protected authenticationFlowURL(): string {
+        return buildAuthenticationFlowURL({
+            apiBase: globalAK().api.base,
+            next: this.nextURL(),
+        });
+    }
+
+    protected renderAvatar(account?: Pick<BrowserLocalAccount, "avatar">): SlottedTemplateResult {
         if (account?.avatar && !isDefaultAvatar(account.avatar)) {
             return html`<span part="avatar">
                 <img part="avatar-image" src=${account.avatar} alt="" />
@@ -52,7 +78,7 @@ export class UserSwitcher extends WithSession(AKElement) {
         </span>`;
     }
 
-    protected renderAccount(account: UserSelectionUser): SlottedTemplateResult {
+    protected renderAccount(account: BrowserLocalAccount): SlottedTemplateResult {
         const label = account.name || account.username;
         const description = formatUserSecondaryIdentifier(account, label);
         const content = html`
@@ -76,13 +102,17 @@ export class UserSwitcher extends WithSession(AKElement) {
             </li>`;
         }
 
+        const switchURL = this.accountSwitchFlowURL(account);
+        if (!switchURL) {
+            return html`<li role="presentation">
+                <button class="pf-c-dropdown__menu-item" part="menu-item" role="menuitem" disabled>
+                    ${content}
+                </button>
+            </li>`;
+        }
+
         return html`<li role="presentation">
-            <a
-                class="pf-c-dropdown__menu-item"
-                part="menu-item"
-                role="menuitem"
-                href=${this.authenticationFlowURL(account)}
-            >
+            <a class="pf-c-dropdown__menu-item" part="menu-item" role="menuitem" href=${switchURL}>
                 ${content}
             </a>
         </li>`;

@@ -40,13 +40,15 @@ class SessionStore(SessionBase):
         return [k.value for k in self.model.Keys]
 
     def _browser_binding_valid(self, session) -> bool:
-        """Sessions bound to a browser may only be loaded with that browser's cookie"""
+        """Browser-bound sessions must match the browser cookie and be current for it."""
         if self._browser_key is self.UNBOUND:
             return True
         authenticated_session = getattr(session, "authenticatedsession", None)
         if authenticated_session is None or authenticated_session.browser_key is None:
             return True
-        return constant_time_compare(authenticated_session.browser_key, self._browser_key or "")
+        return authenticated_session.is_current and constant_time_compare(
+            authenticated_session.browser_key, self._browser_key or ""
+        )
 
     def _session_queryset(self):
         """Return the session queryset with account-selection relations loaded."""
@@ -68,7 +70,9 @@ class SessionStore(SessionBase):
                 expires__gt=timezone.now(),
             )
             if not self._browser_binding_valid(session):
-                raise SuspiciousOperation("Session denied: browser cookie missing or mismatched")
+                raise SuspiciousOperation(
+                    "Session denied: browser cookie missing, mismatched, or stale"
+                )
             return session
         except (self.model.DoesNotExist, SuspiciousOperation) as exc:
             self._clear_invalid_session(exc)
@@ -80,7 +84,9 @@ class SessionStore(SessionBase):
                 expires__gt=timezone.now(),
             )
             if not self._browser_binding_valid(session):
-                raise SuspiciousOperation("Session denied: browser cookie missing or mismatched")
+                raise SuspiciousOperation(
+                    "Session denied: browser cookie missing, mismatched, or stale"
+                )
             return session
         except (self.model.DoesNotExist, SuspiciousOperation) as exc:
             self._clear_invalid_session(exc)
