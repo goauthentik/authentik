@@ -1,0 +1,133 @@
+"""Account switch view tests"""
+
+from django.conf import settings
+from django.urls import reverse
+
+from authentik.core.models import AuthenticatedSession, Session
+from authentik.core.tests.test_sessions import create_session
+from authentik.core.tests.utils import create_test_brand, create_test_flow, create_test_user
+from authentik.core.views.account_switch import (
+    PLAN_CONTEXT_ACCOUNT_SWITCH_FROM_USER,
+    PLAN_CONTEXT_IS_ACCOUNT_SWITCH,
+)
+from authentik.flows.markers import StageMarker
+from authentik.flows.models import FlowDesignation, FlowStageBinding
+from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
+from authentik.flows.tests import FlowTestCase
+from authentik.flows.views.executor import SESSION_KEY_PLAN
+from authentik.root.middleware import COOKIE_NAME_ACCOUNTS
+from authentik.stages.user_login.models import UserLoginStage
+
+
+class TestAccountSwitch(FlowTestCase):
+    """Test starting the brand's account switch flow"""
+
+    def setUp(self):
+        super().setUp()
+        self.user = create_test_user()
+        self.other_user = create_test_user()
+        self.flow = create_test_flow(FlowDesignation.AUTHENTICATION)
+        self.login_binding = FlowStageBinding.objects.create(
+            target=self.flow,
+            stage=UserLoginStage.objects.create(name="login"),
+            order=0,
+        )
+        self.brand = create_test_brand(flow_account_switch=self.flow)
+
+    def switch_url(self, user) -> str:
+        return reverse("authentik_core:account-switch", kwargs={"user_uid": user.uid})
+
+    def login(self, user) -> str:
+        """Log the test client in through the flow executor, returning the session key"""
+        plan = FlowPlan(
+            flow_pk=self.flow.pk.hex, bindings=[self.login_binding], markers=[StageMarker()]
+        )
+        plan.context[PLAN_CONTEXT_PENDING_USER] = user
+        session = self.client.session
+        session[SESSION_KEY_PLAN] = plan
+        session.save()
+        response = self.client.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
+        )
+        self.assertEqual(response.status_code, 200)
+        return self.client.session.session_key
+
+    def test_no_brand_flow(self):
+        """Test switching 404s when the brand has no account switch flow"""
+        self.brand.flow_account_switch = None
+        self.brand.save()
+
+        response = self.client.get(self.switch_url(self.user))
+
+        self.assertEqual(response.status_code, 404)
+
+    def test_switch_with_live_session(self):
+        """Test a live login of this browser is passed to the flow as context"""
+        self.login(self.user)
+        browser_key = self.client.cookies[COOKIE_NAME_ACCOUNTS].value
+        create_session(self.other_user, browser_key=browser_key)
+
+        response = self.client.get(self.switch_url(self.other_user))
+
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(
+            response.url,
+            reverse("authentik_core:if-flow", kwargs={"flow_slug": self.flow.slug}),
+        )
+        plan: FlowPlan = self.client.session[SESSION_KEY_PLAN]
+        self.assertEqual(plan.context[PLAN_CONTEXT_PENDING_USER], self.other_user)
+        self.assertTrue(plan.context[PLAN_CONTEXT_IS_ACCOUNT_SWITCH])
+        self.assertEqual(plan.context[PLAN_CONTEXT_ACCOUNT_SWITCH_FROM_USER], self.user)
+
+    def test_switch_without_live_session(self):
+        """Test an unknown or stale target starts the flow without switch context"""
+        self.login(self.user)
+
+        response = self.client.get(self.switch_url(self.other_user))
+
+        self.assertEqual(response.status_code, 302)
+        plan: FlowPlan = self.client.session[SESSION_KEY_PLAN]
+        self.assertNotIn(PLAN_CONTEXT_PENDING_USER, plan.context)
+        self.assertNotIn(PLAN_CONTEXT_IS_ACCOUNT_SWITCH, plan.context)
+
+    def test_switch_ignores_other_browser_session(self):
+        """Test a live login of a different browser doesn't count as proof"""
+        self.login(self.user)
+        create_session(self.other_user, browser_key="A" * 32)
+
+        response = self.client.get(self.switch_url(self.other_user))
+
+        self.assertEqual(response.status_code, 302)
+        plan: FlowPlan = self.client.session[SESSION_KEY_PLAN]
+        self.assertNotIn(PLAN_CONTEXT_PENDING_USER, plan.context)
+
+    def test_full_switch(self):
+        """Test the full switch: the new login takes over, the old session survives
+        as a switch target but can't be replayed"""
+        first_session_key = self.login(self.user)
+        browser_key = self.client.cookies[COOKIE_NAME_ACCOUNTS].value
+        create_session(self.other_user, browser_key=browser_key)
+
+        response = self.client.get(self.switch_url(self.other_user), follow=True)
+        self.assertEqual(response.status_code, 200)
+        response = self.client.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
+        )
+        self.assertEqual(response.status_code, 200)
+
+        # The client is now logged in as the other user on a new session
+        self.assertNotEqual(self.client.session.session_key, first_session_key)
+        current = AuthenticatedSession.objects.get(
+            session__session_key=self.client.session.session_key
+        )
+        self.assertEqual(current.user, self.other_user)
+        self.assertTrue(current.is_current)
+        # The first user's login survives as a switch target, but is superseded
+        first = AuthenticatedSession.objects.get(session__session_key=first_session_key)
+        self.assertEqual(first.user, self.user)
+        self.assertFalse(first.is_current)
+        self.assertTrue(Session.objects.filter(session_key=first_session_key).exists())
+        # Replaying the first session cookie doesn't authenticate anymore
+        self.client.cookies[settings.SESSION_COOKIE_NAME] = first_session_key
+        response = self.client.get(reverse("authentik_api:user-me"))
+        self.assertEqual(response.status_code, 403)

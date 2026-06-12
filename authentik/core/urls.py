@@ -19,6 +19,7 @@ from authentik.core.api.tokens import TokenViewSet
 from authentik.core.api.transactional_applications import TransactionalApplicationView
 from authentik.core.api.users import UserViewSet
 from authentik.core.setup.views import SetupView
+from authentik.core.views.account_switch import AccountSwitchView
 from authentik.core.views.apps import RedirectToAppLaunch
 from authentik.core.views.debug import AccessDeniedView
 from authentik.core.views.interface import (
@@ -43,6 +44,11 @@ urlpatterns = [
         "application/launch/<slug:application_slug>/",
         RedirectToAppLaunch.as_view(),
         name="application-launch",
+    ),
+    path(
+        "account/switch/<str:user_uid>/",
+        AccountSwitchView.as_view(),
+        name="account-switch",
     ),
     # Interfaces
     path(
