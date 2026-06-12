@@ -178,7 +178,7 @@ class AuthorizeError(OAuth2Error):
         if urlparse(self.redirect_uri).scheme == "":
             return bad_request_message(request, self.description, title=self.error)
         # When the client requested the form_post response mode, errors must also be returned via
-        # an auto-submitting form POST to the redirect URI, just like a successful response.
+        # an auto-submitting form POST to the redirect URI.
         # See https://openid.net/specs/oauth-v2-form-post-response-mode-1_0.html
         if self.response_mode == ResponseMode.FORM_POST:
             attrs = {"error": self.error, "error_description": self.description}
