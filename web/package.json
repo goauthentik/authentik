@@ -148,7 +148,7 @@
         "date-fns": "^4.1.0",
         "deepmerge-ts": "^7.1.5",
         "dompurify": "^3.4.3",
-        "esbuild": "^0.28.0",
+        "esbuild": "^0.28.1",
         "eslint": "^9.39.3",
         "eslint-plugin-lit": "^2.3.1",
         "eslint-plugin-wc": "^3.1.0",
