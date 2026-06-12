@@ -4,6 +4,8 @@ sidebar_label: mailcow
 support_level: community
 ---
 
+import RedirectURI20265Note from "../../\_redirect-uri-2026-5-note.mdx";
+
 ## What is mailcow?
 
 > mailcow is a Dockerized, open-source groupware and email suite based on Docker. It relies on many well-known and long-used components, which, when combined, result in a comprehensive email server solution.
@@ -26,6 +28,8 @@ This documentation lists only the settings that you need to change from their de
 :::
 
 ## authentik configuration
+
+<RedirectURI20265Note />
 
 To support the integration of mailcow with authentik, you need to create a property mapping, set the `email_verified` attribute on required users, and create an application/provider pair in authentik.
 
@@ -56,7 +60,7 @@ Repeat these steps for all users that need to use the Mailcow integration.
     - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
         - Note the **Client ID** and **Client Secret** values because they will be required later.
-        - Set a `Strict` redirect URI to `https://mailcow.company`.
+        - Add a **Redirect URI** of type `Strict` `Authorization` as `https://mailcow.company`.
         - Select any available signing key.
         - Under **Advanced protocol settings**:
             - Remove the `authentik default OAuth Mapping: OpenID 'email'` scope from **Selected Scopes**.

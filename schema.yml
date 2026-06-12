@@ -36537,6 +36537,8 @@ components:
           type: string
         api_url:
           type: string
+        request_content_type:
+          $ref: '#/components/schemas/RequestContentTypeEnum'
         interactive:
           type: boolean
         score_min_threshold:
@@ -36582,6 +36584,8 @@ components:
         api_url:
           type: string
           minLength: 1
+        request_content_type:
+          $ref: '#/components/schemas/RequestContentTypeEnum'
         interactive:
           type: boolean
         score_min_threshold:
@@ -48491,6 +48495,8 @@ components:
         api_url:
           type: string
           minLength: 1
+        request_content_type:
+          $ref: '#/components/schemas/RequestContentTypeEnum'
         interactive:
           type: boolean
         score_min_threshold:
@@ -54043,6 +54049,11 @@ components:
           minimum: -2147483648
       required:
       - name
+    RequestContentTypeEnum:
+      enum:
+      - application/x-www-form-urlencoded
+      - application/json
+      type: string
     Review:
       type: object
       description: |-
