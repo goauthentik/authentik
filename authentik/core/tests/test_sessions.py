@@ -7,21 +7,10 @@ from django.test import RequestFactory, TestCase
 from django.urls import reverse
 from django.utils.crypto import get_random_string
 
-from authentik.core.models import AuthenticatedSession, Session, User
+from authentik.core.models import AuthenticatedSession
 from authentik.core.sessions import SessionStore
-from authentik.core.tests.utils import create_test_user
+from authentik.core.tests.utils import create_test_session, create_test_user
 from authentik.root.middleware import BROWSER_KEY_LENGTH, COOKIE_NAME_ACCOUNTS, SessionMiddleware
-
-
-def create_session(user: User, browser_key: str | None = None) -> AuthenticatedSession:
-    """Create a live login for the given user"""
-    store = SessionStore()
-    store.create()
-    return AuthenticatedSession.objects.create(
-        session=Session.objects.get(session_key=store.session_key),
-        user=user,
-        browser_key=browser_key,
-    )
 
 
 class TestSessionSuperseding(TestCase):
@@ -32,7 +21,7 @@ class TestSessionSuperseding(TestCase):
 
     def test_current_session_loads(self):
         """Test the current login of a browser keeps working"""
-        target = create_session(self.user, browser_key=get_random_string(BROWSER_KEY_LENGTH))
+        target = create_test_session(self.user, browser_key=get_random_string(BROWSER_KEY_LENGTH))
         self.client.cookies[settings.SESSION_COOKIE_NAME] = target.session.session_key
 
         response = self.client.get(reverse("authentik_api:user-me"))
@@ -42,7 +31,7 @@ class TestSessionSuperseding(TestCase):
 
     def test_superseded_session_rejected(self):
         """Test a recorded session cookie can't be replayed after an account switch"""
-        target = create_session(self.user, browser_key=get_random_string(BROWSER_KEY_LENGTH))
+        target = create_test_session(self.user, browser_key=get_random_string(BROWSER_KEY_LENGTH))
         target.is_current = False
         target.save(update_fields=["is_current"])
         self.client.cookies[settings.SESSION_COOKIE_NAME] = target.session.session_key
@@ -54,8 +43,8 @@ class TestSessionSuperseding(TestCase):
     def test_login_supersedes_other_browser_sessions(self):
         """Test a new login marks the browser's previous logins as not current"""
         browser_key = get_random_string(BROWSER_KEY_LENGTH)
-        previous = create_session(self.user, browser_key=browser_key)
-        other_browser = create_session(self.user, browser_key=get_random_string(BROWSER_KEY_LENGTH))
+        previous = create_test_session(self.user, browser_key=browser_key)
+        other_browser = create_test_session(self.user, browser_key=get_random_string(BROWSER_KEY_LENGTH))
 
         request = RequestFactory().get("/")
         request.browser_key = browser_key

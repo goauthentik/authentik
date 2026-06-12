@@ -9,15 +9,13 @@ import type { SlottedTemplateResult } from "#elements/types";
 import { isDefaultAvatar } from "#elements/utils/images";
 
 import {
-    accountFromUser,
     type BrowserLocalAccount,
-    readStoredAccounts,
-    writeStoredAccounts,
+    syncStoredAccounts,
 } from "#components/ak-account-switcher-storage";
 import Styles from "#components/ak-account-switcher.css";
 
 import { msg } from "@lit/localize";
-import { html } from "lit";
+import { html, type PropertyValues } from "lit";
 import { customElement } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -27,26 +25,11 @@ import PFDropdown from "@patternfly/patternfly/components/Dropdown/dropdown.css"
 export class AccountSwitcher extends WithSession(AKElement) {
     static styles = [PFButton, PFDropdown, Styles];
 
-    protected get accounts(): BrowserLocalAccount[] {
-        const currentUser = this.currentUser;
-        if (!currentUser) {
-            return readStoredAccounts();
-        }
-        const accounts = [accountFromUser(currentUser)];
-        for (const account of readStoredAccounts()) {
-            // Dedupe by username (unique server-side) as well as uid, so an account
-            // never shows up twice regardless of what was stored.
-            const known = accounts.some(
-                (existing) =>
-                    existing.uid === account.uid ||
-                    (account.username && existing.username === account.username),
-            );
-            if (!known) {
-                accounts.push({ ...account, isCurrent: false });
-            }
-        }
-        writeStoredAccounts(accounts);
-        return accounts;
+    protected accounts: BrowserLocalAccount[] = [];
+
+    protected override willUpdate(changed: PropertyValues<this>): void {
+        super.willUpdate(changed);
+        this.accounts = syncStoredAccounts(this.currentUser);
     }
 
     protected nextQuery(): string {

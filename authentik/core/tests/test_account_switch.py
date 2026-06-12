@@ -5,8 +5,12 @@ from django.urls import reverse
 
 from authentik.blueprints.tests import apply_blueprint
 from authentik.core.models import AuthenticatedSession, Session
-from authentik.core.tests.test_sessions import create_session
-from authentik.core.tests.utils import create_test_brand, create_test_flow, create_test_user
+from authentik.core.tests.utils import (
+    create_test_brand,
+    create_test_flow,
+    create_test_session,
+    create_test_user,
+)
 from authentik.core.views.account_switch import (
     PLAN_CONTEXT_ACCOUNT_SWITCH_FROM_USER,
     PLAN_CONTEXT_IS_ACCOUNT_SWITCH,
@@ -60,7 +64,7 @@ class TestAccountSwitch(FlowTestCase):
         self.brand.save()
         self.login(self.user)
         browser_key = self.client.cookies[COOKIE_NAME_ACCOUNTS].value
-        create_session(self.other_user, browser_key=browser_key)
+        create_test_session(self.other_user, browser_key=browser_key)
 
         response = self.client.get(self.switch_url(self.other_user))
 
@@ -86,7 +90,7 @@ class TestAccountSwitch(FlowTestCase):
         """Test a live login of this browser is passed to the flow as context"""
         self.login(self.user)
         browser_key = self.client.cookies[COOKIE_NAME_ACCOUNTS].value
-        create_session(self.other_user, browser_key=browser_key)
+        create_test_session(self.other_user, browser_key=browser_key)
 
         response = self.client.get(self.switch_url(self.other_user))
 
@@ -114,7 +118,7 @@ class TestAccountSwitch(FlowTestCase):
     def test_switch_ignores_other_browser_session(self):
         """Test a live login of a different browser doesn't count as proof"""
         self.login(self.user)
-        create_session(self.other_user, browser_key="A" * 32)
+        create_test_session(self.other_user, browser_key="A" * 32)
 
         response = self.client.get(self.switch_url(self.other_user))
 
@@ -131,7 +135,7 @@ class TestAccountSwitch(FlowTestCase):
         self.brand.save()
         self.login(self.user)
         browser_key = self.client.cookies[COOKIE_NAME_ACCOUNTS].value
-        create_session(self.other_user, browser_key=browser_key)
+        create_test_session(self.other_user, browser_key=browser_key)
 
         response = self.client.get(self.switch_url(self.other_user))
         self.assertEqual(response.status_code, 302)
@@ -146,7 +150,7 @@ class TestAccountSwitch(FlowTestCase):
         as a switch target but can't be replayed"""
         first_session_key = self.login(self.user)
         browser_key = self.client.cookies[COOKIE_NAME_ACCOUNTS].value
-        create_session(self.other_user, browser_key=browser_key)
+        create_test_session(self.other_user, browser_key=browser_key)
 
         response = self.client.get(self.switch_url(self.other_user), follow=True)
         self.assertEqual(response.status_code, 200)

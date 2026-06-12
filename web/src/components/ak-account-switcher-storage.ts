@@ -49,7 +49,7 @@ export function writeStoredAccounts(accounts: BrowserLocalAccount[]): void {
     localStorage.setItem(ACCOUNT_STORAGE_KEY, JSON.stringify({ accounts }));
 }
 
-export function accountFromUser(user: UserSelf): BrowserLocalAccount {
+function accountFromUser(user: UserSelf): BrowserLocalAccount {
     return {
         uid: user.uid,
         username: user.username,
@@ -58,4 +58,29 @@ export function accountFromUser(user: UserSelf): BrowserLocalAccount {
         avatar: user.avatar ?? "",
         isCurrent: true,
     };
+}
+
+/**
+ * Merge the current user into the stored account list, persist it, and return it.
+ *
+ * Accounts are deduped by uid and by username (usernames are unique server-side),
+ * so the same account never shows up twice regardless of what was stored.
+ */
+export function syncStoredAccounts(user: Readonly<UserSelf> | null): BrowserLocalAccount[] {
+    if (!user) {
+        return readStoredAccounts();
+    }
+    const accounts = [accountFromUser(user)];
+    for (const account of readStoredAccounts()) {
+        const known = accounts.some(
+            (existing) =>
+                existing.uid === account.uid ||
+                (account.username && existing.username === account.username),
+        );
+        if (!known) {
+            accounts.push({ ...account, isCurrent: false });
+        }
+    }
+    writeStoredAccounts(accounts);
+    return accounts;
 }
