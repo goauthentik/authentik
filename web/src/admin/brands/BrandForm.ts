@@ -256,6 +256,26 @@ export class BrandForm extends ModelForm<Brand, string> {
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
+                        label=${msg("Account switch flow", {
+                            id: "brand.form.flow-account-switch.label",
+                        })}
+                        name="flowAccountSwitch"
+                    >
+                        <ak-flow-search
+                            placeholder=${msg("Select an account switch flow...", {
+                                id: "brand.form.flow-account-switch.placeholder",
+                            })}
+                            flowType=${FlowDesignationEnum.Authentication}
+                            .currentFlow=${this.instance?.flowAccountSwitch}
+                        ></ak-flow-search>
+                        <p class="pf-c-form__helper-text">
+                            ${msg(
+                                "Authentication flow used when switching between accounts signed in on the same browser. If no flow is set, account switching is not offered.",
+                                { id: "brand.form.flow-account-switch.description" },
+                            )}
+                        </p>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
                         label=${msg("Invalidation Flow")}
                         name="flowInvalidation"
                     >

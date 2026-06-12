@@ -1,3 +1,4 @@
+import "#components/ak-account-switcher";
 import "#elements/forms/HorizontalFormElement";
 import "#components/ak-switch-input";
 import "#elements/buttons/ActionButton/ak-action-button";
@@ -5,12 +6,10 @@ import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { aki } from "#common/api/client";
 import { globalAK } from "#common/global";
-import { formatUserDisplayName } from "#common/users";
 
 import { AKElement } from "#elements/Base";
 import { WithNotifications } from "#elements/mixins/notifications";
 import { WithSession } from "#elements/mixins/session";
-import { isDefaultAvatar } from "#elements/utils/images";
 
 import Styles from "#components/ak-nav-button.css";
 import { AKDrawerChangeEvent } from "#components/notifications/events";
@@ -22,11 +21,9 @@ import { html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { guard } from "lit/directives/guard.js";
 
-import PFAvatar from "@patternfly/patternfly/components/Avatar/avatar.css";
 import PFBrand from "@patternfly/patternfly/components/Brand/brand.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFDrawer from "@patternfly/patternfly/components/Drawer/drawer.css";
-import PFDropdown from "@patternfly/patternfly/components/Dropdown/dropdown.css";
 import PFNotificationBadge from "@patternfly/patternfly/components/NotificationBadge/notification-badge.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
@@ -39,17 +36,7 @@ export class NavigationButtons extends WithNotifications(WithSession(AKElement))
     @property({ type: Boolean, reflect: true })
     apiDrawerOpen = false;
 
-    static styles = [
-        PFDisplay,
-        PFBrand,
-        PFPage,
-        PFAvatar,
-        PFButton,
-        PFDrawer,
-        PFDropdown,
-        PFNotificationBadge,
-        Styles,
-    ];
+    static styles = [PFDisplay, PFBrand, PFPage, PFButton, PFDrawer, PFNotificationBadge, Styles];
 
     protected renderAPIDrawerTrigger() {
         const { apiDrawer } = this.uiConfig.enabledFeatures;
@@ -172,30 +159,7 @@ export class NavigationButtons extends WithNotifications(WithSession(AKElement))
             </div>`;
     }
 
-    renderAvatar() {
-        const { currentUser } = this;
-
-        if (!currentUser) {
-            return nothing;
-        }
-
-        const { avatar } = currentUser;
-
-        if (!avatar || isDefaultAvatar(avatar)) {
-            return nothing;
-        }
-
-        return html`<div
-            class="pf-c-page__header-tools-item pf-c-avatar pf-m-hidden pf-m-visible-on-xl"
-            aria-hidden="true"
-        >
-            <img src=${avatar} alt=${msg("Avatar image")} />
-        </div>`;
-    }
-
     render() {
-        const displayName = formatUserDisplayName(this.currentUser, this.uiConfig);
-
         return html`<div role="presentation" class="pf-c-page__header-tools">
             <div class="pf-c-page__header-tools-group">
                 ${this.renderAPIDrawerTrigger()}
@@ -203,28 +167,10 @@ export class NavigationButtons extends WithNotifications(WithSession(AKElement))
                 ${this.renderNotificationDrawerTrigger()}
                 <!-- -->
                 ${this.renderSettings()}
-                <div class="pf-c-page__header-tools-item">
-                    <a
-                        href="${globalAK().api.base}flows/-/default/invalidation/"
-                        class="pf-c-button pf-m-plain"
-                        aria-label=${msg("Sign out")}
-                    >
-                        <pf-tooltip position="top" content=${msg("Sign out")}>
-                            <i class="fas fa-sign-out-alt" aria-hidden="true"></i>
-                        </pf-tooltip>
-                    </a>
-                </div>
+                <ak-account-switcher></ak-account-switcher>
                 <slot name="extra"></slot>
             </div>
             ${this.renderImpersonation()}
-            ${displayName
-                ? html`<div class="pf-c-page__header-tools-group pf-m-hidden">
-                      <div class="pf-c-page__header-tools-item pf-m-visible-on-2xl">
-                          ${displayName}
-                      </div>
-                  </div>`
-                : nothing}
-            ${this.renderAvatar()}
             <slot></slot>
         </div>`;
     }
