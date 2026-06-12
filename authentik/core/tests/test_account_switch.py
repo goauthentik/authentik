@@ -10,6 +10,7 @@ from authentik.core.views.account_switch import (
     PLAN_CONTEXT_ACCOUNT_SWITCH_FROM_USER,
     PLAN_CONTEXT_IS_ACCOUNT_SWITCH,
 )
+from authentik.events.models import Event, EventAction
 from authentik.flows.markers import StageMarker
 from authentik.flows.models import FlowDesignation, FlowStageBinding
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
@@ -127,6 +128,17 @@ class TestAccountSwitch(FlowTestCase):
         self.assertEqual(first.user, self.user)
         self.assertFalse(first.is_current)
         self.assertTrue(Session.objects.filter(session_key=first_session_key).exists())
+        # The login is audited as an account switch from the first user
+        event = Event.objects.filter(
+            action=EventAction.LOGIN,
+            context__is_account_switch=True,
+        ).first()
+        self.assertIsNotNone(event)
+        self.assertEqual(event.user["username"], self.other_user.username)
+        self.assertEqual(
+            event.context[PLAN_CONTEXT_ACCOUNT_SWITCH_FROM_USER]["username"],
+            self.user.username,
+        )
         # Replaying the first session cookie doesn't authenticate anymore
         self.client.cookies[settings.SESSION_COOKIE_NAME] = first_session_key
         response = self.client.get(reverse("authentik_api:user-me"))

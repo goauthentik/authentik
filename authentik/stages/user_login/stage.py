@@ -146,9 +146,9 @@ class UserLoginStageView(ChallengeStageView):
         the session, which deletes its Session row entirely."""
         old_session = self.request.session
         flow_get = old_session.get(SESSION_KEY_GET)
-        # The plan being executed moves to the new session (the executor persists it there
-        # on the next stage transition); remove it from the old session so the previous
-        # user doesn't resume a half-finished flow when this browser switches back.
+        # The plan being executed moves to the new session, so the login signal handlers
+        # (e.g. the audit log) see its context and the previous user can't resume a
+        # half-finished flow when this browser switches back.
         if SESSION_KEY_PLAN in old_session:
             del old_session[SESSION_KEY_PLAN]
         old_session.save()
@@ -156,6 +156,7 @@ class UserLoginStageView(ChallengeStageView):
             last_ip=ClientIPMiddleware.get_client_ip(self.request),
             last_user_agent=self.request.META.get("HTTP_USER_AGENT", ""),
         )
+        self.request.session[SESSION_KEY_PLAN] = self.executor.plan
         if flow_get is not None:
             self.request.session[SESSION_KEY_GET] = flow_get
 

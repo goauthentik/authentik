@@ -12,6 +12,10 @@ from rest_framework.request import Request
 
 from authentik.core.models import AuthenticatedSession, User
 from authentik.core.signals import login_failed, password_changed, password_hash_changed
+from authentik.core.views.account_switch import (
+    PLAN_CONTEXT_ACCOUNT_SWITCH_FROM_USER,
+    PLAN_CONTEXT_IS_ACCOUNT_SWITCH,
+)
 from authentik.events.models import Event, EventAction
 from authentik.flows.models import Stage
 from authentik.flows.planner import (
@@ -50,6 +54,11 @@ def on_user_logged_in(sender, request: HttpRequest, user: User, **_):
         if PLAN_CONTEXT_DEVICE in flow_plan.context:
             # Save device
             kwargs[PLAN_CONTEXT_DEVICE] = flow_plan.context[PLAN_CONTEXT_DEVICE]
+        if flow_plan.context.get(PLAN_CONTEXT_IS_ACCOUNT_SWITCH):
+            # Save that this login was an account switch, and which user switched
+            kwargs[PLAN_CONTEXT_IS_ACCOUNT_SWITCH] = True
+            if from_user := flow_plan.context.get(PLAN_CONTEXT_ACCOUNT_SWITCH_FROM_USER):
+                kwargs[PLAN_CONTEXT_ACCOUNT_SWITCH_FROM_USER] = from_user
     event = Event.new(EventAction.LOGIN, **kwargs).from_http(request, user=user)
     request.session[SESSION_LOGIN_EVENT] = event
     request.session.save()
