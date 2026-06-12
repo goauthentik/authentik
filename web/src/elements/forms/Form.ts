@@ -148,6 +148,13 @@ export class Form<T = Record<string, unknown>, D = T>
         id: "form.submit.verb.creating",
     });
 
+    /**
+     * The past-tense verb to use in the default success message, e.g. "Created" or "Updated".
+     */
+    public static submittedVerb: string = msg("Created", {
+        id: "form.submit.verb.created",
+    });
+
     //#region Modal helpers
 
     public [TransclusionChildSymbol] = true;
@@ -239,6 +246,14 @@ export class Form<T = Record<string, unknown>, D = T>
      */
     @property({ type: String, attribute: "submitting-label", useDefault: true })
     public submittingLabel: string | null = null;
+
+    /**
+     * The message shown after the form has been successfully submitted. If not provided,
+     * a default label will be generated based on `submittedVerb` and `verboseName`,
+     * falling back to "Created".
+     */
+    @property({ type: String, attribute: "submitted-label", useDefault: true })
+    public submittedLabel: string | null = null;
 
     @property({ type: String, attribute: "cancel-label", useDefault: true })
     public cancelButtonLabel: string | null = msg("Cancel");
@@ -425,6 +440,26 @@ export class Form<T = Record<string, unknown>, D = T>
             id: "form.submitting",
             desc: "The message shown while a form is being submitted.",
         });
+    }
+
+    /**
+     * An overridable method for formatting the message shown after the form has been
+     * successfully submitted.
+     */
+    protected formatSubmittedLabel(submittedLabel = this.submittedLabel): string {
+        if (submittedLabel) {
+            return submittedLabel;
+        }
+
+        const noun = this.verboseName;
+        const verb = (this.constructor as typeof Form).submittedVerb;
+
+        return noun
+            ? msg(str`${verb} ${noun}`, {
+                  id: "form.submitted.verb-entity",
+                  desc: "The message shown after a form is successfully submitted.",
+              })
+            : verb;
     }
 
     //#endregion
