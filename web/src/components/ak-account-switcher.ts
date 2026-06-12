@@ -32,13 +32,19 @@ export class AccountSwitcher extends WithSession(AKElement) {
         if (!currentUser) {
             return readStoredAccounts();
         }
-        const currentAccount = accountFromUser(currentUser);
-        const accounts = [
-            currentAccount,
-            ...readStoredAccounts()
-                .filter((account) => account.uid !== currentAccount.uid)
-                .map((account) => ({ ...account, isCurrent: false })),
-        ];
+        const accounts = [accountFromUser(currentUser)];
+        for (const account of readStoredAccounts()) {
+            // Dedupe by username (unique server-side) as well as uid, so an account
+            // never shows up twice regardless of what was stored.
+            const known = accounts.some(
+                (existing) =>
+                    existing.uid === account.uid ||
+                    (account.username && existing.username === account.username),
+            );
+            if (!known) {
+                accounts.push({ ...account, isCurrent: false });
+            }
+        }
         writeStoredAccounts(accounts);
         return accounts;
     }
