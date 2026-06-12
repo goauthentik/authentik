@@ -12,10 +12,12 @@ from jwt import PyJWTError, decode, encode
 from rest_framework.fields import BooleanField, CharField
 
 from authentik.core.models import AuthenticatedSession, Session, User
+from authentik.core.sessions import SessionStore
 from authentik.events.middleware import audit_ignore
 from authentik.flows.challenge import ChallengeResponse, WithUserInfoChallenge
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
 from authentik.flows.stage import ChallengeStageView
+from authentik.flows.views.executor import SESSION_KEY_GET, SESSION_KEY_PLAN
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.root.middleware import ClientIPMiddleware
 from authentik.stages.password import BACKEND_INBUILT
@@ -138,6 +140,25 @@ class UserLoginStageView(ChallengeStageView):
             self.logger.info("eh", exc=exc)
             return False
 
+    def detach_session(self):
+        """Continue on a brand-new session so the login of the currently authenticated user
+        stays usable as a switch target. django.contrib.auth.login would otherwise flush
+        the session, which deletes its Session row entirely."""
+        old_session = self.request.session
+        flow_get = old_session.get(SESSION_KEY_GET)
+        # The plan being executed moves to the new session (the executor persists it there
+        # on the next stage transition); remove it from the old session so the previous
+        # user doesn't resume a half-finished flow when this browser switches back.
+        if SESSION_KEY_PLAN in old_session:
+            del old_session[SESSION_KEY_PLAN]
+        old_session.save()
+        self.request.session = SessionStore(
+            last_ip=ClientIPMiddleware.get_client_ip(self.request),
+            last_user_agent=self.request.META.get("HTTP_USER_AGENT", ""),
+        )
+        if flow_get is not None:
+            self.request.session[SESSION_KEY_GET] = flow_get
+
     def do_login(self, request: HttpRequest, remember: bool | None = None) -> HttpResponse:
         """Attach the currently pending user to the current session.
         `remember` Argument should be `None` if not configured, otherwise set to `True`/`False`
@@ -154,6 +175,8 @@ class UserLoginStageView(ChallengeStageView):
         if not user.is_active:
             self.logger.warning("User is not active, login will not work.")
             return self.executor.stage_invalid()
+        if self.request.user.is_authenticated and self.request.user.pk != user.pk:
+            self.detach_session()
         delta = self.set_session_duration(bool(remember))
         self.set_session_ip()
         # Check if the login request is coming from a known device
