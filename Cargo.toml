@@ -48,8 +48,8 @@ metrics-exporter-prometheus = { version = "= 0.18.3", default-features = false }
 nix = { version = "= 0.31.2", features = ["hostname", "signal"] }
 notify = "= 8.2.0"
 pin-project-lite = "= 0.2.17"
-pyo3 = "= 0.28.3"
-pyo3-build-config = "= 0.28.3"
+pyo3 = "= 0.29.0"
+pyo3-build-config = "= 0.29.0"
 regex = "= 1.12.3"
 reqwest = { version = "= 0.13.3", features = [
   "form",
