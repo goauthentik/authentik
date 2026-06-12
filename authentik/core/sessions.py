@@ -32,15 +32,27 @@ class SessionStore(SessionBase):
     def model_fields(self):
         return [k.value for k in self.model.Keys]
 
+    @staticmethod
+    def _check_superseded(session) -> None:
+        """Reject logins the browser has since switched away from. is_current is cleared
+        in the database when another login takes over the browser
+        (AuthenticatedSession.from_request), so a recorded session cookie can't be
+        replayed to resume the previous account without going through a flow."""
+        authenticated_session = getattr(session, "authenticatedsession", None)
+        if authenticated_session is not None and not authenticated_session.is_current:
+            raise SuspiciousOperation("Session denied: superseded by a newer login")
+
     def _get_session_from_db(self):
         try:
-            return self.model.objects.select_related(
+            session = self.model.objects.select_related(
                 "authenticatedsession",
                 "authenticatedsession__user",
             ).get(
                 session_key=self.session_key,
                 expires__gt=timezone.now(),
             )
+            self._check_superseded(session)
+            return session
         except (self.model.DoesNotExist, SuspiciousOperation) as exc:
             if isinstance(exc, SuspiciousOperation):
                 LOGGER.warning(str(exc))
@@ -48,13 +60,15 @@ class SessionStore(SessionBase):
 
     async def _aget_session_from_db(self):
         try:
-            return await self.model.objects.select_related(
+            session = await self.model.objects.select_related(
                 "authenticatedsession",
                 "authenticatedsession__user",
             ).aget(
                 session_key=self.session_key,
                 expires__gt=timezone.now(),
             )
+            self._check_superseded(session)
+            return session
         except (self.model.DoesNotExist, SuspiciousOperation) as exc:
             if isinstance(exc, SuspiciousOperation):
                 LOGGER.warning(str(exc))
