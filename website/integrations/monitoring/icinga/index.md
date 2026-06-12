@@ -4,6 +4,8 @@ sidebar_label: Icinga Web 2
 support_level: community
 ---
 
+import RedirectURI20265Note from "../../\_redirect-uri-2026-5-note.mdx";
+
 ## What is Icinga Web 2?
 
 > Icinga Web 2 is the next-generation web interface for the Icinga monitoring stack. It provides a flexible UI to view monitoring states, drill into problems, and integrate with the Icinga 2 backend.
@@ -27,6 +29,8 @@ This documentation lists only the settings that you need to change from their de
 
 ## authentik configuration
 
+<RedirectURI20265Note />
+
 To support the integration of Icinga Web 2 with authentik, you need to create an application/provider pair in authentik.
 
 ### Create an application and provider in authentik
@@ -37,7 +41,7 @@ To support the integration of Icinga Web 2 with authentik, you need to create an
     - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
     - **Configure Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
         - Note the **Client ID** and **Client Secret** values because they will be required later.
-        - Set a `Strict` redirect URI to `https://icinga.company/icingaweb2/oidc/authentication/realm?name=authentik`.
+        - Add a **Redirect URI** of type `Strict` `Authorization` as `https://icinga.company/icingaweb2/oidc/authentication/realm?name=authentik`.
         - Select any available signing key.
     - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 

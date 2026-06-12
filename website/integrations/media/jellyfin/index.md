@@ -4,6 +4,8 @@ sidebar_label: Jellyfin
 support_level: community
 ---
 
+import RedirectURI20265Note from "../../\_redirect-uri-2026-5-note.mdx";
+
 ## What is Jellyfin?
 
 > Jellyfin is a free and open source media management and streaming platform for movies, TV shows, and music.
@@ -95,6 +97,8 @@ At this point, enter a username and click **Save Search Attribute Settings and Q
 
 ## OIDC configuration
 
+<RedirectURI20265Note />
+
 ### authentik configuration
 
 **Provider Settings**
@@ -102,7 +106,7 @@ At this point, enter a username and click **Save Search Attribute Settings and Q
 In authentik under **Providers**, create an OAuth2/OpenID Provider with these settings:
 
 - Name: `jellyfin`
-- Redirect URI: `https://jellyfin.company/sso/OID/redirect/authentik`
+- **Redirect URI**: `Strict` `Authorization` `https://jellyfin.company/sso/OID/redirect/authentik`
 
 Everything else is up to you, just make sure to grab the client ID and the client secret!
 

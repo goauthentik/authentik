@@ -5880,10 +5880,6 @@ doesn't pass when either or both of the selected options are equal or above the 
 <trans-unit id="s1f4df216b56de4ac">
   <source>Optionally restrict which WebAuthn device types may be used. When no device types are selected, all devices are allowed.</source>
 </trans-unit>
-<trans-unit id="s11274960b13cf21a">
-  <source>This restriction only applies to devices created in authentik 2024.4 or later.</source>
-  <target>이 제한은 authentik 2024.4 또는 이후에 등록된 기기에만 적용됩니다.</target>
-</trans-unit>
 <trans-unit id="s24bce955914b1f0a">
   <source>Stage used to configure a WebAuthn authenticator (i.e. Yubikey, FaceID/Windows Hello).</source>
   <target>WebAuthn 인증기를 구성하는 데 사용되는 스테이지(예: Yubikey, FaceID/Windows Hello).</target>

@@ -4,6 +4,8 @@ sidebar_label: Plesk
 support_level: community
 ---
 
+import RedirectURI20265Note from "../../\_redirect-uri-2026-5-note.mdx";
+
 ## What is Plesk?
 
 > Plesk is a web hosting platform with a control panel that helps manage servers, applications, and websites through a comprehensive graphical user interface. It provides tools for web professionals, IT administrators, and hosting companies to simplify the process of hosting and managing websites.
@@ -27,6 +29,8 @@ Replace these placeholders in the guide with your values:
 
 ## authentik configuration
 
+<RedirectURI20265Note />
+
 To support the integration of Plesk with authentik, you need to create an application/provider pair in authentik.
 
 ### Create an application and provider in authentik
@@ -38,7 +42,7 @@ To support the integration of Plesk with authentik, you need to create an applic
 - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
 - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
     - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
-    - Set a `Strict` redirect URI to `https://plesk.company/modules/oauth/public/login.php`.
+    - Add a **Redirect URI** of type `Strict` `Authorization` as `https://plesk.company/modules/oauth/public/login.php`.
     - Select any available signing key.
 - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 
