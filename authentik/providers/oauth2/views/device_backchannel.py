@@ -72,7 +72,7 @@ class DeviceView(View):
         # Key binding requires dpop_jkt at authorization time
         if SCOPE_BOUND_KEY in self.scopes and not self.dpop_jkt:
             raise DeviceCodeError("dpop_jkt is required when bound_key scope is requested")
-        # dpop_jkt should only be set if requesting the key binding scope 
+        # dpop_jkt should only be set if requesting the key binding scope
         if SCOPE_BOUND_KEY not in self.scopes and self.dpop_jkt:
             raise DeviceCodeError("dpop_jkt is set when bound_key scope is not requested")
 

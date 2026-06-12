@@ -9,6 +9,7 @@ from urllib.parse import urlparse
 
 from cryptography.hazmat.primitives.asymmetric.rsa import RSAPublicKey
 from django.core.cache import cache
+from jwcrypto.jwk import JWK
 from jwt import PyJWK
 from jwt import decode as jwt_decode
 from jwt import decode_complete as jwt_decode_complete
@@ -59,7 +60,7 @@ DPOP_IAT_CLOCK_SKEW = 60
 
 # JTI replay protection window in seconds. Must cover the iat validity window
 # (DPOP_IAT_CLOCK_SKEW) so a proof can never fall out of the replay cache
-# while still being iat fresh. To avoid edge cases we use 
+# while still being iat fresh. To avoid edge cases we use
 # 3 * DPOP_IAT_CLOCK_SKEW rather than 2 * DPOP_IAT_CLOCK_SKEW.
 DPOP_JTI_REPLAY_WINDOW = 3 * DPOP_IAT_CLOCK_SKEW
 
@@ -69,12 +70,13 @@ CACHE_KEY_DPOP_JTI = "authentik_providers_oauth2_dpop_jti_%s"
 
 def jwk_thumbprint(jwk: dict) -> str:
     """Compute the SHA-256 JWK Thumbprint per RFC 7638"""
-    key = PyJWK.from_dict(jwk)
-    return key.thumbprint()
+    return JWK(**jwk).thumbprint()
+
 
 def is_valid_jkt(value: str) -> bool:
     """True if value is a well-formed base64url SHA-256 JWK thumbprint."""
     return bool(DPOP_JKT_RE.fullmatch(value))
+
 
 def code_sha256(value: str) -> str:
     """Compute c_s256: BASE64URL(SHA256(ASCII(value)))"""
@@ -196,7 +198,8 @@ class DPoPValidator:
     def _check_jti_replay(self, jti: str) -> None:
         """Check if the jti has been seen before (replay protection)."""
 
-        # Only store the hash of the JTI to prevent memory-exhaustion attacks (recommended by RFC 9449 11.1)
+        # Only store the hash of the JTI to prevent memory-exhaustion attacks 
+        # Recommended by RFC 9449 11.1
         jti_hash = hashlib.sha256(jti.encode("utf-8")).hexdigest()
         cache_key = CACHE_KEY_DPOP_JTI % jti_hash
         if not cache.add(cache_key, True, timeout=DPOP_JTI_REPLAY_WINDOW):
