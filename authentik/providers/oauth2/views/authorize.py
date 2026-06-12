@@ -155,7 +155,11 @@ class OAuthAuthorizationParams:
         self.check_scope(github_compat)
         if self.request:
             raise AuthorizeError(
-                self.redirect_uri, "request_not_supported", self.grant_type, self.state
+                self.redirect_uri,
+                "request_not_supported",
+                self.grant_type,
+                self.state,
+                response_mode=self.response_mode,
             )
         self.check_nonce()
         self.check_code_challenge()
@@ -179,11 +183,23 @@ class OAuthAuthorizationParams:
         # Grant type validation.
         if not self.grant_type:
             LOGGER.warning("Invalid response type", type=self.response_type)
-            raise AuthorizeError(self.redirect_uri, "unsupported_response_type", "", self.state)
+            raise AuthorizeError(
+                self.redirect_uri,
+                "unsupported_response_type",
+                "",
+                self.state,
+                response_mode=self.response_mode,
+            )
 
         if self.grant_type not in self.provider.grant_types:
             LOGGER.warning("Invalid grant_type for provider", grant_type=self.grant_type)
-            raise AuthorizeError(self.redirect_uri, "invalid_request", self.grant_type, self.state)
+            raise AuthorizeError(
+                self.redirect_uri,
+                "invalid_request",
+                self.grant_type,
+                self.state,
+                response_mode=self.response_mode,
+            )
 
         if self.response_mode not in ResponseMode.values:
             self.response_mode = ResponseMode.QUERY
@@ -254,7 +270,11 @@ class OAuthAuthorizationParams:
         ):
             LOGGER.warning("Missing 'openid' scope.")
             raise AuthorizeError(
-                self.redirect_uri, "invalid_scope", self.grant_type, self.state
+                self.redirect_uri,
+                "invalid_scope",
+                self.grant_type,
+                self.state,
+                response_mode=self.response_mode,
             ).with_cause("scope_openid_missing")
         if SCOPE_OFFLINE_ACCESS in self.scope:
             # https://openid.net/specs/openid-connect-core-1_0.html#OfflineAccess
@@ -291,7 +311,11 @@ class OAuthAuthorizationParams:
         if not self.nonce:
             LOGGER.warning("Missing nonce for OpenID Request")
             raise AuthorizeError(
-                self.redirect_uri, "invalid_request", self.grant_type, self.state
+                self.redirect_uri,
+                "invalid_request",
+                self.grant_type,
+                self.state,
+                response_mode=self.response_mode,
             ).with_cause("nonce_missing")
 
     def check_code_challenge(self):
@@ -306,6 +330,7 @@ class OAuthAuthorizationParams:
                 self.grant_type,
                 self.state,
                 f"Unsupported challenge method {self.code_challenge_method}",
+                response_mode=self.response_mode,
             )
 
     def create_code(self, request: HttpRequest) -> AuthorizationCode:
@@ -367,6 +392,7 @@ class AuthorizationFlowInitView(PolicyAccessView):
                 "login_required",
                 self.params.grant_type,
                 self.params.state,
+                response_mode=self.params.response_mode,
             )
             raise RequestValidationError(error.get_response(self.request))
 
@@ -574,6 +600,7 @@ class OAuthFulfillmentStage(StageView):
                     "consent_required",
                     self.params.grant_type,
                     self.params.state,
+                    response_mode=self.params.response_mode,
                 )
             Event.new(
                 EventAction.AUTHORIZE_APPLICATION,
@@ -648,6 +675,7 @@ class OAuthFulfillmentStage(StageView):
                 "server_error",
                 self.params.grant_type,
                 self.params.state,
+                response_mode=self.params.response_mode,
             ) from None
 
     def create_implicit_response(self, code: AuthorizationCode | None) -> dict:
