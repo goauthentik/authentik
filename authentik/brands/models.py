@@ -43,6 +43,11 @@ class Brand(SerializerModel):
     flow_authentication = models.ForeignKey(
         Flow, null=True, on_delete=models.SET_NULL, related_name="brand_authentication"
     )
+    # Authentication flow that account switches go through; switching is only
+    # offered when this is set
+    flow_account_switch = models.ForeignKey(
+        Flow, null=True, on_delete=models.SET_NULL, related_name="brand_account_switch"
+    )
     flow_invalidation = models.ForeignKey(
         Flow, null=True, on_delete=models.SET_NULL, related_name="brand_invalidation"
     )

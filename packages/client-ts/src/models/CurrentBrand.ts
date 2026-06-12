@@ -92,6 +92,12 @@ export interface CurrentBrand {
      * @type {string}
      * @memberof CurrentBrand
      */
+    flowAccountSwitch?: string;
+    /**
+     *
+     * @type {string}
+     * @memberof CurrentBrand
+     */
     flowInvalidation?: string;
     /**
      *
@@ -177,6 +183,8 @@ export function CurrentBrandFromJSONTyped(json: any, ignoreDiscriminator: boolea
         uiTheme: UiThemeEnumFromJSON(json["ui_theme"]),
         flowAuthentication:
             json["flow_authentication"] == null ? undefined : json["flow_authentication"],
+        flowAccountSwitch:
+            json["flow_account_switch"] == null ? undefined : json["flow_account_switch"],
         flowInvalidation: json["flow_invalidation"] == null ? undefined : json["flow_invalidation"],
         flowRecovery: json["flow_recovery"] == null ? undefined : json["flow_recovery"],
         flowUnenrollment: json["flow_unenrollment"] == null ? undefined : json["flow_unenrollment"],
@@ -215,6 +223,7 @@ export function CurrentBrandToJSONTyped(
         branding_favicon: value["brandingFavicon"],
         branding_custom_css: value["brandingCustomCss"],
         flow_authentication: value["flowAuthentication"],
+        flow_account_switch: value["flowAccountSwitch"],
         flow_invalidation: value["flowInvalidation"],
         flow_recovery: value["flowRecovery"],
         flow_unenrollment: value["flowUnenrollment"],
