@@ -1,8 +1,9 @@
 """authentik OAuth2 Authorization views"""
 
+from base64 import urlsafe_b64decode
 from dataclasses import InitVar, dataclass, field
 from datetime import timedelta
-from json import dumps
+from json import JSONDecodeError, dumps, loads
 from re import error as RegexError
 from re import fullmatch
 from typing import Any
@@ -151,35 +152,70 @@ class OAuthAuthorizationParams:
             LOGGER.warning("Invalid client identifier", client_id=self.client_id)
             raise ClientIdError(client_id=self.client_id)
         self.check_redirect_uri()
-        self.check_grant()
-        self.check_scope(github_compat)
         if self.request:
+            # We don't support request objects (`request_parameter_supported` is false), so we
+            # reject them with `request_not_supported`. The error must still be returned to the
+            # client using the response mode it requested - which, along with the response type,
+            # may only be present inside the request object. Recover just those two routing
+            # parameters so the rejection is delivered correctly; the object is never otherwise
+            # trusted or processed.
+            self.resolve_routing_from_request_object()
+            self.grant_type = self.resolve_grant_type()
+            self.set_default_response_mode()
             raise AuthorizeError(
                 self.redirect_uri,
                 "request_not_supported",
-                self.grant_type,
+                self.grant_type or "",
                 self.state,
                 response_mode=self.response_mode,
             )
+        self.check_grant()
+        self.check_scope(github_compat)
         self.check_nonce()
         self.check_code_challenge()
+
+    def resolve_grant_type(self) -> str | None:
+        """Map the response_type to the grant_type/flow it implies, without validation."""
+        return {
+            ResponseTypes.CODE: GrantType.AUTHORIZATION_CODE,
+            ResponseTypes.ID_TOKEN: GrantType.IMPLICIT,
+            ResponseTypes.ID_TOKEN_TOKEN: GrantType.IMPLICIT,
+            ResponseTypes.CODE_TOKEN: GrantType.HYBRID,
+            ResponseTypes.CODE_ID_TOKEN: GrantType.HYBRID,
+            ResponseTypes.CODE_ID_TOKEN_TOKEN: GrantType.HYBRID,
+        }.get(self.response_type)
+
+    def set_default_response_mode(self):
+        """Default the response mode based on the grant type when not explicitly requested."""
+        if self.response_mode not in ResponseMode.values:
+            self.response_mode = ResponseMode.QUERY
+            if self.grant_type in [GrantType.IMPLICIT, GrantType.HYBRID]:
+                self.response_mode = ResponseMode.FRAGMENT
+
+    def resolve_routing_from_request_object(self):
+        """Best-effort decode of the by-value request object to recover the response routing
+        parameters (response_type, response_mode) when they aren't passed as top-level request
+        parameters. Only these two values are read - used solely to return errors via the
+        response mode the client requested. The object is not verified or otherwise processed."""
+        if not self.request:
+            return
+        try:
+            payload = self.request.split(".")[1]
+            payload += "=" * (-len(payload) % 4)
+            claims = loads(urlsafe_b64decode(payload))
+        except IndexError, ValueError, JSONDecodeError:
+            return
+        if not isinstance(claims, dict):
+            return
+        if not self.response_type:
+            self.response_type = claims.get("response_type", "")
+        if not self.response_mode:
+            self.response_mode = claims.get("response_mode", False)
 
     def check_grant(self):
         """Check grant"""
         # Determine which flow to use.
-        if self.response_type in [ResponseTypes.CODE]:
-            self.grant_type = GrantType.AUTHORIZATION_CODE
-        elif self.response_type in [
-            ResponseTypes.ID_TOKEN,
-            ResponseTypes.ID_TOKEN_TOKEN,
-        ]:
-            self.grant_type = GrantType.IMPLICIT
-        elif self.response_type in [
-            ResponseTypes.CODE_TOKEN,
-            ResponseTypes.CODE_ID_TOKEN,
-            ResponseTypes.CODE_ID_TOKEN_TOKEN,
-        ]:
-            self.grant_type = GrantType.HYBRID
+        self.grant_type = self.resolve_grant_type()
         # Grant type validation.
         if not self.grant_type:
             LOGGER.warning("Invalid response type", type=self.response_type)
@@ -201,11 +237,7 @@ class OAuthAuthorizationParams:
                 response_mode=self.response_mode,
             )
 
-        if self.response_mode not in ResponseMode.values:
-            self.response_mode = ResponseMode.QUERY
-
-            if self.grant_type in [GrantType.IMPLICIT, GrantType.HYBRID]:
-                self.response_mode = ResponseMode.FRAGMENT
+        self.set_default_response_mode()
 
     def check_redirect_uri(self):
         """Redirect URI validation."""
