@@ -270,7 +270,7 @@ export class BrandForm extends ModelForm<Brand, string> {
                         ></ak-flow-search>
                         <p class="pf-c-form__helper-text">
                             ${msg(
-                                "Authentication flow used when switching between accounts signed in on the same browser. If no flow is set, account switching is not offered.",
+                                "Authentication flow used when switching between accounts signed in on the same browser. If left empty, the default authentication flow is used.",
                                 { id: "brand.form.flow-account-switch.description" },
                             )}
                         </p>

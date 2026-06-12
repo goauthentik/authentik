@@ -122,10 +122,7 @@ export class AccountSwitcher extends WithSession(AKElement) {
         if (!currentUser) {
             return null;
         }
-        // Switching only works through the brand's account switch flow; without
-        // one, offer plain sign out instead of a list that leads nowhere.
-        const switchingAvailable = Boolean(globalAK().brand.flowAccountSwitch);
-        const accounts = switchingAvailable ? this.accounts : [];
+        const accounts = this.accounts;
         const displayName =
             formatUserDisplayName(currentUser, this.uiConfig) || currentUser.username;
         const currentAccount = accounts.find((account) => account.isCurrent);
@@ -160,21 +157,19 @@ export class AccountSwitcher extends WithSession(AKElement) {
                     ${accounts.length
                         ? html`<li class="pf-c-dropdown__separator" role="separator"></li>`
                         : null}
-                    ${switchingAvailable
-                        ? html`<li role="presentation">
-                              <a
-                                  class="pf-c-dropdown__menu-item"
-                                  part="menu-item"
-                                  role="menuitem"
-                                  href=${this.addAccountURL()}
-                              >
-                                  <i class="fas fa-plus" aria-hidden="true"></i>
-                                  ${msg("Add another account", {
-                                      id: "account-switcher.actions.add-account.label",
-                                  })}
-                              </a>
-                          </li>`
-                        : null}
+                    <li role="presentation">
+                        <a
+                            class="pf-c-dropdown__menu-item"
+                            part="menu-item"
+                            role="menuitem"
+                            href=${this.addAccountURL()}
+                        >
+                            <i class="fas fa-plus" aria-hidden="true"></i>
+                            ${msg("Add another account", {
+                                id: "account-switcher.actions.add-account.label",
+                            })}
+                        </a>
+                    </li>
                     <li role="presentation">${this.renderSignOut()}</li>
                 </menu>
             </ak-dropdown>

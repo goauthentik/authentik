@@ -12,7 +12,7 @@ from authentik.core.views.account_switch import (
 )
 from authentik.events.models import Event, EventAction
 from authentik.flows.markers import StageMarker
-from authentik.flows.models import FlowDesignation, FlowStageBinding
+from authentik.flows.models import Flow, FlowDesignation, FlowStageBinding
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
 from authentik.flows.tests import FlowTestCase
 from authentik.flows.views.executor import SESSION_KEY_PLAN
@@ -53,10 +53,29 @@ class TestAccountSwitch(FlowTestCase):
         self.assertEqual(response.status_code, 200)
         return self.client.session.session_key
 
-    def test_no_brand_flow(self):
-        """Test switching 404s when the brand has no account switch flow"""
+    def test_no_brand_flow_falls_back(self):
+        """Test switching falls back to the default authentication flow"""
         self.brand.flow_account_switch = None
         self.brand.save()
+        self.login(self.user)
+        browser_key = self.client.cookies[COOKIE_NAME_ACCOUNTS].value
+        create_session(self.other_user, browser_key=browser_key)
+
+        response = self.client.get(self.switch_url(self.other_user))
+
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(
+            response.url,
+            reverse("authentik_core:if-flow", kwargs={"flow_slug": self.flow.slug}),
+        )
+        plan: FlowPlan = self.client.session[SESSION_KEY_PLAN]
+        self.assertEqual(plan.context[PLAN_CONTEXT_PENDING_USER], self.other_user)
+
+    def test_no_flow_at_all(self):
+        """Test switching 404s when no authentication flow exists either"""
+        self.brand.flow_account_switch = None
+        self.brand.save()
+        Flow.objects.filter(designation=FlowDesignation.AUTHENTICATION).delete()
 
         response = self.client.get(self.switch_url(self.user))
 

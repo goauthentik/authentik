@@ -6,8 +6,10 @@ from django.views import View
 
 from authentik.core.models import AuthenticatedSession
 from authentik.flows.exceptions import FlowNonApplicableException
+from authentik.flows.models import FlowDesignation
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlanner
 from authentik.flows.stage import PLAN_CONTEXT_PENDING_USER_IDENTIFIER
+from authentik.flows.views.executor import ToDefaultFlow
 
 PLAN_CONTEXT_IS_ACCOUNT_SWITCH = "is_account_switch"
 PLAN_CONTEXT_ACCOUNT_SWITCH_FROM_USER = "account_switch_from_user"
@@ -15,7 +17,7 @@ PLAN_CONTEXT_ACCOUNT_SWITCH_FROM_USER = "account_switch_from_user"
 
 class AccountSwitchView(View):
     """Authenticate one of the browser's other logins through the brand's account
-    switch flow.
+    switch flow, falling back to the default authentication flow.
 
     The browser cookie proves this browser holds a live session for the target user;
     that proof is passed to the flow as context. Which stages the target user must
@@ -23,9 +25,9 @@ class AccountSwitchView(View):
     or password when `is_account_switch` is set); nothing is skipped by default."""
 
     def get(self, request: HttpRequest, user_uid: str) -> HttpResponse:
-        flow = request.brand.flow_account_switch
-        if not flow:
-            raise Http404
+        flow = request.brand.flow_account_switch or ToDefaultFlow.get_flow(
+            request, FlowDesignation.AUTHENTICATION
+        )
         context = {}
         session = self.get_browser_session(request, user_uid)
         if session:
