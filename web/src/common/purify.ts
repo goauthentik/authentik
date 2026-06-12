@@ -51,6 +51,33 @@ export const SanitizedTrustPolicy = trustedTypes.createPolicy("authentik-sanitiz
 });
 
 /**
+ * Trusted types policy for HTML produced by our build-time markdown
+ * pipeline (`mdx-plugin`) and stamped into `<ak-mdx>` in URL mode.
+ *
+ * The compiled HTML originates from source we own, but `<ak-mdx>` exposes
+ * a `replacers` hook that lets consumers splice dynamic — and sometimes
+ * admin-controlled — values into it before render (e.g. a proxy
+ * provider's `externalHost` in `ProxyProviderViewPage`). Once a replacer
+ * has run, "we own every byte" no longer holds, so we re-sanitize here
+ * rather than passing the string through untouched.
+ *
+ * DOMPurify's default tag list would strip the custom elements our
+ * pipeline emits (`<ak-alert>`, `<ak-md-a>`, `<ak-diagram>`) along with
+ * the `part`/`level` attributes they rely on, so those are explicitly
+ * allowed. Everything else — script handlers, unknown elements, unsafe
+ * URLs injected via a replacer — is still removed.
+ */
+export const CompiledMarkdownSanitizePolicy = trustedTypes.createPolicy("authentik-markdown", {
+    createHTML: (untrustedHTML: string) => {
+        return DOMPurify.sanitize(untrustedHTML, {
+            RETURN_TRUSTED_TYPE: false,
+            ADD_TAGS: ["ak-alert", "ak-md-a", "ak-diagram"],
+            ADD_ATTR: ["part", "level"],
+        });
+    },
+});
+
+/**
  * Trusted types policy, allowing a minimal set of _safe_ HTML tags supplied by
  * a trusted source, such as the brand API.
  */
