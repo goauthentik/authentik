@@ -98,7 +98,6 @@ class TestBrands(APITestCase):
         response.pop("flow_authentication", None)
         response.pop("flow_invalidation", None)
         response.pop("flow_user_settings", None)
-        response.pop("flow_user_selection", None)
         self.assertEqual(
             response,
             {
@@ -124,7 +123,6 @@ class TestBrands(APITestCase):
         response.pop("flow_authentication", None)
         response.pop("flow_invalidation", None)
         response.pop("flow_user_settings", None)
-        response.pop("flow_user_selection", None)
         self.assertEqual(
             response,
             {

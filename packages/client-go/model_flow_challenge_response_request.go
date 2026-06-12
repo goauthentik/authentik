@@ -44,7 +44,6 @@ type FlowChallengeResponseRequest struct {
 	RedirectChallengeResponseRequest                *RedirectChallengeResponseRequest
 	TelegramChallengeResponseRequest                *TelegramChallengeResponseRequest
 	UserLoginChallengeResponseRequest               *UserLoginChallengeResponseRequest
-	UserSelectionChallengeResponseRequest           *UserSelectionChallengeResponseRequest
 }
 
 // AppleChallengeResponseRequestAsFlowChallengeResponseRequest is a convenience function that returns AppleChallengeResponseRequest wrapped in FlowChallengeResponseRequest
@@ -226,13 +225,6 @@ func TelegramChallengeResponseRequestAsFlowChallengeResponseRequest(v *TelegramC
 func UserLoginChallengeResponseRequestAsFlowChallengeResponseRequest(v *UserLoginChallengeResponseRequest) FlowChallengeResponseRequest {
 	return FlowChallengeResponseRequest{
 		UserLoginChallengeResponseRequest: v,
-	}
-}
-
-// UserSelectionChallengeResponseRequestAsFlowChallengeResponseRequest is a convenience function that returns UserSelectionChallengeResponseRequest wrapped in FlowChallengeResponseRequest
-func UserSelectionChallengeResponseRequestAsFlowChallengeResponseRequest(v *UserSelectionChallengeResponseRequest) FlowChallengeResponseRequest {
-	return FlowChallengeResponseRequest{
-		UserSelectionChallengeResponseRequest: v,
 	}
 }
 
@@ -534,18 +526,6 @@ func (dst *FlowChallengeResponseRequest) UnmarshalJSON(data []byte) error {
 		}
 	}
 
-	// check if the discriminator value is 'ak-stage-user-selection'
-	if jsonDict["component"] == "ak-stage-user-selection" {
-		// try to unmarshal JSON data into UserSelectionChallengeResponseRequest
-		err = json.Unmarshal(data, &dst.UserSelectionChallengeResponseRequest)
-		if err == nil {
-			return nil // data stored in dst.UserSelectionChallengeResponseRequest, return on the first match
-		} else {
-			dst.UserSelectionChallengeResponseRequest = nil
-			return fmt.Errorf("failed to unmarshal FlowChallengeResponseRequest as UserSelectionChallengeResponseRequest: %s", err.Error())
-		}
-	}
-
 	// check if the discriminator value is 'xak-flow-frame'
 	if jsonDict["component"] == "xak-flow-frame" {
 		// try to unmarshal JSON data into FrameChallengeResponseRequest
@@ -679,10 +659,6 @@ func (src FlowChallengeResponseRequest) MarshalJSON() ([]byte, error) {
 		return json.Marshal(&src.UserLoginChallengeResponseRequest)
 	}
 
-	if src.UserSelectionChallengeResponseRequest != nil {
-		return json.Marshal(&src.UserSelectionChallengeResponseRequest)
-	}
-
 	return nil, nil // no data in oneOf schemas
 }
 
@@ -795,10 +771,6 @@ func (obj *FlowChallengeResponseRequest) GetActualInstance() interface{} {
 		return obj.UserLoginChallengeResponseRequest
 	}
 
-	if obj.UserSelectionChallengeResponseRequest != nil {
-		return obj.UserSelectionChallengeResponseRequest
-	}
-
 	// all schemas are nil
 	return nil
 }
@@ -907,10 +879,6 @@ func (obj FlowChallengeResponseRequest) GetActualInstanceValue() interface{} {
 
 	if obj.UserLoginChallengeResponseRequest != nil {
 		return *obj.UserLoginChallengeResponseRequest
-	}
-
-	if obj.UserSelectionChallengeResponseRequest != nil {
-		return *obj.UserSelectionChallengeResponseRequest
 	}
 
 	// all schemas are nil

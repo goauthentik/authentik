@@ -24,7 +24,6 @@ export const FlowDesignationEnum = {
     Unenrollment: "unenrollment",
     Recovery: "recovery",
     StageConfiguration: "stage_configuration",
-    UserSelection: "user_selection",
     UnknownDefaultOpenApi: "11184809",
 } as const;
 export type FlowDesignationEnum = (typeof FlowDesignationEnum)[keyof typeof FlowDesignationEnum];

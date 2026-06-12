@@ -6,23 +6,25 @@ export function RenderFlowOption(flow: Flow): string {
     return `${flow.slug} (${flow.name})`;
 }
 
-const designationToLabel = {
-    [FlowDesignationEnum.Authentication]: msg("Authentication"),
-    [FlowDesignationEnum.UserSelection]: msg("User selection"),
-    [FlowDesignationEnum.Authorization]: msg("Authorization"),
-    [FlowDesignationEnum.Enrollment]: msg("Enrollment"),
-    [FlowDesignationEnum.Invalidation]: msg("Invalidation"),
-    [FlowDesignationEnum.Recovery]: msg("Recovery"),
-    [FlowDesignationEnum.StageConfiguration]: msg("Stage Configuration"),
-    [FlowDesignationEnum.Unenrollment]: msg("Unenrollment"),
-    [FlowDesignationEnum.UnknownDefaultOpenApi]: msg("Unknown designation"),
-};
-
 export function DesignationToLabel(designation: FlowDesignationEnum): string {
-    return (
-        designationToLabel[designation] ??
-        designationToLabel[FlowDesignationEnum.UnknownDefaultOpenApi]
-    );
+    switch (designation) {
+        case FlowDesignationEnum.Authentication:
+            return msg("Authentication");
+        case FlowDesignationEnum.Authorization:
+            return msg("Authorization");
+        case FlowDesignationEnum.Enrollment:
+            return msg("Enrollment");
+        case FlowDesignationEnum.Invalidation:
+            return msg("Invalidation");
+        case FlowDesignationEnum.Recovery:
+            return msg("Recovery");
+        case FlowDesignationEnum.StageConfiguration:
+            return msg("Stage Configuration");
+        case FlowDesignationEnum.Unenrollment:
+            return msg("Unenrollment");
+        case FlowDesignationEnum.UnknownDefaultOpenApi:
+            return msg("Unknown designation");
+    }
 }
 
 export function LayoutToLabel(layout: FlowLayoutEnum): string {

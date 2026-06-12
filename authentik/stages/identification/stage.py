@@ -14,7 +14,6 @@ from rest_framework.fields import BooleanField, CharField, ChoiceField, DictFiel
 from rest_framework.serializers import ValidationError
 from sentry_sdk import start_span
 
-from authentik.common.oauth.constants import QS_LOGIN_HINT
 from authentik.core.api.utils import JSONDictField, PassiveSerializer
 from authentik.core.models import Application, Source, User
 from authentik.endpoints.connectors.agent.stage import PLAN_CONTEXT_DEVICE_AUTH_TOKEN
@@ -399,10 +398,8 @@ class IdentificationStageView(ChallengeStageView):
                 ui_sources.append(button)
         challenge.initial_data["sources"] = ui_sources
 
-        # Pre-fill username from an upstream hint without skipping identification.
-        if prefill := self.executor.plan.context.get(
-            PLAN_CONTEXT_PENDING_USER_IDENTIFIER
-        ) or get_qs.get(QS_LOGIN_HINT):
+        # Pre-fill username from login_hint unless user clicked "Not you?"
+        if prefill := self.executor.plan.context.get(PLAN_CONTEXT_PENDING_USER_IDENTIFIER):
             challenge.initial_data["pending_user_identifier"] = prefill
 
         return challenge

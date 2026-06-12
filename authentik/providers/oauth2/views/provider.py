@@ -18,10 +18,6 @@ from authentik.common.oauth.constants import (
     GRANT_TYPE_REFRESH_TOKEN,
     PKCE_METHOD_PLAIN,
     PKCE_METHOD_S256,
-    PROMPT_CONSENT,
-    PROMPT_LOGIN,
-    PROMPT_NONE,
-    PROMPT_SELECT_ACCOUNT,
     SCOPE_OPENID,
 )
 from authentik.core.expression.exceptions import PropertyMappingExpressionException
@@ -115,12 +111,6 @@ class ProviderInfoView(View):
                 "client_secret_basic",
             ],
             "acr_values_supported": [ACR_AUTHENTIK_DEFAULT],
-            "prompt_values_supported": [
-                PROMPT_NONE,
-                PROMPT_CONSENT,
-                PROMPT_LOGIN,
-                PROMPT_SELECT_ACCOUNT,
-            ],
             "scopes_supported": scopes,
             # https://openid.net/specs/openid-connect-core-1_0.html#RequestObject
             "request_parameter_supported": False,

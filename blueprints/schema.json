@@ -4864,46 +4864,6 @@
                     ],
                     "properties": {
                         "model": {
-                            "const": "authentik_stages_user_selection.userselectionstage"
-                        },
-                        "id": {
-                            "type": "string"
-                        },
-                        "state": {
-                            "type": "string",
-                            "enum": [
-                                "absent",
-                                "created",
-                                "must_created",
-                                "present"
-                            ],
-                            "default": "present"
-                        },
-                        "conditions": {
-                            "type": "array",
-                            "items": {
-                                "type": "boolean"
-                            }
-                        },
-                        "permissions": {
-                            "$ref": "#/$defs/model_authentik_stages_user_selection.userselectionstage_permissions"
-                        },
-                        "attrs": {
-                            "$ref": "#/$defs/model_authentik_stages_user_selection.userselectionstage"
-                        },
-                        "identifiers": {
-                            "$ref": "#/$defs/model_authentik_stages_user_selection.userselectionstage"
-                        }
-                    }
-                },
-                {
-                    "type": "object",
-                    "required": [
-                        "model",
-                        "identifiers"
-                    ],
-                    "properties": {
-                        "model": {
                             "const": "authentik_stages_user_write.userwritestage"
                         },
                         "id": {
@@ -5174,16 +5134,6 @@
                     "type": "string",
                     "format": "uuid",
                     "title": "Flow user settings"
-                },
-                "flow_user_selection": {
-                    "type": "string",
-                    "format": "uuid",
-                    "title": "Flow user selection"
-                },
-                "flow_account_switch": {
-                    "type": "string",
-                    "format": "uuid",
-                    "title": "Flow account switch"
                 },
                 "flow_device_code": {
                     "type": "string",
@@ -6338,10 +6288,6 @@
                             "authentik_stages_user_logout.change_userlogoutstage",
                             "authentik_stages_user_logout.delete_userlogoutstage",
                             "authentik_stages_user_logout.view_userlogoutstage",
-                            "authentik_stages_user_selection.add_userselectionstage",
-                            "authentik_stages_user_selection.change_userselectionstage",
-                            "authentik_stages_user_selection.delete_userselectionstage",
-                            "authentik_stages_user_selection.view_userselectionstage",
                             "authentik_stages_user_write.add_userwritestage",
                             "authentik_stages_user_write.change_userwritestage",
                             "authentik_stages_user_write.delete_userwritestage",
@@ -8555,8 +8501,7 @@
                         "enrollment",
                         "unenrollment",
                         "recovery",
-                        "stage_configuration",
-                        "user_selection"
+                        "stage_configuration"
                     ],
                     "title": "Designation",
                     "description": "Decides what this Flow is used for. For example, the Authentication flow is redirect to when an un-authenticated user visits authentik."
@@ -9089,7 +9034,6 @@
                         "authentik.stages.authenticator_totp",
                         "authentik.stages.authenticator_validate",
                         "authentik.stages.authenticator_webauthn",
-                        "authentik.stages.user_selection",
                         "authentik.stages.captcha",
                         "authentik.stages.consent",
                         "authentik.stages.deny",
@@ -9221,7 +9165,6 @@
                         "authentik_stages_authenticator_validate.authenticatorvalidatestage",
                         "authentik_stages_authenticator_webauthn.authenticatorwebauthnstage",
                         "authentik_stages_authenticator_webauthn.webauthndevice",
-                        "authentik_stages_user_selection.userselectionstage",
                         "authentik_stages_captcha.captchastage",
                         "authentik_stages_consent.consentstage",
                         "authentik_stages_deny.denystage",
@@ -12112,10 +12055,6 @@
                             "authentik_stages_user_logout.change_userlogoutstage",
                             "authentik_stages_user_logout.delete_userlogoutstage",
                             "authentik_stages_user_logout.view_userlogoutstage",
-                            "authentik_stages_user_selection.add_userselectionstage",
-                            "authentik_stages_user_selection.change_userselectionstage",
-                            "authentik_stages_user_selection.delete_userselectionstage",
-                            "authentik_stages_user_selection.view_userselectionstage",
                             "authentik_stages_user_write.add_userwritestage",
                             "authentik_stages_user_write.change_userwritestage",
                             "authentik_stages_user_write.delete_userwritestage",
@@ -16130,43 +16069,6 @@
                             "change_userlogoutstage",
                             "delete_userlogoutstage",
                             "view_userlogoutstage"
-                        ]
-                    },
-                    "user": {
-                        "type": "integer"
-                    },
-                    "role": {
-                        "type": "string"
-                    }
-                }
-            }
-        },
-        "model_authentik_stages_user_selection.userselectionstage": {
-            "type": "object",
-            "properties": {
-                "name": {
-                    "type": "string",
-                    "minLength": 1,
-                    "title": "Name"
-                }
-            },
-            "required": []
-        },
-        "model_authentik_stages_user_selection.userselectionstage_permissions": {
-            "type": "array",
-            "items": {
-                "type": "object",
-                "required": [
-                    "permission"
-                ],
-                "properties": {
-                    "permission": {
-                        "type": "string",
-                        "enum": [
-                            "add_userselectionstage",
-                            "change_userselectionstage",
-                            "delete_userselectionstage",
-                            "view_userselectionstage"
                         ]
                     },
                     "user": {

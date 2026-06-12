@@ -65,8 +65,6 @@ pub enum FlowChallengeResponseRequest {
     AkSourceTelegram(models::TelegramChallengeResponseRequest),
     #[serde(rename = "ak-stage-user-login")]
     AkStageUserLogin(models::UserLoginChallengeResponseRequest),
-    #[serde(rename = "ak-stage-user-selection")]
-    AkStageUserSelection(models::UserSelectionChallengeResponseRequest),
 }
 
 impl Default for FlowChallengeResponseRequest {

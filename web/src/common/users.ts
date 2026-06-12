@@ -31,16 +31,6 @@ export function formatUserDisplayName(user: UserLike | null, uiConfig?: UIConfig
     return label || "";
 }
 
-export function formatUserSecondaryIdentifier(user: UserLike, label: string): string {
-    if (user.email && user.email !== label) {
-        return user.email;
-    }
-    if (user.username && user.username !== label) {
-        return user.username;
-    }
-    return "";
-}
-
 const formatUnknownUserLabel = () =>
     msg("Unknown user", {
         id: "user.display.unknownUser",

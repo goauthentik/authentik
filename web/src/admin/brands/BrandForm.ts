@@ -307,34 +307,6 @@ export class BrandForm extends ModelForm<Brand, string> {
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
-                        label=${msg("User selection flow")}
-                        name="flowUserSelection"
-                    >
-                        <ak-flow-search
-                            placeholder=${msg("Select a user selection flow...")}
-                            flowType=${FlowDesignationEnum.UserSelection}
-                            .currentFlow=${this.instance?.flowUserSelection}
-                        ></ak-flow-search>
-                        <p class="pf-c-form__helper-text">
-                            ${msg("Flow used when users choose between browser-local accounts.")}
-                        </p>
-                    </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${msg("User switch flow")}
-                        name="flowAccountSwitch"
-                    >
-                        <ak-flow-search
-                            placeholder=${msg("Select a user switch flow...")}
-                            flowType=${FlowDesignationEnum.Authentication}
-                            .currentFlow=${this.instance?.flowAccountSwitch}
-                        ></ak-flow-search>
-                        <p class="pf-c-form__helper-text">
-                            ${msg(
-                                "Authentication flow used after selecting another browser-local account. If left empty, the default authentication flow is used.",
-                            )}
-                        </p>
-                    </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
                         label=${msg("Device code flow")}
                         name="flowDeviceCode"
                     >

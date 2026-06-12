@@ -1,1 +1,0 @@
-"""authentik user selection stage."""

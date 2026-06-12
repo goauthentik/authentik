@@ -24,7 +24,6 @@ from authentik.common.oauth.constants import (
     PROMPT_CONSENT,
     PROMPT_LOGIN,
     PROMPT_NONE,
-    PROMPT_SELECT_ACCOUNT,
     QS_LOGIN_HINT,
     SCOPE_GITHUB,
     SCOPE_OFFLINE_ACCESS,
@@ -33,11 +32,6 @@ from authentik.common.oauth.constants import (
     UI_LOCALES,
 )
 from authentik.core.models import Application
-from authentik.core.user_selection import (
-    get_selectable_accounts,
-    request_selected_current_user,
-    start_user_selection_flow_response,
-)
 from authentik.events.models import Event, EventAction
 from authentik.events.signals import get_login_event
 from authentik.flows.challenge import (
@@ -82,7 +76,8 @@ LOGGER = get_logger()
 
 PLAN_CONTEXT_PARAMS = "goauthentik.io/providers/oauth2/params"
 SESSION_KEY_LAST_LOGIN_UID = "authentik/providers/oauth2/last_login_uid"
-ALLOWED_PROMPT_PARAMS = {PROMPT_NONE, PROMPT_CONSENT, PROMPT_LOGIN, PROMPT_SELECT_ACCOUNT}
+
+ALLOWED_PROMPT_PARAMS = {PROMPT_NONE, PROMPT_CONSENT, PROMPT_LOGIN}
 
 
 @dataclass(slots=True)
@@ -374,15 +369,6 @@ class AuthorizationFlowInitView(PolicyAccessView):
                 self.params.state,
             )
             raise RequestValidationError(error.get_response(self.request))
-        if PROMPT_NONE in self.params.prompt and PROMPT_SELECT_ACCOUNT in self.params.prompt:
-            # Account selection always requires user interaction, which prompt=none disallows.
-            error = AuthorizeError(
-                self.params.redirect_uri,
-                "account_selection_required",
-                self.params.grant_type,
-                self.params.state,
-            )
-            raise RequestValidationError(error.get_response(self.request))
 
     def resolve_provider_application(self):
         client_id = self.request.GET.get("client_id")
@@ -390,46 +376,9 @@ class AuthorizationFlowInitView(PolicyAccessView):
         self.application = self.provider.application
 
     def modify_flow_context(self, flow: Flow, context: dict[str, Any]) -> dict[str, Any]:
-        if QS_LOGIN_HINT in self.request.GET and (
-            PROMPT_SELECT_ACCOUNT not in self.params.prompt
-            or request_selected_current_user(self.request)
-        ):
+        if QS_LOGIN_HINT in self.request.GET:
             context[PLAN_CONTEXT_PENDING_USER_IDENTIFIER] = self.request.GET.get(QS_LOGIN_HINT)
         return super().modify_flow_context(flow, context)
-
-    def should_show_user_selection(self) -> bool:
-        """Check if the authorization flow should prompt for a user choice."""
-        if not self.can_start_user_selection():
-            return False
-        if PROMPT_SELECT_ACCOUNT in self.params.prompt:
-            return True
-        return len(get_selectable_accounts(self.request)) > 1
-
-    def can_start_user_selection(self) -> bool:
-        """Return whether this authorize request may start an interactive account chooser."""
-        if PROMPT_NONE in self.params.prompt or PROMPT_LOGIN in self.params.prompt:
-            return False
-        if request_selected_current_user(self.request):
-            # The user just picked this account in the selection flow
-            return False
-        return True
-
-    def handle_no_permission(self) -> HttpResponse:
-        """Offer the account chooser to signed-out browsers that still have live logins."""
-        if not self.can_start_user_selection():
-            return super().handle_no_permission()
-        if SESSION_KEY_LAST_LOGIN_UID in self.request.session:
-            # A re-authentication (max_age/prompt=login) is in progress; don't divert it
-            return super().handle_no_permission()
-        if get_selectable_accounts(self.request):
-            response = start_user_selection_flow_response(
-                self.request,
-                self.request.get_full_path(),
-                getattr(self, "application", None),
-            )
-            if response:
-                return response
-        return super().handle_no_permission()
 
     def modify_policy_request(self, request: PolicyRequest) -> PolicyRequest:
         request.context["oauth_scopes"] = self.params.scope
@@ -538,14 +487,6 @@ class AuthorizationFlowInitView(PolicyAccessView):
             )
         except FlowNonApplicableException:
             return self.handle_no_permission_authenticated()
-        if self.should_show_user_selection():
-            response = start_user_selection_flow_response(
-                self.request,
-                self.request.get_full_path(),
-                self.application,
-            )
-            if response:
-                return response
         # OpenID clients can specify a `prompt` parameter, and if its set to consent we
         # need to inject a consent stage
         if PROMPT_CONSENT in self.params.prompt:

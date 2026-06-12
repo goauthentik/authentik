@@ -142,11 +142,6 @@ import {
     UserLoginChallengeResponseRequestFromJSONTyped,
     UserLoginChallengeResponseRequestToJSON,
 } from "./UserLoginChallengeResponseRequest";
-import type { UserSelectionChallengeResponseRequest } from "./UserSelectionChallengeResponseRequest";
-import {
-    UserSelectionChallengeResponseRequestFromJSONTyped,
-    UserSelectionChallengeResponseRequestToJSON,
-} from "./UserSelectionChallengeResponseRequest";
 
 /**
  * @type FlowChallengeResponseRequest
@@ -184,7 +179,6 @@ export type FlowChallengeResponseRequest =
     | ({ component: "ak-stage-password" } & PasswordChallengeResponseRequest)
     | ({ component: "ak-stage-prompt" } & PromptChallengeResponseRequest)
     | ({ component: "ak-stage-user-login" } & UserLoginChallengeResponseRequest)
-    | ({ component: "ak-stage-user-selection" } & UserSelectionChallengeResponseRequest)
     | ({ component: "xak-flow-frame" } & FrameChallengeResponseRequest)
     | ({ component: "xak-flow-redirect" } & RedirectChallengeResponseRequest);
 
@@ -324,12 +318,6 @@ export function FlowChallengeResponseRequestFromJSONTyped(
             return Object.assign({}, UserLoginChallengeResponseRequestFromJSONTyped(json, true), {
                 component: "ak-stage-user-login",
             } as const);
-        case "ak-stage-user-selection":
-            return Object.assign(
-                {},
-                UserSelectionChallengeResponseRequestFromJSONTyped(json, true),
-                { component: "ak-stage-user-selection" } as const,
-            );
         case "xak-flow-frame":
             return Object.assign({}, FrameChallengeResponseRequestFromJSONTyped(json, true), {
                 component: "xak-flow-frame",
@@ -450,10 +438,6 @@ export function FlowChallengeResponseRequestToJSONTyped(
         case "ak-stage-user-login":
             return Object.assign({}, UserLoginChallengeResponseRequestToJSON(value), {
                 component: "ak-stage-user-login",
-            } as const);
-        case "ak-stage-user-selection":
-            return Object.assign({}, UserSelectionChallengeResponseRequestToJSON(value), {
-                component: "ak-stage-user-selection",
             } as const);
         case "xak-flow-frame":
             return Object.assign({}, FrameChallengeResponseRequestToJSON(value), {

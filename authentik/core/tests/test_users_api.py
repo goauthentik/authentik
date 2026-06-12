@@ -24,10 +24,7 @@ from authentik.core.tests.utils import (
     create_test_flow,
     create_test_user,
 )
-from authentik.flows.models import (
-    FlowAuthenticationRequirement,
-    FlowDesignation,
-)
+from authentik.flows.models import FlowAuthenticationRequirement, FlowDesignation
 from authentik.lib.generators import generate_id, generate_key
 from authentik.rbac.models import Role
 from authentik.stages.email.models import EmailStage

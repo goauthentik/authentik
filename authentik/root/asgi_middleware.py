@@ -8,7 +8,6 @@ from channels.sessions import InstanceSessionWrapper as UpstreamInstanceSessionW
 from channels.sessions import SessionMiddleware as UpstreamSessionMiddleware
 from django.contrib.auth.models import AnonymousUser
 
-from authentik.root.middleware import COOKIE_NAME_BROWSER
 from authentik.root.middleware import SessionMiddleware as HTTPSessionMiddleware
 
 
@@ -19,11 +18,8 @@ class InstanceSessionWrapper(UpstreamInstanceSessionWrapper):
     async def resolve_session(self):
         raw_session = self.scope["cookies"].get(self.cookie_name)
         session_key = HTTPSessionMiddleware.decode_session_key(raw_session)
-        browser_key = HTTPSessionMiddleware.parse_browser_key(
-            self.scope["cookies"].get(COOKIE_NAME_BROWSER)
-        )
         self.scope["session"]._wrapped = await database_sync_to_async(self.session_store)(
-            session_key, browser_key=browser_key
+            session_key
         )
 
 

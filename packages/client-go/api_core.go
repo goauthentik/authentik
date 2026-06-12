@@ -36,14 +36,12 @@ type ApiCoreBrandsListRequest struct {
 	clientCertificates            *[]string
 	default_                      *bool
 	domain                        *string
-	flowAccountSwitch             *string
 	flowAuthentication            *string
 	flowDeviceCode                *string
 	flowInvalidation              *string
 	flowLockdown                  *string
 	flowRecovery                  *string
 	flowUnenrollment              *string
-	flowUserSelection             *string
 	flowUserSettings              *string
 	ordering                      *string
 	page                          *int32
@@ -92,11 +90,6 @@ func (r ApiCoreBrandsListRequest) Domain(domain string) ApiCoreBrandsListRequest
 	return r
 }
 
-func (r ApiCoreBrandsListRequest) FlowAccountSwitch(flowAccountSwitch string) ApiCoreBrandsListRequest {
-	r.flowAccountSwitch = &flowAccountSwitch
-	return r
-}
-
 func (r ApiCoreBrandsListRequest) FlowAuthentication(flowAuthentication string) ApiCoreBrandsListRequest {
 	r.flowAuthentication = &flowAuthentication
 	return r
@@ -124,11 +117,6 @@ func (r ApiCoreBrandsListRequest) FlowRecovery(flowRecovery string) ApiCoreBrand
 
 func (r ApiCoreBrandsListRequest) FlowUnenrollment(flowUnenrollment string) ApiCoreBrandsListRequest {
 	r.flowUnenrollment = &flowUnenrollment
-	return r
-}
-
-func (r ApiCoreBrandsListRequest) FlowUserSelection(flowUserSelection string) ApiCoreBrandsListRequest {
-	r.flowUserSelection = &flowUserSelection
 	return r
 }
 
@@ -239,9 +227,6 @@ func (a *CoreAPIService) CoreBrandsListExecute(r ApiCoreBrandsListRequest) (*Pag
 	if r.domain != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "domain", r.domain, "form", "")
 	}
-	if r.flowAccountSwitch != nil {
-		parameterAddToHeaderOrQuery(localVarQueryParams, "flow_account_switch", r.flowAccountSwitch, "form", "")
-	}
 	if r.flowAuthentication != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "flow_authentication", r.flowAuthentication, "form", "")
 	}
@@ -259,9 +244,6 @@ func (a *CoreAPIService) CoreBrandsListExecute(r ApiCoreBrandsListRequest) (*Pag
 	}
 	if r.flowUnenrollment != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "flow_unenrollment", r.flowUnenrollment, "form", "")
-	}
-	if r.flowUserSelection != nil {
-		parameterAddToHeaderOrQuery(localVarQueryParams, "flow_user_selection", r.flowUserSelection, "form", "")
 	}
 	if r.flowUserSettings != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "flow_user_settings", r.flowUserSettings, "form", "")

@@ -137,12 +137,6 @@ Starting with authentik 2024.2, applications only receive an access token by def
 
 The authorization code grant converts an authorization code into an access token and, optionally, a refresh token. The authorization code is issued by the authentik [authorization flow](../../flows-stages/flow/index.md), can only be used once, and expires quickly.
 
-#### Account selection
-
-OpenID Connect clients can request account selection with `prompt=select_account`. When this prompt is present, authentik starts the brand's configured [user selection flow](../../flows-stages/stages/user_selection/index.md) before continuing authorization. authentik also starts that flow automatically when the same browser has multiple live accounts available for the provider authorization request.
-
-Clients can send `login_hint` with `prompt=select_account` to place the matching browser-local account first. The hint does not select or authenticate the account by itself.
-
 #### Implicit
 
 :::info

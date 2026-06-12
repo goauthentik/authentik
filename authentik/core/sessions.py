@@ -6,7 +6,6 @@ from django.contrib.auth import BACKEND_SESSION_KEY, HASH_SESSION_KEY, SESSION_K
 from django.contrib.sessions.backends.db import SessionStore as SessionBase
 from django.core.exceptions import SuspiciousOperation
 from django.utils import timezone
-from django.utils.crypto import constant_time_compare
 from django.utils.functional import cached_property
 from structlog.stdlib import get_logger
 
@@ -16,14 +15,8 @@ LOGGER = get_logger()
 
 
 class SessionStore(SessionBase):
-    # Default for `browser_key` distinguishing trusted internal loads (which skip browser
-    # binding entirely) from loads on behalf of a browser request, where the middleware
-    # always passes the request's browser cookie value (or None if absent).
-    UNBOUND = object()
-
-    def __init__(self, session_key=None, last_ip=None, last_user_agent="", browser_key=UNBOUND):
+    def __init__(self, session_key=None, last_ip=None, last_user_agent=""):
         super().__init__(session_key)
-        self._browser_key = browser_key
         self._create_kwargs = {
             "last_ip": last_ip or ClientIPMiddleware.default_ip,
             "last_user_agent": last_user_agent,
@@ -39,57 +32,33 @@ class SessionStore(SessionBase):
     def model_fields(self):
         return [k.value for k in self.model.Keys]
 
-    def _browser_binding_valid(self, session) -> bool:
-        """Browser-bound sessions must match the browser cookie and be current for it."""
-        if self._browser_key is self.UNBOUND:
-            return True
-        authenticated_session = getattr(session, "authenticatedsession", None)
-        if authenticated_session is None or authenticated_session.browser_key is None:
-            return True
-        return authenticated_session.is_current and constant_time_compare(
-            authenticated_session.browser_key, self._browser_key or ""
-        )
-
-    def _session_queryset(self):
-        """Return the session queryset with account-selection relations loaded."""
-        return self.model.objects.select_related(
-            "authenticatedsession",
-            "authenticatedsession__user",
-        )
-
-    def _clear_invalid_session(self, exc: Exception) -> None:
-        """Clear the active session key after a missing or rejected session load."""
-        if isinstance(exc, SuspiciousOperation):
-            LOGGER.warning(str(exc))
-        self._session_key = None
-
     def _get_session_from_db(self):
         try:
-            session = self._session_queryset().get(
+            return self.model.objects.select_related(
+                "authenticatedsession",
+                "authenticatedsession__user",
+            ).get(
                 session_key=self.session_key,
                 expires__gt=timezone.now(),
             )
-            if not self._browser_binding_valid(session):
-                raise SuspiciousOperation(
-                    "Session denied: browser cookie missing, mismatched, or stale"
-                )
-            return session
         except (self.model.DoesNotExist, SuspiciousOperation) as exc:
-            self._clear_invalid_session(exc)
+            if isinstance(exc, SuspiciousOperation):
+                LOGGER.warning(str(exc))
+            self._session_key = None
 
     async def _aget_session_from_db(self):
         try:
-            session = await self._session_queryset().aget(
+            return await self.model.objects.select_related(
+                "authenticatedsession",
+                "authenticatedsession__user",
+            ).aget(
                 session_key=self.session_key,
                 expires__gt=timezone.now(),
             )
-            if not self._browser_binding_valid(session):
-                raise SuspiciousOperation(
-                    "Session denied: browser cookie missing, mismatched, or stale"
-                )
-            return session
         except (self.model.DoesNotExist, SuspiciousOperation) as exc:
-            self._clear_invalid_session(exc)
+            if isinstance(exc, SuspiciousOperation):
+                LOGGER.warning(str(exc))
+            self._session_key = None
 
     def encode(self, session_dict):
         return pickle.dumps(session_dict, protocol=pickle.HIGHEST_PROTOCOL)

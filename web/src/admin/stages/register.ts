@@ -3,7 +3,6 @@
  */
 
 import "#admin/stages/authenticator_duo/AuthenticatorDuoStageForm";
-import "#admin/stages/user_selection/UserSelectionStageForm";
 import "#admin/stages/authenticator_email/AuthenticatorEmailStageForm";
 import "#admin/stages/authenticator_sms/AuthenticatorSMSStageForm";
 import "#admin/stages/authenticator_static/AuthenticatorStaticStageForm";

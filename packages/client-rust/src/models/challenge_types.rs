@@ -73,8 +73,6 @@ pub enum ChallengeTypes {
     AkSourceTelegram(models::TelegramLoginChallenge),
     #[serde(rename = "ak-stage-user-login")]
     AkStageUserLogin(models::UserLoginChallenge),
-    #[serde(rename = "ak-stage-user-selection")]
-    AkStageUserSelection(models::UserSelectionChallenge),
 }
 
 impl Default for ChallengeTypes {

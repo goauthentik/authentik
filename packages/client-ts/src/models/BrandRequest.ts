@@ -95,18 +95,6 @@ export interface BrandRequest {
      * @type {string}
      * @memberof BrandRequest
      */
-    flowUserSelection?: string | null;
-    /**
-     *
-     * @type {string}
-     * @memberof BrandRequest
-     */
-    flowAccountSwitch?: string | null;
-    /**
-     *
-     * @type {string}
-     * @memberof BrandRequest
-     */
     flowDeviceCode?: string | null;
     /**
      *
@@ -175,10 +163,6 @@ export function BrandRequestFromJSONTyped(json: any, ignoreDiscriminator: boolea
         flowUnenrollment: json["flow_unenrollment"] == null ? undefined : json["flow_unenrollment"],
         flowUserSettings:
             json["flow_user_settings"] == null ? undefined : json["flow_user_settings"],
-        flowUserSelection:
-            json["flow_user_selection"] == null ? undefined : json["flow_user_selection"],
-        flowAccountSwitch:
-            json["flow_account_switch"] == null ? undefined : json["flow_account_switch"],
         flowDeviceCode: json["flow_device_code"] == null ? undefined : json["flow_device_code"],
         flowLockdown: json["flow_lockdown"] == null ? undefined : json["flow_lockdown"],
         defaultApplication:
@@ -215,8 +199,6 @@ export function BrandRequestToJSONTyped(
         flow_recovery: value["flowRecovery"],
         flow_unenrollment: value["flowUnenrollment"],
         flow_user_settings: value["flowUserSettings"],
-        flow_user_selection: value["flowUserSelection"],
-        flow_account_switch: value["flowAccountSwitch"],
         flow_device_code: value["flowDeviceCode"],
         flow_lockdown: value["flowLockdown"],
         default_application: value["defaultApplication"],

@@ -120,11 +120,6 @@ import {
 } from "./TelegramLoginChallenge";
 import type { UserLoginChallenge } from "./UserLoginChallenge";
 import { UserLoginChallengeFromJSONTyped, UserLoginChallengeToJSON } from "./UserLoginChallenge";
-import type { UserSelectionChallenge } from "./UserSelectionChallenge";
-import {
-    UserSelectionChallengeFromJSONTyped,
-    UserSelectionChallengeToJSON,
-} from "./UserSelectionChallenge";
 
 /**
  * @type ChallengeTypes
@@ -159,7 +154,6 @@ export type ChallengeTypes =
     | ({ component: "ak-stage-prompt" } & PromptChallenge)
     | ({ component: "ak-stage-session-end" } & SessionEndChallenge)
     | ({ component: "ak-stage-user-login" } & UserLoginChallenge)
-    | ({ component: "ak-stage-user-selection" } & UserSelectionChallenge)
     | ({ component: "xak-flow-frame" } & FrameChallenge)
     | ({ component: "xak-flow-redirect" } & RedirectChallenge)
     | ({ component: "xak-flow-shell" } & ShellChallenge);
@@ -283,10 +277,6 @@ export function ChallengeTypesFromJSONTyped(
         case "ak-stage-user-login":
             return Object.assign({}, UserLoginChallengeFromJSONTyped(json, true), {
                 component: "ak-stage-user-login",
-            } as const);
-        case "ak-stage-user-selection":
-            return Object.assign({}, UserSelectionChallengeFromJSONTyped(json, true), {
-                component: "ak-stage-user-selection",
             } as const);
         case "xak-flow-frame":
             return Object.assign({}, FrameChallengeFromJSONTyped(json, true), {
@@ -424,10 +414,6 @@ export function ChallengeTypesToJSONTyped(
         case "ak-stage-user-login":
             return Object.assign({}, UserLoginChallengeToJSON(value), {
                 component: "ak-stage-user-login",
-            } as const);
-        case "ak-stage-user-selection":
-            return Object.assign({}, UserSelectionChallengeToJSON(value), {
-                component: "ak-stage-user-selection",
             } as const);
         case "xak-flow-frame":
             return Object.assign({}, FrameChallengeToJSON(value), {
