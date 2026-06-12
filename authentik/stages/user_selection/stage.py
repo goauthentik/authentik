@@ -28,7 +28,7 @@ from authentik.core.user_selection import (
     user_matches_hint,
 )
 from authentik.flows.challenge import Challenge, ChallengeResponse
-from authentik.flows.models import Flow, FlowDesignation, in_memory_stage
+from authentik.flows.models import Flow, in_memory_stage
 from authentik.flows.planner import PLAN_CONTEXT_APPLICATION, PLAN_CONTEXT_REDIRECT, FlowPlan
 from authentik.flows.stage import ChallengeStageView
 from authentik.flows.views.executor import NEXT_ARG_NAME, SESSION_KEY_GET, SESSION_KEY_PLAN
@@ -160,11 +160,7 @@ class UserSelectionStageView(ChallengeStageView):
         brand_flow = getattr(self.request.brand, "flow_authentication", None)
         if brand_flow:
             return brand_flow
-        return (
-            Flow.objects.filter(designation=FlowDesignation.AUTHENTICATION)
-            .order_by("slug")
-            .first()
-        )
+        return None
 
     def detach_flow_session(self) -> None:
         """Move the in-progress flow to a new anonymous session."""

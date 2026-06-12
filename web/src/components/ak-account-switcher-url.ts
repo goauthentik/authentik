@@ -20,16 +20,13 @@ export function buildAccountSwitchFlowURL({
     apiBase,
     next,
 }: AccountSwitchFlowURLConfig): string | null {
-    if (!account.uid) {
+    if (!account.uid || !userSelectionFlow) {
         return null;
     }
     const query = new URLSearchParams({
         next,
         user_uid: account.uid,
     });
-    if (!userSelectionFlow) {
-        return `${apiBase}flows/-/default/user-selection/?${query.toString()}`;
-    }
     return `${apiBase}if/flow/${userSelectionFlow}/?${query.toString()}`;
 }
 

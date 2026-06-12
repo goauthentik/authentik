@@ -518,8 +518,6 @@ class ToDefaultFlow(View):
             flow = brand.flow_authentication
         elif designation == FlowDesignation.INVALIDATION:
             flow = brand.flow_invalidation
-        elif designation == FlowDesignation.USER_SELECTION:
-            flow = brand.flow_user_selection
         if flow:
             return flow
         # If no flow was set, get the first based on slug and policy

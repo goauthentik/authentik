@@ -2,7 +2,6 @@
 
 from urllib.parse import urlparse
 
-from django.urls import reverse
 from rest_framework.test import APITestCase
 
 from authentik.common.oauth.constants import QS_LOGIN_HINT
@@ -46,22 +45,6 @@ class TestUsersAPIUserSelection(APITestCase):
         self.assertEqual(plan.context[PLAN_CONTEXT_PENDING_USER].pk, self.user.pk)
         self.assertEqual(plan.context[PLAN_CONTEXT_PENDING_USER_IDENTIFIER], self.user.email)
         self.assertEqual(plan.context[PLAN_CONTEXT_REDIRECT], "/")
-
-    def test_default_user_selection_uses_brand_flow(self):
-        """Test the default user-selection route resolves the brand's configured flow."""
-        flow, _ = create_test_user_selection_flow()
-
-        response = self.client.get(
-            reverse("authentik_flows:default-user-selection"),
-            data={
-                "next": "/if/user/#/library",
-                "user_uid": self.user.uuid.hex,
-            },
-        )
-
-        self.assertEqual(response.status_code, 302)
-        self.assertIn(flow.slug, urlparse(response.url).path)
-        self.assertIn("user_uid=", urlparse(response.url).query)
 
     def test_user_selection_signed_out_requires_login(self):
         """Test a signed-out browser has to authenticate to use one of its logins."""
