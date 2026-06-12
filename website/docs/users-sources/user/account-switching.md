@@ -22,10 +22,10 @@ Logins performed through a switch are recorded in the event log with `is_account
 
 Account switches authenticate through the brand's **Account switch flow** (under **System** > **Brands**, in the brand's **Default flows**). Any authentication flow can be used; if no flow is set, the default authentication flow is used.
 
-By default the selected flow runs in full, including identification and password stages. The username of the account being switched to is pre-filled. To let switches skip stages, bind a policy to the stage binding in the flow; the flow context above is available on the policy request. For example, an expression policy that skips its stage during account switches:
+The default authentication flow skips its identification stage during account switches (the account being switched to is already identified by its session), while password and authenticator validation still run. This is expressed by the `default-authentication-flow-identification-stage` expression policy bound to the identification stage:
 
 ```python
 return not request.context.get("is_account_switch", False)
 ```
 
-Bind this policy to the identification, password, or authenticator validation stage bindings of the flow, depending on what a switch back to a signed-in account needs to confirm.
+Custom flows control this the same way: bind a policy like the one above to the identification, password, or authenticator validation stage bindings, depending on what a switch back to a signed-in account needs to confirm. The flow context above is available on the policy request. Without such policies the flow runs in full, with the username of the account being switched to pre-filled.

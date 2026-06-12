@@ -3,6 +3,7 @@
 from django.conf import settings
 from django.urls import reverse
 
+from authentik.blueprints.tests import apply_blueprint
 from authentik.core.models import AuthenticatedSession, Session
 from authentik.core.tests.test_sessions import create_session
 from authentik.core.tests.utils import create_test_brand, create_test_flow, create_test_user
@@ -120,6 +121,25 @@ class TestAccountSwitch(FlowTestCase):
         self.assertEqual(response.status_code, 302)
         plan: FlowPlan = self.client.session[SESSION_KEY_PLAN]
         self.assertNotIn(PLAN_CONTEXT_PENDING_USER, plan.context)
+
+    @apply_blueprint("default/flow-default-authentication-flow.yaml")
+    def test_default_flow_skips_identification(self):
+        """Test a switch through the default authentication flow doesn't ask for the
+        username again and goes straight to the password stage"""
+        flow = Flow.objects.get(slug="default-authentication-flow")
+        self.brand.flow_account_switch = flow
+        self.brand.save()
+        self.login(self.user)
+        browser_key = self.client.cookies[COOKIE_NAME_ACCOUNTS].value
+        create_session(self.other_user, browser_key=browser_key)
+
+        response = self.client.get(self.switch_url(self.other_user))
+        self.assertEqual(response.status_code, 302)
+        response = self.client.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug})
+        )
+
+        self.assertStageResponse(response, flow, component="ak-stage-password")
 
     def test_full_switch(self):
         """Test the full switch: the new login takes over, the old session survives
