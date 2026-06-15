@@ -1,11 +1,14 @@
 """LDAP Sync tasks"""
 
+from datetime import timedelta
 from uuid import uuid4
 
 from django.core.cache import cache
+from django.db.models import F
+from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
+from django_dramatiq_postgres.models import TaskState
 from dramatiq.actor import actor
-from dramatiq.composition import group
 from dramatiq.message import Message
 from ldap3.core.exceptions import LDAPException
 from structlog.stdlib import get_logger
@@ -16,7 +19,7 @@ from authentik.lib.sync.outgoing.exceptions import StopSync
 from authentik.lib.sync.outgoing.models import OutgoingSyncProvider
 from authentik.lib.sync.outgoing.signals import sync_outgoing_inhibit_dispatch
 from authentik.lib.utils.reflection import all_subclasses, class_to_path, path_to_class
-from authentik.sources.ldap.models import LDAPSource
+from authentik.sources.ldap.models import LDAPSource, LDAPSourceSync
 from authentik.sources.ldap.sync.base import BaseLDAPSynchronizer
 from authentik.sources.ldap.sync.forward_delete_groups import GroupLDAPForwardDeletion
 from authentik.sources.ldap.sync.forward_delete_users import UserLDAPForwardDeletion
@@ -47,68 +50,70 @@ def ldap_connectivity_check(pk: str | None = None):
     cache.set(CACHE_KEY_STATUS + source.slug, status, timeout=timeout)
 
 
-@actor(
-    # We take the configured hours timeout time by 3.5 as we run user and
-    # group in parallel and then membership, then deletions, so 3x is to cover the serial tasks,
-    # and 0.5x on top of that to give some more leeway
-    time_limit=(60 * 60 * CONFIG.get_int("ldap.task_timeout_hours") * 1000) * 3.5,
-    description=_("Sync LDAP source."),
-)
+@actor(description=_("Sync LDAP source."))
 def ldap_sync(source_pk: str):
     """Sync a single source"""
     task = CurrentTask.get_task()
-    source: LDAPSource = LDAPSource.objects.filter(pk=source_pk, enabled=True).first()
+    source = LDAPSource.objects.filter(pk=source_pk, enabled=True).first()
     if not source:
         return
     with source.sync_lock as lock_acquired:
         if not lock_acquired:
-            task.info("Synchronization is already running. Skipping")
-            LOGGER.debug("Failed to acquire lock for LDAP sync, skipping task", source=source.slug)
+            task.info("Another synchronization is already starting. Skipping this one.")
+            LOGGER.debug(
+                "Failed to acquire lock for LDAP sync, another is already starting, skipping task",
+                source=source.slug,
+            )
             return
 
-        user_group_tasks = group(
-            ldap_sync_paginator(task, source, UserLDAPSynchronizer)
-            + ldap_sync_paginator(task, source, GroupLDAPSynchronizer)
+        previous_sync = LDAPSourceSync.objects.filter(source=source).order_by("-started_at").first()
+        if previous_sync and any(
+            state not in (TaskState.DONE, TaskState.REJECTED)
+            for state in previous_sync.tasks.values_list("state", flat=True)
+        ):
+            task.info("Synchronization is already running. Skipping")
+            LOGGER.debug(
+                "Previous LDAP sync detected as running, skipping task", source=source.slug
+            )
+            return
+
+        current_sync = LDAPSourceSync.objects.create(
+            source=source, expires=now() + timedelta(days=60)
         )
 
-        membership_tasks = group(ldap_sync_paginator(task, source, MembershipLDAPSynchronizer))
+    # User and group sync can happen at once, they have no dependencies on each other
+    current_sync.enqueue(
+        ldap_sync_paginator(task, source, UserLDAPSynchronizer)
+        + ldap_sync_paginator(task, source, GroupLDAPSynchronizer)
+    )
 
-        deletion_tasks = group(
-            ldap_sync_paginator(task, source, UserLDAPForwardDeletion)
-            + ldap_sync_paginator(task, source, GroupLDAPForwardDeletion),
-        )
+    # Membership sync needs to run afterwards
+    current_sync.enqueue(ldap_sync_paginator(task, source, MembershipLDAPSynchronizer))
 
-        # User and group sync can happen at once, they have no dependencies on each other
-        user_group_tasks.run().wait(
-            timeout=60 * 60 * CONFIG.get_int("ldap.task_timeout_hours") * 1000
-        )
-        # Membership sync needs to run afterwards
-        membership_tasks.run().wait(
-            timeout=60 * 60 * CONFIG.get_int("ldap.task_timeout_hours") * 1000
-        )
-        # Finally, deletions. What we'd really like to do here is something like
-        # ```
-        # user_identifiers = <ldap query>
-        # User.objects.exclude(
-        #     usersourceconnection__identifier__in=user_uniqueness_identifiers,
-        # ).delete()
-        # ```
-        # This runs into performance issues in large installations. So instead we spread the
-        # work out into three steps:
-        # 1. Get every object from the LDAP source.
-        # 2. Mark every object as "safe" in the database. This is quick, but any error could
-        #    mean deleting users which should not be deleted, so we do it immediately, in
-        #    large chunks, and only queue the deletion step afterwards.
-        # 3. Delete every unmarked item. This is slow, so we spread it over many tasks in
-        #    small chunks.
-        deletion_tasks.run().wait(
-            timeout=60 * 60 * CONFIG.get_int("ldap.task_timeout_hours") * 1000,
-        )
+    # Finally, deletions. What we'd really like to do here is something like
+    # ```
+    # user_identifiers = <ldap query>
+    # User.objects.exclude(
+    #     usersourceconnection__identifier__in=user_uniqueness_identifiers,
+    # ).delete()
+    # ```
+    # This runs into performance issues in large installations. So instead we spread the
+    # work out into three steps:
+    # 1. Get every object from the LDAP source.
+    # 2. Mark every object as "safe" in the database. This is quick, but any error could
+    #    mean deleting users which should not be deleted, so we do it immediately, in
+    #    large chunks, and only queue the deletion step afterwards.
+    # 3. Delete every unmarked item. This is slow, so we spread it over many tasks in
+    #    small chunks.
+    current_sync.enqueue(
+        ldap_sync_paginator(task, source, UserLDAPForwardDeletion)
+        + ldap_sync_paginator(task, source, GroupLDAPForwardDeletion),
+    )
 
     if source.sync_outgoing_trigger_mode == SyncOutgoingTriggerMode.DEFERRED_END:
-        for outgoing_sync_provider_cls in all_subclasses(OutgoingSyncProvider):
-            for provider in outgoing_sync_provider_cls.objects.all():
-                provider.sync_dispatch()
+        current_sync.enqueue(
+            [ldap_sync_trigger_outgoing_sync.message_with_options(rel_obj=task.rel_obj)]
+        )
 
 
 def ldap_sync_paginator(
@@ -137,14 +142,14 @@ def ldap_sync_paginator(
 def ldap_sync_page(source_pk: str, sync_class: str, page_cache_key: str):
     """Synchronization of an LDAP Source"""
     self = CurrentTask.get_task()
-    source: LDAPSource = LDAPSource.objects.filter(pk=source_pk).first()
+    source = LDAPSource.objects.filter(pk=source_pk).first()
     if not source:
         # Because the source couldn't be found, we don't have a UID
         # to set the state with
         return
-    sync: type[BaseLDAPSynchronizer] = path_to_class(sync_class)
+    Synchronizer: type[BaseLDAPSynchronizer] = path_to_class(sync_class)
     try:
-        sync_inst: BaseLDAPSynchronizer = sync(source, self)
+        synchronizer: BaseLDAPSynchronizer = Synchronizer(source, self)
         page = cache.get(page_cache_key)
         if not page:
             error_message = (
@@ -155,15 +160,28 @@ def ldap_sync_page(source_pk: str, sync_class: str, page_cache_key: str):
             self.error(error_message)
             return
         cache.touch(page_cache_key)
+
         if source.sync_outgoing_trigger_mode == SyncOutgoingTriggerMode.IMMEDIATE:
-            count = sync_inst.sync(page)
+            count = synchronizer.sync(page)
         else:
             with sync_outgoing_inhibit_dispatch():
-                count = sync_inst.sync(page)
+                count = synchronizer.sync(page)
+
         self.info(f"Synced {count} objects.")
+        sync_field_name = f"{synchronizer.name()}_count"
+        sync_field_update = {sync_field_name: F(sync_field_name) + count}
+        LDAPSourceSync.objects.filter(source=source, tasks=self).update(**sync_field_update)
+
         cache.delete(page_cache_key)
     except (LDAPException, StopSync) as exc:
         # No explicit event is created here as .error will do that
         LOGGER.warning("Failed to sync LDAP", exc=exc, source=source)
         self.error(exc)
         raise exc
+
+
+@actor(description=_("Trigger outgoing provider sync after LDAP sync."))
+def ldap_sync_trigger_outgoing_sync():
+    for outgoing_sync_provider_cls in all_subclasses(OutgoingSyncProvider):
+        for provider in outgoing_sync_provider_cls.objects.all():
+            provider.sync_dispatch()

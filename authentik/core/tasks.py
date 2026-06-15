@@ -26,6 +26,8 @@ def clean_expired_models():
     self = CurrentTask.get_task()
     for cls in ExpiringModel.__subclasses__():
         cls: ExpiringModel
+        if cls._meta.abstract:
+            continue
         objects = (
             cls.objects.including_expired()
             .all()

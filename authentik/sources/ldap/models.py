@@ -32,6 +32,7 @@ from authentik.crypto.models import CertificateKeyPair
 from authentik.lib.config import CONFIG
 from authentik.lib.models import DomainlessURLValidator
 from authentik.lib.sync.incoming.models import IncomingSyncSource
+from authentik.lib.sync.models import Sync
 from authentik.lib.utils.time import fqdn_rand
 from authentik.tasks.schedules.common import ScheduleSpec
 
@@ -362,6 +363,16 @@ class LDAPSource(IncomingSyncSource):
         verbose_name_plural = _("LDAP Sources")
 
 
+class LDAPSourceSync(Sync):
+    source = models.ForeignKey(LDAPSource, on_delete=models.CASCADE)
+
+    users_count = models.PositiveBigIntegerField(default=0)
+    groups_count = models.PositiveBigIntegerField(default=0)
+    membership_count = models.PositiveBigIntegerField(default=0)
+    user_deletions_count = models.PositiveBigIntegerField(default=0)
+    group_deletions_count = models.PositiveBigIntegerField(default=0)
+
+
 class LDAPSourcePropertyMapping(PropertyMapping):
     """Map LDAP Property to User or Group object attribute"""
 
@@ -392,9 +403,7 @@ class UserLDAPSourceConnection(UserSourceConnection):
 
     @property
     def serializer(self) -> type[Serializer]:
-        from authentik.sources.ldap.api.connections import (
-            UserLDAPSourceConnectionSerializer,
-        )
+        from authentik.sources.ldap.api.connections import UserLDAPSourceConnectionSerializer
 
         return UserLDAPSourceConnectionSerializer
 
@@ -415,9 +424,7 @@ class GroupLDAPSourceConnection(GroupSourceConnection):
 
     @property
     def serializer(self) -> type[Serializer]:
-        from authentik.sources.ldap.api.connections import (
-            GroupLDAPSourceConnectionSerializer,
-        )
+        from authentik.sources.ldap.api.connections import GroupLDAPSourceConnectionSerializer
 
         return GroupLDAPSourceConnectionSerializer
 
