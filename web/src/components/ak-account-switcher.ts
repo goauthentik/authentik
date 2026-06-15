@@ -57,7 +57,7 @@ export class AccountSwitcher extends WithSession(AKElement) {
     }
 
     protected renderAccount(account: BrowserLocalAccount): SlottedTemplateResult {
-        const label = account.name || account.username;
+        const label = formatUserDisplayName(account, this.uiConfig) || account.username;
         const description = formatUserSecondaryIdentifier(account, label);
         const content = html`
             <span class="pf-c-dropdown__menu-item-main" part="item">

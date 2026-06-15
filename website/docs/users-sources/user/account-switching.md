@@ -6,26 +6,29 @@ authentik can keep multiple accounts signed in within the same browser and let u
 
 ## How it works
 
-Every login creates its own session. authentik groups the sessions created by the same browser using an opaque browser cookie (`authentik_accounts`), so only that browser can switch between them. Only the most recent login is active at a time; switching to another account authenticates that account through a flow, it never silently reuses the previous session.
+Every login creates its own session. authentik groups sessions created by the same browser, so a user can only switch to accounts that are already signed in from that browser.
 
-When a user picks another account from the switcher, authentik checks that the browser holds a live session for that account and starts the configured account switch flow with the following flow context:
+Only the most recent login is active at a time. When a user selects another account from the switcher, authentik verifies that the browser has a live session for that account, then starts the configured account switch flow. The user must complete the authentication stages required by that flow, such as password or MFA validation.
 
-- `pending_user`: the account being switched to
-- `account_switch_from_user`: the account that was active when the switch started
-- `is_account_switch`: set to `true`
+The previous account's session stays signed in as a switch target, but its session cookie can no longer be used to act as that account. This prevents an old recorded session cookie from being replayed after the browser has switched to another account.
 
-The previous account's session stays signed in as a switch target, but its session cookie can no longer be used to act as that account.
-
-Logins performed through a switch are recorded in the event log with `is_account_switch` and the user that switched.
+Logins performed through an account switch are recorded in the event log.
 
 ## Configuration
 
-Account switches authenticate through the brand's **Account switch flow** (under **System** > **Brands**, in the brand's **Default flows**). Any authentication flow can be used; if no flow is set, the default authentication flow is used.
+Account switches authenticate through the brand's **Account switch flow**.
 
-The default authentication flow skips its identification stage during account switches (the account being switched to is already identified by its session), while password and authenticator validation still run. This is expressed by the `default-authentication-flow-identification-stage` expression policy bound to the identification stage:
+1. Log in to authentik as an administrator and open the Admin interface.
+2. Navigate to **System** > **Brands** and edit the brand you want to configure.
+3. Under **Default flows**, set **Account switch flow** to the authentication flow users should complete when switching accounts.
+4. Click **Update**.
+
+Any authentication flow can be used. If no account switch flow is set, authentik uses the brand's default authentication flow.
+
+The default authentication flow does not ask users to identify the account again during an account switch, because the selected account is already known. Password and authenticator validation still run. This is controlled by the expression policy bound to the identification stage:
 
 ```python
 return not request.context.get("is_account_switch", False)
 ```
 
-Custom flows control this the same way: bind a policy like the one above to the identification, password, or authenticator validation stage bindings, depending on what a switch back to a signed-in account needs to confirm. The flow context above is available on the policy request. Without such policies the flow runs in full, with the username of the account being switched to pre-filled.
+Custom account switch flows can use the same pattern. Bind an expression policy to the identification, password, or authenticator validation stage bindings, depending on what users should confirm when they switch back to a signed-in account. Without those policies, the flow runs in full, with the selected account already filled in.
