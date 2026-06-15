@@ -81,6 +81,7 @@ class PostgresBroker(Broker):
         super().__init__(*args, middleware=[], **kwargs)  # type: ignore[misc]
         self.logger = get_logger(__name__, type(self))
 
+        self.actor_options.add("dependencies")
         self.queues = set()
 
         self.db_alias = db_alias
@@ -132,7 +133,6 @@ class PostgresBroker(Broker):
         return {
             "queue_name": message.queue_name,
             "actor_name": message.actor_name,
-            "state": TaskState.QUEUED,
             "retries": message.options.get("retries", 0),
             "eta": eta,
         }
@@ -158,6 +158,7 @@ class PostgresBroker(Broker):
             "Enqueueing message on queue", message_id=message.message_id, queue=queue_name
         )
 
+        dependencies = message.options.pop("dependencies", [])
         message.options["model_defaults"] = self.model_defaults(message)
         message.options["model_create_defaults"] = {}
         self.emit_before("enqueue", message, delay)
@@ -168,6 +169,9 @@ class PostgresBroker(Broker):
             }
             defaults = message.options.pop("model_defaults")
             defaults["message"] = message.encode()
+            defaults["state"] = (
+                TaskState.QUEUED if not dependencies else TaskState.WAITING_FOR_DEPENDENCIES
+            )
             create_defaults = {
                 **query,
                 **defaults,
@@ -181,6 +185,8 @@ class PostgresBroker(Broker):
             )
             message.options["task"] = task
             message.options["task_created"] = created
+            if created and dependencies:
+                task.dependencies.set(dependencies)
 
             self.emit_after("enqueue", message, delay)
         return message
@@ -477,10 +483,25 @@ class _PostgresConsumer(Consumer):
     @raise_broker_connection_error
     def ack(self, message: MessageProxy) -> None:
         self._post_process_message(message, TaskState.DONE)
+        with transaction.atomic(using=self.db_alias):
+            dependents = self.query_set.select_for_update().filter(
+                state=TaskState.WAITING_FOR_DEPENDENCIES,
+                dependencies=message.message_id,
+            )
+            for dependent in dependents:
+                dependencies_state = dependent.dependencies.using(self.db_alias).values_list(
+                    "state", flat=True
+                )
+                if all(state == TaskState.DONE for state in dependencies_state):
+                    dependent.state = TaskState.QUEUED
+                    dependent.save()
 
     @raise_broker_connection_error
     def nack(self, message: MessageProxy) -> None:
         self._post_process_message(message, TaskState.REJECTED)
+        self.query_set.filter(
+            state=TaskState.WAITING_FOR_DEPENDENCIES, dependencies=message.message_id
+        ).update(state=TaskState.REJECTED, message=b"", mtime=timezone.now(), eta=None)
 
     @raise_broker_connection_error
     def requeue(self, messages: Iterable[MessageProxy]) -> None:
