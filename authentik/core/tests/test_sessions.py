@@ -44,7 +44,9 @@ class TestSessionSuperseding(TestCase):
         """Test a new login marks the browser's previous logins as not current"""
         browser_key = get_random_string(BROWSER_KEY_LENGTH)
         previous = create_test_session(self.user, browser_key=browser_key)
-        other_browser = create_test_session(self.user, browser_key=get_random_string(BROWSER_KEY_LENGTH))
+        other_browser = create_test_session(
+            self.user, browser_key=get_random_string(BROWSER_KEY_LENGTH)
+        )
 
         request = RequestFactory().get("/")
         request.browser_key = browser_key

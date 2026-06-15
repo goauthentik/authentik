@@ -58,9 +58,7 @@ class AccountSwitchView(View):
         response = plan.to_redirect(request, flow)
         if stale_user_uid:
             separator = "&" if "?" in response["Location"] else "?"
-            response["Location"] += separator + urlencode(
-                {QS_ACCOUNT_SWITCH_STALE: stale_user_uid}
-            )
+            response["Location"] += separator + urlencode({QS_ACCOUNT_SWITCH_STALE: stale_user_uid})
         return response
 
     @staticmethod

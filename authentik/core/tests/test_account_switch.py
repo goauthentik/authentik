@@ -14,15 +14,15 @@ from authentik.core.tests.utils import (
     create_test_user,
 )
 from authentik.core.views.account_switch import QS_ACCOUNT_SWITCH_STALE
+from authentik.events.models import Event, EventAction
+from authentik.flows.markers import StageMarker
+from authentik.flows.models import Flow, FlowDesignation, FlowStageBinding
 from authentik.flows.planner import (
     PLAN_CONTEXT_ACCOUNT_SWITCH_FROM_USER,
     PLAN_CONTEXT_IS_ACCOUNT_SWITCH,
     PLAN_CONTEXT_PENDING_USER,
     FlowPlan,
 )
-from authentik.events.models import Event, EventAction
-from authentik.flows.markers import StageMarker
-from authentik.flows.models import Flow, FlowDesignation, FlowStageBinding
 from authentik.flows.tests import FlowTestCase
 from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.root.middleware import COOKIE_NAME_ACCOUNTS
