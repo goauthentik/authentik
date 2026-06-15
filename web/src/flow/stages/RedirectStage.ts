@@ -3,7 +3,11 @@ import "#flow/components/ak-flow-card";
 import { SlottedTemplateResult } from "#elements/types";
 
 import { BaseStage } from "#flow/stages/base";
-import { multiTabOrchestrateResume } from "#flow/tabs/orchestrator";
+import {
+    multiTabOrchestrateLeave,
+    multiTabOrchestrateResume,
+    multiTabOrchestrateSameOriginNavigation,
+} from "#flow/tabs/orchestrator";
 
 import { FlowChallengeResponseRequest, RedirectChallenge } from "@goauthentik/api";
 
@@ -79,8 +83,15 @@ export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeRes
             this.challenge?.to,
         );
 
-        if (this.isForeignURL()) {
+        const finalRedirect = this.challenge?.finalRedirect ?? false;
+        if (finalRedirect) {
             await multiTabOrchestrateResume();
+        }
+        const url = new URL(this.challenge!.to, window.location.origin);
+        if (finalRedirect && url.origin !== window.location.origin) {
+            multiTabOrchestrateLeave();
+        } else {
+            multiTabOrchestrateSameOriginNavigation();
         }
         window.location.assign(this.challenge!.to);
         this.startedRedirect = true;
@@ -124,8 +135,9 @@ export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeRes
                         type="submit"
                         class="pf-c-button pf-m-primary pf-m-block"
                         href=${this.challenge.to}
-                        @click=${() => {
-                            this.startedRedirect = true;
+                        @click=${(ev: Event) => {
+                            ev.preventDefault();
+                            this.redirect();
                         }}
                     >
                         ${msg("Follow redirect")}

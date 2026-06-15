@@ -3,6 +3,7 @@ import { TabID } from "#flow/tabs/TabID";
 import { ConsoleLogger, Logger } from "#logger/browser";
 
 export const BROADCAST_CHANNEL_NAME = "authentik";
+export const SESSION_STORAGE_RESUME_ID = "authentik_tab_resume_id";
 
 enum BroadcastMessageType {
     discover = "discover",
@@ -17,11 +18,17 @@ export interface BroadcastMessage {
     [key: string]: unknown;
 }
 
+export interface BroadcastExitEventDetail {
+    tabID: string;
+    resumeID?: string;
+}
+
 export class Broadcast extends BroadcastChannel implements Disposable {
     static shared = new Broadcast();
 
     protected discoveredTabIDs = new Set<string>();
-    public exitedTabIDs: string[] = [];
+    public exitedTabIDs = new Map<string, string | undefined>();
+    protected suppressNextExit = false;
 
     protected logger: Logger;
 
@@ -41,10 +48,21 @@ export class Broadcast extends BroadcastChannel implements Disposable {
                 this.discoveredTabIDs.add(ev.data.sender as string);
                 return;
             case BroadcastMessageType.exit:
-                this.exitedTabIDs.push(ev.data.sender);
+                this.exitedTabIDs.set(ev.data.sender, ev.data.resumeID as string | undefined);
+                window.dispatchEvent(
+                    new CustomEvent<BroadcastExitEventDetail>("ak-multitab-exit", {
+                        detail: {
+                            tabID: ev.data.sender,
+                            resumeID: ev.data.resumeID as string | undefined,
+                        },
+                    }),
+                );
                 return;
             case BroadcastMessageType.continue:
                 if (ev.data.target === TabID.shared.current) {
+                    if (typeof ev.data.resumeID === "string") {
+                        sessionStorage.setItem(SESSION_STORAGE_RESUME_ID, ev.data.resumeID);
+                    }
                     this.logger.debug("Continuing upon event");
                     window.dispatchEvent(new CustomEvent("ak-multitab-continue"));
                 }
@@ -53,6 +71,10 @@ export class Broadcast extends BroadcastChannel implements Disposable {
     };
 
     protected pageHideListener = () => {
+        if (this.suppressNextExit) {
+            this.suppressNextExit = false;
+            return;
+        }
         this.akExitTab();
     };
 
@@ -71,6 +93,7 @@ export class Broadcast extends BroadcastChannel implements Disposable {
 
     async akTabDiscover(): Promise<Set<string>> {
         this.discoveredTabIDs.clear();
+        this.exitedTabIDs.clear();
 
         this.postMessage({
             type: BroadcastMessageType.discover,
@@ -84,18 +107,26 @@ export class Broadcast extends BroadcastChannel implements Disposable {
         return this.discoveredTabIDs;
     }
 
-    akResumeTab(tabId: string) {
+    akResumeTab(tabId: string, resumeID: string) {
         this.postMessage({
             type: BroadcastMessageType.continue,
             sender: TabID.shared.current,
             target: tabId,
+            resumeID,
         });
     }
 
     akExitTab() {
+        const resumeID = sessionStorage.getItem(SESSION_STORAGE_RESUME_ID) || undefined;
         this.postMessage({
             type: BroadcastMessageType.exit,
             sender: TabID.shared.current,
+            resumeID,
         });
+        sessionStorage.removeItem(SESSION_STORAGE_RESUME_ID);
+    }
+
+    akSuppressNextExit() {
+        this.suppressNextExit = true;
     }
 }
