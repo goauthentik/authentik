@@ -4,6 +4,8 @@ sidebar_label: OpenProject
 support_level: community
 ---
 
+import RedirectURI20265Note from "../../\_redirect-uri-2026-5-note.mdx";
+
 ## What is OpenProject?
 
 > OpenProject is a web-based project management software. Use OpenProject to manage your projects, tasks and goals. Collaborate via work packages and link them to your pull requests on GitHub.
@@ -22,6 +24,8 @@ This documentation lists only the settings that you need to change from their de
 :::
 
 ## authentik configuration
+
+<RedirectURI20265Note />
 
 To support the integration of OpenProject with authentik, you need to create a property mapping and an application/provider pair in authentik.
 
@@ -61,7 +65,7 @@ OpenProject requires a first and last name for each user. By default authentik o
     - **Protocol settings**:
         - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
         - **Redirect URI**:
-            - Strict: `https://openproject.company/auth/oidc-authentik/callback`
+            - `Strict` `Authorization`: `https://openproject.company/auth/oidc-authentik/callback`
         - **Signing key**: select any available signing key.
     - **Advanced protocol settings**:
         - **Scopes**:

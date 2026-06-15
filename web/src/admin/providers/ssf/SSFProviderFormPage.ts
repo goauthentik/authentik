@@ -8,7 +8,7 @@ import "#elements/forms/SearchSelect/index";
 import "#elements/utils/TimeDeltaHelp";
 import "#components/ak-switch-input";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { ifPresent } from "#elements/utils/attributes";
 
@@ -35,7 +35,7 @@ import { ifDefined } from "lit/directives/if-defined.js";
 @customElement("ak-provider-ssf-form")
 export class SSFProviderFormPage extends BaseProviderForm<SSFProvider> {
     async loadInstance(pk: number): Promise<SSFProvider> {
-        const provider = await new ProvidersApi(DEFAULT_CONFIG).providersSsfRetrieve({
+        const provider = await aki(ProvidersApi).providersSsfRetrieve({
             id: pk,
         });
         return provider;
@@ -43,12 +43,12 @@ export class SSFProviderFormPage extends BaseProviderForm<SSFProvider> {
 
     async send(data: SSFProvider): Promise<SSFProvider> {
         if (this.instance) {
-            return new ProvidersApi(DEFAULT_CONFIG).providersSsfUpdate({
+            return aki(ProvidersApi).providersSsfUpdate({
                 id: this.instance.pk,
                 sSFProviderRequest: data,
             });
         }
-        return new ProvidersApi(DEFAULT_CONFIG).providersSsfCreate({
+        return aki(ProvidersApi).providersSsfCreate({
             sSFProviderRequest: data,
         });
     }

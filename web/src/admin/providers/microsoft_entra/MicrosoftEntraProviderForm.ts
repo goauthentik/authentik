@@ -11,7 +11,7 @@ import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/Radio";
 import "#elements/forms/SearchSelect/index";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { BaseProviderForm } from "#admin/providers/BaseProviderForm";
 import {
@@ -36,19 +36,19 @@ import { ifDefined } from "lit/directives/if-defined.js";
 @customElement("ak-provider-microsoft-entra-form")
 export class MicrosoftEntraProviderFormPage extends BaseProviderForm<MicrosoftEntraProvider> {
     loadInstance(pk: number): Promise<MicrosoftEntraProvider> {
-        return new ProvidersApi(DEFAULT_CONFIG).providersMicrosoftEntraRetrieve({
+        return aki(ProvidersApi).providersMicrosoftEntraRetrieve({
             id: pk,
         });
     }
 
     async send(data: MicrosoftEntraProvider): Promise<MicrosoftEntraProvider> {
         if (this.instance) {
-            return new ProvidersApi(DEFAULT_CONFIG).providersMicrosoftEntraUpdate({
+            return aki(ProvidersApi).providersMicrosoftEntraUpdate({
                 id: this.instance.pk,
                 microsoftEntraProviderRequest: data,
             });
         }
-        return new ProvidersApi(DEFAULT_CONFIG).providersMicrosoftEntraCreate({
+        return aki(ProvidersApi).providersMicrosoftEntraCreate({
             microsoftEntraProviderRequest: data,
         });
     }
@@ -171,9 +171,7 @@ export class MicrosoftEntraProviderFormPage extends BaseProviderForm<MicrosoftEn
                                 if (query !== undefined) {
                                     args.search = query;
                                 }
-                                const groups = await new CoreApi(DEFAULT_CONFIG).coreGroupsList(
-                                    args,
-                                );
+                                const groups = await aki(CoreApi).coreGroupsList(args);
                                 return groups.results;
                             }}
                             .renderElement=${(group: Group): string => {

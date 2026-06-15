@@ -1,6 +1,6 @@
 import "#elements/forms/HorizontalFormElement";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { SentryIgnoredError } from "#common/sentry/index";
 
 import { ModelForm } from "#elements/forms/ModelForm";
@@ -18,7 +18,7 @@ export class MFADeviceForm extends ModelForm<Device, string> {
     deviceType!: string;
 
     async loadInstance(pk: string): Promise<Device> {
-        const devices = await new AuthenticatorsApi(DEFAULT_CONFIG).authenticatorsAllList();
+        const devices = await aki(AuthenticatorsApi).authenticatorsAllList();
         return devices.filter((device) => {
             return device.pk === pk && device.type === this.deviceType;
         })[0];
@@ -31,37 +31,37 @@ export class MFADeviceForm extends ModelForm<Device, string> {
     async send(device: Device): Promise<Device> {
         switch (this.instance?.type) {
             case "authentik_stages_authenticator_duo.DuoDevice":
-                await new AuthenticatorsApi(DEFAULT_CONFIG).authenticatorsDuoUpdate({
+                await aki(AuthenticatorsApi).authenticatorsDuoUpdate({
                     id: parseInt(this.instance?.pk, 10),
                     duoDeviceRequest: device,
                 });
                 break;
             case "authentik_stages_authenticator_email.EmailDevice":
-                await new AuthenticatorsApi(DEFAULT_CONFIG).authenticatorsEmailUpdate({
+                await aki(AuthenticatorsApi).authenticatorsEmailUpdate({
                     id: parseInt(this.instance?.pk, 10),
                     emailDeviceRequest: device,
                 });
                 break;
             case "authentik_stages_authenticator_sms.SMSDevice":
-                await new AuthenticatorsApi(DEFAULT_CONFIG).authenticatorsSmsUpdate({
+                await aki(AuthenticatorsApi).authenticatorsSmsUpdate({
                     id: parseInt(this.instance?.pk, 10),
                     sMSDeviceRequest: device,
                 });
                 break;
             case "authentik_stages_authenticator_totp.TOTPDevice":
-                await new AuthenticatorsApi(DEFAULT_CONFIG).authenticatorsTotpUpdate({
+                await aki(AuthenticatorsApi).authenticatorsTotpUpdate({
                     id: parseInt(this.instance?.pk, 10),
                     tOTPDeviceRequest: device,
                 });
                 break;
             case "authentik_stages_authenticator_static.StaticDevice":
-                await new AuthenticatorsApi(DEFAULT_CONFIG).authenticatorsStaticUpdate({
+                await aki(AuthenticatorsApi).authenticatorsStaticUpdate({
                     id: parseInt(this.instance?.pk, 10),
                     staticDeviceRequest: device,
                 });
                 break;
             case "authentik_stages_authenticator_webauthn.WebAuthnDevice":
-                await new AuthenticatorsApi(DEFAULT_CONFIG).authenticatorsWebauthnUpdate({
+                await aki(AuthenticatorsApi).authenticatorsWebauthnUpdate({
                     id: parseInt(this.instance?.pk, 10),
                     webAuthnDeviceRequest: device,
                 });
