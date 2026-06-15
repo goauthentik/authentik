@@ -25,7 +25,7 @@
  *
  * @callback LexerAction
  * @this {Lexer}
- * @param {...string[]} match
+ * @param {...string} match
  * @returns {Token | Token[] | null | void}
  */
 
@@ -174,10 +174,7 @@ export class Lexer {
                 this.reject = false;
                 this.#remove++;
 
-                let token = match.action.apply(
-                    this,
-                    /** @type {string[]} */ (/** @type {unknown} */ (result)),
-                );
+                let token = match.action.apply(this, result);
 
                 if (this.reject) {
                     this.index = result.index;
