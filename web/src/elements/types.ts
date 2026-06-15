@@ -10,6 +10,20 @@ import type {
 } from "lit";
 import type { DirectiveResult } from "lit-html/directive.js";
 
+// Lit publishes `DirectiveResult` as an empty `{}` interface — its identifying
+// `_$litDirective$` field is marked `@internal` and stripped at build time. An
+// empty interface accepts any non-nullish value, which silently neuters the
+// `DirectiveResult` branch of unions like {@linkcode SlottedTemplateResult}:
+// raw function references and other unintended shapes assign without complaint
+// (see goauthentik/authentik#22222 / #22226). Restoring the field via module
+// augmentation forces real directive results — which carry the property at
+// runtime — to pass while rejecting accidental factory leaks at `tsc` time.
+declare module "lit-html/directive.js" {
+    interface DirectiveResult {
+        readonly ["_$litDirective$"]: unknown;
+    }
+}
+
 //#region HTML Helpers
 
 export const AKElementTagPrefix = `ak-`;
@@ -323,16 +337,20 @@ export type SelectOptions<T = never> = SelectOption<T>[] | GroupedOptions<T>;
 /**
  * A convenience type representing the result of a slotted template, i.e.
  *
- * - A string, which will be rendered as text.
+ * - A string or number, which will be rendered as text.
  * - A TemplateResult, which will be rendered as HTML.
  * - `nothing` or `null`, which will not be rendered.
+ * - An array or iterable of any of the above, which will be rendered in order.
  */
 export type SlottedTemplateResult =
     | string
+    | number
     | TemplateResult
     | typeof nothing
     | null
     | DirectiveResult
-    | HTMLElement;
+    | HTMLElement
+    | readonly SlottedTemplateResult[]
+    | Iterable<SlottedTemplateResult>;
 
 export type Spread = { [key: string]: unknown };
