@@ -7,7 +7,7 @@ import "#elements/forms/HorizontalFormElement";
 
 import { propertyMappingsProvider, propertyMappingsSelector } from "./SCIMSourceFormHelpers.js";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { placeholderHelperText } from "#admin/helperText";
 import { BaseSourceForm } from "#admin/sources/BaseSourceForm";
@@ -22,7 +22,7 @@ import { ifDefined } from "lit/directives/if-defined.js";
 @customElement("ak-source-scim-form")
 export class SCIMSourceForm extends BaseSourceForm<SCIMSource> {
     async loadInstance(pk: string): Promise<SCIMSource> {
-        return new SourcesApi(DEFAULT_CONFIG)
+        return aki(SourcesApi)
             .sourcesScimRetrieve({
                 slug: pk,
             })
@@ -33,12 +33,12 @@ export class SCIMSourceForm extends BaseSourceForm<SCIMSource> {
 
     async send(data: SCIMSource): Promise<SCIMSource> {
         if (this.instance?.slug) {
-            return new SourcesApi(DEFAULT_CONFIG).sourcesScimPartialUpdate({
+            return aki(SourcesApi).sourcesScimPartialUpdate({
                 slug: this.instance.slug,
                 patchedSCIMSourceRequest: data,
             });
         }
-        return new SourcesApi(DEFAULT_CONFIG).sourcesScimCreate({
+        return aki(SourcesApi).sourcesScimCreate({
             sCIMSourceRequest: data as unknown as SCIMSourceRequest,
         });
     }

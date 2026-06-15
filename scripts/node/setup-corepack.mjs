@@ -102,9 +102,12 @@ async function main() {
         subcommand = "use";
     }
 
-    await $`corepack ${subcommand} ${packageManager}`({ cwd });
-
-    logger.info("Corepack installed npm successfully");
+    return $`corepack ${subcommand} ${packageManager}`({ cwd });
 }
 
-main().catch((error) => reportAndExit(error, logger));
+main()
+    .then(() => {
+        logger.info("Corepack setup completed successfully");
+        process.exit(0);
+    })
+    .catch((error) => reportAndExit(error, logger));

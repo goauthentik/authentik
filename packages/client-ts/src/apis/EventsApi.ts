@@ -12,59 +12,62 @@
  * Do not edit the class manually.
  */
 
-import type {
-    DataExport,
-    Event,
-    EventActions,
-    EventRequest,
-    EventStats,
-    EventTopPerUser,
-    EventVolume,
-    Notification,
-    NotificationRequest,
-    NotificationRule,
-    NotificationRuleRequest,
-    NotificationTransport,
-    NotificationTransportRequest,
-    NotificationTransportTest,
-    PaginatedEventList,
-    PaginatedNotificationList,
-    PaginatedNotificationRuleList,
-    PaginatedNotificationTransportList,
-    PatchedEventRequest,
-    PatchedNotificationRequest,
-    PatchedNotificationRuleRequest,
-    PatchedNotificationTransportRequest,
-    SeverityEnum,
-    TransportModeEnum,
-    TypeCreate,
-    UsedBy,
-} from "../models/index";
+import { type DataExport, DataExportFromJSON } from "../models/DataExport";
+import { type Event, EventFromJSON } from "../models/Event";
+import { type EventActions } from "../models/EventActions";
+import { type EventRequest, EventRequestToJSON } from "../models/EventRequest";
+import { type EventStats, EventStatsFromJSON } from "../models/EventStats";
+import { type EventTopPerUser, EventTopPerUserFromJSON } from "../models/EventTopPerUser";
+import { type EventVolume, EventVolumeFromJSON } from "../models/EventVolume";
+import { type Notification, NotificationFromJSON } from "../models/Notification";
+import { type NotificationRequest, NotificationRequestToJSON } from "../models/NotificationRequest";
+import { type NotificationRule, NotificationRuleFromJSON } from "../models/NotificationRule";
 import {
-    DataExportFromJSON,
-    EventFromJSON,
-    EventRequestToJSON,
-    EventStatsFromJSON,
-    EventTopPerUserFromJSON,
-    EventVolumeFromJSON,
-    NotificationFromJSON,
-    NotificationRequestToJSON,
-    NotificationRuleFromJSON,
+    type NotificationRuleRequest,
     NotificationRuleRequestToJSON,
+} from "../models/NotificationRuleRequest";
+import {
+    type NotificationTransport,
     NotificationTransportFromJSON,
+} from "../models/NotificationTransport";
+import {
+    type NotificationTransportRequest,
     NotificationTransportRequestToJSON,
+} from "../models/NotificationTransportRequest";
+import {
+    type NotificationTransportTest,
     NotificationTransportTestFromJSON,
-    PaginatedEventListFromJSON,
+} from "../models/NotificationTransportTest";
+import { type PaginatedEventList, PaginatedEventListFromJSON } from "../models/PaginatedEventList";
+import {
+    type PaginatedNotificationList,
     PaginatedNotificationListFromJSON,
+} from "../models/PaginatedNotificationList";
+import {
+    type PaginatedNotificationRuleList,
     PaginatedNotificationRuleListFromJSON,
+} from "../models/PaginatedNotificationRuleList";
+import {
+    type PaginatedNotificationTransportList,
     PaginatedNotificationTransportListFromJSON,
-    PatchedEventRequestToJSON,
+} from "../models/PaginatedNotificationTransportList";
+import { type PatchedEventRequest, PatchedEventRequestToJSON } from "../models/PatchedEventRequest";
+import {
+    type PatchedNotificationRequest,
     PatchedNotificationRequestToJSON,
+} from "../models/PatchedNotificationRequest";
+import {
+    type PatchedNotificationRuleRequest,
     PatchedNotificationRuleRequestToJSON,
+} from "../models/PatchedNotificationRuleRequest";
+import {
+    type PatchedNotificationTransportRequest,
     PatchedNotificationTransportRequestToJSON,
-    TypeCreateFromJSON,
-    UsedByFromJSON,
-} from "../models/index";
+} from "../models/PatchedNotificationTransportRequest";
+import { type SeverityEnum } from "../models/SeverityEnum";
+import { type TransportModeEnum } from "../models/TransportModeEnum";
+import { type TypeCreate, TypeCreateFromJSON } from "../models/TypeCreate";
+import { type UsedBy, UsedByFromJSON } from "../models/UsedBy";
 import * as runtime from "../runtime";
 
 export interface EventsEventsCreateRequest {
@@ -416,7 +419,7 @@ export class EventsApi extends runtime.BaseAPI {
 
         let urlPath = `/events/events/{event_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"event_uuid"}}`,
+            "{event_uuid}",
             encodeURIComponent(String(requestParameters["eventUuid"])),
         );
 
@@ -693,7 +696,7 @@ export class EventsApi extends runtime.BaseAPI {
 
         let urlPath = `/events/events/{event_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"event_uuid"}}`,
+            "{event_uuid}",
             encodeURIComponent(String(requestParameters["eventUuid"])),
         );
 
@@ -758,7 +761,7 @@ export class EventsApi extends runtime.BaseAPI {
 
         let urlPath = `/events/events/{event_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"event_uuid"}}`,
+            "{event_uuid}",
             encodeURIComponent(String(requestParameters["eventUuid"])),
         );
 
@@ -1006,7 +1009,7 @@ export class EventsApi extends runtime.BaseAPI {
 
         let urlPath = `/events/events/{event_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"event_uuid"}}`,
+            "{event_uuid}",
             encodeURIComponent(String(requestParameters["eventUuid"])),
         );
 
@@ -1177,10 +1180,7 @@ export class EventsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/events/notifications/{uuid}/`;
-        urlPath = urlPath.replace(
-            `{${"uuid"}}`,
-            encodeURIComponent(String(requestParameters["uuid"])),
-        );
+        urlPath = urlPath.replace("{uuid}", encodeURIComponent(String(requestParameters["uuid"])));
 
         return {
             path: urlPath,
@@ -1385,10 +1385,7 @@ export class EventsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/events/notifications/{uuid}/`;
-        urlPath = urlPath.replace(
-            `{${"uuid"}}`,
-            encodeURIComponent(String(requestParameters["uuid"])),
-        );
+        urlPath = urlPath.replace("{uuid}", encodeURIComponent(String(requestParameters["uuid"])));
 
         return {
             path: urlPath,
@@ -1456,10 +1453,7 @@ export class EventsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/events/notifications/{uuid}/`;
-        urlPath = urlPath.replace(
-            `{${"uuid"}}`,
-            encodeURIComponent(String(requestParameters["uuid"])),
-        );
+        urlPath = urlPath.replace("{uuid}", encodeURIComponent(String(requestParameters["uuid"])));
 
         return {
             path: urlPath,
@@ -1527,10 +1521,7 @@ export class EventsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/events/notifications/{uuid}/`;
-        urlPath = urlPath.replace(
-            `{${"uuid"}}`,
-            encodeURIComponent(String(requestParameters["uuid"])),
-        );
+        urlPath = urlPath.replace("{uuid}", encodeURIComponent(String(requestParameters["uuid"])));
 
         return {
             path: urlPath,
@@ -1594,10 +1585,7 @@ export class EventsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/events/notifications/{uuid}/used_by/`;
-        urlPath = urlPath.replace(
-            `{${"uuid"}}`,
-            encodeURIComponent(String(requestParameters["uuid"])),
-        );
+        urlPath = urlPath.replace("{uuid}", encodeURIComponent(String(requestParameters["uuid"])));
 
         return {
             path: urlPath,
@@ -1728,7 +1716,7 @@ export class EventsApi extends runtime.BaseAPI {
 
         let urlPath = `/events/rules/{pbm_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"pbm_uuid"}}`,
+            "{pbm_uuid}",
             encodeURIComponent(String(requestParameters["pbmUuid"])),
         );
 
@@ -1876,7 +1864,7 @@ export class EventsApi extends runtime.BaseAPI {
 
         let urlPath = `/events/rules/{pbm_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"pbm_uuid"}}`,
+            "{pbm_uuid}",
             encodeURIComponent(String(requestParameters["pbmUuid"])),
         );
 
@@ -1945,7 +1933,7 @@ export class EventsApi extends runtime.BaseAPI {
 
         let urlPath = `/events/rules/{pbm_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"pbm_uuid"}}`,
+            "{pbm_uuid}",
             encodeURIComponent(String(requestParameters["pbmUuid"])),
         );
 
@@ -2020,7 +2008,7 @@ export class EventsApi extends runtime.BaseAPI {
 
         let urlPath = `/events/rules/{pbm_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"pbm_uuid"}}`,
+            "{pbm_uuid}",
             encodeURIComponent(String(requestParameters["pbmUuid"])),
         );
 
@@ -2087,7 +2075,7 @@ export class EventsApi extends runtime.BaseAPI {
 
         let urlPath = `/events/rules/{pbm_uuid}/used_by/`;
         urlPath = urlPath.replace(
-            `{${"pbm_uuid"}}`,
+            "{pbm_uuid}",
             encodeURIComponent(String(requestParameters["pbmUuid"])),
         );
 
@@ -2217,10 +2205,7 @@ export class EventsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/events/transports/{uuid}/`;
-        urlPath = urlPath.replace(
-            `{${"uuid"}}`,
-            encodeURIComponent(String(requestParameters["uuid"])),
-        );
+        urlPath = urlPath.replace("{uuid}", encodeURIComponent(String(requestParameters["uuid"])));
 
         return {
             path: urlPath,
@@ -2369,10 +2354,7 @@ export class EventsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/events/transports/{uuid}/`;
-        urlPath = urlPath.replace(
-            `{${"uuid"}}`,
-            encodeURIComponent(String(requestParameters["uuid"])),
-        );
+        urlPath = urlPath.replace("{uuid}", encodeURIComponent(String(requestParameters["uuid"])));
 
         return {
             path: urlPath,
@@ -2442,10 +2424,7 @@ export class EventsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/events/transports/{uuid}/`;
-        urlPath = urlPath.replace(
-            `{${"uuid"}}`,
-            encodeURIComponent(String(requestParameters["uuid"])),
-        );
+        urlPath = urlPath.replace("{uuid}", encodeURIComponent(String(requestParameters["uuid"])));
 
         return {
             path: urlPath,
@@ -2508,10 +2487,7 @@ export class EventsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/events/transports/{uuid}/test/`;
-        urlPath = urlPath.replace(
-            `{${"uuid"}}`,
-            encodeURIComponent(String(requestParameters["uuid"])),
-        );
+        urlPath = urlPath.replace("{uuid}", encodeURIComponent(String(requestParameters["uuid"])));
 
         return {
             path: urlPath,
@@ -2583,10 +2559,7 @@ export class EventsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/events/transports/{uuid}/`;
-        urlPath = urlPath.replace(
-            `{${"uuid"}}`,
-            encodeURIComponent(String(requestParameters["uuid"])),
-        );
+        urlPath = urlPath.replace("{uuid}", encodeURIComponent(String(requestParameters["uuid"])));
 
         return {
             path: urlPath,
@@ -2652,10 +2625,7 @@ export class EventsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/events/transports/{uuid}/used_by/`;
-        urlPath = urlPath.replace(
-            `{${"uuid"}}`,
-            encodeURIComponent(String(requestParameters["uuid"])),
-        );
+        urlPath = urlPath.replace("{uuid}", encodeURIComponent(String(requestParameters["uuid"])));
 
         return {
             path: urlPath,

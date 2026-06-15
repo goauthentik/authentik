@@ -4,6 +4,8 @@ sidebar_label: Omnissa Workspace ONE Access
 support_level: community
 ---
 
+import RedirectURI20265Note from "../../\_redirect-uri-2026-5-note.mdx";
+
 ## What is Omnissa Workspace ONE Access?
 
 > Omnissa Workspace ONE Access, now Omnissa Access, is the identity and access service for the Omnissa Workspace ONE platform. It provides single sign-on, access policies, and identity federation for applications and devices, and can delegate authentication to external identity providers such as authentik.
@@ -31,6 +33,8 @@ You can leave the form open in another browser tab while configuring authentik.
 
 ## authentik configuration
 
+<RedirectURI20265Note />
+
 To support the integration of Omnissa Workspace ONE Access with authentik, you need to create an application/provider pair in authentik.
 
 ### Create an application and provider in authentik
@@ -43,8 +47,8 @@ To support the integration of Omnissa Workspace ONE Access with authentik, you n
         - Note the **Client ID** and **Client Secret** values because they will be required later.
         - **Protocol Settings**:
             - **Redirect URI**:
-                - Strict: the redirect URI you noted in the Omnissa Workspace ONE Access pre-configuration step.
-                - Strict: `awgb://oauth2`. This URI is used by the Workspace ONE mobile applications.
+                - `Strict` `Authorization`: the redirect URI you noted in the Omnissa Workspace ONE Access pre-configuration step.
+                - `Strict` `Authorization`: `awgb://oauth2`. This URI is used by the Workspace ONE mobile applications.
             - **Signing Key**: select any available signing key.
     - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 

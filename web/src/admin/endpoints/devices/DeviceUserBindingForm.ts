@@ -1,6 +1,6 @@
 import "#components/ak-switch-input";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { PolicyBindingCheckTarget } from "#common/policies/utils";
 
 import { PolicyBindingForm } from "#admin/policies/PolicyBindingForm";
@@ -14,7 +14,7 @@ import { customElement } from "lit/decorators.js";
 @customElement("ak-device-binding-form")
 export class DeviceUserBindingForm extends PolicyBindingForm<DeviceUserBinding> {
     async loadInstance(pk: string): Promise<DeviceUserBinding> {
-        const binding = await new EndpointsApi(DEFAULT_CONFIG).endpointsDeviceBindingsRetrieve({
+        const binding = await aki(EndpointsApi).endpointsDeviceBindingsRetrieve({
             policyBindingUuid: pk,
         });
         if (binding?.policyObj) {
@@ -50,12 +50,12 @@ export class DeviceUserBindingForm extends PolicyBindingForm<DeviceUserBinding> 
         }
 
         if (this.instance?.pk) {
-            return new EndpointsApi(DEFAULT_CONFIG).endpointsDeviceBindingsUpdate({
+            return aki(EndpointsApi).endpointsDeviceBindingsUpdate({
                 policyBindingUuid: this.instance.pk,
                 deviceUserBindingRequest: data,
             });
         }
-        return new EndpointsApi(DEFAULT_CONFIG).endpointsDeviceBindingsCreate({
+        return aki(EndpointsApi).endpointsDeviceBindingsCreate({
             deviceUserBindingRequest: data,
         });
     }

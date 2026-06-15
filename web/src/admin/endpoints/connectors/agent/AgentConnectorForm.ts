@@ -9,7 +9,7 @@ import "#admin/common/ak-crypto-certificate-search";
 import "#elements/utils/TimeDeltaHelp";
 import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { ModelForm } from "#elements/forms/ModelForm";
 import { WithBrandConfig } from "#elements/mixins/branding";
@@ -35,7 +35,7 @@ import { ifDefined } from "lit/directives/if-defined.js";
 @customElement("ak-endpoints-connector-agent-form")
 export class AgentConnectorForm extends WithBrandConfig(ModelForm<AgentConnector, string>) {
     loadInstance(pk: string): Promise<AgentConnector> {
-        return new EndpointsApi(DEFAULT_CONFIG).endpointsAgentsConnectorsRetrieve({
+        return aki(EndpointsApi).endpointsAgentsConnectorsRetrieve({
             connectorUuid: pk,
         });
     }
@@ -48,12 +48,12 @@ export class AgentConnectorForm extends WithBrandConfig(ModelForm<AgentConnector
 
     async send(data: AgentConnector): Promise<AgentConnector> {
         if (this.instance) {
-            return new EndpointsApi(DEFAULT_CONFIG).endpointsAgentsConnectorsPartialUpdate({
+            return aki(EndpointsApi).endpointsAgentsConnectorsPartialUpdate({
                 connectorUuid: this.instance.connectorUuid!,
                 patchedAgentConnectorRequest: data,
             });
         }
-        return new EndpointsApi(DEFAULT_CONFIG).endpointsAgentsConnectorsCreate({
+        return aki(EndpointsApi).endpointsAgentsConnectorsCreate({
             agentConnectorRequest: data as unknown as AgentConnectorRequest,
         });
     }

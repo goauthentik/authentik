@@ -4,6 +4,8 @@ sidebar_label: Gravity
 support_level: community
 ---
 
+import RedirectURI20265Note from "../../\_redirect-uri-2026-5-note.mdx";
+
 ## What is Gravity?
 
 > Gravity is a fully-replicated DNS, DHCP, and TFTP server powered by [etcd](https://etcd.io/), offering features like built-in caching, ad/privacy blocking, automatic DNS registration, and metric tracking.
@@ -27,6 +29,8 @@ Gravity automatically triggers SSO authentication when configured. To prevent th
 
 ## authentik configuration
 
+<RedirectURI20265Note />
+
 To support the integration of Gravity with authentik, you need to create an application/provider pair in authentik.
 
 ### Create an application and provider in authentik
@@ -38,7 +42,7 @@ To support the integration of Gravity with authentik, you need to create an appl
 - **Choose a Provider type**: Select **OAuth2/OpenID Connect** as the provider type.
 - **Configure the Provider**: Provide a name (or accept the auto-provided name), choose the authorization flow for this provider, and configure the following required settings:
     - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
-    - Set a `Strict` redirect URI to `https://gravity.company/auth/oidc/callback`.
+    - Add a **Redirect URI** of type `Strict` `Authorization` as `https://gravity.company/auth/oidc/callback`.
     - Select any available signing key.
 - **Configure Bindings** _(optional)_: Create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 

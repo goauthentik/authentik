@@ -4,6 +4,8 @@ sidebar_label: grommunio
 support_level: community
 ---
 
+import RedirectURI20265Note from "../../\_redirect-uri-2026-5-note.mdx";
+
 <!-- spellchecker:ignore gromox -->
 
 ## What is grommunio?
@@ -25,6 +27,8 @@ This documentation lists only the settings that you need to change from their de
 
 ## authentik configuration
 
+<RedirectURI20265Note />
+
 To integrate authentik with grommunio, you will need to create an application and provider pair in authentik.
 
 :::info Keycloak-compatible endpoints
@@ -39,7 +43,7 @@ grommunio-web expects Keycloak-compatible OIDC endpoints. Because authentik does
     - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
     - **Configure the Provider**: provide a name, the authorization flow to use, and the following required configurations.
         - Note the **Client ID** and **Client Secret** values because they will be required later.
-        - Set a `Strict` redirect URI to `https://grommunio.company/web`.
+        - Add a **Redirect URI** of type `Strict` `Authorization` as `https://grommunio.company/web`.
         - Set **Signing Key** to an available RSA key.
         - Under **Advanced protocol settings**:
             - Add the `authentik default OAuth Mapping: OpenID 'offline_access'` scope to **Selected Scopes**.

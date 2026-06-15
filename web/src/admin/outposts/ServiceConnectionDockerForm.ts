@@ -3,7 +3,7 @@ import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/index";
 import "#components/ak-switch-input";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { ModelForm } from "#elements/forms/ModelForm";
 
@@ -17,7 +17,7 @@ import { ifDefined } from "lit/directives/if-defined.js";
 @customElement("ak-service-connection-docker-form")
 export class ServiceConnectionDockerForm extends ModelForm<DockerServiceConnection, string> {
     loadInstance(pk: string): Promise<DockerServiceConnection> {
-        return new OutpostsApi(DEFAULT_CONFIG).outpostsServiceConnectionsDockerRetrieve({
+        return aki(OutpostsApi).outpostsServiceConnectionsDockerRetrieve({
             uuid: pk,
         });
     }
@@ -30,12 +30,12 @@ export class ServiceConnectionDockerForm extends ModelForm<DockerServiceConnecti
 
     async send(data: DockerServiceConnection): Promise<DockerServiceConnection> {
         if (this.instance) {
-            return new OutpostsApi(DEFAULT_CONFIG).outpostsServiceConnectionsDockerUpdate({
+            return aki(OutpostsApi).outpostsServiceConnectionsDockerUpdate({
                 uuid: this.instance.pk || "",
                 dockerServiceConnectionRequest: data,
             });
         }
-        return new OutpostsApi(DEFAULT_CONFIG).outpostsServiceConnectionsDockerCreate({
+        return aki(OutpostsApi).outpostsServiceConnectionsDockerCreate({
             dockerServiceConnectionRequest: data,
         });
     }
@@ -82,6 +82,7 @@ export class ServiceConnectionDockerForm extends ModelForm<DockerServiceConnecti
             >
                 <ak-crypto-certificate-search
                     .certificate=${this.instance?.tlsVerification}
+                    nokey
                 ></ak-crypto-certificate-search>
                 <p class="pf-c-form__helper-text">
                     ${msg(

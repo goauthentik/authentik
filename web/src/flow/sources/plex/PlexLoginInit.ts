@@ -1,7 +1,7 @@
 import "#elements/EmptyState";
 import "#flow/components/ak-flow-card";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { PlexAPIClient, popupCenterScreen } from "#common/helpers/plex";
 
 import { showAPIErrorMessage } from "#elements/messages/MessageContainer";
@@ -41,7 +41,7 @@ export class PlexLoginInit extends BaseStage<
         const authWindow = await popupCenterScreen(authInfo.authUrl, "plex auth", 550, 700);
         PlexAPIClient.pinPoll(this.challenge?.clientId || "", authInfo.pin.id).then((token) => {
             authWindow?.close();
-            new SourcesApi(DEFAULT_CONFIG)
+            aki(SourcesApi)
                 .sourcesPlexRedeemTokenCreate({
                     plexTokenRedeemRequest: {
                         plexToken: token,

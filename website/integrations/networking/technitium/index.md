@@ -4,6 +4,8 @@ sidebar_label: Technitium DNS
 support_level: community
 ---
 
+import RedirectURI20265Note from "../../\_redirect-uri-2026-5-note.mdx";
+
 ## What is Technitium DNS?
 
 > Technitium DNS Server is a free, open source, cross-platform, authoritative and recursive DNS server that can be self-hosted for privacy and security, software development, and testing on small to medium-sized networks.
@@ -24,6 +26,8 @@ This documentation lists only the settings that you need to change from their de
 :::
 
 ## authentik configuration
+
+<RedirectURI20265Note />
 
 To support the integration of Technitium DNS with authentik, you need to create a scope mapping, an application/provider pair, and application entitlements in authentik.
 
@@ -59,7 +63,7 @@ Technitium DNS uses the `roles` claim to map SSO users to local groups. Create a
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
         - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
         - Set **Client type** to `Confidential`.
-        - Set a `Strict` redirect URI to `https://technitium.company/sso/callback`.
+        - Add a **Redirect URI** of type `Strict` `Authorization` as `https://technitium.company/sso/callback`.
         - Select any available signing key.
         - Ensure that the `openid`, `email`, and `profile` scopes are selected. Remove the `email` scope if you prefer usernames to use the preferred username claim instead of the email address.
         - Under **Advanced protocol settings** > **Selected Scopes**, add the scope mapping that you created in the previous section.
