@@ -174,6 +174,9 @@ export class Lexer {
                 this.reject = false;
                 this.#remove++;
 
+                // TypeScript Native's assessment is correct.
+                // but TypeScript Node can't make the connection between regex and the array.
+                // @ts-ignore - Remove after TypeScript Native is mainline.
                 let token = match.action.apply(this, result);
 
                 if (this.reject) {
