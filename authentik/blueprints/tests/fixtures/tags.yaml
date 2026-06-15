@@ -55,6 +55,10 @@ entries:
                       suffix,
                   ]
               policy_pk2: !Format ["%%s-%%s", !KeyOf policy, suffix]
+              boolEq:
+                  !Condition [EQ, "2", "2"]
+              boolNeq:
+                  !Condition [NEQ, 2, "2"]
               boolAnd:
                   !Condition [AND, !Context foo, !Format ["%%s", "a_string"], 1]
               boolNand:
