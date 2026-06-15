@@ -1,10 +1,12 @@
 """Test AuthN Request generator and parser"""
 
 from base64 import b64encode
+from urllib.parse import parse_qs, urlparse
 
 from defusedxml.lxml import fromstring
 from django.http.request import QueryDict
 from django.test import TestCase
+from django.urls import reverse
 from guardian.utils import get_anonymous_user
 from lxml import etree  # nosec
 
@@ -15,6 +17,7 @@ from authentik.common.saml.constants import (
     SAML_NAME_ID_FORMAT_EMAIL,
     SAML_NAME_ID_FORMAT_UNSPECIFIED,
 )
+from authentik.core.models import Application
 from authentik.core.tests.utils import (
     RequestFactory,
     create_test_admin_user,
@@ -23,6 +26,7 @@ from authentik.core.tests.utils import (
 )
 from authentik.crypto.models import CertificateKeyPair
 from authentik.events.models import Event, EventAction
+from authentik.flows.models import FlowStageBinding
 from authentik.lib.generators import generate_id
 from authentik.lib.xml import lxml_from_string
 from authentik.providers.saml.models import SAMLPropertyMapping, SAMLProvider
@@ -32,6 +36,7 @@ from authentik.sources.saml.exceptions import MismatchedRequestID
 from authentik.sources.saml.models import SAMLBindingTypes, SAMLSource
 from authentik.sources.saml.processors.request import SESSION_KEY_REQUEST_ID, RequestProcessor
 from authentik.sources.saml.processors.response import ResponseProcessor
+from authentik.stages.dummy.models import DummyStage
 
 POST_REQUEST = (
     "PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz48c2FtbDJwOkF1dGhuUmVxdWVzdCB4bWxuczpzYW1sMn"
@@ -123,6 +128,34 @@ class TestAuthNRequest(TestCase):
         )
         self.assertEqual(parsed_request.id, request_proc.request_id)
         self.assertEqual(parsed_request.relay_state, "test_state")
+
+    def test_redirect_binding_flow_redirect_includes_resume_url(self):
+        """Test SP-initiated Redirect binding keeps the original SAML URL as next."""
+        app = Application.objects.create(name="test-app", slug="test-app", provider=self.provider)
+        FlowStageBinding.objects.create(
+            target=self.provider.authorization_flow,
+            stage=DummyStage.objects.create(name=generate_id()),
+            order=0,
+        )
+        http_request = self.request_factory.get("/")
+        params = RequestProcessor(self.source, http_request, "test_state").build_auth_n_detached()
+        self.client.force_login(create_test_admin_user())
+        url = reverse(
+            "authentik_providers_saml:sso-redirect",
+            kwargs={"application_slug": app.slug},
+        )
+
+        response = self.client.get(url, params)
+
+        self.assertEqual(response.status_code, 302)
+        redirect_query = parse_qs(urlparse(response["Location"]).query)
+        self.assertIn("next", redirect_query)
+
+        next_url = urlparse(redirect_query["next"][0])
+        self.assertEqual(next_url.path, url)
+        next_query = parse_qs(next_url.query)
+        for key, value in params.items():
+            self.assertEqual(next_query[key], [value])
 
     def test_request_encrypt(self):
         """Test full SAML Request/Response flow, fully encrypted"""

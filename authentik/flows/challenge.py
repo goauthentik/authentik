@@ -68,6 +68,7 @@ class RedirectChallenge(Challenge):
     """Challenge type to redirect the client"""
 
     to = CharField()
+    final_redirect = BooleanField(default=False)
     component = CharField(default="xak-flow-redirect")
 
 

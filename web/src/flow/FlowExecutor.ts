@@ -32,7 +32,10 @@ import { ThemedImage } from "#elements/utils/images";
 
 import { AKFlowAdvanceEvent, AKFlowInspectorChangeEvent } from "#flow/events";
 import { BaseStage, StageHost, SubmitOptions } from "#flow/stages/base";
-import { multiTabOrchestrateLeave } from "#flow/tabs/orchestrator";
+import {
+    multiTabOrchestrateLeave,
+    multiTabOrchestrateSameOriginNavigation,
+} from "#flow/tabs/orchestrator";
 
 import { ConsoleLogger } from "#logger/browser";
 
@@ -196,6 +199,18 @@ export class FlowExecutor
 
         window.addEventListener("ak-multitab-continue", () => {
             document.title = "continued";
+            const qs = new URLSearchParams(window.location.search);
+            const next = qs.get("next");
+            if (next) {
+                const url = new URL(next, window.location.origin);
+                if (url.origin === window.location.origin) {
+                    multiTabOrchestrateSameOriginNavigation();
+                } else {
+                    multiTabOrchestrateLeave();
+                }
+                window.location.assign(url);
+                return;
+            }
             if (
                 this.challenge?.component === "ak-stage-identification" &&
                 this.challenge.applicationPreLaunch &&
@@ -204,15 +219,6 @@ export class FlowExecutor
                 multiTabOrchestrateLeave();
                 window.location.assign(this.challenge.applicationPreLaunch);
                 return;
-            }
-            const qs = new URLSearchParams(window.location.search);
-            const next = qs.get("next");
-            if (next) {
-                const url = new URL(next, window.location.origin);
-                if (!url.pathname.startsWith(`${globalAK().api.relBase}if/flow`)) {
-                    multiTabOrchestrateLeave();
-                }
-                window.location.assign(url);
             }
         });
     }
