@@ -122,6 +122,18 @@ authentik can be run locally, although depending on which part you want to work 
 
 This is documented in the [developer docs](./setup/frontend-dev-environment.mdx).
 
+#### Running Python tooling locally (mypy, tests, linting)
+
+Before running any Python CI targets such as `make lint` or `make ci-lint-mypy`, you must generate a local configuration file:
+
+```shell
+make gen-dev-config
+```
+
+This creates `local.env.yml` in the repository root with a random `secret_key`. It is required because `mypy_django_plugin` initializes Django at startup to introspect models, and Django requires a non-empty `SECRET_KEY`. Without this file (and without an `AUTHENTIK_SECRET_KEY` environment variable), mypy will fail with a confusing internal error.
+
+You only need to run this once per clone. The file is already listed in `.gitignore`.
+
 ### Help with the docs
 
 Contributions to the technical documentation are greatly appreciated. Open a PR if you have improvements to make or new content to add. If you have questions or suggestions about the documentation, open an Issue. No contribution is too small.
