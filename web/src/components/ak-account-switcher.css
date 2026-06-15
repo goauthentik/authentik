@@ -28,7 +28,13 @@
     gap: var(--pf-global--spacer--sm);
 }
 
-[part="toggle"] {
+/*
+ * The class selector matches PatternFly's `.pf-c-dropdown__toggle.pf-m-plain`
+ * specificity so this `display: flex` wins; a bare `[part="toggle"]` loses to
+ * PatternFly's `display: inline-block`, which left the avatar, label, and caret
+ * laid out on a text baseline instead of vertically centered with the toolbar.
+ */
+.pf-c-dropdown__toggle.pf-m-plain[part="toggle"] {
     display: flex;
     align-items: center;
     gap: var(--pf-global--spacer--sm);
