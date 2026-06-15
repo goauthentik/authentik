@@ -8,7 +8,7 @@ import RedirectURI20265Note from "../../\_redirect-uri-2026-5-note.mdx";
 
 ## What is Budibase?
 
-> Budibase is an open source low-code platform, and the easiest way to build internal tools that improve productivity.
+> Budibase is an open-source low-code platform for building internal tools and workflow applications.
 >
 > -- https://github.com/Budibase/budibase
 
@@ -22,6 +22,8 @@ The following placeholders are used in this guide:
 :::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
+
+Log in to Budibase as an administrator, open the builder, navigate to **Settings** > **Auth**, and copy the **Callback URL** displayed under **OpenID Connect**. You will use this URL when creating the authentik provider.
 
 ## authentik configuration
 
@@ -37,7 +39,7 @@ To support the integration of Budibase with authentik, you need to create an app
     - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
         - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
-        - Add a **Redirect URI** of type `Strict` `Authorization` as `https://budibase.company/api/global/auth/oidc/callback`.
+        - Add a **Redirect URI** of type `Strict` `Authorization` using the **Callback URL** copied from Budibase.
         - Select any available signing key.
     - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 
@@ -45,18 +47,21 @@ To support the integration of Budibase with authentik, you need to create an app
 
 ## Budibase configuration
 
-From the main page of your Budibase installation, add the following values under the **Auth** section of the builder:
+1. Log in to Budibase as an administrator, open the builder, and navigate to **Settings** > **Auth**.
+2. Under **OpenID Connect**, set the following values:
+    - **Config URL**: `https://authentik.company/application/o/<application_slug>/.well-known/openid-configuration`
+    - **Client ID**: `<Client ID from authentik>`
+    - **Client Secret**: `<Client Secret from authentik>`
+    - **Name**: `authentik`
+    - **Activated**: enabled
 
-- **Config URL**: `https://authentik.company/application/o/<application_slug>/.well-known/openid-configuration`
-- **Client ID**: `Client ID from authentik`
-- **Client Secret**: `Client Secret from authentik`
-- **Callback URL**: `https://budibase.company/api/global/auth/oidc/callback/`
-- **Name**: `authentik`
+3. Click **Save**.
 
 ## Configuration verification
 
-To confirm that authentik is properly configured with Budibase, visit your Budibase installation, and click **Sign in with authentik**.
+To confirm that authentik is properly configured with Budibase, open Budibase and log in with authentik.
 
 ## Resources
 
 - [Budibase official documentation on OpenID Connect](https://docs.budibase.com/docs/openid-connect)
+- [Budibase source code](https://github.com/Budibase/budibase)
