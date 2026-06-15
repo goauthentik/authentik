@@ -29,20 +29,30 @@ export class AccountSwitcher extends WithSession(AKElement) {
 
     protected override willUpdate(changed: PropertyValues<this>): void {
         super.willUpdate(changed);
-        this.accounts = syncStoredAccounts(this.currentUser);
+        if (changed.has("session")) {
+            this.accounts = syncStoredAccounts(this.currentUser);
+        }
     }
 
-    protected nextQuery(): string {
+    protected get nextQuery(): string {
         const next = `${window.location.pathname}${window.location.search}${window.location.hash}`;
         return new URLSearchParams({ next }).toString();
     }
 
     protected accountSwitchURL(account: BrowserLocalAccount): string {
-        return `${globalAK().api.base}account/switch/${account.uid}/?${this.nextQuery()}`;
+        return `${globalAK().api.base}account/switch/${account.uid}/?${this.nextQuery}`;
     }
 
     protected addAccountURL(): string {
-        return `${globalAK().api.base}flows/-/default/authentication/?${this.nextQuery()}`;
+        return `${globalAK().api.base}flows/-/default/authentication/?${this.nextQuery}`;
+    }
+
+    protected get currentAccount(): BrowserLocalAccount | undefined {
+        return this.accounts.find((account) => account.isCurrent);
+    }
+
+    protected accountLabel(account: BrowserLocalAccount): string {
+        return formatUserDisplayName(account, this.uiConfig) || account.username;
     }
 
     protected renderAvatar(account?: Pick<BrowserLocalAccount, "avatar">): SlottedTemplateResult {
@@ -57,20 +67,19 @@ export class AccountSwitcher extends WithSession(AKElement) {
     }
 
     protected renderAccount(account: BrowserLocalAccount): SlottedTemplateResult {
-        const label = formatUserDisplayName(account, this.uiConfig) || account.username;
+        const label = this.accountLabel(account);
         const description = formatUserSecondaryIdentifier(account, label);
-        const content = html`
-            <span class="pf-c-dropdown__menu-item-main" part="item">
-                ${this.renderAvatar(account)}
-                <span part="labels">
-                    <span part="name">${label}</span>
-                    ${description ? html`<span part="description">${description}</span>` : null}
-                </span>
-                ${account.isCurrent
-                    ? html`<i class="fas fa-check" part="current-indicator" aria-hidden="true"></i>`
-                    : null}
+
+        const content = html`<span class="pf-c-dropdown__menu-item-main" part="item">
+            ${this.renderAvatar(account)}
+            <span part="labels">
+                <span part="name">${label}</span>
+                ${description ? html`<span part="description">${description}</span>` : null}
             </span>
-        `;
+            ${account.isCurrent
+                ? html`<i class="fas fa-check" part="current-indicator" aria-hidden="true"></i>`
+                : null}
+        </span>`;
 
         if (account.isCurrent) {
             return html`<li role="presentation">
@@ -111,10 +120,8 @@ export class AccountSwitcher extends WithSession(AKElement) {
         if (!currentUser) {
             return null;
         }
-        const accounts = this.accounts;
         const displayName =
             formatUserDisplayName(currentUser, this.uiConfig) || currentUser.username;
-        const currentAccount = accounts.find((account) => account.isCurrent);
 
         return html`<div part="container">
             <ak-dropdown class="pf-c-dropdown" part="switcher">
@@ -126,7 +133,7 @@ export class AccountSwitcher extends WithSession(AKElement) {
                     aria-haspopup="menu"
                     aria-controls="account-switcher-menu"
                 >
-                    ${this.renderAvatar(currentAccount)}
+                    ${this.renderAvatar(this.currentAccount)}
                     <span part="toggle-label">${displayName}</span>
                     <i
                         class="fas fa-caret-down pf-c-dropdown__toggle-icon"
@@ -142,8 +149,8 @@ export class AccountSwitcher extends WithSession(AKElement) {
                     aria-labelledby="account-switcher-toggle"
                     tabindex="-1"
                 >
-                    ${accounts.map((account) => this.renderAccount(account))}
-                    ${accounts.length
+                    ${this.accounts.map((account) => this.renderAccount(account))}
+                    ${this.accounts.length
                         ? html`<li class="pf-c-dropdown__separator" role="separator"></li>`
                         : null}
                     <li role="presentation">

@@ -1,3 +1,5 @@
+import { StorageAccessor } from "#common/storage";
+
 import type { UserSelf } from "@goauthentik/api";
 
 const ACCOUNT_STORAGE_KEY = "authentik.accounts";
@@ -11,7 +13,17 @@ export interface BrowserLocalAccount {
     isCurrent: boolean;
 }
 
-function coerceStoredAccount(value: unknown): BrowserLocalAccount | null {
+interface StoredAccountsPayload {
+    accounts?: unknown;
+}
+
+const stringOrEmpty = (value: unknown): string => (typeof value === "string" ? value : "");
+
+function accountStorage(): StorageAccessor {
+    return StorageAccessor.local(ACCOUNT_STORAGE_KEY);
+}
+
+export function coerceStoredAccount(value: unknown): BrowserLocalAccount | null {
     if (!value || typeof value !== "object") {
         return null;
     }
@@ -21,35 +33,40 @@ function coerceStoredAccount(value: unknown): BrowserLocalAccount | null {
     }
     return {
         uid: account.uid,
-        username: typeof account.username === "string" ? account.username : "",
-        name: typeof account.name === "string" ? account.name : "",
-        email: typeof account.email === "string" ? account.email : "",
-        avatar: typeof account.avatar === "string" ? account.avatar : "",
+        username: stringOrEmpty(account.username),
+        name: stringOrEmpty(account.name),
+        email: stringOrEmpty(account.email),
+        avatar: stringOrEmpty(account.avatar),
         isCurrent: Boolean(account.isCurrent),
     };
 }
 
-export function readStoredAccounts(): BrowserLocalAccount[] {
-    try {
-        const stored = JSON.parse(localStorage.getItem(ACCOUNT_STORAGE_KEY) ?? "{}");
-        if (!Array.isArray(stored.accounts)) {
-            return [];
-        }
-        return stored.accounts
-            .map((account: unknown) => coerceStoredAccount(account))
-            .filter((account: BrowserLocalAccount | null): account is BrowserLocalAccount =>
-                Boolean(account),
-            );
-    } catch {
+export function coerceStoredAccounts(value: unknown): BrowserLocalAccount[] {
+    if (!value || typeof value !== "object") {
         return [];
     }
+
+    const { accounts } = value as StoredAccountsPayload;
+    if (!Array.isArray(accounts)) {
+        return [];
+    }
+
+    return accounts
+        .map((account: unknown) => coerceStoredAccount(account))
+        .filter((account: BrowserLocalAccount | null): account is BrowserLocalAccount =>
+            Boolean(account),
+        );
 }
 
-export function writeStoredAccounts(accounts: BrowserLocalAccount[]): void {
-    localStorage.setItem(ACCOUNT_STORAGE_KEY, JSON.stringify({ accounts }));
+export function readStoredAccounts(): BrowserLocalAccount[] {
+    return coerceStoredAccounts(accountStorage().readJSON<StoredAccountsPayload>());
 }
 
-function accountFromUser(user: UserSelf): BrowserLocalAccount {
+export function writeStoredAccounts(accounts: BrowserLocalAccount[]): boolean {
+    return accountStorage().writeJSON({ accounts });
+}
+
+function accountFromUser(user: Readonly<UserSelf>): BrowserLocalAccount {
     return {
         uid: user.uid,
         username: user.username,
@@ -58,6 +75,39 @@ function accountFromUser(user: UserSelf): BrowserLocalAccount {
         avatar: user.avatar ?? "",
         isCurrent: true,
     };
+}
+
+function accountMatches(
+    account: BrowserLocalAccount,
+    knownUIDs: ReadonlySet<string>,
+    knownUsernames: ReadonlySet<string>,
+): boolean {
+    return (
+        knownUIDs.has(account.uid) ||
+        (account.username !== "" && knownUsernames.has(account.username))
+    );
+}
+
+export function mergeStoredAccounts(
+    currentAccount: BrowserLocalAccount,
+    storedAccounts: readonly BrowserLocalAccount[],
+): BrowserLocalAccount[] {
+    const accounts = [currentAccount];
+    const knownUIDs = new Set([currentAccount.uid]);
+    const knownUsernames = new Set(currentAccount.username ? [currentAccount.username] : []);
+
+    for (const account of storedAccounts) {
+        if (accountMatches(account, knownUIDs, knownUsernames)) {
+            continue;
+        }
+        accounts.push({ ...account, isCurrent: false });
+        knownUIDs.add(account.uid);
+        if (account.username) {
+            knownUsernames.add(account.username);
+        }
+    }
+
+    return accounts;
 }
 
 /**
@@ -70,17 +120,8 @@ export function syncStoredAccounts(user: Readonly<UserSelf> | null): BrowserLoca
     if (!user) {
         return readStoredAccounts();
     }
-    const accounts = [accountFromUser(user)];
-    for (const account of readStoredAccounts()) {
-        const known = accounts.some(
-            (existing) =>
-                existing.uid === account.uid ||
-                (account.username && existing.username === account.username),
-        );
-        if (!known) {
-            accounts.push({ ...account, isCurrent: false });
-        }
-    }
+
+    const accounts = mergeStoredAccounts(accountFromUser(user), readStoredAccounts());
     writeStoredAccounts(accounts);
     return accounts;
 }

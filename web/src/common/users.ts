@@ -31,14 +31,15 @@ export function formatUserDisplayName(user: UserLike | null, uiConfig?: UIConfig
     return label || "";
 }
 
-export function formatUserSecondaryIdentifier(user: UserLike, label: string): string {
-    if (user.email && user.email !== label) {
-        return user.email;
-    }
-    if (user.username && user.username !== label) {
-        return user.username;
-    }
-    return "";
+/**
+ * Pick a secondary identifier that distinguishes a user from the visible label.
+ */
+export function formatUserSecondaryIdentifier(user: UserLike, primaryLabel: string): string {
+    return (
+        [user.email, user.username].find(
+            (identifier) => identifier && identifier !== primaryLabel,
+        ) ?? ""
+    );
 }
 
 const formatUnknownUserLabel = () =>

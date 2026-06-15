@@ -10,6 +10,7 @@ import { globalAK } from "#common/global";
 import { AKElement } from "#elements/Base";
 import { WithNotifications } from "#elements/mixins/notifications";
 import { WithSession } from "#elements/mixins/session";
+import type { SlottedTemplateResult } from "#elements/types";
 
 import Styles from "#components/ak-nav-button.css";
 import { AKDrawerChangeEvent } from "#components/notifications/events";
@@ -38,7 +39,7 @@ export class NavigationButtons extends WithNotifications(WithSession(AKElement))
 
     static styles = [PFDisplay, PFBrand, PFPage, PFButton, PFDrawer, PFNotificationBadge, Styles];
 
-    protected renderAPIDrawerTrigger() {
+    protected renderAPIDrawerTrigger(): SlottedTemplateResult {
         const { apiDrawer } = this.uiConfig.enabledFeatures;
 
         return guard([apiDrawer], () => {
@@ -78,7 +79,7 @@ export class NavigationButtons extends WithNotifications(WithSession(AKElement))
         });
     }
 
-    protected renderNotificationDrawerTrigger() {
+    protected renderNotificationDrawerTrigger(): SlottedTemplateResult {
         const { notificationDrawer } = this.uiConfig.enabledFeatures;
         const notificationCount = this.notificationCount;
 
@@ -122,7 +123,7 @@ export class NavigationButtons extends WithNotifications(WithSession(AKElement))
         });
     }
 
-    renderSettings() {
+    protected renderSettings(): SlottedTemplateResult {
         if (!this.uiConfig?.enabledFeatures.settings) {
             return nothing;
         }
@@ -141,7 +142,7 @@ export class NavigationButtons extends WithNotifications(WithSession(AKElement))
         </div>`;
     }
 
-    renderImpersonation() {
+    protected renderImpersonation(): SlottedTemplateResult {
         if (!this.impersonating) return nothing;
 
         const onClick = async () => {
@@ -159,7 +160,7 @@ export class NavigationButtons extends WithNotifications(WithSession(AKElement))
             </div>`;
     }
 
-    render() {
+    render(): SlottedTemplateResult {
         return html`<div role="presentation" class="pf-c-page__header-tools">
             <div class="pf-c-page__header-tools-group">
                 ${this.renderAPIDrawerTrigger()}
