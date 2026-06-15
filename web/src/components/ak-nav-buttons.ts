@@ -168,7 +168,7 @@ export class NavigationButtons extends WithNotifications(WithSession(AKElement))
                 ${this.renderNotificationDrawerTrigger()}
                 <!-- -->
                 ${this.renderSettings()}
-                <ak-account-switcher></ak-account-switcher>
+                <ak-account-switcher class="pf-c-page__header-tools-item"></ak-account-switcher>
                 <slot name="extra"></slot>
             </div>
             ${this.renderImpersonation()}

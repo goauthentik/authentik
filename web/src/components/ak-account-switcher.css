@@ -1,19 +1,23 @@
 :host {
-    display: contents;
+    display: inline-flex;
+    align-items: center;
+    min-height: 2rem;
 }
 
 [part="switcher"] {
     font-size: var(--pf-global--FontSize--md);
     line-height: var(--pf-global--LineHeight--md);
     display: flex;
+    align-items: center;
     justify-content: center;
     flex-wrap: wrap;
 }
 
 [part="container"] {
-    display: flex;
+    display: inline-flex;
     align-items: center;
-    min-height: 100%;
+    min-height: 2rem;
+    line-height: 1;
 }
 
 [part="menu"] {

@@ -1,3 +1,10 @@
 .pf-c-page__header-tools {
     display: flex;
+    align-items: center;
+}
+
+.pf-c-page__header-tools-group,
+.pf-c-page__header-tools-item {
+    display: inline-flex;
+    align-items: center;
 }
