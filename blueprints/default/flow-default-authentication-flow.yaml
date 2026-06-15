@@ -69,15 +69,6 @@ entries:
     target: !KeyOf flow
   model: authentik_flows.flowstagebinding
 - model: authentik_policies_expression.expressionpolicy
-  id: default-authentication-flow-identification-optional
-  identifiers:
-    name: default-authentication-flow-identification-stage
-  attrs:
-    expression: |
-      # During an account switch authentik already verified that this browser holds
-      # a session for the pending user, so they don't need to be identified again
-      return not request.context.get("is_account_switch", False)
-- model: authentik_policies_expression.expressionpolicy
   id: default-authentication-flow-password-optional
   identifiers:
     name: default-authentication-flow-password-stage
@@ -101,13 +92,6 @@ entries:
       # if the authentication method is webauthn (passwordless), then we skip the authenticator
       # validation stage by returning false (true will execute the stage)
       return not (flow_plan.context.get("auth_method") == "auth_webauthn_pwl")
-- model: authentik_policies.policybinding
-  identifiers:
-    order: 10
-    target: !KeyOf default-authentication-flow-identification-binding
-    policy: !KeyOf default-authentication-flow-identification-optional
-  attrs:
-    failure_result: true
 - model: authentik_policies.policybinding
   identifiers:
     order: 10

@@ -12,14 +12,12 @@ from rest_framework.request import Request
 
 from authentik.core.models import AuthenticatedSession, User
 from authentik.core.signals import login_failed, password_changed, password_hash_changed
-from authentik.core.views.account_switch import (
-    PLAN_CONTEXT_ACCOUNT_SWITCH_FROM_USER,
-    PLAN_CONTEXT_IS_ACCOUNT_SWITCH,
-)
 from authentik.events.models import Event, EventAction
 from authentik.flows.models import Stage
 from authentik.flows.planner import (
+    PLAN_CONTEXT_ACCOUNT_SWITCH_FROM_USER,
     PLAN_CONTEXT_DEVICE,
+    PLAN_CONTEXT_IS_ACCOUNT_SWITCH,
     PLAN_CONTEXT_OUTPOST,
     PLAN_CONTEXT_SOURCE,
     FlowPlan,

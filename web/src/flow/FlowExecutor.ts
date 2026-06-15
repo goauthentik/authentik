@@ -25,6 +25,8 @@ import { LitPropertyRecord, SlottedTemplateResult } from "#elements/types";
 import { exportParts } from "#elements/utils/attributes";
 import { ThemedImage } from "#elements/utils/images";
 
+import { removeStoredAccount } from "#components/ak-account-switcher-storage";
+
 import {
     AKFlowAdvanceEvent,
     AKFlowSubmitRequest,
@@ -63,6 +65,8 @@ import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 
 /// <reference types="../../types/lit.d.ts" />
+
+const ACCOUNT_SWITCH_STALE_QUERY = "account_switch_stale";
 
 /**
  * An executor for authentik flows.
@@ -242,6 +246,13 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
 
     public async firstUpdated(changed: PropertyValues<this>): Promise<void> {
         super.firstUpdated(changed);
+
+        const staleAccountUID = new URLSearchParams(window.location.search).get(
+            ACCOUNT_SWITCH_STALE_QUERY,
+        );
+        if (staleAccountUID) {
+            removeStoredAccount(staleAccountUID);
+        }
 
         this.refresh().then(() => {
             window.dispatchEvent(new AKFlowAdvanceEvent());

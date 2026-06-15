@@ -1,5 +1,7 @@
 """Account switch view tests"""
 
+from urllib.parse import parse_qs, urlsplit
+
 from django.conf import settings
 from django.urls import reverse
 
@@ -11,14 +13,16 @@ from authentik.core.tests.utils import (
     create_test_session,
     create_test_user,
 )
-from authentik.core.views.account_switch import (
+from authentik.core.views.account_switch import QS_ACCOUNT_SWITCH_STALE
+from authentik.flows.planner import (
     PLAN_CONTEXT_ACCOUNT_SWITCH_FROM_USER,
     PLAN_CONTEXT_IS_ACCOUNT_SWITCH,
+    PLAN_CONTEXT_PENDING_USER,
+    FlowPlan,
 )
 from authentik.events.models import Event, EventAction
 from authentik.flows.markers import StageMarker
 from authentik.flows.models import Flow, FlowDesignation, FlowStageBinding
-from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
 from authentik.flows.tests import FlowTestCase
 from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.root.middleware import COOKIE_NAME_ACCOUNTS
@@ -114,6 +118,10 @@ class TestAccountSwitch(FlowTestCase):
         plan: FlowPlan = self.client.session[SESSION_KEY_PLAN]
         self.assertNotIn(PLAN_CONTEXT_PENDING_USER, plan.context)
         self.assertNotIn(PLAN_CONTEXT_IS_ACCOUNT_SWITCH, plan.context)
+        self.assertEqual(
+            parse_qs(urlsplit(response.url).query)[QS_ACCOUNT_SWITCH_STALE],
+            [self.other_user.uid],
+        )
 
     def test_switch_ignores_other_browser_session(self):
         """Test a live login of a different browser doesn't count as proof"""
@@ -125,6 +133,10 @@ class TestAccountSwitch(FlowTestCase):
         self.assertEqual(response.status_code, 302)
         plan: FlowPlan = self.client.session[SESSION_KEY_PLAN]
         self.assertNotIn(PLAN_CONTEXT_PENDING_USER, plan.context)
+        self.assertEqual(
+            parse_qs(urlsplit(response.url).query)[QS_ACCOUNT_SWITCH_STALE],
+            [self.other_user.uid],
+        )
 
     @apply_blueprint("default/flow-default-authentication-flow.yaml")
     def test_default_flow_skips_identification(self):
@@ -142,6 +154,8 @@ class TestAccountSwitch(FlowTestCase):
         response = self.client.get(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug})
         )
+        self.assertEqual(response.status_code, 302)
+        response = self.client.get(response.url)
 
         self.assertStageResponse(response, flow, component="ak-stage-password")
 

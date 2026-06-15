@@ -66,6 +66,12 @@ export function writeStoredAccounts(accounts: BrowserLocalAccount[]): boolean {
     return accountStorage().writeJSON({ accounts });
 }
 
+export function removeStoredAccount(uid: string): BrowserLocalAccount[] {
+    const accounts = readStoredAccounts().filter((account) => account.uid !== uid);
+    writeStoredAccounts(accounts);
+    return accounts;
+}
+
 function accountFromUser(user: Readonly<UserSelf>): BrowserLocalAccount {
     return {
         uid: user.uid,
