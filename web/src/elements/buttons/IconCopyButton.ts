@@ -52,7 +52,8 @@ export function IconCopyButton({
         @click=${doCopy}
         aria-label=${buttonLabel}
     >
-        <i class="fas fa-copy" aria-hidden="true"></i>
-        <pf-tooltip position="top" content=${tooltipLabel}> </pf-tooltip>
+        <pf-tooltip position="top" content=${tooltipLabel}>
+            <i class="fas fa-copy" aria-hidden="true"></i>
+        </pf-tooltip>
     </button>`;
 }
