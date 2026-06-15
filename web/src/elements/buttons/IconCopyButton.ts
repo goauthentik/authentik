@@ -14,7 +14,7 @@ export interface IconCopyButtonProps {
     buttonLabel?: string;
     tooltipLabel?: string;
     entityLabel?: string;
-    description?: string;
+    description?: SlottedTemplateResult;
 }
 
 export function IconCopyButton({
