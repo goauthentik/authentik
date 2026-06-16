@@ -18,6 +18,9 @@ export class AkSecretTextInput extends HorizontalLightComponent<string> {
     @property({ type: Boolean, reflect: true })
     public revealed = false;
 
+    @property({ type: Boolean, reflect: true })
+    public plaintext = false;
+
     @property({ type: String })
     public placeholder = "";
 
@@ -93,7 +96,7 @@ export class AkSecretTextInput extends HorizontalLightComponent<string> {
 
         return html`<input
             ${ref(this.#ref)}
-            type="text"
+            type=${this.plaintext ? "text" : "password"}
             id=${this.fieldID}
             aria-describedby=${this.helpID}
             @input=${this.#inputListener}
