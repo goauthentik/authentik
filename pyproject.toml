@@ -76,7 +76,7 @@ dependencies = [
 
 [dependency-groups]
 dev = [
-  "aws-cdk-lib==2.258.0",
+  "aws-cdk-lib==2.258.1",
   "bandit==1.9.4",
   "black==26.5.1",
   "bpython==0.26",
