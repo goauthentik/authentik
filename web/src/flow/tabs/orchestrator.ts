@@ -11,6 +11,7 @@ const logger = ConsoleLogger.prefix("mtab/orchestrate");
 
 const TAB_EXIT_TIMEOUT_MS = 3000;
 const TAB_EXIT_MAX_WAIT_MS = 15000;
+const TAB_EXIT_SETTLE_MS = 100;
 
 export function multiTabOrchestrateLeave() {
     Broadcast.shared.akExitTab();
@@ -47,7 +48,7 @@ async function waitForTabExit(tab: string, resumeID: string) {
             return;
         }
         logger.debug("tab exited", tab);
-        finish(1000);
+        finish(TAB_EXIT_SETTLE_MS);
     };
 
     const timeoutCheck = async () => {
