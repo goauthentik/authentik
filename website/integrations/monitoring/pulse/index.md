@@ -33,13 +33,13 @@ To support the integration of Pulse with authentik, you need to create an applic
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
-    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Note the **slug** value because you will use it when configuring Pulse.
     - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
-        - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
+        - Note the **Client ID** and **Client Secret** values because they will be required later.
         - Add a **Redirect URI** of type `Strict` `Authorization` as `https://pulse.company/api/oidc/callback`.
-        - Select any available signing key.
-        - Under **Advanced protocol settings**, add `authentik default OAuth Mapping: OpenID 'offline_access'` to the selected scopes if you want long-lived sessions backed by refresh tokens.
+        - Select an RSA signing key so authentik signs ID tokens with RS256.
+        - Under **Advanced protocol settings** > **Scopes**, add `authentik default OAuth Mapping: OpenID 'offline_access'` to the selected scopes if you want long-lived sessions backed by refresh tokens.
     - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 
 3. Click **Submit** to save the new application and provider.
@@ -52,16 +52,17 @@ To support the integration of Pulse with authentik, you need to create an applic
     - **Issuer URL**: `https://authentik.company/application/o/<application_slug>/`
     - **Client ID**: enter the Client ID from authentik.
     - **Client Secret**: enter the Client Secret from authentik.
-    - **Redirect URL**: `https://pulse.company/api/oidc/callback`
-    - **End Session URL**: `https://authentik.company/application/o/<application_slug>/end-session/`
-    - **Scopes**: `openid profile email` (add `offline_access` if you added the scope mapping in authentik)
-    - **Claim Mapping** _(optional)_: map `email`, `username`, and `groups` to the claims issued by authentik. Include the `groups` scope if you want to use allowed groups.
-    - **Allowed Groups**, **Allowed Domains**, **Allowed Emails** _(optional)_: restrict who can sign in based on the claims Pulse receives from authentik.
+    - **Redirect URL**: confirm that Pulse shows `https://pulse.company/api/oidc/callback`. If it shows a different URL, enter `https://pulse.company/api/oidc/callback`.
+    - **Logout URL**: `https://authentik.company/application/o/<application_slug>/end-session/`
 4. Click **Save**.
 
-:::info
-Pulse stores refresh tokens encrypted and invalidates the session if a refresh attempt fails, so revoked access at the identity provider logs the user out on the next token refresh.
-:::
+### Configure optional OIDC settings
+
+Pulse can also be configured with access restrictions and longer-lived sessions:
+
+- To restrict access, expand **Show advanced OIDC options** and configure **Allowed groups**, **Allowed domains**, or **Allowed email addresses**. authentik includes the user's group names in the `groups` claim of the default `profile` scope.
+- To assign Pulse roles from authentik group membership, configure **Group role mappings** as `group=roleId` pairs, for example `pulse-admins=admin`. Group role mappings require Pulse Pro.
+- To enable long-lived sessions, add `offline_access` to **Scopes** in Pulse if you added the `offline_access` scope mapping in authentik. Pulse stores the refresh token with the user's session and invalidates the session if token refresh fails.
 
 ### Hide local login _(optional)_
 
@@ -74,3 +75,4 @@ To confirm that authentik is properly configured with Pulse, log out and attempt
 ## Resources
 
 - [Pulse OIDC Single Sign-On documentation](https://github.com/rcourtman/Pulse/blob/main/docs/OIDC.md)
+- [Pulse configuration documentation](https://github.com/rcourtman/Pulse/blob/main/docs/CONFIGURATION.md)
