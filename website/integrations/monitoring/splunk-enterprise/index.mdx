@@ -173,14 +173,15 @@ Splunk maps values from the SAML `role` attribute to Splunk roles. The authentik
 1. Log in to Splunk Enterprise with a local administrator account.
 2. In the Splunk bar, navigate to **Settings** > **Users and authentication** > **Authentication methods**.
 3. Click **Configure Splunk to use SAML**.
-4. In the top right, click **New Group**.
-5. Configure the mapping:
+4. If the **SAML Configuration** dialog opens, click **Cancel** to return to the SAML groups page.
+5. Click **New Group**.
+6. Configure the mapping:
     - **Group name**: enter the authentik application entitlement name, for example `splunk-user`.
     - **Splunk roles**: select the Splunk role or roles to assign, for example `user`.
-6. Click **Save**.
-7. Repeat these steps for each Splunk role entitlement.
+7. Click **Save**.
+8. Repeat these steps for each Splunk role entitlement.
 
-:::note
+:::note Auto-mapped roles
 Splunk can auto-map SAML role values to local Splunk roles with the same name. Explicit group mappings are recommended because they make authorization easier to review and avoid accidentally granting roles when an entitlement name matches a Splunk role.
 :::
 
@@ -190,7 +191,7 @@ To verify SAML login, navigate to the authentik User interface and click the Spl
 
 ## Resources
 
-- [Splunk Enterprise Documentation - Configure SSO with Okta as your identity provider](https://help.splunk.com/en/splunk-enterprise/administer/manage-users-and-security/10.0/use-saml-as-an-authentication-scheme-for-single-sign-on/configure-sso-with-okta-as-your-identity-provider)
-- [Splunk Enterprise Documentation - Configure SAML SSO for other IdPs](https://help.splunk.com/en/splunk-enterprise/administer/manage-users-and-security/10.0/use-saml-as-an-authentication-scheme-for-single-sign-on/configure-saml-sso-for-other-idps)
-- [Splunk Enterprise Documentation - Map groups on a SAML identity provider to Splunk roles](https://help.splunk.com/en/splunk-enterprise/administer/manage-users-and-security/10.0/use-saml-as-an-authentication-scheme-for-single-sign-on/map-groups-on-a-saml-identity-provider-to-splunk-roles)
-- [Splunk Enterprise Documentation - Troubleshoot SAML SSO](https://help.splunk.com/en/splunk-enterprise/administer/manage-users-and-security/10.0/use-saml-as-an-authentication-scheme-for-single-sign-on/troubleshoot-saml-sso)
+- [Splunk Enterprise Documentation - Configure single sign-on with SAML](https://help.splunk.com/en/splunk-enterprise/administer/manage-users-and-security/10.4/use-saml-as-an-authentication-scheme-for-single-sign-on/configure-single-sign-on-with-saml)
+- [Splunk Enterprise Documentation - Configure SAML SSO for other IdPs](https://help.splunk.com/en/splunk-enterprise/administer/manage-users-and-security/10.4/use-saml-as-an-authentication-scheme-for-single-sign-on/configure-saml-sso-for-other-idps)
+- [Splunk Enterprise Documentation - Map groups on a SAML identity provider to Splunk roles](https://help.splunk.com/en/splunk-enterprise/administer/manage-users-and-security/10.4/use-saml-as-an-authentication-scheme-for-single-sign-on/map-groups-on-a-saml-identity-provider-to-splunk-roles)
+- [Splunk Enterprise Documentation - Troubleshoot SAML SSO](https://help.splunk.com/en/splunk-enterprise/administer/manage-users-and-security/10.4/use-saml-as-an-authentication-scheme-for-single-sign-on/troubleshoot-saml-sso)
