@@ -210,7 +210,7 @@ class TesOAuth2DeviceBackchannel(OAuthTestCase):
 
     @apply_blueprint("system/providers-oauth2.yaml")
     def test_device_dpop_jkt_without_bound_key_rejected(self):
-        """dpop_jkt without bound_key scope must 400, not 500"""
+        """Test dpop_jkt without bound_key scope throws HTTP 400 error"""
         self.provider.property_mappings.set(
             ScopeMapping.objects.filter(
                 managed__in=["goauthentik.io/providers/oauth2/scope-openid"]
@@ -226,6 +226,9 @@ class TesOAuth2DeviceBackchannel(OAuthTestCase):
             },
         )
         self.assertEqual(res.status_code, 400)
+        body = res.json()
+        self.assertEqual(body["error"], "dpop_jkt_not_allowed")
+        self.assertIn("dpop_jkt", body["error_description"])
 
     @apply_blueprint("system/providers-oauth2.yaml")
     def test_device_bound_key_without_dpop_jkt_rejected(self):
@@ -245,6 +248,9 @@ class TesOAuth2DeviceBackchannel(OAuthTestCase):
             data={"scope": f"{SCOPE_OPENID} {SCOPE_BOUND_KEY}"},
         )
         self.assertEqual(res.status_code, 400)
+        body = res.json()
+        self.assertEqual(body["error"], "dpop_jkt_required")
+        self.assertIn("dpop_jkt", body["error_description"])
 
     @apply_blueprint("system/providers-oauth2.yaml")
     def test_device_malformed_dpop_jkt_rejected(self):
@@ -264,3 +270,6 @@ class TesOAuth2DeviceBackchannel(OAuthTestCase):
             data={"scope": f"{SCOPE_OPENID} {SCOPE_BOUND_KEY}", "dpop_jkt": "nope"},
         )
         self.assertEqual(res.status_code, 400)
+        body = res.json()
+        self.assertEqual(body["error"], "invalid_dpop_jkt")
+        self.assertIn("dpop_jkt", body["error_description"])

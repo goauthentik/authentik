@@ -9,6 +9,7 @@ from urllib.parse import urlparse
 
 from cryptography.hazmat.primitives.asymmetric.rsa import RSAPublicKey
 from django.core.cache import cache
+from django.db import transaction
 from jwcrypto.jwk import JWK
 from jwt import PyJWK
 from jwt import decode as jwt_decode
@@ -168,7 +169,7 @@ class DPoPValidator:
         try:
             key = PyJWK.from_dict(jwk)
             return jwt_decode(dpop_proof, key.key, algorithms=[alg], options={"verify_iat": False})
-        except (PyJWTError, InvalidTokenError) as exc:
+        except (PyJWTError, InvalidTokenError, TypeError, ValueError) as exc:
             raise DPoPError("DPoP proof signature verification failed") from exc
 
     def _validate_payload_claims(self, payload: dict, expected_htm: str, expected_htu: str) -> str:
@@ -198,11 +199,16 @@ class DPoPValidator:
     def _check_jti_replay(self, jti: str) -> None:
         """Check if the jti has been seen before (replay protection)."""
 
-        # Only store the hash of the JTI to prevent memory-exhaustion attacks 
+        # Only store the hash of the JTI to prevent memory-exhaustion attacks
         # Recommended by RFC 9449 11.1
         jti_hash = hashlib.sha256(jti.encode("utf-8")).hexdigest()
         cache_key = CACHE_KEY_DPOP_JTI % jti_hash
-        if not cache.add(cache_key, True, timeout=DPOP_JTI_REPLAY_WINDOW):
+        # `cache.add()` is atomic set-if-not-exists. Wrap so when the cache
+        # backend is DB-backed (as in tests), a duplicate-key insert does not
+        # break the surrounding transaction.
+        with transaction.atomic():
+            added = cache.add(cache_key, True, timeout=DPOP_JTI_REPLAY_WINDOW)
+        if not added:
             raise DPoPError("DPoP proof jti replay detected")
 
     def _validate_optional_claims(

@@ -6,10 +6,12 @@ import json
 import time
 
 from cryptography.hazmat.primitives.asymmetric.ec import (
+    SECP256K1,
     SECP256R1,
     EllipticCurvePrivateKey,
     generate_private_key,
 )
+from cryptography.hazmat.primitives.asymmetric.rsa import generate_private_key as generate_rsa_key
 from django.core.cache import cache
 from django.test import TestCase
 from jwt import encode as jwt_encode
@@ -109,6 +111,45 @@ def _craft_jwt(payload: dict, private_key, algorithm: str, headers: dict) -> str
 
     segments.append(base64.urlsafe_b64encode(signature).rstrip(b"="))
     return b".".join(segments).decode()
+
+
+def _b64_uint(value: int) -> str:
+    """Encode an unsigned integer as a base64url string (no padding)."""
+    length = (value.bit_length() + 7) // 8
+    return base64.urlsafe_b64encode(value.to_bytes(length, "big")).rstrip(b"=").decode()
+
+
+class RSAProofBuilder:
+    """Helper to build RSA-signed DPoP proof JWTs for testing"""
+
+    def __init__(self, key_size: int = 2048):
+        self.private_key = generate_rsa_key(public_exponent=65537, key_size=key_size)
+        nums = self.private_key.public_key().public_numbers()
+        self.jwk = {"kty": "RSA", "n": _b64_uint(nums.n), "e": _b64_uint(nums.e)}
+
+    def build(
+        self,
+        htm: str = "POST",
+        htu: str = "https://server.example.com/token",
+        c_s256: str | None = None,
+        iat: int | None = None,
+        jti: str = "rsa-jti-001",
+        alg: str = "RS256",
+    ) -> str:
+        headers = {"typ": "dpop+jwt", "jwk": self.jwk.copy(), "alg": alg}
+        payload = {
+            "htm": htm,
+            "htu": htu,
+            "iat": iat if iat is not None else int(time.time()),
+            "jti": jti,
+        }
+        if c_s256 is not None:
+            payload["c_s256"] = c_s256
+        return jwt_encode(payload, self.private_key, algorithm=alg, headers=headers)
+
+    @property
+    def jkt(self) -> str:
+        return jwk_thumbprint(self.jwk)
 
 
 class TestJWKThumbprint(TestCase):
@@ -425,3 +466,41 @@ class TestDPoPValidator(TestCase):
         with self.assertRaises(DPoPError) as cm:
             self.validator.validate(proof, expected_htm="POST", expected_htu=self.htu)
         self.assertIn("signature", str(cm.exception).lower())
+
+    def test_rsa_proof_accepted(self):
+        """A valid 2048-bit RSA DPoP proof should validate."""
+        builder = RSAProofBuilder(key_size=2048)
+        proof = builder.build(htu=self.htu)
+        result = self.validator.validate(proof, expected_htm="POST", expected_htu=self.htu)
+        self.assertEqual(result["kty"], "RSA")
+
+    def test_rsa_key_too_small_rejected(self):
+        """An RSA key below the minimum size (2048 bits) must be rejected."""
+        builder = RSAProofBuilder(key_size=1024)
+        proof = builder.build(htu=self.htu)
+        with self.assertRaises(DPoPError) as cm:
+            self.validator.validate(proof, expected_htm="POST", expected_htu=self.htu)
+        self.assertIn("too small", str(cm.exception).lower())
+
+    def test_unsupported_ec_curve_rejected(self):
+        """An EC key on a curve outside the supported set must be rejected."""
+        priv = generate_private_key(SECP256K1())
+        nums = priv.public_key().public_numbers()
+        x = base64.urlsafe_b64encode(nums.x.to_bytes(32, "big")).rstrip(b"=").decode()
+        y = base64.urlsafe_b64encode(nums.y.to_bytes(32, "big")).rstrip(b"=").decode()
+        jwk = {"kty": "EC", "crv": "secp256k1", "x": x, "y": y}
+        payload = {
+            "htm": "POST",
+            "htu": self.htu,
+            "iat": int(time.time()),
+            "jti": "curve-jti-001",
+        }
+        proof = _craft_jwt(
+            payload,
+            priv,
+            algorithm="ES256",
+            headers={"typ": "dpop+jwt", "jwk": jwk, "alg": "ES256"},
+        )
+        with self.assertRaises(DPoPError) as cm:
+            self.validator.validate(proof, expected_htm="POST", expected_htu=self.htu)
+        self.assertIn("curve", str(cm.exception).lower())

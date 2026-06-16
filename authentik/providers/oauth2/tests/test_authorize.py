@@ -825,6 +825,7 @@ class TestAuthorize(OAuthTestCase):
         plan = self.client.session.get(SESSION_KEY_PLAN)
         self.assertEqual(plan.context[PLAN_CONTEXT_PENDING_USER_IDENTIFIER], "foo")
 
+    @apply_blueprint("system/providers-oauth2.yaml")
     def test_dpop_jkt_persisted(self):
         """Test that dpop_jkt is persisted in the authorization code"""
         flow = create_test_flow()
@@ -835,6 +836,14 @@ class TestAuthorize(OAuthTestCase):
             redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "foo://localhost")],
             access_code_validity="seconds=100",
             grant_types=[GrantType.AUTHORIZATION_CODE],
+        )
+        provider.property_mappings.set(
+            ScopeMapping.objects.filter(
+                managed__in=[
+                    "goauthentik.io/providers/oauth2/scope-openid",
+                    "goauthentik.io/providers/oauth2/scope-bound_key",
+                ]
+            )
         )
         Application.objects.create(name="app", slug="app", provider=provider)
         state = generate_id()
@@ -883,6 +892,7 @@ class TestAuthorize(OAuthTestCase):
             OAuthAuthorizationParams.from_request(request)
         self.assertEqual(cm.exception.error, "invalid_request")
 
+    @apply_blueprint("system/providers-oauth2.yaml")
     def test_bound_key_without_dpop_jkt_rejected(self):
         """bound_key scope without dpop_jkt must be rejected"""
         provider = OAuth2Provider.objects.create(
@@ -891,6 +901,14 @@ class TestAuthorize(OAuthTestCase):
             authorization_flow=create_test_flow(),
             redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://local.invalid/Foo")],
             grant_types=[GrantType.AUTHORIZATION_CODE],
+        )
+        provider.property_mappings.set(
+            ScopeMapping.objects.filter(
+                managed__in=[
+                    "goauthentik.io/providers/oauth2/scope-openid",
+                    "goauthentik.io/providers/oauth2/scope-bound_key",
+                ]
+            )
         )
         request = self.factory.get(
             "/",

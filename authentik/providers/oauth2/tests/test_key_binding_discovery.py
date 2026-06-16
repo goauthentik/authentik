@@ -2,7 +2,8 @@
 
 from django.urls import reverse
 
-from authentik.blueprints.tests import apply_blueprint
+from authentik.blueprints.models import BlueprintInstance
+from authentik.blueprints.v1.importer import Importer
 from authentik.core.models import Application
 from authentik.core.tests.utils import create_test_flow
 from authentik.lib.generators import generate_id
@@ -15,17 +16,22 @@ class TestKeyBindingDiscovery(OAuthTestCase):
 
     def setUp(self) -> None:
         super().setUp()
-        apply_blueprint("system/providers-oauth2.yaml")
+        content = BlueprintInstance(path="system/providers-oauth2.yaml").retrieve()
+        Importer.from_string(content).apply()
         self.provider = OAuth2Provider.objects.create(
             name=generate_id(),
             client_id="test",
             authorization_flow=create_test_flow(),
             signing_key=self.keypair,
         )
-        # Add bound_key scope mapping to the provider
-        bound_key_mapping = ScopeMapping.objects.filter(scope_name="bound_key").first()
-        if bound_key_mapping:
-            self.provider.scope_mappings.add(bound_key_mapping)
+        self.provider.property_mappings.set(
+            ScopeMapping.objects.filter(
+                managed__in=[
+                    "goauthentik.io/providers/oauth2/scope-openid",
+                    "goauthentik.io/providers/oauth2/scope-bound_key",
+                ]
+            )
+        )
         self.app = Application.objects.create(
             name=generate_id(), slug="test", provider=self.provider
         )
