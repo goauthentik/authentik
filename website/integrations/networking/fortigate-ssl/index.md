@@ -83,7 +83,7 @@ SSH into FortiGate and run the following commands, replacing `authentik-signing-
 ```text
 config user saml
     edit "authentik-sso"
-        set cert "Fortinet_Factory"
+        set cert "<Your Fortinet Cert>"
         set entity-id "https://fortigate.company/remote/saml/metadata"
         set single-sign-on-url "https://fortigate.company/remote/saml/login"
         set single-logout-url "https://fortigate.company/remote/saml/logout"
