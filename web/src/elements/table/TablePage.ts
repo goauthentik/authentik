@@ -93,7 +93,7 @@ export abstract class TablePage<T extends object> extends Table<T> {
             ${inner
                 ? inner
                 : html`<ak-empty-state icon=${this.pageIcon}
-                      ><span>${this.emptyStateMessage}</span>
+                      ><span>${this.formatEmptyStateMessage()}</span>
                       <div slot="body">
                           ${this.searchEnabled ? this.renderEmptyClearSearch() : nothing}
                       </div>
