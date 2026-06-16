@@ -303,6 +303,41 @@ class _PostgresConsumer(Consumer):
         )  # type: ignore[no-untyped-call]
         return cast(int, lock_id)
 
+    def _backlog_waiting_for_dependencies(self) -> None:
+        self.logger.debug("Backlogging tasks waiting for dependencies", queue=self.queue_name)
+        with transaction.atomic(using=self.db_alias):
+            for task in self.query_set.filter(
+                queue_name=self.queue_name,
+                state=TaskState.WAITING_FOR_DEPENDENCIES,
+            ).select_for_update():
+                dependencies_states = task.dependencies.values_list("state", flat=True)
+                if any(state == TaskState.REJECTED for state in dependencies_states):
+                    self.logger.debug(
+                        "Task found with rejected dependencies, rejecting it too.",
+                        queue=self.queue_name,
+                        task_id=task.message_id,
+                    )
+                    task.state = TaskState.REJECTED
+                    task.message = b""
+                    task.mtime = timezone.now()
+                    task.eta = None
+                    task.save()
+                elif all(state == TaskState.DONE for state in dependencies_states):
+                    self.logger.debug(
+                        "Task found with all dependencies done, enqueuing.",
+                        queue=self.queue_name,
+                        task_id=task.message_id,
+                    )
+                    task.state = TaskState.QUEUED
+                    task.mtime = timezone.now()
+                    task.save()
+                else:
+                    self.logger.debug(
+                        "Task still is still waiting for dependencies, skipping.",
+                        queue=self.queue_name,
+                        task_id=task.message_id,
+                    )
+
     def _fetch_pending_messages(self) -> set[str]:
         self.logger.debug("Fetching for pending messages", queue=self.queue_name)
         pending = set(
@@ -436,6 +471,9 @@ class _PostgresConsumer(Consumer):
 
         if not self.pending:
             self.pending = self._fetch_pending_messages()
+
+        if not self.pending:
+            self._backlog_waiting_for_dependencies()
 
         # If we have some messages pending, loop to find one to process
         while True:
