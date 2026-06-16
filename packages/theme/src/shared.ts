@@ -25,11 +25,12 @@ import { styleframe } from "styleframe";
  * @type {StyleframeOptions}
  */
 export const authentikStyleframeOptions = {
+   indent: "    ",
     variables: {
-        name: ({ name }) => "ak-" + name.replace(/\./g, "-"),
+        name: ({ name }: { name: string }) => `ak-${name.replace(/\./g, "-")}`
     },
     themes: {
-        selector: ({ name }) => `html[data-theme="${name}"]`,
+        selector: ({ name }: { name: string}) => `html[data-theme="${name}"]`,
     },
 };
 

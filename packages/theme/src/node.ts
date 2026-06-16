@@ -1,4 +1,4 @@
-/**
+/*
  * @file Node-only build helpers for `@goauthentik/theme`.
  *
  * Re-exports everything the browser entry exports, plus filesystem-touching
@@ -7,7 +7,8 @@
  * @import { OutputFile } from "@styleframe/transpiler";
  */
 
-/// <reference types="../types/node.js" />
+
+import type { OutputFile } from "@styleframe/transpiler";
 
 import { writeFile } from "node:fs/promises";
 
@@ -28,12 +29,21 @@ export * from "./tokens/index.js";
  *   this absolute path in addition to being returned.
  */
 
+interface BuildOptions {
+    outFile?: string;
+}
+
 /**
  * @typedef {object} BuildResult
  * @property {string} css The full CSS string emitted by styleframe.
  * @property {OutputFile[]} files Raw transpile output for callers that want
  *   to inspect every file styleframe produced.
  */
+
+interface BuildResult {
+    css: string;
+    files: OutputFile[];
+}
 
 /**
  * Transpile the configured token tree to CSS.
@@ -44,7 +54,7 @@ export * from "./tokens/index.js";
  * @param {BuildOptions} [options]
  * @returns {Promise<BuildResult>}
  */
-export async function build(options = {}) {
+export async function build(options: BuildOptions = {}): Promise<BuildResult> {
     const output = await transpile(instance, { type: "css" });
     const cssFile = output.files.find((file) => file.name.endsWith(".css"));
     const css = cssFile?.content ?? "";

@@ -9,5 +9,5 @@
  * filesystem live in `./lib/node.js` (exposed via the `./build` subpath).
  */
 
-export { instance, ref, selector, theme, variable } from "./lib/shared.js";
-export * from "./lib/tokens/index.js";
+export { instance, ref, selector, theme, variable } from "./shared.js";
+export * from "./tokens/index.js";
