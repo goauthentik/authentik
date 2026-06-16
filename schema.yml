@@ -50941,6 +50941,12 @@ components:
           - $ref: '#/components/schemas/CompatibilityModeEnum'
           title: SCIM Compatibility Mode
           description: Alter authentik behavior for vendor-specific SCIM implementations.
+        flatten_nested_groups:
+          type: boolean
+          description: When enabled, members of nested child groups are included as
+            direct members of the parent group in the SCIM payload. Useful for SCIM
+            endpoints that do not support nested groups (AWS IAM Identity Center,
+            Slack, etc.).
         service_provider_config_cache_timeout:
           type: string
           minLength: 1
@@ -55023,6 +55029,12 @@ components:
           - $ref: '#/components/schemas/CompatibilityModeEnum'
           title: SCIM Compatibility Mode
           description: Alter authentik behavior for vendor-specific SCIM implementations.
+        flatten_nested_groups:
+          type: boolean
+          description: When enabled, members of nested child groups are included as
+            direct members of the parent group in the SCIM payload. Useful for SCIM
+            endpoints that do not support nested groups (AWS IAM Identity Center,
+            Slack, etc.).
         service_provider_config_cache_timeout:
           type: string
           description: Cache duration for ServiceProviderConfig responses. Set minutes=0
@@ -55150,6 +55162,12 @@ components:
           - $ref: '#/components/schemas/CompatibilityModeEnum'
           title: SCIM Compatibility Mode
           description: Alter authentik behavior for vendor-specific SCIM implementations.
+        flatten_nested_groups:
+          type: boolean
+          description: When enabled, members of nested child groups are included as
+            direct members of the parent group in the SCIM payload. Useful for SCIM
+            endpoints that do not support nested groups (AWS IAM Identity Center,
+            Slack, etc.).
         service_provider_config_cache_timeout:
           type: string
           minLength: 1
