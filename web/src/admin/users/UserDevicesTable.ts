@@ -16,6 +16,9 @@ import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-user-device-table")
 export class UserDeviceTable extends Table<Device> {
+    public static override verboseName = msg("Device");
+    public static override verboseNamePlural = msg("Devices");
+
     @property({ type: Number })
     userId?: number;
 
