@@ -64,6 +64,8 @@ export interface TasksSchedulesUpdateRequest {
 export interface TasksTasksListRequest {
     actorName?: string;
     aggregatedStatus?: Array<TaskAggregatedStatusEnum>;
+    messageId?: string;
+    messageIdIn?: Array<string>;
     ordering?: string;
     page?: number;
     pageSize?: number;
@@ -450,6 +452,16 @@ export class TasksApi extends runtime.BaseAPI {
 
         if (requestParameters["aggregatedStatus"] != null) {
             queryParameters["aggregated_status"] = requestParameters["aggregatedStatus"];
+        }
+
+        if (requestParameters["messageId"] != null) {
+            queryParameters["message_id"] = requestParameters["messageId"];
+        }
+
+        if (requestParameters["messageIdIn"] != null) {
+            queryParameters["message_id__in"] = requestParameters["messageIdIn"]!.join(
+                runtime.COLLECTION_FORMATS["csv"],
+            );
         }
 
         if (requestParameters["ordering"] != null) {

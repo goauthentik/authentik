@@ -12,6 +12,9 @@
  * Do not edit the class manually.
  */
 
+import type { LDAPSourceSyncStatusEnum } from "./LDAPSourceSyncStatusEnum";
+import { LDAPSourceSyncStatusEnumFromJSON } from "./LDAPSourceSyncStatusEnum";
+
 /**
  *
  * @export
@@ -20,10 +23,10 @@
 export interface LDAPSourceSync {
     /**
      *
-     * @type {number}
+     * @type {string}
      * @memberof LDAPSourceSync
      */
-    readonly pk: number;
+    readonly pk: string;
     /**
      *
      * @type {Array<string>}
@@ -38,10 +41,16 @@ export interface LDAPSourceSync {
     readonly startedAt: Date;
     /**
      *
-     * @type {boolean}
+     * @type {Date}
      * @memberof LDAPSourceSync
      */
-    readonly done: boolean;
+    readonly finishedAt: Date | null;
+    /**
+     *
+     * @type {LDAPSourceSyncStatusEnum}
+     * @memberof LDAPSourceSync
+     */
+    readonly status: LDAPSourceSyncStatusEnum;
     /**
      *
      * @type {string}
@@ -87,7 +96,8 @@ export function instanceOfLDAPSourceSync(value: object): value is LDAPSourceSync
     if (!("pk" in value) || value["pk"] === undefined) return false;
     if (!("tasks" in value) || value["tasks"] === undefined) return false;
     if (!("startedAt" in value) || value["startedAt"] === undefined) return false;
-    if (!("done" in value) || value["done"] === undefined) return false;
+    if (!("finishedAt" in value) || value["finishedAt"] === undefined) return false;
+    if (!("status" in value) || value["status"] === undefined) return false;
     if (!("source" in value) || value["source"] === undefined) return false;
     return true;
 }
@@ -107,7 +117,8 @@ export function LDAPSourceSyncFromJSONTyped(
         pk: json["pk"],
         tasks: json["tasks"],
         startedAt: new Date(json["started_at"]),
-        done: json["done"],
+        finishedAt: json["finished_at"] == null ? null : new Date(json["finished_at"]),
+        status: LDAPSourceSyncStatusEnumFromJSON(json["status"]),
         source: json["source"],
         usersCount: json["users_count"] == null ? undefined : json["users_count"],
         groupsCount: json["groups_count"] == null ? undefined : json["groups_count"],
@@ -124,7 +135,7 @@ export function LDAPSourceSyncToJSON(json: any): LDAPSourceSync {
 }
 
 export function LDAPSourceSyncToJSONTyped(
-    value?: Omit<LDAPSourceSync, "pk" | "started_at" | "done"> | null,
+    value?: Omit<LDAPSourceSync, "pk" | "started_at" | "finished_at" | "status"> | null,
     ignoreDiscriminator: boolean = false,
 ): any {
     if (value == null) {

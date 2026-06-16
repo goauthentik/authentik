@@ -80,6 +80,7 @@ def ldap_sync(source_pk: str):
         current_sync = LDAPSourceSync.objects.create(
             source=source, expires=now() + timedelta(days=60)
         )
+        current_sync.tasks.add(task)
 
         # User and group sync can happen at once, they have no dependencies on each other
         current_sync.enqueue(

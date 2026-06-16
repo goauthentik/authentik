@@ -2,7 +2,7 @@ from typing import cast
 
 from django.db.models import Count
 from django_dramatiq_postgres.models import TaskState
-from django_filters.filters import BooleanFilter, MultipleChoiceFilter
+from django_filters.filters import BaseInFilter, BooleanFilter, MultipleChoiceFilter, UUIDFilter
 from django_filters.filterset import FilterSet
 from dramatiq.actor import Actor
 from dramatiq.broker import get_broker
@@ -17,10 +17,7 @@ from drf_spectacular.utils import (
 )
 from rest_framework.decorators import action
 from rest_framework.fields import IntegerField, ReadOnlyField, SerializerMethodField
-from rest_framework.mixins import (
-    ListModelMixin,
-    RetrieveModelMixin,
-)
+from rest_framework.mixins import ListModelMixin, RetrieveModelMixin
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -94,16 +91,23 @@ class TaskSerializer(ModelSerializer):
         return actor.options["description"]
 
 
+class UUIDInFilter(BaseInFilter, UUIDFilter):
+    pass
+
+
 class TaskFilter(FilterSet):
     rel_obj_id__isnull = BooleanFilter("rel_obj_id", "isnull")
     aggregated_status = MultipleChoiceFilter(
         choices=TaskStatus.choices,
         field_name="aggregated_status",
     )
+    message_id__in = UUIDInFilter(field_name="message_id", lookup_expr="in")
 
     class Meta:
         model = Task
         fields = (
+            "message_id",
+            "message_id__in",
             "queue_name",
             "actor_name",
             "state",

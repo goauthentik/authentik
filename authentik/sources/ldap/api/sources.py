@@ -16,7 +16,7 @@ from rest_framework.viewsets import ModelViewSet
 from authentik.core.api.sources import SourceSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.crypto.models import CertificateKeyPair
-from authentik.lib.sync.api import SyncSerializer, SyncStatusSerializer
+from authentik.lib.sync.api import SyncSerializer
 from authentik.rbac.filters import ObjectFilter
 from authentik.sources.ldap.models import LDAPSource, LDAPSourceSync
 from authentik.sources.ldap.tasks import CACHE_KEY_STATUS, SYNC_CLASSES
@@ -163,9 +163,15 @@ class LDAPSourceViewSet(UsedByMixin, ModelViewSet):
     def syncs(self, request: Request, slug: str) -> Response:
         """Get provider's sync statuses"""
         source: LDAPSource = self.get_object()
-        syncs = LDAPSourceSync.objects.filter(source=source)
 
-        return Response(SyncStatusSerializer(syncs, many=True).data)
+        syncs = LDAPSourceSync.objects.filter(source=source).order_by("-started_at")
+
+        page = self.paginate_queryset(syncs)
+        if page is not None:
+            serializer = LDAPSourceSyncSerializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        return Response(LDAPSourceSyncSerializer(syncs, many=True).data)
 
     @extend_schema(
         responses={

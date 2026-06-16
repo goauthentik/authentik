@@ -3,7 +3,11 @@ import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 import { AKElement } from "#elements/Base";
 import { PFColor } from "#elements/Label";
 
-import { LastTaskStatusEnum, TaskAggregatedStatusEnum } from "@goauthentik/api";
+import {
+    LastTaskStatusEnum,
+    LDAPSourceSyncStatusEnum,
+    TaskAggregatedStatusEnum,
+} from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { CSSResult, html, TemplateResult } from "lit";
@@ -16,7 +20,7 @@ export class TaskStatus extends AKElement {
     public static styles: CSSResult[] = [PFButton];
 
     @property()
-    status?: TaskAggregatedStatusEnum | TaskAggregatedStatusEnum | LastTaskStatusEnum;
+    status?: TaskAggregatedStatusEnum | LastTaskStatusEnum | LDAPSourceSyncStatusEnum;
 
     render(): TemplateResult {
         switch (this.status) {
@@ -36,6 +40,7 @@ export class TaskStatus extends AKElement {
                 return html`<ak-label color=${PFColor.Blue}>${msg("Pre-processing")}</ak-label>`;
             case TaskAggregatedStatusEnum.Running:
             case LastTaskStatusEnum.Running:
+            case LDAPSourceSyncStatusEnum.Running:
                 return html`<ak-label color=${PFColor.Blue}>${msg("Running")}</ak-label>`;
             case TaskAggregatedStatusEnum.Postprocess:
             case LastTaskStatusEnum.Postprocess:
@@ -44,14 +49,17 @@ export class TaskStatus extends AKElement {
             case LastTaskStatusEnum.Done:
             case TaskAggregatedStatusEnum.Info:
             case LastTaskStatusEnum.Info:
+            case LDAPSourceSyncStatusEnum.Done:
                 return html`<ak-label color=${PFColor.Green}>${msg("Successful")}</ak-label>`;
             case TaskAggregatedStatusEnum.Warning:
             case LastTaskStatusEnum.Warning:
+            case LDAPSourceSyncStatusEnum.Warning:
                 return html`<ak-label color=${PFColor.Orange}>${msg("Warning")}</ak-label>`;
             case TaskAggregatedStatusEnum.Rejected:
             case LastTaskStatusEnum.Rejected:
             case TaskAggregatedStatusEnum.Error:
             case LastTaskStatusEnum.Error:
+            case LDAPSourceSyncStatusEnum.Error:
                 return html`<ak-label color=${PFColor.Red}>${msg("Error")}</ak-label>`;
             default:
                 return html`<ak-label color=${PFColor.Gray}>${msg("Unknown")}</ak-label>`;

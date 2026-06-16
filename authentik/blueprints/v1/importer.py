@@ -50,6 +50,7 @@ from authentik.lib.utils.reflection import get_apps
 from authentik.outposts.models import OutpostServiceConnection
 from authentik.policies.models import Policy, PolicyBindingModel
 from authentik.rbac.models import Role
+from authentik.sources.ldap.models import LDAPSourceSync
 
 # Context set when the serializer is created in a blueprint context
 # Update website/docs/customize/blueprints/v1/models.md when used
@@ -84,6 +85,7 @@ def excluded_models() -> list[type[Model]]:
         # Classes that have other dependencies
         Session,
         AuthenticatedSession,
+        LDAPSourceSync,
     )
 
 

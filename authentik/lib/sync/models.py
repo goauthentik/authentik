@@ -1,3 +1,4 @@
+from datetime import datetime
 from uuid import uuid4
 
 from django.db import models
@@ -6,21 +7,65 @@ from dramatiq.broker import get_broker
 from dramatiq.message import Message
 
 from authentik.core.models import ExpiringModel
-from authentik.tasks.models import Task
+from authentik.tasks.models import Task, TaskStatus
+
+
+class SyncStatus(models.TextChoices):
+    RUNNING = TaskStatus.RUNNING
+    ERROR = TaskStatus.ERROR
+    WARNING = TaskStatus.WARNING
+    DONE = TaskStatus.DONE
 
 
 class Sync(ExpiringModel):
-    uuid = models.UUIDField(default=uuid4)
+    uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
 
     tasks = models.ManyToManyField(Task, related_name="+")
 
     started_at = models.DateTimeField(auto_now_add=True)
 
-    def is_done(self) -> bool:
-        return any(
+    @property
+    def done(self) -> bool:
+        return not any(
             state not in (TaskState.DONE, TaskState.REJECTED)
             for state in self.tasks.values_list("state", flat=True)
         )
+
+    @property
+    def finished_at(self) -> datetime | None:
+        last_task = self.tasks.order_by("-mtime").first()
+        if last_task:
+            return last_task.mtime
+        return None
+
+    @property
+    def status(self) -> SyncStatus:
+        states = self.tasks.values_list("aggregated_status", flat=True)
+        if any(
+            state
+            in (
+                TaskStatus.WAITING_FOR_DEPENDENCIES,
+                TaskStatus.QUEUED,
+                TaskStatus.CONSUMED,
+                TaskStatus.PREPROCESS,
+                TaskStatus.RUNNING,
+                TaskStatus.POSTPROCESS,
+            )
+            for state in states
+        ):
+            return SyncStatus.RUNNING
+        if any(
+            state
+            in (
+                TaskStatus.REJECTED,
+                TaskStatus.ERROR,
+            )
+            for state in states
+        ):
+            return SyncStatus.ERROR
+        if any(state == TaskStatus.WARNING for state in states):
+            return SyncStatus.WARNING
+        return SyncStatus.DONE
 
     def enqueue(self, messages: list[Message], existing_tasks_as_dependencies: bool = True) -> None:
         broker = get_broker()

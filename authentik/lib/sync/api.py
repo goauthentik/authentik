@@ -1,4 +1,4 @@
-from rest_framework.fields import BooleanField, ChoiceField, DateTimeField, SerializerMethodField
+from rest_framework.fields import BooleanField, ChoiceField, DateTimeField
 
 from authentik.core.api.utils import ModelSerializer, PassiveSerializer
 from authentik.lib.sync.models import Sync
@@ -14,16 +14,12 @@ class SyncStatusSerializer(PassiveSerializer):
 
 
 class SyncSerializer(ModelSerializer):
-    done = SerializerMethodField()
-
-    def get_done(self, obj: Sync) -> bool:
-        return obj.is_done()
-
     class Meta:
         model = Sync
         fields = [
             "pk",
             "tasks",
             "started_at",
-            "done",
+            "finished_at",
+            "status",
         ]

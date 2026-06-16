@@ -33358,6 +33358,21 @@ paths:
             $ref: '#/components/schemas/TaskAggregatedStatusEnum'
         explode: true
         style: form
+      - in: query
+        name: message_id
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: message_id__in
+        schema:
+          type: array
+          items:
+            type: string
+            format: uuid
+        description: Multiple values may be separated by commas.
+        explode: false
+        style: form
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
       - $ref: '#/components/parameters/QueryPaginationPageSize'
@@ -42547,9 +42562,10 @@ components:
       type: object
       properties:
         pk:
-          type: integer
+          type: string
+          format: uuid
           readOnly: true
-          title: ID
+          title: Uuid
         tasks:
           type: array
           items:
@@ -42559,8 +42575,14 @@ components:
           type: string
           format: date-time
           readOnly: true
-        done:
-          type: boolean
+        finished_at:
+          type: string
+          format: date-time
+          nullable: true
+          readOnly: true
+        status:
+          allOf:
+          - $ref: '#/components/schemas/LDAPSourceSyncStatusEnum'
           readOnly: true
         source:
           type: string
@@ -42591,11 +42613,19 @@ components:
           minimum: 0
           format: int64
       required:
-      - done
+      - finished_at
       - pk
       - source
       - started_at
+      - status
       - tasks
+    LDAPSourceSyncStatusEnum:
+      enum:
+      - running
+      - error
+      - warning
+      - done
+      type: string
     LangEnum:
       type: string
       enum:

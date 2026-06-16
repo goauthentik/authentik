@@ -1,9 +1,9 @@
 import "#admin/rbac/ak-rbac-object-permission-page";
 import "#admin/sources/ldap/LDAPSourceConnectivity";
 import "#admin/sources/ldap/LDAPSourceUserList";
+import "#admin/sources/ldap/LDAPSourceSyncList";
 import "#admin/sources/ldap/LDAPSourceGroupList";
 import "#admin/events/ObjectChangelog";
-import "#components/sync/SyncStatusCard";
 import "#elements/CodeMirror";
 import "#elements/Tabs";
 import "#elements/buttons/ActionButton/index";
@@ -120,17 +120,9 @@ export class LDAPSourceViewPage extends AKElement {
                                 )}
                             </div>
                         </div>
-                        <div class="pf-l-grid__item pf-m-12-col pf-m-6-col-on-xl pf-m-6-col-on-2xl">
-                            <ak-sync-status-card
-                                .fetch=${() => {
-                                    if (!this.source) return Promise.reject();
-                                    return aki(SourcesApi).sourcesLdapSyncStatusRetrieve({
-                                        slug: this.source.slug,
-                                    });
-                                }}
-                            ></ak-sync-status-card>
-                        </div>
-                        <div class="pf-c-card pf-l-grid__item pf-m-12-col">
+                        <div
+                            class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-6-col-on-xl pf-m-6-col-on-2xl"
+                        >
                             <div class="pf-c-card__title">
                                 <p>${msg("Connectivity")}</p>
                             </div>
@@ -149,6 +141,14 @@ export class LDAPSourceViewPage extends AKElement {
                                 .relObjModel=${modelName}
                                 .relObjId="${this.source?.pk}"
                             ></ak-schedule-list>
+                        </div>
+                        <div class="pf-c-card pf-l-grid__item pf-m-12-col">
+                            <div class="pf-c-card__title">
+                                <p>${msg("Previous synchronisations")}</p>
+                            </div>
+                            <ak-source-ldap-sync-list
+                                .source=${this.source}
+                            ></ak-source-ldap-sync-list>
                         </div>
                     </div>
                 </div>
