@@ -20,6 +20,9 @@ export class TaskStatus extends AKElement {
 
     render(): TemplateResult {
         switch (this.status) {
+            case TaskAggregatedStatusEnum.WaitingForDependencies:
+            case LastTaskStatusEnum.WaitingForDependencies:
+                return html`<ak-label color=${PFColor.Gray}>${msg("Waiting for dependencies")}</ak-label>`;
             case TaskAggregatedStatusEnum.Queued:
             case LastTaskStatusEnum.Queued:
                 return html`<ak-label color=${PFColor.Gray}>${msg("Waiting to run")}</ak-label>`;

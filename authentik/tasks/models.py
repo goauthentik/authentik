@@ -20,6 +20,7 @@ from authentik.tenants.models import Tenant
 class TaskStatus(models.TextChoices):
     """Task aggregated status. Reported by the task runners"""
 
+    WAITING_FOR_DEPENDENCIES = TaskState.WAITING_FOR_DEPENDENCIES
     QUEUED = TaskState.QUEUED
     CONSUMED = TaskState.CONSUMED
     PREPROCESS = TaskState.PREPROCESS
