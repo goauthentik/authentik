@@ -10,6 +10,22 @@ import { ifDefined } from "lit/directives/if-defined.js";
 import { createRef, ref } from "lit/directives/ref.js";
 import { styleMap } from "lit/directives/style-map.js";
 
+/**
+ * This component switches between a display of asterisks indicating a secret value, and an input
+ * control. By default, the input control is type 'password'; the attribute 'plaintext' will change
+ * it to type 'text.'
+
+ * @element ak-secret-text-input
+ *
+ * @class AkSecretTextInput
+ *
+ * @prop {String} value - The value of the component
+ * @prop {Boolean} plaintext - Use a `type="text"` input field instead of `type="password"` when input allowed.
+ * @prop {Boolean} revealed - Puts component in read-write mode. When plaintext is true, will show the secret.
+ * @prop {Number} maxLength
+ * @prop {Number} minLength
+ */
+
 @customElement("ak-secret-text-input")
 export class AkSecretTextInput extends HorizontalLightComponent<string> {
     @property({ type: String })
