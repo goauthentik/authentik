@@ -6,7 +6,7 @@ support_level: community
 
 ## What is OPNsense?
 
-> OPNsense is an open source, easy-to-use and easy-to-build FreeBSD based firewall and routing platform.
+> OPNsense is an open source FreeBSD-based firewall and routing platform.
 >
 > -- https://opnsense.org/
 
@@ -59,8 +59,6 @@ While following the LDAP provider documentation, use the following OPNsense-spec
 
 4. Click **Save**.
 
-![](./opnsense1.png)
-
 ### Enable authentik authentication
 
 OPNsense can use LDAP for authentication, but GUI privileges still need to be assigned in OPNsense. Before enabling the LDAP server for GUI login, ensure that the LDAP users or groups that should access the OPNsense web UI exist in OPNsense and have the required privileges.
@@ -69,8 +67,6 @@ OPNsense can use LDAP for authentication, but GUI privileges still need to be as
 2. Under **Authentication**, add `authentik` to the **Server** list.
 3. Keep **Local Database** selected as a fallback while testing the new LDAP server.
 4. Click **Save**.
-
-![](./opnsense2.png)
 
 You can import users or synchronize users and groups from authentik LDAP. For more information, refer to the OPNsense LDAP documentation in the Resources section.
 
