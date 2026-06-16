@@ -196,6 +196,13 @@ export function formatLocaleDisplayNames(
     return entries.sort(createIntlCollator(activeLocaleTag, collatorOptions));
 }
 
+/**
+ * Format the display name for a single locale, using the same logic as the options list.
+ *
+ * @param languageTag The locale to format.
+ * @param localizedDisplayName The localized display name for the locale
+ * @param relativeDisplayName The relative display name for the locale.
+ */
 export function formatRelativeLocaleDisplayName(
     languageTag: TargetLanguageTag,
     localizedDisplayName: string,
