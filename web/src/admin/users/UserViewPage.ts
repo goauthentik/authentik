@@ -8,6 +8,7 @@ import "#admin/users/UserChart";
 import "#admin/users/UserForm";
 import "#admin/users/UserImpersonateForm";
 import "#admin/users/UserPasswordForm";
+import "#admin/users/UserTokenList";
 import "#admin/users/oauth/UserAccessTokenList";
 import "#admin/users/oauth/UserRefreshTokenList";
 import "#components/DescriptionList";
@@ -256,6 +257,18 @@ export class UserViewPage extends WithLicenseSummary(
             >
                 <div class="pf-c-card">
                     <ak-user-session-list targetUser=${user.username}></ak-user-session-list>
+                </div>
+            </div>
+            <div
+                role="tabpanel"
+                tabindex="0"
+                slot="page-tokens"
+                id="page-tokens"
+                aria-label=${msg("Tokens")}
+                class="pf-c-page__main-section pf-m-no-padding-mobile"
+            >
+                <div class="pf-c-card">
+                    <ak-admin-user-token-list .user=${user}></ak-admin-user-token-list>
                 </div>
             </div>
             <div

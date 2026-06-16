@@ -90,7 +90,7 @@ export abstract class Table<T extends object, D = T>
     extends WithSession(AKElement)
     implements TableLike, TransclusionChildElement
 {
-    declare ["constructor"]: Required<EntityDescriptorElement>;
+    declare ["constructor"]: EntityDescriptorElement;
 
     static styles: CSSResult[] = [
         PFTable,
