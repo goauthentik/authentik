@@ -8,7 +8,7 @@ support_level: community
 
 > OPNsense is an open source, easy-to-use and easy-to-build FreeBSD based firewall and routing platform.
 >
-> -- https://docs.opnsense.org/
+> -- https://opnsense.org/
 
 ## Preparation
 
