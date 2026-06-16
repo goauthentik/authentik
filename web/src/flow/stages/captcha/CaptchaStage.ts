@@ -12,6 +12,7 @@ import { AKFormErrors, ErrorProp } from "#components/ak-field-errors";
 import { FlowUserDetails } from "#flow/FormStatic";
 import { BaseStage } from "#flow/stages/base";
 import Styles from "#flow/stages/captcha/CaptchaStage.css";
+import { CapController, isCapWidgetURL } from "#flow/stages/captcha/controllers/cap";
 import {
     CaptchaController,
     CaptchaControllerConstructor,
@@ -53,7 +54,14 @@ interface LoadMessage {
     message: "load";
 }
 
-type IframeMessageEvent = MessageEvent<CaptchaMessage | LoadMessage>;
+interface ErrorMessage {
+    source?: string;
+    context?: string;
+    message: "error";
+    error: string;
+}
+
+type IframeMessageEvent = MessageEvent<CaptchaMessage | LoadMessage | ErrorMessage>;
 
 @customElement("ak-stage-captcha")
 export class CaptchaStage
@@ -79,6 +87,7 @@ export class CaptchaStage
         HCaptchaController,
         GReCaptchaController,
         TurnstileController,
+        CapController,
     ]);
 
     #logger = ConsoleLogger.prefix("flow:captcha");
@@ -165,6 +174,9 @@ export class CaptchaStage
         return match(data)
             .with({ message: "captcha" }, ({ token }) => this.onTokenChange(token))
             .with({ message: "load" }, this.#loadListener)
+            .with({ message: "error" }, ({ error }) => {
+                this.error = error;
+            })
             .otherwise(({ message }) => {
                 this.#logger.debug(`Unknown message: ${message}`);
             });
@@ -183,12 +195,18 @@ export class CaptchaStage
         }
 
         if (this.challenge?.interactive) {
+            // Cap renders its own framed widget, so the generic iframe loading shimmer looks like
+            // an extra CAPTCHA box flashing behind it.
+            const isCapChallenge =
+                URL.canParse(this.challenge.jsUrl) && isCapWidgetURL(new URL(this.challenge.jsUrl));
+
             return html`
                 <iframe
                     aria-label=${msg("CAPTCHA challenge")}
                     ${ref(this.iframeRef)}
                     style="height: ${this.iframeHeight}px;"
                     data-ready=${this.#iframeLoaded ? "ready" : "loading"}
+                    data-transparent-loading=${isCapChallenge ? "true" : "false"}
                     class="ak-interactive-challenge"
                     id="ak-captcha"
                 ></iframe>
@@ -306,8 +324,13 @@ export class CaptchaStage
 
         // Then, load the new script...
         const scriptElement = document.createElement("script");
+        const matchedController = Array.from(CaptchaStage.controllers).find((Controller) =>
+            Controller.matchesURL(challengeURL),
+        );
 
         scriptElement.src = challengeURL.toString();
+        scriptElement.type =
+            matchedController?.scriptType === "module" ? "module" : "text/javascript";
         scriptElement.async = true;
         scriptElement.defer = true;
         scriptElement.onload = this.#scriptLoadListener;
@@ -528,6 +551,7 @@ export class CaptchaStage
             challengeURL: challengeURL.toString(),
             theme: this.activeTheme,
             scriptOnLoad: !(controller instanceof TurnstileController),
+            scriptType: controller.scriptType,
         });
 
         if (

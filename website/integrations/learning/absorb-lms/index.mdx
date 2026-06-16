@@ -5,6 +5,7 @@ support_level: community
 authentik_version: 2026.5
 ---
 
+import RedirectURI20265Note from "../../_redirect-uri-2026-5-note.mdx";
 import SAMLProvider20265Warning from "../../_saml-provider-2026-5-warning.mdx";
 import TabItem from "@theme/TabItem";
 import Tabs from "@theme/Tabs";
@@ -39,6 +40,8 @@ values={[
 
 ## authentik configuration
 
+<RedirectURI20265Note />
+
 To integrate authentik with Absorb LMS via OIDC, you will need to create an application and provider pair in authentik.
 
 ### Create an application and provider in authentik
@@ -49,7 +52,7 @@ To integrate authentik with Absorb LMS via OIDC, you will need to create an appl
     - **Choose a Provider type**: select **OAuth2/OIDC Provider** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
         - Take note of the **Client ID** and **Client Secret** values as these will be required in the next section.
-        - Set a `Strict` Redirect URI to `https://company.myabsorb.com/account/openidconnect`
+        - Add a **Redirect URI** of type `Strict` `Authorization` as `https://company.myabsorb.com/account/openidconnect`
         - Select any available **Signing key**.
     - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications in a user's **Application Dashboard**.
 

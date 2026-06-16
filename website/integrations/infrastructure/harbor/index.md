@@ -4,6 +4,8 @@ sidebar_label: Harbor
 support_level: community
 ---
 
+import RedirectURI20265Note from "../../\_redirect-uri-2026-5-note.mdx";
+
 ## What is Harbor?
 
 > Harbor is an open source container image registry that secures images with role-based access control, scans images for vulnerabilities, and signs images as trusted. A CNCF Graduated project, Harbor delivers compliance, performance, and interoperability to help you consistently and securely manage images across cloud native compute platforms like Kubernetes and Docker.
@@ -23,6 +25,8 @@ This documentation lists only the settings that you need to change from their de
 
 ## authentik configuration
 
+<RedirectURI20265Note />
+
 To support the integration of Harbor with authentik, you need to create an application/provider pair in authentik.
 
 ### Create an application and provider in authentik
@@ -35,7 +39,7 @@ To support the integration of Harbor with authentik, you need to create an appli
 - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
     - **Protocol Settings**:
         - **Redirect URI**:
-            - Strict: `https://harbor.company/c/oidc/callback`.
+            - `Strict` `Authorization`: `https://harbor.company/c/oidc/callback`.
         - **Signing Key**: select any available signing key.
     - **Advanced Protocol Settings**:
         - **Scopes**: add `authentik default OAuth Mapping: OpenID 'offline_access'` to **Selected Scopes**.
