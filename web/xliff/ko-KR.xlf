@@ -8871,7 +8871,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="captcha.provider-link">
   <source>API keys can be obtained from the
-                        <x id="0" equiv-text="${html `&lt;a target=&quot;_blank&quot; rel=&quot;noopener noreferrer&quot; href=${keyURL}&#10;                                &gt;${formatAPISource()}&lt;/a&#10;                            &gt;.`}"/></source>
+                                        <x id="0" equiv-text="${html `&lt;a&#10;                                                target=&quot;_blank&quot;&#10;                                                rel=&quot;noopener noreferrer&quot;&#10;                                                href=${keyURL}&#10;                                                &gt;${formatAPISource()}&lt;/a&#10;                                            &gt;.`}"/></source>
   <note from="lit-localize">Supplementary help text with link to provider dashboard.</note>
 </trans-unit>
 <trans-unit id="s87f858ca3c8e5579">
@@ -10792,6 +10792,49 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sd1b98c71ea0d603b">
   <source>Flags allow you to enable new functionality and behavior in authentik early.</source>
+</trans-unit>
+<trans-unit id="s00640d26256c4878">
+  <source>Cap Endpoint</source>
+</trans-unit>
+<trans-unit id="s40bf0fb50dad7090">
+  <source>https://cap.example.com/site-key/</source>
+</trans-unit>
+<trans-unit id="sc18a73a5831aca7b">
+  <source>For Cap, prefer the self-hosted widget asset, for example https://cap.example.com/assets/widget.js. If using a CDN, pin a reviewed release.</source>
+</trans-unit>
+<trans-unit id="s4e1e8db555003a9a">
+  <source>Cap's server-side verification endpoint, for example https://cap.example.com/site-key/siteverify.</source>
+</trans-unit>
+<trans-unit id="sdb752cddc543357d">
+  <source>Request Content Type</source>
+</trans-unit>
+<trans-unit id="s8afdb5c5a27d37eb">
+  <source>Content-Type used for server-side verification. Cap requires JSON; most other providers use form-encoded requests.</source>
+</trans-unit>
+<trans-unit id="captcha.request-content-type.form">
+  <source>Form encoded</source>
+</trans-unit>
+<trans-unit id="captcha.request-content-type.json">
+  <source>JSON</source>
+</trans-unit>
+<trans-unit id="captcha.providers.cap">
+  <source>Cap</source>
+</trans-unit>
+<trans-unit id="captcha.providers.cap.description">
+  <source>Cap is a self-hostable CAPTCHA server that uses proof-of-work challenges.</source>
+</trans-unit>
+<trans-unit id="captcha.providers.cap.setup-guide">
+  <source>Cap documentation</source>
+</trans-unit>
+<trans-unit id="captcha.cap-endpoint.description">
+  <source>The public site-key endpoint of your Cap server.</source>
+  <note from="lit-localize">Description for Cap endpoint field.</note>
+</trans-unit>
+<trans-unit id="captcha.provider-link.cap">
+  <source>Use the
+                                        <x id="0" equiv-text="${html `&lt;a&#10;                                            target=&quot;_blank&quot;&#10;                                            rel=&quot;noopener noreferrer&quot;&#10;                                            href=${keyURL}&#10;                                            &gt;${formatAPISource()}&lt;/a&#10;                                        &gt;`}"/>
+                                        to self-host Cap and configure the endpoint.</source>
+  <note from="lit-localize">Supplementary help text with link to Cap documentation.</note>
 </trans-unit>
 </body>
 </file>
