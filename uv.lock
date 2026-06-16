@@ -413,7 +413,7 @@ requires-dist = [
     { name = "pyyaml", specifier = "==6.0.3" },
     { name = "requests-oauthlib", specifier = "==2.0.0" },
     { name = "scim2-filter-parser", specifier = "==0.7.0" },
-    { name = "sentry-sdk", specifier = "==2.61.1" },
+    { name = "sentry-sdk", specifier = "==2.62.0" },
     { name = "service-identity", specifier = "==26.1.0" },
     { name = "setproctitle", specifier = "==1.3.7" },
     { name = "structlog", specifier = "==25.5.0" },
@@ -432,7 +432,7 @@ requires-dist = [
 
 [package.metadata.requires-dev]
 dev = [
-    { name = "aws-cdk-lib", specifier = "==2.258.0" },
+    { name = "aws-cdk-lib", specifier = "==2.258.1" },
     { name = "bandit", specifier = "==1.9.4" },
     { name = "black", specifier = "==26.5.1" },
     { name = "bpython", specifier = "==0.26" },
@@ -542,7 +542,7 @@ wheels = [
 
 [[package]]
 name = "aws-cdk-lib"
-version = "2.258.0"
+version = "2.258.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "aws-cdk-asset-awscli-v1" },
@@ -553,9 +553,9 @@ dependencies = [
     { name = "publication" },
     { name = "typeguard" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/1e/b1/3a41b542274379dfcf4bdd678e28906fe0f6c4fe24bac18b29c9aa11d0c7/aws_cdk_lib-2.258.0.tar.gz", hash = "sha256:415153ab4f22f1e14163c1b1b39fa1835a8afb77d18cb16c0653caef5a40055a", size = 50799367, upload-time = "2026-06-04T20:34:19.773Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/75/f7/2b7bda2c4a8eb5413e5940c640dd952d5ce00683a8ca4089742a75280cf9/aws_cdk_lib-2.258.1.tar.gz", hash = "sha256:a25158952b9e39c7a5ffd3fd1fcf8d769f73454e22394320d9e1c944324956a9", size = 50799708, upload-time = "2026-06-09T09:18:23.689Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/6f/d3/b326b14262f7e57bb214f6a1eb3d23eb6838a90c8009d8dd38b6de203abf/aws_cdk_lib-2.258.0-py3-none-any.whl", hash = "sha256:aacd129577b8cb294d37f678778d427e03ee2cc9c4b0283fe1baf0d576655f9a", size = 51488515, upload-time = "2026-06-04T20:33:38.834Z" },
+    { url = "https://files.pythonhosted.org/packages/97/ee/326682437a52a7aabc5b2b81517eb0d6e07f291044ef837b01291269855c/aws_cdk_lib-2.258.1-py3-none-any.whl", hash = "sha256:eb60a20edcb4a547fa1eb5ed6f3ef16648346a7400821cf4a37b15051adcbe73", size = 51487906, upload-time = "2026-06-09T09:17:40.348Z" },
 ]
 
 [[package]]
@@ -3386,15 +3386,15 @@ wheels = [
 
 [[package]]
 name = "sentry-sdk"
-version = "2.61.1"
+version = "2.62.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "certifi" },
     { name = "urllib3" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/63/3b/4bc6b348bbd331daa14d4babe9f2b99bc854f4da41560eefb9488d78481d/sentry_sdk-2.61.1.tar.gz", hash = "sha256:9c6adccb3feefa9ba032c8d295ca477575c2f11896046a2b0ad686c47c4af555", size = 459429, upload-time = "2026-06-01T07:24:18.875Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/f6/5d/a343201726150e05f2036eeb6e493e2e2f8bf8a66f5aa70f2f4ac96f9ca3/sentry_sdk-2.62.0.tar.gz", hash = "sha256:3c870b9f50d9fd15b58c817dbde1c7cfaa9fe3f05df0a4c6edd5571cb82f5491", size = 463986, upload-time = "2026-06-08T13:23:49.223Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/df/54/c9218db183846e08efaf68534889ef42e499dde432778881104a42f7071b/sentry_sdk-2.61.1-py3-none-any.whl", hash = "sha256:fa36eaf4b8ad708f718500d4bdcc1532637526a22beb874d88cbc0a46458b5ae", size = 483735, upload-time = "2026-06-01T07:24:17.027Z" },
+    { url = "https://files.pythonhosted.org/packages/3d/07/05440381627877aae223fd68f330df9b9fc6641d08bf65328b55235617a2/sentry_sdk-2.62.0-py3-none-any.whl", hash = "sha256:27f61d13a86c3c1648dec666dd5a64f79772dd6a84b446f11866601ecab24f6f", size = 490586, upload-time = "2026-06-08T13:23:47.486Z" },
 ]
 
 [[package]]
