@@ -156,8 +156,8 @@ class AuthorizeError(OAuth2Error):
         error: str,
         grant_type: str,
         state: str,
-        description: str | None = None,
         response_mode: str | None = None,
+        description: str | None = None,
     ):
         super().__init__()
         self.error = error

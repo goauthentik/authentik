@@ -164,7 +164,7 @@ class OAuthAuthorizationParams:
                 "request_not_supported",
                 self.grant_type or "",
                 self.state,
-                response_mode=self.response_mode,
+                self.response_mode,
             )
         self.check_grant()
         self.check_scope(github_compat)
@@ -221,7 +221,7 @@ class OAuthAuthorizationParams:
                 "unsupported_response_type",
                 "",
                 self.state,
-                response_mode=self.response_mode,
+                self.response_mode,
             )
 
         if self.grant_type not in self.provider.grant_types:
@@ -231,7 +231,7 @@ class OAuthAuthorizationParams:
                 "invalid_request",
                 self.grant_type,
                 self.state,
-                response_mode=self.response_mode,
+                self.response_mode,
             )
 
         self.set_default_response_mode()
@@ -303,7 +303,7 @@ class OAuthAuthorizationParams:
                 "invalid_scope",
                 self.grant_type,
                 self.state,
-                response_mode=self.response_mode,
+                self.response_mode,
             ).with_cause("scope_openid_missing")
         if SCOPE_OFFLINE_ACCESS in self.scope:
             # https://openid.net/specs/openid-connect-core-1_0.html#OfflineAccess
@@ -344,7 +344,7 @@ class OAuthAuthorizationParams:
                 "invalid_request",
                 self.grant_type,
                 self.state,
-                response_mode=self.response_mode,
+                self.response_mode,
             ).with_cause("nonce_missing")
 
     def check_code_challenge(self):
@@ -358,8 +358,8 @@ class OAuthAuthorizationParams:
                 "invalid_request",
                 self.grant_type,
                 self.state,
+                self.response_mode,
                 f"Unsupported challenge method {self.code_challenge_method}",
-                response_mode=self.response_mode,
             )
 
     def create_code(self, request: HttpRequest) -> AuthorizationCode:
@@ -421,7 +421,7 @@ class AuthorizationFlowInitView(PolicyAccessView):
                 "login_required",
                 self.params.grant_type,
                 self.params.state,
-                response_mode=self.params.response_mode,
+                self.params.response_mode,
             )
             raise RequestValidationError(error.get_response(self.request))
 
@@ -629,7 +629,7 @@ class OAuthFulfillmentStage(StageView):
                     "consent_required",
                     self.params.grant_type,
                     self.params.state,
-                    response_mode=self.params.response_mode,
+                    self.params.response_mode,
                 )
             Event.new(
                 EventAction.AUTHORIZE_APPLICATION,
@@ -704,7 +704,7 @@ class OAuthFulfillmentStage(StageView):
                 "server_error",
                 self.params.grant_type,
                 self.params.state,
-                response_mode=self.params.response_mode,
+                self.params.response_mode,
             ) from None
 
     def create_implicit_response(self, code: AuthorizationCode | None) -> dict:
