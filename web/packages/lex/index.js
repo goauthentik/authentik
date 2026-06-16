@@ -25,7 +25,7 @@
  *
  * @callback LexerAction
  * @this {Lexer}
- * @param {...string} match
+ * @param {...string[]} match
  * @returns {Token | Token[] | null | void}
  */
 
@@ -176,6 +176,7 @@ export class Lexer {
 
                 // TypeScript Native's assessment is correct.
                 // but TypeScript Node can't make the connection between regex and the array.
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                 // @ts-ignore - Remove after TypeScript Native is mainline.
                 let token = match.action.apply(this, result);
 
