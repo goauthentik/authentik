@@ -58,7 +58,7 @@ To support the integration of Hoop.dev with authentik, you must configure Hoop.d
     - **Issuer URL**: `https://authentik.company/application/o/<application_slug>/`
 7. Click **Save**.
 
-Hoop.dev synchronizes authentik groups on login when authentik includes the `groups` claim in the ID token. To use groups for Hoop.dev access control, make sure users are members of the relevant authentik groups before they log in.
+Hoop.dev automatically synchronizes authentik groups at login whenever the ID token includes the `groups` claim. To use groups for Hoop.dev access control, ensure users are added to the appropriate authentik groups before they log in.
 
 ## Configuration verification
 
