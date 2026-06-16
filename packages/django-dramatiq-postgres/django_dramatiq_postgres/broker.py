@@ -4,6 +4,7 @@ import time
 from collections.abc import Callable, Iterable
 from datetime import UTC, datetime, timedelta
 from typing import Any, ParamSpec, TypeVar, cast
+from uuid import UUID
 
 import tenacity
 from django.core.exceptions import ImproperlyConfigured
@@ -486,7 +487,7 @@ class _PostgresConsumer(Consumer):
         with transaction.atomic(using=self.db_alias):
             dependents = self.query_set.select_for_update().filter(
                 state=TaskState.WAITING_FOR_DEPENDENCIES,
-                dependencies=message.message_id,
+                dependencies=cast(UUID, message.message_id),
             )
             for dependent in dependents:
                 dependencies_state = dependent.dependencies.using(self.db_alias).values_list(
@@ -500,7 +501,8 @@ class _PostgresConsumer(Consumer):
     def nack(self, message: MessageProxy) -> None:
         self._post_process_message(message, TaskState.REJECTED)
         self.query_set.filter(
-            state=TaskState.WAITING_FOR_DEPENDENCIES, dependencies=message.message_id
+            state=TaskState.WAITING_FOR_DEPENDENCIES,
+            dependencies=cast(UUID, message.message_id),
         ).update(state=TaskState.REJECTED, message=b"", mtime=timezone.now(), eta=None)
 
     @raise_broker_connection_error
