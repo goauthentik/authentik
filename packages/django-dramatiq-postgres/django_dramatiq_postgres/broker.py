@@ -308,7 +308,13 @@ class _PostgresConsumer(Consumer):
         pending = set(
             self.query_set.exclude(message_id__in=self.in_processing)
             .filter(queue_name=self.queue_name)
-            .exclude(state__in=(TaskState.DONE, TaskState.REJECTED))
+            .exclude(
+                state__in=(
+                    TaskState.DONE,
+                    TaskState.REJECTED,
+                    TaskState.WAITING_FOR_DEPENDENCIES,
+                )
+            )
             .exclude(eta__gte=timezone.now() + timedelta(seconds=self.timeout))
             .order_by(F("eta").asc(nulls_first=True))
             .values_list("message_id", flat=True)
@@ -360,7 +366,11 @@ class _PostgresConsumer(Consumer):
                     "state": TaskState.CONSUMED.value,
                     "mtime": timezone.now(),
                     "message_id": message_id,
-                    "excluded_states": [TaskState.DONE.value, TaskState.REJECTED.value],
+                    "excluded_states": [
+                        TaskState.DONE.value,
+                        TaskState.REJECTED.value,
+                        TaskState.WAITING_FOR_DEPENDENCIES.value,
+                    ],
                     "maximum_eta": timezone.now() + timedelta(seconds=self.timeout),
                     "lock_id": self._get_message_lock_id(message_id),
                 },

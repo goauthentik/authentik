@@ -57,7 +57,7 @@ class TaskBase(models.Model):
     dependencies = models.ManyToManyField(
         "self",
         verbose_name=_("Tasks that must complete for this task to run."),
-        default=None,
+        symmetrical=False,
     )
 
     result = models.BinaryField(null=True, help_text=_("Task result"))
