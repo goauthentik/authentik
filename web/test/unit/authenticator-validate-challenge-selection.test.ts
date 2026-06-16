@@ -12,6 +12,7 @@ const makeDeviceChallenge = (
     deviceUid,
     challenge: {},
     lastUsed: null,
+    uid: "test",
 });
 
 describe("shouldResetSelectedChallenge", () => {

@@ -17,6 +17,7 @@ import {
 import { msg } from "@lit/localize";
 import { html, LitElement, TemplateResult } from "lit";
 import { customElement } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-stage-authenticator-validate-code")
 export class AuthenticatorValidateStageWebCode extends BaseDeviceStage<
@@ -60,6 +61,12 @@ export class AuthenticatorValidateStageWebCode extends BaseDeviceStage<
                 </div>
 
                 ${AKFormErrors({ errors: this.challenge?.responseErrors?.code })}
+
+                <input
+                    type="hidden"
+                    name="challengeUid"
+                    value=${ifDefined(this.deviceChallenge?.uid)}
+                />
             </fieldset>
 
             <fieldset class="ak-c-fieldset pf-c-form__group pf-m-action">

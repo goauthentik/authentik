@@ -4,36 +4,30 @@ from datetime import datetime
 from hashlib import sha256
 
 from django.conf import settings
+from django.db import models
 from django.http import HttpRequest, HttpResponse
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from jwt import PyJWTError, decode, encode
-from rest_framework.fields import CharField, IntegerField, ListField, UUIDField
+from rest_framework.fields import CharField, ChoiceField, IntegerField, ListField, UUIDField
 from rest_framework.serializers import ValidationError
 
 from authentik.core.api.utils import JSONDictField, PassiveSerializer
 from authentik.core.models import User
+from authentik.core.signals import login_failed
 from authentik.events.middleware import audit_ignore
 from authentik.events.models import Event, EventAction
 from authentik.flows.challenge import ChallengeResponse, WithUserInfoChallenge
-from authentik.flows.exceptions import FlowSkipStageException, StageInvalidException
+from authentik.flows.exceptions import FlowSkipStageException
 from authentik.flows.models import FlowDesignation, NotConfiguredAction, Stage
-from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
+from authentik.flows.planner import PLAN_CONTEXT_APPLICATION, PLAN_CONTEXT_PENDING_USER
 from authentik.flows.stage import ChallengeStageView
 from authentik.lib.utils.time import timedelta_from_string
-from authentik.policies.reputation.signals import update_score
-from authentik.stages.authenticator import devices_for_user
 from authentik.stages.authenticator.models import Device
-from authentik.stages.authenticator_email.models import EmailDevice
-from authentik.stages.authenticator_sms.models import SMSDevice
 from authentik.stages.authenticator_validate.challenge import (
+    ChallengeValidationError,
     DeviceChallenge,
-    get_challenge_for_device,
-    get_webauthn_challenge_without_user,
-    select_challenge,
-    validate_challenge_code,
-    validate_challenge_duo,
-    validate_challenge_webauthn,
+    FlowContext,
 )
 from authentik.stages.authenticator_validate.models import AuthenticatorValidateStage, DeviceClasses
 from authentik.stages.authenticator_webauthn.models import WebAuthnDevice
@@ -64,75 +58,40 @@ class AuthenticatorValidationChallenge(WithUserInfoChallenge):
     configuration_stages = ListField(child=SelectableStageSerializer())
 
 
+class ChallengeAction(models.TextChoices):
+    INITIATE = "initiate"
+    VALIDATE = "validate"
+
+
 class AuthenticatorValidationChallengeResponse(ChallengeResponse):
     """Challenge used for Code-based and WebAuthn authenticators"""
 
     device: Device | None
+    challenge: dict | None
+    failure_context: dict
 
-    selected_challenge = DeviceChallenge(required=False)
     selected_stage = CharField(required=False)
 
+    action = ChoiceField(choices=ChallengeAction.choices, default=ChallengeAction.VALIDATE)
     code = CharField(required=False)
     webauthn = JSONDictField(required=False)
     duo = IntegerField(required=False)
+    challenge_uid = CharField(required=False)
     component = CharField(default="ak-stage-authenticator-validate")
 
-    def _challenge_allowed(self, classes: list):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.failure_context = {}
+
+    def validate_challenge_uid(self, challenge_uid: str):
         device_challenges: list[dict] = self.stage.executor.plan.context.get(
             PLAN_CONTEXT_DEVICE_CHALLENGES, []
         )
-        if not any(x["device_class"] in classes for x in device_challenges):
-            raise ValidationError("No compatible device class allowed")
-
-    def validate_code(self, code: str) -> str:
-        """Validate code-based response, raise error if code isn't allowed"""
-        self._challenge_allowed(
-            [DeviceClasses.TOTP, DeviceClasses.STATIC, DeviceClasses.SMS, DeviceClasses.EMAIL]
-        )
-        self.device = validate_challenge_code(code, self.stage, self.stage.get_pending_user())
-        return code
-
-    def validate_webauthn(self, webauthn: dict) -> dict:
-        """Validate webauthn response, raise error if webauthn wasn't allowed
-        or response is invalid"""
-        self._challenge_allowed([DeviceClasses.WEBAUTHN])
-        self.device = validate_challenge_webauthn(
-            webauthn, self.stage, self.stage.get_pending_user()
-        )
-        return webauthn
-
-    def validate_duo(self, duo: int) -> int:
-        """Initiate Duo authentication"""
-        self._challenge_allowed([DeviceClasses.DUO])
-        self.device = validate_challenge_duo(duo, self.stage, self.stage.get_pending_user())
-        return duo
-
-    def validate_selected_challenge(self, challenge: dict) -> dict:
-        """Check which challenge the user has selected. Actual logic only used for SMS stage."""
-        # First check if the challenge is valid
-        allowed = False
-        for device_challenge in self.stage.executor.plan.context.get(
-            PLAN_CONTEXT_DEVICE_CHALLENGES, []
-        ):
-            if device_challenge.get("device_class", "") == challenge.get(
-                "device_class", ""
-            ) and device_challenge.get("device_uid", "") == challenge.get("device_uid", ""):
-                allowed = True
-        if not allowed:
-            raise ValidationError("invalid challenge selected")
-
-        device_class = challenge.get("device_class", "")
-        if device_class == "sms":
-            devices = SMSDevice.objects.filter(pk=int(challenge.get("device_uid", "0")))
-            if not devices.exists():
-                raise ValidationError("invalid challenge selected")
-            select_challenge(self.stage.request, devices.first())
-        elif device_class == "email":
-            devices = EmailDevice.objects.filter(pk=int(challenge.get("device_uid", "0")))
-            if not devices.exists():
-                raise ValidationError("invalid challenge selected")
-            select_challenge(self.stage.request, devices.first())
-        return challenge
+        for challenge in device_challenges:
+            if challenge["uid"] == challenge_uid:
+                self.challenge = challenge
+                return challenge_uid
+        raise ValidationError("Invalid challenge")
 
     def validate_selected_stage(self, stage_pk: str) -> str:
         """Check that the selected stage is valid"""
@@ -144,10 +103,56 @@ class AuthenticatorValidationChallengeResponse(ChallengeResponse):
         return stage_pk
 
     def validate(self, attrs: dict):
-        # Checking if the given data is from a valid device class is done above
-        # Here we only check if the any data was sent at all
-        if "code" not in attrs and "webauthn" not in attrs and "duo" not in attrs:
+        if not hasattr(self, "challenge"):
             raise ValidationError("Empty response")
+
+        device_class = DeviceClasses(self.challenge["device_class"])
+        challenger = self.stage.executor.current_stage.get_device_challenger(
+            device_class,
+            self.stage.request,
+            FlowContext(application=self.stage.executor.plan.context.get(PLAN_CONTEXT_APPLICATION)),
+        )
+        if attrs["action"] == ChallengeAction.INITIATE:
+            challenger.initiate(self.challenge)
+            raise ValidationError("Empty response")
+
+        self.failure_context = {"device_class": device_class.value}
+
+        if device_class in [
+            DeviceClasses.TOTP,
+            DeviceClasses.STATIC,
+            DeviceClasses.SMS,
+            DeviceClasses.EMAIL,
+        ]:
+            response_field = "code"
+        elif device_class == DeviceClasses.WEBAUTHN:
+            response_field = "webauthn"
+        elif device_class == DeviceClasses.DUO:
+            response_field = "duo"
+        else:
+            raise ValidationError("Empty response")
+        try:
+            response = attrs[response_field]
+        except KeyError:
+            raise ValidationError(
+                {response_field: _("This field is required")}, code="required"
+            ) from None
+
+        pending_user = self.stage.get_pending_user()
+
+        if self.challenge["device_uid"] is not None:
+            devices = device_class.as_type().objects.filter(pk=self.challenge["device_uid"])
+        elif pending_user.is_anonymous:
+            devices = device_class.as_type().objects.all()
+        else:
+            devices = device_class.as_type().objects.filter(user=self.stage.get_pending_user())
+
+        try:
+            self.device = challenger.validate(devices, self.challenge["challenge"], response)
+        except ChallengeValidationError as exc:
+            self.failure_context.update(exc.failure_context)
+            raise ValidationError({response_field: exc.detail}, code=exc.code) from exc
+
         self.stage.executor.plan.context.setdefault(PLAN_CONTEXT_METHOD, "auth_mfa")
         self.stage.executor.plan.context.setdefault(PLAN_CONTEXT_METHOD_ARGS, {})
         self.stage.executor.plan.context[PLAN_CONTEXT_METHOD_ARGS].setdefault("mfa_devices", [])
@@ -169,111 +174,69 @@ class AuthenticatorValidateStageView(ChallengeStageView):
         """Get a list of all device challenges applicable for the current stage"""
         challenges = []
         pending_user = self.get_pending_user()
-        if pending_user.is_anonymous:
-            # We shouldn't get here without any kind of authentication data
-            raise StageInvalidException()
+
         # When `pretend_user_exists` is enabled in the identification stage,
         # `pending_user` will be a user model that isn't save to the DB
         # hence it doesn't have a PK. In that case we just return an empty list of
         # authenticators
-        if not pending_user.pk:
+        if not pending_user.is_anonymous and not pending_user.pk:
             return []
-        # Convert to a list to have usable log output instead of just <generator ...>
-        user_devices = list(devices_for_user(self.get_pending_user()))
-        self.logger.debug("Got devices for user", devices=user_devices)
-
-        # static and totp are only shown once
-        # since their challenges are device-independent
-        seen_classes = []
 
         stage: AuthenticatorValidateStage = self.executor.current_stage
 
-        threshold = timedelta_from_string(stage.last_auth_threshold)
         allowed_devices = []
 
-        has_webauthn_filters_set = stage.webauthn_allowed_device_types.exists()
+        for device_cls in DeviceClasses:
+            if device_cls not in stage.device_classes:
+                self.logger.debug("device class not allowed", device_class=device_cls)
+                continue
 
-        for device in user_devices:
-            device_class = device.__class__.__name__.lower().replace("device", "")
-            if device_class not in stage.device_classes:
-                self.logger.debug("device class not allowed", device_class=device_class)
-                continue
-            if isinstance(device, SMSDevice) and device.is_hashed:
-                self.logger.debug("Hashed SMS device, skipping", device=device)
-                continue
-            allowed_devices.append(device)
-            # Ignore WebAuthn devices which are not in the allowed types
-            if (
-                isinstance(device, WebAuthnDevice)
-                and device.device_type
-                and has_webauthn_filters_set
-            ):
-                if not stage.webauthn_allowed_device_types.filter(
-                    pk=device.device_type.pk
-                ).exists():
-                    self.logger.debug(
-                        "WebAuthn device type not allowed", device=device, type=device.device_type
-                    )
-                    continue
-            # Ensure only one challenge per device class
-            # WebAuthn does another device loop to find all WebAuthn devices
-            if device_class in seen_classes:
-                continue
-            if device_class not in seen_classes:
-                seen_classes.append(device_class)
-            challenge = DeviceChallenge(
-                data={
-                    "device_class": device_class,
-                    "device_uid": device.pk,
-                    "challenge": get_challenge_for_device(self, stage, device),
-                    "last_used": device.last_used,
-                }
+            challenger = stage.get_device_challenger(
+                device_cls,
+                self.request,
+                FlowContext(application=self.executor.plan.context.get(PLAN_CONTEXT_APPLICATION)),
             )
-            challenge.is_valid()
-            challenges.append(challenge.data)
-            self.logger.debug("adding challenge for device", challenge=challenge)
+
+            if not pending_user.is_anonymous:
+                allowed_devices.extend(challenger.get_allowed_devices(pending_user))
+                cls_challenges = challenger.make_device_challenges(pending_user)
+            else:
+                id_challenge = challenger.make_identification_challenge()
+                if id_challenge is not None:
+                    cls_challenges = [id_challenge]
+                else:
+                    continue
+
+            for ch in cls_challenges:
+                ch.is_valid()
+                challenges.append(ch.data)
+                self.logger.debug("adding challenge for device", challenge=ch)
+
         # check if we have an MFA cookie and if it's valid
-        if threshold.total_seconds() > 0:
+        if timedelta_from_string(stage.last_auth_threshold).total_seconds() > 0:
             self.check_mfa_cookie(allowed_devices)
         return challenges
-
-    def get_webauthn_challenge_without_user(self) -> list[dict]:
-        """Get a WebAuthn challenge when no pending user is set."""
-        challenge = DeviceChallenge(
-            data={
-                "device_class": DeviceClasses.WEBAUTHN,
-                "device_uid": -1,
-                "challenge": get_webauthn_challenge_without_user(
-                    self,
-                    self.executor.current_stage,
-                ),
-                "last_used": None,
-            }
-        )
-        challenge.is_valid()
-        return [challenge.data]
 
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:  # noqa: PLR0911
         """Check if a user is set, and check if the user has any devices
         if not, we can skip this entire stage"""
         user = self.get_pending_user()
         stage: AuthenticatorValidateStage = self.executor.current_stage
-        if user and not user.is_anonymous:
-            try:
-                challenges = self.get_device_challenges()
-            except FlowSkipStageException:
-                return self.executor.stage_ok()
-        else:
+
+        if not user or user.is_anonymous:
             if self.executor.flow.designation != FlowDesignation.AUTHENTICATION:
                 self.logger.debug("Refusing passwordless flow in non-authentication flow")
                 return self.executor.stage_ok()
-            # Passwordless auth, with just webauthn
-            if DeviceClasses.WEBAUTHN in stage.device_classes:
-                self.logger.debug("Flow without user, getting generic webauthn challenge")
-                challenges = self.get_webauthn_challenge_without_user()
-            else:
+            # Only WebAuthn authentication is supported
+            if DeviceClasses.WEBAUTHN not in stage.device_classes:
                 self.logger.debug("No pending user, continuing")
                 return self.executor.stage_ok()
+
+        try:
+            challenges = self.get_device_challenges()
+        except FlowSkipStageException:
+            return self.executor.stage_ok()
+
         self.executor.plan.context[PLAN_CONTEXT_DEVICE_CHALLENGES] = challenges
 
         # No allowed devices
@@ -420,7 +383,18 @@ class AuthenticatorValidateStageView(ChallengeStageView):
         return response
 
     def challenge_invalid(self, response: AuthenticatorValidationChallengeResponse) -> HttpResponse:
-        update_score(self.request, self.get_pending_user().username, -1)
+        if response.data.get("action") != ChallengeAction.INITIATE:
+            failed_user = self.get_pending_user()
+            if failed_user.is_anonymous and "device" in response.failure_context:
+                failed_user = response.failure_context["device"].user
+            if not failed_user.is_anonymous:
+                login_failed.send(
+                    sender=__name__,
+                    credentials={"username": failed_user.username},
+                    request=self.request,
+                    stage=self.executor.current_stage,
+                    context={PLAN_CONTEXT_METHOD_ARGS: response.failure_context},
+                )
         return super().challenge_invalid(response)
 
     def challenge_valid(self, response: AuthenticatorValidationChallengeResponse) -> HttpResponse:

@@ -32,7 +32,7 @@ export interface DeviceChallenge {
      * @type {string}
      * @memberof DeviceChallenge
      */
-    deviceUid: string;
+    deviceUid: string | null;
     /**
      *
      * @type {{ [key: string]: any; }}
@@ -45,6 +45,12 @@ export interface DeviceChallenge {
      * @memberof DeviceChallenge
      */
     lastUsed: Date | null;
+    /**
+     *
+     * @type {string}
+     * @memberof DeviceChallenge
+     */
+    uid: string;
 }
 
 /**
@@ -55,6 +61,7 @@ export function instanceOfDeviceChallenge(value: object): value is DeviceChallen
     if (!("deviceUid" in value) || value["deviceUid"] === undefined) return false;
     if (!("challenge" in value) || value["challenge"] === undefined) return false;
     if (!("lastUsed" in value) || value["lastUsed"] === undefined) return false;
+    if (!("uid" in value) || value["uid"] === undefined) return false;
     return true;
 }
 
@@ -74,6 +81,7 @@ export function DeviceChallengeFromJSONTyped(
         deviceUid: json["device_uid"],
         challenge: json["challenge"],
         lastUsed: json["last_used"] == null ? null : new Date(json["last_used"]),
+        uid: json["uid"],
     };
 }
 
@@ -94,5 +102,6 @@ export function DeviceChallengeToJSONTyped(
         device_uid: value["deviceUid"],
         challenge: value["challenge"],
         last_used: value["lastUsed"] == null ? value["lastUsed"] : value["lastUsed"].toISOString(),
+        uid: value["uid"],
     };
 }

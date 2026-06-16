@@ -1,14 +1,22 @@
 """Authenticator Validation Stage"""
 
+from typing import TYPE_CHECKING
+
+from django.apps import apps
 from django.contrib.postgres.fields.array import ArrayField
 from django.db import models
+from django.http import HttpRequest
 from django.utils.translation import gettext_lazy as _
 from django.views import View
 from rest_framework.serializers import BaseSerializer
 
 from authentik.flows.models import NotConfiguredAction, Stage
 from authentik.lib.utils.time import timedelta_string_validator
+from authentik.stages.authenticator.models import Device
 from authentik.stages.authenticator_webauthn.models import UserVerification, WebAuthnHint
+
+if TYPE_CHECKING:
+    from authentik.stages.authenticator_validate.challenge import DeviceChallenger, FlowContext
 
 
 class DeviceClasses(models.TextChoices):
@@ -27,6 +35,24 @@ class DeviceClasses(models.TextChoices):
         return getattr(
             DeviceClasses, model_label.rsplit(".", maxsplit=1)[-1][: -len("device")].upper()
         )
+
+    @staticmethod
+    def from_model(model: type[Device]) -> DeviceClasses:
+        return DeviceClasses.from_model_label(model._meta.label_lower)
+
+    def as_type(self) -> type[Device]:
+        """Get the Device model class for this device class"""
+        model_name = f"{self.value}device"
+        app_label_map = {
+            DeviceClasses.STATIC: "authentik_stages_authenticator_static",
+            DeviceClasses.TOTP: "authentik_stages_authenticator_totp",
+            DeviceClasses.WEBAUTHN: "authentik_stages_authenticator_webauthn",
+            DeviceClasses.DUO: "authentik_stages_authenticator_duo",
+            DeviceClasses.SMS: "authentik_stages_authenticator_sms",
+            DeviceClasses.EMAIL: "authentik_stages_authenticator_email",
+        }
+        app_label = app_label_map.get(self)
+        return apps.get_model(app_label, model_name)
 
 
 def default_device_classes() -> list:
@@ -119,6 +145,19 @@ class AuthenticatorValidateStage(Stage):
         elif device_class == DeviceClasses.STATIC:
             return self.static_otp_throttling_factor
         return None
+
+    def get_device_challenger(
+        self,
+        device_class: DeviceClasses,
+        request: HttpRequest,
+        flow_context: FlowContext,
+    ) -> DeviceChallenger:
+        from authentik.stages.authenticator_validate.challenge import DeviceChallenger
+
+        device_type = device_class.as_type()
+        return DeviceChallenger.get_subclass_for_device_type(device_type)(
+            request, self, flow_context
+        )
 
     class Meta:
         verbose_name = _("Authenticator Validation Stage")

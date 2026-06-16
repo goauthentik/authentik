@@ -11,7 +11,7 @@ from authentik.flows.tests import FlowTestCase
 from authentik.lib.generators import generate_id
 from authentik.stages.authenticator_sms.models import AuthenticatorSMSStage, SMSDevice, SMSProviders
 from authentik.stages.authenticator_validate.models import AuthenticatorValidateStage, DeviceClasses
-from authentik.stages.authenticator_validate.stage import COOKIE_NAME_MFA
+from authentik.stages.authenticator_validate.stage import COOKIE_NAME_MFA, ChallengeAction
 from authentik.stages.identification.models import IdentificationStage, UserFields
 
 
@@ -95,6 +95,7 @@ class AuthenticatorValidateStageSMSTests(FlowTestCase):
             follow=True,
         )
         self.assertEqual(response.status_code, 200)
+        challenge_uid = response.json()["device_challenges"][0]["uid"]
         send_mock = MagicMock()
         with patch(
             "authentik.stages.authenticator_sms.models.AuthenticatorSMSStage.send", send_mock
@@ -103,19 +104,18 @@ class AuthenticatorValidateStageSMSTests(FlowTestCase):
                 reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
                 {
                     "component": "ak-stage-authenticator-validate",
-                    "selected_challenge": {
-                        "device_class": "sms",
-                        "device_uid": str(device.pk),
-                        "challenge": {},
-                        "last_used": None,
-                    },
+                    "challenge_uid": challenge_uid,
+                    "action": ChallengeAction.INITIATE,
                 },
             )
         self.assertEqual(send_mock.call_count, 1)
         device.generate_token()
         response = self.client.post(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
-            {"code": device.token},
+            {
+                "code": device.token,
+                "challenge_uid": challenge_uid,
+            },
         )
         self.assertIn(COOKIE_NAME_MFA, response.cookies)
         self.assertStageResponse(response, component="xak-flow-redirect", to="/")

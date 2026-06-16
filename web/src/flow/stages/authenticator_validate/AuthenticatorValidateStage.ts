@@ -24,6 +24,7 @@ import {
     FlowChallengeResponseRequest,
     FlowsApi,
 } from "@goauthentik/api";
+import { AuthenticatorValidationChallengeResponseActionEnum } from "@goauthentik/api/src/models/AuthenticatorValidationChallengeResponseActionEnum";
 
 import { msg } from "@lit/localize";
 import { CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
@@ -154,7 +155,8 @@ export class AuthenticatorValidateStage
 
         const flowChallengeResponseRequest = {
             component,
-            selectedChallenge: value,
+            challengeUid: value.uid,
+            action: AuthenticatorValidationChallengeResponseActionEnum.Initiate,
         } satisfies FlowChallengeResponseRequest;
 
         // We don't use this.submit here, as we don't want to advance the flow.
@@ -174,7 +176,12 @@ export class AuthenticatorValidateStage
         payload: AuthenticatorValidationChallengeResponseRequest,
         options?: SubmitOptions,
     ): Promise<boolean> {
-        return this.host?.submit(payload, options) || Promise.resolve();
+        return (
+            this.host?.submit(
+                { ...payload, challengeUid: this.selectedDeviceChallenge?.uid },
+                options,
+            ) || Promise.resolve()
+        );
     }
 
     public reset(): void {
@@ -292,6 +299,7 @@ export class AuthenticatorValidateStage
                         this.submit({
                             component: this.challenge?.component || "",
                             selectedStage: stage.pk,
+                            action: AuthenticatorValidationChallengeResponseActionEnum.Initiate,
                         });
                     }}
                 >

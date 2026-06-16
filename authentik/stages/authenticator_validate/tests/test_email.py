@@ -10,6 +10,7 @@ from authentik.lib.generators import generate_id
 from authentik.lib.utils.email import mask_email
 from authentik.stages.authenticator_email.models import AuthenticatorEmailStage, EmailDevice
 from authentik.stages.authenticator_validate.models import AuthenticatorValidateStage, DeviceClasses
+from authentik.stages.authenticator_validate.stage import ChallengeAction
 from authentik.stages.identification.models import IdentificationStage, UserFields
 
 
@@ -50,18 +51,14 @@ class AuthenticatorValidateStageEmailTests(FlowTestCase):
         self.assertEqual(response.status_code, 200)
         return response
 
-    def _send_challenge(self, device):
+    def _send_challenge(self, device, challenge_uid: str):
         """Helper to send challenge for device"""
         response = self.client.post(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
             {
                 "component": "ak-stage-authenticator-validate",
-                "selected_challenge": {
-                    "device_class": "email",
-                    "device_uid": str(device.pk),
-                    "challenge": {},
-                    "last_used": device.last_used.isoformat() if device.last_used else None,
-                },
+                "challenge_uid": challenge_uid,
+                "action": ChallengeAction.INITIATE,
             },
         )
         self.assertEqual(response.status_code, 200)
@@ -78,10 +75,12 @@ class AuthenticatorValidateStageEmailTests(FlowTestCase):
         )  # Short email for testing purposes
 
         # First identify the user
-        self._identify_user()
+        response = self._identify_user()
+
+        challenge_uid = response.json()["device_challenges"][0]["uid"]
 
         # Send the challenge
-        response = self._send_challenge(device)
+        response = self._send_challenge(device, challenge_uid)
         response_data = self.assertStageResponse(
             response,
             flow=self.flow,
@@ -100,7 +99,11 @@ class AuthenticatorValidateStageEmailTests(FlowTestCase):
         # Submit the valid code
         response = self.client.post(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
-            {"component": "ak-stage-authenticator-validate", "code": device.token},
+            {
+                "component": "ak-stage-authenticator-validate",
+                "code": device.token,
+                "challenge_uid": challenge_uid,
+            },
         )
         # Should redirect to root since this is the last stage
         self.assertStageRedirects(response, "/")
@@ -149,10 +152,12 @@ class AuthenticatorValidateStageEmailTests(FlowTestCase):
         )
 
         # First identify the user
-        self._identify_user()
+        response = self._identify_user()
+
+        challenge_uid = response.json()["device_challenges"][0]["uid"]
 
         # Send the challenge
-        self._send_challenge(device)
+        self._send_challenge(device, challenge_uid)
 
         # Generate a token for the device
         device.generate_token()
@@ -160,7 +165,11 @@ class AuthenticatorValidateStageEmailTests(FlowTestCase):
         # Try invalid code and verify error message
         response = self.client.post(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
-            {"component": "ak-stage-authenticator-validate", "code": "invalid"},
+            {
+                "component": "ak-stage-authenticator-validate",
+                "code": "invalid",
+                "challenge_uid": challenge_uid,
+            },
         )
         response_data = self.assertStageResponse(
             response,
@@ -173,10 +182,7 @@ class AuthenticatorValidateStageEmailTests(FlowTestCase):
                 "code": [
                     {
                         "code": "invalid",
-                        "string": (
-                            "Invalid Token. Please ensure the time on your device "
-                            "is accurate and try again."
-                        ),
+                        "string": ("Invalid Token."),
                     }
                 ],
             },

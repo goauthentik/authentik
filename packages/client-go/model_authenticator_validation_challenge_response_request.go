@@ -20,12 +20,13 @@ var _ MappedNullable = &AuthenticatorValidationChallengeResponseRequest{}
 
 // AuthenticatorValidationChallengeResponseRequest Challenge used for Code-based and WebAuthn authenticators
 type AuthenticatorValidationChallengeResponseRequest struct {
-	Component            *string                 `json:"component,omitempty"`
-	SelectedChallenge    *DeviceChallengeRequest `json:"selected_challenge,omitempty"`
-	SelectedStage        *string                 `json:"selected_stage,omitempty"`
-	Code                 *string                 `json:"code,omitempty"`
-	Webauthn             map[string]interface{}  `json:"webauthn,omitempty"`
-	Duo                  *int32                  `json:"duo,omitempty"`
+	Component            *string                                             `json:"component,omitempty"`
+	SelectedStage        *string                                             `json:"selected_stage,omitempty"`
+	Action               *AuthenticatorValidationChallengeResponseActionEnum `json:"action,omitempty"`
+	Code                 *string                                             `json:"code,omitempty"`
+	Webauthn             map[string]interface{}                              `json:"webauthn,omitempty"`
+	Duo                  *int32                                              `json:"duo,omitempty"`
+	ChallengeUid         *string                                             `json:"challenge_uid,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -39,6 +40,8 @@ func NewAuthenticatorValidationChallengeResponseRequest() *AuthenticatorValidati
 	this := AuthenticatorValidationChallengeResponseRequest{}
 	var component string = "ak-stage-authenticator-validate"
 	this.Component = &component
+	var action AuthenticatorValidationChallengeResponseActionEnum = AUTHENTICATORVALIDATIONCHALLENGERESPONSEACTIONENUM_VALIDATE
+	this.Action = &action
 	return &this
 }
 
@@ -49,6 +52,8 @@ func NewAuthenticatorValidationChallengeResponseRequestWithDefaults() *Authentic
 	this := AuthenticatorValidationChallengeResponseRequest{}
 	var component string = "ak-stage-authenticator-validate"
 	this.Component = &component
+	var action AuthenticatorValidationChallengeResponseActionEnum = AUTHENTICATORVALIDATIONCHALLENGERESPONSEACTIONENUM_VALIDATE
+	this.Action = &action
 	return &this
 }
 
@@ -84,38 +89,6 @@ func (o *AuthenticatorValidationChallengeResponseRequest) SetComponent(v string)
 	o.Component = &v
 }
 
-// GetSelectedChallenge returns the SelectedChallenge field value if set, zero value otherwise.
-func (o *AuthenticatorValidationChallengeResponseRequest) GetSelectedChallenge() DeviceChallengeRequest {
-	if o == nil || IsNil(o.SelectedChallenge) {
-		var ret DeviceChallengeRequest
-		return ret
-	}
-	return *o.SelectedChallenge
-}
-
-// GetSelectedChallengeOk returns a tuple with the SelectedChallenge field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *AuthenticatorValidationChallengeResponseRequest) GetSelectedChallengeOk() (*DeviceChallengeRequest, bool) {
-	if o == nil || IsNil(o.SelectedChallenge) {
-		return nil, false
-	}
-	return o.SelectedChallenge, true
-}
-
-// HasSelectedChallenge returns a boolean if a field has been set.
-func (o *AuthenticatorValidationChallengeResponseRequest) HasSelectedChallenge() bool {
-	if o != nil && !IsNil(o.SelectedChallenge) {
-		return true
-	}
-
-	return false
-}
-
-// SetSelectedChallenge gets a reference to the given DeviceChallengeRequest and assigns it to the SelectedChallenge field.
-func (o *AuthenticatorValidationChallengeResponseRequest) SetSelectedChallenge(v DeviceChallengeRequest) {
-	o.SelectedChallenge = &v
-}
-
 // GetSelectedStage returns the SelectedStage field value if set, zero value otherwise.
 func (o *AuthenticatorValidationChallengeResponseRequest) GetSelectedStage() string {
 	if o == nil || IsNil(o.SelectedStage) {
@@ -146,6 +119,38 @@ func (o *AuthenticatorValidationChallengeResponseRequest) HasSelectedStage() boo
 // SetSelectedStage gets a reference to the given string and assigns it to the SelectedStage field.
 func (o *AuthenticatorValidationChallengeResponseRequest) SetSelectedStage(v string) {
 	o.SelectedStage = &v
+}
+
+// GetAction returns the Action field value if set, zero value otherwise.
+func (o *AuthenticatorValidationChallengeResponseRequest) GetAction() AuthenticatorValidationChallengeResponseActionEnum {
+	if o == nil || IsNil(o.Action) {
+		var ret AuthenticatorValidationChallengeResponseActionEnum
+		return ret
+	}
+	return *o.Action
+}
+
+// GetActionOk returns a tuple with the Action field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AuthenticatorValidationChallengeResponseRequest) GetActionOk() (*AuthenticatorValidationChallengeResponseActionEnum, bool) {
+	if o == nil || IsNil(o.Action) {
+		return nil, false
+	}
+	return o.Action, true
+}
+
+// HasAction returns a boolean if a field has been set.
+func (o *AuthenticatorValidationChallengeResponseRequest) HasAction() bool {
+	if o != nil && !IsNil(o.Action) {
+		return true
+	}
+
+	return false
+}
+
+// SetAction gets a reference to the given AuthenticatorValidationChallengeResponseActionEnum and assigns it to the Action field.
+func (o *AuthenticatorValidationChallengeResponseRequest) SetAction(v AuthenticatorValidationChallengeResponseActionEnum) {
+	o.Action = &v
 }
 
 // GetCode returns the Code field value if set, zero value otherwise.
@@ -244,6 +249,38 @@ func (o *AuthenticatorValidationChallengeResponseRequest) SetDuo(v int32) {
 	o.Duo = &v
 }
 
+// GetChallengeUid returns the ChallengeUid field value if set, zero value otherwise.
+func (o *AuthenticatorValidationChallengeResponseRequest) GetChallengeUid() string {
+	if o == nil || IsNil(o.ChallengeUid) {
+		var ret string
+		return ret
+	}
+	return *o.ChallengeUid
+}
+
+// GetChallengeUidOk returns a tuple with the ChallengeUid field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AuthenticatorValidationChallengeResponseRequest) GetChallengeUidOk() (*string, bool) {
+	if o == nil || IsNil(o.ChallengeUid) {
+		return nil, false
+	}
+	return o.ChallengeUid, true
+}
+
+// HasChallengeUid returns a boolean if a field has been set.
+func (o *AuthenticatorValidationChallengeResponseRequest) HasChallengeUid() bool {
+	if o != nil && !IsNil(o.ChallengeUid) {
+		return true
+	}
+
+	return false
+}
+
+// SetChallengeUid gets a reference to the given string and assigns it to the ChallengeUid field.
+func (o *AuthenticatorValidationChallengeResponseRequest) SetChallengeUid(v string) {
+	o.ChallengeUid = &v
+}
+
 func (o AuthenticatorValidationChallengeResponseRequest) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -257,11 +294,11 @@ func (o AuthenticatorValidationChallengeResponseRequest) ToMap() (map[string]int
 	if !IsNil(o.Component) {
 		toSerialize["component"] = o.Component
 	}
-	if !IsNil(o.SelectedChallenge) {
-		toSerialize["selected_challenge"] = o.SelectedChallenge
-	}
 	if !IsNil(o.SelectedStage) {
 		toSerialize["selected_stage"] = o.SelectedStage
+	}
+	if !IsNil(o.Action) {
+		toSerialize["action"] = o.Action
 	}
 	if !IsNil(o.Code) {
 		toSerialize["code"] = o.Code
@@ -271,6 +308,9 @@ func (o AuthenticatorValidationChallengeResponseRequest) ToMap() (map[string]int
 	}
 	if !IsNil(o.Duo) {
 		toSerialize["duo"] = o.Duo
+	}
+	if !IsNil(o.ChallengeUid) {
+		toSerialize["challenge_uid"] = o.ChallengeUid
 	}
 
 	for key, value := range o.AdditionalProperties {
@@ -295,11 +335,12 @@ func (o *AuthenticatorValidationChallengeResponseRequest) UnmarshalJSON(data []b
 
 	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "component")
-		delete(additionalProperties, "selected_challenge")
 		delete(additionalProperties, "selected_stage")
+		delete(additionalProperties, "action")
 		delete(additionalProperties, "code")
 		delete(additionalProperties, "webauthn")
 		delete(additionalProperties, "duo")
+		delete(additionalProperties, "challenge_uid")
 		o.AdditionalProperties = additionalProperties
 	}
 

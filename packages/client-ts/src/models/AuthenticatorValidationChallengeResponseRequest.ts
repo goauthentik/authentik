@@ -12,11 +12,11 @@
  * Do not edit the class manually.
  */
 
-import type { DeviceChallengeRequest } from "./DeviceChallengeRequest";
+import type { AuthenticatorValidationChallengeResponseActionEnum } from "./AuthenticatorValidationChallengeResponseActionEnum";
 import {
-    DeviceChallengeRequestFromJSON,
-    DeviceChallengeRequestToJSON,
-} from "./DeviceChallengeRequest";
+    AuthenticatorValidationChallengeResponseActionEnumFromJSON,
+    AuthenticatorValidationChallengeResponseActionEnumToJSON,
+} from "./AuthenticatorValidationChallengeResponseActionEnum";
 
 /**
  * Challenge used for Code-based and WebAuthn authenticators
@@ -32,16 +32,16 @@ export interface AuthenticatorValidationChallengeResponseRequest {
     component?: string;
     /**
      *
-     * @type {DeviceChallengeRequest}
-     * @memberof AuthenticatorValidationChallengeResponseRequest
-     */
-    selectedChallenge?: DeviceChallengeRequest;
-    /**
-     *
      * @type {string}
      * @memberof AuthenticatorValidationChallengeResponseRequest
      */
     selectedStage?: string;
+    /**
+     *
+     * @type {AuthenticatorValidationChallengeResponseActionEnum}
+     * @memberof AuthenticatorValidationChallengeResponseRequest
+     */
+    action?: AuthenticatorValidationChallengeResponseActionEnum;
     /**
      *
      * @type {string}
@@ -60,6 +60,12 @@ export interface AuthenticatorValidationChallengeResponseRequest {
      * @memberof AuthenticatorValidationChallengeResponseRequest
      */
     duo?: number;
+    /**
+     *
+     * @type {string}
+     * @memberof AuthenticatorValidationChallengeResponseRequest
+     */
+    challengeUid?: string;
 }
 
 /**
@@ -86,14 +92,15 @@ export function AuthenticatorValidationChallengeResponseRequestFromJSONTyped(
     }
     return {
         component: json["component"] == null ? undefined : json["component"],
-        selectedChallenge:
-            json["selected_challenge"] == null
-                ? undefined
-                : DeviceChallengeRequestFromJSON(json["selected_challenge"]),
         selectedStage: json["selected_stage"] == null ? undefined : json["selected_stage"],
+        action:
+            json["action"] == null
+                ? undefined
+                : AuthenticatorValidationChallengeResponseActionEnumFromJSON(json["action"]),
         code: json["code"] == null ? undefined : json["code"],
         webauthn: json["webauthn"] == null ? undefined : json["webauthn"],
         duo: json["duo"] == null ? undefined : json["duo"],
+        challengeUid: json["challenge_uid"] == null ? undefined : json["challenge_uid"],
     };
 }
 
@@ -113,10 +120,11 @@ export function AuthenticatorValidationChallengeResponseRequestToJSONTyped(
 
     return {
         component: value["component"],
-        selected_challenge: DeviceChallengeRequestToJSON(value["selectedChallenge"]),
         selected_stage: value["selectedStage"],
+        action: AuthenticatorValidationChallengeResponseActionEnumToJSON(value["action"]),
         code: value["code"],
         webauthn: value["webauthn"],
         duo: value["duo"],
+        challenge_uid: value["challengeUid"],
     };
 }

@@ -3,20 +3,20 @@
 from unittest.mock import MagicMock, patch
 
 from django.urls import reverse
-from rest_framework.exceptions import ValidationError
 
 from authentik.brands.utils import get_brand_for_request
 from authentik.core.middleware import RESPONSE_HEADER_ID
+from authentik.core.models import Application
 from authentik.core.tests.utils import RequestFactory, create_test_admin_user, create_test_flow
 from authentik.events.models import Event, EventAction
 from authentik.flows.models import FlowDesignation, FlowStageBinding
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
-from authentik.flows.stage import StageView
 from authentik.flows.tests import FlowTestCase
-from authentik.flows.views.executor import SESSION_KEY_PLAN, FlowExecutorView
+from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.lib.generators import generate_id, generate_key
 from authentik.stages.authenticator_duo.models import AuthenticatorDuoStage, DuoDevice
-from authentik.stages.authenticator_validate.challenge import validate_challenge_duo
+from authentik.stages.authenticator_validate.challenge import ChallengeValidationError, FlowContext
+from authentik.stages.authenticator_validate.challenge.duo import DuoChallenger
 from authentik.stages.authenticator_validate.models import AuthenticatorValidateStage, DeviceClasses
 from authentik.stages.user_login.models import UserLoginStage
 
@@ -34,6 +34,8 @@ class AuthenticatorValidateStageDuoTests(FlowTestCase):
 
         request.brand = get_brand_for_request(request)
 
+        application = Application()
+
         stage = AuthenticatorDuoStage.objects.create(
             name=generate_id(),
             client_id=generate_id(),
@@ -44,6 +46,7 @@ class AuthenticatorValidateStageDuoTests(FlowTestCase):
             user=self.user,
             stage=stage,
         )
+        challenger = DuoChallenger(request, stage, FlowContext(application=application))
         with patch(
             "authentik.stages.authenticator_duo.models.AuthenticatorDuoStage.auth_client",
             MagicMock(
@@ -60,17 +63,7 @@ class AuthenticatorValidateStageDuoTests(FlowTestCase):
         ):
             self.assertEqual(
                 duo_device,
-                validate_challenge_duo(
-                    duo_device.pk,
-                    StageView(
-                        FlowExecutorView(
-                            current_stage=stage,
-                            plan=FlowPlan(generate_id(), [], {}),
-                        ),
-                        request=request,
-                    ),
-                    self.user,
-                ),
+                challenger.validate(DuoDevice.objects.filter(pk=duo_device.pk), {}, duo_device.pk),
             )
         with patch(
             "authentik.stages.authenticator_duo.models.AuthenticatorDuoStage.auth_client",
@@ -86,18 +79,9 @@ class AuthenticatorValidateStageDuoTests(FlowTestCase):
                 )
             ),
         ):
-            with self.assertRaises(ValidationError):
-                validate_challenge_duo(
-                    duo_device.pk,
-                    StageView(
-                        FlowExecutorView(
-                            current_stage=stage,
-                            plan=FlowPlan(generate_id(), [], {}),
-                        ),
-                        request=request,
-                    ),
-                    self.user,
-                )
+            challenger = DuoChallenger(request, stage, FlowContext(application=application))
+            with self.assertRaises(ChallengeValidationError):
+                challenger.validate(DuoDevice.objects.filter(pk=duo_device.pk), {}, duo_device.pk)
 
     @patch(
         "authentik.stages.authenticator_duo.models.AuthenticatorDuoStage.auth_client",
@@ -149,9 +133,11 @@ class AuthenticatorValidateStageDuoTests(FlowTestCase):
         )
         self.assertEqual(response.status_code, 200)
 
+        challenge_uid = response.json()["device_challenges"][0]["uid"]
+
         response = self.client.post(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
-            {"duo": duo_device.pk},
+            {"duo": duo_device.pk, "challenge_uid": challenge_uid},
             follow=True,
         )
 

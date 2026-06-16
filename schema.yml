@@ -35718,6 +35718,11 @@ components:
       - device_challenges
       - pending_user
       - pending_user_avatar
+    AuthenticatorValidationChallengeResponseActionEnum:
+      enum:
+      - initiate
+      - validate
+      type: string
     AuthenticatorValidationChallengeResponseRequest:
       type: object
       description: Challenge used for Code-based and WebAuthn authenticators
@@ -35726,11 +35731,13 @@ components:
           type: string
           minLength: 1
           default: ak-stage-authenticator-validate
-        selected_challenge:
-          $ref: '#/components/schemas/DeviceChallengeRequest'
         selected_stage:
           type: string
           minLength: 1
+        action:
+          allOf:
+          - $ref: '#/components/schemas/AuthenticatorValidationChallengeResponseActionEnum'
+          default: validate
         code:
           type: string
           minLength: 1
@@ -35739,6 +35746,9 @@ components:
           additionalProperties: {}
         duo:
           type: integer
+        challenge_uid:
+          type: string
+          minLength: 1
     AuthenticatorWebAuthnChallenge:
       type: object
       description: WebAuthn Challenge
@@ -37448,6 +37458,7 @@ components:
           $ref: '#/components/schemas/DeviceClassesEnum'
         device_uid:
           type: string
+          nullable: true
         challenge:
           type: object
           additionalProperties: {}
@@ -37455,32 +37466,14 @@ components:
           type: string
           format: date-time
           nullable: true
+        uid:
+          type: string
       required:
       - challenge
       - device_class
       - device_uid
       - last_used
-    DeviceChallengeRequest:
-      type: object
-      description: Single device challenge
-      properties:
-        device_class:
-          $ref: '#/components/schemas/DeviceClassesEnum'
-        device_uid:
-          type: string
-          minLength: 1
-        challenge:
-          type: object
-          additionalProperties: {}
-        last_used:
-          type: string
-          format: date-time
-          nullable: true
-      required:
-      - challenge
-      - device_class
-      - device_uid
-      - last_used
+      - uid
     DeviceClassesEnum:
       enum:
       - static

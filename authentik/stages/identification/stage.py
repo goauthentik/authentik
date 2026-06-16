@@ -16,6 +16,7 @@ from sentry_sdk import start_span
 
 from authentik.core.api.utils import JSONDictField, PassiveSerializer
 from authentik.core.models import Application, Source, User
+from authentik.core.signals import login_failed
 from authentik.endpoints.connectors.agent.stage import PLAN_CONTEXT_DEVICE_AUTH_TOKEN
 from authentik.endpoints.models import Device
 from authentik.events.middleware import audit_ignore
@@ -38,9 +39,11 @@ from authentik.lib.utils.reflection import all_subclasses, class_to_path
 from authentik.lib.utils.urls import reverse_with_qs
 from authentik.root.middleware import ClientIPMiddleware
 from authentik.stages.authenticator_validate.challenge import (
-    get_webauthn_challenge_without_user,
-    validate_challenge_webauthn,
+    ChallengeValidationError,
+    FlowContext,
 )
+from authentik.stages.authenticator_validate.challenge.webauthn import WebAuthnChallenger
+from authentik.stages.authenticator_validate.models import DeviceClasses
 from authentik.stages.authenticator_webauthn.models import WebAuthnDevice
 from authentik.stages.captcha.stage import (
     PLAN_CONTEXT_CAPTCHA_PRIVATE_KEY,
@@ -54,6 +57,8 @@ from authentik.stages.password.stage import (
     PLAN_CONTEXT_METHOD_ARGS,
     authenticate,
 )
+
+PLAN_CONTEXT_WEBAUTHN_CHALLENGE = "goauthentik.io/stages/identification/webauthn_challenge"
 
 
 class LoginChallengeMixin:
@@ -134,9 +139,29 @@ class IdentificationChallengeResponse(ChallengeResponse):
         current_stage: IdentificationStage = IdentificationStage.objects.get(
             pk=self.stage.executor.current_stage.pk
         )
-        return validate_challenge_webauthn(
-            passkey, self.stage, self.stage.get_pending_user(), current_stage.webauthn_stage
+        webauthn_challenger = WebAuthnChallenger(
+            self.stage.request,
+            current_stage.webauthn_stage,
+            FlowContext(application=self.stage.executor.plan.context.get(PLAN_CONTEXT_APPLICATION)),
         )
+        try:
+            return webauthn_challenger.validate(
+                WebAuthnDevice.objects.all(),
+                self.stage.executor.plan.context.get(PLAN_CONTEXT_WEBAUTHN_CHALLENGE),
+                passkey,
+            )
+        except ChallengeValidationError as exc:
+            if "device" in exc.failure_context:
+                context = {"device_class": DeviceClasses.WEBAUTHN.value}
+                context.update(exc.failure_context)
+                login_failed.send(
+                    sender=__name__,
+                    credentials={"username": exc.failure_context["device"].user.username},
+                    request=self.stage.request,
+                    stage=self.stage.executor.current_stage,
+                    context={PLAN_CONTEXT_METHOD_ARGS: context},
+                )
+            raise ValidationError(exc.detail, exc.code) from exc
 
     def validate(self, attrs: dict[str, Any]) -> dict[str, Any]:
         """Validate that user exists, and optionally their password, captcha token, or passkey"""
@@ -282,7 +307,18 @@ class IdentificationStageView(ChallengeStageView):
         if not current_stage.webauthn_stage:
             self.logger.debug("No webauthn_stage configured")
             return None
-        challenge = get_webauthn_challenge_without_user(self, current_stage.webauthn_stage)
+
+        self.executor.plan.context.pop(PLAN_CONTEXT_WEBAUTHN_CHALLENGE, None)
+
+        webauthn_challenger = WebAuthnChallenger(
+            self.request,
+            current_stage.webauthn_stage,
+            FlowContext(application=self.executor.plan.context.get(PLAN_CONTEXT_APPLICATION)),
+        )
+        challenge = webauthn_challenger.make_raw_identification_challenge()
+
+        self.executor.plan.context[PLAN_CONTEXT_WEBAUTHN_CHALLENGE] = challenge
+
         self.logger.debug("Generated passkey challenge", challenge=challenge)
         return challenge
 
