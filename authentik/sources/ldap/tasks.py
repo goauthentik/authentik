@@ -57,7 +57,7 @@ def ldap_sync(source_pk: str):
     source = LDAPSource.objects.filter(pk=source_pk, enabled=True).first()
     if not source:
         return
-    with source.sync_lock as lock_acquired:
+    with source.start_sync_lock as lock_acquired:
         if not lock_acquired:
             task.info("Another synchronization is already starting. Skipping this one.")
             LOGGER.debug(
@@ -81,39 +81,39 @@ def ldap_sync(source_pk: str):
             source=source, expires=now() + timedelta(days=60)
         )
 
-    # User and group sync can happen at once, they have no dependencies on each other
-    current_sync.enqueue(
-        ldap_sync_paginator(task, source, UserLDAPSynchronizer)
-        + ldap_sync_paginator(task, source, GroupLDAPSynchronizer)
-    )
-
-    # Membership sync needs to run afterwards
-    current_sync.enqueue(ldap_sync_paginator(task, source, MembershipLDAPSynchronizer))
-
-    # Finally, deletions. What we'd really like to do here is something like
-    # ```
-    # user_identifiers = <ldap query>
-    # User.objects.exclude(
-    #     usersourceconnection__identifier__in=user_uniqueness_identifiers,
-    # ).delete()
-    # ```
-    # This runs into performance issues in large installations. So instead we spread the
-    # work out into three steps:
-    # 1. Get every object from the LDAP source.
-    # 2. Mark every object as "safe" in the database. This is quick, but any error could
-    #    mean deleting users which should not be deleted, so we do it immediately, in
-    #    large chunks, and only queue the deletion step afterwards.
-    # 3. Delete every unmarked item. This is slow, so we spread it over many tasks in
-    #    small chunks.
-    current_sync.enqueue(
-        ldap_sync_paginator(task, source, UserLDAPForwardDeletion)
-        + ldap_sync_paginator(task, source, GroupLDAPForwardDeletion),
-    )
-
-    if source.sync_outgoing_trigger_mode == SyncOutgoingTriggerMode.DEFERRED_END:
+        # User and group sync can happen at once, they have no dependencies on each other
         current_sync.enqueue(
-            [ldap_sync_trigger_outgoing_sync.message_with_options(rel_obj=task.rel_obj)]
+            ldap_sync_paginator(task, source, UserLDAPSynchronizer)
+            + ldap_sync_paginator(task, source, GroupLDAPSynchronizer)
         )
+
+        # Membership sync needs to run afterwards
+        current_sync.enqueue(ldap_sync_paginator(task, source, MembershipLDAPSynchronizer))
+
+        # Finally, deletions. What we'd really like to do here is something like
+        # ```
+        # user_identifiers = <ldap query>
+        # User.objects.exclude(
+        #     usersourceconnection__identifier__in=user_uniqueness_identifiers,
+        # ).delete()
+        # ```
+        # This runs into performance issues in large installations. So instead we spread the
+        # work out into three steps:
+        # 1. Get every object from the LDAP source.
+        # 2. Mark every object as "safe" in the database. This is quick, but any error could
+        #    mean deleting users which should not be deleted, so we do it immediately, in
+        #    large chunks, and only queue the deletion step afterwards.
+        # 3. Delete every unmarked item. This is slow, so we spread it over many tasks in
+        #    small chunks.
+        current_sync.enqueue(
+            ldap_sync_paginator(task, source, UserLDAPForwardDeletion)
+            + ldap_sync_paginator(task, source, GroupLDAPForwardDeletion),
+        )
+
+        if source.sync_outgoing_trigger_mode == SyncOutgoingTriggerMode.DEFERRED_END:
+            current_sync.enqueue(
+                [ldap_sync_trigger_outgoing_sync.message_with_options(rel_obj=task.rel_obj)]
+            )
 
 
 def ldap_sync_paginator(

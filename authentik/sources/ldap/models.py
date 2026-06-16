@@ -310,7 +310,7 @@ class LDAPSource(IncomingSyncSource):
         return RuntimeError("Failed to bind")
 
     @property
-    def sync_lock(self) -> pglock.advisory:
+    def start_sync_lock(self) -> pglock.advisory:
         """Postgres lock for syncing LDAP to prevent multiple parallel syncs happening"""
         return pglock.advisory(
             lock_id=f"goauthentik.io/{connection.schema_name}/sources/ldap/sync/{self.slug}",
