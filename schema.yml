@@ -42334,12 +42334,16 @@ components:
           allOf:
           - $ref: '#/components/schemas/SyncOutgoingTriggerModeEnum'
           description: When to trigger sync for outgoing providers
+        last_sync:
+          type: string
+          readOnly: true
       required:
       - base_dn
       - component
       - connectivity
       - icon_themed_urls
       - icon_url
+      - last_sync
       - managed
       - meta_model_name
       - name

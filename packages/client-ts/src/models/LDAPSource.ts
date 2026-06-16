@@ -288,6 +288,12 @@ export interface LDAPSource {
      * @memberof LDAPSource
      */
     syncOutgoingTriggerMode?: SyncOutgoingTriggerModeEnum;
+    /**
+     *
+     * @type {string}
+     * @memberof LDAPSource
+     */
+    readonly lastSync: string;
 }
 
 /**
@@ -307,6 +313,7 @@ export function instanceOfLDAPSource(value: object): value is LDAPSource {
     if (!("serverUri" in value) || value["serverUri"] === undefined) return false;
     if (!("baseDn" in value) || value["baseDn"] === undefined) return false;
     if (!("connectivity" in value) || value["connectivity"] === undefined) return false;
+    if (!("lastSync" in value) || value["lastSync"] === undefined) return false;
     return true;
 }
 
@@ -391,6 +398,7 @@ export function LDAPSourceFromJSONTyped(json: any, ignoreDiscriminator: boolean)
             json["sync_outgoing_trigger_mode"] == null
                 ? undefined
                 : SyncOutgoingTriggerModeEnumFromJSON(json["sync_outgoing_trigger_mode"]),
+        lastSync: json["last_sync"],
     };
 }
 
@@ -410,6 +418,7 @@ export function LDAPSourceToJSONTyped(
         | "icon_url"
         | "icon_themed_urls"
         | "connectivity"
+        | "last_sync"
     > | null,
     ignoreDiscriminator: boolean = false,
 ): any {

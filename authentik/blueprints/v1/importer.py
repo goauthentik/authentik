@@ -85,7 +85,6 @@ def excluded_models() -> list[type[Model]]:
         # Classes that have other dependencies
         Session,
         AuthenticatedSession,
-        LDAPSourceSync,
     )
 
 
