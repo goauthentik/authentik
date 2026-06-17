@@ -6,6 +6,7 @@ from django.db.models import Count
 from django.dispatch import receiver
 from django.utils.timezone import now
 from django_dramatiq_postgres.models import TaskState
+from dramatiq.broker import get_broker
 from packaging.version import parse
 from prometheus_client import Gauge
 
@@ -46,9 +47,17 @@ def monitoring_set_workers(sender, **kwargs):
 
 @receiver(monitoring_set)
 def monitoring_set_queued_tasks(sender, **kwargs):
-    """Set number of queued tasks"""
-    for stats in Task.objects.values("queue_name", "actor_name").distinct():
-        GAUGE_TASKS_QUEUED.labels(stats["queue_name"], stats["actor_name"]).set(0)
+    """Set the queued-tasks gauge for every registered actor.
+
+    Enumerates ``(queue_name, actor_name)`` combinations from the dramatiq
+    broker's in-memory actor registry rather than via
+    ``SELECT DISTINCT ... FROM authentik_tasks_task`` — the latter forces a
+    full-table scan on every Prometheus scrape and becomes a top CPU consumer
+    under sustained load as the task table grows.
+    """
+    broker = get_broker()
+    for actor in broker.actors.values():
+        GAUGE_TASKS_QUEUED.labels(actor.queue_name, actor.actor_name).set(0)
     for stats in (
         Task.objects.filter(state=TaskState.QUEUED)
         .values("queue_name", "actor_name")
