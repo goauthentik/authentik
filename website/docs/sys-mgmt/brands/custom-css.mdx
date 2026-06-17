@@ -225,3 +225,17 @@ If you're still having trouble, the issue may stem from your CDN or reverse prox
 There's currently no comprehensive documentation on available CSS variables and parts in authentik. You can inspect the rendered HTML using browser developer tools to identify the CSS variables and parts applied to various elements.
 
 Look for CSS variables prefixed with `--ak-` and `--pf-` to identify those defined by authentik and Patternfly respectively. HTML elements with the `part="..."` attribute indicate which parts are available for styling.
+
+### The UI looks broken after upgrading authentik. What should I do?
+
+The upgrade may have introduced changes to the base theme, which could conflict with your custom CSS. In addition to reviewing the release notes for any changes, you may need to adjust your custom CSS to accommodate the new base styles. Avoiding direct element styling and instead relying on CSS variables and parts can help reduce the likelihood of breakage after upgrades.
+
+### I've locked myself out of authentik with a broken theme. How do I recover?
+
+If you've locked yourself out of authentik due to a broken theme, you can use the recovery token to regain access. To generate a recovery token, run the following command in your terminal:
+
+```sh
+uv run ak create_recovery_key 10 akadmin
+```
+
+Using a recovery token will disable custom CSS, allowing you to log in, navigate to the **System** > **Brands** page, and remove or fix the broken custom CSS.
