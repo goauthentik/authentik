@@ -36,6 +36,24 @@ body {
     overflow: hidden;
 }
 
+.ak-c-safe-mode {
+    position: fixed;
+    z-index: 9999999;
+    inset-block-end: 0;
+    inset-inline-end: 0;
+    pointer-events: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--pf-global--FontSize--sm, 0.75rem);
+    font-weight: bold;
+    color: var(--pf-global--Color--100, CanvasText);
+    background-color: var(--pf-global--BackgroundColor--200, Canvas);
+    opacity: 0.75;
+    padding: var(--pf-global--spacer--sm, 0.5rem);
+    border-start-start-radius: 8px;
+}
+
 /* #endregion */
 
 html > form > input {
