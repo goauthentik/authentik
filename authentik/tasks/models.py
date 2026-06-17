@@ -34,6 +34,15 @@ class TaskStatus(models.TextChoices):
 
 
 class Task(InternallyManagedMixin, SerializerModel, TaskBase):
+    # Overridden from TaskBase to use a through model
+    dependencies = models.ManyToManyField(
+        "self",
+        verbose_name=_("Tasks that must complete for this task to run."),
+        symmetrical=False,
+        through="TaskDependency",
+        through_fields=("task", "dependency"),
+    )
+
     tenant = models.ForeignKey(
         Tenant,
         on_delete=models.CASCADE,
@@ -148,6 +157,20 @@ class Task(InternallyManagedMixin, SerializerModel, TaskBase):
 
     def error(self, message: str | Exception, **attributes) -> None:
         self.log(self.uid, TaskStatus.ERROR, message, **attributes)
+
+
+class TaskDependency(models.Model):
+    pk = models.CompositePrimaryKey("task", "dependency")
+    task = models.ForeignKey(Task, on_delete=models.CASCADE, related_name="+")
+    dependency = models.ForeignKey(Task, on_delete=models.CASCADE, related_name="+")
+
+    class Meta:
+        default_permissions = []
+        verbose_name = _("Task dependency")
+        verbose_name_plural = _("Task dependencies")
+
+    def __str__(self):
+        return f"Task {self.pk[0]} dependency on {self.pk[1]}"
 
 
 class TaskLog(InternallyManagedMixin, models.Model):
