@@ -21,16 +21,11 @@ from authentik.core.api.users import UserViewSet
 from authentik.core.setup.views import SetupView
 from authentik.core.views.apps import RedirectToAppLaunch
 from authentik.core.views.debug import AccessDeniedView
-from authentik.core.views.interface import (
-    BrandDefaultRedirectView,
-    InterfaceView,
-    RootRedirectView,
-)
+from authentik.core.views.interface import BrandDefaultRedirectView, InterfaceView, RootRedirectView
 from authentik.flows.views.interface import FlowInterfaceView
 from authentik.root.asgi_middleware import AuthMiddlewareStack
 from authentik.root.middleware import ChannelsLoggingMiddleware
 from authentik.root.ws.consumer import MessageConsumer
-from authentik.tenants.channels import TenantsAwareMiddleware
 
 urlpatterns = [
     path(
@@ -103,9 +98,7 @@ api_urlpatterns = [
 websocket_urlpatterns = [
     path(
         "ws/client/",
-        ChannelsLoggingMiddleware(
-            TenantsAwareMiddleware(AuthMiddlewareStack(MessageConsumer.as_asgi()))
-        ),
+        ChannelsLoggingMiddleware(AuthMiddlewareStack(MessageConsumer.as_asgi())),
     ),
 ]
 
