@@ -43,6 +43,7 @@ hyper-unix-socket = "= 0.6.1"
 hyper-util = "= 0.1.20"
 ipnet = { version = "= 2.12.0", features = ["serde"] }
 json-subscriber = "= 0.2.8"
+jsonwebtoken = { version = "= 10.4.0", features = ["aws_lc_rs"] }
 metrics = "= 0.24.6"
 metrics-exporter-prometheus = { version = "= 0.18.3", default-features = false }
 nix = { version = "= 0.31.3", features = ["hostname", "signal"] }
@@ -269,7 +270,7 @@ publish.workspace = true
 [features]
 default = ["core", "proxy"]
 core = ["ak-common/core", "dep:pyo3", "dep:sqlx"]
-proxy = ["ak-common/proxy", "dep:ak-client"]
+proxy = ["ak-common/proxy", "dep:ak-client", "dep:jsonwebtoken"]
 
 [build-dependencies]
 pyo3-build-config.workspace = true
@@ -287,6 +288,7 @@ eyre.workspace = true
 futures.workspace = true
 hyper-unix-socket.workspace = true
 hyper-util.workspace = true
+jsonwebtoken = { workspace = true, optional = true }
 metrics-exporter-prometheus.workspace = true
 metrics.workspace = true
 nix.workspace = true

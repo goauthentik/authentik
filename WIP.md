@@ -65,9 +65,12 @@ step below is meant to be one focused, compilable, testable commit.
 - [x] **A1.** `Claims` + `ProxyClaims` serde types (mirror `types/claims.go`; `groups`/
   `entitlements` default-empty `Vec<String>`, `raw_token`, `ak_proxy`). Round-trip JSON test.
   Done in `src/outpost/proxy/claims.rs` (container-level `#[serde(default)]`; 3 tests).
-- [ ] **A2.** Add `jsonwebtoken` (`aws_lc_rs` feature). `OAuthState` type + HS256 encode/decode
+- [x] **A2.** Add `jsonwebtoken` (`aws_lc_rs` feature). `OAuthState` type + HS256 encode/decode
   signed with `cookie_secret`; **disable exp/aud validation**, enforce issuer. Tests: round-trip +
   issuer-mismatch rejection.
+  Done in `src/outpost/proxy/oauth_state.rs`. Note: `jsonwebtoken` is **v10.4.0** (v10 redesign;
+  HS256 encode/decode/`Validation` API matches v9). Added to workspace deps + `proxy` feature
+  (`dep:jsonwebtoken`). Cleared `required_spec_claims` so the `exp`-less token decodes. 3 tests.
 - [ ] **A3.** `OidcEndpoint` struct from `OpenIdConnectConfiguration` mirroring `endpoint.go`
   (embedded/browser URL rewriting). URL-rewrite tests.
 - [ ] **A4.** ID-token verification: `decode_header`→`kid`, JWKS fetch (`reqwest` → `jwk::JwkSet`),

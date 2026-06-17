@@ -25,6 +25,7 @@ use crate::outpost::{Outpost, OutpostController, proxy::application::Application
 mod application;
 mod claims;
 mod handlers;
+mod oauth_state;
 
 #[derive(Debug, Default, FromArgs, PartialEq, Eq)]
 /// Run the authentik proxy outpost.
