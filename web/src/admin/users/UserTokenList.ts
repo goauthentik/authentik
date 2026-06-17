@@ -13,27 +13,30 @@ import { formatIntentLabel } from "#common/labels";
 import { IconTokenCopyButton } from "#elements/buttons/IconTokenCopyButton";
 import { IconEditButton, ModalInvokerButton } from "#elements/dialogs";
 import { IconPermissionButton } from "#elements/dialogs/components/IconPermissionButton";
-import { PaginatedResponse, TableColumn, Timestamp } from "#elements/table/Table";
-import { TablePage } from "#elements/table/TablePage";
+import { showAPIErrorMessage } from "#elements/messages/MessageContainer";
+import { PaginatedResponse, Table, TableColumn, Timestamp } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
 
 import { TokenForm } from "#admin/tokens/TokenForm";
 
-import { CoreApi, IntentEnum, ModelEnum, Token } from "@goauthentik/api";
+import { CoreApi, IntentEnum, ModelEnum, Token, User } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { html, nothing } from "lit";
-import { customElement } from "lit/decorators.js";
+import { html, nothing, PropertyValues } from "lit";
+import { customElement, property } from "lit/decorators.js";
 
-@customElement("ak-token-list")
-export class TokenListPage extends TablePage<Token> {
+@customElement("ak-admin-user-token-list")
+export class AdminUserTokenList extends Table<Token> {
+    public static override verboseName = msg("Token");
+    public static override verboseNamePlural = msg("Tokens");
+
+    @property({ type: Number, attribute: "user-id", useDefault: true })
+    public userID: number | null = null;
+
+    @property({ attribute: false, useDefault: true })
+    public user: User | null = null;
+
     protected override searchEnabled = true;
-    public override pageTitle = msg("Tokens");
-    public override pageDescription = msg(
-        "Tokens are used throughout authentik for Email validation stages, Recovery keys and API access.",
-    );
-    public override pageIcon = "pf-icon pf-icon-security";
-    public override searchPlaceholder = msg("Search for a token identifier, user, or intent...");
 
     protected override rowLabel(item: Token): string | null {
         return item.identifier;
@@ -43,13 +46,62 @@ export class TokenListPage extends TablePage<Token> {
     public override clearOnRefresh = true;
     public override order = "expires";
 
+    //#region Lifecycle
+
     protected override async apiEndpoint(): Promise<PaginatedResponse<Token>> {
-        return aki(CoreApi).coreTokensList(await this.defaultEndpointConfig());
+        if (!this.user) {
+            await this.refresh();
+        }
+
+        if (!this.user) {
+            throw new TypeError("User is not set, cannot fetch tokens.");
+        }
+
+        return aki(CoreApi).coreTokensList({
+            ...(await this.defaultEndpointConfig()),
+            userUsername: this.user.username,
+        });
+    }
+
+    public refresh = () => {
+        if (!this.userID) {
+            return;
+        }
+
+        return aki(CoreApi)
+            .coreUsersRetrieve({
+                id: this.userID!,
+            })
+            .then((user) => {
+                this.user = user;
+            })
+            .catch(showAPIErrorMessage);
+    };
+
+    protected override updated(changed: PropertyValues<this>) {
+        super.updated(changed);
+
+        if (changed.has("userID") && this.userID !== null) {
+            this.refresh();
+        }
+    }
+
+    //#region
+
+    //#endregion
+
+    //#region Rendering
+
+    protected override renderObjectCreate(): SlottedTemplateResult {
+        if (!this.user) {
+            return null;
+        }
+
+        return ModalInvokerButton(TokenForm, { defaultUser: this.user });
     }
 
     protected columns: TableColumn[] = [
         [msg("Identifier"), "identifier"],
-        [msg("User"), "user"],
         [msg("Expires?"), "expiring"],
         [msg("Expiry date"), "expires"],
         [msg("Intent"), "intent"],
@@ -81,17 +133,12 @@ export class TokenListPage extends TablePage<Token> {
         </ak-forms-delete-bulk>`;
     }
 
-    protected override renderObjectCreate(): SlottedTemplateResult {
-        return ModalInvokerButton(TokenForm);
-    }
-
     protected override row(item: Token): SlottedTemplateResult[] {
         return [
             html`<div>${item.identifier}</div>
                 ${item.managed
                     ? html`<small>${msg("Token is managed by authentik.")}</small>`
                     : nothing}`,
-            html`<a href="#/identity/users/${item.userObj?.pk}">${item.userObj?.username}</a>`,
             html`<ak-status-label type="warning" ?good=${item.expiring}></ak-status-label>`,
             Timestamp(item.expires && item.expiring ? item.expires : null),
             html`${formatIntentLabel(item.intent ?? IntentEnum.Api)}`,
@@ -114,10 +161,12 @@ export class TokenListPage extends TablePage<Token> {
             </div>`,
         ];
     }
+
+    //#endregion
 }
 
 declare global {
     interface HTMLElementTagNameMap {
-        "ak-token-list": TokenListPage;
+        "ak-admin-user-token-list": AdminUserTokenList;
     }
 }
