@@ -12,6 +12,7 @@ from msgraph.generated.models.user_collection_response import UserCollectionResp
 from msgraph.generated.models.verified_domain import VerifiedDomain
 from rest_framework.test import APITestCase
 
+from authentik.admin.utils import get_system_settings
 from authentik.blueprints.tests import apply_blueprint
 from authentik.core.models import Application, Group, User
 from authentik.core.tests.utils import create_test_admin_user
@@ -24,7 +25,6 @@ from authentik.enterprise.providers.microsoft_entra.tasks import microsoft_entra
 from authentik.events.models import Event, EventAction
 from authentik.lib.generators import generate_id
 from authentik.lib.sync.outgoing.models import OutgoingSyncDeleteAction
-from authentik.tenants.models import Tenant
 
 
 class MicrosoftEntraUserTests(APITestCase):
@@ -34,7 +34,9 @@ class MicrosoftEntraUserTests(APITestCase):
     def setUp(self) -> None:
         # Delete all users and groups as the mocked HTTP responses only return one ID
         # which will cause errors with multiple users
-        Tenant.objects.update(avatars="none")
+        settings = get_system_settings()
+        settings.avatars = "none"
+        settings.save()
         User.objects.all().exclude_anonymous().delete()
         Group.objects.all().delete()
         self.provider: MicrosoftEntraProvider = MicrosoftEntraProvider.objects.create(

@@ -2,12 +2,12 @@
 
 from django.test import TestCase
 
+from authentik.admin.utils import get_system_settings
 from authentik.blueprints.tests import apply_blueprint
 from authentik.core.models import Application, Group, User
 from authentik.lib.generators import generate_id
 from authentik.policies.models import PolicyBinding
 from authentik.providers.scim.models import SCIMMapping, SCIMProvider
-from authentik.tenants.models import Tenant
 
 
 class SCIMApplicationPoliciesTests(TestCase):
@@ -18,7 +18,9 @@ class SCIMApplicationPoliciesTests(TestCase):
         # Delete all users and groups as to only have the test users and groups
         User.objects.all().exclude_anonymous().delete()
         Group.objects.all().delete()
-        Tenant.objects.update(avatars="none")
+        settings = get_system_settings()
+        settings.avatars = "none"
+        settings.save()
 
         self.provider: SCIMProvider = SCIMProvider.objects.create(
             name=generate_id(),

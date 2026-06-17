@@ -7,6 +7,7 @@ from django.test import TestCase
 from jsonschema import validate
 from requests_mock import Mocker
 
+from authentik.admin.utils import get_system_settings
 from authentik.blueprints.tests import apply_blueprint
 from authentik.core.models import Application, Group, User, UserTypes
 from authentik.lib.generators import generate_id
@@ -15,7 +16,6 @@ from authentik.lib.sync.outgoing.exceptions import TransientSyncException
 from authentik.providers.scim.models import SCIMMapping, SCIMProvider, SCIMProviderUser
 from authentik.providers.scim.tasks import scim_sync, scim_sync_objects, sync_tasks
 from authentik.tasks.models import Task
-from authentik.tenants.models import Tenant
 
 
 class SCIMUserTests(TestCase):
@@ -25,7 +25,9 @@ class SCIMUserTests(TestCase):
     def setUp(self) -> None:
         # Delete all users and groups as the mocked HTTP responses only return one ID
         # which will cause errors with multiple users
-        Tenant.objects.update(avatars="none")
+        settings = get_system_settings()
+        settings.avatars = "none"
+        settings.save()
         User.objects.all().exclude_anonymous().delete()
         Group.objects.all().delete()
         self.provider: SCIMProvider = SCIMProvider.objects.create(
