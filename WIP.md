@@ -62,8 +62,9 @@ step below is meant to be one focused, compilable, testable commit.
 
 ### Phase A — pure types & crypto primitives (unit-testable, no axum)
 
-- [ ] **A1.** `Claims` + `ProxyClaims` serde types (mirror `types/claims.go`; `groups`/
+- [x] **A1.** `Claims` + `ProxyClaims` serde types (mirror `types/claims.go`; `groups`/
   `entitlements` default-empty `Vec<String>`, `raw_token`, `ak_proxy`). Round-trip JSON test.
+  Done in `src/outpost/proxy/claims.rs` (container-level `#[serde(default)]`; 3 tests).
 - [ ] **A2.** Add `jsonwebtoken` (`aws_lc_rs` feature). `OAuthState` type + HS256 encode/decode
   signed with `cookie_secret`; **disable exp/aud validation**, enforce issuer. Tests: round-trip +
   issuer-mismatch rejection.
