@@ -80,18 +80,6 @@ To support the integration of Omada Controller with authentik, you need to creat
 
 7. Click **Finish**.
 
-### Create an application entitlement in authentik
-
-1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Applications** > **Applications** and open the Omada Controller application after you create it.
-3. Click the **Application entitlements** tab.
-4. Create an entitlement such as `Omada-admins`. The entitlement name must start with `Omada-` for the `omada_usergroup_name` property mapping to function correctly.
-5. Open the entitlement and bind the user or group that needs Omada Controller administrator access to it.
-
-:::warning
-Omada can't handle a user being in multiple roles. Therefore, ensure that a user receives only a single `Omada-` entitlement.
-:::
-
 ### Create an application and provider in authentik
 
 <SAMLProvider20265Warning />
@@ -124,6 +112,18 @@ Omada can't handle a user being in multiple roles. Therefore, ensure that a user
 
 3. Click **Submit** to save the new application and provider.
 
+### Create an application entitlement in authentik
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Applications** > **Applications** and open the Omada Controller application after you create it.
+3. Click the **Application entitlements** tab.
+4. Create an entitlement such as `Omada-admins`. The entitlement name must start with `Omada-` for the `omada_usergroup_name` property mapping to function correctly.
+5. Open the entitlement and bind the user or group that needs Omada Controller administrator access to it.
+
+:::warning
+Omada can't handle a user being in multiple roles. Therefore, ensure that a user receives only a single `Omada-` entitlement.
+:::
+
 ### Copy the metadata URL
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
@@ -139,8 +139,8 @@ Omada can't handle a user being in multiple roles. Therefore, ensure that a user
 5. Click **Load Info**, and then click **Send**.
 6. In the **Actions** column, click on the **Details** button next to the newly created authentik SAML connection.
 7. Take note of the **Entity ID**, **Omada ID**, **Resource ID**, and then click **OK**. These values will be required in the next section.
-8. At the top-right corner of the page, click **Go to SAML Role**, and then **Add New SAML Role**.
-9. Set the desired **SAML Role Name**, **Role**, **User Type**, and **Privileges** for the new SAML role. The **SAML Role Name** must exactly match the name of the previously created authentik entitlement. It is case sensitive.
+8. At the top-right corner of the page, click **Go to SAML User Group**, and then **Add New SAML User Group**.
+9. Set the desired **SAML User Group Name**, **Role**, and **Privileges** for the new SAML user group. The **SAML User Group Name** must exactly match the name of the previously created authentik entitlement. It is case sensitive.
 10. Click **Create**.
 
 ## Encoding default relay state
@@ -189,4 +189,4 @@ To verify that authentik is correctly integrated with Omada Controller, first lo
 
 ## Resources
 
-- [Omada Networks Documentation - How to Configure SAML SSO on Omada Controller](https://www.omadanetworks.com/de/support/faq/4406/#_Toc193896083)
+- [Omada Networks Documentation - How to Configure SAML SSO on Omada Controller](https://www.omadanetworks.com/en/support/faq/4406/#_Toc193896083)
