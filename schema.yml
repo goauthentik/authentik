@@ -50946,6 +50946,10 @@ components:
           minLength: 1
           description: Cache duration for ServiceProviderConfig responses. Set minutes=0
             to disable.
+        service_provider_config_override:
+          type: object
+          additionalProperties: {}
+          description: Override values in the service provider config.
         exclude_users_service_account:
           type: boolean
         sync_page_size:
@@ -55027,6 +55031,10 @@ components:
           type: string
           description: Cache duration for ServiceProviderConfig responses. Set minutes=0
             to disable.
+        service_provider_config_override:
+          type: object
+          additionalProperties: {}
+          description: Override values in the service provider config.
         exclude_users_service_account:
           type: boolean
         sync_page_size:
@@ -55155,6 +55163,10 @@ components:
           minLength: 1
           description: Cache duration for ServiceProviderConfig responses. Set minutes=0
             to disable.
+        service_provider_config_override:
+          type: object
+          additionalProperties: {}
+          description: Override values in the service provider config.
         exclude_users_service_account:
           type: boolean
         sync_page_size:
