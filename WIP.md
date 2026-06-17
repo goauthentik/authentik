@@ -71,8 +71,12 @@ step below is meant to be one focused, compilable, testable commit.
   Done in `src/outpost/proxy/oauth_state.rs`. Note: `jsonwebtoken` is **v10.4.0** (v10 redesign;
   HS256 encode/decode/`Validation` API matches v9). Added to workspace deps + `proxy` feature
   (`dep:jsonwebtoken`). Cleared `required_spec_claims` so the `exp`-less token decodes. 3 tests.
-- [ ] **A3.** `OidcEndpoint` struct from `OpenIdConnectConfiguration` mirroring `endpoint.go`
+- [x] **A3.** `OidcEndpoint` struct from `OpenIdConnectConfiguration` mirroring `endpoint.go`
   (embedded/browser URL rewriting). URL-rewrite tests.
+  Done in `src/outpost/proxy/endpoint.rs` as a pure `OidcEndpoint::new(oidc, authentik_host,
+  host_browser, embedded)` (3 tests mirror the Go `endpoint_test.go` cases). NOTE: no
+  `host_browser` field exists in the Rust config schema yet — add it when wiring into
+  `Application::new` (B6).
 - [ ] **A4.** ID-token verification: `decode_header`→`kid`, JWKS fetch (`reqwest` → `jwk::JwkSet`),
   RS256 verify; plus HS256-by-client-secret path keyed off
   `id_token_signing_alg_values_supported`. Fixture test.

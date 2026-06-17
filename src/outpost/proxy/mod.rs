@@ -24,6 +24,7 @@ use crate::outpost::{Outpost, OutpostController, proxy::application::Application
 
 mod application;
 mod claims;
+mod endpoint;
 mod handlers;
 mod oauth_state;
 
