@@ -4,6 +4,7 @@ from unittest.mock import MagicMock, patch
 
 from django.test import TestCase
 
+from authentik.admin.utils import get_system_settings
 from authentik.blueprints.tests import apply_blueprint
 from authentik.core.models import Application, Group, User
 from authentik.core.tests.utils import create_test_user
@@ -18,7 +19,6 @@ from authentik.events.models import Event, EventAction
 from authentik.lib.generators import generate_id
 from authentik.lib.sync.outgoing.models import OutgoingSyncDeleteAction
 from authentik.lib.tests.utils import load_fixture
-from authentik.tenants.models import Tenant
 
 domains_list_v1_mock = load_fixture("fixtures/domains_list_v1.json")
 
@@ -30,7 +30,9 @@ class GoogleWorkspaceGroupTests(TestCase):
     def setUp(self) -> None:
         # Delete all groups and groups as the mocked HTTP responses only return one ID
         # which will cause errors with multiple groups
-        Tenant.objects.update(avatars="none")
+        settings = get_system_settings()
+        settings.avatars = "none"
+        settings.save()
         User.objects.all().exclude_anonymous().delete()
         Group.objects.all().delete()
         self.provider: GoogleWorkspaceProvider = GoogleWorkspaceProvider.objects.create(

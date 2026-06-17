@@ -3,12 +3,12 @@
 from requests_mock import Mocker
 from rest_framework.test import APITestCase
 
+from authentik.admin.utils import get_system_settings
 from authentik.blueprints.tests import apply_blueprint
 from authentik.core.models import Application, Group, User
 from authentik.lib.generators import generate_id
 from authentik.providers.scim.models import SCIMAuthenticationMode, SCIMMapping, SCIMProvider
 from authentik.sources.oauth.models import OAuthSource
-from authentik.tenants.models import Tenant
 
 
 class TestSCIMOAuthAuth(APITestCase):
@@ -18,7 +18,9 @@ class TestSCIMOAuthAuth(APITestCase):
     def setUp(self) -> None:
         # Delete all users and groups as the mocked HTTP responses only return one ID
         # which will cause errors with multiple users
-        Tenant.objects.update(avatars="none")
+        settings = get_system_settings()
+        settings.avatars = "none"
+        settings.save()
         User.objects.all().exclude_anonymous().delete()
         Group.objects.all().delete()
         self.source = OAuthSource.objects.create(

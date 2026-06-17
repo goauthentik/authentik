@@ -6,6 +6,7 @@ from channels.testing import WebsocketCommunicator
 from django.http import HttpRequest
 from django.test import TransactionTestCase
 
+from authentik.admin.utils import get_system_settings
 from authentik.core.tests.utils import create_test_user
 from authentik.events.models import (
     Event,
@@ -19,15 +20,13 @@ from authentik.lib.generators import generate_id
 from authentik.root import websocket
 from authentik.stages.password import BACKEND_INBUILT
 from authentik.stages.user_login.stage import COOKIE_NAME_KNOWN_DEVICE
-from authentik.tenants.utils import get_current_tenant
 
 
 class TestClientWS(TransactionTestCase):
-
     def setUp(self):
-        tenant = get_current_tenant()
-        tenant.flags[RefreshOtherFlowsAfterAuthentication().key] = True
-        tenant.save()
+        settings = get_system_settings()
+        settings.flags[RefreshOtherFlowsAfterAuthentication().key] = True
+        settings.save()
         self.user = create_test_user()
 
     async def _alogin_cookie(self, user, **kwargs):
