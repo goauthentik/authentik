@@ -9,7 +9,7 @@ from django.db.models import F, Func, JSONField, Value
 from authentik.lib.utils.reflection import all_subclasses
 
 if TYPE_CHECKING:
-    from authentik.tenants.models import Tenant
+    from authentik.admin.models import SystemSettings
 
 
 class Flag[T]:
@@ -28,15 +28,15 @@ class Flag[T]:
         return self.__key
 
     @classmethod
-    def get(cls, tenant: Tenant | None = None) -> T | None:
-        from authentik.tenants.utils import get_current_tenant
+    def get(cls, settings: SystemSettings | None = None) -> T | None:
+        from authentik.admin.utils import get_system_settings
 
-        if not tenant:
-            tenant = get_current_tenant(["flags"])
+        if not settings:
+            settings = get_system_settings()
 
         flags = {}
         try:
-            flags: dict[str, Any] = tenant.flags
+            flags: dict[str, Any] = settings.flags
         except DatabaseError, ProgrammingError, InternalError:
             pass
         value = flags.get(cls.__key, None)
@@ -45,14 +45,10 @@ class Flag[T]:
         return value
 
     @classmethod
-    def set(cls, value: T, tenant: Tenant | None = None) -> T | None:
-        from authentik.tenants.models import Tenant
-        from authentik.tenants.utils import get_current_tenant
+    def set(cls, value: T) -> T | None:
+        from authentik.admin.models import SystemSettings
 
-        if not tenant:
-            tenant = get_current_tenant()
-
-        Tenant.objects.filter(pk=tenant.pk).update(
+        SystemSettings.objects.update(
             flags=Func(
                 F("flags"),
                 Value([cls.__key]),
@@ -83,24 +79,23 @@ def patch_flag[T](flag: Flag[T], value: T):
 
     def wrapper_outer(func: Callable):
         """Set a flag for a test"""
-        from authentik.tenants.utils import get_current_tenant
+        from authentik.admin.utils import get_system_settings
 
-        def cleanup(tenant: Tenant, flags: dict[str, Any]):
-            tenant.flags = flags
-            tenant.save()
+        def cleanup(flags: dict[str, Any]):
+            SystemSettings.objects.update(flags=flags)
 
         @wraps(func)
         def wrapper(*args, **kwargs):
-            tenant = get_current_tenant()
-            old_flags = copy(tenant.flags)
-            tenant.flags[flag().key] = value
-            tenant.save()
+            settings = get_system_settings()
+            old_flags = copy(settings.flags)
+            settings.flags[flag().key] = value
+            settings.save()
             try:
                 res = func(*args, **kwargs)
-                cleanup(tenant, old_flags)
+                cleanup(old_flags)
                 return res
             finally:
-                cleanup(tenant, old_flags)
+                cleanup(old_flags)
 
         return wrapper
 

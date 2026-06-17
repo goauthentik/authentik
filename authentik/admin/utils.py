@@ -2,4 +2,7 @@ from authentik.admin.models import SystemSettings
 
 
 def get_system_settings() -> SystemSettings:
-    return SystemSettings.objects.get(pk=True)
+    try:
+        return SystemSettings.objects.get(pk=True)
+    except SystemSettings.DoesNotExist:
+        return SystemSettings(pk=False)
