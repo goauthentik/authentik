@@ -27,6 +27,7 @@ mod claims;
 mod endpoint;
 mod handlers;
 mod oauth_state;
+mod token;
 
 #[derive(Debug, Default, FromArgs, PartialEq, Eq)]
 /// Run the authentik proxy outpost.

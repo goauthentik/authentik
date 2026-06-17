@@ -77,9 +77,14 @@ step below is meant to be one focused, compilable, testable commit.
   host_browser, embedded)` (3 tests mirror the Go `endpoint_test.go` cases). NOTE: no
   `host_browser` field exists in the Rust config schema yet — add it when wiring into
   `Application::new` (B6).
-- [ ] **A4.** ID-token verification: `decode_header`→`kid`, JWKS fetch (`reqwest` → `jwk::JwkSet`),
+- [x] **A4.** ID-token verification: `decode_header`→`kid`, JWKS fetch (`reqwest` → `jwk::JwkSet`),
   RS256 verify; plus HS256-by-client-secret path keyed off
   `id_token_signing_alg_values_supported`. Fixture test.
+  Done in `src/outpost/proxy/token.rs`: pure `verify_hs256` / `verify_rs256` (issuer + audience
+  + exp validated; sets `raw_token` and defaults `ak_proxy`). RS256 works on the `aws_lc_rs`
+  backend with no extra feature. 4 fixture tests (HS256, RS256, wrong-issuer, unknown-kid).
+  DEFERRED to B6/C10: the async JWKS **fetch** (reqwest GET), the HS256-vs-RS256 **selection**
+  from `id_token_signing_alg_values_supported`, and JWKS caching/refresh on unknown `kid`.
 
 ### Phase B — session + cookies (needs A1)
 
