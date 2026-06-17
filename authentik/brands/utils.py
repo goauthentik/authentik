@@ -16,12 +16,26 @@ from authentik.tenants.models import Tenant
 _q_default = Q(default=True)
 DEFAULT_BRAND = Brand(domain="fallback")
 
+# Brand FKs read on the request hot path. select_related pulls them into the
+# same SELECT to avoid N+1 lazy loads; CurrentBrandSerializer alone reads 7.
+_BRAND_RELATED_FK_FIELDS = (
+    "flow_authentication",
+    "flow_invalidation",
+    "flow_recovery",
+    "flow_unenrollment",
+    "flow_user_settings",
+    "flow_device_code",
+    "flow_lockdown",
+    "default_application",
+)
+
 
 def get_brand_for_request(request: HttpRequest) -> Brand:
     """Get brand object for current request"""
 
     brand = (
-        Brand.objects.annotate(
+        Brand.objects.select_related(*_BRAND_RELATED_FK_FIELDS)
+        .annotate(
             host_domain=Value(request.get_host()),
             domain_length=Length("domain"),
             match_priority=Case(
