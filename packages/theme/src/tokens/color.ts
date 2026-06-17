@@ -42,7 +42,6 @@ export const colors = useColorDesignTokens(instance, {
 // earlier oklab(0.23) value visibly brightened every PF-backed dark panel.
 theme("dark", (ctx) => {
     const c = colors;
-    
     const darkColors: VPPair[] = [
         [c.colorText, "#e0e0e0"],
         [c.colorTextMuted, "#aaabac"],

@@ -6,11 +6,17 @@
  * autocomplete.
  */
 
-import { variable } from "../shared.js";
+import { instance } from "../shared.js";
 
-export const zIndexXs = variable("z-index.xs", 100);
-export const zIndexSm = variable("z-index.sm", 200);
-export const zIndexMd = variable("z-index.md", 300);
-export const zIndexLg = variable("z-index.lg", 400);
-export const zIndexXl = variable("z-index.xl", 500);
-export const zIndex2xl = variable("z-index.2xl", 600);
+import { createUseVariable } from "@styleframe/theme";
+
+const useZIndex = createUseVariable("z-index");
+
+export const zIndex = useZIndex(instance, {
+    "xs": 100,
+    "sm": 200,
+    "md": 300,
+    "lg": 400,
+    "xl": 500,
+    "2xl": 600,
+});
