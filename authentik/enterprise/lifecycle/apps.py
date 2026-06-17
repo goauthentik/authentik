@@ -10,7 +10,7 @@ class ReportsConfig(EnterpriseConfig):
     default = True
 
     @property
-    def tenant_schedule_specs(self) -> list[ScheduleSpec]:
+    def schedule_specs(self) -> list[ScheduleSpec]:
         from authentik.enterprise.lifecycle.tasks import apply_lifecycle_rules
 
         return [

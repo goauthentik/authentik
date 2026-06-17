@@ -28,7 +28,7 @@ class AuthentikEventsConfig(ManagedAppConfig):
     default = True
 
     @property
-    def tenant_schedule_specs(self) -> list[ScheduleSpec]:
+    def schedule_specs(self) -> list[ScheduleSpec]:
         from authentik.events.tasks import notification_cleanup
 
         return [
@@ -38,7 +38,7 @@ class AuthentikEventsConfig(ManagedAppConfig):
             ),
         ]
 
-    @ManagedAppConfig.reconcile_global
+    @ManagedAppConfig.reconcile
     def check_deprecations(self):
         """Check for config deprecations"""
         from authentik.events.models import Event, EventAction

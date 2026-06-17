@@ -34,7 +34,7 @@ class AuthentikCoreConfig(ManagedAppConfig):
         super().import_related()
         self.import_module("authentik.core.setup.signals")
 
-    @ManagedAppConfig.reconcile_tenant
+    @ManagedAppConfig.reconcile
     def source_inbuilt(self):
         """Reconcile inbuilt source"""
         from authentik.core.models import Source
@@ -48,7 +48,7 @@ class AuthentikCoreConfig(ManagedAppConfig):
         )
 
     @property
-    def tenant_schedule_specs(self) -> list[ScheduleSpec]:
+    def schedule_specs(self) -> list[ScheduleSpec]:
         from authentik.core.tasks import clean_expired_models, clean_temporary_users
 
         return [

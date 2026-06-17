@@ -11,7 +11,7 @@ class AuthentikProviderProxyConfig(ManagedAppConfig):
     verbose_name = "authentik Providers.Proxy"
     default = True
 
-    @ManagedAppConfig.reconcile_tenant
+    @ManagedAppConfig.reconcile
     def proxy_set_defaults(self):
         from authentik.providers.proxy.models import ProxyProvider
 
