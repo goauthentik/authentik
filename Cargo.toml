@@ -24,6 +24,10 @@ argh = "= 0.1.19"
 axum-server = { version = "= 0.8.0", features = ["tls-rustls-no-provider"] }
 aws-lc-rs = { version = "= 1.17.0", features = ["fips"] }
 axum = { version = "= 0.8.9", features = ["http2", "macros", "ws"] }
+axum-extra = { version = "= 0.12.6", default-features = false, features = [
+  "cookie-signed",
+  "cookie-key-expansion",
+] }
 clap = { version = "= 4.6.1", features = ["derive", "env"] }
 client-ip = { version = "0.2.1", features = ["forwarded-header"] }
 color-eyre = "= 0.6.5"
@@ -270,7 +274,13 @@ publish.workspace = true
 [features]
 default = ["core", "proxy"]
 core = ["ak-common/core", "dep:pyo3", "dep:sqlx"]
-proxy = ["ak-common/proxy", "dep:ak-client", "dep:jsonwebtoken"]
+proxy = [
+  "ak-common/proxy",
+  "dep:ak-client",
+  "dep:jsonwebtoken",
+  "dep:axum-extra",
+  "dep:aws-lc-rs",
+]
 
 [build-dependencies]
 pyo3-build-config.workspace = true
@@ -281,6 +291,8 @@ ak-client = { workspace = true, optional = true }
 ak-common.workspace = true
 arc-swap.workspace = true
 argh.workspace = true
+aws-lc-rs = { workspace = true, optional = true }
+axum-extra = { workspace = true, optional = true }
 axum-server.workspace = true
 axum.workspace = true
 color-eyre.workspace = true

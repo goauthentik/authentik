@@ -9,6 +9,7 @@ use url::Url;
 
 use crate::outpost::proxy::{
     ProxyOutpost,
+    cookie::SessionCookie,
     endpoint::OidcEndpoint,
     session::{SessionStore, filesystem::FsSessionStore},
 };
@@ -23,6 +24,7 @@ pub(super) struct Application {
     pub(super) cert: Option<Arc<Certificate>>,
     pub(super) endpoint: OidcEndpoint,
     pub(super) session_store: SessionStore,
+    pub(super) session_cookie: SessionCookie,
 }
 
 impl Application {
@@ -70,6 +72,16 @@ impl Application {
 
         let session_store = SessionStore::Filesystem(FsSessionStore::new(std::env::temp_dir()));
 
+        let session_cookie = SessionCookie::new(
+            provider.client_id.as_deref().unwrap_or_default(),
+            provider
+                .cookie_secret
+                .as_deref()
+                .ok_or_else(|| eyre!("provider has no cookie secret"))?,
+            external_url.scheme() == "https",
+            provider.cookie_domain.clone(),
+        )?;
+
         let router = Router::new()
             // TODO: /start
             .route(
@@ -110,6 +122,7 @@ impl Application {
             cert,
             endpoint,
             session_store,
+            session_cookie,
         })
     }
 }

@@ -105,8 +105,14 @@ step below is meant to be one focused, compilable, testable commit.
   DEFERRED to B7: cookie signing key (needs axum-extra). DEFERRED to C10/C13: backchannel
   `reqwest` client (needs Host-override) and `session_max_age` from `access_token_validity`
   (avoids an f64→int `as` cast until it's actually used).
-- [ ] **B7.** Add `axum-extra` cookie support; signed session-ID cookie read/issue helper with
+- [x] **B7.** Add `axum-extra` cookie support; signed session-ID cookie read/issue helper with
   per-provider domain/secure/samesite/path/maxage (mirror `getStore` options).
+  Done in `src/outpost/proxy/cookie.rs`: `SessionCookie` (own struct, independently testable)
+  with `jar`/`read`/`build`. `axum-extra = 0.12.6` (compatible with axum 0.8.9), features
+  `cookie-signed` + `cookie-key-expansion`; key via `Key::derive_from(cookie_secret)` (secret is
+  a 32-char string). Cookie name `authentik_proxy_<sha256(client_id)[..4] hex>` via `aws-lc-rs`
+  digest (added as direct dep, already transitive). Wired into `Application` (`session_cookie`).
+  5 tests (round-trip through signing, attributes, wrong-key, short-secret, name stability).
 
 ### Phase C — auth-start + callback (shared flow; needs A2–A4, B)
 
