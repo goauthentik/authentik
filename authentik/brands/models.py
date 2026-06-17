@@ -18,6 +18,20 @@ from authentik.lib.models import SerializerModel
 LOGGER = get_logger()
 
 
+# Brand FKs read on the request hot path. select_related pulls them into the
+# same SELECT to avoid N+1 lazy loads; CurrentBrandSerializer alone reads 7.
+_BRAND_RELATED_FK_FIELDS = (
+    "flow_authentication",
+    "flow_invalidation",
+    "flow_recovery",
+    "flow_unenrollment",
+    "flow_user_settings",
+    "flow_device_code",
+    "flow_lockdown",
+    "default_application",
+)
+
+
 class Brand(SerializerModel):
     """Single brand"""
 
