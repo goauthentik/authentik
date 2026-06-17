@@ -10,11 +10,8 @@ export default [
     ["documentation", "Documentation"],
     ["hypervisors-orchestrators", "Hypervisors / Orchestrators"],
     ["infrastructure", "Infrastructure"],
-<<<<<<< HEAD
-=======
     ["learning", "Learning"],
     ["log-forwarding", "Log Forwarding"],
->>>>>>> 7bdbfade30 (website/docs: add Splunk event forwarding docs (#22938))
     ["networking", "Networking"],
     ["media", "Media"],
     ["miscellaneous", "Miscellaneous"],
