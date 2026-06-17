@@ -20,7 +20,7 @@ pub struct DeviceChallengeRequest {
     #[serde(rename = "challenge")]
     pub challenge: std::collections::HashMap<String, serde_json::Value>,
     #[serde(rename = "last_used", deserialize_with = "Option::deserialize")]
-    pub last_used: Option<String>,
+    pub last_used: Option<chrono::DateTime<chrono::FixedOffset>>,
 }
 
 impl DeviceChallengeRequest {
@@ -29,7 +29,7 @@ impl DeviceChallengeRequest {
         device_class: models::DeviceClassesEnum,
         device_uid: String,
         challenge: std::collections::HashMap<String, serde_json::Value>,
-        last_used: Option<String>,
+        last_used: Option<chrono::DateTime<chrono::FixedOffset>>,
     ) -> DeviceChallengeRequest {
         DeviceChallengeRequest {
             device_class,

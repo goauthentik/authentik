@@ -26,6 +26,7 @@ aws-lc-rs = { version = "= 1.17.0", features = ["fips"] }
 axum = { version = "= 0.8.9", features = ["http2", "macros", "ws"] }
 clap = { version = "= 4.6.1", features = ["derive", "env"] }
 client-ip = { version = "0.2.1", features = ["forwarded-header"] }
+chrono = { version = "0.4.45", features = ["serde"] }
 color-eyre = "= 0.6.5"
 colored = "= 3.1.1"
 config-rs = { package = "config", version = "= 0.15.22", default-features = false, features = [
@@ -83,7 +84,7 @@ serde_repr = "= 0.1.20"
 serde_with = { version = "= 3.21.0", default-features = false, features = [
   "base64",
 ] }
-sqlx = { version = "= 0.8.6", default-features = false, features = [
+sqlx = { version = "= 0.9.0", default-features = false, features = [
   "runtime-tokio",
   "tls-rustls-aws-lc-rs",
   "postgres",
@@ -96,7 +97,7 @@ sqlx = { version = "= 0.8.6", default-features = false, features = [
 ] }
 tempfile = "= 3.27.0"
 thiserror = "= 2.0.18"
-time = { version = "= 0.3.47", features = ["macros"] }
+time = { version = "= 0.3.49", features = ["macros"] }
 tokio = { version = "= 1.52.3", features = ["full", "tracing"] }
 tokio-retry2 = "= 0.9.1"
 tokio-rustls = "= 0.26.4"
