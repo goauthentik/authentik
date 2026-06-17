@@ -2,19 +2,17 @@
 
 from django.utils.translation import gettext_lazy as _
 
+from authentik.admin.flags import Flag
 from authentik.blueprints.apps import ManagedAppConfig
 from authentik.tasks.schedules.common import ScheduleSpec
-from authentik.tenants.flags import Flag
 
 
 class Setup(Flag[bool], key="setup"):
-
     default = False
     visibility = "system"
 
 
 class AppAccessWithoutBindings(Flag[bool], key="core_default_app_access"):
-
     default = True
     visibility = "none"
     description = _(

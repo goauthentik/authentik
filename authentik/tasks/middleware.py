@@ -3,12 +3,8 @@ from typing import Any, cast
 
 from django.conf import settings
 from django.db import OperationalError
-from django_dramatiq_postgres.middleware import (
-    CurrentTask as BaseCurrentTask,
-)
-from django_dramatiq_postgres.middleware import (
-    MetricsMiddleware as BaseMetricsMiddleware,
-)
+from django_dramatiq_postgres.middleware import CurrentTask as BaseCurrentTask
+from django_dramatiq_postgres.middleware import MetricsMiddleware as BaseMetricsMiddleware
 from dramatiq.broker import Broker
 from dramatiq.message import Message
 from dramatiq.middleware import Middleware
@@ -20,8 +16,6 @@ from authentik.lib.sentry import should_ignore_exception
 from authentik.lib.utils.reflection import class_to_path
 from authentik.root.signals import post_startup, pre_startup, startup
 from authentik.tasks.models import Task, TaskLog, TaskStatus
-from authentik.tenants.models import Tenant
-from authentik.tenants.utils import get_current_tenant
 
 LOGGER = get_logger()
 HEALTHCHECK_LOGGER = get_logger("authentik.worker").bind()
@@ -40,20 +34,6 @@ class CurrentTask(BaseCurrentTask):
     @classmethod
     def get_task(cls) -> Task:
         return cast(Task, super().get_task())
-
-
-class TenantMiddleware(Middleware):
-    def before_enqueue(self, broker: Broker, message: Message, delay: int):
-        message.options["model_create_defaults"]["tenant"] = get_current_tenant()
-
-    def before_process_message(self, broker: Broker, message: Message):
-        task: Task = message.options["task"]
-        task.tenant.activate()
-
-    def after_process_message(self, *args, **kwargs):
-        Tenant.deactivate()
-
-    after_skip_message = after_process_message
 
 
 class ModelDataMiddleware(Middleware):

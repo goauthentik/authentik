@@ -390,7 +390,6 @@ TEST_RUNNER = "authentik.root.test_runner.PytestTestRunner"
 # Dramatiq
 
 DRAMATIQ = {
-    "broker_class": "authentik.tasks.broker.Broker",
     "channel_prefix": "authentik",
     "task_model": "authentik.tasks.models.Task",
     "task_purge_interval": timedelta_from_string(
@@ -410,7 +409,6 @@ DRAMATIQ = {
         ).total_seconds(),
         "watch_folder": BASE_DIR / "authentik",
     },
-    "scheduler_class": "authentik.tasks.schedules.scheduler.Scheduler",
     "schedule_model": "authentik.tasks.schedules.models.Schedule",
     "scheduler_interval": timedelta_from_string(
         CONFIG.get("worker.scheduler_interval")
@@ -442,7 +440,6 @@ DRAMATIQ = {
         ("dramatiq.results.middleware.Results", {"store_results": True}),
         ("authentik.tasks.middleware.StartupSignalsMiddleware", {}),
         ("authentik.tasks.middleware.CurrentTask", {}),
-        ("authentik.tasks.middleware.TenantMiddleware", {}),
         ("authentik.tasks.middleware.ModelDataMiddleware", {}),
         ("authentik.tasks.middleware.TaskLogMiddleware", {}),
         ("authentik.tasks.middleware.LoggingMiddleware", {}),

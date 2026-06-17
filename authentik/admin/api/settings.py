@@ -10,10 +10,10 @@ from rest_framework.fields import JSONField
 from rest_framework.generics import RetrieveUpdateAPIView
 from rest_framework.permissions import SAFE_METHODS
 
+from authentik.admin.flags import Flag
 from authentik.admin.models import SystemSettings
 from authentik.core.api.utils import JSONDictField, ModelSerializer
 from authentik.rbac.permissions import HasPermission
-from authentik.tenants.flags import Flag
 
 
 class FlagJSONField(JSONDictField):

@@ -17,10 +17,7 @@ from drf_spectacular.utils import (
 )
 from rest_framework.decorators import action
 from rest_framework.fields import IntegerField, ReadOnlyField, SerializerMethodField
-from rest_framework.mixins import (
-    ListModelMixin,
-    RetrieveModelMixin,
-)
+from rest_framework.mixins import ListModelMixin, RetrieveModelMixin
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -32,7 +29,6 @@ from authentik.core.api.utils import ModelSerializer
 from authentik.events.logs import LogEventSerializer
 from authentik.rbac.decorators import permission_required
 from authentik.tasks.models import Task, TaskStatus
-from authentik.tenants.utils import get_current_tenant
 
 LOGGER = get_logger()
 
@@ -141,7 +137,6 @@ class TaskViewSet(
             Task.objects.select_related("rel_obj_content_type")
             .prefetch_related("tasklogs")
             .defer("message", "result")
-            .filter(tenant=get_current_tenant())
         )
 
     @permission_required("authentik_tasks.retry_task")
