@@ -5,7 +5,7 @@ import "#flow/stages/authenticator_validate/AuthenticatorValidateStageWebAuthn";
 
 import Styles from "./AuthenticatorValidateStage.css";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { SlottedTemplateResult } from "#elements/types";
 import { StrictUnsafe } from "#elements/utils/unsafe";
@@ -117,7 +117,7 @@ export class AuthenticatorValidateStage
         Styles,
     ];
 
-    #api = new FlowsApi(DEFAULT_CONFIG);
+    #api = aki(FlowsApi);
 
     public flowSlug = "";
 
@@ -267,7 +267,10 @@ export class AuthenticatorValidateStage
             },
         );
 
-        return html`<fieldset class="pf-c-form__group pf-m-action" name="device-challenges">
+        return html`<fieldset
+            class="ak-c-fieldset pf-c-form__group pf-m-action"
+            name="device-challenges"
+        >
             <legend class="pf-c-title">${msg("Select an authentication method")}</legend>
             ${deviceChallengeButtons}
         </fieldset>`;
@@ -300,7 +303,7 @@ export class AuthenticatorValidateStage
             },
         );
 
-        return html`<fieldset class="pf-c-form__group pf-m-action" name="stages">
+        return html`<fieldset class="ak-c-fieldset pf-c-form__group pf-m-action" name="stages">
             <legend class="sr-only">${msg("Select a configuration stage")}</legend>
             ${stageButtons}
         </fieldset>`;

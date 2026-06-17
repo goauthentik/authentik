@@ -4,7 +4,7 @@ import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/Radio";
 import "#elements/forms/SearchSelect/index";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { ModelForm } from "#elements/forms/ModelForm";
 import { SlottedTemplateResult } from "#elements/types";
@@ -18,7 +18,7 @@ import {
 } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { html, nothing } from "lit";
+import { html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
 interface RoleAssignData {
@@ -30,11 +30,19 @@ interface RoleAssignData {
 
 @customElement("ak-rbac-role-object-permission-form")
 export class RoleObjectPermissionForm extends ModelForm<RoleAssignData, number> {
-    @property()
-    public model?: ModelEnum;
+    public static override verboseName = msg("Role Object Permission");
+    public static override verboseNamePlural = msg("Role Object Permissions");
+    public static override createLabel = msg("Assign");
+    public static override submitVerb = msg("Assign");
 
-    @property()
-    public objectPk?: string;
+    @property({ type: String })
+    public model: ModelEnum | null = null;
+
+    @property({
+        attribute: "object-pk",
+        useDefault: true,
+    })
+    public objectPk: string | null = null;
 
     @state()
     protected modelPermissions: PaginatedPermissionList | null = null;
@@ -47,7 +55,7 @@ export class RoleObjectPermissionForm extends ModelForm<RoleAssignData, number> 
 
     async load(): Promise<void> {
         const [appLabel, modelName] = (this.model || "").split(".");
-        this.modelPermissions = await new RbacApi(DEFAULT_CONFIG).rbacPermissionsList({
+        this.modelPermissions = await aki(RbacApi).rbacPermissionsList({
             contentTypeModel: modelName,
             contentTypeAppLabel: appLabel,
             ordering: "codename",
@@ -64,22 +72,24 @@ export class RoleObjectPermissionForm extends ModelForm<RoleAssignData, number> 
 
     send(data: RoleAssignData): Promise<unknown> {
         const [app, _model] = this.model?.split(".") || "";
-        return new RbacApi(DEFAULT_CONFIG).rbacPermissionsAssignedByRolesAssign({
+
+        return aki(RbacApi).rbacPermissionsAssignedByRolesAssign({
             uuid: data.role,
             permissionAssignRequest: {
                 permissions: Object.keys(data.permissions)
                     .filter((key) => data.permissions[key])
                     .map((permission) => `${app}.${permission}`),
                 model: this.model!,
-                objectPk: this.objectPk,
+                objectPk: this.objectPk ?? undefined,
             },
         });
     }
 
     renderForm(): SlottedTemplateResult {
         if (!this.modelPermissions) {
-            return nothing;
+            return null;
         }
+
         return html`<span
                 >${msg(
                     "Choose the object permissions that you want the selected role to have on this object. These object permissions are in addition to any global permissions already within the role.",
@@ -88,6 +98,7 @@ export class RoleObjectPermissionForm extends ModelForm<RoleAssignData, number> 
             <form class="pf-c-form pf-m-horizontal">
                 <ak-form-element-horizontal label=${msg("Role")} name="role">
                     <ak-search-select
+                        placeholder=${msg("Select a role...")}
                         .fetchObjects=${async (query?: string): Promise<Role[]> => {
                             const args: RbacRolesListRequest = {
                                 ordering: "name",
@@ -95,7 +106,7 @@ export class RoleObjectPermissionForm extends ModelForm<RoleAssignData, number> 
                             if (query !== undefined) {
                                 args.search = query;
                             }
-                            const roles = await new RbacApi(DEFAULT_CONFIG).rbacRolesList(args);
+                            const roles = await aki(RbacApi).rbacRolesList(args);
                             return roles.results;
                         }}
                         .renderElement=${(role: Role): string => {

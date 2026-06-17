@@ -1,7 +1,40 @@
 use std::{collections::HashMap, net::SocketAddr, num::NonZeroUsize};
 
 use ipnet::IpNet;
-use serde::{Deserialize, Serialize};
+use serde::{Deserialize, Deserializer, Serialize, de::Error as _};
+
+pub(super) const KEYS_TO_PARSE_AS_LIST: [&str; 4] = [
+    "listen.http",
+    "listen.metrics",
+    "listen.trusted_proxy_cidrs",
+    "log.http_headers",
+];
+
+fn deserialize_optional_u64<'de, D>(deserializer: D) -> Result<Option<u64>, D::Error>
+where
+    D: Deserializer<'de>,
+{
+    // The value comes as a number from config files but as a string from env vars.
+    #[derive(Deserialize)]
+    #[serde(untagged)]
+    enum NumOrStr {
+        Num(u64),
+        Str(String),
+    }
+
+    match Option::<NumOrStr>::deserialize(deserializer)? {
+        None => Ok(None),
+        Some(NumOrStr::Num(n)) => Ok(Some(n)),
+        Some(NumOrStr::Str(s)) => {
+            let s = s.trim();
+            if s.is_empty() || s.eq_ignore_ascii_case("none") || s.eq_ignore_ascii_case("null") {
+                Ok(None)
+            } else {
+                s.parse().map(Some).map_err(D::Error::custom)
+            }
+        }
+    }
+}
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Config {
@@ -23,6 +56,11 @@ pub struct Config {
     pub web: WebConfig,
 
     pub worker: WorkerConfig,
+
+    // Outpost specific fields
+    pub host: Option<String>,
+    pub token: Option<String>,
+    pub insecure: Option<bool>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -38,6 +76,7 @@ pub struct PostgreSQLConfig {
     pub sslcert: Option<String>,
     pub sslkey: Option<String>,
 
+    #[serde(deserialize_with = "deserialize_optional_u64")]
     pub conn_max_age: Option<u64>,
     pub conn_health_checks: bool,
 

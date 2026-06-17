@@ -4,7 +4,7 @@ sidebar_label: OPNsense
 support_level: community
 ---
 
-## What is OPNsense
+## What is OPNsense?
 
 > OPNsense is a free and Open-Source FreeBSD-based firewall and routing software. It is licensed under an Open Source Initiative approved license.
 >
@@ -98,7 +98,7 @@ In OPNsense, go to _System/Settings/Administration_ and under _Authentication_ a
 
 ### Step 7
 
-You can now either import users, or synchronize from Authentik LDAP. See https://docs.opnsense.org/manual/how-tos/user-ldap.html for more.
+You can now either import users, or synchronize from authentik LDAP. See https://docs.opnsense.org/manual/how-tos/user-ldap.html for more.
 
 ## Notes
 

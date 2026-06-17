@@ -1,6 +1,6 @@
 import "#elements/forms/HorizontalFormElement";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { docLink } from "#common/global";
 import { MessageLevel } from "#common/messages";
 
@@ -80,7 +80,7 @@ export class FileUploadForm extends Form<Record<string, unknown>> {
             throw new PreventFormSubmit("Selected file not provided", this);
         }
 
-        const api = new AdminApi(DEFAULT_CONFIG);
+        const api = aki(AdminApi);
         const customName = typeof data.name === "string" ? data.name.trim() : "";
 
         // If custom name provided, append original file extension; otherwise use original filename

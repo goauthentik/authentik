@@ -52,6 +52,9 @@ export class ArrayInput<T> extends AKControlElement<T[]> implements IArrayInput<
         `,
     ];
 
+    @property({ type: String })
+    public name: string | null = null;
+
     @property({ type: Boolean })
     validate = false;
 
@@ -87,20 +90,20 @@ export class ArrayInput<T> extends AKControlElement<T[]> implements IArrayInput<
     @queryAll("div.ak-input-group")
     inputGroups?: HTMLDivElement[];
 
-    json() {
+    toJSON() {
         if (!this.inputGroups) {
             throw new Error("Could not find input group collection in ak-array-input");
         }
         return this.items;
     }
 
-    get isValid() {
+    get valid() {
         if (!this.validate) {
             return true;
         }
 
         const oneIsValid = (g: HTMLDivElement) =>
-            g.querySelector<HTMLInputElement & AKControlElement<T>>("[name]")?.isValid ?? true;
+            g.querySelector<HTMLInputElement & AKControlElement<T>>("[name]")?.valid ?? true;
         const allAreValid = Array.from(this.inputGroups ?? []).every(oneIsValid);
         return allAreValid && (this.validator ? this.validator(this.items) : true);
     }
@@ -109,8 +112,9 @@ export class ArrayInput<T> extends AKControlElement<T[]> implements IArrayInput<
         return Array.from(this.inputGroups ?? [])
             .map(
                 (group) =>
-                    group.querySelector<HTMLInputElement & AKControlElement<T>>("[name]")?.json() ??
-                    null,
+                    group
+                        .querySelector<HTMLInputElement & AKControlElement<T>>("[name]")
+                        ?.toJSON() ?? null,
             )
             .filter((i) => i !== null);
     }

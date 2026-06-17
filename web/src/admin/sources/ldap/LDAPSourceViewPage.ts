@@ -1,24 +1,25 @@
 import "#admin/rbac/ak-rbac-object-permission-page";
 import "#admin/sources/ldap/LDAPSourceConnectivity";
-import "#admin/sources/ldap/LDAPSourceForm";
 import "#admin/sources/ldap/LDAPSourceUserList";
 import "#admin/sources/ldap/LDAPSourceGroupList";
 import "#admin/events/ObjectChangelog";
+import "#components/sync/SyncStatusCard";
 import "#elements/CodeMirror";
 import "#elements/Tabs";
 import "#elements/buttons/ActionButton/index";
 import "#elements/buttons/SpinnerButton/index";
-import "#elements/forms/ModalForm";
-import "#elements/sync/SyncStatusCard";
 import "#elements/tasks/ScheduleList";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { EVENT_REFRESH } from "#common/constants";
 
 import { AKElement } from "#elements/Base";
+import { modalInvoker } from "#elements/dialogs";
 import { SlottedTemplateResult } from "#elements/types";
 
 import renderDescriptionList from "#components/DescriptionList";
+
+import { LDAPSourceForm } from "#admin/sources/ldap/LDAPSourceForm";
 
 import { LDAPSource, ModelEnum, SourcesApi } from "@goauthentik/api";
 
@@ -38,7 +39,7 @@ import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 export class LDAPSourceViewPage extends AKElement {
     @property({ type: String })
     set sourceSlug(slug: string) {
-        new SourcesApi(DEFAULT_CONFIG)
+        aki(SourcesApi)
             .sourcesLdapRetrieve({
                 slug: slug,
             })
@@ -105,23 +106,14 @@ export class LDAPSourceViewPage extends AKElement {
                                         ],
                                         [
                                             msg("Related actions"),
-                                            html`<ak-forms-modal>
-                                                <span slot="submit">${msg("Save Changes")}</span>
-                                                <span slot="header"
-                                                    >${msg("Update LDAP Source")}</span
-                                                >
-                                                <ak-source-ldap-form
-                                                    slot="form"
-                                                    .instancePk=${this.source?.slug}
-                                                >
-                                                </ak-source-ldap-form>
-                                                <button
-                                                    slot="trigger"
-                                                    class="pf-c-button pf-m-primary pf-m-block"
-                                                >
-                                                    ${msg("Edit")}
-                                                </button>
-                                            </ak-forms-modal>`,
+                                            html`<button
+                                                class="pf-c-button pf-m-primary pf-m-block"
+                                                ${modalInvoker(LDAPSourceForm, {
+                                                    instancePk: this.source?.slug,
+                                                })}
+                                            >
+                                                ${msg("Edit")}
+                                            </button>`,
                                         ],
                                     ],
                                     { twocolumn: true },
@@ -132,9 +124,7 @@ export class LDAPSourceViewPage extends AKElement {
                             <ak-sync-status-card
                                 .fetch=${() => {
                                     if (!this.source) return Promise.reject();
-                                    return new SourcesApi(
-                                        DEFAULT_CONFIG,
-                                    ).sourcesLdapSyncStatusRetrieve({
+                                    return aki(SourcesApi).sourcesLdapSyncStatusRetrieve({
                                         slug: this.source.slug,
                                     });
                                 }}

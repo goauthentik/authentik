@@ -1,5 +1,6 @@
 import "#admin/common/ak-flow-search/ak-source-flow-search";
 import "#components/ak-slug-input";
+import "#components/ak-text-input";
 import "#components/ak-secret-text-input";
 import "#elements/forms/Radio";
 import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
@@ -7,7 +8,7 @@ import "#components/ak-switch-input";
 
 import { propertyMappingsProvider, propertyMappingsSelector } from "./TelegramSourceFormHelpers.js";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { policyEngineModes } from "#admin/policies/PolicyEngineModes";
 import { BaseSourceForm } from "#admin/sources/BaseSourceForm";
@@ -29,7 +30,7 @@ import { ifDefined } from "lit/directives/if-defined.js";
 @customElement("ak-source-telegram-form")
 export class TelegramSourceForm extends BaseSourceForm<TelegramSource> {
     async loadInstance(pk: string): Promise<TelegramSource> {
-        const source = await new SourcesApi(DEFAULT_CONFIG).sourcesTelegramRetrieve({
+        const source = await aki(SourcesApi).sourcesTelegramRetrieve({
             slug: pk,
         });
         return source;
@@ -38,12 +39,12 @@ export class TelegramSourceForm extends BaseSourceForm<TelegramSource> {
     async send(data: TelegramSource): Promise<TelegramSource> {
         let source: TelegramSource;
         if (this.instance?.pk) {
-            source = await new SourcesApi(DEFAULT_CONFIG).sourcesTelegramPartialUpdate({
+            source = await aki(SourcesApi).sourcesTelegramPartialUpdate({
                 slug: this.instance.slug,
                 patchedTelegramSourceRequest: data,
             });
         } else {
-            source = await new SourcesApi(DEFAULT_CONFIG).sourcesTelegramCreate({
+            source = await aki(SourcesApi).sourcesTelegramCreate({
                 telegramSourceRequest: data as unknown as TelegramSourceRequest,
             });
         }
@@ -51,24 +52,21 @@ export class TelegramSourceForm extends BaseSourceForm<TelegramSource> {
     }
 
     protected override renderForm(): TemplateResult {
-        return html`
-            <ak-form-element-horizontal label=${msg("Name")} required name="name">
-                <input
-                    type="text"
-                    value="${ifDefined(this.instance?.name)}"
-                    class="pf-c-form-control"
-                    required
-                />
-            </ak-form-element-horizontal>
-
+        return html`<ak-text-input
+                label=${msg("Source Name")}
+                placeholder=${msg("Type a name for this source...")}
+                required
+                name="name"
+                value="${ifDefined(this.instance?.name)}"
+            ></ak-text-input>
             <ak-slug-input
                 name="slug"
+                placeholder=${msg("e.g. my-telegram-source")}
                 value=${ifDefined(this.instance?.slug)}
                 label=${msg("Slug")}
                 required
                 input-hint="code"
             ></ak-slug-input>
-
             <ak-switch-input
                 name="enabled"
                 label=${msg("Enabled")}
@@ -136,9 +134,10 @@ export class TelegramSourceForm extends BaseSourceForm<TelegramSource> {
             <ak-secret-text-input
                 label=${msg("Bot token")}
                 name="botToken"
+                plaintext
                 input-hint="code"
-                ?required=${this.instance === undefined}
-                ?revealed=${this.instance === undefined}
+                ?required=${!this.instance}
+                ?revealed=${!this.instance}
             ></ak-secret-text-input>
             <ak-switch-input
                 name="requestMessageAccess"
@@ -163,7 +162,7 @@ export class TelegramSourceForm extends BaseSourceForm<TelegramSource> {
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
-                        label=${msg("Authentication flow")}
+                        label=${msg("Authentication Flow")}
                         name="authenticationFlow"
                     >
                         <ak-source-flow-search
@@ -242,8 +241,7 @@ export class TelegramSourceForm extends BaseSourceForm<TelegramSource> {
                         </ak-radio>
                     </ak-form-element-horizontal>
                 </div>
-            </ak-form-group>
-        `;
+            </ak-form-group>`;
     }
 }
 

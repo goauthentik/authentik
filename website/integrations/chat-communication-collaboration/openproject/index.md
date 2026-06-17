@@ -4,9 +4,11 @@ sidebar_label: OpenProject
 support_level: community
 ---
 
-## What is OpenProject
+import RedirectURI20265Note from "../../\_redirect-uri-2026-5-note.mdx";
 
-> OpenProject is a web-based project management software. Use OpenProject to manage your projects, tasks and goals. Collaborate via work packages and link them to your pull requests on Github.
+## What is OpenProject?
+
+> OpenProject is a web-based project management software. Use OpenProject to manage your projects, tasks and goals. Collaborate via work packages and link them to your pull requests on GitHub.
 >
 > -- https://www.openproject.org/
 
@@ -22,6 +24,8 @@ This documentation lists only the settings that you need to change from their de
 :::
 
 ## authentik configuration
+
+<RedirectURI20265Note />
 
 To support the integration of OpenProject with authentik, you need to create a property mapping and an application/provider pair in authentik.
 
@@ -53,7 +57,7 @@ OpenProject requires a first and last name for each user. By default authentik o
 ### Create an application and provider in authentik
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
+2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
 
 - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
 - **Choose a Provider type**: select **OAuth2/OpenID Provider** as the provider type.
@@ -61,13 +65,13 @@ OpenProject requires a first and last name for each user. By default authentik o
     - **Protocol settings**:
         - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
         - **Redirect URI**:
-            - Strict: `https://openproject.company/auth/oidc-authentik/callback`
+            - `Strict` `Authorization`: `https://openproject.company/auth/oidc-authentik/callback`
         - **Signing key**: select any available signing key.
     - **Advanced protocol settings**:
         - **Scopes**:
             - Remove `authentik default OAuth Mapping: OpenID 'profile'` from **Selected Scopes**.
             - Add the scope that you created in the previous section (e.g. `Open Project Profile Scope`) to **Selected Scopes**.
-- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 
 3. Click **Submit** to save the new application and provider.
 
@@ -75,7 +79,7 @@ OpenProject requires a first and last name for each user. By default authentik o
 
 To support the integration of authentik with OpenProject, you need to configure authentication in the OpenProject administration interface.
 
-1. Log in to OpenProject as an administrator, click on your profile icon at the top right and then **Administration**.
+1. Log in to OpenProject as an administrator, click your profile icon in the top-right corner, and then click **Administration**.
 2. Navigate to **Authentication** > **OpenID providers**.
 3. Provide a display name (e.g. `Authentik`) and click **Save**.
 4. Click on **I have a discover endpoint URL** and enter:

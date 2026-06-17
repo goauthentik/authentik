@@ -153,7 +153,7 @@ export class WebAuthnAuthenticatorRegisterStage extends BaseStage<
                 ${this.challenge?.responseErrors
                     ? html`<p>${this.challenge.responseErrors.response[0].string}</p>`
                     : nothing}
-                <fieldset class="pf-c-form__group pf-m-action">
+                <fieldset class="ak-c-fieldset pf-c-form__group pf-m-action">
                     <legend class="sr-only">${msg("Form actions")}</legend>
                     ${!this.registerRunning
                         ? html` <button

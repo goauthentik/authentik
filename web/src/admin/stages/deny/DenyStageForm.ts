@@ -1,6 +1,6 @@
 import "#elements/forms/HorizontalFormElement";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { BaseStageForm } from "#admin/stages/BaseStageForm";
 
@@ -14,19 +14,19 @@ import { ifDefined } from "lit/directives/if-defined.js";
 @customElement("ak-stage-deny-form")
 export class DenyStageForm extends BaseStageForm<DenyStage> {
     loadInstance(pk: string): Promise<DenyStage> {
-        return new StagesApi(DEFAULT_CONFIG).stagesDenyRetrieve({
+        return aki(StagesApi).stagesDenyRetrieve({
             stageUuid: pk,
         });
     }
 
     async send(data: DenyStage): Promise<DenyStage> {
         if (this.instance) {
-            return new StagesApi(DEFAULT_CONFIG).stagesDenyUpdate({
+            return aki(StagesApi).stagesDenyUpdate({
                 stageUuid: this.instance.pk || "",
                 denyStageRequest: data,
             });
         }
-        return new StagesApi(DEFAULT_CONFIG).stagesDenyCreate({
+        return aki(StagesApi).stagesDenyCreate({
             denyStageRequest: data,
         });
     }

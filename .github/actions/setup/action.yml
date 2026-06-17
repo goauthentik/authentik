@@ -25,7 +25,7 @@ runs:
       if: ${{ contains(inputs.dependencies, 'system') || contains(inputs.dependencies, 'python') }}
       uses: gerlero/apt-install@f4fa5265092af9e750549565d28c99aec7189639
       with:
-        packages: libpq-dev openssl libxmlsec1-dev pkg-config gettext krb5-multidev libkrb5-dev heimdal-multidev libclang-dev krb5-kdc krb5-user krb5-admin-server
+        packages: libpq-dev openssl libxmlsec1-dev pkg-config gettext libclang-dev libkadm5clnt-mit12 libkadm5clnt7t64-heimdal libkrb5-dev krb5-kdc krb5-user krb5-admin-server
         update: true
         upgrade: false
         install-recommends: false
@@ -37,7 +37,7 @@ runs:
         sudo rsync -a --delete /tmp/empty/ /usr/local/lib/android/
     - name: Install uv
       if: ${{ contains(inputs.dependencies, 'python') }}
-      uses: astral-sh/setup-uv@cec208311dfd045dd5311c1add060b2062131d57 # v5
+      uses: astral-sh/setup-uv@fac544c07dec837d0ccb6301d7b5580bf5edae39 # v5
       with:
         enable-cache: true
     - name: Setup python
@@ -49,45 +49,29 @@ runs:
       if: ${{ contains(inputs.dependencies, 'python') }}
       shell: bash
       working-directory: ${{ inputs.working-directory }}
-      run: uv sync --all-extras --dev --frozen
+      run: uv sync --all-extras --dev --locked
     - name: Setup rust (stable)
       if: ${{ contains(inputs.dependencies, 'rust') && !contains(inputs.dependencies, 'rust-nightly') }}
-      uses: actions-rust-lang/setup-rust-toolchain@150fca883cd4034361b621bd4e6a9d34e5143606 # v1
+      uses: actions-rust-lang/setup-rust-toolchain@46268bd060767258de96ed93c1251119784f2ab6 # v1
       with:
         rustflags: ""
     - name: Setup rust (nightly)
       if: ${{ contains(inputs.dependencies, 'rust-nightly') }}
-      uses: actions-rust-lang/setup-rust-toolchain@150fca883cd4034361b621bd4e6a9d34e5143606 # v1
+      uses: actions-rust-lang/setup-rust-toolchain@46268bd060767258de96ed93c1251119784f2ab6 # v1
       with:
         toolchain: nightly
         components: rustfmt
         rustflags: ""
     - name: Setup rust dependencies
       if: ${{ contains(inputs.dependencies, 'rust') }}
-      uses: taiki-e/install-action@80e6af7a2ec7f280fffe2d0a9d3a12a9d11d86e9 # v2
+      uses: taiki-e/install-action@7a79fe8c3a13344501c80d99cae481c1c9085912 # v2
       with:
         tool: cargo-deny cargo-machete cargo-llvm-cov nextest
-    - name: Setup node (web)
+    - name: Setup node (root, web)
       if: ${{ contains(inputs.dependencies, 'node') }}
-      uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v4
+      uses: ./.github/actions/setup-node
       with:
-        node-version-file: "${{ inputs.working-directory }}web/package.json"
-        cache: "npm"
-        cache-dependency-path: "${{ inputs.working-directory }}web/package-lock.json"
-        registry-url: "https://registry.npmjs.org"
-    - name: Setup node (root)
-      if: ${{ contains(inputs.dependencies, 'node') }}
-      uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v4
-      with:
-        node-version-file: "${{ inputs.working-directory }}package.json"
-        cache: "npm"
-        cache-dependency-path: "${{ inputs.working-directory }}package-lock.json"
-        registry-url: "https://registry.npmjs.org"
-    - name: Install Node deps
-      if: ${{ contains(inputs.dependencies, 'node') }}
-      shell: bash
-      working-directory: ${{ inputs.working-directory }}
-      run: npm ci
+        working-directory: web
     - name: Setup go
       if: ${{ contains(inputs.dependencies, 'go') }}
       uses: actions/setup-go@4a3601121dd01d1626a1e23e37211e3254c1c06c # v5
@@ -95,7 +79,7 @@ runs:
         go-version-file: "${{ inputs.working-directory }}go.mod"
     - name: Setup docker cache
       if: ${{ contains(inputs.dependencies, 'runtime') }}
-      uses: AndreKurait/docker-cache@0fe76702a40db986d9663c24954fc14c6a6031b7
+      uses: AndreKurait/docker-cache@7a3887908bdb97935395833df69b060cfcca0f7f
       with:
         key: docker-images-${{ runner.os }}-${{ hashFiles('.github/actions/setup/compose.yml', 'Makefile') }}-${{ inputs.postgresql_version }}
     - name: Setup dependencies
@@ -104,8 +88,8 @@ runs:
       working-directory: ${{ inputs.working-directory }}
       run: |
         export PSQL_TAG=${{ inputs.postgresql_version }}
-        docker compose -f .github/actions/setup/compose.yml up -d
-        cd web && npm ci
+        docker compose -f .github/actions/setup/compose.yml up -d --wait
+        corepack npm ci --prefix web
     - name: Generate config
       if: ${{ contains(inputs.dependencies, 'python') }}
       shell: uv run python {0}

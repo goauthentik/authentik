@@ -2,20 +2,29 @@ import "#elements/Alert";
 
 import { AKElement } from "#elements/Base";
 import { WithLicenseSummary } from "#elements/mixins/license";
+import { SlottedTemplateResult } from "#elements/types";
 
 import { msg } from "@lit/localize";
-import { html, nothing } from "lit";
+import { css, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-license-notice")
 export class AKLicenceNotice extends WithLicenseSummary(AKElement) {
-    @property()
+    public static styles = [
+        css`
+            ::part(container) {
+                background-color: transparent;
+            }
+        `,
+    ];
+
+    @property({ type: String })
     public label = msg("Enterprise only");
 
-    @property()
+    @property({ type: String })
     public description = msg("Learn more about the enterprise license.");
 
-    render() {
+    protected override render(): SlottedTemplateResult {
         if (this.hasEnterpriseLicense) {
             return nothing;
         }

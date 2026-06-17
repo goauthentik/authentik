@@ -2,7 +2,7 @@ import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/index";
 import "#components/ak-text-input";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { ModelForm } from "#elements/forms/ModelForm";
 
@@ -30,14 +30,14 @@ export class LDAPSourceUserForm extends ModelForm<UserLDAPSourceConnection, numb
     }
 
     protected async loadInstance(pk: number): Promise<UserLDAPSourceConnection> {
-        return new SourcesApi(DEFAULT_CONFIG).sourcesUserConnectionsLdapRetrieve({
+        return aki(SourcesApi).sourcesUserConnectionsLdapRetrieve({
             id: pk,
         });
     }
 
     async send(data: UserLDAPSourceConnection) {
         data.source = this.source?.pk || "";
-        return new SourcesApi(DEFAULT_CONFIG).sourcesUserConnectionsLdapCreate({
+        return aki(SourcesApi).sourcesUserConnectionsLdapCreate({
             userLDAPSourceConnectionRequest: data,
         });
     }
@@ -52,7 +52,7 @@ export class LDAPSourceUserForm extends ModelForm<UserLDAPSourceConnection, numb
                         if (query !== undefined) {
                             args.search = query;
                         }
-                        const users = await new CoreApi(DEFAULT_CONFIG).coreUsersList(args);
+                        const users = await aki(CoreApi).coreUsersList(args);
                         return users.results;
                     }}
                     .renderElement=${(user: User): string => {

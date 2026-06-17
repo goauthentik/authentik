@@ -2,7 +2,7 @@ import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import "#admin/sources/ldap/LDAPSourceGroupForm";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
@@ -29,7 +29,7 @@ export class LDAPSourceGroupList extends Table<GroupLDAPSourceConnection> {
             object-label=${msg("LDAP Group(s)")}
             .objects=${this.selectedElements}
             .delete=${(item: GroupLDAPSourceConnection) => {
-                return new SourcesApi(DEFAULT_CONFIG).sourcesGroupConnectionsLdapDestroy({
+                return aki(SourcesApi).sourcesGroupConnectionsLdapDestroy({
                     id: item.pk,
                 });
             }}
@@ -41,7 +41,7 @@ export class LDAPSourceGroupList extends Table<GroupLDAPSourceConnection> {
     }
 
     renderToolbar(): TemplateResult {
-        return html`<ak-forms-modal cancelText=${msg("Close")} ?closeAfterSuccessfulSubmit=${false}>
+        return html`<ak-forms-modal cancelText=${msg("Close")} keep-open-after-submit>
                 <span slot="submit">${msg("Connect")}</span>
                 <span slot="header">${msg("Connect Group")}</span>
                 <ak-source-ldap-group-form .source=${this.source} slot="form">
@@ -52,7 +52,7 @@ export class LDAPSourceGroupList extends Table<GroupLDAPSourceConnection> {
     }
 
     async apiEndpoint(): Promise<PaginatedResponse<GroupLDAPSourceConnection>> {
-        return new SourcesApi(DEFAULT_CONFIG).sourcesGroupConnectionsLdapList({
+        return aki(SourcesApi).sourcesGroupConnectionsLdapList({
             ...(await this.defaultEndpointConfig()),
             sourceSlug: this.source?.slug,
         });

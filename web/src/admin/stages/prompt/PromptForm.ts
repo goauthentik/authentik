@@ -3,7 +3,7 @@ import "#elements/forms/HorizontalFormElement";
 import "#flow/stages/prompt/PromptStage";
 import "#components/ak-switch-input";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { parseAPIResponseError } from "#common/errors/network";
 
 import { ModelForm } from "#elements/forms/ModelForm";
@@ -39,6 +39,9 @@ class PreviewStageHost implements StageHost {
 
 @customElement("ak-prompt-form")
 export class PromptForm extends ModelForm<Prompt, string> {
+    public static override verboseName = msg("Prompt");
+    public static override verboseNamePlural = msg("Prompts");
+
     @state()
     protected preview: PromptChallenge | null = null;
 
@@ -58,18 +61,18 @@ export class PromptForm extends ModelForm<Prompt, string> {
 
     send(data: Prompt): Promise<unknown> {
         if (this.instance) {
-            return new StagesApi(DEFAULT_CONFIG).stagesPromptPromptsUpdate({
+            return aki(StagesApi).stagesPromptPromptsUpdate({
                 promptUuid: this.instance.pk || "",
                 promptRequest: data,
             });
         }
-        return new StagesApi(DEFAULT_CONFIG).stagesPromptPromptsCreate({
+        return aki(StagesApi).stagesPromptPromptsCreate({
             promptRequest: data,
         });
     }
 
     async loadInstance(pk: string): Promise<Prompt> {
-        const prompt = await new StagesApi(DEFAULT_CONFIG).stagesPromptPromptsRetrieve({
+        const prompt = await aki(StagesApi).stagesPromptPromptsRetrieve({
             promptUuid: pk,
         });
         await this.refreshPreview(prompt);
@@ -83,7 +86,7 @@ export class PromptForm extends ModelForm<Prompt, string> {
             return;
         }
 
-        return new StagesApi(DEFAULT_CONFIG)
+        return aki(StagesApi)
             .stagesPromptPromptsPreviewCreate({
                 promptRequest,
             })
@@ -145,6 +148,9 @@ export class PromptForm extends ModelForm<Prompt, string> {
             [PromptTypeEnum.Separator, msg("Separator: Static Separator Line")],
             [PromptTypeEnum.Hidden, msg("Hidden: Hidden field, can be used to insert data into form.")],
             [PromptTypeEnum.Static, msg("Static: Static value, displayed as-is.")],
+            [PromptTypeEnum.AlertInfo, msg("Alert (Info): Static alert box with info styling")],
+            [PromptTypeEnum.AlertWarning, msg("Alert (Warning): Static alert box with warning styling")],
+            [PromptTypeEnum.AlertDanger, msg("Alert (Danger): Static alert box with danger styling")],
             [PromptTypeEnum.AkLocale, msg("authentik: Locale: Displays a list of locales authentik supports.")],
         ];
         const currentType = this.instance?.type;

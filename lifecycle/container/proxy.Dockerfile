@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 
 # Stage 1: Build web
-FROM --platform=${BUILDPLATFORM} docker.io/library/node:24 AS web-builder
+FROM --platform=${BUILDPLATFORM} docker.io/library/node:26 AS web-builder
 
 ENV NODE_ENV=production
 WORKDIR /static
@@ -10,18 +10,29 @@ WORKDIR /static
 COPY ./packages /packages
 COPY ./web/packages /static/packages
 
+RUN --mount=type=bind,target=/static/package.json,src=./package.json \
+    --mount=type=bind,target=/static/package-lock.json,src=./package-lock.json \
+    --mount=type=bind,target=/static/web/package.json,src=./web/package.json \
+    --mount=type=bind,target=/static/web/package-lock.json,src=./web/package-lock.json \
+    --mount=type=bind,target=/static/scripts/node/,src=./scripts/node/ \
+    --mount=type=bind,target=/static/packages/logger-js/,src=./packages/logger-js/ \
+    node ./scripts/node/setup-corepack.mjs --force && \
+    node ./scripts/node/lint-runtime.mjs ./web
+
 COPY package.json /
-RUN --mount=type=bind,target=/static/package.json,src=./web/package.json \
+
+RUN --mount=type=bind,target=/static/.npmrc,src=./.npmrc \
+    --mount=type=bind,target=/static/package.json,src=./web/package.json \
     --mount=type=bind,target=/static/package-lock.json,src=./web/package-lock.json \
     --mount=type=bind,target=/static/scripts,src=./web/scripts \
     --mount=type=cache,target=/root/.npm \
-    npm ci
+    corepack npm ci
 
 COPY web .
 RUN npm run build-proxy
 
 # Stage 2: Build
-FROM --platform=${BUILDPLATFORM} docker.io/library/golang:1.26.2-trixie@sha256:da3943074756e8d6f109ce7a84be16e98bffa39e9d369a0447f016b56db84e8f AS builder
+FROM --platform=${BUILDPLATFORM} docker.io/library/golang:1.26.4-trixie@sha256:bbf22ddccb3205344f2755ea8fa4fe39f7a8b2b77b9f7b764ec2aad31406f6fc AS builder
 
 ARG TARGETOS
 ARG TARGETARCH
@@ -62,7 +73,6 @@ LABEL org.opencontainers.image.authors="Authentik Security Inc." \
     org.opencontainers.image.documentation="https://docs.goauthentik.io" \
     org.opencontainers.image.licenses="https://github.com/goauthentik/authentik/blob/main/LICENSE" \
     org.opencontainers.image.revision=${GIT_BUILD_HASH} \
-    org.opencontainers.image.source="https://github.com/goauthentik/authentik" \
     org.opencontainers.image.title="authentik proxy outpost image" \
     org.opencontainers.image.url="https://goauthentik.io" \
     org.opencontainers.image.vendor="Authentik Security Inc." \

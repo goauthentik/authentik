@@ -12,7 +12,7 @@ For an overview of branding and other customization options in authentik refer t
 
 To create or edit a brand, follow these steps:
 
-1. Log in as an administrator, open the authentik Admin interface, and navigate to **System** > **Brands**.
+1. Log in as an administrator, open the authentik Admin interface, and navigate to **System** > **Brands**.
 
 2. Click **Create** to add a new brand, or click the **Edit** icon next to an existing brand to modify it.
 
@@ -70,6 +70,15 @@ When using the [Mutual TLS Stage](../../add-secure-apps/flows-stages/stages/mtls
 #### Attributes
 
 Attributes such as locale, theme settings (light/dark mode), and custom attributes can be set to a per-brand default value here. Any custom attributes can be retrieved via [`group_attributes()`](../../users-sources/user/user_ref.mdx#object-properties).
+
+To set the UI language for a brand, add `settings.locale` with a supported locale code. For example, to use English across the default brand:
+
+```yaml
+settings:
+    locale: en
+```
+
+To hide the language selector on authentication flows, see [Hide the locale selector](./custom-css.mdx#hide-the-locale-selector).
 
 ## Image optimization
 

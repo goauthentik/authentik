@@ -74,6 +74,7 @@ authentik is acting as both a Service Provider (SP) to Google and an Identity Pr
     - Set **ACS URL** to `https://authentik.company/source/saml/<google-slug>/acs/`.
     - Set **Entity ID** to `https://authentik.company/source/saml/<google-slug>/metadata/`.
     - Set **Start URL** to `https://authentik.company`.
+    - Enable **Signed response**.
     - Set **Name ID format** to `EMAIL`.
     - Set **Name ID** to `Basic Information > Primary Email`.
 2. Click **Continue**.
@@ -105,15 +106,15 @@ authentik is acting as both a Service Provider (SP) to Google and an Identity Pr
 ### Create a SAML source in authentik
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Directory** > **Federation and Social login** and click **Create**.
+2. Navigate to **Directory** > **Federation and Social login** and click **New Source**.
 3. Select **SAML Source** and configure the following settings:
     - Set **Name** to `Google Workspace`.
     - Set **Slug** to `google` (must match the slug used in Google Workspace ACS URL).
     - Set **SSO URL** to the SSO URL from Google Workspace.
     - Set **Issuer** to `https://authentik.company/source/saml/<google-slug>/metadata/`.
     - Set **Verification Certificate** to the Google Workspace certificate you uploaded earlier.
-      :::warning Disable Verify Assertion Signature
-      If you do not disable the following option, your integration with Google Workspace will not work.
+      :::warning Signed response required
+      These verification settings expect Google Workspace to sign the SAML response. Make sure **Signed response** is enabled in the Google Workspace SAML app.
       :::
     - Disable **Verify Assertion Signature**.
     - Enable **Verify Response Signature**.
@@ -133,6 +134,7 @@ For instructions on embedding the new source within a flow, such as an authoriza
 
 - **`403 app_not_configured_for_user`**: Ensure the Entity ID matches between Google Workspace and authentik. The Entity ID must be identical in both configurations.
 - **`403 app_not_enabled_for_user`**: Enable the application for your organization in the Google Workspace Admin Console under **Apps** > **Web and mobile apps**.
+- **`Expected exactly one Signature in the Response element`**: Enable **Signed response** in the Google Workspace Admin Console under **Apps** > **Web and mobile apps** > your SAML app, for example `authentik`. If this option is disabled, Google Workspace signs only the SAML assertion instead of the outer SAML response.
 
 ## Resources
 

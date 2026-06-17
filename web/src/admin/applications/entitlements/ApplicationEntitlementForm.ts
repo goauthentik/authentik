@@ -3,7 +3,7 @@ import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/Radio";
 import "#elements/forms/SearchSelect/index";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { ModelForm } from "#elements/forms/ModelForm";
 
@@ -20,7 +20,7 @@ import PFContent from "@patternfly/patternfly/components/Content/content.css";
 @customElement("ak-application-entitlement-form")
 export class ApplicationEntitlementForm extends ModelForm<ApplicationEntitlement, string> {
     async loadInstance(pk: string): Promise<ApplicationEntitlement> {
-        return new CoreApi(DEFAULT_CONFIG).coreApplicationEntitlementsRetrieve({
+        return aki(CoreApi).coreApplicationEntitlementsRetrieve({
             pbmUuid: pk,
         });
     }
@@ -42,12 +42,12 @@ export class ApplicationEntitlementForm extends ModelForm<ApplicationEntitlement
             data.app = this.targetPk;
         }
         if (this.instance?.pbmUuid) {
-            return new CoreApi(DEFAULT_CONFIG).coreApplicationEntitlementsUpdate({
+            return aki(CoreApi).coreApplicationEntitlementsUpdate({
                 pbmUuid: this.instance.pbmUuid || "",
                 applicationEntitlementRequest: data,
             });
         }
-        return new CoreApi(DEFAULT_CONFIG).coreApplicationEntitlementsCreate({
+        return aki(CoreApi).coreApplicationEntitlementsCreate({
             applicationEntitlementRequest: data,
         });
     }

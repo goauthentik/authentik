@@ -59,37 +59,14 @@ pre:has(.hljs) {
     padding: var(--pf-global--spacer--md);
 }
 
-svg[id^="mermaid-svg-"] {
-    .rect {
-        fill: var(
-            --ak-mermaid-box-background-color,
-            var(--pf-global--BackgroundColor--light-300)
-        ) !important;
-    }
-
-    .messageText {
-        stroke-width: 4;
-        fill: var(--ak-mermaid-message-text) !important;
-        paint-order: stroke;
-    }
+ak-alert + :is(h2, p) {
+    padding-top: var(--pf-global--spacer--md);
 }
 
 /* #region Dark Theme */
 
 :host([theme="dark"]) {
-    --ak-mermaid-message-text: var(--ak-dark-foreground);
-    --ak-mermaid-box-background-color: var(--ak-dark-background-lighter);
     --ak-table-stripe-background: var(--pf-global--BackgroundColor--dark-200);
-
-    svg[id^="mermaid-svg-"] {
-        line[class^="messageLine"] {
-            /*
-            Mermaid's support for dynamic palette changes leaves a lot to be desired.
-            This is a workaround to keep content readable while not breaking the rest of the theme.
-         */
-            filter: invert(1) !important;
-        }
-    }
 }
 
 /* #endregion */

@@ -6,4 +6,3 @@ services:
     network_mode: none
     volumes:
       - ./:/local
-      - ../../schema.yml:/schema.yml:ro

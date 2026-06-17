@@ -1,6 +1,6 @@
 import "#elements/buttons/SpinnerButton/index";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { groupBy } from "#common/utils";
 
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
@@ -21,26 +21,26 @@ export class RBACPermissionTable extends Table<Permission> {
 
     public override order = "content_type__app_label,content_type__model";
 
-    async apiEndpoint(): Promise<PaginatedResponse<Permission>> {
-        return new RbacApi(DEFAULT_CONFIG).rbacPermissionsList(await this.defaultEndpointConfig());
+    protected override async apiEndpoint(): Promise<PaginatedResponse<Permission>> {
+        return aki(RbacApi).rbacPermissionsList(await this.defaultEndpointConfig());
     }
 
-    groupBy(items: Permission[]): [string, Permission[]][] {
+    protected override groupBy(items: Permission[]): [string, Permission[]][] {
         return groupBy(items, (perm) => {
             return perm.appLabelVerbose;
         });
     }
 
-    protected columns: TableColumn[] = [
+    protected override columns: TableColumn[] = [
         [msg("Name"), "codename"],
         [msg("Model"), ""],
     ];
 
-    protected row(item: Permission): SlottedTemplateResult[] {
+    protected override row(item: Permission): SlottedTemplateResult[] {
         return [html`<div>${item.name}</div>`, html`${item.modelVerbose}`];
     }
 
-    protected renderSelectedChip(item: Permission): SlottedTemplateResult {
+    protected override renderSelectedChip(item: Permission): SlottedTemplateResult {
         return item.name;
     }
 }

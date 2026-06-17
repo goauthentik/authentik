@@ -7,10 +7,9 @@ from dramatiq.broker import Broker, MessageProxy, get_broker
 from dramatiq.middleware.middleware import Middleware
 from dramatiq.middleware.retries import Retries
 from dramatiq.results.middleware import Results
-from dramatiq.worker import Worker, _ConsumerThread, _WorkerThread
+from dramatiq.worker import ConsumerThread, Worker, WorkerThread
 
 from authentik.tasks.broker import PostgresBroker
-from authentik.tasks.middleware import WorkerHealthcheckMiddleware
 
 TESTING_QUEUE = "testing"
 
@@ -18,9 +17,10 @@ TESTING_QUEUE = "testing"
 class TestWorker(Worker):
     def __init__(self, broker: Broker):
         super().__init__(broker=broker)
+        self.worker_id = 1000
         self.work_queue = PriorityQueue()
         self.consumers = {
-            TESTING_QUEUE: _ConsumerThread(
+            TESTING_QUEUE: ConsumerThread(
                 broker=self.broker,
                 queue_name=TESTING_QUEUE,
                 prefetch=2,
@@ -33,7 +33,7 @@ class TestWorker(Worker):
             prefetch=2,
             timeout=1,
         )
-        self._worker = _WorkerThread(
+        self._worker = WorkerThread(
             broker=self.broker,
             consumers=self.consumers,
             work_queue=self.work_queue,
@@ -78,19 +78,18 @@ def use_test_broker():
         actor.broker = broker
         actor.broker.declare_actor(actor)
 
-    for middleware_class, middleware_kwargs in Conf().middlewares:
-        middleware: Middleware = import_string(middleware_class)(
-            **middleware_kwargs,
-        )
-        if isinstance(middleware, WorkerHealthcheckMiddleware):
-            middleware.port = 9102
-        if isinstance(middleware, Retries):
-            middleware.max_retries = 0
-        if isinstance(middleware, Results):
-            middleware.backend = import_string(Conf().result_backend)(
+    for middleware_class_path, middleware_kwargs in Conf().middlewares:
+        middleware_class = import_string(middleware_class_path)
+        if issubclass(middleware_class, Results):
+            middleware_kwargs["backend"] = import_string(Conf().result_backend)(
                 *Conf().result_backend_args,
                 **Conf().result_backend_kwargs,
             )
+        middleware: Middleware = middleware_class(
+            **middleware_kwargs,
+        )
+        if isinstance(middleware, Retries):
+            middleware.max_retries = 0
         broker.add_middleware(middleware)
 
     broker.start()

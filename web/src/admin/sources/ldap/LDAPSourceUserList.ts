@@ -2,7 +2,7 @@ import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import "#admin/sources/ldap/LDAPSourceUserForm";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
@@ -29,7 +29,7 @@ export class LDAPSourceUserList extends Table<UserLDAPSourceConnection> {
             object-label=${msg("LDAP User(s)")}
             .objects=${this.selectedElements}
             .delete=${(item: UserLDAPSourceConnection) => {
-                return new SourcesApi(DEFAULT_CONFIG).sourcesUserConnectionsLdapDestroy({
+                return aki(SourcesApi).sourcesUserConnectionsLdapDestroy({
                     id: item.pk,
                 });
             }}
@@ -47,7 +47,7 @@ export class LDAPSourceUserList extends Table<UserLDAPSourceConnection> {
     }
 
     renderToolbar(): TemplateResult {
-        return html`<ak-forms-modal cancelText=${msg("Close")} ?closeAfterSuccessfulSubmit=${false}>
+        return html`<ak-forms-modal cancelText=${msg("Close")} keep-open-after-submit>
                 <span slot="submit">${msg("Connect")}</span>
                 <span slot="header">${msg("Connect User")}</span>
                 <ak-source-ldap-user-form .source=${this.source} slot="form">
@@ -58,7 +58,7 @@ export class LDAPSourceUserList extends Table<UserLDAPSourceConnection> {
     }
 
     async apiEndpoint(): Promise<PaginatedResponse<UserLDAPSourceConnection>> {
-        return new SourcesApi(DEFAULT_CONFIG).sourcesUserConnectionsLdapList({
+        return aki(SourcesApi).sourcesUserConnectionsLdapList({
             ...(await this.defaultEndpointConfig()),
             sourceSlug: this.source?.slug,
         });
