@@ -13,6 +13,7 @@ import {
 import { MessageLevel } from "#common/messages";
 import { dateTimeLocal } from "#common/temporal";
 
+import type { CodeMirrorTextarea } from "#elements/CodeMirror";
 import { showMessage } from "#elements/messages/MessageContainer";
 import { WizardPage } from "#elements/wizard/WizardPage";
 
@@ -227,9 +228,10 @@ export class InvitationWizardDetailsStep extends WizardPage {
             <ak-form-element-horizontal label=${msg("Custom attributes")}>
                 <ak-codemirror
                     mode="yaml"
+                    raw
                     .value=${this.fixedDataRaw}
-                    @change=${(ev: CustomEvent) => {
-                        this.fixedDataRaw = ev.detail.value;
+                    @change=${(ev: Event) => {
+                        this.fixedDataRaw = (ev.target as CodeMirrorTextarea).value;
                         this.validate();
                     }}
                 >
