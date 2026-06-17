@@ -7,10 +7,7 @@ from drf_spectacular.contrib.django_filters import (
     DjangoFilterExtension as BaseDjangoFilterExtension,
 )
 from drf_spectacular.generators import SchemaGenerator
-from drf_spectacular.plumbing import (
-    ResolvedComponent,
-    follow_field_source,
-)
+from drf_spectacular.plumbing import ResolvedComponent, follow_field_source
 from drf_spectacular.renderers import OpenApiJsonRenderer
 from drf_spectacular.settings import spectacular_settings
 from structlog.stdlib import get_logger
@@ -57,7 +54,7 @@ class DjangoFilterExtension(BaseDjangoFilterExtension):
     _get_model_field() incorrectly double-appends to_field_name when field_name already ends
     with that value (e.g. field_name='tags__slug', to_field_name='slug' produces the invalid
     path ['tags', 'slug', 'slug']). This caused hundreds of spurious warnings during schema
-    generation for filters such as TagFilter, TenancyFilterSet.tenant, and OwnerFilterMixin.owner.
+    generation for filters such as TagFilter, and OwnerFilterMixin.owner.
 
     See: https://github.com/netbox-community/netbox/issues/20787
          https://github.com/tfranzel/drf-spectacular/issues/1475

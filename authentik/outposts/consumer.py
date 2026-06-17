@@ -12,7 +12,6 @@ from channels.exceptions import DenyConnection
 from channels.generic.websocket import JsonWebsocketConsumer
 from dacite.core import from_dict
 from dacite.data import Data
-from django.db import connection
 from django.http.request import QueryDict
 from guardian.shortcuts import get_objects_for_user
 from structlog.stdlib import BoundLogger, get_logger

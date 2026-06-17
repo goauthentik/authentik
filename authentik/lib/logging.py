@@ -5,7 +5,6 @@ from logging import Logger
 from os import getpid
 
 import structlog
-from django.db import connection
 
 from authentik.lib.config import CONFIG
 

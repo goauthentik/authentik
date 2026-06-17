@@ -8,7 +8,7 @@ from typing import Any
 
 import gssapi
 import pglock
-from django.db import connection, models
+from django.db import models
 from django.http import HttpRequest
 from django.shortcuts import reverse
 from django.templatetags.static import static

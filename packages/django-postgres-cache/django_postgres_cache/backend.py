@@ -8,8 +8,9 @@ from django.conf import settings
 from django.core.cache.backends.base import DEFAULT_TIMEOUT, BaseCache
 from django.db import DatabaseError
 from django.utils.timezone import now
-from django_postgres_cache.models import CacheEntry
 from psqlextra.types import ConflictAction
+
+from django_postgres_cache.models import CacheEntry
 
 
 class DatabaseCache(BaseCache):

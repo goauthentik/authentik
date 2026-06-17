@@ -5,7 +5,6 @@ from hashlib import sha256
 from asgiref.sync import async_to_sync
 from channels.generic.websocket import JsonWebsocketConsumer
 from django.core.cache import cache
-from django.db import connection
 
 from authentik.core.models import User
 from authentik.root.ws.storage import CACHE_PREFIX

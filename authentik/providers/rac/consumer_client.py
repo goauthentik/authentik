@@ -6,7 +6,6 @@ from asgiref.sync import async_to_sync
 from channels.db import database_sync_to_async
 from channels.exceptions import ChannelFull, DenyConnection
 from channels.generic.websocket import AsyncWebsocketConsumer
-from django.db import connection
 from django.http.request import QueryDict
 from structlog.stdlib import BoundLogger, get_logger
 
@@ -22,7 +21,7 @@ def build_rac_client_group() -> str:
     The `RACClientConsumer` consumer adds itself to this group on connection,
     and removes itself once it has been assigned a specific outpost channel
     """
-    return sha256("group_rac_client".encode()).hexdigest()
+    return sha256(b"group_rac_client").hexdigest()
 
 
 def build_rac_client_group_session(session_key: str) -> str:

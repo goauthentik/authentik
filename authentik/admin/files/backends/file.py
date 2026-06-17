@@ -7,7 +7,6 @@ from pathlib import Path
 
 import jwt
 from django.conf import settings
-from django.db import connection
 from django.http.request import HttpRequest
 from django.utils.timezone import now
 

@@ -8,7 +8,7 @@ from tempfile import NamedTemporaryFile, mkdtemp
 from typing import Any
 
 import pglock
-from django.db import connection, models
+from django.db import models
 from django.templatetags.static import static
 from django.utils.translation import gettext_lazy as _
 from ldap3 import ALL, NONE, RANDOM, Connection, Server, ServerPool, Tls

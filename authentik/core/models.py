@@ -32,7 +32,6 @@ from structlog.stdlib import get_logger
 from authentik.admin.files.fields import FileField
 from authentik.admin.files.manager import get_file_manager
 from authentik.admin.files.usage import FileUsage
-from authentik.admin.models import DEFAULT_TOKEN_DURATION, DEFAULT_TOKEN_LENGTH
 from authentik.admin.utils import get_system_settings, get_unique_identifier
 from authentik.blueprints.models import ManagedModel
 from authentik.core.expression.exceptions import PropertyMappingExpressionException

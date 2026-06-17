@@ -4,7 +4,7 @@ from typing import Any, Self
 import pglock
 from django.core.paginator import Paginator
 from django.core.validators import MinValueValidator
-from django.db import connection, models
+from django.db import models
 from django.db.models import Model, QuerySet, TextChoices
 from django.utils.translation import gettext_lazy as _
 from dramatiq.actor import Actor

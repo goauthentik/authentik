@@ -6,7 +6,6 @@ from urllib.parse import urlsplit, urlunsplit
 import boto3
 from botocore.config import Config
 from botocore.exceptions import ClientError
-from django.db import connection
 from django.http.request import HttpRequest
 
 from authentik.admin.files.backends.base import ManageableBackend, get_content_type
