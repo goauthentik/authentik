@@ -88,11 +88,17 @@ step below is meant to be one focused, compilable, testable commit.
 
 ### Phase B — session + cookies (needs A1)
 
-- [ ] **B5.** `SessionData` + async `SessionStore` trait + `FsSessionStore` (JSON files,
+- [x] **B5.** `SessionData` + async `SessionStore` trait + `FsSessionStore` (JSON files,
   `session_<id>`, maxage→expiry). save/load/delete/expiry tests.
-- [ ] **B6.** Extend `Application` to hold `Arc<dyn SessionStore>`, cookie signing key,
-  `OidcEndpoint`, backchannel `reqwest` client; wire in `Application::new`. Compiles, no behavior
-  change.
+  Done in `src/outpost/proxy/session/{mod,filesystem}.rs`. DESIGN CHANGE: `SessionStore` is an
+  **enum** (native `async fn`, static dispatch), not a `dyn` trait — native async-fn traits
+  aren't dyn-compatible and we avoid `async-trait`. Each file stores `{expires, data}` JSON and
+  expiry is checked on `load` (no mtime/background-cleanup reliance). Added `tempfile` dev-dep.
+  5 tests. DEFERRED: writable-path validation + periodic cleanup sweep (Go's `NewStore`/
+  `CleanupManager`) — not needed for correctness given load-time expiry.
+- [ ] **B6.** Extend `Application` to hold the `SessionStore` (enum), cookie signing key,
+  `OidcEndpoint`, backchannel `reqwest` client; wire in `Application::new`. Also add the
+  `host_browser` config field (needed by `OidcEndpoint`, see A3). Compiles, no behavior change.
 - [ ] **B7.** Add `axum-extra` cookie support; signed session-ID cookie read/issue helper with
   per-provider domain/secure/samesite/path/maxage (mirror `getStore` options).
 

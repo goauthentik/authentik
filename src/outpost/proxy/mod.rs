@@ -27,6 +27,7 @@ mod claims;
 mod endpoint;
 mod handlers;
 mod oauth_state;
+mod session;
 mod token;
 
 #[derive(Debug, Default, FromArgs, PartialEq, Eq)]
