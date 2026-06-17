@@ -16,6 +16,7 @@ from scim2_filter_parser.transpilers.django_q_object import get_query
 from structlog import BoundLogger
 from structlog.stdlib import get_logger
 
+from authentik.admin.utils import get_system_settings
 from authentik.core.models import Group, User
 from authentik.core.sources.mapper import SourceMapper
 from authentik.lib.sync.mapper import PropertyMappingManager
@@ -85,7 +86,7 @@ class SCIMView(APIView):
         )
 
     def paginate_query(self, query: QuerySet) -> Page:
-        per_page = int(self.request.tenant.pagination_default_page_size)
+        per_page = int(get_system_settings().pagination_default_page_size)
         start_index = 1
         try:
             start_index = int(self.request.query_params.get("startIndex", 1))

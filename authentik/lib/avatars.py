@@ -13,9 +13,9 @@ from lxml import etree  # nosec
 from lxml.etree import Element, SubElement, _Element  # nosec
 from requests.exceptions import ConnectionError, HTTPError, RequestException, Timeout
 
+from authentik.admin.utils import get_system_settings
 from authentik.lib.utils.dict import get_path_from_dict
 from authentik.lib.utils.http import get_http_session
-from authentik.tenants.utils import get_current_tenant
 
 if TYPE_CHECKING:
     from authentik.core.models import User
@@ -60,9 +60,7 @@ def avatar_mode_gravatar(user: User, mode: str) -> str | None:
 
 def generate_colors(text: str) -> tuple[str, str]:
     """Generate colors based on `text`"""
-    color = (
-        int(md5(text.lower().encode("utf-8"), usedforsecurity=False).hexdigest(), 16) % 0xFFFFFF
-    )  # nosec
+    color = int(md5(text.lower().encode("utf-8"), usedforsecurity=False).hexdigest(), 16) % 0xFFFFFF  # nosec
 
     # Get a (somewhat arbitrarily) reduced scope of colors
     # to avoid too dark or light backgrounds
@@ -127,7 +125,7 @@ def generate_avatar_from_name(
     text.attrib["x"] = "50%"
     text.attrib["y"] = "50%"
     text.attrib["style"] = (
-        f"color: #{text_hex}; " "line-height: 1; " f"font-family: {','.join(SVG_FONTS)}; "
+        f"color: #{text_hex}; line-height: 1; font-family: {','.join(SVG_FONTS)}; "
     )
     text.attrib["fill"] = f"#{text_hex}"
     text.attrib["alignment-baseline"] = "middle"
@@ -204,12 +202,7 @@ def get_avatar(user: User, request: HttpRequest | None = None) -> str:
         "initials": avatar_mode_generated,
         "gravatar": avatar_mode_gravatar,
     }
-    tenant = None
-    if request:
-        tenant = request.tenant
-    else:
-        tenant = get_current_tenant()
-    modes: str = tenant.avatars
+    modes: str = get_system_settings().avatars
     for mode in modes.split(","):
         avatar = None
         if mode in mode_map:

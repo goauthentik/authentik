@@ -1,12 +1,11 @@
 """Test event retention"""
 
 from django.test.client import RequestFactory
-from django_tenants.utils import get_public_schema_name
 from rest_framework.test import APITestCase
 
+from authentik.admin.utils import get_system_settings
 from authentik.events.models import Event, EventAction
 from authentik.lib.utils.time import timedelta_from_string
-from authentik.tenants.models import Tenant
 
 
 class TestEventRetention(APITestCase):
@@ -14,12 +13,11 @@ class TestEventRetention(APITestCase):
 
     def test_event_retention(self):
         """Test brand's event retention"""
-        default_tenant = Tenant.objects.get(schema_name=get_public_schema_name())
-        default_tenant.event_retention = "weeks=3"
-        default_tenant.save()
+        settings = get_system_settings()
+        settings.event_retention = "weeks=3"
+        settings.save()
         factory = RequestFactory()
         request = factory.get("/")
-        request.tenant = default_tenant
         event = Event.new(action=EventAction.SYSTEM_EXCEPTION, message="test").from_http(request)
         self.assertEqual(event.expires.day, (event.created + timedelta_from_string("weeks=3")).day)
         self.assertEqual(
