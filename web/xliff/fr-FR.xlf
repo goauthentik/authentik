@@ -6318,10 +6318,6 @@ doesn't pass when either or both of the selected options are equal or above the 
   <source>Optionally restrict which WebAuthn device types may be used. When no device types are selected, all devices are allowed.</source>
   <target>Optionnel, restreindre quels types d'appareil WebAuthn peuvent être utilisés. Lorsqu'aucun type d'appareil n'est sélectionné, tout les appareils sont autorisés.</target>
 </trans-unit>
-<trans-unit id="s11274960b13cf21a">
-  <source>This restriction only applies to devices created in authentik 2024.4 or later.</source>
-  <target>Les restrictions ne s'appliquent qu'aux appareils créés dans authentik 2024.4 ou ultérieur.</target>
-</trans-unit>
 <trans-unit id="s24bce955914b1f0a">
   <source>Stage used to configure a WebAuthn authenticator (i.e. Yubikey, FaceID/Windows Hello).</source>
   <target>Étape de configuration d'un authentificateur WebAuthn (Yubikey, FaceID/Windows Hello).</target>
@@ -9076,9 +9072,6 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
 <trans-unit id="s3b4ad8abf4f08c35">
   <source>Hide managed roles</source>
 </trans-unit>
-<trans-unit id="s7dcfe418b8d601f6">
-  <source>Flags allow you to enable new functionality and behaviour in authentik early.</source>
-</trans-unit>
 <trans-unit id="s8aa73079812f56b2">
   <source>Refresh other flow tabs upon authentication</source>
 </trans-unit>
@@ -9505,7 +9498,7 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
 </trans-unit>
 <trans-unit id="captcha.provider-link">
   <source>API keys can be obtained from the
-                        <x id="0" equiv-text="${html `&lt;a target=&quot;_blank&quot; rel=&quot;noopener noreferrer&quot; href=${keyURL}&#10;                                &gt;${formatAPISource()}&lt;/a&#10;                            &gt;.`}"/></source>
+                                        <x id="0" equiv-text="${html `&lt;a&#10;                                                target=&quot;_blank&quot;&#10;                                                rel=&quot;noopener noreferrer&quot;&#10;                                                href=${keyURL}&#10;                                                &gt;${formatAPISource()}&lt;/a&#10;                                            &gt;.`}"/></source>
   <note from="lit-localize">Supplementary help text with link to provider dashboard.</note>
 </trans-unit>
 <trans-unit id="s87f858ca3c8e5579">
@@ -11423,6 +11416,52 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
 <trans-unit id="wizard.step.details">
   <source><x id="0" equiv-text="${entityLabel}"/> Details</source>
   <note from="lit-localize">Label for the step in the creation wizard where the details of the entity being created are filled in. The placeholder {entity} is replaced with the name of the entity type, for example 'User Details' or 'Group Details'.</note>
+</trans-unit>
+<trans-unit id="sd1b98c71ea0d603b">
+  <source>Flags allow you to enable new functionality and behavior in authentik early.</source>
+</trans-unit>
+<trans-unit id="s00640d26256c4878">
+  <source>Cap Endpoint</source>
+</trans-unit>
+<trans-unit id="s40bf0fb50dad7090">
+  <source>https://cap.example.com/site-key/</source>
+</trans-unit>
+<trans-unit id="sc18a73a5831aca7b">
+  <source>For Cap, prefer the self-hosted widget asset, for example https://cap.example.com/assets/widget.js. If using a CDN, pin a reviewed release.</source>
+</trans-unit>
+<trans-unit id="s4e1e8db555003a9a">
+  <source>Cap's server-side verification endpoint, for example https://cap.example.com/site-key/siteverify.</source>
+</trans-unit>
+<trans-unit id="sdb752cddc543357d">
+  <source>Request Content Type</source>
+</trans-unit>
+<trans-unit id="s8afdb5c5a27d37eb">
+  <source>Content-Type used for server-side verification. Cap requires JSON; most other providers use form-encoded requests.</source>
+</trans-unit>
+<trans-unit id="captcha.request-content-type.form">
+  <source>Form encoded</source>
+</trans-unit>
+<trans-unit id="captcha.request-content-type.json">
+  <source>JSON</source>
+</trans-unit>
+<trans-unit id="captcha.providers.cap">
+  <source>Cap</source>
+</trans-unit>
+<trans-unit id="captcha.providers.cap.description">
+  <source>Cap is a self-hostable CAPTCHA server that uses proof-of-work challenges.</source>
+</trans-unit>
+<trans-unit id="captcha.providers.cap.setup-guide">
+  <source>Cap documentation</source>
+</trans-unit>
+<trans-unit id="captcha.cap-endpoint.description">
+  <source>The public site-key endpoint of your Cap server.</source>
+  <note from="lit-localize">Description for Cap endpoint field.</note>
+</trans-unit>
+<trans-unit id="captcha.provider-link.cap">
+  <source>Use the
+                                        <x id="0" equiv-text="${html `&lt;a&#10;                                            target=&quot;_blank&quot;&#10;                                            rel=&quot;noopener noreferrer&quot;&#10;                                            href=${keyURL}&#10;                                            &gt;${formatAPISource()}&lt;/a&#10;                                        &gt;`}"/>
+                                        to self-host Cap and configure the endpoint.</source>
+  <note from="lit-localize">Supplementary help text with link to Cap documentation.</note>
 </trans-unit>
 </body>
 </file>

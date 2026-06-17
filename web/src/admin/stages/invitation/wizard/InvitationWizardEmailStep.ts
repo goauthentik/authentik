@@ -3,7 +3,7 @@ import "#elements/forms/HorizontalFormElement";
 
 import type { InvitationWizardState } from "./types";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import {
     parseAPIResponseError,
     pluckErrorDetail,
@@ -55,9 +55,7 @@ export class InvitationWizardEmailStep extends WizardPage {
     activeCallback = async (): Promise<void> => {
         this.host.valid = this.toAddresses.trim().length > 0;
         try {
-            this.availableTemplates = await new StagesApi(
-                DEFAULT_CONFIG,
-            ).stagesEmailTemplatesList();
+            this.availableTemplates = await aki(StagesApi).stagesEmailTemplatesList();
         } catch {
             this.availableTemplates = [];
         }
@@ -97,7 +95,7 @@ export class InvitationWizardEmailStep extends WizardPage {
         const bcc = this.parseEmailAddresses(this.bccAddresses);
 
         try {
-            await new StagesApi(DEFAULT_CONFIG).stagesInvitationInvitationsSendEmailCreate({
+            await aki(StagesApi).stagesInvitationInvitationsSendEmailCreate({
                 inviteUuid: invitationPk,
                 invitationSendEmailRequest: {
                     emailAddresses: to,

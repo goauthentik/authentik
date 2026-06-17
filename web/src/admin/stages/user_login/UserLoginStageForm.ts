@@ -5,7 +5,7 @@ import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/utils/TimeDeltaHelp";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { BaseStageForm } from "#admin/stages/BaseStageForm";
 
@@ -18,19 +18,19 @@ import { customElement } from "lit/decorators.js";
 @customElement("ak-stage-user-login-form")
 export class UserLoginStageForm extends BaseStageForm<UserLoginStage> {
     loadInstance(pk: string): Promise<UserLoginStage> {
-        return new StagesApi(DEFAULT_CONFIG).stagesUserLoginRetrieve({
+        return aki(StagesApi).stagesUserLoginRetrieve({
             stageUuid: pk,
         });
     }
 
     async send(data: UserLoginStage): Promise<UserLoginStage> {
         if (this.instance) {
-            return new StagesApi(DEFAULT_CONFIG).stagesUserLoginUpdate({
+            return aki(StagesApi).stagesUserLoginUpdate({
                 stageUuid: this.instance.pk || "",
                 userLoginStageRequest: data,
             });
         }
-        return new StagesApi(DEFAULT_CONFIG).stagesUserLoginCreate({
+        return aki(StagesApi).stagesUserLoginCreate({
             userLoginStageRequest: data,
         });
     }

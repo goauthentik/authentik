@@ -5,7 +5,7 @@ import "#components/ak-event-info";
 import "#elements/Tabs";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { EventWithContext } from "#common/events";
 import { actionToLabel } from "#common/labels";
 
@@ -49,7 +49,7 @@ export class EventListPage extends WithLicenseSummary(TablePage<Event>) {
     ];
 
     async apiEndpoint(): Promise<PaginatedResponse<Event>> {
-        return new EventsApi(DEFAULT_CONFIG).eventsEventsList(await this.defaultEndpointConfig());
+        return aki(EventsApi).eventsEventsList(await this.defaultEndpointConfig());
     }
 
     protected columns: TableColumn[] = [
@@ -124,7 +124,7 @@ export class EventListPage extends WithLicenseSummary(TablePage<Event>) {
         return html`${super.renderToolbar()}
             <ak-reports-export-button
                 .createExport=${(params: EventsEventsExportCreateRequest) => {
-                    return new EventsApi(DEFAULT_CONFIG).eventsEventsExportCreate(params);
+                    return aki(EventsApi).eventsEventsExportCreate(params);
                 }}
                 .exportParams=${() => this.defaultEndpointConfig()}
             ></ak-reports-export-button>`;

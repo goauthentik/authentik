@@ -10,7 +10,7 @@ from authentik.flows.planner import FlowPlan
 from authentik.flows.tests import FlowTestCase
 from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.lib.generators import generate_id
-from authentik.stages.captcha.models import CaptchaStage
+from authentik.stages.captcha.models import CaptchaRequestContentType, CaptchaStage
 from authentik.stages.captcha.stage import (
     PLAN_CONTEXT_CAPTCHA_PRIVATE_KEY,
     PLAN_CONTEXT_CAPTCHA_SITE_KEY,
@@ -56,6 +56,39 @@ class TestCaptchaStage(FlowTestCase):
         )
         self.assertEqual(response.status_code, 200)
         self.assertStageRedirects(response, reverse("authentik_core:root-redirect"))
+        self.assertEqual(
+            mock.request_history[0].headers["Content-Type"],
+            CaptchaRequestContentType.FORM,
+        )
+        self.assertIn("response=PASSED", mock.request_history[0].text)
+
+    @Mocker()
+    def test_valid_json_content_type(self, mock: Mocker):
+        """Test valid captcha with JSON verification request"""
+        self.stage.request_content_type = CaptchaRequestContentType.JSON
+        self.stage.save()
+        mock.post(
+            "https://www.recaptcha.net/recaptcha/api/siteverify",
+            json={
+                "success": True,
+                "score": 0.5,
+            },
+        )
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
+        session = self.client.session
+        session[SESSION_KEY_PLAN] = plan
+        session.save()
+        response = self.client.post(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
+            {"token": "PASSED"},
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertStageRedirects(response, reverse("authentik_core:root-redirect"))
+        self.assertEqual(
+            mock.request_history[0].headers["Content-Type"],
+            CaptchaRequestContentType.JSON,
+        )
+        self.assertEqual(mock.request_history[0].json()["response"], "PASSED")
 
     @Mocker()
     def test_valid_override(self, mock: Mocker):

@@ -9,7 +9,7 @@ import "#elements/ak-mdx/index";
 import "#elements/buttons/ModalButton";
 import "#elements/buttons/SpinnerButton/index";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { EVENT_REFRESH } from "#common/constants";
 
 import type { Replacer } from "#elements/ak-mdx/index";
@@ -105,7 +105,7 @@ export class ProxyProviderViewPage extends AKElement {
     }
 
     fetchProvider(id: number) {
-        new ProvidersApi(DEFAULT_CONFIG)
+        aki(ProvidersApi)
             .providersProxyRetrieve({ id })
             .then((prov) => (this.provider = prov));
     }

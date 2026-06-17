@@ -6,7 +6,7 @@ import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { IconEditButton, ModalInvokerButton } from "#elements/dialogs";
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
@@ -40,7 +40,7 @@ export class EndpointListPage extends Table<Endpoint> {
     public provider: RACProvider | null = null;
 
     protected override async apiEndpoint(): Promise<PaginatedResponse<Endpoint>> {
-        return new RacApi(DEFAULT_CONFIG).racEndpointsList({
+        return aki(RacApi).racEndpointsList({
             ...(await this.defaultEndpointConfig()),
             provider: this.provider?.pk,
             superuserFullList: true,
@@ -65,12 +65,12 @@ export class EndpointListPage extends Table<Endpoint> {
                 ];
             }}
             .usedBy=${(item: Endpoint) => {
-                return new RacApi(DEFAULT_CONFIG).racEndpointsUsedByList({
+                return aki(RacApi).racEndpointsUsedByList({
                     pbmUuid: item.pk,
                 });
             }}
             .delete=${(item: Endpoint) => {
-                return new RacApi(DEFAULT_CONFIG).racEndpointsDestroy({
+                return aki(RacApi).racEndpointsDestroy({
                     pbmUuid: item.pk,
                 });
             }}

@@ -4,6 +4,8 @@ sidebar_label: Karakeep
 support_level: community
 ---
 
+import RedirectURI20265Note from "../../\_redirect-uri-2026-5-note.mdx";
+
 ## What is Karakeep?
 
 > A self-hostable bookmark-everything app (links, notes and images) with AI-based automatic tagging and full-text search.
@@ -23,6 +25,8 @@ This documentation lists only the settings that you need to change from their de
 
 ## authentik configuration
 
+<RedirectURI20265Note />
+
 To support the integration of Karakeep with authentik, you need to create an application/provider pair in authentik.
 
 ### Create an application and provider in authentik
@@ -34,7 +38,7 @@ To support the integration of Karakeep with authentik, you need to create an app
 - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
 - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
     - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
-    - Set a `Strict` redirect URI to `https://karakeep.company/api/auth/callback/custom`.
+    - Add a **Redirect URI** of type `Strict` `Authorization` as `https://karakeep.company/api/auth/callback/custom`.
     - Select any available signing key.
 - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 
