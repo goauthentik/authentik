@@ -88,7 +88,7 @@ class OutgoingSyncProvider(ScheduledModel, Model):
     def sync_lock(self) -> pglock.advisory:
         """Postgres lock for syncing to prevent multiple parallel syncs happening"""
         return pglock.advisory(
-            lock_id=f"goauthentik.io/{connection.schema_name}/providers/outgoing-sync/{str(self.pk)}",
+            lock_id=f"goauthentik.io/providers/outgoing-sync/{str(self.pk)}",
             timeout=0,
             side_effect=pglock.Return,
         )

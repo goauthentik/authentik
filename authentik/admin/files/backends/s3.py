@@ -48,7 +48,7 @@ class S3Backend(ManageableBackend):
     @property
     def base_path(self) -> str:
         """S3 key prefix: {usage}/{schema}/"""
-        return f"{self.usage.value}/{connection.schema_name}"
+        return f"{self.usage.value}/{CONFIG.get('postgresql.default_schema')}"
 
     @property
     def bucket_name(self) -> str:

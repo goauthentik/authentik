@@ -13,12 +13,12 @@ LOGGER = get_logger()
 GAUGE_OUTPOSTS_CONNECTED = Gauge(
     "authentik_outposts_connected",
     "Currently connected outposts",
-    ["tenant", "outpost", "uid", "expected"],
+    ["outpost", "uid", "expected"],
 )
 GAUGE_OUTPOSTS_LAST_UPDATE = Gauge(
     "authentik_outposts_last_update",
     "Last update from any outpost",
-    ["tenant", "outpost", "uid", "version"],
+    ["outpost", "uid", "version"],
 )
 MANAGED_OUTPOST = "goauthentik.io/outposts/embedded"
 MANAGED_OUTPOST_NAME = "authentik Embedded Outpost"

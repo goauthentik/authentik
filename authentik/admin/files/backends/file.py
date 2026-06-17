@@ -41,7 +41,7 @@ class FileBackend(ManageableBackend):
     @property
     def base_path(self) -> Path:
         """Path structure: {base_dir}/{usage}/{schema}"""
-        return self._base_dir / self.usage.value / connection.schema_name
+        return self._base_dir / self.usage.value / CONFIG.get("postgresql.default_schema")
 
     @property
     def manageable(self) -> bool:
@@ -84,7 +84,7 @@ class FileBackend(ManageableBackend):
 
         def _file_url(name: str, request: HttpRequest | None) -> str:
             prefix = CONFIG.get("web.path", "/")[:-1]
-            path = f"{self.usage.value}/{connection.schema_name}/{name}"
+            path = f"{self.usage.value}/{CONFIG.get('postgresql.default_schema')}/{name}"
             token = jwt.encode(
                 payload={
                     "path": path,

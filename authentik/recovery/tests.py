@@ -7,7 +7,6 @@ from django.core.management import call_command
 from django.test import TestCase
 from django.urls import reverse
 from django.utils.timezone import now
-from django_tenants.utils import get_public_schema_name
 
 from authentik.core.models import Token, TokenIntents, User
 
@@ -26,7 +25,6 @@ class TestRecovery(TestCase):
             "create_recovery_key",
             "5",
             self.user.username,
-            schema=get_public_schema_name(),
             stdout=out,
         )
         token = Token.objects.get(intent=TokenIntents.INTENT_RECOVERY, user=self.user)
@@ -38,7 +36,7 @@ class TestRecovery(TestCase):
         """Test creation of a new key (invalid)"""
         out = StringIO()
         self.assertEqual(len(Token.objects.filter(intent=TokenIntents.INTENT_RECOVERY)), 0)
-        call_command("create_recovery_key", "5", "foo", schema=get_public_schema_name(), stderr=out)
+        call_command("create_recovery_key", "5", "foo", stderr=out)
         self.assertIn("not found", out.getvalue())
 
     def test_recovery_view(self):
@@ -48,7 +46,6 @@ class TestRecovery(TestCase):
             "create_recovery_key",
             "10",
             self.user.username,
-            schema=get_public_schema_name(),
             stdout=out,
         )
         token = Token.objects.get(intent=TokenIntents.INTENT_RECOVERY, user=self.user)
@@ -63,15 +60,13 @@ class TestRecovery(TestCase):
     def test_recovery_admin_group_invalid(self):
         """Test creation of admin group"""
         out = StringIO()
-        call_command("create_admin_group", "1", schema=get_public_schema_name(), stderr=out)
+        call_command("create_admin_group", "1", stderr=out)
         self.assertIn("not found", out.getvalue())
 
     def test_recovery_admin_group(self):
         """Test creation of admin group"""
         out = StringIO()
-        call_command(
-            "create_admin_group", self.user.username, schema=get_public_schema_name(), stdout=out
-        )
+        call_command("create_admin_group", self.user.username, stdout=out)
         self.assertIn("successfully added to", out.getvalue())
         self.assertTrue(self.user.is_superuser)
 
@@ -82,7 +77,6 @@ class TestRecovery(TestCase):
         call_command(
             "create_recovery_key",
             self.user.username,
-            schema=get_public_schema_name(),
             stdout=out,
         )
         after_creation = now()
@@ -107,7 +101,6 @@ class TestRecovery(TestCase):
             "create_recovery_key",
             str(custom_duration),
             self.user.username,
-            schema=get_public_schema_name(),
             stdout=out,
         )
         after_creation = now()
@@ -132,7 +125,6 @@ class TestRecovery(TestCase):
             "create_recovery_key",
             str(short_duration),
             self.user.username,
-            schema=get_public_schema_name(),
             stdout=out,
         )
         after_creation = now()
@@ -161,7 +153,6 @@ class TestRecovery(TestCase):
                     "create_recovery_key",
                     str(duration),
                     self.user.username,
-                    schema=get_public_schema_name(),
                     stdout=out,
                 )
                 after_creation = now()

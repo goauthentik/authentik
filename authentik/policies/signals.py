@@ -19,9 +19,7 @@ LOGGER = get_logger()
 @receiver(monitoring_set)
 def monitoring_set_policies(sender, **kwargs):
     """set policy gauges"""
-    GAUGE_POLICIES_CACHED.labels(tenant=connection.schema_name).set(
-        len(cache.keys(f"{CACHE_PREFIX}*") or [])
-    )
+    GAUGE_POLICIES_CACHED.set(len(cache.keys(f"{CACHE_PREFIX}*") or []))
 
 
 @receiver(post_save, sender=Policy)
