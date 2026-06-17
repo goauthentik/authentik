@@ -96,9 +96,15 @@ step below is meant to be one focused, compilable, testable commit.
   expiry is checked on `load` (no mtime/background-cleanup reliance). Added `tempfile` dev-dep.
   5 tests. DEFERRED: writable-path validation + periodic cleanup sweep (Go's `NewStore`/
   `CleanupManager`) — not needed for correctness given load-time expiry.
-- [ ] **B6.** Extend `Application` to hold the `SessionStore` (enum), cookie signing key,
+- [x] **B6.** Extend `Application` to hold the `SessionStore` (enum), cookie signing key,
   `OidcEndpoint`, backchannel `reqwest` client; wire in `Application::new`. Also add the
   `host_browser` config field (needed by `OidcEndpoint`, see A3). Compiles, no behavior change.
+  Done: added `host_browser: Option<String>` to config schema (`AUTHENTIK_HOST_BROWSER`);
+  `Application` now holds `endpoint: OidcEndpoint` (built from outpost `config["authentik_host"]`
+  + `host_browser` + `is_embedded`) and `session_store: SessionStore` (filesystem, `temp_dir()`).
+  DEFERRED to B7: cookie signing key (needs axum-extra). DEFERRED to C10/C13: backchannel
+  `reqwest` client (needs Host-override) and `session_max_age` from `access_token_validity`
+  (avoids an f64→int `as` cast until it's actually used).
 - [ ] **B7.** Add `axum-extra` cookie support; signed session-ID cookie read/issue helper with
   per-provider domain/secure/samesite/path/maxage (mirror `getStore` options).
 

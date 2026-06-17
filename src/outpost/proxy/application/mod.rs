@@ -1,13 +1,17 @@
 use std::sync::Arc;
 
 use ak_client::models::{ProxyMode, ProxyOutpostConfig};
-use ak_common::tls::store::Certificate;
+use ak_common::{config, tls::store::Certificate};
 use axum::{Router, routing::any};
 use eyre::{Result, eyre};
 use tracing::instrument;
 use url::Url;
 
-use crate::outpost::proxy::ProxyOutpost;
+use crate::outpost::proxy::{
+    ProxyOutpost,
+    endpoint::OidcEndpoint,
+    session::{SessionStore, filesystem::FsSessionStore},
+};
 
 pub(super) mod handlers;
 
@@ -17,6 +21,8 @@ pub(super) struct Application {
     pub(super) provider: ProxyOutpostConfig,
     pub(super) router: Router<Arc<Self>>,
     pub(super) cert: Option<Arc<Certificate>>,
+    pub(super) endpoint: OidcEndpoint,
+    pub(super) session_store: SessionStore,
 }
 
 impl Application {
@@ -40,6 +46,29 @@ impl Application {
         } else {
             None
         };
+
+        let embedded = outpost.controller.is_embedded();
+        let authentik_host = outpost
+            .controller
+            .outpost
+            .load()
+            .config
+            .get("authentik_host")
+            .and_then(serde_json::Value::as_str)
+            .and_then(|raw| Url::parse(raw).ok());
+        let host_browser = config::get()
+            .host_browser
+            .as_deref()
+            .filter(|raw| !raw.is_empty())
+            .and_then(|raw| Url::parse(raw).ok());
+        let endpoint = OidcEndpoint::new(
+            &provider.oidc_configuration,
+            authentik_host.as_ref(),
+            host_browser.as_ref(),
+            embedded,
+        );
+
+        let session_store = SessionStore::Filesystem(FsSessionStore::new(std::env::temp_dir()));
 
         let router = Router::new()
             // TODO: /start
@@ -79,6 +108,8 @@ impl Application {
             provider,
             router,
             cert,
+            endpoint,
+            session_store,
         })
     }
 }

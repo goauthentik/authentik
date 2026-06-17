@@ -60,6 +60,7 @@ pub struct Config {
 
     // Outpost specific fields
     pub host: Option<String>,
+    pub host_browser: Option<String>,
     pub token: Option<String>,
     pub insecure: Option<bool>,
 }
