@@ -32,6 +32,8 @@ from structlog.stdlib import get_logger
 from authentik.admin.files.fields import FileField
 from authentik.admin.files.manager import get_file_manager
 from authentik.admin.files.usage import FileUsage
+from authentik.admin.models import DEFAULT_TOKEN_DURATION, DEFAULT_TOKEN_LENGTH
+from authentik.admin.utils import get_system_settings, get_unique_identifier
 from authentik.blueprints.models import ManagedModel
 from authentik.core.expression.exceptions import PropertyMappingExpressionException
 from authentik.core.types import UILoginButton, UserSettingSerializer
@@ -49,8 +51,6 @@ from authentik.lib.utils.reflection import class_to_path
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.policies.models import PolicyBindingModel
 from authentik.rbac.models import Role
-from authentik.tenants.models import DEFAULT_TOKEN_DURATION, DEFAULT_TOKEN_LENGTH
-from authentik.tenants.utils import get_current_tenant, get_unique_identifier
 
 LOGGER = get_logger()
 USERNAME_MAX_LENGTH = 150
@@ -90,23 +90,12 @@ def managed_role_name(user_or_group: models.Model):
 
 def default_token_duration() -> datetime:
     """Default duration a Token is valid"""
-    current_tenant = get_current_tenant()
-    token_duration = (
-        current_tenant.default_token_duration
-        if hasattr(current_tenant, "default_token_duration")
-        else DEFAULT_TOKEN_DURATION
-    )
-    return now() + timedelta_from_string(token_duration)
+    return now() + timedelta_from_string(get_system_settings().default_token_duration)
 
 
 def default_token_key() -> str:
     """Default token key"""
-    current_tenant = get_current_tenant()
-    token_length = (
-        current_tenant.default_token_length
-        if hasattr(current_tenant, "default_token_length")
-        else DEFAULT_TOKEN_LENGTH
-    )
+    token_length = get_system_settings().default_token_length
     # We use generate_id since the chars in the key should be easy
     # to use in Emails (for verification) and URLs (for recovery)
     return generate_id(token_length)

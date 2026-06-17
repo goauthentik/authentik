@@ -9,13 +9,13 @@ from psqlextra.query import ConflictAction
 from psqlextra.util import postgres_manager
 from structlog.stdlib import get_logger
 
+from authentik.admin.utils import get_system_settings
 from authentik.core.signals import login_failed
 from authentik.events.context_processors.asn import ASN_CONTEXT_PROCESSOR
 from authentik.events.context_processors.geoip import GEOIP_CONTEXT_PROCESSOR
 from authentik.policies.reputation.models import Reputation, reputation_expiry
 from authentik.root.middleware import ClientIPMiddleware
 from authentik.stages.identification.signals import identification_failed
-from authentik.tenants.utils import get_current_tenant
 
 LOGGER = get_logger()
 
@@ -23,8 +23,8 @@ LOGGER = get_logger()
 def update_score(request: HttpRequest, identifier: str, amount: int):
     """Update score for IP and User"""
     remote_ip = ClientIPMiddleware.get_client_ip(request)
-    tenant = getattr(request, "tenant", get_current_tenant())
-    amount = max(tenant.reputation_lower_limit, min(tenant.reputation_upper_limit, amount))
+    settings = get_system_settings()
+    amount = max(settings.reputation_lower_limit, min(settings.reputation_upper_limit, amount))
 
     with postgres_manager(Reputation) as manager:
         reputation = manager.on_conflict(
@@ -32,8 +32,8 @@ def update_score(request: HttpRequest, identifier: str, amount: int):
             ConflictAction.UPDATE,
             update_values=dict(
                 score=Greatest(
-                    tenant.reputation_lower_limit,
-                    Least(tenant.reputation_upper_limit, F("score") + amount),
+                    settings.reputation_lower_limit,
+                    Least(settings.reputation_upper_limit, F("score") + amount),
                 ),
             ),
         ).insert_and_get(

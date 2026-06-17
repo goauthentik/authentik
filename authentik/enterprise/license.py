@@ -17,13 +17,9 @@ from django.utils.timezone import now
 from jwt import PyJWTError, decode, get_unverified_header
 from jwt.algorithms import ECAlgorithm
 from rest_framework.exceptions import ValidationError
-from rest_framework.fields import (
-    ChoiceField,
-    DateTimeField,
-    IntegerField,
-    ListField,
-)
+from rest_framework.fields import ChoiceField, DateTimeField, IntegerField, ListField
 
+from authentik.admin.utils import get_unique_identifier
 from authentik.core.api.utils import PassiveSerializer
 from authentik.core.models import User, UserTypes
 from authentik.enterprise.models import (
@@ -35,7 +31,6 @@ from authentik.enterprise.models import (
     LicenseUsage,
     LicenseUsageStatus,
 )
-from authentik.tenants.utils import get_unique_identifier
 
 CACHE_KEY_ENTERPRISE_LICENSE = "goauthentik.io/enterprise/license"
 CACHE_EXPIRY_ENTERPRISE_LICENSE = 3 * 60 * 60  # 2 Hours

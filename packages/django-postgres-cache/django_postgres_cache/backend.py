@@ -5,20 +5,18 @@ from datetime import UTC, datetime
 from typing import Any
 
 from django.conf import settings
-from django.core.cache.backends.base import DEFAULT_TIMEOUT, BaseCache, get_key_func
+from django.core.cache.backends.base import DEFAULT_TIMEOUT, BaseCache
 from django.db import DatabaseError
 from django.utils.timezone import now
-from psqlextra.types import ConflictAction
-
 from django_postgres_cache.models import CacheEntry
+from psqlextra.types import ConflictAction
 
 
 class DatabaseCache(BaseCache):
     pickle_protocol = pickle.HIGHEST_PROTOCOL
 
-    def __init__(self, location: Any, params: dict[str, Any]) -> None:
+    def __init__(self, location: Any, params: dict[str, Any]):
         super().__init__(params)
-        self.reverse_key_func = get_key_func(params["REVERSE_KEY_FUNCTION"])
 
     def _make_value(self, value: Any) -> str:
         pickled = pickle.dumps(value, self.pickle_protocol)
@@ -197,4 +195,4 @@ class DatabaseCache(BaseCache):
             regex = self.make_key(keys_pattern.replace("*", ".*"), version=version)
             qs = CacheEntry.objects.filter(cache_key__regex=regex)
 
-        return [self.reverse_key_func(key) for key in qs.values_list("cache_key", flat=True)]
+        return list(qs.values_list("cache_key", flat=True))

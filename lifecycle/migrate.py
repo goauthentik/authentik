@@ -120,9 +120,7 @@ def run_migrations():
                 "available on your PYTHONPATH environment variable? Did you "
                 "forget to activate a virtual environment?"
             ) from exc
-        execute_from_command_line(["", "migrate_schemas"])
-        if CONFIG.get_bool("tenants.enabled", False):
-            execute_from_command_line(["", "migrate_schemas", "--schema", "template", "--tenant"])
+        execute_from_command_line(["", "migrate"])
         # Run django system checks for all databases
         check_args = ["", "check"]
         for label in django_db_config(CONFIG).keys():

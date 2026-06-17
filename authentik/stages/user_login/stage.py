@@ -11,6 +11,7 @@ from django.utils.translation import gettext as _
 from jwt import PyJWTError, decode, encode
 from rest_framework.fields import BooleanField, CharField
 
+from authentik.admin.utils import get_unique_identifier
 from authentik.core.models import AuthenticatedSession, Session, User
 from authentik.events.middleware import audit_ignore
 from authentik.flows.challenge import ChallengeResponse, WithUserInfoChallenge
@@ -23,12 +24,8 @@ from authentik.stages.password.stage import (
     PLAN_CONTEXT_AUTHENTICATION_BACKEND,
     PLAN_CONTEXT_METHOD_ARGS,
 )
-from authentik.stages.user_login.middleware import (
-    SESSION_KEY_BINDING_GEO,
-    SESSION_KEY_BINDING_NET,
-)
+from authentik.stages.user_login.middleware import SESSION_KEY_BINDING_GEO, SESSION_KEY_BINDING_NET
 from authentik.stages.user_login.models import UserLoginStage
-from authentik.tenants.utils import get_unique_identifier
 
 COOKIE_NAME_KNOWN_DEVICE = "authentik_device"
 
