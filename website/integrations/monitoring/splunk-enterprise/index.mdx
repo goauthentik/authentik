@@ -18,19 +18,21 @@ import Tabs from "@theme/Tabs";
 The following placeholders are used in this guide:
 
 - `authentik.company` is the FQDN of the authentik installation.
-- `splunk.company` is the FQDN of the Splunk Enterprise instance.
+- `splunk.company` is the browser-facing FQDN of the Splunk Enterprise instance. Include a port in this value only if users include that port when they open Splunk Enterprise.
 
 :::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
 :::warning Lockout
-Errors in the Splunk SAML configuration can lock users out of Splunk Enterprise. Keep a local Splunk administrator account available while configuring SAML. You can reach the local login page at `https://splunk.company:8000/en-US/account/login?loginType=Splunk`.
+Errors in the Splunk SAML configuration can lock users out of Splunk Enterprise. Keep a local Splunk administrator account available while configuring SAML. You can reach the local login page at `https://splunk.company/en-US/account/login?loginType=Splunk`.
 :::
 
 ## authentik configuration
 
 To support the integration of Splunk Enterprise with authentik, you need to create and import a self-signed certificate, create SAML property mappings, create an application/provider pair, and create application entitlements for the Splunk roles users should receive.
+
+To forward authentik events to Splunk Enterprise, see [Forward events to Splunk Enterprise](/log-forwarding/splunk-enterprise/).
 
 ### Create and import a self-signed certificate
 
@@ -112,9 +114,9 @@ Splunk expects the SAML assertion to include user role, email, and display name 
     - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
     - **Choose a Provider type**: select **SAML Provider** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
-        - Set the **ACS URL** to `https://splunk.company:8000/saml/acs`.
-        - Set the **Audience** to `https://splunk.company:8000`.
-        - Set the **SLS URL** to `https://splunk.company:8000/saml/logout`.
+        - Set the **ACS URL** to `https://splunk.company/saml/acs`.
+        - Set the **Audience** to `https://splunk.company`.
+        - Set the **SLS URL** to `https://splunk.company/saml/logout`.
         - Under **Advanced protocol settings**:
             - Set **Signing Certificate** to the self-signed certificate that you imported earlier.
             - Enable **Sign assertions** and **Sign responses**.
@@ -153,10 +155,13 @@ For this integration, each entitlement name must exactly match the Splunk SAML g
 4. Click **SAML Configuration**.
 5. Configure the SAML settings:
     - Upload the metadata file from authentik by dragging it into the drop zone, or paste the metadata contents into the **Metadata contents** text area.
-    - Set **Entity ID** to `https://splunk.company:8000`. This value must match the **Audience** value in authentik.
+    - Set **Entity ID** to `https://splunk.company`. This value must match the **Audience** value in authentik.
     - If Splunk does not populate the certificate from metadata, copy the contents of the authentik signing certificate, starting with `-----BEGIN CERTIFICATE-----`, into **IdP certificate chains**.
-    - Under **Advanced Settings**, set **FQDN - Host Name or IP address of the load balancer** to `https://splunk.company`.
+    - Under **Advanced Settings**, set **FQDN - Host Name or IP address of the load balancer** to `splunk.company`.
+    - Under **Advanced Settings**, set **Redirect port - load balancer port** to the browser-facing HTTPS port, usually `443`.
 6. Click **Save**.
+
+Use the same browser-facing Splunk Enterprise URL in authentik and Splunk Enterprise. Do not use an internal backend URL or IP address for the SAML **ACS URL**, **Audience**, **Entity ID**, or load balancer settings unless users open Splunk Enterprise through that same URL.
 
 ### Configure group mappings
 
@@ -178,7 +183,7 @@ Splunk can auto-map SAML role values to local Splunk roles with the same name. E
 
 ## Configuration verification
 
-To verify the integration of authentik with Splunk Enterprise, navigate to the authentik User interface and click the Splunk Enterprise application to initiate a Single Sign-On login. Upon successful login, you should be redirected to Splunk Enterprise and have the appropriate permissions set by your application entitlements.
+To verify SAML login, navigate to the authentik User interface and click the Splunk Enterprise application to initiate a Single Sign-On login. Upon successful login, you should be redirected to Splunk Enterprise and have the appropriate permissions set by your application entitlements.
 
 ## Resources
 
