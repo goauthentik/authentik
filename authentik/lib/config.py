@@ -19,6 +19,7 @@ from urllib.parse import urlparse
 
 import yaml
 from django.conf import ImproperlyConfigured
+from django.db.utils import DEFAULT_DB_ALIAS
 
 from authentik.lib.utils.dict import delete_path_in_dict, get_path_from_dict, set_path_in_dict
 
@@ -354,6 +355,16 @@ def postgresql_direct_db_enabled(config: ConfigLoader | None = None) -> bool:
             "conn_options",
         )
     )
+
+
+def advisory_lock_db_alias(config: ConfigLoader | None = None) -> str:
+    """Return the DB alias to use for session-scoped advisory locks.
+
+    Routes through the direct endpoint when configured so the locks survive
+    a transaction-mode pooler in front of ``postgresql.host`` (the lock and
+    its release must run on the same backend connection).
+    """
+    return DIRECT_DB_ALIAS if postgresql_direct_db_enabled(config) else DEFAULT_DB_ALIAS
 
 
 def postgresql_direct_connection_kwargs(config: ConfigLoader | None = None) -> dict:

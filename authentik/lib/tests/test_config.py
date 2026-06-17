@@ -16,6 +16,7 @@ from authentik.lib.config import (
     Attr,
     AttrEncoder,
     ConfigLoader,
+    advisory_lock_db_alias,
     django_db_config,
     postgresql_direct_connection_kwargs,
     postgresql_direct_db_enabled,
@@ -753,3 +754,17 @@ class TestConfig(TestCase):
         kwargs = postgresql_direct_connection_kwargs(config)
         self.assertEqual(kwargs["application_name"], "authentik-direct")
         self.assertEqual(kwargs["keepalives"], 1)
+
+    def test_advisory_lock_db_alias_defaults_to_default(self):
+        """Without postgresql.direct.*, advisory locks stay on the default alias."""
+        config = ConfigLoader()
+        self._set_main_postgres(config)
+        self.assertEqual(advisory_lock_db_alias(config), "default")
+
+    def test_advisory_lock_db_alias_uses_direct_when_enabled(self):
+        """With a direct endpoint configured, advisory locks route through it
+        so they survive a transaction-mode pooler in front of ``postgresql.host``."""
+        config = ConfigLoader()
+        self._set_main_postgres(config)
+        config.set("postgresql.direct.host", "direct-pg")
+        self.assertEqual(advisory_lock_db_alias(config), DIRECT_DB_ALIAS)

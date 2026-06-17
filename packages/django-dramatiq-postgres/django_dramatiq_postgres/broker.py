@@ -272,6 +272,7 @@ class _PostgresConsumer(Consumer):
             self.scheduler = import_string(Conf().scheduler_class)()
             self.scheduler.broker = self.broker
             self.scheduler.db_alias = self.db_alias
+            self.scheduler.direct_db_alias = self.direct_db_alias
             self.scheduler_interval = timedelta(seconds=Conf().scheduler_interval)
             self.scheduler_last_run = timezone.now() - self.scheduler_interval
 
