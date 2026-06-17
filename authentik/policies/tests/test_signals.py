@@ -6,6 +6,10 @@ only User saves must not trigger the broad ``cache.keys(...)`` invalidation.
 
 from unittest import TestCase, mock
 
+from authentik.core.models import User
+from authentik.policies import signals
+from authentik.policies.models import Policy
+
 
 class _FakeUser:
     pk = 1
@@ -22,7 +26,6 @@ class TestInvalidatePolicyCacheSkipsLastLoginOnly(TestCase):
     def _run_handler(self, sender, instance, update_fields):
         """Run the handler with mocked cache/PolicyBinding; return the
         cache mock for assertions."""
-        from authentik.policies import signals
 
         with (
             mock.patch.object(signals, "cache") as mock_cache,
@@ -40,8 +43,6 @@ class TestInvalidatePolicyCacheSkipsLastLoginOnly(TestCase):
     def test_user_save_with_only_last_login_does_not_invalidate(self):
         """User save with update_fields=["last_login"] is the per-login hot
         path. The handler must short-circuit without touching the cache."""
-        from authentik.core.models import User
-
         mock_cache = self._run_handler(
             sender=User, instance=_FakeUser(), update_fields=["last_login"]
         )
@@ -52,8 +53,6 @@ class TestInvalidatePolicyCacheSkipsLastLoginOnly(TestCase):
         """``update_fields`` may be a set (Django supports any iterable).
         The handler must treat ``{"last_login"}`` identically to
         ``["last_login"]``."""
-        from authentik.core.models import User
-
         mock_cache = self._run_handler(
             sender=User, instance=_FakeUser(), update_fields={"last_login"}
         )
@@ -63,8 +62,6 @@ class TestInvalidatePolicyCacheSkipsLastLoginOnly(TestCase):
         """A User save that updates ``email`` (or any non-last_login field)
         must still invalidate the cache — those updates can affect policy
         evaluation, group membership computation, etc."""
-        from authentik.core.models import User
-
         mock_cache = self._run_handler(sender=User, instance=_FakeUser(), update_fields=["email"])
         mock_cache.keys.assert_called()
         mock_cache.delete_many.assert_called()
@@ -72,8 +69,6 @@ class TestInvalidatePolicyCacheSkipsLastLoginOnly(TestCase):
     def test_user_save_with_last_login_plus_other_fields_invalidates(self):
         """If ``update_fields`` contains ``last_login`` plus anything else,
         we must invalidate — the other field could have policy implications."""
-        from authentik.core.models import User
-
         mock_cache = self._run_handler(
             sender=User,
             instance=_FakeUser(),
@@ -84,8 +79,6 @@ class TestInvalidatePolicyCacheSkipsLastLoginOnly(TestCase):
     def test_user_save_without_update_fields_invalidates(self):
         """``update_fields=None`` means a full save — anything could have
         changed, so we conservatively invalidate."""
-        from authentik.core.models import User
-
         mock_cache = self._run_handler(sender=User, instance=_FakeUser(), update_fields=None)
         mock_cache.keys.assert_called()
 
@@ -94,8 +87,6 @@ class TestInvalidatePolicyCacheSkipsLastLoginOnly(TestCase):
         Policy/PolicyBinding/PolicyBindingModel/Group saves must continue to
         invalidate as before — those changes affect access decisions for
         every user."""
-        from authentik.policies.models import Policy
-
         mock_cache = self._run_handler(
             sender=Policy,
             instance=_FakePolicy(),
