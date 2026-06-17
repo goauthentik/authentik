@@ -13,60 +13,17 @@
  * colors keep consistent intensity across themes so warnings read as urgent.
  */
 
-import { instance, theme } from "../shared.js";
+import { useColorDesignTokens, oklchTransform, type VPPair } from "./color-libs.js";
+import { instance, theme, ref } from "../shared.js";
 
-import { createVariableFunction } from "styleframe";
-import { createUseVariable } from "@styleframe/theme";
-import { formatHex, oklch as toOklch, toGamut } from "culori";
-
-/*
- * Restrict the OKLCH values to six decimal places; Javascript will give it to you accurate to 16
- * places, but OKLCH doesn't much care past six, and 16 is just unreadable.
- *
- * Includes in each OKLCH output line a comment containing the RGB value, to help IDEs show the
- * color accurately.
- */
-
-
-const toSrgb = toGamut("rgb", "oklch");
-const round = (v: number, precision = 6) => Number(v.toFixed(precision)).toString();
-const oklchTransform = (value: string) => {
-        const c = toOklch(value);
-        if (!c || c.l == null || c.c == null) {
-            return value;
-        }
-
-        const result = `oklch(${round(c.l)} ${round(c.c)} ${round(c.h ?? 0)} / ${round(c.alpha ?? 1)})`;
-        return `${result} /* ${formatHex(toSrgb(c))} */`;
-};
-const useColorDesignTokens = createUseVariable("color", { transform: oklchTransform });
-
-export const {
-    colorAccent,
-    colorPrimary,
-    colorPrimaryHover,
-    colorText,
-    colorTextMuted,
-    colorLink,
-    colorLinkHover,
-    colorLinkVisited,
-    colorSurface,
-    colorSurfaceRaised,
-    colorSurfaceMuted,
-    colorBorder,
-    colorBorderStrong,
-    colorInfo,
-    colorSuccess,
-    colorWarning,
-    colorDanger,
-} = useColorDesignTokens(instance, {
+export const colors = useColorDesignTokens(instance, {
     "accent": "#fd4b2d",
     "primary": "#0066cc",
     "primary-hover": "#004080",
     "text": "#151515",
     "text-muted": "#6a6e73",
-    "link": "@color.primary",
-    "link-hover": "@color.primary-hover",
+    "link": ref("primary"),
+    "link-hover": ref("primary-hover"),
     "link-visited": "#40199a",
     "surface": "#ffffff",
     "surface-raised": "#fafafa",
@@ -79,27 +36,26 @@ export const {
     "danger": "#c9190b",
 });
 
-type Variable = ReturnType<ReturnType<typeof createVariableFunction>>;
-type VPPair = [Variable, string];
 
 // Dark theme overrides. Surface values are pinned near PatternFly 4's
 // BackgroundColor--100 (#151515) and the legacy drawer surface (#18191a) — the
 // earlier oklab(0.23) value visibly brightened every PF-backed dark panel.
 theme("dark", (ctx) => {
-
+    const c = colors;
+    
     const darkColors: VPPair[] = [
-        [colorText, "#e0e0e0"],
-        [colorTextMuted, "#aaabac"],
-        [colorLink, "#20a9f8"],
-        [colorLinkHover, "#73bcf7"],
-        [colorLinkVisited, "#a18fff"],
-        [colorSurface, "#121212"],
-        [colorSurfaceMuted, "#090909"],
-        [colorSurfaceRaised, "#1c1c1c"],
-        [colorBorder, "#444548"],
-        [colorBorderStrong, "#57585a"],
-        [colorInfo, "#73bcf7"],
-        [colorSuccess, "#5ba352"]
+        [c.colorText, "#e0e0e0"],
+        [c.colorTextMuted, "#aaabac"],
+        [c.colorLink, "#20a9f8"],
+        [c.colorLinkHover, "#73bcf7"],
+        [c.colorLinkVisited, "#a18fff"],
+        [c.colorSurface, "#121212"],
+        [c.colorSurfaceMuted, "#090909"],
+        [c.colorSurfaceRaised, "#1c1c1c"],
+        [c.colorBorder, "#444548"],
+        [c.colorBorderStrong, "#57585a"],
+        [c.colorInfo, "#73bcf7"],
+        [c.colorSuccess, "#5ba352"]
     ];
 
     darkColors.forEach(([v, p]) => ctx.variable(v, oklchTransform(p)));
