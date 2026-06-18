@@ -1,4 +1,5 @@
 import "#elements/buttons/Dropdown";
+import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { globalAK } from "#common/global";
 import { formatUserDisplayName, formatUserSecondaryIdentifier, type UserLike } from "#common/users";
@@ -120,12 +121,20 @@ export class AccountSwitcher extends WithSession(AKElement) {
     ): SlottedTemplateResult {
         const displayName =
             formatUserDisplayName(currentUser, this.uiConfig) || currentUser.username;
+        const identity = html`<div part="identity">
+            ${this.renderAvatar(currentUser)}
+            <span part="toggle-label">${displayName}</span>
+        </div>`;
 
+        if (this.accounts.length <= 1) {
+            return html`<div part="container">${identity}</div>`;
+        }
+
+        const disabledMessage = msg("Account switching is disabled.", {
+            id: "account-switcher.disabled.label",
+        });
         return html`<div part="container">
-            <div part="identity">
-                ${this.renderAvatar(currentUser)}
-                <span part="toggle-label">${displayName}</span>
-            </div>
+            <pf-tooltip position="bottom" content=${disabledMessage}>${identity}</pf-tooltip>
         </div>`;
     }
 
