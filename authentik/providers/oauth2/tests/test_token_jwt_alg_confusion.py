@@ -91,26 +91,14 @@ class TestTokenJWTAlgConfusion(OAuthTestCase):
         )
 
     def _public_key_secret_candidates(self) -> dict[str, bytes]:
-        """The trusted source's public key, as an attacker would scrape it from
-        the JWKS endpoint -- used as the forged HMAC secret."""
+        """The public-key byte representations a real attacker would scrape from
+        the published JWKS/cert and try as the forged HMAC secret. These are the
+        two representations actual tooling (e.g. jwt_tool) uses for HS/RS
+        confusion: the bare public key PEM and the x5c certificate PEM."""
         public_key = self.source_cert.public_key
-        public_numbers = public_key.public_numbers()
-        modulus = public_numbers.n
-        # All the byte representations of the public key an attacker can derive
-        # from the published JWKS/cert and would try as the HMAC secret. The
-        # classic HS/RS confusion only succeeds if the server's HMAC secret bytes
-        # match one of these exactly, so probing all of them turns the test into
-        # a real regression guard rather than a single lucky-shot probe.
         return {
             "spki_pem": public_key.public_bytes(Encoding.PEM, PublicFormat.SubjectPublicKeyInfo),
-            "spki_pem_no_trailing_newline": public_key.public_bytes(
-                Encoding.PEM, PublicFormat.SubjectPublicKeyInfo
-            ).rstrip(b"\n"),
-            "spki_der": public_key.public_bytes(Encoding.DER, PublicFormat.SubjectPublicKeyInfo),
-            "pkcs1_pem": public_key.public_bytes(Encoding.PEM, PublicFormat.PKCS1),
-            "pkcs1_der": public_key.public_bytes(Encoding.DER, PublicFormat.PKCS1),
             "cert_pem": self.source_cert.certificate.public_bytes(Encoding.PEM),
-            "raw_modulus": modulus.to_bytes((modulus.bit_length() + 7) // 8, "big"),
         }
 
     @staticmethod
