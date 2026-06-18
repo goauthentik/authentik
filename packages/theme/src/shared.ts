@@ -14,17 +14,15 @@
  * - The theme selector matches the existing `html[data-theme="..."]` convention
  *   used across the authentik stylesheets.
  *
- * @import { Styleframe, StyleframeOptions } from "@styleframe/core";
  */
 
-import { styleframe } from "styleframe";
+import { styleframe, type StyleframeOptions } from "styleframe";
 
 /**
  * Authentik-specific styleframe configuration.
  *
- * @type {StyleframeOptions}
  */
-export const authentikStyleframeOptions = {
+export const authentikStyleframeOptions: StyleframeOptions = {
    indent: "    ",
     variables: {
         name: ({ name }: { name: string }) => `ak-${name.replace(/\./g, "-")}`

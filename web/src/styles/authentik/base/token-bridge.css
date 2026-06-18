@@ -1,0 +1,83 @@
+/*
+ * Runtime bridge from authentik's public semantic tokens to existing
+ * PatternFly 4 variables. This keeps old component CSS working while new
+ * custom CSS can target the shorter --ak-* surface.
+ */
+
+:root,
+:host {
+    /* Legacy authentik bridge */
+    --ak-accent: var(--ak-color-accent, #fd4b2d);
+
+    /* PatternFly 4 compatibility bridge */
+    --pf-global--primary-color--100: var(--ak-color-primary, var(--pf-global--primary-color--100));
+    --pf-global--primary-color--200: var(--ak-color-primary-hover, var(--pf-global--primary-color--200));
+    --pf-global--link--Color: var(--ak-color-link, var(--pf-global--link--Color));
+    --pf-global--link--Color--hover: var(--ak-color-link-hover, var(--ak-color-primary-hover, oklab(0.3763 -0.0324 -0.1182))
+    );
+    --pf-global--link--Color--visited: var(--ak-color-link-visited, var(--pf-global--link--Color--visited));
+    --pf-global--Color--100: var(--ak-color-text, var(--pf-global--Color--100));
+    --pf-global--Color--200: var(--ak-color-text-muted, var(--pf-global--Color--200));
+    --pf-global--BackgroundColor--100: var(--ak-color-surface, var(--pf-global--BackgroundColor--100));
+    --pf-global--BackgroundColor--150: var(--ak-color-surface-raised, var(--pf-global--BackgroundColor--150));
+    --pf-global--BackgroundColor--200: var(--ak-color-surface-muted, var(--pf-global--BackgroundColor--200));
+    --pf-global--BorderColor--100: var(--ak-color-border, var(--pf-global--BorderColor--100));
+    --pf-global--BorderColor--200: var(--ak-color-border-strong, var(--pf-global--BorderColor--200));
+    --pf-global--info-color--100: var(--ak-color-info, var(--pf-global--info-color--100));
+    --pf-global--success-color--100: var(--ak-color-success, var(--pf-global--success-color--100));
+    --pf-global--warning-color--100: var(--ak-color-warning, var(--pf-global--warning-color--100));
+    --pf-global--danger-color--100: var(--ak-color-danger, var(--pf-global--danger-color--100));
+    --pf-global--FontFamily--sans-serif: var(--ak-font-family-body, var(--pf-global--FontFamily--sans-serif));
+    --pf-global--FontFamily--heading--sans-serif: var(--ak-font-family-heading, var(--pf-global--FontFamily--heading--sans-serif));
+    --pf-global--FontFamily--monospace: var(--ak-font-family-code, var(--pf-global--FontFamily--monospace));
+    --pf-global--FontSize--xs: var(--ak-font-size-xs, var(--pf-global--FontSize--xs));
+    --pf-global--FontSize--sm: var(--ak-font-size-sm, var(--pf-global--FontSize--sm));
+    --pf-global--FontSize--md: var(--ak-font-size-md, var(--pf-global--FontSize--md));
+    --pf-global--FontSize--lg: var(--ak-font-size-lg, var(--pf-global--FontSize--lg));
+    --pf-global--FontSize--xl: var(--ak-font-size-xl, var(--pf-global--FontSize--xl));
+    --pf-global--FontSize--2xl: var(--ak-font-size-2xl, var(--pf-global--FontSize--2xl));
+    --pf-global--FontSize--3xl: var(--ak-font-size-3xl, var(--pf-global--FontSize--3xl));
+    --pf-global--FontSize--4xl: var(--ak-font-size-4xl, var(--pf-global--FontSize--4xl));
+    --pf-global--LineHeight--sm: var(--ak-line-height-sm, var(--pf-global--LineHeight--sm));
+    --pf-global--LineHeight--md: var(--ak-line-height-md, var(--pf-global--LineHeight--md));
+    --pf-global--spacer--xs: var(--ak-space-xs, var(--pf-global--spacer--xs));
+    --pf-global--spacer--sm: var(--ak-space-sm, var(--pf-global--spacer--sm));
+    --pf-global--spacer--md: var(--ak-space-md, var(--pf-global--spacer--md));
+    --pf-global--spacer--lg: var(--ak-space-lg, var(--pf-global--spacer--lg));
+    --pf-global--spacer--xl: var(--ak-space-xl, var(--pf-global--spacer--xl));
+    --pf-global--spacer--2xl: var(--ak-space-2xl, var(--pf-global--spacer--2xl));
+    --pf-global--spacer--3xl: var(--ak-space-3xl, var(--pf-global--spacer--3xl));
+    --pf-global--spacer--4xl: var(--ak-space-4xl, var(--pf-global--spacer--4xl));
+    --pf-global--BorderRadius--sm: var(--ak-radius-sm, var(--pf-global--BorderRadius--sm));
+    --pf-global--BorderRadius--lg: var(--ak-radius-pill, var(--pf-global--BorderRadius--lg));
+    --pf-global--BorderWidth--sm: var(--ak-border-width-sm, var(--pf-global--BorderWidth--sm));
+    --pf-global--BorderWidth--md: var(--ak-border-width-md, var(--pf-global--BorderWidth--md));
+    --pf-global--BorderWidth--lg: var(--ak-border-width-lg, var(--pf-global--BorderWidth--lg));
+    --pf-global--TransitionDuration: var(--ak-duration-normal, var(--pf-global--TransitionDuration));
+    --pf-global--TimingFunction: var(--ak-easing-standard, var(--pf-global--TimingFunction));
+
+    /* Shadows. Directional variants (top/right/bottom/left) intentionally
+     * stay on PatternFly's own theme-switched values — they're niche enough
+     * that exposing four extra public tokens per size isn't worth it. */
+    --pf-global--BoxShadow--sm: var(--ak-shadow-sm);
+    --pf-global--BoxShadow--md: var(--ak-shadow-md);
+    --pf-global--BoxShadow--lg: var(--ak-shadow-lg);
+    --pf-global--BoxShadow--xl: var(--ak-shadow-xl);
+    --pf-global--BoxShadow--inset: var(--ak-shadow-inset);
+
+    /* Font weights. semi-bold is deliberately NOT bridged because PatternFly's
+     * default --pf-global--FontWeight--semi-bold is 700 (same as bold) unless
+     * the Overpass font scale is active. Aliasing it to 600 here would silently
+     * shift every consumer of the PF var. */
+    --pf-global--FontWeight--light: var(--ak-font-weight-light, var(--pf-global--BoxShadow--sm));
+    --pf-global--FontWeight--normal: var(--ak-font-weight-normal, var(--pf-global--FontWeight--normal));
+    --pf-global--FontWeight--bold: var(--ak-font-weight-bold, var(--pf-global--FontWeight--bold));
+
+    /* Z-index scale. */
+    --pf-global--ZIndex--xs: var(--ak-z-index-xs, var(--pf-global--ZIndex--xs));
+    --pf-global--ZIndex--sm: var(--ak-z-index-sm, var(--pf-global--ZIndex--sm));
+    --pf-global--ZIndex--md: var(--ak-z-index-md, var(--pf-global--ZIndex--md));
+    --pf-global--ZIndex--lg: var(--ak-z-index-lg, var(--pf-global--ZIndex--lg));
+    --pf-global--ZIndex--xl: var(--ak-z-index-xl, var(--pf-global--ZIndex--xl));
+    --pf-global--ZIndex--2xl: var(--ak-z-index-2xl, var(--pf-global--ZIndex--2xl));
+}

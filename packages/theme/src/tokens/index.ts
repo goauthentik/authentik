@@ -7,9 +7,10 @@
  */
 
 export * from "./color.js";
-export * from "./utopia-typography.js";
-export * from "./utopia-spacing.js";
+export * from "./typography.js";
+export * from "./spacing.js";
 export * from "./shape.js";
+export * from "./fonts.js";
 export * from "./shadow.js";
 export * from "./motion.js";
 export * from "./z-index.js";

@@ -1,5 +1,3 @@
-import { instance, theme } from "../shared.js";
-
 import { createVariableFunction } from "styleframe";
 import { createUseVariable } from "@styleframe/theme";
 import { formatHex, oklch as toOklch, toGamut } from "culori";
@@ -25,7 +23,7 @@ export const oklchTransform = (value: string | Reference<string>) => {
     }
     
     const c = toOklch(value);
-    if (!c || c.l == null || c.c == null) {
+    if (!c || c.l === null || c.c === null) {
         return value;
     }
     

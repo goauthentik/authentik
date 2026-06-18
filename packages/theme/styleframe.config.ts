@@ -15,5 +15,4 @@ import "./src/tokens/index.js";
 
 import { instance } from "./src/shared.js";
 
-console.log(instance);
 export default instance;

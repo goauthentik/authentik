@@ -30,10 +30,8 @@ const utopiaSpacing = ["xs", "sm", "md", "lg", "xl", "2xl", "3xl", "4xl"].reduce
     }
     return {
         ...acc,
-        [s]: size.clamp
-    }
-},
-    {}
-);
+        [s]: size.clamp,
+    };
+}, {});
 
 export const space = useSpacing(instance, utopiaSpacing);

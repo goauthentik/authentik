@@ -4,27 +4,43 @@
  * @import { Config } from "eslint/config";
  */
 
-import { createESLintPackageConfig } from "@goauthentik/eslint-config";
-
-import { defineConfig } from "eslint/config";
+import js from '@eslint/js';
+import { defineConfig } from 'eslint/config';
+import tseslint from 'typescript-eslint';
 
 // @ts-check
 
 /**
  * @type {Config[]}
  */
-const eslintConfig = defineConfig(
-    createESLintPackageConfig({
-        parserOptions: {
-            tsconfigRootDir: import.meta.dirname,
-        },
-    }),
-    {
-        rules: {
-            "no-console": "off",
-        },
-        files: ["shared/**"],
+const eslintConfig = defineConfig({
+    extends: [js.configs.recommended, tseslint.configs.recommended],
+    ignores: ["./dist/**"],
+    rules: {
+        "@typescript-eslint/ban-ts-comment": [
+            "error",
+            {
+                "ts-expect-error": "allow-with-description",
+                "ts-ignore": true,
+                "ts-nocheck": "allow-with-description",
+                "ts-check": false,
+                "minimumDescriptionLength": 5,
+            },
+        ],
+        "no-use-before-define": "off",
+        "@typescript-eslint/no-use-before-define": "error",
+        "no-invalid-this": "off",
+        "no-unused-vars": "off",
+        "@typescript-eslint/no-namespace": "off",
+        "@typescript-eslint/no-unused-vars": [
+            "warn",
+            {
+                argsIgnorePattern: "^_",
+                varsIgnorePattern: "^_",
+                caughtErrorsIgnorePattern: "^_",
+            },
+        ],
     },
-);
+});
 
 export default eslintConfig;

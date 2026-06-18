@@ -16,8 +16,8 @@ import { createUseVariable } from "@styleframe/theme";
 const useFontFamily = createUseVariable("font-family");
 
 export const fontFamily = useFontFamily(instance, {
-    "text": '"RedHatText", helvetica, arial, sans-serif',
-    "heading": '"RedHatDisplay", helvetica, arial, sans-serif',
-    "monospace": '"RedHatMono", "Liberation Mono", consolas, "SFMono-Regular", menlo, monaco, "Courier New", monospace'
+    "text": '"RedHatTextVF", "RedHatText", helvetica, arial, sans-serif',
+    "heading": '"RedHatDisplayVF", "RedHatDisplay", helvetica, arial, sans-serif',
+    "monospace": '"RedHatMonoVF", "RedHatMono", "Liberation Mono", consolas, "SFMono-Regular", menlo, monaco, "Courier New", monospace'
 });
 

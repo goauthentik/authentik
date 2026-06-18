@@ -5,7 +5,7 @@
  * inset shadow uses a near-solid color in dark mode rather than a faded rgba.
  */
 
-import { theme, variable, instance } from "../shared.js";
+import { theme, instance } from "../shared.js";
 import { createUseVariable } from "@styleframe/theme";
 import type { VPPair } from "./color-libs.js";
 const useShadowTokens = createUseVariable("shadow");

@@ -4,7 +4,6 @@
  * Re-exports everything the browser entry exports, plus filesystem-touching
  * helpers that wrap styleframe's `transpile()` for use from build scripts.
  *
- * @import { OutputFile } from "@styleframe/transpiler";
  */
 
 

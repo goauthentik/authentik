@@ -9,18 +9,19 @@
  */
 
 import { instance, variable } from "../shared.js";
+
 import { useFontSizeDesignTokens } from "@styleframe/theme";
 import { calculateTypeScale } from "utopia-core";
 
 const utopiaSizes = calculateTypeScale({
-  minWidth: 320,
-  maxWidth: 1440,
-  minFontSize: 14,
-  maxFontSize: 18,
-  minTypeScale: 1.125,
-  maxTypeScale: 1.25,
-  positiveSteps: 5,
-  negativeSteps: 2
+    minWidth: 320,
+    maxWidth: 1440,
+    minFontSize: 14,
+    maxFontSize: 18,
+    minTypeScale: 1.125,
+    maxTypeScale: 1.25,
+    positiveSteps: 5,
+    negativeSteps: 2,
 });
 
 if (utopiaSizes === undefined) {
@@ -34,11 +35,9 @@ const utopiaScaling = ["xs", "sm", "md", "lg", "xl", "2xl", "3xl", "4xl"].reduce
     if (!size) {
         throw new Error("Scale elements out of range for utopia font sizing.");
     }
-        
-        return { ...acc, [s]: size.clamp };
-},
-    {}
-);
+
+    return { ...acc, [s]: size.clamp };
+}, {});
 
 export const fontSize = useFontSizeDesignTokens(instance, utopiaScaling);
 
