@@ -74,6 +74,11 @@ export abstract class SearchSelectBase<T>
     public abstract selected?: (element: T, elements: T[]) => boolean;
 
     /**
+     * Create an object for a custom value when creatable is enabled.
+     */
+    public abstract createObject?: (value: string) => T;
+
+    /**
      * A function passed to this object (or using the default below) that groups objects in the
      * collection under search into categories.
      */
@@ -198,8 +203,7 @@ export abstract class SearchSelectBase<T>
                 const selectedValue = this.selectedObject ? this.value(this.selectedObject) : null;
 
                 if (selectedValue !== currentValue) {
-                    // Input has changed but hasn't been committed yet so create synthetic object
-                    this.selectedObject = { name: currentValue } as T;
+                    this.selectedObject = this.createObject?.(currentValue) ?? null;
                 }
             }
         }
@@ -279,13 +283,11 @@ export abstract class SearchSelectBase<T>
 
         this.query = value;
         this.updateData()?.then(() => {
-            // If creatable, check if selectedObject's value matches the typed value exactly
+            // If creatable, check if selectedObject's value matches the typed value exactly.
             if (this.creatable) {
                 const selectedValue = this.selectedObject ? this.value(this.selectedObject) : null;
                 if (selectedValue !== value) {
-                    // No exact match so create a synthetic object with the raw value
-                    // "synthetic" isn't an official term or anything, it's just called like that here
-                    this.selectedObject = { name: value } as T;
+                    this.selectedObject = this.createObject?.(value) ?? null;
                 }
             }
             this.dispatchChangeEvent(this.selectedObject);
@@ -319,8 +321,7 @@ export abstract class SearchSelectBase<T>
 
         if (!selected) {
             if (this.creatable) {
-                // Create a synthetic object with the user's custom value
-                this.selectedObject = { name: value } as T;
+                this.selectedObject = this.createObject?.(value) ?? null;
                 this.dispatchChangeEvent(this.selectedObject);
                 return;
             }

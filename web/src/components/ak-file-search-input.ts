@@ -25,8 +25,20 @@ interface FileItem {
     usage: string;
 }
 
+const inFlightFetches = new Map<string, Promise<FileItem[]>>();
+
 const renderElement = (item: FileItem) => item.name;
 const renderValue = (item?: FileItem | null) => item?.name;
+
+function createCustomFileItem(name: string, usage: UsageEnum): FileItem {
+    return {
+        name,
+        url: name,
+        mime_type: "",
+        size: 0,
+        usage,
+    };
+}
 
 /**
  * File Search Input Component
@@ -69,57 +81,56 @@ export class AKFileSearchInput extends AKElement {
         return this.value === item.name;
     };
 
-    public override firstUpdated() {
-        // If we have a value but it's not in the fetched results (like fa:// or custom URL),
-        // the search-select won't show it. We need to add it to the initial fetch.
-        if (this.value) {
-            // Search-select will call #fetch and then try to select using #selected
-            // And then if the value isn't found in results, creatable mode will handle it
+    async #fetchFiles(query?: string): Promise<FileItem[]> {
+        const cacheKey = `${this.usage}:${query ?? ""}`;
+        let fetchPromise = inFlightFetches.get(cacheKey);
+        if (!fetchPromise) {
+            const api = aki(AdminApi);
+            fetchPromise = api
+                .adminFileList({
+                    usage: this.usage as UsageEnum,
+                    ...(query ? { search: query } : {}),
+                })
+                .then((response) => {
+                    // Cast necessary: API returns File objects but we only use name, url, mime_type, size, and usage properties
+                    const fileResponse = response as unknown as FileItem[];
+
+                    if (!fileResponse || !Array.isArray(fileResponse)) {
+                        console.error("Invalid response format from files API", fileResponse);
+                        return [];
+                    }
+
+                    return fileResponse;
+                })
+                .catch(async (error) => {
+                    const parsedError = await parseAPIResponseError(error);
+                    console.error(msg("Failed to fetch files"), pluckErrorDetail(parsedError));
+                    return [];
+                })
+                .finally(() => {
+                    inFlightFetches.delete(cacheKey);
+                });
+            inFlightFetches.set(cacheKey, fetchPromise);
         }
+
+        return fetchPromise;
     }
 
     async #fetch(query?: string): Promise<FileItem[]> {
-        const api = aki(AdminApi);
-        return api
-            .adminFileList({
-                usage: this.usage as UsageEnum,
-                ...(query ? { search: query } : {}),
-            })
-            .then((response) => {
-                // Cast necessary: API returns File objects but we only use name, url, mime_type, size, and usage properties
-                const fileResponse = response as unknown as FileItem[];
+        return this.#fetchFiles(query).then((fileResponse) => {
+            let results = fileResponse;
 
-                if (!fileResponse || !Array.isArray(fileResponse)) {
-                    console.error("Invalid response format from files API", fileResponse);
-                    return [];
-                }
+            if (!query && this.value && !results.find((item) => item.name === this.value)) {
+                results = [createCustomFileItem(this.value, this.usage), ...results];
+            }
 
-                let results = fileResponse;
-
-                // Only add synthetic item on initial load (no query), not during search.
-                // This prevents stale values from appearing in search results.
-                // The synthetic item is needed for fa:// URLs or custom URLs that aren't in the API.
-                if (!query && this.value && !results.find((item) => item.name === this.value)) {
-                    results = [
-                        {
-                            name: this.value,
-                            url: this.value,
-                            mime_type: "",
-                            size: 0,
-                            usage: this.usage,
-                        },
-                        ...results,
-                    ];
-                }
-
-                return results;
-            })
-            .catch(async (error) => {
-                const parsedError = await parseAPIResponseError(error);
-                console.error(msg("Failed to fetch files"), pluckErrorDetail(parsedError));
-                return [];
-            });
+            return results;
+        });
     }
+
+    #createObject = (value: string): FileItem => {
+        return createCustomFileItem(value, this.usage);
+    };
 
     render() {
         return html` <ak-form-element-horizontal name=${ifDefined(this.name ?? undefined)}>
@@ -140,6 +151,7 @@ export class AKFileSearchInput extends AKElement {
                 .renderElement=${renderElement}
                 .value=${renderValue}
                 .selected=${this.#selected}
+                .createObject=${this.#createObject}
                 ?blankable=${this.blankable}
                 creatable
             >

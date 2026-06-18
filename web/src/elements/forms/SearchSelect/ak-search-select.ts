@@ -18,6 +18,7 @@ export interface ISearchSelect<T> extends ISearchSelectBase<T> {
     renderDescription?: (element: T) => SlottedTemplateResult;
     value: (element: T | null) => string | number;
     selected?: (element: T, elements: T[]) => boolean;
+    createObject?: (value: string) => T;
     groupBy: (items: T[]) => [string, T[]][];
 }
 
@@ -70,6 +71,9 @@ export class SearchSelect<
 
     @property({ attribute: false })
     public selected?: (element: T, elements: T[]) => boolean;
+
+    @property({ attribute: false })
+    public createObject?: (value: string) => T;
 
     @property({ attribute: false })
     public groupBy: (items: T[]) => [string, T[]][] = (items: T[]): [string, T[]][] => {
