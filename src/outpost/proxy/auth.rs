@@ -2,10 +2,14 @@
 
 use axum::http::HeaderMap;
 use axum::http::header::AUTHORIZATION;
+use eyre::{Result, eyre};
 use tracing::warn;
 
 use crate::outpost::proxy::application::Application;
-use crate::outpost::proxy::{backchannel, claims::Claims};
+use crate::outpost::proxy::{backchannel, claims::Claims, token};
+
+/// Username that signals the password is a bearer token to introspect.
+const JWT_USERNAME: &str = "goauthentik.io/token";
 
 /// Extract the bearer token from an `Authorization` header value.
 pub(crate) fn bearer_token(value: &str) -> Option<&str> {
@@ -51,6 +55,64 @@ impl Application {
         .inspect_err(|err| warn!(?err, "bearer introspection failed"))
         .ok()
         .flatten()
+    }
+
+    /// Verify a signed token (HS256 by client secret, else RS256 via JWKS).
+    pub(super) async fn verify_token(&self, token: &str) -> Result<Claims> {
+        let client_id = self
+            .provider
+            .client_id
+            .as_deref()
+            .ok_or_else(|| eyre!("provider has no client id"))?;
+        let supports_hs256 = self
+            .provider
+            .oidc_configuration
+            .id_token_signing_alg_values_supported
+            .iter()
+            .any(|alg| alg == "HS256");
+        if supports_hs256 {
+            let client_secret = self
+                .provider
+                .client_secret
+                .as_deref()
+                .ok_or_else(|| eyre!("provider has no client secret"))?;
+            token::verify_hs256(token, client_secret, &self.endpoint.issuer, client_id)
+        } else {
+            let jwks = backchannel::fetch_jwks(&self.client, &self.endpoint.jwks_uri).await?;
+            token::verify_rs256(token, &jwks, &self.endpoint.issuer, client_id)
+        }
+    }
+
+    /// Resolve claims from HTTP basic auth: a `goauthentik.io/token` username
+    /// means the password is a bearer token; otherwise exchange the credentials
+    /// via the `client_credentials` grant and verify the returned id token.
+    pub(super) async fn attempt_basic_auth(&self, username: &str, password: &str) -> Option<Claims> {
+        if username == JWT_USERNAME
+            && let Some(claims) = self.attempt_bearer_auth(password).await
+        {
+            return Some(claims);
+        }
+
+        let client_id = self.provider.client_id.as_deref()?;
+        let scope = self.provider.scopes_to_request.join(" ");
+        let id_token = backchannel::client_credentials_token(
+            &self.client,
+            &self.endpoint.token_url,
+            self.token_host.as_deref(),
+            client_id,
+            username,
+            password,
+            &scope,
+        )
+        .await
+        .inspect_err(|err| warn!(?err, "client credentials request failed"))
+        .ok()
+        .flatten()?;
+
+        self.verify_token(&id_token)
+            .await
+            .inspect_err(|err| warn!(?err, "failed to verify client credentials token"))
+            .ok()
     }
 }
 

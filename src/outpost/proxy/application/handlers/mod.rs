@@ -19,7 +19,6 @@ use crate::outpost::proxy::{
     backchannel, oauth,
     oauth_state::{self, OAuthState},
     session::SessionData,
-    token,
 };
 
 pub(super) mod forward;
@@ -245,18 +244,7 @@ pub(super) async fn handle_auth_callback(
     )
     .await?;
 
-    let claims = if app
-        .provider
-        .oidc_configuration
-        .id_token_signing_alg_values_supported
-        .iter()
-        .any(|alg| alg == "HS256")
-    {
-        token::verify_hs256(&access_token, client_secret, &app.endpoint.issuer, client_id)?
-    } else {
-        let jwks = backchannel::fetch_jwks(&app.client, &app.endpoint.jwks_uri).await?;
-        token::verify_rs256(&access_token, &jwks, &app.endpoint.issuer, client_id)?
-    };
+    let claims = app.verify_token(&access_token).await?;
 
     let max_age = max_age_until(claims.exp);
     let data = SessionData {

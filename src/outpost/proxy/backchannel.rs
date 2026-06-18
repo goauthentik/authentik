@@ -10,7 +10,10 @@ use crate::outpost::proxy::claims::Claims;
 
 #[derive(Deserialize)]
 struct TokenResponse {
+    #[serde(default)]
     access_token: String,
+    #[serde(default)]
+    id_token: String,
 }
 
 #[derive(Deserialize)]
@@ -52,6 +55,33 @@ pub(crate) async fn exchange_code(
 pub(crate) async fn fetch_jwks(client: &ClientWithMiddleware, jwks_uri: &str) -> Result<JwkSet> {
     let response = client.get(jwks_uri).send().await?.error_for_status()?;
     Ok(response.json::<JwkSet>().await?)
+}
+
+/// Request a token via the `client_credentials` grant, returning the id token.
+pub(crate) async fn client_credentials_token(
+    client: &ClientWithMiddleware,
+    token_url: &str,
+    token_host: Option<&str>,
+    client_id: &str,
+    username: &str,
+    password: &str,
+    scope: &str,
+) -> Result<Option<String>> {
+    let mut request = client.post(token_url).form(&[
+        ("grant_type", "client_credentials"),
+        ("client_id", client_id),
+        ("username", username),
+        ("password", password),
+        ("scope", scope),
+    ]);
+    if let Some(host) = token_host {
+        request = request.header(HOST, host);
+    }
+    let response = request.send().await?;
+    if !response.status().is_success() {
+        return Ok(None);
+    }
+    Ok(Some(response.json::<TokenResponse>().await?.id_token))
 }
 
 /// Introspect a bearer token, returning its claims when the token is active.

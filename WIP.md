@@ -157,8 +157,13 @@ step below is meant to be one focused, compilable, testable commit.
   `src/outpost/proxy/auth.rs`: `bearer_token` (case-insensitive, tested) + `Application` methods
   `authorization_header`/`cached_claims`/`cache_claims`/`attempt_bearer_auth`. Helpers are unused
   until the `check_auth` orchestrator (D13). 1 new test.
-- [ ] **D12.** `attempt_basic_auth` (`goauthentik.io/token` username → bearer path; else
+- [x] **D12.** `attempt_basic_auth` (`goauthentik.io/token` username → bearer path; else
   client-credentials token POST + verify) (`auth_basic.go`).
+  Done: `backchannel::client_credentials_token` (returns the **id_token**). `Application`
+  methods `verify_token` (HS256-by-secret / RS256-via-JWKS selection — factored out and C10's
+  callback refactored to use it) and `attempt_basic_auth` (`JWT_USERNAME` → bearer, else
+  client-credentials + verify id token). Username/password parsing stays for `check_auth` (D13),
+  so no base64 needed yet. Verify primitives already tested in `token.rs`; no new test (pure I/O).
 - [ ] **D13.** Unified `check_auth`: session → cache → bearer → basic → `Option<Claims>`.
 
 ### Phase E — header injection + allowlist (needs A1)
