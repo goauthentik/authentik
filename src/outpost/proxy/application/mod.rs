@@ -91,6 +91,14 @@ impl Application {
             .or(authentik_host.as_ref())
             .map(|url| url.authority().to_owned());
 
+        // Embedded outposts persist sessions in PostgreSQL; others use the filesystem.
+        #[cfg(feature = "core")]
+        let session_store = if embedded {
+            SessionStore::Postgres(crate::outpost::proxy::session::postgres::PgSessionStore)
+        } else {
+            SessionStore::Filesystem(FsSessionStore::new(std::env::temp_dir()))
+        };
+        #[cfg(not(feature = "core"))]
         let session_store = SessionStore::Filesystem(FsSessionStore::new(std::env::temp_dir()));
 
         let unauthenticated_regex = allowlist::compile_skip_regex(provider.skip_path_regex.as_deref());

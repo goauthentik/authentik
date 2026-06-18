@@ -8,6 +8,8 @@ use serde::{Deserialize, Serialize};
 use crate::outpost::proxy::claims::Claims;
 
 pub(crate) mod filesystem;
+#[cfg(feature = "core")]
+pub(crate) mod postgres;
 
 use filesystem::FsSessionStore;
 
@@ -23,12 +25,16 @@ pub(crate) struct SessionData {
 #[derive(Debug)]
 pub(crate) enum SessionStore {
     Filesystem(FsSessionStore),
+    #[cfg(feature = "core")]
+    Postgres(postgres::PgSessionStore),
 }
 
 impl SessionStore {
     pub(crate) async fn load(&self, sid: &str) -> Result<Option<SessionData>> {
         match self {
             Self::Filesystem(store) => store.load(sid).await,
+            #[cfg(feature = "core")]
+            Self::Postgres(store) => store.load(sid).await,
         }
     }
 
@@ -40,12 +46,16 @@ impl SessionStore {
     ) -> Result<()> {
         match self {
             Self::Filesystem(store) => store.save(sid, data, max_age).await,
+            #[cfg(feature = "core")]
+            Self::Postgres(store) => store.save(sid, data, max_age).await,
         }
     }
 
     pub(crate) async fn delete(&self, sid: &str) -> Result<()> {
         match self {
             Self::Filesystem(store) => store.delete(sid).await,
+            #[cfg(feature = "core")]
+            Self::Postgres(store) => store.delete(sid).await,
         }
     }
 
@@ -56,6 +66,8 @@ impl SessionStore {
     ) -> Result<()> {
         match self {
             Self::Filesystem(store) => store.logout(filter).await,
+            #[cfg(feature = "core")]
+            Self::Postgres(store) => store.logout(filter).await,
         }
     }
 }

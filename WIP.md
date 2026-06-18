@@ -239,8 +239,17 @@ step below is meant to be one focused, compilable, testable commit.
   Done in `src/outpost/proxy/mod.rs`: on a `SessionEnd` WS event, iterate every app and call
   `session_store.logout(|c| c.sid == event.session_id)`. Made `EventSessionEnd.session_id`
   `pub(crate)` (resolves its long-standing dead-code warning).
-- [ ] **G22.** `PgSessionStore` (sqlx) + feature-flag decision (`dep:sqlx` under `proxy` vs new
+- [x] **G22.** `PgSessionStore` (sqlx) + feature-flag decision (`dep:sqlx` under `proxy` vs new
   `proxy-postgres`) + `PgPool` wiring + backend selection in config schema. DB-gated test.
+  Done in `src/outpost/proxy/session/postgres.rs`. DECISION: gated behind `#[cfg(feature =
+  "core")]` (NOT a new feature) and reuses `ak_common::db::get()` — because Go's `SessionBackend`
+  is purely embedded-based (embedded→postgres, else filesystem), and only the embedded build has
+  `core`/the DB pool. No config field needed. `Application::new` selects Postgres when embedded
+  (under `core`), else filesystem. Runtime sqlx queries (no compile-time `DATABASE_URL`); upsert
+  on `session_key`, expiry-on-load, `logout` by claims filter; `user_id` from `claims.sub`.
+  DEFERRED: live-DB integration test (needs CI postgres + `db::init`; logic mirrors the tested fs
+  store). NOTE: standalone `--features proxy` (no core) has pre-existing unrelated build errors
+  (`Mode::Worker`, etc.) — orthogonal to this step; `PgSessionStore` is correctly excluded there.
 - [ ] **G23.** Error-page rendering (templated 401/500) replacing bare status codes (`error.go`).
 
 ## Ordering risks / notes to carry forward
