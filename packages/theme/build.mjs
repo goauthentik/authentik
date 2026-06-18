@@ -1,4 +1,4 @@
-import { build } from "./src/node.js";
+import { build } from "./dist/node.js";
 
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";

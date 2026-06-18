@@ -9,11 +9,11 @@
         "directory": "packages/theme"
     },
     "scripts": {
-        "build": "npm run build:types && npm run build:assets && npm run build:dtcg && npm run build:format",
-        "build:assets": "node scripts/build.mjs",
-        "build:dtcg": "styleframe dtcg export --config styleframe.config.mjs --output dist/tokens.dtcg.json --collection authentik",
-        "build:format": "node scripts/format-dist.mjs",
-        "build:types": "tsc -p .",
+        "build": "npm run build:src && npm run build:assets && npm run build:dtcg && npm run build:format",
+        "build:src": "tsgo -p .",
+        "build:assets": "node ./build.mjs",
+        "build:dtcg": "styleframe dtcg export --config styleframe.config.ts --output dist/tokens.dtcg.json --collection authentik",
+        "build:format": "prettier --write ./dist",
         "lint": "eslint --fix .",
         "lint-check": "eslint --max-warnings 0 .",
         "prepare": "npm run build",
