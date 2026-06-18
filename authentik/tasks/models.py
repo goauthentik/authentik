@@ -159,7 +159,7 @@ class Task(InternallyManagedMixin, SerializerModel, TaskBase):
         self.log(self.uid, TaskStatus.ERROR, message, **attributes)
 
 
-class TaskDependency(models.Model):
+class TaskDependency(InternallyManagedMixin, models.Model):
     pk = models.CompositePrimaryKey("task", "dependency")
     task = models.ForeignKey(Task, on_delete=models.CASCADE, related_name="+")
     dependency = models.ForeignKey(Task, on_delete=models.CASCADE, related_name="+")
