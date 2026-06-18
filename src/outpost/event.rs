@@ -53,7 +53,7 @@ struct Event {
 
 #[derive(Debug, Deserialize)]
 pub(crate) struct EventSessionEnd {
-    session_id: String,
+    pub(crate) session_id: String,
 }
 
 fn build_ws_url(mut url: Url, outpost_pk: &str, instance_uuid: &str, attempt: u32) -> Result<Url> {

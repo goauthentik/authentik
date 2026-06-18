@@ -234,8 +234,11 @@ step below is meant to be one focused, compilable, testable commit.
   Done in `handlers/mod.rs`: reads session claims (no claims → `redirect_to_start`), logs out all
   the user's sessions (`sub` filter via `session_store.logout`), clears the session cookie (new
   `SessionCookie::removal`), and 302s to `end_session_endpoint?id_token_hint=<raw_token>`.
-- [ ] **G21.** `ProxyOutpost::end_session`: per-app store `logout(sid == event.session_id)`
+- [x] **G21.** `ProxyOutpost::end_session`: per-app store `logout(sid == event.session_id)`
   (`session.go`).
+  Done in `src/outpost/proxy/mod.rs`: on a `SessionEnd` WS event, iterate every app and call
+  `session_store.logout(|c| c.sid == event.session_id)`. Made `EventSessionEnd.session_id`
+  `pub(crate)` (resolves its long-standing dead-code warning).
 - [ ] **G22.** `PgSessionStore` (sqlx) + feature-flag decision (`dep:sqlx` under `proxy` vs new
   `proxy-postgres`) + `PgPool` wiring + backend selection in config schema. DB-gated test.
 - [ ] **G23.** Error-page rendering (templated 401/500) replacing bare status codes (`error.go`).

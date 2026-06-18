@@ -157,9 +157,15 @@ impl Outpost for ProxyOutpost {
         Ok(())
     }
 
-    async fn end_session(&self, _event: super::event::EventSessionEnd) -> Result<()> {
-        // todo!()
-        warn!(?_event, "removing session");
+    async fn end_session(&self, event: super::event::EventSessionEnd) -> Result<()> {
+        let session_id = event.session_id;
+        debug!(session_id, "ending sessions");
+        let matches_session = move |claims: &claims::Claims| claims.sid == session_id;
+        for app in self.apps.load_full().values() {
+            if let Err(err) = app.session_store.logout(&matches_session).await {
+                warn!(?err, provider = app.provider.name, "failed to end session");
+            }
+        }
         Ok(())
     }
 }
