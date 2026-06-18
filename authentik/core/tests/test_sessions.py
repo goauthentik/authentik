@@ -10,7 +10,12 @@ from django.utils.crypto import get_random_string
 from authentik.core.models import AuthenticatedSession
 from authentik.core.sessions import SessionStore
 from authentik.core.tests.utils import create_test_session, create_test_user
-from authentik.root.middleware import BROWSER_KEY_LENGTH, COOKIE_NAME_ACCOUNTS, SessionMiddleware
+from authentik.root.middleware import (
+    BROWSER_KEY_LENGTH,
+    COOKIE_NAME_ACCOUNTS_LEGACY,
+    COOKIE_NAME_BROWSER,
+    SessionMiddleware,
+)
 
 
 class TestSessionSuperseding(TestCase):
@@ -76,24 +81,37 @@ class TestBrowserCookie(TestCase):
 
         response = SessionMiddleware(view)(RequestFactory().get("/"))
 
-        cookie = response.cookies.get(COOKIE_NAME_ACCOUNTS)
+        cookie = response.cookies.get(COOKIE_NAME_BROWSER)
         self.assertIsNotNone(cookie)
-        self.assertEqual(len(cookie.value), BROWSER_KEY_LENGTH)
+        self.assertIsNotNone(SessionMiddleware.parse_browser_key(cookie.value))
+        self.assertFalse(cookie["httponly"])
 
     def test_existing_cookie_reused(self):
         """Test an existing accounts cookie is parsed onto the request"""
         browser_key = get_random_string(BROWSER_KEY_LENGTH)
         request = RequestFactory().get("/")
-        request.COOKIES[COOKIE_NAME_ACCOUNTS] = browser_key
+        request.COOKIES[COOKIE_NAME_BROWSER] = SessionMiddleware.encode_browser_key(browser_key)
 
         SessionMiddleware(lambda request: HttpResponse()).process_request(request)
 
         self.assertEqual(request.browser_key, browser_key)
         self.assertEqual(SessionMiddleware.ensure_browser_key(request), browser_key)
 
+    def test_legacy_cookie_reused(self):
+        """Test an existing raw accounts cookie is parsed onto the request"""
+        browser_key = get_random_string(BROWSER_KEY_LENGTH)
+        request = RequestFactory().get("/")
+        request.COOKIES[COOKIE_NAME_ACCOUNTS_LEGACY] = browser_key
+
+        SessionMiddleware(lambda request: HttpResponse()).process_request(request)
+
+        self.assertEqual(request.browser_key, browser_key)
+
     def test_parse_browser_key(self):
         """Test browser cookie values are validated"""
         valid = get_random_string(BROWSER_KEY_LENGTH)
+        token = SessionMiddleware.encode_browser_key(valid)
+        self.assertEqual(SessionMiddleware.parse_browser_key(token), valid)
         self.assertEqual(SessionMiddleware.parse_browser_key(valid), valid)
         self.assertIsNone(SessionMiddleware.parse_browser_key(None))
         self.assertIsNone(SessionMiddleware.parse_browser_key(""))

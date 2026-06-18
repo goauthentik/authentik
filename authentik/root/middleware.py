@@ -32,7 +32,8 @@ SIGNING_HASH = sha512(settings.SECRET_KEY.encode()).hexdigest()
 
 # Opaque browser identifier used to group logins for account switching.
 # Unlike the session cookie it survives logins and logouts.
-COOKIE_NAME_ACCOUNTS = "authentik_accounts"
+COOKIE_NAME_BROWSER = "authentik_browser"
+COOKIE_NAME_ACCOUNTS_LEGACY = "authentik_accounts"
 BROWSER_KEY_LENGTH = 32
 BROWSER_COOKIE_AGE = int(timedelta(days=365).total_seconds())
 
@@ -87,11 +88,34 @@ class SessionMiddleware(UpstreamSessionMiddleware):
         return value
 
     @staticmethod
-    def parse_browser_key(raw: str | None) -> str | None:
-        """Validate the browser cookie value; it is opaque and only ever compared for equality"""
+    def validate_browser_key(raw: str | None) -> str | None:
+        """Validate an opaque browser key."""
         if raw and len(raw) == BROWSER_KEY_LENGTH and raw.isalnum():
             return raw
         return None
+
+    @staticmethod
+    def encode_browser_key(browser_key: str) -> str:
+        """Encode the opaque browser key as a signed token."""
+        return encode(
+            {
+                "iss": "authentik",
+                "sub": "browser",
+                "browser": browser_key,
+            },
+            SIGNING_HASH,
+        )
+
+    @staticmethod
+    def parse_browser_key(raw: str | None) -> str | None:
+        """Decode and validate the signed browser cookie."""
+        if not raw:
+            return None
+        try:
+            payload = decode(raw, SIGNING_HASH, algorithms=["HS256"])
+            return SessionMiddleware.validate_browser_key(payload.get("browser"))
+        except PyJWTError:
+            return SessionMiddleware.validate_browser_key(raw)
 
     @staticmethod
     def ensure_browser_key(request: HttpRequest) -> str | None:
@@ -105,9 +129,10 @@ class SessionMiddleware(UpstreamSessionMiddleware):
     def process_request(self, request: HttpRequest):
         raw_session = request.COOKIES.get(settings.SESSION_COOKIE_NAME)
         session_key = SessionMiddleware.decode_session_key(raw_session)
-        request.browser_key = SessionMiddleware.parse_browser_key(
-            request.COOKIES.get(COOKIE_NAME_ACCOUNTS)
+        raw_browser = request.COOKIES.get(COOKIE_NAME_BROWSER) or request.COOKIES.get(
+            COOKIE_NAME_ACCOUNTS_LEGACY
         )
+        request.browser_key = SessionMiddleware.parse_browser_key(raw_browser)
         request.session = self.SessionStore(
             session_key,
             last_ip=ClientIPMiddleware.get_client_ip(request),
@@ -176,13 +201,18 @@ class SessionMiddleware(UpstreamSessionMiddleware):
                     # It is intentionally not deleted with the session cookie.
                     if getattr(request, "browser_key", None):
                         response.set_cookie(
-                            COOKIE_NAME_ACCOUNTS,
-                            request.browser_key,
+                            COOKIE_NAME_BROWSER,
+                            SessionMiddleware.encode_browser_key(request.browser_key),
                             max_age=BROWSER_COOKIE_AGE,
                             domain=settings.SESSION_COOKIE_DOMAIN,
                             path=settings.SESSION_COOKIE_PATH,
                             secure=secure,
-                            httponly=True,
+                            samesite=same_site,
+                        )
+                        response.delete_cookie(
+                            COOKIE_NAME_ACCOUNTS_LEGACY,
+                            domain=settings.SESSION_COOKIE_DOMAIN,
+                            path=settings.SESSION_COOKIE_PATH,
                             samesite=same_site,
                         )
         return response

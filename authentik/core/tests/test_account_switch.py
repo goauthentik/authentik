@@ -25,7 +25,7 @@ from authentik.flows.planner import (
 )
 from authentik.flows.tests import FlowTestCase
 from authentik.flows.views.executor import SESSION_KEY_PLAN
-from authentik.root.middleware import COOKIE_NAME_ACCOUNTS
+from authentik.root.middleware import COOKIE_NAME_BROWSER, SessionMiddleware
 from authentik.stages.user_login.models import UserLoginStage
 
 
@@ -62,12 +62,20 @@ class TestAccountSwitch(FlowTestCase):
         self.assertEqual(response.status_code, 200)
         return self.client.session.session_key
 
+    def browser_key(self) -> str:
+        """Return the decoded browser key from the test client's cookie."""
+        browser_key = SessionMiddleware.parse_browser_key(
+            self.client.cookies[COOKIE_NAME_BROWSER].value
+        )
+        assert browser_key is not None
+        return browser_key
+
     def test_no_brand_flow_falls_back(self):
         """Test switching falls back to the default authentication flow"""
         self.brand.flow_account_switch = None
         self.brand.save()
         self.login(self.user)
-        browser_key = self.client.cookies[COOKIE_NAME_ACCOUNTS].value
+        browser_key = self.browser_key()
         create_test_session(self.other_user, browser_key=browser_key)
 
         response = self.client.get(self.switch_url(self.other_user))
@@ -93,7 +101,7 @@ class TestAccountSwitch(FlowTestCase):
     def test_switch_with_live_session(self):
         """Test a live login of this browser is passed to the flow as context"""
         self.login(self.user)
-        browser_key = self.client.cookies[COOKIE_NAME_ACCOUNTS].value
+        browser_key = self.browser_key()
         create_test_session(self.other_user, browser_key=browser_key)
 
         response = self.client.get(self.switch_url(self.other_user))
@@ -146,7 +154,7 @@ class TestAccountSwitch(FlowTestCase):
         self.brand.flow_account_switch = flow
         self.brand.save()
         self.login(self.user)
-        browser_key = self.client.cookies[COOKIE_NAME_ACCOUNTS].value
+        browser_key = self.browser_key()
         create_test_session(self.other_user, browser_key=browser_key)
 
         response = self.client.get(self.switch_url(self.other_user))
@@ -163,7 +171,7 @@ class TestAccountSwitch(FlowTestCase):
         """Test the full switch: the new login takes over, the old session survives
         as a switch target but can't be replayed"""
         first_session_key = self.login(self.user)
-        browser_key = self.client.cookies[COOKIE_NAME_ACCOUNTS].value
+        browser_key = self.browser_key()
         create_test_session(self.other_user, browser_key=browser_key)
 
         response = self.client.get(self.switch_url(self.other_user), follow=True)
