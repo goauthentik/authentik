@@ -121,6 +121,7 @@ Available compatibility modes are:
 - **AWS**: Disables PATCH operations for AWS Identity Center compatibility
 - **Slack**: Enables filtering support for Slack's SCIM implementation
 - **Salesforce**: Uses the non-standard `/ServiceProviderConfigs` endpoint
+- **GitLab**: Skips the `ServiceProviderConfig` endpoint because GitLab's SCIM implementation does not expose it
 - **Webex**: Uses the vendor-specific behavior required for Webex SCIM
 - **vCenter**: Skips the `ServiceProviderConfig` endpoint, which is not implemented in VMware vCenter
 
