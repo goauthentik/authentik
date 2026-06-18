@@ -164,7 +164,13 @@ step below is meant to be one focused, compilable, testable commit.
   callback refactored to use it) and `attempt_basic_auth` (`JWT_USERNAME` → bearer, else
   client-credentials + verify id token). Username/password parsing stays for `check_auth` (D13),
   so no base64 needed yet. Verify primitives already tested in `token.rs`; no new test (pure I/O).
-- [ ] **D13.** Unified `check_auth`: session → cache → bearer → basic → `Option<Claims>`.
+- [x] **D13.** Unified `check_auth`: session → cache → bearer → basic → `Option<Claims>`.
+  Done in `auth.rs`: `Application::check_auth(headers)` tries `claims_from_session` (cookie sid →
+  store), then the header-keyed cache, then `attempt_bearer_auth`, then `attempt_basic_auth`
+  (caching the result of the latter two). `basic_credentials` decodes the Basic header (added
+  `base64` dep; tested). Unused until Phase F. SIMPLIFICATION vs Go: bearer/basic do **not**
+  write a session/set a cookie (the header cache handles reuse). DEFERRED to F19: stripping the
+  `Authorization` header before forwarding upstream. 1 new test.
 
 ### Phase E — header injection + allowlist (needs A1)
 

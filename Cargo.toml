@@ -23,6 +23,7 @@ arc-swap = "= 1.9.1"
 argh = "= 0.1.19"
 axum-server = { version = "= 0.8.0", features = ["tls-rustls-no-provider"] }
 aws-lc-rs = { version = "= 1.17.0", features = ["fips"] }
+base64 = "= 0.22.1"
 axum = { version = "= 0.8.9", features = ["http2", "macros", "ws"] }
 axum-extra = { version = "= 0.12.6", default-features = false, features = [
   "cookie-signed",
@@ -284,6 +285,7 @@ proxy = [
   "dep:reqwest",
   "dep:reqwest-middleware",
   "dep:moka",
+  "dep:base64",
 ]
 
 [build-dependencies]
@@ -296,6 +298,7 @@ ak-common.workspace = true
 arc-swap.workspace = true
 argh.workspace = true
 aws-lc-rs = { workspace = true, optional = true }
+base64 = { workspace = true, optional = true }
 axum-extra = { workspace = true, optional = true }
 axum-server.workspace = true
 axum.workspace = true

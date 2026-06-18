@@ -2,6 +2,8 @@
 
 use axum::http::HeaderMap;
 use axum::http::header::AUTHORIZATION;
+use base64::Engine as _;
+use base64::engine::general_purpose::STANDARD as BASE64;
 use eyre::{Result, eyre};
 use tracing::warn;
 
@@ -19,6 +21,18 @@ pub(crate) fn bearer_token(value: &str) -> Option<&str> {
     } else {
         None
     }
+}
+
+/// Decode the username and password from a basic `Authorization` header value.
+pub(crate) fn basic_credentials(value: &str) -> Option<(String, String)> {
+    const PREFIX: &str = "Basic ";
+    if !value.get(..PREFIX.len())?.eq_ignore_ascii_case(PREFIX) {
+        return None;
+    }
+    let decoded = BASE64.decode(value.get(PREFIX.len()..)?).ok()?;
+    let decoded = String::from_utf8(decoded).ok()?;
+    let (username, password) = decoded.split_once(':')?;
+    Some((username.to_owned(), password.to_owned()))
 }
 
 impl Application {
@@ -114,11 +128,48 @@ impl Application {
             .inspect_err(|err| warn!(?err, "failed to verify client credentials token"))
             .ok()
     }
+
+    /// Load claims for the request's session, if any.
+    async fn claims_from_session(&self, headers: &HeaderMap) -> Option<Claims> {
+        let jar = self.session_cookie.jar(headers);
+        let sid = self.session_cookie.read(&jar)?;
+        self.session_store.load(&sid).await.ok()??.claims
+    }
+
+    /// Resolve the request's claims: session, then cached header auth, then a
+    /// bearer token, then basic auth. Returns `None` when unauthenticated.
+    pub(super) async fn check_auth(&self, headers: &HeaderMap) -> Option<Claims> {
+        if let Some(claims) = self.claims_from_session(headers).await {
+            return Some(claims);
+        }
+
+        let auth_header = Self::authorization_header(headers)?;
+
+        if let Some(claims) = self.cached_claims(auth_header).await {
+            return Some(claims);
+        }
+
+        if let Some(token) = bearer_token(auth_header)
+            && let Some(claims) = self.attempt_bearer_auth(token).await
+        {
+            self.cache_claims(auth_header, &claims).await;
+            return Some(claims);
+        }
+
+        if let Some((username, password)) = basic_credentials(auth_header)
+            && let Some(claims) = self.attempt_basic_auth(&username, &password).await
+        {
+            self.cache_claims(auth_header, &claims).await;
+            return Some(claims);
+        }
+
+        None
+    }
 }
 
 #[cfg(test)]
 mod tests {
-    use super::bearer_token;
+    use super::{basic_credentials, bearer_token};
 
     #[test]
     fn extracts_bearer_token() {
@@ -128,5 +179,27 @@ mod tests {
         assert_eq!(bearer_token("Basic abc123"), None);
         assert_eq!(bearer_token("Bearer"), None);
         assert_eq!(bearer_token(""), None);
+    }
+
+    #[test]
+    fn decodes_basic_credentials() {
+        use base64::Engine as _;
+        use base64::engine::general_purpose::STANDARD;
+
+        let header = format!("Basic {}", STANDARD.encode("user:pass"));
+        assert_eq!(
+            basic_credentials(&header),
+            Some(("user".to_owned(), "pass".to_owned()))
+        );
+
+        // The password may contain a colon; only the first one separates fields.
+        let header = format!("Basic {}", STANDARD.encode("user:pa:ss"));
+        assert_eq!(
+            basic_credentials(&header),
+            Some(("user".to_owned(), "pa:ss".to_owned()))
+        );
+
+        assert_eq!(basic_credentials("Bearer something"), None);
+        assert_eq!(basic_credentials("Basic not valid base64!!"), None);
     }
 }
