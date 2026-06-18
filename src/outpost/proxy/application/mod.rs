@@ -5,6 +5,7 @@ use ak_client::models::{ProxyMode, ProxyOutpostConfig};
 use ak_common::{config, tls::store::Certificate};
 use axum::{Router, routing::any};
 use eyre::{Result, eyre};
+use reqwest_middleware::ClientWithMiddleware;
 use tracing::instrument;
 use url::Url;
 
@@ -26,6 +27,10 @@ pub(super) struct Application {
     pub(super) endpoint: OidcEndpoint,
     pub(super) session_store: SessionStore,
     pub(super) session_cookie: SessionCookie,
+    /// Backchannel HTTP client (shares the API client's connection pool).
+    pub(super) client: ClientWithMiddleware,
+    /// `Host` header for backchannel token requests (browser host), if rewriting applies.
+    pub(super) token_host: Option<String>,
 }
 
 impl Application {
@@ -70,6 +75,10 @@ impl Application {
             host_browser.as_ref(),
             embedded,
         );
+        let token_host = host_browser
+            .as_ref()
+            .or(authentik_host.as_ref())
+            .map(|url| url.authority().to_owned());
 
         let session_store = SessionStore::Filesystem(FsSessionStore::new(std::env::temp_dir()));
 
@@ -127,6 +136,8 @@ impl Application {
             endpoint,
             session_store,
             session_cookie,
+            client: outpost.controller.api_config.client.clone(),
+            token_host,
         })
     }
 

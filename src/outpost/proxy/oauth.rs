@@ -26,9 +26,9 @@ pub(crate) fn redirect_param(uri: &Uri) -> Option<String> {
 /// Validate the `rd` redirect parameter against the provider configuration,
 /// returning the allowed redirect URL or `None` if it must be rejected.
 ///
-/// For proxy/forward_single the redirect must resolve to the external host (a
-/// bare path is resolved against it). For forward_domain the redirect host must
-/// end with the cookie domain.
+/// For proxy/`forward_single` the redirect must resolve to the external host (a
+/// bare path is resolved against it). For `forward_domain` the redirect host
+/// must end with the cookie domain.
 pub(crate) fn check_redirect_param(
     rd: &str,
     mode: ProxyMode,

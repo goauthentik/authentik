@@ -233,6 +233,8 @@ dependencies = [
  "pyo3",
  "pyo3-build-config",
  "rand 0.10.1",
+ "reqwest",
+ "reqwest-middleware",
  "rustls",
  "serde",
  "serde_json",

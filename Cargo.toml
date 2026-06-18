@@ -280,6 +280,8 @@ proxy = [
   "dep:jsonwebtoken",
   "dep:axum-extra",
   "dep:aws-lc-rs",
+  "dep:reqwest",
+  "dep:reqwest-middleware",
 ]
 
 [build-dependencies]
@@ -306,6 +308,8 @@ metrics.workspace = true
 nix.workspace = true
 pyo3 = { workspace = true, optional = true }
 rand.workspace = true
+reqwest = { workspace = true, optional = true }
+reqwest-middleware = { workspace = true, optional = true }
 rustls.workspace = true
 serde.workspace = true
 serde_json.workspace = true

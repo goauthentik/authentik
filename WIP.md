@@ -135,8 +135,17 @@ step below is meant to be one focused, compilable, testable commit.
   `SessionRedirect` is never read in Go (redirect comes from the state JWT). The 401 uses a plain
   body; templated error page deferred to G25. `redirect_to_start` is unused until Phase F. 6 new
   tests.
-- [ ] **C10.** `handle_auth_callback`: validate state JWT + session-ID match, code exchange, verify
+- [x] **C10.** `handle_auth_callback`: validate state JWT + session-ID match, code exchange, verify
   ID token, extract claims, session maxage from `exp`, save, redirect to stored `rd`.
+  Done. New `src/outpost/proxy/backchannel.rs` (`exchange_code`, `fetch_jwks`) using the API's
+  `ClientWithMiddleware` (added `reqwest` + `reqwest-middleware` direct deps). `Application` now
+  holds `client` + `token_host` (browser host for the embedded `Host`-override on token requests).
+  `handle_auth_callback`: 400 on missing cookie / invalid state / sid-mismatch / blank code; else
+  exchanges the code, verifies the access token (HS256 by client secret if `HS256` in
+  `id_token_signing_alg_values_supported`, else RS256 via JWKS) against `endpoint.issuer` +
+  `client_id`, saves `SessionData{claims}` (maxage = `exp - now`), and 302s to `state.redirect`
+  (fallback external host) with the session cookie. No unit test (pure I/O); covered by Phase C
+  e2e milestone — its building blocks are already tested.
 
 ### Phase D — non-session auth paths + caching (needs A4, C)
 

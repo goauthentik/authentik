@@ -1,4 +1,5 @@
 use std::str::FromStr;
+use std::time::{Duration, SystemTime, UNIX_EPOCH};
 use std::{fmt, sync::Arc};
 
 use ak_axum::error::Result;
@@ -11,12 +12,14 @@ use axum::{
 use eyre::eyre;
 use serde::{Deserialize, Deserializer};
 use tower::util::ServiceExt as _;
-use tracing::{debug, instrument};
+use tracing::{debug, instrument, warn};
 
 use crate::outpost::proxy::{
     application::Application,
-    oauth,
+    backchannel, oauth,
     oauth_state::{self, OAuthState},
+    session::SessionData,
+    token,
 };
 
 pub(super) mod forward;
@@ -164,12 +167,111 @@ pub(super) fn redirect_to_start(app: &Application, headers: &HeaderMap, uri: &Ur
     Ok((StatusCode::FOUND, [(header::LOCATION, start)]).into_response())
 }
 
+#[derive(Default, Deserialize)]
+struct CallbackParams {
+    code: Option<String>,
+    state: Option<String>,
+}
+
+/// Remaining session lifetime derived from a token's `exp` (unix seconds).
+fn max_age_until(exp: i64) -> Duration {
+    let now = SystemTime::now()
+        .duration_since(UNIX_EPOCH)
+        .map_or(0, |elapsed| elapsed.as_secs());
+    let remaining = exp
+        .saturating_sub(i64::try_from(now).unwrap_or(i64::MAX))
+        .max(0);
+    Duration::from_secs(u64::try_from(remaining).unwrap_or(0))
+}
+
 #[instrument(skip_all)]
 pub(super) async fn handle_auth_callback(
-    State(_app): State<Arc<Application>>,
-    _request: Request,
+    State(app): State<Arc<Application>>,
+    request: Request,
 ) -> Result<Response> {
-    todo!()
+    let client_id = app
+        .provider
+        .client_id
+        .as_deref()
+        .ok_or_else(|| eyre!("provider has no client id"))?;
+    let client_secret = app
+        .provider
+        .client_secret
+        .as_deref()
+        .ok_or_else(|| eyre!("provider has no client secret"))?;
+    let cookie_secret = app
+        .provider
+        .cookie_secret
+        .as_deref()
+        .ok_or_else(|| eyre!("provider has no cookie secret"))?;
+
+    let jar = app.session_cookie.jar(request.headers());
+    let Some(sid) = app.session_cookie.read(&jar) else {
+        warn!("auth callback without a valid session cookie");
+        return Ok(StatusCode::BAD_REQUEST.into_response());
+    };
+
+    let params = Query::<CallbackParams>::try_from_uri(request.uri())
+        .map(|query| query.0)
+        .unwrap_or_default();
+
+    // Validate the state JWT (signature + issuer) and that it belongs to this session.
+    let Some(state_token) = params.state else {
+        return Ok(StatusCode::BAD_REQUEST.into_response());
+    };
+    let Ok(state) = OAuthState::decode(&state_token, cookie_secret, &oauth_state::issuer(client_id))
+    else {
+        warn!("invalid oauth state");
+        return Ok(StatusCode::BAD_REQUEST.into_response());
+    };
+    if state.sid != sid {
+        warn!("oauth state does not match the session");
+        return Ok(StatusCode::BAD_REQUEST.into_response());
+    }
+
+    let Some(code) = params.code.filter(|code| !code.is_empty()) else {
+        return Ok(StatusCode::BAD_REQUEST.into_response());
+    };
+
+    let redirect_uri = oauth::callback_redirect_uri(&app.provider.external_host)?;
+    let access_token = backchannel::exchange_code(
+        &app.client,
+        &app.endpoint.token_url,
+        app.token_host.as_deref(),
+        &code,
+        &redirect_uri,
+        client_id,
+        client_secret,
+    )
+    .await?;
+
+    let claims = if app
+        .provider
+        .oidc_configuration
+        .id_token_signing_alg_values_supported
+        .iter()
+        .any(|alg| alg == "HS256")
+    {
+        token::verify_hs256(&access_token, client_secret, &app.endpoint.issuer, client_id)?
+    } else {
+        let jwks = backchannel::fetch_jwks(&app.client, &app.endpoint.jwks_uri).await?;
+        token::verify_rs256(&access_token, &jwks, &app.endpoint.issuer, client_id)?
+    };
+
+    let max_age = max_age_until(claims.exp);
+    let data = SessionData {
+        claims: Some(claims),
+        redirect: None,
+    };
+    app.session_store.save(&sid, &data, max_age).await?;
+
+    let location = if state.redirect.is_empty() {
+        app.provider.external_host.clone()
+    } else {
+        state.redirect
+    };
+    let cookie = app.session_cookie.build(&sid, max_age);
+    Ok((jar.add(cookie), (StatusCode::FOUND, [(header::LOCATION, location)])).into_response())
 }
 
 #[instrument(skip_all)]
