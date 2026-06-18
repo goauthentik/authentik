@@ -10,12 +10,15 @@ from django.db.utils import IntegrityError
 from django.utils.translation import gettext_lazy as _
 from django_dramatiq_postgres.models import TaskBase, TaskState
 from dramatiq.errors import Retry
+from structlog.stdlib import get_logger
 
 from authentik.events.logs import LogEvent
 from authentik.events.utils import sanitize_item
 from authentik.lib.models import InternallyManagedMixin, SerializerModel
 from authentik.lib.utils.errors import exception_to_dict
 from authentik.tenants.models import Tenant
+
+LOGGER = get_logger()
 
 
 class TaskStatus(models.TextChoices):
@@ -184,7 +187,9 @@ class TaskLog(InternallyManagedMixin, models.Model):
                 timestamp=log_event.timestamp,
                 attributes=sanitize_item(log_event.attributes),
             )
-        except IntegrityError:
+        except IntegrityError as exc:
+            LOGGER.warning("failed to save log event, writing it to console instead", exc=exc)
+            log_event.log()
             return None
 
     @classmethod
@@ -209,7 +214,10 @@ class TaskLog(InternallyManagedMixin, models.Model):
                     for log_event in log_events
                 ]
             )
-        except IntegrityError:
+        except IntegrityError as exc:
+            LOGGER.warning("failed to save log events, writing it to console instead", exc=exc)
+            for log_event in log_events:
+                log_event.log()
             return None
 
     def to_log_event(self) -> LogEvent:
