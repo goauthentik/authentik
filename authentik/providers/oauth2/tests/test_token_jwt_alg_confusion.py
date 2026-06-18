@@ -1,18 +1,8 @@
-"""Security regression tests for JWT algorithm-confusion attacks against the
-client_credentials JWT-bearer grant.
-
-These cover the negative path where an attacker crafts a JWT whose ``alg`` header
-does not match the algorithm the configured source JWK is meant to be verified
-with. References: RFC 9700 §4.5 (algorithm confusion), the "alg:none" signature
-bypass class (CVE-2015-9235 and relatives), and the asymmetric/HMAC key-confusion
-pattern (using a published RSA public key as an HMAC secret).
-
-The verification path under test is
-``TokenParams._TokenParams__validate_jwt_from_source`` in
-``authentik/providers/oauth2/views/token.py``. Note that when a source JWK omits
-the optional ``alg`` member, verification falls back to the (attacker controlled)
-algorithm from the JWT header -- exactly the precondition for a confusion attack.
-These tests assert the forgeries are rejected regardless.
+"""Security regression tests for JWT algorithm-confusion against the
+client_credentials JWT-bearer grant (RFC 9700 §4.5, CVE-2015-9235): alg:none,
+HS/RS key confusion (RSA public key used as an HMAC secret), and kid swapping.
+Assert the forgeries are rejected, including when the source JWK omits ``alg``
+and verification falls back to the attacker-controlled header algorithm.
 """
 
 import hashlib
