@@ -35,6 +35,8 @@ pub(super) struct Application {
     pub(super) token_host: Option<String>,
     /// Short-lived cache of claims keyed by the `Authorization` header.
     pub(super) auth_cache: Cache<String, Claims>,
+    /// Outpost name, sent upstream as `X-authentik-meta-outpost`.
+    pub(super) outpost_name: String,
 }
 
 impl Application {
@@ -146,6 +148,7 @@ impl Application {
                 .time_to_live(Duration::from_secs(60))
                 .max_capacity(10_000)
                 .build(),
+            outpost_name: outpost.controller.outpost.load().name.clone(),
         })
     }
 

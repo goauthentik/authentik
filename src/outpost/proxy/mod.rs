@@ -29,6 +29,7 @@ mod claims;
 mod cookie;
 mod endpoint;
 mod handlers;
+mod headers;
 mod oauth;
 mod oauth_state;
 mod session;

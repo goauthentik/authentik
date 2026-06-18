@@ -174,8 +174,14 @@ step below is meant to be one focused, compilable, testable commit.
 
 ### Phase E — header injection + allowlist (needs A1)
 
-- [ ] **E14.** `get_headers`/`add_headers` (all `X-authentik-*`, basic-auth from user attributes,
+- [x] **E14.** `get_headers`/`add_headers` (all `X-authentik-*`, basic-auth from user attributes,
   additional headers, underscore-dedup). Unit test.
+  Done in `src/outpost/proxy/headers.rs`: `Application::add_upstream_headers` sets all
+  `X-authentik-*` user + meta headers (meta-version via `ak_common::user_agent_outpost`,
+  meta-outpost via new `Application.outpost_name`), the attribute-derived `Authorization`
+  (`basic_auth_header`, email username fallback), `additionalHeaders`, then
+  `remove_underscore_headers`. 4 tests (basic-auth + fallback + disabled + underscore dedup).
+  Unused until Phase F.
 - [ ] **E15.** `UnauthenticatedRegex` allowlist (`IsAllowlisted`) — compile regexes in
   `Application::new`; mode-dependent path-vs-URL matching. Unit test.
 
