@@ -230,7 +230,10 @@ step below is meant to be one focused, compilable, testable commit.
 
 ### Phase G — logout, postgres, error pages
 
-- [ ] **G20.** `handle_sign_out`: clear session, redirect to `end_session_endpoint`.
+- [x] **G20.** `handle_sign_out`: clear session, redirect to `end_session_endpoint`.
+  Done in `handlers/mod.rs`: reads session claims (no claims → `redirect_to_start`), logs out all
+  the user's sessions (`sub` filter via `session_store.logout`), clears the session cookie (new
+  `SessionCookie::removal`), and 302s to `end_session_endpoint?id_token_hint=<raw_token>`.
 - [ ] **G21.** `ProxyOutpost::end_session`: per-app store `logout(sid == event.session_id)`
   (`session.go`).
 - [ ] **G22.** `PgSessionStore` (sqlx) + feature-flag decision (`dep:sqlx` under `proxy` vs new

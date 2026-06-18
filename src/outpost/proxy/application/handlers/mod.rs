@@ -13,10 +13,13 @@ use eyre::eyre;
 use serde::{Deserialize, Deserializer};
 use tower::util::ServiceExt as _;
 use tracing::{debug, instrument, warn};
+use url::Url;
 
 use crate::outpost::proxy::{
     application::Application,
-    backchannel, oauth,
+    backchannel,
+    claims::Claims,
+    oauth,
     oauth_state::{self, OAuthState},
     session::SessionData,
 };
@@ -269,8 +272,46 @@ pub(super) async fn handle_auth_callback(
 
 #[instrument(skip_all)]
 pub(super) async fn handle_sign_out(
-    State(_app): State<Arc<Application>>,
-    _request: Request,
+    State(app): State<Arc<Application>>,
+    request: Request,
 ) -> Result<Response> {
-    todo!()
+    let jar = app.session_cookie.jar(request.headers());
+    let claims = match app.session_cookie.read(&jar) {
+        Some(sid) => app
+            .session_store
+            .load(&sid)
+            .await
+            .ok()
+            .flatten()
+            .and_then(|data| data.claims),
+        None => None,
+    };
+    let Some(claims) = claims else {
+        return redirect_to_start(&app, request.headers(), request.uri());
+    };
+
+    let mut end_session = Url::parse(&app.endpoint.end_session_endpoint)?;
+    end_session
+        .query_pairs_mut()
+        .append_pair("id_token_hint", &claims.raw_token);
+
+    // Log out every session belonging to this user.
+    let sub = claims.sub.clone();
+    if let Err(err) = app
+        .session_store
+        .logout(&move |candidate: &Claims| candidate.sub == sub)
+        .await
+    {
+        warn!(?err, "failed to log out sessions");
+    }
+
+    let jar = jar.remove(app.session_cookie.removal());
+    Ok((
+        jar,
+        (
+            StatusCode::FOUND,
+            [(header::LOCATION, end_session.to_string())],
+        ),
+    )
+        .into_response())
 }

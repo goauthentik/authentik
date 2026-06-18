@@ -54,6 +54,16 @@ impl SessionCookie {
         jar.get(&self.name).map(|cookie| cookie.value().to_owned())
     }
 
+    /// Build a cookie that clears the session cookie in the browser.
+    pub(crate) fn removal(&self) -> Cookie<'static> {
+        let mut cookie = Cookie::new(self.name.clone(), "");
+        cookie.set_path("/");
+        if let Some(domain) = &self.domain {
+            cookie.set_domain(domain.clone());
+        }
+        cookie
+    }
+
     /// Build the cookie carrying `sid`, valid for `max_age`.
     pub(crate) fn build(&self, sid: &str, max_age: Duration) -> Cookie<'static> {
         let mut cookie = Cookie::new(self.name.clone(), sid.to_owned());
