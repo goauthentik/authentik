@@ -333,7 +333,7 @@ class _PostgresConsumer(Consumer):
                     task.save()
                 else:
                     self.logger.debug(
-                        "Task still is still waiting for dependencies, skipping.",
+                        "Task is still waiting for dependencies, skipping.",
                         queue=self.queue_name,
                         task_id=task.message_id,
                     )
