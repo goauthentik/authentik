@@ -1,17 +1,13 @@
-use std::collections::HashMap;
 use std::sync::Arc;
 
 use ak_axum::error::Result;
-use ak_client::apis::events_api::events_events_create;
-use ak_client::models::{EventActions, EventRequest};
 use axum::{
     extract::{Request, State},
     http::{HeaderMap, StatusCode, Uri, header},
     response::{IntoResponse as _, Response},
 };
 use eyre::{Result as EyreResult, eyre};
-use serde_json::json;
-use tracing::{instrument, warn};
+use tracing::instrument;
 use url::Url;
 
 use crate::outpost::proxy::{application::Application, claims::Claims, oauth};
@@ -33,28 +29,6 @@ pub(super) fn nginx_forward_url(headers: &HeaderMap) -> EyreResult<Url> {
     let original =
         header_str(headers, "x-original-url").ok_or_else(|| eyre!("no forward URL found"))?;
     Ok(Url::parse(original)?)
-}
-
-impl Application {
-    /// Report a forward-auth misconfiguration as a configuration-error event.
-    pub(super) async fn report_misconfiguration(&self, message: &str, url: &str) {
-        let context = HashMap::from([
-            ("message".to_owned(), json!(message)),
-            ("provider".to_owned(), json!(self.provider.name)),
-            ("outpost".to_owned(), json!(self.outpost_name)),
-            ("url".to_owned(), json!(url)),
-        ]);
-        let event = EventRequest {
-            context: Some(context),
-            ..EventRequest::new(
-                EventActions::ConfigurationError,
-                "authentik.providers.proxy".to_owned(),
-            )
-        };
-        if let Err(err) = events_events_create(&self.api_config, event).await {
-            warn!(?err, "failed to report configuration error");
-        }
-    }
 }
 
 /// Whether the URL carries `name=true` (case-insensitive) in its query.
