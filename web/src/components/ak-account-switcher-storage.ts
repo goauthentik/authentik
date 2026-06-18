@@ -116,12 +116,7 @@ export function mergeStoredAccounts(
     return accounts;
 }
 
-/**
- * Merge the current user into the stored account list, persist it, and return it.
- *
- * Accounts are deduped by uid and by username (usernames are unique server-side),
- * so the same account never shows up twice regardless of what was stored.
- */
+/** Persist the current user into the deduped local account list. */
 export function syncStoredAccounts(user: Readonly<UserSelf> | null): BrowserLocalAccount[] {
     if (!user) {
         return readStoredAccounts();

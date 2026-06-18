@@ -34,10 +34,7 @@ class SessionStore(SessionBase):
 
     @staticmethod
     def _check_superseded(session) -> None:
-        """Reject logins the browser has since switched away from. is_current is cleared
-        in the database when another login takes over the browser
-        (AuthenticatedSession.from_request), so a recorded session cookie can't be
-        replayed to resume the previous account without going through a flow."""
+        """Reject browser logins superseded by a newer login."""
         authenticated_session = getattr(session, "authenticatedsession", None)
         if (
             authenticated_session is not None

@@ -53,7 +53,7 @@ def on_user_logged_in(sender, request: HttpRequest, user: User, **_):
             # Save device
             kwargs[PLAN_CONTEXT_DEVICE] = flow_plan.context[PLAN_CONTEXT_DEVICE]
         if flow_plan.context.get(PLAN_CONTEXT_IS_ACCOUNT_SWITCH):
-            # Save that this login was an account switch, and which user switched
+            # Record that this login came from an account switch.
             kwargs[PLAN_CONTEXT_IS_ACCOUNT_SWITCH] = True
             if from_user := flow_plan.context.get(PLAN_CONTEXT_ACCOUNT_SWITCH_FROM_USER):
                 kwargs[PLAN_CONTEXT_ACCOUNT_SWITCH_FROM_USER] = from_user

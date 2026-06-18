@@ -22,11 +22,7 @@ QS_ACCOUNT_SWITCH_STALE = "account_switch_stale"
 
 
 class AccountSwitchView(View):
-    """Authenticate one of the browser's other logins through the brand's account
-    switch flow, falling back to the default authentication flow.
-
-    The browser cookie proves this browser holds a live session for the target user,
-    and that proof is passed to the flow as context."""
+    """Authenticate another login held by this browser."""
 
     def get(self, request: HttpRequest, user_uid: str) -> HttpResponse:
         flow = request.brand.flow_account_switch or ToDefaultFlow.get_flow(
@@ -63,9 +59,7 @@ class AccountSwitchView(View):
 
     @staticmethod
     def get_browser_session(request: HttpRequest, user_uid: str) -> AuthenticatedSession | None:
-        """Live login of this browser matching the target user, if any. The target is
-        matched against the browser's own sessions only, so unknown UIDs can't be used
-        to probe which users exist."""
+        """Live login of this browser matching the target user, if any."""
         browser_key = getattr(request, "browser_key", None)
         if not browser_key:
             return None

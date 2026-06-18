@@ -1368,13 +1368,11 @@ class AuthenticatedSession(SerializerModel):
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
-    # Value of the browser cookie that groups all logins created by the same browser.
-    # Sessions without it (pre-existing ones, or sessions created outside a browser
-    # context) can never be offered for account switching.
+    # Browser cookie value grouping logins from the same browser.
+    # Unbound sessions are never offered for account switching.
     browser_key = models.CharField(max_length=64, null=True, db_index=True)
-    # Whether this is the login the browser most recently switched to. Stored in the
-    # database (not just in the cookie) so a recorded session cookie can't be replayed
-    # after the browser switched to another account.
+    # Whether this is the login the browser most recently switched to.
+    # Stored server-side to reject replayed cookies for superseded logins.
     is_current = models.BooleanField(default=False)
 
     @property
@@ -1401,9 +1399,8 @@ class AuthenticatedSession(SerializerModel):
             return None
         browser_key = SessionMiddleware.ensure_browser_key(request)
         if browser_key:
-            # The new login takes over the browser; all sessions it created before
-            # become switch targets only. Concurrent logins on the same browser may
-            # briefly leave two current sessions, the cookies pick the winner.
+            # The new login takes over the browser; older logins become switch targets.
+            # Concurrent logins may briefly leave two current sessions; cookies pick the winner.
             AuthenticatedSession.objects.filter(browser_key=browser_key).update(is_current=False)
         return AuthenticatedSession(
             session=Session.objects.filter(session_key=request.session.session_key).first(),

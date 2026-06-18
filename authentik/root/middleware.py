@@ -30,8 +30,7 @@ LOGGER = get_logger("authentik.asgi")
 ACR_AUTHENTIK_SESSION = "goauthentik.io/core/default"
 SIGNING_HASH = sha512(settings.SECRET_KEY.encode()).hexdigest()
 
-# Opaque identifier for the browser itself, which groups all logins created by it
-# (AuthenticatedSession.browser_key) so they can be offered for account switching.
+# Opaque browser identifier used to group logins for account switching.
 # Unlike the session cookie it survives logins and logouts.
 COOKIE_NAME_ACCOUNTS = "authentik_accounts"
 BROWSER_KEY_LENGTH = 32
@@ -96,9 +95,7 @@ class SessionMiddleware(UpstreamSessionMiddleware):
 
     @staticmethod
     def ensure_browser_key(request: HttpRequest) -> str | None:
-        """Return the request's browser key, generating one if the browser doesn't have one
-        yet. Returns None for requests that didn't pass through the session middleware
-        (e.g. test client logins), leaving the session unbound to any browser."""
+        """Return or create a browser key for requests that passed through this middleware."""
         if not hasattr(request, "browser_key"):
             return None
         if not request.browser_key:
@@ -175,10 +172,8 @@ class SessionMiddleware(UpstreamSessionMiddleware):
                         httponly=settings.SESSION_COOKIE_HTTPONLY or None,
                         samesite=same_site,
                     )
-                    # Issue/refresh the browser cookie alongside the session cookie so it
-                    # always outlives the sessions bound to it. It is intentionally not
-                    # deleted with the session cookie, as it groups the other logins
-                    # this browser still has.
+                    # Keep the browser cookie longer-lived than the sessions it groups.
+                    # It is intentionally not deleted with the session cookie.
                     if getattr(request, "browser_key", None):
                         response.set_cookie(
                             COOKIE_NAME_ACCOUNTS,

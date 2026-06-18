@@ -46,12 +46,7 @@ urlpatterns = [
         name="application-launch",
     ),
     path(
-        # Account choices are remembered by the frontend, so the switch endpoint
-        # is the trust boundary that turns the selected UID into backend-verified
-        # flow context. A separate in-memory bootstrap flow would still need a
-        # URL boundary for this browser-session check, but would add another
-        # flow plan whose only job is to validate the target and redirect into
-        # the real authentication flow.
+        # Turns the frontend-selected UID into backend-verified flow context.
         "account/switch/<str:user_uid>/",
         AccountSwitchView.as_view(),
         name="account-switch",
