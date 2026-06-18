@@ -19,7 +19,7 @@ use crate::outpost::proxy::{
     application::Application,
     backchannel,
     claims::Claims,
-    oauth,
+    error_page, oauth,
     oauth_state::{self, OAuthState},
     session::SessionData,
 };
@@ -149,11 +149,11 @@ pub(super) fn redirect_to_start(app: &Application, headers: &HeaderMap, uri: &Ur
     // that carries an Authorization header; report 401 instead.
     if headers.contains_key(header::AUTHORIZATION) && app.provider.intercept_header_auth == Some(true)
     {
-        return Ok((
+        return Ok(error_page::error_response(
             StatusCode::UNAUTHORIZED,
-            "Unauthenticated: header authentication is enabled, no redirect is performed.",
-        )
-            .into_response());
+            "Unauthenticated",
+            "Due to 'Receive header authentication' being set, no redirect is performed.",
+        ));
     }
 
     let mut redirect = oauth::url_join(&app.provider.external_host, uri.path());

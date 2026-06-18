@@ -6,12 +6,12 @@ use ak_axum::extract::host::Host;
 use axum::{
     extract::{Request, State},
     http::{HeaderName, HeaderValue, StatusCode},
-    response::{IntoResponse as _, Response},
+    response::Response,
 };
 use tracing::{instrument, warn};
 use url::Url;
 
-use crate::outpost::proxy::{application::Application, oauth, reverse_proxy};
+use crate::outpost::proxy::{application::Application, error_page, oauth, reverse_proxy};
 
 #[instrument(skip_all)]
 pub(crate) async fn handle(
@@ -54,7 +54,18 @@ pub(crate) async fn handle(
         Ok(response) => Ok(response),
         Err(err) => {
             warn!(?err, "error proxying to upstream server");
-            Ok((StatusCode::BAD_GATEWAY, "Error proxying to upstream server").into_response())
+            // Only superusers see the underlying error detail.
+            let is_superuser = proxy_claims.is_some_and(|proxy| proxy.is_superuser);
+            let message = if is_superuser {
+                format!("Error proxying to upstream server: {err}")
+            } else {
+                "Failed to connect to backend.".to_owned()
+            };
+            Ok(error_page::error_response(
+                StatusCode::BAD_GATEWAY,
+                "Bad Gateway",
+                &message,
+            ))
         }
     }
 }

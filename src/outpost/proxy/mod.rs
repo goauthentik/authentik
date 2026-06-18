@@ -29,6 +29,7 @@ mod backchannel;
 mod claims;
 mod cookie;
 mod endpoint;
+mod error_page;
 mod events;
 mod handlers;
 mod headers;

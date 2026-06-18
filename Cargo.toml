@@ -21,6 +21,7 @@ publish = false
 [workspace.dependencies]
 arc-swap = "= 1.9.1"
 argh = "= 0.1.19"
+askama = "= 0.16.0"
 axum-server = { version = "= 0.8.0", features = ["tls-rustls-no-provider"] }
 aws-lc-rs = { version = "= 1.17.0", features = ["fips"] }
 base64 = "= 0.22.1"
@@ -305,6 +306,7 @@ proxy = [
   "dep:hyper-rustls",
   "dep:http-body-util",
   "dep:thiserror",
+  "dep:askama",
 ]
 
 [build-dependencies]
@@ -316,6 +318,7 @@ ak-client = { workspace = true, optional = true }
 ak-common.workspace = true
 arc-swap.workspace = true
 argh.workspace = true
+askama = { workspace = true, optional = true }
 aws-lc-rs = { workspace = true, optional = true }
 base64 = { workspace = true, optional = true }
 axum-extra = { workspace = true, optional = true }

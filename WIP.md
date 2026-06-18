@@ -250,7 +250,14 @@ step below is meant to be one focused, compilable, testable commit.
   DEFERRED: live-DB integration test (needs CI postgres + `db::init`; logic mirrors the tested fs
   store). NOTE: standalone `--features proxy` (no core) has pre-existing unrelated build errors
   (`Mode::Worker`, etc.) — orthogonal to this step; `PgSessionStore` is correctly excluded there.
-- [ ] **G23.** Error-page rendering (templated 401/500) replacing bare status codes (`error.go`).
+- [x] **G23.** Error-page rendering (templated 401/500) replacing bare status codes (`error.go`).
+  Done with **askama** (compile-time, type-safe, auto HTML-escaping). The template is an inline
+  `#[template(source = r#"..."#, ext = "html")]` literal in `error_page.rs` — no `templates/`
+  dir, no `askama.toml`, no separate file (askama rejects `include_str!`; `source` must be a
+  literal). `error_page.rs` has the `ErrorPage` struct + `error_response`. Wired the 502
+  in `proxy::handle` (detailed error for superusers, else "Failed to connect to backend.") and the
+  intercept-header 401 in `redirect_to_start`. 1 test (render + escape; askama escapes with
+  numeric refs `&#60;`). Callback 400s / misconfig 500 stay plain (matches Go).
 
 ## Ordering risks / notes to carry forward
 
