@@ -11230,6 +11230,7 @@
                         "aws",
                         "slack",
                         "sfdc",
+                        "gitlab",
                         "webex",
                         "vcenter"
                     ],

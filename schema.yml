@@ -36625,6 +36625,7 @@ components:
       - aws
       - slack
       - sfdc
+      - gitlab
       - webex
       - vcenter
       type: string
