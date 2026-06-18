@@ -2,9 +2,10 @@ use std::str::FromStr;
 use std::{fmt, sync::Arc};
 
 use ak_axum::error::Result;
+use ak_client::models::ProxyMode;
 use axum::{
     extract::{Query, Request, State},
-    http::{StatusCode, header},
+    http::{HeaderMap, StatusCode, Uri, header},
     response::{IntoResponse as _, Response},
 };
 use eyre::eyre;
@@ -93,11 +94,23 @@ pub(super) async fn handle_auth_start(
         .read(&jar)
         .unwrap_or_else(oauth::new_session_id);
 
+    let redirect = oauth::redirect_param(request.uri())
+        .zip(app.provider.mode)
+        .and_then(|(rd, mode)| {
+            oauth::check_redirect_param(
+                &rd,
+                mode,
+                &app.provider.external_host,
+                app.provider.cookie_domain.as_deref(),
+            )
+        })
+        .unwrap_or_default();
+
     let state = OAuthState {
         iss: oauth_state::issuer(client_id),
         sid: sid.clone(),
         state: oauth::new_session_id(),
-        redirect: oauth::redirect_param(request.uri()).unwrap_or_default(),
+        redirect,
     };
     let token = state.encode(cookie_secret)?;
 
@@ -116,6 +129,39 @@ pub(super) async fn handle_auth_start(
         (StatusCode::FOUND, [(header::LOCATION, authorize)]),
     )
         .into_response())
+}
+
+/// Redirect an unauthenticated request to the auth-start endpoint, carrying the
+/// originally-requested URL in the `rd` parameter.
+#[instrument(skip_all)]
+pub(super) fn redirect_to_start(app: &Application, headers: &HeaderMap, uri: &Uri) -> Result<Response> {
+    // With "Receive header authentication" enabled, don't redirect a request
+    // that carries an Authorization header; report 401 instead.
+    if headers.contains_key(header::AUTHORIZATION) && app.provider.intercept_header_auth == Some(true)
+    {
+        return Ok((
+            StatusCode::UNAUTHORIZED,
+            "Unauthenticated: header authentication is enabled, no redirect is performed.",
+        )
+            .into_response());
+    }
+
+    let mut redirect = oauth::url_join(&app.provider.external_host, uri.path());
+    if app.provider.mode == Some(ProxyMode::ForwardDomain) {
+        let valid = app
+            .provider
+            .cookie_domain
+            .as_deref()
+            .map(|domain| domain.trim_start_matches('.'))
+            .zip(uri.host())
+            .is_some_and(|(domain, host)| host.ends_with(domain));
+        if !valid {
+            redirect.clone_from(&app.provider.external_host);
+        }
+    }
+
+    let start = oauth::start_url(&app.provider.external_host, &redirect)?;
+    Ok((StatusCode::FOUND, [(header::LOCATION, start)]).into_response())
 }
 
 #[instrument(skip_all)]

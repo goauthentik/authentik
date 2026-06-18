@@ -125,8 +125,16 @@ step below is meant to be one focused, compilable, testable commit.
   (`Application::session_max_age` from `access_token_validity`, via `from_secs_f64` to avoid an
   `as` cast). No store write at start (cookie carries the sid; callback creates the entry).
   NOTE: `rd` is taken raw here; validation (`checkRedirectParam`) lands in C9.
-- [ ] **C9.** `redirect_to_start` helper: store redirect in session, `InterceptHeaderAuth` 401
+- [x] **C9.** `redirect_to_start` helper: store redirect in session, `InterceptHeaderAuth` 401
   path, forward_domain redirect validation (`checkRedirectParam`).
+  Done: `oauth::check_redirect_param` (proxy/forward_single → must resolve to external host, bare
+  path allowed; forward_domain → host must end with cookie domain), `oauth::url_join`,
+  `oauth::start_url`; wired `handle_auth_start` to validate `rd` via `check_redirect_param`.
+  `redirect_to_start` (in `handlers/mod.rs`) builds the 302 to `/start?rd=…` and returns 401 when
+  `intercept_header_auth` + an `Authorization` header are present. NOTE: no session write —
+  `SessionRedirect` is never read in Go (redirect comes from the state JWT). The 401 uses a plain
+  body; templated error page deferred to G25. `redirect_to_start` is unused until Phase F. 6 new
+  tests.
 - [ ] **C10.** `handle_auth_callback`: validate state JWT + session-ID match, code exchange, verify
   ID token, extract claims, session maxage from `exp`, save, redirect to stored `rd`.
 
