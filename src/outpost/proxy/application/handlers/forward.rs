@@ -31,6 +31,28 @@ pub(super) fn nginx_forward_url(headers: &HeaderMap) -> EyreResult<Url> {
     Ok(Url::parse(original)?)
 }
 
+/// Path prefix Envoy's external authorization filter sends requests under.
+const ENVOY_PREFIX: &str = "/outpost.goauthentik.io/auth/envoy";
+
+/// Reconstruct the original request URL from an Envoy ext-authz request: strip
+/// the envoy prefix from the path and take the host from the `Host` header.
+pub(super) fn envoy_forward_url(uri: &Uri, headers: &HeaderMap) -> Option<Url> {
+    let path = uri
+        .path()
+        .strip_prefix(ENVOY_PREFIX)
+        .filter(|path| !path.is_empty())
+        .unwrap_or("/");
+    let host = header_str(headers, "host")?;
+    let scheme = uri
+        .scheme_str()
+        .or_else(|| header_str(headers, "x-forwarded-proto"))
+        .unwrap_or("https");
+    let query = uri
+        .query()
+        .map_or_else(String::new, |query| format!("?{query}"));
+    Url::parse(&format!("{scheme}://{host}{path}{query}")).ok()
+}
+
 /// Whether the URL carries `name=true` (case-insensitive) in its query.
 fn has_signature(url: &Url, name: &str) -> bool {
     url.query_pairs()
@@ -83,7 +105,11 @@ async fn forward_header_auth(
     }
 
     if let Some(claims) = app.check_auth(request.headers()).await {
-        return Ok(forward_authenticated_response(&app, &claims, request.headers()));
+        return Ok(forward_authenticated_response(
+            &app,
+            &claims,
+            request.headers(),
+        ));
     }
     if app.is_allowlisted(&fwd) {
         return Ok(StatusCode::OK.into_response());
@@ -102,18 +128,59 @@ pub(crate) async fn handle_caddy(
 
 #[instrument(skip_all)]
 pub(crate) async fn handle_envoy(
-    State(_app): State<Arc<Application>>,
-    _request: Request,
+    State(app): State<Arc<Application>>,
+    request: Request,
 ) -> Result<Response> {
-    todo!()
+    let Some(fwd) = envoy_forward_url(request.uri(), request.headers()) else {
+        return Ok((StatusCode::BAD_REQUEST, "invalid envoy request").into_response());
+    };
+
+    if let Some(claims) = app.check_auth(request.headers()).await {
+        return Ok(forward_authenticated_response(
+            &app,
+            &claims,
+            request.headers(),
+        ));
+    }
+    if app.is_allowlisted(&fwd) {
+        return Ok(StatusCode::OK.into_response());
+    }
+
+    super::auth_start(&app, request.headers(), fwd.into())
 }
 
 #[instrument(skip_all)]
 pub(crate) async fn handle_nginx(
-    State(_app): State<Arc<Application>>,
-    _request: Request,
+    State(app): State<Arc<Application>>,
+    request: Request,
 ) -> Result<Response> {
-    todo!()
+    let Ok(fwd) = nginx_forward_url(request.headers()) else {
+        let message = format!(
+            "Outpost {} (Provider {}) failed to detect a forward URL from nginx",
+            app.outpost_name, app.provider.name
+        );
+        app.report_misconfiguration(&message, &request.uri().to_string())
+            .await;
+        return Ok((StatusCode::INTERNAL_SERVER_ERROR, "configuration error").into_response());
+    };
+
+    if let Some(claims) = app.check_auth(request.headers()).await {
+        return Ok(forward_authenticated_response(
+            &app,
+            &claims,
+            request.headers(),
+        ));
+    }
+    if app.is_allowlisted(&fwd) {
+        return Ok(StatusCode::OK.into_response());
+    }
+    // Let the outpost's own endpoints (callback, start, ...) through unauthenticated.
+    if fwd.path().starts_with("/outpost.goauthentik.io") {
+        return Ok(StatusCode::OK.into_response());
+    }
+
+    // nginx's auth_request performs the redirect itself, so just deny here.
+    Ok((StatusCode::UNAUTHORIZED, "unauthorized request").into_response())
 }
 
 #[instrument(skip_all)]
@@ -126,9 +193,9 @@ pub(crate) async fn handle_traefik(
 
 #[cfg(test)]
 mod tests {
-    use axum::http::{HeaderMap, HeaderValue};
+    use axum::http::{HeaderMap, HeaderValue, Uri};
 
-    use super::{nginx_forward_url, traefik_forward_url};
+    use super::{ENVOY_PREFIX, envoy_forward_url, nginx_forward_url, traefik_forward_url};
 
     #[test]
     fn parses_traefik_forward_url() {
@@ -164,5 +231,27 @@ mod tests {
     #[test]
     fn nginx_without_header_errors() {
         let _ = nginx_forward_url(&HeaderMap::new()).expect_err("missing header should error");
+    }
+
+    #[test]
+    fn builds_envoy_forward_url() {
+        let uri: Uri = "/outpost.goauthentik.io/auth/envoy/app/page?x=1"
+            .parse()
+            .expect("uri");
+        let mut headers = HeaderMap::new();
+        headers.insert("host", HeaderValue::from_static("app.example.com"));
+
+        let url = envoy_forward_url(&uri, &headers).expect("forward url");
+        assert_eq!(url.as_str(), "https://app.example.com/app/page?x=1");
+    }
+
+    #[test]
+    fn envoy_bare_prefix_maps_to_root() {
+        let uri: Uri = ENVOY_PREFIX.parse().expect("uri");
+        let mut headers = HeaderMap::new();
+        headers.insert("host", HeaderValue::from_static("app.example.com"));
+
+        let url = envoy_forward_url(&uri, &headers).expect("forward url");
+        assert_eq!(url.as_str(), "https://app.example.com/");
     }
 }

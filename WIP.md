@@ -206,8 +206,13 @@ step below is meant to be one focused, compilable, testable commit.
   copies User-Agent), else allowlist → 200, else `auth_start(fwd)`. REFACTOR: extracted
   `auth_start(app, headers, redirect)` core from `handle_auth_start` so forward auth can pass the
   fwd URL as the redirect. First handlers wired end-to-end through the Phase A–E machinery.
-- [ ] **F18.** `handle_nginx` (200+headers / redirect-flag session save / 401) and `handle_envoy`
+- [x] **F18.** `handle_nginx` (200+headers / redirect-flag session save / 401) and `handle_envoy`
   (path-trim, host fixup).
+  Done: `handle_nginx` — `nginx_forward_url` (`X-Original-URL`); `check_auth`→200+headers, else
+  allowlist→200, else outpost-path→200, else **401** (no auth-start; nginx `auth_request` redirects
+  itself). `handle_envoy` — `envoy_forward_url` strips the envoy prefix + rebuilds from `Host`;
+  traefik-style check_auth→200/allowlist→200/else `auth_start`. Added a `{*rest}` envoy route for
+  subpaths. No session write (SessionRedirect unused, see C9). 2 new envoy URL tests.
 - [ ] **F19.** Reverse-proxy data path (`mode_proxy.go`): hyper-util client → `internal_host`,
   request/response modification, backend-override/host-header, streaming, `X-Powered-By`,
   `check_auth`→headers or `redirect_to_start`.
