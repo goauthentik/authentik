@@ -182,8 +182,12 @@ step below is meant to be one focused, compilable, testable commit.
   (`basic_auth_header`, email username fallback), `additionalHeaders`, then
   `remove_underscore_headers`. 4 tests (basic-auth + fallback + disabled + underscore dedup).
   Unused until Phase F.
-- [ ] **E15.** `UnauthenticatedRegex` allowlist (`IsAllowlisted`) — compile regexes in
+- [x] **E15.** `UnauthenticatedRegex` allowlist (`IsAllowlisted`) — compile regexes in
   `Application::new`; mode-dependent path-vs-URL matching. Unit test.
+  Done in `src/outpost/proxy/allowlist.rs`: `compile_skip_regex` (newline-split, invalid skipped)
+  stored as `Application.unauthenticated_regex`; `is_allowlisted` matches the path (proxy/
+  forward_single) or full URL (forward_domain). Added `regex` direct dep. 3 tests. HARDENING vs
+  Go: blank lines are dropped (Go compiles `""` → matches everything). Unused until Phase F.
 
 ### Phase F — modes (needs C, D, E)
 

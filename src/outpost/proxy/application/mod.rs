@@ -11,7 +11,7 @@ use tracing::instrument;
 use url::Url;
 
 use crate::outpost::proxy::{
-    ProxyOutpost,
+    ProxyOutpost, allowlist,
     claims::Claims,
     cookie::SessionCookie,
     endpoint::OidcEndpoint,
@@ -37,6 +37,8 @@ pub(super) struct Application {
     pub(super) auth_cache: Cache<String, Claims>,
     /// Outpost name, sent upstream as `X-authentik-meta-outpost`.
     pub(super) outpost_name: String,
+    /// Compiled `skip_path_regex` patterns for unauthenticated access.
+    pub(super) unauthenticated_regex: Vec<regex::Regex>,
 }
 
 impl Application {
@@ -87,6 +89,8 @@ impl Application {
             .map(|url| url.authority().to_owned());
 
         let session_store = SessionStore::Filesystem(FsSessionStore::new(std::env::temp_dir()));
+
+        let unauthenticated_regex = allowlist::compile_skip_regex(provider.skip_path_regex.as_deref());
 
         let session_cookie = SessionCookie::new(
             provider.client_id.as_deref().unwrap_or_default(),
@@ -149,6 +153,7 @@ impl Application {
                 .max_capacity(10_000)
                 .build(),
             outpost_name: outpost.controller.outpost.load().name.clone(),
+            unauthenticated_regex,
         })
     }
 

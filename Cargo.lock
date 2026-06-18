@@ -246,6 +246,7 @@ dependencies = [
  "pyo3",
  "pyo3-build-config",
  "rand 0.10.1",
+ "regex",
  "reqwest",
  "reqwest-middleware",
  "rustls",
