@@ -47,7 +47,6 @@ entries:
     order: 10
     stage: !KeyOf default-authentication-identification
     target: !KeyOf flow
-  id: default-authentication-flow-identification-binding
   model: authentik_flows.flowstagebinding
 - identifiers:
     order: 20
