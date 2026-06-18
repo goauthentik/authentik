@@ -37,8 +37,8 @@ class MembershipLDAPSynchronizer(BaseLDAPSynchronizer):
 
         # If we are looking up groups from users, we don't need to fetch the group membership field
         attributes = [self._source.object_uniqueness_field, LDAP_DISTINGUISHED_NAME]
-        if not self._source.lookup_groups_from_user:
-            attributes.append(self._source.group_membership_field)
+        if not self._source.lookup_groups_from_member:
+            attributes.append(self._source.membership_field)
 
         return self.search_paginator(
             search_base=self.base_dn_groups,
@@ -58,31 +58,43 @@ class MembershipLDAPSynchronizer(BaseLDAPSynchronizer):
             if self._source.lookup_groups_from_user:
                 group_dn = group_data.get("dn", {})
                 escaped_dn = escape_filter_chars(group_dn)
-                group_filter = f"({self._source.group_membership_field}={escaped_dn})"
-                group_members = self._source.connection().extend.standard.paged_search(
-                    search_base=self.base_dn_users,
-                    search_filter=group_filter,
-                    search_scope=SUBTREE,
-                    attributes=[self._source.object_uniqueness_field],
-                )
+                group_filter = f"({self._source.membership_field}={escaped_dn})"
+
+                bases = [self.base_dn_users]  # select search bases
+                if self._source.sync_group_parents:
+                    bases.append(self.base_dn_groups)
+
+                group_members = map(
+                    lambda base: self._source.connection().extend.standard.paged_search(
+                        search_base=base,
+                        search_filter=group_filter,
+                        search_scope=SUBTREE,
+                        attributes=[self._source.object_uniqueness_field],
+                    ),
+                    bases,
+                )  # do it once or twice depending on sync_group_parents
+
                 members = []
-                for group_member in group_members:
-                    group_member_dn = group_member.get("dn", {})
-                    members.append(group_member_dn)
+
+                for per_base_search in group_members:  # iterate over results per base
+                    for group_member in per_base_search:
+                        group_member_dn = group_member.get("dn", {})
+                        members.append(group_member_dn)
+
             else:
                 if (attributes := self.get_attributes(group_data)) is None:
                     continue
-                members = attributes.get(self._source.group_membership_field, [])
+                members = attributes.get(self._source.membership_field, [])
 
             group = self.get_group(group_data)
             if not group:
                 continue
 
             users = User.objects.filter(
-                Q(**{f"attributes__{self._source.user_membership_attribute}__in": members})
+                Q(**{f"attributes__{self._source.membership_reference}__in": members})
                 | Q(
                     **{
-                        f"attributes__{self._source.user_membership_attribute}__isnull": True,
+                        f"attributes__{self._source.membership_attribute}__isnull": True,
                         "groups__in": [group],
                     }
                 )
@@ -90,6 +102,20 @@ class MembershipLDAPSynchronizer(BaseLDAPSynchronizer):
             membership_count += 1
             membership_count += users.count()
             group.users.set(users)
+
+            if self._source.sync_group_parents:
+                groups = Group.objects.filter(
+                    Q(**{f"attributes__{self._source.membership_reference}__in": members})
+                    | Q(
+                        **{
+                            f"attributes__{self._source.membership_attribute}__isnull": True,
+                            "parents__in": [group],
+                        }
+                    )
+                ).distinct()
+                membership_count += groups.count()
+                group.children.set(groups)
+
             group.save()
         self._logger.debug("Successfully updated group membership")
         return membership_count
