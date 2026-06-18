@@ -16,6 +16,7 @@ use crate::outpost::proxy::{
     cookie::SessionCookie,
     endpoint::OidcEndpoint,
     session::{SessionStore, filesystem::FsSessionStore},
+    upstream,
 };
 
 pub(super) mod handlers;
@@ -39,6 +40,8 @@ pub(super) struct Application {
     pub(super) outpost_name: String,
     /// Compiled `skip_path_regex` patterns for unauthenticated access.
     pub(super) unauthenticated_regex: Vec<regex::Regex>,
+    /// Client used to forward requests upstream (proxy mode).
+    pub(super) upstream_client: upstream::UpstreamClient,
 }
 
 impl Application {
@@ -91,6 +94,9 @@ impl Application {
         let session_store = SessionStore::Filesystem(FsSessionStore::new(std::env::temp_dir()));
 
         let unauthenticated_regex = allowlist::compile_skip_regex(provider.skip_path_regex.as_deref());
+
+        let upstream_client =
+            upstream::build_client(provider.internal_host_ssl_validation == Some(false))?;
 
         let session_cookie = SessionCookie::new(
             provider.client_id.as_deref().unwrap_or_default(),
@@ -153,11 +159,12 @@ impl Application {
             api_config: outpost.controller.api_config.clone(),
             token_host,
             auth_cache: Cache::builder()
-                .time_to_live(Duration::from_secs(60))
+                .time_to_live(Duration::from_mins(1))
                 .max_capacity(10_000)
                 .build(),
             outpost_name: outpost.controller.outpost.load().name.clone(),
             unauthenticated_regex,
+            upstream_client,
         })
     }
 

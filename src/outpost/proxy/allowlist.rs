@@ -22,8 +22,8 @@ pub(crate) fn compile_skip_regex(skip_path_regex: Option<&str>) -> Vec<Regex> {
         .collect()
 }
 
-/// Whether `url` matches any allowlist pattern. Proxy/forward_single match on the
-/// path; forward_domain matches the full URL.
+/// Whether `url` matches any allowlist pattern. Proxy/`forward_single` match on
+/// the path; `forward_domain` matches the full URL.
 pub(crate) fn is_allowlisted(regexes: &[Regex], mode: ProxyMode, url: &Url) -> bool {
     let test = match mode {
         ProxyMode::Proxy | ProxyMode::ForwardSingle => url.path(),

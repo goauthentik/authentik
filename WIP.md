@@ -213,9 +213,20 @@ step below is meant to be one focused, compilable, testable commit.
   itself). `handle_envoy` — `envoy_forward_url` strips the envoy prefix + rebuilds from `Host`;
   traefik-style check_auth→200/allowlist→200/else `auth_start`. Added a `{*rest}` envoy route for
   subpaths. No session write (SessionRedirect unused, see C9). 2 new envoy URL tests.
-- [ ] **F19.** Reverse-proxy data path (`mode_proxy.go`): hyper-util client → `internal_host`,
+- [x] **F19.** Reverse-proxy data path (`mode_proxy.go`): hyper-util client → `internal_host`,
   request/response modification, backend-override/host-header, streaming, `X-Powered-By`,
   `check_auth`→headers or `redirect_to_start`.
+  Done. VENDORED `hyper-reverse-proxy` (MIT) → `src/outpost/proxy/reverse_proxy.rs`, ported to
+  hyper 1.x with panic-free header handling and the upstream X-Forwarded-For bug fixed; keeps
+  hop-by-hop stripping, X-Forwarded-For, and **WebSocket/Upgrade** proxying (`copy_bidirectional`
+  via `TokioIo`). `upstream.rs`: hyper-util + hyper-rustls `UpstreamClient` (per-app, insecure
+  verifier when `internal_host_ssl_validation == Some(false)`). `proxy::handle`: `check_auth` →
+  inject headers / allowlist passthrough / `redirect_to_start`; sets `X-Forwarded-Host` (via the
+  trusted-proxy-aware `ak_axum` `Host` extractor), `backend_override` target; 502 on upstream
+  error. (`X-Powered-By` is added by `wrap_router`, not here.) Added deps:
+  `hyper`, `hyper-rustls`, `http-body-util` (+ hyper-util features). DEFERRED: `host_header`
+  override (doesn't fit the vendored `call` cleanly — needs a follow-up) and `UpstreamTiming`
+  metric.
 
 ### Phase G — logout, postgres, error pages
 
