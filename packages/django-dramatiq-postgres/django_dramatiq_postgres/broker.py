@@ -333,7 +333,7 @@ class _PostgresConsumer(Consumer):
                     task.save()
                 else:
                     self.logger.debug(
-                        "Task still is still waiting for dependencies, skipping.",
+                        "Task is still waiting for dependencies, skipping.",
                         queue=self.queue_name,
                         task_id=task.message_id,
                     )
@@ -570,7 +570,7 @@ class _PostgresConsumer(Consumer):
         if timezone.now() - self.scheduler_last_run < self.scheduler_interval:
             return
         self.scheduler.run()
-        self.schedule_last_run = timezone.now()
+        self.scheduler_last_run = timezone.now()
 
     def _purge_locks(self) -> None:
         while True:
