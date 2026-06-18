@@ -69,7 +69,7 @@
      * default --pf-global--FontWeight--semi-bold is 700 (same as bold) unless
      * the Overpass font scale is active. Aliasing it to 600 here would silently
      * shift every consumer of the PF var. */
-    --pf-global--FontWeight--light: var(--ak-font-weight-light, var(--pf-global--BoxShadow--sm));
+    --pf-global--FontWeight--light: var(--ak-font-weight-light, var(--pf-global--FontWeight--light));
     --pf-global--FontWeight--normal: var(--ak-font-weight-normal, var(--pf-global--FontWeight--normal));
     --pf-global--FontWeight--bold: var(--ak-font-weight-bold, var(--pf-global--FontWeight--bold));
 
