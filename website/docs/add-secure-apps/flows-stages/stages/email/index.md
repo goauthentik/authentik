@@ -127,9 +127,18 @@ These templates are rendered with Django's templating engine, so you can also us
 
 Templates can extend the base email template and use standard Django template tags. For example:
 
+:::info
+Each Django `{% ... %}` tag must stay on one line; a tag wrapped across lines won't parse.
+:::
+
+<!-- prettier-ignore -->
 ```html
-{# This comment is not rendered in the final email. #} {% extends "email/base.html" %} {% load i18n
-%} {% load humanize %} {% block content %}
+{# This comment is not rendered in the final email. #}
+{% extends "email/base.html" %}
+{% load i18n %}
+{% load humanize %}
+
+{% block content %}
 <tr>
     <td class="alert alert-success">
         {% blocktrans with username=user.username %} Hi {{ username }},{% endblocktrans %}
@@ -140,39 +149,20 @@ Templates can extend the base email template and use standard Django template ta
         <table width="100%" cellpadding="0" cellspacing="0">
             <tr>
                 <td class="content-block">
-                    {% trans 'You recently requested to change your password for your authentik
-                    account. Use the button below to set a new password.' %}
+                    {% blocktrans %}You recently requested to change your password for your authentik account. Use the button below to set a new password.{% endblocktrans %}
                 </td>
             </tr>
             <tr>
                 <td class="content-block">
-                    <table
-                        role="presentation"
-                        border="0"
-                        cellpadding="0"
-                        cellspacing="0"
-                        class="btn btn-primary"
-                    >
+                    <table role="presentation" border="0" cellpadding="0" cellspacing="0" class="btn btn-primary">
                         <tbody>
                             <tr>
                                 <td align="center">
-                                    <table
-                                        role="presentation"
-                                        border="0"
-                                        cellpadding="0"
-                                        cellspacing="0"
-                                    >
+                                    <table role="presentation" border="0" cellpadding="0" cellspacing="0">
                                         <tbody>
                                             <tr>
                                                 <td>
-                                                    <a
-                                                        id="confirm"
-                                                        href="{{ url }}"
-                                                        rel="noopener noreferrer"
-                                                        target="_blank"
-                                                    >
-                                                        {% trans 'Reset Password' %}
-                                                    </a>
+                                                    <a id="confirm" href="{{ url }}" rel="noopener noreferrer" target="_blank">{% trans 'Reset Password' %}</a>
                                                 </td>
                                             </tr>
                                         </tbody>
@@ -185,9 +175,7 @@ Templates can extend the base email template and use standard Django template ta
             </tr>
             <tr>
                 <td class="content-block">
-                    {% blocktrans with expires=expires|naturaltime %} If you did not request a
-                    password change, please ignore this email. The link above is valid for {{
-                    expires }}. {% endblocktrans %}
+                    {% blocktrans with expires=expires|naturaltime %}If you did not request a password change, please ignore this email. The link above is valid for {{ expires }}.{% endblocktrans %}
                 </td>
             </tr>
         </table>
