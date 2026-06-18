@@ -6,15 +6,15 @@ use ak_client::apis::events_api::events_events_create;
 use ak_client::models::{EventActions, EventRequest};
 use axum::{
     extract::{Request, State},
-    http::HeaderMap,
-    response::Response,
+    http::{HeaderMap, StatusCode, Uri, header},
+    response::{IntoResponse as _, Response},
 };
 use eyre::{Result as EyreResult, eyre};
 use serde_json::json;
 use tracing::{instrument, warn};
 use url::Url;
 
-use crate::outpost::proxy::application::Application;
+use crate::outpost::proxy::{application::Application, claims::Claims, oauth};
 
 fn header_str<'a>(headers: &'a HeaderMap, name: &str) -> Option<&'a str> {
     headers.get(name)?.to_str().ok()
@@ -57,12 +57,73 @@ impl Application {
     }
 }
 
+/// Whether the URL carries `name=true` (case-insensitive) in its query.
+fn has_signature(url: &Url, name: &str) -> bool {
+    url.query_pairs()
+        .any(|(key, value)| key == name && value.eq_ignore_ascii_case("true"))
+}
+
+/// 200 response carrying the authenticated user's headers for the reverse proxy.
+fn forward_authenticated_response(
+    app: &Application,
+    claims: &Claims,
+    request_headers: &HeaderMap,
+) -> Response {
+    let mut response = StatusCode::OK.into_response();
+    app.add_upstream_headers(response.headers_mut(), claims);
+    if let Some(user_agent) = request_headers.get(header::USER_AGENT) {
+        response
+            .headers_mut()
+            .insert(header::USER_AGENT, user_agent.clone());
+    }
+    response
+}
+
+/// Shared Traefik/Caddy forward-auth flow (both reconstruct the URL from
+/// `X-Forwarded-*` headers).
+async fn forward_header_auth(
+    app: Arc<Application>,
+    mut request: Request,
+    source: &str,
+) -> Result<Response> {
+    let Ok(fwd) = traefik_forward_url(request.headers()) else {
+        let message = format!(
+            "Outpost {} (Provider {}) failed to detect a forward URL from {source}",
+            app.outpost_name, app.provider.name
+        );
+        app.report_misconfiguration(&message, &request.uri().to_string())
+            .await;
+        return Ok((StatusCode::INTERNAL_SERVER_ERROR, "configuration error").into_response());
+    };
+
+    if has_signature(&fwd, oauth::CALLBACK_SIGNATURE) {
+        // The callback comes through the forward-auth endpoint; point the request
+        // at the reconstructed URL so the handler sees `state`/`code`.
+        if let Ok(uri) = Uri::try_from(fwd.as_str()) {
+            *request.uri_mut() = uri;
+        }
+        return super::handle_auth_callback(State(app), request).await;
+    }
+    if has_signature(&fwd, oauth::LOGOUT_SIGNATURE) {
+        return super::handle_sign_out(State(app), request).await;
+    }
+
+    if let Some(claims) = app.check_auth(request.headers()).await {
+        return Ok(forward_authenticated_response(&app, &claims, request.headers()));
+    }
+    if app.is_allowlisted(&fwd) {
+        return Ok(StatusCode::OK.into_response());
+    }
+
+    super::auth_start(&app, request.headers(), fwd.into())
+}
+
 #[instrument(skip_all)]
 pub(crate) async fn handle_caddy(
-    State(_app): State<Arc<Application>>,
-    _request: Request,
+    State(app): State<Arc<Application>>,
+    request: Request,
 ) -> Result<Response> {
-    todo!()
+    forward_header_auth(app, request, "Caddy").await
 }
 
 #[instrument(skip_all)]
@@ -83,10 +144,10 @@ pub(crate) async fn handle_nginx(
 
 #[instrument(skip_all)]
 pub(crate) async fn handle_traefik(
-    State(_app): State<Arc<Application>>,
-    _request: Request,
+    State(app): State<Arc<Application>>,
+    request: Request,
 ) -> Result<Response> {
-    todo!()
+    forward_header_auth(app, request, "Traefik").await
 }
 
 #[cfg(test)]

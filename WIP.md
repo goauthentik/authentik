@@ -198,8 +198,14 @@ step below is meant to be one focused, compilable, testable commit.
   `ConfigurationError` event via `events_events_create`). REFACTOR: `Application` now holds the
   full `api_config: Configuration` (was just the client) — needed for the events API; updated the
   3 backchannel call sites. 4 parsing tests.
-- [ ] **F17.** `handle_traefik` + `handle_caddy` (shared logic): callback/logout dispatch,
+- [x] **F17.** `handle_traefik` + `handle_caddy` (shared logic): callback/logout dispatch,
   `check_auth`→headers, allowlist, else auth-start.
+  Done: `forward_header_auth` (shared, `source` label) reconstructs the URL via
+  `traefik_forward_url`, dispatches callback/logout from the fwd query (sets `request.uri` to fwd
+  for the callback), then `check_auth` → 200 with injected headers (`forward_authenticated_response`,
+  copies User-Agent), else allowlist → 200, else `auth_start(fwd)`. REFACTOR: extracted
+  `auth_start(app, headers, redirect)` core from `handle_auth_start` so forward auth can pass the
+  fwd URL as the redirect. First handlers wired end-to-end through the Phase A–E machinery.
 - [ ] **F18.** `handle_nginx` (200+headers / redirect-flag session save / 401) and `handle_envoy`
   (path-trim, host fixup).
 - [ ] **F19.** Reverse-proxy data path (`mode_proxy.go`): hyper-util client → `internal_host`,

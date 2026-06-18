@@ -79,23 +79,6 @@ pub(super) async fn handle_auth_start(
     State(app): State<Arc<Application>>,
     request: Request,
 ) -> Result<Response> {
-    let client_id = app
-        .provider
-        .client_id
-        .as_deref()
-        .ok_or_else(|| eyre!("provider has no client id"))?;
-    let cookie_secret = app
-        .provider
-        .cookie_secret
-        .as_deref()
-        .ok_or_else(|| eyre!("provider has no cookie secret"))?;
-
-    let jar = app.session_cookie.jar(request.headers());
-    let sid = app
-        .session_cookie
-        .read(&jar)
-        .unwrap_or_else(oauth::new_session_id);
-
     let redirect = oauth::redirect_param(request.uri())
         .zip(app.provider.mode)
         .and_then(|(rd, mode)| {
@@ -107,6 +90,28 @@ pub(super) async fn handle_auth_start(
             )
         })
         .unwrap_or_default();
+    auth_start(&app, request.headers(), redirect)
+}
+
+/// Begin the OAuth flow: ensure a session id, sign the state, and redirect to
+/// the authorize endpoint with `redirect` carried in the state.
+pub(super) fn auth_start(app: &Application, headers: &HeaderMap, redirect: String) -> Result<Response> {
+    let client_id = app
+        .provider
+        .client_id
+        .as_deref()
+        .ok_or_else(|| eyre!("provider has no client id"))?;
+    let cookie_secret = app
+        .provider
+        .cookie_secret
+        .as_deref()
+        .ok_or_else(|| eyre!("provider has no cookie secret"))?;
+
+    let jar = app.session_cookie.jar(headers);
+    let sid = app
+        .session_cookie
+        .read(&jar)
+        .unwrap_or_else(oauth::new_session_id);
 
     let state = OAuthState {
         iss: oauth_state::issuer(client_id),
