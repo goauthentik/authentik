@@ -127,8 +127,8 @@ These templates are rendered with Django's templating engine, so you can also us
 
 Templates can extend the base email template and use standard Django template tags. For example:
 
-:::warning
-Keep each Django template tag (`{% ... %}`) on a single line. A tag split across multiple lines (for example by an HTML formatter) fails to parse and the email stage errors with "Request has been denied".
+:::info
+Each Django `{% ... %}` tag must stay on one line; a tag wrapped across lines won't parse.
 :::
 
 <!-- prettier-ignore -->
