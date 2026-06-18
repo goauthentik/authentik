@@ -442,6 +442,7 @@ class _PostgresConsumer(Consumer):
         # Run required processes first
         self._scheduler()
         self._purge_locks()
+        self._auto_purge()
 
         # If we don't have a connection yet, fetch missed notifications from the table directly
         if self._listen_connection is None and not self.pending:
@@ -487,9 +488,6 @@ class _PostgresConsumer(Consumer):
             else:
                 self.logger.debug("Message already consumed. Skipping.", message_id=message_id)
                 continue
-
-        # No message to process, we can do some cleaning
-        self._auto_purge()
 
         self.misses = 0
         return None
