@@ -2,7 +2,7 @@ use std::{str::FromStr as _, sync::OnceLock, time::Duration};
 
 use eyre::Result;
 use sqlx::{
-    ConnectOptions as _, Executor as _, PgConnection, PgPool,
+    AssertSqlSafe, ConnectOptions as _, Executor as _, PgConnection, PgPool,
     postgres::{PgConnectOptions, PgPoolOptions, PgSslMode},
 };
 use tokio::fs::read_to_string;
@@ -85,7 +85,7 @@ pub async fn init(tasks: &mut Tasks) -> Result<()> {
                     "SET application_name = '{application_name}'; SET search_path = \
                      '{default_schema}';"
                 );
-                conn.execute(query.as_str()).await?;
+                conn.execute(AssertSqlSafe(query)).await?;
                 Ok(())
             })
         });
