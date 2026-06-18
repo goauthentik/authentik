@@ -127,67 +127,41 @@ These templates are rendered with Django's templating engine, so you can also us
 
 Templates can extend the base email template and use standard Django template tags. For example:
 
+:::warning
+Keep each Django template tag (`{% ... %}`) on a single line. A tag split across multiple lines (for example by an HTML formatter) fails to parse and the email stage errors with "Request has been denied".
+:::
+
+<!-- prettier-ignore -->
 ```html
-{# This comment is not rendered in the final email. #} {% extends "email/base.html" %} {% load i18n
-%} {% load humanize %} {% block content %}
+{# This comment is not rendered in the final email. #}
+{% extends "email/base.html" %}
+{% load i18n %}
+{% load humanize %}
+
+{% block content %}
 <tr>
-    <td class="alert alert-success">
-        {% blocktrans with username=user.username %} Hi {{ username }},{% endblocktrans %}
+    <td align="center">
+        <h1>
+            {% blocktrans with username=user.username %}Hi {{ username }},{% endblocktrans %}
+        </h1>
     </td>
 </tr>
 <tr>
-    <td class="content-wrap">
-        <table width="100%" cellpadding="0" cellspacing="0">
+    <td align="center">
+        <table border="0">
             <tr>
-                <td class="content-block">
-                    {% trans 'You recently requested to change your password for your authentik
-                    account. Use the button below to set a new password.' %}
+                <td align="center" style="max-width: 300px; padding: 20px 0; color: #212124;">
+                    {% blocktrans %}You recently requested to change your password for your authentik account. Use the button below to set a new password.{% endblocktrans %}
                 </td>
             </tr>
             <tr>
-                <td class="content-block">
-                    <table
-                        role="presentation"
-                        border="0"
-                        cellpadding="0"
-                        cellspacing="0"
-                        class="btn btn-primary"
-                    >
-                        <tbody>
-                            <tr>
-                                <td align="center">
-                                    <table
-                                        role="presentation"
-                                        border="0"
-                                        cellpadding="0"
-                                        cellspacing="0"
-                                    >
-                                        <tbody>
-                                            <tr>
-                                                <td>
-                                                    <a
-                                                        id="confirm"
-                                                        href="{{ url }}"
-                                                        rel="noopener noreferrer"
-                                                        target="_blank"
-                                                    >
-                                                        {% trans 'Reset Password' %}
-                                                    </a>
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <td align="center" class="btn btn-primary">
+                    <a id="confirm" href="{{ url }}" rel="noopener noreferrer" target="_blank">{% trans 'Reset Password' %}</a>
                 </td>
             </tr>
             <tr>
-                <td class="content-block">
-                    {% blocktrans with expires=expires|naturaltime %} If you did not request a
-                    password change, please ignore this email. The link above is valid for {{
-                    expires }}. {% endblocktrans %}
+                <td align="center" style="padding: 20px; font-size: 12px; color: #212124;">
+                    {% blocktrans with expires=expires|naturaltime %}If you did not request a password change, please ignore this email. The link above is valid for {{ expires }}.{% endblocktrans %}
                 </td>
             </tr>
         </table>
