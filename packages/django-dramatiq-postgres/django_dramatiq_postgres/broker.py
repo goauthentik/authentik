@@ -4,6 +4,7 @@ import time
 from collections.abc import Callable, Iterable
 from datetime import UTC, datetime, timedelta
 from typing import Any, ParamSpec, TypeVar, cast
+from uuid import UUID
 
 import tenacity
 from django.core.exceptions import ImproperlyConfigured
@@ -81,6 +82,7 @@ class PostgresBroker(Broker):
         super().__init__(*args, middleware=[], **kwargs)  # type: ignore[misc]
         self.logger = get_logger(__name__, type(self))
 
+        self.actor_options.add("dependencies")
         self.queues = set()
 
         self.db_alias = db_alias
@@ -132,7 +134,6 @@ class PostgresBroker(Broker):
         return {
             "queue_name": message.queue_name,
             "actor_name": message.actor_name,
-            "state": TaskState.QUEUED,
             "retries": message.options.get("retries", 0),
             "eta": eta,
         }
@@ -158,6 +159,7 @@ class PostgresBroker(Broker):
             "Enqueueing message on queue", message_id=message.message_id, queue=queue_name
         )
 
+        dependencies = message.options.pop("dependencies", [])
         message.options["model_defaults"] = self.model_defaults(message)
         message.options["model_create_defaults"] = {}
         self.emit_before("enqueue", message, delay)
@@ -168,6 +170,9 @@ class PostgresBroker(Broker):
             }
             defaults = message.options.pop("model_defaults")
             defaults["message"] = message.encode()
+            defaults["state"] = (
+                TaskState.QUEUED if not dependencies else TaskState.WAITING_FOR_DEPENDENCIES
+            )
             create_defaults = {
                 **query,
                 **defaults,
@@ -181,6 +186,8 @@ class PostgresBroker(Broker):
             )
             message.options["task"] = task
             message.options["task_created"] = created
+            if created and dependencies:
+                task.dependencies.set(dependencies)
 
             self.emit_after("enqueue", message, delay)
         return message
@@ -296,12 +303,53 @@ class _PostgresConsumer(Consumer):
         )  # type: ignore[no-untyped-call]
         return cast(int, lock_id)
 
+    def _backlog_waiting_for_dependencies(self) -> None:
+        self.logger.debug("Backlogging tasks waiting for dependencies", queue=self.queue_name)
+        with transaction.atomic(using=self.db_alias):
+            for task in self.query_set.filter(
+                queue_name=self.queue_name,
+                state=TaskState.WAITING_FOR_DEPENDENCIES,
+            ).select_for_update():
+                dependencies_states = task.dependencies.values_list("state", flat=True)
+                if any(state == TaskState.REJECTED for state in dependencies_states):
+                    self.logger.debug(
+                        "Task found with rejected dependencies, rejecting it too.",
+                        queue=self.queue_name,
+                        task_id=task.message_id,
+                    )
+                    task.state = TaskState.REJECTED
+                    task.message = b""
+                    task.mtime = timezone.now()
+                    task.eta = None
+                    task.save()
+                elif all(state == TaskState.DONE for state in dependencies_states):
+                    self.logger.debug(
+                        "Task found with all dependencies done, enqueuing.",
+                        queue=self.queue_name,
+                        task_id=task.message_id,
+                    )
+                    task.state = TaskState.QUEUED
+                    task.mtime = timezone.now()
+                    task.save()
+                else:
+                    self.logger.debug(
+                        "Task is still waiting for dependencies, skipping.",
+                        queue=self.queue_name,
+                        task_id=task.message_id,
+                    )
+
     def _fetch_pending_messages(self) -> set[str]:
         self.logger.debug("Fetching for pending messages", queue=self.queue_name)
         pending = set(
             self.query_set.exclude(message_id__in=self.in_processing)
             .filter(queue_name=self.queue_name)
-            .exclude(state__in=(TaskState.DONE, TaskState.REJECTED))
+            .exclude(
+                state__in=(
+                    TaskState.DONE,
+                    TaskState.REJECTED,
+                    TaskState.WAITING_FOR_DEPENDENCIES,
+                )
+            )
             .exclude(eta__gte=timezone.now() + timedelta(seconds=self.timeout))
             .order_by(F("eta").asc(nulls_first=True))
             .values_list("message_id", flat=True)
@@ -353,7 +401,11 @@ class _PostgresConsumer(Consumer):
                     "state": TaskState.CONSUMED.value,
                     "mtime": timezone.now(),
                     "message_id": message_id,
-                    "excluded_states": [TaskState.DONE.value, TaskState.REJECTED.value],
+                    "excluded_states": [
+                        TaskState.DONE.value,
+                        TaskState.REJECTED.value,
+                        TaskState.WAITING_FOR_DEPENDENCIES.value,
+                    ],
                     "maximum_eta": timezone.now() + timedelta(seconds=self.timeout),
                     "lock_id": self._get_message_lock_id(message_id),
                 },
@@ -420,6 +472,9 @@ class _PostgresConsumer(Consumer):
         if not self.pending:
             self.pending = self._fetch_pending_messages()
 
+        if not self.pending:
+            self._backlog_waiting_for_dependencies()
+
         # If we have some messages pending, loop to find one to process
         while True:
             try:
@@ -477,10 +532,26 @@ class _PostgresConsumer(Consumer):
     @raise_broker_connection_error
     def ack(self, message: MessageProxy) -> None:
         self._post_process_message(message, TaskState.DONE)
+        with transaction.atomic(using=self.db_alias):
+            dependents = self.query_set.select_for_update().filter(
+                state=TaskState.WAITING_FOR_DEPENDENCIES,
+                dependencies=cast(UUID, message.message_id),
+            )
+            for dependent in dependents:
+                dependencies_state = dependent.dependencies.using(self.db_alias).values_list(
+                    "state", flat=True
+                )
+                if all(state == TaskState.DONE for state in dependencies_state):
+                    dependent.state = TaskState.QUEUED
+                    dependent.save()
 
     @raise_broker_connection_error
     def nack(self, message: MessageProxy) -> None:
         self._post_process_message(message, TaskState.REJECTED)
+        self.query_set.filter(
+            state=TaskState.WAITING_FOR_DEPENDENCIES,
+            dependencies=cast(UUID, message.message_id),
+        ).update(state=TaskState.REJECTED, message=b"", mtime=timezone.now(), eta=None)
 
     @raise_broker_connection_error
     def requeue(self, messages: Iterable[MessageProxy]) -> None:
@@ -499,7 +570,7 @@ class _PostgresConsumer(Consumer):
         if timezone.now() - self.scheduler_last_run < self.scheduler_interval:
             return
         self.scheduler.run()
-        self.schedule_last_run = timezone.now()
+        self.scheduler_last_run = timezone.now()
 
     def _purge_locks(self) -> None:
         while True:

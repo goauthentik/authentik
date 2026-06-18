@@ -68,6 +68,7 @@ export class FleetConnectorForm extends ModelForm<FleetConnector, string> {
                         label=${msg("Fleet API Token")}
                         placeholder=${msg("Provide your Fleet API token...")}
                         name="token"
+                        plaintext
                         ?revealed=${!this.instance}
                     ></ak-secret-text-input>
                     <ak-switch-input

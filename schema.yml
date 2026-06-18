@@ -36621,6 +36621,7 @@ components:
       - aws
       - slack
       - sfdc
+      - gitlab
       - webex
       - vcenter
       type: string
@@ -42660,6 +42661,7 @@ components:
       - zh-hant
     LastTaskStatusEnum:
       enum:
+      - waiting_for_dependencies
       - queued
       - consumed
       - preprocess
@@ -56764,6 +56766,7 @@ components:
       - uid
     TaskAggregatedStatusEnum:
       enum:
+      - waiting_for_dependencies
       - queued
       - consumed
       - preprocess
@@ -56777,6 +56780,7 @@ components:
       type: string
     TaskStatusEnum:
       enum:
+      - waiting_for_dependencies
       - queued
       - consumed
       - preprocess
