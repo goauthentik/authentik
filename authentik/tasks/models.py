@@ -6,6 +6,7 @@ import pgtrigger
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
+from django.db.utils import IntegrityError
 from django.utils.translation import gettext_lazy as _
 from django_dramatiq_postgres.models import TaskBase, TaskState
 from dramatiq.errors import Retry
@@ -174,14 +175,17 @@ class TaskLog(InternallyManagedMixin, models.Model):
     def create_from_log_event(cls, task: Task, log_event: LogEvent) -> Self | None:
         if not task.message:
             return None
-        return cls.objects.create(
-            task=task,
-            event=log_event.event,
-            log_level=log_event.log_level,
-            logger=log_event.logger,
-            timestamp=log_event.timestamp,
-            attributes=sanitize_item(log_event.attributes),
-        )
+        try:
+            return cls.objects.create(
+                task=task,
+                event=log_event.event,
+                log_level=log_event.log_level,
+                logger=log_event.logger,
+                timestamp=log_event.timestamp,
+                attributes=sanitize_item(log_event.attributes),
+            )
+        except IntegrityError:
+            return None
 
     @classmethod
     def bulk_create_from_log_events(
@@ -191,19 +195,22 @@ class TaskLog(InternallyManagedMixin, models.Model):
     ) -> list[Self] | None:
         if not task.message:
             return None
-        return cls.objects.bulk_create(
-            [
-                cls(
-                    task=task,
-                    event=log_event.event,
-                    log_level=log_event.log_level,
-                    logger=log_event.logger,
-                    timestamp=log_event.timestamp,
-                    attributes=sanitize_item(log_event.attributes),
-                )
-                for log_event in log_events
-            ]
-        )
+        try:
+            return cls.objects.bulk_create(
+                [
+                    cls(
+                        task=task,
+                        event=log_event.event,
+                        log_level=log_event.log_level,
+                        logger=log_event.logger,
+                        timestamp=log_event.timestamp,
+                        attributes=sanitize_item(log_event.attributes),
+                    )
+                    for log_event in log_events
+                ]
+            )
+        except IntegrityError:
+            return None
 
     def to_log_event(self) -> LogEvent:
         return LogEvent(
