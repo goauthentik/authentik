@@ -15,6 +15,7 @@
 
 import { useColorDesignTokens, oklchTransform, type VPPair } from "./color-libs.js";
 import { instance, theme, ref } from "../shared.js";
+import { type Reference } from "styleframe";
 
 export const colors = useColorDesignTokens(instance, {
     "accent": "#fd4b2d",

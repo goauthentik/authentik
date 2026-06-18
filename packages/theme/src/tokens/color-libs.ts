@@ -4,8 +4,9 @@ import { createVariableFunction } from "styleframe";
 import { createUseVariable } from "@styleframe/theme";
 import { formatHex, oklch as toOklch, toGamut } from "culori";
 
-type Variable = ReturnType<ReturnType<typeof createVariableFunction>>;
-type VPPair = [Variable, string];
+import { type Reference } from "styleframe";
+export type Variable = ReturnType<ReturnType<typeof createVariableFunction>>;
+export type VPPair = [Variable, string];
 
 /*
  * Restrict the OKLCH values to six decimal places; Javascript will give it to you accurate to 16
@@ -18,13 +19,17 @@ type VPPair = [Variable, string];
 
 const toSrgb = toGamut("rgb", "oklch");
 const round = (v: number, precision = 6) => Number(v.toFixed(precision)).toString();
-export const oklchTransform = (value: string) => {
-        const c = toOklch(value);
-        if (!c || c.l == null || c.c == null) {
-            return value;
-        }
-
-        const result = `oklch(${round(c.l)} ${round(c.c)} ${round(c.h ?? 0)} / ${round(c.alpha ?? 1)})`;
-        return `${result} /* ${formatHex(toSrgb(c))} */`;
+export const oklchTransform = (value: string | Reference<string>) => {
+    if (typeof value !== "string") {
+        return value;
+    }
+    
+    const c = toOklch(value);
+    if (!c || c.l == null || c.c == null) {
+        return value;
+    }
+    
+    const result = `oklch(${round(c.l)} ${round(c.c)} ${round(c.h ?? 0)} / ${round(c.alpha ?? 1)})`;
+    return `${result} /* ${formatHex(toSrgb(c))} */`;
 };
 export const useColorDesignTokens = createUseVariable("color", { transform: oklchTransform });

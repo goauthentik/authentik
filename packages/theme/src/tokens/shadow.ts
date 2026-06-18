@@ -7,6 +7,7 @@
 
 import { theme, variable, instance } from "../shared.js";
 import { createUseVariable } from "@styleframe/theme";
+import type { VPPair } from "./color-libs.js";
 const useShadowTokens = createUseVariable("shadow");
 
 export const shadow = useShadowTokens(instance, {

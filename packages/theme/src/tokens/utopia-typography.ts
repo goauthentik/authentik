@@ -10,23 +10,37 @@
 
 import { instance, variable } from "../shared.js";
 import { useFontSizeDesignTokens } from "@styleframe/theme";
+import { calculateTypeScale } from "utopia-core";
 
-export const fontFamilyBody = variable("font.family-body", "var(--ak-font-family-sans-serif)");
-export const fontFamilyHeading = variable("font.family-heading", "var(--ak-generic-display)");
-export const fontFamilyCode = variable("font.family-code", "var(--ak-font-family-monospace)");
-
-
-
-export const fontSize = useFontSizeDesignTokens(instance, {
-    "xs": "0.75rem",
-    "sm": "0.875rem",
-    "md": "1rem",
-    "lg": "1.125rem",
-    "xl": "1.25rem",
-    "2xl": "1.5rem",
-    "3xl": "1.75rem",
-    "4xl": "2.25rem",
+const utopiaSizes = calculateTypeScale({
+  minWidth: 320,
+  maxWidth: 1440,
+  minFontSize: 14,
+  maxFontSize: 18,
+  minTypeScale: 1.125,
+  maxTypeScale: 1.25,
+  positiveSteps: 5,
+  negativeSteps: 2
 });
+
+if (utopiaSizes === undefined) {
+    throw new Error("Failed to parse utopiaScale configuration for utopia spacing.");
+}
+
+utopiaSizes.reverse();
+
+const utopiaScaling = ["xs", "sm", "md", "lg", "xl", "2xl", "3xl", "4xl"].reduce((acc, s, idx) => {
+    const size = utopiaSizes[idx];
+    if (!size) {
+        throw new Error("Scale elements out of range for utopia font sizing.");
+    }
+        
+        return { ...acc, [s]: size.clamp };
+},
+    {}
+);
+
+export const fontSize = useFontSizeDesignTokens(instance, utopiaScaling);
 
 export const fontWeightLight = variable("font.weight-light", 300);
 export const fontWeightNormal = variable("font.weight-normal", 400);

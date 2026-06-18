@@ -3,10 +3,11 @@
  */
 
 import { instance } from "../shared.js";
-
 import { createUseVariable } from "@styleframe/theme";
 
 const useSpacing = createUseVariable("space");
+
+// 4, 8, 16, 24, 32, 48, 60 pixels: the "standard" progression.
 
 export const space = useSpacing(instance, {
     "xs": "0.25rem",
