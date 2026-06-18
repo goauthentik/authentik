@@ -70,8 +70,8 @@ class TestAccountSwitch(FlowTestCase):
         assert browser_key is not None
         return browser_key
 
-    def test_no_brand_flow_falls_back(self):
-        """Test switching falls back to the default authentication flow"""
+    def test_no_brand_flow_disables_switching(self):
+        """Test switching 404s when the brand has no account switch flow"""
         self.brand.flow_account_switch = None
         self.brand.save()
         self.login(self.user)
@@ -79,22 +79,6 @@ class TestAccountSwitch(FlowTestCase):
         create_test_session(self.other_user, browser_key=browser_key)
 
         response = self.client.get(self.switch_url(self.other_user))
-
-        self.assertEqual(response.status_code, 302)
-        self.assertEqual(
-            response.url,
-            reverse("authentik_core:if-flow", kwargs={"flow_slug": self.flow.slug}),
-        )
-        plan: FlowPlan = self.client.session[SESSION_KEY_PLAN]
-        self.assertEqual(plan.context[PLAN_CONTEXT_PENDING_USER], self.other_user)
-
-    def test_no_flow_at_all(self):
-        """Test switching 404s when no authentication flow exists either"""
-        self.brand.flow_account_switch = None
-        self.brand.save()
-        Flow.objects.filter(designation=FlowDesignation.AUTHENTICATION).delete()
-
-        response = self.client.get(self.switch_url(self.user))
 
         self.assertEqual(response.status_code, 404)
 

@@ -8,7 +8,6 @@ from django.views import View
 
 from authentik.core.models import AuthenticatedSession
 from authentik.flows.exceptions import FlowNonApplicableException
-from authentik.flows.models import FlowDesignation
 from authentik.flows.planner import (
     PLAN_CONTEXT_ACCOUNT_SWITCH_FROM_USER,
     PLAN_CONTEXT_IS_ACCOUNT_SWITCH,
@@ -16,7 +15,6 @@ from authentik.flows.planner import (
     FlowPlanner,
 )
 from authentik.flows.stage import PLAN_CONTEXT_PENDING_USER_IDENTIFIER
-from authentik.flows.views.executor import ToDefaultFlow
 
 QS_ACCOUNT_SWITCH_STALE = "account_switch_stale"
 
@@ -25,9 +23,9 @@ class AccountSwitchView(View):
     """Authenticate another login held by this browser."""
 
     def get(self, request: HttpRequest, user_uid: str) -> HttpResponse:
-        flow = request.brand.flow_account_switch or ToDefaultFlow.get_flow(
-            request, FlowDesignation.AUTHENTICATION
-        )
+        flow = request.brand.flow_account_switch
+        if not flow:
+            raise Http404
         context = {}
         session = self.get_browser_session(request, user_uid)
         stale_user_uid = None

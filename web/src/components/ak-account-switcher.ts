@@ -117,7 +117,7 @@ export class AccountSwitcher extends WithSession(AKElement) {
 
     render(): SlottedTemplateResult {
         const currentUser = this.currentUser;
-        if (!currentUser) {
+        if (!currentUser || !globalAK().brand.flowAccountSwitch) {
             return null;
         }
         const displayName =
