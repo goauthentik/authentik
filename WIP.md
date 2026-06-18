@@ -191,8 +191,13 @@ step below is meant to be one focused, compilable, testable commit.
 
 ### Phase F — modes (needs C, D, E)
 
-- [ ] **F16.** Forward-auth URL helpers (`getTraefikForwardUrl`, `getNginxForwardUrl`) +
+- [x] **F16.** Forward-auth URL helpers (`getTraefikForwardUrl`, `getNginxForwardUrl`) +
   `ReportMisconfiguration` (events API). Parsing tests.
+  Done in `handlers/forward.rs`: `traefik_forward_url` (`X-Forwarded-Proto/Host/Uri`),
+  `nginx_forward_url` (`X-Original-URL`), and `Application::report_misconfiguration` (POSTs a
+  `ConfigurationError` event via `events_events_create`). REFACTOR: `Application` now holds the
+  full `api_config: Configuration` (was just the client) — needed for the events API; updated the
+  3 backchannel call sites. 4 parsing tests.
 - [ ] **F17.** `handle_traefik` + `handle_caddy` (shared logic): callback/logout dispatch,
   `check_auth`→headers, allowlist, else auth-start.
 - [ ] **F18.** `handle_nginx` (200+headers / redirect-flag session save / 401) and `handle_envoy`

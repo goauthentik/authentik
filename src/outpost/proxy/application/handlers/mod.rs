@@ -234,7 +234,7 @@ pub(super) async fn handle_auth_callback(
 
     let redirect_uri = oauth::callback_redirect_uri(&app.provider.external_host)?;
     let access_token = backchannel::exchange_code(
-        &app.client,
+        &app.api_config.client,
         &app.endpoint.token_url,
         app.token_host.as_deref(),
         &code,

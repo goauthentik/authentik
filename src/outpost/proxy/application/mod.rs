@@ -1,12 +1,12 @@
 use std::sync::Arc;
 use std::time::Duration;
 
+use ak_client::apis::configuration::Configuration;
 use ak_client::models::{ProxyMode, ProxyOutpostConfig};
 use ak_common::{config, tls::store::Certificate};
 use axum::{Router, routing::any};
 use eyre::{Result, eyre};
 use moka::future::Cache;
-use reqwest_middleware::ClientWithMiddleware;
 use tracing::instrument;
 use url::Url;
 
@@ -29,8 +29,8 @@ pub(super) struct Application {
     pub(super) endpoint: OidcEndpoint,
     pub(super) session_store: SessionStore,
     pub(super) session_cookie: SessionCookie,
-    /// Backchannel HTTP client (shares the API client's connection pool).
-    pub(super) client: ClientWithMiddleware,
+    /// Authenticated API client configuration (backchannel calls + events API).
+    pub(super) api_config: Configuration,
     /// `Host` header for backchannel token requests (browser host), if rewriting applies.
     pub(super) token_host: Option<String>,
     /// Short-lived cache of claims keyed by the `Authorization` header.
@@ -146,7 +146,7 @@ impl Application {
             endpoint,
             session_store,
             session_cookie,
-            client: outpost.controller.api_config.client.clone(),
+            api_config: outpost.controller.api_config.clone(),
             token_host,
             auth_cache: Cache::builder()
                 .time_to_live(Duration::from_secs(60))

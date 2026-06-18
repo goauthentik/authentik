@@ -58,7 +58,7 @@ impl Application {
         let client_id = self.provider.client_id.as_deref()?;
         let client_secret = self.provider.client_secret.as_deref()?;
         backchannel::introspect_token(
-            &self.client,
+            &self.api_config.client,
             &self.endpoint.token_introspection,
             self.token_host.as_deref(),
             client_id,
@@ -92,7 +92,7 @@ impl Application {
                 .ok_or_else(|| eyre!("provider has no client secret"))?;
             token::verify_hs256(token, client_secret, &self.endpoint.issuer, client_id)
         } else {
-            let jwks = backchannel::fetch_jwks(&self.client, &self.endpoint.jwks_uri).await?;
+            let jwks = backchannel::fetch_jwks(&self.api_config.client, &self.endpoint.jwks_uri).await?;
             token::verify_rs256(token, &jwks, &self.endpoint.issuer, client_id)
         }
     }
@@ -110,7 +110,7 @@ impl Application {
         let client_id = self.provider.client_id.as_deref()?;
         let scope = self.provider.scopes_to_request.join(" ");
         let id_token = backchannel::client_credentials_token(
-            &self.client,
+            &self.api_config.client,
             &self.endpoint.token_url,
             self.token_host.as_deref(),
             client_id,
