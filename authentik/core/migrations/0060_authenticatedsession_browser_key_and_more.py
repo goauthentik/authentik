@@ -18,6 +18,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name="authenticatedsession",
             name="is_current",
-            field=models.BooleanField(default=True),
+            field=models.BooleanField(default=False),
         ),
     ]

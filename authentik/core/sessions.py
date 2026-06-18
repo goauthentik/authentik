@@ -39,7 +39,11 @@ class SessionStore(SessionBase):
         (AuthenticatedSession.from_request), so a recorded session cookie can't be
         replayed to resume the previous account without going through a flow."""
         authenticated_session = getattr(session, "authenticatedsession", None)
-        if authenticated_session is not None and not authenticated_session.is_current:
+        if (
+            authenticated_session is not None
+            and authenticated_session.browser_key
+            and not authenticated_session.is_current
+        ):
             raise SuspiciousOperation("Session denied: superseded by a newer login")
 
     def _get_session_from_db(self):

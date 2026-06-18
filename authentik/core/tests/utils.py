@@ -50,6 +50,7 @@ def create_test_session(user: User, browser_key: str | None = None) -> Authentic
         session=Session.objects.get(session_key=store.session_key),
         user=user,
         browser_key=browser_key,
+        is_current=True,
     )
 
 

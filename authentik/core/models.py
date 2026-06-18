@@ -1375,7 +1375,7 @@ class AuthenticatedSession(SerializerModel):
     # Whether this is the login the browser most recently switched to. Stored in the
     # database (not just in the cookie) so a recorded session cookie can't be replayed
     # after the browser switched to another account.
-    is_current = models.BooleanField(default=True)
+    is_current = models.BooleanField(default=False)
 
     @property
     def serializer(self) -> type[Serializer]:
@@ -1409,4 +1409,5 @@ class AuthenticatedSession(SerializerModel):
             session=Session.objects.filter(session_key=request.session.session_key).first(),
             user=user,
             browser_key=browser_key,
+            is_current=True,
         )
