@@ -4,13 +4,19 @@ use std::{fmt, sync::Arc};
 use ak_axum::error::Result;
 use axum::{
     extract::{Query, Request, State},
-    response::Response,
+    http::{StatusCode, header},
+    response::{IntoResponse as _, Response},
 };
+use eyre::eyre;
 use serde::{Deserialize, Deserializer};
 use tower::util::ServiceExt as _;
 use tracing::{debug, instrument};
 
-use crate::outpost::proxy::application::Application;
+use crate::outpost::proxy::{
+    application::Application,
+    oauth,
+    oauth_state::{self, OAuthState},
+};
 
 pub(super) mod forward;
 pub(super) mod proxy;
@@ -63,6 +69,53 @@ pub(crate) async fn handle(app: Arc<Application>, request: Request) -> Result<Re
     }
 
     Ok(app.router.clone().with_state(app).oneshot(request).await?)
+}
+
+#[instrument(skip_all)]
+pub(super) async fn handle_auth_start(
+    State(app): State<Arc<Application>>,
+    request: Request,
+) -> Result<Response> {
+    let client_id = app
+        .provider
+        .client_id
+        .as_deref()
+        .ok_or_else(|| eyre!("provider has no client id"))?;
+    let cookie_secret = app
+        .provider
+        .cookie_secret
+        .as_deref()
+        .ok_or_else(|| eyre!("provider has no cookie secret"))?;
+
+    let jar = app.session_cookie.jar(request.headers());
+    let sid = app
+        .session_cookie
+        .read(&jar)
+        .unwrap_or_else(oauth::new_session_id);
+
+    let state = OAuthState {
+        iss: oauth_state::issuer(client_id),
+        sid: sid.clone(),
+        state: oauth::new_session_id(),
+        redirect: oauth::redirect_param(request.uri()).unwrap_or_default(),
+    };
+    let token = state.encode(cookie_secret)?;
+
+    let redirect_uri = oauth::callback_redirect_uri(&app.provider.external_host)?;
+    let authorize = oauth::authorize_url(
+        &app.endpoint.auth_url,
+        client_id,
+        &redirect_uri,
+        &app.provider.scopes_to_request,
+        &token,
+    )?;
+
+    let cookie = app.session_cookie.build(&sid, app.session_max_age());
+    Ok((
+        jar.add(cookie),
+        (StatusCode::FOUND, [(header::LOCATION, authorize)]),
+    )
+        .into_response())
 }
 
 #[instrument(skip_all)]

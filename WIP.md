@@ -116,8 +116,15 @@ step below is meant to be one focused, compilable, testable commit.
 
 ### Phase C — auth-start + callback (shared flow; needs A2–A4, B)
 
-- [ ] **C8.** `/outpost.goauthentik.io/start` route + `handle_auth_start`: ensure session ID, build
+- [x] **C8.** `/outpost.goauthentik.io/start` route + `handle_auth_start`: ensure session ID, build
   state JWT, build authorize URL with `?rd=`, 302. (First user-visible behavior.)
+  Done: pure URL helpers in `src/outpost/proxy/oauth.rs` (`authorize_url`, `callback_redirect_uri`,
+  `redirect_param`, `new_session_id` (uuid v4), signature/`rd` constants; 4 tests). `/start` route
+  added; `handle_auth_start` (in `application/handlers/mod.rs`) reads/creates the session id from
+  the signed cookie, builds the state JWT, 302s to the authorize URL, and sets the session cookie
+  (`Application::session_max_age` from `access_token_validity`, via `from_secs_f64` to avoid an
+  `as` cast). No store write at start (cookie carries the sid; callback creates the entry).
+  NOTE: `rd` is taken raw here; validation (`checkRedirectParam`) lands in C9.
 - [ ] **C9.** `redirect_to_start` helper: store redirect in session, `InterceptHeaderAuth` 401
   path, forward_domain redirect validation (`checkRedirectParam`).
 - [ ] **C10.** `handle_auth_callback`: validate state JWT + session-ID match, code exchange, verify

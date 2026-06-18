@@ -1,4 +1,5 @@
 use std::sync::Arc;
+use std::time::Duration;
 
 use ak_client::models::{ProxyMode, ProxyOutpostConfig};
 use ak_common::{config, tls::store::Certificate};
@@ -83,7 +84,10 @@ impl Application {
         )?;
 
         let router = Router::new()
-            // TODO: /start
+            .route(
+                "/outpost.goauthentik.io/start",
+                any(handlers::handle_auth_start),
+            )
             .route(
                 "/outpost.goauthentik.io/callback",
                 any(handlers::handle_auth_callback),
@@ -124,5 +128,15 @@ impl Application {
             session_store,
             session_cookie,
         })
+    }
+
+    /// Default session lifetime: the access token validity plus one second
+    /// (so the session never outlives indefinitely), or zero if unset.
+    pub(super) fn session_max_age(&self) -> Duration {
+        self.provider
+            .access_token_validity
+            .map_or(Duration::ZERO, |validity| {
+                Duration::from_secs_f64(validity + 1.0)
+            })
     }
 }
