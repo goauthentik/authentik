@@ -1,7 +1,7 @@
 import "#elements/buttons/Dropdown";
 
 import { globalAK } from "#common/global";
-import { formatUserDisplayName, formatUserSecondaryIdentifier } from "#common/users";
+import { formatUserDisplayName, formatUserSecondaryIdentifier, type UserLike } from "#common/users";
 
 import { AKElement } from "#elements/Base";
 import { WithSession } from "#elements/mixins/session";
@@ -55,7 +55,7 @@ export class AccountSwitcher extends WithSession(AKElement) {
         return formatUserDisplayName(account, this.uiConfig) || account.username;
     }
 
-    protected renderAvatar(account?: Pick<BrowserLocalAccount, "avatar">): SlottedTemplateResult {
+    protected renderAvatar(account?: { avatar?: string }): SlottedTemplateResult {
         if (account?.avatar && !isDefaultAvatar(account.avatar)) {
             return html`<span part="avatar">
                 <img part="avatar-image" src=${account.avatar} alt="" />
@@ -115,10 +115,27 @@ export class AccountSwitcher extends WithSession(AKElement) {
         </a>`;
     }
 
+    protected renderCurrentIdentity(
+        currentUser: Readonly<UserLike & { avatar?: string }>,
+    ): SlottedTemplateResult {
+        const displayName =
+            formatUserDisplayName(currentUser, this.uiConfig) || currentUser.username;
+
+        return html`<div part="container">
+            <div part="identity">
+                ${this.renderAvatar(currentUser)}
+                <span part="toggle-label">${displayName}</span>
+            </div>
+        </div>`;
+    }
+
     render(): SlottedTemplateResult {
         const currentUser = this.currentUser;
-        if (!currentUser || !globalAK().brand.flowAccountSwitch) {
+        if (!currentUser) {
             return null;
+        }
+        if (!globalAK().brand.flowAccountSwitch) {
+            return this.renderCurrentIdentity(currentUser);
         }
         const displayName =
             formatUserDisplayName(currentUser, this.uiConfig) || currentUser.username;

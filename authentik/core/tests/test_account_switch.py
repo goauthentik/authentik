@@ -68,7 +68,8 @@ class TestAccountSwitch(FlowTestCase):
         browser_key = SessionMiddleware.parse_browser_key(
             self.client.cookies[COOKIE_NAME_BROWSER].value
         )
-        assert browser_key is not None
+        if browser_key is None:
+            self.fail("Expected a browser key cookie after login")
         return browser_key
 
     def test_no_brand_flow_disables_switching(self):

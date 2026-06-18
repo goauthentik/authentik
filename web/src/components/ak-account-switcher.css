@@ -20,6 +20,16 @@
     line-height: 1;
 }
 
+[part="identity"] {
+    display: flex;
+    align-items: center;
+    gap: var(--pf-global--spacer--sm);
+    min-height: 2rem;
+    padding-inline: var(--pf-global--spacer--sm);
+    font-size: var(--pf-global--FontSize--md);
+    line-height: 1;
+}
+
 [part="menu"] {
     min-width: 18rem;
 }
