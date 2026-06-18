@@ -47,7 +47,7 @@
 .pf-c-dropdown__toggle.pf-m-plain[part="toggle"] {
     display: flex;
     align-items: center;
-    gap: var(--pf-global--spacer--sm);
+    gap: 0;
     min-height: 2rem;
     padding-block: 0;
     padding-inline: var(--pf-global--spacer--sm);
@@ -67,9 +67,14 @@
     white-space: nowrap;
 }
 
+.pf-c-dropdown__toggle[part="toggle"] [part="toggle-label"] {
+    margin-inline-start: var(--pf-global--spacer--sm);
+}
+
 [part="toggle-icon"] {
     display: inline-flex;
     align-items: center;
+    margin-inline-start: var(--pf-global--spacer--xs);
     margin-block-start: 0;
     line-height: 1;
 }
