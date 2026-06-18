@@ -30,10 +30,11 @@ from authentik.core.models import (
 )
 from authentik.crypto.models import CertificateKeyPair
 from authentik.lib.config import CONFIG
-from authentik.lib.models import DomainlessURLValidator
+from authentik.lib.models import DomainlessURLValidator, InternallyManagedMixin
 from authentik.lib.sync.incoming.models import IncomingSyncSource
 from authentik.lib.sync.models import Sync
 from authentik.lib.utils.time import fqdn_rand
+from authentik.tasks.models import Task
 from authentik.tasks.schedules.common import ScheduleSpec
 
 LDAP_TIMEOUT = 15
@@ -364,6 +365,12 @@ class LDAPSource(IncomingSyncSource):
 
 
 class LDAPSourceSync(Sync):
+    tasks = models.ManyToManyField(
+        Task,
+        related_name="+",
+        through="LDAPSourceSyncTask",
+        through_fields=("ldap_source_sync", "task"),
+    )
     source = models.ForeignKey(LDAPSource, on_delete=models.CASCADE)
 
     users_count = models.PositiveBigIntegerField(default=0)
@@ -371,6 +378,28 @@ class LDAPSourceSync(Sync):
     membership_count = models.PositiveBigIntegerField(default=0)
     user_deletions_count = models.PositiveBigIntegerField(default=0)
     group_deletions_count = models.PositiveBigIntegerField(default=0)
+
+    class Meta:
+        default_permissions = []
+        verbose_name = _("LDAP source sync")
+        verbose_name_plural = _("LDAP source syncs")
+
+    def __str__(self):
+        return f"LDAP Source ({self.source.pk}) Sync ({self.pk})"
+
+
+class LDAPSourceSyncTask(InternallyManagedMixin, models.Model):
+    pk = models.CompositePrimaryKey("ldap_source_sync", "task")
+    ldap_source_sync = models.ForeignKey(LDAPSourceSync, on_delete=models.CASCADE, related_name="+")
+    task = models.ForeignKey(Task, on_delete=models.CASCADE, related_name="+")
+
+    class Meta:
+        default_permissions = []
+        verbose_name = _("LDAP source sync task")
+        verbose_name_plural = _("LDAP source syncs tasks")
+
+    def __str__(self):
+        return f"LDAP Source Sync ({self.ldap_source_sync.pk}) Task ({self.task.pk})"
 
 
 class LDAPSourcePropertyMapping(PropertyMapping):

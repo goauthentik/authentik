@@ -7,6 +7,7 @@ from dramatiq.broker import get_broker
 from dramatiq.message import Message
 
 from authentik.core.models import ExpiringModel
+from authentik.lib.models import InternallyManagedMixin
 from authentik.tasks.models import Task, TaskStatus
 
 
@@ -17,10 +18,12 @@ class SyncStatus(models.TextChoices):
     DONE = TaskStatus.DONE
 
 
-class Sync(ExpiringModel):
+class Sync(InternallyManagedMixin, ExpiringModel):
     uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
 
-    tasks = models.ManyToManyField(Task, related_name="+")
+    # Must be defined by subclasses with a through model
+    # tasks = models.ManyToManyField(Task, related_name="+")
+    tasks: models.ManyToManyField
 
     started_at = models.DateTimeField(auto_now_add=True)
 
