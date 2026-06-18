@@ -33,6 +33,11 @@ pub(crate) fn verify_hs256(
     decode_claims(token, &key, &validation(Algorithm::HS256, issuer, audience))
 }
 
+/// Extract the `kid` from a token header without verifying the signature.
+pub(crate) fn token_kid(token: &str) -> Result<Option<String>> {
+    Ok(decode_header(token)?.kid)
+}
+
 /// Verify an RS256-signed token against the JWK matching its `kid`.
 pub(crate) fn verify_rs256(
     token: &str,

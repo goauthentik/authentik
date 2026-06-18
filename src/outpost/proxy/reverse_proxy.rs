@@ -120,6 +120,7 @@ fn create_proxied_request<B>(
     forward_url: &str,
     mut request: Request<B>,
     upgrade: Option<&str>,
+    host_override: Option<&str>,
 ) -> Result<Request<B>, ProxyError> {
     let contains_te_trailers = request
         .headers()
@@ -161,14 +162,23 @@ fn create_proxied_request<B>(
         }
     }
 
+    // A configured host header overrides the one derived from the URI authority.
+    if let Some(host) = host_override {
+        request.headers_mut().insert(HOST, host.parse()?);
+    }
+
     Ok(request)
 }
 
 /// Proxy `request` to `forward_uri`, handling protocol upgrades (e.g. WebSocket).
+///
+/// `host_override`, when set, replaces the `Host` header sent upstream (the
+/// connection still targets `forward_uri`).
 pub(super) async fn call<C>(
     client_ip: IpAddr,
     forward_uri: &str,
     mut request: Request<Body>,
+    host_override: Option<&str>,
     client: &Client<C, Body>,
 ) -> Result<Response<Body>, ProxyError>
 where
@@ -182,6 +192,7 @@ where
         forward_uri,
         request,
         request_upgrade_type.as_deref(),
+        host_override,
     )?;
     let mut response = client.request(proxied).await?;
 

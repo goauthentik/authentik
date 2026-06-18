@@ -83,8 +83,10 @@ step below is meant to be one focused, compilable, testable commit.
   Done in `src/outpost/proxy/token.rs`: pure `verify_hs256` / `verify_rs256` (issuer + audience
   + exp validated; sets `raw_token` and defaults `ak_proxy`). RS256 works on the `aws_lc_rs`
   backend with no extra feature. 4 fixture tests (HS256, RS256, wrong-issuer, unknown-kid).
-  DEFERRED to B6/C10: the async JWKS **fetch** (reqwest GET), the HS256-vs-RS256 **selection**
-  from `id_token_signing_alg_values_supported`, and JWKS caching/refresh on unknown `kid`.
+  Async JWKS **fetch** + HS256-vs-RS256 **selection** done in C10/D12 (`verify_token`). JWKS
+  **caching** done later: `Application.jwks_cache: ArcSwapOption<JwkSet>`; `verify_rs256_cached`
+  verifies against the cached set when it has the token's `kid`, else refetches + caches
+  (`token::token_kid` peeks the `kid`).
 
 ### Phase B — session + cookies (needs A1)
 
@@ -94,8 +96,9 @@ step below is meant to be one focused, compilable, testable commit.
   **enum** (native `async fn`, static dispatch), not a `dyn` trait — native async-fn traits
   aren't dyn-compatible and we avoid `async-trait`. Each file stores `{expires, data}` JSON and
   expiry is checked on `load` (no mtime/background-cleanup reliance). Added `tempfile` dev-dep.
-  5 tests. DEFERRED: writable-path validation + periodic cleanup sweep (Go's `NewStore`/
-  `CleanupManager`) — not needed for correctness given load-time expiry.
+  5 tests. DONE LATER: `FsSessionStore::new` now verifies the dir is writable (returns `Result`);
+  `cleanup()` sweeps expired files and `cleanup_loop(arbiter)` runs it every 5 min (spawned in
+  `ProxyOutpost::start` for non-embedded outposts). +1 cleanup test.
 - [x] **B6.** Extend `Application` to hold the `SessionStore` (enum), cookie signing key,
   `OidcEndpoint`, backchannel `reqwest` client; wire in `Application::new`. Also add the
   `host_browser` config field (needed by `OidcEndpoint`, see A3). Compiles, no behavior change.
@@ -224,9 +227,12 @@ step below is meant to be one focused, compilable, testable commit.
   inject headers / allowlist passthrough / `redirect_to_start`; sets `X-Forwarded-Host` (via the
   trusted-proxy-aware `ak_axum` `Host` extractor), `backend_override` target; 502 on upstream
   error. (`X-Powered-By` is added by `wrap_router`, not here.) Added deps:
-  `hyper`, `hyper-rustls`, `http-body-util` (+ hyper-util features). DEFERRED: `host_header`
-  override (doesn't fit the vendored `call` cleanly — needs a follow-up) and `UpstreamTiming`
-  metric.
+  `hyper`, `hyper-rustls`, `http-body-util` (+ hyper-util features). DONE LATER: `host_header`
+  override — threaded an optional `host_override` through `reverse_proxy::call` →
+  `create_proxied_request` (sets `Host` after the URI-derived removal); `proxy::handle` passes
+  `claims.ak_proxy.host_header`. DONE LATER: `UpstreamTiming` metric — `proxy::handle` records
+  `authentik_outpost_proxy_upstream_response_duration_seconds` (labels outpost_name/method/scheme/
+  host/upstream_host) around the upstream call, matching Go.
 
 ### Phase G — logout, postgres, error pages
 

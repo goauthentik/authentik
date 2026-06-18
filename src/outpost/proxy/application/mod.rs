@@ -4,8 +4,10 @@ use std::time::Duration;
 use ak_client::apis::configuration::Configuration;
 use ak_client::models::{ProxyMode, ProxyOutpostConfig};
 use ak_common::{config, tls::store::Certificate};
+use arc_swap::ArcSwapOption;
 use axum::{Router, routing::any};
 use eyre::{Result, eyre};
+use jsonwebtoken::jwk::JwkSet;
 use moka::future::Cache;
 use tracing::instrument;
 use url::Url;
@@ -42,6 +44,8 @@ pub(super) struct Application {
     pub(super) unauthenticated_regex: Vec<regex::Regex>,
     /// Client used to forward requests upstream (proxy mode).
     pub(super) upstream_client: upstream::UpstreamClient,
+    /// Cached provider JWKS for RS256 verification (refreshed on unknown `kid`).
+    pub(super) jwks_cache: ArcSwapOption<JwkSet>,
 }
 
 impl Application {
@@ -96,10 +100,10 @@ impl Application {
         let session_store = if embedded {
             SessionStore::Postgres(crate::outpost::proxy::session::postgres::PgSessionStore)
         } else {
-            SessionStore::Filesystem(FsSessionStore::new(std::env::temp_dir()))
+            SessionStore::Filesystem(FsSessionStore::new(std::env::temp_dir())?)
         };
         #[cfg(not(feature = "core"))]
-        let session_store = SessionStore::Filesystem(FsSessionStore::new(std::env::temp_dir()));
+        let session_store = SessionStore::Filesystem(FsSessionStore::new(std::env::temp_dir())?);
 
         let unauthenticated_regex = allowlist::compile_skip_regex(provider.skip_path_regex.as_deref());
 
@@ -173,6 +177,7 @@ impl Application {
             outpost_name: outpost.controller.outpost.load().name.clone(),
             unauthenticated_regex,
             upstream_client,
+            jwks_cache: ArcSwapOption::empty(),
         })
     }
 

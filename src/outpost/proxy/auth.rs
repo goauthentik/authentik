@@ -1,5 +1,7 @@
 //! Resolving claims from the session, the auth cache, or a bearer token.
 
+use std::sync::Arc;
+
 use axum::http::HeaderMap;
 use axum::http::header::AUTHORIZATION;
 use base64::Engine as _;
@@ -92,9 +94,32 @@ impl Application {
                 .ok_or_else(|| eyre!("provider has no client secret"))?;
             token::verify_hs256(token, client_secret, &self.endpoint.issuer, client_id)
         } else {
-            let jwks = backchannel::fetch_jwks(&self.api_config.client, &self.endpoint.jwks_uri).await?;
-            token::verify_rs256(token, &jwks, &self.endpoint.issuer, client_id)
+            self.verify_rs256_cached(token, &self.endpoint.issuer, client_id)
+                .await
         }
+    }
+
+    /// Verify an RS256 token against the cached JWKS, refreshing it when the
+    /// token's `kid` is not present (e.g. after key rotation).
+    async fn verify_rs256_cached(
+        &self,
+        token: &str,
+        issuer: &str,
+        audience: &str,
+    ) -> Result<Claims> {
+        let kid = token::token_kid(token)?.ok_or_else(|| eyre!("token header has no kid"))?;
+
+        if let Some(jwks) = self.jwks_cache.load_full()
+            && jwks.find(&kid).is_some()
+        {
+            return token::verify_rs256(token, &jwks, issuer, audience);
+        }
+
+        let jwks =
+            backchannel::fetch_jwks(&self.api_config.client, &self.endpoint.jwks_uri).await?;
+        let claims = token::verify_rs256(token, &jwks, issuer, audience);
+        self.jwks_cache.store(Some(Arc::new(jwks)));
+        claims
     }
 
     /// Resolve claims from HTTP basic auth: a `goauthentik.io/token` username

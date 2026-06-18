@@ -4,11 +4,17 @@ use std::io::ErrorKind;
 use std::path::PathBuf;
 use std::time::{Duration, SystemTime, UNIX_EPOCH};
 
+use ak_common::Arbiter;
 use eyre::Result;
 use serde::{Deserialize, Serialize};
+use tokio::time::interval;
+use tracing::warn;
 
 use crate::outpost::proxy::claims::Claims;
 use crate::outpost::proxy::session::SessionData;
+
+/// How often expired session files are swept from disk.
+const CLEANUP_INTERVAL: Duration = Duration::from_mins(5);
 
 const SESSION_FILE_PREFIX: &str = "session_";
 
@@ -31,8 +37,12 @@ fn now_unix() -> i64 {
 }
 
 impl FsSessionStore {
-    pub(crate) fn new(dir: PathBuf) -> Self {
-        Self { dir }
+    /// Create a store, verifying the directory is writable.
+    pub(crate) fn new(dir: PathBuf) -> Result<Self> {
+        let probe = dir.join(format!("{SESSION_FILE_PREFIX}write_test"));
+        std::fs::write(&probe, b"")?;
+        let _ = std::fs::remove_file(&probe);
+        Ok(Self { dir })
     }
 
     fn path(&self, sid: &str) -> PathBuf {
@@ -106,6 +116,54 @@ impl FsSessionStore {
         }
         Ok(())
     }
+
+    /// Remove expired session files from the store directory.
+    pub(crate) async fn cleanup(&self) -> Result<()> {
+        let now = now_unix();
+        let mut entries = tokio::fs::read_dir(&self.dir).await?;
+        while let Some(entry) = entries.next_entry().await? {
+            let name = entry.file_name();
+            let Some(name) = name.to_str() else {
+                continue;
+            };
+            if !name.starts_with(SESSION_FILE_PREFIX) {
+                continue;
+            }
+            let path = entry.path();
+            let Ok(bytes) = tokio::fs::read(&path).await else {
+                continue;
+            };
+            if let Ok(record) = serde_json::from_slice::<StoredSession>(&bytes)
+                && record.expires <= now
+            {
+                let _ = tokio::fs::remove_file(&path).await;
+            }
+        }
+        Ok(())
+    }
+}
+
+/// Periodically sweep expired session files from the system temp dir until shutdown.
+pub(crate) async fn cleanup_loop(arbiter: Arbiter) -> Result<()> {
+    let store = match FsSessionStore::new(std::env::temp_dir()) {
+        Ok(store) => store,
+        Err(err) => {
+            warn!(?err, "session directory not writable; cleanup disabled");
+            return Ok(());
+        }
+    };
+    let mut ticker = interval(CLEANUP_INTERVAL);
+    loop {
+        tokio::select! {
+            () = arbiter.shutdown() => break,
+            _ = ticker.tick() => {
+                if let Err(err) = store.cleanup().await {
+                    warn!(?err, "session cleanup failed");
+                }
+            }
+        }
+    }
+    Ok(())
 }
 
 #[cfg(test)]
@@ -132,7 +190,7 @@ mod tests {
     #[tokio::test]
     async fn save_and_load() {
         let dir = tempdir().expect("tempdir");
-        let store = FsSessionStore::new(dir.path().to_path_buf());
+        let store = FsSessionStore::new(dir.path().to_path_buf()).expect("store");
         let session = data("user");
 
         store
@@ -147,7 +205,7 @@ mod tests {
     #[tokio::test]
     async fn load_missing_returns_none() {
         let dir = tempdir().expect("tempdir");
-        let store = FsSessionStore::new(dir.path().to_path_buf());
+        let store = FsSessionStore::new(dir.path().to_path_buf()).expect("store");
 
         assert_eq!(store.load("nope").await.expect("load"), None);
     }
@@ -155,7 +213,7 @@ mod tests {
     #[tokio::test]
     async fn expired_returns_none() {
         let dir = tempdir().expect("tempdir");
-        let store = FsSessionStore::new(dir.path().to_path_buf());
+        let store = FsSessionStore::new(dir.path().to_path_buf()).expect("store");
 
         store
             .save("e", &data("user"), Duration::from_secs(0))
@@ -166,9 +224,29 @@ mod tests {
     }
 
     #[tokio::test]
+    async fn cleanup_removes_only_expired() {
+        let dir = tempdir().expect("tempdir");
+        let store = FsSessionStore::new(dir.path().to_path_buf()).expect("store");
+
+        store
+            .save("live", &data("user"), Duration::from_mins(1))
+            .await
+            .expect("save");
+        store
+            .save("dead", &data("user"), Duration::from_secs(0))
+            .await
+            .expect("save");
+
+        store.cleanup().await.expect("cleanup");
+
+        assert!(dir.path().join("session_live").exists());
+        assert!(!dir.path().join("session_dead").exists());
+    }
+
+    #[tokio::test]
     async fn delete_removes_session() {
         let dir = tempdir().expect("tempdir");
-        let store = FsSessionStore::new(dir.path().to_path_buf());
+        let store = FsSessionStore::new(dir.path().to_path_buf()).expect("store");
 
         store
             .save("abc", &data("user"), Duration::from_mins(1))
@@ -184,7 +262,7 @@ mod tests {
     #[tokio::test]
     async fn logout_deletes_matching_only() {
         let dir = tempdir().expect("tempdir");
-        let store = FsSessionStore::new(dir.path().to_path_buf());
+        let store = FsSessionStore::new(dir.path().to_path_buf()).expect("store");
 
         store
             .save("a", &data("target"), Duration::from_mins(1))

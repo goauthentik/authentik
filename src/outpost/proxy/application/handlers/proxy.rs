@@ -8,6 +8,8 @@ use axum::{
     http::{HeaderName, HeaderValue, StatusCode},
     response::Response,
 };
+use metrics::histogram;
+use tokio::time::Instant;
 use tracing::{instrument, warn};
 use url::Url;
 
@@ -40,7 +42,7 @@ pub(crate) async fn handle(
             .insert(HeaderName::from_static("x-forwarded-host"), host);
     }
 
-    // A user attribute may override the upstream backend.
+    // A user attribute may override the upstream backend and/or the host header.
     let proxy_claims = claims.as_ref().and_then(|claims| claims.ak_proxy.as_ref());
     let target = proxy_claims
         .map(|proxy| proxy.backend_override.as_str())
@@ -49,8 +51,29 @@ pub(crate) async fn handle(
             || app.provider.internal_host.clone().unwrap_or_default(),
             str::to_owned,
         );
+    let host_override = proxy_claims
+        .map(|proxy| proxy.host_header.as_str())
+        .filter(|host| !host.is_empty());
 
-    match reverse_proxy::call(client_ip, &target, request, &app.upstream_client).await {
+    let method = request.method().to_string();
+    let start = Instant::now();
+    let call_result =
+        reverse_proxy::call(client_ip, &target, request, host_override, &app.upstream_client).await;
+
+    let (scheme, upstream_host) = Url::parse(&target)
+        .map(|url| (url.scheme().to_owned(), url.authority().to_owned()))
+        .unwrap_or_default();
+    histogram!(
+        "authentik_outpost_proxy_upstream_response_duration_seconds",
+        "outpost_name" => app.outpost_name.clone(),
+        "method" => method,
+        "scheme" => scheme,
+        "host" => forwarded_host,
+        "upstream_host" => upstream_host,
+    )
+    .record(start.elapsed().as_secs_f64());
+
+    match call_result {
         Ok(response) => Ok(response),
         Err(err) => {
             warn!(?err, "error proxying to upstream server");

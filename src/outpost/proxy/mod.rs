@@ -94,6 +94,15 @@ impl Outpost for ProxyOutpost {
             )?;
         }
 
+        // Non-embedded outposts use the filesystem session store; sweep expired files.
+        if !self.controller.is_embedded() {
+            let arbiter = tasks.arbiter();
+            tasks
+                .build_task()
+                .name(&format!("{}::session_cleanup", module_path!()))
+                .spawn(session::filesystem::cleanup_loop(arbiter))?;
+        }
+
         Ok(())
     }
 
