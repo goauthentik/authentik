@@ -38,3 +38,38 @@ return not request.context.get("is_account_switch", False)
 Bind the policy to the identification, password, authenticator validation, or other stage binding
 depending on what users should confirm when they switch back to a signed-in account. Without these
 policies, the selected account switch flow runs in full.
+
+## Require only MFA for recently used accounts
+
+To require only MFA when the selected account was used in the last 24 hours, create a dedicated
+account switch flow with a Password stage, an Authenticator Validation stage, and a User Login stage.
+Then bind the following expression policy to the Password stage binding:
+
+```python
+from datetime import timedelta
+
+from django.utils import timezone
+
+from authentik.core.models import AuthenticatedSession
+
+flow_plan = request.context.get("flow_plan")
+user = None
+if flow_plan:
+    user = flow_plan.context.get("pending_user")
+
+now = timezone.now()
+if not request.context.get("is_account_switch", False) or not user:
+    return True
+
+recently_used = AuthenticatedSession.objects.filter(
+    user=user,
+    session__expires__gt=now,
+    session__last_used__gte=now - timedelta(hours=24),
+).exists()
+
+return not recently_used
+```
+
+When the policy returns `False`, authentik skips the Password stage and continues to the
+Authenticator Validation stage. When no live session for that account has been used in the last
+24 hours, the Password stage runs and the user completes the full password plus MFA flow.
