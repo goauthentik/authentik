@@ -14,7 +14,6 @@ from authentik.flows.planner import (
     PLAN_CONTEXT_PENDING_USER,
     FlowPlanner,
 )
-from authentik.flows.stage import PLAN_CONTEXT_PENDING_USER_IDENTIFIER
 
 QS_ACCOUNT_SWITCH_STALE = "account_switch_stale"
 
@@ -33,8 +32,6 @@ class AccountSwitchView(View):
             context.update(
                 {
                     PLAN_CONTEXT_PENDING_USER: session.user,
-                    PLAN_CONTEXT_PENDING_USER_IDENTIFIER: session.user.email
-                    or session.user.username,
                     PLAN_CONTEXT_IS_ACCOUNT_SWITCH: True,
                 }
             )

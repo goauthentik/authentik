@@ -23,6 +23,7 @@ from authentik.flows.planner import (
     PLAN_CONTEXT_PENDING_USER,
     FlowPlan,
 )
+from authentik.flows.stage import PLAN_CONTEXT_PENDING_USER_IDENTIFIER
 from authentik.flows.tests import FlowTestCase
 from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.root.middleware import COOKIE_NAME_BROWSER, SessionMiddleware
@@ -97,6 +98,7 @@ class TestAccountSwitch(FlowTestCase):
         )
         plan: FlowPlan = self.client.session[SESSION_KEY_PLAN]
         self.assertEqual(plan.context[PLAN_CONTEXT_PENDING_USER], self.other_user)
+        self.assertNotIn(PLAN_CONTEXT_PENDING_USER_IDENTIFIER, plan.context)
         self.assertTrue(plan.context[PLAN_CONTEXT_IS_ACCOUNT_SWITCH])
         self.assertEqual(plan.context[PLAN_CONTEXT_ACCOUNT_SWITCH_FROM_USER], self.user)
 
@@ -131,9 +133,8 @@ class TestAccountSwitch(FlowTestCase):
         )
 
     @apply_blueprint("default/flow-default-authentication-flow.yaml")
-    def test_default_flow_skips_identification(self):
-        """Test a switch through the default authentication flow doesn't ask for the
-        username again and goes straight to the password stage"""
+    def test_default_flow_runs_identification_without_policy(self):
+        """Test the default flow still runs identification without a skip policy"""
         flow = Flow.objects.get(slug="default-authentication-flow")
         self.brand.flow_account_switch = flow
         self.brand.save()
@@ -146,10 +147,9 @@ class TestAccountSwitch(FlowTestCase):
         response = self.client.get(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug})
         )
-        self.assertEqual(response.status_code, 302)
-        response = self.client.get(response.url)
+        self.assertEqual(response.status_code, 200)
 
-        self.assertStageResponse(response, flow, component="ak-stage-password")
+        self.assertStageResponse(response, flow, component="ak-stage-identification")
 
     def test_full_switch(self):
         """Test the full switch: the new login takes over, the old session survives
