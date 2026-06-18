@@ -90,12 +90,28 @@ class TestTokenJWTAlgConfusion(OAuthTestCase):
             name=generate_id(), slug=generate_id(), provider=self.provider
         )
 
-    def _source_public_key_pem(self) -> bytes:
+    def _public_key_secret_candidates(self) -> dict[str, bytes]:
         """The trusted source's public key, as an attacker would scrape it from
         the JWKS endpoint -- used as the forged HMAC secret."""
-        return self.source_cert.public_key.public_bytes(
-            Encoding.PEM, PublicFormat.SubjectPublicKeyInfo
-        )
+        public_key = self.source_cert.public_key
+        public_numbers = public_key.public_numbers()
+        modulus = public_numbers.n
+        # All the byte representations of the public key an attacker can derive
+        # from the published JWKS/cert and would try as the HMAC secret. The
+        # classic HS/RS confusion only succeeds if the server's HMAC secret bytes
+        # match one of these exactly, so probing all of them turns the test into
+        # a real regression guard rather than a single lucky-shot probe.
+        return {
+            "spki_pem": public_key.public_bytes(Encoding.PEM, PublicFormat.SubjectPublicKeyInfo),
+            "spki_pem_no_trailing_newline": public_key.public_bytes(
+                Encoding.PEM, PublicFormat.SubjectPublicKeyInfo
+            ).rstrip(b"\n"),
+            "spki_der": public_key.public_bytes(Encoding.DER, PublicFormat.SubjectPublicKeyInfo),
+            "pkcs1_pem": public_key.public_bytes(Encoding.PEM, PublicFormat.PKCS1),
+            "pkcs1_der": public_key.public_bytes(Encoding.DER, PublicFormat.PKCS1),
+            "cert_pem": self.source_cert.certificate.public_bytes(Encoding.PEM),
+            "raw_modulus": modulus.to_bytes((modulus.bit_length() + 7) // 8, "big"),
+        }
 
     @staticmethod
     def _forge_hs256(payload: dict, secret: bytes, kid: str) -> str:
@@ -146,19 +162,23 @@ class TestTokenJWTAlgConfusion(OAuthTestCase):
 
     def test_hs256_confusion_with_alg_in_jwk(self):
         """HS256 forgery signed with the source's RSA public key, against a JWK
-        that pins alg=RS256. The header-declared HS256 must not be honored."""
-        forged = self._forge_hs256(
-            {"sub": "foo", "exp": self._exp()},
-            secret=self._source_public_key_pem(),
-            kid=self.source_cert.kid,
-        )
-        self._assert_rejected(self._post_assertion(forged))
+        that pins alg=RS256. The header-declared HS256 must not be honored, for
+        any public-key byte representation the attacker might use as the secret."""
+        for label, secret in self._public_key_secret_candidates().items():
+            with self.subTest(secret=label):
+                forged = self._forge_hs256(
+                    {"sub": "foo", "exp": self._exp()},
+                    secret=secret,
+                    kid=self.source_cert.kid,
+                )
+                self._assert_rejected(self._post_assertion(forged))
 
     def test_hs256_confusion_without_alg_in_jwk(self):
         """The dangerous case: when the source JWK omits ``alg``, verification
         falls back to the attacker-controlled header algorithm. An HS256 forgery
         signed with the RSA public key must still be rejected (PyJWT refuses to
-        use an asymmetric key as an HMAC secret)."""
+        use an asymmetric key as an HMAC secret) -- for every public-key byte
+        representation the attacker might try as the secret."""
         # Rebuild the source's JWK set without the alg member to force the fallback
         jwks = deepcopy(self.source.oidc_jwks)
         for key in jwks["keys"]:
@@ -166,12 +186,14 @@ class TestTokenJWTAlgConfusion(OAuthTestCase):
         self.source.oidc_jwks = jwks
         self.source.save()
 
-        forged = self._forge_hs256(
-            {"sub": "foo", "exp": self._exp()},
-            secret=self._source_public_key_pem(),
-            kid=self.source_cert.kid,
-        )
-        self._assert_rejected(self._post_assertion(forged))
+        for label, secret in self._public_key_secret_candidates().items():
+            with self.subTest(secret=label):
+                forged = self._forge_hs256(
+                    {"sub": "foo", "exp": self._exp()},
+                    secret=secret,
+                    kid=self.source_cert.kid,
+                )
+                self._assert_rejected(self._post_assertion(forged))
 
     def test_kid_swapped_to_unrelated_key(self):
         """A token signed with an unrelated key but carrying a kid that matches a
