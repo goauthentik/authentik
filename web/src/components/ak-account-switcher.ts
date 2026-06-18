@@ -1,8 +1,7 @@
 import "#elements/buttons/Dropdown";
-import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { globalAK } from "#common/global";
-import { formatUserDisplayName, formatUserSecondaryIdentifier, type UserLike } from "#common/users";
+import { formatUserDisplayName, formatUserSecondaryIdentifier } from "#common/users";
 
 import { AKElement } from "#elements/Base";
 import { WithSession } from "#elements/mixins/session";
@@ -117,25 +116,22 @@ export class AccountSwitcher extends WithSession(AKElement) {
     }
 
     protected renderCurrentIdentity(
-        currentUser: Readonly<UserLike & { avatar?: string }>,
+        currentUser: Readonly<{ avatar?: string }>,
     ): SlottedTemplateResult {
-        const displayName =
-            formatUserDisplayName(currentUser, this.uiConfig) || currentUser.username;
+        const disabledMessage =
+            this.accounts.length > 1
+                ? msg("Account switching disabled", {
+                      id: "account-switcher.disabled.label",
+                  })
+                : null;
         const identity = html`<div part="identity">
             ${this.renderAvatar(currentUser)}
-            <span part="toggle-label">${displayName}</span>
+            ${disabledMessage
+                ? html`<span part="disabled-message">${disabledMessage}</span>`
+                : null}
         </div>`;
 
-        if (this.accounts.length <= 1) {
-            return html`<div part="container">${identity}</div>`;
-        }
-
-        const disabledMessage = msg("Account switching is disabled.", {
-            id: "account-switcher.disabled.label",
-        });
-        return html`<div part="container">
-            <pf-tooltip position="bottom" content=${disabledMessage}>${identity}</pf-tooltip>
-        </div>`;
+        return html`<div part="container">${identity}</div>`;
     }
 
     render(): SlottedTemplateResult {
@@ -146,8 +142,6 @@ export class AccountSwitcher extends WithSession(AKElement) {
         if (!globalAK().brand.flowAccountSwitch) {
             return this.renderCurrentIdentity(currentUser);
         }
-        const displayName =
-            formatUserDisplayName(currentUser, this.uiConfig) || currentUser.username;
 
         return html`<div part="container">
             <ak-dropdown class="pf-c-dropdown" part="switcher">
@@ -158,9 +152,11 @@ export class AccountSwitcher extends WithSession(AKElement) {
                     id="account-switcher-toggle"
                     aria-haspopup="menu"
                     aria-controls="account-switcher-menu"
+                    aria-label=${msg("Switch account", {
+                        id: "account-switcher.toggle.label",
+                    })}
                 >
                     ${this.renderAvatar(this.currentAccount)}
-                    <span part="toggle-label">${displayName}</span>
                     <i
                         class="fas fa-caret-down pf-c-dropdown__toggle-icon"
                         part="toggle-icon"
