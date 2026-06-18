@@ -20,16 +20,6 @@
     line-height: 1;
 }
 
-[part="identity"] {
-    display: flex;
-    align-items: center;
-    gap: var(--pf-global--spacer--sm);
-    min-height: 2rem;
-    padding-inline: var(--pf-global--spacer--sm);
-    font-size: var(--pf-global--FontSize--md);
-    line-height: 1;
-}
-
 [part="menu"] {
     min-width: 18rem;
 }
@@ -62,15 +52,6 @@
     margin-inline-start: var(--pf-global--spacer--xs);
     margin-block-start: 0;
     line-height: 1;
-}
-
-[part="disabled-message"] {
-    max-width: 12rem;
-    overflow: hidden;
-    color: var(--pf-global--Color--200);
-    line-height: 2rem;
-    text-overflow: ellipsis;
-    white-space: nowrap;
 }
 
 [part="avatar"] {

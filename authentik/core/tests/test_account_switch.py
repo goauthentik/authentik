@@ -73,16 +73,42 @@ class TestAccountSwitch(FlowTestCase):
         return browser_key
 
     def test_no_brand_flow_disables_switching(self):
-        """Test switching 404s when the brand has no account switch flow"""
+        """Test switching shows an error when the brand has no account switch flow"""
         self.brand.flow_account_switch = None
         self.brand.save()
         self.login(self.user)
         browser_key = self.browser_key()
         create_test_session(self.other_user, browser_key=browser_key)
 
-        response = self.client.get(self.switch_url(self.other_user))
+        response = self.client.get(
+            self.switch_url(self.other_user),
+            {"next": "/if/admin/#/core/brands"},
+        )
 
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 400)
+        self.assertContains(
+            response,
+            "Account switching is disabled for this brand.",
+            status_code=400,
+        )
+
+    def test_no_brand_flow_does_not_redirect_to_next(self):
+        """Test disabled switching renders the endpoint instead of redirecting to next"""
+        self.brand.flow_account_switch = None
+        self.brand.save()
+        self.login(self.user)
+
+        response = self.client.get(
+            self.switch_url(self.other_user),
+            {"next": "https://example.invalid/"},
+        )
+
+        self.assertEqual(response.status_code, 400)
+        self.assertContains(
+            response,
+            "Account switching is disabled for this brand.",
+            status_code=400,
+        )
 
     def test_switch_with_live_session(self):
         """Test a live login of this browser is passed to the flow as context"""

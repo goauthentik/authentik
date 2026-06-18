@@ -115,32 +115,9 @@ export class AccountSwitcher extends WithSession(AKElement) {
         </a>`;
     }
 
-    protected renderCurrentIdentity(
-        currentUser: Readonly<{ avatar?: string }>,
-    ): SlottedTemplateResult {
-        const disabledMessage =
-            this.accounts.length > 1
-                ? msg("Account switching disabled", {
-                      id: "account-switcher.disabled.label",
-                  })
-                : null;
-        const identity = html`<div part="identity">
-            ${this.renderAvatar(currentUser)}
-            ${disabledMessage
-                ? html`<span part="disabled-message">${disabledMessage}</span>`
-                : null}
-        </div>`;
-
-        return html`<div part="container">${identity}</div>`;
-    }
-
     render(): SlottedTemplateResult {
-        const currentUser = this.currentUser;
-        if (!currentUser) {
+        if (!this.currentUser) {
             return null;
-        }
-        if (!globalAK().brand.flowAccountSwitch) {
-            return this.renderCurrentIdentity(currentUser);
         }
 
         return html`<div part="container">

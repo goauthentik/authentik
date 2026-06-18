@@ -3,7 +3,9 @@
 from urllib.parse import urlencode
 
 from django.http import Http404, HttpRequest, HttpResponse
+from django.template.response import TemplateResponse
 from django.utils import timezone
+from django.utils.translation import gettext as _
 from django.views import View
 
 from authentik.core.models import AuthenticatedSession
@@ -24,7 +26,15 @@ class AccountSwitchView(View):
     def get(self, request: HttpRequest, user_uid: str) -> HttpResponse:
         flow = request.brand.flow_account_switch
         if not flow:
-            raise Http404
+            return TemplateResponse(
+                request,
+                "if/error.html",
+                {
+                    "title": _("Account switching disabled"),
+                    "message": _("Account switching is disabled for this brand."),
+                },
+                status=400,
+            )
         context = {}
         session = self.get_browser_session(request, user_uid)
         stale_user_uid = None
