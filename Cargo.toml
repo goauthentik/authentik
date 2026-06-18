@@ -50,6 +50,7 @@ json-subscriber = "= 0.2.8"
 jsonwebtoken = { version = "= 10.4.0", features = ["aws_lc_rs"] }
 metrics = "= 0.24.6"
 metrics-exporter-prometheus = { version = "= 0.18.3", default-features = false }
+moka = { version = "= 0.12.15", default-features = false, features = ["future"] }
 nix = { version = "= 0.31.3", features = ["hostname", "signal"] }
 notify = "= 8.2.0"
 pin-project-lite = "= 0.2.17"
@@ -282,6 +283,7 @@ proxy = [
   "dep:aws-lc-rs",
   "dep:reqwest",
   "dep:reqwest-middleware",
+  "dep:moka",
 ]
 
 [build-dependencies]
@@ -305,6 +307,7 @@ hyper-util.workspace = true
 jsonwebtoken = { workspace = true, optional = true }
 metrics-exporter-prometheus.workspace = true
 metrics.workspace = true
+moka = { workspace = true, optional = true }
 nix.workspace = true
 pyo3 = { workspace = true, optional = true }
 rand.workspace = true

@@ -23,6 +23,7 @@ use tracing::{debug, error, info, instrument, warn};
 use crate::outpost::{Outpost, OutpostController, proxy::application::Application};
 
 mod application;
+mod auth;
 mod backchannel;
 mod claims;
 mod cookie;

@@ -149,8 +149,14 @@ step below is meant to be one focused, compilable, testable commit.
 
 ### Phase D — non-session auth paths + caching (needs A4, C)
 
-- [ ] **D11.** Add `moka` TTL cache; `attempt_bearer_auth` (introspection POST) + cache get/save
+- [x] **D11.** Add `moka` TTL cache; `attempt_bearer_auth` (introspection POST) + cache get/save
   (`auth_bearer.go`, `auth.go`).
+  Done: added `moka` (future, default-features off). `Application.auth_cache:
+  Cache<String, Claims>` (60s TTL, 10k cap), keyed by the `Authorization` header.
+  `backchannel::introspect_token` (form POST, `active` check, `raw_token` set). New
+  `src/outpost/proxy/auth.rs`: `bearer_token` (case-insensitive, tested) + `Application` methods
+  `authorization_header`/`cached_claims`/`cache_claims`/`attempt_bearer_auth`. Helpers are unused
+  until the `check_auth` orchestrator (D13). 1 new test.
 - [ ] **D12.** `attempt_basic_auth` (`goauthentik.io/token` username → bearer path; else
   client-credentials token POST + verify) (`auth_basic.go`).
 - [ ] **D13.** Unified `check_auth`: session → cache → bearer → basic → `Option<Claims>`.

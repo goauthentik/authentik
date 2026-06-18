@@ -5,12 +5,14 @@ use ak_client::models::{ProxyMode, ProxyOutpostConfig};
 use ak_common::{config, tls::store::Certificate};
 use axum::{Router, routing::any};
 use eyre::{Result, eyre};
+use moka::future::Cache;
 use reqwest_middleware::ClientWithMiddleware;
 use tracing::instrument;
 use url::Url;
 
 use crate::outpost::proxy::{
     ProxyOutpost,
+    claims::Claims,
     cookie::SessionCookie,
     endpoint::OidcEndpoint,
     session::{SessionStore, filesystem::FsSessionStore},
@@ -31,6 +33,8 @@ pub(super) struct Application {
     pub(super) client: ClientWithMiddleware,
     /// `Host` header for backchannel token requests (browser host), if rewriting applies.
     pub(super) token_host: Option<String>,
+    /// Short-lived cache of claims keyed by the `Authorization` header.
+    pub(super) auth_cache: Cache<String, Claims>,
 }
 
 impl Application {
@@ -138,6 +142,10 @@ impl Application {
             session_cookie,
             client: outpost.controller.api_config.client.clone(),
             token_host,
+            auth_cache: Cache::builder()
+                .time_to_live(Duration::from_secs(60))
+                .max_capacity(10_000)
+                .build(),
         })
     }
 
