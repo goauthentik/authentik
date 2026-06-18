@@ -40,7 +40,6 @@ from authentik.lib.config import CONFIG
 from authentik.tasks.apps import PRIORITY_HIGH
 from authentik.tasks.middleware import CurrentTask
 from authentik.tasks.schedules.models import Schedule
-from authentik.tenants.models import Tenant
 
 LOGGER = get_logger()
 
@@ -92,20 +91,16 @@ class BlueprintEventHandler(FileSystemEventHandler):
     def on_created(self, event: FileSystemEvent):
         """Process file creation"""
         LOGGER.debug("new blueprint file created, starting discovery")
-        for tenant in Tenant.objects.filter(ready=True):
-            with tenant:
-                Schedule.dispatch_by_actor(blueprints_discovery)
+        Schedule.dispatch_by_actor(blueprints_discovery)
 
     def on_modified(self, event: FileSystemEvent):
         """Process file modification"""
         path = Path(event.src_path)
         root = Path(CONFIG.get("blueprints_dir")).absolute()
         rel_path = str(path.relative_to(root))
-        for tenant in Tenant.objects.filter(ready=True):
-            with tenant:
-                for instance in BlueprintInstance.objects.filter(path=rel_path, enabled=True):
-                    LOGGER.debug("modified blueprint file, starting apply", instance=instance)
-                    apply_blueprint.send_with_options(args=(instance.pk,), rel_obj=instance)
+        for instance in BlueprintInstance.objects.filter(path=rel_path, enabled=True):
+            LOGGER.debug("modified blueprint file, starting apply", instance=instance)
+            apply_blueprint.send_with_options(args=(instance.pk,), rel_obj=instance)
 
 
 @actor(

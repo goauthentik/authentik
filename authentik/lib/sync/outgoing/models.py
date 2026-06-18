@@ -4,7 +4,7 @@ from typing import Any, Self
 import pglock
 from django.core.paginator import Paginator
 from django.core.validators import MinValueValidator
-from django.db import connection, models
+from django.db import models
 from django.db.models import Model, QuerySet, TextChoices
 from django.utils.translation import gettext_lazy as _
 from dramatiq.actor import Actor
@@ -88,7 +88,7 @@ class OutgoingSyncProvider(ScheduledModel, Model):
     def sync_lock(self) -> pglock.advisory:
         """Postgres lock for syncing to prevent multiple parallel syncs happening"""
         return pglock.advisory(
-            lock_id=f"goauthentik.io/{connection.schema_name}/providers/outgoing-sync/{str(self.pk)}",
+            lock_id=f"goauthentik.io/providers/outgoing-sync/{str(self.pk)}",
             timeout=0,
             side_effect=pglock.Return,
         )

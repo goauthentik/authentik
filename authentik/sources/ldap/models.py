@@ -8,7 +8,7 @@ from tempfile import NamedTemporaryFile, mkdtemp
 from typing import Any
 
 import pglock
-from django.db import connection, models
+from django.db import models
 from django.templatetags.static import static
 from django.utils.translation import gettext_lazy as _
 from ldap3 import ALL, NONE, RANDOM, Connection, Server, ServerPool, Tls
@@ -312,7 +312,7 @@ class LDAPSource(IncomingSyncSource):
     def sync_lock(self) -> pglock.advisory:
         """Postgres lock for syncing LDAP to prevent multiple parallel syncs happening"""
         return pglock.advisory(
-            lock_id=f"goauthentik.io/{connection.schema_name}/sources/ldap/sync/{self.slug}",
+            lock_id=f"goauthentik.io/sources/ldap/sync/{self.slug}",
             timeout=0,
             side_effect=pglock.Return,
         )
@@ -392,9 +392,7 @@ class UserLDAPSourceConnection(UserSourceConnection):
 
     @property
     def serializer(self) -> type[Serializer]:
-        from authentik.sources.ldap.api.connections import (
-            UserLDAPSourceConnectionSerializer,
-        )
+        from authentik.sources.ldap.api.connections import UserLDAPSourceConnectionSerializer
 
         return UserLDAPSourceConnectionSerializer
 
@@ -415,9 +413,7 @@ class GroupLDAPSourceConnection(GroupSourceConnection):
 
     @property
     def serializer(self) -> type[Serializer]:
-        from authentik.sources.ldap.api.connections import (
-            GroupLDAPSourceConnectionSerializer,
-        )
+        from authentik.sources.ldap.api.connections import GroupLDAPSourceConnectionSerializer
 
         return GroupLDAPSourceConnectionSerializer
 

@@ -8,7 +8,7 @@ from typing import Any
 
 import gssapi
 import pglock
-from django.db import connection, models
+from django.db import models
 from django.http import HttpRequest
 from django.shortcuts import reverse
 from django.templatetags.static import static
@@ -189,7 +189,7 @@ class KerberosSource(IncomingSyncSource):
     def sync_lock(self) -> pglock.advisory:
         """Lock for syncing Kerberos to prevent multiple parallel syncs happening"""
         return pglock.advisory(
-            lock_id=f"goauthentik.io/{connection.schema_name}/sources/kerberos/sync/{self.slug}",
+            lock_id=f"goauthentik.io/sources/kerberos/sync/{self.slug}",
             timeout=0,
             side_effect=pglock.Return,
         )
@@ -217,14 +217,7 @@ class KerberosSource(IncomingSyncSource):
     @property
     def tempdir(self) -> Path:
         """Get temporary storage for Kerberos files"""
-        path = (
-            Path(gettempdir())
-            / "authentik"
-            / connection.schema_name
-            / "sources"
-            / "kerberos"
-            / str(self.pk)
-        )
+        path = Path(gettempdir()) / "authentik" / "sources" / "kerberos" / str(self.pk)
         path.mkdir(mode=0o700, parents=True, exist_ok=True)
         return path
 

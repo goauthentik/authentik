@@ -1,5 +1,7 @@
 """authentik admin app config"""
 
+from django.db import DEFAULT_DB_ALIAS
+from django.db.models.signals import post_migrate
 from prometheus_client import Info
 
 from authentik.blueprints.apps import ManagedAppConfig
@@ -10,6 +12,12 @@ from authentik.tasks.schedules.common import ScheduleSpec
 PROM_INFO = Info("authentik_version", "Currently running authentik version")
 
 
+def ensure_system_settings(*args, using=DEFAULT_DB_ALIAS, **kwargs):
+    from authentik.admin.models import SystemSettings
+
+    SystemSettings.objects.using(using).update_or_create()
+
+
 class AuthentikAdminConfig(ManagedAppConfig):
     """authentik admin app config"""
 
@@ -18,7 +26,13 @@ class AuthentikAdminConfig(ManagedAppConfig):
     verbose_name = "authentik Admin"
     default = True
 
-    @ManagedAppConfig.reconcile_global
+    @ManagedAppConfig.reconcile
+    def system_settings(self):
+        """Make sure system settings exists"""
+        post_migrate.connect(ensure_system_settings)
+        ensure_system_settings()
+
+    @ManagedAppConfig.reconcile
     def clear_update_notifications(self):
         """Clear update notifications on startup if the notification was for the version
         we're running now."""
@@ -35,7 +49,7 @@ class AuthentikAdminConfig(ManagedAppConfig):
                 notification.delete()
 
     @property
-    def global_schedule_specs(self) -> list[ScheduleSpec]:
+    def schedule_specs(self) -> list[ScheduleSpec]:
         from authentik.admin.tasks import update_latest_version
 
         return [

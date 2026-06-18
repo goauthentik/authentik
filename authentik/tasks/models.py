@@ -14,7 +14,6 @@ from authentik.events.logs import LogEvent
 from authentik.events.utils import sanitize_item
 from authentik.lib.models import InternallyManagedMixin, SerializerModel
 from authentik.lib.utils.errors import exception_to_dict
-from authentik.tenants.models import Tenant
 
 
 class TaskStatus(models.TextChoices):
@@ -33,12 +32,6 @@ class TaskStatus(models.TextChoices):
 
 
 class Task(InternallyManagedMixin, SerializerModel, TaskBase):
-    tenant = models.ForeignKey(
-        Tenant,
-        on_delete=models.CASCADE,
-        help_text=_("Tenant this task belongs to"),
-    )
-
     rel_obj_content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE, null=True)
     rel_obj_id = models.TextField(null=True)
     rel_obj = GenericForeignKey("rel_obj_content_type", "rel_obj_id")

@@ -11,6 +11,7 @@ from jwt import PyJWTError, decode, encode
 from rest_framework.fields import CharField, IntegerField, ListField, UUIDField
 from rest_framework.serializers import ValidationError
 
+from authentik.admin.utils import get_unique_identifier
 from authentik.core.api.utils import JSONDictField, PassiveSerializer
 from authentik.core.models import User
 from authentik.events.middleware import audit_ignore
@@ -38,7 +39,6 @@ from authentik.stages.authenticator_validate.challenge import (
 from authentik.stages.authenticator_validate.models import AuthenticatorValidateStage, DeviceClasses
 from authentik.stages.authenticator_webauthn.models import WebAuthnDevice
 from authentik.stages.password.stage import PLAN_CONTEXT_METHOD, PLAN_CONTEXT_METHOD_ARGS
-from authentik.tenants.utils import get_unique_identifier
 
 COOKIE_NAME_MFA = "authentik_mfa"
 

@@ -3,13 +3,12 @@
 from importlib import import_module
 
 from django.conf import settings
+from django.core.management.base import BaseCommand
 
-from authentik.tenants.management import TenantCommand
 
-
-class Command(TenantCommand):
+class Command(BaseCommand):
     """Delete all sessions"""
 
-    def handle_per_tenant(self, **options):
+    def handle(self, **options):
         engine = import_module(settings.SESSION_ENGINE)
         engine.SessionStore.clear_expired()

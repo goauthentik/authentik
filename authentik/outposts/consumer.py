@@ -12,7 +12,6 @@ from channels.exceptions import DenyConnection
 from channels.generic.websocket import JsonWebsocketConsumer
 from dacite.core import from_dict
 from dacite.data import Data
-from django.db import connection
 from django.http.request import QueryDict
 from guardian.shortcuts import get_objects_for_user
 from structlog.stdlib import BoundLogger, get_logger
@@ -22,13 +21,11 @@ from authentik.outposts.models import OUTPOST_HELLO_INTERVAL, Outpost, OutpostSt
 
 
 def build_outpost_group(outpost_pk: str | UUID) -> str:
-    return sha256(f"{connection.schema_name}/group_outpost_{str(outpost_pk)}".encode()).hexdigest()
+    return sha256(f"group_outpost_{str(outpost_pk)}".encode()).hexdigest()
 
 
 def build_outpost_group_instance(outpost_pk: str | UUID, instance: str) -> str:
-    return sha256(
-        f"{connection.schema_name}/group_outpost_{str(outpost_pk)}_{instance}".encode()
-    ).hexdigest()
+    return sha256(f"group_outpost_{str(outpost_pk)}_{instance}".encode()).hexdigest()
 
 
 class WebsocketMessageInstruction(IntEnum):
@@ -94,7 +91,6 @@ class OutpostConsumer(JsonWebsocketConsumer):
             self.channel_name,
         )
         GAUGE_OUTPOSTS_CONNECTED.labels(
-            tenant=connection.schema_name,
             outpost=self.outpost.name,
             uid=self.instance_uid,
             expected=self.outpost.config.kubernetes_replicas,
@@ -112,7 +108,6 @@ class OutpostConsumer(JsonWebsocketConsumer):
                 )
         if self.outpost and self.instance_uid:
             GAUGE_OUTPOSTS_CONNECTED.labels(
-                tenant=connection.schema_name,
                 outpost=self.outpost.name,
                 uid=self.instance_uid,
                 expected=self.outpost.config.kubernetes_replicas,
@@ -138,7 +133,6 @@ class OutpostConsumer(JsonWebsocketConsumer):
         elif msg.instruction == WebsocketMessageInstruction.ACK:
             return
         GAUGE_OUTPOSTS_LAST_UPDATE.labels(
-            tenant=connection.schema_name,
             outpost=self.outpost.name,
             uid=self.instance_uid or "",
             version=state.version or "",

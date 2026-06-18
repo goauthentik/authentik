@@ -20,9 +20,6 @@ class ManagedAppConfig(AppConfig):
 
     logger: BoundLogger
 
-    RECONCILE_GLOBAL_CATEGORY: str = "global"
-    RECONCILE_TENANT_CATEGORY: str = "tenant"
-
     def __init__(self, app_name: str, *args, **kwargs) -> None:
         super().__init__(app_name, *args, **kwargs)
         self.logger = get_logger().bind(app_name=app_name)
@@ -33,8 +30,7 @@ class ManagedAppConfig(AppConfig):
         return super().ready()
 
     def _on_startup_callback(self, sender, **_):
-        self._reconcile_global()
-        self._reconcile_tenant()
+        self._reconcile()
 
     def import_related(self):
         """Automatically import related modules which rely on just being imported
@@ -69,22 +65,21 @@ class ManagedAppConfig(AppConfig):
         """Load module"""
         import_module(path)
 
-    def _reconcile(self, prefix: str) -> None:
-        for meth_name in dir(self):
+    def _reconcile(self) -> None:
+        for name in dir(self):
             # Check the attribute on the class to avoid evaluating @property descriptors.
             # Using getattr(self, ...) on a @property would evaluate it, which can trigger
-            # expensive side effects (e.g. tenant_schedule_specs iterating all providers
+            # expensive side effects (e.g. schedule_specs iterating all providers
             # and running PolicyEngine queries for every user).
-            class_attr = getattr(type(self), meth_name, None)
+            class_attr = getattr(type(self), name, None)
             if class_attr is None or isinstance(class_attr, property):
                 continue
             if not callable(class_attr):
                 continue
-            category = getattr(class_attr, "_authentik_managed_reconcile", None)
-            if category != prefix:
+            should_call = getattr(class_attr, "_authentik_managed_reconcile", False)
+            if not should_call:
                 continue
-            meth = getattr(self, meth_name)
-            name = meth_name.replace(prefix, "")
+            meth = getattr(self, name)
             try:
                 self.logger.debug("Starting reconciler", name=name)
                 meth()
@@ -93,53 +88,15 @@ class ManagedAppConfig(AppConfig):
                 self.logger.warning("Failed to run reconcile", name=name, exc=exc)
 
     @staticmethod
-    def reconcile_tenant(func: Callable):
+    def reconcile(func: Callable):
         """Mark a function to be called on startup (for each tenant)"""
-        func._authentik_managed_reconcile = ManagedAppConfig.RECONCILE_TENANT_CATEGORY
-        return func
-
-    @staticmethod
-    def reconcile_global(func: Callable):
-        """Mark a function to be called on startup (globally)"""
-        func._authentik_managed_reconcile = ManagedAppConfig.RECONCILE_GLOBAL_CATEGORY
+        func._authentik_managed_reconcile = True
         return func
 
     @property
-    def tenant_schedule_specs(self) -> list[ScheduleSpec]:
-        """Get a list of schedule specs that must exist in each tenant"""
+    def schedule_specs(self) -> list[ScheduleSpec]:
+        """Get a list of schedule specs that must exist"""
         return []
-
-    @property
-    def global_schedule_specs(self) -> list[ScheduleSpec]:
-        """Get a list of schedule specs that must exist in the default tenant"""
-        return []
-
-    def _reconcile_tenant(self) -> None:
-        """reconcile ourselves for tenanted methods"""
-        from authentik.tenants.models import Tenant
-
-        try:
-            tenants = list(Tenant.objects.filter(ready=True))
-        except (DatabaseError, ProgrammingError, InternalError) as exc:
-            self.logger.debug("Failed to get tenants to run reconcile", exc=exc)
-            return
-        for tenant in tenants:
-            with tenant:
-                self._reconcile(self.RECONCILE_TENANT_CATEGORY)
-
-    def _reconcile_global(self) -> None:
-        """
-        reconcile ourselves for global methods.
-        Used for signals, tasks, etc. Database queries should not be made in here.
-        """
-        from django_tenants.utils import get_public_schema_name, schema_context
-
-        try:
-            with schema_context(get_public_schema_name()):
-                self._reconcile(self.RECONCILE_GLOBAL_CATEGORY)
-        except (DatabaseError, ProgrammingError, InternalError) as exc:
-            self.logger.debug("Failed to access database to run reconcile", exc=exc)
-            return
 
 
 class AuthentikBlueprintsConfig(ManagedAppConfig):
@@ -154,14 +111,14 @@ class AuthentikBlueprintsConfig(ManagedAppConfig):
         super().import_models()
         self.import_module("authentik.blueprints.v1.meta.apply_blueprint")
 
-    @ManagedAppConfig.reconcile_global
+    @ManagedAppConfig.reconcile
     def tasks_middlewares(self):
         from authentik.blueprints.v1.tasks import BlueprintWatcherMiddleware
 
         get_broker().add_middleware(BlueprintWatcherMiddleware())
 
     @property
-    def tenant_schedule_specs(self) -> list[ScheduleSpec]:
+    def schedule_specs(self) -> list[ScheduleSpec]:
         from authentik.blueprints.v1.tasks import blueprints_discovery, clear_failed_blueprints
 
         return [

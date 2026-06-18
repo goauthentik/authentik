@@ -49,19 +49,14 @@ from rest_framework.fields import (
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
-from rest_framework.serializers import (
-    ListSerializer,
-    PrimaryKeyRelatedField,
-)
+from rest_framework.serializers import ListSerializer, PrimaryKeyRelatedField
 from rest_framework.validators import UniqueValidator
 from rest_framework.viewsets import ModelViewSet
 from structlog.stdlib import get_logger
 
+from authentik.admin.utils import get_system_settings
 from authentik.api.authentication import TokenAuthentication
-from authentik.api.search.fields import (
-    ChoiceSearchField,
-    JSONSearchField,
-)
+from authentik.api.search.fields import ChoiceSearchField, JSONSearchField
 from authentik.api.validation import validate
 from authentik.blueprints.v1.importer import SERIALIZER_CONTEXT_BLUEPRINT
 from authentik.brands.models import Brand
@@ -960,7 +955,7 @@ class UserViewSet(
     @action(detail=True, methods=["POST"], permission_classes=[IsAuthenticated])
     def impersonate(self, request: Request, pk: int) -> Response:
         """Impersonate a user"""
-        if not request.tenant.impersonation:
+        if not get_system_settings().impersonation:
             LOGGER.debug("User attempted to impersonate", user=request.user)
             return Response(status=401)
         user_to_be = self.get_object()
@@ -977,7 +972,7 @@ class UserViewSet(
         if user_to_be.pk == self.request.user.pk:
             LOGGER.debug("User attempted to impersonate themselves", user=request.user)
             return Response(status=401)
-        if not reason and request.tenant.impersonation_require_reason:
+        if not reason and get_system_settings().impersonation_require_reason:
             LOGGER.debug(
                 "User attempted to impersonate without providing a reason",
                 user=request.user,

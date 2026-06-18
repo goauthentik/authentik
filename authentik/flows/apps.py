@@ -3,14 +3,13 @@
 from django.utils.translation import gettext_lazy as _
 from prometheus_client import Gauge, Histogram
 
+from authentik.admin.flags import Flag
 from authentik.blueprints.apps import ManagedAppConfig
 from authentik.lib.utils.reflection import all_subclasses
-from authentik.tenants.flags import Flag
 
 GAUGE_FLOWS_CACHED = Gauge(
     "authentik_flows_cached",
     "Cached flows",
-    ["tenant"],
 )
 HIST_FLOW_EXECUTION_STAGE_TIME = Histogram(
     "authentik_flows_execution_stage_time",
@@ -25,7 +24,6 @@ HIST_FLOWS_PLAN_TIME = Histogram(
 
 
 class RefreshOtherFlowsAfterAuthentication(Flag[bool], key="flows_refresh_others"):
-
     default = False
     visibility = "public"
     description = _("Refresh other tabs after successful authentication.")
@@ -33,7 +31,6 @@ class RefreshOtherFlowsAfterAuthentication(Flag[bool], key="flows_refresh_others
 
 
 class ContinuousLogin(Flag[bool], key="flows_continuous_login"):
-
     default = False
     visibility = "public"
     description = _("Upon successful authentication, re-start authentication in other open tabs.")

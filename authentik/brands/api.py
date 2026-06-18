@@ -6,12 +6,7 @@ from django.db import models
 from drf_spectacular.utils import extend_schema, extend_schema_field
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
-from rest_framework.fields import (
-    CharField,
-    ChoiceField,
-    ListField,
-    SerializerMethodField,
-)
+from rest_framework.fields import CharField, ChoiceField, ListField, SerializerMethodField
 from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.permissions import AllowAny
 from rest_framework.request import Request
@@ -19,13 +14,13 @@ from rest_framework.response import Response
 from rest_framework.validators import UniqueValidator
 from rest_framework.viewsets import ModelViewSet
 
+from authentik.admin.api.settings import FlagJSONField
+from authentik.admin.flags import Flag
+from authentik.admin.utils import get_system_settings
 from authentik.brands.models import Brand
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import ModelSerializer, PassiveSerializer, ThemedUrlsSerializer
 from authentik.rbac.filters import SecretKeyFilter
-from authentik.tenants.api.settings import FlagJSONField
-from authentik.tenants.flags import Flag
-from authentik.tenants.utils import get_current_tenant
 
 
 class FooterLinkSerializer(PassiveSerializer):
@@ -86,8 +81,8 @@ class Themes(models.TextChoices):
 
 
 def get_default_ui_footer_links():
-    """Get default UI footer links based on current tenant settings"""
-    return get_current_tenant().footer_links
+    """Get default UI footer links based on current settings"""
+    return get_system_settings().footer_links
 
 
 class CurrentBrandSerializer(PassiveSerializer):

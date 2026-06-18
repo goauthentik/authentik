@@ -17,13 +17,13 @@ from rest_framework.response import Response
 from rest_framework.validators import UniqueValidator
 from rest_framework.viewsets import ModelViewSet
 
+from authentik.admin.utils import get_unique_identifier
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import ModelSerializer, PassiveSerializer
 from authentik.core.models import User, UserTypes
 from authentik.enterprise.license import LicenseKey, LicenseSummarySerializer
 from authentik.enterprise.models import License
 from authentik.rbac.decorators import permission_required
-from authentik.tenants.utils import get_unique_identifier
 
 
 class EnterpriseRequiredMixin:

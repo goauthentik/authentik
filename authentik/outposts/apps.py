@@ -13,12 +13,12 @@ LOGGER = get_logger()
 GAUGE_OUTPOSTS_CONNECTED = Gauge(
     "authentik_outposts_connected",
     "Currently connected outposts",
-    ["tenant", "outpost", "uid", "expected"],
+    ["outpost", "uid", "expected"],
 )
 GAUGE_OUTPOSTS_LAST_UPDATE = Gauge(
     "authentik_outposts_last_update",
     "Last update from any outpost",
-    ["tenant", "outpost", "uid", "version"],
+    ["outpost", "uid", "version"],
 )
 MANAGED_OUTPOST = "goauthentik.io/outposts/embedded"
 MANAGED_OUTPOST_NAME = "authentik Embedded Outpost"
@@ -32,7 +32,7 @@ class AuthentikOutpostConfig(ManagedAppConfig):
     verbose_name = "authentik Outpost"
     default = True
 
-    @ManagedAppConfig.reconcile_tenant
+    @ManagedAppConfig.reconcile
     def embedded_outpost(self):
         """Ensure embedded outpost"""
         from authentik.outposts.models import (
@@ -64,21 +64,14 @@ class AuthentikOutpostConfig(ManagedAppConfig):
             Outpost.objects.filter(managed=MANAGED_OUTPOST).delete()
 
     @property
-    def tenant_schedule_specs(self) -> list[ScheduleSpec]:
-        from authentik.outposts.tasks import outpost_token_ensurer
+    def schedule_specs(self) -> list[ScheduleSpec]:
+        from authentik.outposts.tasks import outpost_connection_discovery, outpost_token_ensurer
 
         return [
             ScheduleSpec(
                 actor=outpost_token_ensurer,
                 crontab=f"{fqdn_rand('outpost_token_ensurer')} */8 * * *",
             ),
-        ]
-
-    @property
-    def global_schedule_specs(self) -> list[ScheduleSpec]:
-        from authentik.outposts.tasks import outpost_connection_discovery
-
-        return [
             ScheduleSpec(
                 actor=outpost_connection_discovery,
                 crontab=f"{fqdn_rand('outpost_connection_discovery')} */8 * * *",

@@ -21,6 +21,7 @@ from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
 
 from authentik import authentik_full_version
+from authentik.admin.utils import get_system_settings
 from authentik.brands.models import Brand
 from authentik.brands.utils import DEFAULT_BRAND
 from authentik.core.middleware import (
@@ -49,8 +50,6 @@ from authentik.root.ws.consumer import build_user_group
 from authentik.stages.email.models import EmailTemplates
 from authentik.stages.email.utils import TemplateEmailMessage
 from authentik.tasks.models import TasksModel
-from authentik.tenants.models import Tenant
-from authentik.tenants.utils import get_current_tenant
 
 LOGGER = get_logger()
 DISCORD_FIELD_LIMIT = 25
@@ -60,11 +59,7 @@ NOTIFICATION_SUMMARY_LENGTH = 75
 def default_event_duration():
     """Default duration an Event is saved.
     This is used as a fallback when no brand is available"""
-    try:
-        tenant = get_current_tenant(only=["event_retention"])
-        return now() + timedelta_from_string(tenant.event_retention)
-    except Tenant.DoesNotExist:
-        return now() + timedelta(days=365)
+    return now() + timedelta_from_string(get_system_settings().event_retention)
 
 
 def default_brand():
@@ -584,9 +579,7 @@ class NotificationTransport(TasksModel, SerializerModel):
 
     @property
     def serializer(self) -> type[Serializer]:
-        from authentik.events.api.notification_transports import (
-            NotificationTransportSerializer,
-        )
+        from authentik.events.api.notification_transports import NotificationTransportSerializer
 
         return NotificationTransportSerializer
 
@@ -702,9 +695,7 @@ class NotificationWebhookMapping(PropertyMapping):
 
     @property
     def serializer(self) -> type[type[Serializer]]:
-        from authentik.events.api.notification_mappings import (
-            NotificationWebhookMappingSerializer,
-        )
+        from authentik.events.api.notification_mappings import NotificationWebhookMappingSerializer
 
         return NotificationWebhookMappingSerializer
 

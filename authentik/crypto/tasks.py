@@ -24,7 +24,6 @@ from authentik.crypto.models import CertificateKeyPair
 from authentik.lib.config import CONFIG
 from authentik.tasks.middleware import CurrentTask
 from authentik.tasks.schedules.models import Schedule
-from authentik.tenants.models import Tenant
 
 LOGGER = get_logger()
 
@@ -91,9 +90,7 @@ class CertificateEventHandler(FileSystemEventHandler):
             "Certificate file created, triggering discovery",
             file=event.src_path,
         )
-        for tenant in Tenant.objects.filter(ready=True):
-            with tenant:
-                Schedule.dispatch_by_actor(certificate_discovery)
+        Schedule.dispatch_by_actor(certificate_discovery)
 
     def on_modified(self, event: FileSystemEvent):
         """Process certificate file modification"""
@@ -101,9 +98,7 @@ class CertificateEventHandler(FileSystemEventHandler):
             "Certificate file modified, triggering discovery",
             file=event.src_path,
         )
-        for tenant in Tenant.objects.filter(ready=True):
-            with tenant:
-                Schedule.dispatch_by_actor(certificate_discovery)
+        Schedule.dispatch_by_actor(certificate_discovery)
 
 
 @actor(description=_("Discover, import and update certificates from the filesystem."))

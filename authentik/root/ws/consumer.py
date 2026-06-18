@@ -5,26 +5,21 @@ from hashlib import sha256
 from asgiref.sync import async_to_sync
 from channels.generic.websocket import JsonWebsocketConsumer
 from django.core.cache import cache
-from django.db import connection
 
 from authentik.core.models import User
 from authentik.root.ws.storage import CACHE_PREFIX
 
 
 def build_session_group(session_key: str):
-    return sha256(
-        f"{connection.schema_name}/group_client_session_{str(session_key)}".encode()
-    ).hexdigest()
+    return sha256(f"group_client_session_{str(session_key)}".encode()).hexdigest()
 
 
 def build_device_group(device_id: str):
-    return sha256(
-        f"{connection.schema_name}/group_client_device_{str(device_id)}".encode()
-    ).hexdigest()
+    return sha256(f"group_client_device_{str(device_id)}".encode()).hexdigest()
 
 
 def build_user_group(user: User):
-    return sha256(f"{connection.schema_name}/group_client_user_{user.uuid}".encode()).hexdigest()
+    return sha256(f"group_client_user_{user.uuid}".encode()).hexdigest()
 
 
 class MessageConsumer(JsonWebsocketConsumer):
