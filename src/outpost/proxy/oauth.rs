@@ -77,7 +77,8 @@ pub(crate) fn start_url(external_host: &str, redirect: &str) -> Result<String> {
 pub(crate) fn callback_redirect_uri(external_host: &str) -> Result<String> {
     let mut url = Url::parse(external_host)?;
     url.set_path("/outpost.goauthentik.io/callback");
-    url.query_pairs_mut().append_pair(CALLBACK_SIGNATURE, "true");
+    url.query_pairs_mut()
+        .append_pair(CALLBACK_SIGNATURE, "true");
     Ok(url.into())
 }
 
@@ -107,7 +108,9 @@ mod tests {
     use axum::http::Uri;
     use url::Url;
 
-    use super::{authorize_url, callback_redirect_uri, check_redirect_param, redirect_param, start_url};
+    use super::{
+        authorize_url, callback_redirect_uri, check_redirect_param, redirect_param, start_url,
+    };
 
     #[test]
     fn builds_callback_redirect_uri() {

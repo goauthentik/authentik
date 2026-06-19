@@ -1,8 +1,9 @@
 use std::sync::Arc;
 
-use ak_axum::error::Result;
-use ak_axum::extract::client_ip::ClientIp;
-use ak_axum::extract::host::Host;
+use ak_axum::{
+    error::Result,
+    extract::{client_ip::ClientIp, host::Host},
+};
 use axum::{
     extract::{Request, State},
     http::{HeaderName, HeaderValue, StatusCode},
@@ -28,8 +29,11 @@ pub(crate) async fn handle(
         app.add_upstream_headers(request.headers_mut(), claims);
     } else {
         // Unauthenticated: allow only allowlisted paths through; otherwise start auth.
-        let request_url =
-            Url::parse(&oauth::url_join(&app.provider.external_host, request.uri().path())).ok();
+        let request_url = Url::parse(&oauth::url_join(
+            &app.provider.external_host,
+            request.uri().path(),
+        ))
+        .ok();
         if !request_url.is_some_and(|url| app.is_allowlisted(&url)) {
             return super::redirect_to_start(&app, request.headers(), request.uri());
         }
@@ -57,8 +61,14 @@ pub(crate) async fn handle(
 
     let method = request.method().to_string();
     let start = Instant::now();
-    let call_result =
-        reverse_proxy::call(client_ip, &target, request, host_override, &app.upstream_client).await;
+    let call_result = reverse_proxy::call(
+        client_ip,
+        &target,
+        request,
+        host_override,
+        &app.upstream_client,
+    )
+    .await;
 
     let (scheme, upstream_host) = Url::parse(&target)
         .map(|url| (url.scheme().to_owned(), url.authority().to_owned()))

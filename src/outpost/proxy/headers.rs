@@ -3,12 +3,10 @@
 use ak_client::models::ProxyOutpostConfig;
 use ak_common::user_agent_outpost;
 use axum::http::{HeaderMap, HeaderName, HeaderValue};
-use base64::Engine as _;
-use base64::engine::general_purpose::STANDARD as BASE64;
+use base64::{Engine as _, engine::general_purpose::STANDARD as BASE64};
 use serde_json::Value;
 
-use crate::outpost::proxy::application::Application;
-use crate::outpost::proxy::claims::Claims;
+use crate::outpost::proxy::{application::Application, claims::Claims};
 
 /// Set a header, overwriting any existing value. Invalid names/values are skipped.
 fn set_header(headers: &mut HeaderMap, name: &str, value: &str) {

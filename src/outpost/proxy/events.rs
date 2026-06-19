@@ -2,8 +2,10 @@
 
 use std::collections::HashMap;
 
-use ak_client::apis::events_api::events_events_create;
-use ak_client::models::{EventActions, EventRequest};
+use ak_client::{
+    apis::events_api::events_events_create,
+    models::{EventActions, EventRequest},
+};
 use serde_json::json;
 use tracing::warn;
 

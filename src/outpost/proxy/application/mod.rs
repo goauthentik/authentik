@@ -1,8 +1,9 @@
-use std::sync::Arc;
-use std::time::Duration;
+use std::{sync::Arc, time::Duration};
 
-use ak_client::apis::configuration::Configuration;
-use ak_client::models::{ProxyMode, ProxyOutpostConfig};
+use ak_client::{
+    apis::configuration::Configuration,
+    models::{ProxyMode, ProxyOutpostConfig},
+};
 use ak_common::{config, tls::store::Certificate};
 use arc_swap::ArcSwapOption;
 use axum::{Router, routing::any};
@@ -105,7 +106,8 @@ impl Application {
         #[cfg(not(feature = "core"))]
         let session_store = SessionStore::Filesystem(FsSessionStore::new(std::env::temp_dir())?);
 
-        let unauthenticated_regex = allowlist::compile_skip_regex(provider.skip_path_regex.as_deref());
+        let unauthenticated_regex =
+            allowlist::compile_skip_regex(provider.skip_path_regex.as_deref());
 
         let upstream_client =
             upstream::build_client(provider.internal_host_ssl_validation == Some(false))?;

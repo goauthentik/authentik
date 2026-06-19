@@ -1,8 +1,7 @@
 //! Verification of authentik-issued access tokens (used as ID tokens).
 
 use eyre::{Result, eyre};
-use jsonwebtoken::jwk::JwkSet;
-use jsonwebtoken::{Algorithm, DecodingKey, Validation, decode, decode_header};
+use jsonwebtoken::{Algorithm, DecodingKey, Validation, decode, decode_header, jwk::JwkSet};
 
 use crate::outpost::proxy::claims::{Claims, ProxyClaims};
 
@@ -59,8 +58,7 @@ pub(crate) fn verify_rs256(
 mod tests {
     use std::time::{SystemTime, UNIX_EPOCH};
 
-    use jsonwebtoken::jwk::JwkSet;
-    use jsonwebtoken::{Algorithm, EncodingKey, Header, encode};
+    use jsonwebtoken::{Algorithm, EncodingKey, Header, encode, jwk::JwkSet};
     use serde_json::{Value, json};
 
     use super::{verify_hs256, verify_rs256};
@@ -196,7 +194,7 @@ J78973mJGC9/uRJqtkbPBeQ=
         )
         .expect("failed to sign token");
 
-        let _ = verify_rs256(&token, &jwks(), ISSUER, AUDIENCE)
-            .expect_err("should reject unknown kid");
+        let _ =
+            verify_rs256(&token, &jwks(), ISSUER, AUDIENCE).expect_err("should reject unknown kid");
     }
 }

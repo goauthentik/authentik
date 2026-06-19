@@ -1,7 +1,6 @@
 //! Signed session-ID cookie handling.
 
-use std::fmt;
-use std::time::Duration;
+use std::{fmt, time::Duration};
 
 use aws_lc_rs::digest;
 use axum::http::HeaderMap;
@@ -95,8 +94,10 @@ fn cookie_name(client_id: &str) -> String {
 mod tests {
     use std::time::Duration;
 
-    use axum::http::{HeaderMap, header};
-    use axum::response::IntoResponse as _;
+    use axum::{
+        http::{HeaderMap, header},
+        response::IntoResponse as _,
+    };
 
     use super::{SessionCookie, cookie_name};
 
@@ -104,7 +105,9 @@ mod tests {
     const SECRET: &str = "0123456789abcdef0123456789abcdef";
 
     fn issued_set_cookie(cookie: &SessionCookie, sid: &str) -> String {
-        let jar = cookie.jar(&HeaderMap::new()).add(cookie.build(sid, Duration::from_mins(1)));
+        let jar = cookie
+            .jar(&HeaderMap::new())
+            .add(cookie.build(sid, Duration::from_mins(1)));
         let response = (jar, ()).into_response();
         response
             .headers()
@@ -117,9 +120,8 @@ mod tests {
 
     #[test]
     fn round_trip_signed_cookie() {
-        let cookie =
-            SessionCookie::new("client-123", SECRET, true, Some("example.com".to_owned()))
-                .expect("session cookie");
+        let cookie = SessionCookie::new("client-123", SECRET, true, Some("example.com".to_owned()))
+            .expect("session cookie");
 
         let set_cookie = issued_set_cookie(&cookie, "the-sid");
         let pair = set_cookie.split(';').next().expect("name=value pair");
@@ -127,14 +129,16 @@ mod tests {
         let mut headers = HeaderMap::new();
         headers.insert(header::COOKIE, pair.parse().expect("cookie header value"));
 
-        assert_eq!(cookie.read(&cookie.jar(&headers)), Some("the-sid".to_owned()));
+        assert_eq!(
+            cookie.read(&cookie.jar(&headers)),
+            Some("the-sid".to_owned())
+        );
     }
 
     #[test]
     fn sets_expected_attributes() {
-        let cookie =
-            SessionCookie::new("client-123", SECRET, true, Some("example.com".to_owned()))
-                .expect("session cookie");
+        let cookie = SessionCookie::new("client-123", SECRET, true, Some("example.com".to_owned()))
+            .expect("session cookie");
         let set_cookie = issued_set_cookie(&cookie, "the-sid");
 
         assert!(set_cookie.contains("HttpOnly"));
@@ -146,11 +150,14 @@ mod tests {
 
     #[test]
     fn rejects_wrong_key() {
-        let writer =
-            SessionCookie::new("client-123", SECRET, false, None).expect("session cookie");
-        let reader =
-            SessionCookie::new("client-123", "ffffffffffffffffffffffffffffffff", false, None)
-                .expect("session cookie");
+        let writer = SessionCookie::new("client-123", SECRET, false, None).expect("session cookie");
+        let reader = SessionCookie::new(
+            "client-123",
+            "ffffffffffffffffffffffffffffffff",
+            false,
+            None,
+        )
+        .expect("session cookie");
 
         let set_cookie = issued_set_cookie(&writer, "the-sid");
         let pair = set_cookie.split(';').next().expect("name=value pair");

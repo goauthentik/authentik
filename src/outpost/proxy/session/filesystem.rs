@@ -1,8 +1,10 @@
 //! Filesystem-backed session store: one JSON file per session.
 
-use std::io::ErrorKind;
-use std::path::PathBuf;
-use std::time::{Duration, SystemTime, UNIX_EPOCH};
+use std::{
+    io::ErrorKind,
+    path::PathBuf,
+    time::{Duration, SystemTime, UNIX_EPOCH},
+};
 
 use ak_common::Arbiter;
 use eyre::Result;
@@ -10,8 +12,7 @@ use serde::{Deserialize, Serialize};
 use tokio::time::interval;
 use tracing::warn;
 
-use crate::outpost::proxy::claims::Claims;
-use crate::outpost::proxy::session::SessionData;
+use crate::outpost::proxy::{claims::Claims, session::SessionData};
 
 /// How often expired session files are swept from disk.
 const CLEANUP_INTERVAL: Duration = Duration::from_mins(5);
@@ -165,8 +166,7 @@ mod tests {
     use tempfile::tempdir;
 
     use super::FsSessionStore;
-    use crate::outpost::proxy::claims::Claims;
-    use crate::outpost::proxy::session::SessionData;
+    use crate::outpost::proxy::{claims::Claims, session::SessionData};
 
     fn data(sub: &str) -> SessionData {
         SessionData {

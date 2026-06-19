@@ -2,17 +2,22 @@
 
 use std::net::IpAddr;
 
-use axum::body::Body;
-use axum::http::header::{
-    CONNECTION, Entry, HOST, HeaderMap, HeaderName, HeaderValue, InvalidHeaderValue,
-    PROXY_AUTHENTICATE, PROXY_AUTHORIZATION, TE, TRAILER, TRANSFER_ENCODING, UPGRADE,
+use axum::{
+    body::Body,
+    http::{
+        Request, Response, StatusCode, Uri,
+        header::{
+            CONNECTION, Entry, HOST, HeaderMap, HeaderName, HeaderValue, InvalidHeaderValue,
+            PROXY_AUTHENTICATE, PROXY_AUTHORIZATION, TE, TRAILER, TRANSFER_ENCODING, UPGRADE,
+        },
+        uri::InvalidUri,
+    },
 };
-use axum::http::uri::InvalidUri;
-use axum::http::{Request, Response, StatusCode, Uri};
 use hyper::upgrade::OnUpgrade;
-use hyper_util::client::legacy::Client;
-use hyper_util::client::legacy::connect::Connect;
-use hyper_util::rt::TokioIo;
+use hyper_util::{
+    client::legacy::{Client, connect::Connect},
+    rt::TokioIo,
+};
 use tokio::io::copy_bidirectional;
 use tracing::warn;
 
@@ -206,7 +211,8 @@ where
     let response_upgrade_type = upgrade_type(response.headers());
     if request_upgrade_type != response_upgrade_type {
         return Err(ProxyError::Upgrade(format!(
-            "backend switched to {response_upgrade_type:?} when {request_upgrade_type:?} was requested"
+            "backend switched to {response_upgrade_type:?} when {request_upgrade_type:?} was \
+             requested"
         )));
     }
     let Some(request_on_upgrade) = request_on_upgrade else {

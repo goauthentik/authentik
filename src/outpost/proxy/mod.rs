@@ -36,9 +36,9 @@ mod headers;
 mod oauth;
 mod oauth_state;
 mod reverse_proxy;
-mod upstream;
 mod session;
 mod token;
+mod upstream;
 
 #[derive(Debug, Default, FromArgs, PartialEq, Eq)]
 /// Run the authentik proxy outpost.

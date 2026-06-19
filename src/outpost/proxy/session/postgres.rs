@@ -3,12 +3,13 @@
 use std::time::Duration;
 
 use eyre::Result;
-use sqlx::types::Json;
-use sqlx::types::chrono::{DateTime, Utc};
+use sqlx::types::{
+    Json,
+    chrono::{DateTime, Utc},
+};
 use uuid::Uuid;
 
-use crate::outpost::proxy::claims::Claims;
-use crate::outpost::proxy::session::SessionData;
+use crate::outpost::proxy::{claims::Claims, session::SessionData};
 
 /// Stores sessions in the shared `authentik_providers_proxy_proxysession` table.
 #[derive(Debug, Clone)]
@@ -118,8 +119,10 @@ mod tests {
     use ak_common::{Tasks, config, db};
 
     use super::PgSessionStore;
-    use crate::outpost::proxy::claims::{Claims, ProxyClaims};
-    use crate::outpost::proxy::session::SessionData;
+    use crate::outpost::proxy::{
+        claims::{Claims, ProxyClaims},
+        session::SessionData,
+    };
 
     /// Truncates the session table when dropped, cleaning up after the test.
     struct TruncateGuard;

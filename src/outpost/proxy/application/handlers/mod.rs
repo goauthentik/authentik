@@ -1,6 +1,9 @@
-use std::str::FromStr;
-use std::time::{Duration, SystemTime, UNIX_EPOCH};
-use std::{fmt, sync::Arc};
+use std::{
+    fmt,
+    str::FromStr,
+    sync::Arc,
+    time::{Duration, SystemTime, UNIX_EPOCH},
+};
 
 use ak_axum::error::Result;
 use ak_client::models::ProxyMode;
@@ -98,7 +101,11 @@ pub(super) async fn handle_auth_start(
 
 /// Begin the OAuth flow: ensure a session id, sign the state, and redirect to
 /// the authorize endpoint with `redirect` carried in the state.
-pub(super) fn auth_start(app: &Application, headers: &HeaderMap, redirect: String) -> Result<Response> {
+pub(super) fn auth_start(
+    app: &Application,
+    headers: &HeaderMap,
+    redirect: String,
+) -> Result<Response> {
     let client_id = app
         .provider
         .client_id
@@ -144,10 +151,15 @@ pub(super) fn auth_start(app: &Application, headers: &HeaderMap, redirect: Strin
 /// Redirect an unauthenticated request to the auth-start endpoint, carrying the
 /// originally-requested URL in the `rd` parameter.
 #[instrument(skip_all)]
-pub(super) fn redirect_to_start(app: &Application, headers: &HeaderMap, uri: &Uri) -> Result<Response> {
+pub(super) fn redirect_to_start(
+    app: &Application,
+    headers: &HeaderMap,
+    uri: &Uri,
+) -> Result<Response> {
     // With "Receive header authentication" enabled, don't redirect a request
     // that carries an Authorization header; report 401 instead.
-    if headers.contains_key(header::AUTHORIZATION) && app.provider.intercept_header_auth == Some(true)
+    if headers.contains_key(header::AUTHORIZATION)
+        && app.provider.intercept_header_auth == Some(true)
     {
         return Ok(error_page::error_response(
             StatusCode::UNAUTHORIZED,
@@ -226,7 +238,8 @@ pub(super) async fn handle_auth_callback(
     let Some(state_token) = params.state else {
         return Ok(StatusCode::BAD_REQUEST.into_response());
     };
-    let Ok(state) = OAuthState::decode(&state_token, cookie_secret, &oauth_state::issuer(client_id))
+    let Ok(state) =
+        OAuthState::decode(&state_token, cookie_secret, &oauth_state::issuer(client_id))
     else {
         warn!("invalid oauth state");
         return Ok(StatusCode::BAD_REQUEST.into_response());
@@ -267,7 +280,11 @@ pub(super) async fn handle_auth_callback(
         state.redirect
     };
     let cookie = app.session_cookie.build(&sid, max_age);
-    Ok((jar.add(cookie), (StatusCode::FOUND, [(header::LOCATION, location)])).into_response())
+    Ok((
+        jar.add(cookie),
+        (StatusCode::FOUND, [(header::LOCATION, location)]),
+    )
+        .into_response())
 }
 
 #[instrument(skip_all)]

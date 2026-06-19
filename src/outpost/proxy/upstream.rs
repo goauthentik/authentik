@@ -5,12 +5,15 @@ use std::sync::Arc;
 use axum::body::Body;
 use eyre::Result;
 use hyper_rustls::{HttpsConnector, HttpsConnectorBuilder};
-use hyper_util::client::legacy::Client;
-use hyper_util::client::legacy::connect::HttpConnector;
-use hyper_util::rt::TokioExecutor;
-use rustls::client::danger::{HandshakeSignatureValid, ServerCertVerified, ServerCertVerifier};
-use rustls::pki_types::{CertificateDer, ServerName, UnixTime};
-use rustls::{ClientConfig, DigitallySignedStruct, Error as RustlsError, SignatureScheme};
+use hyper_util::{
+    client::legacy::{Client, connect::HttpConnector},
+    rt::TokioExecutor,
+};
+use rustls::{
+    ClientConfig, DigitallySignedStruct, Error as RustlsError, SignatureScheme,
+    client::danger::{HandshakeSignatureValid, ServerCertVerified, ServerCertVerifier},
+    pki_types::{CertificateDer, ServerName, UnixTime},
+};
 
 /// Client forwarding to upstream servers (HTTP or HTTPS, with optional upgrades).
 pub(super) type UpstreamClient = Client<HttpsConnector<HttpConnector>, Body>;

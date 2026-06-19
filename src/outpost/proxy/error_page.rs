@@ -1,8 +1,10 @@
 //! Rendering of the branded HTML error page.
 
 use askama::Template;
-use axum::http::StatusCode;
-use axum::response::{Html, IntoResponse as _, Response};
+use axum::{
+    http::StatusCode,
+    response::{Html, IntoResponse as _, Response},
+};
 use tracing::error;
 
 #[derive(Template)]

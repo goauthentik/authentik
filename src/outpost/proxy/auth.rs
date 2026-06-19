@@ -2,15 +2,12 @@
 
 use std::sync::Arc;
 
-use axum::http::HeaderMap;
-use axum::http::header::AUTHORIZATION;
-use base64::Engine as _;
-use base64::engine::general_purpose::STANDARD as BASE64;
+use axum::http::{HeaderMap, header::AUTHORIZATION};
+use base64::{Engine as _, engine::general_purpose::STANDARD as BASE64};
 use eyre::{Result, eyre};
 use tracing::warn;
 
-use crate::outpost::proxy::application::Application;
-use crate::outpost::proxy::{backchannel, claims::Claims, token};
+use crate::outpost::proxy::{application::Application, backchannel, claims::Claims, token};
 
 /// Username that signals the password is a bearer token to introspect.
 const JWT_USERNAME: &str = "goauthentik.io/token";
@@ -125,7 +122,11 @@ impl Application {
     /// Resolve claims from HTTP basic auth: a `goauthentik.io/token` username
     /// means the password is a bearer token; otherwise exchange the credentials
     /// via the `client_credentials` grant and verify the returned id token.
-    pub(super) async fn attempt_basic_auth(&self, username: &str, password: &str) -> Option<Claims> {
+    pub(super) async fn attempt_basic_auth(
+        &self,
+        username: &str,
+        password: &str,
+    ) -> Option<Claims> {
         if username == JWT_USERNAME
             && let Some(claims) = self.attempt_bearer_auth(password).await
         {
@@ -208,8 +209,7 @@ mod tests {
 
     #[test]
     fn decodes_basic_credentials() {
-        use base64::Engine as _;
-        use base64::engine::general_purpose::STANDARD;
+        use base64::{Engine as _, engine::general_purpose::STANDARD};
 
         let header = format!("Basic {}", STANDARD.encode("user:pass"));
         assert_eq!(
