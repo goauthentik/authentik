@@ -2,6 +2,7 @@
 
 from base64 import b64decode
 from dataclasses import dataclass
+from fnmatch import fnmatch
 from urllib.parse import quote_plus
 from xml.etree.ElementTree import ParseError  # nosec
 
@@ -44,6 +45,8 @@ class AuthNRequest:
 
     force_authn: bool = False
 
+    acs_url: str | None = None
+
 
 class AuthNRequestParser:
     """AuthNRequest Parser"""
@@ -61,14 +64,20 @@ class AuthNRequestParser:
         # `AssertionConsumerServiceURL` can be omitted, and we should fallback to the
         # default ACS URL
         if "AssertionConsumerServiceURL" not in root.attrib:
-            request_acs_url = self.provider.acs_url.lower()
+            request_acs_url = self.provider.acs_url
         else:
             request_acs_url = root.attrib["AssertionConsumerServiceURL"]
 
-        if self.provider.acs_url.lower() != request_acs_url.lower():
+        provider_acs_url = self.provider.acs_url
+        if "*" in provider_acs_url:
+            matched = fnmatch(request_acs_url.lower(), provider_acs_url.lower())
+        else:
+            matched = provider_acs_url.lower() == request_acs_url.lower()
+
+        if not matched:
             msg = (
                 f"ACS URL of {request_acs_url} doesn't match Provider "
-                f"ACS URL of {self.provider.acs_url}."
+                f"ACS URL of {provider_acs_url}."
             )
             self.logger.warning(msg)
             raise CannotHandleAssertion(msg)
@@ -81,6 +90,7 @@ class AuthNRequestParser:
         auth_n_request = AuthNRequest(
             id=root.attrib["ID"], relay_state=relay_state, force_authn=force_authn
         )
+        auth_n_request.acs_url = request_acs_url
 
         # Check if AuthnRequest has a NameID Policy object
         name_id_policies = root.findall(f"{{{NS_SAML_PROTOCOL}}}NameIDPolicy")

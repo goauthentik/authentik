@@ -315,7 +315,7 @@ class AssertionProcessor:
         if self.auth_n_request.id:
             subject_confirmation_data.attrib["InResponseTo"] = self.auth_n_request.id
         subject_confirmation_data.attrib["NotOnOrAfter"] = self._valid_not_on_or_after
-        subject_confirmation_data.attrib["Recipient"] = self.provider.acs_url
+        subject_confirmation_data.attrib["Recipient"] = self.auth_n_request.acs_url or self.provider.acs_url
         return subject
 
     def get_assertion(self) -> Element:
@@ -350,7 +350,7 @@ class AssertionProcessor:
         response = Element(f"{{{NS_SAML_PROTOCOL}}}Response", nsmap=NS_MAP)
         response.attrib["Version"] = "2.0"
         response.attrib["IssueInstant"] = self._issue_instant
-        response.attrib["Destination"] = self.provider.acs_url
+        response.attrib["Destination"] = self.auth_n_request.acs_url or self.provider.acs_url
         response.attrib["ID"] = self._response_id
         if self.auth_n_request.id:
             response.attrib["InResponseTo"] = self.auth_n_request.id
