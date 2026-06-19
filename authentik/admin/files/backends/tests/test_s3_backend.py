@@ -16,6 +16,7 @@ class TestS3BackendClientCache(TestCase):
 
     @CONFIG.patch("storage.s3.access_key", "accessKey1")
     @CONFIG.patch("storage.s3.secret_key", "secretKey1")
+    @CONFIG.patch("storage.s3.use_ssl", "true")
     def test_client_reuses_boto_client(self):
         """Test repeated client access reuses the same boto client."""
         with patch("authentik.admin.files.backends.s3.boto3.Session") as session_cls:
@@ -28,55 +29,32 @@ class TestS3BackendClientCache(TestCase):
             self.assertIs(backend.client, client)
             self.assertIs(backend.client, client)
             session.client.assert_called_once()
-
-    @CONFIG.patch("storage.s3.access_key", "accessKey1")
-    @CONFIG.patch("storage.s3.secret_key", "secretKey1")
-    @CONFIG.patch("storage.s3.endpoint", "https://s3-1.example.com")
-    def test_client_refreshes_when_endpoint_changes(self):
-        """Test client cache is invalidated when S3 endpoint changes."""
-        with patch("authentik.admin.files.backends.s3.boto3.Session") as session_cls:
-            session = session_cls.return_value
-            first_client = Mock()
-            second_client = Mock()
-            session.client.side_effect = [first_client, second_client]
-
-            backend = S3Backend(FileUsage.MEDIA)
-
-            self.assertIs(backend.client, first_client)
-            with CONFIG.patch("storage.s3.endpoint", "https://s3-2.example.com"):
-                self.assertIs(backend.client, second_client)
-            self.assertEqual(session.client.call_count, 2)
-
-    @CONFIG.patch("storage.s3.access_key", "accessKey1")
-    @CONFIG.patch("storage.s3.secret_key", "secretKey1")
-    @CONFIG.patch("storage.s3.signature_version", "s3v4")
-    def test_client_refreshes_when_signature_version_changes(self):
-        """Test client cache is invalidated when S3 signature version changes."""
-        with patch("authentik.admin.files.backends.s3.boto3.Session") as session_cls:
-            session = session_cls.return_value
-            first_client = Mock()
-            second_client = Mock()
-            session.client.side_effect = [first_client, second_client]
-
-            backend = S3Backend(FileUsage.MEDIA)
-
-            self.assertIs(backend.client, first_client)
-            with CONFIG.patch("storage.s3.signature_version", "s3"):
-                self.assertIs(backend.client, second_client)
-            self.assertEqual(session.client.call_count, 2)
-
-    @CONFIG.patch("storage.s3.access_key", "accessKey1")
-    @CONFIG.patch("storage.s3.secret_key", "secretKey1")
-    @CONFIG.patch("storage.s3.use_ssl", "true")
-    def test_client_converts_use_ssl_to_bool(self):
-        """Test string-backed use_ssl config is passed to boto as a bool."""
-        with patch("authentik.admin.files.backends.s3.boto3.Session") as session_cls:
-            session = session_cls.return_value
-
-            backend = S3Backend(FileUsage.MEDIA)
-
-            self.assertIs(backend.client, session.client.return_value)
             self.assertIs(session.client.call_args.kwargs["use_ssl"], True)
+
+    @CONFIG.patch("storage.s3.access_key", "accessKey1")
+    @CONFIG.patch("storage.s3.secret_key", "secretKey1")
+    def test_client_refreshes_when_config_changes(self):
+        """Test client cache is invalidated when S3 client config changes."""
+        changes = (
+            ("endpoint", "https://s3-1.example.com", "https://s3-2.example.com"),
+            ("signature_version", "s3v4", "s3"),
+        )
+
+        for key, initial, changed in changes:
+            with self.subTest(key=key):
+                with CONFIG.patch(f"storage.s3.{key}", initial):
+                    with patch("authentik.admin.files.backends.s3.boto3.Session") as session_cls:
+                        session = session_cls.return_value
+                        first_client = Mock()
+                        second_client = Mock()
+                        session.client.side_effect = [first_client, second_client]
+
+                        backend = S3Backend(FileUsage.MEDIA)
+
+                        self.assertIs(backend.client, first_client)
+                        with CONFIG.patch(f"storage.s3.{key}", changed):
+                            self.assertIs(backend.client, second_client)
+                        self.assertEqual(session.client.call_count, 2)
 
 
 @skipUnless(s3_test_server_available(), "S3 test server not available")
