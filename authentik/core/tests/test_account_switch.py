@@ -87,7 +87,7 @@ class TestAccountSwitch(FlowTestCase):
         self.assertEqual(response.status_code, 400)
         self.assertContains(
             response,
-            "Account switching is disabled for this brand.",
+            "Account switching is disabled.",
             status_code=400,
         )
 
@@ -105,7 +105,7 @@ class TestAccountSwitch(FlowTestCase):
         self.assertEqual(response.status_code, 400)
         self.assertContains(
             response,
-            "Account switching is disabled for this brand.",
+            "Account switching is disabled.",
             status_code=400,
         )
 

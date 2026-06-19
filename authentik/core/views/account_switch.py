@@ -30,7 +30,7 @@ class AccountSwitchView(View):
                 "if/error.html",
                 {
                     "title": _("Account switching disabled"),
-                    "message": _("Account switching is disabled for this brand."),
+                    "message": _("Account switching is disabled."),
                 },
                 status=400,
             )
