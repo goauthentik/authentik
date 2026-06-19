@@ -1,17 +1,63 @@
 """authentik sessions engine"""
 
 import pickle  # nosec
+from typing import TYPE_CHECKING
 
 from django.contrib.auth import BACKEND_SESSION_KEY, HASH_SESSION_KEY, SESSION_KEY
 from django.contrib.sessions.backends.db import SessionStore as SessionBase
 from django.core.exceptions import SuspiciousOperation
+from django.http import HttpRequest
 from django.utils import timezone
 from django.utils.functional import cached_property
 from structlog.stdlib import get_logger
 
 from authentik.root.middleware import ClientIPMiddleware
 
+if TYPE_CHECKING:
+    from authentik.core.models import AuthenticatedSession, User
+
 LOGGER = get_logger()
+
+
+def authenticated_session_from_request(
+    request: HttpRequest, user: User
+) -> AuthenticatedSession | None:
+    """Create a new authenticated session from an HTTP request."""
+    from authentik.core.models import AuthenticatedSession, Session
+
+    if not hasattr(request, "session") or not request.session.exists(request.session.session_key):
+        return None
+    session = Session.objects.filter(session_key=request.session.session_key).first()
+    if session is None:
+        return None
+    authenticated_session, _ = AuthenticatedSession.objects.update_or_create(
+        session=session,
+        defaults={
+            "user": user,
+            "is_current": True,
+        },
+    )
+    return bind_authenticated_session_to_browser(request, authenticated_session)
+
+
+def bind_authenticated_session_to_browser(
+    request: HttpRequest, authenticated_session: AuthenticatedSession
+) -> AuthenticatedSession:
+    """Bind an authenticated session to the request's browser key."""
+    from authentik.core.models import AuthenticatedSession
+    from authentik.root.middleware import SessionMiddleware
+
+    browser_key = SessionMiddleware.ensure_browser_key(request)
+    if browser_key:
+        # The new login takes over the browser; older logins become switch targets.
+        AuthenticatedSession.objects.filter(browser_key=browser_key).exclude(
+            session=authenticated_session.session
+        ).update(is_current=False)
+        if authenticated_session.browser_key != browser_key or not authenticated_session.is_current:
+            authenticated_session.browser_key = browser_key
+            authenticated_session.is_current = True
+            authenticated_session.save(update_fields=["browser_key", "is_current"])
+    return authenticated_session
 
 
 class SessionStore(SessionBase):

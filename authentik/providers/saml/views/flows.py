@@ -8,7 +8,8 @@ from django.utils.http import urlencode
 from django.utils.translation import gettext as _
 from structlog.stdlib import get_logger
 
-from authentik.core.models import Application, AuthenticatedSession
+from authentik.core.models import Application
+from authentik.core.sessions import authenticated_session_from_request
 from authentik.events.models import Event, EventAction
 from authentik.flows.challenge import (
     PLAN_CONTEXT_TITLE,
@@ -65,7 +66,7 @@ class SAMLFlowFinalView(ChallengeStageView):
             response = processor.build_response()
 
             # Create SAMLSession to track this login
-            auth_session = AuthenticatedSession.from_request(request, request.user)
+            auth_session = authenticated_session_from_request(request, request.user)
             if auth_session:
                 # Since samlsessions should only exist uniquely for an active session and a provider
                 # any existing combination is likely an old, dead session

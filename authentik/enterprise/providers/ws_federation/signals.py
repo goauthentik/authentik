@@ -8,7 +8,8 @@ from django.urls import reverse
 from django.utils import timezone
 from structlog.stdlib import get_logger
 
-from authentik.core.models import AuthenticatedSession, User
+from authentik.core.models import User
+from authentik.core.sessions import authenticated_session_from_request
 from authentik.enterprise.providers.ws_federation.models import WSFederationProvider
 from authentik.enterprise.providers.ws_federation.processors.constants import (
     WS_FED_ACTION_SIGN_OUT_CLEANUP,
@@ -41,7 +42,7 @@ def handle_ws_fed_iframe_pre_user_logout(
     if not user.is_authenticated:
         return
 
-    auth_session = AuthenticatedSession.from_request(request, user)
+    auth_session = authenticated_session_from_request(request, user)
     if not auth_session:
         return
 

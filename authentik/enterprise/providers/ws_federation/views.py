@@ -5,7 +5,8 @@ from django.utils.translation import gettext as _
 from django.views import View
 from structlog.stdlib import get_logger
 
-from authentik.core.models import Application, AuthenticatedSession
+from authentik.core.models import Application
+from authentik.core.sessions import authenticated_session_from_request
 from authentik.enterprise.providers.ws_federation.models import WSFederationProvider
 from authentik.enterprise.providers.ws_federation.processors.constants import (
     WS_FED_ACTION_SIGN_IN,
@@ -131,7 +132,7 @@ class WSFedFlowFinalView(ChallengeStageView):
         saml_processor = proc.saml_processor
 
         # Create SAMLSession to track this login
-        auth_session = AuthenticatedSession.from_request(self.request, self.request.user)
+        auth_session = authenticated_session_from_request(self.request, self.request.user)
         if auth_session:
             # Since samlsessions should only exist uniquely for an active session and a provider
             # any existing combination is likely an old, dead session

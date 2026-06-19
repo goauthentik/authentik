@@ -7,8 +7,7 @@ from django.test import RequestFactory, TestCase
 from django.urls import reverse
 from django.utils.crypto import get_random_string
 
-from authentik.core.models import AuthenticatedSession
-from authentik.core.sessions import SessionStore
+from authentik.core.sessions import SessionStore, authenticated_session_from_request
 from authentik.core.tests.utils import create_test_session, create_test_user
 from authentik.root.middleware import (
     BROWSER_KEY_LENGTH,
@@ -34,6 +33,25 @@ class TestSessionSuperseding(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json()["user"]["username"], self.user.username)
 
+    def test_legacy_session_gets_browser_key(self):
+        """Test a legacy login without a browser key is bound on next request"""
+        target = create_test_session(self.user)
+        self.assertIsNone(target.browser_key)
+        self.client.cookies[settings.SESSION_COOKIE_NAME] = target.session.session_key
+
+        response = self.client.get(reverse("authentik_api:user-me"))
+
+        self.assertEqual(response.status_code, 200)
+        target.refresh_from_db()
+        self.assertIsNotNone(target.browser_key)
+        self.assertTrue(target.is_current)
+        browser_cookie = response.cookies.get(COOKIE_NAME_BROWSER)
+        self.assertIsNotNone(browser_cookie)
+        self.assertEqual(
+            SessionMiddleware.parse_browser_key(browser_cookie.value),
+            target.browser_key,
+        )
+
     def test_superseded_session_rejected(self):
         """Test a recorded session cookie can't be replayed after an account switch"""
         target = create_test_session(self.user, browser_key=get_random_string(BROWSER_KEY_LENGTH))
@@ -57,7 +75,7 @@ class TestSessionSuperseding(TestCase):
         request.browser_key = browser_key
         request.session = SessionStore()
         request.session.create()
-        new_session = AuthenticatedSession.from_request(request, self.user)
+        new_session = authenticated_session_from_request(request, self.user)
 
         self.assertEqual(new_session.browser_key, browser_key)
         self.assertTrue(new_session.is_current)

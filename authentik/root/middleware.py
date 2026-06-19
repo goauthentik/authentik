@@ -16,6 +16,7 @@ from django.http.request import HttpRequest
 from django.http.response import HttpResponse, HttpResponseServerError
 from django.middleware.csrf import CSRF_SESSION_KEY
 from django.middleware.csrf import CsrfViewMiddleware as UpstreamCsrfViewMiddleware
+from django.utils import timezone
 from django.utils.cache import patch_vary_headers
 from django.utils.crypto import get_random_string
 from django.utils.http import http_date
@@ -124,6 +125,7 @@ class SessionMiddleware(UpstreamSessionMiddleware):
             return None
         if not request.browser_key:
             request.browser_key = get_random_string(BROWSER_KEY_LENGTH)
+            request.browser_key_needs_update = True
         return request.browser_key
 
     def process_request(self, request: HttpRequest):
@@ -133,11 +135,33 @@ class SessionMiddleware(UpstreamSessionMiddleware):
             COOKIE_NAME_ACCOUNTS_LEGACY
         )
         request.browser_key = SessionMiddleware.parse_browser_key(raw_browser)
+        request.browser_key_needs_update = COOKIE_NAME_ACCOUNTS_LEGACY in request.COOKIES
         request.session = self.SessionStore(
             session_key,
             last_ip=ClientIPMiddleware.get_client_ip(request),
             last_user_agent=request.META.get("HTTP_USER_AGENT", ""),
         )
+
+    @staticmethod
+    def bind_authenticated_session_browser_key(request: HttpRequest):
+        """Bind legacy authenticated sessions to the browser key as soon as possible."""
+        if not hasattr(request, "session") or not request.session.session_key:
+            return
+        from authentik.core.models import AuthenticatedSession
+        from authentik.core.sessions import bind_authenticated_session_to_browser
+
+        authenticated_session = AuthenticatedSession.objects.filter(
+            session_id=request.session.session_key,
+            session__expires__gt=timezone.now(),
+        ).first()
+        if not authenticated_session:
+            return
+        if authenticated_session.browser_key and not getattr(request, "browser_key", None):
+            request.browser_key = authenticated_session.browser_key
+            request.browser_key_needs_update = True
+            return
+        if not authenticated_session.browser_key:
+            bind_authenticated_session_to_browser(request, authenticated_session)
 
     def process_response(self, request: HttpRequest, response: HttpResponse) -> HttpResponse:
         """
@@ -146,6 +170,7 @@ class SessionMiddleware(UpstreamSessionMiddleware):
         the session cookie if the session has been emptied.
         """
         try:
+            SessionMiddleware.bind_authenticated_session_browser_key(request)
             accessed = request.session.accessed
             modified = request.session.modified
             empty = request.session.is_empty()
@@ -197,24 +222,26 @@ class SessionMiddleware(UpstreamSessionMiddleware):
                         httponly=settings.SESSION_COOKIE_HTTPONLY or None,
                         samesite=same_site,
                     )
-                    # Keep the browser cookie longer-lived than the sessions it groups.
-                    # It is intentionally not deleted with the session cookie.
-                    if getattr(request, "browser_key", None):
-                        response.set_cookie(
-                            COOKIE_NAME_BROWSER,
-                            SessionMiddleware.encode_browser_key(request.browser_key),
-                            max_age=BROWSER_COOKIE_AGE,
-                            domain=settings.SESSION_COOKIE_DOMAIN,
-                            path=settings.SESSION_COOKIE_PATH,
-                            secure=secure,
-                            samesite=same_site,
-                        )
-                        response.delete_cookie(
-                            COOKIE_NAME_ACCOUNTS_LEGACY,
-                            domain=settings.SESSION_COOKIE_DOMAIN,
-                            path=settings.SESSION_COOKIE_PATH,
-                            samesite=same_site,
-                        )
+        # Keep the browser cookie longer-lived than the sessions it groups.
+        # It is intentionally not deleted with the session cookie.
+        if getattr(request, "browser_key", None) and getattr(
+            request, "browser_key_needs_update", False
+        ):
+            response.set_cookie(
+                COOKIE_NAME_BROWSER,
+                SessionMiddleware.encode_browser_key(request.browser_key),
+                max_age=BROWSER_COOKIE_AGE,
+                domain=settings.SESSION_COOKIE_DOMAIN,
+                path=settings.SESSION_COOKIE_PATH,
+                secure=secure,
+                samesite=same_site,
+            )
+            response.delete_cookie(
+                COOKIE_NAME_ACCOUNTS_LEGACY,
+                domain=settings.SESSION_COOKIE_DOMAIN,
+                path=settings.SESSION_COOKIE_PATH,
+                samesite=same_site,
+            )
         return response
 
 

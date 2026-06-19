@@ -1391,23 +1391,3 @@ class AuthenticatedSession(SerializerModel):
 
     def __str__(self) -> str:
         return f"Authenticated Session {str(self.pk)[:10]}"
-
-    @staticmethod
-    def from_request(request: HttpRequest, user: User) -> AuthenticatedSession | None:
-        """Create a new session from a http request"""
-        from authentik.root.middleware import SessionMiddleware
-
-        if not hasattr(request, "session") or not request.session.exists(
-            request.session.session_key
-        ):
-            return None
-        browser_key = SessionMiddleware.ensure_browser_key(request)
-        if browser_key:
-            # The new login takes over the browser; older logins become switch targets.
-            AuthenticatedSession.objects.filter(browser_key=browser_key).update(is_current=False)
-        return AuthenticatedSession(
-            session=Session.objects.filter(session_key=request.session.session_key).first(),
-            user=user,
-            browser_key=browser_key,
-            is_current=True,
-        )
