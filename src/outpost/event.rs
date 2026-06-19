@@ -117,11 +117,9 @@ async fn handle_event<O: Outpost>(
             let event: EventSessionEnd = serde_json::from_value(event.args)?;
             outpost.end_session(event).await?;
         }
-        #[expect(
-            clippy::unimplemented,
-            reason = "this is only relevant for the RAC provider"
-        )]
-        EventKind::ProviderSpecific => unimplemented!(),
+        EventKind::ProviderSpecific => {
+            debug!("received provider specific event. ignoring.");
+        }
     }
     Ok(())
 }

@@ -222,7 +222,8 @@ mod tests {
     #[test]
     fn builds_start_url() {
         assert_eq!(
-            start_url("https://app.example.com", "https://app.example.com/page").expect("start url"),
+            start_url("https://app.example.com", "https://app.example.com/page")
+                .expect("start url"),
             "https://app.example.com/outpost.goauthentik.io/start?rd=https%3A%2F%2Fapp.example.com%2Fpage"
         );
     }
