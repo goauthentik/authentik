@@ -53,7 +53,8 @@ class AccountSwitchView(View):
         else:
             stale_user_pk = user_pk
         planner = FlowPlanner(flow)
-        # The context decides which stages policies skip, so cached plans don't apply
+        # The account-switch context can change policy decisions while building the stage list.
+        # Reusing a cached plan would skip that planning pass.
         planner.use_cache = False
         try:
             plan = planner.plan(request, context)
