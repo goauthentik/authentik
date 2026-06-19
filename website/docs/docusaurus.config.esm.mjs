@@ -36,6 +36,7 @@ const releaseEnvironment = prepareReleaseEnvironment();
 const files = [
     // ---
     resolve(authentikModulePath, "lifecycle/container/compose.yml"),
+    resolve(authentikModulePath, "lifecycle/quadlet"),
 ];
 
 await Promise.all(

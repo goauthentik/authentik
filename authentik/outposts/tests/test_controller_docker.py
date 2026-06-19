@@ -6,7 +6,7 @@ from docker.models.containers import Container
 from authentik.blueprints.tests import reconcile_app
 from authentik.outposts.apps import MANAGED_OUTPOST
 from authentik.outposts.controllers.base import ControllerException
-from authentik.outposts.controllers.docker import DockerController
+from authentik.outposts.controllers.docker import DockerController, local_docker_client_kwargs
 from authentik.outposts.models import DockerServiceConnection, Outpost, OutpostType
 from authentik.providers.proxy.controllers.docker import ProxyDockerController
 
@@ -34,6 +34,17 @@ class DockerControllerTests(TestCase):
         """Ensure init fails with invalid client"""
         with self.assertRaises(ControllerException):
             DockerController(self.outpost, self.integration)
+
+    def test_local_client_kwargs(self):
+        """Local Docker connections use their configured socket."""
+        self.assertEqual(
+            local_docker_client_kwargs("/run/podman/podman.sock"),
+            {"base_url": "unix:///run/podman/podman.sock"},
+        )
+        self.assertEqual(
+            local_docker_client_kwargs("unix:///run/podman/podman.sock"),
+            {"base_url": "unix:///run/podman/podman.sock"},
+        )
 
     def test_env_valid(self):
         """Test environment check"""

@@ -1,0 +1,24 @@
+[Unit]
+Description=authentik PostgreSQL
+
+[Container]
+ContainerName=authentik-postgresql
+Image=docker.io/library/postgres:16-alpine
+AutoUpdate=registry
+Pod=authentik.pod
+Volume=authentik-database.volume:/var/lib/postgresql/data
+EnvironmentFile=%h/.config/authentik/authentik.env
+Environment=POSTGRES_DB=authentik
+Environment=POSTGRES_USER=authentik
+HealthCmd=pg_isready -d authentik -U authentik
+HealthInterval=30s
+HealthStartPeriod=20s
+HealthTimeout=5s
+HealthRetries=5
+Notify=healthy
+
+[Service]
+Restart=always
+
+[Install]
+WantedBy=default.target

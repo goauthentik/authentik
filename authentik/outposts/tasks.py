@@ -1,7 +1,7 @@
 """outpost tasks"""
 
 from hashlib import sha256
-from os import R_OK, access
+from os import R_OK, access, getenv
 from pathlib import Path
 from socket import gethostname
 from typing import Any
@@ -42,6 +42,40 @@ from authentik.tasks.middleware import CurrentTask
 
 LOGGER = get_logger()
 CACHE_KEY_OUTPOST_DOWN = "goauthentik.io/outposts/teardown/%s"
+
+
+def local_docker_socket_paths(runtime_dir: str | None = None) -> list[str]:
+    """Return Docker-compatible socket paths to probe for local outpost management."""
+    candidate_sockets = [
+        urlparse(DEFAULT_UNIX_SOCKET).path,
+        "/run/podman/podman.sock",
+    ]
+    if runtime_dir:
+        candidate_sockets.append(f"{runtime_dir}/podman/podman.sock")
+    return candidate_sockets
+
+
+def docker_socket_url(socket_path: str) -> str:
+    """Return a Docker SDK-compatible URL for a Unix socket path."""
+    return f"unix://{socket_path}"
+
+
+def discover_local_docker_connection(task: Any, socket_paths: list[str]) -> None:
+    """Create a local Docker service connection for the first readable socket."""
+    for socket_path in socket_paths:
+        socket = Path(socket_path)
+        if not (socket.exists() and access(socket, R_OK)):
+            continue
+        task.info(f"Detected local container socket at {socket_path}")
+        if DockerServiceConnection.objects.filter(local=True).exists():
+            break
+        task.info("Created Service Connection for local container socket")
+        DockerServiceConnection.objects.create(
+            name="Local Docker connection",
+            local=True,
+            url=docker_socket_url(socket_path),
+        )
+        break
 
 
 def hash_session_key(session_key: str) -> str:
@@ -189,17 +223,7 @@ def outpost_connection_discovery():
                     name=kubeconfig_local_name,
                     kubeconfig=safe_load(_kubeconfig),
                 )
-    unix_socket_path = urlparse(DEFAULT_UNIX_SOCKET).path
-    socket = Path(unix_socket_path)
-    if socket.exists() and access(socket, R_OK):
-        self.info("Detected local docker socket")
-        if len(DockerServiceConnection.objects.filter(local=True)) == 0:
-            self.info("Created Service Connection for docker")
-            DockerServiceConnection.objects.create(
-                name="Local Docker connection",
-                local=True,
-                url=unix_socket_path,
-            )
+    discover_local_docker_connection(self, local_docker_socket_paths(getenv("XDG_RUNTIME_DIR")))
 
 
 @actor(description=_("Terminate session on all outposts."))

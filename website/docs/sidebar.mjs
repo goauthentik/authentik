@@ -78,6 +78,7 @@ const items = [
                 collapsed: true,
                 items: [
                     "install-config/install/docker-compose",
+                    "install-config/install/podman-quadlet",
                     "install-config/install/kubernetes",
                     "install-config/install/aws",
                 ],

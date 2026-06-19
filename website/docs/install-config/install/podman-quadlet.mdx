@@ -1,0 +1,225 @@
+---
+title: Podman with Quadlet installation
+authentik_version: "2026.8"
+---
+
+import TabItem from "@theme/TabItem";
+import Tabs from "@theme/Tabs";
+
+Use this guide for test setups and small-scale production setups that run authentik with Podman and [Quadlet](https://docs.podman.io/en/latest/markdown/podman-systemd.unit.5.html).
+
+Quadlet turns Podman `.container`, `.pod`, and `.volume` files into systemd services. For larger production deployments, see [Kubernetes installation](./kubernetes.md).
+
+## Requirements
+
+- Podman 5.0 or later
+- systemd
+
+## Rootful vs. rootless
+
+Quadlet can run authentik as rootful system services or as rootless user services. Every command in this guide is shown for both modes; pick the tab that matches your deployment.
+
+## Prepare the host
+
+Create the state and configuration directories, then write the environment file.
+
+<Tabs groupId="install-mode">
+<TabItem value="rootful" label="Rootful" default>
+
+```shell
+sudo mkdir -p /var/lib/authentik/{data,certs,custom-templates}
+sudo mkdir -p /etc/authentik
+sudo tee /etc/authentik/authentik.env > /dev/null <<EOF
+POSTGRES_PASSWORD=$(openssl rand -base64 36 | tr -d '\n')
+AUTHENTIK_SECRET_KEY=$(openssl rand -base64 60 | tr -d '\n')
+AUTHENTIK_ERROR_REPORTING__ENABLED=true
+EOF
+sudo chmod 600 /etc/authentik/authentik.env
+```
+
+</TabItem>
+<TabItem value="rootless" label="Rootless">
+
+```shell
+mkdir -p ~/.local/share/authentik/{data,certs,custom-templates}
+mkdir -p ~/.config/authentik
+tee ~/.config/authentik/authentik.env > /dev/null <<EOF
+POSTGRES_PASSWORD=$(openssl rand -base64 36 | tr -d '\n')
+AUTHENTIK_SECRET_KEY=$(openssl rand -base64 60 | tr -d '\n')
+AUTHENTIK_ERROR_REPORTING__ENABLED=true
+EOF
+chmod 600 ~/.config/authentik/authentik.env
+```
+
+</TabItem>
+</Tabs>
+
+Enable the Podman API socket for outpost management:
+
+<Tabs groupId="install-mode">
+<TabItem value="rootful" label="Rootful" default>
+
+```shell
+sudo systemctl enable --now podman.socket
+```
+
+</TabItem>
+<TabItem value="rootless" label="Rootless">
+
+```shell
+systemctl --user enable --now podman.socket
+loginctl enable-linger "$USER"
+```
+
+</TabItem>
+</Tabs>
+
+## Download the Quadlet units
+
+Download the Quadlet units for the mode you chose:
+
+<Tabs groupId="install-mode">
+<TabItem value="rootful" label="Rootful" default>
+
+```shell
+sudo mkdir -p /etc/containers/systemd
+for unit in \
+    authentik.pod \
+    authentik-database.volume \
+    authentik-postgresql.container \
+    authentik-server.container \
+    authentik-worker.container; do
+    curl -fsSL "https://docs.goauthentik.io/quadlet/$unit" \
+        | sudo tee "/etc/containers/systemd/$unit" >/dev/null
+done
+```
+
+</TabItem>
+<TabItem value="rootless" label="Rootless">
+
+```shell
+mkdir -p ~/.config/containers/systemd
+for unit in \
+    authentik.pod \
+    authentik-database.volume \
+    authentik-postgresql.container \
+    authentik-server.container \
+    authentik-worker.container; do
+    curl -fsSL "https://docs.goauthentik.io/quadlet/rootless/$unit" \
+        -o "$HOME/.config/containers/systemd/$unit"
+done
+```
+
+</TabItem>
+</Tabs>
+
+:::note SELinux
+On SELinux-enabled hosts, the units label bind mounts with `:Z`, including the Podman socket mount. If that does not fit your policy, edit the affected `.container` files before starting authentik.
+:::
+
+The units create one Podman pod named `authentik` with three containers: PostgreSQL, server, and worker. Containers in the pod share a network namespace, so the worker listens on `:9001` for HTTP and `:9301` for metrics to avoid port conflicts with the server.
+
+The worker runs as UID 0 inside the container. This lets it read the root-owned socket in rootful mode; in rootless mode, container UID 0 maps back to the calling user.
+
+## Start authentik
+
+Reload systemd, then enable and start the services. The pod starts automatically.
+
+<Tabs groupId="install-mode">
+<TabItem value="rootful" label="Rootful" default>
+
+```shell
+sudo systemctl daemon-reload
+sudo systemctl enable --now \
+    authentik-postgresql.service \
+    authentik-server.service \
+    authentik-worker.service
+```
+
+</TabItem>
+<TabItem value="rootless" label="Rootless">
+
+```shell
+systemctl --user daemon-reload
+systemctl --user enable --now \
+    authentik-postgresql.service \
+    authentik-server.service \
+    authentik-worker.service
+```
+
+</TabItem>
+</Tabs>
+
+Quadlet pulls images on first start, so the initial run can take a few minutes. Tail the logs to watch the migration and startup:
+
+<Tabs groupId="install-mode">
+<TabItem value="rootful" label="Rootful" default>
+
+```shell
+journalctl -u authentik-server.service -u authentik-worker.service -u authentik-postgresql.service -f
+```
+
+</TabItem>
+<TabItem value="rootless" label="Rootless">
+
+```shell
+journalctl --user -u authentik-server.service -u authentik-worker.service -u authentik-postgresql.service -f
+```
+
+</TabItem>
+</Tabs>
+
+## Access authentik
+
+To start the initial setup, navigate to `http://<your server's IP or hostname>:9000`.
+
+:::note Rootless ports
+Rootless Podman cannot bind ports below 1024 by default. Use the published ports shown in this guide, or place a reverse proxy in front of authentik. Other options include firewall port forwarding, systemd socket activation, or changing the system's unprivileged port range.
+:::
+
+You are then prompted to set a password for the `akadmin` user (the default user).
+
+:::info Issues with initial setup
+If you run into issues, refer to our [troubleshooting docs](../../troubleshooting/login.md#cant-access-initial-setup-flow-during-installation-steps).
+:::
+
+## Upgrading
+
+The Quadlet `.container` files set `AutoUpdate=registry`, so Podman can pull newer digests for the configured image tags. To upgrade on demand:
+
+<Tabs groupId="install-mode">
+<TabItem value="rootful" label="Rootful" default>
+
+```shell
+sudo podman auto-update
+```
+
+</TabItem>
+<TabItem value="rootless" label="Rootless">
+
+```shell
+podman auto-update
+```
+
+</TabItem>
+</Tabs>
+
+For scheduled updates, use Podman's `podman-auto-update.timer`.
+
+To upgrade to a new authentik release, download the current Quadlet units again or edit the `Image=` line in `authentik-server.container` and `authentik-worker.container`. Then reload systemd and restart the services.
+
+## Use a Podman socket on earlier authentik versions
+
+Before authentik 2026.8, authentik only detected `/var/run/docker.sock` automatically. Bind-mount the Podman socket to that path inside the worker:
+
+```ini
+Volume=/run/podman/podman.sock:/var/run/docker.sock:Z
+```
+
+Alternatively, set `DOCKER_HOST=unix:///run/podman/podman.sock` in `/etc/authentik/authentik.env`; the Docker SDK that authentik uses honors this variable.
+
+## First steps in authentik
+
+import BlurbFirstSteps from "../first-steps/_blurb_first_steps.mdx";
+
+<BlurbFirstSteps />
