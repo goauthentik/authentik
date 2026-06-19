@@ -1,7 +1,7 @@
 import "#elements/CodeMirror";
 import "#elements/forms/HorizontalFormElement";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { BasePropertyMappingForm } from "#admin/property-mappings/BasePropertyMappingForm";
 
@@ -14,19 +14,19 @@ export class PropertyMappingSourcePlexForm extends BasePropertyMappingForm<PlexS
     protected override docLink = "/users-sources/sources/property-mappings/expressions";
 
     loadInstance(pk: string): Promise<PlexSourcePropertyMapping> {
-        return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsSourcePlexRetrieve({
+        return aki(PropertymappingsApi).propertymappingsSourcePlexRetrieve({
             pmUuid: pk,
         });
     }
 
     async send(data: PlexSourcePropertyMapping): Promise<PlexSourcePropertyMapping> {
         if (this.instance) {
-            return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsSourcePlexUpdate({
+            return aki(PropertymappingsApi).propertymappingsSourcePlexUpdate({
                 pmUuid: this.instance.pk,
                 plexSourcePropertyMappingRequest: data,
             });
         }
-        return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsSourcePlexCreate({
+        return aki(PropertymappingsApi).propertymappingsSourcePlexCreate({
             plexSourcePropertyMappingRequest: data,
         });
     }

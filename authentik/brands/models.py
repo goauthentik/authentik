@@ -18,6 +18,20 @@ from authentik.lib.models import SerializerModel
 LOGGER = get_logger()
 
 
+# Brand FKs read on the request hot path. select_related pulls them into the
+# same SELECT to avoid N+1 lazy loads; CurrentBrandSerializer alone reads 7.
+_BRAND_RELATED_FK_FIELDS = (
+    "flow_authentication",
+    "flow_invalidation",
+    "flow_recovery",
+    "flow_unenrollment",
+    "flow_user_settings",
+    "flow_device_code",
+    "flow_lockdown",
+    "default_application",
+)
+
+
 class Brand(SerializerModel):
     """Single brand"""
 
@@ -57,6 +71,9 @@ class Brand(SerializerModel):
     )
     flow_device_code = models.ForeignKey(
         Flow, null=True, on_delete=models.SET_NULL, related_name="brand_device_code"
+    )
+    flow_lockdown = models.ForeignKey(
+        Flow, null=True, on_delete=models.SET_NULL, related_name="brand_lockdown"
     )
 
     default_application = models.ForeignKey(
@@ -101,13 +118,23 @@ class Brand(SerializerModel):
         """Get themed URLs for branding_favicon if it contains %(theme)s"""
         return get_file_manager(FileUsage.MEDIA).themed_urls(self.branding_favicon)
 
-    def branding_default_flow_background_url(self) -> str:
+    def branding_default_flow_background_url(self, request=None, use_cache: bool = True) -> str:
         """Get branding_default_flow_background URL"""
-        return get_file_manager(FileUsage.MEDIA).file_url(self.branding_default_flow_background)
+        return get_file_manager(FileUsage.MEDIA).file_url(
+            self.branding_default_flow_background,
+            request,
+            use_cache=use_cache,
+        )
 
-    def branding_default_flow_background_themed_urls(self) -> dict[str, str] | None:
+    def branding_default_flow_background_themed_urls(
+        self, request=None, use_cache: bool = True
+    ) -> dict[str, str] | None:
         """Get themed URLs for branding_default_flow_background if it contains %(theme)s"""
-        return get_file_manager(FileUsage.MEDIA).themed_urls(self.branding_default_flow_background)
+        return get_file_manager(FileUsage.MEDIA).themed_urls(
+            self.branding_default_flow_background,
+            request,
+            use_cache=use_cache,
+        )
 
     @property
     def serializer(self) -> type[Serializer]:

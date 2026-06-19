@@ -52,8 +52,8 @@ export class ModalForm extends ModalButton {
 
     //#region Properties
 
-    @property({ type: Boolean })
-    public closeAfterSuccessfulSubmit = true;
+    @property({ type: Boolean, attribute: "keep-open-after-submit" })
+    public keepOpenAfterSubmit = false;
 
     @property({ type: Boolean })
     public showSubmitButton = true;
@@ -66,9 +66,9 @@ export class ModalForm extends ModalButton {
 
     //#endregion
 
-    // #region Private methods
+    // #region Public methods
 
-    #confirm = async (): Promise<void> => {
+    public submit = async (event?: Event): Promise<void> => {
         const form = findSlottedInstance(Form, this.formSlot);
 
         if (!form) {
@@ -85,15 +85,20 @@ export class ModalForm extends ModalButton {
         this.loading = true;
         this.locked = true;
 
+        const submitter =
+            event instanceof SubmitEvent
+                ? event.submitter
+                : ((event?.currentTarget || this) as HTMLElement);
+
         const formPromise = form.submit(
             new SubmitEvent("submit", {
-                submitter: this,
+                submitter,
             }),
         );
 
         return formPromise
             .then(() => {
-                if (this.closeAfterSuccessfulSubmit) {
+                if (!this.keepOpenAfterSubmit) {
                     this.open = false;
                     form?.reset();
 
@@ -118,7 +123,7 @@ export class ModalForm extends ModalButton {
             });
     };
 
-    #cancel = (): void => {
+    public requestClose = (): void => {
         const defaultInvoked = this.dispatchEvent(new ModalHideEvent(this));
 
         if (defaultInvoked) {
@@ -130,20 +135,33 @@ export class ModalForm extends ModalButton {
 
     //#region Listeners
 
-    #refreshListener = (e: Event): void => {
+    protected refreshListener = (e: Event): void => {
         // if the modal should stay open after successful submit, prevent EVENT_REFRESH from bubbling
         // to the parent components (which would cause table refreshes that destroy the modal)
-        if (!this.closeAfterSuccessfulSubmit) {
+        if (this.keepOpenAfterSubmit) {
             e.stopPropagation();
         }
     };
 
-    #scrollListener = () => {
+    protected scrollListener = () => {
         window.dispatchEvent(
             new CustomEvent("scroll", {
                 bubbles: true,
             }),
         );
+    };
+
+    protected slotChangeListener = () => {
+        const slottedForm = findSlottedInstance(Form, this.formSlot);
+
+        if (!slottedForm) {
+            return;
+        }
+
+        slottedForm.visible = true;
+
+        this.headingContent = slottedForm.headline || null;
+        this.submitButtonContent = slottedForm.submitLabel || null;
     };
 
     //#endregion
@@ -163,16 +181,9 @@ export class ModalForm extends ModalButton {
         this.submitSlot = this.ownerDocument.createElement("slot");
         this.submitSlot.name = "submit";
 
-        this.formSlot.addEventListener("slotchange", () => {
-            const slottedForm = this.hasSlotted("header")
-                ? null
-                : findSlottedInstance(Form, this.formSlot);
+        this.formSlot.addEventListener("slotchange", this.slotChangeListener);
 
-            this.headingContent = slottedForm?.headline || null;
-            this.submitButtonContent = slottedForm?.submitLabel || null;
-        });
-
-        this.addEventListener(EVENT_REFRESH, this.#refreshListener);
+        this.addEventListener(EVENT_REFRESH, this.refreshListener);
     }
 
     //#endregion
@@ -197,7 +208,7 @@ export class ModalForm extends ModalButton {
 
             return html`<button
                 type="button"
-                @click=${this.#confirm}
+                @click=${this.submit}
                 class="pf-c-button pf-m-primary"
                 aria-description=${msg("Submit action")}
             >
@@ -207,12 +218,12 @@ export class ModalForm extends ModalButton {
     }
 
     protected renderActions(): SlottedTemplateResult {
-        return html`<fieldset class="pf-c-modal-box__footer">
+        return html`<fieldset class="ak-c-fieldset pf-c-modal-box__footer">
             <legend class="sr-only">${msg("Form actions")}</legend>
             <button
                 type="button"
                 aria-description=${msg("Cancel action")}
-                @click=${this.#cancel}
+                @click=${this.requestClose}
                 class="pf-c-button pf-m-plain"
             >
                 ${this.cancelText}
@@ -227,7 +238,7 @@ export class ModalForm extends ModalButton {
                 : nothing}
             ${this.renderHeading()}
             <slot name="above-form"></slot>
-            <div class="pf-c-modal-box__body" @scroll=${this.#scrollListener}>${this.formSlot}</div>
+            <div class="pf-c-modal-box__body" @scroll=${this.scrollListener}>${this.formSlot}</div>
             ${this.renderActions()}`;
     }
 

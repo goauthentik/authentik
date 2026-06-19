@@ -4,7 +4,7 @@ import "#elements/buttons/Dropdown";
 import "#elements/buttons/ModalButton";
 import "#elements/buttons/SpinnerButton/index";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { EventWithContext } from "#common/events";
 import { actionToLabel } from "#common/labels";
 
@@ -16,7 +16,7 @@ import { EventGeo, renderEventUser } from "#admin/events/utils";
 import { Event, EventsApi } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { html, PropertyValues, TemplateResult } from "lit";
+import { html, PropertyValues } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-object-changelog")
@@ -46,7 +46,7 @@ export class ObjectChangelog extends Table<Event> {
         if (this.targetModelName === "") {
             return Promise.reject();
         }
-        return new EventsApi(DEFAULT_CONFIG).eventsEventsList({
+        return aki(EventsApi).eventsEventsList({
             ...(await this.defaultEndpointConfig()),
             action: "model_",
             contextModelApp: appName,
@@ -82,11 +82,11 @@ export class ObjectChangelog extends Table<Event> {
         ];
     }
 
-    renderExpanded(item: Event): TemplateResult {
+    renderExpanded(item: Event): SlottedTemplateResult {
         return html`<ak-event-info .event=${item as EventWithContext}></ak-event-info>`;
     }
 
-    renderEmpty(): TemplateResult {
+    renderEmpty(): SlottedTemplateResult {
         return super.renderEmpty(
             html`<ak-empty-state
                 ><span>${msg("No Events found.")}</span>

@@ -13,6 +13,7 @@ from django.core.exceptions import SuspiciousOperation
 from django.db.models import Model
 from django.db.models.signals import m2m_changed, post_save, pre_delete
 from django.http import HttpRequest, HttpResponse
+from django_postgres_cache.models import CacheEntry
 from structlog.stdlib import BoundLogger, get_logger
 
 from authentik.blueprints.v1.importer import excluded_models
@@ -31,6 +32,7 @@ IGNORED_MODELS = tuple(
         Notification,
         StaticToken,
         Session,
+        CacheEntry,
     )
 )
 

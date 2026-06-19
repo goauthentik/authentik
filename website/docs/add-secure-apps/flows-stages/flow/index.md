@@ -18,13 +18,13 @@ When these stages are successfully completed, authentik logs in the user.
 
 ![](./simple_stages.png)
 
-By default, policies are evaluated dynamically, right before the stage (to which a policy is bound) is presented to the user. This flexibility allows the login process to continue, change, or stop, based on the success or failure of each policy.
+By default, policies bound to stage bindings are evaluated dynamically, right before the stage is presented to the user. This flexibility allows the login process to continue, change, or stop, based on the success or failure of each policy.
 
-This default behaviour can be altered by enabling the **Evaluate when flow is planned** option on the stage binding. With this setting a _flow plan_ containing all stages is generated upon flow execution. This means that all attached policies are evaluated upon execution. For more information about flow plans, read our [flow context documentation](./context/index.mdx).
+You can change this behavior by enabling the **Evaluate when flow is planned** option on the stage binding. When this option is enabled, authentik uses the [Flow Planner](./planner.md) to evaluate the stage binding's policies when the flow starts, and includes the stage in the flow plan only if those policies pass.
 
 ## Policies and permissions
 
-Flows can have [policies](../stages/index.md) assigned to them. These policies determine if the current user is allowed to see and use this flow.
+Flows can have [policies](../../../customize/policies/index.md) assigned to them. These policies determine if the current user is allowed to see and use this flow.
 
 Keep in mind that in certain circumstances, policies cannot match against users and groups as there is no authenticated user yet.
 
@@ -50,9 +50,9 @@ To create a flow, follow these steps:
 
 1. Log in to authentik as an administrator and open the Admin interface.
 2. In the Admin interface, navigate to **Flows and Stages > Flows**.
-3. Click **Create**, define the flow using the [configuration settings](#flow-configuration-options) described below, and then click **Finish**.
+3. Click **New Flow**, define the flow using the [configuration settings](#flow-configuration-options) described below, and then click **Create Flow**.
 
-After creating the flow, you can then [bind specific stages](../stages/index.md#bind-a-stage-to-a-flow) to the flow and [bind policies](../../../customize/policies/working_with_policies.md) to the flow to further customize the user's log in and authentication process.
+After creating the flow, you can then [bind specific stages](../stages/index.md#bind-a-stage-to-a-flow) to the flow and [bind policies](../../../customize/policies/bindings.md) to the flow to further customize the user's log in and authentication process.
 
 To determine which flow should be used, authentik will first check which default authentication flow is configured in the active [**Brand**](../../../sys-mgmt/brands/index.md). If no default is configured there, the policies in all flows with the matching designation are checked, and the first flow with matching policies sorted by `slug` will be used.
 

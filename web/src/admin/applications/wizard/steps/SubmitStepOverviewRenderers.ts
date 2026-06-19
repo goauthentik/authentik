@@ -18,6 +18,7 @@ import {
     RACProvider,
     RadiusProvider,
     RedirectURI,
+    RedirectURITypeEnum,
     SAMLProvider,
     SCIMProvider,
     WSFederationProvider,
@@ -41,7 +42,7 @@ const renderSAMLOverview: ProviderOverview<SAMLProvider> = (provider) => {
     return renderSummary("SAML", provider.name, [
         [msg("ACS URL"), provider.acsUrl],
         [msg("Audience"), provider.audience || "-"],
-        [msg("Issuer"), provider.issuer],
+        [msg("Issuer"), provider.urlIssuer],
     ]);
 };
 
@@ -49,8 +50,8 @@ const renderSAMLImportOverview: ProviderOverview<ProvidersSamlImportMetadataCrea
     provider,
 ) => {
     return renderSummary("SAML", provider.name, [
-        [msg("Authorization flow"), provider.authorizationFlow ?? "-"],
-        [msg("Invalidation flow"), provider.invalidationFlow ?? "-"],
+        [msg("Authorization Flow"), provider.authorizationFlow ?? "-"],
+        [msg("Invalidation Flow"), provider.invalidationFlow ?? "-"],
     ]);
 };
 
@@ -85,7 +86,10 @@ function formatRedirectUris(uris: RedirectURI[] = []) {
                           ${uri.url}
                           (${uri.matchingMode === MatchingModeEnum.Strict
                               ? msg("strict")
-                              : msg("regexp")})
+                              : msg("regexp")},
+                          ${uri.redirectUriType === RedirectURITypeEnum.Logout
+                              ? msg("post logout")
+                              : msg("authorization")})
                       </li>`,
               )}
           </ul>`
@@ -149,7 +153,7 @@ const renderOAuth2Overview: ProviderOverview<OAuth2Provider> = (provider) => {
     const label = provider.clientType ? clientTypeToLabel[provider.clientType]() : "";
 
     return renderSummary("OAuth2", provider.name, [
-        [msg("Client type"), label],
+        [msg("Client Type"), label],
         [msg("Client ID"), provider.clientId],
         [msg("Redirect URIs"), formatRedirectUris(provider.redirectUris)],
     ]);

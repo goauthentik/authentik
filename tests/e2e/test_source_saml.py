@@ -16,7 +16,8 @@ from authentik.flows.models import Flow
 from authentik.lib.generators import generate_id
 from authentik.sources.saml.models import SAMLBindingTypes, SAMLSource
 from authentik.stages.identification.models import IdentificationStage
-from tests.e2e.utils import SeleniumTestCase, retry
+from tests.decorators import retry
+from tests.selenium import SeleniumTestCase
 
 IDP_CERT = """-----BEGIN CERTIFICATE-----
 MIIDXTCCAkWgAwIBAgIJALmVVuDWu4NYMA0GCSqGSIb3DQEBCwUAMEUxCzAJBgNV
@@ -393,7 +394,6 @@ class TestSourceSAML(SeleniumTestCase):
 
         self.login_via_saml_source()
 
-        # sleep(999999)
         self.assert_user(
             User.objects.exclude(username="akadmin")
             .exclude(username__startswith="ak-outpost")

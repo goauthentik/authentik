@@ -99,7 +99,7 @@ If not specified, the server name defaults to trying out all entries in the keyt
 There are some extra settings you can configure:
 
 - Update internal password on login: when a user logs in to authentik using the Kerberos source as a password backend, their internal authentik password will be updated to match the one from Kerberos.
-- Use password writeback: when a user changes their password in authentik, their Kerberos password is automatically updated to match the one from authentik. This is only available if synchronization is configured.
+- Use password writeback: when a user changes their password in authentik, their Kerberos password is automatically updated to match the one from authentik. This is only available if synchronization is configured, and requires authentik to receive the raw password; [hashed-password imports](../../../../install-config/automated-install.mdx#authentik_bootstrap_password_hash) are not written back to Kerberos.
 
 ## Kerberos source property mappings
 
@@ -124,7 +124,7 @@ These property mappings are configured with the most common Kerberos setups.
 
 ### Expression data
 
-The following variable is available to Kerberos source property mappings:
+The following variable is available to Kerberos source property mappings:
 
 - `principal`: a Python string containing the Kerberos principal. For example `alice@REALM.COMPANY` or `HTTP/authentik.company@REALM.COMPANY`.
 

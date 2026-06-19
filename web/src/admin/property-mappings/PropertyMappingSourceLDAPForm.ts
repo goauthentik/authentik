@@ -1,7 +1,7 @@
 import "#elements/CodeMirror";
 import "#elements/forms/HorizontalFormElement";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { BasePropertyMappingForm } from "#admin/property-mappings/BasePropertyMappingForm";
 
@@ -14,19 +14,19 @@ export class PropertyMappingSourceLDAPForm extends BasePropertyMappingForm<LDAPS
     protected override docLink = "/users-sources/sources/property-mappings/expressions";
 
     loadInstance(pk: string): Promise<LDAPSourcePropertyMapping> {
-        return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsSourceLdapRetrieve({
+        return aki(PropertymappingsApi).propertymappingsSourceLdapRetrieve({
             pmUuid: pk,
         });
     }
 
     async send(data: LDAPSourcePropertyMapping): Promise<LDAPSourcePropertyMapping> {
         if (this.instance) {
-            return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsSourceLdapUpdate({
+            return aki(PropertymappingsApi).propertymappingsSourceLdapUpdate({
                 pmUuid: this.instance.pk,
                 lDAPSourcePropertyMappingRequest: data,
             });
         }
-        return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsSourceLdapCreate({
+        return aki(PropertymappingsApi).propertymappingsSourceLdapCreate({
             lDAPSourcePropertyMappingRequest: data,
         });
     }

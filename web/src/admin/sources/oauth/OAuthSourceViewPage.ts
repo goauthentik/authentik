@@ -1,21 +1,22 @@
 import "#admin/policies/BoundPoliciesList";
 import "#admin/rbac/ak-rbac-object-permission-page";
 import "#admin/sources/oauth/OAuthSourceDiagram";
-import "#admin/sources/oauth/OAuthSourceForm";
 import "#admin/events/ObjectChangelog";
 import "#elements/CodeMirror";
 import "#elements/Tabs";
 import "#elements/buttons/SpinnerButton/index";
-import "#elements/forms/ModalForm";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { EVENT_REFRESH } from "#common/constants";
 
 import { AKElement } from "#elements/Base";
+import { modalInvoker } from "#elements/dialogs";
 import { sourceBindingTypeNotices } from "#elements/sources/utils";
 import { SlottedTemplateResult } from "#elements/types";
 
 import renderDescriptionList from "#components/DescriptionList";
+
+import { OAuthSourceForm } from "#admin/sources/oauth/OAuthSourceForm";
 
 import { ModelEnum, OAuthSource, ProviderTypeEnum, SourcesApi } from "@goauthentik/api";
 
@@ -36,8 +37,6 @@ export function ProviderToLabel(provider?: ProviderTypeEnum): string {
             return "";
         case ProviderTypeEnum.Apple:
             return "Apple";
-        case ProviderTypeEnum.Azuread:
-            return "Azure Active Directory (Deprecated)";
         case ProviderTypeEnum.Discord:
             return "Discord";
         case ProviderTypeEnum.Facebook:
@@ -77,7 +76,7 @@ export function ProviderToLabel(provider?: ProviderTypeEnum): string {
 export class OAuthSourceViewPage extends AKElement {
     @property({ type: String })
     set sourceSlug(value: string) {
-        new SourcesApi(DEFAULT_CONFIG)
+        aki(SourcesApi)
             .sourcesOauthRetrieve({
                 slug: value,
             })
@@ -137,21 +136,14 @@ export class OAuthSourceViewPage extends AKElement {
                                     ],
                                     [
                                         msg("Related actions"),
-                                        html`<ak-forms-modal>
-                                            <span slot="submit">${msg("Save Changes")}</span>
-                                            <span slot="header">${msg("Update OAuth Source")}</span>
-                                            <ak-source-oauth-form
-                                                slot="form"
-                                                .instancePk=${this.source.slug}
-                                            >
-                                            </ak-source-oauth-form>
-                                            <button
-                                                slot="trigger"
-                                                class="pf-c-button pf-m-primary pf-m-block"
-                                            >
-                                                ${msg("Edit")}
-                                            </button>
-                                        </ak-forms-modal>`,
+                                        html`<button
+                                            class="pf-c-button pf-m-primary pf-m-block"
+                                            ${modalInvoker(OAuthSourceForm, {
+                                                instancePk: this.source.slug,
+                                            })}
+                                        >
+                                            ${msg("Edit")}
+                                        </button>`,
                                     ],
                                 ])}
                             </div>

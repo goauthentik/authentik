@@ -146,9 +146,7 @@ class Importer:
         try:
             from authentik.enterprise.license import LicenseKey
 
-            context["goauthentik.io/enterprise/licensed"] = (
-                LicenseKey.get_total().status().is_valid,
-            )
+            context["goauthentik.io/enterprise/licensed"] = LicenseKey.get_total().status().is_valid
         except ModuleNotFoundError:
             pass
         return context
@@ -325,6 +323,42 @@ class Importer:
             serializer.instance = model_instance
         return serializer
 
+    def _save_with_retry(
+        self, serializer: BaseSerializer, entry: BlueprintEntry, raise_errors: bool
+    ) -> Model | None:
+        """Save a serializer, retrying once on IntegrityError by re-fetching the existing instance.
+
+        Returns the saved instance, or None when recovery failed and raise_errors is False.
+        Raises EntryInvalidError / IntegrityError when raise_errors is True and recovery
+        is not possible.
+        """
+        try:
+            with atomic():
+                return serializer.save()
+        except IntegrityError:
+            self.logger.debug(
+                "Integrity error during save, retrying after re-fetching instance",
+                entry=entry,
+            )
+            # Race condition: another process committed the same object between our
+            # SELECT and INSERT. Re-validate so we pick up the now-existing instance.
+            try:
+                retry_serializer = self._validate_single(entry)
+            except EntryInvalidError as exc:
+                self.logger.warning(f"Entry invalid on retry: {exc}", entry=entry, error=exc)
+                if raise_errors:
+                    raise exc
+                return None
+            if not retry_serializer:
+                return None
+            try:
+                return retry_serializer.save()
+            except IntegrityError:
+                self.logger.warning("Integrity error persists on retry", entry=entry)
+                if raise_errors:
+                    raise
+                return None
+
     def _apply_permissions(self, instance: Model, entry: BlueprintEntry):
         """Apply object-level permissions for an entry"""
         for perm in entry.get_permissions(self._import):
@@ -395,7 +429,9 @@ class Importer:
                         pk=instance.pk,
                     )
                 else:
-                    instance = serializer.save()
+                    instance = self._save_with_retry(serializer, entry, raise_errors)
+                    if instance is None:
+                        return False
                     self.logger.debug("Updated model", model=instance)
                 if "pk" in entry.identifiers:
                     self.__pk_map[entry.identifiers["pk"]] = instance.pk

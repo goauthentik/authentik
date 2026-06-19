@@ -1,6 +1,7 @@
 ---
 title: Release xxxx.x
 slug: "/releases/xxxx.x"
+draft: true
 ---
 
 ## Highlights
@@ -22,7 +23,7 @@ When you upgrade, be aware that the version of the authentik instance and of any
 To upgrade, download the new docker-compose file and update the Docker stack with the new version, using these commands:
 
 ```shell
-wget -O docker-compose.yml https://goauthentik.io/version/xxxx.x/lifecycle/container/docker-compose.yml
+wget -O docker-compose.yml https://goauthentik.io/version/xxxx.x/lifecycle/container/compose.yml
 docker compose up -d
 ```
 

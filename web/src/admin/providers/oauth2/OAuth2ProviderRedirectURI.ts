@@ -4,7 +4,7 @@ import { AKControlElement } from "#elements/ControlElement";
 import { LitPropertyRecord } from "#elements/types";
 import { ifPresent } from "#elements/utils/attributes";
 
-import { MatchingModeEnum, RedirectURI } from "@goauthentik/api";
+import { MatchingModeEnum, RedirectURI, RedirectURITypeEnum } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { css, html } from "lit";
@@ -37,6 +37,7 @@ export class OAuth2ProviderRedirectURI extends AKControlElement<RedirectURI> {
     public redirectURI: RedirectURI = {
         matchingMode: MatchingModeEnum.Strict,
         url: "",
+        redirectUriType: RedirectURITypeEnum.Authorization,
     };
 
     @property({ type: String, useDefault: true })
@@ -48,13 +49,13 @@ export class OAuth2ProviderRedirectURI extends AKControlElement<RedirectURI> {
     @queryAll(".ak-form-control")
     controls?: HTMLInputElement[];
 
-    json() {
+    toJSON(): RedirectURI {
         return Object.fromEntries(
             Array.from(this.controls ?? []).map((control) => [control.name, control.value]),
         ) as unknown as RedirectURI;
     }
 
-    get isValid() {
+    get valid() {
         return true;
     }
 
@@ -80,6 +81,25 @@ export class OAuth2ProviderRedirectURI extends AKControlElement<RedirectURI> {
                     ?selected=${this.redirectURI.matchingMode === MatchingModeEnum.Regex}
                 >
                     ${msg("Regex")}
+                </option>
+            </select>
+            <select
+                name="redirectUriType"
+                class="pf-c-form-control ak-form-control"
+                @change=${onChange}
+            >
+                <option
+                    value="${RedirectURITypeEnum.Authorization}"
+                    ?selected=${(this.redirectURI.redirectUriType ??
+                        RedirectURITypeEnum.Authorization) === RedirectURITypeEnum.Authorization}
+                >
+                    ${msg("Authorization")}
+                </option>
+                <option
+                    value="${RedirectURITypeEnum.Logout}"
+                    ?selected=${this.redirectURI.redirectUriType === RedirectURITypeEnum.Logout}
+                >
+                    ${msg("Post Logout")}
                 </option>
             </select>
             <input

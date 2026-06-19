@@ -1,23 +1,39 @@
-import { APIMessage, MessageLevel } from "#common/messages";
+import { MessageLevel } from "#common/messages";
+import { isPromiseLike } from "#common/promises";
 
 import { showMessage } from "#elements/messages/MessageContainer";
+import { SlottedTemplateResult } from "#elements/types";
 
 import { msg, str } from "@lit/localize";
 
-function castToClipboardItem(input: string, mimeType = "text/plain"): ClipboardItem {
+export type ClipboardItemSource = string | ClipboardItemData | ClipboardItem;
+
+/**
+ * Helper function to convert a string into a ClipboardItem for writing to the clipboard.
+ *
+ * @remarks
+ * This requires either a secure context (HTTPS) or localhost.
+ */
+function castToClipboardItem(source: ClipboardItemSource, mimeType = "text/plain"): ClipboardItem {
+    if (source instanceof ClipboardItem) {
+        return source;
+    }
+
+    const data = typeof source === "string" ? new Blob([source], { type: mimeType }) : source;
+
     return new ClipboardItem({
-        [mimeType]: new Blob([input], {
-            type: mimeType,
-        }),
+        [mimeType]: data,
     });
 }
 
-export async function doWriteToClipboard(...data: string[] | ClipboardItem[]): Promise<void> {
-    if (data.every((item) => typeof item === "string")) {
-        return navigator.clipboard.write(data.map((item) => castToClipboardItem(item)));
-    }
-
-    return navigator.clipboard.write(data);
+/**
+ * Writes data to the clipboard using the Clipboard API.
+ *
+ * @remarks
+ * This requires either a secure context (HTTPS) or localhost.
+ */
+export async function doWriteToClipboard(...data: ClipboardItemSource[]): Promise<void> {
+    return navigator.clipboard.write(data.map((item) => castToClipboardItem(item)));
 }
 
 /**
@@ -30,22 +46,48 @@ export async function doWriteToClipboard(...data: string[] | ClipboardItem[]): P
  * @return A promise resolving to `true` on success, `false` on failure.
  */
 export function writeToClipboard(
-    data: string | ClipboardItem | string[] | ClipboardItem[] | null | undefined,
+    data?: ClipboardItemSource | ClipboardItemSource[] | null,
     entityLabel?: string,
-    description?: string,
+    description?: SlottedTemplateResult,
 ): Promise<boolean> {
     if (!data || (Array.isArray(data) && data.length === 0)) {
         console.warn("Cannot write empty data to clipboard");
 
         return Promise.resolve(false);
     }
+    const messageKey = `clipboard-success-${entityLabel ?? "generic"}`;
 
-    const normalized = typeof data === "string" ? castToClipboardItem(data) : data;
+    // Wrap with promise to simplify fallback behavior.
+    const clipboardItemsPromise = new Promise<ClipboardItemSource[]>((resolve) => {
+        const hasAsyncData = Array.isArray(data) ? data.some(isPromiseLike) : isPromiseLike(data);
 
-    return doWriteToClipboard(...(Array.isArray(normalized) ? normalized : [normalized]))
-        .then(() => {
-            const message: APIMessage = {
+        if (hasAsyncData) {
+            showMessage({
                 level: MessageLevel.info,
+                icon: "fas fa-clipboard-check",
+                message: entityLabel
+                    ? msg(str`Copying ${entityLabel}...`, {
+                          id: "clipboard.progress.message.entity",
+                      })
+                    : msg("Copying to clipboard...", {
+                          id: "clipboard.progress.generic",
+                      }),
+                description,
+                key: messageKey,
+            });
+        }
+
+        const normalized = typeof data === "string" ? castToClipboardItem(data) : data;
+        const items = Array.isArray(normalized) ? normalized : [normalized];
+
+        resolve(items);
+    });
+
+    return clipboardItemsPromise
+        .then((items) => doWriteToClipboard(...items))
+        .then(() => {
+            showMessage({
+                level: MessageLevel.success,
                 icon: "fas fa-clipboard-check",
                 message: entityLabel
                     ? msg(str`${entityLabel} copied to clipboard.`, {
@@ -55,9 +97,8 @@ export function writeToClipboard(
                           id: "clipboard.write.success.generic",
                       }),
                 description,
-            };
-
-            showMessage(message, true);
+                key: messageKey,
+            });
 
             return true;
         })

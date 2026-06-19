@@ -6,6 +6,8 @@ Image files are used in authentik to add icons to new applications or sources, a
 
 authentik provides a centralized file management system for storing and organizing these files. Files can be uploaded and managed from **Customization** > **Files** in the Admin interface. By default, files are stored on disk in the `/data` directory, but [S3 storage](../sys-mgmt/ops/storage-s3.md) can also be configured.
 
+If file uploads are missing or unavailable after an upgrade, see [Errors when uploading icons](../troubleshooting/image_upload.md).
+
 ## Upload and manage files
 
 To upload and use image files, follow these steps:

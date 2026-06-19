@@ -4,104 +4,80 @@ sidebar_label: OPNsense
 support_level: community
 ---
 
-## What is OPNsense
+## What is OPNsense?
 
-> OPNsense is a free and Open-Source FreeBSD-based firewall and routing software. It is licensed under an Open Source Initiative approved license.
+> OPNsense is an open source FreeBSD-based firewall and routing platform.
 >
 > -- https://opnsense.org/
-
-:::info
-This is based on authentik 2024.2.2 and OPNsense 24.1.3_1-amd64 installed using https://docs.opnsense.org/manual/install.html. Instructions may differ between versions.
-:::
 
 ## Preparation
 
 The following placeholders are used in this guide:
 
-- `authentik.company` is the FQDN of authentik.
-- `opnsense` is the name of the authentik Service account we'll create.
-- `DC=ldap,DC=goauthentik,DC=io` is the Base DN of the LDAP Provider (default)
+- `opnsense.company` is the FQDN of the OPNsense installation.
+- `authentik.company` is the FQDN of the authentik installation.
+- `ldap.company` is the FQDN of the authentik LDAP outpost.
 
 :::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
-### Step 1
-
-In authentik, go and 'Create Service account' (under _Directory/Users_) for OPNsense to use as the LDAP Binder, leaving 'Create group' ticked as we'll need that group for the provider.
-In this example, we'll use `opnsense-user` as the Service account's username.
-
-:::info
-Take note of the password for this user as you'll need to give it to OPNsense in _Step 4_.
+:::warning LDAPS certificate
+This guide uses LDAPS. The LDAP outpost must use a certificate that is trusted by OPNsense and valid for `ldap.company`. If you use a private certificate authority, import that authority into OPNsense under **System** > **Trust** > **Authorities** before configuring the LDAP server.
 :::
 
-### Step 2
+## authentik configuration
 
-In authentik, create an _LDAP Provider_ (under _Applications/Providers_) with these settings:
+To support the integration of OPNsense with authentik, you need an LDAP application/provider pair, a service account for LDAP binding, LDAP search permissions for that service account, and an LDAP outpost. Follow the [LDAP provider documentation](/docs/add-secure-apps/providers/ldap/create-ldap-provider) to create these resources.
 
-:::info
-Only settings that have been modified from default have been listed.
-:::
+While following the LDAP provider documentation, use the following OPNsense-specific settings:
 
-**Protocol Settings**
+- On the LDAP provider, set **Certificate** to the certificate OPNsense will trust for `ldap.company`.
+- On the LDAP provider, set **TLS Server Name** to `ldap.company`.
+- For the LDAP bind service account name, use a descriptive name such as `opnsense-user`.
+- If you configure application bindings, ensure that the LDAP bind service account and users who should authenticate to OPNsense have access to the application.
 
-- Name: LDAP
-- Search group: opnsense
-- Certificate: authentik Self-signed certificate
+## OPNsense configuration
 
-### Step 3
+### Add the LDAP authentication server
 
-In authentik, create an application (under _Applications/Applications_) which uses this provider. Optionally apply access restrictions to the application using policy bindings.
+1. Log in to the OPNsense web UI at `opnsense.company`.
+2. Navigate to **System** > **Access** > **Servers** and click **Add**.
+3. Configure the LDAP server with the following settings:
+    - **Descriptive name**: `authentik`
+    - **Type**: `LDAP`
+    - **Hostname or IP address**: `ldap.company`
+    - **Port value**: `636`
+    - **Transport**: `SSL - Encrypted`
+    - **Bind credentials**:
+        - **User DN**: `CN=opnsense-user,OU=users,DC=ldap,DC=goauthentik,DC=io`
+        - **Password**: enter the password for the LDAP bind service account.
+    - **Base DN**: `DC=ldap,DC=goauthentik,DC=io`
+    - **Authentication containers**: `OU=users,DC=ldap,DC=goauthentik,DC=io;OU=groups,DC=ldap,DC=goauthentik,DC=io`
+    - **Extended Query**: `objectClass=user`
+    - **Initial Template**: `OpenLDAP`
 
-:::info
-Only settings that have been modified from default have been listed.
-:::
+4. Click **Save**.
 
-- Name: LDAP
-- Slug: ldap
-- Provider: LDAP
+### Enable authentik authentication
 
-### Step 4
+OPNsense can use LDAP for authentication, but GUI privileges still need to be assigned in OPNsense. Before enabling the LDAP server for GUI login, ensure that the LDAP users or groups that should access the OPNsense web UI exist in OPNsense and have the required privileges.
 
-In authentik, create an outpost (under _Applications/Outposts_) of type `LDAP` that uses the LDAP Application you created in _Step 3_.
+1. Navigate to **System** > **Settings** > **Administration**.
+2. Under **Authentication**, add `authentik` to the **Server** list.
+3. Keep **Local Database** selected as a fallback while testing the new LDAP server.
+4. Click **Save**.
 
-:::info
-Only settings that have been modified from default have been listed.
-:::
+You can import users or synchronize users and groups from authentik LDAP. For more information, refer to the OPNsense LDAP documentation in the Resources section.
 
-- Name: LDAP
-- Type: LDAP
+## Configuration verification
 
-### Step 5
+To confirm that authentik is properly configured with OPNsense, navigate to **System** > **Access** > **Tester** in OPNsense, select the `authentik` authentication server, and test with an authentik user's username and password.
 
-Add your authentik LDAP server to OPNsense by going to your OPNsense Web UI and clicking the `+` under _System/Access/Servers_.
+After the test succeeds, log out of OPNsense and log back in with an authentik account that has the required OPNsense privileges.
 
-Change the following fields
+## Resources
 
-- Descriptive name: authentik
-- Hostname or IP address: authentik.company
-- Transport: SSL - Encrypted
-- Bind credentials
-    - User DN: CN=opnsense-user,OU=users,DC=ldap,DC=goauthentik,DC=io
-    - Password: whatever-you-set
-    - Base DN: DC=ldap,DC=goauthentik,DC=io
-- Authentication containers: OU=users,DC=ldap,DC=goauthentik,DC=io;OU=groups,DC=ldap,DC=goauthentik,DC=io
-- Extended Query: &(objectClass=user)
-
-![](./opnsense1.png)
-
-### Step 6
-
-In OPNsense, go to _System/Settings/Administration_ and under _Authentication_ at the bottom of that page, add `authentik` to the Server list
-
-![](./opnsense2.png)
-
-### Step 7
-
-You can now either import users, or synchronize from Authentik LDAP. See https://docs.opnsense.org/manual/how-tos/user-ldap.html for more.
-
-## Notes
-
-:::info
-Secure LDAP more by creating a group for your `DN Bind` users and restricting the `Search group` of the LDAP Provider to them.
-:::
+- [OPNsense documentation - Access / Servers / LDAP](https://docs.opnsense.org/manual/how-tos/user-ldap.html)
+- [OPNsense documentation - Access / User Management](https://docs.opnsense.org/manual/users.html)
+- [OPNsense source - LDAP connector](https://github.com/opnsense/core/blob/master/src/opnsense/mvc/app/library/OPNsense/Auth/LDAP.php)

@@ -29,6 +29,7 @@ class ChannelIdentifier(StrEnum):
 class TaskState(models.TextChoices):
     """Task system-state. Reported by the task runners"""
 
+    WAITING_FOR_DEPENDENCIES = "waiting_for_dependencies"
     QUEUED = "queued"
     CONSUMED = "consumed"
     PREPROCESS = "preprocess"
@@ -52,6 +53,12 @@ class TaskBase(models.Model):
     mtime = models.DateTimeField(default=now, help_text=_("Task last modified time"))
     retries = models.PositiveBigIntegerField(default=0, help_text=_("Number of retries"))
     eta = models.DateTimeField(null=True, help_text=_("Planned execution time"))
+
+    dependencies = models.ManyToManyField(
+        "self",
+        verbose_name=_("Tasks that must complete for this task to run."),
+        symmetrical=False,
+    )
 
     result = models.BinaryField(null=True, help_text=_("Task result"))
     result_expiry = models.DateTimeField(null=True, help_text=_("Result expiry time"))
@@ -159,7 +166,7 @@ class ScheduleBase(models.Model):
 
     def send(self, broker: Broker | None = None) -> Message[Any]:
         broker = broker or get_broker()
-        actor: Actor[Any, Any] = broker.get_actor(self.actor_name)  # type: ignore[no-untyped-call]
+        actor: Actor[Any, Any] = broker.get_actor(self.actor_name)
         return actor.send_with_options(
             args=pickle.loads(self.args),  # nosec
             kwargs=pickle.loads(self.kwargs),  # nosec

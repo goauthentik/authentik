@@ -51,13 +51,36 @@ If the server in the webhook URL doesn’t have a certificate issued by a public
 
 You can use Webhook mappings to configure the request's payload and/or header. These are a type of property mapping that can be applied to the `Webhook Body Mapping` or `Webhook Header Mapping` fields of the webhook notification transport.
 
-##### Webhook body example
+##### Webhook body examples
 
 An example of a webhook body mapping that sets a `foo` key with its value set to the body of the notification:
 
 ```python
 return {
     "foo": request.context['notification'].body,
+}
+```
+
+You can also include fields from the notification recipient and the triggering event:
+
+```python
+return {
+    "email": request.user.email,
+    "client_ip": notification.event.client_ip,
+}
+```
+
+For failed login notifications, the attempted username is stored in the event context. If the GeoIP and ASN context processors are configured, their data is also available in the event context:
+
+```python
+event = notification.event
+
+return {
+    "action": event.action,
+    "username": event.context.get("username"),
+    "client_ip": event.client_ip,
+    "geo": event.context.get("geo"),
+    "asn": event.context.get("asn"),
 }
 ```
 
@@ -77,8 +100,8 @@ This sends a request using the Slack-specific format. This is also compatible wi
 
 ## Create a notification transport
 
-1. Log in as an administrator to the authentik Admin interface, and then navigate to **Event > Notification Transports**.
+1. Log in as an administrator to the authentik Admin interface, and then navigate to **Event > Notification Transports**.
 
-2. Click **Create** to add a new transport or click the **Edit** icon next to an existing notification transport to modify it.
+2. Click **New Notification Transport** to add a new transport or click the **Edit** icon next to an existing notification transport to modify it.
 
-3. Define the **Name** and **Mode** for the notification transport, enter required configuration settings, and then click **Create**.
+3. Define the **Name** and **Mode** for the notification transport, enter required configuration settings, and then click **Create Notification Transport**.

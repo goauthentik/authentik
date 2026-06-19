@@ -20,9 +20,14 @@ export class TaskStatus extends AKElement {
 
     render(): TemplateResult {
         switch (this.status) {
+            case TaskAggregatedStatusEnum.WaitingForDependencies:
+            case LastTaskStatusEnum.WaitingForDependencies:
+                return html`<ak-label color=${PFColor.Gray}
+                    >${msg("Waiting for dependencies")}</ak-label
+                >`;
             case TaskAggregatedStatusEnum.Queued:
             case LastTaskStatusEnum.Queued:
-                return html`<ak-label color=${PFColor.Grey}>${msg("Waiting to run")}</ak-label>`;
+                return html`<ak-label color=${PFColor.Gray}>${msg("Waiting to run")}</ak-label>`;
             case TaskAggregatedStatusEnum.Consumed:
             case LastTaskStatusEnum.Consumed:
                 return html`<ak-label color=${PFColor.Blue}>${msg("Consumed")}</ak-label>`;
@@ -49,7 +54,7 @@ export class TaskStatus extends AKElement {
             case LastTaskStatusEnum.Error:
                 return html`<ak-label color=${PFColor.Red}>${msg("Error")}</ak-label>`;
             default:
-                return html`<ak-label color=${PFColor.Grey}>${msg("Unknown")}</ak-label>`;
+                return html`<ak-label color=${PFColor.Gray}>${msg("Unknown")}</ak-label>`;
         }
     }
 }

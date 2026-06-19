@@ -1,5 +1,4 @@
 import "#admin/providers/RelatedApplicationButton";
-import "#admin/providers/oauth2/OAuth2ProviderForm";
 import "#admin/events/ObjectChangelog";
 import "#admin/rbac/ak-rbac-object-permission-page";
 import "#admin/rbac/ObjectPermissionModal";
@@ -11,13 +10,16 @@ import "#elements/ak-mdx/index";
 import "#elements/buttons/ModalButton";
 import "#elements/buttons/SpinnerButton/index";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { EVENT_REFRESH } from "#common/constants";
 
 import { AKElement } from "#elements/Base";
+import { modalInvoker } from "#elements/dialogs";
 import { SlottedTemplateResult } from "#elements/types";
 
 import renderDescriptionList from "#components/DescriptionList";
+
+import { OAuth2ProviderFormPage } from "#admin/providers/oauth2/OAuth2ProviderForm";
 
 import {
     ClientTypeEnum,
@@ -78,7 +80,7 @@ export function LogoutMethodToLabel(method?: OAuth2ProviderLogoutMethodEnum): st
 export class OAuth2ProviderViewPage extends AKElement {
     @property({ type: Number })
     set providerID(value: number) {
-        new ProvidersApi(DEFAULT_CONFIG)
+        aki(ProvidersApi)
             .providersOauth2Retrieve({
                 id: value,
             })
@@ -121,7 +123,7 @@ export class OAuth2ProviderViewPage extends AKElement {
     }
 
     fetchPreview(): void {
-        new ProvidersApi(DEFAULT_CONFIG)
+        aki(ProvidersApi)
             .providersOauth2PreviewUserRetrieve({
                 id: this.provider?.pk || 0,
                 forUser: this.previewUser?.pk,
@@ -142,7 +144,7 @@ export class OAuth2ProviderViewPage extends AKElement {
                     id="page-overview"
                     aria-label="${msg("Overview")}"
                     @activate=${() => {
-                        new ProvidersApi(DEFAULT_CONFIG)
+                        aki(ProvidersApi)
                             .providersOauth2SetupUrlsRetrieve({
                                 id: this.provider?.pk || 0,
                             })
@@ -214,7 +216,7 @@ export class OAuth2ProviderViewPage extends AKElement {
                                 html`<ak-provider-related-application .provider=${this.provider}>
                                 </ak-provider-related-application>`,
                             ],
-                            [msg("Client type"), html`${TypeToLabel(this.provider?.clientType)}`],
+                            [msg("Client Type"), html`${TypeToLabel(this.provider?.clientType)}`],
                             [msg("Client ID"), html`${this.provider?.clientId}`],
                             [
                                 msg("Redirect URIs"),
@@ -238,21 +240,14 @@ export class OAuth2ProviderViewPage extends AKElement {
                             ],
                             [
                                 msg("Related actions"),
-                                html`<ak-forms-modal>
-                                    <span slot="submit">${msg("Save Changes")}</span>
-                                    <span slot="header">${msg("Update OAuth2 Provider")}</span>
-                                    <ak-provider-oauth2-form
-                                        slot="form"
-                                        .instancePk=${this.provider?.pk || 0}
-                                    >
-                                    </ak-provider-oauth2-form>
-                                    <button
-                                        slot="trigger"
-                                        class="pf-c-button pf-m-primary pf-m-block"
-                                    >
-                                        ${msg("Edit")}
-                                    </button>
-                                </ak-forms-modal>`,
+                                html`<button
+                                    class="pf-c-button pf-m-primary pf-m-block"
+                                    ${modalInvoker(OAuth2ProviderFormPage, {
+                                        instancePk: this.provider?.pk || 0,
+                                    })}
+                                >
+                                    ${msg("Edit")}
+                                </button>`,
                             ],
                         ])}
                     </div>
@@ -443,9 +438,7 @@ export class OAuth2ProviderViewPage extends AKElement {
                                             if (query !== undefined) {
                                                 args.search = query;
                                             }
-                                            const users = await new CoreApi(
-                                                DEFAULT_CONFIG,
-                                            ).coreUsersList(args);
+                                            const users = await aki(CoreApi).coreUsersList(args);
                                             return users.results;
                                         }}
                                         .renderElement=${(user: User): string => {

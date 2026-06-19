@@ -5,6 +5,7 @@ from argparse import ArgumentParser
 from unittest import TestCase
 from unittest.mock import patch
 
+import freezegun
 import pytest
 from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
@@ -69,8 +70,8 @@ class PytestTestRunner(DiscoverRunner):  # pragma: no cover
 
         # Test-specific configuration
         test_config = {
-            "events.context_processors.geoip": "tests/GeoLite2-City-Test.mmdb",
-            "events.context_processors.asn": "tests/GeoLite2-ASN-Test.mmdb",
+            "events.context_processors.geoip": "tests/geoip/GeoLite2-City-Test.mmdb",
+            "events.context_processors.asn": "tests/geoip/GeoLite2-ASN-Test.mmdb",
             "blueprints_dir": "./blueprints",
             "outposts.container_image_base": f"ghcr.io/goauthentik/dev-%(type)s:{get_docker_tag()}",
             "tenants.enabled": False,
@@ -90,6 +91,8 @@ class PytestTestRunner(DiscoverRunner):  # pragma: no cover
         self.logger.debug("Test environment configured")
 
         self.task_broker = use_test_broker()
+
+        freezegun.configure(extend_ignore_list=["cryptography"])
 
         # Send startup signals
         pre_startup.send(sender=self, mode="test")

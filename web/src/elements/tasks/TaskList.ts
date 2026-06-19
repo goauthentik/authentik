@@ -7,7 +7,7 @@ import "#elements/tasks/TaskStatus";
 import "#elements/tasks/TaskStatusSummary";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { EVENT_REFRESH } from "#common/constants";
 
 import { PaginatedResponse, Table, TableColumn, Timestamp } from "#elements/table/Table";
@@ -47,7 +47,7 @@ export class TaskList extends Table<Task> {
     @property()
     relObjModel?: string;
     @property()
-    relObjId?: string;
+    relObjId?: string | number;
 
     @property({ type: Boolean })
     showOnlyStandalone: boolean = true;
@@ -75,6 +75,7 @@ export class TaskList extends Table<Task> {
                   : undefined;
         const aggregatedStatus = this.excludeSuccessful
             ? [
+                  TaskAggregatedStatusEnum.WaitingForDependencies,
                   TaskAggregatedStatusEnum.Queued,
                   TaskAggregatedStatusEnum.Consumed,
                   TaskAggregatedStatusEnum.Preprocess,
@@ -86,13 +87,13 @@ export class TaskList extends Table<Task> {
               ]
             : undefined;
         if (this.includeOverview) {
-            this.status = await new TasksApi(DEFAULT_CONFIG).tasksTasksStatusRetrieve();
+            this.status = await aki(TasksApi).tasksTasksStatusRetrieve();
         }
-        return new TasksApi(DEFAULT_CONFIG).tasksTasksList({
+        return aki(TasksApi).tasksTasksList({
             ...(await this.defaultEndpointConfig()),
             relObjContentTypeAppLabel: this.relObjAppLabel,
             relObjContentTypeModel: this.relObjModel,
-            relObjId: this.relObjId,
+            relObjId: this.relObjId ? this.relObjId.toString() : undefined,
             relObjIdIsnull,
             aggregatedStatus,
         });
@@ -180,11 +181,11 @@ export class TaskList extends Table<Task> {
             item.eta !== undefined ? Timestamp(item.eta) : nothing,
             Timestamp(item.mtime ?? new Date()),
             html`<ak-task-status .status=${item.aggregatedStatus}></ak-task-status>`,
-            item.state === TaskStatusEnum.Rejected || item.state === TaskStatusEnum.Done
+            item.state === TaskStatusEnum.Rejected
                 ? html`<ak-action-button
                       class="pf-m-plain"
                       .apiRequest=${() => {
-                          return new TasksApi(DEFAULT_CONFIG)
+                          return aki(TasksApi)
                               .tasksTasksRetryCreate({
                                   messageId: item.messageId ?? "",
                               })

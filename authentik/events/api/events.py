@@ -11,6 +11,8 @@ from django.db.models.functions import TruncHour
 from django.db.models.query_utils import Q
 from django.utils.text import slugify
 from django.utils.timezone import now
+from djangoql.schema import DateTimeField as QLDateTimeFIeld
+from djangoql.schema import IntField, StrField
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiParameter, extend_schema
 from guardian.shortcuts import get_objects_for_user
@@ -27,6 +29,7 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
+from authentik.api.search.fields import ChoiceSearchField, JSONSearchField
 from authentik.api.validation import validate
 from authentik.core.api.object_types import TypeCreateSerializer
 from authentik.core.api.utils import ModelSerializer, PassiveSerializer
@@ -171,10 +174,6 @@ class EventViewSet(
     filterset_class = EventsFilter
 
     def get_ql_fields(self):
-        from djangoql.schema import DateTimeField, IntField, StrField
-
-        from authentik.enterprise.search.fields import ChoiceSearchField, JSONSearchField
-
         return [
             ChoiceSearchField(Event, "action"),
             StrField(Event, "event_uuid"),
@@ -216,7 +215,7 @@ class EventViewSet(
                     ),
                 ),
             ),
-            DateTimeField(Event, "created", suggest_options=True),
+            QLDateTimeFIeld(Event, "created", suggest_options=True),
         ]
 
     @extend_schema(

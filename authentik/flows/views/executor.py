@@ -62,6 +62,7 @@ from authentik.policies.engine import PolicyEngine
 LOGGER = get_logger()
 # Argument used to redirect user after login
 NEXT_ARG_NAME = "next"
+
 SESSION_KEY_PLAN = "authentik/flows/plan"
 SESSION_KEY_GET = "authentik/flows/get"
 SESSION_KEY_POST = "authentik/flows/post"
@@ -195,7 +196,7 @@ class FlowExecutorView(APIView):
                     return self.handle_invalid_flow(exc)
                 except EmptyFlowException as exc:
                     self._logger.warning("f(exec): Flow is empty", exc=exc)
-                    # To match behaviour with loading an empty flow plan from cache,
+                    # To match behavior with loading an empty flow plan from cache,
                     # we don't show an error message here, but rather call _flow_done()
                     return self._flow_done()
             # We don't save the Plan after getting the next stage

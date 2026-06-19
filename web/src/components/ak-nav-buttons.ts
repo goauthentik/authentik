@@ -3,17 +3,17 @@ import "#components/ak-switch-input";
 import "#elements/buttons/ActionButton/ak-action-button";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { globalAK } from "#common/global";
 import { formatUserDisplayName } from "#common/users";
 
 import { AKElement } from "#elements/Base";
 import { WithNotifications } from "#elements/mixins/notifications";
 import { WithSession } from "#elements/mixins/session";
-import { AKDrawerChangeEvent } from "#elements/notifications/events";
 import { isDefaultAvatar } from "#elements/utils/images";
 
 import Styles from "#components/ak-nav-button.css";
+import { AKDrawerChangeEvent } from "#components/notifications/events";
 
 import { CoreApi } from "@goauthentik/api";
 
@@ -158,7 +158,7 @@ export class NavigationButtons extends WithNotifications(WithSession(AKElement))
         if (!this.impersonating) return nothing;
 
         const onClick = async () => {
-            await new CoreApi(DEFAULT_CONFIG).coreUsersImpersonateEndRetrieve();
+            await aki(CoreApi).coreUsersImpersonateEndRetrieve();
             window.location.reload();
         };
 
@@ -207,6 +207,7 @@ export class NavigationButtons extends WithNotifications(WithSession(AKElement))
                     <a
                         href="${globalAK().api.base}flows/-/default/invalidation/"
                         class="pf-c-button pf-m-plain"
+                        aria-label=${msg("Sign out")}
                     >
                         <pf-tooltip position="top" content=${msg("Sign out")}>
                             <i class="fas fa-sign-out-alt" aria-hidden="true"></i>
