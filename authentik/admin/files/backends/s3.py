@@ -49,6 +49,18 @@ class S3Backend(ManageableBackend):
         self._config[key] = refreshed
         return (refreshed, current != refreshed)
 
+    def _get_config_bool(self, key: str, default: bool) -> tuple[bool, bool]:
+        unset = object()
+        current = self._config.get(key, unset)
+        refreshed = CONFIG.get_bool(
+            f"storage.{self.usage.value}.{self.name}.{key}",
+            CONFIG.get_bool(f"storage.{self.name}.{key}", default),
+        )
+        if current is unset:
+            current = refreshed
+        self._config[key] = refreshed
+        return (refreshed, current != refreshed)
+
     @property
     def base_path(self) -> str:
         """S3 key prefix: {usage}/{schema}/"""
@@ -91,6 +103,10 @@ class S3Backend(ManageableBackend):
     def client(self):
         """Create S3 client with configured endpoint and region."""
         endpoint_url, endpoint_url_r = self._get_config("endpoint", None)
+        use_ssl, use_ssl_r = self._get_config_bool("use_ssl", True)
+        region_name, region_name_r = self._get_config("region", None)
+        addressing_style, addressing_style_r = self._get_config("addressing_style", "auto")
+        signature_version, signature_version_r = self._get_config("signature_version", "s3v4")
         # Keep signature_version pass-through and let boto3/botocore handle it.
         # In boto3's S3 configuration docs, `s3v4` (default) and deprecated `s3`
         # are the documented values:
@@ -99,25 +115,17 @@ class S3Backend(ManageableBackend):
         # not enforce a restricted allowlist here.
 
         session = self.session
-        if self._client is not None and not endpoint_url_r:
+        client_config_changed = any(
+            [
+                endpoint_url_r,
+                use_ssl_r,
+                region_name_r,
+                addressing_style_r,
+                signature_version_r,
+            ]
+        )
+        if self._client is not None and not client_config_changed:
             return self._client
-
-        use_ssl = CONFIG.get_bool(
-            f"storage.{self.usage.value}.{self.name}.use_ssl",
-            CONFIG.get_bool(f"storage.{self.name}.use_ssl", True),
-        )
-        region_name = CONFIG.get(
-            f"storage.{self.usage.value}.{self.name}.region",
-            CONFIG.get(f"storage.{self.name}.region", None),
-        )
-        addressing_style = CONFIG.get(
-            f"storage.{self.usage.value}.{self.name}.addressing_style",
-            CONFIG.get(f"storage.{self.name}.addressing_style", "auto"),
-        )
-        signature_version = CONFIG.get(
-            f"storage.{self.usage.value}.{self.name}.signature_version",
-            CONFIG.get(f"storage.{self.name}.signature_version", "s3v4"),
-        )
 
         self._client = session.client(
             "s3",
