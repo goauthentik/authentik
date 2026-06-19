@@ -22,6 +22,7 @@ LOGGER = get_logger()
 # same SELECT to avoid N+1 lazy loads; CurrentBrandSerializer alone reads 7.
 _BRAND_RELATED_FK_FIELDS = (
     "flow_authentication",
+    "flow_account_switch",
     "flow_invalidation",
     "flow_recovery",
     "flow_unenrollment",

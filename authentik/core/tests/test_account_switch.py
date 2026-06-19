@@ -77,7 +77,7 @@ class TestAccountSwitch(FlowTestCase):
         self.brand.save()
         self.login(self.user)
         browser_key = self.browser_key()
-        create_test_session(self.other_user, browser_key=browser_key)
+        create_test_session(self.other_user, browser_key=browser_key, is_current=False)
 
         response = self.client.get(
             self.switch_url(self.other_user),
@@ -113,7 +113,7 @@ class TestAccountSwitch(FlowTestCase):
         """Test switching is rejected when there is no current login to switch from"""
         browser_key = "A" * 32
         self.client.cookies[BROWSER_COOKIE_NAME] = SessionMiddleware.encode_browser_key(browser_key)
-        create_test_session(self.other_user, browser_key=browser_key)
+        create_test_session(self.other_user, browser_key=browser_key, is_current=False)
 
         response = self.client.get(self.switch_url(self.other_user))
 
@@ -128,7 +128,7 @@ class TestAccountSwitch(FlowTestCase):
         """Test a live login of this browser is passed to the flow as context"""
         self.login(self.user)
         browser_key = self.browser_key()
-        create_test_session(self.other_user, browser_key=browser_key)
+        create_test_session(self.other_user, browser_key=browser_key, is_current=False)
 
         response = self.client.get(self.switch_url(self.other_user))
 
@@ -184,7 +184,7 @@ class TestAccountSwitch(FlowTestCase):
         self.brand.save()
         self.login(self.user)
         browser_key = self.browser_key()
-        create_test_session(self.other_user, browser_key=browser_key)
+        create_test_session(self.other_user, browser_key=browser_key, is_current=False)
 
         response = self.client.get(self.switch_url(self.other_user))
         self.assertEqual(response.status_code, 302)
@@ -201,7 +201,7 @@ class TestAccountSwitch(FlowTestCase):
         as a switch target but can't be replayed"""
         first_session_key = self.login(self.user)
         browser_key = self.browser_key()
-        create_test_session(self.other_user, browser_key=browser_key)
+        create_test_session(self.other_user, browser_key=browser_key, is_current=False)
 
         response = self.client.get(self.switch_url(self.other_user), follow=True)
         self.assertEqual(response.status_code, 200)

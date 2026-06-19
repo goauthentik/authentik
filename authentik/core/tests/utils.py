@@ -42,7 +42,9 @@ def create_test_user(name: str | None = None, **kwargs) -> User:
     return user
 
 
-def create_test_session(user: User, browser_key: str | None = None) -> AuthenticatedSession:
+def create_test_session(
+    user: User, browser_key: str | None = None, is_current: bool = True
+) -> AuthenticatedSession:
     """Create a live login for the given user, optionally bound to a browser"""
     store = SessionStore()
     store.create()
@@ -50,7 +52,7 @@ def create_test_session(user: User, browser_key: str | None = None) -> Authentic
         session=Session.objects.get(session_key=store.session_key),
         user=user,
         browser_key=browser_key,
-        is_current=True,
+        is_current=is_current,
     )
 
 
