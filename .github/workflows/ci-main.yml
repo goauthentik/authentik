@@ -11,6 +11,7 @@ on:
     branches:
       - main
       - version-*
+      - rust-proxy
 
 env:
   POSTGRES_DB: authentik
