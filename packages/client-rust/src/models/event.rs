@@ -31,9 +31,9 @@ pub struct Event {
     )]
     pub client_ip: Option<Option<String>>,
     #[serde(rename = "created")]
-    pub created: String,
+    pub created: chrono::DateTime<chrono::FixedOffset>,
     #[serde(rename = "expires", skip_serializing_if = "Option::is_none")]
-    pub expires: Option<String>,
+    pub expires: Option<chrono::DateTime<chrono::FixedOffset>>,
     #[serde(rename = "brand", skip_serializing_if = "Option::is_none")]
     pub brand: Option<std::collections::HashMap<String, serde_json::Value>>,
 }
@@ -44,7 +44,7 @@ impl Event {
         pk: uuid::Uuid,
         action: models::EventActions,
         app: String,
-        created: String,
+        created: chrono::DateTime<chrono::FixedOffset>,
     ) -> Event {
         Event {
             pk,

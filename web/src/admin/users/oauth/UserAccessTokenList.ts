@@ -18,6 +18,9 @@ import PFFlex from "@patternfly/patternfly/layouts/Flex/flex.css";
 
 @customElement("ak-user-oauth-access-token-list")
 export class UserOAuthAccessTokenList extends Table<TokenModel> {
+    public static override verboseName = msg("Access Token");
+    public static override verboseNamePlural = msg("Access Tokens");
+
     expandable = true;
 
     @property({ type: Number })
