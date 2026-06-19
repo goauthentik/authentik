@@ -14,7 +14,6 @@
 @import "./components/Icon/icon.css";
 @import "#elements/ak-drawer/ak-drawer.root.css";
 @import "#elements/locale/ak-locale-select.css";
-@import "#elements/locale/ak-locale-select.css";
 @import "#flow/FlowExecutor.css";
 @import "#styles/authentik/login.css";
 
