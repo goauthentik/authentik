@@ -46,8 +46,7 @@ urlpatterns = [
         name="application-launch",
     ),
     path(
-        # Turns the frontend-selected UID into backend-verified flow context.
-        "account/switch/<str:user_uid>/",
+        "account/switch/<int:user_pk>/",
         AccountSwitchView.as_view(),
         name="account-switch",
     ),

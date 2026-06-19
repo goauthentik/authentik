@@ -40,7 +40,7 @@ export class AccountSwitcher extends WithSession(AKElement) {
     }
 
     protected accountSwitchURL(account: BrowserLocalAccount): string {
-        return `${globalAK().api.base}account/switch/${account.uid}/?${this.nextQuery}`;
+        return `${globalAK().api.base}account/switch/${account.pk}/?${this.nextQuery}`;
     }
 
     protected addAccountURL(): string {

@@ -23,7 +23,7 @@ QS_ACCOUNT_SWITCH_STALE = "account_switch_stale"
 class AccountSwitchView(View):
     """Authenticate another login held by this browser."""
 
-    def get(self, request: HttpRequest, user_uid: str) -> HttpResponse:
+    def get(self, request: HttpRequest, user_pk: int) -> HttpResponse:
         flow = request.brand.flow_account_switch
         if not flow:
             return TemplateResponse(
@@ -36,8 +36,8 @@ class AccountSwitchView(View):
                 status=400,
             )
         context = {}
-        session = self.get_browser_session(request, user_uid)
-        stale_user_uid = None
+        session = self.get_browser_session(request, user_pk)
+        stale_user_pk = None
         if session:
             context.update(
                 {
@@ -48,7 +48,7 @@ class AccountSwitchView(View):
             if request.user.is_authenticated:
                 context[PLAN_CONTEXT_ACCOUNT_SWITCH_FROM_USER] = request.user
         else:
-            stale_user_uid = user_uid
+            stale_user_pk = user_pk
         planner = FlowPlanner(flow)
         # The context decides which stages policies skip, so cached plans don't apply
         planner.use_cache = False
@@ -57,24 +57,25 @@ class AccountSwitchView(View):
         except FlowNonApplicableException:
             raise Http404 from None
         response = plan.to_redirect(request, flow)
-        if stale_user_uid:
+        if stale_user_pk:
             separator = "&" if "?" in response["Location"] else "?"
-            response["Location"] += separator + urlencode({QS_ACCOUNT_SWITCH_STALE: stale_user_uid})
+            response["Location"] += separator + urlencode({QS_ACCOUNT_SWITCH_STALE: stale_user_pk})
         return response
 
     @staticmethod
-    def get_browser_session(request: HttpRequest, user_uid: str) -> AuthenticatedSession | None:
+    def get_browser_session(request: HttpRequest, user_pk: int) -> AuthenticatedSession | None:
         """Live login of this browser matching the target user, if any."""
         browser_key = getattr(request, "browser_key", None)
         if not browser_key:
             return None
-        sessions = (
+        return (
             AuthenticatedSession.objects.filter(
                 browser_key=browser_key,
                 session__expires__gt=timezone.now(),
                 user__is_active=True,
+                user_id=user_pk,
             )
             .select_related("session", "user")
             .order_by("-session__last_used")
+            .first()
         )
-        return next((session for session in sessions if session.user.uid == user_uid), None)

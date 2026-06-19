@@ -8,7 +8,7 @@ const BROWSER_COOKIE_NAME = "authentik_browser";
 const BROWSER_COOKIE_AGE_SECONDS = 60 * 60 * 24 * 365;
 
 export interface BrowserLocalAccount {
-    uid: string;
+    pk: number;
     username: string;
     name: string;
     email: string;
@@ -71,11 +71,11 @@ export function coerceStoredAccount(value: unknown): BrowserLocalAccount | null 
         return null;
     }
     const account = value as Partial<BrowserLocalAccount>;
-    if (typeof account.uid !== "string" || !account.uid) {
+    if (typeof account.pk !== "number") {
         return null;
     }
     return {
-        uid: account.uid,
+        pk: account.pk,
         username: stringOrEmpty(account.username),
         name: stringOrEmpty(account.name),
         email: stringOrEmpty(account.email),
@@ -109,15 +109,15 @@ export function writeStoredAccounts(accounts: BrowserLocalAccount[]): boolean {
     return accountStorage().writeJSON({ accounts });
 }
 
-export function removeStoredAccount(uid: string): BrowserLocalAccount[] {
-    const accounts = readStoredAccounts().filter((account) => account.uid !== uid);
+export function removeStoredAccount(pk: string): BrowserLocalAccount[] {
+    const accounts = readStoredAccounts().filter((account) => account.pk.toString() !== pk);
     writeStoredAccounts(accounts);
     return accounts;
 }
 
 function accountFromUser(user: Readonly<UserSelf>): BrowserLocalAccount {
     return {
-        uid: user.uid,
+        pk: user.pk,
         username: user.username,
         name: user.name,
         email: user.email ?? "",
@@ -128,11 +128,11 @@ function accountFromUser(user: Readonly<UserSelf>): BrowserLocalAccount {
 
 function accountMatches(
     account: BrowserLocalAccount,
-    knownUIDs: ReadonlySet<string>,
+    knownPKs: ReadonlySet<number>,
     knownUsernames: ReadonlySet<string>,
 ): boolean {
     return (
-        knownUIDs.has(account.uid) ||
+        knownPKs.has(account.pk) ||
         (account.username !== "" && knownUsernames.has(account.username))
     );
 }
@@ -142,15 +142,15 @@ export function mergeStoredAccounts(
     storedAccounts: readonly BrowserLocalAccount[],
 ): BrowserLocalAccount[] {
     const accounts = [currentAccount];
-    const knownUIDs = new Set([currentAccount.uid]);
+    const knownPKs = new Set([currentAccount.pk]);
     const knownUsernames = new Set(currentAccount.username ? [currentAccount.username] : []);
 
     for (const account of storedAccounts) {
-        if (accountMatches(account, knownUIDs, knownUsernames)) {
+        if (accountMatches(account, knownPKs, knownUsernames)) {
             continue;
         }
         accounts.push({ ...account, isCurrent: false });
-        knownUIDs.add(account.uid);
+        knownPKs.add(account.pk);
         if (account.username) {
             knownUsernames.add(account.username);
         }

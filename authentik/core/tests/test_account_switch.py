@@ -46,7 +46,7 @@ class TestAccountSwitch(FlowTestCase):
         self.brand = create_test_brand(flow_account_switch=self.flow)
 
     def switch_url(self, user) -> str:
-        return reverse("authentik_core:account-switch", kwargs={"user_uid": user.uid})
+        return reverse("authentik_core:account-switch", kwargs={"user_pk": user.pk})
 
     def login(self, user) -> str:
         """Log the test client in through the flow executor, returning the session key"""
@@ -141,7 +141,7 @@ class TestAccountSwitch(FlowTestCase):
         self.assertNotIn(PLAN_CONTEXT_IS_ACCOUNT_SWITCH, plan.context)
         self.assertEqual(
             parse_qs(urlsplit(response.url).query)[QS_ACCOUNT_SWITCH_STALE],
-            [self.other_user.uid],
+            [str(self.other_user.pk)],
         )
 
     def test_switch_ignores_other_browser_session(self):
@@ -156,7 +156,7 @@ class TestAccountSwitch(FlowTestCase):
         self.assertNotIn(PLAN_CONTEXT_PENDING_USER, plan.context)
         self.assertEqual(
             parse_qs(urlsplit(response.url).query)[QS_ACCOUNT_SWITCH_STALE],
-            [self.other_user.uid],
+            [str(self.other_user.pk)],
         )
 
     @apply_blueprint("default/flow-default-authentication-flow.yaml")

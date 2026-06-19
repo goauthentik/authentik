@@ -254,11 +254,11 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
     public async firstUpdated(changed: PropertyValues<this>): Promise<void> {
         super.firstUpdated(changed);
 
-        const staleAccountUID = new URLSearchParams(window.location.search).get(
+        const staleAccountPK = new URLSearchParams(window.location.search).get(
             ACCOUNT_SWITCH_STALE_QUERY,
         );
-        if (staleAccountUID) {
-            removeStoredAccount(staleAccountUID);
+        if (staleAccountPK) {
+            removeStoredAccount(staleAccountPK);
         }
 
         this.refresh().then(() => {
