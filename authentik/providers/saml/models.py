@@ -33,7 +33,7 @@ from authentik.core.models import (
     User,
 )
 from authentik.crypto.models import CertificateKeyPair
-from authentik.lib.models import DomainlessURLValidator, InternallyManagedMixin, SerializerModel
+from authentik.lib.models import DomainlessURLValidator, InternallyManagedMixin, SerializerModel, WildcardDomainlessURLValidator
 from authentik.lib.utils.time import timedelta_string_validator
 from authentik.sources.saml.models import SAMLNameIDPolicy
 
@@ -59,7 +59,8 @@ class SAMLProvider(Provider):
     """SAML 2.0 Endpoint for applications which support SAML."""
 
     acs_url = models.TextField(
-        validators=[DomainlessURLValidator(schemes=("http", "https"))], verbose_name=_("ACS URL")
+        validators=[WildcardDomainlessURLValidator(schemes=("http", "https"))],
+        verbose_name=_("ACS URL"),
     )
     sp_binding = models.TextField(
         choices=SAMLBindings.choices,
