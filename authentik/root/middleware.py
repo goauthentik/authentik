@@ -221,9 +221,7 @@ class SessionMiddleware(UpstreamSessionMiddleware):
                     )
         # Keep the browser cookie longer-lived than the sessions it groups.
         # It is intentionally not deleted with the session cookie.
-        if getattr(request, "browser_key", None) and getattr(
-            request, "browser_key_needs_update", False
-        ):
+        if request.browser_key and request.browser_key_needs_update:
             response.set_cookie(
                 BROWSER_COOKIE_NAME,
                 SessionMiddleware.encode_browser_key(request.browser_key),
