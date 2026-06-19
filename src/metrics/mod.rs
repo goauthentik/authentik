@@ -80,6 +80,7 @@ pub(crate) fn start(tasks: &mut Tasks) -> Result<Arc<Metrics>> {
 
     // Only run HTTP server in worker mode, in server or allinone mode, they're handled by the
     // server.
+    #[cfg(feature = "core")]
     if Mode::get() == Mode::Worker {
         for addr in config::get().listen.metrics.iter().copied() {
             server::start_plain(tasks, "metrics", router.clone(), addr)?;
