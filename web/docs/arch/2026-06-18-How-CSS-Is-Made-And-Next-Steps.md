@@ -89,27 +89,54 @@ and clearer idea of how our CSS is used:
 - reset: A CSS Reset for the global document
 - legacy: Patternfly 4's global CSS Custom Properties and assets such as fonts & icons
 - theme: Inject Authentik's CSS Custom Properties for its design system here, overriding the P4 names
-- brand: Inject any customer overrides of the global properties
+- brand: Inject any customer overrides of the global properties.
 - components: downstream Document-scoped look and feel for web components
+
+The discipline of maintaining the layers in source order must be maintained; one of our personas is
+"External user: Elderly volunteer for a non profit who's using a Macbook from 2016 and can't upgrade
+to a version of Safari that understands `@layer`." The *Flow* application (but not *User* or
+*Admin*) must support these users. 2016 (ten years ago) is considered our cutoff because it was the
+first year shadowDOM v1 became "baseline newly available" and 64-bit iPads became standard.
 
 ### Inside a component:
 
 `@layer reset, local`:
 
-Only the inheritable resets are inherited! If you want `border-box` to work inside a component, you
-need to say so explicitly!
+Only the inheritable resets are inherited. If you want `border-box` to work inside a component, you
+need to say so explicitly.
 
 ## Action plan:
 
 1. De-duplicate: The exact same code is cut-and-pasted into interface, static, global, and base!
    Let's move all that into its own file.
 2. Write a top-level `document-layers.css` file that describes the layers we're going to use.
-3. Vendor the Patternfly stuff that we're keeping.
+3. Vendor the Patternfly top-level (but not component) stuff that we're keeping.
 4. Include our overrides.
+
+At this point, this is just the rationalization of the existing `styles` folder. This should be a
+single PR.
+
+And then we have:
+
 5. Integrate the *design-system* `theme` branch into this, replacing the overrides.
 6. Fix the way `brand` css is injected, so that it comes in the right place in the cascade. Note
    that as long as it has the `@layer brand;` declaration at the top, it actually doesn't matter
    **when** it's added to the global `adoptedStylesheet` collection; its specificity will allow its
    CSS Custom Properties to override those of the the layers that preceede in the
    `document-layers.css` declaration.
-7. Continue the work of vendoring *Elements*
+    setting on the server.
+7. Continue the work of incorporating our CSS decisions into our *Elements* collection
+
+These are all side-projects and optional, but desired for the white-label capability:
+
+After step 5:
+
+- (Optional) Write a web component that exposes our theme as a collection of sliders, inputs, and
+  color-pickers, and let people see what the site looks like in real-time.
+- (Optional) Enable algorithmic sizing & spacing
+- (Optional) Enable algorithmic sizing & spacing with viewport-relative sizes and clamps
+- (Optional) Enable algorithmic color theming. [See example](https://github.com/brechtDR/oklchroma)
+
+After step 6:
+
+- (Optional) Enable saving the output of the web component described above into a custom brand
