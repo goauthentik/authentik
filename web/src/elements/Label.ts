@@ -3,19 +3,18 @@ import type { SlottedTemplateResult, Spread } from "#elements/types";
 
 import { spread } from "@open-wc/lit-helpers";
 
-import { css, html, nothing } from "lit";
+import { html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 
 import PFLabel from "@patternfly/patternfly/components/Label/label.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 export enum PFColor {
     Green = "pf-m-green",
     Orange = "pf-m-orange",
     Red = "pf-m-red",
     Blue = "pf-m-blue",
-    Grey = "",
+    Gray = "",
 }
 
 export const levelNames = ["warning", "info", "success", "danger"];
@@ -27,7 +26,7 @@ const chromeList: Chrome[] = [
     ["warning", PFColor.Orange, "pf-m-orange", "fa-exclamation-triangle"],
     ["success", PFColor.Green, "pf-m-green", "fa-check"],
     ["running", PFColor.Blue, "pf-m-blue", "fa-clock"],
-    ["info", PFColor.Grey, "pf-m-grey", "fa-info-circle"],
+    ["info", PFColor.Gray, "pf-m-grey", "fa-info-circle"],
 ];
 
 export interface ILabel {
@@ -39,7 +38,7 @@ export interface ILabel {
 @customElement("ak-label")
 export class Label extends AKElement implements ILabel {
     @property()
-    color: PFColor = PFColor.Grey;
+    color: PFColor = PFColor.Gray;
 
     @property()
     icon?: string;
@@ -47,31 +46,20 @@ export class Label extends AKElement implements ILabel {
     @property({ type: Boolean })
     compact = false;
 
-    static styles = [
-        PFBase,
-        PFLabel,
-        css`
-            :host([theme="dark"]) {
-                .pf-m-grey {
-                    --pf-c-label__icon--Color: var(--ak-dark-background);
-                    --pf-c-label__content--Color: var(--ak-dark-background);
-                }
-            }
-        `,
-    ];
+    static styles = [PFLabel];
 
     get classesAndIcon() {
         const chrome = chromeList.find(
             ([level, color]) => this.color === level || this.color === color,
         );
 
-        const [illo, icon] = chrome ? chrome.slice(2) : ["pf-m-grey", "fa-info-circle"];
+        const [modifier, icon] = chrome ? chrome.slice(2) : ["pf-m-grey", "fa-info-circle"];
 
         return {
             classes: {
                 "pf-c-label": true,
                 "pf-m-compact": this.compact,
-                ...(illo ? { [illo]: true } : {}),
+                ...(modifier ? { [modifier]: true } : {}),
             },
             icon: this.icon ? this.icon : icon,
         };

@@ -1,6 +1,6 @@
 import "#elements/Spinner";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { EVENT_REFRESH } from "#common/constants";
 import { formatElapsedTime } from "#common/temporal";
 
@@ -10,10 +10,8 @@ import { PFColor } from "#elements/Label";
 import { OutpostHealth, OutpostsApi } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
-import { CSSResult, html, TemplateResult } from "lit";
+import { html, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
-
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-outpost-health-simple")
 export class OutpostHealthSimpleElement extends AKElement {
@@ -29,8 +27,6 @@ export class OutpostHealthSimpleElement extends AKElement {
     @property({ attribute: false })
     showVersion = true;
 
-    static styles: CSSResult[] = [PFBase];
-
     constructor() {
         super();
         window.addEventListener(EVENT_REFRESH, () => {
@@ -41,7 +37,7 @@ export class OutpostHealthSimpleElement extends AKElement {
 
     firstUpdated(): void {
         if (!this.outpostId) return;
-        new OutpostsApi(DEFAULT_CONFIG)
+        aki(OutpostsApi)
             .outpostsInstancesHealthList({
                 uuid: this.outpostId,
             })
@@ -56,7 +52,7 @@ export class OutpostHealthSimpleElement extends AKElement {
             return html`<ak-spinner></ak-spinner>`;
         }
         if (!this.outpostHealths || this.outpostHealths.length === 0) {
-            return html`<ak-label color=${PFColor.Grey}>${msg("Not available")}</ak-label>`;
+            return html`<ak-label color=${PFColor.Gray}>${msg("Not available")}</ak-label>`;
         }
         const outdatedOutposts = this.outpostHealths.filter((h) => h.versionOutdated);
         if (outdatedOutposts.length > 0) {

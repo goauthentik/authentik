@@ -1,10 +1,11 @@
 import "#admin/events/EventMap";
 import "#admin/events/EventVolumeChart";
+import "#admin/reports/ExportButton";
 import "#components/ak-event-info";
 import "#elements/Tabs";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { EventWithContext } from "#common/events";
 import { actionToLabel } from "#common/labels";
 
@@ -15,7 +16,7 @@ import { SlottedTemplateResult } from "#elements/types";
 
 import { EventGeo, renderEventUser } from "#admin/events/utils";
 
-import { Event, EventsApi } from "@goauthentik/api";
+import { Event, EventsApi, EventsEventsExportCreateRequest } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { css, CSSResult, html, TemplateResult } from "lit";
@@ -48,7 +49,7 @@ export class EventListPage extends WithLicenseSummary(TablePage<Event>) {
     ];
 
     async apiEndpoint(): Promise<PaginatedResponse<Event>> {
-        return new EventsApi(DEFAULT_CONFIG).eventsEventsList(await this.defaultEndpointConfig());
+        return aki(EventsApi).eventsEventsList(await this.defaultEndpointConfig());
     }
 
     protected columns: TableColumn[] = [
@@ -117,6 +118,16 @@ export class EventListPage extends WithLicenseSummary(TablePage<Event>) {
 
     renderExpanded(item: Event): TemplateResult {
         return html`<ak-event-info .event=${item as EventWithContext}></ak-event-info>`;
+    }
+
+    protected renderToolbar(): TemplateResult {
+        return html`${super.renderToolbar()}
+            <ak-reports-export-button
+                .createExport=${(params: EventsEventsExportCreateRequest) => {
+                    return aki(EventsApi).eventsEventsExportCreate(params);
+                }}
+                .exportParams=${() => this.defaultEndpointConfig()}
+            ></ak-reports-export-button>`;
     }
 }
 

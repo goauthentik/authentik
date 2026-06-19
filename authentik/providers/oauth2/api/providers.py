@@ -27,6 +27,7 @@ from authentik.providers.oauth2.models import (
     AccessToken,
     OAuth2Provider,
     RedirectURIMatchingMode,
+    RedirectURIType,
     ScopeMapping,
 )
 from authentik.rbac.decorators import permission_required
@@ -37,6 +38,9 @@ class RedirectURISerializer(PassiveSerializer):
 
     matching_mode = ChoiceField(choices=RedirectURIMatchingMode.choices)
     url = CharField()
+    redirect_uri_type = ChoiceField(
+        choices=RedirectURIType.choices, default=RedirectURIType.AUTHORIZATION, required=False
+    )
 
 
 class OAuth2ProviderSerializer(ProviderSerializer):
@@ -61,6 +65,7 @@ class OAuth2ProviderSerializer(ProviderSerializer):
         fields = ProviderSerializer.Meta.fields + [
             "authorization_flow",
             "client_type",
+            "grant_types",
             "client_id",
             "client_secret",
             "access_code_validity",
@@ -71,7 +76,8 @@ class OAuth2ProviderSerializer(ProviderSerializer):
             "signing_key",
             "encryption_key",
             "redirect_uris",
-            "backchannel_logout_uri",
+            "logout_uri",
+            "logout_method",
             "sub_mode",
             "property_mappings",
             "issuer_mode",

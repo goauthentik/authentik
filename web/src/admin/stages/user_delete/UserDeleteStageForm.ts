@@ -1,6 +1,6 @@
 import "#elements/forms/HorizontalFormElement";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { BaseStageForm } from "#admin/stages/BaseStageForm";
 
@@ -14,24 +14,24 @@ import { ifDefined } from "lit/directives/if-defined.js";
 @customElement("ak-stage-user-delete-form")
 export class UserDeleteStageForm extends BaseStageForm<UserDeleteStage> {
     loadInstance(pk: string): Promise<UserDeleteStage> {
-        return new StagesApi(DEFAULT_CONFIG).stagesUserDeleteRetrieve({
+        return aki(StagesApi).stagesUserDeleteRetrieve({
             stageUuid: pk,
         });
     }
 
     async send(data: UserDeleteStage): Promise<UserDeleteStage> {
         if (this.instance) {
-            return new StagesApi(DEFAULT_CONFIG).stagesUserDeleteUpdate({
+            return aki(StagesApi).stagesUserDeleteUpdate({
                 stageUuid: this.instance.pk || "",
                 userDeleteStageRequest: data,
             });
         }
-        return new StagesApi(DEFAULT_CONFIG).stagesUserDeleteCreate({
+        return aki(StagesApi).stagesUserDeleteCreate({
             userDeleteStageRequest: data,
         });
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html` <span>
                 ${msg(
                     "Delete the currently pending user. CAUTION, this stage does not ask for confirmation. Use a consent stage to ensure the user is aware of their actions.",

@@ -8,7 +8,7 @@ from rest_framework.serializers import BaseSerializer
 
 from authentik.flows.models import NotConfiguredAction, Stage
 from authentik.lib.utils.time import timedelta_string_validator
-from authentik.stages.authenticator_webauthn.models import UserVerification
+from authentik.stages.authenticator_webauthn.models import UserVerification, WebAuthnHint
 
 
 class DeviceClasses(models.TextChoices):
@@ -21,6 +21,12 @@ class DeviceClasses(models.TextChoices):
     DUO = "duo", _("Duo")
     SMS = "sms", _("SMS")
     EMAIL = "email", _("Email")
+
+    @staticmethod
+    def from_model_label(model_label: str) -> DeviceClasses:
+        return getattr(
+            DeviceClasses, model_label.rsplit(".", maxsplit=1)[-1][: -len("device")].upper()
+        )
 
 
 def default_device_classes() -> list:
@@ -36,7 +42,7 @@ def default_device_classes() -> list:
 
 
 class AuthenticatorValidateStage(Stage):
-    """Validate user's configured OTP Device."""
+    """Validate user's configured Multi Factor Authentication."""
 
     not_configured_action = models.TextField(
         choices=NotConfiguredAction.choices, default=NotConfiguredAction.SKIP
@@ -73,9 +79,19 @@ class AuthenticatorValidateStage(Stage):
         choices=UserVerification.choices,
         default=UserVerification.PREFERRED,
     )
+    webauthn_hints = ArrayField(
+        models.TextField(choices=WebAuthnHint.choices),
+        default=list,
+        blank=True,
+    )
     webauthn_allowed_device_types = models.ManyToManyField(
         "authentik_stages_authenticator_webauthn.WebAuthnDeviceType", blank=True
     )
+
+    email_otp_throttling_factor = models.FloatField(default=1)
+    sms_otp_throttling_factor = models.FloatField(default=1)
+    totp_otp_throttling_factor = models.FloatField(default=1)
+    static_otp_throttling_factor = models.FloatField(default=1)
 
     @property
     def serializer(self) -> type[BaseSerializer]:
@@ -92,6 +108,17 @@ class AuthenticatorValidateStage(Stage):
     @property
     def component(self) -> str:
         return "ak-stage-authenticator-validate-form"
+
+    def get_throttling_factor(self, device_class: DeviceClasses) -> float | None:
+        if device_class == DeviceClasses.EMAIL:
+            return self.email_otp_throttling_factor
+        elif device_class == DeviceClasses.SMS:
+            return self.sms_otp_throttling_factor
+        elif device_class == DeviceClasses.TOTP:
+            return self.totp_otp_throttling_factor
+        elif device_class == DeviceClasses.STATIC:
+            return self.static_otp_throttling_factor
+        return None
 
     class Meta:
         verbose_name = _("Authenticator Validation Stage")

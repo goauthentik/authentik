@@ -7,10 +7,7 @@ from django.urls import reverse
 from jwt import decode
 
 from authentik.blueprints.tests import apply_blueprint
-from authentik.core.models import Application, Group, Token, TokenIntents, UserTypes
-from authentik.core.tests.utils import create_test_admin_user, create_test_cert, create_test_flow
-from authentik.policies.models import PolicyBinding
-from authentik.providers.oauth2.constants import (
+from authentik.common.oauth.constants import (
     GRANT_TYPE_CLIENT_CREDENTIALS,
     GRANT_TYPE_PASSWORD,
     SCOPE_OPENID,
@@ -18,9 +15,13 @@ from authentik.providers.oauth2.constants import (
     SCOPE_OPENID_PROFILE,
     TOKEN_TYPE,
 )
+from authentik.core.models import Application, Group, Token, TokenIntents, UserTypes
+from authentik.core.tests.utils import create_test_admin_user, create_test_cert, create_test_flow
+from authentik.policies.models import PolicyBinding
 from authentik.providers.oauth2.errors import TokenError
 from authentik.providers.oauth2.models import (
     AccessToken,
+    GrantType,
     OAuth2Provider,
     RedirectURI,
     RedirectURIMatchingMode,
@@ -41,6 +42,7 @@ class TestTokenClientCredentialsStandard(OAuthTestCase):
             authorization_flow=create_test_flow(),
             redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://testserver")],
             signing_key=create_test_cert(),
+            grant_types=[GrantType.CLIENT_CREDENTIALS, GrantType.PASSWORD],
         )
         self.provider.property_mappings.set(ScopeMapping.objects.all())
         self.app = Application.objects.create(name="test", slug="test", provider=self.provider)

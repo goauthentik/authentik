@@ -1,27 +1,20 @@
 import "#admin/policies/BoundPoliciesList";
-import "#admin/rbac/ObjectPermissionsPage";
+import "#admin/rbac/ak-rbac-object-permission-page";
 import "#admin/sources/saml/SAMLSourceForm";
-import "#components/events/ObjectChangelog";
+import "#admin/events/ObjectChangelog";
 import "#elements/CodeMirror";
 import "#elements/Tabs";
 import "#elements/buttons/SpinnerButton/index";
 import "#elements/forms/ModalForm";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { EVENT_REFRESH } from "#common/constants";
 
 import { AKElement } from "#elements/Base";
-import { CodeMirrorMode } from "#elements/CodeMirror";
+import { sourceBindingTypeNotices } from "#elements/sources/utils";
 import { SlottedTemplateResult } from "#elements/types";
 
-import { sourceBindingTypeNotices } from "#admin/sources/utils";
-
-import {
-    RbacPermissionsAssignedByUsersListModelEnum,
-    SAMLMetadata,
-    SAMLSource,
-    SourcesApi,
-} from "@goauthentik/api";
+import { ModelEnum, SAMLMetadata, SAMLSource, SourcesApi } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { CSSResult, html, nothing } from "lit";
@@ -34,13 +27,12 @@ import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-source-saml-view")
 export class SAMLSourceViewPage extends AKElement {
     @property({ type: String })
     set sourceSlug(slug: string) {
-        new SourcesApi(DEFAULT_CONFIG)
+        aki(SourcesApi)
             .sourcesSamlRetrieve({
                 slug: slug,
             })
@@ -55,15 +47,7 @@ export class SAMLSourceViewPage extends AKElement {
     @state()
     metadata?: SAMLMetadata;
 
-    static styles: CSSResult[] = [
-        PFBase,
-        PFPage,
-        PFGrid,
-        PFButton,
-        PFContent,
-        PFCard,
-        PFDescriptionList,
-    ];
+    static styles: CSSResult[] = [PFPage, PFGrid, PFButton, PFContent, PFCard, PFDescriptionList];
 
     constructor() {
         super();
@@ -143,7 +127,7 @@ export class SAMLSourceViewPage extends AKElement {
                             </div>
                             <div class="pf-c-card__footer">
                                 <ak-forms-modal>
-                                    <span slot="submit">${msg("Update")}</span>
+                                    <span slot="submit">${msg("Save Changes")}</span>
                                     <span slot="header">${msg("Update SAML Source")}</span>
                                     <ak-source-saml-form
                                         slot="form"
@@ -168,14 +152,11 @@ export class SAMLSourceViewPage extends AKElement {
                 >
                     <div class="pf-l-grid pf-m-gutter">
                         <div class="pf-c-card pf-l-grid__item pf-m-12-col">
-                            <div class="pf-c-card__body">
-                                <ak-object-changelog
-                                    targetModelPk=${this.source.pk || ""}
-                                    targetModelApp="authentik_sources_saml"
-                                    targetModelName="samlsource"
-                                >
-                                </ak-object-changelog>
-                            </div>
+                            <ak-object-changelog
+                                targetModelPk=${this.source.pk || ""}
+                                targetModelName=${ModelEnum.AuthentikSourcesSamlSamlsource}
+                            >
+                            </ak-object-changelog>
                         </div>
                     </div>
                 </div>
@@ -187,7 +168,7 @@ export class SAMLSourceViewPage extends AKElement {
                     aria-label="${msg("Metadata")}"
                     class="pf-c-page__main-section pf-m-no-padding-mobile"
                     @activate=${() => {
-                        new SourcesApi(DEFAULT_CONFIG)
+                        aki(SourcesApi)
                             .sourcesSamlMetadataRetrieve({
                                 slug: this.source?.slug || "",
                             })
@@ -200,7 +181,7 @@ export class SAMLSourceViewPage extends AKElement {
                         <div class="pf-c-card pf-l-grid__item pf-m-12-col">
                             <div class="pf-c-card__body">
                                 <ak-codemirror
-                                    mode=${CodeMirrorMode.XML}
+                                    mode="xml"
                                     readonly
                                     value="${ifDefined(this.metadata?.metadata)}"
                                 ></ak-codemirror>
@@ -209,7 +190,7 @@ export class SAMLSourceViewPage extends AKElement {
                                 <a
                                     class="pf-c-button pf-m-primary"
                                     target="_blank"
-                                    href=${ifDefined(this.metadata?.downloadUrl)}
+                                    href=${ifDefined(this.metadata?.downloadUrl ?? undefined)}
                                 >
                                     ${msg("Download")}
                                 </a>
@@ -233,14 +214,12 @@ export class SAMLSourceViewPage extends AKElement {
             You can only use policies here as access is checked before the user is authenticated.`,
                                 )}
                             </div>
-                            <div class="pf-c-card__body">
-                                <ak-bound-policies-list
-                                    .target=${this.source.pk}
-                                    .typeNotices=${sourceBindingTypeNotices()}
-                                    .policyEngineMode=${this.source.policyEngineMode}
-                                >
-                                </ak-bound-policies-list>
-                            </div>
+                            <ak-bound-policies-list
+                                .target=${this.source.pk}
+                                .typeNotices=${sourceBindingTypeNotices()}
+                                .policyEngineMode=${this.source.policyEngineMode}
+                            >
+                            </ak-bound-policies-list>
                         </div>
                     </div>
                 </div>
@@ -250,7 +229,7 @@ export class SAMLSourceViewPage extends AKElement {
                     slot="page-permissions"
                     id="page-permissions"
                     aria-label="${msg("Permissions")}"
-                    model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikSourcesSamlSamlsource}
+                    model=${ModelEnum.AuthentikSourcesSamlSamlsource}
                     objectPk=${this.source.pk}
                 ></ak-rbac-object-permission-page>
             </ak-tabs>

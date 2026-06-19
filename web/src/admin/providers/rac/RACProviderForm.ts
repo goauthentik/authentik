@@ -1,5 +1,8 @@
+import "#admin/common/ak-flow-search/ak-flow-search";
 import "#admin/common/ak-crypto-certificate-search";
 import "#admin/common/ak-flow-search/ak-branded-flow-search";
+import "#components/ak-text-input";
+import "#components/ak-switch-input";
 import "#elements/CodeMirror";
 import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
 import "#elements/forms/FormGroup";
@@ -10,11 +13,13 @@ import "#elements/utils/TimeDeltaHelp";
 
 import { propertyMappingsProvider, propertyMappingsSelector } from "./RACProviderFormHelpers.js";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { ModelForm } from "#elements/forms/ModelForm";
 
-import { FlowsInstancesListDesignationEnum, ProvidersApi, RACProvider } from "@goauthentik/api";
+import { AKLabel } from "#components/ak-label";
+
+import { FlowDesignationEnum, ProvidersApi, RACProvider } from "@goauthentik/api";
 
 import YAML from "yaml";
 
@@ -26,7 +31,7 @@ import { ifDefined } from "lit/directives/if-defined.js";
 @customElement("ak-provider-rac-form")
 export class RACProviderFormPage extends ModelForm<RACProvider, number> {
     async loadInstance(pk: number): Promise<RACProvider> {
-        return new ProvidersApi(DEFAULT_CONFIG).providersRacRetrieve({
+        return aki(ProvidersApi).providersRacRetrieve({
             id: pk,
         });
     }
@@ -40,34 +45,42 @@ export class RACProviderFormPage extends ModelForm<RACProvider, number> {
 
     async send(data: RACProvider): Promise<RACProvider> {
         if (this.instance) {
-            return new ProvidersApi(DEFAULT_CONFIG).providersRacUpdate({
+            return aki(ProvidersApi).providersRacUpdate({
                 id: this.instance.pk,
                 rACProviderRequest: data,
             });
         }
-        return new ProvidersApi(DEFAULT_CONFIG).providersRacCreate({
+        return aki(ProvidersApi).providersRacCreate({
             rACProviderRequest: data,
         });
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html`
-            <ak-form-element-horizontal label=${msg("Name")} required name="name">
-                <input
-                    type="text"
-                    value="${ifDefined(this.instance?.name)}"
-                    class="pf-c-form-control"
-                    required
-                />
-            </ak-form-element-horizontal>
-
-            <ak-form-element-horizontal
-                name="authorizationFlow"
-                label=${msg("Authorization flow")}
+            <ak-text-input
+                label=${msg("Provider Name")}
                 required
-            >
+                name="name"
+                value="${ifDefined(this.instance?.name)}"
+                placeholder=${msg("Type a provider name...")}
+                spellcheck="false"
+                ?autofocus=${!this.instance}
+            ></ak-text-input>
+
+            <ak-form-element-horizontal name="authorizationFlow" required>
+                ${AKLabel(
+                    {
+                        className: "pf-c-form__group-label",
+                        slot: "label",
+                        htmlFor: "authorizationFlow",
+                        required: true,
+                    },
+                    msg("Authorization Flow"),
+                )}
                 <ak-flow-search
-                    flowType=${FlowsInstancesListDesignationEnum.Authorization}
+                    id="authorizationFlow"
+                    label=${msg("Authorization Flow")}
+                    flowType=${FlowDesignationEnum.Authorization}
                     .currentFlow=${this.instance?.authorizationFlow}
                     required
                 ></ak-flow-search>
@@ -95,28 +108,15 @@ export class RACProviderFormPage extends ModelForm<RACProvider, number> {
                 </p>
                 <ak-utils-time-delta-help></ak-utils-time-delta-help>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal name="deleteTokenOnDisconnect">
-                <label class="pf-c-switch">
-                    <input
-                        class="pf-c-switch__input"
-                        type="checkbox"
-                        ?checked=${this.instance?.deleteTokenOnDisconnect ?? false}
-                    />
-                    <span class="pf-c-switch__toggle">
-                        <span class="pf-c-switch__toggle-icon">
-                            <i class="fas fa-check" aria-hidden="true"></i>
-                        </span>
-                    </span>
-                    <span class="pf-c-switch__label"
-                        >${msg("Delete authorization on disconnect")}</span
-                    >
-                </label>
-                <p class="pf-c-form__helper-text">
-                    ${msg(
-                        "When enabled, connection authorizations will be deleted when a client disconnects. This will force clients with flaky internet connections to re-authorize the endpoint.",
-                    )}
-                </p>
-            </ak-form-element-horizontal>
+            <ak-switch-input
+                name="deleteTokenOnDisconnect"
+                label=${msg("Delete authorization on disconnect")}
+                ?checked=${this.instance?.deleteTokenOnDisconnect ?? false}
+                help=${msg(
+                    "When enabled, connection authorizations will be deleted when a client disconnects. This will force clients with flaky internet connections to re-authorize the endpoint.",
+                )}
+            >
+            </ak-switch-input>
 
             <ak-form-group open label="${msg("Protocol settings")}">
                 <div class="pf-c-form">

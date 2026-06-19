@@ -1,11 +1,13 @@
 {% load i18n %}
 {% get_current_language as LANGUAGE_CODE %}
 
-<script>
+<script data-id="authentik-config">
+    "use strict";
+
     window.authentik = {
         locale: "{{ LANGUAGE_CODE }}",
-        config: JSON.parse('{{ config_json|escapejs }}'),
-        brand: JSON.parse('{{ brand_json|escapejs }}'),
+        config: JSON.parse('{{ config_json|escapejs }}' || "{}"),
+        brand: JSON.parse('{{ brand_json|escapejs }}' || "{}"),
         versionFamily: "{{ version_family }}",
         versionSubdomain: "{{ version_subdomain }}",
         build: "{{ build }}",

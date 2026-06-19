@@ -1,7 +1,8 @@
+import "#components/ak-switch-input";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { BasePolicyForm } from "#admin/policies/BasePolicyForm";
 
@@ -15,24 +16,24 @@ import { ifDefined } from "lit/directives/if-defined.js";
 @customElement("ak-policy-password-expiry-form")
 export class PasswordExpiryPolicyForm extends BasePolicyForm<PasswordExpiryPolicy> {
     loadInstance(pk: string): Promise<PasswordExpiryPolicy> {
-        return new PoliciesApi(DEFAULT_CONFIG).policiesPasswordExpiryRetrieve({
+        return aki(PoliciesApi).policiesPasswordExpiryRetrieve({
             policyUuid: pk,
         });
     }
 
     async send(data: PasswordExpiryPolicy): Promise<PasswordExpiryPolicy> {
         if (this.instance) {
-            return new PoliciesApi(DEFAULT_CONFIG).policiesPasswordExpiryUpdate({
+            return aki(PoliciesApi).policiesPasswordExpiryUpdate({
                 policyUuid: this.instance.pk || "",
                 passwordExpiryPolicyRequest: data,
             });
         }
-        return new PoliciesApi(DEFAULT_CONFIG).policiesPasswordExpiryCreate({
+        return aki(PoliciesApi).policiesPasswordExpiryCreate({
             passwordExpiryPolicyRequest: data,
         });
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html` <span>
                 ${msg(
                     "Checks if the request's user's password has been changed in the last x days, and denys based on settings.",
@@ -46,26 +47,15 @@ export class PasswordExpiryPolicyForm extends BasePolicyForm<PasswordExpiryPolic
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal name="executionLogging">
-                <label class="pf-c-switch">
-                    <input
-                        class="pf-c-switch__input"
-                        type="checkbox"
-                        ?checked=${this.instance?.executionLogging ?? false}
-                    />
-                    <span class="pf-c-switch__toggle">
-                        <span class="pf-c-switch__toggle-icon">
-                            <i class="fas fa-check" aria-hidden="true"></i>
-                        </span>
-                    </span>
-                    <span class="pf-c-switch__label">${msg("Execution logging")}</span>
-                </label>
-                <p class="pf-c-form__helper-text">
-                    ${msg(
-                        "When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.",
-                    )}
-                </p>
-            </ak-form-element-horizontal>
+            <ak-switch-input
+                name="executionLogging"
+                label=${msg("Execution logging")}
+                ?checked=${this.instance?.executionLogging ?? false}
+                help=${msg(
+                    "When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.",
+                )}
+            >
+            </ak-switch-input>
             <ak-form-group open label="${msg("Policy-specific settings")}">
                 <div class="pf-c-form">
                     <ak-form-element-horizontal
@@ -80,25 +70,12 @@ export class PasswordExpiryPolicyForm extends BasePolicyForm<PasswordExpiryPolic
                             required
                         />
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal name="denyOnly">
-                        <label class="pf-c-switch">
-                            <input
-                                class="pf-c-switch__input"
-                                type="checkbox"
-                                ?checked=${this.instance?.denyOnly ?? false}
-                            />
-                            <span class="pf-c-switch__toggle">
-                                <span class="pf-c-switch__toggle-icon">
-                                    <i class="fas fa-check" aria-hidden="true"></i>
-                                </span>
-                            </span>
-                            <span class="pf-c-switch__label"
-                                >${msg(
-                                    "Only fail the policy, don't invalidate user's password",
-                                )}</span
-                            >
-                        </label>
-                    </ak-form-element-horizontal>
+                    <ak-switch-input
+                        name="denyOnly"
+                        label=${msg("Only fail the policy, don't invalidate user's password")}
+                        ?checked=${this.instance?.denyOnly ?? false}
+                    >
+                    </ak-switch-input>
                 </div>
             </ak-form-group>`;
     }

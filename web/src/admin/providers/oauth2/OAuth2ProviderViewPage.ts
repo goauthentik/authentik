@@ -1,6 +1,7 @@
 import "#admin/providers/RelatedApplicationButton";
-import "#admin/providers/oauth2/OAuth2ProviderForm";
-import "#components/events/ObjectChangelog";
+import "#admin/events/ObjectChangelog";
+import "#admin/rbac/ak-rbac-object-permission-page";
+import "#admin/rbac/ObjectPermissionModal";
 import "#elements/CodeMirror";
 import "#elements/EmptyState";
 import "#elements/Tabs";
@@ -9,13 +10,16 @@ import "#elements/ak-mdx/index";
 import "#elements/buttons/ModalButton";
 import "#elements/buttons/SpinnerButton/index";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { EVENT_REFRESH } from "#common/constants";
 
 import { AKElement } from "#elements/Base";
+import { modalInvoker } from "#elements/dialogs";
 import { SlottedTemplateResult } from "#elements/types";
 
 import renderDescriptionList from "#components/DescriptionList";
+
+import { OAuth2ProviderFormPage } from "#admin/providers/oauth2/OAuth2ProviderForm";
 
 import {
     ClientTypeEnum,
@@ -23,10 +27,10 @@ import {
     CoreUsersListRequest,
     ModelEnum,
     OAuth2Provider,
+    OAuth2ProviderLogoutMethodEnum,
     OAuth2ProviderSetupURLs,
     PropertyMappingPreview,
     ProvidersApi,
-    RbacPermissionsAssignedByUsersListModelEnum,
     User,
 } from "@goauthentik/api";
 import { IDGenerator } from "@goauthentik/core/id";
@@ -47,7 +51,6 @@ import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 export function TypeToLabel(type?: ClientTypeEnum): string {
     if (!type) return "";
@@ -61,11 +64,23 @@ export function TypeToLabel(type?: ClientTypeEnum): string {
     }
 }
 
+export function LogoutMethodToLabel(method?: OAuth2ProviderLogoutMethodEnum): string {
+    if (!method) return "";
+    switch (method) {
+        case OAuth2ProviderLogoutMethodEnum.Backchannel:
+            return msg("Back-channel");
+        case OAuth2ProviderLogoutMethodEnum.Frontchannel:
+            return msg("Front-channel");
+        case OAuth2ProviderLogoutMethodEnum.UnknownDefaultOpenApi:
+            return msg("Unknown");
+    }
+}
+
 @customElement("ak-provider-oauth2-view")
 export class OAuth2ProviderViewPage extends AKElement {
     @property({ type: Number })
     set providerID(value: number) {
-        new ProvidersApi(DEFAULT_CONFIG)
+        aki(ProvidersApi)
             .providersOauth2Retrieve({
                 id: value,
             })
@@ -87,7 +102,6 @@ export class OAuth2ProviderViewPage extends AKElement {
     previewUser?: User;
 
     static styles: CSSResult[] = [
-        PFBase,
         PFButton,
         PFPage,
         PFGrid,
@@ -109,7 +123,7 @@ export class OAuth2ProviderViewPage extends AKElement {
     }
 
     fetchPreview(): void {
-        new ProvidersApi(DEFAULT_CONFIG)
+        aki(ProvidersApi)
             .providersOauth2PreviewUserRetrieve({
                 id: this.provider?.pk || 0,
                 forUser: this.previewUser?.pk,
@@ -121,8 +135,8 @@ export class OAuth2ProviderViewPage extends AKElement {
         if (!this.provider) {
             return nothing;
         }
-        return html` <main>
-            <ak-tabs>
+        return html`<main part="main">
+            <ak-tabs part="tabs">
                 <div
                     role="tabpanel"
                     tabindex="0"
@@ -130,7 +144,7 @@ export class OAuth2ProviderViewPage extends AKElement {
                     id="page-overview"
                     aria-label="${msg("Overview")}"
                     @activate=${() => {
-                        new ProvidersApi(DEFAULT_CONFIG)
+                        aki(ProvidersApi)
                             .providersOauth2SetupUrlsRetrieve({
                                 id: this.provider?.pk || 0,
                             })
@@ -162,13 +176,11 @@ export class OAuth2ProviderViewPage extends AKElement {
                     class="pf-c-page__main-section pf-m-no-padding-mobile"
                 >
                     <div class="pf-c-card">
-                        <div class="pf-c-card__body">
-                            <ak-object-changelog
-                                targetModelPk=${this.provider?.pk || ""}
-                                targetModelName=${this.provider?.metaModelName || ""}
-                            >
-                            </ak-object-changelog>
-                        </div>
+                        <ak-object-changelog
+                            targetModelPk=${this.provider?.pk || ""}
+                            targetModelName=${this.provider?.metaModelName || ""}
+                        >
+                        </ak-object-changelog>
                     </div>
                 </div>
                 <ak-rbac-object-permission-page
@@ -177,7 +189,7 @@ export class OAuth2ProviderViewPage extends AKElement {
                     slot="page-permissions"
                     id="page-permissions"
                     aria-label="${msg("Permissions")}"
-                    model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikProvidersOauth2Oauth2provider}
+                    model=${ModelEnum.AuthentikProvidersOauth2Oauth2provider}
                     objectPk=${this.provider.pk}
                 ></ak-rbac-object-permission-page>
             </ak-tabs>
@@ -185,11 +197,8 @@ export class OAuth2ProviderViewPage extends AKElement {
     }
 
     renderTabOverview(): SlottedTemplateResult {
-        if (!this.provider) {
-            return nothing;
-        }
         const [appLabel, modelName] = ModelEnum.AuthentikProvidersOauth2Oauth2provider.split(".");
-        return html` ${this.provider?.assignedApplicationName
+        return html`${this.provider?.assignedApplicationName
                 ? nothing
                 : html`<div slot="header" class="pf-c-banner pf-m-warning">
                       ${msg("Warning: Provider is not used by an Application.")}
@@ -198,100 +207,49 @@ export class OAuth2ProviderViewPage extends AKElement {
                 <div
                     class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-4-col-on-xl pf-m-4-col-on-2xl"
                 >
+                    <div class="pf-c-card__title">${msg("Info")}</div>
                     <div class="pf-c-card__body">
-                        <dl class="pf-c-description-list">
-                            <div class="pf-c-description-list__group">
-                                <dt class="pf-c-description-list__term">
-                                    <span class="pf-c-description-list__text">${msg("Name")}</span>
-                                </dt>
-                                <dd class="pf-c-description-list__description">
-                                    <div class="pf-c-description-list__text">
-                                        ${this.provider.name}
-                                    </div>
-                                </dd>
-                            </div>
-                            <div class="pf-c-description-list__group">
-                                <dt class="pf-c-description-list__term">
-                                    <span class="pf-c-description-list__text"
-                                        >${msg("Assigned to application")}</span
-                                    >
-                                </dt>
-                                <dd class="pf-c-description-list__description">
-                                    <div class="pf-c-description-list__text">
-                                        <ak-provider-related-application .provider=${this.provider}>
-                                        </ak-provider-related-application>
-                                    </div>
-                                </dd>
-                            </div>
-                            <div class="pf-c-description-list__group">
-                                <dt class="pf-c-description-list__term">
-                                    <span class="pf-c-description-list__text"
-                                        >${msg("Client type")}</span
-                                    >
-                                </dt>
-                                <dd class="pf-c-description-list__description">
-                                    <div class="pf-c-description-list__text">
-                                        ${TypeToLabel(this.provider.clientType)}
-                                    </div>
-                                </dd>
-                            </div>
-                            <div class="pf-c-description-list__group">
-                                <dt class="pf-c-description-list__term">
-                                    <span class="pf-c-description-list__text"
-                                        >${msg("Client ID")}</span
-                                    >
-                                </dt>
-                                <dd class="pf-c-description-list__description">
-                                    <div class="pf-c-description-list__text pf-m-monospace">
-                                        ${this.provider.clientId}
-                                    </div>
-                                </dd>
-                            </div>
-                            <div class="pf-c-description-list__group">
-                                <dt class="pf-c-description-list__term">
-                                    <span class="pf-c-description-list__text"
-                                        >${msg("Redirect URIs")}</span
-                                    >
-                                </dt>
-                                <dd class="pf-c-description-list__description">
-                                    <div class="pf-c-description-list__text">
-                                        <ul>
-                                            ${this.provider.redirectUris.map((ru) => {
-                                                return html`<li class="pf-m-monospace">
-                                                    ${ru.matchingMode}: ${ru.url}
-                                                </li>`;
-                                            })}
-                                        </ul>
-                                    </div>
-                                </dd>
-                            </div>
-                            <div class="pf-c-description-list__group">
-                                <dt class="pf-c-description-list__term">
-                                    <span class="pf-c-description-list__text"
-                                        >${msg("Back-Channel Logout URI")}</span
-                                    >
-                                </dt>
-                                <dd class="pf-c-description-list__description">
-                                    <div class="pf-c-description-list__text pf-m-monospace">
-                                        ${this.provider.backchannelLogoutUri}
-                                    </div>
-                                </dd>
-                            </div>
-                        </dl>
-                    </div>
-                    <div class="pf-c-card__footer">
-                        <ak-forms-modal>
-                            <span slot="submit">${msg("Update")}</span>
-                            <span slot="header">${msg("Update OAuth2 Provider")}</span>
-                            <ak-provider-oauth2-form
-                                slot="form"
-                                .instancePk=${this.provider.pk || 0}
-                            >
-                            </ak-provider-oauth2-form>
-                            <button slot="trigger" class="pf-c-button pf-m-primary">
-                                ${msg("Edit")}
-                            </button>
-                        </ak-forms-modal>
+                        ${renderDescriptionList([
+                            [msg("Name"), html`${this.provider?.name}`],
+                            [
+                                msg("Assigned to application"),
+                                html`<ak-provider-related-application .provider=${this.provider}>
+                                </ak-provider-related-application>`,
+                            ],
+                            [msg("Client Type"), html`${TypeToLabel(this.provider?.clientType)}`],
+                            [msg("Client ID"), html`${this.provider?.clientId}`],
+                            [
+                                msg("Redirect URIs"),
+                                (this.provider?.redirectUris || []).length > 0
+                                    ? html`<ul>
+                                          ${this.provider?.redirectUris.map((ru) => {
+                                              return html`<li class="pf-m-monospace">
+                                                  ${ru.matchingMode}: ${ru.url}
+                                              </li>`;
+                                          })}
+                                      </ul>`
+                                    : "-",
+                            ],
+                            [
+                                msg("Logout URI"),
+                                this.provider?.logoutUri !== "" ? this.provider?.logoutUri : "-",
+                            ],
+                            [
+                                msg("Logout Method"),
+                                html`${LogoutMethodToLabel(this.provider?.logoutMethod)}`,
+                            ],
+                            [
+                                msg("Related actions"),
+                                html`<button
+                                    class="pf-c-button pf-m-primary pf-m-block"
+                                    ${modalInvoker(OAuth2ProviderFormPage, {
+                                        instancePk: this.provider?.pk || 0,
+                                    })}
+                                >
+                                    ${msg("Edit")}
+                                </button>`,
+                            ],
+                        ])}
                     </div>
                 </div>
                 <div class="pf-c-card pf-l-grid__item pf-m-8-col">
@@ -331,7 +289,11 @@ export class OAuth2ProviderViewPage extends AKElement {
                                     value="${this.providerUrls?.issuer || msg("-")}"
                                 />
                             </div>
-                            <hr class="pf-c-divider" />
+                        </form>
+                    </div>
+                    <hr class="pf-c-divider" />
+                    <div class="pf-c-card__body">
+                        <form class="pf-c-form">
                             <div class="pf-c-form__group">
                                 <label
                                     class="pf-c-form__label"
@@ -422,7 +384,7 @@ export class OAuth2ProviderViewPage extends AKElement {
                         <ak-task-list
                             .relObjAppLabel=${appLabel}
                             .relObjModel=${modelName}
-                            .relObjId="${this.provider.pk}"
+                            .relObjId="${this.provider?.pk}"
                         ></ak-task-list>
                     </div>
                 </div>
@@ -439,7 +401,8 @@ export class OAuth2ProviderViewPage extends AKElement {
                                     }
                                     return input.replaceAll(
                                         "<application slug>",
-                                        this.provider.assignedApplicationSlug,
+                                        this.provider.assignedApplicationSlug ??
+                                            "<application slug>",
                                     );
                                 },
                             ]}
@@ -475,9 +438,7 @@ export class OAuth2ProviderViewPage extends AKElement {
                                             if (query !== undefined) {
                                                 args.search = query;
                                             }
-                                            const users = await new CoreApi(
-                                                DEFAULT_CONFIG,
-                                            ).coreUsersList(args);
+                                            const users = await aki(CoreApi).coreUsersList(args);
                                             return users.results;
                                         }}
                                         .renderElement=${(user: User): string => {

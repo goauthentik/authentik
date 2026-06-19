@@ -6,10 +6,11 @@ import { findFlatOptions, findOptionsSubset, groupOptions, optionsToFlat } from 
 import { ListSelect } from "#elements/ak-list-select/ak-list-select";
 import { AKElement } from "#elements/Base";
 import type { GroupedOptions, SelectOption, SelectOptions } from "#elements/types";
+import { ifPresent } from "#elements/utils/attributes";
 import { randomId } from "#elements/utils/randomId";
 
 import { msg } from "@lit/localize";
-import { CSSResult, html, nothing, PropertyValues } from "lit";
+import { css, CSSResult, html, nothing, PropertyValues } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 import { createRef, ref, Ref } from "lit/directives/ref.js";
@@ -17,18 +18,18 @@ import { createRef, ref, Ref } from "lit/directives/ref.js";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import PFSelect from "@patternfly/patternfly/components/Select/select.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 export interface ISearchSelectView {
     options: SelectOptions;
     value?: string;
     open: boolean;
     blankable: boolean;
+    readOnly: boolean;
     caseSensitive: boolean;
     name?: string;
     placeholder: string;
     managed: boolean;
-    emptyOption: string;
+    emptyOption: string | null;
 }
 
 /**
@@ -69,7 +70,16 @@ export interface ISearchSelectView {
  */
 @customElement("ak-search-select-view")
 export class SearchSelectView extends AKElement implements ISearchSelectView {
-    static styles: CSSResult[] = [PFBase, PFForm, PFFormControl, PFSelect];
+    static styles: CSSResult[] = [
+        PFForm,
+        PFFormControl,
+        PFSelect,
+        css`
+            .pf-c-select {
+                --pf-c-select__toggle-wrapper--MaxWidth: initial;
+            }
+        `,
+    ];
 
     //#region Properties
 
@@ -117,6 +127,14 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
     public blankable = false;
 
     /**
+     * Prevents user interaction while showing the current value.
+     *
+     * @attr
+     */
+    @property({ type: Boolean, attribute: "readonly" })
+    public readOnly = false;
+
+    /**
      * If not managed, make the matcher case-sensitive during interaction.  If managed,
      * the manager must handle this.
      *
@@ -148,7 +166,7 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
      * @attr
      */
     @property({ type: String })
-    public placeholder: string = msg("Select an object.");
+    public placeholder: string = msg("Select an object...");
 
     /**
      * A unique ID to associate with the input and label.
@@ -173,8 +191,8 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
      *
      * @attr
      */
-    @property()
-    public emptyOption = "---------";
+    @property({ type: String })
+    public emptyOption: string | null = null;
 
     //#endregion
 
@@ -212,11 +230,13 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
         this.setAttribute("data-ouia-component-safe", "true");
     }
 
-    public override firstUpdated() {
+    public override firstUpdated(changed: PropertyValues<this>) {
+        super.firstUpdated(changed);
+
         // Route around Lit's scheduling algorithm complaining about re-renders
-        window.setTimeout(() => {
+        requestAnimationFrame(() => {
             this.inputRefIsAvailable = Boolean(this.#inputRef?.value);
-        }, 0);
+        });
     }
 
     connectedCallback() {
@@ -238,6 +258,8 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
     //#region Event Listeners
 
     #clickListener = (_ev: Event) => {
+        if (this.readOnly) return;
+
         this.open = !this.open;
         this.#inputRef.value?.focus();
     };
@@ -253,6 +275,8 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
     }
 
     #searchKeyupListener = (event: KeyboardEvent) => {
+        if (this.readOnly) return;
+
         if (event.key === "Escape") {
             event.stopPropagation();
             event.preventDefault();
@@ -267,6 +291,8 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
     };
 
     #searchKeydownListener = (event: KeyboardEvent) => {
+        if (this.readOnly) return;
+
         if (!this.open) return;
 
         switch (event.key) {
@@ -329,6 +355,8 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
     }
 
     #inputListener = (_ev: InputEvent) => {
+        if (this.readOnly) return;
+
         if (!this.managed) {
             this.findValueForInput();
             this.requestUpdate();
@@ -346,6 +374,8 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
     };
 
     #listKeydownListener = (event: KeyboardEvent) => {
+        if (this.readOnly) return;
+
         if (event.key === "Tab" && event.shiftKey) {
             event.preventDefault();
 
@@ -354,6 +384,8 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
     };
 
     #changeListener = (event: InputEvent) => {
+        if (this.readOnly) return;
+
         if (!event.target) {
             return;
         }
@@ -387,6 +419,9 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
             const newDisplayValue = this.findDisplayForValue(this.value);
             if (newDisplayValue) {
                 this.displayValue = newDisplayValue;
+            } else {
+                // If no display value found (e.g., custom creatable value), use the value itself
+                this.displayValue = this.value;
             }
         }
     }
@@ -404,8 +439,11 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
     //#region Render
 
     public override render() {
-        const emptyOption = this.blankable ? this.emptyOption : undefined;
-        const open = this.open;
+        const { open } = this;
+
+        const emptyOption = this.blankable
+            ? this.emptyOption || this.placeholder || msg("Select an option...")
+            : null;
 
         return html`<div class="pf-c-select" part="ak-search-select">
                 <div class="pf-c-select__toggle pf-m-typeahead" part="ak-search-select-toggle">
@@ -428,6 +466,7 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
                             @keyup=${this.#searchKeyupListener}
                             @keydown=${this.#searchKeydownListener}
                             value=${this.displayValue}
+                            ?readonly=${this.readOnly}
                         />
                     </div>
                 </div>
@@ -446,7 +485,7 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
                               value=${ifDefined(this.value)}
                               @change=${this.#changeListener}
                               @blur=${this.#blurListener}
-                              emptyOption=${ifDefined(emptyOption)}
+                              emptyOption=${ifPresent(emptyOption)}
                               @keydown=${this.#listKeydownListener}
                               @keyup=${this.#listKeyupListener}
                           ></ak-list-select>

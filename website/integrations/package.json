@@ -12,23 +12,25 @@
         "start": "docusaurus start"
     },
     "dependencies": {
-        "@docusaurus/core": "^3.8.1",
-        "@docusaurus/module-type-aliases": "^3.8.1",
-        "@docusaurus/plugin-client-redirects": "^3.8.1",
-        "@docusaurus/preset-classic": "^3.8.1",
-        "@docusaurus/theme-mermaid": "^3.8.1",
-        "@docusaurus/tsconfig": "^3.8.1",
-        "@docusaurus/types": "^3.8.1",
-        "@goauthentik/docusaurus-config": "^2.1.2",
+        "@docusaurus/core": "^3.10.1",
+        "@docusaurus/module-type-aliases": "^3.10.1",
+        "@docusaurus/plugin-client-redirects": "^3.10.1",
+        "@docusaurus/preset-classic": "^3.10.1",
+        "@docusaurus/theme-mermaid": "^3.10.1",
+        "@docusaurus/tsconfig": "^3.10.1",
+        "@docusaurus/types": "^3.10.1",
+        "@goauthentik/docusaurus-config": "../../packages/docusaurus-config",
         "@goauthentik/docusaurus-theme": "*",
         "@mdx-js/react": "^3.1.1",
-        "@types/react": "^19.1.16",
-        "@types/react-dom": "^19.2.0",
-        "prism-react-renderer": "^2.3.0",
-        "react": "^19.1.1",
-        "react-dom": "^19.2.0"
+        "@types/react": "^19.2.14",
+        "@types/react-dom": "^19.2.3",
+        "prism-react-renderer": "^2.4.1",
+        "react": "^19.2.6",
+        "react-dom": "^19.2.6",
+        "typescript": "^6.0.3"
     },
     "engines": {
-        "node": ">=24"
+        "node": ">=24",
+        "npm": ">=11.14.1"
     }
 }

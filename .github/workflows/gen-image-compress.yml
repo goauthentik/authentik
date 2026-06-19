@@ -29,32 +29,32 @@ jobs:
        github.event.pull_request.head.repo.full_name == github.repository)
     steps:
       - id: generate_token
-        uses: tibdex/github-app-token@v2
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v2
         with:
-          app_id: ${{ secrets.GH_APP_ID }}
-          private_key: ${{ secrets.GH_APP_PRIVATE_KEY }}
-      - uses: actions/checkout@v5
+          client-id: ${{ secrets.GH_APP_ID }}
+          private-key: ${{ secrets.GH_APP_PRIV_KEY }}
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v5
         with:
           token: ${{ steps.generate_token.outputs.token }}
       - name: Compress images
         id: compress
-        uses: calibreapp/image-actions@main
+        uses: calibreapp/image-actions@9d037c06280028c110ff61c433ad4dc7d33c3c43 # main
         with:
           GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }}
           compressOnly: ${{ github.event_name != 'pull_request' }}
-      - uses: peter-evans/create-pull-request@v7
+      - uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v7
         if: "${{ github.event_name != 'pull_request' && steps.compress.outputs.markdown != '' }}"
         id: cpr
         with:
           token: ${{ steps.generate_token.outputs.token }}
           title: "*: Auto compress images"
           branch-suffix: timestamp
-          commit-messsage: "*: compress images"
+          commit-message: "*: compress images"
           body: ${{ steps.compress.outputs.markdown }}
           delete-branch: true
           signoff: true
           labels: dependencies
-      - uses: peter-evans/enable-pull-request-automerge@v3
+      - uses: peter-evans/enable-pull-request-automerge@a660677d5469627102a1c1e11409dd063606628d # v3
         if: "${{ github.event_name != 'pull_request' && steps.compress.outputs.markdown != '' }}"
         with:
           token: ${{ steps.generate_token.outputs.token }}

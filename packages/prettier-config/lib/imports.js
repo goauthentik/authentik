@@ -10,7 +10,8 @@ import { formatSourceFromFile } from "format-imports";
 import { parsers as babelParsers } from "prettier/plugins/babel";
 import { parsers as typescriptParsers } from "prettier/plugins/typescript";
 
-const require = createRequire(process.cwd() + "/");
+const require = createRequire(`${process.cwd()}/`);
+const AK_KEEP_UNUSED_IMPORTS = !!process.env.AK_KEEP_UNUSED_IMPORTS;
 
 /**
  * @param {string} name
@@ -19,7 +20,7 @@ const require = createRequire(process.cwd() + "/");
 function resolveModule(name) {
     try {
         return require.resolve(name);
-    } catch (error) {
+    } catch (_error) {
         return null;
     }
 }
@@ -60,12 +61,12 @@ function normalizeImports(filepath, input) {
             [
                 // ---
                 `(?:import|from)`,
-                `\\\(?\\n?\\s*`,
-                `"(?<suffix>@goauthentik\/${submodule}\/)`,
+                `\\(?\\n?\\s*`,
+                `"(?<suffix>@goauthentik/${submodule}/)`,
 
                 `(?<path>[^"'.]+)`,
                 `(?:.[^"']+)?["']`,
-                `\\n?\\s*\\\)?;`,
+                `\\n?\\s*\\)?;`,
             ].join(""),
             "gm",
         );
@@ -143,6 +144,7 @@ const preprocess = (input, { filepath, printWidth }) => {
         nodeProtocol: "always",
         maxLineLength: printWidth,
         wrappingStyle: "prettier",
+        keepUnused: AK_KEEP_UNUSED_IMPORTS ? [".*"] : [],
         groupRules: [
             "^node:",
             "^[./]",

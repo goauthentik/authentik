@@ -7,21 +7,28 @@ import "#user/user-settings/details/UserSettingsFlowExecutor";
 import "#user/user-settings/mfa/MFADevicesPage";
 import "#user/user-settings/tokens/UserTokenList";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { EVENT_REFRESH } from "#common/constants";
-import { rootInterface } from "#common/theme";
+import { startAccountLockdown } from "#common/users";
 
+import { AKSkipToContent } from "#elements/a11y/ak-skip-to-content";
 import { AKElement } from "#elements/Base";
+import { showAPIErrorMessage } from "#elements/messages/MessageContainer";
+import { WithLicenseSummary } from "#elements/mixins/license";
+import { WithSession } from "#elements/mixins/session";
+import { SlottedTemplateResult } from "#elements/types";
+import { ifPresent } from "#elements/utils/attributes";
 
-import type { UserInterface } from "#user/index.entrypoint";
+import Styles from "#user/user-settings/styles.css";
 
 import { StagesApi, UserSetting } from "@goauthentik/api";
 
-import { localized, msg } from "@lit/localize";
-import { css, CSSResult, html, nothing, TemplateResult } from "lit";
+import { msg } from "@lit/localize";
+import { CSSResult, html, nothing } from "lit";
 import { customElement, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
@@ -30,16 +37,14 @@ import PFFormControl from "@patternfly/patternfly/components/FormControl/form-co
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGallery from "@patternfly/patternfly/layouts/Gallery/gallery.css";
 import PFStack from "@patternfly/patternfly/layouts/Stack/stack.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
 import PFSizing from "@patternfly/patternfly/utilities/Sizing/sizing.css";
 
-@localized()
 @customElement("ak-user-settings")
-export class UserSettingsPage extends AKElement {
+export class UserSettingsPage extends WithLicenseSummary(WithSession(AKElement)) {
     static styles: CSSResult[] = [
-        PFBase,
         PFPage,
+        PFButton,
         PFDisplay,
         PFGallery,
         PFContent,
@@ -49,59 +54,86 @@ export class UserSettingsPage extends AKElement {
         PFForm,
         PFFormControl,
         PFStack,
-        css`
-            .pf-c-page {
-                --pf-c-page--BackgroundColor: transparent;
-            }
-            .pf-c-page__main-section {
-                --pf-c-page__main-section--BackgroundColor: transparent;
-            }
-            :host([theme="dark"]) .pf-c-page {
-                --pf-c-page--BackgroundColor: transparent;
-            }
-            :host([theme="dark"]) .pf-c-page__main-section {
-                --pf-c-page__main-section--BackgroundColor: transparent;
-            }
-
-            .pf-c-page__main {
-                min-height: 100vh;
-            }
-            .pf-c-page__main,
-            .pf-c-page__main {
-                overflow: unset;
-            }
-
-            @media screen and (min-width: 1200px) {
-                :host {
-                    width: 90rem;
-                    width: 90rem;
-                    align-self: center;
-                }
-            }
-        `,
+        Styles,
     ];
 
+    protected stagesAPI = aki(StagesApi);
+
     @state()
-    userSettings?: UserSetting[];
+    protected userSettings: UserSetting[] | null = null;
+
+    protected refresh = () => {
+        return this.stagesAPI
+            .stagesAllUserSettingsList()
+            .then((nextUserSettings) => {
+                this.userSettings = nextUserSettings;
+            })
+            .catch(showAPIErrorMessage);
+    };
 
     constructor() {
         super();
-        this.addEventListener(EVENT_REFRESH, () => {
-            this.firstUpdated();
-        });
+        this.addEventListener(EVENT_REFRESH, this.refresh);
     }
 
-    async firstUpdated(): Promise<void> {
-        this.userSettings = await new StagesApi(DEFAULT_CONFIG).stagesAllUserSettingsList();
+    public async firstUpdated(): Promise<void> {
+        this.refresh();
     }
 
-    render(): TemplateResult {
+    protected lockAccount = () => {
+        return startAccountLockdown().catch(showAPIErrorMessage);
+    };
+
+    protected renderSecuritySettings(): SlottedTemplateResult {
+        if (!this.hasEnterpriseLicense) {
+            return null;
+        }
+
+        return html`<div
+            id="page-security"
+            role="tabpanel"
+            tabindex="0"
+            slot="page-security"
+            aria-label=${msg("Security")}
+            class="pf-c-page__main-section pf-m-no-padding-mobile"
+        >
+            <div class="pf-l-stack pf-m-gutter">
+                <div class="pf-l-stack__item">
+                    <div class="pf-c-card">
+                        <div class="pf-c-card__title">${msg("Account Lockdown")}</div>
+                        <div class="pf-c-card__body">
+                            <p>
+                                ${msg(
+                                    "If you suspect your account has been compromised, you can immediately lock it to prevent unauthorized access.",
+                                )}
+                            </p>
+                        </div>
+                        <div class="pf-c-card__footer">
+                            <button class="pf-c-button pf-m-danger" @click=${this.lockAccount}>
+                                ${msg("Lock my account")}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>`;
+    }
+
+    protected override render(): SlottedTemplateResult {
         const pwStage =
             this.userSettings?.filter((stage) => stage.component === "ak-user-settings-password") ||
             [];
+
+        const { currentUser } = this;
+
         return html`<div class="pf-c-page">
-            <main class="pf-c-page__main" tabindex="-1">
-                <ak-tabs vertical>
+            <div class="pf-c-page__main">
+                <ak-tabs
+                    vertical
+                    role="main"
+                    aria-label=${msg("User settings")}
+                    ${AKSkipToContent.ref}
+                >
                     <div
                         id="page-details"
                         role="tabpanel"
@@ -132,13 +164,9 @@ export class UserSettingsPage extends AKElement {
                         class="pf-c-page__main-section pf-m-no-padding-mobile"
                     >
                         <div class="pf-c-card">
-                            <div class="pf-c-card__body">
-                                <ak-user-session-list
-                                    targetUser=${ifDefined(
-                                        rootInterface<UserInterface>()?.me?.user.username,
-                                    )}
-                                ></ak-user-session-list>
-                            </div>
+                            <ak-user-session-list
+                                targetUser=${ifPresent(currentUser?.username)}
+                            ></ak-user-session-list>
                         </div>
                     </div>
                     <div
@@ -150,26 +178,35 @@ export class UserSettingsPage extends AKElement {
                         class="pf-c-page__main-section pf-m-no-padding-mobile"
                     >
                         <div class="pf-c-card">
-                            <div class="pf-c-card__body">
-                                <ak-user-consent-list
-                                    userId=${ifDefined(rootInterface<UserInterface>()?.me?.user.pk)}
-                                ></ak-user-consent-list>
-                            </div>
+                            <ak-user-consent-list
+                                userId=${ifPresent(currentUser?.pk)}
+                            ></ak-user-consent-list>
                         </div>
                     </div>
                     <div
-                        id="page-mfa"
+                        id="page-credentials"
                         role="tabpanel"
                         tabindex="0"
-                        slot="page-mfa"
-                        aria-label=${msg("MFA Devices")}
+                        slot="page-credentials"
+                        aria-label=${msg("Credentials")}
                         class="pf-c-page__main-section pf-m-no-padding-mobile"
                     >
-                        <div class="pf-c-card">
-                            <div class="pf-c-card__body">
-                                <ak-user-settings-mfa
-                                    .userSettings=${this.userSettings}
-                                ></ak-user-settings-mfa>
+                        <div class="pf-l-stack pf-m-gutter">
+                            <div class="pf-l-stack__item">
+                                <div class="pf-c-card">
+                                    <div class="pf-c-card__title">${msg("MFA Devices")}</div>
+                                    <ak-user-settings-mfa
+                                        .userSettings=${this.userSettings}
+                                    ></ak-user-settings-mfa>
+                                </div>
+                            </div>
+                            <div class="pf-l-stack__item">
+                                <div class="pf-c-card">
+                                    <div class="pf-c-card__title">
+                                        ${msg("Tokens and App passwords")}
+                                    </div>
+                                    <ak-user-token-list></ak-user-token-list>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -188,26 +225,14 @@ export class UserSettingsPage extends AKElement {
                                 )}
                             </div>
                             <ak-user-settings-source
-                                userId=${ifDefined(rootInterface<UserInterface>()?.me?.user.pk)}
+                                allow-configuration
+                                user-id=${ifPresent(currentUser?.pk)}
                             ></ak-user-settings-source>
                         </div>
                     </div>
-                    <div
-                        id="page-tokens"
-                        role="tabpanel"
-                        tabindex="0"
-                        slot="page-tokens"
-                        aria-label=${msg("Tokens and App passwords")}
-                        class="pf-c-page__main-section pf-m-no-padding-mobile"
-                    >
-                        <div class="pf-c-card">
-                            <div class="pf-c-card__body">
-                                <ak-user-token-list></ak-user-token-list>
-                            </div>
-                        </div>
-                    </div>
+                    ${this.renderSecuritySettings()}
                 </ak-tabs>
-            </main>
+            </div>
         </div>`;
     }
 }

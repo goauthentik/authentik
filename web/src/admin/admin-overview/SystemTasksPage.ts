@@ -4,7 +4,7 @@ import "#elements/buttons/SpinnerButton/index";
 import "#elements/events/LogViewer";
 import "#elements/tasks/ScheduleList";
 import "#elements/tasks/TaskList";
-import "#elements/tasks/TaskOverview";
+import "#admin/rbac/ObjectPermissionModal";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { AKElement } from "#elements/Base";
@@ -23,44 +23,33 @@ import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList
 import PFList from "@patternfly/patternfly/components/List/list.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-system-tasks")
 export class SystemTasksPage extends AKElement {
-    static get styles(): CSSResult[] {
-        return [
-            PFBase,
-            PFList,
-            PFBanner,
-            PFPage,
-            PFContent,
-            PFButton,
-            PFDescriptionList,
-            PFGrid,
-            PFCard,
-        ];
-    }
+    public static styles: CSSResult[] = [
+        // ---
+        PFList,
+        PFBanner,
+        PFPage,
+        PFContent,
+        PFButton,
+        PFDescriptionList,
+        PFGrid,
+        PFCard,
+    ];
 
     render(): TemplateResult {
-        return html` <main>
-            <ak-tabs>
+        return html`<main part="main">
+            <ak-tabs part="tabs">
                 <div
                     role="tabpanel"
                     tabindex="0"
                     slot="page-tasks"
                     id="page-tasks"
                     aria-label="${msg("Tasks")}"
+                    class="pf-c-page__main-section pf-m-no-padding-mobile"
                 >
-                    <ak-task-overview></ak-task-overview>
-                    <div
-                        class="pf-l-grid pf-m-gutter pf-c-page__main-section pf-m-no-padding-mobile"
-                    >
-                        <div
-                            class="pf-l-grid__item pf-m-12-col pf-m-12-col-on-xl pf-m-12-col-on-2xl"
-                        >
-                            <ak-task-list></ak-task-list>
-                        </div>
-                    </div>
+                    <ak-task-list include-overview></ak-task-list>
                 </div>
                 <div
                     role="tabpanel"
@@ -70,13 +59,7 @@ export class SystemTasksPage extends AKElement {
                     aria-label="${msg("Schedules")}"
                     class="pf-c-page__main-section pf-m-no-padding-mobile"
                 >
-                    <div class="pf-l-grid pf-m-gutter">
-                        <div
-                            class="pf-l-grid__item pf-m-12-col pf-m-12-col-on-xl pf-m-12-col-on-2xl"
-                        >
-                            <ak-schedule-list></ak-schedule-list>
-                        </div>
-                    </div>
+                    <ak-schedule-list></ak-schedule-list>
                 </div>
             </ak-tabs>
         </main>`;

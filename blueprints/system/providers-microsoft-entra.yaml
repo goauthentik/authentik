@@ -29,7 +29,7 @@ entries:
                 password=request.user.password
             )
             # ...otherwise we set an immutable ID based on the user's UID
-            user["on_premises_immutable_id"] = request.user.uid,
+            user["on_premises_immutable_id"] = request.user.uid
         return user
   - identifiers:
       managed: goauthentik.io/providers/microsoft_entra/group

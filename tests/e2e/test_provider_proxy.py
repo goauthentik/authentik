@@ -2,12 +2,9 @@
 
 from base64 import b64encode
 from dataclasses import asdict
-from json import loads
-from sys import platform
+from json import dumps
 from time import sleep
-from unittest.case import skip, skipUnless
 
-from channels.testing import ChannelsLiveServerTestCase
 from jwt import decode
 from selenium.webdriver.common.by import By
 
@@ -15,10 +12,11 @@ from authentik.blueprints.tests import apply_blueprint, reconcile_app
 from authentik.core.models import Application
 from authentik.flows.models import Flow
 from authentik.lib.generators import generate_id
-from authentik.outposts.models import DockerServiceConnection, Outpost, OutpostConfig, OutpostType
-from authentik.outposts.tasks import outpost_connection_discovery
+from authentik.outposts.models import Outpost, OutpostConfig, OutpostType
 from authentik.providers.proxy.models import ProxyProvider
-from tests.e2e.utils import SeleniumTestCase, retry
+from tests.decorators import retry
+from tests.live import ChannelsE2ETestCase
+from tests.selenium import SeleniumTestCase
 
 
 class TestProviderProxy(SeleniumTestCase):
@@ -94,24 +92,39 @@ class TestProviderProxy(SeleniumTestCase):
         self.login()
         sleep(1)
 
-        full_body_text = self.driver.find_element(By.CSS_SELECTOR, "pre").text
-        body = loads(full_body_text)
+        body = self.parse_json_content()
+        headers = body.get("headers", {})
+        snippet = dumps(body, indent=2)[:500].replace("\n", " ")
 
-        self.assertEqual(body["headers"]["X-Authentik-Username"], [self.user.username])
-        self.assertEqual(body["headers"]["X-Foo"], ["bar"])
-        raw_jwt: str = body["headers"]["X-Authentik-Jwt"][0]
+        self.assertEqual(
+            headers.get("X-Authentik-Username"),
+            [self.user.username],
+            f"X-Authentik-Username header mismatch at {self.driver.current_url}: {snippet}",
+        )
+        self.assertEqual(
+            headers.get("X-Foo"),
+            ["bar"],
+            f"X-Foo header mismatch at {self.driver.current_url}: {snippet}",
+        )
+        raw_jwt: str = headers.get("X-Authentik-Jwt", [None])[0]
         jwt = decode(raw_jwt, options={"verify_signature": False})
 
-        self.assertIsNotNone(jwt["sid"])
-        self.assertIsNotNone(jwt["ak_proxy"])
+        self.assertIsNotNone(jwt["sid"], "Missing 'sid' in JWT")
+        self.assertIsNotNone(jwt["ak_proxy"], "Missing 'ak_proxy' in JWT")
 
         self.driver.get("http://localhost:9000/outpost.goauthentik.io/sign_out")
         sleep(2)
+
         flow_executor = self.get_shadow_root("ak-flow-executor")
         session_end_stage = self.get_shadow_root("ak-stage-session-end", flow_executor)
         flow_card = self.get_shadow_root("ak-flow-card", session_end_stage)
         title = flow_card.find_element(By.CSS_SELECTOR, ".pf-c-title.pf-m-3xl").text
-        self.assertIn("You've logged out of", title)
+
+        self.assertIn(
+            "You've logged out of",
+            title,
+            f"Logout title mismatch at {self.driver.current_url}: {title}",
+        )
 
     @retry()
     @apply_blueprint(
@@ -167,26 +180,40 @@ class TestProviderProxy(SeleniumTestCase):
         self.login()
         sleep(1)
 
-        full_body_text = self.driver.find_element(By.CSS_SELECTOR, "pre").text
-        body = loads(full_body_text)
+        body = self.parse_json_content()
+        headers = body.get("headers", {})
+        snippet = dumps(body, indent=2)[:500].replace("\n", " ")
 
-        self.assertEqual(body["headers"]["X-Authentik-Username"], [self.user.username])
+        self.assertEqual(
+            headers.get("X-Authentik-Username"),
+            [self.user.username],
+            f"X-Authentik-Username header mismatch at {self.driver.current_url}: {snippet}",
+        )
+
         auth_header = b64encode(f"{cred}:{cred}".encode()).decode()
-        self.assertEqual(body["headers"]["Authorization"], [f"Basic {auth_header}"])
+
+        self.assertEqual(
+            headers.get("Authorization"),
+            [f"Basic {auth_header}"],
+            f"Authorization header mismatch at {self.driver.current_url}: {snippet}",
+        )
 
         self.driver.get("http://localhost:9000/outpost.goauthentik.io/sign_out")
         sleep(2)
+
         flow_executor = self.get_shadow_root("ak-flow-executor")
         session_end_stage = self.get_shadow_root("ak-stage-session-end", flow_executor)
         flow_card = self.get_shadow_root("ak-flow-card", session_end_stage)
         title = flow_card.find_element(By.CSS_SELECTOR, ".pf-c-title.pf-m-3xl").text
-        self.assertIn("You've logged out of", title)
+
+        self.assertIn(
+            "You've logged out of",
+            title,
+            f"Logout title mismatch at {self.driver.current_url}: {title}",
+        )
 
 
-# TODO: Fix flaky test
-@skip("Flaky test")
-@skipUnless(platform.startswith("linux"), "requires local docker")
-class TestProviderProxyConnect(ChannelsLiveServerTestCase):
+class TestProviderProxyConnect(ChannelsE2ETestCase):
     """Test Proxy connectivity over websockets"""
 
     @retry(exceptions=[AssertionError])
@@ -200,7 +227,6 @@ class TestProviderProxyConnect(ChannelsLiveServerTestCase):
     @reconcile_app("authentik_crypto")
     def test_proxy_connectivity(self):
         """Test proxy connectivity over websocket"""
-        outpost_connection_discovery()
         proxy: ProxyProvider = ProxyProvider.objects.create(
             name=generate_id(),
             authorization_flow=Flow.objects.get(
@@ -214,15 +240,24 @@ class TestProviderProxyConnect(ChannelsLiveServerTestCase):
         proxy.save()
         # we need to create an application to actually access the proxy
         Application.objects.create(name=generate_id(), slug=generate_id(), provider=proxy)
-        service_connection = DockerServiceConnection.objects.get(local=True)
+
         outpost: Outpost = Outpost.objects.create(
             name=generate_id(),
             type=OutpostType.PROXY,
-            service_connection=service_connection,
             _config=asdict(OutpostConfig(authentik_host=self.live_server_url, log_level="debug")),
         )
         outpost.providers.add(proxy)
         outpost.build_user_permissions(outpost.user)
+
+        self.run_container(
+            image=self.get_container_image("ghcr.io/goauthentik/dev-proxy"),
+            ports={
+                "9000": "9000",
+            },
+            environment={
+                "AUTHENTIK_TOKEN": outpost.token.key,
+            },
+        )
 
         # Wait until outpost healthcheck succeeds
         healthcheck_retries = 0

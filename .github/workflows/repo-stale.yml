@@ -12,15 +12,14 @@ permissions:
 
 jobs:
   stale:
-    if: ${{ github.repository != 'goauthentik/authentik-internal' }}
     runs-on: ubuntu-latest
     steps:
       - id: generate_token
-        uses: tibdex/github-app-token@v2
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v2
         with:
-          app_id: ${{ secrets.GH_APP_ID }}
-          private_key: ${{ secrets.GH_APP_PRIVATE_KEY }}
-      - uses: actions/stale@v10
+          client-id: ${{ secrets.GH_APP_ID }}
+          private-key: ${{ secrets.GH_APP_PRIV_KEY }}
+      - uses: actions/stale@eb5cf3af3ac0a1aa4c9c45633dd1ae542a27a899 # v10
         with:
           repo-token: ${{ steps.generate_token.outputs.token }}
           days-before-stale: 60
@@ -28,8 +27,6 @@ jobs:
           exempt-issue-labels: pinned,security,pr_wanted,enhancement,bug/confirmed,enhancement/confirmed,question,status/reviewing
           stale-issue-label: status/stale
           stale-issue-message: >
-            This issue has been automatically marked as stale because it has not had
-            recent activity. It will be closed if no further activity occurs. Thank you
-            for your contributions.
+            This issue has been automatically marked as stale because it has not had recent activity. It will be closed if no further activity occurs. Thank you for your contributions.
           # Don't stale PRs, so only apply to PRs with a non-existent label
           only-pr-labels: foo

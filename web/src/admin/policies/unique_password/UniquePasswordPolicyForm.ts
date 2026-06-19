@@ -1,7 +1,8 @@
+import "#components/ak-switch-input";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { BasePolicyForm } from "#admin/policies/BasePolicyForm";
 
@@ -15,24 +16,24 @@ import { ifDefined } from "lit/directives/if-defined.js";
 @customElement("ak-policy-password-uniqueness-form")
 export class UniquePasswordPolicyForm extends BasePolicyForm<UniquePasswordPolicy> {
     async loadInstance(pk: string): Promise<UniquePasswordPolicy> {
-        return new PoliciesApi(DEFAULT_CONFIG).policiesUniquePasswordRetrieve({
+        return aki(PoliciesApi).policiesUniquePasswordRetrieve({
             policyUuid: pk,
         });
     }
 
     async send(data: UniquePasswordPolicy): Promise<UniquePasswordPolicy> {
         if (this.instance) {
-            return new PoliciesApi(DEFAULT_CONFIG).policiesUniquePasswordUpdate({
+            return aki(PoliciesApi).policiesUniquePasswordUpdate({
                 policyUuid: this.instance.pk || "",
                 uniquePasswordPolicyRequest: data,
             });
         }
-        return new PoliciesApi(DEFAULT_CONFIG).policiesUniquePasswordCreate({
+        return aki(PoliciesApi).policiesUniquePasswordCreate({
             uniquePasswordPolicyRequest: data,
         });
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html` <span>
                 ${msg(
                     "Ensure that the user's new password is different from their previous passwords. The number of past passwords to check is configurable.",
@@ -46,26 +47,15 @@ export class UniquePasswordPolicyForm extends BasePolicyForm<UniquePasswordPolic
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal name="executionLogging">
-                <label class="pf-c-switch">
-                    <input
-                        class="pf-c-switch__input"
-                        type="checkbox"
-                        ?checked=${this.instance?.executionLogging ?? false}
-                    />
-                    <span class="pf-c-switch__toggle">
-                        <span class="pf-c-switch__toggle-icon">
-                            <i class="fas fa-check" aria-hidden="true"></i>
-                        </span>
-                    </span>
-                    <span class="pf-c-switch__label">${msg("Execution logging")}</span>
-                </label>
-                <p class="pf-c-form__helper-text">
-                    ${msg(
-                        "When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.",
-                    )}
-                </p>
-            </ak-form-element-horizontal>
+            <ak-switch-input
+                name="executionLogging"
+                label=${msg("Execution logging")}
+                ?checked=${this.instance?.executionLogging ?? false}
+                help=${msg(
+                    "When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.",
+                )}
+            >
+            </ak-switch-input>
             <ak-form-element-horizontal
                 label=${msg("Password field")}
                 required

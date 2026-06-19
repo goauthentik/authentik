@@ -4,7 +4,9 @@ sidebar_label: Open WebUI
 support_level: community
 ---
 
-## What is Open WebUI
+import RedirectURI20265Note from "../../\_redirect-uri-2026-5-note.mdx";
+
+## What is Open WebUI?
 
 > Open WebUI is a simple, self-hosted AI platform that works entirely offline. It supports tools like Ollama and OpenAI-style APIs and has a built-in engine for RAG tasks.
 >
@@ -23,30 +25,32 @@ This documentation lists only the settings that you need to change from their de
 
 ## authentik configuration
 
+<RedirectURI20265Note />
+
 To support the integration of Open WebUI with authentik, you need to create an application/provider pair in authentik.
 
 ### Create an application and provider in authentik
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
+2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
 
 - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
 - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
 - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
     - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
-    - Set a `Strict` redirect URI to `https://openwebui.company/oauth/oidc/callback`.
+    - Add a **Redirect URI** of type `Strict` `Authorization` as `https://openwebui.company/oauth/oidc/callback`.
     - Select any available signing key.
     - Make sure to leave the **Encryption Key** field empty.
-- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 
 3. Click **Submit** to save the new application and provider.
 
 ## Open WebUI configuration
 
-To configure authentik with Open WebUI, you must add the following environment variables to your OpenWebUI deployment:
+To configure Open WebUI to use authentik, add the following environment variables to your Open WebUI deployment:
 
 :::warning
-`WEBUI_URL` is a persistent configuration setting and must be set before enabling SSO. Changing it later requires either disabling persistent configuration or updating it in the Admin panel. More information can be found in the [Open WebUI documentation](https://docs.openwebui.com/getting-started/env-configuration/#important-note-on-persistentconfig-environment-variables).
+`WEBUI_URL` is persisted by Open WebUI and must be set before enabling SSO. If you change it later, disable persistent configuration or update the value in the Admin panel. More information is available in the [Open WebUI documentation](https://docs.openwebui.com/getting-started/env-configuration/#important-note-on-persistentconfig-environment-variables).
 :::
 
 ```yaml
@@ -65,6 +69,8 @@ OAUTH_MERGE_ACCOUNTS_BY_EMAIL=true
 
 Then restart Open WebUI to apply the changes.
 
+Replace `<application_slug>` with the authentik application slug created earlier.
+
 ## Configuration verification
 
 - Open your web browser and go to `https://openwebui.company`.
@@ -74,12 +80,12 @@ Then restart Open WebUI to apply the changes.
 - If you successfully return to the Open WebUI, the login is working correctly.
 
 :::info
-Users are automatically created, but an administrator must update their role to at least **User** via the WebGUI.
-To do so, log in as an administrator and access the **Admin Panel** (URL: `https://openwebui.company`/admin/users).
-Click on the user whose role should be increased from **Pending** to at least **User**.
-More details on how to administer Open WebUI can be found here `https://docs.openwebui.com/`.
+Users are automatically created, but an administrator must update their role to at least **User** via the Web UI.
+To do so, log in as an administrator and access the **Admin Panel** (URL: `https://openwebui.company/admin/users`).
+Click the user whose role should be increased from **Pending** to at least **User**.
+More details on how to administer Open WebUI can be found here: `https://docs.openwebui.com/`.
 :::
 
-## References
+## Resources
 
 - [Open WebUI Documentation - Federated Authentication Support](https://docs.openwebui.com/features/sso/)

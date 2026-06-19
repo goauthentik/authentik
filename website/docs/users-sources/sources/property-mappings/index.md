@@ -36,7 +36,7 @@ return {
 }
 ```
 
-You can see that the expression returns a Python dictionary. The dictionary keys must match [User properties](../../user/user_ref.mdx#object-properties) or [Group properties](../../groups/group_ref.md#object-properties). Note that for users, `ak_groups` and `group_attributes` cannot be set.
+You can see that the expression returns a Python dictionary. The dictionary keys must match [User properties](../../user/user_ref.mdx#object-properties) or [Group properties](../../groups/group_ref.md#object-properties). Note that for users, `groups` and `group_attributes` cannot be set.
 
 See each source documentation for a reference of the available data. See the authentik [expressions documentation](./expressions.md) for available data and functions.
 
@@ -57,7 +57,7 @@ A user or group object is constructed as follows:
 
 1.  The source provides initial properties based on commonly used data.
 2.  Each property mapping associated with the source is run and results are merged into the previous properties.
-    - If a property mapping throws an error, the process is aborted. If that happens inside a synchronization process, the object is skipped. If it happens during an enrollment or authentication flow, the flow is cancelled.
+    - If a property mapping throws an error, the process is aborted. If that happens inside a synchronization process, the object is skipped. If it happens during an enrollment or authentication flow, the flow is canceled.
     - If a property mapping sets one attribute to `None`, that attribute is then discarded.
 3.  If the `username` field is not set for user objects, or the `name` field is not set for group objects, the process is aborted.
 4.  The object is created or updated. The `attributes` property is merged with existing data if the object already exists.

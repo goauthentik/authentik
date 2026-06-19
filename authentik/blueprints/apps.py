@@ -1,10 +1,11 @@
 """authentik Blueprints app"""
 
+import traceback
 from collections.abc import Callable
 from importlib import import_module
-from inspect import ismethod
 
 from django.apps import AppConfig
+from django.conf import settings
 from django.db import DatabaseError, InternalError, ProgrammingError
 from dramatiq.broker import get_broker
 from structlog.stdlib import BoundLogger, get_logger
@@ -44,8 +45,21 @@ class ManagedAppConfig(AppConfig):
                 module_name = f"{self.name}.{rel_module}"
                 import_module(module_name)
                 self.logger.info("Imported related module", module=module_name)
-            except ModuleNotFoundError:
-                pass
+            except ModuleNotFoundError as exc:
+                if settings.DEBUG:
+                    # This is a heuristic for determining whether the exception was caused
+                    # "directly" by the `import_module` call or whether the initial import
+                    # succeeded and a later import (within the existing module) failed.
+                    # 1. <the calling function>
+                    # 2. importlib.import_module
+                    # 3. importlib._bootstrap._gcd_import
+                    # 4. importlib._bootstrap._find_and_load
+                    # 5. importlib._bootstrap._find_and_load_unlocked
+                    STACK_LENGTH_HEURISTIC = 5
+
+                    stack_length = len(traceback.extract_tb(exc.__traceback__))
+                    if stack_length > STACK_LENGTH_HEURISTIC:
+                        raise
 
         import_relative("checks")
         import_relative("tasks")
@@ -57,12 +71,19 @@ class ManagedAppConfig(AppConfig):
 
     def _reconcile(self, prefix: str) -> None:
         for meth_name in dir(self):
-            meth = getattr(self, meth_name)
-            if not ismethod(meth):
+            # Check the attribute on the class to avoid evaluating @property descriptors.
+            # Using getattr(self, ...) on a @property would evaluate it, which can trigger
+            # expensive side effects (e.g. tenant_schedule_specs iterating all providers
+            # and running PolicyEngine queries for every user).
+            class_attr = getattr(type(self), meth_name, None)
+            if class_attr is None or isinstance(class_attr, property):
                 continue
-            category = getattr(meth, "_authentik_managed_reconcile", None)
+            if not callable(class_attr):
+                continue
+            category = getattr(class_attr, "_authentik_managed_reconcile", None)
             if category != prefix:
                 continue
+            meth = getattr(self, meth_name)
             name = meth_name.replace(prefix, "")
             try:
                 self.logger.debug("Starting reconciler", name=name)

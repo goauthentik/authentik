@@ -1,6 +1,7 @@
 // sort-imports-ignore
 import "@webcomponents/webcomponentsjs";
 import "lit/polyfill-support.js";
+import "./custom-elements-get-name.js";
 import "core-js/actual";
-import "@formatjs/intl-listformat/polyfill";
-import "@formatjs/intl-listformat/locale-data/en";
+import "@formatjs/intl-listformat/polyfill.js";
+import "@formatjs/intl-listformat/locale-data/en.js";

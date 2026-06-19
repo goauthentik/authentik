@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"goauthentik.io/internal/outpost/proxyv2/constants"
+	"goauthentik.io/internal/outpost/proxyv2/types"
 )
 
 func (a *Application) checkAuthHeaderBearer(r *http.Request) string {
@@ -21,7 +22,7 @@ func (a *Application) checkAuthHeaderBearer(r *http.Request) string {
 }
 
 type TokenIntrospectionResponse struct {
-	Claims
+	types.Claims
 	Scope    string `json:"scope"`
 	Active   bool   `json:"active"`
 	ClientID string `json:"client_id"`

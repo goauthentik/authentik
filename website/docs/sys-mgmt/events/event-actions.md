@@ -306,3 +306,7 @@ An email has been sent. Included is the email that was sent.
 ### `update_available`
 
 An update is available.
+
+### `export_ready`
+
+A data export has been generated.

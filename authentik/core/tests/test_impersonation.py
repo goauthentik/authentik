@@ -3,7 +3,6 @@
 from json import loads
 
 from django.urls import reverse
-from guardian.shortcuts import assign_perm
 from rest_framework.test import APITestCase
 
 from authentik.core.tests.utils import create_test_admin_user, create_test_user
@@ -48,8 +47,8 @@ class TestImpersonation(APITestCase):
     def test_impersonate_global(self):
         """Test impersonation with global permissions"""
         new_user = create_test_user()
-        assign_perm("authentik_core.impersonate", new_user)
-        assign_perm("authentik_core.view_user", new_user)
+        new_user.assign_perms_to_managed_role("authentik_core.impersonate")
+        new_user.assign_perms_to_managed_role("authentik_core.view_user")
         self.client.force_login(new_user)
 
         response = self.client.post(
@@ -69,8 +68,8 @@ class TestImpersonation(APITestCase):
     def test_impersonate_scoped(self):
         """Test impersonation with scoped permissions"""
         new_user = create_test_user()
-        assign_perm("authentik_core.impersonate", new_user, self.other_user)
-        assign_perm("authentik_core.view_user", new_user, self.other_user)
+        new_user.assign_perms_to_managed_role("authentik_core.impersonate", self.other_user)
+        new_user.assign_perms_to_managed_role("authentik_core.view_user", self.other_user)
         self.client.force_login(new_user)
 
         response = self.client.post(

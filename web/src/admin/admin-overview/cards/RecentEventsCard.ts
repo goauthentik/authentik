@@ -5,63 +5,39 @@ import "#elements/buttons/Dropdown";
 import "#elements/buttons/ModalButton";
 import "#elements/buttons/SpinnerButton/index";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
-import { EventWithContext } from "#common/events";
-import { actionToLabel } from "#common/labels";
+import Styles from "#admin/admin-overview/cards/RecentEventsCard.css";
+import { SimpleEventTable } from "#admin/events/SimpleEventTable";
 
-import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
-import { SlottedTemplateResult } from "#elements/types";
-
-import { EventGeo, renderEventUser } from "#admin/events/utils";
-
-import { Event, EventsApi } from "@goauthentik/api";
+import { EventsEventsListRequest } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { css, CSSResult, html, TemplateResult } from "lit";
+import { CSSResult, html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 
 @customElement("ak-recent-events")
-export class RecentEventsCard extends Table<Event> {
+export class RecentEventsCard extends SimpleEventTable {
     public override role = "region";
     public override ariaLabel = msg("Recent events");
     public override label = msg("Events");
 
+    public override expandable = false;
+    // Rough approximate based on admin overview card height
+    public override pageSize = 6;
+
     @property()
     order = "-created";
 
-    @property({ type: Number })
-    pageSize = 10;
-
-    async apiEndpoint(): Promise<PaginatedResponse<Event>> {
-        return new EventsApi(DEFAULT_CONFIG).eventsEventsList({
-            ...(await this.defaultEndpointConfig()),
-            pageSize: this.pageSize,
-        });
+    async apiParameters(): Promise<Partial<EventsEventsListRequest>> {
+        return {};
     }
 
     static styles: CSSResult[] = [
+        // ---
         ...super.styles,
         PFCard,
-        css`
-            .pf-c-card__title {
-                --pf-c-card__title--FontFamily: var(--pf-global--FontFamily--heading--sans-serif);
-                --pf-c-card__title--FontSize: var(--pf-global--FontSize--md);
-                --pf-c-card__title--FontWeight: var(--pf-global--FontWeight--bold);
-            }
-        `,
-    ];
-
-    protected override rowLabel(item: Event): string {
-        return actionToLabel(item.action);
-    }
-
-    protected columns: TableColumn[] = [
-        [msg("Action"), "action"],
-        [msg("User"), "user"],
-        [msg("Creation Date"), "created"],
-        [msg("Client IP"), "client_ip"],
+        Styles,
     ];
 
     renderToolbar(): TemplateResult {
@@ -69,30 +45,6 @@ export class RecentEventsCard extends Table<Event> {
             <i class="pf-icon pf-icon-catalog" aria-hidden="true"></i>
             ${msg("Recent events")}
         </h1>`;
-    }
-
-    row(item: EventWithContext): SlottedTemplateResult[] {
-        return [
-            html`<div><a href="${`#/events/log/${item.pk}`}">${actionToLabel(item.action)}</a></div>
-                <small>${item.app}</small>`,
-            renderEventUser(item),
-            html`<ak-timestamp .timestamp=${item.created}></ak-timestamp>`,
-            html` <div>${item.clientIp || msg("-")}</div>
-                <small>${EventGeo(item)}</small>`,
-        ];
-    }
-
-    renderEmpty(inner?: SlottedTemplateResult): TemplateResult {
-        if (this.error) {
-            return super.renderEmpty(inner);
-        }
-
-        return super.renderEmpty(
-            html`<ak-empty-state
-                ><span>${msg("No Events found.")}</span>
-                <div slot="body">${msg("No matching events could be found.")}</div>
-            </ak-empty-state>`,
-        );
     }
 }
 

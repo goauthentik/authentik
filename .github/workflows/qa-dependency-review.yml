@@ -1,0 +1,32 @@
+---
+name: QA - Dependency review
+
+# Blocks PRs that introduce a dependency with a known vulnerability above
+# the configured severity threshold. Covers every ecosystem GitHub's
+# Advisory Database supports — for this repo that's npm, Go modules,
+# Python (pip/uv), Cargo, and GitHub Actions.
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  dependency-review:
+    name: dependency-review
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v5
+      - uses: actions/dependency-review-action@a1d282b36b6f3519aa1f3fc636f609c47dddb294 # v5.0.0
+        with:
+          # Block PRs that introduce a *new* dependency with a known
+          # high/critical vuln. We don't fail on existing vulns — those are
+          # surfaced separately via Dependabot.
+          fail-on-severity: high
+          # Surface a summary comment on the PR itself, in addition to the
+          # check status, so reviewers can see the diff at a glance.
+          comment-summary-in-pr: on-failure

@@ -3,8 +3,11 @@ package proxyv2
 import (
 	"context"
 	"fmt"
+	"net"
 	"net/http"
 	"net/url"
+	"os"
+	"path"
 
 	"github.com/getsentry/sentry-go"
 	"goauthentik.io/internal/constants"
@@ -15,7 +18,9 @@ import (
 )
 
 func (ps *ProxyServer) Refresh() error {
-	providers, err := ak.Paginator(ps.akAPI.Client.OutpostsApi.OutpostsProxyList(context.Background()), ak.PaginatorOptions{
+	req := ps.akAPI.Client.OutpostsAPI.OutpostsProxyList(context.Background())
+	ps.log.WithField("outpost_pk", ps.akAPI.Outpost.Pk).Debug("Requesting providers for outpost")
+	providers, err := ak.Paginator(req, ak.PaginatorOptions{
 		PageSize: 100,
 		Logger:   ps.log,
 	})
@@ -25,16 +30,33 @@ func (ps *ProxyServer) Refresh() error {
 	if err != nil {
 		return err
 	}
+	ps.log.WithField("count", len(providers)).Debug("Fetched providers")
+	if len(providers) == 0 && !ps.akAPI.IsEmbedded() {
+		ps.log.Warning("No providers assigned to this outpost, check outpost configuration in authentik")
+	}
+	for i, p := range providers {
+		ps.log.WithField("index", i).WithField("name", p.Name).WithField("external_host", p.ExternalHost).WithField("assigned_to_app", p.AssignedApplicationName).Debug("Provider details")
+	}
 	apps := make(map[string]*application.Application)
 	for _, provider := range providers {
 		rsp := sentry.StartSpan(context.Background(), "authentik.outposts.proxy.application_ss")
 		ua := fmt.Sprintf(" (provider=%s)", provider.Name)
+		var transport http.RoundTripper
+		if ps.akAPI.IsEmbedded() {
+			transport = &http.Transport{
+				DialContext: func(_ context.Context, _, _ string) (net.Conn, error) {
+					return net.Dial("unix", path.Join(os.TempDir(), "authentik.sock"))
+				},
+			}
+		} else {
+			transport = ak.GetTLSTransport()
+		}
 		hc := &http.Client{
 			Transport: web.NewUserAgentTransport(
 				constants.UserAgentOutpost()+ua,
 				web.NewTracingTransport(
 					rsp.Context(),
-					ak.GetTLSTransport(),
+					transport,
 				),
 			),
 		}
@@ -52,6 +74,7 @@ func (ps *ProxyServer) Refresh() error {
 			ps.log.WithError(err).Warning("failed to setup application")
 			continue
 		}
+		ps.log.WithField("name", provider.Name).WithField("host", externalHost.Host).Info("Loaded application")
 		apps[externalHost.Host] = a
 	}
 	ps.apps = apps
@@ -69,4 +92,15 @@ func (ps *ProxyServer) CryptoStore() *ak.CryptoStore {
 
 func (ps *ProxyServer) Apps() []*application.Application {
 	return maps.Values(ps.apps)
+}
+
+func (ps *ProxyServer) SessionBackend() string {
+	if ps.akAPI.IsEmbedded() {
+		return "postgres"
+	}
+	if !ps.akAPI.IsEmbedded() {
+		return "filesystem"
+	}
+	ps.log.Panic("failed to determine session backend type")
+	return ""
 }

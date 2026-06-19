@@ -3,7 +3,7 @@ import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/index";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { RenderFlowOption } from "#admin/flows/utils";
 import { BaseStageForm } from "#admin/stages/BaseStageForm";
@@ -12,8 +12,8 @@ import {
     AuthenticatorDuoStage,
     AuthenticatorDuoStageRequest,
     Flow,
+    FlowDesignationEnum,
     FlowsApi,
-    FlowsInstancesListDesignationEnum,
     FlowsInstancesListRequest,
     StagesApi,
 } from "@goauthentik/api";
@@ -25,24 +25,24 @@ import { customElement } from "lit/decorators.js";
 @customElement("ak-stage-authenticator-duo-form")
 export class AuthenticatorDuoStageForm extends BaseStageForm<AuthenticatorDuoStage> {
     loadInstance(pk: string): Promise<AuthenticatorDuoStage> {
-        return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorDuoRetrieve({
+        return aki(StagesApi).stagesAuthenticatorDuoRetrieve({
             stageUuid: pk,
         });
     }
 
     async send(data: AuthenticatorDuoStage): Promise<AuthenticatorDuoStage> {
         if (this.instance) {
-            return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorDuoPartialUpdate({
+            return aki(StagesApi).stagesAuthenticatorDuoPartialUpdate({
                 stageUuid: this.instance.pk || "",
                 patchedAuthenticatorDuoStageRequest: data,
             });
         }
-        return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorDuoCreate({
+        return aki(StagesApi).stagesAuthenticatorDuoCreate({
             authenticatorDuoStageRequest: data as unknown as AuthenticatorDuoStageRequest,
         });
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html` <span>
                 ${msg(
                     "Stage used to configure a duo-based authenticator. This stage should be used for configuration flows.",
@@ -142,15 +142,12 @@ export class AuthenticatorDuoStageForm extends BaseStageForm<AuthenticatorDuoSta
                             .fetchObjects=${async (query?: string): Promise<Flow[]> => {
                                 const args: FlowsInstancesListRequest = {
                                     ordering: "slug",
-                                    designation:
-                                        FlowsInstancesListDesignationEnum.StageConfiguration,
+                                    designation: FlowDesignationEnum.StageConfiguration,
                                 };
                                 if (query !== undefined) {
                                     args.search = query;
                                 }
-                                const flows = await new FlowsApi(DEFAULT_CONFIG).flowsInstancesList(
-                                    args,
-                                );
+                                const flows = await aki(FlowsApi).flowsInstancesList(args);
                                 return flows.results;
                             }}
                             .renderElement=${(flow: Flow): string => {

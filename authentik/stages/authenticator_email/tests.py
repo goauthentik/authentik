@@ -8,22 +8,22 @@ from django.core.mail.backends.locmem import EmailBackend
 from django.core.mail.backends.smtp import EmailBackend as SMTPEmailBackend
 from django.db.utils import IntegrityError
 from django.template.exceptions import TemplateDoesNotExist
+from django.test import TestCase
 from django.urls import reverse
 from django.utils.timezone import now
 
-from authentik.core.tests.utils import create_test_admin_user, create_test_flow, create_test_user
+from authentik.core.tests.utils import create_test_flow, create_test_user
 from authentik.flows.models import FlowStageBinding
 from authentik.flows.tests import FlowTestCase
 from authentik.lib.config import CONFIG
 from authentik.lib.utils.email import mask_email
+from authentik.stages.authenticator.tests import ThrottlingTestMixin
 from authentik.stages.authenticator_email.api import (
     AuthenticatorEmailStageSerializer,
     EmailDeviceSerializer,
 )
 from authentik.stages.authenticator_email.models import AuthenticatorEmailStage, EmailDevice
-from authentik.stages.authenticator_email.stage import (
-    SESSION_KEY_EMAIL_DEVICE,
-)
+from authentik.stages.authenticator_email.stage import PLAN_CONTEXT_EMAIL_DEVICE
 from authentik.stages.email.utils import TemplateEmailMessage
 
 
@@ -33,7 +33,7 @@ class TestAuthenticatorEmailStage(FlowTestCase):
     def setUp(self):
         super().setUp()
         self.flow = create_test_flow()
-        self.user = create_test_admin_user()
+        self.user = create_test_user()
         self.user_noemail = create_test_user(email="")
         self.stage = AuthenticatorEmailStage.objects.create(
             name="email-authenticator",
@@ -81,6 +81,7 @@ class TestAuthenticatorEmailStage(FlowTestCase):
         self.assertFalse(self.device.verify_token("000000"))
 
         # Verify correct token (should clear token after verification)
+        self.device.throttle_reset(commit=False)
         self.assertTrue(self.device.verify_token(token))
         self.assertIsNone(self.device.token)
 
@@ -213,20 +214,26 @@ class TestAuthenticatorEmailStage(FlowTestCase):
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
             data={"component": "ak-stage-authenticator-email"},
         )
-        self.assertIn("email required", str(response.content))
+        self.assertStageResponse(
+            response,
+            self.flow,
+            response_errors={"non_field_errors": [{"code": "invalid", "string": "email required"}]},
+        )
 
         # Test invalid code
         response = self.client.post(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
             data={"component": "ak-stage-authenticator-email", "code": "000000"},
         )
-        self.assertIn("Code does not match", str(response.content))
+        self.assertStageResponse(
+            response,
+            self.flow,
+            response_errors={
+                "non_field_errors": [{"code": "invalid", "string": "Code does not match"}]
+            },
+        )
 
         # Test valid code
-        self.client.force_login(self.user)
-        response = self.client.get(
-            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
-        )
         device = self.device
         token = device.token
         response = self.client.post(
@@ -285,8 +292,7 @@ class TestAuthenticatorEmailStage(FlowTestCase):
         response = self.client.get(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
         )
-        self.assertIn(SESSION_KEY_EMAIL_DEVICE, self.client.session)
-        device = self.client.session[SESSION_KEY_EMAIL_DEVICE]
+        device = self.get_flow_plan().context[PLAN_CONTEXT_EMAIL_DEVICE]
         self.assertIsInstance(device, EmailDevice)
         self.assertFalse(device.confirmed)
         self.assertEqual(device.user, self.user)
@@ -294,8 +300,6 @@ class TestAuthenticatorEmailStage(FlowTestCase):
         # Test device confirmation and cleanup
         device.confirmed = True
         device.email = "new_test@authentik.local"  # Use a different email
-        self.client.session[SESSION_KEY_EMAIL_DEVICE] = device
-        self.client.session.save()
         response = self.client.post(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
             data={"component": "ak-stage-authenticator-email", "code": device.token},
@@ -328,3 +332,27 @@ class TestAuthenticatorEmailStage(FlowTestCase):
         # Test AuthenticatorEmailStage send method
         self.stage.send(self.device)
         self.assertEqual(len(mail.outbox), 1)
+
+
+class TestEmailDeviceThrottling(ThrottlingTestMixin, TestCase):
+    def setUp(self):
+        super().setUp()
+        flow = create_test_flow()
+        user = create_test_user()
+        stage = AuthenticatorEmailStage.objects.create(
+            name="email-authenticator-throttle",
+            use_global_settings=True,
+            from_address="test@authentik.local",
+            configure_flow=flow,
+            token_expiry="minutes=30",
+        )  # nosec
+        self.device = EmailDevice.objects.create(
+            user=user, stage=stage, email="throttle@authentik.local"
+        )
+        self.device.generate_token()
+
+    def valid_token(self):
+        return self.device.token
+
+    def invalid_token(self):
+        return "000000" if self.device.token != "000000" else "111111"

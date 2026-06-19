@@ -1,8 +1,8 @@
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
-import "#elements/sync/SyncObjectForm";
+import "#components/sync/SyncObjectForm";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
@@ -31,16 +31,14 @@ export class GoogleWorkspaceProviderGroupList extends Table<GoogleWorkspaceProvi
     clearOnRefresh = true;
 
     renderToolbar(): TemplateResult {
-        return html`<ak-forms-modal cancelText=${msg("Close")} ?closeAfterSuccessfulSubmit=${false}>
+        return html`<ak-forms-modal cancelText=${msg("Close")} keep-open-after-submit>
                 <span slot="submit">${msg("Sync")}</span>
                 <span slot="header">${msg("Sync Group")}</span>
                 <ak-sync-object-form
                     .provider=${this.providerId}
                     model=${SyncObjectModelEnum.AuthentikCoreModelsGroup}
                     .sync=${(data: ProvidersGoogleWorkspaceSyncObjectCreateRequest) => {
-                        return new ProvidersApi(
-                            DEFAULT_CONFIG,
-                        ).providersGoogleWorkspaceSyncObjectCreate(data);
+                        return aki(ProvidersApi).providersGoogleWorkspaceSyncObjectCreate(data);
                     }}
                     slot="form"
                 >
@@ -53,10 +51,10 @@ export class GoogleWorkspaceProviderGroupList extends Table<GoogleWorkspaceProvi
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
-            objectLabel=${msg("Google Workspace Group(s)")}
+            object-label=${msg("Google Workspace Group(s)")}
             .objects=${this.selectedElements}
             .delete=${(item: GoogleWorkspaceProviderGroup) => {
-                return new ProvidersApi(DEFAULT_CONFIG).providersGoogleWorkspaceGroupsDestroy({
+                return aki(ProvidersApi).providersGoogleWorkspaceGroupsDestroy({
                     id: item.id,
                 });
             }}
@@ -68,7 +66,7 @@ export class GoogleWorkspaceProviderGroupList extends Table<GoogleWorkspaceProvi
     }
 
     async apiEndpoint(): Promise<PaginatedResponse<GoogleWorkspaceProviderGroup>> {
-        return new ProvidersApi(DEFAULT_CONFIG).providersGoogleWorkspaceGroupsList({
+        return aki(ProvidersApi).providersGoogleWorkspaceGroupsList({
             ...(await this.defaultEndpointConfig()),
             providerId: this.providerId,
         });

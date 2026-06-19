@@ -1,28 +1,29 @@
-import "#admin/rbac/ObjectPermissionModal";
 import "#elements/buttons/ActionButton/index";
 import "#elements/buttons/SpinnerButton/index";
 import "#elements/events/LogViewer";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import "#elements/tasks/TaskStatus";
+import "#elements/tasks/TaskStatusSummary";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { EVENT_REFRESH } from "#common/constants";
 
 import { PaginatedResponse, Table, TableColumn, Timestamp } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
 
 import {
+    GlobalTaskStatus,
     Task,
+    TaskAggregatedStatusEnum,
     TasksApi,
-    TasksTasksListAggregatedStatusEnum,
-    TasksTasksListStateEnum,
+    TaskStatusEnum,
 } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { CSSResult, html, nothing, TemplateResult } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { customElement, property, state } from "lit/decorators.js";
 
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
@@ -30,6 +31,14 @@ import PFSpacing from "@patternfly/patternfly/utilities/Spacing/spacing.css";
 
 @customElement("ak-task-list")
 export class TaskList extends Table<Task> {
+    public static styles: CSSResult[] = [
+        // ---
+        ...super.styles,
+        PFDescriptionList,
+        PFSpacing,
+        PFTitle,
+    ];
+
     expandable = true;
     clearOnRefresh = true;
 
@@ -38,7 +47,7 @@ export class TaskList extends Table<Task> {
     @property()
     relObjModel?: string;
     @property()
-    relObjId?: string;
+    relObjId?: string | number;
 
     @property({ type: Boolean })
     showOnlyStandalone: boolean = true;
@@ -46,14 +55,16 @@ export class TaskList extends Table<Task> {
     @property({ type: Boolean })
     excludeSuccessful: boolean = true;
 
+    @property({ type: Boolean, attribute: "include-overview" })
+    includeOverview: boolean = false;
+
     protected override searchEnabled = true;
 
     @property()
     order = "-mtime";
 
-    static get styles(): CSSResult[] {
-        return super.styles.concat(PFDescriptionList, PFSpacing, PFTitle);
-    }
+    @state()
+    status?: GlobalTaskStatus;
 
     async apiEndpoint(): Promise<PaginatedResponse<Task>> {
         const relObjIdIsnull =
@@ -64,21 +75,25 @@ export class TaskList extends Table<Task> {
                   : undefined;
         const aggregatedStatus = this.excludeSuccessful
             ? [
-                  TasksTasksListAggregatedStatusEnum.Queued,
-                  TasksTasksListAggregatedStatusEnum.Consumed,
-                  TasksTasksListAggregatedStatusEnum.Preprocess,
-                  TasksTasksListAggregatedStatusEnum.Running,
-                  TasksTasksListAggregatedStatusEnum.Postprocess,
-                  TasksTasksListAggregatedStatusEnum.Rejected,
-                  TasksTasksListAggregatedStatusEnum.Warning,
-                  TasksTasksListAggregatedStatusEnum.Error,
+                  TaskAggregatedStatusEnum.WaitingForDependencies,
+                  TaskAggregatedStatusEnum.Queued,
+                  TaskAggregatedStatusEnum.Consumed,
+                  TaskAggregatedStatusEnum.Preprocess,
+                  TaskAggregatedStatusEnum.Running,
+                  TaskAggregatedStatusEnum.Postprocess,
+                  TaskAggregatedStatusEnum.Rejected,
+                  TaskAggregatedStatusEnum.Warning,
+                  TaskAggregatedStatusEnum.Error,
               ]
             : undefined;
-        return new TasksApi(DEFAULT_CONFIG).tasksTasksList({
+        if (this.includeOverview) {
+            this.status = await aki(TasksApi).tasksTasksStatusRetrieve();
+        }
+        return aki(TasksApi).tasksTasksList({
             ...(await this.defaultEndpointConfig()),
             relObjContentTypeAppLabel: this.relObjAppLabel,
             relObjContentTypeModel: this.relObjModel,
-            relObjId: this.relObjId,
+            relObjId: this.relObjId ? this.relObjId.toString() : undefined,
             relObjIdIsnull,
             aggregatedStatus,
         });
@@ -103,10 +118,18 @@ export class TaskList extends Table<Task> {
     protected columns: TableColumn[] = [
         [msg("Task"), "actor_name"],
         [msg("Queue"), "queue_name"],
+        [msg("Retries"), "retries"],
+        [msg("Planned execution time")],
         [msg("Last updated"), "mtime"],
         [msg("Status"), "aggregated_status"],
         [msg("Actions"), null, msg("Row Actions")],
     ];
+
+    render(): TemplateResult {
+        return html`${this.includeOverview
+            ? html`<ak-task-status-summary .status=${this.status}></ak-task-status-summary>`
+            : nothing}${super.render()}`;
+    }
 
     renderToolbarAfter(): TemplateResult {
         return html`<div class="pf-c-toolbar__group pf-m-filter-group">
@@ -154,14 +177,15 @@ export class TaskList extends Table<Task> {
             html`<div>${item.description}</div>
                 <small>${item.uid}</small>`,
             html`${item.queueName}`,
+            html`${item.retries}`,
+            item.eta !== undefined ? Timestamp(item.eta) : nothing,
             Timestamp(item.mtime ?? new Date()),
             html`<ak-task-status .status=${item.aggregatedStatus}></ak-task-status>`,
-            item.state === TasksTasksListStateEnum.Rejected ||
-            item.state === TasksTasksListStateEnum.Done
+            item.state === TaskStatusEnum.Rejected
                 ? html`<ak-action-button
                       class="pf-m-plain"
                       .apiRequest=${() => {
-                          return new TasksApi(DEFAULT_CONFIG)
+                          return aki(TasksApi)
                               .tasksTasksRetryCreate({
                                   messageId: item.messageId ?? "",
                               })
@@ -186,9 +210,9 @@ export class TaskList extends Table<Task> {
     renderExpanded(item: Task): TemplateResult {
         return html`<div class="pf-c-content">
             <p class="pf-c-title pf-u-mb-md">${msg("Current execution logs")}</p>
-            <ak-log-viewer .logs=${item?.messages}></ak-log-viewer>
+            <ak-log-viewer .items=${item.logs}></ak-log-viewer>
             <p class="pf-c-title pf-u-mt-xl pf-u-mb-md">${msg("Previous executions logs")}</p>
-            <ak-log-viewer .logs=${item?.previousMessages}></ak-log-viewer>
+            <ak-log-viewer .items=${item.previousLogs}></ak-log-viewer>
         </div>`;
     }
 }

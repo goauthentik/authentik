@@ -7,10 +7,8 @@ from socket import gethostname
 from typing import Any
 from urllib.parse import urlparse
 
-from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
 from django.core.cache import cache
-from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
 from docker.constants import DEFAULT_UNIX_SOCKET
 from dramatiq.actor import actor
@@ -108,7 +106,6 @@ def outpost_service_connection_monitor(connection_pk: Any):
 def outpost_controller(outpost_pk: str, action: str = "up", from_cache: bool = False):
     """Create/update/monitor/delete the deployment of an Outpost"""
     self = CurrentTask.get_task()
-    self.set_uid(outpost_pk)
     logs = []
     if from_cache:
         outpost: Outpost = cache.get(CACHE_KEY_OUTPOST_DOWN % outpost_pk)
@@ -119,7 +116,6 @@ def outpost_controller(outpost_pk: str, action: str = "up", from_cache: bool = F
     if not outpost:
         LOGGER.warning("No outpost")
         return
-    self.set_uid(slugify(outpost.name))
     try:
         controller_type = controller_for_outpost(outpost)
         if not controller_type:
@@ -162,7 +158,7 @@ def outpost_send_update(pk: Any):
     layer = get_channel_layer()
     group = build_outpost_group(outpost.pk)
     LOGGER.debug("sending update", channel=group, outpost=outpost)
-    async_to_sync(layer.group_send)(group, {"type": "event.update"})
+    layer.group_send_blocking(group, {"type": "event.update"})
 
 
 @actor(description=_("Checks the local environment and create Service connections."))
@@ -213,7 +209,7 @@ def outpost_session_end(session_id: str):
     for outpost in Outpost.objects.all():
         LOGGER.info("Sending session end signal to outpost", outpost=outpost)
         group = build_outpost_group(outpost.pk)
-        async_to_sync(layer.group_send)(
+        layer.group_send_blocking(
             group,
             {
                 "type": "event.session.end",

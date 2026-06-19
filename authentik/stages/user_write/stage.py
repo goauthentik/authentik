@@ -13,7 +13,7 @@ from rest_framework.exceptions import ValidationError
 from authentik.core.middleware import SESSION_KEY_IMPERSONATE_USER
 from authentik.core.models import USER_ATTRIBUTE_SOURCES, User, UserSourceConnection, UserTypes
 from authentik.core.sources.stage import PLAN_CONTEXT_SOURCES_CONNECTION
-from authentik.events.utils import sanitize_item
+from authentik.events.utils import sanitize_dict, sanitize_item
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
 from authentik.flows.stage import StageView
 from authentik.flows.views.executor import FlowExecutorView
@@ -30,19 +30,27 @@ PLAN_CONTEXT_USER_PATH = "user_path"
 
 
 class UserWriteStageView(StageView):
-    """Finalise Enrollment flow by creating a user object."""
+    """Finalize Enrollment flow by creating a user object."""
 
     def __init__(self, executor: FlowExecutorView, **kwargs):
         super().__init__(executor, **kwargs)
         self.disallowed_user_attributes = [
             "groups",
+            # Block attribute writes that would otherwise land on the model's
+            # primary key. An IdP that returns an `id` claim (mocksaml is one
+            # example) used to crash the enrollment flow with
+            # ValueError: Field 'id' expected a number but got '<hex>'
+            # because hasattr(user, "id") is true and setattr(user, "id", ...)
+            # was taken unchecked. See #21580.
+            "id",
+            "pk",
         ]
 
     @staticmethod
     def write_attribute(user: User, key: str, value: Any):
         """Allow use of attributes.foo.bar when writing to a user, with full
         recursion"""
-        parts = key.replace("_", ".").split(".")
+        parts = key.replace("attributes_", "attributes.", 1).split(".")
         if len(parts) < 1:  # pragma: no cover
             return
         # Function will always be called with a key like attributes.
@@ -115,7 +123,10 @@ class UserWriteStageView(StageView):
                 continue
             # For exact attributes match, update the dictionary in place
             elif key == "attributes":
-                user.attributes.update(value)
+                if isinstance(value, dict):
+                    user.attributes.update(sanitize_dict(value))
+                else:
+                    raise ValidationError("Attempt to overwrite complete attributes")
             # If using dot notation, use the correct helper to update the nested value
             elif key.startswith("attributes.") or key.startswith("attributes_"):
                 UserWriteStageView.write_attribute(user, key, value)
@@ -183,9 +194,9 @@ class UserWriteStageView(StageView):
             with transaction.atomic():
                 user.save()
                 if self.executor.current_stage.create_users_group:
-                    user.ak_groups.add(self.executor.current_stage.create_users_group)
+                    user.groups.add(self.executor.current_stage.create_users_group)
                 if PLAN_CONTEXT_GROUPS in self.executor.plan.context:
-                    user.ak_groups.add(*self.executor.plan.context[PLAN_CONTEXT_GROUPS])
+                    user.groups.add(*self.executor.plan.context[PLAN_CONTEXT_GROUPS])
         except (IntegrityError, ValueError, TypeError, InternalError) as exc:
             self.logger.warning("Failed to save user", exc=exc)
             return self.executor.stage_invalid(_("Failed to update user. Please try again later."))

@@ -1,6 +1,7 @@
+import "#components/ak-switch-input";
 import "#elements/forms/HorizontalFormElement";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { BaseStageForm } from "#admin/stages/BaseStageForm";
 
@@ -14,24 +15,24 @@ import { ifDefined } from "lit/directives/if-defined.js";
 @customElement("ak-stage-dummy-form")
 export class DummyStageForm extends BaseStageForm<DummyStage> {
     loadInstance(pk: string): Promise<DummyStage> {
-        return new StagesApi(DEFAULT_CONFIG).stagesDummyRetrieve({
+        return aki(StagesApi).stagesDummyRetrieve({
             stageUuid: pk,
         });
     }
 
     async send(data: DummyStage): Promise<DummyStage> {
         if (this.instance) {
-            return new StagesApi(DEFAULT_CONFIG).stagesDummyUpdate({
+            return aki(StagesApi).stagesDummyUpdate({
                 stageUuid: this.instance.pk || "",
                 dummyStageRequest: data,
             });
         }
-        return new StagesApi(DEFAULT_CONFIG).stagesDummyCreate({
+        return aki(StagesApi).stagesDummyCreate({
             dummyStageRequest: data,
         });
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html` <span>
                 ${msg(
                     "Dummy stage used for testing. Shows a simple continue button and always passes.",
@@ -45,21 +46,11 @@ export class DummyStageForm extends BaseStageForm<DummyStage> {
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal name="throwError">
-                <label class="pf-c-switch">
-                    <input
-                        class="pf-c-switch__input"
-                        type="checkbox"
-                        ?checked=${this.instance?.throwError ?? false}
-                    />
-                    <span class="pf-c-switch__toggle">
-                        <span class="pf-c-switch__toggle-icon">
-                            <i class="fas fa-check" aria-hidden="true"></i>
-                        </span>
-                    </span>
-                    <span class="pf-c-switch__label">${msg("Throw error?")}</span>
-                </label>
-            </ak-form-element-horizontal>`;
+            <ak-switch-input
+                name="throwError"
+                label=${msg("Throw error?")}
+                ?checked=${this.instance?.throwError ?? false}
+            ></ak-switch-input>`;
     }
 }
 

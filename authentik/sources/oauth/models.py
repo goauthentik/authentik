@@ -27,6 +27,12 @@ class AuthorizationCodeAuthMethod(models.TextChoices):
     POST_BODY = "post_body", _("Include the client ID and secret as request parameters")
 
 
+class PKCEMethod(models.TextChoices):
+    NONE = "none", _("No PKCE")
+    PLAIN = "plain", _("Plain")
+    S256 = "S256", _("S256")
+
+
 class OAuthSource(NonCreatableType, Source):
     """Login using a Generic OAuth provider."""
 
@@ -67,6 +73,9 @@ class OAuthSource(NonCreatableType, Source):
     oidc_jwks_url = models.TextField(default="", blank=True)
     oidc_jwks = models.JSONField(default=dict, blank=True)
 
+    pkce = models.TextField(
+        choices=PKCEMethod.choices, default=PKCEMethod.NONE, verbose_name=_("PKCE")
+    )
     authorization_code_auth_method = models.TextField(
         choices=AuthorizationCodeAuthMethod.choices,
         default=AuthorizationCodeAuthMethod.BASIC_AUTH,
@@ -76,7 +85,7 @@ class OAuthSource(NonCreatableType, Source):
     )
 
     @property
-    def source_type(self) -> type["SourceType"]:
+    def source_type(self) -> type[SourceType]:
         """Return the provider instance for this source"""
         from authentik.sources.oauth.types.registry import registry
 
@@ -127,7 +136,8 @@ class OAuthSource(NonCreatableType, Source):
         return UILoginButton(
             name=self.name,
             challenge=provider.login_challenge(self, request),
-            icon_url=self.icon_url,
+            icon_url=self.get_icon_url(request, use_cache=False) or self.icon_url,
+            promoted=self.promoted,
         )
 
     def ui_user_settings(self) -> UserSettingSerializer | None:
@@ -214,6 +224,15 @@ class DiscordOAuthSource(CreatableType, OAuthSource):
         verbose_name_plural = _("Discord OAuth Sources")
 
 
+class SlackOAuthSource(CreatableType, OAuthSource):
+    """Social Login using Slack."""
+
+    class Meta:
+        abstract = True
+        verbose_name = _("Slack OAuth Source")
+        verbose_name_plural = _("Slack OAuth Sources")
+
+
 class PatreonOAuthSource(CreatableType, OAuthSource):
     """Social Login using Patreon."""
 
@@ -232,17 +251,6 @@ class GoogleOAuthSource(CreatableType, OAuthSource):
         verbose_name_plural = _("Google OAuth Sources")
 
 
-class AzureADOAuthSource(CreatableType, OAuthSource):
-    """(Deprecated) Social Login using Azure AD."""
-
-    class Meta:
-        abstract = True
-        verbose_name = _("Azure AD OAuth Source")
-        verbose_name_plural = _("Azure AD OAuth Sources")
-
-
-# TODO: When removing this, add a migration for OAuthSource that sets
-# provider_type to `entraid` if it is currently `azuread`
 class EntraIDOAuthSource(CreatableType, OAuthSource):
     """Social Login using Entra ID."""
 
@@ -288,6 +296,15 @@ class RedditOAuthSource(CreatableType, OAuthSource):
         verbose_name_plural = _("Reddit OAuth Sources")
 
 
+class WeChatOAuthSource(CreatableType, OAuthSource):
+    """Social Login using WeChat."""
+
+    class Meta:
+        abstract = True
+        verbose_name = _("WeChat OAuth Source")
+        verbose_name_plural = _("WeChat OAuth Sources")
+
+
 class OAuthSourcePropertyMapping(PropertyMapping):
     """Map OAuth properties to User or Group object attributes"""
 
@@ -312,6 +329,7 @@ class UserOAuthSourceConnection(UserSourceConnection):
     """Authorized remote OAuth provider."""
 
     access_token = models.TextField(blank=True, null=True, default=None)
+    refresh_token = models.TextField(blank=True, null=True, default=None)
     expires = models.DateTimeField(default=now)
 
     @property
@@ -325,10 +343,6 @@ class UserOAuthSourceConnection(UserSourceConnection):
         )
 
         return UserOAuthSourceConnectionSerializer
-
-    def save(self, *args, **kwargs):
-        self.access_token = self.access_token or None
-        super().save(*args, **kwargs)
 
     class Meta:
         verbose_name = _("User OAuth Source Connection")

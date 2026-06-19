@@ -132,15 +132,20 @@ class PolicyEngine:
             # If we didn't find any static bindings, do nothing
             return
         self.logger.debug("P_ENG: Found static bindings", **matched_bindings)
-        if matched_bindings.get("passing", 0) > 0:
-            # Any passing static binding -> passing
-            passing = True
+        if self.mode == PolicyEngineMode.MODE_ANY:
+            if matched_bindings.get("passing", 0) > 0:
+                # Any passing static binding -> passing
+                passing = True
+        elif self.mode == PolicyEngineMode.MODE_ALL:
+            if matched_bindings.get("passing", 0) == matched_bindings["total"]:
+                # All static bindings are passing -> passing
+                passing = True
         elif matched_bindings["total"] > 0 and matched_bindings.get("passing", 0) < 1:
             # No matching static bindings but at least one is configured -> not passing
             passing = False
         self.__static_result = PolicyResult(passing)
 
-    def build(self) -> "PolicyEngine":
+    def build(self) -> PolicyEngine:
         """Build wrapper which monitors performance"""
         with (
             start_span(
@@ -185,6 +190,16 @@ class PolicyEngine:
                 # Only call .recv() if no result is saved, otherwise we just deadlock here
                 if not proc_info.result:
                     proc_info.result = proc_info.connection.recv()
+                if proc_info.result and proc_info.result._exec_time:
+                    HIST_POLICIES_EXECUTION_TIME.labels(
+                        binding_order=proc_info.binding.order,
+                        binding_target_type=proc_info.binding.target_type,
+                        binding_target_name=proc_info.binding.target_name,
+                        object_type=(
+                            class_to_path(self.request.obj.__class__) if self.request.obj else ""
+                        ),
+                        mode="execute_process",
+                    ).observe(proc_info.result._exec_time)
             return self
 
     @property

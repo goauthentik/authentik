@@ -12,26 +12,34 @@ from django.db import connection, models
 from django.templatetags.static import static
 from django.utils.translation import gettext_lazy as _
 from ldap3 import ALL, NONE, RANDOM, Connection, Server, ServerPool, Tls
-from ldap3.core.exceptions import LDAPException, LDAPInsufficientAccessRightsResult, LDAPSchemaError
+from ldap3.core.exceptions import (
+    LDAPAdminLimitExceededResult,
+    LDAPAttributeError,
+    LDAPException,
+    LDAPInsufficientAccessRightsResult,
+    LDAPSchemaError,
+)
 from rest_framework.serializers import Serializer
+from structlog.stdlib import get_logger
 
 from authentik.core.models import (
     Group,
     GroupSourceConnection,
     PropertyMapping,
-    Source,
     UserSourceConnection,
 )
 from authentik.crypto.models import CertificateKeyPair
 from authentik.lib.config import CONFIG
 from authentik.lib.models import DomainlessURLValidator
+from authentik.lib.sync.incoming.models import IncomingSyncSource
 from authentik.lib.utils.time import fqdn_rand
 from authentik.tasks.schedules.common import ScheduleSpec
-from authentik.tasks.schedules.models import ScheduledModel
 
 LDAP_TIMEOUT = 15
 LDAP_UNIQUENESS = "ldap_uniq"
+"""Deprecated, don't use"""
 LDAP_DISTINGUISHED_NAME = "distinguishedName"
+LOGGER = get_logger()
 
 
 def flatten(value: Any) -> Any:
@@ -56,7 +64,7 @@ class MultiURLValidator(DomainlessURLValidator):
             super().__call__(value)
 
 
-class LDAPSource(ScheduledModel, Source):
+class LDAPSource(IncomingSyncSource):
     """Federate LDAP Directory with authentik, or create new accounts in LDAP."""
 
     server_uri = models.TextField(
@@ -158,7 +166,7 @@ class LDAPSource(ScheduledModel, Source):
 
     @property
     def serializer(self) -> type[Serializer]:
-        from authentik.sources.ldap.api import LDAPSourceSerializer
+        from authentik.sources.ldap.api.sources import LDAPSourceSerializer
 
         return LDAPSourceSerializer
 
@@ -184,13 +192,14 @@ class LDAPSource(ScheduledModel, Source):
         ]
 
     @property
-    def property_mapping_type(self) -> "type[PropertyMapping]":
+    def property_mapping_type(self) -> type[PropertyMapping]:
         from authentik.sources.ldap.models import LDAPSourcePropertyMapping
 
         return LDAPSourcePropertyMapping
 
     def update_properties_with_uniqueness_field(self, properties, dn, ldap, **kwargs):
         properties.setdefault("attributes", {})[LDAP_DISTINGUISHED_NAME] = dn
+        # TODO: Remove after 2026.5, still stored for legacy
         if self.object_uniqueness_field in ldap:
             properties["attributes"][LDAP_UNIQUENESS] = flatten(
                 ldap.get(self.object_uniqueness_field)
@@ -269,17 +278,27 @@ class LDAPSource(ScheduledModel, Source):
         )
 
         if self.start_tls:
+            LOGGER.debug("Connection StartTLS", source=self)
             conn.start_tls(read_server_info=False)
         try:
             successful = conn.bind()
             if successful:
                 return conn
-        except (LDAPSchemaError, LDAPInsufficientAccessRightsResult) as exc:
-            # Schema error, so try connecting without schema info
+        except (
+            LDAPSchemaError,
+            LDAPInsufficientAccessRightsResult,
+            LDAPAdminLimitExceededResult,
+            LDAPAttributeError,
+        ) as exc:
+            # Schema error or rate limit during schema fetch, retry without schema info
             # See https://github.com/goauthentik/authentik/issues/4590
             # See also https://github.com/goauthentik/authentik/issues/3399
+            # LDAPAdminLimitExceededResult: Google Secure LDAP rate-limits schema queries
+            # LDAPAttributeError: Google Secure LDAP returns unsupported attrs in schema
             if server_kwargs.get("get_info", ALL) == NONE:
+                LOGGER.warning("Failed to connect after schema downgrade", source=self, exc=exc)
                 raise exc
+            LOGGER.warning("Downgrading connection to no schema info", source=self, exc=exc)
             server_kwargs["get_info"] = NONE
             return self.connection(server, server_kwargs, connection_kwargs)
         finally:
@@ -298,6 +317,16 @@ class LDAPSource(ScheduledModel, Source):
             side_effect=pglock.Return,
         )
 
+    def get_ldap_server_info(self, srv: Server) -> dict[str, str]:
+        info = {
+            "vendor": _("N/A"),
+            "version": _("N/A"),
+        }
+        if srv.info:
+            info["vendor"] = str(flatten(srv.info.vendor_name))
+            info["version"] = str(flatten(srv.info.vendor_version))
+        return info
+
     def check_connection(self) -> dict[str, dict[str, str]]:
         """Check LDAP Connection"""
         servers = self.server()
@@ -308,9 +337,8 @@ class LDAPSource(ScheduledModel, Source):
             try:
                 conn = self.connection(server=server)
                 server_info[server.host] = {
-                    "vendor": str(flatten(conn.server.info.vendor_name)),
-                    "version": str(flatten(conn.server.info.vendor_version)),
                     "status": "ok",
+                    **self.get_ldap_server_info(conn.server),
                 }
             except LDAPException as exc:
                 server_info[server.host] = {
@@ -320,9 +348,8 @@ class LDAPSource(ScheduledModel, Source):
         try:
             conn = self.connection()
             server_info["__all__"] = {
-                "vendor": str(flatten(conn.server.info.vendor_name)),
-                "version": str(flatten(conn.server.info.vendor_version)),
                 "status": "ok",
+                **self.get_ldap_server_info(conn.server),
             }
         except LDAPException as exc:
             server_info["__all__"] = {
@@ -344,7 +371,7 @@ class LDAPSourcePropertyMapping(PropertyMapping):
 
     @property
     def serializer(self) -> type[Serializer]:
-        from authentik.sources.ldap.api import LDAPSourcePropertyMappingSerializer
+        from authentik.sources.ldap.api.property_mappings import LDAPSourcePropertyMappingSerializer
 
         return LDAPSourcePropertyMappingSerializer
 
@@ -365,7 +392,7 @@ class UserLDAPSourceConnection(UserSourceConnection):
 
     @property
     def serializer(self) -> type[Serializer]:
-        from authentik.sources.ldap.api import (
+        from authentik.sources.ldap.api.connections import (
             UserLDAPSourceConnectionSerializer,
         )
 
@@ -388,7 +415,7 @@ class GroupLDAPSourceConnection(GroupSourceConnection):
 
     @property
     def serializer(self) -> type[Serializer]:
-        from authentik.sources.ldap.api import (
+        from authentik.sources.ldap.api.connections import (
             GroupLDAPSourceConnectionSerializer,
         )
 

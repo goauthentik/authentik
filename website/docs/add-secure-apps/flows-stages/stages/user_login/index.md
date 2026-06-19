@@ -1,83 +1,101 @@
 ---
-title: User Login stage
+title: User login stage
+toc_max_heading_level: 4
 ---
 
-The User Login stage attaches a currently pending user to the current session.
+The User Login stage attaches the current `pending_user` to a new authentik session.
 
-It can be used after `user_write` during an enrollment flow, or after a `password` stage during an authentication flow.
+## Overview
 
-## User login stage configuration options
+This stage is usually the final stage in authentication, enrollment and recovery flows, signing the user in immediately upon success.
 
-When creating or editing this stage in the UI of the Admin interface, you can set the following configuration options.
+## Configuration options
 
-**Name**: enter a descriptive name for the stage.
+- **Session duration**: how long the created session should last. A value of `seconds=0` keeps the session until the browser session ends.
+- **Network binding**: optionally bind the session to ASN, network, or IP-derived network information.
+- **GeoIP binding**: optionally bind the session to continent, country, or city information.
+- **Terminate other sessions**: revoke the user's other active authentik sessions when this stage succeeds.
+- **Remember me offset**: extend the session when the user explicitly chooses the remember-me option. A value of `seconds=0` hides the option.
+- **Remember device**: store a longer-lived cookie that helps authentik recognize a known device on later sign-ins.
 
-**Stage-specific settings**
+## Flow integration
 
-- **Session duration**: By default, the authentik session expires when you close your browser (_seconds=0_).
+Use this stage near the end of flows that should create an authenticated browser session.
 
-    :::warning
-    Different browsers handle session cookies differently, and might not remove them even when the browser is closed. See [here](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie#expiresdate) for more info.
-    :::
+Common placements include:
 
-    You can set the session to expire after any duration using the syntax of `hours=1,minutes=2,seconds=3`. The following keys are allowed:
-    - Microseconds
-    - Milliseconds
-    - Seconds
-    - Minutes
-    - Hours
-    - Days
-    - Weeks
+- after a [Password](../password/index.md) or [Authenticator Validation](../authenticator_validate/index.md) stage in authentication flows
+- after a [User Write](../user_write/index.md) stage in enrollment flows
 
-    All values accept floating-point values.
+## Notes
 
-- **Stay signed in offset**: When this is set to a higher value than the default _seconds=0_, the user logging in is shown a prompt, allowing the user to choose if their session should be extended or not. The same syntax as for _Session duration_ applies.
+:::warning
+Browsers handle session cookies differently. A session configured with `seconds=0` is intended to end when the browser session ends, but some browsers can retain session state longer.
+:::
 
-    ![](./stay_signed_in.png)
+Duration fields use the standard authentik timedelta syntax such as `hours=1,minutes=30,seconds=0`.
 
-- **Network binding and GeoIP binding**
+All values accept floating-point numbers.
 
-    When configured, all sessions authenticated by this stage will be bound to the selected network and/or GeoIP criteria.
+Valid keys in those duration strings include:
 
-    Sessions that break this binding will be terminated on use. The created [`logout`](../../../../sys-mgmt/events/event-actions#logout) event will contain additional data related to what caused the binding to be broken:
+- microseconds
+- milliseconds
+- seconds
+- minutes
+- hours
+- days
+- weeks
 
-    ```json
-    {
-        "asn": {
+- If **Remember me offset** is greater than `seconds=0`, authentik shows the user a **Remember me on this device** option during login.
+
+![](./stay_signed_in.png)
+
+- If **Remember device** is enabled, authentik stores a cookie that can be used in later flows or policies to distinguish known from unknown devices.
+- If the user already has another authenticated session from the same IP address, authentik also classifies that sign-in as coming from a known device.
+- If **Network binding** or **GeoIP binding** is enabled, authentik terminates sessions that later violate the selected binding.
+
+When a session is terminated because a binding is broken, the generated logout event includes additional binding data describing what changed.
+
+```json
+{
+    "asn": {
+        "asn": 6805,
+        "as_org": "Telefonica Germany",
+        "network": "5.4.0.0/14"
+    },
+    "geo": {
+        "lat": 51.2993,
+        "city": "",
+        "long": 9.491,
+        "country": "DE",
+        "continent": "EU"
+    },
+    "binding": {
+        "reason": "network.missing",
+        "new_value": {
             "asn": 6805,
             "as_org": "Telefonica Germany",
             "network": "5.4.0.0/14"
         },
-        "geo": {
-            "lat": 51.2993,
-            "city": "",
-            "long": 9.491,
-            "country": "DE",
-            "continent": "EU"
-        },
-        "binding": {
-            "reason": "network.missing",
-            "new_value": {
-                "asn": 6805,
-                "as_org": "Telefonica Germany",
-                "network": "5.4.0.0/14"
-            },
-            "previous_value": {}
-        },
-        "ip": {
-            "previous": "1.2.3.4",
-            "new": "5.6.7.8"
-        },
-        "http_request": {
-            "args": {},
-            "path": "/if/admin/",
-            "method": "GET",
-            "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
-        },
-        "logout_reason": "Session binding broken"
-    }
-    ```
+        "previous_value": {}
+    },
+    "ip": {
+        "previous": "1.2.3.4",
+        "new": "5.6.7.8"
+    },
+    "http_request": {
+        "args": {},
+        "path": "/if/admin/",
+        "method": "GET",
+        "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+    },
+    "logout_reason": "Session binding broken"
+}
+```
 
-- **Terminate other sessions**
+For alerting and policy use, authentik can also classify a login as coming from a known or unknown device based on the "Remember me on this device" cookie and related session information.
 
-    When enabled, previous sessions of the user logging in will be revoked. This has no affect on OAuth refresh tokens.
+See the notification policy examples for [logins from unknown devices](../../../../sys-mgmt/events/notification_rule_expression_policies.mdx#trigger-alert-when-user-logs-in-from-unknown-device).
+
+When **Terminate other sessions** is enabled, previous authentik sessions for the same user are revoked. This does not affect OAuth refresh tokens.

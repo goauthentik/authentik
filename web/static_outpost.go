@@ -1,5 +1,4 @@
 //go:build outpost_static_embed
-// +build outpost_static_embed
 
 package web
 

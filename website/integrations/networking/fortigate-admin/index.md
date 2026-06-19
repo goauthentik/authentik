@@ -4,9 +4,9 @@ sidebar_label: FortiGate Admin Login
 support_level: community
 ---
 
-## What is FortiGate
+## What is FortiGate?
 
-> FortiGate is a firewall from FortiNet. It is a NGFW with layer7 inspection and able to become a part of a FortiNet security fabric.
+> FortiGate is a firewall from Fortinet. It is an NGFW with layer 7 inspection and can become part of a Fortinet security fabric.
 >
 > -- https://www.fortinet.com/products/next-generation-firewall
 
@@ -38,27 +38,25 @@ To support the integration of FortiGate with authentik, you need to create an ap
 ### Create an application and provider in authentik
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
+2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
 
 - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Take note of the **slug** as it will be required later.
 - **Choose a Provider type**: select **SAML Provider** as the provider type.
 - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
     - Set the **ACS URL** to `https://fgt.company/saml/?acs`.
-    - Set the **Issuer** to `https://authentik.company`.
     - Set the **Audience** to `https://fgt.company/metadata`.
-    - Set the **Service Provider Binding** to `Post`.
     - Under **Advanced protocol settings**, add the **Property Mapping** you created in the previous section, then select an available **Signing Certificate**.
-- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 
 3. Click **Submit** to save the new application and provider.
 
-## FortiGate Configuration
+## FortiGate configuration
 
-To integrate Fortigate with authentik, nagiate to `https://fortigate.company/ng/system/certificate` and import the certificate you configured in the previous section.
+To integrate FortiGate with authentik, navigate to `https://fortigate.company/ng/system/certificate` and import the certificate you configured in the previous section.
 
 Once that is done, navigate to `https://fortigate.company/fabric-connector/edit/security-fabric-connection` and select **Single Sign-On** to configure SAML authentication. You should see, under **Mode**, a toggle named **Service Provider (SP)**, toggle it to enable this authentication method.
 
-Then, set the following values in the Fortigate administrative UI:
+Then, set the following values in the FortiGate administrative UI:
 
 - **SP Address**: `fortigate.company`
 - **Default login page**: `Normal` or `Single Sign-On`, depending on your needs. `Normal` allows local and SAML authentication while the latter only allows SAML authentication.
@@ -68,18 +66,18 @@ Under **IdP Details**, set the following values:
 
 - **SP entity ID**: `https`
 - **IdP Type**: `Custom`
-- **IdP entity ID**: `https://authentik.company`
-- **IdP Login URL**: `https://authentik.company/application/saml/<application_slug>/sso/binding/redirect/`
-- **IdP Logout URL**: `https://authentik.company/application/saml/<application_slug>/slo/binding/redirect/`
+- **IdP entity ID**: `https://authentik.company/application/saml/<application_slug>/metadata/`
+- **IdP Login URL**: `https://authentik.company/application/saml/<application_slug>/`
+- **IdP Logout URL**: `https://authentik.company/application/saml/<application_slug>/`
 
 FortiGate creates a new user by default if one does not exist, so you will need to set the Default Admin Profile to the permissions you want any new users to have. (I have created a `no_permissions` profile to assign by default.)
 
 Under `SP Details` set the **SP entity ID** to `https`. Note it for later use (this is your Audience value of the authentik SP-provider).
 
 - Set `IdP Type` to `Custom`
-- Set `IdP entity ID` to `https://authentik.company`
-- Set `IdP Login URL` to `https://authentik.company/application/saml/<application_slug>/sso/binding/redirect/`
-- Set `IdP Logout URL` to `https://authentik.company/application/saml/<application_slug>/slo/binding/redirect/`
+- Set `IdP entity ID` to `https://authentik.company/application/saml/<application_slug>/metadata/`
+- Set `IdP Login URL` to `https://authentik.company/application/saml/<application_slug>/`
+- Set `IdP Logout URL` to `https://authentik.company/application/saml/<application_slug>/`
 - Set `IdP Certificate` to `ak.cert`
 
 ## Troubleshooting
@@ -116,6 +114,8 @@ end
 
 ## Configuration verification
 
+To confirm that authentik is properly configured with FortiGate Admin Login, log out and attempt to log back in using SAML authentication through authentik.
+
 ## Resources
 
-- [Offocial Fortigate documentation on SAML authentication](https://community.fortinet.com/t5/FortiGate/Technical-Tip-Configuring-SAML-SSO-login-for-FortiGate/ta-p/194656)
+- [Official FortiGate documentation on SAML authentication](https://community.fortinet.com/t5/FortiGate/Technical-Tip-Configuring-SAML-SSO-login-for-FortiGate/ta-p/194656)

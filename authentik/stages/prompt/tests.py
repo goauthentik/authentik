@@ -330,10 +330,20 @@ class TestPromptStage(FlowTestCase):
 
     def test_static_hidden_overwrite(self):
         """Test that static and hidden fields ignore any value sent to them"""
+        alert_prompt = Prompt.objects.create(
+            name=generate_id(),
+            field_key="alert_prompt",
+            type=FieldTypes.ALERT_INFO,
+            required=True,
+            placeholder="alert fallback",
+            initial_value="alert content",
+        )
+        self.stage.fields.add(alert_prompt)
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
         plan.context[PLAN_CONTEXT_PROMPT] = {"hidden_prompt": "hidden"}
         self.prompt_data["hidden_prompt"] = "foo"
         self.prompt_data["static_prompt"] = "foo"
+        self.prompt_data["alert_prompt"] = "foo"
         challenge_response = PromptChallengeResponse(
             None, stage_instance=self.stage, plan=plan, data=self.prompt_data, stage=self.stage_view
         )
@@ -341,6 +351,7 @@ class TestPromptStage(FlowTestCase):
         self.assertNotEqual(challenge_response.validated_data["hidden_prompt"], "foo")
         self.assertEqual(challenge_response.validated_data["hidden_prompt"], "hidden")
         self.assertNotEqual(challenge_response.validated_data["static_prompt"], "foo")
+        self.assertEqual(challenge_response.validated_data["alert_prompt"], "alert content")
 
     def test_prompt_placeholder(self):
         """Test placeholder and expression"""
@@ -455,6 +466,46 @@ class TestPromptStage(FlowTestCase):
             prompt.get_choices(context, self.user, self.factory.get("/")), (context["foo"],)
         )
 
+    def test_choice_prompts_placeholder_and_initial_value_single_choice_dict(self):
+        """Test placeholder and initial value of dict choice fields with 1 choice"""
+        context = {"foo": {"label": "foo", "value": generate_id()}}
+
+        prompt: Prompt = Prompt(
+            field_key="fixed_choice_prompt_expression",
+            label="LABEL",
+            type=FieldTypes.DROPDOWN,
+            placeholder=context["foo"],
+            placeholder_expression=False,
+            initial_value=context["foo"]["value"],
+            initial_value_expression=False,
+        )
+        self.assertEqual(prompt.get_placeholder(context, self.user, self.factory.get("/")), "")
+        self.assertEqual(
+            prompt.get_initial_value(context, self.user, self.factory.get("/")),
+            context["foo"]["value"],
+        )
+        self.assertEqual(
+            prompt.get_choices(context, self.user, self.factory.get("/")), (context["foo"],)
+        )
+
+        prompt: Prompt = Prompt(
+            field_key="fixed_choice_prompt_expression",
+            label="LABEL",
+            type=FieldTypes.DROPDOWN,
+            placeholder="return [prompt_context['foo']]",
+            placeholder_expression=True,
+            initial_value="return prompt_context['foo']['value']",
+            initial_value_expression=True,
+        )
+        self.assertEqual(prompt.get_placeholder(context, self.user, self.factory.get("/")), "")
+        self.assertEqual(
+            prompt.get_initial_value(context, self.user, self.factory.get("/")),
+            context["foo"]["value"],
+        )
+        self.assertEqual(
+            prompt.get_choices(context, self.user, self.factory.get("/")), (context["foo"],)
+        )
+
     def test_choice_prompts_placeholder_and_initial_value_multiple_choices(self):
         """Test placeholder and initial value of choice fields with multiple choices"""
         context = {}
@@ -487,6 +538,57 @@ class TestPromptStage(FlowTestCase):
         self.assertEqual(prompt.get_initial_value(context, self.user, self.factory.get("/")), True)
         self.assertEqual(
             prompt.get_choices(context, self.user, self.factory.get("/")), ("test", True, 42)
+        )
+
+    def test_choice_prompts_placeholder_and_initial_value_multiple_choices_dict(self):
+        """Test placeholder and initial value of dict choice fields with multiple dict choices"""
+        context = {}
+
+        prompt: Prompt = Prompt(
+            field_key="fixed_choice_prompt_expression",
+            label="LABEL",
+            type=FieldTypes.RADIO_BUTTON_GROUP,
+            placeholder="return ["
+            "{'label': 'Option 1', 'value': 'value1'},"
+            "{'label': 'Option 2', 'value': 'value2'}"
+            "]",
+            placeholder_expression=True,
+        )
+        self.assertEqual(prompt.get_placeholder(context, self.user, self.factory.get("/")), "")
+        self.assertEqual(
+            prompt.get_initial_value(context, self.user, self.factory.get("/")).get("value"),
+            "value1",
+        )
+        self.assertEqual(
+            tuple(
+                (choice["label"], choice["value"])
+                for choice in prompt.get_choices(context, self.user, self.factory.get("/"))
+            ),
+            (("Option 1", "value1"), ("Option 2", "value2")),
+        )
+
+        prompt: Prompt = Prompt(
+            field_key="fixed_choice_prompt_expression",
+            label="LABEL",
+            type=FieldTypes.RADIO_BUTTON_GROUP,
+            placeholder="return ["
+            "{'label': 'Option 1', 'value': 'value1'},"
+            "{'label': 'Option 2', 'value': 'value2'}"
+            "]",
+            placeholder_expression=True,
+            initial_value="return 'value2'",
+            initial_value_expression=True,
+        )
+        self.assertEqual(prompt.get_placeholder(context, self.user, self.factory.get("/")), "")
+        self.assertEqual(
+            prompt.get_initial_value(context, self.user, self.factory.get("/")), "value2"
+        )
+        self.assertEqual(
+            tuple(
+                (choice["label"], choice["value"])
+                for choice in prompt.get_choices(context, self.user, self.factory.get("/"))
+            ),
+            (("Option 1", "value1"), ("Option 2", "value2")),
         )
 
     def test_choice_prompts_placeholder_and_initial_value_from_context(self):

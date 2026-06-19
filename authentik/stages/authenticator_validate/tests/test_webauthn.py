@@ -2,20 +2,18 @@
 
 from time import sleep
 
-from django.test.client import RequestFactory
 from django.urls.base import reverse
 from rest_framework.serializers import ValidationError
 from webauthn.helpers.base64url_to_bytes import base64url_to_bytes
 from webauthn.helpers.bytes_to_base64url import bytes_to_base64url
 
-from authentik.core.tests.utils import create_test_admin_user, create_test_flow
+from authentik.core.tests.utils import RequestFactory, create_test_admin_user, create_test_flow
 from authentik.flows.models import FlowStageBinding, NotConfiguredAction
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
 from authentik.flows.stage import StageView
 from authentik.flows.tests import FlowTestCase
 from authentik.flows.views.executor import SESSION_KEY_PLAN, FlowExecutorView
 from authentik.lib.generators import generate_id
-from authentik.lib.tests.utils import get_request
 from authentik.stages.authenticator_validate.challenge import (
     get_challenge_for_device,
     get_webauthn_challenge_without_user,
@@ -30,6 +28,7 @@ from authentik.stages.authenticator_webauthn.models import (
     UserVerification,
     WebAuthnDevice,
     WebAuthnDeviceType,
+    WebAuthnHint,
 )
 from authentik.stages.authenticator_webauthn.stage import PLAN_CONTEXT_WEBAUTHN_CHALLENGE
 from authentik.stages.authenticator_webauthn.tasks import webauthn_mds_import
@@ -86,7 +85,7 @@ class AuthenticatorValidateStageWebAuthnTests(FlowTestCase):
 
     def test_device_challenge_webauthn(self):
         """Test webauthn"""
-        request = get_request("/")
+        request = self.request_factory.get("/")
         request.user = self.user
 
         webauthn_device = WebAuthnDevice.objects.create(
@@ -135,7 +134,7 @@ class AuthenticatorValidateStageWebAuthnTests(FlowTestCase):
         """Test webauthn (getting device challenges with a webauthn
         device that is not allowed due to aaguid restrictions)"""
         webauthn_mds_import.send(force=True).get_result()
-        request = get_request("/")
+        request = self.request_factory.get("/")
         request.user = self.user
 
         WebAuthnDevice.objects.create(
@@ -179,7 +178,7 @@ class AuthenticatorValidateStageWebAuthnTests(FlowTestCase):
 
     def test_raw_get_challenge(self):
         """Test webauthn"""
-        request = get_request("/")
+        request = self.request_factory.get("/")
         request.user = self.user
 
         stage = AuthenticatorValidateStage.objects.create(
@@ -232,7 +231,7 @@ class AuthenticatorValidateStageWebAuthnTests(FlowTestCase):
 
     def test_get_challenge_userless(self):
         """Test webauthn (userless)"""
-        request = get_request("/")
+        request = self.request_factory.get("/")
         stage = AuthenticatorValidateStage.objects.create(
             name=generate_id(), webauthn_user_verification=UserVerification.PREFERRED
         )
@@ -257,6 +256,105 @@ class AuthenticatorValidateStageWebAuthnTests(FlowTestCase):
         self.assertEqual(challenge["rpId"], "testserver")
         self.assertEqual(challenge["timeout"], 60000)
         self.assertEqual(challenge["userVerification"], "preferred")
+
+    def test_device_challenge_webauthn_with_hints(self):
+        """Test that webauthn hints are included in authentication challenge"""
+        request = self.request_factory.get("/")
+        request.user = self.user
+
+        webauthn_device = WebAuthnDevice.objects.create(
+            user=self.user,
+            public_key=bytes_to_base64url(b"qwerqwerqre"),
+            credential_id=bytes_to_base64url(b"foobarbaz"),
+            sign_count=0,
+            rp_id=generate_id(),
+        )
+        stage = AuthenticatorValidateStage.objects.create(
+            name=generate_id(),
+            last_auth_threshold="milliseconds=0",
+            not_configured_action=NotConfiguredAction.CONFIGURE,
+            device_classes=[DeviceClasses.WEBAUTHN],
+            webauthn_user_verification=UserVerification.PREFERRED,
+            webauthn_hints=[WebAuthnHint.CLIENT_DEVICE, WebAuthnHint.HYBRID],
+        )
+        plan = FlowPlan("")
+        stage_view = AuthenticatorValidateStageView(
+            FlowExecutorView(flow=None, current_stage=stage, plan=plan), request=request
+        )
+        challenge = get_challenge_for_device(stage_view, stage, webauthn_device)
+        self.assertEqual(challenge["hints"], ["client-device", "hybrid"])
+
+    def test_device_challenge_webauthn_no_hints(self):
+        """Test that hints key is absent when no hints configured"""
+        request = self.request_factory.get("/")
+        request.user = self.user
+
+        webauthn_device = WebAuthnDevice.objects.create(
+            user=self.user,
+            public_key=bytes_to_base64url(b"qwerqwerqre"),
+            credential_id=bytes_to_base64url(b"foobarbaz"),
+            sign_count=0,
+            rp_id=generate_id(),
+        )
+        stage = AuthenticatorValidateStage.objects.create(
+            name=generate_id(),
+            last_auth_threshold="milliseconds=0",
+            not_configured_action=NotConfiguredAction.CONFIGURE,
+            device_classes=[DeviceClasses.WEBAUTHN],
+            webauthn_user_verification=UserVerification.PREFERRED,
+        )
+        plan = FlowPlan("")
+        stage_view = AuthenticatorValidateStageView(
+            FlowExecutorView(flow=None, current_stage=stage, plan=plan), request=request
+        )
+        challenge = get_challenge_for_device(stage_view, stage, webauthn_device)
+        self.assertNotIn("hints", challenge)
+
+    def test_get_challenge_userless_with_hints(self):
+        """Test that hints are included in userless/passwordless challenge"""
+        request = self.request_factory.get("/")
+        stage = AuthenticatorValidateStage.objects.create(
+            name=generate_id(),
+            webauthn_user_verification=UserVerification.PREFERRED,
+            webauthn_hints=[WebAuthnHint.SECURITY_KEY, WebAuthnHint.CLIENT_DEVICE],
+        )
+        plan = FlowPlan("")
+        stage_view = AuthenticatorValidateStageView(
+            FlowExecutorView(flow=None, current_stage=stage, plan=plan), request=request
+        )
+        challenge = get_webauthn_challenge_without_user(stage_view, stage)
+        self.assertEqual(challenge["hints"], ["security-key", "client-device"])
+
+    def test_device_challenge_webauthn_hints_order_preserved(self):
+        """Test that hint order is preserved in authentication challenge"""
+        request = self.request_factory.get("/")
+        request.user = self.user
+
+        webauthn_device = WebAuthnDevice.objects.create(
+            user=self.user,
+            public_key=bytes_to_base64url(b"qwerqwerqre"),
+            credential_id=bytes_to_base64url(b"foobarbaz"),
+            sign_count=0,
+            rp_id=generate_id(),
+        )
+        stage = AuthenticatorValidateStage.objects.create(
+            name=generate_id(),
+            last_auth_threshold="milliseconds=0",
+            not_configured_action=NotConfiguredAction.CONFIGURE,
+            device_classes=[DeviceClasses.WEBAUTHN],
+            webauthn_user_verification=UserVerification.PREFERRED,
+            webauthn_hints=[
+                WebAuthnHint.HYBRID,
+                WebAuthnHint.SECURITY_KEY,
+                WebAuthnHint.CLIENT_DEVICE,
+            ],
+        )
+        plan = FlowPlan("")
+        stage_view = AuthenticatorValidateStageView(
+            FlowExecutorView(flow=None, current_stage=stage, plan=plan), request=request
+        )
+        challenge = get_challenge_for_device(stage_view, stage, webauthn_device)
+        self.assertEqual(challenge["hints"], ["hybrid", "security-key", "client-device"])
 
     def test_validate_challenge_unrestricted(self):
         """Test webauthn authentication (unrestricted webauthn device)"""
@@ -493,7 +591,7 @@ class AuthenticatorValidateStageWebAuthnTests(FlowTestCase):
 
     def test_validate_challenge_invalid(self):
         """Test webauthn"""
-        request = get_request("/")
+        request = self.request_factory.get("/")
         request.user = self.user
 
         WebAuthnDevice.objects.create(
@@ -517,7 +615,7 @@ class AuthenticatorValidateStageWebAuthnTests(FlowTestCase):
         plan.context[PLAN_CONTEXT_WEBAUTHN_CHALLENGE] = base64url_to_bytes(
             "g98I51mQvZXo5lxLfhrD2zfolhZbLRyCgqkkYap1jwSaJ13BguoJWCF9_Lg3AgO4Wh-Bqa556JE20oKsYbl6RA"
         )
-        request = get_request("/")
+        request = self.request_factory.get("/")
 
         stage_view = AuthenticatorValidateStageView(
             FlowExecutorView(flow=flow, current_stage=stage, plan=plan), request=request

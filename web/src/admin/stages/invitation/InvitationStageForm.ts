@@ -1,7 +1,8 @@
+import "#components/ak-switch-input";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { BaseStageForm } from "#admin/stages/BaseStageForm";
 
@@ -14,24 +15,24 @@ import { customElement } from "lit/decorators.js";
 @customElement("ak-stage-invitation-form")
 export class InvitationStageForm extends BaseStageForm<InvitationStage> {
     loadInstance(pk: string): Promise<InvitationStage> {
-        return new StagesApi(DEFAULT_CONFIG).stagesInvitationStagesRetrieve({
+        return aki(StagesApi).stagesInvitationStagesRetrieve({
             stageUuid: pk,
         });
     }
 
     async send(data: InvitationStage): Promise<InvitationStage> {
         if (this.instance) {
-            return new StagesApi(DEFAULT_CONFIG).stagesInvitationStagesUpdate({
+            return aki(StagesApi).stagesInvitationStagesUpdate({
                 stageUuid: this.instance.pk || "",
                 invitationStageRequest: data,
             });
         }
-        return new StagesApi(DEFAULT_CONFIG).stagesInvitationStagesCreate({
+        return aki(StagesApi).stagesInvitationStagesCreate({
             invitationStageRequest: data,
         });
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html` <span>
                 ${msg("This stage can be included in enrollment flows to accept invitations.")}
             </span>
@@ -45,28 +46,14 @@ export class InvitationStageForm extends BaseStageForm<InvitationStage> {
             </ak-form-element-horizontal>
             <ak-form-group open label="${msg("Stage-specific settings")}">
                 <div class="pf-c-form">
-                    <ak-form-element-horizontal name="continueFlowWithoutInvitation">
-                        <label class="pf-c-switch">
-                            <input
-                                class="pf-c-switch__input"
-                                type="checkbox"
-                                ?checked=${this.instance?.continueFlowWithoutInvitation ?? false}
-                            />
-                            <span class="pf-c-switch__toggle">
-                                <span class="pf-c-switch__toggle-icon">
-                                    <i class="fas fa-check" aria-hidden="true"></i>
-                                </span>
-                            </span>
-                            <span class="pf-c-switch__label"
-                                >${msg("Continue flow without invitation")}</span
-                            >
-                        </label>
-                        <p class="pf-c-form__helper-text">
-                            ${msg(
-                                "If this flag is set, this Stage will jump to the next Stage when no Invitation is given. By default this Stage will cancel the Flow when no invitation is given.",
-                            )}
-                        </p>
-                    </ak-form-element-horizontal>
+                    <ak-switch-input
+                        name="continueFlowWithoutInvitation"
+                        label=${msg("Continue flow without invitation")}
+                        ?checked=${this.instance?.continueFlowWithoutInvitation ?? false}
+                        help=${msg(
+                            "If this flag is set, this Stage will jump to the next Stage when no Invitation is given. By default this Stage will cancel the Flow when no invitation is given.",
+                        )}
+                    ></ak-switch-input>
                 </div>
             </ak-form-group>`;
     }

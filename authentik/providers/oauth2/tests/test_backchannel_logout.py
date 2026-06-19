@@ -4,21 +4,19 @@ from unittest.mock import Mock, patch
 
 import jwt
 from django.test import RequestFactory
-from django.utils import timezone
 from dramatiq.results.errors import ResultFailure
 from requests import Response
 from requests.exceptions import HTTPError, Timeout
 
-from authentik.core.models import Application, AuthenticatedSession, Session
+from authentik.core.models import Application
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
 from authentik.lib.generators import generate_id
 from authentik.providers.oauth2.id_token import hash_session_key
 from authentik.providers.oauth2.models import (
-    AccessToken,
+    OAuth2LogoutMethod,
     OAuth2Provider,
     RedirectURI,
     RedirectURIMatchingMode,
-    RefreshToken,
 )
 from authentik.providers.oauth2.tasks import send_backchannel_logout_request
 from authentik.providers.oauth2.tests.utils import OAuthTestCase
@@ -44,52 +42,6 @@ class TestBackChannelLogout(OAuthTestCase):
         self.app.provider = self.provider
         self.app.save()
 
-    def _create_session(self, session_key=None):
-        """Create a session with the given key or a generated one"""
-        session_key = session_key or f"session-{generate_id()}"
-        session = Session.objects.create(
-            session_key=session_key,
-            expires=timezone.now() + timezone.timedelta(hours=1),
-            last_ip="255.255.255.255",
-        )
-        auth_session = AuthenticatedSession.objects.create(
-            session=session,
-            user=self.user,
-        )
-        return auth_session
-
-    def _create_token(
-        self, provider, user, session=None, token_type="access", token_id=None
-    ):  # nosec
-        """Create a token of the specified type"""
-        token_id = token_id or f"{token_type}-token-{generate_id()}"
-        kwargs = {
-            "provider": provider,
-            "user": user,
-            "session": session,
-            "token": token_id,
-            "_id_token": "{}",
-            "auth_time": timezone.now(),
-        }
-
-        if token_type == "access":  # nosec
-            return AccessToken.objects.create(**kwargs)
-        else:  # refresh
-            return RefreshToken.objects.create(**kwargs)
-
-    def _create_provider(self, name=None):
-        """Create an OAuth2 provider"""
-        name = name or f"provider-{generate_id()}"
-        provider = OAuth2Provider.objects.create(
-            name=name,
-            authorization_flow=create_test_flow(),
-            redirect_uris=[
-                RedirectURI(RedirectURIMatchingMode.STRICT, f"http://{name}/callback"),
-            ],
-            signing_key=self.keypair,
-        )
-        return provider
-
     def _create_logout_token(
         self,
         provider: OAuth2Provider | None = None,
@@ -112,11 +64,16 @@ class TestBackChannelLogout(OAuthTestCase):
 
     def _decode_token(self, token, provider=None):
         """Helper to decode and validate a JWT token"""
+        decoded = self._decode_token_complete(token, provider)
+        return decoded["payload"]
+
+    def _decode_token_complete(self, token, provider=None):
+        """Helper to decode and validate a JWT token into a header, and payload dict"""
         provider = provider or self.provider
         key, alg = provider.jwt_key
         if alg != "HS256":
             key = provider.signing_key.public_key
-        return jwt.decode(
+        return jwt.decode_complete(
             token, key, algorithms=[alg], options={"verify_exp": False, "verify_aud": False}
         )
 
@@ -154,11 +111,23 @@ class TestBackChannelLogout(OAuthTestCase):
         self.assertEqual(decoded3["sub"], sub)
         self.assertIn("events", decoded3)
 
+    def test_create_logout_token_header_type(self):
+        """Test creating logout tokens and checking if the token header type is correct"""
+        session_id = "test-session-123"
+        token1 = self._create_logout_token(session_id=session_id)
+
+        decoded = self._decode_token_complete(token1)
+
+        self.assertIsNotNone(decoded["header"])
+        self.assertEqual(decoded["header"]["typ"], "logout+jwt")
+
     @patch("authentik.providers.oauth2.tasks.get_http_session")
     def test_send_backchannel_logout_request_scenarios(self, mock_get_session):
         """Test various scenarios for backchannel logout request task"""
         # Setup provider with backchannel logout URI
-        self.provider.backchannel_logout_uri = "http://testserver/backchannel_logout"
+
+        self.provider.logout_uri = "http://testserver/backchannel_logout"
+        self.provider.logout_method = OAuth2LogoutMethod.BACKCHANNEL
         self.provider.save()
 
         # Setup mock session and response
@@ -193,7 +162,7 @@ class TestBackChannelLogout(OAuthTestCase):
 
         # Scenario 3: No URI configured
         mock_session.post.reset_mock()
-        self.provider.backchannel_logout_uri = ""
+        self.provider.logout_uri = ""
         self.provider.save()
         result = send_backchannel_logout_request.send(
             self.provider.pk, "http://testserver", sub="test-user-uid"
@@ -215,7 +184,8 @@ class TestBackChannelLogout(OAuthTestCase):
 
         # Scenario 6: Request timeout
         mock_session.post.side_effect = Timeout("Request timed out")
-        self.provider.backchannel_logout_uri = "http://testserver/backchannel_logout"
+        self.provider.logout_uri = "http://testserver/backchannel_logout"
+        self.provider.logout_method = OAuth2LogoutMethod.BACKCHANNEL
         self.provider.save()
         with self.assertRaises(ResultFailure):
             send_backchannel_logout_request.send(

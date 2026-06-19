@@ -4,7 +4,9 @@ sidebar_label: Gitea
 support_level: community
 ---
 
-## What is Gitea
+import RedirectURI20265Note from "../../\_redirect-uri-2026-5-note.mdx";
+
+## What is Gitea?
 
 > Gitea is a community managed lightweight code hosting solution written in Go. It is published under the MIT license.
 >
@@ -23,26 +25,29 @@ This documentation lists only the settings that you need to change from their de
 
 ## authentik configuration
 
+<RedirectURI20265Note />
+
 To support the integration of Gitea with authentik, you need to create an application/provider pair in authentik.
 
 ### Create an application and provider in authentik
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
+2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
 
 - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
 - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
 - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
     - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
-    - Set a `Strict` redirect URI to `https://<gitea.company>/user/oauth2/authentik/callback`.
+    - Add a **Redirect URI** of type `Strict` `Authorization` as `https://<gitea.company>/user/oauth2/authentik/callback`.
     - Select any available signing key.
-- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+    - Under **Advanced protocol settings** > **Selected Scopes**, add `authentik default OAuth Mapping: OpenID 'entitlements'`.
+- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 
 3. Click **Submit** to save the new application and provider.
 
 ## Gitea configuration
 
-1. Log in to Gitea as an administrator, then click on your profile icon at the top right and select **Site Administration**.
+1. Log in to Gitea as an administrator, then click your profile icon in the top-right corner and select **Site Administration**.
 2. Select the **Authentication Sources** tab and then click on **Add Authentication Source**.
 3. Set the following required configurations:
     - **Authentication Name**: `authentik` (This must match the name used in the **Redirect URI** in the previous section)
@@ -59,51 +64,47 @@ To support the integration of Gitea with authentik, you need to create an applic
 
 ### Claims for authorization management (optional)
 
-:::info
-This step is _optional_ and shows how to set claims to control the permissions of users in Gitea by adding them to groups.
-:::
+This optional section shows how to set claims to control the permissions of users in Gitea by assigning them application entitlements.
 
-#### Create groups
+#### Create application entitlements
 
-The following groups will be created:
+The following application entitlements will be created:
 
 - `gituser`: normal Gitea users.
 - `gitadmin`: Gitea users with administrative permissions.
 - `gitrestricted`: restricted Gitea users.
 
-:::info
-Users who are in none of these groups will not be able to log in to gitea.
-:::
+Users who are assigned none of these entitlements will not be able to log in to Gitea.
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Directory** > **Groups** and click **Create**.
-3. Set the group name to `gituser` and click **Create**.
-4. Repeat steps 2 and 3 to create two additional groups named `gitadmin` and `gitrestricted`.
-5. Click the name of a newly created group and navigate to the **Users** tab.
-6. Click **Add existing user**, select the user/s that need Gitea access and click **Add**.
-7. Repeat steps 5 and 6 for the two additional groups.
-
-:::info
-You can add users to the groups at any point.
-:::
+2. Navigate to **Applications** > **Applications** and open the Gitea application.
+3. Click the **Application entitlements** tab.
+4. Click **New Entitlement**, set the name to `gituser`, and then click **Create**.
+5. Repeat step 4 to create two additional entitlements named `gitadmin` and `gitrestricted`.
+6. Open an entitlement and bind the users or groups that need Gitea access to it.
+7. Repeat step 6 for the two additional entitlements.
 
 #### Create custom property mapping
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Customization** > **Property Mappings** and click **Create**. Create a **Scope Mapping** with the following configurations:
-    - **Name**: Choose a descriptive name (.e.g `authentik gitea OAuth Mapping: OpenID 'gitea'`)
+    - **Name**: Choose a descriptive name (e.g. `authentik gitea OAuth Mapping: OpenID 'gitea'`)
     - **Scope name**: `gitea`
     - **Expression**:
 
     ```python showLineNumbers
+    entitlement_names = {
+        entitlement.name
+        for entitlement in request.user.app_entitlements(provider.application)
+    }
     gitea_claims = {}
 
-    if request.user.ak_groups.filter(name="gituser").exists():
-        gitea_claims["gitea"]= "user"
-    if request.user.ak_groups.filter(name="gitadmin").exists():
-        gitea_claims["gitea"]= "admin"
-    if request.user.ak_groups.filter(name="gitrestricted").exists():
-        gitea_claims["gitea"]= "restricted"
+    if "gituser" in entitlement_names:
+        gitea_claims["gitea"] = "user"
+    if "gitadmin" in entitlement_names:
+        gitea_claims["gitea"] = "admin"
+    if "gitrestricted" in entitlement_names:
+        gitea_claims["gitea"] = "restricted"
 
     return gitea_claims
     ```
@@ -125,10 +126,10 @@ You can add users to the groups at any point.
 #### Configure Gitea to use the new claims
 
 :::info
-For this to function, the Gitea `ENABLE_AUTO_REGISTRATION: true` variable must be set. More information on configurations variables in the [Gitea Configuration Cheat Sheet](https://docs.gitea.com/administration/config-cheat-sheet).
+For this to function, the Gitea `ENABLE_AUTO_REGISTRATION: true` variable must be set. More information on configuration variables is available in the [Gitea Configuration Cheat Sheet](https://docs.gitea.com/administration/config-cheat-sheet).
 :::
 
-1. Log in to Gitea as an admin. Click on your profile icon at the top right > **Site Administration**.
+1. Log in to Gitea as an admin. Click your profile icon in the top-right corner, and then click **Site Administration**.
 2. Select the **Authentication Sources** tab and edit the **authentik** Authentication Source.
 3. Set the following configurations:
     - **Additional Scopes**: `email profile gitea`
@@ -139,11 +140,11 @@ For this to function, the Gitea `ENABLE_AUTO_REGISTRATION: true` variable must b
 4. Click **Update Authentication Source**.
 
 :::info
-Users who are not part of any defined group will be denied login access.
-In contrast, members of the `gitadmin` group will have full administrative privileges, while those in the `gitrestricted` group will have limited access.
+Users who are assigned none of the defined entitlements will be denied login access.
+In contrast, users assigned the `gitadmin` entitlement will have full administrative privileges, while users assigned the `gitrestricted` entitlement will have limited access.
 :::
 
-### Helm Chart Configuration
+### Helm chart configuration
 
 authentik authentication can be configured automatically in Kubernetes deployments using its [Helm chart](https://gitea.com/gitea/helm-chart/).
 

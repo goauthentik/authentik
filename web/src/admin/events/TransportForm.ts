@@ -1,20 +1,23 @@
 import "#components/ak-hidden-text-input";
+import "#components/ak-switch-input";
+import "#components/ak-text-input";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/Radio";
 import "#elements/forms/SearchSelect/index";
+import "#admin/common/ak-crypto-certificate-search";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { ModelForm } from "#elements/forms/ModelForm";
 
 import {
     EventsApi,
     NotificationTransport,
-    NotificationTransportModeEnum,
     NotificationWebhookMapping,
     PropertymappingsApi,
     PropertymappingsNotificationListRequest,
     StagesApi,
+    TransportModeEnum,
     TypeCreate,
 } from "@goauthentik/api";
 
@@ -25,8 +28,11 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-event-transport-form")
 export class TransportForm extends ModelForm<NotificationTransport, string> {
+    public static override verboseName = msg("Notification Transport");
+    public static override verboseNamePlural = msg("Notification Transports");
+
     loadInstance(pk: string): Promise<NotificationTransport> {
-        return new EventsApi(DEFAULT_CONFIG)
+        return aki(EventsApi)
             .eventsTransportsRetrieve({
                 uuid: pk,
             })
@@ -36,7 +42,7 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
             });
     }
     async load(): Promise<void> {
-        this.templates = await new StagesApi(DEFAULT_CONFIG).stagesEmailTemplatesList();
+        this.templates = await aki(StagesApi).stagesEmailTemplatesList();
     }
 
     templates?: TypeCreate[];
@@ -55,12 +61,12 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
 
     async send(data: NotificationTransport): Promise<NotificationTransport> {
         if (this.instance) {
-            return new EventsApi(DEFAULT_CONFIG).eventsTransportsUpdate({
+            return aki(EventsApi).eventsTransportsUpdate({
                 uuid: this.instance.pk || "",
                 notificationTransportRequest: data,
             });
         }
-        return new EventsApi(DEFAULT_CONFIG).eventsTransportsCreate({
+        return aki(EventsApi).eventsTransportsCreate({
             notificationTransportRequest: data,
         });
     }
@@ -71,72 +77,62 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
         this.showEmail = false;
 
         switch (mode) {
-            case NotificationTransportModeEnum.Webhook:
-            case NotificationTransportModeEnum.WebhookSlack:
+            case TransportModeEnum.Webhook:
+            case TransportModeEnum.WebhookSlack:
                 this.showWebhook = true;
                 break;
-            case NotificationTransportModeEnum.Email:
+            case TransportModeEnum.Email:
                 this.showEmail = true;
                 break;
-            case NotificationTransportModeEnum.Local:
+            case TransportModeEnum.Local:
             default:
                 // Both flags remain false
                 break;
         }
     }
 
-    renderForm(): TemplateResult {
-        return html`
-            <ak-form-element-horizontal label=${msg("Name")} required name="name">
-                <input
-                    type="text"
-                    value="${ifDefined(this.instance?.name)}"
-                    class="pf-c-form-control"
-                    required
-                />
-            </ak-form-element-horizontal>
-            <ak-form-element-horizontal name="sendOnce">
-                <label class="pf-c-switch">
-                    <input
-                        class="pf-c-switch__input"
-                        type="checkbox"
-                        ?checked=${this.instance?.sendOnce ?? false}
-                    />
-                    <span class="pf-c-switch__toggle">
-                        <span class="pf-c-switch__toggle-icon">
-                            <i class="fas fa-check" aria-hidden="true"></i>
-                        </span>
-                    </span>
-                    <span class="pf-c-switch__label">${msg("Send once")}</span>
-                </label>
-                <p class="pf-c-form__helper-text">
-                    ${msg(
-                        "Only send notification once, for example when sending a webhook into a chat channel.",
-                    )}
-                </p>
-            </ak-form-element-horizontal>
+    protected override renderForm(): TemplateResult {
+        return html`<ak-text-input
+                label=${msg("Transport Name")}
+                placeholder=${msg("Type a name for this transport...")}
+                autofocus
+                spellcheck="false"
+                autocomplete="off"
+                required
+                name="name"
+                value="${ifDefined(this.instance?.name)}"
+            ></ak-text-input>
+            <ak-switch-input
+                name="sendOnce"
+                label=${msg("Send once")}
+                ?checked=${this.instance?.sendOnce ?? false}
+                help=${msg(
+                    "Only send notification once, for example when sending a webhook into a chat channel.",
+                )}
+            >
+            </ak-switch-input>
             <ak-form-element-horizontal label=${msg("Mode")} required name="mode">
                 <ak-radio
-                    @change=${(ev: CustomEvent<{ value: NotificationTransportModeEnum }>) => {
+                    @change=${(ev: CustomEvent<{ value: TransportModeEnum }>) => {
                         this.onModeChange(ev.detail.value);
                     }}
                     .options=${[
                         {
                             label: msg("Local (notifications will be created within authentik)"),
-                            value: NotificationTransportModeEnum.Local,
+                            value: TransportModeEnum.Local,
                             default: true,
                         },
                         {
                             label: msg("Email"),
-                            value: NotificationTransportModeEnum.Email,
+                            value: TransportModeEnum.Email,
                         },
                         {
                             label: msg("Webhook (generic)"),
-                            value: NotificationTransportModeEnum.Webhook,
+                            value: TransportModeEnum.Webhook,
                         },
                         {
                             label: msg("Webhook (Slack/Discord)"),
-                            value: NotificationTransportModeEnum.WebhookSlack,
+                            value: TransportModeEnum.WebhookSlack,
                         },
                     ]}
                     .value=${this.instance?.mode}
@@ -154,6 +150,20 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
             </ak-hidden-text-input>
             <ak-form-element-horizontal
                 ?hidden=${!this.showWebhook}
+                label=${msg("Webhook Certificate Authority")}
+                name="webhookCa"
+            >
+                <ak-crypto-certificate-search
+                    .certificate=${this.instance?.webhookCa}
+                ></ak-crypto-certificate-search>
+                <p class="pf-c-form__helper-text">
+                    ${msg(
+                        "Keypair used to validate the certificate of the webhook endpoint. When not configured, the standard CA bundle is used.",
+                    )}
+                </p>
+            </ak-form-element-horizontal>
+            <ak-form-element-horizontal
+                ?hidden=${!this.showWebhook}
                 label=${msg("Webhook Body Mapping")}
                 name="webhookMappingBody"
             >
@@ -167,17 +177,12 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
                         if (query !== undefined) {
                             args.search = query;
                         }
-                        const items = await new PropertymappingsApi(
-                            DEFAULT_CONFIG,
-                        ).propertymappingsNotificationList(args);
+                        const items =
+                            await aki(PropertymappingsApi).propertymappingsNotificationList(args);
                         return items.results;
                     }}
-                    .renderElement=${(item: NotificationWebhookMapping): string => {
-                        return item.name;
-                    }}
-                    .value=${(item: NotificationWebhookMapping | undefined): string | undefined => {
-                        return item?.pk;
-                    }}
+                    .renderElement=${(item: NotificationWebhookMapping) => item.name}
+                    .value=${(item: NotificationWebhookMapping | null) => item?.pk}
                     .selected=${(item: NotificationWebhookMapping): boolean => {
                         return this.instance?.webhookMappingBody === item.pk;
                     }}
@@ -200,17 +205,14 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
                         if (query !== undefined) {
                             args.search = query;
                         }
-                        const items = await new PropertymappingsApi(
-                            DEFAULT_CONFIG,
-                        ).propertymappingsNotificationList(args);
+                        const items =
+                            await aki(PropertymappingsApi).propertymappingsNotificationList(args);
                         return items.results;
                     }}
                     .renderElement=${(item: NotificationWebhookMapping): string => {
                         return item.name;
                     }}
-                    .value=${(item: NotificationWebhookMapping | undefined): string | undefined => {
-                        return item?.pk;
-                    }}
+                    .value=${(item: NotificationWebhookMapping | null) => item?.pk}
                     .selected=${(item: NotificationWebhookMapping): boolean => {
                         return this.instance?.webhookMappingHeaders === item.pk;
                     }}
@@ -249,8 +251,7 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
                         </option>`;
                     })}
                 </select>
-            </ak-form-element-horizontal>
-        `;
+            </ak-form-element-horizontal> `;
     }
 }
 

@@ -6,24 +6,28 @@ on:
   schedule:
     # Every night at 3am
     - cron: "0 3 * * *"
+  pull_request:
+    paths:
+      # Needs to refer to itself
+      - .github/workflows/ci-main-daily.yml
 
 jobs:
   test-container:
-    if: ${{ github.repository != 'goauthentik/authentik-internal' }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
         version:
           - docs
-          - version-2025-4
-          - version-2025-2
+          - version-2026-2
+          - version-2026-5
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v5
       - run: |
+          set -euo pipefail
           current="$(pwd)"
           dir="/tmp/authentik/${{ matrix.version }}"
-          mkdir -p $dir
-          cd $dir
-          wget https://${{ matrix.version }}.goauthentik.io/docker-compose.yml
-          ${current}/scripts/test_docker.sh
+          mkdir -p "${dir}/lifecycle/container"
+          cd "${dir}"
+          wget "https://${{ matrix.version }}.goauthentik.io/compose.yml" -O "${dir}/lifecycle/container/compose.yml"
+          "${current}/scripts/test_docker.sh"

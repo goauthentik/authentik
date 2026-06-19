@@ -3,9 +3,8 @@ import "#components/ak-text-input";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/ModalForm";
-import "#elements/forms/ProxyForm";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { ModelForm } from "#elements/forms/ModelForm";
 
@@ -19,12 +18,12 @@ import { ifDefined } from "lit/directives/if-defined.js";
 @customElement("ak-schedule-form")
 export class ScheduleForm extends ModelForm<Schedule, string> {
     async loadInstance(pk: string): Promise<Schedule> {
-        return await new TasksApi(DEFAULT_CONFIG).tasksSchedulesRetrieve({
+        return aki(TasksApi).tasksSchedulesRetrieve({
             id: pk,
         });
     }
 
-    getSuccessMessage(): string {
+    public override getSuccessMessage(): string {
         if (!this.instance) {
             return "";
         }
@@ -35,13 +34,14 @@ export class ScheduleForm extends ModelForm<Schedule, string> {
         if (!this.instance) {
             return;
         }
-        return await new TasksApi(DEFAULT_CONFIG).tasksSchedulesUpdate({
+
+        return aki(TasksApi).tasksSchedulesUpdate({
             id: this.instance.id,
             scheduleRequest: data,
         });
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
             <ak-text-input
                 name="crontab"

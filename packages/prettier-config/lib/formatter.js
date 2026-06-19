@@ -1,6 +1,6 @@
-import { format } from "prettier";
-
 import { AuthentikPrettierConfig } from "./constants.js";
+
+import { format } from "prettier";
 
 /**
  * Format using Prettier.

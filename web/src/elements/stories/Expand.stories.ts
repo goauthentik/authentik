@@ -72,8 +72,8 @@ export const DefaultStory: StoryObj = {
         container(
             html` <ak-expand
                 ?expanded=${expanded}
-                textOpen=${ifDefined(textOpen)}
-                textClosed=${ifDefined(textClosed)}
+                text-open=${ifDefined(textOpen)}
+                text-closed=${ifDefined(textClosed)}
                 ><div>
                     <p>Μήτ᾽ ἔμοι μέλι μήτε μέλισσα</p>
                     <p>"Neither the bee nor the honey for me." - Sappho, 600 BC</p>

@@ -1,6 +1,15 @@
 ---
-title: Proxy Provider
+title: Proxy provider
 ---
+
+The proxy provider protects applications that do not support native authentication protocols such as OIDC, SAML, or LDAP.
+
+Depending on the selected mode, one of the following happens:
+
+1. The authentik outpost proxies requests to the upstream application.
+2. Your existing reverse proxy handles the application traffic and asks the authentik outpost to check authentication and authorization.
+
+Refer to the [create a proxy provider](./create-proxy-provider.md) documentation for setup instructions.
 
 ```mermaid
 sequenceDiagram
@@ -20,92 +29,57 @@ sequenceDiagram
     end
 ```
 
-## Headers
+## Proxy modes
+
+The proxy provider supports the following modes:
+
+| Mode                              | Use when                                                                                                                 |
+| --------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| Proxy                             | The authentik outpost should proxy traffic to one upstream application.                                                  |
+| Forward auth (single application) | Your existing reverse proxy should proxy traffic to one application and use authentik only for authentication checks.    |
+| Forward auth (domain level)       | Your existing reverse proxy should use one proxy provider to protect multiple applications under the same parent domain. |
+
+Domain-level forward auth cannot enforce different application-level authorization rules for each protected application. Use single-application mode when each application needs its own policies, bindings, or authorization behavior.
+
+## Headers sent to upstream applications
 
 The proxy outpost sets the following user-specific headers:
 
-### `X-authentik-username`
+| Header                     | Example value                                                      | Description                                                        |
+| -------------------------- | ------------------------------------------------------------------ | ------------------------------------------------------------------ |
+| `X-authentik-username`     | `akadmin`                                                          | Username of the currently logged in user.                          |
+| `X-authentik-groups`       | `foo\|bar\|baz`                                                    | Groups the user is a member of, separated by pipes.                |
+| `X-authentik-entitlements` | `foo\|bar\|baz`                                                    | Entitlements the user has for the application, separated by pipes. |
+| `X-authentik-email`        | `root@localhost`                                                   | Email address of the currently logged in user.                     |
+| `X-authentik-name`         | `authentik Default Admin`                                          | Full name of the currently logged in user.                         |
+| `X-authentik-uid`          | `900347b8a29876b45ca6f75722635ecfedf0e931c6022e3a29a8aa13fb5516fb` | Hashed identifier of the currently logged in user.                 |
 
-Example value: `akadmin`
+The proxy outpost also sets the following application-specific headers:
 
-The username of the currently logged in user
+| Header                      | Example value                  | Description                                               |
+| --------------------------- | ------------------------------ | --------------------------------------------------------- |
+| `X-authentik-meta-outpost`  | `authentik Embedded Outpost`   | Name of the authentik outpost.                            |
+| `X-authentik-meta-provider` | `test`                         | Name of the authentik provider.                           |
+| `X-authentik-meta-app`      | `test`                         | Slug of the authentik application.                        |
+| `X-authentik-meta-version`  | `goauthentik.io/outpost/1.2.3` | Version of the authentik outpost.                         |
+| `X-Forwarded-Host`          | `app.company`                  | Original host sent by the client. Only set in proxy mode. |
 
-### `X-authentik-groups`
-
-Example value: `foo|bar|baz`
-
-The groups the user is member of, separated by a pipe
-
-### `X-authentik-entitlements`
-
-Example value: `foo|bar|baz`
-
-The entitlements on the application this user has access to, separated by a pipe
-
-### `X-authentik-email`
-
-Example value: `root@localhost`
-
-The email address of the currently logged in user
-
-### `X-authentik-name`
-
-Example value: `authentik Default Admin`
-
-Full name of the current user
-
-### `X-authentik-uid`
-
-Example value: `900347b8a29876b45ca6f75722635ecfedf0e931c6022e3a29a8aa13fb5516fb`
-
-The hashed identifier of the currently logged in user.
-
-Besides these user-specific headers, some application specific headers are also set:
-
-### `X-authentik-meta-outpost`
-
-Example value: `authentik Embedded Outpost`
-
-The authentik outpost's name.
-
-### `X-authentik-meta-provider`
-
-Example value: `test`
-
-The authentik provider's name.
-
-### `X-authentik-meta-app`
-
-Example value: `test`
-
-The authentik application's slug.
-
-### `X-authentik-meta-version`
-
-Example value: `goauthentik.io/outpost/1.2.3`
-
-The authentik outpost's version.
-
-### `X-Forwarded-Host`
-
-:::info
-Only set in proxy mode
-:::
-
-The original Host header sent by the client. This is set as the `Host` header is set to the host of the configured backend.
+In proxy mode, `X-Forwarded-Host` preserves the original `Host` header sent by the client because the `Host` header is set to the configured upstream host.
 
 ### Additional headers
 
-Additionally, you can set `additionalHeaders` attribute on groups or users to set additional headers:
+You can set the `additionalHeaders` attribute on groups or users to send additional static headers:
 
 ```yaml
 additionalHeaders:
     X-test-header: test-value
 ```
 
+For dynamic headers, see the [custom headers](./custom_headers.md) documentation.
+
 ## HTTPS
 
-The outpost listens on both 9000 for HTTP and 9443 for HTTPS.
+The outpost listens on port `9000` for HTTP and port `9443` for HTTPS.
 
 :::info
 If your upstream host is HTTPS, and you're not using forward auth, you need to access the outpost over HTTPS too.
@@ -113,35 +87,36 @@ If your upstream host is HTTPS, and you're not using forward auth, you need to a
 
 ## Logging out
 
-Login is done automatically when you visit the domain without a valid cookie.
+Login is initiated automatically when you visit the protected application without a valid cookie.
 
-When using single-application mode, navigate to `app.domain.tld/outpost.goauthentik.io/sign_out`.
+To log out, navigate to `/outpost.goauthentik.io/sign_out` on the host that serves the outpost:
 
-When using domain-level mode, navigate to `auth.domain.tld/outpost.goauthentik.io/sign_out`, where auth.domain.tld is the external host configured for the provider.
+- In proxy mode and forward auth single-application mode, use the protected application host, for example `https://app.company/outpost.goauthentik.io/sign_out`.
+- In forward auth domain-level mode, use the authentication URL configured for the provider, for example `https://auth.company/outpost.goauthentik.io/sign_out`.
 
-To log out, navigate to `/outpost.goauthentik.io/sign_out`.
-
-Starting with authentik 2023.2, when logging out of a provider, all the users sessions within the respective outpost are invalidated.
+Logging out of a provider invalidates all sessions for that user within the respective outpost.
 
 ## Allowing unauthenticated requests
 
-To allow un-authenticated requests to certain paths/URLs, you can use the _Unauthenticated URLs_ / _Unauthenticated Paths_ field.
+To allow unauthenticated requests to specific paths or URLs, use the **Unauthenticated Paths** or **Unauthenticated URLs** field on the proxy provider.
 
-Each new line is interpreted as a regular expression, and is compiled and checked using the standard Golang regex parser.
+Each new line is interpreted as a regular expression and is compiled and checked using the standard Golang regex parser.
 
-The behaviour of this field changes depending on which mode you're in.
+The behavior of this field changes depending on the selected mode.
 
 ### Proxy and Forward auth (single application)
 
-In this mode, the regular expressions are matched against the Request's Path.
+In these modes, the regular expressions are matched against the request path.
 
 ### Forward auth (domain level)
 
-In this mode, the regular expressions are matched against the Request's full URL.
+In this mode, the regular expressions are matched against the full request URL, including the scheme and host.
 
 ## Dynamic backend selection
 
-You can configure the backend the proxy should access dynamically via scope mappings. To do this, create a scope mapping with a name and scope of your choice, and set the expression to:
+In proxy mode, you can configure the upstream backend dynamically with scope mappings.
+
+Create a scope mapping with a name and scope of your choice, and set the expression to:
 
 ```python
 return {
@@ -151,11 +126,13 @@ return {
 }
 ```
 
-Afterwards, edit the proxy provider and add this new mapping. The expression is only evaluated when the user logs into the application.
+Edit the proxy provider and add this mapping under **Additional scopes**. The expression is evaluated only when the user logs in to the application.
 
 ## Host header:ak-version[2025.6.1]
 
-By default, the proxy provider will use the forwarded host header received from the client. Starting with authentik 2025.6.1, it is possible to dynamically adjust the host header with a property mapping. To do this, create a scope mapping with a name and scope of your choice, and set the expression to:
+By default, the proxy provider uses the forwarded host header received from the client. Starting with authentik 2025.6.1, you can dynamically adjust the host header with a property mapping.
+
+Create a scope mapping with a name and scope of your choice, and set the expression to:
 
 ```python
 return {
@@ -165,7 +142,7 @@ return {
 }
 ```
 
-Afterwards, edit the proxy provider and add this new mapping. The expression is only evaluated when the user logs into the application.
+Edit the proxy provider and add this mapping under **Additional scopes**. The expression is evaluated only when the user logs in to the application.
 
 ### Dynamically setting host header
 
@@ -181,4 +158,12 @@ return {
 }
 ```
 
-Afterwards, edit the proxy provider and add this new mapping. The expression is only evaluated when the user logs into the application.
+Edit the proxy provider and add this mapping under **Additional scopes**. The expression is evaluated only when the user logs in to the application.
+
+## Proxy authentication
+
+When a user authenticates to the proxy, authentik uses OAuth2 behavior configured on the proxy provider. For header-based authentication options, see [Header authentication](./header_authentication.mdx) and [Machine-to-Machine](../oauth2/machine_to_machine.mdx).
+
+## Troubleshooting
+
+To obtain more detailed information about a failure, search the logs of the outpost or server container for the `client_id` of the proxy provider. The `client_id` is shown on the provider's **Authentication** tab.

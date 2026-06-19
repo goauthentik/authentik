@@ -4,9 +4,9 @@ sidebar_label: Cloudflare
 support_level: community
 ---
 
-## What is Cloudflare
+## What is Cloudflare?
 
-> Cloudflare is a global cloud services provider that enhances the security, performance, and reliability of websites and applications through its content delivery network (CDN), DDoS protection, and web infrastructure solutions.
+> Cloudflare Dashboard is the web interface used to manage Cloudflare accounts, zones, Zero Trust, security, performance, and other Cloudflare services.
 >
 > -- https://www.cloudflare.com/
 
@@ -14,81 +14,62 @@ support_level: community
 
 The following placeholders are used in this guide:
 
-- `acmecorp.company` is the FQDN of your company's email domain.
-- `authentik.company` is the FQDN of the authentik installation.
+- `company.com` is the email domain used by users in your Cloudflare organization.
 
 :::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
-:::warning Prerequisites
-Before proceeding, ensure you have a Cloudflare account and that authentik is already configured with Cloudflare Access, following the steps in our [integration guide](../../security/cloudflare-access/index.md).
+To proceed, you need:
+
+- A Cloudflare account where you are a **Super Administrator**.
+- A Cloudflare Zero Trust organization.
+- Control over DNS for `company.com`, because Cloudflare requires a TXT record to verify the email domain before Dashboard SSO can be enabled.
+- A working Cloudflare Access identity provider that uses authentik. If this is not already configured, follow the [Cloudflare Access integration guide](../../security/cloudflare-access/index.md) first.
+
+This guide configures SSO for the Cloudflare Dashboard. To protect applications with Cloudflare Access, use the [Cloudflare Access integration guide](../../security/cloudflare-access/index.md) instead.
+
+:::warning Cloudflare Dashboard SSO scope
+Cloudflare Dashboard SSO applies to every Cloudflare user with the configured email domain, including users who already exist in Cloudflare. Cloudflare does not support plus-addressed user emails, such as `user+cloudflare@company.com`, with Dashboard SSO.
 :::
+
+## authentik configuration
+
+Cloudflare Dashboard SSO uses your existing Cloudflare Access identity provider. Before enabling Dashboard SSO, make sure Cloudflare Access is configured to use authentik and that the identity provider test succeeds in Cloudflare.
+
+To test the identity provider, open the Cloudflare dashboard and navigate to **Zero Trust** > **Integrations** > **Identity providers**. Next to the authentik identity provider, click **Test** and complete the login flow.
 
 ## Cloudflare configuration
 
-1. Log in to the [Cloudflare Dashboard](https://dash.cloudflare.com) as an administrator.
-2. Navigate to **My account** (sidebar) > **Account API tokens** and click **Create**.
-3. Under **Create Custom Token**, select **Get Started**. Add an `Account` permission with the `SSO Connector: Edit` scope. Store this token securely; you will need it throughout this guide, and it can also be used to disable SSO if you are locked out. Complete the process by selecting **Continue to Summary**, then **Create Token**.
-4. Copy your Cloudflare Account ID from the dashboard URL. For example, in `https://dash.cloudflare.com/<account_id>/home/domains`, the `<account_id>` value is what you need.
-5. Export the following environment variables in your terminal:
+### Create a recovery API token
 
-```sh
-export CLOUDFLARE_API_TOKEN=<your_api_token>
-export CLOUDFLARE_ACCOUNT_ID=<your_account_id>
-```
+Cloudflare recommends creating an Account API token with the `SSO Connector Edit` role before enabling Dashboard SSO. Store this token securely so you can disable Dashboard SSO through the API if an identity provider misconfiguration locks you out.
 
-5. Create the SSO connector with the following command:
+1. Log in to the Cloudflare dashboard as a Super Administrator.
+2. Navigate to **Manage Account** > **Account API Tokens** and click **Create**.
+3. Under **Create Custom Token**, click **Get Started**.
+4. Add the **Account** permission `SSO Connector Edit`.
+5. Click **Continue to Summary**, then click **Create Token**.
 
-```sh
-curl "https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/sso_connectors" \
-  --request POST \
-  --header "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
-  --json '{"email_domain":"acmecorp.company"}'
-```
+### Register the email domain
 
-An example of a successful response:
+1. In the Cloudflare dashboard, navigate to **Manage Account** > **Members** > **Settings**.
+2. In the Dashboard SSO settings, add a new SSO domain.
+3. Enter `company.com` as the email domain, then create the SSO connector.
+4. Copy the verification code from Cloudflare.
+5. Create a DNS `TXT` record at `company.com` with the verification code as its value. The value must include the `cloudflare_dashboard_sso=` prefix.
+6. Wait for Cloudflare to verify domain ownership. If verification times out, begin verification again from the SSO connector actions menu after confirming the DNS record is available.
 
-```json
-{
-    "result": {
-        "id": "<your_sso_connector_id>",
-        "enabled": false,
-        "email_domain": "acmecorp.company",
-        "created_on": "2025-09-25T21:05:20.462622Z",
-        "updated_on": "2025-09-25T21:05:20.462622Z",
-        "verification": {
-            "code": "cloudflare_dashboard_sso=11111111111111111111",
-            "status": "pending"
-        }
-    },
-    "success": true,
-    "errors": [],
-    "messages": []
-}
-```
+### Enable Dashboard SSO
 
-6. Copy the `code` value and create a DNS TXT record containing it at the apex of your email domain.
-
-7. Next, export your connector ID:
-
-```sh
-export CLOUDFLARE_SSO_CONNECTOR_ID=<your_sso_connector_id>
-```
-
-8. After the DNS record has propagated, enable the connector with the following command:
-
-```sh
-curl "https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/sso_connectors/$CLOUDFLARE_SSO_CONNECTOR_ID" \
-  --request PATCH \
-  --header "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
-  --json '{"enabled": true}'
-```
+1. In the Cloudflare dashboard, navigate to **Manage Account** > **Members** > **Settings**.
+2. Open the actions menu for the SSO connector you created.
+3. Click **Enable**.
 
 ## Configuration verification
 
-To verify the integration, log in to your company’s Cloudflare Access installation with authentik. A new application named **SSO App** should appear in the dashboard. Selecting it should redirect you to the Cloudflare Dashboard.
+To confirm that authentik is properly configured with Cloudflare Dashboard SSO, open Cloudflare Dashboard in a private browser window and sign in with an email address from `company.com`. You should be redirected to authentik, complete the login flow, and return to Cloudflare Dashboard.
 
 ## Resources
 
-- [Cloudflare Dashboard SSO Documentation](https://developers.cloudflare.com/cloudflare-one/applications/configure-apps/dash-sso-apps/)
+- [Cloudflare Docs - Set up dashboard SSO](https://developers.cloudflare.com/fundamentals/manage-members/dashboard-sso/)

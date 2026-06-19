@@ -12,8 +12,10 @@ from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
 from authentik.flows.stage import PLAN_CONTEXT_PENDING_USER_IDENTIFIER
 from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.lib.generators import generate_id
+from authentik.providers.oauth2.utils import pkce_s256_challenge
 from authentik.sources.oauth.api.source import OAuthSourceSerializer
-from authentik.sources.oauth.models import OAuthSource
+from authentik.sources.oauth.clients.oauth2 import SESSION_KEY_OAUTH_PKCE
+from authentik.sources.oauth.models import OAuthSource, PKCEMethod
 
 
 class TestOAuthSource(APITestCase):
@@ -77,6 +79,7 @@ class TestOAuthSource(APITestCase):
             "token_endpoint": "http://mock/oauth/token",
             "userinfo_endpoint": "http://mock/oauth/userinfo",
             "jwks_uri": "http://mock/oauth/discovery/keys",
+            "code_challenge_methods_supported": ["S256"],
         }
         jwks_config = {"keys": []}
         with Mocker() as mocker:
@@ -107,6 +110,7 @@ class TestOAuthSource(APITestCase):
                 serializer.validated_data["oidc_jwks_url"], "http://mock/oauth/discovery/keys"
             )
             self.assertEqual(serializer.validated_data["oidc_jwks"], jwks_config)
+            self.assertEqual(serializer.validated_data["pkce"], PKCEMethod.S256)
 
     def test_api_validate_openid_connect_invalid(self):
         """Test API validation (with OIDC endpoints)"""
@@ -186,6 +190,32 @@ class TestOAuthSource(APITestCase):
         self.assertEqual(qs["response_type"], ["code"])
         self.assertEqual(qs["state"], [state])
         self.assertEqual(qs["scope"], ["email openid profile"])
+
+    def test_source_redirect_pkce(self):
+        """test redirect view"""
+        self.source.pkce = PKCEMethod.S256
+        self.source.save()
+        res = self.client.get(
+            reverse(
+                "authentik_sources_oauth:oauth-client-login",
+                kwargs={"source_slug": self.source.slug},
+            )
+        )
+        self.assertEqual(res.status_code, 302)
+        qs = parse_qs(res.url)
+
+        session = self.client.session
+        state = session[f"oauth-client-{self.source.name}-request-state"]
+        verifier = session[SESSION_KEY_OAUTH_PKCE]
+        self.assertEqual(len(verifier), 128)
+        challenge = pkce_s256_challenge(verifier)
+
+        self.assertEqual(qs["redirect_uri"], ["http://testserver/source/oauth/callback/test/"])
+        self.assertEqual(qs["response_type"], ["code"])
+        self.assertEqual(qs["state"], [state])
+        self.assertEqual(qs["scope"], ["email openid profile"])
+        self.assertEqual(qs["code_challenge"], [challenge])
+        self.assertEqual(qs["code_challenge_method"], ["S256"])
 
     def test_source_callback(self):
         """test callback view"""
