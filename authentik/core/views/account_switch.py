@@ -1,5 +1,6 @@
 """Account switch view"""
 
+from typing import Any
 from urllib.parse import urlencode
 
 from django.http import Http404, HttpRequest, HttpResponse
@@ -10,6 +11,7 @@ from django.views import View
 
 from authentik.core.models import AuthenticatedSession
 from authentik.flows.exceptions import FlowNonApplicableException
+from authentik.flows.models import Flow
 from authentik.flows.planner import (
     PLAN_CONTEXT_ACCOUNT_SWITCH_FROM_USER,
     PLAN_CONTEXT_PENDING_USER,
@@ -46,12 +48,20 @@ class AccountSwitchView(View):
             )
         context = {}
         session = self.get_browser_session(request, user_pk)
-        stale_user_pk = None
-        if session:
-            context[PLAN_CONTEXT_PENDING_USER] = session.user
-            context[PLAN_CONTEXT_ACCOUNT_SWITCH_FROM_USER] = request.user
-        else:
-            stale_user_pk = user_pk
+        if not session:
+            return self.redirect_to_flow(request, flow, context, stale_user_pk=user_pk)
+        context[PLAN_CONTEXT_PENDING_USER] = session.user
+        context[PLAN_CONTEXT_ACCOUNT_SWITCH_FROM_USER] = request.user
+        return self.redirect_to_flow(request, flow, context)
+
+    @staticmethod
+    def redirect_to_flow(
+        request: HttpRequest,
+        flow: Flow,
+        context: dict[str, Any],
+        stale_user_pk: int | None = None,
+    ) -> HttpResponse:
+        """Plan and redirect to the account switch flow."""
         planner = FlowPlanner(flow)
         # The account-switch context can change policy decisions while building the stage list.
         # Reusing a cached plan would skip that planning pass.
