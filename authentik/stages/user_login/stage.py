@@ -143,7 +143,7 @@ class UserLoginStageView(ChallengeStageView):
     def detach_session(self):
         """Continue on a new session so the current login stays usable as a switch target."""
         old_session = self.request.session
-        flow_get = old_session.get(SESSION_KEY_GET)
+        flow_query_params = old_session.get(SESSION_KEY_GET)
         # Move the active plan so audit events keep context and old logins cannot resume it.
         if SESSION_KEY_PLAN in old_session:
             del old_session[SESSION_KEY_PLAN]
@@ -154,8 +154,8 @@ class UserLoginStageView(ChallengeStageView):
             last_user_agent=old_session.get(session_keys.LAST_USER_AGENT, ""),
         )
         self.request.session[SESSION_KEY_PLAN] = self.executor.plan
-        if flow_get is not None:
-            self.request.session[SESSION_KEY_GET] = flow_get
+        if flow_query_params is not None:
+            self.request.session[SESSION_KEY_GET] = flow_query_params
 
     def do_login(self, request: HttpRequest, remember: bool | None = None) -> HttpResponse:
         """Attach the currently pending user to the current session.
