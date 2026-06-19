@@ -77,17 +77,6 @@ class SessionStore(SessionBase):
     def model_fields(self):
         return [k.value for k in self.model.Keys]
 
-    @staticmethod
-    def _check_superseded(session) -> None:
-        """Reject browser logins superseded by a newer login."""
-        authenticated_session = getattr(session, "authenticatedsession", None)
-        if (
-            authenticated_session is not None
-            and authenticated_session.browser_key
-            and not authenticated_session.is_current
-        ):
-            raise SuspiciousOperation("Session denied: superseded by a newer login")
-
     def _get_session_from_db(self):
         try:
             session = self.model.objects.select_related(
@@ -97,7 +86,8 @@ class SessionStore(SessionBase):
                 session_key=self.session_key,
                 expires__gt=timezone.now(),
             )
-            self._check_superseded(session)
+            if session.is_superseded:
+                raise SuspiciousOperation("Session denied: superseded by a newer login")
             return session
         except (self.model.DoesNotExist, SuspiciousOperation) as exc:
             if isinstance(exc, SuspiciousOperation):
@@ -113,7 +103,8 @@ class SessionStore(SessionBase):
                 session_key=self.session_key,
                 expires__gt=timezone.now(),
             )
-            self._check_superseded(session)
+            if session.is_superseded:
+                raise SuspiciousOperation("Session denied: superseded by a newer login")
             return session
         except (self.model.DoesNotExist, SuspiciousOperation) as exc:
             if isinstance(exc, SuspiciousOperation):

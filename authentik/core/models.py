@@ -1337,6 +1337,16 @@ class Session(ExpiringModel, AbstractBaseSession):
     def __str__(self):
         return self.session_key
 
+    @property
+    def is_superseded(self) -> bool:
+        """Check if this session was replaced by a newer login in the same browser."""
+        authenticated_session = getattr(self, "authenticatedsession", None)
+        return bool(
+            authenticated_session
+            and authenticated_session.browser_key
+            and not authenticated_session.is_current
+        )
+
     class Keys(StrEnum):
         """
         Keys to be set with the session interface for the fields above to be updated.
