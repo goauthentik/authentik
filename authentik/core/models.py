@@ -1368,8 +1368,7 @@ class AuthenticatedSession(SerializerModel):
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
-    # Browser cookie value grouping logins from the same browser.
-    # Unbound sessions are never offered for account switching.
+    # This is matched against the value of the `authentik_browser` cookie.
     browser_key = models.CharField(max_length=64, null=True, db_index=True)
     # Whether this is the login the browser most recently switched to.
     # Stored server-side to reject replayed cookies for superseded logins.
