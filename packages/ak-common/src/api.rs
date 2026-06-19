@@ -62,32 +62,39 @@ pub fn make_config() -> Result<Configuration> {
 
 /// Fetch all pages from a paginated API endpoint, returning all results combined.
 ///
-/// - `fetch`: a function that takes a page number and returns a future resolving to a paginated
-/// response.
-/// - `get_pagination`: a function that extracts the [`Pagination`] metadata from a response.
-/// - `get_results`: a function that extracts the result items from a response.
-pub async fn fetch_all<T, R, E, F, Fut>(
+/// - `fetch`: takes a page number and returns a future resolving to a paginated response.
+/// - `get_pagination`: extracts the [`Pagination`] metadata from a response.
+/// - `get_results`: extracts the result items from a response.
+pub async fn fetch_all<T, R, E, F, Fut, P, G>(
     fetch: F,
-    get_pagination: impl Fn(&R) -> &Pagination,
-    get_results: impl Fn(R) -> Vec<T>,
+    get_pagination: P,
+    get_results: G,
 ) -> std::result::Result<Vec<T>, E>
 where
     F: Fn(i32) -> Fut,
     Fut: Future<Output = std::result::Result<R, E>>,
+    P: Fn(&R) -> &Pagination,
+    G: Fn(R) -> Vec<T>,
 {
-    let mut page = 1;
+    let mut page = 1_i32;
     let mut results = Vec::with_capacity(0);
 
     loop {
         let response = fetch(page).await?;
         let next = get_pagination(&response).next;
-        if page == 1 {
+        if page == 1_i32 {
+            #[expect(
+                clippy::as_conversions,
+                clippy::cast_possible_truncation,
+                clippy::cast_sign_loss,
+                reason = "pagination count is a small non-negative integer"
+            )]
             let count = get_pagination(&response).count as usize;
             results.reserve(count);
         }
         results.extend(get_results(response));
-        if next > 0.0 {
-            page += 1;
+        if next > 0.0_f64 {
+            page += 1_i32;
         } else {
             break;
         }
