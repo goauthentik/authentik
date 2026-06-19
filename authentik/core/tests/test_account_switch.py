@@ -19,7 +19,6 @@ from authentik.flows.markers import StageMarker
 from authentik.flows.models import Flow, FlowDesignation, FlowStageBinding
 from authentik.flows.planner import (
     PLAN_CONTEXT_ACCOUNT_SWITCH_FROM_USER,
-    PLAN_CONTEXT_IS_ACCOUNT_SWITCH,
     PLAN_CONTEXT_PENDING_USER,
     FlowPlan,
 )
@@ -126,7 +125,6 @@ class TestAccountSwitch(FlowTestCase):
         plan: FlowPlan = self.client.session[SESSION_KEY_PLAN]
         self.assertEqual(plan.context[PLAN_CONTEXT_PENDING_USER], self.other_user)
         self.assertNotIn(PLAN_CONTEXT_PENDING_USER_IDENTIFIER, plan.context)
-        self.assertTrue(plan.context[PLAN_CONTEXT_IS_ACCOUNT_SWITCH])
         self.assertEqual(plan.context[PLAN_CONTEXT_ACCOUNT_SWITCH_FROM_USER], self.user)
 
     def test_switch_without_live_session(self):
@@ -138,7 +136,7 @@ class TestAccountSwitch(FlowTestCase):
         self.assertEqual(response.status_code, 302)
         plan: FlowPlan = self.client.session[SESSION_KEY_PLAN]
         self.assertNotIn(PLAN_CONTEXT_PENDING_USER, plan.context)
-        self.assertNotIn(PLAN_CONTEXT_IS_ACCOUNT_SWITCH, plan.context)
+        self.assertNotIn(PLAN_CONTEXT_ACCOUNT_SWITCH_FROM_USER, plan.context)
         self.assertEqual(
             parse_qs(urlsplit(response.url).query)[QS_ACCOUNT_SWITCH_STALE],
             [str(self.other_user.pk)],

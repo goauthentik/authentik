@@ -17,7 +17,6 @@ from authentik.flows.models import Stage
 from authentik.flows.planner import (
     PLAN_CONTEXT_ACCOUNT_SWITCH_FROM_USER,
     PLAN_CONTEXT_DEVICE,
-    PLAN_CONTEXT_IS_ACCOUNT_SWITCH,
     PLAN_CONTEXT_OUTPOST,
     PLAN_CONTEXT_SOURCE,
     FlowPlan,
@@ -52,11 +51,10 @@ def on_user_logged_in(sender, request: HttpRequest, user: User, **_):
         if PLAN_CONTEXT_DEVICE in flow_plan.context:
             # Save device
             kwargs[PLAN_CONTEXT_DEVICE] = flow_plan.context[PLAN_CONTEXT_DEVICE]
-        if flow_plan.context.get(PLAN_CONTEXT_IS_ACCOUNT_SWITCH):
+        if from_user := flow_plan.context.get(PLAN_CONTEXT_ACCOUNT_SWITCH_FROM_USER):
             # Record that this login came from an account switch.
-            kwargs[PLAN_CONTEXT_IS_ACCOUNT_SWITCH] = True
-            if from_user := flow_plan.context.get(PLAN_CONTEXT_ACCOUNT_SWITCH_FROM_USER):
-                kwargs[PLAN_CONTEXT_ACCOUNT_SWITCH_FROM_USER] = from_user
+            kwargs["is_account_switch"] = True
+            kwargs[PLAN_CONTEXT_ACCOUNT_SWITCH_FROM_USER] = from_user
     event = Event.new(EventAction.LOGIN, **kwargs).from_http(request, user=user)
     request.session[SESSION_LOGIN_EVENT] = event
     request.session.save()

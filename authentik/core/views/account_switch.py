@@ -12,7 +12,6 @@ from authentik.core.models import AuthenticatedSession
 from authentik.flows.exceptions import FlowNonApplicableException
 from authentik.flows.planner import (
     PLAN_CONTEXT_ACCOUNT_SWITCH_FROM_USER,
-    PLAN_CONTEXT_IS_ACCOUNT_SWITCH,
     PLAN_CONTEXT_PENDING_USER,
     FlowPlanner,
 )
@@ -39,12 +38,7 @@ class AccountSwitchView(View):
         session = self.get_browser_session(request, user_pk)
         stale_user_pk = None
         if session:
-            context.update(
-                {
-                    PLAN_CONTEXT_PENDING_USER: session.user,
-                    PLAN_CONTEXT_IS_ACCOUNT_SWITCH: True,
-                }
-            )
+            context[PLAN_CONTEXT_PENDING_USER] = session.user
             if request.user.is_authenticated:
                 context[PLAN_CONTEXT_ACCOUNT_SWITCH_FROM_USER] = request.user
         else:

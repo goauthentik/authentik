@@ -42,7 +42,6 @@ PLAN_CONTEXT_APPLICATION = "application"
 PLAN_CONTEXT_DEVICE = "device"
 PLAN_CONTEXT_SOURCE = "source"
 PLAN_CONTEXT_OUTPOST = "outpost"
-PLAN_CONTEXT_IS_ACCOUNT_SWITCH = "is_account_switch"
 PLAN_CONTEXT_ACCOUNT_SWITCH_FROM_USER = "account_switch_from_user"
 PLAN_CONTEXT_POST = "goauthentik.io/http/post"
 # Is set by the Flow Planner when a FlowToken was used, and the currently active flow plan
