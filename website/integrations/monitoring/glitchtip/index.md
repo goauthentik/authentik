@@ -33,7 +33,7 @@ To support the integration of GlitchTip with authentik, you need to create an ap
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
-    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Note the **slug** value because you will use it when configuring GlitchTip.
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Note the **Slug** value because you will use it when configuring GlitchTip.
     - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
         - Note the **Client ID** and **Client Secret** values because they will be required later.
@@ -76,7 +76,7 @@ To add an authentik account to an existing GlitchTip account, log in with the ex
 
 ## Configuration verification
 
-To confirm that authentik is properly configured with GlitchTip, log out of GlitchTip and open the GlitchTip login page. Click the authentik login option and confirm that you are redirected to authentik for authentication and then back to GlitchTip.
+To confirm that authentik is properly configured with GlitchTip, log out of GlitchTip and open the GlitchTip login page. Click the authentik login option. You should be redirected to authentik for authentication and then returned to GlitchTip.
 
 ## Resources
 
