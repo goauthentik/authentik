@@ -91,10 +91,6 @@ class S3Backend(ManageableBackend):
     def client(self):
         """Create S3 client with configured endpoint and region."""
         endpoint_url, endpoint_url_r = self._get_config("endpoint", None)
-        use_ssl, use_ssl_r = self._get_config("use_ssl", True)
-        region_name, region_name_r = self._get_config("region", None)
-        addressing_style, addressing_style_r = self._get_config("addressing_style", "auto")
-        signature_version, signature_version_r = self._get_config("signature_version", "s3v4")
         # Keep signature_version pass-through and let boto3/botocore handle it.
         # In boto3's S3 configuration docs, `s3v4` (default) and deprecated `s3`
         # are the documented values:
@@ -103,15 +99,25 @@ class S3Backend(ManageableBackend):
         # not enforce a restricted allowlist here.
 
         session = self.session
-        if (
-            self._client is not None
-            and not endpoint_url_r
-            and not use_ssl_r
-            and not region_name_r
-            and not addressing_style_r
-            and not signature_version_r
-        ):
+        if self._client is not None and not endpoint_url_r:
             return self._client
+
+        use_ssl = CONFIG.get_bool(
+            f"storage.{self.usage.value}.{self.name}.use_ssl",
+            CONFIG.get_bool(f"storage.{self.name}.use_ssl", True),
+        )
+        region_name = CONFIG.get(
+            f"storage.{self.usage.value}.{self.name}.region",
+            CONFIG.get(f"storage.{self.name}.region", None),
+        )
+        addressing_style = CONFIG.get(
+            f"storage.{self.usage.value}.{self.name}.addressing_style",
+            CONFIG.get(f"storage.{self.name}.addressing_style", "auto"),
+        )
+        signature_version = CONFIG.get(
+            f"storage.{self.usage.value}.{self.name}.signature_version",
+            CONFIG.get(f"storage.{self.name}.signature_version", "s3v4"),
+        )
 
         self._client = session.client(
             "s3",
