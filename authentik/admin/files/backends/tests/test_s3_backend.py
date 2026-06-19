@@ -12,7 +12,7 @@ from authentik.lib.config import CONFIG
 
 
 class TestS3BackendClientCache(TestCase):
-    """Test S3 client caching without requiring an S3 test server."""
+    """Test S3 client caching."""
 
     @CONFIG.patch("storage.s3.access_key", "accessKey1")
     @CONFIG.patch("storage.s3.secret_key", "secretKey1")
