@@ -30,7 +30,7 @@ export class InvitationWizard extends AKElement implements TransclusionChildElem
 
     protected override render(): SlottedTemplateResult {
         return html`<ak-wizard
-            entity-singular=${msg("Invitation")}
+            verbose-name=${msg("Invitation")}
             description=${msg("Create a new invitation with an enrollment flow.")}
             .initialSteps=${["flow-step", "details-step", "success-step"]}
         >
