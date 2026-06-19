@@ -34,13 +34,22 @@ class AccountSwitchView(View):
                 },
                 status=400,
             )
+        if not request.user.is_authenticated:
+            return TemplateResponse(
+                request,
+                "if/error.html",
+                {
+                    "title": _("Account switching unavailable"),
+                    "message": _("Account switching requires an active session."),
+                },
+                status=400,
+            )
         context = {}
         session = self.get_browser_session(request, user_pk)
         stale_user_pk = None
         if session:
             context[PLAN_CONTEXT_PENDING_USER] = session.user
-            if request.user.is_authenticated:
-                context[PLAN_CONTEXT_ACCOUNT_SWITCH_FROM_USER] = request.user
+            context[PLAN_CONTEXT_ACCOUNT_SWITCH_FROM_USER] = request.user
         else:
             stale_user_pk = user_pk
         planner = FlowPlanner(flow)

@@ -109,6 +109,21 @@ class TestAccountSwitch(FlowTestCase):
             status_code=400,
         )
 
+    def test_switch_requires_authenticated_source_user(self):
+        """Test switching is rejected when there is no current login to switch from"""
+        browser_key = "A" * 32
+        self.client.cookies[COOKIE_NAME_BROWSER] = browser_key
+        create_test_session(self.other_user, browser_key=browser_key)
+
+        response = self.client.get(self.switch_url(self.other_user))
+
+        self.assertEqual(response.status_code, 400)
+        self.assertContains(
+            response,
+            "Account switching requires an active session.",
+            status_code=400,
+        )
+
     def test_switch_with_live_session(self):
         """Test a live login of this browser is passed to the flow as context"""
         self.login(self.user)
