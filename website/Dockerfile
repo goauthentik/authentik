@@ -48,7 +48,7 @@ COPY ./SECURITY.md /work/
 RUN  --mount=type=bind,target=/work/packages/docusaurus-config/,src=./packages/docusaurus-config/ \
     corepack npm run build -w docs
 
-FROM docker.io/library/nginx:1.31.2-trixie@sha256:351872cd77d5a6221ff3950af72453167b7fbc3d73aa21ad2606e85c76151792
+FROM docker.io/library/nginx:1.31.2-trixie@sha256:42f2d24ae18df9b5251d1cc45548085656d2335e9338fd150a24e415462d151f
 LABEL org.opencontainers.image.authors="Authentik Security Inc." \
     org.opencontainers.image.source="https://github.com/goauthentik/authentik" \
     org.opencontainers.image.description="authentik product documentation" \
