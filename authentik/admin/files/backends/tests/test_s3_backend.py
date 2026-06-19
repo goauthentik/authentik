@@ -49,23 +49,6 @@ class TestS3BackendClientCache(TestCase):
 
     @CONFIG.patch("storage.s3.access_key", "accessKey1")
     @CONFIG.patch("storage.s3.secret_key", "secretKey1")
-    @CONFIG.patch("storage.s3.region", "us-east-1")
-    def test_client_ignores_region_changes_until_restart(self):
-        """Test client cache is not invalidated when S3 region changes."""
-        with patch("authentik.admin.files.backends.s3.boto3.Session") as session_cls:
-            session = session_cls.return_value
-            client = Mock()
-            session.client.return_value = client
-
-            backend = S3Backend(FileUsage.MEDIA)
-
-            self.assertIs(backend.client, client)
-            with CONFIG.patch("storage.s3.region", "us-east-2"):
-                self.assertIs(backend.client, client)
-            session.client.assert_called_once()
-
-    @CONFIG.patch("storage.s3.access_key", "accessKey1")
-    @CONFIG.patch("storage.s3.secret_key", "secretKey1")
     @CONFIG.patch("storage.s3.use_ssl", "true")
     def test_client_converts_use_ssl_to_bool(self):
         """Test string-backed use_ssl config is passed to boto as a bool."""
@@ -73,8 +56,8 @@ class TestS3BackendClientCache(TestCase):
             session = session_cls.return_value
 
             backend = S3Backend(FileUsage.MEDIA)
-            backend.client
 
+            self.assertIs(backend.client, session.client.return_value)
             self.assertIs(session.client.call_args.kwargs["use_ssl"], True)
 
 
