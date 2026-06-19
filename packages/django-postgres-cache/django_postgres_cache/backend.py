@@ -112,34 +112,6 @@ class DatabaseCache(BaseCache):
             result[key_map[entry.cache_key]] = self._unmake_value(entry.value)
         return result
 
-    def get_or_set(
-        self,
-        key: Any,
-        default: Any | None,
-        timeout: float | None = DEFAULT_TIMEOUT,
-        version: int | None = None,
-    ) -> Any | None:
-        key = self.make_and_validate_key(key, version=version)
-        if callable(default):
-            default = default()
-        default = self._make_value(default)
-        expiry = self._make_expiry(timeout)
-        entry = CacheEntry.objects.on_conflict(
-            ["cache_key"],
-            ConflictAction.NOTHING,
-        ).insert_and_get(
-            cache_key=key,
-            value=default,
-            expires=expiry,
-        )
-        # If the row already existed, nothing is returned
-        if entry is None:
-            entry = CacheEntry.objects.filter(cache_key=key).first()
-        # Sanity check, should not happen
-        if entry is None:
-            return None
-        return self._unmake_value(entry.value)
-
     def has_key(self, key: Any, version: int | None = None) -> bool:
         key = self.make_and_validate_key(key, version=version)
         return bool(CacheEntry.objects.filter(cache_key=key, expires__gte=now()).exists())
