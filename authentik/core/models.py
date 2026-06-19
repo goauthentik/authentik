@@ -1370,8 +1370,6 @@ class AuthenticatedSession(SerializerModel):
 
     # This is matched against the value of the `authentik_browser` cookie.
     browser_key = models.CharField(max_length=64, null=True, db_index=True)
-    # Whether this is the login the browser most recently switched to.
-    # Stored server-side to reject replayed cookies for superseded logins.
     is_current = models.BooleanField(default=False)
 
     @property
