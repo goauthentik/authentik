@@ -139,7 +139,10 @@ class TestAccountSwitch(FlowTestCase):
         )
         plan: FlowPlan = self.client.session[SESSION_KEY_PLAN]
         self.assertEqual(plan.context[PLAN_CONTEXT_PENDING_USER], self.other_user)
-        self.assertNotIn(PLAN_CONTEXT_PENDING_USER_IDENTIFIER, plan.context)
+        self.assertEqual(
+            plan.context[PLAN_CONTEXT_PENDING_USER_IDENTIFIER],
+            self.other_user.username,
+        )
         self.assertEqual(plan.context[PLAN_CONTEXT_ACCOUNT_SWITCH_FROM_USER], self.user)
 
     def test_switch_without_live_session(self):
@@ -173,8 +176,9 @@ class TestAccountSwitch(FlowTestCase):
         )
 
     @apply_blueprint("default/flow-default-authentication-flow.yaml")
-    def test_default_flow_runs_identification_without_policy(self):
-        """Test the default flow still runs identification without a skip policy"""
+    def test_default_flow_skips_identification(self):
+        """Test a switch through the default authentication flow doesn't ask for the
+        username again and goes straight to the password stage"""
         flow = Flow.objects.get(slug="default-authentication-flow")
         self.brand.flow_account_switch = flow
         self.brand.save()
@@ -187,9 +191,10 @@ class TestAccountSwitch(FlowTestCase):
         response = self.client.get(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug})
         )
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 302)
+        response = self.client.get(response.url)
 
-        self.assertStageResponse(response, flow, component="ak-stage-identification")
+        self.assertStageResponse(response, flow, component="ak-stage-password")
 
     def test_full_switch(self):
         """Test the full switch: the new login takes over, the old session survives

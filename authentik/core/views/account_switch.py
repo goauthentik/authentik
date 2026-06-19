@@ -17,6 +17,7 @@ from authentik.flows.planner import (
     PLAN_CONTEXT_PENDING_USER,
     FlowPlanner,
 )
+from authentik.flows.stage import PLAN_CONTEXT_PENDING_USER_IDENTIFIER
 
 QS_ACCOUNT_SWITCH_STALE = "account_switch_stale"
 
@@ -51,6 +52,9 @@ class AccountSwitchView(View):
         if not session:
             return self.redirect_to_flow(request, flow, context, stale_user_pk=user_pk)
         context[PLAN_CONTEXT_PENDING_USER] = session.user
+        # Pre-fill the identification stage so the target account doesn't have to be retyped,
+        # letting a policy-free switch flow skip straight to the next stage.
+        context[PLAN_CONTEXT_PENDING_USER_IDENTIFIER] = session.user.username
         context[PLAN_CONTEXT_ACCOUNT_SWITCH_FROM_USER] = request.user
         return self.redirect_to_flow(request, flow, context)
 
