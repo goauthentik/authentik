@@ -148,9 +148,10 @@ class UserLoginStageView(ChallengeStageView):
         if SESSION_KEY_PLAN in old_session:
             del old_session[SESSION_KEY_PLAN]
         old_session.save()
+        session_keys = old_session.model.Keys
         self.request.session = SessionStore(
-            last_ip=ClientIPMiddleware.get_client_ip(self.request),
-            last_user_agent=self.request.META.get("HTTP_USER_AGENT", ""),
+            last_ip=old_session.get(session_keys.LAST_IP),
+            last_user_agent=old_session.get(session_keys.LAST_USER_AGENT, ""),
         )
         self.request.session[SESSION_KEY_PLAN] = self.executor.plan
         if flow_get is not None:
