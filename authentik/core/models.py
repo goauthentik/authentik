@@ -1381,6 +1381,13 @@ class AuthenticatedSession(SerializerModel):
     class Meta:
         verbose_name = _("Authenticated Session")
         verbose_name_plural = _("Authenticated Sessions")
+        constraints = [
+            models.UniqueConstraint(
+                fields=["browser_key"],
+                condition=Q(browser_key__isnull=False, is_current=True),
+                name="authentik_core_authenticatedsession_current_browser_key",
+            ),
+        ]
 
     def __str__(self) -> str:
         return f"Authenticated Session {str(self.pk)[:10]}"
@@ -1397,7 +1404,6 @@ class AuthenticatedSession(SerializerModel):
         browser_key = SessionMiddleware.ensure_browser_key(request)
         if browser_key:
             # The new login takes over the browser; older logins become switch targets.
-            # Concurrent logins may briefly leave two current sessions; cookies pick the winner.
             AuthenticatedSession.objects.filter(browser_key=browser_key).update(is_current=False)
         return AuthenticatedSession(
             session=Session.objects.filter(session_key=request.session.session_key).first(),
