@@ -526,6 +526,7 @@ class NotificationTransport(TasksModel, SerializerModel):
                     user=notification.user,
                     request=None,
                     notification=notification,
+                    original_body=body,
                 )
             )
         if self.webhook_mapping_headers:
