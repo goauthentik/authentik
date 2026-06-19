@@ -80,14 +80,6 @@ impl FsSessionStore {
         Ok(())
     }
 
-    pub(crate) async fn delete(&self, sid: &str) -> Result<()> {
-        match tokio::fs::remove_file(self.path(sid)).await {
-            Ok(()) => Ok(()),
-            Err(err) if err.kind() == ErrorKind::NotFound => Ok(()),
-            Err(err) => Err(err.into()),
-        }
-    }
-
     pub(crate) async fn logout(
         &self,
         filter: &(dyn Fn(&Claims) -> bool + Send + Sync),
@@ -241,22 +233,6 @@ mod tests {
 
         assert!(dir.path().join("session_live").exists());
         assert!(!dir.path().join("session_dead").exists());
-    }
-
-    #[tokio::test]
-    async fn delete_removes_session() {
-        let dir = tempdir().expect("tempdir");
-        let store = FsSessionStore::new(dir.path().to_path_buf()).expect("store");
-
-        store
-            .save("abc", &data("user"), Duration::from_mins(1))
-            .await
-            .expect("save");
-        store.delete("abc").await.expect("delete");
-
-        assert_eq!(store.load("abc").await.expect("load"), None);
-        // Deleting a missing session is not an error.
-        store.delete("abc").await.expect("delete missing");
     }
 
     #[tokio::test]

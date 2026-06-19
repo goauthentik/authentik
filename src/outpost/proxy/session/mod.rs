@@ -51,14 +51,6 @@ impl SessionStore {
         }
     }
 
-    pub(crate) async fn delete(&self, sid: &str) -> Result<()> {
-        match self {
-            Self::Filesystem(store) => store.delete(sid).await,
-            #[cfg(feature = "core")]
-            Self::Postgres(store) => store.delete(sid).await,
-        }
-    }
-
     /// Delete every stored session whose claims match `filter`.
     pub(crate) async fn logout(
         &self,

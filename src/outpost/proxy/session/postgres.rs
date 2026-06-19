@@ -71,7 +71,7 @@ impl PgSessionStore {
         Ok(())
     }
 
-    pub(crate) async fn delete(&self, sid: &str) -> Result<()> {
+    async fn delete(&self, sid: &str) -> Result<()> {
         sqlx::query("DELETE FROM authentik_providers_proxy_proxysession WHERE session_key = $1")
             .bind(sid)
             .execute(ak_common::db::get())
@@ -94,7 +94,7 @@ impl PgSessionStore {
 
         let stale: Vec<String> = rows
             .into_iter()
-            .filter(|(_, data)| data.0.claims.as_ref().is_some_and(|claims| filter(claims)))
+            .filter(|(_, data)| data.0.claims.as_ref().is_some_and(filter))
             .map(|(session_key, _)| session_key)
             .collect();
 
