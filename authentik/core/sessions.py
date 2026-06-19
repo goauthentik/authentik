@@ -49,7 +49,6 @@ def bind_authenticated_session_to_browser(
 
     browser_key = SessionMiddleware.ensure_browser_key(request)
     if browser_key:
-        # The new login takes over the browser; older logins become switch targets.
         AuthenticatedSession.objects.filter(browser_key=browser_key).exclude(
             session=authenticated_session.session
         ).update(is_current=False)
