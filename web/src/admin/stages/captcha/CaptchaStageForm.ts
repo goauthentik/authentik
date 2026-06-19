@@ -221,6 +221,7 @@ export class CaptchaStageForm extends BaseStageForm<CaptchaStage> {
                 name="privateKey"
                 label=${msg("Secret Key")}
                 input-hint="code"
+                plaintext
                 ?required=${!this.instance}
                 ?revealed=${!this.instance}
                 placeholder=${msg("Paste your CAPTCHA secret key...")}
