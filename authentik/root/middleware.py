@@ -33,9 +33,8 @@ SIGNING_HASH = sha512(settings.SECRET_KEY.encode()).hexdigest()
 
 # Opaque browser identifier used to group logins for account switching.
 # Unlike the session cookie it survives logins and logouts.
-COOKIE_NAME_BROWSER = "authentik_browser"
-COOKIE_NAME_ACCOUNTS_LEGACY = "authentik_accounts"
-BROWSER_KEY_LENGTH = 32
+BROWSER_COOKIE_NAME = "authentik_browser"
+BROWSER_COOKIE_KEY_LENGTH = 32
 BROWSER_COOKIE_AGE = int(timedelta(days=365).total_seconds())
 
 
@@ -91,7 +90,7 @@ class SessionMiddleware(UpstreamSessionMiddleware):
     @staticmethod
     def validate_browser_key(raw: str | None) -> str | None:
         """Validate an opaque browser key."""
-        if raw and len(raw) == BROWSER_KEY_LENGTH and raw.isalnum():
+        if raw and len(raw) == BROWSER_COOKIE_KEY_LENGTH and raw.isalnum():
             return raw
         return None
 
@@ -116,7 +115,7 @@ class SessionMiddleware(UpstreamSessionMiddleware):
             payload = decode(raw, SIGNING_HASH, algorithms=["HS256"])
             return SessionMiddleware.validate_browser_key(payload.get("browser"))
         except PyJWTError:
-            return SessionMiddleware.validate_browser_key(raw)
+            return None
 
     @staticmethod
     def ensure_browser_key(request: HttpRequest) -> str | None:
@@ -124,18 +123,16 @@ class SessionMiddleware(UpstreamSessionMiddleware):
         if not hasattr(request, "browser_key"):
             return None
         if not request.browser_key:
-            request.browser_key = get_random_string(BROWSER_KEY_LENGTH)
+            request.browser_key = get_random_string(BROWSER_COOKIE_KEY_LENGTH)
             request.browser_key_needs_update = True
         return request.browser_key
 
     def process_request(self, request: HttpRequest):
         raw_session = request.COOKIES.get(settings.SESSION_COOKIE_NAME)
         session_key = SessionMiddleware.decode_session_key(raw_session)
-        raw_browser = request.COOKIES.get(COOKIE_NAME_BROWSER) or request.COOKIES.get(
-            COOKIE_NAME_ACCOUNTS_LEGACY
-        )
+        raw_browser = request.COOKIES.get(BROWSER_COOKIE_NAME)
         request.browser_key = SessionMiddleware.parse_browser_key(raw_browser)
-        request.browser_key_needs_update = COOKIE_NAME_ACCOUNTS_LEGACY in request.COOKIES
+        request.browser_key_needs_update = False
         request.session = self.SessionStore(
             session_key,
             last_ip=ClientIPMiddleware.get_client_ip(request),
@@ -143,8 +140,8 @@ class SessionMiddleware(UpstreamSessionMiddleware):
         )
 
     @staticmethod
-    def bind_authenticated_session_browser_key(request: HttpRequest):
-        """Bind legacy authenticated sessions to the browser key as soon as possible."""
+    def ensure_authenticated_session_browser_key(request: HttpRequest):
+        """Ensure the current authenticated session is bound to a browser key."""
         if not hasattr(request, "session") or not request.session.session_key:
             return
         from authentik.core.models import AuthenticatedSession
@@ -170,7 +167,7 @@ class SessionMiddleware(UpstreamSessionMiddleware):
         the session cookie if the session has been emptied.
         """
         try:
-            SessionMiddleware.bind_authenticated_session_browser_key(request)
+            SessionMiddleware.ensure_authenticated_session_browser_key(request)
             accessed = request.session.accessed
             modified = request.session.modified
             empty = request.session.is_empty()
@@ -228,18 +225,12 @@ class SessionMiddleware(UpstreamSessionMiddleware):
             request, "browser_key_needs_update", False
         ):
             response.set_cookie(
-                COOKIE_NAME_BROWSER,
+                BROWSER_COOKIE_NAME,
                 SessionMiddleware.encode_browser_key(request.browser_key),
                 max_age=BROWSER_COOKIE_AGE,
                 domain=settings.SESSION_COOKIE_DOMAIN,
                 path=settings.SESSION_COOKIE_PATH,
                 secure=secure,
-                samesite=same_site,
-            )
-            response.delete_cookie(
-                COOKIE_NAME_ACCOUNTS_LEGACY,
-                domain=settings.SESSION_COOKIE_DOMAIN,
-                path=settings.SESSION_COOKIE_PATH,
                 samesite=same_site,
             )
         return response

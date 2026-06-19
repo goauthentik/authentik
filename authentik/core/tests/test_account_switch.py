@@ -25,7 +25,7 @@ from authentik.flows.planner import (
 from authentik.flows.stage import PLAN_CONTEXT_PENDING_USER_IDENTIFIER
 from authentik.flows.tests import FlowTestCase
 from authentik.flows.views.executor import SESSION_KEY_PLAN
-from authentik.root.middleware import COOKIE_NAME_BROWSER, SessionMiddleware
+from authentik.root.middleware import BROWSER_COOKIE_NAME, SessionMiddleware
 from authentik.stages.user_login.models import UserLoginStage
 
 
@@ -65,7 +65,7 @@ class TestAccountSwitch(FlowTestCase):
     def browser_key(self) -> str:
         """Return the decoded browser key from the test client's cookie."""
         browser_key = SessionMiddleware.parse_browser_key(
-            self.client.cookies[COOKIE_NAME_BROWSER].value
+            self.client.cookies[BROWSER_COOKIE_NAME].value
         )
         if browser_key is None:
             self.fail("Expected a browser key cookie after login")
@@ -112,7 +112,7 @@ class TestAccountSwitch(FlowTestCase):
     def test_switch_requires_authenticated_source_user(self):
         """Test switching is rejected when there is no current login to switch from"""
         browser_key = "A" * 32
-        self.client.cookies[COOKIE_NAME_BROWSER] = browser_key
+        self.client.cookies[BROWSER_COOKIE_NAME] = SessionMiddleware.encode_browser_key(browser_key)
         create_test_session(self.other_user, browser_key=browser_key)
 
         response = self.client.get(self.switch_url(self.other_user))
