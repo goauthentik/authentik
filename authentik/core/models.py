@@ -14,6 +14,7 @@ from django.contrib.auth.hashers import check_password, identify_hasher
 from django.contrib.auth.models import AbstractUser, Permission
 from django.contrib.auth.models import UserManager as DjangoUserManager
 from django.contrib.sessions.base_session import AbstractBaseSession
+from django.core.exceptions import SuspiciousOperation
 from django.core.validators import validate_slug
 from django.db import models
 from django.db.models import Manager, Q, QuerySet, options
@@ -1346,6 +1347,11 @@ class Session(ExpiringModel, AbstractBaseSession):
             and authenticated_session.browser_key
             and not authenticated_session.is_current
         )
+
+    def validate_not_superseded(self):
+        """Reject browser logins superseded by a newer login."""
+        if self.is_superseded:
+            raise SuspiciousOperation("Session denied: superseded by a newer login")
 
     class Keys(StrEnum):
         """

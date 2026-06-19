@@ -86,8 +86,7 @@ class SessionStore(SessionBase):
                 session_key=self.session_key,
                 expires__gt=timezone.now(),
             )
-            if session.is_superseded:
-                raise SuspiciousOperation("Session denied: superseded by a newer login")
+            session.validate_not_superseded()
             return session
         except (self.model.DoesNotExist, SuspiciousOperation) as exc:
             if isinstance(exc, SuspiciousOperation):
@@ -103,8 +102,7 @@ class SessionStore(SessionBase):
                 session_key=self.session_key,
                 expires__gt=timezone.now(),
             )
-            if session.is_superseded:
-                raise SuspiciousOperation("Session denied: superseded by a newer login")
+            session.validate_not_superseded()
             return session
         except (self.model.DoesNotExist, SuspiciousOperation) as exc:
             if isinstance(exc, SuspiciousOperation):
