@@ -431,7 +431,7 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
     protected override render(): SlottedTemplateResult {
         const { challenge, loading } = this;
 
-        return html`<ak-locale-select
+        return html`<div class="pf-c-login" data-layout=${this.layout} part="login"><ak-locale-select
                 part="locale-select"
                 exportparts="label:locale-select-label,select:locale-select-select"
                 class="pf-m-dark"
@@ -462,7 +462,7 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
                         : this.renderLoading();
                 })}
             </main>
-            ${this.renderFooter()}`;
+            ${this.renderFooter()}</div>`;
     }
 
     //#endregion

@@ -10,10 +10,8 @@
 @import "./components/Drawer/drawer.css";
 @import "./components/Form/form.css";
 @import "./components/Fieldset/fieldset.css";
-@import "./components/Login/login.css";
 @import "./components/Icon/icon.css";
 @import "#elements/ak-drawer/ak-drawer.root.css";
 @import "#elements/locale/ak-locale-select.css";
-@import "#flow/FlowExecutor.css";
-@import "#styles/authentik/login.css";
-
+@import "./components/Login/login-tokens.css";
+@import "./components/Login/login-layout.css";
