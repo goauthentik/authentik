@@ -59,7 +59,7 @@ def avatar_mode_gravatar(user: User, mode: str) -> str | None:
 
 
 def generate_colors(text: str) -> tuple[str, str]:
-    """Generate colours based on `text`"""
+    """Generate colors based on `text`"""
     color = (
         int(md5(text.lower().encode("utf-8"), usedforsecurity=False).hexdigest(), 16) % 0xFFFFFF
     )  # nosec

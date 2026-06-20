@@ -6,7 +6,7 @@ import "#admin/applications/wizard/steps/ak-application-wizard-provider-choice-s
 import "#admin/applications/wizard/steps/ak-application-wizard-provider-step";
 import "#admin/applications/wizard/steps/ak-application-wizard-submit-step";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { assertEveryPresent } from "#common/utils";
 
 import { listen } from "#elements/decorators/listen";
@@ -56,7 +56,7 @@ export const providerTypePriority: ProviderModelNameEnum[] = [
 
 @customElement("ak-application-wizard")
 export class AKApplicationWizard extends CreateWizard {
-    #api = new ProvidersApi(DEFAULT_CONFIG);
+    #api = aki(ProvidersApi);
 
     public static override verboseName = msg("Application");
     public static override verboseNamePlural = msg("Applications");

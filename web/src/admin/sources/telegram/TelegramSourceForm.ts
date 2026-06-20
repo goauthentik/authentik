@@ -8,7 +8,7 @@ import "#components/ak-switch-input";
 
 import { propertyMappingsProvider, propertyMappingsSelector } from "./TelegramSourceFormHelpers.js";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { policyEngineModes } from "#admin/policies/PolicyEngineModes";
 import { BaseSourceForm } from "#admin/sources/BaseSourceForm";
@@ -30,7 +30,7 @@ import { ifDefined } from "lit/directives/if-defined.js";
 @customElement("ak-source-telegram-form")
 export class TelegramSourceForm extends BaseSourceForm<TelegramSource> {
     async loadInstance(pk: string): Promise<TelegramSource> {
-        const source = await new SourcesApi(DEFAULT_CONFIG).sourcesTelegramRetrieve({
+        const source = await aki(SourcesApi).sourcesTelegramRetrieve({
             slug: pk,
         });
         return source;
@@ -39,12 +39,12 @@ export class TelegramSourceForm extends BaseSourceForm<TelegramSource> {
     async send(data: TelegramSource): Promise<TelegramSource> {
         let source: TelegramSource;
         if (this.instance?.pk) {
-            source = await new SourcesApi(DEFAULT_CONFIG).sourcesTelegramPartialUpdate({
+            source = await aki(SourcesApi).sourcesTelegramPartialUpdate({
                 slug: this.instance.slug,
                 patchedTelegramSourceRequest: data,
             });
         } else {
-            source = await new SourcesApi(DEFAULT_CONFIG).sourcesTelegramCreate({
+            source = await aki(SourcesApi).sourcesTelegramCreate({
                 telegramSourceRequest: data as unknown as TelegramSourceRequest,
             });
         }
@@ -134,6 +134,7 @@ export class TelegramSourceForm extends BaseSourceForm<TelegramSource> {
             <ak-secret-text-input
                 label=${msg("Bot token")}
                 name="botToken"
+                plaintext
                 input-hint="code"
                 ?required=${!this.instance}
                 ?revealed=${!this.instance}

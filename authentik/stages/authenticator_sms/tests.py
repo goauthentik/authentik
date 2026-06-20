@@ -362,7 +362,7 @@ class AuthenticatorSMSStageTests(FlowTestCase):
 
 
 class TestSMSDeviceThrottling(ThrottlingTestMixin, TestCase):
-    """Test ThrottlingMixin behaviour on SMSDevice.verify_token"""
+    """Test ThrottlingMixin behavior on SMSDevice.verify_token"""
 
     def setUp(self):
         super().setUp()
