@@ -9,7 +9,8 @@
  */
 
 import { cp } from "node:fs/promises";
-import { basename, resolve } from "node:path";
+import { createRequire } from "node:module";
+import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { createDocusaurusConfig } from "@goauthentik/docusaurus-config";
@@ -24,6 +25,7 @@ import { prepareReleaseEnvironment } from "@goauthentik/docusaurus-theme/release
 import { remarkLinkRewrite } from "@goauthentik/docusaurus-theme/remark";
 
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
+const require = createRequire(import.meta.url);
 
 const rootStaticDirectory = resolve(__dirname, "..", "static");
 const packageStaticDirectory = resolve(__dirname, "static");
@@ -33,16 +35,24 @@ const releaseEnvironment = prepareReleaseEnvironment();
 
 //#region Copy static files
 
-const files = [
-    // ---
-    resolve(authentikModulePath, "lifecycle/container/compose.yml"),
-];
+const brandFiles = new Map([
+    [resolve(authentikModulePath, "lifecycle/container/compose.yml"), "compose.yml"],
+    ["@goauthentik/brand-assets/icon.png", "img/icon.png"],
+    ["@goauthentik/brand-assets/icon.svg", "img/icon.svg"],
+    ["@goauthentik/brand-assets/social.png", "img/social.png"],
+    // cspell:disable-next-line
+    ["@goauthentik/brand-assets/icon_left_brand.svg", "img/icon_left_brand_colour.svg"],
+    ["@goauthentik/brand-assets/icon_left_brand_white.svg", "img/icon_left_brand.svg"],
+    // cspell:disable-next-line
+    ["@goauthentik/brand-assets/icon_top_brand.svg", "img/icon_top_brand_colour.svg"],
+    ["@goauthentik/brand-assets/icon_top_brand_white.svg", "img/icon_top_brand.svg"],
+]);
 
 await Promise.all(
-    files.map((file) => {
-        const fileName = basename(file);
-        const destPath = resolve(rootStaticDirectory, fileName);
-        return cp(file, destPath, { recursive: true });
+    Array.from(brandFiles.entries(), async ([src, dest]) => {
+        const srcPath = require.resolve(src);
+        const destPath = resolve(rootStaticDirectory, dest);
+        return cp(srcPath, destPath, { recursive: true });
     }),
 );
 
