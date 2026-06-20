@@ -209,6 +209,7 @@ const items = [
                             id: "add-secure-apps/providers/proxy/index",
                         },
                         items: [
+                            "add-secure-apps/providers/proxy/create-proxy-provider",
                             "add-secure-apps/providers/proxy/custom_headers",
                             "add-secure-apps/providers/proxy/header_authentication",
                             {
@@ -253,7 +254,15 @@ const items = [
                             "add-secure-apps/providers/saml/saml_single_logout",
                         ],
                     },
-                    "add-secure-apps/providers/scim/index",
+                    {
+                        type: "category",
+                        label: "SCIM Provider",
+                        link: {
+                            type: "doc",
+                            id: "add-secure-apps/providers/scim/index",
+                        },
+                        items: ["add-secure-apps/providers/scim/create-scim-provider"],
+                    },
                     {
                         type: "category",
                         label: "SSF Provider",
@@ -290,6 +299,7 @@ const items = [
                             id: "add-secure-apps/flows-stages/flow/index",
                         },
                         items: [
+                            "add-secure-apps/flows-stages/flow/planner",
                             "add-secure-apps/flows-stages/flow/inspector",
                             "add-secure-apps/flows-stages/flow/context/index",
                             {
@@ -721,10 +731,12 @@ const items = [
                         items: ["sys-mgmt/events/notification_rule_expression_policies"],
                     },
                     "sys-mgmt/events/transports",
+                    "sys-mgmt/events/log-forwarding",
                     "sys-mgmt/events/logging-events",
                     "sys-mgmt/events/event-actions",
                 ],
             },
+            "sys-mgmt/akql",
             "sys-mgmt/certificates",
             "sys-mgmt/settings",
             "sys-mgmt/service-accounts",
@@ -1054,7 +1066,8 @@ const items = [
             type: "generated-index",
             title: "Releases",
             slug: "releases",
-            description: "Release Notes for recent authentik versions",
+            description:
+                "Read the latest authentik release notes, including upgrade guidance, breaking changes, new features, and fixes for supported versions.",
         },
         items: createReleaseSidebarEntries(releases),
     },

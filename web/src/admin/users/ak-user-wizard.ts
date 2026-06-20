@@ -6,6 +6,8 @@ import "#elements/wizard/FormWizardPage";
 import "#elements/wizard/TypeCreateWizardPage";
 import "#elements/wizard/Wizard";
 
+import { DefaultUIConfig } from "#common/ui/config";
+
 import { LitPropertyRecord, SlottedTemplateResult } from "#elements/types";
 import { CreateWizard } from "#elements/wizard/CreateWizard";
 import { TypeCreateWizardPageLayouts } from "#elements/wizard/TypeCreateWizardPage";
@@ -77,7 +79,7 @@ export class ServiceAccountResultPage extends WizardPage<UserWizardState> {
         this.host.cancelable = false;
     };
 
-    public formatNextLabel(): SlottedTemplateResult | null {
+    public override formatNextLabel(): SlottedTemplateResult | null {
         return ButtonKindLabelRecord.close();
     }
 
@@ -121,8 +123,8 @@ export class AKUserWizard extends CreateWizard {
     /**
      * Default path to assign to new users created via the wizard.
      */
-    @property({ type: String, attribute: "default-path" })
-    public defaultPath: string = "users";
+    @property({ type: String, attribute: "default-path", useDefault: true })
+    public defaultPath: string = DefaultUIConfig.defaults.userPath;
 
     protected apiEndpoint(): Promise<TypeCreate[]> {
         return Promise.resolve(DEFAULT_USER_TYPES);

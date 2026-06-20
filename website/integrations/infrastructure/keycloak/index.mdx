@@ -4,6 +4,8 @@ sidebar_label: Keycloak
 support_level: community
 ---
 
+import RedirectURI20265Note from "../../_redirect-uri-2026-5-note.mdx";
+import SAMLProvider20265Warning from "../../_saml-provider-2026-5-warning.mdx";
 import TabItem from "@theme/TabItem";
 import Tabs from "@theme/Tabs";
 
@@ -38,6 +40,8 @@ Keycloak can be configured to use either OIDC or SAML for federated login source
 
 ## authentik configuration
 
+<RedirectURI20265Note />
+
 To support the integration of Keycloak with authentik, you need to create an application/provider pair in authentik.
 
 ### Create an application and provider in authentik
@@ -48,11 +52,11 @@ To support the integration of Keycloak with authentik, you need to create an app
     - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
         - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
-        - Set a `Strict` redirect URI to `https://keycloak.company/access/oidc/callback`.
+        - Add a **Redirect URI** of type `Strict` `Authorization` as `https://keycloak.company/access/oidc/callback`.
         - Set the **Logout URI** to `https://keycloak.company/realms/<keycloak-realm-name>/protocol/openid-connect/logout/backchannel-logout`.
         - Set the **Logout Method** to `Back-channel`.
         - Select any available signing key.
-    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 
 3. Click **Submit** to save the new application and provider.
 
@@ -75,6 +79,8 @@ To support the integration of Keycloak with authentik, you need to create an app
 
 ### Create an application and provider in authentik
 
+<SAMLProvider20265Warning />
+
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **New Application** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
     - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Take note of the **slug** as it will be required later.
@@ -88,7 +94,7 @@ To support the integration of Keycloak with authentik, you need to create an app
         - Set the **Audience** to `https://keycloak.company/realms/<keycloak-realm-name>`.
         - Under **Advanced protocol settings**, set **Signing Certificate** to use any available certificate.
 
-- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 
 3. Click **Submit** to save the new application and provider.
 

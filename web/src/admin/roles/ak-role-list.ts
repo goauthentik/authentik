@@ -4,7 +4,7 @@ import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { IconEditButton, ModalInvokerButton } from "#elements/dialogs";
 import { getURLParam, updateURLParams } from "#elements/router/RouteMatch";
@@ -18,7 +18,7 @@ import { RoleForm } from "#admin/roles/ak-role-form";
 
 import { RbacApi, Role } from "@goauthentik/api";
 
-import { msg } from "@lit/localize";
+import { msg, str } from "@lit/localize";
 import { html, PropertyValues, TemplateResult } from "lit";
 import { customElement, state } from "lit/decorators.js";
 
@@ -41,7 +41,7 @@ export class RoleListPage extends TablePage<Role> {
     protected hideManaged = getURLParam<boolean>("hideManaged", true);
 
     protected async apiEndpoint(): Promise<PaginatedResponse<Role>> {
-        return new RbacApi(DEFAULT_CONFIG).rbacRolesList({
+        return aki(RbacApi).rbacRolesList({
             ...(await this.defaultEndpointConfig()),
             managedIsnull: this.hideManaged ? true : undefined,
         });
@@ -59,12 +59,12 @@ export class RoleListPage extends TablePage<Role> {
             object-label=${msg("Role(s)")}
             .objects=${this.selectedElements}
             .usedBy=${(item: Role) => {
-                return new RbacApi(DEFAULT_CONFIG).rbacRolesUsedByList({
+                return aki(RbacApi).rbacRolesUsedByList({
                     uuid: item.pk,
                 });
             }}
             .delete=${(item: Role) => {
-                return new RbacApi(DEFAULT_CONFIG).rbacRolesDestroy({
+                return aki(RbacApi).rbacRolesDestroy({
                     uuid: item.pk,
                 });
             }}
@@ -83,7 +83,11 @@ export class RoleListPage extends TablePage<Role> {
 
     row(item: Role): SlottedTemplateResult[] {
         return [
-            html`<a href="#/identity/roles/${item.pk}">${item.name}</a>`,
+            html`<a
+                href="#/identity/roles/${item.pk}"
+                aria-label=${msg(str`View details of role "${item.name}"`)}
+                >${item.name}</a
+            >`,
             html`<div class="ak-c-table__actions">${IconEditButton(RoleForm, item.pk)}</div>`,
         ];
     }

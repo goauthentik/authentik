@@ -51,7 +51,7 @@ jobs:
             deps: rust-nightly
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v5
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v5
       - name: Setup authentik env
         uses: ./.github/actions/setup
         with:
@@ -61,7 +61,7 @@ jobs:
   test-gen:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v5
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v5
         with:
           ref: ${{ github.event.pull_request.head.sha }}
       - name: Setup authentik env
@@ -77,7 +77,7 @@ jobs:
   test-migrations:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v5
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v5
       - name: Setup authentik env
         uses: ./.github/actions/setup
       - name: run migrations
@@ -103,14 +103,19 @@ jobs:
           - 18-alpine
         run_id: [1, 2, 3, 4, 5]
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v5
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v5
         with:
           fetch-depth: 0
       - name: checkout stable
         run: |
           set -e -o pipefail
+
           cp -R .github ..
           cp -R scripts ..
+
+          mkdir -p ../packages
+          cp -R packages/logger-js ../packages/logger-js
+
           # Previous stable tag
           prev_stable=$(git tag --sort=version:refname | grep '^version/' | grep -vE -- '-rc[0-9]+$' | tail -n1)
           # Current version family based on
@@ -118,10 +123,13 @@ jobs:
           if [[ -n $current_version_family ]]; then
               prev_stable="version/${current_version_family}"
           fi
+
           echo "::notice::Checking out ${prev_stable} as stable version..."
           git checkout ${prev_stable}
-          rm -rf .github/ scripts/
+
+          rm -rf .github/ scripts/ packages/logger-js/
           mv ../.github ../scripts .
+          mv ../packages/logger-js ./packages/
       - name: Setup authentik env (stable)
         uses: ./.github/actions/setup
         with:
@@ -171,7 +179,7 @@ jobs:
           - 18-alpine
         run_id: [1, 2, 3, 4, 5]
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v5
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v5
       - name: Setup authentik env
         uses: ./.github/actions/setup
         with:
@@ -191,7 +199,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v5
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v5
       - name: Setup authentik env
         uses: ./.github/actions/setup
       - name: Create k8s Kind Cluster
@@ -244,7 +252,7 @@ jobs:
             glob: tests/e2e/test_endpoints_*
             profiles: selenium
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v5
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v5
       - name: Setup authentik env
         uses: ./.github/actions/setup
       - name: Setup e2e env
@@ -252,6 +260,7 @@ jobs:
           COMPOSE_PROFILES: ${{ matrix.job.profiles }}
         run: |
           docker compose -f tests/e2e/compose.yml up -d --quiet-pull
+      - uses: ./.github/actions/setup-node
       - id: cache-web
         uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v4
         if: contains(matrix.job.profiles, 'selenium')
@@ -261,10 +270,12 @@ jobs:
       - name: prepare web ui
         if: steps.cache-web.outputs.cache-hit != 'true' && contains(matrix.job.profiles, 'selenium')
         working-directory: web
+        env:
+          NODE_ENV: "production"
         run: |
-          npm ci
-          npm run build
-          npm run build:sfe
+          corepack npm ci
+          corepack npm run build
+          corepack npm run build:sfe
       - name: run e2e
         run: |
           uv run coverage run manage.py test ${{ matrix.job.glob }}
@@ -295,7 +306,7 @@ jobs:
           - name: ssf_transmitter
             glob: tests/openid_conformance/test_ssf_transmitter.py
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v5
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v5
       - name: Setup authentik env
         uses: ./.github/actions/setup
       - name: Setup e2e env (chrome, etc)
@@ -313,11 +324,12 @@ jobs:
           key: ${{ runner.os }}-web-${{ hashFiles('web/package-lock.json', 'web/src/**', 'web/packages/sfe/src/**') }}-b
       - name: prepare web ui
         if: steps.cache-web.outputs.cache-hit != 'true'
-        working-directory: web
+        env:
+          NODE_ENV: "production"
         run: |
-          npm ci
-          npm run build
-          npm run build:sfe
+          corepack npm ci --prefix web
+          corepack npm run build --prefix web
+          corepack npm run build:sfe --prefix web
       - name: run conformance
         run: |
           uv run coverage run manage.py test ${{ matrix.job.glob }}
@@ -336,7 +348,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v5
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v5
       - name: Setup authentik env
         uses: ./.github/actions/setup
         with:
@@ -395,7 +407,7 @@ jobs:
       pull-requests: write
     timeout-minutes: 120
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v5
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v5
         with:
           ref: ${{ github.event.pull_request.head.sha }}
       - name: prepare variables

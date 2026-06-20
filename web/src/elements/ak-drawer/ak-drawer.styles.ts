@@ -51,11 +51,11 @@ export const styles = css`
         flex-direction: column;
     }
 
-    :host(:not([inline], [static])) .ak-v2-c-drawer__main {
+    :host(:not([inline]):not([static])) .ak-v2-c-drawer__main {
         position: relative;
     }
 
-    :host(:not([inline], [static])) .ak-v2-c-drawer__main > .ak-v2-c-drawer__panel {
+    :host(:not([inline]):not([static])) .ak-v2-c-drawer__main > .ak-v2-c-drawer__panel {
         position: absolute;
         inset-block-start: 0;
         inset-block-end: 0;
@@ -65,17 +65,17 @@ export const styles = css`
     }
 
     :where(.ak-v2-m-dir-rtl, [dir="rtl"])
-        :host(:not([inline], [static]))
+        :host(:not([inline]):not([static]))
         .ak-v2-c-drawer__main
         > .ak-v2-c-drawer__panel {
         transform: translateX(calc(100% * var(--ak-v2-global--inverse--multiplier)));
     }
 
-    :host([expanded]:not([inline], [static])) .ak-v2-c-drawer__main > .ak-v2-c-drawer__panel {
+    :host([expanded]:not([inline]):not([static])) .ak-v2-c-drawer__main > .ak-v2-c-drawer__panel {
         transform: translateX(0);
     }
 
-    :host([position="left"]:not([inline], [static]))
+    :host([position="left"]:not([inline]):not([static]))
         .ak-v2-c-drawer__main
         > .ak-v2-c-drawer__panel {
         inset-inline-end: auto;
@@ -84,19 +84,19 @@ export const styles = css`
     }
 
     :where(.ak-v2-m-dir-rtl, [dir="rtl"])
-        :host([position="left"]:not([inline], [static]))
+        :host([position="left"]:not([inline]):not([static]))
         .ak-v2-c-drawer__main
         > .ak-v2-c-drawer__panel {
         transform: translateX(calc(-100% * var(--ak-v2-global--inverse--multiplier)));
     }
 
-    :host([expanded][position="left"]:not([inline], [static]))
+    :host([expanded][position="left"]:not([inline]):not([static]))
         .ak-v2-c-drawer__main
         > .ak-v2-c-drawer__panel {
         transform: translateX(0);
     }
 
-    :host([position="bottom"]:not([inline], [static]))
+    :host([position="bottom"]:not([inline]):not([static]))
         .ak-v2-c-drawer__main
         > .ak-v2-c-drawer__panel {
         inset-inline-end: 0;
@@ -108,7 +108,7 @@ export const styles = css`
         transform: translateY(100%);
     }
 
-    :host([position="bottom"][expanded]:not([inline], [static]))
+    :host([position="bottom"][expanded]:not([inline]):not([static]))
         .ak-v2-c-drawer__main
         > .ak-v2-c-drawer__panel {
         transform: translateY(0);
@@ -406,10 +406,10 @@ export const styles = css`
             );
         }
 
-        :host([position="left"][inline]:not([no-border], [resizable]))
+        :host([position="left"][inline]:not([no-border]):not([resizable]))
             .ak-v2-c-drawer__main
             > .ak-v2-c-drawer__panel:not(.pf-m-no-border, .pf-m-resizable),
-        :host([position="left"][static]:not([no-border], [resizable]))
+        :host([position="left"][static]:not([no-border]):not([resizable]))
             .ak-v2-c-drawer__main
             > .ak-v2-c-drawer__panel:not(.pf-m-no-border, .pf-m-resizable) {
             padding-inline-start: 0;

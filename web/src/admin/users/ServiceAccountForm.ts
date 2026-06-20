@@ -4,7 +4,7 @@ import "#components/ak-text-input";
 import "#components/ak-radio-input";
 import "#components/ak-switch-input";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { dateTimeLocal } from "#common/temporal";
 
 import { Form } from "#elements/forms/Form";
@@ -59,7 +59,7 @@ export class ServiceAccountForm extends Form<UserServiceAccountRequest> {
     }
 
     async send(data: UserServiceAccountRequest): Promise<UserServiceAccountResponse> {
-        const result = await new CoreApi(DEFAULT_CONFIG).coreUsersServiceAccountCreate({
+        const result = await aki(CoreApi).coreUsersServiceAccountCreate({
             userServiceAccountRequest: data,
         });
         this.result = result;
@@ -67,7 +67,7 @@ export class ServiceAccountForm extends Form<UserServiceAccountRequest> {
             this.parentElement.showSubmitButton = false;
         }
         if (this.targetGroup) {
-            await new CoreApi(DEFAULT_CONFIG).coreGroupsAddUserCreate({
+            await aki(CoreApi).coreGroupsAddUserCreate({
                 groupUuid: this.targetGroup.pk,
                 userAccountRequest: {
                     pk: this.result.userPk,
@@ -75,7 +75,7 @@ export class ServiceAccountForm extends Form<UserServiceAccountRequest> {
             });
         }
         if (this.targetRole) {
-            await new RbacApi(DEFAULT_CONFIG).rbacRolesAddUserCreate({
+            await aki(RbacApi).rbacRolesAddUserCreate({
                 uuid: this.targetRole.pk,
                 userAccountSerializerForRoleRequest: {
                     pk: this.result.userPk,

@@ -4,7 +4,7 @@ import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/index";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { AKLabel } from "#components/ak-label";
 
@@ -28,19 +28,19 @@ import { customElement } from "lit/decorators.js";
 @customElement("ak-stage-password-form")
 export class PasswordStageForm extends BaseStageForm<PasswordStage> {
     loadInstance(pk: string): Promise<PasswordStage> {
-        return new StagesApi(DEFAULT_CONFIG).stagesPasswordRetrieve({
+        return aki(StagesApi).stagesPasswordRetrieve({
             stageUuid: pk,
         });
     }
 
     async send(data: PasswordStage): Promise<PasswordStage> {
         if (this.instance) {
-            return new StagesApi(DEFAULT_CONFIG).stagesPasswordUpdate({
+            return aki(StagesApi).stagesPasswordUpdate({
                 stageUuid: this.instance.pk || "",
                 passwordStageRequest: data,
             });
         }
-        return new StagesApi(DEFAULT_CONFIG).stagesPasswordCreate({
+        return aki(StagesApi).stagesPasswordCreate({
             passwordStageRequest: data,
         });
     }
@@ -125,9 +125,7 @@ export class PasswordStageForm extends BaseStageForm<PasswordStage> {
                                 if (query !== undefined) {
                                     args.search = query;
                                 }
-                                const flows = await new FlowsApi(DEFAULT_CONFIG).flowsInstancesList(
-                                    args,
-                                );
+                                const flows = await aki(FlowsApi).flowsInstancesList(args);
                                 return flows.results;
                             }}
                             .renderElement=${(flow: Flow): string => {

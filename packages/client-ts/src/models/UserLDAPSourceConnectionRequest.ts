@@ -20,12 +20,6 @@
 export interface UserLDAPSourceConnectionRequest {
     /**
      *
-     * @type {number}
-     * @memberof UserLDAPSourceConnectionRequest
-     */
-    user: number;
-    /**
-     *
      * @type {string}
      * @memberof UserLDAPSourceConnectionRequest
      */
@@ -44,7 +38,6 @@ export interface UserLDAPSourceConnectionRequest {
 export function instanceOfUserLDAPSourceConnectionRequest(
     value: object,
 ): value is UserLDAPSourceConnectionRequest {
-    if (!("user" in value) || value["user"] === undefined) return false;
     if (!("source" in value) || value["source"] === undefined) return false;
     if (!("identifier" in value) || value["identifier"] === undefined) return false;
     return true;
@@ -64,7 +57,6 @@ export function UserLDAPSourceConnectionRequestFromJSONTyped(
         return json;
     }
     return {
-        user: json["user"],
         source: json["source"],
         identifier: json["identifier"],
     };
@@ -83,7 +75,6 @@ export function UserLDAPSourceConnectionRequestToJSONTyped(
     }
 
     return {
-        user: value["user"],
         source: value["source"],
         identifier: value["identifier"],
     };

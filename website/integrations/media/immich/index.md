@@ -4,6 +4,8 @@ sidebar_label: Immich
 support_level: community
 ---
 
+import RedirectURI20265Note from "../../\_redirect-uri-2026-5-note.mdx";
+
 ## What is Immich?
 
 > Immich is a self-hosted backup solution for photos and videos on mobile devices.
@@ -23,6 +25,8 @@ This documentation lists only the settings that you need to change from their de
 
 ## authentik configuration
 
+<RedirectURI20265Note />
+
 To support the integration of Immich with authentik, you need to create an application/provider pair in authentik.
 
 ### Create an application and provider in authentik
@@ -33,9 +37,9 @@ To support the integration of Immich with authentik, you need to create an appli
     - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
         - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
-        - Add three `Strict` redirect URIs and set them to `app.immich:///oauth-callback`, `https://immich.company/auth/login`, and `https://immich.company/user-settings`.
+        - Add three **Redirect URIs** of type `Strict` `Authorization` as `app.immich:///oauth-callback`, `https://immich.company/auth/login`, and `https://immich.company/user-settings`.
         - Select any available signing key.
-    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
     - **Configure Launch URL** _(optional)_: set the [Launch URL](/docs/add-secure-apps/applications/#appearance) to `https://immich.company/auth/login?autoLaunch=1` to allow automatic login to Immich when clicking the application from within authentik.
 
 3. Click **Submit** to save the new application and provider.

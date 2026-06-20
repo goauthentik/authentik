@@ -37,7 +37,7 @@ runs:
         sudo rsync -a --delete /tmp/empty/ /usr/local/lib/android/
     - name: Install uv
       if: ${{ contains(inputs.dependencies, 'python') }}
-      uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v5
+      uses: astral-sh/setup-uv@fac544c07dec837d0ccb6301d7b5580bf5edae39 # v5
       with:
         enable-cache: true
     - name: Setup python
@@ -64,30 +64,14 @@ runs:
         rustflags: ""
     - name: Setup rust dependencies
       if: ${{ contains(inputs.dependencies, 'rust') }}
-      uses: taiki-e/install-action@ec28e287910af896fd98e04056d31fa68607e7ad # v2
+      uses: taiki-e/install-action@15449e3094499af05d8d964a1c884208e4b8b595 # v2
       with:
         tool: cargo-deny cargo-machete cargo-llvm-cov nextest
-    - name: Setup node (web)
+    - name: Setup node (root, web)
       if: ${{ contains(inputs.dependencies, 'node') }}
-      uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v4
+      uses: ./.github/actions/setup-node
       with:
-        node-version-file: "${{ inputs.working-directory }}web/package.json"
-        cache: "npm"
-        cache-dependency-path: "${{ inputs.working-directory }}web/package-lock.json"
-        registry-url: "https://registry.npmjs.org"
-    - name: Setup node (root)
-      if: ${{ contains(inputs.dependencies, 'node') }}
-      uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v4
-      with:
-        node-version-file: "${{ inputs.working-directory }}package.json"
-        cache: "npm"
-        cache-dependency-path: "${{ inputs.working-directory }}package-lock.json"
-        registry-url: "https://registry.npmjs.org"
-    - name: Install Node deps
-      if: ${{ contains(inputs.dependencies, 'node') }}
-      shell: bash
-      working-directory: ${{ inputs.working-directory }}
-      run: npm ci
+        working-directory: web
     - name: Setup go
       if: ${{ contains(inputs.dependencies, 'go') }}
       uses: actions/setup-go@4a3601121dd01d1626a1e23e37211e3254c1c06c # v5
@@ -95,7 +79,7 @@ runs:
         go-version-file: "${{ inputs.working-directory }}go.mod"
     - name: Setup docker cache
       if: ${{ contains(inputs.dependencies, 'runtime') }}
-      uses: AndreKurait/docker-cache@0fe76702a40db986d9663c24954fc14c6a6031b7
+      uses: AndreKurait/docker-cache@7a3887908bdb97935395833df69b060cfcca0f7f
       with:
         key: docker-images-${{ runner.os }}-${{ hashFiles('.github/actions/setup/compose.yml', 'Makefile') }}-${{ inputs.postgresql_version }}
     - name: Setup dependencies
@@ -105,7 +89,7 @@ runs:
       run: |
         export PSQL_TAG=${{ inputs.postgresql_version }}
         docker compose -f .github/actions/setup/compose.yml up -d --wait
-        cd web && npm ci
+        corepack npm ci --prefix web
     - name: Generate config
       if: ${{ contains(inputs.dependencies, 'python') }}
       shell: uv run python {0}

@@ -1,11 +1,22 @@
 # syntax=docker/dockerfile:1
 
 # Stage: Build webui
-FROM --platform=${BUILDPLATFORM} docker.io/library/node:24-trixie-slim@sha256:4f2b45e32dc7d2caf66b6dbd59fac50e32f8077769efe0ef4d4c3f114672537d AS node-builder
+FROM --platform=${BUILDPLATFORM} docker.io/library/node:26-trixie-slim@sha256:191ef878ecb351d68b78219593de18bd8942afd59af59f29960dc4b24805a3f1 AS node-builder
 
 ARG GIT_BUILD_HASH
 ENV GIT_BUILD_HASH=$GIT_BUILD_HASH
 ENV NODE_ENV=production
+
+WORKDIR /work
+
+RUN --mount=type=bind,target=/work/package.json,src=./package.json \
+    --mount=type=bind,target=/work/package-lock.json,src=./package-lock.json \
+    --mount=type=bind,target=/work/web/package.json,src=./web/package.json \
+    --mount=type=bind,target=/work/web/package-lock.json,src=./web/package-lock.json \
+    --mount=type=bind,target=/work/scripts/node/,src=./scripts/node/ \
+    --mount=type=bind,target=/work/packages/logger-js/,src=./packages/logger-js/ \
+    node ./scripts/node/setup-corepack.mjs --force && \
+    node ./scripts/node/lint-runtime.mjs ./web
 
 WORKDIR /work/web
 
@@ -13,12 +24,13 @@ WORKDIR /work/web
 COPY ./packages /work/packages
 COPY ./web/packages /work/web/packages
 
-RUN --mount=type=bind,target=/work/web/package.json,src=./web/package.json \
+RUN --mount=type=bind,target=/work/.npmrc,src=./.npmrc \
+    --mount=type=bind,target=/work/web/package.json,src=./web/package.json \
     --mount=type=bind,target=/work/web/package-lock.json,src=./web/package-lock.json \
     --mount=type=bind,target=/work/web/packages/sfe/package.json,src=./web/packages/sfe/package.json \
     --mount=type=bind,target=/work/web/scripts,src=./web/scripts \
     --mount=type=cache,id=npm-ak,sharing=shared,target=/root/.npm \
-    npm ci
+    corepack npm ci
 
 COPY ./package.json /work
 COPY ./web /work/web/
@@ -29,7 +41,7 @@ RUN npm run build && \
     npm run build:sfe
 
 # Stage: Build go proxy
-FROM --platform=${BUILDPLATFORM} docker.io/library/golang:1.26.2-trixie@sha256:4a7137ea573f79c86ae451ff05817ed762ef5597fcf732259e97abeb3108d873 AS go-builder
+FROM --platform=${BUILDPLATFORM} docker.io/library/golang:1.26.4-trixie@sha256:bbf22ddccb3205344f2755ea8fa4fe39f7a8b2b77b9f7b764ec2aad31406f6fc AS go-builder
 
 ARG TARGETOS
 ARG TARGETARCH
@@ -104,9 +116,9 @@ RUN --mount=type=bind,target=rust-toolchain.toml,src=rust-toolchain.toml \
 RUN cat /root/.rustup/settings.toml
 
 # Stage: Download uv
-FROM ghcr.io/astral-sh/uv:0.11.5@sha256:555ac94f9a22e656fc5f2ce5dfee13b04e94d099e46bb8dd3a73ec7263f2e484 AS uv
+FROM ghcr.io/astral-sh/uv:0.11.22@sha256:16b63af0e7342dd372da9ca989ea9fa542fc68f4640972d59a8450a5240fe42e AS uv
 # Stage: Base python image
-FROM ghcr.io/goauthentik/fips-python:3.14.3-slim-trixie-fips@sha256:bf45eb77a010d76fe6abd7ae137d1b0c44b6227cd984945042135fdf05ebf8d9 AS python-base
+FROM ghcr.io/goauthentik/fips-python:3.14.6-slim-trixie-fips@sha256:9b938f7e589643dd6ad7d142c3b25ddce6b9b637d7e8b87c0610db67bddcdf0d AS python-base
 
 ENV VENV_PATH="/ak-root/.venv" \
     PATH="/lifecycle:/ak-root/.venv/bin:$PATH" \

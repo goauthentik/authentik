@@ -4,6 +4,8 @@ sidebar_label: OpenProject
 support_level: community
 ---
 
+import RedirectURI20265Note from "../../\_redirect-uri-2026-5-note.mdx";
+
 ## What is OpenProject?
 
 > OpenProject is a web-based project management software. Use OpenProject to manage your projects, tasks and goals. Collaborate via work packages and link them to your pull requests on GitHub.
@@ -22,6 +24,8 @@ This documentation lists only the settings that you need to change from their de
 :::
 
 ## authentik configuration
+
+<RedirectURI20265Note />
 
 To support the integration of OpenProject with authentik, you need to create a property mapping and an application/provider pair in authentik.
 
@@ -61,13 +65,13 @@ OpenProject requires a first and last name for each user. By default authentik o
     - **Protocol settings**:
         - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
         - **Redirect URI**:
-            - Strict: `https://openproject.company/auth/oidc-authentik/callback`
+            - `Strict` `Authorization`: `https://openproject.company/auth/oidc-authentik/callback`
         - **Signing key**: select any available signing key.
     - **Advanced protocol settings**:
         - **Scopes**:
             - Remove `authentik default OAuth Mapping: OpenID 'profile'` from **Selected Scopes**.
             - Add the scope that you created in the previous section (e.g. `Open Project Profile Scope`) to **Selected Scopes**.
-- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 
 3. Click **Submit** to save the new application and provider.
 
