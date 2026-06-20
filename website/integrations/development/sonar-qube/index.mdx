@@ -4,9 +4,11 @@ sidebar_label: SonarQube
 support_level: community
 ---
 
+import SAMLProvider20265Warning from "../../_saml-provider-2026-5-warning.mdx";
+
 ## What is SonarQube?
 
-> Self-managed static analysis tool for continuous codebase inspection
+> SonarQube Server is a self-managed static analysis tool for continuous code inspection.
 >
 > -- https://www.sonarsource.com/products/sonarqube/
 
@@ -14,62 +16,57 @@ support_level: community
 
 The following placeholders are used in this guide:
 
-- `sonarqube.company` is the FQDN of the sonarqube installation.
+- `sonarqube.company` is the FQDN of the SonarQube installation.
 - `authentik.company` is the FQDN of the authentik installation.
 
 :::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
-## Terraform provider
+## authentik configuration
 
-Create an application in authentik. Create a SAML Provider with the following values
+<SAMLProvider20265Warning />
 
-```hcl
+To support the integration of SonarQube with authentik, you need to create an application/provider pair in authentik.
 
-data "authentik_flow" "default-provider-authorization-implicit-consent" {
-  slug = "default-provider-authorization-implicit-consent"
-}
+### Create an application and provider in authentik
 
-data "authentik_property_mapping_saml" "saml-sonar-qube" {
-  managed_list = [
-    "goauthentik.io/providers/saml/email",
-    "goauthentik.io/providers/saml/username",
-    "goauthentik.io/providers/saml/name"
-  ]
-}
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Note the **slug** value because it will be required later.
+    - **Choose a Provider type**: select **SAML Provider** as the provider type.
+    - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+        - Set the **ACS URL** to `https://sonarqube.company/oauth2/callback/saml`.
+        - Set the **Audience** to `sonarqube`.
+        - Under **Advanced protocol settings**:
+            - Select an available **Signing Certificate**.
+            - Set **Service Provider Binding** to **Post**.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 
-resource "authentik_provider_saml" "provider_sonar-qube" {
-    name                = "SonarQube"
+3. Click **Submit** to save the new application and provider.
 
-    authorization_flow  = data.authentik_flow.default-provider-authorization-implicit-consent.id
+## SonarQube configuration
 
-    acs_url    = "https://sonarqube.company/oauth2/callback/saml"
-    sp_binding = "post"
-    audience   = "https://sonarqube.company/saml2/metadata"
+1. Log in to SonarQube as an administrator.
+2. Navigate to **Administration** > **Configuration** > **General Settings** > **Authentication** > **SAML**.
+3. Click **Create Configuration** and configure the following settings:
+    - **Application ID**: `sonarqube`
+    - **Provider Name**: `authentik`
+    - **Provider ID**: `https://authentik.company/application/saml/<application_slug>/metadata/`
+    - **SAML login URL**: `https://authentik.company/application/saml/<application_slug>/`
+    - **Identity provider certificate**: paste the signing certificate that you selected for the authentik SAML provider. You can download it from the authentik SAML provider page, under **Related objects** > **Download signing certificate**.
+    - **SAML user login attribute**: `http://schemas.goauthentik.io/2021/02/saml/username`
+    - **SAML user name attribute**: `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name`
+    - **SAML user email attribute**: `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress`
+4. Click **Save configuration**.
+5. Click **Test Configuration** to start a SAML test sign-in.
+6. After the test succeeds, click **Enable configuration**.
 
-    property_mappings = data.authentik_property_mapping_saml.saml-sonar-qube.ids
-}
+## Configuration verification
 
-resource "authentik_application" "application_sonar-qube" {
-    name              = "SonarQube"
-    slug              = "sonarqube"
-    protocol_provider = authentik_provider_saml.provider_sonar-qube.id
-}
+To confirm that authentik is properly configured with SonarQube, log out of SonarQube and open the integration. Click **Log in with authentik** and confirm that you are redirected to authentik for authentication and then back to SonarQube.
 
-```
+## Resources
 
-## SonarQube
-
-Navigate to **Administration > Configuration > Authentication > SAML**.
-
-Input these Values
-
-- Application ID: https://sonarqube.company/saml2/metadata
-- Provider Name: authentik
-- Provider ID: authentik
-- SAML login URL: https://authentik.company/application/saml/sonarqube/sso/binding/redirect/
-- Identity provider certificate: Download it from authentik
-- SAML user login attribute: http://schemas.goauthentik.io/2021/02/saml/username
-- SAML user name attribute: http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name
-- SAML user email attribute: http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress
+- [SonarQube Server documentation - Overview of SAML support](https://docs.sonarsource.com/sonarqube-server/instance-administration/authentication/saml/overview)
+- [SonarQube Server documentation - With Keycloak](https://docs.sonarsource.com/sonarqube-server/instance-administration/authentication/saml/how-to-set-up-keycloak)
