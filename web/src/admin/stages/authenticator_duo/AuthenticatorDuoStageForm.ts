@@ -5,6 +5,8 @@ import "#elements/forms/SearchSelect/index";
 
 import { aki } from "#common/api/client";
 
+import { AKLabel } from "#components/ak-label";
+
 import { RenderFlowOption } from "#admin/flows/utils";
 import { BaseStageForm } from "#admin/stages/BaseStageForm";
 
@@ -48,20 +50,35 @@ export class AuthenticatorDuoStageForm extends BaseStageForm<AuthenticatorDuoSta
                     "Stage used to configure a duo-based authenticator. This stage should be used for configuration flows.",
                 )}
             </span>
-            <ak-form-element-horizontal label=${msg("Name")} required name="name">
+            <ak-form-element-horizontal required name="name">
+                ${AKLabel(
+                    {
+                        slot: "label",
+                        className: "pf-c-form__group-label",
+                        htmlFor: "name",
+                        required: true,
+                    },
+                    msg("Name"),
+                )}
                 <input
+                    id="name"
                     type="text"
                     value="${this.instance?.name ?? ""}"
                     class="pf-c-form-control"
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal
-                label=${msg("Authenticator type name")}
-                ?required=${false}
-                name="friendlyName"
-            >
+            <ak-form-element-horizontal ?required=${false} name="friendlyName">
+                ${AKLabel(
+                    {
+                        slot: "label",
+                        className: "pf-c-form__group-label",
+                        htmlFor: "friendlyName",
+                    },
+                    msg("Authenticator type name"),
+                )}
                 <input
+                    id="friendlyName"
                     type="text"
                     value="${this.instance?.friendlyName ?? ""}"
                     class="pf-c-form-control"
@@ -72,8 +89,18 @@ export class AuthenticatorDuoStageForm extends BaseStageForm<AuthenticatorDuoSta
                     )}
                 </p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("API Hostname")} required name="apiHostname">
+            <ak-form-element-horizontal required name="apiHostname">
+                ${AKLabel(
+                    {
+                        slot: "label",
+                        className: "pf-c-form__group-label",
+                        htmlFor: "apiHostname",
+                        required: true,
+                    },
+                    msg("API Hostname"),
+                )}
                 <input
+                    id="apiHostname"
                     type="text"
                     value="${this.instance?.apiHostname ?? ""}"
                     class="pf-c-form-control pf-m-monospace"
@@ -84,12 +111,18 @@ export class AuthenticatorDuoStageForm extends BaseStageForm<AuthenticatorDuoSta
             </ak-form-element-horizontal>
             <ak-form-group open label="${msg("Duo Auth API")}">
                 <div class="pf-c-form">
-                    <ak-form-element-horizontal
-                        label=${msg("Integration key")}
-                        required
-                        name="clientId"
-                    >
+                    <ak-form-element-horizontal required name="clientId">
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "clientId",
+                                required: true,
+                            },
+                            msg("Integration key"),
+                        )}
                         <input
+                            id="clientId"
                             type="text"
                             value="${this.instance?.clientId ?? ""}"
                             class="pf-c-form-control"
@@ -112,11 +145,17 @@ export class AuthenticatorDuoStageForm extends BaseStageForm<AuthenticatorDuoSta
                 )}"
             >
                 <div class="pf-c-form">
-                    <ak-form-element-horizontal
-                        label=${msg("Integration key")}
-                        name="adminIntegrationKey"
-                    >
+                    <ak-form-element-horizontal name="adminIntegrationKey">
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "adminIntegrationKey",
+                            },
+                            msg("Integration key"),
+                        )}
                         <input
+                            id="adminIntegrationKey"
                             type="text"
                             value="${this.instance?.adminIntegrationKey ?? ""}"
                             class="pf-c-form-control pf-m-monospace"
@@ -134,11 +173,17 @@ export class AuthenticatorDuoStageForm extends BaseStageForm<AuthenticatorDuoSta
             </ak-form-group>
             <ak-form-group open label="${msg("Stage-specific settings")}">
                 <div class="pf-c-form">
-                    <ak-form-element-horizontal
-                        label=${msg("Configuration flow")}
-                        name="configureFlow"
-                    >
+                    <ak-form-element-horizontal name="configureFlow">
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "configureFlow",
+                            },
+                            msg("Configuration flow"),
+                        )}
                         <ak-search-select
+                            id="configureFlow"
                             .fetchObjects=${async (query?: string): Promise<Flow[]> => {
                                 const args: FlowsInstancesListRequest = {
                                     ordering: "slug",

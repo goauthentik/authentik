@@ -12,6 +12,8 @@ import { ModelForm } from "#elements/forms/ModelForm";
 import { showMessage } from "#elements/messages/MessageContainer";
 import { SlottedTemplateResult } from "#elements/types";
 
+import { AKLabel } from "#components/ak-label";
+
 import {
     AuthenticatorDuoStage,
     AuthenticatorDuoStageManualDeviceImportRequest,
@@ -61,8 +63,18 @@ export class DuoDeviceImportForm extends ModelForm<AuthenticatorDuoStage, string
     }
 
     protected renderFormManual(): SlottedTemplateResult {
-        return html`<ak-form-element-horizontal label=${msg("User")} required name="username">
+        return html`<ak-form-element-horizontal required name="username">
+                ${AKLabel(
+                    {
+                        slot: "label",
+                        className: "pf-c-form__group-label",
+                        htmlFor: "username",
+                        required: true,
+                    },
+                    msg("User"),
+                )}
                 <ak-search-select
+                    id="username"
                     placeholder=${msg("Select a user...")}
                     .fetchObjects=${async (query?: string): Promise<User[]> => {
                         const args: CoreUsersListRequest = {
@@ -103,8 +115,17 @@ export class DuoDeviceImportForm extends ModelForm<AuthenticatorDuoStage, string
     }
 
     renderFormAutomatic(): SlottedTemplateResult {
-        return html`<ak-form-element-horizontal label=${msg("Automatic import")}>
+        return html`<ak-form-element-horizontal>
+                ${AKLabel(
+                    {
+                        slot: "label",
+                        className: "pf-c-form__group-label",
+                        htmlFor: "duo-automatic-import",
+                    },
+                    msg("Automatic import"),
+                )}
                 <ak-action-button
+                    id="duo-automatic-import"
                     class="pf-m-primary"
                     .apiRequest=${() => {
                         return aki(StagesApi)
