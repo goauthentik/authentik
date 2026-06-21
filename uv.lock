@@ -3595,7 +3595,7 @@ wheels = [
 
 [[package]]
 name = "twisted"
-version = "25.5.0"
+version = "26.4.0rc2"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "attrs" },
@@ -3606,9 +3606,9 @@ dependencies = [
     { name = "typing-extensions" },
     { name = "zope-interface" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/13/0f/82716ed849bf7ea4984c21385597c949944f0f9b428b5710f79d0afc084d/twisted-25.5.0.tar.gz", hash = "sha256:1deb272358cb6be1e3e8fc6f9c8b36f78eb0fa7c2233d2dbe11ec6fee04ea316", size = 3545725, upload-time = "2025-06-07T09:52:24.858Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/0a/44/60da409efd39860f5c7355ff844690d96168bc02eb1b06171d2fc81b80ae/twisted-26.4.0rc2.tar.gz", hash = "sha256:d1db6c391a1b6e70028c3212298178621db149a6f75555f6503da557c763406d", size = 3575417, upload-time = "2026-04-29T15:44:25.136Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/eb/66/ab7efd8941f0bc7b2bd555b0f0471bff77df4c88e0cc31120c82737fec77/twisted-25.5.0-py3-none-any.whl", hash = "sha256:8559f654d01a54a8c3efe66d533d43f383531ebf8d81d9f9ab4769d91ca15df7", size = 3204767, upload-time = "2025-06-07T09:52:21.428Z" },
+    { url = "https://files.pythonhosted.org/packages/73/30/cdb6811e0853bd6d60ee6a685385b9e469db1dfdce344bc53f2e7d3fe6f4/twisted-26.4.0rc2-py3-none-any.whl", hash = "sha256:41eeb62a7f2688c634f7a1af76e225c58da48f8af1640fcb285ce386a96889e2", size = 3230408, upload-time = "2026-04-29T15:44:22.514Z" },
 ]
 
 [package.optional-dependencies]
