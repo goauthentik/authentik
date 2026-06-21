@@ -83,6 +83,7 @@ class SCIMCompatibilityMode(models.TextChoices):
     AWS = "aws", _("AWS")
     SLACK = "slack", _("Slack")
     SALESFORCE = "sfdc", _("Salesforce")
+    GITLAB = "gitlab", _("GitLab")
     WEBEX = "webex", _("Webex")
     VCENTER = "vcenter", _("vCenter")
 

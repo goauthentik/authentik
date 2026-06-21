@@ -2,7 +2,7 @@
 title: Captcha stage
 ---
 
-The Captcha stage adds CAPTCHA verification to a flow by using Google reCAPTCHA or compatible alternatives like hCaptcha and Cloudflare Turnstile.
+The Captcha stage adds CAPTCHA verification to a flow by using Google reCAPTCHA or compatible alternatives like hCaptcha, Cloudflare Turnstile, and Cap.
 
 ## Overview
 
@@ -20,6 +20,7 @@ It can either be bound to a flow or embedded inside the [Identification stage](.
 - **Error on invalid score**: show an error immediately when the score is outside the configured threshold. If disabled, the flow continues and policies can inspect the result from context.
 - **JS URL**: JavaScript loader URL for the provider.
 - **API URL**: verification endpoint URL for the provider.
+- **Request content type**: content type used when authentik verifies the CAPTCHA token with the provider.
 
 ## Flow integration
 
@@ -54,6 +55,25 @@ Recommended values:
 - **API URL**: `https://api.hcaptcha.com/siteverify`
 
 Score thresholds only apply to hCaptcha Enterprise.
+
+### Cap
+
+Cap is a self-hostable CAPTCHA server that uses proof-of-work challenges.
+
+See https://trycap.dev/guide/.
+
+authentik supports Cap's default widget. The floating widget is not supported.
+
+Recommended values:
+
+- **Public key**: public Cap endpoint for the site key path, for example `https://cap.example.com/site-key/`
+- **Private key**: Cap secret key
+- **Interactive**: enabled
+- **JS URL**: self-hosted Cap widget asset, for example `https://cap.example.com/assets/widget.js`. If you use a CDN, pin a reviewed release such as `https://cdn.jsdelivr.net/npm/cap-widget@<version>` instead of the unversioned package URL. See [Cap releases](https://github.com/tiagozip/cap/releases).
+- **API URL**: Cap verification endpoint, for example `https://cap.example.com/site-key/siteverify`
+- **Request content type**: JSON
+
+Cap does not use score thresholds.
 
 ### Cloudflare Turnstile
 

@@ -4,6 +4,8 @@ sidebar_label: SharePoint Server SE
 support_level: community
 ---
 
+import RedirectURI20265Note from "../../\_redirect-uri-2026-5-note.mdx";
+
 ## What is Microsoft SharePoint?
 
 > SharePoint is a proprietary, web-based collaborative platform that integrates natively with Microsoft 365.
@@ -65,6 +67,8 @@ These guidelines use the following placeholders for the overall setup:
 | SharePoint Trusted Token Issuer Description        | `sp.issuerDesc`                      | authentik IDP                                                                          |
 
 ## authentik configuration
+
+<RedirectURI20265Note />
 
 ### Step 1: Create authentik OpenID property mappings
 
@@ -140,7 +144,7 @@ From the authentik Admin Dashboard:
       :::info
       use the explicit flow if user consents are required
       :::
-    - **Redirect URIs / Origins**: `auth.providerRedirectURI`
+    - **Redirect URIs / Origins** (`Strict` `Authorization`): `auth.providerRedirectURI`
     - **Signing Key**: authentik Self-signed Certificate
       :::info
       The certificate is used for signing JWT tokens; if you change it after the integration do not forget to update your SharePoint Trusted Certificate.

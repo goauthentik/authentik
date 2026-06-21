@@ -723,6 +723,7 @@ export * from "./RelatedRule";
 export * from "./Reputation";
 export * from "./ReputationPolicy";
 export * from "./ReputationPolicyRequest";
+export * from "./RequestContentTypeEnum";
 export * from "./RequestStatus";
 export * from "./Review";
 export * from "./ReviewRequest";

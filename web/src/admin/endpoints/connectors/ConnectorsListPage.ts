@@ -22,6 +22,9 @@ import { customElement } from "lit/decorators.js";
 
 @customElement("ak-endpoints-connectors-list")
 export class ConnectorsListPage extends TablePage<Connector> {
+    public static override verboseName = msg("Connector");
+    public static override verboseNamePlural = msg("Connectors");
+
     public override searchPlaceholder = msg("Search connectors by name or type...");
     public override pageIcon = "pf-icon pf-icon-data-source";
     public override pageTitle = msg("Connectors");
