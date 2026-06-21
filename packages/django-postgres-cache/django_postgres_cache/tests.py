@@ -28,7 +28,7 @@ class MakeExpiryTests(SimpleTestCase):
     """
 
     @override_settings(USE_TZ=True)
-    def test_timeout_none_is_aware_when_use_tz_enabled(self):
+    def test_timeout_none_is_aware_when_use_tz_enabled(self) -> None:
         """timeout=None must return a timezone-aware datetime when USE_TZ=True."""
         expiry = _cache()._make_expiry(None)
 
@@ -36,7 +36,7 @@ class MakeExpiryTests(SimpleTestCase):
         self.assertEqual(expiry.microsecond, 0)
 
     @override_settings(USE_TZ=False)
-    def test_timeout_none_is_naive_when_use_tz_disabled(self):
+    def test_timeout_none_is_naive_when_use_tz_disabled(self) -> None:
         """timeout=None must return a naive datetime when USE_TZ=False."""
         expiry = _cache()._make_expiry(None)
 
@@ -44,7 +44,7 @@ class MakeExpiryTests(SimpleTestCase):
         self.assertEqual(expiry.microsecond, 0)
 
     @override_settings(USE_TZ=True)
-    def test_timeout_value_is_aware_when_use_tz_enabled(self):
+    def test_timeout_value_is_aware_when_use_tz_enabled(self) -> None:
         """A numeric timeout must also return a timezone-aware datetime when USE_TZ=True."""
         expiry = _cache()._make_expiry(300)
 
@@ -52,7 +52,7 @@ class MakeExpiryTests(SimpleTestCase):
         self.assertEqual(expiry.microsecond, 0)
 
     @override_settings(USE_TZ=False)
-    def test_timeout_value_is_naive_when_use_tz_disabled(self):
+    def test_timeout_value_is_naive_when_use_tz_disabled(self) -> None:
         """A numeric timeout must return a naive datetime when USE_TZ=False."""
         expiry = _cache()._make_expiry(300)
 
