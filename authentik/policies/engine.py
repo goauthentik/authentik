@@ -124,7 +124,7 @@ class PolicyEngine:
                         | Q(~Q(group__in=all_groups), group__isnull=False),
                         negate=True,
                     ),
-                    Q(expiring=False) | Q(expiring=True, expires__lt=now()),
+                    Q(expiring=False) | Q(expiring=True, expires__gte=now()),
                     enabled=True,
                 ),
             )

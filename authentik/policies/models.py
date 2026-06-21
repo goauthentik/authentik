@@ -66,6 +66,8 @@ class PolicyBinding(ExpiringModel, SerializerModel):
     policy_binding_uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
 
     enabled = models.BooleanField(default=True)
+    # Shadow's field from ExpiringModel, as we don't want to default expire
+    expiring = models.BooleanField(default=False)
 
     policy = InheritanceForeignKey(
         "Policy",
