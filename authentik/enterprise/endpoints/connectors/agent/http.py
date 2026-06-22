@@ -34,7 +34,12 @@ def build_apu(public_key: ec.EllipticCurvePublicKey):
     return result
 
 
-def encrypt_token_with_a256_gcm(body: dict, device_encryption_key: str, apv: bytes) -> str:
+def encrypt_token_with_a256_gcm(
+    body: dict,
+    device_encryption_key: str,
+    apv: bytes,
+    typ: str = "platformsso-login-response+jwt",
+) -> str:
     ephemeral_key = ec.generate_private_key(curve=ec.SECP256R1())
     device_public_key = serialization.load_pem_public_key(
         device_encryption_key.encode(), backend=default_backend()
@@ -57,7 +62,7 @@ def encrypt_token_with_a256_gcm(body: dict, device_encryption_key: str, apv: byt
             "kty": "EC",
             "crv": "P-256",
         },
-        "typ": "platformsso-login-response+jwt",
+        "typ": typ,
         "alg": "ECDH-ES",
         "apu": base64url_encode(apu),
         "apv": base64url_encode(apv),
@@ -112,10 +117,11 @@ class JWEResponse(HttpResponse):
         data: dict,
         device: AgentDeviceConnection,
         apv: str,
+        typ: str = "platformsso-login-response+jwt",
     ):
         super().__init__(
             content=encrypt_token_with_a256_gcm(
-                data, device.apple_encryption_key, base64url_decode(apv)
+                data, device.apple_encryption_key, base64url_decode(apv), typ=typ
             ),
-            content_type="application/platformsso-login-response+jwt",
+            content_type=f"application/{typ}",
         )

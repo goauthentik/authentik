@@ -175,6 +175,18 @@ class AppleNonce(InternallyManagedMixin, ExpiringModel):
         verbose_name_plural = _("Apple Nonces")
 
 
+class AppleUnlockKey(InternallyManagedMixin, ExpiringModel):
+    """Server-provisioned EC256 key for Platform SSO v2.0 user_unlock."""
+
+    identifier = models.UUIDField(primary_key=True, default=uuid4)
+    device_user = models.ForeignKey(AgentDeviceUserBinding, on_delete=models.CASCADE)
+    private_key = models.TextField()
+
+    class Meta(ExpiringModel.Meta):
+        verbose_name = _("Apple Unlock Key")
+        verbose_name_plural = _("Apple Unlock Keys")
+
+
 class AppleIndependentSecureEnclave(Authenticator):
     """A device-independent secure enclave key, used by Tap-to-login"""
 

@@ -1,5 +1,17 @@
+from base64 import b64decode, urlsafe_b64encode
+from datetime import timezone as dt_timezone
 from typing import Any
+from uuid import UUID
 
+from cryptography import x509
+from cryptography.hazmat.primitives import hashes, serialization
+from cryptography.hazmat.primitives.asymmetric.ec import (
+    ECDH,
+    SECP256R1,
+    EllipticCurvePublicKey,
+    generate_private_key,
+)
+from cryptography.x509.oid import NameOID
 from django.http import HttpRequest, HttpResponse
 from django.urls import reverse
 from django.utils.decorators import method_decorator
@@ -21,6 +33,7 @@ from authentik.endpoints.connectors.agent.models import (
     AgentDeviceUserBinding,
     AppleIndependentSecureEnclave,
     AppleNonce,
+    AppleUnlockKey,
     DeviceAuthenticationToken,
 )
 from authentik.enterprise.endpoints.connectors.agent.http import JWEResponse
@@ -52,7 +65,6 @@ class TokenView(View):
             raise ValidationError("Invalid request") from exc
         version = request.POST.get("platform_sso_version")
         grant_type = request.POST.get("grant_type")
-        print(request.POST)
         handler_func = (
             f"handle_v{version}_{grant_type}".replace("-", "_")
             .replace("+", "_")
@@ -211,4 +223,121 @@ class TokenView(View):
         )
 
     def handle_v2_0_urn_ietf_params_oauth_grant_type_jwt_bearer(self):
-        print(self.jwt_request)
+        request_type = self.jwt_request.get("request_type")
+        if request_type == "key_request":
+            return self._handle_key_request()
+        if request_type == "key_exchange":
+            return self._handle_key_exchange()
+        LOGGER.debug("Unknown request_type for v2.0", request_type=request_type)
+        return HttpResponse(status=400)
+
+    def _validate_refresh_token(self) -> DeviceAuthenticationToken:
+        token = self.jwt_request.get("refresh_token")
+        auth_token = (
+            DeviceAuthenticationToken.objects.filter(
+                token=token,
+                device=self.device_connection.device,
+            )
+            .select_related("user")
+            .first()
+        )
+        if not auth_token:
+            raise ValidationError("Invalid refresh token")
+        if auth_token.expires < now():
+            auth_token.delete()
+            raise ValidationError("Expired refresh token")
+        return auth_token
+
+    def _handle_key_request(self) -> HttpResponse:
+        auth_token = self._validate_refresh_token()
+        device_user = AgentDeviceUserBinding.objects.filter(
+            target=self.device_connection.device,
+            user=auth_token.user,
+        ).first()
+        if not device_user:
+            LOGGER.warning("No device user binding found for key request")
+            return HttpResponse(status=400)
+
+        private_key = generate_private_key(SECP256R1())
+        subject = x509.Name([x509.NameAttribute(NameOID.COMMON_NAME, auth_token.user.username)])
+        expires_at = self.now + timedelta_from_string(self.connector.auth_session_duration)
+        cert = (
+            x509.CertificateBuilder()
+            .subject_name(subject)
+            .issuer_name(subject)
+            .public_key(private_key.public_key())
+            .serial_number(x509.random_serial_number())
+            .not_valid_before(self.now.astimezone(dt_timezone.utc))
+            .not_valid_after(expires_at.astimezone(dt_timezone.utc))
+            .sign(private_key, hashes.SHA256())
+        )
+
+        unlock_key = AppleUnlockKey.objects.create(
+            device_user=device_user,
+            private_key=private_key.private_bytes(
+                encoding=serialization.Encoding.PEM,
+                format=serialization.PrivateFormat.PKCS8,
+                encryption_algorithm=serialization.NoEncryption(),
+            ).decode(),
+            expires=expires_at,
+        )
+
+        cert_b64 = urlsafe_b64encode(cert.public_bytes(serialization.Encoding.DER)).rstrip(b"=").decode()
+
+        return JWEResponse(
+            {
+                "certificate": cert_b64,
+                "exp": int(expires_at.timestamp()),
+                "iat": int(self.now.timestamp()),
+                "key_context": str(unlock_key.identifier),
+            },
+            device=self.device_connection,
+            apv=self.jwt_request["jwe_crypto"]["apv"],
+            typ="platformsso-key-response+jwt",
+        )
+
+    def _handle_key_exchange(self) -> HttpResponse:
+        auth_token = self._validate_refresh_token()
+
+        raw_context = self.jwt_request.get("key_context")
+        if not raw_context:
+            LOGGER.warning("Missing key_context in key exchange request")
+            return HttpResponse(status=400)
+        try:
+            key_context_uuid = UUID(raw_context)
+        except ValueError:
+            LOGGER.warning("Invalid key_context UUID", key_context=raw_context)
+            return HttpResponse(status=400)
+
+        unlock_key = AppleUnlockKey.objects.filter(
+            identifier=key_context_uuid,
+            device_user__user=auth_token.user,
+            device_user__target=self.device_connection.device,
+        ).first()
+        if not unlock_key:
+            LOGGER.warning("No unlock key found for key_context", key_context=raw_context)
+            return HttpResponse(status=400)
+
+        private_key = serialization.load_pem_private_key(
+            unlock_key.private_key.encode(),
+            password=None,
+        )
+
+        raw_pubkey = self.jwt_request["other_publickey"]
+        other_pubkey_bytes = b64decode(raw_pubkey + "=" * (-len(raw_pubkey) % 4))
+        other_public_key = EllipticCurvePublicKey.from_encoded_point(SECP256R1(), other_pubkey_bytes)
+
+        shared_key = private_key.exchange(ECDH(), other_public_key)
+        expires_at = self.now + timedelta_from_string(self.connector.auth_session_duration)
+
+        return JWEResponse(
+            {
+                "key": urlsafe_b64encode(shared_key).rstrip(b"=").decode(),
+                "exp": int(expires_at.timestamp()),
+                "iat": int(self.now.timestamp()),
+                "key_context": str(unlock_key.identifier),
+            },
+            device=self.device_connection,
+            apv=self.jwt_request["jwe_crypto"]["apv"],
+            typ="platformsso-key-response+jwt",
+        )
