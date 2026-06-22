@@ -32,12 +32,12 @@ For SMTP requirements and global email delivery settings, see [Email configurati
 
 ## Custom templates
 
-This stage supports custom email templates the same way the [Email stage](../email/index.md#custom-templates) does. Mount your custom templates into authentik's template directory and they become selectable in the stage's **Template** dropdown.
+This stage supports custom email templates in the same way as the [Email stage](../email/index.md#custom-templates). Mount your custom templates into authentik's template directory, and they will appear in the stage's **Template** dropdown.
 
-For the full mounting instructions (Docker Compose and Kubernetes), the available template variables, and an example template, see [Custom templates](../email/index.md#custom-templates) in the Email stage documentation.
+For the full mounting instructions (Docker Compose and Kubernetes), a list of available template variables, and an example template, see [Custom templates](../email/index.md#custom-templates) in the Email stage documentation.
 
 :::info
-If a custom template does not appear in the **Template** selector, check the worker logs. Templates are discovered when the stage configuration form loads.
+If a custom template does not appear in the **Template** selector, check the worker container logs. Templates are discovered when the stage configuration form loads.
 :::
 
 ## Flow integration
