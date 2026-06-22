@@ -3,7 +3,7 @@
 use ak_client::models::ProxyMode;
 use axum::http::Uri;
 use eyre::Result;
-use url::{Url, form_urlencoded};
+use url::{form_urlencoded, Url};
 use uuid::Uuid;
 
 pub(crate) const CALLBACK_SIGNATURE: &str = "X-authentik-auth-callback";
@@ -21,6 +21,15 @@ pub(crate) fn redirect_param(uri: &Uri) -> Option<String> {
     form_urlencoded::parse(query.as_bytes())
         .find(|(key, _)| key.as_ref() == REDIRECT_PARAM)
         .map(|(_, value)| value.into_owned())
+}
+
+/// Whether the query string carries `name=true` (value compared
+/// case-insensitively, matching the Go outpost's `strings.EqualFold`).
+pub(crate) fn has_signature(query: Option<&str>, name: &str) -> bool {
+    query.is_some_and(|query| {
+        form_urlencoded::parse(query.as_bytes())
+            .any(|(key, value)| key == name && value.eq_ignore_ascii_case("true"))
+    })
 }
 
 /// Validate the `rd` redirect parameter against the provider configuration,
@@ -117,8 +126,24 @@ mod tests {
     use url::Url;
 
     use super::{
-        authorize_url, callback_redirect_uri, check_redirect_param, redirect_param, start_url,
+        authorize_url, callback_redirect_uri, check_redirect_param, has_signature, redirect_param,
+        start_url, CALLBACK_SIGNATURE,
     };
+
+    #[test]
+    fn signature_match_is_case_insensitive() {
+        for value in ["true", "True", "TRUE"] {
+            let query = format!("{CALLBACK_SIGNATURE}={value}");
+            assert!(has_signature(Some(&query), CALLBACK_SIGNATURE), "{value}");
+        }
+        // Anything that isn't `true`, the wrong key, or a missing query is false.
+        assert!(!has_signature(
+            Some(&format!("{CALLBACK_SIGNATURE}=false")),
+            CALLBACK_SIGNATURE
+        ));
+        assert!(!has_signature(Some("other=true"), CALLBACK_SIGNATURE));
+        assert!(!has_signature(None, CALLBACK_SIGNATURE));
+    }
 
     #[test]
     fn builds_callback_redirect_uri() {

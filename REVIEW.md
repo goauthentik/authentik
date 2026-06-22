@@ -33,7 +33,7 @@ rewriting, SNI, and PROXY-protocol support are present and behave like Go (see
 | 3.3 | Sign-out clears the session cookie | Low | Improvement | — |
 | 4.1 | Sessions/cookies are not portable across the cutover | Medium | Migration | — |
 | 4.2 | Cookie secret length enforced (≥32 bytes) | Low | Migration | — |
-| 5.2 | Signature query parsing is case-sensitive | Low | Robustness | Open |
+| 5.2 | Signature query parsing is case-sensitive | Low | Robustness | ✅ Resolved |
 
 ---
 
@@ -250,7 +250,7 @@ configs.
 
 ## 5. Robustness / minor
 
-### 5.2 — [Low] Callback/logout signature query parsing is case-sensitive
+### 5.2 — [Low] Callback/logout signature query parsing is case-sensitive — ✅ Resolved
 
 The proxy-mode `handle` dispatcher parses the signature query params into
 `Option<bool>` via `FromStr` (`src/outpost/proxy/application/handlers/mod.rs:49-65`),
@@ -260,6 +260,14 @@ the canonical lowercase `true` (built in `oauth::callback_redirect_uri`), so thi
 only differs for non-canonical casing. (Note the Traefik/Caddy forward handlers
 *do* use case-insensitive matching — `forward.rs:57-60` — so this is a small
 internal inconsistency too.)
+
+**Resolved (2026-06-22):** added a shared `oauth::has_signature(query, name)`
+helper that matches the value case-insensitively (`src/outpost/proxy/oauth.rs`),
+and routed both the proxy-mode `handle` dispatcher
+(`src/outpost/proxy/application/handlers/mod.rs`) and the Traefik/Caddy forward
+handlers (`forward.rs`) through it. This matches Go's `strings.EqualFold` and
+removes the internal inconsistency; the bespoke `Option<bool>` parsing (and its
+`empty_string_as_none` helper) were dropped.
 
 ---
 

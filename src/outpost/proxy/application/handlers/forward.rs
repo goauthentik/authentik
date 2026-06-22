@@ -53,12 +53,6 @@ pub(super) fn envoy_forward_url(uri: &Uri, headers: &HeaderMap) -> Option<Url> {
     Url::parse(&format!("{scheme}://{host}{path}{query}")).ok()
 }
 
-/// Whether the URL carries `name=true` (case-insensitive) in its query.
-fn has_signature(url: &Url, name: &str) -> bool {
-    url.query_pairs()
-        .any(|(key, value)| key == name && value.eq_ignore_ascii_case("true"))
-}
-
 /// 200 response carrying the authenticated user's headers for the reverse proxy.
 fn forward_authenticated_response(
     app: &Application,
@@ -92,7 +86,7 @@ async fn forward_header_auth(
         return Ok((StatusCode::INTERNAL_SERVER_ERROR, "configuration error").into_response());
     };
 
-    if has_signature(&fwd, oauth::CALLBACK_SIGNATURE) {
+    if oauth::has_signature(fwd.query(), oauth::CALLBACK_SIGNATURE) {
         // The callback comes through the forward-auth endpoint; point the request
         // at the reconstructed URL so the handler sees `state`/`code`.
         if let Ok(uri) = Uri::try_from(fwd.as_str()) {
@@ -100,7 +94,7 @@ async fn forward_header_auth(
         }
         return super::handle_auth_callback(State(app), request).await;
     }
-    if has_signature(&fwd, oauth::LOGOUT_SIGNATURE) {
+    if oauth::has_signature(fwd.query(), oauth::LOGOUT_SIGNATURE) {
         return super::handle_sign_out(State(app), request).await;
     }
 
