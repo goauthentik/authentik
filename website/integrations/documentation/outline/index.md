@@ -28,27 +28,13 @@ This documentation lists only the settings that you need to change from their de
 
 <RedirectURI20265Note />
 
-To support the integration of Outline with authentik, you need to create a custom scope mapping and an application/provider pair in authentik.
+To support the integration of Outline with authentik, you need to create a scope mapping and an application/provider pair in authentik.
 
-### Create custom scope mapping
+### Create an email verification scope mapping in authentik
 
-Recent versions of Outline require the email scope to return `email_verified: True`. Because the default authentik email scope mapping returns `email_verified: False`, create a custom scope mapping for Outline.
+Outline requires the email scope to return a value of `email_verified: True`. As of [authentik 2025.10](/docs/releases/2025/v2025.10.md#default-oauth-scope-mappings) the default behavior is to return `email_verified: False`, so a custom scope mapping is required for Outline to allow authentication.
 
-1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Customization** > **Property Mappings** and click **Create**.
-    - **Select type**: select **Scope Mapping**.
-    - **Configure the Scope Mapping**: Provide a descriptive name (e.g. `Outline Email Scope`), and an optional description.
-        - **Scope name**: `email`
-        - **Expression**:
-
-        ```python showLineNumbers
-        return {
-            "email": request.user.email,
-            "email_verified": True
-        }
-        ```
-
-3. Click **Finish** to save the property mapping.
+Refer to [Email scope verification](/docs/add-secure-apps/providers/oauth2/index.mdx#email-scope-verification) for instructions on how to create the required custom scope mapping.
 
 ### Create an application and provider in authentik
 
