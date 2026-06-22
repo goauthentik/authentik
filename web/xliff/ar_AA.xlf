@@ -468,7 +468,7 @@
 </trans-unit>
 <trans-unit id="s482bc55a78891ef7">
   <source>A code has been sent to your address: <x id="0" equiv-text="${email}"/></source>
-  <target>A code has been sent to your address: <x id="0" equiv-text="${email}"/></target>
+  <target>تم إرسال رمز إلى عنوانك: <x id="0" equiv-text="${email}"/></target>
 </trans-unit>
 <trans-unit id="s5afa3fc77ce8d94d">
   <source>A code has been sent to your email address.</source>
@@ -564,7 +564,7 @@
 </trans-unit>
 <trans-unit id="s7dd64bb0c1fa8e87">
   <source>Select &quot;<x id="0" equiv-text="${rowLabel}"/>&quot; row</source>
-  <target>Select &quot;<x id="0" equiv-text="${rowLabel}"/>&quot; row</target>
+  <target>تحديد الصف &quot;<x id="0" equiv-text="${rowLabel}"/>&quot;</target>
 </trans-unit>
 <trans-unit id="sd26f670ca5d5b0c6">
   <source>Collapse row</source>
@@ -9175,7 +9175,7 @@ Bindings to groups/users are checked against the user of the event.</target>
 </trans-unit>
 <trans-unit id="s76e10cbcb80c3a64">
   <source>Are you sure you want to remove the selected users from <x id="0" equiv-text="${targetLabel}"/>?</source>
-  <target>Are you sure you want to remove the selected users from <x id="0" equiv-text="${targetLabel}"/>?</target>
+  <target>هل أنت متأكد من رغبتك في إزالة المستخدمين المحددين من <x id="0" equiv-text="${targetLabel}"/>؟</target>
 </trans-unit>
 <trans-unit id="s85835da8c3bd6198">
   <source>Are you sure you want to remove the selected users?</source>
