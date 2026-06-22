@@ -4,11 +4,13 @@ metadata:
     blueprints.goauthentik.io/system: "true"
   name: System - Object Attributes - User
 entries:
+  # Keys based on https://www.iana.org/assignments/jwt/jwt.xhtml
+  # and https://openid.net/specs/openid-connect-core-1_0.html#AddressClaim
   identity:
     - model: authentik_core.objectattribute
       identifiers:
-        key: givenName
-        managed: goauthentik.io/object-attrs/user/identity/givenName
+        key: given_name
+        managed: goauthentik.io/object-attrs/user/identity/given_name
       attrs:
         group: Identity
         object_type: authentik_core.user
@@ -19,8 +21,8 @@ entries:
         type: text
     - model: authentik_core.objectattribute
       identifiers:
-        key: familyName
-        managed: goauthentik.io/object-attrs/user/identity/familyName
+        key: family_name
+        managed: goauthentik.io/object-attrs/user/identity/family_name
       attrs:
         group: Identity
         object_type: authentik_core.user
@@ -45,10 +47,10 @@ entries:
   address:
     - model: authentik_core.objectattribute
       identifiers:
-        key: street
+        key: address_street
         managed: goauthentik.io/object-attrs/user/address/street
       attrs:
-        group: Address
+        group: address/street_address
         object_type: authentik_core.user
         label: Street
         enabled: false
@@ -57,22 +59,22 @@ entries:
         type: text
     - model: authentik_core.objectattribute
       identifiers:
-        key: state
-        managed: goauthentik.io/object-attrs/user/address/state
+        key: address_region
+        managed: goauthentik.io/object-attrs/user/address/region
       attrs:
         group: Address
         object_type: authentik_core.user
-        label: State
+        label: Region
         enabled: false
         is_required: false
         is_unique: false
         type: text
     - model: authentik_core.objectattribute
       identifiers:
-        key: location
-        managed: goauthentik.io/object-attrs/user/address/location
+        key: address_locality
+        managed: goauthentik.io/object-attrs/user/address/locality
       attrs:
-        group: Address
+        group: Locality
         object_type: authentik_core.user
         label: Location
         enabled: false
@@ -81,8 +83,8 @@ entries:
         type: text
     - model: authentik_core.objectattribute
       identifiers:
-        key: postalCode
-        managed: goauthentik.io/object-attrs/user/address/postal-code
+        key: address_postal_code
+        managed: goauthentik.io/object-attrs/user/address/postal_code
       attrs:
         group: Address
         object_type: authentik_core.user
@@ -94,8 +96,8 @@ entries:
   contact:
     - model: authentik_core.objectattribute
       identifiers:
-        key: phoneNumber
-        managed: goauthentik.io/object-attrs/user/contact/phone-number
+        key: phone_number
+        managed: goauthentik.io/object-attrs/user/contact/phone_number
       attrs:
         group: Contact
         object_type: authentik_core.user
@@ -108,7 +110,7 @@ entries:
   unix:
     - model: authentik_core.objectattribute
       identifiers:
-        key: shell
+        key: unix_shell
         managed: goauthentik.io/object-attrs/user/unix/shell
       attrs:
         group: Unix
@@ -121,7 +123,7 @@ entries:
   employee:
     - model: authentik_core.objectattribute
       identifiers:
-        key: employeeNumber
+        key: employee_number
         managed: goauthentik.io/object-attrs/user/employee/number
       attrs:
         group: Employee
@@ -133,12 +135,24 @@ entries:
         type: text
     - model: authentik_core.objectattribute
       identifiers:
-        key: jobTitle
-        managed: goauthentik.io/object-attrs/user/employee/title
+        key: employee_job_title
+        managed: goauthentik.io/object-attrs/user/employee/job_title
       attrs:
         group: Employee
         object_type: authentik_core.user
         label: Title
+        enabled: false
+        is_required: false
+        is_unique: false
+        type: text
+    - model: authentik_core.objectattribute
+      identifiers:
+        key: employee_departmenet
+        managed: goauthentik.io/object-attrs/user/employee/departmenet
+      attrs:
+        group: Employee
+        object_type: authentik_core.user
+        label: Departement
         enabled: false
         is_required: false
         is_unique: false

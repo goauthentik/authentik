@@ -36,8 +36,8 @@ entries:
       expression: |
         return {
             "name": request.user.name,
-            "given_name": ak_obj_attr(request.user, "givenName", "name"),
-            "family_name": ak_obj_attr(request.user, "familyName"),
+            "given_name": ak_obj_attr(request.user, "given_name", "name"),
+            "family_name": ak_obj_attr(request.user, "family_name"),
             "preferred_username": request.user.username,
             "nickname": request.user.username,
             "groups": [group.name for group in request.user.groups.all()],
