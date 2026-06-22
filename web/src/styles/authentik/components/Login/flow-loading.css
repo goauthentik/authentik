@@ -2,10 +2,10 @@
    instructs the flow layout on what to do *before* that happens, to avoid FOUC.
  */
 ak-flow-executor:not(:defined) {
-      display: grid;
-      place-items: center;
-      width: 100%;
-      min-height: 100dvh;
+    display: grid;
+    place-items: center;
+    width: 100%;
+    min-height: 100dvh;
 }
 
 /* Don't show anything else except the spinner until the Javascript has done its job. */

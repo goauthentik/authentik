@@ -12,7 +12,7 @@ All of our CSS is complied together by this ESBuild plug.
 ## ./scripts/build-web.mjs
 
 Calls `ESBuild` internally, passes it the `styleLoaderPlugin` configuration, and the paths to three
-*endpoint* files ending in `.global.css`. Each of these represents a single product that will be
+_endpoint_ files ending in `.global.css`. Each of these represents a single product that will be
 loaded by Django into a document's global stylesheet.
 
 This script is a top-level run via `npm run build`.
@@ -23,7 +23,7 @@ This script is a top-level run via `npm run build`.
 - `flows.global.css`: The top-level stylesheet that is used by the Flow application
 - `static.global.css`: The top-level stylesheet used by a handful of Django static pages
 
-Each endpoint file consists of a collection of imports and overrides.  `static` is not a huge
+Each endpoint file consists of a collection of imports and overrides. `static` is not a huge
 concern at the moment, but `interface` and `flows` matter:
 
 ## Interface load pattern:
@@ -31,23 +31,23 @@ concern at the moment, but `interface` and `flows` matter:
 The `interface.global.css` file is almost entirely imports:
 
 1. @patternfly/patternfly/base/patternfly-common.css — PF reset + base element rules + utilities
-2. @patternfly/.../patternfly-globals.css — the --pf-global--* custom properties at :root
+2. @patternfly/.../patternfly-globals.css — the --pf-global--\* custom properties at :root
 3. @patternfly/.../patternfly-themes.css — dark-theme token reassignments
 4. @patternfly/.../patternfly-fa-icons.css, patternfly-pf-icons.css — icon @font-face + classes
 5. @patternfly/.../components/Spinner/spinner.css
 6. #fonts/RedHat/faces.css — RedHat @font-face
 7. ./base/fonts.css
 8. ./base/variables.css, which in turn loads:
-   - colors 
-   - colors-dark 
-   - spacers 
-   - icons 
-   - shadows 
-   - z-indexes 
-   - borders
-   - miscellaneous overrides of Patternfly
-   - --ak-*
-   - --ak-v2-global-*
+    - colors
+    - colors-dark
+    - spacers
+    - icons
+    - shadows
+    - z-indexes
+    - borders
+    - miscellaneous overrides of Patternfly
+    - --ak-\*
+    - --ak-v2-global-\*
 9. ./base/scrollbars.css
 10. ./base/globals.css
 11. ./base/common.css
@@ -62,7 +62,7 @@ The `flow.global.css` file duplicates (not imports!) the exact same files as `in
 15. @patternfly/.../components/BackgroundImage/background-image.css
 16. #elements/locale/ak-locale-select.css — imported twice (flows.global.css:24-25)
 17. #flow/FlowExecutor.css — which is also bundled into the shadow root via FlowExecutor.ts:11
-19. A large block of inline rules: the --ak-c-login--* token system, the PF4 .pf-c-login overrides
+18. A large block of inline rules: the --ak-c-login--\* token system, the PF4 .pf-c-login overrides
     (with !important on container padding, flows.global.css:139-140), and the [name="flow-links"]
     grid.
 
@@ -72,7 +72,7 @@ We use the old-school mechanism of:
 
 1. source order
 2. selector specificity
-3. `!important`. 
+3. `!important`.
 
 This is known to be fragile, and our discipline around it has not been fantastic, mostly because
 we're trying to improve something that wasn't built with improvability at the design layer in mind.
@@ -94,8 +94,8 @@ and clearer idea of how our CSS is used:
 
 The discipline of maintaining the layers in source order must be maintained; one of our personas is
 "External user: Elderly volunteer for a non profit who's using a Macbook from 2016 and can't upgrade
-to a version of Safari that understands `@layer`." The *Flow* application (but not *User* or
-*Admin*) must support these users. 2016 (ten years ago) is considered our cutoff because it was the
+to a version of Safari that understands `@layer`." The _Flow_ application (but not _User_ or
+_Admin_) must support these users. 2016 (ten years ago) is considered our cutoff because it was the
 first year shadowDOM v1 became "baseline newly available" and 64-bit iPads became standard.
 
 ### Inside a component:
@@ -118,14 +118,14 @@ single PR.
 
 And then we have:
 
-5. Integrate the *design-system* `theme` branch into this, replacing the overrides.
+5. Integrate the _design-system_ `theme` branch into this, replacing the overrides.
 6. Fix the way `brand` css is injected, so that it comes in the right place in the cascade. Note
    that as long as it has the `@layer brand;` declaration at the top, it actually doesn't matter
    **when** it's added to the global `adoptedStylesheet` collection; its specificity will allow its
    CSS Custom Properties to override those of the the layers that preceede in the
    `document-layers.css` declaration.
-    setting on the server.
-7. Continue the work of incorporating our CSS decisions into our *Elements* collection
+   setting on the server.
+7. Continue the work of incorporating our CSS decisions into our _Elements_ collection
 
 These are all side-projects and optional, but desired for the white-label capability:
 
