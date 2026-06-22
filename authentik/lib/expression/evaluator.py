@@ -166,7 +166,7 @@ class BaseEvaluator:
         return len(list(user_devices)) > 0
 
     @staticmethod
-    def expr_obj_attr(obj: Model, attr_key: str, fallback: str) -> Any:
+    def expr_obj_attr(obj: Model, attr_key: str, fallback: str | None = None) -> Any:
         """Get an attribute of the given object if set by its dotted path, otherwise
         return fallback value."""
         attrs = getattr(obj, "attributes", {})
