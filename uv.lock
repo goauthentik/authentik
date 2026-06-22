@@ -453,7 +453,7 @@ dev = [
     { name = "pytest", specifier = "==9.0.3" },
     { name = "pytest-django", specifier = "==4.12.0" },
     { name = "pytest-flakefinder", specifier = "==1.1.0" },
-    { name = "pytest-github-actions-annotate-failures", specifier = "==0.4.0" },
+    { name = "pytest-github-actions-annotate-failures", specifier = "==0.4.1" },
     { name = "pytest-randomly", specifier = "==4.1.0" },
     { name = "pytest-timeout", specifier = "==2.4.0" },
     { name = "requests-mock", specifier = "==1.12.1" },
@@ -3084,14 +3084,14 @@ wheels = [
 
 [[package]]
 name = "pytest-github-actions-annotate-failures"
-version = "0.4.0"
+version = "0.4.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "pytest" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/c2/e1/8f2c242e6d75a26a8e5ddcc23f652a411e4aac3eedc4b923808ac0582685/pytest_github_actions_annotate_failures-0.4.0.tar.gz", hash = "sha256:77d6baa29c8c61c2dacc494fa76eb95a185f0ee61666714ac43fb12ea672d217", size = 10857, upload-time = "2026-03-02T18:57:40.919Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/05/74/9ee7377ed117e7084e7a04a8e5748239b5b2b99a58daa55bfb0d8b9a1a19/pytest_github_actions_annotate_failures-0.4.1.tar.gz", hash = "sha256:cce5ed29b57e8f454fcc4414f8c9aaa9bf8e40848cfcb444b13d7204e9fc9dcb", size = 11748, upload-time = "2026-06-18T17:04:33.932Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/0f/bd/11809f5c78d5d8da2d0e004845d2382768bc20798b3e0988bca61efd349f/pytest_github_actions_annotate_failures-0.4.0-py3-none-any.whl", hash = "sha256:285fed86e16b0b7a8eac6acdcde31913798fb739b15ef5b86895b4f5e32bf237", size = 6039, upload-time = "2026-03-02T18:57:39.991Z" },
+    { url = "https://files.pythonhosted.org/packages/6a/cc/962a57f364ffe32dea6400a5115c23b217146597b8a445f8a5c656343f0d/pytest_github_actions_annotate_failures-0.4.1-py3-none-any.whl", hash = "sha256:d117bba2f975a357f4e395a71bf1638b4bcf5558fd7e8ee56d2480a521af8e03", size = 6117, upload-time = "2026-06-18T17:04:32.932Z" },
 ]
 
 [[package]]
