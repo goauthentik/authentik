@@ -27,7 +27,7 @@ rewriting, SNI, and PROXY-protocol support are present and behave like Go (see
 |---|---------|----------|------|--------|
 | 2.1 | Upstream `Host` header differs in proxy mode (internal vs original) | High | Bug/regression | ✅ Resolved |
 | 2.2 | Underscore-header smuggling mitigation is weaker | Medium | Bug/regression | ✅ Resolved |
-| 2.3 | `forward_domain` `rd` redirect validation is more permissive | Medium | Bug/regression | Open |
+| 2.3 | `forward_domain` `rd` redirect validation is more permissive | Medium | Bug/regression | ✅ Resolved |
 | 3.1 | `X-Forwarded-*` now gated on trusted proxies | Info | Improvement | — |
 | 3.2 | `intercept_header_auth` 401 path returns cleanly | Low | Improvement | — |
 | 3.3 | Sign-out clears the session cookie | Low | Improvement | — |
@@ -124,7 +124,7 @@ regardless of a dash-named twin — matching Go's effective behavior. A smuggled
 `X_authentik_username` is now removed even when the legitimate
 `X-authentik-username` is present.
 
-### 2.3 — [Medium] `forward_domain` `rd` redirect validation is more permissive
+### 2.3 — [Medium] `forward_domain` `rd` redirect validation is more permissive — ✅ Resolved
 
 **Go** validates the `rd` redirect for `forward_domain` against the **raw** cookie
 domain, including its leading dot
@@ -157,6 +157,14 @@ so they match there.
 **Recommendation:** in `check_redirect_param` for `ForwardDomain`, require a
 domain-boundary match — keep the leading dot (match against the raw cookie
 domain), or check `host == domain || host.ends_with(&format!(".{domain}"))`.
+
+**Resolved (2026-06-22):** `check_redirect_param` for `ForwardDomain`
+(`src/outpost/proxy/oauth.rs`) now requires a domain-boundary match — the apex
+domain itself or a true subdomain — instead of a bare suffix. `evilcompany.com`
+is rejected for cookie domain `company.com` whether or not the configured value
+has a leading dot, while the apex and legitimate subdomains are still allowed.
+This is stricter than Go's `checkRedirectParam`, which is a plain suffix check on
+the raw cookie domain (permissive when the domain has no leading dot).
 
 ---
 

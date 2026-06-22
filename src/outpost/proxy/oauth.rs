@@ -28,7 +28,7 @@ pub(crate) fn redirect_param(uri: &Uri) -> Option<String> {
 ///
 /// For proxy/`forward_single` the redirect must resolve to the external host (a
 /// bare path is resolved against it). For `forward_domain` the redirect host
-/// must end with the cookie domain.
+/// must be the cookie domain or one of its subdomains.
 pub(crate) fn check_redirect_param(
     rd: &str,
     mode: ProxyMode,
@@ -50,7 +50,15 @@ pub(crate) fn check_redirect_param(
         ProxyMode::ForwardDomain => {
             let domain = cookie_domain?.trim_start_matches('.');
             let resolved = Url::parse(rd).ok()?;
-            if !resolved.host_str()?.ends_with(domain) {
+            let host = resolved.host_str()?;
+            // Require a domain-boundary match — the apex domain itself or one of
+            // its subdomains — so a look-alike like `evilcompany.com` is rejected
+            // for cookie domain `company.com` (a bare suffix check would allow it).
+            let within_domain = host == domain
+                || host
+                    .strip_suffix(domain)
+                    .is_some_and(|prefix| prefix.ends_with('.'));
+            if !within_domain {
                 return None;
             }
             Some(resolved.into())
@@ -198,7 +206,8 @@ mod tests {
     }
 
     #[test]
-    fn check_redirect_forward_domain_suffix() {
+    fn check_redirect_forward_domain_boundary() {
+        // A subdomain of the cookie domain is allowed.
         assert_eq!(
             check_redirect_param(
                 "https://sub.example.com/page",
@@ -208,6 +217,17 @@ mod tests {
             ),
             Some("https://sub.example.com/page".to_owned())
         );
+        // The apex domain itself is allowed.
+        assert_eq!(
+            check_redirect_param(
+                "https://example.com/page",
+                ProxyMode::ForwardDomain,
+                "https://auth.example.com",
+                Some(".example.com"),
+            ),
+            Some("https://example.com/page".to_owned())
+        );
+        // An unrelated domain is rejected.
         assert_eq!(
             check_redirect_param(
                 "https://evil.com/page",
@@ -217,6 +237,19 @@ mod tests {
             ),
             None
         );
+        // A look-alike that merely ends with the domain is rejected (2.3): it is
+        // not a subdomain of `example.com`, regardless of the leading-dot config.
+        for cookie_domain in [".example.com", "example.com"] {
+            assert_eq!(
+                check_redirect_param(
+                    "https://evilexample.com/page",
+                    ProxyMode::ForwardDomain,
+                    "https://auth.example.com",
+                    Some(cookie_domain),
+                ),
+                None
+            );
+        }
     }
 
     #[test]
