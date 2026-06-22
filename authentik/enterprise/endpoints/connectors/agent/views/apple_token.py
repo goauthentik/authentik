@@ -37,7 +37,6 @@ LOGGER = get_logger()
 
 @method_decorator(csrf_exempt, name="dispatch")
 class TokenView(View):
-
     device_connection: AgentDeviceConnection
     connector: AgentConnector
 
@@ -50,9 +49,10 @@ class TokenView(View):
             self.jwt_request = self.validate_request_token(assertion)
         except PyJWTError as exc:
             LOGGER.warning("failed to parse JWT", exc=exc)
-            raise ValidationError("Invalid request") from None
+            raise ValidationError("Invalid request") from exc
         version = request.POST.get("platform_sso_version")
         grant_type = request.POST.get("grant_type")
+        print(request.POST)
         handler_func = (
             f"handle_v{version}_{grant_type}".replace("-", "_")
             .replace("+", "_")
@@ -80,19 +80,25 @@ class TokenView(View):
         self.connector = AgentConnector.objects.get(pk=self.device_connection.connector.pk)
         LOGGER.debug("got device", device=self.device_connection.device)
 
-        expected_aud = self.request.build_absolute_uri(
-            reverse("authentik_enterprise_endpoints_connectors_agent:psso-token")
-        )
-        if not self.device_connection.apple_signing_key:
-            LOGGER.warning("Failed to issue token for device, no apple_signing_key")
-            raise ValidationError("Invalid request")
+        kwargs = {
+            "issuer": str(self.connector.pk)
+        }
+        if header["typ"] == "platformsso-key-request+jwt":
+            pass
+        elif header["typ"] == "platformsso-login-request+jwt":
+            expected_aud = self.request.build_absolute_uri(
+                reverse("authentik_enterprise_endpoints_connectors_agent:psso-token")
+            )
+            if not self.device_connection.apple_signing_key:
+                LOGGER.warning("Failed to issue token for device, no apple_signing_key")
+                raise ValidationError("Invalid request")
+            kwargs["audience"] =expected_aud
         # Properly decode the JWT with the key from the device
         decoded = decode(
             assertion,
             self.device_connection.apple_signing_key,
             algorithms=["ES256"],
-            audience=expected_aud,
-            issuer=str(self.connector.pk),
+            **kwargs
         )
         self.remote_nonce = decoded.get("nonce")
 
@@ -175,11 +181,16 @@ class TokenView(View):
         )
 
     def handle_v1_0_urn_ietf_params_oauth_grant_type_jwt_bearer(self):
-        try:
-            user, inner = self.validate_embedded_assertion(self.jwt_request["assertion"])
-        except PyJWTError as exc:
-            LOGGER.warning("failed to validate inner assertion", exc=exc)
-            raise ValidationError("Invalid request") from None
+        if self.jwt_request.get("grant_type") == "urn:ietf:params:oauth:grant-type:token-exchange":
+            user = AgentDeviceUserBinding.objects.filter(
+                user__username=self.jwt_request["sub"]
+            ).first()
+        else:
+            try:
+                user, inner = self.validate_embedded_assertion(self.jwt_request["assertion"])
+            except PyJWTError as exc:
+                LOGGER.warning("failed to validate inner assertion", exc=exc)
+                raise ValidationError("Invalid request") from None
         id_token = self.create_id_token(user.user)
         auth_token = DeviceAuthenticationToken.objects.create(
             device=self.device_connection.device,
@@ -198,3 +209,6 @@ class TokenView(View):
             device=self.device_connection,
             apv=self.jwt_request["jwe_crypto"]["apv"],
         )
+
+    def handle_v2_0_urn_ietf_params_oauth_grant_type_jwt_bearer(self):
+        print(self.jwt_request)

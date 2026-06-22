@@ -3,6 +3,7 @@ from django.urls import path
 from authentik.enterprise.endpoints.connectors.agent.api.secure_enclave import (
     AppleIndependentSecureEnclaveViewSet,
 )
+from authentik.enterprise.endpoints.connectors.agent.views.apple_authorize import AppleAuthorizeView
 from authentik.enterprise.endpoints.connectors.agent.views.apple_jwks import AppleJWKSView
 from authentik.enterprise.endpoints.connectors.agent.views.apple_nonce import NonceView
 from authentik.enterprise.endpoints.connectors.agent.views.apple_register import (
@@ -20,6 +21,7 @@ urlpatterns = [
         AgentInteractiveAuth.as_view(),
         name="authenticate",
     ),
+    path("psso/authorize/", AppleAuthorizeView.as_view(), name="psso-authorize"),
     path("psso/token/", TokenView.as_view(), name="psso-token"),
     path("psso/jwks/", AppleJWKSView.as_view(), name="psso-jwks"),
     path("psso/nonce/", NonceView.as_view(), name="psso-nonce"),
