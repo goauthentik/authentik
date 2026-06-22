@@ -5,7 +5,7 @@ import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { IconEditButton } from "#elements/dialogs";
 import { PFColor } from "#elements/Label";
@@ -38,12 +38,12 @@ export class OutpostListPage extends TablePage<Outpost> {
     public override pageIcon = "pf-icon pf-icon-zone";
 
     protected async apiEndpoint(): Promise<PaginatedResponse<Outpost>> {
-        const outposts = await new OutpostsApi(DEFAULT_CONFIG).outpostsInstancesList(
+        const outposts = await aki(OutpostsApi).outpostsInstancesList(
             await this.defaultEndpointConfig(),
         );
         await Promise.all(
             outposts.results.map((outpost) => {
-                return new OutpostsApi(DEFAULT_CONFIG)
+                return aki(OutpostsApi)
                     .outpostsInstancesHealthList({
                         uuid: outpost.pk,
                     })
@@ -121,12 +121,12 @@ export class OutpostListPage extends TablePage<Outpost> {
             object-label=${msg("Outpost(s)")}
             .objects=${this.selectedElements}
             .usedBy=${(item: Outpost) => {
-                return new OutpostsApi(DEFAULT_CONFIG).outpostsInstancesUsedByList({
+                return aki(OutpostsApi).outpostsInstancesUsedByList({
                     uuid: item.pk,
                 });
             }}
             .delete=${(item: Outpost) => {
-                return new OutpostsApi(DEFAULT_CONFIG).outpostsInstancesDestroy({
+                return aki(OutpostsApi).outpostsInstancesDestroy({
                     uuid: item.pk,
                 });
             }}

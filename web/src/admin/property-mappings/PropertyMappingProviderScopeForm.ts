@@ -1,7 +1,7 @@
 import "#elements/CodeMirror";
 import "#elements/forms/HorizontalFormElement";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { BasePropertyMappingForm } from "#admin/property-mappings/BasePropertyMappingForm";
 
@@ -15,19 +15,19 @@ import { ifDefined } from "lit/directives/if-defined.js";
 @customElement("ak-property-mapping-provider-scope-form")
 export class PropertyMappingProviderScopeForm extends BasePropertyMappingForm<ScopeMapping> {
     loadInstance(pk: string): Promise<ScopeMapping> {
-        return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsProviderScopeRetrieve({
+        return aki(PropertymappingsApi).propertymappingsProviderScopeRetrieve({
             pmUuid: pk,
         });
     }
 
     async send(data: ScopeMapping): Promise<ScopeMapping> {
         if (this.instance) {
-            return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsProviderScopeUpdate({
+            return aki(PropertymappingsApi).propertymappingsProviderScopeUpdate({
                 pmUuid: this.instance.pk,
                 scopeMappingRequest: data,
             });
         }
-        return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsProviderScopeCreate({
+        return aki(PropertymappingsApi).propertymappingsProviderScopeCreate({
             scopeMappingRequest: data,
         });
     }

@@ -23,7 +23,7 @@ jobs:
         command:
           - prettier-check
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v5
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v5
       - uses: ./.github/actions/setup-node
         with:
           working-directory: website
@@ -34,7 +34,7 @@ jobs:
     env:
       NODE_ENV: production
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v5
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v5
       - uses: ./.github/actions/setup-node
         name: Setup Node.js
         with:
@@ -46,7 +46,7 @@ jobs:
     env:
       NODE_ENV: production
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v5
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v5
       - uses: ./.github/actions/setup-node
         with:
           working-directory: website
@@ -61,7 +61,7 @@ jobs:
       id-token: write
       attestations: write
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v5
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v5
         with:
           ref: ${{ github.event.pull_request.head.sha }}
       - name: Set up QEMU
