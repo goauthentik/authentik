@@ -23,23 +23,23 @@ rewriting, SNI, and PROXY-protocol support are present and behave like Go (see
 
 ## Summary
 
-| # | Finding | Severity | Type |
-|---|---------|----------|------|
-| 2.1 | Upstream `Host` header differs in proxy mode (internal vs original) | High | Bug/regression |
-| 2.2 | Underscore-header smuggling mitigation is weaker | Medium | Bug/regression |
-| 2.3 | `forward_domain` `rd` redirect validation is more permissive | Medium | Bug/regression |
-| 3.1 | `X-Forwarded-*` now gated on trusted proxies | Info | Improvement |
-| 3.2 | `intercept_header_auth` 401 path returns cleanly | Low | Improvement |
-| 3.3 | Sign-out clears the session cookie | Low | Improvement |
-| 4.1 | Sessions/cookies are not portable across the cutover | Medium | Migration |
-| 4.2 | Cookie secret length enforced (≥32 bytes) | Low | Migration |
-| 5.2 | Signature query parsing is case-sensitive | Low | Robustness |
+| # | Finding | Severity | Type | Status |
+|---|---------|----------|------|--------|
+| 2.1 | Upstream `Host` header differs in proxy mode (internal vs original) | High | Bug/regression | ✅ Resolved |
+| 2.2 | Underscore-header smuggling mitigation is weaker | Medium | Bug/regression | Open |
+| 2.3 | `forward_domain` `rd` redirect validation is more permissive | Medium | Bug/regression | Open |
+| 3.1 | `X-Forwarded-*` now gated on trusted proxies | Info | Improvement | — |
+| 3.2 | `intercept_header_auth` 401 path returns cleanly | Low | Improvement | — |
+| 3.3 | Sign-out clears the session cookie | Low | Improvement | — |
+| 4.1 | Sessions/cookies are not portable across the cutover | Medium | Migration | — |
+| 4.2 | Cookie secret length enforced (≥32 bytes) | Low | Migration | — |
+| 5.2 | Signature query parsing is case-sensitive | Low | Robustness | Open |
 
 ---
 
 ## 2. Behavioral differences — likely bugs / regressions
 
-### 2.1 — [High] Upstream `Host` header differs in proxy mode
+### 2.1 — [High] Upstream `Host` header differs in proxy mode — ✅ Resolved
 
 **Go:** the reverse-proxy `Director` rewrites `r.URL` to the upstream but never
 touches `r.Host` unless the user has an `ak_proxy.host_header` override
@@ -73,6 +73,16 @@ unaffected, but apps that read `Host` will break or behave differently.
 **Recommendation:** default the upstream `Host` to the original request host when
 `ak_proxy.host_header` is empty (i.e. pass the external host as `host_override`
 unless overridden), matching Go.
+
+**Resolved (2026-06-22):** the upstream client is now built with `set_host(false)`
+(`src/outpost/proxy/upstream.rs`), so it never derives `Host` from the upstream
+URI authority, and `create_proxied_request` no longer strips the inbound `Host`
+(`src/outpost/proxy/reverse_proxy.rs`). The upstream now receives the original
+request host by default, or the `ak_proxy.host_header` override when set — matching
+Go. Caveat: this relies on an inbound `Host` header, which holds for HTTP/1.1; the
+listeners don't negotiate HTTP/2 (no ALPN configured). If HTTP/2 inbound is enabled
+later, set `Host` explicitly from the resolved request host, since an h2 request
+carries it in `:authority` rather than a `Host` header.
 
 ### 2.2 — [Medium] Underscore-header smuggling mitigation is weaker
 

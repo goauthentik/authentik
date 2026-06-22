@@ -5,7 +5,7 @@ use std::net::IpAddr;
 use axum::{
     body::Body,
     http::{
-        Request, Response, StatusCode, Uri,
+        Request, Response, StatusCode,
         header::{
             CONNECTION, Entry, HOST, HeaderMap, HeaderName, HeaderValue, InvalidHeaderValue,
             PROXY_AUTHENTICATE, PROXY_AUTHORIZATION, TE, TRAILER, TRANSFER_ENCODING, UPGRADE,
@@ -136,10 +136,7 @@ fn create_proxied_request<B>(
                 .any(|token| token.trim().eq_ignore_ascii_case(TRAILERS.as_str()))
         });
 
-    let uri: Uri = forward_uri(forward_url, &request).parse()?;
-    // The client sets `Host` from the URI authority.
-    request.headers_mut().remove(HOST);
-    *request.uri_mut() = uri;
+    *request.uri_mut() = forward_uri(forward_url, &request).parse()?;
 
     remove_hop_headers(request.headers_mut());
     remove_connection_headers(request.headers_mut());
@@ -167,7 +164,7 @@ fn create_proxied_request<B>(
         }
     }
 
-    // A configured host header overrides the one derived from the URI authority.
+    // A configured host header overrides the inbound `Host`.
     if let Some(host) = host_override {
         request.headers_mut().insert(HOST, host.parse()?);
     }

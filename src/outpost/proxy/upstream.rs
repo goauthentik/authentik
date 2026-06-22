@@ -31,7 +31,11 @@ pub(super) fn build_client(insecure: bool) -> Result<UpstreamClient> {
     .enable_http1()
     .enable_http2()
     .build();
-    Ok(Client::builder(TokioExecutor::new()).build(connector))
+    // Forward the request's own `Host` upstream instead of deriving it from the
+    // (internal) upstream URI authority. The proxy sets `Host` explicitly.
+    Ok(Client::builder(TokioExecutor::new())
+        .set_host(false)
+        .build(connector))
 }
 
 fn insecure_tls_config() -> ClientConfig {
