@@ -9175,7 +9175,7 @@ Bindings to groups/users are checked against the user of the event.</target>
 </trans-unit>
 <trans-unit id="s76e10cbcb80c3a64">
   <source>Are you sure you want to remove the selected users from <x id="0" equiv-text="${targetLabel}"/>?</source>
-  <target>Are you sure you want to remove the selected users from <x id="0" equiv-text="${targetLabel}"/>?</target>
+  <target>هل أنت متأكد من رغبتك في إزالة المستخدمين المحددين من <x id="0" equiv-text="${targetLabel}"/> ؟</target>
 </trans-unit>
 <trans-unit id="s85835da8c3bd6198">
   <source>Are you sure you want to remove the selected users?</source>
