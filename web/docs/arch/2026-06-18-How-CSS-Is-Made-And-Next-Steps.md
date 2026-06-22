@@ -122,7 +122,7 @@ And then we have:
 6. Fix the way `brand` css is injected, so that it comes in the right place in the cascade. Note
    that as long as it has the `@layer brand;` declaration at the top, it actually doesn't matter
    **when** it's added to the global `adoptedStylesheet` collection; its specificity will allow its
-   CSS Custom Properties to override those of the the layers that preceede in the
+   CSS Custom Properties to override those of the the layers that precede in the
    `document-layers.css` declaration.
    setting on the server.
 7. Continue the work of incorporating our CSS decisions into our _Elements_ collection
