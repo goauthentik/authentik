@@ -5,15 +5,16 @@
 # 
 # Translators:
 # عبدالله, 2026
+# Dev Mowafag, 2026
 # 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-06-15 00:41+0000\n"
+"POT-Creation-Date: 2026-06-19 00:49+0000\n"
 "PO-Revision-Date: 2025-12-01 19:09+0000\n"
-"Last-Translator: عبدالله, 2026\n"
+"Last-Translator: Dev Mowafag, 2026\n"
 "Language-Team: Arabic (Unitag) (https://app.transifex.com/authentik/teams/119923/ar_AA/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -2994,6 +2995,10 @@ msgid "Salesforce"
 msgstr "Salesforce"
 
 #: authentik/providers/scim/models.py
+msgid "GitLab"
+msgstr "Gitlab"
+
+#: authentik/providers/scim/models.py
 msgid "Webex"
 msgstr "Webex"
 
@@ -4995,12 +5000,25 @@ msgid "Failed to update user. Please try again later."
 msgstr "فشل تحديث المستخدم. يرجى المحاولة مجدداً لاحقاً."
 
 #: authentik/tasks/models.py
+#: packages/django-dramatiq-postgres/django_dramatiq_postgres/models.py
+msgid "Tasks that must complete for this task to run."
+msgstr "المهام المطلوب اكتمالها قبل تنفيذ هذه المهمة"
+
+#: authentik/tasks/models.py
 msgid "Tenant this task belongs to"
 msgstr "المستأجر الذي تنتمي إليه هذه المهمة"
 
 #: authentik/tasks/models.py
 msgid "Retry failed task"
 msgstr "إعادة محاولة المهمة الفاشلة"
+
+#: authentik/tasks/models.py
+msgid "Task dependency"
+msgstr "تبعية المهمة"
+
+#: authentik/tasks/models.py
+msgid "Task dependencies"
+msgstr "تبعيات المهمة"
 
 #: authentik/tasks/models.py
 msgid "Task log"
