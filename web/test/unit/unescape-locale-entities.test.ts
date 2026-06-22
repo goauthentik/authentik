@@ -1,3 +1,4 @@
+// cspell:ignore bearbeiten Versuche Beispielsweise nichts sehen Avaa
 import { sanitizeLocaleModule } from "../../scripts/unescape-locale-entities.mjs";
 
 import { describe, expect, it } from "vitest";
