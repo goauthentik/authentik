@@ -442,6 +442,7 @@ class _PostgresConsumer(Consumer):
         # Run required processes first
         self._scheduler()
         self._purge_locks()
+        self._auto_purge()
 
         # If we don't have a connection yet, fetch missed notifications from the table directly
         if self._listen_connection is None and not self.pending:
@@ -488,9 +489,6 @@ class _PostgresConsumer(Consumer):
                 self.logger.debug("Message already consumed. Skipping.", message_id=message_id)
                 continue
 
-        # No message to process, we can do some cleaning
-        self._auto_purge()
-
         self.misses = 0
         return None
 
@@ -509,25 +507,28 @@ class _PostgresConsumer(Consumer):
 
     def _post_process_message(self, message: MessageProxy, state: TaskState) -> None:
         self.logger.debug("Post-processing message", message=message.message_id, state=state)
+        task = message.options.pop("task", None)
+        try:
+            m = b"" if state == TaskState.DONE else message.encode()
+            self.query_set.filter(
+                message_id=message.message_id,
+                queue_name=message.queue_name,
+            ).exclude(
+                state=TaskState.QUEUED,
+            ).update(
+                state=state,
+                message=m,
+                mtime=timezone.now(),
+                eta=None,
+            )
+        finally:
+            message.options["task"] = task
+
         try:
             self.in_processing.remove(str(message.message_id))
         except KeyError:
             pass
         self.to_unlock.add(str(message.message_id))
-        task = message.options.pop("task", None)
-        m = b"" if state == TaskState.DONE else message.encode()
-        self.query_set.filter(
-            message_id=message.message_id,
-            queue_name=message.queue_name,
-        ).exclude(
-            state=TaskState.QUEUED,
-        ).update(
-            state=state,
-            message=m,
-            mtime=timezone.now(),
-            eta=None,
-        )
-        message.options["task"] = task
 
     @raise_broker_connection_error
     def ack(self, message: MessageProxy) -> None:
@@ -555,14 +556,17 @@ class _PostgresConsumer(Consumer):
 
     @raise_broker_connection_error
     def requeue(self, messages: Iterable[MessageProxy]) -> None:
+        messages = list(messages)
         self.query_set.filter(
             message_id__in=[message.message_id for message in messages],
+        ).exclude(
+            state__in=(TaskState.DONE, TaskState.REJECTED),
         ).update(
             state=TaskState.QUEUED,
         )
         for message in messages:
             self.to_unlock.add(str(message.message_id))
-            self.in_processing.remove(str(message.message_id))
+            self.in_processing.discard(str(message.message_id))
 
     def _scheduler(self) -> None:
         if not self.scheduler:

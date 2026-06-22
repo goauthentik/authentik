@@ -49,7 +49,7 @@ jobs:
       tags: ${{ steps.ev.outputs.imageTagsJSON }}
       shouldPush: ${{ steps.ev.outputs.shouldPush }}
     steps:
-      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v5
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v5
       - name: prepare variables
         uses: ./.github/actions/docker-push-variables
         id: ev
@@ -69,7 +69,7 @@ jobs:
       matrix:
         tag: ${{ fromJson(needs.get-tags.outputs.tags) }}
     steps:
-      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v5
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v5
       - name: prepare variables
         uses: ./.github/actions/docker-push-variables
         id: ev
@@ -90,7 +90,7 @@ jobs:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - uses: int128/docker-manifest-create-action@126c2b2195800ebc112cffe9ad6c2e2cce16eff2 # v2
+      - uses: int128/docker-manifest-create-action@849ca6aa2ccb372f3279267f42541c527c5213dd # v2
         id: build
         with:
           tags: ${{ matrix.tag }}
