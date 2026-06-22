@@ -4,18 +4,20 @@ sidebar_label: Wazuh
 support_level: community
 ---
 
+import SAMLProvider20265Warning from "../../_saml-provider-2026-5-warning.mdx";
+
 ## What is Wazuh?
 
-> Wazuh is a security platform that aims to safeguard data assets across multiple environments including on-site, virtualized, containerized, and cloud-based.
+> Wazuh is an open source security platform that provides unified threat detection and response for endpoints and cloud workloads.
 >
-> -- https://wazuh.com
+> -- https://wazuh.com/
 
 ## Preparation
 
 The following placeholders are used in this guide:
 
 - `wazuh-dashboard.company` is the FQDN of the Wazuh Dashboard installation.
-- `wazuh-indexer.company` is the FQDN of the Wazuh Indexer installation
+- `wazuh-indexer.company` is the FQDN of the Wazuh Indexer installation.
 - `authentik.company` is the FQDN of the authentik installation.
 
 :::info
@@ -30,97 +32,90 @@ To support the integration of Wazuh with authentik, you need to create a group, 
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Directory** > **Groups** and click **Create**.
-3. Set a name for the group (e.g. `wazuh-administrators`) and click **Create**.
+3. Set a name for the group, such as `wazuh-administrators`, and click **Create**.
 4. Click the name of the newly created group and navigate to the **Users** tab.
-5. Click **Add existing user**, select the user that needs Wazuh admin access and click **Add**.
+5. Click **Add existing user**, select the users that need Wazuh administrator access, and click **Add**.
 
 ### Create a property mapping in authentik
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Customization** > **Property Mappings** and click **Create**. Create a **SAML Provider Property Mapping** with the following settings:
-    - **Name**: Choose a descriptive name
-    - **SAML Attribute Name**: `Roles`
-    - **Friendly Name**: Leave blank
-    - **Expression**: `wazuh-administrators` is used as a placeholder for the group name.
+2. Navigate to **Customization** > **Property Mappings** and click **Create**.
+3. Create a **SAML Provider Property Mapping** with the following settings:
+    - **Name**: choose a descriptive name, such as `Wazuh roles`.
+    - **SAML Attribute Name**: `Roles`.
+    - **Expression**: change `wazuh-administrators` to the authentik group name that should receive administrator access in Wazuh.
 
     ```python
     if ak_is_group_member(request.user, name="wazuh-administrators"):
-       yield "wazuh-admin"
+        yield "wazuh-admin"
     ```
 
-3. Click **Finish**.
+    The yielded value, `wazuh-admin`, is the backend role that Wazuh evaluates later. To map additional Wazuh roles, add more group checks that yield different backend role values.
+
+4. Click **Finish**.
 
 ### Create an application and provider in authentik
 
-:::warning SAML provider changes in authentik 2026.5
-authentik 2026.5 introduces changes to how the SAML provider behaves. Specifically, the provider now automatically sets the **Issuer** value to: `https://authentik.company/application/saml/<application_slug>/metadata/`
-
-Older versions of authentik set this value to `authentik` by default. If you're running an older version, please set **Issuer** to `https://authentik.company/application/saml/<application_slug>/metadata/`, where `<application_slug>` is the **slug** that you selected for the application.
-:::
+<SAMLProvider20265Warning />
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Applications** > **Applications** and click **New Application** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
-
-- **Application**: provide a descriptive name (e.g., `Wazuh`), an optional group for the type of application, the policy engine mode, and optional UI settings.
-- **Choose a Provider type**: Select **SAML Provider** as the provider type.
-- **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
-    - **ACS URL**: `https://wazuh-dashboard.company/_opendistro/_security/saml/acs`
-    - **Audience**: `wazuh-saml`
-    - Under **Advanced protocol settings**:
-        - **Signing Certificate**: select an existing certificate. If you do not already have one, create it under **System** > **Certificates** before configuring the provider.
-        - **Property Mappings**: add the **Property Mapping** you created in the previous section.
-        - **NameID Property Mapping**: select a property mapping that will be used for Wazuh usernames (e.g. `authentik default SAML Mapping: Name` or `authentik default SAML Mapping: Email`)
+2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Note the **Slug** value because it will be required later.
+    - **Choose a Provider type**: select **SAML Provider** as the provider type.
+    - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+        - Set the **ACS URL** to `https://wazuh-dashboard.company/_opendistro/_security/saml/acs`.
+        - Set the **Audience** to `wazuh-saml`.
+        - Under **Advanced protocol settings**:
+            - Select a **Signing Certificate**. If you do not already have one, create it under **System** > **Certificates** before configuring the provider.
+            - Set **NameID Property Mapping** to the property mapping that Wazuh should use for usernames, such as `authentik default SAML Mapping: Name` or `authentik default SAML Mapping: Email`.
+            - Add the Wazuh roles property mapping that you created earlier.
     - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
-
 3. Click **Submit** to save the new application and provider.
 
-### Download metadata file
+### Download the provider metadata
 
-1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Applications** > **Providers** and click on the name of the provider that you created in the previous section (e.g. `Provider for wazuh`).
-3. Under **Related objects** > **Metadata**, click on **Download**. This downloaded file is your `SAML Metadata` file and it will be required in the next section.
+1. Navigate to **Applications** > **Providers** and open the SAML provider that you created in the previous section.
+2. Open the **Metadata** tab.
+3. Under **SAML Metadata**, click **Download**. Save the file as `wazuh_authentik_meta.xml`; this metadata file is required in the next section.
 
 ## Wazuh configuration
 
-To support the integration of authentik with Wazuh, you will need to configure SAML authentication on the Wazuh Indexer server and create role mappings on the Wazuh Dashboard server.
+To support the integration of authentik with Wazuh, you need to configure SAML authentication on the Wazuh Indexer server and create role mappings on the Wazuh Dashboard server.
 
-### Wazuh Indexer SAML configuration
+### Configure SAML on the Wazuh Indexer server
 
-:::info
-The file `wazuh_authentik_meta.xml` serves as a placeholder for your SAML Metadata file. Ensure that the filename used in this context matches the name of your SAML Metadata file.
-:::
+Back up the Wazuh Indexer security configuration before changing it.
 
-1. For the next step, you will need an exchange key. To generate this key, use the following command:
+1. Generate a 64-character exchange key:
 
     ```bash
     openssl rand -hex 32
     ```
 
-2. Copy the downloaded metadata file to the `/etc/wazuh-indexer/opensearch-security/` directory on your Wazuh Indexer server.
+    The output is the `exchange_key` value that you will use in `/etc/wazuh-indexer/opensearch-security/config.yml`.
 
-3. Change the ownership of the `wazuh_authentik_meta.xml` file to the `wazuh-indexer` user using the following command:
+2. Copy the downloaded `wazuh_authentik_meta.xml` file to the `/etc/wazuh-indexer/opensearch-security/` directory on your Wazuh Indexer server.
+3. Change ownership of the metadata file:
 
     ```bash
-    chown wazuh-indexer:wazuh-indexer /etc/wazuh-indexer/opensearch-security/wazuh_authentik_meta.xml
+    sudo chown wazuh-indexer:wazuh-indexer /etc/wazuh-indexer/opensearch-security/wazuh_authentik_meta.xml
     ```
 
-4. Edit the `/etc/wazuh-indexer/opensearch-security/config.yml` on your Wazuh Indexer server.
-
-    Add a `saml_auth_domain` section after the `basic_internal_auth_domain` section. For example:
+4. Edit `/etc/wazuh-indexer/opensearch-security/config.yml`. Set `order` to `0` and `challenge` to `false` in the existing `basic_internal_auth_domain` section, then add a `saml_auth_domain` section under `authc`:
 
     ```yaml {7,10,13-30} showLineNumbers title="/etc/wazuh-indexer/opensearch-security/config.yml"
     ---
     authc:
         basic_internal_auth_domain:
-            description: "Authenticate SAML against internal users database"
+            description: "Authenticate via HTTP Basic against internal users database"
             http_enabled: true
             transport_enabled: true
             order: 0
             http_authenticator:
-                type: basic
+                type: "basic"
                 challenge: false
             authentication_backend:
-                type: intern
+                type: "intern"
         saml_auth_domain:
             http_enabled: true
             transport_enabled: false
@@ -141,74 +136,66 @@ The file `wazuh_authentik_meta.xml` serves as a placeholder for your SAML Metada
                 type: noop
     ```
 
-:::info
-Ensure that you set the following parameters in the `basic_internal_auth_domain` section: `order: 0` and `challenge: false`
-
-And the `metadata_file`, `kibana_url`, and `exchange_key` parameters in the `saml_auth_domain` section.
-:::
-
-5. Run the `securityadmin.sh` script to load the configuration changes made in the `/etc/wazuh-indexer/opensearch-security/config.yml` file, ensure that you update the `-h` flag to your Wazuh Indexer FQDN:
+5. Run the `securityadmin.sh` script to load the configuration changes. Update the `-h` value to your Wazuh Indexer FQDN:
 
     ```bash
-    export JAVA_HOME=/usr/share/wazuh-indexer/jdk/ && bash /usr/share/wazuh-indexer/plugins/opensearch-security/tools/securityadmin.sh -f /etc/wazuh-indexer/opensearch-security/config.yml -icl -key /etc/wazuh-indexer/certs/admin-key.pem -cert /etc/wazuh-indexer/certs/admin.pem -cacert /etc/wazuh-indexer/certs/root-ca.pem -h wazuh-indexer.company -nhnv
+    sudo env JAVA_HOME=/usr/share/wazuh-indexer/jdk/ bash /usr/share/wazuh-indexer/plugins/opensearch-security/tools/securityadmin.sh -f /etc/wazuh-indexer/opensearch-security/config.yml -icl -key /etc/wazuh-indexer/certs/admin-key.pem -cert /etc/wazuh-indexer/certs/admin.pem -cacert /etc/wazuh-indexer/certs/root-ca.pem -h wazuh-indexer.company -nhnv
     ```
 
-6. Edit the `/etc/wazuh-indexer/opensearch-security/roles_mapping.yml` file and include `wazuh-admin` as a `backend_role` in the appropriate section. The following example adds the role to the `all_access` section:
+6. Edit `/etc/wazuh-indexer/opensearch-security/roles_mapping.yml` and include `wazuh-admin` as a `backend_role` in the appropriate section. The following example maps `wazuh-admin` to the `all_access` role:
 
-    ```yaml showLineNumbers title="/etc/wazuh-indexer/opensearch-security/roles_mapping.yml"
+    ```yaml showLineNumbers {5} title="/etc/wazuh-indexer/opensearch-security/roles_mapping.yml"
     all_access:
-    reserved: true
-    hidden: false
-    backend_roles:
-    // highlight-next-line
-        - "wazuh-admin"
-        - "admin"
-    hosts: []
-    users: []
-    and_backend_roles: []
-    description: "Maps admin to all_access"
+        reserved: true
+        hidden: false
+        backend_roles:
+            - "wazuh-admin"
+            - "admin"
+        hosts: []
+        users: []
+        and_backend_roles: []
+        description: "Maps admin to all_access"
     ```
 
-7. Run the `securityadmin.sh` script again but with the `-f` flag set to `/etc/wazuh-indexer/opensearch-security/roles_mapping.yml`, ensure that you update the `-h` flag to your Wazuh Indexer FQDN:
+7. Run the `securityadmin.sh` script again, with the `-f` value set to `/etc/wazuh-indexer/opensearch-security/roles_mapping.yml`. Update the `-h` value to your Wazuh Indexer FQDN:
 
     ```bash
-    export JAVA_HOME=/usr/share/wazuh-indexer/jdk/ && bash /usr/share/wazuh-indexer/plugins/opensearch-security/tools/securityadmin.sh -f /etc/wazuh-indexer/opensearch-security/roles_mapping.yml -icl -key /etc/wazuh-indexer/certs/admin-key.pem -cert /etc/wazuh-indexer/certs/admin.pem -cacert /etc/wazuh-indexer/certs/root-ca.pem -h wazuh-indexer.company -nhnv
+    sudo env JAVA_HOME=/usr/share/wazuh-indexer/jdk/ bash /usr/share/wazuh-indexer/plugins/opensearch-security/tools/securityadmin.sh -f /etc/wazuh-indexer/opensearch-security/roles_mapping.yml -icl -key /etc/wazuh-indexer/certs/admin-key.pem -cert /etc/wazuh-indexer/certs/admin.pem -cacert /etc/wazuh-indexer/certs/root-ca.pem -h wazuh-indexer.company -nhnv
     ```
 
-### Wazuh dashboard configuration
+### Configure the Wazuh Dashboard server
 
 1. On the Wazuh Dashboard server, check the value of `run_as` in the `/usr/share/wazuh-dashboard/data/wazuh/config/wazuh.yml` configuration file:
 
-    ```yaml showLineNumbers title="/usr/share/wazuh-dashboard/data/wazuh/config/wazuh.yml"
+    ```yaml showLineNumbers {8} title="/usr/share/wazuh-dashboard/data/wazuh/config/wazuh.yml"
     hosts:
         - default:
-                url: https://127.0.0.1
-                port: 55000
-                username: wazuh-wui
-                password: "<WAZUH_WUI_PASSWORD>"
-                // highlight-next-line
-                run_as: false
+              url: https://127.0.0.1
+              port: 55000
+              username: wazuh-wui
+              password: "<WAZUH_WUI_PASSWORD>"
+              run_as: false
     ```
 
-    The `run_as` parameter, when set to true, enables the assignment of roles to users based on authorization context information. See the [Wazuh Authorization Context documentation](https://documentation.wazuh.com/current/user-manual/api/rbac/auth-context.html) for more information.
+    When `run_as` is set to `true`, Wazuh uses authorization context information to assign roles to users.
 
     If `run_as` is set to `false`, proceed to step 4. If `run_as` is set to `true`, proceed with the following steps to add a role mapping on the Wazuh dashboard.
 
 2. On the Wazuh dashboard, click the upper-left menu icon ☰ to open the menu, then go to **Server management** > **Security** > **Roles mapping**.
 
 3. Click **Create Role mapping** and configure the following parameters:
-    - **Role Name**: set a name for the role mapping (e.g. authentik_admins)
-    - **Roles**: select a role (e.g.`administrator`)
-    - **Custom rules**: Click **Add new rule** and set:
+    - **Role Name**: set a name for the role mapping, such as `authentik_admins`.
+    - **Roles**: select a role, such as `administrator`.
+    - **Custom rules**: click **Add new rule** and set:
         - **User field**: `backend_roles`
         - **Search operation**: `FIND`
         - **Value**: `wazuh-admin`
 
-    Click **Save role mapping**
+    Click **Save role mapping**.
 
-4. On the Wazuh Dashboard server, add these lines to the `/etc/wazuh-dashboard/opensearch_dashboards.yml` file. If the entry `opensearch_security.session.keepalive` already exists in your config, change it to `false`.
+4. On the Wazuh Dashboard server, add the SAML settings to `/etc/wazuh-dashboard/opensearch_dashboards.yml`. If `opensearch_security.session.keepalive` already exists in your configuration, change it to `false`.
 
-    ```yaml showLineNumbers
+    ```yaml showLineNumbers title="/etc/wazuh-dashboard/opensearch_dashboards.yml"
     opensearch_security.auth.type: "saml"
     server.xsrf.allowlist:
         [
@@ -219,9 +206,9 @@ And the `metadata_file`, `kibana_url`, and `exchange_key` parameters in the `sam
     opensearch_security.session.keepalive: false
     ```
 
-    Use this config block if you want to use both authentication methods (username/password and SSO):
+    Use this configuration block instead if you want to keep both username/password authentication and SAML SSO enabled:
 
-    ```yaml showLineNumbers
+    ```yaml showLineNumbers title="/etc/wazuh-dashboard/opensearch_dashboards.yml"
     opensearch_security.auth.type: ["basicauth", "saml"]
     opensearch_security.auth.multiple_auth_enabled: true
     server.xsrf.allowlist:
@@ -241,4 +228,10 @@ And the `metadata_file`, `kibana_url`, and `exchange_key` parameters in the `sam
 
 ## Configuration verification
 
-To confirm that authentik is properly configured with Wazuh, log out and log back in using an account that is a member of the appropriate authentik group (e.g. `wazuh-administrators`).
+To confirm that authentik is properly configured with Wazuh, open Wazuh and log in using an account that is a member of the appropriate authentik group, such as `wazuh-administrators`.
+
+## Resources
+
+- [Wazuh documentation - authentik SSO](https://documentation.wazuh.com/current/user-manual/user-administration/single-sign-on/authentik.html)
+- [Wazuh documentation - Wazuh RBAC](https://documentation.wazuh.com/current/user-manual/user-administration/rbac.html)
+- [Wazuh documentation - Authorization context](https://documentation.wazuh.com/current/user-manual/api/rbac/auth-context.html)
