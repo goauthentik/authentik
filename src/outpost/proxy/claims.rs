@@ -73,7 +73,7 @@ mod tests {
     #[test]
     fn missing_fields_default() {
         // A minimal ID token may omit most claims; they should default rather
-        // than fail to deserialize (mirrors Go's `encoding/json`).
+        // than fail to deserialize
         let claims: Claims = serde_json::from_value(json!({
             "sub": "user-uuid",
         }))

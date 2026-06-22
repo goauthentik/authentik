@@ -1,4 +1,4 @@
-//! Reverse proxy, port from Go's httputil.ReverseProxy
+//! Reverse proxy utils
 
 use std::net::IpAddr;
 

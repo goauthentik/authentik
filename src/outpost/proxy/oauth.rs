@@ -24,7 +24,7 @@ pub(crate) fn redirect_param(uri: &Uri) -> Option<String> {
 }
 
 /// Whether the query string carries `name=true` (value compared
-/// case-insensitively, matching the Go outpost's `strings.EqualFold`).
+/// case-insensitively
 pub(crate) fn has_signature(query: Option<&str>, name: &str) -> bool {
     query.is_some_and(|query| {
         form_urlencoded::parse(query.as_bytes())
