@@ -108,6 +108,6 @@ EXPOSE 9000 9300 9443
 USER 1000
 
 ENV TMPDIR=/dev/shm/ \
-    GOFIPS=1
+    RUST_BACKTRACE=full
 
 ENTRYPOINT ["/authentik", "proxy"]
