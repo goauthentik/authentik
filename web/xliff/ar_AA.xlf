@@ -468,7 +468,7 @@
 </trans-unit>
 <trans-unit id="s482bc55a78891ef7">
   <source>A code has been sent to your address: <x id="0" equiv-text="${email}"/></source>
-  <target>A code has been sent to your address: <x id="0" equiv-text="${email}"/></target>
+  <target>تم إرسال رمز إلى عنوانك: <x id="0" equiv-text="${email}"/></target>
 </trans-unit>
 <trans-unit id="s5afa3fc77ce8d94d">
   <source>A code has been sent to your email address.</source>
