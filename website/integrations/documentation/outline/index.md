@@ -32,7 +32,7 @@ To support the integration of Outline with authentik, you need to create a scope
 
 ### Create an email verification scope mapping in authentik
 
-Outline requires the email scope to return a value of `email_verified: True`. As of [authentik 2025.10](/docs/releases/2025/v2025.10.md#default-oauth-scope-mappings) the default behavior is to return `email_verified: False`, so a custom scope mapping is required for Outline to allow authentication.
+Outline requires the email scope to return a value of `email_verified: True`. As of [authentik 2025.10](/docs/releases/2025/v2025.10.md#default-oauth-scope-mappings), the default behavior is to return `email_verified: False`, so a custom scope mapping is required for Outline to allow authentication.
 
 Refer to [Email scope verification](/docs/add-secure-apps/providers/oauth2/index.mdx#email-scope-verification) for instructions on how to create the required custom scope mapping.
 
