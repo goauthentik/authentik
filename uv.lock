@@ -416,7 +416,7 @@ requires-dist = [
     { name = "sentry-sdk", specifier = "==2.62.0" },
     { name = "service-identity", specifier = "==26.1.0" },
     { name = "setproctitle", specifier = "==1.3.7" },
-    { name = "structlog", specifier = "==25.5.0" },
+    { name = "structlog", specifier = "==26.1.0" },
     { name = "swagger-spec-validator", specifier = "==3.0.4" },
     { name = "twilio", specifier = "==9.10.9" },
     { name = "ua-parser", specifier = "==1.0.2" },
@@ -1154,7 +1154,7 @@ requires-dist = [
     { name = "django-pgtrigger", specifier = ">=4,<5" },
     { name = "msgpack", specifier = ">=1,<2" },
     { name = "psycopg", extras = ["pool"], specifier = ">=3.3.4,<4" },
-    { name = "structlog", specifier = ">=25,<26" },
+    { name = "structlog", specifier = ">=26.1.0,<27" },
 ]
 
 [[package]]
@@ -1191,7 +1191,7 @@ requires-dist = [
     { name = "django-pglock", specifier = ">=1.7,<2" },
     { name = "django-pgtrigger", specifier = ">=4,<5" },
     { name = "dramatiq", specifier = ">=2,<3" },
-    { name = "structlog", specifier = ">=25,<26" },
+    { name = "structlog", specifier = ">=26.1.0,<27" },
     { name = "tenacity", specifier = ">=9,<10" },
 ]
 
@@ -3516,11 +3516,11 @@ wheels = [
 
 [[package]]
 name = "structlog"
-version = "25.5.0"
+version = "26.1.0"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/ef/52/9ba0f43b686e7f3ddfeaa78ac3af750292662284b3661e91ad5494f21dbc/structlog-25.5.0.tar.gz", hash = "sha256:098522a3bebed9153d4570c6d0288abf80a031dfdb2048d59a49e9dc2190fc98", size = 1460830, upload-time = "2025-10-27T08:28:23.028Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/5e/89/b4a0bcfdf4f71a3dea31379f095929613d7e4528a0996bca6aa964cd0dca/structlog-26.1.0.tar.gz", hash = "sha256:f63a716cbd1b1291cf7661de7794b455acfa4c43c5bcf1630e6ad5ddc1adb3b7", size = 1459881, upload-time = "2026-06-06T07:33:39.348Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/a8/45/a132b9074aa18e799b891b91ad72133c98d8042c70f6240e4c5f9dabee2f/structlog-25.5.0-py3-none-any.whl", hash = "sha256:a8453e9b9e636ec59bd9e79bbd4a72f025981b3ba0f5837aebf48f02f37a7f9f", size = 72510, upload-time = "2025-10-27T08:28:21.535Z" },
+    { url = "https://files.pythonhosted.org/packages/a9/18/489c97b834dfff9cf2fc2507cede4bcd4b11e67f84bc462acd1992496f86/structlog-26.1.0-py3-none-any.whl", hash = "sha256:e081a26d6c373e6d201eca24eede26d8ffab07f88f477822e679183428d3d91e", size = 73764, upload-time = "2026-06-06T07:33:38.046Z" },
 ]
 
 [[package]]
