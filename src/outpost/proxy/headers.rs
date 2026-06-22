@@ -49,15 +49,12 @@ pub(crate) fn basic_auth_header(provider: &ProxyOutpostConfig, claims: &Claims) 
     Some(format!("Basic {encoded}"))
 }
 
-/// Drop request headers whose name contains an underscore unless a dash-named
-/// twin is also present (mitigates underscore/dash header smuggling).
+/// Drop every request header whose name contains an underscore (mitigates
+/// underscore/dash header smuggling on upstreams that treat `_` and `-` alike).
 pub(crate) fn remove_underscore_headers(headers: &mut HeaderMap) {
     let stale: Vec<HeaderName> = headers
         .keys()
-        .filter(|name| {
-            let name = name.as_str();
-            name.contains('_') && !headers.contains_key(name.replace('_', "-").as_str())
-        })
+        .filter(|name| name.as_str().contains('_'))
         .cloned()
         .collect();
     for name in stale {
@@ -186,19 +183,19 @@ mod tests {
     }
 
     #[test]
-    fn underscore_headers_removed_without_dash_twin() {
+    fn underscore_headers_are_removed() {
         let mut headers = HeaderMap::new();
         headers.insert(
             HeaderName::from_static("x_smuggle"),
             HeaderValue::from_static("evil"),
         );
         headers.insert(
-            HeaderName::from_static("x_keep"),
-            HeaderValue::from_static("a"),
+            HeaderName::from_static("x_authentik_username"),
+            HeaderValue::from_static("attacker"),
         );
         headers.insert(
-            HeaderName::from_static("x-keep"),
-            HeaderValue::from_static("b"),
+            HeaderName::from_static("x-authentik-username"),
+            HeaderValue::from_static("real"),
         );
         headers.insert(
             HeaderName::from_static("x-normal"),
@@ -208,8 +205,8 @@ mod tests {
         remove_underscore_headers(&mut headers);
 
         assert!(!headers.contains_key("x_smuggle"));
-        assert!(headers.contains_key("x_keep")); // has a dash twin
-        assert!(headers.contains_key("x-keep"));
+        assert!(!headers.contains_key("x_authentik_username"));
+        assert!(headers.contains_key("x-authentik-username"));
         assert!(headers.contains_key("x-normal"));
     }
 }

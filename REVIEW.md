@@ -26,7 +26,7 @@ rewriting, SNI, and PROXY-protocol support are present and behave like Go (see
 | # | Finding | Severity | Type | Status |
 |---|---------|----------|------|--------|
 | 2.1 | Upstream `Host` header differs in proxy mode (internal vs original) | High | Bug/regression | ✅ Resolved |
-| 2.2 | Underscore-header smuggling mitigation is weaker | Medium | Bug/regression | Open |
+| 2.2 | Underscore-header smuggling mitigation is weaker | Medium | Bug/regression | ✅ Resolved |
 | 2.3 | `forward_domain` `rd` redirect validation is more permissive | Medium | Bug/regression | Open |
 | 3.1 | `X-Forwarded-*` now gated on trusted proxies | Info | Improvement | — |
 | 3.2 | `intercept_header_auth` 401 path returns cleanly | Low | Improvement | — |
@@ -84,7 +84,7 @@ listeners don't negotiate HTTP/2 (no ALPN configured). If HTTP/2 inbound is enab
 later, set `Host` explicitly from the resolved request host, since an h2 request
 carries it in `:authority` rather than a `Host` header.
 
-### 2.2 — [Medium] Underscore-header smuggling mitigation is weaker
+### 2.2 — [Medium] Underscore-header smuggling mitigation is weaker — ✅ Resolved
 
 Both implementations try to strip client-supplied `X_authentik_*` underscore
 headers so they cannot be confused with the authoritative dashed `X-authentik-*`
@@ -117,6 +117,12 @@ variant alongside it.
 **Recommendation:** strip request headers whose names contain `_` unconditionally
 before injecting the authentik headers (or strip any `x_authentik_*` underscore
 header regardless of a dash twin), reproducing Go's effective behavior.
+
+**Resolved (2026-06-22):** `remove_underscore_headers`
+(`src/outpost/proxy/headers.rs`) now drops every header whose name contains `_`,
+regardless of a dash-named twin — matching Go's effective behavior. A smuggled
+`X_authentik_username` is now removed even when the legitimate
+`X-authentik-username` is present.
 
 ### 2.3 — [Medium] `forward_domain` `rd` redirect validation is more permissive
 
