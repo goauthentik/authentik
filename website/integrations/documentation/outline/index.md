@@ -28,7 +28,27 @@ This documentation lists only the settings that you need to change from their de
 
 <RedirectURI20265Note />
 
-To support the integration of Outline with authentik, you need to create an application/provider pair in authentik.
+To support the integration of Outline with authentik, you need to create a custom scope mapping and an application/provider pair in authentik.
+
+### Create custom scope mapping
+
+Recent versions of Outline require the email scope to return `email_verified: True`. Because the default authentik email scope mapping returns `email_verified: False`, create a custom scope mapping for Outline.
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Customization** > **Property Mappings** and click **Create**.
+    - **Select type**: select **Scope Mapping**.
+    - **Configure the Scope Mapping**: Provide a descriptive name (e.g. `Outline Email Scope`), and an optional description.
+        - **Scope name**: `email`
+        - **Expression**:
+
+        ```python showLineNumbers
+        return {
+            "email": request.user.email,
+            "email_verified": True
+        }
+        ```
+
+3. Click **Finish** to save the property mapping.
 
 ### Create an application and provider in authentik
 
@@ -41,7 +61,9 @@ To support the integration of Outline with authentik, you need to create an appl
     - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
     - Add a **Redirect URI** of type `Strict` `Authorization` as `https://outline.company/auth/oidc.callback`.
     - Select any available signing key.
-    - Under **Advanced protocol settings**, set the **Subject Mode** to **Based on the User's username**.
+    - Under **Advanced protocol settings**:
+        - Set the **Subject Mode** to **Based on the User's username**.
+        - Remove the `authentik default OAuth Mapping: OpenID 'email'` scope, and add the custom scope mapping you created above.
 - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 
 3. Click **Submit** to save the new application and provider.
