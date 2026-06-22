@@ -99,7 +99,7 @@ dev = [
   "pytest-github-actions-annotate-failures==0.4.1",
   "pytest-randomly==4.1.0",
   "pytest-timeout==2.4.0",
-  "pytest==9.0.3",
+  "pytest==9.1.0",
   "requests-mock==1.12.1",
   "ruff==0.15.18",
   "selenium==4.44.0",
