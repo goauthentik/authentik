@@ -3,7 +3,7 @@
 use ak_client::models::ProxyMode;
 use axum::http::Uri;
 use eyre::Result;
-use url::{form_urlencoded, Url};
+use url::{Url, form_urlencoded};
 use uuid::Uuid;
 
 pub(crate) const CALLBACK_SIGNATURE: &str = "X-authentik-auth-callback";
@@ -126,8 +126,8 @@ mod tests {
     use url::Url;
 
     use super::{
-        authorize_url, callback_redirect_uri, check_redirect_param, has_signature, redirect_param,
-        start_url, CALLBACK_SIGNATURE,
+        CALLBACK_SIGNATURE, authorize_url, callback_redirect_uri, check_redirect_param,
+        has_signature, redirect_param, start_url,
     };
 
     #[test]
