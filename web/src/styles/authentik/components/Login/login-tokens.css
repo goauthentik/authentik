@@ -15,9 +15,16 @@
     --ak-c-login__main--brand-PaddingIdeal: 5rem;
     --ak-c-login__main--brand-PaddingMax: 15dvh;
 
-    --ak-c-login__main-ColumnWidth: minmax(min(100%, var(--ak-c-login--MaxWidth)), var(--ak-c-login--MaxWidth));
+    --ak-c-login__main-ColumnWidth: minmax(
+        min(100%, var(--ak-c-login--MaxWidth)),
+        var(--ak-c-login--MaxWidth)
+    );
 
-    --ak-c-login__main-header-PaddingBlock: clamp(var(--pf-global--spacer--xs), 6dvw, var(--pf-global--spacer--lg));
+    --ak-c-login__main-header-PaddingBlock: clamp(
+        var(--pf-global--spacer--xs),
+        6dvw,
+        var(--pf-global--spacer--lg)
+    );
     --ak-c-login__main-header-PaddingInline: var(--ak-c-login--spacer);
 
     --ak-c-login__main--footer-PaddingMin: var(--pf-global--spacer--xs);
@@ -35,7 +42,10 @@
     --ak-c-login__footer--MaxWidth: min(100dvw, var(--ak-c-login--MaxWidth));
 
     --ak-c-login__footer--TrackMin: max-content;
-    --ak-c-login__footer--TrackWidth: minmax(var(--ak-c-login__footer--TrackMin), var(--ak-c-login__footer--TrackMax));
+    --ak-c-login__footer--TrackWidth: minmax(
+        var(--ak-c-login__footer--TrackMin),
+        var(--ak-c-login__footer--TrackMax)
+    );
 
     --ak-c-login__footer--ItemMaxWidth: calc(
         var(--ak-c-login__footer--MaxWidth) - var(--ak-c-login__footer--ColumnGap)
