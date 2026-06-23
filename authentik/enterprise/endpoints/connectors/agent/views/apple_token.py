@@ -1,6 +1,7 @@
 from base64 import b64decode, urlsafe_b64encode
 from datetime import timezone as dt_timezone
 from typing import Any
+from urllib.parse import parse_qs, parse_qsl, urlparse
 from uuid import UUID
 
 from cryptography import x509
@@ -31,6 +32,7 @@ from authentik.endpoints.connectors.agent.models import (
     AgentConnector,
     AgentDeviceConnection,
     AgentDeviceUserBinding,
+    AppleAuthorizationCode,
     AppleIndependentSecureEnclave,
     AppleNonce,
     AppleUnlockKey,
@@ -92,9 +94,7 @@ class TokenView(View):
         self.connector = AgentConnector.objects.get(pk=self.device_connection.connector.pk)
         LOGGER.debug("got device", device=self.device_connection.device)
 
-        kwargs = {
-            "issuer": str(self.connector.pk)
-        }
+        kwargs = {"issuer": str(self.connector.pk)}
         if header["typ"] == "platformsso-key-request+jwt":
             pass
         elif header["typ"] == "platformsso-login-request+jwt":
@@ -104,13 +104,10 @@ class TokenView(View):
             if not self.device_connection.apple_signing_key:
                 LOGGER.warning("Failed to issue token for device, no apple_signing_key")
                 raise ValidationError("Invalid request")
-            kwargs["audience"] =expected_aud
+            kwargs["audience"] = expected_aud
         # Properly decode the JWT with the key from the device
         decoded = decode(
-            assertion,
-            self.device_connection.apple_signing_key,
-            algorithms=["ES256"],
-            **kwargs
+            assertion, self.device_connection.apple_signing_key, algorithms=["ES256"], **kwargs
         )
         self.remote_nonce = decoded.get("nonce")
 
@@ -193,7 +190,19 @@ class TokenView(View):
         )
 
     def handle_v1_0_urn_ietf_params_oauth_grant_type_jwt_bearer(self):
+        print(self.jwt_request)
         if self.jwt_request.get("grant_type") == "urn:ietf:params:oauth:grant-type:token-exchange":
+            # if (
+            #     self.jwt_request.get("subject_token_type")
+            #     == "urn:apple:platformsso:authorization-code-response"
+            # ):
+            #     raw_code = dict(parse_qsl(urlparse(self.jwt_request.get("subject_token")).query)).get("code")
+            #     code = AppleAuthorizationCode.objects.filter(code=raw_code).first()
+            #     if not code:
+            #         return HttpResponse(status=400)
+            #     user = code.user
+            #     code.delete()
+            # else:
             user = AgentDeviceUserBinding.objects.filter(
                 user__username=self.jwt_request["sub"]
             ).first()
@@ -224,6 +233,7 @@ class TokenView(View):
 
     def handle_v2_0_urn_ietf_params_oauth_grant_type_jwt_bearer(self):
         request_type = self.jwt_request.get("request_type")
+        LOGGER.debug("v2 request", request_type=request_type)
         if request_type == "key_request":
             return self._handle_key_request()
         if request_type == "key_exchange":
@@ -267,8 +277,8 @@ class TokenView(View):
             .issuer_name(subject)
             .public_key(private_key.public_key())
             .serial_number(x509.random_serial_number())
-            .not_valid_before(self.now.astimezone(dt_timezone.utc))
-            .not_valid_after(expires_at.astimezone(dt_timezone.utc))
+            .not_valid_before(self.now)
+            .not_valid_after(expires_at)
             .sign(private_key, hashes.SHA256())
         )
 
@@ -282,8 +292,11 @@ class TokenView(View):
             expires=expires_at,
         )
 
-        cert_b64 = urlsafe_b64encode(cert.public_bytes(serialization.Encoding.DER)).rstrip(b"=").decode()
+        cert_b64 = (
+            urlsafe_b64encode(cert.public_bytes(serialization.Encoding.DER)).rstrip(b"=").decode()
+        )
 
+        LOGGER.debug("Created unlock key", device=device_user.target)
         return JWEResponse(
             {
                 "certificate": cert_b64,
@@ -325,7 +338,9 @@ class TokenView(View):
 
         raw_pubkey = self.jwt_request["other_publickey"]
         other_pubkey_bytes = b64decode(raw_pubkey + "=" * (-len(raw_pubkey) % 4))
-        other_public_key = EllipticCurvePublicKey.from_encoded_point(SECP256R1(), other_pubkey_bytes)
+        other_public_key = EllipticCurvePublicKey.from_encoded_point(
+            SECP256R1(), other_pubkey_bytes
+        )
 
         shared_key = private_key.exchange(ECDH(), other_public_key)
         expires_at = self.now + timedelta_from_string(self.connector.auth_session_duration)
@@ -340,4 +355,42 @@ class TokenView(View):
             device=self.device_connection,
             apv=self.jwt_request["jwe_crypto"]["apv"],
             typ="platformsso-key-response+jwt",
+        )
+
+    def handle_v1_0_authorization_code(self) -> HttpResponse:
+        code = self.request.POST.get("code")
+        if not code:
+            return HttpResponse(status=400)
+        auth_code = AppleAuthorizationCode.objects.filter(
+            code=code,
+            connector=self.connector,
+        ).first()
+        if not auth_code:
+            LOGGER.warning("Authorization code not found")
+            return HttpResponse(status=400)
+        if auth_code.expires < now():
+            auth_code.delete()
+            LOGGER.warning("Authorization code expired")
+            return HttpResponse(status=400)
+
+        user = auth_code.user
+        auth_code.delete()
+
+        id_token = self.create_id_token(user)
+        auth_token = DeviceAuthenticationToken.objects.create(
+            device=self.device_connection.device,
+            connector=self.connector,
+            user=user,
+            device_token=self.nonce.device_token,
+        )
+        return JWEResponse(
+            {
+                "refresh_token": auth_token.token,
+                "refresh_token_expires_in": int((auth_token.expires - now()).total_seconds()),
+                "id_token": id_token,
+                "token_type": TOKEN_TYPE,
+                "session_key": self.create_auth_session(user),
+            },
+            device=self.device_connection,
+            apv=self.jwt_request["jwe_crypto"]["apv"],
         )

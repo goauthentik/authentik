@@ -21,6 +21,7 @@ urlpatterns = [
         AgentInteractiveAuth.as_view(),
         name="authenticate",
     ),
+    path("psso/<uuid:connector_uuid>/authorize/", AppleAuthorizeView.as_view(), name="psso-authorize"),
     path("psso/authorize/", AppleAuthorizeView.as_view(), name="psso-authorize"),
     path("psso/token/", TokenView.as_view(), name="psso-token"),
     path("psso/jwks/", AppleJWKSView.as_view(), name="psso-jwks"),

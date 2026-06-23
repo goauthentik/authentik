@@ -40,6 +40,7 @@ class RegisterDeviceView(APIView):
         jwks_endpoint = CharField()
         audience = CharField()
         nonce_endpoint = CharField()
+        authorization_endpoint = CharField()
 
     permission_classes = [IsAuthenticated]
     pagination_class = None
@@ -77,6 +78,12 @@ class RegisterDeviceView(APIView):
                 ),
                 "nonce_endpoint": request.build_absolute_uri(
                     reverse("authentik_enterprise_endpoints_connectors_agent:psso-nonce")
+                ),
+                "authorization_endpoint": request.build_absolute_uri(
+                    reverse(
+                        "authentik_enterprise_endpoints_connectors_agent:psso-authorize",
+                        kwargs={"connector_uuid": str(conn.connector.pk)},
+                    )
                 ),
             }
         )
