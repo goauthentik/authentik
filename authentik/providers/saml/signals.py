@@ -7,7 +7,6 @@ from django.urls import reverse
 from structlog.stdlib import get_logger
 
 from authentik.core.models import AuthenticatedSession, User
-from authentik.core.sessions import authenticated_session_from_request
 from authentik.flows.models import in_memory_stage
 from authentik.flows.views.executor import FlowExecutorView
 from authentik.providers.iframe_logout import IframeLogoutStageView
@@ -39,7 +38,7 @@ def handle_saml_iframe_pre_user_logout(
     if not user.is_authenticated:
         return
 
-    auth_session = authenticated_session_from_request(request, user)
+    auth_session = AuthenticatedSession.from_request(request, user)
     if not auth_session:
         return
 
@@ -128,7 +127,7 @@ def handle_flow_pre_user_logout(
     if not user.is_authenticated:
         return
 
-    auth_session = authenticated_session_from_request(request, user)
+    auth_session = AuthenticatedSession.from_request(request, user)
     if not auth_session:
         return
 

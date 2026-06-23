@@ -18,7 +18,6 @@ from authentik.core.models import (
     User,
     default_token_duration,
 )
-from authentik.core.sessions import authenticated_session_from_request
 from authentik.flows.apps import RefreshOtherFlowsAfterAuthentication
 from authentik.root.ws.consumer import build_device_group
 
@@ -50,7 +49,7 @@ def post_save_application(sender: type[Model], instance, created: bool, **_):
 def user_logged_in_session(sender, request: HttpRequest, user: User, **_):
     """Create an AuthenticatedSession from request"""
 
-    authenticated_session_from_request(request, user)
+    AuthenticatedSession.from_request(request, user)
 
     if not RefreshOtherFlowsAfterAuthentication.get():
         return

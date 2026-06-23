@@ -7,8 +7,7 @@ from django.views.decorators.clickjacking import xframe_options_sameorigin
 from django.views.decorators.csrf import csrf_exempt
 from structlog.stdlib import get_logger
 
-from authentik.core.models import Application
-from authentik.core.sessions import authenticated_session_from_request
+from authentik.core.models import Application, AuthenticatedSession
 from authentik.events.models import Event, EventAction
 from authentik.flows.models import Flow, in_memory_stage
 from authentik.flows.planner import PLAN_CONTEXT_APPLICATION, FlowPlan, FlowPlanner
@@ -109,7 +108,7 @@ class SPInitiatedSLOView(PolicyAccessView):
             plan.context[PLAN_CONTEXT_SAML_RELAY_STATE] = relay_state
 
             # Look up the session issuer to use in the logout response
-            auth_session = authenticated_session_from_request(request, request.user)
+            auth_session = AuthenticatedSession.from_request(request, request.user)
             session_issuer = None
             if auth_session:
                 saml_session = SAMLSession.objects.filter(
@@ -212,7 +211,7 @@ class SPInitiatedSLOView(PolicyAccessView):
             plan.append_stage(in_memory_stage(SessionEndStage))
 
         # Remove samlsession from database
-        auth_session = authenticated_session_from_request(self.request, self.request.user)
+        auth_session = AuthenticatedSession.from_request(self.request, self.request.user)
         if auth_session:
             SAMLSession.objects.filter(
                 session=auth_session,

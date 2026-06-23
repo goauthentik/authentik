@@ -7,7 +7,6 @@ from authentik.common.oauth.constants import (
     PLAN_CONTEXT_OIDC_LOGOUT_IFRAME_SESSIONS,
 )
 from authentik.core.models import AuthenticatedSession, User
-from authentik.core.sessions import authenticated_session_from_request
 from authentik.flows.models import in_memory_stage
 from authentik.providers.iframe_logout import IframeLogoutStageView
 from authentik.providers.oauth2.models import (
@@ -35,7 +34,7 @@ def handle_flow_pre_user_logout(sender, request, user, executor, **kwargs):
     if not user.is_authenticated:
         return
 
-    auth_session = authenticated_session_from_request(request, user)
+    auth_session = AuthenticatedSession.from_request(request, user)
     if not auth_session:
         return
 

@@ -14,8 +14,7 @@ from authentik.common.oauth.constants import (
     PLAN_CONTEXT_OIDC_LOGOUT_IFRAME_SESSIONS,
     PLAN_CONTEXT_POST_LOGOUT_REDIRECT_URI,
 )
-from authentik.core.models import Application
-from authentik.core.sessions import authenticated_session_from_request
+from authentik.core.models import Application, AuthenticatedSession
 from authentik.flows.models import Flow, in_memory_stage
 from authentik.flows.planner import (
     PLAN_CONTEXT_APPLICATION,
@@ -142,7 +141,7 @@ class EndSessionView(PolicyAccessView):
             PLAN_CONTEXT_APPLICATION: self.application,
         }
 
-        auth_session = authenticated_session_from_request(request, request.user)
+        auth_session = AuthenticatedSession.from_request(request, request.user)
 
         if self.post_logout_redirect_uri:
             context[PLAN_CONTEXT_POST_LOGOUT_REDIRECT_URI] = self.post_logout_redirect_uri

@@ -16,7 +16,7 @@ from django.contrib.auth.models import UserManager as DjangoUserManager
 from django.contrib.sessions.base_session import AbstractBaseSession
 from django.core.exceptions import SuspiciousOperation
 from django.core.validators import validate_slug
-from django.db import models
+from django.db import models, transaction
 from django.db.models import Manager, Q, QuerySet, options
 from django.http import HttpRequest
 from django.utils.functional import cached_property
@@ -1393,6 +1393,41 @@ class AuthenticatedSession(SerializerModel):
         from authentik.core.api.authenticated_sessions import AuthenticatedSessionSerializer
 
         return AuthenticatedSessionSerializer
+
+    @classmethod
+    def from_request(cls, request: HttpRequest, user: User) -> Self | None:
+        """Create a new authenticated session from an HTTP request."""
+        if not hasattr(request, "session") or not request.session.exists(
+            request.session.session_key
+        ):
+            return None
+        session = Session.objects.filter(session_key=request.session.session_key).first()
+        if session is None:
+            return None
+        authenticated_session, _ = cls.objects.update_or_create(
+            session=session,
+            defaults={
+                "user": user,
+                "is_current": True,
+            },
+        )
+        return authenticated_session.bind_to_browser(request)
+
+    def bind_to_browser(self, request: HttpRequest) -> Self:
+        """Bind this authenticated session to the request's browser key."""
+        from authentik.root.middleware import SessionMiddleware
+
+        browser_key = SessionMiddleware.ensure_browser_key(request)
+        if browser_key:
+            with transaction.atomic():
+                type(self).objects.filter(browser_key=browser_key).exclude(
+                    session=self.session
+                ).update(is_current=False)
+                if self.browser_key != browser_key or not self.is_current:
+                    self.browser_key = browser_key
+                    self.is_current = True
+                    self.save(update_fields=["browser_key", "is_current"])
+        return self
 
     class Meta:
         verbose_name = _("Authenticated Session")

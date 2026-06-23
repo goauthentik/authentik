@@ -145,7 +145,6 @@ class SessionMiddleware(UpstreamSessionMiddleware):
         if not hasattr(request, "session") or not request.session.session_key:
             return
         from authentik.core.models import AuthenticatedSession
-        from authentik.core.sessions import bind_authenticated_session_to_browser
 
         authenticated_session = AuthenticatedSession.objects.filter(
             session_id=request.session.session_key,
@@ -158,7 +157,7 @@ class SessionMiddleware(UpstreamSessionMiddleware):
             request.browser_key_needs_update = True
             return
         if not authenticated_session.browser_key:
-            bind_authenticated_session_to_browser(request, authenticated_session)
+            authenticated_session.bind_to_browser(request)
 
     def process_response(self, request: HttpRequest, response: HttpResponse) -> HttpResponse:
         """

@@ -10,11 +10,7 @@ from django.urls import reverse
 from django.utils.crypto import get_random_string
 
 from authentik.core.models import AuthenticatedSession
-from authentik.core.sessions import (
-    SessionStore,
-    authenticated_session_from_request,
-    bind_authenticated_session_to_browser,
-)
+from authentik.core.sessions import SessionStore
 from authentik.core.tests.utils import create_test_session, create_test_user
 from authentik.root.middleware import (
     BROWSER_COOKIE_KEY_LENGTH,
@@ -97,7 +93,7 @@ class TestSessionSuperseding(TestCase):
             side_effect=fail_target_save,
         ):
             with self.assertRaises(RuntimeError):
-                bind_authenticated_session_to_browser(request, target)
+                target.bind_to_browser(request)
         previous.refresh_from_db()
         self.assertTrue(previous.is_current)
 
@@ -105,7 +101,7 @@ class TestSessionSuperseding(TestCase):
         request.browser_key = browser_key
         request.session = SessionStore()
         request.session.create()
-        new_session = authenticated_session_from_request(request, self.user)
+        new_session = AuthenticatedSession.from_request(request, self.user)
 
         self.assertEqual(new_session.browser_key, browser_key)
         self.assertTrue(new_session.is_current)
