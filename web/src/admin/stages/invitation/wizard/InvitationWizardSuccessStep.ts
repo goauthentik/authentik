@@ -16,12 +16,10 @@ import { customElement, state } from "lit/decorators.js";
 
 import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-invitation-wizard-success-step")
 export class InvitationWizardSuccessStep extends WizardPage {
     static styles: CSSResult[] = [
-        PFBase,
         PFForm,
         PFAlert,
         css`

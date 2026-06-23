@@ -13,7 +13,13 @@ import { customElement } from "@lit/reactive-element/decorators/custom-element.j
 import { property } from "@lit/reactive-element/decorators/property.js";
 import { html } from "lit";
 
-export type InvitationWizardFlowMode = "existing" | "create";
+export const InvitationWizardFlowMode = {
+    Existing: "existing",
+    Create: "create",
+} as const;
+
+export type InvitationWizardFlowMode =
+    (typeof InvitationWizardFlowMode)[keyof typeof InvitationWizardFlowMode];
 
 @customElement("ak-invitation-wizard")
 export class InvitationWizard extends AKElement implements TransclusionChildElement {
@@ -22,10 +28,22 @@ export class InvitationWizard extends AKElement implements TransclusionChildElem
     public [TransclusionChildSymbol] = true;
 
     @property({ type: String })
-    public mode: InvitationWizardFlowMode = "existing";
+    public mode: InvitationWizardFlowMode = InvitationWizardFlowMode.Existing;
 
     protected override createRenderRoot(): HTMLElement | DocumentFragment {
         return this;
+    }
+
+    public formatARIALabel(): string {
+        return this.mode === InvitationWizardFlowMode.Create
+            ? msg("Create New Invitation Wizard", {
+                  id: "invitations.wizard.create.ariaLabel",
+                  desc: "ARIA label for the invitation wizard when creating a new invitation",
+              })
+            : msg("Existing Invitation Wizard", {
+                  id: "invitations.wizard.existing.ariaLabel",
+                  desc: "ARIA label for the invitation wizard when using an existing invitation",
+              });
     }
 
     protected override render(): SlottedTemplateResult {

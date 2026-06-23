@@ -1,3 +1,4 @@
+import "#components/ak-slug-input";
 import "#components/ak-switch-input";
 import "#elements/CodeMirror";
 import "#elements/forms/HorizontalFormElement";
@@ -13,201 +14,192 @@ import {
 import { MessageLevel } from "#common/messages";
 import { dateTimeLocal } from "#common/temporal";
 
+import { serializeForm } from "#elements/forms/serialization";
 import { showMessage } from "#elements/messages/MessageContainer";
+import { SlottedTemplateResult } from "#elements/types";
 import { WizardPage } from "#elements/wizard/WizardPage";
 
 import { FlowsApi, ManagedApi, StagesApi } from "@goauthentik/api";
 
-import YAML from "yaml";
-
 import { msg, str } from "@lit/localize";
-import { CSSResult, html, TemplateResult } from "lit";
-import { customElement, state } from "lit/decorators.js";
+import { CSSResult, html } from "lit";
+import { customElement } from "lit/decorators.js";
 
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 const MINIMAL_BLUEPRINT_PATH = "example/flows-invitation-enrollment-minimal.yaml";
 
+/**
+ * Serialized payload of the details form.
+ */
+interface DetailsFormData {
+    name: string;
+    expires?: Date;
+    fixedData?: Record<string, unknown> | null;
+    singleUse: boolean;
+}
+
 @customElement("ak-invitation-wizard-details-step")
-export class InvitationWizardDetailsStep extends WizardPage {
-    static styles: CSSResult[] = [PFBase, PFForm, PFFormControl];
+export class InvitationWizardDetailsStep extends WizardPage<InvitationWizardState> {
+    static styles: CSSResult[] = [PFForm, PFFormControl];
 
-    @state()
-    invitationName = "";
+    #defaultExpires = dateTimeLocal(new Date(Date.now() + 48 * 60 * 60 * 1000));
 
-    @state()
-    invitationExpires: string = dateTimeLocal(new Date(Date.now() + 48 * 60 * 60 * 1000));
+    protected get form(): HTMLFormElement | null {
+        return this.renderRoot.querySelector("form");
+    }
 
-    @state()
-    fixedDataRaw = "{}";
+    //#region Validation
 
-    @state()
-    singleUse = true;
-
-    activeCallback = async (): Promise<void> => {
-        this.host.valid = this.invitationName.length > 0;
+    #syncValidity = (): void => {
+        this.host.valid = this.form?.checkValidity() ?? false;
     };
 
-    async #fail(step: string, err: unknown): Promise<false> {
-        const parsed = await parseAPIResponseError(err);
+    public override activeCallback = async (): Promise<void> => {
+        this.#syncValidity();
+    };
+
+    //#endregion
+
+    //#region API orchestration
+
+    async #fail(step: string, error: unknown): Promise<false> {
+        const parsed = await parseAPIResponseError(error);
         const fieldErrors = pluckFallbackFieldErrors(parsed);
         const detail = fieldErrors.length > 0 ? fieldErrors.join(" ") : pluckErrorDetail(parsed);
+
         showMessage({
             level: MessageLevel.error,
             message: msg(str`${step} failed`),
             description: detail,
         });
-        this.logger.error("Invitation wizard step failed", { step, error: err });
+
+        this.logger.error("Invitation wizard step failed", { step, error });
+
         return false;
     }
 
-    validate(): void {
-        let validYaml = true;
+    /**
+     * Import the minimal enrollment-flow blueprint and record the created flow on the wizard state.
+     */
+    async #importEnrollmentFlow(state: InvitationWizardState): Promise<boolean> {
+        const label = msg("Importing enrollment flow blueprint");
+
         try {
-            YAML.parse(this.fixedDataRaw);
-        } catch {
-            validYaml = false;
+            const result = await aki(ManagedApi).managedBlueprintsImportCreate({
+                path: MINIMAL_BLUEPRINT_PATH,
+                context: JSON.stringify({
+                    flow_name: state.newFlowName,
+                    flow_slug: state.newFlowSlug,
+                    stage_name: state.newStageName,
+                    continue_flow_without_invitation: state.continueFlowWithoutInvitation,
+                    user_type: state.newUserType,
+                }),
+            });
+
+            if (!result.success) {
+                const logs = (result.logs || [])
+                    .map((entry) => entry.event)
+                    .filter(Boolean)
+                    .join("\n");
+
+                return this.#fail(label, new Error(logs || msg("Blueprint validation failed")));
+            }
+
+            const slug = state.newFlowSlug!;
+            const { results } = await aki(FlowsApi).flowsInstancesList({ slug });
+            const createdFlow = results[0];
+
+            if (!createdFlow) {
+                return this.#fail(
+                    label,
+                    new Error(msg(str`Flow with slug "${slug}" not found after import`)),
+                );
+            }
+
+            state.createdFlowPk = createdFlow.pk;
+            state.createdFlowSlug = createdFlow.slug;
+            state.needsFlow = false;
+            state.needsStage = false;
+            state.needsBinding = false;
+
+            return true;
+        } catch (error) {
+            return this.#fail(label, error);
         }
-        this.host.valid =
-            this.invitationName.length > 0 && this.invitationExpires.length > 0 && validYaml;
     }
 
-    nextCallback = async (): Promise<boolean> => {
-        if (!this.invitationName) return false;
-
-        let fixedData: Record<string, unknown> = {};
+    /**
+     * Create the invitation, binding it to the created/selected flow, and record it on the state.
+     */
+    async #createInvitation(state: InvitationWizardState, data: DetailsFormData): Promise<boolean> {
         try {
-            fixedData = YAML.parse(this.fixedDataRaw) || {};
-        } catch {
+            const invitation = await aki(StagesApi).stagesInvitationInvitationsCreate({
+                invitationRequest: {
+                    name: data.name,
+                    expires: data.expires,
+                    fixedData: data.fixedData ?? {},
+                    singleUse: data.singleUse,
+                    flow: state.createdFlowPk || state.selectedFlowPk || null,
+                },
+            });
+
+            state.createdInvitationPk = invitation.pk;
+            state.createdInvitation = invitation;
+
+            return true;
+        } catch (error) {
+            return this.#fail(msg("Creating invitation"), error);
+        }
+    }
+
+    public override nextCallback = async (): Promise<boolean> => {
+        const { form } = this;
+
+        if (!form || !form.reportValidity()) return false;
+
+        const { state } = this.host;
+
+        // Already created on a previous attempt (e.g. the user stepped back and forward again).
+        if (state.createdInvitationPk) return true;
+
+        if (state.needsFlow && !(await this.#importEnrollmentFlow(state))) {
             return false;
         }
 
-        const wizardState = this.host.state as unknown as InvitationWizardState;
+        const data = serializeForm<DetailsFormData>(
+            form.querySelectorAll("ak-form-element-horizontal"),
+        );
 
-        if (wizardState.createdInvitationPk) {
-            return true;
-        }
-
-        wizardState.invitationName = this.invitationName;
-        wizardState.invitationExpires = this.invitationExpires;
-        wizardState.invitationFixedData = fixedData;
-        wizardState.invitationSingleUse = this.singleUse;
-
-        if (wizardState.needsFlow) {
-            try {
-                const result = await aki(ManagedApi).managedBlueprintsImportCreate({
-                    path: MINIMAL_BLUEPRINT_PATH,
-                    context: JSON.stringify({
-                        flow_name: wizardState.newFlowName,
-                        flow_slug: wizardState.newFlowSlug,
-                        stage_name: wizardState.newStageName,
-                        continue_flow_without_invitation: wizardState.continueFlowWithoutInvitation,
-                        user_type: wizardState.newUserType,
-                    }),
-                });
-                if (!result.success) {
-                    const logs = (result.logs || [])
-                        .map((l) => l.event)
-                        .filter((m) => !!m)
-                        .join("\n");
-                    return this.#fail(
-                        msg("Importing enrollment flow blueprint"),
-                        new Error(logs || msg("Blueprint validation failed")),
-                    );
-                }
-
-                const slugToLookup = wizardState.newFlowSlug!;
-                const flows = await aki(FlowsApi).flowsInstancesList({
-                    slug: slugToLookup,
-                });
-                const createdFlow = flows.results[0];
-                if (!createdFlow) {
-                    return this.#fail(
-                        msg("Importing enrollment flow blueprint"),
-                        new Error(
-                            msg(str`Flow with slug "${slugToLookup}" not found after import`),
-                        ),
-                    );
-                }
-                wizardState.createdFlowPk = createdFlow.pk;
-                wizardState.createdFlowSlug = createdFlow.slug;
-                wizardState.needsFlow = false;
-                wizardState.needsStage = false;
-                wizardState.needsBinding = false;
-            } catch (err) {
-                return this.#fail(msg("Importing enrollment flow blueprint"), err);
-            }
-        }
-
-        try {
-            const flowPk = wizardState.createdFlowPk || wizardState.selectedFlowPk || undefined;
-            const invitation = await aki(StagesApi).stagesInvitationInvitationsCreate({
-                invitationRequest: {
-                    name: wizardState.invitationName!,
-                    expires: wizardState.invitationExpires
-                        ? new Date(wizardState.invitationExpires)
-                        : undefined,
-                    fixedData: wizardState.invitationFixedData,
-                    singleUse: wizardState.invitationSingleUse,
-                    flow: flowPk || null,
-                },
-            });
-            wizardState.createdInvitationPk = invitation.pk;
-            wizardState.createdInvitation = invitation;
-        } catch (err) {
-            return this.#fail(msg("Creating invitation"), err);
-        }
-
-        return true;
+        return this.#createInvitation(state, data);
     };
 
-    override reset(): void {
-        this.invitationName = "";
-        this.invitationExpires = dateTimeLocal(new Date(Date.now() + 48 * 60 * 60 * 1000));
-        this.fixedDataRaw = "{}";
-        this.singleUse = true;
-    }
+    //#endregion
 
-    render(): TemplateResult {
-        const wizardState = this.host.state as unknown as InvitationWizardState;
+    //#region Rendering
+
+    protected override render(): SlottedTemplateResult {
+        const { state } = this.host;
         const flowDisplay =
-            wizardState.flowMode === "existing"
-                ? wizardState.selectedFlowSlug
-                : wizardState.newFlowSlug;
+            (state.flowMode === "existing" ? state.selectedFlowSlug : state.newFlowSlug) ?? "";
 
-        return html`<form class="pf-c-form pf-m-horizontal">
-            <ak-form-element-horizontal label=${msg("Name")} required>
-                <input
-                    type="text"
-                    class="pf-c-form-control"
-                    required
-                    .value=${this.invitationName}
-                    @input=${(ev: InputEvent) => {
-                        const target = ev.target as HTMLInputElement;
-                        this.invitationName = target.value.replace(/[^a-z0-9-]/g, "");
-                        target.value = this.invitationName;
-                        this.validate();
-                    }}
-                />
-                <p class="pf-c-form__helper-text">
-                    ${msg(
-                        "The name of an invitation must be a slug: only lower case letters, numbers, and the hyphen are permitted here.",
-                    )}
-                </p>
-            </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("Expires")} required>
+        return html`<form class="pf-c-form pf-m-horizontal" @input=${this.#syncValidity}>
+            <ak-slug-input
+                name="name"
+                label=${msg("Name")}
+                required
+                help=${msg(
+                    "The name of an invitation must be a slug: only lower case letters, numbers, and the hyphen are permitted here.",
+                )}
+            ></ak-slug-input>
+            <ak-form-element-horizontal label=${msg("Expires")} required name="expires">
                 <input
                     type="datetime-local"
                     data-type="datetime-local"
                     class="pf-c-form-control"
                     required
-                    .value=${this.invitationExpires}
-                    @input=${(ev: InputEvent) => {
-                        this.invitationExpires = (ev.target as HTMLInputElement).value;
-                        this.validate();
-                    }}
+                    value=${this.#defaultExpires}
                 />
             </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${msg("Flow")}>
@@ -216,7 +208,7 @@ export class InvitationWizardDetailsStep extends WizardPage {
                     class="pf-c-form-control"
                     readonly
                     disabled
-                    .value=${flowDisplay || ""}
+                    .value=${flowDisplay}
                 />
                 <p class="pf-c-form__helper-text">
                     ${msg(
@@ -224,16 +216,8 @@ export class InvitationWizardDetailsStep extends WizardPage {
                     )}
                 </p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("Custom attributes")}>
-                <ak-codemirror
-                    mode="yaml"
-                    .value=${this.fixedDataRaw}
-                    @change=${(ev: CustomEvent) => {
-                        this.fixedDataRaw = ev.detail.value;
-                        this.validate();
-                    }}
-                >
-                </ak-codemirror>
+            <ak-form-element-horizontal label=${msg("Custom attributes")} name="fixedData">
+                <ak-codemirror mode="yaml" value="{}"></ak-codemirror>
                 <p class="pf-c-form__helper-text">
                     ${msg(
                         "Optional data which is loaded into the flow's 'prompt_data' context variable. YAML or JSON.",
@@ -241,15 +225,15 @@ export class InvitationWizardDetailsStep extends WizardPage {
                 </p>
             </ak-form-element-horizontal>
             <ak-switch-input
+                name="singleUse"
                 label=${msg("Single use")}
-                ?checked=${this.singleUse}
-                @change=${(ev: Event) => {
-                    this.singleUse = (ev.target as HTMLInputElement).checked;
-                }}
+                checked
                 help=${msg("When enabled, the invitation will be deleted after usage.")}
             ></ak-switch-input>
         </form>`;
     }
+
+    //#endregion
 }
 
 declare global {
