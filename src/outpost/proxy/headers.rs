@@ -204,7 +204,10 @@ mod tests {
         provider.basic_auth_enabled = Some(false);
 
         let mut headers = HeaderMap::new();
-        headers.insert(AUTHORIZATION, HeaderValue::from_static("Bearer client-token"));
+        headers.insert(
+            AUTHORIZATION,
+            HeaderValue::from_static("Bearer client-token"),
+        );
 
         set_upstream_authorization(&mut headers, &provider, &Claims::default());
 
@@ -228,12 +231,17 @@ mod tests {
         };
 
         let mut headers = HeaderMap::new();
-        headers.insert(AUTHORIZATION, HeaderValue::from_static("Bearer client-token"));
+        headers.insert(
+            AUTHORIZATION,
+            HeaderValue::from_static("Bearer client-token"),
+        );
 
         set_upstream_authorization(&mut headers, &provider(), &claims);
 
         assert_eq!(
-            headers.get(AUTHORIZATION).and_then(|value| value.to_str().ok()),
+            headers
+                .get(AUTHORIZATION)
+                .and_then(|value| value.to_str().ok()),
             Some("Basic c3ZjOnNlY3JldA==")
         );
     }
