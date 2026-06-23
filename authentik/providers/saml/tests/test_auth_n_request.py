@@ -1,6 +1,7 @@
 """Test AuthN Request generator and parser"""
 
 from base64 import b64encode
+from json import loads
 from urllib.parse import parse_qs, urlparse
 
 from defusedxml.lxml import fromstring
@@ -26,10 +27,11 @@ from authentik.core.tests.utils import (
 )
 from authentik.crypto.models import CertificateKeyPair
 from authentik.events.models import Event, EventAction
+from authentik.flows.apps import ContinuousLogin
 from authentik.flows.models import FlowStageBinding
 from authentik.lib.generators import generate_id
 from authentik.lib.xml import lxml_from_string
-from authentik.providers.saml.models import SAMLPropertyMapping, SAMLProvider
+from authentik.providers.saml.models import SAMLBindings, SAMLPropertyMapping, SAMLProvider
 from authentik.providers.saml.processors.assertion import AssertionProcessor
 from authentik.providers.saml.processors.authn_request_parser import AuthNRequestParser
 from authentik.sources.saml.exceptions import MismatchedRequestID
@@ -37,6 +39,7 @@ from authentik.sources.saml.models import SAMLBindingTypes, SAMLSource
 from authentik.sources.saml.processors.request import SESSION_KEY_REQUEST_ID, RequestProcessor
 from authentik.sources.saml.processors.response import ResponseProcessor
 from authentik.stages.dummy.models import DummyStage
+from authentik.tenants.flags import patch_flag
 
 POST_REQUEST = (
     "PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz48c2FtbDJwOkF1dGhuUmVxdWVzdCB4bWxuczpzYW1sMn"
@@ -136,7 +139,7 @@ class TestAuthNRequest(TestCase):
 
     def test_redirect_binding_flow_redirect_includes_resume_url(self):
         """Test SP-initiated Redirect binding keeps the original SAML URL as next."""
-        app = Application.objects.create(name="test-app", slug="test-app", provider=self.provider)
+        app = Application.objects.get(slug="test-app")
         FlowStageBinding.objects.create(
             target=self.provider.authorization_flow,
             stage=DummyStage.objects.create(name=generate_id()),
@@ -161,6 +164,41 @@ class TestAuthNRequest(TestCase):
         next_query = parse_qs(next_url.query)
         for key, value in params.items():
             self.assertEqual(next_query[key], [value])
+
+    @patch_flag(ContinuousLogin, True)
+    def test_redirect_binding_continuous_login_final_redirect(self):
+        """Test SP-initiated Redirect binding returns a final redirect challenge under
+        continuous login, instead of an unvalidated-serializer error."""
+        self.provider.sp_binding = SAMLBindings.REDIRECT
+        self.provider.save()
+        app = Application.objects.get(slug="test-app")
+        http_request = self.request_factory.get("/")
+        params = RequestProcessor(self.source, http_request, "test_state").build_auth_n_detached()
+        self.client.force_login(create_test_admin_user())
+
+        # Initiate the SP-initiated request, which plans the flow and redirects into the executor.
+        initiate = self.client.get(
+            reverse(
+                "authentik_providers_saml:sso-redirect",
+                kwargs={"application_slug": app.slug},
+            ),
+            params,
+        )
+        self.assertEqual(initiate.status_code, 302)
+
+        # Drive the flow executor to completion, reaching SAMLFlowFinalView.
+        response = self.client.get(
+            reverse(
+                "authentik_api:flow-executor",
+                kwargs={"flow_slug": self.provider.authorization_flow.slug},
+            )
+        )
+
+        self.assertEqual(response.status_code, 200)
+        body = loads(response.content.decode())
+        self.assertEqual(body["component"], "xak-flow-redirect")
+        self.assertTrue(body["final_redirect"])
+        self.assertTrue(body["to"].startswith(self.provider.acs_url))
 
     def test_request_encrypt(self):
         """Test full SAML Request/Response flow, fully encrypted"""

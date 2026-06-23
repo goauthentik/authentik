@@ -141,7 +141,7 @@ class SAMLFlowFinalView(ChallengeStageView):
             if ContinuousLogin.get():
                 return HttpChallengeResponse(
                     RedirectChallenge(
-                        data={
+                        instance={
                             "to": f"{provider.acs_url}?{querystring}",
                             "final_redirect": True,
                         }
