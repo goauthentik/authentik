@@ -39,12 +39,24 @@ export class AccountSwitcher extends WithSession(AKElement) {
         return new URLSearchParams({ next }).toString();
     }
 
+    protected rootURL(path: string, query?: string): string {
+        const base = new URL(globalAK().api.base, window.location.origin);
+        if (!base.pathname.endsWith("/")) {
+            base.pathname = `${base.pathname}/`;
+        }
+        const url = new URL(path, base);
+        if (query) {
+            url.search = query;
+        }
+        return `${url.pathname}${url.search}${url.hash}`;
+    }
+
     protected accountSwitchURL(account: BrowserLocalAccount): string {
-        return `${globalAK().api.base}account/switch/${account.pk}/?${this.nextQuery}`;
+        return this.rootURL(`account/switch/${account.pk}/`, this.nextQuery);
     }
 
     protected addAccountURL(): string {
-        return `${globalAK().api.base}flows/-/default/authentication/?${this.nextQuery}`;
+        return this.rootURL("flows/-/default/authentication/", this.nextQuery);
     }
 
     protected get currentAccount(): BrowserLocalAccount | undefined {
@@ -106,7 +118,7 @@ export class AccountSwitcher extends WithSession(AKElement) {
             class="pf-c-dropdown__menu-item"
             part="menu-item"
             role="menuitem"
-            href="${globalAK().api.base}flows/-/default/invalidation/"
+            href=${this.rootURL("flows/-/default/invalidation/")}
         >
             <i class="fas fa-sign-out-alt" aria-hidden="true"></i>
             ${msg("Sign out current account", {
