@@ -26,7 +26,7 @@ const SESSION_FILE_PREFIX: &str = "session_";
 const CLEANUP_LOCK_FILE: &str = "session-cleanup.lock";
 
 /// Session files hold the user's claims and raw token, so restrict them to the
-/// owner (matches the Go outpost's `0600`).
+/// owner.
 const SESSION_FILE_MODE: u32 = 0o600;
 
 #[derive(Debug, Clone)]
@@ -98,7 +98,12 @@ impl FsSessionStore {
             Err(err) if err.kind() == ErrorKind::NotFound => return Ok(None),
             Err(err) => return Err(err.into()),
         };
-        let record: StoredSession = serde_json::from_slice(&bytes)?;
+        // Unreadable data (e.g. a session written by the old Go proxy) is treated
+        // as absent and removed, so the user simply re-authenticates.
+        let Ok(record) = serde_json::from_slice::<StoredSession>(&bytes) else {
+            let _ = tokio::fs::remove_file(&path).await;
+            return Ok(None);
+        };
         if record.expires <= now_unix() {
             let _ = tokio::fs::remove_file(&path).await;
             return Ok(None);
@@ -254,6 +259,19 @@ mod tests {
         let loaded = store.load("abc").await.expect("load");
 
         assert_eq!(loaded, Some(session));
+    }
+
+    #[tokio::test]
+    async fn load_ignores_unreadable_file() {
+        // A session left behind by the old Go proxy isn't our JSON format.
+        let dir = tempdir().expect("tempdir");
+        let store = FsSessionStore::new(dir.path().to_path_buf()).expect("store");
+        let path = dir.path().join("session_legacy");
+        std::fs::write(&path, b"securecookie-or-gob-blob, not json").expect("write legacy file");
+
+        // It loads as absent (→ re-login) and is removed so it isn't reprocessed.
+        assert_eq!(store.load("legacy").await.expect("load"), None);
+        assert!(!path.exists());
     }
 
     #[tokio::test]

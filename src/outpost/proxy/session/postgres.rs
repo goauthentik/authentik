@@ -17,7 +17,10 @@ pub(crate) struct PgSessionStore;
 
 impl PgSessionStore {
     pub(crate) async fn load(&self, sid: &str) -> Result<Option<SessionData>> {
-        let row: Option<(Json<SessionData>, DateTime<Utc>)> = sqlx::query_as(
+        // Decode the JSON ourselves (as `Value`) rather than via `Json<SessionData>`
+        // so a row we can't read — e.g. one written by the old Go proxy — is
+        // treated as absent instead of erroring.
+        let row: Option<(serde_json::Value, DateTime<Utc>)> = sqlx::query_as(
             "
             SELECT session_data, expires
             FROM authentik_providers_proxy_proxysession
@@ -35,7 +38,8 @@ impl PgSessionStore {
             self.delete(sid).await?;
             return Ok(None);
         }
-        Ok(Some(data.0))
+        // Unreadable data reports absence, so the user simply re-authenticates.
+        Ok(serde_json::from_value::<SessionData>(data).ok())
     }
 
     pub(crate) async fn save(
@@ -85,7 +89,7 @@ impl PgSessionStore {
         &self,
         filter: &(dyn Fn(&Claims) -> bool + Send + Sync),
     ) -> Result<()> {
-        let rows: Vec<(String, Json<SessionData>)> = sqlx::query_as(
+        let rows: Vec<(String, serde_json::Value)> = sqlx::query_as(
             "
             SELECT session_key, session_data
             FROM authentik_providers_proxy_proxysession
@@ -96,8 +100,15 @@ impl PgSessionStore {
 
         let stale: Vec<String> = rows
             .into_iter()
-            .filter(|(_, data)| data.0.claims.as_ref().is_some_and(filter))
-            .map(|(session_key, _)| session_key)
+            .filter_map(|(session_key, data)| {
+                // Skip rows we can't read (e.g. sessions from the old Go proxy)
+                // rather than failing the whole logout.
+                let data: SessionData = serde_json::from_value(data).ok()?;
+                data.claims
+                    .as_ref()
+                    .is_some_and(filter)
+                    .then_some(session_key)
+            })
             .collect();
 
         if !stale.is_empty() {
@@ -202,5 +213,52 @@ mod tests {
             .expect("logout");
         assert_eq!(store.load("live").await.expect("load after logout"), None);
         assert!(store.load("other").await.expect("load other").is_some());
+
+        // A row resembling one written by the old Go proxy: a prefixed key and
+        // session_data the Rust `SessionData` can't deserialize. It must degrade
+        // gracefully (load → absent, logout → skipped) rather than error.
+        sqlx::query(
+            "INSERT INTO authentik_providers_proxy_proxysession
+                (uuid, session_key, user_id, session_data, expires, expiring)
+             VALUES ($1, $2, NULL, $3, $4, true)",
+        )
+        .bind(uuid::Uuid::new_v4())
+        .bind("authentik_proxy_session_legacy")
+        .bind(sqlx::types::Json(serde_json::json!("not-a-session-object")))
+        .bind(
+            sqlx::types::chrono::DateTime::from_timestamp(
+                sqlx::types::chrono::Utc::now().timestamp() + 3600,
+                0,
+            )
+            .expect("valid timestamp"),
+        )
+        .execute(db::get())
+        .await
+        .expect("insert foreign row");
+
+        // The foreign session loads as absent rather than erroring.
+        assert_eq!(
+            store
+                .load("authentik_proxy_session_legacy")
+                .await
+                .expect("load foreign row"),
+            None
+        );
+
+        // Logout still succeeds with the foreign row present, and leaves it alone
+        // (it isn't ours to delete).
+        store
+            .logout(&|claims| claims.sub == "never-matches")
+            .await
+            .expect("logout must not error on foreign rows");
+        let (remaining,): (i64,) = sqlx::query_as(
+            "SELECT count(*) FROM authentik_providers_proxy_proxysession
+             WHERE session_key = $1",
+        )
+        .bind("authentik_proxy_session_legacy")
+        .fetch_one(db::get())
+        .await
+        .expect("count foreign row");
+        assert_eq!(remaining, 1);
     }
 }
