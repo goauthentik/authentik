@@ -2,7 +2,7 @@
 
 use ak_client::models::ProxyOutpostConfig;
 use ak_common::user_agent_outpost;
-use axum::http::{HeaderMap, HeaderName, HeaderValue};
+use axum::http::{HeaderMap, HeaderName, HeaderValue, header::AUTHORIZATION};
 use base64::{Engine as _, engine::general_purpose::STANDARD as BASE64};
 use serde_json::Value;
 
@@ -49,6 +49,22 @@ pub(crate) fn basic_auth_header(provider: &ProxyOutpostConfig, claims: &Claims) 
     Some(format!("Basic {encoded}"))
 }
 
+/// Set the `Authorization` header sent upstream.
+///
+/// The client's own inbound `Authorization` (e.g. the bearer token the proxy
+/// just consumed to authenticate the request) is never forwarded upstream. If
+/// basic-auth-to-upstream is configured, its value is set in its place.
+fn set_upstream_authorization(
+    headers: &mut HeaderMap,
+    provider: &ProxyOutpostConfig,
+    claims: &Claims,
+) {
+    headers.remove(AUTHORIZATION);
+    if let Some(authorization) = basic_auth_header(provider, claims) {
+        set_header(headers, "Authorization", &authorization);
+    }
+}
+
 /// Drop every request header whose name contains an underscore (mitigates
 /// underscore/dash header smuggling on upstreams that treat `_` and `-` alike).
 pub(crate) fn remove_underscore_headers(headers: &mut HeaderMap) {
@@ -86,9 +102,7 @@ impl Application {
             set_header(headers, name, &value);
         }
 
-        if let Some(authorization) = basic_auth_header(&self.provider, claims) {
-            set_header(headers, "Authorization", &authorization);
-        }
+        set_upstream_authorization(headers, &self.provider, claims);
 
         if let Some(proxy) = &claims.ak_proxy
             && let Some(Value::Object(additional)) = proxy.user_attributes.get("additionalHeaders")
@@ -107,10 +121,10 @@ mod tests {
     use std::collections::HashMap;
 
     use ak_client::models::ProxyOutpostConfig;
-    use axum::http::{HeaderMap, HeaderName, HeaderValue};
+    use axum::http::{HeaderMap, HeaderName, HeaderValue, header::AUTHORIZATION};
     use serde_json::json;
 
-    use super::{basic_auth_header, remove_underscore_headers};
+    use super::{basic_auth_header, remove_underscore_headers, set_upstream_authorization};
     use crate::outpost::proxy::claims::{Claims, ProxyClaims};
 
     fn provider() -> ProxyOutpostConfig {
@@ -180,6 +194,48 @@ mod tests {
             ..Default::default()
         };
         assert_eq!(basic_auth_header(&provider(), &no_password), None);
+    }
+
+    #[test]
+    fn inbound_authorization_is_dropped() {
+        // The client's inbound Authorization must not leak upstream when
+        // basic-auth-to-upstream is not configured.
+        let mut provider = provider();
+        provider.basic_auth_enabled = Some(false);
+
+        let mut headers = HeaderMap::new();
+        headers.insert(AUTHORIZATION, HeaderValue::from_static("Bearer client-token"));
+
+        set_upstream_authorization(&mut headers, &provider, &Claims::default());
+
+        assert!(!headers.contains_key(AUTHORIZATION));
+    }
+
+    #[test]
+    fn basic_auth_replaces_inbound_authorization() {
+        // With basic-auth-to-upstream enabled, the inbound Authorization is
+        // replaced by the derived basic-auth value rather than forwarded.
+        let claims = Claims {
+            email: "user@example.com".to_owned(),
+            ak_proxy: Some(ProxyClaims {
+                user_attributes: HashMap::from([
+                    ("ldap_username".to_owned(), json!("svc")),
+                    ("ldap_password".to_owned(), json!("secret")),
+                ]),
+                ..Default::default()
+            }),
+            ..Default::default()
+        };
+
+        let mut headers = HeaderMap::new();
+        headers.insert(AUTHORIZATION, HeaderValue::from_static("Bearer client-token"));
+
+        set_upstream_authorization(&mut headers, &provider(), &claims);
+
+        assert_eq!(
+            headers.get(AUTHORIZATION).and_then(|value| value.to_str().ok()),
+            Some("Basic c3ZjOnNlY3JldA==")
+        );
     }
 
     #[test]
