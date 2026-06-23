@@ -93,12 +93,10 @@ export function formatDisambiguatedUserDisplayName(
         }
     }
     if (email && email !== username) {
-        segments.push(
-            msg(str`<${email}>`, {
-                id: "user.display.emailInAngleBrackets",
-                desc: "The user's email in angle brackets, used when the email is different from the username",
-            }),
-        );
+        // Angle brackets are kept outside `msg(str...)` because lit-localize-tools'
+        // template-literal escape pass converts `<` and `>` to `&lt;` / `&gt;` in
+        // every non-source locale, producing literal entity text on the page.
+        segments.push(`<${email}>`);
     }
 
     if (!segments.length) {
