@@ -1,7 +1,7 @@
 """Account switch view"""
 
 from typing import Any
-from urllib.parse import urlencode
+from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import Http404, HttpRequest, HttpResponse
@@ -63,8 +63,10 @@ class AccountSwitchView(LoginRequiredMixin, View):
             raise Http404 from None
         response = plan.to_redirect(request, flow)
         if stale_user_pk:
-            separator = "&" if "?" in response["Location"] else "?"
-            response["Location"] += separator + urlencode({QS_ACCOUNT_SWITCH_STALE: stale_user_pk})
+            location = urlsplit(response["Location"])
+            query = parse_qsl(location.query, keep_blank_values=True)
+            query.append((QS_ACCOUNT_SWITCH_STALE, str(stale_user_pk)))
+            response["Location"] = urlunsplit(location._replace(query=urlencode(query)))
         return response
 
     @staticmethod
