@@ -1,23 +1,24 @@
 /**
- * @file Font tokens — font families
+ * @file Font-family tokens — the concrete brand typefaces.
  *
- * Font families fall through to generic CSS `var(...)` references defined
- * upstream by the existing `fonts.css`. Sizes follow a modular xs..4xl scale.
- * `semi-bold` is deliberately omitted from the public surface because
- * PatternFly's `--pf-global--FontWeight--semi-bold` collapses to 700 (same as
- * bold) unless the Overpass font scale is active.
+ * Self-contained source of authentik's font stacks: the variable RedHat faces
+ * first (registered in `font-face.css`), then the static RedHat faces, then
+ * platform fallbacks. The semantic typography tokens
+ * (`font.family-body/heading/code`) alias these, and the PatternFly bridge maps
+ * `--pf-global--FontFamily--*` onto the semantic layer. Because the stacks are
+ * declared here rather than referenced from a consumer's stylesheet, the
+ * package resolves fonts on its own once published.
  */
 
-import { variable } from "../shared.js";
+import { instance } from "../shared.js";
 
-import { theme, instance } from "../shared.js";
 import { createUseVariable } from "@styleframe/theme";
 
 const useFontFamily = createUseVariable("font-family");
 
 export const fontFamily = useFontFamily(instance, {
-    "text": '"RedHatText", helvetica, arial, sans-serif',
-    "heading": '"RedHatDisplay", helvetica, arial, sans-serif',
-    "monospace": '"RedHatMono", "Liberation Mono", consolas, "SFMono-Regular", menlo, monaco, "Courier New", monospace'
+    "sans-serif": '"RedHatTextVF", "RedHatText", helvetica, arial, sans-serif',
+    "display": '"RedHatDisplayVF", "RedHatDisplay", helvetica, arial, sans-serif',
+    "monospace":
+        '"RedHatMonoVF", "RedHatMono", "Liberation Mono", consolas, "SFMono-Regular", menlo, monaco, "Courier New", monospace',
 });
-

@@ -1,21 +1,22 @@
 /**
  * @file Typography tokens — font families, sizes, line heights, weights.
  *
- * Font families fall through to generic CSS `var(...)` references defined
- * upstream by the existing `fonts.css`. Sizes follow a modular xs..4xl scale.
- * `semi-bold` is deliberately omitted from the public surface because
+ * The semantic family tokens (body/heading/code) alias the concrete brand
+ * stacks declared in `./fonts.ts` (`--ak-font-family-sans-serif/display/
+ * monospace`), so the package resolves fonts on its own. Sizes follow a
+ * modular xs..4xl scale. `semi-bold` is deliberately omitted from the public
+ * surface because
  * PatternFly's `--pf-global--FontWeight--semi-bold` collapses to 700 (same as
  * bold) unless the Overpass font scale is active.
  */
 
 import { instance, variable } from "../shared.js";
+
 import { useFontSizeDesignTokens } from "@styleframe/theme";
 
 export const fontFamilyBody = variable("font.family-body", "var(--ak-font-family-sans-serif)");
-export const fontFamilyHeading = variable("font.family-heading", "var(--ak-generic-display)");
+export const fontFamilyHeading = variable("font.family-heading", "var(--ak-font-family-display)");
 export const fontFamilyCode = variable("font.family-code", "var(--ak-font-family-monospace)");
-
-
 
 export const fontSize = useFontSizeDesignTokens(instance, {
     "xs": "0.75rem",
