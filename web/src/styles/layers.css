@@ -1,4 +1,4 @@
-@layer globals, reset, legacy, theme, components, brand;
+@layer reset, legacy, components, theme, brand;
 
 /* This is our global layer definition file.  It needs to be imported at the very top of every
  * barrel file for the CSS at the document level.
