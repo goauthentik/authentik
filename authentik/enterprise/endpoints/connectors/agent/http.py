@@ -82,7 +82,7 @@ def encrypt_token_with_a256_gcm(
 
     derived_key = ckdf.derive(shared_secret_z)
 
-    nonce = token_bytes(96)
+    nonce = token_bytes(12)
 
     header_json = dumps(jwe_header, separators=(",", ":")).encode()
     aad = urlsafe_b64encode(header_json).rstrip(b"=")

@@ -18,7 +18,6 @@ from authentik.endpoints.connectors.agent.models import (
     DeviceToken,
 )
 from authentik.enterprise.api import EnterpriseRequiredMixin
-from authentik.lib.generators import generate_key
 
 
 class RegisterDeviceView(APIView):
@@ -59,9 +58,9 @@ class RegisterDeviceView(APIView):
         conn: AgentDeviceConnection = device_token.device
         conn.apple_signing_key = body.validated_data["device_signing_key"]
         conn.apple_encryption_key = body.validated_data["device_encryption_key"]
+        conn.apple_key_exchange_key = body.validated_data["device_encryption_key"]
         conn.apple_sign_key_id = body.validated_data["sign_key_id"]
         conn.apple_enc_key_id = body.validated_data["enc_key_id"]
-        conn.apple_key_exchange_key = generate_key()
         conn.save()
         return Response(
             data={
