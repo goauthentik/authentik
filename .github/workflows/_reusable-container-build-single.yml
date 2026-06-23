@@ -1,0 +1,76 @@
+---
+# Re-usable workflow for a single architecture container build
+
+on:
+  workflow_call:
+    inputs:
+      runs-on:
+        required: true
+        type: string
+      ref:
+        required: true
+        type: string
+      image-name:
+        required: true
+        type: string
+      image-arch:
+        required: true
+        type: string
+      image-dockerfile:
+        required: true
+        type: string
+      image-build-args:
+        required: false
+        type: string
+    secrets:
+      image-secrets:
+        required: false
+        type: string
+    outputs:
+      image-digest:
+        value: "${{ jobs.build.outputs.image-digest }}"
+      artifact-id:
+        value: "${{ jobs.build.outputs.artifact-id }}"
+
+jobs:
+  build:
+    name: "Build ${{ inputs.image-name }} on ${{ inputs.image-arch }}"
+    runs-on: "${{ inputs.runs-on }}"
+    outputs:
+      image-digest: "${{ steps.build.outputs.digest }}"
+      artifact-id: "${{ steps.upload.outputs.artifact-id }}"
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v5
+        with:
+          ref: "${{ inputs.ref }}"
+      - uses: docker/setup-qemu-action@06116385d9baf250c9f4dcb4858b16962ea869c3 # v4.1.0
+      - uses: docker/setup-buildx-action@d7f5e7f509e45cec5c76c4d5afdd7de93d0b3df5 # v4.1.0
+      - id: build
+        name: Build Docker Image
+        uses: docker/build-push-action@f9f3042f7e2789586610d6e8b85c8f03e5195baf # v7.2.0
+        with:
+          # inputs
+          context: .
+          file: "${{ inputs.image-dockerfile }}"
+          build-args: "${{ inputs.image-build-args }}"
+          secrets: "${{ secrets.image-secrets }}"
+          # outputs
+          push: false
+          cache-from: |
+            type=registry,ref=ghcr.io/goauthentik/${{ inputs.image-name }}:buildcache-${{ inputs.image-arch }}
+          cache-to: |
+            type=local,dest=build/container/cache/${{ inputs.image-name }}-${{ inputs.image-arch }}
+          attests: |
+            type=provenance,mod=max
+          outputs: |
+            type=oci,dest=build/container/${{ inputs.image-name }}-${{ inputs.image-arch }}.oci.tar
+          # params
+          platforms: "linux/${{ inputs.image-arch }}"
+      - name: Upload artifact
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v4
+        with:
+          name: "container-build-${{ inputs.image-name }}-${{ inputs.image-arch }}"
+          path: build/
+          if-no-files-found: error
+          retention-days: 2
+          include-hidden-files: true

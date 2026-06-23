@@ -1,0 +1,24 @@
+---
+# Re-usable workflow for a multi-architecture container build
+
+on:
+  workflow_call:
+    inputs:
+      name:
+        required: true
+        type: string
+    outputs: {}
+
+jobs:
+  build-amd64:
+    uses: ./.github/workflows/_reusable-container-build-single.yml
+    with:
+      runs-on: ubuntu-latest
+      name: "${{ inputs.name }}"
+      arch: amd64
+  build-arm64:
+    uses: ./.github/workflows/_reusable-container-build-single.yml
+    with:
+      runs-on: ubuntu-24.04-arm
+      name: "${{ inputs.name }}"
+      arch: arm64
