@@ -66,8 +66,6 @@ import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 
 /// <reference types="../../types/lit.d.ts" />
 
-const ACCOUNT_SWITCH_STALE_QUERY = "account_switch_stale";
-
 /**
  * An executor for authentik flows.
  *
@@ -238,6 +236,9 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
             })
             .then((challenge) => {
                 this.challenge = challenge;
+                if (this.challenge.flowInfo?.accountSwitchStaleUser) {
+                    removeStoredAccount(this.challenge.flowInfo.accountSwitchStaleUser);
+                }
                 return !!this.challenge;
             })
             .catch(async (error) => {
@@ -253,13 +254,6 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
 
     public async firstUpdated(changed: PropertyValues<this>): Promise<void> {
         super.firstUpdated(changed);
-
-        const staleAccountPK = new URLSearchParams(window.location.search).get(
-            ACCOUNT_SWITCH_STALE_QUERY,
-        );
-        if (staleAccountPK) {
-            removeStoredAccount(staleAccountPK);
-        }
 
         this.refresh().then(() => {
             window.dispatchEvent(new AKFlowAdvanceEvent());

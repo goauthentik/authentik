@@ -56,6 +56,12 @@ export interface ContextualFlowInfo {
      * @memberof ContextualFlowInfo
      */
     layout: ContextualFlowInfoLayoutEnum;
+    /**
+     *
+     * @type {string}
+     * @memberof ContextualFlowInfo
+     */
+    accountSwitchStaleUser?: string;
 }
 
 /**
@@ -87,6 +93,10 @@ export function ContextualFlowInfoFromJSONTyped(
                 : ThemedUrlsFromJSON(json["background_themed_urls"]),
         cancelUrl: json["cancel_url"],
         layout: ContextualFlowInfoLayoutEnumFromJSON(json["layout"]),
+        accountSwitchStaleUser:
+            json["account_switch_stale_user"] == null
+                ? undefined
+                : json["account_switch_stale_user"],
     };
 }
 
@@ -108,5 +118,6 @@ export function ContextualFlowInfoToJSONTyped(
         background_themed_urls: ThemedUrlsToJSON(value["backgroundThemedUrls"]),
         cancel_url: value["cancelUrl"],
         layout: ContextualFlowInfoLayoutEnumToJSON(value["layout"]),
+        account_switch_stale_user: value["accountSwitchStaleUser"],
     };
 }

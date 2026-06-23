@@ -29,7 +29,11 @@ from authentik.flows.challenge import (
 )
 from authentik.flows.exceptions import StageInvalidException
 from authentik.flows.models import InvalidResponseAction
-from authentik.flows.planner import PLAN_CONTEXT_APPLICATION, PLAN_CONTEXT_PENDING_USER
+from authentik.flows.planner import (
+    PLAN_CONTEXT_ACCOUNT_SWITCH_STALE_USER,
+    PLAN_CONTEXT_APPLICATION,
+    PLAN_CONTEXT_PENDING_USER,
+)
 from authentik.lib.avatars import DEFAULT_AVATAR, get_avatar
 from authentik.lib.utils.reflection import class_to_path
 
@@ -207,6 +211,10 @@ class ChallengeStageView(StageView):
                         "layout": self.executor.flow.layout,
                     }
                 )
+                if stale_user := self.executor.plan.context.get(
+                    PLAN_CONTEXT_ACCOUNT_SWITCH_STALE_USER
+                ):
+                    flow_info.initial_data["account_switch_stale_user"] = stale_user
                 flow_info.is_valid()
                 challenge.initial_data["flow_info"] = flow_info.data
             if isinstance(challenge, WithUserInfoChallenge):

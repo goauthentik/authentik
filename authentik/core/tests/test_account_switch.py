@@ -13,12 +13,12 @@ from authentik.core.tests.utils import (
     create_test_session,
     create_test_user,
 )
-from authentik.core.views.account_switch import QS_ACCOUNT_SWITCH_STALE
 from authentik.events.models import Event, EventAction
 from authentik.flows.markers import StageMarker
 from authentik.flows.models import Flow, FlowDesignation, FlowStageBinding
 from authentik.flows.planner import (
     PLAN_CONTEXT_ACCOUNT_SWITCH_FROM_USER,
+    PLAN_CONTEXT_ACCOUNT_SWITCH_STALE_USER,
     PLAN_CONTEXT_PENDING_USER,
     FlowPlan,
 )
@@ -159,8 +159,8 @@ class TestAccountSwitch(FlowTestCase):
         self.assertNotIn(PLAN_CONTEXT_PENDING_USER, plan.context)
         self.assertNotIn(PLAN_CONTEXT_ACCOUNT_SWITCH_FROM_USER, plan.context)
         self.assertEqual(
-            parse_qs(urlsplit(response.url).query)[QS_ACCOUNT_SWITCH_STALE],
-            [str(self.other_user.pk)],
+            plan.context[PLAN_CONTEXT_ACCOUNT_SWITCH_STALE_USER],
+            str(self.other_user.pk),
         )
 
     def test_switch_ignores_other_browser_session(self):
@@ -174,8 +174,8 @@ class TestAccountSwitch(FlowTestCase):
         plan: FlowPlan = self.client.session[SESSION_KEY_PLAN]
         self.assertNotIn(PLAN_CONTEXT_PENDING_USER, plan.context)
         self.assertEqual(
-            parse_qs(urlsplit(response.url).query)[QS_ACCOUNT_SWITCH_STALE],
-            [str(self.other_user.pk)],
+            plan.context[PLAN_CONTEXT_ACCOUNT_SWITCH_STALE_USER],
+            str(self.other_user.pk),
         )
 
     @apply_blueprint("default/flow-default-authentication-flow.yaml")

@@ -1,7 +1,6 @@
 """Account switch view"""
 
 from typing import Any
-from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import Http404, HttpRequest, HttpResponse
@@ -14,14 +13,12 @@ from authentik.flows.exceptions import FlowNonApplicableException
 from authentik.flows.models import Flow
 from authentik.flows.planner import (
     PLAN_CONTEXT_ACCOUNT_SWITCH_FROM_USER,
+    PLAN_CONTEXT_ACCOUNT_SWITCH_STALE_USER,
     PLAN_CONTEXT_PENDING_USER,
     FlowPlanner,
 )
 from authentik.flows.stage import PLAN_CONTEXT_PENDING_USER_IDENTIFIER
 from authentik.lib.views import bad_request_message
-
-QS_ACCOUNT_SWITCH_STALE = "account_switch_stale"
-
 
 class AccountSwitchView(LoginRequiredMixin, View):
     """Authenticate another login held by this browser."""
@@ -37,7 +34,8 @@ class AccountSwitchView(LoginRequiredMixin, View):
         context = {}
         session = self.get_browser_session(request, user_pk)
         if not session:
-            return self.redirect_to_flow(request, flow, context, stale_user_pk=user_pk)
+            context[PLAN_CONTEXT_ACCOUNT_SWITCH_STALE_USER] = str(user_pk)
+            return self.redirect_to_flow(request, flow, context)
         context[PLAN_CONTEXT_PENDING_USER] = session.user
         # Pre-fill the identification stage so the target account doesn't have to be retyped,
         # letting a policy-free switch flow skip straight to the next stage.
@@ -50,7 +48,6 @@ class AccountSwitchView(LoginRequiredMixin, View):
         request: HttpRequest,
         flow: Flow,
         context: dict[str, Any],
-        stale_user_pk: int | None = None,
     ) -> HttpResponse:
         """Plan and redirect to the account switch flow."""
         planner = FlowPlanner(flow)
@@ -61,13 +58,7 @@ class AccountSwitchView(LoginRequiredMixin, View):
             plan = planner.plan(request, context)
         except FlowNonApplicableException:
             raise Http404 from None
-        response = plan.to_redirect(request, flow)
-        if stale_user_pk:
-            location = urlsplit(response["Location"])
-            query = parse_qsl(location.query, keep_blank_values=True)
-            query.append((QS_ACCOUNT_SWITCH_STALE, str(stale_user_pk)))
-            response["Location"] = urlunsplit(location._replace(query=urlencode(query)))
-        return response
+        return plan.to_redirect(request, flow)
 
     @staticmethod
     def get_browser_session(request: HttpRequest, user_pk: int) -> AuthenticatedSession | None:

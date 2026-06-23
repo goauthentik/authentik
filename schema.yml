@@ -36897,6 +36897,8 @@ components:
           type: string
         layout:
           $ref: '#/components/schemas/ContextualFlowInfoLayoutEnum'
+        account_switch_stale_user:
+          type: string
       required:
       - cancel_url
       - layout
