@@ -90,6 +90,12 @@ class GroupLDAPSynchronizer(BaseLDAPSynchronizer):
                 if "users" in defaults:
                     del defaults["users"]
                 parent = defaults.pop("parent", None)
+                parents = defaults.pop("parents", None)
+                if parent and parents:
+                    raise FieldError(
+                        "Group property mappings returned both 'parent' and 'parents'; "
+                        "set only one."
+                    )
                 action, connection = self.matcher.get_group_action(uniq, defaults)
 
                 created = False
@@ -124,6 +130,8 @@ class GroupLDAPSynchronizer(BaseLDAPSynchronizer):
 
                 if parent:
                     group.parents.add(parent)
+                elif parents:
+                    group.parents.set(parents)
                 self._logger.debug("Created group with attributes", **defaults)
             except SkipObjectException:
                 continue
