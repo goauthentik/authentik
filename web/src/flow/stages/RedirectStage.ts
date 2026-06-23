@@ -6,7 +6,7 @@ import { BaseStage } from "#flow/stages/base";
 import {
     multiTabOrchestrateLeave,
     multiTabOrchestrateResume,
-    multiTabOrchestrateSameOriginNavigation,
+    suppressNextExitForSameOriginNavigation,
 } from "#flow/tabs/orchestrator";
 
 import { FlowChallengeResponseRequest, RedirectChallenge } from "@goauthentik/api";
@@ -91,7 +91,7 @@ export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeRes
         if (finalRedirect && url.origin !== window.location.origin) {
             multiTabOrchestrateLeave();
         } else {
-            multiTabOrchestrateSameOriginNavigation();
+            suppressNextExitForSameOriginNavigation();
         }
         window.location.assign(this.challenge!.to);
         this.startedRedirect = true;

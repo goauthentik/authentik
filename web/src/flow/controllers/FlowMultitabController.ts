@@ -1,8 +1,9 @@
 import type { Interface } from "#elements/Interface";
 
+import { AKMultiTabEvent } from "#flow/tabs/events";
 import {
-    multiTabOrchestrateLeave,
-    multiTabOrchestrateSameOriginNavigation,
+    multiTabOrchestrateLeave as dispatchTabExit,
+    suppressNextExitForSameOriginNavigation,
 } from "#flow/tabs/orchestrator";
 
 import { ChallengeTypes, IdentificationChallenge } from "@goauthentik/api";
@@ -35,39 +36,47 @@ export class FlowMultitabController implements ReactiveController {
         /* no op */
     }
 
-    onMultitab = () => {
+    protected multiTabListener = () => {
         const { challenge } = this.host;
+
         if (!challenge) {
             return;
         }
 
         const qs = new URLSearchParams(window.location.search);
         const next = qs.get("next");
+
         if (next) {
             const url = new URL(next, window.location.origin);
+
             if (url.origin === window.location.origin) {
-                multiTabOrchestrateSameOriginNavigation();
+                suppressNextExitForSameOriginNavigation();
             } else {
-                multiTabOrchestrateLeave();
+                dispatchTabExit();
             }
+
             window.location.assign(url);
+
             return;
         }
 
         if (isIdentificationChallenge(challenge) && challenge.applicationPreLaunch) {
-            multiTabOrchestrateLeave();
+            dispatchTabExit();
+
             window.location.assign(challenge.applicationPreLaunch);
         }
     };
 
-    hostConnected() {
+    public hostConnected() {
         this.#abortController?.abort();
         this.#abortController = new AbortController();
+
         const { signal } = this.#abortController;
-        window.addEventListener("ak-multitab-continue", this.onMultitab, { signal });
+
+        window.addEventListener(AKMultiTabEvent.eventName, this.multiTabListener, { signal });
     }
 
-    hostDisconnected() {
+    public hostDisconnected() {
         this.#abortController?.abort();
         this.#abortController = null;
     }

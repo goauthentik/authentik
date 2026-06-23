@@ -1,85 +1,33 @@
+import { AKMultiTabEvent, AKMultiTabExitEvent } from "#flow/tabs/events";
+import { BroadcastMessage, BroadcastMessageType } from "#flow/tabs/messages";
 import { TabID } from "#flow/tabs/TabID";
 
 import { ConsoleLogger, Logger } from "#logger/browser";
 
-export const BROADCAST_CHANNEL_NAME = "authentik";
-export const SESSION_STORAGE_RESUME_ID = "authentik_tab_resume_id";
-
-enum BroadcastMessageType {
-    discover = "discover",
-    continue = "continue",
-    exit = "exit",
-    discoverReply = "discoverReply",
-}
-
-export interface BroadcastMessage {
-    type: BroadcastMessageType;
-    sender: string;
-    [key: string]: unknown;
-}
-
-export interface BroadcastExitEventDetail {
-    tabID: string;
-    resumeID?: string;
-}
+import { match } from "ts-pattern";
 
 export class Broadcast extends BroadcastChannel implements Disposable {
-    static shared = new Broadcast();
+    public static readonly ChannelName = "authentik";
+    public static readonly SessionStorageKey = "authentik_tab_resume_id";
 
+    public static readonly shared = new Broadcast();
+
+    protected exitedTabIDs = new Map<string, string | null>();
     protected discoveredTabIDs = new Set<string>();
-    public exitedTabIDs = new Map<string, string | undefined>();
-    protected suppressNextExit = false;
+    protected shouldSuppressExit = false;
 
     protected logger: Logger;
+    protected storageKey: string;
 
-    protected messageListener = (ev: MessageEvent<BroadcastMessage>) => {
-        this.logger.debug("broadcast event", ev.data);
-        switch (ev.data.type) {
-            case BroadcastMessageType.discover:
-                if (ev.data.sender === TabID.shared.current) {
-                    return;
-                }
-                this.postMessage({
-                    type: BroadcastMessageType.discoverReply,
-                    sender: TabID.shared.current,
-                });
-                return;
-            case BroadcastMessageType.discoverReply:
-                this.discoveredTabIDs.add(ev.data.sender as string);
-                return;
-            case BroadcastMessageType.exit:
-                this.exitedTabIDs.set(ev.data.sender, ev.data.resumeID as string | undefined);
-                window.dispatchEvent(
-                    new CustomEvent<BroadcastExitEventDetail>("ak-multitab-exit", {
-                        detail: {
-                            tabID: ev.data.sender,
-                            resumeID: ev.data.resumeID as string | undefined,
-                        },
-                    }),
-                );
-                return;
-            case BroadcastMessageType.continue:
-                if (ev.data.target === TabID.shared.current) {
-                    if (typeof ev.data.resumeID === "string") {
-                        sessionStorage.setItem(SESSION_STORAGE_RESUME_ID, ev.data.resumeID);
-                    }
-                    this.logger.debug("Continuing upon event");
-                    window.dispatchEvent(new CustomEvent("ak-multitab-continue"));
-                }
-                return;
-        }
-    };
+    //#region Lifecycle
 
-    protected pageHideListener = () => {
-        if (this.suppressNextExit) {
-            this.suppressNextExit = false;
-            return;
-        }
-        this.akExitTab();
-    };
+    constructor(
+        channelName: string = Broadcast.ChannelName,
+        storageKey: string = Broadcast.SessionStorageKey,
+    ) {
+        super(channelName);
 
-    constructor() {
-        super(BROADCAST_CHANNEL_NAME);
+        this.storageKey = storageKey;
 
         this.addEventListener("message", this.messageListener);
         window.addEventListener("pagehide", this.pageHideListener);
@@ -87,16 +35,83 @@ export class Broadcast extends BroadcastChannel implements Disposable {
         this.logger = ConsoleLogger.prefix("mtab/broadcast");
     }
 
-    [Symbol.dispose]() {
+    public [Symbol.dispose]() {
         this.removeEventListener("message", this.messageListener);
+        window.removeEventListener("pagehide", this.pageHideListener);
     }
 
-    async akTabDiscover(): Promise<Set<string>> {
+    protected dispatchMessage(message: BroadcastMessage): void {
+        this.logger.debug("dispatching message", message);
+
+        this.postMessage(message);
+    }
+
+    //#endregion
+
+    //#region Event Listeners
+
+    protected messageListener = (event: MessageEvent<BroadcastMessage>): void => {
+        this.logger.debug("broadcast event", event.data);
+
+        match(event.data)
+            .with({ type: BroadcastMessageType.Discover }, () => {
+                if (event.data.sender === TabID.shared.current) {
+                    return;
+                }
+
+                this.dispatchMessage({
+                    type: BroadcastMessageType.DiscoverReply,
+                    sender: TabID.shared.current,
+                });
+            })
+            .with({ type: BroadcastMessageType.DiscoverReply }, ({ sender }) => {
+                this.discoveredTabIDs.add(sender);
+            })
+            .with({ type: BroadcastMessageType.Exit }, ({ sender, resumeID }) => {
+                this.exitedTabIDs.set(sender, resumeID);
+
+                window.dispatchEvent(new AKMultiTabExitEvent(sender, resumeID));
+            })
+            .with({ type: BroadcastMessageType.Continue }, ({ target, resumeID }) => {
+                if (target !== TabID.shared.current) {
+                    return;
+                }
+                if (typeof resumeID === "string") {
+                    sessionStorage.setItem(this.storageKey, resumeID);
+                }
+
+                this.logger.debug("Continuing upon event");
+
+                window.dispatchEvent(new AKMultiTabEvent());
+            })
+            .exhaustive();
+    };
+
+    protected pageHideListener = (): void => {
+        if (this.shouldSuppressExit) {
+            this.shouldSuppressExit = false;
+
+            return;
+        }
+
+        return this.dispatchExit();
+    };
+
+    //#endregion
+
+    //#region Public Methods
+
+    /**
+     * Sends a message to all other tabs to discover their tab IDs.
+     *
+     * @returns A promise that resolves with a set of discovered tab IDs.
+     */
+    public async discoverTabs(): Promise<Set<string>> {
         this.discoveredTabIDs.clear();
         this.exitedTabIDs.clear();
 
-        this.postMessage({
-            type: BroadcastMessageType.discover,
+        this.dispatchMessage({
+            type: BroadcastMessageType.Discover,
             sender: TabID.shared.current,
         });
 
@@ -107,26 +122,48 @@ export class Broadcast extends BroadcastChannel implements Disposable {
         return this.discoveredTabIDs;
     }
 
-    akResumeTab(tabId: string, resumeID: string) {
-        this.postMessage({
-            type: BroadcastMessageType.continue,
+    /**
+     * Sends a message to a specific tab to resume its operation.
+     *
+     * @param tabID The ID of the tab to resume.
+     * @param resumeID The resume ID to send to the tab.
+     */
+    public resumeTab(tabID: string, resumeID: string): void {
+        this.dispatchMessage({
+            type: BroadcastMessageType.Continue,
             sender: TabID.shared.current,
-            target: tabId,
+            target: tabID,
             resumeID,
         });
     }
 
-    akExitTab() {
-        const resumeID = sessionStorage.getItem(SESSION_STORAGE_RESUME_ID) || undefined;
-        this.postMessage({
-            type: BroadcastMessageType.exit,
+    /**
+     * Sends a message to all other tabs to notify them that this tab is exiting.
+     */
+    public dispatchExit(): void {
+        const resumeID = sessionStorage.getItem(this.storageKey);
+
+        this.dispatchMessage({
+            type: BroadcastMessageType.Exit,
             sender: TabID.shared.current,
             resumeID,
         });
-        sessionStorage.removeItem(SESSION_STORAGE_RESUME_ID);
+
+        sessionStorage.removeItem(this.storageKey);
     }
 
-    akSuppressNextExit() {
-        this.suppressNextExit = true;
+    /**
+     * Suppresses the next exit event that would be sent when the tab is closed or navigated away from.
+     *
+     * This is useful for cases where the tab is being programmatically closed or navigated away from,
+     * and we don't want to notify other tabs of the exit.
+     *
+     * This method should be called before the tab is closed or navigated away from,
+     * and it will prevent the exit event from being sent to other tabs.
+     */
+    public suppressNextExit(): void {
+        this.shouldSuppressExit = true;
     }
+
+    //#endregion
 }
