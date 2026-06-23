@@ -6,49 +6,68 @@ support_level: community
 
 ## What is OnlyOffice?
 
-> OnlyOffice, stylized as ONLYOFFICE, is a free software office suite developed by Ascensio System SIA, a company headquartered in Riga, Latvia. It features online document editors, platform for document management, corporate communication, mail and project management tools
+> ONLYOFFICE is an online office and productivity suite for document editing and collaboration. ONLYOFFICE Workspace adds document management, projects, CRM, mail, calendars, and an administrative control panel.
 >
-> -- https://en.wikipedia.org/wiki/OnlyOffice
-
-:::info
-This is based on authentik 2021.10.4 and OnlyOffice 11.5.4.1582. Instructions may differ between versions.
-:::
+> -- https://www.onlyoffice.com/
 
 ## Preparation
 
 The following placeholders are used in this guide:
 
-- `authentik.company` is the FQDN of authentik.
-- `onlyoffice.company` is the FQDN of the OnlyOffice instance.
+- `onlyoffice.company` is the FQDN of the ONLYOFFICE Workspace installation.
+- `authentik.company` is the FQDN of the authentik installation.
 
-Open your OnlyOffice instance, navigate to the settings by clicking the cog-icon in the navbar, then click on _Control Panel_ on the sidebar.
-
-In the new tab, click on _SSO_ in the sidebar.
-
-Click the _Enable Single Sign-on Authentication_ checkbox to enable SSO.
-
-Scroll down to _ONLYOFFICE SP Metadata_, and copy the _SP Entity ID (link to metadata XML)_ URL. Open this URL in a new tab, and download the XML file.
+This guide is for ONLYOFFICE Workspace server installations that include the ONLYOFFICE Control Panel. ONLYOFFICE can only be connected to one SAML identity provider at a time.
 
 :::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
-## authentik setup
+### Download the ONLYOFFICE service provider metadata
 
-Create an application in authentik, and create a SAML Provider by using _SAML Provider from Metadata_. Give the provider a name, and upload the XML file you've downloaded in the previous step.
+1. Log in to ONLYOFFICE Workspace as an administrator.
+2. Click the cog icon in the navigation bar, then click **Control Panel** in the sidebar.
+3. In the Control Panel tab, click **SSO** in the sidebar.
+4. Enable **Single Sign-on Authentication**.
+5. Scroll down to **ONLYOFFICE SP Metadata**.
+6. Click **Download SP Metadata XML** to save the ONLYOFFICE SP metadata XML file. You will upload this file to authentik in the next section.
 
-Edit the resulting Provider, and ensure _Signing Certificate_ is set to any certificate.
+## authentik configuration
 
-Navigate on the _Metadata_ tab on the Provider page, and click _Copy download URL_.
+To support the integration of ONLYOFFICE Workspace with authentik, you need to create an application/provider pair in authentik.
 
-## OnlyOffice setup
+### Create an application and provider in authentik
 
-Navigate back to your OnlyOffice Control panel, and paste the URL into _Load metadata from XML to fill the required fields automatically_, and click the upload button next to the input field.
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
+    - **Choose a Provider type**: select **SAML Provider from Metadata** as the provider type.
+    - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configuration:
+        - **Metadata**: select the SP metadata XML you downloaded from ONLYOFFICE Workspace during the preparation step.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
+3. Click **Submit** to save the new application and provider.
+4. Navigate to **Applications** > **Providers** and click the provider you created.
+5. Click **Edit**, open **Advanced protocol settings**, and set the following values:
+    - **Signing Certificate**: select any available certificate.
+    - **Sign responses**: enable this option.
+6. Click **Update**.
+7. Under **Related objects** > **Metadata**, click **Copy download URL**. This metadata download URL will be required in the next section.
 
-Under _Attribute Mapping_, set the following values
+## OnlyOffice configuration
 
-- _First Name_: `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name`
-- _Last Name_: `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name`
-- _Email_: `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress`
+1. Return to the ONLYOFFICE Control Panel and open **SSO**.
+2. Paste the metadata download URL from authentik into **URL to IdP Metadata XML** and click the upload button next to the field.
+3. Under **Attribute Mapping**, set the following values:
+    - **First Name**: `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name`
+    - **Last Name**: `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name`
+    - **Email**: `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress`
+4. Click **Save**.
 
-Click **Save** and a new SSO button appears on the OnlyOffice login page.
+## Configuration verification
+
+To confirm that authentik is properly configured with ONLYOFFICE Workspace, log out of ONLYOFFICE Workspace, open it again, and click **Single Sign-on** on the login page. You should be redirected to authentik to log in, then redirected back to ONLYOFFICE Workspace.
+
+## Resources
+
+- [ONLYOFFICE DocSpace - Configuring ONLYOFFICE SP and Authentik IdP](https://helpcenter.onlyoffice.com/docspace/configuration/configure-authentik.aspx)
+- [ONLYOFFICE Workspace - Single Sign-on overview for server version](https://helpcenter.onlyoffice.com/workspace/administration/control-panel-sso-description.aspx)
