@@ -81,14 +81,17 @@ export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeRes
         if (finalRedirect) {
             await multiTabOrchestrateResume();
         }
+
         // A foreign final redirect means we're leaving authentik for good, so signal our exit.
-        // Same-origin navigations suppress it, otherwise we'd look like we left mid-flow.
+        // Same-origin navigation suppress it, otherwise we'd look like we left mid-flow.
         const url = new URL(this.challenge!.to, window.location.origin);
+
         if (finalRedirect && url.origin !== window.location.origin) {
             multiTabOrchestrateLeave();
         } else {
             suppressNextExitForSameOriginNavigation();
         }
+
         window.location.assign(this.challenge!.to);
         this.startedRedirect = true;
     }

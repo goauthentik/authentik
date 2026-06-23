@@ -168,7 +168,7 @@ class TestAuthNRequest(TestCase):
     @patch_flag(ContinuousLogin, True)
     def test_redirect_binding_continuous_login_final_redirect(self):
         """Test SP-initiated Redirect binding returns a final redirect challenge under
-        continuous login, instead of an unvalidated-serializer error."""
+        continuous login, instead of an un-validated-serializer error."""
         self.provider.sp_binding = SAMLBindings.REDIRECT
         self.provider.save()
         app = Application.objects.get(slug="test-app")
