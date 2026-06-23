@@ -2,9 +2,15 @@
  * @file Build script for `@goauthentik/theme`.
  *
  * Runs the styleframe transpiler against the configured token tree, then
- * fans out the single emitted CSS string into one file per category
- * (color, typography, spacing, shape, shadow, motion, z-index) and a top-
- * level `index.css` that `@import`s them in deterministic order.
+ * writes two kinds of artefact:
+ *
+ *   - `index.css` — the entire theme as one self-contained file. styleframe
+ *     already emits the whole token set as a single string, so this is just
+ *     that string under the generated-file header. A theme is one semantic
+ *     unit; shipping it as one syntactical file means consumers (and their
+ *     bundlers) never have to resolve `@import` to adopt it.
+ *   - One file per category (color, typography, spacing, shape, shadow,
+ *     motion, z-index) for consumers who want to cherry-pick.
  *
  * Consumers can import the whole surface
  * (`@import "@goauthentik/theme/index.css"`) or cherry-pick a category
@@ -182,13 +188,15 @@ function buildCategoryFile(category, blocks) {
 }
 
 /**
- * Build the index.css that `@import`s every emitted category file in order.
+ * Build the self-contained index.css containing the whole theme. styleframe
+ * already hands us the entire token set as one string, so index.css is that
+ * string verbatim under the generated-file header — no `@import`, no assembly
+ * for the consumer to undo. The per-category files remain for cherry-picking.
  *
- * @param {string[]} emittedNames
+ * @param {string} css
  */
-function buildIndex(emittedNames) {
-    const imports = emittedNames.map((name) => `@import "./${name}.css";`).join("\n");
-    return HEADER + imports + "\n";
+function buildIndex(css) {
+    return HEADER + css.replace(/^\n+/, "").trimEnd() + "\n";
 }
 
 await mkdir(OUT_DIR, { recursive: true });
@@ -207,6 +215,8 @@ for (const category of CATEGORIES) {
     emitted.push(category.name);
 }
 
-await writeFile(resolve(OUT_DIR, "index.css"), buildIndex(emitted), "utf-8");
+await writeFile(resolve(OUT_DIR, "index.css"), buildIndex(css), "utf-8");
 
-console.log(`✅  Wrote dist/index.css + ${emitted.length} category files (${emitted.join(", ")})`);
+console.log(
+    `✅  Wrote dist/index.css (self-contained) + ${emitted.length} category files (${emitted.join(", ")})`,
+);
