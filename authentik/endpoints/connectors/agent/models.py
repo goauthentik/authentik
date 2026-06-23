@@ -41,7 +41,10 @@ class AgentConnector(Connector):
         "authentik_flows.Flow", null=True, on_delete=models.SET_DEFAULT, default=None
     )
     jwt_federation_providers = models.ManyToManyField(
-        "authentik_providers_oauth2.OAuth2Provider", blank=True, default=None
+        "authentik_providers_oauth2.OAuth2Provider",
+        blank=True,
+        default=None,
+        through="AgentConnectorJWTFederationProvider",
     )
 
     nss_uid_offset = models.PositiveIntegerField(default=1000)
@@ -86,6 +89,22 @@ class AgentConnector(Connector):
     class Meta:
         verbose_name = _("Agent Connector")
         verbose_name_plural = _("Agent Connectors")
+
+
+class AgentConnectorJWTFederationProvider(models.Model):
+    agent_connector = models.ForeignKey(AgentConnector, on_delete=models.CASCADE)
+    jwt_federation_provider = models.ForeignKey(
+        "authentik_providers_oauth2.OAuth2Provider", on_delete=models.CASCADE
+    )
+
+    class Meta:
+        unique_together = (("agent_connector", "jwt_federation_provider"),)
+
+    def __str__(self):
+        return (
+            f"AgentConnectorJWTFederationProvider for AgentConnector {self.agent_connector_id} "
+            f"and JWTFederationProvider {self.jwt_federation_provider_id}."
+        )
 
 
 class AgentDeviceConnection(DeviceConnection):
