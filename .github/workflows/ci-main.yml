@@ -24,6 +24,30 @@ permissions:
   id-token: write
 
 jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - image: server
+            dockerfile: Dockerfile
+          - image: proxy
+            dockerfile: proxy.Dockerfile
+          - image: ldap
+            dockerfile: ldap.Dockerfile
+          - image: radius
+            dockerfile: radius.Dockerfile
+          - image: rac
+            dockerfile: rac.Dockerfile
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v5
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+      - name: Build container image
+        uses: ./.github/actions/container-build
+        with:
+          image_name: "${{ matrix.image }}"
+          dockerfile: "lifecycle/container/${{ matrix.dockerfile }}"
   lint:
     strategy:
       fail-fast: false

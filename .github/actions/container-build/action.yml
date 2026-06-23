@@ -1,0 +1,34 @@
+---
+name: "Build container image"
+description: "Build a container image. Does not push it."
+
+inputs:
+  image_name:
+    description: "Prefix for the file in which the image will be uploaded"
+  dockerfile_path:
+    description: "Path to the Dockerfile to build from"
+  build_args:
+    description: "Build args to pass to Docker"
+  working-directory:
+    description: |
+      Optional working directory if this repo isn't in the root of the actions workspace.
+      When set, needs to contain a trailing slash
+    default: ""
+
+runs:
+  using: "composite"
+  steps:
+    - name: Build Docker Image
+      uses: docker/build-push-action@f9f3042f7e2789586610d6e8b85c8f03e5195baf # v7.2.0
+      id: push
+      with:
+        context: .
+        file: "${{ inputs.dockerfile_path }}"
+        secrets: |
+          GEOIPUPDATE_ACCOUNT_ID=${{ secrets.GEOIPUPDATE_ACCOUNT_ID }}
+          GEOIPUPDATE_LICENSE_KEY=${{ secrets.GEOIPUPDATE_LICENSE_KEY }}
+        build-args: "${{ inputs.build_args }}"
+        platforms: linux/${{ inputs.image_arch }}
+        cache-from: type=registry,ref=${{ steps.ev.outputs.attestImageNames
+          }}:buildcache-${{ inputs.image_arch }}
+        cache-to: ${{ steps.ev.outputs.cacheTo }}

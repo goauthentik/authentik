@@ -8,15 +8,6 @@ on:
       image_name:
         required: true
         type: string
-      registry_dockerhub:
-        default: false
-        type: boolean
-      registry_ghcr:
-        default: true
-        type: boolean
-      release:
-        default: false
-        type: boolean
     outputs: {}
 
 jobs:

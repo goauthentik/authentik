@@ -67,13 +67,6 @@ jobs:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - uses: ./.github/actions/setup-node
-        with:
-          working-directory: web
-          dependencies: "monorepo"
-      - uses: actions/setup-go@4a3601121dd01d1626a1e23e37211e3254c1c06c # v6
-        with:
-          go-version-file: "go.mod"
       - name: Build Docker Image
         uses: docker/build-push-action@f9f3042f7e2789586610d6e8b85c8f03e5195baf # v7.2.0
         id: push
@@ -88,7 +81,8 @@ jobs:
             ${{ steps.ev.outputs.imageBuildArgs }}
           tags: ${{ steps.ev.outputs.imageTags }}
           platforms: linux/${{ inputs.image_arch }}
-          cache-from: type=registry,ref=${{ steps.ev.outputs.attestImageNames }}:buildcache-${{ inputs.image_arch }}
+          cache-from: type=registry,ref=${{ steps.ev.outputs.attestImageNames
+            }}:buildcache-${{ inputs.image_arch }}
           cache-to: ${{ steps.ev.outputs.cacheTo }}
       - uses: actions/attest-build-provenance@a2bbfa25375fe432b6a289bc6b6cd05ecd0c4c32 # v3
         id: attest
