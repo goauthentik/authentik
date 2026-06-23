@@ -4,7 +4,6 @@ from typing import Any
 from urllib.parse import urlencode
 
 from django.http import Http404, HttpRequest, HttpResponse
-from django.template.response import TemplateResponse
 from django.utils import timezone
 from django.utils.translation import gettext as _
 from django.views import View
@@ -18,6 +17,7 @@ from authentik.flows.planner import (
     FlowPlanner,
 )
 from authentik.flows.stage import PLAN_CONTEXT_PENDING_USER_IDENTIFIER
+from authentik.lib.views import bad_request_message
 
 QS_ACCOUNT_SWITCH_STALE = "account_switch_stale"
 
@@ -28,24 +28,16 @@ class AccountSwitchView(View):
     def get(self, request: HttpRequest, user_pk: int) -> HttpResponse:
         flow = request.brand.flow_account_switch
         if not flow:
-            return TemplateResponse(
+            return bad_request_message(
                 request,
-                "if/error.html",
-                {
-                    "title": _("Account switching disabled"),
-                    "message": _("Account switching is disabled."),
-                },
-                status=400,
+                _("Account switching is disabled."),
+                title="Account switching disabled",
             )
         if not request.user.is_authenticated:
-            return TemplateResponse(
+            return bad_request_message(
                 request,
-                "if/error.html",
-                {
-                    "title": _("Account switching unavailable"),
-                    "message": _("Account switching requires an active session."),
-                },
-                status=400,
+                _("Account switching requires an active session."),
+                title="Account switching unavailable",
             )
         context = {}
         session = self.get_browser_session(request, user_pk)
