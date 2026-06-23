@@ -70,5 +70,5 @@ To confirm that authentik is properly configured with Miniflux, log out of Minif
 
 ## Resources
 
-- [Miniflux OAuth2 and OpenID Connect authentication documentation](https://miniflux.app/docs/howto.html#oauth2-and-openid-connect-authentication)
+- [Miniflux OAuth2 and OpenID Connect authentication](https://miniflux.app/docs/howto.html#oauth2-and-openid-connect-authentication)
 - [Miniflux configuration parameters](https://miniflux.app/docs/configuration.html)
