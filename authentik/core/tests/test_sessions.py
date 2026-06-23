@@ -1,4 +1,4 @@
-"""Session account switching tests"""
+"""Session user switching tests"""
 
 from unittest.mock import patch
 
@@ -13,8 +13,8 @@ from authentik.core.models import AuthenticatedSession
 from authentik.core.sessions import SessionStore
 from authentik.core.tests.utils import create_test_session, create_test_user
 from authentik.root.middleware import (
-    ACCOUNT_SWITCHING_COOKIE_NAME,
-    ACCOUNT_SWITCHING_TOKEN_LENGTH,
+    USER_SWITCHING_COOKIE_NAME,
+    USER_SWITCHING_TOKEN_LENGTH,
     SessionMiddleware,
 )
 
@@ -28,7 +28,7 @@ class TestSessionSuperseding(TestCase):
     def test_current_session_loads(self):
         """Test the current login of a browser keeps working"""
         target = create_test_session(
-            self.user, account_switching_token=get_random_string(ACCOUNT_SWITCHING_TOKEN_LENGTH)
+            self.user, user_switching_token=get_random_string(USER_SWITCHING_TOKEN_LENGTH)
         )
         self.client.cookies[settings.SESSION_COOKIE_NAME] = target.session.session_key
 
@@ -37,30 +37,30 @@ class TestSessionSuperseding(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json()["user"]["username"], self.user.username)
 
-    def test_existing_session_gets_account_switching_token(self):
-        """Test an authenticated session without an account switching token is
+    def test_existing_session_gets_user_switching_token(self):
+        """Test an authenticated session without an user switching token is
         bound on next request"""
         target = create_test_session(self.user)
-        self.assertIsNone(target.account_switching_token)
+        self.assertIsNone(target.user_switching_token)
         self.client.cookies[settings.SESSION_COOKIE_NAME] = target.session.session_key
 
         response = self.client.get(reverse("authentik_api:user-me"))
 
         self.assertEqual(response.status_code, 200)
         target.refresh_from_db()
-        self.assertIsNotNone(target.account_switching_token)
+        self.assertIsNotNone(target.user_switching_token)
         self.assertTrue(target.is_current)
-        account_switching_cookie = response.cookies.get(ACCOUNT_SWITCHING_COOKIE_NAME)
-        self.assertIsNotNone(account_switching_cookie)
+        user_switching_cookie = response.cookies.get(USER_SWITCHING_COOKIE_NAME)
+        self.assertIsNotNone(user_switching_cookie)
         self.assertEqual(
-            SessionMiddleware.parse_account_switching_token(account_switching_cookie.value),
-            target.account_switching_token,
+            SessionMiddleware.parse_user_switching_token(user_switching_cookie.value),
+            target.user_switching_token,
         )
 
     def test_superseded_session_rejected(self):
         """Test a recorded session cookie can't be replayed after an account switch"""
         target = create_test_session(
-            self.user, account_switching_token=get_random_string(ACCOUNT_SWITCHING_TOKEN_LENGTH)
+            self.user, user_switching_token=get_random_string(USER_SWITCHING_TOKEN_LENGTH)
         )
         target.is_current = False
         target.save(update_fields=["is_current"])
@@ -72,10 +72,10 @@ class TestSessionSuperseding(TestCase):
 
     def test_login_supersedes_other_browser_sessions(self):
         """Test a new login marks the browser's previous logins as not current"""
-        account_switching_token = get_random_string(ACCOUNT_SWITCHING_TOKEN_LENGTH)
-        previous = create_test_session(self.user, account_switching_token=account_switching_token)
+        user_switching_token = get_random_string(USER_SWITCHING_TOKEN_LENGTH)
+        previous = create_test_session(self.user, user_switching_token=user_switching_token)
         other_browser = create_test_session(
-            self.user, account_switching_token=get_random_string(ACCOUNT_SWITCHING_TOKEN_LENGTH)
+            self.user, user_switching_token=get_random_string(USER_SWITCHING_TOKEN_LENGTH)
         )
         target = create_test_session(self.user)
         original_save = AuthenticatedSession.save
@@ -86,7 +86,7 @@ class TestSessionSuperseding(TestCase):
             return original_save(instance, *args, **kwargs)
 
         request = RequestFactory().get("/")
-        request.account_switching_token = account_switching_token
+        request.user_switching_token = user_switching_token
         with patch.object(
             AuthenticatedSession,
             "save",
@@ -94,17 +94,17 @@ class TestSessionSuperseding(TestCase):
             side_effect=fail_target_save,
         ):
             with self.assertRaises(RuntimeError):
-                target.bind_to_account_switching_token(request)
+                target.bind_to_user_switching_token(request)
         previous.refresh_from_db()
         self.assertTrue(previous.is_current)
 
         request = RequestFactory().get("/")
-        request.account_switching_token = account_switching_token
+        request.user_switching_token = user_switching_token
         request.session = SessionStore()
         request.session.create()
         new_session = AuthenticatedSession.from_request(request, self.user)
 
-        self.assertEqual(new_session.account_switching_token, account_switching_token)
+        self.assertEqual(new_session.user_switching_token, user_switching_token)
         self.assertTrue(new_session.is_current)
         previous.refresh_from_db()
         self.assertFalse(previous.is_current)
@@ -112,55 +112,53 @@ class TestSessionSuperseding(TestCase):
         self.assertTrue(other_browser.is_current)
 
 
-class TestAccountSwitchingCookie(TestCase):
-    """Test issuance and validation of the account-switching cookie"""
+class TestUserSwitchingCookie(TestCase):
+    """Test issuance and validation of the user-switching cookie"""
 
     def test_cookie_issued_alongside_session(self):
-        """Test the account-switching cookie is set when a session with an
-        account switching token is saved"""
+        """Test the user-switching cookie is set when a session with an
+        user switching token is saved"""
 
         def view(request):
             request.user = AnonymousUser()
             request.session["foo"] = "bar"
-            SessionMiddleware.ensure_account_switching_token(request)
+            SessionMiddleware.ensure_user_switching_token(request)
             return HttpResponse()
 
         response = SessionMiddleware(view)(RequestFactory().get("/"))
 
-        cookie = response.cookies.get(ACCOUNT_SWITCHING_COOKIE_NAME)
+        cookie = response.cookies.get(USER_SWITCHING_COOKIE_NAME)
         self.assertIsNotNone(cookie)
-        self.assertIsNotNone(SessionMiddleware.parse_account_switching_token(cookie.value))
+        self.assertIsNotNone(SessionMiddleware.parse_user_switching_token(cookie.value))
         self.assertFalse(cookie["httponly"])
 
     def test_existing_cookie_reused(self):
-        """Test an existing account-switching cookie is parsed onto the request"""
-        account_switching_token = get_random_string(ACCOUNT_SWITCHING_TOKEN_LENGTH)
+        """Test an existing user-switching cookie is parsed onto the request"""
+        user_switching_token = get_random_string(USER_SWITCHING_TOKEN_LENGTH)
         request = RequestFactory().get("/")
-        request.COOKIES[ACCOUNT_SWITCHING_COOKIE_NAME] = (
-            SessionMiddleware.encode_account_switching_token(account_switching_token)
+        request.COOKIES[USER_SWITCHING_COOKIE_NAME] = SessionMiddleware.encode_user_switching_token(
+            user_switching_token
         )
 
         SessionMiddleware(lambda request: HttpResponse()).process_request(request)
 
-        self.assertEqual(request.account_switching_token, account_switching_token)
+        self.assertEqual(request.user_switching_token, user_switching_token)
         self.assertEqual(
-            SessionMiddleware.ensure_account_switching_token(request), account_switching_token
+            SessionMiddleware.ensure_user_switching_token(request), user_switching_token
         )
 
-    def test_parse_account_switching_token(self):
-        """Test account-switching cookie values are validated"""
-        valid = get_random_string(ACCOUNT_SWITCHING_TOKEN_LENGTH)
-        token = SessionMiddleware.encode_account_switching_token(valid)
-        self.assertEqual(SessionMiddleware.parse_account_switching_token(token), valid)
-        self.assertIsNone(SessionMiddleware.parse_account_switching_token(valid))
-        self.assertIsNone(SessionMiddleware.parse_account_switching_token(None))
-        self.assertIsNone(SessionMiddleware.parse_account_switching_token(""))
-        self.assertIsNone(SessionMiddleware.parse_account_switching_token("too-short"))
+    def test_parse_user_switching_token(self):
+        """Test user-switching cookie values are validated"""
+        valid = get_random_string(USER_SWITCHING_TOKEN_LENGTH)
+        token = SessionMiddleware.encode_user_switching_token(valid)
+        self.assertEqual(SessionMiddleware.parse_user_switching_token(token), valid)
+        self.assertIsNone(SessionMiddleware.parse_user_switching_token(valid))
+        self.assertIsNone(SessionMiddleware.parse_user_switching_token(None))
+        self.assertIsNone(SessionMiddleware.parse_user_switching_token(""))
+        self.assertIsNone(SessionMiddleware.parse_user_switching_token("too-short"))
         self.assertIsNone(
-            SessionMiddleware.parse_account_switching_token(
-                "x" * (ACCOUNT_SWITCHING_TOKEN_LENGTH + 1)
-            )
+            SessionMiddleware.parse_user_switching_token("x" * (USER_SWITCHING_TOKEN_LENGTH + 1))
         )
         self.assertIsNone(
-            SessionMiddleware.parse_account_switching_token("!" * ACCOUNT_SWITCHING_TOKEN_LENGTH)
+            SessionMiddleware.parse_user_switching_token("!" * USER_SWITCHING_TOKEN_LENGTH)
         )

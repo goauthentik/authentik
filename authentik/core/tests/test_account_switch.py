@@ -25,7 +25,7 @@ from authentik.flows.planner import (
 from authentik.flows.stage import PLAN_CONTEXT_PENDING_USER_IDENTIFIER
 from authentik.flows.tests import FlowTestCase
 from authentik.flows.views.executor import SESSION_KEY_PLAN
-from authentik.root.middleware import ACCOUNT_SWITCHING_COOKIE_NAME, SessionMiddleware
+from authentik.root.middleware import USER_SWITCHING_COOKIE_NAME, SessionMiddleware
 from authentik.stages.user_login.models import UserLoginStage
 
 
@@ -62,23 +62,23 @@ class TestAccountSwitch(FlowTestCase):
         self.assertEqual(response.status_code, 200)
         return self.client.session.session_key
 
-    def account_switching_token(self) -> str:
-        """Return the decoded account switching token from the test client's cookie."""
-        account_switching_token = SessionMiddleware.parse_account_switching_token(
-            self.client.cookies[ACCOUNT_SWITCHING_COOKIE_NAME].value
+    def user_switching_token(self) -> str:
+        """Return the decoded user switching token from the test client's cookie."""
+        user_switching_token = SessionMiddleware.parse_user_switching_token(
+            self.client.cookies[USER_SWITCHING_COOKIE_NAME].value
         )
-        if account_switching_token is None:
-            self.fail("Expected an account switching token cookie after login")
-        return account_switching_token
+        if user_switching_token is None:
+            self.fail("Expected a user switching token cookie after login")
+        return user_switching_token
 
     def test_no_brand_flow_disables_switching(self):
         """Test switching shows an error when the brand has no account switch flow"""
         self.brand.flow_account_switch = None
         self.brand.save()
         self.login(self.user)
-        account_switching_token = self.account_switching_token()
+        user_switching_token = self.user_switching_token()
         create_test_session(
-            self.other_user, account_switching_token=account_switching_token, is_current=False
+            self.other_user, user_switching_token=user_switching_token, is_current=False
         )
 
         response = self.client.get(
@@ -89,7 +89,7 @@ class TestAccountSwitch(FlowTestCase):
         self.assertEqual(response.status_code, 400)
         self.assertContains(
             response,
-            "Account switching is disabled.",
+            "User switching is disabled.",
             status_code=400,
         )
 
@@ -107,18 +107,18 @@ class TestAccountSwitch(FlowTestCase):
         self.assertEqual(response.status_code, 400)
         self.assertContains(
             response,
-            "Account switching is disabled.",
+            "User switching is disabled.",
             status_code=400,
         )
 
     def test_switch_requires_authenticated_source_user(self):
         """Test switching is rejected when there is no current login to switch from"""
-        account_switching_token = "A" * 32
-        self.client.cookies[ACCOUNT_SWITCHING_COOKIE_NAME] = (
-            SessionMiddleware.encode_account_switching_token(account_switching_token)
+        user_switching_token = "A" * 32
+        self.client.cookies[USER_SWITCHING_COOKIE_NAME] = (
+            SessionMiddleware.encode_user_switching_token(user_switching_token)
         )
         create_test_session(
-            self.other_user, account_switching_token=account_switching_token, is_current=False
+            self.other_user, user_switching_token=user_switching_token, is_current=False
         )
 
         response = self.client.get(self.switch_url(self.other_user))
@@ -136,9 +136,9 @@ class TestAccountSwitch(FlowTestCase):
     def test_switch_with_live_session(self):
         """Test a live login of this browser is passed to the flow as context"""
         self.login(self.user)
-        account_switching_token = self.account_switching_token()
+        user_switching_token = self.user_switching_token()
         create_test_session(
-            self.other_user, account_switching_token=account_switching_token, is_current=False
+            self.other_user, user_switching_token=user_switching_token, is_current=False
         )
 
         response = self.client.get(self.switch_url(self.other_user))
@@ -174,7 +174,7 @@ class TestAccountSwitch(FlowTestCase):
     def test_switch_ignores_other_browser_session(self):
         """Test a live login of a different browser doesn't count as proof"""
         self.login(self.user)
-        create_test_session(self.other_user, account_switching_token="A" * 32)
+        create_test_session(self.other_user, user_switching_token="A" * 32)
 
         response = self.client.get(self.switch_url(self.other_user))
 
@@ -194,9 +194,9 @@ class TestAccountSwitch(FlowTestCase):
         self.brand.flow_account_switch = flow
         self.brand.save()
         self.login(self.user)
-        account_switching_token = self.account_switching_token()
+        user_switching_token = self.user_switching_token()
         create_test_session(
-            self.other_user, account_switching_token=account_switching_token, is_current=False
+            self.other_user, user_switching_token=user_switching_token, is_current=False
         )
 
         response = self.client.get(self.switch_url(self.other_user))
@@ -213,9 +213,9 @@ class TestAccountSwitch(FlowTestCase):
         """Test the full switch: the new login takes over, the old session survives
         as a switch target but can't be replayed"""
         first_session_key = self.login(self.user)
-        account_switching_token = self.account_switching_token()
+        user_switching_token = self.user_switching_token()
         create_test_session(
-            self.other_user, account_switching_token=account_switching_token, is_current=False
+            self.other_user, user_switching_token=user_switching_token, is_current=False
         )
 
         response = self.client.get(self.switch_url(self.other_user), follow=True)

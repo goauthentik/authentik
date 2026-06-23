@@ -31,11 +31,11 @@ LOGGER = get_logger("authentik.asgi")
 ACR_AUTHENTIK_SESSION = "goauthentik.io/core/default"
 SIGNING_HASH = sha512(settings.SECRET_KEY.encode()).hexdigest()
 
-# Opaque identifier used to group logins for account switching.
+# Opaque identifier used to group logins for user switching.
 # Unlike the session cookie it survives logins and logouts.
-ACCOUNT_SWITCHING_COOKIE_NAME = "authentik_account_switching"
-ACCOUNT_SWITCHING_TOKEN_LENGTH = 32
-ACCOUNT_SWITCHING_COOKIE_AGE = int(timedelta(days=365).total_seconds())
+USER_SWITCHING_COOKIE_NAME = "authentik_user_switching"
+USER_SWITCHING_TOKEN_LENGTH = 32
+USER_SWITCHING_COOKIE_AGE = int(timedelta(days=365).total_seconds())
 
 
 class SessionMiddleware(UpstreamSessionMiddleware):
@@ -88,55 +88,53 @@ class SessionMiddleware(UpstreamSessionMiddleware):
         return value
 
     @staticmethod
-    def validate_account_switching_token(raw: str | None) -> str | None:
-        """Validate an opaque account switching token."""
-        if raw and len(raw) == ACCOUNT_SWITCHING_TOKEN_LENGTH and raw.isalnum():
+    def validate_user_switching_token(raw: str | None) -> str | None:
+        """Validate an opaque user switching token."""
+        if raw and len(raw) == USER_SWITCHING_TOKEN_LENGTH and raw.isalnum():
             return raw
         return None
 
     @staticmethod
-    def encode_account_switching_token(account_switching_token: str) -> str:
-        """Encode the opaque account switching token as a signed token."""
+    def encode_user_switching_token(user_switching_token: str) -> str:
+        """Encode the opaque user switching token as a signed token."""
         return encode(
             {
                 "iss": "authentik",
-                "sub": "account_switching",
-                "account_switching": account_switching_token,
+                "sub": "user_switching",
+                "user_switching": user_switching_token,
             },
             SIGNING_HASH,
         )
 
     @staticmethod
-    def parse_account_switching_token(raw: str | None) -> str | None:
-        """Decode and validate the signed account-switching cookie."""
+    def parse_user_switching_token(raw: str | None) -> str | None:
+        """Decode and validate the signed user-switching cookie."""
         if not raw:
             return None
         try:
             payload = decode(raw, SIGNING_HASH, algorithms=["HS256"])
-            return SessionMiddleware.validate_account_switching_token(
-                payload.get("account_switching")
-            )
+            return SessionMiddleware.validate_user_switching_token(payload.get("user_switching"))
         except PyJWTError:
             return None
 
     @staticmethod
-    def ensure_account_switching_token(request: HttpRequest) -> str | None:
-        """Return or create an account switching token for middleware-managed requests."""
-        if not hasattr(request, "account_switching_token"):
+    def ensure_user_switching_token(request: HttpRequest) -> str | None:
+        """Return or create a user switching token for middleware-managed requests."""
+        if not hasattr(request, "user_switching_token"):
             return None
-        if not request.account_switching_token:
-            request.account_switching_token = get_random_string(ACCOUNT_SWITCHING_TOKEN_LENGTH)
-            request.account_switching_token_needs_update = True
-        return request.account_switching_token
+        if not request.user_switching_token:
+            request.user_switching_token = get_random_string(USER_SWITCHING_TOKEN_LENGTH)
+            request.user_switching_token_needs_update = True
+        return request.user_switching_token
 
     def process_request(self, request: HttpRequest):
         raw_session = request.COOKIES.get(settings.SESSION_COOKIE_NAME)
         session_key = SessionMiddleware.decode_session_key(raw_session)
-        raw_account_switching_cookie = request.COOKIES.get(ACCOUNT_SWITCHING_COOKIE_NAME)
-        request.account_switching_token = SessionMiddleware.parse_account_switching_token(
-            raw_account_switching_cookie
+        raw_user_switching_cookie = request.COOKIES.get(USER_SWITCHING_COOKIE_NAME)
+        request.user_switching_token = SessionMiddleware.parse_user_switching_token(
+            raw_user_switching_cookie
         )
-        request.account_switching_token_needs_update = False
+        request.user_switching_token_needs_update = False
         request.session = self.SessionStore(
             session_key,
             last_ip=ClientIPMiddleware.get_client_ip(request),
@@ -144,8 +142,8 @@ class SessionMiddleware(UpstreamSessionMiddleware):
         )
 
     @staticmethod
-    def ensure_authenticated_session_account_switching_token(request: HttpRequest):
-        """Ensure the current authenticated session is bound to an account switching token."""
+    def ensure_authenticated_session_user_switching_token(request: HttpRequest):
+        """Ensure the current authenticated session is bound to a user switching token."""
         if not hasattr(request, "session") or not request.session.session_key:
             return
         from authentik.core.models import AuthenticatedSession
@@ -156,14 +154,14 @@ class SessionMiddleware(UpstreamSessionMiddleware):
         ).first()
         if not authenticated_session:
             return
-        if authenticated_session.account_switching_token and not getattr(
-            request, "account_switching_token", None
+        if authenticated_session.user_switching_token and not getattr(
+            request, "user_switching_token", None
         ):
-            request.account_switching_token = authenticated_session.account_switching_token
-            request.account_switching_token_needs_update = True
+            request.user_switching_token = authenticated_session.user_switching_token
+            request.user_switching_token_needs_update = True
             return
-        if not authenticated_session.account_switching_token:
-            authenticated_session.bind_to_account_switching_token(request)
+        if not authenticated_session.user_switching_token:
+            authenticated_session.bind_to_user_switching_token(request)
 
     def process_response(self, request: HttpRequest, response: HttpResponse) -> HttpResponse:
         """
@@ -172,7 +170,7 @@ class SessionMiddleware(UpstreamSessionMiddleware):
         the session cookie if the session has been emptied.
         """
         try:
-            SessionMiddleware.ensure_authenticated_session_account_switching_token(request)
+            SessionMiddleware.ensure_authenticated_session_user_switching_token(request)
             accessed = request.session.accessed
             modified = request.session.modified
             empty = request.session.is_empty()
@@ -224,13 +222,13 @@ class SessionMiddleware(UpstreamSessionMiddleware):
                         httponly=settings.SESSION_COOKIE_HTTPONLY or None,
                         samesite=same_site,
                     )
-        # Keep the account-switching cookie longer-lived than the sessions it groups.
+        # Keep the user-switching cookie longer-lived than the sessions it groups.
         # It is intentionally not deleted with the session cookie.
-        if request.account_switching_token and request.account_switching_token_needs_update:
+        if request.user_switching_token and request.user_switching_token_needs_update:
             response.set_cookie(
-                ACCOUNT_SWITCHING_COOKIE_NAME,
-                SessionMiddleware.encode_account_switching_token(request.account_switching_token),
-                max_age=ACCOUNT_SWITCHING_COOKIE_AGE,
+                USER_SWITCHING_COOKIE_NAME,
+                SessionMiddleware.encode_user_switching_token(request.user_switching_token),
+                max_age=USER_SWITCHING_COOKIE_AGE,
                 domain=settings.SESSION_COOKIE_DOMAIN,
                 path=settings.SESSION_COOKIE_PATH,
                 secure=secure,

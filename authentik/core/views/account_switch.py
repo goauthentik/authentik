@@ -29,11 +29,11 @@ class AccountSwitchView(LoginRequiredMixin, View):
         if not flow:
             return bad_request_message(
                 request,
-                _("Account switching is disabled."),
-                title="Account switching disabled",
+                _("User switching is disabled."),
+                title=_("User switching disabled"),
             )
         context = {}
-        session = self.get_account_switching_session(request, user_pk)
+        session = self.get_user_switching_session(request, user_pk)
         if not session:
             context[PLAN_CONTEXT_ACCOUNT_SWITCH_STALE_USER] = str(user_pk)
             return self.redirect_to_flow(request, flow, context)
@@ -62,16 +62,16 @@ class AccountSwitchView(LoginRequiredMixin, View):
         return plan.to_redirect(request, flow)
 
     @staticmethod
-    def get_account_switching_session(
+    def get_user_switching_session(
         request: HttpRequest, user_pk: int
     ) -> AuthenticatedSession | None:
-        """Live login bound to this request's account switching token, if any."""
-        account_switching_token = getattr(request, "account_switching_token", None)
-        if not account_switching_token:
+        """Live login bound to this request's user switching token, if any."""
+        user_switching_token = getattr(request, "user_switching_token", None)
+        if not user_switching_token:
             return None
         return (
             AuthenticatedSession.objects.filter(
-                account_switching_token=account_switching_token,
+                user_switching_token=user_switching_token,
                 session__expires__gt=timezone.now(),
                 user__is_active=True,
                 user_id=user_pk,

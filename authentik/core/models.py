@@ -1344,7 +1344,7 @@ class Session(ExpiringModel, AbstractBaseSession):
         authenticated_session = getattr(self, "authenticatedsession", None)
         return bool(
             authenticated_session
-            and authenticated_session.account_switching_token
+            and authenticated_session.user_switching_token
             and not authenticated_session.is_current
         )
 
@@ -1384,8 +1384,8 @@ class AuthenticatedSession(SerializerModel):
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
-    # This is matched against the value of the `authentik_account_switching` cookie.
-    account_switching_token = models.CharField(max_length=64, null=True, db_index=True)
+    # This is matched against the value of the `authentik_user_switching` cookie.
+    user_switching_token = models.CharField(max_length=64, null=True, db_index=True)
     is_current = models.BooleanField(default=False)
 
     @property
@@ -1411,22 +1411,22 @@ class AuthenticatedSession(SerializerModel):
                 "is_current": True,
             },
         )
-        return authenticated_session.bind_to_account_switching_token(request)
+        return authenticated_session.bind_to_user_switching_token(request)
 
-    def bind_to_account_switching_token(self, request: HttpRequest) -> Self:
-        """Bind this authenticated session to the request's account switching token."""
+    def bind_to_user_switching_token(self, request: HttpRequest) -> Self:
+        """Bind this authenticated session to the request's user switching token."""
         from authentik.root.middleware import SessionMiddleware
 
-        account_switching_token = SessionMiddleware.ensure_account_switching_token(request)
-        if account_switching_token:
+        user_switching_token = SessionMiddleware.ensure_user_switching_token(request)
+        if user_switching_token:
             with transaction.atomic():
-                type(self).objects.filter(account_switching_token=account_switching_token).exclude(
+                type(self).objects.filter(user_switching_token=user_switching_token).exclude(
                     session=self.session
                 ).update(is_current=False)
-                if self.account_switching_token != account_switching_token or not self.is_current:
-                    self.account_switching_token = account_switching_token
+                if self.user_switching_token != user_switching_token or not self.is_current:
+                    self.user_switching_token = user_switching_token
                     self.is_current = True
-                    self.save(update_fields=["account_switching_token", "is_current"])
+                    self.save(update_fields=["user_switching_token", "is_current"])
         return self
 
     class Meta:
@@ -1434,9 +1434,9 @@ class AuthenticatedSession(SerializerModel):
         verbose_name_plural = _("Authenticated Sessions")
         constraints = [
             models.UniqueConstraint(
-                fields=["account_switching_token"],
-                condition=Q(account_switching_token__isnull=False, is_current=True),
-                name="authentik_core_authenticatedsession_current_account_switching_token",
+                fields=["user_switching_token"],
+                condition=Q(user_switching_token__isnull=False, is_current=True),
+                name="authentik_core_authenticatedsession_current_user_switching_token",
             ),
         ]
 

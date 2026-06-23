@@ -167,8 +167,8 @@ class TestUserLoginStage(FlowTestCase):
         self.assertEqual(first.user, self.user)
         self.assertEqual(second.user, other_user)
         # Both logins are bound to the same browser, only the newest one is current
-        self.assertIsNotNone(first.account_switching_token)
-        self.assertEqual(first.account_switching_token, second.account_switching_token)
+        self.assertIsNotNone(first.user_switching_token)
+        self.assertEqual(first.user_switching_token, second.user_switching_token)
         self.assertFalse(first.is_current)
         self.assertTrue(second.is_current)
 
@@ -188,9 +188,7 @@ class TestUserLoginStage(FlowTestCase):
             self.assertEqual(response.status_code, 200)
 
         self.assertEqual(AuthenticatedSession.objects.filter(user=self.user).count(), 1)
-        self.assertIsNotNone(
-            AuthenticatedSession.objects.get(user=self.user).account_switching_token
-        )
+        self.assertIsNotNone(AuthenticatedSession.objects.get(user=self.user).user_switching_token)
 
     def test_expiry(self):
         """Test with expiry"""
