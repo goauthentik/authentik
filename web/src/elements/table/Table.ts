@@ -453,7 +453,7 @@ export abstract class Table<T extends object>
         );
     }
 
-    protected renderEmpty(inner?: SlottedTemplateResult): TemplateResult {
+    protected renderEmpty(inner?: SlottedTemplateResult): SlottedTemplateResult {
         return html`
             <tr role="presentation">
                 <td role="presentation" colspan=${this.#columnCount}>

@@ -96,7 +96,7 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
 
     // TODO: Make this more generic, maybe automatically get the plural name
     // of the object to use in the renderEmpty
-    renderEmpty(inner?: TemplateResult): TemplateResult {
+    protected override renderEmpty(inner?: TemplateResult): SlottedTemplateResult {
         return super.renderEmpty(html`
             ${inner
                 ? inner

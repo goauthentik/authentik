@@ -60,7 +60,7 @@ export class UserEvents extends Table<Event> {
         return html`<ak-event-info .event=${item as EventWithContext}></ak-event-info>`;
     }
 
-    renderEmpty(): TemplateResult {
+    protected override renderEmpty(): SlottedTemplateResult {
         return super.renderEmpty(
             html`<ak-empty-state
                 ><span>${msg("No Events found.")}</span>
