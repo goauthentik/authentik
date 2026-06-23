@@ -7,11 +7,35 @@ import { TabID } from "#flow/tabs/TabID";
 
 import { ConsoleLogger } from "#logger/browser";
 
+/**
+ * Multi-tab continuous-login coordination.
+ *
+ * When several tabs sit in the same flow (e.g. multiple SP-initiated SAML logins), only one needs
+ * the user to authenticate. The tab that completes auth becomes the "leader" and walks every other
+ * ("follower") tab through its own resume, one at a time:
+ *
+ *  1. The leader takes a cross-tab lock ({@link lockKey} in localStorage) so a second finishing tab
+ *     won't also start resuming — it suppresses its own exit and bows out.
+ *  2. For each discovered follower the leader mints a one-shot `resumeID`, starts waiting for that
+ *     tab's exit, then tells it to continue ({@link Broadcast.resumeTab}).
+ *  3. The follower stores the `resumeID`, re-enters its flow, and only echoes it back in an exit
+ *     event once it reaches its OWN final redirect (see `final_redirect` / RedirectStage). The
+ *     leader matches tabID + resumeID, so stale or out-of-order exits from earlier rounds are
+ *     ignored.
+ *  4. {@link waitForTabExit} bounds the wait so one stuck follower can't deadlock the leader.
+ *
+ * Resume is only ever started from a `final_redirect` challenge — the terminal redirect out of a
+ * completed auth flow — never from intermediate hops (source stages, the same-origin SAML re-entry).
+ */
+
 const lockKey = "authentik-tab-locked";
 const logger = ConsoleLogger.prefix("mtab/orchestrate");
 
+// How often to poll for a follower that hasn't sent its exit event yet.
 const TAB_EXIT_TIMEOUT_MS = 3000;
+// Hard ceiling on waiting for a single follower, so one stuck tab can't block the leader forever.
 const TAB_EXIT_MAX_WAIT_MS = 15000;
+// Grace period after an exit event before resolving, to let the follower's navigation settle.
 const TAB_EXIT_SETTLE_MS = 100;
 
 export function multiTabOrchestrateLeave() {

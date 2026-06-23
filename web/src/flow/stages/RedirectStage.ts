@@ -74,10 +74,15 @@ export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeRes
             this.challenge?.to,
         );
 
+        // `final_redirect` marks the terminal redirect out of a completed flow. Only then do we
+        // resume other continuous-login tabs; intermediate hops (source stages, the same-origin
+        // SAML resume re-entry) skip orchestration entirely.
         const finalRedirect = this.challenge?.finalRedirect ?? false;
         if (finalRedirect) {
             await multiTabOrchestrateResume();
         }
+        // A foreign final redirect means we're leaving authentik for good, so signal our exit.
+        // Same-origin navigations suppress it, otherwise we'd look like we left mid-flow.
         const url = new URL(this.challenge!.to, window.location.origin);
         if (finalRedirect && url.origin !== window.location.origin) {
             multiTabOrchestrateLeave();
