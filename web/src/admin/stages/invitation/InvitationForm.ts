@@ -41,6 +41,7 @@ export class InvitationForm extends ModelForm<Invitation, string> {
     protected override renderForm(): TemplateResult {
         return html`<ak-slug-input
                 label=${msg("Invitation Name")}
+                placeholder=${msg("e.g. my-invite")}
                 required
                 name="name"
                 value="${this.instance?.name || ""}"

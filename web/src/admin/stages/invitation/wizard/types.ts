@@ -16,12 +16,6 @@ export interface InvitationWizardState {
     needsStage: boolean;
     needsBinding: boolean;
 
-    // Step 2: Invitation details
-    invitationName?: string;
-    invitationExpires?: string;
-    invitationFixedData?: Record<string, unknown>;
-    invitationSingleUse: boolean;
-
     // Results from API calls
     createdStagePk?: string;
     createdFlowPk?: string;
