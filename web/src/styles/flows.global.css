@@ -1,0 +1,23 @@
+/* Entrypoint file for the CSS used by the Flow application */
+
+@import "#styles/layers.css";
+@import "#styles/vendor/patternfly.css";
+@import "#fonts/RedHat/faces.css";
+
+@import "#styles/authentik/base/fonts.css";
+@import "#styles/authentik/base/variables.css";
+@import "#styles/authentik/base/scrollbars.css";
+@import "#styles/authentik/base/globals.css";
+@import "#styles/authentik/base/common.css";
+@import "#styles/authentik/base/placeholder.css";
+@import "#elements/ak-drawer/ak-drawer.root.css";
+
+@import "#styles/locales/ja/globals.css";
+@import "#styles/locales/ko/globals.css";
+@import "#styles/locales/zh/globals.css";
+
+@import "@patternfly/patternfly/components/BackgroundImage/background-image.css";
+@import "#elements/locale/ak-locale-select.css";
+@import "#styles/authentik/login.css";
+@import "#styles/authentik/components/Login/login-tokens.css";
+@import "#styles/authentik/components/Login/flow-loading.css";

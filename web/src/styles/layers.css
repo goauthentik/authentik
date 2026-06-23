@@ -3,20 +3,17 @@
 /* This is our global layer definition file.  It needs to be imported at the very top of every
  * barrel file for the CSS at the document level.
  *
- * - `globals`: This layer contains the minimum global (default) CSS for theming
- *   needed to inform the CSS reset.
- *
  * - `reset`: The CSS reset.
  *
  * - `legacy`: Patternfly code. Import with
  *   `@import "patternfly-<specific>.css" layer(legacy);`
  *
- * - `theme`: The default CSS custom properties defining the overall theme for
- *   our product.
- *
  * - `components`: Top (document-level) CSS defining either light-DOM
  *   properties, or `:host` CSS variables that our products use for internal
  *   self-definition.
+ *
+ * - `theme`: The default CSS custom properties defining the overall theme for
+ *   our product.
  *
  * - `brand`: Brand overrides for CSS custom properties and component properties
  *   defining our product.

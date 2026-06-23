@@ -1,0 +1,16 @@
+/* Entrypoint file for the styles used by the User & Admin applications */
+
+@import "#styles/layers.css";
+
+@import "#styles/vendor/patternfly.css";
+
+@import "#fonts/RedHat/faces.css";
+@import "#styles/authentik/base/fonts.css";
+@import "#styles/authentik/base/variables.css";
+@import "#styles/authentik/base/scrollbars.css";
+@import "#styles/authentik/base/globals.css";
+@import "#styles/authentik/base/common.css";
+@import "#styles/authentik/base/placeholder.css";
+@import "#styles/locales/ja/globals.css";
+@import "#styles/locales/ko/globals.css";
+@import "#styles/locales/zh/globals.css";

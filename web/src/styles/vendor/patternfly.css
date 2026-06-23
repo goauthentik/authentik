@@ -1,3 +1,7 @@
+/* Barrel file that imports the parts of Patternfly we're using with the
+ * document stylesheet.
+ */
+
 @import "#styles/vendor/patternfly-globals.css" layer(reset);
 @import "#styles/vendor/patternfly-themes.css" layer(legacy);
 @import "#styles/vendor/patternfly-fa-icons.css" layer(legacy);
