@@ -23,9 +23,10 @@ pub(crate) async fn handle(
     Host(forwarded_host): Host,
     mut request: Request,
 ) -> Result<Response> {
-    let claims = app.check_auth(request.headers()).await;
+    let auth = app.check_auth(request.headers()).await;
+    let claims = auth.as_ref().map(|authed| &authed.claims);
 
-    if let Some(claims) = &claims {
+    if let Some(claims) = claims {
         app.add_upstream_headers(request.headers_mut(), claims);
     } else {
         // Unauthenticated: allow only allowlisted paths through; otherwise start auth.
@@ -47,7 +48,7 @@ pub(crate) async fn handle(
     }
 
     // A user attribute may override the upstream backend and/or the host header.
-    let proxy_claims = claims.as_ref().and_then(|claims| claims.ak_proxy.as_ref());
+    let proxy_claims = claims.and_then(|claims| claims.ak_proxy.as_ref());
     let target = proxy_claims
         .map(|proxy| proxy.backend_override.as_str())
         .filter(|backend| !backend.is_empty())
@@ -83,8 +84,8 @@ pub(crate) async fn handle(
     )
     .record(start.elapsed().as_secs_f64());
 
-    match call_result {
-        Ok(response) => Ok(response),
+    let response = match call_result {
+        Ok(response) => response,
         Err(err) => {
             warn!(?err, "error proxying to upstream server");
             // Only superusers see the underlying error detail.
@@ -94,11 +95,11 @@ pub(crate) async fn handle(
             } else {
                 "Failed to connect to backend.".to_owned()
             };
-            Ok(error_page::error_response(
-                StatusCode::BAD_GATEWAY,
-                "Bad Gateway",
-                &message,
-            ))
+            error_page::error_response(StatusCode::BAD_GATEWAY, "Bad Gateway", &message)
         }
-    }
+    };
+
+    // Emit the session cookie if header auth created a session for this request.
+    let set_cookie = auth.and_then(|authed| authed.set_cookie);
+    Ok(super::with_session_cookie(&app, set_cookie, response))
 }

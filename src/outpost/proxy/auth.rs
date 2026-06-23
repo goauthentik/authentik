@@ -1,13 +1,50 @@
 //! Resolving claims from the session, the auth cache, or a bearer token.
 
-use std::sync::Arc;
+use std::{sync::Arc, time::Duration};
 
 use axum::http::{HeaderMap, header::AUTHORIZATION};
+use axum_extra::extract::cookie::Cookie;
 use base64::{Engine as _, engine::general_purpose::STANDARD as BASE64};
 use eyre::{Result, eyre};
 use tracing::warn;
 
-use crate::outpost::proxy::{application::Application, backchannel, claims::Claims, token};
+use crate::outpost::proxy::{
+    application::Application,
+    backchannel,
+    claims::Claims,
+    cookie::SessionCookie,
+    oauth,
+    session::{SessionData, SessionStore},
+    token,
+};
+
+/// A resolved request identity, plus an optional session cookie to emit when the
+/// identity came from header auth (so cookie-capable clients can reuse the
+/// session instead of re-presenting the credential on every request).
+pub(super) struct Authenticated {
+    pub(super) claims: Claims,
+    pub(super) set_cookie: Option<Cookie<'static>>,
+}
+
+/// Persist `claims` as a new session and return the cookie carrying its id, or
+/// `None` if the session could not be saved.
+async fn persist_session(
+    store: &SessionStore,
+    cookie: &SessionCookie,
+    claims: &Claims,
+    max_age: Duration,
+) -> Option<Cookie<'static>> {
+    let sid = oauth::new_session_id();
+    let data = SessionData {
+        claims: Some(claims.clone()),
+        redirect: None,
+    };
+    if let Err(err) = store.save(&sid, &data, max_age).await {
+        warn!(?err, "failed to persist header-auth session");
+        return None;
+    }
+    Some(cookie.build(&sid, max_age))
+}
 
 /// Username that signals the password is a bearer token to introspect.
 const JWT_USERNAME: &str = "goauthentik.io/token";
@@ -162,40 +199,91 @@ impl Application {
         self.session_store.load(&sid).await.ok()??.claims
     }
 
-    /// Resolve the request's claims: session, then cached header auth, then a
+    /// Resolve the request's identity: session, then cached header auth, then a
     /// bearer token, then basic auth. Returns `None` when unauthenticated.
-    pub(super) async fn check_auth(&self, headers: &HeaderMap) -> Option<Claims> {
+    ///
+    /// When the identity is freshly resolved from header auth, a session is
+    /// persisted and its cookie returned in [`Authenticated::set_cookie`].
+    pub(super) async fn check_auth(&self, headers: &HeaderMap) -> Option<Authenticated> {
         if let Some(claims) = self.claims_from_session(headers).await {
-            return Some(claims);
+            return Some(Authenticated {
+                claims,
+                set_cookie: None,
+            });
         }
 
         let auth_header = Self::authorization_header(headers)?;
 
         if let Some(claims) = self.cached_claims(auth_header).await {
-            return Some(claims);
+            return Some(Authenticated {
+                claims,
+                set_cookie: None,
+            });
         }
 
-        if let Some(token) = bearer_token(auth_header)
-            && let Some(claims) = self.attempt_bearer_auth(token).await
-        {
-            self.cache_claims(auth_header, &claims).await;
-            return Some(claims);
-        }
+        // A single `Authorization` header is either bearer or basic, not both.
+        let claims = if let Some(token) = bearer_token(auth_header) {
+            self.attempt_bearer_auth(token).await
+        } else if let Some((username, password)) = basic_credentials(auth_header) {
+            self.attempt_basic_auth(&username, &password).await
+        } else {
+            None
+        }?;
 
-        if let Some((username, password)) = basic_credentials(auth_header)
-            && let Some(claims) = self.attempt_basic_auth(&username, &password).await
-        {
-            self.cache_claims(auth_header, &claims).await;
-            return Some(claims);
-        }
-
-        None
+        self.cache_claims(auth_header, &claims).await;
+        let set_cookie = persist_session(
+            &self.session_store,
+            &self.session_cookie,
+            &claims,
+            self.session_max_age(),
+        )
+        .await;
+        Some(Authenticated { claims, set_cookie })
     }
 }
 
 #[cfg(test)]
 mod tests {
-    use super::{basic_credentials, bearer_token};
+    use std::time::Duration;
+
+    use super::{basic_credentials, bearer_token, persist_session};
+    use crate::outpost::proxy::{
+        claims::Claims,
+        cookie::SessionCookie,
+        session::{SessionStore, filesystem::FsSessionStore},
+    };
+
+    #[tokio::test]
+    async fn persist_session_round_trips() {
+        // A header-auth session is persisted and its cookie carries the id that
+        // loads it back, so a cookie-capable client can reuse the session.
+        let dir = tempfile::tempdir().expect("tempdir");
+        let store =
+            SessionStore::Filesystem(FsSessionStore::new(dir.path().to_path_buf()).expect("store"));
+        let cookie = SessionCookie::new(
+            "client-123",
+            "0123456789abcdef0123456789abcdef",
+            false,
+            None,
+        )
+        .expect("cookie");
+        let claims = Claims {
+            sub: "user-uuid".to_owned(),
+            ..Claims::default()
+        };
+
+        let set_cookie = persist_session(&store, &cookie, &claims, Duration::from_mins(1))
+            .await
+            .expect("session persisted");
+
+        // `build` stores the raw sid as the cookie value.
+        let loaded = store
+            .load(set_cookie.value())
+            .await
+            .expect("load")
+            .expect("session present");
+        assert_eq!(loaded.claims.expect("claims").sub, "user-uuid");
+    }
 
     #[test]
     fn extracts_bearer_token() {

@@ -10,7 +10,7 @@ use eyre::{Result as EyreResult, eyre};
 use tracing::instrument;
 use url::Url;
 
-use crate::outpost::proxy::{application::Application, claims::Claims, oauth};
+use crate::outpost::proxy::{application::Application, auth::Authenticated, oauth};
 
 fn header_str<'a>(headers: &'a HeaderMap, name: &str) -> Option<&'a str> {
     headers.get(name)?.to_str().ok()
@@ -56,17 +56,17 @@ pub(super) fn envoy_forward_url(uri: &Uri, headers: &HeaderMap) -> Option<Url> {
 /// 200 response carrying the authenticated user's headers for the reverse proxy.
 fn forward_authenticated_response(
     app: &Application,
-    claims: &Claims,
+    authed: &Authenticated,
     request_headers: &HeaderMap,
 ) -> Response {
     let mut response = StatusCode::OK.into_response();
-    app.add_upstream_headers(response.headers_mut(), claims);
+    app.add_upstream_headers(response.headers_mut(), &authed.claims);
     if let Some(user_agent) = request_headers.get(header::USER_AGENT) {
         response
             .headers_mut()
             .insert(header::USER_AGENT, user_agent.clone());
     }
-    response
+    super::with_session_cookie(app, authed.set_cookie.clone(), response)
 }
 
 /// Shared Traefik/Caddy forward-auth flow (both reconstruct the URL from
@@ -98,10 +98,10 @@ async fn forward_header_auth(
         return super::handle_sign_out(State(app), request).await;
     }
 
-    if let Some(claims) = app.check_auth(request.headers()).await {
+    if let Some(authed) = app.check_auth(request.headers()).await {
         return Ok(forward_authenticated_response(
             &app,
-            &claims,
+            &authed,
             request.headers(),
         ));
     }
@@ -129,10 +129,10 @@ pub(crate) async fn handle_envoy(
         return Ok((StatusCode::BAD_REQUEST, "invalid envoy request").into_response());
     };
 
-    if let Some(claims) = app.check_auth(request.headers()).await {
+    if let Some(authed) = app.check_auth(request.headers()).await {
         return Ok(forward_authenticated_response(
             &app,
-            &claims,
+            &authed,
             request.headers(),
         ));
     }
@@ -158,10 +158,10 @@ pub(crate) async fn handle_nginx(
         return Ok((StatusCode::INTERNAL_SERVER_ERROR, "configuration error").into_response());
     };
 
-    if let Some(claims) = app.check_auth(request.headers()).await {
+    if let Some(authed) = app.check_auth(request.headers()).await {
         return Ok(forward_authenticated_response(
             &app,
-            &claims,
+            &authed,
             request.headers(),
         ));
     }

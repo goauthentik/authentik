@@ -10,6 +10,7 @@ use axum::{
     http::{HeaderMap, StatusCode, Uri, header},
     response::{IntoResponse as _, Response},
 };
+use axum_extra::extract::cookie::Cookie;
 use eyre::eyre;
 use serde::Deserialize;
 use tower::util::ServiceExt as _;
@@ -27,6 +28,23 @@ use crate::outpost::proxy::{
 
 pub(super) mod forward;
 pub(super) mod proxy;
+
+/// Attach a freshly-created session cookie to `response` (if header auth produced
+/// one), signing it with the application's cookie key.
+fn with_session_cookie(
+    app: &Application,
+    set_cookie: Option<Cookie<'static>>,
+    response: Response,
+) -> Response {
+    match set_cookie {
+        Some(cookie) => (
+            app.session_cookie.jar(&HeaderMap::new()).add(cookie),
+            response,
+        )
+            .into_response(),
+        None => response,
+    }
+}
 
 #[instrument(skip_all)]
 pub(crate) async fn handle(app: Arc<Application>, request: Request) -> Result<Response> {
