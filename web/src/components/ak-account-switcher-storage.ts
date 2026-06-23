@@ -3,9 +3,9 @@ import { StorageAccessor } from "#common/storage";
 import type { UserSelf } from "@goauthentik/api";
 
 const ACCOUNT_STORAGE_KEY = "authentik.accounts";
-const BROWSER_STORAGE_KEY = "authentik.browser";
-const BROWSER_COOKIE_NAME = "authentik_browser";
-const BROWSER_COOKIE_AGE_SECONDS = 60 * 60 * 24 * 365;
+const ACCOUNT_SWITCHING_STORAGE_KEY = "authentik.account_switching";
+const ACCOUNT_SWITCHING_COOKIE_NAME = "authentik_account_switching";
+const ACCOUNT_SWITCHING_COOKIE_AGE_SECONDS = 60 * 60 * 24 * 365;
 
 export interface BrowserLocalAccount {
     pk: number;
@@ -26,8 +26,8 @@ function accountStorage(): StorageAccessor {
     return StorageAccessor.local(ACCOUNT_STORAGE_KEY);
 }
 
-function browserStorage(): StorageAccessor {
-    return StorageAccessor.local(BROWSER_STORAGE_KEY);
+function accountSwitchingStorage(): StorageAccessor {
+    return StorageAccessor.local(ACCOUNT_SWITCHING_STORAGE_KEY);
 }
 
 function readCookie(name: string): string | null {
@@ -39,11 +39,11 @@ function readCookie(name: string): string | null {
     return cookie ? decodeURIComponent(cookie.substring(prefix.length)) : null;
 }
 
-function writeBrowserCookie(value: string): void {
+function writeAccountSwitchingCookie(value: string): void {
     const secure = window.location.protocol === "https:";
     document.cookie = [
-        `${BROWSER_COOKIE_NAME}=${encodeURIComponent(value)}`,
-        `Max-Age=${BROWSER_COOKIE_AGE_SECONDS}`,
+        `${ACCOUNT_SWITCHING_COOKIE_NAME}=${encodeURIComponent(value)}`,
+        `Max-Age=${ACCOUNT_SWITCHING_COOKIE_AGE_SECONDS}`,
         "Path=/",
         `SameSite=${secure ? "None" : "Lax"}`,
         secure ? "Secure" : "",
@@ -52,16 +52,16 @@ function writeBrowserCookie(value: string): void {
         .join("; ");
 }
 
-export function syncBrowserToken(): string | null {
-    const token = readCookie(BROWSER_COOKIE_NAME);
+export function syncAccountSwitchingToken(): string | null {
+    const token = readCookie(ACCOUNT_SWITCHING_COOKIE_NAME);
     if (token) {
-        browserStorage().write(token);
+        accountSwitchingStorage().write(token);
         return token;
     }
 
-    const stored = browserStorage().read<string>();
+    const stored = accountSwitchingStorage().read<string>();
     if (stored) {
-        writeBrowserCookie(stored);
+        writeAccountSwitchingCookie(stored);
     }
     return stored;
 }
@@ -161,7 +161,7 @@ export function mergeStoredAccounts(
 
 /** Persist the current user into the deduped local account list. */
 export function syncStoredAccounts(user: Readonly<UserSelf> | null): BrowserLocalAccount[] {
-    syncBrowserToken();
+    syncAccountSwitchingToken();
 
     if (!user) {
         return readStoredAccounts();

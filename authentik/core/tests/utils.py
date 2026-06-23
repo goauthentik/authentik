@@ -43,15 +43,15 @@ def create_test_user(name: str | None = None, **kwargs) -> User:
 
 
 def create_test_session(
-    user: User, browser_key: str | None = None, is_current: bool = True
+    user: User, account_switching_token: str | None = None, is_current: bool = True
 ) -> AuthenticatedSession:
-    """Create a live login for the given user, optionally bound to a browser"""
+    """Create a live login for the given user, optionally bound for account switching."""
     store = SessionStore()
     store.create()
     return AuthenticatedSession.objects.create(
         session=Session.objects.get(session_key=store.session_key),
         user=user,
-        browser_key=browser_key,
+        account_switching_token=account_switching_token,
         is_current=is_current,
     )
 
@@ -90,7 +90,6 @@ def dummy_get_response(request: HttpRequest):  # pragma: no cover
 
 
 class RequestFactory(BaseRequestFactory):
-
     def generic(
         self,
         method: str,
