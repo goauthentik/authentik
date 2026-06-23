@@ -37,7 +37,7 @@ Follow the [LDAP provider setup](/docs/add-secure-apps/providers/ldap/create-lda
 
 Complete the [service account creation](/docs/add-secure-apps/providers/ldap/create-ldap-provider/#create-a-service-account) and [LDAP search permission](/docs/add-secure-apps/providers/ldap/create-ldap-provider/#assign-the-ldap-search-permission-to-the-service-account) steps for the account Emby uses to connect to LDAP.
 
-When configuring the LDAP provider, set the following required configurations:
+When configuring the LDAP provider, set the following required settings:
 
 - **Base DN**: `dc=company,dc=com`
 - **Certificate**: select the certificate that Emby should trust for LDAPS.
@@ -54,7 +54,7 @@ If access to the authentik LDAP application is restricted, allow the LDAP servic
 
 ## Emby configuration
 
-1. Access your Emby server and log in using the administrator account or the currently configured local administrator credentials.
+1. Log in to Emby as an administrator.
 2. Click the **cog icon** in the upper-right corner to access the dashboard settings.
 3. Navigate to the **Plugins** section and click **Catalog** at the top of the page.
 4. Find and install the **LDAP Authentication** plugin. Restart Emby if prompted to complete the installation.
