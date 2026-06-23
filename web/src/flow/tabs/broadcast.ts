@@ -12,7 +12,6 @@ export class Broadcast extends BroadcastChannel implements Disposable {
 
     public static readonly shared = new Broadcast();
 
-    protected exitedTabIDs = new Map<string, string | null>();
     protected discoveredTabIDs = new Set<string>();
     protected shouldSuppressExit = false;
 
@@ -68,8 +67,6 @@ export class Broadcast extends BroadcastChannel implements Disposable {
                 this.discoveredTabIDs.add(sender);
             })
             .with({ type: BroadcastMessageType.Exit }, ({ sender, resumeID }) => {
-                this.exitedTabIDs.set(sender, resumeID);
-
                 window.dispatchEvent(new AKMultiTabExitEvent(sender, resumeID));
             })
             .with({ type: BroadcastMessageType.Continue }, ({ target, resumeID }) => {
@@ -108,7 +105,6 @@ export class Broadcast extends BroadcastChannel implements Disposable {
      */
     public async discoverTabs(): Promise<Set<string>> {
         this.discoveredTabIDs.clear();
-        this.exitedTabIDs.clear();
 
         this.dispatchMessage({
             type: BroadcastMessageType.Discover,

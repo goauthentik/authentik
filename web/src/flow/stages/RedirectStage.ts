@@ -68,15 +68,6 @@ export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeRes
         this.redirect();
     }
 
-    isForeignURL() {
-        try {
-            const destination = new URL(this.challenge!.to, window.origin);
-            return destination.origin === window.origin;
-        } catch {
-            return true;
-        }
-    }
-
     async redirect() {
         console.debug(
             "authentik/stages/redirect: redirecting to url from server",
