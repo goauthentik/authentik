@@ -101,9 +101,9 @@ auth_oauth2.preferred_username_claims.2 = email
 
 auth_oauth2.additional_scopes_key = groups
 auth_oauth2.scope_aliases.1.alias = rabbitmq-administrator
-auth_oauth2.scope_aliases.1.scope = rabbitmq.tag:administrator rabbitmq.read:*/* rabbitmq.write:*/* rabbitmq.configure:*/*
+auth_oauth2.scope_aliases.1.scope = rabbitmq.tag:administrator rabbitmq.read:* rabbitmq.write:* rabbitmq.configure:*
 auth_oauth2.scope_aliases.2.alias = rabbitmq-monitoring
-auth_oauth2.scope_aliases.2.scope = rabbitmq.tag:monitoring rabbitmq.read:*/*
+auth_oauth2.scope_aliases.2.scope = rabbitmq.tag:monitoring rabbitmq.read:*
 
 management.oauth_enabled            = true
 management.oauth_client_id          = <Client ID from authentik>
