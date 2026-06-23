@@ -9,6 +9,9 @@ fn validation(alg: Algorithm, issuer: &str, audience: &str) -> Validation {
     let mut validation = Validation::new(alg);
     validation.set_issuer(&[issuer]);
     validation.set_audience(&[audience]);
+    // Also reject not-yet-valid tokens; jsonwebtoken ignores `nbf` unless asked.
+    // Everything else, including `exp` and its default leeway, is left as default.
+    validation.validate_nbf = true;
     validation
 }
 
@@ -98,12 +101,24 @@ J78973mJGC9/uRJqtkbPBeQ=
 
     const RSA_MODULUS: &str = "8aUR4LsO3PGmvqQiHTbYwWw8gEclUslZfEAPDVaHoeQRw3-ro94Et2DnG-TmPMMs7ng5iYKH-U4EXWmH5phIMT3NGGRfNgB3-5YgLrKRHr4RuQoubxbD2-XW2ssh-IKS_VcWBpvPnwT3gVAEwcXhamEGpyvcH5huDUU9XLYY6wi6cM9EZ0IwW5Q5nGYkll6cv_foV0eXT9O4enI-_JcJEqTJNBBZ2Qvfu0rYVFgBq-52RF01cR4bPndvUe9dtd1gCQkuuBCFDWup0dwfNySEjuP8g1k6gPekDtEH1fDkzWlqlKCk65VVBfZLgf69IYQJdgpzWMWv-3ZIPuXxrZGUVQ";
 
-    fn expiry() -> u64 {
+    fn now() -> u64 {
         SystemTime::now()
             .duration_since(UNIX_EPOCH)
             .expect("system clock before unix epoch")
             .as_secs()
-            + 3_600_u64
+    }
+
+    fn expiry() -> u64 {
+        now() + 3_600_u64
+    }
+
+    fn hs256_token(claims: &Value) -> String {
+        encode(
+            &Header::new(Algorithm::HS256),
+            claims,
+            &EncodingKey::from_secret(b"client-secret"),
+        )
+        .expect("failed to sign token")
     }
 
     fn token_claims() -> Value {
@@ -181,6 +196,38 @@ J78973mJGC9/uRJqtkbPBeQ=
 
         let _ = verify_hs256(&token, secret, "https://evil.example.com/", AUDIENCE)
             .expect_err("should reject mismatched issuer");
+    }
+
+    #[test]
+    fn rejects_expired_token() {
+        // Expired well beyond any leeway — confirms `exp` is still validated.
+        let token = hs256_token(&json!({
+            "iss": ISSUER, "aud": AUDIENCE, "sub": "user", "exp": now() - 3600,
+        }));
+        let _ = verify_hs256(&token, "client-secret", ISSUER, AUDIENCE)
+            .expect_err("expired token must be rejected");
+    }
+
+    #[test]
+    fn accepts_not_yet_valid_within_leeway() {
+        // `nbf` slightly ahead is tolerated by jsonwebtoken's default leeway.
+        let token = hs256_token(&json!({
+            "iss": ISSUER, "aud": AUDIENCE, "sub": "user",
+            "exp": now() + 3600, "nbf": now() + 30,
+        }));
+        verify_hs256(&token, "client-secret", ISSUER, AUDIENCE)
+            .expect("nbf within the default leeway should be accepted");
+    }
+
+    #[test]
+    fn rejects_not_yet_valid_beyond_leeway() {
+        // `nbf` ten minutes ahead is well beyond the default leeway.
+        let token = hs256_token(&json!({
+            "iss": ISSUER, "aud": AUDIENCE, "sub": "user",
+            "exp": now() + 3600, "nbf": now() + 600,
+        }));
+        let _ = verify_hs256(&token, "client-secret", ISSUER, AUDIENCE)
+            .expect_err("nbf beyond the default leeway must be rejected");
     }
 
     #[test]
