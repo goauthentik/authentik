@@ -81,7 +81,9 @@ export class Broadcast extends BroadcastChannel implements Disposable {
 
                 window.dispatchEvent(new AKMultiTabEvent());
             })
-            .exhaustive();
+            .otherwise(() => {
+                this.logger.warn("Unknown broadcast message type", event.data);
+            });
     };
 
     protected pageHideListener = (): void => {
