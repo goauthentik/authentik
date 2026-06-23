@@ -1,0 +1,194 @@
+---
+title: Integrate with Mattermost
+sidebar_label: Mattermost
+support_level: community
+---
+
+import RedirectURI20265Note from "../../_redirect-uri-2026-5-note.mdx";
+import SAMLProvider20265Warning from "../../_saml-provider-2026-5-warning.mdx";
+import TabItem from "@theme/TabItem";
+import Tabs from "@theme/Tabs";
+
+## What is Mattermost?
+
+> Mattermost is an open source collaboration platform for team messaging, workflow orchestration, and integrations.
+>
+> -- https://mattermost.com/
+
+## Preparation
+
+The following placeholders are used in this guide:
+
+- `mattermost.company` is the FQDN of the Mattermost installation.
+- `authentik.company` is the FQDN of the authentik installation.
+
+:::info
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
+
+## Configuration methods
+
+Mattermost Team Edition can use the GitLab OAuth-compatible configuration. SAML is available only in Mattermost Enterprise Edition. This guide explains both options.
+
+<Tabs
+  defaultValue="team"
+  values={[
+    { label: "Team Edition", value: "team" },
+    { label: "Enterprise Edition", value: "enterprise" },
+  ]}>
+  <TabItem value="team">
+
+## authentik configuration
+
+<RedirectURI20265Note />
+
+To support the integration of Mattermost Team Edition with authentik, you need to create a property mapping and an application/provider pair in authentik.
+
+### Create a property mapping
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Customization** > **Property Mappings** and click **Create**. Create a **Scope Mapping** with the following settings:
+    - **Name**: `mattermost-read-user`
+    - **Scope Name**: `read_user`
+    - **Description**: `Mattermost Team Edition user profile`
+    - **Expression**:
+
+        ```python
+        username = request.user.username
+
+        return {
+            "id": request.user.pk,
+            "username": username,
+            "login": username,
+            "preferred_username": username,
+            "email": request.user.email,
+            "name": request.user.name or username,
+        }
+        ```
+
+Mattermost requires the `id` and `email` values from the user profile response. Ensure that users who log in to Mattermost have an email address in authentik.
+
+### Create an application and provider in authentik
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
+    - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
+    - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+        - Note the **Client ID** and **Client Secret** values because they will be required later.
+        - Add the following **Redirect URIs**:
+            - `Strict` `Authorization`: `https://mattermost.company/login/gitlab/complete`
+            - `Strict` `Authorization`: `https://mattermost.company/signup/gitlab/complete`
+        - Under **Advanced protocol settings**, ensure the `openid` scope and the `mattermost-read-user` scope mapping are selected.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
+
+3. Click **Submit** to save the new application and provider.
+
+## Mattermost configuration
+
+Mattermost Team Edition supports the GitLab OAuth 2.0 authentication path. This guide configures Mattermost's GitLab authentication settings to use authentik as the OAuth provider. GitLab is not required.
+
+Mattermost displays this sign-in method as GitLab in some areas of the System Console. The login button text can be changed in `config.json`. If you are using a hosted Mattermost deployment without filesystem access to `config.json`, you cannot complete this setup.
+
+Mattermost Team Edition does not let you freely set all required GitLab OAuth endpoint values in the System Console. Edit the Mattermost `config.json` file directly and update the `GitLabSettings` object.
+
+```json showLineNumbers title="/opt/mattermost/config/config.json"
+"GitLabSettings": {
+    "Enable": true,
+    "Secret": "<Client Secret from authentik>",
+    "Id": "<Client ID from authentik>",
+    "Scope": "",
+    "AuthEndpoint": "https://authentik.company/application/o/authorize/",
+    "TokenEndpoint": "https://authentik.company/application/o/token/",
+    "UserAPIEndpoint": "https://authentik.company/application/o/userinfo/",
+    "ButtonText": "Log in with authentik"
+}
+```
+
+Restart Mattermost after saving the file.
+
+Leave `Scope` empty as shown so authentik can issue the scopes selected on the provider.
+
+If new Mattermost users should be created on first login, log in to Mattermost as an administrator, open the product menu, select **System Console**, and navigate to **Authentication** > **Signup**. Ensure account creation is enabled, or create Mattermost users before they log in with authentik.
+
+  </TabItem>
+  <TabItem value="enterprise">
+
+## authentik configuration
+
+<SAMLProvider20265Warning />
+
+To support the integration of Mattermost Enterprise Edition with authentik via SAML, you need a certificate-key pair for Mattermost and an application/provider pair in authentik.
+
+### Prepare a Mattermost certificate-key pair
+
+Use an existing certificate-key pair from authentik, or generate one if you do not already have one available.
+
+To generate one, log in to authentik as an administrator, open the authentik Admin interface, navigate to **System** > **Certificates**, and click **Generate**. Use the following values:
+
+- **Common Name**: `mattermost.company`
+- **Private key Algorithm**: `RSA`
+
+Click the caret next to the certificate-key pair you will use for Mattermost, then click **Download Certificate** and **Download Private key**. These files will be required in the Mattermost configuration. Keep them safe. Mattermost uses the private key for request signing and assertion decryption.
+
+### Create an application and provider in authentik
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Take note of the **Slug** as it will be required later.
+    - **Choose a Provider type**: select **SAML Provider** as the provider type.
+    - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+        - Set the **ACS URL** to `https://mattermost.company/login/sso/saml`.
+        - Set the **Audience** to `https://mattermost.company/login/sso/saml`.
+        - Under **Advanced protocol settings**:
+            - Select an available **Signing Certificate**.
+            - Enable **Sign responses**.
+            - Set the **Verification Certificate** to the Mattermost certificate-key pair.
+            - Set the **Encryption Certificate** to the Mattermost certificate-key pair.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
+
+3. Click **Submit** to save the new application and provider.
+
+### Download the authentik signing certificate
+
+1. Navigate to **Applications** > **Providers** and click the name of the SAML provider you created earlier.
+2. Under **Related objects** > **Download signing certificate**, click **Download**. This certificate file will be required in the next section.
+
+## Mattermost configuration
+
+1. Log in to Mattermost as an administrator.
+2. Open the product menu, select **System Console**, and navigate to **Authentication** > **SAML 2.0**.
+3. Configure the following settings:
+    - **Enable Login With SAML 2.0**: enable this setting.
+    - **Identity Provider Metadata URL**: `https://authentik.company/application/saml/<application_slug>/metadata/`
+    - Click **Get SAML Metadata from IdP** to populate the Identity Provider fields from authentik metadata.
+    - **Identity Provider Public Certificate**: upload the authentik signing certificate you downloaded earlier if it was not populated from metadata.
+    - **Verify Signature**: enable this setting.
+    - **Service Provider Login URL**: `https://mattermost.company/login/sso/saml`
+    - **Service Provider Identifier**: `https://mattermost.company/login/sso/saml`
+    - **Enable Encryption**: enable this setting.
+    - **Service Provider Private Key**: upload the Mattermost private key downloaded from authentik.
+    - **Service Provider Public Certificate**: upload the Mattermost certificate downloaded from authentik.
+    - **Sign Request**: enable this setting.
+    - **Signature Algorithm**: `RSAwithSHA256`
+    - **Email Attribute**: `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress`
+    - **Username Attribute**: `http://schemas.goauthentik.io/2021/02/saml/username`
+    - **Id Attribute**: `http://schemas.goauthentik.io/2021/02/saml/uid`
+4. Click **Save**.
+
+Ensure that users who log in to Mattermost have both an email address and username in authentik.
+
+  </TabItem>
+</Tabs>
+
+## Configuration verification
+
+To confirm that authentik is properly configured with Mattermost, log out and log back in via authentik.
+
+## Resources
+
+- [Mattermost Docs - Editions and offerings](https://docs.mattermost.com/product-overview/editions-and-offerings.html)
+- [Mattermost Docs - GitLab Single Sign-On](https://docs.mattermost.com/administration-guide/onboard/sso-gitlab.html)
+- [Mattermost Docs - SAML Single Sign-On](https://docs.mattermost.com/administration-guide/onboard/sso-saml.html)
+- [Mattermost Docs - Authentication configuration settings](https://docs.mattermost.com/administration-guide/configure/authentication-configuration-settings.html)
+- [Mattermost GitLab OAuth provider implementation](https://github.com/mattermost/mattermost/blob/master/server/channels/app/oauthproviders/gitlab/gitlab.go)
