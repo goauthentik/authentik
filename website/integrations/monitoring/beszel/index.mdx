@@ -31,7 +31,7 @@ To support the integration of Beszel with authentik, you need to create an email
 
 ### Create an email verification scope mapping in authentik
 
-Beszel requires the email scope to return a value of `email_verified: True`. As of [authentik 2025.10](/docs/releases/2025/v2025.10.md#default-oauth-scope-mappings) the default behavior is to return `email_verified: False`, so a custom scope mapping is required for Beszel to allow authentication.
+Beszel requires the email scope to return a value of `email_verified: True`. As of [authentik 2025.10](/docs/releases/2025/v2025.10.md#default-oauth-scope-mappings), the default behavior is to return `email_verified: False`, so a custom scope mapping is required for Beszel to allow authentication.
 
 Refer to [Email scope verification](/docs/add-secure-apps/providers/oauth2/index.mdx#email-scope-verification) for instructions on how to create the required custom scope mapping.
 
@@ -78,9 +78,9 @@ Beszel uses PocketBase as its server backend. When you install Beszel, PocketBas
 
 ### User creation and password login
 
-Beszel does not create users automatically by default. Before a user can sign in with authentik, either create the user manually in the **users** collection with an email address that matches their authentik email address, or set the `USER_CREATION=true` environment variable for the Beszel hub.
+Beszel does not create users automatically by default. Before a user can sign in with authentik, either create the user manually in the **users** collection with an email address that matches their authentik email address, or enable automatic user creation by setting the `USER_CREATION=true` environment variable on the Beszel hub.
 
-To disable password login and use only OAuth/OIDC authentication, set the `DISABLE_PASSWORD_AUTH=true` environment variable for the Beszel hub. Avoid changing this setting directly in PocketBase because Beszel applies the environment variable value again on restart.
+To disable password-based login and require OAuth/OIDC authentication instead, set the `DISABLE_PASSWORD_AUTH=true` environment variable on the Beszel hub. Avoid changing this setting directly in PocketBase, because Beszel will overwrite it with the environment variable value on restart.
 
 ## Configuration verification
 
