@@ -271,6 +271,18 @@ pub(super) async fn handle_auth_callback(
     };
 
     let max_age = max_age_until(claims.exp);
+    if max_age.is_zero() {
+        // The token is already expired (it only got here within the verification
+        // leeway). Don't persist a dead session; clear the cookie and restart the
+        // flow.
+        warn!("callback token already expired; clearing session and restarting");
+        return Ok((
+            jar.remove(app.session_cookie.removal()),
+            (StatusCode::FOUND, [(header::LOCATION, location)]),
+        )
+            .into_response());
+    }
+
     let data = SessionData {
         claims: Some(claims),
         redirect: None,
