@@ -74,12 +74,12 @@ Create groups that grant user and administrator access to Jellyfin.
 2. Set **Name** to a group name such as `jellyfin_users`.
 3. Click **Create**.
 4. Open the group, select the **Users** tab, and add the users who should have access to Jellyfin.
-5. Repeat these steps with a group name such as `jellyfin_admins` if you want LDAP group membership to grant Jellyfin administrator access.
+5. Repeat these steps with a group name such as `jellyfin_admins` if you want to grant Jellyfin administrator access via LDAP group membership.
 
 ## Jellyfin configuration
 
-1. Navigate to your Jellyfin installation and log in with the administrator account or currently configured local administrator.
-2. Open the **Administrator dashboard** by selecting your profile icon in the top-right corner, then clicking **Dashboard**.
+1. Log in to Jellyfin as an administrator.
+2. Open the **Administrator Dashboard** by clicking your profile icon in the top-right corner and selecting **Dashboard**.
 3. Navigate to **Plugins** > **Catalog** and install the **LDAP Authentication** plugin.
 4. Restart Jellyfin if prompted.
 5. Return to **Plugins**, click the three dots on the **LDAP-Auth Plugin** card, and click **Settings**.
@@ -99,7 +99,7 @@ Create groups that grant user and administrator access to Jellyfin.
     - **LDAP Uid Attribute**: `uid`
     - **LDAP Username Attribute**: `cn`
 
-10. To grant Jellyfin administrator access through LDAP, set **LDAP Admin Filter** to `(memberOf=cn=jellyfin_admins,ou=groups,dc=company,dc=com)`. If you leave this empty, configure Jellyfin administrator access manually.
+10. _(Optional)_ Set **LDAP Admin Filter** to `(memberOf=cn=jellyfin_admins,ou=groups,dc=company,dc=com)` to grant Jellyfin administrator access based on LDAP group membership. Otherwise, leave this unset and assign Jellyfin administrator access manually.
 11. Click **Save and Test LDAP Filter Settings**. If the settings are correct, Jellyfin shows the number of matching users and administrators.
 12. Enter a username in **Test Login Name**, then click **Save Search Attribute Settings and Query User** to confirm that Jellyfin can find the user.
 13. Under **Jellyfin User Settings**, configure the following settings:
@@ -118,4 +118,4 @@ If the login does not succeed, open **Administration** > **Dashboard** > **Logs*
 ## Resources
 
 - [Jellyfin LDAP Authentication plugin](https://github.com/jellyfin/jellyfin-plugin-ldapauth)
-- [Jellyfin plugin installation documentation](https://jellyfin.org/docs/general/server/plugins/#installing)
+- [Jellyfin plugin installation](https://jellyfin.org/docs/general/server/plugins/#installing)
