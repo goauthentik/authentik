@@ -6,6 +6,7 @@ from typing import TYPE_CHECKING
 from django.contrib.auth import BACKEND_SESSION_KEY, HASH_SESSION_KEY, SESSION_KEY
 from django.contrib.sessions.backends.db import SessionStore as SessionBase
 from django.core.exceptions import SuspiciousOperation
+from django.db import transaction
 from django.http import HttpRequest
 from django.utils import timezone
 from django.utils.functional import cached_property
@@ -49,13 +50,17 @@ def bind_authenticated_session_to_browser(
 
     browser_key = SessionMiddleware.ensure_browser_key(request)
     if browser_key:
-        AuthenticatedSession.objects.filter(browser_key=browser_key).exclude(
-            session=authenticated_session.session
-        ).update(is_current=False)
-        if authenticated_session.browser_key != browser_key or not authenticated_session.is_current:
-            authenticated_session.browser_key = browser_key
-            authenticated_session.is_current = True
-            authenticated_session.save(update_fields=["browser_key", "is_current"])
+        with transaction.atomic():
+            AuthenticatedSession.objects.filter(browser_key=browser_key).exclude(
+                session=authenticated_session.session
+            ).update(is_current=False)
+            if (
+                authenticated_session.browser_key != browser_key
+                or not authenticated_session.is_current
+            ):
+                authenticated_session.browser_key = browser_key
+                authenticated_session.is_current = True
+                authenticated_session.save(update_fields=["browser_key", "is_current"])
     return authenticated_session
 
 

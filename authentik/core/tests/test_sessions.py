@@ -1,5 +1,7 @@
 """Session browser grouping tests"""
 
+from unittest.mock import patch
+
 from django.conf import settings
 from django.contrib.auth.models import AnonymousUser
 from django.http import HttpResponse
@@ -7,7 +9,12 @@ from django.test import RequestFactory, TestCase
 from django.urls import reverse
 from django.utils.crypto import get_random_string
 
-from authentik.core.sessions import SessionStore, authenticated_session_from_request
+from authentik.core.models import AuthenticatedSession
+from authentik.core.sessions import (
+    SessionStore,
+    authenticated_session_from_request,
+    bind_authenticated_session_to_browser,
+)
 from authentik.core.tests.utils import create_test_session, create_test_user
 from authentik.root.middleware import (
     BROWSER_COOKIE_KEY_LENGTH,
@@ -73,6 +80,26 @@ class TestSessionSuperseding(TestCase):
         other_browser = create_test_session(
             self.user, browser_key=get_random_string(BROWSER_COOKIE_KEY_LENGTH)
         )
+        target = create_test_session(self.user)
+        original_save = AuthenticatedSession.save
+
+        def fail_target_save(instance, *args, **kwargs):
+            if instance.pk == target.pk:
+                raise RuntimeError("activation failed")
+            return original_save(instance, *args, **kwargs)
+
+        request = RequestFactory().get("/")
+        request.browser_key = browser_key
+        with patch.object(
+            AuthenticatedSession,
+            "save",
+            autospec=True,
+            side_effect=fail_target_save,
+        ):
+            with self.assertRaises(RuntimeError):
+                bind_authenticated_session_to_browser(request, target)
+        previous.refresh_from_db()
+        self.assertTrue(previous.is_current)
 
         request = RequestFactory().get("/")
         request.browser_key = browser_key
