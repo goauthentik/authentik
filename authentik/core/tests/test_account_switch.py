@@ -117,11 +117,14 @@ class TestAccountSwitch(FlowTestCase):
 
         response = self.client.get(self.switch_url(self.other_user))
 
-        self.assertEqual(response.status_code, 400)
-        self.assertContains(
-            response,
-            "Account switching requires an active session.",
-            status_code=400,
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(
+            urlsplit(response.url).path,
+            reverse("authentik_flows:default-authentication"),
+        )
+        self.assertEqual(
+            parse_qs(urlsplit(response.url).query)["next"],
+            [self.switch_url(self.other_user)],
         )
 
     def test_switch_with_live_session(self):

@@ -3,6 +3,7 @@
 from typing import Any
 from urllib.parse import urlencode
 
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import Http404, HttpRequest, HttpResponse
 from django.utils import timezone
 from django.utils.translation import gettext as _
@@ -22,7 +23,7 @@ from authentik.lib.views import bad_request_message
 QS_ACCOUNT_SWITCH_STALE = "account_switch_stale"
 
 
-class AccountSwitchView(View):
+class AccountSwitchView(LoginRequiredMixin, View):
     """Authenticate another login held by this browser."""
 
     def get(self, request: HttpRequest, user_pk: int) -> HttpResponse:
@@ -32,12 +33,6 @@ class AccountSwitchView(View):
                 request,
                 _("Account switching is disabled."),
                 title="Account switching disabled",
-            )
-        if not request.user.is_authenticated:
-            return bad_request_message(
-                request,
-                _("Account switching requires an active session."),
-                title="Account switching unavailable",
             )
         context = {}
         session = self.get_browser_session(request, user_pk)
