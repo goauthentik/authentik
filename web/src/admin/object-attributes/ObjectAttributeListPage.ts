@@ -5,7 +5,7 @@ import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 import "#components/ak-status-label";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
@@ -14,11 +14,12 @@ import { SlottedTemplateResult } from "#elements/types";
 import { CoreApi, ObjectAttribute, ObjectAttributeTypeEnum } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { html, TemplateResult } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { html } from "lit";
+import { customElement } from "lit/decorators.js";
 
-export function objectAttributeTypeToLabel(type?: ObjectAttributeTypeEnum): string {
+export function formatObjectAttributeType(type?: ObjectAttributeTypeEnum): string {
     if (!type) return "";
+
     switch (type) {
         case ObjectAttributeTypeEnum.Text:
             return msg("Text");
@@ -27,30 +28,28 @@ export function objectAttributeTypeToLabel(type?: ObjectAttributeTypeEnum): stri
         case ObjectAttributeTypeEnum.Boolean:
             return msg("Boolean");
     }
+
     return msg("Unknown type");
 }
 
 @customElement("ak-object-attribute-list")
 export class ObjectAttributeListPage extends TablePage<ObjectAttribute> {
     protected override searchEnabled = true;
-    public pageTitle = msg("Object attributes");
-    public pageDescription = "Configure attributes on objects such as users and groups.";
-    public pageIcon = "pf-icon pf-icon-flavor";
-
     protected override rowLabel(item: ObjectAttribute): string | null {
         return item.pk ?? null;
     }
 
-    checkbox = true;
-    clearOnRefresh = true;
+    public pageTitle = msg("Object attributes");
+    public pageDescription = "Configure attributes on objects such as users and groups.";
+    public pageIcon = "pf-icon pf-icon-flavor";
 
-    @property()
-    order = "key";
+    public override checkbox = true;
+    public override clearOnRefresh = true;
 
-    async apiEndpoint(): Promise<PaginatedResponse<ObjectAttribute>> {
-        return new CoreApi(DEFAULT_CONFIG).coreObjectAttributesList(
-            await this.defaultEndpointConfig(),
-        );
+    public override order = "key";
+
+    protected override async apiEndpoint(): Promise<PaginatedResponse<ObjectAttribute>> {
+        return aki(CoreApi).coreObjectAttributesList(await this.defaultEndpointConfig());
     }
 
     protected columns: TableColumn[] = [
@@ -61,8 +60,7 @@ export class ObjectAttributeListPage extends TablePage<ObjectAttribute> {
         [msg("Actions"), null, msg("Row Actions")],
     ];
 
-    renderToolbarSelected(): TemplateResult {
-        const disabled = this.selectedElements.length < 1;
+    protected override renderToolbarSelected(): SlottedTemplateResult {
         return html`<ak-forms-delete-bulk
             object-label=${msg("Object Attribute(s)")}
             .objects=${this.selectedElements}
@@ -74,35 +72,37 @@ export class ObjectAttributeListPage extends TablePage<ObjectAttribute> {
                 ];
             }}
             .delete=${(item: ObjectAttribute) => {
-                return new CoreApi(DEFAULT_CONFIG).coreObjectAttributesDestroy({
+                return aki(CoreApi).coreObjectAttributesDestroy({
                     attributeId: item.pk,
                 });
             }}
         >
-            <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-danger">
+            <button
+                ?disabled=${!this.selectedElements.length}
+                slot="trigger"
+                class="pf-c-button pf-m-danger"
+            >
                 ${msg("Delete")}
             </button>
         </ak-forms-delete-bulk>`;
     }
 
-    renderObjectCreate(): TemplateResult {
-        return html`
-            <ak-forms-modal>
-                <span slot="submit">${msg("Create")}</span>
-                <span slot="header">${msg("New Attribute")}</span>
-                <ak-object-attribute-form slot="form"> </ak-object-attribute-form>
-                <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Create")}</button>
-            </ak-forms-modal>
-        `;
+    protected override renderObjectCreate(): SlottedTemplateResult {
+        return html`<ak-forms-modal>
+            <span slot="submit">${msg("Create")}</span>
+            <span slot="header">${msg("New Attribute")}</span>
+            <ak-object-attribute-form slot="form"> </ak-object-attribute-form>
+            <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Create")}</button>
+        </ak-forms-modal>`;
     }
 
-    row(item: ObjectAttribute): SlottedTemplateResult[] {
+    protected override row(item: ObjectAttribute): SlottedTemplateResult[] {
         return [
             html`<div>
                 <div>${item.group}: ${item.label}</div>
                 <code>${item.key}</code>
             </div>`,
-            html`${objectAttributeTypeToLabel(item.type)}`,
+            html`${formatObjectAttributeType(item.type)}`,
             html`<ak-status-label ?good=${item.enabled} type="info"></ak-status-label>`,
             html`${item.objectTypeObj.verboseNamePlural}`,
             html`<ak-forms-modal>
@@ -117,7 +117,7 @@ export class ObjectAttributeListPage extends TablePage<ObjectAttribute> {
                         <i class="fas fa-edit" aria-hidden="true"></i>
                     </pf-tooltip>
                 </button>
-            </ak-forms-modal> `,
+            </ak-forms-modal>`,
         ];
     }
 }

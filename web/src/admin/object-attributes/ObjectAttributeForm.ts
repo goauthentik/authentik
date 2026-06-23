@@ -5,9 +5,10 @@ import "#elements/forms/SearchSelect/index";
 import "#components/ak-text-input";
 import "#components/ak-switch-input";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { ModelForm } from "#elements/forms/ModelForm";
+import { SlottedTemplateResult } from "#elements/types";
 
 import {
     AdminApi,
@@ -19,13 +20,13 @@ import {
 } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { html, TemplateResult } from "lit";
+import { html } from "lit";
 import { customElement } from "lit/decorators.js";
 
 @customElement("ak-object-attribute-form")
 export class ObjectAttributeForm extends ModelForm<ObjectAttribute, string> {
     async loadInstance(pk: string): Promise<ObjectAttribute> {
-        return await new CoreApi(DEFAULT_CONFIG).coreObjectAttributesRetrieve({
+        return aki(CoreApi).coreObjectAttributesRetrieve({
             attributeId: pk,
         });
     }
@@ -37,21 +38,25 @@ export class ObjectAttributeForm extends ModelForm<ObjectAttribute, string> {
     }
 
     async send(data: ObjectAttribute): Promise<ObjectAttribute> {
-        data.regex = data.regex !== "" ? data.regex : undefined;
+        if (data.regex === "") {
+            data.regex = undefined;
+        }
+
         if (this.instance?.pk) {
-            return new CoreApi(DEFAULT_CONFIG).coreObjectAttributesUpdate({
+            return aki(CoreApi).coreObjectAttributesUpdate({
                 attributeId: this.instance.pk,
                 objectAttributeRequest: data,
             });
         }
-        return new CoreApi(DEFAULT_CONFIG).coreObjectAttributesCreate({
+
+        return aki(CoreApi).coreObjectAttributesCreate({
             objectAttributeRequest: data,
         });
     }
 
     //#region Renders
 
-    protected override renderForm(): TemplateResult {
+    protected override renderForm(): SlottedTemplateResult {
         return html`<ak-text-input
                 name="label"
                 value="${this.instance?.label ?? ""}"
@@ -99,20 +104,17 @@ export class ObjectAttributeForm extends ModelForm<ObjectAttribute, string> {
                 >
                 </ak-radio>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label="Object type" name="objectType" required>
+            <ak-form-element-horizontal label=${msg("Object type")} name="objectType" required>
                 <ak-search-select
-                    .fetchObjects=${async (): Promise<App[]> => {
+                    .fetchObjects=${(): Promise<App[]> => {
                         const args: AdminModelsListRequest = {
                             filterHasAttributes: true,
                         };
-                        return await new AdminApi(DEFAULT_CONFIG).adminModelsList(args);
+
+                        return aki(AdminApi).adminModelsList(args);
                     }}
-                    .renderElement=${(app: App): string => {
-                        return app.label;
-                    }}
-                    .value=${(app: App | undefined): string | undefined => {
-                        return app?.name;
-                    }}
+                    .renderElement=${(app: App): string => app.label}
+                    .value=${(app?: App) => app?.name}
                     .selected=${(app: App): boolean => {
                         return app.name === this.instance?.objectTypeObj.fullyQualifiedModel;
                     }}
