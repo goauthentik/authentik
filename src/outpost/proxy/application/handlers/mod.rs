@@ -235,18 +235,40 @@ pub(super) async fn handle_auth_callback(
     };
 
     let redirect_uri = oauth::callback_redirect_uri(&app.provider.external_host)?;
-    let access_token = backchannel::exchange_code(
-        &app.api_config.client,
-        &app.endpoint.token_url,
-        app.token_host.as_deref(),
-        &code,
-        &redirect_uri,
-        client_id,
-        client_secret,
-    )
-    .await?;
 
-    let claims = app.verify_token(&access_token).await?;
+    // Where to send the user once the callback resolves — the originally requested
+    // URL carried in the state, falling back to the external host. Used both on
+    // success and to restart the flow on a redeem failure.
+    let location = if state.redirect.is_empty() {
+        app.provider.external_host.clone()
+    } else {
+        state.redirect
+    };
+
+    // Redeem the code and verify the resulting token. On failure, send the user
+    // back to the app rather than erroring, so the auth flow simply restarts
+    // instead of dead-ending on an error page.
+    let redeemed = async {
+        let access_token = backchannel::exchange_code(
+            &app.api_config.client,
+            &app.endpoint.token_url,
+            app.token_host.as_deref(),
+            &code,
+            &redirect_uri,
+            client_id,
+            client_secret,
+        )
+        .await?;
+        app.verify_token(&access_token).await
+    }
+    .await;
+    let claims = match redeemed {
+        Ok(claims) => claims,
+        Err(err) => {
+            warn!(?err, "failed to redeem callback; restarting auth flow");
+            return Ok((StatusCode::FOUND, [(header::LOCATION, location)]).into_response());
+        }
+    };
 
     let max_age = max_age_until(claims.exp);
     let data = SessionData {
@@ -255,11 +277,6 @@ pub(super) async fn handle_auth_callback(
     };
     app.session_store.save(&sid, &data, max_age).await?;
 
-    let location = if state.redirect.is_empty() {
-        app.provider.external_host.clone()
-    } else {
-        state.redirect
-    };
     let cookie = app.session_cookie.build(&sid, max_age);
     Ok((
         jar.add(cookie),
