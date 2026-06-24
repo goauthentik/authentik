@@ -1,0 +1,9 @@
+/* Barrel file that imports the parts of Patternfly we're using with the
+ * document stylesheet.
+ */
+
+@import "#styles/global/vendor/patternfly-globals.css" layer(reset);
+@import "#styles/global/vendor/patternfly-themes.css" layer(vendor);
+@import "#styles/global/vendor/patternfly-fa-icons.css" layer(vendor);
+@import "#styles/global/vendor/patternfly-pf-icons.css" layer(vendor);
+@import "@patternfly/patternfly/components/Spinner/spinner.css" layer(components);
