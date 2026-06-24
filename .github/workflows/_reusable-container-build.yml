@@ -20,6 +20,10 @@ on:
         description: "Build args to pass to Docker"
         required: false
         type: string
+      should-cache:
+        description: "Whether a build cache should be created"
+        type: boolean
+        default: false
     outputs:
       image-digest:
         value: "${{ jobs.build.outputs.image-digest }}"
@@ -37,6 +41,7 @@ jobs:
       image-arch: amd64
       image-dockerfile: "${{ inputs.image-dockerfile }}"
       image-build-args: "${{ inputs.image-build-args }}"
+      should-cache: "${{ inputs.should-cache }}"
   build-arm64:
     uses: ./.github/workflows/_reusable-container-build-single.yml
     secrets: inherit
@@ -47,6 +52,7 @@ jobs:
       image-arch: arm64
       image-dockerfile: "${{ inputs.image-dockerfile }}"
       image-build-args: "${{ inputs.image-build-args }}"
+      should-cache: "${{ inputs.should-cache }}"
   merge:
     runs-on: ubuntu-latest
     needs:
