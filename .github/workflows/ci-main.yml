@@ -25,6 +25,11 @@ permissions:
 
 jobs:
   build:
+    permissions:
+      # Needed to upload cache to ghcr.io
+      packages: write
+      # Needed for checkout
+      contents: read
     strategy:
       fail-fast: false
       matrix:
