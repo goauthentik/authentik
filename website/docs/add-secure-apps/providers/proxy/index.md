@@ -97,19 +97,6 @@ Do not use the request's `X-authentik-meta-jwks` header as the source of trust f
 JWT verification rejects forged tokens, but a valid, unexpired JWT is still a bearer credential. Prevent direct access to the upstream application so that requests can only reach it through the outpost or the reverse proxy that enforces forward auth. Otherwise an attacker could replay a valid `X-authentik-jwt` or spoof the plain identity headers by contacting the application directly.
 :::
 
-### Similar pattern in Cloudflare Access
-
-If you are familiar with [Cloudflare Access JWT validation](https://developers.cloudflare.com/cloudflare-one/access-controls/applications/http-apps/authorization-cookie/validating-json/), the validation model is similar:
-
-| Concern                | authentik proxy provider                         | Cloudflare Access                                             |
-| ---------------------- | ------------------------------------------------ | ------------------------------------------------------------- |
-| Signed identity token  | `X-authentik-jwt` header                         | `Cf-Access-Jwt-Assertion` header or `CF_Authorization` cookie |
-| Key set for validation | `/application/o/<application-slug>/jwks/` (JWKS) | `https://<team>.cloudflareaccess.com/cdn-cgi/access/certs`    |
-| Issuer claim (`iss`)   | Provider issuer from OpenID Configuration        | `https://<team>.cloudflareaccess.com`                         |
-| Audience claim (`aud`) | Provider `client_id`                             | Application Audience (AUD) tag                                |
-
-In both designs, a proxy authenticates the user and forwards a signed token that the upstream application can verify against a published key set. That cryptographic check complements, but does not replace, the requirement to keep the upstream application from being reached directly.
-
 ## HTTPS
 
 The outpost listens on port `9000` for HTTP and port `9443` for HTTPS.
