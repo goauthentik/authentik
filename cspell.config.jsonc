@@ -219,6 +219,7 @@
         "SshRsa",
         "UnicodeRef",
         "Email",
+        "FOUC",
         "HashStrings",
         "AKQL"
     ],
@@ -333,6 +334,7 @@
         "*.stories.{ts,tsx}", // Storybook stories
         "*.min.{js,css}", // Minified JS and CSS files
         "*.min.{js,css}.map", // Source maps for minified files
+        "./web/src/styles/global/vendor/patternfly-fa-icons.css", // Tokens in comments
         //#region Python
         "pyproject.toml",
         "unittest.xml", // Pytest output
