@@ -29,15 +29,15 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - image: server
+          - name: server
             dockerfile: Dockerfile
-          - image: proxy
+          - name: proxy
             dockerfile: proxy.Dockerfile
-          - image: ldap
+          - name: ldap
             dockerfile: ldap.Dockerfile
-          - image: radius
+          - name: radius
             dockerfile: radius.Dockerfile
-          - image: rac
+          - name: rac
             dockerfile: rac.Dockerfile
     uses: ./.github/workflows/_reusable-container-build.yml
     secrets: inherit
