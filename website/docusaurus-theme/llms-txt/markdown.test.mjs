@@ -24,4 +24,13 @@ test("cleanMdxToMarkdown strips a custom directive but keeps its text", async ()
     const out = await cleanMdxToMarkdown(input, resolve(FIXTURE, "topic-a/page-one.md"));
     assert.ok(!out.includes(":::"), "directive markers removed");
     assert.ok(out.includes("Body."), "surrounding prose preserved");
+    assert.ok(out.includes("Available since 2024.1"), "inner directive prose preserved");
+});
+
+test("cleanMdxToMarkdown falls back instead of throwing on malformed frontmatter", async () => {
+    const input = "---\nfoo: [unclosed\n---\n\n# Title\n\nReal body text.";
+    const out = await cleanMdxToMarkdown(input, resolve(FIXTURE, "topic-a/page-one.md"));
+    assert.equal(typeof out, "string");
+    assert.ok(out.includes("Real body text."), "body survives the fallback");
+    assert.ok(!out.includes("foo: [unclosed"), "raw frontmatter is stripped in fallback");
 });
