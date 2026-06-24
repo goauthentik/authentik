@@ -46,6 +46,7 @@ lib64/
 parts/
 dist/
 out/
+.wireit/
 sdist/
 var/
 wheels/

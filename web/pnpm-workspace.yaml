@@ -12,6 +12,7 @@ packages:
   # them as workspace importers, committing phantom entries that every local
   # `pnpm install` prunes right back out.
   - "!packages/prettier-config"
+  - "!packages/theme"
   - "!packages/tsconfig"
 
 # pnpm's default isolated linker exposes packages strictly — only declared

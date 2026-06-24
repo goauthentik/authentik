@@ -86,7 +86,9 @@ asns
 backblazeb2
 cbor
 cloudflarestorage
+consolas
 copylefted
+culori
 cves
 describedby
 dialector
@@ -124,6 +126,7 @@ wasabisys
 LLM
 LLMS
 mcomplete
+menlo
 mermaidjs
 microsoft
 mmdb
@@ -134,6 +137,7 @@ maplibregl
 noopener
 noreferrer
 ocsp
+oklch
 oktadev
 openidc
 ouia
