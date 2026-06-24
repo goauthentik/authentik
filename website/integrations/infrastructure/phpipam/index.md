@@ -16,7 +16,6 @@ The following placeholders are used in this guide:
 
 - `phpipam.company` is the FQDN of the phpipam.
 - `authentik.company` is the FQDN of the authentik installation.
-- `<application_slug>` is the **Slug** of the application in authentik
 - `test-user[0-2]` in place of actual usernames
 - `admin-permission-group` in place of your company naming convention
 - `operator-permission-group` in place of your company naming convention
