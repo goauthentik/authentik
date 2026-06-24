@@ -162,6 +162,22 @@ function removeNumberedPrefixes(pathStr) {
 }
 
 /**
+ * Determine a doc's grouping key.
+ *
+ * @param {{ path: string }} doc
+ * @param {{ groupBy?: "topic"|"category", categories?: [string,string][] }} opts
+ * @returns {string}
+ */
+export function assignGroup(doc, opts) {
+    const first = doc.path.split("/")[0] || "";
+    if (opts.groupBy === "category" && Array.isArray(opts.categories)) {
+        const found = opts.categories.find(([dir]) => dir === first);
+        return found ? found[1] : first;
+    }
+    return first;
+}
+
+/**
  * Resolve a site-relative path to its rendered route URL.
  *
  * @param {string} relPathNoExt Site-relative path, POSIX, no extension.
