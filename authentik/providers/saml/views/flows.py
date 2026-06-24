@@ -116,7 +116,7 @@ class SAMLFlowFinalView(ChallengeStageView):
                         PLAN_CONTEXT_TITLE,
                         _("Redirecting to {app}...".format_map({"app": application.name})),
                     ),
-                    "url": provider.acs_url,
+                    "url": auth_n_request.acs_url or provider.acs_url,
                     "attrs": form_attrs,
                 },
             )
@@ -135,7 +135,7 @@ class SAMLFlowFinalView(ChallengeStageView):
             if auth_n_request.relay_state:
                 url_args[REQUEST_KEY_RELAY_STATE] = auth_n_request.relay_state
             querystring = urlencode(url_args)
-            return redirect(f"{provider.acs_url}?{querystring}")
+            return redirect(f"{auth_n_request.acs_url or provider.acs_url}?{querystring}")
         return bad_request_message(request, "Invalid sp_binding specified")
 
     def get_challenge(self, *args, **kwargs) -> Challenge:
