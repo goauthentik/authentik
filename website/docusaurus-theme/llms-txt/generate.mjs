@@ -114,3 +114,38 @@ export function renderPagePayload(doc) {
     const desc = doc.description ? `\n> ${doc.description.replace(/\s+/g, " ").trim()}\n` : "";
     return `# ${doc.title}\n${desc}\n${doc.content.trim()}\n`;
 }
+
+/**
+ * Generate a per-group (topic/category) index for the third level.
+ *
+ * @param {AKLlmsDocInfo[]} docs
+ * @param {{ title: string, description: string, parentUrl: string }} opts
+ * @returns {Map<string, string>} group dir -> llms.txt contents
+ */
+export function generatePerGroupIndexes(docs, opts) {
+    /** @type {Map<string, AKLlmsDocInfo[]>} */
+    const byGroup = new Map();
+    for (const doc of docs) {
+        const key = doc.group;
+        if (!key) continue;
+        if (!byGroup.has(key)) byGroup.set(key, []);
+        const items = byGroup.get(key);
+        if (items) items.push(doc);
+    }
+
+    /** @type {Map<string, string>} */
+    const out = new Map();
+    for (const [group, groupDocs] of byGroup) {
+        // Flatten group so generateIndex emits a flat TOC, not nested headings.
+        const flat = groupDocs.map((d) => ({ ...d, group: undefined }));
+        out.set(
+            group,
+            generateIndex(flat, {
+                title: `${opts.title} — ${group}`,
+                description: opts.description,
+                crossLinks: [{ label: "Index", url: opts.parentUrl }],
+            }),
+        );
+    }
+    return out;
+}
