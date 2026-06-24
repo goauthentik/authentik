@@ -1,11 +1,10 @@
 /* Entrypoint file for the CSS used by the Flow application */
 
 @import "#styles/layers.css";
-@import "#styles/global/vendor/patternfly.css";
-@import "#fonts/RedHat/faces.css";
+@import "#styles/global/vendor/patternfly.css" layer(global);
+@import "#fonts/RedHat/faces.css" layer(global);
 
-@import "#styles/authentik/base/fonts.css";
-@import "#styles/authentik/base/variables.css";
+@import "#styles/global/tokens/variables.css";
 @import "#styles/authentik/base/scrollbars.css";
 @import "#styles/authentik/base/globals.css";
 @import "#styles/authentik/base/common.css";
