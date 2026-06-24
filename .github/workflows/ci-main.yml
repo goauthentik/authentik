@@ -320,6 +320,15 @@ jobs:
             glob: tests/e2e/test_endpoints_*
             profiles: selenium
     steps:
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v5
+        with:
+          pattern: container-build-*
+          merge-multiple: true
+      - run: |
+          for image in proxy ldap radius rac; do
+            skopeo copy oci-archive:container/amd64.tar "docker-daemon:ghcr.io/goauthentik/dev-${image}:${{ needs.build-compute-tags.outputs.tag-full }}"
+          done
+          rm -rf container/
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v5
       - name: Setup authentik env
         uses: ./.github/actions/setup
@@ -328,15 +337,6 @@ jobs:
           COMPOSE_PROFILES: ${{ matrix.job.profiles }}
         run: |
           docker compose -f tests/e2e/compose.yml up -d --quiet-pull
-      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v5
-        with:
-          name: container-build-proxy,container-build-ldap,container-build-radius,container-build-rac
-          merge-multiple: true
-      - run: |
-          for image in proxy ldap radius rac; do
-            skopeo copy oci-archive:container/amd64.tar "docker-daemon:ghcr.io/goauthentik/dev-${image}:${{ needs.build-compute-tags.outputs.tag-full }}"
-          done
-          rm -rf container/
       - uses: ./.github/actions/setup-node
       - id: cache-web
         uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v4
