@@ -1,18 +1,24 @@
 /* This is our global layer definition file.  It needs to be imported at the very top of every
  * barrel file for the CSS at the document level.
  *
- * - `reset`: The CSS reset.
+ * - `reset`: The CSS reset.  Currently unused: the existing reset is mashed into Patternfly
  *
- * - `vendor`: Patternfly code. Import with `@import "patternfly-<specific>.css" layer(legacy);`
+ * - `vendor`: Patternfly code. Import with `@import "patternfly-<specific>.css" layer(vendor);`
  *
- * - `components`: Top (document-level) CSS defining either light-DOM properties, or `:host` CSS
- *   variables that our products use for internal self-definition.
+ * - `components`: Top (document-level) CSS defining:
+ *   - Components that are top-level and in the light-DOM to provide compatibility with
+ *     automated tools like password managers
+ *   - The `:root{}` entries, one per component, that map the global CSS variables to the variables
+ *     used to control the look and feel of elements within the the shadowDOM of that component.
  *
  * - `theme`: The default CSS custom properties defining the overall theme for our product.
  *
+ * - `mode`: The CSS custom properties that override the theme when defining properties for
+ *   light/dark mode, improved contrast mode, and reduced motion mode.
+ *
  * - `brand`: Brand overrides for CSS custom properties and component properties defining our
- *   product.
+ *   product. 
  */
 
-@layer reset, vendor, components, theme, brand;
+@layer reset, vendor, components, theme, mode, brand;
 
