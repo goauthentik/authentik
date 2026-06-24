@@ -430,7 +430,7 @@ jobs:
           - rac
     steps:
       - id: compute-tags
-        shell: python3
+        shell: python
         env:
           SHA: "${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha }}"
         run: |
