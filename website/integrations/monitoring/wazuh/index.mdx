@@ -52,6 +52,12 @@ To support the integration of Wazuh with authentik, you need to create a group, 
 
 ### Create an application and provider in authentik
 
+:::warning SAML provider changes in authentik 2026.5
+authentik 2026.5 introduces changes to how the SAML provider behaves. Specifically, the provider now automatically sets the **Issuer** value to: `https://authentik.company/application/saml/<application_slug>/metadata/`
+
+Older versions of authentik set this value to `authentik` by default. If you're running an older version, please set **Issuer** to `https://authentik.company/application/saml/<application_slug>/metadata/`, where `<application_slug>` is the **slug** that you selected for the application.
+:::
+
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **New Application** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
 
@@ -200,10 +206,24 @@ And the `metadata_file`, `kibana_url`, and `exchange_key` parameters in the `sam
 
     Click **Save role mapping**
 
-4. On the Wazuh Dashboard server, add these lines to the `/etc/wazuh-dashboard/opensearch_dashboards.yml` file:
+4. On the Wazuh Dashboard server, add these lines to the `/etc/wazuh-dashboard/opensearch_dashboards.yml` file. If the entry `opensearch_security.session.keepalive` already exists in your config, change it to `false`.
 
     ```yaml showLineNumbers
     opensearch_security.auth.type: "saml"
+    server.xsrf.allowlist:
+        [
+            "/_opendistro/_security/saml/acs",
+            "/_opendistro/_security/saml/logout",
+            "/_opendistro/_security/saml/acs/idpinitiated",
+        ]
+    opensearch_security.session.keepalive: false
+    ```
+
+    Use this config block if you want to use both authentication methods (username/password and SSO):
+
+    ```yaml showLineNumbers
+    opensearch_security.auth.type: ["basicauth", "saml"]
+    opensearch_security.auth.multiple_auth_enabled: true
     server.xsrf.allowlist:
         [
             "/_opendistro/_security/saml/acs",

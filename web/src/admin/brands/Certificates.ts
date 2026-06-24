@@ -1,4 +1,4 @@
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import {
     DataProvider,
@@ -17,7 +17,7 @@ export const certificateProvider: DataProvider = async (
     page = 1,
     search = "",
 ): Promise<DataProvision> => {
-    return new CryptoApi(DEFAULT_CONFIG)
+    return aki(CryptoApi)
         .cryptoCertificatekeypairsList({
             ordering: "name",
             pageSize: 20,
@@ -41,7 +41,7 @@ export function certificateSelector(
     }
 
     return async () => {
-        const pm = new CryptoApi(DEFAULT_CONFIG);
+        const pm = aki(CryptoApi);
         const mappings = await Promise.allSettled(
             instanceMappings.map((instanceId) =>
                 pm.cryptoCertificatekeypairsRetrieve({ kpUuid: instanceId }),

@@ -4,6 +4,8 @@ sidebar_label: KitchenOwl
 support_level: community
 ---
 
+import RedirectURI20265Note from "../../\_redirect-uri-2026-5-note.mdx";
+
 ## What is KitchenOwl?
 
 > KitchenOwl is a smart self-hosted grocery list and recipe manager. Easily add items to your shopping list before you go shopping. You can also create recipes and set up meal plans to help you organize your cooking.
@@ -23,6 +25,8 @@ This documentation lists only the settings that you need to change from their de
 
 ## authentik configuration
 
+<RedirectURI20265Note />
+
 To support the integration of KitchenOwl with authentik, you need to create an application/provider pair in authentik.
 
 ### Create an application and provider in authentik
@@ -33,7 +37,7 @@ To support the integration of KitchenOwl with authentik, you need to create an a
     - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
         - Note the **Client ID**, **Client Secret** values because they will be required later.
-        - Create two `Strict` redirect URIs and set them to `https://kitchenowl.company/signin/redirect` and `kitchenowl:/signin/redirect`.
+        - Add two **Redirect URIs** of type `Strict` `Authorization` as `https://kitchenowl.company/signin/redirect` and `kitchenowl:/signin/redirect`.
 
 3. Click **Submit** to save the new application and provider.
 

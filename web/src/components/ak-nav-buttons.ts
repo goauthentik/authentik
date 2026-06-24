@@ -3,7 +3,7 @@ import "#components/ak-switch-input";
 import "#elements/buttons/ActionButton/ak-action-button";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { globalAK } from "#common/global";
 import { formatUserDisplayName } from "#common/users";
 
@@ -158,7 +158,7 @@ export class NavigationButtons extends WithNotifications(WithSession(AKElement))
         if (!this.impersonating) return nothing;
 
         const onClick = async () => {
-            await new CoreApi(DEFAULT_CONFIG).coreUsersImpersonateEndRetrieve();
+            await aki(CoreApi).coreUsersImpersonateEndRetrieve();
             window.location.reload();
         };
 

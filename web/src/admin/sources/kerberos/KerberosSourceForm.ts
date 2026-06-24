@@ -14,7 +14,7 @@ import "#elements/forms/SearchSelect/index";
 
 import { propertyMappingsProvider, propertyMappingsSelector } from "./KerberosSourceFormHelpers.js";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { RadioOption } from "#elements/forms/Radio";
 
@@ -67,20 +67,20 @@ function createSyncOutgoingTriggerModeOptions(): RadioOption<SyncOutgoingTrigger
 @customElement("ak-source-kerberos-form")
 export class KerberosSourceForm extends BaseSourceForm<KerberosSource> {
     async loadInstance(pk: string): Promise<KerberosSource> {
-        return new SourcesApi(DEFAULT_CONFIG).sourcesKerberosRetrieve({
+        return aki(SourcesApi).sourcesKerberosRetrieve({
             slug: pk,
         });
     }
 
     async send(data: KerberosSource): Promise<KerberosSource> {
         if (this.instance) {
-            return new SourcesApi(DEFAULT_CONFIG).sourcesKerberosPartialUpdate({
+            return aki(SourcesApi).sourcesKerberosPartialUpdate({
                 slug: this.instance.slug,
                 patchedKerberosSourceRequest: data,
             });
         }
 
-        return new SourcesApi(DEFAULT_CONFIG).sourcesKerberosCreate({
+        return aki(SourcesApi).sourcesKerberosCreate({
             kerberosSourceRequest: data as unknown as KerberosSourceRequest,
         });
     }

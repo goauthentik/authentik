@@ -26,6 +26,9 @@ export const DEFAULT_CONFIG = new Configuration({
     ],
 });
 
+// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/freeze
+Object.freeze(DEFAULT_CONFIG);
+
 export function brandSetFavicon(brand: CurrentBrand) {
     /**
      *  <link rel="icon" href="/static/dist/assets/icons/icon.png">
