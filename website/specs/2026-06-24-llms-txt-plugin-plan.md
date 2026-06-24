@@ -348,6 +348,7 @@ import { parseDocFile } from "./node.mjs";
 
 test("parseDocFile reads frontmatter title and description", () => {
     const info = parseDocFile(resolve(FIXTURE, "topic-a/index.mdx"), FIXTURE);
+    assert.ok(info, "non-draft file parses to a record"); // also narrows away null
     assert.equal(info.title, "Topic A Overview");
     assert.equal(info.description, "The overview page for Topic A.");
     assert.equal(info.path, "topic-a"); // index collapses
@@ -355,6 +356,7 @@ test("parseDocFile reads frontmatter title and description", () => {
 
 test("parseDocFile falls back to first heading and first paragraph", () => {
     const info = parseDocFile(resolve(FIXTURE, "topic-a/page-one.md"), FIXTURE);
+    assert.ok(info, "non-draft file parses to a record"); // also narrows away null
     assert.equal(info.title, "Page One"); // frontmatter title present
     assert.equal(info.description, "First real paragraph of page one.");
     assert.equal(info.path, "topic-a/page-one");
