@@ -34,3 +34,19 @@ test("cleanMdxToMarkdown falls back instead of throwing on malformed frontmatter
     assert.ok(out.includes("Real body text."), "body survives the fallback");
     assert.ok(!out.includes("foo: [unclosed"), "raw frontmatter is stripped in fallback");
 });
+
+test("cleanMdxToMarkdown strips admonition fences but keeps inner prose", async () => {
+    const input = "# T\n\n:::info Heads up\nImportant note.\n:::\n\nAfter.";
+    const out = await cleanMdxToMarkdown(input, resolve(FIXTURE, "topic-a/page-one.md"));
+    assert.ok(!out.includes(":::"), "no admonition fence markers remain");
+    assert.ok(!out.includes("\\:::"), "no escaped fence markers remain");
+    assert.ok(out.includes("Important note."), "inner prose preserved");
+    assert.ok(out.includes("After."), "following prose preserved");
+});
+
+test("cleanMdxToMarkdown preserves ::: inside fenced code blocks", async () => {
+    const input = "# T\n\n```bash\naws s3 ls arn:::resource\n:::standalone-in-code\n```\n\nBody.";
+    const out = await cleanMdxToMarkdown(input, resolve(FIXTURE, "topic-a/page-one.md"));
+    assert.ok(out.includes("arn:::resource"), "inline ::: in code preserved");
+    assert.ok(out.includes(":::standalone-in-code"), "::: line inside code fence preserved");
+});
