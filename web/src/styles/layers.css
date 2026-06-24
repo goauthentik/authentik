@@ -1,18 +1,20 @@
+@layer reset, vendor, components, theme, brand;
+
 /* This is our global layer definition file.  It needs to be imported at the very top of every
  * barrel file for the CSS at the document level.
  *
  * - `reset`: The CSS reset.
  *
- * - `vendor`: Patternfly code. Import with `@import "patternfly-<specific>.css" layer(legacy);`
+ * - `legacy`: Patternfly code. Import with
+ *   `@import "patternfly-<specific>.css" layer(legacy);`
  *
- * - `components`: Top (document-level) CSS defining either light-DOM properties, or `:host` CSS
- *   variables that our products use for internal self-definition.
+ * - `components`: Top (document-level) CSS defining either light-DOM
+ *   properties, or `:host` CSS variables that our products use for internal
+ *   self-definition.
  *
- * - `theme`: The default CSS custom properties defining the overall theme for our product.
+ * - `theme`: The default CSS custom properties defining the overall theme for
+ *   our product.
  *
- * - `brand`: Brand overrides for CSS custom properties and component properties defining our
- *   product.
+ * - `brand`: Brand overrides for CSS custom properties and component properties
+ *   defining our product.
  */
-
-@layer reset, vendor, components, theme, brand;
-
