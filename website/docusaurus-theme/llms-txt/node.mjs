@@ -115,3 +115,69 @@ export function parseDocFile(filePath, baseDir) {
         content,
     };
 }
+
+/**
+ * @param {string[]} routesPaths
+ * @param {string} tail
+ * @returns {string | undefined}
+ */
+function findMatchingRoute(routesPaths, tail) {
+    const normalized = tail.toLowerCase().replace(/\/+$/, "");
+    if (!normalized) return undefined;
+
+    const matches = routesPaths.filter((route) => {
+        const r = route.toLowerCase().replace(/\/+$/, "");
+        return r === `/${normalized}` || r.endsWith(`/${normalized}`);
+    });
+
+    if (matches.length <= 1) return matches[0];
+    return matches.sort((a, b) => a.length - b.length)[0];
+}
+
+/**
+ * @param {string} urlPath
+ * @returns {string}
+ */
+function collapseMatchingTrailingSegment(urlPath) {
+    const segments = urlPath.split("/");
+    if (segments.length >= 2) {
+        const last = segments[segments.length - 1];
+        const parent = segments[segments.length - 2];
+        if (last && parent && last.toLowerCase() === parent.toLowerCase()) {
+            return segments.slice(0, -1).join("/");
+        }
+    }
+    return urlPath;
+}
+
+/**
+ * @param {string} pathStr
+ * @returns {string}
+ */
+function removeNumberedPrefixes(pathStr) {
+    return pathStr
+        .split("/")
+        .map((segment) => segment.replace(/^\d+-/, ""))
+        .join("/");
+}
+
+/**
+ * Resolve a site-relative path to its rendered route URL.
+ *
+ * @param {string} relPathNoExt Site-relative path, POSIX, no extension.
+ * @param {string[]} routesPaths Resolved routes from Docusaurus postBuild props.
+ * @returns {string | undefined}
+ */
+export function resolveDocumentUrl(relPathNoExt, routesPaths) {
+    if (!routesPaths || routesPaths.length === 0) return undefined;
+
+    const tails = new Set([relPathNoExt]);
+    tails.add(collapseMatchingTrailingSegment(relPathNoExt));
+    tails.add(removeNumberedPrefixes(relPathNoExt));
+
+    for (const tail of tails) {
+        const match = findMatchingRoute(routesPaths, tail);
+        if (match) return match;
+    }
+    return undefined;
+}
