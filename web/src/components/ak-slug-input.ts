@@ -93,19 +93,7 @@ export class AkSlugInput extends HorizontalLightComponent<string> {
             return;
         }
 
-        // A very primitive heuristic: if the previous iteration of the slug and the current
-        // iteration are *similar enough*, set the input value. "Similar enough" here is defined as
-        // "any event which adds or removes a character but leaves the rest of the slug looking like
-        // the previous iteration, set it to the current iteration."
-
         const newSlug = slugify(ev.target.value);
-        const oldSlug = this.input.value;
-        const [shorter, longer] =
-            newSlug.length < oldSlug.length ? [newSlug, oldSlug] : [oldSlug, newSlug];
-
-        if (longer.substring(0, shorter.length) !== shorter) {
-            return;
-        }
 
         // The browser, as a security measure, sets the originating HTML object to be the
         // target; developers cannot change it. In order to provide a meaningful value
