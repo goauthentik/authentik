@@ -27,10 +27,23 @@ test("parseDocFile reads frontmatter title and description", () => {
     assert.equal(info.path, "topic-a"); // index collapses
 });
 
-test("parseDocFile falls back to first heading and first paragraph", () => {
+test("parseDocFile uses frontmatter title and first paragraph for description", () => {
     const info = parseDocFile(resolve(FIXTURE, "topic-a/page-one.md"), FIXTURE);
     assert.ok(info, "non-draft file parses to a record");
     assert.equal(info.title, "Page One"); // frontmatter title present
     assert.equal(info.description, "First real paragraph of page one.");
     assert.equal(info.path, "topic-a/page-one");
+});
+
+test("parseDocFile derives title from first heading when frontmatter has none", () => {
+    const PARSE = resolve(__dirname, "__fixtures__", "parse");
+    const info = parseDocFile(resolve(PARSE, "heading-only.md"), PARSE);
+    assert.ok(info, "non-draft file parses to a record");
+    assert.equal(info.title, "Heading Title");
+    assert.equal(info.description, "Heading-derived page body.");
+});
+
+test("parseDocFile returns null for draft files", () => {
+    const PARSE = resolve(__dirname, "__fixtures__", "parse");
+    assert.equal(parseDocFile(resolve(PARSE, "draft.md"), PARSE), null);
 });
