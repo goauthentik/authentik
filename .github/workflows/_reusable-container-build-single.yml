@@ -6,32 +6,36 @@ on:
     inputs:
       runs-on:
         description: "Runner to use to build the image"
-        required: true
         type: string
+        required: true
       ref:
         description: "Git ref to build the image from"
-        required: true
         type: string
+        required: true
       image-name:
         description: "Name of the image to build"
-        required: true
         type: string
+        required: true
       image-arch:
         description: "Target architecture to build the image. Will be prefixed by linux/ and passed to docker buildx build --platform"
-        required: true
         type: string
+        required: true
       image-dockerfile:
         description: "Path to the Dockerfile to build from"
-        required: true
         type: string
+        required: true
       image-build-args:
         description: "Build args to pass to Docker"
-        required: false
         type: string
+        default: ""
       should-cache:
         description: "Whether a build cache should be created"
         type: boolean
         default: false
+      cache-suffix:
+        description: "Suffix to add to the buildcache tag"
+        type: string
+        default: ""
     outputs:
       image-digest:
         value: "${{ jobs.build.outputs.image-digest }}"
@@ -75,8 +79,9 @@ jobs:
           # outputs
           push: false
           cache-from: |
-            type=registry,ref=ghcr.io/goauthentik/dev-${{ inputs.image-name }}:buildcache-${{ inputs.image-arch }}
-          cache-to: "${{ inputs.should-cache && format('type=registry,ref=ghcr.io/goauthentik/dev-{0}:buildcache-{1},mode=max', inputs.image-name, inputs.image-arch) || '' }}"
+            type=registry,ref=ghcr.io/goauthentik/dev-${{ inputs.image-name }}:buildcache-${{ inputs.image-arch }}-main
+            type=registry,ref=ghcr.io/goauthentik/dev-${{ inputs.image-name }}:buildcache-${{ inputs.image-arch }}${{ inputs.cache-suffix }}
+          cache-to: "${{ inputs.should-cache && format('type=registry,ref=ghcr.io/goauthentik/dev-{0}:buildcache-{1}{2},mode=max', inputs.image-name, inputs.image-arch, inputs.cache-suffix) || '' }}"
           attests: |
             type=provenance,mod=max
           outputs: |

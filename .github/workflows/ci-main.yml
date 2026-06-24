@@ -24,7 +24,42 @@ permissions:
   id-token: write
 
 jobs:
+  build-compute-tags:
+    runs-on: ubuntu-latest
+    outputs:
+      safe-branch-name: "${{ steps.compute-tags.outputs.safe-branch-name }}"
+      tag-full: "${{ steps.compute-tags.outputs.tag-full }}"
+      tag-branch: "${{ steps.compute-tags.outputs.tag-branch }}"
+      tag-flux: "${{ steps.compute-tags.outputs.tag-flux }}"
+    steps:
+      - id: compute-tags
+        shell: python
+        env:
+          SHA: "${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha }}"
+        run: |
+          import os
+          from time import time
+
+          sha = os.environ["SHA"]
+          short_sha = sha[:7]
+
+          branch_name = os.environ["GITHUB_REF"]
+          if os.environ.get("GITHUB_HEAD_REF", "") != "":
+              branch_name = os.environ["GITHUB_HEAD_REF"]
+          safe_branch_name = branch_name.replace("refs/heads/", "").replace("/", "-").replace("'", "-")
+
+          tag_full = f"gh-{sha}"
+          tag_branch = f"gh-{safe_branch_name}"
+          tag_flux = f"gh-{int(time())}-{short_sha}"
+
+          with open(os.environ["GITHUB_OUTPUT"], "a+", encoding="utf-8") as _output:
+              print(f"safe-branch-name={safe_branch_name}", file=_output)
+              print(f"tag-full={tag_full}", file=_output)
+              print(f"tag-branch={tag_branch}", file=_output)
+              print(f"tag-flux={tag_flux}", file=_output)
   build:
+    needs:
+      - build-compute-tags
     permissions:
       # Needed to upload cache to ghcr.io
       packages: write
@@ -53,6 +88,7 @@ jobs:
       image-build-args: |
         GIT_BUILD_HASH=${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha }}
       should-cache: "${{ github.repository == 'goauthentik/authentik' }}"
+      cache-suffix: "-${{ needs.build-compute-tags.outputs.safe-branch-name }}"
   lint:
     strategy:
       fail-fast: false
@@ -414,7 +450,9 @@ jobs:
           jobs: ${{ toJSON(needs) }}
   publish:
     if: "${{ github.repository == 'goauthentik/authentik' }}"
-    needs: build
+    needs:
+      - build-compute-tags
+      - build
     permissions:
       # Needed to upload container images to ghcr.io
       packages: write
@@ -434,30 +472,6 @@ jobs:
           - radius
           - rac
     steps:
-      - id: compute-tags
-        shell: python
-        env:
-          SHA: "${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha }}"
-        run: |
-          import os
-          from time import time
-
-          sha = os.environ["SHA"]
-          short_sha = sha[:7]
-
-          branch_name = os.environ["GITHUB_REF"]
-          if os.environ.get("GITHUB_HEAD_REF", "") != "":
-              branch_name = os.environ["GITHUB_HEAD_REF"]
-          safe_branch_name = branch_name.replace("refs/heads/", "").replace("/", "-").replace("'", "-")
-
-          tag_full = f"gh-{sha}"
-          tag_branch = f"gh-{safe_branch_name}"
-          tag_flux = f"gh-{int(time())}-{short_sha}"
-
-          with open(os.environ["GITHUB_OUTPUT"], "a+", encoding="utf-8") as _output:
-              print(f"tag-full={tag_full}", file=_output)
-              print(f"tag-branch={tag_branch}", file=_output)
-              print(f"tag-flux={tag_flux}", file=_output)
       - uses: regclient/actions/regctl-installer@4b4db1dcc7dad75ad67a788a380f75a20cc8a040
       # logs in to ghcr.io by default
       - uses: regclient/actions/regctl-login@4b4db1dcc7dad75ad67a788a380f75a20cc8a040
@@ -466,25 +480,10 @@ jobs:
           name: "container-build-${{ matrix.name }}"
       - name: publish
         run: |
-          echo regctl image import "ghcr.io/goauthentik/dev-${{ inputs.image-name }}:${{ steps.compute-tags.outputs.tag-full }}" "container/${{ inputs.image-name }}.oci.tar"
-          echo regctl image import "ghcr.io/goauthentik/dev-${{ inputs.image-name }}:${{ steps.compute-tags.outputs.tag-branch }}" "container/${{ inputs.image-name }}.oci.tar"
-          echo regctl image import "ghcr.io/goauthentik/dev-${{ inputs.image-name }}:${{ steps.compute-tags.outputs.tag-flux }}" "container/${{ inputs.image-name }}.oci.tar"
+          echo regctl image import "ghcr.io/goauthentik/dev-${{ inputs.image-name }}:${{ needs.build-compute-tags.outputs.tag-full }}" "container/${{ inputs.image-name }}.oci.tar"
+          echo regctl image import "ghcr.io/goauthentik/dev-${{ inputs.image-name }}:${{ needs.build-compute-tags.outputs.tag-branch }}" "container/${{ inputs.image-name }}.oci.tar"
+          echo regctl image import "ghcr.io/goauthentik/dev-${{ inputs.image-name }}:${{ needs.build-compute-tags.outputs.tag-flux }}" "container/${{ inputs.image-name }}.oci.tar"
 
-  # build:
-  #   permissions:
-  #     # Needed to upload container images to ghcr.io
-  #     packages: write
-  #     # Needed for attestation
-  #     id-token: write
-  #     attestations: write
-  #     # Needed for checkout
-  #     contents: read
-  #   needs: ci-core-mark
-  #   uses: ./.github/workflows/_reusable-docker-build.yml
-  #   secrets: inherit
-  #   with:
-  #     image_name: ${{ github.repository == 'goauthentik/authentik-internal' && 'ghcr.io/goauthentik/internal-server' || 'ghcr.io/goauthentik/dev-server' }}
-  #     release: false
   # pr-comment:
   #   needs:
   #     - build
