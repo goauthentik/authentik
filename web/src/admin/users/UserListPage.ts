@@ -14,7 +14,7 @@ import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { userTypeToLabel } from "#common/labels";
 import { DefaultUIConfig } from "#common/ui/config";
 import { formatUserDisplayName } from "#common/users";
@@ -80,7 +80,7 @@ export class UserListPage extends WithLicenseSummary(
         `,
     ];
 
-    #api = new CoreApi(DEFAULT_CONFIG);
+    #api = aki(CoreApi);
 
     public override expandable = true;
     public override checkbox = true;
@@ -98,8 +98,11 @@ export class UserListPage extends WithLicenseSummary(
     @property({ type: String })
     public order = "-last_login";
 
-    @property({ type: String, useDefault: true })
+    @property({ type: String, attribute: "active-path", useDefault: true })
     public activePath: string = DefaultUIConfig.defaults.userPath;
+
+    @property({ type: String, attribute: "default-active-path", useDefault: true })
+    public defaultActivePath: string = DefaultUIConfig.defaults.userPath;
 
     @state()
     protected hideDeactivated = getURLParam<boolean>("hideDeactivated", false);
@@ -109,18 +112,39 @@ export class UserListPage extends WithLicenseSummary(
 
     protected canImpersonate = false;
 
-    public override connectedCallback(): void {
-        super.connectedCallback();
+    //#region Lifecycle
 
+    /**
+     * Synchronizes `activePath` and `defaultActivePath` from three sources in priority order:
+     *
+     * 1. URL param (explicit navigation)
+     * 2. Brand default user path (admin-configured override)
+     * 3. Compiled-in `DefaultUIConfig` default (fallback)
+     *
+     * `activePath` is set to `""` (show all users) when neither a URL param nor a
+     * brand-level override is present, avoiding silent list filtering.
+     * `defaultActivePath` always resolves to a value via the fallback chain.
+     */
+    protected synchronizeUserPaths(): void {
         this.canImpersonate = this.can(CapabilitiesEnum.CanImpersonate);
 
         const initialDefaultUserPath = DefaultUIConfig.defaults.userPath;
         const brandDefaultUserPath = this.uiConfig.defaults.userPath;
+        const defaultUserPath = brandDefaultUserPath || initialDefaultUserPath;
+        const userPathParam = getURLParam<string>("path", "");
 
-        this.activePath = getURLParam<string>(
-            "path",
-            brandDefaultUserPath || initialDefaultUserPath,
-        );
+        const pathPresent =
+            (userPathParam && userPathParam !== "") || defaultUserPath !== initialDefaultUserPath;
+
+        const resolvedUserPath = pathPresent ? userPathParam || defaultUserPath : "";
+
+        this.activePath = resolvedUserPath;
+        this.defaultActivePath = userPathParam || defaultUserPath;
+    }
+
+    public override connectedCallback(): void {
+        super.connectedCallback();
+        this.synchronizeUserPaths();
     }
 
     protected override async apiEndpoint(): Promise<PaginatedResponse<User>> {
@@ -137,6 +161,17 @@ export class UserListPage extends WithLicenseSummary(
 
         return users;
     }
+
+    //#endregion
+
+    //#region Event Listeners
+
+    protected treeViewRefreshListener = (ev: CustomEvent<{ path: string }>) => {
+        this.activePath = ev.detail.path;
+        this.defaultActivePath = ev.detail.path;
+    };
+
+    //#endregion
 
     protected buildExportParams = async (): Promise<CoreUsersExportCreateRequest> => {
         return {
@@ -346,15 +381,15 @@ export class UserListPage extends WithLicenseSummary(
     }
 
     protected renderObjectCreate(): SlottedTemplateResult {
-        const { activePath } = this;
+        const { defaultActivePath } = this;
 
-        return guard([activePath], () => {
+        return guard([defaultActivePath], () => {
             return [
                 html`<button
                     class="pf-c-button pf-m-primary"
                     type="button"
                     ${modalInvoker(AKUserWizard, {
-                        defaultPath: activePath,
+                        defaultPath: defaultActivePath,
                     })}
                     aria-description=${msg("Open the new user wizard")}
                 >
@@ -383,10 +418,8 @@ export class UserListPage extends WithLicenseSummary(
                     <ak-treeview
                         label=${msg("User paths")}
                         .items=${this.userPaths?.paths || []}
-                        activePath=${this.activePath}
-                        @ak-refresh=${(ev: CustomEvent<{ path: string }>) => {
-                            this.activePath = ev.detail.path;
-                        }}
+                        default-active-path=${this.activePath}
+                        @ak-refresh=${this.treeViewRefreshListener}
                     ></ak-treeview>
                 </div>
             </div>

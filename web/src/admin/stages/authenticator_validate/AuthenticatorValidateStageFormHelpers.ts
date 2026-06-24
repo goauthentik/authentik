@@ -1,4 +1,4 @@
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { DualSelectPair } from "#elements/ak-dual-select/types";
 
@@ -9,7 +9,7 @@ import { Stage, StagesApi } from "@goauthentik/api";
 const stageToSelect = (stage: Stage) => [stage.pk, `${stage.name} (${stage.verboseName})`];
 
 export async function stagesProvider(page = 1, search = "") {
-    const stages = await new StagesApi(DEFAULT_CONFIG).stagesAllList({
+    const stages = await aki(StagesApi).stagesAllList({
         ordering: "name",
         pageSize: 20,
         search: search.trim(),
@@ -28,7 +28,7 @@ export function stagesSelector(instanceStages: string[] | undefined) {
             stages.filter(([_0, _1, _2, stage]: DualSelectPair<Stage>) => stage !== undefined);
     }
     return async () => {
-        const stagesApi = new StagesApi(DEFAULT_CONFIG);
+        const stagesApi = aki(StagesApi);
         const stages = await Promise.allSettled(
             instanceStages.map((instanceId) =>
                 stagesApi.stagesAllRetrieve({ stageUuid: instanceId }),
@@ -42,9 +42,7 @@ export function stagesSelector(instanceStages: string[] | undefined) {
 }
 
 export async function authenticatorWebauthnDeviceTypesListProvider(page = 1, search = "") {
-    const devicetypes = await new StagesApi(
-        DEFAULT_CONFIG,
-    ).stagesAuthenticatorWebauthnDeviceTypesList({
+    const devicetypes = await aki(StagesApi).stagesAuthenticatorWebauthnDeviceTypesList({
         pageSize: 20,
         search: search.trim(),
         page,

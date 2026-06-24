@@ -6,7 +6,7 @@ import "#elements/forms/SearchSelect/index";
 
 import { countryCache } from "./CountryCache.js";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { DataProvision, DualSelectPair } from "#elements/ak-dual-select/types";
 
@@ -25,7 +25,7 @@ function countryToPair(country: GeoIPPolicyCountriesObjInner): DualSelectPair {
 @customElement("ak-policy-geoip-form")
 export class GeoIPPolicyForm extends BasePolicyForm<GeoIPPolicy> {
     loadInstance(pk: string): Promise<GeoIPPolicy> {
-        return new PoliciesApi(DEFAULT_CONFIG).policiesGeoipRetrieve({
+        return aki(PoliciesApi).policiesGeoipRetrieve({
             policyUuid: pk,
         });
     }
@@ -38,12 +38,12 @@ export class GeoIPPolicyForm extends BasePolicyForm<GeoIPPolicy> {
         }
 
         if (this.instance) {
-            return new PoliciesApi(DEFAULT_CONFIG).policiesGeoipUpdate({
+            return aki(PoliciesApi).policiesGeoipUpdate({
                 policyUuid: this.instance.pk || "",
                 geoIPPolicyRequest: data,
             });
         }
-        return new PoliciesApi(DEFAULT_CONFIG).policiesGeoipCreate({
+        return aki(PoliciesApi).policiesGeoipCreate({
             geoIPPolicyRequest: data,
         });
     }

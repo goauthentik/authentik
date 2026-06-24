@@ -3,7 +3,7 @@ import "#admin/common/ak-flow-search/ak-branded-flow-search";
 
 import { renderForm } from "./LDAPProviderFormForm.js";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { WithBrandConfig } from "#elements/mixins/branding";
 
@@ -21,19 +21,19 @@ import { customElement } from "lit/decorators.js";
 @customElement("ak-provider-ldap-form")
 export class LDAPProviderFormPage extends WithBrandConfig(BaseProviderForm<LDAPProvider>) {
     async loadInstance(pk: number): Promise<LDAPProvider> {
-        return new ProvidersApi(DEFAULT_CONFIG).providersLdapRetrieve({
+        return aki(ProvidersApi).providersLdapRetrieve({
             id: pk,
         });
     }
 
     async send(data: LDAPProvider): Promise<LDAPProvider> {
         if (this.instance) {
-            return new ProvidersApi(DEFAULT_CONFIG).providersLdapUpdate({
+            return aki(ProvidersApi).providersLdapUpdate({
                 id: this.instance.pk,
                 lDAPProviderRequest: data,
             });
         }
-        return new ProvidersApi(DEFAULT_CONFIG).providersLdapCreate({
+        return aki(ProvidersApi).providersLdapCreate({
             lDAPProviderRequest: data,
         });
     }

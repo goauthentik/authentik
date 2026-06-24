@@ -12,58 +12,78 @@
  * Do not edit the class manually.
  */
 
-import type {
-    DockerServiceConnection,
-    DockerServiceConnectionRequest,
-    KubernetesServiceConnection,
-    KubernetesServiceConnectionRequest,
-    LDAPCheckAccess,
-    Outpost,
-    OutpostDefaultConfig,
-    OutpostHealth,
-    OutpostRequest,
-    PaginatedDockerServiceConnectionList,
-    PaginatedKubernetesServiceConnectionList,
-    PaginatedLDAPOutpostConfigList,
-    PaginatedOutpostList,
-    PaginatedProxyOutpostConfigList,
-    PaginatedRadiusOutpostConfigList,
-    PaginatedServiceConnectionList,
-    PatchedDockerServiceConnectionRequest,
-    PatchedKubernetesServiceConnectionRequest,
-    PatchedOutpostRequest,
-    RadiusCheckAccess,
-    ServiceConnection,
-    ServiceConnectionState,
-    TypeCreate,
-    UsedBy,
-} from "../models/index";
 import {
+    type DockerServiceConnection,
     DockerServiceConnectionFromJSON,
+} from "../models/DockerServiceConnection";
+import {
+    type DockerServiceConnectionRequest,
     DockerServiceConnectionRequestToJSON,
+} from "../models/DockerServiceConnectionRequest";
+import {
+    type KubernetesServiceConnection,
     KubernetesServiceConnectionFromJSON,
+} from "../models/KubernetesServiceConnection";
+import {
+    type KubernetesServiceConnectionRequest,
     KubernetesServiceConnectionRequestToJSON,
-    LDAPCheckAccessFromJSON,
+} from "../models/KubernetesServiceConnectionRequest";
+import { type LDAPCheckAccess, LDAPCheckAccessFromJSON } from "../models/LDAPCheckAccess";
+import { type Outpost, OutpostFromJSON } from "../models/Outpost";
+import {
+    type OutpostDefaultConfig,
     OutpostDefaultConfigFromJSON,
-    OutpostFromJSON,
-    OutpostHealthFromJSON,
-    OutpostRequestToJSON,
+} from "../models/OutpostDefaultConfig";
+import { type OutpostHealth, OutpostHealthFromJSON } from "../models/OutpostHealth";
+import { type OutpostRequest, OutpostRequestToJSON } from "../models/OutpostRequest";
+import {
+    type PaginatedDockerServiceConnectionList,
     PaginatedDockerServiceConnectionListFromJSON,
+} from "../models/PaginatedDockerServiceConnectionList";
+import {
+    type PaginatedKubernetesServiceConnectionList,
     PaginatedKubernetesServiceConnectionListFromJSON,
+} from "../models/PaginatedKubernetesServiceConnectionList";
+import {
+    type PaginatedLDAPOutpostConfigList,
     PaginatedLDAPOutpostConfigListFromJSON,
+} from "../models/PaginatedLDAPOutpostConfigList";
+import {
+    type PaginatedOutpostList,
     PaginatedOutpostListFromJSON,
+} from "../models/PaginatedOutpostList";
+import {
+    type PaginatedProxyOutpostConfigList,
     PaginatedProxyOutpostConfigListFromJSON,
+} from "../models/PaginatedProxyOutpostConfigList";
+import {
+    type PaginatedRadiusOutpostConfigList,
     PaginatedRadiusOutpostConfigListFromJSON,
+} from "../models/PaginatedRadiusOutpostConfigList";
+import {
+    type PaginatedServiceConnectionList,
     PaginatedServiceConnectionListFromJSON,
+} from "../models/PaginatedServiceConnectionList";
+import {
+    type PatchedDockerServiceConnectionRequest,
     PatchedDockerServiceConnectionRequestToJSON,
+} from "../models/PatchedDockerServiceConnectionRequest";
+import {
+    type PatchedKubernetesServiceConnectionRequest,
     PatchedKubernetesServiceConnectionRequestToJSON,
+} from "../models/PatchedKubernetesServiceConnectionRequest";
+import {
+    type PatchedOutpostRequest,
     PatchedOutpostRequestToJSON,
-    RadiusCheckAccessFromJSON,
-    ServiceConnectionFromJSON,
+} from "../models/PatchedOutpostRequest";
+import { type RadiusCheckAccess, RadiusCheckAccessFromJSON } from "../models/RadiusCheckAccess";
+import { type ServiceConnection, ServiceConnectionFromJSON } from "../models/ServiceConnection";
+import {
+    type ServiceConnectionState,
     ServiceConnectionStateFromJSON,
-    TypeCreateFromJSON,
-    UsedByFromJSON,
-} from "../models/index";
+} from "../models/ServiceConnectionState";
+import { type TypeCreate, TypeCreateFromJSON } from "../models/TypeCreate";
+import { type UsedBy, UsedByFromJSON } from "../models/UsedBy";
 import * as runtime from "../runtime";
 
 export interface OutpostsInstancesCreateRequest {
@@ -397,10 +417,7 @@ export class OutpostsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/outposts/instances/{uuid}/`;
-        urlPath = urlPath.replace(
-            `{${"uuid"}}`,
-            encodeURIComponent(String(requestParameters["uuid"])),
-        );
+        urlPath = urlPath.replace("{uuid}", encodeURIComponent(String(requestParameters["uuid"])));
 
         return {
             path: urlPath,
@@ -502,10 +519,7 @@ export class OutpostsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/outposts/instances/{uuid}/health/`;
-        urlPath = urlPath.replace(
-            `{${"uuid"}}`,
-            encodeURIComponent(String(requestParameters["uuid"])),
-        );
+        urlPath = urlPath.replace("{uuid}", encodeURIComponent(String(requestParameters["uuid"])));
 
         return {
             path: urlPath,
@@ -678,10 +692,7 @@ export class OutpostsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/outposts/instances/{uuid}/`;
-        urlPath = urlPath.replace(
-            `{${"uuid"}}`,
-            encodeURIComponent(String(requestParameters["uuid"])),
-        );
+        urlPath = urlPath.replace("{uuid}", encodeURIComponent(String(requestParameters["uuid"])));
 
         return {
             path: urlPath,
@@ -747,10 +758,7 @@ export class OutpostsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/outposts/instances/{uuid}/`;
-        urlPath = urlPath.replace(
-            `{${"uuid"}}`,
-            encodeURIComponent(String(requestParameters["uuid"])),
-        );
+        urlPath = urlPath.replace("{uuid}", encodeURIComponent(String(requestParameters["uuid"])));
 
         return {
             path: urlPath,
@@ -820,10 +828,7 @@ export class OutpostsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/outposts/instances/{uuid}/`;
-        urlPath = urlPath.replace(
-            `{${"uuid"}}`,
-            encodeURIComponent(String(requestParameters["uuid"])),
-        );
+        urlPath = urlPath.replace("{uuid}", encodeURIComponent(String(requestParameters["uuid"])));
 
         return {
             path: urlPath,
@@ -885,10 +890,7 @@ export class OutpostsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/outposts/instances/{uuid}/used_by/`;
-        urlPath = urlPath.replace(
-            `{${"uuid"}}`,
-            encodeURIComponent(String(requestParameters["uuid"])),
-        );
+        urlPath = urlPath.replace("{uuid}", encodeURIComponent(String(requestParameters["uuid"])));
 
         return {
             path: urlPath,
@@ -956,7 +958,7 @@ export class OutpostsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/outposts/ldap/{id}/check_access/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
@@ -1173,7 +1175,7 @@ export class OutpostsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/outposts/radius/{id}/check_access/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
@@ -1311,10 +1313,7 @@ export class OutpostsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/outposts/service_connections/all/{uuid}/`;
-        urlPath = urlPath.replace(
-            `{${"uuid"}}`,
-            encodeURIComponent(String(requestParameters["uuid"])),
-        );
+        urlPath = urlPath.replace("{uuid}", encodeURIComponent(String(requestParameters["uuid"])));
 
         return {
             path: urlPath,
@@ -1454,10 +1453,7 @@ export class OutpostsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/outposts/service_connections/all/{uuid}/`;
-        urlPath = urlPath.replace(
-            `{${"uuid"}}`,
-            encodeURIComponent(String(requestParameters["uuid"])),
-        );
+        urlPath = urlPath.replace("{uuid}", encodeURIComponent(String(requestParameters["uuid"])));
 
         return {
             path: urlPath,
@@ -1524,10 +1520,7 @@ export class OutpostsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/outposts/service_connections/all/{uuid}/state/`;
-        urlPath = urlPath.replace(
-            `{${"uuid"}}`,
-            encodeURIComponent(String(requestParameters["uuid"])),
-        );
+        urlPath = urlPath.replace("{uuid}", encodeURIComponent(String(requestParameters["uuid"])));
 
         return {
             path: urlPath,
@@ -1645,10 +1638,7 @@ export class OutpostsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/outposts/service_connections/all/{uuid}/used_by/`;
-        urlPath = urlPath.replace(
-            `{${"uuid"}}`,
-            encodeURIComponent(String(requestParameters["uuid"])),
-        );
+        urlPath = urlPath.replace("{uuid}", encodeURIComponent(String(requestParameters["uuid"])));
 
         return {
             path: urlPath,
@@ -1784,10 +1774,7 @@ export class OutpostsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/outposts/service_connections/docker/{uuid}/`;
-        urlPath = urlPath.replace(
-            `{${"uuid"}}`,
-            encodeURIComponent(String(requestParameters["uuid"])),
-        );
+        urlPath = urlPath.replace("{uuid}", encodeURIComponent(String(requestParameters["uuid"])));
 
         return {
             path: urlPath,
@@ -1945,10 +1932,7 @@ export class OutpostsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/outposts/service_connections/docker/{uuid}/`;
-        urlPath = urlPath.replace(
-            `{${"uuid"}}`,
-            encodeURIComponent(String(requestParameters["uuid"])),
-        );
+        urlPath = urlPath.replace("{uuid}", encodeURIComponent(String(requestParameters["uuid"])));
 
         return {
             path: urlPath,
@@ -2018,10 +2002,7 @@ export class OutpostsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/outposts/service_connections/docker/{uuid}/`;
-        urlPath = urlPath.replace(
-            `{${"uuid"}}`,
-            encodeURIComponent(String(requestParameters["uuid"])),
-        );
+        urlPath = urlPath.replace("{uuid}", encodeURIComponent(String(requestParameters["uuid"])));
 
         return {
             path: urlPath,
@@ -2097,10 +2078,7 @@ export class OutpostsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/outposts/service_connections/docker/{uuid}/`;
-        urlPath = urlPath.replace(
-            `{${"uuid"}}`,
-            encodeURIComponent(String(requestParameters["uuid"])),
-        );
+        urlPath = urlPath.replace("{uuid}", encodeURIComponent(String(requestParameters["uuid"])));
 
         return {
             path: urlPath,
@@ -2170,10 +2148,7 @@ export class OutpostsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/outposts/service_connections/docker/{uuid}/used_by/`;
-        urlPath = urlPath.replace(
-            `{${"uuid"}}`,
-            encodeURIComponent(String(requestParameters["uuid"])),
-        );
+        urlPath = urlPath.replace("{uuid}", encodeURIComponent(String(requestParameters["uuid"])));
 
         return {
             path: urlPath,
@@ -2309,10 +2284,7 @@ export class OutpostsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/outposts/service_connections/kubernetes/{uuid}/`;
-        urlPath = urlPath.replace(
-            `{${"uuid"}}`,
-            encodeURIComponent(String(requestParameters["uuid"])),
-        );
+        urlPath = urlPath.replace("{uuid}", encodeURIComponent(String(requestParameters["uuid"])));
 
         return {
             path: urlPath,
@@ -2458,10 +2430,7 @@ export class OutpostsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/outposts/service_connections/kubernetes/{uuid}/`;
-        urlPath = urlPath.replace(
-            `{${"uuid"}}`,
-            encodeURIComponent(String(requestParameters["uuid"])),
-        );
+        urlPath = urlPath.replace("{uuid}", encodeURIComponent(String(requestParameters["uuid"])));
 
         return {
             path: urlPath,
@@ -2533,10 +2502,7 @@ export class OutpostsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/outposts/service_connections/kubernetes/{uuid}/`;
-        urlPath = urlPath.replace(
-            `{${"uuid"}}`,
-            encodeURIComponent(String(requestParameters["uuid"])),
-        );
+        urlPath = urlPath.replace("{uuid}", encodeURIComponent(String(requestParameters["uuid"])));
 
         return {
             path: urlPath,
@@ -2612,10 +2578,7 @@ export class OutpostsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/outposts/service_connections/kubernetes/{uuid}/`;
-        urlPath = urlPath.replace(
-            `{${"uuid"}}`,
-            encodeURIComponent(String(requestParameters["uuid"])),
-        );
+        urlPath = urlPath.replace("{uuid}", encodeURIComponent(String(requestParameters["uuid"])));
 
         return {
             path: urlPath,
@@ -2685,10 +2648,7 @@ export class OutpostsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/outposts/service_connections/kubernetes/{uuid}/used_by/`;
-        urlPath = urlPath.replace(
-            `{${"uuid"}}`,
-            encodeURIComponent(String(requestParameters["uuid"])),
-        );
+        urlPath = urlPath.replace("{uuid}", encodeURIComponent(String(requestParameters["uuid"])));
 
         return {
             path: urlPath,
