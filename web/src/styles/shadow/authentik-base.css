@@ -1,5 +1,5 @@
-@import "#styles/authentik/base/common.css";
-@import "#styles/authentik/base/scrollbars.css";
+@import "#styles/global/theme/common.css";
+@import "#styles/global/reset/scrollbars.css";
 @import "#styles/authentik/components/Alert/alert.css";
 @import "#styles/authentik/components/Banner/banner.css";
 @import "#styles/authentik/components/Label/label.css";
