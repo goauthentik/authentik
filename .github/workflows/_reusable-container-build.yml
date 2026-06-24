@@ -60,6 +60,7 @@ jobs:
           merge-multiple: true
       - name: merge
         run: |
+          find
           regctl image import ocidir://${{ inputs.image-name }}-amd64:build build/container/${{ inputs.image-name }}-amd64.oci.tar
           regctl image import ocidir://${{ inputs.image-name }}-arm64:build build/container/${{ inputs.image-name }}-arm64.oci.tar
           rm -r build/
