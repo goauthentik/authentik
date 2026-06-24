@@ -53,7 +53,6 @@ export function normalizeOptions(options) {
 
     return {
         ...options,
-        sections: options.sections,
         ignoreFiles: options.ignoreFiles ?? [],
         crossLinks: options.crossLinks ?? [],
         groupBy: options.groupBy ?? "topic",

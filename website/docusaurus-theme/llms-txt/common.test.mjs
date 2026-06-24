@@ -18,3 +18,7 @@ test("normalizeOptions applies defaults", () => {
 test("normalizeOptions throws without sections", () => {
     assert.throws(() => normalizeOptions({}), /sections/);
 });
+
+test("normalizeOptions throws with empty sections array", () => {
+    assert.throws(() => normalizeOptions({ sections: [] }), /sections/);
+});
