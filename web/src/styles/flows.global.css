@@ -1,22 +1,31 @@
 /* Entrypoint file for the CSS used by the Flow application */
 
 @import "#styles/layers.css";
-@import "#styles/global/vendor/patternfly.css" layer(global);
-@import "#fonts/RedHat/faces.css" layer(global);
+
+/*
+ * The order of layers dictated in the file above dictates the specificity of the selector rules,
+ * regardless of the order in which they are imported. (If there is a conflict *within* a layer, the
+ * last-one-wins rule still applies.) CSS Custom Properties can be defined after references to them
+ * have been made; the dynamic scoping of CSS ensures the highest specific version of the CSS Custom
+ * Property will be applied when the browser paint phase begins.
+ */
+
+@import "#styles/global/vendor/patternfly.css" layer(vendor);
+@import "#fonts/RedHat/faces.css" layer(vendor);
 
 @import "#styles/global/tokens/variables.css" layer(theme);
 @import "#styles/global/reset/scrollbars.css" layer(reset);
 @import "#styles/global/reset/globals.css" layer(reset);
 @import "#styles/global/theme/common.css" layer(theme);
 @import "#styles/global/theme/placeholder.css" layer(theme);
-@import "#elements/ak-drawer/ak-drawer.root.css";
+@import "#elements/ak-drawer/ak-drawer.root.css" layer(components);
 
-@import "#styles/global/locales/ja/globals.css";
-@import "#styles/global/locales/ko/globals.css";
-@import "#styles/global/locales/zh/globals.css";
+@import "#styles/global/locales/ja/globals.css" layer(components);
+@import "#styles/global/locales/ko/globals.css" layer(components);
+@import "#styles/global/locales/zh/globals.css" layer(components);
 
-@import "@patternfly/patternfly/components/BackgroundImage/background-image.css";
-@import "#elements/locale/ak-locale-select.css";
-@import "#styles/authentik/login.css";
-@import "#styles/authentik/components/Login/login-tokens.css";
-@import "#styles/authentik/components/Login/flow-loading.css";
+@import "@patternfly/patternfly/components/BackgroundImage/background-image.css" layer(components);
+@import "#elements/locale/ak-locale-select.css" layer(components);
+@import "#styles/authentik/login.css" layer(components);
+@import "#styles/authentik/components/Login/login-tokens.css" layer(components);
+@import "#styles/authentik/components/Login/flow-loading.css" layer(components);

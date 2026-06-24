@@ -2,20 +2,28 @@
 
 @import "#styles/layers.css";
 
-@import "@patternfly/patternfly/components/BackgroundImage/background-image.css";
-@import "@patternfly/patternfly/components/Button/button.css";
-@import "@patternfly/patternfly/components/Form/form.css";
-@import "@patternfly/patternfly/components/Drawer/drawer.css";
-@import "@patternfly/patternfly/components/List/list.css";
-@import "@patternfly/patternfly/components/Login/login.css";
-@import "@patternfly/patternfly/components/Title/title.css";
-@import "@patternfly/patternfly/components/Avatar/avatar.css";
-@import "@patternfly/patternfly/utilities/Text/text.css";
-@import "#styles/authentik/components/Drawer/drawer.css";
-@import "#styles/authentik/components/Form/form.css";
-@import "#styles/authentik/components/Fieldset/fieldset.css";
-@import "#styles/authentik/components/Icon/icon.css";
-@import "#elements/ak-drawer/ak-drawer.root.css";
-@import "#elements/locale/ak-locale-select.css";
-@import "#styles/authentik/components/Login/login-tokens.css";
-@import "#styles/authentik/components/Login/login-layout.css";
+/*
+ * The order of layers dictated in the file above dictates the specificity of the selector rules,
+ * regardless of the order in which they are imported. (If there is a conflict *within* a layer, the
+ * last-one-wins rule still applies.) CSS Custom Properties can be defined after references to them
+ * have been made; the dynamic scoping of CSS ensures the highest specific version of the CSS Custom
+ * Property will be applied when the browser paint phase begins.
+ */
+
+@import "@patternfly/patternfly/components/BackgroundImage/background-image.css" layer(vendor);
+@import "@patternfly/patternfly/components/Button/button.css" layer(vendor);
+@import "@patternfly/patternfly/components/Form/form.css" layer(vendor);
+@import "@patternfly/patternfly/components/Drawer/drawer.css" layer(vendor);
+@import "@patternfly/patternfly/components/List/list.css" layer(vendor);
+@import "@patternfly/patternfly/components/Login/login.css" layer(vendor);
+@import "@patternfly/patternfly/components/Title/title.css" layer(vendor);
+@import "@patternfly/patternfly/components/Avatar/avatar.css" layer(vendor);
+@import "@patternfly/patternfly/utilities/Text/text.css" layer(vendor);
+@import "#styles/authentik/components/Drawer/drawer.css" layer(components);
+@import "#styles/authentik/components/Form/form.css" layer(components);
+@import "#styles/authentik/components/Fieldset/fieldset.css" layer(components);
+@import "#styles/authentik/components/Icon/icon.css" layer(components);
+@import "#elements/ak-drawer/ak-drawer.root.css" layer(components);
+@import "#elements/locale/ak-locale-select.css" layer(components);
+@import "#styles/authentik/components/Login/login-tokens.css" layer(components);
+@import "#styles/authentik/components/Login/login-layout.css" layer(components);
