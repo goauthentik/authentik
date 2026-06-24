@@ -50,8 +50,8 @@ jobs:
   merge:
     runs-on: ubuntu-latest
     needs:
-      - build-linux-amd64
-      - build-linux-arm64
+      - build-amd64
+      - build-arm64
     steps:
       - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v5
         with:
