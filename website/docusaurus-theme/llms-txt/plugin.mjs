@@ -11,7 +11,7 @@ import * as fs from "node:fs/promises";
 import * as path from "node:path";
 
 import { LLMS_TXT_FILENAME, LLMS_FULL_FILENAME, normalizeOptions } from "./common.mjs";
-import { collectDocFiles, parseDocFile, resolveDocumentUrl, assignGroup } from "./node.mjs";
+import { collectDocFiles, parseDocFile, resolveDocumentUrl, assignGroup, groupLabel } from "./node.mjs";
 import { cleanMdxToMarkdown } from "./markdown.mjs";
 import {
     generateIndex,
@@ -23,7 +23,7 @@ import {
 
 const PLUGIN_NAME = "ak-llms-txt-plugin";
 
-export { assignGroup };
+export { assignGroup, groupLabel };
 
 /**
  * Build every output file's contents, keyed by build-relative path.
@@ -52,6 +52,7 @@ export async function buildLlmsOutputs(ctx) {
 
             parsed.url = new URL(route, ctx.siteUrl).toString();
             parsed.group = assignGroup(parsed, options);
+            parsed.groupLabel = groupLabel(parsed.group, options);
             parsed.content = await cleanMdxToMarkdown(parsed.content, file);
             docs.push(parsed);
         }

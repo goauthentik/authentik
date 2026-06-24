@@ -24,7 +24,7 @@
  * @property {string[]} [ignoreFiles] Extra glob patterns to exclude.
  * @property {AKLlmsCrossLink[]} [crossLinks] Sibling-site links for the header.
  * @property {"topic"|"category"} [groupBy] How to group the root index.
- * @property {[string, string][]} [categories] [dirName, label] pairs (integrations).
+ * @property {readonly (readonly [string, string])[]} [categories] [dirName, label] pairs (integrations).
  */
 
 /**
@@ -34,7 +34,8 @@
  * @property {string} url Absolute URL of the rendered page.
  * @property {string} description
  * @property {string} content Cleaned Markdown body.
- * @property {string} [group] Topic dir or category label for grouping.
+ * @property {string} [group] Topic dir or category slug for grouping.
+ * @property {string} [groupLabel] Display label for the group (defaults to group).
  */
 
 export const LLMS_TXT_FILENAME = "llms.txt";

@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { fileURLToPath } from "node:url";
 import { resolve } from "node:path";
 
-import { collectDocFiles, normalizePath, parseDocFile, resolveDocumentUrl } from "./node.mjs";
+import { collectDocFiles, normalizePath, parseDocFile, resolveDocumentUrl, assignGroup, groupLabel } from "./node.mjs";
 
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
 const FIXTURE = resolve(__dirname, "__fixtures__", "site");
@@ -60,4 +60,35 @@ test("resolveDocumentUrl strips numbered prefixes", () => {
 
 test("resolveDocumentUrl returns undefined when no route matches", () => {
     assert.equal(resolveDocumentUrl("missing/page", ROUTES), undefined);
+});
+
+test("assignGroup always returns the first path segment (slug) for topic grouping", () => {
+    const doc = { path: "topic-a/page-one" };
+    assert.equal(assignGroup(doc, { groupBy: "topic" }), "topic-a");
+});
+
+test("assignGroup always returns the first path segment (slug) for category grouping", () => {
+    const doc = { path: "cloud-providers/aws" };
+    assert.equal(
+        assignGroup(doc, { groupBy: "category", categories: [["cloud-providers", "Cloud Providers"]] }),
+        "cloud-providers",
+    );
+});
+
+test("groupLabel returns the category display label for a known slug", () => {
+    assert.equal(
+        groupLabel("cloud-providers", { groupBy: "category", categories: [["cloud-providers", "Cloud Providers"]] }),
+        "Cloud Providers",
+    );
+});
+
+test("groupLabel returns the slug itself when no category mapping is found", () => {
+    assert.equal(
+        groupLabel("unknown-slug", { groupBy: "category", categories: [["cloud-providers", "Cloud Providers"]] }),
+        "unknown-slug",
+    );
+});
+
+test("groupLabel returns the slug for topic grouping", () => {
+    assert.equal(groupLabel("topic-a", { groupBy: "topic" }), "topic-a");
 });
