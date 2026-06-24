@@ -1,4 +1,4 @@
-@import "#styles/global/theme/common.css";
+@import "#styles/global/mode/common.css";
 @import "#styles/global/reset/scrollbars.css";
 @import "#styles/authentik/components/Alert/alert.css";
 @import "#styles/authentik/components/Banner/banner.css";

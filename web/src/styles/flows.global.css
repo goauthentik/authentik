@@ -13,11 +13,11 @@
 @import "#styles/global/vendor/patternfly.css" layer(vendor);
 @import "#fonts/RedHat/faces.css" layer(vendor);
 
-@import "#styles/global/tokens/variables.css" layer(theme);
+@import "#styles/global/theme/variables.css" layer(theme);
 @import "#styles/global/reset/scrollbars.css" layer(reset);
 @import "#styles/global/reset/globals.css" layer(reset);
-@import "#styles/global/theme/common.css" layer(theme);
-@import "#styles/global/theme/placeholder.css" layer(theme);
+@import "#styles/global/mode/common.css" layer(theme);
+@import "#styles/global/mode/placeholder.css" layer(theme);
 @import "#elements/ak-drawer/ak-drawer.root.css" layer(components);
 
 @import "#styles/global/locales/ja/globals.css" layer(components);
