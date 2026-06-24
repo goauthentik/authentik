@@ -66,7 +66,7 @@ mailcow requires users to have an email address. The custom email scope mapping 
 
 Repeat these steps for all users that need to use the mailcow integration. The user's email address in authentik must match the mailcow mailbox address for existing mailboxes. If mailcow creates the mailbox during first login, the email domain must already exist in mailcow.
 
-### Create an application and provider in authentik
+### Create an application and provider
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
