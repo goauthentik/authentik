@@ -8,6 +8,8 @@ This is the **authentik documentation website** — the source for everything pu
 
 A shared `docusaurus-theme/` workspace package (`@goauthentik/docusaurus-theme`) holds common theme, redirect, and component code consumed by all three. Common dependencies (Docusaurus, React, MDX) are hoisted to the root `node_modules`.
 
+Theme customizations live in `docusaurus-theme/theme/` as **swizzled** components — Docusaurus's mechanism for overriding a built-in theme component by shadowing it at the same import path (e.g. `theme/EditThisPage`, `theme/DocItem/Content`, `theme/NotFound`). Most are _wrappers_ (render the original and add to it); a few are _ejected_ (full replacements). Because these override theme internals, they can break on a Docusaurus upgrade — prefer wrapping over ejecting, keep overrides minimal, and re-check them when bumping Docusaurus. Scaffold a new one with the `docusaurus swizzle` CLI (`npm run --prefix website/docs docusaurus -- swizzle @docusaurus/theme-classic <ComponentName> --wrap`; use `--eject` only when wrapping cannot express the change), then move the result into `docusaurus-theme/theme/` so all three sites share it.
+
 You are most often editing **Markdown/MDX content**, not application code. Treat documentation as a product: every page has a URL that is a promise to readers, and prose must pass the linters and the spell checker.
 
 ## Commands
@@ -75,6 +77,7 @@ website/
     static/_redirects
   api/                  # API site (@goauthentik/api-docs) — generated from ../schema.yml
   docusaurus-theme/     # Shared theme/components/redirect logic for all three sites
+    theme/              # Swizzled Docusaurus component overrides (shadow built-in theme)
   scripts/              # Build/lint helper scripts (e.g. lint-runtime.mjs)
   static/               # Shared static assets
   package.json          # Root workspace definition
@@ -91,17 +94,9 @@ When you change a documented workflow (commands, structure, conventions), update
 
 ## Authoring conventions
 
-These mirror `style-guide.mdx`; consult it for the full set.
+**`docs/developer-docs/docs/style-guide.mdx` is the single source of truth — read it before authoring prose, and follow it over any summary.** It covers terminology, voice and tense, sentence-case headings, frontmatter, callouts, code-block options, formatting of UI elements and placeholders, accessibility, and metadata. This file deliberately does not restate those rules; a partial copy would drift out of sync with the guide.
 
-- **Product name is always `authentik`** — lowercase `a`, never capitalized, even at the start of a sentence. The company is **Authentik Security, Inc.**. Capitalize **Admin** only when naming the Admin interface.
-- **Sentence case** for titles and headings ("Configure the Google Workspace provider", not Title Case).
-- **American English**, active voice, present tense, Oxford comma.
-- **Frontmatter**: every page needs `title`. Common fields: `sidebar_label`, `description`, `support_level` (integrations: `community` for community-maintained, `authentik` for team-tested, `deprecated`), and authentik directives (`:ak-version[...]`, `:ak-preview`, `:ak-enterprise`).
-- **Callouts**: `:::info` (with optional title), `:::warning`, `:::danger` for irreversible actions.
-- **Formatting**: **bold** for UI elements/actions, `code` for commands/paths/inline code, `<angle_brackets>` (underscores for spaces) for placeholders.
-- **Code blocks**: always set a language; `title="path"`, `showLineNumbers`, and `{n}` line highlighting are available.
-- **Accessibility**: descriptive alt text and link text, no skipped heading levels, gender-neutral pronouns, avoid idioms/ableist terms.
-- **Images sparingly** — prefer Mermaid diagrams (version-controllable) over screenshots.
+The one rule the linters and spell checker cannot enforce, and the one most often gotten wrong: **the product name is always `authentik`** — lowercase `a`, even at the start of a sentence; the company is **Authentik Security, Inc.**, and **Admin** is capitalized only when naming the Admin interface.
 
 ### Adding a Topics page
 
@@ -133,7 +128,15 @@ Avoid renaming/moving pages unless necessary; better organization rarely justifi
 
 ## Spell checking
 
-Spell checking uses **cspell** (`make lint-spellcheck`, config `../cspell.config.jsonc`). Custom dictionaries live in `../locale/en/dictionaries/` (`software-terms.txt`, `integrations.txt`, `idp.txt`, language-specific lists, `people.txt`, `ignore.txt`). Add genuinely new product/service/technology terms to the appropriate dictionary rather than rewording correct prose; never disable the checker for a page.
+Spell checking uses **cspell** (`make lint-spellcheck`, config `../cspell.config.jsonc`). Custom dictionaries live in `../locale/en/dictionaries/` (`software-terms.txt`, `integrations.txt`, `idp.txt`, language-specific lists, `people.txt`, `ignore.txt`). Add genuinely new product/service/technology terms to the appropriate dictionary rather than rewording correct prose; never disable the checker for a whole page.
+
+For a genuine one-off that does not belong in a dictionary (a deliberate misspelling in an example, an opaque token), use an inline cspell comment scoped as tightly as possible:
+
+- `<!-- spellchecker:ignore someword anotherword -->` in Markdown/MDX, or `// spellchecker:ignore ...` in code — allow specific words for the rest of the file.
+- `<!-- spellchecker:disable-next-line -->` / `// spellchecker:disable-next-line` — skip just the following line.
+- `<!-- spellchecker:disable -->` … `<!-- spellchecker:enable -->` — skip a bounded region (avoid; prefer the narrower forms).
+
+Reach for a dictionary entry first — inline ignores are for the rare case the term is truly local to one page.
 
 ## Deployment
 
