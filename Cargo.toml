@@ -26,6 +26,7 @@ aws-lc-rs = { version = "= 1.17.0", features = ["fips"] }
 axum = { version = "= 0.8.9", features = ["http2", "macros", "ws"] }
 clap = { version = "= 4.6.1", features = ["derive", "env"] }
 client-ip = { version = "0.2.1", features = ["forwarded-header"] }
+chrono = { version = "0.4.45", features = ["serde"] }
 color-eyre = "= 0.6.5"
 colored = "= 3.1.1"
 config-rs = { package = "config", version = "= 0.15.22", default-features = false, features = [
@@ -50,7 +51,7 @@ notify = "= 8.2.0"
 pin-project-lite = "= 0.2.17"
 pyo3 = "= 0.29.0"
 pyo3-build-config = "= 0.29.0"
-regex = "= 1.12.3"
+regex = "= 1.12.4"
 reqwest = { version = "= 0.13.4", features = [
   "form",
   "json",
@@ -66,7 +67,7 @@ reqwest-middleware = { version = "= 0.5.2", features = [
   "query",
   "rustls",
 ] }
-rustls = { version = "= 0.23.40", features = ["fips"] }
+rustls = { version = "= 0.23.41", features = ["fips"] }
 sentry = { version = "= 0.48.2", default-features = false, features = [
   "backtrace",
   "contexts",
@@ -80,10 +81,10 @@ sentry = { version = "= 0.48.2", default-features = false, features = [
 serde = { version = "= 1.0.228", features = ["derive"] }
 serde_json = "= 1.0.150"
 serde_repr = "= 0.1.20"
-serde_with = { version = "= 3.20.0", default-features = false, features = [
+serde_with = { version = "= 3.21.0", default-features = false, features = [
   "base64",
 ] }
-sqlx = { version = "= 0.8.6", default-features = false, features = [
+sqlx = { version = "= 0.9.0", default-features = false, features = [
   "runtime-tokio",
   "tls-rustls-aws-lc-rs",
   "postgres",
@@ -96,13 +97,13 @@ sqlx = { version = "= 0.8.6", default-features = false, features = [
 ] }
 tempfile = "= 3.27.0"
 thiserror = "= 2.0.18"
-time = { version = "= 0.3.47", features = ["macros"] }
+time = { version = "= 0.3.49", features = ["macros"] }
 tokio = { version = "= 1.52.3", features = ["full", "tracing"] }
 tokio-retry2 = "= 0.9.1"
 tokio-rustls = "= 0.26.4"
 tokio-util = { version = "= 0.7.18", features = ["full"] }
 tower = "= 0.5.3"
-tower-http = { version = "= 0.6.11", features = ["timeout"] }
+tower-http = { version = "= 0.7.0", features = ["timeout"] }
 tracing = "= 0.1.44"
 tracing-error = "= 0.2.1"
 tracing-subscriber = { version = "= 0.3.23", features = [
@@ -112,8 +113,8 @@ tracing-subscriber = { version = "= 0.3.23", features = [
   "tracing-log",
 ] }
 url = "= 2.5.8"
-uuid = { version = "= 1.23.2", features = ["serde", "v4"] }
-which = "= 8.0.3"
+uuid = { version = "= 1.23.3", features = ["serde", "v4"] }
+which = "= 8.0.4"
 
 ak-axum = { package = "authentik-axum", version = "2026.8.0-rc1", path = "./packages/ak-axum" }
 ak-client = { package = "authentik-client", version = "2026.8.0-rc1", path = "./packages/client-rust" }

@@ -134,6 +134,7 @@ export class TelegramSourceForm extends BaseSourceForm<TelegramSource> {
             <ak-secret-text-input
                 label=${msg("Bot token")}
                 name="botToken"
+                plaintext
                 input-hint="code"
                 ?required=${!this.instance}
                 ?revealed=${!this.instance}

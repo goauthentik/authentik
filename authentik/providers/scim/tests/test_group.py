@@ -1,6 +1,7 @@
 """SCIM Group tests"""
 
 from json import loads
+from unittest.mock import patch
 
 from django.test import TestCase
 from jsonschema import validate
@@ -13,6 +14,7 @@ from authentik.providers.scim.models import SCIMMapping, SCIMProvider, SCIMProvi
 from authentik.providers.scim.tasks import scim_sync
 
 
+@patch("authentik.providers.scim.clients.base.SCIMClient.can_discover", False)
 class SCIMGroupTests(TestCase):
     """SCIM Group tests"""
 
