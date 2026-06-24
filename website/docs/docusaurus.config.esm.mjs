@@ -25,6 +25,8 @@ import { parse } from "@goauthentik/docusaurus-theme/redirects/node";
 import { prepareReleaseEnvironment } from "@goauthentik/docusaurus-theme/releases/node";
 import { remarkLinkRewrite } from "@goauthentik/docusaurus-theme/remark";
 
+import topics from "./topics.mjs";
+
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
 const require = createRequire(import.meta.url);
 
@@ -166,6 +168,10 @@ export default createDocusaurusConfig(
             createLLMSPlugin({
                 sections: [{ path: ".", routeBasePath: "/" }],
                 groupBy: "topic",
+                // Normalized section headings for the top-level topics.
+                categories: topics,
+                // Split the glossary out of "Core Concepts" into its own section.
+                regroup: [["core/glossary", "glossary"]],
                 crossLinks: [
                     {
                         label: "Integrations",

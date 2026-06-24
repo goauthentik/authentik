@@ -32,6 +32,28 @@ const PLUGIN_NAME = "ak-llms-txt-plugin";
 export { assignGroup, groupLabel };
 
 /**
+ * Resolve the base URL for generated links. In a Netlify deploy preview or
+ * branch deploy the canonical site URL (e.g. docs.goauthentik.io) is wrong —
+ * the built copy is served from `DEPLOY_PRIME_URL` — so links must point at the
+ * deploy origin instead of hardcoding the production subdomain. Precedence:
+ * an explicit `siteUrl` option, then the deploy-preview origin, then the
+ * configured site URL.
+ *
+ * @param {{ siteUrl?: string }} options
+ * @param {{ url: string }} siteConfig
+ * @returns {string}
+ */
+export function resolveSiteUrl(options, siteConfig) {
+    if (options.siteUrl) return options.siteUrl;
+    // Netlify sets CONTEXT to one of production | deploy-preview | branch-deploy,
+    // and DEPLOY_PRIME_URL to the canonical URL for the current (non-production) deploy.
+    const context = process.env.CONTEXT;
+    const deployURL = process.env.DEPLOY_PRIME_URL;
+    if (context && context !== "production" && deployURL) return deployURL;
+    return siteConfig.url;
+}
+
+/**
  * Build every output file's contents, keyed by build-relative path.
  *
  * @param {{ siteDir: string, outDir: string, siteUrl: string, title: string,
@@ -133,7 +155,7 @@ function akLLMSPlugin(_loadContext, options) {
             const outputs = await buildLLMSOutputs({
                 siteDir: props.siteDir,
                 outDir: props.outDir,
-                siteUrl: options.siteUrl ?? props.siteConfig.url,
+                siteUrl: resolveSiteUrl(options, props.siteConfig),
                 title: options.title ?? props.siteConfig.title,
                 description: options.description ?? props.siteConfig.tagline ?? "",
                 routesPaths: props.routesPaths,

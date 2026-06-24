@@ -62,6 +62,30 @@ test("parseDocFile cleans a blockquote-citation intro (strips > and -- attributi
     assert.equal(info.description, "AFFiNE is an open-source, self-hostable workspace.");
 });
 
+test("parseDocFile skips a CVE reporter attribution and uses the summary prose", () => {
+    const PARSE = resolve(__dirname, "__fixtures__", "parse");
+    const info = parseDocFile(resolve(PARSE, "cve.md"), PARSE);
+    assert.ok(info, "non-draft file parses to a record");
+    assert.equal(
+        info.description,
+        "Token reuse in invitation URLs leads to access control bypass via the use of a different enrollment flow.",
+    );
+});
+
+test("parseDocFile yields no description when the lead content is only a bullet list", () => {
+    const PARSE = resolve(__dirname, "__fixtures__", "parse");
+    const info = parseDocFile(resolve(PARSE, "prereq-list.md"), PARSE);
+    assert.ok(info, "non-draft file parses to a record");
+    assert.equal(info.description, "");
+});
+
+test("parseDocFile strips inline links/emphasis and keeps the first sentence", () => {
+    const PARSE = resolve(__dirname, "__fixtures__", "parse");
+    const info = parseDocFile(resolve(PARSE, "linky.md"), PARSE);
+    assert.ok(info, "non-draft file parses to a record");
+    assert.equal(info.description, "The authentik Agent runs on the device.");
+});
+
 const ROUTES = ["/", "/topic-a/", "/topic-a/page-one/", "/topic-b/page-two/"];
 
 test("resolveDocumentUrl matches a route by suffix", () => {
@@ -109,16 +133,50 @@ test("groupLabel returns the category display label for a known slug", () => {
     );
 });
 
-test("groupLabel returns the slug itself when no category mapping is found", () => {
+test("groupLabel title-cases the slug when no category mapping is found", () => {
     assert.equal(
         groupLabel("unknown-slug", {
             groupBy: "category",
             categories: [["cloud-providers", "Cloud Providers"]],
         }),
-        "unknown-slug",
+        "Unknown Slug",
     );
 });
 
-test("groupLabel returns the slug for topic grouping", () => {
-    assert.equal(groupLabel("topic-a", { groupBy: "topic" }), "topic-a");
+test("groupLabel uses a category label for topic grouping too", () => {
+    assert.equal(
+        groupLabel("sys-mgmt", {
+            groupBy: "topic",
+            categories: [["sys-mgmt", "System Management"]],
+        }),
+        "System Management",
+    );
+});
+
+test("groupLabel title-cases an unmapped topic slug", () => {
+    assert.equal(groupLabel("topic-a", { groupBy: "topic" }), "Topic A");
+});
+
+test("assignGroup routes a regrouped subtree to its own slug", () => {
+    assert.equal(
+        assignGroup(
+            { path: "core/glossary" },
+            { groupBy: "topic", regroup: [["core/glossary", "glossary"]] },
+        ),
+        "glossary",
+    );
+    assert.equal(
+        assignGroup(
+            { path: "core/glossary/terms/jwt" },
+            { groupBy: "topic", regroup: [["core/glossary", "glossary"]] },
+        ),
+        "glossary",
+    );
+    assert.equal(
+        assignGroup(
+            { path: "core/architecture" },
+            { groupBy: "topic", regroup: [["core/glossary", "glossary"]] },
+        ),
+        "core",
+    );
 });
