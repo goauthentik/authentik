@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { fileURLToPath } from "node:url";
 import { resolve } from "node:path";
 
-import { collectDocFiles, normalizePath, parseDocFile } from "./node.mjs";
+import { collectDocFiles, normalizePath, parseDocFile, resolveDocumentUrl } from "./node.mjs";
 
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
 const FIXTURE = resolve(__dirname, "__fixtures__", "site");
@@ -46,4 +46,18 @@ test("parseDocFile derives title from first heading when frontmatter has none", 
 test("parseDocFile returns null for draft files", () => {
     const PARSE = resolve(__dirname, "__fixtures__", "parse");
     assert.equal(parseDocFile(resolve(PARSE, "draft.md"), PARSE), null);
+});
+
+const ROUTES = ["/", "/topic-a/", "/topic-a/page-one/", "/topic-b/page-two/"];
+
+test("resolveDocumentUrl matches a route by suffix", () => {
+    assert.equal(resolveDocumentUrl("topic-a/page-one", ROUTES), "/topic-a/page-one/");
+});
+
+test("resolveDocumentUrl strips numbered prefixes", () => {
+    assert.equal(resolveDocumentUrl("topic-a/01-page-one", ROUTES), "/topic-a/page-one/");
+});
+
+test("resolveDocumentUrl returns undefined when no route matches", () => {
+    assert.equal(resolveDocumentUrl("missing/page", ROUTES), undefined);
 });
