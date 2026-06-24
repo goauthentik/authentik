@@ -13,6 +13,8 @@ import { createRequire } from "node:module";
 import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
+import topics from "./topics.mjs";
+
 import { createDocusaurusConfig, DocusaurusURL } from "@goauthentik/docusaurus-config";
 import {
     createAlgoliaConfig,
@@ -24,8 +26,6 @@ import { RewriteIndex } from "@goauthentik/docusaurus-theme/redirects";
 import { parse } from "@goauthentik/docusaurus-theme/redirects/node";
 import { prepareReleaseEnvironment } from "@goauthentik/docusaurus-theme/releases/node";
 import { remarkLinkRewrite } from "@goauthentik/docusaurus-theme/remark";
-
-import topics from "./topics.mjs";
 
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
 const require = createRequire(import.meta.url);

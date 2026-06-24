@@ -45,7 +45,10 @@ test("resolveSiteUrl prefers an explicit option, then deploy preview, then site 
         // Explicit option always wins.
         process.env.CONTEXT = "deploy-preview";
         process.env.DEPLOY_PRIME_URL = preview;
-        assert.equal(resolveSiteUrl({ siteUrl: "https://override" }, siteConfig), "https://override");
+        assert.equal(
+            resolveSiteUrl({ siteUrl: "https://override" }, siteConfig),
+            "https://override",
+        );
 
         // Deploy preview / branch deploy uses the deploy origin, not the hardcoded subdomain.
         assert.equal(resolveSiteUrl({}, siteConfig), preview);
