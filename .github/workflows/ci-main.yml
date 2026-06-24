@@ -480,9 +480,9 @@ jobs:
           name: "container-build-${{ matrix.name }}"
       - name: publish
         run: |
-          echo regctl image import "ghcr.io/goauthentik/dev-${{ matrix.name }}:${{ needs.build-compute-tags.outputs.tag-full }}" "container/${{ matrix.name }}.oci.tar"
-          echo regctl image import "ghcr.io/goauthentik/dev-${{ matrix.name }}:${{ needs.build-compute-tags.outputs.tag-branch }}" "container/${{ matrix.name }}.oci.tar"
-          echo regctl image import "ghcr.io/goauthentik/dev-${{ matrix.name }}:${{ needs.build-compute-tags.outputs.tag-flux }}" "container/${{ matrix.name }}.oci.tar"
+          regctl image import "ghcr.io/goauthentik/dev-${{ matrix.name }}:${{ needs.build-compute-tags.outputs.tag-full }}" "container/${{ matrix.name }}.oci.tar"
+          regctl image import "ghcr.io/goauthentik/dev-${{ matrix.name }}:${{ needs.build-compute-tags.outputs.tag-branch }}" "container/${{ matrix.name }}.oci.tar"
+          regctl image import "ghcr.io/goauthentik/dev-${{ matrix.name }}:${{ needs.build-compute-tags.outputs.tag-flux }}" "container/${{ matrix.name }}.oci.tar"
 
   # pr-comment:
   #   needs:
