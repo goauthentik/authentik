@@ -162,19 +162,29 @@ function removeNumberedPrefixes(pathStr) {
 }
 
 /**
- * Determine a doc's grouping key.
+ * Determine a doc's grouping key (always the directory slug, i.e. the first path segment).
  *
  * @param {{ path: string }} doc
- * @param {{ groupBy?: "topic"|"category", categories?: [string,string][] }} opts
+ * @param {{ groupBy?: "topic"|"category", categories?: readonly (readonly [string,string])[] }} opts
  * @returns {string}
  */
 export function assignGroup(doc, opts) {
-    const first = doc.path.split("/")[0] || "";
-    if (opts.groupBy === "category" && Array.isArray(opts.categories)) {
-        const found = opts.categories.find(([dir]) => dir === first);
-        return found ? found[1] : first;
+    return doc.path.split("/")[0] || "";
+}
+
+/**
+ * Resolve the human-readable display label for a group slug.
+ *
+ * @param {string} group The group slug (first path segment).
+ * @param {{ groupBy?: "topic"|"category", categories?: readonly (readonly [string,string])[] }} opts
+ * @returns {string}
+ */
+export function groupLabel(group, opts) {
+    if (opts.groupBy === "category" && opts.categories) {
+        const found = opts.categories.find(([dir]) => dir === group);
+        return found ? found[1] : group;
     }
-    return first;
+    return group;
 }
 
 /**

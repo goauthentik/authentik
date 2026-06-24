@@ -70,14 +70,19 @@ export function generateIndex(docs, opts) {
     if (grouped) {
         /** @type {Map<string, string[]>} */
         const groups = new Map();
+        /** @type {Map<string, string>} */
+        const groupLabels = new Map();
         for (const doc of docs) {
             const key = doc.group || "";
-            if (!groups.has(key)) groups.set(key, []);
+            if (!groups.has(key)) {
+                groups.set(key, []);
+                groupLabels.set(key, doc.groupLabel ?? key);
+            }
             const items = groups.get(key);
             if (items) items.push(tocLine(doc));
         }
         body = [...groups.entries()]
-            .map(([label, items]) => `## ${label}\n\n${items.join("\n")}`)
+            .map(([key, items]) => `## ${groupLabels.get(key) ?? key}\n\n${items.join("\n")}`)
             .join("\n\n");
     } else {
         body = `## Table of Contents\n\n${docs.map(tocLine).join("\n")}`;
@@ -138,10 +143,11 @@ export function generatePerGroupIndexes(docs, opts) {
     for (const [group, groupDocs] of byGroup) {
         // Flatten group so generateIndex emits a flat TOC, not nested headings.
         const flat = groupDocs.map((d) => ({ ...d, group: undefined }));
+        const label = groupDocs[0]?.groupLabel ?? group;
         out.set(
             group,
             generateIndex(flat, {
-                title: `${opts.title} — ${group}`,
+                title: `${opts.title} — ${label}`,
                 description: opts.description,
                 crossLinks: [{ label: "Index", url: opts.parentUrl }],
             }),
