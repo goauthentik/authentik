@@ -83,15 +83,15 @@ export const EntryPoint = /** @type {const} */ ({
         out: resolve(DistDirectory, "poly"),
     },
     InterfaceStyles: {
-        in: resolve(PackageRoot, "src", "styles", "interface.css"),
+        in: resolve(PackageRoot, "src", "styles", "interface.global.css"),
         out: resolve(DistDirectory, "styles", "interface"),
     },
     StaticStyles: {
-        in: resolve(PackageRoot, "src", "styles", "static.css"),
+        in: resolve(PackageRoot, "src", "styles", "static.global.css"),
         out: resolve(DistDirectory, "styles", "static"),
     },
     FlowStyles: {
-        in: resolve(PackageRoot, "src", "styles", "flows.css"),
+        in: resolve(PackageRoot, "src", "styles", "flows.global.css"),
         out: resolve(DistDirectory, "styles", "flow"),
     },
 });
