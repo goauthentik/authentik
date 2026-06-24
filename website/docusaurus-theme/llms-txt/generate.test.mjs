@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 
-import { applyMdExtension, generateIndex, buildHeader, generateFullText, renderPagePayload } from "./generate.mjs";
+import { applyMdExtension, generateIndex, buildHeader, generateFullText, renderPagePayload, generatePerGroupIndexes } from "./generate.mjs";
 
 const DOCS = [
     { title: "Page One", url: "https://docs.x/topic-a/page-one/", description: "First.", group: "topic-a", path: "topic-a/page-one", content: "" },
@@ -72,4 +72,19 @@ test("renderPagePayload renders a single page", () => {
     assert.ok(out.startsWith("# Page One\n"));
     assert.ok(out.includes("> First."));
     assert.ok(out.includes("Body one."));
+});
+
+test("generatePerGroupIndexes makes one index per group with parent cross-link", () => {
+    const map = generatePerGroupIndexes(DOCS, {
+        title: "authentik Documentation",
+        description: "Unified auth.",
+        parentUrl: "https://docs.x/llms.txt",
+    });
+    assert.deepEqual([...map.keys()].sort(), ["topic-a", "topic-b"]);
+    const a = map.get("topic-a");
+    assert.ok(a, "topic-a index must exist");
+    assert.ok(a.includes("# authentik Documentation — topic-a"));
+    assert.ok(a.includes("[Index](https://docs.x/llms.txt)"));
+    assert.ok(a.includes("[Page One]"));
+    assert.ok(!a.includes("[Page Two]"));
 });
