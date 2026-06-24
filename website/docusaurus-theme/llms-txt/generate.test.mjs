@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 
-import { applyMdExtension, generateIndex, buildHeader } from "./generate.mjs";
+import { applyMdExtension, generateIndex, buildHeader, generateFullText, renderPagePayload } from "./generate.mjs";
 
 const DOCS = [
     { title: "Page One", url: "https://docs.x/topic-a/page-one/", description: "First.", group: "topic-a", path: "topic-a/page-one", content: "" },
@@ -51,4 +51,25 @@ test("buildHeader renders title, description, intro, and related links", () => {
 test("buildHeader omits the Related line when there are no crossLinks", () => {
     const out = buildHeader("T", "D", "", []);
     assert.ok(!out.includes("Related:"));
+});
+
+const FULL = [
+    { title: "Page One", url: "u1", description: "First.", content: "Body one.", path: "topic-a/page-one" },
+    { title: "Page Two", url: "u2", description: "Second.", content: "Body two.", path: "topic-b/page-two" },
+];
+
+test("generateFullText concatenates with separators", () => {
+    const out = generateFullText(FULL, { title: "All Docs", description: "Everything." });
+    assert.ok(out.includes("## Page One\n\nBody one."));
+    assert.ok(out.includes("\n---\n"));
+    assert.ok(out.includes("## Page Two\n\nBody two."));
+});
+
+test("renderPagePayload renders a single page", () => {
+    const doc = FULL[0];
+    assert.ok(doc, "first doc must exist");
+    const out = renderPagePayload(doc);
+    assert.ok(out.startsWith("# Page One\n"));
+    assert.ok(out.includes("> First."));
+    assert.ok(out.includes("Body one."));
 });
