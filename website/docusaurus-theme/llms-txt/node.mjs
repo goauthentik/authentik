@@ -45,3 +45,73 @@ export function collectDocFiles(absDir, ignoreFiles = []) {
 
     return entries.map((rel) => resolve(absDir, rel));
 }
+
+/**
+ * Extract the document title.
+ *
+ * @param {Record<string, any>} frontMatter
+ * @param {string} body
+ * @param {string} relPathNoExt
+ * @returns {string}
+ */
+function extractTitle(frontMatter, body, relPathNoExt) {
+    if (typeof frontMatter.title === "string" && frontMatter.title.trim()) {
+        return frontMatter.title.trim();
+    }
+    const heading = body.match(/^#\s+(.+)$/m);
+    if (heading && heading[1]) {
+        return heading[1].trim();
+    }
+    const segments = relPathNoExt.split("/");
+    return segments[segments.length - 1] || relPathNoExt;
+}
+
+/**
+ * Extract a short description: frontmatter, else first prose paragraph.
+ *
+ * @param {Record<string, any>} frontMatter
+ * @param {string} body
+ * @returns {string}
+ */
+function extractDescription(frontMatter, body) {
+    if (typeof frontMatter.description === "string" && frontMatter.description.trim()) {
+        return frontMatter.description.trim();
+    }
+    for (const para of body.split("\n\n")) {
+        const trimmed = para.trim();
+        if (!trimmed) continue;
+        if (trimmed.startsWith("#")) continue;
+        if (/^(import\s|export\s|:::|<)/.test(trimmed)) continue;
+        return trimmed.replace(/\n/g, " ");
+    }
+    return "";
+}
+
+/**
+ * Parse a single Markdown/MDX file into a doc record (url filled later).
+ *
+ * @param {string} filePath Absolute file path.
+ * @param {string} baseDir Absolute scan root.
+ * @returns {AKLlmsDocInfo | null}
+ */
+export function parseDocFile(filePath, baseDir) {
+    const raw = readFileSync(filePath, "utf-8");
+    const { frontMatter, content } = parseFileContentFrontMatter(raw);
+
+    if (frontMatter.draft === true) {
+        return null;
+    }
+
+    const relNoExt = normalizePath(filePath)
+        .slice(normalizePath(baseDir).length + 1)
+        .replace(/\.mdx?$/, "")
+        .replace(/\/index$/, "");
+
+    return {
+        title: extractTitle(frontMatter, content, relNoExt),
+        path: relNoExt,
+        url: "",
+        description: extractDescription(frontMatter, content),
+        content,
+    };
+}
