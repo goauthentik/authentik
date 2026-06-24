@@ -25,22 +25,24 @@
 ### Task 1: Scaffold `llms-txt/` module, types, exports, deps
 
 **Files:**
+
 - Create: `docusaurus-theme/llms-txt/common.mjs`
 - Modify: `docusaurus-theme/package.json` (add `exports` entries + dependencies)
 - Test: `docusaurus-theme/llms-txt/common.test.mjs`
 
 **Interfaces:**
+
 - Consumes: nothing.
 - Produces: JSDoc typedefs imported by every later module — `LLMSDocsSection` `{ path: string, routeBasePath: string, label?: string }`, `LLMSPluginOptions` `{ siteUrl?: string, title?: string, description?: string, sections: LLMSDocsSection[], ignoreFiles?: string[], crossLinks?: {label: string, url: string}[], groupBy?: "topic"|"category", categories?: [string,string][] }`, `LLMSDocInfo` `{ title: string, path: string, url: string, description: string, content: string, group?: string }`. Also a runtime constant `LLMS_TXT_FILENAME = "llms.txt"`, `LLMS_FULL_FILENAME = "llms-full.txt"`.
 
 - [ ] **Step 1: Write the failing test**
 
 ```js
+import assert from "node:assert/strict";
 // docusaurus-theme/llms-txt/common.test.mjs
 import { test } from "node:test";
-import assert from "node:assert/strict";
 
-import { LLMS_TXT_FILENAME, LLMS_FULL_FILENAME, normalizeOptions } from "./common.mjs";
+import { LLMS_FULL_FILENAME, LLMS_TXT_FILENAME, normalizeOptions } from "./common.mjs";
 
 test("filename constants follow llmstxt.org convention", () => {
     assert.equal(LLMS_TXT_FILENAME, "llms.txt");
@@ -177,21 +179,24 @@ git commit -m "feat(llms-txt): scaffold plugin module, types, and deps"
 ### Task 2: File discovery
 
 **Files:**
+
 - Create: `docusaurus-theme/llms-txt/node.mjs`
 - Test: `docusaurus-theme/llms-txt/node.test.mjs`
 - Create (fixtures): `docusaurus-theme/llms-txt/__fixtures__/site/topic-a/index.mdx`, `.../topic-a/page-one.md`, `.../topic-b/page-two.mdx`, `.../topic-b/_partial.mdx` (sibling of its importer so `./_partial.mdx` resolves)
 
 **Interfaces:**
+
 - Consumes: nothing from earlier tasks.
 - Produces: `collectDocFiles(absDir: string, ignoreFiles?: string[]) => string[]` — absolute paths of `.md`/`.mdx` files under `absDir`, excluding partials (`_*`) and test files. `normalizePath(p: string) => string` — POSIX separators.
 
 - [ ] **Step 1: Create fixtures**
 
 ```mdx
-<!-- docusaurus-theme/llms-txt/__fixtures__/site/topic-a/index.mdx -->
----
+## <!-- docusaurus-theme/llms-txt/__fixtures__/site/topic-a/index.mdx -->
+
 title: Topic A Overview
 description: The overview page for Topic A.
+
 ---
 
 # Topic A Overview
@@ -200,10 +205,9 @@ Intro paragraph for topic A.
 ```
 
 ```md
-<!-- docusaurus-theme/llms-txt/__fixtures__/site/topic-a/page-one.md -->
----
-title: Page One
----
+## <!-- docusaurus-theme/llms-txt/__fixtures__/site/topic-a/page-one.md -->
+
+## title: Page One
 
 # Page One
 
@@ -211,10 +215,11 @@ First real paragraph of page one.
 ```
 
 ```mdx
-<!-- docusaurus-theme/llms-txt/__fixtures__/site/topic-b/page-two.mdx -->
----
+## <!-- docusaurus-theme/llms-txt/__fixtures__/site/topic-b/page-two.mdx -->
+
 title: Page Two
 description: Second page.
+
 ---
 
 import Shared from "./_partial.mdx";
@@ -228,17 +233,18 @@ Body of page two.
 
 ```mdx
 <!-- docusaurus-theme/llms-txt/__fixtures__/site/topic-b/_partial.mdx -->
+
 Shared partial content.
 ```
 
 - [ ] **Step 2: Write the failing test**
 
 ```js
+import assert from "node:assert/strict";
+import { resolve } from "node:path";
 // docusaurus-theme/llms-txt/node.test.mjs
 import { test } from "node:test";
-import assert from "node:assert/strict";
 import { fileURLToPath } from "node:url";
-import { resolve } from "node:path";
 
 import { collectDocFiles, normalizePath } from "./node.mjs";
 
@@ -275,8 +281,6 @@ Expected: FAIL — `Cannot find module './node.mjs'`.
 
 import { resolve } from "node:path";
 
-import { parseFileContentFrontMatter } from "@docusaurus/utils/lib/markdownUtils.js";
-import { readFileSync } from "node:fs";
 import FastGlob from "fast-glob";
 
 /**
@@ -334,10 +338,12 @@ git commit -m "feat(llms-txt): add markdown file discovery"
 ### Task 3: Parse a doc file into `LLMSDocInfo`
 
 **Files:**
+
 - Modify: `docusaurus-theme/llms-txt/node.mjs`
 - Test: `docusaurus-theme/llms-txt/node.test.mjs` (append)
 
 **Interfaces:**
+
 - Consumes: `normalizePath` (Task 2), `parseFileContentFrontMatter` (`@docusaurus/utils`).
 - Produces: `parseDocFile(filePath: string, baseDir: string) => LLMSDocInfo | null` — returns `null` for `draft: true`. Sets `title` (frontmatter → first `#` heading → filename), `description` (frontmatter → first non-heading/non-import paragraph), `path` (site-relative, no extension, no trailing `/index`), `content` (raw body — cleaning happens in Task 5), and `url: ""` (filled in Task 4).
 
@@ -459,10 +465,12 @@ git commit -m "feat(llms-txt): parse docs into title/description/path records"
 ### Task 4: Resolve final page URL from `routesPaths`
 
 **Files:**
+
 - Modify: `docusaurus-theme/llms-txt/node.mjs`
 - Test: `docusaurus-theme/llms-txt/node.test.mjs` (append)
 
 **Interfaces:**
+
 - Consumes: nothing new.
 - Produces: `resolveDocumentUrl(relPathNoExt: string, routesPaths: string[]) => string | undefined` — suffix-matches the site-relative path against Docusaurus's resolved routes, trying the original tail, the collapsed-trailing-segment variant, and the numbered-prefix-stripped variant; returns the shortest matching route, else `undefined`.
 
@@ -578,22 +586,24 @@ git commit -m "feat(llms-txt): resolve page URLs from Docusaurus routes"
 ### Task 5: MDX → clean Markdown (inline partials, strip directives)
 
 **Files:**
+
 - Create: `docusaurus-theme/llms-txt/markdown.mjs`
 - Test: `docusaurus-theme/llms-txt/markdown.test.mjs`
 
 **Interfaces:**
+
 - Consumes: `parseFileContentFrontMatter`, the fixtures from Task 2 (`topic-b/page-two.mdx` imports `_partial.mdx`).
 - Produces: `cleanMdxToMarkdown(content: string, filePath: string) => Promise<string>` — inlines `_*.mdx` partial imports, removes custom container directives (`:::ak-version`, `:::enterprise`, etc.) keeping their inner prose, drops `import`/`export` statements, and returns plain Markdown. Throws nothing: on a parse error it falls back to a regex pass so a single bad page never fails the build.
 
 - [ ] **Step 1: Write the failing test**
 
 ```js
+import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
 // docusaurus-theme/llms-txt/markdown.test.mjs
 import { test } from "node:test";
-import assert from "node:assert/strict";
 import { fileURLToPath } from "node:url";
-import { resolve } from "node:path";
-import { readFileSync } from "node:fs";
 
 import { cleanMdxToMarkdown } from "./markdown.mjs";
 
@@ -632,16 +642,16 @@ Expected: FAIL — `Cannot find module './markdown.mjs'`.
  * inline partial imports, strip custom directives and JSX/imports.
  */
 
-import { dirname, resolve } from "node:path";
 import { readFileSync } from "node:fs";
+import { dirname, resolve } from "node:path";
 
 import { parseFileContentFrontMatter } from "@docusaurus/utils/lib/markdownUtils.js";
-import { unified } from "unified";
+import remarkDirective from "remark-directive";
+import remarkGfm from "remark-gfm";
+import remarkMdx from "remark-mdx";
 import remarkParse from "remark-parse";
 import remarkStringify from "remark-stringify";
-import remarkMdx from "remark-mdx";
-import remarkGfm from "remark-gfm";
-import remarkDirective from "remark-directive";
+import { unified } from "unified";
 import { visit } from "unist-util-visit";
 
 /**
@@ -682,7 +692,8 @@ function loadPartial(partialPath, chain) {
  * @returns {string}
  */
 function inlinePartials(content, filePath) {
-    const importRe = /^\s*import\s+(?:(\w+)|{\s*(\w+)\s*})\s+from\s+['"]([^'"]+_[^'"]+\.mdx?)['"];?\s*$/gm;
+    const importRe =
+        /^\s*import\s+(?:(\w+)|{\s*(\w+)\s*})\s+from\s+['"]([^'"]+_[^'"]+\.mdx?)['"];?\s*$/gm;
     /** @type {Map<string, string>} */
     const bodies = new Map();
     let match;
@@ -783,28 +794,44 @@ git commit -m "feat(llms-txt): clean MDX into Markdown (partials, directives)"
 ### Task 6: Generate the grouped index (`llms.txt`) string
 
 **Files:**
+
 - Create: `docusaurus-theme/llms-txt/generate.mjs`
 - Test: `docusaurus-theme/llms-txt/generate.test.mjs`
 
 **Interfaces:**
+
 - Consumes: `LLMSDocInfo` (Task 1).
 - Produces:
-  - `applyMdExtension(url: string) => string` — strips trailing `/`, ensures a `.md` suffix.
-  - `buildHeader(title: string, description: string, intro: string, crossLinks: {label,url}[]) => string`.
-  - `generateIndex(docs: LLMSDocInfo[], opts: {title, description, crossLinks?}) => string` — groups by `doc.group` into `## Group` sections (flat `## Table of Contents` when no groups), each line `- [title](url.md): description`.
+    - `applyMdExtension(url: string) => string` — strips trailing `/`, ensures a `.md` suffix.
+    - `buildHeader(title: string, description: string, intro: string, crossLinks: {label,url}[]) => string`.
+    - `generateIndex(docs: LLMSDocInfo[], opts: {title, description, crossLinks?}) => string` — groups by `doc.group` into `## Group` sections (flat `## Table of Contents` when no groups), each line `- [title](url.md): description`.
 
 - [ ] **Step 1: Write the failing test**
 
 ```js
+import assert from "node:assert/strict";
 // docusaurus-theme/llms-txt/generate.test.mjs
 import { test } from "node:test";
-import assert from "node:assert/strict";
 
 import { applyMdExtension, generateIndex } from "./generate.mjs";
 
 const DOCS = [
-    { title: "Page One", url: "https://docs.x/topic-a/page-one/", description: "First.", group: "topic-a", path: "topic-a/page-one", content: "" },
-    { title: "Page Two", url: "https://docs.x/topic-b/page-two/", description: "Second.", group: "topic-b", path: "topic-b/page-two", content: "" },
+    {
+        title: "Page One",
+        url: "https://docs.x/topic-a/page-one/",
+        description: "First.",
+        group: "topic-a",
+        path: "topic-a/page-one",
+        content: "",
+    },
+    {
+        title: "Page Two",
+        url: "https://docs.x/topic-b/page-two/",
+        description: "Second.",
+        group: "topic-b",
+        path: "topic-b/page-two",
+        content: "",
+    },
 ];
 
 test("applyMdExtension appends .md once", () => {
@@ -940,14 +967,16 @@ git commit -m "feat(llms-txt): generate grouped llms.txt index"
 ### Task 7: Generate full-text (`llms-full.txt`) and per-page `.md`
 
 **Files:**
+
 - Modify: `docusaurus-theme/llms-txt/generate.mjs`
 - Test: `docusaurus-theme/llms-txt/generate.test.mjs` (append)
 
 **Interfaces:**
+
 - Consumes: `buildHeader` (Task 6), `LLMSDocInfo` with `content` populated (cleaned in Task 5).
 - Produces:
-  - `generateFullText(docs, opts: {title, description, crossLinks?}) => string` — header + each doc as `## title` + cleaned content, joined by `\n\n---\n\n`.
-  - `renderPagePayload(doc) => string` — a single page's `.md`: `# title` + `> description` + cleaned content.
+    - `generateFullText(docs, opts: {title, description, crossLinks?}) => string` — header + each doc as `## title` + cleaned content, joined by `\n\n---\n\n`.
+    - `renderPagePayload(doc) => string` — a single page's `.md`: `# title` + `> description` + cleaned content.
 
 - [ ] **Step 1: Write the failing test (append)**
 
@@ -955,8 +984,20 @@ git commit -m "feat(llms-txt): generate grouped llms.txt index"
 import { generateFullText, renderPagePayload } from "./generate.mjs";
 
 const FULL = [
-    { title: "Page One", url: "u1", description: "First.", content: "Body one.", path: "topic-a/page-one" },
-    { title: "Page Two", url: "u2", description: "Second.", content: "Body two.", path: "topic-b/page-two" },
+    {
+        title: "Page One",
+        url: "u1",
+        description: "First.",
+        content: "Body one.",
+        path: "topic-a/page-one",
+    },
+    {
+        title: "Page Two",
+        url: "u2",
+        description: "Second.",
+        content: "Body two.",
+        path: "topic-b/page-two",
+    },
 ];
 
 test("generateFullText concatenates with separators", () => {
@@ -1029,10 +1070,12 @@ git commit -m "feat(llms-txt): generate llms-full.txt and per-page payloads"
 ### Task 8: Per-group index generation (third level)
 
 **Files:**
+
 - Modify: `docusaurus-theme/llms-txt/generate.mjs`
 - Test: `docusaurus-theme/llms-txt/generate.test.mjs` (append)
 
 **Interfaces:**
+
 - Consumes: `generateIndex` (Task 6).
 - Produces: `generatePerGroupIndexes(docs, opts: {title, description, parentUrl}) => Map<string, string>` — keyed by group dir (`doc.group`), each value a `generateIndex` over only that group's docs, with a cross-link back up to `parentUrl` and title `"<title> — <group>"`.
 
@@ -1118,27 +1161,29 @@ git commit -m "feat(llms-txt): generate per-group third-level indexes"
 ### Task 9: Plugin orchestration (`postBuild`) + group assignment
 
 **Files:**
+
 - Modify: `docusaurus-theme/llms-txt/node.mjs` (add `assignGroup`)
 - Create: `docusaurus-theme/llms-txt/plugin.mjs`
 - Test: `docusaurus-theme/llms-txt/plugin.test.mjs`
 
 **Interfaces:**
+
 - Consumes: `collectDocFiles`, `parseDocFile`, `resolveDocumentUrl`, `normalizePath` (node.mjs); `cleanMdxToMarkdown` (markdown.mjs); `generateIndex`, `generateFullText`, `generatePerGroupIndexes`, `renderPagePayload`, `applyMdExtension` (generate.mjs); `normalizeOptions`, `LLMS_TXT_FILENAME`, `LLMS_FULL_FILENAME` (common.mjs).
 - Produces:
-  - `assignGroup(doc: LLMSDocInfo, opts) => string` — first path segment for `groupBy: "topic"`; for `"category"`, the label from `categories` keyed by first segment (falls back to the segment).
-  - `buildLLMSOutputs(ctx) => Promise<Map<relPath, contents>>` — pure async core returning every file to write (root `llms.txt`, `llms-full.txt`, per-group `llms.txt`, per-page `.md`), keyed by build-relative output path. `ctx = { siteDir, outDir, siteUrl, title, description, options, routesPaths }`.
-  - default export `akLLMSPlugin(loadContext, options)` — a `Plugin` whose `postBuild(props)` calls `buildLLMSOutputs` and writes the map to `outDir`.
+    - `assignGroup(doc: LLMSDocInfo, opts) => string` — first path segment for `groupBy: "topic"`; for `"category"`, the label from `categories` keyed by first segment (falls back to the segment).
+    - `buildLLMSOutputs(ctx) => Promise<Map<relPath, contents>>` — pure async core returning every file to write (root `llms.txt`, `llms-full.txt`, per-group `llms.txt`, per-page `.md`), keyed by build-relative output path. `ctx = { siteDir, outDir, siteUrl, title, description, options, routesPaths }`.
+    - default export `akLLMSPlugin(loadContext, options)` — a `Plugin` whose `postBuild(props)` calls `buildLLMSOutputs` and writes the map to `outDir`.
 
 - [ ] **Step 1: Write the failing test**
 
 ```js
+import assert from "node:assert/strict";
+import { resolve } from "node:path";
 // docusaurus-theme/llms-txt/plugin.test.mjs
 import { test } from "node:test";
-import assert from "node:assert/strict";
 import { fileURLToPath } from "node:url";
-import { resolve } from "node:path";
 
-import { buildLLMSOutputs, assignGroup } from "./plugin.mjs";
+import { assignGroup, buildLLMSOutputs } from "./plugin.mjs";
 
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
 const FIXTURE = resolve(__dirname, "__fixtures__", "site");
@@ -1153,7 +1198,10 @@ test("assignGroup uses first segment for topic grouping", () => {
 test("assignGroup maps category labels", () => {
     const doc = { path: "cloud-providers/aws" };
     assert.equal(
-        assignGroup(doc, { groupBy: "category", categories: [["cloud-providers", "Cloud Providers"]] }),
+        assignGroup(doc, {
+            groupBy: "category",
+            categories: [["cloud-providers", "Cloud Providers"]],
+        }),
         "Cloud Providers",
     );
 });
@@ -1166,7 +1214,11 @@ test("buildLLMSOutputs emits root, full, per-group, and per-page files", async (
         title: "authentik Documentation",
         description: "Unified auth.",
         routesPaths: ROUTES,
-        options: { sections: [{ path: ".", routeBasePath: "/" }], groupBy: "topic", crossLinks: [] },
+        options: {
+            sections: [{ path: ".", routeBasePath: "/" }],
+            groupBy: "topic",
+            crossLinks: [],
+        },
     });
 
     assert.ok(outputs.has("llms.txt"), "root index");
@@ -1223,16 +1275,16 @@ export function assignGroup(doc, opts) {
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 
-import { LLMS_TXT_FILENAME, LLMS_FULL_FILENAME, normalizeOptions } from "./common.mjs";
-import { collectDocFiles, parseDocFile, resolveDocumentUrl, assignGroup } from "./node.mjs";
-import { cleanMdxToMarkdown } from "./markdown.mjs";
+import { LLMS_FULL_FILENAME, LLMS_TXT_FILENAME, normalizeOptions } from "./common.mjs";
 import {
-    generateIndex,
+    applyMdExtension,
     generateFullText,
+    generateIndex,
     generatePerGroupIndexes,
     renderPagePayload,
-    applyMdExtension,
 } from "./generate.mjs";
+import { cleanMdxToMarkdown } from "./markdown.mjs";
+import { assignGroup, collectDocFiles, parseDocFile, resolveDocumentUrl } from "./node.mjs";
 
 const PLUGIN_NAME = "ak-llms-txt-plugin";
 
@@ -1363,10 +1415,12 @@ git commit -m "feat(llms-txt): orchestrate generation in postBuild"
 ### Task 10: Wire into the docs build + validate end-to-end 🛑 GATE
 
 **Files:**
+
 - Modify: `docusaurus-theme/config.js` (add `createLLMSPlugin` helper)
 - Modify: `docs/docusaurus.config.esm.mjs` (register the plugin)
 
 **Interfaces:**
+
 - Consumes: the published plugin export `@goauthentik/docusaurus-theme/llms-txt/plugin`.
 - Produces: `createLLMSPlugin(options) => [string, LLMSPluginOptions]` — a plugin tuple for the Docusaurus `plugins` array.
 
@@ -1419,12 +1473,14 @@ Expected: build succeeds; console shows `🚀 ak-llms-txt-plugin generating llms
 - [ ] **Step 4: Validate the output (GATE — index sanity + content quality)**
 
 Run:
+
 ```bash
 ls docs/build/llms.txt docs/build/llms-full.txt
 sed -n '1,20p' docs/build/llms.txt
 # Pick a real topic dir that exists in docs/ (e.g. add-secure-apps):
 ls docs/build/add-secure-apps/llms.txt
 ```
+
 Expected: root `llms.txt` has the title header, `Related: [Integrations]…`, and `## <topic>` sections with `(…page.md)` links; per-topic `llms.txt` exists; a sampled `.md` file (open one referenced in the index) contains clean prose with no `import` lines, no `:::` directives, and no leftover JSX badge components.
 
 Manual check (the spec's content-quality gate): open 5 varied `.md` payloads and confirm an LLM could list the page's steps from them. If partials/directives leak, revisit Task 5 before continuing.
@@ -1441,9 +1497,11 @@ git commit -m "feat(llms-txt): enable on the docs build"
 ### Task 11: Wire into the integrations build (category grouping) 🛑 GATE
 
 **Files:**
+
 - Modify: `integrations/docusaurus.config.esm.mjs`
 
 **Interfaces:**
+
 - Consumes: `createLLMSPlugin` (Task 10), `integrations/categories.mjs` (the 16 `[dirName, label]` pairs).
 
 - [ ] **Step 1: Import the helper and categories**
@@ -1479,11 +1537,13 @@ Expected: build succeeds; plugin logs appear.
 - [ ] **Step 4: Validate (GATE)**
 
 Run:
+
 ```bash
 ls integrations/build/llms.txt integrations/build/llms-full.txt
 ls integrations/build/cloud-providers/llms.txt
 sed -n '1,30p' integrations/build/llms.txt
 ```
+
 Expected: root `llms.txt` groups entries under human-readable category labels (e.g. `## Cloud Providers`), cross-links to docs, and a per-category `llms.txt` exists (e.g. `cloud-providers/llms.txt`) linking only that category's pages back up to the root index.
 
 - [ ] **Step 5: Commit**
@@ -1498,6 +1558,7 @@ git commit -m "feat(llms-txt): enable on the integrations build with category gr
 ## Self-Review
 
 **1. Spec coverage (Layer 1 portion of `2026-06-24-authentik-llm-architecture-design.md`):**
+
 - Three-level index (root + per-group + full-text): Tasks 6, 7, 8, 9. ✅
 - Per-page `.md` as core payload: Tasks 7 (render) + 9 (emit). ✅
 - Partial-import resolution + directive stripping via re-parsed MDX AST (the "re-parsing source" option the spec named): Task 5. ✅

@@ -28,20 +28,22 @@
 ### Task 1: Scaffold the `code-mode` server package
 
 **Files:**
+
 - Create: `mcp-servers/code-mode/package.json`
 - Create: `mcp-servers/code-mode/tsconfig.json`
 - Create: `mcp-servers/code-mode/src/version.mjs`
 - Test: `mcp-servers/code-mode/src/version.test.mjs`
 
 **Interfaces:**
+
 - Produces: `SERVER_NAME = "authentik-code-mode"` and `SERVER_VERSION = "0.1.0"` from `version.mjs`.
 
 - [ ] **Step 1: Write the failing test**
 
 ```js
+import assert from "node:assert/strict";
 // mcp-servers/code-mode/src/version.test.mjs
 import { test } from "node:test";
-import assert from "node:assert/strict";
 
 import { SERVER_NAME, SERVER_VERSION } from "./version.mjs";
 
@@ -59,6 +61,7 @@ Expected: FAIL — `Cannot find module './version.mjs'`.
 - [ ] **Step 3: Create the package files**
 
 `mcp-servers/code-mode/package.json`:
+
 ```json
 {
     "name": "@goauthentik/mcp-code-mode",
@@ -76,6 +79,7 @@ Expected: FAIL — `Cannot find module './version.mjs'`.
 ```
 
 `mcp-servers/code-mode/tsconfig.json`:
+
 ```json
 {
     "extends": "@goauthentik/tsconfig",
@@ -92,6 +96,7 @@ Expected: FAIL — `Cannot find module './version.mjs'`.
 ```
 
 `mcp-servers/code-mode/src/version.mjs`:
+
 ```js
 /** @file Server identity constants. */
 export const SERVER_NAME = "authentik-code-mode";
@@ -116,18 +121,20 @@ git commit -m "feat(code-mode): scaffold MCP server package"
 ### Task 2: Config loader (env validation)
 
 **Files:**
+
 - Create: `mcp-servers/code-mode/src/config.mjs`
 - Test: `mcp-servers/code-mode/src/config.test.mjs`
 
 **Interfaces:**
+
 - Produces: `loadConfig(env) => { baseUrl: string, token: string }` — reads `AUTHENTIK_URL` + `AUTHENTIK_TOKEN`, strips a trailing slash from the URL, throws a clear `Error` if either is missing/empty.
 
 - [ ] **Step 1: Write the failing test**
 
 ```js
+import assert from "node:assert/strict";
 // mcp-servers/code-mode/src/config.test.mjs
 import { test } from "node:test";
-import assert from "node:assert/strict";
 
 import { loadConfig } from "./config.mjs";
 
@@ -193,14 +200,16 @@ git commit -m "feat(code-mode): env config loader"
 ### Task 3: Schema — `$ref` deref + `searchOperations`
 
 **Files:**
+
 - Create: `mcp-servers/code-mode/src/schema.mjs`
 - Create (fixture): `mcp-servers/code-mode/src/__fixtures__/schema.yml`
 - Test: `mcp-servers/code-mode/src/schema.test.mjs`
 
 **Interfaces:**
+
 - Produces:
-  - `derefSchema(spec) => spec` — returns the spec with internal `$ref` (`#/components/...`) resolved inline, cycle-safe (a revisited ref becomes `{ $ref: "<original>" }` to break loops).
-  - `searchOperations(spec, query, limit = 20) => Array<{ method, path, operationId, summary, tags, parameters, requestBody, responses }>` — case-insensitive match of `query` tokens against `path + operationId + summary + tags`; returns at most `limit` operations with their (deref'd) param/request/response slices.
+    - `derefSchema(spec) => spec` — returns the spec with internal `$ref` (`#/components/...`) resolved inline, cycle-safe (a revisited ref becomes `{ $ref: "<original>" }` to break loops).
+    - `searchOperations(spec, query, limit = 20) => Array<{ method, path, operationId, summary, tags, parameters, requestBody, responses }>` — case-insensitive match of `query` tokens against `path + operationId + summary + tags`; returns at most `limit` operations with their (deref'd) param/request/response slices.
 
 - [ ] **Step 1: Create the fixture**
 
@@ -208,71 +217,77 @@ git commit -m "feat(code-mode): env config loader"
 # mcp-servers/code-mode/src/__fixtures__/schema.yml
 openapi: 3.0.3
 info:
-  title: authentik
-  version: 2026.8.0
+    title: authentik
+    version: 2026.8.0
 paths:
-  /core/users/:
-    get:
-      operationId: core_users_list
-      summary: List users
-      tags: [core]
-      parameters:
-        - name: search
-          in: query
-          schema: { type: string }
-      responses:
-        "200":
-          content:
-            application/json:
-              schema: { $ref: "#/components/schemas/User" }
-  /stages/captcha/:
-    post:
-      operationId: stages_captcha_create
-      summary: Create a captcha stage
-      tags: [stages]
-      requestBody:
-        content:
-          application/json:
-            schema: { $ref: "#/components/schemas/CaptchaStage" }
-      responses:
-        "201":
-          content:
-            application/json:
-              schema: { $ref: "#/components/schemas/CaptchaStage" }
+    /core/users/:
+        get:
+            operationId: core_users_list
+            summary: List users
+            tags: [core]
+            parameters:
+                - name: search
+                  in: query
+                  schema: { type: string }
+            responses:
+                "200":
+                    content:
+                        application/json:
+                            schema: { $ref: "#/components/schemas/User" }
+    /stages/captcha/:
+        post:
+            operationId: stages_captcha_create
+            summary: Create a captcha stage
+            tags: [stages]
+            requestBody:
+                content:
+                    application/json:
+                        schema: { $ref: "#/components/schemas/CaptchaStage" }
+            responses:
+                "201":
+                    content:
+                        application/json:
+                            schema: { $ref: "#/components/schemas/CaptchaStage" }
 components:
-  schemas:
-    User:
-      type: object
-      properties:
-        pk: { type: integer }
-        username: { type: string }
-    CaptchaStage:
-      type: object
-      properties:
-        name: { type: string }
-        public_key: { type: string }
-        private_key: { type: string }
+    schemas:
+        User:
+            type: object
+            properties:
+                pk: { type: integer }
+                username: { type: string }
+        CaptchaStage:
+            type: object
+            properties:
+                name: { type: string }
+                public_key: { type: string }
+                private_key: { type: string }
 ```
 
 - [ ] **Step 2: Write the failing test**
 
 ```js
-// mcp-servers/code-mode/src/schema.test.mjs
-import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { fileURLToPath } from "node:url";
 import { resolve } from "node:path";
-import { parse } from "yaml";
+// mcp-servers/code-mode/src/schema.test.mjs
+import { test } from "node:test";
+import { fileURLToPath } from "node:url";
 
 import { derefSchema, searchOperations } from "./schema.mjs";
 
+import { parse } from "yaml";
+
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
-const SPEC = derefSchema(parse(readFileSync(resolve(__dirname, "__fixtures__/schema.yml"), "utf-8")));
+const SPEC = derefSchema(
+    parse(readFileSync(resolve(__dirname, "__fixtures__/schema.yml"), "utf-8")),
+);
 
 test("derefSchema inlines internal $refs", () => {
     const op = SPEC.paths["/core/users/"].get;
-    assert.equal(op.responses["200"].content["application/json"].schema.properties.username.type, "string");
+    assert.equal(
+        op.responses["200"].content["application/json"].schema.properties.username.type,
+        "string",
+    );
 });
 
 test("searchOperations matches by summary/tag/path and returns slices", () => {
@@ -411,20 +426,22 @@ git commit -m "feat(code-mode): schema deref + operation search"
 ### Task 4: `ak.request` client (authed fetch + read-only guard)
 
 **Files:**
+
 - Create: `mcp-servers/code-mode/src/client.mjs`
 - Test: `mcp-servers/code-mode/src/client.test.mjs`
 
 **Interfaces:**
+
 - Consumes: `AKConfig` from `config.mjs` (shape `{ baseUrl, token }`).
 - Produces: `createAk(config, { allowWrites }) => { request(method, path, opts?) }` where `opts = { query?: Record<string,string|number>, body?: unknown }`. Builds `${baseUrl}/api/v3${path}`, sends `Authorization: Bearer <token>`, returns `{ status: number, data: unknown }`. When `allowWrites` is false, a non-GET/HEAD/OPTIONS method throws `Error("writes are disabled in this context; use execute_write")` BEFORE any network call.
 
 - [ ] **Step 1: Write the failing test**
 
 ```js
-// mcp-servers/code-mode/src/client.test.mjs
-import { test } from "node:test";
 import assert from "node:assert/strict";
 import { createServer } from "node:http";
+// mcp-servers/code-mode/src/client.test.mjs
+import { test } from "node:test";
 
 import { createAk } from "./client.mjs";
 
@@ -459,7 +476,10 @@ test("request performs an authenticated GET and parses JSON", async () => {
 
 test("read-only client rejects a write before any network call", async () => {
     const ak = createAk({ baseUrl: "http://127.0.0.1:1", token: "tok" }, { allowWrites: false });
-    await assert.rejects(() => ak.request("POST", "/stages/captcha/", { body: {} }), /writes are disabled/);
+    await assert.rejects(
+        () => ak.request("POST", "/stages/captcha/", { body: {} }),
+        /writes are disabled/,
+    );
 });
 
 test("write-enabled client sends a POST body", async () => {
@@ -514,7 +534,9 @@ export function createAk(config, { allowWrites }) {
     async function request(method, path, opts = {}) {
         const verb = method.toUpperCase();
         if (!allowWrites && !READ_METHODS.has(verb)) {
-            throw new Error(`writes are disabled in this context; use execute_write (attempted ${verb} ${path})`);
+            throw new Error(
+                `writes are disabled in this context; use execute_write (attempted ${verb} ${path})`,
+            );
         }
         const url = new URL(`${config.baseUrl}/api/v3${path}`);
         for (const [k, v] of Object.entries(opts.query ?? {})) {
@@ -523,9 +545,9 @@ export function createAk(config, { allowWrites }) {
         const res = await fetch(url, {
             method: verb,
             headers: {
-                authorization: `Bearer ${config.token}`,
+                "authorization": `Bearer ${config.token}`,
                 "content-type": "application/json",
-                accept: "application/json",
+                "accept": "application/json",
             },
             body: opts.body === undefined ? undefined : JSON.stringify(opts.body),
         });
@@ -559,18 +581,20 @@ git commit -m "feat(code-mode): authenticated ak.request with read-only guard"
 ### Task 5: Sandbox (`node:vm`, only `ak` + `console`)
 
 **Files:**
+
 - Create: `mcp-servers/code-mode/src/sandbox.mjs`
 - Test: `mcp-servers/code-mode/src/sandbox.test.mjs`
 
 **Interfaces:**
+
 - Produces: `runInSandbox(code, ak, { timeoutMs = 30000 }) => Promise<{ result: unknown, logs: string[] }>` — runs `code` as the body of an `async` function in a `vm` context whose only globals are `ak` and `console` (log/error/warn push to `logs`). No `fetch`, `require`, `process`, `globalThis` escapes. `result` is the code's `return` value (JSON-cloned to a plain value). Throws if the code throws or exceeds the timeout.
 
 - [ ] **Step 1: Write the failing test**
 
 ```js
+import assert from "node:assert/strict";
 // mcp-servers/code-mode/src/sandbox.test.mjs
 import { test } from "node:test";
-import assert from "node:assert/strict";
 
 import { runInSandbox } from "./sandbox.mjs";
 
@@ -633,7 +657,8 @@ import vm from "node:vm";
 export async function runInSandbox(code, ak, { timeoutMs = 30000 }) {
     /** @type {string[]} */
     const logs = [];
-    const record = (...args) => logs.push(args.map((a) => (typeof a === "string" ? a : JSON.stringify(a))).join(" "));
+    const record = (...args) =>
+        logs.push(args.map((a) => (typeof a === "string" ? a : JSON.stringify(a))).join(" "));
     const sandbox = {
         ak,
         console: { log: record, error: record, warn: record, info: record },
@@ -665,34 +690,39 @@ git commit -m "feat(code-mode): node:vm sandbox exposing only ak + console"
 ### Task 6: Tools — `search`, `execute`, `execute_write` (two-call confirm)
 
 **Files:**
+
 - Create: `mcp-servers/code-mode/src/tools.mjs`
 - Test: `mcp-servers/code-mode/src/tools.test.mjs`
 
 **Interfaces:**
+
 - Consumes: `searchOperations` (schema.mjs), `createAk` (client.mjs), `runInSandbox` (sandbox.mjs).
 - Produces: `createTools({ spec, config }) => { search, execute, executeWrite, confirmTokenFor }` where:
-  - `search({ query, limit? }) => { operations }` — wraps `searchOperations`.
-  - `execute({ code }) => { result, logs }` — runs `code` with a **read-only** `ak`.
-  - `confirmTokenFor(code) => string` — deterministic 8-char token (sha256 of code).
-  - `executeWrite({ code, confirm? }) => { status: "needs_confirmation", token, preview } | { result, logs }` — when `confirm` is absent or wrong, returns `needs_confirmation` with the token + a preview (the code) and does NOT run; when `confirm === confirmTokenFor(code)`, runs `code` with a **write-enabled** `ak`.
+    - `search({ query, limit? }) => { operations }` — wraps `searchOperations`.
+    - `execute({ code }) => { result, logs }` — runs `code` with a **read-only** `ak`.
+    - `confirmTokenFor(code) => string` — deterministic 8-char token (sha256 of code).
+    - `executeWrite({ code, confirm? }) => { status: "needs_confirmation", token, preview } | { result, logs }` — when `confirm` is absent or wrong, returns `needs_confirmation` with the token + a preview (the code) and does NOT run; when `confirm === confirmTokenFor(code)`, runs `code` with a **write-enabled** `ak`.
 
 - [ ] **Step 1: Write the failing test**
 
 ```js
-// mcp-servers/code-mode/src/tools.test.mjs
-import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { fileURLToPath } from "node:url";
-import { resolve } from "node:path";
 import { createServer } from "node:http";
-import { parse } from "yaml";
+import { resolve } from "node:path";
+// mcp-servers/code-mode/src/tools.test.mjs
+import { test } from "node:test";
+import { fileURLToPath } from "node:url";
 
 import { derefSchema } from "./schema.mjs";
 import { createTools } from "./tools.mjs";
 
+import { parse } from "yaml";
+
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
-const SPEC = derefSchema(parse(readFileSync(resolve(__dirname, "__fixtures__/schema.yml"), "utf-8")));
+const SPEC = derefSchema(
+    parse(readFileSync(resolve(__dirname, "__fixtures__/schema.yml"), "utf-8")),
+);
 
 async function withMock(handler, fn) {
     const server = createServer(handler);
@@ -715,16 +745,24 @@ test("execute runs read-only code", async () => {
         (req, res) => res.end(JSON.stringify([{ username: "alice" }])),
         async (baseUrl) => {
             const tools = createTools({ spec: SPEC, config: { baseUrl, token: "t" } });
-            const { result } = await tools.execute({ code: `return (await ak.request("GET","/core/users/")).data;` });
+            const { result } = await tools.execute({
+                code: `return (await ak.request("GET","/core/users/")).data;`,
+            });
             assert.deepEqual(result, [{ username: "alice" }]);
         },
     );
 });
 
 test("execute blocks writes (read-only binding)", async () => {
-    const tools = createTools({ spec: SPEC, config: { baseUrl: "http://127.0.0.1:1", token: "t" } });
+    const tools = createTools({
+        spec: SPEC,
+        config: { baseUrl: "http://127.0.0.1:1", token: "t" },
+    });
     await assert.rejects(
-        () => tools.execute({ code: `return await ak.request("POST","/stages/captcha/",{body:{}});` }),
+        () =>
+            tools.execute({
+                code: `return await ak.request("POST","/stages/captcha/",{body:{}});`,
+            }),
         /writes are disabled/,
     );
 });
@@ -748,7 +786,10 @@ test("execute_write requires a matching confirm token, then runs", async () => {
 });
 
 test("execute_write rejects a wrong confirm token without running", async () => {
-    const tools = createTools({ spec: SPEC, config: { baseUrl: "http://127.0.0.1:1", token: "t" } });
+    const tools = createTools({
+        spec: SPEC,
+        config: { baseUrl: "http://127.0.0.1:1", token: "t" },
+    });
     const code = `return await ak.request("POST","/stages/captcha/",{body:{}});`;
     const out = await tools.executeWrite({ code, confirm: "wrongtok" });
     assert.equal(out.status, "needs_confirmation");
@@ -768,9 +809,9 @@ Expected: FAIL — `Cannot find module './tools.mjs'`.
 
 import { createHash } from "node:crypto";
 
-import { searchOperations } from "./schema.mjs";
 import { createAk } from "./client.mjs";
 import { runInSandbox } from "./sandbox.mjs";
+import { searchOperations } from "./schema.mjs";
 
 /** @import { AKConfig } from "./config.mjs" */
 
@@ -828,21 +869,23 @@ git commit -m "feat(code-mode): search/execute/execute_write with two-call write
 ### Task 7: Server entry — MCP wiring + startup schema load
 
 **Files:**
+
 - Create: `mcp-servers/code-mode/src/load-schema.mjs`
 - Create: `mcp-servers/code-mode/src/index.mjs`
 - Test: `mcp-servers/code-mode/src/load-schema.test.mjs`
 
 **Interfaces:**
+
 - Consumes: `loadConfig` (config.mjs), `derefSchema` (schema.mjs), `createTools` (tools.mjs), `SERVER_NAME`/`SERVER_VERSION` (version.mjs).
 - Produces: `fetchSchema(config) => Promise<spec>` — GETs `${baseUrl}/api/v3/schema/` with the bearer token, parses YAML or JSON, returns the **deref'd** spec; on network failure logs to stderr and throws. `index.mjs` is the executable entry: loads config, fetches+derefs schema, builds tools, registers them on an `McpServer`, connects `StdioServerTransport`.
 
 - [ ] **Step 1: Write the failing test**
 
 ```js
-// mcp-servers/code-mode/src/load-schema.test.mjs
-import { test } from "node:test";
 import assert from "node:assert/strict";
 import { createServer } from "node:http";
+// mcp-servers/code-mode/src/load-schema.test.mjs
+import { test } from "node:test";
 
 import { fetchSchema } from "./load-schema.mjs";
 
@@ -854,14 +897,21 @@ test("fetchSchema GETs /api/v3/schema/ and returns a deref'd spec", async () => 
         res.end(
             JSON.stringify({
                 openapi: "3.0.3",
-                paths: { "/core/users/": { get: { operationId: "core_users_list", summary: "List users" } } },
+                paths: {
+                    "/core/users/": {
+                        get: { operationId: "core_users_list", summary: "List users" },
+                    },
+                },
                 components: {},
             }),
         );
     });
     await new Promise((r) => server.listen(0, r));
     try {
-        const spec = await fetchSchema({ baseUrl: `http://127.0.0.1:${server.address().port}`, token: "t" });
+        const spec = await fetchSchema({
+            baseUrl: `http://127.0.0.1:${server.address().port}`,
+            token: "t",
+        });
         assert.equal(spec.paths["/core/users/"].get.operationId, "core_users_list");
     } finally {
         server.close();
@@ -880,9 +930,9 @@ Expected: FAIL — `Cannot find module './load-schema.mjs'`.
 // mcp-servers/code-mode/src/load-schema.mjs
 /** @file Fetch the running instance's OpenAPI schema at startup. */
 
-import { parse } from "yaml";
-
 import { derefSchema } from "./schema.mjs";
+
+import { parse } from "yaml";
 
 /** @import { AKConfig } from "./config.mjs" */
 
@@ -970,13 +1020,14 @@ main().catch((err) => {
 - [ ] **Step 6: Smoke-test the entry boots and lists tools**
 
 Create `mcp-servers/code-mode/src/index.smoke.test.mjs`:
+
 ```js
-import { test } from "node:test";
 import assert from "node:assert/strict";
-import { createServer } from "node:http";
 import { spawn } from "node:child_process";
-import { fileURLToPath } from "node:url";
+import { createServer } from "node:http";
 import { resolve } from "node:path";
+import { test } from "node:test";
+import { fileURLToPath } from "node:url";
 
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
 const ENTRY = resolve(__dirname, "index.mjs");
@@ -998,7 +1049,16 @@ test("server starts, serves schema, and responds to tools/list over stdio", asyn
         let out = "";
         child.stdout.on("data", (d) => (out += d));
         const send = (msg) => child.stdin.write(JSON.stringify(msg) + "\n");
-        send({ jsonrpc: "2.0", id: 1, method: "initialize", params: { protocolVersion: "2025-06-18", capabilities: {}, clientInfo: { name: "t", version: "0" } } });
+        send({
+            jsonrpc: "2.0",
+            id: 1,
+            method: "initialize",
+            params: {
+                protocolVersion: "2025-06-18",
+                capabilities: {},
+                clientInfo: { name: "t", version: "0" },
+            },
+        });
         send({ jsonrpc: "2.0", id: 2, method: "tools/list", params: {} });
         await new Promise((r) => setTimeout(r, 1500));
         assert.match(out, /"search"/);
@@ -1030,6 +1090,7 @@ git commit -m "feat(code-mode): MCP stdio entry + startup schema fetch"
 ### Task 8: Register the server + README (🛑 GATE: captcha pivot, mock)
 
 **Files:**
+
 - Modify: `.mcp.json`
 - Modify: `hooks/hooks.json`
 - Modify: `README.md` (the MCP servers table)
@@ -1037,25 +1098,29 @@ git commit -m "feat(code-mode): MCP stdio entry + startup schema fetch"
 - Test: `mcp-servers/code-mode/src/pivot.test.mjs`
 
 **Interfaces:**
+
 - Consumes: everything above (end-to-end).
 
 - [ ] **Step 1: Write the captcha pivot integration test (mock instance)**
 
 ```js
-// mcp-servers/code-mode/src/pivot.test.mjs
-import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { fileURLToPath } from "node:url";
-import { resolve } from "node:path";
 import { createServer } from "node:http";
-import { parse } from "yaml";
+import { resolve } from "node:path";
+// mcp-servers/code-mode/src/pivot.test.mjs
+import { test } from "node:test";
+import { fileURLToPath } from "node:url";
 
 import { derefSchema } from "./schema.mjs";
 import { createTools } from "./tools.mjs";
 
+import { parse } from "yaml";
+
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
-const SPEC = derefSchema(parse(readFileSync(resolve(__dirname, "__fixtures__/schema.yml"), "utf-8")));
+const SPEC = derefSchema(
+    parse(readFileSync(resolve(__dirname, "__fixtures__/schema.yml"), "utf-8")),
+);
 
 test("PIVOT: discover + create a captcha stage in one confirmed write block", async () => {
     const calls = [];
@@ -1067,7 +1132,10 @@ test("PIVOT: discover + create a captcha stage in one confirmed write block", as
     });
     await new Promise((r) => inst.listen(0, r));
     try {
-        const tools = createTools({ spec: SPEC, config: { baseUrl: `http://127.0.0.1:${inst.address().port}`, token: "t" } });
+        const tools = createTools({
+            spec: SPEC,
+            config: { baseUrl: `http://127.0.0.1:${inst.address().port}`, token: "t" },
+        });
 
         // 1. The agent discovers the endpoint.
         const { operations } = tools.search({ query: "create captcha stage" });
@@ -1104,6 +1172,7 @@ Expected: no errors.
 - [ ] **Step 3: Register in `.mcp.json`**
 
 Replace the empty `mcpServers` with:
+
 ```json
 {
     "mcpServers": {
@@ -1122,6 +1191,7 @@ Replace the empty `mcpServers` with:
 - [ ] **Step 4: Register the deps-install hook in `hooks/hooks.json`**
 
 Replace the empty `hooks` with a `SessionStart` entry that installs the server's runtime deps (matches the pattern described in the repo README):
+
 ```json
 {
     "hooks": {
@@ -1174,6 +1244,7 @@ execute({ code: `return (await ak.request("GET","/events/events/",{query:{action
 - [ ] **Step 6: Add the server to the root `README.md` MCP servers table**
 
 Add this row under the `| Server | Backs skill | Tool |` table header:
+
 ```markdown
 | [`code-mode`](mcp-servers/code-mode/) | `ak-admin` (instance ops) | `search`, `execute`, `execute_write` |
 ```
@@ -1195,6 +1266,7 @@ git commit -m "feat(code-mode): register server, hook, docs; captcha pivot test"
 ## Self-Review
 
 **1. Spec coverage (Layer 3 v1 section of the design):**
+
 - `search` over `schema.yml`: Task 3 (+ live fetch Task 7). ✅
 - `execute` read-only sandbox: Tasks 4 (guard) + 5 (sandbox) + 6 (tool). ✅
 - `execute_write` with confirmation: Task 6 (two-call confirm — the chosen client-agnostic resolution of the spec's elicitation open-question). ✅

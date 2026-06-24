@@ -145,10 +145,10 @@ changes between releases" directive.
   tells the agent to **traverse links dynamically** and fetch the page `.md`. No
   deep paths baked into skill prose (survives doc reorganization). The `llms.txt`
   URLs from Layer 1 **are** these skills' entry points.
-- **L2 → L3 (instance):** the `ak-admin` skills add one steering line — *"to
+- **L2 → L3 (instance):** the `ak-admin` skills add one steering line — _"to
   inspect or change the live instance, use the code-mode MCP: `search` for the
   endpoint, then write `ak.request(...)` in `execute` / `execute_write`. Learn the
-  concept from the docs first."* `events-monitoring` → `execute`; `flows-stages`,
+  concept from the docs first."_ `events-monitoring` → `execute`; `flows-stages`,
   `users-directory`, etc. → `execute_write`.
 
 This single pair of seams is what ties the three layers: docs teach the concept,
@@ -171,7 +171,7 @@ instance's version for free.
 
 - **`search(query)`** — query the resolved `schema.yml` (all `$ref`s inlined) and
   return only the matching operations: `method + path + summary + param / request /
-  response schema slices`. This is the only output that scales with the API, and
+response schema slices`. This is the only output that scales with the API, and
   it returns slices, never the whole spec. (Replaces the prior
   `find_endpoint`/`describe_endpoint` pair — search returns the param/response
   schema the agent needs to construct a call.)
@@ -197,13 +197,13 @@ already scaffolded; `.mcp.json` + `SessionStart` deps-install hook already prese
   permissions.
 - **Schema source:** fetch `<AUTHENTIK_URL>/api/v3/schema/` at startup so discovery
   always matches the running instance's version, with a vendored `schema.yml`
-  fallback. This *is* the zero-maintenance property — discovery follows the
+  fallback. This _is_ the zero-maintenance property — discovery follows the
   instance, nothing to regenerate here.
 - **Sandbox — "the binding is the boundary":** in-process `node:vm` / `worker_thread`
   with globals stripped to just `ak` + `console` — no `fs`, no general `fetch`.
   `ak.request` is the only egress; in `execute` it is GET-only. Adversarial
-  isolation is intentionally weak because the trust model is *an admin running code
-  against their own instance with their own token* — the agent could do the same
+  isolation is intentionally weak because the trust model is _an admin running code
+  against their own instance with their own token_ — the agent could do the same
   via any curated call, so the real control is the binding (read-only default +
   write gate), not the VM (per Ronacher).
 - **Write gate:** `execute_write` triggers an MCP confirmation (elicitation) before
@@ -212,7 +212,7 @@ already scaffolded; `.mcp.json` + `SessionStart` deps-install hook already prese
 - **Tools exposed:** `search`, `execute`, `execute_write`. Nothing else.
 - **`@goauthentik/api`:** not on the critical path — `ak.request` is a generic
   authenticated fetch over `schema.yml` paths. The generated client's
-  `Configuration`/runtime is an *optional* transport convenience, not the call
+  `Configuration`/runtime is an _optional_ transport convenience, not the call
   surface.
 
 ### v2 — authentik-native OAuth endpoint (designed; built after v1 proves out)
@@ -223,7 +223,7 @@ enterprise-mcp reference architecture almost 1:1.
 - **Transport:** authentik serves a remote MCP endpoint (HTTP/SSE), e.g. `/mcp`, in
   the product.
 - **Auth:** the MCP client performs **OAuth against authentik itself** (it is the
-  OIDC provider) — no API-token handoff. The agent acts *as the authenticated user*.
+  OIDC provider) — no API-token handoff. The agent acts _as the authenticated user_.
 - **Authorization = authentik's own RBAC.** `ak.request` runs server-side under the
   user's identity, so authentik's existing per-object / role permissions decide what
   the code may read or write. No new scope system to invent — reuse what authentik
