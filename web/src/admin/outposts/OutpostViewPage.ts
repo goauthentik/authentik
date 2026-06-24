@@ -1,8 +1,8 @@
 import "#elements/Tabs";
 import "#admin/events/ObjectChangelog";
 import "#admin/rbac/ak-rbac-object-permission-page";
-import "#elements/tasks/ScheduleList";
-import "#elements/tasks/TaskList";
+import "#components/tasks/ScheduleList";
+import "#components/tasks/TaskList";
 import "#admin/outposts/OutpostForm";
 import "#admin/outposts/OutpostHealthList";
 import "#admin/outposts/OutpostProviderList";
