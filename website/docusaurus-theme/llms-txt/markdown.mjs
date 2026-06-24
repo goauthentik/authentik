@@ -25,6 +25,7 @@ import { visit, SKIP } from "unist-util-visit";
  */
 function regexClean(content) {
     return content
+        .replace(/^---\r?\n[\s\S]*?\r?\n---\r?\n/, "")
         .replace(/^\s*(import|export)\s.*$/gm, "")
         .replace(/^:::+.*$/gm, "")
         .replace(/<\/?[A-Z][^>]*>/g, "")
@@ -88,10 +89,9 @@ function inlinePartials(content, filePath) {
  * @returns {Promise<string>}
  */
 export async function cleanMdxToMarkdown(content, filePath) {
-    const { content: body } = parseFileContentFrontMatter(content);
-    const inlined = inlinePartials(body, filePath);
-
     try {
+        const { content: body } = parseFileContentFrontMatter(content);
+        const inlined = inlinePartials(body, filePath);
         const file = await unified()
             .use(remarkParse)
             .use(remarkMdx)
@@ -103,7 +103,7 @@ export async function cleanMdxToMarkdown(content, filePath) {
         return String(file).trim();
     } catch (err) {
         console.warn(`llms-txt: MDX parse failed for ${filePath}, using regex fallback: ${err}`);
-        return regexClean(inlined);
+        return regexClean(content);
     }
 }
 
