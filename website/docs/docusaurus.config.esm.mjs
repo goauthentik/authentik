@@ -17,6 +17,7 @@ import { createDocusaurusConfig } from "@goauthentik/docusaurus-config";
 import {
     createAlgoliaConfig,
     createClassicPreset,
+    createLlmsPlugin,
     extendConfig,
 } from "@goauthentik/docusaurus-theme/config";
 import { RewriteIndex } from "@goauthentik/docusaurus-theme/redirects";
@@ -161,6 +162,14 @@ export default createDocusaurusConfig(
                     environment: releaseEnvironment,
                 }),
             ],
+
+            createLlmsPlugin({
+                sections: [{ path: ".", routeBasePath: "/" }],
+                groupBy: "topic",
+                crossLinks: [
+                    { label: "Integrations", url: "https://integrations.goauthentik.io/llms.txt" },
+                ],
+            }),
 
             // Inject redirects for later use during runtime,
             // such as navigating to non-existent page with the client-side router.
