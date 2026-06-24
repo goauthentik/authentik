@@ -28,11 +28,6 @@ on:
         description: "Suffix to add to the buildcache tag"
         type: string
         default: ""
-    outputs:
-      image-digest:
-        value: "${{ jobs.build.outputs.image-digest }}"
-      artifact-id:
-        value: "${{ jobs.build.outputs.artifact-id }}"
 
 jobs:
   build-amd64:

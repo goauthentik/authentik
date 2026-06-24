@@ -37,8 +37,6 @@ on:
         type: string
         default: ""
     outputs:
-      image-digest:
-        value: "${{ jobs.build.outputs.image-digest }}"
       artifact-id:
         value: "${{ jobs.build.outputs.artifact-id }}"
 
