@@ -10,11 +10,13 @@ import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { legacyRedirects } from "./legacy-redirects.mjs";
+import categories from "./categories.mjs";
 
 import { createDocusaurusConfig } from "@goauthentik/docusaurus-config";
 import {
     createAlgoliaConfig,
     createClassicPreset,
+    createLlmsPlugin,
     extendConfig,
 } from "@goauthentik/docusaurus-theme/config";
 import { RewriteIndex } from "@goauthentik/docusaurus-theme/redirects";
@@ -66,6 +68,15 @@ export default createDocusaurusConfig(
         //#region Plugins
 
         plugins: [
+            createLlmsPlugin({
+                sections: [{ path: ".", routeBasePath: "/" }],
+                groupBy: "category",
+                categories,
+                crossLinks: [
+                    { label: "Documentation", url: "https://docs.goauthentik.io/llms.txt" },
+                ],
+            }),
+
             // Inject redirects for later use during runtime,
             // such as navigating to non-existent page with the client-side router.
 
