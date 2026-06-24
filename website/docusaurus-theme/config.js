@@ -116,6 +116,16 @@ export function createAlgoliaConfig(overrides) {
 }
 
 /**
+ * Create the llms.txt plugin tuple.
+ *
+ * @param {import("./llms-txt/common.mjs").AKLlmsPluginOptions} options
+ * @returns {[string, import("./llms-txt/common.mjs").AKLlmsPluginOptions]}
+ */
+export function createLlmsPlugin(options) {
+    return ["@goauthentik/docusaurus-theme/llms-txt/plugin", options];
+}
+
+/**
  * @param {Partial<Config>} overrides
  * @returns {Partial<Config>}
  */
