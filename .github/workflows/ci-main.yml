@@ -453,6 +453,7 @@ jobs:
     needs:
       - build-compute-tags
       - build
+      - ci-core-mark
     permissions:
       # Needed to upload container images to ghcr.io
       packages: write
@@ -494,6 +495,7 @@ jobs:
       pull-requests: write
     timeout-minutes: 120
     steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v5
       - name: Comment on PR
         uses: ./.github/actions/comment-pr-instructions
         with:
