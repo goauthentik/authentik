@@ -275,6 +275,15 @@ class DeviceCodeError(TokenError):
             "still pending and polling should continue, but the interval MUST"
             "be increased by 5 seconds for this and all subsequent requests."
         ),
+        "invalid_dpop_jkt": (
+            'The "dpop_jkt" parameter is not a valid base64url-encoded SHA-256 JWK thumbprint'
+        ),
+        "dpop_jkt_required": (
+            'The "dpop_jkt" parameter is required when the "bound_key" scope is requested'
+        ),
+        "dpop_jkt_not_allowed": (
+            'The "dpop_jkt" parameter must not be set unless the "bound_key" scope is requested'
+        ),
     }
 
     def __init__(self, error: str):
