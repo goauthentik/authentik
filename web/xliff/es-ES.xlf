@@ -10767,10 +10767,6 @@ Las vinculaciones a grupos/usuarios se verifican en función del usuario del eve
   <source>No <x id="0" equiv-text="${verboseNamePlural.toLocaleLowerCase(this.activeLanguageTag)}"/> found.</source>
   <note from="lit-localize">The message to show when a table has no content. The placeholder {0} is replaced with the pluralized name of the type of entity being shown in the table.</note>
 </trans-unit>
-<trans-unit id="user.display.emailInAngleBrackets">
-  <source>&lt;<x id="0" equiv-text="${email}"/>&gt;</source>
-  <note from="lit-localize">The user's email in angle brackets, used when the email is different from the username</note>
-</trans-unit>
 <trans-unit id="user.display.nameInParens">
   <source>(<x id="0" equiv-text="${name}"/>)</source>
   <note from="lit-localize">The user's name in parentheses, used when the name is different from the username</note>
@@ -11293,6 +11289,9 @@ Las vinculaciones a grupos/usuarios se verifican en función del usuario del eve
 <trans-unit id="table.search.placeholder">
   <source>Search for <x id="0" equiv-text="${pluralNoun}"/>...</source>
   <note from="lit-localize">Placeholder text for the search input, where the entity plural is interpolated.</note>
+</trans-unit>
+<trans-unit id="s7a72b0fd722d51e0">
+  <source>Waiting for dependencies</source>
 </trans-unit>
 </body>
 </file>
