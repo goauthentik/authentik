@@ -18,19 +18,49 @@ import remarkDirective from "remark-directive";
 import { visit, SKIP } from "unist-util-visit";
 
 /**
+ * Remove Docusaurus admonition fence markers (`:::note`, `:::info`, etc.,
+ * including remark-escaped `\:::` forms and optional titles), keeping the
+ * inner prose. Code-block-aware: never alters lines inside fenced code.
+ *
+ * @param {string} md
+ * @returns {string}
+ */
+function stripAdmonitionFences(md) {
+    const lines = md.split("\n");
+    let inFence = false;
+    const out = [];
+    for (const line of lines) {
+        if (/^\s*(```|~~~)/.test(line)) {
+            inFence = !inFence;
+            out.push(line);
+            continue;
+        }
+        // Outside code: drop a line that is an admonition fence marker:
+        //   opening `:::type[ ...title]` or `\:::type ...`, or a bare closing `:::` / `\:::`.
+        if (!inFence && /^\s*\\?:::+\s*[a-zA-Z][\w-]*.*$/.test(line)) {
+            continue; // opening fence (has a type word) — drop the marker line
+        }
+        if (!inFence && /^\s*\\?:::+\s*$/.test(line)) {
+            continue; // bare closing fence — drop
+        }
+        out.push(line);
+    }
+    return out.join("\n").replace(/\n{3,}/g, "\n\n");
+}
+
+/**
  * Regex fallback used when MDX parsing throws (malformed/complex JSX).
  *
  * @param {string} content
  * @returns {string}
  */
 function regexClean(content) {
-    return content
-        .replace(/^---\r?\n[\s\S]*?\r?\n---\r?\n/, "")
-        .replace(/^\s*(import|export)\s.*$/gm, "")
-        .replace(/^:::+.*$/gm, "")
-        .replace(/<\/?[A-Z][^>]*>/g, "")
-        .replace(/\n{3,}/g, "\n\n")
-        .trim();
+    return stripAdmonitionFences(
+        content
+            .replace(/^---\r?\n[\s\S]*?\r?\n---\r?\n/, "")
+            .replace(/^\s*(import|export)\s.*$/gm, "")
+            .replace(/<\/?[A-Z][^>]*>/g, ""),
+    ).trim();
 }
 
 /**
@@ -100,7 +130,7 @@ export async function cleanMdxToMarkdown(content, filePath) {
             .use(stripNodesPlugin)
             .use(remarkStringify, { bullet: "-", fences: true })
             .process(inlined);
-        return String(file).trim();
+        return stripAdmonitionFences(String(file)).trim();
     } catch (err) {
         console.warn(`llms-txt: MDX parse failed for ${filePath}, using regex fallback: ${err}`);
         return regexClean(content);
