@@ -483,29 +483,18 @@ jobs:
           regctl image import "ghcr.io/goauthentik/dev-${{ matrix.name }}:${{ needs.build-compute-tags.outputs.tag-full }}" "container/${{ matrix.name }}.oci.tar"
           regctl image import "ghcr.io/goauthentik/dev-${{ matrix.name }}:${{ needs.build-compute-tags.outputs.tag-branch }}" "container/${{ matrix.name }}.oci.tar"
           regctl image import "ghcr.io/goauthentik/dev-${{ matrix.name }}:${{ needs.build-compute-tags.outputs.tag-flux }}" "container/${{ matrix.name }}.oci.tar"
-
-  # pr-comment:
-  #   needs:
-  #     - build
-  #   runs-on: ubuntu-latest
-  #   if: ${{ github.event_name == 'pull_request' }}
-  #   permissions:
-  #     # Needed to write comments on PRs
-  #     pull-requests: write
-  #   timeout-minutes: 120
-  #   steps:
-  #     - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v5
-  #       with:
-  #         ref: ${{ github.event.pull_request.head.sha }}
-  #     - name: prepare variables
-  #       uses: ./.github/actions/docker-push-variables
-  #       id: ev
-  #       env:
-  #         DOCKER_USERNAME: ${{ secrets.DOCKER_CORP_USERNAME }}
-  #       with:
-  #         image-name: ghcr.io/goauthentik/dev-server
-  #     - name: Comment on PR
-  #       if: ${{ steps.ev.outputs.shouldPush == 'true' }}
-  #       uses: ./.github/actions/comment-pr-instructions
-  #       with:
-  #         tag: ${{ steps.ev.outputs.imageMainTag }}
+  pr-comment:
+    if: "${{ github.repository == 'goauthentik/authentik' && github.event_name == 'pull_request' }}"
+    needs:
+      - build-compute-tags
+      - publish
+    runs-on: ubuntu-latest
+    permissions:
+      # Needed to write comments on PRs
+      pull-requests: write
+    timeout-minutes: 120
+    steps:
+      - name: Comment on PR
+        uses: ./.github/actions/comment-pr-instructions
+        with:
+          tag: "${{ needs.build-compute-tags.outputs.tag-full }}"
