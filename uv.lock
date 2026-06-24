@@ -371,7 +371,7 @@ requires-dist = [
     { name = "defusedxml", specifier = "==0.7.1" },
     { name = "django", specifier = "==5.2.15" },
     { name = "django-channels-postgres", editable = "packages/django-channels-postgres" },
-    { name = "django-countries", specifier = "==8.2.0" },
+    { name = "django-countries", specifier = "==9.0.0" },
     { name = "django-dramatiq-postgres", editable = "packages/django-dramatiq-postgres" },
     { name = "django-filter", specifier = "==25.2" },
     { name = "django-model-utils", specifier = "==5.0.0" },
@@ -1159,15 +1159,15 @@ requires-dist = [
 
 [[package]]
 name = "django-countries"
-version = "8.2.0"
+version = "9.0.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "asgiref" },
     { name = "typing-extensions" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/67/2e/ed67f8f460d1de25ee64fca5d7f219680f944fc8ac5a29fbede3574dc3db/django_countries-8.2.0.tar.gz", hash = "sha256:6df3883180599052c7dfa9a8be0601792441cfb248935dc229ad1ac92e9e39e3", size = 2455542, upload-time = "2025-11-24T19:57:08.071Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/6e/c1/1e8feb818164c3f23465c08cc3bc1cd7da7101506268a138a1b92ea40339/django_countries-9.0.0.tar.gz", hash = "sha256:a993416af08a8a4e6e866d56b71c7ce92351c81a2543da213cd7899917567a42", size = 614144, upload-time = "2026-06-10T00:39:28.841Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/20/3c/9ebd7ed021b7c519bac954bc88146bc870e7d3c8db2580fa67268464fd2e/django_countries-8.2.0-py3-none-any.whl", hash = "sha256:2b2617bec7c15dc735bdec38ae89f0058e38fddfffdb19a7f6b75ef1e3d5380f", size = 3776079, upload-time = "2025-11-24T19:57:05.576Z" },
+    { url = "https://files.pythonhosted.org/packages/5c/bb/5a17b339852f6486d02b4dd0033132082976c71f049ee909ccb42917be52/django_countries-9.0.0-py3-none-any.whl", hash = "sha256:21fce461733c856355c487d1f24b71338599482505004a0c2e521fd574a59fb1", size = 931759, upload-time = "2026-06-10T00:39:26.851Z" },
 ]
 
 [[package]]
