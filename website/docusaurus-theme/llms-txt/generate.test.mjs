@@ -88,3 +88,31 @@ test("generatePerGroupIndexes makes one index per group with parent cross-link",
     assert.ok(a.includes("[Page One]"));
     assert.ok(!a.includes("[Page Two]"));
 });
+
+test("generatePerGroupIndexes skips docs without a group", () => {
+    const withUngrouped = [
+        ...DOCS,
+        { title: "Loose", url: "https://docs.x/loose/", description: "No group.", group: "", path: "loose", content: "" },
+    ];
+    const map = generatePerGroupIndexes(withUngrouped, {
+        title: "authentik Documentation",
+        description: "Unified auth.",
+        parentUrl: "https://docs.x/llms.txt",
+    });
+    assert.deepEqual([...map.keys()].sort(), ["topic-a", "topic-b"]);
+    for (const contents of map.values()) {
+        assert.ok(!contents.includes("[Loose]"), "ungrouped doc never appears in any group index");
+    }
+});
+
+test("generatePerGroupIndexes isolates each group's docs symmetrically", () => {
+    const map = generatePerGroupIndexes(DOCS, {
+        title: "authentik Documentation",
+        description: "Unified auth.",
+        parentUrl: "https://docs.x/llms.txt",
+    });
+    const b = map.get("topic-b");
+    assert.ok(b, "topic-b index exists");
+    assert.ok(b.includes("[Page Two]"), "topic-b includes its own doc");
+    assert.ok(!b.includes("[Page One]"), "topic-b excludes topic-a's doc");
+});
