@@ -9,14 +9,14 @@
 import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { legacyRedirects } from "./legacy-redirects.mjs";
 import categories from "./categories.mjs";
+import { legacyRedirects } from "./legacy-redirects.mjs";
 
 import { createDocusaurusConfig } from "@goauthentik/docusaurus-config";
 import {
     createAlgoliaConfig,
     createClassicPreset,
-    createLlmsPlugin,
+    createLLMSPlugin,
     extendConfig,
 } from "@goauthentik/docusaurus-theme/config";
 import { RewriteIndex } from "@goauthentik/docusaurus-theme/redirects";
@@ -68,7 +68,7 @@ export default createDocusaurusConfig(
         //#region Plugins
 
         plugins: [
-            createLlmsPlugin({
+            createLLMSPlugin({
                 sections: [{ path: ".", routeBasePath: "/" }],
                 groupBy: "category",
                 categories,

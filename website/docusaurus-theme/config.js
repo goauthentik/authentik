@@ -121,7 +121,7 @@ export function createAlgoliaConfig(overrides) {
  * @param {import("./llms-txt/common.mjs").LLMSPluginOptions} options
  * @returns {[string, import("./llms-txt/common.mjs").LLMSPluginOptions]}
  */
-export function createLlmsPlugin(options) {
+export function createLLMSPlugin(options) {
     return ["@goauthentik/docusaurus-theme/llms-txt/plugin", options];
 }
 

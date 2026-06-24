@@ -4,7 +4,7 @@
 
 **Goal:** Add a Docusaurus plugin to `@goauthentik/docusaurus-theme` that, at build time, emits a three-level llms.txt "index of indexes" plus per-page `.md` payloads for both the docs and integrations sites.
 
-**Architecture:** A `postBuild` plugin (it needs Docusaurus's resolved `routesPaths` for accurate URLs). Pure logic lives in focused `.mjs` modules (discovery, URL resolution, MDX→Markdown cleaning, output generation), each unit-tested with `node --test`. `plugin.mjs` orchestrates them and writes files into the build's `outDir`. A `createLlmsPlugin` helper in `config.js` wires it into both site configs.
+**Architecture:** A `postBuild` plugin (it needs Docusaurus's resolved `routesPaths` for accurate URLs). Pure logic lives in focused `.mjs` modules (discovery, URL resolution, MDX→Markdown cleaning, output generation), each unit-tested with `node --test`. `plugin.mjs` orchestrates them and writes files into the build's `outDir`. A `createLLMSPlugin` helper in `config.js` wires it into both site configs.
 
 **Tech Stack:** Node ESM `.mjs` with JSDoc types (no TS build step — matches the package), `fast-glob`, `@docusaurus/utils` (`parseFileContentFrontMatter`), a `unified`/`remark` pipeline for MDX cleaning, `node:test` + `node:assert/strict`.
 
@@ -1126,8 +1126,8 @@ git commit -m "feat(llms-txt): generate per-group third-level indexes"
 - Consumes: `collectDocFiles`, `parseDocFile`, `resolveDocumentUrl`, `normalizePath` (node.mjs); `cleanMdxToMarkdown` (markdown.mjs); `generateIndex`, `generateFullText`, `generatePerGroupIndexes`, `renderPagePayload`, `applyMdExtension` (generate.mjs); `normalizeOptions`, `LLMS_TXT_FILENAME`, `LLMS_FULL_FILENAME` (common.mjs).
 - Produces:
   - `assignGroup(doc: LLMSDocInfo, opts) => string` — first path segment for `groupBy: "topic"`; for `"category"`, the label from `categories` keyed by first segment (falls back to the segment).
-  - `buildLlmsOutputs(ctx) => Promise<Map<relPath, contents>>` — pure async core returning every file to write (root `llms.txt`, `llms-full.txt`, per-group `llms.txt`, per-page `.md`), keyed by build-relative output path. `ctx = { siteDir, outDir, siteUrl, title, description, options, routesPaths }`.
-  - default export `akLlmsPlugin(loadContext, options)` — a `Plugin` whose `postBuild(props)` calls `buildLlmsOutputs` and writes the map to `outDir`.
+  - `buildLLMSOutputs(ctx) => Promise<Map<relPath, contents>>` — pure async core returning every file to write (root `llms.txt`, `llms-full.txt`, per-group `llms.txt`, per-page `.md`), keyed by build-relative output path. `ctx = { siteDir, outDir, siteUrl, title, description, options, routesPaths }`.
+  - default export `akLLMSPlugin(loadContext, options)` — a `Plugin` whose `postBuild(props)` calls `buildLLMSOutputs` and writes the map to `outDir`.
 
 - [ ] **Step 1: Write the failing test**
 
@@ -1138,7 +1138,7 @@ import assert from "node:assert/strict";
 import { fileURLToPath } from "node:url";
 import { resolve } from "node:path";
 
-import { buildLlmsOutputs, assignGroup } from "./plugin.mjs";
+import { buildLLMSOutputs, assignGroup } from "./plugin.mjs";
 
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
 const FIXTURE = resolve(__dirname, "__fixtures__", "site");
@@ -1158,8 +1158,8 @@ test("assignGroup maps category labels", () => {
     );
 });
 
-test("buildLlmsOutputs emits root, full, per-group, and per-page files", async () => {
-    const outputs = await buildLlmsOutputs({
+test("buildLLMSOutputs emits root, full, per-group, and per-page files", async () => {
+    const outputs = await buildLLMSOutputs({
         siteDir: FIXTURE,
         outDir: "/tmp/ignored",
         siteUrl: "https://docs.x",
@@ -1245,7 +1245,7 @@ export { assignGroup };
  *   description: string, routesPaths: string[], options: LLMSPluginOptions }} ctx
  * @returns {Promise<Map<string, string>>}
  */
-export async function buildLlmsOutputs(ctx) {
+export async function buildLLMSOutputs(ctx) {
     const options = normalizeOptions(ctx.options);
 
     /** @type {LLMSDocInfo[]} */
@@ -1305,7 +1305,7 @@ export async function buildLlmsOutputs(ctx) {
  * @param {LLMSPluginOptions} options
  * @returns {Plugin}
  */
-function akLlmsPlugin(_loadContext, options) {
+function akLLMSPlugin(_loadContext, options) {
     return {
         name: PLUGIN_NAME,
 
@@ -1315,7 +1315,7 @@ function akLlmsPlugin(_loadContext, options) {
         async postBuild(props) {
             console.log(`🚀 ${PLUGIN_NAME} generating llms.txt`);
 
-            const outputs = await buildLlmsOutputs({
+            const outputs = await buildLLMSOutputs({
                 siteDir: props.siteDir,
                 outDir: props.outDir,
                 siteUrl: options.siteUrl ?? props.siteConfig.url,
@@ -1338,7 +1338,7 @@ function akLlmsPlugin(_loadContext, options) {
     };
 }
 
-export default akLlmsPlugin;
+export default akLLMSPlugin;
 ```
 
 - [ ] **Step 5: Run test to verify it passes**
@@ -1363,12 +1363,12 @@ git commit -m "feat(llms-txt): orchestrate generation in postBuild"
 ### Task 10: Wire into the docs build + validate end-to-end 🛑 GATE
 
 **Files:**
-- Modify: `docusaurus-theme/config.js` (add `createLlmsPlugin` helper)
+- Modify: `docusaurus-theme/config.js` (add `createLLMSPlugin` helper)
 - Modify: `docs/docusaurus.config.esm.mjs` (register the plugin)
 
 **Interfaces:**
 - Consumes: the published plugin export `@goauthentik/docusaurus-theme/llms-txt/plugin`.
-- Produces: `createLlmsPlugin(options) => [string, LLMSPluginOptions]` — a plugin tuple for the Docusaurus `plugins` array.
+- Produces: `createLLMSPlugin(options) => [string, LLMSPluginOptions]` — a plugin tuple for the Docusaurus `plugins` array.
 
 - [ ] **Step 1: Add the helper to config.js**
 
@@ -1381,20 +1381,20 @@ Append to `docusaurus-theme/config.js`:
  * @param {import("./llms-txt/common.mjs").LLMSPluginOptions} options
  * @returns {[string, import("./llms-txt/common.mjs").LLMSPluginOptions]}
  */
-export function createLlmsPlugin(options) {
+export function createLLMSPlugin(options) {
     return ["@goauthentik/docusaurus-theme/llms-txt/plugin", options];
 }
 ```
 
 - [ ] **Step 2: Register in the docs config**
 
-In `docs/docusaurus.config.esm.mjs`, add `createLlmsPlugin` to the existing theme-config import:
+In `docs/docusaurus.config.esm.mjs`, add `createLLMSPlugin` to the existing theme-config import:
 
 ```js
 import {
     createAlgoliaConfig,
     createClassicPreset,
-    createLlmsPlugin,
+    createLLMSPlugin,
     extendConfig,
 } from "@goauthentik/docusaurus-theme/config";
 ```
@@ -1402,7 +1402,7 @@ import {
 Then add to the `plugins` array (after the releases plugin tuple):
 
 ```js
-            createLlmsPlugin({
+            createLLMSPlugin({
                 sections: [{ path: ".", routeBasePath: "/" }],
                 groupBy: "topic",
                 crossLinks: [
@@ -1444,11 +1444,11 @@ git commit -m "feat(llms-txt): enable on the docs build"
 - Modify: `integrations/docusaurus.config.esm.mjs`
 
 **Interfaces:**
-- Consumes: `createLlmsPlugin` (Task 10), `integrations/categories.mjs` (the 16 `[dirName, label]` pairs).
+- Consumes: `createLLMSPlugin` (Task 10), `integrations/categories.mjs` (the 16 `[dirName, label]` pairs).
 
 - [ ] **Step 1: Import the helper and categories**
 
-In `integrations/docusaurus.config.esm.mjs`, add `createLlmsPlugin` to the `@goauthentik/docusaurus-theme/config` import, and import the categories:
+In `integrations/docusaurus.config.esm.mjs`, add `createLLMSPlugin` to the `@goauthentik/docusaurus-theme/config` import, and import the categories:
 
 ```js
 import categories from "./categories.mjs";
@@ -1461,7 +1461,7 @@ import categories from "./categories.mjs";
 Add to the integrations `plugins` array:
 
 ```js
-            createLlmsPlugin({
+            createLLMSPlugin({
                 sections: [{ path: ".", routeBasePath: "/" }],
                 groupBy: "category",
                 categories,
@@ -1502,7 +1502,7 @@ git commit -m "feat(llms-txt): enable on the integrations build with category gr
 - Per-page `.md` as core payload: Tasks 7 (render) + 9 (emit). ✅
 - Partial-import resolution + directive stripping via re-parsed MDX AST (the "re-parsing source" option the spec named): Task 5. ✅
 - `postBuild` for route URLs: Tasks 4, 9. ✅
-- `createLlmsPlugin` helper wired into both builds; integrations uses `categories.mjs`: Tasks 10, 11. ✅
+- `createLLMSPlugin` helper wired into both builds; integrations uses `categories.mjs`: Tasks 10, 11. ✅
 - Lean option set (dropped blog/path-transform/customLLMFiles/keepFrontMatter): reflected in `LLMSPluginOptions` (Task 1). ✅
 - Cross-link header ("each site links to its sibling"): `buildHeader`/`crossLinks` (Tasks 6, 10, 11). ✅
 - The two spec validation gates (index sanity, content quality) and the integrations gate: Tasks 10, 11. ✅

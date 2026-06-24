@@ -17,7 +17,7 @@ import { createDocusaurusConfig } from "@goauthentik/docusaurus-config";
 import {
     createAlgoliaConfig,
     createClassicPreset,
-    createLlmsPlugin,
+    createLLMSPlugin,
     extendConfig,
 } from "@goauthentik/docusaurus-theme/config";
 import { RewriteIndex } from "@goauthentik/docusaurus-theme/redirects";
@@ -163,7 +163,7 @@ export default createDocusaurusConfig(
                 }),
             ],
 
-            createLlmsPlugin({
+            createLLMSPlugin({
                 sections: [{ path: ".", routeBasePath: "/" }],
                 groupBy: "topic",
                 crossLinks: [

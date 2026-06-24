@@ -38,7 +38,7 @@ export { assignGroup, groupLabel };
  *   description: string, routesPaths: string[], options: LLMSPluginOptions }} ctx
  * @returns {Promise<Map<string, string>>}
  */
-export async function buildLlmsOutputs(ctx) {
+export async function buildLLMSOutputs(ctx) {
     const options = normalizeOptions(ctx.options);
 
     /** @type {LLMSDocInfo[]} */
@@ -99,7 +99,7 @@ export async function buildLlmsOutputs(ctx) {
  * @param {LLMSPluginOptions} options
  * @returns {Plugin}
  */
-function akLlmsPlugin(_loadContext, options) {
+function akLLMSPlugin(_loadContext, options) {
     return {
         name: PLUGIN_NAME,
 
@@ -109,7 +109,7 @@ function akLlmsPlugin(_loadContext, options) {
         async postBuild(props) {
             console.log(`🚀 ${PLUGIN_NAME} generating llms.txt`);
 
-            const outputs = await buildLlmsOutputs({
+            const outputs = await buildLLMSOutputs({
                 siteDir: props.siteDir,
                 outDir: props.outDir,
                 siteUrl: options.siteUrl ?? props.siteConfig.url,
@@ -132,4 +132,4 @@ function akLlmsPlugin(_loadContext, options) {
     };
 }
 
-export default akLlmsPlugin;
+export default akLLMSPlugin;

@@ -106,7 +106,7 @@ real risk, not residual JSX. This is a one-time, build-stable investment.
 
 ### Wiring
 
-A `createLlmsPlugin(options)` helper in `docusaurus-theme/config.js`, called from
+A `createLLMSPlugin(options)` helper in `docusaurus-theme/config.js`, called from
 both `docs/docusaurus.config.esm.mjs` and
 `integrations/docusaurus.config.esm.mjs`. Integrations passes its category map;
 docs passes topic config.
