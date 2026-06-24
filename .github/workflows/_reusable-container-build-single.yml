@@ -76,7 +76,7 @@ jobs:
           push: false
           cache-from: |
             type=registry,ref=ghcr.io/goauthentik/dev-${{ inputs.image-name }}:buildcache-${{ inputs.image-arch }}
-          cache-to: "${{ inputs.should-cache && format('type=registry,ref=ghcr.io/goauthentik/dev-{0}:buildcache-{1}', inputs.image-name, inputs.image-arch) || '' }}"
+          cache-to: "${{ inputs.should-cache && format('type=registry,ref=ghcr.io/goauthentik/dev-{0}:buildcache-{1},mode=max', inputs.image-name, inputs.image-arch) || '' }}"
           attests: |
             type=provenance,mod=max
           outputs: |
