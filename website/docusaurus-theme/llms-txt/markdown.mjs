@@ -104,7 +104,10 @@ function inlinePartials(content, filePath) {
         const importPath = match[3];
         if (!name || !importPath) continue;
         try {
-            const partialPath = resolve(dirname(filePath), importPath);
+            // Markdown escapes leading underscores etc. in .md import paths (`\_partial.mdx`);
+            // unescape before resolving so the partial file is actually found.
+            const cleanImportPath = importPath.replace(/\\(?=[_*[\]()#-])/g, "");
+            const partialPath = resolve(dirname(filePath), cleanImportPath);
             bodies.set(name, loadPartial(partialPath, new Set([filePath])));
         } catch (err) {
             console.warn(`llms-txt: failed to inline partial ${importPath}: ${err}`);

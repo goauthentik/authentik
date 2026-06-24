@@ -9,6 +9,7 @@ import { cleanMdxToMarkdown } from "./markdown.mjs";
 
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
 const FIXTURE = resolve(__dirname, "__fixtures__", "site");
+const FIXTURE_PARSE = resolve(__dirname, "__fixtures__", "parse");
 
 test("cleanMdxToMarkdown inlines a partial and drops the import", async () => {
     const file = resolve(FIXTURE, "topic-b/page-two.mdx");
@@ -65,4 +66,13 @@ test("cleanMdxToMarkdown handles backticks nested in a ~~~ block without losing 
     assert.ok(!out.includes(":::info"), "admonition after a nested-fence block is still stripped");
     assert.ok(out.includes("Note body."), "admonition inner prose preserved");
     assert.ok(out.includes("End."));
+});
+
+test("cleanMdxToMarkdown inlines a partial whose import path has a Markdown-escaped underscore", async () => {
+    const file = resolve(FIXTURE_PARSE, "escaped-import.md");
+    const raw = readFileSync(file, "utf-8");
+    const out = await cleanMdxToMarkdown(raw, file);
+    assert.ok(out.includes("Escaped partial body."), "escaped-path partial is inlined");
+    assert.ok(!/^import\s/m.test(out), "import line removed");
+    assert.ok(!out.includes("\\_esc-note"), "no escaped path leaks");
 });
