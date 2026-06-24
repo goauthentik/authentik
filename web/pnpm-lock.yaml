@@ -127,6 +127,9 @@ importers:
       '@goauthentik/prettier-config':
         specifier: ^3.5.0
         version: 3.5.0(jiti@2.7.0)(prettier-plugin-packagejson@3.0.2(prettier@3.8.3))(prettier@3.8.3)
+      '@goauthentik/theme':
+        specifier: link:../packages/theme
+        version: link:../packages/theme
       '@goauthentik/tsconfig':
         specifier: ^1.0.9
         version: 1.0.9
