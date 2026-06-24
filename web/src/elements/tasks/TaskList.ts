@@ -75,6 +75,7 @@ export class TaskList extends Table<Task> {
                   : undefined;
         const aggregatedStatus = this.excludeSuccessful
             ? [
+                  TaskAggregatedStatusEnum.WaitingForDependencies,
                   TaskAggregatedStatusEnum.Queued,
                   TaskAggregatedStatusEnum.Consumed,
                   TaskAggregatedStatusEnum.Preprocess,

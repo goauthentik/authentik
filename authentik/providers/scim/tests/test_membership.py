@@ -1,5 +1,7 @@
 """SCIM Membership tests"""
 
+from unittest.mock import patch
+
 from django.test import TestCase
 from requests_mock import Mocker
 
@@ -18,6 +20,7 @@ from authentik.providers.scim.tasks import scim_sync
 from authentik.tenants.models import Tenant
 
 
+@patch("authentik.providers.scim.clients.base.SCIMClient.can_discover", False)
 class SCIMMembershipTests(TestCase):
     """SCIM Membership tests"""
 
