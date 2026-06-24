@@ -387,7 +387,12 @@ class SCIMGroupClient(SCIMClient[Group, SCIMProviderGroup, SCIMGroupSchema]):
         expected_items = int(res["totalResults"])
         while True:
             for group in res["Resources"]:
-                self._discover_group_single(group)
+                try:
+                    self._discover_group_single(group)
+                except ValidationError:
+                    self.logger.warning(
+                        "failed to discover group", scim_group=group.get("externalId")
+                    )
                 seen_items += 1
             if seen_items >= expected_items:
                 break
