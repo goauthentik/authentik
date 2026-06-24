@@ -5,17 +5,17 @@
  * inline partial imports, strip custom directives and JSX/imports.
  */
 
-import { dirname, resolve } from "node:path";
 import { readFileSync } from "node:fs";
+import { dirname, resolve } from "node:path";
 
 import { parseFileContentFrontMatter } from "@docusaurus/utils/lib/markdownUtils.js";
-import { unified } from "unified";
+import remarkDirective from "remark-directive";
+import remarkGfm from "remark-gfm";
+import remarkMdx from "remark-mdx";
 import remarkParse from "remark-parse";
 import remarkStringify from "remark-stringify";
-import remarkMdx from "remark-mdx";
-import remarkGfm from "remark-gfm";
-import remarkDirective from "remark-directive";
-import { visit, SKIP } from "unist-util-visit";
+import { unified } from "unified";
+import { SKIP, visit } from "unist-util-visit";
 
 /**
  * Remove Docusaurus admonition fence markers (`:::note`, `:::info`, etc.,
@@ -95,7 +95,8 @@ function loadPartial(partialPath, chain) {
  * @returns {string}
  */
 function inlinePartials(content, filePath) {
-    const importRe = /^\s*import\s+(?:(\w+)|{\s*(\w+)\s*})\s+from\s+['"]([^'"]+_[^'"]+\.mdx?)['"];?\s*$/gm;
+    const importRe =
+        /^\s*import\s+(?:(\w+)|{\s*(\w+)\s*})\s+from\s+['"]([^'"]+_[^'"]+\.mdx?)['"];?\s*$/gm;
     /** @type {Map<string, string>} */
     const bodies = new Map();
     let match;
@@ -128,9 +129,11 @@ function inlinePartials(content, filePath) {
  *
  * @param {string} content Raw file content (may include frontmatter).
  * @param {string} filePath Absolute path (for resolving partials).
+ * @param {(filePath: string, err: unknown) => void} [onFallback] Called when strict
+ *   MDX parsing fails and the regex fallback is used (for caller-side summary logging).
  * @returns {Promise<string>}
  */
-export async function cleanMdxToMarkdown(content, filePath) {
+export async function cleanMdxToMarkdown(content, filePath, onFallback) {
     try {
         const { content: body } = parseFileContentFrontMatter(content);
         const inlined = inlinePartials(body, filePath);
@@ -144,7 +147,7 @@ export async function cleanMdxToMarkdown(content, filePath) {
             .process(inlined);
         return stripAdmonitionFences(String(file)).trim();
     } catch (err) {
-        console.warn(`llms-txt: MDX parse failed for ${filePath}, using regex fallback: ${err}`);
+        onFallback?.(filePath, err);
         return regexClean(content);
     }
 }

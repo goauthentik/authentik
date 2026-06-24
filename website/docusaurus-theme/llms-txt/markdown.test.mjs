@@ -1,9 +1,9 @@
+import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
 // docusaurus-theme/llms-txt/markdown.test.mjs
 import { test } from "node:test";
-import assert from "node:assert/strict";
 import { fileURLToPath } from "node:url";
-import { resolve } from "node:path";
-import { readFileSync } from "node:fs";
 
 import { cleanMdxToMarkdown } from "./markdown.mjs";
 

@@ -197,6 +197,12 @@ export function groupLabel(group, opts) {
 export function resolveDocumentUrl(relPathNoExt, routesPaths) {
     if (!routesPaths || routesPaths.length === 0) return undefined;
 
+    // The root index page has the bare path "index" (no leading "/index" to
+    // strip), so it never suffix-matches a route. Map it to the site root.
+    if (relPathNoExt === "" || relPathNoExt === "index") {
+        return routesPaths.includes("/") ? "/" : undefined;
+    }
+
     const tails = new Set([relPathNoExt]);
     tails.add(collapseMatchingTrailingSegment(relPathNoExt));
     tails.add(removeNumberedPrefixes(relPathNoExt));

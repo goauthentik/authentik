@@ -10,7 +10,15 @@
  */
 export function applyMdExtension(url) {
     const stripped = url.replace(/\/+$/, "");
-    return stripped.endsWith(".md") ? stripped : `${stripped}.md`;
+    if (stripped.endsWith(".md")) return stripped;
+    // A root URL (no path segment) has no page slug to suffix; the homepage's
+    // markdown payload is /index.md, not "<origin>.md".
+    try {
+        if (!new URL(stripped).pathname.replace(/^\/+/, "")) return `${stripped}/index.md`;
+    } catch {
+        // Not an absolute URL — fall through to the simple suffix.
+    }
+    return `${stripped}.md`;
 }
 
 /**

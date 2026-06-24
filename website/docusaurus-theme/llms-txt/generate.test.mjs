@@ -1,17 +1,41 @@
-import { test } from "node:test";
 import assert from "node:assert/strict";
+import { test } from "node:test";
 
-import { applyMdExtension, generateIndex, buildHeader, generateFullText, renderPagePayload, generatePerGroupIndexes } from "./generate.mjs";
+import {
+    applyMdExtension,
+    buildHeader,
+    generateFullText,
+    generateIndex,
+    generatePerGroupIndexes,
+    renderPagePayload,
+} from "./generate.mjs";
 
 const DOCS = [
-    { title: "Page One", url: "https://docs.x/topic-a/page-one/", description: "First.", group: "topic-a", path: "topic-a/page-one", content: "" },
-    { title: "Page Two", url: "https://docs.x/topic-b/page-two/", description: "Second.", group: "topic-b", path: "topic-b/page-two", content: "" },
+    {
+        title: "Page One",
+        url: "https://docs.x/topic-a/page-one/",
+        description: "First.",
+        group: "topic-a",
+        path: "topic-a/page-one",
+        content: "",
+    },
+    {
+        title: "Page Two",
+        url: "https://docs.x/topic-b/page-two/",
+        description: "Second.",
+        group: "topic-b",
+        path: "topic-b/page-two",
+        content: "",
+    },
 ];
 
 test("applyMdExtension appends .md once", () => {
     assert.equal(applyMdExtension("https://docs.x/a/b/"), "https://docs.x/a/b.md");
     assert.equal(applyMdExtension("https://docs.x/a/b.md"), "https://docs.x/a/b.md");
     assert.equal(applyMdExtension("https://docs.x/a/b"), "https://docs.x/a/b.md");
+    // Root URL (no path) -> homepage payload is /index.md, not "<origin>.md".
+    assert.equal(applyMdExtension("https://docs.x/"), "https://docs.x/index.md");
+    assert.equal(applyMdExtension("https://docs.x"), "https://docs.x/index.md");
 });
 
 test("generateIndex emits grouped sections with .md links and cross-links", () => {
@@ -37,11 +61,17 @@ test("generateIndex emits a flat Table of Contents when no doc has a group", () 
     assert.ok(out.includes("## Table of Contents"), "flat TOC heading");
     assert.ok(!out.includes("## a"), "no group heading in flat mode");
     assert.ok(out.includes("- [A](https://docs.x/a.md): First."), "link with description");
-    assert.ok(out.includes("- [B](https://docs.x/b.md)\n") || out.trimEnd().endsWith("- [B](https://docs.x/b.md)"), "empty-desc link omits the colon");
+    assert.ok(
+        out.includes("- [B](https://docs.x/b.md)\n") ||
+            out.trimEnd().endsWith("- [B](https://docs.x/b.md)"),
+        "empty-desc link omits the colon",
+    );
 });
 
 test("buildHeader renders title, description, intro, and related links", () => {
-    const out = buildHeader("Title", "Desc", "Intro line.", [{ label: "X", url: "https://x/llms.txt" }]);
+    const out = buildHeader("Title", "Desc", "Intro line.", [
+        { label: "X", url: "https://x/llms.txt" },
+    ]);
     assert.ok(out.startsWith("# Title\n"));
     assert.ok(out.includes("> Desc"));
     assert.ok(out.includes("Intro line."));
@@ -54,8 +84,20 @@ test("buildHeader omits the Related line when there are no crossLinks", () => {
 });
 
 const FULL = [
-    { title: "Page One", url: "u1", description: "First.", content: "Body one.", path: "topic-a/page-one" },
-    { title: "Page Two", url: "u2", description: "Second.", content: "Body two.", path: "topic-b/page-two" },
+    {
+        title: "Page One",
+        url: "u1",
+        description: "First.",
+        content: "Body one.",
+        path: "topic-a/page-one",
+    },
+    {
+        title: "Page Two",
+        url: "u2",
+        description: "Second.",
+        content: "Body two.",
+        path: "topic-b/page-two",
+    },
 ];
 
 test("generateFullText concatenates with separators", () => {
@@ -92,7 +134,14 @@ test("generatePerGroupIndexes makes one index per group with parent cross-link",
 test("generatePerGroupIndexes skips docs without a group", () => {
     const withUngrouped = [
         ...DOCS,
-        { title: "Loose", url: "https://docs.x/loose/", description: "No group.", group: "", path: "loose", content: "" },
+        {
+            title: "Loose",
+            url: "https://docs.x/loose/",
+            description: "No group.",
+            group: "",
+            path: "loose",
+            content: "",
+        },
     ];
     const map = generatePerGroupIndexes(withUngrouped, {
         title: "authentik Documentation",

@@ -1,7 +1,7 @@
-import { test } from "node:test";
 import assert from "node:assert/strict";
+import { test } from "node:test";
 
-import { LLMS_TXT_FILENAME, LLMS_FULL_FILENAME, normalizeOptions } from "./common.mjs";
+import { LLMS_FULL_FILENAME, LLMS_TXT_FILENAME, normalizeOptions } from "./common.mjs";
 
 test("filename constants follow llmstxt.org convention", () => {
     assert.equal(LLMS_TXT_FILENAME, "llms.txt");

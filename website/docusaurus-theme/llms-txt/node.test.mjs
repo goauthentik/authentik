@@ -1,9 +1,16 @@
-import { test } from "node:test";
 import assert from "node:assert/strict";
-import { fileURLToPath } from "node:url";
 import { resolve } from "node:path";
+import { test } from "node:test";
+import { fileURLToPath } from "node:url";
 
-import { collectDocFiles, normalizePath, parseDocFile, resolveDocumentUrl, assignGroup, groupLabel } from "./node.mjs";
+import {
+    assignGroup,
+    collectDocFiles,
+    groupLabel,
+    normalizePath,
+    parseDocFile,
+    resolveDocumentUrl,
+} from "./node.mjs";
 
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
 const FIXTURE = resolve(__dirname, "__fixtures__", "site");
@@ -62,6 +69,13 @@ test("resolveDocumentUrl returns undefined when no route matches", () => {
     assert.equal(resolveDocumentUrl("missing/page", ROUTES), undefined);
 });
 
+test("resolveDocumentUrl maps the root index page to /", () => {
+    // The site's index.mdx has no trailing "/index" to strip, so its path is the
+    // bare "index" — it must still resolve to the site root route.
+    assert.equal(resolveDocumentUrl("index", ROUTES), "/");
+    assert.equal(resolveDocumentUrl("", ROUTES), "/");
+});
+
 test("assignGroup always returns the first path segment (slug) for topic grouping", () => {
     const doc = { path: "topic-a/page-one" };
     assert.equal(assignGroup(doc, { groupBy: "topic" }), "topic-a");
@@ -70,21 +84,30 @@ test("assignGroup always returns the first path segment (slug) for topic groupin
 test("assignGroup always returns the first path segment (slug) for category grouping", () => {
     const doc = { path: "cloud-providers/aws" };
     assert.equal(
-        assignGroup(doc, { groupBy: "category", categories: [["cloud-providers", "Cloud Providers"]] }),
+        assignGroup(doc, {
+            groupBy: "category",
+            categories: [["cloud-providers", "Cloud Providers"]],
+        }),
         "cloud-providers",
     );
 });
 
 test("groupLabel returns the category display label for a known slug", () => {
     assert.equal(
-        groupLabel("cloud-providers", { groupBy: "category", categories: [["cloud-providers", "Cloud Providers"]] }),
+        groupLabel("cloud-providers", {
+            groupBy: "category",
+            categories: [["cloud-providers", "Cloud Providers"]],
+        }),
         "Cloud Providers",
     );
 });
 
 test("groupLabel returns the slug itself when no category mapping is found", () => {
     assert.equal(
-        groupLabel("unknown-slug", { groupBy: "category", categories: [["cloud-providers", "Cloud Providers"]] }),
+        groupLabel("unknown-slug", {
+            groupBy: "category",
+            categories: [["cloud-providers", "Cloud Providers"]],
+        }),
         "unknown-slug",
     );
 });

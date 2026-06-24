@@ -43,6 +43,8 @@ export async function buildLLMSOutputs(ctx) {
 
     /** @type {LLMSDocInfo[]} */
     const docs = [];
+    let skippedNoRoute = 0;
+    let mdxFallbacks = 0;
 
     for (const section of options.sections) {
         const absDir = path.resolve(ctx.siteDir, section.path);
@@ -52,16 +54,25 @@ export async function buildLLMSOutputs(ctx) {
 
             const route = resolveDocumentUrl(parsed.path, ctx.routesPaths);
             if (!route) {
-                console.warn(`${PLUGIN_NAME}: no route for ${parsed.path}, skipping.`);
+                // Expected for source files Docusaurus does not route (e.g.
+                // historical release notes). Counted and summarized, not warned per-page.
+                skippedNoRoute++;
                 continue;
             }
 
             parsed.url = new URL(route, ctx.siteUrl).toString();
             parsed.group = assignGroup(parsed, options);
             parsed.groupLabel = groupLabel(parsed.group, options);
-            parsed.content = await cleanMdxToMarkdown(parsed.content, file);
+            parsed.content = await cleanMdxToMarkdown(parsed.content, file, () => mdxFallbacks++);
             docs.push(parsed);
         }
+    }
+
+    if (skippedNoRoute || mdxFallbacks) {
+        console.log(
+            `${PLUGIN_NAME}: indexed ${docs.length} pages ` +
+                `(${skippedNoRoute} skipped — no route; ${mdxFallbacks} used the regex fallback)`,
+        );
     }
 
     /** @type {Map<string, string>} */
