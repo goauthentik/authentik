@@ -25,6 +25,8 @@ The following placeholders are used in this guide:
 SeaTable supports SAML SSO for SeaTable Cloud Enterprise teams and self-hosted SeaTable Server Enterprise Edition installations. SeaTable Cloud requires domain verification in SeaTable Team Management, which is outside the scope of this guide.
 :::
 
+For SeaTable Cloud, log in to SeaTable Cloud and navigate to **Team Management** > **Teams** > **Settings** > **Single Sign-On**. Keep the SeaTable-provided **Entity ID**, **Assertion Consumer Service (ACS) URL**, **Login (SSO URL)**, and **Logout** values available while creating the authentik provider.
+
 :::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
@@ -40,8 +42,6 @@ values={[
 ## authentik configuration
 
 To support the integration of SeaTable Cloud with authentik, you need to create SAML property mappings and an application/provider pair in authentik.
-
-First, log in to SeaTable Cloud and navigate to **Team Management** > **Teams** > **Settings** > **Single Sign-On**. Keep the SeaTable-provided **Entity ID**, **Assertion Consumer Service (ACS) URL**, **Login (SSO URL)**, and **Logout** values available while creating the authentik provider.
 
 ### Create property mappings in authentik
 
@@ -216,7 +216,7 @@ Restart the SeaTable service or Docker container to apply the changes.
 
 ## Configuration verification
 
-To confirm that authentik is integrated correctly with SeaTable, log out of SeaTable and open the SeaTable integration from authentik. After authenticating, you should be redirected to SeaTable.
+To confirm that authentik is integrated correctly with SeaTable, log out of SeaTable and access SeaTable from the authentik application dashboard. You should be redirected to SeaTable.
 
 :::info Self-hosted troubleshooting
 For self-hosted SeaTable, check `/opt/seatable-server/seatable/logs/dtable_web.log` for troubleshooting info if authentication fails.
