@@ -75,16 +75,34 @@ function extractTitle(frontMatter, body, relPathNoExt) {
  */
 function extractDescription(frontMatter, body) {
     if (typeof frontMatter.description === "string" && frontMatter.description.trim()) {
-        return frontMatter.description.trim();
+        return cleanDescriptionText(frontMatter.description);
     }
     for (const para of body.split("\n\n")) {
         const trimmed = para.trim();
         if (!trimmed) continue;
         if (trimmed.startsWith("#")) continue;
-        if (/^(import\s|export\s|:::|<)/.test(trimmed)) continue;
-        return trimmed.replace(/\n/g, " ");
+        if (/^(import\s|export\s)/.test(trimmed)) continue;
+        if (/^(:::|<)/.test(trimmed)) continue;
+        return cleanDescriptionText(trimmed);
     }
     return "";
+}
+
+/**
+ * Normalize a description for use in an index line: many integration pages open
+ * with a blockquote citation (`> Foo is… \n> \n> -- https://foo`), so strip the
+ * blockquote markers and the trailing `-- <source>` attribution, then collapse
+ * whitespace to a single line.
+ *
+ * @param {string} text
+ * @returns {string}
+ */
+function cleanDescriptionText(text) {
+    return text
+        .replace(/^\s*>\s?/gm, "") // blockquote markers
+        .replace(/^\s*(--|—|–)\s.*$/gm, "") // "-- attribution" / em/en-dash source lines
+        .replace(/\s+/g, " ")
+        .trim();
 }
 
 /**

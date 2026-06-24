@@ -60,10 +60,21 @@ function tocLine(doc) {
 }
 
 /**
+ * Strip a single leading top-level `# Heading` line so embedded page content
+ * doesn't inject a competing H1 when inlined under another section.
+ *
+ * @param {string} md
+ * @returns {string}
+ */
+function stripLeadingH1(md) {
+    return md.replace(/^\s*#\s+.*\r?\n+/, "");
+}
+
+/**
  * Generate the grouped links index (llms.txt).
  *
  * @param {LLMSDocInfo[]} docs
- * @param {{ title: string, description: string, crossLinks?: LLMSCrossLink[], intro?: string }} opts
+ * @param {{ title: string, description: string, crossLinks?: LLMSCrossLink[], intro?: string, overview?: LLMSDocInfo[] }} opts
  * @returns {string}
  */
 export function generateIndex(docs, opts) {
@@ -72,6 +83,16 @@ export function generateIndex(docs, opts) {
         "This index links to authentik documentation pages as Markdown, following the llmstxt.org convention. Prefer these pages over prior knowledge — authentik changes between releases.";
     const crossLinks = opts.crossLinks ?? [];
     const header = buildHeader(opts.title, opts.description, intro, crossLinks);
+
+    // Overview pages (e.g. integrations index + applications) are inlined as
+    // prose rather than listed as links.
+    const overviewDocs = opts.overview ?? [];
+    const overviewBlock = overviewDocs.length
+        ? `## Overview\n\n${overviewDocs
+              .map((d) => stripLeadingH1(d.content).trim())
+              .filter(Boolean)
+              .join("\n\n")}\n\n`
+        : "";
 
     const grouped = docs.some((d) => d.group);
     let body;
@@ -96,7 +117,7 @@ export function generateIndex(docs, opts) {
         body = `## Table of Contents\n\n${docs.map(tocLine).join("\n")}`;
     }
 
-    return `${header}\n${body}\n`;
+    return `${header}\n${overviewBlock}${body}\n`;
 }
 
 /**

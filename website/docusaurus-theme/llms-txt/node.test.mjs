@@ -55,6 +55,13 @@ test("parseDocFile returns null for draft files", () => {
     assert.equal(parseDocFile(resolve(PARSE, "draft.md"), PARSE), null);
 });
 
+test("parseDocFile cleans a blockquote-citation intro (strips > and -- attribution)", () => {
+    const PARSE = resolve(__dirname, "__fixtures__", "parse");
+    const info = parseDocFile(resolve(PARSE, "quoted.md"), PARSE);
+    assert.ok(info, "non-draft file parses to a record");
+    assert.equal(info.description, "AFFiNE is an open-source, self-hostable workspace.");
+});
+
 const ROUTES = ["/", "/topic-a/", "/topic-a/page-one/", "/topic-b/page-two/"];
 
 test("resolveDocumentUrl matches a route by suffix", () => {

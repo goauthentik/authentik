@@ -25,6 +25,8 @@
  * @property {LLMSCrossLink[]} [crossLinks] Sibling-site links for the header.
  * @property {"topic"|"category"} [groupBy] How to group the root index.
  * @property {readonly (readonly [string, string])[]} [categories] [dirName, label] pairs (integrations).
+ * @property {string[]} [overviewPages] Site-relative paths (no extension) whose content
+ *   is inlined into the root index as an "## Overview" section instead of listed as links.
  */
 
 /**
@@ -60,5 +62,6 @@ export function normalizeOptions(options) {
         ignoreFiles: options.ignoreFiles ?? [],
         crossLinks: options.crossLinks ?? [],
         groupBy: options.groupBy ?? "topic",
+        overviewPages: options.overviewPages ?? [],
     };
 }

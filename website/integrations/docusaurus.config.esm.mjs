@@ -72,6 +72,10 @@ export default createDocusaurusConfig(
                 sections: [{ path: ".", routeBasePath: "/" }],
                 groupBy: "category",
                 categories,
+                // The integrations landing pages become an "## Overview" section
+                // (inlined prose) instead of link rows; the scaffold template is dropped.
+                overviewPages: ["index", "applications"],
+                ignoreFiles: ["**/template/**"],
                 crossLinks: [
                     {
                         label: "Documentation",

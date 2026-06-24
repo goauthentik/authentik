@@ -78,17 +78,27 @@ export async function buildLLMSOutputs(ctx) {
     /** @type {Map<string, string>} */
     const outputs = new Map();
 
+    // Overview pages (e.g. integrations index + applications) are inlined into
+    // the root index as an "## Overview" section, not listed/grouped as links.
+    const overviewSet = new Set(options.overviewPages ?? []);
+    const overviewDocs = docs.filter((d) => overviewSet.has(d.path));
+    const tocDocs = docs.filter((d) => !overviewSet.has(d.path));
+
     const indexOpts = {
         title: ctx.title,
         description: ctx.description,
         crossLinks: options.crossLinks,
     };
 
-    outputs.set(LLMS_TXT_FILENAME, generateIndex(docs, indexOpts));
+    outputs.set(
+        LLMS_TXT_FILENAME,
+        generateIndex(tocDocs, { ...indexOpts, overview: overviewDocs }),
+    );
+    // llms-full.txt keeps the full content of every page, overview pages included.
     outputs.set(LLMS_FULL_FILENAME, generateFullText(docs, indexOpts));
 
     const rootUrl = new URL(`/${LLMS_TXT_FILENAME}`, ctx.siteUrl).toString();
-    for (const [group, contents] of generatePerGroupIndexes(docs, {
+    for (const [group, contents] of generatePerGroupIndexes(tocDocs, {
         title: ctx.title,
         description: ctx.description,
         parentUrl: rootUrl,

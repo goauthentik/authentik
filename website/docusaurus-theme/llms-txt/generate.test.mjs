@@ -52,6 +52,24 @@ test("generateIndex emits grouped sections with .md links and cross-links", () =
     assert.ok(out.includes("## topic-b"));
 });
 
+test("generateIndex inlines overview pages as an ## Overview section, not links", () => {
+    const overview = [
+        {
+            title: "Integrations overview",
+            content: "# Integrations overview\n\nAn integration is how authentik connects to apps.",
+            path: "index",
+            url: "https://docs.x/",
+            description: "",
+        },
+    ];
+    const out = generateIndex(DOCS, { title: "T", description: "D", overview });
+    assert.ok(out.includes("## Overview"));
+    assert.ok(out.includes("An integration is how authentik connects to apps."));
+    assert.ok(!out.includes("# Integrations overview")); // leading H1 stripped
+    assert.ok(!out.includes("[Integrations overview]")); // not listed as a link
+    assert.ok(out.indexOf("## Overview") < out.indexOf("## topic-a")); // overview leads
+});
+
 test("generateIndex emits a flat Table of Contents when no doc has a group", () => {
     const flat = [
         { title: "A", url: "https://docs.x/a/", description: "First.", path: "a", content: "" },
