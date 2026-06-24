@@ -47,7 +47,7 @@ The `interface.global.css` file is almost entirely imports:
     - borders
     - miscellaneous overrides of Patternfly
     - --ak-\*
-    - --ak-v2-global-\*
+    - @goauthentik/theme tokens + token-bridge.css
 9. ./base/scrollbars.css
 10. ./base/globals.css
 11. ./base/common.css

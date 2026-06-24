@@ -54,6 +54,15 @@ A few rules keep names predictable. If you're writing custom CSS or generating t
 - **Spelled-out group names.** `z-index`, not `z`. `border-width`, not `bw`. This makes tokens discoverable in IDE autocomplete and brand custom CSS without having to memorize abbreviations.
 - **Private variables use a different prefix.** Variables starting with `--_` or `--ak-c-` are component-local and undocumented. They may change between authentik releases. Avoid targeting them in custom CSS unless a release explicitly documents one as stable.
 
+## What is deliberately not a token
+
+Some categories that design systems commonly tokenize are intentionally absent from the public surface. The set stays small until real customization needs justify growing it (see [Stability](#stability)):
+
+- **Breakpoints.** Components respond to their own container wherever possible — container queries are baseline in every browser authentik supports — so there is no viewport breakpoint scale to share. The media queries that remain follow PatternFly's grid tiers and are implementation detail.
+- **Opacities.** Translucency is baked into the values that need it (shadows, scrims) rather than exposed as a standalone scale. An opacity token invites layering translucent colors, which produces unpredictable results against themed surfaces; override the composed color instead.
+- **Grids and layout.** Column counts, gutters, and page structure are component behavior, not brand identity. Brands adjust `space` tokens; components decide how to lay themselves out.
+- **Gradients.** The gradients in the interface are component implementation details — skeleton shimmer, scroll-edge shadows — composed from the semantic colors, not brandable surfaces in their own right. If a brand-facing gradient enters the design language, it will arrive as a semantic token (for example a hero surface), not as raw color stops.
+
 ## Light and dark themes
 
 The design language ships with two themes out of the box. Both are toggled by the `data-theme` attribute on `html`:
