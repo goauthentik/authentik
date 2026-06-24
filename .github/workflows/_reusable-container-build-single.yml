@@ -40,6 +40,11 @@ on:
 
 jobs:
   build:
+    permissions:
+      # Needed to upload cache to ghcr.io
+      packages: write
+      # Needed for checkout
+      contents: read
     name: "Build ${{ inputs.image-name }} on ${{ inputs.image-arch }}"
     runs-on: "${{ inputs.runs-on }}"
     outputs:
