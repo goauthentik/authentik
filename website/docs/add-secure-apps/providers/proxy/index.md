@@ -45,26 +45,26 @@ Domain-level forward auth cannot enforce different application-level authorizati
 
 The proxy outpost sets the following user-specific headers:
 
-| Header                     | Example value                                                      | Description                                                        |
-| -------------------------- | ------------------------------------------------------------------ | ------------------------------------------------------------------ |
-| `X-authentik-username`     | `akadmin`                                                          | Username of the currently logged in user.                          |
-| `X-authentik-groups`       | `foo\|bar\|baz`                                                    | Groups the user is a member of, separated by pipes.                |
-| `X-authentik-entitlements` | `foo\|bar\|baz`                                                    | Entitlements the user has for the application, separated by pipes. |
-| `X-authentik-email`        | `root@localhost`                                                   | Email address of the currently logged in user.                     |
-| `X-authentik-name`         | `authentik Default Admin`                                          | Full name of the currently logged in user.                         |
-| `X-authentik-uid`          | `900347b8a29876b45ca6f75722635ecfedf0e931c6022e3a29a8aa13fb5516fb` | Hashed identifier of the currently logged in user.                 |
+| Header                     | Example value                                                      | Description                                                                                                               |
+| -------------------------- | ------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------- |
+| `X-authentik-username`     | `akadmin`                                                          | Username of the currently logged in user.                                                                                 |
+| `X-authentik-groups`       | `foo\|bar\|baz`                                                    | Groups the user is a member of, separated by pipes.                                                                       |
+| `X-authentik-entitlements` | `foo\|bar\|baz`                                                    | Entitlements the user has for the application, separated by pipes.                                                        |
+| `X-authentik-email`        | `root@localhost`                                                   | Email address of the currently logged in user.                                                                            |
+| `X-authentik-name`         | `authentik Default Admin`                                          | Full name of the currently logged in user.                                                                                |
+| `X-authentik-uid`          | `900347b8a29876b45ca6f75722635ecfedf0e931c6022e3a29a8aa13fb5516fb` | Hashed identifier of the currently logged in user.                                                                        |
 | `X-authentik-jwt`          | `eyJhbGci...`                                                      | Signed JWT issued for the session. See [Verifying identity with the signed JWT](#verifying-identity-with-the-signed-jwt). |
 
 The proxy outpost also sets the following application-specific headers:
 
-| Header                      | Example value                  | Description                                               |
-| --------------------------- | ------------------------------ | --------------------------------------------------------- |
-| `X-authentik-meta-outpost`  | `authentik Embedded Outpost`   | Name of the authentik outpost.                            |
-| `X-authentik-meta-provider` | `test`                         | Name of the authentik provider.                           |
-| `X-authentik-meta-app`      | `test`                         | Slug of the authentik application.                        |
-| `X-authentik-meta-version`  | `goauthentik.io/outpost/1.2.3` | Version of the authentik outpost.                         |
-| `X-authentik-meta-jwks`     | `https://authentik.company/application/o/my-app/jwks/` | JWKS URL for verifying the `X-authentik-jwt` token signature. |
-| `X-Forwarded-Host`          | `app.company`                  | Original host sent by the client. Only set in proxy mode. |
+| Header                      | Example value                                          | Description                                               |
+| --------------------------- | ------------------------------------------------------ | --------------------------------------------------------- |
+| `X-authentik-meta-outpost`  | `authentik Embedded Outpost`                           | Name of the authentik outpost.                            |
+| `X-authentik-meta-provider` | `test`                                                 | Name of the authentik provider.                           |
+| `X-authentik-meta-app`      | `test`                                                 | Slug of the authentik application.                        |
+| `X-authentik-meta-version`  | `goauthentik.io/outpost/1.2.3`                         | Version of the authentik outpost.                         |
+| `X-authentik-meta-jwks`     | `https://authentik.company/application/o/my-app/jwks/` | JWKS URL associated with the `X-authentik-jwt` token.     |
+| `X-Forwarded-Host`          | `app.company`                                          | Original host sent by the client. Only set in proxy mode. |
 
 In proxy mode, `X-Forwarded-Host` preserves the original `Host` header sent by the client because the `Host` header is set to the configured upstream host.
 
@@ -81,32 +81,34 @@ For dynamic headers, see the [custom headers](./custom_headers.md) documentation
 
 ## Verifying identity with the signed JWT
 
-The `X-authentik-*` identity headers (such as `X-authentik-username` and `X-authentik-email`) are convenient, but they are plain strings injected by the outpost and carry no integrity protection on their own. An application that trusts them must rely entirely on network isolation to ensure the headers could only have come from the outpost.
+The `X-authentik-*` identity headers, such as `X-authentik-username` and `X-authentik-email`, are plain strings set by the outpost. They are convenient for applications that only support header-based authentication, but they do not provide integrity protection by themselves.
 
-For stronger assurance, the outpost also forwards a signed JWT in the `X-authentik-jwt` header and the corresponding [JWKS](https://datatracker.ietf.org/doc/html/rfc7517) URL in `X-authentik-meta-jwks`. Your application can cryptographically verify this token instead of trusting the plain headers:
+For stronger assurance, the outpost also forwards a signed JWT in the `X-authentik-jwt` header. Applications that can validate JWTs should verify this token before trusting identity data from the request:
 
 1. Read the JWT from the `X-authentik-jwt` header.
-2. Verify the signature against authentik's signing keys. Pin the JWKS URL in your application configuration (`https://authentik.company/application/o/<application-slug>/jwks/`) rather than trusting the `X-authentik-meta-jwks` header value, since that header is attacker-controllable on a direct request.
-3. Validate the standard claims: `iss` (issuer), `aud` (the provider's `client_id`, shown on the provider's **Authentication** tab), `exp` (expiration), and `sub` (the user identifier).
-4. Derive identity from the verified claims, and treat the other `X-authentik-*` headers as convenience only.
+2. Configure the application with the provider's trusted OpenID Configuration endpoint, usually `https://authentik.company/application/o/<application-slug>/.well-known/openid-configuration`, or with the provider's JWKS URL, usually `https://authentik.company/application/o/<application-slug>/jwks/`.
+3. Verify the token signature against the provider's [JWKS](https://datatracker.ietf.org/doc/html/rfc7517).
+4. Validate the standard claims, including `iss` (issuer), `aud` (the provider `client_id` shown on the provider's **Authentication** tab), `exp` (expiration), and `sub` (the user identifier).
+5. Use the verified JWT claims as the source of identity. Treat the other `X-authentik-*` headers as convenience values only.
+
+Do not use the request's `X-authentik-meta-jwks` header as the source of trust for verification. That header is useful metadata on requests that have already passed through the outpost, but a direct request to the upstream application could set the same header to an attacker-controlled value.
 
 :::warning
-Signature verification rejects forged tokens, but a valid, unexpired JWT is still a bearer credential. You must prevent direct access to the upstream application so that requests can only reach it through the outpost. Otherwise an attacker could replay or inject a valid `X-authentik-jwt` (or spoof the plain identity headers) by contacting the application directly.
+JWT verification rejects forged tokens, but a valid, unexpired JWT is still a bearer credential. Prevent direct access to the upstream application so that requests can only reach it through the outpost or the reverse proxy that enforces forward auth. Otherwise an attacker could replay a valid `X-authentik-jwt` or spoof the plain identity headers by contacting the application directly.
 :::
 
-### Comparison with Cloudflare Access
+### Similar pattern in Cloudflare Access
 
-This pattern is equivalent to how [Cloudflare Access validates JWTs](https://developers.cloudflare.com/cloudflare-one/identity/authorization-cookie/validating-json/) for requests behind a Cloudflare Tunnel:
+If you are familiar with [Cloudflare Access JWT validation](https://developers.cloudflare.com/cloudflare-one/access-controls/applications/http-apps/authorization-cookie/validating-json/), the validation model is similar:
 
-| Concern                | authentik proxy provider                              | Cloudflare Access                                            |
-| ---------------------- | ----------------------------------------------------- | ----------------------------------------------------------- |
-| Signed identity token  | `X-authentik-jwt` header                              | `Cf-Access-Jwt-Assertion` header / `CF_Authorization` cookie |
-| Key set for validation | `/application/o/<application-slug>/jwks/` (JWKS)       | `https://<team>.cloudflareaccess.com/cdn-cgi/access/certs`  |
-| Issuer claim (`iss`)   | authentik issuer URL                                  | `https://<team>.cloudflareaccess.com`                       |
-| Audience claim (`aud`) | provider `client_id`                                  | Application Audience (AUD) tag                               |
-| Network isolation      | App reachable only through the outpost/reverse proxy  | Origin reachable only through Cloudflare Tunnel (`cloudflared`) |
+| Concern                | authentik proxy provider                         | Cloudflare Access                                             |
+| ---------------------- | ------------------------------------------------ | ------------------------------------------------------------- |
+| Signed identity token  | `X-authentik-jwt` header                         | `Cf-Access-Jwt-Assertion` header or `CF_Authorization` cookie |
+| Key set for validation | `/application/o/<application-slug>/jwks/` (JWKS) | `https://<team>.cloudflareaccess.com/cdn-cgi/access/certs`    |
+| Issuer claim (`iss`)   | Provider issuer from OpenID Configuration        | `https://<team>.cloudflareaccess.com`                         |
+| Audience claim (`aud`) | Provider `client_id`                             | Application Audience (AUD) tag                                |
 
-In both designs, the proxy authenticates the user, mints a short-lived signed JWT, and the upstream application verifies that JWT against a published key set. In both designs, the cryptographic check must be paired with network isolation so the origin cannot be reached directly.
+In both designs, a proxy authenticates the user and forwards a signed token that the upstream application can verify against a published key set. That cryptographic check complements, but does not replace, the requirement to keep the upstream application from being reached directly.
 
 ## HTTPS
 
