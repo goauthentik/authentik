@@ -85,3 +85,32 @@ export function generateIndex(docs, opts) {
 
     return `${header}\n${body}\n`;
 }
+
+/**
+ * Generate the concatenated full-text file (llms-full.txt).
+ *
+ * @param {AKLlmsDocInfo[]} docs
+ * @param {{ title: string, description: string, crossLinks?: AKLlmsCrossLink[] }} opts
+ * @returns {string}
+ */
+export function generateFullText(docs, opts) {
+    const header = buildHeader(
+        opts.title,
+        opts.description,
+        "This file contains the full text of all authentik documentation pages, following the llmstxt.org convention.",
+        opts.crossLinks ?? [],
+    );
+    const sections = docs.map((doc) => `## ${doc.title}\n\n${doc.content.trim()}`);
+    return `${header}\n${sections.join("\n\n---\n\n")}\n`;
+}
+
+/**
+ * Render a single page's .md payload.
+ *
+ * @param {AKLlmsDocInfo} doc
+ * @returns {string}
+ */
+export function renderPagePayload(doc) {
+    const desc = doc.description ? `\n> ${doc.description.replace(/\s+/g, " ").trim()}\n` : "";
+    return `# ${doc.title}\n${desc}\n${doc.content.trim()}\n`;
+}
