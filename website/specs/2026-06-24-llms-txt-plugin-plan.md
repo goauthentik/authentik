@@ -31,7 +31,7 @@
 
 **Interfaces:**
 - Consumes: nothing.
-- Produces: JSDoc typedefs imported by every later module — `AKLlmsDocsSection` `{ path: string, routeBasePath: string, label?: string }`, `AKLlmsPluginOptions` `{ siteUrl?: string, title?: string, description?: string, sections: AKLlmsDocsSection[], ignoreFiles?: string[], crossLinks?: {label: string, url: string}[], groupBy?: "topic"|"category", categories?: [string,string][] }`, `AKLlmsDocInfo` `{ title: string, path: string, url: string, description: string, content: string, group?: string }`. Also a runtime constant `LLMS_TXT_FILENAME = "llms.txt"`, `LLMS_FULL_FILENAME = "llms-full.txt"`.
+- Produces: JSDoc typedefs imported by every later module — `LLMSDocsSection` `{ path: string, routeBasePath: string, label?: string }`, `LLMSPluginOptions` `{ siteUrl?: string, title?: string, description?: string, sections: LLMSDocsSection[], ignoreFiles?: string[], crossLinks?: {label: string, url: string}[], groupBy?: "topic"|"category", categories?: [string,string][] }`, `LLMSDocInfo` `{ title: string, path: string, url: string, description: string, content: string, group?: string }`. Also a runtime constant `LLMS_TXT_FILENAME = "llms.txt"`, `LLMS_FULL_FILENAME = "llms-full.txt"`.
 
 - [ ] **Step 1: Write the failing test**
 
@@ -73,32 +73,32 @@ Expected: FAIL — `Cannot find module './common.mjs'`.
  */
 
 /**
- * @typedef {object} AKLlmsDocsSection
+ * @typedef {object} LLMSDocsSection
  * @property {string} path Filesystem path relative to siteDir (e.g. ".", "docs").
  * @property {string} routeBasePath Docusaurus routeBasePath for the section (e.g. "/").
  * @property {string} [label] Optional heading shown when grouping is flat.
  */
 
 /**
- * @typedef {object} AKLlmsCrossLink
+ * @typedef {object} LLMSCrossLink
  * @property {string} label
  * @property {string} url
  */
 
 /**
- * @typedef {object} AKLlmsPluginOptions
+ * @typedef {object} LLMSPluginOptions
  * @property {string} [siteUrl] Overrides the site URL from Docusaurus config.
  * @property {string} [title] Overrides the site title.
  * @property {string} [description] Overrides the site tagline.
- * @property {AKLlmsDocsSection[]} sections One or more docs roots to scan.
+ * @property {LLMSDocsSection[]} sections One or more docs roots to scan.
  * @property {string[]} [ignoreFiles] Extra glob patterns to exclude.
- * @property {AKLlmsCrossLink[]} [crossLinks] Sibling-site links for the header.
+ * @property {LLMSCrossLink[]} [crossLinks] Sibling-site links for the header.
  * @property {"topic"|"category"} [groupBy] How to group the root index.
  * @property {[string, string][]} [categories] [dirName, label] pairs (integrations).
  */
 
 /**
- * @typedef {object} AKLlmsDocInfo
+ * @typedef {object} LLMSDocInfo
  * @property {string} title
  * @property {string} path Site-relative source path, POSIX separators, no extension.
  * @property {string} url Absolute URL of the rendered page.
@@ -113,8 +113,8 @@ export const LLMS_FULL_FILENAME = "llms-full.txt";
 /**
  * Validate and apply defaults to plugin options.
  *
- * @param {Partial<AKLlmsPluginOptions>} options
- * @returns {Required<Pick<AKLlmsPluginOptions, "sections" | "ignoreFiles" | "crossLinks" | "groupBy">> & AKLlmsPluginOptions}
+ * @param {Partial<LLMSPluginOptions>} options
+ * @returns {Required<Pick<LLMSPluginOptions, "sections" | "ignoreFiles" | "crossLinks" | "groupBy">> & LLMSPluginOptions}
  */
 export function normalizeOptions(options) {
     if (!options || !Array.isArray(options.sections) || options.sections.length === 0) {
@@ -270,7 +270,7 @@ Expected: FAIL — `Cannot find module './node.mjs'`.
 /**
  * @file Pure node-side logic for the llms.txt plugin: discovery, parsing, URLs.
  *
- * @import { AKLlmsDocInfo } from "./common.mjs"
+ * @import { LLMSDocInfo } from "./common.mjs"
  */
 
 import { resolve } from "node:path";
@@ -331,7 +331,7 @@ git commit -m "feat(llms-txt): add markdown file discovery"
 
 ---
 
-### Task 3: Parse a doc file into `AKLlmsDocInfo`
+### Task 3: Parse a doc file into `LLMSDocInfo`
 
 **Files:**
 - Modify: `docusaurus-theme/llms-txt/node.mjs`
@@ -339,7 +339,7 @@ git commit -m "feat(llms-txt): add markdown file discovery"
 
 **Interfaces:**
 - Consumes: `normalizePath` (Task 2), `parseFileContentFrontMatter` (`@docusaurus/utils`).
-- Produces: `parseDocFile(filePath: string, baseDir: string) => AKLlmsDocInfo | null` — returns `null` for `draft: true`. Sets `title` (frontmatter → first `#` heading → filename), `description` (frontmatter → first non-heading/non-import paragraph), `path` (site-relative, no extension, no trailing `/index`), `content` (raw body — cleaning happens in Task 5), and `url: ""` (filled in Task 4).
+- Produces: `parseDocFile(filePath: string, baseDir: string) => LLMSDocInfo | null` — returns `null` for `draft: true`. Sets `title` (frontmatter → first `#` heading → filename), `description` (frontmatter → first non-heading/non-import paragraph), `path` (site-relative, no extension, no trailing `/index`), `content` (raw body — cleaning happens in Task 5), and `url: ""` (filled in Task 4).
 
 - [ ] **Step 1: Write the failing test (append)**
 
@@ -417,7 +417,7 @@ function extractDescription(frontMatter, body) {
  *
  * @param {string} filePath Absolute file path.
  * @param {string} baseDir Absolute scan root.
- * @returns {AKLlmsDocInfo | null}
+ * @returns {LLMSDocInfo | null}
  */
 export function parseDocFile(filePath, baseDir) {
     const raw = readFileSync(filePath, "utf-8");
@@ -787,11 +787,11 @@ git commit -m "feat(llms-txt): clean MDX into Markdown (partials, directives)"
 - Test: `docusaurus-theme/llms-txt/generate.test.mjs`
 
 **Interfaces:**
-- Consumes: `AKLlmsDocInfo` (Task 1).
+- Consumes: `LLMSDocInfo` (Task 1).
 - Produces:
   - `applyMdExtension(url: string) => string` — strips trailing `/`, ensures a `.md` suffix.
   - `buildHeader(title: string, description: string, intro: string, crossLinks: {label,url}[]) => string`.
-  - `generateIndex(docs: AKLlmsDocInfo[], opts: {title, description, crossLinks?}) => string` — groups by `doc.group` into `## Group` sections (flat `## Table of Contents` when no groups), each line `- [title](url.md): description`.
+  - `generateIndex(docs: LLMSDocInfo[], opts: {title, description, crossLinks?}) => string` — groups by `doc.group` into `## Group` sections (flat `## Table of Contents` when no groups), each line `- [title](url.md): description`.
 
 - [ ] **Step 1: Write the failing test**
 
@@ -839,7 +839,7 @@ Expected: FAIL — `Cannot find module './generate.mjs'`.
 /**
  * @file Assemble llms.txt / llms-full.txt / per-page .md output strings.
  *
- * @import { AKLlmsDocInfo, AKLlmsCrossLink } from "./common.mjs"
+ * @import { LLMSDocInfo, LLMSCrossLink } from "./common.mjs"
  */
 
 /**
@@ -865,7 +865,7 @@ function oneLine(description) {
  * @param {string} title
  * @param {string} description
  * @param {string} intro
- * @param {AKLlmsCrossLink[]} [crossLinks]
+ * @param {LLMSCrossLink[]} [crossLinks]
  * @returns {string}
  */
 export function buildHeader(title, description, intro, crossLinks = []) {
@@ -881,7 +881,7 @@ export function buildHeader(title, description, intro, crossLinks = []) {
 }
 
 /**
- * @param {AKLlmsDocInfo} doc
+ * @param {LLMSDocInfo} doc
  * @returns {string}
  */
 function tocLine(doc) {
@@ -892,8 +892,8 @@ function tocLine(doc) {
 /**
  * Generate the grouped links index (llms.txt).
  *
- * @param {AKLlmsDocInfo[]} docs
- * @param {{ title: string, description: string, crossLinks?: AKLlmsCrossLink[], intro?: string }} opts
+ * @param {LLMSDocInfo[]} docs
+ * @param {{ title: string, description: string, crossLinks?: LLMSCrossLink[], intro?: string }} opts
  * @returns {string}
  */
 export function generateIndex(docs, opts) {
@@ -944,7 +944,7 @@ git commit -m "feat(llms-txt): generate grouped llms.txt index"
 - Test: `docusaurus-theme/llms-txt/generate.test.mjs` (append)
 
 **Interfaces:**
-- Consumes: `buildHeader` (Task 6), `AKLlmsDocInfo` with `content` populated (cleaned in Task 5).
+- Consumes: `buildHeader` (Task 6), `LLMSDocInfo` with `content` populated (cleaned in Task 5).
 - Produces:
   - `generateFullText(docs, opts: {title, description, crossLinks?}) => string` — header + each doc as `## title` + cleaned content, joined by `\n\n---\n\n`.
   - `renderPagePayload(doc) => string` — a single page's `.md`: `# title` + `> description` + cleaned content.
@@ -985,8 +985,8 @@ Expected: FAIL — `generateFullText is not a function`.
 /**
  * Generate the concatenated full-text file (llms-full.txt).
  *
- * @param {AKLlmsDocInfo[]} docs
- * @param {{ title: string, description: string, crossLinks?: AKLlmsCrossLink[] }} opts
+ * @param {LLMSDocInfo[]} docs
+ * @param {{ title: string, description: string, crossLinks?: LLMSCrossLink[] }} opts
  * @returns {string}
  */
 export function generateFullText(docs, opts) {
@@ -1003,7 +1003,7 @@ export function generateFullText(docs, opts) {
 /**
  * Render a single page's .md payload.
  *
- * @param {AKLlmsDocInfo} doc
+ * @param {LLMSDocInfo} doc
  * @returns {string}
  */
 export function renderPagePayload(doc) {
@@ -1069,12 +1069,12 @@ Expected: FAIL — `generatePerGroupIndexes is not a function`.
 /**
  * Generate a per-group (topic/category) index for the third level.
  *
- * @param {AKLlmsDocInfo[]} docs
+ * @param {LLMSDocInfo[]} docs
  * @param {{ title: string, description: string, parentUrl: string }} opts
  * @returns {Map<string, string>} group dir -> llms.txt contents
  */
 export function generatePerGroupIndexes(docs, opts) {
-    /** @type {Map<string, AKLlmsDocInfo[]>} */
+    /** @type {Map<string, LLMSDocInfo[]>} */
     const byGroup = new Map();
     for (const doc of docs) {
         const key = doc.group;
@@ -1125,7 +1125,7 @@ git commit -m "feat(llms-txt): generate per-group third-level indexes"
 **Interfaces:**
 - Consumes: `collectDocFiles`, `parseDocFile`, `resolveDocumentUrl`, `normalizePath` (node.mjs); `cleanMdxToMarkdown` (markdown.mjs); `generateIndex`, `generateFullText`, `generatePerGroupIndexes`, `renderPagePayload`, `applyMdExtension` (generate.mjs); `normalizeOptions`, `LLMS_TXT_FILENAME`, `LLMS_FULL_FILENAME` (common.mjs).
 - Produces:
-  - `assignGroup(doc: AKLlmsDocInfo, opts) => string` — first path segment for `groupBy: "topic"`; for `"category"`, the label from `categories` keyed by first segment (falls back to the segment).
+  - `assignGroup(doc: LLMSDocInfo, opts) => string` — first path segment for `groupBy: "topic"`; for `"category"`, the label from `categories` keyed by first segment (falls back to the segment).
   - `buildLlmsOutputs(ctx) => Promise<Map<relPath, contents>>` — pure async core returning every file to write (root `llms.txt`, `llms-full.txt`, per-group `llms.txt`, per-page `.md`), keyed by build-relative output path. `ctx = { siteDir, outDir, siteUrl, title, description, options, routesPaths }`.
   - default export `akLlmsPlugin(loadContext, options)` — a `Plugin` whose `postBuild(props)` calls `buildLlmsOutputs` and writes the map to `outDir`.
 
@@ -1217,7 +1217,7 @@ export function assignGroup(doc, opts) {
  * @file Docusaurus llms.txt plugin (postBuild).
  *
  * @import { LoadContext, Plugin, Props } from "@docusaurus/types"
- * @import { AKLlmsPluginOptions, AKLlmsDocInfo } from "./common.mjs"
+ * @import { LLMSPluginOptions, LLMSDocInfo } from "./common.mjs"
  */
 
 import * as fs from "node:fs/promises";
@@ -1242,13 +1242,13 @@ export { assignGroup };
  * Build every output file's contents, keyed by build-relative path.
  *
  * @param {{ siteDir: string, outDir: string, siteUrl: string, title: string,
- *   description: string, routesPaths: string[], options: AKLlmsPluginOptions }} ctx
+ *   description: string, routesPaths: string[], options: LLMSPluginOptions }} ctx
  * @returns {Promise<Map<string, string>>}
  */
 export async function buildLlmsOutputs(ctx) {
     const options = normalizeOptions(ctx.options);
 
-    /** @type {AKLlmsDocInfo[]} */
+    /** @type {LLMSDocInfo[]} */
     const docs = [];
 
     for (const section of options.sections) {
@@ -1302,7 +1302,7 @@ export async function buildLlmsOutputs(ctx) {
 
 /**
  * @param {LoadContext} _loadContext
- * @param {AKLlmsPluginOptions} options
+ * @param {LLMSPluginOptions} options
  * @returns {Plugin}
  */
 function akLlmsPlugin(_loadContext, options) {
@@ -1368,7 +1368,7 @@ git commit -m "feat(llms-txt): orchestrate generation in postBuild"
 
 **Interfaces:**
 - Consumes: the published plugin export `@goauthentik/docusaurus-theme/llms-txt/plugin`.
-- Produces: `createLlmsPlugin(options) => [string, AKLlmsPluginOptions]` — a plugin tuple for the Docusaurus `plugins` array.
+- Produces: `createLlmsPlugin(options) => [string, LLMSPluginOptions]` — a plugin tuple for the Docusaurus `plugins` array.
 
 - [ ] **Step 1: Add the helper to config.js**
 
@@ -1378,8 +1378,8 @@ Append to `docusaurus-theme/config.js`:
 /**
  * Create the llms.txt plugin tuple.
  *
- * @param {import("./llms-txt/common.mjs").AKLlmsPluginOptions} options
- * @returns {[string, import("./llms-txt/common.mjs").AKLlmsPluginOptions]}
+ * @param {import("./llms-txt/common.mjs").LLMSPluginOptions} options
+ * @returns {[string, import("./llms-txt/common.mjs").LLMSPluginOptions]}
  */
 export function createLlmsPlugin(options) {
     return ["@goauthentik/docusaurus-theme/llms-txt/plugin", options];
@@ -1503,13 +1503,13 @@ git commit -m "feat(llms-txt): enable on the integrations build with category gr
 - Partial-import resolution + directive stripping via re-parsed MDX AST (the "re-parsing source" option the spec named): Task 5. ✅
 - `postBuild` for route URLs: Tasks 4, 9. ✅
 - `createLlmsPlugin` helper wired into both builds; integrations uses `categories.mjs`: Tasks 10, 11. ✅
-- Lean option set (dropped blog/path-transform/customLLMFiles/keepFrontMatter): reflected in `AKLlmsPluginOptions` (Task 1). ✅
+- Lean option set (dropped blog/path-transform/customLLMFiles/keepFrontMatter): reflected in `LLMSPluginOptions` (Task 1). ✅
 - Cross-link header ("each site links to its sibling"): `buildHeader`/`crossLinks` (Tasks 6, 10, 11). ✅
 - The two spec validation gates (index sanity, content quality) and the integrations gate: Tasks 10, 11. ✅
 - Out of scope here (Layers 2–3, the captcha pivot): correctly deferred to separate plans.
 
 **2. Placeholder scan:** No TBD/TODO; every code step shows complete code; every command shows expected output. ✅
 
-**3. Type consistency:** `AKLlmsDocInfo` fields (`title/path/url/description/content/group`) used identically across Tasks 3/6/7/8/9. `generateIndex` opts shape consistent between Tasks 6 and 8. `applyMdExtension`/`buildHeader` defined in Task 6 and reused in 7/9. `assignGroup` defined in node.mjs (Task 9 step 3) and re-exported from plugin.mjs. ✅
+**3. Type consistency:** `LLMSDocInfo` fields (`title/path/url/description/content/group`) used identically across Tasks 3/6/7/8/9. `generateIndex` opts shape consistent between Tasks 6 and 8. `applyMdExtension`/`buildHeader` defined in Task 6 and reused in 7/9. `assignGroup` defined in node.mjs (Task 9 step 3) and re-exported from plugin.mjs. ✅
 
 **Known follow-ups (not blockers):** (a) the build-relative path derivation in Task 9 assumes `baseUrl: "/"` (true for both sites); if a site ever uses a non-root baseUrl, strip it explicitly. (b) If Task 10's content-quality gate shows `remark-mdx` choking on many real pages (regex fallback firing often), harden Task 5 — but ship the gate first to get evidence.

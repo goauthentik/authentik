@@ -2,13 +2,13 @@
 /**
  * @file Pure node-side logic for the llms.txt plugin: discovery, parsing, URLs.
  *
- * @import { AKLlmsDocInfo } from "./common.mjs"
+ * @import { LLMSDocInfo } from "./common.mjs"
  */
 
+import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 
 import { parseFileContentFrontMatter } from "@docusaurus/utils/lib/markdownUtils.js";
-import { readFileSync } from "node:fs";
 import FastGlob from "fast-glob";
 
 /**
@@ -92,7 +92,7 @@ function extractDescription(frontMatter, body) {
  *
  * @param {string} filePath Absolute file path.
  * @param {string} baseDir Absolute scan root.
- * @returns {AKLlmsDocInfo | null}
+ * @returns {LLMSDocInfo | null}
  */
 export function parseDocFile(filePath, baseDir) {
     const raw = readFileSync(filePath, "utf-8");

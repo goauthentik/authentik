@@ -1,7 +1,7 @@
 /**
  * @file Assemble llms.txt / llms-full.txt / per-page .md output strings.
  *
- * @import { AKLlmsDocInfo, AKLlmsCrossLink } from "./common.mjs"
+ * @import { LLMSDocInfo, LLMSCrossLink } from "./common.mjs"
  */
 
 /**
@@ -27,7 +27,7 @@ function oneLine(description) {
  * @param {string} title
  * @param {string} description
  * @param {string} intro
- * @param {AKLlmsCrossLink[]} [crossLinks]
+ * @param {LLMSCrossLink[]} [crossLinks]
  * @returns {string}
  */
 export function buildHeader(title, description, intro, crossLinks = []) {
@@ -43,7 +43,7 @@ export function buildHeader(title, description, intro, crossLinks = []) {
 }
 
 /**
- * @param {AKLlmsDocInfo} doc
+ * @param {LLMSDocInfo} doc
  * @returns {string}
  */
 function tocLine(doc) {
@@ -54,8 +54,8 @@ function tocLine(doc) {
 /**
  * Generate the grouped links index (llms.txt).
  *
- * @param {AKLlmsDocInfo[]} docs
- * @param {{ title: string, description: string, crossLinks?: AKLlmsCrossLink[], intro?: string }} opts
+ * @param {LLMSDocInfo[]} docs
+ * @param {{ title: string, description: string, crossLinks?: LLMSCrossLink[], intro?: string }} opts
  * @returns {string}
  */
 export function generateIndex(docs, opts) {
@@ -94,8 +94,8 @@ export function generateIndex(docs, opts) {
 /**
  * Generate the concatenated full-text file (llms-full.txt).
  *
- * @param {AKLlmsDocInfo[]} docs
- * @param {{ title: string, description: string, crossLinks?: AKLlmsCrossLink[] }} opts
+ * @param {LLMSDocInfo[]} docs
+ * @param {{ title: string, description: string, crossLinks?: LLMSCrossLink[] }} opts
  * @returns {string}
  */
 export function generateFullText(docs, opts) {
@@ -112,7 +112,7 @@ export function generateFullText(docs, opts) {
 /**
  * Render a single page's .md payload.
  *
- * @param {AKLlmsDocInfo} doc
+ * @param {LLMSDocInfo} doc
  * @returns {string}
  */
 export function renderPagePayload(doc) {
@@ -123,12 +123,12 @@ export function renderPagePayload(doc) {
 /**
  * Generate a per-group (topic/category) index for the third level.
  *
- * @param {AKLlmsDocInfo[]} docs
+ * @param {LLMSDocInfo[]} docs
  * @param {{ title: string, description: string, parentUrl: string }} opts
  * @returns {Map<string, string>} group dir -> llms.txt contents
  */
 export function generatePerGroupIndexes(docs, opts) {
-    /** @type {Map<string, AKLlmsDocInfo[]>} */
+    /** @type {Map<string, LLMSDocInfo[]>} */
     const byGroup = new Map();
     for (const doc of docs) {
         const key = doc.group;

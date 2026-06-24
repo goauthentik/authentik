@@ -4,22 +4,28 @@
  * @file Docusaurus llms.txt plugin (postBuild).
  *
  * @import { LoadContext, Plugin, Props } from "@docusaurus/types"
- * @import { AKLlmsPluginOptions, AKLlmsDocInfo } from "./common.mjs"
+ * @import { LLMSPluginOptions, LLMSDocInfo } from "./common.mjs"
  */
 
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 
-import { LLMS_TXT_FILENAME, LLMS_FULL_FILENAME, normalizeOptions } from "./common.mjs";
-import { collectDocFiles, parseDocFile, resolveDocumentUrl, assignGroup, groupLabel } from "./node.mjs";
-import { cleanMdxToMarkdown } from "./markdown.mjs";
+import { LLMS_FULL_FILENAME, LLMS_TXT_FILENAME, normalizeOptions } from "./common.mjs";
 import {
-    generateIndex,
+    applyMdExtension,
     generateFullText,
+    generateIndex,
     generatePerGroupIndexes,
     renderPagePayload,
-    applyMdExtension,
 } from "./generate.mjs";
+import { cleanMdxToMarkdown } from "./markdown.mjs";
+import {
+    assignGroup,
+    collectDocFiles,
+    groupLabel,
+    parseDocFile,
+    resolveDocumentUrl,
+} from "./node.mjs";
 
 const PLUGIN_NAME = "ak-llms-txt-plugin";
 
@@ -29,13 +35,13 @@ export { assignGroup, groupLabel };
  * Build every output file's contents, keyed by build-relative path.
  *
  * @param {{ siteDir: string, outDir: string, siteUrl: string, title: string,
- *   description: string, routesPaths: string[], options: AKLlmsPluginOptions }} ctx
+ *   description: string, routesPaths: string[], options: LLMSPluginOptions }} ctx
  * @returns {Promise<Map<string, string>>}
  */
 export async function buildLlmsOutputs(ctx) {
     const options = normalizeOptions(ctx.options);
 
-    /** @type {AKLlmsDocInfo[]} */
+    /** @type {LLMSDocInfo[]} */
     const docs = [];
 
     for (const section of options.sections) {
@@ -90,7 +96,7 @@ export async function buildLlmsOutputs(ctx) {
 
 /**
  * @param {LoadContext} _loadContext
- * @param {AKLlmsPluginOptions} options
+ * @param {LLMSPluginOptions} options
  * @returns {Plugin}
  */
 function akLlmsPlugin(_loadContext, options) {

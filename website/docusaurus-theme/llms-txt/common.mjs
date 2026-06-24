@@ -3,32 +3,32 @@
  */
 
 /**
- * @typedef {object} AKLlmsDocsSection
+ * @typedef {object} LLMSDocsSection
  * @property {string} path Filesystem path relative to siteDir (e.g. ".", "docs").
  * @property {string} routeBasePath Docusaurus routeBasePath for the section (e.g. "/").
  * @property {string} [label] Optional heading shown when grouping is flat.
  */
 
 /**
- * @typedef {object} AKLlmsCrossLink
+ * @typedef {object} LLMSCrossLink
  * @property {string} label
  * @property {string} url
  */
 
 /**
- * @typedef {object} AKLlmsPluginOptions
+ * @typedef {object} LLMSPluginOptions
  * @property {string} [siteUrl] Overrides the site URL from Docusaurus config.
  * @property {string} [title] Overrides the site title.
  * @property {string} [description] Overrides the site tagline.
- * @property {AKLlmsDocsSection[]} sections One or more docs roots to scan.
+ * @property {LLMSDocsSection[]} sections One or more docs roots to scan.
  * @property {string[]} [ignoreFiles] Extra glob patterns to exclude.
- * @property {AKLlmsCrossLink[]} [crossLinks] Sibling-site links for the header.
+ * @property {LLMSCrossLink[]} [crossLinks] Sibling-site links for the header.
  * @property {"topic"|"category"} [groupBy] How to group the root index.
  * @property {readonly (readonly [string, string])[]} [categories] [dirName, label] pairs (integrations).
  */
 
 /**
- * @typedef {object} AKLlmsDocInfo
+ * @typedef {object} LLMSDocInfo
  * @property {string} title
  * @property {string} path Site-relative source path, POSIX separators, no extension.
  * @property {string} url Absolute URL of the rendered page.
@@ -44,8 +44,8 @@ export const LLMS_FULL_FILENAME = "llms-full.txt";
 /**
  * Validate and apply defaults to plugin options.
  *
- * @param {Partial<AKLlmsPluginOptions>} options
- * @returns {Required<Pick<AKLlmsPluginOptions, "sections" | "ignoreFiles" | "crossLinks" | "groupBy">> & AKLlmsPluginOptions}
+ * @param {Partial<LLMSPluginOptions>} options
+ * @returns {Required<Pick<LLMSPluginOptions, "sections" | "ignoreFiles" | "crossLinks" | "groupBy">> & LLMSPluginOptions}
  */
 export function normalizeOptions(options) {
     if (!options || !Array.isArray(options.sections) || options.sections.length === 0) {
