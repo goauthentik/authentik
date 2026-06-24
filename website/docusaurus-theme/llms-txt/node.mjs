@@ -196,6 +196,7 @@ export function parseDocFile(filePath, baseDir) {
         url: "",
         description: extractDescription(frontMatter, content),
         content,
+        slug: typeof frontMatter.slug === "string" ? frontMatter.slug : undefined,
     };
 }
 
@@ -303,4 +304,50 @@ export function resolveDocumentUrl(relPathNoExt, routesPaths) {
         if (match) return match;
     }
     return undefined;
+}
+
+/**
+ * @param {string} routeBasePath
+ * @returns {string}
+ */
+function normalizeRouteBasePath(routeBasePath) {
+    if (!routeBasePath || routeBasePath === "/") {
+        return "/";
+    }
+    return `/${routeBasePath.replace(/^\/+|\/+$/g, "")}/`;
+}
+
+/**
+ * @param {string} routePath
+ * @returns {string}
+ */
+function normalizeRoutePath(routePath) {
+    const normalized = `/${routePath.replace(/^\/+/, "")}`.replace(/\/{2,}/g, "/");
+    if (normalized === "/") {
+        return normalized;
+    }
+    return normalized.endsWith("/") ? normalized : `${normalized}/`;
+}
+
+/**
+ * Resolve a route from source metadata when Docusaurus' final route list is not
+ * available, such as during the dev server's content loading phase.
+ *
+ * @param {LLMSDocInfo} doc
+ * @param {string} routeBasePath
+ * @returns {string}
+ */
+export function resolveDocumentUrlFromSource(doc, routeBasePath) {
+    if (doc.slug) {
+        if (doc.slug.startsWith("/")) {
+            return normalizeRoutePath(doc.slug);
+        }
+        return normalizeRoutePath(`${normalizeRouteBasePath(routeBasePath)}${doc.slug}`);
+    }
+
+    if (doc.path === "" || doc.path === "index") {
+        return normalizeRouteBasePath(routeBasePath);
+    }
+
+    return normalizeRoutePath(`${normalizeRouteBasePath(routeBasePath)}${doc.path}`);
 }

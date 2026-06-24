@@ -1,0 +1,48 @@
+.actions {
+    flex: 0 0 auto;
+    margin-top: 0.0625rem;
+}
+
+.button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    min-height: 2rem;
+    padding: 0.25rem 0.55rem;
+    border: 1px solid var(--ifm-color-emphasis-300);
+    border-radius: 0.375rem;
+    background: var(--ifm-background-surface-color);
+    color: var(--ifm-color-content-secondary);
+    font-size: 0.8125rem;
+    font-weight: 700;
+    line-height: 1.2;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.icon {
+    width: 1.25rem;
+    height: 0.875rem;
+    color: var(--ifm-color-primary);
+    fill: currentColor;
+    flex: 0 0 auto;
+}
+
+.button:hover,
+.button:focus {
+    border-color: var(--ifm-color-primary-light);
+    background: var(--ifm-color-emphasis-100);
+    color: var(--ifm-color-primary-dark);
+    text-decoration: none;
+}
+
+.button:focus-visible {
+    outline: 2px solid var(--ifm-color-primary);
+    outline-offset: 2px;
+}
+
+@media (max-width: 576px) {
+    .actions {
+        margin-top: 0;
+    }
+}
