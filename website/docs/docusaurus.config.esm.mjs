@@ -13,7 +13,7 @@ import { createRequire } from "node:module";
 import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { createDocusaurusConfig } from "@goauthentik/docusaurus-config";
+import { createDocusaurusConfig, DocusaurusURL } from "@goauthentik/docusaurus-config";
 import {
     createAlgoliaConfig,
     createClassicPreset,
@@ -109,7 +109,7 @@ export default createDocusaurusConfig(
             faster: true,
         },
         clientModules: ["../docusaurus-theme/theme/utils/mermaid_icons.js"],
-        url: "https://docs.goauthentik.io",
+        url: DocusaurusURL.Docs,
         //#region Preset
 
         presets: [
@@ -143,7 +143,7 @@ export default createDocusaurusConfig(
                     beforeDefaultRemarkPlugins: [
                         remarkLinkRewrite([
                             ["/api", "https://api.goauthentik.io"],
-                            ["/integrations", "https://integrations.goauthentik.io"],
+                            ["/integrations", DocusaurusURL.Integrations],
                         ]),
                     ],
                 },
@@ -167,7 +167,10 @@ export default createDocusaurusConfig(
                 sections: [{ path: ".", routeBasePath: "/" }],
                 groupBy: "topic",
                 crossLinks: [
-                    { label: "Integrations", url: "https://integrations.goauthentik.io/llms.txt" },
+                    {
+                        label: "Integrations",
+                        url: new URL("llms.txt", DocusaurusURL.Integrations).toString(),
+                    },
                 ],
             }),
 

@@ -12,7 +12,7 @@ import { fileURLToPath } from "node:url";
 import categories from "./categories.mjs";
 import { legacyRedirects } from "./legacy-redirects.mjs";
 
-import { createDocusaurusConfig } from "@goauthentik/docusaurus-config";
+import { createDocusaurusConfig, DocusaurusURL } from "@goauthentik/docusaurus-config";
 import {
     createAlgoliaConfig,
     createClassicPreset,
@@ -39,7 +39,7 @@ export default createDocusaurusConfig(
             faster: true,
         },
 
-        url: "https://integrations.goauthentik.io",
+        url: DocusaurusURL.Integrations,
 
         //#region Preset
 
@@ -73,7 +73,10 @@ export default createDocusaurusConfig(
                 groupBy: "category",
                 categories,
                 crossLinks: [
-                    { label: "Documentation", url: "https://docs.goauthentik.io/llms.txt" },
+                    {
+                        label: "Documentation",
+                        url: new URL("llms.txt", DocusaurusURL.Docs).toString(),
+                    },
                 ],
             }),
 
