@@ -25,6 +25,7 @@ CASB
 CLDR
 DOTADIW
 Docsmg
+DTCG
 GDTC
 GHES
 GHSA
@@ -66,6 +67,7 @@ TOTP
 Transifex
 Unenrollment
 Unmigrate
+USWDS
 Wsfed
 Xen
 Xmldsig

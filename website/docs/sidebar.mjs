@@ -691,7 +691,11 @@ const items = [
                     id: "sys-mgmt/brands/index",
                     type: "doc",
                 },
-                items: ["sys-mgmt/brands/index", "sys-mgmt/brands/custom-css"],
+                items: [
+                    "sys-mgmt/brands/index",
+                    "sys-mgmt/brands/design-language",
+                    "sys-mgmt/brands/custom-css",
+                ],
             },
             {
                 //#endregion

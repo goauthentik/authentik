@@ -30,7 +30,34 @@ Despite this encapsulation, many authentik web components are designed with them
 
 CSS variables (also called CSS custom properties) define colors, spacing, typography, and other design elements throughout authentik. By overriding these variables in your custom CSS, you can change the interface's look and feel at a high level without targeting individual elements.
 
-There's no comprehensive documentation of authentik's CSS variables. However, authentik uses [Patternfly 4](https://pf4.patternfly.org/developer-resources/global-css-variables/) and [Patternfly 5](https://v5-archive.patternfly.org/developer-resources/global-css-variables/) as its underlying design systems, which provide extensive documentation on their CSS variables.
+Start with authentik's semantic `--ak-*` variables. They are shorter and more stable than the underlying PatternFly compatibility variables. PatternFly variables remain available for advanced overrides, but `--pf-*` names are implementation details and may change as authentik's UI evolves.
+
+Common semantic variables include:
+
+| Variable                   | Purpose                                  |
+| -------------------------- | ---------------------------------------- |
+| `--ak-color-accent`        | authentik brand accent                   |
+| `--ak-color-primary`       | primary action and highlight color       |
+| `--ak-color-text`          | default text color                       |
+| `--ak-color-text-muted`    | secondary text color                     |
+| `--ak-color-link`          | link color                               |
+| `--ak-color-surface`       | default component surface                |
+| `--ak-color-surface-muted` | page or muted surface                    |
+| `--ak-color-border`        | default border color                     |
+| `--ak-color-info`          | informational state                      |
+| `--ak-color-success`       | success state                            |
+| `--ak-color-warning`       | warning state                            |
+| `--ak-color-danger`        | danger or destructive state              |
+| `--ak-space-md`            | default spacing unit                     |
+| `--ak-radius-sm`           | default small radius                     |
+| `--ak-shadow-md`           | default drop shadow for cards and panels |
+| `--ak-shadow-lg`           | shadow for popovers and dropdowns        |
+| `--ak-font-weight-bold`    | bold text weight                         |
+| `--ak-z-index-lg`          | z-index for popovers and dropdowns       |
+| `--ak-z-index-xl`          | z-index for modal dialogs                |
+| `--ak-duration-normal`     | default transition duration              |
+
+authentik currently bridges these semantic variables into selected PatternFly 4 variables. For example, changing `--ak-color-primary` also affects many PatternFly-backed buttons, links, and highlights.
 
 ### CSS parts
 
@@ -64,7 +91,7 @@ ak-library::part(card-header-icon) {
 ```css title="✅ Responsive units"
 ak-library::part(card-header-icon) {
     font-size: 2rem;
-    margin-block-end: var(--pf-global--spacer--md);
+    margin-block-end: var(--ak-space-md);
 }
 ```
 
@@ -100,22 +127,45 @@ This directly styles the `body` element based on the color scheme preference. Wh
 
 ```css title="✅ Theme-based styling"
 :root {
-    --ak-global--Color--100: black;
-    --ak-global--BackgroundColor--100: white;
+    --ak-color-text: black;
+    --ak-color-surface: white;
 }
 
 html[data-theme="dark"] {
-    --ak-global--Color--100: white;
-    --ak-global--BackgroundColor--100: black;
+    --ak-color-text: white;
+    --ak-color-surface: black;
 }
 
 body {
-    background-color: var(--ak-global--BackgroundColor--100);
-    color: var(--ak-global--Color--100);
+    background-color: var(--ak-color-surface);
+    color: var(--ak-color-text);
 }
 ```
 
 Here, CSS variables define colors and backgrounds, with values adjusted based on the theme. This approach is more modular and maintainable—theme changes happen in one place without modifying individual element styles throughout the application.
+
+Prefer the semantic authentik variables for custom themes:
+
+```css title="Custom brand colors"
+:root {
+    --ak-color-accent: #e11d48;
+    --ak-color-primary: #2563eb;
+    --ak-color-link: #1d4ed8;
+    --ak-color-surface: #ffffff;
+    --ak-color-surface-muted: #f8fafc;
+    --ak-color-text: #0f172a;
+    --ak-color-border: #cbd5e1;
+}
+
+html[data-theme="dark"] {
+    --ak-color-primary: #60a5fa;
+    --ak-color-link: #93c5fd;
+    --ak-color-surface: #111827;
+    --ak-color-surface-muted: #030712;
+    --ak-color-text: #f9fafb;
+    --ak-color-border: #374151;
+}
+```
 
 ### Contrast ratios (`prefers-contrast`)
 
@@ -222,6 +272,6 @@ If you're still having trouble, the issue may stem from your CDN or reverse prox
 
 ### Where can I find documentation on available CSS Variables and Parts?
 
-There's currently no comprehensive documentation on available CSS variables and parts in authentik. You can inspect the rendered HTML using browser developer tools to identify the CSS variables and parts applied to various elements.
+authentik's public semantic variables are documented in the [CSS variables](#css-variables) section above. You can inspect the rendered HTML using browser developer tools to identify additional component-local CSS variables and parts applied to various elements.
 
-Look for CSS variables prefixed with `--ak-` and `--pf-` to identify those defined by authentik and Patternfly respectively. HTML elements with the `part="..."` attribute indicate which parts are available for styling.
+Prefer top-level semantic variables such as `--ak-color-primary`. Treat `--ak-c-*` and `--pf-*` variables as lower-level escape hatches unless a specific authentik release documents them as stable. HTML elements with the `part="..."` attribute indicate which parts are available for styling.
