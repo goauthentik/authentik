@@ -27,14 +27,23 @@ import { visit, SKIP } from "unist-util-visit";
  */
 function stripAdmonitionFences(md) {
     const lines = md.split("\n");
-    let inFence = false;
+    /** @type {string | null} */
+    let fenceChar = null;
     const out = [];
     for (const line of lines) {
-        if (/^\s*(```|~~~)/.test(line)) {
-            inFence = !inFence;
+        const fence = line.match(/^\s*(`{3,}|~{3,})/);
+        if (fence) {
+            const ch = /** @type {string} */ (/** @type {string} */ (fence[1])[0]);
+            if (fenceChar === null) {
+                fenceChar = ch; // entering a code block
+            } else if (ch === fenceChar) {
+                fenceChar = null; // closing the code block
+            }
+            // else: different fence char inside a block — not a delimiter, leave fenceChar unchanged
             out.push(line);
             continue;
         }
+        const inFence = fenceChar !== null;
         // Outside code: drop a line that is an admonition fence marker:
         //   opening `:::type[ ...title]` or `\:::type ...`, or a bare closing `:::` / `\:::`.
         if (!inFence && /^\s*\\?:::+\s*[a-zA-Z][\w-]*.*$/.test(line)) {
