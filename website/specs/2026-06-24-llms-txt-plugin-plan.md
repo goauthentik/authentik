@@ -179,7 +179,7 @@ git commit -m "feat(llms-txt): scaffold plugin module, types, and deps"
 **Files:**
 - Create: `docusaurus-theme/llms-txt/node.mjs`
 - Test: `docusaurus-theme/llms-txt/node.test.mjs`
-- Create (fixtures): `docusaurus-theme/llms-txt/__fixtures__/site/topic-a/index.mdx`, `.../topic-a/page-one.md`, `.../topic-b/page-two.mdx`, `.../topic-a/_partial.mdx`
+- Create (fixtures): `docusaurus-theme/llms-txt/__fixtures__/site/topic-a/index.mdx`, `.../topic-a/page-one.md`, `.../topic-b/page-two.mdx`, `.../topic-b/_partial.mdx` (sibling of its importer so `./_partial.mdx` resolves)
 
 **Interfaces:**
 - Consumes: nothing from earlier tasks.
@@ -227,7 +227,7 @@ Body of page two.
 ```
 
 ```mdx
-<!-- docusaurus-theme/llms-txt/__fixtures__/site/topic-a/_partial.mdx -->
+<!-- docusaurus-theme/llms-txt/__fixtures__/site/topic-b/_partial.mdx -->
 Shared partial content.
 ```
 
