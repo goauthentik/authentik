@@ -50,3 +50,19 @@ test("cleanMdxToMarkdown preserves ::: inside fenced code blocks", async () => {
     assert.ok(out.includes("arn:::resource"), "inline ::: in code preserved");
     assert.ok(out.includes(":::standalone-in-code"), "::: line inside code fence preserved");
 });
+
+test("cleanMdxToMarkdown preserves ::: inside a ~~~ fenced block", async () => {
+    const input = "# T\n\n~~~yaml\nkey: :::value\n~~~\n\nAfter.";
+    const out = await cleanMdxToMarkdown(input, resolve(FIXTURE, "topic-a/page-one.md"));
+    assert.ok(out.includes(":::value"), "::: inside ~~~ code fence preserved");
+    assert.ok(out.includes("After."));
+});
+
+test("cleanMdxToMarkdown handles backticks nested in a ~~~ block without losing admonition stripping after it", async () => {
+    const input = "# T\n\n~~~md\n```\ncode\n```\n~~~\n\n:::info\nNote body.\n:::\n\nEnd.";
+    const out = await cleanMdxToMarkdown(input, resolve(FIXTURE, "topic-a/page-one.md"));
+    // The inner ``` is inside the ~~~ block and must NOT close it; the :::info AFTER the block must still be stripped.
+    assert.ok(!out.includes(":::info"), "admonition after a nested-fence block is still stripped");
+    assert.ok(out.includes("Note body."), "admonition inner prose preserved");
+    assert.ok(out.includes("End."));
+});
