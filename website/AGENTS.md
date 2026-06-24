@@ -2,7 +2,7 @@
 
 This is the **authentik documentation website** — the source for everything published under `goauthentik.io`. It is a TypeScript [NPM Workspace](https://docs.npmjs.com/cli/v11/using-npm/workspaces) at `./website` that builds **three separate [Docusaurus](https://docusaurus.io/) sites**, each its own workspace package with its own `docusaurus.config.esm.mjs`, `sidebar.mjs`, and `static/_redirects`:
 
-- **Topics / "The Docs"** (`docs/`, pkg `@goauthentik/docs-topics`) → [docs.goauthentik.io](https://docs.goauthentik.io) — how to use authentik.
+- **Topics / "The Docs"** (`docs/`, pkg `@goauthentik/docs-topics`) → [docs.goauthentik.io](https://docs.goauthentik.io) — how to use and configure authentik.
 - **Integrations** (`integrations/`, pkg `@goauthentik/integration-docs`) → [integrations.goauthentik.io](https://integrations.goauthentik.io) — guides for using authentik with third-party services.
 - **API** (`api/`, pkg `@goauthentik/api-docs`) → [api.goauthentik.io](https://api.goauthentik.io) — **generated** from the OpenAPI schema (`../schema.yml`); do not hand-edit reference pages.
 
