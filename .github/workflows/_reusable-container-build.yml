@@ -27,7 +27,7 @@ on:
         value: "${{ jobs.build.outputs.artifact-id }}"
 
 jobs:
-  build-linux-amd64:
+  build-amd64:
     uses: ./.github/workflows/_reusable-container-build-single.yml
     secrets: inherit
     with:
@@ -37,7 +37,7 @@ jobs:
       image-arch: amd64
       image-dockerfile: "${{ inputs.image-dockerfile }}"
       image-build-args: "${{ inputs.image-build-args }}"
-  build-linux-arm64:
+  build-arm64:
     uses: ./.github/workflows/_reusable-container-build-single.yml
     secrets: inherit
     with:
@@ -55,7 +55,7 @@ jobs:
     steps:
       - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v5
         with:
-          artifact-ids: "${{ needs.build-linux-amd64.outputs.artifact-id }},${{ needs.build-linux-arm64.outputs.artifact-id }}"
+          artifact-ids: "${{ needs.build-amd64.outputs.artifact-id }},${{ needs.build-arm64.outputs.artifact-id }}"
           merge-multiple: true
       - name: merge
         run: |
