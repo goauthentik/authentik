@@ -20,8 +20,13 @@ Even if the issue is not a CVE, we still greatly appreciate your help in hardeni
 
 | Version   | Supported |
 | --------- | --------- |
+<<<<<<< HEAD
 | 2025.12.x | ✅        |
 | 2026.2.x  | ✅        |
+=======
+| 2026.2.x  | ✅        |
+| 2026.5.x  | ✅        |
+>>>>>>> f901675da6 (root: Fix SECURITY.md versions (#23370))
 
 ## Reporting a Vulnerability
 
