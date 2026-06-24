@@ -39,6 +39,7 @@ You need to ensure users and groups exist before we proceed with the next steps.
 The groups are used for property mappings later to give the user the correct permission level in the application. For this documentation there is an example for each of the 3 main default permission levels and an easy way to visualise the differences between them.
 
 Select **Directory > Users**
+
 1. **Create test-user 0**
     - username: test-user0
     - Name: Test User0
