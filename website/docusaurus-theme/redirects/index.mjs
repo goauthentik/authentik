@@ -19,9 +19,10 @@ import escapeStringRegexp from "escape-string-regexp";
  * @returns {RegExp}
  */
 export function pathnameToMatcher(pathname) {
-    const matcher = escapeStringRegexp(pathname)
-        .replace(/\\\*/g, "(?<splat>.*)")
-        .replace(/\//g, "\\/");
+    const matcher = pathname
+        .split("*")
+        .map((part) => escapeStringRegexp(part))
+        .join("(?<splat>.*)");
 
     return new RegExp("^" + matcher + (pathname.includes("*") ? "" : "$"), "i");
 }
@@ -42,9 +43,10 @@ function normalizeAliasPathname(pathname) {
  * @returns {RegExp}
  */
 export function destinationToMatcher(destination) {
-    const safeDestination = escapeStringRegexp(destination)
-        .replace(/:splat/g, "(?<splat>.*)")
-        .replace(/\//g, "\\/");
+    const safeDestination = destination
+        .split(":splat")
+        .map((part) => escapeStringRegexp(part))
+        .join("(?<splat>.*)");
     return new RegExp("^" + safeDestination + "$", "i");
 }
 
