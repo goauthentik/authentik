@@ -1,5 +1,6 @@
 /* `:defined` applies after `customElementRegistry.define()` has been called on the tag. So this
-   instructs the flow layout on what to do *before* that happens, to avoid FOUC.
+   instructs the flow layout on what to do *before* that happens, to avoid any flashes of unstyled
+   content (FOUC).
  */
 ak-flow-executor:not(:defined) {
     display: grid;
