@@ -313,14 +313,51 @@ class TokenView(View):
             expires__gt=self.now,
         ).first()
 
-        if existing:
-            private_key = serialization.load_pem_private_key(
-                existing.private_key.encode(), password=None
-            )
+        if existing and existing.certificate_der:
+            # Return the exact same certificate bytes so macOS sees an identical
+            # tokenID (SHA-1 of public key) and does not attempt key rotation,
+            # which would require com.apple.PlatformSSO.login.service-xpc.
+            cert_b64 = existing.certificate_der
             unlock_key = existing
             LOGGER.debug("Reusing existing unlock key", device=device_user.target)
         else:
             private_key = generate_private_key(SECP256R1())
+            subject = x509.Name(
+                [x509.NameAttribute(NameOID.COMMON_NAME, auth_token.user.username)]
+            )
+            cert = (
+                x509.CertificateBuilder()
+                .subject_name(subject)
+                .issuer_name(subject)
+                .public_key(private_key.public_key())
+                .serial_number(x509.random_serial_number())
+                .not_valid_before(self.now)
+                .not_valid_after(expires_at)
+                .add_extension(
+                    x509.KeyUsage(
+                        digital_signature=True,
+                        key_cert_sign=False,
+                        content_commitment=False,
+                        key_encipherment=False,
+                        data_encipherment=False,
+                        key_agreement=True,
+                        crl_sign=False,
+                        encipher_only=False,
+                        decipher_only=False,
+                    ),
+                    critical=True,
+                )
+                .add_extension(
+                    x509.SubjectKeyIdentifier.from_public_key(private_key.public_key()),
+                    critical=False,
+                )
+                .sign(private_key, hashes.SHA256())
+            )
+            cert_b64 = (
+                urlsafe_b64encode(cert.public_bytes(serialization.Encoding.DER))
+                .rstrip(b"=")
+                .decode()
+            )
             unlock_key = AppleUnlockKey.objects.create(
                 device_user=device_user,
                 private_key=private_key.private_bytes(
@@ -328,43 +365,10 @@ class TokenView(View):
                     format=serialization.PrivateFormat.PKCS8,
                     encryption_algorithm=serialization.NoEncryption(),
                 ).decode(),
+                certificate_der=cert_b64,
                 expires=expires_at,
             )
             LOGGER.debug("Created unlock key", device=device_user.target)
-
-        subject = x509.Name([x509.NameAttribute(NameOID.COMMON_NAME, auth_token.user.username)])
-        cert = (
-            x509.CertificateBuilder()
-            .subject_name(subject)
-            .issuer_name(subject)
-            .public_key(private_key.public_key())
-            .serial_number(x509.random_serial_number())
-            .not_valid_before(self.now)
-            .not_valid_after(expires_at)
-            .add_extension(
-                x509.KeyUsage(
-                    digital_signature=True,
-                    key_cert_sign=False,
-                    content_commitment=False,
-                    key_encipherment=False,
-                    data_encipherment=False,
-                    key_agreement=True,
-                    crl_sign=False,
-                    encipher_only=False,
-                    decipher_only=False,
-                ),
-                critical=True,
-            )
-            .add_extension(
-                x509.SubjectKeyIdentifier.from_public_key(private_key.public_key()),
-                critical=False,
-            )
-            .sign(private_key, hashes.SHA256())
-        )
-
-        cert_b64 = (
-            urlsafe_b64encode(cert.public_bytes(serialization.Encoding.DER)).rstrip(b"=").decode()
-        )
         return JWEResponse(
             {
                 "certificate": cert_b64,

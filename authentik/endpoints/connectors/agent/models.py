@@ -198,6 +198,7 @@ class AppleUnlockKey(InternallyManagedMixin, ExpiringModel):
     identifier = models.UUIDField(primary_key=True, default=uuid4)
     device_user = models.ForeignKey(AgentDeviceUserBinding, on_delete=models.CASCADE)
     private_key = models.TextField()
+    certificate_der = models.TextField(default="")
 
     class Meta(ExpiringModel.Meta):
         verbose_name = _("Apple Unlock Key")
