@@ -53,6 +53,9 @@ export function normalizeOptions(options) {
 
     return {
         ...options,
+        // Re-assert the guard-narrowed `sections` so the return type satisfies
+        // Required<Pick<…, "sections">> (the Partial spread widens it to optional).
+        sections: options.sections,
         ignoreFiles: options.ignoreFiles ?? [],
         crossLinks: options.crossLinks ?? [],
         groupBy: options.groupBy ?? "topic",
