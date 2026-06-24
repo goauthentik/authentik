@@ -29,14 +29,14 @@ SAML SSO requires a Slack plan where custom SAML is available and a Slack Worksp
 
 ## authentik configuration
 
-To support the integration of Slack with authentik, create SAML property mappings and an application/provider pair. If you also want to provision Slack users and user groups from authentik, generate a Slack SCIM token in the Slack configuration section, then create a SCIM provider and assign it as a backchannel provider for the same application.
+To support the integration of Slack with authentik, you need to create SAML property mappings and an application/provider pair. If you also want to provision Slack users and user groups from authentik, generate a Slack SCIM token in the Slack configuration section, then create a SCIM provider and assign it as a backchannel provider for the same application.
 
 ### Create property mappings
 
-Slack requires the SAML assertion to include a `User.Email` attribute. You can optionally send username and name attributes.
+Slack requires the SAML assertion to include a `User.Email` attribute. You can also optionally send username and name attributes.
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Customization** > **Property Mappings** and click **Create**. Create the following **SAML Provider Property Mapping** entry:
+2. Navigate to **Customization** > **Property Mappings** and click **Create**. Create the following **SAML Provider Property Mapping**:
     - **Email mapping:**
         - **Name**: Choose a descriptive name.
         - **SAML Attribute Name**: `User.Email`
@@ -45,7 +45,7 @@ Slack requires the SAML assertion to include a `User.Email` attribute. You can o
             return request.user.email
             ```
 
-3. Optionally, create the following additional **SAML Provider Property Mapping** entries:
+3. Optionally, create the following additional **SAML Provider Property Mappings**:
     - **Username mapping:**
         - **Name**: Choose a descriptive name.
         - **SAML Attribute Name**: `User.Username`
@@ -140,13 +140,15 @@ Configure this optional provider only if you want authentik to provision Slack u
 7. Click **Edit** and add the SCIM provider to **Backchannel Providers**.
 8. Click **Update**.
 
+Users that should be provisioned to Slack will then need to be bound to the Slack application. For more information on user and group filtering, refer to the [SCIM provider documentation](../../../providers/scim/#filter-the-sync-scope) .
+
 ## Configuration verification
 
 To confirm that authentik is properly configured with Slack, open the integration from the authentik Application Dashboard. You should be redirected to Slack and signed in.
 
 You can also open your Slack workspace directly and select the SSO option. You should be redirected to authentik to authenticate, then returned to Slack.
 
-If you configured SCIM provisioning, assign a test user or group to the Slack application in authentik and verify that the user or group is created or updated in Slack.
+If you configured SCIM provisioning, assign a test user to the Slack application in authentik and verify that the user is created or updated in Slack.
 
 ## Resources
 
