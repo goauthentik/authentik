@@ -20,10 +20,10 @@ When you upgrade, be aware that the version of the authentik instance and of any
 
 ### Docker Compose
 
-To upgrade, download the new docker-compose file and update the Docker stack with the new version, using these commands:
+To upgrade, download the new compose file and update the Docker stack with the new version, using these commands:
 
 ```shell
-wget -O docker-compose.yml https://goauthentik.io/version/xxxx.x/lifecycle/container/compose.yml
+wget -O compose.yml https://goauthentik.io/version/xxxx.x/lifecycle/container/compose.yml
 docker compose up -d
 ```
 
