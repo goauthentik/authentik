@@ -90,7 +90,9 @@ class InitialPermissions(SerializerModel):
 
     name = models.TextField(max_length=150, unique=True)
     role = models.ForeignKey(Role, on_delete=models.CASCADE)
-    permissions = models.ManyToManyField(Permission, blank=True)
+    permissions = models.ManyToManyField(
+        Permission, blank=True, through="InitialPermissionsPermission"
+    )
 
     @property
     def serializer(self) -> type[BaseSerializer]:
@@ -104,6 +106,20 @@ class InitialPermissions(SerializerModel):
     class Meta:
         verbose_name = _("Initial Permissions")
         verbose_name_plural = _("Initial Permissions")
+
+
+class InitialPermissionsPermission(models.Model):
+    initial_permissions = models.ForeignKey(InitialPermissions, on_delete=models.CASCADE)
+    permission = models.ForeignKey(Permission, on_delete=models.CASCADE)
+
+    class Meta:
+        unique_together = (("initial_permissions", "permission"),)
+
+    def __str__(self):
+        return (
+            f"InitialPermissionsPermission for InitialPermissions {self.initial_permissions_id} "
+            f"and Permission {self.permission_id}."
+        )
 
 
 class SystemPermission(models.Model):
