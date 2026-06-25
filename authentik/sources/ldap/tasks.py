@@ -36,7 +36,10 @@ CACHE_KEY_PREFIX = "goauthentik.io/sources/ldap/page/"
 CACHE_KEY_STATUS = "goauthentik.io/sources/ldap/status/"
 
 
-@actor(description=_("Check connectivity for LDAP source."))
+@actor(
+    description=_("Check connectivity for LDAP source."),
+    queue_name="ldap_provider",
+)
 def ldap_connectivity_check(pk: str | None = None):
     """Check connectivity for LDAP Sources"""
     timeout = 60 * 60 * 2
@@ -53,6 +56,7 @@ def ldap_connectivity_check(pk: str | None = None):
     # and 0.5x on top of that to give some more leeway
     time_limit=(60 * 60 * CONFIG.get_int("ldap.task_timeout_hours") * 1000) * 3.5,
     description=_("Sync LDAP source."),
+    queue_name="ldap_provider",
 )
 def ldap_sync(source_pk: str):
     """Sync a single source"""
@@ -133,6 +137,7 @@ def ldap_sync_paginator(
 @actor(
     time_limit=60 * 60 * CONFIG.get_int("ldap.task_timeout_hours") * 1000,
     description=_("Sync page for LDAP source."),
+    queue_name="ldap_provider",
 )
 def ldap_sync_page(source_pk: str, sync_class: str, page_cache_key: str):
     """Synchronization of an LDAP Source"""
