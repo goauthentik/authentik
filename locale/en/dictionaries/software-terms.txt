@@ -108,8 +108,6 @@ kadmin
 kiprop
 kubeadm
 labelledby
-LLM
-LLMS
 mcomplete
 mermaidjs
 microsoft

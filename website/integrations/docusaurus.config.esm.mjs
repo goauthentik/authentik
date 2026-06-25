@@ -9,14 +9,12 @@
 import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
-import categories from "./categories.mjs";
 import { legacyRedirects } from "./legacy-redirects.mjs";
 
-import { createDocusaurusConfig, DocusaurusURL } from "@goauthentik/docusaurus-config";
+import { createDocusaurusConfig } from "@goauthentik/docusaurus-config";
 import {
     createAlgoliaConfig,
     createClassicPreset,
-    createLLMSPlugin,
     extendConfig,
 } from "@goauthentik/docusaurus-theme/config";
 import { RewriteIndex } from "@goauthentik/docusaurus-theme/redirects";
@@ -39,7 +37,7 @@ export default createDocusaurusConfig(
             faster: true,
         },
 
-        url: DocusaurusURL.Integrations,
+        url: "https://integrations.goauthentik.io",
 
         //#region Preset
 
@@ -68,22 +66,6 @@ export default createDocusaurusConfig(
         //#region Plugins
 
         plugins: [
-            createLLMSPlugin({
-                sections: [{ path: ".", routeBasePath: "/" }],
-                groupBy: "category",
-                categories,
-                // The integrations landing pages become an "## Overview" section
-                // (inlined prose) instead of link rows; the scaffold template is dropped.
-                overviewPages: ["index", "applications"],
-                ignoreFiles: ["**/template/**"],
-                crossLinks: [
-                    {
-                        label: "Documentation",
-                        url: new URL("llms.txt", DocusaurusURL.Docs).toString(),
-                    },
-                ],
-            }),
-
             // Inject redirects for later use during runtime,
             // such as navigating to non-existent page with the client-side router.
 

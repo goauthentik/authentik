@@ -13,13 +13,10 @@ import { createRequire } from "node:module";
 import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
-import topics from "./topics.mjs";
-
-import { createDocusaurusConfig, DocusaurusURL } from "@goauthentik/docusaurus-config";
+import { createDocusaurusConfig } from "@goauthentik/docusaurus-config";
 import {
     createAlgoliaConfig,
     createClassicPreset,
-    createLLMSPlugin,
     extendConfig,
 } from "@goauthentik/docusaurus-theme/config";
 import { RewriteIndex } from "@goauthentik/docusaurus-theme/redirects";
@@ -111,7 +108,7 @@ export default createDocusaurusConfig(
             faster: true,
         },
         clientModules: ["../docusaurus-theme/theme/utils/mermaid_icons.js"],
-        url: DocusaurusURL.Docs,
+        url: "https://docs.goauthentik.io",
         //#region Preset
 
         presets: [
@@ -145,7 +142,7 @@ export default createDocusaurusConfig(
                     beforeDefaultRemarkPlugins: [
                         remarkLinkRewrite([
                             ["/api", "https://api.goauthentik.io"],
-                            ["/integrations", DocusaurusURL.Integrations],
+                            ["/integrations", "https://integrations.goauthentik.io"],
                         ]),
                     ],
                 },
@@ -164,21 +161,6 @@ export default createDocusaurusConfig(
                     environment: releaseEnvironment,
                 }),
             ],
-
-            createLLMSPlugin({
-                sections: [{ path: ".", routeBasePath: "/" }],
-                groupBy: "topic",
-                // Normalized section headings for the top-level topics.
-                categories: topics,
-                // Split the glossary out of "Core Concepts" into its own section.
-                regroup: [["core/glossary", "glossary"]],
-                crossLinks: [
-                    {
-                        label: "Integrations",
-                        url: new URL("llms.txt", DocusaurusURL.Integrations).toString(),
-                    },
-                ],
-            }),
 
             // Inject redirects for later use during runtime,
             // such as navigating to non-existent page with the client-side router.

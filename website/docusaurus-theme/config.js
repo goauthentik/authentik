@@ -32,11 +32,6 @@ export const DocusaurusExcludePatterns = [
     "**/*.test.{js,jsx,ts,tsx}",
     "**/__tests__/**",
     "**/node_modules/**",
-    // Build output lives under the docs root (path: ".") — never scan it as
-    // content. The llms.txt plugin writes per-page `.md` into build/, so without
-    // this a second build (with a dirty build/) ingests them as source and fails.
-    "**/build/**",
-    "**/out/**",
 ];
 
 //#region Preset
@@ -118,16 +113,6 @@ export function createAlgoliaConfig(overrides) {
         externalUrlRegex: /.*/.source,
         ...overrides,
     };
-}
-
-/**
- * Create the llms.txt plugin tuple.
- *
- * @param {import("./llms-txt/common.mjs").LLMSPluginOptions} options
- * @returns {[string, import("./llms-txt/common.mjs").LLMSPluginOptions]}
- */
-export function createLLMSPlugin(options) {
-    return ["@goauthentik/docusaurus-theme/llms-txt/plugin", options];
 }
 
 /**
