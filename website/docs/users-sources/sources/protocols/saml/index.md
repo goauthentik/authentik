@@ -1,47 +1,47 @@
 ---
-title: SAML Source
+title: SAML source
 ---
 
-This source allows authentik to act as a SAML Service Provider. Just like the [SAML provider](../../../../add-secure-apps/providers/saml/index.md), it supports signed requests. Vendor-specific documentation can be found in the Integrations section.
+This source allows authentik to act as a SAML service provider. Like the [SAML provider](../../../../add-secure-apps/providers/saml/index.md), it supports signed requests. Vendor-specific documentation is available in the integrations section.
 
 ## Terminology
 
-| Abbreviation | Name                       | Description                                                                                                                                 |
-| ------------ | -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
-| IDP          | Identity Provider          | The authoritative SAML authentication source that holds the user database                                                                   |
-| SP           | Service Provider           | The client which is connected to an IDP, usually providing a service (e.g. a web application). In the current context, authentik is the SP. |
-| -            | Assertion                  | A message sent by the IDP asserting that the user has been identified                                                                       |
-| ACS          | Assertion Consumer Service | The service on the SP side that consumes the assertion sent from the IDP                                                                    |
-| SSO URL      | Single Sign-On URL         | The URL on the IDP side which the SP calls to initiate an authentication process                                                            |
-| SLO URL      | Single Log-Out URL         | The URL on the IDP side which the SP calls to invalidate a session and logout the user from the IDP as well as the SP                       |
+| Abbreviation | Name                       | Description                                                                                                                                  |
+| ------------ | -------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| IdP          | Identity provider          | The authoritative SAML authentication source that holds the user database.                                                                   |
+| SP           | Service provider           | The client that is connected to an IdP, usually providing a service, such as a web application. In the current context, authentik is the SP. |
+| -            | Assertion                  | A message sent by the IdP asserting that the user has been identified.                                                                       |
+| ACS          | Assertion Consumer Service | The service on the SP side that consumes the assertion sent from the IdP.                                                                    |
+| SSO URL      | Single sign-on URL         | The URL on the IdP side that the SP calls to initiate an authentication process.                                                             |
+| SLO URL      | Single logout URL          | The URL on the IdP side that the SP calls to invalidate a session and log the user out of the IdP and the SP.                                |
 
 ## Example configuration
 
-If you have the provider metadata, you should be able to extract all values you need from this. There is an example provided for a basic IDP metadata file below.
+If you have the provider metadata, you can extract the values that you need from it. The following table provides example values for a basic IdP metadata file.
 
-| Name                       | Example                          | Description                                                                                                                                                                                                                                                                    |
-| -------------------------- | -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Name                       | Company SAML                     | The name of the authentication source                                                                                                                                                                                                                                          |
-| Slug                       | company-saml                     | The slug used in URLs for the source                                                                                                                                                                                                                                           |
-| Icon                       | `branding/company-icon.svg`      | Optional icon or image shown for the source. See [File picker values](../../../../customize/file-picker.md).                                                                                                                                                                   |
-| SSO URL                    | https://saml.company/login/saml  | The SingleSignOnService URL for the IDP, this can be found in the metadata or IDP documentation. There can be different URLs for different Binding Types (e.g. HTTP-Redirect and HTTP-POST), use the URL corresponding to the binding type you choose below                    |
-| SLO URL                    | https://saml.company/logout/saml | The URL that is called when a user logs out of authentik, can be used to automatically log the user out of the SAML IDP after logging out of authentik. Not supported by all IDPs, and not always wanted behavior.                                                             |
-| Issuer/Entity ID           | https://authentik.company        | The identifier for the authentik instance in the SAML federation, can be chosen freely. This is used to identify the SP on the IDP side, it usually makes sense to configure this to the URL of the SP or the path corresponding to the SP (e.g. `/source/saml/<source-slug>/` |
-| Binding Type               | HTTP-POST                        | How authentik communicates with the SSO URL (302 redirect or POST request). This will depend on what the provider supports.                                                                                                                                                    |
-| Allow IDP-Initiated Logins | False                            | Whether to allow the IDP to log users into authentik without any interaction. Activating this may constitute a security risk since this request is not verified, and could be utilized by an attacker to authenticate a user without interaction on their side.                |
-| Force authentication       | False                            | When enabled, authentik requests the IDP to force re-authentication of the user, even if they already have an active session with the IDP.                                                                                                                                     |
-| NameID Policy              | Persistent                       | Depending on what the IDP sends as persistent ID, some IDPs use the username or email address while others will use a random string/hashed value. If the user in authentik receives a random string as a username, try using Email address or Windows                          |
-| Flow settings              | Default                          | If there are custom flows in your instance for external authentication, change to use them here                                                                                                                                                                                |
+| Name                       | Example                          | Description                                                                                                                                                                                                                                                  |
+| -------------------------- | -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Name                       | Company SAML                     | The name of the authentication source                                                                                                                                                                                                                        |
+| Slug                       | company-saml                     | The slug used in URLs for the source                                                                                                                                                                                                                         |
+| Icon                       | `branding/company-icon.svg`      | Optional icon or image shown for the source. See [File picker values](../../../../customize/file-picker.md).                                                                                                                                                 |
+| SSO URL                    | https://saml.company/login/saml  | The SingleSignOnService URL for the IdP. This value can be found in the metadata or IdP documentation. There can be different URLs for different binding types, such as HTTP-Redirect and HTTP-POST. Use the URL for the binding type that you choose below. |
+| SLO URL                    | https://saml.company/logout/saml | The URL that is called when a user logs out of authentik. This can be used to automatically log the user out of the SAML IdP after logging out of authentik. Not all IdPs support or require this behavior.                                                  |
+| Issuer/Entity ID           | https://authentik.company        | The identifier for the authentik instance in the SAML federation. This is used to identify the SP on the IdP side. It usually makes sense to configure this to the SP URL or the path corresponding to the SP, such as `/source/saml/<source-slug>/`.        |
+| Binding Type               | HTTP-POST                        | How authentik communicates with the SSO URL (302 redirect or POST request). This will depend on what the provider supports.                                                                                                                                  |
+| Allow IdP-initiated logins | False                            | Whether to allow the IdP to log users into authentik without any interaction. Activating this can be a security risk because this request is not verified, and could be used by an attacker to authenticate a user without interaction.                      |
+| Force authentication       | False                            | When enabled, authentik requests the IdP to force re-authentication of the user, even if they already have an active session with the IdP.                                                                                                                   |
+| NameID Policy              | Persistent                       | Depending on what the IdP sends as persistent ID, some IdPs use the username or email address while others use a random string or hashed value. If the user in authentik receives a random string as a username, try using **Email address** or **Windows**. |
+| Flow settings              | Default                          | If there are custom flows in your instance for external authentication, select them here.                                                                                                                                                                    |
 
-## Adding authentik as a server provider with your IDP
+## Add authentik as a service provider with your IdP
 
-This will depend heavily on what software you are using for your IDP. On the Metadata tab in the SAML Federation Source you can download the metadata for the service provider, this should enable you to import this into most IDPs. If this does not work, the important parts are:
+This depends on the software that you use for your IdP. On the **Metadata** tab in the SAML federation source, you can download the metadata for the service provider. This should let you import the service provider into most IdPs. If this does not work, the important parts are:
 
 - Entity ID: Taken from the Issuer/Entity ID field above
 - Return URL/ACS URL: `https://authentik.company/source/saml/<source-slug>/acs/`
-- Certificate: If you have chosen to sign your outgoing requests, use the public side of the certificate that you specified in the settings
+- Certificate: If you have chosen to sign your outgoing requests, use the public side of the certificate that you specified in the settings.
 
-## Example IDP metadata
+## Example IdP metadata
 
 ```xml
 <md:EntityDescriptor entityID="https://saml.company/idp">
