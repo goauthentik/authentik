@@ -33,7 +33,7 @@ This documentation lists only the settings that you need to change from their de
 
 To support the integration of Zabbix with authentik, you need to create an application/provider pair in authentik.
 
-If you want Zabbix to create users during their first SAML login, you also need to create SAML property mappings for users' given names and surnames.
+If you want Zabbix to create users during their first SAML login (JIT provisioning), you also need to create SAML property mappings for users' given names and surnames.
 
 ### Create JIT property mappings in authentik _(optional)_
 
@@ -62,7 +62,7 @@ If you want Zabbix to create users during their first SAML login, you also need 
 
 6. Click **Finish**.
 
-### Create an application and provider in authentik
+### Create an application and provider
 
 <SAMLProvider20265Warning />
 
