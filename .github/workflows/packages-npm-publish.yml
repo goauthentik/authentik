@@ -47,7 +47,33 @@ jobs:
       - name: Publish package
         if: steps.changed-files.outputs.any_changed == 'true'
         working-directory: ${{ matrix.package }}
+        # Experimental: the build (tsc, plus typedoc for one package) runs
+        # under Node's permission model. fs reads/writes are scoped to the
+        # package working tree; --permission with no other --allow flags
+        # blocks network, child_process, worker_threads, native addons,
+        # and WASI by default.
+        #
+        # Trade-off: env vars are still readable (the permission model
+        # does not gate them), but with no exfil channel — no network,
+        # no subprocess, no write outside $PWD — they cannot leave the
+        # build sandbox. The npm ci and npm publish phases keep their
+        # full capability set since they legitimately need network and
+        # subprocess access.
         run: |
           corepack npm ci
-          corepack npm run build
+
+          WORK="$PWD"
+          node \
+            --permission \
+            --allow-fs-read="$WORK" \
+            --allow-fs-write="$WORK" \
+            ./node_modules/typescript/bin/tsc -p .
+          if [ -x ./node_modules/typedoc/bin/typedoc ]; then
+            node \
+              --permission \
+              --allow-fs-read="$WORK" \
+              --allow-fs-write="$WORK" \
+              ./node_modules/typedoc/bin/typedoc
+          fi
+
           corepack npm publish
