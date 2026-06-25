@@ -98,6 +98,7 @@ class SCIMProvider(OutgoingSyncProvider, BackchannelProvider):
         default=None,
         blank=True,
         help_text=_("Group filters used to define sync-scope for groups."),
+        through="SCIMProviderGroupFilter",
     )
 
     url = models.TextField(help_text=_("Base URL to SCIM requests, usually ends in /v2"))
@@ -128,6 +129,7 @@ class SCIMProvider(OutgoingSyncProvider, BackchannelProvider):
         default=None,
         blank=True,
         help_text=_("Property mappings used for group creation/updating."),
+        through="SCIMProviderGroupPropertyMapping",
     )
 
     compatibility_mode = models.CharField(
@@ -254,6 +256,34 @@ class SCIMProvider(OutgoingSyncProvider, BackchannelProvider):
     class Meta:
         verbose_name = _("SCIM Provider")
         verbose_name_plural = _("SCIM Providers")
+
+
+class SCIMProviderGroupFilter(models.Model):
+    group = models.ForeignKey(Group, on_delete=models.CASCADE)
+    scim_provider = models.ForeignKey(SCIMProvider, on_delete=models.CASCADE)
+
+    class Meta:
+        unique_together = (("group", "scim_provider"),)
+
+    def __str__(self):
+        return (
+            f"SCIMProviderGroupFilter for SCIMProvider {self.scim_provider_id} "
+            f"and Group {self.group_id}."
+        )
+
+
+class SCIMProviderGroupPropertyMapping(models.Model):
+    property_mapping = models.ForeignKey(PropertyMapping, on_delete=models.CASCADE)
+    scim_provider = models.ForeignKey(SCIMProvider, on_delete=models.CASCADE)
+
+    class Meta:
+        unique_together = (("property_mapping", "scim_provider"),)
+
+    def __str__(self):
+        return (
+            f"SCIMProviderGroupPropertyMapping for SCIMProvider {self.scim_provider_id} "
+            f"and PropertyMapping {self.property_mapping_id}."
+        )
 
 
 class SCIMMapping(PropertyMapping):
