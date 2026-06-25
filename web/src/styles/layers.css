@@ -1,4 +1,4 @@
-/* This is our global layer definition file.  It needs to be imported at the very top of every
+/* This is our global layer definition file. It needs to be imported at the very top of every app
  * barrel file for the CSS at the document level.
  *
  * - `reset`: The CSS reset.  Currently unused: the existing reset is mashed into Patternfly
@@ -16,8 +16,8 @@
  * - `mode`: The CSS custom properties that override the theme when defining properties for
  *   light/dark mode, improved contrast mode, and reduced motion mode.
  *
- * - `brand`: Brand overrides for CSS custom properties and component properties defining our
- *   product. 
+ * - `brand`: Brand overrides for thematic CSS custom properties and component properties defining
+ *   our product.
  */
 
 @layer reset, vendor, components, theme, mode, brand;

@@ -3,6 +3,11 @@
 @import "#styles/layers.css";
 
 /*
+ * 2026-06-25: The `.global.css` suffix is currently *required* to trigger the correct
+ * resolution behavior from the bundler.
+ */
+
+/*
  * The order of layers dictated in the file above dictates the specificity of the selector rules,
  * regardless of the order in which they are imported. (If there is a conflict *within* a layer, the
  * last-one-wins rule still applies.) CSS Custom Properties can be defined after references to them
@@ -16,6 +21,10 @@
 @import "#styles/global/theme/variables.css" layer(theme);
 @import "#styles/global/reset/scrollbars.css" layer(reset);
 @import "#styles/global/reset/globals.css" layer(reset);
+
+@import "#styles/global/mode/mode.css" layer(mode);
+@import "#styles/global/mode/contrast.css" layer(mode);
+
 @import "#styles/authentik/components/Placeholder/placeholder.css" layer(components);
 @import "#elements/ak-drawer/ak-drawer.root.css" layer(components);
 
