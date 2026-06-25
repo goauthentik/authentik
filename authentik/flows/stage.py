@@ -211,8 +211,10 @@ class ChallengeStageView(StageView):
                         "layout": self.executor.flow.layout,
                     }
                 )
-                if stale_user := self.executor.plan.context.get(
-                    PLAN_CONTEXT_ACCOUNT_SWITCH_STALE_USER
+                if self.executor.plan and (
+                    stale_user := self.executor.plan.context.get(
+                        PLAN_CONTEXT_ACCOUNT_SWITCH_STALE_USER
+                    )
                 ):
                     flow_info.initial_data["account_switch_stale_user"] = stale_user
                 flow_info.is_valid()
