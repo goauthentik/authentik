@@ -74,7 +74,8 @@ jobs:
         env:
           NETLIFY_SITE_ID: authentik-api-docs.netlify.app
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
-        run: npx netlify deploy --no-build --prod
+        run: |
+          npx netlify deploy --no-build -d ./build --prod
       - name: Deploy Netlify (Preview)
         if: github.event_name == 'pull_request' || github.ref != 'refs/heads/main'
         working-directory: website/api
@@ -83,5 +84,5 @@ jobs:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
         run: |
           if [ -n "${NETLIFY_AUTH_TOKEN}" ]; then
-            npx netlify deploy --no-build --alias=deploy-preview-${{ github.event.number }}
+            npx netlify deploy --no-build -d ./build --alias=deploy-preview-${{ github.event.number }}
           fi
