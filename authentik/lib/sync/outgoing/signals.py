@@ -20,11 +20,16 @@ def sync_outgoing_inhibit_dispatch():
     """
     Prevent direct and m2m tasks from being dispatched when User/Group/membership change
     """
-    _CTX_INHIBIT_DISPATCH.set(True)
+    token = _CTX_INHIBIT_DISPATCH.set(True)
     try:
         yield
     finally:
-        _CTX_INHIBIT_DISPATCH.set(False)
+        _CTX_INHIBIT_DISPATCH.reset(token)
+
+
+def sync_outgoing_dispatch_inhibited() -> bool:
+    """Check if outgoing sync signal dispatch is currently inhibited."""
+    return _CTX_INHIBIT_DISPATCH.get()
 
 
 def register_signals(
@@ -48,7 +53,7 @@ def register_signals(
         # This primarily happens during user login
         if sender == User and update_fields == {"last_login"}:
             return
-        if _CTX_INHIBIT_DISPATCH.get():
+        if sync_outgoing_dispatch_inhibited():
             return
         if not provider_type.objects.exists():
             return
@@ -62,7 +67,7 @@ def register_signals(
 
     def model_pre_delete(sender: type[Model], instance: User | Group, **_):
         """Pre-delete handler"""
-        if _CTX_INHIBIT_DISPATCH.get():
+        if sync_outgoing_dispatch_inhibited():
             return
         mappings = provider_type.get_object_mappings(instance)
         if not mappings:
@@ -81,7 +86,7 @@ def register_signals(
         """Sync group membership"""
         if action not in ["post_add", "post_remove"]:
             return
-        if _CTX_INHIBIT_DISPATCH.get():
+        if sync_outgoing_dispatch_inhibited():
             return
         if not provider_type.objects.exists():
             return
