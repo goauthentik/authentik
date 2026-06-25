@@ -1,7 +1,6 @@
 ---
 title: Log in with Telegram
 sidebar_label: Telegram
-support_level: community
 ---
 
 Configuring Telegram as a source allows users to authenticate within authentik using their Telegram account credentials.
