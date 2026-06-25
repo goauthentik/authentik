@@ -14,8 +14,10 @@ draft: true
 
 This release does not introduce any new requirements. You can follow the upgrade instructions below; for more detailed information about upgrading authentik, refer to our [Upgrade documentation](../install-config/upgrade.mdx).
 
-:::warning
-When you upgrade, be aware that the version of the authentik instance and of any outposts must be the same. We recommend that you always upgrade any outposts at the same time you upgrade your authentik instance.
+:::warning Upgrade in order and upgrade all components
+Upgrades MUST happen in order, meaning that if you are 2 major releases behind, you need to upgrade to the previous major release before upgrading to this release. Refer to our [Upgrade documentation](../../install-config/upgrade.mdx) for more information on upgrade sequence.
+
+The version of the authentik instance and of any outposts must be the same. We recommend that you always upgrade any outposts at the same time you upgrade your authentik instance.
 :::
 
 ### Docker Compose
