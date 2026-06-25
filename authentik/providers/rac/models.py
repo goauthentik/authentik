@@ -96,7 +96,10 @@ class Endpoint(SerializerModel, PolicyBindingModel):
     maximum_connections = models.IntegerField(default=1)
 
     property_mappings = models.ManyToManyField(
-        "authentik_core.PropertyMapping", default=None, blank=True
+        "authentik_core.PropertyMapping",
+        default=None,
+        blank=True,
+        through="EndpointPropertyMapping",
     )
 
     @property
@@ -111,6 +114,20 @@ class Endpoint(SerializerModel, PolicyBindingModel):
     class Meta:
         verbose_name = _("RAC Endpoint")
         verbose_name_plural = _("RAC Endpoints")
+
+
+class EndpointPropertyMapping(models.Model):
+    property_mapping = models.ForeignKey(PropertyMapping, on_delete=models.CASCADE)
+    endpoint = models.ForeignKey(Endpoint, on_delete=models.CASCADE)
+
+    class Meta:
+        unique_together = (("property_mapping", "endpoint"),)
+
+    def __str__(self):
+        return (
+            f"EndpointPropertyMapping for endpoint {self.endpoint_id} "
+            f"and property_mapping {self.property_mapping_id}."
+        )
 
 
 class RACPropertyMapping(PropertyMapping):
