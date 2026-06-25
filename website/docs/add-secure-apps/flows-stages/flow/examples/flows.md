@@ -50,7 +50,7 @@ Passwordless login flow that lets users sign in from a link sent to their email 
 
 Before importing this flow, make sure that global email settings are configured and that users have valid email addresses. Use this flow only when access to the user's email inbox is an acceptable sign-in factor for your environment.
 
-After import, review the Email stage. The example uses the built-in account confirmation template, so you can replace it with a custom sign-in email template if you want the email text to match the magic-link login experience.
+After import, review the Email stage binding in the flow. The example uses the built-in account confirmation email template. You can replace it with a [custom email template](../../stages/email/#custom-templates) if you want the email text to match the magic-link login experience.
 
 ## Log in with conditional CAPTCHA
 
