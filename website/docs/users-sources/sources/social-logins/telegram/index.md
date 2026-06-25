@@ -1,7 +1,6 @@
 ---
 title: Log in with Telegram
 sidebar_label: Telegram
-support_level: community
 ---
 
 This source lets users authenticate with their Telegram account credentials.

@@ -1,6 +1,5 @@
 ---
 title: FreeIPA
-support_level: community
 ---
 
 ## Preparation
