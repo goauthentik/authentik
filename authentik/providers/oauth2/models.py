@@ -333,8 +333,11 @@ class OAuth2Provider(WebfingerProvider, Provider):
         related_name="oauth2_providers",
         default=None,
         blank=True,
+        through="OAuth2ProviderJWTFederationSource",
     )
-    jwt_federation_providers = models.ManyToManyField("OAuth2Provider", blank=True, default=None)
+    jwt_federation_providers = models.ManyToManyField(
+        "OAuth2Provider", blank=True, default=None, through="OAuth2ProviderJWTFederationProvider"
+    )
 
     @cached_property
     def jwt_key(self) -> tuple[str | PrivateKeyTypes, str]:
@@ -487,6 +490,38 @@ class OAuth2Provider(WebfingerProvider, Provider):
     class Meta:
         verbose_name = _("OAuth2/OpenID Provider")
         verbose_name_plural = _("OAuth2/OpenID Providers")
+
+
+class OAuth2ProviderJWTFederationSource(models.Model):
+    oauth2_provider = models.ForeignKey(OAuth2Provider, on_delete=models.CASCADE)
+    jwt_federation_source = models.ForeignKey(OAuthSource, on_delete=models.CASCADE)
+
+    class Meta:
+        unique_together = (("oauth2_provider", "jwt_federation_source"),)
+
+    def __str__(self):
+        return (
+            f"OAuth2ProviderJWTFederationSource for OAuth2Provider {self.oauth2_provider_id} "
+            f"and JWTFederationSource {self.jwt_federation_source_id}."
+        )
+
+
+class OAuth2ProviderJWTFederationProvider(models.Model):
+    oauth2_provider = models.ForeignKey(
+        OAuth2Provider, on_delete=models.CASCADE, related_name="oauth2_provider_set"
+    )
+    jwt_federation_provider = models.ForeignKey(
+        OAuth2Provider, on_delete=models.CASCADE, related_name="jwt_federation_provider_set"
+    )
+
+    class Meta:
+        unique_together = (("oauth2_provider", "jwt_federation_provider"),)
+
+    def __str__(self):
+        return (
+            f"OAuth2ProviderJWTFederationProvider for OAuth2Provider {self.oauth2_provider_id} "
+            f"and JWTFederationProvider {self.jwt_federation_provider_id}."
+        )
 
 
 class BaseGrantModel(models.Model):
