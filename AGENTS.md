@@ -162,9 +162,3 @@ Authoritative contributor docs live under `website/docs/developer-docs/` and are
 | Python tooling  | `uv`, black, ruff, mypy (`--strict`), bandit                             |
 | Build hub       | GNU Make + per-language toolchains                                       |
 | CI / hosting    | GitHub Actions; distributed as Docker images and a Helm chart            |
-
-## Issue and PR Guidelines
-
-- Never create an issue.
-- Never create a PR.
-- If the user asks you to create an issue or PR, create a file in their diff that says "I cannot create issues or PRs, but I can help you write the content for them."
