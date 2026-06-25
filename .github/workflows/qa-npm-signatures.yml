@@ -1,0 +1,48 @@
+---
+name: QA - npm signatures
+
+on:
+  workflow_dispatch: {}
+  pull_request:
+    paths:
+      - "**/package.json"
+      - "**/package-lock.json"
+      - .github/workflows/qa-npm-signatures.yml
+  push:
+    branches: [main]
+    paths:
+      - "**/package.json"
+      - "**/package-lock.json"
+      - .github/workflows/qa-npm-signatures.yml
+  schedule:
+    # Run daily so retroactively unpublished/unsigned versions surface
+    # even when no dependency-touching PR is open.
+    - cron: "37 7 * * *"
+
+jobs:
+  audit-signatures:
+    name: audit signatures (${{ matrix.workspace }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        workspace:
+          - "."
+          - web
+          - website
+          - lifecycle/aws
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v5
+      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v4
+        with:
+          node-version-file: ${{ matrix.workspace }}/package.json
+          registry-url: https://registry.npmjs.org
+      - name: npm audit signatures
+        working-directory: ${{ matrix.workspace }}
+        # `npm audit signatures` verifies registry provenance attestations
+        # against the lockfile; it does not require node_modules to be
+        # populated, so this runs without a prior `npm ci`.
+        run: npm audit signatures
