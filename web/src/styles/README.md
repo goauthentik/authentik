@@ -25,9 +25,9 @@ The goal of this hierarchy is to make it obvious by path:
 
 ## Note
 
-This is an *intermediate* step.  Our ultimate goals are:
+This is an _intermediate_ step. Our ultimate goals are:
 
-- Provide *our* theme via a separate package.
+- Provide _our_ theme via a separate package.
 - Move as much of a component's hard definitions into a CSS file in the same folder as the component
   itself.
 - Vendor the CSS we actually use into our components.
@@ -48,24 +48,22 @@ The three files in the current folder marked `.global.css` are the entrypoints f
 CSS documents: they contain the imports and layer declarations for all the CSS resources complied
 into the document CSS. These files are matched by declarations in `./web/paths/node.js`, which
 describes to the compiler which files to use as entrypoints. The `.global.css` extension is
-*required* to trigger the correct referencing behavior in the bundler.
+_required_ to trigger the correct referencing behavior in the bundler.
 
-These files are organizational: they should have *only* `@import` statements pointing to other
+These files are organizational: they should have _only_ `@import` statements pointing to other
 CSS files.
 
-
--  Entry (source)         Output                    Consumers
+- Entry (source) Output Consumers
 
 - `interface.global.css` `dist/styles/interface-*` Admin + User
-- `flows.global.css`     `dist/styles/flow-*`      Flow
-- `static.global.css`    `dist/styles/static-*`    Django static templates
-
+- `flows.global.css` `dist/styles/flow-*` Flow
+- `static.global.css` `dist/styles/static-*` Django static templates
 
 ### The fourth pipeline: shadow scope
 
 Every major web component in our system inherts from our LitElement base component,
 `web/src/elements/Base.ts:AKElement`. The base element always adopts two sheets into the shadowroot
-of *every* `AKElement`:
+of _every_ `AKElement`:
 
 - `shadow/patternfly-base.css` (`$PFBase`)
 - `shadow/authentik-base.css` (`$AKBase`)
@@ -110,7 +108,7 @@ web/src/styles/
 
 Note: quite a number of components have embedded CSS of their own (via Lit's `css()` function) or
 have a companion file with the CSS bundled automatically and independently of the scheme described
-here.  Figuring out why some component CSS is specified *here* rather than with the component is 
+here. Figuring out why some component CSS is specified _here_ rather than with the component is
 a TODO item.
 
 ---
@@ -130,19 +128,19 @@ Declared in `layers.css`, lowest specificity first:
 - `theme` The product's default design tokens — CSS Custom Property definitions only, please.
 - `mode` Overrides of `theme` for accessibility light/dark, high-contrast, reduced motion.
 - `brand` Per-deployment overrides of theme/component tokens. Highest specificity.
-  - Database brand overrides: CSS Custom Properties only
-  - Path to a custom CSS file: Lets advanced designers use `::part` to do whatever the heck they
-    want.
+    - Database brand overrides: CSS Custom Properties only
+    - Path to a custom CSS file: Lets advanced designers use `::part` to do whatever the heck they
+      want.
 
-One thing that took forever to understand: Layers are about *selectors*, not *properties*. A CSS
+One thing that took forever to understand: Layers are about _selectors_, not _properties_. A CSS
 Custom Property with the same property name declared in different selectors (say, `:root` vs
 `.some-inner-value`) at the top-level but in different layers may not have the specificity you want.
 Continue to be disciplined with specifying CSS Custom Properties in "dictionary" containers: use
 `:root` in different layers to ensure they all get the same specificity. As stated earlier: once
-they hit the shadow boundary, the CSS Custom Property with the highest specificity *at that moment*
+they hit the shadow boundary, the CSS Custom Property with the highest specificity _at that moment_
 wins.
 
-On the other hand, *import order* only matters within the same layer. Otherwise, later layers always
+On the other hand, _import order_ only matters within the same layer. Otherwise, later layers always
 imbue their selectors with higher specificity over earlier ones.
 
 ---
@@ -171,26 +169,24 @@ multiple places in our code: both as top-level definitions for static pages, and
 components. Most of them are overrides to the Patternfly settings to establish our own preferred
 design or to compensate for the fact that Patternfly is not very friendly to shadowroots.
 
-
 - Components have their own dark-mode settings, influenced by setting the `dark` tag (and/or
   `high-contrast`, and/or `reduced-motion`).
-  - TODO: Make these *rare*.  Ideally, components should get all their dark-mode settings via
-    CSS custom properties.  For the time being, when deciding if CSS should go into `mode` or 
-    into a component, if it is component-specific, it belongs in the *component*.
-    
+    - TODO: Make these _rare_. Ideally, components should get all their dark-mode settings via
+      CSS custom properties. For the time being, when deciding if CSS should go into `mode` or
+      into a component, if it is component-specific, it belongs in the _component_.
+
 ---
 
-TODO: Figure out why `mode.css` has `:host` rules, and what they enable.  I couldn't figure out why
+TODO: Figure out why `mode.css` has `:host` rules, and what they enable. I couldn't figure out why
 they were there; they didn't seem to be imported by anything.
 
-TODO: Figure out what to do with `reset/scrollbars.css`.  It's kinda a reset-- it specifies a
-specific look for the scrollbar that, in the original design, was even before the theme was 
+TODO: Figure out what to do with `reset/scrollbars.css`. It's kinda a reset-- it specifies a
+specific look for the scrollbar that, in the original design, was even before the theme was
 being set the old-fashioned way, via the cascade, and it was placed with the "reset" code
 blocks.
 
-TODO: Find a better home for `patternfly/constants.ts`. 
+TODO: Find a better home for `patternfly/constants.ts`.
 
 TODO: What the heck is `authentik/login.css` doing?
 
 TODO: Move `atom` closer to the component.
-
