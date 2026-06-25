@@ -8,26 +8,26 @@ support_level: community
 The following placeholders are used in this guide:
 
 - `svc_authentik` is the name of the bind account.
-- `freeipa.company` is the Name of the domain.
-- `ipa1.freeipa.company` is the Name of the FreeIPA server.
+- `freeipa.company` is the name of the domain.
+- `ipa1.freeipa.company` is the name of the FreeIPA server.
 
 ## FreeIPA setup
 
 1. Log in to FreeIPA.
 
-2. Create a user in FreeIPA, matching your naming scheme. Provide a strong password, example generation methods: `pwgen 64 1` or `openssl rand 36 | base64 -w 0`. After you are done click **Add and Edit**.
+2. Create a user in FreeIPA that matches your naming scheme. Provide a strong password. Example generation methods are `pwgen 64 1` or `openssl rand 36 | base64 -w 0`. After you are done, click **Add and Edit**.
 
     ![](./user_create.png)
 
-3. In the user management screen, select the Roles tab.
+3. In the user management screen, select the **Roles** tab.
 
     ![](./user_roles.png)
 
-4. Add a role that has privileges to change user passwords, the default `User Administrators` role is sufficient. This is needed to support password resets from within authentik.
+4. Add a role that has privileges to change user passwords. The default `User Administrators` role is sufficient. This is needed to support password resets from within authentik.
 
     ![](./add_user_role.png)
 
-5. By default, if an administrator account resets a user's password in FreeIPA the user's password expires after the first use and must be reset again. This is a security feature to ensure password complexity and history policies are enforced. To bypass this feature for a more seamless experience, you can make the following modification on each of your FreeIPA servers:
+5. By default, if an administrator account resets a user's password in FreeIPA, the user's password expires after the first use and must be reset again. This is a security feature to ensure password complexity and history policies are enforced. To bypass this feature for a more seamless experience, make the following modification on each FreeIPA server:
 
     ```
     $ ldapmodify -x -D "cn=Directory Manager" -W -h ipa1.freeipa.company -p 389
@@ -39,7 +39,7 @@ The following placeholders are used in this guide:
     ```
 
 :::info
-Additional info: [22.1.2. Enabling Password Reset Without Prompting for a Password Change at the Next Login](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/linux_domain_identity_authentication_and_policy_guide/user-authentication#user-passwords-no-expiry)
+For more information, see [22.1.2. Enabling Password Reset Without Prompting for a Password Change at the Next Login](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/linux_domain_identity_authentication_and_policy_guide/user-authentication#user-passwords-no-expiry).
 :::
 
 ## authentik setup
@@ -50,10 +50,10 @@ This documentation lists only the settings that you need to change from their de
 See the [LDAP Source documentation](../../protocols/ldap) for more information on these settings.
 :::
 
-To create a new LDAP Source in authentik:
+To create a new LDAP source in authentik:
 
-1. Log in to authentik as an administrator, and open the authentik Admin interface.
-2. Navigate to **Directory** > **Federation and Social Login**, click **New Source**, select **LDAP Source**, and click **Next**.
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Directory** > **Federation and Social login**, click **New Source**, select **LDAP Source**, and click **Next**.
 3. Configure the following settings:
     - **Name**: Provide a descriptive name for the LDAP source.
     - **Slug**: Provide a slug for the LDAP source.
@@ -63,12 +63,12 @@ To create a new LDAP Source in authentik:
     - Under **Connection settings**:
         - **Server URI**: `ldaps://ipa1.freeipa.company`
           :::tip
-          You can specify multiple server URIs separated by commas (e.g. `ldap://ipa1.freeipa.company,ldap://ipa2.freeipa.company`); if using a DNS record with multiple entries, authentik will pick one at random on first connection.
+          You can specify multiple server URIs separated by commas (for example, `ldap://ipa1.freeipa.company,ldap://ipa2.freeipa.company`). If you use a DNS record with multiple entries, authentik picks one at random on first connection.
           :::
         - **Enable StartTLS**: Enable for `ldap://` protocol, disable for `ldaps://`.
         - **TLS Verification Certificate**: Optionally select the certificate used to validate the remote certificate.
         - **Bind CN**: `uid=svc_authentik,cn=users,cn=accounts,dc=freeipa,dc=company`
-        - **Bind Password**: The password for the above user account.
+        - **Bind Password**: The password for the user account above.
         - **Base DN**: `dc=freeipa,dc=company`
 
     - Under **LDAP Attribute mapping**:
