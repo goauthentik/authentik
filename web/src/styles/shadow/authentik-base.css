@@ -1,4 +1,3 @@
-@import "#styles/global/mode/common.css";
 @import "#styles/global/reset/scrollbars.css";
 @import "#styles/authentik/components/Alert/alert.css";
 @import "#styles/authentik/components/Banner/banner.css";
@@ -20,3 +19,7 @@
 @import "#styles/authentik/components/Skeleton/skeleton.css";
 @import "#styles/authentik/components/Notification/notification.css";
 @import "#styles/authentik/components/Wizard/wizard.css";
+@import "#styles/authentik/components/Scrollbar/scrollbar.css";
+@import "#styles/authentik/components/Title/title.css";
+@import "#styles/authentik/components/Placeholder/placeholder.css";
+@import "#styles/authentik/components/Modifiers/modifiers.css";

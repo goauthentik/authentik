@@ -16,8 +16,7 @@
 @import "#styles/global/theme/variables.css" layer(theme);
 @import "#styles/global/reset/scrollbars.css" layer(reset);
 @import "#styles/global/reset/globals.css" layer(reset);
-@import "#styles/global/mode/common.css" layer(theme);
-@import "#styles/global/mode/placeholder.css" layer(theme);
+@import "#styles/authentik/components/Placeholder/placeholder.css" layer(components);
 
 @import "#styles/global/locales/ja/globals.css" layer(components);
 @import "#styles/global/locales/ko/globals.css" layer(components);
