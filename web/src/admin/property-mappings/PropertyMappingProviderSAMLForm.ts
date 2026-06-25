@@ -3,6 +3,8 @@ import "#elements/forms/HorizontalFormElement";
 
 import { aki } from "#common/api/client";
 
+import { AKLabel } from "#components/ak-label";
+
 import { BasePropertyMappingForm } from "#admin/property-mappings/BasePropertyMappingForm";
 
 import { PropertymappingsApi, SAMLPropertyMapping } from "@goauthentik/api";
@@ -33,12 +35,18 @@ export class PropertyMappingProviderSAMLForm extends BasePropertyMappingForm<SAM
     }
 
     renderExtraFields(): TemplateResult {
-        return html` <ak-form-element-horizontal
-                label=${msg("SAML Attribute Name")}
-                required
-                name="samlName"
-            >
+        return html` <ak-form-element-horizontal required name="samlName">
+                ${AKLabel(
+                    {
+                        slot: "label",
+                        className: "pf-c-form__group-label",
+                        htmlFor: "samlName",
+                        required: true,
+                    },
+                    msg("SAML Attribute Name"),
+                )}
                 <input
+                    id="samlName"
                     type="text"
                     value="${ifDefined(this.instance?.samlName)}"
                     class="pf-c-form-control"
@@ -50,8 +58,17 @@ export class PropertyMappingProviderSAMLForm extends BasePropertyMappingForm<SAM
                     )}
                 </p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("Friendly Name")} name="friendlyName">
+            <ak-form-element-horizontal name="friendlyName">
+                ${AKLabel(
+                    {
+                        slot: "label",
+                        className: "pf-c-form__group-label",
+                        htmlFor: "friendlyName",
+                    },
+                    msg("Friendly Name"),
+                )}
                 <input
+                    id="friendlyName"
                     type="text"
                     value="${ifDefined(this.instance?.friendlyName || "")}"
                     class="pf-c-form-control"
