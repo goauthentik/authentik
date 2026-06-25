@@ -82,6 +82,6 @@ jobs:
           NETLIFY_SITE_ID: authentik-api-docs.netlify.app
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
         run: |
-          if [ -n "${VAR}" ]; then
+          if [ -n "${NETLIFY_AUTH_TOKEN}" ]; then
             npx netlify deploy --no-build --alias=deploy-preview-${{ github.event.number }}
           fi
