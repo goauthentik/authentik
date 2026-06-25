@@ -11329,6 +11329,9 @@ Vazby na skupiny/uživatele jsou kontrolovány vůči uživateli události.</tar
 <trans-unit id="policy.password.score-threshold.description.very-unguessable">
   <source>4: Very unguessable: strong protection from offline slow-hash scenario. (guesses &gt;= 10^10)</source>
 </trans-unit>
+<trans-unit id="sb45f9fb4dba6e71a">
+  <source>Unset</source>
+</trans-unit>
 </body>
 </file>
 </xliff>
