@@ -58,6 +58,41 @@ class TestEventsAPI(APITestCase):
         )
         self.assertEqual(response.status_code, 200)
 
+    def test_top_n_groups_renamed_applications_by_pk(self):
+        """Test top_per_user groups application events by application ID"""
+        app_pk = 1
+        Event.new(
+            EventAction.AUTHORIZE_APPLICATION,
+            authorized_application={
+                "app": "authentik_core",
+                "model_name": "application",
+                "pk": app_pk,
+                "name": "Previous name",
+            },
+        ).set_user(self.user).save()
+        Event.new(
+            EventAction.AUTHORIZE_APPLICATION,
+            authorized_application={
+                "app": "authentik_core",
+                "model_name": "application",
+                "pk": app_pk,
+                "name": "Renamed application",
+            },
+        ).set_user(self.user).save()
+
+        response = self.client.get(
+            reverse("authentik_api:event-top-per-user"),
+            data={"action": EventAction.AUTHORIZE_APPLICATION},
+        )
+
+        self.assertEqual(response.status_code, 200)
+        body = loads(response.content)
+        self.assertEqual(len(body), 1)
+        self.assertEqual(body[0]["application"]["pk"], app_pk)
+        self.assertEqual(body[0]["application"]["name"], "Renamed application")
+        self.assertEqual(body[0]["counted_events"], 2)
+        self.assertEqual(body[0]["unique_users"], 1)
+
     def test_actions(self):
         """Test actions"""
         response = self.client.get(

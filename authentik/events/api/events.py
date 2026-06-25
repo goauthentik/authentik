@@ -4,6 +4,7 @@ from collections import OrderedDict
 from datetime import timedelta
 
 import django_filters
+from django.contrib.postgres.aggregates import ArrayAgg
 from django.db.models import Count, ExpressionWrapper, F, QuerySet
 from django.db.models import DateTimeField as DjangoDateTimeField
 from django.db.models.fields.json import KeyTextTransform, KeyTransform
@@ -242,18 +243,23 @@ class EventViewSet(
         """Get the top_n events grouped by user count"""
         filtered_action = request.query_params.get("action", EventAction.LOGIN)
         top_n = int(request.query_params.get("top_n", "15"))
-        events = (
+        application_pk = KeyTextTransform("pk", KeyTransform("authorized_application", "context"))
+        events = list(
             get_objects_for_user(request.user, "authentik_events.view_event")
             .filter(action=filtered_action)
             .exclude(context__authorized_application=None)
+            .annotate(application_pk=application_pk)
             .annotate(application=KeyTransform("authorized_application", "context"))
             .annotate(user_pk=KeyTextTransform("pk", "user"))
-            .values("application")
-            .annotate(counted_events=Count("application"))
+            .values("application_pk")
+            .annotate(counted_events=Count("event_uuid"))
             .annotate(unique_users=Count("user_pk", distinct=True))
-            .values("unique_users", "application", "counted_events")
+            .annotate(applications=ArrayAgg("application", order_by=("-created", "-event_uuid")))
+            .values("unique_users", "applications", "counted_events")
             .order_by("-counted_events")[:top_n]
         )
+        for event in events:
+            event["application"] = event.pop("applications")[0]
         return Response(EventTopPerUserSerializer(instance=events, many=True).data)
 
     @extend_schema(
