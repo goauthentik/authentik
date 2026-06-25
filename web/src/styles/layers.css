@@ -14,7 +14,8 @@
  * - `theme`: The default CSS custom properties defining the overall theme for our product.
  *
  * - `mode`: The CSS custom properties that override the theme when defining properties for
- *   light/dark mode, improved contrast mode, and reduced motion mode.
+ *   light/dark mode, improved contrast mode, and reduced motion mode. (Note: We don't a a
+ *   reduced-motion file yet.)
  *
  * - `brand`: Brand overrides for thematic CSS custom properties and component properties defining
  *   our product.

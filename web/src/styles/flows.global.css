@@ -27,14 +27,12 @@
 
 @import "#styles/authentik/components/Placeholder/placeholder.css" layer(components);
 @import "#elements/ak-drawer/ak-drawer.root.css" layer(components);
-
 @import "#styles/global/locales/ja/globals.css" layer(components);
 @import "#styles/global/locales/ko/globals.css" layer(components);
 @import "#styles/global/locales/zh/globals.css" layer(components);
-
-@import "@patternfly/patternfly/components/BackgroundImage/background-image.css" layer(components);
+/* `vendor` because it's from Patternfly and we need it to be easily overridable. */
+@import "@patternfly/patternfly/components/BackgroundImage/background-image.css" layer(vendor);
 @import "#elements/locale/ak-locale-select.css" layer(components);
 @import "#styles/authentik/login.css" layer(components);
-
 @import "#styles/authentik/components/Login/login-tokens.css" layer(components);
 @import "#styles/authentik/components/Login/flow-loading.css" layer(components);
