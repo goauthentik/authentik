@@ -26,7 +26,7 @@
 @import "#styles/global/mode/mode.css" layer(mode);
 @import "#styles/global/mode/contrast.css" layer(mode);
 
-@import "#styles/authentik/components/Placeholder/placeholder.css" layer(components);
+@import "#styles/authentik/components/Placeholder/palaceholder.css" layer(components);
 @import "#styles/global/locales/ja/globals.css" layer(components);
 @import "#styles/global/locales/ko/globals.css" layer(components);
 @import "#styles/global/locales/zh/globals.css" layer(components);
