@@ -67,8 +67,6 @@ OIDC_CLIENT_SECRET=<Client Secret from authentik>
 OIDC_REDIRECT_URI=https://excalidash.company/api/auth/oidc/callback
 ```
 
-Replace `<application_slug>` with the authentik application slug created earlier.
-
 If you want to keep password login enabled alongside authentik login, set `AUTH_MODE=hybrid` instead.
 
 If you want to map existing authentik groups to the ExcaliDash administrator role, set `OIDC_ADMIN_GROUPS` to a comma-separated list of authentik group names.
