@@ -322,11 +322,11 @@ jobs:
     steps:
       - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v5
         with:
-          pattern: container-build-*
+          pattern: container-build-*-amd64
           merge-multiple: true
       - run: |
           for image in proxy ldap radius rac; do
-            skopeo copy "oci-archive:container/${image}.oci.tar" "docker-daemon:ghcr.io/goauthentik/dev-${image}:${{ needs.build-compute-tags.outputs.tag-full }}"
+            skopeo copy "oci-archive:container/${image}-amd64.oci.tar" "docker-daemon:ghcr.io/goauthentik/dev-${image}:${{ needs.build-compute-tags.outputs.tag-full }}"
           done
           rm -rf container/
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v5
