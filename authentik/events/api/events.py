@@ -257,7 +257,7 @@ class EventViewSet(
             .annotate(application=KeyTransform("authorized_application", "context"))
             .annotate(user_pk=KeyTextTransform("pk", "user"))
             .values("application_pk")
-            .annotate(counted_events=Count("event_uuid"))
+            .annotate(counted_events=Count("pk"))
             .annotate(unique_users=Count("user_pk", distinct=True))
             .annotate(applications=ArrayAgg("application", order_by=("-created", "-event_uuid")))
             .values("unique_users", "applications", "counted_events")
