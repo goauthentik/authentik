@@ -227,7 +227,7 @@ impl ProxyOutpost {
                 // with the cookie domain set to example.com will still be routed correctly.
                 let domain = cookie_domain.trim_start_matches('.');
 
-                if host.ends_with(domain) && domain.len() > longest_len {
+                if host.ends_with(domain) && domain.len() >= longest_len {
                     longest_len = domain.len();
                     longest_match = Some(Arc::clone(app));
                 }
