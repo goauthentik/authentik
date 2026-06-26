@@ -46,24 +46,13 @@ jobs:
     outputs:
       major_version: "${{ steps.check.outputs.major_version }}"
       changelog_url: "${{ steps.changelog-url.outputs.changelog_url }}"
-  test:
-    name: Pre-release test
-    runs-on: ubuntu-latest
-    needs:
-      - check-inputs
-    steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v5
-        with:
-          ref: "version-${{ needs.check-inputs.outputs.major_version }}"
-      - name: Setup authentik env
-        uses: ./.github/actions/setup
-      - run: make test-docker
-  bump-authentik:
+  bump-version:
     name: Bump authentik version
     needs:
       - check-inputs
-      - test
     runs-on: ubuntu-latest
+    outputs:
+      release-commit: "${{ steps.commit.outputs.release-commit }}"
     steps:
       - id: app-token
         name: Generate app token
@@ -90,15 +79,172 @@ jobs:
         run: "make bump version=${{ inputs.version }}"
       - name: Re-generate API Clients
         run: make gen
-      - name: Commit and push
+      - id: commit
+        name: Commit and push
         run: |
           # ID from https://api.github.com/users/authentik-automation[bot]
           git config --global user.name '${{ steps.app-token.outputs.app-slug }}[bot]'
           git config --global user.email '${{ steps.get-user-id.outputs.user-id }}+${{ steps.app-token.outputs.app-slug }}[bot]@users.noreply.github.com'
           git pull
           git commit -a -m "release: ${{ inputs.version }}" --allow-empty
-          git tag "version/${{ inputs.version }}" HEAD -m "version/${{ inputs.version }}"
-          git push --follow-tags
+          git push
+          echo "release-commit=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+  build-container:
+    needs:
+      - bump-version
+    permissions:
+      # Needed to upload cache to ghcr.io. Even if we don't cache those builds, it's still needed
+      # otherwise the underlying workflow fails with permission issues.
+      packages: write
+      # Needed for checkout
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: server
+            dockerfile: Dockerfile
+          - name: proxy
+            dockerfile: proxy.Dockerfile
+          - name: ldap
+            dockerfile: ldap.Dockerfile
+          - name: radius
+            dockerfile: radius.Dockerfile
+          - name: rac
+            dockerfile: rac.Dockerfile
+    uses: ./.github/workflows/_reusable-container-build.yml
+    secrets: inherit
+    with:
+      ref: "${{ needs.bump-version.outputs.release-commit }}"
+      image-name: "${{ matrix.name }}"
+      image-dockerfile: "lifecycle/container/${{ matrix.dockerfile }}"
+      image-build-args: |
+        VERSION=${{ inputs.version }}
+  build-binaries:
+    needs:
+      - bump-version
+    timeout-minutes: 120
+    runs-on: ubuntu-latest
+    permissions:
+      # Needed for checkout
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        type:
+          - proxy
+          - ldap
+          - radius
+        goos: [linux, darwin]
+        goarch: [amd64, arm64]
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v5
+        with:
+          ref: "${{ needs.bump-version.outputs.release-commit }}"
+      - uses: actions/setup-go@4a3601121dd01d1626a1e23e37211e3254c1c06c # v6
+        with:
+          go-version-file: "go.mod"
+      - uses: ./.github/actions/setup-node
+        with:
+          working-directory: web
+      - name: Build web
+        working-directory: web/
+        run: |
+          npm run build-proxy
+      - name: Build outpost
+        run: |
+          set -x
+          mkdir -p build/binaries/
+          export GOOS=${{ matrix.goos }}
+          export GOARCH=${{ matrix.goarch }}
+          export CGO_ENABLED=0
+          go build -tags=outpost_static_embed -v -o ./build/binaries/authentik-outpost-${{ matrix.type }}_${{ matrix.goos }}_${{ matrix.goarch }} ./cmd/${{ matrix.type }}
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v4
+        with:
+          name: "binaries-build-${{ matrix.type }}-${{ matrix.goos }}-${{ matrix.goarch }}"
+          path: build/
+          if-no-files-found: error
+          retention-days: 2
+          include-hidden-files: true
+  test:
+    name: Pre-release test
+    runs-on: ubuntu-latest
+    needs:
+      - bump-version
+      - build-container
+    steps:
+      - name: Fetch container images
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v5
+        with:
+          name: container-build-server-amd64
+      - name: Load container images
+        run: |
+          skopeo copy "oci-archive:container/server-amd64.oci.tar" "docker-daemon:authentik.invalid/goauthentik/server:${{ inputs.version }}"
+          rm -rf container/
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v5
+        with:
+          ref: "${{ needs.bump-version.outputs.release-commit }}"
+      - name: Run test in Docker
+        env:
+          AUTHENTIK_IMAGE: authentik.invalid/goauthentik/server
+          AUTHENTIK_TAG: "${{ inputs.version }}"
+        run: ./scripts/test_docker.sh
+  create-release:
+    name: Create release
+    needs:
+      - check-inputs
+      - bump-version
+      - build-container
+      - build-binaries
+      - test
+    runs-on: ubuntu-latest
+    steps:
+      - id: app-token
+        name: Generate app token
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v2
+        with:
+          client-id: ${{ secrets.GH_APP_ID }}
+          private-key: ${{ secrets.GH_APP_PRIV_KEY }}
+      - id: get-user-id
+        name: Get GitHub app user ID
+        run: echo "user-id=$(gh api "/users/${{ steps.app-token.outputs.app-slug }}[bot]" --jq .id)" >> "$GITHUB_OUTPUT"
+        env:
+          GH_TOKEN: "${{ steps.app-token.outputs.token }}"
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v5
+        with:
+          ref: "${{ needs.bump-version.outputs.release-commit }}"
+          token: "${{ steps.app-token.outputs.token }}"
+      - name: Create tag
+        run: |
+          # ID from https://api.github.com/users/authentik-automation[bot]
+          git config --global user.name '${{ steps.app-token.outputs.app-slug }}[bot]'
+          git config --global user.email '${{ steps.get-user-id.outputs.user-id }}+${{ steps.app-token.outputs.app-slug }}[bot]@users.noreply.github.com'
+          git pull
+          git tag "version/${{ inputs.version }}" "${{ needs.bump-version.outputs.release-commit }}" -m "version/${{ inputs.version }}"
+          git push --tags
+      - name: Create metadata file
+        run: |
+          echo '{"version": "${{ inputs.version }}", "major_version": "${{ needs.check-inputs.outputs.major_version }}", "release_reason": "${{ inputs.release_reason }}"}' > metadata.json
+      - name: Fetch container images
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v5
+        with:
+          pattern: container-build-*
+          merge-multiple: true
+      - name: Fetch binaries
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v5
+        with:
+          pattern: binaries-build-*
+          merge-multiple: true
+      - uses: actions/attest@59d89421af93a897026c735860bf21b6eb4f7b26
+        with:
+          subject-path: |
+            metadata.json
+            container/proxy.oci.tar
+            container/ldap.oci.tar
+            container/radius.oci.tar
+            container/rac.oci.tar
+            binaries/authentik-outpost-*
+          github-token: "${{ steps.app-token.outputs.token }}"
       - name: Create Release
         uses: softprops/action-gh-release@718ea10b132b3b2eba29c1007bb80653f286566b # v3.0.1
         with:
@@ -110,6 +256,13 @@ jobs:
           generate_release_notes: true
           body: |
             See ${{ needs.check-inputs.outputs.changelog_url }}
+          files: |
+            metadata.json
+            container/proxy.oci.tar
+            container/ldap.oci.tar
+            container/radius.oci.tar
+            container/rac.oci.tar
+            binaries/authentik-outpost-*
   bump-helm:
     name: Bump Helm version
     if: ${{ inputs.release_reason != 'prerelease' }}

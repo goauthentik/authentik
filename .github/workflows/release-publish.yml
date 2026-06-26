@@ -6,22 +6,25 @@ on:
     types: [published, created]
 
 jobs:
-  build-server:
-    uses: ./.github/workflows/_reusable-docker-build.yml
-    secrets: inherit
-    permissions:
-      contents: read
-      # Needed to upload container images to ghcr.io
-      packages: write
-      # Needed for attestation
-      id-token: write
-      attestations: write
-    with:
-      image_name: ghcr.io/goauthentik/server,authentik/server
-      release: true
-      registry_dockerhub: true
-      registry_ghcr: true
-  build-docs:
+  metadata:
+    runs-on: ubuntu-latest
+    outputs:
+      tag-name: "${{ steps.metadata.outputs.tag-name }}"
+      version: "${{ steps.metadata.outputs.version }}"
+      major-version: "${{ steps.metadata.outputs.major-version }}"
+      release-reason: "${{ steps.metadata.outputs.release-reason }}"
+    steps:
+      - id: metadata
+        name: Compute variables
+        run: |
+          tag_name="$(echo "${{ github.ref }}" | sed "s;refs/tags/;;")"
+          echo "tag-name=$tag_name" >> "$GITHUB_OUTPUT"
+          gh release download "$tag_name" --pattern metadata.json
+          gh attestation verify metadata.json --owner goauthentik
+          echo "version=$(jq -r '.version')" >> "$GITHUB_OUTPUT"
+          echo "major-version=$(jq -r '.major_version')" >> "$GITHUB_OUTPUT"
+          echo "release-reason=$(jq -r '.release_reason')" >> "$GITHUB_OUTPUT"
+  publish-containers:
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -30,154 +33,93 @@ jobs:
       # Needed for attestation
       id-token: write
       attestations: write
+    strategy:
+      matrix:
+        name:
+          - server
+          - proxy
+          - ldap
+          - radius
+          - rac
+    needs:
+      - metadata
+    steps:
+      - uses: regclient/actions/regctl-installer@4b4db1dcc7dad75ad67a788a380f75a20cc8a040
+      # logs in to ghcr.io by default
+      - uses: regclient/actions/regctl-login@4b4db1dcc7dad75ad67a788a380f75a20cc8a040
+      - uses: regclient/actions/regctl-login@4b4db1dcc7dad75ad67a788a380f75a20cc8a040
+        with:
+          registry: docker.io
+          username: "${{ secrets.DOCKER_CORP_USERNAME }}"
+          password: "${{ secrets.DOCKER_CORP_PASSWORD }}"
+      - name: Download release container artifact
+        run: |
+          gh release download "${{ needs.metadata.outputs.tag-name }}" --pattern "${{ matrix.name }}.oci.tar"
+          gh attestation verify "${{ matrix.name }}.oci.tar" --owner goauthentik
+      - id: publish
+        name: Publish container
+        run: |
+          regctl import import "ocidir://${{ matrix.name }}:${{ needs.metadata.outputs.version }}" "${{ matrix.name }}.oci.tar"
+          echo "digest=$(regctl image digest "ocidir://${{ matrix.name }}:${{ needs.metadata.outputs.version }}")" >> "$GITHUB_OUTPUT"
+          regctl image import "ghcr.io/goauthentik/${{ matrix.name }}:${{ needs.metadata.outputs.version }}" "${{ matrix.name }}.oci.tar"
+          regctl image import "ghcr.io/goauthentik/${{ matrix.name }}:${{ needs.metadata.outputs.major-version }}" "${{ matrix.name }}.oci.tar"
+          regctl image import "docker.io/authentik/${{ matrix.name }}:${{ needs.metadata.outputs.version }}" "${{ matrix.name }}.oci.tar"
+          regctl image import "docker.io/authentik/${{ matrix.name }}:${{ needs.metadata.outputs.major-version }}" "${{ matrix.name }}.oci.tar"
+      - uses: actions/attest@59d89421af93a897026c735860bf21b6eb4f7b26
+        with:
+          subject-name: "ghcr.io/goauthentik/${{ matrix.name }}"
+          subject-digest: "${{ steps.publish.outputs.digest }}"
+          push-to-registry: true
+  publish-docs-container:
+    needs:
+      - metadata
+    runs-on: ubuntu-latest
+    permissions:
+      # Needed to upload container images to ghcr.io
+      packages: write
+      # Needed for attestation
+      id-token: write
+      attestations: write
+      # Needed for checkout
+      contents: read
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v5
+        with:
+          ref: "${{ needs.metadata.outputs.tag-name }}"
       - name: Set up QEMU
         uses: docker/setup-qemu-action@06116385d9baf250c9f4dcb4858b16962ea869c3 # v4.1.0
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@d7f5e7f509e45cec5c76c4d5afdd7de93d0b3df5 # v4.1.0
-      - name: prepare variables
-        uses: ./.github/actions/docker-push-variables
-        id: ev
-        env:
-          DOCKER_USERNAME: ${{ secrets.DOCKER_CORP_USERNAME }}
-        with:
-          image-name: ghcr.io/goauthentik/docs
       - name: Login to GitHub Container Registry
         uses: docker/login-action@650006c6eb7dba73a995cc03b0b2d7f5ca915bee # v4.2.0
         with:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Build Docker Image
-        id: push
+      - id: build
+        name: Build Docker Image
         uses: docker/build-push-action@f9f3042f7e2789586610d6e8b85c8f03e5195baf # v7.2.0
         with:
-          tags: ${{ steps.ev.outputs.imageTags }}
+          tags: |
+            ghcr.io/goauthentik/docs:${{ needs.metadata.outputs.version }}
+            ghcr.io/goauthentik/docs:${{ needs.metadata.outputs.major_version }}
           file: website/Dockerfile
           push: true
           platforms: linux/amd64,linux/arm64
           context: .
       - uses: actions/attest-build-provenance@a2bbfa25375fe432b6a289bc6b6cd05ecd0c4c32 # v3
-        id: attest
-        if: true
         with:
-          subject-name: ${{ steps.ev.outputs.attestImageNames }}
-          subject-digest: ${{ steps.push.outputs.digest }}
+          subject-name: ghcr.io/goauthentik/docs
+          subject-digest: "${{ steps.build.outputs.digest }}"
           push-to-registry: true
-  build-outpost:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      # Needed to upload container images to ghcr.io
-      packages: write
-      # Needed for attestation
-      id-token: write
-      attestations: write
-    strategy:
-      fail-fast: false
-      matrix:
-        type:
-          - proxy
-          - ldap
-          - radius
-          - rac
-    steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v5
-      - uses: actions/setup-go@4a3601121dd01d1626a1e23e37211e3254c1c06c # v6
-        with:
-          go-version-file: "go.mod"
-      - uses: ./.github/actions/setup-node
-        with:
-          working-directory: web
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@06116385d9baf250c9f4dcb4858b16962ea869c3 # v4.1.0
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@d7f5e7f509e45cec5c76c4d5afdd7de93d0b3df5 # v4.1.0
-      - name: prepare variables
-        uses: ./.github/actions/docker-push-variables
-        id: ev
-        env:
-          DOCKER_USERNAME: ${{ secrets.DOCKER_CORP_USERNAME }}
-        with:
-          image-name: ghcr.io/goauthentik/${{ matrix.type }},authentik/${{ matrix.type }}
-      - name: Docker Login Registry
-        uses: docker/login-action@650006c6eb7dba73a995cc03b0b2d7f5ca915bee # v4.2.0
-        with:
-          username: ${{ secrets.DOCKER_CORP_USERNAME }}
-          password: ${{ secrets.DOCKER_CORP_PASSWORD }}
-      - name: Login to GitHub Container Registry
-        uses: docker/login-action@650006c6eb7dba73a995cc03b0b2d7f5ca915bee # v4.2.0
-        with:
-          registry: ghcr.io
-          username: ${{ github.repository_owner }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Build Docker Image
-        uses: docker/build-push-action@f9f3042f7e2789586610d6e8b85c8f03e5195baf # v7.2.0
-        id: push
-        with:
-          push: true
-          build-args: |
-            VERSION=${{ github.ref }}
-          tags: ${{ steps.ev.outputs.imageTags }}
-          file: lifecycle/container/${{ matrix.type }}.Dockerfile
-          platforms: linux/amd64,linux/arm64
-          context: .
-      - uses: actions/attest-build-provenance@a2bbfa25375fe432b6a289bc6b6cd05ecd0c4c32 # v3
-        id: attest
-        with:
-          subject-name: ${{ steps.ev.outputs.attestImageNames }}
-          subject-digest: ${{ steps.push.outputs.digest }}
-          push-to-registry: true
-  build-outpost-binary:
-    timeout-minutes: 120
-    runs-on: ubuntu-latest
-    permissions:
-      # Needed to upload binaries to the release
-      contents: write
-    strategy:
-      fail-fast: false
-      matrix:
-        type:
-          - proxy
-          - ldap
-          - radius
-        goos: [linux, darwin]
-        goarch: [amd64, arm64]
-    steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v5
-      - uses: actions/setup-go@4a3601121dd01d1626a1e23e37211e3254c1c06c # v6
-        with:
-          go-version-file: "go.mod"
-      - uses: ./.github/actions/setup-node
-        with:
-          working-directory: web
-      - name: Build web
-        working-directory: web/
-        run: |
-          npm run build-proxy
-      - name: Build outpost
-        run: |
-          set -x
-          export GOOS=${{ matrix.goos }}
-          export GOARCH=${{ matrix.goarch }}
-          export CGO_ENABLED=0
-          go build -tags=outpost_static_embed -v -o ./authentik-outpost-${{ matrix.type }}_${{ matrix.goos }}_${{ matrix.goarch }} ./cmd/${{ matrix.type }}
-      - name: Upload binaries to release
-        uses: svenstaro/upload-release-action@29e53e917877a24fad85510ded594ab3c9ca12de # v2
-        with:
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: ./authentik-outpost-${{ matrix.type }}_${{ matrix.goos }}_${{ matrix.goarch }}
-          asset_name: authentik-outpost-${{ matrix.type }}_${{ matrix.goos }}_${{ matrix.goarch }}
-          tag: ${{ github.ref }}
   upload-aws-cfn-template:
     permissions:
       # Needed for AWS login
       id-token: write
       contents: read
     needs:
-      - build-server
-      - build-outpost
+      - metadata
+      - publish-containers
     env:
       AWS_REGION: eu-central-1
     runs-on: ubuntu-latest
@@ -190,42 +132,19 @@ jobs:
       - name: Upload template
         run: |
           aws s3 cp --acl=public-read lifecycle/aws/template.yaml s3://authentik-cloudformation-templates/authentik.ecs.${{ github.ref }}.yaml
+          aws s3 cp --acl=public-read lifecycle/aws/template.yaml s3://authentik-cloudformation-templates/authentik.ecs.${{ needs.metadata.outputs.tag-name }}.yaml
+          # TODO: only if latest
           aws s3 cp --acl=public-read lifecycle/aws/template.yaml s3://authentik-cloudformation-templates/authentik.ecs.latest.yaml
-  test-release:
-    needs:
-      - build-server
-      - build-outpost
-      - build-outpost-binary
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v5
-      - name: Run test suite in final docker images
-        run: |
-          echo "PG_PASS=$(openssl rand 32 | base64 -w 0)" >> lifecycle/container/.env
-          echo "AUTHENTIK_SECRET_KEY=$(openssl rand 32 | base64 -w 0)" >> lifecycle/container/.env
-          docker compose -f lifecycle/container/compose.yml pull -q
-          docker compose -f lifecycle/container/compose.yml up --no-start
-          docker compose -f lifecycle/container/compose.yml start postgresql
-          docker compose -f lifecycle/container/compose.yml run -u root server test-all
   sentry-release:
     needs:
-      - build-server
-      - build-outpost
-      - build-outpost-binary
+      - publish-containers
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v5
-      - name: prepare variables
-        uses: ./.github/actions/docker-push-variables
-        id: ev
-        env:
-          DOCKER_USERNAME: ${{ secrets.DOCKER_CORP_USERNAME }}
-        with:
-          image-name: ghcr.io/goauthentik/server
       - name: Get static files from docker image
         run: |
-          docker pull ${{ steps.ev.outputs.imageMainName }}
-          container=$(docker container create ${{ steps.ev.outputs.imageMainName }})
+          image="ghcr.io/goauthentik/server:${{ needs.metadata.outputs.version }}"
+          docker pull "$image"
+          container=$(docker container create "$image")
           docker cp ${container}:web/ .
       - name: Create a Sentry.io release
         uses: getsentry/action-release@ff07929a6537bac57790c3451cf4d364aca38528 # v3
@@ -235,6 +154,6 @@ jobs:
           SENTRY_ORG: authentik-security-inc
           SENTRY_PROJECT: authentik
         with:
-          release: authentik@${{ steps.ev.outputs.version }}
+          release: "authentik@${{ needs.metadata.outputs.version }}"
           sourcemaps: "./web/dist"
           url_prefix: "~/static/dist"
