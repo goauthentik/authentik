@@ -5,6 +5,83 @@ sidebar_label: Expression Policies
 
 [Notification rules](./notifications.md) with [bound expression policies](./notifications.md#3-create-a-notification-rule-and-bind-it-to-the-policy) are very powerful. The following are examples of what can be achieved.
 
+### Send a welcome email to newly created users
+
+This expression policy sends a welcome email to a user when their account is created, regardless of whether the account was created through an enrollment flow, the Admin interface, the API, or a source sync. It uses the [`ak_send_email`](../../customize/policies/types/expression/reference.mdx) function (available since authentik 2025.10) to email the new user directly, instead of notifying an administrator or a group.
+
+#### Prerequisites
+
+authentik needs to be able to send mail. Either configure a [global email connection](../../install-config/install/docker-compose.mdx#email-configuration-optional-but-recommended), or pass an [Email stage](../../add-secure-apps/flows-stages/stages/email/index.md) to `ak_send_email` through its `stage` argument to use that stage's connection settings instead.
+
+#### Create the expression policy
+
+1. Log in to authentik as an administrator and open the Admin interface.
+2. Navigate to **Customization** > **Policies**.
+3. Click **Create**, select **Expression Policy**, and click **Next**.
+4. Give the policy a name, such as `send-welcome-email`.
+5. Paste the expression below into the **Expression** field.
+6. Click **Finish**.
+
+```python
+from authentik.core.models import User
+
+# Check if an event has occurred
+event = request.context.get("event", None)
+if not event:
+    ak_logger.info("no event")
+    return False
+
+# Check if the event action includes creating a model
+if event.action != "model_created":
+    ak_logger.info("event action does not match")
+    return False
+
+model_app = event.context["model"]["app"]
+model_name = event.context["model"]["model_name"]
+
+# Check if the model that was created is the user model
+if model_app != "authentik_core" or model_name != "user":
+    ak_logger.info("model does not match")
+    return False
+
+user_pk = event.context["model"]["pk"]
+user = User.objects.filter(pk=user_pk).first()
+
+# Check if a user object was found and has an email address
+if not user:
+    ak_logger.info("user not found")
+    return False
+if not user.email:
+    ak_logger.info("user has no email address")
+    return False
+
+# Send the welcome email directly to the new user
+login_url = "https://authentik.company"
+ak_send_email(
+    user.email,
+    "Welcome to authentik",
+    body=f"Hello {user.name},\n\nYour authentik account has been created. You can log in at {login_url}.",
+)
+
+# Return False so the notification rule itself does not fire; the email
+# above is the only action we want to take.
+return False
+```
+
+#### Bind the policy to a notification rule
+
+The policy only runs when it is bound to a notification rule that triggers on the relevant events.
+
+1. Navigate to **Events** > **Notification Rules**.
+2. Click **Create**, give the rule a name such as `welcome-email`, and click **Create**.
+3. In the list of notification rules, click the arrow next to the new rule to expand it, then click **Create or bind...** > **Bind Existing...** and select the `send-welcome-email` policy.
+
+You do not need to select a destination group or a transport on the rule. As noted in [Notification Rules](./notifications.md#3-create-a-notification-rule-and-bind-it-to-the-policy), bound policies are executed even when no destination is selected — and because the policy returns `False`, no notification is ever created. The email is sent entirely by the `ak_send_email` call inside the policy.
+
+Matching on `model_created` ensures the email is sent only when the account is first created. Other changes to the user, such as a password reset, are recorded as `model_updated` and will not trigger this policy.
+
+To send a richer, branded message instead of plain text, replace the `body` argument with a `template` argument pointing to a [custom email template](../../add-secure-apps/flows-stages/stages/email/index.md#custom-templates), and pass any values the template needs through the `context` argument. See the [`ak_send_email` reference](../../customize/policies/types/expression/reference.mdx) for all available parameters.
+
 ### Trigger alert when user logs in from unknown device
 
 This expression policy is triggered when a user logs in from an unknown device. This can be combined with a notification rule to alert administrators, or the user in question if `Send notification to event user` is enabled on the notification rule.
