@@ -137,7 +137,7 @@ class SCIMUserClient(SCIMClient[User, SCIMProviderUser, SCIMUserSchema]):
         if SCIMProviderUser.objects.filter(scim_id=scim_user.id, provider=self.provider).exists():
             return
         user_query = Q(username=scim_user.userName)
-        for email in scim_user.emails:
+        for email in scim_user.emails or []:
             user_query |= Q(username=email.value) | Q(email=email.value)
         ak_user = User.objects.filter(user_query).first()
         if not ak_user:
