@@ -386,9 +386,9 @@ Defaults to `0.0.0.0:9900`.
 
 ##### `AUTHENTIK_LISTEN__DEBUG_PY`
 
-Listening address:port for Python debugging server, see [Debugging](../../developer-docs/setup/debugging.md).
+Base listening address:port for the Python debugging server, see [Debugging](../../developer-docs/setup/debugging.md).
 
-Applies to the Server and the Worker.
+Applies to the Server and the Worker. The Server listens on this exact port; each Worker process listens on a successive port (`9902`, `9903`, …).
 
 Defaults to `0.0.0.0:9901`.
 
