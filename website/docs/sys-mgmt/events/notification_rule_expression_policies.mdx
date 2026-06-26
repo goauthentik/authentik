@@ -82,6 +82,12 @@ Matching on `model_created` ensures the email is sent only when the account is f
 
 To send a richer, branded message instead of plain text, replace the `body` argument with a `template` argument pointing to a [custom email template](../../add-secure-apps/flows-stages/stages/email/index.md#custom-templates), and pass any values the template needs through the `context` argument. See the [`ak_send_email` reference](../../customize/policies/types/expression/reference.mdx) for all available parameters.
 
+:::info 
+One easy way to let the new user set their own password is to point `login_url` at your recovery flow instead, for example `https://authentik.company/if/flow/default-recovery-flow/`. Replace `default-recovery-flow` with the slug of the flow you want to use. This is the same URL as the **Forgot password?** link on the login screen: the user enters their email address and authentik sends them a link to set a password. The flow must exist for the URL to work.
+
+For the built-in ways to send a set-password link, see [User credentials recovery](../../users-sources/user/user_basic_operations.md#user-credentials-recovery).
+:::
+
 ### Trigger alert when user logs in from unknown device
 
 This expression policy is triggered when a user logs in from an unknown device. This can be combined with a notification rule to alert administrators, or the user in question if `Send notification to event user` is enabled on the notification rule.
