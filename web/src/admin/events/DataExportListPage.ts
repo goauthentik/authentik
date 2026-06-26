@@ -3,7 +3,7 @@ import "#elements/buttons/ActionButton/index";
 import "#elements/buttons/SpinnerButton/index";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
-import "#elements/tasks/TaskList";
+import "#components/tasks/TaskList";
 import "#components/ak-status-label";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
