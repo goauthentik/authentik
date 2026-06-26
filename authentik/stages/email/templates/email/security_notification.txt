@@ -1,0 +1,13 @@
+{% load authentik_stages_email %}{% load i18n %}{% autoescape off %}{% if event_action == "password_set" %}{% trans "Your password was changed" %}{% else %}{% trans "Security notification" %}{% endif %}
+
+{% if event_action == "password_set" %}{% blocktrans %}The password for your account was just changed. If you made this change, you can safely ignore this email.{% endblocktrans %}{% else %}{{ body }}{% endif %}
+{% if link %}
+{{ link.label }}: {{ link.target }}
+{% endif %}
+{% blocktrans %}If you did not perform this action, your account may be at risk. Please review your account security and contact your administrator immediately.{% endblocktrans %}
+{% if source %}{% blocktranslate with name=source.from %}
+This email was sent from the notification transport {{ name }}.
+{% endblocktranslate %}{% endif %}
+--
+Powered by goauthentik.io.
+{% endautoescape %}

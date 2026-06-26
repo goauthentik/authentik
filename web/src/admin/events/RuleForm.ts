@@ -115,6 +115,15 @@ export class RuleForm extends ModelForm<NotificationRule, string> {
                 )}
             >
             </ak-switch-input>
+            <ak-switch-input
+                name="destinationEventSubject"
+                label=${msg("Send notification to affected user")}
+                ?checked=${this.instance?.destinationEventSubject ?? false}
+                help=${msg(
+                    "When enabled, notification will be sent to the user affected by the event in addition to any users matched by the above settings.",
+                )}
+            >
+            </ak-switch-input>
             <ak-form-element-horizontal label=${msg("Transports")} required name="transports">
                 <ak-dual-select-dynamic-selected
                     .provider=${eventTransportsProvider}

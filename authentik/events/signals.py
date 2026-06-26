@@ -13,6 +13,7 @@ from rest_framework.request import Request
 from authentik.core.models import AuthenticatedSession, User
 from authentik.core.signals import login_failed, password_changed, password_hash_changed
 from authentik.events.models import Event, EventAction
+from authentik.events.utils import get_user
 from authentik.flows.models import Stage
 from authentik.flows.planner import (
     PLAN_CONTEXT_DEVICE,
@@ -122,7 +123,7 @@ def on_password_changed(
     **_,
 ):
     """Log password change"""
-    Event.new(EventAction.PASSWORD_SET).from_http(request, user=user)
+    Event.new(EventAction.PASSWORD_SET, affected_user_pk=user.pk).from_http(request, user=user)
 
 
 @receiver(post_save, sender=Event)

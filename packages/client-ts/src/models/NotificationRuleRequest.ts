@@ -46,11 +46,17 @@ export interface NotificationRuleRequest {
      */
     destinationGroup?: string | null;
     /**
-     * When enabled, notification will be sent to user the user that triggered the event.When destination_group is configured, notification is sent to both.
+     * When enabled, notification will be sent to the user that triggered the event.When destination_group is configured, notification is sent to both.
      * @type {boolean}
      * @memberof NotificationRuleRequest
      */
     destinationEventUser?: boolean;
+    /**
+     * When enabled, notification will be sent to the user affected by the event.
+     * @type {boolean}
+     * @memberof NotificationRuleRequest
+     */
+    destinationEventSubject?: boolean;
 }
 
 /**
@@ -79,6 +85,10 @@ export function NotificationRuleRequestFromJSONTyped(
         destinationGroup: json["destination_group"] == null ? undefined : json["destination_group"],
         destinationEventUser:
             json["destination_event_user"] == null ? undefined : json["destination_event_user"],
+        destinationEventSubject:
+            json["destination_event_subject"] == null
+                ? undefined
+                : json["destination_event_subject"],
     };
 }
 
@@ -100,5 +110,6 @@ export function NotificationRuleRequestToJSONTyped(
         severity: SeverityEnumToJSON(value["severity"]),
         destination_group: value["destinationGroup"],
         destination_event_user: value["destinationEventUser"],
+        destination_event_subject: value["destinationEventSubject"],
     };
 }

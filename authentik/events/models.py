@@ -593,6 +593,7 @@ class NotificationTransport(TasksModel, SerializerModel):
             }
         if notification.event:
             context["title"] += notification.event.action
+            context["event_action"] = notification.event.action
             for key, value in notification.event.context.items():
                 if not isinstance(value, str):
                     continue
@@ -701,14 +702,22 @@ class NotificationRule(TasksModel, SerializerModel, PolicyBindingModel):
     destination_event_user = models.BooleanField(
         default=False,
         help_text=_(
-            "When enabled, notification will be sent to user the user that triggered the event."
+            "When enabled, notification will be sent to the user that triggered the event."
             "When destination_group is configured, notification is sent to both."
+        ),
+    )
+    destination_event_subject = models.BooleanField(
+        default=False,
+        help_text=_(
+            "When enabled, notification will be sent to the user affected by the event."
         ),
     )
 
     def destination_users(self, event: Event) -> Generator[User, Any]:
         if self.destination_event_user and event.user.get("pk"):
             yield User(pk=event.user.get("pk"))
+        if self.destination_event_subject and event.context.get("affected_user_pk"):
+            yield User(pk=event.context.get("affected_user_pk"))
         if self.destination_group:
             yield from self.destination_group.users.all()
 

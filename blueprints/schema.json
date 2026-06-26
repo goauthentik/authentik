@@ -8561,7 +8561,12 @@
                 "destination_event_user": {
                     "type": "boolean",
                     "title": "Destination event user",
-                    "description": "When enabled, notification will be sent to user the user that triggered the event.When destination_group is configured, notification is sent to both."
+                    "description": "When enabled, notification will be sent to the user that triggered the event.When destination_group is configured, notification is sent to both."
+                },
+                "destination_event_subject": {
+                    "type": "boolean",
+                    "title": "Destination event subject",
+                    "description": "When enabled, notification will be sent to the user affected by the event."
                 }
             },
             "required": []
