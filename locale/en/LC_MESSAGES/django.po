@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-06-11 00:42+0000\n"
+"POT-Creation-Date: 2026-06-19 00:49+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -2825,6 +2825,10 @@ msgid "Salesforce"
 msgstr ""
 
 #: authentik/providers/scim/models.py
+msgid "GitLab"
+msgstr ""
+
+#: authentik/providers/scim/models.py
 msgid "Webex"
 msgstr ""
 
@@ -4014,6 +4018,14 @@ msgid ""
 msgstr ""
 
 #: authentik/stages/captcha/models.py
+msgid "Form encoded"
+msgstr ""
+
+#: authentik/stages/captcha/models.py
+msgid "JSON"
+msgstr ""
+
+#: authentik/stages/captcha/models.py
 msgid "Public key, acquired your captcha Provider."
 msgstr ""
 
@@ -4698,11 +4710,24 @@ msgid "Failed to update user. Please try again later."
 msgstr ""
 
 #: authentik/tasks/models.py
+#: packages/django-dramatiq-postgres/django_dramatiq_postgres/models.py
+msgid "Tasks that must complete for this task to run."
+msgstr ""
+
+#: authentik/tasks/models.py
 msgid "Tenant this task belongs to"
 msgstr ""
 
 #: authentik/tasks/models.py
 msgid "Retry failed task"
+msgstr ""
+
+#: authentik/tasks/models.py
+msgid "Task dependency"
+msgstr ""
+
+#: authentik/tasks/models.py
+msgid "Task dependencies"
 msgstr ""
 
 #: authentik/tasks/models.py

@@ -126,7 +126,10 @@ class SCIMUserClient(SCIMClient[User, SCIMProviderUser, SCIMUserSchema]):
         expected_items = int(res["totalResults"])
         while True:
             for user in res["Resources"]:
-                self._discover_user_single(user)
+                try:
+                    self._discover_user_single(user)
+                except ValidationError:
+                    self.logger.warning("failed to discover user", scim_user=user.get("externalId"))
                 seen_items += 1
             if seen_items >= expected_items:
                 break

@@ -36333,6 +36333,8 @@ components:
           type: string
         api_url:
           type: string
+        request_content_type:
+          $ref: '#/components/schemas/RequestContentTypeEnum'
         interactive:
           type: boolean
         score_min_threshold:
@@ -36378,6 +36380,8 @@ components:
         api_url:
           type: string
           minLength: 1
+        request_content_type:
+          $ref: '#/components/schemas/RequestContentTypeEnum'
         interactive:
           type: boolean
         score_min_threshold:
@@ -36604,6 +36608,7 @@ components:
       - aws
       - slack
       - sfdc
+      - gitlab
       - webex
       - vcenter
       type: string
@@ -42641,6 +42646,7 @@ components:
       - zh-hant
     LastTaskStatusEnum:
       enum:
+      - waiting_for_dependencies
       - queued
       - consumed
       - preprocess
@@ -48260,6 +48266,8 @@ components:
         api_url:
           type: string
           minLength: 1
+        request_content_type:
+          $ref: '#/components/schemas/RequestContentTypeEnum'
         interactive:
           type: boolean
         score_min_threshold:
@@ -53805,6 +53813,11 @@ components:
           minimum: -2147483648
       required:
       - name
+    RequestContentTypeEnum:
+      enum:
+      - application/x-www-form-urlencoded
+      - application/json
+      type: string
     Review:
       type: object
       description: |-
@@ -56734,6 +56747,7 @@ components:
       - uid
     TaskAggregatedStatusEnum:
       enum:
+      - waiting_for_dependencies
       - queued
       - consumed
       - preprocess
@@ -56747,6 +56761,7 @@ components:
       type: string
     TaskStatusEnum:
       enum:
+      - waiting_for_dependencies
       - queued
       - consumed
       - preprocess

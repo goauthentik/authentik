@@ -1,4 +1,4 @@
-FROM --platform=${BUILDPLATFORM} docker.io/library/node:26.3.0-trixie@sha256:e3ffe0cbaeebdcddbfe1ee7bca9b564a92863a8386d5b99a3d72677b3667b61d AS docs-builder
+FROM --platform=${BUILDPLATFORM} docker.io/library/node:26.3.1-trixie@sha256:15797fbed0f20a0c17c6f00e42b8ebe1574971f986fd8ae15be77acf8c30e185 AS docs-builder
 
 ENV NODE_ENV=production
 
@@ -48,7 +48,7 @@ COPY ./SECURITY.md /work/
 RUN  --mount=type=bind,target=/work/packages/docusaurus-config/,src=./packages/docusaurus-config/ \
     corepack npm run build -w docs
 
-FROM docker.io/library/nginx:1.31.1-trixie@sha256:5aca99593157f4ae539a5dec1092a0ad8762f8e2eb1789085a13a0f5622369f6
+FROM docker.io/library/nginx:1.31.2-trixie@sha256:ec4ed8b5299e5e90694af7750eb6dffd2627317d30544d056b0371f8082f7bce
 LABEL org.opencontainers.image.authors="Authentik Security Inc." \
     org.opencontainers.image.source="https://github.com/goauthentik/authentik" \
     org.opencontainers.image.description="authentik product documentation" \
