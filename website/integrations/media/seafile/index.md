@@ -29,7 +29,7 @@ This documentation lists only the settings that you need to change from their de
 
 To support the integration of Seafile with authentik, you need to create an application/provider pair in authentik.
 
-### Create an application and provider in authentik
+### Create an application and provider
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
@@ -71,7 +71,7 @@ OAUTH_ATTRIBUTE_MAP = {
 
 Restart Seahub after updating `seahub_settings.py`.
 
-### Optional single sign-on behavior
+### Single sign-on behavior _(optional)_
 
 To automatically redirect users to the Seafile OAuth login flow, add the following setting:
 
