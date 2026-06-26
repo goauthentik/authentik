@@ -29,13 +29,13 @@ This documentation lists only the settings that you need to change from their de
 
 To support the integration of Komga with authentik, you need to create an application/provider pair in authentik.
 
-### Create an email verification scope mapping in authentik
+### Create an email verification scope mapping
 
 Komga requires the email scope to return a value of `email_verified: True`. As of [authentik 2025.10](/docs/releases/2025/v2025.10.md#default-oauth-scope-mappings) the default behavior is to return `email_verified: False`, so a custom scope mapping is required for Komga to allow authentication.
 
 Refer to [Email scope verification](/docs/add-secure-apps/providers/oauth2/index.mdx#email-scope-verification) for instructions on how to create the required custom scope mapping.
 
-### Create an application and provider in authentik
+### Create an application and provider
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
@@ -56,7 +56,7 @@ Refer to [Email scope verification](/docs/add-secure-apps/providers/oauth2/index
 
 To configure Komga, update its `application.yml` file to include the following options. Existing Komga users must have email addresses that match their authentik users.
 
-:::warning[User identifier]
+:::warning User identifier
 You can configure Komga to use either the `sub` or `preferred_username` as the UID field under `user-name-attribute`. When using `preferred_username` as the user identifier, ensure that the [**Allow users to change username** setting](/docs/sys-mgmt/settings#allow-users-to-change-username) is disabled to prevent authentication issues. The `sub` option uses a unique, stable identifier for the user, while `preferred_username` uses the username configured in authentik.
 :::
 
@@ -80,7 +80,7 @@ spring:
                         issuer-uri: https://authentik.company/application/o/<application_slug>/
 ```
 
-To let Komga create users during first login, also include the following option:
+To have Komga create users during first login, also include the following option:
 
 ```yaml title="application.yml"
 komga:
