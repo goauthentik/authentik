@@ -31,7 +31,7 @@ When Sonarr is configured for external authentication, Sonarr trusts the authent
 
 To support the integration of Sonarr with authentik, you need to create an application/provider pair in authentik and assign it to a proxy outpost.
 
-### Create an application and provider in authentik
+### Create an application and provider
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
