@@ -1,7 +1,6 @@
 from collections.abc import Generator, Iterator
 from contextlib import contextmanager
 from tempfile import SpooledTemporaryFile
-from typing import TypeVar
 from urllib.parse import urlsplit, urlunsplit
 
 import boto3
@@ -14,9 +13,6 @@ from authentik.admin.files.backends.base import ManageableBackend, get_content_t
 from authentik.admin.files.usage import FileUsage
 from authentik.lib.config import CONFIG
 from authentik.lib.utils.time import timedelta_from_string
-
-_T = TypeVar("_T")
-
 
 class S3Backend(ManageableBackend):
     """S3-compatible object storage backend.
@@ -37,24 +33,12 @@ class S3Backend(ManageableBackend):
         self._session = None
         self._client = None
 
-    def _get_config(self, key: str, default: _T) -> tuple[_T, bool]:
+    def _get_config(self, key: str, default: str | None) -> tuple[str | None, bool]:
         unset = object()
         current = self._config.get(key, unset)
         refreshed = CONFIG.refresh(
             f"storage.{self.usage.value}.{self.name}.{key}",
             CONFIG.refresh(f"storage.{self.name}.{key}", default),
-        )
-        if current is unset:
-            current = refreshed
-        self._config[key] = refreshed
-        return (refreshed, current != refreshed)
-
-    def _get_config_bool(self, key: str, default: bool) -> tuple[bool, bool]:
-        unset = object()
-        current = self._config.get(key, unset)
-        refreshed = CONFIG.get_bool(
-            f"storage.{self.usage.value}.{self.name}.{key}",
-            CONFIG.get_bool(f"storage.{self.name}.{key}", default),
         )
         if current is unset:
             current = refreshed
@@ -103,29 +87,32 @@ class S3Backend(ManageableBackend):
     def client(self):
         """Create S3 client with configured endpoint and region."""
         endpoint_url, endpoint_url_r = self._get_config("endpoint", None)
-        use_ssl, use_ssl_r = self._get_config_bool("use_ssl", True)
-        region_name, region_name_r = self._get_config("region", None)
-        addressing_style, addressing_style_r = self._get_config("addressing_style", "auto")
-        signature_version, signature_version_r = self._get_config("signature_version", "s3v4")
+        session = self.session
+        if self._client is not None and not endpoint_url_r:
+            return self._client
+
+        use_ssl = CONFIG.get(
+            f"storage.{self.usage.value}.{self.name}.use_ssl",
+            CONFIG.get(f"storage.{self.name}.use_ssl", True),
+        )
+        region_name = CONFIG.get(
+            f"storage.{self.usage.value}.{self.name}.region",
+            CONFIG.get(f"storage.{self.name}.region", None),
+        )
+        addressing_style = CONFIG.get(
+            f"storage.{self.usage.value}.{self.name}.addressing_style",
+            CONFIG.get(f"storage.{self.name}.addressing_style", "auto"),
+        )
+        signature_version = CONFIG.get(
+            f"storage.{self.usage.value}.{self.name}.signature_version",
+            CONFIG.get(f"storage.{self.name}.signature_version", "s3v4"),
+        )
         # Keep signature_version pass-through and let boto3/botocore handle it.
         # In boto3's S3 configuration docs, `s3v4` (default) and deprecated `s3`
         # are the documented values:
         # https://github.com/boto/boto3/blob/791a3e8f36d83664a47b4281a0586b3546cef3ec/docs/source/guide/configuration.rst?plain=1#L398-L407
         # Botocore also supports additional signer names, so we intentionally do
         # not enforce a restricted allowlist here.
-
-        session = self.session
-        client_config_changed = any(
-            [
-                endpoint_url_r,
-                use_ssl_r,
-                region_name_r,
-                addressing_style_r,
-                signature_version_r,
-            ]
-        )
-        if self._client is not None and not client_config_changed:
-            return self._client
 
         self._client = session.client(
             "s3",
