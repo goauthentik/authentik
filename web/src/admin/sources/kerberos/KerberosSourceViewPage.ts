@@ -1,4 +1,4 @@
-import "#elements/tasks/ScheduleList";
+import "#components/tasks/ScheduleList";
 import "#admin/rbac/ak-rbac-object-permission-page";
 import "#admin/sources/kerberos/KerberosSourceConnectivity";
 import "#admin/sources/kerberos/KerberosSourceForm";
