@@ -27,7 +27,7 @@ By default, if you click **New Application**, you are prompted to create the new
 
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and any additional required configurations.
 
-    - **Configure Bindings**: to manage which applications a user can view and access via their **Application Dashboard** page, you can optionally create a [binding](../bindings-overview/index.md) between the application and a specific policy, group, or user. Note that if you do not define any bindings, then all users have access to the application. For more information about user access, refer to our documentation about [policy-driven authorization](#policy-driven-authorization), [using application entitlements](../applications/manage_apps.mdx#create-an-application-entitlement) and [hiding an application](#hide-applications).
+    - **Configure Bindings**: optionally create a [binding](../bindings-overview/index.md) between the application and a policy, group, or user. Application bindings control whether users can view and access the application from their **Application Dashboard** page. If you do not define any bindings, all users have access to the application. For more information, see [policy-driven authorization](#policy-driven-authorization), [application entitlements](#application-entitlements), and [hiding an application](#hide-applications).
 
 4. On the **Review and Submit Application** panel, review the configuration for the new application and its provider, and then click **Create Application**.
 
@@ -35,16 +35,16 @@ By default, if you click **New Application**, you are prompted to create the new
 
 By default, all users can access applications when no bindings are defined on the application.
 
-You can bind policies, groups, and users to grant access to an application. When nothing is bound, everyone has access. Binding a policy restricts access to specific Users or Groups, or by other custom policies such as restriction to a set time-of-day or a geographic region.
+You can bind policies, groups, and users to grant access to an application. When nothing is bound, everyone has access. Use a policy when access depends on runtime context, such as time of day, geographic region, request data, or user attributes.
 
-When multiple policies/groups/users are attached, you can configure the _Policy engine mode_ to either:
+When multiple policies, groups, or users are attached, use **Policy engine mode** to configure how authentik combines the binding results:
 
-- Require users to pass all policies or be member of all groups (ALL), or
-- Require users to pass any single policy or be member of any group (ANY)
+- `All`: the user must pass every binding.
+- `Any`: the user must pass at least one binding.
 
 The most common ways to control access to an application by using bindings are:
 
-1. [Create a policy binding](../../customize/policies/working_with_policies.md#bind-a-policy-to-an-application) in which a policy is used to determine whether or not a user can access an application.
+1. [Create a policy binding](../../customize/policies/working_with_policies.md#bind-a-policy-to-an-application) that determines whether a user can access an application.
 2. [Bind a user or group to the application](#bind-a-user-or-group-to-an-application).
 
 ### Policy-driven authorization
@@ -63,7 +63,7 @@ Follow the instructions for [creating a new application and provider](#create-an
 
 To bind a user or group to an existing application, click the application in the applications list, open the **Policy / Group / User Bindings** tab, and click **Create or bind...**. Under **Bind Existing...**, select **Bind a user** or **Bind a group**, choose the user or group to bind to the application, configure any additional binding settings, and then click **Create**.
 
-## Application Entitlements
+## Application entitlements
 
 <div className="badge-group">
 
@@ -104,7 +104,7 @@ return {
 1. Open the Admin interface and navigate to **Applications > Applications**.
 2. Click the name of the application for which you want to create an entitlement.
 3. Click the **Application entitlements** tab at the top of the page, and then click **New Entitlement**. Provide a name for the entitlement, enter any optional **Attributes**, and then click **Create**.
-4. In the list locate the entitlement to which you want to bind a user or group, and then **click the caret (>) to expand the entitlement details.**
+4. In the list, locate the entitlement to which you want to bind a user or group, and then click the caret (>) to expand the entitlement details.
 5. In the expanded area, click **Bind existing group/user**.
 6. In the binding modal, select **Group** or **User**, and then select the group or user.
 7. Optionally, configure additional settings for the binding, and then click **Create** to create the binding and close the box.
