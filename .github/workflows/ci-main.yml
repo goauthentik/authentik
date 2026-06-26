@@ -490,16 +490,23 @@ jobs:
       - uses: regclient/actions/regctl-installer@4b4db1dcc7dad75ad67a788a380f75a20cc8a040
       # logs in to ghcr.io by default
       - uses: regclient/actions/regctl-login@4b4db1dcc7dad75ad67a788a380f75a20cc8a040
+      # Docker login is required for attestations
+      - uses: docker/login-action@650006c6eb7dba73a995cc03b0b2d7f5ca915bee
+        with:
+          registry: ghcr.io
+          username: "${{ github.actor }}"
+          password: "${{ secrets.GITHUB_TOKEN }}"
       - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v5
         with:
           name: "container-build-${{ matrix.name }}"
       - id: publish
         name: publish
         run: |
+          regctl import import "ocidir://${{ matrix.name }}:${{ needs.build-compute-tags.outputs.tag-full }}" "container/${{ matrix.name }}.oci.tar"
+          echo "digest=$(regctl image digest "ocidir://${{ matrix.name }}:${{ needs.build-compute-tags.outputs.tag-full }}")" >> "$GITHUB_OUTPUT"
           regctl image import "ghcr.io/goauthentik/dev-${{ matrix.name }}:${{ needs.build-compute-tags.outputs.tag-full }}" "container/${{ matrix.name }}.oci.tar"
           regctl image import "ghcr.io/goauthentik/dev-${{ matrix.name }}:${{ needs.build-compute-tags.outputs.tag-branch }}" "container/${{ matrix.name }}.oci.tar"
           regctl image import "ghcr.io/goauthentik/dev-${{ matrix.name }}:${{ needs.build-compute-tags.outputs.tag-flux }}" "container/${{ matrix.name }}.oci.tar"
-          echo "digest=$(regctl image digest "ghcr.io/goauthentik/dev-${{ matrix.name }}:${{ needs.build-compute-tags.outputs.tag-full }}")" >> "$GITHUB_OUTPUT"
       - uses: actions/attest@59d89421af93a897026c735860bf21b6eb4f7b26
         with:
           subject-name: "ghcr.io/goauthentik/dev-${{ matrix.name }}"
