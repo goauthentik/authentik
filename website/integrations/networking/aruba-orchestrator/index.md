@@ -42,7 +42,7 @@ Aruba Orchestrator requires either a role attribute or a default role for SAML u
         return roles if roles else None
         ```
 
-### Create an application and provider in authentik
+### Create an application and provider
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
@@ -59,7 +59,7 @@ Aruba Orchestrator requires either a role attribute or a default role for SAML u
 
 4. Navigate to **Applications** > **Providers**, open the provider you created, and download the signing certificate.
 
-### Create application entitlements in authentik
+### Create application entitlements
 
 Use [application entitlements](/docs/add-secure-apps/applications/manage_apps/#application-entitlements) to represent the Orchestrator RBAC roles that this application should assign.
 
