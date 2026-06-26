@@ -44,7 +44,7 @@ Because Tautulli uses a single set of HTTP Basic credentials, save those credent
 5. Click the name of the newly created group and navigate to the **Users** tab.
 6. Click **Add existing user**, select each user that needs Tautulli access, and then click **Add**.
 
-### Create an application and provider in authentik
+### Create an application and provider
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
