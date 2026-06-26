@@ -1,5 +1,7 @@
 """SCIM Client tests"""
 
+from unittest.mock import patch
+
 from django.core.cache import cache
 from django.test import TestCase
 from requests_mock import Mocker
@@ -12,6 +14,7 @@ from authentik.providers.scim.models import SCIMMapping, SCIMProvider
 from authentik.providers.scim.tasks import scim_sync
 
 
+@patch("authentik.providers.scim.clients.base.SCIMClient.can_discover", False)
 class SCIMClientTests(TestCase):
     """SCIM Client tests"""
 
