@@ -20,7 +20,7 @@ The following placeholders are used in this guide:
 - `authentik.company` is the FQDN of the authentik installation.
 
 :::info OpenProject Enterprise add-on
-OpenID Connect providers are an OpenProject Enterprise add-on. If **OpenID providers** is not available in OpenProject, activate the Enterprise edition before continuing.
+OpenID Connect providers is an OpenProject Enterprise add-on. If **OpenID providers** is not available in your OpenProject instance, activate the Enterprise edition before continuing.
 :::
 
 :::info
