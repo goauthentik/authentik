@@ -1,0 +1,60 @@
+{% extends "email/base.html" %}
+
+{% load i18n %}
+
+{% block content %}
+<tr>
+  <td align="center">
+    <h1>
+      {% if event_action == "password_set" %}
+      {% trans "Your password was changed" %}
+      {% else %}
+      {% trans "Security notification" %}
+      {% endif %}
+    </h1>
+  </td>
+</tr>
+<tr>
+  <td align="center">
+    <table border="0">
+      <tr>
+        <td align="center" style="max-width: 300px; padding: 20px 0; color: #212124;">
+          {% if event_action == "password_set" %}
+          {% blocktrans %}
+          The password for your account was just changed. If you made this change, you can safely ignore this email.
+          {% endblocktrans %}
+          {% else %}
+          {{ body }}
+          {% endif %}
+        </td>
+      </tr>
+      {% if link %}
+      <tr>
+        <td align="center" class="btn btn-primary">
+          <a id="confirm" href="{{ link.target }}" rel="noopener noreferrer" target="_blank">{{ link.label }}</a>
+        </td>
+      </tr>
+      {% endif %}
+    </table>
+  </td>
+</tr>
+{% endblock %}
+
+{% block sub_content %}
+<tr>
+  <td style="padding: 20px; font-size: 12px; color: #212124;" align="center">
+    {% blocktrans %}
+    If you did not perform this action, your account may be at risk. Please review your account security and contact your administrator immediately.
+    {% endblocktrans %}
+  </td>
+</tr>
+{% if source %}
+<tr>
+  <td style="padding: 20px; font-size: 12px; color: #212124;" align="center">
+    {% blocktranslate with name=source.from %}
+    This email was sent from the notification transport <code>{{ name }}</code>.
+    {% endblocktranslate %}
+  </td>
+</tr>
+{% endif %}
+{% endblock %}

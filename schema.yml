@@ -45424,9 +45424,13 @@ components:
           nullable: true
         destination_event_user:
           type: boolean
-          description: When enabled, notification will be sent to user the user that
-            triggered the event.When destination_group is configured, notification
-            is sent to both.
+          description: When enabled, notification will be sent to the user that triggered
+            the event.When destination_group is configured, notification is sent to
+            both.
+        destination_event_subject:
+          type: boolean
+          description: When enabled, notification will be sent to the user affected
+            by the event.
       required:
       - destination_group_obj
       - name
@@ -45459,9 +45463,13 @@ components:
             and shown to. If left empty, Notification won't ben sent.
         destination_event_user:
           type: boolean
-          description: When enabled, notification will be sent to user the user that
-            triggered the event.When destination_group is configured, notification
-            is sent to both.
+          description: When enabled, notification will be sent to the user that triggered
+            the event.When destination_group is configured, notification is sent to
+            both.
+        destination_event_subject:
+          type: boolean
+          description: When enabled, notification will be sent to the user affected
+            by the event.
       required:
       - name
     NotificationTransport:
@@ -51657,9 +51665,13 @@ components:
             and shown to. If left empty, Notification won't ben sent.
         destination_event_user:
           type: boolean
-          description: When enabled, notification will be sent to user the user that
-            triggered the event.When destination_group is configured, notification
-            is sent to both.
+          description: When enabled, notification will be sent to the user that triggered
+            the event.When destination_group is configured, notification is sent to
+            both.
+        destination_event_subject:
+          type: boolean
+          description: When enabled, notification will be sent to the user affected
+            by the event.
     PatchedNotificationTransportRequest:
       type: object
       description: NotificationTransport Serializer

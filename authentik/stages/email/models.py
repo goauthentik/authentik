@@ -44,6 +44,12 @@ class EmailTemplates(models.TextChoices):
         "email/invitation.html",
         _("Invitation"),
     )
+    SECURITY_NOTIFICATION = (
+        "email/security_notification.html",
+        _("Security Notification"),
+    )
+
+
 
 
 def get_template_choices():

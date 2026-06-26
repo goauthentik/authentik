@@ -25,6 +25,7 @@ class NotificationRuleSerializer(ModelSerializer):
             "destination_group",
             "destination_group_obj",
             "destination_event_user",
+            "destination_event_subject",
         ]
 
 
