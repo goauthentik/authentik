@@ -57,6 +57,7 @@ class AuthenticatorValidateStage(Stage):
             "Stages used to configure Authenticator when user doesn't have any compatible "
             "devices. After this configuration Stage passes, the user is not prompted again."
         ),
+        through="AuthenticatorValidateStageConfigurationStage",
     )
 
     device_classes = ArrayField(
@@ -85,7 +86,9 @@ class AuthenticatorValidateStage(Stage):
         blank=True,
     )
     webauthn_allowed_device_types = models.ManyToManyField(
-        "authentik_stages_authenticator_webauthn.WebAuthnDeviceType", blank=True
+        "authentik_stages_authenticator_webauthn.WebAuthnDeviceType",
+        blank=True,
+        through="AuthenticatorValidateStageWebAuthnAllowedDeviceType",
     )
 
     email_otp_throttling_factor = models.FloatField(default=1)
@@ -123,3 +126,47 @@ class AuthenticatorValidateStage(Stage):
     class Meta:
         verbose_name = _("Authenticator Validation Stage")
         verbose_name_plural = _("Authenticator Validation Stages")
+
+
+class AuthenticatorValidateStageConfigurationStage(models.Model):
+    authenticator_validate_stage = models.ForeignKey(
+        AuthenticatorValidateStage,
+        on_delete=models.CASCADE,
+        related_name="configuration_stage_m2m_objects",
+    )
+    configuration_stage = models.ForeignKey(
+        Stage, on_delete=models.CASCADE, related_name="authenticator_validate_stage_m2m_objects"
+    )
+
+    class Meta:
+        unique_together = (("authenticator_validate_stage", "configuration_stage"),)
+
+    def __str__(self):
+        return (
+            "AuthenticatorValidateStageConfigurationStage for AuthenticatorValidateStage "
+            f"{self.authenticator_validate_stage_id} "
+            f"and ConfigurationStage {self.configuration_stage_id}."
+        )
+
+
+class AuthenticatorValidateStageWebAuthnAllowedDeviceType(models.Model):
+    authenticator_validate_stage = models.ForeignKey(
+        AuthenticatorValidateStage,
+        on_delete=models.CASCADE,
+        related_name="webauthn_allowed_device_types_m2m_objects",
+    )
+    webauthn_allowed_device_type = models.ForeignKey(
+        "authentik_stages_authenticator_webauthn.WebAuthnDeviceType",
+        on_delete=models.CASCADE,
+        related_name="authenticator_validate_stage_m2m_objects",
+    )
+
+    class Meta:
+        unique_together = (("authenticator_validate_stage", "webauthn_allowed_device_type"),)
+
+    def __str__(self):
+        return (
+            "AuthenticatorValidateStageConfigurationStage for AuthenticatorValidateStage "
+            f"{self.authenticator_validate_stage_id} "
+            f"and WebAuthnAllowedDeviceType {self.webauthn_allowed_device_type_id}."
+        )
