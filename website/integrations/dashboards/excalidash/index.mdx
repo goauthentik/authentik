@@ -1,0 +1,88 @@
+---
+title: Integrate with ExcaliDash
+sidebar_label: ExcaliDash
+support_level: community
+---
+
+import RedirectURI20265Note from "../../_redirect-uri-2026-5-note.mdx";
+
+## What is ExcaliDash?
+
+> ExcaliDash is a self-hosted dashboard and organizer for Excalidraw with live collaboration features.
+>
+> -- https://github.com/ZimengXiong/ExcaliDash
+
+## Preparation
+
+The following placeholders are used in this guide:
+
+- `excalidash.company` is the FQDN of the ExcaliDash installation.
+- `authentik.company` is the FQDN of the authentik installation.
+
+:::info
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
+
+## authentik configuration
+
+<RedirectURI20265Note />
+
+To support the integration of ExcaliDash with authentik, you need to create an email verification scope mapping and an application/provider pair in authentik.
+
+### Create an email verification scope mapping in authentik
+
+ExcaliDash requires verified email addresses unless email verification is disabled in ExcaliDash. As of [authentik 2025.10](/docs/releases/2025/v2025.10.md#default-oauth-scope-mappings), the default behavior is to return `email_verified: False`, so a custom scope mapping is required for ExcaliDash to allow authentication while keeping email verification enabled.
+
+Refer to [Email scope verification](/docs/add-secure-apps/providers/oauth2/index.mdx#email-scope-verification) for instructions on how to create the required custom scope mapping.
+
+### Create an application and provider in authentik
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Note the **slug** value because it will be required later.
+    - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
+    - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+        - Note the **Client ID** and **Client Secret** values because they will be required later.
+        - Add a **Redirect URI** of type `Strict` `Authorization` as `https://excalidash.company/api/auth/oidc/callback`.
+        - Select any available signing key.
+        - **Advanced protocol settings** > **Scopes**:
+            - Add `OAuth Mapping: OpenID 'email' with "email_verified"` to the **Selected Scopes**.
+            - Remove the `authentik default OAuth Mapping: OpenID 'email'` scope.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
+
+3. Click **Submit** to save the new application and provider.
+
+## ExcaliDash configuration
+
+Configure the ExcaliDash backend with the following environment variables. Replace the placeholders with values from your authentik instance.
+
+```env title=".env"
+AUTH_MODE=oidc_enforced
+FRONTEND_URL=https://excalidash.company
+TRUST_PROXY=1
+OIDC_PROVIDER_NAME=authentik
+OIDC_ISSUER_URL=https://authentik.company/application/o/<application_slug>/
+OIDC_CLIENT_ID=<Client ID from authentik>
+OIDC_CLIENT_SECRET=<Client Secret from authentik>
+OIDC_REDIRECT_URI=https://excalidash.company/api/auth/oidc/callback
+```
+
+If you want to keep password login enabled alongside authentik login, set `AUTH_MODE=hybrid` instead.
+
+If you want to map existing authentik groups to the ExcaliDash administrator role, set `OIDC_ADMIN_GROUPS` to a comma-separated list of authentik group names.
+
+```env title=".env"
+OIDC_ADMIN_GROUPS=<authentik group name>
+```
+
+Restart the ExcaliDash backend for the changes to take effect.
+
+## Configuration verification
+
+To confirm that authentik is properly configured with ExcaliDash, open ExcaliDash and click **Continue with authentik**. You should be redirected to authentik and returned to ExcaliDash after a successful login.
+
+## Resources
+
+- [ExcaliDash README - Auth, Onboarding, and First Admin Setup](https://github.com/ZimengXiong/ExcaliDash/tree/v0.5.1#auth-onboarding-and-first-admin-setup)
+- [ExcaliDash authentik OIDC example](https://github.com/ZimengXiong/ExcaliDash/blob/v0.5.1/backend/.env.oidc.authentik.example)
+- [ExcaliDash OIDC configuration source](https://github.com/ZimengXiong/ExcaliDash/blob/v0.5.1/backend/src/config.ts)
