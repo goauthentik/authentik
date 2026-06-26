@@ -125,9 +125,9 @@ Declared in `layers.css`, lowest specificity first:
 - `vendor` PatternFly. Import as `… layer(vendor)`. Frozen; do not hand-edit.
 - `components` Document-scope component rules and the `root{}` blocks that bridge global tokens to
   each component's internal custom properties.
-- `theme` The product's default design tokens — CSS Custom Property definitions only, please.
-- `mode` Overrides of `theme` for accessibility light/dark, high-contrast, reduced motion.
-- `brand` Per-deployment overrides of theme/component tokens. Highest specificity.
+- `theme` Default design tokens — CSS Custom Property definitions only, please.
+- `mode` Overrides `theme` for accessibility light/dark, high-contrast, reduced motion.
+- `brand` Per-deployment overrides of theme/component tokens for branding
     - Database brand overrides: CSS Custom Properties only
     - Path to a custom CSS file: Lets advanced designers use `::part` to do whatever the heck they
       want.
