@@ -27,7 +27,7 @@ This documentation lists only the settings that you need to change from their de
 
 To support the integration of FortiGate Admin Login with authentik, you need to create a SAML property mapping and an application/provider pair in authentik.
 
-### Create a property mapping in authentik
+### Create a property mapping
 
 FortiGate expects a SAML attribute named `username` that contains the FortiGate administrator username. This example uses the authentik username, but you can return any user attribute that matches the FortiGate administrator account name.
 
@@ -45,7 +45,7 @@ FortiGate expects a SAML attribute named `username` that contains the FortiGate 
 
 5. Click **Finish** to save the property mapping.
 
-### Create an application and provider in authentik
+### Create an application and provider
 
 <SAMLProvider20265Warning />
 
