@@ -2,9 +2,9 @@ import "#elements/buttons/ActionButton/index";
 import "#elements/buttons/SpinnerButton/index";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
-import "#elements/tasks/ScheduleForm";
-import "#elements/tasks/TaskList";
-import "#elements/tasks/TaskStatus";
+import "#components/tasks/ScheduleForm";
+import "#components/tasks/TaskList";
+import "#components/tasks/TaskStatus";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { aki } from "#common/api/client";
