@@ -3,8 +3,8 @@ import "#elements/buttons/SpinnerButton/index";
 import "#elements/events/LogViewer";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
-import "#elements/tasks/TaskStatus";
-import "#elements/tasks/TaskStatusSummary";
+import "#components/tasks/TaskStatus";
+import "#components/tasks/TaskStatusSummary";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { aki } from "#common/api/client";
@@ -29,6 +29,14 @@ import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFSpacing from "@patternfly/patternfly/utilities/Spacing/spacing.css";
 
+/**
+ * TaskList
+ *
+ * @summary Displays lists of running tasks performed by the authentik service. Often specialized to
+ * a specific object types within the service, or even individual objects.
+ *
+ */
+
 @customElement("ak-task-list")
 export class TaskList extends Table<Task> {
     public static styles: CSSResult[] = [
@@ -44,8 +52,10 @@ export class TaskList extends Table<Task> {
 
     @property()
     relObjAppLabel?: string;
+
     @property()
     relObjModel?: string;
+
     @property()
     relObjId?: string | number;
 
@@ -180,7 +190,7 @@ export class TaskList extends Table<Task> {
             html`${item.retries}`,
             item.eta !== undefined ? Timestamp(item.eta) : nothing,
             Timestamp(item.mtime ?? new Date()),
-            html`<ak-task-status .status=${item.aggregatedStatus}></ak-task-status>`,
+            html`<ak-task-status status=${item.aggregatedStatus}></ak-task-status>`,
             item.state === TaskStatusEnum.Rejected
                 ? html`<ak-action-button
                       class="pf-m-plain"
