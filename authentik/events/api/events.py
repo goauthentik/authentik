@@ -15,7 +15,7 @@ from django.utils.timezone import now
 from djangoql.schema import DateTimeField as QLDateTimeFIeld
 from djangoql.schema import IntField, StrField
 from drf_spectacular.types import OpenApiTypes
-from drf_spectacular.utils import OpenApiParameter, extend_schema
+from drf_spectacular.utils import OpenApiParameter, extend_schema, extend_schema_field
 from guardian.shortcuts import get_objects_for_user
 from rest_framework.decorators import action
 from rest_framework.fields import (
@@ -25,6 +25,7 @@ from rest_framework.fields import (
     DictField,
     IntegerField,
     ListField,
+    SerializerMethodField,
 )
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -77,9 +78,14 @@ class EventSerializer(ModelSerializer):
 class EventTopPerUserSerializer(PassiveSerializer):
     """Response object of Event's top_per_user"""
 
-    application = DictField()
+    application = SerializerMethodField()
     counted_events = IntegerField()
     unique_users = IntegerField()
+
+    @extend_schema_field(OpenApiTypes.OBJECT)
+    def get_application(self, instance: dict) -> dict:
+        """Return the latest stored application payload for this group."""
+        return instance["applications"][0]
 
 
 class EventsFilter(django_filters.FilterSet):
@@ -244,7 +250,7 @@ class EventViewSet(
         filtered_action = request.query_params.get("action", EventAction.LOGIN)
         top_n = int(request.query_params.get("top_n", "15"))
         application_pk = KeyTextTransform("pk", KeyTransform("authorized_application", "context"))
-        events = list(
+        events = (
             get_objects_for_user(request.user, "authentik_events.view_event")
             .filter(action=filtered_action)
             .exclude(context__authorized_application=None)
@@ -258,8 +264,6 @@ class EventViewSet(
             .values("unique_users", "applications", "counted_events")
             .order_by("-counted_events")[:top_n]
         )
-        for event in events:
-            event["application"] = event.pop("applications")[0]
         return Response(EventTopPerUserSerializer(instance=events, many=True).data)
 
     @extend_schema(
