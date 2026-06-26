@@ -3444,26 +3444,6 @@
   <source>If the password's score is less than or equal this value, the policy will fail.</source>
   <target>Se a pontuação da senha for menor ou igual a esse valor, a política irá falhar.</target>
 </trans-unit>
-<trans-unit id="sd94e99af8b41ff54">
-  <source>0: Too guessable: risky password. (guesses &amp;lt; 10^3)</source>
-  <target>0: Muito adivinhável: senha arriscada. (adivinhações &amp;lt; 10^3)</target>
-</trans-unit>
-<trans-unit id="sc926385d1a624c3a">
-  <source>1: Very guessable: protection from throttled online attacks. (guesses &amp;lt; 10^6)</source>
-  <target>1: Muito adivinhável: proteção contra ataques online com limitação. (adivinhações &amp;lt; 10^6)</target>
-</trans-unit>
-<trans-unit id="s8aae61c41319602c">
-  <source>2: Somewhat guessable: protection from unthrottled online attacks. (guesses &amp;lt; 10^8)</source>
-  <target>2: Algo adivinhável: proteção contra ataques online sem limitação. (adivinhações &amp;lt; 10^8)</target>
-</trans-unit>
-<trans-unit id="sc1f4b57e722a89d6">
-  <source>3: Safely unguessable: moderate protection from offline slow-hash scenario. (guesses &amp;lt; 10^10)</source>
-  <target>3: Seguramente não adivinhável: proteção moderada contra cenários offline de hash lento. (adivinhações &amp;lt; 10^10)</target>
-</trans-unit>
-<trans-unit id="sd47f3d3c9741343d">
-  <source>4: Very unguessable: strong protection from offline slow-hash scenario. (guesses &amp;gt;= 10^10)</source>
-  <target>4: Muito não adivinhável: forte proteção contra cenários offline de hash lento. (adivinhações &amp;gt;= 10^10)</target>
-</trans-unit>
 <trans-unit id="sd6cd7ce2310a73a4">
   <source>Checks the value from the policy request against several rules, mostly used to ensure password strength.</source>
   <target>Verifica o valor da solicitação de política em relação a várias regras, usadas principalmente para garantir a força da senha.</target>
@@ -11513,6 +11493,24 @@ por exemplo: <x id="0" equiv-text="&lt;code&gt;"/>oci://registry.domain.tld/path
 </trans-unit>
 <trans-unit id="s7a72b0fd722d51e0">
   <source>Waiting for dependencies</source>
+</trans-unit>
+<trans-unit id="policy.password.score-threshold.description.too-guessable">
+  <source>0: Too guessable: risky password. (guesses &lt; 10^3)</source>
+</trans-unit>
+<trans-unit id="policy.password.score-threshold.description.very-guessable">
+  <source>1: Very guessable: protection from throttled online attacks. (guesses &lt; 10^6)</source>
+</trans-unit>
+<trans-unit id="policy.password.score-threshold.description.somewhat-guessable">
+  <source>2: Somewhat guessable: protection from unthrottled online attacks. (guesses &lt; 10^8)</source>
+</trans-unit>
+<trans-unit id="policy.password.score-threshold.description.safely-unguessable">
+  <source>3: Safely unguessable: moderate protection from offline slow-hash scenario. (guesses &lt; 10^10)</source>
+</trans-unit>
+<trans-unit id="policy.password.score-threshold.description.very-unguessable">
+  <source>4: Very unguessable: strong protection from offline slow-hash scenario. (guesses &gt;= 10^10)</source>
+</trans-unit>
+<trans-unit id="sb45f9fb4dba6e71a">
+  <source>Unset</source>
 </trans-unit>
 </body>
 </file>
