@@ -1,13 +1,13 @@
 ---
-title: LDAP Source
+title: LDAP source
 ---
 
 Sources allow you to connect authentik to an existing user directory. This source allows you to import users and groups from an LDAP server.
 
 :::info
-For Active Directory, follow the [Active Directory Integration](../../directory-sync/active-directory/index.md)
+For Active Directory, follow the [Active Directory integration](../../directory-sync/active-directory/index.md).
 
-For FreeIPA, follow the [FreeIPA Integration](../../directory-sync/freeipa/index.md)
+For FreeIPA, follow the [FreeIPA integration](../../directory-sync/freeipa/index.md).
 :::
 
 ## Configuration options for LDAP sources
@@ -23,12 +23,12 @@ To create or edit a source in authentik, open the Admin interface and navigate t
 
 #### Connection settings
 
-- **Server URI**: URI to your LDAP server/Domain Controller. You can specify multiple servers by separating URIs with a comma, like `ldap://ldap1.company,ldap://ldap2.company`. When using a DNS entry with multiple Records, authentik will select a random entry when first connecting.
+- **Server URI**: URI to your LDAP server or domain controller. You can specify multiple servers by separating URIs with a comma, such as `ldap://ldap1.company,ldap://ldap2.company`. When using a DNS entry with multiple records, authentik selects a random entry when first connecting.
     - **Enable StartTLS**: Enables StartTLS functionality. To use LDAPS instead, use port `636`.
     - **Use Server URI for SNI verification**: this setting is required for servers using TLS 1.3+
 
 - **TLS Verification Certificate**: Select a certificate/keypair containing the LDAP server CA chain to validate the remote certificate. Leave this field empty to skip certificate validation for LDAPS and StartTLS connections. Leaving it empty does not use the container or operating system trust store.
-- **TLS Client authentication certificate**: Client certificate keypair to authenticate against the LDAP Server's Certificate.
+- **TLS Client authentication certificate**: Client certificate keypair to authenticate against the LDAP server's certificate.
 - **Bind CN**: CN of the bind user. This can also be a UPN in the format of `user@domain.tld`.
 - **Bind Password**: Password used during the bind process.
 - **Base DN**: Base DN (distinguished name) used for all LDAP queries.
@@ -55,7 +55,7 @@ If the LDAP server rejects the TLS handshake, verify that **Server URI**, **Enab
 - **Group object filter**: Consider objects matching this filter to be groups.
 - **Lookup using a user attribute**: Acquire group membership from a User object attribute (`memberOf`) instead of a Group attribute (`member`). This works with directories with nested group memberships (Active Directory, RedHat IDM/FreeIPA), using `memberOf:1.2.840.113556.1.4.1941:` as the group membership field.
 - **Group membership field**: The user object attribute or the group object attribute that determines the group membership for a user. If **Lookup using a user attribute** is set, this should be a user object attribute, otherwise a group object attribute.
-- **User membership attribute**: Attribute name on authentik user objects which is checked against the **Group membership field**. Two common cases are:
+- **User membership attribute**: Attribute name on authentik user objects that is checked against the **Group membership field**. Two common cases are:
     - If your groups have `member` attributes containing DNs, set this to `distinguishedName`. (The `distinguishedName` attribute for User objects in authentik is set automatically.)
     - If your groups have `memberUid` attributes containing `uid`s, set this to `uid`. Make sure that you've created a property mapping that creates an attribute called `uid`.
 - **Object uniqueness field**: This field contains a unique identifier.
@@ -117,7 +117,7 @@ LDAP property mappings are used when you define an LDAP source. These mappings d
 - `authentik default OpenLDAP Mapping: cn`
 - `authentik default OpenLDAP Mapping: uid`
 
-These are configured with most common LDAP setups.
+These are configured for most common LDAP setups.
 
 ### Expression data
 
