@@ -43,7 +43,7 @@ values={[
 
 To support the integration of SeaTable Cloud with authentik, you need to create SAML property mappings and an application/provider pair in authentik.
 
-### Create property mappings in authentik
+### Create property mappings
 
 SeaTable Cloud requires SAML attributes named `contact_email`, `name`, and `uid`. Create three SAML provider property mappings for these attributes.
 
@@ -77,13 +77,13 @@ SeaTable Cloud requires SAML attributes named `contact_email`, `name`, and `uid`
         return request.user.uid
         ```
 
-### Create an application and provider in authentik
+### Create an application and provider
 
 <SAMLProvider20265Warning />
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
-    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Note the application **Slug** because it will be required later.
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Note the application **Slug** because you will use it later as `<application_slug>`.
         - Set the **Launch URL** to the **Login (SSO URL)** value from SeaTable.
     - **Choose a Provider type**: select **SAML Provider** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
@@ -136,13 +136,13 @@ The output of this command will be required as the SeaTable metadata URL.
 
 To support the integration of self-hosted SeaTable with authentik, you need to create an application/provider pair in authentik.
 
-### Create an application and provider in authentik
+### Create an application and provider
 
 <SAMLProvider20265Warning />
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
-    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Note the application **Slug** because it will be required later.
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Note the application **Slug** because you will use it later as `<application_slug>`.
         - Set the **Launch URL** to `https://seatable.company/sso/`.
     - **Choose a Provider type**: select **SAML Provider** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
