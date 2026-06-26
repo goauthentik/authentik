@@ -6,7 +6,7 @@ tags:
     - gitlab
 ---
 
-Allows users to authenticate using their GitLab credentials by configuring GitLab as a federated identity provider via OAuth 2.0.
+This source lets users authenticate with their GitLab credentials by configuring GitLab as a federated identity provider with OAuth 2.0.
 
 ## Preparation
 
@@ -41,7 +41,7 @@ To support the integration of GitLab with authentik, you need to create a GitLab
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Directory** > **Federation and Social login**, click **New Source**, and then configure the following settings:
     - **Select type**: select **GitLab OAuth Source** as the source type.
-    - **Create GitLab OAuth Source**: provide a name, a slug which must match the slug used in the GitLab **Redirect URI** field (e.g. `gitlab`), and set the following required configurations:
+    - **Create GitLab OAuth Source**: provide a name, a slug that must match the slug used in the GitLab **Redirect URI** field (e.g. `gitlab`), and set the following required configurations:
         - Under **Protocol settings**:
             - **Consumer key**: set the **Application ID** from GitLab.
             - **Consumer secret**: set the **Secret** from GitLab.

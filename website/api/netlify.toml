@@ -11,7 +11,7 @@
   base    = "website"
   package = "api"
   command = "npm ci --prefix ../packages/docusaurus-config && npm run build -w api"
-  publish = "website/api/build"
+  publish = "build"
 
 [dev]
   command    = "npm start"
