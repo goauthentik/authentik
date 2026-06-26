@@ -1,0 +1,49 @@
+---
+title: Garage
+---
+
+Use Garage with authentik as a self-hosted S3-compatible object store.
+
+import HttpTesting from "./_http-testing.md";
+import PublicUrl from "./_public-url.md";
+import SharedSetup from "./_shared-setup.md";
+
+<SharedSetup />
+
+## Create the bucket in Garage
+
+On a host that can run the Garage CLI, create a bucket and key for authentik:
+
+```bash
+garage bucket create <bucket_name>
+garage key create authentik-s3
+garage bucket allow \
+  --read \
+  --write \
+  --owner \
+  <bucket_name> \
+  --key authentik-s3
+```
+
+Copy the key ID and secret key from the `garage key create` output.
+
+Expose the Garage S3 API through HTTPS for production use.
+
+The endpoint depends on your Garage deployment. For example:
+
+```text
+https://s3.garage.company
+```
+
+## Configure authentik
+
+Add the shared S3 settings, then set the Garage endpoint:
+
+```env
+AUTHENTIK_STORAGE__S3__ENDPOINT=https://s3.garage.company
+AUTHENTIK_STORAGE__S3__ADDRESSING_STYLE=path
+```
+
+<PublicUrl />
+
+<HttpTesting />
