@@ -29,7 +29,7 @@ This documentation lists only the settings that you need to change from their de
 
 To support the integration of What's Up Docker with authentik, you need to create an application/provider pair in authentik.
 
-### Create an application and provider in authentik
+### Create an application and provider
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
@@ -45,7 +45,7 @@ To support the integration of What's Up Docker with authentik, you need to creat
 
 ## What's Up Docker configuration
 
-To configure What's Up Docker to use authentik, add the following values to your `.env` file:
+To configure What's Up Docker to use authentik for SSO, add the following values to your `.env` file:
 
 ```env title=".env"
 WUD_AUTH_OIDC_AUTHENTIK_CLIENTID=<Client ID from authentik>

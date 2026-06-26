@@ -30,7 +30,7 @@ Configuring SSO with OneUptime Cloud requires a Scale plan or higher. If you are
 
 To support the integration of OneUptime with authentik, you need to create an application/provider pair in authentik.
 
-### Create an application and provider in authentik
+### Create an application and provider
 
 <SAMLProvider20265Warning />
 

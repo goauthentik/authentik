@@ -65,7 +65,7 @@ PostHog requires a permanent ID attribute named `name_id`. PostHog can use the m
         return request.user.name.rsplit(" ", 1)[-1] if " " in request.user.name else ""
         ```
 
-### Create an application and provider in authentik
+### Create an application and provider
 
 <SAMLProvider20265Warning />
 
