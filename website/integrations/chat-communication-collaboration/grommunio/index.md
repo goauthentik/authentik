@@ -35,7 +35,7 @@ To integrate authentik with grommunio, you will need to create an application an
 grommunio Web uses Keycloak-compatible OIDC endpoints. Because authentik does not use Keycloak's `/realms/` endpoint structure, this guide configures an nginx bridge on the grommunio server.
 :::
 
-### Create an application and provider in authentik
+### Create an application and provider
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
