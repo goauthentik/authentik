@@ -48,7 +48,7 @@ Joplin requires SAML assertions to include `email` and `displayName` attributes.
             return request.user.email
             ```
 
-### Create an application and provider in authentik
+### Create an application and provider
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
@@ -61,7 +61,7 @@ Joplin requires SAML assertions to include `email` and `displayName` attributes.
     - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 3. Click **Submit** to save the new application and provider.
 
-### Retrieve provider metadata
+### Download metadata file
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Providers** and click the Joplin provider created in the previous section.
