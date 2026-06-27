@@ -74,7 +74,7 @@ In Wiki.js, configure the authentication strategy with these settings:
 You do not have to enable "Allow self-registration" and select a group to which new users should be assigned, but if you don't, you will have to manually provision users in Wiki.js and ensure that their email addresses match the ones they have in authentik.
 :::
 
-In recent versions of Wiki.js, there is a **Map Groups** feature, which will assign users to Wiki.js groups seen in the token received from authentik. To use this feature, the value of **Groups Claim** (e.g. `wiki-groups`) must be included in the `profile` claim from authentik. Here's how to make that happen:
+Wiki.js has a **Map Groups** feature, which will assign users to Wiki.js groups seen in the token received from authentik. To use this feature, the value of **Groups Claim** (e.g. `wiki-groups`) must be included in the `profile` claim from authentik. To set this up:
 - In authentik, naviate to **Customization** > **Property Mappings** and click **New Property Mapping**.
 - Choose **Scope Mapping**.
 - Give the mapping an appropriate name.
