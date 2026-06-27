@@ -28,7 +28,13 @@ This documentation lists only the settings that you need to change from their de
 
 <RedirectURI20265Note />
 
-To support the integration of Outline with authentik, you need to create an application/provider pair in authentik.
+To support the integration of Outline with authentik, you need to create a scope mapping and an application/provider pair in authentik.
+
+### Create an email verification scope mapping in authentik
+
+Outline requires the email scope to return a value of `email_verified: True`. As of [authentik 2025.10](/docs/releases/2025/v2025.10.md#default-oauth-scope-mappings), the default behavior is to return `email_verified: False`, so a custom scope mapping is required for Outline to allow authentication.
+
+Refer to [Email scope verification](/docs/add-secure-apps/providers/oauth2/index.mdx#email-scope-verification) for instructions on how to create the required custom scope mapping.
 
 ### Create an application and provider in authentik
 
@@ -41,7 +47,10 @@ To support the integration of Outline with authentik, you need to create an appl
     - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
     - Add a **Redirect URI** of type `Strict` `Authorization` as `https://outline.company/auth/oidc.callback`.
     - Select any available signing key.
-    - Under **Advanced protocol settings**, set the **Subject Mode** to **Based on the User's username**.
+    - Under **Advanced protocol settings**:
+        - Set the **Subject Mode** to **Based on the User's username**.
+        - Add `OAuth Mapping: OpenID 'email' with "email_verified"` to the **Selected Scopes**.
+        - Remove the `authentik default OAuth Mapping: OpenID 'email'` scope.
 - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 
 3. Click **Submit** to save the new application and provider.

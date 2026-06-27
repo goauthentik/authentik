@@ -21,7 +21,7 @@ jobs:
         command:
           - prettier-check
     steps:
-      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v5
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v5
       - uses: ./.github/actions/setup-node
         with:
           working-directory: website
@@ -31,7 +31,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v5
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v5
       - uses: ./.github/actions/setup-node
         with:
           working-directory: website
@@ -60,7 +60,7 @@ jobs:
       - lint
       - build
     steps:
-      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v5
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v5
       - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v5
         with:
           name: api-docs
@@ -74,7 +74,8 @@ jobs:
         env:
           NETLIFY_SITE_ID: authentik-api-docs.netlify.app
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
-        run: npx netlify deploy --no-build --prod
+        run: |
+          npx netlify deploy --no-build -d ./build --prod
       - name: Deploy Netlify (Preview)
         if: github.event_name == 'pull_request' || github.ref != 'refs/heads/main'
         working-directory: website/api
@@ -82,6 +83,6 @@ jobs:
           NETLIFY_SITE_ID: authentik-api-docs.netlify.app
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
         run: |
-          if [ -n "${VAR}" ]; then
-            npx netlify deploy --no-build --alias=deploy-preview-${{ github.event.number }}
+          if [ -n "${NETLIFY_AUTH_TOKEN}" ]; then
+            npx netlify deploy --no-build -d ./build --alias=deploy-preview-${{ github.event.number }}
           fi
