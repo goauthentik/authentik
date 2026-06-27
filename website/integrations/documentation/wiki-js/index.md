@@ -60,9 +60,9 @@ In Wiki.js, configure the authentication strategy with these settings:
 
 - **Client ID**: Client ID from the authentik provider.
 - **Client Secret**: Client Secret from the authentik provider.
-- **Authorization Endpoint URL**: https://authentik.company/application/o/authorize/
-- **Token Endpoint URL**: https://authentik.company/application/o/token/
-- **User Info Endpoint URL**: https://authentik.company/application/o/userinfo/
+- **Authorization Endpoint URL**: `https://authentik.company/application/o/authorize/`
+- **Token Endpoint URL**: `https://authentik.company/application/o/token/`
+- **User Info Endpoint URL**: `https://authentik.company/application/o/userinfo/`
 - **Issuer**: `https://authentik.company/application/o/<application_slug>/`
 - **Logout URL**: `https://authentik.company/application/o/<application_slug>/end-session/`
 - **Allow self-registration**: Enabled
