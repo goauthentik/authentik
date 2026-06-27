@@ -41,6 +41,28 @@ class TestGroupsAPI(APITestCase):
         self.assertEqual(response.data["results"][0]["users"], [self.user.pk])
         self.assertIsNone(response.data["results"][0]["users_obj"])
 
+    def test_list_without_users_unpaginated_includes_user_pks(self):
+        """Test unpaginated listing without users_obj still includes user PKs."""
+        admin = create_test_admin_user()
+        group = Group.objects.create(name=generate_id())
+        group.users.add(self.user)
+        self.client.force_login(admin)
+
+        pagination_class = GroupViewSet.pagination_class
+        GroupViewSet.pagination_class = None
+        try:
+            response = self.client.get(
+                reverse("authentik_api:group-list"),
+                {"include_users": "false", "name": group.name},
+            )
+        finally:
+            GroupViewSet.pagination_class = pagination_class
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data), 1)
+        self.assertEqual(response.data[0]["users"], [self.user.pk])
+        self.assertIsNone(response.data[0]["users_obj"])
+
     def test_list_without_users_batches_user_pks(self):
         """Test include_users=false uses batched raw user PKs for serialization."""
         users = [self.user, create_test_user()]
