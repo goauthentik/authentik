@@ -5,7 +5,7 @@ http:
             forwardAuth:
                 address: http://outpost.company:9000/outpost.goauthentik.io/auth/traefik
                 trustForwardHeader: true
-                maxResponseBodySize: 4194304  # 4 MiB is a safe, generous cap.
+                maxResponseBodySize: 4194304
                 authResponseHeaders:
                     - X-authentik-username
                     - X-authentik-groups
