@@ -70,16 +70,6 @@ To support the integration of Cisco Secure Firewall Management Center with authe
 7. Click **Next**.
 8. Click **Save** to apply the configuration.
 
-<!--
-6. Confirm the **Service Provider (SP) Settings** that FMC auto-populates:
-    - **SP Entity ID**: should match the **Audience** value (`https://fmc.company`) configured in the authentik provider.
-    - **ACS URL**: should match the **ACS URL** value (`https://fmc.company/saml/SSO`) configured in the authentik provider.
-
-:::info User accounts
-FMC requires that a local user account exists with a username matching the value sent in the SAML assertion before an SSO login can succeed. Ensure that local accounts are pre-created in FMC, or confirm that your FMC version supports just-in-time (JIT) user provisioning via SSO.
-:::
--->
-
 ## Configuration verification
 
 To confirm that authentik is properly configured with Cisco Secure Firewall Management Center, navigate to your FMC login page and select the SSO login option. Complete the authentik sign-in flow. After authentication, FMC should redirect you back and grant access to the management interface.
