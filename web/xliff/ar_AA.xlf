@@ -12297,7 +12297,7 @@ Bindings to groups/users are checked against the user of the event.</target>
 </trans-unit>
 <trans-unit id="wizard.step.choose-type">
   <source>Choose <x id="0" equiv-text="${this.verboseName}"/> Type</source>
-  <target>Choose <x id="0" equiv-text="${this.verboseName}"/> Type</target>
+  <target>اختر نوع <x id="0" equiv-text="${this.verboseName}"/></target>
   <note from="lit-localize">Label for the initial step in the creation wizard where the type of the entity being created is selected. The placeholder {entity} is replaced with the singular name of the entity, for example &apos;Choose User Type&apos; or &apos;Choose Group Type&apos;.</note>
 </trans-unit>
 <trans-unit id="wizard.step.details">
