@@ -31,6 +31,9 @@ class Node:
     def __ne__(self, other):
         return not self.__eq__(other)
 
+    def __hash__(self):
+        return self.__str__()
+
 
 class Expression(Node):
     def __init__(self, left, operator, right):
@@ -82,7 +85,7 @@ class Comparison(Operator):
 
 class Variable(Node):
 
-    def __init__(self, name: str, parser: "AKQLParser"):
+    def __init__(self, name: str, parser: AKQLParser):
         self.name = name
         self.parser = parser
 

@@ -2,6 +2,7 @@
 
 from json import loads
 
+from akql.schema import BoolField, JSONSearchField, StrField
 from django.db.models import Prefetch
 from django.http import Http404
 from django.utils.translation import gettext as _
@@ -25,7 +26,6 @@ from rest_framework.serializers import ListSerializer, ValidationError
 from rest_framework.viewsets import ModelViewSet
 
 from authentik.api.authentication import TokenAuthentication
-from akql.schema import BoolField, JSONSearchField, StrField
 from authentik.api.validation import validate
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import JSONDictField, ModelSerializer, PassiveSerializer

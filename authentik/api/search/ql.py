@@ -3,9 +3,7 @@
 from akql.exceptions import AKQLError
 from akql.queryset import apply_search
 from akql.schema import AKQLSchema
-from django.apps import apps
 from django.db.models import QuerySet
-from drf_spectacular.plumbing import ResolvedComponent, build_object_type
 from rest_framework.filters import SearchFilter
 from rest_framework.request import Request
 from structlog.stdlib import get_logger

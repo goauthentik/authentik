@@ -4,6 +4,8 @@ from collections import OrderedDict
 from datetime import timedelta
 
 import django_filters
+from akql.schema import ChoiceSearchField, IntField, JSONSearchField, StrField
+from akql.schema import DateTimeField as QLDateTimeFIeld
 from django.db.models import Count, ExpressionWrapper, F, QuerySet
 from django.db.models import DateTimeField as DjangoDateTimeField
 from django.db.models.fields.json import KeyTextTransform, KeyTransform
@@ -27,8 +29,6 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
-from akql.schema import ChoiceSearchField, DateTimeField, JSONSearchField, StrField, IntField
-from akql.schema import DateTimeField as QLDateTimeFIeld
 from authentik.api.validation import validate
 from authentik.core.api.object_types import TypeCreateSerializer
 from authentik.core.api.utils import ModelSerializer, PassiveSerializer

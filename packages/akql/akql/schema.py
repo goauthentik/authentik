@@ -14,6 +14,7 @@ from django.utils.timezone import get_current_timezone
 
 from akql.ast import Comparison, Const, List, Logical, Name, Node, Variable
 from akql.exceptions import AKQLSchemaError
+from akql.serializers import AKQLSchemaSerializer
 
 
 class AKQLField:
@@ -43,7 +44,7 @@ class AKQLField:
         if self.model:
             try:
                 return self.model._meta.get_field(self.name).choices
-            except (AttributeError, FieldDoesNotExist):
+            except AttributeError, FieldDoesNotExist:
                 pass
         return []
 
@@ -303,6 +304,7 @@ class RelationField(AKQLField):
     def relation(self):
         return AKQLSchema.model_label(self.related_model)
 
+
 class JSONSearchField(StrField):
     """JSON field for DjangoQL"""
 
@@ -357,7 +359,7 @@ class JSONSearchField(StrField):
             """)  # nosec
             return (x[0] for x in cursor.fetchall())
 
-    def get_fixed_structure(self, serializer: DjangoQLSchemaSerializer) -> OrderedDict:
+    def get_fixed_structure(self, serializer: AKQLSchemaSerializer) -> OrderedDict:
         new_dict = OrderedDict()
         if not self.fixed_structure:
             return new_dict
@@ -368,7 +370,7 @@ class JSONSearchField(StrField):
                 new_dict.update(value.get_nested_options(serializer))
         return new_dict
 
-    def get_nested_options(self, serializer: DjangoQLSchemaSerializer) -> OrderedDict:
+    def get_nested_options(self, serializer: AKQLSchemaSerializer) -> OrderedDict:
         """Get keys of all nested objects to show autocomplete"""
         if not self.suggest_nested:
             if self.fixed_structure:
@@ -405,9 +407,7 @@ class JSONSearchField(StrField):
                     if not relation_structure[relation_key].get(sub_relation_key, None):
                         relation_structure[relation_key][sub_relation_key] = sub_value
                     else:
-                        relation_structure[relation_key][sub_relation_key].update(
-                            sub_value
-                        )
+                        relation_structure[relation_key][sub_relation_key].update(sub_value)
 
         final_dict = defaultdict(dict)
 

@@ -20,6 +20,7 @@ def postprocess_schema_search_autocomplete(result, generator: SchemaGenerator, *
     generator.registry.register_on_missing(AUTOCOMPLETE_SCHEMA)
 
     return result
+
     def serialize_field(self, field):
         result = super().serialize_field(field)
         if isinstance(field, JSONSearchField):
