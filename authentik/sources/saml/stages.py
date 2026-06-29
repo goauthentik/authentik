@@ -17,7 +17,7 @@ from authentik.sources.saml.models import (
 
 LOGGER = get_logger()
 
-PLAN_CONTEXT_SAML_SESSION_DATA = "saml_session_data"
+PLAN_CONTEXT_SAML_SESSION_DATA = "goauthentik.io/sources/saml/session_data"
 
 
 class SAMLPostSourceStage(PostSourceStage):
