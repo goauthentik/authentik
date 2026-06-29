@@ -4,7 +4,7 @@ sidebar_label: OnlyOffice
 support_level: community
 ---
 
-## What is OnlyOffice?
+## What is ONLYOFFICE?
 
 > ONLYOFFICE is an online office and productivity suite for document editing and collaboration. ONLYOFFICE Workspace adds document management, projects, CRM, mail, calendars, and an administrative control panel.
 >
@@ -36,7 +36,7 @@ This documentation lists only the settings that you need to change from their de
 
 To support the integration of ONLYOFFICE Workspace with authentik, you need to create an application/provider pair in authentik.
 
-### Create an application and provider in authentik
+### Create an application and provider
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
