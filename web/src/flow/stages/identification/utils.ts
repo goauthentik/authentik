@@ -1,3 +1,5 @@
+import { MessageFormatter } from "#common/ui/locale/format";
+
 import { LoginSource, UserFieldsEnum } from "@goauthentik/api";
 
 import { match } from "ts-pattern";
@@ -9,7 +11,7 @@ export const OR_LIST_FORMATTERS: Intl.ListFormat = new Intl.ListFormat("default"
     type: "disjunction",
 });
 
-export const UIFieldLabels: Record<UserFieldsEnum, () => string> = {
+export const UIFieldLabels: Record<UserFieldsEnum, MessageFormatter<string>> = {
     [UserFieldsEnum.Username]: () => msg("Username"),
     [UserFieldsEnum.Email]: () => msg("Email"),
     [UserFieldsEnum.Upn]: () => msg("UPN"),
