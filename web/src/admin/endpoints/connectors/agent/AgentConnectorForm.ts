@@ -9,13 +9,12 @@ import "#admin/common/ak-crypto-certificate-search";
 import "#elements/utils/TimeDeltaHelp";
 import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { ModelForm } from "#elements/forms/ModelForm";
 import { WithBrandConfig } from "#elements/mixins/branding";
 import { ifPresent } from "#elements/utils/attributes";
 
-import { gidStartNumberHelp, uidStartNumberHelp } from "#admin/providers/ldap/LDAPOptionsAndHelp";
 import {
     oauth2ProvidersProvider,
     oauth2ProvidersSelector,
@@ -25,7 +24,7 @@ import {
     AgentConnector,
     AgentConnectorRequest,
     EndpointsApi,
-    FlowsInstancesListDesignationEnum,
+    FlowDesignationEnum,
 } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
@@ -36,7 +35,7 @@ import { ifDefined } from "lit/directives/if-defined.js";
 @customElement("ak-endpoints-connector-agent-form")
 export class AgentConnectorForm extends WithBrandConfig(ModelForm<AgentConnector, string>) {
     loadInstance(pk: string): Promise<AgentConnector> {
-        return new EndpointsApi(DEFAULT_CONFIG).endpointsAgentsConnectorsRetrieve({
+        return aki(EndpointsApi).endpointsAgentsConnectorsRetrieve({
             connectorUuid: pk,
         });
     }
@@ -49,12 +48,12 @@ export class AgentConnectorForm extends WithBrandConfig(ModelForm<AgentConnector
 
     async send(data: AgentConnector): Promise<AgentConnector> {
         if (this.instance) {
-            return new EndpointsApi(DEFAULT_CONFIG).endpointsAgentsConnectorsPartialUpdate({
+            return aki(EndpointsApi).endpointsAgentsConnectorsPartialUpdate({
                 connectorUuid: this.instance.connectorUuid!,
                 patchedAgentConnectorRequest: data,
             });
         }
-        return new EndpointsApi(DEFAULT_CONFIG).endpointsAgentsConnectorsCreate({
+        return aki(EndpointsApi).endpointsAgentsConnectorsCreate({
             agentConnectorRequest: data as unknown as AgentConnectorRequest,
         });
     }
@@ -62,9 +61,11 @@ export class AgentConnectorForm extends WithBrandConfig(ModelForm<AgentConnector
     renderForm() {
         return html`<ak-text-input
                 name="name"
-                placeholder=${msg("Connector name...")}
+                placeholder=${msg("Type a connector name...")}
                 label=${msg("Connector name")}
                 value=${ifDefined(this.instance?.name)}
+                input-hint="code"
+                autofocus
                 required
             ></ak-text-input>
             <ak-text-input
@@ -88,12 +89,12 @@ export class AgentConnectorForm extends WithBrandConfig(ModelForm<AgentConnector
             <ak-form-group label="${msg("Authentication settings")}">
                 <div class="pf-c-form">
                     <ak-form-element-horizontal
-                        label=${msg("Authorization flow")}
+                        label=${msg("Authorization Flow")}
                         name="authorizationFlow"
                     >
                         <ak-flow-search
-                            label=${msg("Authorization flow")}
-                            flowType=${FlowsInstancesListDesignationEnum.Authorization}
+                            label=${msg("Authorization Flow")}
+                            flowType=${FlowDesignationEnum.Authorization}
                             .currentFlow=${this.instance?.authorizationFlow}
                         ></ak-flow-search>
                         <p class="pf-c-form__helper-text">
@@ -119,7 +120,7 @@ export class AgentConnectorForm extends WithBrandConfig(ModelForm<AgentConnector
                     >
                     </ak-switch-input>
                     <ak-form-element-horizontal
-                        label=${msg("Federated OIDC Providers")}
+                        label=${msg("Federated OAuth2/OpenID Providers")}
                         name="jwtFederationProviders"
                     >
                         <ak-dual-select-dynamic-selected
@@ -183,15 +184,19 @@ export class AgentConnectorForm extends WithBrandConfig(ModelForm<AgentConnector
                         label=${msg("NSS User ID offset")}
                         required
                         name="nssUidOffset"
-                        value="${this.instance?.nssUidOffset ?? 1000}"
-                        help=${uidStartNumberHelp}
+                        value="${this.instance?.nssUidOffset ?? 2000}"
+                        help=${msg(
+                            "The start for user ID numbers, this number is added to the user ID to make sure that the numbers aren't too low for POSIX users. Default is 2000 to prevent collisions with local users.",
+                        )}
                     ></ak-number-input>
                     <ak-number-input
                         label=${msg("NSS Group ID offset")}
                         required
                         name="nssGidOffset"
-                        value="${this.instance?.nssGidOffset ?? 1000}"
-                        help=${gidStartNumberHelp}
+                        value="${this.instance?.nssGidOffset ?? 4000}"
+                        help=${msg(
+                            "The start for group ID numbers, this number is added to a number generated from the groups' ID to make sure that the numbers aren't too low for POSIX groups. Default is 4000 to prevent collisions with local groups.",
+                        )}
                     ></ak-number-input>
                 </div>
             </ak-form-group>`;

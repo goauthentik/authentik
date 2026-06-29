@@ -11,11 +11,11 @@ import { remarkHeadings } from "#elements/ak-mdx/remark/remark-headings";
 import { remarkLists } from "#elements/ak-mdx/remark/remark-lists";
 import Styles from "#elements/ak-mdx/styles.css";
 import { AKElement } from "#elements/Base";
+import MermaidStyles from "#elements/mermaid/mermaid.css";
+import { loadMermaid } from "#elements/mermaid/utils";
 
 import { DistDirectoryName, StaticDirectoryName } from "#paths";
 import OneDark from "#styles/atom/one-dark.css";
-
-import { UiThemeEnum } from "@goauthentik/api";
 
 import { compile as compileMDX, run as runMDX } from "@mdx-js/mdx";
 import apacheGrammar from "highlight.js/lib/languages/apache";
@@ -39,7 +39,6 @@ import { customElement, property } from "lit/decorators.js";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFList from "@patternfly/patternfly/components/List/list.css";
 import PFTable from "@patternfly/patternfly/components/Table/table.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 const highlightThemeOptions: HighlightOptions = {
     languages: {
@@ -73,11 +72,12 @@ export class AKMDX extends AKElement {
 
     static styles = [
         // ---
-        PFBase,
+
         PFList,
         PFTable,
         PFContent,
         OneDark,
+        MermaidStyles,
         Styles,
     ];
 
@@ -114,6 +114,8 @@ export class AKMDX extends AKElement {
             mdxModule.content,
         );
 
+        const { activeTheme } = this;
+
         const mdx = await compileMDX(normalized, {
             outputFormat: "function-body",
             remarkPlugins: [
@@ -133,7 +135,8 @@ export class AKMDX extends AKElement {
                     rehypeMermaid,
                     {
                         prefix: "mermaid-svg-",
-                        colorScheme: this.activeTheme === UiThemeEnum.Dark ? "dark" : "light",
+                        colorScheme: activeTheme,
+                        mermaidConfig: await loadMermaid(activeTheme),
                     } satisfies RehypeMermaidOptions,
                 ],
             ],

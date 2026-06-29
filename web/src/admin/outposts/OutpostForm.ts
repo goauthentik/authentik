@@ -5,7 +5,7 @@ import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/index";
 import "#components/ak-text-input";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { docLink } from "#common/global";
 import { groupBy } from "#common/utils";
 
@@ -36,11 +36,11 @@ import { map } from "lit/directives/map.js";
 interface ProviderBase {
     pk: number;
     name: string;
-    assignedBackchannelApplicationName?: string;
-    assignedApplicationName?: string;
+    assignedBackchannelApplicationName?: string | null;
+    assignedApplicationName?: string | null;
 }
 
-const api = () => new ProvidersApi(DEFAULT_CONFIG);
+const api = () => aki(ProvidersApi);
 const providerListArgs = (page: number, search = "") => ({
     ordering: "name",
     applicationIsnull: false,
@@ -95,19 +95,29 @@ function providerProvider(type: OutpostTypeEnum): DataProvider {
 
 @customElement("ak-outpost-form")
 export class OutpostForm extends ModelForm<Outpost, string> {
-    @property()
-    type: OutpostTypeEnum = OutpostTypeEnum.Proxy;
+    public static verboseName = msg("Outpost");
+    public static verboseNamePlural = msg("Outposts");
+
+    @property({ type: String })
+    public type: OutpostTypeEnum = OutpostTypeEnum.Proxy;
 
     @property({ type: Boolean })
-    embedded = false;
+    public embedded = false;
 
     @state()
-    providers: DataProvider = providerProvider(this.type);
+    protected providers: DataProvider = providerProvider(this.type);
 
-    defaultConfig?: OutpostDefaultConfig;
+    protected defaultConfig?: OutpostDefaultConfig;
+
+    public override reset(): void {
+        super.reset();
+
+        this.type = OutpostTypeEnum.Proxy;
+        this.providers = providerProvider(this.type);
+    }
 
     async loadInstance(pk: string): Promise<Outpost> {
-        const o = await new OutpostsApi(DEFAULT_CONFIG).outpostsInstancesRetrieve({
+        const o = await aki(OutpostsApi).outpostsInstancesRetrieve({
             uuid: pk,
         });
         this.type = o.type || OutpostTypeEnum.Proxy;
@@ -116,9 +126,7 @@ export class OutpostForm extends ModelForm<Outpost, string> {
     }
 
     async load(): Promise<void> {
-        this.defaultConfig = await new OutpostsApi(
-            DEFAULT_CONFIG,
-        ).outpostsInstancesDefaultSettingsRetrieve();
+        this.defaultConfig = await aki(OutpostsApi).outpostsInstancesDefaultSettingsRetrieve();
         this.providers = providerProvider(this.type);
     }
 
@@ -130,17 +138,17 @@ export class OutpostForm extends ModelForm<Outpost, string> {
 
     async send(data: Outpost): Promise<Outpost> {
         if (this.instance) {
-            return new OutpostsApi(DEFAULT_CONFIG).outpostsInstancesUpdate({
+            return aki(OutpostsApi).outpostsInstancesUpdate({
                 uuid: this.instance.pk || "",
                 outpostRequest: data,
             });
         }
-        return new OutpostsApi(DEFAULT_CONFIG).outpostsInstancesCreate({
+        return aki(OutpostsApi).outpostsInstancesCreate({
             outpostRequest: data,
         });
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         const typeOptions = [
             [OutpostTypeEnum.Proxy, msg("Proxy")],
             [OutpostTypeEnum.Ldap, msg("LDAP")],
@@ -200,17 +208,14 @@ export class OutpostForm extends ModelForm<Outpost, string> {
                         if (query !== undefined) {
                             args.search = query;
                         }
-                        const items = await new OutpostsApi(
-                            DEFAULT_CONFIG,
-                        ).outpostsServiceConnectionsAllList(args);
+                        const items =
+                            await aki(OutpostsApi).outpostsServiceConnectionsAllList(args);
                         return items.results;
                     }}
                     .renderElement=${(item: ServiceConnection): string => {
                         return item.name;
                     }}
-                    .value=${(item: ServiceConnection | undefined): string | undefined => {
-                        return item?.pk;
-                    }}
+                    .value=${(item: ServiceConnection | null) => item?.pk}
                     .groupBy=${(items: ServiceConnection[]) => {
                         return groupBy(items, (item) => item.verboseName);
                     }}

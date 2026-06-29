@@ -76,13 +76,6 @@ export function styleLoaderPlugin({
                 }
             });
 
-            build.onLoad({ filter: /patternfly-base.css/ }, () => {
-                return {
-                    contents: "",
-                    loader: "text",
-                };
-            });
-
             build.onResolve(...fontResolverArgs);
 
             /**

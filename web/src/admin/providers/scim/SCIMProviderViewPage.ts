@@ -2,27 +2,31 @@ import "#admin/providers/RelatedApplicationButton";
 import "#admin/providers/scim/SCIMProviderForm";
 import "#admin/providers/scim/SCIMProviderGroupList";
 import "#admin/providers/scim/SCIMProviderUserList";
-import "#admin/rbac/ObjectPermissionsPage";
+import "#admin/rbac/ak-rbac-object-permission-page";
+import "#admin/rbac/ObjectPermissionModal";
 import "#components/ak-status-label";
-import "#components/events/ObjectChangelog";
+import "#admin/events/ObjectChangelog";
 import "#elements/Tabs";
 import "#elements/ak-mdx/index";
 import "#elements/buttons/ActionButton/index";
 import "#elements/buttons/ModalButton";
-import "#elements/sync/SyncStatusCard";
-import "#elements/tasks/ScheduleList";
-import "#elements/tasks/TaskList";
+import "#components/sync/SyncStatusCard";
+import "#components/tasks/ScheduleList";
+import "#components/tasks/TaskList";
+import "#elements/timestamp/ak-timestamp";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { EVENT_REFRESH } from "#common/constants";
 
 import { AKElement } from "#elements/Base";
 import { SlottedTemplateResult } from "#elements/types";
 
+import renderDescriptionList from "#components/DescriptionList";
+
 import {
     ModelEnum,
     ProvidersApi,
-    RbacPermissionsAssignedByRolesListModelEnum,
+    SCIMAuthenticationModeEnum,
     SCIMProvider,
 } from "@goauthentik/api";
 
@@ -43,7 +47,6 @@ import PFList from "@patternfly/patternfly/components/List/list.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFStack from "@patternfly/patternfly/layouts/Stack/stack.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-provider-scim-view")
 export class SCIMProviderViewPage extends AKElement {
@@ -54,7 +57,6 @@ export class SCIMProviderViewPage extends AKElement {
     provider?: SCIMProvider;
 
     static styles: CSSResult[] = [
-        PFBase,
         PFButton,
         PFBanner,
         PFForm,
@@ -77,7 +79,7 @@ export class SCIMProviderViewPage extends AKElement {
     }
 
     fetchProvider(id: number) {
-        new ProvidersApi(DEFAULT_CONFIG)
+        aki(ProvidersApi)
             .providersScimRetrieve({ id })
             .then((prov) => (this.provider = prov));
     }
@@ -112,13 +114,11 @@ export class SCIMProviderViewPage extends AKElement {
                     class="pf-c-page__main-section pf-m-no-padding-mobile"
                 >
                     <div class="pf-c-card">
-                        <div class="pf-c-card__body">
-                            <ak-object-changelog
-                                targetModelPk=${this.provider?.pk || ""}
-                                targetModelName=${this.provider?.metaModelName || ""}
-                            >
-                            </ak-object-changelog>
-                        </div>
+                        <ak-object-changelog
+                            targetModelPk=${this.provider?.pk || ""}
+                            targetModelName=${this.provider?.metaModelName || ""}
+                        >
+                        </ak-object-changelog>
                     </div>
                 </div>
                 <div
@@ -155,11 +155,47 @@ export class SCIMProviderViewPage extends AKElement {
                     slot="page-permissions"
                     id="page-permissions"
                     aria-label="${msg("Permissions")}"
-                    model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikProvidersScimScimprovider}
+                    model=${ModelEnum.AuthentikProvidersScimScimprovider}
                     objectPk=${this.provider.pk}
                 ></ak-rbac-object-permission-page>
             </ak-tabs>
         </main>`;
+    }
+
+    renderSyncStatusExtra() {
+        if (
+            this.provider?.authMode !== SCIMAuthenticationModeEnum.Oauth &&
+            this.provider?.authMode !== SCIMAuthenticationModeEnum.OauthInteractive
+        )
+            return nothing;
+        return html`
+            <div class="pf-c-description-list__group">
+                <dt class="pf-c-description-list__term">
+                    <span class="pf-c-description-list__text"
+                        >${msg("OAuth Token last updated")}</span
+                    >
+                </dt>
+                <dd class="pf-c-description-list__description">
+                    <div class="pf-c-description-list__text">
+                        <ak-timestamp
+                            .timestamp=${this.provider?.authOauthTokenLastUpdated}
+                        ></ak-timestamp>
+                    </div>
+                </dd>
+            </div>
+            <div class="pf-c-description-list__group">
+                <dt class="pf-c-description-list__term">
+                    <span class="pf-c-description-list__text">${msg("OAuth Token expires")}</span>
+                </dt>
+                <dd class="pf-c-description-list__description">
+                    <div class="pf-c-description-list__text">
+                        <ak-timestamp
+                            .timestamp=${this.provider?.authOauthTokenExpires}
+                        ></ak-timestamp>
+                    </div>
+                </dd>
+            </div>
+        `;
     }
 
     renderTabOverview(): SlottedTemplateResult {
@@ -176,113 +212,114 @@ export class SCIMProviderViewPage extends AKElement {
                 : nothing}
             <div class="pf-c-page__main-section pf-m-no-padding-mobile pf-l-grid pf-m-gutter">
                 <div
-                    class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-6-col-on-xl pf-m-6-col-on-2xl"
+                    class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-4-col-on-xl pf-m-4-col-on-2xl"
                 >
+                    <div class="pf-c-card__title">${msg("Info")}</div>
                     <div class="pf-c-card__body">
-                        <dl class="pf-c-description-list">
-                            <div class="pf-c-description-list__group">
-                                <dt class="pf-c-description-list__term">
-                                    <span class="pf-c-description-list__text">${msg("Name")}</span>
-                                </dt>
-                                <dd class="pf-c-description-list__description">
-                                    <div class="pf-c-description-list__text">
-                                        ${this.provider.name}
-                                    </div>
-                                </dd>
-                            </div>
-                            <div class="pf-c-description-list__group">
-                                <dt class="pf-c-description-list__term">
-                                    <span class="pf-c-description-list__text"
-                                        >${msg("Assigned to application")}</span
+                        ${renderDescriptionList([
+                            [msg("Name"), this.provider.name],
+                            [
+                                msg("Assigned to application"),
+                                html`<ak-provider-related-application
+                                    mode="backchannel"
+                                    .provider=${this.provider}
+                                ></ak-provider-related-application>`,
+                            ],
+                            [
+                                msg("Dry-run"),
+                                html`<ak-status-label
+                                    ?good=${!this.provider.dryRun}
+                                    type="info"
+                                    good-label=${msg("No")}
+                                    bad-label=${msg("Yes")}
+                                ></ak-status-label>`,
+                            ],
+                            [msg("URL"), this.provider.url],
+                            [
+                                msg("Service Provider Config cache timeout"),
+                                this.provider.serviceProviderConfigCacheTimeout,
+                            ],
+                            [
+                                msg("Related actions"),
+                                html`<ak-forms-modal>
+                                    <span slot="submit">${msg("Save Changes")}</span>
+                                    <span slot="header">${msg("Update SCIM Provider")}</span>
+                                    <ak-provider-scim-form
+                                        slot="form"
+                                        .instancePk=${this.provider.pk}
                                     >
-                                </dt>
-                                <dd class="pf-c-description-list__description">
-                                    <div class="pf-c-description-list__text">
-                                        <ak-provider-related-application
-                                            mode="backchannel"
-                                            .provider=${this.provider}
-                                        ></ak-provider-related-application>
-                                    </div>
-                                </dd>
-                            </div>
-                            <div class="pf-c-description-list__group">
-                                <dt class="pf-c-description-list__term">
-                                    <span class="pf-c-description-list__text"
-                                        >${msg("Dry-run")}</span
+                                    </ak-provider-scim-form>
+                                    <button
+                                        slot="trigger"
+                                        class="pf-c-button pf-m-primary pf-m-block"
                                     >
-                                </dt>
-                                <dd class="pf-c-description-list__description">
-                                    <div class="pf-c-description-list__text">
-                                        <ak-status-label
-                                            ?good=${!this.provider.dryRun}
-                                            type="info"
-                                            good-label=${msg("No")}
-                                            bad-label=${msg("Yes")}
-                                        ></ak-status-label>
-                                    </div>
-                                </dd>
-                            </div>
-                            <div class="pf-c-description-list__group">
-                                <dt class="pf-c-description-list__term">
-                                    <span class="pf-c-description-list__text">${msg("URL")}</span>
-                                </dt>
-                                <dd class="pf-c-description-list__description">
-                                    <div class="pf-c-description-list__text">
-                                        ${this.provider.url}
-                                    </div>
-                                </dd>
-                            </div>
-                            <div class="pf-c-description-list__group">
-                                <dt class="pf-c-description-list__term">
-                                    <span class="pf-c-description-list__text">
-                                        ${msg("Service Provider Config cache timeout")}
-                                    </span>
-                                </dt>
-                                <dd class="pf-c-description-list__description">
-                                    <div class="pf-c-description-list__text">
-                                        ${this.provider.serviceProviderConfigCacheTimeout}
-                                    </div>
-                                </dd>
-                            </div>
-                        </dl>
-                    </div>
-                    <div class="pf-c-card__footer">
-                        <ak-forms-modal>
-                            <span slot="submit">${msg("Update")}</span>
-                            <span slot="header">${msg("Update SCIM Provider")}</span>
-                            <ak-provider-scim-form slot="form" .instancePk=${this.provider.pk}>
-                            </ak-provider-scim-form>
-                            <button slot="trigger" class="pf-c-button pf-m-primary">
-                                ${msg("Edit")}
-                            </button>
-                        </ak-forms-modal>
+                                        ${msg("Edit")}
+                                    </button>
+                                </ak-forms-modal>`,
+                            ],
+                        ])}
                     </div>
                 </div>
-                <div
-                    class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-6-col-on-xl pf-m-6-col-on-2xl"
-                >
+                <div class="pf-l-grid__item pf-m-12-col pf-m-8-col-on-xl pf-m-8-col-on-2xl">
+                    ${this.provider.authMode === SCIMAuthenticationModeEnum.OauthInteractive
+                        ? html`
+                              <div class="pf-c-card">
+                                  <div class="pf-c-card__body">
+                                      ${renderDescriptionList(
+                                          [
+                                              [
+                                                  msg("OAuth Status"),
+                                                  html`<ak-status-label
+                                                          ?good=${this.provider
+                                                              .authOauthTokenLastUpdated !== null}
+                                                          good-label=${msg("Authenticated")}
+                                                          bad-label=${msg("No token saved")}
+                                                      ></ak-status-label>
+                                                      <a
+                                                          class="pf-c-button pf-m-primary"
+                                                          href=${this.provider?.authOauthUrlStart ||
+                                                          ""}
+                                                          target="_blank"
+                                                          >${msg("(Re-)authenticate")}</a
+                                                      >`,
+                                              ],
+                                              [
+                                                  msg("OAuth Callback URL"),
+                                                  html`<input
+                                                      class="pf-c-form-control"
+                                                      readonly
+                                                      type="text"
+                                                      value="${this.provider.authOauthUrlCallback ||
+                                                      ""}"
+                                                  />`,
+                                              ],
+                                          ],
+                                          { horizontal: true },
+                                      )}
+                                  </div>
+                              </div>
+                          `
+                        : nothing}
                     <ak-sync-status-card
                         .fetch=${() => {
-                            return new ProvidersApi(DEFAULT_CONFIG).providersScimSyncStatusRetrieve(
-                                {
-                                    id: this.provider?.pk || 0,
-                                },
-                            );
+                            return aki(ProvidersApi).providersScimSyncStatusRetrieve({
+                                id: this.provider?.pk || 0,
+                            });
                         }}
-                    ></ak-sync-status-card>
+                    >
+                        ${this.renderSyncStatusExtra()}
+                    </ak-sync-status-card>
                 </div>
                 <div class="pf-l-grid__item pf-m-12-col pf-l-stack__item">
                     <div class="pf-c-card">
                         <div class="pf-c-card__header">
                             <div class="pf-c-card__title">${msg("Schedules")}</div>
                         </div>
-                        <div class="pf-c-card__body">
-                            <ak-schedule-list
-                                .relObjAppLabel=${appLabel}
-                                .relObjModel=${modelName}
-                                .relObjId="${this.provider.pk}"
-                            ></ak-schedule-list>
-                        </div>
+                        <ak-schedule-list
+                            .relObjAppLabel=${appLabel}
+                            .relObjModel=${modelName}
+                            .relObjId="${this.provider.pk}"
+                        ></ak-schedule-list>
                     </div>
                 </div>
                 <div class="pf-l-grid__item pf-m-12-col pf-l-stack__item">
@@ -290,13 +327,11 @@ export class SCIMProviderViewPage extends AKElement {
                         <div class="pf-c-card__header">
                             <div class="pf-c-card__title">${msg("Tasks")}</div>
                         </div>
-                        <div class="pf-c-card__body">
-                            <ak-task-list
-                                .relObjAppLabel=${appLabel}
-                                .relObjModel=${modelName}
-                                .relObjId="${this.provider.pk}"
-                            ></ak-task-list>
-                        </div>
+                        <ak-task-list
+                            .relObjAppLabel=${appLabel}
+                            .relObjModel=${modelName}
+                            .relObjId="${this.provider.pk}"
+                        ></ak-task-list>
                     </div>
                 </div>
                 <div

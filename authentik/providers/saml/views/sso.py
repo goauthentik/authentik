@@ -10,12 +10,13 @@ from structlog.stdlib import get_logger
 
 from authentik.core.models import Application
 from authentik.events.models import Event, EventAction
+from authentik.flows.apps import ContinuousLogin
 from authentik.flows.exceptions import FlowNonApplicableException
 from authentik.flows.models import in_memory_stage
 from authentik.flows.planner import PLAN_CONTEXT_APPLICATION, PLAN_CONTEXT_SSO, FlowPlanner
 from authentik.flows.views.executor import SESSION_KEY_POST
 from authentik.lib.views import bad_request_message
-from authentik.policies.views import BufferedPolicyAccessView
+from authentik.policies.views import PolicyAccessView
 from authentik.providers.saml.exceptions import CannotHandleAssertion
 from authentik.providers.saml.models import SAMLBindings, SAMLProvider
 from authentik.providers.saml.processors.authn_request_parser import AuthNRequestParser
@@ -35,7 +36,7 @@ from authentik.stages.consent.stage import (
 LOGGER = get_logger()
 
 
-class SAMLSSOView(BufferedPolicyAccessView):
+class SAMLSSOView(PolicyAccessView):
     """SAML SSO Base View, which plans a flow and injects our final stage.
     Calls get/post handler."""
 
@@ -52,6 +53,10 @@ class SAMLSSOView(BufferedPolicyAccessView):
     def check_saml_request(self) -> HttpRequest | None:
         """Handler to verify the SAML Request. Must be implemented by a subclass"""
         raise NotImplementedError
+
+    def get_resume_url(self) -> str | None:
+        """URL to re-enter this SAML request after another tab authenticated."""
+        return None
 
     def get(self, request: HttpRequest, application_slug: str) -> HttpResponse:
         """Verify the SAML Request, and if valid initiate the FlowPlanner for the application"""
@@ -81,19 +86,25 @@ class SAMLSSOView(BufferedPolicyAccessView):
         return plan.to_redirect(
             request,
             self.provider.authorization_flow,
+            next=self.get_resume_url(),
             allowed_silent_types=(
-                [SAMLFlowFinalView] if self.provider.sp_binding in [SAMLBindings.REDIRECT] else []
+                [SAMLFlowFinalView]
+                if self.provider.sp_binding in [SAMLBindings.REDIRECT] and not ContinuousLogin.get()
+                else []
             ),
         )
 
     def post(self, request: HttpRequest, application_slug: str) -> HttpResponse:
         """GET and POST use the same handler, but we can't
-        override .dispatch easily because BufferedPolicyAccessView's dispatch"""
+        override .dispatch easily because PolicyAccessView's dispatch"""
         return self.get(request, application_slug)
 
 
 class SAMLSSOBindingRedirectView(SAMLSSOView):
     """SAML Handler for SSO/Redirect bindings, which are sent via GET"""
+
+    def get_resume_url(self) -> str | None:
+        return self.request.get_full_path()
 
     def check_saml_request(self) -> HttpRequest | None:
         """Handle REDIRECT bindings"""

@@ -15,8 +15,8 @@ from authentik.core.models import Application
 from authentik.lib.config import CONFIG
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.providers.oauth2.errors import DeviceCodeError
-from authentik.providers.oauth2.models import DeviceToken, OAuth2Provider
-from authentik.providers.oauth2.utils import TokenResponse
+from authentik.providers.oauth2.models import DeviceToken, GrantType, OAuth2Provider, ScopeMapping
+from authentik.providers.oauth2.utils import TokenResponse, extract_client_auth
 from authentik.providers.oauth2.views.device_init import QS_KEY_CODE
 
 LOGGER = get_logger()
@@ -28,11 +28,11 @@ class DeviceView(View):
 
     client_id: str
     provider: OAuth2Provider
-    scopes: list[str] = []
+    scopes: set[str] = []
 
     def parse_request(self):
         """Parse incoming request"""
-        client_id = self.request.POST.get("client_id", None)
+        client_id, _ = extract_client_auth(self.request)
         if not client_id:
             raise DeviceCodeError("invalid_client")
         provider = OAuth2Provider.objects.filter(client_id=client_id).first()
@@ -42,9 +42,25 @@ class DeviceView(View):
             _ = provider.application
         except Application.DoesNotExist:
             raise DeviceCodeError("invalid_client") from None
+        if GrantType.DEVICE_CODE not in provider.grant_types:
+            raise DeviceCodeError("invalid_client")
         self.provider = provider
         self.client_id = client_id
-        self.scopes = self.request.POST.get("scope", "").split(" ")
+
+        scopes_to_check = set(self.request.POST.get("scope", "").split())
+        default_scope_names = set(
+            ScopeMapping.objects.filter(provider__in=[self.provider]).values_list(
+                "scope_name", flat=True
+            )
+        )
+        self.scopes = scopes_to_check
+        if not scopes_to_check.issubset(default_scope_names):
+            LOGGER.info(
+                "Application requested scopes not configured, setting to overlap",
+                scope_allowed=default_scope_names,
+                scope_given=self.scopes,
+            )
+            self.scopes = self.scopes.intersection(default_scope_names)
 
     def dispatch(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         throttle = AnonRateThrottle()

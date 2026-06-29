@@ -1,7 +1,7 @@
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/index";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { RenderFlowOption } from "#admin/flows/utils";
 import { BaseStageForm } from "#admin/stages/BaseStageForm";
@@ -9,8 +9,8 @@ import { BaseStageForm } from "#admin/stages/BaseStageForm";
 import {
     AuthenticatorStaticStage,
     Flow,
+    FlowDesignationEnum,
     FlowsApi,
-    FlowsInstancesListDesignationEnum,
     FlowsInstancesListRequest,
     StagesApi,
 } from "@goauthentik/api";
@@ -22,24 +22,24 @@ import { customElement } from "lit/decorators.js";
 @customElement("ak-stage-authenticator-static-form")
 export class AuthenticatorStaticStageForm extends BaseStageForm<AuthenticatorStaticStage> {
     loadInstance(pk: string): Promise<AuthenticatorStaticStage> {
-        return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorStaticRetrieve({
+        return aki(StagesApi).stagesAuthenticatorStaticRetrieve({
             stageUuid: pk,
         });
     }
 
     async send(data: AuthenticatorStaticStage): Promise<AuthenticatorStaticStage> {
         if (this.instance) {
-            return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorStaticUpdate({
+            return aki(StagesApi).stagesAuthenticatorStaticUpdate({
                 stageUuid: this.instance.pk || "",
                 authenticatorStaticStageRequest: data,
             });
         }
-        return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorStaticCreate({
+        return aki(StagesApi).stagesAuthenticatorStaticCreate({
             authenticatorStaticStageRequest: data,
         });
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html` <span>
                 ${msg(
                     "Stage used to configure a static authenticator (i.e. static tokens). This stage should be used for configuration flows.",
@@ -94,14 +94,16 @@ export class AuthenticatorStaticStageForm extends BaseStageForm<AuthenticatorSta
                         name="tokenLength"
                     >
                         <input
-                            type="text"
+                            type="number"
                             value="${this.instance?.tokenLength ?? 12}"
+                            min="1"
+                            max="100"
                             class="pf-c-form-control"
                             required
                         />
                         <p class="pf-c-form__helper-text">
                             ${msg(
-                                "The length of the individual generated tokens. Can be increased to improve security.",
+                                "The length of the individual generated tokens. Can be set to a maximum of 100 characters.",
                             )}
                         </p>
                     </ak-form-element-horizontal>
@@ -113,15 +115,12 @@ export class AuthenticatorStaticStageForm extends BaseStageForm<AuthenticatorSta
                             .fetchObjects=${async (query?: string): Promise<Flow[]> => {
                                 const args: FlowsInstancesListRequest = {
                                     ordering: "slug",
-                                    designation:
-                                        FlowsInstancesListDesignationEnum.StageConfiguration,
+                                    designation: FlowDesignationEnum.StageConfiguration,
                                 };
                                 if (query !== undefined) {
                                     args.search = query;
                                 }
-                                const flows = await new FlowsApi(DEFAULT_CONFIG).flowsInstancesList(
-                                    args,
-                                );
+                                const flows = await aki(FlowsApi).flowsInstancesList(args);
                                 return flows.results;
                             }}
                             .renderElement=${(flow: Flow): string => {

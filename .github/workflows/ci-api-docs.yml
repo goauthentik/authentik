@@ -21,27 +21,21 @@ jobs:
         command:
           - prettier-check
     steps:
-      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v5
-      - name: Install Dependencies
-        working-directory: website/
-        run: npm ci
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v5
+      - uses: ./.github/actions/setup-node
+        with:
+          working-directory: website
       - name: Lint
-        working-directory: website/
-        run: npm run ${{ matrix.command }}
+        run: corepack npm run ${{ matrix.command }} --prefix website
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v5
-      - uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f # v5
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v5
+      - uses: ./.github/actions/setup-node
         with:
-          node-version-file: website/package.json
-          cache: "npm"
-          cache-dependency-path: website/package-lock.json
-      - working-directory: website/
-        name: Install Dependencies
-        run: npm ci
-      - uses: actions/cache@9255dc7a253b0ccc959486e2bca901246202afeb # v4
+          working-directory: website
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v4
         with:
           path: |
             ${{ github.workspace }}/website/api/.docusaurus
@@ -54,8 +48,8 @@ jobs:
         working-directory: website
         env:
           NODE_ENV: production
-        run: npm run build -w api
-      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v4
+        run: corepack npm run build -w api
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v4
         with:
           name: api-docs
           path: website/api/build
@@ -66,23 +60,22 @@ jobs:
       - lint
       - build
     steps:
-      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v5
-      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v5
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v5
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v5
         with:
           name: api-docs
           path: website/api/build
-      - uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f # v5
+      - uses: ./.github/actions/setup-node
         with:
-          node-version-file: website/package.json
-          cache: "npm"
-          cache-dependency-path: website/package-lock.json
+          working-directory: website
       - name: Deploy Netlify (Production)
         working-directory: website/api
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         env:
           NETLIFY_SITE_ID: authentik-api-docs.netlify.app
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
-        run: npx netlify deploy --no-build --prod
+        run: |
+          npx netlify deploy --no-build -d ./build --prod
       - name: Deploy Netlify (Preview)
         if: github.event_name == 'pull_request' || github.ref != 'refs/heads/main'
         working-directory: website/api
@@ -90,6 +83,6 @@ jobs:
           NETLIFY_SITE_ID: authentik-api-docs.netlify.app
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
         run: |
-          if [ -n "${VAR}" ]; then
-            npx netlify deploy --no-build --alias=deploy-preview-${{ github.event.number }}
+          if [ -n "${NETLIFY_AUTH_TOKEN}" ]; then
+            npx netlify deploy --no-build -d ./build --alias=deploy-preview-${{ github.event.number }}
           fi

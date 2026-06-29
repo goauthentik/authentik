@@ -10,7 +10,7 @@ import "#elements/forms/SearchSelect/index";
 
 import { propertyMappingsProvider, propertyMappingsSelector } from "./LDAPSourceFormHelpers.js";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { RadioOption } from "#elements/forms/Radio";
 
@@ -59,25 +59,25 @@ function createSyncOutgoingTriggerModeOptions(): RadioOption<SyncOutgoingTrigger
 @customElement("ak-source-ldap-form")
 export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
     loadInstance(pk: string): Promise<LDAPSource> {
-        return new SourcesApi(DEFAULT_CONFIG).sourcesLdapRetrieve({
+        return aki(SourcesApi).sourcesLdapRetrieve({
             slug: pk,
         });
     }
 
     async send(data: LDAPSource): Promise<LDAPSource> {
         if (this.instance) {
-            return new SourcesApi(DEFAULT_CONFIG).sourcesLdapPartialUpdate({
+            return aki(SourcesApi).sourcesLdapPartialUpdate({
                 slug: this.instance.slug,
                 patchedLDAPSourceRequest: data,
             });
         }
 
-        return new SourcesApi(DEFAULT_CONFIG).sourcesLdapCreate({
+        return aki(SourcesApi).sourcesLdapCreate({
             lDAPSourceRequest: data as unknown as LDAPSourceRequest,
         });
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"
@@ -174,7 +174,7 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
                         ></ak-crypto-certificate-search>
                         <p class="pf-c-form__helper-text">
                             ${msg(
-                                "When connecting to an LDAP Server with TLS, certificates are not checked by default. Specify a keypair to validate the remote certificate.",
+                                "Leave empty to skip certificate validation, or select a certificate/keypair containing the LDAP server CA chain to validate the remote certificate.",
                             )}
                         </p>
                     </ak-form-element-horizontal>
@@ -261,9 +261,7 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
                                 if (query !== undefined) {
                                     args.search = query;
                                 }
-                                const groups = await new CoreApi(DEFAULT_CONFIG).coreGroupsList(
-                                    args,
-                                );
+                                const groups = await aki(CoreApi).coreGroupsList(args);
                                 return groups.results;
                             }}
                             .renderElement=${(group: Group): string => {
@@ -405,7 +403,7 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
                     <ak-radio-input
                         label=${msg("Outgoing sync trigger mode")}
                         required
-                        name="type"
+                        name="syncOutgoingTriggerMode"
                         .value=${this.instance?.syncOutgoingTriggerMode}
                         .options=${createSyncOutgoingTriggerModeOptions}
                     >

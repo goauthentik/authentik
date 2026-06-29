@@ -1,7 +1,7 @@
 import "#elements/CodeMirror";
 import "#elements/forms/HorizontalFormElement";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { BasePropertyMappingForm } from "#admin/property-mappings/BasePropertyMappingForm";
 
@@ -14,19 +14,19 @@ export class PropertyMappingSourceTelegramForm extends BasePropertyMappingForm<T
     protected override docLink = "/users-sources/sources/property-mappings/expressions";
 
     loadInstance(pk: string): Promise<TelegramSourcePropertyMapping> {
-        return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsSourceTelegramRetrieve({
+        return aki(PropertymappingsApi).propertymappingsSourceTelegramRetrieve({
             pmUuid: pk,
         });
     }
 
     async send(data: TelegramSourcePropertyMapping): Promise<TelegramSourcePropertyMapping> {
         if (this.instance) {
-            return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsSourceTelegramUpdate({
+            return aki(PropertymappingsApi).propertymappingsSourceTelegramUpdate({
                 pmUuid: this.instance.pk,
                 telegramSourcePropertyMappingRequest: data,
             });
         }
-        return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsSourceTelegramCreate({
+        return aki(PropertymappingsApi).propertymappingsSourceTelegramCreate({
             telegramSourcePropertyMappingRequest: data,
         });
     }

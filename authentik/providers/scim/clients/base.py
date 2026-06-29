@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 from django.core.cache import cache
 from django.http import HttpResponseBadRequest, HttpResponseNotFound
 from pydantic import ValidationError
-from requests import RequestException, Session
+from requests import JSONDecodeError, RequestException, Session
 
 from authentik.lib.sync.outgoing import (
     HTTP_CONFLICT,
@@ -39,6 +39,8 @@ class SCIMClient[TModel: "Model", TConnection: "Model", TSchema: "BaseModel"](
 
     _session: Session
     _config: ServiceProviderConfiguration
+
+    can_discover = True
 
     def __init__(self, provider: SCIMProvider):
         super().__init__(provider)
@@ -84,7 +86,10 @@ class SCIMClient[TModel: "Model", TConnection: "Model", TSchema: "BaseModel"](
             raise SCIMRequestException(response)
         if response.status_code == HTTP_NO_CONTENT:
             return {}
-        return response.json()
+        try:
+            return response.json()
+        except JSONDecodeError as exc:
+            raise SCIMRequestException(message="Failed to decode SCIM response") from exc
 
     def get_service_provider_config(self):
         """Get Service provider config"""
@@ -96,6 +101,12 @@ class SCIMClient[TModel: "Model", TConnection: "Model", TSchema: "BaseModel"](
         cached_config = cache.get(cache_key) if timeout_seconds > 0 else None
         if cached_config is not None:
             return cached_config
+
+        if self.provider.compatibility_mode in [
+            SCIMCompatibilityMode.GITLAB,
+            SCIMCompatibilityMode.VCENTER,
+        ]:
+            return default_config
 
         # Attempt to fetch from remote
         path = "/ServiceProviderConfig"

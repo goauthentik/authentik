@@ -10,12 +10,15 @@ from structlog.stdlib import get_logger
 
 from authentik.core.models import Application, AuthenticatedSession
 from authentik.events.models import Event, EventAction
+from authentik.flows.apps import ContinuousLogin
 from authentik.flows.challenge import (
     PLAN_CONTEXT_TITLE,
     AutosubmitChallenge,
     AutoSubmitChallengeResponse,
     Challenge,
     ChallengeResponse,
+    HttpChallengeResponse,
+    RedirectChallenge,
 )
 from authentik.flows.planner import PLAN_CONTEXT_APPLICATION
 from authentik.flows.stage import ChallengeStageView
@@ -34,6 +37,8 @@ REQUEST_KEY_SAML_SIGNATURE = "Signature"
 REQUEST_KEY_SAML_SIG_ALG = "SigAlg"
 REQUEST_KEY_SAML_RESPONSE = "SAMLResponse"
 REQUEST_KEY_RELAY_STATE = "RelayState"
+
+DEPRECATION_SP_BINDING_REDIRECT = "authentik.providers.saml.sp_binding_redirect"
 
 PLAN_CONTEXT_SAML_AUTH_N_REQUEST = "authentik/providers/saml/authn_request"
 PLAN_CONTEXT_SAML_LOGOUT_REQUEST = "authentik/providers/saml/logout_request"
@@ -79,6 +84,7 @@ class SAMLFlowFinalView(ChallengeStageView):
                         "session": auth_session,
                         "name_id": processor.name_id,
                         "name_id_format": processor.name_id_format,
+                        "issuer": processor.issuer,
                         "expires": processor.session_not_on_or_after_datetime,
                         "expiring": True,
                     },
@@ -118,12 +124,29 @@ class SAMLFlowFinalView(ChallengeStageView):
                 },
             )
         if provider.sp_binding == SAMLBindings.REDIRECT:
+            Event.log_deprecation(
+                DEPRECATION_SP_BINDING_REDIRECT,
+                (
+                    "Redirect binding for Service Provider binding is deprecated "
+                    "and will be removed in a future version. Use Post binding instead."
+                ),
+                cause=provider.name,
+            )
             url_args = {
                 REQUEST_KEY_SAML_RESPONSE: deflate_and_base64_encode(response),
             }
             if auth_n_request.relay_state:
                 url_args[REQUEST_KEY_RELAY_STATE] = auth_n_request.relay_state
             querystring = urlencode(url_args)
+            if ContinuousLogin.get():
+                return HttpChallengeResponse(
+                    RedirectChallenge(
+                        instance={
+                            "to": f"{provider.acs_url}?{querystring}",
+                            "final_redirect": True,
+                        }
+                    )
+                )
             return redirect(f"{provider.acs_url}?{querystring}")
         return bad_request_message(request, "Invalid sp_binding specified")
 

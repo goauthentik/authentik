@@ -1,15 +1,15 @@
 import "#admin/providers/RelatedApplicationButton";
 import "#admin/providers/proxy/ProxyProviderForm";
-import "#admin/rbac/ObjectPermissionsPage";
+import "#admin/rbac/ak-rbac-object-permission-page";
 import "#components/ak-status-label";
-import "#components/events/ObjectChangelog";
+import "#admin/events/ObjectChangelog";
 import "#elements/CodeMirror";
 import "#elements/Tabs";
 import "#elements/ak-mdx/index";
 import "#elements/buttons/ModalButton";
 import "#elements/buttons/SpinnerButton/index";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { EVENT_REFRESH } from "#common/constants";
 
 import type { Replacer } from "#elements/ak-mdx/index";
@@ -18,12 +18,7 @@ import { getURLParam } from "#elements/router/RouteMatch";
 import { formatSlug } from "#elements/router/utils";
 import { SlottedTemplateResult } from "#elements/types";
 
-import {
-    ProvidersApi,
-    ProxyMode,
-    ProxyProvider,
-    RbacPermissionsAssignedByRolesListModelEnum,
-} from "@goauthentik/api";
+import { ModelEnum, ProvidersApi, ProxyMode, ProxyProvider } from "@goauthentik/api";
 
 import MDCaddyStandalone from "~docs/add-secure-apps/providers/proxy/_caddy_standalone.md";
 import MDNginxIngress from "~docs/add-secure-apps/providers/proxy/_nginx_ingress.md";
@@ -48,7 +43,6 @@ import PFFormControl from "@patternfly/patternfly/components/FormControl/form-co
 import PFList from "@patternfly/patternfly/components/List/list.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 export function ModeToLabel(action?: ProxyMode): string {
     if (!action) return "";
@@ -85,7 +79,6 @@ export class ProxyProviderViewPage extends AKElement {
     provider?: ProxyProvider;
 
     static styles: CSSResult[] = [
-        PFBase,
         PFButton,
         PFPage,
         PFGrid,
@@ -112,7 +105,7 @@ export class ProxyProviderViewPage extends AKElement {
     }
 
     fetchProvider(id: number) {
-        new ProvidersApi(DEFAULT_CONFIG)
+        aki(ProvidersApi)
             .providersProxyRetrieve({ id })
             .then((prov) => (this.provider = prov));
     }
@@ -231,13 +224,11 @@ export class ProxyProviderViewPage extends AKElement {
                     class="pf-c-page__main-section pf-m-no-padding-mobile"
                 >
                     <div class="pf-c-card">
-                        <div class="pf-c-card__body">
-                            <ak-object-changelog
-                                targetModelPk=${this.provider?.pk || ""}
-                                targetModelName=${this.provider?.metaModelName || ""}
-                            >
-                            </ak-object-changelog>
-                        </div>
+                        <ak-object-changelog
+                            targetModelPk=${this.provider?.pk || ""}
+                            targetModelName=${this.provider?.metaModelName || ""}
+                        >
+                        </ak-object-changelog>
                     </div>
                 </div>
                 <ak-rbac-object-permission-page
@@ -246,7 +237,7 @@ export class ProxyProviderViewPage extends AKElement {
                     slot="page-permissions"
                     id="page-permissions"
                     aria-label="${msg("Permissions")}"
-                    model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikProvidersProxyProxyprovider}
+                    model=${ModelEnum.AuthentikProvidersProxyProxyprovider}
                     objectPk=${this.provider.pk}
                 ></ak-rbac-object-permission-page>
             </ak-tabs>
@@ -381,7 +372,7 @@ export class ProxyProviderViewPage extends AKElement {
                     </div>
                     <div class="pf-c-card__footer">
                         <ak-forms-modal>
-                            <span slot="submit">${msg("Update")}</span>
+                            <span slot="submit">${msg("Save Changes")}</span>
                             <span slot="header">${msg("Update Proxy Provider")}</span>
                             <ak-provider-proxy-form
                                 slot="form"

@@ -85,7 +85,7 @@ class OAuthSource(NonCreatableType, Source):
     )
 
     @property
-    def source_type(self) -> type["SourceType"]:
+    def source_type(self) -> type[SourceType]:
         """Return the provider instance for this source"""
         from authentik.sources.oauth.types.registry import registry
 
@@ -136,7 +136,7 @@ class OAuthSource(NonCreatableType, Source):
         return UILoginButton(
             name=self.name,
             challenge=provider.login_challenge(self, request),
-            icon_url=self.icon_url,
+            icon_url=self.get_icon_url(request, use_cache=False) or self.icon_url,
             promoted=self.promoted,
         )
 
@@ -251,17 +251,6 @@ class GoogleOAuthSource(CreatableType, OAuthSource):
         verbose_name_plural = _("Google OAuth Sources")
 
 
-class AzureADOAuthSource(CreatableType, OAuthSource):
-    """(Deprecated) Social Login using Azure AD."""
-
-    class Meta:
-        abstract = True
-        verbose_name = _("Azure AD OAuth Source")
-        verbose_name_plural = _("Azure AD OAuth Sources")
-
-
-# TODO: When removing this, add a migration for OAuthSource that sets
-# provider_type to `entraid` if it is currently `azuread`
 class EntraIDOAuthSource(CreatableType, OAuthSource):
     """Social Login using Entra ID."""
 

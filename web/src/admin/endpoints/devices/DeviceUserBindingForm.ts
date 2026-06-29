@@ -1,11 +1,14 @@
 import "#components/ak-switch-input";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
-import { PolicyBindingForm } from "#admin/policies/PolicyBindingForm";
-import { PolicyBindingCheckTarget } from "#admin/policies/utils";
+import {
+    cleanBindingForSend,
+    pickPolicyGroupUser,
+    PolicyBindingForm,
+} from "#admin/policies/PolicyBindingForm";
 
-import { DeviceUserBinding, EndpointsApi } from "@goauthentik/api";
+import { DeviceUserBinding, EndpointsApi, PolicyBinding } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html } from "lit";
@@ -14,20 +17,31 @@ import { customElement } from "lit/decorators.js";
 @customElement("ak-device-binding-form")
 export class DeviceUserBindingForm extends PolicyBindingForm<DeviceUserBinding> {
     async loadInstance(pk: string): Promise<DeviceUserBinding> {
-        const binding = await new EndpointsApi(DEFAULT_CONFIG).endpointsDeviceBindingsRetrieve({
+        const binding = await aki(EndpointsApi).endpointsDeviceBindingsRetrieve({
             policyBindingUuid: pk,
         });
-        if (binding?.policyObj) {
-            this.policyGroupUser = PolicyBindingCheckTarget.policy;
-        }
-        if (binding?.groupObj) {
-            this.policyGroupUser = PolicyBindingCheckTarget.group;
-        }
-        if (binding?.userObj) {
-            this.policyGroupUser = PolicyBindingCheckTarget.user;
-        }
+        this.policyGroupUser = pickPolicyGroupUser(binding, this.policyGroupUser);
         this.defaultOrder = await this.getOrder();
         return binding;
+    }
+
+    async send(data: PolicyBinding): Promise<unknown> {
+        if (this.targetPk) {
+            data.target = this.targetPk;
+        }
+
+        data = cleanBindingForSend(data, this.policyGroupUser);
+
+        if (this.instance?.pk) {
+            return aki(EndpointsApi).endpointsDeviceBindingsUpdate({
+                policyBindingUuid: this.instance.pk,
+                deviceUserBindingRequest: data,
+            });
+        }
+
+        return aki(EndpointsApi).endpointsDeviceBindingsCreate({
+            deviceUserBindingRequest: data,
+        });
     }
 
     public override renderForm() {

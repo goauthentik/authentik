@@ -7,26 +7,28 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 
 from authentik.blueprints.tests import apply_blueprint, reconcile_app
+from authentik.common.oauth.constants import (
+    SCOPE_OFFLINE_ACCESS,
+    SCOPE_OPENID,
+    SCOPE_OPENID_EMAIL,
+    SCOPE_OPENID_PROFILE,
+)
 from authentik.core.models import Application
 from authentik.core.tests.utils import create_test_cert
 from authentik.flows.models import Flow
 from authentik.lib.generators import generate_id, generate_key
 from authentik.policies.expression.models import ExpressionPolicy
 from authentik.policies.models import PolicyBinding
-from authentik.providers.oauth2.constants import (
-    SCOPE_OFFLINE_ACCESS,
-    SCOPE_OPENID,
-    SCOPE_OPENID_EMAIL,
-    SCOPE_OPENID_PROFILE,
-)
 from authentik.providers.oauth2.models import (
-    ClientTypes,
+    ClientType,
+    GrantType,
     OAuth2Provider,
     RedirectURI,
     RedirectURIMatchingMode,
     ScopeMapping,
 )
-from tests.e2e.utils import SeleniumTestCase, retry
+from tests.decorators import retry
+from tests.selenium import SeleniumTestCase
 
 
 class TestProviderOAuth2OIDCImplicit(SeleniumTestCase):
@@ -70,12 +72,13 @@ class TestProviderOAuth2OIDCImplicit(SeleniumTestCase):
         )
         provider = OAuth2Provider.objects.create(
             name=self.application_slug,
-            client_type=ClientTypes.CONFIDENTIAL,
+            client_type=ClientType.CONFIDENTIAL,
             client_id=self.client_id,
             client_secret=self.client_secret,
             signing_key=create_test_cert(),
             redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://localhost:9009/")],
             authorization_flow=authorization_flow,
+            grant_types=[GrantType.IMPLICIT],
         )
         provider.property_mappings.set(
             ScopeMapping.objects.filter(
@@ -119,7 +122,7 @@ class TestProviderOAuth2OIDCImplicit(SeleniumTestCase):
         )
         provider = OAuth2Provider.objects.create(
             name=self.application_slug,
-            client_type=ClientTypes.CONFIDENTIAL,
+            client_type=ClientType.CONFIDENTIAL,
             client_id=self.client_id,
             client_secret=self.client_secret,
             signing_key=create_test_cert(),
@@ -127,6 +130,7 @@ class TestProviderOAuth2OIDCImplicit(SeleniumTestCase):
                 RedirectURI(RedirectURIMatchingMode.STRICT, "http://localhost:9009/implicit/")
             ],
             authorization_flow=authorization_flow,
+            grant_types=[GrantType.IMPLICIT],
         )
         provider.property_mappings.set(
             ScopeMapping.objects.filter(
@@ -150,7 +154,7 @@ class TestProviderOAuth2OIDCImplicit(SeleniumTestCase):
         self.wait.until(ec.title_contains("authentik"))
         self.login()
 
-        body = self.parse_json_content()
+        body = self.parse_json_content(self.driver.find_element(By.ID, "loginResult"))
         snippet = dumps(body, indent=2)[:500].replace("\n", " ")
 
         profile = body.get("profile", {})
@@ -191,13 +195,14 @@ class TestProviderOAuth2OIDCImplicit(SeleniumTestCase):
         provider = OAuth2Provider.objects.create(
             name=self.application_slug,
             authorization_flow=authorization_flow,
-            client_type=ClientTypes.CONFIDENTIAL,
+            client_type=ClientType.CONFIDENTIAL,
             client_id=self.client_id,
             client_secret=self.client_secret,
             signing_key=create_test_cert(),
             redirect_uris=[
                 RedirectURI(RedirectURIMatchingMode.STRICT, "http://localhost:9009/implicit/")
             ],
+            grant_types=[GrantType.IMPLICIT],
         )
         provider.property_mappings.set(
             ScopeMapping.objects.filter(
@@ -240,7 +245,7 @@ class TestProviderOAuth2OIDCImplicit(SeleniumTestCase):
 
         self.wait.until(ec.url_changes(current_url))
 
-        body = self.parse_json_content()
+        body = self.parse_json_content(self.driver.find_element(By.ID, "loginResult"))
         snippet = dumps(body, indent=2)[:500].replace("\n", " ")
 
         profile = body.get("profile", {})
@@ -281,13 +286,14 @@ class TestProviderOAuth2OIDCImplicit(SeleniumTestCase):
         provider = OAuth2Provider.objects.create(
             name=self.application_slug,
             authorization_flow=authorization_flow,
-            client_type=ClientTypes.CONFIDENTIAL,
+            client_type=ClientType.CONFIDENTIAL,
             client_id=self.client_id,
             client_secret=self.client_secret,
             signing_key=create_test_cert(),
             redirect_uris=[
                 RedirectURI(RedirectURIMatchingMode.STRICT, "http://localhost:9009/implicit/")
             ],
+            grant_types=[GrantType.IMPLICIT],
         )
         provider.property_mappings.set(
             ScopeMapping.objects.filter(

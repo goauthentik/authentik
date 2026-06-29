@@ -1,7 +1,7 @@
 import "#elements/CodeMirror";
 import "#elements/forms/HorizontalFormElement";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { BasePropertyMappingForm } from "#admin/property-mappings/BasePropertyMappingForm";
 
@@ -14,19 +14,19 @@ export class PropertyMappingSourceSCIMForm extends BasePropertyMappingForm<SCIMS
     protected override docLink = "/users-sources/sources/property-mappings/expressions";
 
     loadInstance(pk: string): Promise<SCIMSourcePropertyMapping> {
-        return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsSourceScimRetrieve({
+        return aki(PropertymappingsApi).propertymappingsSourceScimRetrieve({
             pmUuid: pk,
         });
     }
 
     async send(data: SCIMSourcePropertyMapping): Promise<SCIMSourcePropertyMapping> {
         if (this.instance) {
-            return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsSourceScimUpdate({
+            return aki(PropertymappingsApi).propertymappingsSourceScimUpdate({
                 pmUuid: this.instance.pk,
                 sCIMSourcePropertyMappingRequest: data,
             });
         }
-        return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsSourceScimCreate({
+        return aki(PropertymappingsApi).propertymappingsSourceScimCreate({
             sCIMSourcePropertyMappingRequest: data,
         });
     }

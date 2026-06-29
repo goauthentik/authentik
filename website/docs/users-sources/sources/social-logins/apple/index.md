@@ -1,11 +1,12 @@
 ---
-title: Apple
+title: Log in with Apple
+sidebar_label: Apple
 tags:
     - source
     - apple
 ---
 
-Allows users to authenticate using their Apple ID credentials by configuring Apple as a federated identity provider via OAuth2.
+This source lets users authenticate with their Apple ID credentials by configuring Apple as a federated identity provider with OAuth 2.0.
 
 ## Preparation
 
@@ -15,7 +16,7 @@ Apple mandates the use of a [registered top-level domain](https://en.wikipedia.o
 
 ## Apple configuration
 
-To integrate Apple with authentik, you will need to register two identifiers and a key in the Apple Developer Portal.
+To integrate Apple with authentik, you need to register two identifiers and a key in the Apple Developer Portal.
 
 ### Registering identifiers
 
@@ -37,7 +38,7 @@ To integrate Apple with authentik, you will need to register two identifiers and
 
 ### Configuring identifier
 
-11. Once back at the overview list, click on the just-created identifier.
+11. Once back at the overview list, click the just-created identifier.
 12. Enable the checkbox next to **Sign In with Apple**, and click **Configure**
 13. Under **Domains and Subdomains**, enter `authentik.company`.
 14. Under **Return URLs**, enter `https://authentik.company/source/oauth/callback/apple/`.
@@ -60,9 +61,9 @@ To integrate Apple with authentik, you will need to register two identifiers and
 To support the integration of Apple with authentik, you need to create an Apple OAuth source in authentik.
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Directory** > **Federation and Social login**, click **Create**, then configure the following settings:
+2. Navigate to **Directory** > **Federation and Social login**, click **New Source**, then configure the following settings:
     - **Select type**: select **Apple OAuth Source**.
-    - **Create Apple OAuth Source**: provide a name, a slug which must match the slug used in the Apple `Return URL`, and the following required configurations:
+    - **Create Apple OAuth Source**: provide a name, a slug that must match the slug used in the Apple `Return URL`, and the following required configurations:
         - Under **Protocol Settings**:
             - **Consumer key**: The identifier from step 9, then `;`, then your **Team ID** from step 19, then `;`, then the **Key ID** from step 18. (e.g. `company.authentik;JQNH45HN7V;XFBNJ82BV6`).
             - **Consumer secret**: Paste the contents of the keyfile you've downloaded.

@@ -10,7 +10,6 @@ import { customElement, property } from "lit/decorators.js";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFEmptyState from "@patternfly/patternfly/components/EmptyState/empty-state.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFSpacing from "@patternfly/patternfly/utilities/Spacing/spacing.css";
 
 export interface ILibraryPageApplicationEmptyList {
@@ -30,7 +29,6 @@ export class LibraryPageApplicationEmptyList
     implements ILibraryPageApplicationEmptyList
 {
     static styles = [
-        PFBase,
         PFEmptyState,
         PFButton,
         PFContent,

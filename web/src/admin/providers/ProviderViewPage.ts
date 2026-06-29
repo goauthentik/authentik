@@ -8,10 +8,11 @@ import "#admin/providers/radius/RadiusProviderViewPage";
 import "#admin/providers/saml/SAMLProviderViewPage";
 import "#admin/providers/scim/SCIMProviderViewPage";
 import "#admin/providers/ssf/SSFProviderViewPage";
+import "#admin/providers/wsfed/WSFederationProviderViewPage";
 import "#elements/EmptyState";
 import "#elements/buttons/SpinnerButton/ak-spinner-button";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { AKElement } from "#elements/Base";
 
@@ -30,7 +31,7 @@ import PFPage from "@patternfly/patternfly/components/Page/page.css";
 export class ProviderViewPage extends AKElement {
     @property({ type: Number })
     set providerID(value: number) {
-        new ProvidersApi(DEFAULT_CONFIG)
+        aki(ProvidersApi)
             .providersAllRetrieve({
                 id: value,
             })
@@ -86,6 +87,8 @@ export class ProviderViewPage extends AKElement {
                 ></ak-provider-microsoft-entra-view>`;
             case "ak-provider-ssf-form":
                 return html`<ak-provider-ssf-view ${spread(props)}></ak-provider-ssf-view>`;
+            case "ak-provider-wsfed-form":
+                return html`<ak-provider-wsfed-view ${spread(props)}></ak-provider-wsfed-view>`;
             default:
                 return html`<p>Invalid provider type ${this.provider?.component}</p>`;
         }

@@ -32,7 +32,7 @@ class TestRoles(APITestCase):
         role = Role.objects.create(name=generate_id())
         role.assign_perms("authentik_core.view_application")
         group.roles.add(role)
-        self.user.ak_groups.add(group)
+        self.user.groups.add(group)
         self.assertTrue(self.user.has_perm("authentik_core.view_application"))
 
     def test_remove_group_delete(self):
@@ -91,7 +91,7 @@ class TestRoles(APITestCase):
         group.roles.add(role)
         group.users.add(self.user)
         self.assertTrue(self.user.has_perm("authentik_core.view_application"))
-        self.user.ak_groups.remove(group)
+        self.user.groups.remove(group)
         user = User.objects.get(username=self.user.username)
         self.assertFalse(user.has_perm("authentik_core.view_application"))
 

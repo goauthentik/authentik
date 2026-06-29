@@ -4,76 +4,105 @@ sidebar_label: GlobalProtect
 support_level: community
 ---
 
-## What is GlobalProtect
+import SAMLProvider20265Warning from "../../\_saml-provider-2026-5-warning.mdx";
 
-> GlobalProtect enables you to use Palo Alto Networks next-gen firewalls or Prisma Access to secure your mobile workforce.
+## What is GlobalProtect?
+
+> GlobalProtect simplifies remote access management with identity-aware authentication and client or clientless deployment methods for mobile users.
 >
-> Palo Alto Networks GlobalProtect platform is a paid enterprise product.
->
-> -- https://docs.paloaltonetworks.com/globalprotect
+> -- https://www.paloaltonetworks.com/sase/globalprotect
 
 ## Preparation
 
 The following placeholders are used in this guide:
 
-- `gp.company` is the FQDN of the GlobalProtect portal.
 - `authentik.company` is the FQDN of the authentik installation.
+- `gp.company` is the FQDN of the GlobalProtect portal or gateway that uses this provider.
 
 :::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
-:::caution
-A trusted web certificate is required to be bound to the GlobalProtect Portal. This can be signed by a trusted internal Root Certificate Authority (CA); however, a self signed certificate, a certificate outside of its validity, or a non-standard confirming certificate (such as a lifespan not trusted by modern browsers) will error out on SAML authentication.
+:::caution Portal certificate
+A trusted web certificate must be bound to the GlobalProtect portal. The certificate can be signed by a trusted internal root certificate authority (CA), but a self-signed, expired, or otherwise invalid portal certificate can cause SAML authentication to fail.
 :::
 
-## authentik Configuration
+### Prerequisites
+
+- A working GlobalProtect portal and gateway configuration.
+- A certificate configured in authentik for signing SAML responses.
+- Administrative access to the Palo Alto Networks firewall or Panorama instance that manages GlobalProtect.
+
+## authentik configuration
 
 To support the integration of GlobalProtect with authentik, you need to create an application/provider pair in authentik.
 
-### Create an Application and Provider in authentik
+If multiple GlobalProtect portals or gateways initiate SAML requests with different FQDNs, create a separate application/provider pair for each FQDN. Each provider must use the matching FQDN in the **ACS URL** and **Audience**.
+
+### Create an application and provider in authentik
+
+<SAMLProvider20265Warning />
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
-    - **Application**: Provide a descriptive name, an optional group, and UI settings. Take note of the **slug** as it will be required later.
-    - **Choose a Provider type**: Select **SAML Provider**.
-    - **Configure the Provider**:
-        - Set the **ACS URL** to `https://gp.company:443/SAML20/SP/ACS`. (Note the absence of the trailing slash and the inclusion of the web interface port)
-        - Set the **Issuer** to `https://authentik.company/application/saml/<application_slug>/sso/binding/redirect/`.
-        - Set the **Service Provider Binding** to `Post`.
-        - Under **Advanced protocol settings**, select an available **Signing certificate**.
+2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
+    - **Choose a Provider type**: select **SAML Provider** as the provider type.
+    - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+        - Set the **ACS URL** to `https://gp.company:443/SAML20/SP/ACS`.
+        - Set the **Audience** to `https://gp.company:443/SAML20/SP`.
+        - Under **Advanced protocol settings**, select an available **Signing Certificate**.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage access to the application.
 3. Click **Submit** to save the new application and provider.
 
-### Download the metadata
+:::info Non-standard SAML ports
+If GlobalProtect uses a non-standard SAML port, replace `:443` in the **ACS URL** and **Audience** with the configured SAML port. Configure the same custom SAML port on the firewall.
+:::
+
+### Download the SAML metadata
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Applications** > **Providers** > **_Provider Name_** and download the SAML metadata.
+2. Navigate to **Applications** > **Providers** and open the GlobalProtect provider.
+3. Under **Metadata**, click **Download**. The metadata file is required in the GlobalProtect configuration.
 
 ## GlobalProtect configuration
 
-1. Navigate to the GlobalProtect configuration device (Firewall or Panorama).
+### Create a SAML identity provider profile
 
-2. Navigate to 'SAML Identity Provider' on the Device tab and choose the 'import' option.
+1. Log in to the Palo Alto Networks firewall or Panorama instance that manages GlobalProtect.
+2. Navigate to **Device** > **Server Profiles** > **SAML Identity Provider**.
+3. Click **Import** and configure the profile:
+    - **Profile Name**: provide a descriptive name, such as `authentik`.
+    - **Identity Provider Metadata**: upload the metadata file you downloaded from authentik.
+    - **Validate Identity Provider Certificate**: enable this if you have configured a certificate profile that trusts the CA which issued the authentik signing certificate.
+4. Click **OK**.
 
-- Provide a name for the profile.
-- Import the metadata file downloaded earlier. (This will automatically install the authentik signing certificate to the system upon commit.)
-- Select 'Validate Identity Provider Certificate' if desired.
+### Create an authentication profile
 
-3. Navigate to 'Authentication Profile' on the Device tab and add a new profile.
+1. Navigate to **Device** > **Authentication Profile** and click **Add**.
+2. Configure the profile:
+    - **Name**: provide a descriptive name.
+    - **Type**: select **SAML**.
+    - **IdP Server Profile**: select the SAML identity provider profile you created.
+    - **Certificate for Signing Requests**: select a certificate only if authentik is configured to validate signed SAML requests.
+    - **Certificate Profile**: select a certificate profile if you enabled **Validate Identity Provider Certificate** in the SAML identity provider profile.
+    - **Username Attribute**: `http://schemas.goauthentik.io/2021/02/saml/username`
+3. Open the **Advanced** tab and add `all` to **Allow List**.
+4. Click **OK**.
 
-- Type: SAML
-- IdP Server Profile: The profile just created
-- Certificate for Signing Requests: None (Optionally configure authentik for mutual SAML signature)
-- Certificate Profile: None (Optionally configure profile to validate the authentik signing cert)
-- Username Attribute: `username`
+### Assign the authentication profile
 
-4. Chose 'Advanced' within the profile and add 'all'. This will have only authentik control the authorization.
+1. Navigate to **Network** > **GlobalProtect** > **Portals** and open the portal that should use SAML.
+2. Open the portal authentication settings and select the authentication profile you created.
+3. If you do not require a client certificate, select **Yes (User Credentials OR Client Certificate Required)**.
+4. Navigate to **Network** > **GlobalProtect** > **Gateways** and make the same authentication profile change for each gateway that should use SAML. If a gateway uses a different FQDN in its SAML request, use an authentication profile connected to a matching authentik provider.
+5. Commit the changes.
 
-5. Navigate to the 'GlobalProtect Portal Configuration' and chose the portal for SAML access.
+## Configuration verification
 
-- Under 'Authentication' select the 'Authentication Profile' to the one just created. Leave all other settings as default.
-- Optionally chose to require client access via separately issued client cert as well. If not using a client cert, select 'Yes (User Credentials OR Client Certificate Required)'.
+To confirm that authentik is properly configured with GlobalProtect, open the GlobalProtect app or the GlobalProtect portal, connect to `gp.company`, and complete the authentik sign-in flow. After authentication, GlobalProtect should return to the portal or gateway and complete the connection.
 
-6. Make the same exact changes to the 'GlobalProtect Gateway Configuration'.
+## Resources
 
-7. Commit the changes to the firewall.
+- [Palo Alto Networks - Set Up SAML Authentication](https://docs.paloaltonetworks.com/globalprotect/administration/globalprotect-user-authentication/set-up-external-authentication/set-up-saml-authentication)
+- [Palo Alto Networks - Configure Mobile Users without Cloud Identity Engine](https://docs.paloaltonetworks.com/prisma-access/integration/microsoft-integrations-with-prisma-access/azure-ad-saml-authentication-for-mobile-user-deployments/configure-mobile-users-without-cloud-identity-engine)
+- [Palo Alto Networks - SAML Authentication for GlobalProtect Portals on Non-Standard Ports](https://docs.paloaltonetworks.com/globalprotect/administration/globalprotect-user-authentication/set-up-external-authentication/set-up-saml-authentication/saml-authentication-for-globalprotect-portals-on-non-standard-ports)

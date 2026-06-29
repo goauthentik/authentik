@@ -24,7 +24,8 @@ from authentik.blueprints.v1.importer import SERIALIZER_CONTEXT_BLUEPRINT
 from authentik.core.api.providers import ProviderSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.users import UserSerializer
-from authentik.core.api.utils import ModelSerializer
+from authentik.core.api.utils import ModelSerializer, ThemedUrlsSerializer
+from authentik.core.apps import AppAccessWithoutBindings
 from authentik.core.models import Application, User
 from authentik.events.logs import LogEventSerializer, capture_logs
 from authentik.policies.api.exec import PolicyTestResultSerializer
@@ -35,9 +36,13 @@ from authentik.rbac.filters import ObjectFilter
 LOGGER = get_logger()
 
 
-def user_app_cache_key(user_pk: str, page_number: int | None = None) -> str:
+def user_app_cache_key(
+    user_pk: str, page_number: int | None = None, only_with_launch_url: bool = False
+) -> str:
     """Cache key where application list for user is saved"""
     key = f"{CACHE_PREFIX}app_access/{user_pk}"
+    if only_with_launch_url:
+        key += "/launch"
     if page_number:
         key += f"/{page_number}"
     return key
@@ -47,12 +52,20 @@ class ApplicationSerializer(ModelSerializer):
     """Application Serializer"""
 
     launch_url = SerializerMethodField()
-    provider_obj = ProviderSerializer(source="get_provider", required=False, read_only=True)
+    provider_obj = ProviderSerializer(
+        source="get_provider",
+        required=False,
+        read_only=True,
+        allow_null=True,
+    )
     backchannel_providers_obj = ProviderSerializer(
         source="backchannel_providers", required=False, read_only=True, many=True
     )
 
     meta_icon_url = ReadOnlyField(source="get_meta_icon")
+    meta_icon_themed_urls = ThemedUrlsSerializer(
+        source="get_meta_icon_themed_urls", read_only=True, allow_null=True
+    )
 
     def get_launch_url(self, app: Application) -> str | None:
         """Allow formatting of launch URL"""
@@ -63,7 +76,7 @@ class ApplicationSerializer(ModelSerializer):
             user = self.context["request"].user
 
         # Cache serialized user data to avoid N+1 when formatting launch URLs
-        # for multiple applications. UserSerializer accesses user.ak_groups which
+        # for multiple applications. UserSerializer accesses user.groups which
         # would otherwise trigger a query for each application.
         if user is not None:
             if "_cached_user_data" not in self.context:
@@ -102,10 +115,12 @@ class ApplicationSerializer(ModelSerializer):
             "meta_launch_url",
             "meta_icon",
             "meta_icon_url",
+            "meta_icon_themed_urls",
             "meta_description",
             "meta_publisher",
             "policy_engine_mode",
             "group",
+            "meta_hide",
         ]
         extra_kwargs = {
             "backchannel_providers": {"required": False},
@@ -150,15 +165,16 @@ class ApplicationViewSet(UsedByMixin, ModelViewSet):
         return queryset
 
     def _get_allowed_applications(
-        self, pagined_apps: Iterator[Application], user: User | None = None
+        self, paginated_apps: Iterator[Application], user: User | None = None
     ) -> list[Application]:
         applications = []
         request = self.request._request
         if user:
             request = copy(request)
             request.user = user
-        for application in pagined_apps:
+        for application in paginated_apps:
             engine = PolicyEngine(application, request.user, request)
+            engine.empty_result = AppAccessWithoutBindings.get()
             engine.build()
             if engine.passing:
                 applications.append(application)
@@ -216,6 +232,7 @@ class ApplicationViewSet(UsedByMixin, ModelViewSet):
             if not for_user:
                 raise ValidationError({"for_user": "User not found"})
         engine = PolicyEngine(application, for_user, request)
+        engine.empty_result = AppAccessWithoutBindings.get()
         engine.use_cache = False
         with capture_logs() as logs:
             engine.build()
@@ -262,11 +279,17 @@ class ApplicationViewSet(UsedByMixin, ModelViewSet):
         if superuser_full_list and request.user.is_superuser:
             return super().list(request)
 
-        only_with_launch_url = str(
-            request.query_params.get("only_with_launch_url", "false")
-        ).lower()
+        only_with_launch_url = (
+            str(request.query_params.get("only_with_launch_url", "false")).lower()
+        ) == "true"
 
         queryset = self._filter_queryset_for_list(self.get_queryset())
+        queryset = queryset.exclude(meta_hide=True)
+        if only_with_launch_url:
+            # Pre-filter at DB level to skip expensive per-app policy evaluation
+            # for apps that can never appear in the launcher (no meta_launch_url
+            # and no provider, so no possible launch URL).
+            queryset = queryset.exclude(meta_launch_url="", provider__isnull=True)
         paginator: Pagination = self.paginator
         paginated_apps = paginator.paginate_queryset(queryset, request)
 
@@ -283,7 +306,6 @@ class ApplicationViewSet(UsedByMixin, ModelViewSet):
             except ValueError as exc:
                 raise ValidationError from exc
             allowed_applications = self._get_allowed_applications(paginated_apps, user=for_user)
-            allowed_applications = self._expand_applications(allowed_applications)
 
             serializer = self.get_serializer(allowed_applications, many=True)
             return self.get_paginated_response(serializer.data)
@@ -293,19 +315,26 @@ class ApplicationViewSet(UsedByMixin, ModelViewSet):
             allowed_applications = self._get_allowed_applications(paginated_apps)
         if should_cache:
             allowed_applications = cache.get(
-                user_app_cache_key(self.request.user.pk, paginator.page.number)
+                user_app_cache_key(
+                    self.request.user.pk, paginator.page.number, only_with_launch_url
+                )
             )
-            if not allowed_applications:
+            if allowed_applications:
+                # Re-fetch cached applications since pickled instances lose prefetched
+                # relationships, causing N+1 queries during serialization
+                allowed_applications = self._expand_applications(allowed_applications)
+            else:
                 LOGGER.debug("Caching allowed application list", page=paginator.page.number)
                 allowed_applications = self._get_allowed_applications(paginated_apps)
                 cache.set(
-                    user_app_cache_key(self.request.user.pk, paginator.page.number),
+                    user_app_cache_key(
+                        self.request.user.pk, paginator.page.number, only_with_launch_url
+                    ),
                     allowed_applications,
                     timeout=86400,
                 )
-        allowed_applications = self._expand_applications(allowed_applications)
 
-        if only_with_launch_url == "true":
+        if only_with_launch_url:
             allowed_applications = self._filter_applications_with_launch_url(allowed_applications)
 
         serializer = self.get_serializer(allowed_applications, many=True)

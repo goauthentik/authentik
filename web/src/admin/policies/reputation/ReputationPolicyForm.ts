@@ -2,7 +2,7 @@ import "#components/ak-switch-input";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { BasePolicyForm } from "#admin/policies/BasePolicyForm";
 
@@ -16,24 +16,24 @@ import { ifDefined } from "lit/directives/if-defined.js";
 @customElement("ak-policy-reputation-form")
 export class ReputationPolicyForm extends BasePolicyForm<ReputationPolicy> {
     loadInstance(pk: string): Promise<ReputationPolicy> {
-        return new PoliciesApi(DEFAULT_CONFIG).policiesReputationRetrieve({
+        return aki(PoliciesApi).policiesReputationRetrieve({
             policyUuid: pk,
         });
     }
 
     async send(data: ReputationPolicy): Promise<ReputationPolicy> {
         if (this.instance) {
-            return new PoliciesApi(DEFAULT_CONFIG).policiesReputationUpdate({
+            return aki(PoliciesApi).policiesReputationUpdate({
                 policyUuid: this.instance.pk || "",
                 reputationPolicyRequest: data,
             });
         }
-        return new PoliciesApi(DEFAULT_CONFIG).policiesReputationCreate({
+        return aki(PoliciesApi).policiesReputationCreate({
             reputationPolicyRequest: data,
         });
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html` <span>
                 ${msg("Allows/denys requests based on the users and/or the IPs reputation.")}
             </span>

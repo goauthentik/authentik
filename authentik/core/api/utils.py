@@ -127,3 +127,10 @@ class LinkSerializer(PassiveSerializer):
     """Returns a single link"""
 
     link = CharField()
+
+
+class ThemedUrlsSerializer(PassiveSerializer):
+    """Themed URLs - maps theme names to URLs for light and dark themes"""
+
+    light = CharField(required=False, allow_null=True)
+    dark = CharField(required=False, allow_null=True)

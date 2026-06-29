@@ -30,12 +30,20 @@ PLAN_CONTEXT_USER_PATH = "user_path"
 
 
 class UserWriteStageView(StageView):
-    """Finalise Enrollment flow by creating a user object."""
+    """Finalize Enrollment flow by creating a user object."""
 
     def __init__(self, executor: FlowExecutorView, **kwargs):
         super().__init__(executor, **kwargs)
         self.disallowed_user_attributes = [
             "groups",
+            # Block attribute writes that would otherwise land on the model's
+            # primary key. An IdP that returns an `id` claim (mocksaml is one
+            # example) used to crash the enrollment flow with
+            # ValueError: Field 'id' expected a number but got '<hex>'
+            # because hasattr(user, "id") is true and setattr(user, "id", ...)
+            # was taken unchecked. See #21580.
+            "id",
+            "pk",
         ]
 
     @staticmethod
@@ -186,9 +194,9 @@ class UserWriteStageView(StageView):
             with transaction.atomic():
                 user.save()
                 if self.executor.current_stage.create_users_group:
-                    user.ak_groups.add(self.executor.current_stage.create_users_group)
+                    user.groups.add(self.executor.current_stage.create_users_group)
                 if PLAN_CONTEXT_GROUPS in self.executor.plan.context:
-                    user.ak_groups.add(*self.executor.plan.context[PLAN_CONTEXT_GROUPS])
+                    user.groups.add(*self.executor.plan.context[PLAN_CONTEXT_GROUPS])
         except (IntegrityError, ValueError, TypeError, InternalError) as exc:
             self.logger.warning("Failed to save user", exc=exc)
             return self.executor.stage_invalid(_("Failed to update user. Please try again later."))

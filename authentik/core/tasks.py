@@ -27,7 +27,10 @@ def clean_expired_models():
     for cls in ExpiringModel.__subclasses__():
         cls: ExpiringModel
         objects = (
-            cls.objects.all().exclude(expiring=False).exclude(expiring=True, expires__gt=now())
+            cls.objects.including_expired()
+            .all()
+            .exclude(expiring=False)
+            .exclude(expiring=True, expires__gt=now())
         )
         amount = objects.count()
         for obj in chunked_queryset(objects):
@@ -35,8 +38,13 @@ def clean_expired_models():
         LOGGER.debug("Expired models", model=cls, amount=amount)
         self.info(f"Expired {amount} {cls._meta.verbose_name_plural}")
     clear_expired_cache()
-    Message.delete_expired()
-    GroupChannel.delete_expired()
+    for cls in [Message, GroupChannel]:
+        objects = cls.objects.all().filter(expires__lt=now())
+        amount = objects.count()
+        for obj in chunked_queryset(objects):
+            obj.delete()
+        LOGGER.debug("Expired models", model=cls, amount=amount)
+        self.info(f"Expired {amount} {cls._meta.verbose_name_plural}")
 
 
 @actor(description=_("Remove temporary users created by SAML Sources."))

@@ -1,8 +1,8 @@
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
-import "#elements/sync/SyncObjectForm";
+import "#components/sync/SyncObjectForm";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
@@ -28,16 +28,14 @@ export class MicrosoftEntraProviderGroupList extends Table<MicrosoftEntraProvide
     protected override searchEnabled = true;
 
     renderToolbar(): TemplateResult {
-        return html`<ak-forms-modal cancelText=${msg("Close")} ?closeAfterSuccessfulSubmit=${false}>
+        return html`<ak-forms-modal cancelText=${msg("Close")} keep-open-after-submit>
                 <span slot="submit">${msg("Sync")}</span>
                 <span slot="header">${msg("Sync Group")}</span>
                 <ak-sync-object-form
                     .provider=${this.providerId}
                     model=${SyncObjectModelEnum.AuthentikCoreModelsGroup}
                     .sync=${(data: ProvidersMicrosoftEntraSyncObjectCreateRequest) => {
-                        return new ProvidersApi(
-                            DEFAULT_CONFIG,
-                        ).providersMicrosoftEntraSyncObjectCreate(data);
+                        return aki(ProvidersApi).providersMicrosoftEntraSyncObjectCreate(data);
                     }}
                     slot="form"
                 >
@@ -50,10 +48,10 @@ export class MicrosoftEntraProviderGroupList extends Table<MicrosoftEntraProvide
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
-            objectLabel=${msg("Microsoft Entra Group(s)")}
+            object-label=${msg("Microsoft Entra Group(s)")}
             .objects=${this.selectedElements}
             .delete=${(item: MicrosoftEntraProviderGroup) => {
-                return new ProvidersApi(DEFAULT_CONFIG).providersMicrosoftEntraGroupsDestroy({
+                return aki(ProvidersApi).providersMicrosoftEntraGroupsDestroy({
                     id: item.id,
                 });
             }}
@@ -65,7 +63,7 @@ export class MicrosoftEntraProviderGroupList extends Table<MicrosoftEntraProvide
     }
 
     async apiEndpoint(): Promise<PaginatedResponse<MicrosoftEntraProviderGroup>> {
-        return new ProvidersApi(DEFAULT_CONFIG).providersMicrosoftEntraGroupsList({
+        return aki(ProvidersApi).providersMicrosoftEntraGroupsList({
             ...(await this.defaultEndpointConfig()),
             providerId: this.providerId,
         });

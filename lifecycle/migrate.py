@@ -30,10 +30,11 @@ class BaseMigration:
     def __init__(self, cur: Any, con: Any):
         self.cur = cur
         self.con = con
+        self.log = get_logger().bind()
 
     def system_crit(self, command: str):
         """Run system command"""
-        LOGGER.debug("Running system_crit command", command=command)
+        self.log.debug("Running system_crit command", command=command)
         retval = system(command)  # nosec
         if retval != 0:
             raise CommandError("Migration error")
@@ -73,6 +74,9 @@ def release_lock(conn: Connection, cursor: Cursor):
 
 
 def run_migrations():
+    if CONFIG.get_bool("skip_migrations", False):
+        return
+    conn_opts = CONFIG.get_dict_from_b64_json("postgresql.conn_options", default={})
     conn = connect(
         dbname=CONFIG.get("postgresql.name"),
         user=CONFIG.get("postgresql.user"),
@@ -83,6 +87,7 @@ def run_migrations():
         sslrootcert=CONFIG.get("postgresql.sslrootcert"),
         sslcert=CONFIG.get("postgresql.sslcert"),
         sslkey=CONFIG.get("postgresql.sslkey"),
+        **conn_opts,
     )
     curr = conn.cursor()
     try:
@@ -100,7 +105,7 @@ def run_migrations():
                 if name != "Migration":
                     continue
                 migration = sub(curr, conn)
-                curr.execute(f"SET search_path = {CONFIG.get("postgresql.default_schema")}")
+                curr.execute(f"SET search_path = {CONFIG.get('postgresql.default_schema')}")
                 if migration.needs_migration():
                     LOGGER.info("Migration needs to be applied", migration=migration_path.name)
                     migration.run()

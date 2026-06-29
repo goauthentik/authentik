@@ -6,7 +6,9 @@ import "#elements/forms/ModalForm";
 import "#user/user-settings/mfa/MFADeviceForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
-import { AndNext, DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
+import { AndNext } from "#common/api/config";
+import { createPaginatedResponse } from "#common/api/responses";
 import { globalAK } from "#common/global";
 import { deviceTypeName } from "#common/labels";
 import { SentryIgnoredError } from "#common/sentry/index";
@@ -19,6 +21,7 @@ import { AuthenticatorsApi, Device, UserSetting } from "@goauthentik/api";
 import { msg, str } from "@lit/localize";
 import { html, nothing, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
+import { guard } from "lit/directives/guard.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 export const stageToAuthenticatorName = (stage: UserSetting) =>
@@ -29,23 +32,15 @@ export class MFADevicesPage extends Table<Device> {
     @property({ attribute: false })
     userSettings?: UserSetting[];
 
-    checkbox = true;
-    clearOnRefresh = true;
+    public override checkbox = true;
+    public override clearOnRefresh = true;
+
+    public override label = msg("MFA Devices");
+    protected override emptyStateMessage = msg("No MFA devices enrolled.");
 
     async apiEndpoint(): Promise<PaginatedResponse<Device>> {
-        const devices = await new AuthenticatorsApi(DEFAULT_CONFIG).authenticatorsAllList();
-        return {
-            pagination: {
-                current: 0,
-                count: devices.length,
-                totalPages: 1,
-                startIndex: 1,
-                endIndex: devices.length,
-                next: 0,
-                previous: 0,
-            },
-            results: devices,
-        };
+        const devices = await aki(AuthenticatorsApi).authenticatorsAllList();
+        return createPaginatedResponse(devices);
     }
 
     protected columns: TableColumn[] = [
@@ -56,14 +51,17 @@ export class MFADevicesPage extends Table<Device> {
         [msg("Actions"), null, msg("Row Actions")],
     ];
 
-    renderToolbar(): TemplateResult {
-        const settings = (this.userSettings || []).filter((stage) => {
-            if (stage.component === "ak-user-settings-password") {
-                return false;
-            }
-            return stage.configureUrl;
-        });
-        return html`<ak-dropdown class="pf-c-dropdown">
+    protected renderEnrollButton(): SlottedTemplateResult {
+        return guard([this.userSettings], () => {
+            const settings = (this.userSettings || []).filter((stage) => {
+                if (stage.component === "ak-user-settings-password") {
+                    return false;
+                }
+
+                return stage.configureUrl;
+            });
+
+            return html`<ak-dropdown class="pf-c-dropdown">
                 <button
                     class="pf-m-primary pf-c-dropdown__toggle"
                     type="button"
@@ -75,10 +73,9 @@ export class MFADevicesPage extends Table<Device> {
                     <span class="pf-c-dropdown__toggle-text">${msg("Enroll")}</span>
                     <i class="fas fa-caret-down pf-c-dropdown__toggle-icon" aria-hidden="true"></i>
                 </button>
-                <ul
+                <menu
                     class="pf-c-dropdown__menu"
                     hidden
-                    role="menu"
                     id="add-mfa-menu"
                     aria-labelledby="add-mfa-toggle"
                     tabindex="-1"
@@ -89,7 +86,7 @@ export class MFADevicesPage extends Table<Device> {
                                 role="menuitem"
                                 href="${ifDefined(stage.configureUrl)}${AndNext(
                                     `${globalAK().api.relBase}if/user/#/settings;${JSON.stringify({
-                                        page: "page-mfa",
+                                        page: "page-credentials",
                                     })}`,
                                 )}"
                                 class="pf-c-dropdown__menu-item"
@@ -98,13 +95,17 @@ export class MFADevicesPage extends Table<Device> {
                             </a>
                         </li>`;
                     })}
-                </ul>
-            </ak-dropdown>
-            ${super.renderToolbar()}`;
+                </menu>
+            </ak-dropdown>`;
+        });
+    }
+
+    protected override renderToolbar(): TemplateResult {
+        return html`${this.renderEnrollButton()} ${super.renderToolbar()}`;
     }
 
     async deleteWrapper(device: Device) {
-        const api = new AuthenticatorsApi(DEFAULT_CONFIG);
+        const api = aki(AuthenticatorsApi);
         const id = { id: parseInt(device.pk, 10) };
         switch (device.type) {
             case "authentik_stages_authenticator_duo.DuoDevice":
@@ -129,7 +130,7 @@ export class MFADevicesPage extends Table<Device> {
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
-            objectLabel=${msg("Device(s)")}
+            object-label=${msg("Device(s)")}
             .objects=${this.selectedElements}
             .delete=${(item: Device) => {
                 return this.deleteWrapper(item);
@@ -156,7 +157,7 @@ export class MFADevicesPage extends Table<Device> {
             Timestamp(item.lastUsed),
             html`
                 <ak-forms-modal>
-                    <span slot="submit">${msg("Update")}</span>
+                    <span slot="submit">${msg("Save Changes")}</span>
                     <span slot="header">${msg("Update Device")}</span>
                     <ak-user-mfa-form slot="form" deviceType=${item.type} .instancePk=${item.pk}>
                     </ak-user-mfa-form>

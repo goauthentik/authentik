@@ -1,6 +1,6 @@
 import "#elements/forms/HorizontalFormElement";
 
-import { AkControlElement } from "#elements/AkControlElement";
+import { AKControlElement } from "#elements/ControlElement";
 
 import { css, html, nothing, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
@@ -10,7 +10,6 @@ import { createRef, ref, Ref } from "lit/directives/ref.js";
 
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 type Pair = [string, string];
 
@@ -26,8 +25,8 @@ const selectStyles = css`
  * @part select - The select itself, to override the height specified above.
  */
 @customElement("ak-multi-select")
-export class AkMultiSelect extends AkControlElement {
-    static styles = [PFBase, PFForm, PFFormControl, selectStyles];
+export class AkMultiSelect extends AKControlElement {
+    static styles = [PFForm, PFFormControl, selectStyles];
 
     /**
      * The [name] attribute, which is also distributed to the layout manager and the input control.
@@ -84,7 +83,7 @@ export class AkMultiSelect extends AkControlElement {
      * control that produces values of specific interest to our REST API. This is our modern
      * accessor name.
      */
-    json() {
+    toJSON() {
         return this.values;
     }
 

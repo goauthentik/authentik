@@ -3,7 +3,7 @@ import "#elements/CodeMirror";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { docLink } from "#common/global";
 
 import { BasePolicyForm } from "#admin/policies/BasePolicyForm";
@@ -18,24 +18,24 @@ import { ifDefined } from "lit/directives/if-defined.js";
 @customElement("ak-policy-expression-form")
 export class ExpressionPolicyForm extends BasePolicyForm<ExpressionPolicy> {
     loadInstance(pk: string): Promise<ExpressionPolicy> {
-        return new PoliciesApi(DEFAULT_CONFIG).policiesExpressionRetrieve({
+        return aki(PoliciesApi).policiesExpressionRetrieve({
             policyUuid: pk,
         });
     }
 
     async send(data: ExpressionPolicy): Promise<ExpressionPolicy> {
         if (this.instance) {
-            return new PoliciesApi(DEFAULT_CONFIG).policiesExpressionUpdate({
+            return aki(PoliciesApi).policiesExpressionUpdate({
                 policyUuid: this.instance.pk || "",
                 expressionPolicyRequest: data,
             });
         }
-        return new PoliciesApi(DEFAULT_CONFIG).policiesExpressionCreate({
+        return aki(PoliciesApi).policiesExpressionCreate({
             expressionPolicyRequest: data,
         });
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html` <span>
                 ${msg(
                     "Executes the python snippet to determine whether to allow or deny a request.",

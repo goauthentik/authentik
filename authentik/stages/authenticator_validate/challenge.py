@@ -1,9 +1,9 @@
 """Validation stage challenge checking"""
 
-from json import loads
 from typing import TYPE_CHECKING
 from urllib.parse import urlencode
 
+from django.db import transaction
 from django.http import HttpRequest
 from django.http.response import Http404
 from django.shortcuts import get_object_or_404
@@ -12,12 +12,12 @@ from django.utils.translation import gettext_lazy as _
 from rest_framework.fields import CharField, ChoiceField, DateTimeField
 from rest_framework.serializers import ValidationError
 from structlog.stdlib import get_logger
-from webauthn import options_to_json
 from webauthn.authentication.generate_authentication_options import generate_authentication_options
 from webauthn.authentication.verify_authentication_response import verify_authentication_response
 from webauthn.helpers import parse_authentication_credential_json
 from webauthn.helpers.base64url_to_bytes import base64url_to_bytes
 from webauthn.helpers.exceptions import InvalidAuthenticationResponse, InvalidJSONStructure
+from webauthn.helpers.options_to_json_dict import options_to_json_dict
 from webauthn.helpers.structs import PublicKeyCredentialType, UserVerificationRequirement
 
 from authentik.core.api.utils import JSONDictField, PassiveSerializer
@@ -30,8 +30,8 @@ from authentik.flows.stage import StageView
 from authentik.lib.utils.email import mask_email
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.root.middleware import ClientIPMiddleware
-from authentik.stages.authenticator import match_token
-from authentik.stages.authenticator.models import Device
+from authentik.stages.authenticator import devices_for_user
+from authentik.stages.authenticator.models import Device, ThrottlingMixin
 from authentik.stages.authenticator_duo.models import AuthenticatorDuoStage, DuoDevice
 from authentik.stages.authenticator_email.models import EmailDevice
 from authentik.stages.authenticator_sms.models import SMSDevice
@@ -39,6 +39,7 @@ from authentik.stages.authenticator_validate.models import AuthenticatorValidate
 from authentik.stages.authenticator_webauthn.models import UserVerification, WebAuthnDevice
 from authentik.stages.authenticator_webauthn.stage import PLAN_CONTEXT_WEBAUTHN_CHALLENGE
 from authentik.stages.authenticator_webauthn.utils import get_origin, get_rp_id
+from authentik.stages.password.stage import PLAN_CONTEXT_METHOD_ARGS
 
 LOGGER = get_logger()
 if TYPE_CHECKING:
@@ -55,7 +56,7 @@ class DeviceChallenge(PassiveSerializer):
 
 
 def get_challenge_for_device(
-    stage_view: "AuthenticatorValidateStageView", stage: AuthenticatorValidateStage, device: Device
+    stage_view: AuthenticatorValidateStageView, stage: AuthenticatorValidateStage, device: Device
 ) -> dict:
     """Generate challenge for a single device"""
     if isinstance(device, WebAuthnDevice):
@@ -67,7 +68,7 @@ def get_challenge_for_device(
 
 
 def get_webauthn_challenge_without_user(
-    stage_view: "AuthenticatorValidateStageView", stage: AuthenticatorValidateStage
+    stage_view: AuthenticatorValidateStageView, stage: AuthenticatorValidateStage
 ) -> dict:
     """Same as `get_webauthn_challenge`, but allows any client device. We can then later check
     who the device belongs to."""
@@ -81,11 +82,14 @@ def get_webauthn_challenge_without_user(
         authentication_options.challenge
     )
 
-    return loads(options_to_json(authentication_options))
+    options_dict = options_to_json_dict(authentication_options)
+    if stage.webauthn_hints:
+        options_dict["hints"] = list(stage.webauthn_hints)
+    return options_dict
 
 
 def get_webauthn_challenge(
-    stage_view: "AuthenticatorValidateStageView",
+    stage_view: AuthenticatorValidateStageView,
     stage: AuthenticatorValidateStage,
     device: WebAuthnDevice | None = None,
 ) -> dict:
@@ -110,7 +114,10 @@ def get_webauthn_challenge(
         authentication_options.challenge
     )
 
-    return loads(options_to_json(authentication_options))
+    options_dict = options_to_json_dict(authentication_options)
+    if stage.webauthn_hints:
+        options_dict["hints"] = list(stage.webauthn_hints)
+    return options_dict
 
 
 def select_challenge(request: HttpRequest, device: Device):
@@ -137,14 +144,31 @@ def select_challenge_email(request: HttpRequest, device: EmailDevice):
 def validate_challenge_code(code: str, stage_view: StageView, user: User) -> Device:
     """Validate code-based challenges. We test against every device, on purpose, as
     the user mustn't choose between totp and static devices."""
-    device = match_token(user, code)
+
+    with transaction.atomic():
+        for device in devices_for_user(user, for_verify=True):
+            if isinstance(device, ThrottlingMixin):
+                throttling_factor = stage_view.executor.current_stage.get_throttling_factor(
+                    DeviceClasses.from_model_label(device.model_label())
+                )
+                if throttling_factor is not None:
+                    device.set_throttle_factor(throttling_factor)
+            if device.verify_token(code):
+                break
+        else:
+            device = None
+
     if not device:
         login_failed.send(
             sender=__name__,
             credentials={"username": user.username},
             request=stage_view.request,
             stage=stage_view.executor.current_stage,
-            device_class=DeviceClasses.TOTP.value,
+            context={
+                PLAN_CONTEXT_METHOD_ARGS: {
+                    "device_class": DeviceClasses.TOTP.value,
+                }
+            },
         )
         raise ValidationError(
             _("Invalid Token. Please ensure the time on your device is accurate and try again.")
@@ -216,9 +240,13 @@ def validate_challenge_webauthn(
             credentials={"username": user.username},
             request=stage_view.request,
             stage=stage_view.executor.current_stage,
-            device=device,
-            device_class=DeviceClasses.WEBAUTHN.value,
-            device_type=device.device_type,
+            context={
+                PLAN_CONTEXT_METHOD_ARGS: {
+                    "device": device,
+                    "device_class": DeviceClasses.WEBAUTHN.value,
+                    "device_type": device.device_type,
+                },
+            },
         )
         raise ValidationError("Assertion failed") from exc
 
@@ -268,8 +296,12 @@ def validate_challenge_duo(device_pk: int, stage_view: StageView, user: User) ->
                 credentials={"username": user.username},
                 request=stage_view.request,
                 stage=stage_view.executor.current_stage,
-                device_class=DeviceClasses.DUO.value,
-                duo_response=response,
+                context={
+                    PLAN_CONTEXT_METHOD_ARGS: {
+                        "device_class": DeviceClasses.DUO.value,
+                        "duo_response": response,
+                    }
+                },
             )
             raise ValidationError("Duo denied access", code="denied")
         return device

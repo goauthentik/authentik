@@ -4,7 +4,7 @@ sidebar_label: sssd
 support_level: community
 ---
 
-## What is sssd
+## What is sssd?
 
 > **SSSD** is an acronym for System Security Services Daemon. It is the client component of centralized identity management solutions such as FreeIPA, 389 Directory Server, Microsoft Active Directory, OpenLDAP and other directory servers. The client serves and caches the information stored in the remote directory server and provides identity, authentication and authorization services to the host machine.
 >
@@ -104,7 +104,7 @@ Please note that by default, sssd returns all user accounts; active and disabled
 
 :::
 
-## Additional Resources
+## Resources
 
 The setup of sssd might vary based on Linux distribution and version; here are some resources that can help you get this set up:
 

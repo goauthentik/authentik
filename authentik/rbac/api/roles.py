@@ -2,7 +2,7 @@
 
 from django.contrib.auth.models import Permission
 from django.http import Http404
-from django_filters.filters import AllValuesMultipleFilter, BooleanFilter
+from django_filters.filters import AllValuesMultipleFilter, BooleanFilter, CharFilter, NumberFilter
 from django_filters.filterset import FilterSet
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiResponse, extend_schema, extend_schema_field
@@ -22,7 +22,7 @@ from authentik.blueprints.api import ManagedSerializer
 from authentik.blueprints.v1.importer import SERIALIZER_CONTEXT_BLUEPRINT
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import ModelSerializer, PassiveSerializer
-from authentik.core.models import User
+from authentik.core.models import Group, User
 from authentik.rbac.decorators import permission_required
 from authentik.rbac.models import Role, get_permission_choices
 
@@ -65,15 +65,63 @@ class RoleSerializer(ManagedSerializer, ModelSerializer):
 
 
 class RoleFilterSet(FilterSet):
-    """Filter for PropertyMapping"""
+    """Filter for Role"""
 
     managed = extend_schema_field(OpenApiTypes.STR)(AllValuesMultipleFilter(field_name="managed"))
 
     managed__isnull = BooleanFilter(field_name="managed", lookup_expr="isnull")
 
+    inherited = BooleanFilter(
+        method="filter_inherited",
+        label="Include inherited roles (requires users or groups filter)",
+    )
+
+    users = extend_schema_field(OpenApiTypes.INT)(
+        NumberFilter(
+            method="filter_users",
+            label="Filter by user (use with inherited=true for all roles)",
+        )
+    )
+
+    groups = extend_schema_field(OpenApiTypes.UUID)(
+        CharFilter(
+            method="filter_groups",
+            label="Filter by group (use with inherited=true for all roles)",
+        )
+    )
+
+    def filter_inherited(self, queryset, name, value):
+        """This filter is handled by filter_users and filter_groups"""
+        return queryset
+
+    def filter_users(self, queryset, name, value):
+        """Filter roles by user, optionally including inherited roles"""
+        user = User.objects.filter(pk=value).first()
+        if not user:
+            return queryset.none()
+
+        include_inherited = self.data.get("inherited", "").lower() == "true"
+        if include_inherited:
+            return user.all_roles()
+        return queryset.filter(users=user)
+
+    def filter_groups(self, queryset, name, value):
+        """Filter roles by group, optionally including inherited roles"""
+        group = Group.objects.filter(pk=value).first()
+        if not group:
+            return queryset.none()
+
+        include_inherited = self.data.get("inherited", "").lower() == "true"
+        if include_inherited:
+            return group.all_roles()
+        return queryset.filter(groups=group)
+
     class Meta:
         model = Role
-        fields = ["name", "users", "managed"]
+        fields = [
+            "name",
+            "managed",
+        ]
 
 
 class RoleViewSet(UsedByMixin, ModelViewSet):

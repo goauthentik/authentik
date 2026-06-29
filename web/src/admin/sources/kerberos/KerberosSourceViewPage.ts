@@ -1,27 +1,23 @@
-import "#admin/rbac/ObjectPermissionsPage";
+import "#components/tasks/ScheduleList";
+import "#admin/rbac/ak-rbac-object-permission-page";
 import "#admin/sources/kerberos/KerberosSourceConnectivity";
 import "#admin/sources/kerberos/KerberosSourceForm";
-import "#components/events/ObjectChangelog";
+import "#admin/events/ObjectChangelog";
 import "#elements/CodeMirror";
 import "#elements/Tabs";
 import "#elements/ak-mdx/index";
 import "#elements/buttons/ActionButton/index";
 import "#elements/buttons/SpinnerButton/index";
 import "#elements/forms/ModalForm";
-import "#elements/sync/SyncStatusCard";
+import "#components/sync/SyncStatusCard";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { EVENT_REFRESH } from "#common/constants";
 
 import { AKElement } from "#elements/Base";
 import { SlottedTemplateResult } from "#elements/types";
 
-import {
-    KerberosSource,
-    ModelEnum,
-    RbacPermissionsAssignedByRolesListModelEnum,
-    SourcesApi,
-} from "@goauthentik/api";
+import { KerberosSource, ModelEnum, SourcesApi } from "@goauthentik/api";
 
 import MDSourceKerberosBrowser from "~docs/users-sources/sources/protocols/kerberos/browser.md";
 
@@ -37,13 +33,12 @@ import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList
 import PFList from "@patternfly/patternfly/components/List/list.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-source-kerberos-view")
 export class KerberosSourceViewPage extends AKElement {
     @property({ type: String })
     set sourceSlug(slug: string) {
-        new SourcesApi(DEFAULT_CONFIG)
+        aki(SourcesApi)
             .sourcesKerberosRetrieve({
                 slug: slug,
             })
@@ -56,7 +51,6 @@ export class KerberosSourceViewPage extends AKElement {
     source!: KerberosSource;
 
     static styles: CSSResult[] = [
-        PFBase,
         PFPage,
         PFButton,
         PFGrid,
@@ -130,7 +124,7 @@ export class KerberosSourceViewPage extends AKElement {
                             </div>
                             <div class="pf-c-card__footer">
                                 <ak-forms-modal>
-                                    <span slot="submit">${msg("Update")}</span>
+                                    <span slot="submit">${msg("Save Changes")}</span>
                                     <span slot="header">${msg("Update Kerberos Source")}</span>
                                     <ak-source-kerberos-form
                                         slot="form"
@@ -148,9 +142,7 @@ export class KerberosSourceViewPage extends AKElement {
                         >
                             <ak-sync-status-card
                                 .fetch=${() => {
-                                    return new SourcesApi(
-                                        DEFAULT_CONFIG,
-                                    ).sourcesKerberosSyncStatusRetrieve({
+                                    return aki(SourcesApi).sourcesKerberosSyncStatusRetrieve({
                                         slug: this.source?.slug,
                                     });
                                 }}
@@ -170,13 +162,11 @@ export class KerberosSourceViewPage extends AKElement {
                             <div class="pf-c-card__title">
                                 <p>${msg("Schedules")}</p>
                             </div>
-                            <div class="pf-c-card__body">
-                                <ak-schedule-list
-                                    .relObjAppLabel=${appLabel}
-                                    .relObjModel=${modelName}
-                                    .relObjId="${this.source.pk}"
-                                ></ak-schedule-list>
-                            </div>
+                            <ak-schedule-list
+                                .relObjAppLabel=${appLabel}
+                                .relObjModel=${modelName}
+                                .relObjId="${this.source.pk}"
+                            ></ak-schedule-list>
                         </div>
                         <div class="pf-c-card pf-l-grid__item pf-m-12-col">
                             <div class="pf-c-card__body">
@@ -195,14 +185,11 @@ export class KerberosSourceViewPage extends AKElement {
                 >
                     <div class="pf-l-grid pf-m-gutter">
                         <div class="pf-c-card pf-l-grid__item pf-m-12-col">
-                            <div class="pf-c-card__body">
-                                <ak-object-changelog
-                                    targetModelPk=${this.source.pk || ""}
-                                    targetModelApp="authentik_sources_kerberos"
-                                    targetModelName="kerberossource"
-                                >
-                                </ak-object-changelog>
-                            </div>
+                            <ak-object-changelog
+                                targetModelPk=${this.source.pk || ""}
+                                targetModelName=${ModelEnum.AuthentikSourcesKerberosKerberossource}
+                            >
+                            </ak-object-changelog>
                         </div>
                     </div>
                 </div>
@@ -212,7 +199,7 @@ export class KerberosSourceViewPage extends AKElement {
                     slot="page-permissions"
                     id="page-permissions"
                     aria-label="${msg("Permissions")}"
-                    model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikSourcesKerberosKerberossource}
+                    model=${ModelEnum.AuthentikSourcesKerberosKerberossource}
                     objectPk=${this.source.pk}
                 ></ak-rbac-object-permission-page>
             </ak-tabs>

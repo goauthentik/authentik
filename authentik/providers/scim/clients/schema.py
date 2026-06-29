@@ -1,9 +1,13 @@
 """Custom SCIM schemas"""
 
-from enum import Enum
+from enum import StrEnum
+from typing import Self
 
-from pydantic import AnyUrl, BaseModel, ConfigDict, Field
+from django.core.exceptions import ValidationError
+from django.core.validators import validate_email
+from pydantic import AnyUrl, BaseModel, ConfigDict, Field, model_validator
 from pydanticscim.group import Group as BaseGroup
+from pydanticscim.group import GroupMember as BaseGroupMember
 from pydanticscim.responses import PatchOperation as BasePatchOperation
 from pydanticscim.responses import PatchRequest as BasePatchRequest
 from pydanticscim.responses import SCIMError as BaseSCIMError
@@ -12,7 +16,7 @@ from pydanticscim.service_provider import ChangePassword, Filter, Patch, Sort
 from pydanticscim.service_provider import (
     ServiceProviderConfiguration as BaseServiceProviderConfiguration,
 )
-from pydanticscim.user import AddressKind
+from pydanticscim.user import AddressKind, EmailKind
 from pydanticscim.user import User as BaseUser
 
 SCIM_USER_SCHEMA = "urn:ietf:params:scim:schemas:core:2.0:User"
@@ -62,7 +66,7 @@ class EnterpriseUser(BaseModel):
     employeeNumber: str | None = Field(
         None,
         description="Numeric or alphanumeric identifier assigned to a person, "
-        "typically based on order of hire or association with anorganization.",
+        "typically based on order of hire or association with an organization.",
     )
     costCenter: str | None = Field(None, description="Identifies the name of a cost center.")
     organization: str | None = Field(None, description="Identifies the name of an organization.")
@@ -70,7 +74,7 @@ class EnterpriseUser(BaseModel):
     department: str | None = Field(
         None,
         description="Numeric or alphanumeric identifier assigned to a person,"
-        " typically based on order of hire or association with anorganization.",
+        " typically based on order of hire or association with an organization.",
     )
     manager: Manager | None = Field(
         None,
@@ -78,6 +82,43 @@ class EnterpriseUser(BaseModel):
         "service providers to represent organizational hierarchy by referencing"
         " the 'id' attribute of another User.",
     )
+
+
+class Email(BaseModel):
+    value: str | None = Field(
+        None,
+        description=(
+            "Email addresses for the user.  The value SHOULD be canonicalized by the "
+            "service provider, e.g., 'bjensen@example.com' instead of 'bjensen@EXAMPLE.COM'. "
+            "Canonical type values of 'work', 'home', and 'other'."
+        ),
+    )
+    display: str | None = Field(
+        None,
+        description="A human-readable name, primarily used for display purposes.  READ-ONLY.",
+    )
+    type: EmailKind | None = Field(
+        None,
+        description="A label indicating the attribute's function, e.g., 'work' or 'home'.",
+    )
+    primary: bool | None = Field(
+        None,
+        description=(
+            "A Boolean value indicating the 'primary' or preferred attribute value for "
+            "this attribute, e.g., the preferred mailing address or primary email address. "
+            "The primary attribute value 'true' MUST appear no more than once."
+        ),
+    )
+
+    @model_validator(mode="after")
+    def validate_email_django(self) -> Self:
+        """Check that the given email address validates according to django's validation rules.
+        If we used pydantic's built in EmailStr, the rules would be slightly different."""
+        try:
+            validate_email(self.value)
+        except ValidationError as exc:
+            raise ValueError(exc) from exc
+        return self
 
 
 class User(BaseUser):
@@ -101,6 +142,14 @@ class User(BaseUser):
         alias="urn:ietf:params:scim:schemas:extension:enterprise:2.0:User",
         serialization_alias="urn:ietf:params:scim:schemas:extension:enterprise:2.0:User",
     )
+    emails: list[Email] | None = Field(
+        None,
+        description=(
+            "Email addresses for the user.  The value SHOULD be canonicalized by the "
+            "service provider, e.g., 'bjensen@example.com' instead of 'bjensen@EXAMPLE.COM'. "
+            "Canonical type values of 'work', 'home', and 'other'."
+        ),
+    )
 
 
 class Group(BaseGroup):
@@ -112,10 +161,16 @@ class Group(BaseGroup):
     schemas: list[str] = [SCIM_GROUP_SCHEMA]
     externalId: str | None = None
     meta: dict | None = None
+    members: list[GroupMember] | None = Field(None, description="A list of members of the Group.")
+
+
+class GroupMember(BaseGroupMember):
+    """Modified GroupMember that allows extra fields"""
+
+    model_config = ConfigDict(extra="allow")
 
 
 class Bulk(BaseBulk):
-
     maxOperations: int = Field()
 
 
@@ -132,7 +187,7 @@ class ServiceProviderConfiguration(BaseServiceProviderConfiguration):
         return self._is_fallback
 
     @staticmethod
-    def default() -> "ServiceProviderConfiguration":
+    def default() -> ServiceProviderConfiguration:
         """Get default configuration, which doesn't support any optional features as fallback"""
         return ServiceProviderConfiguration(
             patch=Patch(supported=False),
@@ -145,8 +200,7 @@ class ServiceProviderConfiguration(BaseServiceProviderConfiguration):
         )
 
 
-class PatchOp(str, Enum):
-
+class PatchOp(StrEnum):
     replace = "replace"
     remove = "remove"
     add = "add"

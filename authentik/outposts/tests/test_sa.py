@@ -51,10 +51,12 @@ class OutpostTests(TestCase):
         permissions = outpost.user.get_all_obj_perms_on_managed_role().order_by(
             "content_type__model"
         )
-        self.assertEqual(len(permissions), 3)
+        self.assertEqual(len(permissions), 5)
         self.assertEqual(permissions[0].object_pk, str(keypair.pk))
-        self.assertEqual(permissions[1].object_pk, str(outpost.pk))
-        self.assertEqual(permissions[2].object_pk, str(provider.pk))
+        self.assertEqual(permissions[1].object_pk, str(keypair.pk))
+        self.assertEqual(permissions[2].object_pk, str(keypair.pk))
+        self.assertEqual(permissions[3].object_pk, str(outpost.pk))
+        self.assertEqual(permissions[4].object_pk, str(provider.pk))
 
         # Remove provider from outpost, user should only have access to outpost
         outpost.providers.remove(provider)

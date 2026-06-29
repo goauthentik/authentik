@@ -1,9 +1,10 @@
 import "#elements/EmptyState";
 import "chartjs-adapter-date-fns";
 
-import { EVENT_REFRESH, EVENT_THEME_CHANGE } from "#common/constants";
+import { EVENT_REFRESH } from "#common/constants";
 import { APIError, parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
 import { formatElapsedTime } from "#common/temporal";
+import { ThemeChangeEvent } from "#common/theme";
 
 import { AKElement } from "#elements/Base";
 
@@ -40,8 +41,8 @@ Chart.register(LineController, BarController, DoughnutController);
 Chart.register(ArcElement, BarElement, PointElement, LineElement);
 Chart.register(TimeScale, TimeSeriesScale, LinearScale, Filler);
 
-export const FONT_COLOUR_DARK_MODE = "#fafafa";
-export const FONT_COLOUR_LIGHT_MODE = "#151515";
+export const FONT_COLOR_DARK_MODE = "#fafafa";
+export const FONT_COLOR_LIGHT_MODE = "#151515";
 
 export abstract class AKChart<T> extends AKElement {
     public role = "figure";
@@ -58,7 +59,7 @@ export abstract class AKChart<T> extends AKElement {
     @property()
     centerText?: string;
 
-    fontColour = FONT_COLOUR_LIGHT_MODE;
+    fontColor = FONT_COLOR_LIGHT_MODE;
 
     static styles: CSSResult[] = [
         css`
@@ -88,11 +89,11 @@ export abstract class AKChart<T> extends AKElement {
         super.connectedCallback();
         window.addEventListener("resize", this.resizeHandler);
         this.addEventListener(EVENT_REFRESH, this.refreshHandler);
-        this.addEventListener(EVENT_THEME_CHANGE, ((ev: CustomEvent<UiThemeEnum>) => {
+        this.addEventListener(ThemeChangeEvent.eventName, ((ev: CustomEvent<UiThemeEnum>) => {
             if (ev.detail === UiThemeEnum.Light) {
-                this.fontColour = FONT_COLOUR_LIGHT_MODE;
+                this.fontColor = FONT_COLOR_LIGHT_MODE;
             } else {
-                this.fontColour = FONT_COLOUR_DARK_MODE;
+                this.fontColor = FONT_COLOR_DARK_MODE;
             }
             this.chart?.update();
         }) as EventListener);

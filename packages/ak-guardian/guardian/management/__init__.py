@@ -30,7 +30,7 @@ def create_anonymous_user(sender, **kwargs):
         lookup = {User.USERNAME_FIELD: guardian_settings.ANONYMOUS_USER_NAME}
         # fixing #770
         User.objects.using(kwargs["using"]).filter(**lookup).only(User.USERNAME_FIELD).get()
-    except (User.DoesNotExist, DatabaseError):
+    except User.DoesNotExist, DatabaseError:
         # Handle both cases: user doesn't exist AND table doesn't exist (rollback scenario)
         try:
             retrieve_anonymous_function = import_string(guardian_settings.GET_INIT_ANONYMOUS_USER)

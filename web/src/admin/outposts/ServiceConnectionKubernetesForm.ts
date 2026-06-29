@@ -2,7 +2,7 @@ import "#elements/CodeMirror";
 import "#elements/forms/HorizontalFormElement";
 import "#components/ak-switch-input";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { ModelForm } from "#elements/forms/ModelForm";
 
@@ -21,7 +21,7 @@ export class ServiceConnectionKubernetesForm extends ModelForm<
     string
 > {
     loadInstance(pk: string): Promise<KubernetesServiceConnection> {
-        return new OutpostsApi(DEFAULT_CONFIG).outpostsServiceConnectionsKubernetesRetrieve({
+        return aki(OutpostsApi).outpostsServiceConnectionsKubernetesRetrieve({
             uuid: pk,
         });
     }
@@ -34,17 +34,17 @@ export class ServiceConnectionKubernetesForm extends ModelForm<
 
     async send(data: KubernetesServiceConnection): Promise<KubernetesServiceConnection> {
         if (this.instance) {
-            return new OutpostsApi(DEFAULT_CONFIG).outpostsServiceConnectionsKubernetesUpdate({
+            return aki(OutpostsApi).outpostsServiceConnectionsKubernetesUpdate({
                 uuid: this.instance.pk || "",
                 kubernetesServiceConnectionRequest: data,
             });
         }
-        return new OutpostsApi(DEFAULT_CONFIG).outpostsServiceConnectionsKubernetesCreate({
+        return aki(OutpostsApi).outpostsServiceConnectionsKubernetesCreate({
             kubernetesServiceConnectionRequest: data,
         });
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"
@@ -70,23 +70,12 @@ export class ServiceConnectionKubernetesForm extends ModelForm<
                     ${msg("Set custom attributes using YAML or JSON.")}
                 </p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal name="verifySsl">
-                <label class="pf-c-switch">
-                    <input
-                        class="pf-c-switch__input"
-                        type="checkbox"
-                        ?checked=${this.instance?.verifySsl ?? true}
-                    />
-                    <span class="pf-c-switch__toggle">
-                        <span class="pf-c-switch__toggle-icon">
-                            <i class="fas fa-check" aria-hidden="true"></i>
-                        </span>
-                    </span>
-                    <span class="pf-c-switch__label"
-                        >${msg("Verify Kubernetes API SSL Certificate")}</span
-                    >
-                </label>
-            </ak-form-element-horizontal>`;
+            <ak-switch-input
+                name="verifySsl"
+                label=${msg("Verify Kubernetes API SSL Certificate")}
+                ?checked=${this.instance?.verifySsl ?? true}
+            >
+            </ak-switch-input>`;
     }
 }
 

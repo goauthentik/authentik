@@ -1,4 +1,6 @@
 import "#components/ak-radio-input";
+import "#components/ak-text-input";
+import "#components/ak-number-input";
 import "#elements/CodeMirror";
 import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
 import "#elements/forms/FormGroup";
@@ -6,37 +8,41 @@ import "#elements/forms/HorizontalFormElement";
 
 import { propertyMappingsProvider, propertyMappingsSelector } from "./RACProviderFormHelpers.js";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { ModelForm } from "#elements/forms/ModelForm";
+import { SlottedTemplateResult } from "#elements/types";
 
 import { Endpoint, EndpointAuthModeEnum, ProtocolEnum, RacApi } from "@goauthentik/api";
 
 import YAML from "yaml";
 
 import { msg } from "@lit/localize";
-import { html, TemplateResult } from "lit";
+import { html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-rac-endpoint-form")
 export class EndpointForm extends ModelForm<Endpoint, string> {
-    @property({ type: Number })
-    providerID?: number;
+    public static override verboseName = msg("RAC Endpoint");
+    public static override verboseNamePlural = msg("RAC Endpoints");
 
-    loadInstance(pk: string): Promise<Endpoint> {
-        return new RacApi(DEFAULT_CONFIG).racEndpointsRetrieve({
+    @property({ type: Number })
+    public providerID: number | null = null;
+
+    protected override loadInstance(pk: string): Promise<Endpoint> {
+        return aki(RacApi).racEndpointsRetrieve({
             pbmUuid: pk,
         });
     }
 
-    getSuccessMessage(): string {
+    public override getSuccessMessage(): string {
         return this.instance
             ? msg("Successfully updated endpoint.")
             : msg("Successfully created endpoint.");
     }
 
-    async send(data: Endpoint): Promise<Endpoint> {
+    public override async send(data: Endpoint): Promise<Endpoint> {
         data.authMode = EndpointAuthModeEnum.Prompt;
         if (!this.instance) {
             data.provider = this.providerID || 0;
@@ -44,76 +50,69 @@ export class EndpointForm extends ModelForm<Endpoint, string> {
             data.provider = this.instance.provider;
         }
         if (this.instance) {
-            return new RacApi(DEFAULT_CONFIG).racEndpointsPartialUpdate({
+            return aki(RacApi).racEndpointsPartialUpdate({
                 pbmUuid: this.instance.pk || "",
                 patchedEndpointRequest: data,
             });
         }
-        return new RacApi(DEFAULT_CONFIG).racEndpointsCreate({
+        return aki(RacApi).racEndpointsCreate({
             endpointRequest: data,
         });
     }
 
-    renderForm(): TemplateResult {
-        return html`
-            <ak-form-element-horizontal label=${msg("Provider Name")} name="name" required>
-                <input
-                    type="text"
-                    value="${ifDefined(this.instance?.name)}"
-                    class="pf-c-form-control"
-                    required
-                    placeholder=${msg("Type a provider name...")}
-                    spellcheck="false"
-                />
-            </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("Protocol")} required name="protocol">
-                <ak-radio
-                    .options=${[
-                        {
-                            label: msg("RDP"),
-                            value: ProtocolEnum.Rdp,
-                        },
-                        {
-                            label: msg("SSH"),
-                            value: ProtocolEnum.Ssh,
-                        },
-                        {
-                            label: msg("VNC"),
-                            value: ProtocolEnum.Vnc,
-                        },
-                    ]}
-                    .value=${this.instance?.protocol}
-                >
-                </ak-radio>
-            </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("Host")} name="host" required>
-                <input
-                    type="text"
-                    value="${ifDefined(this.instance?.host)}"
-                    class="pf-c-form-control"
-                    required
-                />
-                <p class="pf-c-form__helper-text">
-                    ${msg("Hostname/IP to connect to. Optionally specify the port.")}
-                </p>
-            </ak-form-element-horizontal>
-            <ak-form-element-horizontal
+    protected override renderForm(): SlottedTemplateResult {
+        return html`<ak-text-input
+                label=${msg("Endpoint Name")}
+                name="name"
+                required
+                value="${ifDefined(this.instance?.name)}"
+                placeholder=${msg("Type a name for this endpoint...")}
+                spellcheck="false"
+                ?autofocus=${!this.instance}
+            >
+            </ak-text-input>
+
+            <ak-radio-input
+                label=${msg("Protocol")}
+                name="protocol"
+                required
+                .options=${[
+                    {
+                        label: msg("RDP"),
+                        value: ProtocolEnum.Rdp,
+                    },
+                    {
+                        label: msg("SSH"),
+                        value: ProtocolEnum.Ssh,
+                    },
+                    {
+                        label: msg("VNC"),
+                        value: ProtocolEnum.Vnc,
+                    },
+                ]}
+                .value=${this.instance?.protocol}
+            >
+            </ak-radio-input>
+            <ak-text-input
+                label=${msg("Host")}
+                name="host"
+                required
+                value="${ifDefined(this.instance?.host)}"
+                input-hint="code"
+                help=${msg("Hostname/IP to connect to. Optionally specify the port.")}
+                placeholder=${msg("e.g. myserver.example.com, 10.0.0.1:22")}
+            >
+            </ak-text-input>
+            <ak-number-input
                 label=${msg("Maximum concurrent connections")}
                 name="maximumConnections"
                 required
+                value="${this.instance?.maximumConnections ?? 1}"
+                help=${msg(
+                    "Maximum concurrent allowed connections to this endpoint. Can be set to -1 to disable the limit.",
+                )}
             >
-                <input
-                    type="number"
-                    value="${this.instance?.maximumConnections ?? 1}"
-                    class="pf-c-form-control"
-                    required
-                />
-                <p class="pf-c-form__helper-text">
-                    ${msg(
-                        "Maximum concurrent allowed connections to this endpoint. Can be set to -1 to disable the limit.",
-                    )}
-                </p>
-            </ak-form-element-horizontal>
+            </ak-number-input>
             <ak-form-element-horizontal label=${msg("Property mappings")} name="propertyMappings">
                 <ak-dual-select-dynamic-selected
                     .provider=${propertyMappingsProvider}
@@ -133,8 +132,7 @@ export class EndpointForm extends ModelForm<Endpoint, string> {
                         <p class="pf-c-form__helper-text">${msg("Connection settings.")}</p>
                     </ak-form-element-horizontal>
                 </div>
-            </ak-form-group>
-        `;
+            </ak-form-group> `;
     }
 }
 

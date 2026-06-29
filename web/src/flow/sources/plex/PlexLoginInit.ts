@@ -1,8 +1,7 @@
 import "#elements/EmptyState";
 import "#flow/components/ak-flow-card";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
-import { parseAPIResponseError } from "#common/errors/network";
+import { aki } from "#common/api/client";
 import { PlexAPIClient, popupCenterScreen } from "#common/helpers/plex";
 
 import { showAPIErrorMessage } from "#elements/messages/MessageContainer";
@@ -25,7 +24,6 @@ import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-flow-source-plex")
 export class PlexLoginInit extends BaseStage<
@@ -35,15 +33,7 @@ export class PlexLoginInit extends BaseStage<
     @state()
     authUrl?: string;
 
-    static styles: CSSResult[] = [
-        PFBase,
-        PFLogin,
-        PFForm,
-        PFFormControl,
-        PFButton,
-        PFTitle,
-        PFDivider,
-    ];
+    static styles: CSSResult[] = [PFLogin, PFForm, PFFormControl, PFButton, PFTitle, PFDivider];
 
     async firstUpdated(): Promise<void> {
         const authInfo = await PlexAPIClient.getPin(this.challenge?.clientId || "");
@@ -51,7 +41,7 @@ export class PlexLoginInit extends BaseStage<
         const authWindow = await popupCenterScreen(authInfo.authUrl, "plex auth", 550, 700);
         PlexAPIClient.pinPoll(this.challenge?.clientId || "", authInfo.pin.id).then((token) => {
             authWindow?.close();
-            new SourcesApi(DEFAULT_CONFIG)
+            aki(SourcesApi)
                 .sourcesPlexRedeemTokenCreate({
                     plexTokenRedeemRequest: {
                         plexToken: token,
@@ -62,13 +52,11 @@ export class PlexLoginInit extends BaseStage<
                     window.location.assign(redirectChallenge.to);
                 })
                 .catch(async (error: unknown) => {
-                    return parseAPIResponseError(error)
-                        .then(showAPIErrorMessage)
-                        .then(() => {
-                            setTimeout(() => {
-                                window.location.assign("/");
-                            }, 5000);
-                        });
+                    return showAPIErrorMessage(error).then(() => {
+                        setTimeout(() => {
+                            window.location.assign("/");
+                        }, 5000);
+                    });
                 });
         });
     }
@@ -95,6 +83,8 @@ export class PlexLoginInit extends BaseStage<
         </ak-flow-card>`;
     }
 }
+
+export default PlexLoginInit;
 
 declare global {
     interface HTMLElementTagNameMap {

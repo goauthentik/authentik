@@ -20,7 +20,7 @@ from authentik.core.models import Token
 from authentik.core.types import UserSettingSerializer
 from authentik.flows.challenge import FlowLayout
 from authentik.lib.config import CONFIG
-from authentik.lib.models import InheritanceForeignKey, SerializerModel
+from authentik.lib.models import InheritanceForeignKey, InternallyManagedMixin, SerializerModel
 from authentik.lib.utils.reflection import class_to_path
 from authentik.policies.models import PolicyBindingModel
 
@@ -40,6 +40,7 @@ class FlowAuthenticationRequirement(models.TextChoices):
     REQUIRE_SUPERUSER = "require_superuser"
     REQUIRE_REDIRECT = "require_redirect"
     REQUIRE_OUTPOST = "require_outpost"
+    REQUIRE_TOKEN = "require_token"
 
 
 class NotConfiguredAction(models.TextChoices):
@@ -90,7 +91,7 @@ class Stage(SerializerModel):
     objects = InheritanceManager()
 
     @property
-    def view(self) -> type["StageView"]:
+    def view(self) -> type[StageView]:
         """Return StageView class that implements logic for this stage"""
         # This is a bit of a workaround, since we can't set class methods with setattr
         if hasattr(self, "__in_memory_type"):
@@ -117,7 +118,7 @@ class Stage(SerializerModel):
         return f"Stage {self.name}"
 
 
-def in_memory_stage(view: type["StageView"], **kwargs) -> Stage:
+def in_memory_stage(view: type[StageView], **kwargs) -> Stage:
     """Creates an in-memory stage instance, based on a `view` as view.
     Any key-word arguments are set as attributes on the stage object,
     accessible via `self.executor.current_stage`."""
@@ -185,16 +186,47 @@ class Flow(SerializerModel, PolicyBindingModel):
         help_text=_("Required level of authentication and authorization to access a flow."),
     )
 
-    def background_url(self, request: HttpRequest | None = None) -> str:
+    def background_url(
+        self,
+        request: HttpRequest | None = None,
+        use_cache: bool = True,
+    ) -> str:
         """Get the URL to the background image"""
         if not self.background:
             if request:
-                return request.brand.branding_default_flow_background_url()
+                return request.brand.branding_default_flow_background_url(
+                    request,
+                    use_cache=use_cache,
+                )
             return (
                 CONFIG.get("web.path", "/")[:-1] + "/static/dist/assets/images/flow_background.jpg"
             )
 
-        return get_file_manager(FileUsage.MEDIA).file_url(self.background, request)
+        return get_file_manager(FileUsage.MEDIA).file_url(
+            self.background,
+            request,
+            use_cache=use_cache,
+        )
+
+    def background_themed_urls(
+        self,
+        request: HttpRequest | None = None,
+        use_cache: bool = True,
+    ) -> dict[str, str] | None:
+        """Get themed URLs for background if it contains %(theme)s"""
+        if not self.background:
+            if request:
+                return request.brand.branding_default_flow_background_themed_urls(
+                    request,
+                    use_cache=use_cache,
+                )
+            return None
+
+        return get_file_manager(FileUsage.MEDIA).themed_urls(
+            self.background,
+            request,
+            use_cache=use_cache,
+        )
 
     stages = models.ManyToManyField(Stage, through="FlowStageBinding", blank=True)
 
@@ -301,7 +333,7 @@ class FriendlyNamedStage(models.Model):
         abstract = True
 
 
-class FlowToken(Token):
+class FlowToken(InternallyManagedMixin, Token):
     """Subclass of a standard Token, stores the currently active flow plan upon creation.
     Can be used to later resume a flow."""
 
@@ -310,13 +342,13 @@ class FlowToken(Token):
     revoke_on_execution = models.BooleanField(default=True)
 
     @staticmethod
-    def pickle(plan: "FlowPlan") -> str:
+    def pickle(plan: FlowPlan) -> str:
         """Pickle into string"""
         data = dumps(plan)
         return b64encode(data).decode()
 
     @property
-    def plan(self) -> "FlowPlan":
+    def plan(self) -> FlowPlan:
         """Load Flow plan from pickled version"""
         return loads(b64decode(self._plan.encode()))  # nosec
 

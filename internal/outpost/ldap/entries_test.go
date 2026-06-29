@@ -5,7 +5,7 @@ import (
 
 	"beryju.io/ldap"
 	"github.com/stretchr/testify/assert"
-	"goauthentik.io/api/v3"
+	api "goauthentik.io/packages/client-go"
 )
 
 func Test_UserEntry(t *testing.T) {

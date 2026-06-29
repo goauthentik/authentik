@@ -23,7 +23,7 @@ class StageMarker:
 
     def process(
         self,
-        plan: "FlowPlan",
+        plan: FlowPlan,
         binding: FlowStageBinding,
         http_request: HttpRequest,
     ) -> FlowStageBinding | None:
@@ -40,7 +40,7 @@ class ReevaluateMarker(StageMarker):
 
     def process(
         self,
-        plan: "FlowPlan",
+        plan: FlowPlan,
         binding: FlowStageBinding,
         http_request: HttpRequest,
     ) -> FlowStageBinding | None:

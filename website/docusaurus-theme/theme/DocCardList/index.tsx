@@ -9,15 +9,24 @@ import type { PropSidebarItem } from "@docusaurus/plugin-content-docs";
 import {
     filterDocCardListItems,
     useCurrentSidebarSiblings,
+    useDocById,
 } from "@docusaurus/plugin-content-docs/client";
 import { useLocation } from "@docusaurus/router";
 import DocCard from "@theme/DocCard";
+import Layout from "@theme/DocCard/Layout";
 import type { Props } from "@theme/DocCardList";
 import clsx from "clsx";
 import React, { ReactNode, useMemo } from "react";
 
+// Constant empty array to avoid creating new array on each render
+const EMPTY_SIDEBAR_ITEMS: PropSidebarItem[] = [];
+
 // Type aliases for clarity
 type SidebarDocLike = Extract<PropSidebarItem, { type: "link" }>;
+
+function isReleaseDocLink(item: PropSidebarItem): item is SidebarDocLike {
+    return item.type === "link" && !!item.docId?.startsWith("releases/");
+}
 
 /**
  * Type-safe property existence checker with proper typing
@@ -32,14 +41,34 @@ function hasOwnProperty<T extends object, K extends PropertyKey>(
 /**
  * Generates stable React keys from sidebar items, with fallback to index
  */
-function getStableKey(item: GlossaryItem | PropSidebarItem, idx: number) {
+function getStableKey(item: GlossaryItem | PropSidebarItem, idx: number): string | number {
     if (typeof item === "object" && item !== null) {
         const match = ["docId", "id", "href", "label"].find(
             (name) => hasOwnProperty(item, name) && typeof item[name] === "string",
         );
-        return match ? item[match] : idx;
+        return match ? ((item as Record<string, unknown>)[match] as string) : idx;
     }
     return idx;
+}
+
+/**
+ * Release documentation card item
+ */
+function ReleaseDocCard({ item }: { item: SidebarDocLike }) {
+    const doc = useDocById(item.docId ?? undefined);
+
+    // Docusaurus treats leading digits as emoji-like graphemes and splits the
+    // "2" out into the card icon slot, making version labels look broken.
+    return (
+        <Layout
+            item={item}
+            className={item.className}
+            href={item.href}
+            icon={null}
+            title={item.label}
+            description={item.description ?? doc?.description}
+        />
+    );
 }
 
 /**
@@ -48,7 +77,7 @@ function getStableKey(item: GlossaryItem | PropSidebarItem, idx: number) {
 function DocCardListItem({ item }: { item: React.ComponentProps<typeof DocCard>["item"] }) {
     return (
         <article className={clsx(styles.docCardListItem, "col col--6")}>
-            <DocCard item={item} />
+            {isReleaseDocLink(item) ? <ReleaseDocCard item={item} /> : <DocCard item={item} />}
         </article>
     );
 }
@@ -63,27 +92,31 @@ export default function DocCardList(props: Props): ReactNode {
     const pathname = useLocation()?.pathname ?? "";
     const isGlossary = isGlossaryPath(pathname);
 
-    const siblings = useCurrentSidebarSiblings() ?? [];
+    const sidebarSiblings = useCurrentSidebarSiblings();
+    const siblings = sidebarSiblings ?? EMPTY_SIDEBAR_ITEMS;
+
+    // Extract glossary terms from sidebar structure (always computed, but only used for glossary pages)
+    const glossaryPool = useMemo<SidebarDocLike[]>(() => {
+        const terms: SidebarDocLike[] = [];
+
+        // Recursively process sidebar items to find glossary terms
+        const processItem = (item: PropSidebarItem) => {
+            if (isGlossaryItem(item) && item.type === "link") {
+                terms.push(item as SidebarDocLike);
+            } else if (item.type === "category" && item.items) {
+                item.items.forEach(processItem);
+            }
+        };
+
+        siblings.forEach(processItem);
+        return terms;
+    }, [siblings]);
+
+    // Standard documentation card items (always computed, but only used for non-glossary pages)
+    const baseItems = useMemo(() => filterDocCardListItems(items ?? siblings), [items, siblings]);
 
     // For glossary pages, delegate to specialized GlossaryDocCardList component
     if (isGlossary) {
-        // Extract glossary terms from sidebar structure
-        const glossaryPool = useMemo<SidebarDocLike[]>(() => {
-            const terms: SidebarDocLike[] = [];
-
-            // Recursively process sidebar items to find glossary terms
-            const processItem = (item: PropSidebarItem) => {
-                if (isGlossaryItem(item) && item.type === "link") {
-                    terms.push(item as SidebarDocLike);
-                } else if (item.type === "category" && item.items) {
-                    item.items.forEach(processItem);
-                }
-            };
-
-            siblings.forEach(processItem);
-            return terms;
-        }, [siblings]);
-
         return (
             <ErrorBoundary>
                 <GlossaryDocCardList glossaryPool={glossaryPool} className={className} />
@@ -92,8 +125,6 @@ export default function DocCardList(props: Props): ReactNode {
     }
 
     // Standard documentation card rendering for non-glossary pages
-    const baseItems = useMemo(() => filterDocCardListItems(items ?? siblings), [items, siblings]);
-
     return (
         <section className={clsx("row", className)}>
             {baseItems.map((item, idx) => (

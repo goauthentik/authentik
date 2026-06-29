@@ -6,26 +6,26 @@ import "#elements/forms/SearchSelect/index";
 
 import { countryCache } from "./CountryCache.js";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { DataProvision, DualSelectPair } from "#elements/ak-dual-select/types";
 
 import { BasePolicyForm } from "#admin/policies/BasePolicyForm";
 
-import { DetailedCountry, GeoIPPolicy, PoliciesApi } from "@goauthentik/api";
+import { GeoIPPolicy, GeoIPPolicyCountriesObjInner, PoliciesApi } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html, TemplateResult } from "lit";
 import { customElement } from "lit/decorators.js";
 
-function countryToPair(country: DetailedCountry): DualSelectPair {
+function countryToPair(country: GeoIPPolicyCountriesObjInner): DualSelectPair {
     return [country.code, country.name, country.name];
 }
 
 @customElement("ak-policy-geoip-form")
 export class GeoIPPolicyForm extends BasePolicyForm<GeoIPPolicy> {
     loadInstance(pk: string): Promise<GeoIPPolicy> {
-        return new PoliciesApi(DEFAULT_CONFIG).policiesGeoipRetrieve({
+        return aki(PoliciesApi).policiesGeoipRetrieve({
             policyUuid: pk,
         });
     }
@@ -38,17 +38,17 @@ export class GeoIPPolicyForm extends BasePolicyForm<GeoIPPolicy> {
         }
 
         if (this.instance) {
-            return new PoliciesApi(DEFAULT_CONFIG).policiesGeoipUpdate({
+            return aki(PoliciesApi).policiesGeoipUpdate({
                 policyUuid: this.instance.pk || "",
                 geoIPPolicyRequest: data,
             });
         }
-        return new PoliciesApi(DEFAULT_CONFIG).policiesGeoipCreate({
+        return aki(PoliciesApi).policiesGeoipCreate({
             geoIPPolicyRequest: data,
         });
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html`<span>
                 ${msg(
                     "Ensure the user satisfies requirements of geography or network topology, based on IP address. If any of the configured values match, the policy passes.",
@@ -193,5 +193,11 @@ export class GeoIPPolicyForm extends BasePolicyForm<GeoIPPolicy> {
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-policy-geoip-form": GeoIPPolicyForm;
     }
 }

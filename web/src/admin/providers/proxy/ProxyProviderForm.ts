@@ -3,7 +3,7 @@ import "#admin/common/ak-flow-search/ak-flow-search";
 
 import { renderForm, SetMode, SetShowHttpBasic } from "./ProxyProviderFormForm.js";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { BaseProviderForm } from "#admin/providers/BaseProviderForm";
 
@@ -21,7 +21,7 @@ export class ProxyProviderFormPage extends BaseProviderForm<ProxyProvider> {
     static styles: CSSResult[] = [...super.styles, PFContent, PFList, PFSpacing];
 
     async loadInstance(pk: number): Promise<ProxyProvider> {
-        const provider = await new ProvidersApi(DEFAULT_CONFIG).providersProxyRetrieve({
+        const provider = await aki(ProvidersApi).providersProxyRetrieve({
             id: pk,
         });
         this.showHttpBasic = provider.basicAuthEnabled ?? true;
@@ -30,10 +30,17 @@ export class ProxyProviderFormPage extends BaseProviderForm<ProxyProvider> {
     }
 
     @state()
-    showHttpBasic = true;
+    protected showHttpBasic = true;
 
     @state()
-    mode: ProxyMode = ProxyMode.Proxy;
+    protected mode: ProxyMode = ProxyMode.Proxy;
+
+    public override reset(): void {
+        super.reset();
+
+        this.showHttpBasic = true;
+        this.mode = ProxyMode.Proxy;
+    }
 
     async send(data: ProxyProvider): Promise<ProxyProvider> {
         data.mode = this.mode;
@@ -41,12 +48,12 @@ export class ProxyProviderFormPage extends BaseProviderForm<ProxyProvider> {
             data.cookieDomain = "";
         }
         if (this.instance) {
-            return new ProvidersApi(DEFAULT_CONFIG).providersProxyUpdate({
+            return aki(ProvidersApi).providersProxyUpdate({
                 id: this.instance.pk,
                 proxyProviderRequest: data,
             });
         }
-        return new ProvidersApi(DEFAULT_CONFIG).providersProxyCreate({
+        return aki(ProvidersApi).providersProxyCreate({
             proxyProviderRequest: data,
         });
     }

@@ -84,7 +84,6 @@ TENANT_APPS = [
     "authentik.crypto",
     "authentik.endpoints",
     "authentik.endpoints.connectors.agent",
-    "authentik.enterprise",
     "authentik.events",
     "authentik.admin.files",
     "authentik.flows",
@@ -148,6 +147,7 @@ TENANT_CREATION_FAKES_MIGRATIONS = True
 TENANT_BASE_SCHEMA = "template"
 PUBLIC_SCHEMA_NAME = CONFIG.get("postgresql.default_schema")
 
+GUARDIAN_GROUP_MODEL = "authentik_core.Group"
 GUARDIAN_ROLE_MODEL = "authentik_rbac.Role"
 
 SPECTACULAR_SETTINGS = {
@@ -171,47 +171,57 @@ SPECTACULAR_SETTINGS = {
         "url": "https://github.com/goauthentik/authentik/blob/main/LICENSE",
     },
     "ENUM_NAME_OVERRIDES": {
+        "AppEnum": "authentik.lib.api.Apps",
+        "AuthenticationEnum": "authentik.flows.models.FlowAuthenticationRequirement",
+        "ConsentModeEnum": "authentik.stages.consent.models.ConsentMode",
         "CountryCodeEnum": "django_countries.countries",
         "DeviceClassesEnum": "authentik.stages.authenticator_validate.models.DeviceClasses",
+        "DeviceFactsOSFamily": "authentik.endpoints.facts.OSFamily",
         "EventActions": "authentik.events.models.EventAction",
         "FlowDesignationEnum": "authentik.flows.models.FlowDesignation",
         "FlowLayoutEnum": "authentik.flows.models.FlowLayout",
         "LDAPAPIAccessMode": "authentik.providers.ldap.models.APIAccessMode",
+        "ModelEnum": "authentik.lib.api.Models",
         "OutgoingSyncDeleteAction": "authentik.lib.sync.outgoing.models.OutgoingSyncDeleteAction",
+        "PKCEMethodEnum": "authentik.sources.oauth.models.PKCEMethod",
         "PolicyEngineMode": "authentik.policies.models.PolicyEngineMode",
         "PromptTypeEnum": "authentik.stages.prompt.models.FieldTypes",
         "ProxyMode": "authentik.providers.proxy.models.ProxyMode",
-        "TaskAggregatedStatusEnum": "authentik.tasks.models.TaskStatus",
-        "SAMLNameIDPolicyEnum": "authentik.sources.saml.models.SAMLNameIDPolicy",
+        "RedirectURITypeEnum": "authentik.providers.oauth2.models.RedirectURIType",
         "SAMLBindingsEnum": "authentik.providers.saml.models.SAMLBindings",
+        "SAMLLogoutMethods": "authentik.providers.saml.models.SAMLLogoutMethods",
+        "SAMLNameIDPolicyEnum": "authentik.sources.saml.models.SAMLNameIDPolicy",
+        "SCIMAuthenticationModeEnum": "authentik.providers.scim.models.SCIMAuthenticationMode",
+        "StageModeEnum": "authentik.endpoints.models.StageMode",
+        "TaskAggregatedStatusEnum": "authentik.tasks.models.TaskStatus",
+        "TaskStatusEnum": "django_dramatiq_postgres.models.TaskState",
+        "TransportModeEnum": "authentik.events.models.TransportMode",
         "UserTypeEnum": "authentik.core.models.UserTypes",
         "UserVerificationEnum": "authentik.stages.authenticator_webauthn.models.UserVerification",
-        "SCIMAuthenticationModeEnum": "authentik.providers.scim.models.SCIMAuthenticationMode",
-        "PKCEMethodEnum": "authentik.sources.oauth.models.PKCEMethod",
-        "DeviceFactsOSFamily": "authentik.endpoints.facts.OSFamily",
-        "StageModeEnum": "authentik.endpoints.models.StageMode",
+        "WebAuthnHintEnum": "authentik.stages.authenticator_webauthn.models.WebAuthnHint",
     },
     "ENUM_ADD_EXPLICIT_BLANK_NULL_CHOICE": False,
     "ENUM_GENERATE_CHOICE_DESCRIPTION": False,
     "PREPROCESSING_HOOKS": [
-        "authentik.api.schema.preprocess_schema_exclude_non_api",
+        "authentik.api.v3.schema.cleanup.preprocess_schema_exclude_non_api",
     ],
     "POSTPROCESSING_HOOKS": [
-        "authentik.api.schema.postprocess_schema_register",
-        "authentik.api.schema.postprocess_schema_responses",
-        "authentik.api.schema.postprocess_schema_query_params",
-        "authentik.api.schema.postprocess_schema_remove_unused",
-        "drf_spectacular.hooks.postprocess_schema_enums",
+        "authentik.api.v3.schema.response.postprocess_schema_register",
+        "authentik.api.v3.schema.response.postprocess_schema_responses",
+        "authentik.api.v3.schema.query.postprocess_schema_query_params",
+        "authentik.api.v3.schema.cleanup.postprocess_schema_remove_unused",
+        "authentik.api.v3.schema.search.postprocess_schema_search_autocomplete",
+        "authentik.api.v3.schema.enum.postprocess_schema_enums",
     ],
 }
 
 REST_FRAMEWORK = {
     "DEFAULT_PAGINATION_CLASS": "authentik.api.pagination.Pagination",
     "DEFAULT_FILTER_BACKENDS": [
+        "authentik.api.search.ql.QLSearch",
         "authentik.rbac.filters.ObjectFilter",
         "django_filters.rest_framework.DjangoFilterBackend",
-        "rest_framework.filters.OrderingFilter",
-        "rest_framework.filters.SearchFilter",
+        "authentik.api.ordering.NullsAwareOrderingFilter",
     ],
     "DEFAULT_PERMISSION_CLASSES": ("authentik.rbac.permissions.ObjectPermissions",),
     "DEFAULT_AUTHENTICATION_CLASSES": (
@@ -438,8 +448,6 @@ DRAMATIQ = {
         ("authentik.tasks.middleware.TaskLogMiddleware", {}),
         ("authentik.tasks.middleware.LoggingMiddleware", {}),
         ("authentik.tasks.middleware.DescriptionMiddleware", {}),
-        ("authentik.tasks.middleware.WorkerHealthcheckMiddleware", {}),
-        ("authentik.tasks.middleware.WorkerStatusMiddleware", {}),
         (
             "authentik.tasks.middleware.MetricsMiddleware",
             {
@@ -542,6 +550,15 @@ def _update_settings(app_path: str) -> None:
                 globals()[_attr] = getattr(settings_module, _attr)
     except ImportError:
         pass
+
+
+# Attempt to load enterprise app, if available
+try:
+    importlib.import_module("authentik.enterprise.apps")
+    CONFIG.log("info", "Enabled authentik enterprise")
+    TENANT_APPS.insert(TENANT_APPS.index("authentik.events"), "authentik.enterprise")
+except ImportError:
+    pass
 
 
 if DEBUG:

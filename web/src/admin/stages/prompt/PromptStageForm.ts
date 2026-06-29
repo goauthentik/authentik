@@ -11,7 +11,7 @@ import {
     promptFieldsSelector,
 } from "./PromptStageFormHelpers.js";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { PFSize } from "#common/enums";
 
 import { BaseStageForm } from "#admin/stages/BaseStageForm";
@@ -26,24 +26,24 @@ import { ifDefined } from "lit/directives/if-defined.js";
 @customElement("ak-stage-prompt-form")
 export class PromptStageForm extends BaseStageForm<PromptStage> {
     loadInstance(pk: string): Promise<PromptStage> {
-        return new StagesApi(DEFAULT_CONFIG).stagesPromptStagesRetrieve({
+        return aki(StagesApi).stagesPromptStagesRetrieve({
             stageUuid: pk,
         });
     }
 
     async send(data: PromptStage): Promise<PromptStage> {
         if (this.instance) {
-            return new StagesApi(DEFAULT_CONFIG).stagesPromptStagesUpdate({
+            return aki(StagesApi).stagesPromptStagesUpdate({
                 stageUuid: this.instance.pk || "",
                 promptStageRequest: data,
             });
         }
-        return new StagesApi(DEFAULT_CONFIG).stagesPromptStagesCreate({
+        return aki(StagesApi).stagesPromptStagesCreate({
             promptStageRequest: data,
         });
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html` <span>
                 ${msg(
                     "Show arbitrary input fields to the user, for example during enrollment. Data is saved in the flow context under the 'prompt_data' variable.",

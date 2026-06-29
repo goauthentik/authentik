@@ -3,6 +3,7 @@ from unittest.mock import MagicMock, patch
 from urllib.parse import quote_plus
 
 from django.urls import reverse
+from freezegun import freeze_time
 
 from authentik.core.models import User
 from authentik.core.tests.utils import (
@@ -28,6 +29,7 @@ from authentik.outposts.models import Outpost, OutpostType
 from authentik.stages.prompt.stage import PLAN_CONTEXT_PROMPT
 
 
+@freeze_time("2026-05-10 12:38:46")
 class MTLSStageTests(FlowTestCase):
 
     def setUp(self):
@@ -53,7 +55,7 @@ class MTLSStageTests(FlowTestCase):
 
     def _format_traefik(self, cert: str | None = None):
         cert = cert if cert else self.client_cert
-        return quote_plus(cert.replace(PEM_HEADER, "").replace(PEM_FOOTER, "").replace("\n", ""))
+        return cert.replace(PEM_HEADER, "").replace(PEM_FOOTER, "").replace("\n", "")
 
     def test_parse_xfcc(self):
         """Test authentik Proxy/Envoy's XFCC format"""
@@ -91,7 +93,9 @@ class MTLSStageTests(FlowTestCase):
     def test_parse_outpost_object(self):
         """Test outposts's format"""
         outpost = Outpost.objects.create(name=generate_id(), type=OutpostType.PROXY)
-        outpost.user.assign_perms_to_managed_role("pass_outpost_certificate", self.stage)
+        outpost.user.assign_perms_to_managed_role(
+            "authentik_stages_mtls.pass_outpost_certificate", self.stage
+        )
         with patch(
             "authentik.root.middleware.ClientIPMiddleware.get_outpost_user",
             MagicMock(return_value=outpost.user),

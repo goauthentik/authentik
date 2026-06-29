@@ -7,9 +7,9 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"goauthentik.io/api/v3"
 	"goauthentik.io/internal/constants"
 	"goauthentik.io/internal/outpost/proxyv2/types"
+	api "goauthentik.io/packages/client-go"
 )
 
 func urlMustParse(u string) *url.URL {
@@ -82,9 +82,9 @@ func TestAdHeaders_Standard(t *testing.T) {
 
 func TestAdHeaders_BasicAuth(t *testing.T) {
 	a := newTestApplication()
-	a.proxyConfig.BasicAuthEnabled = api.PtrBool(true)
-	a.proxyConfig.BasicAuthUserAttribute = api.PtrString("user")
-	a.proxyConfig.BasicAuthPasswordAttribute = api.PtrString("pass")
+	a.proxyConfig.BasicAuthEnabled = new(true)
+	a.proxyConfig.BasicAuthUserAttribute = new("user")
+	a.proxyConfig.BasicAuthPasswordAttribute = new("pass")
 	h := http.Header{}
 	a.addHeaders(h, &types.Claims{
 		PreferredUsername: "foo",

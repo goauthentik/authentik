@@ -1,22 +1,31 @@
-.authenticator-button {
-    /* compatibility-mode-fix */
-    & {
-        align-items: center;
-        width: 100%;
-        display: grid;
-        grid-template-columns: minmax(auto, 2rem) minmax(33%, max-content);
-        gap: var(--pf-global--spacer--lg);
-    }
+.ak-c-fieldset.ak-c-fieldset.pf-c-form__group.pf-m-action[name="device-challenges"] {
+    --ak-c-fieldset--BorderWidth: thin;
+
+    --ak-c-fieldset__legend--MarginInlineBase: var(--pf-global--spacer--sm);
+    --ak-c-fieldset__legend--PaddingInlineBase: var(--pf-global--spacer--sm);
+
+    --ak-c-fieldset--RowGap: 0;
+    --ak-c-fieldset--ColumnGap: var(--pf-global--spacer--sm);
+}
+
+.authenticator-button,
+ak-stage-authenticator-validate.style-scope .authenticator-button {
+    align-items: center;
+    width: 100%;
+    display: grid;
+    grid-template-columns: minmax(auto, 2rem) minmax(33%, max-content);
+    gap: var(--pf-global--spacer--lg);
+    padding-block: calc(var(--pf-global--spacer--form-element) * 2);
 
     &:hover {
         background-color: var(--pf-global--BackgroundColor--200);
     }
-}
 
-i {
-    font-size: var(--pf-global--icon--FontSize--lg);
-}
+    i {
+        font-size: var(--pf-global--icon--FontSize--lg);
+    }
 
-.content {
-    text-align: left;
+    .content {
+        text-align: left;
+    }
 }

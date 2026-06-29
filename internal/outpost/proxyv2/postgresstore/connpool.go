@@ -177,7 +177,7 @@ func (p *RefreshableConnPool) PrepareContext(ctx context.Context, query string) 
 }
 
 // ExecContext implements gorm.ConnPool interface
-func (p *RefreshableConnPool) ExecContext(ctx context.Context, query string, args ...interface{}) (sql.Result, error) {
+func (p *RefreshableConnPool) ExecContext(ctx context.Context, query string, args ...any) (sql.Result, error) {
 	var result sql.Result
 	err := p.tryWithRefresh(ctx, func() error {
 		p.mu.RLock()
@@ -190,7 +190,7 @@ func (p *RefreshableConnPool) ExecContext(ctx context.Context, query string, arg
 }
 
 // QueryContext implements gorm.ConnPool interface
-func (p *RefreshableConnPool) QueryContext(ctx context.Context, query string, args ...interface{}) (*sql.Rows, error) {
+func (p *RefreshableConnPool) QueryContext(ctx context.Context, query string, args ...any) (*sql.Rows, error) {
 	var rows *sql.Rows
 	err := p.tryWithRefresh(ctx, func() error {
 		p.mu.RLock()
@@ -203,7 +203,7 @@ func (p *RefreshableConnPool) QueryContext(ctx context.Context, query string, ar
 }
 
 // QueryRowContext implements gorm.ConnPool interface
-func (p *RefreshableConnPool) QueryRowContext(ctx context.Context, query string, args ...interface{}) *sql.Row {
+func (p *RefreshableConnPool) QueryRowContext(ctx context.Context, query string, args ...any) *sql.Row {
 	// Note: sql.Row doesn't return errors until Scan() is called, so we can't detect auth errors here
 	// The error will be caught in higher-level GORM operations
 	p.mu.RLock()
@@ -237,15 +237,15 @@ func (tx *refreshableTx) PrepareContext(ctx context.Context, query string) (*sql
 	return tx.Tx.PrepareContext(ctx, query)
 }
 
-func (tx *refreshableTx) ExecContext(ctx context.Context, query string, args ...interface{}) (sql.Result, error) {
+func (tx *refreshableTx) ExecContext(ctx context.Context, query string, args ...any) (sql.Result, error) {
 	return tx.Tx.ExecContext(ctx, query, args...)
 }
 
-func (tx *refreshableTx) QueryContext(ctx context.Context, query string, args ...interface{}) (*sql.Rows, error) {
+func (tx *refreshableTx) QueryContext(ctx context.Context, query string, args ...any) (*sql.Rows, error) {
 	return tx.Tx.QueryContext(ctx, query, args...)
 }
 
-func (tx *refreshableTx) QueryRowContext(ctx context.Context, query string, args ...interface{}) *sql.Row {
+func (tx *refreshableTx) QueryRowContext(ctx context.Context, query string, args ...any) *sql.Row {
 	return tx.Tx.QueryRowContext(ctx, query, args...)
 }
 

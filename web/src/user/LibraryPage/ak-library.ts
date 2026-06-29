@@ -1,7 +1,7 @@
 import "#elements/EmptyState";
 import "./ak-library-impl.js";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { APIResult } from "#common/api/responses";
 import { parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
 
@@ -25,7 +25,7 @@ import { customElement, state } from "lit/decorators.js";
  *
  */
 
-const coreApi = () => new CoreApi(DEFAULT_CONFIG);
+const coreApi = () => aki(CoreApi);
 
 @customElement("ak-library")
 export class LibraryPage extends AKElement {
@@ -93,7 +93,7 @@ export class LibraryPage extends AKElement {
         );
     }
 
-    public pageTitle = msg("My Applications");
+    public pageTitle = msg("Application Dashboard");
 
     render() {
         if (this.apps.loading) {
@@ -107,7 +107,10 @@ export class LibraryPage extends AKElement {
             </ak-empty-state>`;
         }
 
-        return html`<ak-library-impl .apps=${this.apps}></ak-library-impl>`;
+        return html`<ak-library-impl
+            exportparts="search-input, app-list, app-group, app-group-header, app-group-separator, card-wrapper, card, card-header-icon"
+            .apps=${this.apps}
+        ></ak-library-impl>`;
     }
 }
 

@@ -2,7 +2,7 @@
  * @file Docusaurus config.
  *
  * @import { UserThemeConfig, UserThemeConfigExtra } from "@goauthentik/docusaurus-config";
- * @import { AKReleasesPluginOptions } from "@goauthentik/docusaurus-theme/releases/plugin"
+ * @import { AKReleasesPluginOptions } from "@goauthentik/docusaurus-theme/releases/common"
  * @import * as OpenApiPlugin from "docusaurus-plugin-openapi-docs";
  * @import {Options as PresetOptions} from '@docusaurus/preset-classic';
  * @import { Options as RedirectsPluginOptions } from "@docusaurus/plugin-client-redirects";
@@ -22,6 +22,7 @@ import { remarkLinkRewrite } from "@goauthentik/docusaurus-theme/remark";
 
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
 const require = createRequire(import.meta.url);
+const production = process.env.NODE_ENV === "production";
 const releaseEnvironment = prepareReleaseEnvironment();
 
 const rootStaticDirectory = resolve(__dirname, "..", "static");
@@ -72,10 +73,15 @@ export default createDocusaurusConfig({
             "@docusaurus/preset-classic",
 
             /** @type {PresetOptions} */ ({
-                googleAnalytics: {
-                    trackingID: "G-9MVR9WZFZH",
-                    anonymizeIP: true,
-                },
+                ...(production
+                    ? {
+                          gtag: {
+                              trackingID: "G-9MVR9WZFZH",
+                              anonymizeIP: true,
+                          },
+                      }
+                    : {}),
+
                 theme: {
                     customCss: [require.resolve("@goauthentik/docusaurus-config/css/index.css")],
                 },
@@ -185,7 +191,7 @@ export default createDocusaurusConfig({
         navbar: {
             logo: {
                 alt: "authentik logo",
-                src: "img/icon_left_brand.svg",
+                src: "https://goauthentik.io/img/icon_left_brand.svg",
                 href: "https://goauthentik.io/",
                 target: "_self",
             },

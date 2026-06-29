@@ -7,12 +7,13 @@ from guardian.shortcuts import get_anonymous_user
 from lxml import etree  # nosec
 
 from authentik.blueprints.tests import apply_blueprint
+from authentik.core.models import Application
 from authentik.core.tests.utils import RequestFactory, create_test_cert, create_test_flow
 from authentik.lib.xml import lxml_from_string
 from authentik.providers.saml.models import SAMLPropertyMapping, SAMLProvider
 from authentik.providers.saml.processors.assertion import AssertionProcessor
 from authentik.providers.saml.processors.authn_request_parser import AuthNRequestParser
-from authentik.sources.saml.models import SAMLSource
+from authentik.sources.saml.models import SAMLBindingTypes, SAMLSource
 from authentik.sources.saml.processors.request import RequestProcessor
 
 
@@ -30,11 +31,17 @@ class TestSchema(TestCase):
         )
         self.provider.property_mappings.set(SAMLPropertyMapping.objects.all())
         self.provider.save()
+        Application.objects.create(
+            name="test-app",
+            slug="test-app",
+            provider=self.provider,
+        )
         self.source = SAMLSource.objects.create(
             slug="provider",
             issuer="authentik",
             signing_kp=cert,
             pre_authentication_flow=create_test_flow(),
+            binding_type=SAMLBindingTypes.POST,
         )
         self.request_factory = RequestFactory()
 

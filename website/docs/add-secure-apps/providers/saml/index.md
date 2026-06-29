@@ -12,16 +12,17 @@ Bindings define how SAML messages are exchanged between an Identity Provider (Id
 
 A binding defines how SAML messages are transported over network protocols. In authentik, you can select one of two SAML bindings: `HTTP Redirect` or `HTTP POST`.
 
-Endpoint URLs specify where and how the messages are sent according to that binding. The table below shows the supported endpoints for each binding:
+Endpoint URLs specify where and how the messages are sent according to that binding. authentik exposes a unified SAML endpoint that handles both SSO and SLO for both `HTTP Redirect` and `HTTP POST` bindings — the operation type is detected from the incoming SAML message:
 
-| Endpoint                  | URL                                                          |
-| ------------------------- | ------------------------------------------------------------ |
-| SSO (Redirect binding)    | `/application/saml/<application_slug>/sso/binding/redirect/` |
-| SSO (POST binding)        | `/application/saml/<application_slug>/sso/binding/post/`     |
-| SSO (IdP-initiated login) | `/application/saml/<application_slug>/sso/binding/init/`     |
-| SLO (Redirect binding)    | `/application/saml/<application_slug>/slo/binding/redirect/` |
-| SLO (POST binding)        | `/application/saml/<application_slug>/slo/binding/post/`     |
-| Metadata Download         | `/application/saml/<application_slug>/metadata/`             |
+| Endpoint                  | URL                                              |
+| ------------------------- | ------------------------------------------------ |
+| SAML endpoint (SSO + SLO) | `/application/saml/<application_slug>/`          |
+| SSO (IdP-initiated login) | `/application/saml/<application_slug>/init/`     |
+| Metadata Download         | `/application/saml/<application_slug>/metadata/` |
+
+:::info Legacy endpoints
+The previous binding-specific endpoints (`/sso/binding/redirect/`, `/sso/binding/post/`, `/sso/binding/init/`, `/slo/binding/redirect/`, `/slo/binding/post/`) remain available for backward compatibility.
+:::
 
 ## SAML metadata
 
@@ -34,6 +35,22 @@ You can [import SP SAML metadata](./create-saml-provider.md#create-a-saml-provid
 ### Exporting authentik SAML metadata
 
 You can [export SAML metadata from an authentik SAML provider](./create-saml-provider.md#export-authentik-saml-provider-metadata) to an SP to automatically provide important endpoint and certificate information to the SP.
+
+## EntityID/Issuer override
+
+By default, authentik uses the SAML provider's metadata URL as the IdP `<Issuer>` / `<EntityID>` value:
+
+```
+https://authentik.company/application/saml/<application_slug>/metadata/
+```
+
+The **EntityID/Issuer override** field (under **Advanced protocol settings** on a SAML provider) replaces this default with a custom value. Set it only in the rare case when the Service Provider requires a specific IdP issuer string that doesn't match the metadata URL.
+
+:::info Existing deployments
+
+This field was previously named **Issuer**. Existing values were preserved during the rename. Don't clear the override unless you also update the SP-side **IdP Entity ID** / **IdP Issuer** field to authentik's metadata URL.
+
+:::
 
 ## Certificates
 
@@ -122,16 +139,16 @@ In authentik, it's possible to configure which property mapping will be used to 
 
 In authentik, it's also possible to configure the default SAML NameID policy used for IDP-initiated logins or when an incoming SP assertion doesn't specify a NameID policy (also applies when using a custom NameID Mapping). The following table outlines how NameID policies are handled:
 
-| Default NameID policy                                                            | How authentik will handle the NameID                                                                                                                                                               |
-| -------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Persistent - `urn:oasis:names:tc:SAML:2.0:nameid-format:persistent`              | NameID will be set to the user's hashed ID.                                                                                                                                                        |
-| x509 Subject - `urn:oasis:names:tc:SAML:2.0:nameid-format:X509SubjectName`       | NameID will be set to the user's `distinguishedName` attribute. This attribute is set by the LDAP source by default. If the attribute does not exist, it will fall back the persistent identifier. |
-| Windows - `urn:oasis:names:tc:SAML:2.0:nameid-format:WindowsDomainQualifiedName` | NameID will be set to the user's UPN. This is also set by the LDAP source, and also falls back to the persistent identifier.                                                                       |
-| Transient - `urn:oasis:names:tc:SAML:2.0:nameid-format:transient`                | NameID will be set based on the user's session ID.                                                                                                                                                 |
-| Email address - `urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress`         | NameID will be set to the user's email address.                                                                                                                                                    |
+| Default NameID policy                                                            | How authentik will handle the NameID                                                                                                                                                                  |
+| -------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Persistent - `urn:oasis:names:tc:SAML:2.0:nameid-format:persistent`              | NameID will be set to the user's hashed ID.                                                                                                                                                           |
+| x509 Subject - `urn:oasis:names:tc:SAML:2.0:nameid-format:X509SubjectName`       | NameID will be set to the user's `distinguishedName` attribute. This attribute is set by the LDAP source by default. If the attribute does not exist, it will fall back to the persistent identifier. |
+| Windows - `urn:oasis:names:tc:SAML:2.0:nameid-format:WindowsDomainQualifiedName` | NameID will be set to the user's UPN. This is also set by the LDAP source, and also falls back to the persistent identifier.                                                                          |
+| Transient - `urn:oasis:names:tc:SAML:2.0:nameid-format:transient`                | NameID will be set based on the user's session ID.                                                                                                                                                    |
+| Email address - `urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress`         | NameID will be set to the user's email address.                                                                                                                                                       |
 
-:::warning
-By default, users are free to change their email addresses. Therefore, it is recommended to either: disallow changing email addresses or, if possible, avoid using a user's email address as the NameID attribute.
+:::warning Email based NameID attribute
+By default, users are free to change their email addresses. Therefore, it is recommended to either: avoid using a user's email address as the NameID attribute or, if possible, disallow changing email addresses.
 :::
 
 ## AuthnContextClassRef

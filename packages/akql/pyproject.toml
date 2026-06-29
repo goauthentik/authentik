@@ -2,7 +2,7 @@
 name = "akql"
 version = "3.2.0"
 description = "Model and object permissions for Django"
-requires-python = ">=3.9,<3.14"
+requires-python = ">=3.9,<3.15"
 readme = "README.md"
 license = { text = "MIT" }
 authors = [
@@ -27,6 +27,7 @@ classifiers = [
   'Programming Language :: Python :: 3.11',
   'Programming Language :: Python :: 3.12',
   'Programming Language :: Python :: 3.13',
+  'Programming Language :: Python :: 3.14',
 ]
 
 dependencies = [

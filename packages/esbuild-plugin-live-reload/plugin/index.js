@@ -4,13 +4,13 @@
  * @import { ListenOptions } from "node:net";
  * @import { Server as HTTPServer } from "node:http";
  * @import { Server as HTTPSServer } from "node:https";
- * @import { Logger } from "@goauthentik/esbuild-plugin-live-reload/shared";
+ * @import { Logger } from "@goauthentik/logger-js";
  */
 
 import * as http from "node:http";
 import { resolve as resolvePath } from "node:path";
 
-import { createLogger } from "@goauthentik/esbuild-plugin-live-reload/shared";
+import { createLogger } from "@goauthentik/logger-js";
 
 import { findFreePorts } from "find-free-ports";
 
@@ -44,11 +44,11 @@ const MAX_PORT = 65535;
 async function findDisparatePort() {
     const startPort = Math.floor(Math.random() * (MAX_PORT - MIN_PORT + 1)) + MIN_PORT;
 
-    const wathcherPorts = await findFreePorts(1, {
+    const watcherPorts = await findFreePorts(1, {
         startPort,
     });
 
-    const [port] = wathcherPorts;
+    const [port] = watcherPorts;
 
     if (!port) {
         throw new Error("No free ports available");

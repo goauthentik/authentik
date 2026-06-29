@@ -1,3 +1,4 @@
+import "#components/ak-radio-input";
 import "#elements/CodeMirror";
 import "#components/ak-number-input";
 import "#components/ak-switch-input";
@@ -10,7 +11,7 @@ import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/Radio";
 import "#elements/forms/SearchSelect/index";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { BaseProviderForm } from "#admin/providers/BaseProviderForm";
 import {
@@ -35,24 +36,24 @@ import { ifDefined } from "lit/directives/if-defined.js";
 @customElement("ak-provider-google-workspace-form")
 export class GoogleWorkspaceProviderFormPage extends BaseProviderForm<GoogleWorkspaceProvider> {
     loadInstance(pk: number): Promise<GoogleWorkspaceProvider> {
-        return new ProvidersApi(DEFAULT_CONFIG).providersGoogleWorkspaceRetrieve({
+        return aki(ProvidersApi).providersGoogleWorkspaceRetrieve({
             id: pk,
         });
     }
 
     async send(data: GoogleWorkspaceProvider): Promise<GoogleWorkspaceProvider> {
         if (this.instance) {
-            return new ProvidersApi(DEFAULT_CONFIG).providersGoogleWorkspaceUpdate({
+            return aki(ProvidersApi).providersGoogleWorkspaceUpdate({
                 id: this.instance.pk,
                 googleWorkspaceProviderRequest: data,
             });
         }
-        return new ProvidersApi(DEFAULT_CONFIG).providersGoogleWorkspaceCreate({
+        return aki(ProvidersApi).providersGoogleWorkspaceCreate({
             googleWorkspaceProviderRequest: data,
         });
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html` <ak-form-element-horizontal label=${msg("Provider Name")} required name="name">
                 <input
                     type="text"
@@ -192,9 +193,7 @@ export class GoogleWorkspaceProviderFormPage extends BaseProviderForm<GoogleWork
                                 if (query !== undefined) {
                                     args.search = query;
                                 }
-                                const groups = await new CoreApi(DEFAULT_CONFIG).coreGroupsList(
-                                    args,
-                                );
+                                const groups = await aki(CoreApi).coreGroupsList(args);
                                 return groups.results;
                             }}
                             .renderElement=${(group: Group): string => {

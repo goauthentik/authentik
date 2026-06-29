@@ -3,13 +3,13 @@ title: Integrate with QNAP NAS
 sidebar_label: QNAP NAS
 ---
 
-## What is QNAP NAS
+## What is QNAP NAS?
 
 > QNAP Systems, Inc. is a Taiwanese corporation that specializes in network-attached storage appliances used for file sharing, virtualization, storage management and surveillance applications.
 >
 > -- https://en.wikipedia.org/wiki/QNAP_Systems
 
-Connecting a QNAP NAS to an LDAP Directory is a little bit special as it is **not** (well) documented what really is done behind the scenes of QNAP.
+Connecting a QNAP NAS to an LDAP directory is a little unusual because it is **not** well documented what QNAP does behind the scenes.
 
 ## Preparation
 
@@ -20,9 +20,9 @@ The following placeholders are used in this guide:
   it is just the components of your base DN. For example, if
   `ldap.baseDN` is `dc=ldap,dc=goauthentik,dc=io` then the domain
   might be `ldap.goauthentik.io`.
-- `ldap.searchGroup` is the "Search Group" that can can see all
+- `ldap.searchGroup` is the "Search Group" that can see all
   users and groups in authentik.
-- `qnap.serviceAccount` is a service account created in authentik
+- `qnap.serviceAccount` is a service account created in authentik.
 - `qnap.serviceAccountToken` is the service account token generated
   by authentik.
 
@@ -30,19 +30,19 @@ The following placeholders are used in this guide:
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
-Create an LDAP Provider if you don't already have one setup.
-This guide assumes you will be running with TLS. See the [ldap provider docs](https://docs.goauthentik.io/docs/add-secure-apps/providers/ldap) for setting up SSL on the authentik side.
+Create an LDAP Provider if you don't already have one set up.
+This guide assumes you will be running with TLS. See the [LDAP provider docs](https://docs.goauthentik.io/docs/add-secure-apps/providers/ldap) for setting up SSL on the authentik side.
 
-Remember the `ldap.baseDN` you have configured for the provider as you'll
-need it in the sssd configuration.
+Remember the `ldap.baseDN` you configured for the provider, as you'll
+need it in the SSSD configuration.
 
 Create a new service account for all of your hosts to use to connect
 to LDAP and perform searches. Make sure this service account is added
 to `ldap.searchGroup`.
 
 :::caution
-It seems that QNAP LDAP client configuration has issues with too long password.
-Max password length \<= 66 characters.
+The QNAP LDAP client configuration has issues with passwords that are too long.
+Maximum password length: \<= 66 characters.
 :::
 
 ## Deployment
@@ -51,16 +51,16 @@ Create an outpost deployment for the provider you've created above, as described
 
 The outpost will connect to authentik and configure itself.
 
-## NAS Configuration
+## NAS configuration
 
-The procedure is a two step setup:
+The procedure is a two-step setup:
 
-1. QNAP Web UI: Used to setup and store initial data. Especially to store the encrypted bind password.
-2. SSH config Edit: In order to adapt settings to be able to communicate with authentik LDAP Outpost.
+1. QNAP Web UI: used to set up and store initial data, especially the encrypted bind password.
+2. SSH config edit: used to adapt settings so the NAS can communicate with the authentik LDAP outpost.
 
 :::info
-The config edit is essential, as QNAP relies on certain not configurable things.
-The search for users and groups relies on a fix filter for
+The config edit is essential, as QNAP relies on certain non-configurable settings.
+The search for users and groups relies on a fixed filter for
 `objectClass` in `posixAccount` or `posixGroup` classes.
 
 Also by default the search scope is set to `one` (`singleLevel`), which can be
@@ -118,7 +118,7 @@ With each save (Apply) in the UI the `/etc/config/nss_ldap.conf` will be overwri
 :::
 
 :::info
-The UI Configuration is necessary, as it will save the Password encrypted
+The UI configuration is necessary because it saves the encrypted password
 in `/etc/config/nss_ldap.ensecret`.
 :::
 
@@ -140,6 +140,7 @@ base                        ${ldap.baseDN}
 uri                         ldaps://${ldap.domain}/
 ssl                         on
 rootbinddn                  cn=${qnap.serviceAccount},ou=users,${ldap.baseDN}
+# authentik has no memberUid therefore switch to
 nss_schema                  rfc2307bis
 
 # remap object classes to authentik ones
@@ -152,7 +153,7 @@ nss_map_objectclass         posixGroup      group
 nss_map_attribute           uid             cn
 # map displayName information into comments field
 nss_map_attribute           gecos           displayName
-# see https://ldapwiki.com/wiki/GroupOfUniqueNames%20vs%20groupOfNames
+# see https://ldapwiki.com/wiki/Wiki.jsp?page=GroupOfUniqueNames%20vs%20groupOfNames
 nss_map_attribute           uniqueMember    member
 
 # configure scope per search filter
@@ -168,14 +169,14 @@ tls_ciphers                 EECDH+CHACHA20:EECDH+CHACHA20-draft:EECDH+AES128:RSA
 nss_initgroups_ignoreusers  admin,akadmin
 ```
 
-Now start the LDAP Service:
+Now start the LDAP service:
 
 ```bash
 /sbin/setcfg LDAP Enable TRUE
 /etc/init.d/ldap.sh start
 ```
 
-To see if connection is working, type
+To see if the connection is working, type
 
 ```bash
 # list users

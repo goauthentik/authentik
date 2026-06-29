@@ -29,11 +29,11 @@ func storageTokenIsValid(usage string, r *http.Request) bool {
 	}
 	claims := &StorageClaims{}
 
-	token, err := jwt.ParseWithClaims(tokenString, claims, func(token *jwt.Token) (interface{}, error) {
+	token, err := jwt.ParseWithClaims(tokenString, claims, func(token *jwt.Token) (any, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("unexpected signing method")
 		}
-		key := []byte(fmt.Sprintf("%s:%s", config.Get().SecretKey, usage))
+		key := fmt.Appendf(nil, "%s:%s", config.Get().SecretKey, usage)
 		hash := sha256.Sum256(key)
 		hexDigest := hex.EncodeToString(hash[:])
 		return []byte(hexDigest), nil

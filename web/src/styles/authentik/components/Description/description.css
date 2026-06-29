@@ -1,4 +1,9 @@
-.pf-c-description-list__description .pf-c-button {
+.pf-c-description-list__description .pf-c-button,
+.pf-c-description-list__description ak-action-button {
     margin-right: 6px;
     margin-bottom: 6px;
+}
+
+pre {
+    white-space: break-spaces;
 }

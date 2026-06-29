@@ -4,7 +4,7 @@ sidebar_label: Zulip
 support_level: community
 ---
 
-## What is Zulip
+## What is Zulip?
 
 > Zulip is an open-source team chat application that organizes conversations into topic-based streams, enabling more structured and efficient communication compared to traditional linear chat platforms.
 >
@@ -28,19 +28,17 @@ To support the integration of Zulip with authentik, you need to create an applic
 ### Create an application and provider in authentik
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
+2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
 
 - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Take note of the **slug** as it will be required later.
 - **Choose a Provider type**: select **SAML Provider** as the provider type.
 - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
     - Set the **ACS URL** to `https://zulip.company/complete/saml/`.
-    - Set the **Issuer** to `https://authentik.company`.
-    - Set the **Service Provider Binding** to `Post`.
     - Set the **SLS URL** to `https://zulip.company/complete/saml/`.
     - Set the **SLS Binding** to `Redirect`.
     - Set the **Logout Method** to `Front-channel (Iframe)`.
     - Under **Advanced protocol settings**, select an available **Signing certificate**.
-- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 
 3. Click **Submit** to save the new application and provider.
 
@@ -67,8 +65,8 @@ SOCIAL_AUTH_SAML_ENABLED_IDPS: Dict[str, Any] = {
     "authentik": {
 
 	    # KEEP OTHER SETTINGS AS DEFAULT OR CONFIGURE THEM ACCORDING TO YOUR PREFERENCES
-        "entity_id": "https://authentik.company",
-        "url": "https://authentik.company/application/saml/<application_slug>/sso/binding/redirect/",
+        "entity_id": "https://authentik.company/application/saml/<application_slug>/metadata/",
+        "url": "https://authentik.company/application/saml/<application_slug>/",
         "display_name": "authentik SAML",
     },
 }
@@ -82,7 +80,7 @@ The certificate file name must match the idp identifier name you set in the conf
 Remember to restart Zulip.
 :::
 
-## Additional Resources
+## Resources
 
 Please refer to the following for further information:
 

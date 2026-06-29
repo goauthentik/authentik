@@ -7,7 +7,6 @@ from socket import gethostname
 from typing import Any
 from urllib.parse import urlparse
 
-from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
 from django.core.cache import cache
 from django.utils.translation import gettext_lazy as _
@@ -159,7 +158,7 @@ def outpost_send_update(pk: Any):
     layer = get_channel_layer()
     group = build_outpost_group(outpost.pk)
     LOGGER.debug("sending update", channel=group, outpost=outpost)
-    async_to_sync(layer.group_send)(group, {"type": "event.update"})
+    layer.group_send_blocking(group, {"type": "event.update"})
 
 
 @actor(description=_("Checks the local environment and create Service connections."))
@@ -210,7 +209,7 @@ def outpost_session_end(session_id: str):
     for outpost in Outpost.objects.all():
         LOGGER.info("Sending session end signal to outpost", outpost=outpost)
         group = build_outpost_group(outpost.pk)
-        async_to_sync(layer.group_send)(
+        layer.group_send_blocking(
             group,
             {
                 "type": "event.session.end",

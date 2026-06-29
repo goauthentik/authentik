@@ -4,7 +4,9 @@ sidebar_label: Synology DSM (DiskStation Manager)
 support_level: community
 ---
 
-## What is Synology DSM
+import RedirectURI20265Note from "../../\_redirect-uri-2026-5-note.mdx";
+
+## What is Synology DSM?
 
 > Synology Inc. is a Taiwanese corporation that specializes in network-attached storage (NAS) appliances. Synology's line of NAS is known as the DiskStation for desktop models, FlashStation for all-flash models, and RackStation for rack-mount models. Synology's products are distributed worldwide and localized in several languages.
 >
@@ -27,21 +29,23 @@ This documentation lists only the settings that you need to change from their de
 
 ## authentik configuration
 
+<RedirectURI20265Note />
+
 To support the integration of Synology DSM with authentik, you need to create an application/provider pair in authentik.
 
 ### Create an application and provider in authentik
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
+2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
 
 - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
 - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
 - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
     - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
-    - Set a `Strict` redirect URI to `https://synology.company`.
+    - Add a **Redirect URI** of type `Strict` `Authorization` as `https://synology.company`.
     - Select any available signing key.
     - Under **Advanced protocol settings**, set the **subject mode** to be based on the user's email.
-- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 
 3. Click **Submit** to save the new application and provider.
 
@@ -68,7 +72,7 @@ To configure Synology DSM to utilize authentik as an OpenID Connect 1.0 Provider
 
 **Error `not privilege`**
 
-The log in process could fail with a `not privilege` error, when the SSO pop-up is blocked. Allowing pop-ups in the browser configuration resolves this (see https://github.com/authelia/authelia/discussions/6902#discussioncomment-9756400).
+The login process could fail with a `not privilege` error when the SSO pop-up is blocked. Allowing pop-ups in the browser configuration resolves this (see https://github.com/authelia/authelia/discussions/6902#discussioncomment-9756400).
 
 This error can also happen when you have multiple Redirect URI entries, but only the last one is used when trying to log on from any of the URLs. For example, if using the Application portal, each service has its own URL.
 The DSM tries to match the right redirect URI based on the Host and HTTPS headers. This is why you should not add #/signin at the end of your redirect URIs.

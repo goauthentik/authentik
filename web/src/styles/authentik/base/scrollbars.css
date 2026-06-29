@@ -89,6 +89,7 @@ html[data-theme="dark"],
 }
 
 @supports (scrollbar-width: thin) {
+    .ak-m-thin-scrollbar,
     .pf-c-page__main,
     .pf-c-nav__list,
     .pf-c-card__body {

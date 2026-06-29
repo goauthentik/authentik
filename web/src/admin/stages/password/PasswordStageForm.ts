@@ -1,9 +1,12 @@
+import "#elements/ak-checkbox-group/ak-checkbox-group";
 import "#components/ak-switch-input";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/index";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
+
+import { AKLabel } from "#components/ak-label";
 
 import { RenderFlowOption } from "#admin/flows/utils";
 import { BaseStageForm } from "#admin/stages/BaseStageForm";
@@ -11,8 +14,8 @@ import { BaseStageForm } from "#admin/stages/BaseStageForm";
 import {
     BackendsEnum,
     Flow,
+    FlowDesignationEnum,
     FlowsApi,
-    FlowsInstancesListDesignationEnum,
     FlowsInstancesListRequest,
     PasswordStage,
     StagesApi,
@@ -25,19 +28,19 @@ import { customElement } from "lit/decorators.js";
 @customElement("ak-stage-password-form")
 export class PasswordStageForm extends BaseStageForm<PasswordStage> {
     loadInstance(pk: string): Promise<PasswordStage> {
-        return new StagesApi(DEFAULT_CONFIG).stagesPasswordRetrieve({
+        return aki(StagesApi).stagesPasswordRetrieve({
             stageUuid: pk,
         });
     }
 
     async send(data: PasswordStage): Promise<PasswordStage> {
         if (this.instance) {
-            return new StagesApi(DEFAULT_CONFIG).stagesPasswordUpdate({
+            return aki(StagesApi).stagesPasswordUpdate({
                 stageUuid: this.instance.pk || "",
                 passwordStageRequest: data,
             });
         }
-        return new StagesApi(DEFAULT_CONFIG).stagesPasswordCreate({
+        return aki(StagesApi).stagesPasswordCreate({
             passwordStageRequest: data,
         });
     }
@@ -53,7 +56,7 @@ export class PasswordStageForm extends BaseStageForm<PasswordStage> {
         );
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         const backends = [
             {
                 name: BackendsEnum.AuthentikCoreAuthInbuiltBackend,
@@ -86,7 +89,20 @@ export class PasswordStageForm extends BaseStageForm<PasswordStage> {
             </ak-form-element-horizontal>
             <ak-form-group open label="${msg("Stage-specific settings")}">
                 <div class="pf-c-form">
-                    <ak-form-element-horizontal label=${msg("Backends")} required name="backends">
+                    <ak-form-element-horizontal required name="backends">
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "backends",
+                                required: true,
+                            },
+                            msg("Backends"),
+                        )}
+                        <p class="pf-c-form__helper-text">
+                            ${msg("Selection of backends to test the password against.")}
+                        </p>
+
                         <ak-checkbox-group
                             class="user-field-select"
                             .options=${backends}
@@ -94,9 +110,6 @@ export class PasswordStageForm extends BaseStageForm<PasswordStage> {
                                 .map(({ name }) => name)
                                 .filter((name) => this.isBackendSelected(name))}
                         ></ak-checkbox-group>
-                        <p class="pf-c-form__helper-text">
-                            ${msg("Selection of backends to test the password against.")}
-                        </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Configuration flow")}
@@ -107,15 +120,12 @@ export class PasswordStageForm extends BaseStageForm<PasswordStage> {
                             .fetchObjects=${async (query?: string): Promise<Flow[]> => {
                                 const args: FlowsInstancesListRequest = {
                                     ordering: "slug",
-                                    designation:
-                                        FlowsInstancesListDesignationEnum.StageConfiguration,
+                                    designation: FlowDesignationEnum.StageConfiguration,
                                 };
                                 if (query !== undefined) {
                                     args.search = query;
                                 }
-                                const flows = await new FlowsApi(DEFAULT_CONFIG).flowsInstancesList(
-                                    args,
-                                );
+                                const flows = await aki(FlowsApi).flowsInstancesList(args);
                                 return flows.results;
                             }}
                             .renderElement=${(flow: Flow): string => {

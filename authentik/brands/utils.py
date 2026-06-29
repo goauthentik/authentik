@@ -3,13 +3,13 @@
 from typing import Any
 
 from django.db.models import Case, F, IntegerField, Q, Value, When
-from django.db.models.functions import Length
+from django.db.models.functions import Concat, Length
 from django.http.request import HttpRequest
 from django.utils.html import _json_script_escapes
 from django.utils.safestring import mark_safe
 
 from authentik import authentik_full_version
-from authentik.brands.models import Brand
+from authentik.brands.models import _BRAND_RELATED_FK_FIELDS, Brand
 from authentik.lib.sentry import get_http_meta
 from authentik.tenants.models import Tenant
 
@@ -21,12 +21,14 @@ def get_brand_for_request(request: HttpRequest) -> Brand:
     """Get brand object for current request"""
 
     brand = (
-        Brand.objects.annotate(
+        Brand.objects.select_related(*_BRAND_RELATED_FK_FIELDS)
+        .annotate(
             host_domain=Value(request.get_host()),
             domain_length=Length("domain"),
             match_priority=Case(
                 When(
-                    condition=Q(host_domain__iendswith=F("domain")),
+                    condition=Q(host_domain__iexact=F("domain"))
+                    | Q(host_domain__iendswith=Concat(Value("."), F("domain"))),
                     then=F("domain_length"),
                 ),
                 default=Value(-1),

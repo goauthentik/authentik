@@ -9,19 +9,17 @@ import { customElement, property } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFPagination from "@patternfly/patternfly/components/Pagination/pagination.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-pagination")
 export class AkPagination extends CustomEmitterElement<DualSelectEventType>(AKElement) {
     static styles = [
-        PFBase,
         PFButton,
         PFPagination,
         css`
             :host([theme="dark"]) {
                 .pf-c-pagination__nav-control .pf-c-button {
-                    color: var(--pf-c-button--m-plain--disabled--Color);
-                    --pf-c-button--disabled--Color: var(--pf-c-button--m-plain--Color);
+                    color: var(--pf-c-button--m-plain--Color);
+                    --pf-c-button--disabled--Color: var(--pf-c-button--m-plain--disabled--Color);
                 }
 
                 .pf-c-pagination__nav-control .pf-c-button:disabled {

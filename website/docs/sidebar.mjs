@@ -50,14 +50,19 @@ const items = [
             type: "doc",
             id: "enterprise/index",
         },
-        items: ["enterprise/get-started", "enterprise/manage-enterprise", "enterprise/entsupport"],
+        items: [
+            "enterprise/get-started",
+            "enterprise/enterprise-features",
+            "enterprise/manage-enterprise",
+            "enterprise/enterprise-support",
+        ],
     },
     {
         //#endregion
 
         //#region Installation and Configuration
         type: "category",
-        label: "Installation and Configuration ",
+        label: "Installation and Configuration",
         collapsed: true,
         link: {
             type: "doc",
@@ -76,10 +81,9 @@ const items = [
                     "install-config/install/kubernetes",
                     "install-config/install/aws",
                 ],
+                //#endregion
             },
             {
-                //#endregion
-
                 //#region Configuration
                 type: "category",
                 label: "Configuration",
@@ -89,6 +93,7 @@ const items = [
                 },
                 items: [],
             },
+            "install-config/first-steps/index",
             "install-config/email",
             "install-config/upgrade",
             "install-config/beta",
@@ -155,8 +160,8 @@ const items = [
                             id: "add-secure-apps/providers/gws/index",
                         },
                         items: [
-                            "add-secure-apps/providers/gws/setup-gws",
-                            "add-secure-apps/providers/gws/add-gws-provider",
+                            "add-secure-apps/providers/gws/configure-gws",
+                            "add-secure-apps/providers/gws/create-gws-provider",
                         ],
                     },
                     {
@@ -166,7 +171,7 @@ const items = [
                             type: "doc",
                             id: "add-secure-apps/providers/ldap/index",
                         },
-                        items: ["add-secure-apps/providers/ldap/generic_setup"],
+                        items: ["add-secure-apps/providers/ldap/create-ldap-provider"],
                     },
                     {
                         type: "category",
@@ -176,8 +181,8 @@ const items = [
                             id: "add-secure-apps/providers/entra/index",
                         },
                         items: [
-                            "add-secure-apps/providers/entra/setup-entra",
-                            "add-secure-apps/providers/entra/add-entra-provider",
+                            "add-secure-apps/providers/entra/configure-entra",
+                            "add-secure-apps/providers/entra/create-entra-provider",
                         ],
                     },
                     {
@@ -189,7 +194,7 @@ const items = [
                         },
                         items: [
                             "add-secure-apps/providers/oauth2/create-oauth2-provider",
-                            "add-secure-apps/providers/oauth2/client_credentials",
+                            "add-secure-apps/providers/oauth2/machine_to_machine",
                             "add-secure-apps/providers/oauth2/device_code",
                             "add-secure-apps/providers/oauth2/github-compatibility",
                             "add-secure-apps/providers/oauth2/frontchannel_and_backchannel_logout",
@@ -204,6 +209,7 @@ const items = [
                             id: "add-secure-apps/providers/proxy/index",
                         },
                         items: [
+                            "add-secure-apps/providers/proxy/create-proxy-provider",
                             "add-secure-apps/providers/proxy/custom_headers",
                             "add-secure-apps/providers/proxy/header_authentication",
                             {
@@ -230,7 +236,7 @@ const items = [
                             id: "add-secure-apps/providers/rac/index",
                         },
                         items: [
-                            "add-secure-apps/providers/rac/how-to-rac",
+                            "add-secure-apps/providers/rac/create-rac-provider",
                             "add-secure-apps/providers/rac/rac-public-key",
                             "add-secure-apps/providers/rac/rac_credentials_prompt",
                         ],
@@ -248,7 +254,15 @@ const items = [
                             "add-secure-apps/providers/saml/saml_single_logout",
                         ],
                     },
-                    "add-secure-apps/providers/scim/index",
+                    {
+                        type: "category",
+                        label: "SCIM Provider",
+                        link: {
+                            type: "doc",
+                            id: "add-secure-apps/providers/scim/index",
+                        },
+                        items: ["add-secure-apps/providers/scim/create-scim-provider"],
+                    },
                     {
                         type: "category",
                         label: "SSF Provider",
@@ -257,6 +271,15 @@ const items = [
                             id: "add-secure-apps/providers/ssf/index",
                         },
                         items: ["add-secure-apps/providers/ssf/create-ssf-provider"],
+                    },
+                    {
+                        type: "category",
+                        label: "WS-Federation Provider",
+                        link: {
+                            type: "doc",
+                            id: "add-secure-apps/providers/wsfed/index",
+                        },
+                        items: ["add-secure-apps/providers/wsfed/create-wsfed-provider"],
                     },
                 ],
             },
@@ -276,6 +299,7 @@ const items = [
                             id: "add-secure-apps/flows-stages/flow/index",
                         },
                         items: [
+                            "add-secure-apps/flows-stages/flow/planner",
                             "add-secure-apps/flows-stages/flow/inspector",
                             "add-secure-apps/flows-stages/flow/context/index",
                             {
@@ -307,6 +331,7 @@ const items = [
                             id: "add-secure-apps/flows-stages/stages/index",
                         },
                         items: [
+                            "add-secure-apps/flows-stages/stages/account_lockdown/index",
                             "add-secure-apps/flows-stages/stages/authenticator_duo/index",
                             "add-secure-apps/flows-stages/stages/authenticator_email/index",
                             "add-secure-apps/flows-stages/stages/authenticator_endpoint_gdtc/index",
@@ -316,8 +341,10 @@ const items = [
                             "add-secure-apps/flows-stages/stages/authenticator_validate/index",
                             "add-secure-apps/flows-stages/stages/authenticator_webauthn/index",
                             "add-secure-apps/flows-stages/stages/captcha/index",
-                            "add-secure-apps/flows-stages/stages/deny",
+                            "add-secure-apps/flows-stages/stages/consent/index",
+                            "add-secure-apps/flows-stages/stages/deny/index",
                             "add-secure-apps/flows-stages/stages/email/index",
+                            "add-secure-apps/flows-stages/stages/endpoint/index",
                             "add-secure-apps/flows-stages/stages/identification/index",
                             "add-secure-apps/flows-stages/stages/invitation/index",
                             "add-secure-apps/flows-stages/stages/mtls/index",
@@ -325,22 +352,25 @@ const items = [
                             "add-secure-apps/flows-stages/stages/prompt/index",
                             "add-secure-apps/flows-stages/stages/redirect/index",
                             "add-secure-apps/flows-stages/stages/source/index",
-                            "add-secure-apps/flows-stages/stages/user_delete",
+                            "add-secure-apps/flows-stages/stages/user_delete/index",
                             "add-secure-apps/flows-stages/stages/user_login/index",
-                            "add-secure-apps/flows-stages/stages/user_logout",
-                            "add-secure-apps/flows-stages/stages/user_write",
+                            "add-secure-apps/flows-stages/stages/user_logout/index",
+                            "add-secure-apps/flows-stages/stages/user_write/index",
                         ],
                     },
-                    {
-                        type: "category",
-                        label: "Bindings",
-                        link: {
-                            type: "doc",
-                            id: "add-secure-apps/flows-stages/bindings/index",
-                        },
-                        items: ["add-secure-apps/flows-stages/bindings/work_with_bindings"],
-                    },
                 ],
+            },
+            {
+                //#endregion
+
+                //#region Bindings
+                type: "category",
+                label: "Bindings",
+                link: {
+                    type: "doc",
+                    id: "add-secure-apps/bindings-overview/index",
+                },
+                items: ["add-secure-apps/bindings-overview/work-with-bindings"],
             },
             {
                 //#endregion
@@ -400,21 +430,38 @@ const items = [
                 },
                 items: [
                     "customize/policies/working_with_policies",
+                    "customize/policies/bindings",
                     {
                         type: "category",
-                        label: "Expression Policies",
+                        label: "Policy Types",
                         link: {
                             type: "doc",
-                            id: "customize/policies/expression",
+                            id: "customize/policies/types/index",
                         },
                         items: [
-                            "customize/policies/expression/unique_email",
-                            "customize/policies/expression/managing_flow_context_keys",
-                            "customize/policies/expression/source_switch",
-                            "customize/policies/expression/whitelist_email",
+                            "customize/policies/types/event-matcher",
+                            {
+                                type: "category",
+                                label: "Expression Policies",
+                                link: {
+                                    type: "doc",
+                                    id: "customize/policies/types/expression/index",
+                                },
+                                items: [
+                                    "customize/policies/types/expression/reference",
+                                    "customize/policies/types/expression/unique_email",
+                                    "customize/policies/types/expression/managing_flow_context_keys",
+                                    "customize/policies/types/expression/source_switch",
+                                    "customize/policies/types/expression/whitelist_email",
+                                ],
+                            },
+                            "customize/policies/types/geoip",
+                            "customize/policies/types/password",
+                            "customize/policies/types/password-expiry",
+                            "customize/policies/types/password-uniqueness",
+                            "customize/policies/types/reputation",
                         ],
                     },
-                    "customize/policies/unique_password",
                 ],
             },
             {
@@ -458,6 +505,7 @@ const items = [
             },
             "customize/branding",
             "customize/files",
+            "customize/file-picker",
         ],
     },
     {
@@ -483,6 +531,7 @@ const items = [
                     "users-sources/user/user_ref",
                     "users-sources/user/invitations",
                     "users-sources/user/password_reset_on_login",
+                    "users-sources/user/user-interface",
                 ],
             },
             {
@@ -598,6 +647,7 @@ const items = [
                             },
                             "users-sources/sources/social-logins/facebook/index",
                             "users-sources/sources/social-logins/github/index",
+                            "users-sources/sources/social-logins/keycloak/index",
                             {
                                 type: "category",
                                 label: "Google",
@@ -611,7 +661,9 @@ const items = [
                                 ],
                             },
                             "users-sources/sources/social-logins/mailcow/index",
+                            "users-sources/sources/social-logins/okta/index",
                             "users-sources/sources/social-logins/plex/index",
+                            "users-sources/sources/social-logins/shibboleth/index",
                             "users-sources/sources/social-logins/telegram/index",
                             "users-sources/sources/social-logins/twitch/index",
                             "users-sources/sources/social-logins/twitter/index",
@@ -631,7 +683,16 @@ const items = [
         collapsed: true,
         items: [
             "sys-mgmt/background-tasks",
-            "sys-mgmt/brands",
+            {
+                type: "category",
+                label: "Brands",
+                collapsed: true,
+                link: {
+                    id: "sys-mgmt/brands/index",
+                    type: "doc",
+                },
+                items: ["sys-mgmt/brands/index", "sys-mgmt/brands/custom-css"],
+            },
             {
                 //#endregion
 
@@ -659,17 +720,178 @@ const items = [
                     id: "sys-mgmt/events/index",
                 },
                 items: [
-                    "sys-mgmt/events/notifications",
-                    "sys-mgmt/events/notification_rule_expression_policies",
+                    {
+                        type: "category",
+                        label: "Notification Rules",
+                        collapsed: true,
+                        link: {
+                            id: "sys-mgmt/events/notifications",
+                            type: "doc",
+                        },
+                        items: ["sys-mgmt/events/notification_rule_expression_policies"],
+                    },
                     "sys-mgmt/events/transports",
+                    "sys-mgmt/events/log-forwarding",
                     "sys-mgmt/events/logging-events",
                     "sys-mgmt/events/event-actions",
                 ],
             },
+            "sys-mgmt/akql",
             "sys-mgmt/certificates",
             "sys-mgmt/settings",
             "sys-mgmt/service-accounts",
             "sys-mgmt/data-exports",
+            "sys-mgmt/object-lifecycle-management",
+        ],
+    },
+    {
+        //#endregion
+
+        //#region Endpoint Devices
+        type: "category",
+        label: "Endpoint Devices (Early Preview)",
+        collapsed: true,
+        link: {
+            type: "doc",
+            id: "endpoint-devices/index",
+        },
+        items: [
+            {
+                //#endregion
+
+                //#region authentik Agent
+                type: "category",
+                label: "authentik Agent",
+                collapsed: true,
+                link: {
+                    type: "doc",
+                    id: "endpoint-devices/authentik-agent/index",
+                },
+                items: [
+                    "endpoint-devices/authentik-agent/configuration",
+                    {
+                        //#endregion
+
+                        //#region authentik Agent Deployment
+                        type: "category",
+                        label: "Deployment",
+                        collapsed: true,
+                        link: {
+                            type: "doc",
+                            id: "endpoint-devices/authentik-agent/agent-deployment/index",
+                        },
+                        items: [
+                            "endpoint-devices/authentik-agent/agent-deployment/automated",
+                            "endpoint-devices/authentik-agent/agent-deployment/linux",
+                            "endpoint-devices/authentik-agent/agent-deployment/macos",
+                            "endpoint-devices/authentik-agent/agent-deployment/windows",
+                        ],
+                    },
+                    {
+                        //#endregion
+
+                        //#region Device Authentication
+                        type: "category",
+                        label: "Device authentication",
+                        collapsed: true,
+                        link: {
+                            type: "doc",
+                            id: "endpoint-devices/authentik-agent/device-authentication/index",
+                        },
+                        items: [
+                            "endpoint-devices/authentik-agent/device-authentication/device-access-groups",
+                            {
+                                //#endregion
+
+                                //#region local device login
+                                type: "category",
+                                label: "Local device login",
+                                collapsed: true,
+                                link: {
+                                    type: "doc",
+                                    id: "endpoint-devices/authentik-agent/device-authentication/local-device-login/index",
+                                },
+                                items: [
+                                    "endpoint-devices/authentik-agent/device-authentication/local-device-login/linux",
+                                    "endpoint-devices/authentik-agent/device-authentication/local-device-login/windows",
+                                ],
+                            },
+                            "endpoint-devices/authentik-agent/device-authentication/ssh-authentication",
+                            {
+                                //#endregion
+
+                                //#region cli app authentication
+                                type: "category",
+                                label: "CLI application authentication",
+                                collapsed: true,
+                                link: {
+                                    type: "doc",
+                                    id: "endpoint-devices/authentik-agent/device-authentication/cli-app-authentication/index",
+                                },
+                                items: [
+                                    "endpoint-devices/authentik-agent/device-authentication/cli-app-authentication/aws",
+                                    "endpoint-devices/authentik-agent/device-authentication/cli-app-authentication/k8s",
+                                ],
+                            },
+                        ],
+                    },
+                    "endpoint-devices/authentik-agent/authentik-cli",
+                    "endpoint-devices/authentik-agent/development",
+                    {
+                        //#endregion
+
+                        //#region authentik Agent Release Notes
+                        type: "category",
+                        label: "Release notes",
+                        description: "Release Notes for recent authentik agent versions",
+                        collapsed: true,
+                        link: {
+                            type: "doc",
+                            id: "endpoint-devices/authentik-agent/release-notes/index",
+                        },
+                        items: [
+                            "endpoint-devices/authentik-agent/release-notes/v0.40",
+                            "endpoint-devices/authentik-agent/release-notes/v0.35",
+                        ],
+                    },
+                ],
+            },
+            "endpoint-devices/manage-devices",
+            {
+                //#endregion
+
+                //#region Device Compliance
+                type: "category",
+                label: "Device compliance",
+                collapsed: true,
+                link: {
+                    type: "doc",
+                    id: "endpoint-devices/device-compliance/index",
+                },
+                items: [
+                    "endpoint-devices/device-compliance/configuration",
+                    {
+                        //#endregion
+
+                        //#region Connectors
+                        type: "category",
+                        label: "Connectors",
+                        link: {
+                            type: "doc",
+                            id: "endpoint-devices/device-compliance/connectors/index",
+                        },
+                        items: [
+                            "endpoint-devices/device-compliance/connectors/authentik-agent",
+                            "endpoint-devices/device-compliance/connectors/fleetdm",
+                            "endpoint-devices/device-compliance/connectors/google-chrome",
+                        ],
+                    },
+                    "endpoint-devices/device-compliance/device-reporting",
+                    "endpoint-devices/device-compliance/device-compliance-policy",
+                    "endpoint-devices/device-compliance/browser-extension",
+                    "endpoint-devices/device-compliance/fleet-conditional-access",
+                ],
+            },
         ],
     },
     {
@@ -724,6 +946,7 @@ const items = [
                 },
                 items: [
                     "developer-docs/docs/style-guide",
+                    "developer-docs/docs/theming/index",
                     {
                         type: "category",
                         label: "Templates",
@@ -762,6 +985,7 @@ const items = [
         items: [
             "security/policy",
             "security/security-hardening",
+            "security/account-lockdown",
             {
                 //#endregion
 
@@ -771,6 +995,7 @@ const items = [
                 items: [
                     "security/audits-and-certs/2023-06-cure53",
                     "security/audits-and-certs/2024-11-cobalt",
+                    "security/audits-and-certs/2025-09-includesec",
                 ],
             },
             {
@@ -781,51 +1006,8 @@ const items = [
                 label: "CVEs",
                 items: [
                     {
-                        type: "category",
-                        label: "2025",
-                        items: [
-                            "security/cves/CVE-2025-64708",
-                            "security/cves/CVE-2025-64521",
-                            "security/cves/CVE-2025-53942",
-                            "security/cves/CVE-2025-52553",
-                            "security/cves/CVE-2025-29928",
-                        ],
-                    },
-                    {
-                        type: "category",
-                        label: "2024",
-                        items: [
-                            "security/cves/CVE-2024-52307",
-                            "security/cves/CVE-2024-52289",
-                            "security/cves/CVE-2024-52287",
-                            "security/cves/CVE-2024-47077",
-                            "security/cves/CVE-2024-47070",
-                            "security/cves/CVE-2024-42490",
-                            "security/cves/CVE-2024-38371",
-                            "security/cves/CVE-2024-37905",
-                            "security/cves/CVE-2024-23647",
-                            "security/cves/CVE-2024-21637",
-                        ],
-                    },
-                    {
-                        type: "category",
-                        label: "2023",
-                        items: [
-                            "security/cves/CVE-2023-48228",
-                            "security/cves/GHSA-rjvp-29xq-f62w",
-                            "security/cves/CVE-2023-39522",
-                            "security/cves/CVE-2023-36456",
-                            "security/cves/CVE-2023-26481",
-                        ],
-                    },
-                    {
-                        type: "category",
-                        label: "2022",
-                        items: [
-                            "security/cves/CVE-2022-46172",
-                            "security/cves/CVE-2022-46145",
-                            "security/cves/CVE-2022-23555",
-                        ],
+                        type: "autogenerated",
+                        dirName: "security/cves",
                     },
                 ],
             },
@@ -847,17 +1029,10 @@ const items = [
             {
                 //#endregion
 
-                //#region Forward auth
+                //#region Logs
                 type: "category",
-                label: "Forward auth",
-                items: ["troubleshooting/forward_auth/general"],
-                link: {
-                    type: "generated-index",
-                    title: "Forward auth troubleshooting",
-                    slug: "troubleshooting/forward_auth",
-                    description:
-                        "Steps to help debug forward auth setups with various reverse proxies.",
-                },
+                label: "Logs",
+                items: ["troubleshooting/logs/logs", "troubleshooting/logs/outpost_logs"],
             },
             {
                 //#endregion
@@ -872,13 +1047,13 @@ const items = [
             },
             "troubleshooting/access",
             "troubleshooting/login",
-            "troubleshooting/logs",
             "troubleshooting/image_upload",
             "troubleshooting/missing_permission",
             "troubleshooting/missing_admin_group",
             "troubleshooting/csrf",
             "troubleshooting/emails",
             "troubleshooting/ldap_source",
+            "troubleshooting/forward_auth",
         ],
     },
     {
@@ -891,7 +1066,8 @@ const items = [
             type: "generated-index",
             title: "Releases",
             slug: "releases",
-            description: "Release Notes for recent authentik versions",
+            description:
+                "Read the latest authentik release notes, including upgrade guidance, breaking changes, new features, and fixes for supported versions.",
         },
         items: createReleaseSidebarEntries(releases),
     },

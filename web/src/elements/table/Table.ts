@@ -1,3 +1,4 @@
+import "#elements/ak-progress-bar";
 import "#elements/EmptyState";
 import "#elements/buttons/SpinnerButton/index";
 import "#elements/chips/Chip";
@@ -9,30 +10,39 @@ import "#elements/timestamp/ak-timestamp";
 import { BaseTableListRequest, TableLike } from "./shared.js";
 import { renderTableColumn, TableColumn } from "./TableColumn.js";
 
+import { type PaginatedResponse } from "#common/api/responses";
 import { EVENT_REFRESH } from "#common/constants";
 import { APIError, parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
+import { AKRefreshEvent } from "#common/events";
+import { truncateWords } from "#common/strings";
 import { GroupResult } from "#common/utils";
 
 import { AKElement } from "#elements/Base";
-import { WithLicenseSummary } from "#elements/mixins/license";
+import { intersectionObserver } from "#elements/decorators/intersection-observer";
+import {
+    EntityDescriptorElement,
+    isTransclusionParentElement,
+    type TransclusionChildElement,
+    TransclusionChildSymbol,
+} from "#elements/dialogs/shared";
 import { WithSession } from "#elements/mixins/session";
 import { getURLParam, updateURLParams } from "#elements/router/RouteMatch";
 import Styles from "#elements/table/Table.css";
+import { TableSearchForm } from "#elements/table/TableSearch";
 import { SlottedTemplateResult } from "#elements/types";
 import { ifPresent } from "#elements/utils/attributes";
 import { isInteractiveElement } from "#elements/utils/interactivity";
 import { isEventTargetingListener } from "#elements/utils/pointer";
 
-import { Pagination } from "@goauthentik/api";
+import { ConsoleLogger, Logger } from "#logger/browser";
 
 import { kebabCase } from "change-case";
 
 import { msg, str } from "@lit/localize";
-import { CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
+import { CSSResult, html, nothing, PropertyValues } from "lit";
 import { property, state } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 import { guard } from "lit/directives/guard.js";
-import { ifDefined } from "lit/directives/if-defined.js";
 import { createRef, ref } from "lit/directives/ref.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -42,17 +52,11 @@ import PFSwitch from "@patternfly/patternfly/components/Switch/switch.css";
 import PFTable from "@patternfly/patternfly/components/Table/table.css";
 import PFToolbar from "@patternfly/patternfly/components/Toolbar/toolbar.css";
 import PFBullseye from "@patternfly/patternfly/layouts/Bullseye/bullseye.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 export * from "./shared.js";
 export * from "./TableColumn.js";
 
-export interface PaginatedResponse<T> {
-    pagination: Pagination;
-    autocomplete?: { [key: string]: string };
-
-    results: Array<T>;
-}
+export type { PaginatedResponse };
 
 export function hasPrimaryKey<T extends string | number = string | number>(
     item: object,
@@ -69,13 +73,26 @@ export function hasPrimaryKey<T extends string | number = string | number>(
 export type TableInstance = InstanceType<typeof Table> & {
     columns: TableColumn[];
 };
+export type RowType =
+    | SlottedTemplateResult
+    | [template: SlottedTemplateResult, options: ColumnOptions];
+export interface ColumnOptions {
+    style?: string;
+}
 
-export abstract class Table<T extends object>
-    extends WithLicenseSummary(WithSession(AKElement))
-    implements TableLike
+/**
+ * A base table component that handles fetching, pagination, selection, and grouping of data.
+ *
+ * @template T The type of the items to display in the table.
+ * @template D An optional `toJSON()` result type.
+ */
+export abstract class Table<T extends object, D = T>
+    extends WithSession(AKElement)
+    implements TableLike, TransclusionChildElement
 {
+    declare ["constructor"]: EntityDescriptorElement;
+
     static styles: CSSResult[] = [
-        PFBase,
         PFTable,
         PFBullseye,
         PFButton,
@@ -86,7 +103,20 @@ export abstract class Table<T extends object>
         Styles,
     ];
 
+    public static verboseName: string = msg("Object");
+    public static verboseNamePlural: string = msg("Objects");
+
+    public [TransclusionChildSymbol] = true;
+
+    //#region Abstract members
+
+    /**
+     * The API endpoint to fetch data from.
+     *
+     * @abstract
+     */
     protected abstract apiEndpoint(): Promise<PaginatedResponse<T>>;
+
     /**
      * The columns to display in the table.
      *
@@ -99,37 +129,57 @@ export abstract class Table<T extends object>
      *
      * @abstract
      */
-    protected abstract row(item: T): SlottedTemplateResult[];
+    protected abstract row(item: T): RowType[];
+
+    //#endregion
+
+    //#region Protected Properties
+
+    #verboseName: string | null = null;
 
     /**
-     * Customize the "No objects found" message.
+     * Optional singular label for the type of entity this form creates/edits.
+     *
+     * Overrides the static `verboseName` property for this instance.
      */
-    protected emptyStateMessage = msg("No objects found.");
+    @property({ type: String, attribute: "verbose-name" })
+    public set verboseName(value: string | null) {
+        this.#verboseName = value;
 
-    /**
-     * The total number of defined and additional columns in the table.
-     */
-    #columnCount = 0;
-
-    #columnIDs = new WeakMap<TableColumn, string>();
-
-    #synchronizeColumnProperties() {
-        let nextColumnCount = this.columns.length;
-
-        if (this.checkbox) nextColumnCount += 1;
-        if (this.expandable) nextColumnCount += 1;
-
-        this.#columnCount = nextColumnCount;
-
-        for (const column of this.columns) {
-            const [label] = column;
-
-            if (!label) continue;
-
-            const columnName = kebabCase(label);
-            this.#columnIDs.set(column, columnName);
+        if (isTransclusionParentElement(this.parentElement)) {
+            this.parentElement.slottedElementUpdatedAt = new Date();
         }
     }
+
+    public get verboseName(): string | null {
+        return this.#verboseName || this.constructor.verboseName || null;
+    }
+
+    #verboseNamePlural: string | null = null;
+
+    /**
+     * Optional plural label for the type of entity this form creates/edits.
+     *
+     * Overrides the static `verboseNamePlural` property for this instance.
+     */
+    @property({ type: String, attribute: "verbose-name-plural" })
+    public set verboseNamePlural(value: string | null) {
+        this.#verboseNamePlural = value;
+
+        if (isTransclusionParentElement(this.parentElement)) {
+            this.parentElement.slottedElementUpdatedAt = new Date();
+        }
+    }
+
+    public get verboseNamePlural(): string | null {
+        return this.#verboseNamePlural || this.constructor.verboseNamePlural || null;
+    }
+
+    /**
+     * An optional message to display when the table is empty and no search is applied.
+     * If not provided, a default message will be used.
+     */
+    protected emptyStateMessage: string | null = null;
 
     /**
      * Whether the table is currently fetching data.
@@ -144,6 +194,11 @@ export abstract class Table<T extends object>
     protected lastRefreshedAt: Date | null = null;
 
     /**
+     * Logger instance for this table.
+     */
+    protected logger: Logger;
+
+    /**
      * A cached grouping of the last fetched results.
      *
      * @see {@linkcode Table.fetch}
@@ -151,13 +206,77 @@ export abstract class Table<T extends object>
     @state()
     protected groups: GroupResult<T>[] = [];
 
-    #pageParam = `${this.tagName.toLowerCase()}-page`;
-    #searchParam = `${this.tagName.toLowerCase()}-search`;
+    @state()
+    protected expandedElements = new Set<string | number>();
+
+    @state()
+    protected error: APIError | null = null;
+
+    //#endregion
+
+    //#region Private Members
+
+    /**
+     * The total number of defined and additional columns in the table.
+     */
+    @state()
+    protected columnCount = 0;
+
+    #columnIDs = new WeakMap<TableColumn, string>();
+
+    #synchronizeColumnProperties() {
+        let nextColumnCount = this.columns.length;
+
+        if (this.checkbox) nextColumnCount += 1;
+        if (this.expandable) nextColumnCount += 1;
+
+        this.columnCount = nextColumnCount;
+
+        for (const column of this.columns) {
+            const [label] = column;
+
+            if (!label) continue;
+
+            const columnName = kebabCase(label);
+            this.#columnIDs.set(column, columnName);
+        }
+    }
+
+    /**
+     * Timestamp of when a fetch was requested, but deferred due to the table not being visible.
+     */
+    #deferredRefreshRequestAt: Date | null = null;
+
+    #synchronizeRefreshSchedule(): Promise<void> {
+        if (!this.visible) {
+            if (!this.#deferredRefreshRequestAt) {
+                this.#deferredRefreshRequestAt = new Date();
+            }
+
+            return Promise.resolve();
+        }
+
+        if (!this.#deferredRefreshRequestAt) {
+            return Promise.resolve();
+        }
+
+        return this.fetch();
+    }
+
+    readonly #pageParam: string;
+    readonly #searchParam: string;
+
+    /**
+     * A mapping of the current items to their respective identifiers.
+     */
+    #itemKeys = new WeakMap<T, string | number>();
+
+    //#endregion
 
     @property({ type: Boolean })
     public supportsQL: boolean = false;
 
-    //#region Properties
+    //#region Public Properties
 
     @property({ type: String })
     public toolbarLabel: string | null = null;
@@ -165,11 +284,17 @@ export abstract class Table<T extends object>
     @property({ type: String })
     public label: string | null = null;
 
+    /**
+     * The name of the form, used for JSON serialization.
+     */
+    @property({ type: String, useDefault: true })
+    public name: string | null = null;
+
     @property({ attribute: false })
     public data: PaginatedResponse<T> | null = null;
 
     @property({ type: Number, useDefault: true })
-    public page = getURLParam(this.#pageParam, 1);
+    public page: number;
 
     /**
      * Set if your `selectedElements` use of the selection box is to enable bulk-delete,
@@ -190,18 +315,19 @@ export abstract class Table<T extends object>
     public checkbox = false;
 
     @property({ type: Boolean })
-    public clickable = false;
-
-    @property({ type: Boolean })
     public radioSelect = false;
 
     @property({ type: Boolean })
     public checkboxChip = false;
 
+    @property({ type: String, attribute: "display-box", reflect: true, useDefault: true })
+    public displayBox: "contents" | "block" = "block";
+
     /**
-     * A mapping of the current items to their respective identifiers.
+     * Whether the table is visible in the viewport.
      */
-    #itemKeys = new WeakMap<T, string | number>();
+    @intersectionObserver()
+    public visible = false;
 
     /**
      * A mapping of item keys to selected items.
@@ -219,43 +345,125 @@ export abstract class Table<T extends object>
     @property({ type: Boolean })
     public expandable = false;
 
-    @property({ attribute: false })
-    public searchLabel?: string;
+    @property({ type: String, attribute: "row-class" })
+    public rowClassNames = `${this.checkbox || this.expandable ? "pf-m-hoverable" : ""}`;
 
-    @property({ attribute: false })
-    public searchPlaceholder?: string;
+    @property({ type: String, attribute: "search-label" })
+    public searchLabel: string | null = null;
+
+    @property({ type: String, attribute: "search-placeholder" })
+    public searchPlaceholder: string | null = null;
+
+    //#endregion
+
+    //#region Public methods
+
+    /**
+     * An overridable method to convert selected items to a custom JSON format,
+     * for example when used in a modal with a confirm button.
+     *
+     * By default, it returns the selected elements as an array, but it can be customized to return any data structure needed.
+     */
+    public toJSON(): D[] {
+        return this.selectedElements as unknown as D[];
+    }
+
+    public clearSearch = () => {
+        this.data = null;
+        this.searchInputRef.value?.reset();
+        this.requestUpdate("search");
+
+        return this.fetch();
+    };
+
+    /**
+     * An overridable method for formatting the empty state message when no objects are found.
+     */
+    public formatEmptyStateMessage(): string {
+        if (this.searchEnabled && this.search) {
+            const singularNoun = this.verboseName?.toLocaleLowerCase() || msg("object");
+
+            return msg(str`No ${singularNoun} matches "${truncateWords(this.search, 50)}"`, {
+                id: "table.emptyState.search",
+                desc: "Empty state message when no objects match the search query, where the entity singular is interpolated, followed by the search query truncated to 50 characters.",
+            });
+        }
+
+        if (this.emptyStateMessage) {
+            return this.emptyStateMessage;
+        }
+
+        const pluralNoun = this.verboseNamePlural?.toLocaleLowerCase() || msg("objects");
+
+        return msg(str`No ${pluralNoun} found.`, {
+            id: "table.emptyState.default",
+            desc: "Empty state message when no objects are found, where the entity plural is interpolated.",
+        });
+    }
+
+    public formatSearchPlaceholder(): string {
+        if (this.searchPlaceholder) {
+            return this.searchPlaceholder;
+        }
+
+        const pluralNoun = this.verboseNamePlural?.toLocaleLowerCase() || msg("objects");
+
+        return msg(str`Search for ${pluralNoun}...`, {
+            id: "table.search.placeholder",
+            desc: "Placeholder text for the search input, where the entity plural is interpolated.",
+        });
+    }
 
     //#endregion
 
     //#region Lifecycle
 
-    @state()
-    protected expandedElements = new Set<string | number>();
+    protected selectAllCheckboxRef = createRef<HTMLInputElement>();
+    protected searchInputRef = createRef<TableSearchForm>();
 
-    @state()
-    protected error: APIError | null = null;
-
-    #selectAllCheckboxRef = createRef<HTMLInputElement>();
-
-    #refreshListener = () => {
+    protected refreshListener = (event?: Event) => {
+        this.logger.debug("Received refresh event:", event);
         return this.fetch();
     };
 
+    constructor() {
+        super();
+
+        const { localName } = this;
+
+        this.#pageParam = `${localName}-page`;
+        this.#searchParam = `${localName}-search`;
+        this.page = getURLParam(this.#pageParam, 1);
+
+        this.logger = ConsoleLogger.prefix(localName);
+    }
+
     public override connectedCallback(): void {
         super.connectedCallback();
-        this.addEventListener(EVENT_REFRESH, this.#refreshListener);
+
+        this.addEventListener(AKRefreshEvent.eventName, this.refreshListener);
+        window.addEventListener("submit", this.refreshListener);
 
         if (this.searchEnabled) {
             this.search = getURLParam(this.#searchParam, "");
         }
+
+        // Use `fetch()` rather than `#synchronizeRefreshSchedule()` here: the
+        // latter only flushes a *previously deferred* refresh and would no-op
+        // when a parent (e.g. `AKModal`) has already forced `visible = true`
+        // before the first update cycle, leaving the table empty on open.
+        this.fetch();
     }
 
     public override disconnectedCallback(): void {
         super.disconnectedCallback();
-        this.removeEventListener(EVENT_REFRESH, this.#refreshListener);
+        this.removeEventListener(EVENT_REFRESH, this.refreshListener);
+        window.removeEventListener("submit", this.refreshListener);
     }
 
-    protected willUpdate(changedProperties: PropertyValues<this>): void {
+    protected override willUpdate(changedProperties: PropertyValues<this>): void {
+        super.willUpdate(changedProperties);
+
         const interactive = isInteractiveElement(this);
 
         if (!interactive) {
@@ -276,6 +484,8 @@ export abstract class Table<T extends object>
     }
 
     protected override updated(changedProperties: PropertyValues<this>): void {
+        super.updated(changedProperties);
+
         if (
             (changedProperties as PropertyValues<TableInstance>).has("columns") ||
             changedProperties.has("checkbox") ||
@@ -283,15 +493,15 @@ export abstract class Table<T extends object>
         ) {
             this.#synchronizeColumnProperties();
         }
-    }
 
-    firstUpdated(): void {
-        this.fetch();
+        if (changedProperties.has("visible") && this.hasUpdated) {
+            this.#synchronizeRefreshSchedule();
+        }
     }
 
     //#endregion
 
-    async defaultEndpointConfig(): Promise<BaseTableListRequest> {
+    protected async defaultEndpointConfig(): Promise<BaseTableListRequest> {
         return {
             ordering: this.order,
             page: this.page,
@@ -300,7 +510,27 @@ export abstract class Table<T extends object>
         };
     }
 
-    public fetch(): Promise<void> {
+    /**
+     * Fetch data from the API endpoint.
+     *
+     * @see {@linkcode apiEndpoint}
+     * @todo Make this protected.
+     */
+    public async fetch(): Promise<void> {
+        if (!this.visible) {
+            if (this.#deferredRefreshRequestAt) {
+                this.logger.debug("Skipping fetch; already scheduled");
+
+                return Promise.resolve();
+            }
+
+            this.logger.debug("Scheduling fetch for when table becomes visible");
+
+            this.#deferredRefreshRequestAt = new Date();
+
+            return Promise.resolve();
+        }
+
         if (this.loading) {
             return Promise.resolve();
         }
@@ -333,7 +563,7 @@ export abstract class Table<T extends object>
                     if (this.selectedMap.size) {
                         this.selectedMap = new Map();
 
-                        const selectAllCheckbox = this.#selectAllCheckboxRef.value;
+                        const selectAllCheckbox = this.selectAllCheckboxRef.value;
 
                         if (selectAllCheckbox) {
                             selectAllCheckbox.checked = false;
@@ -350,36 +580,39 @@ export abstract class Table<T extends object>
             .finally(() => {
                 this.loading = false;
                 this.lastRefreshedAt = new Date();
+                this.#deferredRefreshRequestAt = null;
                 this.requestUpdate();
             });
     }
 
     //#region Render
 
-    protected renderLoading(): TemplateResult {
+    protected renderLoading(): SlottedTemplateResult {
+        return guard(
+            [this.loading, this.columnCount],
+            () =>
+                html`<tr role="presentation" class="ak-fade-in ak-m-delayed">
+                    <td role="presentation" colspan=${this.columnCount}>
+                        <div class="pf-l-bullseye">
+                            <ak-empty-state default-label></ak-empty-state>
+                        </div>
+                    </td>
+                </tr>`,
+        );
+    }
+
+    protected renderEmpty(inner?: SlottedTemplateResult): SlottedTemplateResult {
         return html`<tr role="presentation">
-            <td role="presentation" colspan=${this.#columnCount}>
+            <td role="presentation" colspan=${this.columnCount}>
                 <div class="pf-l-bullseye">
-                    <ak-empty-state default-label></ak-empty-state>
+                    ${inner ??
+                    html`<ak-empty-state
+                        ><span>${this.formatEmptyStateMessage()}</span>
+                        <div slot="primary">${this.renderObjectCreate()}</div>
+                    </ak-empty-state>`}
                 </div>
             </td>
         </tr>`;
-    }
-
-    protected renderEmpty(inner?: SlottedTemplateResult): TemplateResult {
-        return html`
-            <tr role="presentation">
-                <td role="presentation" colspan=${this.#columnCount}>
-                    <div class="pf-l-bullseye">
-                        ${inner ??
-                        html`<ak-empty-state
-                            ><span>${this.emptyStateMessage}</span>
-                            <div slot="primary">${this.renderObjectCreate()}</div>
-                        </ak-empty-state>`}
-                    </div>
-                </td>
-            </tr>
-        `;
     }
 
     /**
@@ -446,7 +679,7 @@ export abstract class Table<T extends object>
         if (this.error) {
             return this.renderEmpty(this.renderError());
         }
-        if (this.loading && this.data === null) {
+        if (!this.visible || (this.loading && this.data === null)) {
             return this.renderLoading();
         }
 
@@ -472,7 +705,7 @@ export abstract class Table<T extends object>
 
             return html`<thead>
                     <tr>
-                        <th id=${groupHeaderID} scope="colgroup" colspan=${this.#columnCount}>
+                        <th id=${groupHeaderID} scope="colgroup" colspan=${this.columnCount}>
                             ${groupName}
                         </th>
                     </tr>
@@ -545,7 +778,7 @@ export abstract class Table<T extends object>
             this.requestUpdate("selectedMap");
         }
 
-        const selectAllCheckbox = this.#selectAllCheckboxRef.value;
+        const selectAllCheckbox = this.selectAllCheckboxRef.value;
         const pageItemCount = this.data?.results?.length ?? 0;
         const selectedCount = this.selectedMap.size;
 
@@ -561,7 +794,12 @@ export abstract class Table<T extends object>
         return [["", items]];
     }
 
-    #renderRowGroupItem(item: T, rowIndex: number, items: T[], groupIndex: number): TemplateResult {
+    #renderRowGroupItem(
+        item: T,
+        rowIndex: number,
+        items: T[],
+        groupIndex: number,
+    ): SlottedTemplateResult {
         const groupHeaderID = this.groups.length > 1 ? `table-group-${groupIndex}` : null;
 
         const itemKey = this.#itemKeys.get(item);
@@ -604,7 +842,7 @@ export abstract class Table<T extends object>
                     })}"
                     @click=${expandItem}
                     aria-label=${expanded ? msg("Collapse row") : msg("Expand row")}
-                    aria-expanded=${expanded.toString()}
+                    aria-expanded=${expanded ? "true" : "false"}
                 >
                     <div class="pf-c-table__toggle-icon">
                         &nbsp;<i class="fas fa-angle-down" aria-hidden="true"></i>&nbsp;
@@ -626,7 +864,7 @@ export abstract class Table<T extends object>
                 })}"
             >
                 <td aria-hidden="true"></td>
-                <td colspan=${this.#columnCount - 1}>
+                <td colspan=${this.columnCount - 1}>
                     <div class="pf-c-table__expandable-row-content">
                         ${this.renderExpanded(item)}
                     </div>
@@ -635,12 +873,7 @@ export abstract class Table<T extends object>
         }
 
         return html`
-            <tr
-                aria-selected=${selected.toString()}
-                class="${classMap({
-                    "pf-m-hoverable": this.checkbox || this.expandable || this.clickable,
-                })}"
-            >
+            <tr aria-selected=${selected ? "true" : "false"} class="${this.rowClassNames}">
                 ${memoizedCheckbox} ${memoizedExpansion}
                 ${this.row(item).map((cell, columnIndex) => {
                     const columnID = this.#columnIDs.get(this.columns[columnIndex]);
@@ -648,13 +881,20 @@ export abstract class Table<T extends object>
                     const headers = groupHeaderID
                         ? `${groupHeaderID} ${columnID}`.trim()
                         : columnID;
-
+                    let cellTemplate: SlottedTemplateResult;
+                    let cellOptions: ColumnOptions = {};
+                    if (Array.isArray(cell)) {
+                        [cellTemplate, cellOptions] = cell;
+                    } else {
+                        cellTemplate = cell;
+                    }
                     return html`<td
                         @click=${this.rowClickListener.bind(this, item)}
                         class=${ifPresent(!columnID, "presentational")}
                         headers=${ifPresent(headers)}
+                        style="${ifPresent(cellOptions.style)}"
                     >
-                        ${cell}
+                        ${cellTemplate}
                     </td>`;
                 })}
             </tr>
@@ -666,14 +906,9 @@ export abstract class Table<T extends object>
 
     //#region Toolbar
 
-    protected renderToolbar(): TemplateResult {
-        return html` ${this.renderObjectCreate()}
-            <ak-spinner-button
-                .callAction=${() => {
-                    return this.fetch();
-                }}
-                class="pf-m-secondary"
-            >
+    protected renderToolbar(): SlottedTemplateResult {
+        return html`${this.renderObjectCreate()}
+            <ak-spinner-button .callAction=${this.refreshListener} class="pf-m-secondary">
                 ${msg("Refresh")}</ak-spinner-button
             >`;
     }
@@ -734,9 +969,13 @@ export abstract class Table<T extends object>
     #searchListener = (value: string) => {
         this.search = value;
         this.page = 1;
-        this.fetch();
+
+        return this.fetch();
     };
 
+    /**
+     * Whether the search input should be rendered.
+     */
     protected searchEnabled = false;
 
     protected renderSearch(): SlottedTemplateResult {
@@ -744,19 +983,18 @@ export abstract class Table<T extends object>
             return nothing;
         }
 
-        const isQL = this.supportsQL && this.hasEnterpriseLicense;
-
-        return html` <ak-table-search
-            class="pf-c-toolbar__item pf-m-search-filter ${isQL ? "ql" : ""}"
+        return html`<ak-table-search
+            ${ref(this.searchInputRef)}
+            exportparts="input:toolbar-search-input"
+            class="pf-c-toolbar__item pf-m-search-filter ${this.supportsQL ? "ql" : ""}"
             part="toolbar-search"
             .defaultValue=${this.search}
-            label=${ifDefined(this.searchLabel)}
-            placeholder=${ifDefined(this.searchPlaceholder)}
+            label=${ifPresent(this.searchLabel)}
+            placeholder=${ifPresent(this.formatSearchPlaceholder())}
             .onSearch=${this.#searchListener}
             .supportsQL=${this.supportsQL}
             .apiResponse=${this.data}
-        >
-        </ak-table-search>`;
+        ></ak-table-search>`;
     }
 
     //#endregion
@@ -764,7 +1002,7 @@ export abstract class Table<T extends object>
     //#region Chips
 
     #synchronizeCheckboxAll = () => {
-        const checkbox = this.#selectAllCheckboxRef.value;
+        const checkbox = this.selectAllCheckboxRef.value;
 
         if (!checkbox) return;
 
@@ -792,7 +1030,7 @@ export abstract class Table<T extends object>
      * "activate all on this page,"
      * "deactivate all on this page" with a single click.
      */
-    renderAllOnThisPageCheckbox(): TemplateResult {
+    renderAllOnThisPageCheckbox(): SlottedTemplateResult {
         const selectedCount = this.selectedMap.size;
         const pageItemCount = this.data?.results?.length ?? 0;
 
@@ -802,7 +1040,7 @@ export abstract class Table<T extends object>
 
         return html`<th class="pf-c-table__check" role="presentation">
             <input
-                ${ref(this.#selectAllCheckboxRef)}
+                ${ref(this.selectAllCheckboxRef)}
                 name="select-all"
                 type="checkbox"
                 aria-label=${msg(
@@ -830,7 +1068,7 @@ export abstract class Table<T extends object>
         return this.checkbox && this.checkboxChip;
     }
 
-    protected renderChipGroup(): TemplateResult {
+    protected renderChipGroup(): SlottedTemplateResult {
         return html`<ak-chip-group
             exportparts="chip-group:selected-chip-group"
             class="selected-chips"
@@ -847,40 +1085,59 @@ export abstract class Table<T extends object>
      * A simple pagination display, shown at both the top and bottom of the page.
      */
     protected renderTablePagination(): SlottedTemplateResult {
-        if (!this.paginated) return nothing;
+        if (!this.paginated || !this.data || this.data?.pagination.totalPages < 2) {
+            return nothing;
+        }
 
         const handler = (page: number) => {
             this.page = page;
             this.fetch();
         };
 
-        return html`
-            <ak-table-pagination
-                ?loading=${this.loading}
-                label=${ifPresent(this.label)}
-                class="pf-c-toolbar__item pf-m-pagination"
-                .pages=${this.data?.pagination}
-                .onPageChange=${handler}
-            >
-            </ak-table-pagination>
-        `;
+        return html`<ak-table-pagination
+            ?loading=${this.loading}
+            label=${ifPresent(this.label)}
+            class="pf-c-toolbar__item pf-m-pagination"
+            .pages=${this.data?.pagination}
+            .onPageChange=${handler}
+        ></ak-table-pagination>`;
     }
 
-    protected renderTable(): TemplateResult {
+    protected renderLoadingBar(): SlottedTemplateResult {
+        return guard([this.loading, this.label], () => {
+            if (!this.loading) return nothing;
+
+            return html`<ak-progress-bar
+                indeterminate
+                ?inert=${!this.loading}
+                label=${msg(str`Loading ${this.label ?? "table"} data`, {
+                    id: "table-loading-bar-label",
+                    desc: "Label for progress bar shown when table data is loading",
+                })}
+            ></ak-progress-bar>`;
+        });
+    }
+
+    protected renderTable(): SlottedTemplateResult {
         const totalItemCount = this.data?.pagination.count ?? -1;
 
         const renderBottomPagination = () =>
-            html`<div class="pf-c-pagination pf-m-bottom">
+            html`<div class="pf-c-pagination pf-m-bottom" part="pagination-bottom">
                 <ak-timestamp .timestamp=${this.lastRefreshedAt} refresh>
                     ${msg("Last refreshed")}
                 </ak-timestamp>
                 ${this.renderTablePagination()}
             </div>`;
 
-        return html`${this.needChipGroup ? this.renderChipGroup() : nothing}
+        return html`${this.renderLoadingBar()}${this.needChipGroup
+                ? this.renderChipGroup()
+                : nothing}
             ${this.renderToolbarContainer()}
             <div part="table-container">
                 <table
+                    part="table"
+                    aria-live="polite"
+                    aria-busy=${this.loading ? "true" : "false"}
                     aria-label=${this.label ? msg(str`${this.label} table`) : msg("Table content")}
                     aria-rowcount=${totalItemCount}
                     class="pf-c-table pf-m-compact pf-m-grid-md pf-m-expandable"
@@ -888,7 +1145,12 @@ export abstract class Table<T extends object>
                     <thead aria-label=${msg("Column actions")}>
                         <tr class="pf-c-table__header-row">
                             ${this.checkbox ? this.renderAllOnThisPageCheckbox() : nothing}
-                            ${this.expandable ? html`<td aria-hidden="true"></td>` : nothing}
+                            ${this.expandable
+                                ? html`<th
+                                      class="pf-c-table__toggle pf-m-pressable"
+                                      aria-hidden="true"
+                                  ></th>`
+                                : nothing}
                             ${this.columns.map((column, idx) => {
                                 const [label, orderBy, ariaLabel] = column;
                                 const columnID = this.#columnIDs.get(column) ?? `column-${idx}`;
@@ -910,7 +1172,7 @@ export abstract class Table<T extends object>
             ${guard([this.paginated, this.lastRefreshedAt], renderBottomPagination)}`;
     }
 
-    render(): TemplateResult {
+    protected override render(): SlottedTemplateResult {
         return this.renderTable();
     }
 }

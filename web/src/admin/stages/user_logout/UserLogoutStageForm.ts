@@ -1,6 +1,6 @@
 import "#elements/forms/HorizontalFormElement";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { BaseStageForm } from "#admin/stages/BaseStageForm";
 
@@ -14,24 +14,24 @@ import { ifDefined } from "lit/directives/if-defined.js";
 @customElement("ak-stage-user-logout-form")
 export class UserLogoutStageForm extends BaseStageForm<UserLogoutStage> {
     loadInstance(pk: string): Promise<UserLogoutStage> {
-        return new StagesApi(DEFAULT_CONFIG).stagesUserLogoutRetrieve({
+        return aki(StagesApi).stagesUserLogoutRetrieve({
             stageUuid: pk,
         });
     }
 
     async send(data: UserLogoutStage): Promise<UserLogoutStage> {
         if (this.instance) {
-            return new StagesApi(DEFAULT_CONFIG).stagesUserLogoutUpdate({
+            return aki(StagesApi).stagesUserLogoutUpdate({
                 stageUuid: this.instance.pk || "",
                 userLogoutStageRequest: data,
             });
         }
-        return new StagesApi(DEFAULT_CONFIG).stagesUserLogoutCreate({
+        return aki(StagesApi).stagesUserLogoutCreate({
             userLogoutStageRequest: data,
         });
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html` <span>${msg("Remove the user from the current session.")}</span>
             <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input

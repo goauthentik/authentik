@@ -13,7 +13,6 @@ import PFEmptyState from "@patternfly/patternfly/components/EmptyState/empty-sta
 import PFProgressStepper from "@patternfly/patternfly/components/ProgressStepper/progress-stepper.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFBullseye from "@patternfly/patternfly/layouts/Bullseye/bullseye.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 export enum ActionState {
     pending = "pending",
@@ -30,7 +29,7 @@ export interface ActionStateBundle {
 
 @customElement("ak-wizard-page-action")
 export class ActionWizardPage extends WizardPage {
-    static styles: CSSResult[] = [PFBase, PFBullseye, PFEmptyState, PFTitle, PFProgressStepper];
+    static styles: CSSResult[] = [PFBullseye, PFEmptyState, PFTitle, PFProgressStepper];
 
     @property({ attribute: false })
     states: ActionStateBundle[] = [];
@@ -46,15 +45,15 @@ export class ActionWizardPage extends WizardPage {
         }));
 
         this.host.canBack = false;
-        this.host.canCancel = false;
+        this.host.cancelable = false;
 
         await this.run();
 
         // Ensure wizard is closable, even when run() failed
-        this.host.isValid = true;
+        this.host.valid = true;
     };
 
-    public label = msg("Apply changes");
+    public headline = msg("Apply changes");
 
     async run(): Promise<void> {
         this.currentStep = this.states[0];
@@ -87,7 +86,7 @@ export class ActionWizardPage extends WizardPage {
             }
         }
 
-        this.host.isValid = true;
+        this.host.valid = true;
 
         this.dispatchEvent(
             new CustomEvent(EVENT_REFRESH, {

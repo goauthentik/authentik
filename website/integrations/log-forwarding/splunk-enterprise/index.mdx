@@ -1,0 +1,119 @@
+---
+title: Forward events to Splunk Enterprise
+sidebar_label: Splunk Enterprise forwarding
+support_level: community
+---
+
+authentik can forward selected events to Splunk Enterprise through a generic webhook notification transport and Splunk HTTP Event Collector (HEC). This forwards events that match a notification rule; it does not replace container, system, or reverse-proxy log collection.
+
+## Preparation
+
+The following placeholders are used in this guide:
+
+- `authentik.company` is the FQDN of the authentik installation.
+- `splunk.company` is the FQDN of the Splunk Enterprise instance or load balancer that receives HEC traffic.
+- `<splunk-hec-token>` is a Splunk HTTP Event Collector token used to ingest authentik events.
+
+:::info
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
+
+## Splunk Enterprise configuration
+
+### Create a Splunk HEC token
+
+1. Log in to Splunk Enterprise with an administrator account.
+2. Navigate to **Settings** > **Data inputs**.
+3. Click **HTTP Event Collector**.
+4. Click **New Token** and create a token for authentik events.
+5. Enable the token and allow it to write to the target index.
+
+The HEC URL for JSON events is:
+
+```text
+https://splunk.company/services/collector/event
+```
+
+If you publish HEC through a load balancer or reverse proxy, use the externally reachable HEC URL instead.
+
+## authentik configuration
+
+To forward authentik events to Splunk Enterprise, you need to create webhook mappings, a notification transport, and a notification rule.
+
+### Create webhook mappings
+
+Create a webhook body mapping that formats authentik notifications for the Splunk HEC JSON event endpoint.
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Customization** > **Property Mappings** and click **Create**.
+3. Select **Webhook Mapping** and create the body mapping:
+    - **Name**: choose a descriptive name, for example `Splunk HEC body`.
+    - **Expression**:
+
+        ```python
+        event = notification.event
+
+        return {
+            "time": event.created.timestamp(),
+            "host": "authentik.company",
+            "sourcetype": "authentik:event",
+            "event": {
+                "action": event.action,
+                "app": event.app,
+                "body": notification.body,
+                "severity": notification.severity,
+                "client_ip": event.client_ip,
+                "user": event.user,
+                "context": event.context,
+            },
+        }
+        ```
+
+4. Create another **Webhook Mapping** for the HEC authorization header:
+    - **Name**: choose a descriptive name, for example `Splunk HEC headers`.
+    - **Expression**:
+
+        ```python
+        return {
+            "Authorization": "Splunk <splunk-hec-token>",
+        }
+        ```
+
+### Create a webhook notification transport
+
+1. Navigate to **Events** > **Notification Transports** and click **New Notification Transport**.
+2. Configure the transport:
+    - **Transport Name**: choose a descriptive name, for example `Splunk HEC`.
+    - **Send once**: enable this option.
+    - **Mode**: select **Webhook (generic)**.
+    - **Webhook URL**: set to the Splunk HEC event endpoint, for example `https://splunk.company/services/collector/event`.
+    - **Webhook Body Mapping**: select the Splunk HEC body mapping.
+    - **Webhook Header Mapping**: select the Splunk HEC headers mapping.
+3. Click **Create Notification Transport**.
+
+### Create a notification rule
+
+1. Navigate to **Customization** > **Policies** and create an **Event Matcher Policy** for the events that should be sent to Splunk Enterprise.
+    - Leave the matcher fields empty to match all authentik events.
+    - Use the **Query** field to forward only a subset of events, such as failed logins or application authorization events.
+2. Navigate to **Events** > **Notification Rules** and click **New Notification Rule**.
+3. Configure the rule:
+    - Select a destination group. The rule must have a destination group or **Send notification to event user** enabled before authentik creates notifications.
+    - Select the Splunk HEC notification transport.
+4. Click **Create Notification Rule**.
+5. Expand the new rule, click **Create or bind...**, and bind the Event Matcher Policy that you created for Splunk Enterprise.
+
+## Configuration verification
+
+To verify log forwarding, click **Test** on the Splunk HEC notification transport in authentik. Then search Splunk Enterprise for the configured sourcetype:
+
+```text
+sourcetype="authentik:event"
+```
+
+If Splunk Enterprise does not receive the test event, verify the HEC token, the `Authorization` header mapping, the HEC URL, and network access from authentik to the Splunk HEC endpoint.
+
+## Resources
+
+- [Splunk Enterprise Documentation - Format events for HTTP Event Collector](https://help.splunk.com/en/splunk-enterprise/get-data-in/get-started-with-getting-data-in/9.2/get-data-with-http-event-collector/format-events-for-http-event-collector)
+- [Splunk Enterprise Documentation - HTTP Event Collector REST API endpoints](https://help.splunk.com/en/splunk-enterprise/get-data-in/get-started-with-getting-data-in/9.0/get-data-with-http-event-collector/http-event-collector-rest-api-endpoints)

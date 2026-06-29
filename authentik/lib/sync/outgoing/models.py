@@ -1,3 +1,4 @@
+import math
 from typing import Any, Self
 
 import pglock
@@ -53,14 +54,27 @@ class OutgoingSyncProvider(ScheduledModel, Model):
     ) -> BaseOutgoingSyncClient[T, Any, Any, Self]:
         raise NotImplementedError
 
-    def get_object_qs[T: User | Group](self, type: type[T]) -> QuerySet[T]:
+    def get_object_qs[T: User | Group](self, type: type[T], **kwargs) -> QuerySet[T]:
+        raise NotImplementedError
+
+    @classmethod
+    def get_object_mappings(cls, obj: User | Group) -> list[tuple[str, str]]:
+        """
+        Get a list of mapping between User/Group and ProviderUser/Group:
+        [("provider_pk", "obj_pk")]
+        """
         raise NotImplementedError
 
     def get_paginator[T: User | Group](self, type: type[T]) -> Paginator:
         return Paginator(self.get_object_qs(type), self.sync_page_size)
 
     def get_object_sync_time_limit_ms[T: User | Group](self, type: type[T]) -> int:
-        num_pages: int = self.get_paginator(type).num_pages
+        # Use a simple COUNT(*) on the model instead of materializing get_object_qs(),
+        # which for some providers (e.g. SCIM) runs PolicyEngine per-user and is
+        # extremely expensive. The time limit is an upper-bound estimate, so using
+        # the total count (without policy filtering) is a safe overestimate.
+        total_count = type.objects.count()
+        num_pages = math.ceil(total_count / self.sync_page_size) if total_count > 0 else 1
         page_timeout_ms = timedelta_from_string(self.sync_page_timeout).total_seconds() * 1000
         return int(num_pages * page_timeout_ms * 1.5)
 
@@ -84,7 +98,7 @@ class OutgoingSyncProvider(ScheduledModel, Model):
         raise NotImplementedError
 
     def sync_dispatch(self) -> None:
-        for schedule in self.schedules:
+        for schedule in self.schedules.all():
             schedule.send()
 
     @property

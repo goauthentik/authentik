@@ -3,14 +3,16 @@ import "#elements/forms/HorizontalFormElement";
 import { SlottedTemplateResult } from "../elements/types";
 
 import { AKElement, type AKElementProps } from "#elements/Base";
+import { FocusTarget } from "#elements/utils/focus";
 
 import { ErrorProp } from "#components/ak-field-errors";
 import { AKLabel } from "#components/ak-label";
 
 import { IDGenerator } from "@goauthentik/core/id";
 
-import { html, nothing, TemplateResult } from "lit";
+import { html, PropertyValues } from "lit";
 import { property } from "lit/decorators.js";
+import { guard } from "lit/directives/guard.js";
 
 export interface HorizontalLightComponentProps<T> extends AKElementProps {
     name: string;
@@ -29,6 +31,11 @@ export abstract class HorizontalLightComponent<T>
     extends AKElement
     implements HorizontalLightComponentProps<T>
 {
+    static shadowRootOptions = {
+        ...AKElement.shadowRootOptions,
+        delegatesFocus: true,
+    };
+
     // Render into the lightDOM. This effectively erases the shadowDOM nature of this component, but
     // we're not actually using that and, for the meantime, we need the form handlers to be able to
     // find the children of this component.
@@ -39,6 +46,10 @@ export abstract class HorizontalLightComponent<T>
     protected createRenderRoot() {
         return this;
     }
+
+    protected autofocusTarget = new FocusTarget();
+
+    public override focus = this.autofocusTarget.focus;
 
     public override role = "presentation";
 
@@ -73,6 +84,9 @@ export abstract class HorizontalLightComponent<T>
         this.ariaRequired = value ? "true" : "false";
     }
 
+    @property({ type: Boolean })
+    public autofocus: boolean = false;
+
     /**
      * Help text to display below the form element. Optional
      * @property
@@ -86,7 +100,7 @@ export abstract class HorizontalLightComponent<T>
      * @property
      */
     @property({ type: Object })
-    bighelp?: TemplateResult | TemplateResult[];
+    bighelp?: SlottedTemplateResult | SlottedTemplateResult[];
 
     /**
      * @property
@@ -152,9 +166,21 @@ export abstract class HorizontalLightComponent<T>
 
     //#region Lifecycle
 
-    connectedCallback() {
+    public override connectedCallback() {
         super.connectedCallback();
         this.setAttribute("aria-labelledby", this.labelID);
+
+        this.addEventListener("focus", this.autofocusTarget.toEventListener());
+    }
+
+    protected override firstUpdated(changedProperties: PropertyValues<this>): void {
+        super.firstUpdated(changedProperties);
+
+        if (this.autofocus) {
+            requestAnimationFrame(() => {
+                this.autofocusTarget.focus();
+            });
+        }
     }
 
     //#endregion
@@ -167,14 +193,18 @@ export abstract class HorizontalLightComponent<T>
     protected abstract renderControl(): SlottedTemplateResult;
 
     protected renderHelp(): SlottedTemplateResult | SlottedTemplateResult[] {
-        const bigHelp: SlottedTemplateResult[] = Array.isArray(this.bighelp)
-            ? this.bighelp
-            : [this.bighelp ?? nothing];
+        const { help, bighelp } = this;
 
-        return [
-            this.help ? html`<p class="pf-c-form__helper-text">${this.help}</p>` : nothing,
-            ...bigHelp,
-        ];
+        return guard([help, bighelp], () => {
+            const bigHelp: SlottedTemplateResult[] = Array.isArray(this.bighelp)
+                ? this.bighelp
+                : [this.bighelp ?? null];
+
+            return [
+                this.help ? html`<p class="pf-c-form__helper-text">${this.help}</p>` : null,
+                ...bigHelp,
+            ].filter(Boolean);
+        });
     }
 
     render() {
@@ -185,8 +215,7 @@ export abstract class HorizontalLightComponent<T>
             name=${this.name}
             role="presentation"
             .errorMessages=${this.errorMessages}
-        >
-            ${AKLabel(
+            >${AKLabel(
                 {
                     id: this.labelID,
                     className: "pf-c-form__group-label",
@@ -197,7 +226,7 @@ export abstract class HorizontalLightComponent<T>
                 this.label || "",
             )}
             ${this.renderControl()}
-            <div id=${this.helpID}>${this.renderHelp()}</div>
+            <div id=${this.helpID} part="help">${this.renderHelp()}</div>
         </ak-form-element-horizontal> `;
     }
 
