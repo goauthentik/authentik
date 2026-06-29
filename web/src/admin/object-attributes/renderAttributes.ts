@@ -28,7 +28,10 @@ export type AttributesMixin = {
     attributes?: Record<string, unknown>;
 };
 
-function renderSingleAttribute(attrs: Record<string, unknown>, attr: ObjectAttribute) {
+function renderSingleAttribute(
+    attrs: Record<string, unknown>,
+    attr: ObjectAttribute,
+): SlottedTemplateResult {
     return match(attr.type)
         .with(ObjectAttributeTypeEnum.Text, () => {
             return html`<ak-text-input
@@ -55,6 +58,9 @@ function renderSingleAttribute(attrs: Record<string, unknown>, attr: ObjectAttri
                 ?required=${attr.isRequired}
             >
             </ak-switch-input>`;
+        })
+        .otherwise(() => {
+            return html`<div>Unknown attribute type ${attr.type} for ${attr.key}</div>`;
         });
 }
 
@@ -95,6 +101,7 @@ export abstract class ObjectAttributeModelForm<
                 if (group === "") {
                     return groupedAttrs.map((attr) => renderSingleAttribute(attributes, attr));
                 }
+
                 return html`<ak-form-group label=${group}>
                     <div class="pf-c-form">
                         ${groupedAttrs.map((attr) => renderSingleAttribute(attributes, attr))}
