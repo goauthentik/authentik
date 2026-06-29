@@ -486,14 +486,9 @@ class _PostgresConsumer(Consumer):
     def nack(self, message: Message[Any]) -> None:
         self._post_process_message(message, TaskState.REJECTED)
 
-<<<<<<< HEAD
     @raise_connection_error
     def requeue(self, messages: Iterable[Message[Any]]) -> None:
-=======
-    @raise_broker_connection_error
-    def requeue(self, messages: Iterable[MessageProxy]) -> None:
         messages = list(messages)
->>>>>>> 9a9b4b576b (packages/django-dramatiq-postgres/broker: fix race condition in broker causing completed tasks to be repeated (#23218))
         self.query_set.filter(
             message_id__in=[message.message_id for message in messages],
         ).exclude(
