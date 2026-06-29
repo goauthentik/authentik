@@ -55,7 +55,7 @@ export class ObjectAttributeListPage extends TablePage<ObjectAttribute> {
     protected columns: TableColumn[] = [
         [msg("Label"), "label"],
         [msg("Type"), "type"],
-        [msg("Status"), "enabled"],
+        [msg("Enabled"), "enabled"],
         [msg("Object type"), "object_type"],
         [msg("Actions"), null, msg("Row Actions")],
     ];

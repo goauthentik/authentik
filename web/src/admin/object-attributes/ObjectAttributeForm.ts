@@ -81,7 +81,9 @@ export class ObjectAttributeForm extends ModelForm<ObjectAttribute, string> {
                 name="enabled"
                 label=${msg("Enabled")}
                 ?checked=${this.instance?.enabled ?? true}
-                help=${msg("Value of the attribute cannot be empty.")}
+                help=${msg(
+                    "When checked, attribute will be shown in forms for the selected object type.",
+                )}
             ></ak-switch-input>
             <ak-form-element-horizontal label=${msg("Type")} required name="type">
                 <ak-radio
@@ -149,7 +151,10 @@ export class ObjectAttributeForm extends ModelForm<ObjectAttribute, string> {
                         value="${this.instance?.regex ?? ""}"
                         label=${msg("RegEx")}
                         input-hint="code"
-                        placeholder=${msg("Enter a regex for validation...")}
+                        placeholder=${msg("Enter an optional Regular Expression for validation...")}
+                        help=${msg(
+                            "Optional RegEx to validate any value against. Uses the Python RegEx engine.",
+                        )}
                     ></ak-text-input>
                 </div>
             </ak-form-group>`;
