@@ -74,7 +74,7 @@ export class ObjectChangelog extends Table<Event> {
 
     row(item: EventWithContext): SlottedTemplateResult[] {
         return [
-            html`${actionToLabel(item.action)}`,
+            html`${actionToLabel(item.action, item.context)}`,
             renderEventUser(item),
             Timestamp(item.created),
             html`<div>${item.clientIp || msg("-")}</div>
