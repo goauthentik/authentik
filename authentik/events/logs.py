@@ -37,7 +37,17 @@ class LogEvent:
         )
 
     def log(self):
-        get_logger(self.logger).log(NAME_TO_LEVEL[self.log_level], self.event, **self.attributes)
+        attributes = self.attributes.copy()
+        event_attribute = attributes.pop("event", None)
+        if event_attribute is not None:
+            attributes["log_event_attribute"] = event_attribute
+        attributes["log_logger"] = self.logger
+        attributes["log_event"] = self.event
+        get_logger("authentik.events.logs").log(
+            NAME_TO_LEVEL[self.log_level],
+            "Captured log event",
+            **attributes,
+        )
 
 
 class LogEventSerializer(PassiveSerializer):

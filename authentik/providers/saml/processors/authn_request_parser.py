@@ -68,7 +68,11 @@ class AuthNRequestParser:
                 f"ACS URL of {request_acs_url} doesn't match Provider "
                 f"ACS URL of {self.provider.acs_url}."
             )
-            self.logger.warning(msg)
+            self.logger.warning(
+                "ACS URL mismatch",
+                request_acs_url=request_acs_url,
+                provider_acs_url=self.provider.acs_url,
+            )
             raise CannotHandleAssertion(msg)
 
         auth_n_request = AuthNRequest(id=root.attrib["ID"], relay_state=relay_state)

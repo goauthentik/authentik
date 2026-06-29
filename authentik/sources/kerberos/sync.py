@@ -71,7 +71,7 @@ class KerberosSync:
                 principal=principal,
                 principal_obj=principal_obj,
             )
-            self._logger.debug("Writing user with attributes", **defaults)
+            self._logger.debug("Writing user with attributes", attributes=defaults)
             if "username" not in defaults:
                 raise IntegrityError("Username was not set by propertymappings")
 
