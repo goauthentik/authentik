@@ -94,7 +94,7 @@ class PrivilegedFieldsSerializerMixin:
             return data
         meta = instance._meta
         permission = f"{meta.app_label}.view_{meta.model_name}"
-        if request.user.has_perm(permission, instance) or request.user.has_perm(permission):
+        if request.user.has_perm(permission, instance):
             return data
         for field in self.privileged_fields:
             if field in data:
