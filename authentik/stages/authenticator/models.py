@@ -101,6 +101,15 @@ class Device(CreatedUpdatedModel):
 
         return f"{self.name} ({user})"
 
+    @classmethod
+    def from_db(cls, db, field_names, values):
+        # Cache the initial value of `confirmed` so post_save signals can tell
+        # whether the device just transitioned to confirmed (vs. a re-save of an
+        # already-confirmed device).
+        instance = super().from_db(db, field_names, values)
+        instance._loaded_confirmed = instance.confirmed
+        return instance
+
     @property
     def persistent_id(self):
         """

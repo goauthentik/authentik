@@ -39097,6 +39097,8 @@ components:
       - user_write
       - suspicious_request
       - password_set
+      - mfa_device_added
+      - mfa_device_removed
       - secret_view
       - secret_rotate
       - invitation_used

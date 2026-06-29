@@ -1,6 +1,6 @@
-{% load authentik_stages_email %}{% load i18n %}{% autoescape off %}{% if event_action == "password_set" %}{% trans "Your password was changed" %}{% else %}{% trans "Security notification" %}{% endif %}
+{% load authentik_stages_email %}{% load i18n %}{% autoescape off %}{% if event_action == "password_set" %}{% trans "Your password was changed" %}{% elif event_action == "mfa_device_added" %}{% trans "A new MFA device was added" %}{% elif event_action == "mfa_device_removed" %}{% trans "An MFA device was removed" %}{% else %}{% trans "Security notification" %}{% endif %}
 
-{% if event_action == "password_set" %}{% blocktrans %}The password for your account was just changed. If you made this change, you can safely ignore this email.{% endblocktrans %}{% else %}{{ body }}{% endif %}
+{% if event_action == "password_set" %}{% blocktrans %}The password for your account was just changed. If you made this change, you can safely ignore this email.{% endblocktrans %}{% elif event_action == "mfa_device_added" %}{% blocktrans %}A new multi-factor authentication (MFA) device was just added to your account. If you set this up, you can safely ignore this email.{% endblocktrans %}{% elif event_action == "mfa_device_removed" %}{% blocktrans %}A multi-factor authentication (MFA) device was just removed from your account. If you made this change, you can safely ignore this email.{% endblocktrans %}{% else %}{{ body }}{% endif %}
 {% if link %}
 {{ link.label }}: {{ link.target }}
 {% endif %}

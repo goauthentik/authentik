@@ -98,6 +98,9 @@ class EventAction(models.TextChoices):
     SUSPICIOUS_REQUEST = "suspicious_request"
     PASSWORD_SET = "password_set"  # noqa # nosec
 
+    MFA_DEVICE_ADDED = "mfa_device_added"
+    MFA_DEVICE_REMOVED = "mfa_device_removed"
+
     SECRET_VIEW = "secret_view"  # noqa # nosec
     SECRET_ROTATE = "secret_rotate"  # noqa # nosec
 
@@ -259,6 +262,17 @@ class Event(SerializerModel, ExpiringModel):
             self.app = Event._get_app_from_request(request)
         self.save()
         return self
+
+    def from_ctx_request(self):
+        from authentik.events.middleware import _CTX_IGNORE, _CTX_REQUEST
+
+        if _CTX_IGNORE.get():
+            return
+        request = _CTX_REQUEST.get()
+        if request:
+            self.from_http(request, request.user)
+        else:
+            self.save()
 
     @staticmethod
     def log_deprecation(
@@ -708,9 +722,7 @@ class NotificationRule(TasksModel, SerializerModel, PolicyBindingModel):
     )
     destination_event_subject = models.BooleanField(
         default=False,
-        help_text=_(
-            "When enabled, notification will be sent to the user affected by the event."
-        ),
+        help_text=_("When enabled, notification will be sent to the user affected by the event."),
     )
 
     def destination_users(self, event: Event) -> Generator[User, Any]:
