@@ -4,15 +4,13 @@ sidebar_label: Sonarr
 support_level: community
 ---
 
-:::info
-These instructions apply to all projects in the \*arr Family. If you use multiple of these projects, you can assign them to the same Outpost.
-:::
-
 ## What is Sonarr?
 
-> Sonarr is a PVR for Usenet and BitTorrent users. It can monitor multiple RSS feeds for new episodes of your favorite shows and will grab, sort and rename them. It can also be configured to automatically upgrade the quality of files already downloaded when a better quality format becomes available.
+> Sonarr is an internet PVR for Usenet and Torrents.
 >
-> -- https://github.com/Sonarr/Sonarr
+> -- https://sonarr.tv/
+
+Sonarr does not provide native SSO. This guide uses the authentik Proxy Provider to authenticate requests before they reach Sonarr.
 
 ## Preparation
 
@@ -25,44 +23,57 @@ The following placeholders are used in this guide:
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
-Create a Proxy Provider with the following values:
+:::warning Protect the Sonarr backend
+When Sonarr is configured for external authentication, Sonarr trusts the authentication layer in front of it. Make sure users can access Sonarr only through authentik, and do not expose the Sonarr backend directly to the internet.
+:::
 
-- **Internal host**
+## authentik configuration
 
-    If Sonarr is running in docker, and you're deploying the authentik proxy on the same host, set the value to `http://sonarr:8989`, where sonarr is the name of your container.
+To support the integration of Sonarr with authentik, you need to create an application/provider pair in authentik and assign it to a proxy outpost.
 
-    If Sonarr is running on a different server than where you are deploying the authentik proxy, set the value to `http://sonarr.company:8989`.
+### Create an application and provider
 
-- **External host**
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
+    - **Choose a Provider type**: select **Proxy Provider** as the provider type.
+    - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+        - Set **Mode** to **Proxy**.
+        - Set **External host** to `https://sonarr.company`.
+        - Set **Internal host** to the URL that the authentik proxy outpost uses to reach Sonarr.
+            - If Sonarr and the authentik proxy outpost are both running in the same Docker deployment, set the value to `http://<sonarr_container_name>:8989`.
+            - If Sonarr runs on a different server than the authentik proxy outpost, set the value to `http://sonarr.company:8989`.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 
-    Set this to the external URL you will be accessing Sonarr from.
+3. Click **Submit** to save the new application and provider.
 
-Create an application in authentik and select the provider you've created above.
+### Configure proxy outpost
 
-## Deployment
+The proxy provider requires an authentik proxy outpost. If you do not already have a proxy outpost, follow the [outpost documentation](/docs/add-secure-apps/outposts/) to create and deploy one.
 
-Create an outpost deployment for the provider you've created above, as described [here](https://docs.goauthentik.io/docs/add-secure-apps/outposts/). Deploy this Outpost either on the same host or a different host that can access Sonarr.
+Add the Sonarr application to a proxy outpost that will serve it:
 
-The outpost will connect to authentik and configure itself.
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Applications** > **Outposts**.
+3. Click the edit icon for the proxy outpost. This can be the built-in **authentik Embedded Outpost** or another proxy outpost.
+4. Under **Available Applications**, select the Sonarr application and move it to **Selected Applications**.
+5. Click **Update** to save your changes.
 
-## Authentication setup
+## Sonarr configuration
 
-Because Sonarr can use HTTP Basic credentials, you can save your HTTP Basic Credentials in authentik. The recommended way to do this is to create a Group. Name the group "Sonarr Users", for example. For this group, add the following attributes:
+Configure Sonarr to trust the external authentication layer provided by authentik.
 
-```yaml
-sonarr_user: username
-sonarr_password: password
-```
+1. In Sonarr, navigate to **System** > **Status** and note the **AppData directory** value. The `config.xml` file is stored in this directory.
+2. Stop Sonarr.
+3. Open `config.xml` and replace any existing `AuthenticationMethod` value with `External`. Make sure that the file contains only one `AuthenticationMethod` entry.
 
-Additional note: Make sure the type of authentication is set to "Basic (Browser Popup)" in Sonarr, otherwise the credentials are not passed.
+    ```xml title="config.xml"
+    <AuthenticationMethod>External</AuthenticationMethod>
+    ```
 
-Add all Sonarr users to the Group. You should also create a Group Membership Policy to limit access to the application.
+4. Start Sonarr.
 
-Enable the `Use Basic Authentication` option. Set `HTTP-Basic Username` and `HTTP-Basic Password` to `sonarr_user` and `sonarr_password` respectively. These values can be chosen freely, `sonarr_` is just used as a prefix for clarity.
-
-## Reverse proxy setup
-
-Finally, in your reverse proxy setup for Sonarr, replace the current value for the proxied server (e.g. proxy_pass in nginx) with your authentik outpost proxy provider address.
+Configure DNS or your reverse proxy so that requests for `https://sonarr.company` are routed to the authentik proxy outpost. The authentik proxy outpost then forwards authenticated requests to Sonarr through the **Internal host** configured on the proxy provider.
 
 ```mermaid
 architecture-beta
@@ -77,3 +88,11 @@ architecture-beta
     outpost:R -- L:sonarr
     outpost:T -- B:auth
 ```
+
+## Configuration verification
+
+To verify the login flow, open Sonarr. You should be redirected to authentik before the Sonarr web interface is shown.
+
+## Resources
+
+- [Servarr Wiki - Sonarr v4 FAQ: Forced Authentication](https://wiki.servarr.com/sonarr/faq-v4#forced-authentication)

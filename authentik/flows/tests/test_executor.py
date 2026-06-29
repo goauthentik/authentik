@@ -46,7 +46,7 @@ POLICY_RETURN_FALSE = PropertyMock(return_value=PolicyResult(False, "foo"))
 POLICY_RETURN_TRUE = MagicMock(return_value=PolicyResult(True))
 
 
-def to_stage_response(request: HttpRequest, source: HttpResponse):
+def to_stage_response(request: HttpRequest, source: HttpResponse, final_redirect: bool = False):
     """Mock for to_stage_response that returns the original response, so we can check
     inheritance and member attributes"""
     return source
@@ -182,6 +182,22 @@ class TestFlowExecutor(FlowTestCase):
         response = self.client.get(url + f"?{QS_QUERY}={urlencode({NEXT_ARG_NAME: dest})}")
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, "/unique-string")
+
+    def test_flow_done_redirect_challenge_is_final(self):
+        """Test redirects generated when a flow is done are marked as final."""
+        flow = create_test_flow()
+
+        dest = "/unique-string"
+        url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug})
+
+        response = self.client.get(url + f"?{QS_QUERY}={urlencode({NEXT_ARG_NAME: dest})}")
+
+        self.assertStageResponse(
+            response,
+            component="xak-flow-redirect",
+            to=dest,
+            final_redirect=True,
+        )
 
     @patch(
         "authentik.flows.views.executor.to_stage_response",
