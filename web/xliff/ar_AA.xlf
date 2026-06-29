@@ -11872,7 +11872,7 @@ Bindings to groups/users are checked against the user of the event.</target>
 </trans-unit>
 <trans-unit id="sd30f00ff2135589c">
   <source>When enabled, notification will be sent to the user that triggered the event in addition to any users in the group above. The event user will always be the first user, to send a notification only to the event user enabled &apos;Send once&apos; in the notification transport.</source>
-  <target>When enabled, notification will be sent to the user that triggered the event in addition to any users in the group above. The event user will always be the first user, to send a notification only to the event user enabled &apos;Send once&apos; in the notification transport.</target>
+  <target>عند التفعيل، سيتم إرسال الإشعار إلى المستخدم الذي أطلق الحدث بالإضافة إلى أي مستخدمين في المجموعة أعلاه. سيكون مستخدم الحدث دائماً المستخدم الأول، ولإرسال إشعار إلى مستخدم الحدث فقط فعّل &apos;إرسال مرة واحدة&apos; في ناقل الإشعارات.</target>
 </trans-unit>
 <trans-unit id="s1c0267488c33401b">
   <source>Minimum reviewers</source>
