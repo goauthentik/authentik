@@ -11707,7 +11707,7 @@ Bindings to groups/users are checked against the user of the event.</target>
 </trans-unit>
 <trans-unit id="used-by.consequence.unrecognized">
   <source><x id="0" equiv-text="${verboseName}"/> has an unrecognized relationship (check logs)</source>
-  <target><x id="0" equiv-text="${verboseName}"/> has an unrecognized relationship (check logs)</target>
+  <target>لـ <x id="0" equiv-text="${verboseName}"/> علاقة غير معروفة (تحقق من السجلات)</target>
 </trans-unit>
 <trans-unit id="s539942ab7cc7210e">
   <source>Failed to delete <x id="0" equiv-text="${this.objectLabel}"/></source>
