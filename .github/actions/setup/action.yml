@@ -81,7 +81,7 @@ runs:
       if: ${{ contains(inputs.dependencies, 'runtime') }}
       uses: AndreKurait/docker-cache@7a3887908bdb97935395833df69b060cfcca0f7f
       with:
-        key: docker-images-${{ runner.os }}-${{ hashFiles('.github/actions/setup/compose.yml', 'Makefile', 'tests/e2e/compose.yml', 'tests/openid_conformance/compose.yml') }}-${{ inputs.postgresql_version }}
+        key: docker-images-${{ runner.os }}-${{ hashFiles('.github/actions/setup/compose.yml', 'Makefile') }}-${{ inputs.postgresql_version }}
     - name: Setup dependencies
       if: ${{ contains(inputs.dependencies, 'runtime') }}
       shell: bash
