@@ -10,15 +10,16 @@
         "build-proxy": "wireit",
         "bundler:watch": "node scripts/build-web.mjs --watch",
         "extract-locales": "lit-localize extract",
-        "format": "wireit",
-        "lint": "eslint --fix .",
+		"lint": "run-s lint:oxlint lint:oxfmt",
+		"lint:oxlint": "oxlint",
+		"lint:oxfmt": "oxfmt --check .",
+		"lint:fix": "run-s fix:oxlint format",
+		"fix:oxlint": "oxlint --fix",
         "lint:imports": "knip --config scripts/knip.config.ts",
         "lint:types": "wireit",
         "lint-check": "eslint --max-warnings 0 .",
         "lit-analyse": "wireit",
         "precommit": "wireit",
-        "prettier": "prettier --cache --write -u .",
-        "prettier-check": "prettier --cache --check -u .",
         "pseudolocalize": "node ./scripts/pseudolocalize.mjs",
         "storybook": "storybook dev -p 6006",
         "storybook:build": "wireit",
@@ -94,7 +95,6 @@
         "@codemirror/lang-xml": "^6.1.0",
         "@codemirror/legacy-modes": "^6.5.3",
         "@codemirror/theme-one-dark": "^6.1.3",
-        "@eslint/js": "^9.39.3",
         "@floating-ui/dom": "^1.7.6",
         "@formatjs/intl-listformat": "^8.3.8",
         "@fortawesome/fontawesome-free": "^7.2.0",
@@ -102,8 +102,6 @@
         "@goauthentik/brand-assets": "^2.0.0",
         "@goauthentik/core": "^1.0.0",
         "@goauthentik/esbuild-plugin-live-reload": "^2.0.1",
-        "@goauthentik/eslint-config": "^1.3.0",
-        "@goauthentik/prettier-config": "^3.5.0",
         "@goauthentik/tsconfig": "^1.0.9",
         "@hcaptcha/types": "^1.1.0",
         "@lit/context": "^1.1.6",
@@ -131,9 +129,6 @@
         "@types/node": "^25.7.0",
         "@types/react": "^19.2.17",
         "@types/react-dom": "^19.2.3",
-        "@typescript-eslint/eslint-plugin": "^8.62.0",
-        "@typescript-eslint/parser": "^8.61.1",
-        "@typescript-eslint/utils": "^8.60.0",
         "@typescript/native-preview": "^7.0.0-dev.20260510.1",
         "@vitest/browser": "^4.1.9",
         "@vitest/browser-playwright": "^4.1.6",
@@ -149,7 +144,6 @@
         "deepmerge-ts": "^7.1.5",
         "dompurify": "^3.4.11",
         "esbuild": "^0.28.1",
-        "eslint": "^9.39.3",
         "eslint-plugin-lit": "^2.3.1",
         "eslint-plugin-wc": "^3.1.0",
         "fuse.js": "^7.4.2",
@@ -184,6 +178,8 @@
         "remark-gfm": "^4.0.1",
         "remark-mdx-frontmatter": "^5.2.0",
         "storybook": "^10.2.1",
+        "oxlint": "^1.71.0",
+        "oxfmt": "^0.56.0",
         "style-mod": "^4.1.3",
         "stylelint": "^17.11.1",
         "trusted-types": "^2.0.0",
@@ -191,7 +187,6 @@
         "turnstile-types": "^1.2.3",
         "type-fest": "^5.7.0",
         "typescript": "^6.0.3",
-        "typescript-eslint": "^8.59.3",
         "unist-util-visit": "^5.1.0",
         "vite": "^8.0.16",
         "vitest": "^4.1.6",
@@ -203,7 +198,8 @@
         "@esbuild/darwin-arm64": "^0.28.0",
         "@esbuild/linux-arm64": "^0.28.0",
         "@esbuild/linux-x64": "^0.28.0",
-        "@goauthentik/prettier-config-dev": "../packages/prettier-config",
+        "@goauthentik/oxfmt-config-dev": "../packages/oxfmt-config",
+        "@goauthentik/oxlint-config-dev": "../packages/oxlint-config",
         "@rollup/rollup-darwin-arm64": "^4.61.1",
         "@rollup/rollup-linux-arm64-gnu": "^4.61.1",
         "@rollup/rollup-linux-x64-gnu": "^4.61.1"
@@ -309,13 +305,9 @@
         }
     },
     "packageManager": "npm@11.14.1+sha512.6a8a4d67478497a2dbc6815cad72e64c43f33413717e242756047d466241ab39bee61e691683a64658e94496ec5f1a1c05e4a5ec62dcc773280dfd949443a367",
-    "prettier": "./prettier.config.mjs",
     "overrides": {
         "@goauthentik/esbuild-plugin-live-reload": {
             "esbuild": "$esbuild",
-            "typescript": "$typescript"
-        },
-        "@goauthentik/eslint-config": {
             "typescript": "$typescript"
         },
         "@goauthentik/prettier-config": {
@@ -327,21 +319,6 @@
             "lex": "$lex",
             "lodash": "^4.18.1"
         },
-        "@typescript-eslint/eslint-plugin": {
-            "typescript": "$typescript"
-        },
-        "@typescript-eslint/parser": {
-            "typescript": "$typescript"
-        },
-        "@typescript-eslint/typescript-estree": {
-            "typescript": "$typescript"
-        },
-        "@typescript-eslint/utils": {
-            "typescript": "$typescript"
-        },
-        "format-imports": {
-            "eslint": "$eslint"
-        },
         "node-fetch-commonjs": {
             "node-domexception": "$node-domexception"
         },
@@ -349,9 +326,6 @@
             "@apitools/openapi-parser": "0.0.37"
         },
         "tree-sitter": false,
-        "typescript-eslint": {
-            "typescript": "$typescript"
-        },
         "wireit": {
             "brace-expansion": "^1.1.14"
         }

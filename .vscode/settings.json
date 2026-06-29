@@ -1,5 +1,27 @@
 {
+    "[javascript]": {
+        "editor.defaultFormatter": "oxc.oxc-vscode"
+    },
+    "[javascriptreact]": {
+        "editor.defaultFormatter": "oxc.oxc-vscode"
+    },
+    "[json]": {
+        "editor.defaultFormatter": "oxc.oxc-vscode"
+    },
+    "[markdown]": {
+        "editor.defaultFormatter": "oxc.oxc-vscode"
+    },
+    "[shellscript]": {
+        "editor.defaultFormatter": "oxc.oxc-vscode"
+    },
+    "[typescript]": {
+        "editor.defaultFormatter": "oxc.oxc-vscode"
+    },
+    "[typescriptreact]": {
+        "editor.defaultFormatter": "oxc.oxc-vscode"
+    },
     "[css]": {
+        "editor.defaultFormatter": "oxc.oxc-vscode",
         "editor.minimap.markSectionHeaderRegex": "#\\bregion\\s*(?<separator>-?)\\s*(?<label>.*)\\*/$"
     },
     "[makefile]": {
