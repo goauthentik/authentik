@@ -12302,7 +12302,6 @@ Bindings to groups/users are checked against the user of the event.</target>
 </trans-unit>
 <trans-unit id="wizard.step.details">
   <source><x id="0" equiv-text="${entityLabel}"/> Details</source>
-  <target>التفاصيل</target>
   <note from="lit-localize">Label for the step in the creation wizard where the details of the entity being created are filled in. The placeholder {entity} is replaced with the name of the entity type, for example &apos;User Details&apos; or &apos;Group Details&apos;.</note>
 </trans-unit>
 <trans-unit id="sd1b98c71ea0d603b">
