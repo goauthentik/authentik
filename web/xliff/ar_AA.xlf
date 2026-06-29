@@ -11763,7 +11763,7 @@ Bindings to groups/users are checked against the user of the event.</target>
 </trans-unit>
 <trans-unit id="table.empty">
   <source>No <x id="0" equiv-text="${verboseNamePlural.toLocaleLowerCase(this.activeLanguageTag)}"/> found.</source>
-  <target>No <x id="0" equiv-text="${verboseNamePlural.toLocaleLowerCase(this.activeLanguageTag)}"/> found.</target>
+  <target>لم يتم العثور على <x id="0" equiv-text="${verboseNamePlural.toLocaleLowerCase(this.activeLanguageTag)}"/>.</target>
   <note from="lit-localize">The message to show when a table has no content. The placeholder {0} is replaced with the pluralized name of the type of entity being shown in the table.</note>
 </trans-unit>
 <trans-unit id="user.display.nameInParens">
