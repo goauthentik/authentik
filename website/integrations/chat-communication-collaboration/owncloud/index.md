@@ -40,7 +40,7 @@ ownCloud Server stores one OIDC provider URL in its configuration, but the ownCl
 | Android         | `e4rAsNUSIUs0lF4nbv9FmCeUkTlV9GdgTLDH1b5uie7syb90SzEVrbN7HIpmWJeD` | `dInFYGV33xKzhbRmpqQltYNdfLdJIfJ9L5ISoKhNoT9qZftpdWSP71VrpGR9pmoD` | `Strict` `Authorization`: `oc://android.owncloud.com`                                                                       |
 | iOS             | `mxd5OQDk6es5LzOzRvidJNfXLUZS2oN3oUFeXPP8LpPrhx3UroJFduGEYIBOxkY1` | `KFeFWWEZO9TkisIQzR3fo7hfiMXlOpaqP8CFuTbSHzV1TUuGECglPxpiVKJfOXIx` | `Strict` `Authorization`: `oc://ios.owncloud.com`                                                                           |
 
-### Create applications and providers in authentik
+### Create applications and providers
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard. Repeat the wizard once for each ownCloud client type that you want to support.
