@@ -3336,26 +3336,6 @@ Si se deja vacío, AuthnContextClassRef se establecerá según los métodos de a
   <source>If the password's score is less than or equal this value, the policy will fail.</source>
   <target>Si la puntuación de la contraseña es menor o igual a este valor, la política fallará.</target>
 </trans-unit>
-<trans-unit id="sd94e99af8b41ff54">
-  <source>0: Too guessable: risky password. (guesses &amp;lt; 10^3)</source>
-  <target>0: Demasiado fácil de adivinar: contraseña peligrosa. (intentos &lt; 10^3)</target>
-</trans-unit>
-<trans-unit id="sc926385d1a624c3a">
-  <source>1: Very guessable: protection from throttled online attacks. (guesses &amp;lt; 10^6)</source>
-  <target>1: Muy predecible: protección contra ataques en línea restringidos. (Suposiciones &lt; 10^6)</target>
-</trans-unit>
-<trans-unit id="s8aae61c41319602c">
-  <source>2: Somewhat guessable: protection from unthrottled online attacks. (guesses &amp;lt; 10^8)</source>
-  <target>2: Algo predecible: protección contra ataques en línea sin restricciones. (Suposiciones &lt; 10^8)</target>
-</trans-unit>
-<trans-unit id="sc1f4b57e722a89d6">
-  <source>3: Safely unguessable: moderate protection from offline slow-hash scenario. (guesses &amp;lt; 10^10)</source>
-  <target>3: Imposibilidad de adivinar con seguridad: protección moderada contra escenarios de hash lento sin conexión (conjeturas &lt; 10^10).</target>
-</trans-unit>
-<trans-unit id="sd47f3d3c9741343d">
-  <source>4: Very unguessable: strong protection from offline slow-hash scenario. (guesses &amp;gt;= 10^10)</source>
-  <target>4: Muy difícil de adivinar: protección sólida contra escenarios de hash lento sin conexión (estimaciones &gt;= 10^10)</target>
-</trans-unit>
 <trans-unit id="sd6cd7ce2310a73a4">
   <source>Checks the value from the policy request against several rules, mostly used to ensure password strength.</source>
   <target>Comprueba el valor de la solicitud de política en relación con varias reglas, que se utilizan principalmente para garantizar la seguridad de la contraseña.</target>
@@ -10767,10 +10747,6 @@ Las vinculaciones a grupos/usuarios se verifican en función del usuario del eve
   <source>No <x id="0" equiv-text="${verboseNamePlural.toLocaleLowerCase(this.activeLanguageTag)}"/> found.</source>
   <note from="lit-localize">The message to show when a table has no content. The placeholder {0} is replaced with the pluralized name of the type of entity being shown in the table.</note>
 </trans-unit>
-<trans-unit id="user.display.emailInAngleBrackets">
-  <source>&lt;<x id="0" equiv-text="${email}"/>&gt;</source>
-  <note from="lit-localize">The user's email in angle brackets, used when the email is different from the username</note>
-</trans-unit>
 <trans-unit id="user.display.nameInParens">
   <source>(<x id="0" equiv-text="${name}"/>)</source>
   <note from="lit-localize">The user's name in parentheses, used when the name is different from the username</note>
@@ -11296,6 +11272,24 @@ Las vinculaciones a grupos/usuarios se verifican en función del usuario del eve
 </trans-unit>
 <trans-unit id="s7a72b0fd722d51e0">
   <source>Waiting for dependencies</source>
+</trans-unit>
+<trans-unit id="policy.password.score-threshold.description.too-guessable">
+  <source>0: Too guessable: risky password. (guesses &lt; 10^3)</source>
+</trans-unit>
+<trans-unit id="policy.password.score-threshold.description.very-guessable">
+  <source>1: Very guessable: protection from throttled online attacks. (guesses &lt; 10^6)</source>
+</trans-unit>
+<trans-unit id="policy.password.score-threshold.description.somewhat-guessable">
+  <source>2: Somewhat guessable: protection from unthrottled online attacks. (guesses &lt; 10^8)</source>
+</trans-unit>
+<trans-unit id="policy.password.score-threshold.description.safely-unguessable">
+  <source>3: Safely unguessable: moderate protection from offline slow-hash scenario. (guesses &lt; 10^10)</source>
+</trans-unit>
+<trans-unit id="policy.password.score-threshold.description.very-unguessable">
+  <source>4: Very unguessable: strong protection from offline slow-hash scenario. (guesses &gt;= 10^10)</source>
+</trans-unit>
+<trans-unit id="sb45f9fb4dba6e71a">
+  <source>Unset</source>
 </trans-unit>
 </body>
 </file>
