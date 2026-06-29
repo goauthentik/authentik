@@ -11952,7 +11952,7 @@ Bindings to groups/users are checked against the user of the event.</target>
 </trans-unit>
 <trans-unit id="s7f8967e8077f2734">
   <source>Flow to redirect users to after self-service lockdown. This flow must not require authentication since the user&apos;s session is deleted.</source>
-  <target>Flow to redirect users to after self-service lockdown. This flow must not require authentication since the user&apos;s session is deleted.</target>
+  <target>التدفق الذي يُعاد توجيه المستخدمين إليه بعد الإغلاق الذاتي للخدمة. يجب ألا يتطلب هذا التدفق مصادقة لأن جلسة المستخدم تُحذف.</target>
 </trans-unit>
 <trans-unit id="se84707d40ed8f349">
   <source>Alert (Info): Static alert box with info styling</source>
