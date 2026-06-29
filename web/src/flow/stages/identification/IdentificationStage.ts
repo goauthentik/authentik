@@ -56,11 +56,11 @@ export const OR_LIST_FORMATTERS: Intl.ListFormat = new Intl.ListFormat("default"
     type: "disjunction",
 });
 
-const UI_FIELDS: { [key: string]: string } = {
+const uiFieldLabels = (): { [key: string]: string } => ({
     [UserFieldsEnum.Username]: msg("Username"),
     [UserFieldsEnum.Email]: msg("Email"),
     [UserFieldsEnum.Upn]: msg("UPN"),
-};
+});
 
 const sortLoginSources = (a: LoginSource, b: LoginSource) =>
     match([!!a.promoted, !!b.promoted])
@@ -353,7 +353,8 @@ export class IdentificationStage extends BaseStage<
 
         const offerRecovery = flowDesignation === FlowDesignationEnum.Recovery;
         const type = fields.length === 1 && fields[0] === UserFieldsEnum.Email ? "email" : "text";
-        const label = OR_LIST_FORMATTERS.format(fields.map((f) => UI_FIELDS[f]));
+        const uiFields = uiFieldLabels();
+        const label = OR_LIST_FORMATTERS.format(fields.map((f) => uiFields[f]));
 
         // prettier-ignore
         return html`${offerRecovery ? this.renderRecoveryMessage() : nothing}
