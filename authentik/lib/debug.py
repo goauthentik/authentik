@@ -5,7 +5,7 @@ from authentik.lib.config import CONFIG
 LOGGER = get_logger()
 
 
-def start_debug_server(**kwargs) -> bool:
+def start_debug_server(port_offset: int = 0, **kwargs) -> bool:
     """Attempt to start a debugpy server in the current process.
     Returns true if the server was started successfully, otherwise false"""
     if not CONFIG.get_bool("debug") and not CONFIG.get_bool("debugger"):
@@ -21,8 +21,9 @@ def start_debug_server(**kwargs) -> bool:
 
     listen: str = CONFIG.get("listen.debug_py", "127.0.0.1:9901")
     host, _, port = listen.rpartition(":")
+    port = int(port) + port_offset
     try:
-        debugpy.listen((host, int(port)), **kwargs)  # nosec
+        debugpy.listen((host, port), **kwargs)  # nosec
     except RuntimeError:
         LOGGER.warning("Could not start debug server. Continuing without")
         return False

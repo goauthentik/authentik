@@ -6,7 +6,6 @@ from django_dramatiq_postgres.models import TaskState
 from dramatiq.broker import get_broker
 from dramatiq.message import Message
 
-from authentik.core.models import ExpiringModel
 from authentik.lib.models import InternallyManagedMixin
 from authentik.tasks.models import Task, TaskStatus
 
@@ -18,7 +17,7 @@ class SyncStatus(models.TextChoices):
     DONE = TaskStatus.DONE
 
 
-class Sync(InternallyManagedMixin, ExpiringModel):
+class Sync(InternallyManagedMixin, models.Model):
     uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
 
     # Must be defined by subclasses with a through model
@@ -26,6 +25,15 @@ class Sync(InternallyManagedMixin, ExpiringModel):
     tasks: models.ManyToManyField
 
     started_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        abstract = True
+
+    @classmethod
+    def cleanup(cls) -> int:
+        count = cls.objects.filter(tasks__count=0).delete()[0]
+        count += cls.objects.exclude(pk__in=cls.objects.order_by("-started_at")[:20]).delete()[0]
+        return count
 
     @property
     def done(self) -> bool:
@@ -81,6 +89,3 @@ class Sync(InternallyManagedMixin, ExpiringModel):
             new_message = broker.enqueue(message)
             new_tasks.append(new_message.options["task"])
         self.tasks.add(*new_tasks)
-
-    class Meta:
-        abstract = True

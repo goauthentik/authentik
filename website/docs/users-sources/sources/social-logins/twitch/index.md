@@ -6,7 +6,7 @@ tags:
     - twitch
 ---
 
-Allows users to authenticate using their Twitch credentials by configuring Twitch as a federated identity provider via OAuth2.
+This source lets users authenticate with their Twitch credentials by configuring Twitch as a federated identity provider with OAuth 2.0.
 
 ## Preparation
 
@@ -16,7 +16,7 @@ The following placeholders are used in this guide:
 
 ## Twitch configuration
 
-To integrate Twitch with authentik you will need to create an OAuth application in the Twitch Developers Console.
+To integrate Twitch with authentik, create an OAuth application in the Twitch Developers Console.
 
 1. Log in to the [Twitch Developers Console](https://dev.twitch.tv/console).
 2. Next to **Applications** click **Register Your Application** and set the following fields:
@@ -32,19 +32,19 @@ To integrate Twitch with authentik you will need to create an OAuth application 
 
 ## authentik configuration
 
-To support the integration of Twitch with authentik, you need to create an Twitch OAuth source in authentik.
+To support the integration of Twitch with authentik, create a Twitch OAuth source in authentik.
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Directory** > **Federation and Social login**, click **New Source**, and then configure the following settings:
     - **Select type**: select **Twitch OAuth Source** as the source type.
-    - **Create OAuth Source**: provide a name, a slug which must match the slug used in the Twitch `OAuth Redirect URLs` field (e.g. `twitch`), and set the following required configurations:
+    - **Create OAuth Source**: provide a name, a slug that must match the slug used in the Twitch `OAuth Redirect URLs` field (e.g. `twitch`), and set the following required configurations:
         - **Protocol settings**
             - **Consumer Key**: `<client_ID>`
             - **Consumer Secret**: `<client_secret>`
             - **Scopes** _(optional)_: define any further access scopes.
 3. Click **Finish** to save your settings.
 
-:::info
+:::info Display new source on login screen
 For instructions on how to display the new source on the authentik login page, refer to the [Add sources to default login page documentation](../../index.md#add-sources-to-default-login-page).
 :::
 
