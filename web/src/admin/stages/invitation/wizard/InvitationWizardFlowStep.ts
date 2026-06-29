@@ -296,11 +296,13 @@ export class InvitationWizardFlowStep extends WizardPage<InvitationWizardState> 
 
             if (!pk) return false;
 
-            state.selectedFlowPk = pk;
-            state.selectedFlowSlug = this.enrollmentFlows.find((flow) => flow.pk === pk)?.slug;
-            state.needsFlow = false;
-            state.needsStage = false;
-            state.needsBinding = false;
+            Object.assign(state, {
+                selectedFlowPk: pk,
+                selectedFlowSlug: this.enrollmentFlows.find((flow) => flow.pk === pk)?.slug,
+                needsFlow: false,
+                needsStage: false,
+                needsBinding: false,
+            } satisfies Partial<InvitationWizardState>);
 
             return true;
         }
@@ -320,14 +322,16 @@ export class InvitationWizardFlowStep extends WizardPage<InvitationWizardState> 
 
         const data = form.toJSON() as unknown as NewEnrollmentFormData;
 
-        state.newFlowName = data.flowName;
-        state.newFlowSlug = data.slug;
-        state.newStageName = data.stageName;
-        state.newUserType = data.userType ?? "external";
-        state.continueFlowWithoutInvitation = data.continueFlowWithoutInvitation ?? true;
-        state.needsFlow = true;
-        state.needsStage = true;
-        state.needsBinding = true;
+        Object.assign(state, {
+            newFlowName: data.flowName,
+            newFlowSlug: data.slug,
+            newStageName: data.stageName,
+            newUserType: data.userType ?? "external",
+            continueFlowWithoutInvitation: data.continueFlowWithoutInvitation ?? true,
+            needsFlow: true,
+            needsStage: true,
+            needsBinding: true,
+        } satisfies Partial<InvitationWizardState>);
 
         return true;
     };

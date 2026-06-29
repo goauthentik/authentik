@@ -52,22 +52,22 @@ export class InvitationWizardDetailsStep extends WizardPage<InvitationWizardStat
 
     //#region Validation
 
-    #syncValidity = (): void => {
+    protected syncValidity = (): void => {
         this.host.valid = this.form?.checkValidity() ?? false;
     };
 
     public override activeCallback = async (): Promise<void> => {
-        this.#syncValidity();
+        this.syncValidity();
     };
 
     //#endregion
 
     //#region API orchestration
 
-    async #fail(step: string, error: unknown): Promise<false> {
+    protected async reportStepError(step: string, error: unknown): Promise<false> {
         const parsed = await parseAPIResponseError(error);
         const fieldErrors = pluckFallbackFieldErrors(parsed);
-        const detail = fieldErrors.length > 0 ? fieldErrors.join(" ") : pluckErrorDetail(parsed);
+        const detail = fieldErrors.length ? fieldErrors.join(" ") : pluckErrorDetail(parsed);
 
         showMessage({
             level: MessageLevel.error,
@@ -86,8 +86,8 @@ export class InvitationWizardDetailsStep extends WizardPage<InvitationWizardStat
     async #importEnrollmentFlow(state: InvitationWizardState): Promise<boolean> {
         const label = msg("Importing enrollment flow blueprint");
 
-        try {
-            const result = await aki(ManagedApi).managedBlueprintsImportCreate({
+        return aki(ManagedApi)
+            .managedBlueprintsImportCreate({
                 path: MINIMAL_BLUEPRINT_PATH,
                 context: JSON.stringify({
                     flow_name: state.newFlowName,
@@ -96,38 +96,45 @@ export class InvitationWizardDetailsStep extends WizardPage<InvitationWizardStat
                     continue_flow_without_invitation: state.continueFlowWithoutInvitation,
                     user_type: state.newUserType,
                 }),
+            })
+            .then(async (result) => {
+                if (!result.success) {
+                    const logs = (result.logs || [])
+                        .map((entry) => entry.event)
+                        .filter(Boolean)
+                        .join("\n");
+
+                    return this.reportStepError(
+                        label,
+                        new Error(logs || msg("Blueprint validation failed")),
+                    );
+                }
+
+                const slug = state.newFlowSlug!;
+
+                const { results } = await aki(FlowsApi).flowsInstancesList({ slug });
+                const createdFlow = results[0];
+
+                if (!createdFlow) {
+                    return this.reportStepError(
+                        label,
+                        new Error(msg(str`Flow with slug "${slug}" not found after import`)),
+                    );
+                }
+
+                Object.assign(state, {
+                    createdFlowPk: createdFlow.pk,
+                    createdFlowSlug: createdFlow.slug,
+                    needsFlow: false,
+                    needsStage: false,
+                    needsBinding: false,
+                } satisfies Partial<InvitationWizardState>);
+
+                return true;
+            })
+            .catch((error) => {
+                return this.reportStepError(label, error);
             });
-
-            if (!result.success) {
-                const logs = (result.logs || [])
-                    .map((entry) => entry.event)
-                    .filter(Boolean)
-                    .join("\n");
-
-                return this.#fail(label, new Error(logs || msg("Blueprint validation failed")));
-            }
-
-            const slug = state.newFlowSlug!;
-            const { results } = await aki(FlowsApi).flowsInstancesList({ slug });
-            const createdFlow = results[0];
-
-            if (!createdFlow) {
-                return this.#fail(
-                    label,
-                    new Error(msg(str`Flow with slug "${slug}" not found after import`)),
-                );
-            }
-
-            state.createdFlowPk = createdFlow.pk;
-            state.createdFlowSlug = createdFlow.slug;
-            state.needsFlow = false;
-            state.needsStage = false;
-            state.needsBinding = false;
-
-            return true;
-        } catch (error) {
-            return this.#fail(label, error);
-        }
     }
 
     /**
@@ -150,7 +157,7 @@ export class InvitationWizardDetailsStep extends WizardPage<InvitationWizardStat
 
             return true;
         } catch (error) {
-            return this.#fail(msg("Creating invitation"), error);
+            return this.reportStepError(msg("Creating invitation"), error);
         }
     }
 
@@ -181,13 +188,16 @@ export class InvitationWizardDetailsStep extends WizardPage<InvitationWizardStat
 
     protected override render(): SlottedTemplateResult {
         const { state } = this.host;
-        const flowDisplay =
-            (state.flowMode === "existing" ? state.selectedFlowSlug : state.newFlowSlug) ?? "";
 
-        return html`<form class="pf-c-form pf-m-horizontal" @input=${this.#syncValidity}>
+        const flowDisplay =
+            (state.flowMode === "existing" ? state.selectedFlowSlug : state.newFlowSlug) ??
+            msg("No flow selected");
+
+        return html`<form class="pf-c-form pf-m-horizontal" @input=${this.syncValidity}>
             <ak-slug-input
                 name="name"
-                label=${msg("Name")}
+                label=${msg("Invitation Name")}
+                autofocus
                 required
                 help=${msg(
                     "The name of an invitation must be a slug: only lower case letters, numbers, and the hyphen are permitted here.",
