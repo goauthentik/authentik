@@ -82,7 +82,7 @@ dev = [
   "bpython==0.26",
   "colorama==0.4.6",
   "constructs==10.6.0",
-  "coverage[toml]==7.14.2",
+  "coverage[toml]==7.14.3",
   "daphne==4.2.2",
   "debugpy==1.8.21",
   "django-stubs[compatible-mypy]==6.0.6",
