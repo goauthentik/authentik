@@ -11711,7 +11711,7 @@ Bindings to groups/users are checked against the user of the event.</target>
 </trans-unit>
 <trans-unit id="s539942ab7cc7210e">
   <source>Failed to delete <x id="0" equiv-text="${this.objectLabel}"/></source>
-  <target>Failed to delete <x id="0" equiv-text="${this.objectLabel}"/></target>
+  <target>فشل حذف <x id="0" equiv-text="${this.objectLabel}"/></target>
 </trans-unit>
 <trans-unit id="sc420894701de5ea3">
   <source>Modify</source>
