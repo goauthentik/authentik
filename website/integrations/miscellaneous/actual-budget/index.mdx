@@ -4,12 +4,13 @@ sidebar_label: Actual Budget
 support_level: community
 ---
 
+import RedirectURI20265Note from "../../_redirect-uri-2026-5-note.mdx";
 import TabItem from "@theme/TabItem";
 import Tabs from "@theme/Tabs";
 
 ## What is Actual Budget?
 
-> Actual Budget is a web-based financial management software. It helps users track and manage their income, expenses, and budgets in real time. The software compares actual spending with planned budgets to improve financial decisions.
+> Actual Budget is a fast, privacy-focused app for managing personal finances. It helps users track and manage their income, expenses, and budgets in real time.
 >
 > -- https://actualbudget.org/
 
@@ -26,19 +27,21 @@ This documentation lists only the settings that you need to change from their de
 
 ## authentik configuration
 
+<RedirectURI20265Note />
+
 To support the integration of Actual Budget with authentik, you need to create an application/provider pair in authentik.
 
-### Create an application and provider in authentik
+### Create an application and provider
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
-    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
+2. Navigate to **Applications** > **Applications** and click **New Application** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Note the application **Slug** because it will be required later.
     - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
-        - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
-        - Set a `Strict` redirect URI to `https://actual.company/openid/callback`.
-        - Select any available signing key. Actual Budget only supports the RS256 algorithm. Be aware of this when choosing a signing key.
-    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+        - Note the **Client ID** and **Client Secret** values because they will be required later.
+        - Add a **Redirect URI** of type `Strict` `Authorization` as `https://actual.company/openid/callback`.
+        - Select any available **Signing Key**.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 
 3. Click **Submit** to save the new application and provider.
 
@@ -54,12 +57,11 @@ To support the integration of Actual Budget with authentik, you need to create a
   <TabItem value="env">
   You can configure OpenID Connect with Actual Budget by adding the following variables to your `.env` file.
 
-```yaml showLineNumbers
+```env title=".env"
 ACTUAL_OPENID_DISCOVERY_URL=https://authentik.company/application/o/<application_slug>/
-ACTUAL_OPENID_CLIENT_ID=Your Client ID from authentik
-ACTUAL_OPENID_CLIENT_SECRET=Your Client Secret from authentik
+ACTUAL_OPENID_CLIENT_ID=<Client ID from authentik>
+ACTUAL_OPENID_CLIENT_SECRET=<Client Secret from authentik>
 ACTUAL_OPENID_SERVER_HOSTNAME=https://actual.company
-ACTUAL_OPENID_AUTH_METHOD=oauth2
 ```
 
   </TabItem>
@@ -68,13 +70,14 @@ ACTUAL_OPENID_AUTH_METHOD=oauth2
 You can configure Actual Budget to authenticate users with OpenID Connect by modifying the `/data/config.json` file or its equivalent specified by the `ACTUAL_DATA_DIR` environment variable.
 
 ```json showLineNumbers title="/data/config.json"
-  "openId": {
-          "issuer": "https://authentik.company/application/o/<application_slug>/",
-          "client_id": "<Client ID from authentik>",
-          "client_secret": "<Client Secret from authentik>",
-          "server_hostname": "https://actual.company",
-          "authMethod": "openid"
-      }
+{
+    "openId": {
+        "discoveryURL": "https://authentik.company/application/o/<application_slug>/",
+        "client_id": "<Client ID from authentik>",
+        "client_secret": "<Client Secret from authentik>",
+        "server_hostname": "https://actual.company"
+    }
+}
 ```
 
   </TabItem>
@@ -90,37 +93,37 @@ Alternatively, it is possible to configure OpenID Connect via the UI.
 6. Fill in the following values:
     - **OpenID Provider**: authentik
     - **OpenID provider URL**: `https://authentik.company/application/o/<application_slug>/`
-    - **Client ID**: Enter the **Client ID** from authentik
-    - **Client Secret**: Enter the **Client Secret** from authentik
+    - **Client ID**: enter the **Client ID** from authentik.
+    - **Client Secret**: enter the **Client Secret** from authentik.
+7. Click **OK**. Actual Budget redirects you to the login page after saving the OpenID configuration.
 
   </TabItem>
 </Tabs>
 
-## User Provisioning
+### User provisioning
 
-:::warning
-Users are not created automatically in Actual Budget and must be manually provisioned before OIDC authentication, otherwise you will receive a password error.
+:::warning First OpenID user
+The first user to log in with OpenID is granted admin permissions and becomes the server owner. The server owner cannot be changed from the Actual Budget UI.
 :::
 
-To provision users:
+Actual Budget does not create additional OpenID users automatically unless `ACTUAL_USER_CREATION_MODE=login` is configured on the server. If you do not enable automatic user creation, create each user before they sign in with authentik:
 
 1. Log in as a local (non-OIDC) admin.
 2. Navigate to **Server online** > **User Directory**.
-3. Create users matching existing authentik usernames.
-4. Grant access to the budget via the **User Access** tab.
+3. Create users with usernames matching the corresponding authentik users.
+4. Open the budget and grant access from the **User Access** tab.
 
-### Admin user configuration
+To let Actual Budget create users when they first sign in with authentik, add this variable to your server configuration:
 
-For admin users with OIDC integration:
-
-1. Provision an account with the `admin` role.
-2. To configure this admin as an owner, transfer ownership via **User Access Management**.
-3. You may need to reset the `admin` role afterward if it doesn't appear in the **User Directory**.
+```env title=".env"
+ACTUAL_USER_CREATION_MODE=login
+```
 
 ## Configuration verification
 
-To confirm that authentik is properly configured with Actual Budget, visit your Actual Budget installation, select the OpenID login method from the dropdown menu, and click **Sign in with OpenID**.
+To confirm that authentik is properly configured with Actual Budget, open Actual Budget, select the OpenID login method from the dropdown menu, and click **Sign in with OpenID**.
 
 ## Resources
 
 - [Actual Budget docs - Authenticating With an OpenID Provider](https://actualbudget.org/docs/config/oauth-auth/)
+- [Actual Budget docs - Managing Multi-User Support](https://actualbudget.org/docs/config/multi-user/)

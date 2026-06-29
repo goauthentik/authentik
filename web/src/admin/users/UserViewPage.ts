@@ -8,6 +8,9 @@ import "#admin/users/UserChart";
 import "#admin/users/UserForm";
 import "#admin/users/UserImpersonateForm";
 import "#admin/users/UserPasswordForm";
+import "#admin/users/UserTokenList";
+import "#admin/users/oauth/UserAccessTokenList";
+import "#admin/users/oauth/UserRefreshTokenList";
 import "#components/DescriptionList";
 import "#components/ak-object-attributes-card";
 import "#components/ak-status-label";
@@ -18,8 +21,6 @@ import "#elements/Tabs";
 import "#elements/buttons/ActionButton/ak-action-button";
 import "#elements/buttons/SpinnerButton/ak-spinner-button";
 import "#elements/forms/ModalForm";
-import "#elements/oauth/UserAccessTokenList";
-import "#elements/oauth/UserRefreshTokenList";
 import "#elements/user/SessionList";
 import "#elements/user/UserConsentList";
 import "#elements/user/UserReputationList";
@@ -27,7 +28,7 @@ import "#elements/user/sources/SourceSettings";
 import "./UserDevicesTable.js";
 import "#elements/ak-mdx/ak-mdx";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { AKRefreshEvent } from "#common/events";
 import { userTypeToLabel } from "#common/labels";
 import {
@@ -54,7 +55,7 @@ import { ToggleUserActivationButton } from "#admin/users/UserActiveForm";
 import { UserForm } from "#admin/users/UserForm";
 import { UserImpersonateForm } from "#admin/users/UserImpersonateForm";
 
-import { CapabilitiesEnum, CoreApi, ModelEnum, User } from "@goauthentik/api";
+import { CapabilitiesEnum, CoreApi, ModelEnum, User, UserTypeEnum } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
 import { css, html, PropertyValues, TemplateResult } from "lit";
@@ -75,7 +76,7 @@ import PFSizing from "@patternfly/patternfly/utilities/Sizing/sizing.css";
 export class UserViewPage extends WithLicenseSummary(
     WithLocale(WithBrandConfig(WithCapabilitiesConfig(WithSession(AKElement)))),
 ) {
-    #api = new CoreApi(DEFAULT_CONFIG);
+    #api = aki(CoreApi);
 
     @property({ type: Number, useDefault: true })
     public userId: number | null = null;
@@ -192,7 +193,10 @@ export class UserViewPage extends WithLicenseSummary(
     protected renderActionButtons(user: User) {
         const showImpersonate =
             this.can(CapabilitiesEnum.CanImpersonate) && user.pk !== this.currentUser?.pk;
-        const showLockdown = this.hasEnterpriseLicense && user.pk !== this.currentUser?.pk;
+        const showLockdown =
+            this.hasEnterpriseLicense &&
+            user.pk !== this.currentUser?.pk &&
+            user.type !== UserTypeEnum.InternalServiceAccount;
 
         const displayName = formatUserDisplayName(user);
 
@@ -242,116 +246,123 @@ export class UserViewPage extends WithLicenseSummary(
     }
 
     protected renderTabCredentialsToken(user: User): TemplateResult {
-        return html`
-            <ak-tabs pageIdentifier="userCredentialsTokens" vertical>
-                <div
-                    role="tabpanel"
-                    tabindex="0"
-                    slot="page-sessions"
-                    id="page-sessions"
-                    aria-label=${msg("Sessions")}
-                    class="pf-c-page__main-section pf-m-no-padding-mobile"
-                >
-                    <div class="pf-c-card">
-                            <ak-user-session-list targetUser=${user.username}>
-                            </ak-user-session-list>
-                    </div>
+        return html`<ak-tabs pageIdentifier="userCredentialsTokens" vertical>
+            <div
+                role="tabpanel"
+                tabindex="0"
+                slot="page-sessions"
+                id="page-sessions"
+                aria-label=${msg("Sessions")}
+                class="pf-c-page__main-section pf-m-no-padding-mobile"
+            >
+                <div class="pf-c-card">
+                    <ak-user-session-list targetUser=${user.username}></ak-user-session-list>
                 </div>
-                <div
-                    role="tabpanel"
-                    tabindex="0"
-                    slot="page-reputation"
-                    id="page-reputation"
-                    aria-label=${msg("Reputation scores")}
-                    class="pf-c-page__main-section pf-m-no-padding-mobile"
-                >
-                    <div class="pf-c-card">
-                            <ak-user-reputation-list
-                                targetUsername=${user.username}
-                                targetEmail=${ifDefined(user.email)}
-                            >
-                            </ak-user-reputation-list>
-                    </div>
+            </div>
+            <div
+                role="tabpanel"
+                tabindex="0"
+                slot="page-tokens"
+                id="page-tokens"
+                aria-label=${msg("Tokens")}
+                class="pf-c-page__main-section pf-m-no-padding-mobile"
+            >
+                <div class="pf-c-card">
+                    <ak-admin-user-token-list .user=${user}></ak-admin-user-token-list>
                 </div>
-                <div
-                    role="tabpanel"
-                    tabindex="0"
-                    slot="page-consent"
-                    id="page-consent"
-                    aria-label=${msg("Explicit Consent")}
-                    class="pf-c-page__main-section pf-m-no-padding-mobile"
-                >
-                    <div class="pf-c-card">
-                            <ak-user-consent-list userId=${user.pk}> </ak-user-consent-list>
-                    </div>
+            </div>
+            <div
+                role="tabpanel"
+                tabindex="0"
+                slot="page-reputation"
+                id="page-reputation"
+                aria-label=${msg("Reputation scores")}
+                class="pf-c-page__main-section pf-m-no-padding-mobile"
+            >
+                <div class="pf-c-card">
+                    <ak-user-reputation-list
+                        targetUsername=${user.username}
+                        targetEmail=${ifDefined(user.email)}
+                    ></ak-user-reputation-list>
                 </div>
-                <div
-                    role="tabpanel"
-                    tabindex="0"
-                    slot="page-oauth-access"
-                    id="page-oauth-access"
-                    aria-label=${msg("OAuth Access Tokens")}
-                    class="pf-c-page__main-section pf-m-no-padding-mobile"
-                >
-                    <div class="pf-c-card">
-                            <ak-user-oauth-access-token-list userId=${user.pk}>
-                            </ak-user-oauth-access-token-list>
-                    </div>
+            </div>
+            <div
+                role="tabpanel"
+                tabindex="0"
+                slot="page-consent"
+                id="page-consent"
+                aria-label=${msg("Explicit Consent")}
+                class="pf-c-page__main-section pf-m-no-padding-mobile"
+            >
+                <div class="pf-c-card">
+                    <ak-user-consent-list userId=${user.pk}></ak-user-consent-list>
                 </div>
-                <div
-                    role="tabpanel"
-                    tabindex="0"
-                    slot="page-oauth-refresh"
-                    id="page-oauth-refresh"
-                    aria-label=${msg("OAuth Refresh Tokens")}
-                    class="pf-c-page__main-section pf-m-no-padding-mobile"
-                >
-                    <div class="pf-c-card">
-                            <ak-user-oauth-refresh-token-list userId=${user.pk}>
-                            </ak-user-oauth-refresh-token-list>
-                    </div>
+            </div>
+            <div
+                role="tabpanel"
+                tabindex="0"
+                slot="page-oauth-access"
+                id="page-oauth-access"
+                aria-label=${msg("OAuth Access Tokens")}
+                class="pf-c-page__main-section pf-m-no-padding-mobile"
+            >
+                <div class="pf-c-card">
+                    <ak-user-oauth-access-token-list
+                        userId=${user.pk}
+                    ></ak-user-oauth-access-token-list>
                 </div>
-                <div
-                    role="tabpanel"
-                    tabindex="0"
-                    slot="page-mfa-authenticators"
-                    id="page-mfa-authenticators"
-                    aria-label=${msg("MFA Authenticators")}
-                    class="pf-c-page__main-section pf-m-no-padding-mobile"
-                >
-                    <div class="pf-c-card">
-                            <ak-user-device-table userId=${user.pk}> </ak-user-device-table>
-                    </div>
+            </div>
+            <div
+                role="tabpanel"
+                tabindex="0"
+                slot="page-oauth-refresh"
+                id="page-oauth-refresh"
+                aria-label=${msg("OAuth Refresh Tokens")}
+                class="pf-c-page__main-section pf-m-no-padding-mobile"
+            >
+                <div class="pf-c-card">
+                    <ak-user-oauth-refresh-token-list
+                        userId=${user.pk}
+                    ></ak-user-oauth-refresh-token-list>
                 </div>
-                <div
-                    role="tabpanel"
-                    tabindex="0"
-                    slot="page-source-connections"
-                    id="page-source-connections"
-                    aria-label=${msg("Connected services")}
-                    class="pf-c-page__main-section pf-m-no-padding-mobile"
-                >
-                    <div class="pf-c-card">
-                        <ak-user-settings-source user-id=${user.pk}>
-                        </ak-user-settings-source>
-                    </div>
+            </div>
+            <div
+                role="tabpanel"
+                tabindex="0"
+                slot="page-mfa-authenticators"
+                id="page-mfa-authenticators"
+                aria-label=${msg("MFA Authenticators")}
+                class="pf-c-page__main-section pf-m-no-padding-mobile"
+            >
+                <div class="pf-c-card">
+                    <ak-user-device-table userId=${user.pk}></ak-user-device-table>
                 </div>
-                <div
-                    role="tabpanel"
-                    tabindex="0"
-                    slot="page-rac-connection-tokens"
-                    id="page-rac-connection-tokens"
-                    aria-label=${msg("RAC Connections")}
-                    class="pf-c-page__main-section pf-m-no-padding-mobile"
-                >
-                    <div class="pf-c-card">
-                        <ak-rac-connection-token-list userId=${user.pk}>
-                        </ak-rac-connection-token-list>
-                    </div>
+            </div>
+            <div
+                role="tabpanel"
+                tabindex="0"
+                slot="page-source-connections"
+                id="page-source-connections"
+                aria-label=${msg("Connected services")}
+                class="pf-c-page__main-section pf-m-no-padding-mobile"
+            >
+                <div class="pf-c-card">
+                    <ak-user-settings-source user-id=${user.pk}></ak-user-settings-source>
                 </div>
-            </ak-tabs>
-</main>
-        `;
+            </div>
+            <div
+                role="tabpanel"
+                tabindex="0"
+                slot="page-rac-connection-tokens"
+                id="page-rac-connection-tokens"
+                aria-label=${msg("RAC Connections")}
+                class="pf-c-page__main-section pf-m-no-padding-mobile"
+            >
+                <div class="pf-c-card">
+                    <ak-rac-connection-token-list userId=${user.pk}></ak-rac-connection-token-list>
+                </div>
+            </div>
+        </ak-tabs>`;
     }
 
     protected renderTabApplications(user: User): TemplateResult {
@@ -361,37 +372,35 @@ export class UserViewPage extends WithLicenseSummary(
     }
 
     protected renderTabRoles(user: User): TemplateResult {
-        return html`
-            <ak-tabs pageIdentifier="userRoles" vertical>
-                <div
-                    role="tabpanel"
-                    tabindex="0"
-                    slot="page-assigned-roles"
-                    id="page-assigned-roles"
-                    aria-label=${msg("Assigned Roles")}
-                    class="pf-c-page__main-section pf-m-no-padding-mobile"
-                >
-                    <div class="pf-c-card">
-                        <ak-related-role-table .targetUser=${user}></ak-related-role-table>
-                    </div>
+        return html`<ak-tabs pageIdentifier="userRoles" vertical>
+            <div
+                role="tabpanel"
+                tabindex="0"
+                slot="page-assigned-roles"
+                id="page-assigned-roles"
+                aria-label=${msg("Assigned Roles")}
+                class="pf-c-page__main-section pf-m-no-padding-mobile"
+            >
+                <div class="pf-c-card">
+                    <ak-related-role-table .targetUser=${user}></ak-related-role-table>
                 </div>
-                <div
-                    role="tabpanel"
-                    tabindex="0"
-                    slot="page-all-roles"
-                    id="page-all-roles"
-                    aria-label=${msg("All Roles")}
-                    class="pf-c-page__main-section pf-m-no-padding-mobile"
-                >
-                    <div class="pf-c-card">
-                        <ak-related-role-table
-                            .targetUser=${user}
-                            showInherited
-                        ></ak-related-role-table>
-                    </div>
+            </div>
+            <div
+                role="tabpanel"
+                tabindex="0"
+                slot="page-all-roles"
+                id="page-all-roles"
+                aria-label=${msg("All Roles")}
+                class="pf-c-page__main-section pf-m-no-padding-mobile"
+            >
+                <div class="pf-c-card">
+                    <ak-related-role-table
+                        .targetUser=${user}
+                        showInherited
+                    ></ak-related-role-table>
                 </div>
-            </ak-tabs>
-        `;
+            </div>
+        </ak-tabs> `;
     }
 
     protected override render() {
@@ -422,7 +431,7 @@ export class UserViewPage extends WithLicenseSummary(
                                 ${msg("Actions over the last week (per 8 hours)")}
                             </div>
                             <div class="pf-c-card__body">
-                                <ak-charts-user username=${this.user.username}> </ak-charts-user>
+                                <ak-charts-user username=${this.user.username}></ak-charts-user>
                             </div>
                         </div>
                         <div
@@ -448,8 +457,7 @@ export class UserViewPage extends WithLicenseSummary(
                             <ak-object-changelog
                                 targetModelPk=${this.user.pk}
                                 targetModelName=${ModelEnum.AuthentikCoreUser}
-                            >
-                            </ak-object-changelog>
+                            ></ak-object-changelog>
                         </div>
                         <div class="pf-c-card pf-l-grid__item pf-m-12-col">
                             <ak-object-attributes-card
@@ -467,7 +475,7 @@ export class UserViewPage extends WithLicenseSummary(
                     class="pf-c-page__main-section pf-m-no-padding-mobile"
                 >
                     <div class="pf-c-card">
-                        <ak-group-related-list .targetUser=${this.user}> </ak-group-related-list>
+                        <ak-group-related-list .targetUser=${this.user}></ak-group-related-list>
                     </div>
                 </div>
                 <div
@@ -488,7 +496,7 @@ export class UserViewPage extends WithLicenseSummary(
                     class="pf-c-page__main-section pf-m-no-padding-mobile"
                 >
                     <div class="pf-c-card">
-                        <ak-events-user targetUser=${this.user.username}> </ak-events-user>
+                        <ak-events-user targetUser=${this.user.username}></ak-events-user>
                     </div>
                 </div>
                 <div

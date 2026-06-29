@@ -4,6 +4,8 @@ sidebar_label: Amazon Web Services (Classic IAM)
 support_level: authentik
 ---
 
+import RedirectURI20265Note from "../../_redirect-uri-2026-5-note.mdx";
+import SAMLProvider20265Warning from "../../_saml-provider-2026-5-warning.mdx";
 import TabItem from "@theme/TabItem";
 import Tabs from "@theme/Tabs";
 
@@ -42,6 +44,8 @@ SCIM Provisioning is only supported in conjunction with [IAM Identity Center](..
   <TabItem value="iam-saml">
 
 ## authentik configuration
+
+<RedirectURI20265Note />
 
 To support the integration of AWS with authentik via the Classic IAM method, you need to create two property mappings, an application/provider pair, and application entitlements for the AWS roles that users can assume.
 
@@ -104,8 +108,10 @@ To support the integration of AWS with authentik via the Classic IAM method, you
 
 ### Create an application and provider in authentik
 
+<SAMLProvider20265Warning />
+
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
+2. Navigate to **Applications** > **Applications** and click **New Application** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
     - **Application**: provide a descriptive name (e.g. `AWS`), an optional group for the type of application, the policy engine mode, and optional UI settings.
     - **Choose a Provider type**: select **SAML Provider** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), and configure the following required settings:
@@ -113,7 +119,7 @@ To support the integration of AWS with authentik via the Classic IAM method, you
         - Set the **Audience** to `urn:amazon:webservices`
         - Under **Advanced protocol settings**, select an available **Signing Certificate**, ensure both **Signing Assertions** and **Signing Responses** are enabled, then add, under **Property Mappings**, both property mappings you created in the previous section.
         - Set **NameID Property Mapping** to `authentik default SAML Mapping: Email`.
-    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 
 3. Click **Submit** to save the new application and provider.
 
@@ -235,7 +241,7 @@ Repeat the role creation process for each role that you want to make available t
 
 ### Test the integration
 
-1. Log in to authentik and visit the Application library.
+1. Log in to authentik and visit the Application Dashboard.
 2. Click on the AWS application.
 3. You should be redirected to AWS and logged in. Check the top-right corner of the AWS console to verify your identity is displayed in the format `<role_name>/<username>` (e.g., `authentik-admin/dominic`).
 
@@ -265,15 +271,15 @@ To support the integration of AWS with authentik using OIDC, you need to create 
 ### Create an application and provider in authentik
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
+2. Navigate to **Applications** > **Applications** and click **New Application** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
     - **Application**: provide a descriptive name (e.g., `AWS-OIDC`), an optional group for the type of application, the policy engine mode, and optional UI settings.
     - **Choose a Provider type**: Select OAuth2/OpenID Provider as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
         - Note the **Client ID** and **slug** values because they will be required later.
-        - Set a `Strict` redirect URI to match the AWS resource that you want to access via OIDC.
+        - Add a **Redirect URI** of type `Strict` `Authorization` that matches the AWS resource that you want to access via OIDC.
         - Select any available signing key.
         - Under **Advanced protocol settings** > **Selected Scopes**, add `authentik default OAuth Mapping: OpenID 'entitlements'`.
-    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 
 3. Click **Submit** to save the new application and provider.
 

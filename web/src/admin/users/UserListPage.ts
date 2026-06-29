@@ -14,7 +14,7 @@ import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { userTypeToLabel } from "#common/labels";
 import { DefaultUIConfig } from "#common/ui/config";
 import { formatUserDisplayName } from "#common/users";
@@ -80,7 +80,7 @@ export class UserListPage extends WithLicenseSummary(
         `,
     ];
 
-    #api = new CoreApi(DEFAULT_CONFIG);
+    #api = aki(CoreApi);
 
     public override expandable = true;
     public override checkbox = true;
@@ -91,15 +91,18 @@ export class UserListPage extends WithLicenseSummary(
     public override searchPlaceholder = msg("Search by username, email, etc...");
     public override searchLabel = msg("User Search");
 
-    public pageTitle = msg("Users");
-    public pageDescription = "";
-    public pageIcon = "pf-icon pf-icon-user";
+    public override pageTitle = msg("Users");
+    public override pageDescription = "";
+    public override pageIcon = "pf-icon pf-icon-user";
 
     @property({ type: String })
     public order = "-last_login";
 
-    @property({ type: String })
-    public activePath: string;
+    @property({ type: String, attribute: "active-path", useDefault: true })
+    public activePath: string = DefaultUIConfig.defaults.userPath;
+
+    @property({ type: String, attribute: "default-active-path", useDefault: true })
+    public defaultActivePath: string = DefaultUIConfig.defaults.userPath;
 
     @state()
     protected hideDeactivated = getURLParam<boolean>("hideDeactivated", false);
@@ -107,27 +110,44 @@ export class UserListPage extends WithLicenseSummary(
     @state()
     protected userPaths: UserPath | null = null;
 
-    constructor() {
-        super();
-
-        const defaultPath = DefaultUIConfig.defaults.userPath;
-
-        this.activePath = getURLParam<string>("path", defaultPath);
-
-        if (this.uiConfig.defaults.userPath !== defaultPath) {
-            this.activePath = this.uiConfig.defaults.userPath;
-        }
-    }
-
     protected canImpersonate = false;
+
+    //#region Lifecycle
+
+    /**
+     * Synchronizes `activePath` and `defaultActivePath` from three sources in priority order:
+     *
+     * 1. URL param (explicit navigation)
+     * 2. Brand default user path (admin-configured override)
+     * 3. Compiled-in `DefaultUIConfig` default (fallback)
+     *
+     * `activePath` is set to `""` (show all users) when neither a URL param nor a
+     * brand-level override is present, avoiding silent list filtering.
+     * `defaultActivePath` always resolves to a value via the fallback chain.
+     */
+    protected synchronizeUserPaths(): void {
+        this.canImpersonate = this.can(CapabilitiesEnum.CanImpersonate);
+
+        const initialDefaultUserPath = DefaultUIConfig.defaults.userPath;
+        const brandDefaultUserPath = this.uiConfig.defaults.userPath;
+        const defaultUserPath = brandDefaultUserPath || initialDefaultUserPath;
+        const userPathParam = getURLParam<string>("path", "");
+
+        const pathPresent =
+            (userPathParam && userPathParam !== "") || defaultUserPath !== initialDefaultUserPath;
+
+        const resolvedUserPath = pathPresent ? userPathParam || defaultUserPath : "";
+
+        this.activePath = resolvedUserPath;
+        this.defaultActivePath = userPathParam || defaultUserPath;
+    }
 
     public override connectedCallback(): void {
         super.connectedCallback();
-
-        this.canImpersonate = this.can(CapabilitiesEnum.CanImpersonate);
+        this.synchronizeUserPaths();
     }
 
-    async apiEndpoint(): Promise<PaginatedResponse<User>> {
+    protected override async apiEndpoint(): Promise<PaginatedResponse<User>> {
         const users = await this.#api.coreUsersList({
             ...(await this.defaultEndpointConfig()),
             pathStartswith: this.activePath,
@@ -141,6 +161,29 @@ export class UserListPage extends WithLicenseSummary(
 
         return users;
     }
+
+    //#endregion
+
+    //#region Event Listeners
+
+    protected treeViewRefreshListener = (ev: CustomEvent<{ path: string }>) => {
+        this.activePath = ev.detail.path;
+        this.defaultActivePath = ev.detail.path;
+    };
+
+    //#endregion
+
+    protected buildExportParams = async (): Promise<CoreUsersExportCreateRequest> => {
+        return {
+            ...(await this.defaultEndpointConfig()),
+            pathStartswith: this.activePath,
+            isActive: this.hideDeactivated ? true : undefined,
+        };
+    };
+
+    protected createExport = (params: CoreUsersExportCreateRequest) => {
+        return this.#api.coreUsersExportCreate(params);
+    };
 
     protected override rowLabel(item: User): string {
         if (item.name) {
@@ -158,6 +201,8 @@ export class UserListPage extends WithLicenseSummary(
         [msg("Type"), "type"],
         [msg("Actions"), null, msg("Row Actions")],
     ];
+
+    //#region Renderering
 
     protected override renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
@@ -249,7 +294,7 @@ export class UserListPage extends WithLicenseSummary(
         </div>`;
     }
 
-    protected row(item: User) {
+    protected override row(item: User): SlottedTemplateResult[] {
         const { currentUser } = this;
 
         const showImpersonation = this.canImpersonate && currentUser && item.pk !== currentUser.pk;
@@ -294,7 +339,7 @@ export class UserListPage extends WithLicenseSummary(
         ];
     }
 
-    renderExpanded(item: User): TemplateResult {
+    protected override renderExpanded(item: User): SlottedTemplateResult {
         return html`<dl class="pf-c-description-list pf-m-horizontal">
             <div class="pf-c-description-list__group">
                 <dt class="pf-c-description-list__term">
@@ -335,28 +380,16 @@ export class UserListPage extends WithLicenseSummary(
         </dl>`;
     }
 
-    protected buildExportParams = async () => {
-        return {
-            ...(await this.defaultEndpointConfig()),
-            pathStartswith: this.activePath,
-            isActive: this.hideDeactivated ? true : undefined,
-        };
-    };
-
-    protected createExport = (params: CoreUsersExportCreateRequest) => {
-        return this.#api.coreUsersExportCreate(params);
-    };
-
     protected renderObjectCreate(): SlottedTemplateResult {
-        const { activePath } = this;
+        const { defaultActivePath } = this;
 
-        return guard([activePath], () => {
+        return guard([defaultActivePath], () => {
             return [
                 html`<button
                     class="pf-c-button pf-m-primary"
                     type="button"
                     ${modalInvoker(AKUserWizard, {
-                        defaultPath: activePath,
+                        defaultPath: defaultActivePath,
                     })}
                     aria-description=${msg("Open the new user wizard")}
                 >
@@ -370,7 +403,7 @@ export class UserListPage extends WithLicenseSummary(
         });
     }
 
-    protected renderSidebarBefore(): TemplateResult {
+    protected renderSidebarBefore(): SlottedTemplateResult {
         return html`<aside aria-labelledby="sidebar-left-panel-header" class="pf-c-sidebar__panel">
             <div class="pf-c-card tree">
                 <div
@@ -385,15 +418,15 @@ export class UserListPage extends WithLicenseSummary(
                     <ak-treeview
                         label=${msg("User paths")}
                         .items=${this.userPaths?.paths || []}
-                        activePath=${this.activePath}
-                        @ak-refresh=${(ev: CustomEvent<{ path: string }>) => {
-                            this.activePath = ev.detail.path;
-                        }}
+                        default-active-path=${this.activePath}
+                        @ak-refresh=${this.treeViewRefreshListener}
                     ></ak-treeview>
                 </div>
             </div>
         </aside>`;
     }
+
+    //#endregion
 }
 
 declare global {

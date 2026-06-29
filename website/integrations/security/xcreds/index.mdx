@@ -4,11 +4,23 @@ sidebar_label: XCreds
 support_level: community
 ---
 
+import RedirectURI20265Note from "../../_redirect-uri-2026-5-note.mdx";
+
 ## What is XCreds?
 
-> Xcreds is an open source project for synchronizing IdP passwords with macOS login passwords. Xcreds replaces the macOS login window to provide authentication to the cloud provider; a user enters their cloud password for authentication and Xcreds keeps the local Mac password synchronized with the cloud password.
+> XCreds is an open source project for synchronizing IdP passwords with macOS login passwords. XCreds replaces the macOS login window to provide authentication to the cloud provider; a user enters their cloud password for authentication and XCreds keeps the local Mac password synchronized with the cloud password.
 >
 > -- https://twocanoes.com/products/mac/xcreds/
+
+:::info Document scope
+This guide covers OIDC login for XCreds using an XCreds configuration profile. Device deployment, licensing, password synchronization behavior, and other XCreds management settings are outside the scope of this integration guide.
+:::
+
+## Preparation
+
+The following placeholders are used in this guide:
+
+- `authentik.company` is the FQDN of the authentik installation.
 
 :::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
@@ -16,18 +28,22 @@ This documentation lists only the settings that you need to change from their de
 
 ## authentik configuration
 
+<RedirectURI20265Note />
+
 To support the integration of XCreds with authentik, you need to create an application/provider pair in authentik.
 
 ### Create an application and provider in authentik
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
+2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
     - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
     - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
         - Note the **Client ID** and **Client Secret** values because they will be required later.
-        - Set a `Strict` redirect URI to `https://127.0.0.1/xcreds`
-    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+        - Add a **Redirect URI** of type `Strict` `Authorization` as `https://127.0.0.1/xcreds`.
+        - Select any available signing key.
+        - Under **Advanced protocol settings**, add `authentik default OAuth Mapping: OpenID 'offline_access'` to **Selected Scopes**.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 
 3. Click **Submit** to save the new application and provider.
 
@@ -39,21 +55,21 @@ To support the integration of XCreds with authentik, you need to create an appli
 
 ## XCreds configuration
 
-After XCreds is installed on a target Mac you will need to configure it by creating, installing, and applying a profile. More information can be found in the [XCreds Admin Guide](https://twocanoes.com/knowledge-base/xcreds-admin-guide/).
+After XCreds is installed on a target Mac, configure it by creating, installing, and applying a configuration profile. For more information, refer to the [XCreds Admin Guide](https://twocanoes.com/knowledge-base/xcreds-admin-guide/).
 
 ### ProfileCreator
 
-[ProfileCreator](https://github.com/ProfileCreator/ProfileCreator) is an open source macOS application used to create configuration policies. It is required to create a configuration policy for XCreds.
+[ProfileCreator](https://github.com/ProfileCreator/ProfileCreator) is an open source macOS application used to create configuration profiles. It can create a configuration profile for XCreds.
 
-1. Open the **ProfileCreator** application and click on the `+` icon in the top-left corner to create a new configuration policy:
+1. Open the **ProfileCreator** application and click on the `+` icon in the top-left corner to create a new configuration profile:
     - Under **General** provide a descriptive Payload Display Name, Payload Description, and Payload Organization.
 
-2. Now you need to add an XCreds payload to the configuration policy. Click on the **Application Managed Preferences** icon in the left-hand column that looks like an `A` (third icon from the left, in the left-hand column).
+2. Click the **Application Managed Preferences** icon in the left-hand column that looks like an `A`.
 3. Select XCreds in the list and click the **Add** button in the top-right corner of the screen.
-4. Under **Disabled Keys** click the `+` icon next to the following keys and set the required configurations:
-    - **Client ID**: the authentik Client ID
-    - **Client Secret**: the authentik Client Secret
-    - **Discovery URL**: the authentik OpenID configuration URL
+4. Under **Disabled Keys**, click the `+` icon next to the following keys and set the required configurations:
+    - **Client ID**: the Client ID from authentik
+    - **Client Secret**: the Client Secret from authentik
+    - **Discovery URL**: the OpenID Configuration URL from authentik
     - **Redirect URI**: `https://127.0.0.1/xcreds`
 5. Click on the **Export Profile** icon at the top-left corner of the screen and set the following required configurations:
     - **Platform**: `macOS`
@@ -72,6 +88,13 @@ Next, you need to install the created profile on the target Mac.
 
 ## Configuration verification
 
-To confirm that authentik is properly configured with XCreds on the target Mac, log out and log back in via the XCreds/authentik login screen.
+To confirm that authentik is properly configured with XCreds on the target Mac, log out, open the XCreds login window, and log back in via authentik.
 
 If you need to log in to a local account on the Mac, you can click on the **Mac Login Window** button.
+
+## Resources
+
+- [XCreds Admin Guide](https://twocanoes.com/knowledge-base/xcreds-admin-guide/)
+- [XCreds Identity Provider Integration Guide](https://twocanoes.com/knowledge-base/xcreds-identity-provider-integration-guide/)
+- [ProfileCreator](https://github.com/ProfileCreator/ProfileCreator)
+- [XCreds source code](https://github.com/twocanoes/xcreds)

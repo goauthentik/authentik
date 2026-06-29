@@ -1,6 +1,6 @@
 import "#elements/forms/DeleteBulkForm";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { PaginatedResponse, Table, TableColumn, Timestamp } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
@@ -15,11 +15,14 @@ import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-user-session-list")
 export class AuthenticatedSessionList extends Table<AuthenticatedSession> {
+    public static override verboseName = msg("Session");
+    public static override verboseNamePlural = msg("Sessions");
+
     @property()
     targetUser!: string;
 
     async apiEndpoint(): Promise<PaginatedResponse<AuthenticatedSession>> {
-        return new CoreApi(DEFAULT_CONFIG).coreAuthenticatedSessionsList({
+        return aki(CoreApi).coreAuthenticatedSessionsList({
             ...(await this.defaultEndpointConfig()),
             userUsername: this.targetUser,
         });
@@ -51,12 +54,12 @@ export class AuthenticatedSessionList extends Table<AuthenticatedSession> {
                 ];
             }}
             .usedBy=${(item: AuthenticatedSession) => {
-                return new CoreApi(DEFAULT_CONFIG).coreAuthenticatedSessionsUsedByList({
+                return aki(CoreApi).coreAuthenticatedSessionsUsedByList({
                     uuid: item.uuid || "",
                 });
             }}
             .delete=${(item: AuthenticatedSession) => {
-                return new CoreApi(DEFAULT_CONFIG).coreAuthenticatedSessionsDestroy({
+                return aki(CoreApi).coreAuthenticatedSessionsDestroy({
                     uuid: item.uuid || "",
                 });
             }}

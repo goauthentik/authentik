@@ -1,7 +1,7 @@
 import "#elements/buttons/SpinnerButton/index";
 import "#elements/forms/HorizontalFormElement";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { PFSize } from "#common/enums";
 
 import { Form } from "#elements/forms/Form";
@@ -77,7 +77,7 @@ export class UserPasswordForm extends Form<UserPasswordSetRequest> {
     }
 
     protected override async send(data: UserPasswordSetRequest): Promise<void> {
-        return new CoreApi(DEFAULT_CONFIG).coreUsersSetPasswordCreate({
+        return aki(CoreApi).coreUsersSetPasswordCreate({
             id: this.instancePk || 0,
             userPasswordSetRequest: data,
         });

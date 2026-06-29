@@ -9,7 +9,9 @@ import "#elements/buttons/ActionButton/index";
 import "#elements/buttons/ModalButton";
 import "#elements/buttons/SpinnerButton/index";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { logoutMethodLabel } from "./SAMLProviderOptions.js";
+
+import { aki } from "#common/api/client";
 import { EVENT_REFRESH } from "#common/constants";
 import { MessageLevel } from "#common/messages";
 
@@ -100,7 +102,7 @@ export class SAMLProviderViewPage extends AKElement {
     }
 
     fetchPreview(): void {
-        new ProvidersApi(DEFAULT_CONFIG)
+        aki(ProvidersApi)
             .providersSamlPreviewUserRetrieve({
                 id: this.provider?.pk || 0,
                 forUser: this.previewUser?.pk,
@@ -111,7 +113,7 @@ export class SAMLProviderViewPage extends AKElement {
     }
 
     fetchCertificate(kpUuid: string) {
-        return new CryptoApi(DEFAULT_CONFIG).cryptoCertificatekeypairsRetrieve({ kpUuid });
+        return aki(CryptoApi).cryptoCertificatekeypairsRetrieve({ kpUuid });
     }
 
     fetchSigningCertificate(kpUuid: string) {
@@ -129,27 +131,36 @@ export class SAMLProviderViewPage extends AKElement {
     }
 
     fetchProvider(id: number) {
-        new ProvidersApi(DEFAULT_CONFIG).providersSamlRetrieve({ id }).then((prov) => {
-            this.provider = prov;
-            // Clear existing signing certificate if the provider has none
-            if (!this.provider.signingKp) {
-                this.signer = null;
-            } else {
-                this.fetchSigningCertificate(this.provider.signingKp);
-            }
-            // Clear existing verification certificate if the provider has none
-            if (!this.provider.verificationKp) {
-                this.verifier = null;
-            } else {
-                this.fetchVerificationCertificate(this.provider.verificationKp);
-            }
-        });
+        aki(ProvidersApi)
+            .providersSamlRetrieve({ id })
+            .then((prov) => {
+                this.provider = prov;
+                // Clear existing signing certificate if the provider has none
+                if (!this.provider.signingKp) {
+                    this.signer = null;
+                } else {
+                    this.fetchSigningCertificate(this.provider.signingKp);
+                }
+                // Clear existing verification certificate if the provider has none
+                if (!this.provider.verificationKp) {
+                    this.verifier = null;
+                } else {
+                    this.fetchVerificationCertificate(this.provider.verificationKp);
+                }
+            });
     }
 
     willUpdate(changedProperties: PropertyValues<this>) {
         if (changedProperties.has("providerID") && this.providerID) {
             this.fetchProvider(this.providerID);
         }
+    }
+
+    renderLogoutMethod(): string {
+        if (!this.provider?.slsUrl) {
+            return "-";
+        }
+        return logoutMethodLabel(this.provider.logoutMethod) || "-";
     }
 
     renderRelatedObjects(): TemplateResult {
@@ -283,13 +294,7 @@ export class SAMLProviderViewPage extends AKElement {
         if (!this.provider) {
             return nothing;
         }
-        return html`${
-            this.provider?.assignedApplicationName
-                ? nothing
-                : html`<div slot="header" class="pf-c-banner pf-m-warning">
-                      ${msg("Warning: Provider is not used by an Application.")}
-                  </div>`
-        }
+        return html`${this.provider?.assignedApplicationName ? nothing : html`<div slot="header" class="pf-c-banner pf-m-warning">${msg("Warning: Provider is not used by an Application.")}</div>`}
             <div class="pf-c-page__main-section pf-m-no-padding-mobile pf-l-grid pf-m-gutter">
                 <div class="pf-c-card pf-l-grid__item pf-m-12-col">
                     <div class="pf-c-card__body">
@@ -320,21 +325,7 @@ export class SAMLProviderViewPage extends AKElement {
                             </div>
                             <div class="pf-c-description-list__group">
                                 <dt class="pf-c-description-list__term">
-                                    <span class="pf-c-description-list__text">${msg(
-                                        "ACS URL",
-                                    )}</span>
-                                </dt>
-                                <dd class="pf-c-description-list__description">
-                                    <div class="pf-c-description-list__text">
-                                        ${this.provider.acsUrl}
-                                    </div>
-                                </dd>
-                            </div>
-                            <div class="pf-c-description-list__group">
-                                <dt class="pf-c-description-list__term">
-                                    <span class="pf-c-description-list__text">${msg(
-                                        "Audience",
-                                    )}</span>
+                                    <span class="pf-c-description-list__text">${msg("Audience")}</span>
                                 </dt>
                                 <dd class="pf-c-description-list__description">
                                     <div class="pf-c-description-list__text">
@@ -344,13 +335,31 @@ export class SAMLProviderViewPage extends AKElement {
                             </div>
                             <div class="pf-c-description-list__group">
                                 <dt class="pf-c-description-list__term">
-                                    <span class="pf-c-description-list__text">${msg(
-                                        "Issuer",
-                                    )}</span>
+                                    <span class="pf-c-description-list__text">${msg("ACS URL")}</span>
                                 </dt>
                                 <dd class="pf-c-description-list__description">
                                     <div class="pf-c-description-list__text">
-                                        ${this.provider.issuerOverride}
+                                        ${this.provider.acsUrl}
+                                    </div>
+                                </dd>
+                            </div>
+                            <div class="pf-c-description-list__group">
+                                <dt class="pf-c-description-list__term">
+                                    <span class="pf-c-description-list__text">${msg("SLS URL")}</span>
+                                </dt>
+                                <dd class="pf-c-description-list__description">
+                                    <div class="pf-c-description-list__text">
+                                        ${this.provider.slsUrl || "-"}
+                                    </div>
+                                </dd>
+                            </div>
+                            <div class="pf-c-description-list__group">
+                                <dt class="pf-c-description-list__term">
+                                    <span class="pf-c-description-list__text">${msg("Logout Method")}</span>
+                                </dt>
+                                <dd class="pf-c-description-list__description">
+                                    <div class="pf-c-description-list__text">
+                                        ${this.renderLogoutMethod()}
                                     </div>
                                 </dd>
                             </div>
@@ -441,7 +450,7 @@ export class SAMLProviderViewPage extends AKElement {
                       id="page-metadata"
                       aria-label="${msg("Metadata")}"
                       @activate=${() => {
-                          new ProvidersApi(DEFAULT_CONFIG)
+                          aki(ProvidersApi)
                               .providersSamlMetadataRetrieve({
                                   id: this.provider?.pk || 0,
                               })
@@ -517,9 +526,7 @@ export class SAMLProviderViewPage extends AKElement {
                                         if (query !== undefined) {
                                             args.search = query;
                                         }
-                                        const users = await new CoreApi(
-                                            DEFAULT_CONFIG,
-                                        ).coreUsersList(args);
+                                        const users = await aki(CoreApi).coreUsersList(args);
                                         return users.results;
                                     }}
                                     .renderElement=${(user: User): string => {

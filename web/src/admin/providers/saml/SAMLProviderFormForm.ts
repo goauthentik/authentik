@@ -15,11 +15,12 @@ import {
     availableHashes,
     DEFAULT_HASH_ALGORITHM,
     digestAlgorithmOptions,
+    logoutMethodOptions,
     retrieveSignatureAlgorithm,
     SAMLSupportedKeyTypes,
 } from "./SAMLProviderOptions.js";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { RadioOption } from "#elements/forms/Radio";
 
@@ -29,7 +30,6 @@ import {
     PropertymappingsApi,
     PropertymappingsProviderSamlListRequest,
     SAMLBindingsEnum,
-    SAMLLogoutMethods,
     SAMLNameIDPolicyEnum,
     SAMLPropertyMapping,
     SAMLProvider,
@@ -90,23 +90,6 @@ function renderHasSlsUrl(
     logoutMethod: string,
     setLogoutMethod?: (ev: Event) => void,
 ) {
-    const logoutMethodOptions: RadioOption<string>[] = [
-        {
-            label: msg("Front-channel (Iframe)"),
-            value: SAMLLogoutMethods.FrontchannelIframe,
-            default: true,
-        },
-        {
-            label: msg("Front-channel (Native)"),
-            value: SAMLLogoutMethods.FrontchannelNative,
-        },
-        {
-            label: msg("Back-channel (POST)"),
-            value: SAMLLogoutMethods.Backchannel,
-            disabled: !hasPostBinding,
-        },
-    ];
-
     return html`<ak-radio-input
             label=${msg("SLS Binding")}
             name="slsBinding"
@@ -121,7 +104,7 @@ function renderHasSlsUrl(
         <ak-radio-input
             label=${msg("Logout Method")}
             name="logoutMethod"
-            .options=${logoutMethodOptions}
+            .options=${logoutMethodOptions(hasPostBinding)}
             .value=${logoutMethod}
             help=${msg("Method to use for logout when SLS URL is configured.")}
             @change=${setLogoutMethod}
@@ -332,9 +315,10 @@ export function renderForm({
                             if (query !== undefined) {
                                 args.search = query;
                             }
-                            const items = await new PropertymappingsApi(
-                                DEFAULT_CONFIG,
-                            ).propertymappingsProviderSamlList(args);
+                            const items =
+                                await aki(PropertymappingsApi).propertymappingsProviderSamlList(
+                                    args,
+                                );
                             return items.results;
                         }}
                         .renderElement=${(item: SAMLPropertyMapping): string => {
@@ -367,9 +351,10 @@ export function renderForm({
                             if (query !== undefined) {
                                 args.search = query;
                             }
-                            const items = await new PropertymappingsApi(
-                                DEFAULT_CONFIG,
-                            ).propertymappingsProviderSamlList(args);
+                            const items =
+                                await aki(PropertymappingsApi).propertymappingsProviderSamlList(
+                                    args,
+                                );
                             return items.results;
                         }}
                         .renderElement=${(item: SAMLPropertyMapping): string => {

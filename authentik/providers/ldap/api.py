@@ -91,7 +91,7 @@ class LDAPOutpostConfigSerializer(ModelSerializer):
     unbind_flow_slug = SerializerMethodField()
 
     def get_application_slug(self, instance: LDAPProvider) -> str:
-        """Prioritise backchannel slug over direct application slug"""
+        """Prioritize backchannel slug over direct application slug"""
         if instance.backchannel_application:
             return instance.backchannel_application.slug
         return instance.application.slug

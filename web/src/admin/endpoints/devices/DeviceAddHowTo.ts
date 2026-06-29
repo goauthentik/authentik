@@ -1,7 +1,7 @@
 import "#admin/endpoints/connectors/agent/AgentConnectorSetup";
 import "#elements/Tabs";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { ModalButton } from "#elements/buttons/ModalButton";
 
@@ -19,9 +19,11 @@ export class DeviceAddHowTo extends ModalButton {
     connectedCallback(): void {
         super.connectedCallback();
         this.addEventListener("ak-modal-show", () => {
-            new EndpointsApi(DEFAULT_CONFIG).endpointsConnectorsList().then((e) => {
-                this.connectors = e.results;
-            });
+            aki(EndpointsApi)
+                .endpointsConnectorsList()
+                .then((e) => {
+                    this.connectors = e.results;
+                });
         });
     }
 

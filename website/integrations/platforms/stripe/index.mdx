@@ -4,6 +4,8 @@ sidebar_label: Stripe
 support_level: community
 ---
 
+import SAMLProvider20265Warning from "../../_saml-provider-2026-5-warning.mdx";
+
 ## What is Stripe?
 
 > Stripe is a financial infrastructure platform that enables businesses to accept online and in-person payments, embed financial services, and build custom revenue models.
@@ -15,87 +17,110 @@ support_level: community
 The following placeholders are used in this guide:
 
 - `authentik.company` is the FQDN of the authentik installation.
+- `example.com` is the email domain that you verify for Stripe SSO.
+- `stripe_account_id` is the Stripe account ID to configure, such as `acct_...`.
 
 :::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
+:::info Domain verification required
+Stripe requires a verified email domain before SSO can be enabled.
+:::
+
 ## authentik configuration
 
-To support the integration of Stripe with authentik, you need to create a group, a property mapping, and an application/provider pair in authentik.
+To support the integration of Stripe with authentik, create a group, a property mapping, and an application/provider pair in authentik.
 
-### Create a user group in authentik
+### Create a user group
+
+Use a group attribute to define the Stripe role that authentik sends for each user.
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Directory** > **Groups** and click **Create**.
-3. Set a name for the group (e.g. `Stripe Admins`).
-4. In the **Attributes** field enter: `stripe_role: admin`. Other account types are also supported, see the [Stripe SSO Documentation](https://docs.stripe.com/get-started/account/sso/other#configuring-your-identity-provider)
-5. Click **Create**.
-6. Then, click the name of the newly created group and navigate to the **Users** tab.
-7. Click **Add existing user**, select the user that needs Stripe admin access and click **Add**.
+3. Set a descriptive group name, such as `Stripe Admins`.
+4. In the **Attributes** field, set the Stripe role for members of this group:
 
-### Create a property mapping in authentik
-
-1.  Log in to authentik as an administrator and open the authentik Admin interface.
-2.  Navigate to **Customization** > **Property Mappings** and click **Create**. Then, create a **SAML Provider Property Mapping** using the following settings:
-    - **Name**: `Stripe Role`
-    - **SAML Attribute Name**: `Stripe-Role-<stripe-account-id>` Can be found [here](https://dashboard.stripe.com/settings/account)
-    - **Friendly Name**: Leave blank
-    - **Expression**:
-
-    ```python
-    return request.user.group_attributes().get("stripe_role", "")
+    ```yaml
+    stripe_role: admin
     ```
 
-    :::info
-    To find your Stripe account ID, log in to your Stripe dashboard and navigate to **Settings** > **Account** > **Account details**. You'll find your account ID, which starts with `acct_`, displayed on the right-hand side.
-    :::
+    Use the Stripe role value that members of this group should receive, such as `admin`, `developer`, or `view_only`. Stripe lists the available role values in their [SSO documentation](https://docs.stripe.com/get-started/account/sso/other#configuring-your-identity-provider).
 
-### Create an application and provider in authentik
+5. Click **Create**.
+6. Click the name of the newly created group and navigate to the **Users** tab.
+7. Click **Add existing user**, select the user that needs Stripe access, and click **Add**.
+
+### Create a property mapping
+
+<SAMLProvider20265Warning />
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
-    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
+2. Navigate to **Customization** > **Property Mappings** and click **Create**.
+3. Select **SAML Provider Property Mapping** and click **Next**.
+4. Configure the property mapping with the following settings:
+    - **Name**: `Stripe Role`
+    - **SAML Attribute Name**: `Stripe-Role-<stripe_account_id>`
+    - **Friendly Name**: leave blank.
+    - **Expression**:
+
+        ```python
+        return request.user.group_attributes(request).get("stripe_role", "")
+        ```
+
+5. Click **Finish** to save the property mapping.
+
+:::info Organization-level SSO
+For organization-level SSO, use `Stripe-Role-<stripe_organization_id>` as the SAML attribute name instead of `Stripe-Role-<stripe_account_id>`.
+:::
+
+### Create an application and provider pair
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Applications** > **Applications** and click **New Application** to create an application and provider pair.
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Take note of the **Slug** value because it is required later.
+        - Under **UI Settings**, set **Launch URL** to `https://dashboard.stripe.com/login/saml_direct/domain/example.com/merchant/<stripe_account_id>`.
     - **Choose a Provider type**: select **SAML Provider** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
         - Set the **ACS URL** to `https://dashboard.stripe.com/login/saml/consume`.
         - Set the **Audience** to `https://dashboard.stripe.com/saml/metadata`.
         - Under **Advanced protocol settings**:
-            - Set an available **Signing certificate**.
-            - Add the previously created `Stripe Role` property mapping to **Selected User Property Mappings**.
+            - Select an available **Signing Certificate**.
             - Set **NameID Property Mapping** to `authentik default SAML Mapping: Email`.
-
-    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+            - Add the `Stripe Role` property mapping to **Selected User Property Mappings**.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 
 3. Click **Submit** to save the new application and provider.
 
-### Download certificate file
+### Download the signing certificate
 
-1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Applications** > **Providers** and click on the name of the provider that you created in the previous section (e.g. `Provider for Stripe`).
-3. Under **Related objects** > **Download signing certificate**, click on **Download**. This downloaded file is your `Certificate` file and it will be required in the next section.
+1. Navigate to **Applications** > **Providers** and click the name of the SAML provider that you created.
+2. Under **Related objects** > **Download signing certificate**, click **Download**. This certificate file is required in the next section.
 
 ## Stripe configuration
 
-1. Log in to the [Stripe administrator user authentication page](https://dashboard.stripe.com/account/user_authentication) as an administrator.
-2. Click on the **Settings** cogwheel, and navigate to **Team and security** > **Single sign-on (SSO)**.
-3. Click **Add domain**, then input the domain that SSO users will use. For more information, see the [Stripe Proving Domain Ownership documentation](https://docs.stripe.com/get-started/account/sso/other#proving-domain-verification).
-4. Once your domain is verified, click the three dots next to the domain name, and click **Manage SSO Settings**.
-5. Enter the following settings:
-    - **Identity Provider URL**: `https://auth.domain.com/application/saml/stripe/`
-    - **Issuer ID**: `https://authentik.company/application/saml/<application_slug>/metadata/`
-    - **Identity Provider Certificate**: Paste in the contents of your authentik signing certificate.
+This guide expects that you have already verified `example.com` for SSO in Stripe.
 
-6. Click **Continue**.
-7. Enter the email address of an authentik user designated for testing the SSO configuration and click **Continue**. Ensure that the user belongs to the appropriate authentik group. After logging in on authentik, you will be redirected back to Stripe.
-8. If the test is successful, click **Continue**. Otherwise, verify your configuration and try again.
-9. Choose the **SSO Enforcement** setting. Selecting `Required` mandates that users use authentik to log in, whereas `Optional` allows users to choose between authentik and the standard Stripe login.
-10. Click **Save**.
+1. Log in to the [Stripe Dashboard](https://dashboard.stripe.com/) as an administrator.
+2. Click the **Settings** cogwheel, then navigate to **Team and security** > **Single sign-on (SSO)**.
+3. Open the SSO settings for your verified domain.
+4. Enter the following settings:
+    - **Identity provider URL**: `https://authentik.company/application/saml/<application_slug>/`
+    - **Issuer ID**: `https://authentik.company/application/saml/<application_slug>/metadata/`
+    - **Identity provider certificate**: paste the contents of the authentik signing certificate.
+5. Click **Test** and complete the SSO test with a Stripe user whose email address belongs to the verified domain and who has the required Stripe role attribute from authentik.
+6. If the test succeeds, save the settings and choose the appropriate **SSO enforcement** mode.
+
+:::warning Assign users before requiring SSO
+Do not require SSO until the users who need Stripe access are assigned to the Stripe application in authentik and receive a valid Stripe role attribute. If users do not receive a valid role attribute, Stripe rejects the login.
+:::
 
 ## Configuration verification
 
-To verify that authentik is properly integrated with Stripe, first sign out of your account. Then, navigate to the [Stripe dashboard login page](https://dashboard.stripe.com/login) and then click **Sign in with SSO**. Enter an email address that’s provisioned for SSO, and click **Continue with SSO**. You will then be redirected to authentik for authentication before being sent back to the Stripe dashboard.
+To confirm that authentik is properly configured with Stripe, open the Stripe application from the authentik Application Dashboard. You should be redirected to authentik for authentication and then to the Stripe Dashboard.
 
 ## Resources
 
-- [Stripe documentation - Single sign-on with a SAML provider](https://docs.stripe.com/get-started/account/sso/other)
+- [Stripe Docs - Single sign-on with SAML Identity Provider](https://docs.stripe.com/get-started/account/sso/other)
+- [Stripe Docs - Organization-level SSO](https://docs.stripe.com/get-started/account/orgs/sso)
+- [Stripe Docs - Troubleshoot SSO](https://docs.stripe.com/get-started/account/sso/troubleshooting)

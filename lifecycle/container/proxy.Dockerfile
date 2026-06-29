@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 
 # Stage 1: Build web
-FROM --platform=${BUILDPLATFORM} docker.io/library/node:24 AS web-builder
+FROM --platform=${BUILDPLATFORM} docker.io/library/node:26 AS web-builder
 
 ENV NODE_ENV=production
 WORKDIR /static
@@ -10,18 +10,29 @@ WORKDIR /static
 COPY ./packages /packages
 COPY ./web/packages /static/packages
 
+RUN --mount=type=bind,target=/static/package.json,src=./package.json \
+    --mount=type=bind,target=/static/package-lock.json,src=./package-lock.json \
+    --mount=type=bind,target=/static/web/package.json,src=./web/package.json \
+    --mount=type=bind,target=/static/web/package-lock.json,src=./web/package-lock.json \
+    --mount=type=bind,target=/static/scripts/node/,src=./scripts/node/ \
+    --mount=type=bind,target=/static/packages/logger-js/,src=./packages/logger-js/ \
+    node ./scripts/node/setup-corepack.mjs --force && \
+    node ./scripts/node/lint-runtime.mjs ./web
+
 COPY package.json /
-RUN --mount=type=bind,target=/static/package.json,src=./web/package.json \
+
+RUN --mount=type=bind,target=/static/.npmrc,src=./.npmrc \
+    --mount=type=bind,target=/static/package.json,src=./web/package.json \
     --mount=type=bind,target=/static/package-lock.json,src=./web/package-lock.json \
     --mount=type=bind,target=/static/scripts,src=./web/scripts \
     --mount=type=cache,target=/root/.npm \
-    npm ci
+    corepack npm ci
 
 COPY web .
 RUN npm run build-proxy
 
 # Stage 2: Build
-FROM --platform=${BUILDPLATFORM} docker.io/library/golang:1.26.2-trixie@sha256:4a7137ea573f79c86ae451ff05817ed762ef5597fcf732259e97abeb3108d873 AS builder
+FROM --platform=${BUILDPLATFORM} docker.io/library/golang:1.26.4-trixie@sha256:76a29248dedcd75870e95cbd90cc8cb356db082404ac7d3a5803f276c3ba79c9 AS builder
 
 ARG TARGETOS
 ARG TARGETARCH

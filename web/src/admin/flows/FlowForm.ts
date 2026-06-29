@@ -6,7 +6,7 @@ import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/Radio";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { ModelForm } from "#elements/forms/ModelForm";
 import { WithCapabilitiesConfig } from "#elements/mixins/capabilities";
@@ -41,32 +41,12 @@ export class FlowForm extends WithCapabilitiesConfig(ModelForm<Flow, string>) {
     public static override verboseName = msg("Flow");
     public static override verboseNamePlural = msg("Flows");
 
-    #api = new FlowsApi(DEFAULT_CONFIG);
-
-    protected override async loadInstance(pk: string): Promise<Flow> {
-        return this.#api.flowsInstancesRetrieve({
-            slug: pk,
-        });
-    }
-
-    public override getSuccessMessage(): string {
-        return this.instance
-            ? msg("Successfully updated flow.")
-            : msg("Successfully created flow.");
-    }
-
-    protected override async send(data: Flow): Promise<void | Flow> {
-        if (this.instance) {
-            return this.#api.flowsInstancesUpdate({
-                slug: this.instance.slug,
-                flowRequest: data,
-            });
-        }
-
-        return this.#api.flowsInstancesCreate({
-            flowRequest: data,
-        });
-    }
+    protected endpoints = {
+        load: (slug: string) => aki(FlowsApi).flowsInstancesRetrieve({ slug }),
+        create: (flowRequest: Flow) => aki(FlowsApi).flowsInstancesCreate({ flowRequest }),
+        update: (slug: string, flowRequest: Flow) =>
+            aki(FlowsApi).flowsInstancesUpdate({ slug, flowRequest }),
+    };
 
     protected override renderForm(): TemplateResult {
         return html`<ak-text-input

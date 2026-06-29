@@ -8,12 +8,10 @@ import "#elements/forms/HorizontalFormElement";
 
 import { propertyMappingsProvider, propertyMappingsSelector } from "./RACProviderFormHelpers.js";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { ModelForm } from "#elements/forms/ModelForm";
 import { SlottedTemplateResult } from "#elements/types";
-
-import { AKLabel } from "#components/ak-label";
 
 import { Endpoint, EndpointAuthModeEnum, ProtocolEnum, RacApi } from "@goauthentik/api";
 
@@ -33,7 +31,7 @@ export class EndpointForm extends ModelForm<Endpoint, string> {
     public providerID: number | null = null;
 
     protected override loadInstance(pk: string): Promise<Endpoint> {
-        return new RacApi(DEFAULT_CONFIG).racEndpointsRetrieve({
+        return aki(RacApi).racEndpointsRetrieve({
             pbmUuid: pk,
         });
     }
@@ -52,12 +50,12 @@ export class EndpointForm extends ModelForm<Endpoint, string> {
             data.provider = this.instance.provider;
         }
         if (this.instance) {
-            return new RacApi(DEFAULT_CONFIG).racEndpointsPartialUpdate({
+            return aki(RacApi).racEndpointsPartialUpdate({
                 pbmUuid: this.instance.pk || "",
                 patchedEndpointRequest: data,
             });
         }
-        return new RacApi(DEFAULT_CONFIG).racEndpointsCreate({
+        return aki(RacApi).racEndpointsCreate({
             endpointRequest: data,
         });
     }
@@ -73,38 +71,28 @@ export class EndpointForm extends ModelForm<Endpoint, string> {
                 ?autofocus=${!this.instance}
             >
             </ak-text-input>
-            <ak-form-element-horizontal required name="protocol">
-                ${AKLabel(
-                    {
-                        slot: "label",
-                        className: "pf-c-form__group-label",
-                        htmlFor: "protocol",
-                        required: true,
-                    },
-                    msg("Protocol"),
-                )}
 
-                <ak-radio
-                    id="protocol"
-                    required
-                    .options=${[
-                        {
-                            label: msg("RDP"),
-                            value: ProtocolEnum.Rdp,
-                        },
-                        {
-                            label: msg("SSH"),
-                            value: ProtocolEnum.Ssh,
-                        },
-                        {
-                            label: msg("VNC"),
-                            value: ProtocolEnum.Vnc,
-                        },
-                    ]}
-                    .value=${this.instance?.protocol}
-                >
-                </ak-radio>
-            </ak-form-element-horizontal>
+            <ak-radio-input
+                label=${msg("Protocol")}
+                name="protocol"
+                required
+                .options=${[
+                    {
+                        label: msg("RDP"),
+                        value: ProtocolEnum.Rdp,
+                    },
+                    {
+                        label: msg("SSH"),
+                        value: ProtocolEnum.Ssh,
+                    },
+                    {
+                        label: msg("VNC"),
+                        value: ProtocolEnum.Vnc,
+                    },
+                ]}
+                .value=${this.instance?.protocol}
+            >
+            </ak-radio-input>
             <ak-text-input
                 label=${msg("Host")}
                 name="host"

@@ -25,6 +25,7 @@ class GoogleWorkspaceSyncClient[TModel: Model, TConnection: Model, TSchema: dict
     """Base client for syncing to google workspace"""
 
     domains: list
+    can_discover = True
 
     def __init__(self, provider: GoogleWorkspaceProvider) -> None:
         super().__init__(provider)

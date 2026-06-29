@@ -4,6 +4,8 @@ sidebar_label: PostHog
 support_level: community
 ---
 
+import SAMLProvider20265Warning from "../../\_saml-provider-2026-5-warning.mdx";
+
 ## What is PostHog?
 
 > PostHog is an all-in-one developer platform that provides product analytics, web analytics, session replay, error tracking, feature flags, experimentation, surveys, a data warehouse, and a customer data platform.
@@ -14,7 +16,7 @@ support_level: community
 
 The following placeholders are used in this guide:
 
-- `posthog.company` is the FQDN of the PostHog installation. For PostHog Cloud, use `us.posthog.com` or `eu.posthog.com` instead.
+- `posthog.company` is the FQDN of the PostHog installation. For PostHog Cloud, use `us.posthog.com` or `eu.posthog.com`.
 - `authentik.company` is the FQDN of the authentik installation.
 
 :::info
@@ -22,7 +24,7 @@ This documentation lists only the settings that you need to change from their de
 :::
 
 :::info PostHog requirements
-[PostHog configures SAML per authentication domain](https://posthog.com/docs/settings/sso#authentication-domains). Before configuring SAML, verify that your PostHog plan includes SAML and that the email domain for your users is added and verified in **Organization settings** > **Authentication domains**.
+[PostHog configures SAML per authentication domain](https://posthog.com/docs/settings/sso#authentication-domains). Before configuring SAML, add the email domain for your users in **Organization settings** > **Authentication domains** and complete domain verification if PostHog requires it. Domain verification is outside the scope of this guide.
 :::
 
 ## authentik configuration
@@ -31,7 +33,7 @@ To support the integration of PostHog with authentik, you need to create SAML pr
 
 ### Create property mappings in authentik
 
-PostHog requires a permanent ID attribute named `name_id`. PostHog can use the managed authentik email mapping, but the permanent ID and split-name attributes require custom SAML property mappings.
+PostHog requires a permanent ID attribute named `name_id`. PostHog can use the managed authentik email mapping, but the permanent ID and split-name attributes require custom SAML provider property mappings.
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Customization** > **Property Mappings** and click **Create**.
@@ -63,36 +65,50 @@ PostHog requires a permanent ID attribute named `name_id`. PostHog can use the m
         return request.user.name.rsplit(" ", 1)[-1] if " " in request.user.name else ""
         ```
 
-### Create an application and provider in authentik
+### Create an application and provider
+
+<SAMLProvider20265Warning />
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively, you can first create a provider separately, then create the application and connect it with the provider.)
-    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Note the **slug** value because you will use it when configuring PostHog.
+2. Navigate to **Applications** > **Applications** and click **New Application** to create an application and provider pair. (Alternatively, you can first create a provider separately, then create the application and connect it with the provider.)
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Note the **Slug** value because you will use it when configuring PostHog.
     - **Choose a Provider type**: select **SAML Provider** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
         - Set the **ACS URL** to `https://posthog.company/complete/saml/`.
         - Set the **Audience** to `https://posthog.company`.
         - Under **Advanced protocol settings**:
-            - Set the **Signing Certificate** to any available certificate.
+            - Select an available **Signing Certificate**.
             - Set **NameID Property Mapping** to `PostHog name_id`.
             - Add `authentik default SAML Mapping: Email`, `PostHog name_id`, `PostHog first_name`, and `PostHog last_name` to **Selected User Property Mappings**.
-    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 3. Click **Submit** to save the new application and provider.
 
 ## PostHog configuration
 
 1. Log in to PostHog as an administrator.
-2. Navigate to **Organization settings** > **Authentication domains**.
+2. Click your profile picture in the bottom-left corner, then navigate to **Organization settings** > **Authentication domains**.
 3. If your users' email domain is not already listed, add it and complete PostHog's domain verification process.
-4. Open the SAML configuration for the verified domain and configure the following settings:
+4. Open the SAML configuration for the authentication domain.
+5. Verify that the PostHog-provided **ACS Consumer URL** and **Audience / Entity ID** values match the **ACS URL** and **Audience** values configured in authentik.
+6. Configure the following settings:
     - **SAML ACS URL**: `https://authentik.company/application/saml/<application_slug>/`
     - **SAML Entity ID**: `https://authentik.company/application/saml/<application_slug>/metadata/`
     - **SAML X.509 Certificate**: paste the public certificate from the signing certificate that you selected for the authentik SAML provider.
-5. Save the SAML configuration.
+7. Save the SAML configuration.
+
+### Configure IdP-initiated login _(optional)_
+
+PostHog normally starts SAML login after the user enters their email address on the PostHog login page. If users should also be able to launch PostHog from authentik's **Application Dashboard** page, configure PostHog's RelayState value in authentik.
+
+1. In PostHog, copy the **RelayState** value from the SAML configuration for the authentication domain.
+2. In authentik, navigate to **Applications** > **Providers** and open the SAML provider that you created earlier.
+3. Click **Edit**.
+4. Under **Advanced protocol settings**, set **Default relay state** to the **RelayState** value from PostHog.
+5. Click **Update**.
 
 ## Configuration verification
 
-To confirm that authentik is properly configured with PostHog, log out of PostHog and open the PostHog login page in a private or incognito browser window. Enter an email address that uses the verified authentication domain, click the SSO login option, and confirm that you are redirected to authentik for authentication and then back to PostHog.
+To confirm that authentik is properly configured with PostHog, log out of PostHog and open the PostHog login page in a private or incognito browser window. Enter an email address that uses the configured authentication domain, click the SSO login option, and confirm that you are redirected to authentik for authentication and then back to PostHog.
 
 ## Resources
 

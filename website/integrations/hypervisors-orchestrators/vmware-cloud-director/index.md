@@ -4,6 +4,8 @@ sidebar_label: VMware Cloud Director
 support_level: community
 ---
 
+import RedirectURI20265Note from "../../\_redirect-uri-2026-5-note.mdx";
+
 ## What is VMware Cloud Director?
 
 > VMware Cloud Director is a platform that enables service providers and enterprises to create multi-tenant virtual data centers (VDCs) from underlying VMware vSphere infrastructure. It supports self-service resource provisioning, secure tenant isolation, and management of compute, storage, and networking via web portals and APIs.
@@ -21,6 +23,8 @@ This documentation lists only the settings that you need to change from their de
 
 ## authentik configuration
 
+<RedirectURI20265Note />
+
 To support the integration of VMware Cloud Director with authentik, you need to create an application/provider pair in authentik.
 
 ### Create an application and provider in authentik
@@ -31,9 +35,9 @@ To support the integration of VMware Cloud Director with authentik, you need to 
     - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
         - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
-        - Set a `Strict` redirect URI to `https://clouddirector.company/login/oauth?service=provider`.
+        - Add a **Redirect URI** of type `Strict` `Authorization` as `https://clouddirector.company/login/oauth?service=provider`.
         - Select any available signing key.
-    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 
 :::info Tenant configuration
 The redirect URI is for provider level configuration. If you're configuring a tenant-level integration in VMware Cloud Director, use the URI displayed in [step 2 of the VMware Cloud Director configuration](#vmware-cloud-director-configuration).

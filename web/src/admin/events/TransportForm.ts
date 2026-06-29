@@ -6,7 +6,7 @@ import "#elements/forms/Radio";
 import "#elements/forms/SearchSelect/index";
 import "#admin/common/ak-crypto-certificate-search";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { ModelForm } from "#elements/forms/ModelForm";
 
@@ -32,7 +32,7 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
     public static override verboseNamePlural = msg("Notification Transports");
 
     loadInstance(pk: string): Promise<NotificationTransport> {
-        return new EventsApi(DEFAULT_CONFIG)
+        return aki(EventsApi)
             .eventsTransportsRetrieve({
                 uuid: pk,
             })
@@ -42,7 +42,7 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
             });
     }
     async load(): Promise<void> {
-        this.templates = await new StagesApi(DEFAULT_CONFIG).stagesEmailTemplatesList();
+        this.templates = await aki(StagesApi).stagesEmailTemplatesList();
     }
 
     templates?: TypeCreate[];
@@ -61,12 +61,12 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
 
     async send(data: NotificationTransport): Promise<NotificationTransport> {
         if (this.instance) {
-            return new EventsApi(DEFAULT_CONFIG).eventsTransportsUpdate({
+            return aki(EventsApi).eventsTransportsUpdate({
                 uuid: this.instance.pk || "",
                 notificationTransportRequest: data,
             });
         }
-        return new EventsApi(DEFAULT_CONFIG).eventsTransportsCreate({
+        return aki(EventsApi).eventsTransportsCreate({
             notificationTransportRequest: data,
         });
     }
@@ -177,9 +177,8 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
                         if (query !== undefined) {
                             args.search = query;
                         }
-                        const items = await new PropertymappingsApi(
-                            DEFAULT_CONFIG,
-                        ).propertymappingsNotificationList(args);
+                        const items =
+                            await aki(PropertymappingsApi).propertymappingsNotificationList(args);
                         return items.results;
                     }}
                     .renderElement=${(item: NotificationWebhookMapping) => item.name}
@@ -206,9 +205,8 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
                         if (query !== undefined) {
                             args.search = query;
                         }
-                        const items = await new PropertymappingsApi(
-                            DEFAULT_CONFIG,
-                        ).propertymappingsNotificationList(args);
+                        const items =
+                            await aki(PropertymappingsApi).propertymappingsNotificationList(args);
                         return items.results;
                     }}
                     .renderElement=${(item: NotificationWebhookMapping): string => {

@@ -4,6 +4,8 @@ sidebar_label: osTicket
 support_level: community
 ---
 
+import RedirectURI20265Note from "../../\_redirect-uri-2026-5-note.mdx";
+
 ## What is osTicket?
 
 > osTicket is a web-based, open source user support/ticketing solution.
@@ -23,6 +25,8 @@ This documentation lists only the settings that you need to change from their de
 
 ## authentik configuration
 
+<RedirectURI20265Note />
+
 To support the integration of osTicket with authentik, you need to create an application/provider pair in authentik.
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
@@ -31,11 +35,11 @@ To support the integration of osTicket with authentik, you need to create an app
     - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
         - Note the **Client ID**, **Client Secret** and **slug** values because they will be required later.
-        - Set a `Strict` redirect URI to `https://osticket.company/osticket/api/auth/oauth2`.
+        - Add a **Redirect URI** of type `Strict` `Authorization` as `https://osticket.company/osticket/api/auth/oauth2`.
         - Select any available signing key.
         - Under **Advanced protocol settings**:
             - **Subject Mode**: `Based on the User's Email`
-    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 
 3. Click **Submit** to save the new application and provider.
 

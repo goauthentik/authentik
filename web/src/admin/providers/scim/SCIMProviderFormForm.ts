@@ -19,7 +19,7 @@ import {
     propertyMappingsSelector,
 } from "./SCIMProviderFormHelpers.js";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import {
     CompatibilityModeEnum,
@@ -59,7 +59,7 @@ export function renderAuthOAuth(provider?: Partial<SCIMProvider>, _errors: Valid
                     if (query !== undefined) {
                         args.search = query;
                     }
-                    const sources = await new SourcesApi(DEFAULT_CONFIG).sourcesOauthList(args);
+                    const sources = await aki(SourcesApi).sourcesOauthList(args);
                     return sources.results;
                 }}
                 .renderElement=${(source: OAuthSource): string => {
@@ -93,6 +93,7 @@ export function renderAuth(provider?: Partial<SCIMProvider>, errors: ValidationE
         case SCIMAuthenticationModeEnum.Token:
             return renderAuthToken(provider, errors);
         case SCIMAuthenticationModeEnum.Oauth:
+        case SCIMAuthenticationModeEnum.OauthInteractive:
             return renderAuthOAuth(provider, errors);
     }
 }
@@ -160,11 +161,17 @@ export function renderForm({ provider, errors, update }: SCIMProviderFormProps) 
                                 )}`,
                             },
                             {
-                                label: msg("OAuth"),
+                                label: msg("OAuth (Silent)"),
                                 value: SCIMAuthenticationModeEnum.Oauth,
-                                default: true,
                                 description: html`${msg("Authenticate SCIM requests using OAuth.")}
                                     <ak-license-notice></ak-license-notice>`,
+                            },
+                            {
+                                label: msg("OAuth (Interactive)"),
+                                value: SCIMAuthenticationModeEnum.OauthInteractive,
+                                description: html`${msg(
+                                        "Authenticate SCIM requests using OAuth, interactively authorized.",
+                                    )} <ak-license-notice></ak-license-notice>`,
                             },
                         ]}
                     ></ak-radio>

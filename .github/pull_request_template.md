@@ -1,38 +1,26 @@
 <!--
-👋 Hi there! Welcome.
+👋 Hi there! Welcome. Please check the contributing guidelines: https://docs.goauthentik.io/docs/developer-docs/#how-can-i-contribute
 
-Please check the Contributing guidelines: https://docs.goauthentik.io/docs/developer-docs/#how-can-i-contribute
-
-⚠️ IMPORTANT: Make sure you are opening this PR from a FEATURE BRANCH, not from your main branch!
-If you opened this PR from your main branch, please close it and create a new feature branch instead.
-For more information, see: https://docs.goauthentik.io/developer-docs/contributing/#always-use-feature-branches
+⚠️ Open this PR from a feature branch, not from main: https://docs.goauthentik.io/developer-docs/contributing/#always-use-feature-branches
 -->
 
 ## Details
 
-<!--
-Explain what this PR changes, what the rationale behind the change is, if any new requirements are introduced or any breaking changes caused by this PR.
+### What does this PR change?
 
-Ideally also link an Issue for context that this PR will close using `closes #`
+### Why is this change needed?
+
+### How was this tested?
+
+### Linked issues
+
+<!--
+Use `closes #N` to auto-close an issue on merge. Use `refs #N` for related issues that this PR does not close.
 -->
-REPLACE ME
 
 ---
 
 ## Checklist
 
--   [ ] Local tests pass (`ak test authentik/`)
--   [ ] The code has been formatted (`make lint-fix`)
-
-If an API change has been made
-
--   [ ] The API schema and clients have been updated (`make gen`)
-
-If changes to the frontend have been made
-
--   [ ] The code has been formatted (`make web`)
-
-If applicable
-
--   [ ] The documentation has been updated
--   [ ] The documentation has been formatted (`make docs`)
+-   [ ] The project has been linted, built, and tested (`make all`)
+-   [ ] The documentation has been updated and formatted (`make docs`)

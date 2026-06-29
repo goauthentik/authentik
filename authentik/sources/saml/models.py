@@ -49,7 +49,7 @@ from authentik.crypto.models import CertificateKeyPair
 from authentik.flows.challenge import RedirectChallenge
 from authentik.flows.models import Flow
 from authentik.lib.expression.evaluator import BaseEvaluator
-from authentik.lib.models import DomainlessURLValidator
+from authentik.lib.models import CreatedUpdatedModel, DomainlessURLValidator
 from authentik.lib.utils.time import timedelta_string_validator
 
 
@@ -389,7 +389,7 @@ class GroupSAMLSourceConnection(GroupSourceConnection):
         verbose_name_plural = _("Group SAML Source Connections")
 
 
-class SAMLSourceSession(models.Model):
+class SAMLSourceSession(CreatedUpdatedModel):
     """Track active SAML source sessions for Single Logout support"""
 
     saml_session_id = models.UUIDField(default=uuid4, primary_key=True)
@@ -411,7 +411,6 @@ class SAMLSourceSession(models.Model):
         blank=True,
         help_text=_("SAML NameID format"),
     )
-    created = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         verbose_name = _("SAML Source Session")

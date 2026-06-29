@@ -33,7 +33,6 @@ import { html, PropertyValues } from "lit";
 import { guard } from "lit-html/directives/guard.js";
 import { createRef, ref } from "lit-html/directives/ref.js";
 import { property } from "lit/decorators.js";
-import { keyed } from "lit/directives/keyed.js";
 
 export class CreateWizard extends AKElement implements TransclusionChildElement {
     /**
@@ -102,7 +101,7 @@ export class CreateWizard extends AKElement implements TransclusionChildElement 
      *
      * Overrides the static `verboseName` property for this instance.
      */
-    @property({ type: String, attribute: "entity-singular" })
+    @property({ type: String, attribute: "verbose-name" })
     public set verboseName(value: string | null) {
         this.#verboseName = value;
 
@@ -122,7 +121,7 @@ export class CreateWizard extends AKElement implements TransclusionChildElement 
      *
      * Overrides the static `verboseNamePlural` property for this instance.
      */
-    @property({ type: String, attribute: "entity-plural" })
+    @property({ type: String, attribute: "verbose-name-plural" })
     public set verboseNamePlural(value: string | null) {
         this.#verboseNamePlural = value;
 
@@ -139,6 +138,10 @@ export class CreateWizard extends AKElement implements TransclusionChildElement 
 
     public get wizard(): AKWizard | null {
         return this.wizardRef.value || null;
+    }
+
+    public get pageTypeCreate(): TypeCreateWizardPage | null {
+        return this.pageTypeCreateRef.value || null;
     }
 
     /**
@@ -177,7 +180,7 @@ export class CreateWizard extends AKElement implements TransclusionChildElement 
         });
     }
 
-    public override firstUpdated(changedProperties: PropertyValues<this>): void {
+    protected override firstUpdated(changedProperties: PropertyValues<this>): void {
         super.firstUpdated(changedProperties);
 
         this.refresh();
@@ -241,18 +244,25 @@ export class CreateWizard extends AKElement implements TransclusionChildElement 
      * responsible for updating the wizard's steps and validity.
      */
     protected typeSelectListener = ({
-        detail: typeCreate,
-    }: CustomEvent<TypeCreate>): boolean | Promise<boolean> => {
-        this.selectedType = typeCreate;
+        detail: selectedType,
+    }: CustomEvent<TypeCreate | null>): boolean | Promise<boolean> => {
+        this.selectedType = selectedType;
 
         const { wizard } = this;
 
         if (!wizard) return false;
 
+        const nextSteps = [...this.initialSteps];
+
+        if (!selectedType) {
+            wizard.steps = nextSteps;
+            wizard.valid = false;
+            return false;
+        }
+
         const currentSteps = wizard.steps.slice();
 
-        const selectedSteps = this.selectSteps(typeCreate, currentSteps);
-        const nextSteps = [...this.initialSteps];
+        const selectedSteps = this.selectSteps(selectedType, currentSteps);
 
         const idx = nextSteps.indexOf("initial") + 1;
 
@@ -299,40 +309,42 @@ export class CreateWizard extends AKElement implements TransclusionChildElement 
 
         return html`<ak-wizard
             ${ref(this.wizardRef)}
-            entity-singular=${ifPresent(this.verboseName)}
-            entity-plural=${ifPresent(this.verboseNamePlural)}
+            verbose-name=${ifPresent(this.verboseName)}
+            verbose-name-plural=${ifPresent(this.verboseNamePlural)}
             description=${ifPresent(this.description)}
             part="main"
             .initialSteps=${this.initialSteps}
             .finalHandler=${this.finalHandler}
-        >
-            ${this.renderHeading()}
-            ${keyed(
-                this.wizard?.activeStep,
-                html`<ak-wizard-page-type-create
-                    ${ref(this.pageTypeCreateRef)}
-                    slot="initial"
-                    .types=${this.creationTypes}
-                    layout=${this.layout}
-                    group-label=${ifPresent(this.groupLabel)}
-                    group-description=${ifPresent(this.groupDescription)}
-                    headline=${this.verboseName
-                        ? msg(str`Choose ${this.verboseName} Type`)
-                        : msg("Choose type")}
-                    @ak-type-create-select=${this.typeSelectListener}
-                >
-                    ${this.renderCreateBefore()}
-                    ${guard([initialPageContent], () => {
-                        if (!initialPageContent) {
-                            return null;
-                        }
+            >${this.renderHeading()}
+            <ak-wizard-page-type-create
+                ${ref(this.pageTypeCreateRef)}
+                slot="initial"
+                .types=${this.creationTypes}
+                layout=${this.layout}
+                group-label=${ifPresent(this.groupLabel)}
+                group-description=${ifPresent(this.groupDescription)}
+                headline=${this.verboseName
+                    ? msg(str`Choose ${this.verboseName} Type`, {
+                          id: "wizard.step.choose-type",
+                          desc: "Label for the initial step in the creation wizard where the type of the entity being created is selected. The placeholder {entity} is replaced with the singular name of the entity, for example 'Choose User Type' or 'Choose Group Type'.",
+                      })
+                    : msg("Choose type", {
+                          id: "wizard.step.choose-type.generic",
+                          desc: "Generic label for the initial step in the creation wizard where the type of the entity being created is selected, used when no singular entity name is provided.",
+                      })}
+                @ak-type-create-select=${this.typeSelectListener}
+            >
+                ${this.renderCreateBefore()}
+                ${guard([initialPageContent], () => {
+                    if (!initialPageContent) {
+                        return null;
+                    }
 
-                        return html`<div>
-                            <p>${initialPageContent}</p>
-                        </div>`;
-                    })}
-                </ak-wizard-page-type-create>`,
-            )}
+                    return html`<div>
+                        <p>${initialPageContent}</p>
+                    </div>`;
+                })}
+            </ak-wizard-page-type-create>
             ${this.renderForms()}
         </ak-wizard>`;
     }
@@ -350,7 +362,10 @@ export class CreateWizard extends AKElement implements TransclusionChildElement 
         const slotName = formatTypeCreateStepID(type);
         const entityLabel = selectedType?.name ?? this.verboseName ?? msg("Entity");
 
-        const label = msg(str`${entityLabel} Details`);
+        const label = msg(str`${entityLabel} Details`, {
+            id: "wizard.step.details",
+            desc: `Label for the step in the creation wizard where the details of the entity being created are filled in. The placeholder {entity} is replaced with the name of the entity type, for example 'User Details' or 'Group Details'.`,
+        });
 
         const content = StrictUnsafe(type.component, props);
 

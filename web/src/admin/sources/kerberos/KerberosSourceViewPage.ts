@@ -1,4 +1,4 @@
-import "#elements/tasks/ScheduleList";
+import "#components/tasks/ScheduleList";
 import "#admin/rbac/ak-rbac-object-permission-page";
 import "#admin/sources/kerberos/KerberosSourceConnectivity";
 import "#admin/sources/kerberos/KerberosSourceForm";
@@ -9,9 +9,9 @@ import "#elements/ak-mdx/index";
 import "#elements/buttons/ActionButton/index";
 import "#elements/buttons/SpinnerButton/index";
 import "#elements/forms/ModalForm";
-import "#elements/sync/SyncStatusCard";
+import "#components/sync/SyncStatusCard";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { EVENT_REFRESH } from "#common/constants";
 
 import { AKElement } from "#elements/Base";
@@ -38,7 +38,7 @@ import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 export class KerberosSourceViewPage extends AKElement {
     @property({ type: String })
     set sourceSlug(slug: string) {
-        new SourcesApi(DEFAULT_CONFIG)
+        aki(SourcesApi)
             .sourcesKerberosRetrieve({
                 slug: slug,
             })
@@ -142,9 +142,7 @@ export class KerberosSourceViewPage extends AKElement {
                         >
                             <ak-sync-status-card
                                 .fetch=${() => {
-                                    return new SourcesApi(
-                                        DEFAULT_CONFIG,
-                                    ).sourcesKerberosSyncStatusRetrieve({
+                                    return aki(SourcesApi).sourcesKerberosSyncStatusRetrieve({
                                         slug: this.source?.slug,
                                     });
                                 }}
