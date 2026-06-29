@@ -9,7 +9,9 @@ from django.test import TestCase, TransactionTestCase
 from django.utils import timezone
 from freezegun import freeze_time
 
-from authentik.core.tests.utils import create_test_admin_user
+from authentik.core.tests.utils import create_test_admin_user, create_test_user
+from authentik.events.middleware import audit_ignore
+from authentik.events.models import Event, EventAction
 from authentik.lib.generators import generate_id
 from authentik.stages.authenticator import match_token, user_has_device, verify_token
 from authentik.stages.authenticator.models import Device, VerifyNotAllowed
@@ -238,3 +240,80 @@ class ConcurrencyTestCase(TransactionTestCase):
             thread.join()
 
         self.assertEqual(sum(1 for t in threads if t.verified is not None), 1)
+
+
+class TestDeviceEvents(TestCase):
+    """Test the events emitted when MFA devices are added/removed"""
+
+    def setUp(self):
+        self.user = create_test_user()
+
+    def _added(self):
+        return Event.objects.filter(
+            action=EventAction.MFA_DEVICE_ADDED, context__affected_user_pk=self.user.pk
+        )
+
+    def _removed(self):
+        return Event.objects.filter(
+            action=EventAction.MFA_DEVICE_REMOVED, context__affected_user_pk=self.user.pk
+        )
+
+    def test_added_on_confirmed_create(self):
+        """A confirmed device emits a single event carrying the owner and device details"""
+        device = self.user.staticdevice_set.create()
+        self.assertEqual(self._added().count(), 1)
+        context = self._added().get().context
+        self.assertEqual(context["mfa_device"]["type"], "staticdevice")
+        self.assertEqual(context["mfa_device"]["pk"], device.pk)
+
+    def test_not_added_on_unconfirmed_create(self):
+        """An unconfirmed (in-progress enrollment) device emits nothing"""
+        self.user.staticdevice_set.create(confirmed=False)
+        self.assertFalse(self._added().exists())
+
+    def test_added_on_confirm_transition(self):
+        """Confirming a previously-unconfirmed device emits exactly once"""
+        device = self.user.staticdevice_set.create(confirmed=False)
+        self.assertFalse(self._added().exists())
+        device.confirmed = True
+        device.save()
+        self.assertEqual(self._added().count(), 1)
+
+    def test_added_only_once(self):
+        """Re-saving an already-confirmed device (reloaded from db) does not emit again"""
+        device = self.user.staticdevice_set.create()
+        self.assertEqual(self._added().count(), 1)
+        reloaded = self.user.staticdevice_set.get(pk=device.pk)
+        reloaded.save()
+        self.assertEqual(self._added().count(), 1)
+
+    def test_removed_on_delete(self):
+        """Deleting a confirmed device directly emits a removal event for its owner"""
+        device = self.user.staticdevice_set.create()
+        device.delete()
+        self.assertEqual(self._removed().count(), 1)
+
+    def test_not_removed_on_unconfirmed_delete(self):
+        """Deleting an unconfirmed device emits nothing"""
+        device = self.user.staticdevice_set.create(confirmed=False)
+        device.delete()
+        self.assertFalse(self._removed().exists())
+
+    def test_not_removed_on_user_cascade(self):
+        """Deleting the owner must not emit a removal event per cascaded device"""
+        self.user.staticdevice_set.create()
+        user_pk = self.user.pk
+        self.user.delete()
+        self.assertFalse(
+            Event.objects.filter(
+                action=EventAction.MFA_DEVICE_REMOVED, context__affected_user_pk=user_pk
+            ).exists()
+        )
+
+    def test_audit_ignore_suppresses(self):
+        """audit_ignore() suppresses both add and remove events"""
+        with audit_ignore():
+            device = self.user.staticdevice_set.create()
+            device.delete()
+        self.assertFalse(self._added().exists())
+        self.assertFalse(self._removed().exists())

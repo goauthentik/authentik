@@ -13,7 +13,6 @@ from rest_framework.request import Request
 from authentik.core.models import AuthenticatedSession, User
 from authentik.core.signals import login_failed, password_changed, password_hash_changed
 from authentik.events.models import Event, EventAction
-from authentik.events.utils import get_user
 from authentik.flows.models import Stage
 from authentik.flows.planner import (
     PLAN_CONTEXT_DEVICE,

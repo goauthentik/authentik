@@ -24,6 +24,8 @@ export const EventActions = {
     UserOffboarded: "user_offboarded",
     SuspiciousRequest: "suspicious_request",
     PasswordSet: "password_set",
+    MfaDeviceAdded: "mfa_device_added",
+    MfaDeviceRemoved: "mfa_device_removed",
     SecretView: "secret_view",
     SecretRotate: "secret_rotate",
     InvitationUsed: "invitation_used",

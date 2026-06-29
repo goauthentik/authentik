@@ -50,8 +50,6 @@ class EmailTemplates(models.TextChoices):
     )
 
 
-
-
 def get_template_choices():
     """Get all available Email templates, including dynamically mounted ones.
     Directories are taken from TEMPLATES.DIR setting"""

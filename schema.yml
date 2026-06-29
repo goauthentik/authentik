@@ -40366,6 +40366,8 @@ components:
       - user_offboarded
       - suspicious_request
       - password_set
+      - mfa_device_added
+      - mfa_device_removed
       - secret_view
       - secret_rotate
       - invitation_used
