@@ -46,9 +46,7 @@ class SAMLPostSourceStage(PostSourceStage):
             source=source,
             user=user,
             session=auth_session,
-            session_index=session_data.get("session_index", ""),
-            name_id=session_data.get("name_id", ""),
-            name_id_format=session_data.get("name_id_format", ""),
+            **session_data,
         )
         LOGGER.debug(
             "Created SAMLSourceSession",
