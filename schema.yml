@@ -53861,6 +53861,9 @@ components:
               $ref: '#/components/schemas/ErrorDetail'
         to:
           type: string
+        final_redirect:
+          type: boolean
+          default: false
       required:
       - to
     RedirectChallengeResponseRequest:
