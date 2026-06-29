@@ -17,6 +17,7 @@ To create or edit a source in authentik, open the Admin interface and navigate t
 - **Enabled**: Toggle this option on to allow authentik to use the defined LDAP source.
 - **Update internal password on login**: When the user logs in to authentik using the LDAP password backend, the password is stored as a hashed value in authentik. Toggle off (default setting) if you do not want to store the hashed passwords in authentik.
 - **Sync users**: Enable or disable user synchronization between authentik and the LDAP source.
+- **Sync ysers just-in-time** Enable or disable just-in-time user provisioning. Users will be synced from LDAP when they first log in.
 - **User password writeback**: Enable this option if you want to write password changes that are made in authentik back to LDAP. This requires authentik to receive the raw password; [hashed-password imports](../../../../install-config/automated-install.mdx#authentik_bootstrap_password_hash) are not written back to LDAP.
 - **Sync groups**: Enable/disable group synchronization between authentik and the LDAP source.
 - **Delete Not Found Objects**: :ak-version[2025.6] This option synchronizes user and group deletions from LDAP sources to authentik. User deletion requires enabling **Sync users** and group deletion requires enabling **Sync groups**.
@@ -53,6 +54,7 @@ If the LDAP server rejects the TLS handshake, verify that **Server URI**, **Enab
 - **Additional Group DN**: Prepended to the base DN for group queries.
 - **User object filter**: Consider objects matching this filter to be users.
 - **Group object filter**: Consider objects matching this filter to be groups.
+- **User just-in-time search filter** Filter template used when searching for user accounts when just-in-time user syncing is enabled.
 - **Lookup using a user attribute**: Acquire group membership from a User object attribute (`memberOf`) instead of a Group attribute (`member`). This works with directories with nested group memberships (Active Directory, RedHat IDM/FreeIPA), using `memberOf:1.2.840.113556.1.4.1941:` as the group membership field.
 - **Group membership field**: The user object attribute or the group object attribute that determines the group membership for a user. If **Lookup using a user attribute** is set, this should be a user object attribute, otherwise a group object attribute.
 - **User membership attribute**: Attribute name on authentik user objects that is checked against the **Group membership field**. Two common cases are:
