@@ -12260,7 +12260,7 @@ Bindings to groups/users are checked against the user of the event.</target>
 </trans-unit>
 <trans-unit id="s4e8256e5793952d7">
   <source>If checked, this application will not be shown on the user&apos;s Application Dashboard.</source>
-  <target>If checked, this application will not be shown on the user&apos;s Application Dashboard.</target>
+  <target>إذا تم تحديده، فلن يظهر هذا التطبيق في لوحة تطبيقات المستخدم.</target>
 </trans-unit>
 <trans-unit id="s7d9707524fb7e539">
   <source>The publisher is shown in the Application Dashboard.</source>
