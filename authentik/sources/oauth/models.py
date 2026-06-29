@@ -66,6 +66,15 @@ class OAuthSource(NonCreatableType, Source):
     additional_scopes = models.TextField(
         default="", blank=True, verbose_name=_("Additional Scopes")
     )
+    forward_query_parameters = models.TextField(
+        default="",
+        blank=True,
+        verbose_name=_("Forward Query Parameters"),
+        help_text=_(
+            "Comma-separated list of query parameter names that should be forwarded from the "
+            "authorization request to the upstream Identity Provider's authorization URL."
+        ),
+    )
     consumer_key = models.TextField()
     consumer_secret = models.TextField()
 
