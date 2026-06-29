@@ -3438,26 +3438,6 @@
   <source>If the password&apos;s score is less than or equal this value, the policy will fail.</source>
   <target>If the password&apos;s score is less than or equal this value, the policy will fail.</target>
 </trans-unit>
-<trans-unit id="sd94e99af8b41ff54">
-  <source>0: Too guessable: risky password. (guesses &amp;lt; 10^3)</source>
-  <target>0: Too guessable: risky password. (guesses &amp;lt; 10^3)</target>
-</trans-unit>
-<trans-unit id="sc926385d1a624c3a">
-  <source>1: Very guessable: protection from throttled online attacks. (guesses &amp;lt; 10^6)</source>
-  <target>1: Very guessable: protection from throttled online attacks. (guesses &amp;lt; 10^6)</target>
-</trans-unit>
-<trans-unit id="s8aae61c41319602c">
-  <source>2: Somewhat guessable: protection from unthrottled online attacks. (guesses &amp;lt; 10^8)</source>
-  <target>2: Somewhat guessable: protection from unthrottled online attacks. (guesses &amp;lt; 10^8)</target>
-</trans-unit>
-<trans-unit id="sc1f4b57e722a89d6">
-  <source>3: Safely unguessable: moderate protection from offline slow-hash scenario. (guesses &amp;lt; 10^10)</source>
-  <target>3: Safely unguessable: moderate protection from offline slow-hash scenario. (guesses &amp;lt; 10^10)</target>
-</trans-unit>
-<trans-unit id="sd47f3d3c9741343d">
-  <source>4: Very unguessable: strong protection from offline slow-hash scenario. (guesses &amp;gt;= 10^10)</source>
-  <target>4: Very unguessable: strong protection from offline slow-hash scenario. (guesses &amp;gt;= 10^10)</target>
-</trans-unit>
 <trans-unit id="sd6cd7ce2310a73a4">
   <source>Checks the value from the policy request against several rules, mostly used to ensure password strength.</source>
   <target>Checks the value from the policy request against several rules, mostly used to ensure password strength.</target>
@@ -11786,11 +11766,6 @@ Bindings to groups/users are checked against the user of the event.</target>
   <target>No <x id="0" equiv-text="${verboseNamePlural.toLocaleLowerCase(this.activeLanguageTag)}"/> found.</target>
   <note from="lit-localize">The message to show when a table has no content. The placeholder {0} is replaced with the pluralized name of the type of entity being shown in the table.</note>
 </trans-unit>
-<trans-unit id="user.display.emailInAngleBrackets">
-  <source>&lt;<x id="0" equiv-text="${email}"/>&gt;</source>
-  <target>&lt;&lt;x id=&quot;0&quot; equiv-text=&quot;${email}&quot;/&gt;&gt;</target>
-  <note from="lit-localize">The user&apos;s email in angle brackets, used when the email is different from the username</note>
-</trans-unit>
 <trans-unit id="user.display.nameInParens">
   <source>(<x id="0" equiv-text="${name}"/>)</source>
   <target>(<x id="0" equiv-text="${name}"/>)</target>
@@ -12492,6 +12467,30 @@ Bindings to groups/users are checked against the user of the event.</target>
 <trans-unit id="s7a72b0fd722d51e0">
   <source>Waiting for dependencies</source>
   <target>بانتظار التبعيات</target>
+</trans-unit>
+<trans-unit id="policy.password.score-threshold.description.too-guessable">
+  <source>0: Too guessable: risky password. (guesses &lt; 10^3)</source>
+  <target>0: سهل التخمين جدًا: كلمة مرور خطيرة. (التخمينات &amp;lt; 10^3)</target>
+</trans-unit>
+<trans-unit id="policy.password.score-threshold.description.very-guessable">
+  <source>1: Very guessable: protection from throttled online attacks. (guesses &lt; 10^6)</source>
+  <target>1: سهل التخمين: حماية من الهجمات المقيّدة عبر الإنترنت. (التخمينات &amp;lt; 10^6)</target>
+</trans-unit>
+<trans-unit id="policy.password.score-threshold.description.somewhat-guessable">
+  <source>2: Somewhat guessable: protection from unthrottled online attacks. (guesses &lt; 10^8)</source>
+  <target>2: قابل للتخمين إلى حد ما: حماية من الهجمات غير المقيّدة عبر الإنترنت. (التخمينات &amp;lt; 10^8)</target>
+</trans-unit>
+<trans-unit id="policy.password.score-threshold.description.safely-unguessable">
+  <source>3: Safely unguessable: moderate protection from offline slow-hash scenario. (guesses &lt; 10^10)</source>
+  <target>3: يصعب تخمينه بأمان: حماية معتدلة من سيناريو التجزئة البطيئة دون اتصال. (التخمينات &amp;lt; 10^10)</target>
+</trans-unit>
+<trans-unit id="policy.password.score-threshold.description.very-unguessable">
+  <source>4: Very unguessable: strong protection from offline slow-hash scenario. (guesses &gt;= 10^10)</source>
+  <target>4: يصعب تخمينه جدًا: حماية قوية من سيناريو التجزئة البطيئة دون اتصال. (التخمينات &amp;gt;= 10^10)</target>
+</trans-unit>
+<trans-unit id="sb45f9fb4dba6e71a">
+  <source>Unset</source>
+  <target>غير محدد</target>
 </trans-unit>
 </body>
 </file>
