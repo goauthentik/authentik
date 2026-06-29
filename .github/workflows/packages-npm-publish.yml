@@ -8,6 +8,9 @@ on:
       - packages/tsconfig/**
       - packages/eslint-config/**
       - packages/prettier-config/**
+      - packages/oxlint-config/**
+      - packages/oxfmt-config/**
+      - packages/logger-js
       - packages/docusaurus-config/**
       - packages/esbuild-plugin-live-reload/**
   workflow_dispatch:
@@ -28,8 +31,10 @@ jobs:
           - packages/tsconfig
           - packages/eslint-config
           - packages/prettier-config
-          - packages/docusaurus-config
+          - packages/oxlint-config/**
+          - packages/oxfmt-config/**
           - packages/logger-js
+          - packages/docusaurus-config
           - packages/esbuild-plugin-live-reload
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v5

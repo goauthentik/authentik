@@ -1,0 +1,47 @@
+{
+    "name": "@goauthentik/oxlint-config",
+    "version": "1.0.0",
+    "description": "authentik's Oxlint config",
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/goauthentik/authentik.git",
+        "directory": "packages/oxlint-config"
+    },
+    "scripts": {
+        "build": "tsc -p ."
+    },
+    "type": "module",
+    "types": "./out/index.d.ts",
+    "exports": {
+        "./package.json": "./package.json",
+        ".": {
+            "import": "./out/index.js",
+            "types": "./out/index.d.ts"
+        },
+        "./plugin": {
+            "import": "./out/plugin.js",
+            "types": "./out/plugin.d.ts"
+        }
+    },
+    "devDependencies": {
+        "@goauthentik/tsconfig": "../tsconfig",
+        "typescript": "^6.0.3",
+        "typescript-eslint": "^8.59.3"
+    },
+    "peerDependencies": {
+        "oxlint": "^1.71.0"
+    },
+    "files": [
+        "out/**/*.js",
+        "out/**/*.d.ts",
+        "out/**/*.map",
+        "src"
+    ],
+    "engines": {
+        "node": ">=24.0"
+    },
+    "publishConfig": {
+        "access": "public"
+    }
+}
