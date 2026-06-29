@@ -11500,7 +11500,7 @@ Bindings to groups/users are checked against the user of the event.</target>
 </trans-unit>
 <trans-unit id="se0bf7f662ec09302">
   <source>An error occurred while loading <x id="0" equiv-text="${this.verboseName}"/>.</source>
-  <target>An error occurred while loading <x id="0" equiv-text="${this.verboseName}"/>.</target>
+  <target>حدث خطأ أثناء تحميل <x id="0" equiv-text="${this.verboseName}"/>.</target>
 </trans-unit>
 <trans-unit id="s4fd2fe9adfd426e9">
   <source>Select an option...</source>
