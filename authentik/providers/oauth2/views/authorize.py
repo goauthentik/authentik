@@ -153,7 +153,7 @@ class OAuthAuthorizationParams:
             raise ClientIdError(client_id=self.client_id)
         self.check_redirect_uri()
         if self.request:
-            # We don't support request objects, so we buttThe error must still be returned to the
+            # We don't support request objects, but the error must still be returned to the
             # client using the response mode and type it requested - which, may only be present
             # inside the request object. So we parse just enough to handle this
             self.resolve_routing_from_request_object()
