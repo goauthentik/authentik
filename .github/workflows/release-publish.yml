@@ -3,7 +3,7 @@ name: Release - On publish
 
 on:
   release:
-    types: [published, created]
+    types: published
 
 jobs:
   metadata:
@@ -24,6 +24,7 @@ jobs:
           echo "version=$(jq -r '.version')" >> "$GITHUB_OUTPUT"
           echo "major-version=$(jq -r '.major_version')" >> "$GITHUB_OUTPUT"
           echo "release-reason=$(jq -r '.release_reason')" >> "$GITHUB_OUTPUT"
+          echo "changelog-url=$(jq -r '.changelog_url')" >> "$GITHUB_OUTPUT"
   publish-containers:
     runs-on: ubuntu-latest
     permissions:
@@ -59,7 +60,7 @@ jobs:
       - id: publish
         name: Publish container
         run: |
-          regctl import import "ocidir://${{ matrix.name }}:${{ needs.metadata.outputs.version }}" "${{ matrix.name }}.oci.tar"
+          regctl image import "ocidir://${{ matrix.name }}:${{ needs.metadata.outputs.version }}" "${{ matrix.name }}.oci.tar"
           echo "digest=$(regctl image digest "ocidir://${{ matrix.name }}:${{ needs.metadata.outputs.version }}")" >> "$GITHUB_OUTPUT"
           regctl image import "ghcr.io/goauthentik/${{ matrix.name }}:${{ needs.metadata.outputs.version }}" "${{ matrix.name }}.oci.tar"
           regctl image import "ghcr.io/goauthentik/${{ matrix.name }}:${{ needs.metadata.outputs.major-version }}" "${{ matrix.name }}.oci.tar"
@@ -102,7 +103,7 @@ jobs:
         with:
           tags: |
             ghcr.io/goauthentik/docs:${{ needs.metadata.outputs.version }}
-            ghcr.io/goauthentik/docs:${{ needs.metadata.outputs.major_version }}
+            ghcr.io/goauthentik/docs:${{ needs.metadata.outputs.major-version }}
           file: website/Dockerfile
           push: true
           platforms: linux/amd64,linux/arm64
@@ -133,8 +134,9 @@ jobs:
         run: |
           aws s3 cp --acl=public-read lifecycle/aws/template.yaml s3://authentik-cloudformation-templates/authentik.ecs.${{ github.ref }}.yaml
           aws s3 cp --acl=public-read lifecycle/aws/template.yaml s3://authentik-cloudformation-templates/authentik.ecs.${{ needs.metadata.outputs.tag-name }}.yaml
-          # TODO: only if latest
-          aws s3 cp --acl=public-read lifecycle/aws/template.yaml s3://authentik-cloudformation-templates/authentik.ecs.latest.yaml
+          if [ "$(gh release list --json tagName,isLatest --jq '.[] | select(.tagName=="version/2026.5.2") | .isLatest')" = "true" ]; then
+            aws s3 cp --acl=public-read lifecycle/aws/template.yaml s3://authentik-cloudformation-templates/authentik.ecs.latest.yaml
+          fi
   sentry-release:
     needs:
       - publish-containers
@@ -157,3 +159,89 @@ jobs:
           release: "authentik@${{ needs.metadata.outputs.version }}"
           sourcemaps: "./web/dist"
           url_prefix: "~/static/dist"
+  bump-version:
+    name: Bump version repository
+    needs:
+      - metadata
+      - publish-containers
+    if: ${{ needs.metadata.outputs.release-reason != 'prerelease' }}
+    runs-on: ubuntu-latest
+    steps:
+      - id: app-token
+        name: Generate app token
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v2
+        with:
+          client-id: ${{ secrets.GH_APP_ID }}
+          private-key: ${{ secrets.GH_APP_PRIV_KEY }}
+          repositories: version
+      - id: get-user-id
+        name: Get GitHub app user ID
+        run: echo "user-id=$(gh api "/users/${{ steps.app-token.outputs.app-slug }}[bot]" --jq .id)" >> "$GITHUB_OUTPUT"
+        env:
+          GH_TOKEN: "${{ steps.app-token.outputs.token }}"
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v5
+        with:
+          repository: "${{ github.repository_owner }}/version"
+          token: "${{ steps.app-token.outputs.token }}"
+      - name: Bump version
+        run: |
+          jq \
+            --arg version "${{ needs.metadata.outputs.version }}" \
+            --arg changelog "See ${{ needs.metadata.outputs.changelog-url }}" \
+            --arg changelog_url "${{ needs.metadata.outputs.changelog-url }}" \
+            --arg reason "${{ needs.metadata.outputs.release-reason }}" \
+            '.stable.version = $version | .stable.changelog = $changelog | .stable.changelog_url = $changelog_url | .stable.reason = $reason' version.json > version.new.json
+          mv version.new.json version.json
+      - name: Create pull request
+        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v7
+        with:
+          token: "${{ steps.app-token.outputs.token }}"
+          branch: bump-${{ needs.metadata.outputs.version }}
+          commit-message: "version: bump to ${{ needs.metadata.outputs.version }}"
+          title: "version: bump to ${{ needs.metadata.outputs.version }}"
+          body: "See ${{ needs.metadata.outputs.changelog-url }}"
+          delete-branch: true
+          signoff: true
+          author: "${{ steps.app-token.outputs.app-slug }}[bot] <${{ steps.get-user-id.outputs.user-id }}+${{ steps.app-token.outputs.app-slug }}[bot]@users.noreply.github.com>"
+  bump-helm:
+    name: Bump Helm version
+    needs:
+      - metadata
+      - publish-containers
+    if: ${{ needs.metadata.outputs.release-reason != 'prerelease' }}
+    runs-on: ubuntu-latest
+    steps:
+      - id: app-token
+        name: Generate app token
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v2
+        with:
+          client-id: ${{ secrets.GH_APP_ID }}
+          private-key: ${{ secrets.GH_APP_PRIV_KEY }}
+          repositories: helm
+      - id: get-user-id
+        name: Get GitHub app user ID
+        run: echo "user-id=$(gh api "/users/${{ steps.app-token.outputs.app-slug }}[bot]" --jq .id)" >> "$GITHUB_OUTPUT"
+        env:
+          GH_TOKEN: "${{ steps.app-token.outputs.token }}"
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v5
+        with:
+          repository: "${{ github.repository_owner }}/helm"
+          token: "${{ steps.app-token.outputs.token }}"
+      - name: Bump version
+        run: |
+          sed -i 's/^version: .*/version: ${{ needs.metadata.outputs.version }}/' charts/authentik/Chart.yaml
+          sed -i 's/^appVersion: .*/appVersion: ${{ needs.metadata.outputs.version }}/' charts/authentik/Chart.yaml
+          sed -i 's/upgrade to authentik .*/upgrade to authentik ${{ needs.metadata.outputs.version }}/' charts/authentik/Chart.yaml
+          sed -E -i 's/[0-9]{4}\.[0-9]{1,2}\.[0-9]+$/${{ needs.metadata.outputs.version }}/' charts/authentik/Chart.yaml
+          ./scripts/helm-docs.sh
+      - name: Create pull request
+        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v7
+        with:
+          token: "${{ steps.app-token.outputs.token }}"
+          branch: bump-${{ needs.metadata.outputs.version }}
+          commit-message: "charts/authentik: bump to ${{ needs.metadata.outputs.version }}"
+          title: "charts/authentik: bump to ${{ needs.metadata.outputs.version }}"
+          body: "See ${{ needs.metadata.outputs.changelog-url }}"
+          delete-branch: true
+          signoff: true
+          author: "${{ steps.app-token.outputs.app-slug }}[bot] <${{ steps.get-user-id.outputs.user-id }}+${{ steps.app-token.outputs.app-slug }}[bot]@users.noreply.github.com>"
