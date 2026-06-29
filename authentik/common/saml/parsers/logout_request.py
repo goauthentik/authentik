@@ -42,7 +42,7 @@ class LogoutRequestParser:
         if not name_ids:
             name_ids = root.findall(f"{{{NS_SAML_PROTOCOL}}}NameID")
         if len(name_ids) > 0:
-            request.name_id = name_ids[0].text
+            request.name_id = "".join(name_ids[0].itertext()) or None
             if "Format" in name_ids[0].attrib:
                 request.name_id_format = name_ids[0].attrib["Format"]
 
