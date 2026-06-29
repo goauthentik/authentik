@@ -11968,7 +11968,7 @@ Bindings to groups/users are checked against the user of the event.</target>
 </trans-unit>
 <trans-unit id="s1c23a9eed1a415df">
   <source>Warning: You are about to delete user <x id="0" equiv-text="${shouldShowWarning.username}"/>, but you are currently logged in as this user. Proceed at your own risk.</source>
-  <target>Warning: You are about to delete user <x id="0" equiv-text="${shouldShowWarning.username}"/>, but you are currently logged in as this user. Proceed at your own risk.</target>
+  <target>تحذير: أنت على وشك حذف المستخدم <x id="0" equiv-text="${shouldShowWarning.username}"/>، لكنك مسجّل الدخول حالياً بهذا المستخدم. تابع على مسؤوليتك الخاصة.</target>
 </trans-unit>
 <trans-unit id="s11064f3323dac957">
   <source>Account Lockdown</source>
