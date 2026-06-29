@@ -11758,7 +11758,7 @@ Bindings to groups/users are checked against the user of the event.</target>
 </trans-unit>
 <trans-unit id="usedBy.count.one">
   <source><x id="0" equiv-text="${verboseName}"/> is associated with one object.</source>
-  <target><x id="0" equiv-text="${verboseName}"/> is associated with one object.</target>
+  <target><x id="0" equiv-text="${verboseName}"/> مرتبط بكائن واحد.</target>
   <note from="lit-localize">Singular: exactly one object uses this entity.</note>
 </trans-unit>
 <trans-unit id="table.empty">
