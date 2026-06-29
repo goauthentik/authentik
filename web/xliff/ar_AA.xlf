@@ -284,7 +284,7 @@
 </trans-unit>
 <trans-unit id="s14622ee6de586485">
   <source>Attempted to log in as <x id="0" equiv-text="${this.event.context.username}"/></source>
-  <target>Attempted to log in as <x id="0" equiv-text="${this.event.context.username}"/></target>
+  <target>محاولة تسجيل الدخول باسم <x id="0" equiv-text="${this.event.context.username}"/></target>
 </trans-unit>
 <trans-unit id="sb07bf992e3d00664">
   <source>No additional data available.</source>
