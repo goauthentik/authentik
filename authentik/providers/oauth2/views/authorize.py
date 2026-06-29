@@ -161,10 +161,10 @@ class OAuthAuthorizationParams:
             self.set_default_response_mode()
             raise AuthorizeError(
                 self.redirect_uri,
-                "request_not_supported",
-                self.grant_type or "",
-                self.state,
-                self.response_mode,
+                error="request_not_supported",
+                grant_type=self.grant_type or "",
+                state=self.state,
+                response_mode=self.response_mode,
             )
         self.check_grant()
         self.check_scope(github_compat)
@@ -217,21 +217,21 @@ class OAuthAuthorizationParams:
         if not self.grant_type:
             LOGGER.warning("Invalid response type", type=self.response_type)
             raise AuthorizeError(
-                self.redirect_uri,
-                "unsupported_response_type",
-                "",
-                self.state,
-                self.response_mode,
+                redirect_uri=self.redirect_uri,
+                error="unsupported_response_type",
+                grant_type="",
+                state=self.state,
+                response_mode=self.response_mode,
             )
 
         if self.grant_type not in self.provider.grant_types:
             LOGGER.warning("Invalid grant_type for provider", grant_type=self.grant_type)
             raise AuthorizeError(
-                self.redirect_uri,
-                "invalid_request",
-                self.grant_type,
-                self.state,
-                self.response_mode,
+                redirect_uri=self.redirect_uri,
+                error="invalid_request",
+                grant_type=self.grant_type,
+                state=self.state,
+                response_mode=self.response_mode,
             )
 
         self.set_default_response_mode()
@@ -299,11 +299,11 @@ class OAuthAuthorizationParams:
         ):
             LOGGER.warning("Missing 'openid' scope.")
             raise AuthorizeError(
-                self.redirect_uri,
-                "invalid_scope",
-                self.grant_type,
-                self.state,
-                self.response_mode,
+                redirect_uri=self.redirect_uri,
+                error="invalid_scope",
+                grant_type=self.grant_type,
+                state=self.state,
+                response_mode=self.response_mode,
             ).with_cause("scope_openid_missing")
         if SCOPE_OFFLINE_ACCESS in self.scope:
             # https://openid.net/specs/openid-connect-core-1_0.html#OfflineAccess
@@ -340,11 +340,11 @@ class OAuthAuthorizationParams:
         if not self.nonce:
             LOGGER.warning("Missing nonce for OpenID Request")
             raise AuthorizeError(
-                self.redirect_uri,
-                "invalid_request",
-                self.grant_type,
-                self.state,
-                self.response_mode,
+                redirect_uri=self.redirect_uri,
+                error="invalid_request",
+                grant_type=self.grant_type,
+                state=self.state,
+                response_mode=self.response_mode,
             ).with_cause("nonce_missing")
 
     def check_code_challenge(self):
@@ -354,12 +354,12 @@ class OAuthAuthorizationParams:
             PKCE_METHOD_S256,
         ]:
             raise AuthorizeError(
-                self.redirect_uri,
-                "invalid_request",
-                self.grant_type,
-                self.state,
-                self.response_mode,
-                f"Unsupported challenge method {self.code_challenge_method}",
+                redirect_uri=self.redirect_uri,
+                error="invalid_request",
+                grant_type=self.grant_type,
+                state=self.state,
+                response_mode=self.response_mode,
+                description=f"Unsupported challenge method {self.code_challenge_method}",
             )
 
     def create_code(self, request: HttpRequest) -> AuthorizationCode:
