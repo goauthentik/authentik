@@ -30,6 +30,7 @@ from authentik.lib.utils.time import timedelta_from_string
 from authentik.policies.models import Policy, PolicyBinding
 from authentik.policies.process import PolicyProcess
 from authentik.policies.types import PolicyRequest, PolicyResult
+from authentik.policies.utils import delete_none_values
 from authentik.providers.oauth2.id_token import IDToken
 from authentik.providers.oauth2.models import AccessToken, OAuth2Provider
 from authentik.stages.authenticator import devices_for_user
@@ -82,6 +83,7 @@ class BaseEvaluator:
             "resolve_dns": BaseEvaluator.expr_resolve_dns,
             "reverse_dns": BaseEvaluator.expr_reverse_dns,
             "slugify": slugify,
+            "delete_none_values": delete_none_values,
         }
         self._context = {}
 

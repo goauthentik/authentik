@@ -34,7 +34,7 @@ entries:
       scope_name: profile
       description: "General Profile Information"
       expression: |
-        return {
+        return delete_none_values({
             "name": request.user.name,
             "given_name": ak_obj_attr(request.user, "given_name", "name"),
             "family_name": ak_obj_attr(request.user, "family_name"),
@@ -42,7 +42,7 @@ entries:
             "nickname": request.user.username,
             "groups": [group.name for group in request.user.groups.all()],
             "picture": request.user.avatar,
-        }
+        })
   - identifiers:
       managed: goauthentik.io/providers/oauth2/scope-entitlements
     model: authentik_providers_oauth2.scopemapping
