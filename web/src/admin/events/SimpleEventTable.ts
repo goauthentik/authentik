@@ -46,7 +46,11 @@ export abstract class SimpleEventTable extends Table<Event> {
 
     row(item: EventWithContext): RowType[] {
         return [
-            html`<div><a href="${`#/events/log/${item.pk}`}">${actionToLabel(item.action)}</a></div>
+            html`<div>
+                    <a href="${`#/events/log/${item.pk}`}"
+                        >${actionToLabel(item.action, item.context)}</a
+                    >
+                </div>
                 <small>${item.app}</small>`,
             renderEventUser(item),
             [Timestamp(item.created), { style: "white-space: nowrap;" }],

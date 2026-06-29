@@ -2,6 +2,8 @@
  * @file Contains various label maps for API enums and other values that we want to display in the UI.
  */
 
+import { EventContext, EventModel } from "./events";
+
 import { MessageFormatter } from "#common/ui/locale/format";
 
 import {
@@ -28,7 +30,10 @@ export function formatIntentLabel(intent: IntentEnum = IntentEnum.Api): string {
     return IntentLabelRecord[intent]();
 }
 
-export const EventActionLabelRecord: Record<EventActions, MessageFormatter<string>> = {
+export const EventActionLabelRecord: Record<
+    EventActions,
+    MessageFormatter<string, [context?: EventContext]>
+> = {
     [EventActions.Login]: () => msg("Login"),
     [EventActions.LoginFailed]: () => msg("Failed login"),
     [EventActions.Logout]: () => msg("Logout"),
@@ -53,9 +58,18 @@ export const EventActionLabelRecord: Record<EventActions, MessageFormatter<strin
     [EventActions.SystemException]: () => msg("General system exception"),
     [EventActions.ConfigurationError]: () => msg("Configuration error"),
     [EventActions.ConfigurationWarning]: () => msg("Configuration warning"),
-    [EventActions.ModelCreated]: () => msg("Model created"),
-    [EventActions.ModelUpdated]: () => msg("Model updated"),
-    [EventActions.ModelDeleted]: () => msg("Model deleted"),
+    [EventActions.ModelCreated]: (context?: EventContext) =>
+        context
+            ? msg(str`Model created (${(context.model as EventModel).model_name})`)
+            : msg("Model created"),
+    [EventActions.ModelUpdated]: (context?: EventContext) =>
+        context
+            ? msg(str`Model updated (${(context.model as EventModel).model_name})`)
+            : msg("Model updated"),
+    [EventActions.ModelDeleted]: (context?: EventContext) =>
+        context
+            ? msg(str`Model deleted (${(context.model as EventModel).model_name})`)
+            : msg("Model deleted"),
     [EventActions.EmailSent]: () => msg("Email sent"),
     [EventActions.UpdateAvailable]: () => msg("Update available"),
     [EventActions.ExportReady]: () => msg("Data export ready"),
@@ -67,10 +81,10 @@ export const EventActionLabelRecord: Record<EventActions, MessageFormatter<strin
     [EventActions.Custom]: () => msg("Custom action"),
 };
 
-export function actionToLabel(action?: EventActions): string {
+export function actionToLabel(action?: EventActions, context?: EventContext): string {
     const formatter = action ? EventActionLabelRecord[action] : null;
 
-    return formatter?.() || "";
+    return formatter?.(context) || "";
 }
 
 const SeverityEnumLabelRecord: Record<SeverityEnum, MessageFormatter<string>> = {

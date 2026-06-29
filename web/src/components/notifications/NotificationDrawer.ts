@@ -81,7 +81,7 @@ export class NotificationDrawer extends WithNotifications(WithSession(AKElement)
     }
 
     #renderItem = (item: Notification): TemplateResult => {
-        const label = actionToLabel(item.event?.action);
+        const label = actionToLabel(item.event?.action, item.event?.context);
         const level = severityToLevel(item.severity);
 
         // There's little information we can have to determine if the body
