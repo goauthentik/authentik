@@ -1,25 +1,23 @@
 ---
-title: Integrate with Rocket.chat
-sidebar_label: Rocket.chat
+title: Integrate with Rocket.Chat
+sidebar_label: Rocket.Chat
 support_level: community
 ---
 
-## What is Rocket.chat?
+import RedirectURI20265Note from "../../\_redirect-uri-2026-5-note.mdx";
 
-> Rocket.Chat is an open-source fully customizable communications platform developed in JavaScript for organizations with high standards of data protection. It is licensed under the MIT License with some other licenses mixed in. See [Rocket.chat GitHub](https://github.com/RocketChat/Rocket.Chat/blob/develop/LICENSE) for licensing information.
+## What is Rocket.Chat?
+
+> Centralize real-time messaging, voice, video, AI, and apps for secure, reliable and unified communication among internal and external stakeholders.
 >
-> -- https://github.com/RocketChat/Rocket.Chat
-
-:::info
-This is based on authentik 2022.3.1 and Rocket.chat 4.5.1 using the [Docker Compose install](https://docs.rocket.chat/quick-start/installing-and-updating/rapid-deployment-methods/docker-and-docker-compose/docker-containers). Instructions may differ between versions.
-:::
+> -- https://www.rocket.chat/
 
 ## Preparation
 
 The following placeholders are used in this guide:
 
-- `rocket.company` is the FQDN of Rocket.chat installation.
-- `authentik.company` is the FQDN of authentik installation.
+- `rocket.company` is the FQDN of the Rocket.Chat installation.
+- `authentik.company` is the FQDN of the authentik installation.
 
 :::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
@@ -27,99 +25,70 @@ This documentation lists only the settings that you need to change from their de
 
 ## authentik configuration
 
-To support the integration of Rocket.chat with authentik, you need to create an application/provider pair in authentik.
+<RedirectURI20265Note />
+
+To support the integration of Rocket.Chat with authentik, you need to create an application/provider pair in authentik.
 
 ### Create an application and provider in authentik
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
-
-- **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
-- **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
-- **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
-    - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
-    - Set a `Strict` redirect URI to `https://rocket.company/\_oauth/authentik`.
-    - Select any available signing key.
-- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
+    - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
+    - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+        - Note the **Client ID** and **Client Secret** values because they will be required later.
+        - Add a **Redirect URI** of type `Strict` `Authorization` as `https://rocket.company/_oauth/authentik`.
+        - Select any available signing key.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 
 3. Click **Submit** to save the new application and provider.
 
-## Rocket.chat configuration
+## Rocket.Chat configuration
 
-:::info
-Only settings that have been modified from default have been listed.
+This guide uses `authentik` as the Rocket.Chat custom OAuth name. If you choose a different name, update the redirect URI in authentik to match the callback URL shown by Rocket.Chat.
 
-You may have different settings for some of the group and role mapping for advanced configurations. The settings below are the base settings to connect authentik and Rocket.chat.
-:::
+1. Log in to Rocket.Chat as a system administrator.
+2. Navigate to **Manage** > **Workspace** > **Settings** > **OAuth**.
+3. Click **Add custom OAuth**, enter `authentik` as the unique name, and click **Add**.
+4. Open the new custom OAuth configuration and configure the following settings:
+    - **Enable**: turn the switch on.
+    - **URL**: `https://authentik.company/application/o`
+    - **Token Path**: `/token/`
+    - **Identity Path**: `/userinfo/`
+    - **Authorize Path**: `/authorize/`
+    - **Scope**: `openid email profile`
+    - **Id**: the Client ID from authentik
+    - **Secret**: the Client Secret from authentik
+    - **Login Style**: `Redirect`
+    - **Button Text**: `Login with authentik`
+    - **Username field**: `preferred_username`
+    - **Email field**: `email`
+    - **Name field**: `name`
 
-In Rocket.chat, follow the procedure below:
+5. Click **Save changes**.
+6. Click **Refresh OAuth Services**.
 
-1. Log in as a System Administrator, click your avatar, and choose **Administration**
+To link existing Rocket.Chat users to authentik identities with matching usernames, enable **Merge users** before users sign in with authentik.
 
-2. Scroll down and click **OAuth**
+### Optional account settings
 
-3. In the top-right corner, click **Add custom OAuth**
+Navigate to **Manage** > **Workspace** > **Settings** > **Accounts** and disable the following settings:
 
-4. Give your new oauth the name of _Authentik_, then click **Send**
+- **Allow Name Change**
+- **Allow Username Change**
+- **Allow Email Change**
+- **Allow Password Change for OAuth Users**
 
-![](./rocketchat6.png)
+If authentik handles multi-factor authentication, review **Accounts** > **Two Factor Authentication** and avoid enabling Rocket.Chat two-factor authentication for OAuth users unless you want them to complete an additional challenge after returning from authentik.
 
-5. Scroll down to the new OAuth application, expand the dropdown, and enter the following settings:
-    - Enable: Turn the radio button to the **on** position
-    - URL: https://authentik.company/application/o
-    - Token Path: /token/
-    - Token Sent Via: Payload
-    - Identity Token Sent Via: Same as "Token Sent Via"
-    - Identity Path: /userinfo/
-    - Authorize Path: /authorize/
-    - Scope: email profile openid
-    - Param Name for access token: access_token
-    - Id: _THIS IS THE CLIENT ID YOU COPIED FROM STEP 1 in authentik_
-    - Secret: _THIS IS THE CLIENT SECRET YOU COPIED FROM STEP 1 in authentik_
-    - Login Style: Redirect
-    - Button Text: _Fill in with what you want the SSO button to say_
-    - Button Text Color: _Hex Color for Text on the SSO login button_
-    - Button Color: _Hex Color for the SSO login button_
-    - Key Field: Username
-    - Username field: preferred_username
-    - Email field: email
-    - Name field: name
-    - Roles/Groups field name: groups
-    - Roles/Groups field for channel mapping: groups
-    - User Data Group Map: rocket.cat
-    - Merge users: Turn the radio button to the **on** position
-    - Show Button on Login Page: Turn the radio button to the **on** position
+To prevent password self-registration, navigate to **Accounts** > **Registration** and set **Registration Form** to **Disabled**.
 
-    ![](./rocketchat7.png)
+## Configuration verification
 
-    ![](./rocketchat8.png)
+To confirm that authentik is properly configured with Rocket.Chat, log out of Rocket.Chat and log back in using **Login with authentik**.
 
-    ![](./rocketchat9.png)
+## Resources
 
-    ![](./rocketchat10.png)
-
-6. Click _Save changes_ in the top-right corner of the screen
-
-### Step 4 (optional)
-
-:::info
-By default, Rocket.chat will attempt to use two-factor authentication with any new user coming in to the system and allows users to change their information
-:::
-
-**To disable changing user information and other options inside Rocket.chat:**
-
-Navigate to the _Accounts_ settings to change the following:
-
-- Allow Name Change: Off
-- Allow Username Change: Off
-- Allow Email Change: Off
-- Allow Password Change for OAuth Users: Off
-
-**If you are using Two Factor authentication through authentik:**
-
-Navigate to the _Accounts_ settings, Scroll Down to Two Factor Authentication and turn off _Enable Two Factor Authentication_
-
-**Registration Options**
-Navigate to the _Accounts_ settings, Scroll Down to Registration and choose your [registration options](https://docs.rocket.chat/guides/administration/settings/account-settings#registration), such as:
-
-- Registration Form: Disabled
+- [Rocket.Chat Custom OAuth Setup](https://docs.rocket.chat/docs/custom-oauth-setup)
+- [Rocket.Chat Accounts Settings](https://docs.rocket.chat/docs/accounts)
+- [Rocket.Chat Two Factor Authentication Configuration](https://docs.rocket.chat/docs/two-factor-authentication-configuration)

@@ -254,7 +254,15 @@ const items = [
                             "add-secure-apps/providers/saml/saml_single_logout",
                         ],
                     },
-                    "add-secure-apps/providers/scim/index",
+                    {
+                        type: "category",
+                        label: "SCIM Provider",
+                        link: {
+                            type: "doc",
+                            id: "add-secure-apps/providers/scim/index",
+                        },
+                        items: ["add-secure-apps/providers/scim/create-scim-provider"],
+                    },
                     {
                         type: "category",
                         label: "SSF Provider",
@@ -723,6 +731,7 @@ const items = [
                         items: ["sys-mgmt/events/notification_rule_expression_policies"],
                     },
                     "sys-mgmt/events/transports",
+                    "sys-mgmt/events/log-forwarding",
                     "sys-mgmt/events/logging-events",
                     "sys-mgmt/events/event-actions",
                 ],
