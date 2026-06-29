@@ -11671,7 +11671,7 @@ Bindings to groups/users are checked against the user of the event.</target>
 </trans-unit>
 <trans-unit id="form.headline.deactivation">
   <source>Review <x id="0" equiv-text="${this.verboseName}"/> Deactivation</source>
-  <target>Review <x id="0" equiv-text="${this.verboseName}"/> Deactivation</target>
+  <target>مراجعة إلغاء تنشيط <x id="0" equiv-text="${this.verboseName}"/></target>
 </trans-unit>
 <trans-unit id="form.headline.activation">
   <source>Review <x id="0" equiv-text="${this.verboseName}"/> Activation</source>
