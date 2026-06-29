@@ -12252,7 +12252,7 @@ Bindings to groups/users are checked against the user of the event.</target>
 </trans-unit>
 <trans-unit id="sb8bbbd3b5cd45ad2">
   <source>If checked, the launch URL will open in a new browser tab or window from the user&apos;s Application Dashboard.</source>
-  <target>If checked, the launch URL will open in a new browser tab or window from the user&apos;s Application Dashboard.</target>
+  <target>إذا تم تحديده، سيتم فتح رابط التشغيل في علامة تبويب أو نافذة متصفح جديدة من لوحة تطبيقات المستخدم.</target>
 </trans-unit>
 <trans-unit id="s55272b9955f1d985">
   <source>Hide from Application Dashboard</source>
