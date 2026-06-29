@@ -11727,7 +11727,7 @@ Bindings to groups/users are checked against the user of the event.</target>
 </trans-unit>
 <trans-unit id="usedBy.description">
   <source>List of objects that are associated with this <x id="0" equiv-text="${verboseName}"/>.</source>
-  <target>List of objects that are associated with this <x id="0" equiv-text="${verboseName}"/>.</target>
+  <target>قائمة بالكائنات المرتبطة بـ <x id="0" equiv-text="${verboseName}"/> هذا.</target>
 </trans-unit>
 <trans-unit id="s2f93abbfddb3830d">
   <source>Object Name</source>
