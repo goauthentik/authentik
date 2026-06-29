@@ -12032,7 +12032,7 @@ Bindings to groups/users are checked against the user of the event.</target>
 </trans-unit>
 <trans-unit id="sc157c7dcb3d1b096">
   <source>Controls the authenticatorAttachment parameter sent to the browser during WebAuthn registration. If Hints are configured and this is left as &apos;No preference&apos;, a value is inferred from the selected hints for backward compatibility with older browsers.</source>
-  <target>Controls the authenticatorAttachment parameter sent to the browser during WebAuthn registration. If Hints are configured and this is left as &apos;No preference&apos;, a value is inferred from the selected hints for backward compatibility with older browsers.</target>
+  <target>يتحكم في معامل authenticatorAttachment المُرسل إلى المتصفح أثناء تسجيل WebAuthn. إذا تم ضبط التلميحات (Hints) وتُرك هذا الخيار على &apos;لا تفضيل&apos;، فسيُستنتج قيمة من التلميحات المختارة للتوافق مع المتصفحات القديمة.</target>
 </trans-unit>
 <trans-unit id="s1baea1b8ac34d554">
   <source>New Invitation</source>
