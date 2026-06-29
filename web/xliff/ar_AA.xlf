@@ -11868,7 +11868,7 @@ Bindings to groups/users are checked against the user of the event.</target>
 </trans-unit>
 <trans-unit id="sc9e81e2f575bcf24">
   <source>If no group is selected and &apos;Send notification to event user&apos; is disabled, the rule is disabled.</source>
-  <target>If no group is selected and &apos;Send notification to event user&apos; is disabled, the rule is disabled.</target>
+  <target>إذا لم يتم اختيار أي مجموعة وكان خيار &apos;إرسال الإشعار إلى مستخدم الحدث&apos; معطّلاً، فستكون القاعدة معطّلة.</target>
 </trans-unit>
 <trans-unit id="sd30f00ff2135589c">
   <source>When enabled, notification will be sent to the user that triggered the event in addition to any users in the group above. The event user will always be the first user, to send a notification only to the event user enabled &apos;Send once&apos; in the notification transport.</source>
