@@ -82,21 +82,24 @@ class ModelSerializer(BaseModelSerializer):
 
 
 class PrivilegedFieldsSerializerMixin:
-    """Serializer mixin that empties credential-bearing fields for callers who can
-    only use the object, not manage it."""
+    """Empties credential-bearing fields for callers who can only use the object, not view it."""
 
     privileged_fields: list[str] = []
+
+    def get_privileged_fields(self) -> list[str]:
+        return self.privileged_fields
 
     def to_representation(self, instance: Model) -> dict:
         data = super().to_representation(instance)
         request = self.context.get("request")
-        if not request or not self.privileged_fields:
+        privileged_fields = self.get_privileged_fields()
+        if not request or not privileged_fields:
             return data
         meta = instance._meta
         permission = f"{meta.app_label}.view_{meta.model_name}"
         if request.user.has_perm(permission, instance):
             return data
-        for field in self.privileged_fields:
+        for field in privileged_fields:
             if field in data:
                 data[field] = {}
         return data
