@@ -11778,7 +11778,7 @@ Bindings to groups/users are checked against the user of the event.</target>
 </trans-unit>
 <trans-unit id="usedBy.count.zero">
   <source><x id="0" equiv-text="${verboseName}"/> is not associated with any objects.</source>
-  <target><x id="0" equiv-text="${verboseName}"/> is not associated with any objects.</target>
+  <target><x id="0" equiv-text="${verboseName}"/> غير مرتبط بأي كائنات.</target>
   <note from="lit-localize">Zero: no objects use this entity.</note>
 </trans-unit>
 <trans-unit id="s78a13f8f08d3a317">
