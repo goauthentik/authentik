@@ -612,7 +612,7 @@
 </trans-unit>
 <trans-unit id="s7225aacf0eee94d2">
   <source>Authenticated as <x id="0" equiv-text="${renderUsername(event.user.authenticated_as)}"/></source>
-  <target>Authenticated as <x id="0" equiv-text="${renderUsername(event.user.authenticated_as)}"/></target>
+  <target>تمت المصادقة باسم <x id="0" equiv-text="${renderUsername(event.user.authenticated_as)}"/></target>
 </trans-unit>
 <trans-unit id="s2152f3482784705f">
   <source>Recent events</source>
