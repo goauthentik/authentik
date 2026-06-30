@@ -11,7 +11,7 @@ This expression policy sends a welcome email to a user when their account is cre
 
 ### Prerequisites
 
-authentik needs to be able to send mail. Either configure a [global email connection](../../install-config/install/docker-compose.mdx#email-configuration-optional-but-recommended), or pass an [Email stage](../../add-secure-apps/flows-stages/stages/email/index.md) to `ak_send_email` through its `stage` argument to use that stage's connection settings instead.
+authentik must be able to send email before you can use `ak_send_email`. To do this, either configure the [global email settings](../../install-config/email), or set up an [Email stage](../../add-secure-apps/flows-stages/stages/email/index.md) and pass it to `ak_send_email` via its `stage` argument to use that stage’s connection settings instead.
 
 ### Create the expression policy
 
@@ -78,7 +78,7 @@ The policy only runs when it is bound to a notification rule that triggers on th
 
 You do not need to select a destination group or a transport on the rule. As noted in [Notification Rules](./notifications.md#3-create-a-notification-rule-and-bind-it-to-the-policy), bound policies are executed even when no destination is selected — and because the policy returns `False`, no notification is ever created. The email is sent entirely by the `ak_send_email` call inside the policy.
 
-Matching on `model_created` ensures the email is sent only when the account is first created. Other changes to the user, such as a password reset, are recorded as `model_updated` and will not trigger this policy.
+Matching on `model_created` ensures that the email is only sent when the account is first created. Other changes to the user, such as a password reset, are recorded as `model_updated` and will not trigger this policy.
 
 To send a richer, branded message instead of plain text, replace the `body` argument with a `template` argument pointing to a [custom email template](../../add-secure-apps/flows-stages/stages/email/index.md#custom-templates), and pass any values the template needs through the `context` argument. See the [`ak_send_email` reference](../../customize/policies/types/expression/reference.mdx) for all available parameters.
 
