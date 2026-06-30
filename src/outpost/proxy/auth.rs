@@ -6,7 +6,7 @@ use axum::http::{HeaderMap, header::AUTHORIZATION};
 use axum_extra::extract::cookie::Cookie;
 use base64::{Engine as _, engine::general_purpose::STANDARD as BASE64};
 use eyre::{Result, eyre};
-use tracing::warn;
+use tracing::{Span, field, warn};
 
 use crate::outpost::proxy::{
     application::Application,
@@ -69,6 +69,16 @@ pub(crate) fn basic_credentials(value: &str) -> Option<(String, String)> {
     let decoded = String::from_utf8(decoded).ok()?;
     let (username, password) = decoded.split_once(':')?;
     Some((username.to_owned(), password.to_owned()))
+}
+
+/// The label to log for a resolved identity: the preferred username, or the
+/// subject when no preferred username is set.
+fn user_label(claims: &Claims) -> &str {
+    if claims.preferred_username.is_empty() {
+        &claims.sub
+    } else {
+        &claims.preferred_username
+    }
 }
 
 impl Application {
@@ -199,12 +209,21 @@ impl Application {
         self.session_store.load(&sid).await.ok()??.claims
     }
 
+    /// Resolve the request's identity and record the resolved user on the
+    /// current request span, reusing the claims we already have instead of
+    /// loading the session again.
+    pub(super) async fn check_auth(&self, headers: &HeaderMap) -> Option<Authenticated> {
+        let authed = self.authenticate(headers).await?;
+        Span::current().record("user", field::display(user_label(&authed.claims)));
+        Some(authed)
+    }
+
     /// Resolve the request's identity: session, then cached header auth, then a
     /// bearer token, then basic auth. Returns `None` when unauthenticated.
     ///
     /// When the identity is freshly resolved from header auth, a session is
     /// persisted and its cookie returned in [`Authenticated::set_cookie`].
-    pub(super) async fn check_auth(&self, headers: &HeaderMap) -> Option<Authenticated> {
+    async fn authenticate(&self, headers: &HeaderMap) -> Option<Authenticated> {
         if let Some(claims) = self.claims_from_session(headers).await {
             return Some(Authenticated {
                 claims,

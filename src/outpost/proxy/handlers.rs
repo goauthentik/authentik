@@ -9,7 +9,7 @@ use axum::{
 use metrics::histogram;
 use serde_json::json;
 use tokio::time::Instant;
-use tracing::{Instrument as _, debug, field, info_span, instrument, trace, warn};
+use tracing::{debug, instrument, trace, warn};
 
 use crate::outpost::proxy::{ProxyOutpost, application};
 
@@ -38,7 +38,6 @@ pub(super) async fn default(
     State(outpost): State<Arc<ProxyOutpost>>,
     request: Request,
 ) -> Result<Response> {
-    let span = info_span!("proxy outpost request", user = field::Empty);
     let start = Instant::now();
 
     let app = outpost.lookup_app(&host).or_else(|| {
@@ -71,9 +70,7 @@ pub(super) async fn default(
     };
 
     trace!("passing to application");
-    let response = application::handlers::handle(app, request)
-        .instrument(span)
-        .await?;
+    let response = application::handlers::handle(app, request).await?;
 
     histogram!(
         "authentik_outpost_proxy_request_duration_seconds",

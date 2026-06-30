@@ -16,7 +16,7 @@ use url::Url;
 
 use crate::outpost::proxy::{application::Application, error_page, oauth, reverse_proxy};
 
-#[instrument(skip_all)]
+#[instrument(skip_all, fields(user = tracing::field::Empty))]
 pub(crate) async fn handle(
     State(app): State<Arc<Application>>,
     ClientIp(client_ip): ClientIp,

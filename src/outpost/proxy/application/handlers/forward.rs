@@ -112,7 +112,7 @@ async fn forward_header_auth(
     super::auth_start(&app, request.headers(), fwd.into())
 }
 
-#[instrument(skip_all)]
+#[instrument(skip_all, fields(user = tracing::field::Empty))]
 pub(crate) async fn handle_caddy(
     State(app): State<Arc<Application>>,
     request: Request,
@@ -120,7 +120,7 @@ pub(crate) async fn handle_caddy(
     forward_header_auth(app, request, "Caddy").await
 }
 
-#[instrument(skip_all)]
+#[instrument(skip_all, fields(user = tracing::field::Empty))]
 pub(crate) async fn handle_envoy(
     State(app): State<Arc<Application>>,
     request: Request,
@@ -143,7 +143,7 @@ pub(crate) async fn handle_envoy(
     super::auth_start(&app, request.headers(), fwd.into())
 }
 
-#[instrument(skip_all)]
+#[instrument(skip_all, fields(user = tracing::field::Empty))]
 pub(crate) async fn handle_nginx(
     State(app): State<Arc<Application>>,
     request: Request,
@@ -177,7 +177,7 @@ pub(crate) async fn handle_nginx(
     Ok((StatusCode::UNAUTHORIZED, "unauthorized request").into_response())
 }
 
-#[instrument(skip_all)]
+#[instrument(skip_all, fields(user = tracing::field::Empty))]
 pub(crate) async fn handle_traefik(
     State(app): State<Arc<Application>>,
     request: Request,
