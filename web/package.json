@@ -119,7 +119,7 @@
         "@openlayers-elements/maps": "^0.4.0",
         "@patternfly/elements": "^4.4.0",
         "@patternfly/patternfly": "^4.224.2",
-        "@playwright/test": "^1.60.0",
+        "@playwright/test": "^1.61.0",
         "@sentry/browser": "^10.59.0",
         "@storybook/addon-docs": "^10.4.6",
         "@storybook/addon-links": "^10.4.6",
