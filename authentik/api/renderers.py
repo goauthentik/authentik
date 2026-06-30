@@ -19,6 +19,7 @@ def enc_hook(obj: Any) -> Any:
         return obj.tolist()
     if hasattr(obj, "__iter__"):
         return list(item for item in obj)
+    return None
 
 
 _ENCODER = Encoder(
