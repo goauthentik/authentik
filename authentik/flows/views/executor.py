@@ -157,7 +157,7 @@ class FlowExecutorView(APIView):
     def initialize_request(self, request, *args, **kwargs):
         # Stubbed out `initialize_request` since we call the correct method early on
         # in `dispatch`, and super().dispatch would call it again
-        return self.request
+        return self.request or request
 
     def dispatch(self, request: HttpRequest, flow_slug: str) -> HttpResponse:
         self.request = super().initialize_request(request)
