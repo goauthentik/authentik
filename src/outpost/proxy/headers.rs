@@ -1,7 +1,5 @@
 //! Injection of `X-authentik-*` (and derived) headers into upstream requests.
 
-use std::collections::HashSet;
-
 use ak_client::models::ProxyOutpostConfig;
 use ak_common::user_agent_outpost;
 use axum::http::{HeaderMap, HeaderName, HeaderValue, header::AUTHORIZATION};
@@ -72,28 +70,16 @@ fn set_upstream_authorization(
     }
 }
 
-/// Drop an inbound header containing `_` when its dash-equivalent is *also*
-/// present — e.g. remove `X_authentik_username` when the real
-/// `X-authentik-username` exists, or `X_Request_Id` when `X-Request-Id` does.
+/// Drop every inbound header whose name contains an underscore.
 ///
-/// This stops a client from shadowing a trusted dash header on upstreams that
-/// treat `_` and `-` alike, while leaving standalone underscore headers
-/// (legitimate application headers with no dash twin) untouched. Because the
-/// `X-authentik-*` headers are always set just before this runs, their underscore
-/// spoofs always have a twin and are always removed.
-pub(crate) fn remove_shadowed_underscore_headers(headers: &mut HeaderMap) {
-    // Snapshot the present names so we can test for a dash twin without holding a
-    // borrow on `headers` while removing from it. `HeaderName` is lowercase.
-    let present: HashSet<String> = headers
-        .keys()
-        .map(|name| name.as_str().to_owned())
-        .collect();
+/// authentik's own headers use dashes (`X-authentik-username`), so this never
+/// removes them, but it stops a client from smuggling an `X_authentik_username`
+/// that an upstream treating `_` and `-` alike (nginx, CGI/PHP) would honour in
+/// place of the trusted dash header.
+pub(crate) fn remove_underscore_headers(headers: &mut HeaderMap) {
     let stale: Vec<HeaderName> = headers
         .keys()
-        .filter(|name| {
-            let name = name.as_str();
-            name.contains('_') && present.contains(&name.replace('_', "-"))
-        })
+        .filter(|name| name.as_str().contains('_'))
         .cloned()
         .collect();
     for name in stale {
@@ -144,7 +130,7 @@ impl Application {
             }
         }
 
-        remove_shadowed_underscore_headers(headers);
+        remove_underscore_headers(headers);
     }
 }
 
@@ -156,9 +142,7 @@ mod tests {
     use axum::http::{HeaderMap, HeaderName, HeaderValue, header::AUTHORIZATION};
     use serde_json::json;
 
-    use super::{
-        basic_auth_header, remove_shadowed_underscore_headers, set_upstream_authorization,
-    };
+    use super::{basic_auth_header, remove_underscore_headers, set_upstream_authorization};
     use crate::outpost::proxy::claims::{Claims, ProxyClaims};
 
     fn provider() -> ProxyOutpostConfig {
@@ -305,10 +289,10 @@ mod tests {
     }
 
     #[test]
-    fn shadowed_underscore_headers_are_removed() {
+    fn underscore_headers_are_removed() {
         let mut headers = HeaderMap::new();
         // Underscore (and mixed) spoofs of an authentik header — the real dash
-        // header is present (we always set it), so they are removed.
+        // header is present (we always set it), so the spoofs are removed.
         headers.insert(
             HeaderName::from_static("x_authentik_username"),
             HeaderValue::from_static("attacker"),
@@ -321,7 +305,8 @@ mod tests {
             HeaderName::from_static("x-authentik-username"),
             HeaderValue::from_static("real"),
         );
-        // An underscore header that duplicates a present dash header is dropped...
+        // Every other underscore header is dropped too, whether or not it has a
+        // dash twin.
         headers.insert(
             HeaderName::from_static("x_request_id"),
             HeaderValue::from_static("spoof"),
@@ -330,24 +315,24 @@ mod tests {
             HeaderName::from_static("x-request-id"),
             HeaderValue::from_static("real-id"),
         );
-        // ...but a standalone underscore header with no dash twin is preserved.
         headers.insert(
             HeaderName::from_static("x_trace_token"),
-            HeaderValue::from_static("keep-me"),
+            HeaderValue::from_static("drop-me"),
         );
+        // Dash headers are left untouched.
         headers.insert(
             HeaderName::from_static("x-normal"),
             HeaderValue::from_static("c"),
         );
 
-        remove_shadowed_underscore_headers(&mut headers);
+        remove_underscore_headers(&mut headers);
 
         assert!(!headers.contains_key("x_authentik_username"));
         assert!(!headers.contains_key("x-authentik_username"));
         assert!(headers.contains_key("x-authentik-username"));
         assert!(!headers.contains_key("x_request_id"));
         assert!(headers.contains_key("x-request-id"));
-        assert!(headers.contains_key("x_trace_token"));
+        assert!(!headers.contains_key("x_trace_token"));
         assert!(headers.contains_key("x-normal"));
     }
 }
