@@ -9,8 +9,11 @@ fn validation(alg: Algorithm, issuer: &str, audience: &str) -> Validation {
     let mut validation = Validation::new(alg);
     validation.set_issuer(&[issuer]);
     validation.set_audience(&[audience]);
-    // Also reject not-yet-valid tokens; jsonwebtoken ignores `nbf` unless asked.
-    // Everything else, including `exp` and its default leeway, is left as default.
+    // Require `exp`, `aud` and `iss`: jsonwebtoken only checks the issuer and
+    // audience when those claims are present, so without this a token omitting
+    // them would pass verification.
+    validation.set_required_spec_claims(&["exp", "aud", "iss"]);
+    // Reject not-yet-valid tokens; jsonwebtoken ignores `nbf` unless asked.
     validation.validate_nbf = true;
     validation
 }
@@ -196,6 +199,24 @@ J78973mJGC9/uRJqtkbPBeQ=
 
         let _ = verify_hs256(&token, secret, "https://evil.example.com/", AUDIENCE)
             .expect_err("should reject mismatched issuer");
+    }
+
+    #[test]
+    fn rejects_missing_audience() {
+        let token = hs256_token(&json!({
+            "iss": ISSUER, "sub": "user", "exp": expiry(),
+        }));
+        let _ = verify_hs256(&token, "client-secret", ISSUER, AUDIENCE)
+            .expect_err("token without aud must be rejected");
+    }
+
+    #[test]
+    fn rejects_missing_issuer() {
+        let token = hs256_token(&json!({
+            "aud": AUDIENCE, "sub": "user", "exp": expiry(),
+        }));
+        let _ = verify_hs256(&token, "client-secret", ISSUER, AUDIENCE)
+            .expect_err("token without iss must be rejected");
     }
 
     #[test]
