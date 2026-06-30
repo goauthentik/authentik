@@ -81,8 +81,8 @@ export class SyncStatusChart extends AKChart<SummarizedSyncStatus[]> {
                     const status = await fetchSyncStatus(element);
 
                     const now = new Date().getTime();
+                    // 12 hours in milliseconds.
                     const maxDelta = 12 * 60 * 60 * 1000;
- // 12 hours
 
                     if (
                         status.lastSyncStatus === TaskAggregatedStatusEnum.Error ||

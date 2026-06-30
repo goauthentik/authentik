@@ -40,6 +40,7 @@ export class Route {
         return this;
     }
 
+    // oxlint-disable-next-line unicorn/no-thenable -- `then` is an intentional fluent builder, not a Promise.
     then(render: (args: RouteArgs) => TemplateResult): Route {
         this.callback = async (args) => {
             return render(args);

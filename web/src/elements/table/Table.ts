@@ -800,7 +800,7 @@ export abstract class Table<T extends object, D = T>
     #renderRowGroupItem(
         item: T,
         rowIndex: number,
-        items: T[],
+        _items: T[],
         groupIndex: number,
     ): SlottedTemplateResult {
         const groupHeaderID = this.groups.length > 1 ? `table-group-${groupIndex}` : null;
