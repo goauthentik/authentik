@@ -56,6 +56,7 @@ function createSyncOutgoingTriggerModeOptions(): RadioOption<SyncOutgoingTrigger
         },
     ];
 }
+
 @customElement("ak-source-ldap-form")
 export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
     protected endpoints = {

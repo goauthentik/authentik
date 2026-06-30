@@ -40,6 +40,14 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-source-saml-form")
 export class SAMLSourceForm extends BaseSourceForm<SAMLSource> {
+    protected endpoints = {
+        load: (slug: string) => aki(SourcesApi).sourcesSamlRetrieve({ slug }),
+        create: (sAMLSourceRequest: SAMLSource) =>
+            aki(SourcesApi).sourcesSamlCreate({ sAMLSourceRequest }),
+        update: (slug: string, sAMLSourceRequest: SAMLSource) =>
+            aki(SourcesApi).sourcesSamlUpdate({ slug, sAMLSourceRequest }),
+    };
+
     @state()
     protected hasSigningCert = false;
 
@@ -54,14 +62,6 @@ export class SAMLSourceForm extends BaseSourceForm<SAMLSource> {
         if (!target) return;
         this.hasSigningCert = !!target.selectedKeypair;
     }
-
-    protected endpoints = {
-        load: (slug: string) => aki(SourcesApi).sourcesSamlRetrieve({ slug }),
-        create: (sAMLSourceRequest: SAMLSource) =>
-            aki(SourcesApi).sourcesSamlCreate({ sAMLSourceRequest }),
-        update: (slug: string, sAMLSourceRequest: SAMLSource) =>
-            aki(SourcesApi).sourcesSamlUpdate({ slug, sAMLSourceRequest }),
-    };
 
     renderHasSigningCert(): TemplateResult {
         return html`<ak-switch-input
