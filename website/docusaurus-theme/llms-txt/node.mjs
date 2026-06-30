@@ -314,7 +314,17 @@ function normalizeRouteBasePath(routeBasePath) {
     if (!routeBasePath || routeBasePath === "/") {
         return "/";
     }
-    return `/${routeBasePath.replace(/^\/+|\/+$/g, "")}/`;
+
+    let start = 0;
+    let end = routeBasePath.length;
+    while (start < end && routeBasePath[start] === "/") {
+        start++;
+    }
+    while (end > start && routeBasePath[end - 1] === "/") {
+        end--;
+    }
+
+    return `/${routeBasePath.slice(start, end)}/`;
 }
 
 /**
