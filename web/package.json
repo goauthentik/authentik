@@ -10,14 +10,16 @@
         "build-proxy": "wireit",
         "bundler:watch": "node scripts/build-web.mjs --watch",
         "extract-locales": "lit-localize extract",
-		"lint": "run-s lint:oxlint lint:oxfmt",
-		"lint:oxlint": "oxlint",
-		"lint:oxfmt": "oxfmt --check .",
-		"lint:fix": "run-s fix:oxlint format",
-		"fix:oxlint": "oxlint --fix",
+        "lint": "run-s lint:oxlint lint:oxfmt",
+        "lint:oxlint": "oxlint",
+        "lint:oxfmt": "oxfmt --check .",
+        "lint:fix": "run-s fix:oxlint fix:oxfmt",
+        "fix:oxlint": "oxlint --fix",
+        "fix:oxfmt": "oxfmt --write .",
         "lint:imports": "knip --config scripts/knip.config.ts",
         "lint:types": "wireit",
-        "lint-check": "eslint --max-warnings 0 .",
+        "lint-check": "run-s lint-check:oxlint lint:oxfmt",
+        "lint-check:oxlint": "oxlint --max-warnings=0",
         "lit-analyse": "wireit",
         "precommit": "wireit",
         "pseudolocalize": "node ./scripts/pseudolocalize.mjs",
@@ -144,8 +146,6 @@
         "deepmerge-ts": "^7.1.5",
         "dompurify": "^3.4.11",
         "esbuild": "^0.28.1",
-        "eslint-plugin-lit": "^2.3.1",
-        "eslint-plugin-wc": "^3.1.0",
         "fuse.js": "^7.4.2",
         "globals": "^17.6.0",
         "guacamole-common-js": "^1.5.0",
@@ -163,8 +163,6 @@
         "pino": "^10.3.1",
         "pino-pretty": "^13.1.2",
         "playwright": "^1.61.0",
-        "prettier": "^3.8.3",
-        "prettier-plugin-packagejson": "^3.0.2",
         "pseudolocale": "^2.2.0",
         "rapidoc": "^9.3.8",
         "react": "^19.2.7",
@@ -265,10 +263,10 @@
             "command": "lit-analyzer src"
         },
         "locales:repair": {
-            "command": "prettier --write ./src/locale-codes.ts"
+            "command": "oxfmt --write ./src/locale-codes.ts"
         },
         "precommit": {
-            "command": "prettier --write .",
+            "command": "oxfmt --write .",
             "dependencies": [
                 "lint",
                 "lint:types",
@@ -308,11 +306,6 @@
     "overrides": {
         "@goauthentik/esbuild-plugin-live-reload": {
             "esbuild": "$esbuild",
-            "typescript": "$typescript"
-        },
-        "@goauthentik/prettier-config": {
-            "prettier": "$prettier",
-            "prettier-plugin-packagejson": "$prettier-plugin-packagejson",
             "typescript": "$typescript"
         },
         "@mrmarble/djangoql-completion": {
