@@ -1,5 +1,7 @@
 package config
 
+import "time"
+
 type Config struct {
 	LogLevel string `yaml:"log_level" env:"AUTHENTIK_LOG_LEVEL, overwrite"`
 
@@ -12,10 +14,11 @@ type Config struct {
 	// Outpost specific config
 	// These are only relevant for proxy/ldap outposts, and cannot be set via YAML
 	// They are loaded via this config loader to support file:// schemas
-	AuthentikHost        string `env:"AUTHENTIK_HOST"`
-	AuthentikHostBrowser string `env:"AUTHENTIK_HOST_BROWSER"`
-	AuthentikToken       string `env:"AUTHENTIK_TOKEN"`
-	AuthentikInsecure    bool   `env:"AUTHENTIK_INSECURE"`
+	AuthentikHost                string        `env:"AUTHENTIK_HOST"`
+	AuthentikHostBrowser         string        `env:"AUTHENTIK_HOST_BROWSER"`
+	AuthentikToken               string        `env:"AUTHENTIK_TOKEN"`
+	AuthentikInsecure            bool          `env:"AUTHENTIK_INSECURE"`
+	AuthentikCertificateCacheTTL time.Duration `env:"AUTHENTIK_CERT_CACHE_TTL"`
 }
 
 type ListenConfig struct {
