@@ -142,7 +142,8 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
             signing_key=create_test_cert(),
             redirect_uris=[
                 RedirectURI(
-                    RedirectURIMatchingMode.STRICT, "http://localhost:3000/login/generic_oauth"
+                    RedirectURIMatchingMode.STRICT,
+                    "http://localhost:3000/login/generic_oauth",
                 )
             ],
             authorization_flow=authorization_flow,
@@ -216,7 +217,8 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
             signing_key=create_test_cert(),
             redirect_uris=[
                 RedirectURI(
-                    RedirectURIMatchingMode.STRICT, "http://localhost:3000/login/generic_oauth"
+                    RedirectURIMatchingMode.STRICT,
+                    "http://localhost:3000/login/generic_oauth",
                 )
             ],
             authorization_flow=authorization_flow,
@@ -269,8 +271,7 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
                 flow_slug=invalidation_flow.slug,
             )
         )
-        flow_executor = self.get_shadow_root("ak-flow-executor")
-        session_end_stage = self.get_shadow_root("ak-stage-session-end", flow_executor)
+        session_end_stage = self.get_shadow_root("ak-stage-session-end")
         session_end_stage.find_element(By.ID, "logout").click()
 
     @retry()
@@ -297,7 +298,8 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
             signing_key=create_test_cert(),
             redirect_uris=[
                 RedirectURI(
-                    RedirectURIMatchingMode.STRICT, "http://localhost:3000/login/generic_oauth"
+                    RedirectURIMatchingMode.STRICT,
+                    "http://localhost:3000/login/generic_oauth",
                 )
             ],
             grant_types=[GrantType.AUTHORIZATION_CODE],
@@ -326,8 +328,7 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
         self.wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, "ak-flow-executor")))
         sleep(1)
 
-        flow_executor = self.get_shadow_root("ak-flow-executor")
-        consent_stage = self.get_shadow_root("ak-stage-consent", flow_executor)
+        consent_stage = self.get_shadow_root("ak-stage-consent")
 
         self.assertIn(
             app.name,
@@ -382,7 +383,8 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
             signing_key=create_test_cert(),
             redirect_uris=[
                 RedirectURI(
-                    RedirectURIMatchingMode.STRICT, "http://localhost:3000/login/generic_oauth"
+                    RedirectURIMatchingMode.STRICT,
+                    "http://localhost:3000/login/generic_oauth",
                 )
             ],
             grant_types=[GrantType.AUTHORIZATION_CODE],

@@ -63,7 +63,10 @@ class TestOpenIDConformance(SSLLiveMixin, SeleniumTestCase):
         }
 
     def run_test(
-        self, test_name: str, test_plan_config: dict[str, Any], test_variant: dict[str, Any]
+        self,
+        test_name: str,
+        test_plan_config: dict[str, Any],
+        test_variant: dict[str, Any],
     ):
         self.conformance = Conformance(f"https://{self.host}:8443", None, verify_ssl=False)
 
@@ -117,7 +120,9 @@ class TestOpenIDConformance(SSLLiveMixin, SeleniumTestCase):
             if len(upload_items) > uploaded_image:
                 screenshot = self.get_screenshot()
                 self.conformance.upload_image(
-                    module_id, upload_items[uploaded_image]["upload"], screenshot
+                    module_id,
+                    upload_items[uploaded_image]["upload"],
+                    screenshot,
                 )
                 sleep(3)
                 uploaded_image += 1
@@ -146,8 +151,7 @@ class TestOpenIDConformance(SSLLiveMixin, SeleniumTestCase):
             self.logger.debug("Authorizing")
             self.wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, "ak-flow-executor")))
             sleep(1)
-            flow_executor = self.get_shadow_root("ak-flow-executor")
-            consent_stage = self.get_shadow_root("ak-stage-consent", flow_executor)
+            consent_stage = self.get_shadow_root("ak-stage-consent")
             consent_stage.find_element(
                 By.CSS_SELECTOR,
                 "[type=submit]",

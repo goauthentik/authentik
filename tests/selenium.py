@@ -86,7 +86,8 @@ class SeleniumTestMixin(E2ETestMixin):
         except RequestException as exc:
             if path.exists() and not IS_CI:
                 self.logger.info(
-                    "Failed to download chrome extension, using cached copy", path=path
+                    "Failed to download chrome extension, using cached copy",
+                    path=path,
                 )
                 return path
             raise exc
@@ -231,8 +232,20 @@ class SeleniumTestMixin(E2ETestMixin):
 
         return body_json
 
+    def find_light_element(self, selector: str, timeout: float = 10) -> WebElement:
+        """Find an element by selector inside a Flow, regardless of its shadow state"""
+
+        wait = WebDriverWait(self.driver, timeout)
+        try:
+            return wait.until(lambda d: d.find_element(By.CSS_SELECTOR, selector))
+        except TimeoutException:
+            return self.fail("Timed out waiting for {selector} to appear")
+
     def get_shadow_root(
-        self, selector: str, container: WebElement | WebDriver | None = None, timeout: float = 10
+        self,
+        selector: str,
+        container: WebElement | WebDriver | None = None,
+        timeout: float = 10,
     ) -> WebElement:
         """Get the shadow root of a web component specified by `selector`."""
         if not container:
@@ -279,7 +292,8 @@ class SeleniumTestMixin(E2ETestMixin):
 
             def find_element(self, by: str, selector: str) -> WebElement:
                 return self.container.execute_script(
-                    "return document.__shady_native_querySelector(arguments[0])", selector
+                    "return document.__shady_native_querySelector(arguments[0])",
+                    selector,
                 )
 
         return wrapper(self.driver)
@@ -290,12 +304,8 @@ class SeleniumTestMixin(E2ETestMixin):
 
         if "ak-stage-identification" not in skip_stages:
             if shadow_dom:
-                flow_executor = self.get_shadow_root("ak-flow-executor")
-                identification_stage = self.get_shadow_root(
-                    "ak-stage-identification", flow_executor
-                )
+                identification_stage = self.find_light_element("ak-stage-identification")
             else:
-                flow_executor = self.shady_dom()
                 identification_stage = self.shady_dom()
 
             wait = WebDriverWait(identification_stage, self.wait_timeout)
@@ -311,10 +321,8 @@ class SeleniumTestMixin(E2ETestMixin):
 
         if "ak-stage-password" not in skip_stages:
             if shadow_dom:
-                flow_executor = self.get_shadow_root("ak-flow-executor")
-                password_stage = self.get_shadow_root("ak-stage-password", flow_executor)
+                password_stage = self.find_light_element("ak-stage-password")
             else:
-                flow_executor = self.shady_dom()
                 password_stage = self.shady_dom()
 
             wait = WebDriverWait(password_stage, self.wait_timeout)

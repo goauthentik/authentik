@@ -9,7 +9,9 @@ from selenium.webdriver.common.virtual_authenticator import (
 )
 
 from authentik.blueprints.tests import apply_blueprint
-from authentik.stages.authenticator_validate.models import AuthenticatorValidateStage
+from authentik.stages.authenticator_validate.models import (
+    AuthenticatorValidateStage,
+)
 from authentik.stages.authenticator_webauthn.models import (
     AuthenticatorWebAuthnStage,
     WebAuthnDevice,
@@ -35,7 +37,12 @@ class TestFlowsAuthenticatorWebAuthn(SeleniumTestCase):
         )
         self.driver.add_virtual_authenticator(options)
 
-        self.driver.get(self.url("authentik_core:if-flow", flow_slug="default-authentication-flow"))
+        self.driver.get(
+            self.url(
+                "authentik_core:if-flow",
+                flow_slug="default-authentication-flow",
+            )
+        )
         self.login()
 
         self.wait_for_url(self.if_user_url("/library"))
@@ -72,7 +79,12 @@ class TestFlowsAuthenticatorWebAuthn(SeleniumTestCase):
         self.register()
         self.driver.delete_all_cookies()
 
-        self.driver.get(self.url("authentik_core:if-flow", flow_slug="default-authentication-flow"))
+        self.driver.get(
+            self.url(
+                "authentik_core:if-flow",
+                flow_slug="default-authentication-flow",
+            )
+        )
         self.login()
 
         self.wait_for_url(self.if_user_url("/library"))
@@ -122,11 +134,15 @@ class TestFlowsAuthenticatorWebAuthn(SeleniumTestCase):
         self.driver.delete_all_cookies()
 
         # Navigate to login page
-        self.driver.get(self.url("authentik_core:if-flow", flow_slug="default-authentication-flow"))
+        self.driver.get(
+            self.url(
+                "authentik_core:if-flow",
+                flow_slug="default-authentication-flow",
+            )
+        )
 
         # Wait for identification stage to load (ensures passkey challenge is triggered)
-        flow_executor = self.get_shadow_root("ak-flow-executor")
-        self.get_shadow_root("ak-stage-identification", flow_executor)
+        self.get_shadow_root("ak-stage-identification")
 
         # The virtual authenticator should automatically respond to the conditional WebAuthn request
         # triggered by the identification stage when passkey_challenge is present.

@@ -14,7 +14,11 @@ from authentik.flows.models import Flow
 from authentik.lib.generators import generate_id
 from authentik.policies.expression.models import ExpressionPolicy
 from authentik.policies.models import PolicyBinding
-from authentik.providers.saml.models import SAMLBindings, SAMLPropertyMapping, SAMLProvider
+from authentik.providers.saml.models import (
+    SAMLBindings,
+    SAMLPropertyMapping,
+    SAMLProvider,
+)
 from tests.decorators import retry
 from tests.selenium import SeleniumTestCase
 
@@ -244,8 +248,7 @@ class TestProviderSAML(SeleniumTestCase):
 
         self.wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, "ak-flow-executor")))
 
-        flow_executor = self.get_shadow_root("ak-flow-executor")
-        consent_stage = self.get_shadow_root("ak-stage-consent", flow_executor)
+        consent_stage = self.get_shadow_root("ak-stage-consent")
 
         self.assertIn(
             app.name,
@@ -339,8 +342,7 @@ class TestProviderSAML(SeleniumTestCase):
 
         self.wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, "ak-flow-executor")))
 
-        flow_executor = self.get_shadow_root("ak-flow-executor")
-        consent_stage = self.get_shadow_root("ak-stage-consent", flow_executor)
+        consent_stage = self.get_shadow_root("ak-stage-consent")
 
         self.assertIn(
             app.name,

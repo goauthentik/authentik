@@ -17,7 +17,10 @@ from authentik.stages.authenticator_static.models import (
     StaticDevice,
     StaticToken,
 )
-from authentik.stages.authenticator_totp.models import AuthenticatorTOTPStage, TOTPDevice
+from authentik.stages.authenticator_totp.models import (
+    AuthenticatorTOTPStage,
+    TOTPDevice,
+)
 from tests.decorators import retry
 from tests.selenium import SeleniumTestCase
 
@@ -43,8 +46,7 @@ class TestFlowsAuthenticator(SeleniumTestCase):
         # Get expected token
         totp = TOTP(device.bin_key, device.step, device.t0, device.digits, device.drift)
 
-        flow_executor = self.get_shadow_root("ak-flow-executor")
-        validation_stage = self.get_shadow_root("ak-stage-authenticator-validate", flow_executor)
+        validation_stage = self.get_shadow_root("ak-stage-authenticator-validate")
         code_stage = self.get_shadow_root("ak-stage-authenticator-validate-code", validation_stage)
         code_stage.find_element(By.CSS_SELECTOR, "input[name=code]").send_keys(totp.token())
         code_stage.find_element(By.CSS_SELECTOR, "input[name=code]").send_keys(Keys.ENTER)
@@ -74,8 +76,7 @@ class TestFlowsAuthenticator(SeleniumTestCase):
             )
         )
 
-        flow_executor = self.get_shadow_root("ak-flow-executor")
-        totp_stage = self.get_shadow_root("ak-stage-authenticator-totp", flow_executor)
+        totp_stage = self.get_shadow_root("ak-stage-authenticator-totp")
         wait = WebDriverWait(totp_stage, self.wait_timeout)
 
         wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, "input[name=otp_uri]")))
@@ -123,8 +124,7 @@ class TestFlowsAuthenticator(SeleniumTestCase):
         # Remember the current URL as we should end up back here
         destination_url = self.driver.current_url
 
-        flow_executor = self.get_shadow_root("ak-flow-executor")
-        authenticator_stage = self.get_shadow_root("ak-stage-authenticator-static", flow_executor)
+        authenticator_stage = self.get_shadow_root("ak-stage-authenticator-static")
         token = authenticator_stage.find_element(By.CSS_SELECTOR, "ul li:nth-child(1)").text
 
         authenticator_stage.find_element(By.CSS_SELECTOR, "button[type=submit]").click()

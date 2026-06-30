@@ -23,8 +23,7 @@ class TestFlowsRecovery(SeleniumTestCase):
     def initial_stages(self, user: User):
         """Fill out initial stages"""
         # Identification stage, click recovery
-        flow_executor = self.get_shadow_root("ak-flow-executor")
-        identification_stage = self.get_shadow_root("ak-stage-identification", flow_executor)
+        identification_stage = self.find_light_element("ak-stage-identification")
         wait = WebDriverWait(identification_stage, self.wait_timeout)
 
         wait.until(
@@ -37,8 +36,7 @@ class TestFlowsRecovery(SeleniumTestCase):
         ).click()
 
         # First prompt stage
-        flow_executor = self.get_shadow_root("ak-flow-executor")
-        identification_stage = self.get_shadow_root("ak-stage-identification", flow_executor)
+        identification_stage = self.find_light_element("ak-stage-identification")
         wait = WebDriverWait(identification_stage, self.wait_timeout)
 
         wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, "input[name=uidField]")))
@@ -71,8 +69,7 @@ class TestFlowsRecovery(SeleniumTestCase):
         self.initial_stages(user)
 
         # Email stage
-        flow_executor = self.get_shadow_root("ak-flow-executor")
-        email_stage = self.get_shadow_root("ak-stage-email", flow_executor)
+        email_stage = self.get_shadow_root("ak-stage-email")
 
         wait = WebDriverWait(email_stage, self.wait_timeout)
 
@@ -92,16 +89,14 @@ class TestFlowsRecovery(SeleniumTestCase):
 
         sleep(2)
 
-        flow_executor = self.get_shadow_root("ak-flow-executor")
-        consent_stage = self.get_shadow_root("ak-stage-consent", flow_executor)
+        consent_stage = self.get_shadow_root("ak-stage-consent")
         consent_stage.find_element(
             By.CSS_SELECTOR,
             "[type=submit]",
         ).click()
 
         # We can now enter the new password
-        flow_executor = self.get_shadow_root("ak-flow-executor")
-        prompt_stage = self.get_shadow_root("ak-stage-prompt", flow_executor)
+        prompt_stage = self.get_shadow_root("ak-stage-prompt")
         wait = WebDriverWait(prompt_stage, self.wait_timeout)
 
         new_password = generate_id()

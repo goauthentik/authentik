@@ -223,9 +223,10 @@ export class RememberMeController implements ReactiveController {
                 class="pf-c-switch__input"
                 type="checkbox"
                 id="authentik-remember-me"
-                @change=${this.toggleChangeListener}
+                @click=${this.toggleChangeListener}
                 ?checked=${this.defaultChecked}
             />
+            <span class="pf-c-switch__toggle"></span>
             <span class="pf-c-form__label">${msg("Remember me on this device")}</span>
         </label>`;
     };

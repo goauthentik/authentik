@@ -4,6 +4,8 @@ import "#flow/components/ak-flow-card";
 import "#flow/components/ak-flow-password-input";
 import "#flow/stages/captcha/CaptchaStage";
 
+import { classList } from "#elements/directives/class-list";
+import { light } from "#elements/directives/light";
 import { renderSourceIcon } from "#elements/sources/utils";
 
 import { AKFormErrors } from "#components/ak-field-errors";
@@ -82,8 +84,6 @@ export class IdentificationStage extends BaseStage<
 
     protected passwordFieldRef = createRef<HTMLInputElement>();
 
-    #form?: HTMLFormElement;
-
     public defaultUserIdentification: string | null = null;
 
     protected rememberMeController: RememberMeController | null = null;
@@ -116,8 +116,6 @@ export class IdentificationStage extends BaseStage<
             this.#prepareRememberMeFrame = requestAnimationFrame(() => {
                 this.prepareRememberMeController();
             });
-
-            this.#createHelperForm();
         }
     }
 
@@ -167,101 +165,6 @@ export class IdentificationStage extends BaseStage<
     }
 
     //#endregion
-
-    //#region Helper Form
-
-    #createHelperForm(): void {
-        const compatMode = "ShadyDOM" in window;
-        this.#form = document.createElement("form");
-        document.documentElement.appendChild(this.#form);
-        // Only add the additional username input if we're in a shadow dom
-        // otherwise it just confuses browsers
-        if (!compatMode) {
-            // This is a workaround for the fact that we're in a shadow dom
-            // adapted from https://github.com/home-assistant/frontend/issues/3133
-            const username = document.createElement("input");
-            username.setAttribute("type", "text");
-            username.setAttribute("name", "username"); // username as name for high compatibility
-            username.setAttribute("autocomplete", "username");
-            username.onkeyup = (ev: Event) => {
-                const el = ev.target as HTMLInputElement;
-                (this.shadowRoot || this)
-                    .querySelectorAll<HTMLInputElement>("input[name=uidField]")
-                    .forEach((input) => {
-                        input.value = el.value;
-                        // Because we assume only one input field exists that matches this
-                        // call focus so the user can press enter
-                        input.focus();
-                    });
-            };
-            this.#form.appendChild(username);
-        }
-        // Only add the password field when we don't already show a password field
-        if (!compatMode && !this.challenge?.passwordFields) {
-            const password = document.createElement("input");
-            password.setAttribute("type", "password");
-            password.setAttribute("name", "password");
-            password.setAttribute("autocomplete", "current-password");
-            password.onkeyup = (event: KeyboardEvent) => {
-                if (event.key === "Enter") {
-                    event.preventDefault();
-                    this.submitForm();
-                }
-
-                const el = event.target as HTMLInputElement;
-                // Because the password field is not actually on this page,
-                // and we want to 'prefill' the password for the user,
-                // save it globally
-                PasswordManagerPrefill.password = el.value;
-                // Because password managers fill username, then password,
-                // we need to re-focus the uid_field here too
-                (this.shadowRoot || this)
-                    .querySelectorAll<HTMLInputElement>("input[name=uidField]")
-                    .forEach((input) => {
-                        // Because we assume only one input field exists that matches this
-                        // call focus so the user can press enter
-                        input.focus();
-                    });
-            };
-
-            this.#form.appendChild(password);
-        }
-
-        const totp = document.createElement("input");
-
-        totp.setAttribute("type", "text");
-        totp.setAttribute("name", "code");
-        totp.setAttribute("autocomplete", "one-time-code");
-        totp.onkeyup = (event: KeyboardEvent) => {
-            if (event.key === "Enter") {
-                event.preventDefault();
-                this.submitForm();
-            }
-
-            const el = event.target as HTMLInputElement;
-            // Because the totp field is not actually on this page,
-            // and we want to 'prefill' the totp for the user,
-            // save it globally
-            PasswordManagerPrefill.totp = el.value;
-            // Because totp managers fill username, then password, then optionally,
-            // we need to re-focus the uid_field here too
-            (this.shadowRoot || this)
-                .querySelectorAll<HTMLInputElement>("input[name=uidField]")
-                .forEach((input) => {
-                    // Because we assume only one input field exists that matches this
-                    // call focus so the user can press enter
-                    input.focus();
-                });
-        };
-
-        this.#form.appendChild(totp);
-    }
-
-    //#endregion
-
-    protected override onSubmitSuccess(): void {
-        this.#form?.remove();
-    }
 
     protected override onSubmitFailure(): void {
         this.#captcha.onFailure();
@@ -344,6 +247,11 @@ export class IdentificationStage extends BaseStage<
 
         const label = OR_LIST_FORMATTERS.format(fields.map((field) => formatUIFieldLabel(field)));
 
+        const captchaStyles = classList([!this.#captcha.live && "pf-m-action"]);
+
+        // Prettier ignore because it wants to render all this as one big
+        // stream, and that makes it unreadable.
+        //
         // prettier-ignore
         return html`${offerRecovery ? this.renderRecoveryMessage() : nothing}
             <div class="pf-c-form__group">
@@ -355,7 +263,7 @@ export class IdentificationStage extends BaseStage<
             ${passwordFields ? this.renderPasswordFields(challenge) : nothing}
             ${this.renderNonFieldErrors()}
             ${this.#captcha.render()}
-            <div class="pf-c-form__group ${this.#captcha.live ? "" : "pf-m-action"}">
+            <div class="pf-c-form__group ${captchaStyles}">
                 <button
                     ?disabled=${this.#captcha.pending}
                     type="submit"
@@ -439,20 +347,25 @@ export class IdentificationStage extends BaseStage<
     protected renderIdentificationStage(challenge: IdentificationChallenge) {
         const { applicationPre, passwordlessUrl, showSourceLabels, sources = [] } = challenge;
 
-        return html`
-            <form class="pf-c-form" @submit=${this.submitForm}>
-                ${applicationPre ? this.renderPrelude(applicationPre) : nothing}
-                ${this.renderInput(challenge)}
-                ${passwordlessUrl ? this.renderPasswordlessUrl(passwordlessUrl) : nothing}
-            </form>
+        return html` <div>
+            ${light(
+                html`<form class="pf-c-form" @submit=${this.submitForm}>
+                    ${applicationPre ? this.renderPrelude(applicationPre) : nothing}
+                    ${this.renderInput(challenge)}
+                    ${passwordlessUrl ? this.renderPasswordlessUrl(passwordlessUrl) : nothing}
+                </form>`,
+            )}
             ${sources.length ? this.renderLoginSources(sources, showSourceLabels) : nothing}
-        `;
+        </div>`;
     }
 
     protected renderFooter({ enrollUrl, recoveryUrl }: IdentificationFooter) {
         if (!(enrollUrl || recoveryUrl)) {
             return nothing;
         }
+
+        // The `light()` calls here facilitate discovery of these features by
+        // automation tools, especially testing.
 
         return html`<fieldset
             slot="footer-band"
@@ -463,15 +376,23 @@ export class IdentificationStage extends BaseStage<
             <legend class="sr-only">${msg("Additional actions")}</legend>
             ${enrollUrl
                 ? html`<div class="pf-c-login__main-footer-band-item">
-                      ${msg("Need an account?")}
-                      <a href="${enrollUrl}" data-ouia-component-id="enroll">${msg("Sign up.")}</a>
+                      ${light(
+                          html`<span
+                              >${msg("Need an account?")}
+                              <a href="${enrollUrl}" data-ouia-component-id="enroll"
+                                  >${msg("Sign up.")}</a
+                              ></span
+                          >`,
+                      )}
                   </div>`
                 : nothing}
             ${recoveryUrl
                 ? html`<div class="pf-c-login__main-footer-band-item">
-                      <a href="${recoveryUrl}" data-ouia-component-id="recovery"
-                          >${msg("Forgot username or password?")}</a
-                      >
+                      ${light(
+                          html`<a href="${recoveryUrl}" data-ouia-component-id="recovery"
+                              >${msg("Forgot username or password?")}</a
+                          >`,
+                      )}
                   </div>`
                 : nothing}
         </fieldset>`;
