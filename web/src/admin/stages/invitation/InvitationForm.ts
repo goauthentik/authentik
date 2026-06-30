@@ -5,7 +5,7 @@ import "#elements/CodeMirror";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/index";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { dateTimeLocal } from "#common/temporal";
 
 import { ModelForm } from "#elements/forms/ModelForm";
@@ -23,28 +23,19 @@ export class InvitationForm extends ModelForm<Invitation, string> {
     public static override verboseName = msg("Invitation");
     public static override verboseNamePlural = msg("Invitations");
 
-    loadInstance(pk: string): Promise<Invitation> {
-        return new StagesApi(DEFAULT_CONFIG).stagesInvitationInvitationsRetrieve({
-            inviteUuid: pk,
-        });
-    }
+    protected endpoints = {
+        load: (inviteUuid: string) =>
+            aki(StagesApi).stagesInvitationInvitationsRetrieve({ inviteUuid }),
+        create: (invitationRequest: Invitation) =>
+            aki(StagesApi).stagesInvitationInvitationsCreate({ invitationRequest }),
+        update: (inviteUuid: string, invitationRequest: Invitation) =>
+            aki(StagesApi).stagesInvitationInvitationsUpdate({ inviteUuid, invitationRequest }),
+    };
 
     getSuccessMessage(): string {
         return this.instance
             ? msg("Successfully updated invitation.")
             : msg("Successfully created invitation.");
-    }
-
-    async send(data: Invitation): Promise<Invitation> {
-        if (this.instance) {
-            return new StagesApi(DEFAULT_CONFIG).stagesInvitationInvitationsUpdate({
-                inviteUuid: this.instance.pk || "",
-                invitationRequest: data,
-            });
-        }
-        return new StagesApi(DEFAULT_CONFIG).stagesInvitationInvitationsCreate({
-            invitationRequest: data,
-        });
     }
 
     protected override renderForm(): TemplateResult {

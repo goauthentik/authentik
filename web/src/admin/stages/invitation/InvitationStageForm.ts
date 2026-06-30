@@ -2,7 +2,7 @@ import "#components/ak-switch-input";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { BaseStageForm } from "#admin/stages/BaseStageForm";
 
@@ -14,23 +14,13 @@ import { customElement } from "lit/decorators.js";
 
 @customElement("ak-stage-invitation-form")
 export class InvitationStageForm extends BaseStageForm<InvitationStage> {
-    loadInstance(pk: string): Promise<InvitationStage> {
-        return new StagesApi(DEFAULT_CONFIG).stagesInvitationStagesRetrieve({
-            stageUuid: pk,
-        });
-    }
-
-    async send(data: InvitationStage): Promise<InvitationStage> {
-        if (this.instance) {
-            return new StagesApi(DEFAULT_CONFIG).stagesInvitationStagesUpdate({
-                stageUuid: this.instance.pk || "",
-                invitationStageRequest: data,
-            });
-        }
-        return new StagesApi(DEFAULT_CONFIG).stagesInvitationStagesCreate({
-            invitationStageRequest: data,
-        });
-    }
+    protected endpoints = {
+        load: (stageUuid: string) => aki(StagesApi).stagesInvitationStagesRetrieve({ stageUuid }),
+        create: (invitationStageRequest: InvitationStage) =>
+            aki(StagesApi).stagesInvitationStagesCreate({ invitationStageRequest }),
+        update: (stageUuid: string, invitationStageRequest: InvitationStage) =>
+            aki(StagesApi).stagesInvitationStagesUpdate({ stageUuid, invitationStageRequest }),
+    };
 
     protected override renderForm(): TemplateResult {
         return html` <span>

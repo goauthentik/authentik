@@ -12,7 +12,7 @@ import "#elements/Alert";
 
 import { akFooterLinkInput, IFooterLinkInput } from "./AdminSettingsFooterLinks.js";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { Form } from "#elements/forms/Form";
 import { SlottedTemplateResult } from "#elements/types";
@@ -51,7 +51,7 @@ export class AdminSettingsForm extends Form<SettingsRequest> {
     }
 
     async send(settingsRequest: SettingsRequest): Promise<Settings> {
-        const result = await new AdminApi(DEFAULT_CONFIG).adminSettingsUpdate({
+        const result = await aki(AdminApi).adminSettingsUpdate({
             settingsRequest,
         });
 

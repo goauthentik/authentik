@@ -8,7 +8,7 @@ tags:
     - saml
 ---
 
-Allows users to authenticate using their Google Workspace credentials by configuring Google Workspace as a federated identity provider via SAML.
+This source lets users authenticate with their Google Workspace credentials by configuring Google Workspace as a federated identity provider with SAML.
 
 ## What is Google Workspace?
 
@@ -16,7 +16,7 @@ Google Workspace (formerly G Suite) is a collection of cloud-computing, producti
 
 Organizations using Google Workspace allow their users to authenticate to applications using their company email addresses. This guide shows how to set up Security Assertion Markup Language (SAML) as the authentication method between Google Workspace and authentik.
 
-## SAML Authentication Flow
+## SAML authentication flow
 
 This sequence diagram shows a high-level flow between user, authentik, Google Workspace, and the target application.
 
@@ -46,7 +46,7 @@ The key characteristic of this IdP-to-IdP flow is that authentik acts as an inte
 The following placeholders are used in this guide:
 
 - `authentik.company` is the FQDN of the authentik installation.
-- `google-slug` is the slug you will assign to the SAML source in authentik (e.g., `google`).
+- `google-slug` is the slug to assign to the SAML source in authentik (for example, `google`).
 
 ## Google Workspace configuration
 
@@ -63,17 +63,18 @@ The following placeholders are used in this guide:
 7. Take note of the **SSO URL**. This will be required when configuring authentik.
 
 :::info Entity ID
-authentik is acting as both a Service Provider (SP) to Google and an Identity Provider (IdP) to your applications. Since we only need the SP configuration, you can ignore the Entity ID provided by Google.
+authentik acts as both a service provider (SP) to Google and an identity provider (IdP) to your applications. Because only the SP configuration is needed, you can ignore the Entity ID provided by Google.
 :::
 
-8. Click **Continue** to proceed to the Service Provider configuration.
+8. Click **Continue** to proceed to the service provider configuration.
 
-### Configure Service Provider details
+### Configure service provider details
 
 1. Configure the following settings:
     - Set **ACS URL** to `https://authentik.company/source/saml/<google-slug>/acs/`.
     - Set **Entity ID** to `https://authentik.company/source/saml/<google-slug>/metadata/`.
     - Set **Start URL** to `https://authentik.company`.
+    - Enable **Signed response**.
     - Set **Name ID format** to `EMAIL`.
     - Set **Name ID** to `Basic Information > Primary Email`.
 2. Click **Continue**.
@@ -112,8 +113,8 @@ authentik is acting as both a Service Provider (SP) to Google and an Identity Pr
     - Set **SSO URL** to the SSO URL from Google Workspace.
     - Set **Issuer** to `https://authentik.company/source/saml/<google-slug>/metadata/`.
     - Set **Verification Certificate** to the Google Workspace certificate you uploaded earlier.
-      :::warning Disable Verify Assertion Signature
-      If you do not disable the following option, your integration with Google Workspace will not work.
+      :::warning Signed response required
+      These verification settings expect Google Workspace to sign the SAML response. Make sure **Signed response** is enabled in the Google Workspace SAML app.
       :::
     - Disable **Verify Assertion Signature**.
     - Enable **Verify Response Signature**.
@@ -133,6 +134,7 @@ For instructions on embedding the new source within a flow, such as an authoriza
 
 - **`403 app_not_configured_for_user`**: Ensure the Entity ID matches between Google Workspace and authentik. The Entity ID must be identical in both configurations.
 - **`403 app_not_enabled_for_user`**: Enable the application for your organization in the Google Workspace Admin Console under **Apps** > **Web and mobile apps**.
+- **`Expected exactly one Signature in the Response element`**: Enable **Signed response** in the Google Workspace Admin Console under **Apps** > **Web and mobile apps** > your SAML app, for example `authentik`. If this option is disabled, Google Workspace signs only the SAML assertion instead of the outer SAML response.
 
 ## Resources
 

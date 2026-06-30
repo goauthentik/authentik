@@ -4,6 +4,8 @@ sidebar_label: OVHcloud
 support_level: community
 ---
 
+import SAMLProvider20265Warning from "../../\_saml-provider-2026-5-warning.mdx";
+
 ## What is OVHcloud?
 
 > OVHcloud is a French cloud provider. They provide public and private cloud products, shared hosting, and dedicated servers in 140 countries.
@@ -21,6 +23,8 @@ The following placeholders are used in this guide:
 To support the integration of OVHcloud with authentik, you need to create an application/provider pair in authentik.
 
 ### Create an application and provider in authentik
+
+<SAMLProvider20265Warning />
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.

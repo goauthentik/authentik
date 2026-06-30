@@ -520,10 +520,6 @@
 <trans-unit id="sd9b15395dd103f80">
   <source>Sort by "<x id="0" equiv-text="${label}"/>"</source>
 </trans-unit>
-<trans-unit id="s7bc8c327f1f7c82c">
-  <source>No objects found.</source>
-  <target>找不到任何物件。</target>
-</trans-unit>
 <trans-unit id="sfd44ce578f643145">
   <source>Failed to fetch objects.</source>
   <target>無法擷取物件。</target>
@@ -3065,26 +3061,6 @@
 <trans-unit id="s7b3148ffba9f4527">
   <source>If the password's score is less than or equal this value, the policy will fail.</source>
   <target>如果密碼的分數不大於此數值，則未通過政策。</target>
-</trans-unit>
-<trans-unit id="sd94e99af8b41ff54">
-  <source>0: Too guessable: risky password. (guesses &amp;lt; 10^3)</source>
-  <target>0: 極為容易猜測，高風險密碼。（猜測次數 &amp;lt; 10^3）</target>
-</trans-unit>
-<trans-unit id="sc926385d1a624c3a">
-  <source>1: Very guessable: protection from throttled online attacks. (guesses &amp;lt; 10^6)</source>
-  <target>1: 非常容易猜測：可抵抗受限的線上攻擊。（猜測次數 &amp;lt; 10^6）</target>
-</trans-unit>
-<trans-unit id="s8aae61c41319602c">
-  <source>2: Somewhat guessable: protection from unthrottled online attacks. (guesses &amp;lt; 10^8)</source>
-  <target>2: 普通容易猜測：可抵抗不受限的線上攻擊。（猜測次數 &amp;lt; 10^8）</target>
-</trans-unit>
-<trans-unit id="sc1f4b57e722a89d6">
-  <source>3: Safely unguessable: moderate protection from offline slow-hash scenario. (guesses &amp;lt; 10^10)</source>
-  <target>3: 安全難以猜測：在離線的慢速雜湊情境提供中等保護。（猜測次數 &amp;lt; 10^10）</target>
-</trans-unit>
-<trans-unit id="sd47f3d3c9741343d">
-  <source>4: Very unguessable: strong protection from offline slow-hash scenario. (guesses &amp;gt;= 10^10)</source>
-  <target>4: 非常難以猜測：在離線的慢速雜湊情境提供強力保護。（猜測次數 &amp;gt;= 10^10）</target>
 </trans-unit>
 <trans-unit id="sd6cd7ce2310a73a4">
   <source>Checks the value from the policy request against several rules, mostly used to ensure password strength.</source>
@@ -5707,9 +5683,6 @@ doesn't pass when either or both of the selected options are equal or above the 
 <trans-unit id="s1f4df216b56de4ac">
   <source>Optionally restrict which WebAuthn device types may be used. When no device types are selected, all devices are allowed.</source>
 </trans-unit>
-<trans-unit id="s11274960b13cf21a">
-  <source>This restriction only applies to devices created in authentik 2024.4 or later.</source>
-</trans-unit>
 <trans-unit id="s24bce955914b1f0a">
   <source>Stage used to configure a WebAuthn authenticator (i.e. Yubikey, FaceID/Windows Hello).</source>
   <target>用於設定 WebAuthn 身份認證器的階段（例如 Yubikey、FaceID/Windows Hello）。</target>
@@ -6328,14 +6301,6 @@ doesn't pass when either or both of the selected options are equal or above the 
 <trans-unit id="s254a9a23dc1635df">
   <source>Import devices</source>
   <target>匯入裝置</target>
-</trans-unit>
-<trans-unit id="s48cf8fd56b1237ed">
-  <source>Successfully updated flow.</source>
-  <target>成功更新流程。</target>
-</trans-unit>
-<trans-unit id="sc3e0c240b159fbce">
-  <source>Successfully created flow.</source>
-  <target>成功建立流程。</target>
 </trans-unit>
 <trans-unit id="s925936f647ae52cc">
   <source>Shown as the Title in Flow pages.</source>
@@ -8186,9 +8151,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s3b4ad8abf4f08c35">
   <source>Hide managed roles</source>
 </trans-unit>
-<trans-unit id="s7dcfe418b8d601f6">
-  <source>Flags allow you to enable new functionality and behaviour in authentik early.</source>
-</trans-unit>
 <trans-unit id="s8aa73079812f56b2">
   <source>Refresh other flow tabs upon authentication</source>
 </trans-unit>
@@ -8615,7 +8577,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="captcha.provider-link">
   <source>API keys can be obtained from the
-                        <x id="0" equiv-text="${html `&lt;a target=&quot;_blank&quot; rel=&quot;noopener noreferrer&quot; href=${keyURL}&#10;                                &gt;${formatAPISource()}&lt;/a&#10;                            &gt;.`}"/></source>
+                                        <x id="0" equiv-text="${html `&lt;a&#10;                                                target=&quot;_blank&quot;&#10;                                                rel=&quot;noopener noreferrer&quot;&#10;                                                href=${keyURL}&#10;                                                &gt;${formatAPISource()}&lt;/a&#10;                                            &gt;.`}"/></source>
   <note from="lit-localize">Supplementary help text with link to provider dashboard.</note>
 </trans-unit>
 <trans-unit id="s87f858ca3c8e5579">
@@ -9935,17 +9897,9 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>Wizard</source>
   <note from="lit-localize">ARIA label for the creation wizard when no entity singular is provided.</note>
 </trans-unit>
-<trans-unit id="wizard.ariaLabel.entity-singular">
-  <source>New <x id="0" equiv-text="${verboseName}"/> Wizard</source>
-  <note from="lit-localize">ARIA label for the creation wizard, where the entity singular is interpolated.</note>
-</trans-unit>
 <trans-unit id="wizard.header.default">
   <source>Create New Entity</source>
   <note from="lit-localize">Header for the creation wizard when no entity singular is provided.</note>
-</trans-unit>
-<trans-unit id="wizard.header.entity-singular">
-  <source>Create New <x id="0" equiv-text="${verboseName}"/></source>
-  <note from="lit-localize">Header for the creation wizard, where the entity singular is interpolated.</note>
 </trans-unit>
 <trans-unit id="form.submitting">
   <source><x id="0" equiv-text="${submittingVerb} ${verboseName}"/>...</source>
@@ -10123,10 +10077,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="table.empty">
   <source>No <x id="0" equiv-text="${verboseNamePlural.toLocaleLowerCase(this.activeLanguageTag)}"/> found.</source>
   <note from="lit-localize">The message to show when a table has no content. The placeholder {0} is replaced with the pluralized name of the type of entity being shown in the table.</note>
-</trans-unit>
-<trans-unit id="user.display.emailInAngleBrackets">
-  <source>&lt;<x id="0" equiv-text="${email}"/>&gt;</source>
-  <note from="lit-localize">The user's email in angle brackets, used when the email is different from the username</note>
 </trans-unit>
 <trans-unit id="user.display.nameInParens">
   <source>(<x id="0" equiv-text="${name}"/>)</source>
@@ -10533,6 +10483,156 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="wizard.step.details">
   <source><x id="0" equiv-text="${entityLabel}"/> Details</source>
   <note from="lit-localize">Label for the step in the creation wizard where the details of the entity being created are filled in. The placeholder {entity} is replaced with the name of the entity type, for example 'User Details' or 'Group Details'.</note>
+</trans-unit>
+<trans-unit id="sd1b98c71ea0d603b">
+  <source>Flags allow you to enable new functionality and behavior in authentik early.</source>
+</trans-unit>
+<trans-unit id="s00640d26256c4878">
+  <source>Cap Endpoint</source>
+</trans-unit>
+<trans-unit id="s40bf0fb50dad7090">
+  <source>https://cap.example.com/site-key/</source>
+</trans-unit>
+<trans-unit id="sc18a73a5831aca7b">
+  <source>For Cap, prefer the self-hosted widget asset, for example https://cap.example.com/assets/widget.js. If using a CDN, pin a reviewed release.</source>
+</trans-unit>
+<trans-unit id="s4e1e8db555003a9a">
+  <source>Cap's server-side verification endpoint, for example https://cap.example.com/site-key/siteverify.</source>
+</trans-unit>
+<trans-unit id="sdb752cddc543357d">
+  <source>Request Content Type</source>
+</trans-unit>
+<trans-unit id="s8afdb5c5a27d37eb">
+  <source>Content-Type used for server-side verification. Cap requires JSON; most other providers use form-encoded requests.</source>
+</trans-unit>
+<trans-unit id="captcha.request-content-type.form">
+  <source>Form encoded</source>
+</trans-unit>
+<trans-unit id="captcha.request-content-type.json">
+  <source>JSON</source>
+</trans-unit>
+<trans-unit id="captcha.providers.cap">
+  <source>Cap</source>
+</trans-unit>
+<trans-unit id="captcha.providers.cap.description">
+  <source>Cap is a self-hostable CAPTCHA server that uses proof-of-work challenges.</source>
+</trans-unit>
+<trans-unit id="captcha.providers.cap.setup-guide">
+  <source>Cap documentation</source>
+</trans-unit>
+<trans-unit id="captcha.cap-endpoint.description">
+  <source>The public site-key endpoint of your Cap server.</source>
+  <note from="lit-localize">Description for Cap endpoint field.</note>
+</trans-unit>
+<trans-unit id="captcha.provider-link.cap">
+  <source>Use the
+                                        <x id="0" equiv-text="${html `&lt;a&#10;                                            target=&quot;_blank&quot;&#10;                                            rel=&quot;noopener noreferrer&quot;&#10;                                            href=${keyURL}&#10;                                            &gt;${formatAPISource()}&lt;/a&#10;                                        &gt;`}"/>
+                                        to self-host Cap and configure the endpoint.</source>
+  <note from="lit-localize">Supplementary help text with link to Cap documentation.</note>
+</trans-unit>
+<trans-unit id="s71fed01f96762c78">
+  <source>Connection Token</source>
+</trans-unit>
+<trans-unit id="s2a27b0acaaccd6b1">
+  <source>Connection Tokens</source>
+</trans-unit>
+<trans-unit id="sd2e443fc08b24046">
+  <source>Access Token</source>
+</trans-unit>
+<trans-unit id="s0c1fba42c6e31a0f">
+  <source>Access Tokens</source>
+</trans-unit>
+<trans-unit id="s113536ad62a8b179">
+  <source>Refresh Token</source>
+</trans-unit>
+<trans-unit id="se61cf29ea4a4d3fe">
+  <source>Refresh Tokens</source>
+</trans-unit>
+<trans-unit id="sb5cad46bad03dc19">
+  <source>Unknown action</source>
+</trans-unit>
+<trans-unit id="scc03df1c8a965428">
+  <source>Custom action</source>
+</trans-unit>
+<trans-unit id="s08670bea6a90a4e0">
+  <source>Unknown user type</source>
+</trans-unit>
+<trans-unit id="s8dfeaf9950df0ffa">
+  <source>object</source>
+</trans-unit>
+<trans-unit id="s26d3ea846b0765cb">
+  <source>objects</source>
+</trans-unit>
+<trans-unit id="s7d041f0b6a10e8ea">
+  <source>Consents</source>
+</trans-unit>
+<trans-unit id="s8fd7c31e67f73d4c">
+  <source>Reputation score</source>
+</trans-unit>
+<trans-unit id="wizard.ariaLabel.verbose-name.one">
+  <source>New <x id="0" equiv-text="${verboseName}"/> Wizard</source>
+  <note from="lit-localize">ARIA label for the creation wizard, where the entity singular is interpolated.</note>
+</trans-unit>
+<trans-unit id="tokens.clipboard-copy.description">
+  <source><x id="0" equiv-text="${formatIntentLabel(intent)}"/> token for <x id="1" equiv-text="${userObj.username}"/></source>
+  <note from="lit-localize">Description for a clipboard copy action for tokens, with the token intent and username as variables.</note>
+</trans-unit>
+<trans-unit id="table.emptyState.default">
+  <source>No <x id="0" equiv-text="${pluralNoun}"/> found.</source>
+  <note from="lit-localize">Empty state message when no objects are found, where the entity plural is interpolated.</note>
+</trans-unit>
+<trans-unit id="table.emptyState.search">
+  <source>No <x id="0" equiv-text="${singularNoun}"/> matches "<x id="1" equiv-text="${truncateWords(this.search, 50)}"/>"</source>
+  <note from="lit-localize">Empty state message when no objects match the search query, where the entity singular is interpolated, followed by the search query truncated to 50 characters.</note>
+</trans-unit>
+<trans-unit id="wizard.header.verbose-name.one">
+  <source>Create New <x id="0" equiv-text="${verboseName}"/></source>
+  <note from="lit-localize">Header for the creation wizard, where the entity singular is interpolated.</note>
+</trans-unit>
+<trans-unit id="tokens.copy-button.label">
+  <source>Copy token</source>
+  <note from="lit-localize">Label for a button that copies a token to the clipboard.</note>
+</trans-unit>
+<trans-unit id="tokens.copy-button.entity-label">
+  <source>Token</source>
+  <note from="lit-localize">Label for a token entity, used in clipboard copy success messages.</note>
+</trans-unit>
+<trans-unit id="table.search.placeholder">
+  <source>Search for <x id="0" equiv-text="${pluralNoun}"/>...</source>
+  <note from="lit-localize">Placeholder text for the search input, where the entity plural is interpolated.</note>
+</trans-unit>
+<trans-unit id="s7a72b0fd722d51e0">
+  <source>Waiting for dependencies</source>
+</trans-unit>
+<trans-unit id="policy.password.score-threshold.description.too-guessable">
+  <source>0: Too guessable: risky password. (guesses &lt; 10^3)</source>
+</trans-unit>
+<trans-unit id="policy.password.score-threshold.description.very-guessable">
+  <source>1: Very guessable: protection from throttled online attacks. (guesses &lt; 10^6)</source>
+</trans-unit>
+<trans-unit id="policy.password.score-threshold.description.somewhat-guessable">
+  <source>2: Somewhat guessable: protection from unthrottled online attacks. (guesses &lt; 10^8)</source>
+</trans-unit>
+<trans-unit id="policy.password.score-threshold.description.safely-unguessable">
+  <source>3: Safely unguessable: moderate protection from offline slow-hash scenario. (guesses &lt; 10^10)</source>
+</trans-unit>
+<trans-unit id="policy.password.score-threshold.description.very-unguessable">
+  <source>4: Very unguessable: strong protection from offline slow-hash scenario. (guesses &gt;= 10^10)</source>
+</trans-unit>
+<trans-unit id="sb45f9fb4dba6e71a">
+  <source>Unset</source>
+</trans-unit>
+<trans-unit id="s02e9603605609ae6">
+  <source>Successfully created <x id="0" equiv-text="${this.verboseName}"/></source>
+</trans-unit>
+<trans-unit id="s58273fbf883b497d">
+  <source>Successfully updated <x id="0" equiv-text="${this.verboseName}"/></source>
+</trans-unit>
+<trans-unit id="s221db22dbb4e0105">
+  <source>Unknown Field</source>
+</trans-unit>
+<trans-unit id="s47ff2d052ccbcaf3">
+  <source>Unknown Field <x id="0" equiv-text="${fieldLike}"/></source>
 </trans-unit>
 </body>
 </file>

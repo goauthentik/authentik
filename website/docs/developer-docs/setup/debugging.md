@@ -22,7 +22,12 @@ Note that due to the Python debugger for VS Code, when a Python file in authenti
 
 #### Debug the server or the worker
 
-Whichever process is first started listens on port `9901`. Additional processes started after that will then try to listen on the same port, which will fail, and will simply not start the debugger in that case.
+The server and each worker process run their own debug server on a distinct port, derived from the base port set by `AUTHENTIK_LISTEN__DEBUG_PY` (`9901` by default):
+
+- The **server** (Gunicorn) listens on the base port (`9901`).
+- The **worker** runs as one or more processes, controlled by `AUTHENTIK_WORKER__PROCESSES` (defaults to `1`). Each worker process listens on the base port plus an offset, starting at `9902` for the first process, `9903` for the second, and so on.
+
+In VS Code, use the **Debug: Attach Server Core** launch configuration to attach to the server and **Debug: Attach Worker** to attach to the first worker process. To debug additional worker processes, duplicate the worker configuration and change its port to match (`9903`, `9904`, …).
 
 #### Debugging in containers
 
@@ -30,13 +35,14 @@ When debugging an authentik instance running in containers, there are some addit
 
 A local clone of the authentik repository is required to set breakpoints in the code. The locally checked out repository must be on the same version/commit as the authentik version running in the containers. To check out version 2024.12.3, for example, run `git checkout version/2024.12.3`.
 
-The debug port needs to be accessible on the local machine. By default, this is port 9901. Additionally, the container being debugged must be started as `root`, because additional dependencies need to be installed on startup.
+The debug port needs to be accessible on the local machine. By default, this is port 9901 for the server; the worker uses `9902` and up (one port per worker process). Additionally, the container being debugged must be started as `root`, because additional dependencies need to be installed on startup.
 
 When running in Docker Compose, a file `compose.override.yml` can be created next to the authentik `compose.yml` file to expose the port, change the user, and enable debug mode.
 
 ```yaml
 services:
-    # Replace `server` with `worker` to debug the worker container.
+    # To debug the worker container instead, use the `worker` service and map
+    # its worker ports (`9902` and up) rather than `9901`.
     server:
         user: root
         healthcheck:
