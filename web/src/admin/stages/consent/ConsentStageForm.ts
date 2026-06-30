@@ -23,6 +23,7 @@ export class ConsentStageForm extends BaseStageForm<ConsentStage> {
             })
             .then((stage) => {
                 this.showExpiresIn = stage.mode === ConsentModeEnum.Expiring;
+
                 return stage;
             });
     }
@@ -37,6 +38,7 @@ export class ConsentStageForm extends BaseStageForm<ConsentStage> {
                 consentStageRequest: data,
             });
         }
+
         return aki(StagesApi).stagesConsentCreate({
             consentStageRequest: data,
         });
@@ -67,6 +69,7 @@ export class ConsentStageForm extends BaseStageForm<ConsentStage> {
                             class="pf-c-form-control"
                             @change=${(ev: Event) => {
                                 const target = ev.target as HTMLSelectElement;
+
                                 if (target.selectedOptions[0].value === ConsentModeEnum.Expiring) {
                                     this.showExpiresIn = true;
                                 } else {

@@ -39,6 +39,7 @@ export function getValueAtPath(
     separator = ".",
 ): unknown {
     let walk: unknown = from;
+
     for (const comp of path.split(separator)) {
         if (typeof walk === "object" && walk !== null && comp in walk) {
             walk = (walk as Record<string, unknown>)[comp];
@@ -46,6 +47,7 @@ export function getValueAtPath(
             return failure;
         }
     }
+
     return walk;
 }
 

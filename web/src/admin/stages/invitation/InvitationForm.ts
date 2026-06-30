@@ -63,6 +63,7 @@ export class InvitationForm extends ModelForm<Invitation, string> {
 
         if (!flowSearch.value) {
             flowSearch.errorMessages = [msg("Select an enrollment flow.")];
+
             return false;
         }
 

@@ -31,6 +31,7 @@ export function applyCustomElementsGetNamePolyfill(
         console.warn(
             "CustomElementRegistry.getName polyfill: registry lacks define() method, cannot install polyfill",
         );
+
         return;
     }
 
@@ -43,6 +44,7 @@ export function applyCustomElementsGetNamePolyfill(
         options?: ElementDefinitionOptions,
     ): void {
         nameByCtor.set(ctor, name);
+
         return originalDefine(name, ctor, options);
     };
 

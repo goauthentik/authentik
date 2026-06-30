@@ -177,6 +177,7 @@ export class UserSourceSettingsPage extends AKElement {
                 <span>${msg("No services available.")}</span></ak-empty-state
             >`;
         }
+
         return html`<ul class="pf-c-data-list" part="list" aria-label="${msg("Source Settings")}">
             ${this.sourceSettings.map(this.renderSourceSetting)}
         </ul>`;

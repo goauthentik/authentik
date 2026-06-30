@@ -116,6 +116,7 @@ export class FileListPage extends WithCapabilitiesConfig(TablePage<FileListItem>
         if (this.can(CapabilitiesEnum.CanSaveMedia)) {
             return super.renderEmpty(inner);
         }
+
         return super.renderEmpty(
             html`<ak-empty-state icon=${this.pageIcon}
                 ><span>${msg("Configured file backend does not support file management.")}</span>

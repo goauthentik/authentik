@@ -89,11 +89,13 @@ export class AkCryptoCertificateSearch extends CustomListenerElement(AKElement) 
     connectedCallback() {
         super.connectedCallback();
         const horizontalContainer = this.closest("ak-form-element-horizontal[name]");
+
         if (!horizontalContainer) {
             throw new Error("This search can only be used in a named ak-form-element-horizontal");
         }
         const name = horizontalContainer.getAttribute("name");
         const myName = this.getAttribute("name");
+
         if (name !== null && name !== myName) {
             this.setAttribute("name", name);
         }
@@ -135,14 +137,17 @@ export class AkCryptoCertificateSearch extends CustomListenerElement(AKElement) 
         const args: CryptoCertificatekeypairsListRequest = {
             ordering: "name",
         };
+
         if (query !== undefined) {
             args.search = query;
         }
 
         const restrictions: CryptoCertificatekeypairsListRequest = {};
+
         if (!this.noKey) {
             restrictions.hasKey = true;
         }
+
         if (this.allowedKeyTypes?.length) {
             restrictions.keyType = this.allowedKeyTypes;
         }
@@ -151,6 +156,7 @@ export class AkCryptoCertificateSearch extends CustomListenerElement(AKElement) 
 
         if (Object.keys(restrictions).length === 0) {
             const { results } = await api.cryptoCertificatekeypairsList(args);
+
             return results;
         }
 

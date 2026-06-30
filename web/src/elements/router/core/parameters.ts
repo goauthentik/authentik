@@ -71,6 +71,7 @@ export function recordToSearchParams(params: RouterParameterInit): URLSearchPara
  */
 function deserialize(value: string): PrimitiveRouteParameter {
     if (value === "true") return true;
+
     if (value === "false") return false;
 
     if (/^\d+$/.test(value)) {

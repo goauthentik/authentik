@@ -108,6 +108,7 @@ export class ArrayInput<T> extends AKControlElement<T[]> implements IArrayInput<
             g.querySelector<HTMLInputElement & AKControlElement<T>>("[name]")?.valid ?? true;
 
         const allAreValid = Array.from(this.inputGroups ?? []).every(oneIsValid);
+
         return allAreValid && (this.validator ? this.validator(this.items) : true);
     }
 

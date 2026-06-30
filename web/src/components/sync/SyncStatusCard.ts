@@ -50,6 +50,7 @@ export class SyncStatusCard extends AKElement {
         if (this.loading) {
             return html`<ak-empty-state loading></ak-empty-state>`;
         }
+
         return html`
             <dl class="pf-c-description-list">
                 <div class="pf-c-description-list__group">

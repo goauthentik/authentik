@@ -54,6 +54,7 @@ export class UserBulkRevokeSessionsTable extends StaticTable<User> {
 
     row(item: User): SlottedTemplateResult[] {
         const sessionCount = this.sessionCounts.get(item.pk);
+
         return [
             html`${item.username}`,
             html`${item.name || msg("No name set")}`,

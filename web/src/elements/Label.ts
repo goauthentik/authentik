@@ -81,6 +81,7 @@ export class Label extends AKElement implements ILabel {
 
 export function akLabel(properties: ILabel, content: SlottedTemplateResult = nothing) {
     const message = typeof content === "string" ? html`<span>${content}</span>` : content;
+
     return html`<ak-label ${spread(properties as Spread)}>${message}</ak-label>`;
 }
 

@@ -51,6 +51,7 @@ export class OAuth2DCRForm extends ModelForm<OAuth2DynamicClientRegistration, st
             });
         }
         data.provider = this.providerID || 0;
+
         return aki(ProvidersApi).providersOauth2DcrCreate({
             oAuth2DynamicClientRegistrationRequest: data,
         });

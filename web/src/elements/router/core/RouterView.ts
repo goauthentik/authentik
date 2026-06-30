@@ -168,6 +168,7 @@ export class RouterView extends AKElement {
         const base = this.prefix.replace(/\/+$/, "");
 
         if (pathname === base) return "/";
+
         if (pathname.startsWith(`${base}/`)) {
             return `/${pathname.slice(base.length + 1).replace(/^\/+/, "")}`;
         }
@@ -256,6 +257,7 @@ export class RouterView extends AKElement {
 
     protected override updated(changedProperties: PropertyValues): void {
         if (!changedProperties.has("current")) return;
+
         if (!this.#sentryClient || !sentryReporting(this.#sentryClient)) return;
 
         const name = this.#spanName();

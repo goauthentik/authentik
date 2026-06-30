@@ -40,6 +40,7 @@ export class LDAPSourceConnectivity extends AKElement {
             ${map(servers, ([key, server]) => {
                 const label = key === "__all__" ? html`<b>${msg("Global status")}</b>` : key;
                 const content = html`${label}: ${server.status}`;
+
                 return html`<li>
                     ${server.status === "ok"
                         ? html`<pf-tooltip position="top">

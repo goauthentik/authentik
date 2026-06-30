@@ -119,9 +119,11 @@ export class UserForm extends ObjectAttributeModelForm<User, number> {
         if (this.instance) {
             return msg("User updated.");
         }
+
         if (this.targetGroup) {
             return msg(str`User created and added to group ${this.targetGroup.name}`);
         }
+
         if (this.targetRole) {
             return msg(str`User created and added to role ${this.targetRole.name}`);
         }

@@ -19,6 +19,7 @@ export class MFADeviceForm extends ModelForm<Device, string> {
 
     async loadInstance(pk: string): Promise<Device> {
         const devices = await aki(AuthenticatorsApi).authenticatorsAllList();
+
         return devices.filter((device) => {
             return device.pk === pk && device.type === this.deviceType;
         })[0];
@@ -71,6 +72,7 @@ export class MFADeviceForm extends ModelForm<Device, string> {
                     msg(str`Device type ${device.verboseName} cannot be edited`),
                 );
         }
+
         return device;
     }
 

@@ -82,6 +82,7 @@ export function formatDisambiguatedUserDisplayName(
             );
         }
     }
+
     if (email && email !== username) {
         // Angle brackets are kept outside `msg(str...)` because lit-localize-tools'
         // template-literal escape pass converts `<` and `>` to `&lt;` / `&gt;` in
@@ -140,6 +141,7 @@ let pendingRedirect = false;
 export function redirectToAuthFlow(nextPathname?: string): void {
     if (pendingRedirect) {
         console.debug("authentik/users: Redirect already pending, ");
+
         return;
     }
 
@@ -169,6 +171,7 @@ export async function startAccountLockdown(user?: number): Promise<void> {
     const response = await aki(CoreApi).coreUsersAccountLockdownCreate({
         userAccountLockdownRequest: user !== undefined ? { user } : {},
     });
+
     if (response.link) {
         window.location.assign(response.link);
     }

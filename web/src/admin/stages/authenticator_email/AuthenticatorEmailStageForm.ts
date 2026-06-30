@@ -35,6 +35,7 @@ export class AuthenticatorEmailStageForm extends BaseStageForm<AuthenticatorEmai
             stageUuid: pk,
         });
         this.showConnectionSettings = !stage.useGlobalSettings;
+
         return stage;
     }
 
@@ -54,6 +55,7 @@ export class AuthenticatorEmailStageForm extends BaseStageForm<AuthenticatorEmai
                 authenticatorEmailStageRequest: data,
             });
         }
+
         return aki(StagesApi).stagesAuthenticatorEmailCreate({
             authenticatorEmailStageRequest: data,
         });
@@ -63,6 +65,7 @@ export class AuthenticatorEmailStageForm extends BaseStageForm<AuthenticatorEmai
         if (!this.showConnectionSettings) {
             return nothing;
         }
+
         return html`<ak-form-group open label="${msg("Connection settings")}">
             <div class="pf-c-form">
                 <ak-form-element-horizontal label=${msg("SMTP Host")} required name="host">
@@ -217,10 +220,12 @@ export class AuthenticatorEmailStageForm extends BaseStageForm<AuthenticatorEmai
                                     ordering: "slug",
                                     designation: FlowDesignationEnum.StageConfiguration,
                                 };
+
                                 if (query !== undefined) {
                                     args.search = query;
                                 }
                                 const flows = await aki(FlowsApi).flowsInstancesList(args);
+
                                 return flows.results;
                             }}
                             .renderElement=${(flow: Flow): string => {

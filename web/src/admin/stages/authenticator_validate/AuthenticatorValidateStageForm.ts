@@ -45,6 +45,7 @@ export class AuthenticatorValidateStageForm extends BaseStageForm<AuthenticatorV
         });
         this.showConfigurationStages =
             stage.notConfiguredAction === NotConfiguredActionEnum.Configure;
+
         return stage;
     }
 
@@ -66,6 +67,7 @@ export class AuthenticatorValidateStageForm extends BaseStageForm<AuthenticatorV
                 authenticatorValidateStageRequest: data,
             });
         }
+
         return aki(StagesApi).stagesAuthenticatorValidateCreate({
             authenticatorValidateStageRequest: data,
         });
@@ -171,6 +173,7 @@ export class AuthenticatorValidateStageForm extends BaseStageForm<AuthenticatorV
                             class="pf-c-form-control"
                             @change=${(ev: Event) => {
                                 const target = ev.target as HTMLSelectElement;
+
                                 if (
                                     target.selectedOptions[0].value ===
                                     NotConfiguredActionEnum.Configure

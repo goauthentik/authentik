@@ -20,11 +20,13 @@ export function bound(
     if (typeof descriptor?.value !== "function") {
         throw new Error("Only methods can be @bound.");
     }
+
     return {
         configurable: true,
         get() {
             const method = descriptor.value.bind(this);
             Object.defineProperty(this, key, { value: method, configurable: true, writable: true });
+
             return method;
         },
     };

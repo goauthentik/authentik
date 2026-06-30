@@ -132,6 +132,7 @@ export class RelatedGroupList extends Table<Group> {
 
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
+
         return html`<ak-forms-delete-bulk
             object-label=${msg("Group(s)")}
             submit-label=${msg("Remove from Group(s)")}
@@ -142,6 +143,7 @@ export class RelatedGroupList extends Table<Group> {
             .objects=${this.selectedElements}
             .delete=${(item: Group) => {
                 if (!this.targetUser) return;
+
                 return aki(CoreApi).coreGroupsRemoveUserCreate({
                     groupUuid: item.pk,
                     userAccountRequest: {

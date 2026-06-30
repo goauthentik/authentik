@@ -210,6 +210,7 @@ export abstract class WizardStep extends AKElement {
 
         if (button.kind === "finish") {
             this.requestClose("finish");
+
             return;
         }
 
@@ -219,6 +220,7 @@ export abstract class WizardStep extends AKElement {
     public requestClose = (returnValue?: string) => {
         if (!this.dialog) {
             this.logger.warn("Skipping close request: No dialog found for wizard.");
+
             return;
         }
 

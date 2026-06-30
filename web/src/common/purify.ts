@@ -167,5 +167,6 @@ export function renderStaticHTMLUnsafe(untrustedHTML: unknown): string {
         // Remove all comments as they can interfere with the styles.
         .replaceAll("<!---->", "")
         .replaceAll(/<!--\?lit\$\d+\$-->/g, "");
+
     return result;
 }

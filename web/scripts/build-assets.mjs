@@ -65,6 +65,7 @@ const HEXWORLD_DEST = path.resolve(DistDirectory, "assets", "maps");
 
 async function copyHexworld() {
     const archive = path.resolve(HEXWORLD_SRC, "hexworld.pmtiles");
+
     if (!existsSync(archive)) {
         throw new Error(
             `hexworld.pmtiles missing at ${archive}. The archive is committed to git; ` +
@@ -73,6 +74,7 @@ async function copyHexworld() {
         );
     }
     const fonts = path.resolve(HEXWORLD_SRC, "fonts");
+
     if (!existsSync(fonts)) {
         throw new Error(
             `hexworld fonts missing at ${fonts}. The glyph ranges are committed to git; ` +

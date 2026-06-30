@@ -26,6 +26,7 @@ export interface OAuth2DCRFormProps {
 
 export function renderForm({ dcr }: OAuth2DCRFormProps) {
     dcr ||= {};
+
     return html`<ak-text-input
             name="defaultApplicationGroup"
             label=${msg("Default application group")}

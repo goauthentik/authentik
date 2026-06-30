@@ -11,9 +11,11 @@ export function formatUUID(hex: string): string {
     if (typeof hex !== "string") {
         return String(hex ?? "");
     }
+
     if (hex.length < 32) {
         return hex;
     }
+
     return `${hex.substring(0, 8)}-${hex.substring(8, 12)}-${hex.substring(12, 16)}-${hex.substring(16, 20)}-${hex.substring(20, 32)}`;
 }
 
@@ -44,12 +46,15 @@ export function renderEventUser(
 
     const renderUsername = (evu: EventUser) => {
         let username = evu.username;
+
         if (evu.is_anonymous) {
             username = msg("Anonymous user");
         }
+
         if (truncateUsername) {
             return truncate(username, truncateUsername);
         }
+
         return username;
     };
 
@@ -64,6 +69,7 @@ export function renderEventUser(
                 )}
             </small>`;
     }
+
     if (event.user.authenticated_as) {
         return html`${body}<small>
                 ${linkOrSpan(
@@ -74,6 +80,7 @@ export function renderEventUser(
                 )}
             </small>`;
     }
+
     if (event.context.device) {
         return html`${body}<small>
                 <a

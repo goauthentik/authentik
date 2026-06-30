@@ -24,6 +24,7 @@ export function safeParseLocale(candidate: string): Intl.Locale | null {
     }
 
     let locale: Intl.Locale | null = null;
+
     try {
         locale = new Intl.Locale(candidate);
     } catch {
@@ -31,6 +32,7 @@ export function safeParseLocale(candidate: string): Intl.Locale | null {
     }
 
     localeCache.set(candidate, locale);
+
     return locale;
 }
 
@@ -69,6 +71,7 @@ function getParsedSupportedLocales(): ParsedLocale[] {
 export function getBestMatchLocale(candidate: string): TargetLanguageTag | null {
     // Normalize common variations
     const normalized = candidate.trim();
+
     if (!normalized) return null;
 
     const locale = safeParseLocale(normalized);
@@ -114,8 +117,10 @@ export function getBestMatchLocale(candidate: string): TargetLanguageTag | null 
 export function findSupportedLocale(candidates: string[]): TargetLanguageTag | null {
     for (const candidate of candidates) {
         const match = getBestMatchLocale(candidate);
+
         if (match) return match;
     }
+
     return null;
 }
 
@@ -132,6 +137,7 @@ export function setSessionLocale(languageTag: TargetLanguageTag | null): void {
     try {
         if (!languageTag || languageTag === SourceLanguageTag) {
             sessionStorage?.removeItem?.(sessionLocaleKey);
+
             return;
         }
 

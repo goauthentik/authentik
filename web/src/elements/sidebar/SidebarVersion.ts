@@ -47,6 +47,7 @@ export class SidebarVersion extends WithLicenseSummary(WithVersion(AKElement)) {
             return nothing;
         }
         let product = globalAK().brand.brandingTitle || DefaultBrand.brandingTitle;
+
         if (this.licenseSummary.status !== LicenseSummaryStatusEnum.Unlicensed) {
             product += ` ${msg("Enterprise")}`;
         }

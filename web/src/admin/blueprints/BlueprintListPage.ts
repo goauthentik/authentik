@@ -95,6 +95,7 @@ export class BlueprintListPage extends TablePage<BlueprintInstance> {
 
     protected override renderToolbarSelected(): SlottedTemplateResult {
         const disabled = this.selectedElements.length < 1;
+
         return html`<ak-forms-delete-bulk
             object-label=${msg("Blueprint(s)")}
             .objects=${this.selectedElements}

@@ -28,6 +28,7 @@ export function rbacPermissionPair(item: Permission): DualSelectPair {
     const appLabel = item.appLabelVerbose || item.appLabel || "";
     const modelLabel = item.modelVerbose || item.model || "";
     const descriptor = `${appLabel} / ${modelLabel} (${item.codename})`;
+
     return [
         item.id.toString(),
         html`<div class="selection-main">${item.name}</div>
@@ -82,10 +83,12 @@ export class InitialPermissionsForm extends ModelForm<InitialPermissions, string
                         const args: RbacRolesListRequest = {
                             ordering: "name",
                         };
+
                         if (query !== undefined) {
                             args.search = query;
                         }
                         const roles = await aki(RbacApi).rbacRolesList(args);
+
                         return roles.results;
                     }}
                     .renderElement=${(role: Role): string => {
@@ -113,8 +116,8 @@ export class InitialPermissionsForm extends ModelForm<InitialPermissions, string
                     .provider=${(page: number, search?: string): Promise<DataProvision> => {
                         return aki(RbacApi)
                             .rbacPermissionsList({
-                                page: page,
-                                search: search,
+                                page,
+                                search,
                             })
                             .then((results) => {
                                 return {

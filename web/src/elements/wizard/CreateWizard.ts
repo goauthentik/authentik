@@ -186,6 +186,7 @@ export class CreateWizard extends AKElement implements TransclusionChildElement 
         this.refresh();
 
         const { wizard } = this;
+
         if (wizard) {
             this.stepObserver.observe(wizard, { attributeFilter: ["data-active-step"] });
         }
@@ -257,6 +258,7 @@ export class CreateWizard extends AKElement implements TransclusionChildElement 
         if (!selectedType) {
             wizard.steps = nextSteps;
             wizard.valid = false;
+
             return false;
         }
 

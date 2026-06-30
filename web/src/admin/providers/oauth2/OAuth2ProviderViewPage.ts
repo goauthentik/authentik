@@ -160,6 +160,7 @@ export class OAuth2ProviderViewPage extends AKElement {
         if (!this.provider) {
             return nothing;
         }
+
         return html`<main part="main">
             <ak-tabs routed part="tabs">
                 <div
@@ -453,6 +454,7 @@ export class OAuth2ProviderViewPage extends AKElement {
                                     if (!this.provider) {
                                         return input;
                                     }
+
                                     return input.replaceAll(
                                         "<application slug>",
                                         provider.assignedApplicationSlug ?? "<application slug>",
@@ -469,6 +471,7 @@ export class OAuth2ProviderViewPage extends AKElement {
         if (!this.provider) {
             return nothing;
         }
+
         return html` <div
             class="pf-c-page__main-section pf-m-no-padding-mobile pf-l-grid pf-m-gutter"
         >
@@ -488,10 +491,12 @@ export class OAuth2ProviderViewPage extends AKElement {
                                             const args: CoreUsersListRequest = {
                                                 ordering: "username",
                                             };
+
                                             if (query !== undefined) {
                                                 args.search = query;
                                             }
                                             const users = await aki(CoreApi).coreUsersList(args);
+
                                             return users.results;
                                         }}
                                         .renderElement=${(user: User): string => {
@@ -532,6 +537,7 @@ export class OAuth2ProviderViewPage extends AKElement {
         if (this.dcrConfig === undefined) {
             return html`<ak-empty-state loading></ak-empty-state>`;
         }
+
         if (this.dcrConfig === null) {
             return html`<div class="pf-c-page__main-section pf-m-no-padding-mobile">
                 <div class="pf-c-card">
@@ -559,6 +565,7 @@ export class OAuth2ProviderViewPage extends AKElement {
             </div>`;
         }
         const dcr = this.dcrConfig;
+
         return html`<div
             class="pf-c-page__main-section pf-m-no-padding-mobile pf-l-grid pf-m-gutter"
         >

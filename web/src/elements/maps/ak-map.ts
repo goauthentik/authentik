@@ -253,6 +253,7 @@ export class AKMap extends LitElement {
 
             if (!bin) {
                 this.hidePopup();
+
                 return;
             }
 
@@ -520,6 +521,7 @@ export class AKMap extends LitElement {
                 source?.setData(data);
                 this.growColumns();
             });
+
             return;
         }
 
@@ -571,8 +573,10 @@ export class AKMap extends LitElement {
         const signature = this.markers
             .map((m) => `${m.id}:${m.lon}:${m.lat}:${m.action ?? ""}`)
             .join("|");
+
         if (signature === this.#markerSignature) return false;
         this.#markerSignature = signature;
+
         return true;
     }
 

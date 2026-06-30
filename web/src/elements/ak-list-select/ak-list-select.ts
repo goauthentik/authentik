@@ -207,6 +207,7 @@ export class ListSelect extends AKElement implements IListSelect {
 
     public get currentElement(): HTMLElement | undefined {
         const curIndex = this.indexOfFocusedItem;
+
         return curIndex < 0 || curIndex > this.displayedElements.length - 1
             ? undefined
             : this.displayedElements[curIndex];
@@ -219,6 +220,7 @@ export class ListSelect extends AKElement implements IListSelect {
         const elementCount = this.displayedElements.length;
 
         const checkIndex = () => (index === -1 ? 0 : index);
+
         return elementCount === 0 ? -1 : checkIndex();
     }
 
@@ -235,10 +237,12 @@ export class ListSelect extends AKElement implements IListSelect {
             item.removeAttribute("aria-selected");
         });
         const currentElement = this.currentElement;
+
         if (!currentElement) {
             return;
         }
         currentElement.classList.add("ak-highlight-item");
+
         // A disabled row can be focused so its description is reachable, but it cannot be
         // chosen, so it must not be announced as selected.
         if (currentElement.getAttribute("aria-disabled") === "true") {
@@ -313,6 +317,7 @@ export class ListSelect extends AKElement implements IListSelect {
                 this.displayedElements.filter((element) =>
                     isVisibleInScrollRegion(element, this.ul),
                 ).length - 1;
+
             return visibleElementCount * direction + current;
         };
 
@@ -370,6 +375,7 @@ export class ListSelect extends AKElement implements IListSelect {
             // suffices. Whitespace is stripped because `aria-describedby` is a space-separated
             // list of IDs.
             const descId = desc ? `desc-${value.replace(/\s+/g, "_")}` : undefined;
+
             // `aria-disabled` goes on both the `<li>`, which the keyboard handler inspects, and
             // the `<button>`, which is what actually takes focus and so is what assistive
             // technology announces.

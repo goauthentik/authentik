@@ -86,6 +86,7 @@ export class FleetConnectorViewPage extends AKElement {
         if (!this.connector) {
             return nothing;
         }
+
         return html`<ak-tabs routed>
             <div
                 role="tabpanel"

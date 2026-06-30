@@ -63,14 +63,15 @@ export function remarkAdmonition() {
             ) {
                 return;
             }
+
             if (!ADMONITIONS.has(node.name)) return;
 
             const tagName = node.type === "textDirective" ? "span" : "ak-alert";
             const data = node.data || (node.data = {});
             data.hName = tagName;
             data.hProperties = {
-                ...(data.hProperties || {}),
-                ...(node.attributes || {}),
+                ...data.hProperties,
+                ...node.attributes,
                 level:
                     /** @type {Record<string, string>} */ (ADMONITION_LEVEL)[node.name] ??
                     `pf-m-${node.name}`,
@@ -80,6 +81,7 @@ export function remarkAdmonition() {
             const labelIndex = children.findIndex(
                 (c) => c.type === "paragraph" && c.data?.directiveLabel,
             );
+
             if (labelIndex !== -1) {
                 const label = children[labelIndex];
                 children[labelIndex] = {
@@ -111,7 +113,9 @@ export function remarkHeadings({ slugger }) {
      */
     const flatten = (n) => {
         if (n.value) return n.value;
+
         if (n.children) return n.children.map(flatten).join("");
+
         return "";
     };
 
@@ -119,7 +123,7 @@ export function remarkHeadings({ slugger }) {
         visit(tree, "heading", (node) => {
             const id = slugger.slug(flatten(node));
             const data = node.data || (node.data = {});
-            data.hProperties = { ...(data.hProperties || {}), id };
+            data.hProperties = { ...data.hProperties, id };
         });
     };
 }
@@ -132,7 +136,7 @@ export function remarkLists() {
         visit(tree, "list", (node) => {
             const data = node.data || (node.data = {});
             data.hProperties = {
-                ...(data.hProperties || {}),
+                ...data.hProperties,
                 className: "pf-c-list",
             };
         });

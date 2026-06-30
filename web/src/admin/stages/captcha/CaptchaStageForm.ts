@@ -98,6 +98,7 @@ export class CaptchaStageForm extends BaseStageForm<CaptchaStage> {
             delete formData.capEndpoint;
 
             const presetURL = CAPTCHA_PROVIDERS.cap.apiUrl;
+
             // The Cap verification URL includes the site key, so derive it from the
             // widget endpoint unless the advanced field was explicitly customized.
             if (!data.apiUrl || data.apiUrl === presetURL) {

@@ -257,9 +257,11 @@ export const AnimatedProgress: Story = {
         let progress = 0;
         const updateProgress = () => {
             const progressBar = document.querySelector("#animated-progress") as Progress;
+
             if (progressBar) {
                 progress = (progress + 5) % 105;
                 progressBar.value = progress;
+
                 if (progress >= 100) {
                     progressBar.severity = "success";
                 } else {
@@ -371,6 +373,7 @@ export const InteractiveControls: Story = {
     render: () => {
         const handleIncrement = (id: string) => {
             const progress = document.querySelector(`#${id}`) as Progress;
+
             if (progress) {
                 progress.value = Math.min(progress.value + 5, progress.max);
             }
@@ -378,6 +381,7 @@ export const InteractiveControls: Story = {
 
         const handleDecrement = (id: string) => {
             const progress = document.querySelector(`#${id}`) as Progress;
+
             if (progress) {
                 progress.value = Math.max(progress.value - 5, progress.min);
             }
@@ -385,6 +389,7 @@ export const InteractiveControls: Story = {
 
         const handleReset = (id: string) => {
             const progress = document.querySelector(`#${id}`) as Progress;
+
             if (progress) {
                 progress.reset();
             }
@@ -552,7 +557,9 @@ export const BuilderCustomFormatting: Story = {
                 value: 847,
                 displayValue: (value: number) => {
                     if (value < 100) return `${value} items`;
+
                     if (value < 1000) return `${(value / 100).toFixed(1)}K items`;
+
                     return `${(value / 1000).toFixed(1)}M items`;
                 },
                 variant: "outside",
@@ -577,6 +584,7 @@ export const BuilderReactive: Story = {
 
         const updateProgress = () => {
             const container = document.querySelector("#reactive-container");
+
             if (!container) return;
 
             // Simulate fluctuating normal progress
@@ -594,6 +602,7 @@ export const BuilderReactive: Story = {
             if (normalEl) {
                 (normalEl as Progress).value = normalProgress;
             }
+
             if (oneWayEl) {
                 (oneWayEl as Progress).value = oneWayProgress;
             }

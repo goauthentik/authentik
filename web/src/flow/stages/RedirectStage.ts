@@ -57,12 +57,14 @@ export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeRes
         if (!changed.has("challenge")) {
             return;
         }
+
         if (this.promptUser) {
             document.addEventListener("keydown", (ev) => {
                 if (ev.key === "Enter") {
                     this.redirect();
                 }
             });
+
             return;
         }
         this.redirect();
@@ -78,6 +80,7 @@ export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeRes
         // resume other continuous-login tabs; intermediate hops (source stages, the same-origin
         // SAML resume re-entry) skip orchestration entirely.
         const finalRedirect = this.challenge?.finalRedirect ?? false;
+
         if (finalRedirect) {
             await multiTabOrchestrateResume();
         }
@@ -98,6 +101,7 @@ export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeRes
 
     renderLoading(): TemplateResult {
         const url = new URL(this.getURL());
+
         // If the protocol isn't http or https assume a custom protocol, that has an OS-level
         // handler, which the browser will show a popup for.
         // As this wouldn't really be a redirect, show a message that the page can be closed
@@ -109,6 +113,7 @@ export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeRes
                 </ak-empty-state>
             </ak-flow-card>`;
         }
+
         return html`<ak-flow-card .challenge=${this.challenge} loading></ak-flow-card>`;
     }
 

@@ -21,7 +21,7 @@ function flowFrameFactory(challenge: FrameChallenge): StoryObj {
         },
         args: {
             theme: "automatic",
-            challenge: challenge,
+            challenge,
         },
         argTypes: {
             theme: {

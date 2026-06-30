@@ -286,6 +286,7 @@ export class CaptchaStage
     #refreshControllers() {
         if (!this.challenge) {
             this.#logger.debug("No challenge, skipping controller refresh.");
+
             return;
         }
 
@@ -303,6 +304,7 @@ export class CaptchaStage
 
         if (!challengeURL) {
             this.#logger.debug("No challenge URL, skipping controller refresh.");
+
             return;
         }
 
@@ -350,6 +352,7 @@ export class CaptchaStage
 
         if (event.detail.status === "error") {
             this.#logger.debug("Error loading locale:", event.detail);
+
             return;
         }
 
@@ -402,6 +405,7 @@ export class CaptchaStage
                 // Check all iframes. hCaptcha appends the step-2 challenge popup as a
                 // second iframe directly on the body
                 let maxHeight = target.clientHeight;
+
                 for (const iframe of contentDocument.querySelectorAll("iframe")) {
                     const styleHeight = parseFloat(iframe.style.height);
                     const rectBottom = iframe.getBoundingClientRect().bottom;
@@ -409,6 +413,7 @@ export class CaptchaStage
 
                     if (iframe.parentElement) {
                         const height = styleHeight || iframe.getBoundingClientRect().height;
+
                         if (height > 0) iframe.parentElement.style.height = `${height}px`;
                     }
                 }
@@ -482,6 +487,7 @@ export class CaptchaStage
 
         if (!Controller) {
             this.error = msg("Could not find a suitable CAPTCHA provider.");
+
             return;
         }
 
@@ -532,6 +538,7 @@ export class CaptchaStage
 
         if (!iframe) {
             this.#logger.debug(`No iframe found, skipping.`);
+
             return;
         }
 

@@ -38,6 +38,7 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
             })
             .then((transport) => {
                 this.onModeChange(transport.mode);
+
                 return transport;
             });
     }
@@ -66,6 +67,7 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
                 notificationTransportRequest: data,
             });
         }
+
         return aki(EventsApi).eventsTransportsCreate({
             notificationTransportRequest: data,
         });
@@ -175,11 +177,13 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
                         const args: PropertymappingsNotificationListRequest = {
                             ordering: "name",
                         };
+
                         if (query !== undefined) {
                             args.search = query;
                         }
                         const items =
                             await aki(PropertymappingsApi).propertymappingsNotificationList(args);
+
                         return items.results;
                     }}
                     .renderElement=${(item: NotificationWebhookMapping) => item.name}
@@ -203,11 +207,13 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
                         const args: PropertymappingsNotificationListRequest = {
                             ordering: "name",
                         };
+
                         if (query !== undefined) {
                             args.search = query;
                         }
                         const items =
                             await aki(PropertymappingsApi).propertymappingsNotificationList(args);
+
                         return items.results;
                     }}
                     .renderElement=${(item: NotificationWebhookMapping): string => {
@@ -247,6 +253,7 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
                             this.instance?.emailTemplate === template.name ||
                             (!this.instance?.emailTemplate &&
                                 template.name === "email/event_notification.html");
+
                         return html`<option value=${ifDefined(template.name)} ?selected=${selected}>
                             ${template.description}
                         </option>`;

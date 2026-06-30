@@ -31,6 +31,7 @@ const metadata: Meta<IArrayInput<unknown>> = {
         (story: Decorator) => {
             window.setTimeout(() => {
                 const menu = document.getElementById("ak-array-input");
+
                 if (!menu) {
                     throw new Error("Test was not initialized correctly.");
                 }

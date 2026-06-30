@@ -87,6 +87,7 @@ export class MicrosoftEntraProviderViewPage extends AKElement {
         if (!this.provider) {
             return nothing;
         }
+
         return html`<main part="main">
             <ak-tabs routed part="tabs">
                 <div

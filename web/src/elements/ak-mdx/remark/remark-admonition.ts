@@ -66,6 +66,7 @@ export const remarkAdmonition: Plugin<[], Root, VFile> = () => {
             const labelIndex = children.findIndex(
                 (c) => c.type === "paragraph" && c.data?.directiveLabel,
             );
+
             if (labelIndex !== -1) {
                 const label = children[labelIndex];
                 children[labelIndex] = {

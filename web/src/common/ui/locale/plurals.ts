@@ -51,6 +51,7 @@ function getPluralRules(locale?: Intl.LocalesArgument): Intl.PluralRules {
         pr = new Intl.PluralRules(locale);
         PluralRulesCache.set(key, pr);
     }
+
     return pr;
 }
 

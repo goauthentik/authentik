@@ -83,6 +83,7 @@ export const AKLibraryApp: LitFC<AKLibraryAppProps> = ({
         ${spread(extendedProps)}
         >${cardHeader}</a
     >`;
+
     if (rac) {
         main = html`<div
             ${primaryRef}
@@ -94,6 +95,7 @@ export const AKLibraryApp: LitFC<AKLibraryAppProps> = ({
             ${cardHeader}
         </div>`;
     }
+
     // onAppClick intentionally takes precedence over the RAC launcher: in the
     // requestable-browse context a card click means "request access", not "launch".
     if (onAppClick) {

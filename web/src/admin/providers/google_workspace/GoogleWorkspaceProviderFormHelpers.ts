@@ -15,6 +15,7 @@ export async function propertyMappingsProvider(page = 1, search = "") {
         search: search.trim(),
         page,
     });
+
     return {
         pagination: propertyMappings.pagination,
         options: propertyMappings.results.map(mappingToSelect),

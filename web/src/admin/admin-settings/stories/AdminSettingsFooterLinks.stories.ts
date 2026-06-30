@@ -25,6 +25,7 @@ const metadata: Meta<FooterLinkInput> = {
         (story: Decorator) => {
             window.setTimeout(() => {
                 const control = document.getElementById("footer-link");
+
                 if (!control) {
                     throw new Error("Test was not initialized correctly.");
                 }

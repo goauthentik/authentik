@@ -45,6 +45,7 @@ export class TableFilterSelect<T extends Jsonifiable> extends AKElement {
     protected updated(changedProperties: PropertyValues): void {
         if (changedProperties.has("value") && this.options.length > 0) {
             const selected = this.options.filter((opt) => opt.value === this.value);
+
             if (selected.length > 0) {
                 this.selectedOption = selected[0];
             }
@@ -58,6 +59,7 @@ export class TableFilterSelect<T extends Jsonifiable> extends AKElement {
                   <i class="fa fa-check"></i>
               </span>`
             : nothing}`;
+
         return html`<li role="presentation" class="pf-c-select__menu-wrapper">
             <button
                 class=${classMap({
@@ -89,6 +91,7 @@ export class TableFilterSelect<T extends Jsonifiable> extends AKElement {
 
     renderMenu(): SlottedTemplateResult {
         if (!this.open) return nothing;
+
         return html`<div class="pf-c-select__menu">
             <div class="pf-c-select__menu-group">
                 <div class="pf-c-select__menu-group-title" id="Status" aria-hidden="true">

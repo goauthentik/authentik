@@ -72,12 +72,14 @@ export class EnrollmentTokenForm extends WithBrandConfig(ModelForm<EnrollmentTok
         } else {
             data.connector = this.instance.connector;
         }
+
         if (this.instance) {
             return this.#api.endpointsAgentsEnrollmentTokensPartialUpdate({
                 tokenUuid: this.instance.tokenUuid,
                 patchedEnrollmentTokenRequest: data,
             });
         }
+
         return this.#api.endpointsAgentsEnrollmentTokensCreate({
             enrollmentTokenRequest: data as unknown as EnrollmentTokenRequest,
         });
@@ -90,11 +92,13 @@ export class EnrollmentTokenForm extends WithBrandConfig(ModelForm<EnrollmentTok
 
         if (!expiringElement.checked) {
             this.expiresAt = null;
+
             return;
         }
 
         if (this.instance?.expiring && this.instance.expires) {
             this.expiresAt = new Date(this.instance.expires);
+
             return;
         }
 

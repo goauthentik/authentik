@@ -55,10 +55,12 @@ export class EndpointStageForm extends BaseStageForm<EndpointStage> {
                                 const args: EndpointsConnectorsListRequest = {
                                     ordering: "name",
                                 };
+
                                 if (query !== undefined) {
                                     args.search = query;
                                 }
                                 const users = await aki(EndpointsApi).endpointsConnectorsList(args);
+
                                 return users.results;
                             }}
                             .renderElement=${(connector: Connector): string => {

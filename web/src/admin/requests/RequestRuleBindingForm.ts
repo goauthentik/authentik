@@ -47,12 +47,14 @@ export class RequestRuleBindingForm extends ModelForm<RequestRuleBinding, string
     protected async loadInstance(pk: string): Promise<RequestRuleBinding> {
         const binding = await aki(RequestsApi).requestsRuleBindingsRetrieve({ uuid: pk });
         await this.#loadChildBindings(pk);
+
         return binding;
     }
 
     #loadChildBindings = async (bindingPk: string): Promise<void> => {
         if (!this.targetPk) {
             this.selectedEntitlementPairs = [];
+
             return;
         }
 
@@ -83,6 +85,7 @@ export class RequestRuleBindingForm extends ModelForm<RequestRuleBinding, string
             page,
             search,
         };
+
         return this.#coreApi.coreApplicationEntitlementsList(args).then((results) => {
             return {
                 pagination: results.pagination,
@@ -150,10 +153,12 @@ export class RequestRuleBindingForm extends ModelForm<RequestRuleBinding, string
                         const args: RequestsRulesListRequest = {
                             ordering: "name",
                         };
+
                         if (query !== undefined) {
                             args.search = query;
                         }
                         const rules = await aki(RequestsApi).requestsRulesList(args);
+
                         return rules.results;
                     }}
                     .renderElement=${(rule: RequestRule) => rule.name}
@@ -198,6 +203,7 @@ export class RequestRuleBindingForm extends ModelForm<RequestRuleBinding, string
         if (!this.targetPk) {
             return nothing;
         }
+
         return html`<ak-form-element-horizontal
             label=${msg("Additional entitlements")}
             name="relatedTargets"

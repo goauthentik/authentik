@@ -78,6 +78,7 @@ export class ApplicationWizardProviderStep extends ApplicationWizardStep {
                 this.dispatchNavigationEvent({
                     disabled: ["bindings", "submit"],
                 });
+
                 return;
             }
 

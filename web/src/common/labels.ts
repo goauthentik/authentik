@@ -27,6 +27,7 @@ const IntentLabelRecord: Record<IntentEnum, MessageFormatter<string>> = {
 const defaultIntent = IntentLabelRecord[IntentEnum.Api];
 export function formatIntentLabel(intent: IntentEnum | string | null | undefined): string {
     const label = IntentLabelRecord[intent as IntentEnum];
+
     return label?.() ?? intent ?? defaultIntent();
 }
 
@@ -76,6 +77,7 @@ export const EventActionLabelRecord: Record<EventActions, MessageFormatter<strin
 
 export function actionToLabel(action?: string): string {
     const formatter = action ? EventActionLabelRecord[action as EventActions] : null;
+
     return formatter?.() ?? action ?? "";
 }
 
@@ -90,6 +92,7 @@ const defaultSeverityLabel = SeverityEnumLabelRecord[SeverityEnum.UnknownDefault
 
 export function severityToLabel(severity: SeverityEnum | null | undefined): string {
     const formatter = severity ? SeverityEnumLabelRecord[severity] : null;
+
     return formatter?.() ?? severity ?? defaultSeverityLabel();
 }
 
@@ -100,6 +103,7 @@ export function severityToLevel(severity?: SeverityEnum | null): string {
         case SeverityEnum.Alert:
             return "pf-m-danger";
     }
+
     return "pf-m-info";
 }
 
@@ -147,5 +151,6 @@ const defaultUserTypeLabel = UserTypeLabelRecord[UserTypeEnum.UnknownDefaultOpen
 
 export function userTypeToLabel(type?: UserTypeEnum): string {
     const formatter = type ? UserTypeLabelRecord[type] : null;
+
     return formatter?.() ?? type ?? defaultUserTypeLabel();
 }

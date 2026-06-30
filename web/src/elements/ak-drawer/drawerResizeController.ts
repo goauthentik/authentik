@@ -45,14 +45,17 @@ export class DrawerResizeController implements ReactiveController {
     restartController() {
         this.endController();
         this.#abortController = new AbortController();
+
         return this.#abortController.signal;
     }
 
     hostQ(part: string): HTMLElement {
         const element = this.host.renderRoot.querySelector(part);
+
         if (element === null || !(element instanceof HTMLElement)) {
             throw new Error(`Could not identify requested part ${element}`);
         }
+
         return element;
     }
 
@@ -106,6 +109,7 @@ export class DrawerResizeController implements ReactiveController {
             .otherwise(() => {
                 throw new Error(`Do not recognize position: ${this.position}`);
             });
+
         if (this.position === "bottom") {
             this.panel.style.overflowAnchor = "none";
         }
@@ -164,6 +168,7 @@ export class DrawerResizeController implements ReactiveController {
             if (this.isResizing) {
                 ev.preventDefault();
             }
+
             return;
         }
         ev.preventDefault();

@@ -47,7 +47,7 @@ export class LDAPSourceViewPage extends AKElement {
     set sourceSlug(slug: string) {
         aki(SourcesApi)
             .sourcesLdapRetrieve({
-                slug: slug,
+                slug,
             })
             .then((source) => {
                 this.source = source;
@@ -130,6 +130,7 @@ export class LDAPSourceViewPage extends AKElement {
                             <ak-sync-status-card
                                 .fetch=${() => {
                                     if (!this.source) return Promise.reject();
+
                                     return aki(SourcesApi).sourcesLdapSyncStatusRetrieve({
                                         slug: this.source.slug,
                                     });

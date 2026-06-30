@@ -82,6 +82,7 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
             cached: false,
         });
         this.installID = (await aki(EnterpriseApi).enterpriseLicenseInstallIdRetrieve()).installId;
+
         return aki(EnterpriseApi).enterpriseLicenseList(await this.defaultEndpointConfig());
     }
 
@@ -110,6 +111,7 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
 
     protected override renderToolbarSelected(): SlottedTemplateResult {
         const disabled = this.selectedElements.length < 1;
+
         return html`<ak-forms-delete-bulk
             object-label=${msg("License(s)")}
             .objects=${this.selectedElements}
@@ -201,17 +203,21 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
 
     row(item: License): SlottedTemplateResult[] {
         let color = PFColor.Green;
+
         if (item.expiry) {
             const now = new Date();
             const inAMonth = new Date();
             inAMonth.setDate(inAMonth.getDate() + 30);
+
             if (item.expiry <= inAMonth) {
                 color = PFColor.Orange;
             }
+
             if (item.expiry <= now) {
                 color = PFColor.Red;
             }
         }
+
         return [
             html`<div>${item.name}</div>`,
             html`<div>${msg(str`Internal: ${item.internalUsers}`)}</div>

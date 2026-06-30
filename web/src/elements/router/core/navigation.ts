@@ -51,6 +51,7 @@ export function resolveNavigationMode(
     currentOrigin: string,
 ): NavigationMode {
     if (mode === "assign") return "assign";
+
     if (targetOrigin !== currentOrigin) return "assign";
 
     return mode;
@@ -70,6 +71,7 @@ export function navigate(to: string | URL, { mode = "push" }: NavigateOptions = 
 
     if (effectiveMode === "assign") {
         window.location.assign(url.href);
+
         return;
     }
 
@@ -138,10 +140,15 @@ export interface InterceptScope {
  */
 export function decideInterception(ctx: AnchorClickContext, scope: InterceptScope): URL | null {
     if (ctx.defaultPrevented) return null;
+
     if (ctx.button !== 0) return null;
+
     if (ctx.metaKey || ctx.ctrlKey || ctx.shiftKey || ctx.altKey) return null;
+
     if (ctx.hasDownload) return null;
+
     if (ctx.target && ctx.target !== "_self") return null;
+
     if (!ctx.href) return null;
 
     let url: URL;

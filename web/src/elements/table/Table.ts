@@ -266,6 +266,7 @@ export abstract class Table<T extends object, D = T>
         let nextColumnCount = this.columns.length;
 
         if (this.checkbox) nextColumnCount += 1;
+
         if (this.expandable) nextColumnCount += 1;
 
         this.columnCount = nextColumnCount;
@@ -469,6 +470,7 @@ export abstract class Table<T extends object, D = T>
 
     protected refreshListener = (event?: Event) => {
         this.logger.debug("Received refresh event:", event);
+
         return this.fetch().then(() => {
             this.dispatchEvent(new AKTableRefreshEvent(this));
         });
@@ -734,6 +736,7 @@ export abstract class Table<T extends object, D = T>
         if (this.error) {
             return this.renderEmpty(this.renderError());
         }
+
         if (!this.visible || (this.loading && this.data === null)) {
             return this.renderLoading();
         }
@@ -938,11 +941,13 @@ export abstract class Table<T extends object, D = T>
                         : columnID;
                     let cellTemplate: SlottedTemplateResult;
                     let cellOptions: ColumnOptions = {};
+
                     if (Array.isArray(cell)) {
                         [cellTemplate, cellOptions] = cell;
                     } else {
                         cellTemplate = cell;
                     }
+
                     return html`<td
                         @click=${this.rowClickListener.bind(this, item)}
                         class=${ifPresent(!columnID, "presentational")}

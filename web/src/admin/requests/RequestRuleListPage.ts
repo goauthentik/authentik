@@ -47,6 +47,7 @@ export class RequestRuleListPage extends TablePage<RequestRule> {
 
     protected override renderToolbarSelected(): SlottedTemplateResult {
         const disabled = this.selectedElements.length < 1;
+
         return html` <ak-forms-delete-bulk
             object-label=${msg("Request rule(s)")}
             .objects=${this.selectedElements}

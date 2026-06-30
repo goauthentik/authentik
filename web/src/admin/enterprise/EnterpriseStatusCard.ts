@@ -63,13 +63,16 @@ export class EnterpriseStatusCard extends AKElement {
 
     protected renderSummaryBadge() {
         const summary = this.summary?.status;
+
         if (!summary) return nothing;
 
         const status = badgeDetails.get(summary);
+
         if (!status) return nothing;
 
         const valid = this.summary?.latestValid;
         const today = new Date();
+
         if (summary === LicenseSummaryStatusEnum.ExpirySoon && valid) {
             const gap = differenceInSeconds(valid, today);
             // prettier-ignore
@@ -85,7 +88,9 @@ export class EnterpriseStatusCard extends AKElement {
 
     protected calcUserPercentage(licensed: number, current: number) {
         const percentage = licensed > 0 ? Math.ceil(current / (licensed / 100)) : 0;
+
         if (current > 0 && licensed === 0) return Infinity;
+
         return percentage;
     }
 

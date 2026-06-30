@@ -34,7 +34,9 @@ interface MarkdownModule {
 
 async function fetchMarkdownModule(url: string | URL): Promise<MarkdownModule> {
     const response = await fetch(url);
+
     if (!response.ok) throw new Error(`Failed to fetch markdown: ${response.statusText}`);
+
     return response.json();
 }
 
@@ -124,6 +126,7 @@ export class AKMDX extends AKElement {
      */
     async #hydrateFromContent(source: string): Promise<SlottedTemplateResult> {
         const html = this.#applyReplacers(await compileRuntimeMarkdown(source));
+
         return sanitizeHTML(BrandedHTMLPolicy, html);
     }
 

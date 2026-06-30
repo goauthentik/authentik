@@ -90,6 +90,7 @@ export abstract class AdminStatusCard<T> extends AggregateCard {
             // Prevent immediate re-render if only value changed
             if (changed.size === 1) return false;
         }
+
         return true;
     }
 

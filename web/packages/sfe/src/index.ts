@@ -77,6 +77,7 @@ function ak(): GlobalAuthentik {
 // The SFE is rendered without dark mode support, so always use the light variant.
 function brandLogo(): string {
     const brand = ak().brand;
+
     return brand.branding_logo_themed_urls?.light ?? brand.branding_logo;
 }
 
@@ -115,6 +116,7 @@ class SimpleFlowExecutor {
             .html(`<span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
                 <span role="status">Loading...</span>`);
         let finalData: { [key: string]: unknown } = {};
+
         if (data instanceof FormData) {
             finalData = {};
             data.forEach((value, key) => {
@@ -185,6 +187,7 @@ abstract class Stage<T extends FlowInfoChallenge> {
         if (!this.challenge.responseErrors) {
             return [];
         }
+
         return this.challenge.responseErrors[fieldName] || [];
     }
 
@@ -376,11 +379,14 @@ class AuthenticatorValidateStage extends Stage<AuthenticatorValidationChallenge>
         if ("credentials" in navigator) {
             return true;
         }
+
         if (window.location.protocol === "http:" && window.location.hostname !== "localhost") {
             console.warn("WebAuthn requires this page to be accessed via HTTPS.");
+
             return false;
         }
         console.warn("WebAuthn not supported by browser.");
+
         return false;
     }
 
@@ -392,6 +398,7 @@ class AuthenticatorValidateStage extends Stage<AuthenticatorValidationChallenge>
         const allowCredentials = (credentialRequestOptions.allowCredentials || []).map(
             (credentialDescriptor) => {
                 const id = this.u8arr(credentialDescriptor.id.toString());
+
                 return Object.assign({}, credentialDescriptor, { id });
             },
         );
@@ -433,9 +440,11 @@ class AuthenticatorValidateStage extends Stage<AuthenticatorValidationChallenge>
         if (this.challenge.deviceChallenges.length === 1) {
             this.deviceChallenge = this.challenge.deviceChallenges[0];
         }
+
         if (!this.deviceChallenge) {
             return this.renderChallengePicker();
         }
+
         switch (this.deviceChallenge.deviceClass) {
             case "static":
             case "totp":
@@ -464,6 +473,7 @@ class AuthenticatorValidateStage extends Stage<AuthenticatorValidationChallenge>
                     : html`<p>No compatible authentication method available</p>`}
                 ${challenges.map((challenge) => {
                     let label = undefined;
+
                     switch (challenge.deviceClass) {
                         case "static":
                             label = "Recovery keys";
@@ -475,9 +485,11 @@ class AuthenticatorValidateStage extends Stage<AuthenticatorValidationChallenge>
                             label = "Security key";
                             break;
                     }
+
                     if (!label) {
                         return "";
                     }
+
                     return html`<div class="form-label-group my-3 has-validation">
                         <button
                             class="btn btn-secondary w-100 py-2"
@@ -546,6 +558,7 @@ class AuthenticatorValidateStage extends Stage<AuthenticatorValidationChallenge>
                 if (!assertion) {
                     throw new Error("No assertion");
                 }
+
                 try {
                     // we now have an authentication assertion! encode the byte arrays contained
                     // in the assertion data as strings for posting to the server

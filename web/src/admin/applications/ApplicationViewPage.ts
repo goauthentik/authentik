@@ -113,6 +113,7 @@ export class ApplicationViewPage extends WithLicenseSummary(AKElement) {
             .coreApplicationsRetrieve({ slug })
             .then((app) => {
                 this.application = app;
+
                 if (
                     app.providerObj &&
                     [
@@ -154,6 +155,7 @@ export class ApplicationViewPage extends WithLicenseSummary(AKElement) {
         if (!this.application) {
             return nothing;
         }
+
         return html`<div class="pf-l-grid pf-m-gutter">
             <div class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-2-col-on-xl pf-m-2-col-on-2xl">
                 <div class="pf-c-card__title">${msg("Related")}</div>

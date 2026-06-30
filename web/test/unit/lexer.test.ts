@@ -9,6 +9,7 @@ const drain = (lexer: Lexer): unknown[] => {
     while ((token = lexer.lex()) !== null) {
         out.push(token);
     }
+
     return out;
 };
 
@@ -106,6 +107,7 @@ describe("Lexer", () => {
 
             lexer.addRule(/(\w+)=(\w+)/, (...args) => {
                 calls.push(args);
+
                 return args[0];
             });
 
@@ -121,6 +123,7 @@ describe("Lexer", () => {
             lexer.addRule(/a/, function () {
                 // eslint-disable-next-line consistent-this, @typescript-eslint/no-this-alias
                 captured = this;
+
                 return "a";
             });
 
@@ -181,6 +184,7 @@ describe("Lexer", () => {
                 })
                 .addRule(/foo/, () => {
                     order.push("second");
+
                     return "FOO";
                 });
 
@@ -279,6 +283,7 @@ describe("Lexer", () => {
             lexer
                 .addRule(/!/, function () {
                     this.state = 5;
+
                     return "BANG";
                 })
                 .addRule(/./, (m) => m, []);

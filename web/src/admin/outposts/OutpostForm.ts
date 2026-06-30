@@ -122,6 +122,7 @@ export class OutpostForm extends ModelForm<Outpost, string> {
         });
         this.type = o.type || OutpostTypeEnum.Proxy;
         this.providers = providerProvider(o.type);
+
         return o;
     }
 
@@ -143,6 +144,7 @@ export class OutpostForm extends ModelForm<Outpost, string> {
                 outpostRequest: data,
             });
         }
+
         return aki(OutpostsApi).outpostsInstancesCreate({
             outpostRequest: data,
         });
@@ -205,11 +207,13 @@ export class OutpostForm extends ModelForm<Outpost, string> {
                         const args: OutpostsServiceConnectionsAllListRequest = {
                             ordering: "name",
                         };
+
                         if (query !== undefined) {
                             args.search = query;
                         }
                         const items =
                             await aki(OutpostsApi).outpostsServiceConnectionsAllList(args);
+
                         return items.results;
                     }}
                     .renderElement=${(item: ServiceConnection): string => {
@@ -221,9 +225,11 @@ export class OutpostForm extends ModelForm<Outpost, string> {
                     }}
                     .selected=${(item: ServiceConnection, items: ServiceConnection[]): boolean => {
                         let selected = this.instance?.serviceConnection === item.pk;
+
                         if (items.length === 1 && !this.instance) {
                             selected = true;
                         }
+
                         return selected;
                     }}
                     blankable

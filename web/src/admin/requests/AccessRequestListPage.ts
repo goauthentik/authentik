@@ -95,6 +95,7 @@ export class AccessRequestListPage extends TablePage<GrantRequest> {
                 ${msg("Fulfill")}
             </button>`;
         }
+
         if (item.isActive) {
             return html`<ak-forms-confirm
                 successMessage=${msg("Successfully revoked grant")}
@@ -117,6 +118,7 @@ export class AccessRequestListPage extends TablePage<GrantRequest> {
                 </button>
             </ak-forms-confirm>`;
         }
+
         return nothing;
     }
 

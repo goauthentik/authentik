@@ -39,9 +39,11 @@ const MIN_POPOVER_HEIGHT = 128;
 export function* composedAncestors(node: Node): Generator<HTMLElement> {
     const composedParent = (current: Node): Node | null => {
         const slot = (current as Element).assignedSlot;
+
         if (slot) return slot;
 
         const parent = current.parentNode;
+
         return parent instanceof ShadowRoot ? parent.host : parent;
     };
 

@@ -108,8 +108,8 @@ export class LifecycleRuleForm extends ModelForm<LifecycleRule, string, Lifecycl
     #fetchGroups = (page: number, search?: string): Promise<DataProvision> => {
         return this.#coreApi
             .coreGroupsList({
-                page: page,
-                search: search,
+                page,
+                search,
             })
             .then((results) => {
                 return {
@@ -122,8 +122,8 @@ export class LifecycleRuleForm extends ModelForm<LifecycleRule, string, Lifecycl
     #fetchUsers = (page: number, search?: string): Promise<DataProvision> => {
         return this.#coreApi
             .coreUsersList({
-                page: page,
-                search: search,
+                page,
+                search,
             })
             .then((results) => {
                 return {

@@ -313,6 +313,7 @@ export function renderForm({
                             const args: PropertymappingsProviderSamlListRequest = {
                                 ordering: "saml_name",
                             };
+
                             if (query !== undefined) {
                                 args.search = query;
                             }
@@ -320,6 +321,7 @@ export function renderForm({
                                 await aki(PropertymappingsApi).propertymappingsProviderSamlList(
                                     args,
                                 );
+
                             return items.results;
                         }}
                         .renderElement=${(item: SAMLPropertyMapping): string => {
@@ -349,6 +351,7 @@ export function renderForm({
                             const args: PropertymappingsProviderSamlListRequest = {
                                 ordering: "saml_name",
                             };
+
                             if (query !== undefined) {
                                 args.search = query;
                             }
@@ -356,6 +359,7 @@ export function renderForm({
                                 await aki(PropertymappingsApi).propertymappingsProviderSamlList(
                                     args,
                                 );
+
                             return items.results;
                         }}
                         .renderElement=${(item: SAMLPropertyMapping): string => {
@@ -508,6 +512,7 @@ export function renderForm({
                     <select class="pf-c-form-control">
                         ${availableHashes.map((hash) => {
                             const algorithmValue = retrieveSignatureAlgorithm(keyType, hash);
+
                             if (!algorithmValue) return nothing;
 
                             // Default to sha256 or selected sha algorithm if valid

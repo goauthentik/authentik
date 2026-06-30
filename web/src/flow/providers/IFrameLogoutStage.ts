@@ -157,6 +157,7 @@ export class IFrameLogoutStage extends BaseStage<
         // Try to detect when iframe loads (may not work for cross-origin)
         iframe.addEventListener("load", () => {
             const timeout = this.#iframeTimeouts.get(index);
+
             if (timeout) {
                 clearTimeout(timeout);
                 this.#iframeTimeouts.delete(index);
@@ -260,6 +261,7 @@ export class IFrameLogoutStage extends BaseStage<
         if (!this.challenge?.logoutUrls || !this.challenge.logoutUrls.length) {
             const submitEvent = new SubmitEvent("submit");
             this.submitForm(submitEvent);
+
             return html`<ak-flow-card .challenge=${this.challenge} loading></ak-flow-card>`;
         }
 

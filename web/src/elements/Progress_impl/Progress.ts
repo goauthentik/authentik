@@ -91,6 +91,7 @@ export class Progress extends LitElement {
 
     protected getSlotted(name: string) {
         const selector = `[slot="${name}"]`;
+
         return Array.from(this.children).find((e) => e.matches(selector));
     }
 
@@ -107,6 +108,7 @@ export class Progress extends LitElement {
 
         const range = this.max - this.min;
         const normalized = Math.min(Math.max(this.value, this.min), this.max);
+
         return ((normalized - this.min) / range) * 100;
     }
 

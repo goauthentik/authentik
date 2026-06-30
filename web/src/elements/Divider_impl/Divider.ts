@@ -59,6 +59,7 @@ export class Divider extends LitElement {
 
     render() {
         const contentClass = classList([this.hasContent && "has-content"]);
+
         return html`<div part="divider">
             <span part="line start"></span>
             <span part="content" class=${contentClass}

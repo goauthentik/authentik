@@ -26,6 +26,7 @@ export interface BeforeTryEventDetail {
 
 function rgba2hex(cssValue: string) {
     const matches = /^rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*(\d+\.{0,1}\d*))?\)$/.exec(cssValue);
+
     if (!matches) return "";
 
     return `#${matches

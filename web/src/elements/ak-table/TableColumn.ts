@@ -45,6 +45,7 @@ export class TableColumn {
     constructor(value: string, orderBy?: string, host?: HTMLElement) {
         this.value = value;
         this.orderBy = orderBy;
+
         if (host) {
             this.host = host;
         }

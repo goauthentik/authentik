@@ -31,6 +31,7 @@ class PreviewStageHost implements StageHost {
     brand = undefined;
     async submit(payload: unknown): Promise<boolean> {
         this.promptForm.previewResult = payload;
+
         return false;
     }
 
@@ -66,6 +67,7 @@ export class PromptForm extends ModelForm<Prompt, string> {
                 promptRequest: data,
             });
         }
+
         return aki(StagesApi).stagesPromptPromptsCreate({
             promptRequest: data,
         });
@@ -76,6 +78,7 @@ export class PromptForm extends ModelForm<Prompt, string> {
             promptUuid: pk,
         });
         await this.refreshPreview(prompt);
+
         return prompt;
     }
 
@@ -154,6 +157,7 @@ export class PromptForm extends ModelForm<Prompt, string> {
             [PromptTypeEnum.AkLocale, msg("authentik: Locale: Displays a list of locales authentik supports.")],
         ];
         const currentType = this.instance?.type;
+
         return html` ${map(
             promptTypesWithLabels,
             ([promptType, label]) =>

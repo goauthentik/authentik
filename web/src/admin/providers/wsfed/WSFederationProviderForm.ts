@@ -25,6 +25,7 @@ export class WSFederationProviderForm extends BaseProviderForm<WSFederationProvi
             id: pk,
         });
         this.hasSigningKp = !!provider.signingKp;
+
         return provider;
     }
 
@@ -35,6 +36,7 @@ export class WSFederationProviderForm extends BaseProviderForm<WSFederationProvi
                 wSFederationProviderRequest: data,
             });
         }
+
         return aki(ProvidersApi).providersWsfedCreate({
             wSFederationProviderRequest: data,
         });
@@ -43,6 +45,7 @@ export class WSFederationProviderForm extends BaseProviderForm<WSFederationProvi
     renderForm(): TemplateResult {
         const setHasSigningKp = (ev: InputEvent) => {
             const target = ev.target as AkCryptoCertificateSearch;
+
             if (!target) return;
             this.hasSigningKp = !!target.selectedKeypair;
             this.signingKeyType = target.selectedKeypair?.keyType ?? KeyTypeEnum.Rsa;

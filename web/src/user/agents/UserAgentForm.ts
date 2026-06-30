@@ -39,15 +39,18 @@ export class UserAgentForm extends Form<AgentCreateRequest> {
             agentCreateRequest: data,
         });
         this.result = result;
+
         if (this.parentElement instanceof ModalForm) {
             this.parentElement.showSubmitButton = false;
         }
+
         return result;
     }
 
     public override reset(): void {
         super.reset();
         this.result = null;
+
         if (this.parentElement instanceof ModalForm) {
             this.parentElement.showSubmitButton = true;
         }
@@ -92,6 +95,7 @@ export class UserAgentForm extends Form<AgentCreateRequest> {
         if (this.result) {
             return this.renderResponseForm();
         }
+
         return super.renderFormWrapper();
     }
 }

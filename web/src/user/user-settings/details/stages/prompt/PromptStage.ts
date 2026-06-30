@@ -60,6 +60,7 @@ export class UserSettingsPromptStage extends PromptStage {
                 </ak-form-element-horizontal>
             `;
         }
+
         return html`${this.renderPromptInner(prompt)} ${this.renderPromptHelpText(prompt)} `;
     }
 

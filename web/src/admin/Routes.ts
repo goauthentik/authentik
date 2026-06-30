@@ -26,6 +26,7 @@ export const ROUTES: RouteLike[] = [
         "/library",
         () => {
             navigate(toUserInterface(), { mode: "assign" });
+
             return html``;
         },
         "library-redirect",
@@ -40,6 +41,7 @@ export const ROUTES: RouteLike[] = [
         "/administration/dashboard/users",
         async () => {
             await import("#admin/admin-overview/DashboardUserPage");
+
             return html`<ak-admin-dashboard-users></ak-admin-dashboard-users>`;
         },
         "dashboard-users",
@@ -48,6 +50,7 @@ export const ROUTES: RouteLike[] = [
         "/administration/system-tasks{/*}?",
         async () => {
             await import("#admin/admin-overview/SystemTasksPage");
+
             return html`<ak-system-tasks></ak-system-tasks>`;
         },
         "system-tasks",
@@ -57,6 +60,7 @@ export const ROUTES: RouteLike[] = [
         "/core/providers",
         async () => {
             await import("#admin/providers/ProviderListPage");
+
             return html`<ak-provider-list></ak-provider-list>`;
         },
         "providers",
@@ -65,6 +69,7 @@ export const ROUTES: RouteLike[] = [
         "/core/providers/:id{/*}?",
         async (args) => {
             await import("#admin/providers/ProviderViewPage");
+
             return html`<ak-provider-view .providerID=${parseInt(args.id, 10)}></ak-provider-view>`;
         },
         "provider-view",
@@ -74,6 +79,7 @@ export const ROUTES: RouteLike[] = [
         "/core/applications",
         async () => {
             await import("#admin/applications/ApplicationListPage");
+
             return html`<ak-application-list></ak-application-list>`;
         },
         "applications",
@@ -82,6 +88,7 @@ export const ROUTES: RouteLike[] = [
         "/core/applications/:slug{/*}?",
         async (args) => {
             await import("#admin/applications/ApplicationViewPage");
+
             return html`<ak-application-view .applicationSlug=${args.slug}></ak-application-view>`;
         },
         "application-view",
@@ -91,6 +98,7 @@ export const ROUTES: RouteLike[] = [
         "/endpoints/devices",
         async () => {
             await import("#admin/endpoints/devices/DeviceListPage");
+
             return html`<ak-endpoints-device-list></ak-endpoints-device-list>`;
         },
         "devices",
@@ -99,6 +107,7 @@ export const ROUTES: RouteLike[] = [
         "/endpoints/devices/:uuid{/*}?",
         async (args) => {
             await import("#admin/endpoints/devices/DeviceViewPage");
+
             return html`<ak-endpoints-device-view
                 .deviceId=${args.uuid}
             ></ak-endpoints-device-view>`;
@@ -109,6 +118,7 @@ export const ROUTES: RouteLike[] = [
         "/endpoints/connectors",
         async () => {
             await import("#admin/endpoints/connectors/ConnectorsListPage");
+
             return html`<ak-endpoints-connectors-list></ak-endpoints-connectors-list>`;
         },
         "connectors",
@@ -117,6 +127,7 @@ export const ROUTES: RouteLike[] = [
         "/endpoints/connectors/:uuid{/*}?",
         async (args) => {
             await import("#admin/endpoints/connectors/ConnectorViewPage");
+
             return html`<ak-endpoints-connector-view
                 .connectorID=${args.uuid}
             ></ak-endpoints-connector-view>`;
@@ -127,6 +138,7 @@ export const ROUTES: RouteLike[] = [
         "/endpoints/groups",
         async () => {
             await import("#admin/endpoints/DeviceAccessGroupsListPage");
+
             return html`<ak-endpoints-device-access-groups-list></ak-endpoints-device-access-groups-list>`;
         },
         "device-access-groups",
@@ -136,6 +148,7 @@ export const ROUTES: RouteLike[] = [
         "/core/sources",
         async () => {
             await import("#admin/sources/SourceListPage");
+
             return html`<ak-source-list></ak-source-list>`;
         },
         "sources",
@@ -144,6 +157,7 @@ export const ROUTES: RouteLike[] = [
         "/core/sources/:slug{/*}?",
         async (args) => {
             await import("#admin/sources/SourceViewPage");
+
             return html`<ak-source-view .sourceSlug=${args.slug}></ak-source-view>`;
         },
         "source-view",
@@ -152,6 +166,7 @@ export const ROUTES: RouteLike[] = [
         "/core/property-mappings",
         async () => {
             await import("#admin/property-mappings/PropertyMappingListPage");
+
             return html`<ak-property-mapping-list></ak-property-mapping-list>`;
         },
         "property-mappings",
@@ -160,6 +175,7 @@ export const ROUTES: RouteLike[] = [
         "/core/tokens",
         async () => {
             await import("#admin/tokens/TokenListPage");
+
             return html`<ak-token-list></ak-token-list>`;
         },
         "tokens",
@@ -168,6 +184,7 @@ export const ROUTES: RouteLike[] = [
         "/core/brands",
         async () => {
             await import("#admin/brands/BrandListPage");
+
             return html`<ak-brand-list></ak-brand-list>`;
         },
         "brands",
@@ -177,6 +194,7 @@ export const ROUTES: RouteLike[] = [
         "/policy/policies",
         async () => {
             await import("#admin/policies/PolicyListPage");
+
             return html`<ak-policy-list></ak-policy-list>`;
         },
         "policies",
@@ -185,6 +203,7 @@ export const ROUTES: RouteLike[] = [
         "/policy/reputation",
         async () => {
             await import("#admin/policies/reputation/ReputationListPage");
+
             return html`<ak-policy-reputation-list></ak-policy-reputation-list>`;
         },
         "reputation",
@@ -194,6 +213,7 @@ export const ROUTES: RouteLike[] = [
         "/requests/rules",
         async () => {
             await import("#admin/requests/RequestRuleListPage");
+
             return html`<ak-request-rule-list></ak-request-rule-list>`;
         },
         "request-rules",
@@ -202,6 +222,7 @@ export const ROUTES: RouteLike[] = [
         "/requests/access-requests",
         async () => {
             await import("#admin/requests/AccessRequestListPage");
+
             return html`<ak-access-requests-list></ak-access-requests-list>`;
         },
         "access-requests",
@@ -211,6 +232,7 @@ export const ROUTES: RouteLike[] = [
         "/identity/object-attributes",
         async () => {
             await import("#admin/object-attributes/ObjectAttributeListPage");
+
             return html`<ak-object-attribute-list></ak-object-attribute-list>`;
         },
         "object-attributes",
@@ -219,6 +241,7 @@ export const ROUTES: RouteLike[] = [
         "/identity/groups",
         async () => {
             await import("#admin/groups/GroupListPage");
+
             return html`<ak-group-list></ak-group-list>`;
         },
         "groups",
@@ -227,6 +250,7 @@ export const ROUTES: RouteLike[] = [
         "/identity/groups/:uuid{/*}?",
         async (args) => {
             await import("#admin/groups/GroupViewPage");
+
             return html`<ak-group-view .groupId=${args.uuid}></ak-group-view>`;
         },
         "group-view",
@@ -235,6 +259,7 @@ export const ROUTES: RouteLike[] = [
         "/identity/agents",
         async () => {
             await import("#admin/agents/AgentListPage");
+
             return html`<ak-agent-list></ak-agent-list>`;
         },
         "agents",
@@ -243,6 +268,7 @@ export const ROUTES: RouteLike[] = [
         "/identity/users",
         async () => {
             await import("#admin/users/UserListPage");
+
             return html`<ak-user-list></ak-user-list>`;
         },
         "users",
@@ -253,6 +279,7 @@ export const ROUTES: RouteLike[] = [
         "/identity/users/:id{/*}?",
         async (args) => {
             await import("#admin/users/UserViewPage");
+
             return html`<ak-user-view .userId=${parseInt(args.id, 10)}></ak-user-view>`;
         },
         "user-view",
@@ -261,6 +288,7 @@ export const ROUTES: RouteLike[] = [
         "/identity/roles",
         async () => {
             await import("#admin/roles/ak-role-list");
+
             return html`<ak-role-list></ak-role-list>`;
         },
         "roles",
@@ -269,6 +297,7 @@ export const ROUTES: RouteLike[] = [
         "/identity/initial-permissions",
         async () => {
             await import("#admin/rbac/ak-initial-permissions-list");
+
             return html`<ak-initial-permissions-list></ak-initial-permissions-list>`;
         },
         "initial-permissions",
@@ -277,6 +306,7 @@ export const ROUTES: RouteLike[] = [
         "/identity/roles/:id{/*}?",
         async (args) => {
             await import("#admin/roles/ak-role-view");
+
             return html`<ak-role-view roleId=${args.id}></ak-role-view>`;
         },
         "role-view",
@@ -286,6 +316,7 @@ export const ROUTES: RouteLike[] = [
         "/flow/stages/invitations",
         async () => {
             await import("#admin/stages/invitation/InvitationListPage");
+
             return html`<ak-stage-invitation-list></ak-stage-invitation-list>`;
         },
         "stage-invitations",
@@ -294,6 +325,7 @@ export const ROUTES: RouteLike[] = [
         "/flow/stages/prompts",
         async () => {
             await import("#admin/stages/prompt/PromptListPage");
+
             return html`<ak-stage-prompt-list></ak-stage-prompt-list>`;
         },
         "stage-prompts",
@@ -302,6 +334,7 @@ export const ROUTES: RouteLike[] = [
         "/flow/stages",
         async () => {
             await import("#admin/stages/StageListPage");
+
             return html`<ak-stage-list></ak-stage-list>`;
         },
         "stages",
@@ -310,6 +343,7 @@ export const ROUTES: RouteLike[] = [
         "/flow/flows",
         async () => {
             await import("#admin/flows/FlowListPage");
+
             return html`<ak-flow-list></ak-flow-list>`;
         },
         "flows",
@@ -318,6 +352,7 @@ export const ROUTES: RouteLike[] = [
         "/flow/flows/:slug{/*}?",
         async (args) => {
             await import("#admin/flows/FlowViewPage");
+
             return html`<ak-flow-view
                 .flowSlug=${args.slug}
                 exportparts="main, tabs"
@@ -330,6 +365,7 @@ export const ROUTES: RouteLike[] = [
         "/events/log",
         async () => {
             await import("#admin/events/EventListPage");
+
             return html`<ak-event-list></ak-event-list>`;
         },
         "events",
@@ -338,6 +374,7 @@ export const ROUTES: RouteLike[] = [
         "/events/log/:id",
         async (args) => {
             await import("#admin/events/EventViewPage");
+
             return html`<ak-event-view .eventID=${args.id}></ak-event-view>`;
         },
         "event-view",
@@ -346,6 +383,7 @@ export const ROUTES: RouteLike[] = [
         "/events/transports",
         async () => {
             await import("#admin/events/TransportListPage");
+
             return html`<ak-event-transport-list></ak-event-transport-list>`;
         },
         "event-transports",
@@ -354,6 +392,7 @@ export const ROUTES: RouteLike[] = [
         "/events/rules",
         async () => {
             await import("#admin/events/RuleListPage");
+
             return html`<ak-event-rule-list></ak-event-rule-list>`;
         },
         "event-rules",
@@ -362,6 +401,7 @@ export const ROUTES: RouteLike[] = [
         "/events/exports",
         async () => {
             await import("./events/DataExportListPage");
+
             return html`<ak-data-export-list></ak-data-export-list>`;
         },
         "data-exports",
@@ -370,6 +410,7 @@ export const ROUTES: RouteLike[] = [
         "/events/lifecycle-rules",
         async () => {
             await import("#admin/lifecycle/LifecycleRuleListPage");
+
             return html`<ak-lifecycle-rule-list></ak-lifecycle-rule-list>`;
         },
         "lifecycle-rules",
@@ -378,6 +419,7 @@ export const ROUTES: RouteLike[] = [
         "/events/lifecycle-reviews",
         async () => {
             await import("#admin/lifecycle/ReviewListPage");
+
             return html`<ak-review-list></ak-review-list>`;
         },
         "lifecycle-reviews",
@@ -386,6 +428,7 @@ export const ROUTES: RouteLike[] = [
         "/events/offboardings",
         async () => {
             await import("#admin/lifecycle/OffboardingListPage");
+
             return html`<ak-offboarding-list></ak-offboarding-list>`;
         },
         "offboardings",
@@ -395,6 +438,7 @@ export const ROUTES: RouteLike[] = [
         "/outpost/outposts",
         async () => {
             await import("#admin/outposts/OutpostListPage");
+
             return html`<ak-outpost-list></ak-outpost-list>`;
         },
         "outposts",
@@ -403,6 +447,7 @@ export const ROUTES: RouteLike[] = [
         "/outpost/outposts/:id{/*}?",
         async (args) => {
             await import("#admin/outposts/OutpostViewPage");
+
             return html`<ak-outpost-view .outpostID=${args.id}></ak-outpost-view>`;
         },
         "outpost-view",
@@ -411,6 +456,7 @@ export const ROUTES: RouteLike[] = [
         "/outpost/integrations",
         async () => {
             await import("#admin/outposts/ServiceConnectionListPage");
+
             return html`<ak-outpost-service-connection-list></ak-outpost-service-connection-list>`;
         },
         "integrations",
@@ -420,6 +466,7 @@ export const ROUTES: RouteLike[] = [
         "/crypto/certificates",
         async () => {
             await import("#admin/crypto/CertificateKeyPairListPage");
+
             return html`<ak-crypto-certificate-list></ak-crypto-certificate-list>`;
         },
         "certificates",
@@ -428,6 +475,7 @@ export const ROUTES: RouteLike[] = [
         "/admin/settings",
         async () => {
             await import("#admin/admin-settings/AdminSettingsPage");
+
             return html`<ak-admin-settings></ak-admin-settings>`;
         },
         "admin-settings",
@@ -436,6 +484,7 @@ export const ROUTES: RouteLike[] = [
         "/files",
         async () => {
             await import("#admin/files/FileListPage");
+
             return html`<ak-files-list></ak-files-list>`;
         },
         "files",
@@ -444,6 +493,7 @@ export const ROUTES: RouteLike[] = [
         "/blueprints/instances",
         async () => {
             await import("#admin/blueprints/BlueprintListPage");
+
             return html`<ak-blueprint-list></ak-blueprint-list>`;
         },
         "blueprints",
@@ -452,6 +502,7 @@ export const ROUTES: RouteLike[] = [
         "/debug",
         async () => {
             await import("#admin/ak-admin-debug-page");
+
             return html`<ak-admin-debug-page></ak-admin-debug-page>`;
         },
         "debug",
@@ -460,6 +511,7 @@ export const ROUTES: RouteLike[] = [
         "/enterprise/licenses",
         async () => {
             await import("#admin/enterprise/EnterpriseLicenseListPage");
+
             return html`<ak-enterprise-license-list></ak-enterprise-license-list>`;
         },
         "licenses",

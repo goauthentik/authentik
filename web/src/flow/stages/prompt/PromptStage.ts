@@ -240,6 +240,7 @@ ${prompt.initialValue}</textarea
             case PromptTypeEnum.RadioButtonGroup:
                 return html`${(prompt.choices || []).map((choice) => {
                     const id = `${prompt.fieldKey}-${choice.value}`;
+
                     return html`<div class="pf-c-check">
                         <input
                             type="radio"
@@ -303,6 +304,7 @@ ${prompt.initialValue}</textarea
                 <p class="pf-c-form__helper-text">${unsafeHTML(prompt.subText)}</p>
             </div>`;
         }
+
         if (this.shouldRenderInWrapper(prompt)) {
             const errors = this.challenge?.responseErrors?.[prompt.fieldKey];
 
@@ -318,6 +320,7 @@ ${prompt.initialValue}</textarea
                 ${AKFormErrors({ errors })}
             </div>`;
         }
+
         return html`${this.renderPromptInner(prompt)} ${this.renderPromptHelpText(prompt)}`;
     }
 

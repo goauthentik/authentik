@@ -68,6 +68,7 @@ export class SourceSettingsTelegram extends BaseUserSettings {
         const params = new URLSearchParams(this.configureURL || "");
         const botUsername: string = params.get("bot_username") || "";
         const requestMessageAccess = params.get("request_message_access") === "True";
+
         if (this.connectBtnRef.value) this.connectBtnRef.value.textContent = "";
         loadTelegramWidget(
             this.connectBtnRef.value,

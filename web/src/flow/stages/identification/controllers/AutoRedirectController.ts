@@ -19,6 +19,7 @@ export class AutoRedirect implements ReactiveController {
 
     public hostUpdate() {
         const { challenge } = this.host;
+
         if (!challenge) {
             return;
         }

@@ -47,7 +47,7 @@ export class KerberosSourceViewPage extends AKElement {
     set sourceSlug(slug: string) {
         aki(SourcesApi)
             .sourcesKerberosRetrieve({
-                slug: slug,
+                slug,
             })
             .then((source) => {
                 this.source = source;
@@ -80,6 +80,7 @@ export class KerberosSourceViewPage extends AKElement {
         if (!this.source) {
             return nothing;
         }
+
         return html`<main>
             <ak-tabs routed>
                 <div

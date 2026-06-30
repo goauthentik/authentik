@@ -31,5 +31,6 @@ export function IconEditButtonByTagName(
     options: IconEditButtonOptions<NamedEntityElementConstructor> = defaultIconEditOptions,
 ): SlottedTemplateResult {
     const Constructor = lookupElementConstructor(tagName);
+
     return IconEditButton(Constructor, instancePk, itemName, options);
 }

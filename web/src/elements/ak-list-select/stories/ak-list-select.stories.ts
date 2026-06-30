@@ -53,6 +53,7 @@ const sendMessage = (message: string) =>
 const container = (testItem: TemplateResult) => {
     window.setTimeout(() => {
         const menu = document.getElementById("ak-list-select");
+
         if (!menu) {
             throw new Error("Test was not initialized correctly.");
         }

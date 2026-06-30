@@ -56,10 +56,12 @@ export function renderAuthOAuth(provider?: Partial<SCIMProvider>, _errors: Valid
                     const args: SourcesOauthListRequest = {
                         ordering: "name",
                     };
+
                     if (query !== undefined) {
                         args.search = query;
                     }
                     const sources = await aki(SourcesApi).sourcesOauthList(args);
+
                     return sources.results;
                 }}
                 .renderElement=${(source: OAuthSource): string => {

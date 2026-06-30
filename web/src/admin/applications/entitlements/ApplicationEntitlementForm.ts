@@ -34,6 +34,7 @@ export class ApplicationEntitlementForm extends ObjectAttributeModelForm<
         if (this.instance?.pbmUuid) {
             return msg("Successfully updated entitlement.");
         }
+
         return msg("Successfully created entitlement.");
     }
 
@@ -43,12 +44,14 @@ export class ApplicationEntitlementForm extends ObjectAttributeModelForm<
         if (this.targetPk) {
             data.app = this.targetPk;
         }
+
         if (this.instance?.pbmUuid) {
             return aki(CoreApi).coreApplicationEntitlementsUpdate({
                 pbmUuid: this.instance.pbmUuid || "",
                 applicationEntitlementRequest: data,
             });
         }
+
         return aki(CoreApi).coreApplicationEntitlementsCreate({
             applicationEntitlementRequest: data,
         });

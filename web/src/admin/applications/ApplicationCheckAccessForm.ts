@@ -64,6 +64,7 @@ export class ApplicationCheckAccessForm extends Form<{ forUser: number }> {
             })
             .then((result) => {
                 this.result = result;
+
                 return result;
             });
     }

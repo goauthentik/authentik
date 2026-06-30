@@ -51,6 +51,7 @@ export class BrowseRequestable extends AKElement {
 
     protected async refresh(): Promise<void> {
         this.loading = true;
+
         try {
             const applications = await this.#coreApi.coreApplicationsRequestableList({
                 pageSize: 100,
@@ -67,6 +68,7 @@ export class BrowseRequestable extends AKElement {
         const { link } = await this.#requestsApi.requestsGrantRequestsCreate({
             grantRequestCreateRequest: { pbms },
         });
+
         if (link) {
             window.location.assign(link);
         }
@@ -81,6 +83,7 @@ export class BrowseRequestable extends AKElement {
 
             if (entitlements.results.length === 1) {
                 await this.#requestAccess([entitlements.results[0].pbmUuid]);
+
                 return;
             }
 
@@ -89,6 +92,7 @@ export class BrowseRequestable extends AKElement {
                     html`<ak-request-entitlement-modal .app=${app}></ak-request-entitlement-modal>`,
                     { invokerElement: this },
                 );
+
                 return;
             }
 
@@ -102,6 +106,7 @@ export class BrowseRequestable extends AKElement {
         if (this.loading) {
             return html`<ak-empty-state loading></ak-empty-state>`;
         }
+
         if (this.applications.length < 1) {
             return html`<ak-empty-state icon="pf-icon-catalog"
                 ><span>${msg("Nothing available to request.")}</span>
@@ -110,6 +115,7 @@ export class BrowseRequestable extends AKElement {
                 </div>
             </ak-empty-state>`;
         }
+
         return html`<div class="pf-c-page__header pf-c-content">
                 <h1 class="pf-c-page__title">${msg("Requestable applications")}</h1>
             </div>

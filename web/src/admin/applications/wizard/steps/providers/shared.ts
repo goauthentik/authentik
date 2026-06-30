@@ -53,7 +53,9 @@ export function isApplicationTransactionValidationError(
     error: ValidationError,
 ): error is ApplicationTransactionValidationError {
     if ("app" in error) return true;
+
     if ("provider" in error) return true;
+
     if ("bindings" in error) return true;
 
     return false;

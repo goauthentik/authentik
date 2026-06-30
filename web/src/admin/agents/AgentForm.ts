@@ -110,10 +110,12 @@ export class AgentForm extends Form<AgentCreateRequest> {
                         const args: CoreUsersListRequest = {
                             ordering: "username",
                         };
+
                         if (query !== undefined) {
                             args.search = query;
                         }
                         const users = await aki(CoreApi).coreUsersList(args);
+
                         return users.results;
                     }}
                     .renderElement=${(user: User) => user.username}

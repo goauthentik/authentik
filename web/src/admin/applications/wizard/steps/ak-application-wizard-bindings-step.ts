@@ -166,6 +166,7 @@ export class ApplicationWizardBindingsStep extends ApplicationWizardStep {
         if ((this.wizard.bindings ?? []).length === 0) {
             return this.renderEmptyCollection();
         }
+
         return this.renderCollection();
     }
 }

@@ -42,6 +42,7 @@ export class RACProviderFormPage extends ModelForm<RACProvider, number> {
         if (this.instance) {
             return msg("Successfully updated provider.");
         }
+
         return msg("Successfully created provider.");
     }
 

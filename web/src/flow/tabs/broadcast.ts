@@ -73,6 +73,7 @@ export class Broadcast extends BroadcastChannel implements Disposable {
                 if (target !== TabID.shared.current) {
                     return;
                 }
+
                 if (typeof resumeID === "string") {
                     sessionStorage.setItem(this.storageKey, resumeID);
                 }

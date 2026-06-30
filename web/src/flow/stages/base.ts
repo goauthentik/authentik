@@ -66,6 +66,7 @@ export abstract class BaseStage<Tin extends StageChallengeLike, Tout = unknown>
 
         if (!focusTarget) {
             this.logger.info("Skipping focus. No empty candidate.");
+
             return;
         }
 
@@ -75,6 +76,7 @@ export abstract class BaseStage<Tin extends StageChallengeLike, Tout = unknown>
 
     #visibilityListener = () => {
         if (document.visibilityState !== "visible") return;
+
         if (!this.visible) return;
 
         this.focus();

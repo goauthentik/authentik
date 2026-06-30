@@ -36,6 +36,7 @@ export class SearchSelectMenuController implements ReactiveController {
 
         if (!menu) {
             this.#stopTracking();
+
             return;
         }
 
@@ -96,6 +97,7 @@ export class SearchSelectMenuController implements ReactiveController {
      */
     public readonly handleMenuWheel = (event: WheelEvent) => {
         const menu = this.getMenu();
+
         if (!menu) return;
 
         const goingDown = event.deltaY > 0;
@@ -106,12 +108,14 @@ export class SearchSelectMenuController implements ReactiveController {
         if (menuCanScroll) return;
 
         const scroller = findScrollableAncestor(this.host);
+
         if (!scroller) return;
 
         const deltaY = (() => {
             switch (event.deltaMode) {
                 case WheelEvent.DOM_DELTA_LINE: {
                     const lineHeight = parseFloat(getComputedStyle(scroller).lineHeight);
+
                     return event.deltaY * (Number.isFinite(lineHeight) ? lineHeight : 16);
                 }
                 case WheelEvent.DOM_DELTA_PAGE:
@@ -128,6 +132,7 @@ export class SearchSelectMenuController implements ReactiveController {
     #startTracking() {
         const input = this.getInput();
         const menu = this.getMenu();
+
         if (!input || !menu) return;
 
         // Close the menu when its anchor input is no longer visible — scrolled out
@@ -181,6 +186,7 @@ export class SearchSelectMenuController implements ReactiveController {
     #positionMenu() {
         const input = this.getInput();
         const menu = this.getMenu();
+
         if (!input || !menu) return;
 
         placeAnchoredPopover(input, menu, { matchAnchorWidth: true });

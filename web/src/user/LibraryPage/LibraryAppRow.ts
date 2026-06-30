@@ -55,8 +55,11 @@ export const LibraryAppRow: LitFC<LibraryAppRowProps> = ({
     const primaryRef = targetRef ? ref(targetRef) : nothing;
 
     const metaParts: string[] = [];
+
     if (application.metaDescription) metaParts.push(application.metaDescription);
+
     if (application.metaPublisher) metaParts.push(application.metaPublisher);
+
     if (application.slug) metaParts.push(application.slug);
 
     const linkProps = {

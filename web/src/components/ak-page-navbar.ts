@@ -108,6 +108,7 @@ export class AKPageNavbar
         if (isAdminRoute()) {
             title = `${msg("Admin")} - ${title}`;
         }
+
         // Prepend the header to the title
         if (header) {
             title = `${header} - ${title}`;

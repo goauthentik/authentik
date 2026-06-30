@@ -38,6 +38,7 @@ test("style has hex fill + label layers with name:en fallback", () => {
     expect(ids.includes("hexworld-hex")).toBeTruthy();
     const labels = style.layers.filter((layer) => layer.type === "symbol");
     expect(labels.length >= 2, "expected kind-gated symbol layers").toBeTruthy();
+
     for (const layer of labels) {
         expect(layoutOf(layer)["text-field"]).toStrictEqual([
             "coalesce",
@@ -83,8 +84,10 @@ test("wedge palette covers the five event actions in both themes", () => {
     // "11184809" is EventActions.UnknownDefaultOpenApi — drf-spectacular's
     // sentinel for values outside the enum.
     const actions = ["login", "login_failed", "logout", "authorize_application", "11184809"];
+
     for (const theme of ["light", "dark"] satisfies BasemapTheme[]) {
         const colors: Record<string, string | undefined> = wedgeColors(theme);
+
         for (const action of actions) {
             expect(required(colors[action], action), `${theme}/${action}`).toMatch(
                 /^#[0-9a-f]{6}$/i,
@@ -99,6 +102,7 @@ test("bandFadeOpacity cross-fades bands at their boundaries", () => {
     expect(expr[2]).toStrictEqual(["zoom"]);
     // Stops come in [zoom, matchExpression] pairs from index 3 on.
     const stops: [number, ExpressionSpecification][] = [];
+
     for (let i = 3; i < expr.length; i += 2) {
         stops.push([expr[i] as number, expr[i + 1] as ExpressionSpecification]);
     }
@@ -107,6 +111,7 @@ test("bandFadeOpacity cross-fades bands at their boundaries", () => {
         for (let i = 2; i < match.length - 1; i += 2) {
             if (match[i] === res) return match[i + 1];
         }
+
         return match[match.length - 1];
     };
     const atZoom = (z: number) =>
@@ -143,6 +148,7 @@ test("hex and border layers use the band fade", () => {
 test("label layers sort collisions by population and regions start at z3", () => {
     const spec = buildHexworldStyle({ archiveURL: "/x.pmtiles" });
     expect(layerById(spec, "hexworld-label-region").minzoom).toBe(3);
+
     for (const kind of ["country", "region", "locality"]) {
         const sort = layoutOf(layerById(spec, `hexworld-label-${kind}`))["symbol-sort-key"];
         expect(Array.isArray(sort), `${kind} needs a symbol-sort-key`).toBeTruthy();

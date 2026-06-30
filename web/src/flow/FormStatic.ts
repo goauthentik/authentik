@@ -60,6 +60,7 @@ export interface FlowUserDetailsProps {
 
 export const FlowUserDetails: LitFC<FlowUserDetailsProps> = ({ challenge }) => {
     const { pendingUserAvatar, pendingUser, flowInfo } = challenge || {};
+
     return guard(
         [pendingUserAvatar, pendingUser, flowInfo],
         () =>

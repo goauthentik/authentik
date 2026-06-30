@@ -171,6 +171,7 @@ export class SimpleTable
     protected get icolumns(): TableColumn[] {
         const hosted = (column: TableColumn) => {
             column.host = this;
+
             return column;
         };
 

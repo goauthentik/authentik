@@ -87,6 +87,7 @@ export class GoogleWorkspaceProviderViewPage extends AKElement {
         if (!this.provider) {
             return nothing;
         }
+
         return html`<main part="main">
             <ak-tabs routed part="tabs">
                 <section

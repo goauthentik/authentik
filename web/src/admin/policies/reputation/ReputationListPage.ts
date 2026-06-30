@@ -52,6 +52,7 @@ export class ReputationListPage extends TablePage<Reputation> {
 
     protected override renderToolbarSelected(): SlottedTemplateResult {
         const disabled = this.selectedElements.length < 1;
+
         return html`<ak-forms-delete-bulk
             object-label=${msg("Reputation")}
             .objects=${this.selectedElements}

@@ -45,6 +45,7 @@ export class SSFProviderStreamList extends Table<SSFStream> {
 
     protected override renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
+
         return html`<ak-forms-delete-bulk
             object-label=${msg("Stream(s)")}
             .objects=${this.selectedElements}

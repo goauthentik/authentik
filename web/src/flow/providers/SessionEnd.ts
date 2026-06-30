@@ -32,6 +32,7 @@ export class SessionEnd extends BaseStage<SessionEndChallenge, unknown> {
                 str`You've logged out of ${challenge.applicationName}. You can log out of your authentik account.`,
             );
         }
+
         return msg(str`You've logged out of ${challenge.applicationName}.`);
     }
 
@@ -44,7 +45,7 @@ export class SessionEnd extends BaseStage<SessionEndChallenge, unknown> {
 
         return html`<ak-flow-card .challenge=${challenge}>
             <form class="pf-c-form">
-                ${FlowUserDetails({ challenge: challenge })}
+                ${FlowUserDetails({ challenge })}
 
                 <p>${this.getText(challenge)}</p>
                 ${challenge.overviewUrl

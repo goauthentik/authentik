@@ -56,6 +56,7 @@ export class ScheduleList extends Table<Schedule> {
                 : this.showOnlyStandalone
                   ? true
                   : undefined;
+
         return aki(TasksApi).tasksSchedulesList({
             ...(await this.defaultEndpointConfig()),
             relObjContentTypeAppLabel: this.relObjAppLabel,
@@ -81,6 +82,7 @@ export class ScheduleList extends Table<Schedule> {
         if (this.relObjId !== undefined) {
             return nothing;
         }
+
         return html`<div class="pf-c-toolbar__group pf-m-filter-group">
             <div class="pf-c-toolbar__item pf-m-search-filter">
                 <ak-table-filter-select
@@ -143,6 +145,7 @@ export class ScheduleList extends Table<Schedule> {
 
     renderExpanded(item: Schedule): TemplateResult {
         const [appLabel, modelName] = ModelEnum.AuthentikTasksSchedulesSchedule.split(".");
+
         return html`<div class="pf-c-content">
             <ak-task-list
                 .relObjAppLabel=${appLabel}

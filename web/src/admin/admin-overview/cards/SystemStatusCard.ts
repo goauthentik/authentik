@@ -24,6 +24,7 @@ export class SystemStatusCard extends AdminStatusCard<SystemInfo> {
     async getPrimaryValue(): Promise<SystemInfo> {
         this.now = new Date();
         let status = await aki(AdminApi).adminSystemRetrieve();
+
         if (
             !status.embeddedOutpostDisabled &&
             (status.embeddedOutpostHost === "" || !status.embeddedOutpostHost.includes("http"))
@@ -35,6 +36,7 @@ export class SystemStatusCard extends AdminStatusCard<SystemInfo> {
             await this.setOutpostHost();
             status = await aki(AdminApi).adminSystemRetrieve();
         }
+
         return status;
     }
 
@@ -44,6 +46,7 @@ export class SystemStatusCard extends AdminStatusCard<SystemInfo> {
         const outposts = await aki(OutpostsApi).outpostsInstancesList({
             managedIexact: "goauthentik.io/outposts/embedded",
         });
+
         if (outposts.results.length < 1) {
             return;
         }
@@ -58,28 +61,34 @@ export class SystemStatusCard extends AdminStatusCard<SystemInfo> {
     getStatus(value: SystemInfo): Promise<AdminStatus> {
         if (!value.embeddedOutpostDisabled && value.embeddedOutpostHost === "") {
             this.statusSummary = msg("Warning");
+
             return Promise.resolve<AdminStatus>({
                 icon: "fa fa-exclamation-triangle pf-m-warning",
                 message: html`${msg("Embedded outpost is not configured correctly.")}
                     <a href=${toAdminInterface("outpost/outposts")}>${msg("Check outposts.")}</a>`,
             });
         }
+
         if (!value.httpIsSecure && document.location.protocol === "https:") {
             this.statusSummary = msg("Warning");
+
             return Promise.resolve<AdminStatus>({
                 icon: "fa fa-exclamation-triangle pf-m-warning",
                 message: html`${msg("HTTPS is not detected correctly")}`,
             });
         }
         const timeDiff = value.serverTime.getTime() - (this.now || new Date()).getTime();
+
         if (timeDiff > 5000 || timeDiff < -5000) {
             this.statusSummary = msg("Warning");
+
             return Promise.resolve<AdminStatus>({
                 icon: "fa fa-exclamation-triangle pf-m-warning",
                 message: html`${msg("Server and client are further than 5 seconds apart.")}`,
             });
         }
         this.statusSummary = msg("OK");
+
         return Promise.resolve<AdminStatus>({
             icon: "fa fa-check-circle pf-m-success",
             message: html`${msg("Everything is ok.")}`,

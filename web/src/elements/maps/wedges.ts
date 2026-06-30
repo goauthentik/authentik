@@ -19,10 +19,12 @@ export const OTHER_ACTION = "other";
 export function binEvents(points: EventPoint[], zoom: number): Map<string, CellBin> {
     const { res } = bandForZoom(zoom);
     const bins = new Map<string, CellBin>();
+
     for (const point of points) {
         const cell = latLngToCell(point.lat, point.lon, res);
         const action = point.action ?? OTHER_ACTION;
         let bin = bins.get(cell);
+
         if (!bin) {
             bin = { counts: new Map(), total: 0 };
             bins.set(cell, bin);
@@ -30,12 +32,14 @@ export function binEvents(points: EventPoint[], zoom: number): Map<string, CellB
         bin.counts.set(action, (bin.counts.get(action) ?? 0) + 1);
         bin.total += 1;
     }
+
     return bins;
 }
 
 /** Points that fall into `cell` when binned at the zoom band's resolution. */
 export function pointsInCell<T extends EventPoint>(points: T[], zoom: number, cell: string): T[] {
     const { res } = bandForZoom(zoom);
+
     return points.filter((point) => latLngToCell(point.lat, point.lon, res) === cell);
 }
 
@@ -50,6 +54,7 @@ export function binAtLocation<T extends EventPoint>(
     lon: number,
 ): { cell: string; points: T[] } {
     const cell = latLngToCell(lat, lon, bandForZoom(zoom).res);
+
     return { cell, points: pointsInCell(points, zoom, cell) };
 }
 
@@ -91,6 +96,7 @@ function fromLocal(centerLat: number, centerLng: number, x: number, y: number): 
 /** Bearing 0 = north, increasing clockwise, in [0, TAU). */
 function bearingOf(x: number, y: number): number {
     const b = Math.atan2(x, y);
+
     return b < 0 ? b + TAU : b;
 }
 
@@ -101,19 +107,23 @@ function bearingOf(x: number, y: number): number {
 function perimeterPoint(verts: Position[], bearing: number): Position {
     const dx = Math.sin(bearing);
     const dy = Math.cos(bearing);
+
     for (let i = 0; i < verts.length; i++) {
         const [x1, y1] = verts[i]!;
         const [x2, y2] = verts[(i + 1) % verts.length]!;
         const ex = x2 - x1;
         const ey = y2 - y1;
         const denominator = dx * ey - dy * ex;
+
         if (Math.abs(denominator) < 1e-12) continue;
         const t = (x1 * ey - y1 * ex) / denominator;
         const s = (x1 * dy - y1 * dx) / denominator;
+
         if (t > 0 && s >= -1e-9 && s <= 1 + 1e-9) {
             return [x1 + s * ex, y1 + s * ey];
         }
     }
+
     // Numerically degenerate; fall back to the first vertex.
     return verts[0]!;
 }
@@ -121,6 +131,7 @@ function perimeterPoint(verts: Position[], bearing: number): Position {
 /** Clockwise angular distance from `from` to `to` in (0, TAU]. */
 function clockwiseDelta(from: number, to: number): number {
     const d = (to - from) % TAU;
+
     return d <= 0 ? d + TAU : d;
 }
 
@@ -137,6 +148,7 @@ function wedgeRing(
         .map((v) => ({ v, delta: clockwiseDelta(startBearing, bearingOf(v[0], v[1])) }))
         .filter(({ delta }) => delta > 1e-9 && delta < sweep - 1e-9)
         .sort((a, b) => a.delta - b.delta);
+
     for (const { v } of between) points.push(v);
     points.push(perimeterPoint(verts, endBearing % TAU));
     const ring: Position[] = [
@@ -144,18 +156,21 @@ function wedgeRing(
         ...points.map(([x, y]) => fromLocal(centerLat, centerLng, x, y)),
     ];
     ring.push(ring[0]!);
+
     return [ring];
 }
 
 function wholeHexRing(boundary: [number, number][]): Position[][] {
     const ring: Position[] = boundary.map(([lat, lng]) => [lng, lat]);
     ring.push(ring[0]!);
+
     return [ring];
 }
 
 export function buildEventFeatures(points: EventPoint[], zoom: number): EventFeatureCollection {
     const bins = binEvents(points, zoom);
     const features: EventFeature[] = [];
+
     if (bins.size === 0) return { type: "FeatureCollection", features };
 
     const { res } = bandForZoom(zoom);
@@ -181,6 +196,7 @@ export function buildEventFeatures(points: EventPoint[], zoom: number): EventFea
         const verts = boundary.map(([lat, lng]) => toLocal(centerLat, centerLng, lat, lng));
         // Largest wedge starts at north; sweep clockwise in descending order.
         let cursor = 0;
+
         for (const [action, count] of actions) {
             const sweep = (count / bin.total) * TAU;
             features.push({
@@ -194,5 +210,6 @@ export function buildEventFeatures(points: EventPoint[], zoom: number): EventFea
             cursor += sweep;
         }
     }
+
     return { type: "FeatureCollection", features };
 }

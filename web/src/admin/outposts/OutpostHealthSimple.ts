@@ -36,6 +36,7 @@ export class OutpostHealthSimpleElement extends AKElement {
 
         if (event) {
             if (!this.lastRefreshedAt) return;
+
             if (!event.table.renderRoot.contains(this)) return;
         }
 

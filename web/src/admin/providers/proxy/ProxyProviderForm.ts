@@ -26,6 +26,7 @@ export class ProxyProviderFormPage extends BaseProviderForm<ProxyProvider> {
         });
         this.showHttpBasic = provider.basicAuthEnabled ?? true;
         this.mode = provider.mode ?? ProxyMode.Proxy;
+
         return provider;
     }
 
@@ -44,15 +45,18 @@ export class ProxyProviderFormPage extends BaseProviderForm<ProxyProvider> {
 
     async send(data: ProxyProvider): Promise<ProxyProvider> {
         data.mode = this.mode;
+
         if (this.mode !== ProxyMode.ForwardDomain) {
             data.cookieDomain = "";
         }
+
         if (this.instance) {
             return aki(ProvidersApi).providersProxyUpdate({
                 id: this.instance.pk,
                 proxyProviderRequest: data,
             });
         }
+
         return aki(ProvidersApi).providersProxyCreate({
             proxyProviderRequest: data,
         });

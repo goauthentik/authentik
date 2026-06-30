@@ -66,6 +66,7 @@ export function formatElapsedTime(d1: Date, d2: Date = new Date()): string {
             return rtf.format(rounded, unit);
         }
     }
+
     return rtf.format(Math.round(elapsed / 1000), "second");
 }
 

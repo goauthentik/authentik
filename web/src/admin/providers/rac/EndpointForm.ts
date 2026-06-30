@@ -44,17 +44,20 @@ export class EndpointForm extends ModelForm<Endpoint, string> {
 
     public override async send(data: Endpoint): Promise<Endpoint> {
         data.authMode = EndpointAuthModeEnum.Prompt;
+
         if (!this.instance) {
             data.provider = this.providerID || 0;
         } else {
             data.provider = this.instance.provider;
         }
+
         if (this.instance) {
             return aki(RacApi).racEndpointsPartialUpdate({
                 pbmUuid: this.instance.pk || "",
                 patchedEndpointRequest: data,
             });
         }
+
         return aki(RacApi).racEndpointsCreate({
             endpointRequest: data,
         });

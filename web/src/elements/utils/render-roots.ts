@@ -26,6 +26,7 @@ export function findTopmost(ownerDocument = document): HTMLElement {
     const interfaceElement = resolveInterface(ownerDocument);
 
     const dialogs = interfaceElement.renderRoot.querySelectorAll<HTMLDialogElement>("dialog[open]");
+
     return dialogs.length ? dialogs[dialogs.length - 1] : ownerDocument.body;
 }
 

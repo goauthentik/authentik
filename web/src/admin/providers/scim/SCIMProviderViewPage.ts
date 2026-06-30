@@ -175,6 +175,7 @@ export class SCIMProviderViewPage extends AKElement {
             this.provider?.authMode !== SCIMAuthenticationModeEnum.OauthInteractive
         )
             return nothing;
+
         return html`
             <div class="pf-c-description-list__group">
                 <dt class="pf-c-description-list__term">

@@ -103,9 +103,11 @@ export class TaskList extends Table<Task> {
                   TaskAggregatedStatusEnum.Error,
               ]
             : undefined;
+
         if (this.includeOverview) {
             this.status = await aki(TasksApi).tasksTasksStatusRetrieve();
         }
+
         return aki(TasksApi).tasksTasksList({
             ...(await this.defaultEndpointConfig()),
             messageIdIn: this.taskIds,

@@ -97,7 +97,7 @@ export function showAPIErrorMessage(error: unknown, unique = false): Promise<voi
             showMessage(
                 {
                     level: MessageLevel.error,
-                    message: message,
+                    message,
                 },
                 unique,
             );
@@ -143,6 +143,7 @@ export class MessageContainer extends AKElement {
 
         if (!container) {
             logger.warn(`Expected to find a script tag with ${selector}, but none was found.`);
+
             return;
         }
 

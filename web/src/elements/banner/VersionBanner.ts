@@ -13,6 +13,7 @@ export class VersionBanner extends WithVersion(AKElement) {
 
     render() {
         if (!this.version?.versionCurrent) return nothing;
+
         if (this.version.versionCurrent === import.meta.env.AK_VERSION) return nothing;
 
         return html`

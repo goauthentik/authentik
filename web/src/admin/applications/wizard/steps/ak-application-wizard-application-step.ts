@@ -231,6 +231,7 @@ export class ApplicationWizardApplicationStep extends ApplicationWizardStep {
         if (!(this.wizard.app && this.wizard.errors)) {
             throw new Error("Application Step received uninitialized wizard context.");
         }
+
         return this.renderForm(this.wizard.app, this.wizard.errors?.app);
     }
 }

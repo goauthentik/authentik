@@ -59,6 +59,7 @@ export class SAMLSourceForm extends BaseSourceForm<SAMLSource> {
 
     setHasSigningCert(ev: InputEvent): void {
         const target = ev.target as AkCryptoCertificateSearch;
+
         if (!target) return;
         this.hasSigningCert = !!target.selectedKeypair;
     }

@@ -39,6 +39,7 @@ function alignTermType(terms: DescriptionRecord[] | DescriptionPair[] = []) {
     if (isDescriptionRecordCollection(terms)) {
         return terms.map(recordToPair);
     }
+
     return terms ?? [];
 }
 

@@ -62,6 +62,7 @@ export class EnterpriseLicenseForm extends ModelForm<License, string> {
                   })
         ).then((data) => {
             window.dispatchEvent(new CustomEvent(EVENT_REFRESH_ENTERPRISE));
+
             return data;
         });
     }

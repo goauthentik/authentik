@@ -165,6 +165,7 @@ const renderLDAPOverview: ProviderOverview<LDAPProvider> = (provider) => {
 
 function renderWSFedOverview(rawProvider: OneOfProvider) {
     const provider = rawProvider as WSFederationProvider;
+
     return renderSummary("WS-Federation", provider.name, [
         [msg("Reply URL"), provider.replyUrl],
         [msg("Realm"), provider.wtrealm || "-"],

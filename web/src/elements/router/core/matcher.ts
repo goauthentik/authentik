@@ -79,7 +79,9 @@ export function sameRouteMatch<R extends RoutePatternLike>(
     b: RouteMatch<R> | null,
 ): boolean {
     if (a === b) return true;
+
     if (a === null || b === null) return false;
+
     if (a.route !== b.route) return false;
 
     const aKeys = identifyingKeys(a.parameters);

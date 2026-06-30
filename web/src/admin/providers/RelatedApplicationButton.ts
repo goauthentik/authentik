@@ -36,6 +36,7 @@ export class RelatedApplicationButton extends AKElement {
                 ${this.provider.assignedApplicationName}
             </a>`;
         }
+
         if (this.mode === "backchannel" && this.provider?.assignedBackchannelApplicationSlug) {
             return html`<a
                 href=${toAdminInterface(

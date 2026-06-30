@@ -69,10 +69,12 @@ export class UserSettingsFlowExecutor
 
     submit(payload?: FlowChallengeResponseRequest): Promise<boolean> {
         if (!payload) return Promise.reject();
+
         if (!this.challenge) return Promise.reject();
         // @ts-expect-error Component is too generic for Typescript here.
         payload.component = this.challenge.component;
         this.loading = true;
+
         return aki(FlowsApi)
             .flowsExecutorSolve({
                 flowSlug: this.flowSlug || "",
@@ -82,6 +84,7 @@ export class UserSettingsFlowExecutor
             .then((data) => {
                 this.challenge = data;
                 delete this.challenge.flowInfo;
+
                 return !this.challenge.responseErrors;
             })
             .catch(async (error: unknown) => {
@@ -93,6 +96,7 @@ export class UserSettingsFlowExecutor
             })
             .finally(() => {
                 this.loading = false;
+
                 return false;
             });
     }
@@ -158,6 +162,7 @@ export class UserSettingsFlowExecutor
         if (!this.challenge) {
             return nothing;
         }
+
         switch (this.challenge.component) {
             case "ak-stage-prompt":
                 return html`<ak-user-stage-prompt
@@ -197,9 +202,11 @@ export class UserSettingsFlowExecutor
         if (!this.flowSlug) {
             return html`<p>${msg("No settings flow configured.")}</p> `;
         }
+
         if (!this.challenge || this.loading) {
             return html`<ak-empty-state default-label></ak-empty-state>`;
         }
+
         return html` ${this.renderChallenge()} `;
     }
 

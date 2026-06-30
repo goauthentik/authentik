@@ -54,6 +54,7 @@ export class AuthenticatorDuoStage extends BaseStage<
         console.debug(
             `authentik/stages/authenticator_duo: Enrollment status: ${status.duoResponse}`,
         );
+
         switch (status.duoResponse) {
             case DuoResponseEnum.Success:
                 this.host?.submit({});
@@ -61,6 +62,7 @@ export class AuthenticatorDuoStage extends BaseStage<
             case DuoResponseEnum.Waiting:
                 break;
         }
+
         return false;
     };
 

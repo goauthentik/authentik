@@ -29,6 +29,7 @@ export class AppleLoginInit extends BaseStage<AppleLoginChallenge, AppleChalleng
         appleAuth.onload = () => {
             if (!this.challenge) {
                 console.warn("No challenge present for Apple Login");
+
                 return;
             }
 

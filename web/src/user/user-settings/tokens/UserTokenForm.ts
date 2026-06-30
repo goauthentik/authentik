@@ -35,12 +35,14 @@ export class UserTokenForm extends ModelForm<Token, string> {
     async send(data: Token): Promise<Token> {
         if (this.instance) {
             data.intent = this.instance.intent;
+
             return aki(CoreApi).coreTokensUpdate({
                 identifier: this.instance.identifier,
                 tokenRequest: data,
             });
         }
         data.intent = this.intent;
+
         return aki(CoreApi).coreTokensCreate({
             tokenRequest: data,
         });

@@ -43,14 +43,17 @@ test("binEvents uses the zoom band resolution (coarser bins at world zoom)", () 
 /** Planar shoelace area on a closed [lng, lat] ring — fine for proportions. */
 const ringArea = (ring: number[][]) => {
     let area = 0;
+
     for (let i = 0; i < ring.length - 1; i++) {
         area += ring[i]![0]! * ring[i + 1]![1]! - ring[i + 1]![0]! * ring[i]![1]!;
     }
+
     return Math.abs(area / 2);
 };
 
 const closedHexRing = (cell: string) => {
-    const ring = cellToBoundary(cell, true); // [lng, lat] pairs
+    const ring = cellToBoundary(cell, true);
+ // [lng, lat] pairs
     return [...ring, ring[0]!];
 };
 

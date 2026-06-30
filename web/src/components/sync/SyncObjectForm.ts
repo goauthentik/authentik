@@ -64,10 +64,12 @@ export class SyncObjectForm extends Form<SyncObjectRequest> {
                     const args: CoreUsersListRequest = {
                         ordering: "username",
                     };
+
                     if (query !== undefined) {
                         args.search = query;
                     }
                     const users = await aki(CoreApi).coreUsersList(args);
+
                     return users.results;
                 }}
                 .renderElement=${(user: User): string => {
@@ -91,10 +93,12 @@ export class SyncObjectForm extends Form<SyncObjectRequest> {
                     const args: CoreGroupsListRequest = {
                         ordering: "name",
                     };
+
                     if (query !== undefined) {
                         args.search = query;
                     }
                     const groups = await aki(CoreApi).coreGroupsList(args);
+
                     return groups.results;
                 }}
                 .renderElement=${(group: Group): string => {

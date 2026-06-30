@@ -40,6 +40,7 @@ export class AuthenticatorSMSStageForm extends BaseStageForm<AuthenticatorSMSSta
             .then((stage) => {
                 this.provider = stage.provider;
                 this.authType = stage.authType;
+
                 return stage;
             });
     }
@@ -57,6 +58,7 @@ export class AuthenticatorSMSStageForm extends BaseStageForm<AuthenticatorSMSSta
                 patchedAuthenticatorSMSStageRequest: data,
             });
         }
+
         return aki(StagesApi).stagesAuthenticatorSmsCreate({
             authenticatorSMSStageRequest: data as unknown as AuthenticatorSMSStageRequest,
         });
@@ -234,6 +236,7 @@ export class AuthenticatorSMSStageForm extends BaseStageForm<AuthenticatorSMSSta
                                 const args: PropertymappingsNotificationListRequest = {
                                     ordering: "name",
                                 };
+
                                 if (query) {
                                     args.search = query;
                                 }
@@ -241,6 +244,7 @@ export class AuthenticatorSMSStageForm extends BaseStageForm<AuthenticatorSMSSta
                                     await aki(PropertymappingsApi).propertymappingsNotificationList(
                                         args,
                                     );
+
                                 return items.results;
                             }}
                             .renderElement=${(item: NotificationWebhookMapping): string => {
@@ -277,10 +281,12 @@ export class AuthenticatorSMSStageForm extends BaseStageForm<AuthenticatorSMSSta
                                     ordering: "slug",
                                     designation: FlowDesignationEnum.StageConfiguration,
                                 };
+
                                 if (query !== undefined) {
                                     args.search = query;
                                 }
                                 const flows = await aki(FlowsApi).flowsInstancesList(args);
+
                                 return flows.results;
                             }}
                             .renderElement=${(flow: Flow): string => {

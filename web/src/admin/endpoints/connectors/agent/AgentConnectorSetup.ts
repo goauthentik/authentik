@@ -119,11 +119,13 @@ export class AgentConnectorSetup extends AKElement {
                                 ordering: "name",
                                 connector: this.connector?.connectorUuid,
                             };
+
                             if (query !== undefined) {
                                 args.search = query;
                             }
                             const token =
                                 await aki(EndpointsApi).endpointsAgentsEnrollmentTokensList(args);
+
                             return token.results;
                         }}
                         .renderElement=${(token: EnrollmentToken): string => {

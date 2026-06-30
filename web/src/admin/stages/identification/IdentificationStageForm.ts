@@ -112,10 +112,12 @@ export class IdentificationStageForm extends BaseStageForm<IdentificationStage> 
                                 const args: StagesPasswordListRequest = {
                                     ordering: "name",
                                 };
+
                                 if (query !== undefined) {
                                     args.search = query;
                                 }
                                 const stages = await aki(StagesApi).stagesPasswordList(args);
+
                                 return stages.results;
                             }}
                             .groupBy=${(items: Stage[]) =>
@@ -139,10 +141,12 @@ export class IdentificationStageForm extends BaseStageForm<IdentificationStage> 
                                 const args: StagesCaptchaListRequest = {
                                     ordering: "name",
                                 };
+
                                 if (query !== undefined) {
                                     args.search = query;
                                 }
                                 const stages = await aki(StagesApi).stagesCaptchaList(args);
+
                                 return stages.results;
                             }}
                             .groupBy=${(items: Stage[]) =>
@@ -205,11 +209,13 @@ export class IdentificationStageForm extends BaseStageForm<IdentificationStage> 
                                 const args: StagesAuthenticatorValidateListRequest = {
                                     ordering: "name",
                                 };
+
                                 if (query !== undefined) {
                                     args.search = query;
                                 }
                                 const stages =
                                     await aki(StagesApi).stagesAuthenticatorValidateList(args);
+
                                 return stages.results;
                             }}
                             .groupBy=${(items: Stage[]) =>

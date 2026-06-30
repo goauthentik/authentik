@@ -57,6 +57,7 @@ export class WebAuthnAuthenticatorRegisterStage extends BaseStage<
 
         if (!this.host) {
             this.logger.error("Host is not set, cannot submit registration");
+
             return;
         }
 

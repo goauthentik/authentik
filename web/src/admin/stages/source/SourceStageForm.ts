@@ -57,10 +57,12 @@ export class SourceStageForm extends BaseStageForm<SourceStage> {
                         const args: SourcesAllListRequest = {
                             ordering: "name",
                         };
+
                         if (query !== undefined) {
                             args.search = query;
                         }
                         const users = await aki(SourcesApi).sourcesAllList(args);
+
                         return users.results;
                     }}
                     .renderElement=${(source: Source): string => {

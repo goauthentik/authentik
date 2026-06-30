@@ -188,6 +188,7 @@ export class AKModal extends AKElement implements TransclusionParentElement {
 
         if (!dialogElement) {
             this.logger.debug("No parentElement, cannot close modal", this);
+
             return;
         }
 
@@ -233,6 +234,7 @@ export class AKModal extends AKElement implements TransclusionParentElement {
         if (!this.parentElement) {
             this.logger.debug("No parentElement, cannot delegate close", this);
             this.#closing = false;
+
             return;
         }
 
@@ -336,6 +338,7 @@ export class AKModal extends AKElement implements TransclusionParentElement {
 
         if (!dialogElement) {
             this.logger.debug("Skipping connectedCallback, no parentElement", this);
+
             return;
         }
 
@@ -520,6 +523,7 @@ export class AKModal extends AKElement implements TransclusionParentElement {
             if (!hasActionsSlot && !slottedElement) {
                 return null;
             }
+
             if (slottedElement && !slottedElement.renderActions) {
                 // Slotted element is possibly nested, but does not implement an actions render method,
                 // so we cannot render actions for it.

@@ -25,6 +25,7 @@ function resolveDocsHref(href, publicDirectory) {
     next.pathname = next.pathname.replace(/(index)?\.mdx?$/, "");
     next.search = placeholder.search;
     next.hash = placeholder.hash;
+
     return next.toString();
 }
 
@@ -97,10 +98,12 @@ export function rehypeMermaid() {
         visit(tree, "element", (node) => {
             if (node.tagName !== "pre") return;
             const child = node.children?.[0];
+
             if (!child || child.type !== "element" || child.tagName !== "code") return;
 
             const className = child.properties?.className ?? [];
             const classes = Array.isArray(className) ? className : [className];
+
             if (!classes.includes("language-mermaid")) return;
 
             const source = (child.children ?? [])

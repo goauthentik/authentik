@@ -47,6 +47,7 @@ export class AdminUserAgentList extends Table<Agent> {
 
     protected override renderToolbarSelected(): SlottedTemplateResult {
         const disabled = this.selectedElements.length < 1;
+
         return html`<ak-forms-delete-bulk
             object-label=${msg("Agent(s)", { id: "agent.delete.object-label" })}
             .objects=${this.selectedElements}

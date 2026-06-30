@@ -44,6 +44,7 @@ export class UserSwitcher extends WithSession(AKElement) {
                 <img part="avatar-image" src=${user.avatar} alt="" />
             </span>`;
         }
+
         return html`<span part="avatar">
             <i class="fas fa-user" aria-hidden="true"></i>
         </span>`;

@@ -39,8 +39,10 @@ import { parse as parseYAML } from "yaml";
  */
 function splitFrontmatter(source) {
     const match = source.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n?/);
+
     if (!match) return { body: source, frontmatter: {} };
     const frontmatter = parseYAML(match[1]) || {};
+
     return { body: source.slice(match[0].length), frontmatter };
 }
 

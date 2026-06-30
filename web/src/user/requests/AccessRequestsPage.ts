@@ -38,6 +38,7 @@ export class AccessRequestsPage extends AKElement {
 
     override async connectedCallback(): Promise<void> {
         super.connectedCallback();
+
         try {
             this.toReview = await aki(RequestsApi).requestsGrantRequestsPendingReviewList({});
         } catch (error) {
@@ -47,6 +48,7 @@ export class AccessRequestsPage extends AKElement {
 
     protected updated(changedProperties: PropertyValues): void {
         super.updated(changedProperties);
+
         if (changedProperties.has("requestToFulfill") && this.requestToFulfill !== null) {
             aki(RequestsApi)
                 .requestsGrantRequestsRetrieve({

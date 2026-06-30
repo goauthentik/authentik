@@ -79,6 +79,7 @@ export class UserInfoCard extends AKElement {
             this.user.type === UserTypeEnum.InternalServiceAccount
         ) {
             this.pendingOffboarding = null;
+
             return;
         }
 
@@ -171,6 +172,7 @@ export class UserInfoCard extends AKElement {
                 value
                     ? msg("Yes", { id: "common.boolean.yes" })
                     : msg("No", { id: "common.boolean.no" });
+
             return html`<ak-forms-confirm
                 successMessage=${msg("Successfully cancelled offboarding.", {
                     id: "offboarding.cancel.success",

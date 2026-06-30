@@ -138,6 +138,7 @@ export class AuthenticatorEmailStage extends BaseStage<
         if (this.challenge?.emailRequired) {
             return this.renderEmailInput();
         }
+
         return this.renderEmailOTPInput();
     }
 }

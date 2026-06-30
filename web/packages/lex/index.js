@@ -120,8 +120,11 @@ export class Lexer {
 
         if (!global || !pattern.sticky) {
             let flags = "gy";
+
             if (pattern.multiline) flags += "m";
+
             if (pattern.ignoreCase) flags += "i";
+
             if (pattern.unicode) flags += "u";
             pattern = new RegExp(pattern.source, flags);
         }
@@ -148,6 +151,7 @@ export class Lexer {
         this.index = 0;
         this.#tokens.length = 0;
         this.input = input;
+
         return this;
     }
 
@@ -187,7 +191,9 @@ export class Lexer {
                         this.#tokens = token.slice(1);
                         token = token[0];
                     }
+
                     if (length) this.#remove = 0;
+
                     return token;
                 }
             }
@@ -198,11 +204,14 @@ export class Lexer {
                 if (this.reject) {
                     this.#remove = 0;
                     const token = this.#defunct(input.charAt(this.index++));
+
                     if (token !== null && token !== undefined) {
                         if (Array.isArray(token)) {
                             this.#tokens = token.slice(1);
+
                             return token[0];
                         }
+
                         return token;
                     }
                 } else {
