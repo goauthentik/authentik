@@ -9,6 +9,7 @@ resolution-markers = [
 [manifest]
 members = [
     "ak-guardian",
+    "akql",
     "authentik",
     "django-channels-postgres",
     "django-dramatiq-postgres",
@@ -120,6 +121,17 @@ requires-dist = [
     { name = "django", specifier = ">=5.2,<6.0" },
     { name = "typing-extensions", marker = "python_full_version < '3.15'", specifier = ">=4.12.0" },
 ]
+
+[[package]]
+name = "akql"
+version = "3.2.0"
+source = { editable = "packages/akql" }
+dependencies = [
+    { name = "ply" },
+]
+
+[package.metadata]
+requires-dist = [{ name = "ply", specifier = ">=3.8" }]
 
 [[package]]
 name = "annotated-types"
@@ -278,7 +290,6 @@ dependencies = [
     { name = "django-prometheus" },
     { name = "django-storages", extra = ["s3"] },
     { name = "django-tenants" },
-    { name = "djangoql" },
     { name = "djangorestframework" },
     { name = "docker" },
     { name = "drf-orjson-renderer" },
@@ -386,7 +397,6 @@ requires-dist = [
     { name = "django-prometheus", specifier = "==2.5.0" },
     { name = "django-storages", extras = ["s3"], specifier = "==1.14.6" },
     { name = "django-tenants", specifier = "==3.10.1" },
-    { name = "djangoql", specifier = "==0.19.1" },
     { name = "djangorestframework", specifier = "==3.17.1" },
     { name = "docker", specifier = "==7.1.0" },
     { name = "drf-orjson-renderer", specifier = "==1.8.0" },
@@ -1387,18 +1397,6 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/b8/b8/24200c02a3ec2922ff012544a92278631750380fda5f4ff89f8b985365a3/django_tenants-3.10.1.tar.gz", hash = "sha256:cf3ea79a23a6df8db3ed24d4220a1c037749e6070a36864f5f9d50550c2a4fa7", size = 154294, upload-time = "2026-03-17T16:03:21.606Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/de/2f/309ab84126582f92d137e49c3df1ee9cc05b56e3b32428130138f5263036/django_tenants-3.10.1-py3-none-any.whl", hash = "sha256:01b4fb6754ac1e77d7f6a21f43b92149fecbdf7ea9dd91d73ec9c43e11967c40", size = 216574, upload-time = "2026-03-17T16:03:16.372Z" },
-]
-
-[[package]]
-name = "djangoql"
-version = "0.19.1"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "ply" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/9b/95/c4747b92a55e48abcfde05cc1309fe7223998f8fe3bb2e435bb16256738f/djangoql-0.19.1.tar.gz", hash = "sha256:bce09d52857857b22744f93241f16d5c62a1b118a7834e1c8afa14bebb964eee", size = 233831, upload-time = "2026-01-27T03:47:38.743Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/59/86/4455346b3c3cd7e5abe74a9c6abc97ceda2d597e73dd9eb77bd3bd558086/djangoql-0.19.1-py2.py3-none-any.whl", hash = "sha256:70cf53218b15557ed02baaace1387de1caffb6809cdfb3c633e4fd4e53a36111", size = 218813, upload-time = "2026-01-27T03:47:36.522Z" },
 ]
 
 [[package]]

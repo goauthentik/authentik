@@ -4,6 +4,8 @@ from collections import OrderedDict
 from datetime import timedelta
 
 import django_filters
+from akql.schema import ChoiceSearchField, IntField, JSONSearchField, StrField
+from akql.schema import DateTimeField as QLDateTimeFIeld
 from django.db.models import Count, ExpressionWrapper, F, QuerySet
 from django.db.models import DateTimeField as DjangoDateTimeField
 from django.db.models.fields.json import KeyTextTransform, KeyTransform
@@ -11,8 +13,6 @@ from django.db.models.functions import TruncHour
 from django.db.models.query_utils import Q
 from django.utils.text import slugify
 from django.utils.timezone import now
-from djangoql.schema import DateTimeField as QLDateTimeFIeld
-from djangoql.schema import IntField, StrField
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiParameter, extend_schema
 from guardian.shortcuts import get_objects_for_user
@@ -29,7 +29,6 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
-from authentik.api.search.fields import ChoiceSearchField, JSONSearchField
 from authentik.api.validation import validate
 from authentik.core.api.object_types import TypeCreateSerializer
 from authentik.core.api.utils import ModelSerializer, PassiveSerializer
