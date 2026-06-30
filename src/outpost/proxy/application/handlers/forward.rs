@@ -1,6 +1,6 @@
-use std::sync::Arc;
+use std::{net::IpAddr, sync::Arc};
 
-use ak_axum::error::Result;
+use ak_axum::{error::Result, extract::client_ip::ClientIp};
 use axum::{
     extract::{Request, State},
     http::{HeaderMap, StatusCode, Uri, header},
@@ -75,13 +75,14 @@ async fn forward_header_auth(
     app: Arc<Application>,
     mut request: Request,
     source: &str,
+    client_ip: IpAddr,
 ) -> Result<Response> {
     let Ok(fwd) = traefik_forward_url(request.headers()) else {
         let message = format!(
             "Outpost {} (Provider {}) failed to detect a forward URL from {source}",
             app.outpost_name, app.provider.name
         );
-        app.report_misconfiguration(&message, &request.uri().to_string())
+        app.report_misconfiguration(&message, &request.uri().to_string(), client_ip)
             .await;
         return Ok((StatusCode::INTERNAL_SERVER_ERROR, "configuration error").into_response());
     };
@@ -115,9 +116,10 @@ async fn forward_header_auth(
 #[instrument(skip_all, fields(user = tracing::field::Empty))]
 pub(crate) async fn handle_caddy(
     State(app): State<Arc<Application>>,
+    ClientIp(client_ip): ClientIp,
     request: Request,
 ) -> Result<Response> {
-    forward_header_auth(app, request, "Caddy").await
+    forward_header_auth(app, request, "Caddy", client_ip).await
 }
 
 #[instrument(skip_all, fields(user = tracing::field::Empty))]
@@ -146,6 +148,7 @@ pub(crate) async fn handle_envoy(
 #[instrument(skip_all, fields(user = tracing::field::Empty))]
 pub(crate) async fn handle_nginx(
     State(app): State<Arc<Application>>,
+    ClientIp(client_ip): ClientIp,
     request: Request,
 ) -> Result<Response> {
     let Ok(fwd) = nginx_forward_url(request.headers()) else {
@@ -153,7 +156,7 @@ pub(crate) async fn handle_nginx(
             "Outpost {} (Provider {}) failed to detect a forward URL from nginx",
             app.outpost_name, app.provider.name
         );
-        app.report_misconfiguration(&message, &request.uri().to_string())
+        app.report_misconfiguration(&message, &request.uri().to_string(), client_ip)
             .await;
         return Ok((StatusCode::INTERNAL_SERVER_ERROR, "configuration error").into_response());
     };
@@ -180,9 +183,10 @@ pub(crate) async fn handle_nginx(
 #[instrument(skip_all, fields(user = tracing::field::Empty))]
 pub(crate) async fn handle_traefik(
     State(app): State<Arc<Application>>,
+    ClientIp(client_ip): ClientIp,
     request: Request,
 ) -> Result<Response> {
-    forward_header_auth(app, request, "Traefik").await
+    forward_header_auth(app, request, "Traefik", client_ip).await
 }
 
 #[cfg(test)]

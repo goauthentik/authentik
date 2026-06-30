@@ -1,6 +1,6 @@
 //! Reporting events back to authentik.
 
-use std::collections::HashMap;
+use std::{collections::HashMap, net::IpAddr};
 
 use ak_client::{
     apis::events_api::events_events_create,
@@ -13,7 +13,7 @@ use crate::outpost::proxy::application::Application;
 
 impl Application {
     /// Report a misconfiguration as a configuration-error event (best-effort).
-    pub(super) async fn report_misconfiguration(&self, message: &str, url: &str) {
+    pub(super) async fn report_misconfiguration(&self, message: &str, url: &str, client_ip: IpAddr) {
         let context = HashMap::from([
             ("message".to_owned(), json!(message)),
             ("provider".to_owned(), json!(self.provider.name)),
@@ -22,6 +22,7 @@ impl Application {
         ]);
         let event = EventRequest {
             context: Some(context),
+            client_ip: Some(Some(client_ip.to_string())),
             ..EventRequest::new(
                 EventActions::ConfigurationError,
                 "authentik.providers.proxy".to_owned(),
