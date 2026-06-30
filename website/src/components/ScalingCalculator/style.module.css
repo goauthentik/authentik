@@ -1,0 +1,127 @@
+.admonitionForm {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    gap: var(--ifm-global-spacing);
+
+    @media (max-width: 1119px) {
+        grid-template-columns: 1fr;
+    }
+
+    .labelGroup {
+        color: var(--ifm-alert-color);
+        label {
+            font-weight: var(--ifm-font-weight-bold);
+        }
+    }
+
+    .field {
+        display: flex;
+        align-items: center;
+        position: relative;
+
+        input[type="number"] {
+            font-weight: var(--ifm-font-weight-bold);
+            font-size: 1.25em;
+
+            flex: 1 1 auto;
+            background-color: var(--ifm-alert-background-color-highlight);
+            padding: 1em;
+            border-color: var(--ifm-alert-background-color-highlight);
+            border-radius: var(--ifm-alert-border-radius);
+            border-style: double;
+            box-shadow: inset var(--ifm-global-shadow-lw);
+
+            &::-webkit-outer-spin-button,
+            &::-webkit-inner-spin-button {
+                -webkit-appearance: none;
+            }
+        }
+
+        &:has(input[name="flowDuration"])::after {
+            font-variant: all-petite-caps;
+            font-weight: var(--ifm-font-weight-bold);
+            font-size: 1.25em;
+            flex: 0 0 auto;
+            content: "sec";
+            padding: var(--ifm-global-spacing);
+            display: block;
+            position: absolute;
+            right: 0;
+            color: var(--ifm-color-emphasis-700);
+            font-family: var(--ifm-font-family-monospace);
+        }
+    }
+}
+
+.admonitionTable {
+    padding: 0;
+    overflow: hidden;
+}
+
+.comparisionTable {
+    display: grid;
+    grid-template-columns: repeat(var(--ak-comparision-table-columns), 1fr);
+    overflow-x: auto;
+
+    & > header {
+        border-bottom: 1px solid var(--ifm-alert-border-color);
+    }
+    & > header,
+    & > section {
+        display: grid;
+        grid-column: span var(--ak-comparision-table-columns);
+        grid-template-columns: subgrid;
+    }
+
+    & > section:not(:last-child) {
+        border-block-end: 1px solid var(--ifm-alert-background-color-highlight);
+    }
+
+    & > section:nth-child(odd) {
+        /* background-color: var(--ifm-table-stripe-background); */
+
+        .rowLabel,
+        .fieldValue {
+            background-color: var(--ifm-table-stripe-background);
+        }
+    }
+
+    .columnLabel {
+        background-color: var(--ifm-alert-background-color-highlight);
+        font-weight: var(--ifm-table-head-font-weight);
+        padding: var(--ifm-table-cell-padding) calc(var(--ifm-spacing-horizontal) * 2);
+        text-align: center;
+        font-weight: var(--ifm-font-weight-bold);
+        place-content: center;
+    }
+
+    .rowLabel {
+        position: sticky;
+        left: 0;
+        z-index: var(--ifm-z-index-dropdown);
+        backdrop-filter: blur(4px);
+        overflow: hidden;
+        border-block-end-width: 4px;
+    }
+
+    .rowLabel,
+    .fieldValue {
+        background-color: var(--ifm-alert-background-color);
+        padding: var(--ifm-table-cell-padding) calc(var(--ifm-spacing-horizontal) * 2);
+        text-align: center;
+        font-weight: var(--ifm-font-weight-bold);
+        place-content: center;
+
+        &:not(:last-child) {
+            border-inline-end: 1px solid var(--ifm-alert-background-color);
+        }
+    }
+
+    .fieldValue {
+        font-size: 1.25em;
+
+        padding: var(--ifm-table-cell-padding);
+        place-items: center;
+    }
+}
