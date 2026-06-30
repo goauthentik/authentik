@@ -608,7 +608,7 @@
 </trans-unit>
 <trans-unit id="sc35581d9c1cd67ff">
   <source>On behalf of <x id="0" equiv-text="${renderUsername(event.user.on_behalf_of)}"/></source>
-  <target>On behalf of <x id="0" equiv-text="${renderUsername(event.user.on_behalf_of)}"/></target>
+  <target>نيابة عن <x id="0" equiv-text="${renderUsername(event.user.on_behalf_of)}"/></target>
 </trans-unit>
 <trans-unit id="s7225aacf0eee94d2">
   <source>Authenticated as <x id="0" equiv-text="${renderUsername(event.user.authenticated_as)}"/></source>
