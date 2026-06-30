@@ -192,7 +192,8 @@ class HTTPRouteReconciler(KubernetesObjectReconciler):
         )
 
     def create(self, reference: HTTPRoute):
-        return self.api.create_namespaced_custom_object(
+        return self.k8s_api_call(
+            self.api.create_namespaced_custom_object_with_http_info,
             group=self.crd_group,
             version=self.crd_version,
             plural=self.crd_plural,
@@ -202,7 +203,8 @@ class HTTPRouteReconciler(KubernetesObjectReconciler):
         )
 
     def delete(self, reference: HTTPRoute):
-        return self.api.delete_namespaced_custom_object(
+        return self.k8s_api_call(
+            self.api.delete_namespaced_custom_object_with_http_info,
             group=self.crd_group,
             version=self.crd_version,
             plural=self.crd_plural,
@@ -213,7 +215,8 @@ class HTTPRouteReconciler(KubernetesObjectReconciler):
     def retrieve(self) -> HTTPRoute:
         return from_dict(
             HTTPRoute,
-            self.api.get_namespaced_custom_object(
+            self.k8s_api_call(
+                self.api.get_namespaced_custom_object_with_http_info,
                 group=self.crd_group,
                 version=self.crd_version,
                 plural=self.crd_plural,
@@ -223,7 +226,8 @@ class HTTPRouteReconciler(KubernetesObjectReconciler):
         )
 
     def update(self, current: HTTPRoute, reference: HTTPRoute):
-        return self.api.patch_namespaced_custom_object(
+        return self.k8s_api_call(
+            self.api.patch_namespaced_custom_object_with_http_info,
             group=self.crd_group,
             version=self.crd_version,
             plural=self.crd_plural,
