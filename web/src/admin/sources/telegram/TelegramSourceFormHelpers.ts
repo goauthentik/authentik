@@ -1,4 +1,4 @@
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { DualSelectPair } from "#elements/ak-dual-select/types";
 
@@ -7,9 +7,7 @@ import { PropertymappingsApi, TelegramSourcePropertyMapping } from "@goauthentik
 const mappingToSelect = (m: TelegramSourcePropertyMapping) => [m.pk, m.name, m.name, m];
 
 export async function propertyMappingsProvider(page = 1, search = "") {
-    const propertyMappings = await new PropertymappingsApi(
-        DEFAULT_CONFIG,
-    ).propertymappingsSourceTelegramList({
+    const propertyMappings = await aki(PropertymappingsApi).propertymappingsSourceTelegramList({
         ordering: "managed",
         pageSize: 20,
         search: search.trim(),
@@ -30,7 +28,7 @@ export function propertyMappingsSelector(instanceMappings?: string[]) {
     }
 
     return async () => {
-        const pm = new PropertymappingsApi(DEFAULT_CONFIG);
+        const pm = aki(PropertymappingsApi);
         const mappings = await Promise.allSettled(
             instanceMappings.map((instanceId) =>
                 pm.propertymappingsSourceTelegramRetrieve({ pmUuid: instanceId }),

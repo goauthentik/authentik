@@ -4,10 +4,10 @@ import "#elements/buttons/ActionButton/index";
 import "#elements/buttons/SpinnerButton/index";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
-import "#elements/tasks/TaskList";
+import "#components/tasks/TaskList";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { IconEditButton, ModalInvokerButton } from "#elements/dialogs";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
@@ -41,9 +41,7 @@ export class TransportListPage extends TablePage<NotificationTransport> {
     public override order = "name";
 
     protected override async apiEndpoint(): Promise<PaginatedResponse<NotificationTransport>> {
-        return new EventsApi(DEFAULT_CONFIG).eventsTransportsList(
-            await this.defaultEndpointConfig(),
-        );
+        return aki(EventsApi).eventsTransportsList(await this.defaultEndpointConfig());
     }
 
     protected override columns: TableColumn[] = [
@@ -58,12 +56,12 @@ export class TransportListPage extends TablePage<NotificationTransport> {
             object-label=${msg("Notification transport(s)")}
             .objects=${this.selectedElements}
             .usedBy=${(item: NotificationTransport) => {
-                return new EventsApi(DEFAULT_CONFIG).eventsTransportsUsedByList({
+                return aki(EventsApi).eventsTransportsUsedByList({
                     uuid: item.pk,
                 });
             }}
             .delete=${(item: NotificationTransport) => {
-                return new EventsApi(DEFAULT_CONFIG).eventsTransportsDestroy({
+                return aki(EventsApi).eventsTransportsDestroy({
                     uuid: item.pk,
                 });
             }}
@@ -89,7 +87,7 @@ export class TransportListPage extends TablePage<NotificationTransport> {
                 <ak-action-button
                     class="pf-m-plain"
                     .apiRequest=${() => {
-                        return new EventsApi(DEFAULT_CONFIG).eventsTransportsTestCreate({
+                        return aki(EventsApi).eventsTransportsTestCreate({
                             uuid: item.pk || "",
                         });
                     }}

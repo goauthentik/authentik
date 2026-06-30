@@ -4,6 +4,8 @@ sidebar_label: DigitalOcean
 support_level: community
 ---
 
+import RedirectURI20265Note from "../../\_redirect-uri-2026-5-note.mdx";
+
 ## What is DigitalOcean?
 
 > DigitalOcean is a cloud infrastructure provider that offers developers simple, scalable virtual servers (droplets), managed databases, and other cloud services to deploy and manage applications efficiently.
@@ -21,6 +23,8 @@ This documentation lists only the settings that you need to change from their de
 :::
 
 ## authentik configuration
+
+<RedirectURI20265Note />
 
 To support the integration of DigitalOcean with authentik, you need to create a scope mapping, an application/provider pair, and application entitlements for the DigitalOcean roles that users should receive.
 
@@ -72,7 +76,7 @@ To support the integration of DigitalOcean with authentik, you need to create a 
     - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
         - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
-        - Set a `Strict` redirect URI to `https://cloud.digitalocean.com/sessions/sso/callback`.
+        - Add a **Redirect URI** of type `Strict` `Authorization` as `https://cloud.digitalocean.com/sessions/sso/callback`.
         - Select any available signing key.
         - Under **Advanced protocol settings**:
             - Add the `profile` scope created in the previous section. Do not remove authentik’s `authentik default OAuth Mapping: OpenID 'profile'`, as claims such as `name` are required by DigitalOcean.

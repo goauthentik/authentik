@@ -10,7 +10,7 @@ import "#elements/forms/Radio";
 import "#elements/forms/SearchSelect/ak-search-select-ez";
 import "#elements/forms/SearchSelect/index";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { withQuery } from "#elements/forms/SearchSelect/utils";
 
@@ -69,7 +69,7 @@ export function renderForm({
     const keyType = signingKeyType ?? KeyTypeEnum.Rsa;
     const samlPropertyMappingSearch = async (query?: string) =>
         (
-            await new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsProviderSamlList(
+            await aki(PropertymappingsApi).propertymappingsProviderSamlList(
                 withQuery(query, { ordering: "saml_name" }),
             )
         ).results;

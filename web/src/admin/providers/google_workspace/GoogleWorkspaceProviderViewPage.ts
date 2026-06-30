@@ -9,10 +9,10 @@ import "#elements/Tabs";
 import "#elements/buttons/ActionButton/index";
 import "#elements/buttons/ModalButton";
 import "#components/sync/SyncStatusCard";
-import "#elements/tasks/ScheduleList";
-import "#elements/tasks/TaskList";
+import "#components/tasks/ScheduleList";
+import "#components/tasks/TaskList";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { EVENT_REFRESH } from "#common/constants";
 
 import { AKElement } from "#elements/Base";
@@ -65,7 +65,7 @@ export class GoogleWorkspaceProviderViewPage extends AKElement {
     }
 
     fetchProvider(id: number) {
-        new ProvidersApi(DEFAULT_CONFIG)
+        aki(ProvidersApi)
             .providersGoogleWorkspaceRetrieve({ id })
             .then((prov) => (this.provider = prov));
     }
@@ -216,9 +216,7 @@ export class GoogleWorkspaceProviderViewPage extends AKElement {
                 >
                     <ak-sync-status-card
                         .fetch=${() => {
-                            return new ProvidersApi(
-                                DEFAULT_CONFIG,
-                            ).providersGoogleWorkspaceSyncStatusRetrieve({
+                            return aki(ProvidersApi).providersGoogleWorkspaceSyncStatusRetrieve({
                                 id: this.provider?.pk || 0,
                             });
                         }}

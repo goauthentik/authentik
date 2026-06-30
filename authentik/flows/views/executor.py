@@ -204,7 +204,7 @@ class FlowExecutorView(APIView):
                     return self.handle_invalid_flow(exc)
                 except EmptyFlowException as exc:
                     self._logger.warning("f(exec): Flow is empty", exc=exc)
-                    # To match behaviour with loading an empty flow plan from cache,
+                    # To match behavior with loading an empty flow plan from cache,
                     # we don't show an error message here, but rather call _flow_done()
                     return self._flow_done()
             # We don't save the Plan after getting the next stage
@@ -400,14 +400,18 @@ class FlowExecutorView(APIView):
             # check if its an absolute URL or a relative one
             self.cancel()
             return to_stage_response(
-                self.request, redirect(self.plan.context.get(PLAN_CONTEXT_REDIRECT))
+                self.request,
+                redirect(self.plan.context.get(PLAN_CONTEXT_REDIRECT)),
+                final_redirect=True,
             )
         next_param = self.request.session.get(SESSION_KEY_GET, {}).get(
             NEXT_ARG_NAME, "authentik_core:root-redirect"
         )
         self.cancel()
         if next_param and not is_url_absolute(next_param):
-            return to_stage_response(self.request, redirect_with_qs(next_param))
+            return to_stage_response(
+                self.request, redirect_with_qs(next_param), final_redirect=True
+            )
         return to_stage_response(
             self.request, self.stage_invalid(error_message=_("Invalid next URL"))
         )
@@ -549,7 +553,9 @@ class ToDefaultFlow(View):
         return redirect_with_qs("authentik_core:if-flow", request.GET, flow_slug=flow.slug)
 
 
-def to_stage_response(request: HttpRequest, source: HttpResponse) -> HttpResponse:
+def to_stage_response(
+    request: HttpRequest, source: HttpResponse, final_redirect: bool = False
+) -> HttpResponse:
     """Convert normal HttpResponse into JSON Response"""
     if (
         isinstance(source, HttpResponseRedirect)
@@ -568,6 +574,7 @@ def to_stage_response(request: HttpRequest, source: HttpResponse) -> HttpRespons
             RedirectChallenge(
                 {
                     "to": str(redirect_url),
+                    "final_redirect": final_redirect,
                 }
             )
         )

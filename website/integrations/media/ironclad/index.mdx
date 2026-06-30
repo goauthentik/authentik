@@ -4,6 +4,8 @@ sidebar_label: Ironclad
 support_level: community
 ---
 
+import SAMLProvider20265Warning from "../../_saml-provider-2026-5-warning.mdx";
+
 ## What is Ironclad?
 
 > Ironclad is a contract lifecycle management (CLM) platform that gives business and legal teams an easy-to-use platform with AI-powered tools to handle every aspect of the contract lifecycle.
@@ -60,6 +62,8 @@ Ironclad requires both a first and last name for each user, but by default, auth
 6. Click **Finish**.
 
 ### Create an application and provider in authentik
+
+<SAMLProvider20265Warning />
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **New Application** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)

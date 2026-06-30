@@ -2,7 +2,7 @@ import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import "#components/sync/SyncObjectForm";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { formatUserDisplayName } from "#common/users";
 
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
@@ -39,9 +39,7 @@ export class MicrosoftEntraProviderUserList extends Table<MicrosoftEntraProvider
                     .provider=${this.providerId}
                     model=${SyncObjectModelEnum.AuthentikCoreModelsUser}
                     .sync=${(data: ProvidersMicrosoftEntraSyncObjectCreateRequest) => {
-                        return new ProvidersApi(
-                            DEFAULT_CONFIG,
-                        ).providersMicrosoftEntraSyncObjectCreate(data);
+                        return aki(ProvidersApi).providersMicrosoftEntraSyncObjectCreate(data);
                     }}
                     slot="form"
                 >
@@ -57,7 +55,7 @@ export class MicrosoftEntraProviderUserList extends Table<MicrosoftEntraProvider
             object-label=${msg("Microsoft Entra User(s)")}
             .objects=${this.selectedElements}
             .delete=${(item: MicrosoftEntraProviderUser) => {
-                return new ProvidersApi(DEFAULT_CONFIG).providersMicrosoftEntraUsersDestroy({
+                return aki(ProvidersApi).providersMicrosoftEntraUsersDestroy({
                     id: item.id,
                 });
             }}
@@ -69,7 +67,7 @@ export class MicrosoftEntraProviderUserList extends Table<MicrosoftEntraProvider
     }
 
     async apiEndpoint(): Promise<PaginatedResponse<MicrosoftEntraProviderUser>> {
-        return new ProvidersApi(DEFAULT_CONFIG).providersMicrosoftEntraUsersList({
+        return aki(ProvidersApi).providersMicrosoftEntraUsersList({
             ...(await this.defaultEndpointConfig()),
             providerId: this.providerId,
         });

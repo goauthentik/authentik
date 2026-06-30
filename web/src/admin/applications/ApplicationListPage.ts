@@ -8,7 +8,7 @@ import "#elements/forms/ModalForm";
 import "#elements/dialogs/ak-modal";
 import "#admin/applications/ApplicationForm";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { IconEditButton } from "#elements/dialogs";
 import { WithBrandConfig } from "#elements/mixins/branding";
@@ -62,7 +62,7 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
     public order = "name";
 
     async apiEndpoint(): Promise<PaginatedResponse<Application>> {
-        return new CoreApi(DEFAULT_CONFIG).coreApplicationsList({
+        return aki(CoreApi).coreApplicationsList({
             ...(await this.defaultEndpointConfig()),
             superuserFullList: true,
         });
@@ -106,12 +106,12 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
             object-label=${msg("Application(s)")}
             .objects=${this.selectedElements}
             .usedBy=${(item: Application) => {
-                return new CoreApi(DEFAULT_CONFIG).coreApplicationsUsedByList({
+                return aki(CoreApi).coreApplicationsUsedByList({
                     slug: item.slug,
                 });
             }}
             .delete=${(item: Application) => {
-                return new CoreApi(DEFAULT_CONFIG).coreApplicationsDestroy({
+                return aki(CoreApi).coreApplicationsDestroy({
                     slug: item.slug,
                 });
             }}
@@ -228,7 +228,7 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
                 errorMessage=${msg("Failed to delete application cache")}
                 action=${msg("Clear Cache")}
                 .onConfirm=${() => {
-                    return new PoliciesApi(DEFAULT_CONFIG).policiesAllCacheClearCreate();
+                    return aki(PoliciesApi).policiesAllCacheClearCreate();
                 }}
             >
                 <span slot="header">${msg("Clear Application cache")}</span>
