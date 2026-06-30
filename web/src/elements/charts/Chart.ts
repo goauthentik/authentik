@@ -155,7 +155,7 @@ export abstract class AKChart<T> extends AKElement {
         return [];
     }
 
-    timeTickCallback(tickValue: string | number, index: number, ticks: Tick[]): string {
+    timeTickCallback(_tickValue: string | number, index: number, ticks: Tick[]): string {
         const valueStamp = ticks[index];
 
         return formatElapsedTime(new Date(valueStamp.value));

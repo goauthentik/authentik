@@ -14,7 +14,7 @@ interface Names {
 test.describe("RAC", () => {
     const fixtures = new Map<string, Names>();
 
-    test.beforeEach("Seed entity names", async ({}, { testId }) => {
+    test.beforeEach("Seed entity names", async (_, { testId }) => {
         const seed = IDGenerator.randomID(6);
         const base = randomName(seed);
 
