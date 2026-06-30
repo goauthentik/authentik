@@ -1,6 +1,8 @@
 import { createRuntimeOverrides } from "./restrictions.js";
+import { WebComponentJsPlugins, WebComponentRules } from "./web-components.js";
 
 export * from "./restrictions.js";
+export * from "./web-components.js";
 
 export type OxlintConfig = Record<string, unknown>;
 
@@ -9,6 +11,11 @@ export interface OxlintConfigOptions {
     packageNamespace?: string;
     /** Enable oxlint's React plugin (off by default). */
     react?: boolean;
+    /**
+     * Enable the lit-html and Web Component lint rules (`eslint-plugin-lit` + `eslint-plugin-wc`,
+     * loaded as `jsPlugins`). Off by default; the web UI turns it on.
+     */
+    lit?: boolean;
     /** Override the default ignore patterns. */
     ignorePatterns?: string[];
     /** Extra config deep-merged last; an escape hatch for per-repo tweaks. */
@@ -43,11 +50,18 @@ export function createOxlintConfig(options: OxlintConfigOptions = {}): OxlintCon
     const {
         packageNamespace = "@goauthentik",
         react = false,
+        lit = false,
         ignorePatterns = DefaultIgnorePatterns,
         overrides = {},
     } = options;
 
     const plugins = ["typescript", "unicorn", "oxc", ...(react ? ["react"] : [])];
+
+    const jsPlugins: unknown[] = ["@goauthentik/oxlint-config/plugin"];
+
+    if (lit) {
+        jsPlugins.push(...WebComponentJsPlugins);
+    }
 
     const rules: Record<string, unknown> = {
         // JavaScript
@@ -81,11 +95,12 @@ export function createOxlintConfig(options: OxlintConfigOptions = {}): OxlintCon
         "typescript/no-var-requires": "off",
         "typescript/no-require-imports": "off",
         "goauthentik/padding-lines": "warn",
+        ...(lit ? WebComponentRules : {}),
     };
 
     return {
         plugins,
-        jsPlugins: ["@goauthentik/oxlint-config/plugin"],
+        jsPlugins,
         categories: { correctness: "error" },
         ignorePatterns,
         rules,

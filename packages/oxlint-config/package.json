@@ -24,6 +24,10 @@
             "types": "./out/plugin.d.ts"
         }
     },
+    "dependencies": {
+        "eslint-plugin-lit": "^2.3.1",
+        "eslint-plugin-wc": "^3.1.0"
+    },
     "devDependencies": {
         "@goauthentik/tsconfig": "../tsconfig",
         "typescript": "^6.0.3",
