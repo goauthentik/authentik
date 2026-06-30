@@ -55,24 +55,13 @@ export class SAMLSourceForm extends BaseSourceForm<SAMLSource> {
         this.hasSigningCert = !!target.selectedKeypair;
     }
 
-    async loadInstance(pk: string): Promise<SAMLSource> {
-        return aki(SourcesApi).sourcesSamlRetrieve({
-            slug: pk,
-        });
-    }
-
-    async send(data: SAMLSource): Promise<SAMLSource> {
-        if (this.instance) {
-            return aki(SourcesApi).sourcesSamlUpdate({
-                slug: this.instance.slug,
-                sAMLSourceRequest: data,
-            });
-        }
-
-        return aki(SourcesApi).sourcesSamlCreate({
-            sAMLSourceRequest: data,
-        });
-    }
+    protected endpoints = {
+        load: (slug: string) => aki(SourcesApi).sourcesSamlRetrieve({ slug }),
+        create: (sAMLSourceRequest: SAMLSource) =>
+            aki(SourcesApi).sourcesSamlCreate({ sAMLSourceRequest }),
+        update: (slug: string, sAMLSourceRequest: SAMLSource) =>
+            aki(SourcesApi).sourcesSamlUpdate({ slug, sAMLSourceRequest }),
+    };
 
     renderHasSigningCert(): TemplateResult {
         return html`<ak-switch-input

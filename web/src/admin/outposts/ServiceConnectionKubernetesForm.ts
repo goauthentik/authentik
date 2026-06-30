@@ -20,28 +20,26 @@ export class ServiceConnectionKubernetesForm extends ModelForm<
     KubernetesServiceConnection,
     string
 > {
-    loadInstance(pk: string): Promise<KubernetesServiceConnection> {
-        return aki(OutpostsApi).outpostsServiceConnectionsKubernetesRetrieve({
-            uuid: pk,
-        });
-    }
+    protected endpoints = {
+        load: (uuid: string) =>
+            aki(OutpostsApi).outpostsServiceConnectionsKubernetesRetrieve({
+                uuid,
+            }),
+        create: (kubernetesServiceConnectionRequest: KubernetesServiceConnection) =>
+            aki(OutpostsApi).outpostsServiceConnectionsKubernetesCreate({
+                kubernetesServiceConnectionRequest,
+            }),
+        update: (uuid: string, kubernetesServiceConnectionRequest: KubernetesServiceConnection) =>
+            aki(OutpostsApi).outpostsServiceConnectionsKubernetesUpdate({
+                uuid,
+                kubernetesServiceConnectionRequest,
+            }),
+    };
 
     getSuccessMessage(): string {
         return this.instance
             ? msg("Successfully updated integration.")
             : msg("Successfully created integration.");
-    }
-
-    async send(data: KubernetesServiceConnection): Promise<KubernetesServiceConnection> {
-        if (this.instance) {
-            return aki(OutpostsApi).outpostsServiceConnectionsKubernetesUpdate({
-                uuid: this.instance.pk || "",
-                kubernetesServiceConnectionRequest: data,
-            });
-        }
-        return aki(OutpostsApi).outpostsServiceConnectionsKubernetesCreate({
-            kubernetesServiceConnectionRequest: data,
-        });
     }
 
     protected override renderForm(): TemplateResult {

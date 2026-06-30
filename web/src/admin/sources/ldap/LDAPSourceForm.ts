@@ -58,24 +58,15 @@ function createSyncOutgoingTriggerModeOptions(): RadioOption<SyncOutgoingTrigger
 }
 @customElement("ak-source-ldap-form")
 export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
-    loadInstance(pk: string): Promise<LDAPSource> {
-        return aki(SourcesApi).sourcesLdapRetrieve({
-            slug: pk,
-        });
-    }
-
-    async send(data: LDAPSource): Promise<LDAPSource> {
-        if (this.instance) {
-            return aki(SourcesApi).sourcesLdapPartialUpdate({
-                slug: this.instance.slug,
-                patchedLDAPSourceRequest: data,
-            });
-        }
-
-        return aki(SourcesApi).sourcesLdapCreate({
-            lDAPSourceRequest: data as unknown as LDAPSourceRequest,
-        });
-    }
+    protected endpoints = {
+        load: (slug: string) => aki(SourcesApi).sourcesLdapRetrieve({ slug }),
+        create: (lDAPSource: LDAPSource) =>
+            aki(SourcesApi).sourcesLdapCreate({
+                lDAPSourceRequest: lDAPSource as unknown as LDAPSourceRequest,
+            }),
+        update: (slug: string, patchedLDAPSourceRequest: LDAPSource) =>
+            aki(SourcesApi).sourcesLdapPartialUpdate({ slug, patchedLDAPSourceRequest }),
+    };
 
     protected override renderForm(): TemplateResult {
         return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
