@@ -142,6 +142,8 @@ export class Flow extends WithBrandConfig(Interface) {
 
     //#endregion
 
+    //#region Dynamic listeners
+
     //#region Render
 
     constructor() {
@@ -149,7 +151,7 @@ export class Flow extends WithBrandConfig(Interface) {
         this.addController(this.#wsController);
     }
 
-    #handleFlowUpdate = (event: AKFlowInfoUpdateEvent) => {
+    protected handleFlowUpdate = (event: AKFlowInfoUpdateEvent) => {
         const { flowInfo } = event;
         if (!isContextualFlowInfo(flowInfo)) {
             return;
@@ -176,7 +178,7 @@ export class Flow extends WithBrandConfig(Interface) {
         }
     };
 
-    #handleLoading = (event: AKFlowLoadingEvent) => {
+    protected handleLoading = (event: AKFlowLoadingEvent) => {
         this.loading = true;
 
         // The event comes with a payload: a protected boolean promise that
@@ -203,8 +205,8 @@ export class Flow extends WithBrandConfig(Interface) {
 
         this.#abortController = new AbortController();
         const { signal } = this.#abortController;
-        this.addEventListener(AKFlowInfoUpdateEvent.eventName, this.#handleFlowUpdate, { signal });
-        this.addEventListener(AKFlowLoadingEvent.eventName, this.#handleLoading, { signal });
+        this.addEventListener(AKFlowInfoUpdateEvent.eventName, this.handleFlowUpdate, { signal });
+        this.addEventListener(AKFlowLoadingEvent.eventName, this.handleLoading, { signal });
     }
 
     public override disconnectedCallback(): void {

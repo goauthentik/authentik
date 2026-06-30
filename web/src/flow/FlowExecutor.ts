@@ -8,6 +8,7 @@ import { aki } from "#common/api/client";
 import { APIError, parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
 import { configureSentry } from "#common/sentry/index";
 
+import { listen } from "#elements/decorators/listen";
 import { light } from "#elements/directives/light";
 import { Interface } from "#elements/Interface";
 import { showAPIErrorMessage } from "#elements/messages/MessageContainer";
@@ -38,6 +39,7 @@ import { spread } from "@open-wc/lit-helpers";
 import { observed } from "@patternfly/pfe-core/decorators/observed.js";
 import { match } from "ts-pattern";
 
+import { LOCALE_STATUS_EVENT, LocaleStatusEventDetail } from "@lit/localize";
 import { html, PropertyValues } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { guard } from "lit/directives/guard.js";
@@ -122,6 +124,17 @@ export class FlowExecutor extends Interface implements StageHost {
     @observed("handleFlowUpdate")
     @property({ attribute: false })
     public challenge: ChallengeTypes | null = null;
+
+    //#endregion
+
+    //#region Window Listeners
+
+    @listen(LOCALE_STATUS_EVENT, { target: window })
+    protected localeStatusListener = (event: CustomEvent<LocaleStatusEventDetail>) => {
+        if (event.detail.status === "ready") {
+            this.refresh();
+        }
+    };
 
     //#endregion
 
