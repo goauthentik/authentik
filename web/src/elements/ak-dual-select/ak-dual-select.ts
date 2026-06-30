@@ -3,7 +3,6 @@ import "./components/ak-dual-select-controls.js";
 import "./components/ak-dual-select-selected-pane.js";
 import "./components/ak-pagination.js";
 import "./components/ak-search-bar.js";
-
 import { AkDualSelectAvailablePane } from "./components/ak-dual-select-available-pane.js";
 import { AkDualSelectSelectedPane } from "./components/ak-dual-select-selected-pane.js";
 import { globalVariables, mainStyles } from "./components/styles.js";
@@ -14,6 +13,7 @@ import {
     SearchbarEventDetail,
     SearchbarEventSource,
 } from "./types.js";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
 
 import { AKElement } from "#elements/Base";
 import { CustomEmitterElement, CustomListenerElement } from "#elements/utils/eventEmitter";
@@ -26,8 +26,6 @@ import { customElement, property, state } from "lit/decorators.js";
 import type { Ref } from "lit/directives/ref.js";
 import { createRef, ref } from "lit/directives/ref.js";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
-
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
 
 function localeComparator(a: DualSelectPair, b: DualSelectPair) {
     const aSortBy = String(a[2] || a[0]);
@@ -51,13 +49,12 @@ const DelegatedEvents = [
 ] as const satisfies DualSelectEventType[];
 
 /**
+ * @fires ak-dual-select-change - A custom change event with the current `selected` list.
  * @element ak-dual-select
  *
  * A master (but independent) component that shows two lists-- one of "available options" and one of
  * "selected options".  The Available Options panel supports pagination if it receives a valid and
  * active pagination object (based on Django's pagination object) from the invoking component.
- *
- * @fires ak-dual-select-change - A custom change event with the current `selected` list.
  */
 @customElement("ak-dual-select")
 export class AkDualSelect extends CustomEmitterElement(CustomListenerElement(AKElement)) {
@@ -66,17 +63,16 @@ export class AkDualSelect extends CustomEmitterElement(CustomListenerElement(AKE
     //#region Properties
 
     /**
-     * The list of options to *currently* show.
+     * The list of options to _currently_ show.
      *
-     * Note that this is not *all* the options,
-     * only the currently shown list of options from a pagination collection.
+     * Note that this is not _all_ the options, only the currently shown list of options from a
+     * pagination collection.
      */
     @property({ type: Array })
     options: DualSelectPair[] = [];
 
     /**
-     * The list of options selected.
-     * This is the *entire* list and will not be paginated.
+     * The list of options selected. This is the _entire_ list and will not be paginated.
      */
     @property({ type: Array })
     selected: DualSelectPair[] = [];
@@ -97,8 +93,8 @@ export class AkDualSelect extends CustomEmitterElement(CustomListenerElement(AKE
     noStatus = false;
 
     /**
-     * When true, the selected pane preserves insertion order instead of sorting alphabetically.
-     * Use this when the order of selected items is meaningful (e.g. priority-based lists).
+     * When true, the selected pane preserves insertion order instead of sorting alphabetically. Use
+     * this when the order of selected items is meaningful (e.g. priority-based lists).
      */
     @property({ type: Boolean, attribute: "preserve-order" })
     preserveOrder = false;

@@ -1,5 +1,4 @@
 import "#elements/forms/SearchSelect/index";
-
 import { FlowSearch, getFlowValue, renderDescription, renderElement } from "./FlowSearch.js";
 
 import type { Flow } from "@goauthentik/api";

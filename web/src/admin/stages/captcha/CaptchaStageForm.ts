@@ -5,7 +5,6 @@ import "#components/ak-switch-input";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/Alert";
-
 import { aki } from "#common/api/client";
 
 import { Level } from "#elements/Alert";
@@ -77,8 +76,8 @@ export class CaptchaStageForm extends BaseStageForm<CaptchaStage> {
     }
 
     /**
-     * Handle provider dropdown selection change.
-     * Updates the preset, which triggers a re-render with new default values.
+     * Handle provider dropdown selection change. Updates the preset, which triggers a re-render
+     * with new default values.
      */
     #providerChangeListener(e: Event): void {
         const select = e.target as HTMLSelectElement;

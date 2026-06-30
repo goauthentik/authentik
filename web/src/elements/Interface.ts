@@ -1,5 +1,4 @@
 import "#elements/commands/ak-command-palette";
-
 import { globalAK } from "#common/global";
 import { applyDocumentTheme, createUIThemeEffect } from "#common/theme";
 
@@ -30,14 +29,14 @@ export abstract class Interface extends AKElement {
     /**
      * Private map of controllers to their registry keys.
      *
-     * This is used to track which controllers have been registered,
-     * and to unregister them when removed.
+     * This is used to track which controllers have been registered, and to unregister them when
+     * removed.
      */
     #registryKeys = new WeakMap<ReactiveController, ContextType<Context<unknown, unknown>>>();
 
     /**
-     * The command palette instance. This must be inserted by the extending class,
-     * as the palette may depend on a context that is not available at the time of this class's construction.
+     * The command palette instance. This must be inserted by the extending class, as the palette
+     * may depend on a context that is not available at the time of this class's construction.
      */
     public readonly commandPalette: AKCommandPalette;
 

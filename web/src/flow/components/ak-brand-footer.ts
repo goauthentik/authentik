@@ -18,8 +18,8 @@ import { map } from "lit/directives/map.js";
 @customElement("ak-brand-links")
 export class BrandLinks extends AKElement {
     /**
-     * Rendering in the light DOM ensures consistent styling across some of the
-     * more complex flow environments, such as...
+     * Rendering in the light DOM ensures consistent styling across some of the more complex flow
+     * environments, such as...
      *
      * - When JavaScript is not available, such as on error pages.
      * - During the initial loading of the page, before the web components are fully initialized.

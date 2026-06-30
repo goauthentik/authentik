@@ -1,5 +1,4 @@
 import "#elements/EmptyState";
-
 import { aki } from "#common/api/client";
 
 import { Diagram } from "#elements/Diagram/ak-diagram";

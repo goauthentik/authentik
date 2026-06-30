@@ -36,8 +36,8 @@ function getMinimizedLocaleID(tag: string): string {
 }
 
 /**
- * Get the appropriate locale ID for display purposes.
- * Han scripts use full baseName; others use just the language.
+ * Get the appropriate locale ID for display purposes. Han scripts use full baseName; others use
+ * just the language.
  */
 function getDisplayLocaleID(tag: TargetLanguageTag): string {
     const locale = safeParseLocale(tag);
@@ -73,8 +73,8 @@ export function formatDisplayName(
 }
 
 /**
- * Given a localized display name, normalize it for comparison or sorting,
- * removing diacritics and other marks.
+ * Given a localized display name, normalize it for comparison or sorting, removing diacritics and
+ * other marks.
  */
 export function normalizeDisplayName(displayName: string): string {
     return displayName
@@ -138,8 +138,8 @@ export interface FormatLocaleOptionsInit {
 }
 
 /**
- * Pre-defined display names for locales that need special handling.
- * These use minimized IDs or explicit fallbacks.
+ * Pre-defined display names for locales that need special handling. These use minimized IDs or
+ * explicit fallbacks.
  */
 const SPECIAL_LOCALE_FALLBACKS: ReadonlyMap<TargetLanguageTag, () => string> = new Map([
     [SourceLanguageTag, () => msg("English", { id: "en" })],

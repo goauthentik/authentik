@@ -6,7 +6,6 @@ import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
-
 import { aki } from "#common/api/client";
 
 import { renderModal } from "#elements/dialogs";

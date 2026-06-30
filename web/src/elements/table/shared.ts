@@ -1,5 +1,4 @@
 import "#elements/timestamp/ak-timestamp";
-
 import { Pagination } from "@goauthentik/api";
 
 import { html, TemplateResult } from "lit";

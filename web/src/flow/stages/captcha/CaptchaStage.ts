@@ -1,5 +1,9 @@
 import "#flow/FormStatic";
 import "#flow/components/ak-flow-card";
+import PFForm from "@patternfly/patternfly/components/Form/form.css";
+import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
+import PFLogin from "@patternfly/patternfly/components/Login/login.css";
+import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 
 import { pluckErrorDetail } from "#common/errors/network";
 
@@ -33,11 +37,6 @@ import { LOCALE_STATUS_EVENT, LocaleStatusEventDetail, msg } from "@lit/localize
 import { CSSResult, html, nothing, PropertyValues } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { createRef, ref, type Ref } from "lit/directives/ref.js";
-
-import PFForm from "@patternfly/patternfly/components/Form/form.css";
-import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
-import PFLogin from "@patternfly/patternfly/components/Login/login.css";
-import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 
 export type TokenListener = (token: string) => void;
 
@@ -125,8 +124,8 @@ export class CaptchaStage
     protected activeController: CaptchaController | null = null;
 
     /**
-     * The desired source URL of the iframe. Note that this may differ from the actual
-     * `src` attribute of the iframe element for certain captcha providers.
+     * The desired source URL of the iframe. Note that this may differ from the actual `src`
+     * attribute of the iframe element for certain captcha providers.
      */
     #iframeSource = "about:blank";
     /**
@@ -374,8 +373,8 @@ export class CaptchaStage
     #resizeObserver?: ResizeObserver;
 
     /**
-     * An event listener that is called through the iframe's `postMessage` API
-     * when the iframe has loaded its content.
+     * An event listener that is called through the iframe's `postMessage` API when the iframe has
+     * loaded its content.
      */
     #loadListener = () => {
         this.#mutationObserver?.disconnect();
@@ -466,8 +465,8 @@ export class CaptchaStage
     //#region Loading
 
     /**
-     * An event listener that is called when the captcha provider's script has loaded,
-     * attempting to initialize each available controller in order.
+     * An event listener that is called when the captcha provider's script has loaded, attempting to
+     * initialize each available controller in order.
      */
     #scriptLoadListener = async (event?: Event): Promise<void> => {
         const scriptElement = event?.currentTarget as HTMLScriptElement | null;

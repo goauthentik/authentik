@@ -1,3 +1,8 @@
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFContent from "@patternfly/patternfly/components/Content/content.css";
+import PFEmptyState from "@patternfly/patternfly/components/EmptyState/empty-state.css";
+import PFSpacing from "@patternfly/patternfly/utilities/Spacing/spacing.css";
+
 import { docLink, globalAK } from "#common/global";
 
 import { AKElement } from "#elements/Base";
@@ -6,11 +11,6 @@ import { paramURL } from "#elements/router/RouterOutlet";
 import { msg } from "@lit/localize";
 import { css, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
-
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFContent from "@patternfly/patternfly/components/Content/content.css";
-import PFEmptyState from "@patternfly/patternfly/components/EmptyState/empty-state.css";
-import PFSpacing from "@patternfly/patternfly/utilities/Spacing/spacing.css";
 
 export interface ILibraryPageApplicationEmptyList {
     admin: boolean;

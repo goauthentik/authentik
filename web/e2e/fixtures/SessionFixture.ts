@@ -45,8 +45,8 @@ export class SessionFixture extends PageFixture {
     });
 
     /**
-     * The button to submit the the login flow,
-     * typically redirecting to the authenticated interface.
+     * The button to submit the the login flow, typically redirecting to the authenticated
+     * interface.
      */
     public $submitButton = this.page.locator('button[type="submit"]');
 

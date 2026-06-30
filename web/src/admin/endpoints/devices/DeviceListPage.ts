@@ -1,6 +1,8 @@
 import "#elements/cards/AggregateCard";
 import "#elements/forms/DeleteBulkForm";
 import "#admin/endpoints/devices/DeviceAddHowTo";
+import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
+import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 
 import { aki } from "#common/api/client";
 
@@ -16,9 +18,6 @@ import { DeviceSummary, EndpointDevice, EndpointsApi } from "@goauthentik/api";
 import { msg } from "@lit/localize";
 import { css, CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, state } from "lit/decorators.js";
-
-import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
-import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 
 @customElement("ak-endpoints-device-list")
 export class DeviceListPage extends TablePage<EndpointDevice> {

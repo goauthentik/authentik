@@ -1,5 +1,8 @@
 import "#elements/wizard/ActionWizardPage";
 import "#elements/LoadingOverlay";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFTitle from "@patternfly/patternfly/components/Title/title.css";
+import PFWizard from "@patternfly/patternfly/components/Wizard/wizard.css";
 
 import { AKRefreshEvent } from "#common/events";
 
@@ -14,17 +17,14 @@ import { ButtonKindLabelRecord } from "#components/ak-wizard/shared";
 
 import { ConsoleLogger } from "#logger/browser";
 
+import { guard } from "lit-html/directives/guard.js";
+
 import { msg, str } from "@lit/localize";
 import { customElement } from "@lit/reactive-element/decorators/custom-element.js";
 import { property } from "@lit/reactive-element/decorators/property.js";
 import { css, CSSResult, html, PropertyValues } from "lit";
-import { guard } from "lit-html/directives/guard.js";
 import { state } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
-
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFTitle from "@patternfly/patternfly/components/Title/title.css";
-import PFWizard from "@patternfly/patternfly/components/Wizard/wizard.css";
 
 export interface WizardAction {
     displayName: string;
@@ -72,7 +72,8 @@ export class AKWizard<S = Record<string, unknown>> extends AKElement {
     //#region Public Properties
 
     /**
-     * Formats the ARIA label for the wizard, using the {@linkcode verboseName} property if available.
+     * Formats the ARIA label for the wizard, using the {@linkcode verboseName} property if
+     * available.
      */
     public formatARIALabel(verboseName = this.verboseName): string {
         return verboseName
@@ -87,7 +88,8 @@ export class AKWizard<S = Record<string, unknown>> extends AKElement {
     }
 
     /**
-     * Formats the header text for the wizard, using the {@linkcode verboseName} property if available.
+     * Formats the header text for the wizard, using the {@linkcode verboseName} property if
+     * available.
      */
     public formatHeader(verboseName = this.verboseName): string {
         if (verboseName) {
@@ -144,14 +146,15 @@ export class AKWizard<S = Record<string, unknown>> extends AKElement {
     }
 
     /**
-     * Optional plural label for the type of entity this wizard creates, used in messages and the like.
+     * Optional plural label for the type of entity this wizard creates, used in messages and the
+     * like.
      */
     @property({ type: String, attribute: "verbose-name-plural" })
     public verboseNamePlural: string | null = null;
 
     /**
-     * An optional description to show on the initial page of the wizard,
-     * used to explain the different types or provide general information about the creation process.
+     * An optional description to show on the initial page of the wizard, used to explain the
+     * different types or provide general information about the creation process.
      */
     @property({ type: String })
     public description: string | null = null;
@@ -264,13 +267,13 @@ export class AKWizard<S = Record<string, unknown>> extends AKElement {
     }
 
     /**
-     * Determines the current step progress, the active step element, its index,
-     * and whether it's the last page.
+     * Determines the current step progress, the active step element, its index, and whether it's
+     * the last page.
      *
      * @remarks
-     * TODO: This causes a synchronous update of the active step element.
-     * It'd be nice if this could be decoupled. Leaving as is for now since,
-     * x`but something to keep in mind if we run into weird update issues.
+     *   TODO: This causes a synchronous update of the active step element. It'd be nice if this
+     *   could be decoupled. Leaving as is for now since, x`but something to keep in mind if we run
+     *   into weird update issues.
      */
     protected takeStepProgress(): StepProgress {
         if (!this.activeStepElement) {
@@ -314,8 +317,8 @@ export class AKWizard<S = Record<string, unknown>> extends AKElement {
     };
 
     /**
-     * Navigates to the next step, if possible.
-     * If the current step has a `nextCallback`, it will be invoked first.
+     * Navigates to the next step, if possible. If the current step has a `nextCallback`, it will be
+     * invoked first.
      */
     public navigateNext = async (event?: Event): Promise<boolean> => {
         const { activeStepElement, activeStepIndex, lastPage } = this.takeStepProgress();

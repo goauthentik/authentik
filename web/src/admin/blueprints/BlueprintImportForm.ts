@@ -2,6 +2,8 @@ import "#components/ak-status-label";
 import "#elements/events/LogViewer";
 import "#elements/forms/HorizontalFormElement";
 import "#components/ak-toggle-group";
+import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
+import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
 import { aki } from "#common/api/client";
 import { PFSize } from "#common/enums";
@@ -23,9 +25,6 @@ import {
 import { msg } from "@lit/localize";
 import { CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, state } from "lit/decorators.js";
-
-import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
-import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
 /**
  * @slot read-more-link - Link for the read more text

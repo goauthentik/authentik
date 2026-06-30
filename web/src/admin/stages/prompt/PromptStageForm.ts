@@ -3,7 +3,6 @@ import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/ModalForm";
-
 import {
     policiesProvider,
     policiesSelector,

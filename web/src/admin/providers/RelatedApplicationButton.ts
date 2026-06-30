@@ -1,6 +1,7 @@
 import "#admin/applications/ApplicationForm";
 import "#elements/Spinner";
 import "#elements/forms/ModalForm";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
 
 import { AKElement } from "#elements/Base";
 import { ModalInvokerButton } from "#elements/dialogs";
@@ -12,8 +13,6 @@ import { Provider } from "@goauthentik/api";
 
 import { CSSResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
-
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
 
 @customElement("ak-provider-related-application")
 export class RelatedApplicationButton extends AKElement {

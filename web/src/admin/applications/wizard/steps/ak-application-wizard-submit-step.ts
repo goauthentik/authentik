@@ -1,3 +1,9 @@
+import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
+import PFEmptyState from "@patternfly/patternfly/components/EmptyState/empty-state.css";
+import PFProgressStepper from "@patternfly/patternfly/components/ProgressStepper/progress-stepper.css";
+import PFTitle from "@patternfly/patternfly/components/Title/title.css";
+import PFBullseye from "@patternfly/patternfly/layouts/Bullseye/bullseye.css";
+
 import { aki } from "#common/api/client";
 import { EVENT_REFRESH } from "#common/constants";
 import { parseAPIResponseError } from "#common/errors/network";
@@ -40,12 +46,6 @@ import { css, html, nothing } from "lit";
 import { customElement, state } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 
-import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
-import PFEmptyState from "@patternfly/patternfly/components/EmptyState/empty-state.css";
-import PFProgressStepper from "@patternfly/patternfly/components/ProgressStepper/progress-stepper.css";
-import PFTitle from "@patternfly/patternfly/components/Title/title.css";
-import PFBullseye from "@patternfly/patternfly/layouts/Bullseye/bullseye.css";
-
 const _submitStates = ["reviewing", "running", "submitted"] as const;
 type SubmitStates = (typeof _submitStates)[number];
 
@@ -53,7 +53,7 @@ type StrictProviderModelEnum = Exclude<ProviderModelEnum, "11184809">;
 
 const providerMap: Map<string, StrictProviderModelEnum> = Object.values(ProviderModelEnum)
     .filter((value): value is StrictProviderModelEnum => {
-        return value.startsWith('authentik_providers_') && value.endsWith('provider');
+        return value.startsWith("authentik_providers_") && value.endsWith("provider");
     })
     .reduce((acc: Map<string, StrictProviderModelEnum>, value) => {
         const key = value.split(".")[1];

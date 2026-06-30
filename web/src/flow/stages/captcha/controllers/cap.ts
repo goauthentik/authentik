@@ -22,7 +22,8 @@ export class CapController extends CaptchaController {
     public interactive = () => {
         const endpoint = this.host.challenge?.siteKey ?? "";
 
-        return html`<div id="ak-container" class="cap-container">
+        return html`
+            <div id="ak-container" class="cap-container">
                 <cap-widget
                     id="ak-cap-widget"
                     required
@@ -44,7 +45,8 @@ export class CapController extends CaptchaController {
                         error: event.detail.message,
                     });
                 });
-            </script>`;
+            </script>
+        `;
     };
 
     public refreshInteractive = async () => {

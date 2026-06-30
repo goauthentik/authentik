@@ -1,5 +1,10 @@
 import "#admin/lifecycle/LifecyclePreviewBanner";
 import "#admin/lifecycle/ObjectReviewIteration";
+import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
+import PFPage from "@patternfly/patternfly/components/Page/page.css";
+import PFTitle from "@patternfly/patternfly/components/Title/title.css";
+import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
+import PFSpacing from "@patternfly/patternfly/utilities/Spacing/spacing.css";
 
 import { aki } from "#common/api/client";
 import { EVENT_REFRESH } from "#common/constants";
@@ -17,12 +22,6 @@ import { ContentTypeEnum, LifecycleApi, LifecycleIteration } from "@goauthentik/
 import { msg } from "@lit/localize";
 import { html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
-
-import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
-import PFPage from "@patternfly/patternfly/components/Page/page.css";
-import PFTitle from "@patternfly/patternfly/components/Title/title.css";
-import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
-import PFSpacing from "@patternfly/patternfly/utilities/Spacing/spacing.css";
 
 @customElement("ak-object-lifecycle-page")
 export class ObjectLifecyclePage extends WithLicenseSummary(WithSession(AKElement)) {

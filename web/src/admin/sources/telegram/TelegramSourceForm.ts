@@ -5,7 +5,6 @@ import "#components/ak-secret-text-input";
 import "#elements/forms/Radio";
 import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
 import "#components/ak-switch-input";
-
 import { propertyMappingsProvider, propertyMappingsSelector } from "./TelegramSourceFormHelpers.js";
 
 import { aki } from "#common/api/client";

@@ -1,6 +1,5 @@
 import "#components/ak-status-label";
 import "#elements/buttons/SpinnerButton/index";
-
 import { aki } from "#common/api/client";
 
 import { PaginatedResponse, Table, TableColumn, Timestamp } from "#elements/table/Table";

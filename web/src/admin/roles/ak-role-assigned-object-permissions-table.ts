@@ -1,6 +1,5 @@
 import "#elements/forms/DeleteBulkForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
-
 import { aki } from "#common/api/client";
 import { groupBy } from "#common/utils";
 

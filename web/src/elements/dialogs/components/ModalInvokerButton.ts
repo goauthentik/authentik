@@ -1,5 +1,4 @@
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
-
 import { modalInvoker } from "#elements/dialogs/directives";
 import type { ModalTemplate } from "#elements/dialogs/invokers";
 import type { DialogInit, TransclusionElementConstructor } from "#elements/dialogs/shared";
@@ -13,11 +12,13 @@ export interface NewModelButtonProps {
 }
 
 /**
- * A helper function to render a button that opens a **modal** for creating a new **model** instance.
+ * A helper function to render a button that opens a **modal** for creating a new **model**
+ * instance.
  *
  * @param factory A custom element constructor or a function that returns a template result.
  * @param buttonProps Properties to customize the appearance of the button.
- * @param modalProps Properties to pass to the custom element constructor when the factory is a constructor.
+ * @param modalProps Properties to pass to the custom element constructor when the factory is a
+ *   constructor.
  * @param options Initialization options for the modal dialog.
  */
 export function ModalInvokerButton<T extends ModalTemplate | TransclusionElementConstructor>(

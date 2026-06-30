@@ -1,19 +1,14 @@
 /// <reference types="node" />
 
 /**
- * @file Locale module post-process pass.
- *
- * `@lit/localize-tools` 0.8.x runs an HTML escape on every text fragment it
- * splices into a compiled message template, including `str`-tagged and
- * untagged messages whose runtime value is a plain string. Any `<`/`>`/`&`
- * in the translation gets baked in as `&lt;`/`&gt;`/`&amp;`, and any literal
- * entity reference a translator typed (`&quot;`, `&lt;`, ...) round-trips
- * through the escape as `&amp;quot;`/`&amp;lt;`/..., showing up to the user
- * as visible entity text.
- *
- * The `html`-tagged messages need the escape — lit-html parses their static
- * parts as HTML — so we leave those alone. Everything else gets decoded
- * back to the characters the translator meant.
+ * @file Locale module post-process pass. `@lit/localize-tools` 0.8.x runs an HTML escape on every
+ *   text fragment it splices into a compiled message template, including `str`-tagged and untagged
+ *   messages whose runtime value is a plain string. Any `<`/`>`/`&` in the translation gets baked
+ *   in as `&lt;`/`&gt;`/`&amp;`, and any literal entity reference a translator typed (`&quot;`,
+ *   `&lt;`, ...) round-trips through the escape as `&amp;quot;`/`&amp;lt;`/..., showing up to the
+ *   user as visible entity text. The `html`-tagged messages need the escape — lit-html parses their
+ *   static parts as HTML — so we leave those alone. Everything else gets decoded back to the
+ *   characters the translator meant.
  */
 
 import * as fs from "node:fs/promises";
@@ -34,13 +29,14 @@ const ENTITY_TABLE = {
 };
 
 /**
- * Decode the XML predefined entity refs. Repeats until stable so
- * doubly-encoded forms like `&amp;quot;` collapse to `"` in one call.
+ * Decode the XML predefined entity refs. Repeats until stable so doubly-encoded forms like
+ * `&amp;quot;` collapse to `"` in one call.
  *
- * Used for non-HTML templates: the result becomes raw text content in the
- * DOM, so the entity references have to disappear entirely.
+ * Used for non-HTML templates: the result becomes raw text content in the DOM, so the entity
+ * references have to disappear entirely.
  *
  * @param {string} input
+ *
  * @returns {{ output: string; replacements: number }}
  */
 function decodeXmlEntities(input) {
@@ -65,12 +61,12 @@ function decodeXmlEntities(input) {
 /**
  * Strip exactly one layer of `&amp;`-doubling from XML entity references.
  *
- * Used for `html`-tagged templates: lit-html parses the static parts as
- * HTML, so a legitimate `&gt;` must stay as `&gt;`, but a translator's
- * `&amp;gt;` (which renders to a visible `&gt;`) should collapse back to
- * `&gt;` (which renders to `>`).
+ * Used for `html`-tagged templates: lit-html parses the static parts as HTML, so a legitimate
+ * `&gt;` must stay as `&gt;`, but a translator's `&amp;gt;` (which renders to a visible `&gt;`)
+ * should collapse back to `&gt;` (which renders to `>`).
  *
  * @param {string} input
+ *
  * @returns {{ output: string; replacements: number }}
  */
 function undoubleHtmlEntities(input) {
@@ -85,13 +81,14 @@ function undoubleHtmlEntities(input) {
 }
 
 /**
- * Walks a compiled locale module and rewrites every non-`html` template
- * literal so its body no longer carries XML entity references.
+ * Walks a compiled locale module and rewrites every non-`html` template literal so its body no
+ * longer carries XML entity references.
  *
- * Does not parse the file as TypeScript; the emitted shape from
- * `@lit/localize-tools` is regular enough to scan character-by-character.
+ * Does not parse the file as TypeScript; the emitted shape from `@lit/localize-tools` is regular
+ * enough to scan character-by-character.
  *
  * @param {string} source
+ *
  * @returns {{ output: string; replacements: number }}
  */
 export function sanitizeLocaleModule(source) {
@@ -186,11 +183,11 @@ export function sanitizeLocaleModule(source) {
 }
 
 /**
- * Run {@link sanitizeLocaleModule} over every `.ts` and `.js` file in the
- * emitted locales directory. Rewrites files in place when their contents
- * change.
+ * Run {@link sanitizeLocaleModule} over every `.ts` and `.js` file in the emitted locales directory.
+ * Rewrites files in place when their contents change.
  *
  * @param {string} directory
+ *
  * @returns {Promise<{ touched: number; replacements: number }>}
  */
 export async function unescapeOverescapedLitTemplates(directory) {

@@ -1,6 +1,5 @@
 import "#admin/rbac/ak-rbac-object-permission-page";
 import "#elements/forms/ModalForm";
-
 import { PFSize } from "#common/enums";
 
 import { AKElement } from "#elements/Base";
@@ -15,9 +14,8 @@ import { html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 /**
- * This is a bit of a hack to get the viewport checking from ModelForm,
- * even though we actually don't need a form here.
- * #TODO: Rework this in the future
+ * This is a bit of a hack to get the viewport checking from ModelForm, even though we actually
+ * don't need a form here. #TODO: Rework this in the future
  */
 @customElement("ak-rbac-object-permission-modal-form")
 export class ObjectPermissionsPageForm extends ModelForm<never, string> {

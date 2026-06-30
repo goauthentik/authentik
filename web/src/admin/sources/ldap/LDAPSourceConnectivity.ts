@@ -1,4 +1,5 @@
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
+import PFList from "@patternfly/patternfly/components/List/list.css";
 
 import { AKElement } from "#elements/Base";
 import { SlottedTemplateResult } from "#elements/types";
@@ -6,8 +7,6 @@ import { SlottedTemplateResult } from "#elements/types";
 import { msg } from "@lit/localize";
 import { CSSResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
-
-import PFList from "@patternfly/patternfly/components/List/list.css";
 
 @customElement("ak-source-ldap-connectivity")
 export class LDAPSourceConnectivity extends AKElement {

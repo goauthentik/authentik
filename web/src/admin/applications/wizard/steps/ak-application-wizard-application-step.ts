@@ -6,7 +6,6 @@ import "#components/ak-text-input";
 import "#components/ak-textarea-input";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
-
 import { omitKeys, trimMany } from "#common/objects";
 
 import { isSlug } from "#elements/router/utils";
@@ -30,12 +29,13 @@ import { customElement, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 /**
- * The first step of the application wizard, responsible for collecting
- * basic application information such as name, slug, group, and UI settings.
+ * The first step of the application wizard, responsible for collecting basic application
+ * information such as name, slug, group, and UI settings.
  *
- * This step performs validation on the form inputs and updates the wizard state accordingly when the "Next" button is clicked.
+ * This step performs validation on the form inputs and updates the wizard state accordingly when
+ * the "Next" button is clicked.
  *
- * @prop wizard - The current state of the application wizard, shared across all steps.
+ * @property wizard - The current state of the application wizard, shared across all steps.
  */
 @customElement("ak-application-wizard-application-step")
 export class ApplicationWizardApplicationStep extends ApplicationWizardStep {

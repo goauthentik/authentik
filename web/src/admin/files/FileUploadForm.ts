@@ -1,5 +1,4 @@
 import "#elements/forms/HorizontalFormElement";
-
 import { aki } from "#common/api/client";
 import { docLink } from "#common/global";
 import { MessageLevel } from "#common/messages";

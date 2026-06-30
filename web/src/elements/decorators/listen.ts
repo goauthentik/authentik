@@ -53,7 +53,7 @@ export type EventConstructor<K extends keyof WindowEventMap = keyof WindowEventM
  *
  * @remarks
  *
- * Type-safety for this is limited due to the dynamic nature of event listeners.
+ *   Type-safety for this is limited due to the dynamic nature of event listeners.
  */
 function isEventListenerLike(input: unknown): input is EventListenerOrEventListenerObject {
     if (!input) return false;
@@ -66,10 +66,9 @@ function isEventListenerLike(input: unknown): input is EventListenerOrEventListe
 /**
  * Registers the connected and disconnected callbacks to manage event listeners.
  *
- * @see {@linkcode listen} for usage.
- *
  * @param target The target class to register the callbacks on.
  * @internal
+ * @see {@linkcode listen} for usage.
  */
 function registerEventCallbacks<T extends ListenerMixin>(target: T): ListenDecoratorStore {
     const { connectedCallback, disconnectedCallback } = target;
@@ -140,8 +139,8 @@ function registerEventCallbacks<T extends ListenerMixin>(target: T): ListenDecor
 export type ListenDecorator = <T extends LitElement>(target: T, propertyKey: string) => void;
 
 /**
- * Adds an event listener to the `window` object that is automatically
- * removed when the element is disconnected.
+ * Adds an event listener to the `window` object that is automatically removed when the element is
+ * disconnected.
  *
  * @param EventConstructor The event constructor to listen for.
  * @param listener The event listener callback.
@@ -152,8 +151,8 @@ export function listen<K extends keyof WindowEventMap>(
     options?: ListenDecoratorOptions,
 ): ListenDecorator;
 /**
- * Adds an event listener to the `window` object that is automatically
- * removed when the element is disconnected.
+ * Adds an event listener to the `window` object that is automatically removed when the element is
+ * disconnected.
  *
  * @param type The event type to listen for.
  * @param listener The event listener callback.
@@ -164,8 +163,8 @@ export function listen<K extends keyof WindowEventMap>(
     options?: ListenDecoratorOptions,
 ): ListenDecorator;
 /**
- * Adds an event listener to the `window` object that is automatically
- * removed when the element is disconnected.
+ * Adds an event listener to the `window` object that is automatically removed when the element is
+ * disconnected.
  *
  * @param type The event type or constructor to listen for.
  * @param listener The event listener callback.

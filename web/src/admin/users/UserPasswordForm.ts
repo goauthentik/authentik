@@ -1,6 +1,5 @@
 import "#elements/buttons/SpinnerButton/index";
 import "#elements/forms/HorizontalFormElement";
-
 import { aki } from "#common/api/client";
 import { PFSize } from "#common/enums";
 
@@ -56,8 +55,8 @@ export class UserPasswordForm extends Form<UserPasswordSetRequest> {
     /**
      * The autocomplete attribute to use for the password field.
      *
-     * Defaults to "off" to **suggest** that the password is not stored in the browser.
-     * However, the browser may not necessarily respect this setting.
+     * Defaults to "off" to **suggest** that the password is not stored in the browser. However, the
+     * browser may not necessarily respect this setting.
      *
      * Still, we can at least hint at our preferred behavior...
      */

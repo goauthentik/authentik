@@ -1,5 +1,4 @@
 import "#elements/EmptyState";
-
 import { torusIndex } from "#common/collections";
 import { PFSize } from "#common/enums";
 
@@ -23,11 +22,11 @@ import { ifPresent } from "#elements/utils/attributes";
 import { FocusTarget } from "#elements/utils/focus";
 
 import Fuse, { Expression } from "fuse.js";
+import { guard } from "lit-html/directives/guard.js";
+import { createRef, ref } from "lit-html/directives/ref.js";
 
 import { msg, str } from "@lit/localize";
 import { html, PropertyValues } from "lit";
-import { guard } from "lit-html/directives/guard.js";
-import { createRef, ref } from "lit-html/directives/ref.js";
 import { customElement, property, state } from "lit/decorators.js";
 import { repeat } from "lit/directives/repeat.js";
 
@@ -140,8 +139,8 @@ export class AKCommandPaletteModal extends AKModal {
     #flattenedCommands: PaletteCommandDefinition<unknown>[] = [];
 
     /**
-     * Commands ordered by their grouped render order, so that selectionIndex
-     * maps correctly to the visually displayed list.
+     * Commands ordered by their grouped render order, so that selectionIndex maps correctly to the
+     * visually displayed list.
      */
     #renderOrderedCommands: readonly PaletteCommandDefinition<unknown>[] = [];
 

@@ -3,16 +3,14 @@
  */
 
 import "@goauthentik/core/environment/load/node";
-
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 
 import { copyAssets } from "./build-assets.mjs";
 
 /**
- * @file ESBuild script for building the authentik web UI.
- *
  * @import { BuildOptions, Plugin } from "esbuild";
+ * @file ESBuild script for building the authentik web UI.
  */
 import { mdxPlugin } from "#bundler/mdx-plugin/node";
 import { styleLoaderPlugin } from "#bundler/style-loader-plugin/node";
@@ -50,7 +48,7 @@ const BASE_ESBUILD_PLUGINS = [
         setup(build) {
             build.onEnd(async () => {
                 /**
-                 * @type {import('esbuild').PartialMessage[]}
+                 * @type {import("esbuild").PartialMessage[]}
                  */
                 const errors = [];
 
@@ -108,6 +106,7 @@ const BASE_ESBUILD_OPTIONS = {
  *
  * @param {BuildOptions["entryPoints"]} entryPoints
  * @param {Plugin[]} plugIns
+ *
  * @returns {BuildOptions}
  */
 export function createESBuildOptions(entryPoints, plugIns = []) {
@@ -146,8 +145,7 @@ function doHelp() {
 }
 
 /**
- *
- * @returns {Promise<() => Promise<void>>} dispose
+ * @returns {Promise<() => Promise<void>>} Dispose
  */
 async function doWatch() {
     logger.info(`🤖 Watching entry points:\n\t${entryPointsDescription}`);

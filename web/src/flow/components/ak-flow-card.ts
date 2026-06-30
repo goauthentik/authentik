@@ -1,6 +1,7 @@
 import "#elements/EmptyState";
-
 import Styles from "./ak-flow-card.css";
+import PFLogin from "@patternfly/patternfly/components/Login/login.css";
+import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 
 import { AKElement } from "#elements/Base";
 import { SlottedTemplateResult } from "#elements/types";
@@ -10,17 +11,13 @@ import { FormStaticChallenge } from "#flow/types";
 import { CSSResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import PFLogin from "@patternfly/patternfly/components/Login/login.css";
-import PFTitle from "@patternfly/patternfly/components/Title/title.css";
-
 /**
- * @element ak-flow-card
  * @class FlowCard
+ * @element ak-flow-card
  * @slot title - Title of the card, optional, when not set uses the flow title
  * @slot - Main body of the card
  * @slot footer - Footer links, optional
  * @slot footer-band - Band in the footer, option
- *
  */
 @customElement("ak-flow-card")
 export class FlowCard extends AKElement {

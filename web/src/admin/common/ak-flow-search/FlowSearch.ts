@@ -1,5 +1,4 @@
 import "#elements/forms/SearchSelect/index";
-
 import { aki } from "#common/api/client";
 
 import { AKElement } from "#elements/Base";
@@ -34,8 +33,8 @@ export function getFlowValue(flow: Flow | null): string {
  * FlowSearch
  *
  * A wrapper around SearchSelect that understands the basic semantics of querying about Flows. This
- * code eliminates the long blocks of unreadable invocation that were embedded in every provider, as well as in
- * sources, brands, and applications.
+ * code eliminates the long blocks of unreadable invocation that were embedded in every provider, as
+ * well as in sources, brands, and applications.
  */
 export abstract class FlowSearch<T extends Flow> extends CustomListenerElement(AKElement) {
     //#region Properties
@@ -71,7 +70,8 @@ export abstract class FlowSearch<T extends Flow> extends CustomListenerElement(A
     required = false;
 
     /**
-     * When specified and the object instance does not have a flow selected, auto-select the flow with the given slug.
+     * When specified and the object instance does not have a flow selected, auto-select the flow
+     * with the given slug.
      *
      * @attr
      */
@@ -153,11 +153,11 @@ export abstract class FlowSearch<T extends Flow> extends CustomListenerElement(A
     /**
      * This is the most commonly overridden method of this class.
      *
-     *  About half of the Flow Searches use this method, but several have more complex needs,
-     * such as relating to the brand, or just returning false.
+     * About half of the Flow Searches use this method, but several have more complex needs, such as
+     * relating to the brand, or just returning false.
      *
-     * @param flow The flow to compare against.
      * @abstract
+     * @param flow The flow to compare against.
      */
     protected selected = (flow: Flow): boolean => {
         return this.match(flow);

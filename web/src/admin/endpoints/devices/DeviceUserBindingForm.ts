@@ -1,5 +1,4 @@
 import "#components/ak-switch-input";
-
 import { aki } from "#common/api/client";
 
 import {

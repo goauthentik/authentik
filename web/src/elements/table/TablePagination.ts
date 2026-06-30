@@ -1,3 +1,6 @@
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFPagination from "@patternfly/patternfly/components/Pagination/pagination.css";
+
 import { AKElement } from "#elements/Base";
 
 import { Pagination } from "@goauthentik/api";
@@ -5,9 +8,6 @@ import { Pagination } from "@goauthentik/api";
 import { msg, str } from "@lit/localize";
 import { css, CSSResult, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
-
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFPagination from "@patternfly/patternfly/components/Pagination/pagination.css";
 
 export type TablePageChangeListener = (page: number) => void;
 

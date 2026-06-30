@@ -1,7 +1,9 @@
 import "#components/ak-textarea-input";
 import "#elements/forms/HorizontalFormElement";
-
 import type { InvitationWizardState } from "./types";
+import PFForm from "@patternfly/patternfly/components/Form/form.css";
+import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
+import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import { aki } from "#common/api/client";
 import {
@@ -21,10 +23,6 @@ import { StagesApi, TypeCreate } from "@goauthentik/api";
 import { msg, str } from "@lit/localize";
 import { CSSResult, html, TemplateResult } from "lit";
 import { customElement, state } from "lit/decorators.js";
-
-import PFForm from "@patternfly/patternfly/components/Form/form.css";
-import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-invitation-wizard-email-step")
 export class InvitationWizardEmailStep extends WizardPage {

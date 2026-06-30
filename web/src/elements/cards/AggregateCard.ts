@@ -1,4 +1,6 @@
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
+import PFCard from "@patternfly/patternfly/components/Card/card.css";
+import PFFlex from "@patternfly/patternfly/layouts/Flex/flex.css";
 
 import { AKElement } from "#elements/Base";
 import Styles from "#elements/cards/AggregateCard.css";
@@ -6,9 +8,6 @@ import { SlottedTemplateResult } from "#elements/types";
 
 import { CSSResult, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
-
-import PFCard from "@patternfly/patternfly/components/Card/card.css";
-import PFFlex from "@patternfly/patternfly/layouts/Flex/flex.css";
 
 export interface IAggregateCard {
     icon?: string | null;
@@ -18,8 +17,7 @@ export interface IAggregateCard {
 }
 
 /**
- * class AggregateCard
- * element ak-aggregate-card
+ * Class AggregateCard element ak-aggregate-card
  *
  * @slot - The main content of the card
  *

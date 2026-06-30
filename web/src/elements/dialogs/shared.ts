@@ -19,8 +19,8 @@ export interface DialogInit {
      */
     parentElement?: HTMLElement | string | null;
     /**
-     * The element that invoked the dialog.
-     * This determines the context where events are dispatched from the dialog.
+     * The element that invoked the dialog. This determines the context where events are dispatched
+     * from the dialog.
      */
     invokerElement?: Element | null;
     /**
@@ -30,8 +30,8 @@ export interface DialogInit {
      */
     closedBy?: ClosedBy;
     /**
-     * The inline-size to use for the dialog when rendered.
-     * This can be used to control the width of the dialog.
+     * The inline-size to use for the dialog when rendered. This can be used to control the width of
+     * the dialog.
      */
     size?: PFSize;
     /**
@@ -73,14 +73,14 @@ export interface TransclusionElementConstructor extends EntityDescriptor, Custom
 //#region Transclusion
 
 /**
- * A symbol used to identify elements that are designed to be transcluded
- * into dialogs or other containers that support transclusion.
+ * A symbol used to identify elements that are designed to be transcluded into dialogs or other
+ * containers that support transclusion.
  */
 export const TransclusionChildSymbol = Symbol("transclusion-child");
 
 /**
- * A symbol used to identify elements that are designed to be parents of transcluded elements,
- * such as dialogs or other containers that support transclusion.
+ * A symbol used to identify elements that are designed to be parents of transcluded elements, such
+ * as dialogs or other containers that support transclusion.
  */
 export const TransclusionParentSymbol = Symbol("transclusion-parent");
 
@@ -91,21 +91,22 @@ export interface TransclusionParentElement extends LitElement {
 }
 
 /**
- * An element that is designed to included in a dialog or other container that supports transclusion.
+ * An element that is designed to included in a dialog or other container that supports
+ * transclusion.
  */
 export interface TransclusionChildElement extends LitElement {
     /**
      * A marker property to identify this element as a TransclusionElement.
      *
-     * This is useful to avoid a strict type or interface check,
-     * which can be problematic when dealing with elements across different shadow roots.
+     * This is useful to avoid a strict type or interface check, which can be problematic when
+     * dealing with elements across different shadow roots.
      */
     [TransclusionChildSymbol]: boolean;
 
     /**
-     * The parent element that this element is transcluded into, if any.
-     * This can be used to determine the context in which the element is rendered,
-     * and to access properties or methods of the parent container if needed.
+     * The parent element that this element is transcluded into, if any. This can be used to
+     * determine the context in which the element is rendered, and to access properties or methods
+     * of the parent container if needed.
      */
     parentElement: HTMLElement | TransclusionParentElement | null;
 
@@ -120,35 +121,36 @@ export interface TransclusionChildElement extends LitElement {
     size?: PFSize | null;
 
     /**
-     * Whether the element is considered visible for the purposes of rendering in a dialog or other container.
+     * Whether the element is considered visible for the purposes of rendering in a dialog or other
+     * container.
      */
     visible?: boolean;
 
     /**
-     * An optional method to render a header for the element, which can be used
-     * when the element is transcluded into a dialog or other container that supports headers.
+     * An optional method to render a header for the element, which can be used when the element is
+     * transcluded into a dialog or other container that supports headers.
      *
      * @param force Whether to force the contents to render.
      */
     renderHeader?(force?: boolean): SlottedTemplateResult;
 
     /**
-     * An optional method to render action buttons for the element, which can be used
-     * when the element is transcluded into a dialog or other container that supports action buttons.
+     * An optional method to render action buttons for the element, which can be used when the
+     * element is transcluded into a dialog or other container that supports action buttons.
      *
      * @param force Whether to force the contents to render.
      */
     renderActions?(force?: boolean): SlottedTemplateResult;
 
     /**
-     * The label to use for the cancel button when this element is transcluded
-     * into a dialog or other container.
+     * The label to use for the cancel button when this element is transcluded into a dialog or
+     * other container.
      */
     cancelButtonLabel?: string | null;
 
     /**
-     * Whether the dialog or other container should render a default cancel button
-     * when this element is transcluded.
+     * Whether the dialog or other container should render a default cancel button when this element
+     * is transcluded.
      */
     cancelable?: boolean;
 

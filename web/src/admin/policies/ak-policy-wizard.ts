@@ -11,7 +11,6 @@ import "#elements/wizard/TypeCreateWizardPage";
 import "#elements/wizard/Wizard";
 import "#elements/forms/FormGroup";
 import "#admin/policies/PolicyBindingForm";
-
 import { aki } from "#common/api/client";
 import { PolicyBindingCheckTarget } from "#common/policies/utils";
 

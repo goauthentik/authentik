@@ -1,5 +1,4 @@
 import "../AggregateCard.js";
-
 import { AggregateCard, type IAggregateCard } from "../AggregateCard.js";
 
 import { ifPresent } from "#elements/utils/attributes";

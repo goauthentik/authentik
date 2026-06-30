@@ -21,8 +21,8 @@ export class RouteMatch {
     }
 
     /**
-     * Convert the matched Route's URL regex to a sanitized, readable URL by replacing
-     * all regex values with placeholders according to the name of their regex group.
+     * Convert the matched Route's URL regex to a sanitized, readable URL by replacing all regex
+     * values with placeholders according to the name of their regex group.
      *
      * @returns The sanitized URL for logging/tracing.
      */

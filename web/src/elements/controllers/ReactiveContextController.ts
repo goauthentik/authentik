@@ -13,8 +13,8 @@ import { Context, ContextProvider } from "@lit/context";
 /**
  * A base Lit controller for API-backed context providers.
  *
- * Subclasses must implement {@linkcode apiEndpoint} and {@linkcode doRefresh}
- * to fetch data and update the context value, respectively.
+ * Subclasses must implement {@linkcode apiEndpoint} and {@linkcode doRefresh} to fetch data and
+ * update the context value, respectively.
  */
 export abstract class ReactiveContextController<
     Value extends object,
@@ -40,14 +40,14 @@ export abstract class ReactiveContextController<
     /**
      * An {@linkcode AbortController} that can be used to cancel ongoing refreshes.
      *
-     * Generally this is handled automatically by {@linkcode refresh},
-     * but may be useful for subclasses with unique behavior.
+     * Generally this is handled automatically by {@linkcode refresh}, but may be useful for
+     * subclasses with unique behavior.
      */
     protected abortController: null | AbortController = null;
 
     /**
-     * An {@linkcode AbortController} that can be used to cancel ongoing operations
-     * when the host disconnects.
+     * An {@linkcode AbortController} that can be used to cancel ongoing operations when the host
+     * disconnects.
      */
     protected hostAbortController: AbortController | null = null;
 
@@ -61,7 +61,6 @@ export abstract class ReactiveContextController<
      * Updates the context value with the provided data.
      *
      * @param data The data to set in the context.
-     *
      * @see {@linkcode refresh} for fetching new data.
      */
     protected abstract doRefresh(data: Value): void | Promise<void>;
@@ -70,6 +69,7 @@ export abstract class ReactiveContextController<
      * Fetches data from the API endpoint.
      *
      * @param requestInit Optional request initialization parameters.
+     *
      * @returns A promise that resolves to the fetched data.
      */
     protected abstract apiEndpoint(requestInit?: RequestInit): Promise<Value>;
@@ -178,8 +178,8 @@ export abstract class ReactiveContextController<
     /**
      * Called when the host is disconnected.
      *
-     * If this method is overridden, be sure to call `super.hostDisconnected()`
-     * to abort ongoing network requests.
+     * If this method is overridden, be sure to call `super.hostDisconnected()` to abort ongoing
+     * network requests.
      */
     public hostDisconnected() {
         const Constructor = this.constructor as typeof ReactiveContextController;

@@ -1,4 +1,5 @@
 import "#elements/Spinner";
+import PFTable from "@patternfly/patternfly/components/Table/table.css";
 
 import { aki } from "#common/api/client";
 
@@ -9,8 +10,6 @@ import { EventsApi, EventTopPerUser } from "@goauthentik/api";
 import { msg } from "@lit/localize";
 import { CSSResult, html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
-
-import PFTable from "@patternfly/patternfly/components/Table/table.css";
 
 @customElement("ak-top-applications-table")
 export class TopApplicationsTable extends AKElement {

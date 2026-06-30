@@ -1,4 +1,5 @@
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
 
 import { AKElement } from "#elements/Base";
 import { akLabel, PFColor } from "#elements/Label";
@@ -8,8 +9,6 @@ import { LastTaskStatusEnum, TaskAggregatedStatusEnum } from "@goauthentik/api";
 import { msg } from "@lit/localize";
 import { CSSResult, PropertyValues } from "lit";
 import { customElement, property } from "lit/decorators.js";
-
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
 
 type Status = TaskAggregatedStatusEnum | LastTaskStatusEnum;
 type StatusRepresentation = [string, PFColor, ...Status[]];

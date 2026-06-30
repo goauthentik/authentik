@@ -2,8 +2,12 @@ import "#flow/components/ak-flow-card";
 import "#flow/stages/authenticator_validate/AuthenticatorValidateStageCode";
 import "#flow/stages/authenticator_validate/AuthenticatorValidateStageDuo";
 import "#flow/stages/authenticator_validate/AuthenticatorValidateStageWebAuthn";
-
 import Styles from "./AuthenticatorValidateStage.css";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFForm from "@patternfly/patternfly/components/Form/form.css";
+import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
+import PFLogin from "@patternfly/patternfly/components/Login/login.css";
+import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 
 import { aki } from "#common/api/client";
 
@@ -29,12 +33,6 @@ import { msg } from "@lit/localize";
 import { CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
 import { customElement, state } from "lit/decorators.js";
 import { repeat } from "lit/directives/repeat.js";
-
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFForm from "@patternfly/patternfly/components/Form/form.css";
-import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
-import PFLogin from "@patternfly/patternfly/components/Login/login.css";
-import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 
 interface DevicePickerProps {
     icon?: string;

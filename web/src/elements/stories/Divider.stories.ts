@@ -1,5 +1,4 @@
 import "../Divider.js";
-
 import { Divider } from "../Divider.js";
 
 import type { Meta, StoryObj } from "@storybook/web-components";

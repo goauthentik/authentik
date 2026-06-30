@@ -1,12 +1,11 @@
 /**
- * @file CodeMirror editor module.
- *
  * @remarks
- * This should be imported dynamically to avoid the bundle size impact of CodeMirror.
+ *   This should be imported dynamically to avoid the bundle size impact of CodeMirror.
  *
- * ```ts
- * const { CodeMirrorEditor } = await import("#elements/CodeMirror/editor");
- * ```
+ *   ```ts
+ *   const { CodeMirrorEditor } = await import("#elements/CodeMirror/editor");
+ *   ```
+ * @file CodeMirror editor module.
  */
 
 import { ResolvedUITheme, ThemeChangeEvent } from "#common/theme";

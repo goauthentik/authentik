@@ -1,5 +1,4 @@
 import "#flow/components/ak-flow-card";
-
 import { formatDeviceChallengeMessage } from "#common/labels";
 
 import { AKFormErrors } from "#components/ak-field-errors";

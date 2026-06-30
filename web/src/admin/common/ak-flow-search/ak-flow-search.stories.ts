@@ -1,6 +1,5 @@
 import "#admin/common/ak-flow-search/ak-flow-search";
 import "#elements/forms/HorizontalFormElement";
-
 import { AkFlowSearch } from "#admin/common/ak-flow-search/ak-flow-search";
 
 import { Flow, FlowDesignationEnum } from "@goauthentik/api";

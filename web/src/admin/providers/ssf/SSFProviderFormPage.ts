@@ -7,7 +7,6 @@ import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/index";
 import "#elements/utils/TimeDeltaHelp";
 import "#components/ak-switch-input";
-
 import { aki } from "#common/api/client";
 
 import { ifPresent } from "#elements/utils/attributes";
@@ -29,7 +28,6 @@ import { ifDefined } from "lit/directives/if-defined.js";
  * Form page for SSF Authentication Method
  *
  * @element ak-provider-ssf-form
- *
  */
 
 @customElement("ak-provider-ssf-form")

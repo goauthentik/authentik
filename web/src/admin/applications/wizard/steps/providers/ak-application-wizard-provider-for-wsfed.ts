@@ -1,5 +1,4 @@
 import "#elements/forms/FormGroup";
-
 import { ApplicationWizardProviderForm } from "./ApplicationWizardProviderForm.js";
 
 import { type AkCryptoCertificateSearch } from "#admin/common/ak-crypto-certificate-search";

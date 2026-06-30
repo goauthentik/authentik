@@ -1,15 +1,13 @@
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
-
 import Styles from "./styles.css";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFChip from "@patternfly/patternfly/components/Chip/chip.css";
 
 import { AKElement } from "#elements/Base";
 
 import { msg } from "@lit/localize";
 import { CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
-
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFChip from "@patternfly/patternfly/components/Chip/chip.css";
 
 @customElement("ak-chip")
 export class Chip extends AKElement {

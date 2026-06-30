@@ -1,8 +1,10 @@
 /**
- * Given an object and a key, returns the trimmed string value of the key if it exists, otherwise returns null.
+ * Given an object and a key, returns the trimmed string value of the key if it exists, otherwise
+ * returns null.
  *
  * @param item The object to pluck the name from.
  * @param key The key to look for in the object, defaults to "name".
+ *
  * @returns The trimmed string value of the key if it exists, otherwise null.
  */
 export function pluckEntityName<T extends object, K extends Extract<keyof T, string>>(

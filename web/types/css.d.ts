@@ -9,8 +9,8 @@ declare module "*.css" {
         /**
          * A branded type representing a CSS file imported by ESBuild.
          *
-         * While this is a `string`, this is typed as a {@linkcode CSSResult}
-         * to satisfy LitElement's `static styles` property.
+         * While this is a `string`, this is typed as a {@linkcode CSSResult} to satisfy LitElement's
+         * `static styles` property.
          */
         export type CSSModule = CSSResult & { readonly __brand?: string };
     }

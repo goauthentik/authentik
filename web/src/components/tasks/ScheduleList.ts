@@ -6,6 +6,7 @@ import "#components/tasks/ScheduleForm";
 import "#components/tasks/TaskList";
 import "#components/tasks/TaskStatus";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
+import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
 import { aki } from "#common/api/client";
 import { EVENT_REFRESH } from "#common/constants";
@@ -18,8 +19,6 @@ import { ModelEnum, Schedule, TasksApi } from "@goauthentik/api";
 import { msg } from "@lit/localize";
 import { CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
-
-import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
 @customElement("ak-schedule-list")
 export class ScheduleList extends Table<Schedule> {

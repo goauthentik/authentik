@@ -1,6 +1,8 @@
 import "#admin/stages/invitation/InvitationListLink";
-
 import type { InvitationWizardState } from "./types";
+import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
+import PFForm from "@patternfly/patternfly/components/Form/form.css";
+import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import { AKRefreshEvent } from "#common/events";
 import { MessageLevel } from "#common/messages";
@@ -13,10 +15,6 @@ import { Invitation } from "@goauthentik/api";
 import { msg } from "@lit/localize";
 import { css, CSSResult, html, TemplateResult } from "lit";
 import { customElement, state } from "lit/decorators.js";
-
-import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
-import PFForm from "@patternfly/patternfly/components/Form/form.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-invitation-wizard-success-step")
 export class InvitationWizardSuccessStep extends WizardPage {

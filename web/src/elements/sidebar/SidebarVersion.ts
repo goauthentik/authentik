@@ -1,3 +1,7 @@
+import PFAvatar from "@patternfly/patternfly/components/Avatar/avatar.css";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFNav from "@patternfly/patternfly/components/Nav/nav.css";
+
 import { globalAK } from "#common/global";
 import { DefaultBrand } from "#common/ui/config";
 
@@ -12,10 +16,6 @@ import { LicenseSummaryStatusEnum } from "@goauthentik/api";
 import { msg, str } from "@lit/localize";
 import { css, CSSResult, html, nothing } from "lit";
 import { customElement } from "lit/decorators.js";
-
-import PFAvatar from "@patternfly/patternfly/components/Avatar/avatar.css";
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFNav from "@patternfly/patternfly/components/Nav/nav.css";
 
 @customElement("ak-sidebar-version")
 export class SidebarVersion extends WithLicenseSummary(WithVersion(AKElement)) {

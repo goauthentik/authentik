@@ -152,13 +152,14 @@ export class Broadcast extends BroadcastChannel implements Disposable {
     }
 
     /**
-     * Suppresses the next exit event that would be sent when the tab is closed or navigated away from.
+     * Suppresses the next exit event that would be sent when the tab is closed or navigated away
+     * from.
      *
-     * This is useful for cases where the tab is being programmatically closed or navigated away from,
-     * and we don't want to notify other tabs of the exit.
+     * This is useful for cases where the tab is being programmatically closed or navigated away
+     * from, and we don't want to notify other tabs of the exit.
      *
-     * This method should be called before the tab is closed or navigated away from,
-     * and it will prevent the exit event from being sent to other tabs.
+     * This method should be called before the tab is closed or navigated away from, and it will
+     * prevent the exit event from being sent to other tabs.
      */
     public suppressNextExit(): void {
         this.shouldSuppressExit = true;

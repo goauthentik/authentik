@@ -6,6 +6,9 @@ import "#elements/forms/ModalForm";
 import "#components/tasks/TaskStatus";
 import "#components/tasks/TaskStatusSummary";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
+import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
+import PFTitle from "@patternfly/patternfly/components/Title/title.css";
+import PFSpacing from "@patternfly/patternfly/utilities/Spacing/spacing.css";
 
 import { aki } from "#common/api/client";
 import { EVENT_REFRESH } from "#common/constants";
@@ -25,16 +28,11 @@ import { msg } from "@lit/localize";
 import { CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
-import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
-import PFTitle from "@patternfly/patternfly/components/Title/title.css";
-import PFSpacing from "@patternfly/patternfly/utilities/Spacing/spacing.css";
-
 /**
  * TaskList
  *
  * @summary Displays lists of running tasks performed by the authentik service. Often specialized to
  * a specific object types within the service, or even individual objects.
- *
  */
 
 @customElement("ak-task-list")

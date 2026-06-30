@@ -1,7 +1,6 @@
 import "#elements/CodeMirror";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/index";
-
 import { aki } from "#common/api/client";
 import { PFSize } from "#common/enums";
 

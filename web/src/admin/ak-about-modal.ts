@@ -1,4 +1,5 @@
 import "#elements/ak-progress-bar";
+import PFAbout from "@patternfly/patternfly/components/AboutModalBox/about-modal-box.css";
 
 import { aki } from "#common/api/client";
 import { globalAK } from "#common/global";
@@ -18,14 +19,13 @@ import {
     Version,
 } from "@goauthentik/api";
 
-import { msg } from "@lit/localize";
-import { css, html } from "lit";
 import { ref } from "lit-html/directives/ref.js";
 import { styleMap } from "lit-html/directives/style-map.js";
 import { until } from "lit-html/directives/until.js";
-import { customElement, state } from "lit/decorators.js";
 
-import PFAbout from "@patternfly/patternfly/components/AboutModalBox/about-modal-box.css";
+import { msg } from "@lit/localize";
+import { css, html } from "lit";
+import { customElement, state } from "lit/decorators.js";
 
 type AboutEntry = [label: string, content?: SlottedTemplateResult];
 

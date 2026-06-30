@@ -5,7 +5,6 @@ import "#components/ak-status-label";
 import "#elements/Tabs";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
-
 import { aki } from "#common/api/client";
 import { PFSize } from "#common/enums";
 import { PolicyBindingCheckTarget } from "#common/policies/utils";

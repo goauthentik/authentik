@@ -1,6 +1,5 @@
 import "#elements/messages/MessageContainer";
 import "../ak-list-select.js";
-
 import { ListSelect } from "../ak-list-select.js";
 import { groupedSampleData, sampleData } from "./sampleData.js";
 

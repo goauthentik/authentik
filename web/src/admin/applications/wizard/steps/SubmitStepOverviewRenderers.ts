@@ -1,5 +1,4 @@
 import "#components/ak-status-label";
-
 import { SlottedTemplateResult } from "#elements/types";
 
 import { type DescriptionPair, renderDescriptionList } from "#components/DescriptionList";

@@ -2,6 +2,8 @@ import "#elements/CodeMirror";
 import "#elements/forms/HorizontalFormElement";
 import "#flow/stages/prompt/PromptStage";
 import "#components/ak-switch-input";
+import PFTitle from "@patternfly/patternfly/components/Title/title.css";
+import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 
 import { aki } from "#common/api/client";
 import { parseAPIResponseError } from "#common/errors/network";
@@ -20,9 +22,6 @@ import { CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 import { map } from "lit/directives/map.js";
-
-import PFTitle from "@patternfly/patternfly/components/Title/title.css";
-import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 
 class PreviewStageHost implements StageHost {
     challenge = undefined;

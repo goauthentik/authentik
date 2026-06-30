@@ -5,13 +5,17 @@ import "#elements/sidebar/SidebarItem";
 import "#elements/router/RouterOutlet";
 import "#elements/commands/ak-command-palette";
 import "#elements/commands/ak-command-palette-user-modal";
-
 import {
     createAdminSidebarEnterpriseEntries,
     createAdminSidebarEntries,
     renderSidebarItems,
     SidebarEntry,
 } from "./navigation/sidebar.js";
+import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFDrawer from "@patternfly/patternfly/components/Drawer/drawer.css";
+import PFNav from "@patternfly/patternfly/components/Nav/nav.css";
+import PFPage from "@patternfly/patternfly/components/Page/page.css";
 
 import { isAPIResultReady } from "#common/api/responses";
 import { configureSentry } from "#common/sentry/index";
@@ -50,12 +54,6 @@ import { CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
 import { customElement, eventOptions, property, state } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 import { guard } from "lit/directives/guard.js";
-
-import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFDrawer from "@patternfly/patternfly/components/Drawer/drawer.css";
-import PFNav from "@patternfly/patternfly/components/Nav/nav.css";
-import PFPage from "@patternfly/patternfly/components/Page/page.css";
 
 @customElement("ak-interface-admin")
 export class AdminInterface extends WithCapabilitiesConfig(
@@ -161,7 +159,8 @@ export class AdminInterface extends WithCapabilitiesConfig(
                 action: () => navigate("/identity/users"),
                 group: msg("Users"),
             },
-            ...this.entries.flatMap(([, label, , children]) => (children ?? []).map(
+            ...this.entries.flatMap(([, label, , children]) =>
+                (children ?? []).map(
                     ([path, childLabel]): PaletteCommandDefinitionInit => ({
                         namespace: PaletteCommandNamespace.Navigation,
                         label: childLabel,
@@ -170,7 +169,8 @@ export class AdminInterface extends WithCapabilitiesConfig(
                             navigate(path!);
                         },
                     }),
-                )),
+                ),
+            ),
             {
                 namespace: PaletteCommandNamespace.Search,
                 label: msg("Username or email address..."),

@@ -1,5 +1,4 @@
 import "#elements/forms/HorizontalFormElement";
-
 import { aki } from "#common/api/client";
 import { SentryIgnoredError } from "#common/sentry/index";
 

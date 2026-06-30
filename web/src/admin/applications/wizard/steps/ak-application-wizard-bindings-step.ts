@@ -8,6 +8,7 @@ import "#elements/ak-table/ak-select-table";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 import "#admin/applications/wizard/steps/bindings/ak-application-wizard-bindings-toolbar";
+import PFCard from "@patternfly/patternfly/components/Card/card.css";
 
 import { SelectTable } from "#elements/ak-table/ak-select-table";
 
@@ -22,8 +23,6 @@ import { msg, str } from "@lit/localize";
 import { css, html } from "lit";
 import { customElement, query } from "lit/decorators.js";
 
-import PFCard from "@patternfly/patternfly/components/Card/card.css";
-
 const COLUMNS = [
     [msg("Order"), "order"],
     [msg("Binding")],
@@ -33,7 +32,7 @@ const COLUMNS = [
 ];
 
 /**
- * @prop wizard - The current state of the application wizard, shared across all steps.
+ * @property wizard - The current state of the application wizard, shared across all steps.
  */
 @customElement("ak-application-wizard-bindings-step")
 export class ApplicationWizardBindingsStep extends ApplicationWizardStep {
@@ -98,7 +97,9 @@ export class ApplicationWizardBindingsStep extends ApplicationWizardStep {
         const toDelete = this.selectTable
             .toJSON()
             .map((i) => (typeof i === "string" ? parseInt(i, 10) : i));
-        const bindings = this.wizard.bindings.filter((_binding, index) => !toDelete.includes(index));
+        const bindings = this.wizard.bindings.filter(
+            (_binding, index) => !toDelete.includes(index),
+        );
 
         return this.dispatchEvents({
             update: { bindings },

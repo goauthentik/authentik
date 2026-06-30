@@ -1,6 +1,9 @@
 import "#elements/buttons/ActionButton/ak-action-button";
 import "#elements/forms/SearchSelect/index";
 import "#admin/endpoints/connectors/agent/ConfigModal";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFList from "@patternfly/patternfly/components/List/list.css";
+import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 
 import { aki } from "#common/api/client";
 import { EVENT_REFRESH } from "#common/constants";
@@ -20,10 +23,6 @@ import { msg } from "@lit/localize";
 import { css, CSSResult, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { createRef, ref } from "lit/directives/ref.js";
-
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFList from "@patternfly/patternfly/components/List/list.css";
-import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 
 @customElement("ak-endpoints-connector-agent-setup")
 export class AgentConnectorSetup extends AKElement {

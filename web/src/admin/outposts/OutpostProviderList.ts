@@ -2,7 +2,6 @@ import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import "#components/sync/SyncObjectForm";
 import "#admin/common/ak-flow-search/ak-flow-search-no-default";
-
 import { StaticTable } from "#elements/table/StaticTable";
 import { TableColumn } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";

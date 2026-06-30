@@ -5,7 +5,6 @@ import "#elements/forms/Radio";
 import "#components/ak-text-input";
 import "#components/ak-radio-input";
 import "#components/ak-switch-input";
-
 import { aki } from "#common/api/client";
 import { DefaultUIConfig } from "#common/ui/config";
 

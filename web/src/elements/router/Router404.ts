@@ -1,11 +1,11 @@
+import PFEmptyState from "@patternfly/patternfly/components/EmptyState/empty-state.css";
+import PFTitle from "@patternfly/patternfly/components/Title/title.css";
+
 import { AKElement } from "#elements/Base";
 
 import { msg, str } from "@lit/localize";
 import { CSSResult, html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
-
-import PFEmptyState from "@patternfly/patternfly/components/EmptyState/empty-state.css";
-import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 
 @customElement("ak-router-404")
 export class Router404 extends AKElement {

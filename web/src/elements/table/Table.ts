@@ -6,9 +6,15 @@ import "#elements/chips/ChipGroup";
 import "#elements/table/TablePagination";
 import "#elements/table/TableSearch";
 import "#elements/timestamp/ak-timestamp";
-
 import { BaseTableListRequest, TableLike } from "./shared.js";
 import { renderTableColumn, TableColumn } from "./TableColumn.js";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFDropdown from "@patternfly/patternfly/components/Dropdown/dropdown.css";
+import PFPagination from "@patternfly/patternfly/components/Pagination/pagination.css";
+import PFSwitch from "@patternfly/patternfly/components/Switch/switch.css";
+import PFTable from "@patternfly/patternfly/components/Table/table.css";
+import PFToolbar from "@patternfly/patternfly/components/Toolbar/toolbar.css";
+import PFBullseye from "@patternfly/patternfly/layouts/Bullseye/bullseye.css";
 
 import { type PaginatedResponse } from "#common/api/responses";
 import { EVENT_REFRESH } from "#common/constants";
@@ -45,14 +51,6 @@ import { classMap } from "lit/directives/class-map.js";
 import { guard } from "lit/directives/guard.js";
 import { createRef, ref } from "lit/directives/ref.js";
 
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFDropdown from "@patternfly/patternfly/components/Dropdown/dropdown.css";
-import PFPagination from "@patternfly/patternfly/components/Pagination/pagination.css";
-import PFSwitch from "@patternfly/patternfly/components/Switch/switch.css";
-import PFTable from "@patternfly/patternfly/components/Table/table.css";
-import PFToolbar from "@patternfly/patternfly/components/Toolbar/toolbar.css";
-import PFBullseye from "@patternfly/patternfly/layouts/Bullseye/bullseye.css";
-
 export * from "./shared.js";
 export * from "./TableColumn.js";
 
@@ -67,8 +65,8 @@ export function hasPrimaryKey<T extends string | number = string | number>(
 /**
  * An instance of a Table component.
  *
- * This is necessary to work around limitations in Lit's typing system
- * not recognizing abstract properties.
+ * This is necessary to work around limitations in Lit's typing system not recognizing abstract
+ * properties.
  */
 export type TableInstance = InstanceType<typeof Table> & {
     columns: TableColumn[];
@@ -176,8 +174,8 @@ export abstract class Table<T extends object, D = T>
     }
 
     /**
-     * An optional message to display when the table is empty and no search is applied.
-     * If not provided, a default message will be used.
+     * An optional message to display when the table is empty and no search is applied. If not
+     * provided, a default message will be used.
      */
     protected emptyStateMessage: string | null = null;
 
@@ -298,10 +296,10 @@ export abstract class Table<T extends object, D = T>
     public page: number;
 
     /**
-     * Set if your `selectedElements` use of the selection box is to enable bulk-delete,
-     * so that stale data is cleared out when the API returns a new list minus the deleted entries.
+     * Set if your `selectedElements` use of the selection box is to enable bulk-delete, so that
+     * stale data is cleared out when the API returns a new list minus the deleted entries.
      *
-     * @prop
+     * @property
      */
     @property({ attribute: "clear-on-refresh", type: Boolean, reflect: true })
     public clearOnRefresh = false;
@@ -360,10 +358,11 @@ export abstract class Table<T extends object, D = T>
     //#region Public methods
 
     /**
-     * An overridable method to convert selected items to a custom JSON format,
-     * for example when used in a modal with a confirm button.
+     * An overridable method to convert selected items to a custom JSON format, for example when
+     * used in a modal with a confirm button.
      *
-     * By default, it returns the selected elements as an array, but it can be customized to return any data structure needed.
+     * By default, it returns the selected elements as an array, but it can be customized to return
+     * any data structure needed.
      */
     public toJSON(): D[] {
         return this.selectedElements as unknown as D[];
@@ -645,8 +644,8 @@ export abstract class Table<T extends object, D = T>
     /**
      * An overridable event listener when a row is clicked.
      *
-     * @bound
      * @abstract
+     * @bound
      */
     protected rowClickListener(item: T, event?: InputEvent | PointerEvent): void {
         if (event?.defaultPrevented) {
@@ -1031,8 +1030,7 @@ export abstract class Table<T extends object, D = T>
     };
 
     /**
-     * The checkbox on the table header row that allows the user to
-     * "activate all on this page,"
+     * The checkbox on the table header row that allows the user to "activate all on this page,"
      * "deactivate all on this page" with a single click.
      */
     renderAllOnThisPageCheckbox(): SlottedTemplateResult {
@@ -1059,8 +1057,8 @@ export abstract class Table<T extends object, D = T>
     }
 
     /**
-     * For very large tables where the user is selecting a limited number of entries,
-     * we provide a chip-based subtable at the top that shows the list of selected entries.
+     * For very large tables where the user is selecting a limited number of entries, we provide a
+     * chip-based subtable at the top that shows the list of selected entries.
      *
      * Long text result in ellipsized chips, which is sub-optimal.
      */

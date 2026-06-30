@@ -1,5 +1,12 @@
 import "#elements/Expand";
 import "#elements/Spinner";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFCard from "@patternfly/patternfly/components/Card/card.css";
+import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
+import PFList from "@patternfly/patternfly/components/List/list.css";
+import PFTable from "@patternfly/patternfly/components/Table/table.css";
+import PFFlex from "@patternfly/patternfly/layouts/Flex/flex.css";
+import PFSplit from "@patternfly/patternfly/layouts/Split/split.css";
 
 import { aki } from "#common/api/client";
 import { PFSize } from "#common/enums";
@@ -15,14 +22,6 @@ import { css, CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { map } from "lit/directives/map.js";
 import { until } from "lit/directives/until.js";
-
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFCard from "@patternfly/patternfly/components/Card/card.css";
-import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
-import PFList from "@patternfly/patternfly/components/List/list.css";
-import PFTable from "@patternfly/patternfly/components/Table/table.css";
-import PFFlex from "@patternfly/patternfly/layouts/Flex/flex.css";
-import PFSplit from "@patternfly/patternfly/layouts/Split/split.css";
 
 // TODO: Settle these types. It's too hard to make sense of what we're expecting here.
 type EventSlotValueType =

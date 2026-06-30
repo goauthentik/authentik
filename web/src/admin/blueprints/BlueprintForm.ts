@@ -5,6 +5,7 @@ import "#elements/CodeMirror";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/index";
+import PFContent from "@patternfly/patternfly/components/Content/content.css";
 
 import { aki } from "#common/api/client";
 import { docLink } from "#common/global";
@@ -19,8 +20,6 @@ import { msg } from "@lit/localize";
 import { CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
-
-import PFContent from "@patternfly/patternfly/components/Content/content.css";
 
 export enum BlueprintSource {
     Upload = "upload",

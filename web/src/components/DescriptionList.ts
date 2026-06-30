@@ -44,7 +44,7 @@ function alignTermType(terms: DescriptionRecord[] | DescriptionPair[] = []) {
 }
 
 /**
- * renderDescriptionList
+ * RenderDescriptionList
  *
  * This function renders the most common form of the PatternFly description list used in our code.
  * It expects either an array of term/description pairs or an array of `{ term: string, description:

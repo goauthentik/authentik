@@ -1,5 +1,4 @@
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
-
 import { modalInvoker, ModelFormLikeConstructor } from "#elements/dialogs/directives";
 import type { DialogInit, TransclusionElementConstructor } from "#elements/dialogs/shared";
 import type { LitPropertyRecord, SlottedTemplateResult } from "#elements/types";
@@ -13,7 +12,8 @@ import { html } from "lit-html";
  * @param factory A custom element constructor or a function that returns a template result.
  * @param instancePk The primary key of the instance to edit.
  * @param itemName An optional name of the item to include in the button's aria-label and tooltip.
- * @param modalProps Properties to pass to the custom element constructor when the factory is a constructor.
+ * @param modalProps Properties to pass to the custom element constructor when the factory is a
+ *   constructor.
  * @param options Initialization options for the modal dialog.
  */
 export function IconEditButton<T extends TransclusionElementConstructor>(

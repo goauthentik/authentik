@@ -6,7 +6,6 @@ import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/Radio";
 import "#elements/utils/TimeDeltaHelp";
 import "#components/ak-text-input";
-
 import {
     authenticatorWebauthnDeviceTypesListProvider,
     stagesProvider,

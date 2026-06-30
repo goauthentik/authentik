@@ -1,3 +1,7 @@
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFForm from "@patternfly/patternfly/components/Form/form.css";
+import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
+
 import { AKElement } from "#elements/Base";
 import Styles from "#elements/forms/FormGroup.css";
 import { SlottedTemplateResult } from "#elements/types";
@@ -7,17 +11,13 @@ import { CSSResult, html, PropertyValues } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { createRef, ref } from "lit/directives/ref.js";
 
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFForm from "@patternfly/patternfly/components/Form/form.css";
-import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
-
 /**
  * Form Group
  *
  * Mostly visual effects, with a single interaction for opening/closing the view.
  *
- * @todo Listen for custom events from its children about 'invalidation' events, and
- * trigger the `expanded` property as needed.
+ * @todo Listen for custom events from its children about 'invalidation' events, and trigger the
+ *   `expanded` property as needed.
  */
 @customElement("ak-form-group")
 export class AKFormGroup extends AKElement {
@@ -43,8 +43,8 @@ export class AKFormGroup extends AKElement {
     /**
      * Explore within the form group for invalid inputs, revealing the first
      *
-     * Note that this occurs **after** client-side validation, typically when
-     * server-side updates the `errorMessages` property.
+     * Note that this occurs **after** client-side validation, typically when server-side updates
+     * the `errorMessages` property.
      */
     #explore = (mutations: MutationRecord[]) => {
         for (const mutation of mutations) {
@@ -186,10 +186,11 @@ export class AKFormGroup extends AKElement {
 //#region Utilities
 
 /**
- * Deeply report the validity of the form, expanding collapsed groups as needed
- * to reveal invalid inputs.
+ * Deeply report the validity of the form, expanding collapsed groups as needed to reveal invalid
+ * inputs.
  *
  * @param form The form element to check.
+ *
  * @returns Whether the form is valid.
  */
 export function reportValidityDeep(

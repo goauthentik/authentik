@@ -1,7 +1,6 @@
 /**
+ * @import {PrettyOptions} from "pino-pretty"
  * @file Pretty transport for Pino
- *
- * @import { PrettyOptions } from "pino-pretty"
  */
 
 import PinoPretty from "pino-pretty";

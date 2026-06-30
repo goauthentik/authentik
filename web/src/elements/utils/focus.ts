@@ -1,5 +1,5 @@
 /**
- * @fileoverview Utilities for DOM element interaction, focus management, and event handling.
+ * @file Utilities for DOM element interaction, focus management, and event handling.
  */
 
 import { createRef, ref, Ref } from "lit/directives/ref.js";
@@ -71,9 +71,8 @@ export function isActiveElement(
 /**
  * Type predicate to check if an element is focusable.
  *
- * @param target The element to check.
- *
  * @category DOM
+ * @param target The element to check.
  */
 export function isFocusable(target: Element | null | undefined): target is HTMLElement {
     try {

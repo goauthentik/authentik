@@ -1,5 +1,14 @@
 import "#elements/Divider";
 import "#flow/components/ak-flow-card";
+import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFCheck from "@patternfly/patternfly/components/Check/check.css";
+import PFContent from "@patternfly/patternfly/components/Content/content.css";
+import PFForm from "@patternfly/patternfly/components/Form/form.css";
+import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
+import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-group.css";
+import PFLogin from "@patternfly/patternfly/components/Login/login.css";
+import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 
 import { WithCapabilitiesConfig } from "#elements/mixins/capabilities";
 import { SlottedTemplateResult } from "#elements/types";
@@ -23,21 +32,11 @@ import { css, CSSResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
 
-import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFCheck from "@patternfly/patternfly/components/Check/check.css";
-import PFContent from "@patternfly/patternfly/components/Content/content.css";
-import PFForm from "@patternfly/patternfly/components/Form/form.css";
-import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
-import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-group.css";
-import PFLogin from "@patternfly/patternfly/components/Login/login.css";
-import PFTitle from "@patternfly/patternfly/components/Title/title.css";
-
 // Fixes horizontal rule <hr> warning in select dropdowns.
 
 /**
- * @prop {PromptChallenge} challenge - The challenge provided to this stage.
- * @prop {StageHost} host - The host managing this stage.
+ * @property {PromptChallenge} challenge - The challenge provided to this stage.
+ * @property {StageHost} host - The host managing this stage.
  */
 @customElement("ak-stage-prompt")
 export class PromptStage extends WithCapabilitiesConfig(

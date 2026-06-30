@@ -14,10 +14,10 @@ export type RouteInterfaceName = "user" | "admin" | "flow" | "unknown";
 /**
  * Read the current interface route parameter from the URL.
  *
- * @param location The location object to read the pathname from. Defaults to `window.location`.
- * @returns The name of the current interface, or "unknown" if not found.
- *
  * @category Routing
+ * @param location The location object to read the pathname from. Defaults to `window.location`.
+ *
+ * @returns The name of the current interface, or "unknown" if not found.
  */
 export function readInterfaceRouteParam(
     location: Pick<URL, "pathname"> = window.location,
@@ -48,18 +48,17 @@ export function isUserRoute(location: Pick<URL, "pathname"> = window.location): 
 /**
  * Format a string to a URL-safe route slug.
  *
- * The input is converted to lowercase and non-alphanumeric characters are
- * replaced with a hyphen. Trailing whitespace and hyphens are removed.
- *
- * @param input The input string to format.
+ * The input is converted to lowercase and non-alphanumeric characters are replaced with a hyphen.
+ * Trailing whitespace and hyphens are removed.
  *
  * @category Routing
  *
- * ```ts
- * formatSlug("My Application"); // "my-application"
- * formatSlug(" 123ABC "); // "123-ABC"
- * formatSlug("-action-Name-"); // "action-name"
- * ```
+ *   ```ts
+ *   formatSlug("My Application"); // "my-application"
+ *   formatSlug(" 123ABC "); // "123-ABC"
+ *   formatSlug("-action-Name-"); // "action-name"
+ *   ```
+ * @param input The input string to format.
  */
 export function formatSlug(input: string): string {
     return kebabCase(input);

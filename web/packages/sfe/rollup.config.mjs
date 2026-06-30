@@ -1,6 +1,6 @@
 /**
- * @file Rollup configuration for the SFE package.
  * @import { Plugin, RollupOptions } from "rollup";
+ * @file Rollup configuration for the SFE package.
  */
 
 import * as fs from "node:fs/promises";

@@ -31,7 +31,7 @@ Object.freeze(DEFAULT_CONFIG);
 
 export function brandSetFavicon(brand: CurrentBrand) {
     /**
-     *  <link rel="icon" href="/static/dist/assets/icons/icon.png">
+     * <link rel="icon" href="/static/dist/assets/icons/icon.png">
      *  <link rel="shortcut icon" href="/static/dist/assets/icons/icon.png">
      */
     const rels = ["icon", "shortcut icon"];

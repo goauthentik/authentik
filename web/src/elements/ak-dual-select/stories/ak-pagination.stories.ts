@@ -1,6 +1,5 @@
 import "#elements/messages/MessageContainer";
 import "../components/ak-pagination.js";
-
 import { AkPagination } from "../components/ak-pagination.js";
 import { DualSelectEventType } from "../types.js";
 

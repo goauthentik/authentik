@@ -1,6 +1,5 @@
 import "#elements/messages/MessageContainer";
 import "./ak-token-copy-button.js";
-
 import AKTokenCopyButton from "./ak-token-copy-button.js";
 
 import { Meta } from "@storybook/web-components";

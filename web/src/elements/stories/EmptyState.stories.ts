@@ -1,5 +1,4 @@
 import "../EmptyState.js";
-
 import { akEmptyState, type IEmptyState } from "../EmptyState.js";
 
 import type { Meta, StoryObj } from "@storybook/web-components";

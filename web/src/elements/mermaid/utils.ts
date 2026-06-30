@@ -30,16 +30,16 @@ let lastActiveTheme: ResolvedUITheme | null = null;
 let mermaid: Mermaid | null = null;
 
 /**
- * Load the Mermaid library and initialize it with the appropriate theme based
- * on the provided UI theme.
+ * Load the Mermaid library and initialize it with the appropriate theme based on the provided UI
+ * theme.
  *
  * @remarks
  *
- * Mermaid is only loaded once and cached for subsequent calls. Note that
- * Mermaid is a singleton and does not support multiple instances with different
- * configurations. Re-initialization occurs only when the active theme changes.
- *
+ *   Mermaid is only loaded once and cached for subsequent calls. Note that Mermaid is a singleton
+ *   and does not support multiple instances with different configurations. Re-initialization occurs
+ *   only when the active theme changes.
  * @param uiTheme The resolved UI theme to derive Mermaid colors from.
+ *
  * @returns The initialized Mermaid singleton.
  */
 export async function loadMermaid(uiTheme: ResolvedUITheme): Promise<Mermaid> {

@@ -7,6 +7,7 @@ import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import "#elements/dialogs/ak-modal";
 import "#admin/applications/ApplicationForm";
+import PFCard from "@patternfly/patternfly/components/Card/card.css";
 
 import { aki } from "#common/api/client";
 
@@ -29,8 +30,6 @@ import MDApplication from "~docs/add-secure-apps/applications/index.md";
 import { msg, str } from "@lit/localize";
 import { css, CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
-
-import PFCard from "@patternfly/patternfly/components/Card/card.css";
 
 export const applicationListStyle = css``;
 

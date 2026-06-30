@@ -1,5 +1,4 @@
 import "#elements/EmptyState";
-
 import { AKElement } from "#elements/Base";
 import Styles from "#elements/LoadingOverlay.css";
 import { type SlottedTemplateResult, type Spread } from "#elements/types";
@@ -28,17 +27,13 @@ export interface ILoadingOverlay {
 }
 
 /**
+ * @class LoadingOverlay A component for for showing a loading message above a darkening background,
+ *   in order to pause interaction while dynamically importing a major component.
+ *
+ *   ## Slots
  * @element ak-loading-overlay
- * @class LoadingOverlay
- *
- * A component for for showing a loading message above a darkening background, in order
- * to pause interaction while dynamically importing a major component.
- *
- * ## Slots
- *
  * @slot - The main heading text for the loading state
  * @slot body - Descriptive text explaining the loading state
- *
  */
 @customElement("ak-loading-overlay")
 export class LoadingOverlay extends AKElement implements ILoadingOverlay {
@@ -75,10 +70,10 @@ type ContentValue = SlottedTemplateResult | undefined;
 /**
  * Function to create `<ak-loading-overlay>` programmatically
  *
- * @param properties - properties to apply to the component.
- * @param content - strings or TemplateResults for the slots in `<ak-loading-overlay>`
- * @returns TemplateResult for the ak-loading-overlay element
+ * @param properties - Properties to apply to the component.
+ * @param content - Strings or TemplateResults for the slots in `<ak-loading-overlay>`
  *
+ * @returns TemplateResult for the ak-loading-overlay element
  */
 export function akLoadingOverlay(
     properties: ILoadingOverlay = {},

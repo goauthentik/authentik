@@ -1,59 +1,12 @@
 {
     "name": "@goauthentik/web",
     "version": "2026.8.0-rc1",
-    "license": "MIT",
     "private": true,
-    "scripts": {
-        "build": "wireit",
-        "build:sfe": "npm run build -w @goauthentik/web-sfe",
-        "build-locales": "node scripts/build-locales.mjs",
-        "build-proxy": "wireit",
-        "bundler:watch": "node scripts/build-web.mjs --watch",
-        "extract-locales": "lit-localize extract",
-        "lint": "run-s lint:oxlint lint:oxfmt",
-        "lint:oxlint": "oxlint",
-        "lint:oxfmt": "oxfmt --check .",
-        "lint:fix": "run-s fix:oxlint fix:oxfmt",
-        "fix:oxlint": "oxlint --fix",
-        "fix:oxfmt": "oxfmt --write .",
-        "lint:imports": "knip --config scripts/knip.config.ts",
-        "lint:types": "wireit",
-        "lint-check": "run-s lint-check:oxlint lint:oxfmt",
-        "lint-check:oxlint": "oxlint --max-warnings=0",
-        "lit-analyse": "wireit",
-        "precommit": "wireit",
-        "pseudolocalize": "node ./scripts/pseudolocalize.mjs",
-        "storybook": "storybook dev -p 6006",
-        "storybook:build": "wireit",
-        "test": "vitest",
-        "test:e2e": "playwright test",
-        "tsc": "wireit",
-        "watch": "run-s build-locales bundler:watch"
-    },
+    "license": "MIT",
+    "workspaces": [
+        "./packages/*"
+    ],
     "type": "module",
-    "exports": {
-        "./package.json": "./package.json",
-        "./styles/*": "./src/styles/*",
-        "./elements/*": "./src/elements/*",
-        "./common/*": "./src/common/*",
-        "./components/*": "./src/components/*",
-        "./flow/*": "./src/flow/*",
-        "./locales/*": "./src/locales/*",
-        "./user/*": "./src/user/*",
-        "./admin/*": "./src/admin/*",
-        "./*/browser": {
-            "types": "./out/*/browser.d.ts",
-            "import": "./*/browser.js"
-        },
-        "./*/node": {
-            "types": "./out/*/node.d.ts",
-            "import": "./*/node.js"
-        },
-        "./*": {
-            "types": "./out/*/index.d.ts",
-            "import": "./*/index.js"
-        }
-    },
     "imports": {
         "#fonts/*.css": "./fonts/*.css",
         "#styles/*.css": "./src/styles/*.css",
@@ -88,6 +41,56 @@
             "types": "./out/*/index.d.ts",
             "import": "./*/index.js"
         }
+    },
+    "exports": {
+        "./package.json": "./package.json",
+        "./styles/*": "./src/styles/*",
+        "./elements/*": "./src/elements/*",
+        "./common/*": "./src/common/*",
+        "./components/*": "./src/components/*",
+        "./flow/*": "./src/flow/*",
+        "./locales/*": "./src/locales/*",
+        "./user/*": "./src/user/*",
+        "./admin/*": "./src/admin/*",
+        "./*/browser": {
+            "types": "./out/*/browser.d.ts",
+            "import": "./*/browser.js"
+        },
+        "./*/node": {
+            "types": "./out/*/node.d.ts",
+            "import": "./*/node.js"
+        },
+        "./*": {
+            "types": "./out/*/index.d.ts",
+            "import": "./*/index.js"
+        }
+    },
+    "scripts": {
+        "build": "wireit",
+        "build:sfe": "npm run build -w @goauthentik/web-sfe",
+        "build-locales": "node scripts/build-locales.mjs",
+        "build-proxy": "wireit",
+        "bundler:watch": "node scripts/build-web.mjs --watch",
+        "extract-locales": "lit-localize extract",
+        "lint": "run-s lint:oxlint lint:oxfmt",
+        "lint:oxlint": "oxlint",
+        "lint:oxfmt": "oxfmt --check .",
+        "lint:fix": "run-s fix:oxlint fix:oxfmt",
+        "fix:oxlint": "oxlint --fix",
+        "fix:oxfmt": "oxfmt --write .",
+        "lint:imports": "knip --config scripts/knip.config.ts",
+        "lint:types": "wireit",
+        "lint-check": "run-s lint-check:oxlint lint:oxfmt",
+        "lint-check:oxlint": "oxlint --max-warnings=0",
+        "lit-analyse": "wireit",
+        "precommit": "wireit",
+        "pseudolocalize": "node ./scripts/pseudolocalize.mjs",
+        "storybook": "storybook dev -p 6006",
+        "storybook:build": "wireit",
+        "test": "vitest",
+        "test:e2e": "playwright test",
+        "tsc": "wireit",
+        "watch": "run-s build-locales bundler:watch"
     },
     "dependencies": {
         "@codemirror/lang-css": "^6.3.1",
@@ -160,6 +163,8 @@
         "mermaid": "^11.15.0",
         "node-domexception": "^2025.11.0",
         "npm-run-all": "^4.1.5",
+        "oxfmt": "^0.56.0",
+        "oxlint": "^1.71.0",
         "pino": "^10.3.1",
         "pino-pretty": "^13.1.2",
         "playwright": "^1.61.0",
@@ -176,8 +181,6 @@
         "remark-gfm": "^4.0.1",
         "remark-mdx-frontmatter": "^5.2.0",
         "storybook": "^10.2.1",
-        "oxlint": "^1.71.0",
-        "oxfmt": "^0.56.0",
         "style-mod": "^4.1.3",
         "stylelint": "^17.11.1",
         "trusted-types": "^2.0.0",
@@ -202,9 +205,43 @@
         "@rollup/rollup-linux-arm64-gnu": "^4.61.1",
         "@rollup/rollup-linux-x64-gnu": "^4.61.1"
     },
-    "workspaces": [
-        "./packages/*"
-    ],
+    "overrides": {
+        "@goauthentik/esbuild-plugin-live-reload": {
+            "esbuild": "$esbuild",
+            "typescript": "$typescript"
+        },
+        "@mrmarble/djangoql-completion": {
+            "lex": "$lex",
+            "lodash": "^4.18.1"
+        },
+        "node-fetch-commonjs": {
+            "node-domexception": "$node-domexception"
+        },
+        "rapidoc": {
+            "@apitools/openapi-parser": "0.0.37"
+        },
+        "tree-sitter": false,
+        "wireit": {
+            "brace-expansion": "^1.1.14"
+        }
+    },
+    "devEngines": {
+        "packageManager": {
+            "name": "npm",
+            "version": ">=11.14.1",
+            "onFail": "warn"
+        },
+        "runtime": {
+            "name": "node",
+            "onFail": "warn",
+            "version": ">=24"
+        }
+    },
+    "engines": {
+        "node": ">=24",
+        "npm": ">=11.14.1"
+    },
+    "packageManager": "npm@11.14.1+sha512.6a8a4d67478497a2dbc6815cad72e64c43f33413717e242756047d466241ab39bee61e691683a64658e94496ec5f1a1c05e4a5ec62dcc773280dfd949443a367",
     "wireit": {
         "build": {
             "command": "${NODE_RUNNER} scripts/build-web.mjs",
@@ -284,43 +321,6 @@
             "dependencies": [
                 "build-locales"
             ]
-        }
-    },
-    "engines": {
-        "node": ">=24",
-        "npm": ">=11.14.1"
-    },
-    "devEngines": {
-        "runtime": {
-            "name": "node",
-            "onFail": "warn",
-            "version": ">=24"
-        },
-        "packageManager": {
-            "name": "npm",
-            "version": ">=11.14.1",
-            "onFail": "warn"
-        }
-    },
-    "packageManager": "npm@11.14.1+sha512.6a8a4d67478497a2dbc6815cad72e64c43f33413717e242756047d466241ab39bee61e691683a64658e94496ec5f1a1c05e4a5ec62dcc773280dfd949443a367",
-    "overrides": {
-        "@goauthentik/esbuild-plugin-live-reload": {
-            "esbuild": "$esbuild",
-            "typescript": "$typescript"
-        },
-        "@mrmarble/djangoql-completion": {
-            "lex": "$lex",
-            "lodash": "^4.18.1"
-        },
-        "node-fetch-commonjs": {
-            "node-domexception": "$node-domexception"
-        },
-        "rapidoc": {
-            "@apitools/openapi-parser": "0.0.37"
-        },
-        "tree-sitter": false,
-        "wireit": {
-            "brace-expansion": "^1.1.14"
         }
     }
 }

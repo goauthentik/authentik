@@ -1,5 +1,4 @@
 import "#user/LibraryPage/ak-library";
-
 import { Route } from "#elements/router/Route";
 
 import { html } from "lit";

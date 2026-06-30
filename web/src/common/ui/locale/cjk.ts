@@ -60,11 +60,8 @@ export const ZHRegionToHanScript: ReadonlyMap<string, HanScriptTag> = new Map([
 /**
  * Resolve a Chinese locale to it's preferred script tag.
  *
- * Priority:
- * 1. Explicit script subtag (zh-Hant, zh-Hans)
- * 2. Known region mapping (TW, HK, CN, etc.)
- * 3. CLDR maximize() inference
- * 4. Fallback to Simplified (Hans)
+ * Priority: 1. Explicit script subtag (zh-Hant, zh-Hans) 2. Known region mapping (TW, HK, CN, etc.)
+ * 3. CLDR maximize() inference 4. Fallback to Simplified (Hans)
  *
  * @see {@linkcode resolveChineseScriptLegacy} for a regex-based approach.
  */

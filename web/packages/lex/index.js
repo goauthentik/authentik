@@ -7,25 +7,24 @@
  */
 
 /**
- * A token produced by a {@link LexerAction}. The lexer is agnostic to the
- * concrete token shape; consumers pick whatever representation suits them.
+ * A token produced by a {@link LexerAction}. The lexer is agnostic to the concrete token shape;
+ * consumers pick whatever representation suits them.
  *
  * @typedef {unknown} Token
  */
 
 /**
- * A rule action. Invoked with the regex match (full match followed by capture
- * groups) bound to the owning {@link Lexer} so it can read or set `state`,
- * `index`, and `reject`.
+ * A rule action. Invoked with the regex match (full match followed by capture groups) bound to the
+ * owning {@link Lexer} so it can read or set `state`, `index`, and `reject`.
  *
- * Return values:
- * - `null` (or `undefined` from an implicit return) — discard the match and continue scanning.
- * - a single token — yield it from {@link Lexer.lex}.
- * - an array of tokens — yield the first; queue the rest for subsequent calls.
+ * Return values: - `null` (or `undefined` from an implicit return) — discard the match and continue
+ * scanning. - a single token — yield it from {@link Lexer.lex}. - an array of tokens — yield the
+ * first; queue the rest for subsequent calls.
  *
  * @callback LexerAction
  * @this {Lexer}
  * @param {...string[]} match
+ *
  * @returns {Token | Token[] | null | void}
  */
 
@@ -34,7 +33,8 @@
  * @property {RegExp} pattern Sticky-compiled pattern used to probe the input.
  * @property {boolean} global Whether the user-supplied pattern was global.
  * @property {LexerAction} action
- * @property {number[]} start States in which the rule is active. `[0]` is the default state; an empty array means "any state".
+ * @property {number[]} start States in which the rule is active. `[0]` is the default state; an
+ *   empty array means "any state".
  */
 
 /**
@@ -51,6 +51,7 @@
  * @callback DefunctHandler
  * @this {Lexer}
  * @param {string} chr The unexpected character.
+ *
  * @returns {Token | Token[] | null | void}
  */
 
@@ -66,9 +67,9 @@ function defaultDefunct(chr) {
  */
 export class Lexer {
     /**
-     * Current lexer state. Rules whose `start` array contains this value (or
-     * is empty) are eligible to match. Odd-numbered states are also matched
-     * by rules declared with `start: [0]`, mirroring flex's inclusive states.
+     * Current lexer state. Rules whose `start` array contains this value (or is empty) are eligible
+     * to match. Odd-numbered states are also matched by rules declared with `start: [0]`, mirroring
+     * flex's inclusive states.
      *
      * @type {number}
      */
@@ -81,8 +82,8 @@ export class Lexer {
     input = "";
 
     /**
-     * When set to `true` from inside an action, the current match is rolled
-     * back and the next-best match is tried instead.
+     * When set to `true` from inside an action, the current match is rolled back and the next-best
+     * match is tried instead.
      *
      * @type {boolean}
      */
@@ -113,6 +114,7 @@ export class Lexer {
      * @param {RegExp} pattern
      * @param {LexerAction} action
      * @param {number[]} [start] States in which the rule is active. Defaults to `[0]`.
+     *
      * @returns {this}
      */
     addRule(pattern, action, start) {
@@ -143,6 +145,7 @@ export class Lexer {
      * Reset the lexer and load a new input string.
      *
      * @param {string} input
+     *
      * @returns {this}
      */
     setInput(input) {
@@ -229,10 +232,9 @@ export class Lexer {
     }
 
     /**
-     * Probe every state-eligible rule at the current position, returning the
-     * matches sorted by length (longest first), with global rules pinned
-     * after non-global ones to preserve flex's "longest non-global wins"
-     * tie-breaking.
+     * Probe every state-eligible rule at the current position, returning the matches sorted by
+     * length (longest first), with global rules pinned after non-global ones to preserve flex's
+     * "longest non-global wins" tie-breaking.
      *
      * @returns {LexerMatch[]}
      */

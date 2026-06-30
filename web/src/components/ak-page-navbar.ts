@@ -1,5 +1,10 @@
 import "#components/ak-nav-buttons";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFContent from "@patternfly/patternfly/components/Content/content.css";
+import PFDrawer from "@patternfly/patternfly/components/Drawer/drawer.css";
+import PFNotificationBadge from "@patternfly/patternfly/components/NotificationBadge/notification-badge.css";
+import PFPage from "@patternfly/patternfly/components/Page/page.css";
 
 import { globalAK } from "#common/global";
 
@@ -16,12 +21,6 @@ import { msg } from "@lit/localize";
 import { CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { guard } from "lit/directives/guard.js";
-
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFContent from "@patternfly/patternfly/components/Content/content.css";
-import PFDrawer from "@patternfly/patternfly/components/Drawer/drawer.css";
-import PFNotificationBadge from "@patternfly/patternfly/components/NotificationBadge/notification-badge.css";
-import PFPage from "@patternfly/patternfly/components/Page/page.css";
 
 export class PageDetailsUpdate extends Event {
     static readonly eventName = "ak-page-details-update";
@@ -47,12 +46,11 @@ export interface PageHeaderInit {
 /**
  * A global navbar component at the top of the page.
  *
- * Internally, this component listens for the `ak-page-header` event, which is
- * dispatched by the `ak-page-header` component.
+ * Internally, this component listens for the `ak-page-header` event, which is dispatched by the
+ * `ak-page-header` component.
  *
  * @event ak-page-nav-menu-toggle
  * @event ak-page-details-update
- *
  */
 @customElement("ak-page-navbar")
 export class AKPageNavbar

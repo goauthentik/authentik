@@ -6,6 +6,7 @@ import "#elements/forms/ModalForm";
 import "#components/tasks/TaskList";
 import "#components/ak-status-label";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
+import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
 import { aki } from "#common/api/client";
 
@@ -21,8 +22,6 @@ import { DataExport, ReportsApi } from "@goauthentik/api";
 import { msg } from "@lit/localize";
 import { html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
-
-import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
 @customElement("ak-data-export-list")
 export class DataExportListPage extends TablePage<DataExport> {

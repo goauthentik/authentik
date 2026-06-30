@@ -1,4 +1,6 @@
 import "#elements/Spinner";
+import PFEmptyState from "@patternfly/patternfly/components/EmptyState/empty-state.css";
+import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 
 import { PFSize } from "#common/enums";
 
@@ -12,9 +14,6 @@ import { css, html, nothing, render } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 
-import PFEmptyState from "@patternfly/patternfly/components/EmptyState/empty-state.css";
-import PFTitle from "@patternfly/patternfly/components/Title/title.css";
-
 /**
  * Props for the EmptyState component
  */
@@ -22,7 +21,7 @@ export interface IEmptyState {
     /** Font Awesome icon class (e.g., "fa-user", "fa-folder") to display */
     icon?: string;
 
-    /** When true, will automatically show the loading spinner.  Overrides `icon`. */
+    /** When true, will automatically show the loading spinner. Overrides `icon`. */
     loading?: boolean;
 
     /**
@@ -36,18 +35,14 @@ export interface IEmptyState {
 }
 
 /**
+ * @class EmptyState A component for displaying empty states with optional icons, headings, body
+ *   text, and actions. Follows PatternFly design patterns for empty state presentations.
+ *
+ *   ## Slots
  * @element ak-empty-state
- * @class EmptyState
- *
- * A component for displaying empty states with optional icons, headings, body text, and actions.
- * Follows PatternFly design patterns for empty state presentations.
- *
- * ## Slots
- *
  * @slot - The main heading text for the empty state
  * @slot body - Descriptive text explaining the empty state or what the user can do
  * @slot primary - Primary action buttons or other interactive elements
- *
  */
 @customElement("ak-empty-state")
 export class EmptyState extends AKElement implements IEmptyState {
@@ -143,10 +138,10 @@ type ContentValue = SlottedTemplateResult | undefined;
 /**
  * Generate `<ak-empty-state>` programmatically
  *
- * @param properties - properties to apply to the component.
- * @param content - strings or TemplateResults for the slots in `<ak-empty-state>`
- * @returns TemplateResult for the ak-empty-state element
+ * @param properties - Properties to apply to the component.
+ * @param content - Strings or TemplateResults for the slots in `<ak-empty-state>`
  *
+ * @returns TemplateResult for the ak-empty-state element
  */
 export function akEmptyState(properties: IEmptyState = {}, content: IEmptyStateContent = {}) {
     // `heading` here is an Object.key of ILoadingOverlayContent, not the obsolete

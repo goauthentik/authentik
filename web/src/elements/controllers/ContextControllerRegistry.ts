@@ -4,7 +4,6 @@ import { type ContextControllerRegistryMap } from "#elements/types";
  * Check if the environment supports Symbol-keyed WeakMaps.
  *
  * @see {@link https://caniuse.com/mdn-javascript_builtins_weakmap_symbol_as_keys | Can I use}
- *
  * @todo Re-evaluate browser coverage after 2027-01-01
  */
 function supportsSymbolKeyedWeakMap(): boolean {
@@ -25,19 +24,18 @@ function supportsSymbolKeyedWeakMap(): boolean {
  *
  * @remarks
  *
- * A preference for `WeakMap` is optional at the moment.
- * However, if we ever support short-lived context controllers, such as
+ *   A preference for `WeakMap` is optional at the moment. However, if we ever support short-lived
+ *   context controllers, such as
  */
 const ContextControllerConstructor = supportsSymbolKeyedWeakMap() ? WeakMap : Map;
 
 /**
  * A registry of context controllers added to the Interface.
  *
- * @singleton
- *
  * @remarks
  *
- * This is exported separately to avoid circular dependencies.
+ *   This is exported separately to avoid circular dependencies.
+ * @singleton
  */
 export const ContextControllerRegistry =
     new (ContextControllerConstructor as WeakMapConstructor)() as ContextControllerRegistryMap;

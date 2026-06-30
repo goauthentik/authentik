@@ -6,8 +6,9 @@ import { SlottedTemplateResult } from "#elements/types";
 
 import { CoreApi, Token } from "@goauthentik/api";
 
-import { msg, str } from "@lit/localize";
 import { guard } from "lit-html/directives/guard.js";
+
+import { msg, str } from "@lit/localize";
 
 export function IconTokenCopyButton(tokenLike?: Token | string | null): SlottedTemplateResult {
     return guard([tokenLike], () => {

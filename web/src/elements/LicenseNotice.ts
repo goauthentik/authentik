@@ -1,5 +1,4 @@
 import "#elements/Alert";
-
 import { AKElement } from "#elements/Base";
 import { WithLicenseSummary } from "#elements/mixins/license";
 import { SlottedTemplateResult } from "#elements/types";

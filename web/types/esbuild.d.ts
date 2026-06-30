@@ -39,9 +39,9 @@ declare global {
         readonly AK_DOCS_RELEASE_NOTES_URL: string;
 
         /**
+         * @deprecated
          * @todo Determine where this is used and if it is needed,
          * give it a better name.
-         * @deprecated
          */
         readonly AK_API_BASE_PATH: string;
     }
@@ -53,8 +53,7 @@ declare global {
      */
     interface ImportMetaEnv extends ESBuildImportEnv {
         /**
-         * An environment variable used to determine
-         * whether Node.js is running in production mode.
+         * An environment variable used to determine whether Node.js is running in production mode.
          */
         readonly NODE_ENV: "development" | "production";
     }

@@ -2,7 +2,6 @@ import "formdata-polyfill";
 import "weakmap-polyfill";
 import "core-js/actual/object/assign";
 import "@webcomponents/template";
-
 import {
     type AccessDeniedChallenge,
     type AuthenticatorValidationChallenge,
@@ -371,6 +370,7 @@ class AuthenticatorValidateStage extends Stage<AuthenticatorValidationChallenge>
 
     /**
      * Encodes the binary data in the assertion into strings for posting to the server.
+     *
      * @param {PublicKeyCredential} newAssertion
      */
     transformAssertionForServer(newAssertion: PublicKeyCredential): AuthAssertion {

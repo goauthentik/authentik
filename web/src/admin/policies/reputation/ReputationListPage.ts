@@ -3,7 +3,6 @@ import "#elements/buttons/ModalButton";
 import "#elements/buttons/SpinnerButton/index";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
-
 import { aki } from "#common/api/client";
 
 import { PaginatedResponse, TableColumn, Timestamp } from "#elements/table/Table";

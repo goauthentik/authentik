@@ -4,7 +4,6 @@ import "#components/ak-switch-input";
 import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
-
 import { propertyMappingsProvider, propertyMappingsSelector } from "./SCIMSourceFormHelpers.js";
 
 import { aki } from "#common/api/client";

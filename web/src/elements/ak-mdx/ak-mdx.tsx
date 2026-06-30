@@ -1,4 +1,7 @@
 import "#elements/Alert";
+import PFContent from "@patternfly/patternfly/components/Content/content.css";
+import PFList from "@patternfly/patternfly/components/List/list.css";
+import PFTable from "@patternfly/patternfly/components/Table/table.css";
 
 import { globalAK } from "#common/global";
 import { BrandedHTMLPolicy } from "#common/purify";
@@ -35,10 +38,6 @@ import remarkParse from "remark-parse";
 import type { MDXModule } from "~docs/types";
 
 import { customElement, property } from "lit/decorators.js";
-
-import PFContent from "@patternfly/patternfly/components/Content/content.css";
-import PFList from "@patternfly/patternfly/components/List/list.css";
-import PFTable from "@patternfly/patternfly/components/Table/table.css";
 
 const highlightThemeOptions: HighlightOptions = {
     languages: {

@@ -1,3 +1,5 @@
+import PFTreeView from "@patternfly/patternfly/components/TreeView/tree-view.css";
+
 import { EVENT_REFRESH } from "#common/constants";
 
 import { AKElement } from "#elements/Base";
@@ -8,8 +10,6 @@ import { ifPresent } from "#elements/utils/attributes";
 import { msg, str } from "@lit/localize";
 import { CSSResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
-
-import PFTreeView from "@patternfly/patternfly/components/TreeView/tree-view.css";
 
 //#region Tree View Node
 

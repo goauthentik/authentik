@@ -1,5 +1,4 @@
 import "#elements/EmptyState";
-
 import { BaseDeviceStage } from "#flow/stages/authenticator_validate/base";
 
 import {

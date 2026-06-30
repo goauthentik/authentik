@@ -1,8 +1,8 @@
 /**
- * @file Flow executor stage definitions.
- *
  * @remarks
- * The following imports must be imported statically, as they define web components that are used in stage definitions below.
+ *   The following imports must be imported statically, as they define web components that are used
+ *   in stage definitions below.
+ * @file Flow executor stage definitions.
  */
 
 import "#flow/sources/apple/AppleLoginInit";
@@ -12,7 +12,6 @@ import "#flow/stages/FlowErrorStage";
 import "#flow/stages/FlowFrameStage";
 import "#flow/stages/RedirectStage";
 import "#flow/stages/authenticator_webauthn/WebAuthnAuthenticatorRegisterStage";
-
 import type {
     FlowChallengeComponentName,
     PropVariant,
@@ -34,25 +33,20 @@ export interface StageEntry {
  * of props they consume and an optional import callback for lazy-loading.
  *
  * @remarks
- * The different ways a stage can be associated with its server-side component are listed in the
- * type declaration above. The variants are meant to reduce the amount of information you have to
- * provide:
- *
- * - If the server-side component and the client-side tag are the same, only provide the component.
- * - Variants describe the attribute needs. There are only two variant: "standard" and "challenge."
- *   The "challenge" variant is for components that immediately issue redirects. "standard" is the
- *   default; you don't need to specify it.
- * - If the stage needs to be live immediately, import it above. Otherwise, provide an import
- *   function, following the examples already provided.
- *
- * Variants and Tags have a single strong differentiator: Tags refer to web components and so must
- * always have a dash, whereas variants are from a limited supply of names and do not have a dash.
- * The StageFactory will not get confused. If you get confused, the type-checker will explain it.
- *
- * The resolution of the web component tag name is: tag supplied, tag received with import, tag
- * derived from component name. THIS CAN FAIL: a preloaded stage with an incongruent and non- or
- * incorrectly-specified tag will result in a stage that cannot be rendered. Pre-loaded stages must
- * be tested carefully.
+ *   The different ways a stage can be associated with its server-side component are listed in the
+ *   type declaration above. The variants are meant to reduce the amount of information you have to
+ *   provide: - If the server-side component and the client-side tag are the same, only provide the
+ *   component. - Variants describe the attribute needs. There are only two variant: "standard" and
+ *   "challenge." The "challenge" variant is for components that immediately issue redirects.
+ *   "standard" is the default; you don't need to specify it. - If the stage needs to be live
+ *   immediately, import it above. Otherwise, provide an import function, following the examples
+ *   already provided. Variants and Tags have a single strong differentiator: Tags refer to web
+ *   components and so must always have a dash, whereas variants are from a limited supply of names
+ *   and do not have a dash. The StageFactory will not get confused. If you get confused, the
+ *   type-checker will explain it. The resolution of the web component tag name is: tag supplied,
+ *   tag received with import, tag derived from component name. THIS CAN FAIL: a preloaded stage
+ *   with an incongruent and non- or incorrectly-specified tag will result in a stage that cannot be
+ *   rendered. Pre-loaded stages must be tested carefully.
  */
 // ,---.    |    |    ,   .              ,---.|                            |   |
 // |---|,---|,---|    |\  |,---.. . .    `---.|--- ,---.,---.,---.,---.    |---|,---.,---.,---.

@@ -18,10 +18,8 @@ export class AKTimestamp extends AKElement {
      * A lazy-loaded media query list for detecting reduced motion preferences.
      *
      * @remarks
-     * This is initialized only when needed to avoid:
-     *
-     * - Multiple media query list instances across all timestamp elements.
-     * - Initialization before the element is visible.
+     *   This is initialized only when needed to avoid: - Multiple media query list instances across
+     *   all timestamp elements. - Initialization before the element is visible.
      */
     protected static reducedMotionMediaQuery: MediaQueryList | null = null;
 

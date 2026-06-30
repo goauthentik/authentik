@@ -7,7 +7,6 @@ import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/ak-search-select-ez";
 import "#elements/forms/SearchSelect/index";
-
 import { aki } from "#common/api/client";
 import {
     createPassFailOptions,
@@ -31,7 +30,7 @@ import { html, nothing } from "lit";
 import { customElement, query, state } from "lit/decorators.js";
 
 /**
- * @prop wizard - The current state of the application wizard, shared across all steps.
+ * @property wizard - The current state of the application wizard, shared across all steps.
  */
 @customElement("ak-application-wizard-edit-binding-step")
 export class ApplicationWizardEditBindingStep extends ApplicationWizardStep<PolicyBinding> {

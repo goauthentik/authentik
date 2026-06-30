@@ -1,7 +1,6 @@
 import "#elements/chips/Chip";
 import "#elements/chips/ChipGroup";
 import "#elements/forms/DeleteBulkForm";
-
 import { aki } from "#common/api/client";
 
 import { PaginatedResponse, Table, TableColumn, Timestamp } from "#elements/table/Table";

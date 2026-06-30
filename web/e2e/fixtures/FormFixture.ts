@@ -16,7 +16,7 @@ export class FormFixture extends PageFixture {
      * Set the value of a text input.
      *
      * @param fieldName The name of the form element.
-     * @param value the value to set.
+     * @param value The value to set.
      */
     public findTextualInput = async (
         fieldName: string | RegExp,
@@ -41,7 +41,7 @@ export class FormFixture extends PageFixture {
      * Set the value of a text input.
      *
      * @param target The name of the form element.
-     * @param value the value to set.
+     * @param value The value to set.
      */
     public fill = async (
         target: string | RegExp | Locator,
@@ -107,7 +107,7 @@ export class FormFixture extends PageFixture {
      * Set the value of a radio or checkbox input.
      *
      * @param fieldName The name of the form element.
-     * @param value the value to set.
+     * @param value The value to set.
      */
     public setInputCheck = async (
         fieldName: string,
@@ -137,7 +137,7 @@ export class FormFixture extends PageFixture {
      * Set the value of a radio or checkbox input.
      *
      * @param fieldName The name of the form element.
-     * @param pattern the value to set.
+     * @param pattern The value to set.
      */
     public setRadio = async (
         groupName: string,

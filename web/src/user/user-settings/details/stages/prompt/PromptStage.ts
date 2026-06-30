@@ -1,6 +1,5 @@
 import "#elements/forms/HorizontalFormElement";
 import "#flow/components/ak-flow-card";
-
 import { globalAK } from "#common/global";
 import { autoDetectLanguage, setSessionLocale } from "#common/ui/locale/utils";
 
@@ -17,8 +16,7 @@ import { html, nothing } from "lit";
 import { customElement } from "lit/decorators.js";
 
 /**
- * @prop {StageHost} host - The host managing this stage.
- *
+ * @property {StageHost} host - The host managing this stage.
  */
 @customElement("ak-user-stage-prompt")
 export class UserSettingsPromptStage extends PromptStage {

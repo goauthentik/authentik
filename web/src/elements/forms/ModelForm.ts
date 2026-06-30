@@ -1,5 +1,4 @@
 import "#elements/EmptyState";
-
 import { APIError, parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
 import { AKRefreshEvent } from "#common/events";
 
@@ -42,15 +41,14 @@ function isNamedInstance(instance: unknown): instance is NamedInstance {
 }
 
 /**
- * A base form that automatically tracks the server-side object (instance)
- * that we're interested in. Handles loading and tracking of the instance.
+ * A base form that automatically tracks the server-side object (instance) that we're interested in.
+ * Handles loading and tracking of the instance.
  *
  * @template T The type of the model instance.
  * @template PKT The type of the primary key of the model instance.
  * @template D The result of `toJSON()`, which is the data sent to the server on submit.
- *
- * @prop {T} instance - The current instance being edited or viewed.
- * @prop {PKT} instancePk - The primary key of the instance to load.
+ * @property {T} instance - The current instance being edited or viewed.
+ * @property {PKT} instancePk - The primary key of the instance to load.
  */
 export abstract class ModelForm<
     T extends object | null = object,
@@ -72,8 +70,8 @@ export abstract class ModelForm<
     });
 
     /**
-     * The label to use for the submit button while the form is being submitted
-     * when editing an instance, e.g. "Saving Changes...".
+     * The label to use for the submit button while the form is being submitted when editing an
+     * instance, e.g. "Saving Changes...".
      */
     public static savingLabel: string | null = msg("Saving Changes...", {
         id: "form.submit.saving-changes",
@@ -82,7 +80,8 @@ export abstract class ModelForm<
     /**
      * A helper method to create an invoker for editing an instance of this form.
      *
-     * The invoker will look for a `data-pk` attribute on the clicked element to determine which instance to load.
+     * The invoker will look for a `data-pk` attribute on the clicked element to determine which
+     * instance to load.
      *
      * @see {@linkcode Form.asModalInvoker} for opening a blank form in a modal.
      * @see {@linkcode asInvoker} for the underlying implementation.
@@ -105,6 +104,7 @@ export abstract class ModelForm<
      * An overridable method for loading an instance.
      *
      * @param pk The primary key of the instance to load.
+     *
      * @returns A promise that resolves to the loaded instance.
      */
     protected loadInstance(pk: PKT): Promise<T | null> {
@@ -152,15 +152,14 @@ export abstract class ModelForm<
     /**
      * An overridable method for loading any data, beyond the instance.
      *
-     *
-     * @see {@linkcode loadInstance}
      * @returns A promise that resolves when the data has been loaded.
+     * @see {@linkcode loadInstance}
      */
     protected async load?(): Promise<void | boolean>;
 
     /**
-     * Timestamp of last call to {@linkcode load}.
-     * Used to prevent multiple calls to `load` when the form is rapidly shown and hidden.
+     * Timestamp of last call to {@linkcode load}. Used to prevent multiple calls to `load` when the
+     * form is rapidly shown and hidden.
      */
     #loadedAt: Date | null = null;
 
@@ -187,9 +186,11 @@ export abstract class ModelForm<
     }
 
     /**
-     * A helper method to create a default instance when the form is used for creation instead of editing.
+     * A helper method to create a default instance when the form is used for creation instead of
+     * editing.
      *
-     * By default, this returns `null`, but it can be overridden to provide a default instance with pre-filled values.
+     * By default, this returns `null`, but it can be overridden to provide a default instance with
+     * pre-filled values.
      *
      * @returns A default instance of the model, or null if not applicable.
      */

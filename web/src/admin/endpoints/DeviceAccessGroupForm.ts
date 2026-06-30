@@ -1,6 +1,5 @@
 import "#components/ak-text-input";
 import "#elements/forms/HorizontalFormElement";
-
 import { aki } from "#common/api/client";
 import { PFSize } from "#common/enums";
 
@@ -17,7 +16,7 @@ import { ifDefined } from "lit/directives/if-defined.js";
 /**
  * Device Access Group Form
  *
- * @prop {string} instancePk - The primary key of the instance to load.
+ * @property {string} instancePk - The primary key of the instance to load.
  */
 @customElement("ak-endpoints-device-access-groups-form")
 export class DeviceAccessGroupForm extends WithBrandConfig(ModelForm<DeviceAccessGroup, string>) {

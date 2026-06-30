@@ -7,6 +7,15 @@ import "#admin/outposts/OutpostForm";
 import "#admin/outposts/OutpostHealthList";
 import "#admin/outposts/OutpostProviderList";
 import "#elements/buttons/TokenCopyButton/ak-token-copy-button";
+import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFCard from "@patternfly/patternfly/components/Card/card.css";
+import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
+import PFForm from "@patternfly/patternfly/components/Form/form.css";
+import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
+import PFPage from "@patternfly/patternfly/components/Page/page.css";
+import PFProgress from "@patternfly/patternfly/components/Progress/progress.css";
+import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 
 import { aki } from "#common/api/client";
 import { docLink } from "#common/global";
@@ -23,21 +32,12 @@ import { embeddedOutpostManaged, outpostTypeToLabel } from "#admin/outposts/util
 
 import { ModelEnum, Outpost, OutpostHealth, OutpostsApi, OutpostTypeEnum } from "@goauthentik/api";
 
+import { guard } from "lit-html/directives/guard.js";
+
 import { msg, str } from "@lit/localize";
 import { CSSResult, PropertyValues } from "lit";
 import { html } from "lit-html";
-import { guard } from "lit-html/directives/guard.js";
 import { customElement, property } from "lit/decorators.js";
-
-import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFCard from "@patternfly/patternfly/components/Card/card.css";
-import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
-import PFForm from "@patternfly/patternfly/components/Form/form.css";
-import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
-import PFPage from "@patternfly/patternfly/components/Page/page.css";
-import PFProgress from "@patternfly/patternfly/components/Progress/progress.css";
-import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 
 @customElement("ak-outpost-view")
 export class OutpostViewPage extends AKElement {

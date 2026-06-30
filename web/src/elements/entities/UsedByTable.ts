@@ -1,3 +1,5 @@
+import PFList from "@patternfly/patternfly/components/List/list.css";
+
 import { PFSize } from "#common/enums";
 
 import { UsedByListItem } from "#elements/entities/used-by";
@@ -7,13 +9,12 @@ import { SlottedTemplateResult } from "#elements/types";
 
 import { type UsedBy } from "@goauthentik/api";
 
+import { until } from "lit-html/directives/until.js";
+
 import { msg } from "@lit/localize";
 import { CSSResult, PropertyValues } from "lit";
 import { html } from "lit-html";
-import { until } from "lit-html/directives/until.js";
 import { customElement, property, state } from "lit/decorators.js";
-
-import PFList from "@patternfly/patternfly/components/List/list.css";
 
 export interface BulkDeleteMetadata {
     key: string;

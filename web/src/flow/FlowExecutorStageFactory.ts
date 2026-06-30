@@ -71,7 +71,8 @@ export class StageMapping {
     /**
      * A mapping of server-side stage tokens to client-side custom element tags.
      *
-     * This can be used to determine if a given stage component has a corresponding client-side stage.
+     * This can be used to determine if a given stage component has a corresponding client-side
+     * stage.
      */
     public static readonly registry: ReadonlyMap<FlowChallengeComponentName, StageEntry> = new Map(
         StageEntries.map((entry) => [entry.stage, entry]),

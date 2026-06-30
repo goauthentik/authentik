@@ -1,3 +1,5 @@
+import PFProgress from "@patternfly/patternfly/components/Progress/progress.css";
+
 import { PFSize } from "#common/enums";
 
 import { AKElement } from "#elements/Base";
@@ -6,8 +8,6 @@ import { ifPresent } from "#elements/utils/attributes";
 import { css, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { styleMap } from "lit/directives/style-map.js";
-
-import PFProgress from "@patternfly/patternfly/components/Progress/progress.css";
 
 /**
  * @slot description - Description text above the progress bar, on the left

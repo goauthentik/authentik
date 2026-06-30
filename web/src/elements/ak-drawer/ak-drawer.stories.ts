@@ -1,5 +1,4 @@
 import "./ak-drawer";
-
 import { DrawerExpandRequest } from "./ak-drawer.component";
 
 import type { Meta, StoryObj } from "@storybook/web-components-vite";

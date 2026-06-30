@@ -1,13 +1,12 @@
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
+import PFForm from "@patternfly/patternfly/components/Form/form.css";
+import PFList from "@patternfly/patternfly/components/List/list.css";
 
 import { AKElement } from "#elements/Base";
 
 import { msg } from "@lit/localize";
 import { CSSResult, html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
-
-import PFForm from "@patternfly/patternfly/components/Form/form.css";
-import PFList from "@patternfly/patternfly/components/List/list.css";
 
 @customElement("ak-utils-time-delta-help")
 export class TimeDeltaHelp extends AKElement {
