@@ -39,7 +39,6 @@ class TestGetBrandForRequestSelectRelated(TestCase):
             _ = brand.flow_unenrollment
             _ = brand.flow_user_settings
             _ = brand.flow_device_code
-            _ = brand.flow_lockdown
             _ = brand.default_application
 
     def test_brand_related_fk_list_complete(self):
