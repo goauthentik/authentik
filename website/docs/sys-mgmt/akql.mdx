@@ -1,0 +1,329 @@
+---
+title: AKQL search syntax
+sidebar_label: AKQL search
+description: Use AKQL to filter events, users, groups, and event matcher policies.
+---
+
+import { KeyBindingsTable } from "@goauthentik/docusaurus-theme/components/KeyBindingsTable";
+
+AKQL (authentik Query Language) is the advanced search syntax used in the authentik Admin interface and API. Use AKQL to filter long lists, such as events, users, and groups, with structured expressions like `action = "login"` or `context.geo.country = "Germany"`.
+
+AKQL is built on [DjangoQL](https://github.com/ivelum/djangoql).
+
+## Where AKQL is available
+
+AKQL is available on lists and fields backed by the query language:
+
+- **Events** > **Logs**: See [Logging events](./events/logging-events.mdx#advanced-queries).
+- **Directory** > **Users**: See [Manage users](../users-sources/user/user_basic_operations.md#advanced-queries).
+- **Directory** > **Groups**: See [Manage groups](../users-sources/groups/manage_groups.mdx#advanced-queries).
+- **Event Matcher policies**: the **Query** field on an [Event Matcher policy](../customize/policies/types/event-matcher.md#what-it-matches).
+- **REST API list endpoints**: the `search` query parameter on endpoints that return an AKQL autocomplete schema. See [Use AKQL through the API](#use-akql-through-the-api).
+
+Each area exposes its own searchable fields. See [Searchable fields](#searchable-fields).
+
+:::info Plain search fallback
+If the search string is not a valid AKQL expression, authentik falls back to a plain case-insensitive substring search across that list's default search fields. For example, `bob` runs as plain search, while `username = "bob"` runs as AKQL.
+:::
+
+## Query structure
+
+An AKQL query is built from comparisons in this format:
+
+```text
+<field> <operator> <value>
+```
+
+**Example**:
+
+```text
+username = "bob"
+```
+
+You can combine comparisons with `and` and `or`, and use parentheses to group conditions.
+
+### Fields
+
+A field is an attribute that you can filter on, such as `username`, `action`, or `is_active`. The available fields depend on the list that you search.
+
+For related objects and JSON values, use dot notation. For example, use `user.username` for a nested user value on an event, and `context.geo.country` for a value inside the event context.
+
+### Operators
+
+The valid operators depend on the field type.
+
+| Operator         | Meaning                                | Field types             |
+| ---------------- | -------------------------------------- | ----------------------- |
+| `=`              | Equal to                               | All field types         |
+| `!=`             | Not equal to                           | All field types         |
+| `>`              | Greater than                           | Numbers, dates, strings |
+| `>=`             | Greater than or equal to               | Numbers, dates, strings |
+| `<`              | Less than                              | Numbers, dates, strings |
+| `<=`             | Less than or equal to                  | Numbers, dates, strings |
+| `~`              | Contains, case-insensitive             | Strings, dates          |
+| `!~`             | Does not contain, case-insensitive     | Strings, dates          |
+| `startswith`     | Starts with, case-insensitive          | Strings                 |
+| `not startswith` | Does not start with, case-insensitive  | Strings                 |
+| `endswith`       | Ends with, case-insensitive            | Strings                 |
+| `not endswith`   | Does not end with, case-insensitive    | Strings                 |
+| `in (...)`       | Matches any value in the list          | All field types         |
+| `not in (...)`   | Matches none of the values in the list | All field types         |
+
+:::info `~` is not a regular expression
+The `~` and `!~` operators perform a case-insensitive substring match, not a regular-expression match. For example, `username ~ "adm"` matches `akadmin` and `administrator`.
+:::
+
+### Values
+
+Values are typed. The way you write the value tells AKQL how to interpret it.
+
+| Type    | Syntax                                    | Examples             |
+| ------- | ----------------------------------------- | -------------------- |
+| String  | Double quotes or single quotes            | `"bob"`, `'login'`   |
+| Integer | Whole number                              | `42`, `-7`           |
+| Float   | Decimal or exponent number                | `3.14`, `1e3`        |
+| Boolean | `True` or `False`                         | `is_active = False`  |
+| Null    | `None`                                    | `email = None`       |
+| List    | Comma-separated values inside parentheses | `("ana", "akadmin")` |
+
+Keep the following rules in mind:
+
+- Operators and keywords such as `and`, `or`, `not`, `in`, `startswith`, and `endswith` are lowercase.
+- Boolean and null values use `True`, `False`, and `None`.
+- Strings support escape sequences such as `\"`, `\\`, `\n`, `\t`, and `\u00e9`.
+- You can compare a field to `None` only when that field is nullable.
+
+### Combine conditions
+
+Use `and` and `or` to combine comparisons.
+
+**Examples**:
+
+```text
+action = "login" and user.username = "bob"
+```
+
+```text
+action = "login" or action = "logout"
+```
+
+```text
+(action = "login" or action = "logout") and user.username = "bob"
+```
+
+:::tip
+When you mix `and` and `or`, use parentheses so the grouping is clear.
+:::
+
+AKQL does not support a standalone `not` operator for a whole expression. Use `!=` for "not equal to" and `!~` for "does not contain". The `not` keyword is valid only in `not in`, `not startswith`, and `not endswith`.
+
+## Field types
+
+Each searchable field has a type. The field type determines which operators and values it accepts.
+
+### Choice fields
+
+Choice fields, such as an event's `action` or a user's `type`, accept only a fixed set of values. The Admin interface suggests valid values as you type.
+
+### Date and time fields
+
+Date and time fields, such as an event's `created` timestamp, use quoted timestamp values.
+
+Supported formats:
+
+- `"YYYY-MM-DD"`, for example `"2024-01-30"`.
+- `"YYYY-MM-DD HH:MM"`, for example `"2024-01-30 09:00"`.
+- `"YYYY-MM-DD HH:MM:SS"`, for example `"2024-01-30 09:00:15"`.
+
+**Examples**:
+
+```text
+created > "2024-01-01"
+```
+
+```text
+created >= "2024-01-30 09:00" and created < "2024-01-30 17:00"
+```
+
+The `~` operator on a date field performs a substring match on the text form of the timestamp. This is useful for matching a whole day.
+
+```text
+created ~ "2024-01-30"
+```
+
+### JSON and nested fields
+
+Some searchable fields, such as a user's `attributes` or an event's `context`, contain JSON objects. Use dot notation to query values inside them.
+
+**Examples**:
+
+```text
+attributes.department = "engineering"
+```
+
+```text
+context.geo.country = "Germany"
+```
+
+For related objects and JSON objects, query a nested value such as `user.username`, `brand.name`, or `context.http_request.path`. A comparison against the root object, such as `user = "bob"`, is not valid AKQL.
+
+Autocomplete suggests a known subset of nested paths. You can still query other JSON key paths that exist in the stored data.
+
+## Searchable fields
+
+The fields available to AKQL are specific to each list.
+
+### Events
+
+Available in **Events** > **Logs** and in the **Query** field on Event Matcher policies.
+
+| Field              | Type      | Description                                                                    |
+| ------------------ | --------- | ------------------------------------------------------------------------------ |
+| `action`           | Choice    | The [event action](./events/event-actions.md), such as `login`.                |
+| `event_uuid`       | String    | The event's unique identifier.                                                 |
+| `app`              | String    | The application or authentik component that emitted the event.                 |
+| `client_ip`        | String    | The client IP address associated with the event.                               |
+| `user.pk`          | Integer   | The acting user's primary key.                                                 |
+| `user.username`    | String    | The acting user's username.                                                    |
+| `user.email`       | String    | The acting user's email address.                                               |
+| `brand.pk`         | String    | The primary key of the [brand](../customize/branding.md) active for the event. |
+| `brand.app`        | String    | The brand's app label.                                                         |
+| `brand.name`       | String    | The brand's name.                                                              |
+| `brand.model_name` | String    | The brand's model name.                                                        |
+| `context.*`        | JSON      | Arbitrary event context.                                                       |
+| `created`          | Date/time | When the event occurred.                                                       |
+
+Common event context paths include:
+
+- `context.http_request.path`, `context.http_request.method`, `context.http_request.request_id`, `context.http_request.user_agent`, and `context.http_request.args.*`.
+- `context.geo.country`, `context.geo.city`, and other geolocation keys when [GeoIP](./ops/geoip.mdx) is configured.
+- `context.authorized_application.name` and other details for the application involved in the event.
+
+### Users
+
+Available in **Directory** > **Users**.
+
+| Field          | Type    | Description                                                             |
+| -------------- | ------- | ----------------------------------------------------------------------- |
+| `username`     | String  | The user's username.                                                    |
+| `name`         | String  | The user's display name.                                                |
+| `email`        | String  | The user's email address.                                               |
+| `path`         | String  | The user's path within the directory.                                   |
+| `is_active`    | Boolean | Whether the account is active.                                          |
+| `type`         | Choice  | The user type, such as `internal` or `external`.                        |
+| `attributes.*` | JSON    | Any [custom attribute](../users-sources/user/user_ref.mdx) on the user. |
+
+### Groups
+
+Available in **Directory** > **Groups**.
+
+| Field          | Type    | Description                                |
+| -------------- | ------- | ------------------------------------------ |
+| `name`         | String  | The group's name.                          |
+| `is_superuser` | Boolean | Whether the group grants superuser access. |
+| `attributes.*` | JSON    | Any custom attribute on the group.         |
+
+## Examples
+
+### Event examples
+
+```text
+action = "login"
+```
+
+```text
+app startswith "authentik"
+```
+
+```text
+user.username in ("ana", "akadmin")
+```
+
+```text
+context.geo.country = "Germany"
+```
+
+### User examples
+
+```text
+is_active = False
+```
+
+```text
+email endswith "@authentik.company"
+```
+
+```text
+attributes.department = "engineering"
+```
+
+### Group examples
+
+```text
+is_superuser = True
+```
+
+```text
+attributes.role = "admin"
+```
+
+## Use AKQL through the API
+
+API list endpoints that support AKQL accept the query in the `search` query parameter. URL-encode the query string.
+
+**Example**:
+
+```http
+GET /api/v3/core/users/?search=username%20%3D%20%22bob%22
+```
+
+The response pagination object includes an `autocomplete` field that describes the searchable schema for the endpoint. The Admin interface uses this schema for autocomplete suggestions.
+
+## Use AKQL in an Event Matcher policy
+
+Use the **Query** field on an [Event Matcher policy](../customize/policies/types/event-matcher.md) to match events with AKQL.
+
+1. In the Admin interface, navigate to **Customization** > **Policies**.
+2. Create or edit an **Event Matcher Policy**.
+3. In the **Query** field, enter a query that uses the [event fields](#events).
+
+**Example**:
+
+```text
+action = "login_failed" and context.geo.country != "United States"
+```
+
+The policy passes when the event matches the query. If you configure other fields on the policy, such as **Action** or **App**, the event must match those fields and the AKQL query.
+
+## Autocomplete and keyboard shortcuts
+
+AKQL search fields offer autocomplete suggestions for fields, operators, and values where suggestions are available.
+
+:::info
+If an operator or value does not appear in the autocomplete menu, enter it manually.
+:::
+
+The following keyboard shortcuts are available in AKQL search fields:
+
+<KeyBindingsTable
+    aria-label="Keyboard shortcuts for AKQL search"
+    bindings={[
+        [
+            "Autocomplete",
+            [
+                ["Select next suggestion", <kbd aria-label="Down arrow">↓</kbd>],
+                ["Select previous suggestion", <kbd aria-label="Up arrow">↑</kbd>],
+                ["Accept the current suggestion", <kbd aria-label="Tab key">Tab</kbd>],
+                ["Accept the current suggestion", <kbd aria-label="Enter key">Enter</kbd>],
+                ["Dismiss suggestions", <kbd aria-label="Escape key">ESC</kbd>],
+            ],
+        ],
+        [
+            "Search",
+            [
+                ["Submit the current query", <kbd aria-label="Enter key">Enter</kbd>],
+                ["Clear the current query", <kbd aria-label="Escape key">ESC</kbd>],
+            ],
+        ],
+    ]}
+/>

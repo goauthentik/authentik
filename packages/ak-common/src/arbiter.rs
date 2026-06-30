@@ -210,7 +210,7 @@ impl Arbiter {
     /// Consumers listening on this must also listen on [`Arbiter::graceful_shutdown`], as only one
     /// of those is set upon shutdown.
     ///
-    /// It is also possible to use [`Arbiter::shutdown`] when the behaviour is the same between a
+    /// It is also possible to use [`Arbiter::shutdown`] when the behavior is the same between a
     /// fast and a graceful shutdown.
     pub fn fast_shutdown(&self) -> WaitForCancellationFuture<'_> {
         self.fast_shutdown.cancelled()
@@ -221,7 +221,7 @@ impl Arbiter {
     /// Consumers listening on this must also listen on [`Arbiter::fast_shutdown`], as only one
     /// of those is set upon shutdown.
     ///
-    /// It is also possible to use [`Arbiter::shutdown`] when the behaviour is the same between a
+    /// It is also possible to use [`Arbiter::shutdown`] when the behavior is the same between a
     /// fast and a graceful shutdown.
     pub fn graceful_shutdown(&self) -> WaitForCancellationFuture<'_> {
         self.graceful_shutdown.cancelled()

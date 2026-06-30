@@ -4,7 +4,7 @@ title: Source property mappings
 
 Source property mappings allow you to modify or gather extra information from sources.
 
-This page is an overview of how property mappings work. For information about specific protocol, please refer to each protocol page:
+This page is an overview of how property mappings work. For information about a specific protocol, refer to the protocol page:
 
 - [Kerberos](../protocols/kerberos/#kerberos-source-property-mappings)
 - [LDAP](../protocols/ldap/index.md#ldap-source-property-mappings)
@@ -18,10 +18,10 @@ If the default source mappings are not enough, or if you need to get additional 
 
 Here are the steps:
 
-1. In authentik, open the Admin interface, and then navigate to **Customization > Property Mappings**.
+1. In authentik, open the Admin interface, and then navigate to **Customization** > **Property Mappings**.
 2. Click **Create**, select the property mapping type for your source, and then click **Next**.
 3. Type a unique and meaningful **Name**, such as `ldap-displayName-mapping:name`.
-4. In the **Expression** field enter Python expressions to retrieve the value from the source. See [Expression Semantics](#expression-semantics) below for details.
+4. In the **Expression** field, enter Python expressions to retrieve the value from the source. See [Expression semantics](#expression-semantics) below for details.
 5. In the source configuration, select the newly created property mapping as a **User property mapping** if it applies to users, or **Group property mapping** if it applies to groups.
 
 ## How it works
@@ -57,7 +57,7 @@ A user or group object is constructed as follows:
 
 1.  The source provides initial properties based on commonly used data.
 2.  Each property mapping associated with the source is run and results are merged into the previous properties.
-    - If a property mapping throws an error, the process is aborted. If that happens inside a synchronization process, the object is skipped. If it happens during an enrollment or authentication flow, the flow is cancelled.
+    - If a property mapping throws an error, the process is aborted. If that happens inside a synchronization process, the object is skipped. If it happens during an enrollment or authentication flow, the flow is canceled.
     - If a property mapping sets one attribute to `None`, that attribute is then discarded.
 3.  If the `username` field is not set for user objects, or the `name` field is not set for group objects, the process is aborted.
 4.  The object is created or updated. The `attributes` property is merged with existing data if the object already exists.
@@ -74,4 +74,4 @@ return {
 }
 ```
 
-The `groups` attribute is a special attribute that must contain group identifiers. By default, those identifiers are also used as the group name by default, those identifiers are also used as the group name. Each of those identifiers is then given to group property mappings as the `group_id` variable, if extra processing needs to happen.
+The `groups` attribute is a special attribute that must contain group identifiers. By default, those identifiers are also used as the group name. Each identifier is then given to group property mappings as the `group_id` variable, if extra processing needs to happen.

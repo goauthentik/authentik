@@ -1,4 +1,5 @@
 # Integrations
+ADOM
 appflowy
 Ascensio
 Authy
@@ -8,6 +9,7 @@ Budibase
 Doki
 Doku
 dokuwiki
+Dozzle
 Engomo
 Espo
 espocrm
@@ -25,6 +27,7 @@ Gravitee
 grommunio
 HACS
 Homarr
+Icinga
 Informatique
 Jellyseerr
 Kimai
@@ -36,10 +39,12 @@ Kubeconfig
 Mautic
 Mobilizon
 myabsorb
+Nexterm
 Observium
 Ofair
 Ollama
 Omada
+Omnissa
 omniauth
 openwebui
 OPNsense
@@ -48,6 +53,7 @@ Organizr
 Packagify
 Palo
 Papra
+Personio
 PhotoPrism
 pfSense
 phpipam

@@ -73,7 +73,7 @@ rust-test:  ## Run the Rust tests
 	$(CARGO) nextest run --workspace
 
 test: ## Run the server tests and produce a coverage report (locally)
-	$(UV) run coverage run manage.py test --keepdb $(or $(filter-out $@,$(MAKECMDGOALS)),authentik)
+	$(UV) run coverage run manage.py test --keepdb $(or $(filter-out $@ all,$(MAKECMDGOALS)),authentik)
 	$(UV) run coverage combine
 	$(UV) run coverage html
 	$(UV) run coverage report
@@ -186,7 +186,7 @@ gen-changelog:  ## (Release) generate the changelog based from the commits since
 	git log --pretty=format:"- %s" $(shell git merge-base ${last_version} ${current_commit})...${current_commit} > merged_to_current
 	git log --pretty=format:"- %s" $(shell git merge-base ${last_version} ${current_commit})...${last_version} > merged_to_last
 	grep -Eo 'cherry-pick (#\d+)' merged_to_last | cut -d ' ' -f 2 | sed 's/.*/(&)$$/' > cherry_picked_to_last
-	grep -vf cherry_picked_to_last merged_to_current | sort > changelog.md
+	grep -vf cherry_picked_to_last merged_to_current | grep -vE '^- (ci:|website)' | sort > changelog.md
 	rm merged_to_current
 	rm merged_to_last
 	rm cherry_picked_to_last
@@ -201,8 +201,8 @@ gen-diff:  ## (Release) generate the changelog diff between the current schema a
 		/local/schema-old.yml \
 		/local/schema.yml
 	rm schema-old.yml
-	$(SED_INPLACE) 's/{/&#123;/g' diff.md
-	$(SED_INPLACE) 's/}/&#125;/g' diff.md
+	$(SED_INPLACE) 's/{/\&#123;/g' diff.md
+	$(SED_INPLACE) 's/}/\&#125;/g' diff.md
 	npx prettier --write diff.md
 
 gen-client-go:  ## Build and install the authentik API for Golang

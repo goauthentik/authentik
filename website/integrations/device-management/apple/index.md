@@ -13,6 +13,8 @@ authentik_enterprise: true
 authentik_preview: true
 ---
 
+import RedirectURI20265Note from "../../\_redirect-uri-2026-5-note.mdx";
+
 ## What is Apple Business Manager?
 
 > Apple Business Manager is a web-based portal for IT administrators, managers, and procurement professionals to manage devices and automate device enrollment.
@@ -70,6 +72,8 @@ Be aware that Apple Business Manager imposes the following restrictions on feder
   :::
 
 ## authentik configuration
+
+<RedirectURI20265Note />
 
 The workflow to configure authentik as an identity provider for Apple Business Manager involves creating scope mappings, signing keys, a Shared Signals Framework provider, and an OIDC provider/application pair.
 
@@ -160,7 +164,7 @@ You will need to create an [OAuth2/OpenID Provider](/docs/add-secure-apps/provid
     - **Choose a Provider type**: select **OAuth2/OpenID Provider** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
         - Note the **Client ID** and **Client Secret** values because they will be required later.
-        - Set a `Strict` redirect URI to `https://gsa-ws.apple.com/grandslam/GsService2/acs`.
+        - Add a **Redirect URI** of type `Strict` `Authorization` as `https://gsa-ws.apple.com/grandslam/GsService2/acs`.
         - Select any available signing key.
         - Under **Advanced protocol settings**, in addition to the default scopes, add the four following **Selected Scopes** to the provider.
             - `Apple Business Manager ssf.manage`

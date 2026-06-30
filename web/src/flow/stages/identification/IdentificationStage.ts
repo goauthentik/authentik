@@ -17,6 +17,11 @@ import CaptchaDisplayController from "#flow/stages/identification/controllers/Ca
 import RememberMeController from "#flow/stages/identification/controllers/RememberMeController";
 import WebauthnController from "#flow/stages/identification/controllers/WebauthnController";
 import Styles from "#flow/stages/identification/styles.css";
+import {
+    compareLoginSource,
+    formatUIFieldLabel,
+    OR_LIST_FORMATTERS,
+} from "#flow/stages/identification/utils";
 
 import {
     FlowDesignationEnum,
@@ -28,7 +33,6 @@ import {
 } from "@goauthentik/api";
 
 import { kebabCase } from "change-case";
-import { match } from "ts-pattern";
 
 import { msg, str } from "@lit/localize";
 import { html, nothing, PropertyValues, ReactiveControllerHost } from "lit";
@@ -52,23 +56,6 @@ export const PasswordManagerPrefill: {
     password?: string;
     totp?: string;
 } = {};
-
-export const OR_LIST_FORMATTERS: Intl.ListFormat = new Intl.ListFormat("default", {
-    style: "short",
-    type: "disjunction",
-});
-
-const UI_FIELDS: { [key: string]: string } = {
-    [UserFieldsEnum.Username]: msg("Username"),
-    [UserFieldsEnum.Email]: msg("Email"),
-    [UserFieldsEnum.Upn]: msg("UPN"),
-};
-
-const sortLoginSources = (a: LoginSource, b: LoginSource) =>
-    match([!!a.promoted, !!b.promoted])
-        .with([true, false], () => -1)
-        .with([false, true], () => 1)
-        .otherwise(() => 0);
 
 @customElement("ak-stage-identification")
 export class IdentificationStage extends BaseStage<
@@ -196,7 +183,7 @@ export class IdentificationStage extends BaseStage<
 
     protected renderUidField(
         id: string,
-        type: string,
+        type: "email" | "text",
         label: string,
         initialUserIdentification: string | null,
         passwordFields?: boolean,
@@ -244,6 +231,7 @@ export class IdentificationStage extends BaseStage<
             challenge;
 
         const fields = (userFields || []).sort();
+
         if (fields.length === 0) {
             return html`<p>${msg("Select one of the options below to continue.")}</p>`;
         }
@@ -256,7 +244,8 @@ export class IdentificationStage extends BaseStage<
 
         const offerRecovery = flowDesignation === FlowDesignationEnum.Recovery;
         const type = fields.length === 1 && fields[0] === UserFieldsEnum.Email ? "email" : "text";
-        const label = OR_LIST_FORMATTERS.format(fields.map((f) => UI_FIELDS[f]));
+
+        const label = OR_LIST_FORMATTERS.format(fields.map((field) => formatUIFieldLabel(field)));
 
         const captchaStyles = classList([!this.#captcha.live && "pf-m-action"]);
 
@@ -348,7 +337,7 @@ export class IdentificationStage extends BaseStage<
         >
             <legend class="sr-only">${msg("Login sources")}</legend>
             ${repeat(
-                [...sources].sort(sortLoginSources),
+                [...sources].sort(compareLoginSource),
                 (source, idx) => source.name + idx,
                 (source) => this.renderLoginSource(source, showLabels),
             )}

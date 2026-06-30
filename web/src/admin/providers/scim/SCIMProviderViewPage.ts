@@ -11,11 +11,11 @@ import "#elements/ak-mdx/index";
 import "#elements/buttons/ActionButton/index";
 import "#elements/buttons/ModalButton";
 import "#components/sync/SyncStatusCard";
-import "#elements/tasks/ScheduleList";
-import "#elements/tasks/TaskList";
+import "#components/tasks/ScheduleList";
+import "#components/tasks/TaskList";
 import "#elements/timestamp/ak-timestamp";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { EVENT_REFRESH } from "#common/constants";
 
 import { AKElement } from "#elements/Base";
@@ -79,7 +79,7 @@ export class SCIMProviderViewPage extends AKElement {
     }
 
     fetchProvider(id: number) {
-        new ProvidersApi(DEFAULT_CONFIG)
+        aki(ProvidersApi)
             .providersScimRetrieve({ id })
             .then((prov) => (this.provider = prov));
     }
@@ -302,11 +302,9 @@ export class SCIMProviderViewPage extends AKElement {
                         : nothing}
                     <ak-sync-status-card
                         .fetch=${() => {
-                            return new ProvidersApi(DEFAULT_CONFIG).providersScimSyncStatusRetrieve(
-                                {
-                                    id: this.provider?.pk || 0,
-                                },
-                            );
+                            return aki(ProvidersApi).providersScimSyncStatusRetrieve({
+                                id: this.provider?.pk || 0,
+                            });
                         }}
                     >
                         ${this.renderSyncStatusExtra()}

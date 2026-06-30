@@ -4,6 +4,8 @@ sidebar_label: Push Security
 support_level: community
 ---
 
+import SAMLProvider20265Warning from "../../_saml-provider-2026-5-warning.mdx";
+
 ## What is Push Security?
 
 > Push Security is a browser-based identity security platform that hardens and monitors your identity attack surface. Security teams can monitor and secure their entire identity attack surface (ISPM) and detect and block identity-based attacks (ITDR) such as advanced phishing techniques.
@@ -20,77 +22,100 @@ The following placeholders are used in this guide:
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
+:::info Push Security requirements
+SAML login for the Push Security admin console is available for administrators. Push Security requires a default admin role for administrators who join through SAML. SP-initiated login from the Push Security login screen must be enabled by Push Security support.
+:::
+
 ## authentik configuration
 
 To support the integration of Push Security, you need to create property mappings and an application/provider pair in authentik.
 
-### Create property mappings
+### Create property mappings in authentik
 
-Push Security requires separate first and last names for each user, but authentik provides the full name as a single string. To address this, create property mappings that split the full name into first and last names.
+Push Security expects the SAML assertion to include `email`, `given_name`, `family_name`, and `name` attributes. Because authentik stores a user's full name as a single string, create SAML provider property mappings that send the email address, split the full name into first and last names, and send the full display name.
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Customization** > **Property Mappings** and click **Create**.
-    - **Select type**: select **SAML Provider Property Mapping** as the property mapping type.
-    - **Configure the SAML Provider Property Mapping**:
-        - **Name**: `givenname`
-        - **SAML Attribute Name**: `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname`
-        - **Expression**:
+3. Select **SAML Provider Property Mapping** as the property mapping type and click **Next**.
+4. Create a property mapping with the following values:
+    - **Name**: `Push Security email`
+    - **SAML Attribute Name**: `email`
+    - **Expression**:
 
-            ```python
-            return request.user.name.rsplit(" ", 1)[0]
-            ```
+        ```python
+        return request.user.email
+        ```
 
-3. Click **Finish**.
-4. Click **Create** to create the second property mapping.
-    - **Select type**: select **SAML Provider Property Mapping** as the property mapping type.
-    - **Configure the SAML Provider Property Mapping**:
-        - **Name**: `familyname`
-        - **SAML Attribute Name**: `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname`
-        - **Expression**:
+5. Click **Finish** to save the property mapping.
+6. Repeat steps 2-5 to create the following additional SAML provider property mappings:
+    - **Name**: `Push Security given_name`
+    - **SAML Attribute Name**: `given_name`
+    - **Expression**:
 
-            ```python
-            return request.user.name.rsplit(" ", 1)[-1]
-            ```
+        ```python
+        return request.user.name.split(" ", 1)[0] if request.user.name else request.user.username
+        ```
 
-5. Click **Finish**.
+    - **Name**: `Push Security family_name`
+    - **SAML Attribute Name**: `family_name`
+    - **Expression**:
+
+        ```python
+        return request.user.name.rsplit(" ", 1)[-1] if " " in request.user.name else ""
+        ```
+
+    - **Name**: `Push Security name`
+    - **SAML Attribute Name**: `name`
+    - **Expression**:
+
+        ```python
+        return request.user.name or request.user.username
+        ```
 
 ### Create an application and provider in authentik
 
+<SAMLProvider20265Warning />
+
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Applications** > **Applications** and click **New Application** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
+2. Navigate to **Applications** > **Applications** and click **New Application** to create an application and provider pair. (Alternatively, you can first create a provider separately, then create the application and connect it with the provider.)
     - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
-        - Take note of the application slug as it will be required later on.
+        - Take note of the **slug** value because it will be required later.
     - **Choose a Provider type**: select **SAML Provider** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
-        - Temporarily set the **ACS URL** and **Audience** to `https://temp.temp`
+        - Temporarily set the **ACS URL** and **Audience** to `https://temp.temp`.
         - Under **Advanced protocol settings**:
-            - Set an available signing certificate.
-            - **Property mappings**:
-                - Under **Selected User Property Mappings**, add the `givenname` and `familyname` property mappings created in the previous section.
+            - Set **Signing Certificate** to any available certificate.
+            - Set **NameID Property Mapping** to `Push Security email`.
+            - Remove the managed mappings from **Selected User Property Mappings**, then add the `Push Security email`, `Push Security given_name`, `Push Security family_name`, and `Push Security name` property mappings.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 
-- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
-
-3. Click **Submit**.
+3. Click **Submit** to save the new application and provider.
 
 ### Download the signing certificate
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Providers** and click on the name of the newly created Push Security provider.
-3. Click **Download** under **Download signing certificate**. The contents of this certificate will be required in the next section.
+3. Under **Related objects** > **Download signing certificate**, click **Download**. This certificate will be required in the next section.
 
 ## Push Security configuration
 
 1. Log in to the [Push Security administrator console](https://pushsecurity.com).
 2. Go to **Settings** > **Organization**, then under **SAML Configuration**, click **Setup**.
 3. Click **Get Started**, select **Custom SAML**, and click **Next**.
-4. Copy both the **Single Sign-On URL** and the **Service Provider Entity URL**. You’ll need these values in the next section.
+4. Copy both the **Single Sign-On URL** and the **Service Provider Entity URL**. These values will be required in the next section.
 5. Click **Next**.
 6. Choose **Manual**, and enter the following as the **Single Sign-On Login URL**: `https://authentik.company/application/saml/<application_slug>/`
 7. Click **Upload signing certificate**, and upload the certificate downloaded from authentik.
-8. _(Optional but recommended)_ Under **Advanced Settings**, enable **Sign request**. Then download the verification certificate. You’ll need to import this into authentik. Refer to the [authentik certificate documentation](/docs/sys-mgmt/certificates#external-certificates) for guidance.
+8. _(Optional but recommended)_ Under **Advanced Settings**, enable **Sign request**. Then download the verification certificate. This certificate will need to be imported into authentik. Refer to the [authentik certificate documentation](/docs/sys-mgmt/certificates#external-certificates) for guidance.
 9. Click **Next**.
-10. On the **Attribute Mapping** page, click **Next** without making changes.
-11. Leave the **Test SSO** page open. You’ll return to it after completing the next section.
+10. On the **Attribute Mapping** page, confirm that the Push Security attributes are mapped to the following SAML attributes:
+    - **Email**: `email`
+    - **Given name**: `given_name`
+    - **Family name**: `family_name`
+    - **Name**: `name`
+11. Click **Next**.
+12. Select the default admin role that Push Security should use for new administrators who join through SAML.
+13. Leave the **Test SSO** page open. You will return to it after completing the next section.
 
 ## Reconfigure authentik provider
 
@@ -99,24 +124,24 @@ Push Security requires separate first and last names for each user, but authenti
 3. Under **Protocol settings**, set the following required configurations:
     - **ACS URL**: set to the **Single Sign-On URL** copied from the previous section (e.g., `https://login.pushsecurity.com/login/callback?connection=saml-aaa...`).
     - **Audience**: set to the **Service Provider Entity URL** copied from the previous section (e.g., `urn:auth0:production-pushsecurity:saml-aaa...`).
-    - _(Optional but recommended)_ add the verification certificate downloaded from Push Security in the previous section.
+    - _(Optional but recommended)_ Under **Advanced protocol settings**, set **Verification Certificate** to the verification certificate downloaded from Push Security.
 4. Click **Update**.
 
 ## Verify Push Security configuration
 
 1. Return to the Push Security **Test SSO** page.
-2. Click **Test Connection** and you should be redirected to the authentik login screen.
-3. Enter your authentik credentials and log in.
-4. If successful you will be redirected to Push Security and see a **Testing complete!** message.
+2. Click **Test Connection**. You should be redirected to authentik.
+3. Log in with authentik.
+4. After a successful login, you will be redirected to Push Security and see a **Testing complete!** message.
 5. On the **Test SSO** page, click **Enable Connection**.
 
-:::info
-To enable users to enter their email on the Push Security login screen and be redirected to authentik, you will need to contact Push Security to enable the feature. This can be done from the Push Security admin console via **Settings** > **Organization** > **SAML Configuration**.
+:::info SP-initiated login
+Push Security supports IdP-initiated login after SAML is enabled. To allow administrators to enter their email on the Push Security login screen and be redirected to authentik, contact Push Security support.
 :::
 
 ## Configuration verification
 
-To confirm that authentik is properly configured with Push Security, navigate to the authentik dashboard, and click on the Push Security application. You should be redirected to the Push Security admin console.
+To confirm that authentik is properly configured with Push Security, open the Push Security application from the authentik Application Dashboard. You should be redirected to the Push Security admin console.
 
 ## Resources
 

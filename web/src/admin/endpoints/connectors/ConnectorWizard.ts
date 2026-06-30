@@ -6,7 +6,7 @@ import "#elements/wizard/FormWizardPage";
 import "#elements/wizard/TypeCreateWizardPage";
 import "#elements/wizard/Wizard";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { SlottedTemplateResult } from "#elements/types";
 import { CreateWizard } from "#elements/wizard/CreateWizard";
@@ -19,7 +19,7 @@ import { customElement } from "@lit/reactive-element/decorators/custom-element.j
 
 @customElement("ak-endpoint-connector-wizard")
 export class AKEndpointConnectorWizard extends CreateWizard {
-    #api = new EndpointsApi(DEFAULT_CONFIG);
+    #api = aki(EndpointsApi);
 
     public static override verboseName = msg("Endpoint Connector");
     public static override verboseNamePlural = msg("Endpoint Connectors");

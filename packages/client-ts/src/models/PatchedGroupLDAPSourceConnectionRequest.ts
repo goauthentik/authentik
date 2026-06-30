@@ -23,12 +23,6 @@ export interface PatchedGroupLDAPSourceConnectionRequest {
      * @type {string}
      * @memberof PatchedGroupLDAPSourceConnectionRequest
      */
-    group?: string;
-    /**
-     *
-     * @type {string}
-     * @memberof PatchedGroupLDAPSourceConnectionRequest
-     */
     source?: string;
     /**
      *
@@ -61,7 +55,6 @@ export function PatchedGroupLDAPSourceConnectionRequestFromJSONTyped(
         return json;
     }
     return {
-        group: json["group"] == null ? undefined : json["group"],
         source: json["source"] == null ? undefined : json["source"],
         identifier: json["identifier"] == null ? undefined : json["identifier"],
     };
@@ -82,7 +75,6 @@ export function PatchedGroupLDAPSourceConnectionRequestToJSONTyped(
     }
 
     return {
-        group: value["group"],
         source: value["source"],
         identifier: value["identifier"],
     };

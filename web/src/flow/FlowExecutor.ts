@@ -4,7 +4,7 @@ import "#flow/tabs/broadcast";
 import { FlowIframeMessageController } from "./controllers/FlowIframeMessageController";
 import { FlowMultitabController } from "./controllers/FlowMultitabController";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { APIError, parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
 import { configureSentry } from "#common/sentry/index";
 
@@ -163,7 +163,8 @@ export class FlowExecutor extends Interface implements StageHost {
     constructor() {
         configureSentry();
         super();
-        this.api = new FlowsApi(DEFAULT_CONFIG);
+        this.api = aki(FlowsApi);
+
         this.addController(this.#flowIframeMessageController);
         this.addController(this.#flowMultitabController);
         this.addEventListener(AKFlowUpdateChallengeRequest.eventName, this.handleChallengeRequest);

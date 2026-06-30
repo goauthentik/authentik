@@ -19,6 +19,7 @@
     },
     "dependencies": {
         "@eslint/js": "^9.39.3",
+        "@goauthentik/brand-assets": "^2.0.0",
         "@goauthentik/eslint-config": "../packages/eslint-config",
         "@goauthentik/prettier-config": "../packages/prettier-config",
         "@goauthentik/tsconfig": "../packages/tsconfig",
@@ -36,15 +37,15 @@
         "typescript-eslint": "^8.59.3"
     },
     "optionalDependencies": {
-        "@rspack/binding-darwin-arm64": "2.0.3",
-        "@rspack/binding-linux-arm64-gnu": "2.0.3",
-        "@rspack/binding-linux-x64-gnu": "2.0.3",
-        "@swc/core-darwin-arm64": "1.15.33",
-        "@swc/core-linux-arm64-gnu": "1.15.33",
-        "@swc/core-linux-x64-gnu": "1.15.33",
-        "@swc/html-darwin-arm64": "1.15.33",
-        "@swc/html-linux-arm64-gnu": "1.15.33",
-        "@swc/html-linux-x64-gnu": "1.15.33",
+        "@rspack/binding-darwin-arm64": "2.0.8",
+        "@rspack/binding-linux-arm64-gnu": "2.0.8",
+        "@rspack/binding-linux-x64-gnu": "2.0.8",
+        "@swc/core-darwin-arm64": "1.15.43",
+        "@swc/core-linux-arm64-gnu": "1.15.43",
+        "@swc/core-linux-x64-gnu": "1.15.43",
+        "@swc/html-darwin-arm64": "1.15.43",
+        "@swc/html-linux-arm64-gnu": "1.15.43",
+        "@swc/html-linux-x64-gnu": "1.15.43",
         "lightningcss-darwin-arm64": "1.32.0",
         "lightningcss-linux-arm64-gnu": "1.32.0",
         "lightningcss-linux-x64-gnu": "1.32.0"

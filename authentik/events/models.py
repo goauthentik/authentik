@@ -258,6 +258,7 @@ class Event(SerializerModel, ExpiringModel):
             action=EventAction.CONFIGURATION_WARNING,
             context__deprecation=identifier,
         )
+        cause = str(cause)
         if cause:
             query &= Q(context__cause=cause)
         if Event.objects.filter(query).exists():
@@ -518,8 +519,30 @@ class NotificationTransport(TasksModel, SerializerModel):
         }
         if notification.event:
             body["attachments"][0]["title"] = notification.event.action
+        headers = {}
+        if self.webhook_mapping_body:
+            body = sanitize_item(
+                self.webhook_mapping_body.evaluate(
+                    user=notification.user,
+                    request=None,
+                    notification=notification,
+                    original_body=body,
+                )
+            )
+        if self.webhook_mapping_headers:
+            headers = sanitize_item(
+                self.webhook_mapping_headers.evaluate(
+                    user=notification.user,
+                    request=None,
+                    notification=notification,
+                )
+            )
         try:
-            response = get_http_session().post(self.webhook_url, json=body)
+            response = get_http_session().post(
+                self.webhook_url,
+                json=body,
+                headers=headers,
+            )
             response.raise_for_status()
         except RequestException as exc:
             text = exc.response.text if exc.response is not None else str(exc)
