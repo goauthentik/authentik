@@ -27,7 +27,10 @@ pub(crate) async fn handle(
     let claims = auth.as_ref().map(|authed| &authed.claims);
 
     if let Some(claims) = claims {
-        app.add_upstream_headers(request.headers_mut(), claims);
+        // `set_cookie` is present only when the request authenticated via inbound
+        // header credentials (a session was just persisted from them).
+        let via_header_auth = auth.as_ref().is_some_and(|authed| authed.set_cookie.is_some());
+        app.add_upstream_headers(request.headers_mut(), claims, via_header_auth);
     } else {
         // Unauthenticated: allow only allowlisted paths through; otherwise start auth.
         let request_url = Url::parse(&oauth::url_join(

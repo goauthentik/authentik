@@ -53,17 +53,22 @@ pub(crate) fn basic_auth_header(provider: &ProxyOutpostConfig, claims: &Claims) 
 
 /// Set the `Authorization` header sent upstream.
 ///
-/// The client's own inbound `Authorization` (e.g. the bearer token the proxy
-/// just consumed to authenticate the request) is never forwarded upstream. If
-/// basic-auth-to-upstream is configured, its value is set in its place.
+/// A configured basic-auth-to-upstream value always takes precedence. Otherwise,
+/// when the request authenticated via header credentials (`via_header_auth`), the
+/// inbound `Authorization` — the credential the proxy just consumed — is removed
+/// so it is not forwarded upstream. A session-authenticated request keeps its
+/// inbound `Authorization` so upstreams expecting a client-supplied token still
+/// receive it.
 fn set_upstream_authorization(
     headers: &mut HeaderMap,
     provider: &ProxyOutpostConfig,
     claims: &Claims,
+    via_header_auth: bool,
 ) {
-    headers.remove(AUTHORIZATION);
     if let Some(authorization) = basic_auth_header(provider, claims) {
         set_header(headers, "Authorization", &authorization);
+    } else if via_header_auth {
+        headers.remove(AUTHORIZATION);
     }
 }
 
@@ -98,7 +103,16 @@ pub(crate) fn remove_shadowed_underscore_headers(headers: &mut HeaderMap) {
 
 impl Application {
     /// Inject the authenticated user's headers into an upstream request.
-    pub(super) fn add_upstream_headers(&self, headers: &mut HeaderMap, claims: &Claims) {
+    ///
+    /// `via_header_auth` indicates the request authenticated via an inbound
+    /// `Authorization` header (bearer/basic), which governs whether that header
+    /// is stripped before forwarding (see [`set_upstream_authorization`]).
+    pub(super) fn add_upstream_headers(
+        &self,
+        headers: &mut HeaderMap,
+        claims: &Claims,
+        via_header_auth: bool,
+    ) {
         let injected = [
             ("X-authentik-username", claims.preferred_username.clone()),
             ("X-authentik-groups", claims.groups.join("|")),
@@ -120,7 +134,7 @@ impl Application {
             set_header(headers, name, &value);
         }
 
-        set_upstream_authorization(headers, &self.provider, claims);
+        set_upstream_authorization(headers, &self.provider, claims, via_header_auth);
 
         if let Some(proxy) = &claims.ak_proxy
             && let Some(Value::Object(additional)) = proxy.user_attributes.get("additionalHeaders")
@@ -217,9 +231,9 @@ mod tests {
     }
 
     #[test]
-    fn inbound_authorization_is_dropped() {
-        // The client's inbound Authorization must not leak upstream when
-        // basic-auth-to-upstream is not configured.
+    fn inbound_authorization_dropped_on_header_auth() {
+        // A request authenticated via the Authorization header must not have that
+        // credential forwarded upstream (no basic-auth-to-upstream configured).
         let mut provider = provider();
         provider.basic_auth_enabled = Some(false);
 
@@ -229,15 +243,39 @@ mod tests {
             HeaderValue::from_static("Bearer client-token"),
         );
 
-        set_upstream_authorization(&mut headers, &provider, &Claims::default());
+        set_upstream_authorization(&mut headers, &provider, &Claims::default(), true);
 
         assert!(!headers.contains_key(AUTHORIZATION));
     }
 
     #[test]
+    fn inbound_authorization_kept_on_session_auth() {
+        // A session-authenticated request keeps its inbound Authorization (no
+        // basic-auth-to-upstream configured), so the upstream still receives it.
+        let mut provider = provider();
+        provider.basic_auth_enabled = Some(false);
+
+        let mut headers = HeaderMap::new();
+        headers.insert(
+            AUTHORIZATION,
+            HeaderValue::from_static("Bearer client-token"),
+        );
+
+        set_upstream_authorization(&mut headers, &provider, &Claims::default(), false);
+
+        assert_eq!(
+            headers
+                .get(AUTHORIZATION)
+                .and_then(|value| value.to_str().ok()),
+            Some("Bearer client-token")
+        );
+    }
+
+    #[test]
     fn basic_auth_replaces_inbound_authorization() {
         // With basic-auth-to-upstream enabled, the inbound Authorization is
-        // replaced by the derived basic-auth value rather than forwarded.
+        // replaced by the derived basic-auth value rather than forwarded — even
+        // for a session-authenticated request (via_header_auth = false).
         let claims = Claims {
             email: "user@example.com".to_owned(),
             ak_proxy: Some(ProxyClaims {
@@ -256,7 +294,7 @@ mod tests {
             HeaderValue::from_static("Bearer client-token"),
         );
 
-        set_upstream_authorization(&mut headers, &provider(), &claims);
+        set_upstream_authorization(&mut headers, &provider(), &claims, false);
 
         assert_eq!(
             headers

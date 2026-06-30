@@ -60,7 +60,11 @@ fn forward_authenticated_response(
     request_headers: &HeaderMap,
 ) -> Response {
     let mut response = StatusCode::OK.into_response();
-    app.add_upstream_headers(response.headers_mut(), &authed.claims);
+    app.add_upstream_headers(
+        response.headers_mut(),
+        &authed.claims,
+        authed.set_cookie.is_some(),
+    );
     if let Some(user_agent) = request_headers.get(header::USER_AGENT) {
         response
             .headers_mut()
