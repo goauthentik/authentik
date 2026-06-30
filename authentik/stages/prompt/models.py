@@ -351,9 +351,11 @@ class Prompt(SerializerModel):
 class PromptStage(Stage):
     """Prompt the user to enter information."""
 
-    fields = models.ManyToManyField(Prompt)
+    fields = models.ManyToManyField(Prompt, through="PromptStageField")
 
-    validation_policies = models.ManyToManyField(Policy, blank=True)
+    validation_policies = models.ManyToManyField(
+        Policy, blank=True, through="PromptStageValidationPolicy"
+    )
 
     @property
     def serializer(self) -> type[BaseSerializer]:
@@ -374,3 +376,37 @@ class PromptStage(Stage):
     class Meta:
         verbose_name = _("Prompt Stage")
         verbose_name_plural = _("Prompt Stages")
+
+
+class PromptStageField(models.Model):
+    prompt_stage = models.ForeignKey(
+        PromptStage,
+        on_delete=models.CASCADE,
+    )
+    prompt = models.ForeignKey(Prompt, on_delete=models.CASCADE)
+
+    class Meta:
+        unique_together = (("prompt_stage", "prompt"),)
+
+    def __str__(self):
+        return (
+            f"PromptStageField for PromptStage {self.prompt_stage_id} "
+            f"and Field {self.prompt_id}."
+        )
+
+
+class PromptStageValidationPolicy(models.Model):
+    prompt_stage = models.ForeignKey(
+        PromptStage,
+        on_delete=models.CASCADE,
+    )
+    policy = models.ForeignKey(Policy, on_delete=models.CASCADE)
+
+    class Meta:
+        unique_together = (("prompt_stage", "policy"),)
+
+    def __str__(self):
+        return (
+            f"PromptStageValidationPolicy for PromptStage {self.prompt_stage_id} "
+            f"and Policy {self.policy_id}."
+        )
