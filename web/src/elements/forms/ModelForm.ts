@@ -19,6 +19,15 @@ interface NamedInstance {
     verboseNamePlural?: string;
 }
 
+/*
+ * Type for saving and retrieving data ops from the Authentik API.
+ */
+export interface ModelEndpoints<T, PKT extends string | number = string, D = T> {
+    load: (pk: PKT) => Promise<T>;
+    create: (data: NonNullable<D>) => Promise<unknown>;
+    update: (pk: PKT, data: NonNullable<D>) => Promise<unknown>;
+}
+
 /**
  * Predicate to determine if a given instance has verbose name properties.
  *
@@ -80,6 +89,8 @@ export abstract class ModelForm<
      */
     public static asInstanceInvoker = asInstanceInvoker;
 
+    protected endpoints?: ModelEndpoints<NonNullable<T>, PKT, D>;
+
     protected logger = ConsoleLogger.prefix(`model-form/${this.localName}`);
 
     @state()
@@ -96,7 +107,30 @@ export abstract class ModelForm<
      * @param pk The primary key of the instance to load.
      * @returns A promise that resolves to the loaded instance.
      */
-    protected abstract loadInstance(pk: PKT): Promise<T | null>;
+    protected loadInstance(pk: PKT): Promise<T | null> {
+        if (!this.endpoints) {
+            throw new TypeError(
+                "Neither 'endpoints' or 'loadInstance' defined on ${this.localName}",
+            );
+        }
+        return this.endpoints.load(pk);
+    }
+
+    protected override send(data: NonNullable<D>) {
+        if (!this.endpoints) {
+            throw new TypeError("Neither 'endpoints' or 'send' defined on ${this.localName}");
+        }
+        return this.instancePk === null
+            ? this.endpoints.create(data)
+            : this.endpoints.update(this.instancePk, data);
+    }
+
+    public override getSuccessMessage() {
+        if (!this.verboseName) return super.getSuccessMessage();
+        return this.instancePk === null
+            ? msg(str`Successfully created ${this.verboseName}`)
+            : msg(str`Successfully updated ${this.verboseName}`);
+    }
 
     /**
      * An overridable method for assigning the loaded instance to the form's state.
