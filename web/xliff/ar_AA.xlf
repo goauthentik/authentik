@@ -584,7 +584,7 @@
 </trans-unit>
 <trans-unit id="sd09354b0220a13ce">
   <source>Select all rows on page (<x id="0" equiv-text="${selectedCount}"/> of <x id="1" equiv-text="${pageItemCount}"/> selected)</source>
-  <target>Select all rows on page (<x id="0" equiv-text="${selectedCount}"/> of <x id="1" equiv-text="${pageItemCount}"/> selected)</target>
+  <target>تحديد جميع الصفوف في الصفحة (<x id="0" equiv-text="${selectedCount}"/> من <x id="1" equiv-text="${pageItemCount}"/> محددة)</target>
 </trans-unit>
 <trans-unit id="s76ef34813bff563f">
   <source>Last refreshed</source>
