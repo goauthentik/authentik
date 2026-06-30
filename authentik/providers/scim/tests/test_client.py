@@ -1,5 +1,7 @@
 """SCIM Client tests"""
 
+from unittest.mock import patch
+
 from django.core.cache import cache
 from django.test import TestCase
 from requests_mock import Mocker
@@ -12,6 +14,7 @@ from authentik.providers.scim.models import SCIMMapping, SCIMProvider
 from authentik.providers.scim.tasks import scim_sync
 
 
+@patch("authentik.providers.scim.clients.base.SCIMClient.can_discover", False)
 class SCIMClientTests(TestCase):
     """SCIM Client tests"""
 
@@ -83,6 +86,18 @@ class SCIMClientTests(TestCase):
             mock.get(
                 "https://localhost/ServiceProviderConfig",
                 json={},
+            )
+            SCIMClient(self.provider)
+            self.assertEqual(mock.call_count, 1)
+            self.assertEqual(mock.request_history[0].method, "GET")
+
+    def test_config_non_json_response(self):
+        """Test non-JSON config response falls back to defaults"""
+        with Mocker() as mock:
+            mock.get(
+                "https://localhost/ServiceProviderConfig",
+                text="<html></html>",
+                headers={"Content-Type": "text/html"},
             )
             SCIMClient(self.provider)
             self.assertEqual(mock.call_count, 1)
