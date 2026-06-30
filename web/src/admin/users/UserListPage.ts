@@ -13,6 +13,10 @@ import "#elements/buttons/ActionButton/index";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
+import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
+import PFAvatar from "@patternfly/patternfly/components/Avatar/avatar.css";
+import PFCard from "@patternfly/patternfly/components/Card/card.css";
+import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
 import { aki } from "#common/api/client";
 import { userTypeToLabel } from "#common/labels";
@@ -37,15 +41,11 @@ import { UserImpersonateForm } from "#admin/users/UserImpersonateForm";
 
 import { CoreApi, CoreUsersExportCreateRequest, User, UserPath } from "@goauthentik/api";
 
+import { guard } from "lit-html/directives/guard.js";
+
 import { msg, str } from "@lit/localize";
 import { css, CSSResult, html, nothing, TemplateResult } from "lit";
-import { guard } from "lit-html/directives/guard.js";
 import { customElement, property, state } from "lit/decorators.js";
-
-import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
-import PFAvatar from "@patternfly/patternfly/components/Avatar/avatar.css";
-import PFCard from "@patternfly/patternfly/components/Card/card.css";
-import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
 const recoveryButtonStyles = css`
     #recovery-request-buttons {
@@ -121,9 +121,9 @@ export class UserListPage extends WithLicenseSummary(
      * 2. Brand default user path (admin-configured override)
      * 3. Compiled-in `DefaultUIConfig` default (fallback)
      *
-     * `activePath` is set to `""` (show all users) when neither a URL param nor a
-     * brand-level override is present, avoiding silent list filtering.
-     * `defaultActivePath` always resolves to a value via the fallback chain.
+     * `activePath` is set to `""` (show all users) when neither a URL param nor a brand-level
+     * override is present, avoiding silent list filtering. `defaultActivePath` always resolves to a
+     * value via the fallback chain.
      */
     protected synchronizeUserPaths(): void {
         this.canImpersonate = this.can(CapabilitiesEnum.CanImpersonate);

@@ -1,6 +1,5 @@
 import "#admin/common/ak-crypto-certificate-search";
 import "#admin/common/ak-flow-search/ak-branded-flow-search";
-
 import { renderForm } from "./LDAPProviderFormForm.js";
 
 import { aki } from "#common/api/client";
@@ -16,7 +15,7 @@ import { customElement } from "lit/decorators.js";
 /**
  * LDAP Provider Form
  *
- * @prop {number} instancePk - The primary key of the instance to load.
+ * @property {number} instancePk - The primary key of the instance to load.
  */
 @customElement("ak-provider-ldap-form")
 export class LDAPProviderFormPage extends WithBrandConfig(BaseProviderForm<LDAPProvider>) {

@@ -1,5 +1,6 @@
 /**
- * @file Contains various label maps for API enums and other values that we want to display in the UI.
+ * @file Contains various label maps for API enums and other values that we want to display in the
+ *   UI.
  */
 
 import { MessageFormatter } from "#common/ui/locale/format";

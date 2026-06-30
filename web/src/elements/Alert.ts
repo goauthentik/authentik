@@ -1,3 +1,5 @@
+import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
+
 import { AKElement } from "#elements/Base";
 import { type SlottedTemplateResult, type Spread } from "#elements/types";
 
@@ -6,8 +8,6 @@ import { spread } from "@open-wc/lit-helpers";
 import { css, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
-
-import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
 
 export enum Level {
     Warning = "pf-m-warning",

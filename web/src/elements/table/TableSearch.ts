@@ -1,4 +1,8 @@
 import "#components/ak-search-ql/index";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
+import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-group.css";
+import PFToolbar from "@patternfly/patternfly/components/Toolbar/toolbar.css";
 
 import { AKElement } from "#elements/Base";
 import { PaginatedResponse } from "#elements/table/Table";
@@ -8,11 +12,6 @@ import { msg } from "@lit/localize";
 import { css, CSSResult, html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { createRef, ref } from "lit/directives/ref.js";
-
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
-import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-group.css";
-import PFToolbar from "@patternfly/patternfly/components/Toolbar/toolbar.css";
 
 @customElement("ak-table-search")
 export class TableSearchForm extends AKElement {

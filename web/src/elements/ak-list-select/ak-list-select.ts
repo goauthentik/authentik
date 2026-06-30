@@ -1,4 +1,6 @@
 import { groupOptions, isVisibleInScrollRegion } from "./utils.js";
+import PFDropdown from "@patternfly/patternfly/components/Dropdown/dropdown.css";
+import PFSelect from "@patternfly/patternfly/components/Select/select.css";
 
 import { AKElement } from "#elements/Base";
 import type { GroupedOptions, SelectGroup, SelectOption, SelectOptions } from "#elements/types";
@@ -8,9 +10,6 @@ import { match } from "ts-pattern";
 
 import { css, html, nothing, PropertyValueMap } from "lit";
 import { customElement, property, query, state } from "lit/decorators.js";
-
-import PFDropdown from "@patternfly/patternfly/components/Dropdown/dropdown.css";
-import PFSelect from "@patternfly/patternfly/components/Select/select.css";
 
 export interface IListSelect {
     options: SelectOptions;
@@ -70,7 +69,7 @@ export class ListSelect extends AKElement implements IListSelect {
     /**
      * See the search options type, described in the `./types` file, for the relevant types.
      *
-     * @prop
+     * @property
      */
     @property({ type: Array, attribute: false })
     public set options(options: SelectOptions) {
@@ -86,7 +85,7 @@ export class ListSelect extends AKElement implements IListSelect {
     /**
      * The current value of the menu.
      *
-     * @prop
+     * @property
      */
     @property({ type: String, reflect: true })
     public value?: string | null = null;
@@ -95,7 +94,7 @@ export class ListSelect extends AKElement implements IListSelect {
      * The string representation that means an empty option. If not present, no empty option is
      * possible.
      *
-     * @prop
+     * @property
      */
     @property()
     public emptyOption?: string;
@@ -172,9 +171,8 @@ export class ListSelect extends AKElement implements IListSelect {
     /**
      * Highlight the currently focused item.
      *
-     * @todo
-     * This doesn't quite work as intended, but this component will likely
-     * be refined after the PatternFly upgrade.
+     * @todo This doesn't quite work as intended, but this component will likely be refined after
+     *   the PatternFly upgrade.
      */
     private highlightFocusedItem() {
         this.displayedElements.forEach((item) => {

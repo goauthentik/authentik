@@ -1,7 +1,6 @@
 import "#admin/admin-settings/AdminSettingsFooterLinks";
 import "#elements/messages/MessageContainer";
 import "#elements/ak-array-input";
-
 import { IArrayInput } from "#elements/ak-array-input";
 
 import { FooterLinkInput } from "#admin/admin-settings/AdminSettingsFooterLinks";

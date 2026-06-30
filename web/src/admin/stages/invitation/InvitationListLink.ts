@@ -1,6 +1,10 @@
 import "#admin/stages/invitation/InvitationSendEmailForm";
 import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
+import PFForm from "@patternfly/patternfly/components/Form/form.css";
+import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 
 import { aki } from "#common/api/client";
 import { writeToClipboard } from "#common/clipboard";
@@ -14,11 +18,6 @@ import { css, CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { until } from "lit/directives/until.js";
 
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
-import PFForm from "@patternfly/patternfly/components/Form/form.css";
-import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
-
 @customElement("ak-stage-invitation-list-link")
 export class InvitationListLink extends AKElement {
     @property({ attribute: false })
@@ -28,10 +27,9 @@ export class InvitationListLink extends AKElement {
     selectedFlow?: string;
 
     /**
-     * When true, the "Send via Email" button dispatches the
-     * `ak-invitation-send-email-inline` event instead of opening the nested
-     * email modal. Used by the invitation wizard's success step so the email
-     * form can be rendered as its own wizard step.
+     * When true, the "Send via Email" button dispatches the `ak-invitation-send-email-inline` event
+     * instead of opening the nested email modal. Used by the invitation wizard's success step so
+     * the email form can be rendered as its own wizard step.
      */
     @property({ type: Boolean, attribute: "inline-send-email" })
     inlineSendEmail = false;

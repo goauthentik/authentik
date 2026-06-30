@@ -1,5 +1,7 @@
 import { DualSelectEventType, DualSelectPair } from "../types.js";
 import { availablePaneStyles, listStyles } from "./styles.js";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFDualListSelector from "@patternfly/patternfly/components/DualListSelector/dual-list-selector.css";
 
 import { AKElement } from "#elements/Base";
 import { CustomEmitterElement } from "#elements/utils/eventEmitter";
@@ -10,9 +12,6 @@ import { classMap } from "lit/directives/class-map.js";
 import { map } from "lit/directives/map.js";
 import { createRef, ref } from "lit/directives/ref.js";
 
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFDualListSelector from "@patternfly/patternfly/components/DualListSelector/dual-list-selector.css";
-
 const hostAttributes = [
     ["aria-labelledby", "dual-list-selector-available-pane-status"],
     ["aria-multiselectable", "true"],
@@ -20,24 +19,22 @@ const hostAttributes = [
 ] as const satisfies Array<[string, string]>;
 
 /**
+ * @fires ak-dual-select-available-move-changed - When the list of "to move" entries changed.
+ *   Includes the current * `toMove` content.
+ * @fires ak-dual-select-add-one - Double-click with the element clicked on.
+ * @property {DualSelectPair[]} options - The full list of key/value pairs that are currently
+ *   available to be selected.
+ * @property {Set<string | number>} selected - A set of keys that are currently selected, so they
+ *   can be marked as such.
+ *
+ *   It is not expected that the `ak-dual-select-available-move-changed` event will be used;
+ *   instead, the attribute will be read by the parent when a control is clicked.
  * @element ak-dual-select-available-panel
  *
  * The "available options" or "left" pane in a dual-list multi-select. It receives from its parent a
- * list of options to show *now*, the list of all "selected" options, and maintains an internal list
+ * list of options to show _now_, the list of all "selected" options, and maintains an internal list
  * of objects selected to move. "selected" options are marked with a checkmark to show they're
  * already in the "selected" collection and would be pointless to move.
- *
- * @fires ak-dual-select-available-move-changed - When the list of "to move" entries changed.
- * Includes the current * `toMove` content.
- *
- * @fires ak-dual-select-add-one - Double-click with the element clicked on.
- *
- * @prop {DualSelectPair[]} options - The full list of key/value pairs that are currently available to be selected.
- *
- * @prop {Set<string|number>} selected - A set of keys that are currently selected, so they can be marked as such.
- *
- * It is not expected that the `ak-dual-select-available-move-changed` event will be used; instead,
- * the attribute will be read by the parent when a control is clicked.
  */
 @customElement("ak-dual-select-available-pane")
 export class AkDualSelectAvailablePane extends CustomEmitterElement<DualSelectEventType>(
@@ -52,9 +49,9 @@ export class AkDualSelectAvailablePane extends CustomEmitterElement<DualSelectEv
     public options?: DualSelectPair[];
 
     /**
-     * A set (set being easy for lookups) of keys with all the pairs selected,
-     * so that the ones currently being shown that have already been selected
-     * can be marked and their clicks ignored.
+     * A set (set being easy for lookups) of keys with all the pairs selected, so that the ones
+     * currently being shown that have already been selected can be marked and their clicks
+     * ignored.
      */
     @property({ type: Object })
     public selected: Set<string | number> = new Set();
@@ -64,12 +61,12 @@ export class AkDualSelectAvailablePane extends CustomEmitterElement<DualSelectEv
     //#region State
 
     /**
-     * This is the only mutator for this object.
-     * It collects the list of objects the user has clicked on *in this pane*.
+     * This is the only mutator for this object. It collects the list of objects the user has
+     * clicked on _in this pane_.
      *
-     * It is explicitly marked as "public" to emphasize that the parent orchestrator
-     * for the dual-select widget can and will access it to get the list of keys to be
-     * moved (removed) if the user so requests.
+     * It is explicitly marked as "public" to emphasize that the parent orchestrator for the
+     * dual-select widget can and will access it to get the list of keys to be moved (removed) if
+     * the user so requests.
      */
     @state()
     public toMove: Set<string | number> = new Set();

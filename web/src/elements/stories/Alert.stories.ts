@@ -1,5 +1,4 @@
 import "../Alert.js";
-
 import { AKAlert, type IAlert } from "../Alert.js";
 
 import type { Meta, StoryObj } from "@storybook/web-components";
@@ -76,28 +75,28 @@ export const DefaultStory: StoryObj = {
 
 export const SuccessAlert = {
     ...DefaultStory,
-    args: ({
-	...DefaultStory,
-	level: 'success',
-	message: 'He\'s a tribute to your genius!'
-}),
+    args: {
+        ...DefaultStory,
+        level: "success",
+        message: "He's a tribute to your genius!",
+    },
 };
 
 export const InfoAlert = {
     ...DefaultStory,
-    args: ({
-	...DefaultStory,
-	level: 'info',
-	icon: 'fa-coffee',
-	message: 'It is time for coffee.'
-}),
+    args: {
+        ...DefaultStory,
+        level: "info",
+        icon: "fa-coffee",
+        message: "It is time for coffee.",
+    },
 };
 
 export const DangerAlert = {
     ...DefaultStory,
-    args: ({
-	...DefaultStory,
-	level: 'danger',
-	message: 'Danger, Will Robinson!  Danger!'
-}),
+    args: {
+        ...DefaultStory,
+        level: "danger",
+        message: "Danger, Will Robinson!  Danger!",
+    },
 };

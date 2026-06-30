@@ -1,6 +1,5 @@
 /**
  * @file Paths used by the web package.
- *
  * @runtime node
  */
 
@@ -40,17 +39,15 @@ export const DistDirectory = /** @type {`${WebPackageIdentifier}/${typeof DistDi
 //#region Entry points
 
 /**
- * @typedef {{ in: string, out: string }} EntryPointTarget
+ * @typedef {{ in: string; out: string }} EntryPointTarget
  *
- * ESBuild entrypoint target.
- * Matches the type defined in the ESBuild context.
+ *   ESBuild entrypoint target. Matches the type defined in the ESBuild context.
  */
 
 /**
  * Entry points available for building.
  *
  * @satisfies {Record<string, EntryPointTarget>}
- *
  * @runtime node
  */
 export const EntryPoint = /** @type {const} */ ({

@@ -14,7 +14,6 @@ import "#elements/forms/SearchSelect/ak-search-select";
 import "#admin/applications/ak-provider-table";
 import "#admin/applications/components/ak-backchannel-input";
 import "#admin/applications/components/ak-provider-search-input";
-
 import { aki } from "#common/api/client";
 
 import { ModelForm } from "#elements/forms/ModelForm";
@@ -34,7 +33,7 @@ import { ifDefined } from "lit/directives/if-defined.js";
 /**
  * Application Form
  *
- * @prop {string} instancePk - The primary key of the instance to load.
+ * @property {string} instancePk - The primary key of the instance to load.
  */
 @customElement("ak-application-form")
 export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Application, string>) {

@@ -1,6 +1,13 @@
 import "#elements/LoadingOverlay";
-
 import { isFormField } from "./form-associated-element";
+import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFCard from "@patternfly/patternfly/components/Card/card.css";
+import PFForm from "@patternfly/patternfly/components/Form/form.css";
+import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
+import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-group.css";
+import PFSwitch from "@patternfly/patternfly/components/Switch/switch.css";
+import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 
 import { EVENT_REFRESH } from "#common/constants";
 import { PFSize } from "#common/enums";
@@ -40,21 +47,13 @@ import { ConsoleLogger } from "#logger/browser";
 
 import { instanceOfValidationError } from "@goauthentik/api";
 
+import { createRef, ref } from "lit-html/directives/ref.js";
+
 import { msg, str } from "@lit/localize";
 import { CSSResult, html, nothing, PropertyValues } from "lit";
-import { createRef, ref } from "lit-html/directives/ref.js";
 import { customElement, property, state } from "lit/decorators.js";
 import { guard } from "lit/directives/guard.js";
 import { ifDefined } from "lit/directives/if-defined.js";
-
-import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFCard from "@patternfly/patternfly/components/Card/card.css";
-import PFForm from "@patternfly/patternfly/components/Form/form.css";
-import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
-import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-group.css";
-import PFSwitch from "@patternfly/patternfly/components/Switch/switch.css";
-import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 
 //#region Form
 
@@ -70,33 +69,26 @@ export interface AKFormSubmitEvent<T> extends SubmitEvent {
  *
  * The base form element for interacting with user inputs.
  *
- * All forms either[1] inherit from this class and implement the `renderForm()` method to
- * produce the actual form, or include the form in-line as a slotted element. Bizarrely, this form
- * will not render at all if it's not actually in the viewport?[2]
- *
- * @class Form
- *
- * @slot - Where the form goes if `renderForm()` returns undefined.
- * @fires ak-refresh - Dispatched when the form has been successfully submitted and data has changed.
- * @fires ak-submitted - Dispatched when the form is submitted.
- * @fires submit - The native submit event, re-dispatched after a successful submission for parent components to listen for.
- * @csspart partname - description
- *
- *
- * @template T - The type of the form data to be sent. Must be serializable by `serializeForm()`.
- * @template D - The type of the data returned by the `send()` method. Defaults to the same as `T`. *
+ * All forms either[1] inherit from this class and implement the `renderForm()` method to produce
+ * the actual form, or include the form in-line as a slotted element. Bizarrely, this form will not
+ * render at all if it's not actually in the viewport?[2]
  *
  * @remarks
- * TODO:
- *
- * 1. Specialization: Separate this component into three different classes:
- *    - The base class
- *    - The "use `renderForm` class
- *    - The slotted class.
- * 2. There is already specialization-by-type throughout all of our code.
- *    Consider refactoring serializeForm() so that the conversions are on
- *    the input types, rather than here. (i.e. "Polymorphism is better than
- *    switch.")
+ *   TODO: 1. Specialization: Separate this component into three different classes: - The base class
+ *   - The "use `renderForm` class - The slotted class. 2. There is already specialization-by-type
+ *   throughout all of our code. Consider refactoring serializeForm() so that the conversions are on
+ *   the input types, rather than here. (i.e. "Polymorphism is better than switch.")
+ * @fires ak-refresh - Dispatched when the form has been successfully submitted and data has
+ *   changed.
+ * @fires ak-submitted - Dispatched when the form is submitted.
+ * @fires submit - The native submit event, re-dispatched after a successful submission for parent
+ *   components to listen for.
+ * @template T - The type of the form data to be sent. Must be serializable by `serializeForm()`.
+ * @template D - The type of the data returned by the `send()` method. Defaults to the same as `T`.
+ *   *
+ * @class Form
+ * @slot - Where the form goes if `renderForm()` returns undefined.
+ * @csspart partname - description
  */
 @customElement("ak-form")
 export class Form<T = Record<string, unknown>, D = T>
@@ -142,7 +134,8 @@ export class Form<T = Record<string, unknown>, D = T>
     });
 
     /**
-     * The gerund to use in the message key for the submission message, e.g. "Creating" or "Updating".
+     * The gerund to use in the message key for the submission message, e.g. "Creating" or
+     * "Updating".
      */
     public static submittingVerb: string = msg("Creating", {
         id: "form.submit.verb.creating",
@@ -167,8 +160,8 @@ export class Form<T = Record<string, unknown>, D = T>
     /**
      * Show a modal containing this form.
      *
-     * @see {@linkcode renderModal} for the underlying implementation.
      * @returns A promise that resolves when the modal is closed.
+     * @see {@linkcode renderModal} for the underlying implementation.
      */
     public static showModal(init?: DialogInit): Promise<void> {
         return renderModal(new this(), init);
@@ -177,8 +170,8 @@ export class Form<T = Record<string, unknown>, D = T>
     /**
      * Show this form in a modal dialog.
      *
-     * This is useful when working with a form instance directly, rather than
-     * in a Lit HTML template.
+     * This is useful when working with a form instance directly, rather than in a Lit HTML
+     * template.
      *
      * @see {@linkcode Form.showModal} for the static version.
      * @see {@linkcode renderModal} for the underlying implementation.
@@ -194,9 +187,10 @@ export class Form<T = Record<string, unknown>, D = T>
     /**
      * Send the serialized form to its destination.
      *
-     * @param data The serialized form data.
-     * @returns A promise that resolves when the data has been sent.
      * @abstract
+     * @param data The serialized form data.
+     *
+     * @returns A promise that resolves when the data has been sent.
      */
     protected send?(data: NonNullable<D>): Promise<unknown>;
 
@@ -206,8 +200,8 @@ export class Form<T = Record<string, unknown>, D = T>
      * Whether the table is visible in the viewport.
      *
      * @remarks
-     * We cache the visibility between frames to avoid the synchronous `getBoundingClientRect()`
-     * call within {@linkcode isInViewport}.
+     *   We cache the visibility between frames to avoid the synchronous `getBoundingClientRect()`
+     *   call within {@linkcode isInViewport}.
      */
     @intersectionObserver()
     public visible = false;
@@ -225,17 +219,16 @@ export class Form<T = Record<string, unknown>, D = T>
     public size: PFSize | null = null;
 
     /**
-     * The label for the submit button. If not provided,
-     * a default label will be generated based on `verboseName`,
-     * falling back to "Create".
+     * The label for the submit button. If not provided, a default label will be generated based on
+     * `verboseName`, falling back to "Create".
      */
     @property({ type: String, attribute: "submit-label", useDefault: true })
     public submitLabel: string | null = null;
 
     /**
-     * The label for the submit button while the form is being submitted. If not provided,
-     * a default label will be generated based on `submittingVerb` and `verboseName`,
-     * falling back to "Submitting...".
+     * The label for the submit button while the form is being submitted. If not provided, a default
+     * label will be generated based on `submittingVerb` and `verboseName`, falling back to
+     * "Submitting...".
      */
     @property({ type: String, attribute: "submitting-label", useDefault: true })
     public submittingLabel: string | null = null;
@@ -506,7 +499,8 @@ export class Form<T = Record<string, unknown>, D = T>
      * this to work. If processing the data results in an error, we catch the error, distribute
      * field-levels errors to the fields, and send the rest of them to the Notifications.
      *
-     * @returns A promise that resolves to the response from `send()`, or `false` if the form is invalid.
+     * @returns A promise that resolves to the response from `send()`, or `false` if the form is
+     *   invalid.
      */
     public submit = <T = unknown>(submitEvent: SubmitEvent): Promise<T | false> => {
         submitEvent.preventDefault();
@@ -723,8 +717,8 @@ export class Form<T = Record<string, unknown>, D = T>
      * An overridable method for rendering the form header.
      *
      * @remarks
-     * If this form is slotted, such as in a modal, this method will not render anything,
-     * allowing the slot parent to provide the header in a more visually appropriate manner.
+     *   If this form is slotted, such as in a modal, this method will not render anything, allowing
+     *   the slot parent to provide the header in a more visually appropriate manner.
      */
     public renderHeader(force?: boolean): SlottedTemplateResult {
         const { headline, assignedSlot, verboseName } = this;
@@ -760,8 +754,8 @@ export class Form<T = Record<string, unknown>, D = T>
      * An overridable method for rendering the form actions.
      *
      * @remarks
-     * If this form is slotted, such as in a modal, this method will not render anything,
-     * allowing the slot parent to provide the actions in a more visually appropriate manner.
+     *   If this form is slotted, such as in a modal, this method will not render anything, allowing
+     *   the slot parent to provide the actions in a more visually appropriate manner.
      */
     public renderActions(force?: boolean): SlottedTemplateResult {
         const { submitLabel, assignedSlot } = this;

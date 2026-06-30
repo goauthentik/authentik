@@ -1,6 +1,4 @@
 /**
- * @file MDX plugin for ESBuild.
- *
  * @import {
  *   OnLoadArgs,
  *   OnLoadResult,
@@ -9,6 +7,7 @@
  *   Plugin,
  *   PluginBuild
  * } from "esbuild"
+ * @file MDX plugin for ESBuild.
  */
 
 import * as fs from "node:fs/promises";
@@ -17,11 +16,10 @@ import * as path from "node:path";
 import { MonoRepoRoot } from "@goauthentik/core/paths/node";
 
 /**
- * @typedef {Omit<OnLoadArgs, 'pluginData'> & LoadDataFields} LoadData Data passed to `onload`.
+ * @typedef {Omit<OnLoadArgs, "pluginData"> & LoadDataFields} LoadData Data passed to `onload`.
  *
  * @typedef LoadDataFields Extra fields given in `data` to `onload`.
  * @property {PluginData | null | undefined} [pluginData] Plugin data.
- *
  * @typedef PluginData Extra data passed.
  * @property {Buffer | string | null | undefined} [contents] File contents.
  */
@@ -30,7 +28,6 @@ const pluginName = "mdx-plugin";
 
 /**
  * @typedef MDXPluginOptions
- *
  * @property {string} root Root directory.
  */
 
@@ -38,6 +35,7 @@ const pluginName = "mdx-plugin";
  * Bundle MDX into JSON modules.
  *
  * @param {MDXPluginOptions} options
+ *
  * @returns {Plugin}
  */
 export function mdxPlugin({ root }) {
@@ -52,6 +50,7 @@ export function mdxPlugin({ root }) {
     function setup(build) {
         /**
          * @param {OnResolveArgs} args
+         *
          * @returns {Promise<OnResolveResult>}
          */
         async function resolveListener(args) {
@@ -66,6 +65,7 @@ export function mdxPlugin({ root }) {
 
         /**
          * @param {LoadData} data
+         *
          * @returns {Promise<OnLoadResult>}
          */
         async function loadListener(data) {

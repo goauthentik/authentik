@@ -6,6 +6,17 @@ import "#user/user-settings/details/UserPassword";
 import "#user/user-settings/details/UserSettingsFlowExecutor";
 import "#user/user-settings/mfa/MFADevicesPage";
 import "#user/user-settings/tokens/UserTokenList";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFCard from "@patternfly/patternfly/components/Card/card.css";
+import PFContent from "@patternfly/patternfly/components/Content/content.css";
+import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
+import PFForm from "@patternfly/patternfly/components/Form/form.css";
+import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
+import PFPage from "@patternfly/patternfly/components/Page/page.css";
+import PFGallery from "@patternfly/patternfly/layouts/Gallery/gallery.css";
+import PFStack from "@patternfly/patternfly/layouts/Stack/stack.css";
+import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
+import PFSizing from "@patternfly/patternfly/utilities/Sizing/sizing.css";
 
 import { aki } from "#common/api/client";
 import { EVENT_REFRESH } from "#common/constants";
@@ -27,18 +38,6 @@ import { msg } from "@lit/localize";
 import { CSSResult, html, nothing } from "lit";
 import { customElement, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
-
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFCard from "@patternfly/patternfly/components/Card/card.css";
-import PFContent from "@patternfly/patternfly/components/Content/content.css";
-import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
-import PFForm from "@patternfly/patternfly/components/Form/form.css";
-import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
-import PFPage from "@patternfly/patternfly/components/Page/page.css";
-import PFGallery from "@patternfly/patternfly/layouts/Gallery/gallery.css";
-import PFStack from "@patternfly/patternfly/layouts/Stack/stack.css";
-import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
-import PFSizing from "@patternfly/patternfly/utilities/Sizing/sizing.css";
 
 @customElement("ak-user-settings")
 export class UserSettingsPage extends WithLicenseSummary(WithSession(AKElement)) {

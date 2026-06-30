@@ -1,5 +1,4 @@
 import "#elements/EmptyState";
-
 import { SlottedTemplateResult } from "#elements/types";
 
 import { html, nothing, TemplateResult } from "lit";

@@ -5,7 +5,6 @@ import "#admin/endpoints/connectors/gdtc/GoogleChromeConnectorForm";
 import "#elements/wizard/FormWizardPage";
 import "#elements/wizard/TypeCreateWizardPage";
 import "#elements/wizard/Wizard";
-
 import { AKElement } from "#elements/Base";
 import {
     DialogInit,
@@ -28,10 +27,11 @@ import { AKWizard } from "#elements/wizard/Wizard";
 
 import { TypeCreate } from "@goauthentik/api";
 
-import { msg, str } from "@lit/localize";
-import { html, PropertyValues } from "lit";
 import { guard } from "lit-html/directives/guard.js";
 import { createRef, ref } from "lit-html/directives/ref.js";
+
+import { msg, str } from "@lit/localize";
+import { html, PropertyValues } from "lit";
 import { property } from "lit/decorators.js";
 
 export class CreateWizard extends AKElement implements TransclusionChildElement {
@@ -62,8 +62,8 @@ export class CreateWizard extends AKElement implements TransclusionChildElement 
     /**
      * Show a modal containing this form.
      *
-     * @see {@linkcode renderModal} for the underlying implementation.
      * @returns A promise that resolves when the modal is closed.
+     * @see {@linkcode renderModal} for the underlying implementation.
      */
     public static showModal(init?: DialogInit): Promise<void> {
         return renderModal(new (this as unknown as CustomElementConstructor)(), init);
@@ -145,8 +145,8 @@ export class CreateWizard extends AKElement implements TransclusionChildElement 
     }
 
     /**
-     * An optional description to show on the initial page of the wizard,
-     * used to explain the different types or provide general information about the creation process.
+     * An optional description to show on the initial page of the wizard, used to explain the
+     * different types or provide general information about the creation process.
      */
     @property({ type: String })
     public description: string | null = null;
@@ -201,6 +201,7 @@ export class CreateWizard extends AKElement implements TransclusionChildElement 
      * Fetches data from the API endpoint.
      *
      * @param requestInit Optional request initialization parameters.
+     *
      * @returns A promise that resolves to the fetched data.
      */
     protected apiEndpoint?(requestInit?: RequestInit): Promise<TypeCreate[]>;
@@ -217,8 +218,8 @@ export class CreateWizard extends AKElement implements TransclusionChildElement 
     };
 
     /**
-     * Formats the ARIA label for the wizard, delegating to the wizard component if available,
-     * or using a default label if not.
+     * Formats the ARIA label for the wizard, delegating to the wizard component if available, or
+     * using a default label if not.
      */
     public formatARIALabel(verboseName = this.verboseName): string {
         return (
@@ -232,6 +233,7 @@ export class CreateWizard extends AKElement implements TransclusionChildElement 
      *
      * @param type The selected creation type.
      * @param currentSteps The current steps of the wizard.
+     *
      * @returns The filtered steps to use for the wizard.
      */
     protected selectSteps(type: TypeCreate, _currentSteps: string[]): string[] {
@@ -241,8 +243,8 @@ export class CreateWizard extends AKElement implements TransclusionChildElement 
     }
 
     /**
-     * Listener invoked when a type is selected on the initial page,
-     * responsible for updating the wizard's steps and validity.
+     * Listener invoked when a type is selected on the initial page, responsible for updating the
+     * wizard's steps and validity.
      */
     protected typeSelectListener = ({
         detail: selectedType,
@@ -281,13 +283,14 @@ export class CreateWizard extends AKElement implements TransclusionChildElement 
     //#region Rendering
 
     /**
-     * Optional method to render additional content on the initial page, for example to explain the different types.
+     * Optional method to render additional content on the initial page, for example to explain the
+     * different types.
      */
     protected renderInitialPageContent?(): SlottedTemplateResult;
 
     /**
-     * Optional method to render content before the type selection on the initial page,
-     * for example to offer a choice between creation and binding an existing entity.
+     * Optional method to render content before the type selection on the initial page, for example
+     * to offer a choice between creation and binding an existing entity.
      */
     protected renderCreateBefore(): SlottedTemplateResult {
         return null;
@@ -352,8 +355,8 @@ export class CreateWizard extends AKElement implements TransclusionChildElement 
     }
 
     /**
-     * Optional method to assemble properties for the form pages based on the selected type,
-     * which are then passed to the form components when rendering.
+     * Optional method to assemble properties for the form pages based on the selected type, which
+     * are then passed to the form components when rendering.
      */
     protected assembleFormProps?(type: TypeCreate): LitPropertyRecord<object>;
 

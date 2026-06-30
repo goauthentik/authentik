@@ -1,6 +1,10 @@
 import "#elements/EmptyState";
 import "#flow/FormStatic";
 import "#flow/components/ak-flow-card";
+import PFForm from "@patternfly/patternfly/components/Form/form.css";
+import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
+import PFLogin from "@patternfly/patternfly/components/Login/login.css";
+import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 
 import { SlottedTemplateResult } from "#elements/types";
 
@@ -11,11 +15,6 @@ import { FlowChallengeResponseRequest, FlowErrorChallenge } from "@goauthentik/a
 import { msg } from "@lit/localize";
 import { css, CSSResult, html, nothing } from "lit";
 import { customElement } from "lit/decorators.js";
-
-import PFForm from "@patternfly/patternfly/components/Form/form.css";
-import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
-import PFLogin from "@patternfly/patternfly/components/Login/login.css";
-import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 
 @customElement("ak-stage-flow-error")
 export class FlowErrorStage extends BaseStage<FlowErrorChallenge, FlowChallengeResponseRequest> {

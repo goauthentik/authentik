@@ -5,7 +5,8 @@
 import { ConsoleLogger } from "#logger/browser";
 
 /**
- * A utility class for safely accessing web storage (localStorage or sessionStorage) with error handling.
+ * A utility class for safely accessing web storage (localStorage or sessionStorage) with error
+ * handling.
  */
 export class StorageAccessor {
     constructor(
@@ -44,7 +45,8 @@ export class StorageAccessor {
     /**
      * Read the value from storage.
      *
-     * @param fallback An optional value to return if the key does not exist or an error occurs. Defaults to `null`.
+     * @param fallback An optional value to return if the key does not exist or an error occurs.
+     *   Defaults to `null`.
      *
      * @returns The stored value, or `null` if the key does not exist or an error occurs.
      */
@@ -86,9 +88,11 @@ export class StorageAccessor {
     /**
      * Read the value from storage and parse it as JSON.
      *
-     * @param fallback An optional value to return if the key does not exist, the value is not valid JSON, or an error occurs. Defaults to `null`.
+     * @param fallback An optional value to return if the key does not exist, the value is not valid
+     *   JSON, or an error occurs. Defaults to `null`.
      *
-     * @returns The parsed value, or `null` if the key does not exist, the value is not valid JSON, or an error occurs.
+     * @returns The parsed value, or `null` if the key does not exist, the value is not valid JSON,
+     *   or an error occurs.
      */
     public readJSON<T>(fallback?: T): T | null {
         const value = this.read<string>();

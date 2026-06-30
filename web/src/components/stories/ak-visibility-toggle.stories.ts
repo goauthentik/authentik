@@ -1,5 +1,4 @@
 import "../ak-visibility-toggle.js";
-
 import { type VisibilityToggle, type VisibilityToggleProps } from "../ak-visibility-toggle.js";
 
 import type { Meta, StoryObj } from "@storybook/web-components";

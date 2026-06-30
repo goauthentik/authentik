@@ -1,5 +1,4 @@
 import "./ak-spinner-button.js";
-
 import AKSpinnerButton from "./ak-spinner-button.js";
 
 import { Meta } from "@storybook/web-components";

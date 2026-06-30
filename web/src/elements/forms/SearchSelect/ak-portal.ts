@@ -30,10 +30,10 @@ export interface IPortal {
 @customElement("ak-portal")
 export class Portal extends LitElement implements IPortal {
     /**
-     * The host element which will be our reference point for rendering.  Is not necessarily
-     * the element that receives the events.
+     * The host element which will be our reference point for rendering. Is not necessarily the
+     * element that receives the events.
      *
-     * @prop
+     * @property
      */
     @property({ type: Object, attribute: false })
     anchor!: HTMLElement;

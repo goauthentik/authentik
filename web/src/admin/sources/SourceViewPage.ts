@@ -7,7 +7,6 @@ import "#admin/sources/scim/SCIMSourceViewPage";
 import "#admin/sources/telegram/TelegramSourceViewPage";
 import "#elements/EmptyState";
 import "#elements/buttons/SpinnerButton/ak-spinner-button";
-
 import { aki } from "#common/api/client";
 
 import { AKElement } from "#elements/Base";

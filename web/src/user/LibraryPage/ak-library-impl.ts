@@ -1,11 +1,21 @@
 import "#elements/EmptyState";
 import "#user/LibraryApplication/index";
 import "./ak-library-application-empty-list.js";
-
 import Styles from "./ak-library-impl.css";
 import AKLibraryApplicationListStyles from "./ApplicationList.css";
 import { AKLibraryApplicationList } from "./ApplicationList.js";
 import { appHasLaunchUrl } from "./LibraryPageImpl.utils.js";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFCard from "@patternfly/patternfly/components/Card/card.css";
+import PFContent from "@patternfly/patternfly/components/Content/content.css";
+import PFDivider from "@patternfly/patternfly/components/Divider/divider.css";
+import PFDropdown from "@patternfly/patternfly/components/Dropdown/dropdown.css";
+import PFEmptyState from "@patternfly/patternfly/components/EmptyState/empty-state.css";
+import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
+import PFPage from "@patternfly/patternfly/components/Page/page.css";
+import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
+import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
+import PFSpacing from "@patternfly/patternfly/utilities/Spacing/spacing.css";
 
 import { groupBy } from "#common/utils";
 
@@ -29,28 +39,13 @@ import { customElement, property, state } from "lit/decorators.js";
 import { guard } from "lit/directives/guard.js";
 import { createRef } from "lit/directives/ref.js";
 
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFCard from "@patternfly/patternfly/components/Card/card.css";
-import PFContent from "@patternfly/patternfly/components/Content/content.css";
-import PFDivider from "@patternfly/patternfly/components/Divider/divider.css";
-import PFDropdown from "@patternfly/patternfly/components/Dropdown/dropdown.css";
-import PFEmptyState from "@patternfly/patternfly/components/EmptyState/empty-state.css";
-import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
-import PFPage from "@patternfly/patternfly/components/Page/page.css";
-import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
-import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
-import PFSpacing from "@patternfly/patternfly/utilities/Spacing/spacing.css";
-
 /**
  * List of Applications available
  *
- * Properties:
- * apps: a list of the applications available to the user.
+ * Properties: apps: a list of the applications available to the user.
  *
- * Aggregates two functions:
- *   - Display the list of applications available to the user
- *   - Filter that list using the search bar
- *
+ * Aggregates two functions: - Display the list of applications available to the user - Filter that
+ * list using the search bar
  */
 @customElement("ak-library-impl")
 export class LibraryPage extends WithSession(AKElement) {
@@ -62,7 +57,7 @@ export class LibraryPage extends WithSession(AKElement) {
      * Whether to enable the datalist for search suggestions.
      *
      * @remarks
-     * Disabled on Firefox due to performance issues between renders.
+     *   Disabled on Firefox due to performance issues between renders.
      */
     static DataListEnabled = !isFirefox();
 
@@ -96,7 +91,7 @@ export class LibraryPage extends WithSession(AKElement) {
     #applications: Application[] = [];
 
     /**
-     * The *complete* list of applications for this user. Not paginated.
+     * The _complete_ list of applications for this user. Not paginated.
      *
      * @attr
      */

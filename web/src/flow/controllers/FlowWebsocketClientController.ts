@@ -11,11 +11,10 @@ type WebsocketClientControllerHost = ReactiveControllerHost & Interface;
  *
  * @remarks
  *
- * The authentik server may send notifications to the user's session. This controller handles the
- * lifecycle of our simple websocket listener, which filters and re-issues events into the DOM.
- * Users of this controller are expected to implement a listener and display the events to the user.
- * The current implementation uses `ak-message-notifications`, but that's just a detail.
- *
+ *   The authentik server may send notifications to the user's session. This controller handles the
+ *   lifecycle of our simple websocket listener, which filters and re-issues events into the DOM.
+ *   Users of this controller are expected to implement a listener and display the events to the
+ *   user. The current implementation uses `ak-message-notifications`, but that's just a detail.
  */
 export class FlowWebsocketClientController implements ReactiveController {
     constructor(private host: WebsocketClientControllerHost) {

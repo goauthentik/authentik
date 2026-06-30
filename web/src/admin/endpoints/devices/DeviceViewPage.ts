@@ -7,6 +7,12 @@ import "#admin/endpoints/devices/facts/DeviceSoftwareTable";
 import "#admin/endpoints/devices/facts/DeviceGroupTable";
 import "#admin/endpoints/devices/DeviceEvents";
 import "#elements/Tabs";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFCard from "@patternfly/patternfly/components/Card/card.css";
+import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
+import PFPage from "@patternfly/patternfly/components/Page/page.css";
+import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
+import PFStack from "@patternfly/patternfly/layouts/Stack/stack.css";
 
 import { aki } from "#common/api/client";
 import { APIError, parseAPIResponseError } from "#common/errors/network";
@@ -26,13 +32,6 @@ import { DeviceConnection, Disk, EndpointDeviceDetails, EndpointsApi } from "@go
 import { msg, str } from "@lit/localize";
 import { CSSResult, html, nothing, PropertyValues } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
-
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFCard from "@patternfly/patternfly/components/Card/card.css";
-import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
-import PFPage from "@patternfly/patternfly/components/Page/page.css";
-import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
-import PFStack from "@patternfly/patternfly/layouts/Stack/stack.css";
 
 @customElement("ak-endpoints-device-view")
 export class DeviceViewPage extends AKElement {

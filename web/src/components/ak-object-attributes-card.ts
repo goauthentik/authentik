@@ -1,4 +1,6 @@
 import "#components/ak-status-label";
+import PFCard from "@patternfly/patternfly/components/Card/card.css";
+import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
 import { AKElement } from "#elements/Base";
 
@@ -9,9 +11,6 @@ import { isMatching, match, P } from "ts-pattern";
 import { msg } from "@lit/localize";
 import { CSSResult, html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
-
-import PFCard from "@patternfly/patternfly/components/Card/card.css";
-import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
 /**
  * Formats a value for display based on its type.
@@ -38,14 +37,12 @@ function formatValue(value: unknown): TemplateResult | string {
 /**
  * A reusable card component to display custom attributes for objects like User, Group, or Device.
  *
- * This component filters out system attributes (keys starting with `goauthentik.io/`)
- * and optionally excludes the `notes` attribute (since it's typically displayed separately).
+ * This component filters out system attributes (keys starting with `goauthentik.io/`) and
+ * optionally excludes the `notes` attribute (since it's typically displayed separately).
  *
- * Value types are rendered appropriately:
- * - string/number: Plain text
- * - boolean: ak-status-label component
- * - simple arrays: Comma-separated list
- * - objects/complex arrays: Formatted JSON in code block
+ * Value types are rendered appropriately: - string/number: Plain text - boolean: ak-status-label
+ * component - simple arrays: Comma-separated list - objects/complex arrays: Formatted JSON in code
+ * block
  */
 @customElement("ak-object-attributes-card")
 export class ObjectAttributesCard extends AKElement {
@@ -58,8 +55,8 @@ export class ObjectAttributesCard extends AKElement {
     excludeNotes = true;
 
     /**
-     * Filters the attributes to only include custom (non-system) attributes.
-     * Excludes keys starting with "goauthentik.io/" and optionally the "notes" key.
+     * Filters the attributes to only include custom (non-system) attributes. Excludes keys starting
+     * with "goauthentik.io/" and optionally the "notes" key.
      */
     private get customAttributes(): Array<[string, unknown]> {
         return Object.entries(this.objectAttributes || {}).filter(([key]) => {

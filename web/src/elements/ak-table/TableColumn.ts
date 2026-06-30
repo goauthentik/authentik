@@ -17,14 +17,13 @@ export class TableSortEvent extends Event {
 }
 
 /**
- * class TableColumn
+ * Class TableColumn
  *
  * This is a helper class for rendering the contents of a table column header.
  *
  * ## Events
  *
  * - @fires tablesort: when the header is clicked, if the host is not undefined
- *
  */
 export class TableColumn {
     /**

@@ -34,16 +34,14 @@ export interface AkHiddenTextAreaInputProps extends AkHiddenTextInputProps {
 }
 
 /**
+ * @class AkHiddenTextInput A text-input field with a visibility control, so you can show/hide
+ *   sensitive fields.
+ *
+ *   ## CSS Parts
  * @element ak-hidden-text-input
- * @class AkHiddenTextInput
- *
- * A text-input field with a visibility control, so you can show/hide sensitive fields.
- *
- * ## CSS Parts
  * @csspart container - The main container div
  * @csspart input - The input element
  * @csspart toggle - The visibility toggle button
- *
  */
 @customElement("ak-hidden-textarea-input")
 export class AkHiddenTextAreaInput
@@ -53,31 +51,31 @@ export class AkHiddenTextAreaInput
     /* These are mostly just forwarded to the textarea component. */
 
     /**
-     * @property
+     * @property *
      * @attribute
      */
     @property({ type: Number })
     rows?: number = 4;
 
     /**
-     * @property
+     * @property *
      * @attribute
      */
     @property({ type: Number })
     cols?: number;
 
     /**
-     * @property
+     * @property *
      * @attribute
      *
-     * You want `resize=true` so that the resize value is visible in the component tag, activating
-     * the CSS associated with these values.
+     *   You want `resize=true` so that the resize value is visible in the component tag, activating
+     *   the CSS associated with these values.
      */
     @property({ type: String, reflect: true })
     resize?: "none" | "both" | "horizontal" | "vertical" = "vertical";
 
     /**
-     * @property
+     * @property *
      * @attribute
      */
     @property({ type: String })

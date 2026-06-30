@@ -50,9 +50,9 @@ export interface CaptchaProviderPreset {
 }
 
 /**
- * Provider presets for common CAPTCHA services.
- * Each preset contains default URLs, settings, and help text with links to provider dashboards.
- * When a provider is selected, these values auto-fill the form but remain editable.
+ * Provider presets for common CAPTCHA services. Each preset contains default URLs, settings, and
+ * help text with links to provider dashboards. When a provider is selected, these values auto-fill
+ * the form but remain editable.
  */
 export const CAPTCHA_PROVIDERS = {
     recaptcha_v2: {
@@ -188,9 +188,9 @@ export function deriveCapSiteVerifyURL(endpoint: string): string | null {
 }
 
 /**
- * Detect which provider preset matches the given {@linkcode CaptchaStage} instance.
- * This allows the form to show the correct provider in the dropdown when editing
- * an existing CAPTCHA stage. Falls back to "custom" if no match is found.
+ * Detect which provider preset matches the given {@linkcode CaptchaStage} instance. This allows the
+ * form to show the correct provider in the dropdown when editing an existing CAPTCHA stage. Falls
+ * back to "custom" if no match is found.
  */
 function isCapWidgetURL(jsUrl?: string | null): boolean {
     if (!jsUrl || !URL.canParse(jsUrl)) {
@@ -225,9 +225,8 @@ export function detectProviderFromInstance(stage?: CaptchaStage | null): Captcha
 }
 
 /**
- * Get the form values to display, with clear precedence:
- * 1. If editing an existing instance, use instance values
- * 2. Otherwise, use the current preset defaults
+ * Get the form values to display, with clear precedence: 1. If editing an existing instance, use
+ * instance values 2. Otherwise, use the current preset defaults
  */
 export function pluckFormValues(
     instance?: CaptchaStage | null,

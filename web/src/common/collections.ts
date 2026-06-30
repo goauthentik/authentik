@@ -1,6 +1,6 @@
 /**
- * Given an array or length, return logical index of the element at the given delta.
- * This is effectively a modulo loop, allowing for positive and negative deltas.
+ * Given an array or length, return logical index of the element at the given delta. This is
+ * effectively a modulo loop, allowing for positive and negative deltas.
  */
 export function torusIndex(lengthLike: number | ArrayLike<number>, delta: number): number {
     const length = typeof lengthLike === "number" ? lengthLike : lengthLike.length;
@@ -15,8 +15,8 @@ export function torusIndex(lengthLike: number | ArrayLike<number>, delta: number
 /**
  * Shallow-compare new deps against the previously stored deps.
  *
- * Returns `true` if deps match (i.e. we should skip rebinding).
- * Returns `false` if deps are absent, previously unset, or any value differs.
+ * Returns `true` if deps match (i.e. we should skip rebinding). Returns `false` if deps are absent,
+ * previously unset, or any value differs.
  */
 export function checkIterableShallowEquality(
     newDeps?: unknown[] | null,
@@ -32,8 +32,8 @@ export function checkIterableShallowEquality(
 /**
  * Shallow-compare new deps against the previously stored deps.
  *
- * Returns `true` if deps match (i.e. we should skip rebinding).
- * Returns `false` if deps are absent, previously unset, or any value differs.
+ * Returns `true` if deps match (i.e. we should skip rebinding). Returns `false` if deps are absent,
+ * previously unset, or any value differs.
  */
 export function checkObjectShallowEquality(
     newDeps?: object | null,

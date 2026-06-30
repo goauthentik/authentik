@@ -40,7 +40,6 @@ export interface ISearchSelectEz<T = unknown> extends ISearchSelectBase<T> {
  *
  * - @fires ak-change - When a value from the collection has been positively chosen, either as a
  *   consequence of the user typing or when selecting from the list.
- *
  */
 
 @customElement("ak-search-select-ez")

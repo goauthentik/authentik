@@ -1,3 +1,7 @@
+import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
+import PFAlertGroup from "@patternfly/patternfly/components/AlertGroup/alert-group.css";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+
 import { APIMessage, MessageLevel } from "#common/messages";
 
 import { AKElement } from "#elements/Base";
@@ -7,10 +11,6 @@ import { CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 import { ifDefined } from "lit/directives/if-defined.js";
-
-import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
-import PFAlertGroup from "@patternfly/patternfly/components/AlertGroup/alert-group.css";
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
 
 const LevelIconMap = {
     [MessageLevel.error]: "fas fa-exclamation-circle",

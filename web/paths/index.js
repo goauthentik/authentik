@@ -1,6 +1,5 @@
 /**
  * @file Paths used by the web package.
- *
  * @runtime common
  */
 

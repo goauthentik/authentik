@@ -1,5 +1,4 @@
 import "../Label.js";
-
 import { type ILabel, Label, PFColor } from "../Label.js";
 
 import type { Meta, StoryObj } from "@storybook/web-components";
@@ -79,29 +78,29 @@ export const DefaultStory: StoryObj = {
 
 export const SuccessLabel = {
     ...DefaultStory,
-    args: ({
-	...DefaultStory,
-	color: PFColor.Green,
-	message: html`I'll show them! I'll show them <i>all</i>&nbsp;! Mwahahahahaha!`
-}),
+    args: {
+        ...DefaultStory,
+        color: PFColor.Green,
+        message: html`I'll show them! I'll show them <i>all</i>&nbsp;! Mwahahahahaha!`,
+    },
 };
 
 export const CompactWarningLabel = {
     ...DefaultStory,
-    args: ({
-	...DefaultStory,
-	compact: true,
-	color: 'warning',
-	icon: 'fa-coffee',
-	message: 'It is time for coffee.'
-}),
+    args: {
+        ...DefaultStory,
+        compact: true,
+        color: "warning",
+        icon: "fa-coffee",
+        message: "It is time for coffee.",
+    },
 };
 
 export const DangerLabel = {
     ...DefaultStory,
-    args: ({
-	...DefaultStory,
-	color: 'danger',
-	message: 'Grave danger? Is there another kind?'
-}),
+    args: {
+        ...DefaultStory,
+        color: "danger",
+        message: "Grave danger? Is there another kind?",
+    },
 };

@@ -1,17 +1,17 @@
 {
     "name": "@goauthentik/web-sfe",
     "version": "0.0.0",
-    "license": "MIT",
     "private": true,
+    "license": "MIT",
+    "type": "module",
+    "exports": {
+        "./package.json": "./package.json"
+    },
     "scripts": {
         "build": "rollup -c rollup.config.mjs --bundleConfigAsCjs",
         "prettier": "prettier --cache --write -u .",
         "prettier-check": "prettier --cache --check -u .",
         "watch": "rollup -w -c rollup.config.mjs --bundleConfigAsCjs"
-    },
-    "type": "module",
-    "exports": {
-        "./package.json": "./package.json"
     },
     "dependencies": {
         "@goauthentik/api": "0.0.0",

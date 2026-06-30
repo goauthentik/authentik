@@ -1,6 +1,5 @@
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/index";
-
 import { aki } from "#common/api/client";
 import { parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
 import { docLink } from "#common/global";
@@ -31,8 +30,8 @@ const renderValue = (item?: FileItem | null) => item?.name;
 /**
  * File Search Input Component
  *
- * Search/select dropdown for files from authentik.admin.files storage.
- * Supports uploaded files, static files, and external URLs/Font Awesome icons via PassthroughBackend.
+ * Search/select dropdown for files from authentik.admin.files storage. Supports uploaded files,
+ * static files, and external URLs/Font Awesome icons via PassthroughBackend.
  */
 @customElement("ak-file-search-input")
 export class AKFileSearchInput extends AKElement {

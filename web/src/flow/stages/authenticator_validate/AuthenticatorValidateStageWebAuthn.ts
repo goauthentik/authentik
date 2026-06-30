@@ -1,5 +1,4 @@
 import "#elements/EmptyState";
-
 import { parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
 import {
     assertWebAuthnSupported,

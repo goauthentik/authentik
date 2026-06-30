@@ -1,3 +1,6 @@
+import PFForm from "@patternfly/patternfly/components/Form/form.css";
+import PFRadio from "@patternfly/patternfly/components/Radio/radio.css";
+
 import { FormAssociatedElement } from "#elements/forms/form-associated-element";
 import Styles from "#elements/forms/Radio.css";
 import { SlottedTemplateResult } from "#elements/types";
@@ -6,16 +9,13 @@ import { isInteractiveElement } from "#elements/utils/interactivity";
 
 import { IDGenerator } from "@goauthentik/core/id";
 
+import { ref } from "lit-html/directives/ref.js";
+import { repeat } from "lit-html/directives/repeat.js";
 import { Jsonifiable } from "type-fest";
 
 import { msg } from "@lit/localize";
 import { CSSResult, html, nothing, PropertyValues } from "lit";
-import { ref } from "lit-html/directives/ref.js";
-import { repeat } from "lit-html/directives/repeat.js";
 import { customElement, property } from "lit/decorators.js";
-
-import PFForm from "@patternfly/patternfly/components/Form/form.css";
-import PFRadio from "@patternfly/patternfly/components/Radio/radio.css";
 
 export interface RadioOption<T extends Jsonifiable | undefined> {
     label: string;

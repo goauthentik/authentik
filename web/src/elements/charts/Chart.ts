@@ -1,6 +1,5 @@
 import "#elements/EmptyState";
 import "chartjs-adapter-date-fns";
-
 import { EVENT_REFRESH } from "#common/constants";
 import { APIError, parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
 import { formatElapsedTime } from "#common/temporal";

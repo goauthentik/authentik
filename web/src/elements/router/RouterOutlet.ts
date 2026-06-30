@@ -1,6 +1,5 @@
 import "#elements/router/Router404";
 import "#elements/a11y/ak-skip-to-content";
-
 import { ROUTE_SEPARATOR } from "#common/constants";
 
 import { type AKSkipToContent, findMainContent } from "#elements/a11y/ak-skip-to-content";

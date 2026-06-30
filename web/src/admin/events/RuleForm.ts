@@ -4,7 +4,6 @@ import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/Radio";
 import "#elements/forms/SearchSelect/index";
-
 import { eventTransportsProvider, eventTransportsSelector } from "./RuleFormHelpers.js";
 
 import { aki } from "#common/api/client";

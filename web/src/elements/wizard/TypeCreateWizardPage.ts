@@ -1,6 +1,11 @@
 import "#elements/LicenseNotice";
 import "#elements/Alert";
 import "#elements/forms/FormGroup";
+import PFCard from "@patternfly/patternfly/components/Card/card.css";
+import PFForm from "@patternfly/patternfly/components/Form/form.css";
+import PFPage from "@patternfly/patternfly/components/Page/page.css";
+import PFRadio from "@patternfly/patternfly/components/Radio/radio.css";
+import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 
 import { WithLicenseSummary } from "#elements/mixins/license";
 import { SlottedTemplateResult } from "#elements/types";
@@ -15,12 +20,6 @@ import { customElement, property } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 import { guard } from "lit/directives/guard.js";
 import { createRef, ref, Ref } from "lit/directives/ref.js";
-
-import PFCard from "@patternfly/patternfly/components/Card/card.css";
-import PFForm from "@patternfly/patternfly/components/Form/form.css";
-import PFPage from "@patternfly/patternfly/components/Page/page.css";
-import PFRadio from "@patternfly/patternfly/components/Radio/radio.css";
-import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 
 export enum TypeCreateWizardPageLayouts {
     list = "list",

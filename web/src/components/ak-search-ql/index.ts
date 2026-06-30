@@ -1,4 +1,6 @@
 import "#elements/buttons/Dropdown";
+import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
+import PFSearchInput from "@patternfly/patternfly/components/SearchInput/search-input.css";
 
 import { torusIndex } from "#common/collections";
 import { StripHTMLTrustPolicy } from "#common/purify";
@@ -16,9 +18,6 @@ import { msg } from "@lit/localize";
 import { CSSResult, html, LitElement, nothing, PropertyValues, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { createRef, ref, Ref } from "lit/directives/ref.js";
-
-import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
-import PFSearchInput from "@patternfly/patternfly/components/SearchInput/search-input.css";
 
 export class QL extends DjangoQL {
     createCompletionElement() {

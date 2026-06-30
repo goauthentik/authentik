@@ -1,6 +1,5 @@
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/index";
-
 import { aki } from "#common/api/client";
 import { groupBy } from "#common/utils";
 
@@ -60,6 +59,7 @@ export class AkProviderInput extends AKElement {
 
     /**
      * A unique ID to associate with the input and label.
+     *
      * @property
      */
     @property({ type: String, reflect: false })

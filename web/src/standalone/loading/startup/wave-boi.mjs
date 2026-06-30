@@ -63,8 +63,9 @@ export class WavesCanvas {
     f = Math.tan(Math.PI * 0.5 - 0.5 * this.fov);
 
     /**
-     * Flat array storing particle data:
-     * [baseX, baseZ, baseY, r, g, b, a, size, perspectiveSize, halfSize, perspectiveDepthAlpha]
+     * Flat array storing particle data: [baseX, baseZ, baseY, r, g, b, a, size, perspectiveSize,
+     * halfSize, perspectiveDepthAlpha]
+     *
      * @type {Float32Array}
      */
     #particleData = new Float32Array(0);
@@ -112,7 +113,16 @@ export class WavesCanvas {
 
     /**
      * The method to use to draw the waves.
-     * @type {(x: number, y: number, halfSize: number, r: number, g: number, b: number, a: number) => void}
+     *
+     * @type {(
+     *     x: number,
+     *     y: number,
+     *     halfSize: number,
+     *     r: number,
+     *     g: number,
+     *     b: number,
+     *     a: number,
+     * ) => void}
      */
     #drawShape;
 
@@ -229,9 +239,11 @@ export class WavesCanvas {
 
     /**
      * Test if a 3D point is within the view frustum
+     *
      * @param {number} x - World X coordinate
      * @param {number} y - World Y coordinate
      * @param {number} z - World Z coordinate
+     *
      * @returns {boolean}
      */
     #isInFrustum(x, y, z) {
@@ -331,7 +343,8 @@ export class WavesCanvas {
      * @param {number} x
      * @param {number} y
      * @param {number} z
-     * @returns {{x: number, y: number, z: number} | null}
+     *
+     * @returns {{ x: number; y: number; z: number } | null}
      */
     project3DTo2D(x, y, z) {
         const projectedX = (x * this.f) / this.aspectRatio;
@@ -358,6 +371,7 @@ export class WavesCanvas {
      * @param {number} x
      * @param {number} z
      * @param {number} time
+     *
      * @returns {number}
      */
     calculateWaveY(x, z, time) {
@@ -370,6 +384,7 @@ export class WavesCanvas {
 
     /**
      * Draw a simple point particle (for distant objects)
+     *
      * @param {number} x
      * @param {number} y
      * @param {number} r
@@ -399,6 +414,7 @@ export class WavesCanvas {
 
     /**
      * Draw a hollow circle particle
+     *
      * @param {number} x
      * @param {number} y
      * @param {number} halfSize
@@ -446,6 +462,7 @@ export class WavesCanvas {
 
     /**
      * Draw an isosceles triangle particle
+     *
      * @param {number} x
      * @param {number} y
      * @param {number} halfSize

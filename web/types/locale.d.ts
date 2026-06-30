@@ -1,6 +1,6 @@
 /**
- * This module is used to satisfy imports from `#locales/*` which have either
- * not yet been generated, or are missing.
+ * This module is used to satisfy imports from `#locales/*` which have either not yet been
+ * generated, or are missing.
  *
  * ```sh
  * npm run build-locales

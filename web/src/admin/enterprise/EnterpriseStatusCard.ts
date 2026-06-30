@@ -1,4 +1,8 @@
 import "#elements/ak-progress-bar";
+import PFCard from "@patternfly/patternfly/components/Card/card.css";
+import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
+import PFProgress from "@patternfly/patternfly/components/Progress/progress.css";
+import PFSplit from "@patternfly/patternfly/layouts/Split/split.css";
 
 import { AKElement } from "#elements/Base";
 import { PFColor } from "#elements/Label";
@@ -8,11 +12,6 @@ import { LicenseForecast, LicenseSummary, LicenseSummaryStatusEnum } from "@goau
 import { msg, str } from "@lit/localize";
 import { CSSResult, html, nothing } from "lit";
 import { customElement, state } from "lit/decorators.js";
-
-import PFCard from "@patternfly/patternfly/components/Card/card.css";
-import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
-import PFProgress from "@patternfly/patternfly/components/Progress/progress.css";
-import PFSplit from "@patternfly/patternfly/layouts/Split/split.css";
 
 @customElement("ak-enterprise-status-card")
 export class EnterpriseStatusCard extends AKElement {

@@ -3,7 +3,6 @@
  */
 
 import "#elements/dialogs/ak-modal";
-
 import { AKRefreshEvent } from "#common/events";
 
 import { DialogInit } from "#elements/dialogs/shared";
@@ -19,7 +18,8 @@ import { html, render } from "lit";
  *
  * If the parent element is not provided or cannot be resolved, the document body is returned.
  *
- * @param ownerDocument The document to query for the parent element. Defaults to the global document.
+ * @param ownerDocument The document to query for the parent element. Defaults to the global
+ *   document.
  * @param parentElement An optional HTMLElement or selector string to use as the dialog container.
  *
  * @returns The resolved container HTMLElement for the dialog.
@@ -59,24 +59,19 @@ function setDialogCountAttribute(delta: number, ownerDocument: Document = docume
 /**
  * Renders a dialog with the given template.
  *
+ * @remarks
+ *   In the context of the {@link HTMLDialogElement}, we distinguish between **modal** dialogs,
+ *   which are shown using the `showModal()` method and block interaction with the rest of the page,
+ *   and **non-modal** dialogs, which are shown using the `show()` method and allow interaction with
+ *   the rest of the page. For almost all use cases in authentik, dialogs are modal. However,
+ *   {@linkcode AKModal} (and its implementors) are what a developer would typically consider to be
+ *   the modal itself. Here be dragons! The delination between "dialog" and "modal" is not based on
+ *   the presence of a backdrop or blocking behavior, but rather on the underlying HTML elements and
+ *   method used to display it. **Incorrect usage can impact accessibility significantly.**
  * @param renderable The template to render inside the dialog.
  * @param init Initialization options for the dialog.
  *
  * @returns A promise that resolves when the dialog is closed.
- *
- * @remarks
- * In the context of the {@link HTMLDialogElement}, we distinguish between __modal__
- * dialogs, which are shown using the `showModal()` method and block interaction with the rest of the page,
- * and __non-modal__ dialogs, which are shown using the `show()` method and allow interaction with the rest of the page.
- *
- * For almost all use cases in authentik, dialogs are modal. However, {@linkcode AKModal}
- * (and its implementors) are what a developer would typically consider to be the modal itself.
- *
- * Here be dragons! The delination between "dialog" and "modal" is not based on
- * the presence of a backdrop or blocking behavior, but rather on the underlying HTML elements
- *  and method used to display it.
- *
- * **Incorrect usage can impact accessibility significantly.**
  */
 export function renderDialog(
     renderable: unknown,

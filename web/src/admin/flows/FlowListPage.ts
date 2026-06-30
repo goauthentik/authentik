@@ -5,6 +5,7 @@ import "#elements/forms/ConfirmationForm";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
+import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 
 import { aki } from "#common/api/client";
 import { AndNext } from "#common/api/config";
@@ -24,8 +25,6 @@ import { Flow, FlowsApi } from "@goauthentik/api";
 import { msg, str } from "@lit/localize";
 import { html, TemplateResult } from "lit";
 import { customElement } from "lit/decorators.js";
-
-import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 
 @customElement("ak-flow-list")
 export class FlowListPage extends TablePage<Flow> {

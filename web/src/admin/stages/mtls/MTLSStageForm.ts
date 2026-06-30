@@ -4,7 +4,6 @@ import "#elements/ak-dual-select/ak-dual-select-provider";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/Radio";
-
 import { aki } from "#common/api/client";
 
 import { certificateProvider, certificateSelector } from "#admin/brands/Certificates";

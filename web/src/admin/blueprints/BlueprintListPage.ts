@@ -9,6 +9,7 @@ import "#elements/forms/ModalForm";
 import "#components/tasks/TaskList";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 import "#elements/ak-mdx/ak-mdx";
+import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
 import { aki } from "#common/api/client";
 import { EVENT_REFRESH } from "#common/constants";
@@ -29,12 +30,11 @@ import {
     ModelEnum,
 } from "@goauthentik/api";
 
+import { guard } from "lit-html/directives/guard.js";
+
 import { msg, str } from "@lit/localize";
 import { CSSResult, html, nothing } from "lit";
-import { guard } from "lit-html/directives/guard.js";
 import { customElement } from "lit/decorators.js";
-
-import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
 export function BlueprintStatus(blueprint?: BlueprintInstance): string {
     if (!blueprint) return "";

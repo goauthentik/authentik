@@ -1,3 +1,5 @@
+import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
+
 import { globalAK } from "#common/global";
 
 import { AKElement } from "#elements/Base";
@@ -8,8 +10,6 @@ import { LicenseFlagsEnum, LicenseSummaryStatusEnum } from "@goauthentik/api";
 import { msg } from "@lit/localize";
 import { html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
-
-import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 
 @customElement("ak-enterprise-status")
 export class EnterpriseStatusBanner extends WithLicenseSummary(AKElement) {

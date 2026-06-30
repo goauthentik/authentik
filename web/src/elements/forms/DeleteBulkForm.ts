@@ -1,6 +1,5 @@
 import "#elements/buttons/SpinnerButton/index";
 import "#elements/entities/UsedByTable";
-
 import { EVENT_REFRESH } from "#common/constants";
 import { parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
 import { MessageLevel } from "#common/messages";

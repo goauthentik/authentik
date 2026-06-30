@@ -1,3 +1,7 @@
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
+import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-group.css";
+
 import { AKControlElement } from "#elements/ControlElement";
 import { bound } from "#elements/decorators/bound";
 import { type Spread } from "#elements/types";
@@ -9,10 +13,6 @@ import { msg } from "@lit/localize";
 import { css, html, nothing, TemplateResult } from "lit";
 import { customElement, property, queryAll } from "lit/decorators.js";
 import { repeat } from "lit/directives/repeat.js";
-
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
-import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-group.css";
 
 export type InputCell<T> = (el: T, idx: number) => TemplateResult | typeof nothing;
 

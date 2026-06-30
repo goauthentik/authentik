@@ -83,21 +83,17 @@ export function formatElapsedTime(d1: Date, d2: Date = new Date()): string {
  *   />
  * ```
  *
- * @param input - The Date object to convert.
- * @returns A string in the format "YYYY-MM-DDTHH:MM" (e.g., "2023-10-01T12:00").
- * @see https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/datetime-local
- *
  * @remarks
  *
- * So for some reason, the datetime-local input field requires ISO Datetime as value.
+ *   So for some reason, the datetime-local input field requires ISO Datetime as value. But the
+ *   standard`date.toISOString()` returns everything with seconds and milliseconds, which the input
+ *   field doesn't like (on chrome, on firefox its fine) On chrome, setting .valueAsNumber works,
+ *   but that causes an error on firefox, so go figure. Additionally, `toISOString` always returns
+ *   the date without timezone, which we would like to include for better usability
+ * @param input - The Date object to convert.
  *
- * But the standard`date.toISOString()` returns everything with seconds and milliseconds,
- * which the input field doesn't like (on chrome, on firefox its fine)
- *
- * On chrome, setting .valueAsNumber works, but that causes an error on firefox, so go figure.
- *
- * Additionally, `toISOString` always returns the date without timezone,
- * which we would like to include for better usability
+ * @returns A string in the format "YYYY-MM-DDTHH:MM" (e.g., "2023-10-01T12:00").
+ * @see https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/datetime-local
  */
 export function dateTimeLocal(input: Date | number = new Date()): string {
     input = typeof input === "number" ? new Date(input) : input;
@@ -115,17 +111,13 @@ export function dateTimeLocal(input: Date | number = new Date()): string {
  *
  * @remarks
  *
- * Sigh...so our API is UTC/can take TZ info in the ISO format as it should.
- *
- * datetime-local fields (which is almost the only date-time input we use)
- * can return its value as a UTC timestamp...however the generated API client
- * _requires_ a Date object, only to then convert it to an ISO string anyways
- * JS Dates don't include timezone info in the ISO string, so that just sends
- * the local time as UTC...which is wrong.
- *
- * Instead we have to do this, convert the given date to a UTC timestamp,
- * then subtract the timezone offset to create an "invalid" date (correct time&date)
- * but it still "thinks" it's in local TZ.
+ *   Sigh...so our API is UTC/can take TZ info in the ISO format as it should. datetime-local fields
+ *   (which is almost the only date-time input we use) can return its value as a UTC
+ *   timestamp...however the generated API client _requires_ a Date object, only to then convert it
+ *   to an ISO string anyways JS Dates don't include timezone info in the ISO string, so that just
+ *   sends the local time as UTC...which is wrong. Instead we have to do this, convert the given
+ *   date to a UTC timestamp, then subtract the timezone offset to create an "invalid" date (correct
+ *   time&date) but it still "thinks" it's in local TZ.
  */
 export function dateToUTC(input: Date): Date {
     const timestamp = input.getTime();

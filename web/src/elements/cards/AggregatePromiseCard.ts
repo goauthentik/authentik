@@ -1,5 +1,4 @@
 import "#elements/Spinner";
-
 import { PFSize } from "#common/enums";
 
 import { AggregateCard, type IAggregateCard } from "#elements/cards/AggregateCard";
@@ -15,8 +14,7 @@ export interface IAggregatePromiseCard extends IAggregateCard {
 }
 
 /**
- * class AggregatePromiseCard
- * element ak-aggregate-card-promise
+ * Class AggregatePromiseCard element ak-aggregate-card-promise
  *
  * Card component with a specific layout for quick informational blurbs, fills in its main content
  * with the results of a promise; shows a spinner when the promise has not yet resolved. Inherits

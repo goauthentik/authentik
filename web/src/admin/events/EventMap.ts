@@ -1,6 +1,8 @@
 import "@openlayers-elements/core/ol-layer-vector";
 import "@openlayers-elements/maps/ol-select";
 import "./OpenLayer.d.ts";
+import PFCard from "@patternfly/patternfly/components/Card/card.css";
+import OL from "ol/ol.css";
 
 import { EventWithContext } from "#common/events";
 import { globalAK } from "#common/global";
@@ -26,9 +28,6 @@ import Tile from "ol/Tile";
 
 import { css, CSSResult, html, type PropertyValues, type TemplateResult } from "lit";
 import { customElement, property, query } from "lit/decorators.js";
-
-import PFCard from "@patternfly/patternfly/components/Card/card.css";
-import OL from "ol/ol.css";
 
 export const SELECTED_FEATURE_EVENT = "feature-selected";
 
@@ -78,10 +77,8 @@ export class OSMLayer extends OlLayerOpenstreetmap {
 }
 
 /**
- *
  * @event {select-event} - Fired when an event is selected on the map. ID of the event is contained
  *      in the `Event.detail` field.
- *
  */
 @customElement("ak-events-map")
 export class EventMap extends AKElement {

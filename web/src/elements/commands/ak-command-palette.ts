@@ -1,5 +1,4 @@
 import "#elements/commands/ak-command-palette-modal";
-
 import HostStyles from "./ak-command-palette.css";
 
 import { AKElement } from "#elements/Base";

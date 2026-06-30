@@ -1,13 +1,14 @@
 /**
- * @file Storybook configuration.
  * @import { StorybookConfig } from "@storybook/web-components-vite";
+ * @file Storybook configuration.
  */
 
 import { copyAssets } from "../scripts/build-assets.mjs";
 
 /**
  * @param {TemplateStringsArray} strings
- * @param  {...any} values
+ * @param {...any} values
+ *
  * @returns {string}
  */
 const html = (strings, ...values) => String.raw({ raw: strings }, ...values);

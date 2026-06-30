@@ -14,7 +14,8 @@ declare global {
 
     interface HTMLDialogElement {
         /**
-         * Indicates the types of user actions that can be used to close the associated <dialog> element.
+         * Indicates the types of user actions that can be used to close the associated <dialog>
+         * element.
          *
          * @attr closedby
          * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/HTMLDialogElement/closedBy MDN}

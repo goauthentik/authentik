@@ -8,7 +8,6 @@ import "#components/ak-text-input";
 import "#components/ak-radio-input";
 import "#components/ak-number-input";
 import "#components/ak-switch-input";
-
 import { aki } from "#common/api/client";
 
 import { DataProvision, DualSelectPair } from "#elements/ak-dual-select/types";
@@ -32,11 +31,11 @@ import {
     Role,
 } from "@goauthentik/api";
 
+import { ifDefined } from "lit-html/directives/if-defined.js";
 import { match } from "ts-pattern";
 
 import { msg } from "@lit/localize";
 import { html } from "lit";
-import { ifDefined } from "lit-html/directives/if-defined.js";
 import { customElement, state } from "lit/decorators.js";
 import { keyed } from "lit/directives/keyed.js";
 import { createRef, ref } from "lit/directives/ref.js";

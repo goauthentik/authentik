@@ -1,3 +1,6 @@
+import PFForm from "@patternfly/patternfly/components/Form/form.css";
+import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
+
 import { AKElement } from "#elements/Base";
 import { isControlElement } from "#elements/ControlElement";
 import { FormField, isFormField } from "#elements/forms/form-associated-element";
@@ -9,14 +12,11 @@ import { AKLabel } from "#components/ak-label";
 import { css, CSSResult, html, PropertyValues, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import PFForm from "@patternfly/patternfly/components/Form/form.css";
-import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
-
 /**
  * Horizontal Form Element Container.
  *
- * This element provides the interface between elements of our forms and the
- * form itself.
+ * This element provides the interface between elements of our forms and the form itself.
+ *
  * @custom-element ak-form-element-horizontal
  *
  * @TODO
@@ -53,9 +53,11 @@ export class HorizontalFormElement extends AKElement {
 
     /**
      * The label for the input control
-     * @property
+     *
+     * @deprecated Labels cannot associate with inputs across DOM roots. Use the slotted `label`
+     *   element instead.
+     * @property *
      * @attribute
-     * @deprecated Labels cannot associate with inputs across DOM roots. Use the slotted `label` element instead.
      */
     @property({ type: String })
     public label?: string;

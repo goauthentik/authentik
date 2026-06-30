@@ -23,11 +23,10 @@ const logger = ConsoleLogger.prefix("controller/locale");
 /**
  * Loads the locale module for the given locale code.
  *
- * @param locale The locale code to load.
- *
  * @remarks
- * This is used by `@lit/localize` to dynamically load locale modules,
- * as well synchronizing the document's `lang` attribute.
+ *   This is used by `@lit/localize` to dynamically load locale modules, as well synchronizing the
+ *   document's `lang` attribute.
+ * @param locale The locale code to load.
  */
 function loadLocale(locale: string): Promise<LocaleModule> {
     const languageNames = new Intl.DisplayNames([locale, sourceLocale], {
@@ -79,6 +78,7 @@ export class LocaleContextController implements ReactiveController {
 
     /**
      * Attempts to apply the given locale code.
+     *
      * @param nextLocale A user or agent preferred locale code.
      */
     #applyLocale(nextLocale: TargetLanguageTag) {
@@ -108,10 +108,9 @@ export class LocaleContextController implements ReactiveController {
      * Synchronizes changes to the document's `lang` attribute to the locale context.
      *
      * @remarks
-     * While we don't expect the document's `lang` attribute to change outside of
-     * this controller, we observe it to respect a possible external change,
-     * such as from the user agent's language settings, or a browser extension which
-     * modifies the attribute.
+     *   While we don't expect the document's `lang` attribute to change outside of this controller,
+     *   we observe it to respect a possible external change, such as from the user agent's language
+     *   settings, or a browser extension which modifies the attribute.
      */
     #attributeListener = (mutations: MutationRecord[]) => {
         for (const mutation of mutations) {

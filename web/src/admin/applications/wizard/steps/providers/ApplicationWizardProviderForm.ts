@@ -4,7 +4,6 @@ import "#components/ak-switch-input";
 import "#components/ak-text-input";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
-
 import { AKElement } from "#elements/Base";
 import { serializeForm } from "#elements/forms/serialization";
 

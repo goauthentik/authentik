@@ -44,7 +44,6 @@ function assignValue(
 
 /**
  * Convert the elements of the form to JSON.
- *
  */
 export function serializeForm<T = Record<string, unknown>>(elements: Iterable<AKElement>): T {
     const json: Record<string, unknown> = {};

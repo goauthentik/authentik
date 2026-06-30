@@ -1,7 +1,6 @@
 import "#elements/AppIcon";
 import "#user/LibraryApplication/RACLaunchEndpointModal";
 import "#elements/buttons/Dropdown";
-
 import { truncateWords } from "#common/strings";
 
 import { LitFC } from "#elements/types";

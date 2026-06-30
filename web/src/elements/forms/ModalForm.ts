@@ -1,6 +1,5 @@
 import "#elements/LoadingOverlay";
 import "#elements/buttons/SpinnerButton/index";
-
 import { EVENT_REFRESH } from "#common/constants";
 
 import { ModalButton } from "#elements/buttons/ModalButton";

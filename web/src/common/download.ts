@@ -11,8 +11,8 @@ export interface DownloadInit extends BlobPropertyBag {
  * Download a file directly from the frontend.
  *
  * @remarks
- * This function must be called from a user-interaction event handler
- * as it uses an `<a>` element behind the scenes.
+ *   This function must be called from a user-interaction event handler as it uses an `<a>` element
+ *   behind the scenes.
  */
 export function downloadFile({ content, filename, ...options }: DownloadInit): void {
     const blob = new Blob(Array.isArray(content) ? content : [content], options);

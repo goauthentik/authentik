@@ -1,8 +1,10 @@
 import "#components/ak-switch-input";
 import "#elements/CodeMirror";
 import "#elements/forms/HorizontalFormElement";
-
 import type { InvitationWizardState } from "./types";
+import PFForm from "@patternfly/patternfly/components/Form/form.css";
+import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
+import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import { aki } from "#common/api/client";
 import {
@@ -23,10 +25,6 @@ import YAML from "yaml";
 import { msg, str } from "@lit/localize";
 import { CSSResult, html, TemplateResult } from "lit";
 import { customElement, state } from "lit/decorators.js";
-
-import PFForm from "@patternfly/patternfly/components/Form/form.css";
-import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 const MINIMAL_BLUEPRINT_PATH = "example/flows-invitation-enrollment-minimal.yaml";
 

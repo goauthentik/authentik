@@ -1,5 +1,4 @@
 import "#elements/EmptyState";
-
 import { AKRefreshEvent } from "#common/events";
 
 import { AKElement } from "#elements/Base";
@@ -10,8 +9,9 @@ import MermaidStyles from "#elements/mermaid/mermaid.css";
 import { loadMermaid } from "#elements/mermaid/utils";
 import { SlottedTemplateResult } from "#elements/types";
 
-import { CSSResult, PropertyValues } from "lit";
 import { guard } from "lit-html/directives/guard.js";
+
+import { CSSResult, PropertyValues } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
 import { until } from "lit/directives/until.js";

@@ -1,3 +1,5 @@
+import PFToggleGroup from "@patternfly/patternfly/components/ToggleGroup/toggle-group.css";
+
 import { AKElement } from "#elements/Base";
 import { CustomEmitterElement } from "#elements/utils/eventEmitter";
 
@@ -7,8 +9,6 @@ import { html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 
-import PFToggleGroup from "@patternfly/patternfly/components/ToggleGroup/toggle-group.css";
-
 type Pair = [string, string];
 
 /**
@@ -16,9 +16,8 @@ type Pair = [string, string];
  *
  * An implementation of the Patternfly Toggle Group as a LitElement
  *
- * @element ak-toggle-group
- *
  * @fires ak-toggle - Fired when someone clicks on a toggle option. Carries the value of the option.
+ * @element ak-toggle-group
  */
 
 // MYNIS:

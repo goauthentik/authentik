@@ -2,7 +2,7 @@
  * @file Oxfmt configuration
  */
 
-const config = await import("@goauthentik/oxfmt-config-dev")
+const baseConfig = await import("@goauthentik/oxfmt-config-dev")
     .catch(() => {
         console.debug("Fallback to published @goauthentik/oxfmt-config");
 
@@ -11,4 +11,16 @@ const config = await import("@goauthentik/oxfmt-config-dev")
     })
     .then((module) => module.default);
 
-export default config;
+export default {
+    ...baseConfig,
+    overrides: [
+        ...(baseConfig.overrides ?? []),
+        {
+            // oxfmt 0.56's JSDoc formatter is non-idempotent on these comments — it oscillates and
+            // can corrupt fenced `@example` blocks. Skip the JSDoc pass for them until it is fixed
+            // upstream; layout and import formatting still apply.
+            files: ["src/elements/ak-table/ak-select-table.ts", "src/elements/utils/attributes.ts"],
+            options: { jsdoc: false },
+        },
+    ],
+};
