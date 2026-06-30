@@ -166,7 +166,6 @@ mod tests {
                 ak_proxy: Some(ProxyClaims::default()),
                 ..Claims::default()
             }),
-            redirect: None,
         }
     }
 

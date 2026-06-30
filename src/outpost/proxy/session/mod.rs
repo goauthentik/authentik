@@ -18,7 +18,6 @@ use filesystem::FsSessionStore;
 #[serde(default)]
 pub(crate) struct SessionData {
     pub(crate) claims: Option<Claims>,
-    pub(crate) redirect: Option<String>,
 }
 
 /// A session store backend.

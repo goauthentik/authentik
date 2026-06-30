@@ -294,7 +294,6 @@ pub(super) async fn handle_auth_callback(
 
     let data = SessionData {
         claims: Some(claims),
-        redirect: None,
     };
     app.session_store.save(&sid, &data, max_age).await?;
 

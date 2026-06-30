@@ -37,7 +37,6 @@ async fn persist_session(
     let sid = oauth::new_session_id();
     let data = SessionData {
         claims: Some(claims.clone()),
-        redirect: None,
     };
     if let Err(err) = store.save(&sid, &data, max_age).await {
         warn!(?err, "failed to persist header-auth session");

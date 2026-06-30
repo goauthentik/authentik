@@ -242,7 +242,6 @@ mod tests {
                 sid: "sid".to_owned(),
                 ..Claims::default()
             }),
-            redirect: Some("/dashboard".to_owned()),
         }
     }
 
