@@ -592,7 +592,7 @@
 </trans-unit>
 <trans-unit id="s59c9e8f57e3a0075">
   <source><x id="0" equiv-text="${this.label}"/> table</source>
-  <target><x id="0" equiv-text="${this.label}"/> table</target>
+  <target><x id="0" equiv-text="${this.label}"/> جدول</target>
 </trans-unit>
 <trans-unit id="sa25b60b4fac481aa">
   <source>Table content</source>
