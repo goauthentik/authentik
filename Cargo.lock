@@ -187,6 +187,7 @@ dependencies = [
  "nix 0.31.3",
  "pyo3",
  "pyo3-build-config",
+ "reqwest",
  "sqlx",
  "tokio",
  "tracing",
