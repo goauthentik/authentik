@@ -7,10 +7,6 @@ use tracing::info;
 #[derive(Debug, FromArgs, PartialEq)]
 /// Run healthcheck
 #[argh(subcommand, name = "healthcheck")]
-#[expect(
-    clippy::empty_structs_with_brackets,
-    reason = "argh doesn't support unit structs"
-)]
 pub(super) struct Cli {
     #[argh(positional)]
     mode: String,
