@@ -6,8 +6,9 @@ use ak_client::{
     apis::events_api::events_events_create,
     models::{EventActions, EventRequest},
 };
-use serde_json::json;
-use tracing::warn;
+use axum::http::HeaderMap;
+use serde_json::{Map, Value, json};
+use tracing::{error, warn};
 
 use crate::outpost::proxy::application::Application;
 
@@ -17,13 +18,34 @@ impl Application {
         &self,
         message: &str,
         url: &str,
+        headers: &HeaderMap,
         client_ip: IpAddr,
     ) {
+        error!(
+            provider = %self.provider.name,
+            url = %url,
+            client_ip = %client_ip,
+            "configuration error: {message}"
+        );
+
+        // First value of each request header, attached to the event for debugging.
+        let request_headers: Map<String, Value> = headers
+            .keys()
+            .map(|name| {
+                let value = headers
+                    .get(name)
+                    .and_then(|value| value.to_str().ok())
+                    .unwrap_or_default();
+                (name.as_str().to_owned(), Value::from(value))
+            })
+            .collect();
+
         let context = HashMap::from([
             ("message".to_owned(), json!(message)),
             ("provider".to_owned(), json!(self.provider.name)),
             ("outpost".to_owned(), json!(self.outpost_name)),
             ("url".to_owned(), json!(url)),
+            ("headers".to_owned(), Value::Object(request_headers)),
         ]);
         let event = EventRequest {
             context: Some(context),

@@ -86,8 +86,13 @@ async fn forward_header_auth(
             "Outpost {} (Provider {}) failed to detect a forward URL from {source}",
             app.outpost_name, app.provider.name
         );
-        app.report_misconfiguration(&message, &request.uri().to_string(), client_ip)
-            .await;
+        app.report_misconfiguration(
+            &message,
+            &request.uri().to_string(),
+            request.headers(),
+            client_ip,
+        )
+        .await;
         return Ok((StatusCode::INTERNAL_SERVER_ERROR, "configuration error").into_response());
     };
 
@@ -160,8 +165,13 @@ pub(crate) async fn handle_nginx(
             "Outpost {} (Provider {}) failed to detect a forward URL from nginx",
             app.outpost_name, app.provider.name
         );
-        app.report_misconfiguration(&message, &request.uri().to_string(), client_ip)
-            .await;
+        app.report_misconfiguration(
+            &message,
+            &request.uri().to_string(),
+            request.headers(),
+            client_ip,
+        )
+        .await;
         return Ok((StatusCode::INTERNAL_SERVER_ERROR, "configuration error").into_response());
     };
 
