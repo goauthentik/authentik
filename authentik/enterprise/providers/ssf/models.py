@@ -90,7 +90,9 @@ class SSFProvider(TasksModel, BackchannelProvider):
 
     push_verify_certificates = models.BooleanField(default=True)
 
-    oidc_auth_providers = models.ManyToManyField(OAuth2Provider, blank=True, default=None)
+    oidc_auth_providers = models.ManyToManyField(
+        OAuth2Provider, blank=True, default=None, through="SSFProviderOIDCAuthProvider"
+    )
 
     token = models.ForeignKey(Token, on_delete=models.CASCADE, null=True, default=None)
 
@@ -136,6 +138,23 @@ class SSFProvider(TasksModel, BackchannelProvider):
             # as the user requesting to add a stream must have the permission on the provider
             ("add_stream", _("Add stream to SSF provider")),
         ]
+
+
+class SSFProviderOIDCAuthProvider(models.Model):
+    ssf_provider = models.ForeignKey(SSFProvider, on_delete=models.CASCADE)
+    oauth2_provider = models.ForeignKey(
+        OAuth2Provider,
+        on_delete=models.CASCADE,
+    )
+
+    class Meta:
+        unique_together = (("ssf_provider", "oauth2_provider"),)
+
+    def __str__(self):
+        return (
+            f"SSFProviderOIDCAuthProvider for SSFProvider {self.ssf_provider_id} "
+            f"and OAuth2Provider {self.oauth2_provider_id}."
+        )
 
 
 class Stream(models.Model):
