@@ -221,7 +221,8 @@ impl Application {
     /// bearer token, then basic auth. Returns `None` when unauthenticated.
     ///
     /// When the identity is freshly resolved from header auth, a session is
-    /// persisted and its cookie returned in [`Authenticated::set_cookie`].
+    /// persisted and its cookie returned in [`Authenticated::set_cookie`]; if
+    /// the session cannot be stored, the request is treated as unauthenticated.
     async fn authenticate(&self, headers: &HeaderMap) -> Option<Authenticated> {
         if let Some(claims) = self.claims_from_session(headers).await {
             return Some(Authenticated {
@@ -248,15 +249,23 @@ impl Application {
             None
         }?;
 
-        self.cache_claims(auth_header, &claims).await;
+        // Persist a session for the resolved credential before trusting it: if
+        // the store write fails, fail closed (treat the request as
+        // unauthenticated) rather than letting it through with no recoverable
+        // session.
         let set_cookie = persist_session(
             &self.session_store,
             &self.session_cookie,
             &claims,
             self.session_max_age(),
         )
-        .await;
-        Some(Authenticated { claims, set_cookie })
+        .await?;
+
+        self.cache_claims(auth_header, &claims).await;
+        Some(Authenticated {
+            claims,
+            set_cookie: Some(set_cookie),
+        })
     }
 }
 
@@ -301,6 +310,29 @@ mod tests {
             .expect("load")
             .expect("session present");
         assert_eq!(loaded.claims.expect("claims").sub, "user-uuid");
+    }
+
+    #[tokio::test]
+    async fn persist_session_failure_returns_none() {
+        // When the store can't persist the session, no cookie is produced;
+        // `authenticate` propagates this as unauthenticated (fails closed).
+        let dir = tempfile::tempdir().expect("tempdir");
+        let store =
+            SessionStore::Filesystem(FsSessionStore::new(dir.path().to_path_buf()).expect("store"));
+        let cookie = SessionCookie::new(
+            "client-123",
+            "0123456789abcdef0123456789abcdef",
+            false,
+            None,
+        )
+        .expect("cookie");
+
+        // Remove the backing directory so the write fails.
+        dir.close().expect("remove tempdir");
+
+        let set_cookie =
+            persist_session(&store, &cookie, &Claims::default(), Duration::from_mins(1)).await;
+        assert!(set_cookie.is_none());
     }
 
     #[test]
