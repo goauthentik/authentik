@@ -55,6 +55,7 @@ export class RoleListPage extends TablePage<Role> {
 
     protected override renderToolbarSelected(): SlottedTemplateResult {
         const disabled = this.selectedElements.length < 1;
+
         return html`<ak-forms-delete-bulk
             object-label=${msg("Role(s)")}
             .objects=${this.selectedElements}

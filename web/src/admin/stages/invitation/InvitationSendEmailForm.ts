@@ -74,6 +74,7 @@ export class InvitationSendEmailForm extends Form<InvitationSendEmailRequestWith
                 message: msg("Please enter at least one email address"),
                 level: MessageLevel.error,
             });
+
             return;
         }
 

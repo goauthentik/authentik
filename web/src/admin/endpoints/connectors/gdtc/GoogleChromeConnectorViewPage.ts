@@ -67,6 +67,7 @@ export class GoogleChromeConnectorViewPage extends AKElement {
         if (!this.connector) {
             return nothing;
         }
+
         return html`<ak-tabs>
             <div
                 role="tabpanel"

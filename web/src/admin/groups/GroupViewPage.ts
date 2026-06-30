@@ -82,6 +82,7 @@ export class GroupViewPage extends WithLicenseSummary(AKElement) {
         if (!this.group) {
             return nothing;
         }
+
         return html`<main>
             <ak-tabs>
                 <section

@@ -33,6 +33,7 @@ export class LDAPProviderFormPage extends WithBrandConfig(BaseProviderForm<LDAPP
                 lDAPProviderRequest: data,
             });
         }
+
         return aki(ProvidersApi).providersLdapCreate({
             lDAPProviderRequest: data,
         });

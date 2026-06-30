@@ -91,10 +91,12 @@ export class AkSbFruity extends LitElement {
     onNavigation(evt: Event) {
         const current: number = (evt as CustomEvent).detail;
         const index = current - 1;
+
         if (index * this.pageLength > this.options.length) {
             console.warn(
                 `Attempted to index from ${index} for options length ${this.options.length}`,
             );
+
             return;
         }
         const endCount = this.pageLength * (index + 1);

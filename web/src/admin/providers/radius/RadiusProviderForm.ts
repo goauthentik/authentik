@@ -30,6 +30,7 @@ export class RadiusProviderFormPage extends WithBrandConfig(BaseProviderForm<Rad
                 radiusProviderRequest: data,
             });
         }
+
         return aki(ProvidersApi).providersRadiusCreate({
             radiusProviderRequest: data,
         });

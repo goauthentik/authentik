@@ -53,6 +53,7 @@ export class AgentConnectorForm extends WithBrandConfig(ModelForm<AgentConnector
                 patchedAgentConnectorRequest: data,
             });
         }
+
         return aki(EndpointsApi).endpointsAgentsConnectorsCreate({
             agentConnectorRequest: data as unknown as AgentConnectorRequest,
         });

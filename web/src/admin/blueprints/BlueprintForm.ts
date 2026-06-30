@@ -47,12 +47,15 @@ export class BlueprintForm extends ModelForm<BlueprintInstance, string> {
         const inst = await aki(ManagedApi).managedBlueprintsRetrieve({
             instanceUuid: pk,
         });
+
         if (inst.path?.startsWith("oci://")) {
             this.source = BlueprintSource.OCI;
         }
+
         if (inst.content !== "") {
             this.source = BlueprintSource.Internal;
         }
+
         return inst;
     }
 
@@ -71,6 +74,7 @@ export class BlueprintForm extends ModelForm<BlueprintInstance, string> {
                 blueprintInstanceRequest: data,
             });
         }
+
         return aki(ManagedApi).managedBlueprintsCreate({
             blueprintInstanceRequest: data,
         });
@@ -114,15 +118,18 @@ export class BlueprintForm extends ModelForm<BlueprintInstance, string> {
                                   ): Promise<BlueprintFile[]> => {
                                       const items =
                                           await aki(ManagedApi).managedBlueprintsAvailableList();
+
                                       return items.filter((item) =>
                                           query ? item.path.includes(query) : true,
                                       );
                                   }}
                                   .renderElement=${(item: BlueprintFile): string => {
                                       const name = item.path;
+
                                       if (item.meta && item.meta.name) {
                                           return `${name} (${item.meta.name})`;
                                       }
+
                                       return name;
                                   }}
                                   .value=${(item: BlueprintFile | null) => {

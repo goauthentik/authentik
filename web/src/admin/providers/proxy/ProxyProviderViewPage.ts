@@ -46,6 +46,7 @@ import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 
 export function ModeToLabel(action?: ProxyMode): string {
     if (!action) return "";
+
     switch (action) {
         case ProxyMode.Proxy:
             return msg("Proxy");
@@ -154,10 +155,12 @@ export class ProxyProviderViewPage extends AKElement {
                 if (!getURLParam("generatedConfig", false)) {
                     return input;
                 }
+
                 if (!this.provider) {
                     return input;
                 }
                 const extHost = new URL(this.provider.externalHost);
+
                 // See website/docs/add-secure-apps/providers/proxy/forward_auth.mdx
                 if (this.provider?.mode === ProxyMode.ForwardSingle) {
                     return input
@@ -172,9 +175,11 @@ export class ProxyProviderViewPage extends AKElement {
                         .replaceAll("https://app.company", extHost.toString())
                         .replaceAll("app.company", extHost.hostname);
                 }
+
                 return input;
             },
         ];
+
         return html`<ak-tabs pageIdentifier="proxy-setup">
             ${servers.map((server) => {
                 return html`<div
@@ -195,6 +200,7 @@ export class ProxyProviderViewPage extends AKElement {
         if (!this.provider) {
             return nothing;
         }
+
         return html`<main part="main">
             <ak-tabs part="tabs">
                 <div
@@ -248,6 +254,7 @@ export class ProxyProviderViewPage extends AKElement {
         if (!this.provider) {
             return nothing;
         }
+
         return html`<div
             class="pf-c-page__main-section pf-m-no-padding-mobile pf-l-grid pf-m-gutter"
         >
@@ -279,6 +286,7 @@ export class ProxyProviderViewPage extends AKElement {
         if (!this.provider) {
             return nothing;
         }
+
         return html`${this.provider?.assignedApplicationName
                 ? nothing
                 : html`<div slot="header" class="pf-c-banner pf-m-warning">

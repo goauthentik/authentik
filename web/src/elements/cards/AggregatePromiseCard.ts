@@ -46,12 +46,15 @@ export class AggregatePromiseCard extends AggregateCard implements IAggregatePro
         if (!this.promise) {
             return nothing;
         }
+
         try {
             const value = await this.promise;
+
             return html`<i class="fa fa-check-circle" aria-hidden="true"></i
                 >&nbsp;${value.toString()}`;
         } catch (error: unknown) {
             console.warn(error);
+
             return html`<i class="fa fa-exclamation-circle" aria-hidden="true"></i>&nbsp;${this
                     .failureMessage}`;
         }

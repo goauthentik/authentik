@@ -55,6 +55,7 @@ export class SourceListPage extends TablePage<Source> {
             this.selectedElements.length < 1 ||
             this.selectedElements.some((item) => item.component === "");
         const nonBuiltInSources = this.selectedElements.filter((item) => item.component !== "");
+
         return html`<ak-forms-delete-bulk
             object-label=${msg("Source(s)")}
             .objects=${nonBuiltInSources}

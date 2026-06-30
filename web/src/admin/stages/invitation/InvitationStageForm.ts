@@ -27,6 +27,7 @@ export class InvitationStageForm extends BaseStageForm<InvitationStage> {
                 invitationStageRequest: data,
             });
         }
+
         return aki(StagesApi).stagesInvitationStagesCreate({
             invitationStageRequest: data,
         });

@@ -113,6 +113,7 @@ export class SimpleTableSortTest extends LitElement {
         const onTableSort = (event: TableSortEvent) => {
             if (event.value === this.order) {
                 this.sortDown = !this.sortDown;
+
                 return;
             }
             this.order = event.value;

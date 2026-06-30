@@ -15,188 +15,234 @@ export const ROUTES: Route[] = [
     }),
     new Route(new RegExp("^/administration/dashboard/users$"), async () => {
         await import("#admin/admin-overview/DashboardUserPage");
+
         return html`<ak-admin-dashboard-users></ak-admin-dashboard-users>`;
     }),
     new Route(new RegExp("^/administration/system-tasks$"), async () => {
         await import("#admin/admin-overview/SystemTasksPage");
+
         return html`<ak-system-tasks></ak-system-tasks>`;
     }),
     new Route(new RegExp("^/core/providers$"), async () => {
         await import("#admin/providers/ProviderListPage");
+
         return html`<ak-provider-list></ak-provider-list>`;
     }),
     new Route(new RegExp(`^/core/providers/(?<id>${ID_REGEX})$`), async (args) => {
         await import("#admin/providers/ProviderViewPage");
+
         return html`<ak-provider-view .providerID=${parseInt(args.id, 10)}></ak-provider-view>`;
     }),
     new Route(new RegExp("^/core/applications$"), async () => {
         await import("#admin/applications/ApplicationListPage");
+
         return html`<ak-application-list></ak-application-list>`;
     }),
     new Route(new RegExp(`^/core/applications/(?<slug>${SLUG_REGEX})$`), async (args) => {
         await import("#admin/applications/ApplicationViewPage");
+
         return html`<ak-application-view .applicationSlug=${args.slug}></ak-application-view>`;
     }),
     new Route(new RegExp("^/endpoints/devices$"), async () => {
         await import("#admin/endpoints/devices/DeviceListPage");
+
         return html`<ak-endpoints-device-list></ak-endpoints-device-list>`;
     }),
     new Route(new RegExp(`^/endpoints/devices/(?<uuid>${UUID_REGEX})$`), async (args) => {
         await import("#admin/endpoints/devices/DeviceViewPage");
+
         return html`<ak-endpoints-device-view .deviceId=${args.uuid}></ak-endpoints-device-view>`;
     }),
     new Route(new RegExp("^/endpoints/connectors$"), async () => {
         await import("#admin/endpoints/connectors/ConnectorsListPage");
+
         return html`<ak-endpoints-connectors-list></ak-endpoints-connectors-list>`;
     }),
     new Route(new RegExp(`^/endpoints/connectors/(?<uuid>${UUID_REGEX})$`), async (args) => {
         await import("#admin/endpoints/connectors/ConnectorViewPage");
+
         return html`<ak-endpoints-connector-view
             .connectorID=${args.uuid}
         ></ak-endpoints-connector-view>`;
     }),
     new Route(new RegExp("^/endpoints/groups$"), async () => {
         await import("#admin/endpoints/DeviceAccessGroupsListPage");
+
         return html`<ak-endpoints-device-access-groups-list></ak-endpoints-device-access-groups-list>`;
     }),
     new Route(new RegExp("^/core/sources$"), async () => {
         await import("#admin/sources/SourceListPage");
+
         return html`<ak-source-list></ak-source-list>`;
     }),
     new Route(new RegExp(`^/core/sources/(?<slug>${SLUG_REGEX})$`), async (args) => {
         await import("#admin/sources/SourceViewPage");
+
         return html`<ak-source-view .sourceSlug=${args.slug}></ak-source-view>`;
     }),
     new Route(new RegExp("^/core/property-mappings$"), async () => {
         await import("#admin/property-mappings/PropertyMappingListPage");
+
         return html`<ak-property-mapping-list></ak-property-mapping-list>`;
     }),
     new Route(new RegExp("^/core/tokens$"), async () => {
         await import("#admin/tokens/TokenListPage");
+
         return html`<ak-token-list></ak-token-list>`;
     }),
     new Route(new RegExp("^/core/brands"), async () => {
         await import("#admin/brands/BrandListPage");
+
         return html`<ak-brand-list></ak-brand-list>`;
     }),
     new Route(new RegExp("^/policy/policies$"), async () => {
         await import("#admin/policies/PolicyListPage");
+
         return html`<ak-policy-list></ak-policy-list>`;
     }),
     new Route(new RegExp("^/policy/reputation$"), async () => {
         await import("#admin/policies/reputation/ReputationListPage");
+
         return html`<ak-policy-reputation-list></ak-policy-reputation-list>`;
     }),
     new Route(new RegExp("^/identity/groups$"), async () => {
         await import("#admin/groups/GroupListPage");
+
         return html`<ak-group-list></ak-group-list>`;
     }),
     new Route(new RegExp(`^/identity/groups/(?<uuid>${UUID_REGEX})$`), async (args) => {
         await import("#admin/groups/GroupViewPage");
+
         return html`<ak-group-view .groupId=${args.uuid}></ak-group-view>`;
     }),
     new Route(new RegExp("^/identity/users$"), async () => {
         await import("#admin/users/UserListPage");
+
         return html`<ak-user-list></ak-user-list>`;
     }),
     new Route(new RegExp(`^/identity/users/(?<id>${ID_REGEX})$`), async (args) => {
         await import("#admin/users/UserViewPage");
+
         return html`<ak-user-view .userId=${parseInt(args.id, 10)}></ak-user-view>`;
     }),
     new Route(new RegExp("^/identity/roles$"), async () => {
         await import("#admin/roles/ak-role-list");
+
         return html`<ak-role-list></ak-role-list>`;
     }),
     new Route(new RegExp("^/identity/initial-permissions$"), async () => {
         await import("#admin/rbac/ak-initial-permissions-list");
+
         return html`<ak-initial-permissions-list></ak-initial-permissions-list>`;
     }),
     new Route(new RegExp(`^/identity/roles/(?<id>${UUID_REGEX})$`), async (args) => {
         await import("#admin/roles/ak-role-view");
+
         return html`<ak-role-view roleId=${args.id}></ak-role-view>`;
     }),
     new Route(new RegExp("^/flow/stages/invitations$"), async () => {
         await import("#admin/stages/invitation/InvitationListPage");
+
         return html`<ak-stage-invitation-list></ak-stage-invitation-list>`;
     }),
     new Route(new RegExp("^/flow/stages/prompts$"), async () => {
         await import("#admin/stages/prompt/PromptListPage");
+
         return html`<ak-stage-prompt-list></ak-stage-prompt-list>`;
     }),
     new Route(new RegExp("^/flow/stages$"), async () => {
         await import("#admin/stages/StageListPage");
+
         return html`<ak-stage-list></ak-stage-list>`;
     }),
     new Route(new RegExp("^/flow/flows$"), async () => {
         await import("#admin/flows/FlowListPage");
+
         return html`<ak-flow-list></ak-flow-list>`;
     }),
     new Route(new RegExp(`^/flow/flows/(?<slug>${SLUG_REGEX})$`), async (args) => {
         await import("#admin/flows/FlowViewPage");
+
         return html`<ak-flow-view .flowSlug=${args.slug} exportparts="main, tabs"></ak-flow-view>`;
     }),
     new Route(new RegExp("^/events/log$"), async () => {
         await import("#admin/events/EventListPage");
+
         return html`<ak-event-list></ak-event-list>`;
     }),
     new Route(new RegExp(`^/events/log/(?<id>${UUID_REGEX})$`), async (args) => {
         await import("#admin/events/EventViewPage");
+
         return html`<ak-event-view .eventID=${args.id}></ak-event-view>`;
     }),
     new Route(new RegExp("^/events/transports$"), async () => {
         await import("#admin/events/TransportListPage");
+
         return html`<ak-event-transport-list></ak-event-transport-list>`;
     }),
     new Route(new RegExp("^/events/rules$"), async () => {
         await import("#admin/events/RuleListPage");
+
         return html`<ak-event-rule-list></ak-event-rule-list>`;
     }),
     new Route(new RegExp("^/events/exports"), async () => {
         await import("./events/DataExportListPage");
+
         return html`<ak-data-export-list></ak-data-export-list>`;
     }),
     new Route(new RegExp("^/events/lifecycle-rules$"), async () => {
         await import("#admin/lifecycle/LifecycleRuleListPage");
+
         return html`<ak-lifecycle-rule-list></ak-lifecycle-rule-list>`;
     }),
     new Route(new RegExp("^/events/lifecycle-reviews"), async () => {
         await import("#admin/lifecycle/ReviewListPage");
+
         return html`<ak-review-list></ak-review-list>`;
     }),
     new Route(new RegExp("^/outpost/outposts$"), async () => {
         await import("#admin/outposts/OutpostListPage");
+
         return html`<ak-outpost-list></ak-outpost-list>`;
     }),
     new Route(new RegExp(`^/outpost/outposts/(?<id>${UUID_REGEX})$$`), async (args) => {
         await import("#admin/outposts/OutpostViewPage");
+
         return html`<ak-outpost-view .outpostID=${args.id}></ak-outpost-view>`;
     }),
     new Route(new RegExp("^/outpost/integrations$"), async () => {
         await import("#admin/outposts/ServiceConnectionListPage");
+
         return html`<ak-outpost-service-connection-list></ak-outpost-service-connection-list>`;
     }),
     new Route(new RegExp("^/crypto/certificates$"), async () => {
         await import("#admin/crypto/CertificateKeyPairListPage");
+
         return html`<ak-crypto-certificate-list></ak-crypto-certificate-list>`;
     }),
     new Route(new RegExp("^/admin/settings$"), async () => {
         await import("#admin/admin-settings/AdminSettingsPage");
+
         return html`<ak-admin-settings></ak-admin-settings>`;
     }),
     new Route(new RegExp("^/files$"), async () => {
         await import("#admin/files/FileListPage");
+
         return html`<ak-files-list></ak-files-list>`;
     }),
     new Route(new RegExp("^/blueprints/instances$"), async () => {
         await import("#admin/blueprints/BlueprintListPage");
+
         return html`<ak-blueprint-list></ak-blueprint-list>`;
     }),
     new Route(new RegExp("^/debug$"), async () => {
         await import("#admin/ak-admin-debug-page");
+
         return html`<ak-admin-debug-page></ak-admin-debug-page>`;
     }),
     new Route(new RegExp("^/enterprise/licenses$"), async () => {
         await import("#admin/enterprise/EnterpriseLicenseListPage");
+
         return html`<ak-enterprise-license-list></ak-enterprise-license-list>`;
     }),
 ];

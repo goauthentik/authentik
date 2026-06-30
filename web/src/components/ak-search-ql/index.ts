@@ -23,6 +23,7 @@ import PFSearchInput from "@patternfly/patternfly/components/SearchInput/search-
 export class QL extends DjangoQL {
     createCompletionElement() {
         this.completionEnabled = !!this.options.completionEnabled;
+
         return;
     }
     logError(message: string): void {
@@ -119,8 +120,10 @@ export class QLSearch extends FormAssociatedElement<string> implements FormAssoc
         if (!value?.autocomplete) {
             return;
         }
+
         if (!this.#ql) {
             this.#autocompleteCache = value.autocomplete as unknown as Introspections;
+
             return;
         }
 
@@ -188,6 +191,7 @@ export class QLSearch extends FormAssociatedElement<string> implements FormAssoc
             selector: textarea,
             autoResize: false,
         });
+
         if (this.#autocompleteCache) {
             this.#autocompleteCache = null;
         }
@@ -197,6 +201,7 @@ export class QLSearch extends FormAssociatedElement<string> implements FormAssoc
 
         if (!this.#ctx) {
             console.error("authentik/ql: failed to get canvas context");
+
             return;
         }
 
@@ -215,6 +220,7 @@ export class QLSearch extends FormAssociatedElement<string> implements FormAssoc
     #selectCompletion(index: number) {
         if (!this.#ql) {
             console.debug(`authentik/ql: Skipping selection of index ${index}, QL not initialized`);
+
             return;
         }
 
@@ -247,6 +253,7 @@ export class QLSearch extends FormAssociatedElement<string> implements FormAssoc
 
         if (this.#ql.suggestions.length < 1 || this.#ql.loading) {
             this.open = false;
+
             return;
         }
 

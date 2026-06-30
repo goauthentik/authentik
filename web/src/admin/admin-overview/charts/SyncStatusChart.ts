@@ -76,11 +76,13 @@ export class SyncStatusChart extends AKChart<SummarizedSyncStatus[]> {
             objects.results.map(async (element) => {
                 // Each source should have 3 successful tasks, so the worst task overwrites
                 let objectKey = "healthy";
+
                 try {
                     const status = await fetchSyncStatus(element);
 
                     const now = new Date().getTime();
-                    const maxDelta = 12 * 60 * 60 * 1000; // 12 hours
+                    const maxDelta = 12 * 60 * 60 * 1000;
+ // 12 hours
 
                     if (
                         status.lastSyncStatus === TaskAggregatedStatusEnum.Error ||
@@ -100,12 +102,13 @@ export class SyncStatusChart extends AKChart<SummarizedSyncStatus[]> {
                 metrics[objectKey] += 1;
             }),
         );
+
         return {
             healthy: metrics.healthy,
             failed: metrics.failed,
             unsynced: objects.pagination.count === 0 ? 1 : metrics.unsynced,
             total: objects.pagination.count,
-            label: label,
+            label,
         };
     }
 
@@ -168,6 +171,7 @@ export class SyncStatusChart extends AKChart<SummarizedSyncStatus[]> {
             ),
         ];
         this.centerText = statuses.reduce((total, el) => (total += el.total), 0).toString();
+
         return statuses;
     }
 

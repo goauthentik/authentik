@@ -57,6 +57,7 @@ export class InvitationWizardSuccessStep extends WizardPage {
 
     nextCallback = async (): Promise<boolean> => {
         this.dispatchEvent(new AKRefreshEvent());
+
         return true;
     };
 
@@ -88,6 +89,7 @@ export class InvitationWizardSuccessStep extends WizardPage {
 
     onSendViaEmail = async (): Promise<void> => {
         const steps = this.host.steps;
+
         if (!steps.includes("email-step")) {
             this.host.steps = [...steps, "email-step"];
         }

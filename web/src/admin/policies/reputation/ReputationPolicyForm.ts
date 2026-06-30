@@ -28,6 +28,7 @@ export class ReputationPolicyForm extends BasePolicyForm<ReputationPolicy> {
                 reputationPolicyRequest: data,
             });
         }
+
         return aki(PoliciesApi).policiesReputationCreate({
             reputationPolicyRequest: data,
         });

@@ -89,6 +89,7 @@ export class EventListPage extends WithLicenseSummary(TablePage<Event>) {
                 ></ak-events-map>
             </div>`;
         }
+
         return html`<div class="pf-c-page__main-section pf-m-no-padding-bottom">
             <ak-events-volume-chart
                 .query=${{

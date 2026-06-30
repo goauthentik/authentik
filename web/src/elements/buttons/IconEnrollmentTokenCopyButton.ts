@@ -13,6 +13,7 @@ export function IconEnrollmentTokenCopyButton(tokenUuid?: string | null): Slotte
         const fetchTokenViewKey = (): Promise<Blob> => {
             if (!tokenUuid) {
                 console.warn("No tokenUuid provided for IconEnrollmentTokenCopyButton");
+
                 return Promise.resolve(new Blob([""], { type: "text/plain" }));
             }
 

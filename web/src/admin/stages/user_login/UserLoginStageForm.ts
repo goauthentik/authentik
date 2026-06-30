@@ -30,6 +30,7 @@ export class UserLoginStageForm extends BaseStageForm<UserLoginStage> {
                 userLoginStageRequest: data,
             });
         }
+
         return aki(StagesApi).stagesUserLoginCreate({
             userLoginStageRequest: data,
         });

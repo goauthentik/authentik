@@ -38,6 +38,7 @@ export class TelegramLogin extends BaseStage<
     firstUpdated(): void {
         if (!this.challenge) {
             console.warn("No challenge present for Telegram Login");
+
             return;
         }
 

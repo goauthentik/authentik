@@ -67,6 +67,7 @@ export class FileListPage extends WithCapabilitiesConfig(TablePage<FileItem>) {
         }
         const disabled = !this.selectedElements.length;
         const count = this.selectedElements.length;
+
         return html`<ak-forms-delete-bulk
             object-label=${count === 1 ? msg("file") : msg("files")}
             .objects=${this.selectedElements}
@@ -117,6 +118,7 @@ export class FileListPage extends WithCapabilitiesConfig(TablePage<FileItem>) {
         if (this.can(CapabilitiesEnum.CanSaveMedia)) {
             return super.renderEmpty(inner);
         }
+
         return super.renderEmpty(
             html`<ak-empty-state icon=${this.pageIcon}
                 ><span>${msg("Configured file backend does not support file management.")}</span>
@@ -139,6 +141,7 @@ export class FileListPage extends WithCapabilitiesConfig(TablePage<FileItem>) {
         if (!this.can(CapabilitiesEnum.CanSaveMedia)) {
             return nothing;
         }
+
         return html`
             <ak-forms-modal>
                 <span slot="submit">${msg("Upload")}</span>

@@ -27,6 +27,7 @@ export class ScheduleForm extends ModelForm<Schedule, string> {
         if (!this.instance) {
             return "";
         }
+
         return msg("Successfully updated schedule.");
     }
 

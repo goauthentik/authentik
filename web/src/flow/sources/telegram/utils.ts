@@ -19,6 +19,7 @@ export function loadTelegramWidget(
     widgetScript.type = "text/javascript";
     widgetScript.setAttribute("data-radius", "0");
     widgetScript.setAttribute("data-telegram-login", botUsername);
+
     if (requestMessageAccess) {
         widgetScript.setAttribute("data-request-access", "write");
     }

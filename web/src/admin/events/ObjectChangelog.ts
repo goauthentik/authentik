@@ -38,14 +38,17 @@ export class ObjectChangelog extends Table<Event> {
     async apiEndpoint(): Promise<PaginatedResponse<Event>> {
         let modelName = this.targetModelName;
         let appName = this.targetModelApp;
+
         if (this.targetModelName.indexOf(".") !== -1) {
             const parts = this.targetModelName.split(".", 1);
             appName = parts[0];
             modelName = parts[1];
         }
+
         if (this.targetModelName === "") {
             return Promise.reject();
         }
+
         return aki(EventsApi).eventsEventsList({
             ...(await this.defaultEndpointConfig()),
             action: "model_",

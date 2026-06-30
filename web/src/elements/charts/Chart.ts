@@ -127,6 +127,7 @@ export abstract class AKChart<T> extends AKElement {
 
                 if (!canvas) {
                     console.warn("Failed to get canvas element");
+
                     return;
                 }
 
@@ -134,6 +135,7 @@ export abstract class AKChart<T> extends AKElement {
 
                 if (!ctx) {
                     console.warn("failed to get 2d context");
+
                     return;
                 }
 
@@ -155,6 +157,7 @@ export abstract class AKChart<T> extends AKElement {
 
     timeTickCallback(tickValue: string | number, index: number, ticks: Tick[]): string {
         const valueStamp = ticks[index];
+
         return formatElapsedTime(new Date(valueStamp.value));
     }
 
@@ -198,6 +201,7 @@ export abstract class AKChart<T> extends AKElement {
             options: this.getOptions(),
             plugins: this.getPlugins(),
         };
+
         return new Chart(ctx, config as ChartConfiguration);
     }
 

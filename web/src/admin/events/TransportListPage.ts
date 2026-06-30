@@ -52,6 +52,7 @@ export class TransportListPage extends TablePage<NotificationTransport> {
 
     protected override renderToolbarSelected(): SlottedTemplateResult {
         const disabled = this.selectedElements.length < 1;
+
         return html`<ak-forms-delete-bulk
             object-label=${msg("Notification transport(s)")}
             .objects=${this.selectedElements}
@@ -102,6 +103,7 @@ export class TransportListPage extends TablePage<NotificationTransport> {
 
     protected override renderExpanded(item: NotificationTransport): SlottedTemplateResult {
         const [appLabel, modelName] = ModelEnum.AuthentikEventsNotificationtransport.split(".");
+
         return html`<dl class="pf-c-description-list pf-m-horizontal">
             <div class="pf-c-description-list__group">
                 <dt class="pf-c-description-list__term">

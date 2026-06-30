@@ -80,6 +80,7 @@ export class ApplicationWizardRACProviderForm extends ApplicationWizardProviderF
         if (!(this.wizard.provider && this.wizard.errors)) {
             throw new Error("RAC Provider Step received uninitialized wizard context.");
         }
+
         return this.renderForm(this.wizard.provider);
     }
 }

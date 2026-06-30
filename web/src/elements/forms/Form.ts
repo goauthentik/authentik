@@ -455,6 +455,7 @@ export class Form<T = Record<string, unknown>, D = T>
 
         if (!form) {
             this.logger.warn("Unable to check validity, no form found", this);
+
             return true;
         }
 
@@ -537,6 +538,7 @@ export class Form<T = Record<string, unknown>, D = T>
         if (!this.send) {
             this.logger.info("No send() method implemented on form, dispatching submit event");
             this.dispatchEvent(submitEvent);
+
             return Promise.resolve(false);
         }
 
@@ -622,6 +624,7 @@ export class Form<T = Record<string, unknown>, D = T>
     protected doSubmit = (event: SubmitEvent): void => {
         if (this.submitting) {
             this.logger.info("Skipping submit. Already submitting!");
+
             return;
         }
 

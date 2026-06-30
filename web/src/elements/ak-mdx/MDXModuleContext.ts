@@ -15,6 +15,7 @@ export function fetchMDXModule(url: string | URL): Promise<MDXModule> {
         })
         .catch((error) => {
             console.error("Error fetching content", error);
+
             return { content: "", publicPath: "", publicDirectory: "" };
         });
 }

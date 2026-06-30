@@ -23,6 +23,7 @@ export class KerberosSourceConnectivity extends AKElement {
         if (!this.connectivity) {
             return nothing;
         }
+
         return html`<ul class="pf-c-list">
             ${Object.keys(this.connectivity).map((serverKey) => {
                 return html`<li>${serverKey}: ${this.connectivity![serverKey]}</li>`;

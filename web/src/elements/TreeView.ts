@@ -65,9 +65,11 @@ export class TreeViewNode extends AKElement {
         const level = this.item?.level || 0;
         // Ignore the last item as that shouldn't be expanded
         pathSegments.pop();
+
         if (pathSegments[level] === this.item?.id) {
             this.open = true;
         }
+
         if (this.activePath === this.fullPath && this.host) {
             this.host.activeNode = this;
         }
@@ -197,7 +199,7 @@ export class TreeView extends AKElement {
                 id,
                 label: id || "",
                 childItems: [],
-                level: level,
+                level,
                 parent: parentItem,
             };
 
@@ -207,6 +209,7 @@ export class TreeView extends AKElement {
                 const child = this.createNode(path, item, level + 1);
                 child.parent = item;
             }
+
             return item;
         }
 

@@ -40,6 +40,7 @@ export class BrandLinks extends AKElement {
                 href: null,
             },
         ];
+
         return html`<ul
             aria-label=${msg("Site links")}
             class="pf-c-list pf-m-inline"

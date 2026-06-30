@@ -43,7 +43,9 @@ export class EnterpriseStatusCard extends AKElement {
 
     calcUserPercentage(licensed: number, current: number) {
         const percentage = licensed > 0 ? Math.ceil(current / (licensed / 100)) : 0;
+
         if (current > 0 && licensed === 0) return Infinity;
+
         return percentage;
     }
 
@@ -53,6 +55,7 @@ export class EnterpriseStatusCard extends AKElement {
         }
         let internalUserPercentage = 0;
         let externalUserPercentage = 0;
+
         if (this.summary.status !== LicenseSummaryStatusEnum.Unlicensed) {
             internalUserPercentage = this.calcUserPercentage(
                 this.summary.internalUsers,
@@ -63,6 +66,7 @@ export class EnterpriseStatusCard extends AKElement {
                 this.forecast.externalUsers,
             );
         }
+
         return html`<div class="pf-c-card">
             <div class="pf-c-card__title">${msg("Current license status")}</div>
             <div class="pf-c-card__body">

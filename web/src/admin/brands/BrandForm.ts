@@ -214,6 +214,7 @@ export class BrandForm extends ModelForm<Brand, string> {
                                     ordering: "name",
                                     superuserFullList: true,
                                 };
+
                                 if (query !== undefined) {
                                     args.search = query;
                                 }

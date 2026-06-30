@@ -152,6 +152,7 @@ export class ListSelect extends AKElement implements IListSelect {
 
     public get currentElement(): HTMLElement | undefined {
         const curIndex = this.indexOfFocusedItem;
+
         return curIndex < 0 || curIndex > this.displayedElements.length - 1
             ? undefined
             : this.displayedElements[curIndex];
@@ -164,6 +165,7 @@ export class ListSelect extends AKElement implements IListSelect {
         const elementCount = this.displayedElements.length;
 
         const checkIndex = () => (index === -1 ? 0 : index);
+
         return elementCount === 0 ? -1 : checkIndex();
     }
 
@@ -180,6 +182,7 @@ export class ListSelect extends AKElement implements IListSelect {
             item.removeAttribute("aria-selected");
         });
         const currentElement = this.currentElement;
+
         if (!currentElement) {
             return;
         }
@@ -235,6 +238,7 @@ export class ListSelect extends AKElement implements IListSelect {
                 this.displayedElements.filter((element) =>
                     isVisibleInScrollRegion(element, this.ul),
                 ).length - 1;
+
             return visibleElementCount * direction + current;
         };
 

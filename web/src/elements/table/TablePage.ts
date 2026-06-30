@@ -108,6 +108,7 @@ export abstract class TablePage<T extends object> extends Table<T> {
         if (!this.search) {
             return nothing;
         }
+
         return html`<button @click=${this.clearSearch} class="pf-c-button pf-m-link">
             ${msg("Clear search")}
         </button>`;

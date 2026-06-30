@@ -103,10 +103,12 @@ export class RoleObjectPermissionForm extends ModelForm<RoleAssignData, number> 
                             const args: RbacRolesListRequest = {
                                 ordering: "name",
                             };
+
                             if (query !== undefined) {
                                 args.search = query;
                             }
                             const roles = await aki(RbacApi).rbacRolesList(args);
+
                             return roles.results;
                         }}
                         .renderElement=${(role: Role): string => {
@@ -121,6 +123,7 @@ export class RoleObjectPermissionForm extends ModelForm<RoleAssignData, number> 
                 ${this.modelPermissions?.results
                     .filter((perm) => {
                         const [_app, model] = this.model?.split(".") || "";
+
                         return perm.codename !== `add_${model}`;
                     })
                     .map((perm) => {

@@ -30,6 +30,7 @@ export class ExpressionPolicyForm extends BasePolicyForm<ExpressionPolicy> {
                 expressionPolicyRequest: data,
             });
         }
+
         return aki(PoliciesApi).policiesExpressionCreate({
             expressionPolicyRequest: data,
         });

@@ -54,6 +54,7 @@ import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 
 export function TypeToLabel(type?: ClientTypeEnum): string {
     if (!type) return "";
+
     switch (type) {
         case ClientTypeEnum.Confidential:
             return msg("Confidential");
@@ -66,6 +67,7 @@ export function TypeToLabel(type?: ClientTypeEnum): string {
 
 export function LogoutMethodToLabel(method?: OAuth2ProviderLogoutMethodEnum): string {
     if (!method) return "";
+
     switch (method) {
         case OAuth2ProviderLogoutMethodEnum.Backchannel:
             return msg("Back-channel");
@@ -135,6 +137,7 @@ export class OAuth2ProviderViewPage extends AKElement {
         if (!this.provider) {
             return nothing;
         }
+
         return html`<main part="main">
             <ak-tabs part="tabs">
                 <div
@@ -198,6 +201,7 @@ export class OAuth2ProviderViewPage extends AKElement {
 
     renderTabOverview(): SlottedTemplateResult {
         const [appLabel, modelName] = ModelEnum.AuthentikProvidersOauth2Oauth2provider.split(".");
+
         return html`${this.provider?.assignedApplicationName
                 ? nothing
                 : html`<div slot="header" class="pf-c-banner pf-m-warning">
@@ -399,6 +403,7 @@ export class OAuth2ProviderViewPage extends AKElement {
                                     if (!this.provider) {
                                         return input;
                                     }
+
                                     return input.replaceAll(
                                         "<application slug>",
                                         this.provider.assignedApplicationSlug ??
@@ -416,6 +421,7 @@ export class OAuth2ProviderViewPage extends AKElement {
         if (!this.provider) {
             return nothing;
         }
+
         return html` <div
             class="pf-c-page__main-section pf-m-no-padding-mobile pf-l-grid pf-m-gutter"
         >
@@ -435,10 +441,12 @@ export class OAuth2ProviderViewPage extends AKElement {
                                             const args: CoreUsersListRequest = {
                                                 ordering: "username",
                                             };
+
                                             if (query !== undefined) {
                                                 args.search = query;
                                             }
                                             const users = await aki(CoreApi).coreUsersList(args);
+
                                             return users.results;
                                         }}
                                         .renderElement=${(user: User): string => {

@@ -34,14 +34,17 @@ function apiConfiguration(): Configuration {
         });
         Object.freeze(configuration);
     }
+
     return configuration;
 }
 
 export function aki<T>(APIClass: APIConstructor<T>): T {
     let endpoint = endpoints.get(APIClass) as T | undefined;
+
     if (!endpoint) {
         endpoint = new APIClass(apiConfiguration());
         endpoints.set(APIClass, endpoint);
     }
+
     return endpoint;
 }

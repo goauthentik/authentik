@@ -33,11 +33,13 @@ export class TelegramSourceForm extends BaseSourceForm<TelegramSource> {
         const source = await aki(SourcesApi).sourcesTelegramRetrieve({
             slug: pk,
         });
+
         return source;
     }
 
     async send(data: TelegramSource): Promise<TelegramSource> {
         let source: TelegramSource;
+
         if (this.instance?.pk) {
             source = await aki(SourcesApi).sourcesTelegramPartialUpdate({
                 slug: this.instance.slug,
@@ -48,6 +50,7 @@ export class TelegramSourceForm extends BaseSourceForm<TelegramSource> {
                 telegramSourceRequest: data as unknown as TelegramSourceRequest,
             });
         }
+
         return source;
     }
 

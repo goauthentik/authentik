@@ -38,6 +38,7 @@ import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList
 
 export function BlueprintStatus(blueprint?: BlueprintInstance): string {
     if (!blueprint) return "";
+
     switch (blueprint.status) {
         case BlueprintInstanceStatusEnum.Successful:
             return msg("Successful");
@@ -48,6 +49,7 @@ export function BlueprintStatus(blueprint?: BlueprintInstance): string {
         case BlueprintInstanceStatusEnum.Error:
             return msg("Error");
     }
+
     return msg("Unknown");
 }
 
@@ -92,6 +94,7 @@ export class BlueprintListPage extends TablePage<BlueprintInstance> {
 
     protected override renderToolbarSelected(): SlottedTemplateResult {
         const disabled = this.selectedElements.length < 1;
+
         return html`<ak-forms-delete-bulk
             object-label=${msg("Blueprint(s)")}
             .objects=${this.selectedElements}

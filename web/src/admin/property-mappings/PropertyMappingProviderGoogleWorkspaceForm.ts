@@ -24,6 +24,7 @@ export class PropertyMappingProviderGoogleWorkspaceForm extends BasePropertyMapp
                 googleWorkspaceProviderMappingRequest: data,
             });
         }
+
         return aki(PropertymappingsApi).propertymappingsProviderGoogleWorkspaceCreate({
             googleWorkspaceProviderMappingRequest: data,
         });

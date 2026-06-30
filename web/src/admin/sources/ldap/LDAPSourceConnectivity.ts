@@ -24,15 +24,18 @@ export class LDAPSourceConnectivity extends AKElement {
         if (!this.connectivity) {
             return html`${msg("No connectivity status available.")}`;
         }
+
         return html`<ul class="pf-c-list">
             ${Object.keys(this.connectivity).map((serverKey) => {
                 let serverLabel = html`${serverKey}`;
+
                 if (serverKey === "__all__") {
                     serverLabel = html`<b>${msg("Global status")}</b>`;
                 }
                 const server = this.connectivity![serverKey];
                 const content = html`${serverLabel}: ${server.status}`;
                 let tooltip = html`${content}`;
+
                 if (server.status === "ok") {
                     tooltip = html`<pf-tooltip position="top">
                         <ul slot="content" class="pf-c-list">
@@ -42,6 +45,7 @@ export class LDAPSourceConnectivity extends AKElement {
                         ${content}
                     </pf-tooltip>`;
                 }
+
                 return html`<li>${tooltip}</li>`;
             })}
         </ul>`;

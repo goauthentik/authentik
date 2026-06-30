@@ -36,11 +36,13 @@ export class FlowCard extends AKElement {
 
     render() {
         let inner = html`<slot></slot>`;
+
         if (!this.challenge || this.loading) {
             inner = html`<ak-empty-state loading default-label></ak-empty-state>`;
         }
         // No title if the challenge doesn't provide a title and no custom title is set
         let title: null | SlottedTemplateResult = null;
+
         if (this.findSlotted("title")) {
             title = html`<h1 class="pf-c-title pf-m-3xl ak-m-clamped">
                 <slot name="title"></slot>

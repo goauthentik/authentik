@@ -93,6 +93,7 @@ export class AuthenticatorTOTPStage extends BaseStage<
 
     get #secretParam(): string | null {
         const configUrl = this.challenge?.configUrl;
+
         if (!configUrl || !URL.canParse(configUrl)) return null;
 
         const url = new URL(configUrl);

@@ -92,6 +92,7 @@ export class LocaleContextController implements ReactiveController {
 
         if (activeLanguageTag === nextLocale) {
             logger.debug("Skipping locale update, already set to:", displayName);
+
             return;
         }
 
@@ -182,6 +183,7 @@ export class LocaleContextController implements ReactiveController {
     #localeStatusListener = (event: CustomEvent<LocaleStatusEventDetail>) => {
         if (event.detail.status === "error") {
             logger.debug("Error loading locale:", event.detail);
+
             return;
         }
 

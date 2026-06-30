@@ -35,6 +35,7 @@ export class FlowIframeMessageController implements ReactiveController {
 
     onMessage = (event: MessageEvent) => {
         const { source, context, message } = event.data;
+
         if (source === "goauthentik.io" && context === "flow-executor" && message === "submit") {
             this.host.submit({} as FlowChallengeResponseRequest, {
                 invisible: true,

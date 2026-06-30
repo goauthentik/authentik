@@ -48,6 +48,7 @@ export class LibraryPageApplicationEmptyList
         const href = paramURL("/core/applications", {
             createWizard: true,
         });
+
         return html`
             <div class="pf-u-pt-lg">
                 <a

@@ -115,6 +115,7 @@ export class CheckboxGroup extends AkElementWithCustomEvents {
         const name = this.name;
         const entries = new FormData();
         this.values.forEach((v) => entries.append(name, v));
+
         return entries;
     }
 
@@ -130,6 +131,7 @@ export class CheckboxGroup extends AkElementWithCustomEvents {
 
         if (this.internals) {
             this.internals.setValidity({});
+
             if (this.required && this.values.length === 0) {
                 this.internals.setValidity(
                     {
@@ -157,12 +159,15 @@ export class CheckboxGroup extends AkElementWithCustomEvents {
     public override connectedCallback() {
         super.connectedCallback();
         this.dataset.akControl = "true";
+
         if (this.name && !this.internals) {
             this.internals = this.attachInternals();
         }
+
         if (this.internals && this.name) {
             this.internals.ariaRequired = this.required ? "true" : "false";
         }
+
         if (this.required && !this.internals) {
             console.warn(
                 "Setting `required` on ak-checkbox-group has no effect when the `name` attribute is unset",

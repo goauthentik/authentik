@@ -26,6 +26,7 @@ export class UserLogoutStageForm extends BaseStageForm<UserLogoutStage> {
                 userLogoutStageRequest: data,
             });
         }
+
         return aki(StagesApi).stagesUserLogoutCreate({
             userLogoutStageRequest: data,
         });

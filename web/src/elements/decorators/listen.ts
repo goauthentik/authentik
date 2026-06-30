@@ -57,6 +57,7 @@ export type EventConstructor<K extends keyof WindowEventMap = keyof WindowEventM
  */
 function isEventListenerLike(input: unknown): input is EventListenerOrEventListenerObject {
     if (!input) return false;
+
     if (typeof input === "function") return true;
 
     return typeof (input as EventListenerObject).handleEvent === "function";

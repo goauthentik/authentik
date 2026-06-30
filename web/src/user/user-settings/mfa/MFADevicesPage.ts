@@ -40,6 +40,7 @@ export class MFADevicesPage extends Table<Device> {
 
     async apiEndpoint(): Promise<PaginatedResponse<Device>> {
         const devices = await aki(AuthenticatorsApi).authenticatorsAllList();
+
         return createPaginatedResponse(devices);
     }
 
@@ -107,6 +108,7 @@ export class MFADevicesPage extends Table<Device> {
     async deleteWrapper(device: Device) {
         const api = aki(AuthenticatorsApi);
         const id = { id: parseInt(device.pk, 10) };
+
         switch (device.type) {
             case "authentik_stages_authenticator_duo.DuoDevice":
                 return api.authenticatorsDuoDestroy(id);
@@ -129,6 +131,7 @@ export class MFADevicesPage extends Table<Device> {
 
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
+
         return html`<ak-forms-delete-bulk
             object-label=${msg("Device(s)")}
             .objects=${this.selectedElements}

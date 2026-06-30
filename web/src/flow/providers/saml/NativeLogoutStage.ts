@@ -42,6 +42,7 @@ export class NativeLogoutStage extends BaseStage<
         if (this.challenge.isComplete) {
             const submitEvent = new SubmitEvent("submit");
             this.submitForm(submitEvent);
+
             return;
         }
 
@@ -93,6 +94,7 @@ export class NativeLogoutStage extends BaseStage<
             const title = this.challenge.samlResponse
                 ? msg(str`Posting logout response to SAML provider: ${providerName}`)
                 : msg(str`Posting logout request to SAML provider: ${providerName}`);
+
             return html`<ak-flow-card .challenge=${this.challenge} loading>
                 <span slot="title">${title}</span>
                 <form

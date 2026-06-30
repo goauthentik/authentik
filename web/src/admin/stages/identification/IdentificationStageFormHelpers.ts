@@ -25,11 +25,13 @@ export function sourcesSelector(instanceSources: string[] | undefined) {
         return async (sources: DualSelectPair<Source>[]) =>
             sources.filter(([_0, _1, _2, source]: DualSelectPair<Source>) => source !== undefined);
     }
+
     return async () => {
         const sourcesApi = aki(SourcesApi);
         const sources = await Promise.allSettled(
             instanceSources.map((instanceId) => sourcesApi.sourcesAllList({ pbmUuid: instanceId })),
         );
+
         return sources
             .filter((s) => s.status === "fulfilled")
             .map((s) => s.value)

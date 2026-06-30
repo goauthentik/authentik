@@ -37,6 +37,7 @@ export class LDAPSourceGroupForm extends ModelForm<GroupLDAPSourceConnection, nu
 
     async send(data: GroupLDAPSourceConnection) {
         data.source = this.source?.pk || "";
+
         return aki(SourcesApi).sourcesGroupConnectionsLdapCreate({
             groupLDAPSourceConnectionRequest: data,
         });
@@ -49,10 +50,12 @@ export class LDAPSourceGroupForm extends ModelForm<GroupLDAPSourceConnection, nu
                         const args: CoreGroupsListRequest = {
                             ordering: "name",
                         };
+
                         if (query !== undefined) {
                             args.search = query;
                         }
                         const groups = await aki(CoreApi).coreGroupsList(args);
+
                         return groups.results;
                     }}
                     .renderElement=${(group: Group): string => {

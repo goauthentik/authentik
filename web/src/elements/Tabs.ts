@@ -64,6 +64,7 @@ export class Tabs extends AKElement {
 
         if (!this.visible) {
             this.#commands.clear();
+
             return;
         }
 
@@ -148,11 +149,13 @@ export class Tabs extends AKElement {
     public activateTab(nextTabName: string): void {
         if (!nextTabName) {
             console.warn("Cannot activate falsey tab name:", nextTabName);
+
             return;
         }
 
         if (!this.tabs.has(nextTabName)) {
             console.warn("Cannot activate unknown tab name:", nextTabName, this.tabs);
+
             return;
         }
 
@@ -174,6 +177,7 @@ export class Tabs extends AKElement {
     public dispatchActivateEvent(tabPanel = this.findActiveTabPanel()): void {
         if (!tabPanel) {
             console.warn("Cannot dispatch activate event, no tab panel found");
+
             return;
         }
 

@@ -24,6 +24,7 @@ export class PropertyMappingNotification extends BasePropertyMappingForm<Notific
                 notificationWebhookMappingRequest: data,
             });
         }
+
         return aki(PropertymappingsApi).propertymappingsNotificationCreate({
             notificationWebhookMappingRequest: data,
         });

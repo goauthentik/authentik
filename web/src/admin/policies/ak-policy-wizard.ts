@@ -88,6 +88,7 @@ export class PolicyWizard extends CreateWizard {
 
             bindingForm.instance = policyBindingRequest as unknown as PolicyBinding;
         }
+
         if (page.host.state[initialStep]) {
             bindingForm.allowedTypes = [page.host.state[initialStep]];
             bindingForm.policyGroupUser = page.host.state[initialStep];

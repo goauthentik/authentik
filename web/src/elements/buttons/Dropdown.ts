@@ -76,6 +76,7 @@ export class DropdownButton extends AKElement {
 
         if (!this.menu) {
             this.logger.warn("No menu found");
+
             return;
         }
 
@@ -85,6 +86,7 @@ export class DropdownButton extends AKElement {
 
         if (!this.toggleButton) {
             this.logger.warn("No toggle button found");
+
             return;
         }
 

@@ -38,6 +38,7 @@ export class ConnectorViewPage extends AKElement {
         if (!this.connector) {
             return html`<ak-empty-state loading full-height></ak-empty-state>`;
         }
+
         switch (this.connector?.component) {
             case "ak-endpoints-connector-agent-form":
                 return html`<ak-endpoints-connector-agent-view

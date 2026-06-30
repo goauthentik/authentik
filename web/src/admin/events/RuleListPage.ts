@@ -57,6 +57,7 @@ export class RuleListPage extends TablePage<NotificationRule> {
 
     protected override renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
+
         return html`<ak-forms-delete-bulk
             object-label=${msg("Notification rule(s)")}
             .objects=${this.selectedElements}
@@ -79,6 +80,7 @@ export class RuleListPage extends TablePage<NotificationRule> {
 
     protected override row(item: NotificationRule): SlottedTemplateResult[] {
         const enabled = !!item.destinationGroupObj || item.destinationEventUser;
+
         return [
             html`<ak-status-label ?good=${enabled}></ak-status-label>`,
             html`${item.name}`,

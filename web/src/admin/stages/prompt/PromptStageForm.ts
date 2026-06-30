@@ -38,6 +38,7 @@ export class PromptStageForm extends BaseStageForm<PromptStage> {
                 promptStageRequest: data,
             });
         }
+
         return aki(StagesApi).stagesPromptStagesCreate({
             promptStageRequest: data,
         });

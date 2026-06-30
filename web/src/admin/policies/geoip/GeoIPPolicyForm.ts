@@ -43,6 +43,7 @@ export class GeoIPPolicyForm extends BasePolicyForm<GeoIPPolicy> {
                 geoIPPolicyRequest: data,
             });
         }
+
         return aki(PoliciesApi).policiesGeoipCreate({
             geoIPPolicyRequest: data,
         });

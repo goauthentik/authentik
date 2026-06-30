@@ -172,6 +172,7 @@ export async function generateLocaleModules() {
     console.warn = (arg0, ...args) => {
         if (typeof arg0 !== "string") {
             initialConsoleWarn(arg0, ...args);
+
             return;
         }
 

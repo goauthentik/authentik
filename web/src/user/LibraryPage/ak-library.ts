@@ -71,6 +71,7 @@ export class LibraryPage extends AKElement {
 
         const applicationListFetch = await coreApi().coreApplicationsList(applicationListParams(1));
         const pageCount = applicationListFetch.pagination.totalPages;
+
         if (pageCount === 1) {
             return applicationListFetch.results;
         }
@@ -87,6 +88,7 @@ export class LibraryPage extends AKElement {
                     const reason = JSON.stringify(result.reason, null, 2);
                     throw new Error(`Could not retrieve list of applications. Reason: ${reason}`);
                 }
+
                 return [...acc, ...result.value.results];
             },
             [...applicationListFetch.results],

@@ -49,8 +49,8 @@ export class GroupForm extends ModelForm<Group, string> {
     #fetchGroups = (page: number, search?: string): Promise<DataProvision> => {
         return aki(CoreApi)
             .coreGroupsList({
-                page: page,
-                search: search,
+                page,
+                search,
             })
             .then((results) => {
                 return {
@@ -62,8 +62,8 @@ export class GroupForm extends ModelForm<Group, string> {
     #fetchRoles = (page: number, search?: string): Promise<DataProvision> => {
         return aki(RbacApi)
             .rbacRolesList({
-                page: page,
-                search: search,
+                page,
+                search,
             })
             .then((results) => {
                 return {
@@ -89,6 +89,7 @@ export class GroupForm extends ModelForm<Group, string> {
 
     async send(data: Group): Promise<Group> {
         data.attributes ??= {};
+
         if (this.instance?.pk) {
             return aki(CoreApi).coreGroupsPartialUpdate({
                 groupUuid: this.instance.pk,
@@ -96,6 +97,7 @@ export class GroupForm extends ModelForm<Group, string> {
             });
         }
         data.users = [];
+
         return aki(CoreApi).coreGroupsCreate({
             groupRequest: data,
         });

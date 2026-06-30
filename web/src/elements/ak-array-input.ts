@@ -94,6 +94,7 @@ export class ArrayInput<T> extends AKControlElement<T[]> implements IArrayInput<
         if (!this.inputGroups) {
             throw new Error("Could not find input group collection in ak-array-input");
         }
+
         return this.items;
     }
 
@@ -105,6 +106,7 @@ export class ArrayInput<T> extends AKControlElement<T[]> implements IArrayInput<
         const oneIsValid = (g: HTMLDivElement) =>
             g.querySelector<HTMLInputElement & AKControlElement<T>>("[name]")?.valid ?? true;
         const allAreValid = Array.from(this.inputGroups ?? []).every(oneIsValid);
+
         return allAreValid && (this.validator ? this.validator(this.items) : true);
     }
 

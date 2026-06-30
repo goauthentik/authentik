@@ -58,6 +58,7 @@ export class WebauthnController implements ReactiveController {
         // the pending request and the passkey autofill dropdown would never appear.
         if (this.passkey !== this.#hostPasskey) {
             this.passkey = this.#hostPasskey;
+
             if (this.passkey) {
                 this.#startConditionalWebAuthn(this.passkey);
             }
@@ -78,8 +79,10 @@ export class WebauthnController implements ReactiveController {
     ): Promise<void> {
         // Check if browser supports conditional mediation
         const isAvailable = await isConditionalMediationAvailable();
+
         if (!isAvailable) {
             console.debug("authentik/identification: Conditional mediation not available");
+
             return;
         }
 
@@ -100,6 +103,7 @@ export class WebauthnController implements ReactiveController {
 
             if (!credential) {
                 console.debug("authentik/identification: No credential returned");
+
                 return;
             }
 
@@ -110,6 +114,7 @@ export class WebauthnController implements ReactiveController {
             if (error instanceof Error && error.name === "AbortError") {
                 // Request was aborted, this is expected when navigating away
                 console.debug("authentik/identification: Conditional WebAuthn aborted");
+
                 return;
             }
             console.warn("authentik/identification: Conditional WebAuthn failed", error);

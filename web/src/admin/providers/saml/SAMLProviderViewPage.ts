@@ -135,12 +135,14 @@ export class SAMLProviderViewPage extends AKElement {
             .providersSamlRetrieve({ id })
             .then((prov) => {
                 this.provider = prov;
+
                 // Clear existing signing certificate if the provider has none
                 if (!this.provider.signingKp) {
                     this.signer = null;
                 } else {
                     this.fetchSigningCertificate(this.provider.signingKp);
                 }
+
                 // Clear existing verification certificate if the provider has none
                 if (!this.provider.verificationKp) {
                     this.verifier = null;
@@ -160,11 +162,13 @@ export class SAMLProviderViewPage extends AKElement {
         if (!this.provider?.slsUrl) {
             return "-";
         }
+
         return logoutMethodLabel(this.provider.logoutMethod) || "-";
     }
 
     renderRelatedObjects(): TemplateResult {
         const relatedObjects = [];
+
         if (this.provider?.assignedApplicationName) {
             relatedObjects.push(
                 html`<div class="pf-c-description-list__group">
@@ -191,6 +195,7 @@ export class SAMLProviderViewPage extends AKElement {
                                             }),
                                         );
                                     }
+
                                     return navigator.clipboard.writeText(
                                         this.provider?.urlDownloadMetadata || "",
                                     );
@@ -203,6 +208,7 @@ export class SAMLProviderViewPage extends AKElement {
                 </div>`,
             );
         }
+
         if (this.signer) {
             relatedObjects.push(
                 html`<div class="pf-c-description-list__group">
@@ -223,6 +229,7 @@ export class SAMLProviderViewPage extends AKElement {
                 </div>`,
             );
         }
+
         return html` <div class="pf-c-card pf-l-grid__item pf-m-12-col">
             <div class="pf-c-card__title">${msg("Related objects")}</div>
             <div class="pf-c-card__body">
@@ -237,6 +244,7 @@ export class SAMLProviderViewPage extends AKElement {
         if (!this.provider) {
             return nothing;
         }
+
         return html`<main part="main">
             <ak-tabs part="tabs">
                 <div
@@ -294,6 +302,7 @@ export class SAMLProviderViewPage extends AKElement {
         if (!this.provider) {
             return nothing;
         }
+
         return html`${this.provider?.assignedApplicationName ? nothing : html`<div slot="header" class="pf-c-banner pf-m-warning">${msg("Warning: Provider is not used by an Application.")}</div>`}
             <div class="pf-c-page__main-section pf-m-no-padding-mobile pf-l-grid pf-m-gutter">
                 <div class="pf-c-card pf-l-grid__item pf-m-12-col">
@@ -441,6 +450,7 @@ export class SAMLProviderViewPage extends AKElement {
         if (!this.provider) {
             return nothing;
         }
+
         return html`
             ${this.provider.assignedApplicationName
                 ? html` <div
@@ -482,6 +492,7 @@ export class SAMLProviderViewPage extends AKElement {
                                                   }),
                                               );
                                           }
+
                                           return navigator.clipboard.writeText(
                                               this.provider?.urlDownloadMetadata || "",
                                           );
@@ -508,6 +519,7 @@ export class SAMLProviderViewPage extends AKElement {
         if (!this.preview) {
             return html`<ak-empty-state loading></ak-empty-state>`;
         }
+
         return html` <div
             class="pf-c-page__main-section pf-m-no-padding-mobile pf-l-grid pf-m-gutter"
         >
@@ -523,10 +535,12 @@ export class SAMLProviderViewPage extends AKElement {
                                         const args: CoreUsersListRequest = {
                                             ordering: "username",
                                         };
+
                                         if (query !== undefined) {
                                             args.search = query;
                                         }
                                         const users = await aki(CoreApi).coreUsersList(args);
+
                                         return users.results;
                                     }}
                                     .renderElement=${(user: User): string => {

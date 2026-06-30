@@ -61,6 +61,7 @@ export class SidebarItem extends WithCapabilitiesConfig(WithLicenseSummary(AKEle
     public get childItems(): SidebarItem[] {
         const children = Array.from(this.querySelectorAll<SidebarItem>("ak-sidebar-item") || []);
         children.forEach((child) => (child.parent = this));
+
         return children;
     }
 
@@ -128,6 +129,7 @@ export class SidebarItem extends WithCapabilitiesConfig(WithLicenseSummary(AKEle
         const ourPath = this.path.split(";")[0];
         const pathIsWholePath = new RegExp(`^${ourPath}$`).test(path);
         const pathIsAnActivePath = this.activeMatchers.some((v) => v.test(path));
+
         return pathIsWholePath || pathIsAnActivePath;
     }
 
@@ -229,8 +231,10 @@ export class SidebarItem extends WithCapabilitiesConfig(WithLicenseSummary(AKEle
     renderWithPath() {
         if (this.enterprise && !this.hasEnterpriseLicense) {
             if (!this.can(CapabilitiesEnum.IsEnterprise)) return nothing;
+
             return this.renderEnterpriseRequired();
         }
+
         return html`
             <a
                 part="link ${this.current ? "current" : ""}"

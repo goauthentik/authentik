@@ -42,6 +42,7 @@ export class InvitationForm extends ModelForm<Invitation, string> {
                 invitationRequest: data,
             });
         }
+
         return aki(StagesApi).stagesInvitationInvitationsCreate({
             invitationRequest: data,
         });

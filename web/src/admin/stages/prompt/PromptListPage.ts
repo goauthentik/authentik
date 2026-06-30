@@ -52,6 +52,7 @@ export class PromptListPage extends TablePage<Prompt> {
 
     protected renderToolbarSelected(): SlottedTemplateResult {
         const disabled = this.selectedElements.length < 1;
+
         return html`<ak-forms-delete-bulk
             object-label=${msg("Prompt(s)")}
             .objects=${this.selectedElements}

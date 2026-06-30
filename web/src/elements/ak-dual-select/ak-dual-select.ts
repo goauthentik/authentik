@@ -191,6 +191,7 @@ export class AkDualSelect extends CustomEmitterElement(CustomListenerElement(AKE
         const requested = this.options.find(keyfinder(key));
 
         if (!requested) return;
+
         if (this.selected.find(keyfinder(requested[0]))) return;
 
         this.selected = [...this.selected, requested];
@@ -294,9 +295,11 @@ export class AkDualSelect extends CustomEmitterElement(CustomListenerElement(AKE
                 ? this.selected
                 : this.selected.filter(([_k, v, s]) => {
                       const value = s !== undefined ? s : v;
+
                       if (typeof value !== "string") {
                           throw new Error("Filter only works when there's a string comparator");
                       }
+
                       return value.toLowerCase().includes(this.selectedFilter.toLowerCase());
                   });
 

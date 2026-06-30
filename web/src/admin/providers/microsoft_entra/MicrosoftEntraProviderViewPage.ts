@@ -80,6 +80,7 @@ export class MicrosoftEntraProviderViewPage extends AKElement {
         if (!this.provider) {
             return nothing;
         }
+
         return html`<main part="main">
             <ak-tabs part="tabs">
                 <div
@@ -154,6 +155,7 @@ export class MicrosoftEntraProviderViewPage extends AKElement {
         }
         const [appLabel, modelName] =
             ModelEnum.AuthentikProvidersMicrosoftEntraMicrosoftentraprovider.split(".");
+
         return html`${!this.provider?.assignedBackchannelApplicationName
                 ? html`<div slot="header" class="pf-c-banner pf-m-warning">
                       ${msg(

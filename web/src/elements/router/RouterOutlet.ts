@@ -52,10 +52,12 @@ window.addEventListener("load", () => {
 export function paramURL(url: string, params?: { [key: string]: unknown }): string {
     let finalUrl = "#";
     finalUrl += url;
+
     if (params) {
         finalUrl += ";";
         finalUrl += encodeURIComponent(JSON.stringify(params));
     }
+
     return finalUrl;
 }
 export function navigate(url: string, params?: { [key: string]: unknown }): void {
@@ -155,6 +157,7 @@ export class RouterOutlet extends AKElement {
 
             if (oldPath === activeUrl) return;
         }
+
         if (activeUrl === "") {
             activeUrl = this.defaultURL || "/";
             window.location.hash = `#${activeUrl}`;
@@ -196,6 +199,7 @@ export class RouterOutlet extends AKElement {
 
     protected override updated(changedProperties: PropertyValues<this>): void {
         if (!changedProperties.has("current") || !this.current) return;
+
         if (!this.#sentryClient) return;
 
         // https://docs.sentry.io/platforms/javascript/tracing/instrumentation/automatic-instrumentation/#custom-routing

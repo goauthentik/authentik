@@ -81,6 +81,7 @@ export class AkDrawer extends LitElement {
 
         // Simulate the behavior of summary/details, another disclosure pattern.
         const expanded = changed.get("expanded");
+
         if (expanded !== undefined) {
             const expandedMsg = (i: boolean) => (i ? "open" : "closed");
             this.dispatchEvent(

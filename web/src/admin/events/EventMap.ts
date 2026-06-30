@@ -66,6 +66,7 @@ export class OSMLayer extends OlLayerOpenstreetmap {
                 tileLoadFunction: (rawTile: Tile, src: string) => {
                     const tile = rawTile as ImageTile;
                     const image = tile.getImage() as HTMLImageElement | HTMLVideoElement;
+
                     if (image instanceof HTMLImageElement) {
                         image.referrerPolicy = "origin-when-cross-origin";
                     }
@@ -131,6 +132,7 @@ export class EventMap extends AKElement {
         if (!_changedProperties.has("events")) {
             return;
         }
+
         if (!this.vectorLayer?.source || !this.map?.map) {
             return;
         }
@@ -143,9 +145,11 @@ export class EventMap extends AKElement {
                     return false;
                 }
                 const geo = (event as EventWithContext).context.geo;
+
                 if (!geo?.lat || !geo.long) {
                     return false;
                 }
+
                 return true;
             })
             .forEach((event) => {
@@ -170,6 +174,7 @@ export class EventMap extends AKElement {
                 feature.setId(event.pk);
                 this.vectorLayer?.source?.addFeature(feature);
             });
+
         // Zoom to show points better
         if (isEmpty(this.vectorLayer.source.getExtent())) {
             return;

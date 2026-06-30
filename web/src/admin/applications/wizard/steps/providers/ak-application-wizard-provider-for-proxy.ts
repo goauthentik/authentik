@@ -56,6 +56,7 @@ export class ApplicationWizardProxyProviderForm extends ApplicationWizardProvide
         if (!(this.wizard.provider && this.wizard.errors)) {
             throw new Error("Proxy Provider Step received uninitialized wizard context.");
         }
+
         return this.renderForm(this.wizard.provider, this.wizard.errors?.provider);
     }
 }

@@ -39,6 +39,7 @@ export class ServiceConnectionKubernetesForm extends ModelForm<
                 kubernetesServiceConnectionRequest: data,
             });
         }
+
         return aki(OutpostsApi).outpostsServiceConnectionsKubernetesCreate({
             kubernetesServiceConnectionRequest: data,
         });

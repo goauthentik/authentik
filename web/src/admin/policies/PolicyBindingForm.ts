@@ -64,6 +64,7 @@ export function cleanBindingForSend(
             data.group = null;
             break;
     }
+
     return data;
 }
 
@@ -81,6 +82,7 @@ export class PolicyBindingForm<T extends PolicyBinding = PolicyBinding> extends 
             policyBindingUuid: pk,
         });
         this.policyGroupUser = pickPolicyGroupUser(binding, this.policyGroupUser);
+
         return binding as T;
     }
 
@@ -114,6 +116,7 @@ export class PolicyBindingForm<T extends PolicyBinding = PolicyBinding> extends 
         if (this.instance?.pk) {
             return msg("Successfully updated binding.");
         }
+
         return msg("Successfully created binding.");
     }
 
@@ -137,6 +140,7 @@ export class PolicyBindingForm<T extends PolicyBinding = PolicyBinding> extends 
                 policyBindingRequest: data,
             });
         }
+
         return aki(PoliciesApi).policiesBindingsCreate({
             policyBindingRequest: data,
         });
@@ -150,9 +154,11 @@ export class PolicyBindingForm<T extends PolicyBinding = PolicyBinding> extends 
             target: this.targetPk || "",
         });
         const orders = bindings.results.map((binding) => binding.order);
+
         if (orders.length < 1) {
             return 0;
         }
+
         return Math.max(...orders) + 1;
     }
 
@@ -169,6 +175,7 @@ export class PolicyBindingForm<T extends PolicyBinding = PolicyBinding> extends 
                         ${PolicyBindingCheckTargetToLabel(ct)}
                     </option>`;
                 }
+
                 return nothing;
             })}
         </ak-toggle-group>`;
@@ -188,10 +195,12 @@ export class PolicyBindingForm<T extends PolicyBinding = PolicyBinding> extends 
                         const args: PoliciesAllListRequest = {
                             ordering: "name",
                         };
+
                         if (query !== undefined) {
                             args.search = query;
                         }
                         const policies = await aki(PoliciesApi).policiesAllList(args);
+
                         return policies.results;
                     }}
                     .renderElement=${(policy: Policy) => policy.name}
@@ -217,10 +226,12 @@ export class PolicyBindingForm<T extends PolicyBinding = PolicyBinding> extends 
                             ordering: "name",
                             includeUsers: false,
                         };
+
                         if (query !== undefined) {
                             args.search = query;
                         }
                         const groups = await aki(CoreApi).coreGroupsList(args);
+
                         return groups.results;
                     }}
                     .renderElement=${(group: Group): string => {
@@ -247,10 +258,12 @@ export class PolicyBindingForm<T extends PolicyBinding = PolicyBinding> extends 
                         const args: CoreUsersListRequest = {
                             ordering: "username",
                         };
+
                         if (query !== undefined) {
                             args.search = query;
                         }
                         const users = await aki(CoreApi).coreUsersList(args);
+
                         return users.results;
                     }}
                     .renderElement=${(user: User) => user.username}

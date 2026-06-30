@@ -69,6 +69,7 @@ export class SCIMSourceViewPage extends AKElement {
         if (!this.source) {
             return nothing;
         }
+
         return html`<main>
             <ak-tabs>
                 <div

@@ -18,12 +18,15 @@ export class OutpostHealthList extends StaticTable<OutpostHealth> {
 
     protected row(item: OutpostHealth): SlottedTemplateResult[] {
         let versionString = item.version;
+
         if (item.buildHash) {
             versionString = msg(str`${versionString} (build ${item.buildHash.substring(0, 8)})`);
         }
+
         if (item.fipsEnabled) {
             versionString = msg(str`${versionString} (FIPS)`);
         }
+
         return [
             html`${item.hostname}`,
             html`${item.versionOutdated

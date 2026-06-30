@@ -41,6 +41,7 @@ export class CryptoCertificateForm extends ModelForm<CertificateKeyPair, string>
                 patchedCertificateKeyPairRequest: data,
             });
         }
+
         return aki(CryptoApi).cryptoCertificatekeypairsCreate({
             certificateKeyPairRequest: data as unknown as CertificateKeyPairRequest,
         });

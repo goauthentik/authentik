@@ -47,6 +47,7 @@ export class HCaptchaController extends CaptchaController {
     public refresh = async () => {
         if (this.#hcaptchaID === null) {
             this.logger.warn("Skipping refresh: no hCaptcha ID set");
+
             return;
         }
 

@@ -45,6 +45,7 @@ export class EnterpriseStatusBanner extends WithLicenseSummary(AKElement) {
                 break;
         }
         let message = "";
+
         switch (this.licenseSummary?.status) {
             case LicenseSummaryStatusEnum.LimitExceededAdmin:
             case LicenseSummaryStatusEnum.LimitExceededUser:
@@ -68,6 +69,7 @@ export class EnterpriseStatusBanner extends WithLicenseSummary(AKElement) {
             default:
                 break;
         }
+
         return html`<div
             class="pf-c-banner pf-m-sticky ${this.licenseSummary?.status ===
             LicenseSummaryStatusEnum.ReadOnly

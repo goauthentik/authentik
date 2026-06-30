@@ -34,6 +34,7 @@ export class FleetConnectorForm extends ModelForm<FleetConnector, string> {
                 patchedFleetConnectorRequest: data,
             });
         }
+
         return aki(EndpointsApi).endpointsFleetConnectorsCreate({
             fleetConnectorRequest: data as unknown as FleetConnectorRequest,
         });

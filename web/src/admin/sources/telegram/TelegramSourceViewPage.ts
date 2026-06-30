@@ -53,6 +53,7 @@ export class TelegramSourceViewPage extends AKElement {
         if (!this.source) {
             return html``;
         }
+
         return html` <ak-tabs>
             <section
                 slot="page-overview"

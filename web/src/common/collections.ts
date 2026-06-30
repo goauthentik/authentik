@@ -23,7 +23,9 @@ export function checkIterableShallowEquality(
     prevDeps?: unknown[] | null,
 ): boolean {
     if (!newDeps || !prevDeps) return false;
+
     if (prevDeps.length !== newDeps.length) return false;
+
     return prevDeps.every((prev, i) => prev === newDeps[i]);
 }
 

@@ -66,6 +66,7 @@ export class ObjectLifecyclePage extends WithLicenseSummary(WithSession(AKElemen
         if (!this.model || !this.objectPk) {
             return Promise.resolve();
         }
+
         return aki(LifecycleApi)
             .lifecycleIterationsListLatest({
                 contentType: this.model,

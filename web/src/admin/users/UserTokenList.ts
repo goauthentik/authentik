@@ -110,6 +110,7 @@ export class AdminUserTokenList extends Table<Token> {
 
     protected override renderToolbarSelected(): SlottedTemplateResult {
         const disabled = this.selectedElements.length < 1;
+
         return html`<ak-forms-delete-bulk
             object-label=${msg("Token(s)")}
             .objects=${this.selectedElements}

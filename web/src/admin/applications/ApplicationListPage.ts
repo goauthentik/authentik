@@ -102,6 +102,7 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
 
     protected override renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
+
         return html`<ak-forms-delete-bulk
             object-label=${msg("Application(s)")}
             .objects=${this.selectedElements}

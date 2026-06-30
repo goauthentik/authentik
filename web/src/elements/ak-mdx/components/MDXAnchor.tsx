@@ -50,6 +50,7 @@ export const MDXAnchor = ({
 
         if (!target) {
             console.warn(`Element with ID ${elementID} not found`);
+
             return;
         }
 

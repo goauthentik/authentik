@@ -25,7 +25,7 @@ export class SourceViewPage extends AKElement {
     set sourceSlug(slug: string) {
         aki(SourcesApi)
             .sourcesAllRetrieve({
-                slug: slug,
+                slug,
             })
             .then((source) => {
                 this.source = source;
@@ -39,6 +39,7 @@ export class SourceViewPage extends AKElement {
         if (!this.source) {
             return html`<ak-empty-state loading full-height></ak-empty-state>`;
         }
+
         switch (this.source?.component) {
             case "ak-source-kerberos-form":
                 return html`<ak-source-kerberos-view

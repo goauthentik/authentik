@@ -95,7 +95,7 @@ export function showAPIErrorMessage(error: unknown, unique = false): Promise<voi
             showMessage(
                 {
                     level: MessageLevel.error,
-                    message: message,
+                    message,
                 },
                 unique,
             );

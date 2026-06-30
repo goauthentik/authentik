@@ -13,6 +13,7 @@ function supportsSymbolKeyedWeakMap(): boolean {
 
     try {
         wm.set(testKey, "value");
+
         return wm.has(testKey);
     } catch (_error) {
         return false;

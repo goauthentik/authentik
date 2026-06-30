@@ -62,6 +62,7 @@ export class RoleAssignedObjectPermissionTable extends Table<RoleAssignedObjectP
         });
         this.modelPermissions = modelPermissions;
         this.requestUpdate("columns");
+
         return perms;
     }
 
@@ -85,6 +86,7 @@ export class RoleAssignedObjectPermissionTable extends Table<RoleAssignedObjectP
 
     protected override renderToolbarSelected(): SlottedTemplateResult {
         const disabled = this.selectedElements.length < 1;
+
         return html`<ak-forms-delete-bulk
             object-label=${msg("Permission(s)")}
             .objects=${this.selectedElements}
@@ -121,6 +123,7 @@ export class RoleAssignedObjectPermissionTable extends Table<RoleAssignedObjectP
                 .some((uPerm) => uPerm.codename === perm.codename);
 
             let tooltip: string | null = null;
+
             if (assignedToModel && assignedToObject) {
                 tooltip = msg("Global and object permission");
             } else if (assignedToModel) {
@@ -136,6 +139,7 @@ export class RoleAssignedObjectPermissionTable extends Table<RoleAssignedObjectP
                     : html`<i class="fas fa-times pf-m-danger" aria-hidden="true"></i>`} `,
             );
         });
+
         return baseRow;
     }
 }

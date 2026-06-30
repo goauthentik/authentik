@@ -103,6 +103,7 @@ export function resolveChineseFallback(
 ): typeof CJKLanguageTag.HanSimplified | typeof CJKLanguageTag.HanTraditional {
     // Explicit script?
     if (/[-_]hant\b/i.test(candidate)) return CJKLanguageTag.HanTraditional;
+
     if (/[-_]hans\b/i.test(candidate)) return CJKLanguageTag.HanSimplified;
 
     // Traditional region?
@@ -119,6 +120,7 @@ export function resolveChineseFallback(
 export function resolveChineseScriptLegacy(candidate: string): HanScriptTag {
     // Explicit script?
     if (/[-_]hant\b/i.test(candidate)) return HanScriptTag.Traditional;
+
     if (/[-_]hans\b/i.test(candidate)) return HanScriptTag.Simplified;
 
     // Traditional region?

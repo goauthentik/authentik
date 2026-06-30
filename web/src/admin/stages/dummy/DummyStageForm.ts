@@ -27,6 +27,7 @@ export class DummyStageForm extends BaseStageForm<DummyStage> {
                 dummyStageRequest: data,
             });
         }
+
         return aki(StagesApi).stagesDummyCreate({
             dummyStageRequest: data,
         });

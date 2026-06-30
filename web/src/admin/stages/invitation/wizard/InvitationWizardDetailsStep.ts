@@ -60,11 +60,13 @@ export class InvitationWizardDetailsStep extends WizardPage {
             description: detail,
         });
         this.logger.error("Invitation wizard step failed", { step, error: err });
+
         return false;
     }
 
     validate(): void {
         let validYaml = true;
+
         try {
             YAML.parse(this.fixedDataRaw);
         } catch {
@@ -78,6 +80,7 @@ export class InvitationWizardDetailsStep extends WizardPage {
         if (!this.invitationName) return false;
 
         let fixedData: Record<string, unknown> = {};
+
         try {
             fixedData = YAML.parse(this.fixedDataRaw) || {};
         } catch {
@@ -107,11 +110,13 @@ export class InvitationWizardDetailsStep extends WizardPage {
                         user_type: wizardState.newUserType,
                     }),
                 });
+
                 if (!result.success) {
                     const logs = (result.logs || [])
                         .map((l) => l.event)
                         .filter((m) => !!m)
                         .join("\n");
+
                     return this.#fail(
                         msg("Importing enrollment flow blueprint"),
                         new Error(logs || msg("Blueprint validation failed")),
@@ -123,6 +128,7 @@ export class InvitationWizardDetailsStep extends WizardPage {
                     slug: slugToLookup,
                 });
                 const createdFlow = flows.results[0];
+
                 if (!createdFlow) {
                     return this.#fail(
                         msg("Importing enrollment flow blueprint"),

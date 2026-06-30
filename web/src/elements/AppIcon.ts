@@ -50,6 +50,7 @@ export class AppIcon extends AKElement implements IAppIcon {
         // Check for Font Awesome icons (fa://fa-icon-name)
         if (this.icon?.startsWith(AppIcon.FontAwesomeProtocol)) {
             const iconClass = this.icon.slice(AppIcon.FontAwesomeProtocol.length);
+
             return this.#wrap(
                 html`<i
                     part="icon font-awesome"
@@ -66,6 +67,7 @@ export class AppIcon extends AKElement implements IAppIcon {
         // Use themed URL if available, otherwise fall back to icon
         const resolvedIcon =
             (this.iconThemedUrls as Record<string, string> | null)?.[this.activeTheme] ?? this.icon;
+
         if (resolvedIcon) {
             return this.#wrap(
                 html`<img

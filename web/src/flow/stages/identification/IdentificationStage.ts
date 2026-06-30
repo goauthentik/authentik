@@ -174,6 +174,7 @@ export class IdentificationStage extends BaseStage<
         const compatMode = "ShadyDOM" in window;
         this.#form = document.createElement("form");
         document.documentElement.appendChild(this.#form);
+
         // Only add the additional username input if we're in a shadow dom
         // otherwise it just confuses browsers
         if (!compatMode) {
@@ -196,6 +197,7 @@ export class IdentificationStage extends BaseStage<
             };
             this.#form.appendChild(username);
         }
+
         // Only add the password field when we don't already show a password field
         if (!compatMode && !this.challenge?.passwordFields) {
             const password = document.createElement("input");
@@ -312,6 +314,7 @@ export class IdentificationStage extends BaseStage<
 
     protected renderPasswordFields(challenge: IdentificationChallenge) {
         const { allowShowPassword } = challenge;
+
         return html`<ak-flow-input-password
             .inputRef=${this.passwordFieldRef}
             label=${msg("Password")}
@@ -386,6 +389,7 @@ export class IdentificationStage extends BaseStage<
         const { name, iconUrl, challenge } = source;
 
         const icon = renderSourceIcon(name, iconUrl);
+
         return html`<button
             type="button"
             @click=${() => this.#dispatchChallengeToHost(challenge)}

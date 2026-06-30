@@ -141,6 +141,7 @@ export class UserTokenList extends Table<Token> {
 
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
+
         return html`<ak-forms-delete-bulk
             object-label=${msg("Token(s)")}
             .objects=${this.selectedElements}

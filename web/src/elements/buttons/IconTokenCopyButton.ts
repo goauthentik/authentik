@@ -30,6 +30,7 @@ export function IconTokenCopyButton(tokenLike?: Token | string | null): SlottedT
         const fetchTokenViewKey = (): Promise<Blob> => {
             if (!identifier) {
                 console.warn("No identifier provided for IconTokenCopyButton");
+
                 return Promise.resolve(new Blob([""], { type: "text/plain" }));
             }
 

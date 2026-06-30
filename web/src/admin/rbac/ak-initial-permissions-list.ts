@@ -48,6 +48,7 @@ export class InitialPermissionsListPage extends TablePage<InitialPermissions> {
 
     protected override renderToolbarSelected(): SlottedTemplateResult {
         const disabled = this.selectedElements.length < 1;
+
         return html`<ak-forms-delete-bulk
             object-label=${msg("Initial Permissions")}
             .objects=${this.selectedElements}

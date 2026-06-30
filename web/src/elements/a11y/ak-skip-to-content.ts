@@ -131,6 +131,7 @@ export class AKSkipToContent extends AKElement {
 
         if (!targetElement) {
             console.warn(`Could not find target element for skip to content`);
+
             return;
         }
 

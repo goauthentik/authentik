@@ -94,6 +94,7 @@ export class SCIMProviderViewPage extends AKElement {
         if (!this.provider) {
             return nothing;
         }
+
         return html`<main part="main">
             <ak-tabs part="tabs">
                 <div
@@ -168,6 +169,7 @@ export class SCIMProviderViewPage extends AKElement {
             this.provider?.authMode !== SCIMAuthenticationModeEnum.OauthInteractive
         )
             return nothing;
+
         return html`
             <div class="pf-c-description-list__group">
                 <dt class="pf-c-description-list__term">
@@ -203,6 +205,7 @@ export class SCIMProviderViewPage extends AKElement {
             return nothing;
         }
         const [appLabel, modelName] = ModelEnum.AuthentikProvidersScimScimprovider.split(".");
+
         return html` ${!this.provider?.assignedBackchannelApplicationName
                 ? html`<div slot="header" class="pf-c-banner pf-m-warning">
                       ${msg(

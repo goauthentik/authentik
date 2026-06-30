@@ -40,6 +40,7 @@ export class RACProviderFormPage extends ModelForm<RACProvider, number> {
         if (this.instance) {
             return msg("Successfully updated provider.");
         }
+
         return msg("Successfully created provider.");
     }
 
@@ -50,6 +51,7 @@ export class RACProviderFormPage extends ModelForm<RACProvider, number> {
                 rACProviderRequest: data,
             });
         }
+
         return aki(ProvidersApi).providersRacCreate({
             rACProviderRequest: data,
         });

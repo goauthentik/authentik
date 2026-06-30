@@ -26,6 +26,7 @@ export class PropertyMappingSourceTelegramForm extends BasePropertyMappingForm<T
                 telegramSourcePropertyMappingRequest: data,
             });
         }
+
         return aki(PropertymappingsApi).propertymappingsSourceTelegramCreate({
             telegramSourcePropertyMappingRequest: data,
         });

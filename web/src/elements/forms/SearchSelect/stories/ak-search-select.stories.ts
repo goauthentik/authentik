@@ -29,6 +29,7 @@ const getSamples = (query = "") => {
         return Promise.resolve(samples);
     }
     const check = new RegExp(query);
+
     return Promise.resolve(samples.filter((s) => check.test(s.name)));
 };
 

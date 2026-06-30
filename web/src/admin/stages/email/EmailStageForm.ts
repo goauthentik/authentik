@@ -24,6 +24,7 @@ export class EmailStageForm extends BaseStageForm<EmailStage> {
             stageUuid: pk,
         });
         this.showConnectionSettings = !stage.useGlobalSettings;
+
         return stage;
     }
 
@@ -43,6 +44,7 @@ export class EmailStageForm extends BaseStageForm<EmailStage> {
                 patchedEmailStageRequest: data,
             });
         }
+
         return aki(StagesApi).stagesEmailCreate({
             emailStageRequest: data,
         });
@@ -52,6 +54,7 @@ export class EmailStageForm extends BaseStageForm<EmailStage> {
         if (!this.showConnectionSettings) {
             return nothing;
         }
+
         return html`<ak-form-group label="${msg("Connection settings")}">
             <div class="pf-c-form">
                 <ak-form-element-horizontal label=${msg("SMTP Host")} required name="host">
@@ -182,6 +185,7 @@ export class EmailStageForm extends BaseStageForm<EmailStage> {
                         <select name="users" class="pf-c-form-control">
                             ${this.templates?.map((template) => {
                                 const selected = this.instance?.template === template.name;
+
                                 return html`<option
                                     value=${ifDefined(template.name)}
                                     ?selected=${selected}

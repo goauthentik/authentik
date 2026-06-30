@@ -55,6 +55,7 @@ export class GroupListPage extends TablePage<Group> {
 
     protected renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
+
         return html`<ak-forms-delete-bulk
             object-label=${msg("Group(s)")}
             .objects=${this.selectedElements}

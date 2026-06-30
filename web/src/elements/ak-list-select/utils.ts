@@ -5,6 +5,7 @@ export function isVisibleInScrollRegion(el: HTMLElement, container: HTMLElement)
     const elBottom = elTop + el.clientHeight;
     const containerTop = container.scrollTop;
     const containerBottom = containerTop + container.clientHeight;
+
     return (
         (elTop >= containerTop && elBottom <= containerBottom) ||
         (elTop < containerTop && containerTop < elBottom) ||
@@ -13,5 +14,5 @@ export function isVisibleInScrollRegion(el: HTMLElement, container: HTMLElement)
 }
 
 export function groupOptions(options: SelectOptions): GroupedOptions {
-    return Array.isArray(options) ? { grouped: false, options: options } : options;
+    return Array.isArray(options) ? { grouped: false, options } : options;
 }

@@ -38,7 +38,7 @@ export const AllFieldTypes = flowFactory("ak-stage-prompt", {
     ].map((type, idx) => {
         return {
             fieldKey: `fk_${type}`,
-            type: type,
+            type,
             label: `${capitalCase(type)} (${type})`,
             order: idx,
             required: true,

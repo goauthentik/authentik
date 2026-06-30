@@ -202,6 +202,7 @@ export class AuthenticatorValidateStage
         // If user only has a single device, autoselect that device.
         if (this.challenge.deviceChallenges.length === 1) {
             this.selectedDeviceChallenge = this.challenge.deviceChallenges[0];
+
             return;
         }
 
@@ -210,6 +211,7 @@ export class AuthenticatorValidateStage
         const totpChallenge = this.challenge.deviceChallenges.find(
             (challenge) => challenge.deviceClass === DeviceClassesEnum.Totp,
         );
+
         if (PasswordManagerPrefill.totp && totpChallenge) {
             this.logger.debug("Found prefill TOTP code to select");
             this.selectedDeviceChallenge = totpChallenge;
@@ -315,6 +317,7 @@ export class AuthenticatorValidateStage
         }
 
         const tag = resolveAuthenticatorComponentTag(this.selectedDeviceChallenge.deviceClass);
+
         if (!tag) return null;
 
         const showBackButton = (this.challenge?.deviceChallenges || []).length > 1;

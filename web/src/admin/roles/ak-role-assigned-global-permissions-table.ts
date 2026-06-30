@@ -63,6 +63,7 @@ export class RoleAssignedGlobalPermissionsTable extends Table<Permission> {
 
     protected renderToolbarSelected(): SlottedTemplateResult {
         const disabled = this.selectedElements.length < 1;
+
         return html`<ak-forms-delete-bulk
             object-label=${msg("Permission(s)")}
             .objects=${this.selectedElements}

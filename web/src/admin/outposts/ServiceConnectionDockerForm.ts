@@ -35,6 +35,7 @@ export class ServiceConnectionDockerForm extends ModelForm<DockerServiceConnecti
                 dockerServiceConnectionRequest: data,
             });
         }
+
         return aki(OutpostsApi).outpostsServiceConnectionsDockerCreate({
             dockerServiceConnectionRequest: data,
         });

@@ -54,6 +54,7 @@ export class InvitationWizardEmailStep extends WizardPage {
 
     activeCallback = async (): Promise<void> => {
         this.host.valid = this.toAddresses.trim().length > 0;
+
         try {
             this.availableTemplates = await aki(StagesApi).stagesEmailTemplatesList();
         } catch {
@@ -75,20 +76,24 @@ export class InvitationWizardEmailStep extends WizardPage {
     nextCallback = async (): Promise<boolean> => {
         const wizardState = this.host.state as unknown as InvitationWizardState;
         const invitationPk = wizardState.createdInvitationPk;
+
         if (!invitationPk) {
             showMessage({
                 level: MessageLevel.error,
                 message: msg("No invitation available to send"),
             });
+
             return false;
         }
 
         const to = this.parseEmailAddresses(this.toAddresses);
+
         if (to.length === 0) {
             showMessage({
                 level: MessageLevel.error,
                 message: msg("Please enter at least one email address"),
             });
+
             return false;
         }
         const cc = this.parseEmailAddresses(this.ccAddresses);
@@ -114,6 +119,7 @@ export class InvitationWizardEmailStep extends WizardPage {
                 message: msg("Failed to queue invitation emails"),
                 description: detail,
             });
+
             return false;
         }
 
@@ -124,6 +130,7 @@ export class InvitationWizardEmailStep extends WizardPage {
             ),
         });
         this.dispatchEvent(new AKRefreshEvent());
+
         return true;
     };
 

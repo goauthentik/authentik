@@ -29,6 +29,7 @@ export class AuthenticatorEndpointGDTCStageForm extends BaseStageForm<Authentica
                 patchedAuthenticatorEndpointGDTCStageRequest: data,
             });
         }
+
         return aki(StagesApi).stagesAuthenticatorEndpointGdtcCreate({
             authenticatorEndpointGDTCStageRequest: data,
         });

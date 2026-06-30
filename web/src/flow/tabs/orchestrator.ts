@@ -102,6 +102,7 @@ function waitForTabExit(tabID: string, resumeID: string): Promise<void> {
         if (!tabs.has(tabID)) {
             logger.warn("Timed out waiting for tab exit event, tab is gone", tabID);
             cleanup();
+
             return;
         }
 
@@ -130,6 +131,7 @@ export async function multiTabOrchestrateResume() {
     if (lockTabID && tabs.has(lockTabID)) {
         logger.debug("Tabs locked, suppressing same-origin exit.");
         suppressNextExitForSameOriginNavigation();
+
         return;
     }
 

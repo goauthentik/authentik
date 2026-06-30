@@ -23,6 +23,7 @@ function assignValue(
 
     if (!element.name?.includes(".")) {
         parent[element.name] = value;
+
         return;
     }
 
@@ -30,6 +31,7 @@ function assignValue(
 
     for (let index = 0; index < nameElements.length - 1; index++) {
         const nameEl = nameElements[index];
+
         // Ensure all nested structures exist
         if (!(nameEl in parent)) {
             parent[nameEl] = {};
@@ -86,6 +88,7 @@ export function serializeForm<T = Record<string, unknown>>(elements: Iterable<AK
 
             if (inputElement.type === "datetime-local") {
                 const valueAsNumber = inputElement.valueAsNumber;
+
                 return assignValue(
                     inputElement,
                     isNaN(valueAsNumber) ? undefined : dateToUTC(new Date(valueAsNumber)),
@@ -97,6 +100,7 @@ export function serializeForm<T = Record<string, unknown>>(elements: Iterable<AK
                 // Workaround for Firefox <93, since 92 and older don't support
                 // datetime-local fields
                 const date = new Date(inputElement.value);
+
                 return assignValue(
                     inputElement,
                     isNaN(date.getTime()) ? undefined : dateToUTC(date),

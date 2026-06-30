@@ -48,6 +48,7 @@ export class GoogleWorkspaceProviderFormPage extends BaseProviderForm<GoogleWork
                 googleWorkspaceProviderRequest: data,
             });
         }
+
         return aki(ProvidersApi).providersGoogleWorkspaceCreate({
             googleWorkspaceProviderRequest: data,
         });
@@ -190,10 +191,12 @@ export class GoogleWorkspaceProviderFormPage extends BaseProviderForm<GoogleWork
                                     ordering: "name",
                                     includeUsers: false,
                                 };
+
                                 if (query !== undefined) {
                                     args.search = query;
                                 }
                                 const groups = await aki(CoreApi).coreGroupsList(args);
+
                                 return groups.results;
                             }}
                             .renderElement=${(group: Group): string => {

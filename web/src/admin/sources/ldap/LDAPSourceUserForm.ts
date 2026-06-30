@@ -37,6 +37,7 @@ export class LDAPSourceUserForm extends ModelForm<UserLDAPSourceConnection, numb
 
     async send(data: UserLDAPSourceConnection) {
         data.source = this.source?.pk || "";
+
         return aki(SourcesApi).sourcesUserConnectionsLdapCreate({
             userLDAPSourceConnectionRequest: data,
         });
@@ -49,10 +50,12 @@ export class LDAPSourceUserForm extends ModelForm<UserLDAPSourceConnection, numb
                         const args: CoreUsersListRequest = {
                             ordering: "username",
                         };
+
                         if (query !== undefined) {
                             args.search = query;
                         }
                         const users = await aki(CoreApi).coreUsersList(args);
+
                         return users.results;
                     }}
                     .renderElement=${(user: User): string => {

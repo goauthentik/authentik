@@ -274,6 +274,7 @@ export abstract class SearchSelectBase<T>
             this.selectedObject = null;
             this.query = undefined;
             this.updateData();
+
             return;
         }
 
@@ -282,6 +283,7 @@ export abstract class SearchSelectBase<T>
             // If creatable, check if selectedObject's value matches the typed value exactly
             if (this.creatable) {
                 const selectedValue = this.selectedObject ? this.value(this.selectedObject) : null;
+
                 if (selectedValue !== value) {
                     // No exact match so create a synthetic object with the raw value
                     // "synthetic" isn't an official term or anything, it's just called like that here
@@ -322,6 +324,7 @@ export abstract class SearchSelectBase<T>
                 // Create a synthetic object with the user's custom value
                 this.selectedObject = { name: value } as T;
                 this.dispatchChangeEvent(this.selectedObject);
+
                 return;
             }
             console.warn(`ak-search-select: No corresponding object found for value (${value}`);
@@ -413,6 +416,7 @@ export abstract class SearchSelectBase<T>
         if (!this.#loading && changed.has("objects")) {
             this.dispatchEvent(new Event("ready"));
         }
+
         // It is not safe for automated tests to interact with this component while it is fetching
         // data.
         if (!this.#loading) {
