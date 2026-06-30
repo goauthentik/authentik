@@ -164,6 +164,15 @@ pub(super) fn redirect_to_start(
     }
 
     let start = oauth::start_url(&app.provider.external_host, &redirect)?;
+
+    // Reaching here means the session lookup already failed, so any
+    // signature-valid session cookie is stale: clear it so the browser stops
+    // sending a dead session id.
+    let jar = app.session_cookie.jar(headers);
+    if app.session_cookie.read(&jar).is_some() {
+        let jar = jar.remove(app.session_cookie.removal());
+        return Ok((jar, (StatusCode::FOUND, [(header::LOCATION, start)])).into_response());
+    }
     Ok((StatusCode::FOUND, [(header::LOCATION, start)]).into_response())
 }
 
