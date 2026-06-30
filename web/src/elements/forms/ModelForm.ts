@@ -9,8 +9,10 @@ import { Form } from "#elements/forms/Form";
 import { SlottedTemplateResult } from "#elements/types";
 
 import { ConsoleLogger } from "#logger/browser";
+import AKFadeIn from "#styles/authentik/components/Modifiers/fade-in.css";
 
 import { msg, str } from "@lit/localize";
+import type { CSSResult } from "lit";
 import { html } from "lit-html";
 import { property, state } from "lit/decorators.js";
 
@@ -57,6 +59,8 @@ export abstract class ModelForm<
     PKT extends string | number = string | number,
     D = T,
 > extends Form<T, D> {
+    public static styles: CSSResult[] = [...Form.styles, AKFadeIn];
+
     /**
      * The modifier to use in the default headline when editing an instance, e.g. "Edit".
      */

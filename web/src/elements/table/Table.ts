@@ -35,6 +35,7 @@ import { isInteractiveElement } from "#elements/utils/interactivity";
 import { isEventTargetingListener } from "#elements/utils/pointer";
 
 import { ConsoleLogger, Logger } from "#logger/browser";
+import AKFadeIn from "#styles/authentik/components/Modifiers/fade-in.css";
 
 import { kebabCase } from "change-case";
 
@@ -100,6 +101,7 @@ export abstract class Table<T extends object, D = T>
         PFToolbar,
         PFDropdown,
         PFPagination,
+        AKFadeIn,
         Styles,
     ];
 
