@@ -36,6 +36,7 @@ class MutualTLSStage(Stage):
             "Configure certificate authorities to validate the certificate against. "
             "This option has a higher priority than the `client_certificate` option on `Brand`."
         ),
+        through="MutualTLSStageCertificateAuthority",
     )
 
     cert_attribute = models.TextField(choices=CertAttributes.choices)
@@ -63,3 +64,21 @@ class MutualTLSStage(Stage):
         permissions = [
             ("pass_outpost_certificate", _("Permissions to pass Certificates for outposts.")),
         ]
+
+
+class MutualTLSStageCertificateAuthority(models.Model):
+    mutual_tls_stage = models.ForeignKey(
+        MutualTLSStage,
+        on_delete=models.CASCADE,
+    )
+    certificate_key_pair = models.ForeignKey(CertificateKeyPair, on_delete=models.CASCADE)
+
+    class Meta:
+        unique_together = (("mutual_tls_stage", "certificate_key_pair"),)
+
+    def __str__(self):
+        return (
+            "MutualTLSStageCertificateAuthority for MutualTLSStage "
+            f"{self.mutual_tls_stage_id} "
+            f"and CertificateKeyPair {self.certificate_key_pair_id}."
+        )
