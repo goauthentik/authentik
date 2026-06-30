@@ -34,6 +34,7 @@ PLAN_CONTEXT_AUTHENTICATION_BACKEND = "user_backend"
 PLAN_CONTEXT_METHOD = "auth_method"
 PLAN_CONTEXT_METHOD_ARGS = "auth_method_args"
 PLAN_CONTEXT_INITIAL_SCORE = "goauthentik.io/stages/password/initial_score"
+PLAN_CONTEXT_FAILED_ATTEMPTS = "goauthentik.io/stages/password/failed_attempts"
 
 
 def authenticate(
@@ -164,12 +165,17 @@ class PasswordStageView(ChallengeStageView):
 
     def challenge_invalid(self, response: PasswordChallengeResponse) -> HttpResponse:
         current_stage: PasswordStage = self.executor.current_stage
-        initial_score = self.executor.plan.context.get(PLAN_CONTEXT_INITIAL_SCORE)
-        if initial_score is None:
-            initial_score = self.get_reputation_score()
-            self.executor.plan.context[PLAN_CONTEXT_INITIAL_SCORE] = initial_score
-        new_score = self.get_reputation_score()
-        if (initial_score - new_score) >= current_stage.failed_attempts_before_cancel:
+        # Count failed attempts per flow plan directly. The previous
+        # `initial_score - new_score` check derived attempts from the
+        # Reputation score, which is clipped at tenant.reputation_lower_limit:
+        # once a user hits the floor (e.g. after the first flow exhausts
+        # the limit), subsequent failures no longer push the diff above
+        # failed_attempts_before_cancel and the cancel guard never fires
+        # on later flows. That let users keep retrying indefinitely after
+        # the first lockout - see #21600.
+        attempts = self.executor.plan.context.get(PLAN_CONTEXT_FAILED_ATTEMPTS, 0) + 1
+        self.executor.plan.context[PLAN_CONTEXT_FAILED_ATTEMPTS] = attempts
+        if attempts >= current_stage.failed_attempts_before_cancel:
             self.logger.debug("User has exceeded maximum tries")
             return self.executor.stage_invalid(_("Invalid password"))
         return super().challenge_invalid(response)
