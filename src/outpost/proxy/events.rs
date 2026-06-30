@@ -13,7 +13,12 @@ use crate::outpost::proxy::application::Application;
 
 impl Application {
     /// Report a misconfiguration as a configuration-error event (best-effort).
-    pub(super) async fn report_misconfiguration(&self, message: &str, url: &str, client_ip: IpAddr) {
+    pub(super) async fn report_misconfiguration(
+        &self,
+        message: &str,
+        url: &str,
+        client_ip: IpAddr,
+    ) {
         let context = HashMap::from([
             ("message".to_owned(), json!(message)),
             ("provider".to_owned(), json!(self.provider.name)),
