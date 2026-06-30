@@ -23,7 +23,7 @@ jobs:
         command:
           - prettier-check
     steps:
-      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v5
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v5
       - uses: ./.github/actions/setup-node
         with:
           working-directory: website
@@ -34,7 +34,7 @@ jobs:
     env:
       NODE_ENV: production
     steps:
-      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v5
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v5
       - uses: ./.github/actions/setup-node
         name: Setup Node.js
         with:
@@ -46,7 +46,7 @@ jobs:
     env:
       NODE_ENV: production
     steps:
-      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v5
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v5
       - uses: ./.github/actions/setup-node
         with:
           working-directory: website
@@ -61,7 +61,7 @@ jobs:
       id-token: write
       attestations: write
     steps:
-      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v5
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v5
         with:
           ref: ${{ github.event.pull_request.head.sha }}
       - name: Set up QEMU
@@ -93,7 +93,7 @@ jobs:
           context: .
           cache-from: type=registry,ref=ghcr.io/goauthentik/dev-docs:buildcache
           cache-to: ${{ steps.ev.outputs.shouldPush == 'true' && 'type=registry,ref=ghcr.io/goauthentik/dev-docs:buildcache,mode=max' || '' }}
-      - uses: actions/attest-build-provenance@a2bbfa25375fe432b6a289bc6b6cd05ecd0c4c32 # v3
+      - uses: actions/attest-build-provenance@0f67c3f4856b2e3261c31976d6725780e5e4c373 # v3
         id: attest
         if: ${{ steps.ev.outputs.shouldPush == 'true' }}
         with:

@@ -42,7 +42,7 @@ runs:
         enable-cache: true
     - name: Setup python
       if: ${{ contains(inputs.dependencies, 'python') }}
-      uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v5
+      uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v5
       with:
         python-version-file: "${{ inputs.working-directory }}pyproject.toml"
     - name: Install Python deps
@@ -52,19 +52,19 @@ runs:
       run: uv sync --all-extras --dev --locked
     - name: Setup rust (stable)
       if: ${{ contains(inputs.dependencies, 'rust') && !contains(inputs.dependencies, 'rust-nightly') }}
-      uses: actions-rust-lang/setup-rust-toolchain@46268bd060767258de96ed93c1251119784f2ab6 # v1
+      uses: actions-rust-lang/setup-rust-toolchain@166cdcfd11aee3cb47222f9ddb555ce30ddb9659 # v1
       with:
         rustflags: ""
     - name: Setup rust (nightly)
       if: ${{ contains(inputs.dependencies, 'rust-nightly') }}
-      uses: actions-rust-lang/setup-rust-toolchain@46268bd060767258de96ed93c1251119784f2ab6 # v1
+      uses: actions-rust-lang/setup-rust-toolchain@166cdcfd11aee3cb47222f9ddb555ce30ddb9659 # v1
       with:
         toolchain: nightly
         components: rustfmt
         rustflags: ""
     - name: Setup rust dependencies
       if: ${{ contains(inputs.dependencies, 'rust') }}
-      uses: taiki-e/install-action@7a79fe8c3a13344501c80d99cae481c1c9085912 # v2
+      uses: taiki-e/install-action@bffeee26d4db9be238a4ea78d8826604ebcb594d # v2
       with:
         tool: cargo-deny cargo-machete cargo-llvm-cov nextest
     - name: Setup node (root, web)
@@ -74,7 +74,7 @@ runs:
         working-directory: web
     - name: Setup go
       if: ${{ contains(inputs.dependencies, 'go') }}
-      uses: actions/setup-go@4a3601121dd01d1626a1e23e37211e3254c1c06c # v5
+      uses: actions/setup-go@924ae3a1cded613372ab5595356fb5720e22ba16 # v5
       with:
         go-version-file: "${{ inputs.working-directory }}go.mod"
     - name: Setup docker cache
