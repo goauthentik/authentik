@@ -27,10 +27,10 @@ export class FlowCard extends AKElement {
     role = "presentation";
 
     @property({ type: Object })
-    challenge?: Pick<FormStaticChallenge, "flowInfo">;
+    public challenge: Pick<FormStaticChallenge, "flowInfo"> | null = null;
 
     @property({ type: Boolean })
-    loading = false;
+    public loading = false;
 
     static styles: CSSResult[] = [PFLogin, PFTitle, Styles];
 
