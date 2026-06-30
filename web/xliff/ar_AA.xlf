@@ -556,7 +556,7 @@
 </trans-unit>
 <trans-unit id="sd9b15395dd103f80">
   <source>Sort by &quot;<x id="0" equiv-text="${label}"/>&quot;</source>
-  <target>Sort by &quot;<x id="0" equiv-text="${label}"/>&quot;</target>
+  <target>رتب حسب &quot;<x id="0" equiv-text="${label}"/>&quot;</target>
 </trans-unit>
 <trans-unit id="sfd44ce578f643145">
   <source>Failed to fetch objects.</source>
