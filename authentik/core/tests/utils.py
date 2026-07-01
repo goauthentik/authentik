@@ -10,7 +10,8 @@ from django.test import RequestFactory as BaseRequestFactory
 from django.utils.text import slugify
 
 from authentik.brands.models import Brand
-from authentik.core.models import Group, User
+from authentik.core.models import AuthenticatedSession, Group, Session, User
+from authentik.core.sessions import SessionStore
 from authentik.crypto.builder import CertificateBuilder, PrivateKeyAlg
 from authentik.crypto.models import CertificateKeyPair
 from authentik.flows.models import Flow, FlowDesignation
@@ -39,6 +40,20 @@ def create_test_user(name: str | None = None, **kwargs) -> User:
     user.set_password(uid)
     user.save()
     return user
+
+
+def create_test_session(
+    user: User, user_switching_token: str | None = None, is_current: bool = True
+) -> AuthenticatedSession:
+    """Create a live login for the given user, optionally bound for user switching."""
+    store = SessionStore()
+    store.create()
+    return AuthenticatedSession.objects.create(
+        session=Session.objects.get(session_key=store.session_key),
+        user=user,
+        user_switching_token=user_switching_token,
+        is_current=is_current,
+    )
 
 
 def create_test_admin_user(name: str | None = None, **kwargs) -> User:
@@ -75,7 +90,6 @@ def dummy_get_response(request: HttpRequest):  # pragma: no cover
 
 
 class RequestFactory(BaseRequestFactory):
-
     def generic(
         self,
         method: str,

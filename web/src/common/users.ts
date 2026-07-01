@@ -31,6 +31,17 @@ export function formatUserDisplayName(user: UserLike | null, uiConfig?: UIConfig
     return label || "";
 }
 
+/**
+ * Pick a secondary identifier that distinguishes a user from the visible label.
+ */
+export function formatUserSecondaryIdentifier(user: UserLike, primaryLabel: string): string {
+    return (
+        [user.email, user.username].find(
+            (identifier) => identifier && identifier !== primaryLabel,
+        ) ?? ""
+    );
+}
+
 const formatUnknownUserLabel = () =>
     msg("Unknown user", {
         id: "user.display.unknownUser",

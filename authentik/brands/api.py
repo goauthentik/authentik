@@ -59,6 +59,7 @@ class BrandSerializer(ModelSerializer):
             "branding_custom_css",
             "branding_default_flow_background",
             "flow_authentication",
+            "flow_account_switch",
             "flow_invalidation",
             "flow_recovery",
             "flow_unenrollment",
@@ -113,6 +114,7 @@ class CurrentBrandSerializer(PassiveSerializer):
     )
 
     flow_authentication = CharField(source="flow_authentication.slug", required=False)
+    flow_account_switch = CharField(source="flow_account_switch.slug", required=False)
     flow_invalidation = CharField(source="flow_invalidation.slug", required=False)
     flow_recovery = CharField(source="flow_recovery.slug", required=False)
     flow_unenrollment = CharField(source="flow_unenrollment.slug", required=False)
@@ -151,6 +153,7 @@ class BrandViewSet(UsedByMixin, ModelViewSet):
         "branding_favicon",
         "branding_default_flow_background",
         "flow_authentication",
+        "flow_account_switch",
         "flow_invalidation",
         "flow_recovery",
         "flow_unenrollment",

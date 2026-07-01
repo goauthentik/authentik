@@ -34,13 +34,15 @@ class SessionStore(SessionBase):
 
     def _get_session_from_db(self):
         try:
-            return self.model.objects.select_related(
+            session = self.model.objects.select_related(
                 "authenticatedsession",
                 "authenticatedsession__user",
             ).get(
                 session_key=self.session_key,
                 expires__gt=timezone.now(),
             )
+            session.validate_not_superseded()
+            return session
         except (self.model.DoesNotExist, SuspiciousOperation) as exc:
             if isinstance(exc, SuspiciousOperation):
                 LOGGER.warning(str(exc))
@@ -48,13 +50,15 @@ class SessionStore(SessionBase):
 
     async def _aget_session_from_db(self):
         try:
-            return await self.model.objects.select_related(
+            session = await self.model.objects.select_related(
                 "authenticatedsession",
                 "authenticatedsession__user",
             ).aget(
                 session_key=self.session_key,
                 expires__gt=timezone.now(),
             )
+            session.validate_not_superseded()
+            return session
         except (self.model.DoesNotExist, SuspiciousOperation) as exc:
             if isinstance(exc, SuspiciousOperation):
                 LOGGER.warning(str(exc))

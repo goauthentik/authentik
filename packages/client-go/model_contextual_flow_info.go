@@ -21,12 +21,13 @@ var _ MappedNullable = &ContextualFlowInfo{}
 
 // ContextualFlowInfo Contextual flow information for a challenge
 type ContextualFlowInfo struct {
-	Title                *string                      `json:"title,omitempty"`
-	Background           *string                      `json:"background,omitempty"`
-	BackgroundThemedUrls NullableThemedUrls           `json:"background_themed_urls,omitempty"`
-	CancelUrl            string                       `json:"cancel_url"`
-	Layout               ContextualFlowInfoLayoutEnum `json:"layout"`
-	AdditionalProperties map[string]interface{}
+	Title                  *string                      `json:"title,omitempty"`
+	Background             *string                      `json:"background,omitempty"`
+	BackgroundThemedUrls   NullableThemedUrls           `json:"background_themed_urls,omitempty"`
+	CancelUrl              string                       `json:"cancel_url"`
+	Layout                 ContextualFlowInfoLayoutEnum `json:"layout"`
+	AccountSwitchStaleUser *string                      `json:"account_switch_stale_user,omitempty"`
+	AdditionalProperties   map[string]interface{}
 }
 
 type _ContextualFlowInfo ContextualFlowInfo
@@ -205,6 +206,38 @@ func (o *ContextualFlowInfo) SetLayout(v ContextualFlowInfoLayoutEnum) {
 	o.Layout = v
 }
 
+// GetAccountSwitchStaleUser returns the AccountSwitchStaleUser field value if set, zero value otherwise.
+func (o *ContextualFlowInfo) GetAccountSwitchStaleUser() string {
+	if o == nil || IsNil(o.AccountSwitchStaleUser) {
+		var ret string
+		return ret
+	}
+	return *o.AccountSwitchStaleUser
+}
+
+// GetAccountSwitchStaleUserOk returns a tuple with the AccountSwitchStaleUser field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ContextualFlowInfo) GetAccountSwitchStaleUserOk() (*string, bool) {
+	if o == nil || IsNil(o.AccountSwitchStaleUser) {
+		return nil, false
+	}
+	return o.AccountSwitchStaleUser, true
+}
+
+// HasAccountSwitchStaleUser returns a boolean if a field has been set.
+func (o *ContextualFlowInfo) HasAccountSwitchStaleUser() bool {
+	if o != nil && !IsNil(o.AccountSwitchStaleUser) {
+		return true
+	}
+
+	return false
+}
+
+// SetAccountSwitchStaleUser gets a reference to the given string and assigns it to the AccountSwitchStaleUser field.
+func (o *ContextualFlowInfo) SetAccountSwitchStaleUser(v string) {
+	o.AccountSwitchStaleUser = &v
+}
+
 func (o ContextualFlowInfo) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -226,6 +259,9 @@ func (o ContextualFlowInfo) ToMap() (map[string]interface{}, error) {
 	}
 	toSerialize["cancel_url"] = o.CancelUrl
 	toSerialize["layout"] = o.Layout
+	if !IsNil(o.AccountSwitchStaleUser) {
+		toSerialize["account_switch_stale_user"] = o.AccountSwitchStaleUser
+	}
 
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
@@ -275,6 +311,7 @@ func (o *ContextualFlowInfo) UnmarshalJSON(data []byte) (err error) {
 		delete(additionalProperties, "background_themed_urls")
 		delete(additionalProperties, "cancel_url")
 		delete(additionalProperties, "layout")
+		delete(additionalProperties, "account_switch_stale_user")
 		o.AdditionalProperties = additionalProperties
 	}
 

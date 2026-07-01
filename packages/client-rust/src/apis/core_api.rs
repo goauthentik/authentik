@@ -68,6 +68,7 @@ pub async fn core_brands_list(
     client_certificates: Option<Vec<uuid::Uuid>>,
     default: Option<bool>,
     domain: Option<&str>,
+    flow_account_switch: Option<&str>,
     flow_authentication: Option<&str>,
     flow_device_code: Option<&str>,
     flow_invalidation: Option<&str>,
@@ -90,6 +91,7 @@ pub async fn core_brands_list(
     let p_query_client_certificates = client_certificates;
     let p_query_default = default;
     let p_query_domain = domain;
+    let p_query_flow_account_switch = flow_account_switch;
     let p_query_flow_authentication = flow_authentication;
     let p_query_flow_device_code = flow_device_code;
     let p_query_flow_invalidation = flow_invalidation;
@@ -146,6 +148,9 @@ pub async fn core_brands_list(
     }
     if let Some(ref param_value) = p_query_domain {
         req_builder = req_builder.query(&[("domain", &param_value.to_string())]);
+    }
+    if let Some(ref param_value) = p_query_flow_account_switch {
+        req_builder = req_builder.query(&[("flow_account_switch", &param_value.to_string())]);
     }
     if let Some(ref param_value) = p_query_flow_authentication {
         req_builder = req_builder.query(&[("flow_authentication", &param_value.to_string())]);

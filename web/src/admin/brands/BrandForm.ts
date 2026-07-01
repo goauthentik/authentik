@@ -103,6 +103,29 @@ export class BrandForm extends ModelForm<Brand, string> {
         });
     }
 
+    protected renderAccountSwitchFlowInput(): TemplateResult {
+        return html`<ak-form-element-horizontal
+            label=${msg("User switch flow", {
+                id: "brand.form.flow-user-switch.label",
+            })}
+            name="flowAccountSwitch"
+        >
+            <ak-flow-search
+                placeholder=${msg("Select a user switch flow...", {
+                    id: "brand.form.flow-user-switch.placeholder",
+                })}
+                flowType=${FlowDesignationEnum.Authentication}
+                .currentFlow=${this.instance?.flowAccountSwitch}
+            ></ak-flow-search>
+            <p class="pf-c-form__helper-text">
+                ${msg(
+                    "Authentication flow used when switching between users signed in on the same browser. If left empty, user switching is disabled.",
+                    { id: "brand.form.flow-user-switch.description" },
+                )}
+            </p>
+        </ak-form-element-horizontal>`;
+    }
+
     protected override renderForm(): TemplateResult {
         const {
             brandingTitle = "",
@@ -255,6 +278,7 @@ export class BrandForm extends ModelForm<Brand, string> {
                             )}
                         </p>
                     </ak-form-element-horizontal>
+                    ${this.renderAccountSwitchFlowInput()}
                     <ak-form-element-horizontal
                         label=${msg("Invalidation Flow")}
                         name="flowInvalidation"

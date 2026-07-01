@@ -5115,6 +5115,11 @@
                     "format": "uuid",
                     "title": "Flow authentication"
                 },
+                "flow_account_switch": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Flow account switch"
+                },
                 "flow_invalidation": {
                     "type": "string",
                     "format": "uuid",

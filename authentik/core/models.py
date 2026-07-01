@@ -14,8 +14,9 @@ from django.contrib.auth.hashers import check_password, identify_hasher
 from django.contrib.auth.models import AbstractUser, Permission
 from django.contrib.auth.models import UserManager as DjangoUserManager
 from django.contrib.sessions.base_session import AbstractBaseSession
+from django.core.exceptions import SuspiciousOperation
 from django.core.validators import validate_slug
-from django.db import models
+from django.db import models, transaction
 from django.db.models import Manager, Q, QuerySet, options
 from django.http import HttpRequest
 from django.utils.functional import cached_property
@@ -1337,6 +1338,21 @@ class Session(ExpiringModel, AbstractBaseSession):
     def __str__(self):
         return self.session_key
 
+    @property
+    def is_superseded(self) -> bool:
+        """Check if this session was replaced by a newer login in the same browser."""
+        authenticated_session = getattr(self, "authenticatedsession", None)
+        return bool(
+            authenticated_session
+            and authenticated_session.user_switching_token
+            and not authenticated_session.is_current
+        )
+
+    def validate_not_superseded(self):
+        """Reject browser logins superseded by a newer login."""
+        if self.is_superseded:
+            raise SuspiciousOperation("Session denied: superseded by a newer login")
+
     class Keys(StrEnum):
         """
         Keys to be set with the session interface for the fields above to be updated.
@@ -1368,27 +1384,61 @@ class AuthenticatedSession(SerializerModel):
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
+    # This is matched against the value of the `authentik_user_switching` cookie.
+    user_switching_token = models.CharField(max_length=64, null=True, db_index=True)
+    is_current = models.BooleanField(default=False)
+
     @property
     def serializer(self) -> type[Serializer]:
         from authentik.core.api.authenticated_sessions import AuthenticatedSessionSerializer
 
         return AuthenticatedSessionSerializer
 
-    class Meta:
-        verbose_name = _("Authenticated Session")
-        verbose_name_plural = _("Authenticated Sessions")
-
-    def __str__(self) -> str:
-        return f"Authenticated Session {str(self.pk)[:10]}"
-
-    @staticmethod
-    def from_request(request: HttpRequest, user: User) -> AuthenticatedSession | None:
-        """Create a new session from a http request"""
+    @classmethod
+    def from_request(cls, request: HttpRequest, user: User) -> Self | None:
+        """Create a new authenticated session from an HTTP request."""
         if not hasattr(request, "session") or not request.session.exists(
             request.session.session_key
         ):
             return None
-        return AuthenticatedSession(
-            session=Session.objects.filter(session_key=request.session.session_key).first(),
-            user=user,
+        session = Session.objects.filter(session_key=request.session.session_key).first()
+        if session is None:
+            return None
+        authenticated_session, _ = cls.objects.update_or_create(
+            session=session,
+            defaults={
+                "user": user,
+                "is_current": True,
+            },
         )
+        return authenticated_session.bind_to_user_switching_token(request)
+
+    def bind_to_user_switching_token(self, request: HttpRequest) -> Self:
+        """Bind this authenticated session to the request's user switching token."""
+        from authentik.root.middleware import SessionMiddleware
+
+        user_switching_token = SessionMiddleware.ensure_user_switching_token(request)
+        if user_switching_token:
+            with transaction.atomic():
+                type(self).objects.filter(user_switching_token=user_switching_token).exclude(
+                    session=self.session
+                ).update(is_current=False)
+                if self.user_switching_token != user_switching_token or not self.is_current:
+                    self.user_switching_token = user_switching_token
+                    self.is_current = True
+                    self.save(update_fields=["user_switching_token", "is_current"])
+        return self
+
+    class Meta:
+        verbose_name = _("Authenticated Session")
+        verbose_name_plural = _("Authenticated Sessions")
+        constraints = [
+            models.UniqueConstraint(
+                fields=["user_switching_token"],
+                condition=Q(user_switching_token__isnull=False, is_current=True),
+                name="authentik_core_authenticatedsession_current_user_switching_token",
+            ),
+        ]
+
+    def __str__(self) -> str:
+        return f"Authenticated Session {str(self.pk)[:10]}"
