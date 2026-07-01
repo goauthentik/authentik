@@ -44,6 +44,32 @@ func stringify(in any) *string {
 	}
 }
 
+// flattenAttributes recursively flattens nested maps into camelCase keys
+// e.g., {"settings": {"locale": "en"}} becomes {"settingsLocale": "en"}
+// Uses camelCase because AttributeKeySanitize removes dots from LDAP attribute names
+func flattenAttributes(attrs map[string]any, prefix string) map[string]any {
+	result := make(map[string]any)
+
+	for key, value := range attrs {
+		// Build the flattened key using camelCase
+		flatKey := key
+		if prefix != "" && len(key) > 0 {
+			flatKey = prefix + strings.ToUpper(key[:1]) + key[1:]
+		}
+
+		// Recursively flatten nested maps
+		if nestedMap, ok := value.(map[string]any); ok {
+			for k, v := range flattenAttributes(nestedMap, flatKey) {
+				result[k] = v
+			}
+		} else {
+			result[flatKey] = value
+		}
+	}
+
+	return result
+}
+
 func AttributesToLDAP(
 	attrs map[string]any,
 	keyFormatter func(key string) string,
@@ -53,7 +79,11 @@ func AttributesToLDAP(
 	if attrs == nil {
 		return attrList
 	}
-	for attrKey, attrValue := range attrs {
+
+	// Flatten nested attributes first
+	flattened := flattenAttributes(attrs, "")
+
+	for attrKey, attrValue := range flattened {
 		entry := &ldap.EntryAttribute{Name: keyFormatter(attrKey)}
 		switch t := attrValue.(type) {
 		case []string:
