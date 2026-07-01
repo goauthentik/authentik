@@ -23,28 +23,19 @@ export class InvitationForm extends ModelForm<Invitation, string> {
     public static override verboseName = msg("Invitation");
     public static override verboseNamePlural = msg("Invitations");
 
-    loadInstance(pk: string): Promise<Invitation> {
-        return aki(StagesApi).stagesInvitationInvitationsRetrieve({
-            inviteUuid: pk,
-        });
-    }
+    protected endpoints = {
+        load: (inviteUuid: string) =>
+            aki(StagesApi).stagesInvitationInvitationsRetrieve({ inviteUuid }),
+        create: (invitationRequest: Invitation) =>
+            aki(StagesApi).stagesInvitationInvitationsCreate({ invitationRequest }),
+        update: (inviteUuid: string, invitationRequest: Invitation) =>
+            aki(StagesApi).stagesInvitationInvitationsUpdate({ inviteUuid, invitationRequest }),
+    };
 
     getSuccessMessage(): string {
         return this.instance
             ? msg("Successfully updated invitation.")
             : msg("Successfully created invitation.");
-    }
-
-    async send(data: Invitation): Promise<Invitation> {
-        if (this.instance) {
-            return aki(StagesApi).stagesInvitationInvitationsUpdate({
-                inviteUuid: this.instance.pk || "",
-                invitationRequest: data,
-            });
-        }
-        return aki(StagesApi).stagesInvitationInvitationsCreate({
-            invitationRequest: data,
-        });
     }
 
     protected override renderForm(): TemplateResult {

@@ -6512,14 +6512,6 @@ w toku, tworzony jest nowy użytkownik i zapisywane są do niego dane.</target>
   <source>Import devices</source>
   <target>Importuj urządzenia</target>
 </trans-unit>
-<trans-unit id="s48cf8fd56b1237ed">
-  <source>Successfully updated flow.</source>
-  <target>Pomyślnie zaktualizowano przepływ.</target>
-</trans-unit>
-<trans-unit id="sc3e0c240b159fbce">
-  <source>Successfully created flow.</source>
-  <target>Pomyślnie utworzono przepływ.</target>
-</trans-unit>
 <trans-unit id="s925936f647ae52cc">
   <source>Shown as the Title in Flow pages.</source>
   <target>Wyświetlany jako tytuł na stronach przepływu.</target>
@@ -10915,6 +10907,18 @@ Powiązania z grupami/użytkownikami są sprawdzane względem użytkownika zdarz
 </trans-unit>
 <trans-unit id="sb45f9fb4dba6e71a">
   <source>Unset</source>
+</trans-unit>
+<trans-unit id="s02e9603605609ae6">
+  <source>Successfully created <x id="0" equiv-text="${this.verboseName}"/></source>
+</trans-unit>
+<trans-unit id="s58273fbf883b497d">
+  <source>Successfully updated <x id="0" equiv-text="${this.verboseName}"/></source>
+</trans-unit>
+<trans-unit id="s221db22dbb4e0105">
+  <source>Unknown Field</source>
+</trans-unit>
+<trans-unit id="s47ff2d052ccbcaf3">
+  <source>Unknown Field <x id="0" equiv-text="${fieldLike}"/></source>
 </trans-unit>
 </body>
 </file>
