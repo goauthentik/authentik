@@ -6,7 +6,7 @@ description: Proposed runtime CSS and design token architecture for authentik's 
 
 <!-- cspell:words DTCG unlayered -->
 
-authentik's UI is currently a customized PatternFly 4 system wrapped by Lit web components. Treat PatternFly as the compatibility substrate, not the future public API.
+authentik's UI is currently a customized PatternFly 4 system wrapped by Lit web components. Treat PatternFly as a compatibility layer, not the public API to build on.
 
 ## Current state
 

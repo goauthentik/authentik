@@ -6,7 +6,7 @@ description: A staged plan for adopting CSS @layer in authentik's web UI without
 
 <!-- cspell:words unlayered -->
 
-This page is a working proposal. The goal is to discuss the migration before any rules move into layers, because partial layering can quietly reduce predictability rather than improve it.
+This page is a working proposal. The goal is to discuss the migration before any rules move into layers, because partial layering can reduce predictability rather than improve it.
 
 ## Why we want layers
 
@@ -50,7 +50,7 @@ Today every authentik and PatternFly rule is unlayered. The moment we wrap any r
 | `web/src/styles/authentik/base/common.css` utilities (`.sr-only`, `.ak-fade-in`, etc.) | `utilities`    |
 | Brand `branding_custom_css`, applied per shadow root in `Base.ts`                      | `overrides`    |
 
-Nothing here is wrong; it is just not named.
+Nothing here is wrong; it is not named explicitly.
 
 ## Two cascade contexts to think about separately
 

@@ -64,7 +64,7 @@ html[data-theme="dark"] {
 }
 ```
 
-A third theme — `reduced` — is reserved for users who explicitly opt into reduced motion, in addition to the browser-level `prefers-reduced-motion` media query, which fires automatically. authentik respects both, so most operators typically do not need to do anything to support reduced motion users.
+A third theme — `reduced` — is reserved for users who explicitly opt into reduced motion, in addition to the browser-level `prefers-reduced-motion` media query, which fires automatically. authentik respects both, so most operators do not need to do anything to support reduced motion users.
 
 When you override semantic tokens in your custom CSS, follow the same pattern: provide light values under `:root`, then dark values under `html[data-theme="dark"]`. See [Custom CSS · Theme-based styling](./custom-css.mdx) for a worked example.
 

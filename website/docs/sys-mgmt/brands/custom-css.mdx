@@ -16,7 +16,7 @@ Custom CSS is an advanced feature. Improper use may lead to unexpected behavior 
 
 ## Concepts
 
-authentik's design system is built around several key concepts that help manage and apply styles consistently. Understanding these concepts is essential for working with custom CSS effectively.
+authentik's design system rests on a few concepts that keep styling consistent across the interface. Understanding them helps when writing custom CSS.
 
 ### Web components
 
@@ -79,7 +79,7 @@ When customizing authentik's appearance, think of the theme as the primary way t
 
 ### Viewport considerations
 
-When customizing styles that depend on viewport size, use [responsive design principles](https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/CSS_layout/Responsive_Design). In authentik's design system, this means leveraging CSS variables that automatically adapt to viewport size rather than hardcoding styles for specific breakpoints.
+When customizing styles that depend on viewport size, use [responsive design principles](https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/CSS_layout/Responsive_Design). In authentik's design system, this means using CSS variables that adapt to viewport size rather than hardcoding styles for specific breakpoints.
 
 ```css title="❌ Static units"
 ak-library::part(card-header-icon) {
@@ -105,7 +105,7 @@ Users may have accessibility preferences set in their operating system or browse
 
 authentik's interface uses web standards APIs to detect **user agent hints** and determine the preferred visual experience. Where possible, authentik prioritizes system or browser-level preferences.
 
-However, authentik also applies its own theming rules to ensure a consistent and visually appealing experience. This means authentik respects user preferences while maintaining a cohesive look.
+However, authentik also applies its own theming rules, so the result stays consistent while still respecting user preferences.
 
 For example:
 
@@ -142,7 +142,7 @@ body {
 }
 ```
 
-Here, CSS variables define colors and backgrounds, with values adjusted based on the theme. This approach is more modular and maintainable—theme changes happen in one place without modifying individual element styles throughout the application.
+Here, CSS variables define colors and backgrounds, with values adjusted based on the theme. This approach is more modular and maintainable. Theme changes happen in one place, without editing individual element styles across the application.
 
 Prefer the semantic authentik variables for custom themes:
 
@@ -257,7 +257,7 @@ authentik doesn't require CSS parts or CSS variables. You can use standard CSS s
 
 :::danger Your custom CSS may break after upgrading authentik
 
-Direct element styling tends to break when authentik updates, since internal structures can change without notice—especially for complex pages like the flow executor. CSS parts are more limited in scope but provide a stable theming API and a more predictable upgrade experience.
+Direct element styling tends to break when authentik updates, since internal structures can change without notice, especially for complex pages like the flow executor. CSS parts are more limited in scope but provide a stable theming API and a more predictable upgrade experience.
 
 :::
 
