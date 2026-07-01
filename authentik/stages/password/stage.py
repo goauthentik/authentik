@@ -162,6 +162,19 @@ class PasswordStageView(ChallengeStageView):
             or 0
         )
 
+    def lockout_pending_user(self) -> None:
+        """Deactivate the pending user after too many failed password attempts."""
+        pending_user = self.get_pending_user()
+        if not pending_user.is_authenticated or not pending_user.pk:
+            return
+        user = User.objects.filter(pk=pending_user.pk).first()
+        if not user or not user.is_active:
+            return
+        user.is_active = False
+        user.save(update_fields=["is_active"])
+        self.executor.plan.context[PLAN_CONTEXT_PENDING_USER] = user
+        self.logger.info("User exceeded password lockout threshold", user=user.username)
+
     def challenge_invalid(self, response: PasswordChallengeResponse) -> HttpResponse:
         current_stage: PasswordStage = self.executor.current_stage
         initial_score = self.executor.plan.context.get(PLAN_CONTEXT_INITIAL_SCORE)
@@ -169,7 +182,14 @@ class PasswordStageView(ChallengeStageView):
             initial_score = self.get_reputation_score()
             self.executor.plan.context[PLAN_CONTEXT_INITIAL_SCORE] = initial_score
         new_score = self.get_reputation_score()
-        if (initial_score - new_score) >= current_stage.failed_attempts_before_cancel:
+        failed_attempts = initial_score - new_score
+        if (
+            current_stage.failed_attempts_before_lockout > 0
+            and failed_attempts >= current_stage.failed_attempts_before_lockout
+        ):
+            self.lockout_pending_user()
+            return self.executor.stage_invalid(_("Invalid password"))
+        if failed_attempts >= current_stage.failed_attempts_before_cancel:
             self.logger.debug("User has exceeded maximum tries")
             return self.executor.stage_invalid(_("Invalid password"))
         return super().challenge_invalid(response)

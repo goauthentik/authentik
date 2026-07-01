@@ -49,7 +49,16 @@ class PasswordStage(ConfigurableStage, Stage):
         default=5,
         help_text=_(
             "How many attempts a user has before the flow is canceled. "
-            "To lock the user out, use a reputation policy and a user_write stage."
+            "To deactivate the user after failed attempts, configure failed attempts "
+            "before lockout."
+        ),
+    )
+    failed_attempts_before_lockout = models.PositiveIntegerField(
+        default=0,
+        help_text=_(
+            "How many failed attempts a user has before their account is deactivated. "
+            "Set to 0 to disable. This must be less than or equal to failed attempts "
+            "before cancel."
         ),
     )
     allow_show_password = models.BooleanField(

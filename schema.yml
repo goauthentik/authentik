@@ -31323,6 +31323,10 @@ paths:
         name: failed_attempts_before_cancel
         schema:
           type: integer
+      - in: query
+        name: failed_attempts_before_lockout
+        schema:
+          type: integer
       - $ref: '#/components/parameters/QueryName'
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
@@ -47694,7 +47698,15 @@ components:
           maximum: 2147483647
           minimum: -2147483648
           description: How many attempts a user has before the flow is canceled. To
-            lock the user out, use a reputation policy and a user_write stage.
+            deactivate the user after failed attempts, configure failed attempts before
+            lockout.
+        failed_attempts_before_lockout:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: How many failed attempts a user has before their account is
+            deactivated. Set to 0 to disable. This must be less than or equal to failed
+            attempts before cancel.
         allow_show_password:
           type: boolean
           description: When enabled, provides a 'show password' button with the password
@@ -47731,7 +47743,15 @@ components:
           maximum: 2147483647
           minimum: -2147483648
           description: How many attempts a user has before the flow is canceled. To
-            lock the user out, use a reputation policy and a user_write stage.
+            deactivate the user after failed attempts, configure failed attempts before
+            lockout.
+        failed_attempts_before_lockout:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: How many failed attempts a user has before their account is
+            deactivated. Set to 0 to disable. This must be less than or equal to failed
+            attempts before cancel.
         allow_show_password:
           type: boolean
           description: When enabled, provides a 'show password' button with the password
@@ -50123,7 +50143,15 @@ components:
           maximum: 2147483647
           minimum: -2147483648
           description: How many attempts a user has before the flow is canceled. To
-            lock the user out, use a reputation policy and a user_write stage.
+            deactivate the user after failed attempts, configure failed attempts before
+            lockout.
+        failed_attempts_before_lockout:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: How many failed attempts a user has before their account is
+            deactivated. Set to 0 to disable. This must be less than or equal to failed
+            attempts before cancel.
         allow_show_password:
           type: boolean
           description: When enabled, provides a 'show password' button with the password
