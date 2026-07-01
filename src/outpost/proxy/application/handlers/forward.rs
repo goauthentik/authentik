@@ -34,23 +34,22 @@ pub(super) fn nginx_forward_url(headers: &HeaderMap) -> EyreResult<Url> {
 /// Path prefix Envoy's external authorization filter sends requests under.
 const ENVOY_PREFIX: &str = "/outpost.goauthentik.io/auth/envoy";
 
-/// Reconstruct the original request URL from an Envoy ext-authz request: strip
-/// the envoy prefix from the path and take the host from the `Host` header.
-pub(super) fn envoy_forward_url(uri: &Uri, headers: &HeaderMap) -> Option<Url> {
+/// Reconstruct the original request target from an Envoy ext-authz request:
+/// strip the envoy prefix from the path and take the host from the `Host`
+/// header. Returns the request path and the scheme-less full target
+/// (`//host/path?query`), which
+/// leaves the envoy request's scheme empty.
+pub(super) fn envoy_forward_target(uri: &Uri, headers: &HeaderMap) -> Option<(String, String)> {
     let path = uri
         .path()
         .strip_prefix(ENVOY_PREFIX)
         .filter(|path| !path.is_empty())
         .unwrap_or("/");
     let host = header_str(headers, "host")?;
-    let scheme = uri
-        .scheme_str()
-        .or_else(|| header_str(headers, "x-forwarded-proto"))
-        .unwrap_or("https");
     let query = uri
         .query()
         .map_or_else(String::new, |query| format!("?{query}"));
-    Url::parse(&format!("{scheme}://{host}{path}{query}")).ok()
+    Some((path.to_owned(), format!("//{host}{path}{query}")))
 }
 
 /// 200 response carrying the authenticated user's headers for the reverse proxy.
@@ -136,7 +135,7 @@ pub(crate) async fn handle_envoy(
     State(app): State<Arc<Application>>,
     request: Request,
 ) -> Result<Response> {
-    let Some(fwd) = envoy_forward_url(request.uri(), request.headers()) else {
+    let Some((path, fwd)) = envoy_forward_target(request.uri(), request.headers()) else {
         return Ok((StatusCode::BAD_REQUEST, "invalid envoy request").into_response());
     };
 
@@ -147,11 +146,11 @@ pub(crate) async fn handle_envoy(
             request.headers(),
         ));
     }
-    if app.is_allowlisted(&fwd) {
+    if app.is_allowlisted_target(&path, &fwd) {
         return Ok(StatusCode::OK.into_response());
     }
 
-    super::auth_start(&app, request.headers(), fwd.into())
+    super::auth_start(&app, request.headers(), fwd)
 }
 
 #[instrument(skip_all, fields(user = tracing::field::Empty))]
@@ -207,7 +206,7 @@ pub(crate) async fn handle_traefik(
 mod tests {
     use axum::http::{HeaderMap, HeaderValue, Uri};
 
-    use super::{ENVOY_PREFIX, envoy_forward_url, nginx_forward_url, traefik_forward_url};
+    use super::{ENVOY_PREFIX, envoy_forward_target, nginx_forward_url, traefik_forward_url};
 
     #[test]
     fn parses_traefik_forward_url() {
@@ -246,15 +245,17 @@ mod tests {
     }
 
     #[test]
-    fn builds_envoy_forward_url() {
+    fn builds_envoy_forward_target() {
         let uri: Uri = "/outpost.goauthentik.io/auth/envoy/app/page?x=1"
             .parse()
             .expect("uri");
         let mut headers = HeaderMap::new();
         headers.insert("host", HeaderValue::from_static("app.example.com"));
 
-        let url = envoy_forward_url(&uri, &headers).expect("forward url");
-        assert_eq!(url.as_str(), "https://app.example.com/app/page?x=1");
+        let (path, full) = envoy_forward_target(&uri, &headers).expect("forward target");
+        assert_eq!(path, "/app/page");
+        // Scheme-less for envoy.
+        assert_eq!(full, "//app.example.com/app/page?x=1");
     }
 
     #[test]
@@ -263,7 +264,8 @@ mod tests {
         let mut headers = HeaderMap::new();
         headers.insert("host", HeaderValue::from_static("app.example.com"));
 
-        let url = envoy_forward_url(&uri, &headers).expect("forward url");
-        assert_eq!(url.as_str(), "https://app.example.com/");
+        let (path, full) = envoy_forward_target(&uri, &headers).expect("forward target");
+        assert_eq!(path, "/");
+        assert_eq!(full, "//app.example.com/");
     }
 }

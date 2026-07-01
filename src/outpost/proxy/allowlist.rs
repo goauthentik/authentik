@@ -22,14 +22,32 @@ pub(crate) fn compile_skip_regex(skip_path_regex: Option<&str>) -> Vec<Regex> {
         .collect()
 }
 
+/// The string an allowlist pattern is tested against: the path for
+/// proxy/`forward_single`, the full URL for `forward_domain`.
+fn allowlist_target<'a>(mode: ProxyMode, path: &'a str, full: &'a str) -> &'a str {
+    match mode {
+        ProxyMode::Proxy | ProxyMode::ForwardSingle => path,
+        ProxyMode::ForwardDomain => full,
+    }
+}
+
 /// Whether `url` matches any allowlist pattern. Proxy/`forward_single` match on
 /// the path; `forward_domain` matches the full URL.
 pub(crate) fn is_allowlisted(regexes: &[Regex], mode: ProxyMode, url: &Url) -> bool {
-    let test = match mode {
-        ProxyMode::Proxy | ProxyMode::ForwardSingle => url.path(),
-        ProxyMode::ForwardDomain => url.as_str(),
-    };
-    regexes.iter().any(|regex| regex.is_match(test))
+    is_allowlisted_target(regexes, mode, url.path(), url.as_str())
+}
+
+/// As [`is_allowlisted`], but for a forward target supplied as a path and a
+/// full, possibly scheme-less, URL string (the envoy handler reconstructs a
+/// scheme-less target that cannot be a `Url`).
+pub(crate) fn is_allowlisted_target(
+    regexes: &[Regex],
+    mode: ProxyMode,
+    path: &str,
+    full: &str,
+) -> bool {
+    let target = allowlist_target(mode, path, full);
+    regexes.iter().any(|regex| regex.is_match(target))
 }
 
 impl Application {
@@ -39,6 +57,14 @@ impl Application {
             .mode
             .is_some_and(|mode| is_allowlisted(&self.unauthenticated_regex, mode, url))
     }
+
+    /// Allowlist check for a forward target supplied as a path and a full,
+    /// possibly scheme-less, URL string — used by the envoy handler.
+    pub(super) fn is_allowlisted_target(&self, path: &str, full: &str) -> bool {
+        self.provider.mode.is_some_and(|mode| {
+            is_allowlisted_target(&self.unauthenticated_regex, mode, path, full)
+        })
+    }
 }
 
 #[cfg(test)]
@@ -46,7 +72,7 @@ mod tests {
     use ak_client::models::ProxyMode;
     use url::Url;
 
-    use super::{compile_skip_regex, is_allowlisted};
+    use super::{compile_skip_regex, is_allowlisted, is_allowlisted_target};
 
     #[test]
     fn compiles_and_skips_invalid() {
@@ -75,5 +101,24 @@ mod tests {
 
         assert!(is_allowlisted(&regexes, ProxyMode::ForwardDomain, &allowed));
         assert!(!is_allowlisted(&regexes, ProxyMode::ForwardDomain, &denied));
+    }
+
+    #[test]
+    fn forward_domain_matches_scheme_less_target() {
+        // The envoy handler reconstructs a scheme-less target (`//host/path`).
+        // A host-anchored pattern still matches without a scheme.
+        let regexes = compile_skip_regex(Some("^//public\\.example\\.com/"));
+        assert!(is_allowlisted_target(
+            &regexes,
+            ProxyMode::ForwardDomain,
+            "/info",
+            "//public.example.com/info"
+        ));
+        assert!(!is_allowlisted_target(
+            &regexes,
+            ProxyMode::ForwardDomain,
+            "/info",
+            "//private.example.com/info"
+        ));
     }
 }
