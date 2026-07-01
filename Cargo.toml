@@ -8,7 +8,7 @@ members = [
 resolver = "3"
 
 [workspace.package]
-version = "2026.5.0"
+version = "2026.5.3"
 authors = ["authentik Team <hello@goauthentik.io>"]
 description = "Making authentication simple."
 edition = "2024"
@@ -48,8 +48,8 @@ metrics-exporter-prometheus = { version = "= 0.18.3", default-features = false }
 nix = { version = "= 0.31.2", features = ["hostname", "signal"] }
 notify = "= 8.2.0"
 pin-project-lite = "= 0.2.17"
-pyo3 = "= 0.28.3"
-pyo3-build-config = "= 0.28.3"
+pyo3 = "= 0.29.0"
+pyo3-build-config = "= 0.29.0"
 regex = "= 1.12.3"
 reqwest = { version = "= 0.13.3", features = [
   "form",
@@ -115,9 +115,9 @@ url = "= 2.5.8"
 uuid = { version = "= 1.23.1", features = ["serde", "v4"] }
 which = "= 8.0.2"
 
-ak-axum = { package = "authentik-axum", version = "2026.5.0", path = "./packages/ak-axum" }
-ak-client = { package = "authentik-client", version = "2026.5.0", path = "./packages/client-rust" }
-ak-common = { package = "authentik-common", version = "2026.5.0", path = "./packages/ak-common", default-features = false }
+ak-axum = { package = "authentik-axum", version = "2026.5.3", path = "./packages/ak-axum" }
+ak-client = { package = "authentik-client", version = "2026.5.3", path = "./packages/client-rust" }
+ak-common = { package = "authentik-common", version = "2026.5.3", path = "./packages/ak-common", default-features = false }
 
 [workspace.lints.rust]
 ambiguous_negative_literals = "warn"

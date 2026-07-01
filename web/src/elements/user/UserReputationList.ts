@@ -15,6 +15,9 @@ import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-user-reputation-list")
 export class UserReputationList extends Table<Reputation> {
+    public static override verboseName = msg("Reputation score");
+    public static override verboseNamePlural = msg("Reputation scores");
+
     @property()
     targetUsername!: string;
 

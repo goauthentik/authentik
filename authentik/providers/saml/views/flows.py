@@ -127,7 +127,7 @@ class SAMLFlowFinalView(ChallengeStageView):
                     "Redirect binding for Service Provider binding is deprecated "
                     "and will be removed in a future version. Use Post binding instead."
                 ),
-                cause=provider,
+                cause=provider.name,
             )
             url_args = {
                 REQUEST_KEY_SAML_RESPONSE: deflate_and_base64_encode(response),

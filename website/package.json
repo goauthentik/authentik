@@ -20,6 +20,7 @@
     },
     "dependencies": {
         "@eslint/js": "^9.39.3",
+        "@goauthentik/brand-assets": "^2.0.0",
         "@goauthentik/eslint-config": "../packages/eslint-config",
         "@goauthentik/prettier-config": "../packages/prettier-config",
         "@goauthentik/tsconfig": "../packages/tsconfig",
@@ -99,6 +100,7 @@
         "@typescript-eslint/parser": {
             "typescript": "$typescript"
         },
+        "detect-package-manager": "file:./vendored/detect-package-manager",
         "docusaurus-theme-openapi-docs": {
             "postman-code-generators": {
                 ".": "^1.10.1",
@@ -113,6 +115,7 @@
             "detect-package-manager": "file:./vendored/detect-package-manager",
             "shelljs": "0.10.0"
         },
+        "shelljs": "0.10.0",
         "typescript-eslint": {
             "typescript": "$typescript"
         }
