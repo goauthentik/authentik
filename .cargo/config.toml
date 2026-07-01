@@ -1,5 +1,6 @@
 [alias]
 t = ["nextest", "run", "--workspace"]
+e2e = ["nextest", "run", "--workspace", "-E", "binary_id(authentik::e2e_*)"]
 
 [build]
 rustflags = ["--cfg", "tokio_unstable"]

@@ -70,13 +70,16 @@ go-test:  ## Run the golang tests
 	go test -timeout 0 -v -race -cover ./...
 
 rust-test:  ## Run the Rust tests
-	$(CARGO) nextest run --workspace
+	$(CARGO) nextest run --workspace -E 'binary_id(authentik::e2e_*)'
 
 test: ## Run the server tests and produce a coverage report (locally)
 	$(UV) run coverage run manage.py test --keepdb $(or $(filter-out $@ all,$(MAKECMDGOALS)),authentik)
 	$(UV) run coverage combine
 	$(UV) run coverage html
 	$(UV) run coverage report
+
+test-e2e:
+	$(CARGO) nextest run --workspace -E 'binary_id(authentik::e2e_*)'
 
 lint-fix-rust:
 	$(CARGO) +nightly fmt --all -- --config-path "${PWD}/.cargo/rustfmt.toml"
