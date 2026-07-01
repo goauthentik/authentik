@@ -17,23 +17,13 @@ import { customElement } from "lit/decorators.js";
 
 @customElement("ak-stage-user-login-form")
 export class UserLoginStageForm extends BaseStageForm<UserLoginStage> {
-    loadInstance(pk: string): Promise<UserLoginStage> {
-        return aki(StagesApi).stagesUserLoginRetrieve({
-            stageUuid: pk,
-        });
-    }
-
-    async send(data: UserLoginStage): Promise<UserLoginStage> {
-        if (this.instance) {
-            return aki(StagesApi).stagesUserLoginUpdate({
-                stageUuid: this.instance.pk || "",
-                userLoginStageRequest: data,
-            });
-        }
-        return aki(StagesApi).stagesUserLoginCreate({
-            userLoginStageRequest: data,
-        });
-    }
+    protected endpoints = {
+        load: (stageUuid: string) => aki(StagesApi).stagesUserLoginRetrieve({ stageUuid }),
+        create: (userLoginStageRequest: UserLoginStage) =>
+            aki(StagesApi).stagesUserLoginCreate({ userLoginStageRequest }),
+        update: (stageUuid: string, userLoginStageRequest: UserLoginStage) =>
+            aki(StagesApi).stagesUserLoginUpdate({ stageUuid, userLoginStageRequest }),
+    };
 
     protected override renderForm(): TemplateResult {
         return html` <span>${msg("Log the currently pending user in.")}</span>

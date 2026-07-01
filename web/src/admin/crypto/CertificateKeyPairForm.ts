@@ -22,28 +22,26 @@ export class CryptoCertificateForm extends ModelForm<CertificateKeyPair, string>
     public static override submitVerb = msg("Import");
     public static override submittingVerb = msg("Importing");
 
-    loadInstance(pk: string): Promise<CertificateKeyPair> {
-        return aki(CryptoApi).cryptoCertificatekeypairsRetrieve({
-            kpUuid: pk,
-        });
-    }
+    protected endpoints = {
+        load: (kpUuid: string) =>
+            aki(CryptoApi).cryptoCertificatekeypairsRetrieve({
+                kpUuid,
+            }),
+        create: (data: CertificateKeyPair) =>
+            aki(CryptoApi).cryptoCertificatekeypairsCreate({
+                certificateKeyPairRequest: data as unknown as CertificateKeyPairRequest,
+            }),
+        update: (kpUuid: string, patchedCertificateKeyPairRequest: CertificateKeyPair) =>
+            aki(CryptoApi).cryptoCertificatekeypairsPartialUpdate({
+                kpUuid,
+                patchedCertificateKeyPairRequest,
+            }),
+    };
 
     getSuccessMessage(): string {
         return this.instance
             ? msg("Successfully updated certificate-key pair.")
             : msg("Successfully created certificate-key pair.");
-    }
-
-    async send(data: CertificateKeyPair): Promise<CertificateKeyPair> {
-        if (this.instance) {
-            return aki(CryptoApi).cryptoCertificatekeypairsPartialUpdate({
-                kpUuid: this.instance.pk || "",
-                patchedCertificateKeyPairRequest: data,
-            });
-        }
-        return aki(CryptoApi).cryptoCertificatekeypairsCreate({
-            certificateKeyPairRequest: data as unknown as CertificateKeyPairRequest,
-        });
     }
 
     protected override renderForm(): TemplateResult {

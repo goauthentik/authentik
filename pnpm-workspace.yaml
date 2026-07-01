@@ -1,0 +1,29 @@
+packages:
+  - "packages/docusaurus-config"
+  - "packages/esbuild-plugin-live-reload"
+  - "packages/eslint-config"
+  - "packages/logger-js"
+  - "packages/prettier-config"
+  - "packages/tsconfig"
+  - "lifecycle/aws"
+
+overrides:
+  "@typescript-eslint/eslint-plugin>typescript": "$typescript"
+  "@typescript-eslint/parser>typescript": "$typescript"
+  "format-imports>eslint": "$eslint"
+  "typescript-eslint>typescript": "$typescript"
+
+# Allow-list of dependencies whose install/postinstall scripts may run.
+# Everything else is blocked, replacing the prior `ignore-scripts=true` +
+# `npm rebuild --foreground-scripts <pkg>` pattern from #20400. Each entry is
+# audited at review time — adding a package here grants it arbitrary code
+# execution at install.
+onlyBuiltDependencies:
+  - esbuild
+
+# Explicit approval map for pnpm 11+. `true` = allowed (mirror onlyBuiltDependencies);
+# `false` = explicitly declined (silences the "pending approval" prompt
+# without running the script).
+allowBuilds:
+  core-js: false
+  esbuild: true

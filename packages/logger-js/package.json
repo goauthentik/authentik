@@ -29,8 +29,8 @@
     },
     "devDependencies": {
         "@eslint/js": "^9.39.3",
-        "@goauthentik/prettier-config": "../prettier-config",
-        "@goauthentik/tsconfig": "../tsconfig",
+        "@goauthentik/prettier-config": "link:../prettier-config",
+        "@goauthentik/tsconfig": "link:../tsconfig",
         "@types/node": "^25.7.0",
         "eslint": "^9.39.3",
         "pino": "^10.3.1",
@@ -50,8 +50,7 @@
         "out/**/*"
     ],
     "engines": {
-        "node": ">=24",
-        "npm": ">=11.14.1"
+        "node": ">=24"
     },
     "devEngines": {
         "runtime": {
@@ -60,26 +59,12 @@
             "onFail": "ignore"
         },
         "packageManager": {
-            "name": "npm",
-            "version": ">=11.14.1",
+            "name": "pnpm",
+            "version": ">=11.5.1",
             "onFail": "ignore"
         }
     },
     "prettier": "@goauthentik/prettier-config",
-    "overrides": {
-        "@typescript-eslint/eslint-plugin": {
-            "typescript": "$typescript"
-        },
-        "@typescript-eslint/parser": {
-            "typescript": "$typescript"
-        },
-        "format-imports": {
-            "eslint": "$eslint"
-        },
-        "typescript-eslint": {
-            "typescript": "$typescript"
-        }
-    },
     "peerDependenciesMeta": {
         "pino": {
             "optional": true
