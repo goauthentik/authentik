@@ -70,10 +70,14 @@ class MutualTLSStageCertificateAuthority(models.Model):
     mutual_tls_stage = models.ForeignKey(
         MutualTLSStage,
         on_delete=models.CASCADE,
+        db_column="mutualtlsstage_id",
     )
-    certificate_key_pair = models.ForeignKey(CertificateKeyPair, on_delete=models.CASCADE)
+    certificate_key_pair = models.ForeignKey(
+        CertificateKeyPair, on_delete=models.CASCADE, db_column="certificatekeypair_id"
+    )
 
     class Meta:
+        db_table = "authentik_stages_mtls_mutualtlsstage_certificate_authorities"
         unique_together = (("mutual_tls_stage", "certificate_key_pair"),)
 
     def __str__(self):

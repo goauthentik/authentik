@@ -3,16 +3,6 @@
 import django.db.models.deletion
 from django.db import migrations, models
 
-SQL = """
-ALTER TABLE authentik_providers_rac_endpoint_property_mappings RENAME TO authentik_providers_rac_endpointpropertymapping;
-ALTER TABLE authentik_providers_rac_endpointpropertymapping RENAME COLUMN propertymapping_id TO property_mapping_id;
-"""
-
-REVERSE_SQL = """
-ALTER TABLE authentik_providers_rac_endpointpropertymapping RENAME COLUMN property_mapping_id TO propertymapping_id;
-ALTER TABLE authentik_providers_rac_endpointpropertymapping RENAME TO authentik_providers_rac_endpoint_property_mappings;
-"""
-
 
 class Migration(migrations.Migration):
 
@@ -23,12 +13,7 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.SeparateDatabaseAndState(
-            database_operations=[
-                migrations.RunSQL(
-                    sql=SQL,
-                    reverse_sql=REVERSE_SQL,
-                ),
-            ],
+            database_operations=[],
             state_operations=[
                 migrations.CreateModel(
                     name="EndpointPropertyMapping",
@@ -52,12 +37,14 @@ class Migration(migrations.Migration):
                         (
                             "property_mapping",
                             models.ForeignKey(
+                                db_column="propertymapping_id",
                                 on_delete=django.db.models.deletion.CASCADE,
                                 to="authentik_core.propertymapping",
                             ),
                         ),
                     ],
                     options={
+                        "db_table": "authentik_providers_rac_endpoint_property_mappings",
                         "unique_together": {("property_mapping", "endpoint")},
                     },
                 ),

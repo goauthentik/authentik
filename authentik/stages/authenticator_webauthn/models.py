@@ -231,13 +231,16 @@ class AuthenticatorWebAuthnStageDeviceTypeRestriction(models.Model):
     authenticator_webauthn_stage = models.ForeignKey(
         AuthenticatorWebAuthnStage,
         on_delete=models.CASCADE,
+        db_column="authenticatorwebauthnstage_id",
     )
     device_type_restriction = models.ForeignKey(
         WebAuthnDeviceType,
         on_delete=models.CASCADE,
+        db_column="webauthndevicetype_id",
     )
 
     class Meta:
+        db_table = "authentik_stages_authenticator_webauthn_authenticatorwebaute3a7"
         unique_together = (("authenticator_webauthn_stage", "device_type_restriction"),)
 
     def __str__(self):

@@ -133,12 +133,17 @@ class AuthenticatorValidateStageConfigurationStage(models.Model):
         AuthenticatorValidateStage,
         on_delete=models.CASCADE,
         related_name="configuration_stage_m2m_objects",
+        db_column="authenticatorvalidatestage_id",
     )
     configuration_stage = models.ForeignKey(
-        Stage, on_delete=models.CASCADE, related_name="authenticator_validate_stage_m2m_objects"
+        Stage,
+        on_delete=models.CASCADE,
+        related_name="authenticator_validate_stage_m2m_objects",
+        db_column="stage_id",
     )
 
     class Meta:
+        db_table = "authentik_stages_authenticator_validate_authenticatorvalida3e25"
         unique_together = (("authenticator_validate_stage", "configuration_stage"),)
 
     def __str__(self):
@@ -154,14 +159,17 @@ class AuthenticatorValidateStageWebAuthnAllowedDeviceType(models.Model):
         AuthenticatorValidateStage,
         on_delete=models.CASCADE,
         related_name="webauthn_allowed_device_types_m2m_objects",
+        db_column="authenticatorvalidatestage_id",
     )
     webauthn_allowed_device_type = models.ForeignKey(
         "authentik_stages_authenticator_webauthn.WebAuthnDeviceType",
         on_delete=models.CASCADE,
         related_name="authenticator_validate_stage_m2m_objects",
+        db_column="webauthndevicetype_id",
     )
 
     class Meta:
+        db_table = "authentik_stages_authenticator_validate_authenticatorvalida8318"
         unique_together = (("authenticator_validate_stage", "webauthn_allowed_device_type"),)
 
     def __str__(self):

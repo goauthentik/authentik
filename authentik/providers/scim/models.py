@@ -260,9 +260,12 @@ class SCIMProvider(OutgoingSyncProvider, BackchannelProvider):
 
 class SCIMProviderGroupFilter(models.Model):
     group = models.ForeignKey(Group, on_delete=models.CASCADE)
-    scim_provider = models.ForeignKey(SCIMProvider, on_delete=models.CASCADE)
+    scim_provider = models.ForeignKey(
+        SCIMProvider, on_delete=models.CASCADE, db_column="scimprovider_id"
+    )
 
     class Meta:
+        db_table = "authentik_providers_scim_scimprovider_group_filters"
         unique_together = (("group", "scim_provider"),)
 
     def __str__(self):
@@ -273,10 +276,15 @@ class SCIMProviderGroupFilter(models.Model):
 
 
 class SCIMProviderGroupPropertyMapping(models.Model):
-    property_mapping = models.ForeignKey(PropertyMapping, on_delete=models.CASCADE)
-    scim_provider = models.ForeignKey(SCIMProvider, on_delete=models.CASCADE)
+    property_mapping = models.ForeignKey(
+        PropertyMapping, on_delete=models.CASCADE, db_column="propertymapping_id"
+    )
+    scim_provider = models.ForeignKey(
+        SCIMProvider, on_delete=models.CASCADE, db_column="scimprovider_id"
+    )
 
     class Meta:
+        db_table = "authentik_providers_scim_scimprovider_property_mappings_group"
         unique_together = (("property_mapping", "scim_provider"),)
 
     def __str__(self):

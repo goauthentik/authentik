@@ -3,16 +3,6 @@
 import django.db.models.deletion
 from django.db import migrations, models
 
-SQL = """
-ALTER TABLE authentik_stages_identification_identificationstage_sources RENAME TO authentik_stages_identification_identificationstagesource;
-ALTER TABLE authentik_stages_identification_identificationstagesource RENAME COLUMN identificationstage_id to identification_stage_id;
-"""
-
-REVERSE_SQL = """
-ALTER TABLE authentik_stages_identification_identificationstagesource RENAME COLUMN identification_stage_id to identificationstage_id;
-ALTER TABLE authentik_stages_identification_identificationstagesource RENAME TO authentik_stages_identification_identificationstage_sources;
-"""
-
 
 class Migration(migrations.Migration):
 
@@ -23,12 +13,7 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.SeparateDatabaseAndState(
-            database_operations=[
-                migrations.RunSQL(
-                    sql=SQL,
-                    reverse_sql=REVERSE_SQL,
-                ),
-            ],
+            database_operations=[],
             state_operations=[
                 migrations.CreateModel(
                     name="IdentificationStageSource",
@@ -45,6 +30,7 @@ class Migration(migrations.Migration):
                         (
                             "identification_stage",
                             models.ForeignKey(
+                                db_column="identificationstage_id",
                                 on_delete=django.db.models.deletion.CASCADE,
                                 to="authentik_stages_identification.identificationstage",
                             ),
@@ -58,6 +44,7 @@ class Migration(migrations.Migration):
                         ),
                     ],
                     options={
+                        "db_table": "authentik_stages_identification_identificationstage_sources",
                         "unique_together": {("identification_stage", "source")},
                     },
                 ),

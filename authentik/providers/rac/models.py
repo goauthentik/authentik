@@ -117,16 +117,19 @@ class Endpoint(SerializerModel, PolicyBindingModel):
 
 
 class EndpointPropertyMapping(models.Model):
-    property_mapping = models.ForeignKey(PropertyMapping, on_delete=models.CASCADE)
+    property_mapping = models.ForeignKey(
+        PropertyMapping, on_delete=models.CASCADE, db_column="propertymapping_id"
+    )
     endpoint = models.ForeignKey(Endpoint, on_delete=models.CASCADE)
 
     class Meta:
+        db_table = "authentik_providers_rac_endpoint_property_mappings"
         unique_together = (("property_mapping", "endpoint"),)
 
     def __str__(self):
         return (
-            f"EndpointPropertyMapping for endpoint {self.endpoint_id} "
-            f"and property_mapping {self.property_mapping_id}."
+            f"EndpointPropertyMapping for Endpoint {self.endpoint_id} "
+            f"and PropertyMapping {self.property_mapping_id}."
         )
 
 

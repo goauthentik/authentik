@@ -92,18 +92,23 @@ class AgentConnector(Connector):
 
 
 class AgentConnectorJWTFederationProvider(models.Model):
-    agent_connector = models.ForeignKey(AgentConnector, on_delete=models.CASCADE)
-    jwt_federation_provider = models.ForeignKey(
-        "authentik_providers_oauth2.OAuth2Provider", on_delete=models.CASCADE
+    agent_connector = models.ForeignKey(
+        AgentConnector, on_delete=models.CASCADE, db_column="agentconnector_id"
+    )
+    oauth2_provider = models.ForeignKey(
+        "authentik_providers_oauth2.OAuth2Provider",
+        on_delete=models.CASCADE,
+        db_column="oauth2provider_id",
     )
 
     class Meta:
-        unique_together = (("agent_connector", "jwt_federation_provider"),)
+        db_table = "authentik_endpoints_connectors_agent_agentconnector_jwt_fed2bc6"
+        unique_together = (("agent_connector", "oauth2_provider"),)
 
     def __str__(self):
         return (
             f"AgentConnectorJWTFederationProvider for AgentConnector {self.agent_connector_id} "
-            f"and JWTFederationProvider {self.jwt_federation_provider_id}."
+            f"and OAuth2Provider {self.oauth2_provider_id}."
         )
 
 

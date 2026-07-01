@@ -382,10 +382,12 @@ class PromptStageField(models.Model):
     prompt_stage = models.ForeignKey(
         PromptStage,
         on_delete=models.CASCADE,
+        db_column="promptstage_id",
     )
     prompt = models.ForeignKey(Prompt, on_delete=models.CASCADE)
 
     class Meta:
+        db_table = "authentik_stages_prompt_promptstage_fields"
         unique_together = (("prompt_stage", "prompt"),)
 
     def __str__(self):
@@ -399,10 +401,12 @@ class PromptStageValidationPolicy(models.Model):
     prompt_stage = models.ForeignKey(
         PromptStage,
         on_delete=models.CASCADE,
+        db_column="promptstage_id",
     )
     policy = models.ForeignKey(Policy, on_delete=models.CASCADE)
 
     class Meta:
+        db_table = "authentik_stages_prompt_promptstage_validation_policies"
         unique_together = (("prompt_stage", "policy"),)
 
     def __str__(self):

@@ -141,13 +141,17 @@ class SSFProvider(TasksModel, BackchannelProvider):
 
 
 class SSFProviderOIDCAuthProvider(models.Model):
-    ssf_provider = models.ForeignKey(SSFProvider, on_delete=models.CASCADE)
+    ssf_provider = models.ForeignKey(
+        SSFProvider, on_delete=models.CASCADE, db_column="ssfprovider_id"
+    )
     oauth2_provider = models.ForeignKey(
         OAuth2Provider,
         on_delete=models.CASCADE,
+        db_column="oauth2provider_id",
     )
 
     class Meta:
+        db_table = "authentik_providers_ssf_ssfprovider_oidc_auth_providers"
         unique_together = (("ssf_provider", "oauth2_provider"),)
 
     def __str__(self):

@@ -3,16 +3,6 @@
 import django.db.models.deletion
 from django.db import migrations, models
 
-SQL = """
-ALTER TABLE authentik_rbac_initialpermissions_permissions RENAME TO authentik_rbac_initialpermissionspermission;
-ALTER TABLE authentik_rbac_initialpermissionspermission RENAME COLUMN initialpermissions_id to initial_permissions_id;
-"""
-
-REVERSE_SQL = """
-ALTER TABLE authentik_rbac_initialpermissionspermission RENAME COLUMN initial_permissions_id to initialpermissions_id;
-ALTER TABLE authentik_rbac_initialpermissionspermission RENAME TO authentik_rbac_initialpermissions_permissions;
-"""
-
 
 class Migration(migrations.Migration):
 
@@ -23,12 +13,7 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.SeparateDatabaseAndState(
-            database_operations=[
-                migrations.RunSQL(
-                    sql=SQL,
-                    reverse_sql=REVERSE_SQL,
-                ),
-            ],
+            database_operations=[],
             state_operations=[
                 migrations.CreateModel(
                     name="InitialPermissionsPermission",
@@ -45,6 +30,7 @@ class Migration(migrations.Migration):
                         (
                             "initial_permissions",
                             models.ForeignKey(
+                                db_column="initialpermissions_id",
                                 on_delete=django.db.models.deletion.CASCADE,
                                 to="authentik_rbac.initialpermissions",
                             ),
@@ -57,6 +43,7 @@ class Migration(migrations.Migration):
                         ),
                     ],
                     options={
+                        "db_table": "authentik_rbac_initialpermissions_permissions",
                         "unique_together": {("initial_permissions", "permission")},
                     },
                 ),

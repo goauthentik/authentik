@@ -171,13 +171,13 @@ class Brand(SerializerModel):
 
 
 class BrandClientCertificate(models.Model):
-    brand = models.ForeignKey(
-        Brand,
-        on_delete=models.CASCADE,
+    brand = models.ForeignKey(Brand, on_delete=models.CASCADE)
+    certificate_key_pair = models.ForeignKey(
+        CertificateKeyPair, on_delete=models.CASCADE, db_column="certificatekeypair_id"
     )
-    certificate_key_pair = models.ForeignKey(CertificateKeyPair, on_delete=models.CASCADE)
 
     class Meta:
+        db_table = "authentik_brands_brand_client_certificates"
         unique_together = (("brand", "certificate_key_pair"),)
 
     def __str__(self):

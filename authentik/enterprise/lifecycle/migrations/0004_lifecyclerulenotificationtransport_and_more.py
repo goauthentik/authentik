@@ -4,38 +4,6 @@ import django.db.models.deletion
 from django.conf import settings
 from django.db import migrations, models
 
-GROUP_SQL = """
-ALTER TABLE authentik_lifecycle_lifecyclerule_reviewer_groups RENAME TO authentik_lifecycle_lifecyclerulereviewergroup;
-ALTER TABLE authentik_lifecycle_lifecyclerulereviewergroup RENAME COLUMN lifecyclerule_id to lifecycle_rule_id;
-"""
-
-GROUP_REVERSE_SQL = """
-ALTER TABLE authentik_lifecycle_lifecyclerulereviewergroup RENAME COLUMN lifecycle_rule_id to lifecyclerule_id;
-ALTER TABLE authentik_lifecycle_lifecyclerulereviewergroup RENAME TO authentik_lifecycle_lifecyclerule_reviewer_groups;
-"""
-
-USER_SQL = """
-ALTER TABLE authentik_lifecycle_lifecyclerule_reviewers RENAME TO authentik_lifecycle_lifecyclerulereviewer;
-ALTER TABLE authentik_lifecycle_lifecyclerulereviewer RENAME COLUMN lifecyclerule_id to lifecycle_rule_id;
-"""
-
-USER_REVERSE_SQL = """
-ALTER TABLE authentik_lifecycle_lifecyclerulereviewer RENAME COLUMN lifecycle_rule_id to lifecyclerule_id;
-ALTER TABLE authentik_lifecycle_lifecyclerulereviewer RENAME TO authentik_lifecycle_lifecyclerule_reviewers;
-"""
-
-TRANSPORT_SQL = """
-ALTER TABLE authentik_lifecycle_lifecyclerule_notification_transports RENAME TO authentik_lifecycle_lifecyclerulenotificationtransport;
-ALTER TABLE authentik_lifecycle_lifecyclerulenotificationtransport RENAME COLUMN lifecyclerule_id to lifecycle_rule_id;
-ALTER TABLE authentik_lifecycle_lifecyclerulenotificationtransport RENAME COLUMN notificationtransport_id to notification_transport_id;
-"""
-
-TRANSPORT_REVERSE_SQL = """
-ALTER TABLE authentik_lifecycle_lifecyclerulenotificationtransport RENAME COLUMN notification_transport_id to notificationtransport_id;
-ALTER TABLE authentik_lifecycle_lifecyclerulenotificationtransport RENAME COLUMN lifecycle_rule_id to lifecyclerule_id;
-ALTER TABLE authentik_lifecycle_lifecyclerulenotificationtransport RENAME TO authentik_lifecycle_lifecyclerule_notification_transports;
-"""
-
 
 class Migration(migrations.Migration):
 
@@ -51,12 +19,7 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.SeparateDatabaseAndState(
-            database_operations=[
-                migrations.RunSQL(
-                    sql=GROUP_SQL,
-                    reverse_sql=GROUP_REVERSE_SQL,
-                ),
-            ],
+            database_operations=[],
             state_operations=[
                 migrations.CreateModel(
                     name="LifecycleRuleReviewerGroup",
@@ -80,12 +43,14 @@ class Migration(migrations.Migration):
                         (
                             "lifecycle_rule",
                             models.ForeignKey(
+                                db_column="lifecyclerule_id",
                                 on_delete=django.db.models.deletion.CASCADE,
                                 to="authentik_lifecycle.lifecyclerule",
                             ),
                         ),
                     ],
                     options={
+                        "db_table": "authentik_lifecycle_lifecyclerule_reviewer_groups",
                         "unique_together": {("lifecycle_rule", "group")},
                     },
                 ),
@@ -101,12 +66,7 @@ class Migration(migrations.Migration):
             ],
         ),
         migrations.SeparateDatabaseAndState(
-            database_operations=[
-                migrations.RunSQL(
-                    sql=USER_SQL,
-                    reverse_sql=USER_REVERSE_SQL,
-                ),
-            ],
+            database_operations=[],
             state_operations=[
                 migrations.CreateModel(
                     name="LifecycleRuleReviewer",
@@ -123,6 +83,7 @@ class Migration(migrations.Migration):
                         (
                             "lifecycle_rule",
                             models.ForeignKey(
+                                db_column="lifecyclerule_id",
                                 on_delete=django.db.models.deletion.CASCADE,
                                 to="authentik_lifecycle.lifecyclerule",
                             ),
@@ -136,6 +97,7 @@ class Migration(migrations.Migration):
                         ),
                     ],
                     options={
+                        "db_table": "authentik_lifecycle_lifecyclerule_reviewers",
                         "unique_together": {("lifecycle_rule", "user")},
                     },
                 ),
@@ -151,12 +113,7 @@ class Migration(migrations.Migration):
             ],
         ),
         migrations.SeparateDatabaseAndState(
-            database_operations=[
-                migrations.RunSQL(
-                    sql=TRANSPORT_SQL,
-                    reverse_sql=TRANSPORT_REVERSE_SQL,
-                ),
-            ],
+            database_operations=[],
             state_operations=[
                 migrations.CreateModel(
                     name="LifecycleRuleNotificationTransport",
@@ -173,6 +130,7 @@ class Migration(migrations.Migration):
                         (
                             "lifecycle_rule",
                             models.ForeignKey(
+                                db_column="lifecyclerule_id",
                                 on_delete=django.db.models.deletion.CASCADE,
                                 to="authentik_lifecycle.lifecyclerule",
                             ),
@@ -180,12 +138,14 @@ class Migration(migrations.Migration):
                         (
                             "notification_transport",
                             models.ForeignKey(
+                                db_column="notificationtransport_id",
                                 on_delete=django.db.models.deletion.CASCADE,
                                 to="authentik_events.notificationtransport",
                             ),
                         ),
                     ],
                     options={
+                        "db_table": "authentik_lifecycle_lifecyclerule_notification_transports",
                         "unique_together": {("lifecycle_rule", "notification_transport")},
                     },
                 ),

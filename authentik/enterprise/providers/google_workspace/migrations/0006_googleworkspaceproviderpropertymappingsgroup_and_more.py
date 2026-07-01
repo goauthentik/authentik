@@ -3,18 +3,6 @@
 import django.db.models.deletion
 from django.db import migrations, models
 
-SQL = """
-ALTER TABLE authentik_providers_google_workspace_googleworkspaceprovide63d9 RENAME TO authentik_providers_google_workspace_googleworkspaceprovided4a1;
-ALTER TABLE authentik_providers_google_workspace_googleworkspaceprovided4a1 RENAME COLUMN googleworkspaceprovider_id to google_workspace_provider_id;
-ALTER TABLE authentik_providers_google_workspace_googleworkspaceprovided4a1 RENAME COLUMN propertymapping_id to property_mapping_id;
-"""
-
-REVERSE_SQL = """
-ALTER TABLE authentik_providers_google_workspace_googleworkspaceprovided4a1 RENAME COLUMN property_mapping_id to propertymapping_id;
-ALTER TABLE authentik_providers_google_workspace_googleworkspaceprovided4a1 RENAME COLUMN google_workspace_provider_id to googleworkspaceprovider_id;
-ALTER TABLE authentik_providers_google_workspace_googleworkspaceprovided4a1 RENAME TO authentik_providers_google_workspace_googleworkspaceprovide63d9;
-"""
-
 
 class Migration(migrations.Migration):
 
@@ -28,12 +16,7 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.SeparateDatabaseAndState(
-            database_operations=[
-                migrations.RunSQL(
-                    sql=SQL,
-                    reverse_sql=REVERSE_SQL,
-                ),
-            ],
+            database_operations=[],
             state_operations=[
                 migrations.CreateModel(
                     name="GoogleWorkspaceProviderPropertyMappingsGroup",
@@ -50,6 +33,7 @@ class Migration(migrations.Migration):
                         (
                             "google_workspace_provider",
                             models.ForeignKey(
+                                db_column="googleworkspaceprovider_id",
                                 on_delete=django.db.models.deletion.CASCADE,
                                 to="authentik_providers_google_workspace.googleworkspaceprovider",
                             ),
@@ -57,12 +41,14 @@ class Migration(migrations.Migration):
                         (
                             "property_mapping",
                             models.ForeignKey(
+                                db_column="propertymapping_id",
                                 on_delete=django.db.models.deletion.CASCADE,
                                 to="authentik_core.propertymapping",
                             ),
                         ),
                     ],
                     options={
+                        "db_table": "authentik_providers_google_workspace_googleworkspaceprovide63d9",
                         "unique_together": {("google_workspace_provider", "property_mapping")},
                     },
                 ),

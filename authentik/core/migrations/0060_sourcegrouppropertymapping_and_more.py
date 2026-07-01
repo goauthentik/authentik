@@ -4,60 +4,6 @@ import django.db.models.deletion
 from django.conf import settings
 from django.db import migrations, models
 
-USER_SQL = """
-ALTER TABLE authentik_core_source_user_property_mappings RENAME TO authentik_core_sourceuserpropertymapping;
-ALTER TABLE authentik_core_sourceuserpropertymapping RENAME COLUMN propertymapping_id TO property_mapping_id;
-"""
-
-USER_REVERSE_SQL = """
-ALTER TABLE authentik_core_sourceuserpropertymapping RENAME COLUMN property_mapping_id TO propertymapping_id;
-ALTER TABLE authentik_core_sourceuserpropertymapping RENAME TO authentik_core_source_user_property_mappings;
-"""
-
-GROUP_SQL = """
-ALTER TABLE authentik_core_source_group_property_mappings RENAME TO authentik_core_sourcegrouppropertymapping;
-ALTER TABLE authentik_core_sourcegrouppropertymapping RENAME COLUMN propertymapping_id TO property_mapping_id;
-"""
-
-GROUP_REVERSE_SQL = """
-ALTER TABLE authentik_core_sourcegrouppropertymapping RENAME COLUMN property_mapping_id TO propertymapping_id;
-ALTER TABLE authentik_core_sourcegrouppropertymapping RENAME TO authentik_core_source_group_property_mappings;
-"""
-
-PROVIDER_SQL = """
-ALTER TABLE authentik_core_provider_property_mappings RENAME TO authentik_core_providerpropertymapping;
-ALTER TABLE authentik_core_providerpropertymapping RENAME COLUMN propertymapping_id TO property_mapping_id;
-"""
-
-PROVIDER_REVERSE_SQL = """
-ALTER TABLE authentik_core_providerpropertymapping RENAME COLUMN property_mapping_id TO propertymapping_id;
-ALTER TABLE authentik_core_providerpropertymapping RENAME TO authentik_core_provider_property_mappings;
-"""
-
-USER_ROLE_SQL = """
-ALTER TABLE authentik_core_user_roles RENAME TO authentik_core_userrole;
-"""
-
-USER_ROLE_REVERSE_SQL = """
-ALTER TABLE authentik_core_userrole RENAME TO authentik_core_user_roles;
-"""
-
-GROUP_ROLE_SQL = """
-ALTER TABLE authentik_core_group_roles RENAME TO authentik_core_grouprole;
-"""
-
-GROUP_ROLE_REVERSE_SQL = """
-ALTER TABLE authentik_core_grouprole RENAME TO authentik_core_group_roles;
-"""
-
-USER_GROUP_SQL = """
-ALTER TABLE authentik_core_user_groups RENAME TO authentik_core_usergroup;
-"""
-
-USER_GROUP_REVERSE_SQL = """
-ALTER TABLE authentik_core_usergroup RENAME TO authentik_core_user_groups;
-"""
-
 
 class Migration(migrations.Migration):
 
@@ -68,12 +14,7 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.SeparateDatabaseAndState(
-            database_operations=[
-                migrations.RunSQL(
-                    sql=USER_SQL,
-                    reverse_sql=USER_REVERSE_SQL,
-                ),
-            ],
+            database_operations=[],
             state_operations=[
                 migrations.CreateModel(
                     name="SourceUserPropertyMapping",
@@ -90,6 +31,7 @@ class Migration(migrations.Migration):
                         (
                             "property_mapping",
                             models.ForeignKey(
+                                db_column="propertymapping_id",
                                 on_delete=django.db.models.deletion.CASCADE,
                                 to="authentik_core.propertymapping",
                             ),
@@ -103,6 +45,7 @@ class Migration(migrations.Migration):
                         ),
                     ],
                     options={
+                        "db_table": "authentik_core_source_user_property_mappings",
                         "unique_together": {("property_mapping", "source")},
                     },
                 ),
@@ -120,12 +63,7 @@ class Migration(migrations.Migration):
             ],
         ),
         migrations.SeparateDatabaseAndState(
-            database_operations=[
-                migrations.RunSQL(
-                    sql=GROUP_SQL,
-                    reverse_sql=GROUP_REVERSE_SQL,
-                ),
-            ],
+            database_operations=[],
             state_operations=[
                 migrations.CreateModel(
                     name="SourceGroupPropertyMapping",
@@ -142,6 +80,7 @@ class Migration(migrations.Migration):
                         (
                             "property_mapping",
                             models.ForeignKey(
+                                db_column="propertymapping_id",
                                 on_delete=django.db.models.deletion.CASCADE,
                                 to="authentik_core.propertymapping",
                             ),
@@ -155,6 +94,7 @@ class Migration(migrations.Migration):
                         ),
                     ],
                     options={
+                        "db_table": "authentik_core_source_group_property_mappings",
                         "unique_together": {("property_mapping", "source")},
                     },
                 ),
@@ -172,12 +112,7 @@ class Migration(migrations.Migration):
             ],
         ),
         migrations.SeparateDatabaseAndState(
-            database_operations=[
-                migrations.RunSQL(
-                    sql=PROVIDER_SQL,
-                    reverse_sql=PROVIDER_REVERSE_SQL,
-                ),
-            ],
+            database_operations=[],
             state_operations=[
                 migrations.CreateModel(
                     name="ProviderPropertyMapping",
@@ -194,6 +129,7 @@ class Migration(migrations.Migration):
                         (
                             "property_mapping",
                             models.ForeignKey(
+                                db_column="propertymapping_id",
                                 on_delete=django.db.models.deletion.CASCADE,
                                 to="authentik_core.propertymapping",
                             ),
@@ -207,6 +143,7 @@ class Migration(migrations.Migration):
                         ),
                     ],
                     options={
+                        "db_table": "authentik_core_provider_property_mappings",
                         "unique_together": {("property_mapping", "provider")},
                     },
                 ),
@@ -223,12 +160,7 @@ class Migration(migrations.Migration):
             ],
         ),
         migrations.SeparateDatabaseAndState(
-            database_operations=[
-                migrations.RunSQL(
-                    sql=USER_ROLE_SQL,
-                    reverse_sql=USER_ROLE_REVERSE_SQL,
-                ),
-            ],
+            database_operations=[],
             state_operations=[
                 migrations.CreateModel(
                     name="UserRole",
@@ -258,18 +190,14 @@ class Migration(migrations.Migration):
                         ),
                     ],
                     options={
+                        "db_table": "authentik_core_user_roles",
                         "unique_together": {("user", "role")},
                     },
                 ),
             ],
         ),
         migrations.SeparateDatabaseAndState(
-            database_operations=[
-                migrations.RunSQL(
-                    sql=GROUP_ROLE_SQL,
-                    reverse_sql=GROUP_ROLE_REVERSE_SQL,
-                ),
-            ],
+            database_operations=[],
             state_operations=[
                 migrations.CreateModel(
                     name="GroupRole",
@@ -299,18 +227,14 @@ class Migration(migrations.Migration):
                         ),
                     ],
                     options={
+                        "db_table": "authentik_core_group_roles",
                         "unique_together": {("group", "role")},
                     },
                 ),
             ],
         ),
         migrations.SeparateDatabaseAndState(
-            database_operations=[
-                migrations.RunSQL(
-                    sql=USER_GROUP_SQL,
-                    reverse_sql=USER_GROUP_REVERSE_SQL,
-                ),
-            ],
+            database_operations=[],
             state_operations=[
                 migrations.AlterField(
                     model_name="group",
@@ -360,6 +284,7 @@ class Migration(migrations.Migration):
                         ),
                     ],
                     options={
+                        "db_table": "authentik_core_user_groups",
                         "unique_together": {("user", "group")},
                     },
                 ),
