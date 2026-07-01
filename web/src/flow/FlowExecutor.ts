@@ -195,16 +195,6 @@ export class FlowExecutor
         });
 
         window.addEventListener("ak-multitab-continue", () => {
-            document.title = "continued";
-            if (
-                this.challenge?.component === "ak-stage-identification" &&
-                this.challenge.applicationPreLaunch &&
-                this.challenge.applicationPreLaunch !== "blank://blank"
-            ) {
-                multiTabOrchestrateLeave();
-                window.location.assign(this.challenge.applicationPreLaunch);
-                return;
-            }
             const qs = new URLSearchParams(window.location.search);
             const next = qs.get("next");
             if (next) {
