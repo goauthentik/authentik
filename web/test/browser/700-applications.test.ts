@@ -187,4 +187,39 @@ test.describe("Applications", () => {
             await expect($app, "Application is visible in the table").toBeVisible();
         });
     });
+
+    test("Application name beginning with consecutive capitals fills a complete slug", async ({
+        session,
+        pointer,
+        page,
+    }) => {
+        const { click } = pointer;
+
+        await test.step("Authenticate", async () => {
+            await session.login({ to: "/if/admin/#/core/applications" });
+        });
+
+        const wizardDialog = page.getByRole("dialog", { name: "New Application Wizard" });
+
+        await test.step("Open wizard", async () => {
+            await expect(wizardDialog, "Wizard is initially closed").toBeHidden();
+
+            await click("New Application", "button");
+
+            await expect(wizardDialog, "Wizard opens").toBeVisible();
+        });
+
+        await test.step("Type a name with leading consecutive capitals", async () => {
+            // Press one key at a time: the regression (#17958) only surfaces per-keystroke,
+            // so a bulk fill() would set the final value in one event and miss the bug.
+            await wizardDialog
+                .getByRole("textbox", { name: /Application Name/ })
+                .pressSequentially("OAuth Demo");
+
+            await expect(
+                wizardDialog.getByRole("textbox", { name: "Slug" }),
+                "Slug includes the full name, not just the leading capitals",
+            ).toHaveValue("o-auth-demo");
+        });
+    });
 });
