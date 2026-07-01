@@ -91,10 +91,6 @@ To support the integration of authentik with Active Directory, create a new LDAP
 
     ![](./03_additional_perms.png)
 
-<<<<<<< HEAD
-6. To finalise the Active Directory setup, you need to enable the backend "authentik LDAP" in the Password Stage.
-=======
 6. To finalize the Active Directory setup, enable the `authentik LDAP` backend in the password stage.
->>>>>>> c9a9407641 (website/docs: clean up source docs (#23374))
 
     ![](./11_ak_stage.png)

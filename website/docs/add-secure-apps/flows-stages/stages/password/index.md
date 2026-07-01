@@ -23,7 +23,7 @@ The stage supports authentik's built-in password database, app passwords, LDAP-b
 
 ## Flow integration
 
-This stage is typically bound after an [Identification](../identification/index.md) stage and before a [Authenticator Validation](../authenticator_validate/index.md) or [User Login](../user_login/index.md) stage.
+This stage is typically bound after an [Identification](../identification/index.md) stage and before an [Authenticator Validation](../authenticator_validate/index.md) or [User Login](../user_login/index.md) stage.
 
 If the [Identification stage](../identification/index.md) has its **Password stage** option set, the password prompt is rendered as part of the identification step and the Password stage should not also be bound separately in the same flow.
 
