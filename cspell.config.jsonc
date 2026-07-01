@@ -269,6 +269,8 @@
         ".docusaurus/**", // Cache
         "./{docs,website}/build", // Topic docs build output
         "./{docs,website}/**/build", // Workspaces output
+        "_redirects", // Redirects file
+        "_headers", // Headers file
         //#endregion
         //#region Golang
         "go.mod", // Go module file
