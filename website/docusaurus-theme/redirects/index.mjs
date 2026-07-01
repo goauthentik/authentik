@@ -19,10 +19,20 @@ import escapeStringRegexp from "escape-string-regexp";
  * @returns {RegExp}
  */
 export function pathnameToMatcher(pathname) {
-    return new RegExp(
-        "^" + escapeStringRegexp(pathname).replace(/\\\*/g, "(?<splat>.*)").replace(/\//g, "\\/"),
-        "i",
-    );
+    const matcher = pathname
+        .split("*")
+        .map((part) => escapeStringRegexp(part))
+        .join("(?<splat>.*)");
+
+    return new RegExp("^" + matcher + (pathname.includes("*") ? "" : "$"), "i");
+}
+
+/**
+ * @param {string} pathname
+ * @returns {string}
+ */
+function normalizeAliasPathname(pathname) {
+    return pathname.replace(/\/+$/, "") || "/";
 }
 
 /**
@@ -33,9 +43,10 @@ export function pathnameToMatcher(pathname) {
  * @returns {RegExp}
  */
 export function destinationToMatcher(destination) {
-    const safeDestination = escapeStringRegexp(destination)
-        .replace(/:splat/g, "(?<splat>.*)")
-        .replace(/\//g, "\\/");
+    const safeDestination = destination
+        .split(":splat")
+        .map((part) => escapeStringRegexp(part))
+        .join("(?<splat>.*)");
     return new RegExp("^" + safeDestination + "$", "i");
 }
 
@@ -131,13 +142,21 @@ export class RewriteIndex {
      * @returns {string[]}
      */
     findAliases(pathname) {
-        const aliases = new Set();
+        /**
+         * @type {Map<string, string>}
+         */
+        const aliases = new Map();
+        const addAlias = (alias) => {
+            if (normalizeAliasPathname(alias) === normalizeAliasPathname(pathname)) return;
+
+            aliases.set(normalizeAliasPathname(alias), alias);
+        };
 
         for (const [destinationMatcher, destination] of this.#destinationMap) {
             const alias = this.#aliasMap.get(pathname);
 
             if (alias) {
-                aliases.add(alias);
+                addAlias(alias);
             }
 
             const match = destinationMatcher.exec(pathname);
@@ -147,9 +166,7 @@ export class RewriteIndex {
             let result = destination;
 
             if (!match.groups) {
-                if (pathname === result) continue;
-
-                aliases.add(result);
+                addAlias(result);
                 continue;
             }
 
@@ -157,11 +174,9 @@ export class RewriteIndex {
                 result = result.replace(`:${group}`, value);
             }
 
-            if (result === pathname) continue;
-
-            aliases.add(result);
+            addAlias(result);
         }
 
-        return Array.from(aliases);
+        return Array.from(aliases.values());
     }
 }
