@@ -703,7 +703,25 @@ const items = [
                 items: [
                     "sys-mgmt/ops/monitoring",
                     "sys-mgmt/ops/worker",
-                    "sys-mgmt/ops/storage-s3",
+                    {
+                        type: "category",
+                        label: "S3 storage",
+                        collapsed: true,
+                        link: {
+                            type: "doc",
+                            id: "sys-mgmt/ops/storage-s3/index",
+                        },
+                        items: [
+                            "sys-mgmt/ops/storage-s3/aws-s3",
+                            "sys-mgmt/ops/storage-s3/cloudflare-r2",
+                            "sys-mgmt/ops/storage-s3/backblaze-b2",
+                            "sys-mgmt/ops/storage-s3/wasabi",
+                            "sys-mgmt/ops/storage-s3/google-cloud-storage",
+                            "sys-mgmt/ops/storage-s3/azure-blob-s3-gateway",
+                            "sys-mgmt/ops/storage-s3/garage",
+                            "sys-mgmt/ops/storage-s3/seaweedfs",
+                        ],
+                    },
                     "sys-mgmt/ops/geoip",
                     "sys-mgmt/ops/backup-restore",
                 ],

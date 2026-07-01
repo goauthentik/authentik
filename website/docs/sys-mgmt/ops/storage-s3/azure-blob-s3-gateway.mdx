@@ -1,0 +1,41 @@
+---
+title: Azure Blob Storage through an S3-compatible gateway
+---
+
+Azure Blob Storage does not natively expose an S3-compatible API. To use Azure Blob Storage with authentik's S3 backend, place an S3-compatible gateway in front of Azure Blob Storage and configure authentik to use the gateway endpoint.
+
+import PublicUrl from "./_public-url.md";
+import SharedSetup from "./_shared-setup.md";
+
+<SharedSetup />
+
+## Configure the S3-compatible gateway
+
+The exact UI depends on the gateway that you use. In the gateway admin interface:
+
+1. Log in to the gateway admin interface.
+2. Connect the gateway to the Azure storage account.
+3. Create or select the bucket mapping that points to the Azure Blob Storage container.
+4. Name the bucket mapping `<bucket_name>`.
+5. Create an access key and secret key for authentik.
+6. Grant the key permission to list the bucket and to read, write, and delete objects.
+7. Configure CORS for the bucket mapping using the policy from [CORS policy](./index.mdx#cors-policy).
+8. Copy the gateway S3 endpoint that authentik should use.
+9. Copy the public S3 endpoint that browsers should use, if it differs from the internal endpoint.
+
+## Configure authentik
+
+Add the shared S3 settings, then set the gateway endpoint:
+
+```env
+AUTHENTIK_STORAGE__S3__ENDPOINT=https://<gateway_s3_endpoint>
+AUTHENTIK_STORAGE__S3__ADDRESSING_STYLE=path
+```
+
+<PublicUrl />
+
+If the gateway requires a legacy S3 signature, also set:
+
+```env
+AUTHENTIK_STORAGE__S3__SIGNATURE_VERSION=s3
+```

@@ -1,0 +1,49 @@
+---
+title: Cloudflare R2
+---
+
+Use Cloudflare R2 with authentik through R2's S3-compatible API.
+
+import SharedSetup from "./_shared-setup.md";
+
+<SharedSetup />
+
+## Create the bucket in Cloudflare
+
+1. Log in to the [Cloudflare dashboard](https://dash.cloudflare.com/).
+2. Select the account that should own the bucket.
+3. Go to **R2 Object Storage**.
+4. Click **Create bucket**.
+5. Enter `<bucket_name>` as the bucket name.
+6. Click **Create bucket**.
+7. On the R2 overview page, copy the account ID. You need it for the endpoint URL.
+
+## Create R2 credentials
+
+1. In the Cloudflare dashboard, go to **R2 Object Storage**.
+2. Click **Manage R2 API tokens**.
+3. Click **Create API token**.
+4. Select read and write access for the bucket that authentik uses.
+5. Click **Create API token**.
+6. Copy the access key ID and secret access key.
+
+Cloudflare R2 uses an account endpoint in the following format:
+
+```text
+https://<account_id>.r2.cloudflarestorage.com
+```
+
+## Configure authentik
+
+Add the shared S3 settings, then set the R2 endpoint:
+
+```env
+AUTHENTIK_STORAGE__S3__ENDPOINT=https://<account_id>.r2.cloudflarestorage.com
+AUTHENTIK_STORAGE__S3__REGION=auto
+```
+
+If generated file URLs do not resolve correctly with your bucket configuration, set path-style addressing:
+
+```env
+AUTHENTIK_STORAGE__S3__ADDRESSING_STYLE=path
+```

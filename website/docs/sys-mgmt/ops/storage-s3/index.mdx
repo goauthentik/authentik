@@ -1,0 +1,191 @@
+---
+title: S3-compatible storage
+---
+
+authentik can store uploaded files in Amazon S3 or an S3-compatible object storage provider instead of storing them on the local filesystem in `/data`.
+
+Use this guide for the shared authentik settings, bucket permissions, CORS policy, and migration steps. Use the provider pages for endpoint formats and provider-specific notes:
+
+- [Amazon S3](./aws-s3.mdx)
+- [Cloudflare R2](./cloudflare-r2.mdx)
+- [Backblaze B2](./backblaze-b2.mdx)
+- [Wasabi](./wasabi.mdx)
+- [Google Cloud Storage](./google-cloud-storage.mdx)
+- [Azure Blob Storage through an S3-compatible gateway](./azure-blob-s3-gateway.mdx)
+- [Garage](./garage.mdx)
+- [SeaweedFS](./seaweedfs.mdx)
+
+For the full list of storage configuration options, see the [configuration reference](../../../install-config/configuration/configuration.mdx#storage-settings).
+
+## Prepare storage
+
+Before you configure authentik, create or identify the following values:
+
+- An S3 bucket for authentik files, for example `<bucket_name>`.
+- S3 access credentials, unless you use AWS SDK authentication such as an instance role or profile.
+- The S3 endpoint URL for your provider, if the provider is not Amazon S3.
+- The public origin that users use to access authentik, for example `https://authentik.company`.
+
+The examples on this page use the AWS CLI. For S3-compatible providers, add the provider endpoint with `--endpoint-url=<s3_endpoint>`.
+
+## Bucket permissions
+
+authentik needs permission to list bucket contents and to read, write, and delete objects in the bucket. For Amazon S3, the following IAM policy grants those permissions:
+
+```json title="authentik-s3-policy.json"
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "ListBucket",
+            "Effect": "Allow",
+            "Action": ["s3:ListBucket"],
+            "Resource": "arn:aws:s3:::<bucket_name>"
+        },
+        {
+            "Sid": "ManageObjects",
+            "Effect": "Allow",
+            "Action": [
+                "s3:GetObject",
+                "s3:PutObject",
+                "s3:DeleteObject",
+                "s3:AbortMultipartUpload",
+                "s3:ListMultipartUploadParts"
+            ],
+            "Resource": "arn:aws:s3:::<bucket_name>/*"
+        }
+    ]
+}
+```
+
+For S3-compatible providers, create the equivalent policy in the provider's access-control system.
+
+## CORS policy
+
+Apply a CORS policy to the bucket so that the authentik web interface can load files directly from generated S3 URLs.
+
+Save the following policy as `cors.json`. Replace `https://authentik.company` with your authentik origin, including the scheme and port if you use a non-standard port.
+
+```json title="cors.json"
+{
+    "CORSRules": [
+        {
+            "AllowedOrigins": ["https://authentik.company"],
+            "AllowedHeaders": ["Authorization"],
+            "AllowedMethods": ["GET"],
+            "MaxAgeSeconds": 3000
+        }
+    ]
+}
+```
+
+If users access authentik from more than one domain, include each origin in `AllowedOrigins`.
+
+Apply the policy:
+
+```bash
+AWS_ACCESS_KEY_ID=<access_key> AWS_SECRET_ACCESS_KEY=<secret_key> aws s3api \
+  --endpoint-url=<s3_endpoint> \
+  put-bucket-cors \
+  --bucket=<bucket_name> \
+  --cors-configuration=file://cors.json
+```
+
+For Amazon S3, omit `--endpoint-url`.
+
+## Configure authentik
+
+Add the following settings to your `.env` file:
+
+```env
+AUTHENTIK_STORAGE__BACKEND=s3
+AUTHENTIK_STORAGE__S3__ACCESS_KEY=<access_key>
+AUTHENTIK_STORAGE__S3__SECRET_KEY=<secret_key>
+AUTHENTIK_STORAGE__S3__BUCKET_NAME=<bucket_name>
+```
+
+If you use AWS SDK authentication, such as an instance role or profile, omit `AUTHENTIK_STORAGE__S3__ACCESS_KEY` and `AUTHENTIK_STORAGE__S3__SECRET_KEY`. See `AUTHENTIK_STORAGE__S3__SESSION_PROFILE` and related options in the [configuration reference](../../../install-config/configuration/configuration.mdx#s3-storage-backend-settings).
+
+For non-AWS providers, also configure the provider endpoint:
+
+```env
+AUTHENTIK_STORAGE__S3__ENDPOINT=<s3_endpoint>
+```
+
+Set `AUTHENTIK_STORAGE__S3__CUSTOM_DOMAIN` only when the URL that authentik uses internally to reach S3 is different from the URL that browsers should use to retrieve files.
+
+```env
+AUTHENTIK_STORAGE__S3__CUSTOM_DOMAIN=<public_s3_domain>/<bucket_name>
+```
+
+The custom domain value must include the bucket name and must not include a scheme. For example, if users can retrieve objects from `https://s3.company/authentik-data/`, set:
+
+```env
+AUTHENTIK_STORAGE__S3__CUSTOM_DOMAIN=s3.company/authentik-data
+```
+
+Whether generated file URLs use HTTPS is controlled by `AUTHENTIK_STORAGE__S3__SECURE_URLS`, which defaults to `true`.
+
+If your provider requires path-style bucket addressing, set:
+
+```env
+AUTHENTIK_STORAGE__S3__ADDRESSING_STYLE=path
+```
+
+If your provider only supports legacy S3 signatures, set:
+
+```env
+AUTHENTIK_STORAGE__S3__SIGNATURE_VERSION=s3
+```
+
+By default, authentik uses signature version `s3v4`.
+
+## Check file content types
+
+Browsers rely on the HTTP `Content-Type` header to decide whether to render a file as an image, HTML, or another format. authentik sets the content type when it uploads files. If you upload files to the bucket with another tool, ensure that the tool also writes the correct `Content-Type` metadata.
+
+The following command updates the `Content-Type` metadata for PNG files in a bucket:
+
+```bash
+aws s3 cp \
+  s3://<bucket_name>/ s3://<bucket_name>/ \
+  --exclude "*" --include "*.png" \
+  --no-guess-mime-type \
+  --content-type "image/png" \
+  --metadata-directive "REPLACE" \
+  --recursive
+```
+
+:::info
+Terraform uploads to S3 do not set the `Content-Type` header unless you configure the metadata explicitly.
+:::
+
+## Migrate between storage backends
+
+The following examples assume that the local storage path is `/data` and the bucket is `<bucket_name>`. Ensure that your AWS CLI configuration can reach your provider. For non-AWS providers, include `--endpoint-url=<s3_endpoint>`.
+
+### Migrate from file storage to S3
+
+Follow the setup steps above, then sync files from the local directory to the bucket root:
+
+```bash
+aws s3 sync /data s3://<bucket_name>/
+```
+
+For non-AWS providers:
+
+```bash
+aws --endpoint-url=<s3_endpoint> s3 sync /data s3://<bucket_name>/
+```
+
+### Migrate from S3 to file storage
+
+```bash
+aws s3 sync s3://<bucket_name>/ /data
+```
+
+For non-AWS providers:
+
+```bash
+aws --endpoint-url=<s3_endpoint> s3 sync s3://<bucket_name>/ /data
+```

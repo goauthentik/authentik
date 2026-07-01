@@ -1,0 +1,46 @@
+---
+title: Wasabi
+---
+
+Use Wasabi with authentik through Wasabi's S3-compatible API.
+
+import SharedSetup from "./_shared-setup.md";
+
+<SharedSetup />
+
+## Create the bucket in Wasabi
+
+1. Log in to the [Wasabi Console](https://console.wasabisys.com/).
+2. Go to **Buckets**.
+3. Click **Create Bucket**.
+4. Enter `<bucket_name>` as the bucket name.
+5. Select the region that should store authentik files.
+6. Click **Create Bucket**.
+7. Note the region that you selected.
+
+## Create Wasabi credentials
+
+1. In the Wasabi Console, go to **Access Keys**.
+2. Click **Create Access Key**.
+3. Select the user that authentik should use.
+4. Click **Create**.
+5. Copy the access key and secret key.
+
+For tighter access control, create a Wasabi user or group for authentik and attach a policy equivalent to [Bucket permissions](./index.mdx#bucket-permissions).
+
+Wasabi endpoints are region-specific. Most endpoints use the following format:
+
+```text
+https://s3.<region>.wasabisys.com
+```
+
+For example, the `us-east-1` endpoint can use `https://s3.wasabisys.com` or `https://s3.us-east-1.wasabisys.com`.
+
+## Configure authentik
+
+Add the shared S3 settings, then set the Wasabi endpoint and region:
+
+```env
+AUTHENTIK_STORAGE__S3__ENDPOINT=https://s3.<region>.wasabisys.com
+AUTHENTIK_STORAGE__S3__REGION=<region>
+```
