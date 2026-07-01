@@ -32,7 +32,10 @@ import { ThemedImage } from "#elements/utils/images";
 
 import { AKFlowAdvanceEvent, AKFlowInspectorChangeEvent } from "#flow/events";
 import { BaseStage, StageHost, SubmitOptions } from "#flow/stages/base";
-import { multiTabOrchestrateLeave } from "#flow/tabs/orchestrator";
+import {
+    multiTabOrchestrateLeave,
+    suppressNextExitForSameOriginNavigation,
+} from "#flow/tabs/orchestrator";
 
 import { ConsoleLogger } from "#logger/browser";
 
@@ -195,24 +198,40 @@ export class FlowExecutor
         });
 
         window.addEventListener("ak-multitab-continue", () => {
-            document.title = "continued";
-            if (
-                this.challenge?.component === "ak-stage-identification" &&
-                this.challenge.applicationPreLaunch &&
-                this.challenge.applicationPreLaunch !== "blank://blank"
-            ) {
-                multiTabOrchestrateLeave();
-                window.location.assign(this.challenge.applicationPreLaunch);
+            const challenge = this.challenge;
+
+            if (!challenge) {
                 return;
             }
+
             const qs = new URLSearchParams(window.location.search);
             const next = qs.get("next");
+
             if (next) {
                 const url = new URL(next, window.location.origin);
-                if (!url.pathname.startsWith(`${globalAK().api.relBase}if/flow`)) {
+
+                // A same-origin `next` (e.g. the SP-initiated SAML resume re-entry) is an
+                // intermediate hop, so suppress our exit instead of signaling we left mid-flow.
+                if (url.origin === window.location.origin) {
+                    suppressNextExitForSameOriginNavigation();
+                } else {
                     multiTabOrchestrateLeave();
                 }
+
                 window.location.assign(url);
+
+                return;
+            }
+
+            // `blank://blank` is the 2026.2 mechanism for hiding an application; don't treat it
+            // as a launchable destination.
+            if (
+                challenge.component === "ak-stage-identification" &&
+                challenge.applicationPreLaunch &&
+                challenge.applicationPreLaunch !== "blank://blank"
+            ) {
+                multiTabOrchestrateLeave();
+                window.location.assign(challenge.applicationPreLaunch);
             }
         });
     }
