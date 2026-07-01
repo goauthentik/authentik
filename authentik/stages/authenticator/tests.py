@@ -250,12 +250,12 @@ class TestDeviceEvents(TestCase):
 
     def _added(self):
         return Event.objects.filter(
-            action=EventAction.MFA_DEVICE_ADDED, context__affected_user_pk=self.user.pk
+            action=EventAction.MFA_DEVICE_ADDED, context__subject_uuid=self.user.uuid.hex
         )
 
     def _removed(self):
         return Event.objects.filter(
-            action=EventAction.MFA_DEVICE_REMOVED, context__affected_user_pk=self.user.pk
+            action=EventAction.MFA_DEVICE_REMOVED, context__subject_uuid=self.user.uuid.hex
         )
 
     def test_added_on_confirmed_create(self):
@@ -302,11 +302,11 @@ class TestDeviceEvents(TestCase):
     def test_not_removed_on_user_cascade(self):
         """Deleting the owner must not emit a removal event per cascaded device"""
         self.user.staticdevice_set.create()
-        user_pk = self.user.pk
+        subject_uuid = self.user.uuid.hex
         self.user.delete()
         self.assertFalse(
             Event.objects.filter(
-                action=EventAction.MFA_DEVICE_REMOVED, context__affected_user_pk=user_pk
+                action=EventAction.MFA_DEVICE_REMOVED, context__subject_uuid=subject_uuid
             ).exists()
         )
 

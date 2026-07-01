@@ -79,6 +79,28 @@ class TestEventsNotifications(APITestCase):
         notification: Notification = execute_mock.call_args[0][0]
         self.assertEqual(notification.user, user)
 
+    def test_trigger_event_subject(self):
+        """Test trigger routing to the event's subject, not its actor"""
+        actor = create_test_user()
+        subject = create_test_user()
+        transport = NotificationTransport.objects.create(name=generate_id())
+        trigger = NotificationRule.objects.create(
+            name=generate_id(), destination_event_subject=True
+        )
+        trigger.transports.add(transport)
+        trigger.save()
+        matcher = EventMatcherPolicy.objects.create(
+            name="matcher", action=EventAction.CUSTOM_PREFIX
+        )
+        PolicyBinding.objects.create(target=trigger, policy=matcher, order=0)
+
+        execute_mock = MagicMock()
+        with patch("authentik.events.models.NotificationTransport.send", execute_mock):
+            Event.new(EventAction.CUSTOM_PREFIX, subject_uuid=subject.uuid).set_user(actor).save()
+        self.assertEqual(execute_mock.call_count, 1)
+        notification: Notification = execute_mock.call_args[0][0]
+        self.assertEqual(notification.user, subject)
+
     def test_trigger_no_group(self):
         """Test trigger without group"""
         trigger = NotificationRule.objects.create(name=generate_id())
