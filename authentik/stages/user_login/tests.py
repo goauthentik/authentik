@@ -21,6 +21,7 @@ from authentik.flows.views.executor import NEXT_ARG_NAME, SESSION_KEY_PLAN
 from authentik.lib.generators import generate_id
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.root.middleware import ClientIPMiddleware
+from authentik.stages.password.stage import PLAN_CONTEXT_METHOD_ARGS
 from authentik.stages.user_login.middleware import (
     SESSION_KEY_BINDING_NET,
     BoundSessionMiddleware,
@@ -28,6 +29,10 @@ from authentik.stages.user_login.middleware import (
     logout_extra,
 )
 from authentik.stages.user_login.models import GeoIPBinding, NetworkBinding, UserLoginStage
+from authentik.stages.user_login.stage import (
+    COOKIE_NAME_KNOWN_DEVICE,
+    PLAN_CONTEXT_METHOD_ARGS_KNOWN_DEVICE,
+)
 
 
 class TestUserLoginStage(FlowTestCase):
@@ -199,6 +204,65 @@ class TestUserLoginStage(FlowTestCase):
         sleep(5)
         self.client.session.clear_expired()
         self.assertEqual(list(self.client.session.keys()), [])
+
+    def test_remember_device_with_remember_prompt(self):
+        """Test known-device detection after remember prompt"""
+        self.stage.remember_me_offset = "seconds=2"
+        self.stage.remember_device = "days=30"
+        self.stage.save()
+
+        def start_login():
+            plan = FlowPlan(
+                flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()]
+            )
+            plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
+            session = self.client.session
+            session[SESSION_KEY_PLAN] = plan
+            session.save()
+
+        for remember_me in (False, True):
+            with self.subTest(remember_me=remember_me):
+                self.client.cookies.clear()
+                start_login()
+
+                response = self.client.get(
+                    reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
+                )
+                self.assertStageResponse(response, component="ak-stage-user-login")
+
+                response = self.client.post(
+                    reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
+                    data={"remember_me": remember_me},
+                )
+                self.assertEqual(response.status_code, 200)
+                self.assertStageRedirects(response, reverse("authentik_core:root-redirect"))
+                self.assertIn(COOKIE_NAME_KNOWN_DEVICE, response.cookies)
+                device_cookie = response.cookies[COOKIE_NAME_KNOWN_DEVICE].value
+
+                AuthenticatedSession.objects.filter(user=self.user).delete()
+                self.client.cookies.clear()
+                self.client.cookies[COOKIE_NAME_KNOWN_DEVICE] = device_cookie
+                start_login()
+
+                response = self.client.get(
+                    reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
+                )
+                self.assertStageResponse(response, component="ak-stage-user-login")
+
+                with self.assertFlowFinishes() as finished_plan:
+                    response = self.client.post(
+                        reverse(
+                            "authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}
+                        ),
+                        data={"remember_me": remember_me},
+                    )
+                self.assertEqual(response.status_code, 200)
+                self.assertStageRedirects(response, reverse("authentik_core:root-redirect"))
+                self.assertTrue(
+                    finished_plan().context[PLAN_CONTEXT_METHOD_ARGS][
+                        PLAN_CONTEXT_METHOD_ARGS_KNOWN_DEVICE
+                    ]
+                )
 
     @patch(
         "authentik.flows.views.executor.to_stage_response",

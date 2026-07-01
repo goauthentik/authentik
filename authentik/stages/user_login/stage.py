@@ -180,6 +180,4 @@ class UserLoginStageView(ChallengeStageView):
             Session.objects.filter(
                 authenticatedsession__user=user,
             ).exclude(session_key=self.request.session.session_key).delete()
-        if remember is None:
-            return self.set_known_device_cookie(user)
-        return self.executor.stage_ok()
+        return self.set_known_device_cookie(user)
