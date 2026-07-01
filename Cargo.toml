@@ -300,7 +300,6 @@ proxy = [
   "dep:jsonwebtoken",
   "dep:axum-extra",
   "dep:aws-lc-rs",
-  "dep:reqwest",
   "dep:reqwest-middleware",
   "dep:moka",
   "dep:base64",
