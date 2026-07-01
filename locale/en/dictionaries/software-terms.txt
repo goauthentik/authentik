@@ -120,6 +120,8 @@ oktadev
 openidc
 ouia
 ouid
+oxlint
+oxfmt
 peap
 pkce
 plex
