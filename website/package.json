@@ -23,7 +23,7 @@
         "@goauthentik/eslint-config": "../packages/eslint-config",
         "@goauthentik/prettier-config": "../packages/prettier-config",
         "@goauthentik/tsconfig": "../packages/tsconfig",
-        "@types/node": "^25.7.0",
+        "@types/node": "^26.1.0",
         "deepmerge-ts": "^7.1.5",
         "escape-string-regexp": "^5.0.0",
         "eslint": "^9.39.3",
