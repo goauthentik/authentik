@@ -108,6 +108,7 @@ class SlackOAuthRedirect(OAuthRedirect):
         # get_additional_parameters handles all scopes for Slack (both scope and user_scope)
         params = self.get_additional_parameters(source)
         params.update(self._try_login_hint_extract())
+        params.update(self._eval_additional_url_parameters(source))
         return client.get_redirect_url(params)
 
 

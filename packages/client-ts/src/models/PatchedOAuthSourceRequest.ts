@@ -170,6 +170,12 @@ export interface PatchedOAuthSourceRequest {
      */
     additionalScopes?: string;
     /**
+     * Expression that returns a dictionary of additional parameters to append to the authorization URL.
+     * @type {string}
+     * @memberof PatchedOAuthSourceRequest
+     */
+    additionalUrlParams?: string;
+    /**
      *
      * @type {string}
      * @memberof PatchedOAuthSourceRequest
@@ -254,6 +260,8 @@ export function PatchedOAuthSourceRequestFromJSONTyped(
         consumerKey: json["consumer_key"] == null ? undefined : json["consumer_key"],
         consumerSecret: json["consumer_secret"] == null ? undefined : json["consumer_secret"],
         additionalScopes: json["additional_scopes"] == null ? undefined : json["additional_scopes"],
+        additionalUrlParams:
+            json["additional_url_params"] == null ? undefined : json["additional_url_params"],
         oidcWellKnownUrl:
             json["oidc_well_known_url"] == null ? undefined : json["oidc_well_known_url"],
         oidcJwksUrl: json["oidc_jwks_url"] == null ? undefined : json["oidc_jwks_url"],
@@ -300,6 +308,7 @@ export function PatchedOAuthSourceRequestToJSONTyped(
         consumer_key: value["consumerKey"],
         consumer_secret: value["consumerSecret"],
         additional_scopes: value["additionalScopes"],
+        additional_url_params: value["additionalUrlParams"],
         oidc_well_known_url: value["oidcWellKnownUrl"],
         oidc_jwks_url: value["oidcJwksUrl"],
         oidc_jwks: value["oidcJwks"],

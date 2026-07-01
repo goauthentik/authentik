@@ -13023,6 +13023,11 @@
                     "type": "string",
                     "title": "Additional Scopes"
                 },
+                "additional_url_params": {
+                    "type": "string",
+                    "title": "Additional URL Parameters",
+                    "description": "Expression that returns a dictionary of additional parameters to append to the authorization URL."
+                },
                 "oidc_well_known_url": {
                     "type": "string",
                     "title": "Oidc well known url"

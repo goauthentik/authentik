@@ -222,6 +222,12 @@ export interface OAuthSource {
      */
     additionalScopes?: string;
     /**
+     * Expression that returns a dictionary of additional parameters to append to the authorization URL.
+     * @type {string}
+     * @memberof OAuthSource
+     */
+    additionalUrlParams?: string;
+    /**
      *
      * @type {SourceType}
      * @memberof OAuthSource
@@ -326,6 +332,8 @@ export function OAuthSourceFromJSONTyped(json: any, ignoreDiscriminator: boolean
         consumerKey: json["consumer_key"],
         callbackUrl: json["callback_url"],
         additionalScopes: json["additional_scopes"] == null ? undefined : json["additional_scopes"],
+        additionalUrlParams:
+            json["additional_url_params"] == null ? undefined : json["additional_url_params"],
         type: SourceTypeFromJSON(json["type"]),
         oidcWellKnownUrl:
             json["oidc_well_known_url"] == null ? undefined : json["oidc_well_known_url"],
@@ -384,6 +392,7 @@ export function OAuthSourceToJSONTyped(
         pkce: PKCEMethodEnumToJSON(value["pkce"]),
         consumer_key: value["consumerKey"],
         additional_scopes: value["additionalScopes"],
+        additional_url_params: value["additionalUrlParams"],
         oidc_well_known_url: value["oidcWellKnownUrl"],
         oidc_jwks_url: value["oidcJwksUrl"],
         oidc_jwks: value["oidcJwks"],
