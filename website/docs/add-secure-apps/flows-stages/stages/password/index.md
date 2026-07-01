@@ -36,7 +36,7 @@ When **Failed attempts before lockout** is greater than `0`, authentik deactivat
 
 Configure **Failed attempts before lockout** to be less than or equal to **Failed attempts before cancel**. If **Failed attempts before cancel** is lower, the flow is canceled before the lockout threshold is reached.
 
-The effective maximum is also bounded by the tenant reputation lower limit. For example, with the default lower limit of `-5`, a user whose reputation is already `-4` can only lose one more reputation point before the score reaches the lower limit. In that case, a lockout threshold greater than `1` cannot be reached in that flow run.
+The effective maximum is also bounded by the brand reputation lower limit. For example, with the default lower limit of `-5`, a user whose reputation is already `-4` can only lose one more reputation point before the score reaches the lower limit. In that case, a lockout threshold greater than `1` cannot be reached in that flow run.
 
 ## Notes
 
