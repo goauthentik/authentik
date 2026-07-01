@@ -208,7 +208,11 @@ class YAMLTag:
     """Base class for all YAML Tags"""
 
     def __repr__(self) -> str:
-        return str(self.resolve(BlueprintEntry(""), Blueprint()))
+        # resolve() may raise; a repr must never raise (called by the log sanitizer).
+        try:
+            return str(self.resolve(BlueprintEntry(""), Blueprint()))
+        except Exception:  # noqa: BLE001 - a repr must never raise
+            return f"<{self.__class__.__name__}>"
 
     def resolve(self, entry: BlueprintEntry, blueprint: Blueprint) -> Any:
         """Implement yaml tag logic"""

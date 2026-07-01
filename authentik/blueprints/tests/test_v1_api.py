@@ -156,6 +156,40 @@ class TestBlueprintsV1API(APITestCase):
         self.assertFalse(res.json()["success"])
         self.assertGreater(len(res.json()["logs"]), 0)
 
+    def test_api_import_invalid_blueprint_with_yaml_tag_returns_result_payload(self):
+        """An invalid entry that still holds a raw YAML tag (e.g. !KeyOf) must return
+        a result payload, not crash while sanitizing the logged entry."""
+        content = (
+            "version: 1\n"
+            "entries:\n"
+            "  - model: authentik_providers_oauth2.scopemapping\n"
+            "    id: sm\n"
+            "    identifiers: { scope_name: test-tag-scope }\n"
+            "    attrs:\n"
+            "      name: test-tag-scope\n"
+            "      scope_name: test-tag-scope\n"
+            '      expression: "return {}"\n'
+            "  - model: authentik_providers_oauth2.oauth2provider\n"
+            "    id: provider\n"
+            "    identifiers: { client_id: test-tag }\n"
+            "    attrs:\n"
+            "      name: test-tag\n"
+            "      client_id: test-tag\n"
+            "      property_mappings:\n"
+            "        - !KeyOf sm\n"
+        )
+        file = SimpleUploadedFile("invalid-blueprint-tag.yaml", content.encode())
+
+        res = self.client.post(
+            reverse("authentik_api:blueprintinstance-import-"),
+            data={"file": file},
+            format="multipart",
+        )
+
+        self.assertEqual(res.status_code, 200)
+        self.assertFalse(res.json()["success"])
+        self.assertGreater(len(res.json()["logs"]), 0)
+
     def test_api_import_unknown_path(self):
         """Path not in available blueprints is rejected (covers api.py:56)."""
         res = self.client.post(

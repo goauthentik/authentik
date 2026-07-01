@@ -4,8 +4,10 @@ from os import chmod, environ, unlink, write
 from tempfile import mkstemp
 
 from django.test import TransactionTestCase
+from yaml import load
 
 from authentik.blueprints.tests import apply_blueprint
+from authentik.blueprints.v1.common import BlueprintLoader
 from authentik.blueprints.v1.exporter import FlowExporter
 from authentik.blueprints.v1.importer import Importer, transaction_rollback
 from authentik.core.models import Group
@@ -37,6 +39,37 @@ class TestBlueprintsV1(TransactionTestCase):
             '"model": "authentik_core.Group"}]}'
         )
         self.assertFalse(importer.validate()[0])
+
+    def test_yaml_tag_repr_does_not_raise(self):
+        """repr() of a YAML tag must never raise (it is used by log sanitization)."""
+        tag = load("!KeyOf does-not-exist", Loader=BlueprintLoader)
+        self.assertIsInstance(repr(tag), str)
+
+    def test_validate_invalid_entry_holding_yaml_tag(self):
+        """An invalid entry that still holds a raw !KeyOf must return validation
+        errors instead of raising while sanitizing the logged entry."""
+        importer = Importer.from_string(
+            "version: 1\n"
+            "entries:\n"
+            "  - model: authentik_providers_oauth2.scopemapping\n"
+            "    id: sm\n"
+            "    identifiers: { scope_name: test-tag-scope }\n"
+            "    attrs:\n"
+            "      name: test-tag-scope\n"
+            "      scope_name: test-tag-scope\n"
+            '      expression: "return {}"\n'
+            "  - model: authentik_providers_oauth2.oauth2provider\n"
+            "    id: provider\n"
+            "    identifiers: { client_id: test-tag }\n"
+            "    attrs:\n"
+            "      name: test-tag\n"
+            "      client_id: test-tag\n"
+            "      property_mappings:\n"
+            "        - !KeyOf sm\n"
+        )
+        valid, logs = importer.validate()
+        self.assertFalse(valid)
+        self.assertGreater(len(logs), 0)
 
     def test_validated_import_dict_identifiers(self):
         """Test importing blueprints with dict identifiers."""
