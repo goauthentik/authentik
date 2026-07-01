@@ -13,6 +13,8 @@ authentik_enterprise: true
 authentik_preview: true
 ---
 
+import RedirectURI20265Note from "../../\_redirect-uri-2026-5-note.mdx";
+
 ## What is Apple Business Manager?
 
 > Apple Business Manager is a web-based portal for IT administrators, managers, and procurement professionals to manage devices, and automate device enrollment.
@@ -79,6 +81,8 @@ The following placeholders are used in this guide:
 - `authentik.company`: The FQDN of the authentik installation.
 
 ## authentik configuration
+
+<RedirectURI20265Note />
 
 The workflow to configure authentik as an identity provider for Apple Business Manager involves creating scope mappings, signing keys, a Shared Signals Framework provider, and an OIDC provider/application pair.
 
@@ -171,7 +175,18 @@ Alternatively, you can use an existing key if you have one available.
 
 :::tip Keep your text editor ready
 
-authentik will automatically generate the **Client ID** and **Client Secret** values for the new provider. You'll need these values when configuring Apple Business Manager.
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Applications** > **Providers** and click **New Provider** to open the provider wizard.
+    - **Choose a Provider type**: select **OAuth2/OpenID Provider** as the provider type.
+    - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+        - Note the **Client ID** and **Client Secret** values because they will be required later.
+        - Add a **Redirect URI** of type `Strict` `Authorization` as `https://gsa-ws.apple.com/grandslam/GsService2/acs`.
+        - Select any available signing key.
+        - Under **Advanced protocol settings**, in addition to the default scopes, add the four following **Selected Scopes** to the provider.
+            - `Apple Business Manager ssf.manage`
+            - `Apple Business Manager ssf.read`
+            - `Apple Business Manager profile`
+            - `authentik default OAuth Mapping: OpenID 'offline_access'`
 
 You can always find your provider's generated values by navigating to **Providers**, selecting the provider by name, and clicking the **Edit** button.
 

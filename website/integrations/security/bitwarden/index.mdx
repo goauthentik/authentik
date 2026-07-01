@@ -4,6 +4,7 @@ sidebar_label: Bitwarden
 support_level: community
 ---
 
+import RedirectURI20265Note from "../../_redirect-uri-2026-5-note.mdx";
 import TabItem from "@theme/TabItem";
 import Tabs from "@theme/Tabs";
 
@@ -42,6 +43,8 @@ You can configure Bitwarden to use either OIDC or SAML; this guide explains both
 
 ## authentik configuration
 
+<RedirectURI20265Note />
+
 To support the integration of Bitwarden with authentik, you need to create a property mapping and an application/provider pair in authentik.
 
 ### Create a property mapping
@@ -76,7 +79,7 @@ Bitwarden requires a first and last name for every user. However, authentik, by 
     - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
         - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
-        - Set a `Strict` redirect URI to:
+        - Add a **Redirect URI** of type `Strict` `Authorization`:
             - `https://sso.bitwarden.com/oidc-signin` for non-EU-based SaaS Bitwarden.
             - `https://sso.bitwarden.eu/oidc-signin` for EU-based SaaS Bitwarden.
             - `https://bitwarden.company/oidc-signin` for self-hosted Bitwarden.

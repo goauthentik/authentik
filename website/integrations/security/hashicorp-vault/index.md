@@ -4,6 +4,8 @@ sidebar_label: HashiCorp Vault
 support_level: authentik
 ---
 
+import RedirectURI20265Note from "../../\_redirect-uri-2026-5-note.mdx";
+
 ## What is Vault?
 
 > Secure, store and tightly control access to tokens, passwords, certificates, encryption keys for protecting secrets and other sensitive data using a UI, CLI, or HTTP API.
@@ -27,6 +29,8 @@ This documentation lists only the settings that you need to change from their de
 
 ## authentik configuration
 
+<RedirectURI20265Note />
+
 To support the integration of HashiCorp Vault with authentik, you need to create an application/provider pair in authentik.
 
 ### Create an application and provider in authentik
@@ -38,7 +42,7 @@ To support the integration of HashiCorp Vault with authentik, you need to create
 - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
 - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
     - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
-    - Add three `Strict` redirect URIs and set them to `https://vault.company/ui/vault/auth/oidc/oidc/callback`, `https://vault.company/oidc/callback`, and `http://localhost:8250/oidc/callback`.
+    - Add three **Redirect URIs** of type `Strict` `Authorization` as `https://vault.company/ui/vault/auth/oidc/oidc/callback`, `https://vault.company/oidc/callback`, and `http://localhost:8250/oidc/callback`.
     - Select any available signing key.
 - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 

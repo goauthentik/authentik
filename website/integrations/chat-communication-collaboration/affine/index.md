@@ -4,6 +4,8 @@ sidebar_label: AFFiNE
 support_level: community
 ---
 
+import RedirectURI20265Note from "../../\_redirect-uri-2026-5-note.mdx";
+
 ## What is AFFiNE?
 
 > AFFiNE is an open-source platform that allows you to bring together documents, whiteboards, and databases. It is a reliable tool designed to create a professional workspace for your work. With AFFiNE, you can focus on practicality and efficiency, making it easier to collaborate on your projects.
@@ -23,6 +25,8 @@ This documentation lists only the settings that you need to change from their de
 
 ## authentik configuration
 
+<RedirectURI20265Note />
+
 To support the integration of AFFiNE with authentik, you need to create an application/provider pair in authentik.
 
 ### Create an application and provider in authentik
@@ -34,7 +38,7 @@ To support the integration of AFFiNE with authentik, you need to create an appli
 - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
 - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
     - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
-    - Create a `Strict` redirect URI and set to `https://affine.company/oauth/callback`.
+    - Add a **Redirect URI** of type `Strict` `Authorization` as `https://affine.company/oauth/callback`.
     - Select any available signing key.
 - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 
