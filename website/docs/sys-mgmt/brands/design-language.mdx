@@ -51,7 +51,7 @@ A few rules keep names predictable. If you're writing custom CSS or generating t
 
 - **One semantic tier.** Token names express design decisions, not raw values. `--ak-color-primary` is the name; there's no public `--ak-color-brand-500` underneath it. If your brand needs a full custom palette, you remap the semantic tokens rather than reaching for a primitive palette.
 - **A single size scale: `xs`, `sm`, `md`, `lg`, `xl`, `2xl`, `3xl`, `4xl`.** Used consistently across `space`, `font.size`, `radius`, `border-width`, `shadow`, and `z-index`. There are no descriptive scales like `extraTight` or `loose`.
-- **Spelled-out group names.** `z-index`, not `z`. `border-width`, not `bw`. This makes  tokens discoverable in IDE autocomplete and brand custom CSS without having to memorize abbreviations.
+- **Spelled-out group names.** `z-index`, not `z`. `border-width`, not `bw`. This makes tokens discoverable in IDE autocomplete and brand custom CSS without having to memorize abbreviations.
 - **Private variables use a different prefix.** Variables starting with `--_` or `--ak-c-` are component-local and undocumented. They may change between authentik releases. Avoid targeting them in custom CSS unless a release explicitly documents one as stable.
 
 ## Light and dark themes
@@ -72,12 +72,12 @@ When you override semantic tokens in your custom CSS, follow the same pattern: p
 
 If your organization has its own design tooling, you can pull authentik's tokens in directly. The token system is published as the [`@goauthentik/theme`](https://www.npmjs.com/package/@goauthentik/theme) npm package, with three output formats:
 
-| Path                                           | Format        | Use case                                                                    |
-| ---------------------------------------------- | ------------- | --------------------------------------------------------------------------- |
+| Path                                           | Format        | Use case                                                                     |
+| ---------------------------------------------- | ------------- | ---------------------------------------------------------------------------- |
 | `@goauthentik/theme/index.css`                 | CSS           | Include in a stylesheet to mirror authentik's tokens in another web surface. |
-| `@goauthentik/theme/color.css` (and per group) | CSS           | Select a single category — for example, just colors, or just shadows.       |
-| `@goauthentik/theme/tokens.dtcg.json`          | DTCG 2025.10  | Import into Tokens Studio, Terrazzo, Figma, or any other DTCG-aware tool.   |
-| `@goauthentik/theme/tokens.dtcg.resolver.json` | DTCG resolver | Companion document that describes the `Dark` and `Reduced` theme modifiers. |
+| `@goauthentik/theme/color.css` (and per group) | CSS           | Select a single category — for example, just colors, or just shadows.        |
+| `@goauthentik/theme/tokens.dtcg.json`          | DTCG 2025.10  | Import into Tokens Studio, Terrazzo, Figma, or any other DTCG-aware tool.    |
+| `@goauthentik/theme/tokens.dtcg.resolver.json` | DTCG resolver | Companion document that describes the `Dark` and `Reduced` theme modifiers.  |
 
 The DTCG JSON files are intended to be read or hand-edited; they are also formatted and validated as part of the package's build.
 
