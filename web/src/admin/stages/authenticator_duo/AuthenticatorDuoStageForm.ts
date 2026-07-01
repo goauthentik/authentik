@@ -24,23 +24,19 @@ import { customElement } from "lit/decorators.js";
 
 @customElement("ak-stage-authenticator-duo-form")
 export class AuthenticatorDuoStageForm extends BaseStageForm<AuthenticatorDuoStage> {
-    loadInstance(pk: string): Promise<AuthenticatorDuoStage> {
-        return aki(StagesApi).stagesAuthenticatorDuoRetrieve({
-            stageUuid: pk,
-        });
-    }
-
-    async send(data: AuthenticatorDuoStage): Promise<AuthenticatorDuoStage> {
-        if (this.instance) {
-            return aki(StagesApi).stagesAuthenticatorDuoPartialUpdate({
-                stageUuid: this.instance.pk || "",
-                patchedAuthenticatorDuoStageRequest: data,
-            });
-        }
-        return aki(StagesApi).stagesAuthenticatorDuoCreate({
-            authenticatorDuoStageRequest: data as unknown as AuthenticatorDuoStageRequest,
-        });
-    }
+    protected endpoints = {
+        load: (stageUuid: string) => aki(StagesApi).stagesAuthenticatorDuoRetrieve({ stageUuid }),
+        create: (authenticatorDuoStageRequest: AuthenticatorDuoStage) =>
+            aki(StagesApi).stagesAuthenticatorDuoCreate({
+                authenticatorDuoStageRequest:
+                    authenticatorDuoStageRequest as unknown as AuthenticatorDuoStageRequest,
+            }),
+        update: (stageUuid: string, patchedAuthenticatorDuoStageRequest: AuthenticatorDuoStage) =>
+            aki(StagesApi).stagesAuthenticatorDuoPartialUpdate({
+                stageUuid,
+                patchedAuthenticatorDuoStageRequest,
+            }),
+    };
 
     protected override renderForm(): TemplateResult {
         return html` <span>

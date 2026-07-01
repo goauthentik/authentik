@@ -136,7 +136,7 @@ export default createDocusaurusConfig(
             navbar: {
                 logo: {
                     alt: "authentik logo",
-                    src: "img/icon_left_brand.svg",
+                    src: "https://goauthentik.io/img/icon_left_brand.svg",
                     href: "https://goauthentik.io/",
                     target: "_self",
                 },

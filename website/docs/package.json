@@ -23,7 +23,7 @@
         "@goauthentik/docusaurus-config": "../../packages/docusaurus-config",
         "@goauthentik/docusaurus-theme": "*",
         "@iconify-json/fa7-regular": "^1.2.2",
-        "@iconify-json/fa7-solid": "^1.2.3",
+        "@iconify-json/fa7-solid": "^1.2.5",
         "@iconify-json/fluent-mdl2": "^1.2.1",
         "@iconify-json/mdi": "^1.2.3",
         "@mdx-js/react": "^3.1.1",
