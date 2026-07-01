@@ -50,14 +50,24 @@
     --ak-v2-global--BackgroundColor--100: #fff;
     --ak-v2-global--BorderWidth--sm: 1px;
 
+    --ak-v2-global--BackgroundColor--over-photo-filter: rgba(3, 3, 3, 0.55);
+
     /* ---- Text Colors ---------- */
-    --pf-v5-global--Color--100: #151515;
+    --ak-v2-global--Color--100: #151515;
+    --ak-v2-global--Color--900: #f0f0f0;
 
     /* ---- Border Colors -------- */
     --ak-v2-global--BorderColor--100: #d2d2d2;
     --ak-v2-global--BorderColor--200: #8a8d90;
 
     /* ---- Box Shadows ------ */
+    --ak-v2-global--BoxShadow--md:
+        0 0.25rem 0.5rem 0rem rgba(3, 3, 3, 0.12), 0 0 0.25rem 0 rgba(3, 3, 3, 0.06);
+    --ak-v2-global--BoxShadow--md-top: 0 -0.5rem 0.5rem -0.375rem rgba(3, 3, 3, 0.18);
+    --ak-v2-global--BoxShadow--md-right: 0.5rem 0 0.5rem -0.375rem rgba(3, 3, 3, 0.18);
+    --ak-v2-global--BoxShadow--md-bottom: 0 0.5rem 0.5rem -0.375rem rgba(3, 3, 3, 0.18);
+    --ak-v2-global--BoxShadow--md-left: -0.5rem 0 0.5rem -0.375rem rgba(3, 3, 3, 0.18);
+
     --ak-v2-global--BoxShadow--lg:
         0 0.5rem 1rem 0 rgba(3, 3, 3, 0.16), 0 0 0.375rem 0 rgba(3, 3, 3, 0.08);
     --ak-v2-global--BoxShadow--lg-top: 0 -0.75rem 0.75rem -0.5rem rgba(3, 3, 3, 0.18);
@@ -78,6 +88,10 @@
     --ak-v2-global--gutter: 1rem;
     --ak-v2-global--gutter--md: 1.5rem;
 
+    /* ---- Border Radius -------- */
+    --ak-v2-global--BorderRadius--sm: var(--ak-v2-global--spacer--xs);
+    --ak-v2-global--BorderRadius--lg: 30em;
+
     /* ---- Z-Index -------------- */
     --ak-v2-global--ZIndex--xs: 100;
     --ak-v2-global--ZIndex--sm: 200;
@@ -87,6 +101,8 @@
 
     /* ---- Customization Bridge - */
     --ak-v2-global--dark-background: var(--ak-dark-background);
+    --ak-v2-global--SecondaryReverseColor: var(--pf-global--Color--200);
+    --ak-v2-global--Color--light-100: var(--pf-global--Color--light-100);
 }
 
 /* -------- Dark Theme ------------------------------- */
@@ -103,6 +119,13 @@
     --ak-v2-global--BorderColor--200: #444548;
 
     /* ---- Box Shadows ------ */
+    --ak-v2-global--BoxShadow--md:
+        0 0.25rem 0.5rem 0rem rgba(3, 3, 3, 0.48), 0 0 0.25rem 0 rgba(3, 3, 3, 0.24);
+    --ak-v2-global--BoxShadow--md-top: 0 -0.5rem 0.5rem -0.375rem rgba(3, 3, 3, 0.72);
+    --ak-v2-global--BoxShadow--md-right: 0.5rem 0 0.5rem -0.375rem rgba(3, 3, 3, 0.72);
+    --ak-v2-global--BoxShadow--md-bottom: 0 0.5rem 0.5rem -0.375rem rgba(3, 3, 3, 0.72);
+    --ak-v2-global--BoxShadow--md-left: -0.5rem 0 0.5rem -0.375rem rgba(3, 3, 3, 0.72);
+
     --ak-v2-global--BoxShadow--lg:
         0 0.5rem 1rem 0 rgba(3, 3, 3, 0.64), 0 0 0.375rem 0 rgba(3, 3, 3, 0.32);
     --ak-v2-global--BoxShadow--lg-top: 0 -0.75rem 0.75rem -0.5rem rgba(3, 3, 3, 0.72);

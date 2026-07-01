@@ -75,14 +75,3 @@ ak-flow-inspector-button {
         grid-row: header;
     }
 }
-
-@media (min-width: 70rem) and (min-height: 17.5rem) {
-    :host([data-layout^="sidebar"]),
-    [data-layout^="sidebar"] /* Compatibility mode */ {
-        --ak-global--BackgroundContrastFilter: none !important;
-
-        [part="locale-select"] {
-            --ak-c-flow-executor__locale-select--Color: inherit !important;
-        }
-    }
-}

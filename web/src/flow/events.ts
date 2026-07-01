@@ -1,6 +1,8 @@
 import type { FlowChallengeResponseRequestBody, SubmitOptions, SubmitRequest } from "#flow/types";
 
-import { ChallengeTypes } from "@goauthentik/api";
+import { ChallengeTypes, ContextualFlowInfo } from "@goauthentik/api";
+
+const PROPAGATES = { bubbles: true, composed: true };
 
 /**
  * @file Flow event utilities.
@@ -17,7 +19,7 @@ export class AKFlowInspectorChangeEvent extends Event {
     public readonly open: boolean;
 
     constructor(open: boolean) {
-        super(AKFlowInspectorChangeEvent.eventName, { bubbles: true, composed: true });
+        super(AKFlowInspectorChangeEvent.eventName, PROPAGATES);
 
         this.open = open;
     }
@@ -46,7 +48,7 @@ export class AKFlowAdvanceEvent extends Event {
     public static readonly eventName = "ak-flow-advance";
 
     constructor() {
-        super(AKFlowAdvanceEvent.eventName, { bubbles: true, composed: true });
+        super(AKFlowAdvanceEvent.eventName, PROPAGATES);
     }
 }
 
@@ -62,7 +64,7 @@ export class AKFlowUpdateChallengeRequest extends Event {
     public challenge: ChallengeTypes;
 
     constructor(challenge: ChallengeTypes) {
-        super(AKFlowUpdateChallengeRequest.eventName, { bubbles: true, composed: true });
+        super(AKFlowUpdateChallengeRequest.eventName, PROPAGATES);
         this.challenge = challenge;
     }
 }
@@ -75,11 +77,36 @@ export class AKFlowSubmitRequest extends Event {
         payload: FlowChallengeResponseRequestBody,
         options: SubmitOptions = { invisible: false },
     ) {
-        super(AKFlowSubmitRequest.eventName, { bubbles: true, composed: true });
+        super(AKFlowSubmitRequest.eventName, PROPAGATES);
         this.request = {
             payload,
             options,
         };
+    }
+}
+
+export class AKFlowInfoUpdateEvent extends Event {
+    public static readonly eventName = "ak-flow-info-update-event";
+    public flowInfo: ContextualFlowInfo | null = null;
+
+    constructor(flowInfo?: ContextualFlowInfo) {
+        super(AKFlowInfoUpdateEvent.eventName, PROPAGATES);
+        this.flowInfo = flowInfo ?? null;
+    }
+}
+
+// This is subtle: we don't actually *care* about the Promise's payload; we only care to show some
+// "loading" message (spinner, skeleton, whatever) when there's a network transaction underway. So
+// when we start a transaction, we send a copy of its promise in an event; upon receipt, a listener
+// can show whatever visual effect is desired, then listen for the promise to resolve, then stop the
+// visual effect. Complete separation and independence.
+//
+export class AKFlowLoadingEvent extends Event {
+    public static readonly eventName = "ak-flow-loading-event";
+    public awaiter: Promise<unknown>;
+    constructor(awaiter: Promise<unknown>) {
+        super(AKFlowLoadingEvent.eventName, PROPAGATES);
+        this.awaiter = awaiter;
     }
 }
 
@@ -93,6 +120,8 @@ declare global {
 
     interface HTMLElementEventMap {
         [AKFlowSubmitRequest.eventName]: AKFlowSubmitRequest;
+        [AKFlowInfoUpdateEvent.eventName]: AKFlowInfoUpdateEvent;
+        [AKFlowLoadingEvent.eventName]: AKFlowLoadingEvent;
         [AKFlowUpdateChallengeRequest.eventName]: AKFlowUpdateChallengeRequest;
     }
 }
