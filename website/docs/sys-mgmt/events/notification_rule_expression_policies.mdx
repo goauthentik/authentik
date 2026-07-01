@@ -3,51 +3,47 @@ title: Notification Rule Expression Policies
 sidebar_label: Expression Policies
 ---
 
-[Notification rules](./notifications.md) with [bound expression policies](./notifications.md#3-create-a-notification-rule-and-bind-it-to-the-policy) are very powerful. The following are examples of what can be achieved.
+[Notification rules](./notifications.md) with [bound expression policies](./notifications.md#3-create-a-notification-rule-and-bind-it-to-the-policy) can match event context, update related objects, and send custom messages. The following examples show common event-driven automation patterns.
 
 ## Send a welcome email to newly created users
 
-This expression policy sends a welcome email to a user when their account is created, regardless of whether the account was created through an enrollment flow, the Admin interface, the API, or a source sync. It uses the [`ak_send_email`](../../customize/policies/types/expression/reference.mdx) function (available since authentik 2025.10) to email the new user directly, instead of notifying an administrator or a group.
+This expression policy sends a welcome email to a user when their account is created through an enrollment flow, the Admin interface, the API, or a source sync. Instead of creating an administrator notification, it uses [`ak_send_email`](../../customize/policies/types/expression/reference.mdx) to email the new user directly.
 
 ### Prerequisites
 
-authentik must be able to send email before you can use `ak_send_email`. To do this, either configure the [global email settings](../../install-config/email.mdx), or set up an [Email stage](../../add-secure-apps/flows-stages/stages/email/index.md) and pass it to `ak_send_email` via its `stage` argument to use that stage’s connection settings instead.
+authentik must be able to send email before you can use `ak_send_email`. Either configure the [global email settings](../../install-config/email.mdx), or set up an [Email stage](../../add-secure-apps/flows-stages/stages/email/index.md) and pass it to `ak_send_email` with the `stage` argument to use that stage's connection settings.
 
 ### Create the expression policy
 
-1. Log in to authentik as an administrator and open the Admin interface.
-2. Navigate to **Customization** > **Policies**.
-3. Click **Create**, select **Expression Policy**, and click **Next**.
-4. Give the policy a name, such as `send-welcome-email`.
-5. Paste the expression below into the **Expression** field.
-6. Click **Finish**.
+1. Log in as an administrator, open the authentik Admin interface, and navigate to **Customization > Policies**.
+2. Click **Create**, select **Expression Policy**, and click **Next**.
+3. Give the policy a name, such as `send-welcome-email`.
+4. Paste the expression below into the **Expression** field.
+5. Click **Finish**.
 
 ```python
 from authentik.core.models import User
 
-# Check if an event has occurred
-event = request.context.get("event", None)
+event = request.context.get("event")
 if not event:
     ak_logger.info("no event")
     return False
 
-# Check if the event action includes creating a model
 if event.action != "model_created":
     ak_logger.info("event action does not match")
     return False
 
-model_app = event.context["model"]["app"]
-model_name = event.context["model"]["model_name"]
+model = event.context.get("model", {})
+model_app = model.get("app")
+model_name = model.get("model_name")
 
-# Check if the model that was created is the user model
 if model_app != "authentik_core" or model_name != "user":
     ak_logger.info("model does not match")
     return False
 
-user_pk = event.context["model"]["pk"]
+user_pk = model.get("pk")
 user = User.objects.filter(pk=user_pk).first()
 
-# Check if a user object was found and has an email address
 if not user:
     ak_logger.info("user not found")
     return False
@@ -55,16 +51,17 @@ if not user.email:
     ak_logger.info("user has no email address")
     return False
 
-# Send the welcome email directly to the new user
 login_url = "https://authentik.company"
 ak_send_email(
     user.email,
     "Welcome to authentik",
-    body=f"Hello {user.name},\n\nYour authentik account has been created. You can log in at {login_url}.",
+    body=(
+        f"Hello {user.name},\n\n"
+        f"Your authentik account has been created. You can log in at {login_url}."
+    ),
 )
 
-# Return False so the notification rule itself does not fire; the email
-# above is the only action we want to take.
+# Return False so the notification rule does not create a notification object.
 return False
 ```
 
@@ -72,210 +69,187 @@ return False
 
 The policy only runs when it is bound to a notification rule that triggers on the relevant events.
 
-1. Navigate to **Events** > **Notification Rules**.
-2. Click **Create**, give the rule a name such as `welcome-email`, and click **Create**.
-3. In the list of notification rules, click the arrow next to the new rule to expand it, then click **Create or bind...** > **Bind Existing...** and select the `send-welcome-email` policy.
+1. Navigate to **Event > Notification Rules**.
+2. Click **New Notification Rule**.
+3. Give the rule a name, such as `welcome-email`.
+4. Leave **Send notification to event user** disabled, leave **Destination group** empty, and do not select a notification transport.
+5. Click **Create Notification Rule**.
+6. In the list of notification rules, click the arrow next to the new rule to expand the rule details.
+7. Click **Create or bind...**. Under **Bind Existing...**, select **Bind an existing policy**.
+8. In the **Create Binding** modal, select the `send-welcome-email` policy, and then click **Create**.
 
-You do not need to select a destination group or a transport on the rule. As noted in [Notification Rules](./notifications.md#3-create-a-notification-rule-and-bind-it-to-the-policy), bound policies are executed even when no destination is selected — and because the policy returns `False`, no notification is ever created. The email is sent entirely by the `ak_send_email` call inside the policy.
+This pattern does not require a destination group or transport on the rule. As noted in [Notification Rules](./notifications.md#3-create-a-notification-rule-and-bind-it-to-the-policy), bound policies are executed even when no destination is selected. Because this policy returns `False`, authentik does not create a notification object. The email is sent entirely by the `ak_send_email` call inside the policy.
 
-Matching on `model_created` ensures that the email is only sent when the account is first created. Other changes to the user, such as a password reset, are recorded as `model_updated` and will not trigger this policy.
+Matching on `model_created` ensures that the email is only sent when the account is first created. Other changes to the user, such as a password reset, are recorded as `model_updated` and do not trigger this policy.
 
 To send a richer, branded message instead of plain text, replace the `body` argument with a `template` argument pointing to a [custom email template](../../add-secure-apps/flows-stages/stages/email/index.md#custom-templates), and pass any values the template needs through the `context` argument. See the [`ak_send_email` reference](../../customize/policies/types/expression/reference.mdx) for all available parameters.
 
 :::info
-One easy way to let the new user set their own password is to point `login_url` at your recovery flow instead, for example `https://authentik.company/if/flow/default-recovery-flow/`. Replace `default-recovery-flow` with the slug of the flow you want to use. This is the same URL as the **Forgot password?** link on the login screen: the user enters their email address and authentik sends them a link to set a password. The flow must exist for the URL to work.
+To let the new user set their own password, point `login_url` at your recovery flow, for example `https://authentik.company/if/flow/default-recovery-flow/`. Replace `default-recovery-flow` with the slug of the flow you want to use. The user can then enter their email address and receive a password setup link. The flow must exist for the URL to work.
 
 For the built-in ways to send a set-password link, see [User credentials recovery](../../users-sources/user/user_basic_operations.md#user-credentials-recovery).
 :::
 
 ## Trigger alert when user logs in from unknown device
 
-This expression policy is triggered when a user logs in from an unknown device. This can be combined with a notification rule to alert administrators, or the user in question if `Send notification to event user` is enabled on the notification rule.
+This expression policy matches login events from an unknown device. Use it with a notification rule to alert administrators, or enable **Send notification to event user** on the rule to alert the user who logged in.
 
 ```python
-# Check if an event has occurred
-event = request.context.get("event", None)
+event = request.context.get("event")
 if not event:
     ak_logger.info("no event")
     return False
 
-# Check if the event action includes updating a model
 if event.action != "login":
     ak_logger.info("event action does not match")
     return False
 
-# Get the known device status
-known_device = event.context["auth_method_args"]["known_device"]
+known_device = event.context.get("auth_method_args", {}).get("known_device")
 
-# Alert if device is unknown
-if known_device == False:
-  ak_logger.info("User logged in from unknown device")
-  return True
-else:
-  return False
+if known_device is False:
+    ak_logger.info("user logged in from unknown device")
+    return True
+
+return False
 ```
 
 ## Change user attributes upon account deactivation
 
-This expression policy is triggered when a user account with the `sshPublicKey` attribute set is deactivated. It saves the `sshPublicKey` attribute to a new `inactivesshPublicKey` attribute, and subsequently nullifies the `sshPublicKey` attribute.
+This expression policy runs when a user account with the `sshPublicKey` attribute is deactivated. It moves the value to `inactiveSSHPublicKey`, clears `sshPublicKey`, and saves the updated user attributes.
 
 ```python
 from authentik.core.models import User
 
-# Check if an event has occurred
-event = request.context.get("event", None)
+event = request.context.get("event")
 if not event:
     ak_logger.info("no event")
     return False
 
-# Check if the event action includes updating a model
 if event.action != "model_updated":
     ak_logger.info("event action does not match")
     return False
 
-model_app = event.context["model"]["app"]
-model_name = event.context["model"]["model_name"]
+model = event.context.get("model", {})
+model_app = model.get("app")
+model_name = model.get("model_name")
 
-# Check if the model that was updated is the user model
 if model_app != "authentik_core" or model_name != "user":
     ak_logger.info("model does not match")
+    return False
 
-user_pk = event.context["model"]["pk"]
+user_pk = model.get("pk")
 user = User.objects.filter(pk=user_pk).first()
-
-# Check if an user object was found
 if not user:
     ak_logger.info("user not found")
     return False
 
-# Check if user is active
 if user.is_active:
     ak_logger.info("user is active, not changing")
     return False
 
-# Check if user has the `sshPublicKey` attribute set
 if not user.attributes.get("sshPublicKey"):
     ak_logger.info("no public keys to remove")
     return False
 
-# Save the `sshPublicKey` attribute to a new `inactiveSSHPublicKey` attribute
 user.attributes["inactiveSSHPublicKey"] = user.attributes["sshPublicKey"]
-
-# Nullify the `sshPublicKey` attribute
 user.attributes["sshPublicKey"] = []
-
-# Save the changes made to the user
-user.save()
+user.save(update_fields=["attributes"])
 
 return False
 ```
 
 ## Alert when application is created without binding
 
-This expression policy is triggered when a new application is created without any user, group, or policy bound to it. The notification rule can then be configured to alert an administrator. This feature is useful for ensuring limited access to applications, because by default an application without any users, groups, or policies bound to it can be accessed by all users.
+This expression policy matches newly created applications that do not have a user, group, or policy binding. Use it with a notification rule to alert an administrator, because an application without bindings can be accessed by all users by default.
 
 ```python
 from authentik.core.models import Application
 from authentik.policies.models import PolicyBinding
 
-# Check if an event has occurred
-event = request.context.get("event", None)
+event = request.context.get("event")
 if not event:
     ak_logger.info("no event")
     return False
 
-# Check if the event action includes creating a model
 if event.action != "model_created":
     ak_logger.info("event action does not match")
     return False
 
-model_app = event.context["model"]["app"]
-model_name = event.context["model"]["model_name"]
+model = event.context.get("model", {})
+model_app = model.get("app")
+model_name = model.get("model_name")
 
-# Check if the model that was created is the application model
 if model_app != "authentik_core" or model_name != "application":
     ak_logger.info("model does not match")
+    return False
 
-application_pk = event.context["model"]["pk"]
+application_pk = model.get("pk")
 application = Application.objects.filter(pk=application_pk).first()
-
-# Check if an application object was found
 if not application:
     ak_logger.info("application not found")
     return False
 
-# Check if application has binding
 if PolicyBinding.objects.filter(target=application).exists():
-    output = PolicyBinding.objects.filter(target=application)
-    ak_logger.info("application has bindings, returning true")
-    return True
+    ak_logger.info("application has bindings")
+    return False
 
-return False
+ak_logger.info("application has no bindings")
+return True
 ```
 
 ## Append user addition history to group attributes
 
-This expression policy is triggered when a user is added to a group. The policy then creates and updates a `UserAddedHistory` attribute to the group with a date/time stamp and the username of the added user. This functionality is already available within the changelog of a group, but this code can be used as a template to trigger alerts or other events.
+This expression policy runs when users are added to a group. It appends a timestamped entry to the group's `UserAddedHistory` attribute for each added user. This information is already available in the group's changelog, but the code can be used as a template for alerts or other event-driven updates.
 
 :::info
 This policy interacts with the `diff` event output. This field is only available with an enterprise license.
 :::
 
 ```python
-from authentik.core.models import User
-from authentik.core.models import Group
-from datetime import datetime
+from django.utils import timezone
 
-# Check if an event has occurred
-event = request.context.get("event", None)
+from authentik.core.models import Group, User
+
+event = request.context.get("event")
 if not event:
     ak_logger.info("no event")
     return False
 
-# Check if the event action includes updating a model
 if event.action != "model_updated":
     ak_logger.info("event action does not match")
     return False
 
-model_app = event.context["model"]["app"]
-model_name = event.context["model"]["model_name"]
+model = event.context.get("model", {})
+model_app = model.get("app")
+model_name = model.get("model_name")
 
-# Check if the model that was updated is the group model
 if model_app != "authentik_core" or model_name != "group":
     ak_logger.info("model does not match")
-
-group_pk = event.context["model"]["pk"]
-group = Group.objects.filter(pk=group_pk).first()
-
-# If user was added to group, get user object, else return false
-if "add" in event.context["diff"]["users"]:
-    ak_logger.info("user added to group")
-
-    user_pk = event.context["diff"]["users"]["add"][0]
-    user = User.objects.filter(pk=user_pk).first()
-else:
-    ak_logger.info("user not added to group")
     return False
 
-# Check if a group object was found
+group_pk = model.get("pk")
+group = Group.objects.filter(pk=group_pk).first()
 if not group:
     ak_logger.info("group not found")
     return False
 
-# Check if an user object was found
-if not user:
-    ak_logger.info("user not found")
+added_user_pks = event.context.get("diff", {}).get("users", {}).get("add", [])
+if not added_user_pks:
+    ak_logger.info("user not added to group")
     return False
 
 if not group.attributes.get("UserAddedHistory"):
     group.attributes["UserAddedHistory"] = []
 
-current_date_time = datetime.now().isoformat(timespec='seconds')
+current_date_time = timezone.now().isoformat(timespec="seconds")
+users = User.objects.filter(pk__in=added_user_pks)
 
-group.attributes["UserAddedHistory"].append(current_date_time + " - Added user: " + user.username)
+for user in users:
+    group.attributes["UserAddedHistory"].append(
+        f"{current_date_time} - Added user: {user.username}"
+    )
 
-# Save the changes made to the group
-group.save()
+group.save(update_fields=["attributes"])
 
 return False
 ```
