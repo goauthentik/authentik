@@ -160,7 +160,33 @@ export class PasswordStageForm extends BaseStageForm<PasswordStage> {
                         />
                         <p class="pf-c-form__helper-text">
                             ${msg(
-                                "How many attempts a user has before the flow is canceled. To lock the user out, use a reputation policy and a user_write stage.",
+                                "How many attempts a user has before the flow is canceled. To deactivate the user after failed attempts, configure failed attempts before lockout.",
+                                {
+                                    id: "stages.password.failed-attempts-before-cancel.description",
+                                },
+                            )}
+                        </p>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
+                        label=${msg("Failed attempts before lockout", {
+                            id: "stages.password.failed-attempts-before-lockout.label",
+                        })}
+                        required
+                        name="failedAttemptsBeforeLockout"
+                    >
+                        <input
+                            type="number"
+                            min="0"
+                            value="${this.instance?.failedAttemptsBeforeLockout ?? 0}"
+                            class="pf-c-form-control"
+                            required
+                        />
+                        <p class="pf-c-form__helper-text">
+                            ${msg(
+                                "How many failed attempts a user has before their account is deactivated. Set to 0 to disable. This must be less than or equal to failed attempts before cancel.",
+                                {
+                                    id: "stages.password.failed-attempts-before-lockout.description",
+                                },
                             )}
                         </p>
                     </ak-form-element-horizontal>

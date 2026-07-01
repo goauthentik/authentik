@@ -40,11 +40,17 @@ export interface PatchedPasswordStageRequest {
      */
     configureFlow?: string | null;
     /**
-     * How many attempts a user has before the flow is canceled. To lock the user out, use a reputation policy and a user_write stage.
+     * How many attempts a user has before the flow is canceled. To deactivate the user after failed attempts, configure failed attempts before lockout.
      * @type {number}
      * @memberof PatchedPasswordStageRequest
      */
     failedAttemptsBeforeCancel?: number;
+    /**
+     * How many failed attempts a user has before their account is deactivated. Set to 0 to disable. This must be less than or equal to failed attempts before cancel.
+     * @type {number}
+     * @memberof PatchedPasswordStageRequest
+     */
+    failedAttemptsBeforeLockout?: number;
     /**
      * When enabled, provides a 'show password' button with the password input field.
      * @type {boolean}
@@ -84,6 +90,10 @@ export function PatchedPasswordStageRequestFromJSONTyped(
             json["failed_attempts_before_cancel"] == null
                 ? undefined
                 : json["failed_attempts_before_cancel"],
+        failedAttemptsBeforeLockout:
+            json["failed_attempts_before_lockout"] == null
+                ? undefined
+                : json["failed_attempts_before_lockout"],
         allowShowPassword:
             json["allow_show_password"] == null ? undefined : json["allow_show_password"],
     };
@@ -109,6 +119,7 @@ export function PatchedPasswordStageRequestToJSONTyped(
                 : (value["backends"] as Array<any>).map(BackendsEnumToJSON),
         configure_flow: value["configureFlow"],
         failed_attempts_before_cancel: value["failedAttemptsBeforeCancel"],
+        failed_attempts_before_lockout: value["failedAttemptsBeforeLockout"],
         allow_show_password: value["allowShowPassword"],
     };
 }

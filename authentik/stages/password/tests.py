@@ -167,6 +167,50 @@ class TestPasswordStage(FlowTestCase):
         # To ensure the plan has been cancelled, check SESSION_KEY_PLAN
         self.assertNotIn(SESSION_KEY_PLAN, self.client.session)
         self.assertStageResponse(response, flow=self.flow, error_message="Invalid password")
+        self.user.refresh_from_db()
+        self.assertTrue(self.user.is_active)
+
+    def test_invalid_password_account_lockout(self):
+        """Test invalid passwords deactivate the user when lockout is configured"""
+        self.stage.failed_attempts_before_lockout = 2
+        self.stage.save()
+
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
+        plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
+        session = self.client.session
+        session[SESSION_KEY_PLAN] = plan
+        session.save()
+
+        res = self.client.get(
+            reverse(
+                "authentik_api:flow-executor",
+                kwargs={"flow_slug": self.flow.slug},
+            ),
+        )
+        self.assertEqual(res.status_code, 200)
+
+        response = self.client.post(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
+            {"password": self.user.username + "test"},
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertStageResponse(
+            response,
+            flow=self.flow,
+            response_errors={"password": [{"string": "Invalid password", "code": "invalid"}]},
+        )
+        self.user.refresh_from_db()
+        self.assertTrue(self.user.is_active)
+
+        response = self.client.post(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
+            {"password": self.user.username + "test"},
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertNotIn(SESSION_KEY_PLAN, self.client.session)
+        self.assertStageResponse(response, flow=self.flow, error_message="Invalid password")
+        self.user.refresh_from_db()
+        self.assertFalse(self.user.is_active)
 
     @patch(
         "authentik.flows.views.executor.to_stage_response",

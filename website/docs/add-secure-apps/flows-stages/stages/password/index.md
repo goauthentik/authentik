@@ -18,6 +18,7 @@ The stage supports authentik's built-in password database, app passwords, LDAP-b
     - **User database + LDAP password**
     - **User database + Kerberos password**
 - **Failed attempts before cancel**: how many failed password submissions are allowed before the flow is canceled.
+- **Failed attempts before lockout**: how many failed password submissions are allowed before the pending user's account is deactivated. Set this to `0` to disable account lockout.
 - **Allow show password**: show a button that reveals the entered password.
 - **Configuration flow**: optional authenticated flow that lets users configure or change their password from user settings.
 
@@ -26,6 +27,16 @@ The stage supports authentik's built-in password database, app passwords, LDAP-b
 This stage is typically bound after an [Identification](../identification/index.md) stage and before an [Authenticator Validation](../authenticator_validate/index.md) or [User Login](../user_login/index.md) stage.
 
 If the [Identification stage](../identification/index.md) has its **Password stage** option set, the password prompt is rendered as part of the identification step and the Password stage should not also be bound separately in the same flow.
+
+### Failed attempts and account lockout
+
+The Password stage measures failed password submissions by comparing the pending user's reputation score when the password challenge is shown with the score after each failed password submission. Each invalid password submission lowers the user's reputation score.
+
+When **Failed attempts before lockout** is greater than `0`, authentik deactivates the pending user after the configured reputation score decrease is reached. The user must be reactivated by an administrator before they can log in again.
+
+Configure **Failed attempts before lockout** to be less than or equal to **Failed attempts before cancel**. If **Failed attempts before cancel** is lower, the flow is canceled before the lockout threshold is reached.
+
+The effective maximum is also bounded by the tenant reputation lower limit. For example, with the default lower limit of `-5`, a user whose reputation is already `-4` can only lose one more reputation point before the score reaches the lower limit. In that case, a lockout threshold greater than `1` cannot be reached in that flow run.
 
 ## Notes
 
