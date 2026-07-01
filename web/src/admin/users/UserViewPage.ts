@@ -26,7 +26,7 @@ import { CapabilitiesEnum, CoreApi, ModelEnum, User } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html, PropertyValues } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { customElement, property, state } from "lit/decorators.js";
 
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
@@ -43,6 +43,9 @@ export class UserViewPage extends WithLicenseSummary(
 
     @property({ attribute: false, useDefault: true })
     public user: User | null = null;
+
+    @state()
+    private activatedTabs = new Set<string>(["page-overview"]);
 
     static styles = [PFPage, PFContent, PFCard];
 
@@ -88,6 +91,18 @@ export class UserViewPage extends WithLicenseSummary(
         }
     }
 
+    protected activateTab(tab: string) {
+        if (this.activatedTabs.has(tab)) {
+            return;
+        }
+
+        this.activatedTabs = new Set([...this.activatedTabs, tab]);
+    }
+
+    protected renderWhenActive(tab: string, content: unknown) {
+        return this.activatedTabs.has(tab) ? content : null;
+    }
+
     protected override render() {
         if (!this.user) {
             return null;
@@ -102,6 +117,7 @@ export class UserViewPage extends WithLicenseSummary(
                     id="page-overview"
                     aria-label=${msg("Overview")}
                     class="pf-c-page__main-section pf-m-no-padding-mobile"
+                    @activate=${() => this.activateTab("page-overview")}
                 >
                     <ak-user-overview-tab
                         .user=${this.user}
@@ -118,10 +134,14 @@ export class UserViewPage extends WithLicenseSummary(
                     id="page-groups"
                     aria-label=${msg("Groups")}
                     class="pf-c-page__main-section pf-m-no-padding-mobile"
+                    @activate=${() => this.activateTab("page-groups")}
                 >
-                    <div class="pf-c-card">
-                        <ak-group-related-list .targetUser=${this.user}></ak-group-related-list>
-                    </div>
+                    ${this.renderWhenActive(
+                        "page-groups",
+                        html`<div class="pf-c-card">
+                            <ak-group-related-list .targetUser=${this.user}></ak-group-related-list>
+                        </div>`,
+                    )}
                 </div>
                 <div
                     role="tabpanel"
@@ -129,8 +149,12 @@ export class UserViewPage extends WithLicenseSummary(
                     slot="page-roles"
                     id="page-roles"
                     aria-label=${msg("Roles")}
+                    @activate=${() => this.activateTab("page-roles")}
                 >
-                    <ak-user-roles-tab .user=${this.user}></ak-user-roles-tab>
+                    ${this.renderWhenActive(
+                        "page-roles",
+                        html`<ak-user-roles-tab .user=${this.user}></ak-user-roles-tab>`,
+                    )}
                 </div>
                 <div
                     role="tabpanel"
@@ -139,10 +163,14 @@ export class UserViewPage extends WithLicenseSummary(
                     id="page-events"
                     aria-label=${msg("User events")}
                     class="pf-c-page__main-section pf-m-no-padding-mobile"
+                    @activate=${() => this.activateTab("page-events")}
                 >
-                    <div class="pf-c-card">
-                        <ak-events-user targetUser=${this.user.username}></ak-events-user>
-                    </div>
+                    ${this.renderWhenActive(
+                        "page-events",
+                        html`<div class="pf-c-card">
+                            <ak-events-user targetUser=${this.user.username}></ak-events-user>
+                        </div>`,
+                    )}
                 </div>
                 <div
                     role="tabpanel"
@@ -150,8 +178,14 @@ export class UserViewPage extends WithLicenseSummary(
                     slot="page-credentials"
                     id="page-credentials"
                     aria-label=${msg("Credentials / Tokens")}
+                    @activate=${() => this.activateTab("page-credentials")}
                 >
-                    <ak-user-credentials-tab .user=${this.user}></ak-user-credentials-tab>
+                    ${this.renderWhenActive(
+                        "page-credentials",
+                        html`<ak-user-credentials-tab
+                            .user=${this.user}
+                        ></ak-user-credentials-tab>`,
+                    )}
                 </div>
                 <div
                     role="tabpanel"
@@ -160,19 +194,31 @@ export class UserViewPage extends WithLicenseSummary(
                     id="page-applications"
                     aria-label=${msg("Applications")}
                     class="pf-c-page__main-section pf-m-no-padding-mobile"
+                    @activate=${() => this.activateTab("page-applications")}
                 >
-                    <ak-user-applications-tab .user=${this.user}></ak-user-applications-tab>
+                    ${this.renderWhenActive(
+                        "page-applications",
+                        html`<ak-user-applications-tab
+                            .user=${this.user}
+                        ></ak-user-applications-tab>`,
+                    )}
                 </div>
-                <ak-rbac-object-permission-page
+                <div
                     role="tabpanel"
                     tabindex="0"
                     slot="page-permissions"
                     id="page-permissions"
                     aria-label=${msg("Permissions")}
-                    model=${ModelEnum.AuthentikCoreUser}
-                    objectPk=${this.user.pk}
+                    @activate=${() => this.activateTab("page-permissions")}
                 >
-                </ak-rbac-object-permission-page>
+                    ${this.renderWhenActive(
+                        "page-permissions",
+                        html`<ak-rbac-object-permission-page
+                            model=${ModelEnum.AuthentikCoreUser}
+                            objectPk=${this.user.pk}
+                        ></ak-rbac-object-permission-page>`,
+                    )}
+                </div>
             </ak-tabs>
         </main>`;
     }

@@ -15,7 +15,7 @@ import { User } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html, nothing } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
@@ -26,7 +26,22 @@ export class UserCredentialsTab extends AKElement {
     @property({ attribute: false })
     public user?: User;
 
+    @state()
+    private activatedTabs = new Set<string>(["page-sessions"]);
+
     static styles = [PFPage, PFCard];
+
+    protected activateTab(tab: string) {
+        if (this.activatedTabs.has(tab)) {
+            return;
+        }
+
+        this.activatedTabs = new Set([...this.activatedTabs, tab]);
+    }
+
+    protected renderWhenActive(tab: string, content: unknown) {
+        return this.activatedTabs.has(tab) ? content : null;
+    }
 
     protected override render() {
         if (!this.user) {
@@ -41,10 +56,16 @@ export class UserCredentialsTab extends AKElement {
                 id="page-sessions"
                 aria-label=${msg("Sessions")}
                 class="pf-c-page__main-section pf-m-no-padding-mobile"
+                @activate=${() => this.activateTab("page-sessions")}
             >
-                <div class="pf-c-card">
-                    <ak-user-session-list targetUser=${this.user.username}></ak-user-session-list>
-                </div>
+                ${this.renderWhenActive(
+                    "page-sessions",
+                    html`<div class="pf-c-card">
+                        <ak-user-session-list
+                            targetUser=${this.user.username}
+                        ></ak-user-session-list>
+                    </div>`,
+                )}
             </div>
             <div
                 role="tabpanel"
@@ -53,10 +74,14 @@ export class UserCredentialsTab extends AKElement {
                 id="page-tokens"
                 aria-label=${msg("Tokens")}
                 class="pf-c-page__main-section pf-m-no-padding-mobile"
+                @activate=${() => this.activateTab("page-tokens")}
             >
-                <div class="pf-c-card">
-                    <ak-admin-user-token-list .user=${this.user}></ak-admin-user-token-list>
-                </div>
+                ${this.renderWhenActive(
+                    "page-tokens",
+                    html`<div class="pf-c-card">
+                        <ak-admin-user-token-list .user=${this.user}></ak-admin-user-token-list>
+                    </div>`,
+                )}
             </div>
             <div
                 role="tabpanel"
@@ -65,13 +90,17 @@ export class UserCredentialsTab extends AKElement {
                 id="page-reputation"
                 aria-label=${msg("Reputation scores")}
                 class="pf-c-page__main-section pf-m-no-padding-mobile"
+                @activate=${() => this.activateTab("page-reputation")}
             >
-                <div class="pf-c-card">
-                    <ak-user-reputation-list
-                        targetUsername=${this.user.username}
-                        targetEmail=${ifDefined(this.user.email)}
-                    ></ak-user-reputation-list>
-                </div>
+                ${this.renderWhenActive(
+                    "page-reputation",
+                    html`<div class="pf-c-card">
+                        <ak-user-reputation-list
+                            targetUsername=${this.user.username}
+                            targetEmail=${ifDefined(this.user.email)}
+                        ></ak-user-reputation-list>
+                    </div>`,
+                )}
             </div>
             <div
                 role="tabpanel"
@@ -80,10 +109,14 @@ export class UserCredentialsTab extends AKElement {
                 id="page-consent"
                 aria-label=${msg("Explicit Consent")}
                 class="pf-c-page__main-section pf-m-no-padding-mobile"
+                @activate=${() => this.activateTab("page-consent")}
             >
-                <div class="pf-c-card">
-                    <ak-user-consent-list userId=${this.user.pk}></ak-user-consent-list>
-                </div>
+                ${this.renderWhenActive(
+                    "page-consent",
+                    html`<div class="pf-c-card">
+                        <ak-user-consent-list userId=${this.user.pk}></ak-user-consent-list>
+                    </div>`,
+                )}
             </div>
             <div
                 role="tabpanel"
@@ -92,12 +125,16 @@ export class UserCredentialsTab extends AKElement {
                 id="page-oauth-access"
                 aria-label=${msg("OAuth Access Tokens")}
                 class="pf-c-page__main-section pf-m-no-padding-mobile"
+                @activate=${() => this.activateTab("page-oauth-access")}
             >
-                <div class="pf-c-card">
-                    <ak-user-oauth-access-token-list
-                        userId=${this.user.pk}
-                    ></ak-user-oauth-access-token-list>
-                </div>
+                ${this.renderWhenActive(
+                    "page-oauth-access",
+                    html`<div class="pf-c-card">
+                        <ak-user-oauth-access-token-list
+                            userId=${this.user.pk}
+                        ></ak-user-oauth-access-token-list>
+                    </div>`,
+                )}
             </div>
             <div
                 role="tabpanel"
@@ -106,12 +143,16 @@ export class UserCredentialsTab extends AKElement {
                 id="page-oauth-refresh"
                 aria-label=${msg("OAuth Refresh Tokens")}
                 class="pf-c-page__main-section pf-m-no-padding-mobile"
+                @activate=${() => this.activateTab("page-oauth-refresh")}
             >
-                <div class="pf-c-card">
-                    <ak-user-oauth-refresh-token-list
-                        userId=${this.user.pk}
-                    ></ak-user-oauth-refresh-token-list>
-                </div>
+                ${this.renderWhenActive(
+                    "page-oauth-refresh",
+                    html`<div class="pf-c-card">
+                        <ak-user-oauth-refresh-token-list
+                            userId=${this.user.pk}
+                        ></ak-user-oauth-refresh-token-list>
+                    </div>`,
+                )}
             </div>
             <div
                 role="tabpanel"
@@ -120,10 +161,14 @@ export class UserCredentialsTab extends AKElement {
                 id="page-mfa-authenticators"
                 aria-label=${msg("MFA Authenticators")}
                 class="pf-c-page__main-section pf-m-no-padding-mobile"
+                @activate=${() => this.activateTab("page-mfa-authenticators")}
             >
-                <div class="pf-c-card">
-                    <ak-user-device-table userId=${this.user.pk}></ak-user-device-table>
-                </div>
+                ${this.renderWhenActive(
+                    "page-mfa-authenticators",
+                    html`<div class="pf-c-card">
+                        <ak-user-device-table userId=${this.user.pk}></ak-user-device-table>
+                    </div>`,
+                )}
             </div>
             <div
                 role="tabpanel"
@@ -132,10 +177,14 @@ export class UserCredentialsTab extends AKElement {
                 id="page-source-connections"
                 aria-label=${msg("Connected services")}
                 class="pf-c-page__main-section pf-m-no-padding-mobile"
+                @activate=${() => this.activateTab("page-source-connections")}
             >
-                <div class="pf-c-card">
-                    <ak-user-settings-source user-id=${this.user.pk}></ak-user-settings-source>
-                </div>
+                ${this.renderWhenActive(
+                    "page-source-connections",
+                    html`<div class="pf-c-card">
+                        <ak-user-settings-source user-id=${this.user.pk}></ak-user-settings-source>
+                    </div>`,
+                )}
             </div>
             <div
                 role="tabpanel"
@@ -144,12 +193,16 @@ export class UserCredentialsTab extends AKElement {
                 id="page-rac-connection-tokens"
                 aria-label=${msg("RAC Connections")}
                 class="pf-c-page__main-section pf-m-no-padding-mobile"
+                @activate=${() => this.activateTab("page-rac-connection-tokens")}
             >
-                <div class="pf-c-card">
-                    <ak-rac-connection-token-list
-                        userId=${this.user.pk}
-                    ></ak-rac-connection-token-list>
-                </div>
+                ${this.renderWhenActive(
+                    "page-rac-connection-tokens",
+                    html`<div class="pf-c-card">
+                        <ak-rac-connection-token-list
+                            userId=${this.user.pk}
+                        ></ak-rac-connection-token-list>
+                    </div>`,
+                )}
             </div>
         </ak-tabs>`;
     }

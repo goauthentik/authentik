@@ -7,7 +7,7 @@ import { User } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html, nothing } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { customElement, property, state } from "lit/decorators.js";
 
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
@@ -17,7 +17,22 @@ export class UserRolesTab extends AKElement {
     @property({ attribute: false })
     public user?: User;
 
+    @state()
+    private activatedTabs = new Set<string>(["page-assigned-roles"]);
+
     static styles = [PFPage, PFCard];
+
+    protected activateTab(tab: string) {
+        if (this.activatedTabs.has(tab)) {
+            return;
+        }
+
+        this.activatedTabs = new Set([...this.activatedTabs, tab]);
+    }
+
+    protected renderWhenActive(tab: string, content: unknown) {
+        return this.activatedTabs.has(tab) ? content : null;
+    }
 
     protected override render() {
         if (!this.user) {
@@ -32,10 +47,14 @@ export class UserRolesTab extends AKElement {
                 id="page-assigned-roles"
                 aria-label=${msg("Assigned Roles")}
                 class="pf-c-page__main-section pf-m-no-padding-mobile"
+                @activate=${() => this.activateTab("page-assigned-roles")}
             >
-                <div class="pf-c-card">
-                    <ak-related-role-table .targetUser=${this.user}></ak-related-role-table>
-                </div>
+                ${this.renderWhenActive(
+                    "page-assigned-roles",
+                    html`<div class="pf-c-card">
+                        <ak-related-role-table .targetUser=${this.user}></ak-related-role-table>
+                    </div>`,
+                )}
             </div>
             <div
                 role="tabpanel"
@@ -44,13 +63,17 @@ export class UserRolesTab extends AKElement {
                 id="page-all-roles"
                 aria-label=${msg("All Roles")}
                 class="pf-c-page__main-section pf-m-no-padding-mobile"
+                @activate=${() => this.activateTab("page-all-roles")}
             >
-                <div class="pf-c-card">
-                    <ak-related-role-table
-                        .targetUser=${this.user}
-                        showInherited
-                    ></ak-related-role-table>
-                </div>
+                ${this.renderWhenActive(
+                    "page-all-roles",
+                    html`<div class="pf-c-card">
+                        <ak-related-role-table
+                            .targetUser=${this.user}
+                            showInherited
+                        ></ak-related-role-table>
+                    </div>`,
+                )}
             </div>
         </ak-tabs>`;
     }
