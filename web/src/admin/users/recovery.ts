@@ -42,7 +42,9 @@ export const RecoveryButtons: LitFC<RecoveryButtonsProps> = ({
                         ${msg("Email recovery link")}
                     </button>`
                   : html`<p>
-                        <span class=${emptyClasses || ""}>${msg("No email address set.")}</span>
+                        <span class=${emptyClasses || ""}>
+                            ${msg("Set an email address to email a recovery link.")}
+                        </span>
                     </p>`,
           ]
         : [
