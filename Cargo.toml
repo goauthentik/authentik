@@ -23,13 +23,13 @@ arc-swap = "= 1.9.1"
 argh = "= 0.1.19"
 askama = "= 0.16.0"
 axum-server = { version = "= 0.8.0", features = ["tls-rustls-no-provider"] }
-aws-lc-rs = { version = "= 1.17.0", features = ["fips"] }
-base64 = "= 0.22.1"
+aws-lc-rs = { version = "= 1.17.1", features = ["fips"] }
 axum = { version = "= 0.8.9", features = ["http2", "macros", "ws"] }
 axum-extra = { version = "= 0.12.6", default-features = false, features = [
   "cookie-signed",
   "cookie-key-expansion",
 ] }
+base64 = "= 0.22.1"
 clap = { version = "= 4.6.1", features = ["derive", "env"] }
 client-ip = { version = "0.2.1", features = ["forwarded-header"] }
 chrono = { version = "0.4.45", features = ["serde"] }
@@ -67,7 +67,9 @@ json-subscriber = "= 0.2.8"
 jsonwebtoken = { version = "= 10.4.0", features = ["aws_lc_rs"] }
 metrics = "= 0.24.6"
 metrics-exporter-prometheus = { version = "= 0.18.3", default-features = false }
-moka = { version = "= 0.12.15", default-features = false, features = ["future"] }
+moka = { version = "= 0.12.15", default-features = false, features = [
+  "future",
+] }
 nix = { version = "= 0.31.3", features = ["hostname", "signal"] }
 notify = "= 8.2.0"
 pin-project-lite = "= 0.2.17"
@@ -341,8 +343,8 @@ nix.workspace = true
 pyo3 = { workspace = true, optional = true }
 rand.workspace = true
 regex = { workspace = true, optional = true }
-reqwest = { workspace = true, optional = true }
 reqwest-middleware = { workspace = true, optional = true }
+reqwest.workspace = true
 rustls.workspace = true
 serde.workspace = true
 serde_json.workspace = true
