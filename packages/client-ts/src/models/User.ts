@@ -140,6 +140,12 @@ export interface User {
      */
     readonly passwordChangeDate: Date;
     /**
+     * User must change their password on the next login.
+     * @type {boolean}
+     * @memberof User
+     */
+    passwordChangeRequired?: boolean;
+    /**
      *
      * @type {Date}
      * @memberof User
@@ -198,6 +204,8 @@ export function UserFromJSONTyped(json: any, ignoreDiscriminator: boolean): User
         type: json["type"] == null ? undefined : UserTypeEnumFromJSON(json["type"]),
         uuid: json["uuid"],
         passwordChangeDate: new Date(json["password_change_date"]),
+        passwordChangeRequired:
+            json["password_change_required"] == null ? undefined : json["password_change_required"],
         lastUpdated: new Date(json["last_updated"]),
     };
 }
@@ -238,5 +246,6 @@ export function UserToJSONTyped(
         attributes: value["attributes"],
         path: value["path"],
         type: UserTypeEnumToJSON(value["type"]),
+        password_change_required: value["passwordChangeRequired"],
     };
 }

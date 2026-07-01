@@ -5574,6 +5574,11 @@
                     ],
                     "title": "Type"
                 },
+                "password_change_required": {
+                    "type": "boolean",
+                    "title": "Password change required",
+                    "description": "User must change their password on the next login."
+                },
                 "password": {
                     "type": [
                         "string",

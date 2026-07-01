@@ -24,6 +24,12 @@ export interface UserPasswordHashSetRequest {
      * @memberof UserPasswordHashSetRequest
      */
     password: string;
+    /**
+     *
+     * @type {boolean}
+     * @memberof UserPasswordHashSetRequest
+     */
+    passwordChangeRequired?: boolean;
 }
 
 /**
@@ -49,6 +55,8 @@ export function UserPasswordHashSetRequestFromJSONTyped(
     }
     return {
         password: json["password"],
+        passwordChangeRequired:
+            json["password_change_required"] == null ? undefined : json["password_change_required"],
     };
 }
 
@@ -66,5 +74,6 @@ export function UserPasswordHashSetRequestToJSONTyped(
 
     return {
         password: value["password"],
+        password_change_required: value["passwordChangeRequired"],
     };
 }

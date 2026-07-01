@@ -41,6 +41,33 @@ class TestUsers(TestCase):
         user.ak_groups.all()
         self.assertEqual(Event.objects.count(), 1)
 
+    def test_set_password_clears_password_change_required(self):
+        """Test password updates clear a pending password change requirement."""
+        user = User.objects.create(username=generate_id(), password_change_required=True)
+        user.set_password(generate_id())
+        user.save()
+
+        user.refresh_from_db()
+        self.assertFalse(user.password_change_required)
+
+    def test_set_password_from_hash_clears_password_change_required(self):
+        """Test hash password updates clear a pending password change requirement."""
+        user = User.objects.create(username=generate_id(), password_change_required=True)
+        user.set_password_from_hash(make_password(generate_id()))
+        user.save()
+
+        user.refresh_from_db()
+        self.assertFalse(user.password_change_required)
+
+    def test_set_password_can_preserve_password_change_required(self):
+        """Test internal password hash upgrades can preserve the reset requirement."""
+        user = User.objects.create(username=generate_id(), password_change_required=True)
+        user.set_password(generate_id(), signal=False, clear_password_change_required=False)
+        user.save()
+
+        user.refresh_from_db()
+        self.assertTrue(user.password_change_required)
+
     def test_set_password_from_hash_signal_skips_source_sync_receivers(self):
         """Test hash password updates do not expose a raw password to sync receivers."""
         user = User.objects.create(

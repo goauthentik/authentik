@@ -354,6 +354,7 @@ class UserSerializer(ModelSerializer):
             "type",
             "uuid",
             "password_change_date",
+            "password_change_required",
             "last_updated",
         ]
         extra_kwargs = {
@@ -464,12 +465,14 @@ class UserPasswordSetSerializer(PassiveSerializer):
     """Payload to set a users' password directly"""
 
     password = CharField(required=True)
+    password_change_required = BooleanField(required=False, default=False)
 
 
 class UserPasswordHashSetSerializer(PassiveSerializer):
     """Payload to set a users' password hash directly"""
 
     password = CharField(required=True)
+    password_change_required = BooleanField(required=False, default=False)
 
 
 class UserServiceAccountSerializer(PassiveSerializer):
@@ -842,6 +845,7 @@ class UserViewSet(
         user: User = self.get_object()
         try:
             user.set_password(body.validated_data["password"], request=request)
+            user.password_change_required = body.validated_data["password_change_required"]
             user.save()
         except (ValidationError, IntegrityError) as exc:
             LOGGER.debug("Failed to set password", exc=exc)
@@ -877,6 +881,7 @@ class UserViewSet(
         user: User = self.get_object()
         try:
             user.set_password_from_hash(body.validated_data["password"], request=request)
+            user.password_change_required = body.validated_data["password_change_required"]
             user.save()
         except ValueError as exc:
             LOGGER.debug("Failed to set password hash", exc=exc)

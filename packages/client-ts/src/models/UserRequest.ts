@@ -81,6 +81,12 @@ export interface UserRequest {
      * @memberof UserRequest
      */
     type?: UserTypeEnum;
+    /**
+     * User must change their password on the next login.
+     * @type {boolean}
+     * @memberof UserRequest
+     */
+    passwordChangeRequired?: boolean;
 }
 
 /**
@@ -111,6 +117,8 @@ export function UserRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean
         attributes: json["attributes"] == null ? undefined : json["attributes"],
         path: json["path"] == null ? undefined : json["path"],
         type: json["type"] == null ? undefined : UserTypeEnumFromJSON(json["type"]),
+        passwordChangeRequired:
+            json["password_change_required"] == null ? undefined : json["password_change_required"],
     };
 }
 
@@ -138,5 +146,6 @@ export function UserRequestToJSONTyped(
         attributes: value["attributes"],
         path: value["path"],
         type: UserTypeEnumToJSON(value["type"]),
+        password_change_required: value["passwordChangeRequired"],
     };
 }

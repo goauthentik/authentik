@@ -60,6 +60,12 @@ pub struct User {
     pub uuid: uuid::Uuid,
     #[serde(rename = "password_change_date")]
     pub password_change_date: chrono::DateTime<chrono::FixedOffset>,
+    /// User must change their password on the next login.
+    #[serde(
+        rename = "password_change_required",
+        skip_serializing_if = "Option::is_none"
+    )]
+    pub password_change_required: Option<bool>,
     #[serde(rename = "last_updated")]
     pub last_updated: chrono::DateTime<chrono::FixedOffset>,
 }
@@ -100,6 +106,7 @@ impl User {
             r#type: None,
             uuid,
             password_change_date,
+            password_change_required: None,
             last_updated,
         }
     }

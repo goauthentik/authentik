@@ -161,6 +161,15 @@ export class UserViewPage extends WithLicenseSummary(
             [msg("Email"), user.email || "-"],
             [msg("Last login"), Timestamp(user.lastLogin)],
             [msg("Last password change"), Timestamp(user.passwordChangeDate)],
+            [
+                msg("Password change required"),
+                html`<ak-status-label
+                    type="warning"
+                    ?good=${!user.passwordChangeRequired}
+                    good-label=${msg("No")}
+                    bad-label=${msg("Required")}
+                ></ak-status-label>`,
+            ],
             [msg("Active"), html`<ak-status-label ?good=${user.isActive}></ak-status-label>`],
             [msg("Type"), userTypeToLabel(user.type)],
             [

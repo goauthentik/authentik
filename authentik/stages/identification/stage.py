@@ -53,6 +53,7 @@ from authentik.stages.password.stage import (
     PLAN_CONTEXT_METHOD,
     PLAN_CONTEXT_METHOD_ARGS,
     authenticate,
+    redirect_to_password_change_flow,
 )
 
 
@@ -429,4 +430,10 @@ class IdentificationStageView(ChallengeStageView):
             self.executor.plan.context[PLAN_CONTEXT_PENDING_USER_IDENTIFIER] = (
                 response.validated_data.get("uid_field")
             )
+        if current_stage.password_stage:
+            reset_response = redirect_to_password_change_flow(
+                self, response.pre_user, current_stage.password_stage
+            )
+            if reset_response:
+                return reset_response
         return self.executor.stage_ok()
