@@ -18,6 +18,9 @@ import PFFlex from "@patternfly/patternfly/layouts/Flex/flex.css";
 
 @customElement("ak-user-oauth-refresh-token-list")
 export class UserOAuthRefreshTokenList extends Table<TokenModel> {
+    public static override verboseName = msg("Refresh Token");
+    public static override verboseNamePlural = msg("Refresh Tokens");
+
     expandable = true;
 
     @property({ type: Number })

@@ -8,7 +8,7 @@ import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
-import { intentToLabel } from "#common/labels";
+import { formatIntentLabel } from "#common/labels";
 
 import { IconTokenCopyButton } from "#elements/buttons/IconTokenCopyButton";
 import { IconEditButton, ModalInvokerButton } from "#elements/dialogs";
@@ -94,7 +94,7 @@ export class TokenListPage extends TablePage<Token> {
             html`<a href="#/identity/users/${item.userObj?.pk}">${item.userObj?.username}</a>`,
             html`<ak-status-label type="warning" ?good=${item.expiring}></ak-status-label>`,
             Timestamp(item.expires && item.expiring ? item.expires : null),
-            html`${intentToLabel(item.intent ?? IntentEnum.Api)}`,
+            html`${formatIntentLabel(item.intent ?? IntentEnum.Api)}`,
             html`<div class="ak-c-table__actions">
                 ${!item.managed
                     ? IconEditButton(TokenForm, item.identifier, item.identifier)
@@ -110,7 +110,7 @@ export class TokenListPage extends TablePage<Token> {
                     model: ModelEnum.AuthentikCoreToken,
                     objectPk: item.pk,
                 })}
-                ${IconTokenCopyButton(item.identifier)}
+                ${IconTokenCopyButton(item)}
             </div>`,
         ];
     }

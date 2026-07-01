@@ -1,6 +1,5 @@
 ---
 title: Active Directory
-support_level: community
 ---
 
 ## Preparation
