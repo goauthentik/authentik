@@ -84,6 +84,13 @@ class OAuthSource(NonCreatableType, Source):
         ),
     )
 
+    discord_guild_id = models.TextField(
+        default="",
+        blank=True,
+        help_text=_("The Discord guild ID to sync roles from"),
+        verbose_name=_("Guild ID"),
+    )
+
     @property
     def source_type(self) -> type[SourceType]:
         """Return the provider instance for this source"""

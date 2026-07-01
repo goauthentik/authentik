@@ -147,6 +147,7 @@ class OAuthSourceSerializer(SourceSerializer):
             "oidc_jwks_url",
             "oidc_jwks",
             "authorization_code_auth_method",
+            "discord_guild_id",
         ]
         extra_kwargs = {
             "consumer_secret": {"write_only": True},

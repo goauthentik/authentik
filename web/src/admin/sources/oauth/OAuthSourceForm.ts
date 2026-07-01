@@ -270,6 +270,32 @@ export class OAuthSourceForm extends BaseSourceForm<OAuthSource> {
         </ak-form-group>`;
     }
 
+    protected renderSourceOptions(): SlottedTemplateResult {
+        if (this.providerType?.name === ProviderTypeEnum.Discord) {
+            return html`
+                <ak-form-group open label="${msg("Discord Settings")}">
+                    <div class="pf-c-form">
+                        <ak-form-element-horizontal label=${msg("Guild ID")} name="discordGuildId">
+                            <input
+                                type="text"
+                                value="${ifDefined(this.instance?.discordGuildId ?? undefined)}"
+                                class="pf-c-form-control pf-m-monospace"
+                                autocomplete="off"
+                                spellcheck="false"
+                            />
+                            <p class="pf-c-form__helper-text">
+                                ${msg(
+                                "Guild ID to sync roles from. If left empty, no role syncing will occur.",
+                                )}
+                            </p>
+                        </ak-form-element-horizontal>
+                    </div>
+                </ak-form-group>`;
+        }
+
+        return nothing;
+    }
+
     protected override renderForm(): TemplateResult {
         return html`<ak-text-input
                 label=${msg("Source Name")}
@@ -431,6 +457,7 @@ export class OAuthSourceForm extends BaseSourceForm<OAuthSource> {
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>
+            ${this.renderSourceOptions()}
             ${this.renderUrlOptions()}
             <ak-form-group open label="${msg("OAuth Attribute mapping")}">
                 <div class="pf-c-form">
