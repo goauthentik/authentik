@@ -3,18 +3,6 @@
 import django.db.models.deletion
 from django.db import migrations, models
 
-SQL = """
-ALTER TABLE authentik_stages_authenticator_webauthn_authenticatorwebaute3a7 RENAME TO authentik_stages_authenticator_webauthn_authenticatorwebaute20c;
-ALTER TABLE authentik_stages_authenticator_webauthn_authenticatorwebaute20c RENAME COLUMN authenticatorwebauthnstage_id to authenticator_webauthn_stage_id;
-ALTER TABLE authentik_stages_authenticator_webauthn_authenticatorwebaute20c RENAME COLUMN webauthndevicetype_id to device_type_restriction_id;
-"""
-
-REVERSE_SQL = """
-ALTER TABLE authentik_stages_authenticator_webauthn_authenticatorwebaute20c RENAME COLUMN device_type_restriction_id to webauthndevicetype_id;
-ALTER TABLE authentik_stages_authenticator_webauthn_authenticatorwebaute20c RENAME COLUMN authenticator_webauthn_stage_id to authenticatorwebauthnstage_id;
-ALTER TABLE authentik_stages_authenticator_webauthn_authenticatorwebaute20c RENAME TO authentik_stages_authenticator_webauthn_authenticatorwebaute3a7;
-"""
-
 
 class Migration(migrations.Migration):
 
@@ -27,12 +15,7 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.SeparateDatabaseAndState(
-            database_operations=[
-                migrations.RunSQL(
-                    sql=SQL,
-                    reverse_sql=REVERSE_SQL,
-                ),
-            ],
+            database_operations=[],
             state_operations=[
                 migrations.CreateModel(
                     name="AuthenticatorWebAuthnStageDeviceTypeRestriction",
@@ -49,6 +32,7 @@ class Migration(migrations.Migration):
                         (
                             "authenticator_webauthn_stage",
                             models.ForeignKey(
+                                db_column="authenticatorwebauthnstage_id",
                                 on_delete=django.db.models.deletion.CASCADE,
                                 to="authentik_stages_authenticator_webauthn.authenticatorwebauthnstage",
                             ),
@@ -56,12 +40,14 @@ class Migration(migrations.Migration):
                         (
                             "device_type_restriction",
                             models.ForeignKey(
+                                db_column="webauthndevicetype_id",
                                 on_delete=django.db.models.deletion.CASCADE,
                                 to="authentik_stages_authenticator_webauthn.webauthndevicetype",
                             ),
                         ),
                     ],
                     options={
+                        "db_table": "authentik_stages_authenticator_webauthn_authenticatorwebaute3a7",
                         "unique_together": {
                             ("authenticator_webauthn_stage", "device_type_restriction")
                         },

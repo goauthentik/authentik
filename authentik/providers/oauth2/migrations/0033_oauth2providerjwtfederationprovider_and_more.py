@@ -3,30 +3,6 @@
 import django.db.models.deletion
 from django.db import migrations, models
 
-SOURCE_SQL = """
-ALTER TABLE authentik_providers_oauth2_oauth2provider_jwt_federation_so2b48 RENAME TO authentik_providers_oauth2_oauth2providerjwtfederationsource;
-ALTER TABLE authentik_providers_oauth2_oauth2providerjwtfederationsource RENAME COLUMN oauthsource_id to jwt_federation_source_id;
-ALTER TABLE authentik_providers_oauth2_oauth2providerjwtfederationsource RENAME COLUMN oauth2provider_id to oauth2_provider_id;
-"""
-
-SOURCE_REVERSE_SQL = """
-ALTER TABLE authentik_providers_oauth2_oauth2providerjwtfederationsource RENAME COLUMN oauth2_provider_id to oauth2provider_id;
-ALTER TABLE authentik_providers_oauth2_oauth2providerjwtfederationsource RENAME COLUMN jwt_federation_source_id to oauthsource_id;
-ALTER TABLE authentik_providers_oauth2_oauth2providerjwtfederationsource RENAME TO authentik_providers_oauth2_oauth2provider_jwt_federation_so2b48;
-"""
-
-PROVIDER_SQL = """
-ALTER TABLE authentik_providers_oauth2_oauth2provider_jwt_federation_pr9002 RENAME TO authentik_providers_oauth2_oauth2providerjwtfederationprovider;
-ALTER TABLE authentik_providers_oauth2_oauth2providerjwtfederationprovider RENAME COLUMN from_oauth2provider_id to oauth2_provider_id;
-ALTER TABLE authentik_providers_oauth2_oauth2providerjwtfederationprovider RENAME COLUMN to_oauth2provider_id to jwt_federation_provider_id;
-"""
-
-PROVIDER_REVERSE_SQL = """
-ALTER TABLE authentik_providers_oauth2_oauth2providerjwtfederationprovider RENAME COLUMN jwt_federation_provider_id to to_oauth2provider_id;
-ALTER TABLE authentik_providers_oauth2_oauth2providerjwtfederationprovider RENAME COLUMN oauth2_provider_id to from_oauth2provider_id;
-ALTER TABLE authentik_providers_oauth2_oauth2providerjwtfederationprovider RENAME TO authentik_providers_oauth2_oauth2provider_jwt_federation_pr9002;
-"""
-
 
 class Migration(migrations.Migration):
 
@@ -37,12 +13,7 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.SeparateDatabaseAndState(
-            database_operations=[
-                migrations.RunSQL(
-                    sql=SOURCE_SQL,
-                    reverse_sql=SOURCE_REVERSE_SQL,
-                ),
-            ],
+            database_operations=[],
             state_operations=[
                 migrations.CreateModel(
                     name="OAuth2ProviderJWTFederationSource",
@@ -57,8 +28,9 @@ class Migration(migrations.Migration):
                             ),
                         ),
                         (
-                            "jwt_federation_source",
+                            "oauth_source",
                             models.ForeignKey(
+                                db_column="oauthsource_id",
                                 on_delete=django.db.models.deletion.CASCADE,
                                 to="authentik_sources_oauth.oauthsource",
                             ),
@@ -66,13 +38,15 @@ class Migration(migrations.Migration):
                         (
                             "oauth2_provider",
                             models.ForeignKey(
+                                db_column="oauth2provider_id",
                                 on_delete=django.db.models.deletion.CASCADE,
                                 to="authentik_providers_oauth2.oauth2provider",
                             ),
                         ),
                     ],
                     options={
-                        "unique_together": {("oauth2_provider", "jwt_federation_source")},
+                        "db_table": "authentik_providers_oauth2_oauth2provider_jwt_federation_so2b48",
+                        "unique_together": {("oauth2_provider", "oauth_source")},
                     },
                 ),
                 migrations.AlterField(
@@ -90,12 +64,7 @@ class Migration(migrations.Migration):
             ],
         ),
         migrations.SeparateDatabaseAndState(
-            database_operations=[
-                migrations.RunSQL(
-                    sql=PROVIDER_SQL,
-                    reverse_sql=PROVIDER_REVERSE_SQL,
-                ),
-            ],
+            database_operations=[],
             state_operations=[
                 migrations.CreateModel(
                     name="OAuth2ProviderJWTFederationProvider",
@@ -112,21 +81,24 @@ class Migration(migrations.Migration):
                         (
                             "jwt_federation_provider",
                             models.ForeignKey(
+                                db_column="to_oauth2provider_id",
                                 on_delete=django.db.models.deletion.CASCADE,
-                                related_name="jwt_federation_provider_set",
+                                related_name="oauth2_provider_m2m_objects",
                                 to="authentik_providers_oauth2.oauth2provider",
                             ),
                         ),
                         (
                             "oauth2_provider",
                             models.ForeignKey(
+                                db_column="from_oauth2provider_id",
                                 on_delete=django.db.models.deletion.CASCADE,
-                                related_name="oauth2_provider_set",
+                                related_name="jwt_federation_provider_m2m_objects",
                                 to="authentik_providers_oauth2.oauth2provider",
                             ),
                         ),
                     ],
                     options={
+                        "db_table": "authentik_providers_oauth2_oauth2provider_jwt_federation_pr9002",
                         "unique_together": {("oauth2_provider", "jwt_federation_provider")},
                     },
                 ),

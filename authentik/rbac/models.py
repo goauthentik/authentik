@@ -109,10 +109,13 @@ class InitialPermissions(SerializerModel):
 
 
 class InitialPermissionsPermission(models.Model):
-    initial_permissions = models.ForeignKey(InitialPermissions, on_delete=models.CASCADE)
+    initial_permissions = models.ForeignKey(
+        InitialPermissions, on_delete=models.CASCADE, db_column="initialpermissions_id"
+    )
     permission = models.ForeignKey(Permission, on_delete=models.CASCADE)
 
     class Meta:
+        db_table = "authentik_rbac_initialpermissions_permissions"
         unique_together = (("initial_permissions", "permission"),)
 
     def __str__(self):

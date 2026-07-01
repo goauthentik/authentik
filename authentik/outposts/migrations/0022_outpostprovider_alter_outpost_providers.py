@@ -3,14 +3,6 @@
 import django.db.models.deletion
 from django.db import migrations, models
 
-SQL = """
-ALTER TABLE authentik_outposts_outpost_providers RENAME TO authentik_outposts_outpostprovider;
-"""
-
-REVERSE_SQL = """
-ALTER TABLE authentik_outposts_outpostprovider RENAME TO authentik_outposts_outpost_providers;
-"""
-
 
 class Migration(migrations.Migration):
 
@@ -21,12 +13,7 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.SeparateDatabaseAndState(
-            database_operations=[
-                migrations.RunSQL(
-                    sql=SQL,
-                    reverse_sql=REVERSE_SQL,
-                ),
-            ],
+            database_operations=[],
             state_operations=[
                 migrations.CreateModel(
                     name="OutpostProvider",
@@ -56,6 +43,7 @@ class Migration(migrations.Migration):
                         ),
                     ],
                     options={
+                        "db_table": "authentik_outposts_outpost_providers",
                         "unique_together": {("outpost", "provider")},
                     },
                 ),

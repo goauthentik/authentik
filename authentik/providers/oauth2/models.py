@@ -493,28 +493,40 @@ class OAuth2Provider(WebfingerProvider, Provider):
 
 
 class OAuth2ProviderJWTFederationSource(models.Model):
-    oauth2_provider = models.ForeignKey(OAuth2Provider, on_delete=models.CASCADE)
-    jwt_federation_source = models.ForeignKey(OAuthSource, on_delete=models.CASCADE)
+    oauth2_provider = models.ForeignKey(
+        OAuth2Provider, on_delete=models.CASCADE, db_column="oauth2provider_id"
+    )
+    oauth_source = models.ForeignKey(
+        OAuthSource, on_delete=models.CASCADE, db_column="oauthsource_id"
+    )
 
     class Meta:
-        unique_together = (("oauth2_provider", "jwt_federation_source"),)
+        db_table = "authentik_providers_oauth2_oauth2provider_jwt_federation_so2b48"
+        unique_together = (("oauth2_provider", "oauth_source"),)
 
     def __str__(self):
         return (
             f"OAuth2ProviderJWTFederationSource for OAuth2Provider {self.oauth2_provider_id} "
-            f"and JWTFederationSource {self.jwt_federation_source_id}."
+            f"and OauthSource {self.oauth_source_id}."
         )
 
 
 class OAuth2ProviderJWTFederationProvider(models.Model):
     oauth2_provider = models.ForeignKey(
-        OAuth2Provider, on_delete=models.CASCADE, related_name="oauth2_provider_set"
+        OAuth2Provider,
+        on_delete=models.CASCADE,
+        related_name="jwt_federation_provider_m2m_objects",
+        db_column="from_oauth2provider_id",
     )
     jwt_federation_provider = models.ForeignKey(
-        OAuth2Provider, on_delete=models.CASCADE, related_name="jwt_federation_provider_set"
+        OAuth2Provider,
+        on_delete=models.CASCADE,
+        related_name="oauth2_provider_m2m_objects",
+        db_column="to_oauth2provider_id",
     )
 
     class Meta:
+        db_table = "authentik_providers_oauth2_oauth2provider_jwt_federation_pr9002"
         unique_together = (("oauth2_provider", "jwt_federation_provider"),)
 
     def __str__(self):

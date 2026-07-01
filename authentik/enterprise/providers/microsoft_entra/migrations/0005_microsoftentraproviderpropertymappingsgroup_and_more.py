@@ -3,18 +3,6 @@
 import django.db.models.deletion
 from django.db import migrations, models
 
-SQL = """
-ALTER TABLE authentik_providers_microsoft_entra_microsoftentraprovider_9f0b RENAME TO authentik_providers_microsoft_entra_microsoftentraproviderp3880;
-ALTER TABLE authentik_providers_microsoft_entra_microsoftentraproviderp3880 RENAME COLUMN microsoftentraprovider_id to microsoft_entra_provider_id;
-ALTER TABLE authentik_providers_microsoft_entra_microsoftentraproviderp3880 RENAME COLUMN propertymapping_id to property_mapping_id;
-"""
-
-REVERSE_SQL = """
-ALTER TABLE authentik_providers_microsoft_entra_microsoftentraproviderp3880 RENAME COLUMN property_mapping_id to propertymapping_id;
-ALTER TABLE authentik_providers_microsoft_entra_microsoftentraproviderp3880 RENAME COLUMN microsoft_entra_provider_id to microsoftentraprovider_id;
-ALTER TABLE authentik_providers_microsoft_entra_microsoftentraproviderp3880 RENAME TO authentik_providers_microsoft_entra_microsoftentraprovider_9f0b;
-"""
-
 
 class Migration(migrations.Migration):
 
@@ -28,12 +16,7 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.SeparateDatabaseAndState(
-            database_operations=[
-                migrations.RunSQL(
-                    sql=SQL,
-                    reverse_sql=REVERSE_SQL,
-                ),
-            ],
+            database_operations=[],
             state_operations=[
                 migrations.CreateModel(
                     name="MicrosoftEntraProviderPropertyMappingsGroup",
@@ -50,6 +33,7 @@ class Migration(migrations.Migration):
                         (
                             "microsoft_entra_provider",
                             models.ForeignKey(
+                                db_column="microsoftentraprovider_id",
                                 on_delete=django.db.models.deletion.CASCADE,
                                 to="authentik_providers_microsoft_entra.microsoftentraprovider",
                             ),
@@ -57,13 +41,15 @@ class Migration(migrations.Migration):
                         (
                             "property_mapping",
                             models.ForeignKey(
+                                db_column="propertymapping_id",
                                 on_delete=django.db.models.deletion.CASCADE,
                                 to="authentik_core.propertymapping",
                             ),
                         ),
                     ],
                     options={
-                        "unique_together": {("microsoft_entra_provider_id", "property_mapping")},
+                        "db_table": "authentik_providers_microsoft_entra_microsoftentraprovider_9f0b",
+                        "unique_together": {("microsoft_entra_provider", "property_mapping")},
                     },
                 ),
                 migrations.AlterField(

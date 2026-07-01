@@ -3,28 +3,6 @@
 import django.db.models.deletion
 from django.db import migrations, models
 
-GROUP_SQL = """
-ALTER TABLE authentik_providers_scim_scimprovider_group_filters RENAME TO authentik_providers_scim_scimprovidergroupfilter;
-ALTER TABLE authentik_providers_scim_scimprovidergroupfilter RENAME COLUMN scimprovider_id to scim_provider_id;
-"""
-
-GROUP_REVERSE_SQL = """
-ALTER TABLE authentik_providers_scim_scimprovidergroupfilter RENAME COLUMN scim_provider_id to scimprovider_id;
-ALTER TABLE authentik_providers_scim_scimprovidergroupfilter RENAME TO authentik_providers_scim_scimprovider_group_filters;
-"""
-
-PROPERTY_MAPPINGS_SQL = """
-ALTER TABLE authentik_providers_scim_scimprovider_property_mappings_group RENAME TO authentik_providers_scim_scimprovidergrouppropertymapping;
-ALTER TABLE authentik_providers_scim_scimprovidergrouppropertymapping RENAME COLUMN scimprovider_id to scim_provider_id;
-ALTER TABLE authentik_providers_scim_scimprovidergrouppropertymapping RENAME COLUMN propertymapping_id to property_mapping_id;
-"""
-
-PROPERTY_MAPPINGS_REVERSE_SQL = """
-ALTER TABLE authentik_providers_scim_scimprovidergrouppropertymapping RENAME COLUMN property_mapping_id to propertymapping_id;
-ALTER TABLE authentik_providers_scim_scimprovidergrouppropertymapping RENAME COLUMN scim_provider_id to scimprovider_id;
-ALTER TABLE authentik_providers_scim_scimprovidergrouppropertymapping RENAME TO authentik_providers_scim_scimprovider_property_mappings_group;
-"""
-
 
 class Migration(migrations.Migration):
 
@@ -35,12 +13,7 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.SeparateDatabaseAndState(
-            database_operations=[
-                migrations.RunSQL(
-                    sql=GROUP_SQL,
-                    reverse_sql=GROUP_REVERSE_SQL,
-                ),
-            ],
+            database_operations=[],
             state_operations=[
                 migrations.CreateModel(
                     name="SCIMProviderGroupFilter",
@@ -64,12 +37,14 @@ class Migration(migrations.Migration):
                         (
                             "scim_provider",
                             models.ForeignKey(
+                                db_column="scimprovider_id",
                                 on_delete=django.db.models.deletion.CASCADE,
                                 to="authentik_providers_scim.scimprovider",
                             ),
                         ),
                     ],
                     options={
+                        "db_table": "authentik_providers_scim_scimprovider_group_filters",
                         "unique_together": {("group", "scim_provider")},
                     },
                 ),
@@ -87,12 +62,7 @@ class Migration(migrations.Migration):
             ],
         ),
         migrations.SeparateDatabaseAndState(
-            database_operations=[
-                migrations.RunSQL(
-                    sql=PROPERTY_MAPPINGS_SQL,
-                    reverse_sql=PROPERTY_MAPPINGS_REVERSE_SQL,
-                ),
-            ],
+            database_operations=[],
             state_operations=[
                 migrations.CreateModel(
                     name="SCIMProviderGroupPropertyMapping",
@@ -109,6 +79,7 @@ class Migration(migrations.Migration):
                         (
                             "property_mapping",
                             models.ForeignKey(
+                                db_column="propertymapping_id",
                                 on_delete=django.db.models.deletion.CASCADE,
                                 to="authentik_core.propertymapping",
                             ),
@@ -116,12 +87,14 @@ class Migration(migrations.Migration):
                         (
                             "scim_provider",
                             models.ForeignKey(
+                                db_column="scimprovider_id",
                                 on_delete=django.db.models.deletion.CASCADE,
                                 to="authentik_providers_scim.scimprovider",
                             ),
                         ),
                     ],
                     options={
+                        "db_table": "authentik_providers_scim_scimprovider_property_mappings_group",
                         "unique_together": {("property_mapping", "scim_provider")},
                     },
                 ),

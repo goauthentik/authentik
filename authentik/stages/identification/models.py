@@ -159,10 +159,12 @@ class IdentificationStageSource(models.Model):
     identification_stage = models.ForeignKey(
         IdentificationStage,
         on_delete=models.CASCADE,
+        db_column="identificationstage_id",
     )
     source = models.ForeignKey(Source, on_delete=models.CASCADE)
 
     class Meta:
+        db_table = "authentik_stages_identification_identificationstage_sources"
         unique_together = (("identification_stage", "source"),)
 
     def __str__(self):

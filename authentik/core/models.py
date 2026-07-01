@@ -1329,44 +1329,53 @@ class PropertyMapping(SerializerModel, ManagedModel):
 
 
 class SourceUserPropertyMapping(models.Model):
-    property_mapping = models.ForeignKey(PropertyMapping, on_delete=models.CASCADE)
+    property_mapping = models.ForeignKey(
+        PropertyMapping, on_delete=models.CASCADE, db_column="propertymapping_id"
+    )
     source = models.ForeignKey(Source, on_delete=models.CASCADE)
 
     class Meta:
+        db_table = "authentik_core_source_user_property_mappings"
         unique_together = (("property_mapping", "source"),)
 
     def __str__(self):
         return (
-            f"SourceUserPropertyMapping for source {self.source_id} "
-            f"and property_mapping {self.property_mapping_id}."
+            f"SourceUserPropertyMapping for Source {self.source_id} "
+            f"and PropertyMapping {self.property_mapping_id}."
         )
 
 
 class SourceGroupPropertyMapping(models.Model):
-    property_mapping = models.ForeignKey(PropertyMapping, on_delete=models.CASCADE)
+    property_mapping = models.ForeignKey(
+        PropertyMapping, on_delete=models.CASCADE, db_column="propertymapping_id"
+    )
     source = models.ForeignKey(Source, on_delete=models.CASCADE)
 
     class Meta:
+        db_table = "authentik_core_source_group_property_mappings"
         unique_together = (("property_mapping", "source"),)
 
     def __str__(self):
         return (
-            f"SourceGroupPropertyMapping for source {self.source_id} "
-            f"and property_mapping {self.property_mapping_id}."
+            f"SourceGroupPropertyMapping for Source {self.source_id} "
+            f"and PropertyMapping {self.property_mapping_id}."
         )
 
 
 class ProviderPropertyMapping(models.Model):
-    property_mapping = models.ForeignKey(PropertyMapping, on_delete=models.CASCADE)
+    property_mapping = models.ForeignKey(
+        PropertyMapping, on_delete=models.CASCADE, db_column="propertymapping_id"
+    )
     provider = models.ForeignKey(Provider, on_delete=models.CASCADE)
 
     class Meta:
+        db_table = "authentik_core_provider_property_mappings"
         unique_together = (("property_mapping", "provider"),)
 
     def __str__(self):
         return (
-            f"ProviderPropertyMapping for provider {self.provider_id} "
-            f"and property_mapping {self.property_mapping_id}."
+            f"ProviderPropertyMapping for Provider {self.provider_id} "
+            f"and PropertyMapping {self.property_mapping_id}."
         )
 
 
@@ -1375,10 +1384,11 @@ class UserRole(models.Model):
     role = models.ForeignKey(Role, on_delete=models.CASCADE)
 
     class Meta:
+        db_table = "authentik_core_user_roles"
         unique_together = (("user", "role"),)
 
     def __str__(self):
-        return f"UserRole for user {self.user_id} and role {self.role_id}."
+        return f"UserRole for User {self.user_id} and Role {self.role_id}."
 
 
 class GroupRole(models.Model):
@@ -1386,10 +1396,11 @@ class GroupRole(models.Model):
     role = models.ForeignKey(Role, on_delete=models.CASCADE)
 
     class Meta:
+        db_table = "authentik_core_group_roles"
         unique_together = (("group", "role"),)
 
     def __str__(self):
-        return f"GroupRole for group {self.group_id} and role {self.role_id}."
+        return f"GroupRole for Group {self.group_id} and Role {self.role_id}."
 
 
 class UserGroup(models.Model):
@@ -1397,10 +1408,11 @@ class UserGroup(models.Model):
     group = models.ForeignKey(Group, on_delete=models.CASCADE)
 
     class Meta:
+        db_table = "authentik_core_user_groups"
         unique_together = (("user", "group"),)
 
     def __str__(self):
-        return f"UserGroup for user {self.user_id} and group {self.group}."
+        return f"UserGroup for User {self.user_id} and Group {self.group_id}."
 
 
 class Session(ExpiringModel, AbstractBaseSession):

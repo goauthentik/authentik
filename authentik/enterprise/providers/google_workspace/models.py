@@ -200,10 +200,14 @@ class GoogleWorkspaceProviderPropertyMappingsGroup(models.Model):
     google_workspace_provider = models.ForeignKey(
         GoogleWorkspaceProvider,
         on_delete=models.CASCADE,
+        db_column="googleworkspaceprovider_id",
     )
-    property_mapping = models.ForeignKey(PropertyMapping, on_delete=models.CASCADE)
+    property_mapping = models.ForeignKey(
+        PropertyMapping, on_delete=models.CASCADE, db_column="propertymapping_id"
+    )
 
     class Meta:
+        db_table = "authentik_providers_google_workspace_googleworkspaceprovide63d9"
         unique_together = (("google_workspace_provider", "property_mapping"),)
 
     def __str__(self):

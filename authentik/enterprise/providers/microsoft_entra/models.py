@@ -189,11 +189,15 @@ class MicrosoftEntraProviderPropertyMappingsGroup(models.Model):
     microsoft_entra_provider = models.ForeignKey(
         MicrosoftEntraProvider,
         on_delete=models.CASCADE,
+        db_column="microsoftentraprovider_id",
     )
-    property_mapping = models.ForeignKey(PropertyMapping, on_delete=models.CASCADE)
+    property_mapping = models.ForeignKey(
+        PropertyMapping, on_delete=models.CASCADE, db_column="propertymapping_id"
+    )
 
     class Meta:
-        unique_together = (("microsoft_entra_provider_id", "property_mapping"),)
+        db_table = "authentik_providers_microsoft_entra_microsoftentraprovider_9f0b"
+        unique_together = (("microsoft_entra_provider", "property_mapping"),)
 
     def __str__(self):
         return (

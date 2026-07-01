@@ -3,16 +3,6 @@
 import django.db.models.deletion
 from django.db import migrations, models
 
-SQL = """
-ALTER TABLE authentik_brands_brand_client_certificates RENAME TO authentik_brands_brandclientcertificate;
-ALTER TABLE authentik_brands_brandclientcertificate RENAME COLUMN certificatekeypair_id to certificate_key_pair_id;
-"""
-
-REVERSE_SQL = """
-ALTER TABLE authentik_brands_brandclientcertificate RENAME COLUMN certificate_key_pair_id to certificatekeypair_id;
-ALTER TABLE authentik_brands_brandclientcertificate RENAME TO authentik_brands_brand_client_certificates;
-"""
-
 
 class Migration(migrations.Migration):
 
@@ -23,12 +13,7 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.SeparateDatabaseAndState(
-            database_operations=[
-                migrations.RunSQL(
-                    sql=SQL,
-                    reverse_sql=REVERSE_SQL,
-                ),
-            ],
+            database_operations=[],
             state_operations=[
                 migrations.CreateModel(
                     name="BrandClientCertificate",
@@ -52,12 +37,14 @@ class Migration(migrations.Migration):
                         (
                             "certificate_key_pair",
                             models.ForeignKey(
+                                db_column="certificatekeypair_id",
                                 on_delete=django.db.models.deletion.CASCADE,
                                 to="authentik_crypto.certificatekeypair",
                             ),
                         ),
                     ],
                     options={
+                        "db_table": "authentik_brands_brand_client_certificates",
                         "unique_together": {("brand", "certificate_key_pair")},
                     },
                 ),

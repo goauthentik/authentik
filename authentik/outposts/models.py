@@ -462,10 +462,11 @@ class OutpostProvider(models.Model):
     provider = models.ForeignKey(Provider, on_delete=models.CASCADE)
 
     class Meta:
+        db_table = "authentik_outposts_outpost_providers"
         unique_together = (("outpost", "provider"),)
 
     def __str__(self):
-        return f"OutpostProvider for outpost {self.outpost_id} and provider {self.provider}."
+        return f"OutpostProvider for Outpost {self.outpost_id} and Provider {self.provider_id}."
 
 
 @dataclass

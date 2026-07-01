@@ -165,29 +165,16 @@ class LifecycleRule(SerializerModel):
                     break
 
 
-reviewers = models.ManyToManyField(
-    "authentik_core.User", blank=True, through="LifecycleRuleReviewer"
-)
-
-notification_transports = models.ManyToManyField(
-    NotificationTransport,
-    help_text=_(
-        "Select which transports should be used to notify the reviewers. If none are "
-        "selected, the notification will only be shown in the authentik UI."
-    ),
-    blank=True,
-    through="LifecycleRuleNotificationTransport",
-)
-
-
 class LifecycleRuleReviewerGroup(models.Model):
     lifecycle_rule = models.ForeignKey(
         LifecycleRule,
         on_delete=models.CASCADE,
+        db_column="lifecyclerule_id",
     )
     group = models.ForeignKey("authentik_core.Group", on_delete=models.CASCADE)
 
     class Meta:
+        db_table = "authentik_lifecycle_lifecyclerule_reviewer_groups"
         unique_together = (("lifecycle_rule", "group"),)
 
     def __str__(self):
@@ -202,10 +189,12 @@ class LifecycleRuleReviewer(models.Model):
     lifecycle_rule = models.ForeignKey(
         LifecycleRule,
         on_delete=models.CASCADE,
+        db_column="lifecyclerule_id",
     )
     user = models.ForeignKey("authentik_core.User", on_delete=models.CASCADE)
 
     class Meta:
+        db_table = "authentik_lifecycle_lifecyclerule_reviewers"
         unique_together = (("lifecycle_rule", "user"),)
 
     def __str__(self):
@@ -220,10 +209,14 @@ class LifecycleRuleNotificationTransport(models.Model):
     lifecycle_rule = models.ForeignKey(
         LifecycleRule,
         on_delete=models.CASCADE,
+        db_column="lifecyclerule_id",
     )
-    notification_transport = models.ForeignKey(NotificationTransport, on_delete=models.CASCADE)
+    notification_transport = models.ForeignKey(
+        NotificationTransport, on_delete=models.CASCADE, db_column="notificationtransport_id"
+    )
 
     class Meta:
+        db_table = "authentik_lifecycle_lifecyclerule_notification_transports"
         unique_together = (("lifecycle_rule", "notification_transport"),)
 
     def __str__(self):

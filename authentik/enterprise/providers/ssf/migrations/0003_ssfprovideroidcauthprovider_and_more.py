@@ -3,18 +3,6 @@
 import django.db.models.deletion
 from django.db import migrations, models
 
-SQL = """
-ALTER TABLE authentik_providers_ssf_ssfprovider_oidc_auth_providers RENAME TO authentik_providers_ssf_ssfprovideroidcauthprovider;
-ALTER TABLE authentik_providers_ssf_ssfprovideroidcauthprovider RENAME COLUMN ssfprovider_id to ssf_provider_id;
-ALTER TABLE authentik_providers_ssf_ssfprovideroidcauthprovider RENAME COLUMN oauth2provider_id to oauth2_provider_id;
-"""
-
-REVERSE_SQL = """
-ALTER TABLE authentik_providers_ssf_ssfprovideroidcauthprovider RENAME COLUMN oauth2_provider_id to oauth2provider_id;
-ALTER TABLE authentik_providers_ssf_ssfprovideroidcauthprovider RENAME COLUMN ssf_provider_id to ssfprovider_id;
-ALTER TABLE authentik_providers_ssf_ssfprovideroidcauthprovider RENAME TO authentik_providers_ssf_ssfprovider_oidc_auth_providers;
-"""
-
 
 class Migration(migrations.Migration):
 
@@ -25,12 +13,7 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.SeparateDatabaseAndState(
-            database_operations=[
-                migrations.RunSQL(
-                    sql=SQL,
-                    reverse_sql=REVERSE_SQL,
-                ),
-            ],
+            database_operations=[],
             state_operations=[
                 migrations.CreateModel(
                     name="SSFProviderOIDCAuthProvider",
@@ -47,6 +30,7 @@ class Migration(migrations.Migration):
                         (
                             "oauth2_provider",
                             models.ForeignKey(
+                                db_column="oauth2provider_id",
                                 on_delete=django.db.models.deletion.CASCADE,
                                 to="authentik_providers_oauth2.oauth2provider",
                             ),
@@ -54,12 +38,14 @@ class Migration(migrations.Migration):
                         (
                             "ssf_provider",
                             models.ForeignKey(
+                                db_column="ssfprovider_id",
                                 on_delete=django.db.models.deletion.CASCADE,
                                 to="authentik_providers_ssf.ssfprovider",
                             ),
                         ),
                     ],
                     options={
+                        "db_table": "authentik_providers_ssf_ssfprovider_oidc_auth_providers",
                         "unique_together": {("ssf_provider", "oauth2_provider")},
                     },
                 ),

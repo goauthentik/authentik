@@ -3,30 +3,6 @@
 import django.db.models.deletion
 from django.db import migrations, models
 
-STAGE_SQL = """
-ALTER TABLE authentik_stages_authenticator_validate_authenticatorvalida3e25 RENAME TO authentik_stages_authenticator_validate_authenticatorvalida09f9;
-ALTER TABLE authentik_stages_authenticator_validate_authenticatorvalida09f9 RENAME COLUMN stage_id to configuration_stage_id;
-ALTER TABLE authentik_stages_authenticator_validate_authenticatorvalida09f9 RENAME COLUMN authenticatorvalidatestage_id to authenticator_validate_stage_id;
-"""
-
-STAGE_REVERSE_SQL = """
-ALTER TABLE authentik_stages_authenticator_validate_authenticatorvalida09f9 RENAME COLUMN authenticator_validate_stage_id to authenticatorvalidatestage_id;
-ALTER TABLE authentik_stages_authenticator_validate_authenticatorvalida09f9 RENAME COLUMN configuration_stage_id to stage_id;
-ALTER TABLE authentik_stages_authenticator_validate_authenticatorvalida09f9 RENAME TO authentik_stages_authenticator_validate_authenticatorvalida3e25;
-"""
-
-DEVICE_TYPE_SQL = """
-ALTER TABLE authentik_stages_authenticator_validate_authenticatorvalida8318 RENAME TO authentik_stages_authenticator_validate_authenticatorvalidaed85;
-ALTER TABLE authentik_stages_authenticator_validate_authenticatorvalidaed85 RENAME COLUMN webauthndevicetype_id to webauthn_allowed_device_type_id;
-ALTER TABLE authentik_stages_authenticator_validate_authenticatorvalidaed85 RENAME COLUMN authenticatorvalidatestage_id to authenticator_validate_stage_id;
-"""
-
-DEVICE_TYPE_REVERSE_SQL = """
-ALTER TABLE authentik_stages_authenticator_validate_authenticatorvalidaed85 RENAME COLUMN authenticator_validate_stage_id to authenticatorvalidatestage_id;
-ALTER TABLE authentik_stages_authenticator_validate_authenticatorvalidaed85 RENAME COLUMN webauthn_allowed_device_type_id to webauthndevicetype_id;
-ALTER TABLE authentik_stages_authenticator_validate_authenticatorvalidaed85 RENAME TO authentik_stages_authenticator_validate_authenticatorvalida8318;
-"""
-
 
 class Migration(migrations.Migration):
 
@@ -44,12 +20,7 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.SeparateDatabaseAndState(
-            database_operations=[
-                migrations.RunSQL(
-                    sql=STAGE_SQL,
-                    reverse_sql=STAGE_REVERSE_SQL,
-                ),
-            ],
+            database_operations=[],
             state_operations=[
                 migrations.CreateModel(
                     name="AuthenticatorValidateStageConfigurationStage",
@@ -66,6 +37,7 @@ class Migration(migrations.Migration):
                         (
                             "authenticator_validate_stage",
                             models.ForeignKey(
+                                db_column="authenticatorvalidatestage_id",
                                 on_delete=django.db.models.deletion.CASCADE,
                                 related_name="configuration_stage_m2m_objects",
                                 to="authentik_stages_authenticator_validate.authenticatorvalidatestage",
@@ -74,6 +46,7 @@ class Migration(migrations.Migration):
                         (
                             "configuration_stage",
                             models.ForeignKey(
+                                db_column="stage_id",
                                 on_delete=django.db.models.deletion.CASCADE,
                                 related_name="authenticator_validate_stage_m2m_objects",
                                 to="authentik_flows.stage",
@@ -81,6 +54,7 @@ class Migration(migrations.Migration):
                         ),
                     ],
                     options={
+                        "db_table": "authentik_stages_authenticator_validate_authenticatorvalida3e25",
                         "unique_together": {
                             ("authenticator_validate_stage", "configuration_stage")
                         },
@@ -101,12 +75,7 @@ class Migration(migrations.Migration):
             ],
         ),
         migrations.SeparateDatabaseAndState(
-            database_operations=[
-                migrations.RunSQL(
-                    sql=DEVICE_TYPE_SQL,
-                    reverse_sql=DEVICE_TYPE_REVERSE_SQL,
-                ),
-            ],
+            database_operations=[],
             state_operations=[
                 migrations.CreateModel(
                     name="AuthenticatorValidateStageWebAuthnAllowedDeviceType",
@@ -123,6 +92,7 @@ class Migration(migrations.Migration):
                         (
                             "authenticator_validate_stage",
                             models.ForeignKey(
+                                db_column="authenticatorvalidatestage_id",
                                 on_delete=django.db.models.deletion.CASCADE,
                                 related_name="webauthn_allowed_device_types_m2m_objects",
                                 to="authentik_stages_authenticator_validate.authenticatorvalidatestage",
@@ -131,6 +101,7 @@ class Migration(migrations.Migration):
                         (
                             "webauthn_allowed_device_type",
                             models.ForeignKey(
+                                db_column="webauthndevicetype_id",
                                 on_delete=django.db.models.deletion.CASCADE,
                                 related_name="authenticator_validate_stage_m2m_objects",
                                 to="authentik_stages_authenticator_webauthn.webauthndevicetype",
@@ -138,6 +109,7 @@ class Migration(migrations.Migration):
                         ),
                     ],
                     options={
+                        "db_table": "authentik_stages_authenticator_validate_authenticatorvalida8318",
                         "unique_together": {
                             ("authenticator_validate_stage", "webauthn_allowed_device_type")
                         },

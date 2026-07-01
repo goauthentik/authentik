@@ -3,18 +3,6 @@
 import django.db.models.deletion
 from django.db import migrations, models
 
-SQL = """
-ALTER TABLE authentik_events_notificationrule_transports RENAME TO authentik_events_notificationrulenotificationtransport;
-ALTER TABLE authentik_events_notificationrulenotificationtransport RENAME COLUMN notificationrule_id to notification_rule_id;
-ALTER TABLE authentik_events_notificationrulenotificationtransport RENAME COLUMN notificationtransport_id to notification_transport_id;
-"""
-
-REVERSE_SQL = """
-ALTER TABLE authentik_events_notificationrulenotificationtransport RENAME COLUMN notification_transport_id to notificationtransport_id;
-ALTER TABLE authentik_events_notificationrulenotificationtransport RENAME COLUMN notification_rule_id to notificationrule_id;
-ALTER TABLE authentik_events_notificationrulenotificationtransport RENAME TO authentik_events_notificationrule_transports;
-"""
-
 
 class Migration(migrations.Migration):
 
@@ -24,12 +12,7 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.SeparateDatabaseAndState(
-            database_operations=[
-                migrations.RunSQL(
-                    sql=SQL,
-                    reverse_sql=REVERSE_SQL,
-                ),
-            ],
+            database_operations=[],
             state_operations=[
                 migrations.CreateModel(
                     name="NotificationRuleNotificationTransport",
@@ -46,6 +29,7 @@ class Migration(migrations.Migration):
                         (
                             "notification_rule",
                             models.ForeignKey(
+                                db_column="notificationrule_id",
                                 on_delete=django.db.models.deletion.CASCADE,
                                 to="authentik_events.notificationrule",
                             ),
@@ -53,12 +37,14 @@ class Migration(migrations.Migration):
                         (
                             "notification_transport",
                             models.ForeignKey(
+                                db_column="notificationtransport_id",
                                 on_delete=django.db.models.deletion.CASCADE,
                                 to="authentik_events.notificationtransport",
                             ),
                         ),
                     ],
                     options={
+                        "db_table": "authentik_events_notificationrule_transports",
                         "unique_together": {("notification_rule", "notification_transport")},
                     },
                 ),

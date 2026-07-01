@@ -3,26 +3,6 @@
 import django.db.models.deletion
 from django.db import migrations, models
 
-PROMPT_SQL = """
-ALTER TABLE authentik_stages_prompt_promptstage_fields RENAME TO authentik_stages_prompt_promptstagefield;
-ALTER TABLE authentik_stages_prompt_promptstagefield RENAME COLUMN promptstage_id to prompt_stage_id;
-"""
-
-PROMPT_REVERSE_SQL = """
-ALTER TABLE authentik_stages_prompt_promptstagefield RENAME COLUMN prompt_stage_id to promptstage_id;
-ALTER TABLE authentik_stages_prompt_promptstagefield RENAME TO authentik_stages_prompt_promptstage_fields;
-"""
-
-POLICY_SQL = """
-ALTER TABLE authentik_stages_prompt_promptstage_validation_policies RENAME TO authentik_stages_prompt_promptstagevalidationpolicy;
-ALTER TABLE authentik_stages_prompt_promptstagevalidationpolicy RENAME COLUMN promptstage_id to prompt_stage_id;
-"""
-
-POLICY_REVERSE_SQL = """
-ALTER TABLE authentik_stages_prompt_promptstagevalidationpolicy RENAME COLUMN prompt_stage_id to promptstage_id;
-ALTER TABLE authentik_stages_prompt_promptstagevalidationpolicy RENAME TO authentik_stages_prompt_promptstage_validation_policies;
-"""
-
 
 class Migration(migrations.Migration):
 
@@ -33,12 +13,7 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.SeparateDatabaseAndState(
-            database_operations=[
-                migrations.RunSQL(
-                    sql=PROMPT_SQL,
-                    reverse_sql=PROMPT_REVERSE_SQL,
-                ),
-            ],
+            database_operations=[],
             state_operations=[
                 migrations.CreateModel(
                     name="PromptStageField",
@@ -62,12 +37,14 @@ class Migration(migrations.Migration):
                         (
                             "prompt_stage",
                             models.ForeignKey(
+                                db_column="promptstage_id",
                                 on_delete=django.db.models.deletion.CASCADE,
                                 to="authentik_stages_prompt.promptstage",
                             ),
                         ),
                     ],
                     options={
+                        "db_table": "authentik_stages_prompt_promptstage_fields",
                         "unique_together": {("prompt_stage", "prompt")},
                     },
                 ),
@@ -82,12 +59,7 @@ class Migration(migrations.Migration):
             ],
         ),
         migrations.SeparateDatabaseAndState(
-            database_operations=[
-                migrations.RunSQL(
-                    sql=POLICY_SQL,
-                    reverse_sql=POLICY_REVERSE_SQL,
-                ),
-            ],
+            database_operations=[],
             state_operations=[
                 migrations.CreateModel(
                     name="PromptStageValidationPolicy",
@@ -104,6 +76,7 @@ class Migration(migrations.Migration):
                         (
                             "prompt_stage",
                             models.ForeignKey(
+                                db_column="promptstage_id",
                                 on_delete=django.db.models.deletion.CASCADE,
                                 to="authentik_stages_prompt.promptstage",
                             ),
@@ -117,6 +90,7 @@ class Migration(migrations.Migration):
                         ),
                     ],
                     options={
+                        "db_table": "authentik_stages_prompt_promptstage_validation_policies",
                         "unique_together": {("prompt_stage", "policy")},
                     },
                 ),

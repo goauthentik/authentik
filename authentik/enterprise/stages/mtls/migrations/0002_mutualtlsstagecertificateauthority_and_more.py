@@ -3,18 +3,6 @@
 import django.db.models.deletion
 from django.db import migrations, models
 
-SQL = """
-ALTER TABLE authentik_stages_mtls_mutualtlsstage_certificate_authorities RENAME TO authentik_stages_mtls_mutualtlsstagecertificateauthority;
-ALTER TABLE authentik_stages_mtls_mutualtlsstagecertificateauthority RENAME COLUMN mutualtlsstage_id to mutual_tls_stage_id;
-ALTER TABLE authentik_stages_mtls_mutualtlsstagecertificateauthority RENAME COLUMN certificatekeypair_id to certificate_key_pair_id;
-"""
-
-REVERSE_SQL = """
-ALTER TABLE authentik_stages_mtls_mutualtlsstagecertificateauthority RENAME COLUMN certificate_key_pair_id to certificatekeypair_id;
-ALTER TABLE authentik_stages_mtls_mutualtlsstagecertificateauthority RENAME COLUMN mutual_tls_stage_id to mutualtlsstage_id;
-ALTER TABLE authentik_stages_mtls_mutualtlsstagecertificateauthority RENAME TO authentik_stages_mtls_mutualtlsstage_certificate_authorities;
-"""
-
 
 class Migration(migrations.Migration):
 
@@ -25,12 +13,7 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.SeparateDatabaseAndState(
-            database_operations=[
-                migrations.RunSQL(
-                    sql=SQL,
-                    reverse_sql=REVERSE_SQL,
-                ),
-            ],
+            database_operations=[],
             state_operations=[
                 migrations.CreateModel(
                     name="MutualTLSStageCertificateAuthority",
@@ -47,6 +30,7 @@ class Migration(migrations.Migration):
                         (
                             "certificate_key_pair",
                             models.ForeignKey(
+                                db_column="certificatekeypair_id",
                                 on_delete=django.db.models.deletion.CASCADE,
                                 to="authentik_crypto.certificatekeypair",
                             ),
@@ -54,12 +38,14 @@ class Migration(migrations.Migration):
                         (
                             "mutual_tls_stage",
                             models.ForeignKey(
+                                db_column="mutualtlsstage_id",
                                 on_delete=django.db.models.deletion.CASCADE,
                                 to="authentik_stages_mtls.mutualtlsstage",
                             ),
                         ),
                     ],
                     options={
+                        "db_table": "authentik_stages_mtls_mutualtlsstage_certificate_authorities",
                         "unique_together": {("mutual_tls_stage", "certificate_key_pair")},
                     },
                 ),

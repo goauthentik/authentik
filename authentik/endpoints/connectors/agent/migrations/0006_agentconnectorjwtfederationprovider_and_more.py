@@ -3,18 +3,6 @@
 import django.db.models.deletion
 from django.db import migrations, models
 
-SQL = """
-ALTER TABLE authentik_endpoints_connectors_agent_agentconnector_jwt_fed2bc6 RENAME TO authentik_endpoints_connectors_agent_agentconnectorjwtfeder5bb8;
-ALTER TABLE authentik_endpoints_connectors_agent_agentconnectorjwtfeder5bb8 RENAME COLUMN agentconnector_id to agent_connector_id;
-ALTER TABLE authentik_endpoints_connectors_agent_agentconnectorjwtfeder5bb8 RENAME COLUMN oauth2provider_id to jwt_federation_provider_id;
-"""
-
-REVERSE_SQL = """
-ALTER TABLE authentik_endpoints_connectors_agent_agentconnectorjwtfeder5bb8 RENAME COLUMN agent_connector_id to agentconnector_id;
-ALTER TABLE authentik_endpoints_connectors_agent_agentconnectorjwtfeder5bb8 RENAME COLUMN jwt_federation_provider_id to oauth2provider_id;
-ALTER TABLE authentik_endpoints_connectors_agent_agentconnectorjwtfeder5bb8 RENAME TO authentik_endpoints_connectors_agent_agentconnector_jwt_fed2bc6;
-"""
-
 
 class Migration(migrations.Migration):
 
@@ -25,12 +13,7 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.SeparateDatabaseAndState(
-            database_operations=[
-                migrations.RunSQL(
-                    sql=SQL,
-                    reverse_sql=REVERSE_SQL,
-                ),
-            ],
+            database_operations=[],
             state_operations=[
                 migrations.CreateModel(
                     name="AgentConnectorJWTFederationProvider",
@@ -47,20 +30,23 @@ class Migration(migrations.Migration):
                         (
                             "agent_connector",
                             models.ForeignKey(
+                                db_column="agentconnector_id",
                                 on_delete=django.db.models.deletion.CASCADE,
                                 to="authentik_endpoints_connectors_agent.agentconnector",
                             ),
                         ),
                         (
-                            "jwt_federation_provider",
+                            "oauth2_provider",
                             models.ForeignKey(
+                                db_column="oauth2provider_id",
                                 on_delete=django.db.models.deletion.CASCADE,
                                 to="authentik_providers_oauth2.oauth2provider",
                             ),
                         ),
                     ],
                     options={
-                        "unique_together": {("agent_connector", "jwt_federation_provider")},
+                        "db_table": "authentik_endpoints_connectors_agent_agentconnector_jwt_fed2bc6",
+                        "unique_together": {("agent_connector", "oauth2_provider")},
                     },
                 ),
                 migrations.AlterField(
