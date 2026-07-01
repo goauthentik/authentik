@@ -728,8 +728,10 @@ class NotificationRule(TasksModel, SerializerModel, PolicyBindingModel):
     def destination_users(self, event: Event) -> Generator[User, Any]:
         if self.destination_event_user and event.user.get("pk"):
             yield User(pk=event.user.get("pk"))
-        if self.destination_event_subject and event.context.get("affected_user_pk"):
-            yield User(pk=event.context.get("affected_user_pk"))
+        if self.destination_event_subject and (subject_uuid := event.context.get("subject_uuid")):
+            subject = User.objects.filter(uuid=subject_uuid).first()
+            if subject:
+                yield subject
         if self.destination_group:
             yield from self.destination_group.users.all()
 

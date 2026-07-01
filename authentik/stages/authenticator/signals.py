@@ -13,7 +13,7 @@ def device_post_save_event(sender, instance: Device, created: bool, raw: bool, *
 
     Event.new(
         EventAction.MFA_DEVICE_ADDED,
-        affected_user_pk=instance.user.pk,
+        subject_uuid=instance.user.uuid,
         mfa_device={"type": instance._meta.model_name, "name": instance.name, "pk": instance.pk},
     ).from_ctx_request()
 
@@ -26,6 +26,6 @@ def device_pre_delete_event(sender, instance: Device, origin, **_):
         return
     Event.new(
         EventAction.MFA_DEVICE_REMOVED,
-        affected_user_pk=instance.user.pk,
+        subject_uuid=instance.user.uuid,
         mfa_device={"type": instance._meta.model_name, "name": instance.name, "pk": instance.pk},
     ).from_ctx_request()

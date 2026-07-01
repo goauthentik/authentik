@@ -122,7 +122,7 @@ def on_password_changed(
     **_,
 ):
     """Log password change"""
-    Event.new(EventAction.PASSWORD_SET, affected_user_pk=user.pk).from_http(request, user=user)
+    Event.new(EventAction.PASSWORD_SET, subject_uuid=user.uuid).from_http(request, user=user)
 
 
 @receiver(post_save, sender=Event)
