@@ -24410,6 +24410,14 @@ paths:
           format: uuid
       - $ref: '#/components/parameters/QuerySearch'
       - in: query
+        name: sign_authn_request
+        schema:
+          type: boolean
+      - in: query
+        name: sign_logout_request
+        schema:
+          type: boolean
+      - in: query
         name: signature_algorithm
         schema:
           $ref: '#/components/schemas/SignatureAlgorithmEnum'
@@ -24426,6 +24434,14 @@ paths:
         schema:
           type: string
           format: uuid
+      - in: query
+        name: slo_binding
+        schema:
+          allOf:
+          - $ref: '#/components/schemas/SloBindingEnum'
+          description: |+
+            Binding type for Single Logout requests to the IdP.
+
       - in: query
         name: slo_url
         schema:
@@ -50843,6 +50859,10 @@ components:
             no Policy is sent.
         binding_type:
           $ref: '#/components/schemas/BindingTypeEnum'
+        slo_binding:
+          allOf:
+          - $ref: '#/components/schemas/SloBindingEnum'
+          description: Binding type for Single Logout requests to the IdP.
         verification_kp:
           type: string
           format: uuid
@@ -50880,6 +50900,16 @@ components:
           type: boolean
         signed_response:
           type: boolean
+        sign_authn_request:
+          type: boolean
+          title: Sign AuthnRequest
+          description: Whether to sign outgoing AuthnRequests. Requires a Signing
+            Keypair to be set.
+        sign_logout_request:
+          type: boolean
+          title: Sign LogoutRequest
+          description: Whether to sign outgoing LogoutRequests. Requires a Signing
+            Keypair to be set.
     PatchedSCIMMappingRequest:
       type: object
       description: SCIMMapping Serializer
@@ -54619,6 +54649,10 @@ components:
             no Policy is sent.
         binding_type:
           $ref: '#/components/schemas/BindingTypeEnum'
+        slo_binding:
+          allOf:
+          - $ref: '#/components/schemas/SloBindingEnum'
+          description: Binding type for Single Logout requests to the IdP.
         verification_kp:
           type: string
           format: uuid
@@ -54655,6 +54689,16 @@ components:
           type: boolean
         signed_response:
           type: boolean
+        sign_authn_request:
+          type: boolean
+          title: Sign AuthnRequest
+          description: Whether to sign outgoing AuthnRequests. Requires a Signing
+            Keypair to be set.
+        sign_logout_request:
+          type: boolean
+          title: Sign LogoutRequest
+          description: Whether to sign outgoing LogoutRequests. Requires a Signing
+            Keypair to be set.
       required:
       - component
       - icon_themed_urls
@@ -54823,6 +54867,10 @@ components:
             no Policy is sent.
         binding_type:
           $ref: '#/components/schemas/BindingTypeEnum'
+        slo_binding:
+          allOf:
+          - $ref: '#/components/schemas/SloBindingEnum'
+          description: Binding type for Single Logout requests to the IdP.
         verification_kp:
           type: string
           format: uuid
@@ -54860,6 +54908,16 @@ components:
           type: boolean
         signed_response:
           type: boolean
+        sign_authn_request:
+          type: boolean
+          title: Sign AuthnRequest
+          description: Whether to sign outgoing AuthnRequests. Requires a Signing
+            Keypair to be set.
+        sign_logout_request:
+          type: boolean
+          title: Sign LogoutRequest
+          description: Whether to sign outgoing LogoutRequests. Requires a Signing
+            Keypair to be set.
       required:
       - name
       - pre_authentication_flow
@@ -56147,6 +56205,11 @@ components:
       - http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha384
       - http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha512
       - http://www.w3.org/2000/09/xmldsig#dsa-sha1
+      type: string
+    SloBindingEnum:
+      enum:
+      - REDIRECT
+      - POST
       type: string
     Software:
       type: object

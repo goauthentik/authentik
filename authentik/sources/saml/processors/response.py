@@ -44,12 +44,9 @@ from authentik.sources.saml.exceptions import (
     SAMLException,
     UnsupportedNameIDFormat,
 )
-from authentik.sources.saml.models import (
-    GroupSAMLSourceConnection,
-    SAMLSource,
-    UserSAMLSourceConnection,
-)
+from authentik.sources.saml.models import SAMLSource, UserSAMLSourceConnection
 from authentik.sources.saml.processors.request import SESSION_KEY_REQUEST_ID
+from authentik.sources.saml.stages import PLAN_CONTEXT_SAML_SESSION_DATA, SAMLSourceFlowManager
 
 LOGGER = get_logger()
 if TYPE_CHECKING:
@@ -264,6 +261,7 @@ class ResponseProcessor:
         user.set_unusable_password()
         user.save()
         UserSAMLSourceConnection.objects.create(source=self._source, user=user, identifier=name_id)
+        session_index = self._get_session_index()
         return SAMLSourceFlowManager(
             source=self._source,
             request=self._http_request,
@@ -273,8 +271,24 @@ class ResponseProcessor:
                 "assertion": self.get_assertion(),
                 "name_id": name_id_el,
             },
-            policy_context={},
+            policy_context={
+                PLAN_CONTEXT_SAML_SESSION_DATA: {
+                    "session_index": session_index or "",
+                    "name_id": name_id,
+                    "name_id_format": name_id_el.attrib.get("Format", ""),
+                },
+            },
         )
+
+    def _get_session_index(self) -> str | None:
+        """Get SessionIndex from AuthnStatement element"""
+        assertion = self._root.find(f"{{{NS_SAML_ASSERTION}}}Assertion")
+        if assertion is None:
+            return None
+        authn_statement = assertion.find(f"{{{NS_SAML_ASSERTION}}}AuthnStatement")
+        if authn_statement is None:
+            return None
+        return authn_statement.attrib.get("SessionIndex")
 
     def get_assertion(self) -> Element | None:
         """Get assertion element, if we have a signed assertion"""
@@ -330,6 +344,7 @@ class ResponseProcessor:
         if name_id_el.attrib["Format"] == SAML_NAME_ID_FORMAT_TRANSIENT:
             return self._handle_name_id_transient()
 
+        session_index = self._get_session_index()
         return SAMLSourceFlowManager(
             source=self._source,
             request=self._http_request,
@@ -341,12 +356,10 @@ class ResponseProcessor:
             },
             policy_context={
                 "saml_response": etree.tostring(self._root),
+                PLAN_CONTEXT_SAML_SESSION_DATA: {
+                    "session_index": session_index or "",
+                    "name_id": name_id,
+                    "name_id_format": name_id_el.attrib.get("Format", ""),
+                },
             },
         )
-
-
-class SAMLSourceFlowManager(SourceFlowManager):
-    """Source flow manager for SAML Sources"""
-
-    user_connection_type = UserSAMLSourceConnection
-    group_connection_type = GroupSAMLSourceConnection
