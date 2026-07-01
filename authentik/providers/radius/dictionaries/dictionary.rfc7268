@@ -1,0 +1,80 @@
+# -*- text -*-
+# Copyright (C) 2023 The FreeRADIUS Server project and contributors
+# This work is licensed under CC-BY version 4.0 https://creativecommons.org/licenses/by/4.0
+# Version $Id$
+#
+#        Attributes and values defined in RFC 7268
+#        http://www.ietf.org/rfc/rfc7268.txt
+#
+#	$Id$
+#
+
+ATTRIBUTE	Allowed-Called-Station-Id		174	string
+ATTRIBUTE	EAP-Peer-Id				175	octets
+ATTRIBUTE	EAP-Server-Id				176	octets
+ATTRIBUTE	Mobility-Domain-Id			177	integer
+ATTRIBUTE	Preauth-Timeout				178	integer
+ATTRIBUTE	Network-Id-Name				179	octets
+
+# TLVs in the format defined in Figure 11-8 of Section 11.12 of
+# "IEEE Standard for Local and metropolitan area
+# networks - Port-Based Network Access Control", IEEE Std
+# 802.1X-2010.
+#
+# These are <drum roll> 7 bit TLV-Type, and 9-bit TLV-Length
+#
+# If the TLVs are too large for 253 octets, they are fragmented
+# into multiple attributes.
+ATTRIBUTE	EAPoL-Announcement			180	octets	concat
+
+ATTRIBUTE	WLAN-HESSID				181	string
+
+# Defined in Section 8.4.1.34 of the above IEEE document.
+ATTRIBUTE	WLAN-Venue-Info				182	struct
+MEMBER		Reserved				octets[2]  # MUST be zero
+MEMBER		Group					uint8
+MEMBER		Type					uint8
+
+# A two or 3 character language code selected from ISO-639.
+# If it's two characters, a trailing zero byte is added
+ATTRIBUTE	WLAN-Venue-Language			183	octets[3]
+
+ATTRIBUTE	WLAN-Venue-Name				184	string
+
+# two least significant octets contain the Reason Code values defined
+# in Table 8-36 of Section 8.4.1.7 of the above IEEE document.
+ATTRIBUTE	WLAN-Reason-Code			185	integer
+
+# The next four attributes are binary packed.  The first 3 octets is
+# the OUI.  The last octet is the Suite Type.
+
+# in Suite selector format as specified in Figure 8-187 within Section
+# 8.4.2.27.2 of [IEEE-802.11], with values of OUI and Suite Type drawn
+# from Table 8-99.
+ATTRIBUTE	WLAN-Pairwise-Cipher			186	struct
+MEMBER		OUI					octets[3]
+MEMBER		Suite-Type				uint8
+
+# same as WLAN-Pairwise-Cipher
+ATTRIBUTE	WLAN-Group-Cipher			187	struct
+MEMBER		OUI					octets[3]
+MEMBER		Type					uint8
+# in Suite selector format as specified in Figure 8-187
+# within Section 8.4.2.27.2 of [IEEE-802.11], with values of OUI and
+# Suite Type drawn from Table 8-101:
+ATTRIBUTE	WLAN-AKM-Suite				188	struct
+MEMBER		OUI					octets[3]
+MEMBER		Suite-Type				uint8
+
+# same as WLAN-Pairwise-Cipher
+ATTRIBUTE	WLAN-Group-Mgmt-Cipher			189	struct
+MEMBER		OUI					octets[3]
+MEMBER		Type					uint8
+
+# the upper 3 octets are zero
+# the low octet contains the RF Band field, whose values are defined
+# by the IEEE 802.11 Band ID field (Table 8-53a of [IEEE-802.11ad])
+
+ATTRIBUTE	WLAN-RF-Band				190	struct
+MEMBER		Reserved				octets[3]
+MEMBER		Id					uint8

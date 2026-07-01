@@ -1,0 +1,37 @@
+# -*- text -*-
+# Copyright (C) 2023 The FreeRADIUS Server project and contributors
+# This work is licensed under CC-BY version 4.0 https://creativecommons.org/licenses/by/4.0
+# Version $Id$
+#
+#        Attributes and values defined in RFC 8045
+#        http://www.ietf.org/rfc/rfc8045.txt
+#
+
+ATTRIBUTE	IP-Port-Limit-Info			241.5	tlv
+ATTRIBUTE	Type					.1	integer
+ATTRIBUTE	Limit					.2	integer
+ATTRIBUTE	Ext-IPv4-Addr				.3	ipaddr
+ATTRIBUTE	Int-IPv4-Addr				.4	ipaddr
+ATTRIBUTE	Int-IPv6-Addr				.5	ipv6addr
+ATTRIBUTE	Int-Port				.6	integer
+ATTRIBUTE	Ext-Port				.7	integer
+ATTRIBUTE	Alloc					.8	integer
+
+VALUE	Alloc				Reserved		0
+VALUE	Alloc				Allocation		1
+VALUE	Alloc				Deallocation		2
+
+ATTRIBUTE	Range-Start				.9	integer
+ATTRIBUTE	Range-End				.10	integer
+ATTRIBUTE	Local-Id				.11	string
+
+ATTRIBUTE	IP-Port-Range				241.6	tlv clone=.IP-Port-Limit-Info
+ATTRIBUTE	Range-Start				.9	integer
+ATTRIBUTE	Range-End				.10	integer
+ATTRIBUTE	Local-Id				.11	string
+
+ATTRIBUTE	IP-Port-Forwarding-Map			241.7	tlv clone=.IP-Port-Range
+
+ALIAS		IP-Port-Limit-Info			Extended-Attribute-1.IP-Port-Limit-Info
+ALIAS		IP-Port-Range				Extended-Attribute-1.IP-Port-Range
+ALIAS		IP-Port-Forwarding-Map			Extended-Attribute-1.IP-Port-Forwarding-Map
