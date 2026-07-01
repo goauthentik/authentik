@@ -9,6 +9,7 @@ export interface ISearchSelectConfig<T = unknown> {
     renderDescription?: (element: T) => string | TemplateResult;
     value: (element: T | null) => string;
     selected?: (element: T, elements: T[]) => boolean;
+    createObject?: (value: string) => T;
     groupBy?: (items: T[]) => [string, T[]][];
 }
 
@@ -50,6 +51,7 @@ export class SearchSelectEz<T> extends SearchSelectBase<T> {
     public renderDescription?: ((element: T) => string | TemplateResult) | undefined;
     public value!: (element: T | null) => string;
     public selected?: ((element: T, elements: T[]) => boolean) | undefined;
+    public createObject?: ((value: string) => T) | undefined;
 
     @property({ type: Object, attribute: false })
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -61,6 +63,7 @@ export class SearchSelectEz<T> extends SearchSelectBase<T> {
         this.renderDescription = this.config.renderDescription;
         this.value = this.config.value;
         this.selected = this.config.selected;
+        this.createObject = this.config.createObject;
 
         if (this.config.groupBy) {
             this.groupBy = this.config.groupBy;
