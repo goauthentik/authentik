@@ -12,6 +12,8 @@ import "#elements/utils/TimeDeltaHelp";
 
 import { propertyMappingsProvider, propertyMappingsSelector } from "./ProxyProviderFormHelpers.js";
 
+import { AKLabel } from "#components/ak-label";
+
 import {
     oauth2ProviderSelector,
     oauth2ProvidersProvider,
@@ -219,12 +221,18 @@ export function renderForm({ provider = {}, errors = {}, args }: ProxyProviderFo
             required
         ></ak-text-input>
 
-        <ak-form-element-horizontal
-            label=${msg("Authorization Flow")}
-            required
-            name="authorizationFlow"
-        >
+        <ak-form-element-horizontal required name="authorizationFlow">
+            ${AKLabel(
+                {
+                    slot: "label",
+                    className: "pf-c-form__group-label",
+                    htmlFor: "authorizationFlow",
+                    required: true,
+                },
+                msg("Authorization Flow"),
+            )}
             <ak-flow-search
+                id="authorizationFlow"
                 flowType=${FlowDesignationEnum.Authorization}
                 .currentFlow=${provider.authorizationFlow}
                 required
@@ -251,16 +259,31 @@ export function renderForm({ provider = {}, errors = {}, args }: ProxyProviderFo
 
         <ak-form-group label="${msg("Advanced protocol settings")}">
             <div class="pf-c-form">
-                <ak-form-element-horizontal label=${msg("Certificate")} name="certificate">
+                <ak-form-element-horizontal name="certificate">
+                    ${AKLabel(
+                        {
+                            slot: "label",
+                            className: "pf-c-form__group-label",
+                            htmlFor: "certificate",
+                        },
+                        msg("Certificate"),
+                    )}
                     <ak-crypto-certificate-search
+                        id="certificate"
                         .certificate=${provider.certificate}
                     ></ak-crypto-certificate-search>
                 </ak-form-element-horizontal>
-                <ak-form-element-horizontal
-                    label=${msg("Additional scopes")}
-                    name="propertyMappings"
-                >
+                <ak-form-element-horizontal name="propertyMappings">
+                    ${AKLabel(
+                        {
+                            slot: "label",
+                            className: "pf-c-form__group-label",
+                            htmlFor: "propertyMappings",
+                        },
+                        msg("Additional scopes"),
+                    )}
                     <ak-dual-select-dynamic-selected
+                        id="propertyMappings"
                         .provider=${propertyMappingsProvider}
                         .selector=${propertyMappingsSelector(provider.propertyMappings)}
                         available-label="${msg("Available Scopes")}"
@@ -271,13 +294,18 @@ export function renderForm({ provider = {}, errors = {}, args }: ProxyProviderFo
                     </p>
                 </ak-form-element-horizontal>
 
-                <ak-form-element-horizontal
-                    label="${mode === ProxyMode.ForwardDomain
-                        ? msg("Unauthenticated URLs")
-                        : msg("Unauthenticated Paths")}"
-                    name="skipPathRegex"
-                >
-                    <textarea class="pf-c-form-control pf-m-monospace">
+                <ak-form-element-horizontal name="skipPathRegex">
+                    ${AKLabel(
+                        {
+                            slot: "label",
+                            className: "pf-c-form__group-label",
+                            htmlFor: "skipPathRegex",
+                        },
+                        mode === ProxyMode.ForwardDomain
+                            ? msg("Unauthenticated URLs")
+                            : msg("Unauthenticated Paths"),
+                    )}
+                    <textarea id="skipPathRegex" class="pf-c-form-control pf-m-monospace">
 ${provider.skipPathRegex}</textarea
                     >
                     <p class="pf-c-form__helper-text">
@@ -317,11 +345,17 @@ ${provider.skipPathRegex}</textarea
                 </ak-switch-input>
 
                 ${showHttpBasic ? renderHttpBasic(provider) : nothing}
-                <ak-form-element-horizontal
-                    label=${msg("Federated OIDC Sources")}
-                    name="jwtFederationSources"
-                >
+                <ak-form-element-horizontal name="jwtFederationSources">
+                    ${AKLabel(
+                        {
+                            slot: "label",
+                            className: "pf-c-form__group-label",
+                            htmlFor: "jwtFederationSources",
+                        },
+                        msg("Federated OIDC Sources"),
+                    )}
                     <ak-dual-select-dynamic-selected
+                        id="jwtFederationSources"
                         .provider=${oauth2SourcesProvider}
                         .selector=${oauth2SourcesSelector(provider.jwtFederationSources)}
                         available-label=${msg("Available Sources")}
@@ -333,11 +367,17 @@ ${provider.skipPathRegex}</textarea
                         )}
                     </p>
                 </ak-form-element-horizontal>
-                <ak-form-element-horizontal
-                    label=${msg("Federated OAuth2/OpenID Providers")}
-                    name="jwtFederationProviders"
-                >
+                <ak-form-element-horizontal name="jwtFederationProviders">
+                    ${AKLabel(
+                        {
+                            slot: "label",
+                            className: "pf-c-form__group-label",
+                            htmlFor: "jwtFederationProviders",
+                        },
+                        msg("Federated OAuth2/OpenID Providers"),
+                    )}
                     <ak-dual-select-dynamic-selected
+                        id="jwtFederationProviders"
                         .provider=${oauth2ProvidersProvider}
                         .selector=${oauth2ProviderSelector(provider.jwtFederationProviders)}
                         available-label=${msg("Available Providers")}
@@ -354,11 +394,17 @@ ${provider.skipPathRegex}</textarea
 
         <ak-form-group label="${msg("Advanced flow settings")}">
             <div class="pf-c-form">
-                <ak-form-element-horizontal
-                    label=${msg("Authentication Flow")}
-                    name="authenticationFlow"
-                >
+                <ak-form-element-horizontal name="authenticationFlow">
+                    ${AKLabel(
+                        {
+                            slot: "label",
+                            className: "pf-c-form__group-label",
+                            htmlFor: "authenticationFlow",
+                        },
+                        msg("Authentication Flow"),
+                    )}
                     <ak-flow-search
+                        id="authenticationFlow"
                         flowType=${FlowDesignationEnum.Authentication}
                         .currentFlow=${provider.authenticationFlow}
                     ></ak-flow-search>
@@ -368,12 +414,18 @@ ${provider.skipPathRegex}</textarea
                         )}
                     </p>
                 </ak-form-element-horizontal>
-                <ak-form-element-horizontal
-                    label=${msg("Invalidation Flow")}
-                    name="invalidationFlow"
-                    required
-                >
+                <ak-form-element-horizontal name="invalidationFlow" required>
+                    ${AKLabel(
+                        {
+                            slot: "label",
+                            className: "pf-c-form__group-label",
+                            htmlFor: "invalidationFlow",
+                            required: true,
+                        },
+                        msg("Invalidation Flow"),
+                    )}
                     <ak-flow-search
+                        id="invalidationFlow"
                         flowType=${FlowDesignationEnum.Invalidation}
                         .currentFlow=${provider.invalidationFlow}
                         defaultFlowSlug="default-provider-invalidation-flow"

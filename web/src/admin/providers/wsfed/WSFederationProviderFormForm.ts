@@ -14,6 +14,8 @@ import { aki } from "#common/api/client";
 
 import { withQuery } from "#elements/forms/SearchSelect/utils";
 
+import { AKLabel } from "#components/ak-label";
+
 import {
     propertyMappingsProvider,
     propertyMappingsSelector,
@@ -97,12 +99,18 @@ export function renderForm({
             required
             .errorMessages=${errors.name}
         ></ak-text-input>
-        <ak-form-element-horizontal
-            name="authorizationFlow"
-            label=${msg("Authorization Flow")}
-            required
-        >
+        <ak-form-element-horizontal name="authorizationFlow" required>
+            ${AKLabel(
+                {
+                    slot: "label",
+                    className: "pf-c-form__group-label",
+                    htmlFor: "authorizationFlow",
+                    required: true,
+                },
+                msg("Authorization Flow"),
+            )}
             <ak-flow-search
+                id="authorizationFlow"
                 flowType=${FlowDesignationEnum.Authorization}
                 .currentFlow=${provider.authorizationFlow}
                 .errorMessages=${errors.authorizationFlow}
@@ -138,11 +146,17 @@ export function renderForm({
 
         <ak-form-group label="${msg("Advanced flow settings")}">
             <div class="pf-c-form">
-                <ak-form-element-horizontal
-                    label=${msg("Authentication Flow")}
-                    name="authenticationFlow"
-                >
+                <ak-form-element-horizontal name="authenticationFlow">
+                    ${AKLabel(
+                        {
+                            slot: "label",
+                            className: "pf-c-form__group-label",
+                            htmlFor: "authenticationFlow",
+                        },
+                        msg("Authentication Flow"),
+                    )}
                     <ak-flow-search
+                        id="authenticationFlow"
                         flowType=${FlowDesignationEnum.Authentication}
                         .currentFlow=${provider.authenticationFlow}
                     ></ak-flow-search>
@@ -152,12 +166,18 @@ export function renderForm({
                         )}
                     </p>
                 </ak-form-element-horizontal>
-                <ak-form-element-horizontal
-                    label=${msg("Invalidation Flow")}
-                    name="invalidationFlow"
-                    required
-                >
+                <ak-form-element-horizontal name="invalidationFlow" required>
+                    ${AKLabel(
+                        {
+                            slot: "label",
+                            className: "pf-c-form__group-label",
+                            htmlFor: "invalidationFlow",
+                            required: true,
+                        },
+                        msg("Invalidation Flow"),
+                    )}
                     <ak-flow-search
+                        id="invalidationFlow"
                         flowType=${FlowDesignationEnum.Invalidation}
                         .currentFlow=${provider.invalidationFlow}
                         defaultFlowSlug="default-provider-invalidation-flow"
@@ -172,8 +192,17 @@ export function renderForm({
 
         <ak-form-group label="${msg("Advanced protocol settings")}">
             <div class="pf-c-form">
-                <ak-form-element-horizontal label=${msg("Signing Certificate")} name="signingKp">
+                <ak-form-element-horizontal name="signingKp">
+                    ${AKLabel(
+                        {
+                            slot: "label",
+                            className: "pf-c-form__group-label",
+                            htmlFor: "signingKp",
+                        },
+                        msg("Signing Certificate"),
+                    )}
                     <ak-crypto-certificate-search
+                        id="signingKp"
                         .certificate=${provider.signingKp}
                         @input=${setHasSigningKp}
                         singleton
@@ -204,11 +233,17 @@ export function renderForm({
                           </ak-switch-input>`
                     : nothing}
 
-                <ak-form-element-horizontal
-                    label=${msg("Encryption Certificate")}
-                    name="encryptionKp"
-                >
+                <ak-form-element-horizontal name="encryptionKp">
+                    ${AKLabel(
+                        {
+                            slot: "label",
+                            className: "pf-c-form__group-label",
+                            htmlFor: "encryptionKp",
+                        },
+                        msg("Encryption Certificate"),
+                    )}
                     <ak-crypto-certificate-search
+                        id="encryptionKp"
                         .certificate=${provider.encryptionKp}
                         nokey
                         .allowedKeyTypes=${SAMLSupportedKeyTypes}
@@ -217,22 +252,34 @@ export function renderForm({
                         ${msg("When selected, assertions will be encrypted using this keypair.")}
                     </p>
                 </ak-form-element-horizontal>
-                <ak-form-element-horizontal
-                    label=${msg("Property mappings")}
-                    name="propertyMappings"
-                >
+                <ak-form-element-horizontal name="propertyMappings">
+                    ${AKLabel(
+                        {
+                            slot: "label",
+                            className: "pf-c-form__group-label",
+                            htmlFor: "propertyMappings",
+                        },
+                        msg("Property mappings"),
+                    )}
                     <ak-dual-select-dynamic-selected
+                        id="propertyMappings"
                         .provider=${propertyMappingsProvider}
                         .selector=${propertyMappingsSelector(provider.propertyMappings)}
                         available-label=${msg("Available User Property Mappings")}
                         selected-label=${msg("Selected User Property Mappings")}
                     ></ak-dual-select-dynamic-selected>
                 </ak-form-element-horizontal>
-                <ak-form-element-horizontal
-                    label=${msg("NameID Property Mapping")}
-                    name="nameIdMapping"
-                >
+                <ak-form-element-horizontal name="nameIdMapping">
+                    ${AKLabel(
+                        {
+                            slot: "label",
+                            className: "pf-c-form__group-label",
+                            htmlFor: "nameIdMapping",
+                        },
+                        msg("NameID Property Mapping"),
+                    )}
                     <ak-search-select-ez
+                        id="nameIdMapping"
                         .config=${nameIdMappingConfig}
                         blankable
                     ></ak-search-select-ez>
@@ -242,11 +289,17 @@ export function renderForm({
                         )}
                     </p>
                 </ak-form-element-horizontal>
-                <ak-form-element-horizontal
-                    label=${msg("AuthnContextClassRef Property Mapping")}
-                    name="authnContextClassRefMapping"
-                >
+                <ak-form-element-horizontal name="authnContextClassRefMapping">
+                    ${AKLabel(
+                        {
+                            slot: "label",
+                            className: "pf-c-form__group-label",
+                            htmlFor: "authnContextClassRefMapping",
+                        },
+                        msg("AuthnContextClassRef Property Mapping"),
+                    )}
                     <ak-search-select-ez
+                        id="authnContextClassRefMapping"
                         .config=${authnContextClassRefMappingConfig}
                         blankable
                     ></ak-search-select-ez>
@@ -265,12 +318,17 @@ export function renderForm({
                     .errorMessages=${errors.sessionValidNotOnOrAfter}
                     help=${msg("Session not valid on or after current time + this value.")}
                 ></ak-text-input>
-                <ak-form-element-horizontal
-                    label=${msg("Default NameID Policy")}
-                    required
-                    name="defaultNameIdPolicy"
-                >
-                    <select class="pf-c-form-control">
+                <ak-form-element-horizontal required name="defaultNameIdPolicy">
+                    ${AKLabel(
+                        {
+                            slot: "label",
+                            className: "pf-c-form__group-label",
+                            htmlFor: "defaultNameIdPolicy",
+                            required: true,
+                        },
+                        msg("Default NameID Policy"),
+                    )}
+                    <select id="defaultNameIdPolicy" class="pf-c-form-control">
                         ${samlNameIDPolicyAndLabel.map(
                             ([policy, label]) =>
                                 html`<option
@@ -288,12 +346,17 @@ export function renderForm({
                     </p>
                 </ak-form-element-horizontal>
 
-                <ak-form-element-horizontal
-                    label=${msg("Digest algorithm")}
-                    required
-                    name="digestAlgorithm"
-                >
-                    <select class="pf-c-form-control">
+                <ak-form-element-horizontal required name="digestAlgorithm">
+                    ${AKLabel(
+                        {
+                            slot: "label",
+                            className: "pf-c-form__group-label",
+                            htmlFor: "digestAlgorithm",
+                            required: true,
+                        },
+                        msg("Digest algorithm"),
+                    )}
+                    <select id="digestAlgorithm" class="pf-c-form-control">
                         ${digestAlgorithmOptions.map(
                             (opt) => html`
                                 <option
@@ -308,12 +371,17 @@ export function renderForm({
                     </select>
                 </ak-form-element-horizontal>
 
-                <ak-form-element-horizontal
-                    label=${msg("Signature algorithm")}
-                    required
-                    name="signatureAlgorithm"
-                >
-                    <select class="pf-c-form-control">
+                <ak-form-element-horizontal required name="signatureAlgorithm">
+                    ${AKLabel(
+                        {
+                            slot: "label",
+                            className: "pf-c-form__group-label",
+                            htmlFor: "signatureAlgorithm",
+                            required: true,
+                        },
+                        msg("Signature algorithm"),
+                    )}
+                    <select id="signatureAlgorithm" class="pf-c-form-control">
                         ${availableHashes.map((hash) => {
                             const algorithmValue = retrieveSignatureAlgorithm(keyType, hash);
                             if (!algorithmValue) return nothing;

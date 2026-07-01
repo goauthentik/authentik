@@ -21,6 +21,8 @@ import {
 
 import { aki } from "#common/api/client";
 
+import { AKLabel } from "#components/ak-label";
+
 import {
     CompatibilityModeEnum,
     OAuthSource,
@@ -50,8 +52,17 @@ export function renderAuthToken(provider?: Partial<SCIMProvider>, errors: Valida
 }
 
 export function renderAuthOAuth(provider?: Partial<SCIMProvider>, _errors: ValidationError = {}) {
-    return html`<ak-form-element-horizontal label=${msg("OAuth Source")} name="authOauth">
+    return html`<ak-form-element-horizontal name="authOauth">
+            ${AKLabel(
+                {
+                    slot: "label",
+                    className: "pf-c-form__group-label",
+                    htmlFor: "authOauth",
+                },
+                msg("OAuth Source"),
+            )}
             <ak-search-select
+                id="authOauth"
                 .fetchObjects=${async (query?: string): Promise<OAuthSource[]> => {
                     const args: SourcesOauthListRequest = {
                         ordering: "name",
@@ -78,8 +89,20 @@ export function renderAuthOAuth(provider?: Partial<SCIMProvider>, _errors: Valid
                 ${msg("Specify OAuth source used for authentication.")}
             </p>
         </ak-form-element-horizontal>
-        <ak-form-element-horizontal label=${msg("OAuth Parameters")} name="authOauthParams">
-            <ak-codemirror mode="yaml" value="${YAML.stringify(provider?.authOauthParams ?? {})}">
+        <ak-form-element-horizontal name="authOauthParams">
+            ${AKLabel(
+                {
+                    slot: "label",
+                    className: "pf-c-form__group-label",
+                    htmlFor: "authOauthParams",
+                },
+                msg("OAuth Parameters"),
+            )}
+            <ak-codemirror
+                id="authOauthParams"
+                mode="yaml"
+                value="${YAML.stringify(provider?.authOauthParams ?? {})}"
+            >
             </ak-codemirror>
             <p class="pf-c-form__helper-text">
                 ${msg("Additional OAuth parameters, such as grant_type.")}
@@ -137,12 +160,18 @@ export function renderForm({ provider, errors, update }: SCIMProviderFormProps) 
                 >
                 </ak-switch-input>
 
-                <ak-form-element-horizontal
-                    label=${msg("Authentication Mode")}
-                    required
-                    name="authMode"
-                >
+                <ak-form-element-horizontal required name="authMode">
+                    ${AKLabel(
+                        {
+                            slot: "label",
+                            className: "pf-c-form__group-label",
+                            htmlFor: "authMode",
+                            required: true,
+                        },
+                        msg("Authentication Mode"),
+                    )}
                     <ak-radio
+                        id="authMode"
                         @change=${(ev: CustomEvent<{ value: SCIMAuthenticationModeEnum }>) => {
                             if (!provider) {
                                 provider = {};
@@ -259,8 +288,17 @@ export function renderForm({ provider, errors, update }: SCIMProviderFormProps) 
                 >
                 </ak-switch-input>
 
-                <ak-form-element-horizontal label=${msg("Group Filter")} name="groupFilters">
+                <ak-form-element-horizontal name="groupFilters">
+                    ${AKLabel(
+                        {
+                            slot: "label",
+                            className: "pf-c-form__group-label",
+                            htmlFor: "groupFilters",
+                        },
+                        msg("Group Filter"),
+                    )}
                     <ak-dual-select-dynamic-selected
+                        id="groupFilters"
                         .provider=${groupsProvider}
                         .selector=${groupsSelector(provider?.groupFilters, null)}
                         available-label=${msg("Available Groups")}
@@ -275,11 +313,17 @@ export function renderForm({ provider, errors, update }: SCIMProviderFormProps) 
 
         <ak-form-group open label="${msg("Attribute mapping")}">
             <div class="pf-c-form">
-                <ak-form-element-horizontal
-                    label=${msg("User Property Mappings")}
-                    name="propertyMappings"
-                >
+                <ak-form-element-horizontal name="propertyMappings">
+                    ${AKLabel(
+                        {
+                            slot: "label",
+                            className: "pf-c-form__group-label",
+                            htmlFor: "propertyMappings",
+                        },
+                        msg("User Property Mappings"),
+                    )}
                     <ak-dual-select-dynamic-selected
+                        id="propertyMappings"
                         .provider=${propertyMappingsProvider}
                         .selector=${propertyMappingsSelector(
                             provider.propertyMappings,
@@ -292,11 +336,17 @@ export function renderForm({ provider, errors, update }: SCIMProviderFormProps) 
                         ${msg("Property mappings used to user mapping.")}
                     </p>
                 </ak-form-element-horizontal>
-                <ak-form-element-horizontal
-                    label=${msg("Group Property Mappings")}
-                    name="propertyMappingsGroup"
-                >
+                <ak-form-element-horizontal name="propertyMappingsGroup">
+                    ${AKLabel(
+                        {
+                            slot: "label",
+                            className: "pf-c-form__group-label",
+                            htmlFor: "propertyMappingsGroup",
+                        },
+                        msg("Group Property Mappings"),
+                    )}
                     <ak-dual-select-dynamic-selected
+                        id="propertyMappingsGroup"
                         .provider=${propertyMappingsProvider}
                         .selector=${propertyMappingsSelector(
                             provider.propertyMappingsGroup,

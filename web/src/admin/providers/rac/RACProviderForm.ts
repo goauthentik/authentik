@@ -78,12 +78,18 @@ export class RACProviderFormPage extends ModelForm<RACProvider, number> {
                     ${msg("Flow used when authorizing this provider.")}
                 </p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal
-                label=${msg("Connection expiry")}
-                required
-                name="connectionExpiry"
-            >
+            <ak-form-element-horizontal required name="connectionExpiry">
+                ${AKLabel(
+                    {
+                        slot: "label",
+                        className: "pf-c-form__group-label",
+                        htmlFor: "connectionExpiry",
+                        required: true,
+                    },
+                    msg("Connection expiry"),
+                )}
                 <input
+                    id="connectionExpiry"
                     type="text"
                     value="${this.instance?.connectionExpiry ?? "hours=8"}"
                     class="pf-c-form-control pf-m-monospace"
@@ -110,19 +116,34 @@ export class RACProviderFormPage extends ModelForm<RACProvider, number> {
 
             <ak-form-group open label="${msg("Protocol settings")}">
                 <div class="pf-c-form">
-                    <ak-form-element-horizontal
-                        label=${msg("Property mappings")}
-                        name="propertyMappings"
-                    >
+                    <ak-form-element-horizontal name="propertyMappings">
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "propertyMappings",
+                            },
+                            msg("Property mappings"),
+                        )}
                         <ak-dual-select-dynamic-selected
+                            id="propertyMappings"
                             .provider=${propertyMappingsProvider}
                             .selector=${propertyMappingsSelector(this.instance?.propertyMappings)}
                             available-label="${msg("Available Property Mappings")}"
                             selected-label="${msg("Selected Property Mappings")}"
                         ></ak-dual-select-dynamic-selected>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal label=${msg("Settings")} name="settings">
+                    <ak-form-element-horizontal name="settings">
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "settings",
+                            },
+                            msg("Settings"),
+                        )}
                         <ak-codemirror
+                            id="settings"
                             mode="yaml"
                             value="${YAML.stringify(this.instance?.settings ?? {})}"
                         >
