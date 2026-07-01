@@ -14,16 +14,16 @@ services:
     restart: always
   s3:
     container_name: s3
-    image: docker.io/zenko/cloudserver
+    image: docker.io/minio/minio
+    command: server /data --address ":9000"
     environment:
-      REMOTE_MANAGEMENT_DISABLE: "1"
-      SCALITY_ACCESS_KEY_ID: accessKey1
-      SCALITY_SECRET_ACCESS_KEY: secretKey1
+      MINIO_ROOT_USER: accessKey1
+      MINIO_ROOT_PASSWORD: secretKey1
+      MINIO_BROWSER: "off" # disables Web UI console
     ports:
-      - 8020:8000
+      - 8020:9000
     volumes:
-      - s3-data:/usr/src/app/localData
-      - s3-metadata:/usr/scr/app/localMetadata
+      - s3-data:/data
     restart: always
   spotlight:
     image: ghcr.io/getsentry/spotlight
@@ -44,6 +44,4 @@ volumes:
   db-data:
     driver: local
   s3-data:
-    driver: local
-  s3-metadata:
     driver: local
