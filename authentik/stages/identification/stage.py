@@ -52,8 +52,8 @@ from authentik.stages.identification.signals import identification_failed
 from authentik.stages.password.stage import (
     PLAN_CONTEXT_METHOD,
     PLAN_CONTEXT_METHOD_ARGS,
+    add_password_change_flow_to_plan,
     authenticate,
-    redirect_to_password_change_flow,
 )
 
 
@@ -431,7 +431,7 @@ class IdentificationStageView(ChallengeStageView):
                 response.validated_data.get("uid_field")
             )
         if current_stage.password_stage:
-            reset_response = redirect_to_password_change_flow(
+            reset_response = add_password_change_flow_to_plan(
                 self, response.pre_user, current_stage.password_stage
             )
             if reset_response:
