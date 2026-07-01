@@ -91,6 +91,7 @@ export const PasswordFieldExample: Story = {
             const passwordField = document.querySelector("#demo-password") as HTMLInputElement;
 
             toggle.open = isVisible;
+
             if (passwordField) {
                 passwordField.type = isVisible ? "text" : "password";
             }

@@ -40,6 +40,7 @@ export class Divider extends AKElement {
 
 export function akDivider(content: SlottedTemplateResult = nothing) {
     const message = typeof content === "string" ? html`<span>${content}</span>` : content;
+
     return html`<ak-divider>${message}</ak-divider>`;
 }
 

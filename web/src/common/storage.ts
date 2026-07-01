@@ -51,6 +51,7 @@ export class StorageAccessor {
     public read<T extends string>(fallback?: T): T | null {
         try {
             const value = this.storage.getItem(this.key);
+
             return value !== null ? (value as T) : (fallback ?? null);
         } catch (_error: unknown) {
             return fallback ?? null;
@@ -75,6 +76,7 @@ export class StorageAccessor {
 
         try {
             this.storage.setItem(this.key, value);
+
             return true;
         } catch (_error: unknown) {
             return false;
@@ -112,6 +114,7 @@ export class StorageAccessor {
     public writeJSON(value: unknown): boolean {
         try {
             const stringified = JSON.stringify(value);
+
             return this.write(stringified);
         } catch (error: unknown) {
             this.logger.error("Failed to write JSON value to storage", error);
@@ -130,6 +133,7 @@ export class StorageAccessor {
 
         try {
             this.storage.removeItem(this.key);
+
             return true;
         } catch (error: unknown) {
             this.logger.error("Failed to delete value from storage", error);

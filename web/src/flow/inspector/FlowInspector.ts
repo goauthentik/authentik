@@ -77,6 +77,7 @@ export class FlowInspector extends AKElement {
         }
         const conciseStage = { ...stage };
         conciseStage.flowSet = [];
+
         return conciseStage;
     }
 
@@ -272,8 +273,10 @@ ${stringify(this.getStage(currentPlan?.nextPlannedStage?.stageObj))}</pre
         if (this.error) {
             return this.renderAccessDenied();
         }
+
         if (!this.state) {
             this.advanceHandler();
+
             return html`<aside
                 aria-label=${msg("Flow inspector loading")}
                 class="pf-c-drawer__body pf-m-no-padding"

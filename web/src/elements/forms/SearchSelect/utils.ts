@@ -13,7 +13,7 @@ const isGroupedOptionsCollection = (v: unknown): v is SelectGrouped =>
     v !== null && typeof v === "object" && "grouped" in v && v.grouped === true;
 
 export const groupOptions = (options: SelectOptions): GroupedOptions =>
-    isSelectOptionsArray(options) ? { grouped: false, options: options } : options;
+    isSelectOptionsArray(options) ? { grouped: false, options } : options;
 
 export function optionsToFlat(groupedOptions: GroupedOptions): Pair[] {
     return isGroupedOptionsCollection(groupedOptions)
@@ -26,6 +26,7 @@ export function optionsToFlat(groupedOptions: GroupedOptions): Pair[] {
 
 export function findFlatOptions(options: Pair[], value: string): Pair[] {
     const fragLength = value.length;
+
     return options.filter((option) => (option[1][1] ?? "").substring(0, fragLength) === value);
 }
 
@@ -35,6 +36,7 @@ export function findOptionsSubset(
     caseSensitive = false,
 ): GroupedOptions {
     const fragLength = value.length;
+
     if (value.trim() === "") {
         return groupedOptions;
     }
@@ -42,6 +44,7 @@ export function findOptionsSubset(
     const compValue = caseSensitive ? value : value.toLowerCase();
     const compOption = (option: SelectOption) => {
         const extractedOption = (option[1] ?? "").substring(0, fragLength);
+
         return caseSensitive ? extractedOption : extractedOption.toLowerCase();
     };
 

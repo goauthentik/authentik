@@ -222,6 +222,7 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
     protected refresh = async () => {
         if (!this.flowSlug) {
             this.#logger.debug("Skipping refresh, no flow slug provided");
+
             return Promise.resolve();
         }
 
@@ -234,12 +235,14 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
             })
             .then((challenge) => {
                 this.challenge = challenge;
+
                 return !!this.challenge;
             })
             .catch(async (error) => {
                 const parsedError = await parseAPIResponseError(error);
                 showAPIErrorMessage(parsedError);
                 this.setFlowErrorChallenge(parsedError);
+
                 return false;
             })
             .finally(() => {
@@ -281,6 +284,7 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
         options?: SubmitOptions,
     ): Promise<boolean> => {
         if (!payload) throw new Error("No payload provided");
+
         if (!this.challenge) throw new Error("No challenge provided");
 
         if (!this.flowSlug) {
@@ -312,10 +316,12 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
             .then((challenge) => {
                 window.dispatchEvent(new AKFlowAdvanceEvent());
                 this.challenge = challenge;
+
                 return !this.challenge.responseErrors;
             })
             .catch((error: APIError) => {
                 this.setFlowErrorChallenge(error);
+
                 return false;
             })
             .finally(() => {
@@ -398,6 +404,7 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
             if (!this.#layoutUsesSidebarFrames) return;
 
             const src = this.challenge?.flowInfo?.background;
+
             if (!src) return nothing;
 
             return html`

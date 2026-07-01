@@ -45,6 +45,7 @@ export async function isConditionalMediationAvailable(): Promise<boolean> {
     ) {
         return await window.PublicKeyCredential.isConditionalMediationAvailable();
     }
+
     return false;
 }
 
@@ -95,6 +96,7 @@ export function transformNewAssertionForServer(newAssertion: PublicKeyCredential
     const rawId = new Uint8Array(newAssertion.rawId);
 
     const registrationClientExtensions = newAssertion.getClientExtensionResults();
+
     return {
         id: newAssertion.id,
         rawId: b64enc(rawId),
@@ -115,6 +117,7 @@ export function transformCredentialRequestOptions(
     const allowCredentials = (credentialRequestOptions.allowCredentials || []).map(
         (credentialDescriptor) => {
             const id = u8arr(credentialDescriptor.id.toString());
+
             return Object.assign({}, credentialDescriptor, { id });
         },
     );

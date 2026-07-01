@@ -35,6 +35,7 @@ export class GoogleChromeConnectorForm extends ModelForm<GoogleChromeConnector, 
                 patchedGoogleChromeConnectorRequest: data,
             });
         }
+
         return aki(EndpointsApi).endpointsGoogleChromeConnectorsCreate({
             googleChromeConnectorRequest: data,
         });

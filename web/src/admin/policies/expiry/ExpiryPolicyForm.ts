@@ -28,6 +28,7 @@ export class PasswordExpiryPolicyForm extends BasePolicyForm<PasswordExpiryPolic
                 passwordExpiryPolicyRequest: data,
             });
         }
+
         return aki(PoliciesApi).policiesPasswordExpiryCreate({
             passwordExpiryPolicyRequest: data,
         });

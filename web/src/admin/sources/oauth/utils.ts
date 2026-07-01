@@ -4,6 +4,7 @@ import { msg } from "@lit/localize";
 
 export function UserMatchingModeToLabel(mode?: UserMatchingModeEnum): string {
     if (!mode) return "";
+
     switch (mode) {
         case UserMatchingModeEnum.Identifier:
             return msg("Link users on unique identifier");
@@ -30,6 +31,7 @@ export function UserMatchingModeToLabel(mode?: UserMatchingModeEnum): string {
 
 export function GroupMatchingModeToLabel(mode?: GroupMatchingModeEnum): string {
     if (!mode) return "";
+
     switch (mode) {
         case GroupMatchingModeEnum.Identifier:
             return msg("Link users on unique identifier");

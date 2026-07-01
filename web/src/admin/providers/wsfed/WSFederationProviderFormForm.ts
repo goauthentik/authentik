@@ -316,6 +316,7 @@ export function renderForm({
                     <select class="pf-c-form-control">
                         ${availableHashes.map((hash) => {
                             const algorithmValue = retrieveSignatureAlgorithm(keyType, hash);
+
                             if (!algorithmValue) return nothing;
 
                             const isCurrentAlgorithmAvailable = availableHashes.some(

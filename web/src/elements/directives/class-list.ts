@@ -28,6 +28,7 @@ class ClassListDirective extends Directive {
 
     constructor(part: PartInfo) {
         super(part);
+
         if (!partIsAttribute(part) || part.name !== "class" || (part.strings ?? []).length > 2) {
             throw new Error(
                 "'classSet()' can only be used in the 'class' attribute and must be the only " +
@@ -38,6 +39,7 @@ class ClassListDirective extends Directive {
 
     render(rawClassUpdate: ClassUpdate) {
         const classUpdate = Array.isArray(rawClassUpdate) ? rawClassUpdate : [rawClassUpdate];
+
         return ` ${classUpdate.filter((s) => typeof s === "string").join(" ")} `;
     }
 
@@ -54,6 +56,7 @@ class ClassListDirective extends Directive {
         // Ensure current and static are disjoint.
         const wantedAndNotStatic = wanted.filter((w) => !this.#staticClasses!.has(w));
         this.#currentClasses = new Set(wantedAndNotStatic);
+
         return this.render(wantedAndNotStatic);
     }
 

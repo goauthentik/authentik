@@ -51,6 +51,7 @@ function decodeXmlEntities(input) {
         let local = 0;
         const next = current.replace(ENTITY_PATTERN, (match) => {
             local++;
+
             return ENTITY_TABLE[match];
         });
 
@@ -76,8 +77,10 @@ function undoubleHtmlEntities(input) {
     let replacements = 0;
     const output = input.replace(DOUBLE_ENCODED_PATTERN, (_match, name) => {
         replacements++;
+
         return `&${name};`;
     });
+
     return { output, replacements };
 }
 
@@ -199,6 +202,7 @@ export async function unescapeOverescapedLitTemplates(directory) {
     await Promise.all(
         entries.map(async (entry) => {
             if (!entry.isFile()) return;
+
             if (!entry.name.endsWith(".ts") && !entry.name.endsWith(".js")) return;
 
             const filePath = path.join(directory, entry.name);

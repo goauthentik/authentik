@@ -90,7 +90,7 @@ export const ButtonWithSuccess = () => {
 
 export const ButtonWithError = () => {
     const run = () =>
-        new Promise((resolve, reject) => {
+        new Promise((_resolve, reject) => {
             setTimeout(() => {
                 reject(new Error("This is the error message."));
             }, 3000);

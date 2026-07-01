@@ -78,6 +78,7 @@ export abstract class BaseTaskButton<R = unknown> extends CustomEmitterElement(A
                 if (typeof this.callAction !== "function") {
                     throw new TypeError("No action defined for SpinnerButton");
                 }
+
                 return this.callAction();
             },
             args: () => [],

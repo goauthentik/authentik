@@ -138,6 +138,7 @@ export class RACProviderViewPage extends AKElement {
         if (!this.provider) {
             return null;
         }
+
         return html`${this.provider?.assignedApplicationName
                 ? null
                 : html`<div slot="header" class="pf-c-banner pf-m-warning">

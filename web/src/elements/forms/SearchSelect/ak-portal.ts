@@ -71,6 +71,7 @@ export class Portal extends LitElement implements IPortal {
 
         this.dropdownContainer = this.ownerDocument.createElement("div");
         this.dropdownContainer.dataset.managedBy = "ak-portal";
+
         if (this.name) {
             this.dropdownContainer.dataset.managedFor = this.name;
         }
@@ -128,6 +129,7 @@ export class Portal extends LitElement implements IPortal {
 
     render() {
         this.dropdownContainer.appendChild(this.content);
+
         // This is a dummy object that just has to exist to be the communications channel between
         // the tethered object and its anchor.
         return nothing;
@@ -135,6 +137,7 @@ export class Portal extends LitElement implements IPortal {
 
     updated() {
         (this.content as HTMLElement).style.display = "none";
+
         if (this.anchor && this.dropdownContainer && this.open && !this.hidden) {
             (this.content as HTMLElement).style.display = "";
             this.setPosition();

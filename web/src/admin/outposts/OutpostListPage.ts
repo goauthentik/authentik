@@ -52,6 +52,7 @@ export class OutpostListPage extends TablePage<Outpost> {
                     });
             }),
         );
+
         return outposts;
     }
 
@@ -77,6 +78,7 @@ export class OutpostListPage extends TablePage<Outpost> {
         if (item.providers.length < 1) {
             return html`-`;
         }
+
         return html`<ul>
             ${item.providersObj?.map((p) => {
                 return html`<li>

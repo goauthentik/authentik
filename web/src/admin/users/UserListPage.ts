@@ -211,6 +211,7 @@ export class UserListPage extends WithLicenseSummary(
         const shouldShowWarning = this.selectedElements.find((el) => {
             return el.pk === currentUser?.pk || el.pk === originalUser?.pk;
         });
+
         return html`<ak-user-bulk-revoke-sessions .users=${this.selectedElements}>
                 <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-warning">
                     ${msg("Revoke Sessions")}

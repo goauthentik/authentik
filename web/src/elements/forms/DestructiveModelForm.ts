@@ -64,6 +64,7 @@ export class DestructiveModelForm<T extends object = object> extends ModelForm<T
     protected override load(): Promise<void> {
         if (!this.usedBy) {
             this.usedByList = [];
+
             return Promise.resolve();
         }
 

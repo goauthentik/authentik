@@ -29,6 +29,7 @@ export class DummyPolicyForm extends BasePolicyForm<DummyPolicy> {
                 dummyPolicyRequest: data,
             });
         }
+
         return aki(PoliciesApi).policiesDummyCreate({
             dummyPolicyRequest: data,
         });

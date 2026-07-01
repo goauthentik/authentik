@@ -75,6 +75,7 @@ export class SSFProviderViewPage extends AKElement {
         if (!this.provider) {
             return nothing;
         }
+
         return html`<main part="main">
             <ak-tabs part="tabs">
                 <div
@@ -120,6 +121,7 @@ export class SSFProviderViewPage extends AKElement {
             return nothing;
         }
         const [appLabel, modelName] = ModelEnum.AuthentikProvidersSsfSsfprovider.split(".");
+
         return html`<div
             class="pf-c-page__main-section pf-m-no-padding-mobile pf-l-grid pf-m-gutter"
         >

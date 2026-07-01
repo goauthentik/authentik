@@ -26,6 +26,7 @@ export class PropertyMappingSourceOAuthForm extends BasePropertyMappingForm<OAut
                 oAuthSourcePropertyMappingRequest: data,
             });
         }
+
         return aki(PropertymappingsApi).propertymappingsSourceOauthCreate({
             oAuthSourcePropertyMappingRequest: data,
         });

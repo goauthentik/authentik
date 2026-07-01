@@ -42,6 +42,7 @@ export class RoleForm extends ModelForm<Role, string> {
                 patchedRoleRequest: data,
             });
         }
+
         return aki(RbacApi).rbacRolesCreate({
             roleRequest: data,
         });

@@ -47,6 +47,7 @@ export class MicrosoftEntraProviderGroupList extends Table<MicrosoftEntraProvide
 
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
+
         return html`<ak-forms-delete-bulk
             object-label=${msg("Microsoft Entra Group(s)")}
             .objects=${this.selectedElements}

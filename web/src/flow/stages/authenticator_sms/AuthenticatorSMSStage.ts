@@ -45,6 +45,7 @@ export class AuthenticatorSMSStage extends BaseStage<
         if (!this.challenge) {
             return nothing;
         }
+
         return html`<ak-flow-card .challenge=${this.challenge}>
             <form class="pf-c-form" @submit=${this.submitForm}>
                 ${FlowUserDetails({ challenge: this.challenge })}

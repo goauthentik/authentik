@@ -95,6 +95,7 @@ export class FormFixture extends PageFixture {
 
             if (found) {
                 this.logger.info(`"${query}" found in the table`);
+
                 return $rowEntry;
             }
         }
@@ -210,6 +211,7 @@ export class FormFixture extends PageFixture {
 
         if (currentOpen === value) {
             this.logger.debug(`Form group ${pattern} is already ${value ? "open" : "closed"}`);
+
             return;
         }
 

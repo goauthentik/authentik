@@ -60,6 +60,7 @@ export class RuleForm extends ModelForm<NotificationRule, string> {
                 notificationRuleRequest: data,
             });
         }
+
         return aki(EventsApi).eventsRulesCreate({
             notificationRuleRequest: data,
         });

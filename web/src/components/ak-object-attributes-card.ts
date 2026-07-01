@@ -64,7 +64,9 @@ export class ObjectAttributesCard extends AKElement {
     private get customAttributes(): Array<[string, unknown]> {
         return Object.entries(this.objectAttributes || {}).filter(([key]) => {
             if (key.startsWith("goauthentik.io/")) return false;
+
             if (this.excludeNotes && key === "notes") return false;
+
             return true;
         });
     }

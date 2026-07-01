@@ -33,6 +33,7 @@ export class AKTimestamp extends AKElement {
             if (value instanceof Date && previousValue instanceof Date) {
                 return value.getTime() !== previousValue.getTime();
             }
+
             return value !== previousValue;
         },
     })

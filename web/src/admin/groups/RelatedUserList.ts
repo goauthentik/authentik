@@ -86,9 +86,11 @@ export class AddRelatedUserForm extends Form<{ users: number[] }> {
                         },
                     });
                 }
+
                 return Promise.resolve();
             }),
         );
+
         return data;
     }
 
@@ -251,6 +253,7 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
                         },
                     });
                 }
+
                 if (this.targetRole) {
                     return aki(RbacApi).rbacRolesRemoveUserCreate({
                         uuid: this.targetRole.pk,

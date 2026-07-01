@@ -183,6 +183,7 @@ export class AKWizard<S = Record<string, unknown>> extends AKElement {
                 actionPage.dataset.wizardmanaged = "true";
                 this.appendChild(actionPage);
             }
+
             if (!this.steps.includes("ak-wizard-page-action")) {
                 this.steps = [...this.steps, "ak-wizard-page-action"];
             }
@@ -305,6 +306,7 @@ export class AKWizard<S = Record<string, unknown>> extends AKElement {
 
         if (prevPage) {
             this.activeStepElement = prevPage;
+
             return Promise.resolve(true);
         }
 
@@ -335,6 +337,7 @@ export class AKWizard<S = Record<string, unknown>> extends AKElement {
                 return promise
                     .then(() => {
                         this.requestClose("submitted");
+
                         return true;
                     })
                     .finally(() => {
@@ -395,6 +398,7 @@ export class AKWizard<S = Record<string, unknown>> extends AKElement {
     public requestClose = (returnValue?: string) => {
         if (!this.dialog) {
             this.logger.warn("Skipping close request: No dialog found for wizard.");
+
             return;
         }
 
@@ -501,15 +505,18 @@ export class AKWizard<S = Record<string, unknown>> extends AKElement {
                         slotSelector: `[slot=${step}]`,
                         renderRootChildren: renderRoot.children,
                     });
+
                     return html`<p>Unexpected missing step: ${step}</p>`;
                 }
 
                 // By default, disable steps ahead of the current step
                 let disabled = activeStepIndex < idx;
+
                 // If this wizard is at the end, disable navigation back
                 if (activeStepIndex === this.steps.length - 1 && idx !== activeStepIndex) {
                     disabled = true;
                 }
+
                 return html`<li role="presentation" class="pf-c-wizard__nav-item">
                     <button
                         class=${classMap({

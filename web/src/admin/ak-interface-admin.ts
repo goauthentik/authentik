@@ -161,8 +161,7 @@ export class AdminInterface extends WithCapabilitiesConfig(
                 action: () => navigate("/identity/users"),
                 group: msg("Users"),
             },
-            ...this.entries.flatMap(([, label, , children]) => [
-                ...(children ?? []).map(
+            ...this.entries.flatMap(([, label, , children]) => (children ?? []).map(
                     ([path, childLabel]): PaletteCommandDefinitionInit => ({
                         namespace: PaletteCommandNamespace.Navigation,
                         label: childLabel,
@@ -171,15 +170,14 @@ export class AdminInterface extends WithCapabilitiesConfig(
                             navigate(path!);
                         },
                     }),
-                ),
-            ]),
+                )),
             {
                 namespace: PaletteCommandNamespace.Search,
                 label: msg("Username or email address..."),
                 prefix: CommandPrefix.SearchFor(),
                 group: msg("Users"),
                 keywords: [msg("search"), msg("find")],
-                action: async (data, event) => {
+                action: async (_data, event) => {
                     event?.stopPropagation();
 
                     const userPalette = this.ownerDocument.createElement(

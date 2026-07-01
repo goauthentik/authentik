@@ -67,6 +67,7 @@ export class AkSlugInput extends HorizontalLightComponent<string> {
         // Reset 'touched' status if the slug & target have been reset
         if (this.#origin && this.#origin.value === "" && this.input.value === "") {
             this.#touched = false;
+
             return;
         }
 
@@ -148,9 +149,11 @@ export class AkSlugInput extends HorizontalLightComponent<string> {
         }
 
         const rootNode = this.getRootNode();
+
         if (rootNode instanceof ShadowRoot || rootNode instanceof Document) {
             this.#origin = rootNode.querySelector(this.source);
         }
+
         if (this.#origin) {
             this.#origin.addEventListener("input", this.slugify);
         }

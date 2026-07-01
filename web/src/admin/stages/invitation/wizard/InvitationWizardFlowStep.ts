@@ -72,6 +72,7 @@ export class InvitationWizardFlowStep extends WizardPage {
         if (this.mode === "create") {
             this.loading = false;
             this.validate();
+
             return;
         }
 
@@ -117,6 +118,7 @@ export class InvitationWizardFlowStep extends WizardPage {
         if (this.mode === "existing" && this.enrollmentFlows.length === 1) {
             const currentSlot = this.slot;
             const advanced = await this.host.navigateNext();
+
             if (advanced) {
                 this.host.steps = this.host.steps.filter((s) => s !== currentSlot);
             }
@@ -217,6 +219,7 @@ export class InvitationWizardFlowStep extends WizardPage {
                     .fetchObjects=${async (query?: string): Promise<EnrollmentFlow[]> => {
                         if (!query) return this.enrollmentFlows;
                         const needle = query.toLowerCase();
+
                         return this.enrollmentFlows.filter(
                             (flow) =>
                                 flow.name.toLowerCase().includes(needle) ||

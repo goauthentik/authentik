@@ -25,6 +25,7 @@ export class LDAPSourceGroupList extends Table<GroupLDAPSourceConnection> {
 
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
+
         return html`<ak-forms-delete-bulk
             object-label=${msg("LDAP Group(s)")}
             .objects=${this.selectedElements}

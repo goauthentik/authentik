@@ -56,6 +56,7 @@ export class DeviceListPage extends TablePage<EndpointDevice> {
 
     async apiEndpoint(): Promise<PaginatedResponse<EndpointDevice>> {
         this.summary = await aki(EndpointsApi).endpointsDevicesSummaryRetrieve();
+
         return aki(EndpointsApi).endpointsDevicesList(await this.defaultEndpointConfig());
     }
 
@@ -144,6 +145,7 @@ export class DeviceListPage extends TablePage<EndpointDevice> {
 
     renderToolbarSelected() {
         const disabled = this.selectedElements.length < 1;
+
         return html`<ak-forms-delete-bulk
             object-label=${msg("Endpoint Device(s)")}
             .objects=${this.selectedElements}

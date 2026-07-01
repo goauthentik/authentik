@@ -40,7 +40,7 @@ export class KerberosSourceViewPage extends AKElement {
     set sourceSlug(slug: string) {
         aki(SourcesApi)
             .sourcesKerberosRetrieve({
-                slug: slug,
+                slug,
             })
             .then((source) => {
                 this.source = source;
@@ -74,6 +74,7 @@ export class KerberosSourceViewPage extends AKElement {
             return nothing;
         }
         const [appLabel, modelName] = ModelEnum.AuthentikSourcesKerberosKerberossource.split(".");
+
         return html`<main>
             <ak-tabs>
                 <div

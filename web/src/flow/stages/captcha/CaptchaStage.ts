@@ -286,6 +286,7 @@ export class CaptchaStage
     #refreshControllers() {
         if (!this.challenge) {
             this.#logger.debug("No challenge, skipping controller refresh.");
+
             return;
         }
 
@@ -303,6 +304,7 @@ export class CaptchaStage
 
         if (!challengeURL) {
             this.#logger.debug("No challenge URL, skipping controller refresh.");
+
             return;
         }
 
@@ -350,6 +352,7 @@ export class CaptchaStage
 
         if (event.detail.status === "error") {
             this.#logger.debug("Error loading locale:", event.detail);
+
             return;
         }
 
@@ -477,6 +480,7 @@ export class CaptchaStage
 
         if (!Controller) {
             this.error = msg("Could not find a suitable CAPTCHA provider.");
+
             return;
         }
 
@@ -527,6 +531,7 @@ export class CaptchaStage
 
         if (!iframe) {
             this.#logger.debug(`No iframe found, skipping.`);
+
             return;
         }
 

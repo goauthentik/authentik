@@ -91,6 +91,7 @@ export class SimpleTableSortTest extends LitElement {
             ? (a: Ord, b: Ord) => (a[this.order] < b[this.order] ? -1 : 1)
             : (a: Ord, b: Ord) => (a[this.order] < b[this.order] ? 1 : -1);
         content.sort(comparison);
+
         return content.map(({ name, calories, sugar, fiber, protein }) => [
             name,
             calories,
@@ -104,6 +105,7 @@ export class SimpleTableSortTest extends LitElement {
         const onTableSort = (event: TableSortEvent) => {
             if (event.value === this.order) {
                 this.sortDown = !this.sortDown;
+
                 return;
             }
             this.order = event.value;

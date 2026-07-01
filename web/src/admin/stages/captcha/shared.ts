@@ -198,6 +198,7 @@ function isCapWidgetURL(jsUrl?: string | null): boolean {
     }
 
     const { pathname } = new URL(jsUrl);
+
     return pathname.includes("cap-widget") || pathname.endsWith("/assets/widget.js");
 }
 

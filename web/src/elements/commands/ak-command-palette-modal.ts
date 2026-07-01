@@ -64,6 +64,7 @@ export class AKCommandPaletteModal extends AKModal {
     public set value(nextValue: string) {
         if (!this.autofocusTarget.target) {
             this.initialValue = nextValue;
+
             return;
         }
 
@@ -258,7 +259,7 @@ export class AKCommandPaletteModal extends AKModal {
                 prefix: CommandPrefix.SearchFor(),
                 group: msg("Users"),
                 keywords: [msg("search"), msg("find")],
-                action: async (data, event) => {
+                action: async (_data, event) => {
                     event?.stopPropagation();
 
                     const userPalette = this.ownerDocument.createElement(
@@ -420,6 +421,7 @@ export class AKCommandPaletteModal extends AKModal {
 
         if (!command) {
             this.logger.warn("No command found for index:", commandIndex);
+
             return;
         }
 
@@ -454,7 +456,9 @@ export class AKCommandPaletteModal extends AKModal {
         const visibleCommandsCount = this.filteredCommands.length;
 
         if (!this.open) return;
+
         if (!visibleCommandsCount) return;
+
         if (event.shiftKey || event.altKey) return;
 
         switch (event.key) {

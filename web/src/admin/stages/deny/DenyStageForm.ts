@@ -26,6 +26,7 @@ export class DenyStageForm extends BaseStageForm<DenyStage> {
                 denyStageRequest: data,
             });
         }
+
         return aki(StagesApi).stagesDenyCreate({
             denyStageRequest: data,
         });

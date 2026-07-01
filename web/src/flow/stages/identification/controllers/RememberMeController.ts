@@ -153,6 +153,7 @@ export class RememberMeController implements ReactiveController {
 
         if (!usernameField) {
             this.logger.warn("Cannot enable remember me: no username field found");
+
             return;
         }
 
@@ -185,12 +186,15 @@ export class RememberMeController implements ReactiveController {
         const { challenge } = this.host;
 
         if (!challenge) return false;
+
         if (!challenge.enableRememberMe) return false;
 
         if (challenge.passwordFields) return false;
+
         if (challenge.passwordlessUrl) return false;
 
         if (!this.defaultChecked) return false;
+
         return !!this.usernameField?.value;
     }
 

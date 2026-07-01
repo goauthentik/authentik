@@ -96,9 +96,11 @@ export class TaskList extends Table<Task> {
                   TaskAggregatedStatusEnum.Error,
               ]
             : undefined;
+
         if (this.includeOverview) {
             this.status = await aki(TasksApi).tasksTasksStatusRetrieve();
         }
+
         return aki(TasksApi).tasksTasksList({
             ...(await this.defaultEndpointConfig()),
             relObjContentTypeAppLabel: this.relObjAppLabel,
@@ -112,12 +114,14 @@ export class TaskList extends Table<Task> {
     #toggleShowOnlyStandalone = () => {
         this.showOnlyStandalone = !this.showOnlyStandalone;
         this.page = 1;
+
         return this.fetch();
     };
 
     #toggleExcludeSuccessful = () => {
         this.excludeSuccessful = !this.excludeSuccessful;
         this.page = 1;
+
         return this.fetch();
     };
 

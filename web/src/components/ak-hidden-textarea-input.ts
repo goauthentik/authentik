@@ -88,6 +88,7 @@ export class AkHiddenTextAreaInput
 
     get displayValue() {
         const value = this.value ?? "";
+
         if (this.revealed) {
             return value;
         }

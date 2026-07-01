@@ -35,6 +35,7 @@ function beforeSend(
     if (hint.originalException instanceof SentryIgnoredError) {
         return null;
     }
+
     if (
         hint.originalException instanceof ResponseError ||
         hint.originalException instanceof DOMException

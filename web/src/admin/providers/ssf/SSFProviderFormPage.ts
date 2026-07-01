@@ -38,6 +38,7 @@ export class SSFProviderFormPage extends BaseProviderForm<SSFProvider> {
         const provider = await aki(ProvidersApi).providersSsfRetrieve({
             id: pk,
         });
+
         return provider;
     }
 
@@ -48,6 +49,7 @@ export class SSFProviderFormPage extends BaseProviderForm<SSFProvider> {
                 sSFProviderRequest: data,
             });
         }
+
         return aki(ProvidersApi).providersSsfCreate({
             sSFProviderRequest: data,
         });

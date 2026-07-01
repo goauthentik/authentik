@@ -67,6 +67,7 @@ export class TokenForm extends ModelForm<Token, string> {
                 tokenRequest: data,
             });
         }
+
         return aki(CoreApi).coreTokensCreate({
             tokenRequest: data,
         });
@@ -79,11 +80,13 @@ export class TokenForm extends ModelForm<Token, string> {
 
         if (!expiringElement.checked) {
             this.expiresAt = null;
+
             return;
         }
 
         if (this.instance?.expiring && this.instance.expires) {
             this.expiresAt = new Date(this.instance.expires);
+
             return;
         }
 

@@ -43,6 +43,7 @@ export class PlexSourceForm extends BaseSourceForm<PlexSource> {
         });
         this.plexToken = source.plexToken;
         this.loadServers();
+
         return source;
     }
 
@@ -60,6 +61,7 @@ export class PlexSourceForm extends BaseSourceForm<PlexSource> {
 
     async send(data: PlexSource): Promise<PlexSource> {
         data.plexToken = this.plexToken || "";
+
         if (this.instance?.pk) {
             return aki(SourcesApi).sourcesPlexUpdate({
                 slug: this.instance.slug,
@@ -101,6 +103,7 @@ export class PlexSourceForm extends BaseSourceForm<PlexSource> {
                 ${msg("Load servers")}
             </button>`;
         }
+
         return html` <button
                 class="pf-c-button pf-m-secondary"
                 type="button"
@@ -129,6 +132,7 @@ export class PlexSourceForm extends BaseSourceForm<PlexSource> {
                                 return server === r.clientIdentifier;
                             },
                         );
+
                         return html`<option value=${r.clientIdentifier} ?selected=${selected}>
                             ${r.name}
                         </option>`;

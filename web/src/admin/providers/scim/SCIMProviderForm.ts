@@ -23,6 +23,7 @@ export class SCIMProviderFormPage extends BaseProviderForm<SCIMProvider> {
                 sCIMProviderRequest: data,
             });
         }
+
         return aki(ProvidersApi).providersScimCreate({
             sCIMProviderRequest: data,
         });

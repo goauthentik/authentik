@@ -98,7 +98,7 @@ export class ApplicationWizardBindingsStep extends ApplicationWizardStep {
         const toDelete = this.selectTable
             .toJSON()
             .map((i) => (typeof i === "string" ? parseInt(i, 10) : i));
-        const bindings = this.wizard.bindings.filter((binding, index) => !toDelete.includes(index));
+        const bindings = this.wizard.bindings.filter((_binding, index) => !toDelete.includes(index));
 
         return this.dispatchEvents({
             update: { bindings },
@@ -166,6 +166,7 @@ export class ApplicationWizardBindingsStep extends ApplicationWizardStep {
         if ((this.wizard.bindings ?? []).length === 0) {
             return this.renderEmptyCollection();
         }
+
         return this.renderCollection();
     }
 }

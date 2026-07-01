@@ -54,6 +54,7 @@ export class ShowHintController implements ReactiveController {
 
     hostConnected() {
         const localStores = getCurrentStorageValue();
+
         if (!(this.hintToken in localStores)) {
             return;
         }

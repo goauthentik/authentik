@@ -83,5 +83,8 @@ export const DefaultStory: StoryObj = {
 };
 export const Expanded = {
     ...DefaultStory,
-    args: { ...DefaultStory, ...{ expanded: true } },
+    args: ({
+	...DefaultStory,
+	expanded: true
+}),
 };

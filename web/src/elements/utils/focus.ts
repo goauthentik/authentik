@@ -22,6 +22,7 @@ export function assertFocusable(target: Element | null | undefined): asserts tar
     if (!target) {
         throw new FocusAssertionError("Skipping focus, no target", { target: null });
     }
+
     if (!(target instanceof HTMLElement)) {
         throw new FocusAssertionError("Skipping focus, target is not an HTMLElement", { target });
     }
@@ -57,6 +58,7 @@ export function isActiveElement(
 
     // Does the container element have a shadow root?
     if (!("shadowRoot" in containerElement)) return false;
+
     if (containerElement.shadowRoot === null) return false;
 
     // Is the target element the active element?
@@ -76,6 +78,7 @@ export function isActiveElement(
 export function isFocusable(target: Element | null | undefined): target is HTMLElement {
     try {
         assertFocusable(target);
+
         return true;
     } catch (error) {
         if (error instanceof FocusAssertionError) {
@@ -83,6 +86,7 @@ export function isFocusable(target: Element | null | undefined): target is HTMLE
         } else {
             console.error("Unexpected error during focus assertion", error);
         }
+
         return false;
     }
 }

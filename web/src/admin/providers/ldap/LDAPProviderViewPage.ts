@@ -77,6 +77,7 @@ export class LDAPProviderViewPage extends WithSession(AKElement) {
         if (!this.provider) {
             return nothing;
         }
+
         return html`<main part="main">
             <ak-tabs part="tabs">
                 <div

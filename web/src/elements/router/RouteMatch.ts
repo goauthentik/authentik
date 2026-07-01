@@ -28,10 +28,12 @@ export class RouteMatch {
      */
     sanitizedURL() {
         let cleanedURL = this.fullURL;
+
         for (const match of Object.keys(this.arguments)) {
             const value = this.arguments[match];
             cleanedURL = cleanedURL?.replace(value, `:${match}`);
         }
+
         return cleanedURL;
     }
 
@@ -42,23 +44,28 @@ export class RouteMatch {
 
 export function getURLParams(): RouteParameterRecord {
     const params = {};
+
     if (window.location.hash.includes(ROUTE_SEPARATOR)) {
         const urlParts = window.location.hash.slice(1).split(ROUTE_SEPARATOR, 2);
         const rawParams = decodeURIComponent(urlParts[1]);
+
         try {
             return JSON.parse(rawParams);
         } catch {
             return params;
         }
     }
+
     return params;
 }
 
 export function getURLParam<T>(key: string, fallback: T): T {
     const params = getURLParams();
+
     if (key in params) {
         return params[key] as T;
     }
+
     return fallback;
 }
 
@@ -69,11 +76,13 @@ export function getURLParam<T>(key: string, fallback: T): T {
  */
 export function prepareURLParams(params: RouteParameterRecord): RouteParameterRecord {
     const preparedParams: RouteParameterRecord = {};
+
     for (const [key, value] of Object.entries(params)) {
         if (value !== null && value !== undefined && value !== "") {
             preparedParams[key] = value;
         }
     }
+
     return preparedParams;
 }
 

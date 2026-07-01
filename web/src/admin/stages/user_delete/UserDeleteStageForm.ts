@@ -26,6 +26,7 @@ export class UserDeleteStageForm extends BaseStageForm<UserDeleteStage> {
                 userDeleteStageRequest: data,
             });
         }
+
         return aki(StagesApi).stagesUserDeleteCreate({
             userDeleteStageRequest: data,
         });

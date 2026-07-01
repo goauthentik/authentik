@@ -55,6 +55,7 @@ export class EndpointListPage extends Table<Endpoint> {
 
     protected override renderToolbarSelected(): SlottedTemplateResult {
         const disabled = this.selectedElements.length < 1;
+
         return html`<ak-forms-delete-bulk
             object-label=${msg("Endpoint(s)")}
             .objects=${this.selectedElements}

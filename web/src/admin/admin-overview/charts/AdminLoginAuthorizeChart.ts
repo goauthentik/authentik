@@ -44,8 +44,9 @@ export class AdminLoginAuthorizeChart extends EventChart {
             cubicInterpolationMode: "monotone",
             tension: 0.4,
         });
+
         return this.eventVolume(data, {
-            optsMap: optsMap,
+            optsMap,
             padToDays: 7,
         });
     }

@@ -27,6 +27,7 @@ export class PropertyMappingProviderScopeForm extends BasePropertyMappingForm<Sc
                 scopeMappingRequest: data,
             });
         }
+
         return aki(PropertymappingsApi).propertymappingsProviderScopeCreate({
             scopeMappingRequest: data,
         });

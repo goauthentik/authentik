@@ -63,6 +63,7 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
         const binding = await aki(FlowsApi).flowsBindingsRetrieve({
             fsbUuid: pk,
         });
+
         return binding;
     }
 
@@ -82,6 +83,7 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
         if (this.instance?.pk) {
             return msg("Successfully updated binding.");
         }
+
         return msg("Successfully created binding.");
     }
 
@@ -92,9 +94,11 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
                 patchedFlowStageBindingRequest: data,
             });
         }
+
         if (this.targetPk) {
             data.target = this.targetPk;
         }
+
         return aki(FlowsApi).flowsBindingsCreate({
             flowStageBindingRequest: data,
         });
@@ -108,9 +112,11 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
             target: this.targetPk || "",
         });
         const orders = bindings.results.map((binding) => binding.order);
+
         if (orders.length < 1) {
             return 0;
         }
+
         return Math.max(...orders) + 1;
     }
 
@@ -118,6 +124,7 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
         if (this.instance?.target || this.targetPk) {
             return nothing;
         }
+
         return html`<ak-form-element-horizontal label=${msg("Target")} required name="target">
             <ak-flow-search
                 flowType=${FlowDesignationEnum.Authorization}
@@ -136,10 +143,12 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
                         const args: StagesAllListRequest = {
                             ordering: "name",
                         };
+
                         if (query !== undefined) {
                             args.search = query;
                         }
                         const stages = await aki(StagesApi).stagesAllList(args);
+
                         return stages.results;
                     }}
                     .groupBy=${(items: Stage[]) => {

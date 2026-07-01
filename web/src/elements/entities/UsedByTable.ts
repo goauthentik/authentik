@@ -31,6 +31,7 @@ export class UsedByTable<T extends object> extends StaticTable<T> {
         if ("name" in item) {
             metadata.push({ key: msg("Name"), value: item.name as string });
         }
+
         return metadata;
     };
 
@@ -42,6 +43,7 @@ export class UsedByTable<T extends object> extends StaticTable<T> {
 
     protected override rowLabel(item: T): string | null {
         const name = "name" in item && typeof item.name === "string" ? item.name.trim() : null;
+
         return name || null;
     }
 
@@ -75,8 +77,10 @@ export class UsedByTable<T extends object> extends StaticTable<T> {
             if (!this.usedByData.has(item) && this.usedBy) {
                 this.usedByData.set(item, await this.usedBy(item));
             }
+
             return this.renderUsedBy(this.usedByData.get(item) || []);
         };
+
         return html`${this.usedBy
             ? until(handler(), html`<ak-spinner size=${PFSize.Large}></ak-spinner>`)
             : null}`;
@@ -86,6 +90,7 @@ export class UsedByTable<T extends object> extends StaticTable<T> {
         if (usedBy.length < 1) {
             return html`<span>${msg("Not used by any other object.")}</span>`;
         }
+
         return html`<ul class="pf-c-list">
             ${usedBy.map((ub) => UsedByListItem({ ub }))}
         </ul>`;

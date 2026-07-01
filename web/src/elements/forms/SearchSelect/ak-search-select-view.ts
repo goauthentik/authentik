@@ -312,6 +312,7 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
     #blurListener = (event: FocusEvent) => {
         // If we lost focus but the menu got it, don't do anything;
         const relatedTarget = event.relatedTarget as HTMLElement | undefined;
+
         if (
             relatedTarget &&
             (this.contains(relatedTarget) ||
@@ -322,6 +323,7 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
             return;
         }
         this.open = false;
+
         if (!this.value) {
             if (this.#inputRef.value) {
                 this.#inputRef.value.value = "";
@@ -337,14 +339,18 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
 
     findValueForInput() {
         const value = this.#inputRef.value?.value;
+
         if (value === undefined || value.trim() === "") {
             this.setValue(undefined);
+
             return;
         }
 
         const matchesFound = findFlatOptions(this.#flatOptions, value);
+
         if (matchesFound.length > 0) {
             const newValue = matchesFound[0][0];
+
             if (newValue === value) {
                 return;
             }
@@ -390,8 +396,10 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
             return;
         }
         const value = (event.target as HTMLInputElement).value;
+
         if (value) {
             const newDisplayValue = this.findDisplayForValue(value);
+
             if (this.#inputRef.value) {
                 this.#inputRef.value.value = newDisplayValue ?? "";
             }
@@ -406,6 +414,7 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
 
     findDisplayForValue(value: string) {
         const newDisplayValue = this.#flatOptions.find((option) => option[0] === value);
+
         return newDisplayValue ? newDisplayValue[1][1] : undefined;
     }
 
@@ -417,6 +426,7 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
     public override willUpdate(changed: PropertyValues<this>) {
         if (changed.has("value") && this.value) {
             const newDisplayValue = this.findDisplayForValue(this.value);
+
             if (newDisplayValue) {
                 this.displayValue = newDisplayValue;
             } else {

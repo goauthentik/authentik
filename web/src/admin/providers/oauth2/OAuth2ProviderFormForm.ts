@@ -176,6 +176,7 @@ export function renderForm({
 }: OAuth2ProviderFormProps) {
     provider ||= {};
     errors ||= {};
+
     return html` <ak-text-input
             name="name"
             placeholder=${msg("Type a provider name...")}

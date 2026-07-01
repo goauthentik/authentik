@@ -33,9 +33,11 @@ export class EndpointAgentStage extends BaseStage<
         if (ev.data._ak_ext !== "authentik-platform-sso") {
             return;
         }
+
         if (!ev.data.response) {
             return;
         }
+
         if (this.#timeout !== null) {
             clearTimeout(this.#timeout);
         }

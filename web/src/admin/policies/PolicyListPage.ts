@@ -96,6 +96,7 @@ export class PolicyListPage extends TablePage<Policy> {
 
     protected override renderToolbarSelected(): SlottedTemplateResult {
         const disabled = this.selectedElements.length < 1;
+
         return html`<ak-forms-delete-bulk
             object-label=${msg("Policy / Policies")}
             .objects=${this.selectedElements}

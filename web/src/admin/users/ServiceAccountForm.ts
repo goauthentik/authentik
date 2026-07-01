@@ -55,6 +55,7 @@ export class ServiceAccountForm extends Form<UserServiceAccountRequest> {
         if (this.targetGroup) {
             return msg(str`Successfully created user and added to group ${this.targetGroup.name}`);
         }
+
         return msg("Successfully created user.");
     }
 
@@ -63,9 +64,11 @@ export class ServiceAccountForm extends Form<UserServiceAccountRequest> {
             userServiceAccountRequest: data,
         });
         this.result = result;
+
         if (this.parentElement instanceof ModalForm) {
             this.parentElement.showSubmitButton = false;
         }
+
         if (this.targetGroup) {
             await aki(CoreApi).coreGroupsAddUserCreate({
                 groupUuid: this.targetGroup.pk,
@@ -74,6 +77,7 @@ export class ServiceAccountForm extends Form<UserServiceAccountRequest> {
                 },
             });
         }
+
         if (this.targetRole) {
             await aki(RbacApi).rbacRolesAddUserCreate({
                 uuid: this.targetRole.pk,
@@ -82,6 +86,7 @@ export class ServiceAccountForm extends Form<UserServiceAccountRequest> {
                 },
             });
         }
+
         return result;
     }
 
@@ -90,6 +95,7 @@ export class ServiceAccountForm extends Form<UserServiceAccountRequest> {
         this.result = null;
 
         this.expiresAt = new Date(Date.now() + EXPIRATION_DURATION);
+
         if (this.parentElement instanceof ModalForm) {
             this.parentElement.showSubmitButton = true;
         }
@@ -195,6 +201,7 @@ export class ServiceAccountForm extends Form<UserServiceAccountRequest> {
         if (this.result) {
             return this.renderResponseForm();
         }
+
         return super.renderFormWrapper();
     }
 

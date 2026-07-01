@@ -87,9 +87,11 @@ export class DeviceViewPage extends AKElement {
                 (d) => d.mountpoint === "/" || d.mountpoint === "C:",
             ) || [];
         let rootDisk: Disk | undefined = undefined;
+
         if (_rootDisk?.length > 0) {
             rootDisk = _rootDisk[0];
         }
+
         return html`<div class="pf-l-stack pf-m-gutter">
             <div class="pf-l-stack__item pf-c-card">
                 <div class="pf-c-card__title">${msg("Device details")}</div>
@@ -215,10 +217,14 @@ export class DeviceViewPage extends AKElement {
 
     agentVersion(conn: DeviceConnection): string | undefined {
         const vendorContainer = conn.latestSnapshot?.data.vendor;
+
         if (!vendorContainer) return;
         const vendorData = vendorContainer[conn.latestSnapshot.vendor];
+
         if (!vendorData) return;
+
         if (!("agent_version" in vendorData)) return;
+
         return msg(str`Agent version: ${vendorData.agent_version ?? "-"}`);
     }
 
@@ -226,6 +232,7 @@ export class DeviceViewPage extends AKElement {
         if (!this.device) {
             return nothing;
         }
+
         return html`<ak-endpoints-device-process-table
             .items=${(this.device?.facts.data.processes || []).sort(trySortNumerical)}
         ></ak-endpoints-device-process-table>`;
@@ -235,6 +242,7 @@ export class DeviceViewPage extends AKElement {
         if (!this.device) {
             return nothing;
         }
+
         return html`<ak-endpoints-device-users-table
             .items=${(this.device?.facts.data.users || []).sort(trySortNumerical)}
         ></ak-endpoints-device-users-table>`;
@@ -244,6 +252,7 @@ export class DeviceViewPage extends AKElement {
         if (!this.device) {
             return nothing;
         }
+
         return html`<ak-endpoints-device-groups-table
             .items=${(this.device?.facts.data.groups || []).sort(trySortNumerical)}
         ></ak-endpoints-device-groups-table>`;
@@ -253,6 +262,7 @@ export class DeviceViewPage extends AKElement {
         if (!this.device) {
             return nothing;
         }
+
         return html`<ak-endpoints-device-software-table
             .items=${(this.device?.facts.data.software || []).sort((a, b) =>
                 a.name.localeCompare(b.name),

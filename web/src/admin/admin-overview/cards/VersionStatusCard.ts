@@ -27,12 +27,14 @@ export class VersionStatusCard extends AdminStatusCard<Version> {
                 message: html`${msg(str`Based on ${value.versionCurrent}`)}`,
             });
         }
+
         if (value.outdated) {
             return Promise.resolve<AdminStatus>({
                 icon: "fa fa-exclamation-triangle pf-m-warning",
                 message: html`${msg(str`${value.versionLatest} is available!`)}`,
             });
         }
+
         if (value.outpostOutdated) {
             return Promise.resolve<AdminStatus>({
                 icon: "fa fa-exclamation-triangle pf-m-warning",
@@ -40,12 +42,14 @@ export class VersionStatusCard extends AdminStatusCard<Version> {
                     <a href="#/outpost/outposts">${msg("Check outposts.")}</a>`,
             });
         }
+
         if (value.versionLatestValid) {
             return Promise.resolve<AdminStatus>({
                 icon: "fa fa-check-circle pf-m-success",
                 message: html`${msg("Up-to-date!")}`,
             });
         }
+
         return Promise.resolve<AdminStatus>({
             icon: "fa fa-question-circle",
             message: html`${msg("Latest version unknown")}`,
@@ -57,10 +61,12 @@ export class VersionStatusCard extends AdminStatusCard<Version> {
         const versionFamily = this.value?.versionCurrent.split(".");
         versionFamily?.pop();
         let link = `https://docs.goauthentik.io/releases/${versionFamily?.join(".")}`;
+
         if (this.value?.buildHash) {
             text = this.value.buildHash?.substring(0, 7);
             link = `https://github.com/goauthentik/authentik/commit/${this.value.buildHash}`;
         }
+
         return html`<a rel="noopener noreferrer" href=${link} target="_blank">${text}</a>`;
     }
 }

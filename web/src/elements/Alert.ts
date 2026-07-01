@@ -97,6 +97,7 @@ export class AKAlert extends AKElement implements IAlert {
 
 export function akAlert(properties: IAlert, content: SlottedTemplateResult = nothing) {
     const message = typeof content === "string" ? html`<span>${content}</span>` : content;
+
     return html`<ak-alert ${spread(properties as Spread)}>${message}</ak-alert>`;
 }
 

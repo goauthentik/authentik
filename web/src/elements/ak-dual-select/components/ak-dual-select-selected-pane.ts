@@ -124,6 +124,7 @@ export class AkDualSelectSelectedPane extends CustomEmitterElement<DualSelectEve
                         const selected = classMap({
                             "pf-m-selected": this.toMove.has(key),
                         });
+
                         return html` <li
                             class="pf-c-dual-list-selector__list-item"
                             aria-selected="false"

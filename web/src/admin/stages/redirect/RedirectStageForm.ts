@@ -32,6 +32,7 @@ export class RedirectStageForm extends BaseStageForm<RedirectStage> {
             })
             .then((stage) => {
                 this.mode = stage.mode ?? RedirectStageModeEnum.Static;
+
                 return stage;
             });
     }
@@ -43,6 +44,7 @@ export class RedirectStageForm extends BaseStageForm<RedirectStage> {
                 redirectStageRequest: data,
             });
         }
+
         return aki(StagesApi).stagesRedirectCreate({
             redirectStageRequest: data,
         });
@@ -114,10 +116,12 @@ export class RedirectStageForm extends BaseStageForm<RedirectStage> {
                                 const args: FlowsInstancesListRequest = {
                                     ordering: "slug",
                                 };
+
                                 if (query !== undefined) {
                                     args.search = query;
                                 }
                                 const flows = await aki(FlowsApi).flowsInstancesList(args);
+
                                 return flows.results;
                             }}
                             .renderElement=${(flow: Flow): string => RenderFlowOption(flow)}

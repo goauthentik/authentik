@@ -152,6 +152,7 @@ export class SelectTable extends SimpleTable {
     private onSelect(ev: InputEvent) {
         ev.stopPropagation();
         const value = (ev.target as HTMLInputElement).value;
+
         if (this.multiple) {
             this.selected = this.selected.includes(value)
                 ? this.selected.filter((v) => v !== value)
@@ -188,6 +189,7 @@ export class SelectTable extends SimpleTable {
         // receives the state; the second ensures the input tag on the page reflects the state
         // accurately. See https://github.com/lit/lit-element/issues/601
         const checked = this.selected.includes(key);
+
         return html`<td part="select-cell" class="pf-c-table__check">
             <input
                 type="checkbox"

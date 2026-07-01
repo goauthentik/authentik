@@ -43,10 +43,12 @@ export class ConsentStage extends BaseStage<ConsentChallenge, ConsentChallengeRe
             if (permission.name === "") {
                 return nothing;
             }
+
             // Special case for openid Scope
             if (permission.id === "openid") {
                 return nothing;
             }
+
             return html`<li data-permission-code="${permission.id}">${permission.name}</li>`;
         })}`;
     }

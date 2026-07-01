@@ -37,6 +37,7 @@ export function brandSetFavicon(brand: CurrentBrand) {
     const rels = ["icon", "shortcut icon"];
     rels.forEach((rel) => {
         let relIcon = document.head.querySelector<HTMLLinkElement>(`link[rel='${rel}']`);
+
         if (!relIcon) {
             relIcon = document.createElement("link");
             relIcon.rel = rel;

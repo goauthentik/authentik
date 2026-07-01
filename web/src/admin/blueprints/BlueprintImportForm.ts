@@ -64,16 +64,19 @@ export class BlueprintImportForm extends Form<ManagedBlueprintsImportCreateReque
     async send(data: ManagedBlueprintsImportCreateRequest): Promise<BlueprintImportResult> {
         if (this.source === BlueprintSource.Upload) {
             const file = this.files().get("blueprint");
+
             if (!file) {
                 throw new PreventFormSubmit("No form data");
             }
             data.file = file;
         }
         const result = await aki(ManagedApi).managedBlueprintsImportCreate(data);
+
         if (!result.success) {
             this.result = result;
             throw new PreventFormSubmit("Failed to import blueprint");
         }
+
         return result;
     }
 
@@ -153,15 +156,18 @@ export class BlueprintImportForm extends Form<ManagedBlueprintsImportCreateReque
                           placeholder=${msg("Select a blueprint...")}
                           .fetchObjects=${async (query?: string): Promise<BlueprintFile[]> => {
                               const items = await aki(ManagedApi).managedBlueprintsAvailableList();
+
                               return items.filter((item) =>
                                   query ? item.path.includes(query) : true,
                               );
                           }}
                           .renderElement=${(item: BlueprintFile): string => {
                               const name = item.path;
+
                               if (item.meta && item.meta.name) {
                                   return `${name} (${item.meta.name})`;
                               }
+
                               return name;
                           }}
                           .value=${(item: BlueprintFile | null) => {

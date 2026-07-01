@@ -64,6 +64,7 @@ export class Expand extends AKElement implements IExpand {
 
 export function akExpand(properties: IExpand, content: SlottedTemplateResult = nothing) {
     const message = typeof content === "string" ? html`<span>${content}</span>` : content;
+
     return html`<ak-expand ${spread(properties as Spread)}>${message}</ak-expand>`;
 }
 

@@ -234,6 +234,7 @@ export class LibraryPage extends WithSession(AKElement) {
         if (this.targetRef.value && this.visibleApplications.length === 1) {
             this.targetRef.value.focus();
             this.targetRef.value.click();
+
             return;
         }
     };
@@ -261,6 +262,7 @@ export class LibraryPage extends WithSession(AKElement) {
 
         if (this.renderRoot instanceof ShadowRoot) {
             const focusedElement = this.renderRoot.activeElement;
+
             if (isInteractiveElement(focusedElement)) {
                 focusedElement.click();
             }
@@ -269,6 +271,7 @@ export class LibraryPage extends WithSession(AKElement) {
 
     #visibilityListener = () => {
         if (document.visibilityState !== "visible") return;
+
         if (!this.visible) return;
 
         this.focus();
@@ -288,6 +291,7 @@ export class LibraryPage extends WithSession(AKElement) {
             ([groupLabelA, groupAppsA], [groupLabelB, groupAppsB]) => {
                 if (selectedApp) {
                     if (groupAppsA.includes(selectedApp)) return -1;
+
                     if (groupAppsB.includes(selectedApp)) return 1;
                 }
 

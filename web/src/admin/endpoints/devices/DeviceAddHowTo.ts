@@ -34,6 +34,7 @@ export class DeviceAddHowTo extends ModalButton {
                     .connector=${connector}
                 ></ak-endpoints-connector-agent-setup>`;
         }
+
         return html`<p>${msg("Configured connector does not support setup.")}</p>`;
     }
 

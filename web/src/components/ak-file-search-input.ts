@@ -80,6 +80,7 @@ export class AKFileSearchInput extends AKElement {
 
     async #fetch(query?: string): Promise<FileItem[]> {
         const api = aki(AdminApi);
+
         return api
             .adminFileList({
                 usage: this.usage as UsageEnum,
@@ -91,6 +92,7 @@ export class AKFileSearchInput extends AKElement {
 
                 if (!fileResponse || !Array.isArray(fileResponse)) {
                     console.error("Invalid response format from files API", fileResponse);
+
                     return [];
                 }
 
@@ -117,6 +119,7 @@ export class AKFileSearchInput extends AKElement {
             .catch(async (error) => {
                 const parsedError = await parseAPIResponseError(error);
                 console.error(msg("Failed to fetch files"), pluckErrorDetail(parsedError));
+
                 return [];
             });
     }

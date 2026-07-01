@@ -167,6 +167,7 @@ export function createUIThemeEffect(
             console.debug(
                 `authentik/theme (document): skipping media query change due to explicit choice (${themeChoice})`,
             );
+
             return;
         }
 
@@ -367,6 +368,7 @@ export function applyBackgroundImageProperty(
     const { backgroundImage } = getComputedStyle(target, "::before");
 
     const currentURL = pluckCurrentBackgroundURL(backgroundImage, baseOrigin);
+
     if (currentURL?.href === nextURL.href) {
         return;
     }

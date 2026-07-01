@@ -107,6 +107,7 @@ export class ConfigModal extends ModalButton {
                                 }),
                             );
                         }
+
                         return navigator.clipboard.writeText(this.config?.config || "");
                     }}
                 >

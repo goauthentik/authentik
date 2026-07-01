@@ -26,9 +26,11 @@ export class UserReputationList extends Table<Reputation> {
 
     async apiEndpoint(): Promise<PaginatedResponse<Reputation>> {
         const identifiers = [this.targetUsername];
+
         if (this.targetEmail !== undefined) {
             identifiers.push(this.targetEmail);
         }
+
         return aki(PoliciesApi).policiesReputationScoresList({
             ...(await this.defaultEndpointConfig()),
             identifierIn: identifiers,
@@ -52,6 +54,7 @@ export class UserReputationList extends Table<Reputation> {
 
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
+
         return html`<ak-forms-delete-bulk
             object-label=${msg("Reputation score(s)")}
             .objects=${this.selectedElements}

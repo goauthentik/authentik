@@ -46,11 +46,13 @@ export class NotificationsContextController extends ReactiveContextController<No
 
         if (!isAPIResultReady(session)) {
             this.logger.info("Session not ready, skipping notifications refresh");
+
             return Promise.resolve(fallback);
         }
 
         if (session.error) {
             this.logger.warn("Session error, skipping notifications refresh");
+
             return Promise.resolve(fallback);
         }
 

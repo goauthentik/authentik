@@ -65,6 +65,7 @@ export class OutpostServiceConnectionListPage extends TablePage<ServiceConnectio
                     });
             }),
         );
+
         return connections;
     }
 
@@ -84,6 +85,7 @@ export class OutpostServiceConnectionListPage extends TablePage<ServiceConnectio
 
     row(item: ServiceConnection): SlottedTemplateResult[] {
         const itemState = this.state[item.pk];
+
         return [
             item.name,
             item.verboseName,
@@ -103,6 +105,7 @@ export class OutpostServiceConnectionListPage extends TablePage<ServiceConnectio
 
     renderExpanded(item: ServiceConnection): TemplateResult {
         const [appLabel, modelName] = item.metaModelName.split(".");
+
         return html`<dl class="pf-c-description-list pf-m-horizontal">
                 <div class="pf-c-description-list__group">
                     <dt class="pf-c-description-list__term">
@@ -139,6 +142,7 @@ export class OutpostServiceConnectionListPage extends TablePage<ServiceConnectio
 
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
+
         return html`<ak-forms-delete-bulk
             object-label=${msg("Outpost integration(s)")}
             .objects=${this.selectedElements}

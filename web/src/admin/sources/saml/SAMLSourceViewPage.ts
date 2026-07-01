@@ -34,7 +34,7 @@ export class SAMLSourceViewPage extends AKElement {
     set sourceSlug(slug: string) {
         aki(SourcesApi)
             .sourcesSamlRetrieve({
-                slug: slug,
+                slug,
             })
             .then((source) => {
                 this.source = source;
@@ -61,6 +61,7 @@ export class SAMLSourceViewPage extends AKElement {
         if (!this.source) {
             return nothing;
         }
+
         return html`<main>
             <ak-tabs>
                 <div

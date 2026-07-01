@@ -60,6 +60,7 @@ export abstract class BaseStage<Tin extends StageChallengeLike, Tout = unknown>
 
     #visibilityListener = () => {
         if (document.visibilityState !== "visible") return;
+
         if (!this.visible) return;
 
         if (!this.autofocusTarget.target) return;

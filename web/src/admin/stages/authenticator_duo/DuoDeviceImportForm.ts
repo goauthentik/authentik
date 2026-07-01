@@ -47,6 +47,7 @@ export class DuoDeviceImportForm extends ModelForm<AuthenticatorDuoStage, string
 
     async send(data: AuthenticatorDuoStage): Promise<void> {
         const importData = data as unknown as AuthenticatorDuoStageManualDeviceImportRequest;
+
         return aki(StagesApi).stagesAuthenticatorDuoImportDeviceManualCreate({
             stageUuid: this.instance?.pk || "",
             authenticatorDuoStageManualDeviceImportRequest: importData,
@@ -68,10 +69,12 @@ export class DuoDeviceImportForm extends ModelForm<AuthenticatorDuoStage, string
                         const args: CoreUsersListRequest = {
                             ordering: "username",
                         };
+
                         if (query !== undefined) {
                             args.search = query;
                         }
                         const users = await aki(CoreApi).coreUsersList(args);
+
                         return users.results;
                     }}
                     .renderElement=${(user: User): string => {

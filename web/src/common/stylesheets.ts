@@ -144,6 +144,7 @@ export function setAdoptedStyleSheets(styleRoot: StyleRoot, styleSheets: StyleSh
 
     if (styleRoot === document) {
         document.adoptedStyleSheets = nextAdoptedStyleSheets;
+
         return;
     }
 
@@ -191,6 +192,7 @@ export function inspectStyleSheetTree(element: ReactiveElement): InspectedStyleS
             if (node instanceof ReactiveElement) {
                 return NodeFilter.FILTER_ACCEPT;
             }
+
             return NodeFilter.FILTER_SKIP;
         },
     });

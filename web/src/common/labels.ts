@@ -93,6 +93,7 @@ export function severityToLevel(severity?: SeverityEnum | null): string {
         case SeverityEnum.Alert:
             return "pf-m-danger";
     }
+
     return "pf-m-info";
 }
 

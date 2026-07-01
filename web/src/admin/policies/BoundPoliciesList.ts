@@ -98,17 +98,21 @@ export class BoundPoliciesList<T extends PolicyBinding = PolicyBinding> extends 
         } else if (item.user) {
             return msg(str`User ${item.userObj?.name || item.userObj?.username}`);
         }
+
         return msg("-");
     }
 
     protected getPolicyUserGroupRow(item: PolicyBinding): SlottedTemplateResult {
         const label = this.getPolicyUserGroupRowLabel(item);
+
         if (item.user) {
             return html` <a href=${`#/identity/users/${item.user}`}> ${label} </a> `;
         }
+
         if (item.group) {
             return html` <a href=${`#/identity/groups/${item.group}`}> ${label} </a> `;
         }
+
         return html`${label}`;
     }
 
@@ -146,6 +150,7 @@ export class BoundPoliciesList<T extends PolicyBinding = PolicyBinding> extends 
 
     protected override renderToolbarSelected(): SlottedTemplateResult {
         const disabled = this.selectedElements.length < 1;
+
         return html`<ak-spinner-button .callAction=${this.refreshListener} class="pf-m-secondary">
                 ${msg("Refresh")}</ak-spinner-button
             ><ak-forms-delete-bulk
@@ -193,6 +198,7 @@ export class BoundPoliciesList<T extends PolicyBinding = PolicyBinding> extends 
                 ${msg("Bind existing group/user")}
             </button>`;
         }
+
         return html`<button
             class="pf-c-button pf-m-primary"
             type="button"
@@ -257,9 +263,11 @@ export class BoundPoliciesList<T extends PolicyBinding = PolicyBinding> extends 
         const policyEngineMode = policyEngineModes.find(
             (pem) => pem.value === this.policyEngineMode,
         );
+
         if (policyEngineMode === undefined) {
             return nothing;
         }
+
         return html`${this.findSlotted("description")
                 ? html`<p class="policy-desc">
                       <slot name="description"></slot>

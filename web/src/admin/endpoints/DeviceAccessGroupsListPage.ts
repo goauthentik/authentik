@@ -63,6 +63,7 @@ export class DeviceAccessGroupsListPage extends TablePage<DeviceAccessGroup> {
 
     renderToolbarSelected() {
         const disabled = this.selectedElements.length < 1;
+
         return html`<ak-forms-delete-bulk
             object-label=${msg("Device Group(s)")}
             .objects=${this.selectedElements}

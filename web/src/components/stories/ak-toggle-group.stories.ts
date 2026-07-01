@@ -32,6 +32,7 @@ function injectTheme() {
 
 const container = (testItem: TemplateResult) => {
     injectTheme();
+
     return html` <div style="padding: 2em">
         <style>
             li {

@@ -24,6 +24,7 @@ export class PropertyMappingProviderMicrosoftEntraForm extends BasePropertyMappi
                 microsoftEntraProviderMappingRequest: data,
             });
         }
+
         return aki(PropertymappingsApi).propertymappingsProviderMicrosoftEntraCreate({
             microsoftEntraProviderMappingRequest: data,
         });

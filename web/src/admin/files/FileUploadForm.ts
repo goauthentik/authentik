@@ -30,6 +30,7 @@ function assertValidFileName(fileName: string): void {
     // Allow %(theme)s placeholder for theme-specific files
     // Replace with placeholder for validation, then check the result
     const nameForValidation = fileName.replaceAll(THEME_VARIABLE, "theme");
+
     if (!VALID_FILE_NAME_PATTERN.test(nameForValidation)) {
         throw new Error(
             msg(
@@ -41,7 +42,9 @@ function assertValidFileName(fileName: string): void {
 
 function getFileExtension(fileName: string): string {
     const lastDot = fileName.lastIndexOf(".");
+
     if (lastDot <= 0) return "";
+
     return fileName.slice(lastDot);
 }
 
@@ -63,6 +66,7 @@ export class FileUploadForm extends Form<Record<string, unknown>> {
 
     #fileChangeListener = (e: Event) => {
         const input = e.target as HTMLInputElement;
+
         if (input.files?.length) {
             this.selectedFile = input.files[0];
         } else {

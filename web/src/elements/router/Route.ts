@@ -27,25 +27,31 @@ export class Route {
     redirect(to: string, raw = false): Route {
         this.callback = async () => {
             console.debug(`authentik/router: redirecting ${to}`);
+
             if (!raw) {
                 window.location.hash = `#${to}`;
             } else {
                 window.location.hash = to;
             }
+
             return nothing;
         };
+
         return this;
     }
 
+    // oxlint-disable-next-line unicorn/no-thenable -- `then` is an intentional fluent builder, not a Promise.
     then(render: (args: RouteArgs) => TemplateResult): Route {
         this.callback = async (args) => {
             return render(args);
         };
+
         return this;
     }
 
     thenAsync(render: (args: RouteArgs) => Promise<TemplateResult>): Route {
         this.callback = render;
+
         return this;
     }
 
@@ -56,6 +62,7 @@ export class Route {
                 html`<ak-empty-state loading></ak-empty-state>`,
             )}`;
         }
+
         if (this.element) {
             return this.element;
         }

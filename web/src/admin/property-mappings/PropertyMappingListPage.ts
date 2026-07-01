@@ -71,6 +71,7 @@ export class PropertyMappingListPage extends TablePage<PropertyMapping> {
 
     protected override renderToolbarSelected(): SlottedTemplateResult {
         const disabled = this.selectedElements.length < 1;
+
         return html`<ak-forms-delete-bulk
             object-label=${msg("Property Mapping(s)")}
             .objects=${this.selectedElements}

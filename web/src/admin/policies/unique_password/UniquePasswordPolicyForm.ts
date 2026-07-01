@@ -28,6 +28,7 @@ export class UniquePasswordPolicyForm extends BasePolicyForm<UniquePasswordPolic
                 uniquePasswordPolicyRequest: data,
             });
         }
+
         return aki(PoliciesApi).policiesUniquePasswordCreate({
             uniquePasswordPolicyRequest: data,
         });

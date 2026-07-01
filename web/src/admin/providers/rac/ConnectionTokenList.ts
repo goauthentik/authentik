@@ -47,6 +47,7 @@ export class ConnectionTokenListPage extends Table<ConnectionToken> {
 
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
+
         return html`<ak-forms-delete-bulk
             object-label=${msg("Connection Token(s)")}
             .objects=${this.selectedElements}
@@ -77,6 +78,7 @@ export class ConnectionTokenListPage extends Table<ConnectionToken> {
         if (this.provider) {
             return item.endpointObj.name ?? null;
         }
+
         return item.providerObj.name ?? null;
     }
 
@@ -99,6 +101,7 @@ export class ConnectionTokenListPage extends Table<ConnectionToken> {
         if (this.provider) {
             return [html`${item.endpointObj.name}`, html`${item.user.username}`];
         }
+
         return [html`${item.providerObj.name}`, html`${item.endpointObj.name}`];
     }
 }

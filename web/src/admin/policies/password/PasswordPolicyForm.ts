@@ -39,6 +39,7 @@ export class PasswordPolicyForm extends BasePolicyForm<PasswordPolicy> {
         this.showStatic = policy.checkStaticRules || false;
         this.showHIBP = policy.checkHaveIBeenPwned || false;
         this.showZxcvbn = policy.checkZxcvbn || false;
+
         return policy;
     }
 
@@ -49,6 +50,7 @@ export class PasswordPolicyForm extends BasePolicyForm<PasswordPolicy> {
                 passwordPolicyRequest: data,
             });
         }
+
         return aki(PoliciesApi).policiesPasswordCreate({
             passwordPolicyRequest: data,
         });

@@ -89,6 +89,7 @@ export class RacInterface extends WithBrandConfig(Interface) {
 
     static domSize(): { width: number; height: number } {
         const size = document.body.getBoundingClientRect();
+
         return {
             width: size.width,
             height: size.height,
@@ -146,6 +147,7 @@ export class RacInterface extends WithBrandConfig(Interface) {
         };
         this.client.onstatechange = (state) => {
             this.clientState = state;
+
             if (state === GuacClientState.CONNECTED) {
                 this.onConnected();
             }
@@ -162,12 +164,14 @@ export class RacInterface extends WithBrandConfig(Interface) {
 
                 reader.onend = () => {
                     const trimmed = data.trim();
+
                     // Some remote sessions (notably SSH) push empty clipboard
                     // payloads that would otherwise clobber the user's local
                     // clipboard, breaking subsequent paste attempts. Ignore
                     // them so the local clipboard remains intact.
                     if (!trimmed) {
                         console.debug("authentik/rac: ignored empty remote clipboard payload");
+
                         return;
                     }
                     this._previousClipboardValue = trimmed;
@@ -201,6 +205,7 @@ export class RacInterface extends WithBrandConfig(Interface) {
     reconnect(): void {
         this.clientState = undefined;
         this.connectionAttempt += 1;
+
         if (!this.hasConnected) {
             // Check connection attempts if we haven't had a successful connection
             if (this.connectionAttempt >= RECONNECT_ATTEMPTS_INITIAL) {
@@ -208,12 +213,14 @@ export class RacInterface extends WithBrandConfig(Interface) {
                 this.reconnectingMessage = msg(
                     str`Connection failed after ${this.connectionAttempt} attempts.`,
                 );
+
                 return;
             }
         } else if (this.connectionAttempt >= RECONNECT_ATTEMPTS) {
             this.reconnectingMessage = msg(
                 str`Connection failed after ${this.connectionAttempt} attempts.`,
             );
+
             return;
         }
         const delay = 500 * this.connectionAttempt;
@@ -237,6 +244,7 @@ export class RacInterface extends WithBrandConfig(Interface) {
 
     onConnected(): void {
         console.debug("authentik/rac: connected");
+
         if (!this.client) {
             return;
         }
@@ -275,12 +283,15 @@ export class RacInterface extends WithBrandConfig(Interface) {
 
     initAudioInput(): void {
         const stream = this.client?.createAudioStream(AUDIO_INPUT_MIMETYPE);
+
         if (!stream) return;
         // Guacamole.AudioPlayer
         const recorder = Guacamole.AudioRecorder.getInstance(stream, AUDIO_INPUT_MIMETYPE);
+
         // If creation of the AudioRecorder failed, simply end the stream
         if (!recorder) {
             stream.sendEnd();
+
             return;
         }
         // Otherwise, ensure that another audio stream is created after this
@@ -302,9 +313,11 @@ export class RacInterface extends WithBrandConfig(Interface) {
         try {
             if (!this._previousClipboardValue) {
                 this._previousClipboardValue = await navigator.clipboard.readText();
+
                 return;
             }
             const newValue = await navigator.clipboard.readText();
+
             if (newValue !== this._previousClipboardValue) {
                 console.debug(`authentik/rac: new clipboard value: ${newValue}`);
                 this._previousClipboardValue = newValue;
@@ -336,12 +349,15 @@ export class RacInterface extends WithBrandConfig(Interface) {
             return nothing;
         }
         let message = html`${GuacStateToString(this.clientState)}`;
+
         if (this.clientState === GuacClientState.WAITING) {
             message = html`${msg("Connecting...")}`;
         }
+
         if (this.hasConnected) {
             message = html`${this.reconnectingMessage}`;
         }
+
         if (this.clientStatus?.message) {
             message = html`${message}<br />${this.clientStatus.message}`;
         }
@@ -350,6 +366,7 @@ export class RacInterface extends WithBrandConfig(Interface) {
             GuacClientState.DISCONNECTING,
             GuacClientState.WAITING,
         ].includes(this.clientState);
+
         return html`
             <ak-loading-overlay ?no-spinner=${!isLoading} icon="fa fa-times">
                 <span>${message}</span>

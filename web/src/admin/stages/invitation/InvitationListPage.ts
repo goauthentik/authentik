@@ -67,6 +67,7 @@ export class InvitationListPage extends TablePage<Invitation> {
                 const enrollmentFlows = (stage.flowSet || []).filter(
                     (flow) => flow.designation === FlowDesignationEnum.Enrollment,
                 );
+
                 if (enrollmentFlows.length > 1) {
                     this.multipleEnrollmentFlows = true;
                 }
@@ -74,6 +75,7 @@ export class InvitationListPage extends TablePage<Invitation> {
         } catch {
             // assuming we can't fetch stages, ignore the error
         }
+
         return aki(StagesApi).stagesInvitationInvitationsList({
             ...(await this.defaultEndpointConfig()),
         });
@@ -88,6 +90,7 @@ export class InvitationListPage extends TablePage<Invitation> {
 
     protected override renderToolbarSelected(): SlottedTemplateResult {
         const disabled = this.selectedElements.length < 1;
+
         return html`<ak-forms-delete-bulk
             object-label=${msg("Invitation(s)")}
             .objects=${this.selectedElements}

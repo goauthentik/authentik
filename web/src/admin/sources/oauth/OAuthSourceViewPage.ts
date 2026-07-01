@@ -102,6 +102,7 @@ export class OAuthSourceViewPage extends AKElement {
         if (!this.source) {
             return nothing;
         }
+
         return html`<main>
             <ak-tabs>
                 <div

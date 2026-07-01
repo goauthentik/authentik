@@ -13,6 +13,7 @@ import { html, TemplateResult } from "lit";
 
 function makeid(length: number) {
     const sample = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
     return Array.from({ length })
         .fill(" ")
         .map(() => sample.charAt(Math.floor(Math.random() * sample.length)))

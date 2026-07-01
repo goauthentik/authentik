@@ -258,10 +258,12 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
                                     ordering: "name",
                                     includeUsers: false,
                                 };
+
                                 if (query !== undefined) {
                                     args.search = query;
                                 }
                                 const groups = await aki(CoreApi).coreGroupsList(args);
+
                                 return groups.results;
                             }}
                             .renderElement=${(group: Group): string => {

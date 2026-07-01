@@ -113,6 +113,7 @@ export abstract class ModelForm<
                 "Neither 'endpoints' or 'loadInstance' defined on ${this.localName}",
             );
         }
+
         return this.endpoints.load(pk);
     }
 
@@ -120,6 +121,7 @@ export abstract class ModelForm<
         if (!this.endpoints) {
             throw new TypeError("Neither 'endpoints' or 'send' defined on ${this.localName}");
         }
+
         return this.instancePk === null
             ? this.endpoints.create(data)
             : this.endpoints.update(this.instancePk, data);
@@ -127,6 +129,7 @@ export abstract class ModelForm<
 
     public override getSuccessMessage() {
         if (!this.verboseName) return super.getSuccessMessage();
+
         return this.instancePk === null
             ? msg(str`Successfully created ${this.verboseName}`)
             : msg(str`Successfully updated ${this.verboseName}`);
@@ -244,6 +247,7 @@ export abstract class ModelForm<
 
                 if (result === false) {
                     this.logger.debug("Load method returned false, skipping instance load");
+
                     return;
                 }
 
@@ -261,6 +265,7 @@ export abstract class ModelForm<
     protected retryLoad = (): Promise<void> => {
         this.error = null;
         this.#loadedAt = null;
+
         return this.doLoad();
     };
 
@@ -271,6 +276,7 @@ export abstract class ModelForm<
     public refresh = async (): Promise<void> => {
         if (!this.instancePk) {
             this.logger.info("Skipping refresh. No instance PK provided.");
+
             return;
         }
 
@@ -315,6 +321,7 @@ export abstract class ModelForm<
                 instance: !!this.instance,
                 loadedAt: !!this.#loadedAt,
             });
+
             return html`<ak-empty-state
                 class="${ready ? "" : "ak-fade-in ak-m-delayed"}"
                 loading

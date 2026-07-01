@@ -86,6 +86,7 @@ export class OAuthSourceForm extends BaseSourceForm<OAuthSource> {
             slug: pk,
         });
         this.providerType = source.type;
+
         return source;
     }
 

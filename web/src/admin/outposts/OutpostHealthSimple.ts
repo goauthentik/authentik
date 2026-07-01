@@ -51,10 +51,12 @@ export class OutpostHealthSimpleElement extends AKElement {
         if (!this.outpostId || !this.loaded) {
             return html`<ak-spinner></ak-spinner>`;
         }
+
         if (!this.outpostHealths || this.outpostHealths.length === 0) {
             return html`<ak-label color=${PFColor.Gray}>${msg("Not available")}</ak-label>`;
         }
         const outdatedOutposts = this.outpostHealths.filter((h) => h.versionOutdated);
+
         if (outdatedOutposts.length > 0) {
             return html`<ak-label color=${PFColor.Red}>
                 ${msg(
@@ -63,6 +65,7 @@ export class OutpostHealthSimpleElement extends AKElement {
             >`;
         }
         const lastSeen = this.outpostHealths[0].lastSeen;
+
         return html`<ak-label color=${PFColor.Green}>
             ${msg(
                 str`Last seen: ${formatElapsedTime(lastSeen)} (${lastSeen.toLocaleTimeString()})`,

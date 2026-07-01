@@ -54,6 +54,7 @@ export class DataExportListPage extends TablePage<DataExport> {
 
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
+
         return html`<ak-forms-delete-bulk
             object-label=${msg("Data export(s)")}
             .objects=${this.selectedElements}

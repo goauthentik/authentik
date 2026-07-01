@@ -26,6 +26,7 @@ export class PropertyMappingSourceSAMLForm extends BasePropertyMappingForm<SAMLS
                 sAMLSourcePropertyMappingRequest: data,
             });
         }
+
         return aki(PropertymappingsApi).propertymappingsSourceSamlCreate({
             sAMLSourcePropertyMappingRequest: data,
         });

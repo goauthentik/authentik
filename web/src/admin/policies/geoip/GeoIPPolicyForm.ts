@@ -43,6 +43,7 @@ export class GeoIPPolicyForm extends BasePolicyForm<GeoIPPolicy> {
                 geoIPPolicyRequest: data,
             });
         }
+
         return aki(PoliciesApi).policiesGeoipCreate({
             geoIPPolicyRequest: data,
         });
@@ -169,7 +170,7 @@ export class GeoIPPolicyForm extends BasePolicyForm<GeoIPPolicy> {
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal label=${msg("Countries")} name="countries">
                         <ak-dual-select-provider
-                            .provider=${(page: number, search?: string): Promise<DataProvision> => {
+                            .provider=${(_page: number, search?: string): Promise<DataProvision> => {
                                 return countryCache
                                     .getCountries()
                                     .then((results) => {

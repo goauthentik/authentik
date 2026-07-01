@@ -42,7 +42,7 @@ export const ButtonWithSuccess = () => {
 
 export const ButtonWithReject = () => {
     const run = () =>
-        new Promise((resolve, reject) => {
+        new Promise((_resolve, reject) => {
             setTimeout(() => {
                 reject("Rejected!");
             }, 3000);

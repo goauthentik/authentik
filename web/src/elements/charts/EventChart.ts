@@ -63,6 +63,7 @@ export function actionToColor(action: EventActions): string {
         case EventActions.UserWrite:
             return "#ef9234";
     }
+
     return "";
 }
 
@@ -79,9 +80,11 @@ export abstract class EventChart extends AKChart<EventVolume[]> {
         const datasets: ChartData = {
             datasets: [],
         };
+
         if (!options) {
             options = {};
         }
+
         if (!options.optsMap) {
             options.optsMap = new Map<EventActions, Partial<ChartDataset>>();
         }
@@ -100,6 +103,7 @@ export abstract class EventChart extends AKChart<EventVolume[]> {
                 .map((v) => v.time)
                 .sort((a, b) => b.getTime() - a.getTime())
                 .reverse();
+
             if (earliestDate.length > 0 && options.padToDays) {
                 const earliestPadded = new Date(
                     new Date().getTime() - options.padToDays * (1000 * 3600 * 24),
@@ -107,6 +111,7 @@ export abstract class EventChart extends AKChart<EventVolume[]> {
                 const daysDelta = Math.round(
                     (earliestDate[0].getTime() - earliestPadded.getTime()) / (1000 * 3600 * 24),
                 );
+
                 if (daysDelta > 0) {
                     actionData.push({
                         x: earliestPadded.getTime(),
@@ -121,6 +126,7 @@ export abstract class EventChart extends AKChart<EventVolume[]> {
                 ...options.optsMap?.get(action),
             });
         });
+
         return datasets;
     }
 }

@@ -51,6 +51,7 @@ export function convertContent(
         if (groupBy || keyBy) {
             console.warn("Passed processor function when content is already marked as grouped");
         }
+
         return content;
     }
 
@@ -58,6 +59,7 @@ export function convertContent(
         if (groupBy || keyBy) {
             console.warn("Passed processor function when content is already marked as flat");
         }
+
         return content;
     }
 
@@ -68,9 +70,10 @@ export function convertContent(
                 "Passed processor function when content is processed and can't be analyzed for grouping",
             );
         }
+
         return {
             kind: "flat",
-            content: content,
+            content,
         };
     }
 
@@ -90,6 +93,7 @@ export function convertContent(
 
     if (groupBy) {
         const groupedContent = groupByProcessor(content, groupBy);
+
         return {
             kind: "groups",
             content: groupedContent.map(([group, rowsForGroup]) => ({

@@ -24,6 +24,7 @@ export class PropertyMappingProviderSCIMForm extends BasePropertyMappingForm<SCI
                 sCIMMappingRequest: data,
             });
         }
+
         return aki(PropertymappingsApi).propertymappingsProviderScimCreate({
             sCIMMappingRequest: data,
         });

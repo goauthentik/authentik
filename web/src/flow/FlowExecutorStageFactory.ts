@@ -110,6 +110,7 @@ export class StageMapping {
         // import event won't happen. Without it, the class constructor won't be available for tag
         // resolution anyway.
         const newtag = init.tag || (await fetch?.().then(resolveStageTag)) || stage;
+
         return new StageMapping({ ...init, tag: newtag });
     }
 }
