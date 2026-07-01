@@ -101,7 +101,7 @@ COPY --from=web-builder /static/security.txt /web/security.txt
 COPY --from=web-builder /static/dist/ /web/dist/
 COPY --from=web-builder /static/authentik/ /web/authentik/
 
-# HEALTHCHECK --interval=5s --retries=20 --start-period=3s CMD [ "/authentik", "healthcheck" ]
+HEALTHCHECK --interval=5s --retries=20 --start-period=3s CMD [ "/authentik", "healthcheck", "proxy" ]
 
 EXPOSE 9000 9300 9443
 
