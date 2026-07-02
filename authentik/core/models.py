@@ -187,7 +187,9 @@ class Group(SerializerModel, AttributesMixin):
         default=False, help_text=_("Users added to this group will be superusers.")
     )
 
-    roles = models.ManyToManyField("authentik_rbac.Role", related_name="groups", blank=True)
+    roles = models.ManyToManyField(
+        "authentik_rbac.Role", related_name="groups", blank=True, through="GroupRole"
+    )
 
     parents = models.ManyToManyField(
         "Group",
@@ -369,8 +371,10 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
     type = models.TextField(choices=UserTypes.choices, default=UserTypes.INTERNAL)
 
     sources = models.ManyToManyField("Source", through="UserSourceConnection")
-    groups = models.ManyToManyField("Group", related_name="users")
-    roles = models.ManyToManyField("authentik_rbac.Role", related_name="users", blank=True)
+    groups = models.ManyToManyField("Group", related_name="users", through="UserGroup")
+    roles = models.ManyToManyField(
+        "authentik_rbac.Role", related_name="users", blank=True, through="UserRole"
+    )
     password_change_date = models.DateTimeField(auto_now_add=True)
 
     last_updated = models.DateTimeField(auto_now=True)
@@ -660,7 +664,9 @@ class Provider(SerializerModel):
         related_name="provider_invalidation",
     )
 
-    property_mappings = models.ManyToManyField("PropertyMapping", default=None, blank=True)
+    property_mappings = models.ManyToManyField(
+        "PropertyMapping", default=None, blank=True, through="ProviderPropertyMapping"
+    )
 
     backchannel_application = models.ForeignKey(
         "Application",
@@ -940,10 +946,18 @@ class Source(ManagedModel, SerializerModel, PolicyBindingModel):
         ),
     )
     user_property_mappings = models.ManyToManyField(
-        "PropertyMapping", default=None, blank=True, related_name="source_userpropertymappings_set"
+        "PropertyMapping",
+        default=None,
+        blank=True,
+        related_name="source_userpropertymappings_set",
+        through="SourceUserPropertyMapping",
     )
     group_property_mappings = models.ManyToManyField(
-        "PropertyMapping", default=None, blank=True, related_name="source_grouppropertymappings_set"
+        "PropertyMapping",
+        default=None,
+        blank=True,
+        related_name="source_grouppropertymappings_set",
+        through="SourceGroupPropertyMapping",
     )
 
     icon = FileField(blank=True, default="")
@@ -1312,6 +1326,93 @@ class PropertyMapping(SerializerModel, ManagedModel):
     class Meta:
         verbose_name = _("Property Mapping")
         verbose_name_plural = _("Property Mappings")
+
+
+class SourceUserPropertyMapping(models.Model):
+    property_mapping = models.ForeignKey(
+        PropertyMapping, on_delete=models.CASCADE, db_column="propertymapping_id"
+    )
+    source = models.ForeignKey(Source, on_delete=models.CASCADE)
+
+    class Meta:
+        db_table = "authentik_core_source_user_property_mappings"
+        unique_together = (("property_mapping", "source"),)
+
+    def __str__(self):
+        return (
+            f"SourceUserPropertyMapping for Source {self.source_id} "
+            f"and PropertyMapping {self.property_mapping_id}."
+        )
+
+
+class SourceGroupPropertyMapping(models.Model):
+    property_mapping = models.ForeignKey(
+        PropertyMapping, on_delete=models.CASCADE, db_column="propertymapping_id"
+    )
+    source = models.ForeignKey(Source, on_delete=models.CASCADE)
+
+    class Meta:
+        db_table = "authentik_core_source_group_property_mappings"
+        unique_together = (("property_mapping", "source"),)
+
+    def __str__(self):
+        return (
+            f"SourceGroupPropertyMapping for Source {self.source_id} "
+            f"and PropertyMapping {self.property_mapping_id}."
+        )
+
+
+class ProviderPropertyMapping(models.Model):
+    property_mapping = models.ForeignKey(
+        PropertyMapping, on_delete=models.CASCADE, db_column="propertymapping_id"
+    )
+    provider = models.ForeignKey(Provider, on_delete=models.CASCADE)
+
+    class Meta:
+        db_table = "authentik_core_provider_property_mappings"
+        unique_together = (("property_mapping", "provider"),)
+
+    def __str__(self):
+        return (
+            f"ProviderPropertyMapping for Provider {self.provider_id} "
+            f"and PropertyMapping {self.property_mapping_id}."
+        )
+
+
+class UserRole(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    role = models.ForeignKey(Role, on_delete=models.CASCADE)
+
+    class Meta:
+        db_table = "authentik_core_user_roles"
+        unique_together = (("user", "role"),)
+
+    def __str__(self):
+        return f"UserRole for User {self.user_id} and Role {self.role_id}."
+
+
+class GroupRole(models.Model):
+    group = models.ForeignKey(Group, on_delete=models.CASCADE)
+    role = models.ForeignKey(Role, on_delete=models.CASCADE)
+
+    class Meta:
+        db_table = "authentik_core_group_roles"
+        unique_together = (("group", "role"),)
+
+    def __str__(self):
+        return f"GroupRole for Group {self.group_id} and Role {self.role_id}."
+
+
+class UserGroup(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    group = models.ForeignKey(Group, on_delete=models.CASCADE)
+
+    class Meta:
+        db_table = "authentik_core_user_groups"
+        unique_together = (("user", "group"),)
+
+    def __str__(self):
+        return f"UserGroup for User {self.user_id} and Group {self.group_id}."
 
 
 class Session(ExpiringModel, AbstractBaseSession):

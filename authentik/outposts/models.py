@@ -281,7 +281,7 @@ class Outpost(ScheduledModel, SerializerModel, ManagedModel):
 
     _config = models.JSONField(default=default_outpost_config)
 
-    providers = models.ManyToManyField(Provider)
+    providers = models.ManyToManyField(Provider, through="OutpostProvider")
 
     @property
     def serializer(self) -> Serializer:
@@ -455,6 +455,18 @@ class Outpost(ScheduledModel, SerializerModel, ManagedModel):
     class Meta:
         verbose_name = _("Outpost")
         verbose_name_plural = _("Outposts")
+
+
+class OutpostProvider(models.Model):
+    outpost = models.ForeignKey(Outpost, on_delete=models.CASCADE)
+    provider = models.ForeignKey(Provider, on_delete=models.CASCADE)
+
+    class Meta:
+        db_table = "authentik_outposts_outpost_providers"
+        unique_together = (("outpost", "provider"),)
+
+    def __str__(self):
+        return f"OutpostProvider for Outpost {self.outpost_id} and Provider {self.provider_id}."
 
 
 @dataclass

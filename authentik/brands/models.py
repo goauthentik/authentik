@@ -102,6 +102,7 @@ class Brand(SerializerModel):
         default=None,
         blank=True,
         help_text=_("Certificates used for client authentication."),
+        through="BrandClientCertificate",
     )
     attributes = models.JSONField(default=dict, blank=True)
 
@@ -167,6 +168,23 @@ class Brand(SerializerModel):
             models.Index(fields=["domain"]),
             models.Index(fields=["default"]),
         ]
+
+
+class BrandClientCertificate(models.Model):
+    brand = models.ForeignKey(Brand, on_delete=models.CASCADE)
+    certificate_key_pair = models.ForeignKey(
+        CertificateKeyPair, on_delete=models.CASCADE, db_column="certificatekeypair_id"
+    )
+
+    class Meta:
+        db_table = "authentik_brands_brand_client_certificates"
+        unique_together = (("brand", "certificate_key_pair"),)
+
+    def __str__(self):
+        return (
+            f"BrandClientCertificate for Brand {self.brand_id} "
+            f"and CertificateKeyPair {self.certificate_key_pair_id}."
+        )
 
 
 class WebfingerProvider(models.Model):

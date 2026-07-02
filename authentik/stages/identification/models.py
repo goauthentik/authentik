@@ -126,7 +126,11 @@ class IdentificationStage(Stage):
     )
 
     sources = models.ManyToManyField(
-        Source, default=list, help_text=_("Specify which sources should be shown."), blank=True
+        Source,
+        default=list,
+        help_text=_("Specify which sources should be shown."),
+        blank=True,
+        through="IdentificationStageSource",
     )
     show_source_labels = models.BooleanField(default=False)
 
@@ -149,3 +153,22 @@ class IdentificationStage(Stage):
     class Meta:
         verbose_name = _("Identification Stage")
         verbose_name_plural = _("Identification Stages")
+
+
+class IdentificationStageSource(models.Model):
+    identification_stage = models.ForeignKey(
+        IdentificationStage,
+        on_delete=models.CASCADE,
+        db_column="identificationstage_id",
+    )
+    source = models.ForeignKey(Source, on_delete=models.CASCADE)
+
+    class Meta:
+        db_table = "authentik_stages_identification_identificationstage_sources"
+        unique_together = (("identification_stage", "source"),)
+
+    def __str__(self):
+        return (
+            f"IdentificationStageSource for IdentificationStage {self.identification_stage_id} "
+            f"and Source {self.source_id}."
+        )

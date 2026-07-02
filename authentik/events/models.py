@@ -671,6 +671,7 @@ class NotificationRule(TasksModel, SerializerModel, PolicyBindingModel):
             "selected, the notification will only be shown in the authentik UI."
         ),
         blank=True,
+        through="NotificationRuleNotificationTransport",
     )
     severity = models.TextField(
         choices=NotificationSeverity.choices,
@@ -713,6 +714,28 @@ class NotificationRule(TasksModel, SerializerModel, PolicyBindingModel):
     class Meta:
         verbose_name = _("Notification Rule")
         verbose_name_plural = _("Notification Rules")
+
+
+class NotificationRuleNotificationTransport(models.Model):
+    notification_rule = models.ForeignKey(
+        NotificationRule, on_delete=models.CASCADE, db_column="notificationrule_id"
+    )
+    notification_transport = models.ForeignKey(
+        NotificationTransport,
+        on_delete=models.CASCADE,
+        db_column="notificationtransport_id",
+    )
+
+    class Meta:
+        db_table = "authentik_events_notificationrule_transports"
+        unique_together = (("notification_rule", "notification_transport"),)
+
+    def __str__(self):
+        return (
+            "NotificationRuleNotificationTransport for NotificationRule "
+            f"{self.notification_rule_id} "
+            f"and NotificationTransport {self.notification_transport_id}."
+        )
 
 
 class NotificationWebhookMapping(PropertyMapping):

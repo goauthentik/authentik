@@ -111,7 +111,9 @@ class AuthenticatorWebAuthnStage(ConfigurableStage, FriendlyNamedStage, Stage):
         blank=True,
     )
 
-    device_type_restrictions = models.ManyToManyField("WebAuthnDeviceType", blank=True)
+    device_type_restrictions = models.ManyToManyField(
+        "WebAuthnDeviceType", blank=True, through="AuthenticatorWebAuthnStageDeviceTypeRestriction"
+    )
 
     max_attempts = models.PositiveIntegerField(default=0)
 
@@ -223,3 +225,27 @@ class WebAuthnDeviceType(InternallyManagedMixin, SerializerModel):
 
     def __str__(self) -> str:
         return f"WebAuthn device type {self.description} ({self.aaguid})"
+
+
+class AuthenticatorWebAuthnStageDeviceTypeRestriction(models.Model):
+    authenticator_webauthn_stage = models.ForeignKey(
+        AuthenticatorWebAuthnStage,
+        on_delete=models.CASCADE,
+        db_column="authenticatorwebauthnstage_id",
+    )
+    device_type_restriction = models.ForeignKey(
+        WebAuthnDeviceType,
+        on_delete=models.CASCADE,
+        db_column="webauthndevicetype_id",
+    )
+
+    class Meta:
+        db_table = "authentik_stages_authenticator_webauthn_authenticatorwebaute3a7"
+        unique_together = (("authenticator_webauthn_stage", "device_type_restriction"),)
+
+    def __str__(self):
+        return (
+            "AuthenticatorWebAuthnStageDeviceTypeRestriction for AuthenticatorWebAuthnStage "
+            f"{self.authenticator_webauthn_stage_id} "
+            f"and WebAuthnDeviceType {self.device_type_restriction_id}."
+        )

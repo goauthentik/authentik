@@ -109,6 +109,7 @@ class GoogleWorkspaceProvider(OutgoingSyncProvider, BackchannelProvider):
         default=None,
         blank=True,
         help_text=_("Property mappings used for group creation/updating."),
+        through="GoogleWorkspaceProviderPropertyMappingsGroup",
     )
 
     @property
@@ -193,6 +194,28 @@ class GoogleWorkspaceProvider(OutgoingSyncProvider, BackchannelProvider):
     class Meta:
         verbose_name = _("Google Workspace Provider")
         verbose_name_plural = _("Google Workspace Providers")
+
+
+class GoogleWorkspaceProviderPropertyMappingsGroup(models.Model):
+    google_workspace_provider = models.ForeignKey(
+        GoogleWorkspaceProvider,
+        on_delete=models.CASCADE,
+        db_column="googleworkspaceprovider_id",
+    )
+    property_mapping = models.ForeignKey(
+        PropertyMapping, on_delete=models.CASCADE, db_column="propertymapping_id"
+    )
+
+    class Meta:
+        db_table = "authentik_providers_google_workspace_googleworkspaceprovide63d9"
+        unique_together = (("google_workspace_provider", "property_mapping"),)
+
+    def __str__(self):
+        return (
+            "GoogleWorkspaceProviderPropertyMappingsGroup for GoogleWorkspaceProvider "
+            f"{self.google_workspace_provider_id} "
+            f"and PropertyMapping {self.property_mapping_id}."
+        )
 
 
 class GoogleWorkspaceProviderMapping(PropertyMapping):
