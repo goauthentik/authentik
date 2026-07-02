@@ -10,7 +10,7 @@ import RedirectURI20265Note from "../../\_redirect-uri-2026-5-note.mdx";
 
 > Dashy is a self-hostable personal dashboard built for you. Includes status-checking, widgets, themes, icon packs, a UI editor and tons more.
 >
-> -- https://github.com/Lissy93/dashy
+> -- https://dashy.to/
 
 ## Preparation
 
@@ -29,16 +29,17 @@ This documentation lists only the settings that you need to change from their de
 
 To support the integration of Dashy with authentik, you need to create an application/provider pair in authentik.
 
-If you want to manage Dashy administrator access through authentik, create or choose a group for Dashy administrators and add the appropriate users to it. Note the exact group name because it will be required later.
+If you want to manage Dashy administrator access through authentik, create or choose a group for Dashy administrators and add the appropriate users to it. Dashy checks the `groups` claim from the ID token for the group name that you configure later.
 
 ### Create an application and provider in authentik
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
     - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
+        - Note the **Slug** value because it will be required later.
     - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
-        - Note the **Client ID** and **slug** values because they will be required later.
+        - Note the **Client ID** value because it will be required later.
         - Set the **Client type** to `Public`. Dashy runs entirely in the browser and does not store a client secret.
         - Add two **Redirect URIs** of type `Strict` `Authorization`:
             - `https://dashy.company`
@@ -59,9 +60,9 @@ Dashy can be configured through the web UI under **Config** > **Edit Config** or
     - Set **OIDC Endpoint** to `https://authentik.company/application/o/<application_slug>/`.
     - Set **OIDC Client Id** to the Client ID from the authentik provider.
     - Set **OIDC Scope** to `openid profile email`.
-    - If you use an authentik group for Dashy administrators, set **Admin Group** to the exact name of that group.
+    - If you use an authentik group for Dashy administrators, set **Admin Group** to the exact group name from authentik. The `profile` scope includes the `groups` claim that Dashy uses for this check.
 5. If you use an authentik group for Dashy administrators, enable **Disable all UI Config for non admin users.**.
-6. Click **Save Changes** and reload Dashy to apply the new authentication settings.
+6. Click **Save Changes** and restart Dashy to apply the new authentication settings.
 
 :::info Manual configuration
 The same settings can also be set directly in `conf.yml`.
@@ -72,13 +73,13 @@ appConfig:
         enableOidc: true
         oidc:
             endpoint: https://authentik.company/application/o/<application_slug>/
-            clientId: <Client ID from authentik>
+            clientId: "<Client ID from authentik>"
             scope: openid profile email
             adminGroup: Dashy Admins
     disableConfigurationForNonAdmin: true
 ```
 
-Replace `Dashy Admins` with the exact name of your authentik group for Dashy administrators.
+Replace `Dashy Admins` with the exact name of your authentik group for Dashy administrators. If you do not use a Dashy administrator group, remove `adminGroup` and `disableConfigurationForNonAdmin`. Restart Dashy after changing any values under `appConfig.auth.oidc`.
 
 :::
 
@@ -88,6 +89,6 @@ To confirm that authentik is properly configured with Dashy, log out of Dashy, t
 
 ## Resources
 
-- [Dashy Authentik authentication documentation](https://dashy.to/docs/authentication/authentik/)
+- [Dashy authentik authentication documentation](https://dashy.to/docs/authentication/authentik/)
 - [Dashy configuration reference](https://dashy.to/docs/configuring/)
 - [Dashy OIDC authentication source](https://github.com/Lissy93/dashy/blob/master/services/auth-oidc.js)
