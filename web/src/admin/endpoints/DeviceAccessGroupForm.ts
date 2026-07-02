@@ -26,29 +26,26 @@ export class DeviceAccessGroupForm extends WithBrandConfig(ModelForm<DeviceAcces
 
     public override size = PFSize.Small;
 
-    protected override loadInstance(pk: string): Promise<DeviceAccessGroup> {
-        return aki(EndpointsApi).endpointsDeviceAccessGroupsRetrieve({
-            pbmUuid: pk,
-        });
-    }
+    protected endpoints = {
+        load: (pbmUuid: string) =>
+            aki(EndpointsApi).endpointsDeviceAccessGroupsRetrieve({
+                pbmUuid,
+            }),
+        create: (data: DeviceAccessGroup) =>
+            aki(EndpointsApi).endpointsDeviceAccessGroupsCreate({
+                deviceAccessGroupRequest: data as unknown as DeviceAccessGroupRequest,
+            }),
+        update: (pbmUuid: string, patchedDeviceAccessGroupRequest: DeviceAccessGroup) =>
+            aki(EndpointsApi).endpointsDeviceAccessGroupsPartialUpdate({
+                pbmUuid,
+                patchedDeviceAccessGroupRequest,
+            }),
+    };
 
     public override getSuccessMessage(): string {
         return this.instance
             ? msg("Successfully updated group.")
             : msg("Successfully created group.");
-    }
-
-    protected override async send(data: DeviceAccessGroup): Promise<DeviceAccessGroup> {
-        if (this.instance) {
-            return aki(EndpointsApi).endpointsDeviceAccessGroupsPartialUpdate({
-                pbmUuid: this.instance.pbmUuid,
-                patchedDeviceAccessGroupRequest: data,
-            });
-        }
-
-        return aki(EndpointsApi).endpointsDeviceAccessGroupsCreate({
-            deviceAccessGroupRequest: data as unknown as DeviceAccessGroupRequest,
-        });
     }
 
     protected override renderForm() {

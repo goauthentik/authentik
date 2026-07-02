@@ -1,6 +1,7 @@
 ---
 title: Get started with authentik Enterprise
 description: "How to get started with authentik Enterprise"
+sidebar_position: 1
 ---
 
 Installing authentik is exactly the same process for both the Enterprise version and our open source version. Enterprise features are enabled by installing a license.

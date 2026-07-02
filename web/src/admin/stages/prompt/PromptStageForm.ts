@@ -25,23 +25,13 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-stage-prompt-form")
 export class PromptStageForm extends BaseStageForm<PromptStage> {
-    loadInstance(pk: string): Promise<PromptStage> {
-        return aki(StagesApi).stagesPromptStagesRetrieve({
-            stageUuid: pk,
-        });
-    }
-
-    async send(data: PromptStage): Promise<PromptStage> {
-        if (this.instance) {
-            return aki(StagesApi).stagesPromptStagesUpdate({
-                stageUuid: this.instance.pk || "",
-                promptStageRequest: data,
-            });
-        }
-        return aki(StagesApi).stagesPromptStagesCreate({
-            promptStageRequest: data,
-        });
-    }
+    protected endpoints = {
+        load: (stageUuid: string) => aki(StagesApi).stagesPromptStagesRetrieve({ stageUuid }),
+        create: (promptStageRequest: PromptStage) =>
+            aki(StagesApi).stagesPromptStagesCreate({ promptStageRequest }),
+        update: (stageUuid: string, promptStageRequest: PromptStage) =>
+            aki(StagesApi).stagesPromptStagesUpdate({ stageUuid, promptStageRequest }),
+    };
 
     protected override renderForm(): TemplateResult {
         return html` <span>
