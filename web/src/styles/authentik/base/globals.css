@@ -37,21 +37,33 @@ body {
 }
 
 .ak-c-safe-mode {
+    --pf-c-banner--md--PaddingLeft: var(--pf-global--spacer--md);
+    --pf-c-banner--md--PaddingRight: var(--pf-global--spacer--md);
+
     position: fixed;
     z-index: 9999999;
     inset-block-end: 0;
     inset-inline-end: 0;
-    pointer-events: none;
+    border-start-start-radius: var(--pf-global--BorderRadius--sm);
     display: flex;
     align-items: center;
-    justify-content: center;
-    font-size: var(--pf-global--FontSize--sm, 0.75rem);
-    font-weight: bold;
-    color: var(--pf-global--Color--100, CanvasText);
-    background-color: var(--pf-global--BackgroundColor--200, Canvas);
-    opacity: 0.75;
-    padding: var(--pf-global--spacer--sm, 0.5rem);
-    border-start-start-radius: 8px;
+    font-weight: var(--pf-global--FontWeight--normal);
+    gap: var(--pf-global--spacer--md);
+    animation: ak-safe-mode-fade-out 1s ease-in-out 0.5s forwards;
+
+    &:hover {
+        animation-direction: reverse;
+        animation-duration: 0.5s;
+    }
+}
+
+@keyframes ak-safe-mode-fade-out {
+    0% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0.4;
+    }
 }
 
 /* #endregion */
