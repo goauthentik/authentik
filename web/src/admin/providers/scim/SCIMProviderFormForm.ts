@@ -248,6 +248,14 @@ export function renderForm({ provider, errors, update }: SCIMProviderFormProps) 
                         "When enabled, mutating requests will be dropped and logged instead.",
                     )}
                 ></ak-switch-input>
+                <ak-switch-input
+                    name="flattenNestedGroups"
+                    label=${msg("Flatten nested group members")}
+                    ?checked=${provider.flattenNestedGroups ?? false}
+                    help=${msg(
+                        "When enabled, members of nested child groups are sent as direct members of the parent group. Useful for SCIM endpoints that do not support nested groups (AWS IAM Identity Center, Slack, etc.).",
+                    )}
+                ></ak-switch-input>
             </div>
         </ak-form-group>
         <ak-form-group open label="${msg("Filtering")}">

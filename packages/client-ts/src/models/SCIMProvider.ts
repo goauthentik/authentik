@@ -156,6 +156,12 @@ export interface SCIMProvider {
      */
     compatibilityMode?: CompatibilityModeEnum;
     /**
+     * When enabled, members of nested child groups are included as direct members of the parent group in the SCIM payload. Useful for SCIM endpoints that do not support nested groups (AWS IAM Identity Center, Slack, etc.).
+     * @type {boolean}
+     * @memberof SCIMProvider
+     */
+    flattenNestedGroups?: boolean;
+    /**
      * Cache duration for ServiceProviderConfig responses. Set minutes=0 to disable.
      * @type {string}
      * @memberof SCIMProvider
@@ -268,6 +274,8 @@ export function SCIMProviderFromJSONTyped(json: any, ignoreDiscriminator: boolea
             json["compatibility_mode"] == null
                 ? undefined
                 : CompatibilityModeEnumFromJSON(json["compatibility_mode"]),
+        flattenNestedGroups:
+            json["flatten_nested_groups"] == null ? undefined : json["flatten_nested_groups"],
         serviceProviderConfigCacheTimeout:
             json["service_provider_config_cache_timeout"] == null
                 ? undefined
@@ -319,6 +327,7 @@ export function SCIMProviderToJSONTyped(
         auth_oauth: value["authOauth"],
         auth_oauth_params: value["authOauthParams"],
         compatibility_mode: CompatibilityModeEnumToJSON(value["compatibilityMode"]),
+        flatten_nested_groups: value["flattenNestedGroups"],
         service_provider_config_cache_timeout: value["serviceProviderConfigCacheTimeout"],
         exclude_users_service_account: value["excludeUsersServiceAccount"],
         sync_page_size: value["syncPageSize"],
