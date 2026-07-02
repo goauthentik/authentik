@@ -227,6 +227,7 @@ dependencies = [
  "pyo3-build-config",
  "rand 0.10.1",
  "reqwest",
+ "serde_json",
  "sqlx",
  "testcontainers",
  "thirtyfour",

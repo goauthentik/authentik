@@ -151,6 +151,26 @@ async fn trying_stuff_out() -> Result<()> {
     )
     .await?;
 
+    driver
+        .goto("http://server:9000/api/v3/core/users/me/")
+        .await?;
+    wait_for_url(
+        &driver,
+        "http://server:9000/api/v3/core/users/me/",
+        Duration::from_secs(20),
+        Duration::from_millis(500),
+    )
+    .await?;
+
+    let body = driver.query(By::Tag("pre")).single().await?.text().await?;
+    let data: serde_json::Value = serde_json::from_str(&body)?;
+    dbg!(&data);
+
+    assert!(data.get("user").is_some());
+    assert_eq!(data["user"]["username"], "akadmin");
+    assert_eq!(data["user"]["name"], "authentik Default Admin");
+    assert_eq!(data["user"]["email"], "root@example.com");
+
     driver.quit().await?;
 
     Ok(())

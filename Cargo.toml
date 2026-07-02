@@ -293,6 +293,7 @@ which.workspace = true
 
 [dev-dependencies]
 rand.workspace = true
+serde_json.workspace = true
 testcontainers.workspace = true
 thirtyfour.workspace = true
 
