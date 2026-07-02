@@ -1,4 +1,5 @@
 import "#components/ak-slug-input";
+import "#components/ak-text-input";
 import "#components/ak-switch-input";
 import "#elements/CodeMirror";
 import "#elements/forms/HorizontalFormElement";
@@ -25,8 +26,14 @@ import { msg, str } from "@lit/localize";
 import { CSSResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 
+import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
+import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-group.css";
+import PFSwitch from "@patternfly/patternfly/components/Switch/switch.css";
+import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 
 const MINIMAL_BLUEPRINT_PATH = "example/flows-invitation-enrollment-minimal.yaml";
 
@@ -42,7 +49,16 @@ interface DetailsFormData {
 
 @customElement("ak-invitation-wizard-details-step")
 export class InvitationWizardDetailsStep extends WizardPage<InvitationWizardState> {
-    static styles: CSSResult[] = [PFForm, PFFormControl];
+    static styles: CSSResult[] = [
+        PFCard,
+        PFButton,
+        PFForm,
+        PFAlert,
+        PFInputGroup,
+        PFFormControl,
+        PFSwitch,
+        PFTitle,
+    ];
 
     #defaultExpires = dateTimeLocal(new Date(Date.now() + 48 * 60 * 60 * 1000));
 
@@ -58,6 +74,7 @@ export class InvitationWizardDetailsStep extends WizardPage<InvitationWizardStat
 
     public override activeCallback = async (): Promise<void> => {
         this.syncValidity();
+        this.requestUpdate();
     };
 
     //#endregion
@@ -83,7 +100,7 @@ export class InvitationWizardDetailsStep extends WizardPage<InvitationWizardStat
     /**
      * Import the minimal enrollment-flow blueprint and record the created flow on the wizard state.
      */
-    async #importEnrollmentFlow(state: InvitationWizardState): Promise<boolean> {
+    protected async importEnrollmentFlow(state: InvitationWizardState): Promise<boolean> {
         const label = msg("Importing enrollment flow blueprint");
 
         return aki(ManagedApi)
@@ -171,7 +188,7 @@ export class InvitationWizardDetailsStep extends WizardPage<InvitationWizardStat
         // Already created on a previous attempt (e.g. the user stepped back and forward again).
         if (state.createdInvitationPk) return true;
 
-        if (state.needsFlow && !(await this.#importEnrollmentFlow(state))) {
+        if (state.needsFlow && !(await this.importEnrollmentFlow(state))) {
             return false;
         }
 
@@ -186,17 +203,22 @@ export class InvitationWizardDetailsStep extends WizardPage<InvitationWizardStat
 
     //#region Rendering
 
+    protected formatFlowDisplayLabel(): string {
+        const { flowMode = "create", newFlowSlug, selectedFlowSlug } = this.host.state;
+
+        if (flowMode === "create" && newFlowSlug) {
+            return newFlowSlug;
+        }
+
+        return selectedFlowSlug ?? msg("No flow selected");
+    }
+
     protected override render(): SlottedTemplateResult {
-        const { state } = this.host;
-
-        const flowDisplay =
-            (state.flowMode === "existing" ? state.selectedFlowSlug : state.newFlowSlug) ??
-            msg("No flow selected");
-
         return html`<form class="pf-c-form pf-m-horizontal" @input=${this.syncValidity}>
             <ak-slug-input
                 name="name"
                 label=${msg("Invitation Name")}
+                placeholder=${msg("e.g. my-invitation")}
                 autofocus
                 required
                 help=${msg(
@@ -212,20 +234,15 @@ export class InvitationWizardDetailsStep extends WizardPage<InvitationWizardStat
                     value=${this.#defaultExpires}
                 />
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("Flow")}>
-                <input
-                    type="text"
-                    class="pf-c-form-control"
-                    readonly
-                    disabled
-                    .value=${flowDisplay}
-                />
-                <p class="pf-c-form__helper-text">
-                    ${msg(
-                        "The flow selected in the previous step. The invitation will be bound to this flow.",
-                    )}
-                </p>
-            </ak-form-element-horizontal>
+            <ak-text-input
+                label=${msg("Flow")}
+                readonly
+                input-hint="code"
+                .value=${this.formatFlowDisplayLabel()}
+                help=${msg(
+                    "The flow selected in the previous step. The invitation will be bound to this flow.",
+                )}
+            ></ak-text-input>
             <ak-form-element-horizontal label=${msg("Custom attributes")} name="fixedData">
                 <ak-codemirror mode="yaml" value="{}"></ak-codemirror>
                 <p class="pf-c-form__helper-text">

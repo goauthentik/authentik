@@ -98,6 +98,7 @@ class InvitationWizardFlowStepNewEnrollmentForm extends Form<NewEnrollmentFormDa
                 label=${msg("Invitation Stage Name")}
                 value="invitation-stage"
                 required
+                input-hint="code"
                 placeholder=${msg("Type a name for the stage...")}
             ></ak-text-input>
 
@@ -200,8 +201,8 @@ export class InvitationWizardFlowStep extends WizardPage<InvitationWizardState> 
         `,
     ];
 
-    @property({ type: String })
-    public mode: InvitationWizardFlowMode = InvitationWizardFlowMode.Existing;
+    @property({ type: String, attribute: "flow-mode" })
+    public flowMode: InvitationWizardFlowMode = InvitationWizardFlowMode.Existing;
 
     @state()
     protected enrollmentFlows: EnrollmentFlow[] = [];
@@ -219,7 +220,7 @@ export class InvitationWizardFlowStep extends WizardPage<InvitationWizardState> 
 
     protected formRef = createRef<Form>();
 
-    protected async refreshEnrollmentFlows(): Promise<void> {
+    protected refreshEnrollmentFlows(): Promise<void> {
         this.loading = true;
 
         return aki(StagesApi)
@@ -258,20 +259,13 @@ export class InvitationWizardFlowStep extends WizardPage<InvitationWizardState> 
         // `nextCallback` blocks progression via `reportValidity()` when something's missing.
         this.host.valid = true;
 
-        if (this.mode !== InvitationWizardFlowMode.Existing) {
+        if (this.flowMode !== InvitationWizardFlowMode.Existing) {
             // Nothing to fetch when creating a brand-new flow.
             this.loading = false;
             return;
         }
 
         await this.refreshEnrollmentFlows();
-
-        // No eligible flows exist, so there's nothing to pick: fall back to creating one.
-        if (!this.enrollmentFlows.length) {
-            this.noEligibleFlows = true;
-            this.mode = InvitationWizardFlowMode.Create;
-            return;
-        }
 
         // If there's exactly one eligible flow, skip this step so the user goes
         // straight to the invitation details. Drop ourselves from the step list
@@ -284,14 +278,22 @@ export class InvitationWizardFlowStep extends WizardPage<InvitationWizardState> 
                 this.host.steps = this.host.steps.filter((s) => s !== currentSlot);
             }
         }
+
+        // No eligible flows exist, so there's nothing to pick: fall back to creating one.
+        if (!this.enrollmentFlows.length) {
+            this.noEligibleFlows = true;
+            this.flowMode = InvitationWizardFlowMode.Create;
+
+            return;
+        }
     };
 
     public override nextCallback = async (): Promise<boolean> => {
         const { state } = this.host;
 
-        state.flowMode = this.mode;
+        state.flowMode = this.flowMode;
 
-        if (this.mode === InvitationWizardFlowMode.Existing) {
+        if (this.flowMode === InvitationWizardFlowMode.Existing) {
             const pk = this.resolveExistingFlowPk();
 
             if (!pk) return false;
@@ -395,7 +397,7 @@ export class InvitationWizardFlowStep extends WizardPage<InvitationWizardState> 
             </div>`;
         }
 
-        if (this.mode === InvitationWizardFlowMode.Existing) {
+        if (this.flowMode === InvitationWizardFlowMode.Existing) {
             return html`<ak-invitation-wizard-flow-step-existing-flow-form
                 .enrollmentFlows=${this.enrollmentFlows}
                 ${ref(this.formRef)}
