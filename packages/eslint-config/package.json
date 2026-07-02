@@ -45,8 +45,8 @@
         "eslint-plugin-wc": "^3.1.0"
     },
     "devDependencies": {
-        "@goauthentik/prettier-config": "../prettier-config",
-        "@goauthentik/tsconfig": "../tsconfig",
+        "@goauthentik/prettier-config": "link:../prettier-config",
+        "@goauthentik/tsconfig": "link:../tsconfig",
         "@types/eslint": "^9.6.1",
         "@types/node": "^25.7.0",
         "typescript": "^6.0.3",
@@ -64,8 +64,7 @@
         "out/**/*"
     ],
     "engines": {
-        "node": ">=24",
-        "npm": ">=11.14.1"
+        "node": ">=24"
     },
     "devEngines": {
         "runtime": {
@@ -74,26 +73,12 @@
             "onFail": "warn"
         },
         "packageManager": {
-            "name": "npm",
-            "version": ">=11.14.1",
+            "name": "pnpm",
+            "version": ">=11.5.1",
             "onFail": "warn"
         }
     },
     "prettier": "@goauthentik/prettier-config",
-    "overrides": {
-        "@typescript-eslint/eslint-plugin": {
-            "typescript": "$typescript"
-        },
-        "@typescript-eslint/parser": {
-            "typescript": "$typescript"
-        },
-        "format-imports": {
-            "eslint": "$eslint"
-        },
-        "typescript-eslint": {
-            "typescript": "$typescript"
-        }
-    },
     "peerDependenciesMeta": {
         "react": {
             "optional": true
