@@ -105,14 +105,14 @@ export const SERVER_VERSION = "0.1.0";
 
 - [ ] **Step 4: Install deps and run the test**
 
-Run: `npm install` (from repo root — installs the new workspace)
+Run: `pnpm install` (from repo root — installs the new workspace)
 Run: `node --test mcp-servers/code-mode/src/version.test.mjs`
 Expected: PASS (1 test).
 
 - [ ] **Step 5: Commit**
 
 ```bash
-git add mcp-servers/code-mode/package.json mcp-servers/code-mode/tsconfig.json mcp-servers/code-mode/src/version.mjs mcp-servers/code-mode/src/version.test.mjs package-lock.json
+git add mcp-servers/code-mode/package.json mcp-servers/code-mode/tsconfig.json mcp-servers/code-mode/src/version.mjs mcp-servers/code-mode/src/version.test.mjs pnpm-lock.yaml
 git commit -m "feat(code-mode): scaffold MCP server package"
 ```
 

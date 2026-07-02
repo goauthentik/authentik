@@ -1,5 +1,7 @@
 ---
 title: Sources
+sidebar_position: 5
+sidebar_label: "Federated and Social Sources"
 ---
 
 Sources allow you to connect authentik to an external user directory. Sources can also be used with social login providers such as Facebook, X, or GitHub.
