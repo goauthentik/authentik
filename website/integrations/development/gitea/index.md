@@ -134,10 +134,12 @@ For this to function, the Gitea `ENABLE_AUTO_REGISTRATION: true` variable must b
 3. Set the following configurations:
     - **Additional Scopes**: `email profile gitea`
     - **Required Claim Name**: `gitea`
-    - **Claim name providing group names for this source.** (Optional): `gitea`
-    - **Group Claim value for administrator users.** (Optional - requires claim name to be set): `admin`
-    - **Group Claim value for restricted users.** (Optional - requires claim name to be set): `restricted`
-4. Click **Update Authentication Source**.
+    - **Claim name providing group names for this source. (Optional)**: `gitea`
+    - **Group Claim value for administrator users. (Optional - requires claim name to be set)**: `admin`
+    - **Group Claim value for restricted users. (Optional - requires claim name to be set)**: `restricted`
+4. (Optional) It is possible to assign users to Organizational teams based upon their group. For example, members of the group `admin` could be made owners of the `Acme` group in this way:
+    - **Map claimed groups to Organization teams.**: `{"admin":{"Acme":["Owners"]}}`
+5. Click **Update Authentication Source**.
 
 :::info
 Users who are assigned none of the defined entitlements will be denied login access.

@@ -37,8 +37,8 @@
     },
     "devDependencies": {
         "@eslint/js": "^9.39.3",
-        "@goauthentik/eslint-config": "../eslint-config",
-        "@goauthentik/tsconfig": "../tsconfig",
+        "@goauthentik/eslint-config": "link:../eslint-config",
+        "@goauthentik/tsconfig": "link:../tsconfig",
         "@types/node": "^25.7.0",
         "eslint": "^9.39.3",
         "prettier": "^3.8.3",
@@ -56,8 +56,7 @@
         "out/**/*"
     ],
     "engines": {
-        "node": ">=24",
-        "npm": ">=11.14.1"
+        "node": ">=24"
     },
     "devEngines": {
         "runtime": {
@@ -66,26 +65,12 @@
             "onFail": "warn"
         },
         "packageManager": {
-            "name": "npm",
-            "version": ">=11.14.1",
+            "name": "pnpm",
+            "version": ">=11.5.1",
             "onFail": "warn"
         }
     },
     "prettier": "./index.js",
-    "overrides": {
-        "@typescript-eslint/eslint-plugin": {
-            "typescript": "$typescript"
-        },
-        "@typescript-eslint/parser": {
-            "typescript": "$typescript"
-        },
-        "format-imports": {
-            "eslint": "$eslint"
-        },
-        "typescript-eslint": {
-            "typescript": "$typescript"
-        }
-    },
     "publishConfig": {
         "access": "public"
     }
