@@ -1,6 +1,7 @@
 ---
 title: Enterprise features
 description: "Features included in authentik Enterprise"
+sidebar_position: 2
 ---
 
 This page describes the Enterprise features that are available in the authentik [Enterprise plans](https://goauthentik.io/pricing/).

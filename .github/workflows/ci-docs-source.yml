@@ -27,6 +27,4 @@ jobs:
         env:
           NETLIFY_SITE_ID: eb246b7b-1d83-4f69-89f7-01a936b4ca59
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
-        run: |
-          npm install -g netlify-cli
-          netlify deploy --dir=source_docs --prod
+        run: pnpm dlx netlify-cli deploy --dir=source_docs --prod

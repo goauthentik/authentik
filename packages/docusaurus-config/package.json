@@ -33,19 +33,19 @@
         "@docusaurus/theme-common": "^3.10.0",
         "@docusaurus/theme-search-algolia": "^3.10.0",
         "@docusaurus/types": "^3.10.0",
-        "@eslint/js": "^9.39.3",
-        "@goauthentik/eslint-config": "../eslint-config",
-        "@goauthentik/prettier-config": "../prettier-config",
-        "@goauthentik/tsconfig": "../tsconfig",
-        "@types/node": "^25.7.0",
+        "@eslint/js": "^10.0.1",
+        "@goauthentik/eslint-config": "link:../eslint-config",
+        "@goauthentik/prettier-config": "link:../prettier-config",
+        "@goauthentik/tsconfig": "link:../tsconfig",
+        "@types/node": "^25.9.4",
         "@types/react": "^19.2.14",
         "@types/react-dom": "^19.2.3",
-        "eslint": "^9.39.3",
+        "eslint": "^10.5.0",
         "pino": "^10.3.1",
         "prettier": "^3.8.3",
         "prettier-plugin-packagejson": "^3.0.2",
         "typescript": "^6.0.3",
-        "typescript-eslint": "^8.59.3"
+        "typescript-eslint": "^8.62.0"
     },
     "peerDependencies": {
         "@docusaurus/theme-common": "^3.10.1",
@@ -65,8 +65,7 @@
         "out/**/*"
     ],
     "engines": {
-        "node": ">=24",
-        "npm": ">=11.14.1"
+        "node": ">=24"
     },
     "devEngines": {
         "runtime": {
@@ -75,23 +74,12 @@
             "version": ">=24"
         },
         "packageManager": {
-            "name": "npm",
-            "version": ">=11.14.1",
+            "name": "pnpm",
+            "version": ">=11.5.1",
             "onFail": "warn"
         }
     },
     "prettier": "@goauthentik/prettier-config",
-    "overrides": {
-        "@typescript-eslint/eslint-plugin": {
-            "typescript": "$typescript"
-        },
-        "@typescript-eslint/parser": {
-            "typescript": "$typescript"
-        },
-        "typescript-eslint": {
-            "typescript": "$typescript"
-        }
-    },
     "peerDependenciesMeta": {
         "@docusaurus/theme-search-algolia": {
             "optional": true

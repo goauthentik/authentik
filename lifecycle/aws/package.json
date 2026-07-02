@@ -12,19 +12,14 @@
     },
     "engines": {
         "node": ">=24",
-        "npm": ">=11.14.1"
+        "pnpm": ">=11.9.0"
     },
     "devEngines": {
         "runtime": {
             "name": "node",
             "onFail": "warn",
             "version": ">=24"
-        },
-        "packageManager": {
-            "name": "npm",
-            "version": ">=11.14.1",
-            "onFail": "warn"
         }
     },
-    "packageManager": "npm@11.14.1+sha512.6a8a4d67478497a2dbc6815cad72e64c43f33413717e242756047d466241ab39bee61e691683a64658e94496ec5f1a1c05e4a5ec62dcc773280dfd949443a367"
+    "packageManager": "pnpm@11.9.0+sha512.bd682d5d03fe525ef7c9fd6780c6884d1e756ac4c9c9fe00c538782824310dcf90e3ddc4f53835f06dfaebd5085e41855e0bcbb3b60de2ac5bbab89e5036f03b"
 }
