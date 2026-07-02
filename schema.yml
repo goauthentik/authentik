@@ -38139,6 +38139,12 @@ components:
         failure_result:
           type: boolean
           description: Result if the Policy execution fails.
+        expires:
+          type: string
+          format: date-time
+          nullable: true
+        expiring:
+          type: boolean
         is_primary:
           type: boolean
         connector:
@@ -38194,6 +38200,12 @@ components:
         failure_result:
           type: boolean
           description: Result if the Policy execution fails.
+        expires:
+          type: string
+          format: date-time
+          nullable: true
+        expiring:
+          type: boolean
         is_primary:
           type: boolean
       required:
@@ -48886,6 +48898,12 @@ components:
         failure_result:
           type: boolean
           description: Result if the Policy execution fails.
+        expires:
+          type: string
+          format: date-time
+          nullable: true
+        expiring:
+          type: boolean
         is_primary:
           type: boolean
     PatchedDockerServiceConnectionRequest:
@@ -52726,7 +52744,17 @@ components:
         failure_result:
           type: boolean
           description: Result if the Policy execution fails.
+        expires:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        expiring:
+          type: boolean
+          readOnly: true
       required:
+      - expires
+      - expiring
       - group_obj
       - order
       - pk

@@ -1,21 +1,21 @@
-import '../../components/ak-text-input';
-import '../../elements/CodeMirror/ak-codemirror';
+import "../../components/ak-text-input";
+import "../../elements/CodeMirror/ak-codemirror";
+import "../../components/ak-radio-input";
 
-import { aki } from '#common/api/client';
+import { aki } from "#common/api/client";
 
 import { Form } from "#elements/forms/Form";
-import { WithSession } from '#elements/mixins/session';
-import { SlottedTemplateResult } from '#elements/types';
+import { WithSession } from "#elements/mixins/session";
+import { SlottedTemplateResult } from "#elements/types";
 
-import { GrantRequest, GrantRequestFulfillRequest, PamApi, RequestStatus } from '@goauthentik/api';
+import { GrantRequest, GrantRequestFulfillRequest, PamApi, RequestStatus } from "@goauthentik/api";
 
-import YAML from 'yaml';
+import YAML from "yaml";
 
-import { msg } from '@lit/localize';
-import { html } from 'lit-html';
-import { ifDefined } from 'lit-html/directives/if-defined.js';
-import { customElement, property } from 'lit/decorators.js';
-import "../../components/ak-radio-input";
+import { msg } from "@lit/localize";
+import { html } from "lit-html";
+import { ifDefined } from "lit-html/directives/if-defined.js";
+import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-access-request-fulfill-form")
 export class AccessRequestFulfillForm extends WithSession(Form<GrantRequestFulfillRequest>) {
@@ -63,11 +63,7 @@ export class AccessRequestFulfillForm extends WithSession(Form<GrantRequestFulfi
                 ]}
             ></ak-radio-input>
             <ak-form-element-horizontal label=${msg("Data")} name="data">
-                <ak-codemirror
-                    mode="yaml"
-                    value="${YAML.stringify({})}"
-                >
-                </ak-codemirror>
+                <ak-codemirror mode="yaml" value="${YAML.stringify({})}"> </ak-codemirror>
             </ak-form-element-horizontal>
         `;
     }

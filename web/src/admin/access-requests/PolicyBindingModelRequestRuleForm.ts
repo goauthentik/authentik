@@ -1,16 +1,18 @@
-import "#components/ak-text-input";
+import '#components/ak-text-input';
 
-import { aki } from "#common/api/client";
+import { aki } from '#common/api/client';
 
-import { ModelForm } from "#elements/forms/ModelForm";
-import { SlottedTemplateResult } from "#elements/types";
+import { ModelForm } from '#elements/forms/ModelForm';
+import { SlottedTemplateResult } from '#elements/types';
 
-import { PamApi, PolicyBindingModelRequestRule } from "@goauthentik/api";
+import { PamApi, PolicyBindingModelRequestRule } from '@goauthentik/api';
 
-import { msg } from "@lit/localize";
-import { html } from "lit-html";
-import { ifDefined } from "lit-html/directives/if-defined.js";
-import { customElement, property } from "lit/decorators.js";
+import { msg } from '@lit/localize';
+import { html } from 'lit-html';
+import { ifDefined } from 'lit-html/directives/if-defined.js';
+import { customElement, property } from 'lit/decorators.js';
+import "../../components/ak-number-input";
+import "../../components/ak-switch-input";
 
 @customElement("ak-pbm-request-rule-form")
 export class PolicyBindingModelRequestRuleForm extends ModelForm<
@@ -46,12 +48,33 @@ export class PolicyBindingModelRequestRuleForm extends ModelForm<
 
     protected renderForm(): SlottedTemplateResult {
         return html`<ak-text-input
-            label=${msg("Rule Name")}
-            name="name"
-            required
-            value="${ifDefined(this.instance?.name)}"
-            placeholder=${msg("Type a name for this lifecycle rule...")}
-        ></ak-text-input>`;
+                label=${msg("Rule Name")}
+                name="name"
+                required
+                value="${ifDefined(this.instance?.name)}"
+                placeholder=${msg("Type a name for this lifecycle rule...")}
+            ></ak-text-input>
+            <ak-number-input
+                label=${msg("Minimum reviewers")}
+                min=${1}
+                name="minReviewers"
+                value="${this.instance?.minReviewers ?? 1}"
+                help=${msg(
+                    "Number of users from the selected reviewer groups that must approve the review.",
+                )}
+            ></ak-number-input>
+            <ak-switch-input
+                name="minReviewersIsPerGroup"
+                ?checked=${this.instance?.minReviewersIsPerGroup ?? false}
+                label=${msg("Minimum reviewers is per-group")}
+                .help=${msg(
+                    html`If checked, approving a review will require at least that many users from
+                        <em>each</em> of the selected groups. When disabled, the value is a total
+                        across all groups.`,
+                )}
+            >
+            </ak-switch-input>
+`;
     }
 }
 

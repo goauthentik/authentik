@@ -1,5 +1,6 @@
 import Styles from "../LibraryPage/ak-library-impl.css";
 
+import { aki } from "#common/api/client";
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { PaginatedResponse } from "#common/api/responses";
 
@@ -15,7 +16,6 @@ import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
-import { aki } from "#common/api/client";
 
 @customElement("ak-discovery")
 export class DiscoverPage extends AKElement {
@@ -27,7 +27,9 @@ export class DiscoverPage extends AKElement {
     public override connectedCallback(): void {
         super.connectedCallback();
 
-        aki(CoreApi).coreApplicationsRequestableList({}).then(apps => this.apps = apps);
+        aki(CoreApi)
+            .coreApplicationsRequestableList({})
+            .then((apps) => (this.apps = apps));
     }
 
     render() {

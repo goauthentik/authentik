@@ -1,20 +1,21 @@
-import '../../components/ak-status-label';
+import "../../components/ak-status-label";
 
-import { aki } from '#common/api/client';
-import { PaginatedResponse } from '#common/api/responses';
+import { aki } from "#common/api/client";
+import { PaginatedResponse } from "#common/api/responses";
 
-import { modalInvoker } from '#elements/dialogs';
-import { RowType, Timestamp } from '#elements/table/Table';
-import { TableColumn } from '#elements/table/TableColumn';
-import { TablePage } from '#elements/table/TablePage';
-import { SlottedTemplateResult } from '#elements/types';
+import { modalInvoker } from "#elements/dialogs";
+import { RowType, Timestamp } from "#elements/table/Table";
+import { TableColumn } from "#elements/table/TableColumn";
+import { TablePage } from "#elements/table/TablePage";
+import { SlottedTemplateResult } from "#elements/types";
 
-import { GrantRequest, PamApi, RequestStatus } from '@goauthentik/api';
+import { AccessRequestFulfillForm } from "#admin/access-requests/AccessRequestFulfillForm";
 
-import { msg } from '@lit/localize';
-import { html } from 'lit-html';
-import { customElement } from 'lit/decorators.js';
-import { AccessRequestFulfillForm } from '#admin/access-requests/AccessRequestFulfillForm';
+import { GrantRequest, PamApi, RequestStatus } from "@goauthentik/api";
+
+import { msg } from "@lit/localize";
+import { html } from "lit-html";
+import { customElement } from "lit/decorators.js";
 
 @customElement("ak-access-requests-list")
 export class AccessRequestListPage extends TablePage<GrantRequest> {
