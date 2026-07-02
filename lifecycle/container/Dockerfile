@@ -1,7 +1,11 @@
 # syntax=docker/dockerfile:1
 
+# Tag must track the root package.json `packageManager` version. ${BUILDPLATFORM}
+# keeps the binary's arch aligned with the builder stage on cross-arch builds.
+FROM --platform=${BUILDPLATFORM} ghcr.io/pnpm/pnpm:11.5.1@sha256:3cbdefab0d887dee497ddc8dfe6d871257317d69520fe30f9ccec0a84bde6e89 AS pnpm
+
 # Stage: Build webui
-FROM --platform=${BUILDPLATFORM} docker.io/library/node:26-trixie-slim@sha256:f9b8bd6c62fcd007c08ce2bb2907485b624b968fd76094445822e0ec14002cf0 AS node-builder
+FROM --platform=${BUILDPLATFORM} docker.io/library/node:26-trixie-slim@sha256:a1d9d671994fc2d26e297ac56b4b1522a8bc7fa71c43b14cd1b1fe6c5116f7dc AS node-builder
 
 ARG GIT_BUILD_HASH
 ENV GIT_BUILD_HASH=$GIT_BUILD_HASH
@@ -9,39 +13,41 @@ ENV NODE_ENV=production
 
 WORKDIR /work
 
+COPY --from=pnpm /opt/pnpm /opt/pnpm
+ENV PATH="/opt/pnpm:${PATH}"
+
 RUN --mount=type=bind,target=/work/package.json,src=./package.json \
-    --mount=type=bind,target=/work/package-lock.json,src=./package-lock.json \
     --mount=type=bind,target=/work/web/package.json,src=./web/package.json \
-    --mount=type=bind,target=/work/web/package-lock.json,src=./web/package-lock.json \
+    --mount=type=bind,target=/work/web/pnpm-lock.yaml,src=./web/pnpm-lock.yaml \
     --mount=type=bind,target=/work/scripts/node/,src=./scripts/node/ \
     --mount=type=bind,target=/work/packages/logger-js/,src=./packages/logger-js/ \
-    node ./scripts/node/setup-corepack.mjs --force && \
     node ./scripts/node/lint-runtime.mjs ./web
 
 WORKDIR /work/web
 
-# These files need to be copied and cannot be mounted as `npm ci` will build the client's typescript
+# These files need to be copied and cannot be mounted as `pnpm install` will build the client's typescript
 COPY ./packages /work/packages
 COPY ./web/packages /work/web/packages
 
 RUN --mount=type=bind,target=/work/.npmrc,src=./.npmrc \
     --mount=type=bind,target=/work/web/package.json,src=./web/package.json \
-    --mount=type=bind,target=/work/web/package-lock.json,src=./web/package-lock.json \
+    --mount=type=bind,target=/work/web/pnpm-lock.yaml,src=./web/pnpm-lock.yaml \
+    --mount=type=bind,target=/work/web/pnpm-workspace.yaml,src=./web/pnpm-workspace.yaml \
     --mount=type=bind,target=/work/web/packages/sfe/package.json,src=./web/packages/sfe/package.json \
     --mount=type=bind,target=/work/web/scripts,src=./web/scripts \
-    --mount=type=cache,id=npm-ak,sharing=shared,target=/root/.npm \
-    corepack npm ci
+    --mount=type=cache,id=pnpm-ak,sharing=shared,target=/root/.local/share/pnpm/store \
+    pnpm install --frozen-lockfile
 
 COPY ./package.json /work
 COPY ./web /work/web/
 # TODO: Update this after moving website to docs
 COPY ./website /work/website/
 
-RUN npm run build && \
-    npm run build:sfe
+RUN pnpm run build && \
+    pnpm run build:sfe
 
 # Stage: Build go proxy
-FROM --platform=${BUILDPLATFORM} docker.io/library/golang:1.26.4-trixie@sha256:76a29248dedcd75870e95cbd90cc8cb356db082404ac7d3a5803f276c3ba79c9 AS go-builder
+FROM --platform=${BUILDPLATFORM} docker.io/library/golang:1.26.4-trixie@sha256:68b7145ec43d1820b9a56704554b53d1520aa2a15cb5233e374188a31b2a1bce AS go-builder
 
 ARG TARGETOS
 ARG TARGETARCH
@@ -116,9 +122,9 @@ RUN --mount=type=bind,target=rust-toolchain.toml,src=rust-toolchain.toml \
 RUN cat /root/.rustup/settings.toml
 
 # Stage: Download uv
-FROM ghcr.io/astral-sh/uv:0.11.24@sha256:99ea34acedc870ba4ad11a1f540a1c04267c9f30aadc465a94406f52dfda2c36 AS uv
+FROM ghcr.io/astral-sh/uv:0.11.26@sha256:3d868e555f8f1dbc324afa005066cd11e1053fc4743b9808ca8025283e65efa5 AS uv
 # Stage: Base python image
-FROM ghcr.io/goauthentik/fips-python:3.14.6-slim-trixie-fips@sha256:fe20a6822005d767948a7580c2ae28fa4b4b4cd893a4382f5e093459b18980c5 AS python-base
+FROM ghcr.io/goauthentik/fips-python:3.14.6-slim-trixie-fips@sha256:3b0f3fbe25429bc3974177eb566691f4aa0fa6f644ee2b5947fd6451378047db AS python-base
 
 ENV VENV_PATH="/ak-root/.venv" \
     PATH="/lifecycle:/ak-root/.venv/bin:$PATH" \

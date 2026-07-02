@@ -33,13 +33,23 @@ export class RuleForm extends ModelForm<NotificationRule, string> {
     public static verboseName = msg("Notification Rule");
     public static verboseNamePlural = msg("Notification Rules");
 
-    eventTransports?: PaginatedNotificationTransportList;
+    protected endpoints = {
+        load: (pbmUuid: string) =>
+            aki(EventsApi).eventsRulesRetrieve({
+                pbmUuid,
+            }),
+        create: (notificationRuleRequest: NotificationRule) =>
+            aki(EventsApi).eventsRulesCreate({
+                notificationRuleRequest,
+            }),
+        update: (pbmUuid: string, notificationRuleRequest: NotificationRule) =>
+            aki(EventsApi).eventsRulesUpdate({
+                pbmUuid,
+                notificationRuleRequest,
+            }),
+    };
 
-    loadInstance(pk: string): Promise<NotificationRule> {
-        return aki(EventsApi).eventsRulesRetrieve({
-            pbmUuid: pk,
-        });
-    }
+    eventTransports?: PaginatedNotificationTransportList;
 
     async load(): Promise<void> {
         this.eventTransports = await aki(EventsApi).eventsTransportsList({
@@ -51,18 +61,6 @@ export class RuleForm extends ModelForm<NotificationRule, string> {
         return this.instance
             ? msg("Successfully updated rule.")
             : msg("Successfully created rule.");
-    }
-
-    async send(data: NotificationRule): Promise<NotificationRule> {
-        if (this.instance) {
-            return aki(EventsApi).eventsRulesUpdate({
-                pbmUuid: this.instance.pk || "",
-                notificationRuleRequest: data,
-            });
-        }
-        return aki(EventsApi).eventsRulesCreate({
-            notificationRuleRequest: data,
-        });
     }
 
     protected override renderForm(): TemplateResult {

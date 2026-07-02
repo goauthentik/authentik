@@ -25,10 +25,10 @@ function run_authentik {
         fi
         ;;
     healthcheck)
-        if [[ -x "$(command -v authentik-server)" ]]; then
-            echo authentik-server "$@"
+        if [[ -x "$(command -v authentik)" ]]; then
+            echo authentik "$@"
         else
-            echo go run ./cmd/server "$@"
+            echo cargo run -- "$@"
         fi
         ;;
     allinone | worker)

@@ -20,6 +20,7 @@ from rest_framework.validators import UniqueValidator
 from rest_framework.viewsets import ModelViewSet
 
 from authentik.brands.models import Brand
+from authentik.brands.utils import session_safe_mode
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import ModelSerializer, PassiveSerializer, ThemedUrlsSerializer
 from authentik.rbac.filters import SecretKeyFilter
@@ -129,6 +130,15 @@ class CurrentBrandSerializer(PassiveSerializer):
         for flag in Flag.available(visibility="public"):
             values[flag().key] = flag.get()
         return values
+
+    def to_representation(self, instance: Brand) -> dict[str, Any]:
+        data = super().to_representation(instance)
+        # Suppress custom CSS for safe-mode sessions (e.g. recovery links) so that
+        # misconfigured branding cannot prevent a user from reaching the UI to fix it.
+        request = self.context.get("request")
+        if request is not None and session_safe_mode(request):
+            data["branding_custom_css"] = ""
+        return data
 
 
 class BrandViewSet(UsedByMixin, ModelViewSet):
