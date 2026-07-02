@@ -1,10 +1,13 @@
 """SCIM Application Policies tests"""
 
+from unittest.mock import patch
+
 from django.test import TestCase
 
 from authentik.blueprints.tests import apply_blueprint
 from authentik.core.models import Application, Group, User
 from authentik.lib.generators import generate_id
+from authentik.lib.sync.outgoing.signals import sync_outgoing_inhibit_dispatch
 from authentik.policies.models import PolicyBinding
 from authentik.providers.scim.models import SCIMMapping, SCIMProvider
 from authentik.tenants.models import Tenant
@@ -88,3 +91,44 @@ class SCIMApplicationPoliciesTests(TestCase):
             set([self.users[1].pk, self.users[2].pk, self.users[4].pk]),
             set(user_qs.values_list("pk", flat=True)),
         )
+
+    def test_group_policy_member_add_dispatches_sync(self):
+        """Adding a user to a policy-bound group triggers a full SCIM sync"""
+        PolicyBinding.objects.create(target=self.app, group=self.group1, order=0)
+
+        with patch("authentik.providers.scim.signals.scim_sync.send_with_options") as sync:
+            self.users[3].groups.add(self.group1)
+
+        sync.assert_called_once()
+        self.assertEqual(sync.call_args.kwargs["args"], (self.provider.pk,))
+
+    def test_group_policy_member_remove_dispatches_sync(self):
+        """Removing a user from a policy-bound group triggers SCIM cleanup"""
+        PolicyBinding.objects.create(target=self.app, group=self.group1, order=0)
+
+        with patch("authentik.providers.scim.signals.scim_sync.send_with_options") as sync:
+            self.group1.users.remove(self.users[1])
+
+        sync.assert_called_once()
+        self.assertEqual(sync.call_args.kwargs["args"], (self.provider.pk,))
+
+    def test_unbound_group_member_change_does_not_dispatch_sync(self):
+        """Changing a group outside application policy bindings does not sync"""
+        PolicyBinding.objects.create(target=self.app, group=self.group1, order=0)
+
+        with patch("authentik.providers.scim.signals.scim_sync.send_with_options") as sync:
+            self.users[3].groups.add(self.group3)
+
+        sync.assert_not_called()
+
+    def test_inhibited_member_change_does_not_dispatch_sync(self):
+        """Bulk sync contexts can inhibit application-policy sync dispatch"""
+        PolicyBinding.objects.create(target=self.app, group=self.group1, order=0)
+
+        with (
+            sync_outgoing_inhibit_dispatch(),
+            patch("authentik.providers.scim.signals.scim_sync.send_with_options") as sync,
+        ):
+            self.users[3].groups.add(self.group1)
+
+        sync.assert_not_called()
