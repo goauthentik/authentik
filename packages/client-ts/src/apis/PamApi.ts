@@ -17,7 +17,10 @@ import {
     type GrantRequestCreateRequest,
     GrantRequestCreateRequestToJSON,
 } from "../models/GrantRequestCreateRequest";
-import { type GrantRequestRequest, GrantRequestRequestToJSON } from "../models/GrantRequestRequest";
+import {
+    type GrantRequestFulfillRequest,
+    GrantRequestFulfillRequestToJSON,
+} from "../models/GrantRequestFulfillRequest";
 import { type Link, LinkFromJSON } from "../models/Link";
 import {
     type PaginatedGrantRequestList,
@@ -56,7 +59,7 @@ export interface PamGrantRequestsDestroyRequest {
 
 export interface PamGrantRequestsFulfillCreateRequest {
     uuid: string;
-    grantRequestRequest?: GrantRequestRequest;
+    grantRequestFulfillRequest: GrantRequestFulfillRequest;
 }
 
 export interface PamGrantRequestsListRequest {
@@ -252,6 +255,13 @@ export class PamApi extends runtime.BaseAPI {
             );
         }
 
+        if (requestParameters["grantRequestFulfillRequest"] == null) {
+            throw new runtime.RequiredError(
+                "grantRequestFulfillRequest",
+                'Required parameter "grantRequestFulfillRequest" was null or undefined when calling pamGrantRequestsFulfillCreate().',
+            );
+        }
+
         const queryParameters: any = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -275,7 +285,7 @@ export class PamApi extends runtime.BaseAPI {
             method: "POST",
             headers: headerParameters,
             query: queryParameters,
-            body: GrantRequestRequestToJSON(requestParameters["grantRequestRequest"]),
+            body: GrantRequestFulfillRequestToJSON(requestParameters["grantRequestFulfillRequest"]),
         };
     }
 
@@ -284,14 +294,12 @@ export class PamApi extends runtime.BaseAPI {
     async pamGrantRequestsFulfillCreateRaw(
         requestParameters: PamGrantRequestsFulfillCreateRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<GrantRequest>> {
+    ): Promise<runtime.ApiResponse<void>> {
         const requestOptions =
             await this.pamGrantRequestsFulfillCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            GrantRequestFromJSON(jsonValue),
-        );
+        return new runtime.VoidApiResponse(response);
     }
 
     /**
@@ -299,12 +307,8 @@ export class PamApi extends runtime.BaseAPI {
     async pamGrantRequestsFulfillCreate(
         requestParameters: PamGrantRequestsFulfillCreateRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<GrantRequest> {
-        const response = await this.pamGrantRequestsFulfillCreateRaw(
-            requestParameters,
-            initOverrides,
-        );
-        return await response.value();
+    ): Promise<void> {
+        await this.pamGrantRequestsFulfillCreateRaw(requestParameters, initOverrides);
     }
 
     /**

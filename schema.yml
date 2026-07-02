@@ -11165,16 +11165,13 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/GrantRequestRequest'
+              $ref: '#/components/schemas/GrantRequestFulfillRequest'
+        required: true
       security:
       - authentik: []
       responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GrantRequest'
-          description: ''
+        '204':
+          description: Request fulfilled
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
@@ -40866,24 +40863,18 @@ components:
             format: uuid
       required:
       - pbms
-    GrantRequestRequest:
+    GrantRequestFulfillRequest:
       type: object
+      description: Base serializer class which doesn't implement create/update methods
       properties:
-        requester_data:
+        data:
           type: object
           additionalProperties: {}
-        fulfiller_data:
-          type: object
-          additionalProperties: {}
-        expires:
-          type: string
-          format: date-time
-          nullable: true
         status:
           $ref: '#/components/schemas/RequestStatus'
-        uuid:
-          type: string
-          format: uuid
+      required:
+      - data
+      - status
     GrantTypesEnum:
       enum:
       - authorization_code

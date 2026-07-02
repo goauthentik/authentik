@@ -1,9 +1,11 @@
+from typing import Any
 from uuid import uuid4
 
 from django.db import models, transaction
 from rest_framework.serializers import Serializer
 
 from authentik.core.models import CreatedUpdatedModel, ExpiringModel, User
+from authentik.flows.models import Flow
 from authentik.lib.models import SerializerModel
 from authentik.policies.models import PolicyBinding, PolicyBindingModel
 
@@ -70,8 +72,12 @@ class GrantRequest(SerializerModel, ExpiringModel, CreatedUpdatedModel):
         return GrantRequestSerializer
 
     @transaction.atomic
-    def fulfill(self, user: User):
+    def fulfill(self, status: RequestStatus, user: User, data: dict[str, Any]):
+        if self.status != RequestStatus.CREATED:
+            return
         self.fulfilled_by = user
+        self.fulfiller_data = data
+        self.status = status
         self.save()
         if self.status != RequestStatus.APPROVED:
             return
@@ -81,6 +87,7 @@ class GrantRequest(SerializerModel, ExpiringModel, CreatedUpdatedModel):
                 target=target.target,
                 expiring=self.expiring,
                 expires=self.expires,
+                order=1000,
             )
             target.binding = target_binding
             target.save()

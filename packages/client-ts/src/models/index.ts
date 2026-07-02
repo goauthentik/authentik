@@ -225,7 +225,7 @@ export * from "./GoogleWorkspaceProviderUser";
 export * from "./GoogleWorkspaceProviderUserRequest";
 export * from "./GrantRequest";
 export * from "./GrantRequestCreateRequest";
-export * from "./GrantRequestRequest";
+export * from "./GrantRequestFulfillRequest";
 export * from "./GrantTypesEnum";
 export * from "./Group";
 export * from "./GroupKerberosSourceConnection";

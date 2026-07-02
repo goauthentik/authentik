@@ -1,5 +1,6 @@
-from drf_spectacular.utils import extend_schema
+from drf_spectacular.utils import OpenApiResponse, extend_schema
 from rest_framework.decorators import action
+from rest_framework.fields import ChoiceField
 from rest_framework.mixins import (
     DestroyModelMixin,
     ListModelMixin,
@@ -12,10 +13,15 @@ from rest_framework.viewsets import GenericViewSet
 
 from authentik.api.validation import validate
 from authentik.core.api.groups import PartialUserSerializer
-from authentik.core.api.utils import LinkSerializer, ModelSerializer, PassiveSerializer
+from authentik.core.api.utils import (
+    JSONDictField,
+    LinkSerializer,
+    ModelSerializer,
+    PassiveSerializer,
+)
 from authentik.flows.models import Flow, in_memory_stage
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlanner
-from authentik.pam.models import GrantRequest
+from authentik.pam.models import GrantRequest, RequestStatus
 from authentik.pam.stage import PLAN_CONTEXT_GRANT_REQUESTED_PBMS, GrantRequestFinalStageView
 from authentik.policies.models import PolicyBindingModel
 
@@ -46,6 +52,10 @@ class GrantRequestViewSet(RetrieveModelMixin, DestroyModelMixin, ListModelMixin,
     class GrantRequestCreateSerializer(PassiveSerializer):
         pbms = PrimaryKeyRelatedField(queryset=PolicyBindingModel.objects.all(), many=True)
 
+    class GrantRequestFulfillSerializer(PassiveSerializer):
+        data = JSONDictField()
+        status = ChoiceField(choices=RequestStatus.choices)
+
     @extend_schema(request=GrantRequestCreateSerializer, responses={200: LinkSerializer})
     @validate(GrantRequestCreateSerializer)
     def create(self, request: Request, body: GrantRequestCreateSerializer) -> Response:
@@ -63,9 +73,18 @@ class GrantRequestViewSet(RetrieveModelMixin, DestroyModelMixin, ListModelMixin,
         plan.append_stage(in_memory_stage(GrantRequestFinalStageView))
         return Response({"link": plan.to_redirect(request, flow).url})
 
+    @extend_schema(
+        request=GrantRequestFulfillSerializer,
+        responses={
+            204: OpenApiResponse(description="Request fulfilled"),
+        },
+    )
     @action(["POST"], detail=True)
-    def fulfill(self, request: Request, *args, **kwargs):
+    @validate(GrantRequestFulfillSerializer)
+    def fulfill(self, request: Request, body: GrantRequestFulfillSerializer, *args, **kwargs):
         grant: GrantRequest = self.get_object()
         # TODO: Check if this user can fulfill this grant
-        grant.fulfill(request.user)
+        grant.fulfill(
+            body.validated_data.get("status"), request.user, data=body.validated_data.get("data")
+        )
         return Response(status=204)

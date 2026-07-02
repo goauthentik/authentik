@@ -1,18 +1,20 @@
-import "../../components/ak-status-label";
+import '../../components/ak-status-label';
 
-import { aki } from "#common/api/client";
-import { PaginatedResponse } from "#common/api/responses";
+import { aki } from '#common/api/client';
+import { PaginatedResponse } from '#common/api/responses';
 
-import { RowType, Timestamp } from "#elements/table/Table";
-import { TableColumn } from "#elements/table/TableColumn";
-import { TablePage } from "#elements/table/TablePage";
-import { SlottedTemplateResult } from "#elements/types";
+import { modalInvoker } from '#elements/dialogs';
+import { RowType, Timestamp } from '#elements/table/Table';
+import { TableColumn } from '#elements/table/TableColumn';
+import { TablePage } from '#elements/table/TablePage';
+import { SlottedTemplateResult } from '#elements/types';
 
-import { GrantRequest, PamApi, RequestStatus } from "@goauthentik/api";
+import { GrantRequest, PamApi, RequestStatus } from '@goauthentik/api';
 
-import { msg } from "@lit/localize";
-import { html } from "lit-html";
-import { customElement } from "lit/decorators.js";
+import { msg } from '@lit/localize';
+import { html } from 'lit-html';
+import { customElement } from 'lit/decorators.js';
+import { AccessRequestFulfillForm } from '#admin/access-requests/AccessRequestFulfillForm';
 
 @customElement("ak-access-requests-list")
 export class AccessRequestListPage extends TablePage<GrantRequest> {
@@ -30,9 +32,10 @@ export class AccessRequestListPage extends TablePage<GrantRequest> {
         [msg("User"), "createdBy"],
         [msg("Created"), "created"],
         [msg("Status"), "status"],
+        [msg("Actions")],
     ];
     protected renderExpanded(item: GrantRequest): SlottedTemplateResult {
-        return html`${JSON.stringify(item.data)}<br>${item.targets}`;
+        return html`${JSON.stringify(item.requesterData)}<br />${item.targets}`;
     }
     protected row(item: GrantRequest): RowType[] {
         return [
@@ -47,6 +50,14 @@ export class AccessRequestListPage extends TablePage<GrantRequest> {
                 bad-label=${msg("Pending")}
                 type="info"
             ></ak-status-label>`,
+            html`<button
+                class="pf-c-button pf-m-secondary pf-m-block"
+                ${modalInvoker(AccessRequestFulfillForm, {
+                    request: item,
+                })}
+            >
+                ${msg("Edit")}
+            </button>`,
         ];
     }
 }
