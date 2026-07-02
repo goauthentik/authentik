@@ -11,7 +11,7 @@ dependencies = [
   "channels==4.3.2",
   "cryptography==48.0.1",
   "dacite==1.9.2",
-  "deepmerge==2.0",
+  "deepmerge==2.1.0",
   "defusedxml==0.7.1",
   "django-channels-postgres",
   "django-countries==9.0.0",

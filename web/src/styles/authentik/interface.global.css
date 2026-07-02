@@ -4,6 +4,8 @@
 @import "@patternfly/patternfly/base/patternfly-fa-icons.css";
 @import "@patternfly/patternfly/base/patternfly-pf-icons.css";
 @import "@patternfly/patternfly/components/Spinner/spinner.css";
+@import "@patternfly/patternfly/components/Banner/banner.css";
+@import "./components/Banner/banner.css";
 @import "#fonts/RedHat/faces.css";
 @import "./base/fonts.css";
 @import "./base/variables.css";
