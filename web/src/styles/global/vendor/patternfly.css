@@ -7,3 +7,5 @@
 @import "#styles/global/vendor/patternfly-fa-icons.css";
 @import "#styles/global/vendor/patternfly-pf-icons.css";
 @import "@patternfly/patternfly/components/Spinner/spinner.css";
+@import "@patternfly/patternfly/components/Banner/banner.css";
+@import "#styles/authentik/components/Banner/banner.css";

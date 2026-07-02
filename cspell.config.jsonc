@@ -206,22 +206,22 @@
         "\\w+l?ifying\\b",
         // PatternFly's grey label modifier is spelled the British way upstream.
         "pf-m-grey",
-        // External tool/path names that are spelled the British way upstream.
-        "lit-analyse",
-        "analyse-phase",
-        "SpellCheckerIgnoreInDocSetting",
-        "EncodedURI",
-        "Urls",
-        "href",
+        // Other terms we needed
+        "AKQL"
         "Base64",
+        "Email",
+        "EncodedURI",
+        "FOUC",  // Flash Of Unstyled Content
+        "HashStrings",
         "PublicKey",
         "RsaCert",
+        "SpellCheckerIgnoreInDocSetting",
         "SshRsa",
         "UnicodeRef",
-        "Email",
-        "FOUC",
-        "HashStrings",
-        "AKQL"
+        "Urls",
+        "analyse-phase",  // UK Spelling
+        "href",
+        "lit-analyse" // UK Spelling
     ],
     "languageSettings": [
         {
@@ -302,7 +302,8 @@
         "LICENSE", // License file
         ".gitignore", // Git ignore file
         ".gitattributes", // Git attributes file
-        "*-lock.{json,yaml}", // Lock files (NPM, Yarn, Pip, Cargo)
+        "*-lock.{json,yaml}", // Lock files (NPM, Yarn, Pnpm, Pip, Cargo)
+        "pnpm-workspace.yaml", // PNPM workspace + override config
         "CHANGELOG*.md", // Changelog files
         ".vscode/**", // VSCode configuration
         "out", // TypeScript type-checking output
