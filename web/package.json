@@ -133,10 +133,10 @@
         "@types/react-dom": "^19.2.3",
         "@typescript-eslint/eslint-plugin": "^8.62.0",
         "@typescript-eslint/parser": "^8.61.1",
-        "@typescript-eslint/utils": "^8.60.1",
+        "@typescript-eslint/utils": "^8.62.0",
         "@typescript/native-preview": "7.0.0-dev.20260602.1",
         "@vitest/browser": "^4.1.9",
-        "@vitest/browser-playwright": "^4.1.8",
+        "@vitest/browser-playwright": "^4.1.9",
         "@webcomponents/webcomponentsjs": "^2.8.0",
         "base64-js": "^1.5.1",
         "change-case": "^5.4.4",
@@ -183,7 +183,7 @@
         "remark-frontmatter": "^5.0.0",
         "remark-gfm": "^4.0.1",
         "remark-mdx-frontmatter": "^5.2.0",
-        "storybook": "^10.4.2",
+        "storybook": "^10.4.6",
         "style-mod": "^4.1.3",
         "stylelint": "^17.12.0",
         "trusted-types": "^2.0.0",
@@ -194,15 +194,15 @@
         "typescript-eslint": "^8.60.1",
         "unist-util-visit": "^5.1.0",
         "vite": "^8.0.16",
-        "vitest": "^4.1.8",
+        "vitest": "^4.1.9",
         "webcomponent-qr-code": "^1.3.0",
         "wireit": "^0.14.12",
         "yaml": "^2.9.0"
     },
     "optionalDependencies": {
-        "@esbuild/darwin-arm64": "^0.28.0",
-        "@esbuild/linux-arm64": "^0.28.0",
-        "@esbuild/linux-x64": "^0.28.0",
+        "@esbuild/darwin-arm64": "^0.28.1",
+        "@esbuild/linux-arm64": "^0.28.1",
+        "@esbuild/linux-x64": "^0.28.1",
         "@goauthentik/prettier-config-dev": "link:../packages/prettier-config",
         "@rollup/rollup-darwin-arm64": "^4.61.1",
         "@rollup/rollup-linux-arm64-gnu": "^4.61.1",
@@ -291,7 +291,7 @@
     },
     "engines": {
         "node": ">=24",
-        "pnpm": ">=11.5.1"
+        "pnpm": ">=11.9.0"
     },
     "devEngines": {
         "runtime": {
@@ -300,6 +300,6 @@
             "version": ">=24"
         }
     },
-    "packageManager": "pnpm@11.5.1+sha512.93f7b57422ea7068257235b4c16eb60762eb68e1dc23723199cc739043ea9be2c4143274a399d8c6defa2b1176226d9ca1c4b63482d6200c1a8fbaa78c1d1485",
+    "packageManager": "pnpm@11.9.0+sha512.bd682d5d03fe525ef7c9fd6780c6884d1e756ac4c9c9fe00c538782824310dcf90e3ddc4f53835f06dfaebd5085e41855e0bcbb3b60de2ac5bbab89e5036f03b",
     "prettier": "./prettier.config.mjs"
 }
