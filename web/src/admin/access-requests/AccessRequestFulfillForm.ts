@@ -8,7 +8,12 @@ import { Form } from "#elements/forms/Form";
 import { WithSession } from "#elements/mixins/session";
 import { SlottedTemplateResult } from "#elements/types";
 
-import { GrantRequest, GrantRequestFulfillRequest, PamApi, RequestStatus } from "@goauthentik/api";
+import {
+    GrantRequest,
+    PamApi,
+    PatchedGrantRequestFulfillRequest,
+    RequestStatus,
+} from "@goauthentik/api";
 
 import YAML from "yaml";
 
@@ -18,17 +23,17 @@ import { ifDefined } from "lit-html/directives/if-defined.js";
 import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-access-request-fulfill-form")
-export class AccessRequestFulfillForm extends WithSession(Form<GrantRequestFulfillRequest>) {
+export class AccessRequestFulfillForm extends WithSession(Form<PatchedGrantRequestFulfillRequest>) {
     @property({ type: Object })
     request?: GrantRequest;
 
     public static override createLabel = msg("Fulfill request");
     public static submitVerb: string = msg("Submit");
 
-    protected async send(data: GrantRequestFulfillRequest): Promise<unknown> {
-        return aki(PamApi).pamGrantRequestsFulfillCreate({
+    protected async send(data: PatchedGrantRequestFulfillRequest): Promise<unknown> {
+        return aki(PamApi).pamGrantRequestsFulfillPartialUpdate({
             uuid: this.request?.uuid || "",
-            grantRequestFulfillRequest: data,
+            patchedGrantRequestFulfillRequest: data,
         });
     }
 

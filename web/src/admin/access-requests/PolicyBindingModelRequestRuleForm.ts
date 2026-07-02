@@ -1,18 +1,18 @@
-import '#components/ak-text-input';
-
-import { aki } from '#common/api/client';
-
-import { ModelForm } from '#elements/forms/ModelForm';
-import { SlottedTemplateResult } from '#elements/types';
-
-import { PamApi, PolicyBindingModelRequestRule } from '@goauthentik/api';
-
-import { msg } from '@lit/localize';
-import { html } from 'lit-html';
-import { ifDefined } from 'lit-html/directives/if-defined.js';
-import { customElement, property } from 'lit/decorators.js';
+import "#components/ak-text-input";
 import "../../components/ak-number-input";
 import "../../components/ak-switch-input";
+
+import { aki } from "#common/api/client";
+
+import { ModelForm } from "#elements/forms/ModelForm";
+import { SlottedTemplateResult } from "#elements/types";
+
+import { PamApi, PolicyBindingModelRequestRule } from "@goauthentik/api";
+
+import { msg } from "@lit/localize";
+import { html } from "lit-html";
+import { ifDefined } from "lit-html/directives/if-defined.js";
+import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-pbm-request-rule-form")
 export class PolicyBindingModelRequestRuleForm extends ModelForm<
@@ -73,8 +73,7 @@ export class PolicyBindingModelRequestRuleForm extends ModelForm<
                         across all groups.`,
                 )}
             >
-            </ak-switch-input>
-`;
+            </ak-switch-input> `;
     }
 }
 

@@ -5,7 +5,7 @@ from django.db import models, transaction
 from rest_framework.serializers import Serializer
 
 from authentik.core.models import CreatedUpdatedModel, ExpiringModel, User
-from authentik.lib.models import SerializerModel
+from authentik.lib.models import InternallyManagedMixin, SerializerModel
 from authentik.policies.models import PolicyBinding, PolicyBindingModel
 
 
@@ -92,7 +92,7 @@ class GrantRequest(SerializerModel, ExpiringModel, CreatedUpdatedModel):
             target.save()
 
 
-class GrantRequestTarget(models.Model):
+class GrantRequestTarget(InternallyManagedMixin, models.Model):
     """Concrete m2m to make gergo happy"""
 
     uuid = models.UUIDField(default=uuid4, primary_key=True)

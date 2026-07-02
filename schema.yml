@@ -11149,8 +11149,8 @@ paths:
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
   /pam/grant_requests/{uuid}/fulfill/:
-    post:
-      operationId: pam_grant_requests_fulfill_create
+    patch:
+      operationId: pam_grant_requests_fulfill_partial_update
       parameters:
       - in: path
         name: uuid
@@ -11165,8 +11165,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/GrantRequestFulfillRequest'
-        required: true
+              $ref: '#/components/schemas/PatchedGrantRequestFulfillRequest'
       security:
       - authentik: []
       responses:
@@ -40875,18 +40874,6 @@ components:
             format: uuid
       required:
       - pbms
-    GrantRequestFulfillRequest:
-      type: object
-      description: Base serializer class which doesn't implement create/update methods
-      properties:
-        data:
-          type: object
-          additionalProperties: {}
-        status:
-          $ref: '#/components/schemas/RequestStatus'
-      required:
-      - data
-      - status
     GrantTypesEnum:
       enum:
       - authorization_code
@@ -49464,6 +49451,15 @@ components:
           type: boolean
           description: When enabled, provider will not modify or create objects in
             the remote system.
+    PatchedGrantRequestFulfillRequest:
+      type: object
+      description: Base serializer class which doesn't implement create/update methods
+      properties:
+        data:
+          type: object
+          additionalProperties: {}
+        status:
+          $ref: '#/components/schemas/RequestStatus'
     PatchedGroupKerberosSourceConnectionRequest:
       type: object
       description: Group Source Connection

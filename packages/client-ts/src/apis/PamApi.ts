@@ -17,10 +17,6 @@ import {
     type GrantRequestCreateRequest,
     GrantRequestCreateRequestToJSON,
 } from "../models/GrantRequestCreateRequest";
-import {
-    type GrantRequestFulfillRequest,
-    GrantRequestFulfillRequestToJSON,
-} from "../models/GrantRequestFulfillRequest";
 import { type Link, LinkFromJSON } from "../models/Link";
 import {
     type PaginatedGrantRequestList,
@@ -34,6 +30,10 @@ import {
     type PaginatedPolicyBindingModelRequestRuleList,
     PaginatedPolicyBindingModelRequestRuleListFromJSON,
 } from "../models/PaginatedPolicyBindingModelRequestRuleList";
+import {
+    type PatchedGrantRequestFulfillRequest,
+    PatchedGrantRequestFulfillRequestToJSON,
+} from "../models/PatchedGrantRequestFulfillRequest";
 import {
     type PatchedPolicyBindingModelRequestRuleRequest,
     PatchedPolicyBindingModelRequestRuleRequestToJSON,
@@ -57,9 +57,9 @@ export interface PamGrantRequestsDestroyRequest {
     uuid: string;
 }
 
-export interface PamGrantRequestsFulfillCreateRequest {
+export interface PamGrantRequestsFulfillPartialUpdateRequest {
     uuid: string;
-    grantRequestFulfillRequest: GrantRequestFulfillRequest;
+    patchedGrantRequestFulfillRequest?: PatchedGrantRequestFulfillRequest;
 }
 
 export interface PamGrantRequestsListRequest {
@@ -243,22 +243,15 @@ export class PamApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for pamGrantRequestsFulfillCreate without sending the request
+     * Creates request options for pamGrantRequestsFulfillPartialUpdate without sending the request
      */
-    async pamGrantRequestsFulfillCreateRequestOpts(
-        requestParameters: PamGrantRequestsFulfillCreateRequest,
+    async pamGrantRequestsFulfillPartialUpdateRequestOpts(
+        requestParameters: PamGrantRequestsFulfillPartialUpdateRequest,
     ): Promise<runtime.RequestOpts> {
         if (requestParameters["uuid"] == null) {
             throw new runtime.RequiredError(
                 "uuid",
-                'Required parameter "uuid" was null or undefined when calling pamGrantRequestsFulfillCreate().',
-            );
-        }
-
-        if (requestParameters["grantRequestFulfillRequest"] == null) {
-            throw new runtime.RequiredError(
-                "grantRequestFulfillRequest",
-                'Required parameter "grantRequestFulfillRequest" was null or undefined when calling pamGrantRequestsFulfillCreate().',
+                'Required parameter "uuid" was null or undefined when calling pamGrantRequestsFulfillPartialUpdate().',
             );
         }
 
@@ -282,21 +275,23 @@ export class PamApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: "POST",
+            method: "PATCH",
             headers: headerParameters,
             query: queryParameters,
-            body: GrantRequestFulfillRequestToJSON(requestParameters["grantRequestFulfillRequest"]),
+            body: PatchedGrantRequestFulfillRequestToJSON(
+                requestParameters["patchedGrantRequestFulfillRequest"],
+            ),
         };
     }
 
     /**
      */
-    async pamGrantRequestsFulfillCreateRaw(
-        requestParameters: PamGrantRequestsFulfillCreateRequest,
+    async pamGrantRequestsFulfillPartialUpdateRaw(
+        requestParameters: PamGrantRequestsFulfillPartialUpdateRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<runtime.ApiResponse<void>> {
         const requestOptions =
-            await this.pamGrantRequestsFulfillCreateRequestOpts(requestParameters);
+            await this.pamGrantRequestsFulfillPartialUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.VoidApiResponse(response);
@@ -304,11 +299,11 @@ export class PamApi extends runtime.BaseAPI {
 
     /**
      */
-    async pamGrantRequestsFulfillCreate(
-        requestParameters: PamGrantRequestsFulfillCreateRequest,
+    async pamGrantRequestsFulfillPartialUpdate(
+        requestParameters: PamGrantRequestsFulfillPartialUpdateRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<void> {
-        await this.pamGrantRequestsFulfillCreateRaw(requestParameters, initOverrides);
+        await this.pamGrantRequestsFulfillPartialUpdateRaw(requestParameters, initOverrides);
     }
 
     /**
