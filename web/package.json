@@ -133,7 +133,7 @@
         "@types/react-dom": "^19.2.3",
         "@typescript-eslint/eslint-plugin": "^8.62.0",
         "@typescript-eslint/parser": "^8.61.1",
-        "@typescript-eslint/utils": "^8.60.1",
+        "@typescript-eslint/utils": "^8.62.0",
         "@typescript/native-preview": "7.0.0-dev.20260602.1",
         "@vitest/browser": "^4.1.9",
         "@vitest/browser-playwright": "^4.1.9",
