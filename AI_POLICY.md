@@ -1,0 +1,21 @@
+# AI Usage Policy
+
+The authentik project welcomes community contributions, but has strict rules for AI usage:
+
+- **All AI usage in any form must be disclosed.** You must state the tool you used (e.g. Claude Code, Cursor, Amp) along with the extent that the work was AI-assisted.
+- **The human-in-the-loop must fully understand all code.** If you can't explain what your changes do and how they interact with the greater system without the aid of AI tools, please do not contribute these changes to this project.
+- **Issues and discussions can use AI assistance but must have a human-in-the-loop.** This means that any content generated with AI must have been reviewed _and edited_ by a human before submission. AI is often overly verbose, with noise that distracts from the main point. Humans must do their research and trim this down.
+- **No AI-generated media is allowed (art, images, videos, audio, etc.).** Text and code are the only acceptable AI-generated content.
+- If a code contribution or discussion appears to be entirely AI-driven and lacking human judgement, the maintainers will close the issue/PR/discussion.
+
+These rules apply to all external contributions to authentik. Maintainers use AI tools at their discretion; as an internal team, the maintaners are already constantly discussing their work with each other and checking in as humans, having already proven their understanding of the code.
+
+## There are Humans Here
+
+Please remember that authentik is maintained by humans.
+
+Every discussion, issue, and pull request is read and reviewed by humans (and sometimes machines, too). It is a boundary point at which people interact with each other and the work done. It is disrespectful and unscalable to approach this boundary with low-effort, unqualified work, since it puts the burden of validation on the maintainer.
+
+**Our reason for the strict AI policy is not due to an anti-AI stance**, but instead due to the number of highly unqualified AI-driven contributions. A small minority misusing these tools creates an unscalable problem for maintainers.
+
+In a perfect world, AI would produce high-quality, accurate work every time. But today, that reality depends on careful consideration and usage by the human driver of the AI. Since AI is instead best as _producing code quickly_, we have to have strict rules in place to protect the project and maintainers' limited time.
