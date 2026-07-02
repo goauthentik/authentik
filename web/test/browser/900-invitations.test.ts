@@ -1,9 +1,8 @@
 import { expect, test } from "#e2e";
 
 import { IDGenerator } from "@goauthentik/core/id";
-import { series } from "@goauthentik/core/promises";
 
-test.describe("Invitation Wizard", () => {
+test.describe("Invitation form", () => {
     const invitationNames = new Map<string, string>();
 
     //#region Lifecycle
@@ -26,11 +25,66 @@ test.describe("Invitation Wizard", () => {
     //#endregion
 
     // Regression for goauthentik/authentik#22637: typing custom attributes into the
-    // CodeMirror editor wedged the wizard's Next button into a permanently-disabled
-    // state, because the change handler read `ev.detail.value` (the detail is a
-    // CodeMirror ViewUpdate, so `.value` was undefined) and the resulting
-    // `YAML.parse(undefined)` threw, marking the step invalid.
-    test("Create invitation with custom attributes via new enrollment flow", async ({
+    // CodeMirror editor must not block submission.
+    test("Create invitation with custom attributes", async ({ page, form, pointer }, testInfo) => {
+        const name = invitationNames.get(testInfo.testId)!;
+        const { fill } = form;
+        const { click } = pointer;
+
+        const $dialog = page.getByRole("dialog", { name: "New Invitation" });
+        const $successDialog = page.getByRole("dialog", { name: "Invitation Details" });
+        const $editor = $dialog.locator("ak-codemirror");
+
+        await test.step("Open the invitation form", async () => {
+            await expect($dialog, "Form is initially closed").toBeHidden();
+
+            await click("New Invitation", "button");
+
+            await expect($dialog, "Form opens").toBeVisible();
+        });
+
+        await test.step("Fill invitation details", async () => {
+            await fill("Invitation Name", name, $dialog);
+
+            await $dialog.getByPlaceholder("Select a flow...").click();
+            await page.getByRole("option", { name: /default-source-enrollment/ }).click();
+        });
+
+        await test.step("Edit custom attributes (#22637)", async () => {
+            await $editor.click();
+            await page.keyboard.press("ControlOrMeta+a");
+            await page.keyboard.type("department: engineering");
+        });
+
+        await test.step("Create the invitation", async () => {
+            await click("Create Invitation", "button", $dialog);
+
+            await expect(
+                page.getByText("Successfully created invitation."),
+                "Success message confirms the invitation was created",
+            ).toBeVisible({ timeout: 10_000 });
+        });
+
+        await test.step("Success modal presents the invitation link", async () => {
+            await expect($successDialog, "Success modal opens").toBeVisible();
+
+            await expect(
+                $successDialog.getByRole("button", { name: "Copy Link" }),
+                "Copy Link action is available",
+            ).toBeVisible();
+
+            await expect(
+                $successDialog.getByRole("button", { name: "Send via Email" }),
+                "Send via Email action is available",
+            ).toBeVisible();
+
+            await $successDialog.getByRole("button", { name: "Close", exact: true }).click();
+
+            await expect($successDialog, "Success modal closes").toBeHidden();
+        });
+    });
+
+    test("Create enrollment flow with invitation stage from the flow select", async ({
         page,
         form,
         pointer,
@@ -40,70 +94,49 @@ test.describe("Invitation Wizard", () => {
         const { fill } = form;
         const { click } = pointer;
 
-        const dialog = page.getByRole("dialog", { name: "New Invitation Wizard" });
-        const $next = page.getByTestId("wizard-navigation-next");
-        const $editor = dialog.locator("ak-codemirror");
+        const $dialog = page.getByRole("dialog", { name: "New Invitation" });
+        const $flowDialog = page.getByRole("dialog", { name: "New Enrollment Flow" });
+        const $successDialog = page.getByRole("dialog", { name: "Invitation Details" });
 
-        await test.step("Open the create-flow wizard", async () => {
-            await expect(dialog, "Wizard is initially closed").toBeHidden();
+        await test.step("Open the invitation form", async () => {
+            await click("New Invitation", "button");
 
-            await click("New Invitation options");
-            await click("New Enrollment Flow", "menuitem");
-
-            await expect(dialog, "Wizard opens").toBeVisible();
+            await expect($dialog, "Form opens").toBeVisible();
         });
 
-        await test.step("Configure the new enrollment flow", async () => {
-            // Create mode defers validation to the Next handler, so the step is valid
-            // (and Next enabled) as soon as it loads — never wedged on "Loading…".
-            await expect($next, "Next is enabled on the create-flow step").toBeEnabled();
+        await test.step("Open the stacked enrollment flow form via the flow select", async () => {
+            await $dialog.getByPlaceholder("Select a flow...").click();
 
-            await series(
-                [fill, "Flow name", `Invite Flow ${seed}`, dialog],
-                [fill, "Invitation stage name", `invite-stage-${seed}`, dialog],
-                [click, "Next", "button", dialog],
-            );
+            await page.getByRole("option", { name: "Create a new enrollment flow" }).click();
+
+            await expect($flowDialog, "Enrollment flow form opens on top").toBeVisible();
         });
 
-        await test.step("Fill invitation details", async () => {
-            await expect($next, "Next is disabled until a name is provided").toBeDisabled();
-            await fill("Name", name, dialog);
-            await expect($next, "Next is enabled once a name is provided").toBeEnabled();
+        await test.step("Create the enrollment flow and invitation stage", async () => {
+            await fill("Flow Name", `Invite Flow ${seed}`, $flowDialog);
+            await fill("Invitation Stage Name", `invite-stage-${seed}`, $flowDialog);
+
+            await click("Create Enrollment Flow", "button", $flowDialog);
+
+            await expect($flowDialog, "Flow form closes after creation").toBeHidden();
+            await expect($dialog, "Invitation form is still open underneath").toBeVisible();
         });
 
-        await test.step("Editing custom attributes keeps the step valid", async () => {
-            await $editor.click();
-            await page.keyboard.press("ControlOrMeta+a");
-            await page.keyboard.type("department: engineering");
-
+        await test.step("The newly created flow is selected", async () => {
             await expect(
-                $next,
-                "Next stays enabled after editing custom attributes (#22637)",
-            ).toBeEnabled();
-
-            // Clearing the field must not wedge the step either.
-            await $editor.click();
-            await page.keyboard.press("ControlOrMeta+a");
-            await page.keyboard.press("Delete");
-
-            await expect(
-                $next,
-                "Next stays enabled after clearing custom attributes (#22637)",
-            ).toBeEnabled();
+                $dialog.getByPlaceholder("Select a flow..."),
+                "Flow search adopts the newly created flow",
+            ).toHaveValue(new RegExp(seed));
         });
 
         await test.step("Create the invitation", async () => {
-            await click("Next", "button", dialog);
+            await fill("Invitation Name", name, $dialog);
 
-            await expect(
-                page.getByText("Successfully created invitation."),
-                "Success message confirms the invitation was created",
-            ).toBeVisible({ timeout: 10_000 });
-        });
+            await click("Create Invitation", "button", $dialog);
 
-        await test.step("Finish and close the wizard", async () => {
-            await $next.click();
-            await expect(dialog, "Wizard closes after finishing").toBeHidden();
+            await expect($successDialog, "Success modal opens").toBeVisible({ timeout: 10_000 });
+
+            await $successDialog.getByRole("button", { name: "Close", exact: true }).click();
         });
     });
 });
