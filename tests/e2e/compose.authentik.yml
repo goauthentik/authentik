@@ -27,6 +27,9 @@ services:
       AUTHENTIK_POSTGRESQL__PASSWORD: ${PG_PASS}
       AUTHENTIK_SECRET_KEY: ${AUTHENTIK_SECRET_KEY:?secret key required}
       AUTHENTIK_LOG_LEVEL: debug
+      AUTHENTIK_BOOTSTRAP_EMAIL: root@example.com
+      AUTHENTIK_BOOTSTRAP_PASSWORD: akadmin
+      AUTHENTIK_BOOTSTRAP_TOKEN: akadmin
     image: ${AUTHENTIK_IMAGE:-ghcr.io/goauthentik/dev-server}:${AUTHENTIK_TAG:?tag}
     ports:
       - "9000"
@@ -45,7 +48,28 @@ services:
       AUTHENTIK_POSTGRESQL__PASSWORD: ${PG_PASS}
       AUTHENTIK_LOG_LEVEL: debug
       AUTHENTIK_SECRET_KEY: ${AUTHENTIK_SECRET_KEY:?secret key required}
+      AUTHENTIK_BOOTSTRAP_EMAIL: root@example.com
+      AUTHENTIK_BOOTSTRAP_PASSWORD: akadmin
+      AUTHENTIK_BOOTSTRAP_TOKEN: akadmin
     image: ${AUTHENTIK_IMAGE:-ghcr.io/goauthentik/dev-server}:${AUTHENTIK_TAG:?tag}
     restart: unless-stopped
     shm_size: 512mb
     user: root
+  selenium:
+    image: ghcr.io/goauthentik/selenium:148.0-ak-0.44.3
+    shm_size: 2g
+    restart: always
+    environment:
+      VIDEO_READY_PORT: 9912
+    ports:
+      - "4444"
+      - "7900"
+      - "5900"
+  mailpit:
+    image: docker.io/axllent/mailpit:v1.30.3
+    ports:
+      - "8025"
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "http://localhost:8025"]
+      interval: 5s
+      start_period: 1s
