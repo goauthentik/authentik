@@ -9,8 +9,8 @@ import "#elements/buttons/ActionButton/index";
 import "#elements/buttons/ModalButton";
 import "#elements/events/LogViewer";
 import "#components/sync/SyncStatusCard";
-import "#elements/tasks/ScheduleList";
-import "#elements/tasks/TaskList";
+import "#components/tasks/ScheduleList";
+import "#components/tasks/TaskList";
 
 import { aki } from "#common/api/client";
 import { EVENT_REFRESH } from "#common/constants";

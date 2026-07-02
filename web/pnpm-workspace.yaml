@@ -1,0 +1,60 @@
+packages:
+    - "packages/*"
+    # client-ts is a symlink to the repo-root packages/client-ts; consuming it as
+    # a workspace member makes pnpm treat an out-of-root path as an importer, which
+    # it cannot represent in this lockfile. Link it as an external local package
+    # instead (see web + sfe package.json).
+    - "!packages/client-ts"
+
+# pnpm's default isolated linker exposes packages strictly — only declared
+# dependencies are visible. The web bundle relies on a handful of phantom
+# deps that were hoisted by npm at the root of `node_modules` (lit-html
+# internals, ol, mdast-util-to-string, etc.). Until each is added as an
+# explicit dependency, fall back to the flat hoisted layout that mirrors
+# npm's behavior.
+nodeLinker: hoisted
+
+overrides:
+    "@goauthentik/esbuild-plugin-live-reload>esbuild": "$esbuild"
+    "@goauthentik/esbuild-plugin-live-reload>typescript": "$typescript"
+    "@goauthentik/eslint-config>typescript": "$typescript"
+    "@goauthentik/prettier-config>prettier": "$prettier"
+    "@goauthentik/prettier-config>prettier-plugin-packagejson": "$prettier-plugin-packagejson"
+    "@goauthentik/prettier-config>typescript": "$typescript"
+    "@mrmarble/djangoql-completion>lex": "$lex"
+    "@mrmarble/djangoql-completion>lodash": "^4.18.1"
+    "@typescript-eslint/eslint-plugin>typescript": "$typescript"
+    "@typescript-eslint/parser>typescript": "$typescript"
+    "@typescript-eslint/typescript-estree>typescript": "$typescript"
+    "@typescript-eslint/utils>typescript": "$typescript"
+    "format-imports>eslint": "$eslint"
+    "node-fetch-commonjs>node-domexception": "$node-domexception"
+    "rapidoc>@apitools/openapi-parser": "0.0.37"
+    "typescript-eslint>typescript": "$typescript"
+    "wireit>brace-expansion": "^1.1.14"
+
+# Allow-list of dependencies whose install/postinstall scripts may run.
+# Everything else is blocked, replacing the prior `ignore-scripts=true` +
+# `npm rebuild --foreground-scripts <pkg>` pattern from #20400. Each entry
+# is audited at review time — adding a package here grants it arbitrary code
+# execution at install.
+onlyBuiltDependencies:
+    - chromedriver
+    - esbuild
+    - tree-sitter
+    - tree-sitter-json
+    - "@tree-sitter-grammars/tree-sitter-yaml"
+
+# Explicit approval map for pnpm 11+. `true` = allowed (mirror
+# onlyBuiltDependencies); `false` = explicitly declined to silence the
+# "pending approval" prompt without running the install script.
+allowBuilds:
+    "@scarf/scarf": false
+    "@swc/core": false
+    "@tree-sitter-grammars/tree-sitter-yaml": true
+    chromedriver: true
+    core-js: false
+    core-js-pure: false
+    esbuild: true
+    tree-sitter: true
+    tree-sitter-json: true
