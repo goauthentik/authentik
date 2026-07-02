@@ -1,8 +1,13 @@
+from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from dramatiq import actor
 
 from authentik.core.models import User
-from authentik.enterprise.lifecycle.models import LifecycleRule
+from authentik.enterprise.lifecycle.models import (
+    LifecycleRule,
+    OffboardingStatus,
+    UserOffboarding,
+)
 from authentik.events.models import Event, Notification, NotificationTransport
 from authentik.tasks.schedules.models import Schedule
 
@@ -23,6 +28,34 @@ def apply_lifecycle_rule(rule_id: str):
     rule = LifecycleRule.objects.filter(pk=rule_id).first()
     if rule:
         rule.apply()
+
+
+@actor(description=_("Execute due user offboardings."))
+def execute_due_offboardings():
+    due = UserOffboarding.objects.filter(
+        status=OffboardingStatus.PENDING,
+        scheduled_for__lte=timezone.now(),
+    ).select_related("user")
+    for offboarding in due:
+        execute_offboarding.send(str(offboarding.pk))
+
+
+@actor(description=_("Execute a single user offboarding."))
+def execute_offboarding(offboarding_pk: str):
+    offboarding = (
+        UserOffboarding.objects.filter(pk=offboarding_pk, status=OffboardingStatus.PENDING)
+        .select_related("user")
+        .first()
+    )
+    if not offboarding:
+        return
+    try:
+        offboarding.execute()
+    except Exception:
+        offboarding.status = OffboardingStatus.FAILED
+        offboarding.executed_on = timezone.now()
+        offboarding.save(update_fields=["status", "executed_on"])
+        raise
 
 
 @actor(description=_("Send lifecycle rule notification."))
