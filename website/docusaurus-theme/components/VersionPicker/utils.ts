@@ -60,8 +60,7 @@ export function useHostname() {
 
 export function useCachedVersionPluginData(): AKReleasesPluginData | null {
     const pluginData = usePluginData("ak-releases-plugin", undefined) as
-        | AKReleasesPluginData
-        | undefined;
+        AKReleasesPluginData | undefined;
 
     return pluginData ?? null;
 }
