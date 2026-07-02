@@ -18,6 +18,8 @@
       {% else %}
       {% trans "A sign-in to your account was blocked" %}
       {% endif %}
+      {% elif event_action == "user_write" and event_context.action_id == "account_lockdown" %}
+      {% trans "Your account has been locked" %}
       {% else %}
       {% trans "Security notification" %}
       {% endif %}
@@ -51,6 +53,10 @@
           A sign-in to your account was blocked by a security policy. If this was you, try again from a recognized network, or contact your administrator.
           {% endblocktrans %}
           {% endif %}
+          {% elif event_action == "user_write" and event_context.action_id == "account_lockdown" %}
+          {% blocktrans %}
+          Your account was just locked as an emergency security measure. If you did this yourself, no further action is needed. To regain access to your account, please contact your administrator or security team.
+          {% endblocktrans %}
           {% else %}
           {{ body }}
           {% endif %}

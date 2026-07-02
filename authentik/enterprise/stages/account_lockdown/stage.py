@@ -224,6 +224,7 @@ class AccountLockdownStageView(StageView):
                 action_id=LOCKDOWN_EVENT_ACTION_ID,
                 reason=reason,
                 affected_user=user.username,
+                subject_uuid=user.uuid,
             ).from_http(request)
         except Exception as exc:  # noqa: BLE001
             # Event emission should not make the lockdown itself fail.

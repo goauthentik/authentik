@@ -152,6 +152,7 @@ class TestAccountLockdownStage(AccountLockdownStageTestMixin, FlowTestCase):
         self.assertEqual(event.context["action_id"], LOCKDOWN_EVENT_ACTION_ID)
         self.assertEqual(event.context["reason"], "Security incident")
         self.assertEqual(event.context["affected_user"], self.target_user.username)
+        self.assertEqual(event.context["subject_uuid"], self.target_user.uuid.hex)
 
     def test_lockdown_with_pending_user_reason(self):
         """Test lockdown stage with a pending target and explicit reason."""
