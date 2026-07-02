@@ -23,7 +23,7 @@ runs:
       run: sudo apt-get remove --purge man-db
     - name: Install apt deps
       if: ${{ contains(inputs.dependencies, 'system') || contains(inputs.dependencies, 'python') }}
-      uses: gerlero/apt-install@f4fa5265092af9e750549565d28c99aec7189639
+      uses: gerlero/apt-install@c0fa73fe5c4a22deecf6d629565be92a15dd2026
       with:
         packages: libpq-dev openssl libxmlsec1-dev pkg-config gettext libclang-dev libkadm5clnt-mit12 libkadm5clnt7t64-heimdal libkrb5-dev krb5-kdc krb5-user krb5-admin-server
         update: true
@@ -64,12 +64,12 @@ runs:
         rustflags: ""
     - name: Setup rust dependencies
       if: ${{ contains(inputs.dependencies, 'rust') }}
-      uses: taiki-e/install-action@bffeee26d4db9be238a4ea78d8826604ebcb594d # v2
+      uses: taiki-e/install-action@9bcaee1dcae34154180f412e2fa69355a7cda9f6 # v2
       with:
         tool: cargo-deny cargo-machete cargo-llvm-cov nextest
     - name: Setup pnpm
       if: ${{ contains(inputs.dependencies, 'node') }}
-      uses: pnpm/action-setup@a7487c7e89a18df4991f7f222e4898a00d66ddda # v4.1.0
+      uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # v6.0.9
     - name: Pin pnpm store directory
       if: ${{ contains(inputs.dependencies, 'node') }}
       shell: bash
