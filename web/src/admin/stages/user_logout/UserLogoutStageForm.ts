@@ -13,23 +13,13 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-stage-user-logout-form")
 export class UserLogoutStageForm extends BaseStageForm<UserLogoutStage> {
-    loadInstance(pk: string): Promise<UserLogoutStage> {
-        return aki(StagesApi).stagesUserLogoutRetrieve({
-            stageUuid: pk,
-        });
-    }
-
-    async send(data: UserLogoutStage): Promise<UserLogoutStage> {
-        if (this.instance) {
-            return aki(StagesApi).stagesUserLogoutUpdate({
-                stageUuid: this.instance.pk || "",
-                userLogoutStageRequest: data,
-            });
-        }
-        return aki(StagesApi).stagesUserLogoutCreate({
-            userLogoutStageRequest: data,
-        });
-    }
+    protected endpoints = {
+        load: (stageUuid: string) => aki(StagesApi).stagesUserLogoutRetrieve({ stageUuid }),
+        create: (userLogoutStageRequest: UserLogoutStage) =>
+            aki(StagesApi).stagesUserLogoutCreate({ userLogoutStageRequest }),
+        update: (stageUuid: string, userLogoutStageRequest: UserLogoutStage) =>
+            aki(StagesApi).stagesUserLogoutUpdate({ stageUuid, userLogoutStageRequest }),
+    };
 
     protected override renderForm(): TemplateResult {
         return html` <span>${msg("Remove the user from the current session.")}</span>

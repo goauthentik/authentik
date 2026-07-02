@@ -4,3 +4,5 @@
 @import "@patternfly/patternfly/base/patternfly-fa-icons.css";
 @import "@patternfly/patternfly/base/patternfly-pf-icons.css";
 @import "@patternfly/patternfly/components/Spinner/spinner.css";
+@import "@patternfly/patternfly/components/Banner/banner.css";
+@import "#styles/authentik/components/Banner/banner.css";
