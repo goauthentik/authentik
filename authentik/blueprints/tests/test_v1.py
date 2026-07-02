@@ -65,7 +65,8 @@ class TestBlueprintsV1(TransactionTestCase):
                       name: test-tag
                       client_id: test-tag
                       property_mappings:
-                      - !KeyOf sm""")
+                      - !KeyOf sm
+        """)
         valid, logs = importer.validate()
         self.assertFalse(valid)
         self.assertGreater(len(logs), 0)
