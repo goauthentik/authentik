@@ -7,12 +7,17 @@ from django.urls import reverse
 
 from authentik.core.tests.utils import create_test_admin_user, create_test_brand, create_test_flow
 from authentik.flows.markers import StageMarker
-from authentik.flows.models import FlowDesignation, FlowStageBinding
-from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
+from authentik.flows.models import FlowAuthenticationRequirement, FlowDesignation, FlowStageBinding
+from authentik.flows.planner import (
+    PLAN_CONTEXT_PASSWORD_CHANGE_REQUIRED,
+    PLAN_CONTEXT_PENDING_USER,
+    FlowPlan,
+)
 from authentik.flows.tests import FlowTestCase
 from authentik.flows.tests.test_executor import TO_STAGE_RESPONSE_MOCK
 from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.lib.generators import generate_id
+from authentik.stages.dummy.models import DummyStage
 from authentik.stages.password import BACKEND_INBUILT
 from authentik.stages.password.models import PasswordStage
 
@@ -88,6 +93,55 @@ class TestPasswordStage(FlowTestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertStageRedirects(response, reverse("authentik_core:root-redirect"))
+
+    def test_valid_password_change_required(self):
+        """Test valid password inserts password change flow when required."""
+        configure_flow = create_test_flow(
+            FlowDesignation.STAGE_CONFIGURATION,
+            authentication=FlowAuthenticationRequirement.REQUIRE_AUTHENTICATED,
+        )
+        configure_binding = FlowStageBinding.objects.create(
+            target=configure_flow,
+            stage=DummyStage.objects.create(name=generate_id()),
+            order=0,
+        )
+        next_binding = FlowStageBinding.objects.create(
+            target=self.flow,
+            stage=DummyStage.objects.create(name=generate_id()),
+            order=3,
+        )
+        self.stage.configure_flow = configure_flow
+        self.stage.save()
+        self.user.password_change_required = True
+        self.user.save()
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
+        plan.append(next_binding)
+        plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
+        session = self.client.session
+        session[SESSION_KEY_PLAN] = plan
+        session.save()
+
+        exec_url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
+        response = self.client.post(
+            exec_url,
+            {"password": self.user.username},
+        )
+
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, exec_url)
+        reset_plan = self.client.session[SESSION_KEY_PLAN]
+        self.assertEqual(reset_plan.flow_pk, self.flow.pk.hex)
+        self.assertEqual(reset_plan.bindings[0], configure_binding)
+        self.assertEqual(reset_plan.bindings[1], next_binding)
+        self.assertEqual(reset_plan.context[PLAN_CONTEXT_PENDING_USER], self.user)
+        self.assertTrue(reset_plan.context[PLAN_CONTEXT_PASSWORD_CHANGE_REQUIRED])
+
+        response = self.client.post(exec_url)
+
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, exec_url)
+        reset_plan = self.client.session[SESSION_KEY_PLAN]
+        self.assertEqual(reset_plan.bindings[0], next_binding)
 
     def test_valid_password_inactive(self):
         """Test with a valid pending user and valid password"""

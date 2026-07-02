@@ -51536,6 +51536,9 @@ components:
           minLength: 1
         type:
           $ref: '#/components/schemas/UserTypeEnum'
+        password_change_required:
+          type: boolean
+          description: User must change their password on the next login.
     PatchedUserSAMLSourceConnectionRequest:
       type: object
       description: User source connection
@@ -57609,6 +57612,9 @@ components:
           type: string
           format: date-time
           readOnly: true
+        password_change_required:
+          type: boolean
+          description: User must change their password on the next login.
         last_updated:
           type: string
           format: date-time
@@ -58105,6 +58111,9 @@ components:
         password:
           type: string
           minLength: 1
+        password_change_required:
+          type: boolean
+          default: false
       required:
       - password
     UserPasswordSetRequest:
@@ -58114,6 +58123,9 @@ components:
         password:
           type: string
           minLength: 1
+        password_change_required:
+          type: boolean
+          default: false
       required:
       - password
     UserPath:
@@ -58242,6 +58254,9 @@ components:
           minLength: 1
         type:
           $ref: '#/components/schemas/UserTypeEnum'
+        password_change_required:
+          type: boolean
+          description: User must change their password on the next login.
       required:
       - name
       - username

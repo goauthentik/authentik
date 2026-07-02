@@ -21,9 +21,13 @@ from authentik.flows.challenge import (
     ChallengeResponse,
     WithUserInfoChallenge,
 )
-from authentik.flows.exceptions import StageInvalidException
+from authentik.flows.exceptions import FlowNonApplicableException, StageInvalidException
 from authentik.flows.models import Flow, Stage
-from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
+from authentik.flows.planner import (
+    PLAN_CONTEXT_PASSWORD_CHANGE_REQUIRED,
+    PLAN_CONTEXT_PENDING_USER,
+    FlowPlanner,
+)
 from authentik.flows.stage import ChallengeStageView
 from authentik.lib.utils.reflection import path_to_class
 from authentik.policies.reputation.models import Reputation
@@ -34,6 +38,33 @@ PLAN_CONTEXT_AUTHENTICATION_BACKEND = "user_backend"
 PLAN_CONTEXT_METHOD = "auth_method"
 PLAN_CONTEXT_METHOD_ARGS = "auth_method_args"
 PLAN_CONTEXT_INITIAL_SCORE = "goauthentik.io/stages/password/initial_score"
+
+
+def add_password_change_flow_to_plan(
+    stage_view: ChallengeStageView, user: User, password_stage: PasswordStage
+) -> HttpResponse | None:
+    """Add a password stage's configure flow to the active plan when password change is required."""
+    if not user.password_change_required:
+        return None
+    if not password_stage.configure_flow:
+        stage_view.logger.warning("Password change required but no configure flow is set")
+        return stage_view.executor.stage_invalid(
+            _("Password change is required, but no password change flow is configured.")
+        )
+    planner = FlowPlanner(password_stage.configure_flow)
+    planner.use_cache = False
+    stage_view.executor.plan.context[PLAN_CONTEXT_PENDING_USER] = user
+    stage_view.executor.plan.context[PLAN_CONTEXT_PASSWORD_CHANGE_REQUIRED] = True
+    try:
+        password_change_plan = planner.plan(stage_view.request, stage_view.executor.plan.context)
+    except FlowNonApplicableException:
+        stage_view.logger.warning("Password change required but configure flow is not applicable")
+        return stage_view.executor.stage_invalid(
+            _("Password change is required, but the password change flow is not applicable.")
+        )
+    stage_view.executor.plan.bindings[1:1] = password_change_plan.bindings
+    stage_view.executor.plan.markers[1:1] = password_change_plan.markers
+    return None
 
 
 def authenticate(
@@ -178,4 +209,11 @@ class PasswordStageView(ChallengeStageView):
         """Authenticate against django's authentication backend"""
         if PLAN_CONTEXT_PENDING_USER not in self.executor.plan.context:
             return self.executor.stage_invalid()
+        reset_response = add_password_change_flow_to_plan(
+            self,
+            self.executor.plan.context[PLAN_CONTEXT_PENDING_USER],
+            self.executor.current_stage,
+        )
+        if reset_response:
+            return reset_response
         return self.executor.stage_ok()

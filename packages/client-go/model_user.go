@@ -37,15 +37,17 @@ type User struct {
 	RolesObj    []Role         `json:"roles_obj"`
 	Email       *string        `json:"email,omitempty"`
 	// User's avatar, either a http/https URL or a data URI
-	Avatar               string                 `json:"avatar"`
-	Attributes           map[string]interface{} `json:"attributes,omitempty"`
-	Uid                  string                 `json:"uid"`
-	Path                 *string                `json:"path,omitempty"`
-	Type                 *UserTypeEnum          `json:"type,omitempty"`
-	Uuid                 string                 `json:"uuid"`
-	PasswordChangeDate   time.Time              `json:"password_change_date"`
-	LastUpdated          time.Time              `json:"last_updated"`
-	AdditionalProperties map[string]interface{}
+	Avatar             string                 `json:"avatar"`
+	Attributes         map[string]interface{} `json:"attributes,omitempty"`
+	Uid                string                 `json:"uid"`
+	Path               *string                `json:"path,omitempty"`
+	Type               *UserTypeEnum          `json:"type,omitempty"`
+	Uuid               string                 `json:"uuid"`
+	PasswordChangeDate time.Time              `json:"password_change_date"`
+	// User must change their password on the next login.
+	PasswordChangeRequired *bool     `json:"password_change_required,omitempty"`
+	LastUpdated            time.Time `json:"last_updated"`
+	AdditionalProperties   map[string]interface{}
 }
 
 type _User User
@@ -614,6 +616,38 @@ func (o *User) SetPasswordChangeDate(v time.Time) {
 	o.PasswordChangeDate = v
 }
 
+// GetPasswordChangeRequired returns the PasswordChangeRequired field value if set, zero value otherwise.
+func (o *User) GetPasswordChangeRequired() bool {
+	if o == nil || IsNil(o.PasswordChangeRequired) {
+		var ret bool
+		return ret
+	}
+	return *o.PasswordChangeRequired
+}
+
+// GetPasswordChangeRequiredOk returns a tuple with the PasswordChangeRequired field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *User) GetPasswordChangeRequiredOk() (*bool, bool) {
+	if o == nil || IsNil(o.PasswordChangeRequired) {
+		return nil, false
+	}
+	return o.PasswordChangeRequired, true
+}
+
+// HasPasswordChangeRequired returns a boolean if a field has been set.
+func (o *User) HasPasswordChangeRequired() bool {
+	if o != nil && !IsNil(o.PasswordChangeRequired) {
+		return true
+	}
+
+	return false
+}
+
+// SetPasswordChangeRequired gets a reference to the given bool and assigns it to the PasswordChangeRequired field.
+func (o *User) SetPasswordChangeRequired(v bool) {
+	o.PasswordChangeRequired = &v
+}
+
 // GetLastUpdated returns the LastUpdated field value
 func (o *User) GetLastUpdated() time.Time {
 	if o == nil {
@@ -687,6 +721,9 @@ func (o User) ToMap() (map[string]interface{}, error) {
 	}
 	toSerialize["uuid"] = o.Uuid
 	toSerialize["password_change_date"] = o.PasswordChangeDate
+	if !IsNil(o.PasswordChangeRequired) {
+		toSerialize["password_change_required"] = o.PasswordChangeRequired
+	}
 	toSerialize["last_updated"] = o.LastUpdated
 
 	for key, value := range o.AdditionalProperties {
@@ -761,6 +798,7 @@ func (o *User) UnmarshalJSON(data []byte) (err error) {
 		delete(additionalProperties, "type")
 		delete(additionalProperties, "uuid")
 		delete(additionalProperties, "password_change_date")
+		delete(additionalProperties, "password_change_required")
 		delete(additionalProperties, "last_updated")
 		o.AdditionalProperties = additionalProperties
 	}

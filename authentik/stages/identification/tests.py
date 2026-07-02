@@ -5,7 +5,11 @@ from requests_mock import Mocker
 from rest_framework.exceptions import ValidationError
 
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
-from authentik.flows.models import FlowDesignation, FlowStageBinding
+from authentik.flows.models import FlowAuthenticationRequirement, FlowDesignation, FlowStageBinding
+from authentik.flows.planner import (
+    PLAN_CONTEXT_PASSWORD_CHANGE_REQUIRED,
+    PLAN_CONTEXT_PENDING_USER,
+)
 from authentik.flows.stage import PLAN_CONTEXT_PENDING_USER_IDENTIFIER
 from authentik.flows.tests import FlowTestCase
 from authentik.lib.generators import generate_id
@@ -14,6 +18,7 @@ from authentik.stages.authenticator_validate.models import AuthenticatorValidate
 from authentik.stages.authenticator_webauthn.models import WebAuthnDevice
 from authentik.stages.captcha.models import CaptchaStage
 from authentik.stages.captcha.tests import RECAPTCHA_PRIVATE_KEY, RECAPTCHA_PUBLIC_KEY
+from authentik.stages.dummy.models import DummyStage
 from authentik.stages.identification.api import IdentificationStageSerializer
 from authentik.stages.identification.models import IdentificationStage, UserFields
 from authentik.stages.password import BACKEND_INBUILT
@@ -179,6 +184,39 @@ class TestIdentificationStage(FlowTestCase):
         response = self.client.post(url, form_data)
         self.assertEqual(response.status_code, 200)
         self.assertStageRedirects(response, reverse("authentik_core:root-redirect"))
+
+    def test_valid_with_password_change_required(self):
+        """Test valid password inserts password change flow when required."""
+        configure_flow = create_test_flow(
+            FlowDesignation.STAGE_CONFIGURATION,
+            authentication=FlowAuthenticationRequirement.REQUIRE_AUTHENTICATED,
+        )
+        configure_binding = FlowStageBinding.objects.create(
+            target=configure_flow,
+            stage=DummyStage.objects.create(name=generate_id()),
+            order=0,
+        )
+        pw_stage = PasswordStage.objects.create(
+            name="password",
+            backends=[BACKEND_INBUILT],
+            configure_flow=configure_flow,
+        )
+        self.stage.password_stage = pw_stage
+        self.stage.save()
+        self.user.password_change_required = True
+        self.user.save()
+        form_data = {"uid_field": self.user.email, "password": self.user.username}
+        url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
+
+        response = self.client.post(url, form_data)
+
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, url)
+        plan = self.get_flow_plan()
+        self.assertEqual(plan.flow_pk, self.flow.pk.hex)
+        self.assertEqual(plan.bindings[0], configure_binding)
+        self.assertEqual(plan.context[PLAN_CONTEXT_PENDING_USER], self.user)
+        self.assertTrue(plan.context[PLAN_CONTEXT_PASSWORD_CHANGE_REQUIRED])
 
     def test_invalid_with_password(self):
         """Test with valid email and invalid password in single step"""

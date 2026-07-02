@@ -48,6 +48,7 @@ PLAN_CONTEXT_POST = "goauthentik.io/http/post"
 PLAN_CONTEXT_IS_RESTORED = "is_restored"
 PLAN_CONTEXT_IS_REDIRECTED = "is_redirected"
 PLAN_CONTEXT_REDIRECT_STAGE_TARGET = "redirect_stage_target"
+PLAN_CONTEXT_PASSWORD_CHANGE_REQUIRED = "goauthentik.io/core/password_change_required"
 CACHE_TIMEOUT = CONFIG.get_int("cache.timeout_flows")
 CACHE_PREFIX = "goauthentik.io/flows/planner/"
 
@@ -212,7 +213,15 @@ class FlowPlanner:
             self.flow.authentication == FlowAuthenticationRequirement.REQUIRE_AUTHENTICATED
             and not request.user.is_authenticated
         ):
-            raise FlowNonApplicableException()
+            pending_user = context.get(PLAN_CONTEXT_PENDING_USER)
+            password_change_required = (
+                context.get(PLAN_CONTEXT_PASSWORD_CHANGE_REQUIRED)
+                and isinstance(pending_user, User)
+                and bool(pending_user.pk)
+                and pending_user.password_change_required
+            )
+            if not password_change_required:
+                raise FlowNonApplicableException()
         if (
             self.flow.authentication == FlowAuthenticationRequirement.REQUIRE_UNAUTHENTICATED
             and request.user.is_authenticated

@@ -244,6 +244,16 @@ export class UserForm extends ModelForm<User, number> {
             >
             </ak-switch-input>
 
+            <ak-switch-input
+                name="passwordChangeRequired"
+                label=${msg("Require password change on next login")}
+                ?checked=${this.instance?.passwordChangeRequired ?? false}
+                help=${msg(
+                    "After signing in with their current password, the user must set a new password before continuing.",
+                )}
+            >
+            </ak-switch-input>
+
             <ak-text-input
                 name="path"
                 label=${msg("Path")}

@@ -372,6 +372,10 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
     groups = models.ManyToManyField("Group", related_name="users")
     roles = models.ManyToManyField("authentik_rbac.Role", related_name="users", blank=True)
     password_change_date = models.DateTimeField(auto_now_add=True)
+    password_change_required = models.BooleanField(
+        default=False,
+        help_text=_("User must change their password on the next login."),
+    )
 
     last_updated = models.DateTimeField(auto_now=True)
 
@@ -550,7 +554,14 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
         )
         return self.groups
 
-    def set_password(self, raw_password, signal=True, sender=None, request=None):
+    def set_password(
+        self,
+        raw_password,
+        signal=True,
+        sender=None,
+        request=None,
+        clear_password_change_required=True,
+    ):
         if self.pk and signal:
             from authentik.core.signals import password_changed
 
@@ -558,6 +569,8 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
                 sender = self
             password_changed.send(sender=sender, user=self, password=raw_password, request=request)
         self.password_change_date = now()
+        if clear_password_change_required:
+            self.password_change_required = False
         return super().set_password(raw_password)
 
     @staticmethod
@@ -586,6 +599,7 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
             password_hash_changed.send(sender=sender, user=self, request=request)
         self.password = password_hash
         self.password_change_date = now()
+        self.password_change_required = False
 
     def check_password(self, raw_password: str) -> bool:
         """
@@ -596,7 +610,7 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
         """
 
         def setter(raw_password):
-            self.set_password(raw_password, signal=False)
+            self.set_password(raw_password, signal=False, clear_password_change_required=False)
             # Password hash upgrades shouldn't be considered password changes.
             self._password = None
             self.save(update_fields=["password"])

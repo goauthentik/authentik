@@ -1,5 +1,6 @@
 import "#elements/buttons/SpinnerButton/index";
 import "#elements/forms/HorizontalFormElement";
+import "#components/ak-switch-input";
 
 import { aki } from "#common/api/client";
 import { PFSize } from "#common/enums";
@@ -128,7 +129,16 @@ export class UserPasswordForm extends Form<UserPasswordSetRequest> {
                     placeholder=${ifPresent(this.placeholder || this.label)}
                     autocomplete=${ifPresent(this.autocomplete)}
                 />
-            </ak-form-element-horizontal>`;
+            </ak-form-element-horizontal>
+
+            <ak-switch-input
+                name="passwordChangeRequired"
+                label=${msg("Require password change on next login")}
+                help=${msg(
+                    "After signing in with this password, the user must set a new password before continuing.",
+                )}
+            >
+            </ak-switch-input>`;
     }
 
     //#endregion

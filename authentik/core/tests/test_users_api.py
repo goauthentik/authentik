@@ -122,6 +122,33 @@ class TestUsersAPI(APITestCase):
         self.assertEqual(response.status_code, 204)
         self.admin.refresh_from_db()
         self.assertTrue(self.admin.check_password(new_pw))
+        self.assertFalse(self.admin.password_change_required)
+
+    def test_set_password_change_required(self):
+        """Test Direct password set can require a password change"""
+        self.client.force_login(self.admin)
+        new_pw = generate_key()
+        response = self.client.post(
+            reverse("authentik_api:user-set-password", kwargs={"pk": self.admin.pk}),
+            data={"password": new_pw, "password_change_required": True},
+        )
+        self.assertEqual(response.status_code, 204)
+        self.admin.refresh_from_db()
+        self.assertTrue(self.admin.check_password(new_pw))
+        self.assertTrue(self.admin.password_change_required)
+
+    def test_set_password_clears_change_required_by_default(self):
+        """Test Direct password set clears any pending password change requirement"""
+        self.client.force_login(self.admin)
+        self.admin.password_change_required = True
+        self.admin.save()
+        response = self.client.post(
+            reverse("authentik_api:user-set-password", kwargs={"pk": self.admin.pk}),
+            data={"password": generate_key()},
+        )
+        self.assertEqual(response.status_code, 204)
+        self.admin.refresh_from_db()
+        self.assertFalse(self.admin.password_change_required)
 
     def test_set_password_blank(self):
         """Test Direct password set"""
@@ -141,6 +168,24 @@ class TestUsersAPI(APITestCase):
         response = self._set_password_hash(self.user, password_hash)
 
         self._assert_password_hash_set(self.user, password, password_hash, response)
+
+    def test_set_password_hash_change_required(self):
+        """Test setting a user's password hash can require a password change."""
+        self.client.force_login(self.admin)
+        password = generate_key()
+        password_hash = make_password(password)
+        response = self._set_password_hash(self.user, password_hash, client=self.client)
+
+        self._assert_password_hash_set(self.user, password, password_hash, response)
+        self.assertFalse(self.user.password_change_required)
+
+        response = self.client.post(
+            reverse("authentik_api:user-set-password-hash", kwargs={"pk": self.user.pk}),
+            data={"password": password_hash, "password_change_required": True},
+        )
+        self.assertEqual(response.status_code, 204)
+        self.user.refresh_from_db()
+        self.assertTrue(self.user.password_change_required)
 
     def test_set_password_hash_invalid(self):
         """Test invalid password hashes are rejected."""
