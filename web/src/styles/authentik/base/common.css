@@ -20,7 +20,9 @@
 }
 
 @media (not (prefers-contrast: more)) {
-    input {
+    /* Unifies the PF outline behavior, fixing what appears to be a "double outline" */
+    input:not([type="checkbox"]):not([type="radio"]),
+    textarea {
         outline: none;
     }
 }
