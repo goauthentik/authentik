@@ -14,23 +14,32 @@ packages:
 # npm's behavior.
 nodeLinker: hoisted
 
+# Shared version references for the `catalog:` protocol. Keep these in sync with
+# web/package.json so overrides pin transitive deps to the versions we use.
+catalog:
+    esbuild: "^0.28.1"
+    eslint: "^9.39.4"
+    prettier: "^3.8.3"
+    prettier-plugin-packagejson: "^3.0.2"
+    typescript: "^6.0.3"
+
 overrides:
-    "@goauthentik/esbuild-plugin-live-reload>esbuild": "$esbuild"
-    "@goauthentik/esbuild-plugin-live-reload>typescript": "$typescript"
-    "@goauthentik/eslint-config>typescript": "$typescript"
-    "@goauthentik/prettier-config>prettier": "$prettier"
-    "@goauthentik/prettier-config>prettier-plugin-packagejson": "$prettier-plugin-packagejson"
-    "@goauthentik/prettier-config>typescript": "$typescript"
-    "@mrmarble/djangoql-completion>lex": "$lex"
+    "@goauthentik/esbuild-plugin-live-reload>esbuild": "catalog:"
+    "@goauthentik/esbuild-plugin-live-reload>typescript": "catalog:"
+    "@goauthentik/eslint-config>typescript": "catalog:"
+    "@goauthentik/prettier-config>prettier": "catalog:"
+    "@goauthentik/prettier-config>prettier-plugin-packagejson": "catalog:"
+    "@goauthentik/prettier-config>typescript": "catalog:"
+    "@mrmarble/djangoql-completion>lex": "workspace:*"
     "@mrmarble/djangoql-completion>lodash": "^4.18.1"
-    "@typescript-eslint/eslint-plugin>typescript": "$typescript"
-    "@typescript-eslint/parser>typescript": "$typescript"
-    "@typescript-eslint/typescript-estree>typescript": "$typescript"
-    "@typescript-eslint/utils>typescript": "$typescript"
-    "format-imports>eslint": "$eslint"
-    "node-fetch-commonjs>node-domexception": "$node-domexception"
+    "@typescript-eslint/eslint-plugin>typescript": "catalog:"
+    "@typescript-eslint/parser>typescript": "catalog:"
+    "@typescript-eslint/typescript-estree>typescript": "catalog:"
+    "@typescript-eslint/utils>typescript": "catalog:"
+    "format-imports>eslint": "catalog:"
+    "node-fetch-commonjs>node-domexception": "workspace:*"
     "rapidoc>@apitools/openapi-parser": "0.0.37"
-    "typescript-eslint>typescript": "$typescript"
+    "typescript-eslint>typescript": "catalog:"
     "wireit>brace-expansion": "^1.1.14"
 
 # Allow-list of dependencies whose install/postinstall scripts may run.
