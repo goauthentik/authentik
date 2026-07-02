@@ -40,7 +40,6 @@ overrides:
     "node-fetch-commonjs>node-domexception": "workspace:*"
     "rapidoc>@apitools/openapi-parser": "0.0.37"
     "typescript-eslint>typescript": "catalog:"
-    "wireit>brace-expansion": "^1.1.14"
 
 # Allow-list of dependencies whose install/postinstall scripts may run.
 # Everything else is blocked, replacing the prior `ignore-scripts=true` +
