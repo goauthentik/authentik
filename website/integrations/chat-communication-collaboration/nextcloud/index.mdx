@@ -111,6 +111,54 @@ To set a quota, define the `nextcloud_quota` attribute on a user, group, or Next
 
 If you created the `Nextcloud Profile` scope mapping and want authentik to send Nextcloud-specific group values, open the new application, click the **Application entitlements** tab, and create the entitlements that Nextcloud should receive in the `groups` claim. Bind the appropriate users or groups to each entitlement.
 
+### Configure the OpenID Connect user backend
+
+1. In Nextcloud, install the **OpenID Connect user backend** app.
+2. Log in to Nextcloud as an administrator and navigate to **Settings** > **OpenID Connect**.
+3. Click the **+** button and enter the following settings:
+    - **Identifier**: `authentik`
+    - **Client ID**: `<Client ID from authentik>`
+    - **Client secret**: `<Client Secret from authentik>`
+    - **Discovery endpoint**: `https://authentik.company/application/o/<application_slug>/.well-known/openid-configuration`
+    - **Scope**: `email profile openid`
+    - If you created the `Nextcloud Profile` scope mapping, add `nextcloud` to the **Scope** value.
+    - Under **Attribute mapping**:
+        - **User ID mapping**: `sub`
+        - **Display name mapping**: `name`
+        - **Email mapping**: `email`
+        - If you created the `Nextcloud Profile` scope mapping:
+            - **User ID mapping**: `user_id`
+            - **Quota mapping**: `quota`
+            - **Groups mapping**: `groups`
+            - Enable **Use group provisioning**.
+    - Disable **Use unique user ID** if you use `user_id` to match existing Nextcloud users or if you send the `admin` group for administrator access.
+
+:::info Local provider connections
+If authentik and Nextcloud are running on the same host and Nextcloud cannot reach authentik, add `'allow_local_remote_servers' => true` to the Nextcloud `config/config.php` file.
+:::
+
+### Enable OIDC back-channel logout _(optional)_
+
+To automatically log users out of their Nextcloud sessions when they log out of authentik, enable back-channel logout.
+
+1. In Nextcloud, navigate to **Settings** > **OpenID Connect**.
+2. Under **Registered Providers**, locate the provider with the identifier used earlier.
+3. Copy the back-channel logout URL for that provider. For example, `https://nextcloud.company/apps/user_oidc/backchannel-logout/authentik`.
+4. In authentik, navigate to **Applications** > **Providers** and edit the Nextcloud provider.
+5. Under **Protocol settings**, set **Logout URI** to the copied back-channel logout URL.
+6. Set **Logout Method** to `Back-channel`.
+7. Click **Update**.
+
+### Make OIDC the default login method _(optional)_
+
+If this is the only configured OpenID Connect provider, run the following command on the Nextcloud host to redirect users to authentik automatically when they access the Nextcloud login page:
+
+```bash
+sudo -u www-data php /var/www/nextcloud/occ config:app:set --type=string --value=0 user_oidc allow_multiple_user_backends
+```
+
+Administrators can still use Nextcloud's built-in authentication with `https://nextcloud.company/login?direct=1`.
+
 </TabItem>
 <TabItem value="saml">
 
@@ -175,96 +223,6 @@ If you created the `Nextcloud groups` property mapping, open the new application
 1. Navigate to **Applications** > **Providers** and click the name of the newly created Nextcloud provider.
 2. Under **Download signing certificate**, click **Download**. The contents of this certificate will be required when configuring Nextcloud.
 
-</TabItem>
-<TabItem value="ldap">
-
-To support the integration of Nextcloud with authentik over LDAP, you need to create an application/provider pair and deploy an LDAP outpost.
-
-### Create an application and provider
-
-1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
-    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
-    - **Choose a Provider type**: select **LDAP** as the provider type.
-    - **Configure the Provider**: provide a name (or accept the auto-provided name), the bind flow to use for this provider, and the following required configuration.
-        - Note the **Base DN** because it will be required later.
-    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
-3. Click **Submit** to save the new application and provider.
-
-### Create an LDAP outpost
-
-1. Navigate to **Applications** > **Outposts** and click **Create**.
-    - **Name**: provide a suitable name for the outpost.
-    - **Type**: select `LDAP`.
-    - **Applications**: add the newly created Nextcloud application to **Selected Applications**.
-2. Click **Create**.
-
-</TabItem>
-</Tabs>
-
-## Nextcloud configuration
-
-<Tabs
-defaultValue="oidc"
-values={[
-    { label: "OIDC", value: "oidc" },
-    { label: "SAML", value: "saml" },
-    { label: "LDAP", value: "ldap" }
-]}
->
-<TabItem value="oidc">
-
-### Configure the OpenID Connect user backend
-
-1. In Nextcloud, install the **OpenID Connect user backend** app.
-2. Log in to Nextcloud as an administrator and navigate to **Settings** > **OpenID Connect**.
-3. Click the **+** button and enter the following settings:
-    - **Identifier**: `authentik`
-    - **Client ID**: `<Client ID from authentik>`
-    - **Client secret**: `<Client Secret from authentik>`
-    - **Discovery endpoint**: `https://authentik.company/application/o/<application_slug>/.well-known/openid-configuration`
-    - **Scope**: `email profile openid`
-    - If you created the `Nextcloud Profile` scope mapping, add `nextcloud` to the **Scope** value.
-    - Under **Attribute mapping**:
-        - **User ID mapping**: `sub`
-        - **Display name mapping**: `name`
-        - **Email mapping**: `email`
-        - If you created the `Nextcloud Profile` scope mapping:
-            - **User ID mapping**: `user_id`
-            - **Quota mapping**: `quota`
-            - **Groups mapping**: `groups`
-            - Enable **Use group provisioning**.
-    - Disable **Use unique user ID** if you use `user_id` to match existing Nextcloud users or if you send the `admin` group for administrator access.
-
-:::info Local provider connections
-If authentik and Nextcloud are running on the same host and Nextcloud cannot reach authentik, add `'allow_local_remote_servers' => true` to the Nextcloud `config/config.php` file.
-:::
-
-### Enable OIDC back-channel logout _(optional)_
-
-To automatically log users out of their Nextcloud sessions when they log out of authentik, enable back-channel logout.
-
-1. In Nextcloud, navigate to **Settings** > **OpenID Connect**.
-2. Under **Registered Providers**, locate the provider with the identifier used earlier.
-3. Copy the back-channel logout URL for that provider. For example, `https://nextcloud.company/apps/user_oidc/backchannel-logout/authentik`.
-4. In authentik, navigate to **Applications** > **Providers** and edit the Nextcloud provider.
-5. Under **Protocol settings**, set **Logout URI** to the copied back-channel logout URL.
-6. Set **Logout Method** to `Back-channel`.
-7. Click **Update**.
-
-### Make OIDC the default login method _(optional)_
-
-If this is the only configured OpenID Connect provider, run the following command on the Nextcloud host to redirect users to authentik automatically when they access the Nextcloud login page:
-
-```bash
-sudo -u www-data php /var/www/nextcloud/occ config:app:set --type=string --value=0 user_oidc allow_multiple_user_backends
-```
-
-Administrators can still use Nextcloud's built-in authentication with `https://nextcloud.company/login?direct=1`.
-
-</TabItem>
-<TabItem value="saml">
-
 ### Configure SSO & SAML authentication
 
 1. Log in to Nextcloud as an administrator and navigate to **Apps** by clicking your profile picture in the top-right corner.
@@ -293,6 +251,27 @@ Using the UID attribute as username is not recommended because of its mutable na
 
 </TabItem>
 <TabItem value="ldap">
+
+To support the integration of Nextcloud with authentik over LDAP, you need to create an application/provider pair and deploy an LDAP outpost.
+
+### Create an application and provider
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
+    - **Choose a Provider type**: select **LDAP** as the provider type.
+    - **Configure the Provider**: provide a name (or accept the auto-provided name), the bind flow to use for this provider, and the following required configuration.
+        - Note the **Base DN** because it will be required later.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
+3. Click **Submit** to save the new application and provider.
+
+### Create an LDAP outpost
+
+1. Navigate to **Applications** > **Outposts** and click **Create**.
+    - **Name**: provide a suitable name for the outpost.
+    - **Type**: select `LDAP`.
+    - **Applications**: add the newly created Nextcloud application to **Selected Applications**.
+2. Click **Create**.
 
 ### Configure the LDAP user and group backend
 
@@ -333,30 +312,11 @@ Using the UID attribute as username is not recommended because of its mutable na
 
 ## Configuration verification
 
-<Tabs
-defaultValue="oidc"
-values={[
-    { label: "OIDC", value: "oidc" },
-    { label: "SAML", value: "saml" },
-    { label: "LDAP", value: "ldap" }
-]}
->
-<TabItem value="oidc">
+To confirm that authentik is properly configured with Nextcloud, log out of Nextcloud and use the login method you configured:
 
-To confirm that authentik is properly configured with Nextcloud, log out and log back in using the **Login with authentik** option. You should be redirected to authentik and then returned to the Nextcloud dashboard.
-
-</TabItem>
-<TabItem value="saml">
-
-To confirm that authentik is properly configured with Nextcloud, log out and log back in using the **SSO & SAML log in** option. You should be redirected to authentik and then returned to the Nextcloud dashboard.
-
-</TabItem>
-<TabItem value="ldap">
-
-To confirm that authentik is properly configured with Nextcloud, log out and log back in with an LDAP user from authentik.
-
-</TabItem>
-</Tabs>
+- For OIDC, click **Login with authentik**. You should be redirected to authentik and then returned to the Nextcloud dashboard.
+- For SAML, click **SSO & SAML log in**. You should be redirected to authentik and then returned to the Nextcloud dashboard.
+- For LDAP, log in with an LDAP user from authentik.
 
 ## Resources
 
