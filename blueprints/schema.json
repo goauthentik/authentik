@@ -8921,6 +8921,7 @@
                     "enum": [
                         "login",
                         "login_failed",
+                        "login_blocked",
                         "logout",
                         "user_write",
                         "user_offboarded",
@@ -9050,6 +9051,7 @@
                             "enum": [
                                 "login",
                                 "login_failed",
+                                "login_blocked",
                                 "logout",
                                 "user_write",
                                 "user_offboarded",
@@ -9822,6 +9824,7 @@
                         null,
                         "login",
                         "login_failed",
+                        "login_blocked",
                         "logout",
                         "user_write",
                         "user_offboarded",

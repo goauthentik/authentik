@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from collections.abc import Iterable
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Any
 
@@ -77,15 +78,18 @@ class PolicyResult:
 
     log_messages: list[LogEvent] | None
 
+    reasons: frozenset[str]
+
     _exec_time: int | None
 
-    def __init__(self, passing: bool, *messages: str):
+    def __init__(self, passing: bool, *messages: str, reasons: Iterable[str] | None = None):
         self.passing = passing
         self.messages = messages
         self.raw_result = None
         self.source_binding = None
         self.source_results = []
         self.log_messages = []
+        self.reasons = frozenset(reasons or ())
         self._exec_time = None
 
     def __repr__(self):

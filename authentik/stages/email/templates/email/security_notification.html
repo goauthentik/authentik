@@ -12,6 +12,12 @@
       {% trans "A new MFA device was added" %}
       {% elif event_action == "mfa_device_removed" %}
       {% trans "An MFA device was removed" %}
+      {% elif event_action == "login_blocked" %}
+      {% if "impossible_travel" in event_context.reasons %}
+      {% trans "A sign-in from an unusual location was blocked" %}
+      {% else %}
+      {% trans "A sign-in to your account was blocked" %}
+      {% endif %}
       {% else %}
       {% trans "Security notification" %}
       {% endif %}
@@ -35,6 +41,16 @@
           {% blocktrans %}
           A multi-factor authentication (MFA) device was just removed from your account. If you made this change, you can safely ignore this email.
           {% endblocktrans %}
+          {% elif event_action == "login_blocked" %}
+          {% if "impossible_travel" in event_context.reasons %}
+          {% blocktrans %}
+          We blocked a sign-in to your account because it came from a location too far from your previous sign-in to be possible. If this wasn't you, your password may be compromised.
+          {% endblocktrans %}
+          {% else %}
+          {% blocktrans %}
+          A sign-in to your account was blocked by a security policy. If this was you, try again from a recognized network, or contact your administrator.
+          {% endblocktrans %}
+          {% endif %}
           {% else %}
           {{ body }}
           {% endif %}

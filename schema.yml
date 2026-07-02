@@ -40361,6 +40361,7 @@ components:
       enum:
       - login
       - login_failed
+      - login_blocked
       - logout
       - user_write
       - user_offboarded
