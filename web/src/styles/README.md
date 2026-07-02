@@ -61,7 +61,7 @@ CSS files.
 
 ### The fourth pipeline: shadow scope
 
-Every major web component in our system inherts from our LitElement base component,
+Every major web component in our system inherits from our LitElement base component,
 `web/src/elements/Base.ts:AKElement`. The base element always adopts two sheets into the shadowroot
 of _every_ `AKElement`:
 
@@ -71,7 +71,7 @@ of _every_ `AKElement`:
 CSS Custom Properties defined in a parent element (native or custom) crosses the shadow boundary and
 affects the look and feel of child elements that consume those properties. The `@layer` directive
 controls only the specificity of the property declarations at the `document` level; the CSS Custom
-Property with the highest specifity when it his the element boundary wins.
+Property with the highest specificity when it his the element boundary wins.
 
 ---
 
