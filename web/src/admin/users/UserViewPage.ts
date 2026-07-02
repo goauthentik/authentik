@@ -35,9 +35,7 @@ import PFPage from "@patternfly/patternfly/components/Page/page.css";
 
 @customElement("ak-user-view")
 export class UserViewPage extends WithLazyTabs(
-    WithLicenseSummary(
-        WithLocale(WithBrandConfig(WithCapabilitiesConfig(WithSession(AKElement)))),
-    ),
+    WithLicenseSummary(WithLocale(WithBrandConfig(WithCapabilitiesConfig(WithSession(AKElement))))),
 ) {
     #api = aki(CoreApi);
 
