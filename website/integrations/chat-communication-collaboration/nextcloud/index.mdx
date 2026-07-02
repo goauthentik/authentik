@@ -16,7 +16,7 @@ import Tabs from "@theme/Tabs";
 > -- https://nextcloud.com/
 
 :::warning Server-side encryption
-If you require Nextcloud server-side encryption with per-user keys, use LDAP. OIDC and SAML do not provide Nextcloud with the user's cleartext password, which can prevent encrypted user data from being decrypted.
+If you require [Nextcloud server-side encryption](https://docs.nextcloud.com/server/latest/admin_manual/configuration_files/encryption_configuration.html) with per-user keys, use LDAP. OIDC and SAML do not provide Nextcloud with the user's cleartext password, which can prevent encrypted user data from being decrypted.
 :::
 
 :::caution HTTPS required
@@ -56,7 +56,7 @@ values={[
 
 To support the integration of Nextcloud with authentik over OIDC, you need to create an application/provider pair. If you want authentik to send Nextcloud storage quotas, group membership, or existing Nextcloud user IDs, also create a custom scope mapping.
 
-### Create a scope mapping in authentik
+### Create a scope mapping
 
 If you do not need storage quota, group information, administrator assignment, or existing-user matching in Nextcloud, skip to the next section.
 
@@ -92,7 +92,7 @@ This mapping reads Nextcloud-specific groups from application entitlements. Afte
 
 To set a quota, define the `nextcloud_quota` attribute on a user, group, or Nextcloud application entitlement. For example, setting it to `1 GB` restricts the user to 1 GB of storage. To connect an authentik user to an existing Nextcloud account, set the user's `nextcloud_user_id` attribute to the existing Nextcloud username.
 
-### Create an application and provider in authentik
+### Create an application and provider
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
@@ -118,7 +118,7 @@ If you created the `Nextcloud Profile` scope mapping and want authentik to send 
 
 To support the integration of Nextcloud with authentik over SAML, you need to create an application/provider pair. If you want authentik to send Nextcloud storage quotas or group memberships, also create SAML property mappings.
 
-### Create SAML property mappings in authentik
+### Create SAML property mappings
 
 If you do not need storage quota or group information in Nextcloud, skip to the next section.
 
@@ -154,7 +154,7 @@ If you do not need storage quota or group information in Nextcloud, skip to the 
 
 This mapping reads Nextcloud-specific groups from application entitlements. After you create the application below, create entitlements with names that match the group names Nextcloud should receive. To grant Nextcloud administrator access, create an entitlement named `admin` and bind the appropriate users or groups to it.
 
-### Create an application and provider in authentik
+### Create an application and provider
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
@@ -180,7 +180,7 @@ If you created the `Nextcloud groups` property mapping, open the new application
 
 To support the integration of Nextcloud with authentik over LDAP, you need to create an application/provider pair and deploy an LDAP outpost.
 
-### Create an application and provider in authentik
+### Create an application and provider
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
@@ -240,7 +240,7 @@ values={[
 If authentik and Nextcloud are running on the same host and Nextcloud cannot reach authentik, add `'allow_local_remote_servers' => true` to the Nextcloud `config/config.php` file.
 :::
 
-### Optional: Enable OIDC back-channel logout
+### Enable OIDC back-channel logout _(optional)_
 
 To automatically log users out of their Nextcloud sessions when they log out of authentik, enable back-channel logout.
 
@@ -252,7 +252,7 @@ To automatically log users out of their Nextcloud sessions when they log out of 
 6. Set **Logout Method** to `Back-channel`.
 7. Click **Update**.
 
-### Optional: Make OIDC the default login method
+### Make OIDC the default login method _(optional)_
 
 If this is the only configured OpenID Connect provider, run the following command on the Nextcloud host to redirect users to authentik automatically when they access the Nextcloud login page:
 
