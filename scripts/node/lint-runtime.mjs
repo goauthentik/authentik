@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 /**
- * @file Lints the installed Node.js and npm versions against the requirements specified in package.json.
+ * @file Lints the installed Node.js and pnpm versions against the requirements specified in package.json.
  *
  * Usage:
- *   lint-node [options] [directory]
+ *   lint-runtime [options] [directory]
  *
  * Exit codes:
  *   0  Versions are in sync
@@ -14,10 +14,9 @@ import * as assert from "node:assert/strict";
 import { parseArgs } from "node:util";
 
 import { ConsoleLogger } from "../../packages/logger-js/lib/node.js";
-import { CommandError, parseCWD, reportAndExit } from "./utils/commands.mjs";
-import { corepack } from "./utils/corepack.mjs";
+import { parseCWD, reportAndExit } from "./utils/commands.mjs";
 import { resolveRepoRoot } from "./utils/git.mjs";
-import { compareVersions, findNPMPackage, loadJSON, node, npm, parseRange } from "./utils/node.mjs";
+import { compareVersions, findNPMPackage, loadJSON, node, pnpm, parseRange } from "./utils/node.mjs";
 
 const logger = ConsoleLogger.prefix("lint-runtime");
 
@@ -33,10 +32,10 @@ async function readRequirements(start) {
 
     const nodeVersion = await node`--version`().then((output) => output.replace(/^v/, ""));
 
-    const requiredNpmVersion = packageJSONData.engines?.npm;
+    const requiredPnpmVersion = packageJSONData.engines?.pnpm;
     const requiredNodeVersion = packageJSONData.engines?.node;
 
-    return { nodeVersion, requiredNpmVersion, requiredNodeVersion };
+    return { nodeVersion, requiredPnpmVersion, requiredNodeVersion };
 }
 
 async function main() {
@@ -50,47 +49,28 @@ async function main() {
     logger.info(`cwd ${cwd}`);
     logger.info(`repository ${repoRoot || "not found"}`);
 
-    const corepackVersion = await corepack`--version`().catch(() => null);
-    const useCorepack = !!corepackVersion;
-    logger.info(`corepack ${corepackVersion || "disabled"}`);
+    const pnpmVersion = await pnpm`--version`({ cwd }).catch((error) => {
+        logger.warn(`Failed to read pnpm version: ${error.message}`);
+        return null;
+    });
 
-    const npmVersion = await npm`--version`({ cwd, useCorepack })
-        .then((version) => {
-            logger.info(`npm${corepackVersion ? " (via Corepack)" : ""} ${version}`);
+    if (pnpmVersion) {
+        logger.info(`pnpm ${pnpmVersion}`);
+    }
 
-            return version;
-        })
-        .catch((error) => {
-            if (error instanceof CommandError && corepackVersion) {
-                logger.warn(`Failed to read npm version via Corepack ${error.message}`);
-
-                logger.info(`Attempting to read npm version directly without Corepack...`);
-                // Corepack might be misconfigured or outdated.
-                // Attempting a second read without Corepack can help us distinguish
-                // between a general npm issue and a Corepack-specific one.
-                return npm`--version`({ cwd }).then((version) => {
-                    logger.info(`npm (direct) ${version}`);
-
-                    return version;
-                });
-            }
-
-            throw error;
-        });
-
-    const { nodeVersion, requiredNpmVersion, requiredNodeVersion } = await readRequirements(cwd);
+    const { nodeVersion, requiredPnpmVersion, requiredNodeVersion } = await readRequirements(cwd);
 
     logger.info(`node ${nodeVersion}`);
 
-    if (requiredNpmVersion) {
-        logger.info(`package.json npm ${requiredNpmVersion}`);
+    if (requiredPnpmVersion && pnpmVersion) {
+        logger.info(`package.json pnpm ${requiredPnpmVersion}`);
 
-        const { operator, version: required } = parseRange(requiredNpmVersion);
-        const result = compareVersions(npmVersion, required);
+        const { operator, version: required } = parseRange(requiredPnpmVersion);
+        const result = compareVersions(pnpmVersion, required);
 
         assert.ok(
             operator === ">=" ? result >= 0 : result === 0,
-            `npm version ${npmVersion} does not satisfy required version ${requiredNpmVersion}`,
+            `pnpm version ${pnpmVersion} does not satisfy required version ${requiredPnpmVersion}`,
         );
     }
 
@@ -109,7 +89,7 @@ async function main() {
 
 main()
     .then(() => {
-        logger.info("✅ Node.js and npm versions are in sync.");
+        logger.info("✅ Node.js and pnpm versions are in sync.");
         process.exit(0);
     })
     .catch((error) => reportAndExit(error, logger));
