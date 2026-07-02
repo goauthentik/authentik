@@ -35,11 +35,12 @@ class GrantRequestFinalStageView(StageView):
                     binding=None,
                 )
             Event.new(
-                EventAction.MODEL_CREATED,
+                EventAction.ACCESS_REQUEST_CREATED,
                 model=req,
+                targets=pbms,
                 hyperlink=request.build_absolute_uri(reverse("authentik_core:if-admin"))
-                + f"#/pam/requests/{req.uuid}/respond",
-                hyperlink_label="Respond",
+                + f"#/pam/requests/{req.uuid}/fulfill",
+                hyperlink_label="Fulfill",
             ).from_http(request, user)
         return self.executor.stage_ok()
 

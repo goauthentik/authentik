@@ -130,6 +130,9 @@ class EventAction(models.TextChoices):
     REVIEW_ATTESTED = "review_attested"
     REVIEW_COMPLETED = "review_completed"
 
+    ACCESS_REQUEST_CREATED = "access_request_created"
+    ACCESS_REQUEST_FULFILLED = "access_request_fulfilled"
+
     CUSTOM_PREFIX = "custom_"
 
 
