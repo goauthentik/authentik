@@ -75,6 +75,13 @@ class GeoIPPolicy(Policy):
 
         result = PolicyResult(passing, *messages)
         result.source_results = list(chain(static_results, dynamic_results))
+        if not passing:
+            relevant: list[PolicyResult] = []
+            if not static_passing:
+                relevant += static_results
+            if not dynamic_passing:
+                relevant += dynamic_results
+            result.reasons = frozenset(reason for r in relevant for reason in r.reasons)
 
         return result
 
@@ -90,7 +97,7 @@ class GeoIPPolicy(Policy):
 
         if asn not in self.asns:
             message = _("Client IP is not part of an allowed autonomous system.")
-            return PolicyResult(False, message)
+            return PolicyResult(False, message, reasons={"forbidden_asn"})
 
         return PolicyResult(True)
 
@@ -106,7 +113,7 @@ class GeoIPPolicy(Policy):
 
         if country not in self.countries:
             message = _("Client IP is not in an allowed country.")
-            return PolicyResult(False, message)
+            return PolicyResult(False, message, reasons={"forbidden_country"})
 
         return PolicyResult(True)
 
@@ -121,7 +128,7 @@ class GeoIPPolicy(Policy):
         _now = now()
         geoip_data: GeoIPDict | None = request.context.get("geoip")
         if not geoip_data:
-            return PolicyResult(False)
+            return PolicyResult(False, reasons={"no_geoip_data"})
         if not previous_logins.exists():
             return PolicyResult(True)
         result = False
@@ -139,7 +146,9 @@ class GeoIPPolicy(Policy):
                 self.history_max_distance_km + self.distance_tolerance_km
             ):
                 return PolicyResult(
-                    False, _("Distance from previous authentication is larger than threshold.")
+                    False,
+                    _("Distance from previous authentication is larger than threshold."),
+                    reasons={"history_distance"},
                 )
             # Check if distance between `previous_login` and now is more
             # than max distance per hour times the amount of hours since the previous login
@@ -149,7 +158,9 @@ class GeoIPPolicy(Policy):
             if self.check_impossible_travel and dist.km >= (
                 (MAX_DISTANCE_HOUR_KM * rel_time_hours) + self.distance_tolerance_km
             ):
-                return PolicyResult(False, _("Distance is further than possible."))
+                return PolicyResult(
+                    False, _("Distance is further than possible."), reasons={"impossible_travel"}
+                )
             result = True
         return PolicyResult(result)
 

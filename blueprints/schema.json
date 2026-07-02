@@ -8300,6 +8300,7 @@
                     "enum": [
                         "login",
                         "login_failed",
+                        "login_blocked",
                         "logout",
                         "user_write",
                         "suspicious_request",
@@ -8424,6 +8425,7 @@
                             "enum": [
                                 "login",
                                 "login_failed",
+                                "login_blocked",
                                 "logout",
                                 "user_write",
                                 "suspicious_request",
@@ -9191,6 +9193,7 @@
                         null,
                         "login",
                         "login_failed",
+                        "login_blocked",
                         "logout",
                         "user_write",
                         "suspicious_request",

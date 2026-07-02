@@ -23,6 +23,7 @@ type EventActions string
 const (
 	EVENTACTIONS_LOGIN                      EventActions = "login"
 	EVENTACTIONS_LOGIN_FAILED               EventActions = "login_failed"
+	EVENTACTIONS_LOGIN_BLOCKED              EventActions = "login_blocked"
 	EVENTACTIONS_LOGOUT                     EventActions = "logout"
 	EVENTACTIONS_USER_WRITE                 EventActions = "user_write"
 	EVENTACTIONS_SUSPICIOUS_REQUEST         EventActions = "suspicious_request"
@@ -62,6 +63,7 @@ const (
 var AllowedEventActionsEnumValues = []EventActions{
 	"login",
 	"login_failed",
+	"login_blocked",
 	"logout",
 	"user_write",
 	"suspicious_request",

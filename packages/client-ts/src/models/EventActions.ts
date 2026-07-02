@@ -19,6 +19,7 @@
 export const EventActions = {
     Login: "login",
     LoginFailed: "login_failed",
+    LoginBlocked: "login_blocked",
     Logout: "logout",
     UserWrite: "user_write",
     SuspiciousRequest: "suspicious_request",

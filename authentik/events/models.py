@@ -92,6 +92,7 @@ class EventAction(models.TextChoices):
 
     LOGIN = "login"
     LOGIN_FAILED = "login_failed"
+    LOGIN_BLOCKED = "login_blocked"
     LOGOUT = "logout"
 
     USER_WRITE = "user_write"
@@ -608,6 +609,7 @@ class NotificationTransport(TasksModel, SerializerModel):
         if notification.event:
             context["title"] += notification.event.action
             context["event_action"] = notification.event.action
+            context["event_context"] = notification.event.context
             for key, value in notification.event.context.items():
                 if not isinstance(value, str):
                     continue
