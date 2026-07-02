@@ -1,5 +1,7 @@
 ---
 title: SCIM Provider
+sidebar_position: 11
+sidebar_label: "SCIM Provider"
 ---
 
 SCIM (System for Cross-domain Identity Management) is a set of APIs to provision users and groups. The SCIM provider in authentik supports SCIM 2.0 and can be used to provision and sync users from authentik into other applications.
@@ -95,19 +97,21 @@ You can limit which users and groups a SCIM provider synchronizes. User filterin
 
 ### User filtering
 
-Use **Exclude service accounts** in the SCIM provider settings when you do not want service accounts to be synchronized.
+Users that are synchronized via a SCIM provider are controlled through application access policies. When a SCIM provider is configured as a backchannel provider for an application, only users who are bound to that application are synchronized. A common setup is to bind a group to the SCIM application so that all members of that group are synchronized to the target SCIM endpoint.
 
-Users can also be filtered through application access policies. If the SCIM provider is attached to a backchannel application, only users who can view that application are synchronized.
+If no users are bound to the SCIM application, the SCIM provider synchronizes all users.
+
+When a user is no longer assigned to the application—either directly or through a group—and a SCIM sync task runs, that user is deprovisioned from the target SCIM endpoint.
+
+Use **Exclude service accounts** in the SCIM provider settings when you do not want service accounts to be synchronized.
 
 ### Group filters
 
-Group filters define the synchronization scope for groups.
+Group filters define the synchronization scope for groups. Group filters apply only to groups. They do not limit which users are synchronized.
 
 If no group filters are selected, the SCIM provider synchronizes all groups.
 
 If group filters are selected, only the selected groups are synchronized.
-
-Group filters apply only to groups. They do not limit which users are synchronized.
 
 Changing the selected group filters does _not_ remove groups or memberships that were synchronized previously.
 
@@ -121,6 +125,7 @@ Available compatibility modes are:
 - **AWS**: Disables PATCH operations for AWS Identity Center compatibility
 - **Slack**: Enables filtering support for Slack's SCIM implementation
 - **Salesforce**: Uses the non-standard `/ServiceProviderConfigs` endpoint
+- **GitLab**: Skips the `ServiceProviderConfig` endpoint because GitLab's SCIM implementation does not expose it
 - **Webex**: Uses the vendor-specific behavior required for Webex SCIM
 - **vCenter**: Skips the `ServiceProviderConfig` endpoint, which is not implemented in VMware vCenter
 

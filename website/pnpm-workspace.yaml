@@ -1,0 +1,61 @@
+packages:
+  - "vendored/*"
+  - "docusaurus-theme"
+  - "api"
+  - "integrations"
+  - "docs"
+
+# Docusaurus and several first-party plugins rely on phantom deps
+# (notably `@docusaurus/utils`) that npm hoisted. Until each is added as an
+# explicit dependency, fall back to the flat hoisted layout that mirrors
+# npm's behavior.
+nodeLinker: hoisted
+
+catalog:
+  eslint: "^9.39.3"
+  typescript: "^6.0.3"
+  prettier-plugin-packagejson: "^3.0.2"
+
+overrides:
+  "@goauthentik/docusaurus-config>react": "^19.2.6"
+  "@goauthentik/docusaurus-config>react-dom": "^19.2.6"
+  "@goauthentik/docusaurus-config>@docusaurus/theme-common": "^3.10.1"
+  "@goauthentik/eslint-config>typescript": "catalog:"
+  "@goauthentik/prettier-config>prettier-plugin-packagejson": "catalog:"
+  "@typescript-eslint/parser>typescript": "catalog:"
+  "@typescript-eslint/utils>typescript": "catalog:"
+  "docusaurus-theme-openapi-docs>postman-code-generators": "^2.1.1"
+  "docusaurus-theme-openapi-docs>detect-package-manager": "workspace:*"
+  "docusaurus-theme-openapi-docs>shelljs": "0.10.0"
+  "format-imports>eslint": "catalog:"
+  "lodash": "^4.18.1"
+  "postman-code-generators>detect-package-manager": "workspace:*"
+  "postman-code-generators>shelljs": "0.10.0"
+  "postman-collection": "^5.3.0"
+  "typescript-eslint>typescript": "catalog:"
+  "uuid": "^14.0.0"
+
+# Allow-list of dependencies whose install/postinstall scripts may run.
+# Everything else is blocked, replacing the prior `ignore-scripts=true` +
+# `npm rebuild --foreground-scripts <pkg>` pattern from #20400. Each entry
+# is audited at review time — adding a package here grants it arbitrary code
+# execution at install.
+onlyBuiltDependencies:
+  - "@parcel/watcher"
+  - "@swc/core"
+
+# Explicit approval map for pnpm 11+. `true` = allowed (mirror
+# onlyBuiltDependencies); `false` = explicitly declined to silence the
+# "pending approval" prompt without running the install script.
+allowBuilds:
+  "@parcel/watcher": true
+  "@swc/core": true
+  core-js: false
+  postman-code-generators: false
+
+minimumReleaseAgeExclude:
+  - js-yaml@4.1.1
+  - serialize-javascript@7.0.3
+  - yaml@1.10.3
+  - serialize-javascript@7.0.5
+  - '@types/node@26.1.0'

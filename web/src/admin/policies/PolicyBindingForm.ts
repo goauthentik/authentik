@@ -26,6 +26,8 @@ import {
     User,
 } from "@goauthentik/api";
 
+import { match, P } from "ts-pattern";
+
 import { msg } from "@lit/localize";
 import { CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
@@ -33,6 +35,37 @@ import { customElement, property, state } from "lit/decorators.js";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 
 export type PolicyBindingNotice = { type: PolicyBindingCheckTarget; notice: string };
+
+export const pickPolicyGroupUser = (
+    binding: Partial<PolicyBinding> | null | undefined,
+    current: PolicyBindingCheckTarget,
+): PolicyBindingCheckTarget =>
+    match(binding)
+        .with({ policyObj: P.nonNullable }, () => PolicyBindingCheckTarget.Policy)
+        .with({ groupObj: P.nonNullable }, () => PolicyBindingCheckTarget.Group)
+        .with({ userObj: P.nonNullable }, () => PolicyBindingCheckTarget.User)
+        .otherwise(() => current);
+
+export function cleanBindingForSend(
+    data: PolicyBinding,
+    type: PolicyBindingCheckTarget,
+): PolicyBinding {
+    switch (type) {
+        case PolicyBindingCheckTarget.Policy:
+            data.user = null;
+            data.group = null;
+            break;
+        case PolicyBindingCheckTarget.Group:
+            data.policy = null;
+            data.user = null;
+            break;
+        case PolicyBindingCheckTarget.User:
+            data.policy = null;
+            data.group = null;
+            break;
+    }
+    return data;
+}
 
 @customElement("ak-policy-binding-form")
 export class PolicyBindingForm<T extends PolicyBinding = PolicyBinding> extends ModelForm<
@@ -47,15 +80,7 @@ export class PolicyBindingForm<T extends PolicyBinding = PolicyBinding> extends 
         const binding = await aki(PoliciesApi).policiesBindingsRetrieve({
             policyBindingUuid: pk,
         });
-        if (binding?.policyObj) {
-            this.policyGroupUser = PolicyBindingCheckTarget.Policy;
-        }
-        if (binding?.groupObj) {
-            this.policyGroupUser = PolicyBindingCheckTarget.Group;
-        }
-        if (binding?.userObj) {
-            this.policyGroupUser = PolicyBindingCheckTarget.User;
-        }
+        this.policyGroupUser = pickPolicyGroupUser(binding, this.policyGroupUser);
         return binding as T;
     }
 
@@ -103,20 +128,8 @@ export class PolicyBindingForm<T extends PolicyBinding = PolicyBinding> extends 
         if (this.targetPk) {
             data.target = this.targetPk;
         }
-        switch (this.policyGroupUser) {
-            case PolicyBindingCheckTarget.Policy:
-                data.user = null;
-                data.group = null;
-                break;
-            case PolicyBindingCheckTarget.Group:
-                data.policy = null;
-                data.user = null;
-                break;
-            case PolicyBindingCheckTarget.User:
-                data.policy = null;
-                data.group = null;
-                break;
-        }
+
+        data = cleanBindingForSend(data, this.policyGroupUser);
 
         if (this.instance?.pk) {
             return aki(PoliciesApi).policiesBindingsUpdate({

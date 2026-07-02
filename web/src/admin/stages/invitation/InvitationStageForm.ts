@@ -14,23 +14,13 @@ import { customElement } from "lit/decorators.js";
 
 @customElement("ak-stage-invitation-form")
 export class InvitationStageForm extends BaseStageForm<InvitationStage> {
-    loadInstance(pk: string): Promise<InvitationStage> {
-        return aki(StagesApi).stagesInvitationStagesRetrieve({
-            stageUuid: pk,
-        });
-    }
-
-    async send(data: InvitationStage): Promise<InvitationStage> {
-        if (this.instance) {
-            return aki(StagesApi).stagesInvitationStagesUpdate({
-                stageUuid: this.instance.pk || "",
-                invitationStageRequest: data,
-            });
-        }
-        return aki(StagesApi).stagesInvitationStagesCreate({
-            invitationStageRequest: data,
-        });
-    }
+    protected endpoints = {
+        load: (stageUuid: string) => aki(StagesApi).stagesInvitationStagesRetrieve({ stageUuid }),
+        create: (invitationStageRequest: InvitationStage) =>
+            aki(StagesApi).stagesInvitationStagesCreate({ invitationStageRequest }),
+        update: (stageUuid: string, invitationStageRequest: InvitationStage) =>
+            aki(StagesApi).stagesInvitationStagesUpdate({ stageUuid, invitationStageRequest }),
+    };
 
     protected override renderForm(): TemplateResult {
         return html` <span>

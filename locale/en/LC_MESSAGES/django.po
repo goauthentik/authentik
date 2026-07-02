@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-06-11 00:42+0000\n"
+"POT-Creation-Date: 2026-06-30 00:36+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -587,6 +587,10 @@ msgstr ""
 
 #: authentik/core/tasks.py
 msgid "Remove temporary users created by SAML Sources."
+msgstr ""
+
+#: authentik/core/templates/base/skeleton.html
+msgid "Recovery session is active. Custom branding is disabled."
 msgstr ""
 
 #: authentik/core/templates/if/error.html
@@ -2381,6 +2385,20 @@ msgstr ""
 msgid "Handle backchannel logout notifications dispatched via signal"
 msgstr ""
 
+#: authentik/providers/oauth2/templates/if/oauth_form_post.html
+msgid "Redirecting..."
+msgstr ""
+
+#: authentik/providers/oauth2/templates/if/oauth_form_post.html
+msgid ""
+"Your browser does not support JavaScript, please click below to continue."
+msgstr ""
+
+#: authentik/providers/oauth2/templates/if/oauth_form_post.html
+#: authentik/stages/identification/stage.py
+msgid "Continue"
+msgstr ""
+
 #: authentik/providers/oauth2/views/device_init.py
 msgid "Invalid code"
 msgstr ""
@@ -2822,6 +2840,10 @@ msgstr ""
 
 #: authentik/providers/scim/models.py
 msgid "Salesforce"
+msgstr ""
+
+#: authentik/providers/scim/models.py
+msgid "GitLab"
 msgstr ""
 
 #: authentik/providers/scim/models.py
@@ -4014,6 +4036,14 @@ msgid ""
 msgstr ""
 
 #: authentik/stages/captcha/models.py
+msgid "Form encoded"
+msgstr ""
+
+#: authentik/stages/captcha/models.py
+msgid "JSON"
+msgstr ""
+
+#: authentik/stages/captcha/models.py
 msgid "Public key, acquired your captcha Provider."
 msgstr ""
 
@@ -4400,10 +4430,6 @@ msgstr ""
 msgid "Log in"
 msgstr ""
 
-#: authentik/stages/identification/stage.py
-msgid "Continue"
-msgstr ""
-
 #: authentik/stages/invitation/models.py
 msgid ""
 "If this flag is set, this Stage will jump to the next Stage when no "
@@ -4698,11 +4724,24 @@ msgid "Failed to update user. Please try again later."
 msgstr ""
 
 #: authentik/tasks/models.py
+#: packages/django-dramatiq-postgres/django_dramatiq_postgres/models.py
+msgid "Tasks that must complete for this task to run."
+msgstr ""
+
+#: authentik/tasks/models.py
 msgid "Tenant this task belongs to"
 msgstr ""
 
 #: authentik/tasks/models.py
 msgid "Retry failed task"
+msgstr ""
+
+#: authentik/tasks/models.py
+msgid "Task dependency"
+msgstr ""
+
+#: authentik/tasks/models.py
+msgid "Task dependencies"
 msgstr ""
 
 #: authentik/tasks/models.py

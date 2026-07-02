@@ -17,6 +17,7 @@
  * @export
  */
 export const LastTaskStatusEnum = {
+    WaitingForDependencies: "waiting_for_dependencies",
     Queued: "queued",
     Consumed: "consumed",
     Preprocess: "preprocess",
