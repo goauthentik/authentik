@@ -44,21 +44,21 @@
         "find-free-ports": "^3.1.1"
     },
     "devDependencies": {
-        "@eslint/js": "^10.0.1",
+        "@eslint/js": "^9.39.3",
         "@goauthentik/eslint-config": "link:../eslint-config",
         "@goauthentik/logger-js": "link:../logger-js",
         "@goauthentik/prettier-config": "link:../prettier-config",
         "@goauthentik/tsconfig": "link:../tsconfig",
         "@types/node": "^25.7.0",
         "esbuild": "^0.28.1",
-        "eslint": "^10.5.0",
+        "eslint": "^9.39.3",
         "pino": "^10.3.1",
         "prettier": "^3.8.3",
         "prettier-plugin-packagejson": "^3.0.2",
         "typedoc": "^0.28.18",
         "typedoc-plugin-markdown": "^4.11.0",
         "typescript": "^6.0.3",
-        "typescript-eslint": "^8.62.0"
+        "typescript-eslint": "^8.59.3"
     },
     "peerDependencies": {
         "@goauthentik/logger-js": "^1.0.1",
