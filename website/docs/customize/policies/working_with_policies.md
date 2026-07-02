@@ -33,10 +33,10 @@ If you are not sure which policy type to choose, see [Types of policies in authe
 
 After creating the policy, you can bind it to either a:
 
-- [flow](../../add-secure-apps/flows-stages/flow/index.md)
-- [stage binding](../../add-secure-apps/flows-stages/stages/index.md#stage-bindings)
-- [application](../../add-secure-apps/applications/index.md)
-- [source](../../users-sources/sources/index.md)
+- [Flow](../../add-secure-apps/flows-stages/flow/index.md)
+- [Stage binding](../../add-secure-apps/flows-stages/stages/index.md#stage-bindings)
+- [Application](../../add-secure-apps/applications/index.md)
+- [Source](../../users-sources/sources/index.md)
 
 For background about policy bindings, stage bindings, and why policies on stages are bound to flow-stage bindings, see [Bindings in authentik](../../add-secure-apps/bindings-overview/index.md).
 

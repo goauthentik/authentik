@@ -6,8 +6,8 @@ sidebar_label: "Bindings"
 
 A binding connects one authentik object to another object that uses it. Bindings let authentik answer two common questions:
 
-- Where should authentik evaluate this policy, user, or group?
-- Where should authentik insert this stage into a flow?
+- Where should authentik evaluate this [policy](../../customize/policies/index.md), user, or group?
+- Where should authentik insert this [stage](../flows-stages/stages/index.md) into a flow?
 
 A policy answers "should this request pass?" A policy binding decides where authentik asks that question.
 
@@ -15,7 +15,7 @@ For step-by-step links, see [Work with bindings](./work-with-bindings.md).
 
 ## Binding types
 
-The two binding types that you will work with most often are policy bindings and flow-stage bindings.
+The two most common binding types are policy bindings and flow-stage bindings.
 
 - **Policy bindings** attach a policy, user, or group to a target that supports policy binding.
 - **Flow-stage bindings** attach a stage to a flow and define where that stage runs.
@@ -26,17 +26,17 @@ Use a policy binding when you want to control whether a target is allowed, denie
 
 The policy binding system is shared by several authentik objects. You can bind policies, users, and groups to these targets:
 
-| Target                  | What the binding controls                               |
-| ----------------------- | ------------------------------------------------------- |
-| Flow                    | Whether the user can start or continue using the flow.  |
-| Flow-stage binding      | Whether a specific stage runs in that flow.             |
-| Application             | Whether the user can view and access the application.   |
-| Application entitlement | Whether the user has access to an entitlement.          |
-| Source                  | Whether the source can be used for login or enrollment. |
-| Device                  | Whether the device passes the configured access checks. |
-| Device access group     | Whether the device is part of the access group.         |
-| Notification rule       | Whether the notification rule applies.                  |
-| RAC endpoint            | Whether the user can access the Remote Access endpoint. |
+| Target                  | What the binding controls                                |
+| ----------------------- | -------------------------------------------------------- |
+| Flow                    | Whether the user can start or continue using the flow.   |
+| Flow-stage binding      | Whether a specific stage applies to a user in that flow. |
+| Application             | Whether the user can view and access the application.    |
+| Application entitlement | Whether the user has access to an entitlement.           |
+| Source                  | Whether the source can be used for login or enrollment.  |
+| Device                  | Whether the device passes the configured access checks.  |
+| Device access group     | Whether the device is part of the access group.          |
+| Notification rule       | Whether the notification rule applies.                   |
+| RAC endpoint            | Whether the user can access the Remote Access endpoint.  |
 
 Stages themselves are not policy binding targets. A stage is attached to a flow through a flow-stage binding, so when you bind a policy to a stage in a flow, you are binding it to that flow-stage binding.
 
