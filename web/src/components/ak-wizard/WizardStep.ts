@@ -62,7 +62,7 @@ export abstract class WizardStep extends AKElement {
 
                 & > * {
                     width: 100%;
-                    flex: 1 1 auto;
+                    flex: 0 1 auto;
                 }
             }
         `,

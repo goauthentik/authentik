@@ -29,7 +29,7 @@ To support the integration of FortiAnalyzer with authentik, you need to create a
 
 ### Create a property mapping in authentik
 
-FortiAnalyzer expects a SAML attribute named `username` that contains the value used to identify the administrator account. This example uses the authentik username, but you can return any user attribute that matches the FortiAnalyzer administrator identifier.
+FortiAnalyzer expects the SAML NameID and a SAML attribute named `username` to identify the administrator account. This example uses the authentik username for both values, but you can return any user attribute that matches the FortiAnalyzer administrator identifier.
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Customization** > **Property Mappings** and click **Create**.
@@ -46,7 +46,7 @@ FortiAnalyzer expects a SAML attribute named `username` that contains the value 
 5. Click **Finish** to save the property mapping.
 
 :::info Optional SAML attributes
-FortiAnalyzer also accepts `profilename` and `adoms` attributes. The `profilename` attribute assigns a matching admin profile that already exists on FortiAnalyzer. The `adoms` attribute grants access to one or more ADOMs. To use either attribute, create additional SAML provider property mappings with the corresponding **SAML Attribute Name**, return the desired values from the **Expression**, and add the mappings to **Selected User Property Mappings** when configuring the provider.
+FortiAnalyzer also accepts `profilename` and `adoms` attributes for wildcard SSO administrators that allow external profile or ADOM overrides. The `profilename` attribute can assign a matching admin profile that already exists on FortiAnalyzer. The `adoms` attribute can grant access to one or more ADOMs. To use either attribute, create additional SAML provider property mappings with the corresponding **SAML Attribute Name**, return the desired values from the **Expression**, and add the mappings to **Selected User Property Mappings** when configuring the provider.
 :::
 
 ### Create an application and provider in authentik
@@ -86,7 +86,7 @@ FortiAnalyzer also accepts `profilename` and `adoms` attributes. The `profilenam
 6. Click **Apply** to save the configuration.
 
 :::info Administrator permissions
-With **Auto Create Admin** enabled, newly-created SSO administrators receive the configured default admin profile. If users should receive permissions through SAML attributes instead, create matching FortiAnalyzer admin profiles and ADOMs, and send the optional `profilename` and `adoms` attributes from authentik.
+With **Auto Create Admin** enabled, newly-created SSO administrators receive the configured default admin profile. If users should receive permissions through SAML attributes instead, create matching FortiAnalyzer admin profiles and ADOMs, configure wildcard SSO administrator overrides in FortiAnalyzer, and send the optional `profilename` and `adoms` attributes from authentik.
 :::
 
 ## Configuration verification
@@ -96,4 +96,4 @@ To confirm that authentik is properly configured with FortiAnalyzer, open FortiA
 ## Resources
 
 - [FortiAnalyzer Administration Guide - SAML admin authentication](https://docs.fortinet.com/document/fortianalyzer/8.0.0/administration-guide/981386/saml-admin-authentication)
-- [FortiAnalyzer CLI Reference - SAML](https://docs.fortinet.com/document/fortianalyzer/8.0.0/cli-reference/312574/saml)
+- [Fortinet Community - SAML attributes for ADOM and admin profile override with wildcard SSO administrators](https://community.fortinet.com/fortimanager-27/technical-tip-saml-attributes-for-adom-and-admin-profile-override-with-wildcard-sso-administrators-127057)
