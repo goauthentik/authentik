@@ -39,7 +39,7 @@
         "@eslint/js": "^10.0.1",
         "@goauthentik/eslint-config": "link:../eslint-config",
         "@goauthentik/tsconfig": "link:../tsconfig",
-        "@types/node": "^25.7.0",
+        "@types/node": "^25.9.4",
         "eslint": "^10.5.0",
         "prettier": "^3.8.3",
         "prettier-plugin-packagejson": "^3.0.2",
