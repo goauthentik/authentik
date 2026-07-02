@@ -26,7 +26,13 @@ export interface GrantRequestRequest {
      * @type {{ [key: string]: any; }}
      * @memberof GrantRequestRequest
      */
-    data?: { [key: string]: any };
+    requesterData?: { [key: string]: any };
+    /**
+     *
+     * @type {{ [key: string]: any; }}
+     * @memberof GrantRequestRequest
+     */
+    fulfillerData?: { [key: string]: any };
     /**
      *
      * @type {Date}
@@ -66,7 +72,8 @@ export function GrantRequestRequestFromJSONTyped(
         return json;
     }
     return {
-        data: json["data"] == null ? undefined : json["data"],
+        requesterData: json["requester_data"] == null ? undefined : json["requester_data"],
+        fulfillerData: json["fulfiller_data"] == null ? undefined : json["fulfiller_data"],
         expires: json["expires"] == null ? undefined : new Date(json["expires"]),
         status: json["status"] == null ? undefined : RequestStatusFromJSON(json["status"]),
         uuid: json["uuid"] == null ? undefined : json["uuid"],
@@ -86,7 +93,8 @@ export function GrantRequestRequestToJSONTyped(
     }
 
     return {
-        data: value["data"],
+        requester_data: value["requesterData"],
+        fulfiller_data: value["fulfillerData"],
         expires: value["expires"] == null ? value["expires"] : value["expires"].toISOString(),
         status: RequestStatusToJSON(value["status"]),
         uuid: value["uuid"],

@@ -23,7 +23,7 @@ class GrantRequestFinalStageView(StageView):
         with transaction.atomic(), audit_ignore():
             req = GrantRequest.objects.create(
                 created_by=user,
-                data=self.executor.plan.context.get(PLAN_CONTEXT_PROMPT, {}),
+                requester_data=self.executor.plan.context.get(PLAN_CONTEXT_PROMPT, {}),
                 expiring=True,
                 expires=expires,
                 status=RequestStatus.CREATED,

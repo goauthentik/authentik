@@ -40830,7 +40830,10 @@ components:
           allOf:
           - $ref: '#/components/schemas/PartialUser'
           readOnly: true
-        data:
+        requester_data:
+          type: object
+          additionalProperties: {}
+        fulfiller_data:
           type: object
           additionalProperties: {}
         expires:
@@ -40866,7 +40869,10 @@ components:
     GrantRequestRequest:
       type: object
       properties:
-        data:
+        requester_data:
+          type: object
+          additionalProperties: {}
+        fulfiller_data:
           type: object
           additionalProperties: {}
         expires:

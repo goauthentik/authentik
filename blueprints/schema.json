@@ -9000,10 +9000,15 @@
         "model_authentik_pam.grantrequest": {
             "type": "object",
             "properties": {
-                "data": {
+                "requester_data": {
                     "type": "object",
                     "additionalProperties": true,
-                    "title": "Data"
+                    "title": "Requester data"
+                },
+                "fulfiller_data": {
+                    "type": "object",
+                    "additionalProperties": true,
+                    "title": "Fulfiller data"
                 },
                 "expires": {
                     "type": [

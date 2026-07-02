@@ -29,7 +29,8 @@ class GrantRequestSerializer(ModelSerializer):
         fields = [
             "created",
             "created_by",
-            "data",
+            "requester_data",
+            "fulfiller_data",
             "expires",
             "status",
             "targets",

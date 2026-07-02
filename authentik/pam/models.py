@@ -58,7 +58,8 @@ class GrantRequest(SerializerModel, ExpiringModel, CreatedUpdatedModel):
     # Targets access was requested to
     targets = models.ManyToManyField(PolicyBindingModel, through="GrantRequestTarget")
     # Justification data, inputted by the `created_by` user via a flow, used for approve/deny
-    data = models.JSONField(default=dict)
+    requester_data = models.JSONField(default=dict)
+    fulfiller_data = models.JSONField(default=dict)
 
     status = models.TextField(choices=RequestStatus.choices, default=RequestStatus.CREATED)
 

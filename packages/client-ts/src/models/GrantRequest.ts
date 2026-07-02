@@ -40,7 +40,13 @@ export interface GrantRequest {
      * @type {{ [key: string]: any; }}
      * @memberof GrantRequest
      */
-    data?: { [key: string]: any };
+    requesterData?: { [key: string]: any };
+    /**
+     *
+     * @type {{ [key: string]: any; }}
+     * @memberof GrantRequest
+     */
+    fulfillerData?: { [key: string]: any };
     /**
      *
      * @type {Date}
@@ -88,7 +94,8 @@ export function GrantRequestFromJSONTyped(json: any, ignoreDiscriminator: boolea
     return {
         created: new Date(json["created"]),
         createdBy: PartialUserFromJSON(json["created_by"]),
-        data: json["data"] == null ? undefined : json["data"],
+        requesterData: json["requester_data"] == null ? undefined : json["requester_data"],
+        fulfillerData: json["fulfiller_data"] == null ? undefined : json["fulfiller_data"],
         expires: json["expires"] == null ? undefined : new Date(json["expires"]),
         status: json["status"] == null ? undefined : RequestStatusFromJSON(json["status"]),
         targets: json["targets"],
@@ -109,7 +116,8 @@ export function GrantRequestToJSONTyped(
     }
 
     return {
-        data: value["data"],
+        requester_data: value["requesterData"],
+        fulfiller_data: value["fulfillerData"],
         expires: value["expires"] == null ? value["expires"] : value["expires"].toISOString(),
         status: RequestStatusToJSON(value["status"]),
         uuid: value["uuid"],
