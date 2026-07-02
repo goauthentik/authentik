@@ -18,5 +18,5 @@
 @import "@patternfly/patternfly/components/BackgroundImage/background-image.css";
 @import "#elements/locale/ak-locale-select.css";
 @import "#styles/authentik/login.css";
-@import "./components/Login/login-tokens.css";
-@import "./components/Login/flow-loading.css";
+@import "#styles/authentik/components/Login/login-tokens.css";
+@import "#styles/authentik/components/Login/flow-loading.css";
