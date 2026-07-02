@@ -17,23 +17,13 @@ import { customElement } from "lit/decorators.js";
  */
 @customElement("ak-provider-radius-form")
 export class RadiusProviderFormPage extends WithBrandConfig(BaseProviderForm<RadiusProvider>) {
-    loadInstance(pk: number): Promise<RadiusProvider> {
-        return aki(ProvidersApi).providersRadiusRetrieve({
-            id: pk,
-        });
-    }
-
-    async send(data: RadiusProvider): Promise<RadiusProvider> {
-        if (this.instance) {
-            return aki(ProvidersApi).providersRadiusUpdate({
-                id: this.instance.pk,
-                radiusProviderRequest: data,
-            });
-        }
-        return aki(ProvidersApi).providersRadiusCreate({
-            radiusProviderRequest: data,
-        });
-    }
+    protected endpoints = {
+        load: (id: number) => aki(ProvidersApi).providersRadiusRetrieve({ id }),
+        create: (radiusProviderRequest: RadiusProvider) =>
+            aki(ProvidersApi).providersRadiusCreate({ radiusProviderRequest }),
+        update: (id: number, radiusProviderRequest: RadiusProvider) =>
+            aki(ProvidersApi).providersRadiusUpdate({ id, radiusProviderRequest }),
+    };
 
     renderForm() {
         return renderForm({ provider: this.instance, brand: this.brand });

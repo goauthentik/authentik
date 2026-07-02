@@ -13,23 +13,19 @@ import { customElement } from "lit/decorators.js";
 export class PropertyMappingSourceKerberosForm extends BasePropertyMappingForm<KerberosSourcePropertyMapping> {
     protected override docLink = "/users-sources/sources/property-mappings/expressions";
 
-    loadInstance(pk: string): Promise<KerberosSourcePropertyMapping> {
-        return aki(PropertymappingsApi).propertymappingsSourceKerberosRetrieve({
-            pmUuid: pk,
-        });
-    }
-
-    async send(data: KerberosSourcePropertyMapping): Promise<KerberosSourcePropertyMapping> {
-        if (this.instance) {
-            return aki(PropertymappingsApi).propertymappingsSourceKerberosUpdate({
-                pmUuid: this.instance.pk,
-                kerberosSourcePropertyMappingRequest: data,
-            });
-        }
-        return aki(PropertymappingsApi).propertymappingsSourceKerberosCreate({
-            kerberosSourcePropertyMappingRequest: data,
-        });
-    }
+    protected endpoints = {
+        load: (pk: string) =>
+            aki(PropertymappingsApi).propertymappingsSourceKerberosRetrieve({ pmUuid: pk }),
+        create: (kerberosSourcePropertyMappingRequest: KerberosSourcePropertyMapping) =>
+            aki(PropertymappingsApi).propertymappingsSourceKerberosCreate({
+                kerberosSourcePropertyMappingRequest,
+            }),
+        update: (pk: string, kerberosSourcePropertyMappingRequest: KerberosSourcePropertyMapping) =>
+            aki(PropertymappingsApi).propertymappingsSourceKerberosUpdate({
+                pmUuid: pk,
+                kerberosSourcePropertyMappingRequest,
+            }),
+    };
 }
 
 declare global {

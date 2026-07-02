@@ -284,7 +284,7 @@
 </trans-unit>
 <trans-unit id="s14622ee6de586485">
   <source>Attempted to log in as <x id="0" equiv-text="${this.event.context.username}"/></source>
-  <target>Attempted to log in as <x id="0" equiv-text="${this.event.context.username}"/></target>
+  <target>محاولة تسجيل الدخول باسم <x id="0" equiv-text="${this.event.context.username}"/></target>
 </trans-unit>
 <trans-unit id="sb07bf992e3d00664">
   <source>No additional data available.</source>
@@ -468,7 +468,7 @@
 </trans-unit>
 <trans-unit id="s482bc55a78891ef7">
   <source>A code has been sent to your address: <x id="0" equiv-text="${email}"/></source>
-  <target>A code has been sent to your address: <x id="0" equiv-text="${email}"/></target>
+  <target>تم إرسال رمز إلى عنوانك: <x id="0" equiv-text="${email}"/></target>
 </trans-unit>
 <trans-unit id="s5afa3fc77ce8d94d">
   <source>A code has been sent to your email address.</source>
@@ -556,7 +556,7 @@
 </trans-unit>
 <trans-unit id="sd9b15395dd103f80">
   <source>Sort by &quot;<x id="0" equiv-text="${label}"/>&quot;</source>
-  <target>Sort by &quot;<x id="0" equiv-text="${label}"/>&quot;</target>
+  <target>رتب حسب &quot;<x id="0" equiv-text="${label}"/>&quot;</target>
 </trans-unit>
 <trans-unit id="sfd44ce578f643145">
   <source>Failed to fetch objects.</source>
@@ -564,7 +564,7 @@
 </trans-unit>
 <trans-unit id="s7dd64bb0c1fa8e87">
   <source>Select &quot;<x id="0" equiv-text="${rowLabel}"/>&quot; row</source>
-  <target>Select &quot;<x id="0" equiv-text="${rowLabel}"/>&quot; row</target>
+  <target>تحديد الصف &quot;<x id="0" equiv-text="${rowLabel}"/>&quot;</target>
 </trans-unit>
 <trans-unit id="sd26f670ca5d5b0c6">
   <source>Collapse row</source>
@@ -584,7 +584,7 @@
 </trans-unit>
 <trans-unit id="sd09354b0220a13ce">
   <source>Select all rows on page (<x id="0" equiv-text="${selectedCount}"/> of <x id="1" equiv-text="${pageItemCount}"/> selected)</source>
-  <target>Select all rows on page (<x id="0" equiv-text="${selectedCount}"/> of <x id="1" equiv-text="${pageItemCount}"/> selected)</target>
+  <target>تحديد جميع الصفوف في الصفحة (<x id="0" equiv-text="${selectedCount}"/> من <x id="1" equiv-text="${pageItemCount}"/> محددة)</target>
 </trans-unit>
 <trans-unit id="s76ef34813bff563f">
   <source>Last refreshed</source>
@@ -592,7 +592,7 @@
 </trans-unit>
 <trans-unit id="s59c9e8f57e3a0075">
   <source><x id="0" equiv-text="${this.label}"/> table</source>
-  <target><x id="0" equiv-text="${this.label}"/> table</target>
+  <target><x id="0" equiv-text="${this.label}"/> جدول</target>
 </trans-unit>
 <trans-unit id="sa25b60b4fac481aa">
   <source>Table content</source>
@@ -608,11 +608,11 @@
 </trans-unit>
 <trans-unit id="sc35581d9c1cd67ff">
   <source>On behalf of <x id="0" equiv-text="${renderUsername(event.user.on_behalf_of)}"/></source>
-  <target>On behalf of <x id="0" equiv-text="${renderUsername(event.user.on_behalf_of)}"/></target>
+  <target>نيابة عن <x id="0" equiv-text="${renderUsername(event.user.on_behalf_of)}"/></target>
 </trans-unit>
 <trans-unit id="s7225aacf0eee94d2">
   <source>Authenticated as <x id="0" equiv-text="${renderUsername(event.user.authenticated_as)}"/></source>
-  <target>Authenticated as <x id="0" equiv-text="${renderUsername(event.user.authenticated_as)}"/></target>
+  <target>تمت المصادقة باسم <x id="0" equiv-text="${renderUsername(event.user.authenticated_as)}"/></target>
 </trans-unit>
 <trans-unit id="s2152f3482784705f">
   <source>Recent events</source>
@@ -3437,26 +3437,6 @@
 <trans-unit id="s7b3148ffba9f4527">
   <source>If the password&apos;s score is less than or equal this value, the policy will fail.</source>
   <target>If the password&apos;s score is less than or equal this value, the policy will fail.</target>
-</trans-unit>
-<trans-unit id="sd94e99af8b41ff54">
-  <source>0: Too guessable: risky password. (guesses &amp;lt; 10^3)</source>
-  <target>0: Too guessable: risky password. (guesses &amp;lt; 10^3)</target>
-</trans-unit>
-<trans-unit id="sc926385d1a624c3a">
-  <source>1: Very guessable: protection from throttled online attacks. (guesses &amp;lt; 10^6)</source>
-  <target>1: Very guessable: protection from throttled online attacks. (guesses &amp;lt; 10^6)</target>
-</trans-unit>
-<trans-unit id="s8aae61c41319602c">
-  <source>2: Somewhat guessable: protection from unthrottled online attacks. (guesses &amp;lt; 10^8)</source>
-  <target>2: Somewhat guessable: protection from unthrottled online attacks. (guesses &amp;lt; 10^8)</target>
-</trans-unit>
-<trans-unit id="sc1f4b57e722a89d6">
-  <source>3: Safely unguessable: moderate protection from offline slow-hash scenario. (guesses &amp;lt; 10^10)</source>
-  <target>3: Safely unguessable: moderate protection from offline slow-hash scenario. (guesses &amp;lt; 10^10)</target>
-</trans-unit>
-<trans-unit id="sd47f3d3c9741343d">
-  <source>4: Very unguessable: strong protection from offline slow-hash scenario. (guesses &amp;gt;= 10^10)</source>
-  <target>4: Very unguessable: strong protection from offline slow-hash scenario. (guesses &amp;gt;= 10^10)</target>
 </trans-unit>
 <trans-unit id="sd6cd7ce2310a73a4">
   <source>Checks the value from the policy request against several rules, mostly used to ensure password strength.</source>
@@ -9175,7 +9155,7 @@ Bindings to groups/users are checked against the user of the event.</target>
 </trans-unit>
 <trans-unit id="s76e10cbcb80c3a64">
   <source>Are you sure you want to remove the selected users from <x id="0" equiv-text="${targetLabel}"/>?</source>
-  <target>Are you sure you want to remove the selected users from <x id="0" equiv-text="${targetLabel}"/>?</target>
+  <target>هل أنت متأكد من رغبتك في إزالة المستخدمين المحددين من <x id="0" equiv-text="${targetLabel}"/>؟</target>
 </trans-unit>
 <trans-unit id="s85835da8c3bd6198">
   <source>Are you sure you want to remove the selected users?</source>
@@ -11520,7 +11500,7 @@ Bindings to groups/users are checked against the user of the event.</target>
 </trans-unit>
 <trans-unit id="se0bf7f662ec09302">
   <source>An error occurred while loading <x id="0" equiv-text="${this.verboseName}"/>.</source>
-  <target>An error occurred while loading <x id="0" equiv-text="${this.verboseName}"/>.</target>
+  <target>حدث خطأ أثناء تحميل <x id="0" equiv-text="${this.verboseName}"/>.</target>
 </trans-unit>
 <trans-unit id="s4fd2fe9adfd426e9">
   <source>Select an option...</source>
@@ -11691,11 +11671,11 @@ Bindings to groups/users are checked against the user of the event.</target>
 </trans-unit>
 <trans-unit id="form.headline.deactivation">
   <source>Review <x id="0" equiv-text="${this.verboseName}"/> Deactivation</source>
-  <target>Review <x id="0" equiv-text="${this.verboseName}"/> Deactivation</target>
+  <target>مراجعة إلغاء تنشيط <x id="0" equiv-text="${this.verboseName}"/></target>
 </trans-unit>
 <trans-unit id="form.headline.activation">
   <source>Review <x id="0" equiv-text="${this.verboseName}"/> Activation</source>
-  <target>Review <x id="0" equiv-text="${this.verboseName}"/> Activation</target>
+  <target>مراجعة تنشيط <x id="0" equiv-text="${this.verboseName}"/></target>
 </trans-unit>
 <trans-unit id="sa2ddb53b55f7432b">
   <source>Objects</source>
@@ -11727,11 +11707,11 @@ Bindings to groups/users are checked against the user of the event.</target>
 </trans-unit>
 <trans-unit id="used-by.consequence.unrecognized">
   <source><x id="0" equiv-text="${verboseName}"/> has an unrecognized relationship (check logs)</source>
-  <target><x id="0" equiv-text="${verboseName}"/> has an unrecognized relationship (check logs)</target>
+  <target>لـ <x id="0" equiv-text="${verboseName}"/> علاقة غير معروفة (تحقق من السجلات)</target>
 </trans-unit>
 <trans-unit id="s539942ab7cc7210e">
   <source>Failed to delete <x id="0" equiv-text="${this.objectLabel}"/></source>
-  <target>Failed to delete <x id="0" equiv-text="${this.objectLabel}"/></target>
+  <target>فشل حذف <x id="0" equiv-text="${this.objectLabel}"/></target>
 </trans-unit>
 <trans-unit id="sc420894701de5ea3">
   <source>Modify</source>
@@ -11747,7 +11727,7 @@ Bindings to groups/users are checked against the user of the event.</target>
 </trans-unit>
 <trans-unit id="usedBy.description">
   <source>List of objects that are associated with this <x id="0" equiv-text="${verboseName}"/>.</source>
-  <target>List of objects that are associated with this <x id="0" equiv-text="${verboseName}"/>.</target>
+  <target>قائمة بالكائنات المرتبطة بـ <x id="0" equiv-text="${verboseName}"/> هذا.</target>
 </trans-unit>
 <trans-unit id="s2f93abbfddb3830d">
   <source>Object Name</source>
@@ -11763,7 +11743,7 @@ Bindings to groups/users are checked against the user of the event.</target>
 </trans-unit>
 <trans-unit id="used-by.consequence.cascade">
   <source><x id="0" equiv-text="${relationName}"/> will be deleted</source>
-  <target><x id="0" equiv-text="${relationName}"/> will be deleted</target>
+  <target>سيتم حذف <x id="0" equiv-text="${relationName}"/></target>
   <note from="lit-localize">Consequence of deletion, when the related object will also be deleted. The name of the related object will be included, in the format &apos;Related object will be deleted&apos;.</note>
 </trans-unit>
 <trans-unit id="user.display.unknownUser">
@@ -11773,23 +11753,18 @@ Bindings to groups/users are checked against the user of the event.</target>
 </trans-unit>
 <trans-unit id="usedBy.count.other">
   <source><x id="0" equiv-text="${verboseName}"/> is associated with <x id="1" equiv-text="${usedByList.length}"/> objects.</source>
-  <target><x id="0" equiv-text="${verboseName}"/> is associated with <x id="1" equiv-text="${usedByList.length}"/> objects.</target>
+  <target><x id="0" equiv-text="${verboseName}"/> مرتبط بـ <x id="1" equiv-text="${usedByList.length}"/> كائنات.</target>
   <note from="lit-localize">Plural: N objects use this entity.</note>
 </trans-unit>
 <trans-unit id="usedBy.count.one">
   <source><x id="0" equiv-text="${verboseName}"/> is associated with one object.</source>
-  <target><x id="0" equiv-text="${verboseName}"/> is associated with one object.</target>
+  <target><x id="0" equiv-text="${verboseName}"/> مرتبط بكائن واحد.</target>
   <note from="lit-localize">Singular: exactly one object uses this entity.</note>
 </trans-unit>
 <trans-unit id="table.empty">
   <source>No <x id="0" equiv-text="${verboseNamePlural.toLocaleLowerCase(this.activeLanguageTag)}"/> found.</source>
-  <target>No <x id="0" equiv-text="${verboseNamePlural.toLocaleLowerCase(this.activeLanguageTag)}"/> found.</target>
+  <target>لم يتم العثور على <x id="0" equiv-text="${verboseNamePlural.toLocaleLowerCase(this.activeLanguageTag)}"/>.</target>
   <note from="lit-localize">The message to show when a table has no content. The placeholder {0} is replaced with the pluralized name of the type of entity being shown in the table.</note>
-</trans-unit>
-<trans-unit id="user.display.emailInAngleBrackets">
-  <source>&lt;<x id="0" equiv-text="${email}"/>&gt;</source>
-  <target>&lt;&lt;x id=&quot;0&quot; equiv-text=&quot;${email}&quot;/&gt;&gt;</target>
-  <note from="lit-localize">The user&apos;s email in angle brackets, used when the email is different from the username</note>
 </trans-unit>
 <trans-unit id="user.display.nameInParens">
   <source>(<x id="0" equiv-text="${name}"/>)</source>
@@ -11803,7 +11778,7 @@ Bindings to groups/users are checked against the user of the event.</target>
 </trans-unit>
 <trans-unit id="usedBy.count.zero">
   <source><x id="0" equiv-text="${verboseName}"/> is not associated with any objects.</source>
-  <target><x id="0" equiv-text="${verboseName}"/> is not associated with any objects.</target>
+  <target><x id="0" equiv-text="${verboseName}"/> غير مرتبط بأي كائنات.</target>
   <note from="lit-localize">Zero: no objects use this entity.</note>
 </trans-unit>
 <trans-unit id="s78a13f8f08d3a317">
@@ -11893,11 +11868,11 @@ Bindings to groups/users are checked against the user of the event.</target>
 </trans-unit>
 <trans-unit id="sc9e81e2f575bcf24">
   <source>If no group is selected and &apos;Send notification to event user&apos; is disabled, the rule is disabled.</source>
-  <target>If no group is selected and &apos;Send notification to event user&apos; is disabled, the rule is disabled.</target>
+  <target>إذا لم يتم اختيار أي مجموعة وكان خيار &apos;إرسال الإشعار إلى مستخدم الحدث&apos; معطّلاً، فستكون القاعدة معطّلة.</target>
 </trans-unit>
 <trans-unit id="sd30f00ff2135589c">
   <source>When enabled, notification will be sent to the user that triggered the event in addition to any users in the group above. The event user will always be the first user, to send a notification only to the event user enabled &apos;Send once&apos; in the notification transport.</source>
-  <target>When enabled, notification will be sent to the user that triggered the event in addition to any users in the group above. The event user will always be the first user, to send a notification only to the event user enabled &apos;Send once&apos; in the notification transport.</target>
+  <target>عند التفعيل، سيتم إرسال الإشعار إلى المستخدم الذي أطلق الحدث بالإضافة إلى أي مستخدمين في المجموعة أعلاه. سيكون مستخدم الحدث دائماً المستخدم الأول، ولإرسال إشعار إلى مستخدم الحدث فقط فعّل &apos;إرسال مرة واحدة&apos; في ناقل الإشعارات.</target>
 </trans-unit>
 <trans-unit id="s1c0267488c33401b">
   <source>Minimum reviewers</source>
@@ -11977,7 +11952,7 @@ Bindings to groups/users are checked against the user of the event.</target>
 </trans-unit>
 <trans-unit id="s7f8967e8077f2734">
   <source>Flow to redirect users to after self-service lockdown. This flow must not require authentication since the user&apos;s session is deleted.</source>
-  <target>Flow to redirect users to after self-service lockdown. This flow must not require authentication since the user&apos;s session is deleted.</target>
+  <target>التدفق الذي يُعاد توجيه المستخدمين إليه بعد الإغلاق الذاتي للخدمة. يجب ألا يتطلب هذا التدفق مصادقة لأن جلسة المستخدم تُحذف.</target>
 </trans-unit>
 <trans-unit id="se84707d40ed8f349">
   <source>Alert (Info): Static alert box with info styling</source>
@@ -11993,7 +11968,7 @@ Bindings to groups/users are checked against the user of the event.</target>
 </trans-unit>
 <trans-unit id="s1c23a9eed1a415df">
   <source>Warning: You are about to delete user <x id="0" equiv-text="${shouldShowWarning.username}"/>, but you are currently logged in as this user. Proceed at your own risk.</source>
-  <target>Warning: You are about to delete user <x id="0" equiv-text="${shouldShowWarning.username}"/>, but you are currently logged in as this user. Proceed at your own risk.</target>
+  <target>تحذير: أنت على وشك حذف المستخدم <x id="0" equiv-text="${shouldShowWarning.username}"/>، لكنك مسجّل الدخول حالياً بهذا المستخدم. تابع على مسؤوليتك الخاصة.</target>
 </trans-unit>
 <trans-unit id="s11064f3323dac957">
   <source>Account Lockdown</source>
@@ -12057,7 +12032,7 @@ Bindings to groups/users are checked against the user of the event.</target>
 </trans-unit>
 <trans-unit id="sc157c7dcb3d1b096">
   <source>Controls the authenticatorAttachment parameter sent to the browser during WebAuthn registration. If Hints are configured and this is left as &apos;No preference&apos;, a value is inferred from the selected hints for backward compatibility with older browsers.</source>
-  <target>Controls the authenticatorAttachment parameter sent to the browser during WebAuthn registration. If Hints are configured and this is left as &apos;No preference&apos;, a value is inferred from the selected hints for backward compatibility with older browsers.</target>
+  <target>يتحكم في معامل authenticatorAttachment المُرسل إلى المتصفح أثناء تسجيل WebAuthn. إذا تم ضبط التلميحات Hints وتُرك هذا الخيار على &apos;لا تفضيل&apos;، فسيُستنتج قيمة من التلميحات المختارة للتوافق مع المتصفحات القديمة.</target>
 </trans-unit>
 <trans-unit id="s1baea1b8ac34d554">
   <source>New Invitation</source>
@@ -12277,7 +12252,7 @@ Bindings to groups/users are checked against the user of the event.</target>
 </trans-unit>
 <trans-unit id="sb8bbbd3b5cd45ad2">
   <source>If checked, the launch URL will open in a new browser tab or window from the user&apos;s Application Dashboard.</source>
-  <target>If checked, the launch URL will open in a new browser tab or window from the user&apos;s Application Dashboard.</target>
+  <target>إذا تم تحديده، سيتم فتح رابط التشغيل في علامة تبويب أو نافذة متصفح جديدة من لوحة تطبيقات المستخدم.</target>
 </trans-unit>
 <trans-unit id="s55272b9955f1d985">
   <source>Hide from Application Dashboard</source>
@@ -12285,7 +12260,7 @@ Bindings to groups/users are checked against the user of the event.</target>
 </trans-unit>
 <trans-unit id="s4e8256e5793952d7">
   <source>If checked, this application will not be shown on the user&apos;s Application Dashboard.</source>
-  <target>If checked, this application will not be shown on the user&apos;s Application Dashboard.</target>
+  <target>إذا تم تحديده، فلن يظهر هذا التطبيق في لوحة تطبيقات المستخدم.</target>
 </trans-unit>
 <trans-unit id="s7d9707524fb7e539">
   <source>The publisher is shown in the Application Dashboard.</source>
@@ -12322,12 +12297,12 @@ Bindings to groups/users are checked against the user of the event.</target>
 </trans-unit>
 <trans-unit id="wizard.step.choose-type">
   <source>Choose <x id="0" equiv-text="${this.verboseName}"/> Type</source>
-  <target>Choose <x id="0" equiv-text="${this.verboseName}"/> Type</target>
+  <target>اختر نوع <x id="0" equiv-text="${this.verboseName}"/></target>
   <note from="lit-localize">Label for the initial step in the creation wizard where the type of the entity being created is selected. The placeholder {entity} is replaced with the singular name of the entity, for example &apos;Choose User Type&apos; or &apos;Choose Group Type&apos;.</note>
 </trans-unit>
 <trans-unit id="wizard.step.details">
   <source><x id="0" equiv-text="${entityLabel}"/> Details</source>
-  <target><x id="0" equiv-text="${entityLabel}"/> Details</target>
+  <target>تفاصيل <x id="0" equiv-text="${entityLabel}"/></target>
   <note from="lit-localize">Label for the step in the creation wizard where the details of the entity being created are filled in. The placeholder {entity} is replaced with the name of the entity type, for example &apos;User Details&apos; or &apos;Group Details&apos;.</note>
 </trans-unit>
 <trans-unit id="sd1b98c71ea0d603b">
@@ -12492,6 +12467,30 @@ Bindings to groups/users are checked against the user of the event.</target>
 <trans-unit id="s7a72b0fd722d51e0">
   <source>Waiting for dependencies</source>
   <target>بانتظار التبعيات</target>
+</trans-unit>
+<trans-unit id="policy.password.score-threshold.description.too-guessable">
+  <source>0: Too guessable: risky password. (guesses &lt; 10^3)</source>
+  <target>0: سهل التخمين جدًا: كلمة مرور خطيرة. (التخمينات &amp;lt; 10^3)</target>
+</trans-unit>
+<trans-unit id="policy.password.score-threshold.description.very-guessable">
+  <source>1: Very guessable: protection from throttled online attacks. (guesses &lt; 10^6)</source>
+  <target>1: سهل التخمين: حماية من الهجمات المقيّدة عبر الإنترنت. (التخمينات &amp;lt; 10^6)</target>
+</trans-unit>
+<trans-unit id="policy.password.score-threshold.description.somewhat-guessable">
+  <source>2: Somewhat guessable: protection from unthrottled online attacks. (guesses &lt; 10^8)</source>
+  <target>2: قابل للتخمين إلى حد ما: حماية من الهجمات غير المقيّدة عبر الإنترنت. (التخمينات &amp;lt; 10^8)</target>
+</trans-unit>
+<trans-unit id="policy.password.score-threshold.description.safely-unguessable">
+  <source>3: Safely unguessable: moderate protection from offline slow-hash scenario. (guesses &lt; 10^10)</source>
+  <target>3: يصعب تخمينه بأمان: حماية معتدلة من سيناريو التجزئة البطيئة دون اتصال. (التخمينات &amp;lt; 10^10)</target>
+</trans-unit>
+<trans-unit id="policy.password.score-threshold.description.very-unguessable">
+  <source>4: Very unguessable: strong protection from offline slow-hash scenario. (guesses &gt;= 10^10)</source>
+  <target>4: يصعب تخمينه جدًا: حماية قوية من سيناريو التجزئة البطيئة دون اتصال. (التخمينات &amp;gt;= 10^10)</target>
+</trans-unit>
+<trans-unit id="sb45f9fb4dba6e71a">
+  <source>Unset</source>
+  <target>غير محدد</target>
 </trans-unit>
 </body>
 </file>
