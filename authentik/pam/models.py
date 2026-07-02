@@ -5,7 +5,6 @@ from django.db import models, transaction
 from rest_framework.serializers import Serializer
 
 from authentik.core.models import CreatedUpdatedModel, ExpiringModel, User
-from authentik.flows.models import Flow
 from authentik.lib.models import SerializerModel
 from authentik.policies.models import PolicyBinding, PolicyBindingModel
 
@@ -67,7 +66,7 @@ class GrantRequest(SerializerModel, ExpiringModel, CreatedUpdatedModel):
 
     @property
     def serializer(self) -> type[Serializer]:
-        from authentik.pam.api.grant_request import GrantRequestSerializer
+        from authentik.pam.api.grant_requests import GrantRequestSerializer
 
         return GrantRequestSerializer
 
@@ -122,6 +121,6 @@ class PolicyBindingModelRequestRule(SerializerModel, CreatedUpdatedModel, Policy
 
     @property
     def serializer(self):
-        from authentik.pam.api.request_rule import PolicyBindingModelRequestRuleSerializer
+        from authentik.pam.api.request_rules import PolicyBindingModelRequestRuleSerializer
 
         return PolicyBindingModelRequestRuleSerializer

@@ -1,5 +1,6 @@
 from drf_spectacular.utils import OpenApiResponse, extend_schema
 from rest_framework.decorators import action
+from rest_framework.exceptions import ValidationError
 from rest_framework.fields import ChoiceField
 from rest_framework.mixins import (
     DestroyModelMixin,
@@ -21,13 +22,12 @@ from authentik.core.api.utils import (
 )
 from authentik.flows.models import Flow, in_memory_stage
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlanner
-from authentik.pam.models import GrantRequest, RequestStatus
+from authentik.pam.models import GrantRequest, PolicyBindingModelRequestRule, RequestStatus
 from authentik.pam.stage import PLAN_CONTEXT_GRANT_REQUESTED_PBMS, GrantRequestFinalStageView
 from authentik.policies.models import PolicyBindingModel
 
 
 class GrantRequestSerializer(ModelSerializer):
-
     created_by = PartialUserSerializer(read_only=True)
 
     class Meta:
@@ -45,7 +45,6 @@ class GrantRequestSerializer(ModelSerializer):
 
 
 class GrantRequestViewSet(RetrieveModelMixin, DestroyModelMixin, ListModelMixin, GenericViewSet):
-
     queryset = GrantRequest.objects.all()
     serializer_class = GrantRequestSerializer
 
@@ -79,10 +78,17 @@ class GrantRequestViewSet(RetrieveModelMixin, DestroyModelMixin, ListModelMixin,
             204: OpenApiResponse(description="Request fulfilled"),
         },
     )
-    @action(["POST"], detail=True)
+    @action(["PATCH"], detail=True)
     @validate(GrantRequestFulfillSerializer)
     def fulfill(self, request: Request, body: GrantRequestFulfillSerializer, *args, **kwargs):
         grant: GrantRequest = self.get_object()
+        unauthorized_rules = (
+            PolicyBindingModelRequestRule.objects.filter(pbm__in=grant.targets.all())
+            .exclude(reviewers=request.user)
+            .exclude(reviewer_groups__users=request.user)
+        )
+        if unauthorized_rules.exists():
+            raise ValidationError("User does not have permissions to approve object")
         # TODO: Check if this user can fulfill this grant
         grant.fulfill(
             body.validated_data.get("status"), request.user, data=body.validated_data.get("data")

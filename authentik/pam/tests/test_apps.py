@@ -11,6 +11,7 @@ from authentik.policies.models import PolicyBinding
 
 
 class AppRequestTests(APITestCase):
+
     def setUp(self):
         Application.objects.all().delete()
 
