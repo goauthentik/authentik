@@ -65,7 +65,7 @@ class TestOpenIDConformance(SSLLiveMixin, SeleniumTestCase):
     def run_test(
         self, test_name: str, test_plan_config: dict[str, Any], test_variant: dict[str, Any]
     ):
-        self.conformance = Conformance(f"https://{self.host}:8443/", None, verify_ssl=False)
+        self.conformance = Conformance(f"https://{self.host}:8443", None, verify_ssl=False)
 
         test_plan = self.conformance.create_test_plan(
             test_name,

@@ -8,7 +8,7 @@ import "#user/user-settings/tokens/UserTokenForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
-import { intentToLabel } from "#common/labels";
+import { formatIntentLabel } from "#common/labels";
 import { formatElapsedTime } from "#common/temporal";
 
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
@@ -119,7 +119,7 @@ export class PersonasList extends Table<Persona> {
                 </dt>
                 <dd class="pf-c-description-list__description">
                     <div class="pf-c-description-list__text">
-                        ${intentToLabel(item.intent ?? IntentEnum.Api)}
+                        ${formatIntentLabel(item.intent ?? IntentEnum.Api)}
                     </div>
                 </dd>
             </div>

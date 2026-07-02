@@ -1,8 +1,8 @@
 ---
-title: OAuth Source
+title: OAuth source
 ---
 
-This source allows users to enroll themselves with an external OAuth-based Identity Provider. The generic provider expects the endpoint to return OpenID-Connect compatible information. Vendor-specific implementations have their own OAuth Source.
+This source allows users to enroll themselves with an external OAuth-based identity provider. The generic provider expects the endpoint to return OpenID Connect-compatible information. Vendor-specific implementations have their own OAuth source.
 
 - Policies: Allow/Forbid users from linking their accounts with this provider.
 - Icon: Optional icon or image shown for the source. See [File picker values](../../../../customize/file-picker.md).
@@ -25,9 +25,9 @@ This URL is fetched upon saving the source, and all the URLs will be replaced by
 
 ### JWKS
 
-To simplify machine-to-machine authentication, you can create an OAuth Source as a "trusted" source of JWTs. Create a source and configure either the Well-known URL or the OIDC JWKS URL, or you can manually enter the JWKS data if you so desire.
+To simplify machine-to-machine authentication, you can create an OAuth source as a trusted source of JWTs. Create a source and configure either the Well-known URL or the OIDC JWKS URL. You can also manually enter the JWKS data.
 
-Afterwards, this source can be selected in one or multiple OAuth2 providers, and any JWT issued by any of the configured sources' JWKS will be able to authenticate. To learn more about this, see [JWT-authentication](../../../../add-secure-apps/providers/oauth2/machine_to_machine#jwt-authentication).
+Afterward, this source can be selected in one or more OAuth 2.0 providers. Any JWT issued by the configured source's JWKS can authenticate. To learn more about this, see [JWT authentication](../../../../add-secure-apps/providers/oauth2/machine_to_machine#jwt-authentication).
 
 ### `login_hint` parameter
 
