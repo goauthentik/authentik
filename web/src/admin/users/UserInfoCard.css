@@ -18,13 +18,13 @@
 
 .ak-user-management {
     display: grid;
-    gap: var(--pf-global--spacer--sm);
+    gap: var(--pf-global--spacer--md);
     grid-template-columns: minmax(0, 1fr);
 }
 
 .ak-user-management-section {
     display: grid;
-    gap: var(--pf-global--spacer--xs);
+    gap: var(--pf-global--spacer--sm);
     min-width: 0;
 }
 
@@ -44,7 +44,7 @@
 .ak-user-button-collection {
     align-items: start;
     display: grid;
-    gap: var(--pf-global--spacer--xs);
+    gap: var(--pf-global--spacer--form-element);
     grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr));
 }
 
