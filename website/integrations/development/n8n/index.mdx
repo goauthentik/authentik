@@ -37,7 +37,6 @@ To support the integration of n8n with authentik, you need to create an applicat
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **New Application** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
-
     - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Take note of the **Slug** value because it is required later.
     - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
@@ -58,7 +57,6 @@ n8n can provision instance roles and project roles from OIDC claims. Use [applic
 4. To provision project roles, create entitlements in the format `<project_id>:<role>`, such as `<project_id>:editor`.
 5. Bind the appropriate users or groups to each entitlement.
 6. Navigate to **Customization** > **Property Mappings** and click **Create**. Create a **Scope Mapping** with the following settings:
-
     - **Name**: choose a descriptive name, such as `authentik n8n OAuth Mapping: OpenID 'n8n'`.
     - **Scope name**: `n8n`
     - **Expression**:
