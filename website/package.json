@@ -33,7 +33,7 @@
         "prettier": "3.8.3",
         "prettier-plugin-packagejson": "^3.0.2",
         "typescript": "^6.0.3",
-        "typescript-eslint": "^8.60.1"
+        "typescript-eslint": "^8.62.1"
     },
     "optionalDependencies": {
         "@rspack/binding-darwin-arm64": "2.0.8",
