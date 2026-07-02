@@ -7,8 +7,10 @@ import "#admin/users/UserApplicationTable";
 import "#admin/users/UserChart";
 import "#admin/users/UserForm";
 import "#admin/users/UserImpersonateForm";
+import "#admin/users/UserOffboardingForm";
 import "#admin/users/UserPasswordForm";
 import "#admin/users/UserTokenList";
+import "#elements/forms/ModalForm";
 import "#admin/users/oauth/UserAccessTokenList";
 import "#admin/users/oauth/UserRefreshTokenList";
 import "#components/DescriptionList";
@@ -20,7 +22,6 @@ import "#elements/CodeMirror";
 import "#elements/Tabs";
 import "#elements/buttons/ActionButton/ak-action-button";
 import "#elements/buttons/SpinnerButton/ak-spinner-button";
-import "#elements/forms/ModalForm";
 import "#elements/user/SessionList";
 import "#elements/user/UserConsentList";
 import "#elements/user/UserReputationList";
@@ -55,11 +56,20 @@ import { ToggleUserActivationButton } from "#admin/users/UserActiveForm";
 import { UserForm } from "#admin/users/UserForm";
 import { UserImpersonateForm } from "#admin/users/UserImpersonateForm";
 
-import { CapabilitiesEnum, CoreApi, ModelEnum, User, UserTypeEnum } from "@goauthentik/api";
+import {
+    CapabilitiesEnum,
+    CoreApi,
+    LifecycleApi,
+    ModelEnum,
+    Status748Enum,
+    User,
+    UserOffboarding,
+    UserTypeEnum,
+} from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
 import { css, html, PropertyValues, TemplateResult } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
@@ -77,12 +87,16 @@ export class UserViewPage extends WithLicenseSummary(
     WithLocale(WithBrandConfig(WithCapabilitiesConfig(WithSession(AKElement)))),
 ) {
     #api = aki(CoreApi);
+    #lifecycleApi = aki(LifecycleApi);
 
     @property({ type: Number, useDefault: true })
     public userId: number | null = null;
 
     @property({ attribute: false, useDefault: true })
     public user: User | null = null;
+
+    @state()
+    protected pendingOffboarding: UserOffboarding | null = null;
 
     static styles = [
         PFPage,
@@ -122,7 +136,35 @@ export class UserViewPage extends WithLicenseSummary(
             })
             .then((user) => {
                 this.user = user;
+                return this.#loadOffboarding(user);
             })
+            .catch(showAPIErrorMessage);
+    };
+
+    #loadOffboarding = async (user: User): Promise<void> => {
+        if (!this.hasEnterpriseLicense) {
+            this.pendingOffboarding = null;
+            return;
+        }
+
+        const offboardings = await this.#lifecycleApi
+            .lifecycleUserOffboardingList({
+                userUuid: user.uuid,
+                status: Status748Enum.Pending,
+            })
+            .catch(() => null);
+
+        this.pendingOffboarding = offboardings?.results.at(0) ?? null;
+    };
+
+    protected cancelOffboarding = async (): Promise<void> => {
+        if (!this.pendingOffboarding) {
+            return;
+        }
+
+        await this.#lifecycleApi
+            .lifecycleUserOffboardingDestroy({ id: this.pendingOffboarding.id })
+            .then(() => this.refresh())
             .catch(showAPIErrorMessage);
     };
 
@@ -197,6 +239,10 @@ export class UserViewPage extends WithLicenseSummary(
             this.hasEnterpriseLicense &&
             user.pk !== this.currentUser?.pk &&
             user.type !== UserTypeEnum.InternalServiceAccount;
+        const showOffboarding =
+            this.hasEnterpriseLicense &&
+            user.pk !== this.currentUser?.pk &&
+            user.type !== UserTypeEnum.InternalServiceAccount;
 
         const displayName = formatUserDisplayName(user);
 
@@ -218,6 +264,7 @@ export class UserViewPage extends WithLicenseSummary(
                       ${msg("Account Lockdown")}
                   </button>`
                 : null}
+            ${showOffboarding ? this.renderOffboardingButton(user) : null}
             ${showImpersonate
                 ? html`<button
                       class="pf-c-button pf-m-tertiary pf-m-block"
@@ -233,6 +280,33 @@ export class UserViewPage extends WithLicenseSummary(
                   </button>`
                 : null}
         </div> `;
+    }
+
+    protected renderOffboardingButton(user: User) {
+        if (this.pendingOffboarding) {
+            const scheduledFor = this.pendingOffboarding.scheduledFor;
+            return html`<button
+                class="pf-c-button pf-m-warning pf-m-block"
+                @click=${this.cancelOffboarding}
+                type="button"
+            >
+                <pf-tooltip
+                    position="top"
+                    content=${msg(str`Offboarding scheduled for ${scheduledFor.toLocaleString()}`)}
+                >
+                    <span>${msg("Cancel Offboarding")}</span>
+                </pf-tooltip>
+            </button>`;
+        }
+
+        return html`<ak-forms-modal @ak-refresh=${() => this.refresh()}>
+            <span slot="submit">${msg("Schedule")}</span>
+            <span slot="header">${msg("Schedule Offboarding")}</span>
+            <ak-user-offboarding-form slot="form" user-id=${user.pk}></ak-user-offboarding-form>
+            <button slot="trigger" class="pf-c-button pf-m-danger pf-m-block" type="button">
+                ${msg("Schedule Offboarding")}
+            </button>
+        </ak-forms-modal>`;
     }
 
     protected renderRecoveryButtons(user: User) {
