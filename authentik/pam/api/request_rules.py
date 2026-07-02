@@ -1,5 +1,6 @@
 from rest_framework.viewsets import ModelViewSet
 
+from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import ModelSerializer
 from authentik.pam.models import PolicyBindingModelRequestRule
 
@@ -20,7 +21,8 @@ class PolicyBindingModelRequestRuleSerializer(ModelSerializer):
         ]
 
 
-class PolicyBindingModelRequestRuleViewSet(ModelViewSet):
+class PolicyBindingModelRequestRuleViewSet(UsedByMixin, ModelViewSet):
+    """Policy-binding request rules"""
 
     queryset = PolicyBindingModelRequestRule.objects.all()
     serializer_class = PolicyBindingModelRequestRuleSerializer

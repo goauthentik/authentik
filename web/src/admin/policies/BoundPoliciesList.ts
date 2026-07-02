@@ -211,7 +211,7 @@ export class BoundPoliciesList<T extends PolicyBinding = PolicyBinding> extends 
         return [
             html`<pre>${item.order}</pre>`,
             html`${this.getPolicyUserGroupRow(item)}`,
-            html`${item.expiring ? Timestamp(item.expires) : msg("-")}`,
+            html`${item.expiring ? Timestamp(item.expires ?? new Date()) : msg("-")}`,
             html`<ak-status-label type="warning" ?good=${item.enabled}></ak-status-label>`,
             html`${item.timeout}`,
             html`<div class="ak-c-table__actions">

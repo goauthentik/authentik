@@ -47,6 +47,7 @@ import {
     type PolicyBindingModelRequestRuleRequest,
     PolicyBindingModelRequestRuleRequestToJSON,
 } from "../models/PolicyBindingModelRequestRuleRequest";
+import { type UsedBy, UsedByFromJSON } from "../models/UsedBy";
 import * as runtime from "../runtime";
 
 export interface PamGrantRequestsCreateRequest {
@@ -117,6 +118,10 @@ export interface PamRequestRulesRetrieveRequest {
 export interface PamRequestRulesUpdateRequest {
     uuid: string;
     policyBindingModelRequestRuleRequest: PolicyBindingModelRequestRuleRequest;
+}
+
+export interface PamRequestRulesUsedByListRequest {
+    uuid: string;
 }
 
 /**
@@ -664,6 +669,7 @@ export class PamApi extends runtime.BaseAPI {
     }
 
     /**
+     * Policy-binding request rules
      */
     async pamRequestRulesCreateRaw(
         requestParameters: PamRequestRulesCreateRequest,
@@ -678,6 +684,7 @@ export class PamApi extends runtime.BaseAPI {
     }
 
     /**
+     * Policy-binding request rules
      */
     async pamRequestRulesCreate(
         requestParameters: PamRequestRulesCreateRequest,
@@ -725,6 +732,7 @@ export class PamApi extends runtime.BaseAPI {
     }
 
     /**
+     * Policy-binding request rules
      */
     async pamRequestRulesDestroyRaw(
         requestParameters: PamRequestRulesDestroyRequest,
@@ -737,6 +745,7 @@ export class PamApi extends runtime.BaseAPI {
     }
 
     /**
+     * Policy-binding request rules
      */
     async pamRequestRulesDestroy(
         requestParameters: PamRequestRulesDestroyRequest,
@@ -799,6 +808,7 @@ export class PamApi extends runtime.BaseAPI {
     }
 
     /**
+     * Policy-binding request rules
      */
     async pamRequestRulesListRaw(
         requestParameters: PamRequestRulesListRequest,
@@ -813,6 +823,7 @@ export class PamApi extends runtime.BaseAPI {
     }
 
     /**
+     * Policy-binding request rules
      */
     async pamRequestRulesList(
         requestParameters: PamRequestRulesListRequest = {},
@@ -865,6 +876,7 @@ export class PamApi extends runtime.BaseAPI {
     }
 
     /**
+     * Policy-binding request rules
      */
     async pamRequestRulesPartialUpdateRaw(
         requestParameters: PamRequestRulesPartialUpdateRequest,
@@ -880,6 +892,7 @@ export class PamApi extends runtime.BaseAPI {
     }
 
     /**
+     * Policy-binding request rules
      */
     async pamRequestRulesPartialUpdate(
         requestParameters: PamRequestRulesPartialUpdateRequest,
@@ -930,6 +943,7 @@ export class PamApi extends runtime.BaseAPI {
     }
 
     /**
+     * Policy-binding request rules
      */
     async pamRequestRulesRetrieveRaw(
         requestParameters: PamRequestRulesRetrieveRequest,
@@ -944,6 +958,7 @@ export class PamApi extends runtime.BaseAPI {
     }
 
     /**
+     * Policy-binding request rules
      */
     async pamRequestRulesRetrieve(
         requestParameters: PamRequestRulesRetrieveRequest,
@@ -1003,6 +1018,7 @@ export class PamApi extends runtime.BaseAPI {
     }
 
     /**
+     * Policy-binding request rules
      */
     async pamRequestRulesUpdateRaw(
         requestParameters: PamRequestRulesUpdateRequest,
@@ -1017,12 +1033,74 @@ export class PamApi extends runtime.BaseAPI {
     }
 
     /**
+     * Policy-binding request rules
      */
     async pamRequestRulesUpdate(
         requestParameters: PamRequestRulesUpdateRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<PolicyBindingModelRequestRule> {
         const response = await this.pamRequestRulesUpdateRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for pamRequestRulesUsedByList without sending the request
+     */
+    async pamRequestRulesUsedByListRequestOpts(
+        requestParameters: PamRequestRulesUsedByListRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["uuid"] == null) {
+            throw new runtime.RequiredError(
+                "uuid",
+                'Required parameter "uuid" was null or undefined when calling pamRequestRulesUsedByList().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/pam/request_rules/{uuid}/used_by/`;
+        urlPath = urlPath.replace("{uuid}", encodeURIComponent(String(requestParameters["uuid"])));
+
+        return {
+            path: urlPath,
+            method: "GET",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * Get a list of all objects that use this object
+     */
+    async pamRequestRulesUsedByListRaw(
+        requestParameters: PamRequestRulesUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+        const requestOptions = await this.pamRequestRulesUsedByListRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
+    }
+
+    /**
+     * Get a list of all objects that use this object
+     */
+    async pamRequestRulesUsedByList(
+        requestParameters: PamRequestRulesUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Array<UsedBy>> {
+        const response = await this.pamRequestRulesUsedByListRaw(requestParameters, initOverrides);
         return await response.value();
     }
 }

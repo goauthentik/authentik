@@ -52,7 +52,7 @@ export class PolicyBindingModelRequestRuleForm extends ModelForm<
                 name="name"
                 required
                 value="${ifDefined(this.instance?.name)}"
-                placeholder=${msg("Type a name for this lifecycle rule...")}
+                placeholder=${msg("Type a name for this request rule...")}
             ></ak-text-input>
             <ak-number-input
                 label=${msg("Minimum reviewers")}
@@ -60,7 +60,7 @@ export class PolicyBindingModelRequestRuleForm extends ModelForm<
                 name="minReviewers"
                 value="${this.instance?.minReviewers ?? 1}"
                 help=${msg(
-                    "Number of users from the selected reviewer groups that must approve the review.",
+                    "Number of users from the selected reviewer groups that must approve the request.",
                 )}
             ></ak-number-input>
             <ak-switch-input
@@ -73,7 +73,7 @@ export class PolicyBindingModelRequestRuleForm extends ModelForm<
                         across all groups.`,
                 )}
             >
-            </ak-switch-input> `;
+            </ak-switch-input>`;
     }
 }
 

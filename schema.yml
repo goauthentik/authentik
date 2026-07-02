@@ -11246,6 +11246,7 @@ paths:
   /pam/request_rules/:
     get:
       operationId: pam_request_rules_list
+      description: Policy-binding request rules
       parameters:
       - $ref: '#/components/parameters/QueryName'
       - $ref: '#/components/parameters/QueryPaginationOrdering'
@@ -11274,6 +11275,7 @@ paths:
           $ref: '#/components/responses/GenericErrorResponse'
     post:
       operationId: pam_request_rules_create
+      description: Policy-binding request rules
       tags:
       - pam
       requestBody:
@@ -11298,6 +11300,7 @@ paths:
   /pam/request_rules/{uuid}/:
     get:
       operationId: pam_request_rules_retrieve
+      description: Policy-binding request rules
       parameters:
       - in: path
         name: uuid
@@ -11323,6 +11326,7 @@ paths:
           $ref: '#/components/responses/GenericErrorResponse'
     put:
       operationId: pam_request_rules_update
+      description: Policy-binding request rules
       parameters:
       - in: path
         name: uuid
@@ -11354,6 +11358,7 @@ paths:
           $ref: '#/components/responses/GenericErrorResponse'
     patch:
       operationId: pam_request_rules_partial_update
+      description: Policy-binding request rules
       parameters:
       - in: path
         name: uuid
@@ -11384,6 +11389,7 @@ paths:
           $ref: '#/components/responses/GenericErrorResponse'
     delete:
       operationId: pam_request_rules_destroy
+      description: Policy-binding request rules
       parameters:
       - in: path
         name: uuid
@@ -11399,6 +11405,35 @@ paths:
       responses:
         '204':
           description: No response body
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /pam/request_rules/{uuid}/used_by/:
+    get:
+      operationId: pam_request_rules_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this policy binding model request rule.
+        required: true
+      tags:
+      - pam
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
