@@ -23,7 +23,7 @@ runs:
       run: sudo apt-get remove --purge man-db
     - name: Install apt deps
       if: ${{ contains(inputs.dependencies, 'system') || contains(inputs.dependencies, 'python') }}
-      uses: gerlero/apt-install@f4fa5265092af9e750549565d28c99aec7189639
+      uses: gerlero/apt-install@c0fa73fe5c4a22deecf6d629565be92a15dd2026
       with:
         packages: libpq-dev openssl libxmlsec1-dev pkg-config gettext libclang-dev libkadm5clnt-mit12 libkadm5clnt7t64-heimdal libkrb5-dev krb5-kdc krb5-user krb5-admin-server
         update: true
