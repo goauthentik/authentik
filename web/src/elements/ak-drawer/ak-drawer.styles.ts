@@ -40,7 +40,7 @@ export const styles = css`
         :host([position="left"])
         .ak-v2-c-drawer__main
         > .ak-v2-c-drawer__panel {
-        transform: translateX(calc(-100% * var(--ak-v2-global--inverse--multiplier)));
+        transform: translateX(calc(-100% * var(--_drawer-inverse-multiplier)));
     }
 
     :host([position="left"]) .ak-v2-c-drawer__main > .ak-v2-c-drawer__content {
@@ -68,7 +68,7 @@ export const styles = css`
         :host(:not([inline]):not([static]))
         .ak-v2-c-drawer__main
         > .ak-v2-c-drawer__panel {
-        transform: translateX(calc(100% * var(--ak-v2-global--inverse--multiplier)));
+        transform: translateX(calc(100% * var(--_drawer-inverse-multiplier)));
     }
 
     :host([expanded]:not([inline]):not([static])) .ak-v2-c-drawer__main > .ak-v2-c-drawer__panel {
@@ -87,7 +87,7 @@ export const styles = css`
         :host([position="left"]:not([inline]):not([static]))
         .ak-v2-c-drawer__main
         > .ak-v2-c-drawer__panel {
-        transform: translateX(calc(-100% * var(--ak-v2-global--inverse--multiplier)));
+        transform: translateX(calc(-100% * var(--_drawer-inverse-multiplier)));
     }
 
     :host([expanded][position="left"]:not([inline]):not([static]))
@@ -152,7 +152,7 @@ export const styles = css`
         flex-basis: var(--ak-v2-c-drawer__panel--FlexBasis);
         order: 1;
         max-height: var(--ak-v2-c-drawer__panel--MaxHeight);
-        gap: var(--ak-v2-global--spacer--sm);
+        gap: var(--ak-space-sm);
         overflow: auto;
         background-color: var(--ak-v2-c-drawer__panel--BackgroundColor);
         box-shadow: var(--ak-v2-c-drawer__panel--BoxShadow);
@@ -272,7 +272,7 @@ export const styles = css`
     }
 
     :where(.ak-v2-m-dir-rtl, [dir="rtl"]) .ak-v2-c-drawer__splitter-handle {
-        transform: translate(calc(-50% * var(--ak-v2-global--inverse--multiplier)), -50%);
+        transform: translate(calc(-50% * var(--_drawer-inverse-multiplier)), -50%);
     }
 
     .ak-v2-c-drawer__splitter-handle::after {
@@ -597,7 +597,7 @@ export const styles = css`
         :host([inline])
         .ak-v2-c-drawer__main
         > .ak-v2-c-drawer__panel {
-        transform: translateX(calc(100% * var(--ak-v2-global--inverse--multiplier)));
+        transform: translateX(calc(100% * var(--_drawer-inverse-multiplier)));
     }
 
     :host([inline][expanded]) .ak-v2-c-drawer__main > .ak-v2-c-drawer__panel {
@@ -615,7 +615,7 @@ export const styles = css`
         :host([inline][position="left"])
         .ak-v2-c-drawer__main
         > .ak-v2-c-drawer__panel {
-        transform: translateX(calc(-100% * var(--ak-v2-global--inverse--multiplier)));
+        transform: translateX(calc(-100% * var(--_drawer-inverse-multiplier)));
     }
 
     :host([inline][position="left"][expanded]) .ak-v2-c-drawer__main > .ak-v2-c-drawer__panel {
@@ -678,7 +678,7 @@ export const styles = css`
         :host([inline-on-lg])
         .ak-v2-c-drawer__main
         > .ak-v2-c-drawer__panel {
-        transform: translateX(calc(100% * var(--ak-v2-global--inverse--multiplier)));
+        transform: translateX(calc(100% * var(--_drawer-inverse-multiplier)));
     }
 
     :host([inline-on-lg][expanded]) .ak-v2-c-drawer__main > .ak-v2-c-drawer__panel {
@@ -696,7 +696,7 @@ export const styles = css`
         :host([inline-on-lg][position="left"])
         .ak-v2-c-drawer__main
         > .ak-v2-c-drawer__panel {
-        transform: translateX(calc(-100% * var(--ak-v2-global--inverse--multiplier)));
+        transform: translateX(calc(-100% * var(--_drawer-inverse-multiplier)));
     }
 
     :host([inline-on-lg][position="left"][expanded])
@@ -763,7 +763,7 @@ export const styles = css`
         :host([inline-on-xl])
         .ak-v2-c-drawer__main
         > .ak-v2-c-drawer__panel {
-        transform: translateX(calc(100% * var(--ak-v2-global--inverse--multiplier)));
+        transform: translateX(calc(100% * var(--_drawer-inverse-multiplier)));
     }
 
     :host([inline-on-xl][expanded]) .ak-v2-c-drawer__main > .ak-v2-c-drawer__panel {
@@ -781,7 +781,7 @@ export const styles = css`
         :host([inline-on-xl][position="left"])
         .ak-v2-c-drawer__main
         > .ak-v2-c-drawer__panel {
-        transform: translateX(calc(-100% * var(--ak-v2-global--inverse--multiplier)));
+        transform: translateX(calc(-100% * var(--_drawer-inverse-multiplier)));
     }
 
     :host([inline-on-xl][position="left"][expanded])
@@ -848,7 +848,7 @@ export const styles = css`
         :host([inline-on-2xl])
         .ak-v2-c-drawer__main
         > .ak-v2-c-drawer__panel {
-        transform: translateX(calc(100% * var(--ak-v2-global--inverse--multiplier)));
+        transform: translateX(calc(100% * var(--_drawer-inverse-multiplier)));
     }
 
     :host([inline-on-2xl][expanded]) .ak-v2-c-drawer__main > .ak-v2-c-drawer__panel {
@@ -866,7 +866,7 @@ export const styles = css`
         :host([inline-on-2xl][position="left"])
         .ak-v2-c-drawer__main
         > .ak-v2-c-drawer__panel {
-        transform: translateX(calc(-100% * var(--ak-v2-global--inverse--multiplier)));
+        transform: translateX(calc(-100% * var(--_drawer-inverse-multiplier)));
     }
 
     :host([inline-on-2xl][position="left"][expanded])

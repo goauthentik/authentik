@@ -1,3 +1,8 @@
+/* Cascade layer reservation. No rule lives in a layer yet; this declaration
+ * names the order so downstream PRs can target it without re-deciding.
+ * See website/docs/developer-docs/frontend/cascade-layers.md. */
+@layer reset, base, tokens, components, utilities, overrides;
+
 @import "@patternfly/patternfly/base/patternfly-common.css";
 @import "@patternfly/patternfly/base/patternfly-globals.css";
 @import "@patternfly/patternfly/base/patternfly-themes.css";
