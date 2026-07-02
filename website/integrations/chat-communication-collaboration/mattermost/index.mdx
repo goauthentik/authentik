@@ -28,7 +28,7 @@ This documentation lists only the settings that you need to change from their de
 
 ## Configuration methods
 
-Mattermost Team Edition can use the GitLab OAuth-compatible configuration. SAML is available only in Mattermost Enterprise Edition. This guide explains both options.
+Mattermost Team Edition can use OAuth 2.0. SAML is available only in Mattermost Enterprise Edition. This guide explains both options.
 
 <Tabs
   defaultValue="team"
@@ -48,6 +48,7 @@ To support the integration of Mattermost Team Edition with authentik, you need t
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Customization** > **Property Mappings** and click **Create**. Create a **Scope Mapping** with the following settings:
+
     - **Name**: `mattermost-read-user`
     - **Scope Name**: `read_user`
     - **Description**: `Mattermost Team Edition user profile`
@@ -72,6 +73,7 @@ Mattermost requires the `id` and `email` values from the user profile response. 
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
+
     - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
     - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
@@ -124,17 +126,23 @@ To support the integration of Mattermost Enterprise Edition with authentik via S
 
 Use an existing certificate-key pair from authentik, or generate one if you do not already have one available.
 
-To generate one, log in to authentik as an administrator, open the authentik Admin interface, navigate to **System** > **Certificates**, and click **Generate**. Use the following values:
+To generate one:
 
-- **Common Name**: `mattermost.company`
-- **Private key Algorithm**: `RSA`
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **System** > **Certificates** and click **Generate**.
+3. Configure the following settings:
+    - **Common Name**: `mattermost.company`
+    - **Private key Algorithm**: `RSA`
+4. Click **Generate**.
+5. Click the caret next to the certificate-key pair you will use for Mattermost, then click **Download Certificate** and **Download Private key**.
 
-Click the caret next to the certificate-key pair you will use for Mattermost, then click **Download Certificate** and **Download Private key**. These files will be required in the Mattermost configuration. Keep them safe. Mattermost uses the private key for request signing and assertion decryption.
+These files will be required in the Mattermost configuration. Keep them safe. Mattermost uses the private key for request signing and assertion decryption.
 
 ### Create an application and provider
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
+
     - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Take note of the **Slug** as it will be required later.
     - **Choose a Provider type**: select **SAML Provider** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
