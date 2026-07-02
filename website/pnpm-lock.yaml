@@ -171,8 +171,8 @@ importers:
         specifier: ^5.0.2
         version: 5.0.2(@docusaurus/plugin-content-docs@3.10.1(@docusaurus/faster@3.10.1(@docusaurus/types@3.10.1(@swc/core@1.15.40)(postcss@8.5.15)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(postcss@8.5.15))(@mdx-js/react@3.1.1(@types/react@19.2.16)(react@19.2.7))(@rspack/core@1.7.11)(@swc/core@1.15.40)(postcss@8.5.15)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(typescript@6.0.3))(@docusaurus/utils-validation@3.10.1(@swc/core@1.15.40)(postcss@8.5.15)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(@docusaurus/utils@3.10.1(@swc/core@1.15.40)(postcss@8.5.15)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(@types/json-schema@7.0.15)(react@19.2.7)
       docusaurus-theme-openapi-docs:
-        specifier: ^5.0.2
-        version: 5.0.2(74cb3e8cc18fb419348baba15f863c10)
+        specifier: ^5.1.0
+        version: 5.1.0(e57aaf1524dbd1e0ce07f67a4a7aaa21)
       npm-run-all:
         specifier: ^4.1.5
         version: 4.1.5
@@ -2829,8 +2829,8 @@ packages:
     resolution: {integrity: sha512-EbGRQg4FhrmwLodl+t3JNAnXHWVr9Vp+Zl1QBZVPY4ByfkzIT8cX3K6QWODHtkIZqqJVEWvhHSx3v5PDHsaQag==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
 
-  '@ungap/structured-clone@1.3.1':
-    resolution: {integrity: sha512-mUFwbeTqrVgDQxFveS+df2yfap6iuP20NAKAsBt5jDEoOTDew+zwLAOilHCeQJOVSvmgCX4ogqIrA0mnyr08yQ==}
+  '@ungap/structured-clone@1.3.2':
+    resolution: {integrity: sha512-5jsZFwgR5rTdKwidH9Qmat75RKwqfpKlWWB1frDkljN127mwqBu8K0PYo7/hFpF03IEJpfVPpCQDY/eDx3iHvA==}
 
   '@upsetjs/venn.js@2.0.0':
     resolution: {integrity: sha512-WbBhLrooyePuQ1VZxrJjtLvTc4NVfpOyKx0sKqioq9bX1C1m7Jgykkn8gLrtwumBioXIqam8DLxp88Adbue6Hw==}
@@ -3888,8 +3888,8 @@ packages:
       '@docusaurus/core': ^2.0.0-beta || ^3.0.0-alpha
       sass: ^1.30.0
 
-  docusaurus-theme-openapi-docs@5.0.2:
-    resolution: {integrity: sha512-BD6WhbunR6kXqtoUUDlhxO4HlCNM2nYENGr/TbiTEknkgXYKQz+FEIhY4Hyz5GSLpuhPih0CDuNl7Xkfpcz0Yw==}
+  docusaurus-theme-openapi-docs@5.1.0:
+    resolution: {integrity: sha512-SLHg1lodIM5AEGo0EJx4pJ+9szDDrN8Q+hNk5qqTVJ60k/zKjHAnwGCzVDT25K1CCMDPaUzuuruj43d7TRoQKw==}
     engines: {node: '>=14'}
     peerDependencies:
       '@docusaurus/theme-common': ^3.10.0
@@ -4188,6 +4188,9 @@ packages:
 
   fast-uri@3.1.2:
     resolution: {integrity: sha512-rVjf7ArG3LTk+FS6Yw81V1DLuZl1bRbNrev6Tmd/9RaroeeRRJhAt7jg/6YFxbvAQXUCavSoZhPPj6oOx+5KjQ==}
+
+  fast-uri@3.1.3:
+    resolution: {integrity: sha512-i70LwGWUduXqzicKXWshooq+sWL1K3WUU5rKZNG/0i3a1OSoX3HqhH5WbWwTmqWfor4urUakGPiRQcleRZTwOg==}
 
   fastq@1.20.1:
     resolution: {integrity: sha512-GGToxJ/w1x32s/D2EKND7kTil4n8OVk/9mycTc4VDza13lOvpUZTGX3mFSCtV9ksdGBVzvsyAVLM6mHFThxXxw==}
@@ -4620,8 +4623,8 @@ packages:
   immer@11.1.8:
     resolution: {integrity: sha512-/tbkHMW7y10Lx6i1crLjD4/OhNkRG+Fo7byZHtah0547nIeXYcpIXaUh0IAQY6gO5459qpGGYapcEOHtFXkIuA==}
 
-  immutable@5.1.6:
-    resolution: {integrity: sha512-q1swsS8K7L8usSHuOqF2TAoCCkonYz0SG38wLAggaa4Wml70zixIvt2ql4coQ2C2B3hTjltJry4r6bULwgAXLQ==}
+  immutable@5.1.9:
+    resolution: {integrity: sha512-m8nVez3rwrgmWxtLMt1ZYXB2Lv7OKYn/disyxAlSDYAlKSlFoPPfIAmAM/M5xqL4m4C/wAPw7S2/CNaUii1Hxg==}
 
   import-fresh@3.3.1:
     resolution: {integrity: sha512-TR3KfrTZTYLPB6jUjfx6MF9WcWrHL9su5TObK4ZkYgBdWKPOFoSoQIdEuTuR82pmtxH2spWG9h6etwfr1pLBqQ==}
@@ -5723,8 +5726,8 @@ packages:
   package-manager-detector@1.6.0:
     resolution: {integrity: sha512-61A5ThoTiDG/C8s8UMZwSorAGwMJ0ERVGj2OjoW5pAalsNOg15+iQiPzrLJ4jhZ1HJzmC2PIHT2oEiH3R5fzNA==}
 
-  pako@2.1.0:
-    resolution: {integrity: sha512-w+eufiZ1WuJYgPXbV/PO3NCMEc3xqylkKHzp8bxp1uW4qaSNQUkwmLLEc3kKsfz8lpV1F8Ht3U1Cm+9Srog2ug==}
+  pako@2.2.0:
+    resolution: {integrity: sha512-zJq6RP/5q+TO2OpFV3FHzlPnFjmkb7Nc99a5SNjJE+uu/PkpChs+NIZSSzbBoD+6kjiISXjfYdwj1ZRQ81dz/w==}
 
   param-case@3.0.4:
     resolution: {integrity: sha512-RXlj7zCYokReqWpOPH9oYivUzLYZ5vAPIfEmCTNViosC78F8F0H9y7T7gG2M39ymgutxF5gcFEsyZQSph9Bp3A==}
@@ -6329,8 +6332,8 @@ packages:
     resolution: {integrity: sha512-KTqnxsgGiQ6ZAzZCVlJH5eOjSnvlyEgx1m8bkRJfOhmGRqfo5KLvmAlACQkrjEtOQ4B7wF9TdSLIs9O90MX9xA==}
     engines: {node: '>=16.0.0'}
 
-  qs@6.15.2:
-    resolution: {integrity: sha512-Rzq0KEyX/w/tEybncDgdkZrJgVUsUMk3xjh3t5bv3S1HTAtg+uOYt72+ZfwiQwKdysThkTBdL/rTi6HDmX9Ddw==}
+  qs@6.15.3:
+    resolution: {integrity: sha512-O9gl3zCl5h5blw1KGUzQKhA5oUXSl8rwUIM5o0S3nCXMliSvy5Dzx7/DJcI+SwgICv+IneSZwhBh1oSyEHA71A==}
     engines: {node: '>=0.6'}
 
   queue-microtask@1.2.3:
@@ -6373,8 +6376,8 @@ packages:
   react-fast-compare@3.2.2:
     resolution: {integrity: sha512-nsO+KSNgo1SbJqJEYRE9ERzo7YtYbou/OqjSQKxV7jcKox7+usiUVZOAC+XnDOABXggQTno0Y1CpVnuWEc1boQ==}
 
-  react-hook-form@7.77.0:
-    resolution: {integrity: sha512-Sslh9YDYc0GDlWT/lxasnIduNo4v3yyvqRGvmGKUre5AFjDs/HV9/OafHGD8d+sB2yoL4UIL9L8X9i0WlZZebg==}
+  react-hook-form@7.80.0:
+    resolution: {integrity: sha512-4P+fk6oXsxY+6xSj7Euhc2sumQD8zQqCuVHoJwoyp9EchP+IUW9OESB7uHFJOKsIBQ4MQqYE84INJFqUCYNoOg==}
     engines: {node: '>=18.0.0'}
     peerDependencies:
       react: ^16.8.0 || ^17 || ^18 || ^19
@@ -6684,8 +6687,8 @@ packages:
       webpack:
         optional: true
 
-  sass@1.100.0:
-    resolution: {integrity: sha512-B5j0rYMlinhhOo9tjQebMVVn0TfyXAF+wB3b2ggZUuJ/is/Y+7+JGjirAMxHZ9Z3hIP98NPfamlAkBHa1lAaXQ==}
+  sass@1.101.0:
+    resolution: {integrity: sha512-OL3GoQyoUdDt843DpVmDO6y2k1sc5IhUDSpu8XucEI+35neq5QivZ1iuegnpraEVTJXlQGK1gl27zKcTLEPbQw==}
     engines: {node: '>=20.19.0'}
     hasBin: true
 
@@ -6849,6 +6852,10 @@ packages:
 
   side-channel@1.1.0:
     resolution: {integrity: sha512-ZX99e6tRweoUXqR+VBrslhda51Nh5MTQwou5tnUDgbtyM0dBgmhEDtWGP/xbKn6hqfPRHujUNwz5fy/wbbhnpw==}
+    engines: {node: '>= 0.4'}
+
+  side-channel@1.1.1:
+    resolution: {integrity: sha512-6x6dK6zJdpTzF4sQeNYxwtvBzf6Eg4GtlesS94HOvTudUeyK2WXAaIfmDgsyslYrRBeFIlsi54AYsFGUuhmvrQ==}
     engines: {node: '>= 0.4'}
 
   signal-exit@3.0.7:
@@ -12525,11 +12532,11 @@ snapshots:
     dependencies:
       '@hapi/hoek': 9.3.0
 
-  '@hookform/error-message@2.0.1(react-dom@19.2.7(react@19.2.7))(react-hook-form@7.77.0(react@19.2.7))(react@19.2.7)':
+  '@hookform/error-message@2.0.1(react-dom@19.2.7(react@19.2.7))(react-hook-form@7.80.0(react@19.2.7))(react@19.2.7)':
     dependencies:
       react: 19.2.7
       react-dom: 19.2.7(react@19.2.7)
-      react-hook-form: 7.77.0(react@19.2.7)
+      react-hook-form: 7.80.0(react@19.2.7)
 
   '@humanfs/core@0.19.2':
     dependencies:
@@ -12997,7 +13004,7 @@ snapshots:
   '@redocly/ajv@8.18.1':
     dependencies:
       fast-deep-equal: 3.1.3
-      fast-uri: 3.1.2
+      fast-uri: 3.1.3
       json-schema-traverse: 1.0.0
       require-from-string: 2.0.2
 
@@ -13753,7 +13760,7 @@ snapshots:
       '@typescript-eslint/types': 8.60.1
       eslint-visitor-keys: 5.0.1
 
-  '@ungap/structured-clone@1.3.1': {}
+  '@ungap/structured-clone@1.3.2': {}
 
   '@upsetjs/venn.js@2.0.0':
     optionalDependencies:
@@ -14084,7 +14091,7 @@ snapshots:
       http-errors: 2.0.1
       iconv-lite: 0.4.24
       on-finished: 2.4.1
-      qs: 6.15.2
+      qs: 6.15.3
       raw-body: 2.5.3
       type-is: 1.6.18
       unpipe: 1.0.0
@@ -14967,21 +14974,21 @@ snapshots:
       - '@types/json-schema'
       - encoding
 
-  docusaurus-plugin-sass@0.2.6(@docusaurus/core@3.10.1(@docusaurus/faster@3.10.1(@docusaurus/types@3.10.1(@swc/core@1.15.40)(postcss@8.5.15)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(postcss@8.5.15))(@mdx-js/react@3.1.1(@types/react@19.2.16)(react@19.2.7))(@rspack/core@1.7.11)(@swc/core@1.15.40)(postcss@8.5.15)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(typescript@6.0.3))(@rspack/core@1.7.11)(sass@1.100.0)(webpack@5.107.2(@swc/core@1.15.40)(postcss@8.5.15)):
+  docusaurus-plugin-sass@0.2.6(@docusaurus/core@3.10.1(@docusaurus/faster@3.10.1(@docusaurus/types@3.10.1(@swc/core@1.15.40)(postcss@8.5.15)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(postcss@8.5.15))(@mdx-js/react@3.1.1(@types/react@19.2.16)(react@19.2.7))(@rspack/core@1.7.11)(@swc/core@1.15.40)(postcss@8.5.15)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(typescript@6.0.3))(@rspack/core@1.7.11)(sass@1.101.0)(webpack@5.107.2(@swc/core@1.15.40)(postcss@8.5.15)):
     dependencies:
       '@docusaurus/core': 3.10.1(@docusaurus/faster@3.10.1(@docusaurus/types@3.10.1(@swc/core@1.15.40)(postcss@8.5.15)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(postcss@8.5.15))(@mdx-js/react@3.1.1(@types/react@19.2.16)(react@19.2.7))(@rspack/core@1.7.11)(@swc/core@1.15.40)(postcss@8.5.15)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(typescript@6.0.3)
-      sass: 1.100.0
-      sass-loader: 16.0.8(@rspack/core@1.7.11)(sass@1.100.0)(webpack@5.107.2(@swc/core@1.15.40)(postcss@8.5.15))
+      sass: 1.101.0
+      sass-loader: 16.0.8(@rspack/core@1.7.11)(sass@1.101.0)(webpack@5.107.2(@swc/core@1.15.40)(postcss@8.5.15))
     transitivePeerDependencies:
       - '@rspack/core'
       - node-sass
       - sass-embedded
       - webpack
 
-  docusaurus-theme-openapi-docs@5.0.2(74cb3e8cc18fb419348baba15f863c10):
+  docusaurus-theme-openapi-docs@5.1.0(e57aaf1524dbd1e0ce07f67a4a7aaa21):
     dependencies:
       '@docusaurus/theme-common': 3.10.1(@docusaurus/plugin-content-docs@3.10.1(@docusaurus/faster@3.10.1(@docusaurus/types@3.10.1(@swc/core@1.15.40)(postcss@8.5.15)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(postcss@8.5.15))(@mdx-js/react@3.1.1(@types/react@19.2.16)(react@19.2.7))(@rspack/core@1.7.11)(@swc/core@1.15.40)(postcss@8.5.15)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(typescript@6.0.3))(@swc/core@1.15.40)(postcss@8.5.15)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
-      '@hookform/error-message': 2.0.1(react-dom@19.2.7(react@19.2.7))(react-hook-form@7.77.0(react@19.2.7))(react@19.2.7)
+      '@hookform/error-message': 2.0.1(react-dom@19.2.7(react@19.2.7))(react-hook-form@7.80.0(react@19.2.7))(react@19.2.7)
       '@reduxjs/toolkit': 2.12.0(react-redux@9.3.0(@types/react@19.2.16)(react@19.2.7)(redux@5.0.1))(react@19.2.7)
       allof-merge: 0.6.8
       buffer: 6.0.3
@@ -14989,10 +14996,10 @@ snapshots:
       copy-text-to-clipboard: 3.2.2
       crypto-js: 4.2.0
       docusaurus-plugin-openapi-docs: 5.0.2(@docusaurus/plugin-content-docs@3.10.1(@docusaurus/faster@3.10.1(@docusaurus/types@3.10.1(@swc/core@1.15.40)(postcss@8.5.15)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(postcss@8.5.15))(@mdx-js/react@3.1.1(@types/react@19.2.16)(react@19.2.7))(@rspack/core@1.7.11)(@swc/core@1.15.40)(postcss@8.5.15)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(typescript@6.0.3))(@docusaurus/utils-validation@3.10.1(@swc/core@1.15.40)(postcss@8.5.15)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(@docusaurus/utils@3.10.1(@swc/core@1.15.40)(postcss@8.5.15)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(@types/json-schema@7.0.15)(react@19.2.7)
-      docusaurus-plugin-sass: 0.2.6(@docusaurus/core@3.10.1(@docusaurus/faster@3.10.1(@docusaurus/types@3.10.1(@swc/core@1.15.40)(postcss@8.5.15)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(postcss@8.5.15))(@mdx-js/react@3.1.1(@types/react@19.2.16)(react@19.2.7))(@rspack/core@1.7.11)(@swc/core@1.15.40)(postcss@8.5.15)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(typescript@6.0.3))(@rspack/core@1.7.11)(sass@1.100.0)(webpack@5.107.2(@swc/core@1.15.40)(postcss@8.5.15))
+      docusaurus-plugin-sass: 0.2.6(@docusaurus/core@3.10.1(@docusaurus/faster@3.10.1(@docusaurus/types@3.10.1(@swc/core@1.15.40)(postcss@8.5.15)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(postcss@8.5.15))(@mdx-js/react@3.1.1(@types/react@19.2.16)(react@19.2.7))(@rspack/core@1.7.11)(@swc/core@1.15.40)(postcss@8.5.15)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(typescript@6.0.3))(@rspack/core@1.7.11)(sass@1.101.0)(webpack@5.107.2(@swc/core@1.15.40)(postcss@8.5.15))
       file-saver: 2.0.5
       lodash: 4.18.1
-      pako: 2.1.0
+      pako: 2.2.0
       path-browserify: 1.0.1
       postman-code-generators: 2.1.1
       postman-collection: 5.3.0
@@ -15000,7 +15007,7 @@ snapshots:
       process: 0.11.10
       react: 19.2.7
       react-dom: 19.2.7(react@19.2.7)
-      react-hook-form: 7.77.0(react@19.2.7)
+      react-hook-form: 7.80.0(react@19.2.7)
       react-live: 4.1.8(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       react-magic-dropzone: 1.0.1
       react-markdown: 10.1.0(@types/react@19.2.16)(react@19.2.7)
@@ -15008,8 +15015,8 @@ snapshots:
       react-redux: 9.3.0(@types/react@19.2.16)(react@19.2.7)(redux@5.0.1)
       rehype-raw: 7.0.0
       remark-gfm: 4.0.1
-      sass: 1.100.0
-      sass-loader: 16.0.8(@rspack/core@1.7.11)(sass@1.100.0)(webpack@5.107.2(@swc/core@1.15.40)(postcss@8.5.15))
+      sass: 1.101.0
+      sass-loader: 16.0.8(@rspack/core@1.7.11)(sass@1.101.0)(webpack@5.107.2(@swc/core@1.15.40)(postcss@8.5.15))
       unist-util-visit: 5.1.0
       url: 0.11.4
       xml-formatter: 3.7.0
@@ -15390,7 +15397,7 @@ snapshots:
       parseurl: 1.3.3
       path-to-regexp: 0.1.13
       proxy-addr: 2.0.7
-      qs: 6.15.2
+      qs: 6.15.3
       range-parser: 1.2.1
       safe-buffer: 5.2.1
       send: 0.19.2
@@ -15426,6 +15433,8 @@ snapshots:
   fast-safe-stringify@2.1.1: {}
 
   fast-uri@3.1.2: {}
+
+  fast-uri@3.1.3: {}
 
   fastq@1.20.1:
     dependencies:
@@ -15713,7 +15722,7 @@ snapshots:
     dependencies:
       '@types/hast': 3.0.4
       '@types/unist': 3.0.3
-      '@ungap/structured-clone': 1.3.1
+      '@ungap/structured-clone': 1.3.2
       hast-util-from-parse5: 8.0.3
       hast-util-to-parse5: 8.0.1
       html-void-elements: 3.0.0
@@ -15963,7 +15972,7 @@ snapshots:
 
   immer@11.1.8: {}
 
-  immutable@5.1.6: {}
+  immutable@5.1.9: {}
 
   import-fresh@3.3.1:
     dependencies:
@@ -16601,7 +16610,7 @@ snapshots:
     dependencies:
       '@types/hast': 3.0.4
       '@types/mdast': 4.0.4
-      '@ungap/structured-clone': 1.3.1
+      '@ungap/structured-clone': 1.3.2
       devlop: 1.1.0
       micromark-util-sanitize-uri: 2.0.1
       trim-lines: 3.0.1
@@ -17360,7 +17369,7 @@ snapshots:
 
   package-manager-detector@1.6.0: {}
 
-  pako@2.1.0: {}
+  pako@2.2.0: {}
 
   param-case@3.0.4:
     dependencies:
@@ -18017,9 +18026,10 @@ snapshots:
 
   pvutils@1.1.5: {}
 
-  qs@6.15.2:
+  qs@6.15.3:
     dependencies:
-      side-channel: 1.1.0
+      es-define-property: 1.0.1
+      side-channel: 1.1.1
 
   queue-microtask@1.2.3: {}
 
@@ -18059,7 +18069,7 @@ snapshots:
 
   react-fast-compare@3.2.2: {}
 
-  react-hook-form@7.77.0(react@19.2.7):
+  react-hook-form@7.80.0(react@19.2.7):
     dependencies:
       react: 19.2.7
 
@@ -18466,18 +18476,18 @@ snapshots:
 
   safer-buffer@2.1.2: {}
 
-  sass-loader@16.0.8(@rspack/core@1.7.11)(sass@1.100.0)(webpack@5.107.2(@swc/core@1.15.40)(postcss@8.5.15)):
+  sass-loader@16.0.8(@rspack/core@1.7.11)(sass@1.101.0)(webpack@5.107.2(@swc/core@1.15.40)(postcss@8.5.15)):
     dependencies:
       neo-async: 2.6.2
     optionalDependencies:
       '@rspack/core': 1.7.11
-      sass: 1.100.0
+      sass: 1.101.0
       webpack: 5.107.2(@swc/core@1.15.40)(postcss@8.5.15)
 
-  sass@1.100.0:
+  sass@1.101.0:
     dependencies:
       chokidar: 5.0.0
-      immutable: 5.1.6
+      immutable: 5.1.9
       source-map-js: 1.2.1
     optionalDependencies:
       '@parcel/watcher': 2.5.6
@@ -18680,6 +18690,14 @@ snapshots:
       side-channel-map: 1.0.1
 
   side-channel@1.1.0:
+    dependencies:
+      es-errors: 1.3.0
+      object-inspect: 1.13.4
+      side-channel-list: 1.0.1
+      side-channel-map: 1.0.1
+      side-channel-weakmap: 1.0.2
+
+  side-channel@1.1.1:
     dependencies:
       es-errors: 1.3.0
       object-inspect: 1.13.4
@@ -19300,7 +19318,7 @@ snapshots:
   url@0.11.4:
     dependencies:
       punycode: 1.4.1
-      qs: 6.15.2
+      qs: 6.15.3
 
   use-editable@2.3.3(react@19.2.7):
     dependencies:
