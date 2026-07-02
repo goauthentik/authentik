@@ -10,11 +10,11 @@
 [build]
   base    = "website"
   package = "api"
-  command = "npm ci --prefix ../packages/docusaurus-config && npm run build -w api"
+  command = "pnpm --dir .. install --frozen-lockfile && pnpm install --frozen-lockfile && pnpm run build:api"
   publish = "build"
 
 [dev]
-  command    = "npm start"
+  command    = "pnpm start"
   targetPort = 3000
 
 [context.production.environment]

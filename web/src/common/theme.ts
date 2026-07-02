@@ -178,7 +178,9 @@ export function createUIThemeEffect(
     };
 
     const themeChoiceListener = () => {
-        let theme = formatColorScheme(document.documentElement.dataset.themeChoice);
+        const { documentElement } = document;
+
+        let theme = formatColorScheme(documentElement.dataset.themeChoice);
 
         if (theme === "auto") {
             theme = mediaQueryList.matches
@@ -186,7 +188,8 @@ export function createUIThemeEffect(
                 : UIThemeInversion[colorSchemeTarget];
         }
 
-        document.documentElement.dataset.theme = theme;
+        documentElement.dataset.theme = theme;
+        documentElement.classList.toggle("pf-theme-dark", theme === "dark");
 
         effect(theme);
     };
@@ -280,6 +283,7 @@ export const applyDocumentTheme = ((
     }
 
     ownerDocument.documentElement.dataset.theme = currentUITheme;
+    document.documentElement.classList.toggle("pf-theme-dark", currentUITheme === "dark");
 
     console.debug(`authentik/theme (document): switching to ${currentUITheme} theme`);
 
@@ -308,6 +312,7 @@ export function applyThemeChoice(hint?: CSSColorSchemeValue, doc: Document = doc
     const themeChoice = !hint || hint === "auto" ? "auto" : resolveUITheme(hint);
 
     doc.documentElement.dataset.themeChoice = themeChoice;
+    document.documentElement.classList.toggle("pf-theme-dark", themeChoice === "dark");
 }
 
 /**
