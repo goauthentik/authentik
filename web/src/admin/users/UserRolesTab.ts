@@ -2,37 +2,25 @@ import "#admin/roles/ak-related-role-table";
 import "#elements/Tabs";
 
 import { AKElement } from "#elements/Base";
+import { WithLazyTabs } from "#elements/mixins/lazy-tabs";
 
 import { User } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html, nothing } from "lit";
-import { customElement, property, state } from "lit/decorators.js";
+import { customElement, property } from "lit/decorators.js";
 
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 
 @customElement("ak-user-roles-tab")
-export class UserRolesTab extends AKElement {
+export class UserRolesTab extends WithLazyTabs(AKElement) {
     @property({ attribute: false })
     public user?: User;
 
-    @state()
-    private activatedTabs = new Set<string>(["page-assigned-roles"]);
+    public override activatedTabs = new Set<string>(["page-assigned-roles"]);
 
     static styles = [PFPage, PFCard];
-
-    protected activateTab(tab: string) {
-        if (this.activatedTabs.has(tab)) {
-            return;
-        }
-
-        this.activatedTabs = new Set([...this.activatedTabs, tab]);
-    }
-
-    protected renderWhenActive(tab: string, content: unknown) {
-        return this.activatedTabs.has(tab) ? content : null;
-    }
 
     protected override render() {
         if (!this.user) {

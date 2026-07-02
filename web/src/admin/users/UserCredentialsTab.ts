@@ -10,38 +10,26 @@ import "#elements/user/sources/SourceSettings";
 import "./UserDevicesTable.js";
 
 import { AKElement } from "#elements/Base";
+import { WithLazyTabs } from "#elements/mixins/lazy-tabs";
 
 import { User } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html, nothing } from "lit";
-import { customElement, property, state } from "lit/decorators.js";
+import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 
 @customElement("ak-user-credentials-tab")
-export class UserCredentialsTab extends AKElement {
+export class UserCredentialsTab extends WithLazyTabs(AKElement) {
     @property({ attribute: false })
     public user?: User;
 
-    @state()
-    private activatedTabs = new Set<string>(["page-sessions"]);
+    public override activatedTabs = new Set<string>(["page-sessions"]);
 
     static styles = [PFPage, PFCard];
-
-    protected activateTab(tab: string) {
-        if (this.activatedTabs.has(tab)) {
-            return;
-        }
-
-        this.activatedTabs = new Set([...this.activatedTabs, tab]);
-    }
-
-    protected renderWhenActive(tab: string, content: unknown) {
-        return this.activatedTabs.has(tab) ? content : null;
-    }
 
     protected override render() {
         if (!this.user) {

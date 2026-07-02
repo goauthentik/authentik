@@ -16,6 +16,7 @@ import { listen } from "#elements/decorators/listen";
 import { showAPIErrorMessage } from "#elements/messages/MessageContainer";
 import { WithBrandConfig } from "#elements/mixins/branding";
 import { WithCapabilitiesConfig } from "#elements/mixins/capabilities";
+import { WithLazyTabs } from "#elements/mixins/lazy-tabs";
 import { WithLicenseSummary } from "#elements/mixins/license";
 import { WithLocale } from "#elements/mixins/locale";
 import { WithSession } from "#elements/mixins/session";
@@ -26,15 +27,17 @@ import { CapabilitiesEnum, CoreApi, ModelEnum, User } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html, PropertyValues } from "lit";
-import { customElement, property, state } from "lit/decorators.js";
+import { customElement, property } from "lit/decorators.js";
 
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 
 @customElement("ak-user-view")
-export class UserViewPage extends WithLicenseSummary(
-    WithLocale(WithBrandConfig(WithCapabilitiesConfig(WithSession(AKElement)))),
+export class UserViewPage extends WithLazyTabs(
+    WithLicenseSummary(
+        WithLocale(WithBrandConfig(WithCapabilitiesConfig(WithSession(AKElement)))),
+    ),
 ) {
     #api = aki(CoreApi);
 
@@ -43,9 +46,6 @@ export class UserViewPage extends WithLicenseSummary(
 
     @property({ attribute: false, useDefault: true })
     public user: User | null = null;
-
-    @state()
-    private activatedTabs = new Set<string>(["page-overview"]);
 
     static styles = [PFPage, PFContent, PFCard];
 
@@ -89,18 +89,6 @@ export class UserViewPage extends WithLicenseSummary(
                         : null,
             });
         }
-    }
-
-    protected activateTab(tab: string) {
-        if (this.activatedTabs.has(tab)) {
-            return;
-        }
-
-        this.activatedTabs = new Set([...this.activatedTabs, tab]);
-    }
-
-    protected renderWhenActive(tab: string, content: unknown) {
-        return this.activatedTabs.has(tab) ? content : null;
     }
 
     protected override render() {
