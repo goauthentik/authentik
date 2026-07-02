@@ -27,6 +27,10 @@ This documentation lists only the settings that you need to change from their de
 Gravity automatically triggers SSO authentication when configured. To prevent this behavior, log in using the following URL: `https://gravity.company/ui/?local`.
 :::
 
+:::warning Access control
+Gravity grants OIDC-authenticated users administrative access. Use authentik application bindings or policies to restrict which users can access Gravity.
+:::
+
 ## authentik configuration
 
 <RedirectURI20265Note />
@@ -37,29 +41,33 @@ To support the integration of Gravity with authentik, you need to create an appl
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
-
-- **Application**: Provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
-- **Choose a Provider type**: Select **OAuth2/OpenID Connect** as the provider type.
-- **Configure the Provider**: Provide a name (or accept the auto-provided name), choose the authorization flow for this provider, and configure the following required settings:
-    - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
-    - Add a **Redirect URI** of type `Strict` `Authorization` as `https://gravity.company/auth/oidc/callback`.
-    - Select any available signing key.
-- **Configure Bindings** _(optional)_: Create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
+    - **Application**: provide a descriptive name, a slug, an optional group for the type of application, the policy engine mode, and optional UI settings. Take note of the **Slug** value as it will be required later.
+    - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
+    - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+        - Note the **Client ID** and **Client Secret** values because they will be required later.
+        - Add a **Redirect URI** of type `Strict` `Authorization` as `https://gravity.company/auth/oidc/callback`.
+        - Select any available signing key.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 
 3. Click **Submit** to save the new application and provider.
 
 ## Gravity configuration
 
-1. From the **Gravity administrative interface**, navigate to **Cluster** > **Roles** and click **API**.
-2. Under the **OIDC** sub-section, configure the following values:
+1. Log in to the Gravity administrative interface.
+2. Navigate to **Cluster** > **Roles** and click **API**.
+3. Under the **OIDC** section, configure the following values:
 
 - **Issuer**: `https://authentik.company/application/o/<application_slug>/`
-- **Client ID**: Your Client ID from authentik
-- **Client Secret**: Your Client Secret from authentik
+- **Client ID**: use the Client ID from authentik
+- **Client Secret**: use the Client Secret from authentik
 - **Redirect URL**: `https://gravity.company/auth/oidc/callback`
 
-3. Click **Update** to save and apply your configuration.
+4. Click **Update** to save and apply your configuration.
 
 ## Configuration verification
 
-To verify integration with authentik, log out of Gravity and attempt to visit the login page. You should be automatically redirected to authentik.
+To verify the integration with authentik, log out of Gravity and open Gravity. You should be automatically redirected to authentik.
+
+## Resources
+
+- [Gravity API role configuration documentation](https://gravity.beryju.io/docs/api/role_config/)

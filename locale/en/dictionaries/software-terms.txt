@@ -108,6 +108,8 @@ kadmin
 kiprop
 kubeadm
 labelledby
+LLM
+LLMS
 mcomplete
 mermaidjs
 microsoft
@@ -156,6 +158,7 @@ unenrollment
 unhashed
 unmigrate
 unskippable
+unsynchronized
 uperm
 uwsgi
 wireit

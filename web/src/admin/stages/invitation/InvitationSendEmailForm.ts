@@ -21,7 +21,7 @@ interface InvitationSendEmailRequestWithTemplate {
     emailAddresses: string;
     ccAddresses?: string;
     bccAddresses?: string;
-    template?: TypeCreate;
+    template?: string;
 }
 
 @customElement("ak-invitation-send-email-form")
@@ -84,7 +84,7 @@ export class InvitationSendEmailForm extends Form<InvitationSendEmailRequestWith
                     emailAddresses: addresses,
                     ccAddresses: ccAddresses.length > 0 ? ccAddresses : undefined,
                     bccAddresses: bccAddresses.length > 0 ? bccAddresses : undefined,
-                    template: data.template?.name,
+                    template: data.template,
                 },
             });
 
