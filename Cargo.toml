@@ -19,7 +19,7 @@ license-file = "LICENSE"
 publish = false
 
 [workspace.dependencies]
-arc-swap = "= 1.9.1"
+arc-swap = "= 1.9.2"
 argh = "= 0.1.19"
 axum-server = { version = "= 0.8.0", features = ["tls-rustls-no-provider"] }
 aws-lc-rs = { version = "= 1.17.1", features = ["fips"] }

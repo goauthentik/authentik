@@ -1,6 +1,6 @@
 {
     "name": "@goauthentik/docusaurus-config",
-    "version": "3.0.0",
+    "version": "3.0.1",
     "description": "authentik's Docusaurus config",
     "license": "MIT",
     "repository": {
@@ -30,22 +30,22 @@
         "prism-react-renderer": "^2.4.1"
     },
     "devDependencies": {
-        "@docusaurus/theme-common": "^3.10.0",
-        "@docusaurus/theme-search-algolia": "^3.10.0",
-        "@docusaurus/types": "^3.10.0",
-        "@eslint/js": "^9.39.3",
+        "@docusaurus/theme-common": "^3.10.1",
+        "@docusaurus/theme-search-algolia": "^3.10.1",
+        "@docusaurus/types": "^3.10.1",
+        "@eslint/js": "^9.39.4",
         "@goauthentik/eslint-config": "link:../eslint-config",
         "@goauthentik/prettier-config": "link:../prettier-config",
         "@goauthentik/tsconfig": "link:../tsconfig",
-        "@types/node": "^25.7.0",
-        "@types/react": "^19.2.14",
+        "@types/node": "^25.9.4",
+        "@types/react": "^19.2.17",
         "@types/react-dom": "^19.2.3",
-        "eslint": "^9.39.3",
+        "eslint": "^9.39.4",
         "pino": "^10.3.1",
-        "prettier": "^3.8.3",
+        "prettier": "3.8.3",
         "prettier-plugin-packagejson": "^3.0.2",
         "typescript": "^6.0.3",
-        "typescript-eslint": "^8.59.3"
+        "typescript-eslint": "^8.62.1"
     },
     "peerDependencies": {
         "@docusaurus/theme-common": "^3.10.1",
@@ -55,8 +55,8 @@
         "react-dom": ">=19"
     },
     "optionalDependencies": {
-        "react": ">=19",
-        "react-dom": ">=19"
+        "react": "^19.2.7",
+        "react-dom": "^19.2.7"
     },
     "files": [
         "./index.js",
