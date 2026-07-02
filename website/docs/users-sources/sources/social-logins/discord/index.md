@@ -129,8 +129,9 @@ return {
 
 5. Click **Finish**.
 6. Navigate to **Directory** > **Federation and Social login** and click the **Edit** icon next to your Discord OAuth Source.
-7. Under **OAuth Attribute mapping** add the newly created property mapping to **Selected User Property Mappings**.
-8. Click **Update**.
+7. Set **Group matching mode** to **Link to a group with identical name**.
+8. Under **OAuth Attribute mapping** add the newly created property mapping to **Selected User Property Mappings**.
+9. Click **Update**.
 
 ### Checking Discord Guild membership
 
