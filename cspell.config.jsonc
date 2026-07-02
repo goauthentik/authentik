@@ -207,7 +207,7 @@
         // PatternFly's grey label modifier is spelled the British way upstream.
         "pf-m-grey",
         // Other terms we needed
-        "AKQL"
+        "AKQL",
         "Base64",
         "Email",
         "EncodedURI",
