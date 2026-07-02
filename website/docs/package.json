@@ -4,7 +4,7 @@
     "license": "MIT",
     "private": true,
     "scripts": {
-        "build": "run-s build:docusaurus build:copy",
+        "build": "docusaurus build && cp -r ./build/ ../build/",
         "build:copy": "cp -r ./build/ ../build/",
         "build:docusaurus": "docusaurus build",
         "check-types": "tsc -b .",
@@ -20,24 +20,23 @@
         "@docusaurus/theme-mermaid": "^3.10.1",
         "@docusaurus/tsconfig": "^3.10.1",
         "@docusaurus/types": "^3.10.1",
-        "@goauthentik/docusaurus-config": "../../packages/docusaurus-config",
-        "@goauthentik/docusaurus-theme": "*",
-        "@iconify-json/fa7-regular": "^1.2.2",
+        "@goauthentik/docusaurus-config": "link:../../packages/docusaurus-config",
+        "@goauthentik/docusaurus-theme": "workspace:*",
+        "@iconify-json/fa7-regular": "^1.2.3",
         "@iconify-json/fa7-solid": "^1.2.5",
         "@iconify-json/fluent-mdl2": "^1.2.1",
         "@iconify-json/mdi": "^1.2.3",
         "@mdx-js/react": "^3.1.1",
-        "@types/react": "^19.2.14",
+        "@types/react": "^19.2.16",
         "@types/react-dom": "^19.2.3",
         "prism-react-renderer": "^2.4.1",
-        "react": "^19.2.6",
+        "react": "^19.2.7",
         "react-before-after-slider-component": "^1.1.8",
-        "react-dom": "^19.2.6",
+        "react-dom": "^19.2.7",
         "typescript": "^6.0.3",
-        "unist-util-visit": "^5.0.0"
+        "unist-util-visit": "^5.1.0"
     },
     "engines": {
-        "node": ">=24",
-        "npm": ">=11.14.1"
+        "node": ">=24"
     }
 }

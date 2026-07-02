@@ -80,6 +80,14 @@ export abstract class ModelForm<
     });
 
     /**
+     * The message shown after the form has been successfully submitted when
+     * editing an instance, e.g. "Changes Saved".
+     */
+    public static savedLabel: string | null = msg("Changes Saved", {
+        id: "form.submit.changes-saved",
+    });
+
+    /**
      * A helper method to create an invoker for editing an instance of this form.
      *
      * The invoker will look for a `data-pk` attribute on the clicked element to determine which instance to load.
@@ -214,6 +222,16 @@ export abstract class ModelForm<
         }
 
         return super.formatSubmittingLabel(submittingLabel);
+    }
+
+    protected override formatSubmittedLabel(submittedLabel?: string): string {
+        const { savedLabel } = this.constructor as typeof ModelForm;
+
+        if (this.instancePk && savedLabel) {
+            return savedLabel;
+        }
+
+        return super.formatSubmittedLabel(submittedLabel);
     }
 
     protected override formatHeadline(modifier?: string | null): string {

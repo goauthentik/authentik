@@ -243,6 +243,8 @@ updates:
         patterns:
           - "@docusaurus/*"
           - "@goauthentik/docusaurus-config"
+          - "docusaurus-plugin-openapi-docs"
+          - "docusaurus-theme-openapi-docs"
       build:
         patterns:
           - "@swc/*"

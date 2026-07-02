@@ -589,6 +589,10 @@ msgstr ""
 msgid "Remove temporary users created by SAML Sources."
 msgstr ""
 
+#: authentik/core/templates/base/skeleton.html
+msgid "Recovery session is active. Custom branding is disabled."
+msgstr ""
+
 #: authentik/core/templates/if/error.html
 #: authentik/policies/templates/policies/denied.html
 msgid "Go home"
