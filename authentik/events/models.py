@@ -90,6 +90,7 @@ class EventAction(models.TextChoices):
     LOGOUT = "logout"
 
     USER_WRITE = "user_write"
+    USER_OFFBOARDED = "user_offboarded"
     SUSPICIOUS_REQUEST = "suspicious_request"
     PASSWORD_SET = "password_set"  # noqa # nosec
 
