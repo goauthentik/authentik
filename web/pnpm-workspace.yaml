@@ -19,7 +19,7 @@ nodeLinker: hoisted
 catalog:
     esbuild: "^0.28.1"
     eslint: "^9.39.4"
-    prettier: "^3.8.3"
+    prettier: "^3.9.4"
     prettier-plugin-packagejson: "^3.0.2"
     typescript: "^6.0.3"
 

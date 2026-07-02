@@ -8,7 +8,7 @@ overrides:
   '@goauthentik/esbuild-plugin-live-reload>esbuild': ^0.28.1
   '@goauthentik/esbuild-plugin-live-reload>typescript': ^6.0.3
   '@goauthentik/eslint-config>typescript': ^6.0.3
-  '@goauthentik/prettier-config>prettier': ^3.8.3
+  '@goauthentik/prettier-config>prettier': ^3.9.4
   '@goauthentik/prettier-config>prettier-plugin-packagejson': ^3.0.2
   '@goauthentik/prettier-config>typescript': ^6.0.3
   '@mrmarble/djangoql-completion>lex': workspace:*
@@ -971,7 +971,7 @@ packages:
     resolution: {integrity: sha512-4GZ7FuZ7/B0gfDwr/wLuqnLG8BKhPOtchm/I3i2fISkXjrD85koHL757OlP8fvFIf7x6qo4RnrC8jbUHD3Mekg==}
     engines: {node: '>=24', npm: '>=11.10.1'}
     peerDependencies:
-      prettier: ^3.8.3
+      prettier: ^3.9.4
       prettier-plugin-packagejson: ^3.0.2
 
   '@goauthentik/tsconfig@1.0.9':
