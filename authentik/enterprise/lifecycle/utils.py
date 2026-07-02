@@ -58,18 +58,3 @@ class ContentTypeField(ChoiceField):
 class GenericForeignKeySerializer(Serializer):
     content_type = ContentTypeField()
     object_id = UUIDField()
-
-
-class ReviewerGroupSerializer(ModelSerializer):
-    class Meta:
-        model = Group
-        fields = [
-            "pk",
-            "name",
-        ]
-
-
-class ReviewerUserSerializer(ModelSerializer):
-    class Meta:
-        model = User
-        fields = ["pk", "uuid", "username", "name"]
