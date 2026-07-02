@@ -32,15 +32,15 @@
         "weakmap-polyfill": "^2.0.4"
     },
     "optionalDependencies": {
-        "@swc/core-darwin-arm64": "^1.15.40",
-        "@swc/core-darwin-x64": "^1.15.40",
-        "@swc/core-linux-arm-gnueabihf": "^1.15.40",
-        "@swc/core-linux-arm64-gnu": "^1.15.40",
-        "@swc/core-linux-arm64-musl": "^1.15.40",
-        "@swc/core-linux-x64-gnu": "^1.15.40",
-        "@swc/core-linux-x64-musl": "^1.15.40",
-        "@swc/core-win32-arm64-msvc": "^1.15.40",
-        "@swc/core-win32-ia32-msvc": "^1.15.40",
-        "@swc/core-win32-x64-msvc": "^1.15.40"
+        "@swc/core-darwin-arm64": "^1.15.43",
+        "@swc/core-darwin-x64": "^1.15.43",
+        "@swc/core-linux-arm-gnueabihf": "^1.15.43",
+        "@swc/core-linux-arm64-gnu": "^1.15.43",
+        "@swc/core-linux-arm64-musl": "^1.15.43",
+        "@swc/core-linux-x64-gnu": "^1.15.43",
+        "@swc/core-linux-x64-musl": "^1.15.43",
+        "@swc/core-win32-arm64-msvc": "^1.15.43",
+        "@swc/core-win32-ia32-msvc": "^1.15.43",
+        "@swc/core-win32-x64-msvc": "^1.15.43"
     }
 }
