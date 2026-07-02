@@ -30,6 +30,10 @@ from authentik.policies.utils import delete_none_values
 class FleetController(BaseController[DBC]):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        base_url = self.connector.url
+        if base_url.endswith("/"):
+            base_url = base_url[:-1]
+        self._base_url = base_url
         self._session = get_http_session()
         self._session.headers["Authorization"] = f"Bearer {self.connector.token}"
         if self.connector.headers_mapping:
@@ -51,7 +55,7 @@ class FleetController(BaseController[DBC]):
         return [Capabilities.STAGE_ENDPOINTS, Capabilities.ENROLL_AUTOMATIC_API]
 
     def _url(self, path: str) -> str:
-        return f"{self.connector.url}{path}"
+        return f"{self._base_url}{path}"
 
     def _paginate_hosts(self):
         try:

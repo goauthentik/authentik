@@ -23,23 +23,13 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-endpoints-stage-form")
 export class EndpointStageForm extends BaseStageForm<EndpointStage> {
-    loadInstance(pk: string): Promise<EndpointStage> {
-        return aki(StagesApi).stagesEndpointsRetrieve({
-            stageUuid: pk,
-        });
-    }
-
-    async send(data: EndpointStage): Promise<EndpointStage> {
-        if (this.instance) {
-            return aki(StagesApi).stagesEndpointsUpdate({
-                stageUuid: this.instance.pk || "",
-                endpointStageRequest: data,
-            });
-        }
-        return aki(StagesApi).stagesEndpointsCreate({
-            endpointStageRequest: data,
-        });
-    }
+    protected endpoints = {
+        load: (stageUuid: string) => aki(StagesApi).stagesEndpointsRetrieve({ stageUuid }),
+        create: (endpointStageRequest: EndpointStage) =>
+            aki(StagesApi).stagesEndpointsCreate({ endpointStageRequest }),
+        update: (stageUuid: string, endpointStageRequest: EndpointStage) =>
+            aki(StagesApi).stagesEndpointsUpdate({ stageUuid, endpointStageRequest }),
+    };
 
     protected override renderForm(): TemplateResult {
         return html` <span>

@@ -45,10 +45,10 @@
     },
     "devDependencies": {
         "@eslint/js": "^9.39.3",
-        "@goauthentik/eslint-config": "../eslint-config",
-        "@goauthentik/logger-js": "../logger-js",
-        "@goauthentik/prettier-config": "../prettier-config",
-        "@goauthentik/tsconfig": "../tsconfig",
+        "@goauthentik/eslint-config": "link:../eslint-config",
+        "@goauthentik/logger-js": "link:../logger-js",
+        "@goauthentik/prettier-config": "link:../prettier-config",
+        "@goauthentik/tsconfig": "link:../tsconfig",
         "@types/node": "^25.7.0",
         "esbuild": "^0.27.4",
         "eslint": "^9.39.3",
@@ -72,8 +72,7 @@
         "out/**/*"
     ],
     "engines": {
-        "node": ">=24",
-        "npm": ">=11.14.1"
+        "node": ">=24"
     },
     "devEngines": {
         "runtime": {
@@ -82,8 +81,8 @@
             "version": ">=24"
         },
         "packageManager": {
-            "name": "npm",
-            "version": ">=11.14.1",
+            "name": "pnpm",
+            "version": ">=11.5.1",
             "onFail": "warn"
         }
     },
@@ -96,20 +95,6 @@
         "reload",
         "authentik"
     ],
-    "overrides": {
-        "@typescript-eslint/eslint-plugin": {
-            "typescript": "$typescript"
-        },
-        "@typescript-eslint/parser": {
-            "typescript": "$typescript"
-        },
-        "format-imports": {
-            "eslint": "$eslint"
-        },
-        "typescript-eslint": {
-            "typescript": "$typescript"
-        }
-    },
     "peerDependenciesMeta": {
         "@goauthentik/logger-js": {
             "optional": true

@@ -1,5 +1,7 @@
 ---
 title: Proxy provider
+sidebar_position: 7
+sidebar_label: "Proxy Provider"
 ---
 
 The proxy provider protects applications that do not support native authentication protocols such as OIDC, SAML, or LDAP.

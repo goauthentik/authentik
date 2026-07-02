@@ -93,7 +93,7 @@ In Wiki.js, open the **Generic OpenID Connect / OAuth2** authentication strategy
 - **Issuer**: `https://authentik.company/application/o/<application_slug>/`
 - **Logout URL**: `https://authentik.company/application/o/<application_slug>/end-session/`
 
-If users should be created automatically when they first sign in with authentik, enable **Allow self-registration** and select the Wiki.js group that new users should initially receive in **Assign to group**. If you keep self-registration disabled, you must create users in Wiki.js manually and ensure their email addresses match their authentik email addresses.
+If users should be created automatically when they first sign in with authentik, enable **Allow self-registration** and select the Wiki.js group that new users should initially receive in **Assign to group**. In recent Wiki.js versions, **Assign to group** takes precedence over **Map Groups**. If you keep self-registration disabled, you must create users in Wiki.js manually and ensure their email addresses match their authentik email addresses.
 
 ### Map groups _(optional)_
 
