@@ -32,7 +32,7 @@ This guide uses the [OpenID Connect / OAuth client](https://www.drupal.org/proje
 
 To support the integration of Drupal with authentik, you need to create an application/provider pair in authentik.
 
-### Create an application and provider in authentik
+### Create an application and provider
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
