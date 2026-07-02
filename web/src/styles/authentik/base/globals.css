@@ -36,6 +36,39 @@ body {
     overflow: hidden;
 }
 
+<<<<<<< HEAD
+=======
+.ak-c-safe-mode {
+    --pf-c-banner--md--PaddingLeft: var(--pf-global--spacer--md);
+    --pf-c-banner--md--PaddingRight: var(--pf-global--spacer--md);
+
+    position: fixed;
+    z-index: 9999999;
+    inset-block-end: 0;
+    inset-inline-end: 0;
+    border-start-start-radius: var(--pf-global--BorderRadius--sm);
+    display: flex;
+    align-items: center;
+    font-weight: var(--pf-global--FontWeight--normal);
+    gap: var(--pf-global--spacer--md);
+    animation: ak-safe-mode-fade-out 1s ease-in-out 0.5s forwards;
+
+    &:hover {
+        animation-direction: reverse;
+        animation-duration: 0.5s;
+    }
+}
+
+@keyframes ak-safe-mode-fade-out {
+    0% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0.4;
+    }
+}
+
+>>>>>>> c4b44efdff (web: Recovery Token CSS Safe Mode  (#23152))
 /* #endregion */
 
 html > form > input {
