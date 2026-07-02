@@ -52,7 +52,7 @@ Now that you have your authentik instance installed and configured with the requ
 
 :::tip Security Best Practice
 
-In a production environment, best practice is to first [create a group](../../users-sources/groups/manage_groups.mdx#create-a-group), then [create the user(s)](../../users-sources/user/user_basic_operations.md#create-a-user), and then add the application. Then you can configure the application to have a [binding](../../add-secure-apps/bindings-overview/work-with-bindings.md#) to a specific group or user. The binding controls the access to the application (whether or not it is displayed on a user's Application Dashboard page).
+In a production environment, best practice is to first [create a group](../../users-sources/groups/manage_groups.mdx#create-a-group), then [create the user(s)](../../users-sources/user/user_basic_operations.md#create-a-user), and then add the application. Then you can configure the application to have a [binding](../../add-secure-apps/bindings-overview/work-with-bindings.md) to a specific group or user. The binding controls access to the application and whether it is displayed on a user's Application Dashboard page.
 
 :::
 
@@ -82,15 +82,13 @@ Every application that you add to authentik requires a provider, which is used t
 - **Configure the Application**:
     - **Name**: provide a descriptive name (such as Grafana).
         - **Group**: select an optional group for the application; groups are used to visually separate applications. For example, you can choose to group applications that you use for coding from those you use for internal communication.
-    - **Policy engine mode**: select **Any** for this tutorial; the mode determines how strictly policies are adhered to.
+    - **Policy engine mode**: select **Any** for this tutorial. The mode determines how authentik combines binding results.
         - <strong className="tip">TIP</strong>: in authentik,
           [policies](../../customize/policies/bindings.md) are used in authentik to fine-tune access
-          to applications, flows, stages and many other authentik components. It is not required to
-          use a policy at all, though. The _policy engine mode_ setting of **Any** means that as
-          long as a single policy passes (or if there are no policies bound to the application),
-          then access to the application is granted. The mode **ALL** means that every one of any
-          policies bound to the application must pass in order for a user to have access to the
-          application.
+          to applications, flows, stages, and many other authentik components. You do not need to
+          use a policy for every application. The **Any** policy engine mode grants access when at
+          least one binding passes, or when no bindings are configured. The **All** mode requires
+          every binding on the application to pass.
     - **UI Settings**: optional UI settings that are displayed about the application, including the launch URL, and three settings to display extra information about the application on the **Application Dashboard** page: an optional icon, the publisher of the application, and a brief description.
 - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
 - **Configure the Provider**:
@@ -115,7 +113,7 @@ Every application that you add to authentik requires a provider, which is used t
         - <strong className="tip">TIP</strong>: authentik generates a key that you can use, called
           the `authentik Self-signed Certificate`, if you do not have a specific signing key for an
           application.
-- **Configure Bindings** _(optional)_: for this tutorial, skip this step because you do not yet have a user. Later, after you create your first user, you can [create a binding](../../add-secure-apps/bindings-overview/work-with-bindings.md) to manage the display and access to applications on a user's **Application Dashboard** page.
+- **Configure Bindings** _(optional)_: for this tutorial, skip this step because you do not yet have a user. Later, after you create your first user, you can [create a binding](../../add-secure-apps/bindings-overview/work-with-bindings.md) to manage access to the application and its display on a user's **Application Dashboard** page.
     - <strong className="tip">TIP</strong>: By creating a binding between an application and a
       specific user, you are ensuring that the application is accessible only to that user and any
       other users or groups for whom you created a binding. Learn more about how bindings are used
@@ -221,7 +219,7 @@ Instead, use a specific version tag for authentik instances' container images, s
 
 ### Using bindings to allow or restrict access to applications
 
-Note that if you do not define any [bindings](../../add-secure-apps/bindings-overview/index.md), then all users have access to the application. To control access, you can [create a binding](../../add-secure-apps/bindings-overview/work-with-bindings.md). For more information about user access, refer to our documentation about [authorization](../../add-secure-apps/applications/manage_apps.mdx#policy-driven-authorization) and [hiding an application](../../add-secure-apps/applications/manage_apps.mdx#hide-applications).
+If you do not define any [bindings](../../add-secure-apps/bindings-overview/index.md), all users have access to the application. To control access, you can [create a binding](../../add-secure-apps/bindings-overview/work-with-bindings.md). For more information, see [policy-driven authorization](../../add-secure-apps/applications/manage_apps.mdx#policy-driven-authorization) and [hiding an application](../../add-secure-apps/applications/manage_apps.mdx#hide-applications).
 
 ### Upgrades
 
