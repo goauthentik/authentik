@@ -14,23 +14,13 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-stage-dummy-form")
 export class DummyStageForm extends BaseStageForm<DummyStage> {
-    loadInstance(pk: string): Promise<DummyStage> {
-        return aki(StagesApi).stagesDummyRetrieve({
-            stageUuid: pk,
-        });
-    }
-
-    async send(data: DummyStage): Promise<DummyStage> {
-        if (this.instance) {
-            return aki(StagesApi).stagesDummyUpdate({
-                stageUuid: this.instance.pk || "",
-                dummyStageRequest: data,
-            });
-        }
-        return aki(StagesApi).stagesDummyCreate({
-            dummyStageRequest: data,
-        });
-    }
+    protected endpoints = {
+        load: (stageUuid: string) => aki(StagesApi).stagesDummyRetrieve({ stageUuid }),
+        create: (dummyStageRequest: DummyStage) =>
+            aki(StagesApi).stagesDummyCreate({ dummyStageRequest }),
+        update: (stageUuid: string, dummyStageRequest: DummyStage) =>
+            aki(StagesApi).stagesDummyUpdate({ stageUuid, dummyStageRequest }),
+    };
 
     protected override renderForm(): TemplateResult {
         return html` <span>

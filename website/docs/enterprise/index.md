@@ -1,5 +1,7 @@
 ---
 title: Welcome to authentik Enterprise
+sidebar_label: Overview
+sidebar_position: 0
 ---
 
 The Enterprise release of authentik provides all of the functionality that we have spent years building in our open source product, with a full support plan and an expanded feature set.

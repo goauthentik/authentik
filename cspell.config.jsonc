@@ -301,7 +301,8 @@
         "LICENSE", // License file
         ".gitignore", // Git ignore file
         ".gitattributes", // Git attributes file
-        "*-lock.{json,yaml}", // Lock files (NPM, Yarn, Pip, Cargo)
+        "*-lock.{json,yaml}", // Lock files (NPM, Yarn, Pnpm, Pip, Cargo)
+        "pnpm-workspace.yaml", // PNPM workspace + override config
         "CHANGELOG*.md", // Changelog files
         ".vscode/**", // VSCode configuration
         "out", // TypeScript type-checking output

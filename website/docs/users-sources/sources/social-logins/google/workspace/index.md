@@ -8,7 +8,7 @@ tags:
     - saml
 ---
 
-Allows users to authenticate using their Google Workspace credentials by configuring Google Workspace as a federated identity provider via SAML.
+This source lets users authenticate with their Google Workspace credentials by configuring Google Workspace as a federated identity provider with SAML.
 
 ## What is Google Workspace?
 
@@ -16,7 +16,7 @@ Google Workspace (formerly G Suite) is a collection of cloud-computing, producti
 
 Organizations using Google Workspace allow their users to authenticate to applications using their company email addresses. This guide shows how to set up Security Assertion Markup Language (SAML) as the authentication method between Google Workspace and authentik.
 
-## SAML Authentication Flow
+## SAML authentication flow
 
 This sequence diagram shows a high-level flow between user, authentik, Google Workspace, and the target application.
 
@@ -46,7 +46,7 @@ The key characteristic of this IdP-to-IdP flow is that authentik acts as an inte
 The following placeholders are used in this guide:
 
 - `authentik.company` is the FQDN of the authentik installation.
-- `google-slug` is the slug you will assign to the SAML source in authentik (e.g., `google`).
+- `google-slug` is the slug to assign to the SAML source in authentik (for example, `google`).
 
 ## Google Workspace configuration
 
@@ -63,12 +63,12 @@ The following placeholders are used in this guide:
 7. Take note of the **SSO URL**. This will be required when configuring authentik.
 
 :::info Entity ID
-authentik is acting as both a Service Provider (SP) to Google and an Identity Provider (IdP) to your applications. Since we only need the SP configuration, you can ignore the Entity ID provided by Google.
+authentik acts as both a service provider (SP) to Google and an identity provider (IdP) to your applications. Because only the SP configuration is needed, you can ignore the Entity ID provided by Google.
 :::
 
-8. Click **Continue** to proceed to the Service Provider configuration.
+8. Click **Continue** to proceed to the service provider configuration.
 
-### Configure Service Provider details
+### Configure service provider details
 
 1. Configure the following settings:
     - Set **ACS URL** to `https://authentik.company/source/saml/<google-slug>/acs/`.
