@@ -161,6 +161,7 @@ export const ModelEnum = {
     AuthentikLifecycleLifecyclerule: "authentik_lifecycle.lifecyclerule",
     AuthentikLifecycleLifecycleiteration: "authentik_lifecycle.lifecycleiteration",
     AuthentikLifecycleReview: "authentik_lifecycle.review",
+    AuthentikLifecycleUseroffboarding: "authentik_lifecycle.useroffboarding",
     AuthentikPoliciesUniquePasswordUniquepasswordpolicy:
         "authentik_policies_unique_password.uniquepasswordpolicy",
     AuthentikProvidersGoogleWorkspaceGoogleworkspaceprovider:

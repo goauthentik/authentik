@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { type Action0beEnum } from "../models/Action0beEnum";
 import { type LifecycleIteration, LifecycleIterationFromJSON } from "../models/LifecycleIteration";
 import {
     type LifecycleIterationRequest,
@@ -31,11 +32,25 @@ import {
     PaginatedLifecycleRuleListFromJSON,
 } from "../models/PaginatedLifecycleRuleList";
 import {
+    type PaginatedUserOffboardingList,
+    PaginatedUserOffboardingListFromJSON,
+} from "../models/PaginatedUserOffboardingList";
+import {
     type PatchedLifecycleRuleRequest,
     PatchedLifecycleRuleRequestToJSON,
 } from "../models/PatchedLifecycleRuleRequest";
+import {
+    type PatchedUserOffboardingRequest,
+    PatchedUserOffboardingRequestToJSON,
+} from "../models/PatchedUserOffboardingRequest";
 import { type Review, ReviewFromJSON } from "../models/Review";
 import { type ReviewRequest, ReviewRequestToJSON } from "../models/ReviewRequest";
+import { type Status748Enum } from "../models/Status748Enum";
+import { type UserOffboarding, UserOffboardingFromJSON } from "../models/UserOffboarding";
+import {
+    type UserOffboardingRequest,
+    UserOffboardingRequestToJSON,
+} from "../models/UserOffboardingRequest";
 import * as runtime from "../runtime";
 
 export interface LifecycleIterationsCreateRequest {
@@ -90,6 +105,38 @@ export interface LifecycleRulesRetrieveRequest {
 export interface LifecycleRulesUpdateRequest {
     id: string;
     lifecycleRuleRequest: LifecycleRuleRequest;
+}
+
+export interface LifecycleUserOffboardingCreateRequest {
+    userOffboardingRequest: UserOffboardingRequest;
+}
+
+export interface LifecycleUserOffboardingDestroyRequest {
+    id: string;
+}
+
+export interface LifecycleUserOffboardingListRequest {
+    action?: Action0beEnum;
+    ordering?: string;
+    page?: number;
+    pageSize?: number;
+    search?: string;
+    status?: Status748Enum;
+    userUuid?: string;
+}
+
+export interface LifecycleUserOffboardingPartialUpdateRequest {
+    id: string;
+    patchedUserOffboardingRequest?: PatchedUserOffboardingRequest;
+}
+
+export interface LifecycleUserOffboardingRetrieveRequest {
+    id: string;
+}
+
+export interface LifecycleUserOffboardingUpdateRequest {
+    id: string;
+    userOffboardingRequest: UserOffboardingRequest;
 }
 
 /**
@@ -787,6 +834,427 @@ export class LifecycleApi extends runtime.BaseAPI {
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<LifecycleRule> {
         const response = await this.lifecycleRulesUpdateRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for lifecycleUserOffboardingCreate without sending the request
+     */
+    async lifecycleUserOffboardingCreateRequestOpts(
+        requestParameters: LifecycleUserOffboardingCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["userOffboardingRequest"] == null) {
+            throw new runtime.RequiredError(
+                "userOffboardingRequest",
+                'Required parameter "userOffboardingRequest" was null or undefined when calling lifecycleUserOffboardingCreate().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters["Content-Type"] = "application/json";
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/lifecycle/user_offboarding/`;
+
+        return {
+            path: urlPath,
+            method: "POST",
+            headers: headerParameters,
+            query: queryParameters,
+            body: UserOffboardingRequestToJSON(requestParameters["userOffboardingRequest"]),
+        };
+    }
+
+    /**
+     */
+    async lifecycleUserOffboardingCreateRaw(
+        requestParameters: LifecycleUserOffboardingCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<UserOffboarding>> {
+        const requestOptions =
+            await this.lifecycleUserOffboardingCreateRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            UserOffboardingFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     */
+    async lifecycleUserOffboardingCreate(
+        requestParameters: LifecycleUserOffboardingCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<UserOffboarding> {
+        const response = await this.lifecycleUserOffboardingCreateRaw(
+            requestParameters,
+            initOverrides,
+        );
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for lifecycleUserOffboardingDestroy without sending the request
+     */
+    async lifecycleUserOffboardingDestroyRequestOpts(
+        requestParameters: LifecycleUserOffboardingDestroyRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
+            throw new runtime.RequiredError(
+                "id",
+                'Required parameter "id" was null or undefined when calling lifecycleUserOffboardingDestroy().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/lifecycle/user_offboarding/{id}/`;
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
+
+        return {
+            path: urlPath,
+            method: "DELETE",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     */
+    async lifecycleUserOffboardingDestroyRaw(
+        requestParameters: LifecycleUserOffboardingDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
+        const requestOptions =
+            await this.lifecycleUserOffboardingDestroyRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.VoidApiResponse(response);
+    }
+
+    /**
+     */
+    async lifecycleUserOffboardingDestroy(
+        requestParameters: LifecycleUserOffboardingDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
+        await this.lifecycleUserOffboardingDestroyRaw(requestParameters, initOverrides);
+    }
+
+    /**
+     * Creates request options for lifecycleUserOffboardingList without sending the request
+     */
+    async lifecycleUserOffboardingListRequestOpts(
+        requestParameters: LifecycleUserOffboardingListRequest,
+    ): Promise<runtime.RequestOpts> {
+        const queryParameters: any = {};
+
+        if (requestParameters["action"] != null) {
+            queryParameters["action"] = requestParameters["action"];
+        }
+
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
+        }
+
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
+        }
+
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
+        }
+
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
+        }
+
+        if (requestParameters["status"] != null) {
+            queryParameters["status"] = requestParameters["status"];
+        }
+
+        if (requestParameters["userUuid"] != null) {
+            queryParameters["user__uuid"] = requestParameters["userUuid"];
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/lifecycle/user_offboarding/`;
+
+        return {
+            path: urlPath,
+            method: "GET",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     */
+    async lifecycleUserOffboardingListRaw(
+        requestParameters: LifecycleUserOffboardingListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PaginatedUserOffboardingList>> {
+        const requestOptions =
+            await this.lifecycleUserOffboardingListRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedUserOffboardingListFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     */
+    async lifecycleUserOffboardingList(
+        requestParameters: LifecycleUserOffboardingListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PaginatedUserOffboardingList> {
+        const response = await this.lifecycleUserOffboardingListRaw(
+            requestParameters,
+            initOverrides,
+        );
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for lifecycleUserOffboardingPartialUpdate without sending the request
+     */
+    async lifecycleUserOffboardingPartialUpdateRequestOpts(
+        requestParameters: LifecycleUserOffboardingPartialUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
+            throw new runtime.RequiredError(
+                "id",
+                'Required parameter "id" was null or undefined when calling lifecycleUserOffboardingPartialUpdate().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters["Content-Type"] = "application/json";
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/lifecycle/user_offboarding/{id}/`;
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
+
+        return {
+            path: urlPath,
+            method: "PATCH",
+            headers: headerParameters,
+            query: queryParameters,
+            body: PatchedUserOffboardingRequestToJSON(
+                requestParameters["patchedUserOffboardingRequest"],
+            ),
+        };
+    }
+
+    /**
+     */
+    async lifecycleUserOffboardingPartialUpdateRaw(
+        requestParameters: LifecycleUserOffboardingPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<UserOffboarding>> {
+        const requestOptions =
+            await this.lifecycleUserOffboardingPartialUpdateRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            UserOffboardingFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     */
+    async lifecycleUserOffboardingPartialUpdate(
+        requestParameters: LifecycleUserOffboardingPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<UserOffboarding> {
+        const response = await this.lifecycleUserOffboardingPartialUpdateRaw(
+            requestParameters,
+            initOverrides,
+        );
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for lifecycleUserOffboardingRetrieve without sending the request
+     */
+    async lifecycleUserOffboardingRetrieveRequestOpts(
+        requestParameters: LifecycleUserOffboardingRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
+            throw new runtime.RequiredError(
+                "id",
+                'Required parameter "id" was null or undefined when calling lifecycleUserOffboardingRetrieve().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/lifecycle/user_offboarding/{id}/`;
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
+
+        return {
+            path: urlPath,
+            method: "GET",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     */
+    async lifecycleUserOffboardingRetrieveRaw(
+        requestParameters: LifecycleUserOffboardingRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<UserOffboarding>> {
+        const requestOptions =
+            await this.lifecycleUserOffboardingRetrieveRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            UserOffboardingFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     */
+    async lifecycleUserOffboardingRetrieve(
+        requestParameters: LifecycleUserOffboardingRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<UserOffboarding> {
+        const response = await this.lifecycleUserOffboardingRetrieveRaw(
+            requestParameters,
+            initOverrides,
+        );
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for lifecycleUserOffboardingUpdate without sending the request
+     */
+    async lifecycleUserOffboardingUpdateRequestOpts(
+        requestParameters: LifecycleUserOffboardingUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
+            throw new runtime.RequiredError(
+                "id",
+                'Required parameter "id" was null or undefined when calling lifecycleUserOffboardingUpdate().',
+            );
+        }
+
+        if (requestParameters["userOffboardingRequest"] == null) {
+            throw new runtime.RequiredError(
+                "userOffboardingRequest",
+                'Required parameter "userOffboardingRequest" was null or undefined when calling lifecycleUserOffboardingUpdate().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters["Content-Type"] = "application/json";
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/lifecycle/user_offboarding/{id}/`;
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
+
+        return {
+            path: urlPath,
+            method: "PUT",
+            headers: headerParameters,
+            query: queryParameters,
+            body: UserOffboardingRequestToJSON(requestParameters["userOffboardingRequest"]),
+        };
+    }
+
+    /**
+     */
+    async lifecycleUserOffboardingUpdateRaw(
+        requestParameters: LifecycleUserOffboardingUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<UserOffboarding>> {
+        const requestOptions =
+            await this.lifecycleUserOffboardingUpdateRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            UserOffboardingFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     */
+    async lifecycleUserOffboardingUpdate(
+        requestParameters: LifecycleUserOffboardingUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<UserOffboarding> {
+        const response = await this.lifecycleUserOffboardingUpdateRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 }

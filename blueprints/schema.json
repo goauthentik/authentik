@@ -864,6 +864,46 @@
                     ],
                     "properties": {
                         "model": {
+                            "const": "authentik_lifecycle.useroffboarding"
+                        },
+                        "id": {
+                            "type": "string"
+                        },
+                        "state": {
+                            "type": "string",
+                            "enum": [
+                                "absent",
+                                "created",
+                                "must_created",
+                                "present"
+                            ],
+                            "default": "present"
+                        },
+                        "conditions": {
+                            "type": "array",
+                            "items": {
+                                "type": "boolean"
+                            }
+                        },
+                        "permissions": {
+                            "$ref": "#/$defs/model_authentik_lifecycle.useroffboarding_permissions"
+                        },
+                        "attrs": {
+                            "$ref": "#/$defs/model_authentik_lifecycle.useroffboarding"
+                        },
+                        "identifiers": {
+                            "$ref": "#/$defs/model_authentik_lifecycle.useroffboarding"
+                        }
+                    }
+                },
+                {
+                    "type": "object",
+                    "required": [
+                        "model",
+                        "identifiers"
+                    ],
+                    "properties": {
+                        "model": {
                             "const": "authentik_enterprise.license"
                         },
                         "id": {
@@ -5791,15 +5831,19 @@
                             "authentik_lifecycle.add_lifecycleiteration",
                             "authentik_lifecycle.add_lifecyclerule",
                             "authentik_lifecycle.add_review",
+                            "authentik_lifecycle.add_useroffboarding",
                             "authentik_lifecycle.change_lifecycleiteration",
                             "authentik_lifecycle.change_lifecyclerule",
                             "authentik_lifecycle.change_review",
+                            "authentik_lifecycle.change_useroffboarding",
                             "authentik_lifecycle.delete_lifecycleiteration",
                             "authentik_lifecycle.delete_lifecyclerule",
                             "authentik_lifecycle.delete_review",
+                            "authentik_lifecycle.delete_useroffboarding",
                             "authentik_lifecycle.view_lifecycleiteration",
                             "authentik_lifecycle.view_lifecyclerule",
                             "authentik_lifecycle.view_review",
+                            "authentik_lifecycle.view_useroffboarding",
                             "authentik_outposts.add_dockerserviceconnection",
                             "authentik_outposts.add_kubernetesserviceconnection",
                             "authentik_outposts.add_outpost",
@@ -7117,6 +7161,66 @@
                 }
             }
         },
+        "model_authentik_lifecycle.useroffboarding": {
+            "type": "object",
+            "properties": {
+                "user": {
+                    "type": "integer",
+                    "title": "User"
+                },
+                "scheduled_for": {
+                    "type": "string",
+                    "format": "date-time",
+                    "title": "Scheduled for",
+                    "description": "Absolute time at which the offboarding action is executed."
+                },
+                "action": {
+                    "type": "string",
+                    "enum": [
+                        "deactivate",
+                        "delete"
+                    ],
+                    "title": "Action"
+                },
+                "revoke_sessions": {
+                    "type": "boolean",
+                    "title": "Revoke sessions",
+                    "description": "Revoke all of the user's sessions when offboarding."
+                },
+                "revoke_tokens": {
+                    "type": "boolean",
+                    "title": "Revoke tokens",
+                    "description": "Revoke all of the user's tokens when offboarding."
+                }
+            },
+            "required": []
+        },
+        "model_authentik_lifecycle.useroffboarding_permissions": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "permission"
+                ],
+                "properties": {
+                    "permission": {
+                        "type": "string",
+                        "enum": [
+                            "add_useroffboarding",
+                            "change_useroffboarding",
+                            "delete_useroffboarding",
+                            "view_useroffboarding"
+                        ]
+                    },
+                    "user": {
+                        "type": "integer"
+                    },
+                    "role": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
         "model_authentik_enterprise.license": {
             "type": "object",
             "properties": {
@@ -8057,6 +8161,7 @@
                         "login_failed",
                         "logout",
                         "user_write",
+                        "user_offboarded",
                         "suspicious_request",
                         "password_set",
                         "secret_view",
@@ -8179,6 +8284,7 @@
                                 "login_failed",
                                 "logout",
                                 "user_write",
+                                "user_offboarded",
                                 "suspicious_request",
                                 "password_set",
                                 "secret_view",
@@ -8939,6 +9045,7 @@
                         "login_failed",
                         "logout",
                         "user_write",
+                        "user_offboarded",
                         "suspicious_request",
                         "password_set",
                         "secret_view",
@@ -9189,6 +9296,7 @@
                         "authentik_lifecycle.lifecyclerule",
                         "authentik_lifecycle.lifecycleiteration",
                         "authentik_lifecycle.review",
+                        "authentik_lifecycle.useroffboarding",
                         "authentik_policies_unique_password.uniquepasswordpolicy",
                         "authentik_providers_google_workspace.googleworkspaceprovider",
                         "authentik_providers_google_workspace.googleworkspaceprovidermapping",
@@ -11559,15 +11667,19 @@
                             "authentik_lifecycle.add_lifecycleiteration",
                             "authentik_lifecycle.add_lifecyclerule",
                             "authentik_lifecycle.add_review",
+                            "authentik_lifecycle.add_useroffboarding",
                             "authentik_lifecycle.change_lifecycleiteration",
                             "authentik_lifecycle.change_lifecyclerule",
                             "authentik_lifecycle.change_review",
+                            "authentik_lifecycle.change_useroffboarding",
                             "authentik_lifecycle.delete_lifecycleiteration",
                             "authentik_lifecycle.delete_lifecyclerule",
                             "authentik_lifecycle.delete_review",
+                            "authentik_lifecycle.delete_useroffboarding",
                             "authentik_lifecycle.view_lifecycleiteration",
                             "authentik_lifecycle.view_lifecyclerule",
                             "authentik_lifecycle.view_review",
+                            "authentik_lifecycle.view_useroffboarding",
                             "authentik_outposts.add_dockerserviceconnection",
                             "authentik_outposts.add_kubernetesserviceconnection",
                             "authentik_outposts.add_outpost",
