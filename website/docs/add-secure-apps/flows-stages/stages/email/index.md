@@ -123,6 +123,10 @@ These templates are rendered with Django's templating engine, so you can also us
 
 ![](./custom_template.png)
 
+### Custom template tags
+
+- `inline_static_binary`: Inlines an image as a data-url.
+
 ### Example template
 
 Templates can extend the base email template and use standard Django template tags. For example:
