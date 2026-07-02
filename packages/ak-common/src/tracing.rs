@@ -30,12 +30,12 @@ pub fn install() -> Result<()> {
     }
 
     if config.debug {
-        let console_layer = console_subscriber::ConsoleLayer::builder()
-            .server_addr(config.listen.debug_tokio)
-            .spawn();
+        // let console_layer = console_subscriber::ConsoleLayer::builder()
+        //     .server_addr(config.listen.debug_tokio)
+        //     .spawn();
         tracing_subscriber::registry()
             .with(ErrorLayer::default())
-            .with(console_layer)
+            // .with(console_layer)
             .with(
                 fmt::layer()
                     .compact()
@@ -187,11 +187,8 @@ pub mod sentry {
             environment: config.environment,
             send_pii: config.send_pii,
             #[expect(
-                clippy::cast_possible_truncation,
-                reason = "This is fine, we'll never get big values here."
-            )]
-            #[expect(
                 clippy::as_conversions,
+                clippy::cast_possible_truncation,
                 reason = "This is fine, we'll never get big values here."
             )]
             sample_rate: config.traces_sample_rate as f32,

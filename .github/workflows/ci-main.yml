@@ -368,7 +368,10 @@ jobs:
       - name: Setup authentik env
         uses: ./.github/actions/setup
         with:
-          dependencies: rust,runtime
+          dependencies: system,python,rust,runtime
+      - name: Prepare database
+        run: |
+          uv run make migrate
       - name: run tests
         run: |
           cargo llvm-cov --no-report nextest --workspace

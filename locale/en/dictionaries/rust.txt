@@ -2,6 +2,7 @@ allinone
 argh
 clippy
 impls
+moka
 nasm
 netns
 pointee
