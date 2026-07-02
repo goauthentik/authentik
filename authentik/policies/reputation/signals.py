@@ -20,7 +20,18 @@ from authentik.tenants.utils import get_current_tenant
 LOGGER = get_logger()
 
 
-def update_score(request: HttpRequest, identifier: str, amount: int):
+def mask_identifier(identifier: str) -> str:
+    """Mask identifier for logging to prevent accidental password logging.
+
+    Shows first 2 and last 1 characters, masks the rest.
+    For short identifiers (< 4 chars), masks everything.
+    """
+    if len(identifier) < 4:
+        return "***"
+    return f"{identifier[:2]}***{identifier[-1]}"
+
+
+def update_score(request: HttpRequest, identifier: str, amount: int, *, mask_for_log: bool = False):
     """Update score for IP and User"""
     remote_ip = ClientIPMiddleware.get_client_ip(request)
     tenant = getattr(request, "tenant", get_current_tenant())
@@ -45,20 +56,21 @@ def update_score(request: HttpRequest, identifier: str, amount: int):
             expires=reputation_expiry(),
         )
 
-    LOGGER.info("Updated score", amount=reputation.score, for_user=identifier, for_ip=remote_ip)
+    log_identifier = mask_identifier(identifier) if mask_for_log else identifier
+    LOGGER.info("Updated score", amount=reputation.score, for_user=log_identifier, for_ip=remote_ip)
 
 
 @receiver(login_failed)
 def handle_failed_login(sender, request, credentials, **_):
     """Lower Score for failed login attempts"""
     if "username" in credentials:
-        update_score(request, credentials.get("username"), -1)
+        update_score(request, credentials.get("username"), -1, mask_for_log=True)
 
 
 @receiver(identification_failed)
 def handle_identification_failed(sender, request, uid_field: str, **_):
     """Lower Score for failed identification attempts"""
-    update_score(request, uid_field, -1)
+    update_score(request, uid_field, -1, mask_for_log=True)
 
 
 @receiver(user_logged_in)

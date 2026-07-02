@@ -6,7 +6,7 @@ from authentik.core.models import User
 from authentik.lib.generators import generate_id
 from authentik.policies.reputation.api import ReputationPolicySerializer
 from authentik.policies.reputation.models import Reputation, ReputationPolicy
-from authentik.policies.reputation.signals import update_score
+from authentik.policies.reputation.signals import mask_identifier, update_score
 from authentik.policies.types import PolicyRequest
 from authentik.stages.password import BACKEND_INBUILT
 from authentik.stages.password.stage import authenticate
@@ -26,6 +26,20 @@ class TestReputationPolicy(TestCase):
         self.user = User.objects.create(username=self.username)
         self.user.set_password(self.password)
         self.backends = [BACKEND_INBUILT]
+
+    def test_mask_identifier_short(self):
+        """test mask_identifier with short strings"""
+        self.assertEqual(mask_identifier("ab"), "***")
+        self.assertEqual(mask_identifier("abc"), "***")
+
+    def test_mask_identifier_long(self):
+        """test mask_identifier with longer strings"""
+        self.assertEqual(mask_identifier("username"), "us***e")
+        self.assertEqual(mask_identifier("my_password_is_here"), "my***e")
+
+    def test_mask_identifier_exactly_four(self):
+        """test mask_identifier with exactly 4 characters"""
+        self.assertEqual(mask_identifier("user"), "us***r")
 
     def test_ip_reputation(self):
         """test IP reputation"""
