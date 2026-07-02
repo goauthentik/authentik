@@ -10,15 +10,37 @@ import {
     normalizePath,
     parseDocFile,
     resolveDocumentUrl,
+    resolveDocumentUrlFromSource,
 } from "./node.mjs";
 
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
 const FIXTURE = resolve(__dirname, "__fixtures__", "site");
 
+/**
+ * @param {string} path
+ * @param {string} [slug]
+ * @returns {import("./common.mjs").LLMSDocInfo}
+ */
+function testDoc(path, slug) {
+    return {
+        title: "Test",
+        path,
+        url: "",
+        description: "",
+        content: "",
+        slug,
+    };
+}
+
 test("collectDocFiles finds md and mdx, excludes partials", () => {
     const files = collectDocFiles(FIXTURE).map((f) => normalizePath(f));
     const rels = files.map((f) => f.slice(normalizePath(FIXTURE).length + 1)).sort();
-    assert.deepEqual(rels, ["topic-a/index.mdx", "topic-a/page-one.md", "topic-b/page-two.mdx"]);
+    assert.deepEqual(rels, [
+        "index.mdx",
+        "topic-a/index.mdx",
+        "topic-a/page-one.md",
+        "topic-b/page-two.mdx",
+    ]);
 });
 
 test("collectDocFiles honors extra ignore patterns", () => {
@@ -105,6 +127,29 @@ test("resolveDocumentUrl maps the root index page to /", () => {
     // bare "index" — it must still resolve to the site root route.
     assert.equal(resolveDocumentUrl("index", ROUTES), "/");
     assert.equal(resolveDocumentUrl("", ROUTES), "/");
+});
+
+test("resolveDocumentUrlFromSource maps routeBasePath and index pages", () => {
+    assert.equal(
+        resolveDocumentUrlFromSource(testDoc("topic-a/page-one"), "/"),
+        "/topic-a/page-one/",
+    );
+    assert.equal(resolveDocumentUrlFromSource(testDoc("index"), "/"), "/");
+    assert.equal(
+        resolveDocumentUrlFromSource(testDoc("topic-a/page-one"), "/docs"),
+        "/docs/topic-a/page-one/",
+    );
+});
+
+test("resolveDocumentUrlFromSource honors frontmatter slug overrides", () => {
+    assert.equal(
+        resolveDocumentUrlFromSource(testDoc("customize/branding", "/branding"), "/"),
+        "/branding/",
+    );
+    assert.equal(
+        resolveDocumentUrlFromSource(testDoc("customize/branding", "branding"), "/docs"),
+        "/docs/branding/",
+    );
 });
 
 test("assignGroup always returns the first path segment (slug) for topic grouping", () => {
