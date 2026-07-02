@@ -48,25 +48,24 @@ class TestBlueprintsV1(TransactionTestCase):
     def test_validate_invalid_entry_holding_yaml_tag(self):
         """An invalid entry that still holds a raw !KeyOf must return validation
         errors instead of raising while sanitizing the logged entry."""
-        importer = Importer.from_string(
-            "version: 1\n"
-            "entries:\n"
-            "  - model: authentik_providers_oauth2.scopemapping\n"
-            "    id: sm\n"
-            "    identifiers: { scope_name: test-tag-scope }\n"
-            "    attrs:\n"
-            "      name: test-tag-scope\n"
-            "      scope_name: test-tag-scope\n"
-            '      expression: "return {}"\n'
-            "  - model: authentik_providers_oauth2.oauth2provider\n"
-            "    id: provider\n"
-            "    identifiers: { client_id: test-tag }\n"
-            "    attrs:\n"
-            "      name: test-tag\n"
-            "      client_id: test-tag\n"
-            "      property_mappings:\n"
-            "        - !KeyOf sm\n"
-        )
+        importer = Importer.from_string("""
+            version: 1
+            entries:
+                - model: authentik_providers_oauth2.scopemapping
+                  id: sm
+                  identifiers: { scope_name: test-tag-scope }
+                  attrs:
+                      name: test-tag-scope
+                      scope_name: test-tag-scope
+                      expression: "return {}"
+                - model: authentik_providers_oauth2.oauth2provider
+                  id: provider
+                  identifiers: { client_id: test-tag }
+                  attrs:
+                      name: test-tag
+                      client_id: test-tag
+                      property_mappings:
+                      - !KeyOf sm""")
         valid, logs = importer.validate()
         self.assertFalse(valid)
         self.assertGreater(len(logs), 0)
