@@ -30,7 +30,7 @@ To support the integration of Kimai with authentik, you need to create an applic
 
 Kimai imports SAML users during their first login. To assign Kimai roles from authentik group membership, configure the role mappings in the Kimai `local.yaml` file in the next section.
 
-### Create an application and provider in authentik
+### Create an application and provider
 
 <SAMLProvider20265Warning />
 
@@ -41,7 +41,7 @@ Kimai imports SAML users during their first login. To assign Kimai roles from au
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
         - Set the **ACS URL** to `https://kimai.company/auth/saml/acs`.
         - Set the **SLS URL** to `https://kimai.company/auth/saml/logout`.
-        - Set the **Audience** to `https://kimai.company/auth/saml/metadata`.
+        - Set the **Audience** to `https://kimai.company/`.
         - Set the **Service Provider Binding** to `Post`.
         - Under **Advanced protocol settings**:
             - Select an available **Signing certificate**.
@@ -61,13 +61,14 @@ Kimai imports SAML users during their first login. To assign Kimai roles from au
 
 Paste the following block in your `local.yaml` file, after replacing the placeholder values from above. The file is usually located in `/opt/kimai/config/packages/local.yaml`.
 
-For `x509cert`, open the authentik signing certificate in a text editor, remove the `-----BEGIN CERTIFICATE-----` and `-----END CERTIFICATE-----` lines, remove line breaks, and paste the remaining certificate content.
+For `x509cert`, open the authentik signing certificate in a text editor and paste the full certificate, including the `-----BEGIN CERTIFICATE-----` and `-----END CERTIFICATE-----` lines.
 
 <!-- prettier-ignore-start -->
 
 ```yaml title="/opt/kimai/config/packages/local.yaml"
 kimai:
     saml:
+        provider: authentik
         activate: true
         title: Log in with authentik
         mapping:
@@ -80,29 +81,60 @@ kimai:
                   kimai: alias,
               }
         roles:
+            resetOnLogin: true
             attribute: http://schemas.xmlsoap.org/claims/Group
             mapping:
                 # Insert your roles here (ROLE_USER is added automatically)
                 - { saml: admin.group, kimai: ROLE_ADMIN }
         connection:
             idp:
-                entityId: "https://authentik.company/application/saml/<application_slug>/metadata/"
+                entityId: "https://authentik.company/"
                 singleSignOnService:
-                    url: "https://authentik.company/application/saml/<application_slug>/"
+                    url: "https://authentik.company/application/saml/<application_slug>/sso/binding/redirect/"
                     binding: "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect"
                 # the "single logout" feature was not yet tested, if you want to help, please let me know!
                 singleLogoutService:
-                    url: "https://authentik.company/application/saml/<application_slug>/"
+                    url: "https://authentik.company/if/session-end/<application_slug>/"
                     binding: "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect"
-                x509cert: "<certificate contents from authentik>"
+                x509cert: |
+                    -----BEGIN CERTIFICATE-----
+                    <certificate contents from authentik>
+                    -----END CERTIFICATE-----
             sp:
-                entityId: "https://kimai.company/auth/saml/metadata"
+                entityId: "https://kimai.company/"
                 assertionConsumerService:
                     url: "https://kimai.company/auth/saml/acs"
                     binding: "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST"
                 singleLogoutService:
                     url: "https://kimai.company/auth/saml/logout"
                     binding: "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect"
+                # privateKey: ""
+            # only set baseurl, if auto-detection doesn't work
+            baseurl: "https://kimai.company/auth/saml/"
+            strict: false
+            debug: true
+            security:
+                nameIdEncrypted: false
+                authnRequestsSigned: false
+                logoutRequestSigned: false
+                logoutResponseSigned: false
+                wantMessagesSigned: false
+                wantAssertionsSigned: false
+                wantNameIdEncrypted: false
+                requestedAuthnContext: true
+                signMetadata: false
+                wantXMLValidation: true
+                signatureAlgorithm: "http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"
+                digestAlgorithm: "http://www.w3.org/2001/04/xmlenc#sha256"
+            contactPerson:
+                technical:
+                    givenName: "Kimai Admin"
+                    emailAddress: "admin@example.com"
+            organization:
+                en:
+                    name: "Kimai"
+                    displayname: "Kimai"
+                    url: "https://kimai.company"
 ```
 
 <!-- prettier-ignore-end -->
