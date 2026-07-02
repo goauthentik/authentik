@@ -1,23 +1,24 @@
-@layer globals, reset, legacy, theme, components, brand;
-
-/* This is our global layer definition file.  It needs to be imported at the very top of every
+/* This is our global layer definition file. It needs to be imported at the very top of every app
  * barrel file for the CSS at the document level.
  *
- * - `globals`: This layer contains the minimum global (default) CSS for theming
- *   needed to inform the CSS reset.
+ * - `reset`: The CSS reset.  Currently unused: the existing reset is mashed into Patternfly
  *
- * - `reset`: The CSS reset.
+ * - `vendor`: Patternfly code. Import with `@import "patternfly-<specific>.css" layer(vendor);`
  *
- * - `legacy`: Patternfly code. Import with
- *   `@import "patternfly-<specific>.css" layer(legacy);`
+ * - `components`: Top (document-level) CSS defining:
+ *   - Components that are top-level and in the light-DOM to provide compatibility with
+ *     automated tools like password managers
+ *   - The `:root{}` entries, one per component, that map the global CSS variables to the variables
+ *     used to control the look and feel of elements within the the shadowDOM of that component.
  *
- * - `theme`: The default CSS custom properties defining the overall theme for
+ * - `theme`: The default CSS custom properties defining the overall theme for our product.
+ *
+ * - `mode`: The CSS custom properties that override the theme when defining properties for
+ *   light/dark mode, improved contrast mode, and reduced motion mode. (Note: We don't a a
+ *   reduced-motion file yet.)
+ *
+ * - `brand`: Brand overrides for thematic CSS custom properties and component properties defining
  *   our product.
- *
- * - `components`: Top (document-level) CSS defining either light-DOM
- *   properties, or `:host` CSS variables that our products use for internal
- *   self-definition.
- *
- * - `brand`: Brand overrides for CSS custom properties and component properties
- *   defining our product.
  */
+
+@layer reset, vendor, components, theme, mode, brand;
