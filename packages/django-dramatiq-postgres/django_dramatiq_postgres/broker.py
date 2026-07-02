@@ -77,6 +77,7 @@ class PostgresBroker(Broker):
         *args: Any,
         middleware: list[Middleware] | None = None,
         db_alias: str = DEFAULT_DB_ALIAS,
+        direct_db_alias: str | None = None,
         **kwargs: Any,
     ) -> None:
         super().__init__(*args, middleware=[], **kwargs)  # type: ignore[misc]
@@ -86,6 +87,12 @@ class PostgresBroker(Broker):
         self.queues = set()
 
         self.db_alias = db_alias
+        # Django alias used for connections that must hold a stable PG backend
+        # across statements (consumer LISTEN, session-scoped advisory locks).
+        # When unset, both fall back to db_alias. When set, ORM queries continue
+        # via db_alias (which may go through a transaction pooler) while LISTEN
+        # and lock connections go through direct_db_alias.
+        self.direct_db_alias = direct_db_alias or db_alias
         self.middleware = []
         if middleware:
             raise ImproperlyConfigured(
@@ -114,6 +121,7 @@ class PostgresBroker(Broker):
         return self.consumer_class(
             broker=self,
             db_alias=self.db_alias,
+            direct_db_alias=self.direct_db_alias,
             queue_name=queue_name,
             prefetch=prefetch,
             timeout=timeout,
@@ -235,6 +243,7 @@ class _PostgresConsumer(Consumer):
         queue_name: str,
         prefetch: int,
         timeout: int,
+        direct_db_alias: str | None = None,
         **kwargs: Any,
     ) -> None:
         self.logger = get_logger(__name__, type(self))
@@ -242,6 +251,8 @@ class _PostgresConsumer(Consumer):
         self.pending: set[str] = set()
         self.broker = broker
         self.db_alias = db_alias
+        # See PostgresBroker.__init__ for the rationale. None falls back to db_alias.
+        self.direct_db_alias = direct_db_alias or db_alias
         self.queue_name = queue_name
         self.timeout = timeout // 1000
         self.to_unlock: set[str] = set()
@@ -268,6 +279,7 @@ class _PostgresConsumer(Consumer):
             self.scheduler = import_string(Conf().scheduler_class)()
             self.scheduler.broker = self.broker
             self.scheduler.db_alias = self.db_alias
+            self.scheduler.direct_db_alias = self.direct_db_alias
             self.scheduler_interval = timedelta(seconds=Conf().scheduler_interval)
             self.scheduler_last_run = timezone.now() - self.scheduler_interval
 
@@ -279,15 +291,21 @@ class _PostgresConsumer(Consumer):
     def locks_connection(self) -> DatabaseWrapper:
         if self._locks_connection is not None and self._locks_connection.is_usable():
             return self._locks_connection
-        self._locks_connection = cast(DatabaseWrapper, connections.create_connection(self.db_alias))
+        # Use the direct alias to bypass any transaction pooler: pg_advisory_lock
+        # and pg_advisory_unlock are session-scoped and must run on the same backend.
+        self._locks_connection = cast(
+            DatabaseWrapper, connections.create_connection(self.direct_db_alias)
+        )
         return self._locks_connection
 
     @property
     def listen_connection(self) -> DatabaseWrapper:
         if self._listen_connection is not None and self._listen_connection.is_usable():
             return self._listen_connection
+        # Use the direct alias to bypass any transaction pooler: LISTEN
+        # registration is session-scoped and is lost if the pooler swaps backends.
         self._listen_connection = cast(
-            DatabaseWrapper, connections.create_connection(self.db_alias)
+            DatabaseWrapper, connections.create_connection(self.direct_db_alias)
         )
         # Required for notifications
         # See https://www.psycopg.org/psycopg3/docs/advanced/async.html#asynchronous-notifications
