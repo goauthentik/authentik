@@ -13,6 +13,7 @@ from deepmerge import always_merger
 from django.contrib.auth.hashers import check_password, identify_hasher
 from django.contrib.auth.models import AbstractUser, Permission
 from django.contrib.auth.models import UserManager as DjangoUserManager
+from django.contrib.contenttypes.models import ContentType
 from django.contrib.sessions.base_session import AbstractBaseSession
 from django.core.validators import validate_slug
 from django.db import models
@@ -26,6 +27,7 @@ from guardian.models import RoleModelPermission, RoleObjectPermission
 from model_utils.managers import InheritanceManager
 from psqlextra.indexes import UniqueIndex
 from psqlextra.models import PostgresMaterializedViewModel
+from rest_framework.exceptions import ValidationError
 from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
 
@@ -1392,3 +1394,61 @@ class AuthenticatedSession(SerializerModel):
             session=Session.objects.filter(session_key=request.session.session_key).first(),
             user=user,
         )
+
+
+class ObjectAttribute(SerializerModel, ManagedModel, CreatedUpdatedModel):
+    """User-defined schema for models' `attributes` JSON field."""
+
+    class AttributeType(models.TextChoices):
+        TEXT = "text"
+        NUMBER = "number"
+        BOOLEAN = "boolean"
+
+    attribute_id = models.UUIDField(default=uuid4, primary_key=True)
+
+    enabled = models.BooleanField(default=True)
+
+    object_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    label = models.TextField()
+    group = models.TextField(blank=True)
+    key = models.TextField()
+
+    type = models.TextField(choices=AttributeType.choices)
+    is_unique = models.BooleanField(default=False)
+    is_required = models.BooleanField(default=False)
+    regex = models.TextField(blank=True)
+    is_array = models.BooleanField(default=False)
+
+    def run_validation(self, value: Any) -> None:
+        err_key = f"attributes_{self.key.replace(".", "_")}"
+        if self.is_required and value is None:
+            raise ValidationError({err_key: _("This field is required")})
+        if self.is_array:
+            if not isinstance(value, (list, tuple)):
+                raise ValidationError({err_key: _("Value must be an array.")})
+            if self.regex != "":
+                if not all(re.fullmatch(self.regex, v) for v in value):
+                    raise ValidationError({err_key: _("Value does not match configured pattern.")})
+        else:
+            if self.is_unique:
+                model: type[models.Model] = self.object_type.model_class()
+                lookup_key = f"attributes__{self.key.replace(".", "__")}"
+                if model.objects.filter(**{lookup_key: value}).exists():
+                    raise ValidationError({err_key: _("Value is not unique.")})
+            if self.regex != "":
+                if not re.fullmatch(self.regex, value):
+                    raise ValidationError({err_key: _("Value does not match configured pattern.")})
+
+    @property
+    def serializer(self) -> type[Serializer]:
+        from authentik.core.api.object_attributes import ObjectAttributeSerializer
+
+        return ObjectAttributeSerializer
+
+    def __str__(self):
+        return f"Object attribute '{self.key}' for content type {self.object_type_id}"
+
+    class Meta:
+        verbose_name = _("Object Attribute")
+        verbose_name_plural = _("Object Attributes")
+        unique_together = (("object_type", "key", "enabled"),)
