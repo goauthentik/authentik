@@ -18,24 +18,13 @@ import { customElement } from "lit/decorators.js";
 
 @customElement("ak-stage-account-lockdown-form")
 export class AccountLockdownStageForm extends BaseStageForm<AccountLockdownStage> {
-    #api = aki(StagesApi);
-
-    protected override loadInstance(pk: string): Promise<AccountLockdownStage> {
-        return this.#api.stagesAccountLockdownRetrieve({ stageUuid: pk });
-    }
-
-    protected override async send(data: AccountLockdownStage): Promise<AccountLockdownStage> {
-        if (this.instance) {
-            return this.#api.stagesAccountLockdownUpdate({
-                stageUuid: this.instance.pk || "",
-                accountLockdownStageRequest: data,
-            });
-        }
-
-        return this.#api.stagesAccountLockdownCreate({
-            accountLockdownStageRequest: data,
-        });
-    }
+    protected endpoints = {
+        load: (stageUuid: string) => aki(StagesApi).stagesAccountLockdownRetrieve({ stageUuid }),
+        create: (accountLockdownStageRequest: AccountLockdownStage) =>
+            aki(StagesApi).stagesAccountLockdownCreate({ accountLockdownStageRequest }),
+        update: (stageUuid: string, accountLockdownStageRequest: AccountLockdownStage) =>
+            aki(StagesApi).stagesAccountLockdownUpdate({ stageUuid, accountLockdownStageRequest }),
+    };
 
     protected override renderForm(): SlottedTemplateResult {
         return html`<span>

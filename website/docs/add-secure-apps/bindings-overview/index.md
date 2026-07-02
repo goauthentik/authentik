@@ -1,5 +1,7 @@
 ---
 title: Bindings in authentik
+sidebar_position: 4
+sidebar_label: "Bindings"
 ---
 
 A binding connects one authentik object to another object that uses it. Bindings let authentik answer two common questions:
