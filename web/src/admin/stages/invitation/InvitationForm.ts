@@ -45,6 +45,7 @@ export class InvitationForm extends ModelForm<Invitation, string> {
                 required
                 name="name"
                 value="${this.instance?.name || ""}"
+                autofocus
                 help=${msg(
                     "The name of an invitation must be a slug: only lower case letters, numbers, and the hyphen are permitted here.",
                 )}
