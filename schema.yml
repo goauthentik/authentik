@@ -23704,11 +23704,13 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
-  /sources/ldap/{slug}/sync/status/:
+  /sources/ldap/{slug}/syncs/:
     get:
-      operationId: sources_ldap_sync_status_retrieve
-      description: Get provider's sync status
+      operationId: sources_ldap_syncs_list
+      description: Get provider's sync statuses
       parameters:
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
       - in: path
         name: slug
         schema:
@@ -23724,7 +23726,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SyncStatus'
+                $ref: '#/components/schemas/PaginatedLDAPSourceSyncList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -33356,6 +33358,21 @@ paths:
             $ref: '#/components/schemas/TaskAggregatedStatusEnum'
         explode: true
         style: form
+      - in: query
+        name: message_id
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: message_id__in
+        schema:
+          type: array
+          items:
+            type: string
+            format: uuid
+        description: Multiple values may be separated by commas.
+        explode: false
+        style: form
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
       - $ref: '#/components/parameters/QueryPaginationPageSize'
@@ -42318,12 +42335,16 @@ components:
           allOf:
           - $ref: '#/components/schemas/SyncOutgoingTriggerModeEnum'
           description: When to trigger sync for outgoing providers
+        last_sync:
+          type: string
+          readOnly: true
       required:
       - base_dn
       - component
       - connectivity
       - icon_themed_urls
       - icon_url
+      - last_sync
       - managed
       - meta_model_name
       - name
@@ -42542,6 +42563,74 @@ components:
       - name
       - server_uri
       - slug
+    LDAPSourceSync:
+      type: object
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Uuid
+        tasks:
+          type: array
+          items:
+            type: string
+            format: uuid
+        started_at:
+          type: string
+          format: date-time
+          readOnly: true
+        finished_at:
+          type: string
+          format: date-time
+          nullable: true
+          readOnly: true
+        status:
+          allOf:
+          - $ref: '#/components/schemas/LDAPSourceSyncStatusEnum'
+          readOnly: true
+        source:
+          type: string
+          format: uuid
+        users_count:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+        groups_count:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+        membership_count:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+        user_deletions_count:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+        group_deletions_count:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+      required:
+      - finished_at
+      - pk
+      - source
+      - started_at
+      - status
+      - tasks
+    LDAPSourceSyncStatusEnum:
+      enum:
+      - running
+      - error
+      - warning
+      - done
+      type: string
     LangEnum:
       type: string
       enum:
@@ -46000,6 +46089,21 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/LDAPSourcePropertyMapping'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    PaginatedLDAPSourceSyncList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/LDAPSourceSync'
         autocomplete:
           $ref: '#/components/schemas/Autocomplete'
       required:

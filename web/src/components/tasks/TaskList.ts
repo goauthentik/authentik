@@ -51,6 +51,8 @@ export class TaskList extends Table<Task> {
     clearOnRefresh = true;
 
     @property()
+    taskIds?: string[];
+    @property()
     relObjAppLabel?: string;
 
     @property()
@@ -78,11 +80,13 @@ export class TaskList extends Table<Task> {
 
     async apiEndpoint(): Promise<PaginatedResponse<Task>> {
         const relObjIdIsnull =
-            typeof this.relObjId !== "undefined"
+            typeof this.taskIds !== "undefined"
                 ? undefined
-                : this.showOnlyStandalone
-                  ? true
-                  : undefined;
+                : typeof this.relObjId !== "undefined"
+                  ? undefined
+                  : this.showOnlyStandalone
+                    ? true
+                    : undefined;
         const aggregatedStatus = this.excludeSuccessful
             ? [
                   TaskAggregatedStatusEnum.WaitingForDependencies,
@@ -101,6 +105,7 @@ export class TaskList extends Table<Task> {
         }
         return aki(TasksApi).tasksTasksList({
             ...(await this.defaultEndpointConfig()),
+            messageIdIn: this.taskIds,
             relObjContentTypeAppLabel: this.relObjAppLabel,
             relObjContentTypeModel: this.relObjModel,
             relObjId: this.relObjId ? this.relObjId.toString() : undefined,
@@ -145,7 +150,7 @@ export class TaskList extends Table<Task> {
         return html`<div class="pf-c-toolbar__group pf-m-filter-group">
             <div class="pf-c-toolbar__item pf-m-search-filter">
                 <div class="pf-c-input-group">
-                    ${this.relObjId === undefined
+                    ${this.relObjId === undefined && this.taskIds === undefined
                         ? html` <label class="pf-c-switch">
                               <input
                                   class="pf-c-switch__input"
