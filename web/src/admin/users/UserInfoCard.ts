@@ -17,11 +17,12 @@ import { RecoveryButtons } from "#admin/users/recovery";
 import { ToggleUserActivationButton } from "#admin/users/UserActiveForm";
 import { UserForm } from "#admin/users/UserForm";
 import { UserImpersonateForm } from "#admin/users/UserImpersonateForm";
+import Styles from "#admin/users/UserInfoCard.css";
 
 import { User, UserTypeEnum } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
-import { css, CSSResult, html, nothing } from "lit";
+import { CSSResult, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -45,72 +46,7 @@ export class UserInfoCard extends AKElement {
     @property({ type: Boolean })
     public brandHasRecoveryFlow = false;
 
-    static styles: CSSResult[] = [
-        PFButton,
-        PFCard,
-        PFContent,
-        keyValueListStyles,
-        css`
-            :host {
-                display: block;
-            }
-
-            .ak-user-info-body {
-                display: grid;
-                gap: var(--pf-global--spacer--lg);
-            }
-
-            .ak-user-info-empty {
-                color: var(--pf-global--Color--200);
-            }
-
-            .ak-user-recovery-empty {
-                color: var(--pf-global--Color--200);
-                font-size: var(--pf-global--FontSize--sm);
-            }
-
-            .ak-user-management {
-                display: grid;
-                gap: var(--pf-global--spacer--sm);
-                grid-template-columns: minmax(0, 1fr);
-            }
-
-            .ak-user-management-section {
-                display: grid;
-                gap: var(--pf-global--spacer--xs);
-                min-width: 0;
-            }
-
-            .ak-user-management-heading {
-                color: var(--pf-global--Color--100);
-                font-family: var(--pf-c-card__title--FontFamily);
-                font-size: var(--pf-c-card__title--FontSize);
-                font-weight: var(--pf-c-card__title--FontWeight);
-                margin: 0;
-            }
-
-            .ak-user-management-divider {
-                border-top: 1px solid var(--pf-global--BorderColor--100);
-                padding-top: var(--pf-global--spacer--md);
-            }
-
-            .ak-user-button-collection {
-                align-items: start;
-                display: grid;
-                gap: var(--pf-global--spacer--xs);
-                grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr));
-            }
-
-            .ak-user-button-collection > * {
-                min-width: 0;
-            }
-
-            .ak-user-button-collection > p {
-                grid-column: 1 / -1;
-                margin: 0;
-            }
-        `,
-    ];
+    static styles: CSSResult[] = [PFButton, PFCard, PFContent, keyValueListStyles, Styles];
 
     protected lockdownUser = async () => {
         if (!this.user) {
