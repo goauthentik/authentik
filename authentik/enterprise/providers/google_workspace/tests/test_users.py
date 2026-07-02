@@ -370,3 +370,53 @@ class GoogleWorkspaceUserTests(TestCase):
                 ).exists()
             )
             self.assertFalse(Event.objects.filter(action=EventAction.SYSTEM_EXCEPTION).exists())
+
+    def test_sync_cleanup(self):
+        """Test cleanup of out-of-scope connections (regression for #scim_id).
+
+        _sync_cleanup is shared across all outgoing-sync providers and must
+        resolve the remote identifier generically. Previously it referenced
+        connection.scim_id, which does not exist on GoogleWorkspaceProviderUser
+        (it uses google_id), raising AttributeError during cleanup."""
+        uid = generate_id()
+        # Create a connection whose user is not in the provider's scope, so
+        # _sync_cleanup will try to delete it remotely.
+        self.app.backchannel_providers.remove(self.provider)
+        stale_user = User.objects.create(
+            username=uid,
+            email=f"{uid}@goauthentik.io",
+        )
+        connection = GoogleWorkspaceProviderUser.objects.create(
+            provider=self.provider,
+            user=stale_user,
+            google_id=f"{uid}@goauthentik.io",
+            attributes={},
+        )
+        http = MockHTTP()
+        http.add_response(
+            f"https://admin.googleapis.com/admin/directory/v1/customer/my_customer/domains?key={self.api_key}&alt=json",
+            domains_list_v1_mock,
+        )
+        http.add_response(
+            f"https://admin.googleapis.com/admin/directory/v1/users?customer=my_customer&maxResults=500&orderBy=email&key={self.api_key}&alt=json",
+            method="GET",
+            body={"users": []},
+        )
+        http.add_response(
+            f"https://admin.googleapis.com/admin/directory/v1/groups?customer=my_customer&maxResults=500&orderBy=email&key={self.api_key}&alt=json",
+            method="GET",
+            body={"groups": []},
+        )
+        http.add_response(
+            f"https://admin.googleapis.com/admin/directory/v1/users/{uid}%40goauthentik.io?key={self.api_key}",
+            method="DELETE",
+        )
+        with patch(
+            "authentik.enterprise.providers.google_workspace.models.GoogleWorkspaceProvider.google_credentials",
+            MagicMock(return_value={"developerKey": self.api_key, "http": http}),
+        ):
+            google_workspace_sync.send(self.provider.pk).get_result()
+        # Cleanup must succeed without a SYSTEM_EXCEPTION (the AttributeError
+        # regression) and the stale connection must be removed.
+        self.assertFalse(Event.objects.filter(action=EventAction.SYSTEM_EXCEPTION).exists())
+        self.assertFalse(GoogleWorkspaceProviderUser.objects.filter(pk=connection.pk).exists())
