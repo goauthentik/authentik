@@ -10,7 +10,8 @@ import { formatUserDisplayName, startAccountLockdown } from "#common/users";
 import { AKElement } from "#elements/Base";
 import { showAPIErrorMessage } from "#elements/messages/MessageContainer";
 import { Timestamp } from "#elements/table/shared";
-import type { SlottedTemplateResult } from "#elements/types";
+
+import { keyValueListStyles, renderKeyValueList } from "#components/KeyValueList";
 
 import { RecoveryButtons } from "#admin/users/recovery";
 import { ToggleUserActivationButton } from "#admin/users/UserActiveForm";
@@ -21,7 +22,7 @@ import { User, UserTypeEnum } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
 import { css, CSSResult, html, nothing } from "lit";
-import { customElement, property, state } from "lit/decorators.js";
+import { customElement, property } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
@@ -44,15 +45,11 @@ export class UserInfoCard extends AKElement {
     @property({ type: Boolean })
     public brandHasRecoveryFlow = false;
 
-    @state()
-    private narrowLayout = false;
-
-    #resizeObserver?: ResizeObserver;
-
     static styles: CSSResult[] = [
         PFButton,
         PFCard,
         PFContent,
+        keyValueListStyles,
         css`
             :host {
                 display: block;
@@ -61,41 +58,6 @@ export class UserInfoCard extends AKElement {
             .ak-user-info-body {
                 display: grid;
                 gap: var(--pf-global--spacer--lg);
-            }
-
-            .ak-user-info-grid {
-                display: grid;
-                column-gap: var(--pf-global--spacer--xl);
-                grid-template-columns: repeat(2, minmax(0, 1fr));
-                row-gap: var(--pf-global--spacer--sm);
-            }
-
-            .ak-user-info-grid-one-column {
-                grid-template-columns: minmax(0, 1fr);
-            }
-
-            .ak-user-info-row {
-                align-items: center;
-                column-gap: var(--pf-global--spacer--md);
-                display: grid;
-                grid-template-columns: minmax(6.5rem, 40%) minmax(0, 1fr);
-                min-height: 2rem;
-            }
-
-            .ak-user-info-label {
-                align-items: center;
-                color: var(--pf-global--Color--200);
-                display: flex;
-                font-size: var(--pf-global--FontSize--sm);
-                font-weight: var(--pf-global--FontWeight--bold);
-                line-height: 1.3;
-            }
-
-            .ak-user-info-value {
-                align-items: center;
-                display: flex;
-                min-width: 0;
-                overflow-wrap: anywhere;
             }
 
             .ak-user-info-empty {
@@ -109,57 +71,46 @@ export class UserInfoCard extends AKElement {
 
             .ak-user-management {
                 display: grid;
-                gap: var(--pf-global--spacer--md);
-                grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+                gap: var(--pf-global--spacer--sm);
+                grid-template-columns: minmax(0, 1fr);
             }
 
             .ak-user-management-section {
+                display: grid;
+                gap: var(--pf-global--spacer--xs);
                 min-width: 0;
             }
 
             .ak-user-management-heading {
-                color: var(--pf-global--Color--200);
-                font-size: var(--pf-global--FontSize--sm);
-                font-weight: var(--pf-global--FontWeight--bold);
-                margin: 0 0 var(--pf-global--spacer--sm);
+                color: var(--pf-global--Color--100);
+                font-family: var(--pf-c-card__title--FontFamily);
+                font-size: var(--pf-c-card__title--FontSize);
+                font-weight: var(--pf-c-card__title--FontWeight);
+                margin: 0;
             }
 
             .ak-user-management-divider {
                 border-top: 1px solid var(--pf-global--BorderColor--100);
-                padding-top: var(--pf-global--spacer--lg);
+                padding-top: var(--pf-global--spacer--md);
             }
 
             .ak-user-button-collection {
-                display: flex;
-                flex-direction: column;
-                gap: 0.375rem;
+                align-items: start;
+                display: grid;
+                gap: var(--pf-global--spacer--xs);
+                grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr));
             }
 
             .ak-user-button-collection > * {
-                flex: 1 0 100%;
+                min-width: 0;
             }
 
-            @media (max-width: 768px) {
-                .ak-user-info-grid {
-                    grid-template-columns: minmax(0, 1fr);
-                }
+            .ak-user-button-collection > p {
+                grid-column: 1 / -1;
+                margin: 0;
             }
         `,
     ];
-
-    public override connectedCallback() {
-        super.connectedCallback();
-
-        this.#resizeObserver = new ResizeObserver(([entry]) => {
-            this.narrowLayout = entry.contentRect.width < 512;
-        });
-        this.#resizeObserver.observe(this);
-    }
-
-    public override disconnectedCallback() {
-        this.#resizeObserver?.disconnect();
-        super.disconnectedCallback();
-    }
 
     protected lockdownUser = async () => {
         if (!this.user) {
@@ -232,13 +183,6 @@ export class UserInfoCard extends AKElement {
         return value ? Timestamp(value) : this.renderEmpty();
     }
 
-    protected renderInfoItem(label: string, value: SlottedTemplateResult) {
-        return html`<div class="ak-user-info-row">
-            <div class="ak-user-info-label">${label}</div>
-            <div class="ak-user-info-value">${value}</div>
-        </div>`;
-    }
-
     protected override render() {
         if (!this.user) {
             return nothing;
@@ -249,32 +193,25 @@ export class UserInfoCard extends AKElement {
         return html`
             <div class="pf-c-card__title">${msg("User Info")}</div>
             <div class="pf-c-card__body ak-user-info-body">
-                <div
-                    class="ak-user-info-grid ${this.narrowLayout
-                        ? "ak-user-info-grid-one-column"
-                        : ""}"
-                >
-                    ${this.renderInfoItem(msg("Username"), user.username)}
-                    ${this.renderInfoItem(msg("Name"), user.name || this.renderEmpty())}
-                    ${this.renderInfoItem(msg("Email"), user.email || this.renderEmpty())}
-                    ${this.renderInfoItem(msg("Last login"), this.renderDate(user.lastLogin))}
-                    ${this.renderInfoItem(
-                        msg("Last password change"),
-                        this.renderDate(user.passwordChangeDate),
-                    )}
-                    ${this.renderInfoItem(
+                ${renderKeyValueList([
+                    [msg("Username"), user.username],
+                    [msg("Name"), user.name || this.renderEmpty()],
+                    [msg("Email"), user.email || this.renderEmpty()],
+                    [msg("Last login"), this.renderDate(user.lastLogin)],
+                    [msg("Last password change"), this.renderDate(user.passwordChangeDate)],
+                    [
                         msg("Active"),
                         html`<ak-status-label .good=${user.isActive}></ak-status-label>`,
-                    )}
-                    ${this.renderInfoItem(msg("Type"), userTypeToLabel(user.type))}
-                    ${this.renderInfoItem(
+                    ],
+                    [msg("Type"), userTypeToLabel(user.type)],
+                    [
                         msg("Superuser"),
                         html`<ak-status-label
                             type="neutral"
                             .good=${user.isSuperuser}
                         ></ak-status-label>`,
-                    )}
-                </div>
+                    ],
+                ])}
                 <div class="ak-user-management ak-user-management-divider">
                     <section class="ak-user-management-section">
                         <h3 class="ak-user-management-heading">${msg("Actions")}</h3>

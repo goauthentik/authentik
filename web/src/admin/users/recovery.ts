@@ -43,14 +43,24 @@ export const RecoveryButtons: LitFC<RecoveryButtonsProps> = ({
                     </button>`
                   : html`<p>
                         <span class=${emptyClasses || ""}>
-                            ${msg("Set an email address to email a recovery link.")}
+                            ${msg(
+                                "This user does not have an email address, so authentik cannot email a recovery link. Add an email address to enable email recovery.",
+                                {
+                                    id: "users.recovery.no-email.description",
+                                },
+                            )}
                         </span>
                     </p>`,
           ]
         : [
               html`<p>
                   <span class=${emptyClasses || ""}>
-                      ${msg("No recovery flow configured for this brand.")}
+                      ${msg(
+                          "This brand does not have a recovery flow, so recovery links cannot be created. Configure a recovery flow in the brand settings to enable recovery.",
+                          {
+                              id: "users.recovery.no-brand-flow.description",
+                          },
+                      )}
                   </span>
               </p>`,
           ];
