@@ -11,7 +11,7 @@ A binding connects one authentik object to another object that uses it. Bindings
 
 A policy answers "should this request pass?" A policy binding decides where authentik asks that question.
 
-For step-by-step links, see [Work with bindings](./work-with-bindings.md).
+For a step-by-step guide, see [Work with bindings](./work-with-bindings.md).
 
 ## Binding types
 
