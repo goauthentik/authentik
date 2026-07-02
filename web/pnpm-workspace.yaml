@@ -19,7 +19,6 @@ nodeLinker: hoisted
 catalog:
     esbuild: "^0.28.1"
     eslint: "^9.39.4"
-    prettier: "^3.9.4"
     prettier-plugin-packagejson: "^3.0.2"
     typescript: "^6.0.3"
 
@@ -27,7 +26,6 @@ overrides:
     "@goauthentik/esbuild-plugin-live-reload>esbuild": "catalog:"
     "@goauthentik/esbuild-plugin-live-reload>typescript": "catalog:"
     "@goauthentik/eslint-config>typescript": "catalog:"
-    "@goauthentik/prettier-config>prettier": "catalog:"
     "@goauthentik/prettier-config>prettier-plugin-packagejson": "catalog:"
     "@goauthentik/prettier-config>typescript": "catalog:"
     "@mrmarble/djangoql-completion>lex": "workspace:*"

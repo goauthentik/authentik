@@ -14,7 +14,6 @@ nodeLinker: hoisted
 catalog:
   eslint: "^9.39.3"
   typescript: "^6.0.3"
-  prettier: "^3.8.3"
   prettier-plugin-packagejson: "^3.0.2"
 
 overrides:
@@ -22,7 +21,6 @@ overrides:
   "@goauthentik/docusaurus-config>react-dom": "^19.2.6"
   "@goauthentik/docusaurus-config>@docusaurus/theme-common": "^3.10.1"
   "@goauthentik/eslint-config>typescript": "catalog:"
-  "@goauthentik/prettier-config>prettier": "catalog:"
   "@goauthentik/prettier-config>prettier-plugin-packagejson": "catalog:"
   "@typescript-eslint/parser>typescript": "catalog:"
   "@typescript-eslint/utils>typescript": "catalog:"

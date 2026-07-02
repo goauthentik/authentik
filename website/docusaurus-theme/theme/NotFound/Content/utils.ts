@@ -8,7 +8,8 @@ import { usePluginData } from "@docusaurus/useGlobalData";
  */
 export function useRedirectEntries(): RedirectEntry[] | null {
     const pluginData = usePluginData("ak-redirects-plugin", undefined) as
-        AKRedirectsPluginData | undefined;
+        | AKRedirectsPluginData
+        | undefined;
 
     if (!pluginData || !pluginData.redirects) {
         return null;
