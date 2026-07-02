@@ -183,7 +183,7 @@
         "remark-frontmatter": "^5.0.0",
         "remark-gfm": "^4.0.1",
         "remark-mdx-frontmatter": "^5.2.0",
-        "storybook": "^10.4.2",
+        "storybook": "^10.4.6",
         "style-mod": "^4.1.3",
         "stylelint": "^17.12.0",
         "trusted-types": "^2.0.0",
