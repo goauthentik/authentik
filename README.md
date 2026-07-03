@@ -20,6 +20,7 @@ Our [enterprise offering](https://goauthentik.io/pricing) is available for organ
 
 ## Installation
 
+- Zenith: one-click managed hosting. See the [app listing](https://zenith.hosting/host/authentik?ref=gh).
 - Docker Compose: recommended for small/test setups. See the [documentation](https://docs.goauthentik.io/docs/install-config/install/docker-compose/).
 - Kubernetes (Helm Chart): recommended for larger setups. See the [documentation](https://docs.goauthentik.io/docs/install-config/install/kubernetes/) and the Helm chart [repository](https://github.com/goauthentik/helm).
 - AWS CloudFormation: deploy on AWS using our official templates. See the [documentation](https://docs.goauthentik.io/docs/install-config/install/aws/).
