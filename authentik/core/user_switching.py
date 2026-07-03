@@ -63,7 +63,7 @@ def decode_cookie(raw: str | None) -> str | None:
 
 def ensure_request_token(request: HttpRequest) -> str | None:
     """Return the request's user switching token, creating one if the session
-    middleware initialised the request but no token is present yet."""
+    middleware initialized the request but no token is present yet."""
     if not hasattr(request, "user_switching_token"):
         return None
     if not request.user_switching_token:
