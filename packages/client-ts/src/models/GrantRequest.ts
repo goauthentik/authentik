@@ -12,6 +12,8 @@
  * Do not edit the class manually.
  */
 
+import type { Application } from "./Application";
+import { ApplicationFromJSON } from "./Application";
 import type { PartialUser } from "./PartialUser";
 import { PartialUserFromJSON } from "./PartialUser";
 import type { RequestStatus } from "./RequestStatus";
@@ -67,6 +69,12 @@ export interface GrantRequest {
     readonly targets: Array<string>;
     /**
      *
+     * @type {Array<Application>}
+     * @memberof GrantRequest
+     */
+    readonly targetApps: Array<Application>;
+    /**
+     *
      * @type {string}
      * @memberof GrantRequest
      */
@@ -80,6 +88,7 @@ export function instanceOfGrantRequest(value: object): value is GrantRequest {
     if (!("created" in value) || value["created"] === undefined) return false;
     if (!("createdBy" in value) || value["createdBy"] === undefined) return false;
     if (!("targets" in value) || value["targets"] === undefined) return false;
+    if (!("targetApps" in value) || value["targetApps"] === undefined) return false;
     return true;
 }
 
@@ -99,6 +108,7 @@ export function GrantRequestFromJSONTyped(json: any, ignoreDiscriminator: boolea
         expires: json["expires"] == null ? undefined : new Date(json["expires"]),
         status: json["status"] == null ? undefined : RequestStatusFromJSON(json["status"]),
         targets: json["targets"],
+        targetApps: (json["target_apps"] as Array<any>).map(ApplicationFromJSON),
         uuid: json["uuid"] == null ? undefined : json["uuid"],
     };
 }
@@ -108,7 +118,7 @@ export function GrantRequestToJSON(json: any): GrantRequest {
 }
 
 export function GrantRequestToJSONTyped(
-    value?: Omit<GrantRequest, "created" | "created_by" | "targets"> | null,
+    value?: Omit<GrantRequest, "created" | "created_by" | "targets" | "target_apps"> | null,
     ignoreDiscriminator: boolean = false,
 ): any {
     if (value == null) {

@@ -40891,12 +40891,18 @@ components:
             type: string
             format: uuid
           readOnly: true
+        target_apps:
+          type: array
+          items:
+            $ref: '#/components/schemas/Application'
+          readOnly: true
         uuid:
           type: string
           format: uuid
       required:
       - created
       - created_by
+      - target_apps
       - targets
     GrantRequestCreateRequest:
       type: object

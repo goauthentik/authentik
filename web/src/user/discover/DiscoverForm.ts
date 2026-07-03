@@ -49,7 +49,9 @@ export class DiscoverForm extends Form<GrantRequestCreateRequest> {
     protected send(data: GrantRequestCreateRequest): Promise<unknown> {
         return aki(PamApi)
             .pamGrantRequestsCreate({
-                grantRequestCreateRequest: data,
+                grantRequestCreateRequest: {
+                    pbms: this.selected.map(a => a.pbmUuid),
+                },
             })
             .then((v) => {
                 window.location.assign(v.link);

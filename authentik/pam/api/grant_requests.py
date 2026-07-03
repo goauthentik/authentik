@@ -1,7 +1,7 @@
-from drf_spectacular.utils import OpenApiResponse, extend_schema
+from drf_spectacular.utils import OpenApiResponse, extend_schema, extend_schema_field
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
-from rest_framework.fields import ChoiceField
+from rest_framework.fields import ChoiceField, SerializerMethodField
 from rest_framework.mixins import (
     DestroyModelMixin,
     ListModelMixin,
@@ -13,6 +13,7 @@ from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
 from authentik.api.validation import validate
+from authentik.core.api.applications import ApplicationSerializer
 from authentik.core.api.groups import PartialUserSerializer
 from authentik.core.api.utils import (
     JSONDictField,
@@ -30,6 +31,13 @@ from authentik.policies.models import PolicyBindingModel
 class GrantRequestSerializer(ModelSerializer):
     created_by = PartialUserSerializer(read_only=True)
 
+    # TODO: Optimize this
+    target_apps = SerializerMethodField()
+
+    @extend_schema_field(ApplicationSerializer(many=True))
+    def get_target_apps(self, inst: GrantRequest) -> list[ApplicationSerializer]:
+        return ApplicationSerializer(inst.targets.all().select_subclasses(), many=True).data
+
     class Meta:
         model = GrantRequest
         fields = [
@@ -40,6 +48,7 @@ class GrantRequestSerializer(ModelSerializer):
             "expires",
             "status",
             "targets",
+            "target_apps",
             "uuid",
         ]
 
