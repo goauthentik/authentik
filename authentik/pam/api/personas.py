@@ -15,7 +15,7 @@ class PersonaSerializer(PartialUserSerializer):
 
     class Meta:
         model = Persona
-        fields = PartialUserSerializer.Meta.fields + ["parent"]
+        fields = PartialUserSerializer.Meta.fields + ["uuid", "expiring", "expires", "parent"]
 
 
 class PersonaViewSet(RetrieveModelMixin, DestroyModelMixin, ListModelMixin, GenericViewSet):

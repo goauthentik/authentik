@@ -74,18 +74,6 @@ export interface DeviceUserBindingRequest {
     failureResult?: boolean;
     /**
      *
-     * @type {Date}
-     * @memberof DeviceUserBindingRequest
-     */
-    expires?: Date | null;
-    /**
-     *
-     * @type {boolean}
-     * @memberof DeviceUserBindingRequest
-     */
-    expiring?: boolean;
-    /**
-     *
      * @type {boolean}
      * @memberof DeviceUserBindingRequest
      */
@@ -124,8 +112,6 @@ export function DeviceUserBindingRequestFromJSONTyped(
         order: json["order"],
         timeout: json["timeout"] == null ? undefined : json["timeout"],
         failureResult: json["failure_result"] == null ? undefined : json["failure_result"],
-        expires: json["expires"] == null ? undefined : new Date(json["expires"]),
-        expiring: json["expiring"] == null ? undefined : json["expiring"],
         isPrimary: json["is_primary"] == null ? undefined : json["is_primary"],
     };
 }
@@ -152,8 +138,6 @@ export function DeviceUserBindingRequestToJSONTyped(
         order: value["order"],
         timeout: value["timeout"],
         failure_result: value["failureResult"],
-        expires: value["expires"] == null ? value["expires"] : value["expires"].toISOString(),
-        expiring: value["expiring"],
         is_primary: value["isPrimary"],
     };
 }

@@ -38176,9 +38176,11 @@ components:
         expires:
           type: string
           format: date-time
+          readOnly: true
           nullable: true
         expiring:
           type: boolean
+          readOnly: true
         is_primary:
           type: boolean
         connector:
@@ -38193,6 +38195,8 @@ components:
       required:
       - connector
       - connector_obj
+      - expires
+      - expiring
       - group_obj
       - order
       - pk
@@ -38234,12 +38238,6 @@ components:
         failure_result:
           type: boolean
           description: Result if the Policy execution fails.
-        expires:
-          type: string
-          format: date-time
-          nullable: true
-        expiring:
-          type: boolean
         is_primary:
           type: boolean
       required:
@@ -48922,12 +48920,6 @@ components:
         failure_result:
           type: boolean
           description: Result if the Policy execution fails.
-        expires:
-          type: string
-          format: date-time
-          nullable: true
-        expiring:
-          type: boolean
         is_primary:
           type: boolean
     PatchedDockerServiceConnectionRequest:
@@ -52367,6 +52359,16 @@ components:
         uid:
           type: string
           readOnly: true
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+        expiring:
+          type: boolean
+        expires:
+          type: string
+          format: date-time
+          nullable: true
         parent:
           allOf:
           - $ref: '#/components/schemas/PartialUser'
@@ -52377,6 +52379,7 @@ components:
       - pk
       - uid
       - username
+      - uuid
     PlexAuthenticationChallenge:
       type: object
       description: Challenge shown to the user in identification stage

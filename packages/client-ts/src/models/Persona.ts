@@ -71,6 +71,24 @@ export interface Persona {
     readonly uid: string;
     /**
      *
+     * @type {string}
+     * @memberof Persona
+     */
+    readonly uuid: string;
+    /**
+     *
+     * @type {boolean}
+     * @memberof Persona
+     */
+    expiring?: boolean;
+    /**
+     *
+     * @type {Date}
+     * @memberof Persona
+     */
+    expires?: Date | null;
+    /**
+     *
      * @type {PartialUser}
      * @memberof Persona
      */
@@ -85,6 +103,7 @@ export function instanceOfPersona(value: object): value is Persona {
     if (!("username" in value) || value["username"] === undefined) return false;
     if (!("name" in value) || value["name"] === undefined) return false;
     if (!("uid" in value) || value["uid"] === undefined) return false;
+    if (!("uuid" in value) || value["uuid"] === undefined) return false;
     if (!("parent" in value) || value["parent"] === undefined) return false;
     return true;
 }
@@ -106,6 +125,9 @@ export function PersonaFromJSONTyped(json: any, ignoreDiscriminator: boolean): P
         email: json["email"] == null ? undefined : json["email"],
         attributes: json["attributes"] == null ? undefined : json["attributes"],
         uid: json["uid"],
+        uuid: json["uuid"],
+        expiring: json["expiring"] == null ? undefined : json["expiring"],
+        expires: json["expires"] == null ? undefined : new Date(json["expires"]),
         parent: PartialUserFromJSON(json["parent"]),
     };
 }
@@ -115,7 +137,7 @@ export function PersonaToJSON(json: any): Persona {
 }
 
 export function PersonaToJSONTyped(
-    value?: Omit<Persona, "pk" | "uid" | "parent"> | null,
+    value?: Omit<Persona, "pk" | "uid" | "uuid" | "parent"> | null,
     ignoreDiscriminator: boolean = false,
 ): any {
     if (value == null) {
@@ -130,5 +152,7 @@ export function PersonaToJSONTyped(
             value["lastLogin"] == null ? value["lastLogin"] : value["lastLogin"].toISOString(),
         email: value["email"],
         attributes: value["attributes"],
+        expiring: value["expiring"],
+        expires: value["expires"] == null ? value["expires"] : value["expires"].toISOString(),
     };
 }

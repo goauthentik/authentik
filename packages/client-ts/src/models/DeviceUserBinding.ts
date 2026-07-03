@@ -110,13 +110,13 @@ export interface DeviceUserBinding {
      * @type {Date}
      * @memberof DeviceUserBinding
      */
-    expires?: Date | null;
+    readonly expires: Date | null;
     /**
      *
      * @type {boolean}
      * @memberof DeviceUserBinding
      */
-    expiring?: boolean;
+    readonly expiring: boolean;
     /**
      *
      * @type {boolean}
@@ -147,6 +147,8 @@ export function instanceOfDeviceUserBinding(value: object): value is DeviceUserB
     if (!("userObj" in value) || value["userObj"] === undefined) return false;
     if (!("target" in value) || value["target"] === undefined) return false;
     if (!("order" in value) || value["order"] === undefined) return false;
+    if (!("expires" in value) || value["expires"] === undefined) return false;
+    if (!("expiring" in value) || value["expiring"] === undefined) return false;
     if (!("connector" in value) || value["connector"] === undefined) return false;
     if (!("connectorObj" in value) || value["connectorObj"] === undefined) return false;
     return true;
@@ -177,8 +179,8 @@ export function DeviceUserBindingFromJSONTyped(
         order: json["order"],
         timeout: json["timeout"] == null ? undefined : json["timeout"],
         failureResult: json["failure_result"] == null ? undefined : json["failure_result"],
-        expires: json["expires"] == null ? undefined : new Date(json["expires"]),
-        expiring: json["expiring"] == null ? undefined : json["expiring"],
+        expires: json["expires"] == null ? null : new Date(json["expires"]),
+        expiring: json["expiring"],
         isPrimary: json["is_primary"] == null ? undefined : json["is_primary"],
         connector: json["connector"],
         connectorObj: ConnectorFromJSON(json["connector_obj"]),
@@ -192,7 +194,14 @@ export function DeviceUserBindingToJSON(json: any): DeviceUserBinding {
 export function DeviceUserBindingToJSONTyped(
     value?: Omit<
         DeviceUserBinding,
-        "pk" | "policy_obj" | "group_obj" | "user_obj" | "connector" | "connector_obj"
+        | "pk"
+        | "policy_obj"
+        | "group_obj"
+        | "user_obj"
+        | "expires"
+        | "expiring"
+        | "connector"
+        | "connector_obj"
     > | null,
     ignoreDiscriminator: boolean = false,
 ): any {
@@ -210,8 +219,6 @@ export function DeviceUserBindingToJSONTyped(
         order: value["order"],
         timeout: value["timeout"],
         failure_result: value["failureResult"],
-        expires: value["expires"] == null ? value["expires"] : value["expires"].toISOString(),
-        expiring: value["expiring"],
         is_primary: value["isPrimary"],
     };
 }
