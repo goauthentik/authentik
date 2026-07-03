@@ -123,6 +123,19 @@ These templates are rendered with Django's templating engine, so you can also us
 
 ![](./custom_template.png)
 
+#### Template context
+
+<!-- prettier-ignore -->
+```html
+{{ key_value.user_email }}
+{{ key_value.user_username}}
+{{ body }}
+{{ title }}
+{{ link.target }}
+{{ link.label }}
+{{ key_value.http_request.path }}
+```
+
 ### Example template
 
 Templates can extend the base email template and use standard Django template tags. For example:
