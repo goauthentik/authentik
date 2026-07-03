@@ -20,6 +20,7 @@ from authentik.core.models import (
     UserTypes,
 )
 from authentik.core.tests.utils import create_test_admin_user, create_test_user
+from authentik.enterprise.lifecycle.api.offboarding import UserOffboardingSerializer
 from authentik.enterprise.lifecycle.models import (
     OffboardingAction,
     OffboardingStatus,
@@ -301,6 +302,34 @@ class TestOffboardingAPI(APITestCase):
         )
         self.assertEqual(response.status_code, 400)
         self.assertIn("user", response.data)
+
+    def test_duplicate_pending_race_returns_400(self):
+        """If two requests race past validation, the DB constraint yields a 400, not a 500."""
+        UserOffboarding.objects.create(
+            user=self.user,
+            scheduled_for=now() + timedelta(days=1),
+            action=OffboardingAction.DEACTIVATE,
+        )
+        # Simulate the TOCTOU: bypass the duplicate pre-check so the insert is
+        # the first place the conflict is detected (the partial unique constraint).
+        with patch.object(UserOffboardingSerializer, "validate", new=lambda self, attrs: attrs):
+            response = self.client.post(
+                reverse("authentik_api:useroffboarding-list"),
+                {
+                    "user": self.user.pk,
+                    "scheduled_for": (now() + timedelta(days=2)).isoformat(),
+                    "action": OffboardingAction.DEACTIVATE,
+                },
+            )
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("user", response.data)
+        # The losing insert did not create a second pending row.
+        self.assertEqual(
+            UserOffboarding.objects.filter(
+                user=self.user, status=OffboardingStatus.PENDING
+            ).count(),
+            1,
+        )
 
     def test_offboard_self_rejected(self):
         response = self.client.post(

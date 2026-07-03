@@ -82,14 +82,17 @@ export class UserInfoCard extends AKElement {
             return;
         }
 
-        const offboardings = await this.#lifecycleApi
-            .lifecycleUserOffboardingList({
+        try {
+            const offboardings = await this.#lifecycleApi.lifecycleUserOffboardingList({
                 userUuid: this.user.uuid,
                 status: OffboardingStatusEnum.Pending,
-            })
-            .catch(() => null);
-
-        this.pendingOffboarding = offboardings?.results.at(0) ?? null;
+            });
+            this.pendingOffboarding = offboardings.results.at(0) ?? null;
+        } catch (error) {
+            // Don't swallow: a transient failure must not flip the button to
+            // "Schedule" and hide a real pending offboarding.
+            showAPIErrorMessage(error);
+        }
     };
 
     protected lockdownUser = async () => {

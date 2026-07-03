@@ -1,3 +1,4 @@
+from django.db import IntegrityError, transaction
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from rest_framework.exceptions import ValidationError
@@ -10,6 +11,8 @@ from authentik.core.api.utils import ModelSerializer
 from authentik.core.models import User, UserTypes
 from authentik.enterprise.api import EnterpriseRequiredMixin
 from authentik.enterprise.lifecycle.models import OffboardingStatus, UserOffboarding
+
+DUPLICATE_PENDING_ERROR = _("This user already has a pending offboarding scheduled.")
 
 
 class UserOffboardingSerializer(EnterpriseRequiredMixin, ModelSerializer):
@@ -63,9 +66,7 @@ class UserOffboardingSerializer(EnterpriseRequiredMixin, ModelSerializer):
             if self.instance is not None:
                 existing = existing.exclude(pk=self.instance.pk)
             if existing.exists():
-                raise ValidationError(
-                    {"user": _("This user already has a pending offboarding scheduled.")}
-                )
+                raise ValidationError({"user": DUPLICATE_PENDING_ERROR})
         return attrs
 
 
@@ -78,7 +79,14 @@ class UserOffboardingViewSet(ModelViewSet):
     filterset_fields = ["user__uuid", "status", "action"]
 
     def perform_create(self, serializer: UserOffboardingSerializer) -> None:
-        serializer.save(created_by=self.request.user)
+        # Two concurrent requests can both pass validate()'s duplicate check and
+        # race to insert; the unique constraint rejects the loser. Catch it behind
+        # a savepoint and return the same 400 instead of a 500.
+        try:
+            with transaction.atomic():
+                serializer.save(created_by=self.request.user)
+        except IntegrityError:
+            raise ValidationError({"user": DUPLICATE_PENDING_ERROR}) from None
 
     def destroy(self, request: Request, *args, **kwargs) -> Response:
         """Cancel a pending offboarding instead of deleting the record.

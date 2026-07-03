@@ -364,10 +364,9 @@ class UserOffboarding(SerializerModel):
     def execute(self, request: HttpRequest | None = None):
         """Run the offboarding action and record the outcome.
 
-        The revocations, the destructive action, and the status transition all
-        run in a single transaction, so a mid-way failure rolls everything back:
-        the user is left fully intact (never half-offboarded) and the row stays
-        `PENDING` for a later retry.
+        Revocations, the destructive action, and the status write run in one
+        transaction, so a mid-way failure rolls back completely: the user is
+        left untouched and the row stays `PENDING` for retry.
         """
         from authentik.enterprise.lifecycle.offboarding import offboard_user
 
