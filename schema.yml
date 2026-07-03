@@ -9571,6 +9571,11 @@ paths:
           $ref: '#/components/responses/GenericErrorResponse'
     delete:
       operationId: lifecycle_user_offboarding_destroy
+      description: |-
+        Cancel a pending offboarding instead of deleting the record.
+
+        The row is retained (as `CANCELED`) so the offboarding stays visible in
+        the audit history; deletion would erase who scheduled and cancelled it.
       parameters:
       - in: path
         name: id

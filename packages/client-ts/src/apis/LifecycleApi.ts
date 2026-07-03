@@ -942,6 +942,7 @@ export class LifecycleApi extends runtime.BaseAPI {
     }
 
     /**
+     * Cancel a pending offboarding instead of deleting the record.  The row is retained (as `CANCELED`) so the offboarding stays visible in the audit history; deletion would erase who scheduled and cancelled it.
      */
     async lifecycleUserOffboardingDestroyRaw(
         requestParameters: LifecycleUserOffboardingDestroyRequest,
@@ -955,6 +956,7 @@ export class LifecycleApi extends runtime.BaseAPI {
     }
 
     /**
+     * Cancel a pending offboarding instead of deleting the record.  The row is retained (as `CANCELED`) so the offboarding stays visible in the audit history; deletion would erase who scheduled and cancelled it.
      */
     async lifecycleUserOffboardingDestroy(
         requestParameters: LifecycleUserOffboardingDestroyRequest,
