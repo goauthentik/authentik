@@ -12,8 +12,11 @@
  * Do not edit the class manually.
  */
 
-import type { Action0beEnum } from "./Action0beEnum";
-import { Action0beEnumFromJSON, Action0beEnumToJSON } from "./Action0beEnum";
+import type { OffboardingActionEnum } from "./OffboardingActionEnum";
+import {
+    OffboardingActionEnumFromJSON,
+    OffboardingActionEnumToJSON,
+} from "./OffboardingActionEnum";
 
 /**
  * Mixin to validate that a valid enterprise license
@@ -36,10 +39,10 @@ export interface UserOffboardingRequest {
     scheduledFor: Date;
     /**
      *
-     * @type {Action0beEnum}
+     * @type {OffboardingActionEnum}
      * @memberof UserOffboardingRequest
      */
-    action?: Action0beEnum;
+    action?: OffboardingActionEnum;
     /**
      * Revoke all of the user's sessions when offboarding.
      * @type {boolean}
@@ -77,7 +80,7 @@ export function UserOffboardingRequestFromJSONTyped(
     return {
         user: json["user"],
         scheduledFor: new Date(json["scheduled_for"]),
-        action: json["action"] == null ? undefined : Action0beEnumFromJSON(json["action"]),
+        action: json["action"] == null ? undefined : OffboardingActionEnumFromJSON(json["action"]),
         revokeSessions: json["revoke_sessions"] == null ? undefined : json["revoke_sessions"],
         revokeTokens: json["revoke_tokens"] == null ? undefined : json["revoke_tokens"],
     };
@@ -98,7 +101,7 @@ export function UserOffboardingRequestToJSONTyped(
     return {
         user: value["user"],
         scheduled_for: value["scheduledFor"].toISOString(),
-        action: Action0beEnumToJSON(value["action"]),
+        action: OffboardingActionEnumToJSON(value["action"]),
         revoke_sessions: value["revokeSessions"],
         revoke_tokens: value["revokeTokens"],
     };

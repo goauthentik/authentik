@@ -12,12 +12,15 @@
  * Do not edit the class manually.
  */
 
-import type { Action0beEnum } from "./Action0beEnum";
-import { Action0beEnumFromJSON, Action0beEnumToJSON } from "./Action0beEnum";
+import type { OffboardingActionEnum } from "./OffboardingActionEnum";
+import {
+    OffboardingActionEnumFromJSON,
+    OffboardingActionEnumToJSON,
+} from "./OffboardingActionEnum";
+import type { OffboardingStatusEnum } from "./OffboardingStatusEnum";
+import { OffboardingStatusEnumFromJSON } from "./OffboardingStatusEnum";
 import type { PartialUser } from "./PartialUser";
 import { PartialUserFromJSON } from "./PartialUser";
-import type { Status748Enum } from "./Status748Enum";
-import { Status748EnumFromJSON } from "./Status748Enum";
 
 /**
  * Mixin to validate that a valid enterprise license
@@ -52,10 +55,10 @@ export interface UserOffboarding {
     scheduledFor: Date;
     /**
      *
-     * @type {Action0beEnum}
+     * @type {OffboardingActionEnum}
      * @memberof UserOffboarding
      */
-    action?: Action0beEnum;
+    action?: OffboardingActionEnum;
     /**
      * Revoke all of the user's sessions when offboarding.
      * @type {boolean}
@@ -70,10 +73,10 @@ export interface UserOffboarding {
     revokeTokens?: boolean;
     /**
      *
-     * @type {Status748Enum}
+     * @type {OffboardingStatusEnum}
      * @memberof UserOffboarding
      */
-    readonly status: Status748Enum;
+    readonly status: OffboardingStatusEnum;
     /**
      *
      * @type {PartialUser}
@@ -125,10 +128,10 @@ export function UserOffboardingFromJSONTyped(
         user: json["user"],
         userObj: PartialUserFromJSON(json["user_obj"]),
         scheduledFor: new Date(json["scheduled_for"]),
-        action: json["action"] == null ? undefined : Action0beEnumFromJSON(json["action"]),
+        action: json["action"] == null ? undefined : OffboardingActionEnumFromJSON(json["action"]),
         revokeSessions: json["revoke_sessions"] == null ? undefined : json["revoke_sessions"],
         revokeTokens: json["revoke_tokens"] == null ? undefined : json["revoke_tokens"],
-        status: Status748EnumFromJSON(json["status"]),
+        status: OffboardingStatusEnumFromJSON(json["status"]),
         createdByObj: PartialUserFromJSON(json["created_by_obj"]),
         createdAt: new Date(json["created_at"]),
         executedOn: json["executed_on"] == null ? null : new Date(json["executed_on"]),
@@ -153,7 +156,7 @@ export function UserOffboardingToJSONTyped(
     return {
         user: value["user"],
         scheduled_for: value["scheduledFor"].toISOString(),
-        action: Action0beEnumToJSON(value["action"]),
+        action: OffboardingActionEnumToJSON(value["action"]),
         revoke_sessions: value["revokeSessions"],
         revoke_tokens: value["revokeTokens"],
     };

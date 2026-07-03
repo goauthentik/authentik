@@ -10,8 +10,8 @@ import { ModelForm } from "#elements/forms/ModelForm";
 import { AKLabel } from "#components/ak-label";
 
 import {
-    Action0beEnum,
     LifecycleApi,
+    OffboardingActionEnum,
     UserOffboarding,
     UserOffboardingRequest,
 } from "@goauthentik/api";
@@ -70,11 +70,11 @@ export class UserOffboardingForm extends ModelForm<UserOffboarding, string> {
         return html`<ak-radio-input
                 name="action"
                 label=${msg("Action", { id: "offboarding.field.action.label" })}
-                .value=${Action0beEnum.Deactivate}
+                .value=${OffboardingActionEnum.Deactivate}
                 .options=${[
                     {
                         label: msg("Deactivate", { id: "offboarding.action.deactivate.label" }),
-                        value: Action0beEnum.Deactivate,
+                        value: OffboardingActionEnum.Deactivate,
                         default: true,
                         description: html`${msg(
                             "Lock the user out of authentik without removing their account.",
@@ -83,7 +83,7 @@ export class UserOffboardingForm extends ModelForm<UserOffboarding, string> {
                     },
                     {
                         label: msg("Delete", { id: "offboarding.action.delete.label" }),
-                        value: Action0beEnum.Delete,
+                        value: OffboardingActionEnum.Delete,
                         description: html`${msg("Permanently delete the user's account.", {
                             id: "offboarding.action.delete.description",
                         })}`,

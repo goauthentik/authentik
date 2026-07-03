@@ -182,6 +182,8 @@ SPECTACULAR_SETTINGS = {
         "FlowLayoutEnum": "authentik.flows.models.FlowLayout",
         "LDAPAPIAccessMode": "authentik.providers.ldap.models.APIAccessMode",
         "ModelEnum": "authentik.lib.api.Models",
+        "OffboardingActionEnum": "authentik.enterprise.lifecycle.models.OffboardingAction",
+        "OffboardingStatusEnum": "authentik.enterprise.lifecycle.models.OffboardingStatus",
         "OutgoingSyncDeleteAction": "authentik.lib.sync.outgoing.models.OutgoingSyncDeleteAction",
         "PKCEMethodEnum": "authentik.sources.oauth.models.PKCEMethod",
         "PolicyEngineMode": "authentik.policies.models.PolicyEngineMode",

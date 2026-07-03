@@ -24,9 +24,9 @@ import { UserImpersonateForm } from "#admin/users/UserImpersonateForm";
 import Styles from "#admin/users/UserInfoCard.css";
 
 import {
-    Action0beEnum,
     LifecycleApi,
-    Status748Enum,
+    OffboardingActionEnum,
+    OffboardingStatusEnum,
     User,
     UserOffboarding,
     UserTypeEnum,
@@ -85,7 +85,7 @@ export class UserInfoCard extends AKElement {
         const offboardings = await this.#lifecycleApi
             .lifecycleUserOffboardingList({
                 userUuid: this.user.uuid,
-                status: Status748Enum.Pending,
+                status: OffboardingStatusEnum.Pending,
             })
             .catch(() => null);
 
@@ -161,7 +161,7 @@ export class UserInfoCard extends AKElement {
         if (this.pendingOffboarding) {
             const offboarding = this.pendingOffboarding;
             const actionLabel =
-                offboarding.action === Action0beEnum.Delete
+                offboarding.action === OffboardingActionEnum.Delete
                     ? msg("Delete", { id: "offboarding.action.delete.label" })
                     : msg("Deactivate", { id: "offboarding.action.deactivate.label" });
             const yesNo = (value?: boolean) =>

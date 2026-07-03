@@ -12,7 +12,6 @@
  * Do not edit the class manually.
  */
 
-import { type Action0beEnum } from "../models/Action0beEnum";
 import { type LifecycleIteration, LifecycleIterationFromJSON } from "../models/LifecycleIteration";
 import {
     type LifecycleIterationRequest,
@@ -23,6 +22,8 @@ import {
     type LifecycleRuleRequest,
     LifecycleRuleRequestToJSON,
 } from "../models/LifecycleRuleRequest";
+import { type OffboardingActionEnum } from "../models/OffboardingActionEnum";
+import { type OffboardingStatusEnum } from "../models/OffboardingStatusEnum";
 import {
     type PaginatedLifecycleIterationList,
     PaginatedLifecycleIterationListFromJSON,
@@ -45,7 +46,6 @@ import {
 } from "../models/PatchedUserOffboardingRequest";
 import { type Review, ReviewFromJSON } from "../models/Review";
 import { type ReviewRequest, ReviewRequestToJSON } from "../models/ReviewRequest";
-import { type Status748Enum } from "../models/Status748Enum";
 import { type UserOffboarding, UserOffboardingFromJSON } from "../models/UserOffboarding";
 import {
     type UserOffboardingRequest,
@@ -116,12 +116,12 @@ export interface LifecycleUserOffboardingDestroyRequest {
 }
 
 export interface LifecycleUserOffboardingListRequest {
-    action?: Action0beEnum;
+    action?: OffboardingActionEnum;
     ordering?: string;
     page?: number;
     pageSize?: number;
     search?: string;
-    status?: Status748Enum;
+    status?: OffboardingStatusEnum;
     userUuid?: string;
 }
 

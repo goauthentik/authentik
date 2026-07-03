@@ -9430,7 +9430,7 @@ paths:
       - in: query
         name: action
         schema:
-          $ref: '#/components/schemas/Action0beEnum'
+          $ref: '#/components/schemas/OffboardingActionEnum'
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
       - $ref: '#/components/parameters/QueryPaginationPageSize'
@@ -9438,7 +9438,7 @@ paths:
       - in: query
         name: status
         schema:
-          $ref: '#/components/schemas/Status748Enum'
+          $ref: '#/components/schemas/OffboardingStatusEnum'
       - in: query
         name: user__uuid
         schema:
@@ -34176,11 +34176,6 @@ components:
             flow should not require authentication since the user's session is deleted.
       required:
       - name
-    Action0beEnum:
-      enum:
-      - deactivate
-      - delete
-      type: string
     AgentAuthenticationResponse:
       type: object
       description: Base serializer class which doesn't implement create/update methods
@@ -44860,6 +44855,18 @@ components:
       - name
       - provider_type
       - slug
+    OffboardingActionEnum:
+      enum:
+      - deactivate
+      - delete
+      type: string
+    OffboardingStatusEnum:
+      enum:
+      - pending
+      - completed
+      - failed
+      - canceled
+      type: string
     OpenIDConnectConfiguration:
       type: object
       description: rest_framework Serializer for OIDC Configuration
@@ -51686,7 +51693,7 @@ components:
           format: date-time
           description: Absolute time at which the offboarding action is executed.
         action:
-          $ref: '#/components/schemas/Action0beEnum'
+          $ref: '#/components/schemas/OffboardingActionEnum'
         revoke_sessions:
           type: boolean
           description: Revoke all of the user's sessions when offboarding.
@@ -56690,13 +56697,6 @@ components:
           maxLength: 100
       required:
       - token
-    Status748Enum:
-      enum:
-      - pending
-      - completed
-      - failed
-      - canceled
-      type: string
     SubModeEnum:
       enum:
       - hashed_user_id
@@ -58302,7 +58302,7 @@ components:
           format: date-time
           description: Absolute time at which the offboarding action is executed.
         action:
-          $ref: '#/components/schemas/Action0beEnum'
+          $ref: '#/components/schemas/OffboardingActionEnum'
         revoke_sessions:
           type: boolean
           description: Revoke all of the user's sessions when offboarding.
@@ -58311,7 +58311,7 @@ components:
           description: Revoke all of the user's tokens when offboarding.
         status:
           allOf:
-          - $ref: '#/components/schemas/Status748Enum'
+          - $ref: '#/components/schemas/OffboardingStatusEnum'
           readOnly: true
         created_by_obj:
           allOf:
@@ -58348,7 +58348,7 @@ components:
           format: date-time
           description: Absolute time at which the offboarding action is executed.
         action:
-          $ref: '#/components/schemas/Action0beEnum'
+          $ref: '#/components/schemas/OffboardingActionEnum'
         revoke_sessions:
           type: boolean
           description: Revoke all of the user's sessions when offboarding.
