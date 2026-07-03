@@ -91,7 +91,9 @@ class Migration(migrations.Migration):
                 "verbose_name_plural": "User Offboardings",
                 "indexes": [
                     models.Index(
-                        fields=["status", "scheduled_for"], name="authentik_l_status_a8bd07_idx"
+                        condition=models.Q(("status", "pending")),
+                        fields=["scheduled_for"],
+                        name="pending_offboarding_idx",
                     )
                 ],
                 "constraints": [

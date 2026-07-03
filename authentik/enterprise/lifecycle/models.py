@@ -340,7 +340,16 @@ class UserOffboarding(SerializerModel):
                 name="unique_pending_offboarding_per_user",
             )
         ]
-        indexes = [models.Index(fields=["status", "scheduled_for"])]
+        indexes = [
+            # The sweeper only scans pending rows by scheduled_for; a partial
+            # index keeps this small as terminal (completed/failed/cancelled)
+            # rows accumulate as audit records.
+            models.Index(
+                fields=["scheduled_for"],
+                condition=Q(status=OffboardingStatus.PENDING),
+                name="pending_offboarding_idx",
+            )
+        ]
 
     @property
     def serializer(self) -> type[BaseSerializer]:
