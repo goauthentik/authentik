@@ -4,6 +4,7 @@ from unittest.mock import patch
 
 from django.conf import settings
 from django.contrib.auth.models import AnonymousUser
+from django.db import IntegrityError
 from django.http import HttpResponse
 from django.test import RequestFactory, TestCase
 from django.urls import reverse
@@ -107,6 +108,32 @@ class TestSessionSuperseding(TestCase):
         self.assertFalse(previous.is_current)
         other_browser.refresh_from_db()
         self.assertTrue(other_browser.is_current)
+
+    def test_bind_retries_on_concurrent_conflict(self):
+        """Test a lost race on the current-session constraint is retried, not raised"""
+        token = get_random_string(user_switching.TOKEN_LENGTH)
+        target = create_test_session(self.user, is_current=False)
+        original_save = AuthenticatedSession.save
+        calls = []
+
+        def flaky_save(instance, *args, **kwargs):
+            calls.append(instance.pk)
+            if len(calls) == 1:
+                raise IntegrityError("duplicate current session")
+            return original_save(instance, *args, **kwargs)
+
+        with patch.object(
+            AuthenticatedSession,
+            "save",
+            autospec=True,
+            side_effect=flaky_save,
+        ):
+            target.bind_to_user_switching_token(token)
+
+        self.assertEqual(len(calls), 2)
+        target.refresh_from_db()
+        self.assertEqual(target.user_switching_token, token)
+        self.assertTrue(target.is_current)
 
 
 class TestUserSwitchingCookie(TestCase):

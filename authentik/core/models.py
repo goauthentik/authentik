@@ -16,7 +16,7 @@ from django.contrib.auth.models import UserManager as DjangoUserManager
 from django.contrib.sessions.base_session import AbstractBaseSession
 from django.core.exceptions import SuspiciousOperation
 from django.core.validators import validate_slug
-from django.db import models, transaction
+from django.db import IntegrityError, models, transaction
 from django.db.models import Manager, Q, QuerySet, options
 from django.http import HttpRequest
 from django.utils.functional import cached_property
@@ -1433,19 +1433,36 @@ class AuthenticatedSession(SerializerModel):
             authenticated_session.bind_to_user_switching_token(token)
         return authenticated_session
 
+    #: Attempts to win the current-session slot before giving up on a concurrent bind.
+    USER_SWITCHING_BIND_ATTEMPTS = 3
+
     def bind_to_user_switching_token(self, user_switching_token: str) -> Self:
         """Mark this session as the browser's current login for the given user switching
-        token, superseding the other logins that share it."""
+        token, superseding the other logins that share it.
+
+        Concurrent binds for the same token race on the partial unique constraint that
+        keeps a single current session per token. Retry the loser rather than surface a
+        500; the last writer wins."""
         if not user_switching_token:
             return self
-        with transaction.atomic():
-            type(self).objects.filter(user_switching_token=user_switching_token).exclude(
-                session=self.session
-            ).update(is_current=False)
-            if self.user_switching_token != user_switching_token or not self.is_current:
-                self.user_switching_token = user_switching_token
-                self.is_current = True
-                self.save(update_fields=["user_switching_token", "is_current"])
+        for _attempt in range(self.USER_SWITCHING_BIND_ATTEMPTS):
+            try:
+                with transaction.atomic():
+                    type(self).objects.filter(user_switching_token=user_switching_token).exclude(
+                        session=self.session
+                    ).update(is_current=False)
+                    if self.user_switching_token != user_switching_token or not self.is_current:
+                        self.user_switching_token = user_switching_token
+                        self.is_current = True
+                        self.save(update_fields=["user_switching_token", "is_current"])
+                return self
+            except IntegrityError:
+                # Re-read the state the rolled-back transaction discarded, then retry.
+                self.refresh_from_db(fields=["user_switching_token", "is_current"])
+        LOGGER.warning(
+            "Gave up binding session to user switching token after concurrent conflicts",
+            session=self.pk,
+        )
         return self
 
     class Meta:
