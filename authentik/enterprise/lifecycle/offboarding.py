@@ -35,11 +35,17 @@ def offboard_user(
     revoke_sessions: bool = True,
     revoke_tokens: bool = True,
     request: HttpRequest | None = None,
+    initiator: User | None = None,
 ):
     """Offboard `user` by applying `action`, optionally revoking sessions/tokens.
 
     The event is built and saved before any destructive action so that a
     `DELETE` (which cascades this user's related rows away) is still audited.
+
+    The audit event is attributed to whoever initiated the offboarding: the
+    request user when run interactively, or `initiator` (the admin who scheduled
+    it) when run from the background sweeper. It is never attributed to the
+    offboarded user themselves.
     """
     username = user.username
     user_pk = user.pk
@@ -59,9 +65,10 @@ def offboard_user(
         user_pk=user_pk,
     )
     if request is not None:
-        event.from_http(request)
+        event.from_http(request, user=initiator)
     else:
-        event.set_user(user)
+        if initiator is not None:
+            event.set_user(initiator)
         event.save()
 
     if action == OffboardingAction.DEACTIVATE:

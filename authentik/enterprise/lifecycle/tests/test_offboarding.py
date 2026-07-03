@@ -15,6 +15,7 @@ from authentik.enterprise.lifecycle.models import (
 from authentik.enterprise.lifecycle.offboarding import offboard_user
 from authentik.enterprise.lifecycle.tasks import execute_due_offboardings, execute_offboarding
 from authentik.enterprise.reports.tests.utils import patch_license
+from authentik.events.models import Event, EventAction
 from authentik.lib.generators import generate_id
 
 
@@ -76,6 +77,21 @@ class TestOffboardingSweeper(APITestCase):
         self.assertEqual(offboarding.status, OffboardingStatus.COMPLETED)
         self.assertIsNotNone(offboarding.executed_on)
         self.assertFalse(self.user.is_active)
+
+    def test_audit_event_attributed_to_initiator(self):
+        """The audit event names the admin who scheduled it, not the offboarded user."""
+        admin = create_test_admin_user()
+        offboarding = UserOffboarding.objects.create(
+            user=self.user,
+            scheduled_for=now() - timedelta(minutes=1),
+            action=OffboardingAction.DEACTIVATE,
+            created_by=admin,
+        )
+        execute_offboarding(str(offboarding.pk))
+        event = Event.objects.filter(action=EventAction.USER_OFFBOARDED).latest("created")
+        self.assertEqual(event.user.get("pk"), admin.pk)
+        self.assertNotEqual(event.user.get("pk"), self.user.pk)
+        self.assertEqual(event.context.get("user_pk"), self.user.pk)
 
     def test_future_offboarding_not_picked_up(self):
         offboarding = UserOffboarding.objects.create(

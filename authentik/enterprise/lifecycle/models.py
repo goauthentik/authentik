@@ -359,6 +359,7 @@ class UserOffboarding(SerializerModel):
             revoke_sessions=self.revoke_sessions,
             revoke_tokens=self.revoke_tokens,
             request=request,
+            initiator=self.created_by,
         )
         if is_delete:
             return
