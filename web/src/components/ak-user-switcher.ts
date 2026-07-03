@@ -60,6 +60,10 @@ export class UserSwitcher extends WithSession(AKElement) {
         return this.users.find((user) => user.isCurrent);
     }
 
+    protected get userSwitchingEnabled(): boolean {
+        return Boolean(globalAK().brand.flowUserSwitch);
+    }
+
     protected userLabel(user: BrowserLocalUser): string {
         return formatUserDisplayName(user, this.uiConfig) || user.username;
     }
@@ -129,6 +133,13 @@ export class UserSwitcher extends WithSession(AKElement) {
             return null;
         }
 
+        // When the brand has no user-switch flow configured, switching is disabled and
+        // the backend rejects it, so only surface the current user and hide the switch
+        // targets and the add-user action.
+        const users = this.userSwitchingEnabled
+            ? this.users
+            : this.users.filter((user) => user.isCurrent);
+
         return html`<div part="container">
             <ak-dropdown class="pf-c-dropdown" part="switcher">
                 <button
@@ -157,23 +168,25 @@ export class UserSwitcher extends WithSession(AKElement) {
                     aria-labelledby="user-switcher-toggle"
                     tabindex="-1"
                 >
-                    ${this.users.map((user) => this.renderUser(user))}
-                    ${this.users.length
+                    ${users.map((user) => this.renderUser(user))}
+                    ${users.length
                         ? html`<li class="pf-c-dropdown__separator" role="separator"></li>`
                         : null}
-                    <li role="presentation">
-                        <a
-                            class="pf-c-dropdown__menu-item"
-                            part="menu-item"
-                            role="menuitem"
-                            href=${this.addUserURL()}
-                        >
-                            <i class="fas fa-plus" aria-hidden="true"></i>
-                            ${msg("Add another user", {
-                                id: "user-switcher.actions.add-user.label",
-                            })}
-                        </a>
-                    </li>
+                    ${this.userSwitchingEnabled
+                        ? html`<li role="presentation">
+                              <a
+                                  class="pf-c-dropdown__menu-item"
+                                  part="menu-item"
+                                  role="menuitem"
+                                  href=${this.addUserURL()}
+                              >
+                                  <i class="fas fa-plus" aria-hidden="true"></i>
+                                  ${msg("Add another user", {
+                                      id: "user-switcher.actions.add-user.label",
+                                  })}
+                              </a>
+                          </li>`
+                        : null}
                     <li role="presentation">${this.renderSignOut()}</li>
                 </menu>
             </ak-dropdown>
