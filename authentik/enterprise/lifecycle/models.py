@@ -3,7 +3,7 @@ from uuid import uuid4
 
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
-from django.db import models
+from django.db import models, transaction
 from django.db.models import Q, QuerySet
 from django.db.models.fields import Field
 from django.db.models.functions import Cast
@@ -326,6 +326,9 @@ class UserOffboarding(SerializerModel):
     )
     created_at = models.DateTimeField(auto_now_add=True)
     executed_on = models.DateTimeField(null=True, default=None)
+    attempts = models.PositiveSmallIntegerField(
+        default=0, help_text=_("Number of times execution has been attempted and failed.")
+    )
 
     class Meta:
         verbose_name = _("User Offboarding")
@@ -349,21 +352,28 @@ class UserOffboarding(SerializerModel):
         return f"User offboarding for {self.user} ({self.action}) at {self.scheduled_for}"
 
     def execute(self, request: HttpRequest | None = None):
-        """Run the offboarding action and record the outcome."""
+        """Run the offboarding action and record the outcome.
+
+        The revocations, the destructive action, and the status transition all
+        run in a single transaction, so a mid-way failure rolls everything back:
+        the user is left fully intact (never half-offboarded) and the row stays
+        `PENDING` for a later retry.
+        """
         from authentik.enterprise.lifecycle.offboarding import offboard_user
 
         # `delete` removes this row via cascade, so capture the action first.
         is_delete = self.action == OffboardingAction.DELETE
-        offboard_user(
-            self.user,
-            self.action,
-            revoke_sessions=self.revoke_sessions,
-            revoke_tokens=self.revoke_tokens,
-            request=request,
-            initiator=self.created_by,
-        )
-        if is_delete:
-            return
-        self.status = OffboardingStatus.COMPLETED
-        self.executed_on = timezone.now()
-        self.save(update_fields=["status", "executed_on"])
+        with transaction.atomic():
+            offboard_user(
+                self.user,
+                self.action,
+                revoke_sessions=self.revoke_sessions,
+                revoke_tokens=self.revoke_tokens,
+                request=request,
+                initiator=self.created_by,
+            )
+            if is_delete:
+                return
+            self.status = OffboardingStatus.COMPLETED
+            self.executed_on = timezone.now()
+            self.save(update_fields=["status", "executed_on"])

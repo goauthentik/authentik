@@ -1,4 +1,5 @@
 from datetime import timedelta
+from unittest.mock import patch
 
 from django.apps import apps
 from django.urls import reverse
@@ -13,7 +14,11 @@ from authentik.enterprise.lifecycle.models import (
     UserOffboarding,
 )
 from authentik.enterprise.lifecycle.offboarding import offboard_user
-from authentik.enterprise.lifecycle.tasks import execute_due_offboardings, execute_offboarding
+from authentik.enterprise.lifecycle.tasks import (
+    MAX_OFFBOARDING_ATTEMPTS,
+    execute_due_offboardings,
+    execute_offboarding,
+)
 from authentik.enterprise.reports.tests.utils import patch_license
 from authentik.events.models import Event, EventAction
 from authentik.lib.generators import generate_id
@@ -92,6 +97,55 @@ class TestOffboardingSweeper(APITestCase):
         self.assertEqual(event.user.get("pk"), admin.pk)
         self.assertNotEqual(event.user.get("pk"), self.user.pk)
         self.assertEqual(event.context.get("user_pk"), self.user.pk)
+
+    def test_failed_execution_is_atomic_and_retryable(self):
+        """A mid-way failure rolls back every change and leaves the row retryable."""
+        _add_session(self.user)
+        _add_token(self.user)
+        offboarding = UserOffboarding.objects.create(
+            user=self.user,
+            scheduled_for=now() - timedelta(minutes=1),
+            action=OffboardingAction.DEACTIVATE,
+        )
+        # Sessions/tokens are revoked before the audit event is built; make the
+        # event raise so the failure lands mid-offboarding.
+        with patch(
+            "authentik.enterprise.lifecycle.offboarding.Event.new",
+            side_effect=RuntimeError("boom"),
+        ):
+            with self.assertRaises(RuntimeError):
+                execute_offboarding(str(offboarding.pk))
+
+        offboarding.refresh_from_db()
+        self.user.refresh_from_db()
+        # Nothing was applied: user still active, sessions/tokens intact.
+        self.assertTrue(self.user.is_active)
+        self.assertTrue(AuthenticatedSession.objects.filter(user=self.user).exists())
+        self.assertTrue(Token.objects.filter(user=self.user).exists())
+        # Still retryable, with the failed attempt recorded.
+        self.assertEqual(offboarding.status, OffboardingStatus.PENDING)
+        self.assertEqual(offboarding.attempts, 1)
+
+    def test_offboarding_marked_failed_after_max_attempts(self):
+        """A persistently failing offboarding goes terminal without touching the user."""
+        offboarding = UserOffboarding.objects.create(
+            user=self.user,
+            scheduled_for=now() - timedelta(minutes=1),
+            action=OffboardingAction.DEACTIVATE,
+        )
+        with patch(
+            "authentik.enterprise.lifecycle.offboarding.Event.new",
+            side_effect=RuntimeError("boom"),
+        ):
+            for _ in range(MAX_OFFBOARDING_ATTEMPTS):
+                with self.assertRaises(RuntimeError):
+                    execute_offboarding(str(offboarding.pk))
+
+        offboarding.refresh_from_db()
+        self.user.refresh_from_db()
+        self.assertEqual(offboarding.status, OffboardingStatus.FAILED)
+        self.assertEqual(offboarding.attempts, MAX_OFFBOARDING_ATTEMPTS)
+        self.assertTrue(self.user.is_active)
 
     def test_future_offboarding_not_picked_up(self):
         offboarding = UserOffboarding.objects.create(

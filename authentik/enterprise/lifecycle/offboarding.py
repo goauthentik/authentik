@@ -42,10 +42,8 @@ def offboard_user(
     The event is built and saved before any destructive action so that a
     `DELETE` (which cascades this user's related rows away) is still audited.
 
-    The audit event is attributed to whoever initiated the offboarding: the
-    request user when run interactively, or `initiator` (the admin who scheduled
-    it) when run from the background sweeper. It is never attributed to the
-    offboarded user themselves.
+    The audit event is attributed to the initiator (request user, or the
+    scheduling admin via `initiator`) — never to the offboarded user.
     """
     username = user.username
     user_pk = user.pk

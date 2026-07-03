@@ -1,3 +1,4 @@
+from django.db.models import F
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from dramatiq import actor
@@ -10,6 +11,10 @@ from authentik.enterprise.lifecycle.models import (
 )
 from authentik.events.models import Event, Notification, NotificationTransport
 from authentik.tasks.schedules.models import Schedule
+
+# Retry budget: a due offboarding is retried by dramatiq and the sweeper this
+# many times before it is marked FAILED.
+MAX_OFFBOARDING_ATTEMPTS = 5
 
 
 @actor(description=_("Dispatch tasks to apply lifecycle rules."))
@@ -52,9 +57,14 @@ def execute_offboarding(offboarding_pk: str):
     try:
         offboarding.execute()
     except Exception:
-        offboarding.status = OffboardingStatus.FAILED
-        offboarding.executed_on = timezone.now()
-        offboarding.save(update_fields=["status", "executed_on"])
+        # execute() rolled back, so bump the counter out-of-band and keep the row
+        # PENDING for retry; give up only once the budget is spent.
+        UserOffboarding.objects.filter(pk=offboarding_pk).update(attempts=F("attempts") + 1)
+        offboarding.refresh_from_db(fields=["attempts"])
+        if offboarding.attempts >= MAX_OFFBOARDING_ATTEMPTS:
+            UserOffboarding.objects.filter(
+                pk=offboarding_pk, status=OffboardingStatus.PENDING
+            ).update(status=OffboardingStatus.FAILED, executed_on=timezone.now())
         raise
 
 
