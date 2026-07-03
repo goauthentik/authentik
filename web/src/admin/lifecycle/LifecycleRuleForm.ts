@@ -26,10 +26,11 @@ import {
     Group,
     LifecycleApi,
     LifecycleRule,
+    PartialGroup,
+    PartialUser,
     RbacApi,
-    ReviewerGroup,
-    ReviewerUser,
     Role,
+    User,
 } from "@goauthentik/api";
 
 import { match } from "ts-pattern";
@@ -43,11 +44,7 @@ import { createRef, ref } from "lit/directives/ref.js";
 
 type TargetObject = Application | Group | Role;
 
-function userToPair(item: ReviewerUser): DualSelectPair {
-    return [item.uuid, html`<div class="selection-main">${item.name}</div>`, item.name];
-}
-
-function groupToPair(item: ReviewerGroup): DualSelectPair {
+function userGroupToPair(item: PartialUser | PartialGroup): DualSelectPair {
     return [item.pk, html`<div class="selection-main">${item.name}</div>`, item.name];
 }
 
@@ -89,7 +86,7 @@ export class LifecycleRuleForm extends ModelForm<LifecycleRule, string, Lifecycl
 
     #targetSelectRef = createRef<SearchSelect<TargetObject>>();
     #reviewerGroupsSelectRef = createRef<SearchSelect<Group>>();
-    #reviewerUsersSelectRef = createRef<SearchSelect<Group>>();
+    #reviewerUsersSelectRef = createRef<SearchSelect<User>>();
 
     #coreApi = aki(CoreApi);
     #lifecycleApi = aki(LifecycleApi);
@@ -117,7 +114,7 @@ export class LifecycleRuleForm extends ModelForm<LifecycleRule, string, Lifecycl
             .then((results) => {
                 return {
                     pagination: results.pagination,
-                    options: results.results.map(groupToPair),
+                    options: results.results.map(userGroupToPair),
                 };
             });
     };
@@ -131,7 +128,7 @@ export class LifecycleRuleForm extends ModelForm<LifecycleRule, string, Lifecycl
             .then((results) => {
                 return {
                     pagination: results.pagination,
-                    options: results.results.map(userToPair),
+                    options: results.results.map(userGroupToPair),
                 };
             });
     };
@@ -299,7 +296,7 @@ export class LifecycleRuleForm extends ModelForm<LifecycleRule, string, Lifecycl
         return html`<ak-dual-select-provider
             ${ref(this.#reviewerGroupsSelectRef)}
             .provider=${this.#fetchGroups}
-            .selected=${(this.instance?.reviewerGroupsObj ?? []).map(groupToPair)}
+            .selected=${(this.instance?.reviewerGroupsObj ?? []).map(userGroupToPair)}
             available-label=${msg("Available Groups")}
             selected-label=${msg("Selected Groups")}
         ></ak-dual-select-provider>`;
@@ -309,7 +306,7 @@ export class LifecycleRuleForm extends ModelForm<LifecycleRule, string, Lifecycl
         return html`<ak-dual-select-provider
                 ${ref(this.#reviewerUsersSelectRef)}
                 .provider=${this.#fetchUsers}
-                .selected=${(this.instance?.reviewersObj ?? []).map(userToPair)}
+                .selected=${(this.instance?.reviewersObj ?? []).map(userGroupToPair)}
                 available-label=${msg("Available Users")}
                 selected-label=${msg("Selected Users")}
             ></ak-dual-select-provider>

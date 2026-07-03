@@ -1,31 +1,3 @@
-@import "@patternfly/patternfly/components/BackgroundImage/background-image.css";
-@import "@patternfly/patternfly/components/Button/button.css";
-@import "@patternfly/patternfly/components/Form/form.css";
-@import "@patternfly/patternfly/components/Drawer/drawer.css";
-@import "@patternfly/patternfly/components/List/list.css";
-@import "@patternfly/patternfly/components/Login/login.css";
-@import "@patternfly/patternfly/components/Title/title.css";
-@import "@patternfly/patternfly/components/Avatar/avatar.css";
-@import "@patternfly/patternfly/utilities/Text/text.css";
-@import "./components/Drawer/drawer.css";
-@import "./components/Form/form.css";
-@import "./components/Fieldset/fieldset.css";
-@import "./components/Login/login.css";
-@import "./components/Icon/icon.css";
-@import "#elements/ak-drawer/ak-drawer.root.css";
-@import "#elements/locale/ak-locale-select.css";
-@import "#elements/locale/ak-locale-select.css";
-@import "#flow/FlowExecutor.css";
-
-/**
- * @file Static global styles for authentik.
- *
- * Similar the base/globals.css file, this file is only injected in server templates
- * that may not have the full web component support.
- * If you're deciding on where to put a style, prefer a more specific file
- * to avoid unnecessarily increasing the global scope of the style.
- */
-
 /* #region Custom login variables */
 
 :root {
