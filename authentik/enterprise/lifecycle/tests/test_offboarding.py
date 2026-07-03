@@ -328,8 +328,8 @@ class TestOffboardingAPI(APITestCase):
             scheduled_for=now() + timedelta(days=1),
             action=OffboardingAction.DEACTIVATE,
         )
-        # Simulate the TOCTOU: bypass the duplicate pre-check so the insert is
-        # the first place the conflict is detected (the partial unique constraint).
+        # Simulate the Time-of-Check to Time-of-Use: bypass the duplicate pre-check so the
+        # insert is the first place the conflict is detected (the partial unique constraint).
         with patch.object(UserOffboardingSerializer, "validate", new=lambda self, attrs: attrs):
             response = self.client.post(
                 reverse("authentik_api:useroffboarding-list"),
