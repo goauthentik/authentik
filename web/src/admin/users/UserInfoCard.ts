@@ -4,10 +4,10 @@ import "#admin/users/UserImpersonateForm";
 import "#admin/users/UserOffboardingForm";
 import "#admin/users/UserPasswordForm";
 import "#components/ak-status-label";
+import "#elements/forms/ConfirmationForm";
 import "#elements/forms/ModalForm";
 
 import { aki } from "#common/api/client";
-import { AKRefreshEvent } from "#common/events";
 import { userTypeToLabel } from "#common/labels";
 import { formatUserDisplayName, startAccountLockdown } from "#common/users";
 
@@ -23,7 +23,14 @@ import { UserForm } from "#admin/users/UserForm";
 import { UserImpersonateForm } from "#admin/users/UserImpersonateForm";
 import Styles from "#admin/users/UserInfoCard.css";
 
-import { LifecycleApi, Status748Enum, User, UserOffboarding, UserTypeEnum } from "@goauthentik/api";
+import {
+    Action0beEnum,
+    LifecycleApi,
+    Status748Enum,
+    User,
+    UserOffboarding,
+    UserTypeEnum,
+} from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
 import { CSSResult, html, nothing, PropertyValues } from "lit";
@@ -97,11 +104,12 @@ export class UserInfoCard extends AKElement {
         if (!this.pendingOffboarding) {
             return;
         }
-
-        await this.#lifecycleApi
-            .lifecycleUserOffboardingDestroy({ id: this.pendingOffboarding.id })
-            .then(() => this.dispatchEvent(new AKRefreshEvent()))
-            .catch(showAPIErrorMessage);
+        // ak-forms-confirm surfaces errors and refreshes the parent; we only
+        // need to reload the local state so the button flips back to "Schedule".
+        await this.#lifecycleApi.lifecycleUserOffboardingDestroy({
+            id: this.pendingOffboarding.id,
+        });
+        await this.#loadOffboarding();
     };
 
     protected renderActionButtons(user: User) {
@@ -151,27 +159,91 @@ export class UserInfoCard extends AKElement {
 
     protected renderOffboardingButton(user: User) {
         if (this.pendingOffboarding) {
-            const scheduledFor = this.pendingOffboarding.scheduledFor;
-            return html`<button
-                class="pf-c-button pf-m-warning pf-m-block"
-                @click=${this.cancelOffboarding}
-                type="button"
+            const offboarding = this.pendingOffboarding;
+            const actionLabel =
+                offboarding.action === Action0beEnum.Delete
+                    ? msg("Delete", { id: "offboarding.action.delete.label" })
+                    : msg("Deactivate", { id: "offboarding.action.deactivate.label" });
+            const yesNo = (value?: boolean) =>
+                value
+                    ? msg("Yes", { id: "common.boolean.yes" })
+                    : msg("No", { id: "common.boolean.no" });
+            return html`<ak-forms-confirm
+                successMessage=${msg("Successfully cancelled offboarding.", {
+                    id: "offboarding.cancel.success",
+                })}
+                errorMessage=${msg("Failed to cancel offboarding", {
+                    id: "offboarding.cancel.error",
+                })}
+                action=${msg("Cancel offboarding", { id: "offboarding.cancel.confirm.label" })}
+                actionLevel="pf-m-warning"
+                .onConfirm=${this.cancelOffboarding}
             >
-                <pf-tooltip
-                    position="top"
-                    content=${msg(str`Offboarding scheduled for ${scheduledFor.toLocaleString()}`)}
+                <span slot="header"
+                    >${msg("Cancel scheduled offboarding", {
+                        id: "offboarding.cancel.header",
+                    })}</span
                 >
-                    <span>${msg("Cancel Offboarding")}</span>
-                </pf-tooltip>
-            </button>`;
+                <div slot="body" class="pf-c-content">
+                    <p>
+                        ${msg("The following scheduled offboarding will be cancelled:", {
+                            id: "offboarding.cancel.description",
+                        })}
+                    </p>
+                    <ul>
+                        <li>
+                            ${msg("Scheduled for", {
+                                id: "offboarding.field.scheduled-for.label",
+                            })}:
+                            <strong>${offboarding.scheduledFor.toLocaleString()}</strong>
+                        </li>
+                        <li>
+                            ${msg("Action", { id: "offboarding.field.action.label" })}:
+                            <strong>${actionLabel}</strong>
+                        </li>
+                        <li>
+                            ${msg("Revoke sessions", {
+                                id: "offboarding.field.revoke-sessions.label",
+                            })}:
+                            <strong>${yesNo(offboarding.revokeSessions)}</strong>
+                        </li>
+                        <li>
+                            ${msg("Revoke tokens", {
+                                id: "offboarding.field.revoke-tokens.label",
+                            })}:
+                            <strong>${yesNo(offboarding.revokeTokens)}</strong>
+                        </li>
+                    </ul>
+                </div>
+                <button slot="trigger" class="pf-c-button pf-m-warning pf-m-block" type="button">
+                    <pf-tooltip
+                        position="top"
+                        content=${msg(
+                            str`Offboarding scheduled for ${offboarding.scheduledFor.toLocaleString()}`,
+                            { id: "offboarding.cancel.tooltip" },
+                        )}
+                    >
+                        <span
+                            >${msg("Cancel Offboarding", {
+                                id: "offboarding.cancel.trigger.label",
+                            })}</span
+                        >
+                    </pf-tooltip>
+                </button>
+                <div slot="modal"></div>
+            </ak-forms-confirm>`;
         }
 
         return html`<ak-forms-modal>
-            <span slot="submit">${msg("Schedule")}</span>
-            <span slot="header">${msg("Schedule Offboarding")}</span>
+            <span slot="submit"
+                >${msg("Schedule", { id: "offboarding.schedule.submit.label" })}</span
+            >
+            <span slot="header"
+                >${msg("Schedule Offboarding", { id: "offboarding.schedule.header" })}</span
+            >
             <ak-user-offboarding-form slot="form" user-id=${user.pk}></ak-user-offboarding-form>
             <button slot="trigger" class="pf-c-button pf-m-danger pf-m-block" type="button">
-                ${msg("Schedule Offboarding")}
+                ${msg("Schedule Offboarding", { id: "offboarding.schedule.trigger.label" })}
             </button>
         </ak-forms-modal>`;
     }
