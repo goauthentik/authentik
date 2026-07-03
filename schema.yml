@@ -9508,67 +9508,6 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
-    put:
-      operationId: lifecycle_user_offboarding_update
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this User Offboarding.
-        required: true
-      tags:
-      - lifecycle
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/UserOffboardingRequest'
-        required: true
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/UserOffboarding'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-    patch:
-      operationId: lifecycle_user_offboarding_partial_update
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this User Offboarding.
-        required: true
-      tags:
-      - lifecycle
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedUserOffboardingRequest'
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/UserOffboarding'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
     delete:
       operationId: lifecycle_user_offboarding_destroy
       description: |-
@@ -51680,26 +51619,6 @@ components:
         expires:
           type: string
           format: date-time
-    PatchedUserOffboardingRequest:
-      type: object
-      description: |-
-        Mixin to validate that a valid enterprise license
-        exists before allowing to save the object
-      properties:
-        user:
-          type: integer
-        scheduled_for:
-          type: string
-          format: date-time
-          description: Absolute time at which the offboarding action is executed.
-        action:
-          $ref: '#/components/schemas/OffboardingActionEnum'
-        revoke_sessions:
-          type: boolean
-          description: Revoke all of the user's sessions when offboarding.
-        revoke_tokens:
-          type: boolean
-          description: Revoke all of the user's tokens when offboarding.
     PatchedUserPlexSourceConnectionRequest:
       type: object
       description: User source connection

@@ -40,10 +40,6 @@ import {
     type PatchedLifecycleRuleRequest,
     PatchedLifecycleRuleRequestToJSON,
 } from "../models/PatchedLifecycleRuleRequest";
-import {
-    type PatchedUserOffboardingRequest,
-    PatchedUserOffboardingRequestToJSON,
-} from "../models/PatchedUserOffboardingRequest";
 import { type Review, ReviewFromJSON } from "../models/Review";
 import { type ReviewRequest, ReviewRequestToJSON } from "../models/ReviewRequest";
 import { type UserOffboarding, UserOffboardingFromJSON } from "../models/UserOffboarding";
@@ -125,18 +121,8 @@ export interface LifecycleUserOffboardingListRequest {
     userUuid?: string;
 }
 
-export interface LifecycleUserOffboardingPartialUpdateRequest {
-    id: string;
-    patchedUserOffboardingRequest?: PatchedUserOffboardingRequest;
-}
-
 export interface LifecycleUserOffboardingRetrieveRequest {
     id: string;
-}
-
-export interface LifecycleUserOffboardingUpdateRequest {
-    id: string;
-    userOffboardingRequest: UserOffboardingRequest;
 }
 
 /**
@@ -1051,76 +1037,6 @@ export class LifecycleApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for lifecycleUserOffboardingPartialUpdate without sending the request
-     */
-    async lifecycleUserOffboardingPartialUpdateRequestOpts(
-        requestParameters: LifecycleUserOffboardingPartialUpdateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["id"] == null) {
-            throw new runtime.RequiredError(
-                "id",
-                'Required parameter "id" was null or undefined when calling lifecycleUserOffboardingPartialUpdate().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        headerParameters["Content-Type"] = "application/json";
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/lifecycle/user_offboarding/{id}/`;
-        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
-
-        return {
-            path: urlPath,
-            method: "PATCH",
-            headers: headerParameters,
-            query: queryParameters,
-            body: PatchedUserOffboardingRequestToJSON(
-                requestParameters["patchedUserOffboardingRequest"],
-            ),
-        };
-    }
-
-    /**
-     */
-    async lifecycleUserOffboardingPartialUpdateRaw(
-        requestParameters: LifecycleUserOffboardingPartialUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<UserOffboarding>> {
-        const requestOptions =
-            await this.lifecycleUserOffboardingPartialUpdateRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            UserOffboardingFromJSON(jsonValue),
-        );
-    }
-
-    /**
-     */
-    async lifecycleUserOffboardingPartialUpdate(
-        requestParameters: LifecycleUserOffboardingPartialUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<UserOffboarding> {
-        const response = await this.lifecycleUserOffboardingPartialUpdateRaw(
-            requestParameters,
-            initOverrides,
-        );
-        return await response.value();
-    }
-
-    /**
      * Creates request options for lifecycleUserOffboardingRetrieve without sending the request
      */
     async lifecycleUserOffboardingRetrieveRequestOpts(
@@ -1179,81 +1095,6 @@ export class LifecycleApi extends runtime.BaseAPI {
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<UserOffboarding> {
         const response = await this.lifecycleUserOffboardingRetrieveRaw(
-            requestParameters,
-            initOverrides,
-        );
-        return await response.value();
-    }
-
-    /**
-     * Creates request options for lifecycleUserOffboardingUpdate without sending the request
-     */
-    async lifecycleUserOffboardingUpdateRequestOpts(
-        requestParameters: LifecycleUserOffboardingUpdateRequest,
-    ): Promise<runtime.RequestOpts> {
-        if (requestParameters["id"] == null) {
-            throw new runtime.RequiredError(
-                "id",
-                'Required parameter "id" was null or undefined when calling lifecycleUserOffboardingUpdate().',
-            );
-        }
-
-        if (requestParameters["userOffboardingRequest"] == null) {
-            throw new runtime.RequiredError(
-                "userOffboardingRequest",
-                'Required parameter "userOffboardingRequest" was null or undefined when calling lifecycleUserOffboardingUpdate().',
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        headerParameters["Content-Type"] = "application/json";
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/lifecycle/user_offboarding/{id}/`;
-        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
-
-        return {
-            path: urlPath,
-            method: "PUT",
-            headers: headerParameters,
-            query: queryParameters,
-            body: UserOffboardingRequestToJSON(requestParameters["userOffboardingRequest"]),
-        };
-    }
-
-    /**
-     */
-    async lifecycleUserOffboardingUpdateRaw(
-        requestParameters: LifecycleUserOffboardingUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<UserOffboarding>> {
-        const requestOptions =
-            await this.lifecycleUserOffboardingUpdateRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            UserOffboardingFromJSON(jsonValue),
-        );
-    }
-
-    /**
-     */
-    async lifecycleUserOffboardingUpdate(
-        requestParameters: LifecycleUserOffboardingUpdateRequest,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<UserOffboarding> {
-        const response = await this.lifecycleUserOffboardingUpdateRaw(
             requestParameters,
             initOverrides,
         );

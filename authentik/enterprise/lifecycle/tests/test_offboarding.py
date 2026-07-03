@@ -265,6 +265,70 @@ class TestOffboardingConcurrency(TransactionTestCase):
         self.user.refresh_from_db()
         self.assertFalse(self.user.is_active)
 
+    def test_cancel_racing_execution_does_not_clobber(self):
+        """A cancel that loses the race to a running execution must not overwrite it."""
+        offboarding = UserOffboarding.objects.create(
+            user=self.user,
+            scheduled_for=now() - timedelta(minutes=1),
+            action=OffboardingAction.DEACTIVATE,
+        )
+        pk = str(offboarding.pk)
+
+        inside_lock = ThreadEvent()  # set once the worker holds the row lock
+        may_finish = ThreadEvent()  # released once the canceller is contending
+        errors: list = []
+        cancelled: list = []
+        real_offboard = offboard_user
+
+        def slow_offboard(*args, **kwargs):
+            inside_lock.set()
+            may_finish.wait(timeout=10)
+            return real_offboard(*args, **kwargs)
+
+        class Worker(Thread):
+            __test__ = False
+
+            def run(self):
+                try:
+                    execute_offboarding(pk)
+                except Exception as exc:  # noqa: BLE001
+                    errors.append(exc)
+                finally:
+                    connection.close()
+
+        class Canceller(Thread):
+            __test__ = False
+
+            def run(self):
+                try:
+                    cancelled.append(UserOffboarding.objects.get(pk=pk).cancel())
+                except Exception as exc:  # noqa: BLE001
+                    errors.append(exc)
+                finally:
+                    connection.close()
+
+        with patch(
+            "authentik.enterprise.lifecycle.offboarding.offboard_user", side_effect=slow_offboard
+        ):
+            worker = Worker()
+            worker.start()
+            self.assertTrue(inside_lock.wait(timeout=10), "worker never acquired the lock")
+            # Worker holds the lock mid-execution; the cancel must block on it,
+            # then observe COMPLETED and refuse instead of clobbering the status.
+            canceller = Canceller()
+            canceller.start()
+            time.sleep(0.5)
+            may_finish.set()
+            worker.join(timeout=15)
+            canceller.join(timeout=15)
+
+        self.assertEqual(errors, [])
+        self.assertEqual(cancelled, [False])
+        offboarding.refresh_from_db()
+        self.assertEqual(offboarding.status, OffboardingStatus.COMPLETED)
+        self.user.refresh_from_db()
+        self.assertFalse(self.user.is_active)
+
 
 @patch_license
 class TestOffboardingAPI(APITestCase):
@@ -422,3 +486,17 @@ class TestOffboardingAPI(APITestCase):
         self.assertEqual(response.status_code, 400)
         offboarding.refresh_from_db()
         self.assertEqual(offboarding.status, OffboardingStatus.COMPLETED)
+
+    def test_update_not_allowed(self):
+        """Records are immutable: PUT/PATCH must not rewrite an offboarding."""
+        offboarding = UserOffboarding.objects.create(
+            user=self.user,
+            scheduled_for=now() + timedelta(days=1),
+            action=OffboardingAction.DEACTIVATE,
+        )
+        url = reverse("authentik_api:useroffboarding-detail", kwargs={"pk": offboarding.pk})
+        for method in (self.client.put, self.client.patch):
+            response = method(url, {"action": OffboardingAction.DELETE})
+            self.assertEqual(response.status_code, 405)
+        offboarding.refresh_from_db()
+        self.assertEqual(offboarding.action, OffboardingAction.DEACTIVATE)

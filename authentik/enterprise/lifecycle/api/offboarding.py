@@ -77,6 +77,10 @@ class UserOffboardingViewSet(ModelViewSet):
     ordering = ["scheduled_for"]
     ordering_fields = ["scheduled_for", "created_at", "status"]
     filterset_fields = ["user__uuid", "status", "action"]
+    # Offboarding records are immutable: they can be scheduled (POST), cancelled
+    # (DELETE → soft-cancel), and read — but never edited. PUT/PATCH would let a
+    # terminal audit row's action/schedule/user be rewritten after the fact.
+    http_method_names = ["get", "post", "delete", "head", "options"]
 
     def perform_create(self, serializer: UserOffboardingSerializer) -> None:
         # Two concurrent requests can both pass validate()'s duplicate check and
@@ -95,7 +99,6 @@ class UserOffboardingViewSet(ModelViewSet):
         the audit history; deletion would erase who scheduled and cancelled it.
         """
         offboarding: UserOffboarding = self.get_object()
-        if offboarding.status != OffboardingStatus.PENDING:
+        if not offboarding.cancel():
             raise ValidationError(_("Only a pending offboarding can be cancelled."))
-        offboarding.cancel()
         return Response(status=204)

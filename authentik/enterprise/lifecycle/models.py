@@ -360,15 +360,26 @@ class UserOffboarding(SerializerModel):
     def __str__(self):
         return f"User offboarding for user {self.user_id} ({self.action}) at {self.scheduled_for}"
 
-    def cancel(self):
-        """Cancel a pending offboarding, keeping the row as an audit record.
+    def cancel(self) -> bool:
+        """Cancel iff still pending; returns whether it was cancelled.
 
-        The status change is picked up by the audit middleware as a
-        `model_updated` event, so the actor who cancelled is recorded.
+        Locked and re-checked under the lock so a concurrent execution can't have
+        its terminal status clobbered. The save() emits the audit event.
         """
-        self.status = OffboardingStatus.CANCELED
-        self.executed_on = timezone.now()
-        self.save(update_fields=["status", "executed_on"])
+        with transaction.atomic():
+            locked = (
+                UserOffboarding.objects.select_for_update()
+                .filter(pk=self.pk, status=OffboardingStatus.PENDING)
+                .first()
+            )
+            if locked is None:
+                return False
+            locked.status = OffboardingStatus.CANCELED
+            locked.executed_on = timezone.now()
+            locked.save(update_fields=["status", "executed_on"])
+        self.status = locked.status
+        self.executed_on = locked.executed_on
+        return True
 
     def execute(self, request: HttpRequest | None = None):
         """Run the offboarding action and record the outcome.

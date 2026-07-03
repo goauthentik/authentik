@@ -646,7 +646,6 @@ export * from "./PatchedUserLDAPSourceConnectionRequest";
 export * from "./PatchedUserLoginStageRequest";
 export * from "./PatchedUserLogoutStageRequest";
 export * from "./PatchedUserOAuthSourceConnectionRequest";
-export * from "./PatchedUserOffboardingRequest";
 export * from "./PatchedUserPlexSourceConnectionRequest";
 export * from "./PatchedUserRequest";
 export * from "./PatchedUserSAMLSourceConnectionRequest";
