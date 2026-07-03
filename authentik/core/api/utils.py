@@ -21,6 +21,40 @@ from rest_framework.serializers import (
     raise_errors_on_nested_writes,
 )
 
+# This is in label form to avoid an acute case of circular dependencies
+SIMPLE_THROUGH_MODELS = [
+    "authentik_brands.BrandClientCertificate",
+    "authentik_core.GroupRole",
+    "authentik_core.ProviderPropertyMapping",
+    "authentik_core.SourceGroupPropertyMapping",
+    "authentik_core.SourceUserPropertyMapping",
+    "authentik_core.UserGroup",
+    "authentik_core.UserRole",
+    "authentik_endpoints_connectors_agent.AgentConnectorJWTFederationProvider",
+    "authentik_events.NotificationRuleNotificationTransport",
+    "authentik_lifecycle.LifecycleRuleNotificationTransport",
+    "authentik_lifecycle.LifecycleRuleReviewer",
+    "authentik_lifecycle.LifecycleRuleReviewerGroup",
+    "authentik_lifecycle.Review",
+    "authentik_outposts.OutpostProvider",
+    "authentik_providers_google_workspace.GoogleWorkspaceProviderPropertyMappingsGroup",
+    "authentik_providers_microsoft_entra.MicrosoftEntraProviderPropertyMappingsGroup",
+    "authentik_providers_oauth2.OAuth2ProviderJWTFederationProvider",
+    "authentik_providers_oauth2.OAuth2ProviderJWTFederationSource",
+    "authentik_providers_rac.EndpointPropertyMapping",
+    "authentik_providers_scim.SCIMProviderGroupFilter",
+    "authentik_providers_scim.SCIMProviderGroupPropertyMapping",
+    "authentik_providers_ssf.SSFProviderOIDCAuthProvider",
+    "authentik_rbac.InitialPermissionsPermission",
+    "authentik_stages_authenticator_validate.AuthenticatorValidateStageConfigurationStage",
+    "authentik_stages_authenticator_validate.AuthenticatorValidateStageWebAuthnAllowedDeviceType",
+    "authentik_stages_authenticator_webauthn.AuthenticatorWebAuthnStageDeviceTypeRestriction",
+    "authentik_stages_identification.IdentificationStageSource",
+    "authentik_stages_mtls.MutualTLSStageCertificateAuthority",
+    "authentik_stages_prompt.PromptStageField",
+    "authentik_stages_prompt.PromptStageValidationPolicy",
+]
+
 
 def is_dict(value: Any):
     """Ensure a value is a dictionary, useful for JSONFields"""
@@ -79,6 +113,19 @@ class ModelSerializer(BaseModelSerializer):
                 field.set(value)
 
         return instance
+
+    # To be safe, DRF handles explicit through models differently than implicit ones, for example,
+    # it marks them as `read_only`. However, for "simple" through models, consisting of only the ids
+    # of the related objects, we'd like DRF to handle them as if they were automatically created.
+    def build_relational_field(self, field_name, relation_info):
+        if (
+            relation_info.model_field is not None
+            and relation_info.model_field.many_to_many
+            and relation_info.model_field.remote_field.through._meta.label in SIMPLE_THROUGH_MODELS
+        ):
+            relation_info = relation_info._replace(has_through_model=False)
+
+        return super().build_relational_field(field_name, relation_info)
 
 
 class PassiveSerializer(Serializer):
