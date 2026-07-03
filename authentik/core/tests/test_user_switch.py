@@ -5,6 +5,7 @@ from urllib.parse import parse_qs, urlsplit
 from django.conf import settings
 from django.urls import reverse
 
+from authentik.core import user_switching
 from authentik.core.models import AuthenticatedSession, Session
 from authentik.core.tests.utils import (
     create_test_brand,
@@ -24,7 +25,6 @@ from authentik.flows.planner import (
 from authentik.flows.stage import PLAN_CONTEXT_PENDING_USER_IDENTIFIER
 from authentik.flows.tests import FlowTestCase
 from authentik.flows.views.executor import SESSION_KEY_PLAN
-from authentik.root.middleware import USER_SWITCHING_COOKIE_NAME, SessionMiddleware
 from authentik.stages.dummy.models import DummyStage
 from authentik.stages.identification.models import IdentificationStage
 from authentik.stages.user_login.models import UserLoginStage
@@ -65,8 +65,8 @@ class TestUserSwitch(FlowTestCase):
 
     def user_switching_token(self) -> str:
         """Return the decoded user switching token from the test client's cookie."""
-        user_switching_token = SessionMiddleware.parse_user_switching_token(
-            self.client.cookies[USER_SWITCHING_COOKIE_NAME].value
+        user_switching_token = user_switching.decode_cookie(
+            self.client.cookies[user_switching.COOKIE_NAME].value
         )
         if user_switching_token is None:
             self.fail("Expected a user switching token cookie after login")
@@ -115,8 +115,8 @@ class TestUserSwitch(FlowTestCase):
     def test_switch_requires_authenticated_source_user(self):
         """Test switching is rejected when there is no current login to switch from"""
         user_switching_token = "A" * 32
-        self.client.cookies[USER_SWITCHING_COOKIE_NAME] = (
-            SessionMiddleware.encode_user_switching_token(user_switching_token)
+        self.client.cookies[user_switching.COOKIE_NAME] = user_switching.encode_cookie(
+            user_switching_token
         )
         create_test_session(
             self.other_user, user_switching_token=user_switching_token, is_current=False

@@ -34,6 +34,7 @@ from authentik.admin.files.fields import FileField
 from authentik.admin.files.manager import get_file_manager
 from authentik.admin.files.usage import FileUsage
 from authentik.blueprints.models import ManagedModel
+from authentik.core import user_switching
 from authentik.core.expression.exceptions import PropertyMappingExpressionException
 from authentik.core.types import UILoginButton, UserSettingSerializer
 from authentik.lib.avatars import get_avatar
@@ -1427,22 +1428,24 @@ class AuthenticatedSession(SerializerModel):
                 "is_current": True,
             },
         )
-        return authenticated_session.bind_to_user_switching_token(request)
+        token = user_switching.ensure_request_token(request)
+        if token:
+            authenticated_session.bind_to_user_switching_token(token)
+        return authenticated_session
 
-    def bind_to_user_switching_token(self, request: HttpRequest) -> Self:
-        """Bind this authenticated session to the request's user switching token."""
-        from authentik.root.middleware import SessionMiddleware
-
-        user_switching_token = SessionMiddleware.ensure_user_switching_token(request)
-        if user_switching_token:
-            with transaction.atomic():
-                type(self).objects.filter(user_switching_token=user_switching_token).exclude(
-                    session=self.session
-                ).update(is_current=False)
-                if self.user_switching_token != user_switching_token or not self.is_current:
-                    self.user_switching_token = user_switching_token
-                    self.is_current = True
-                    self.save(update_fields=["user_switching_token", "is_current"])
+    def bind_to_user_switching_token(self, user_switching_token: str) -> Self:
+        """Mark this session as the browser's current login for the given user switching
+        token, superseding the other logins that share it."""
+        if not user_switching_token:
+            return self
+        with transaction.atomic():
+            type(self).objects.filter(user_switching_token=user_switching_token).exclude(
+                session=self.session
+            ).update(is_current=False)
+            if self.user_switching_token != user_switching_token or not self.is_current:
+                self.user_switching_token = user_switching_token
+                self.is_current = True
+                self.save(update_fields=["user_switching_token", "is_current"])
         return self
 
     class Meta:

@@ -1,7 +1,6 @@
 """Dynamically set SameSite depending if the upstream connection is TLS or not"""
 
 from collections.abc import Callable
-from datetime import timedelta
 from hashlib import sha512
 from ipaddress import ip_address
 from time import perf_counter, time
@@ -18,24 +17,18 @@ from django.middleware.csrf import CSRF_SESSION_KEY
 from django.middleware.csrf import CsrfViewMiddleware as UpstreamCsrfViewMiddleware
 from django.utils import timezone
 from django.utils.cache import patch_vary_headers
-from django.utils.crypto import get_random_string
 from django.utils.http import http_date
 from jwt import PyJWTError, decode, encode
 from sentry_sdk import Scope
 from structlog.stdlib import get_logger
 
+from authentik.core import user_switching
 from authentik.core.models import Token, TokenIntents, User, UserTypes
 from authentik.lib.config import CONFIG
 
 LOGGER = get_logger("authentik.asgi")
 ACR_AUTHENTIK_SESSION = "goauthentik.io/core/default"
 SIGNING_HASH = sha512(settings.SECRET_KEY.encode()).hexdigest()
-
-# Opaque identifier used to group logins for user switching.
-# Unlike the session cookie it survives logins and logouts.
-USER_SWITCHING_COOKIE_NAME = "authentik_user_switching"
-USER_SWITCHING_TOKEN_LENGTH = 32
-USER_SWITCHING_COOKIE_AGE = int(timedelta(days=365).total_seconds())
 
 
 class SessionMiddleware(UpstreamSessionMiddleware):
@@ -87,52 +80,11 @@ class SessionMiddleware(UpstreamSessionMiddleware):
             value = session_key
         return value
 
-    @staticmethod
-    def validate_user_switching_token(raw: str | None) -> str | None:
-        """Validate an opaque user switching token."""
-        if raw and len(raw) == USER_SWITCHING_TOKEN_LENGTH and raw.isalnum():
-            return raw
-        return None
-
-    @staticmethod
-    def encode_user_switching_token(user_switching_token: str) -> str:
-        """Encode the opaque user switching token as a signed token."""
-        return encode(
-            {
-                "iss": "authentik",
-                "sub": "user_switching",
-                "user_switching": user_switching_token,
-            },
-            SIGNING_HASH,
-        )
-
-    @staticmethod
-    def parse_user_switching_token(raw: str | None) -> str | None:
-        """Decode and validate the signed user-switching cookie."""
-        if not raw:
-            return None
-        try:
-            payload = decode(raw, SIGNING_HASH, algorithms=["HS256"])
-            return SessionMiddleware.validate_user_switching_token(payload.get("user_switching"))
-        except PyJWTError:
-            return None
-
-    @staticmethod
-    def ensure_user_switching_token(request: HttpRequest) -> str | None:
-        """Return or create a user switching token for middleware-managed requests."""
-        if not hasattr(request, "user_switching_token"):
-            return None
-        if not request.user_switching_token:
-            request.user_switching_token = get_random_string(USER_SWITCHING_TOKEN_LENGTH)
-            request.user_switching_token_needs_update = True
-        return request.user_switching_token
-
     def process_request(self, request: HttpRequest):
         raw_session = request.COOKIES.get(settings.SESSION_COOKIE_NAME)
         session_key = SessionMiddleware.decode_session_key(raw_session)
-        raw_user_switching_cookie = request.COOKIES.get(USER_SWITCHING_COOKIE_NAME)
-        request.user_switching_token = SessionMiddleware.parse_user_switching_token(
-            raw_user_switching_cookie
+        request.user_switching_token = user_switching.decode_cookie(
+            request.COOKIES.get(user_switching.COOKIE_NAME)
         )
         request.user_switching_token_needs_update = False
         request.session = self.SessionStore(
@@ -165,7 +117,9 @@ class SessionMiddleware(UpstreamSessionMiddleware):
             request.user_switching_token_needs_update = True
             return
         if not authenticated_session.user_switching_token:
-            authenticated_session.bind_to_user_switching_token(request)
+            token = user_switching.ensure_request_token(request)
+            if token:
+                authenticated_session.bind_to_user_switching_token(token)
 
     def process_response(self, request: HttpRequest, response: HttpResponse) -> HttpResponse:
         """
@@ -230,9 +184,9 @@ class SessionMiddleware(UpstreamSessionMiddleware):
         # It is intentionally not deleted with the session cookie.
         if request.user_switching_token and request.user_switching_token_needs_update:
             response.set_cookie(
-                USER_SWITCHING_COOKIE_NAME,
-                SessionMiddleware.encode_user_switching_token(request.user_switching_token),
-                max_age=USER_SWITCHING_COOKIE_AGE,
+                user_switching.COOKIE_NAME,
+                user_switching.encode_cookie(request.user_switching_token),
+                max_age=user_switching.COOKIE_AGE,
                 domain=settings.SESSION_COOKIE_DOMAIN,
                 path=settings.SESSION_COOKIE_PATH,
                 secure=secure,
