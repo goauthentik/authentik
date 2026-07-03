@@ -5,6 +5,7 @@ from rest_framework.viewsets import ModelViewSet
 
 from authentik.core.api.groups import PartialUserSerializer
 from authentik.core.api.utils import ModelSerializer
+from authentik.core.models import User, UserTypes
 from authentik.enterprise.api import EnterpriseRequiredMixin
 from authentik.enterprise.lifecycle.models import OffboardingStatus, UserOffboarding
 
@@ -41,6 +42,14 @@ class UserOffboardingSerializer(EnterpriseRequiredMixin, ModelSerializer):
         if value <= now():
             raise ValidationError(_("Offboarding must be scheduled in the future."))
         return value
+
+    def validate_user(self, user: User) -> User:
+        if user.type == UserTypes.INTERNAL_SERVICE_ACCOUNT:
+            raise ValidationError(_("Internal service accounts cannot be offboarded."))
+        request = self.context.get("request")
+        if request is not None and user.pk == request.user.pk:
+            raise ValidationError(_("You cannot offboard your own account."))
+        return user
 
     def validate(self, attrs: dict) -> dict:
         attrs = super().validate(attrs)

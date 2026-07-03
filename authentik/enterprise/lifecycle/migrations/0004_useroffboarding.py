@@ -59,7 +59,13 @@ class Migration(migrations.Migration):
                         default="pending",
                     ),
                 ),
-                ("attempts", models.PositiveSmallIntegerField(default=0, help_text="Number of times execution has been attempted and failed.")),
+                (
+                    "attempts",
+                    models.PositiveSmallIntegerField(
+                        default=0,
+                        help_text="Number of times execution has been attempted and failed.",
+                    ),
+                ),
                 ("created_at", models.DateTimeField(auto_now_add=True)),
                 ("executed_on", models.DateTimeField(default=None, null=True)),
                 (

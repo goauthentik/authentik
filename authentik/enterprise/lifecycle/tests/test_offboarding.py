@@ -11,7 +11,13 @@ from django.urls import reverse
 from django.utils.timezone import now
 from rest_framework.test import APITestCase
 
-from authentik.core.models import AuthenticatedSession, Session, Token, TokenIntents, User
+from authentik.core.models import (
+    AuthenticatedSession,
+    Session,
+    Token,
+    TokenIntents,
+    User,
+)
 from authentik.core.tests.utils import create_test_admin_user, create_test_user
 from authentik.enterprise.lifecycle.models import (
     OffboardingAction,
