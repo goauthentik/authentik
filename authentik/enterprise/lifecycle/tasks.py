@@ -1,3 +1,4 @@
+from django.db import transaction
 from django.db.models import F
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
@@ -47,21 +48,30 @@ def execute_due_offboardings():
 
 @actor(description=_("Execute a single user offboarding."))
 def execute_offboarding(offboarding_pk: str):
-    offboarding = (
-        UserOffboarding.objects.filter(pk=offboarding_pk, status=OffboardingStatus.PENDING)
-        .select_related("user")
-        .first()
-    )
-    if not offboarding:
-        return
     try:
-        offboarding.execute()
+        with transaction.atomic():
+            # Lock the row so two workers can't offboard the same user concurrently.
+            # The status filter is re-evaluated once the lock is held, so a row
+            # another worker already handled is skipped instead of run twice.
+            offboarding = (
+                UserOffboarding.objects.select_for_update()
+                .filter(pk=offboarding_pk, status=OffboardingStatus.PENDING)
+                .select_related("user")
+                .first()
+            )
+            if offboarding is None:
+                return
+            offboarding.execute()
     except Exception:
         # execute() rolled back, so bump the counter out-of-band and keep the row
         # PENDING for retry; give up only once the budget is spent.
         UserOffboarding.objects.filter(pk=offboarding_pk).update(attempts=F("attempts") + 1)
-        offboarding.refresh_from_db(fields=["attempts"])
-        if offboarding.attempts >= MAX_OFFBOARDING_ATTEMPTS:
+        attempts = (
+            UserOffboarding.objects.filter(pk=offboarding_pk)
+            .values_list("attempts", flat=True)
+            .first()
+        )
+        if attempts is not None and attempts >= MAX_OFFBOARDING_ATTEMPTS:
             UserOffboarding.objects.filter(
                 pk=offboarding_pk, status=OffboardingStatus.PENDING
             ).update(status=OffboardingStatus.FAILED, executed_on=timezone.now())

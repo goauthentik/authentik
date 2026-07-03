@@ -1,7 +1,12 @@
+import time
 from datetime import timedelta
+from threading import Event as ThreadEvent
+from threading import Thread
 from unittest.mock import patch
 
 from django.apps import apps
+from django.db import connection
+from django.test import TransactionTestCase
 from django.urls import reverse
 from django.utils.timezone import now
 from rest_framework.test import APITestCase
@@ -147,6 +152,19 @@ class TestOffboardingSweeper(APITestCase):
         self.assertEqual(offboarding.attempts, MAX_OFFBOARDING_ATTEMPTS)
         self.assertTrue(self.user.is_active)
 
+    def test_redispatch_of_completed_offboarding_is_noop(self):
+        """Re-dispatching an already-executed offboarding does not run it again."""
+        offboarding = UserOffboarding.objects.create(
+            user=self.user,
+            scheduled_for=now() - timedelta(minutes=1),
+            action=OffboardingAction.DEACTIVATE,
+        )
+        execute_offboarding(str(offboarding.pk))
+        self.assertEqual(Event.objects.filter(action=EventAction.USER_OFFBOARDED).count(), 1)
+        # The sweeper may re-queue the same row; the status guard must no-op.
+        execute_offboarding(str(offboarding.pk))
+        self.assertEqual(Event.objects.filter(action=EventAction.USER_OFFBOARDED).count(), 1)
+
     def test_future_offboarding_not_picked_up(self):
         offboarding = UserOffboarding.objects.create(
             user=self.user,
@@ -158,6 +176,68 @@ class TestOffboardingSweeper(APITestCase):
         self.user.refresh_from_db()
         self.assertEqual(offboarding.status, OffboardingStatus.PENDING)
         self.assertTrue(self.user.is_active)
+
+
+class TestOffboardingConcurrency(TransactionTestCase):
+    """Two workers must not offboard the same user twice."""
+
+    def setUp(self):
+        self.user = create_test_user()
+
+    def test_concurrent_dispatch_executes_once(self):
+        offboarding = UserOffboarding.objects.create(
+            user=self.user,
+            scheduled_for=now() - timedelta(minutes=1),
+            action=OffboardingAction.DEACTIVATE,
+        )
+        pk = str(offboarding.pk)
+
+        inside_lock = ThreadEvent()  # set once a worker holds the row lock
+        may_finish = ThreadEvent()  # released once the other worker is running
+        errors: list = []
+        real_offboard = offboard_user
+
+        def slow_offboard(*args, **kwargs):
+            # The worker that reaches this holds the row lock; hold it briefly so
+            # the other worker is forced to contend for the same PENDING row.
+            inside_lock.set()
+            may_finish.wait(timeout=10)
+            return real_offboard(*args, **kwargs)
+
+        class Worker(Thread):
+            __test__ = False
+
+            def run(self):
+                try:
+                    execute_offboarding(pk)
+                except Exception as exc:  # noqa: BLE001
+                    errors.append(exc)
+                finally:
+                    connection.close()
+
+        with patch(
+            "authentik.enterprise.lifecycle.offboarding.offboard_user", side_effect=slow_offboard
+        ):
+            first = Worker()
+            first.start()
+            self.assertTrue(inside_lock.wait(timeout=10), "worker never acquired the lock")
+            # First worker now holds the lock inside slow_offboard. The second must
+            # block on select_for_update; give it a moment to reach the lock, then
+            # let the first finish. (The single-execution invariant holds for every
+            # interleaving, since the first worker locks the row before the second starts.)
+            second = Worker()
+            second.start()
+            time.sleep(0.5)
+            may_finish.set()
+            first.join(timeout=15)
+            second.join(timeout=15)
+
+        self.assertEqual(errors, [])
+        self.assertEqual(Event.objects.filter(action=EventAction.USER_OFFBOARDED).count(), 1)
+        offboarding.refresh_from_db()
+        self.assertEqual(offboarding.status, OffboardingStatus.COMPLETED)
+        self.user.refresh_from_db()
+        self.assertFalse(self.user.is_active)
 
 
 @patch_license
