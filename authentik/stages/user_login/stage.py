@@ -141,7 +141,12 @@ class UserLoginStageView(ChallengeStageView):
             return False
 
     def detach_session(self):
-        """Continue on a new session so the current login stays usable as a switch target."""
+        """Continue on a new session so the current login stays usable as a switch target.
+
+        Django's ``login()`` cycles the session key in place, which would overwrite the
+        previous user's session row with the new user's data. Moving to a brand new
+        session row instead leaves the previous login intact so it can be switched back
+        to."""
         old_session = self.request.session
         flow_query_params = old_session.get(SESSION_KEY_GET)
         # Move the active plan so audit events keep context and old logins cannot resume it.
