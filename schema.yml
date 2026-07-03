@@ -58290,7 +58290,7 @@ components:
           type: integer
         user_obj:
           allOf:
-          - $ref: '#/components/schemas/ReviewerUser'
+          - $ref: '#/components/schemas/PartialUser'
           readOnly: true
         scheduled_for:
           type: string
@@ -58310,7 +58310,7 @@ components:
           readOnly: true
         created_by_obj:
           allOf:
-          - $ref: '#/components/schemas/ReviewerUser'
+          - $ref: '#/components/schemas/PartialUser'
           readOnly: true
         created_at:
           type: string

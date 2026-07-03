@@ -14,8 +14,8 @@
 
 import type { Action0beEnum } from "./Action0beEnum";
 import { Action0beEnumFromJSON, Action0beEnumToJSON } from "./Action0beEnum";
-import type { ReviewerUser } from "./ReviewerUser";
-import { ReviewerUserFromJSON } from "./ReviewerUser";
+import type { PartialUser } from "./PartialUser";
+import { PartialUserFromJSON } from "./PartialUser";
 import type { Status748Enum } from "./Status748Enum";
 import { Status748EnumFromJSON } from "./Status748Enum";
 
@@ -40,10 +40,10 @@ export interface UserOffboarding {
     user: number;
     /**
      *
-     * @type {ReviewerUser}
+     * @type {PartialUser}
      * @memberof UserOffboarding
      */
-    readonly userObj: ReviewerUser;
+    readonly userObj: PartialUser;
     /**
      * Absolute time at which the offboarding action is executed.
      * @type {Date}
@@ -76,10 +76,10 @@ export interface UserOffboarding {
     readonly status: Status748Enum;
     /**
      *
-     * @type {ReviewerUser}
+     * @type {PartialUser}
      * @memberof UserOffboarding
      */
-    readonly createdByObj: ReviewerUser;
+    readonly createdByObj: PartialUser;
     /**
      *
      * @type {Date}
@@ -123,13 +123,13 @@ export function UserOffboardingFromJSONTyped(
     return {
         id: json["id"],
         user: json["user"],
-        userObj: ReviewerUserFromJSON(json["user_obj"]),
+        userObj: PartialUserFromJSON(json["user_obj"]),
         scheduledFor: new Date(json["scheduled_for"]),
         action: json["action"] == null ? undefined : Action0beEnumFromJSON(json["action"]),
         revokeSessions: json["revoke_sessions"] == null ? undefined : json["revoke_sessions"],
         revokeTokens: json["revoke_tokens"] == null ? undefined : json["revoke_tokens"],
         status: Status748EnumFromJSON(json["status"]),
-        createdByObj: ReviewerUserFromJSON(json["created_by_obj"]),
+        createdByObj: PartialUserFromJSON(json["created_by_obj"]),
         createdAt: new Date(json["created_at"]),
         executedOn: json["executed_on"] == null ? null : new Date(json["executed_on"]),
     };

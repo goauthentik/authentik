@@ -3,15 +3,15 @@ from django.utils.translation import gettext_lazy as _
 from rest_framework.exceptions import ValidationError
 from rest_framework.viewsets import ModelViewSet
 
+from authentik.core.api.groups import PartialUserSerializer
 from authentik.core.api.utils import ModelSerializer
 from authentik.enterprise.api import EnterpriseRequiredMixin
 from authentik.enterprise.lifecycle.models import OffboardingStatus, UserOffboarding
-from authentik.enterprise.lifecycle.utils import ReviewerUserSerializer
 
 
 class UserOffboardingSerializer(EnterpriseRequiredMixin, ModelSerializer):
-    user_obj = ReviewerUserSerializer(source="user", read_only=True)
-    created_by_obj = ReviewerUserSerializer(source="created_by", read_only=True)
+    user_obj = PartialUserSerializer(source="user", read_only=True)
+    created_by_obj = PartialUserSerializer(source="created_by", read_only=True)
 
     class Meta:
         model = UserOffboarding
