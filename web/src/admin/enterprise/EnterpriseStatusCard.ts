@@ -82,6 +82,11 @@ export class EnterpriseStatusCard extends AKElement {
                         </div>
                     </dl>
                     <div class="pf-l-split__item pf-m-fill">
+                        <p class="pf-u-font-size-sm pf-u-color-200">
+                            ${msg(
+                                str`${this.forecast.internalUsers}/${this.summary.internalUsers} internal users`,
+                            )}
+                        </p>
                         <ak-progress-bar
                             class="${internalUserPercentage > 100
                                 ? "pf-m-danger"
@@ -95,6 +100,11 @@ export class EnterpriseStatusCard extends AKElement {
                                 )}
                             </span>
                         </ak-progress-bar>
+                        <p class="pf-u-font-size-sm pf-u-color-200 pf-u-mt-md">
+                            ${msg(
+                                str`${this.forecast.externalUsers}/${this.summary.externalUsers} external users`,
+                            )}
+                        </p>
                         <ak-progress-bar
                             class="${externalUserPercentage > 100
                                 ? "pf-m-danger"
