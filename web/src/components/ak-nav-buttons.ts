@@ -1,4 +1,4 @@
-import "#components/ak-account-switcher";
+import "#components/ak-user-switcher";
 import "#elements/forms/HorizontalFormElement";
 import "#components/ak-switch-input";
 import "#elements/buttons/ActionButton/ak-action-button";
@@ -169,7 +169,7 @@ export class NavigationButtons extends WithNotifications(WithSession(AKElement))
                 <!-- -->
                 ${this.renderSettings()}
                 <slot name="extra"></slot>
-                <ak-account-switcher class="pf-c-page__header-tools-item"></ak-account-switcher>
+                <ak-user-switcher class="pf-c-page__header-tools-item"></ak-user-switcher>
             </div>
             ${this.renderImpersonation()}
             <slot></slot>

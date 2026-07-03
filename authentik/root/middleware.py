@@ -146,6 +146,10 @@ class SessionMiddleware(UpstreamSessionMiddleware):
         """Ensure the current authenticated session is bound to a user switching token."""
         if not hasattr(request, "session") or not request.session.session_key:
             return
+        if getattr(request, "user_switching_token", None) and not getattr(
+            request, "user_switching_token_needs_update", False
+        ):
+            return
         from authentik.core.models import AuthenticatedSession
 
         authenticated_session = AuthenticatedSession.objects.filter(

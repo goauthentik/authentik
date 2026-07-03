@@ -251,7 +251,6 @@ export interface CoreBrandsListRequest {
     clientCertificates?: Array<string>;
     _default?: boolean;
     domain?: string;
-    flowAccountSwitch?: string;
     flowAuthentication?: string;
     flowDeviceCode?: string;
     flowInvalidation?: string;
@@ -259,6 +258,7 @@ export interface CoreBrandsListRequest {
     flowRecovery?: string;
     flowUnenrollment?: string;
     flowUserSettings?: string;
+    flowUserSwitch?: string;
     ordering?: string;
     page?: number;
     pageSize?: number;
@@ -2190,10 +2190,6 @@ export class CoreApi extends runtime.BaseAPI {
             queryParameters["domain"] = requestParameters["domain"];
         }
 
-        if (requestParameters["flowAccountSwitch"] != null) {
-            queryParameters["flow_account_switch"] = requestParameters["flowAccountSwitch"];
-        }
-
         if (requestParameters["flowAuthentication"] != null) {
             queryParameters["flow_authentication"] = requestParameters["flowAuthentication"];
         }
@@ -2220,6 +2216,10 @@ export class CoreApi extends runtime.BaseAPI {
 
         if (requestParameters["flowUserSettings"] != null) {
             queryParameters["flow_user_settings"] = requestParameters["flowUserSettings"];
+        }
+
+        if (requestParameters["flowUserSwitch"] != null) {
+            queryParameters["flow_user_switch"] = requestParameters["flowUserSwitch"];
         }
 
         if (requestParameters["ordering"] != null) {

@@ -36,7 +36,6 @@ type ApiCoreBrandsListRequest struct {
 	clientCertificates            *[]string
 	default_                      *bool
 	domain                        *string
-	flowAccountSwitch             *string
 	flowAuthentication            *string
 	flowDeviceCode                *string
 	flowInvalidation              *string
@@ -44,6 +43,7 @@ type ApiCoreBrandsListRequest struct {
 	flowRecovery                  *string
 	flowUnenrollment              *string
 	flowUserSettings              *string
+	flowUserSwitch                *string
 	ordering                      *string
 	page                          *int32
 	pageSize                      *int32
@@ -91,11 +91,6 @@ func (r ApiCoreBrandsListRequest) Domain(domain string) ApiCoreBrandsListRequest
 	return r
 }
 
-func (r ApiCoreBrandsListRequest) FlowAccountSwitch(flowAccountSwitch string) ApiCoreBrandsListRequest {
-	r.flowAccountSwitch = &flowAccountSwitch
-	return r
-}
-
 func (r ApiCoreBrandsListRequest) FlowAuthentication(flowAuthentication string) ApiCoreBrandsListRequest {
 	r.flowAuthentication = &flowAuthentication
 	return r
@@ -128,6 +123,11 @@ func (r ApiCoreBrandsListRequest) FlowUnenrollment(flowUnenrollment string) ApiC
 
 func (r ApiCoreBrandsListRequest) FlowUserSettings(flowUserSettings string) ApiCoreBrandsListRequest {
 	r.flowUserSettings = &flowUserSettings
+	return r
+}
+
+func (r ApiCoreBrandsListRequest) FlowUserSwitch(flowUserSwitch string) ApiCoreBrandsListRequest {
+	r.flowUserSwitch = &flowUserSwitch
 	return r
 }
 
@@ -233,9 +233,6 @@ func (a *CoreAPIService) CoreBrandsListExecute(r ApiCoreBrandsListRequest) (*Pag
 	if r.domain != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "domain", r.domain, "form", "")
 	}
-	if r.flowAccountSwitch != nil {
-		parameterAddToHeaderOrQuery(localVarQueryParams, "flow_account_switch", r.flowAccountSwitch, "form", "")
-	}
 	if r.flowAuthentication != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "flow_authentication", r.flowAuthentication, "form", "")
 	}
@@ -256,6 +253,9 @@ func (a *CoreAPIService) CoreBrandsListExecute(r ApiCoreBrandsListRequest) (*Pag
 	}
 	if r.flowUserSettings != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "flow_user_settings", r.flowUserSettings, "form", "")
+	}
+	if r.flowUserSwitch != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "flow_user_switch", r.flowUserSwitch, "form", "")
 	}
 	if r.ordering != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "ordering", r.ordering, "form", "")

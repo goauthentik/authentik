@@ -1,4 +1,4 @@
-"""Account switch view"""
+"""User switch view"""
 
 from typing import Any
 
@@ -12,20 +12,20 @@ from authentik.core.models import AuthenticatedSession
 from authentik.flows.exceptions import FlowNonApplicableException
 from authentik.flows.models import Flow
 from authentik.flows.planner import (
-    PLAN_CONTEXT_ACCOUNT_SWITCH_FROM_USER,
-    PLAN_CONTEXT_ACCOUNT_SWITCH_STALE_USER,
     PLAN_CONTEXT_PENDING_USER,
+    PLAN_CONTEXT_USER_SWITCH_FROM_USER,
+    PLAN_CONTEXT_USER_SWITCH_STALE_USER,
     FlowPlanner,
 )
 from authentik.flows.stage import PLAN_CONTEXT_PENDING_USER_IDENTIFIER
 from authentik.lib.views import bad_request_message
 
 
-class AccountSwitchView(LoginRequiredMixin, View):
+class UserSwitchView(LoginRequiredMixin, View):
     """Authenticate another login held by this browser."""
 
     def get(self, request: HttpRequest, user_pk: int) -> HttpResponse:
-        flow = request.brand.flow_account_switch
+        flow = request.brand.flow_user_switch
         if not flow:
             return bad_request_message(
                 request,
@@ -35,13 +35,13 @@ class AccountSwitchView(LoginRequiredMixin, View):
         context = {}
         session = self.get_user_switching_session(request, user_pk)
         if not session:
-            context[PLAN_CONTEXT_ACCOUNT_SWITCH_STALE_USER] = str(user_pk)
+            context[PLAN_CONTEXT_USER_SWITCH_STALE_USER] = str(user_pk)
             return self.redirect_to_flow(request, flow, context)
         context[PLAN_CONTEXT_PENDING_USER] = session.user
-        # Pre-fill the identification stage so the target account doesn't have to be retyped,
+        # Pre-fill the identification stage so the target user doesn't have to be retyped,
         # letting a policy-free switch flow skip straight to the next stage.
         context[PLAN_CONTEXT_PENDING_USER_IDENTIFIER] = session.user.username
-        context[PLAN_CONTEXT_ACCOUNT_SWITCH_FROM_USER] = request.user
+        context[PLAN_CONTEXT_USER_SWITCH_FROM_USER] = request.user
         return self.redirect_to_flow(request, flow, context)
 
     @staticmethod
@@ -50,9 +50,9 @@ class AccountSwitchView(LoginRequiredMixin, View):
         flow: Flow,
         context: dict[str, Any],
     ) -> HttpResponse:
-        """Plan and redirect to the account switch flow."""
+        """Plan and redirect to the user switch flow."""
         planner = FlowPlanner(flow)
-        # The account-switch context can change policy decisions while building the stage list.
+        # The user-switch context can change policy decisions while building the stage list.
         # Reusing a cached plan would skip that planning pass.
         planner.use_cache = False
         try:

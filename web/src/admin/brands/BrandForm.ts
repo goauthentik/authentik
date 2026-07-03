@@ -103,19 +103,19 @@ export class BrandForm extends ModelForm<Brand, string> {
         });
     }
 
-    protected renderAccountSwitchFlowInput(): TemplateResult {
+    protected renderUserSwitchFlowInput(): TemplateResult {
         return html`<ak-form-element-horizontal
             label=${msg("User switch flow", {
                 id: "brand.form.flow-user-switch.label",
             })}
-            name="flowAccountSwitch"
+            name="flowUserSwitch"
         >
             <ak-flow-search
                 placeholder=${msg("Select a user switch flow...", {
                     id: "brand.form.flow-user-switch.placeholder",
                 })}
                 flowType=${FlowDesignationEnum.Authentication}
-                .currentFlow=${this.instance?.flowAccountSwitch}
+                .currentFlow=${this.instance?.flowUserSwitch}
             ></ak-flow-search>
             <p class="pf-c-form__helper-text">
                 ${msg(
@@ -278,7 +278,7 @@ export class BrandForm extends ModelForm<Brand, string> {
                             )}
                         </p>
                     </ak-form-element-horizontal>
-                    ${this.renderAccountSwitchFlowInput()}
+                    ${this.renderUserSwitchFlowInput()}
                     <ak-form-element-horizontal
                         label=${msg("Invalidation Flow")}
                         name="flowInvalidation"

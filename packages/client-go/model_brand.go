@@ -31,7 +31,7 @@ type Brand struct {
 	BrandingCustomCss             *string        `json:"branding_custom_css,omitempty"`
 	BrandingDefaultFlowBackground *string        `json:"branding_default_flow_background,omitempty"`
 	FlowAuthentication            NullableString `json:"flow_authentication,omitempty"`
-	FlowAccountSwitch             NullableString `json:"flow_account_switch,omitempty"`
+	FlowUserSwitch                NullableString `json:"flow_user_switch,omitempty"`
 	FlowInvalidation              NullableString `json:"flow_invalidation,omitempty"`
 	FlowRecovery                  NullableString `json:"flow_recovery,omitempty"`
 	FlowUnenrollment              NullableString `json:"flow_unenrollment,omitempty"`
@@ -352,47 +352,47 @@ func (o *Brand) UnsetFlowAuthentication() {
 	o.FlowAuthentication.Unset()
 }
 
-// GetFlowAccountSwitch returns the FlowAccountSwitch field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *Brand) GetFlowAccountSwitch() string {
-	if o == nil || IsNil(o.FlowAccountSwitch.Get()) {
+// GetFlowUserSwitch returns the FlowUserSwitch field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *Brand) GetFlowUserSwitch() string {
+	if o == nil || IsNil(o.FlowUserSwitch.Get()) {
 		var ret string
 		return ret
 	}
-	return *o.FlowAccountSwitch.Get()
+	return *o.FlowUserSwitch.Get()
 }
 
-// GetFlowAccountSwitchOk returns a tuple with the FlowAccountSwitch field value if set, nil otherwise
+// GetFlowUserSwitchOk returns a tuple with the FlowUserSwitch field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *Brand) GetFlowAccountSwitchOk() (*string, bool) {
+func (o *Brand) GetFlowUserSwitchOk() (*string, bool) {
 	if o == nil {
 		return nil, false
 	}
-	return o.FlowAccountSwitch.Get(), o.FlowAccountSwitch.IsSet()
+	return o.FlowUserSwitch.Get(), o.FlowUserSwitch.IsSet()
 }
 
-// HasFlowAccountSwitch returns a boolean if a field has been set.
-func (o *Brand) HasFlowAccountSwitch() bool {
-	if o != nil && o.FlowAccountSwitch.IsSet() {
+// HasFlowUserSwitch returns a boolean if a field has been set.
+func (o *Brand) HasFlowUserSwitch() bool {
+	if o != nil && o.FlowUserSwitch.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetFlowAccountSwitch gets a reference to the given NullableString and assigns it to the FlowAccountSwitch field.
-func (o *Brand) SetFlowAccountSwitch(v string) {
-	o.FlowAccountSwitch.Set(&v)
+// SetFlowUserSwitch gets a reference to the given NullableString and assigns it to the FlowUserSwitch field.
+func (o *Brand) SetFlowUserSwitch(v string) {
+	o.FlowUserSwitch.Set(&v)
 }
 
-// SetFlowAccountSwitchNil sets the value for FlowAccountSwitch to be an explicit nil
-func (o *Brand) SetFlowAccountSwitchNil() {
-	o.FlowAccountSwitch.Set(nil)
+// SetFlowUserSwitchNil sets the value for FlowUserSwitch to be an explicit nil
+func (o *Brand) SetFlowUserSwitchNil() {
+	o.FlowUserSwitch.Set(nil)
 }
 
-// UnsetFlowAccountSwitch ensures that no value is present for FlowAccountSwitch, not even an explicit nil
-func (o *Brand) UnsetFlowAccountSwitch() {
-	o.FlowAccountSwitch.Unset()
+// UnsetFlowUserSwitch ensures that no value is present for FlowUserSwitch, not even an explicit nil
+func (o *Brand) UnsetFlowUserSwitch() {
+	o.FlowUserSwitch.Unset()
 }
 
 // GetFlowInvalidation returns the FlowInvalidation field value if set, zero value otherwise (both if not set or set to explicit null).
@@ -836,8 +836,8 @@ func (o Brand) ToMap() (map[string]interface{}, error) {
 	if o.FlowAuthentication.IsSet() {
 		toSerialize["flow_authentication"] = o.FlowAuthentication.Get()
 	}
-	if o.FlowAccountSwitch.IsSet() {
-		toSerialize["flow_account_switch"] = o.FlowAccountSwitch.Get()
+	if o.FlowUserSwitch.IsSet() {
+		toSerialize["flow_user_switch"] = o.FlowUserSwitch.Get()
 	}
 	if o.FlowInvalidation.IsSet() {
 		toSerialize["flow_invalidation"] = o.FlowInvalidation.Get()
@@ -922,7 +922,7 @@ func (o *Brand) UnmarshalJSON(data []byte) (err error) {
 		delete(additionalProperties, "branding_custom_css")
 		delete(additionalProperties, "branding_default_flow_background")
 		delete(additionalProperties, "flow_authentication")
-		delete(additionalProperties, "flow_account_switch")
+		delete(additionalProperties, "flow_user_switch")
 		delete(additionalProperties, "flow_invalidation")
 		delete(additionalProperties, "flow_recovery")
 		delete(additionalProperties, "flow_unenrollment")

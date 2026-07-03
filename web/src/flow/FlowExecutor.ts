@@ -25,7 +25,7 @@ import { LitPropertyRecord, SlottedTemplateResult } from "#elements/types";
 import { exportParts } from "#elements/utils/attributes";
 import { ThemedImage } from "#elements/utils/images";
 
-import { removeStoredAccount } from "#components/ak-account-switcher-storage";
+import { removeStoredUser } from "#components/ak-user-switcher-storage";
 
 import {
     AKFlowAdvanceEvent,
@@ -236,8 +236,8 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
             })
             .then((challenge) => {
                 this.challenge = challenge;
-                if (this.challenge.flowInfo?.accountSwitchStaleUser) {
-                    removeStoredAccount(this.challenge.flowInfo.accountSwitchStaleUser);
+                if (this.challenge.flowInfo?.userSwitchStaleUser) {
+                    removeStoredUser(this.challenge.flowInfo.userSwitchStaleUser);
                 }
                 return !!this.challenge;
             })

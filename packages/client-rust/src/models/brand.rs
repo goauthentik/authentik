@@ -44,12 +44,12 @@ pub struct Brand {
     )]
     pub flow_authentication: Option<Option<uuid::Uuid>>,
     #[serde(
-        rename = "flow_account_switch",
+        rename = "flow_user_switch",
         default,
         with = "::serde_with::rust::double_option",
         skip_serializing_if = "Option::is_none"
     )]
-    pub flow_account_switch: Option<Option<uuid::Uuid>>,
+    pub flow_user_switch: Option<Option<uuid::Uuid>>,
     #[serde(
         rename = "flow_invalidation",
         default,
@@ -131,7 +131,7 @@ impl Brand {
             branding_custom_css: None,
             branding_default_flow_background: None,
             flow_authentication: None,
-            flow_account_switch: None,
+            flow_user_switch: None,
             flow_invalidation: None,
             flow_recovery: None,
             flow_unenrollment: None,

@@ -38,7 +38,7 @@ class TestSessionSuperseding(TestCase):
         self.assertEqual(response.json()["user"]["username"], self.user.username)
 
     def test_existing_session_gets_user_switching_token(self):
-        """Test an authenticated session without an user switching token is
+        """Test an authenticated session without a user switching token is
         bound on next request"""
         target = create_test_session(self.user)
         self.assertIsNone(target.user_switching_token)
@@ -58,7 +58,7 @@ class TestSessionSuperseding(TestCase):
         )
 
     def test_superseded_session_rejected(self):
-        """Test a recorded session cookie can't be replayed after an account switch"""
+        """Test a recorded session cookie can't be replayed after a user switch"""
         target = create_test_session(
             self.user, user_switching_token=get_random_string(USER_SWITCHING_TOKEN_LENGTH)
         )
@@ -146,6 +146,19 @@ class TestUserSwitchingCookie(TestCase):
         self.assertEqual(
             SessionMiddleware.ensure_user_switching_token(request), user_switching_token
         )
+
+    def test_existing_cookie_skips_authenticated_session_reconcile(self):
+        """Test an existing switch token avoids per-response session lookups."""
+        request = RequestFactory().get("/")
+        request.session = SessionStore()
+        request.session.create()
+        request.user_switching_token = get_random_string(USER_SWITCHING_TOKEN_LENGTH)
+        request.user_switching_token_needs_update = False
+
+        with patch("authentik.core.models.AuthenticatedSession.objects.filter") as filter_mock:
+            SessionMiddleware.ensure_authenticated_session_user_switching_token(request)
+
+        filter_mock.assert_not_called()
 
     def test_parse_user_switching_token(self):
         """Test user-switching cookie values are validated"""

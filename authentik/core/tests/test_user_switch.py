@@ -1,11 +1,10 @@
-"""Account switch view tests"""
+"""User switch view tests"""
 
 from urllib.parse import parse_qs, urlsplit
 
 from django.conf import settings
 from django.urls import reverse
 
-from authentik.blueprints.tests import apply_blueprint
 from authentik.core.models import AuthenticatedSession, Session
 from authentik.core.tests.utils import (
     create_test_brand,
@@ -15,22 +14,24 @@ from authentik.core.tests.utils import (
 )
 from authentik.events.models import Event, EventAction
 from authentik.flows.markers import StageMarker
-from authentik.flows.models import Flow, FlowDesignation, FlowStageBinding
+from authentik.flows.models import FlowDesignation, FlowStageBinding
 from authentik.flows.planner import (
-    PLAN_CONTEXT_ACCOUNT_SWITCH_FROM_USER,
-    PLAN_CONTEXT_ACCOUNT_SWITCH_STALE_USER,
     PLAN_CONTEXT_PENDING_USER,
+    PLAN_CONTEXT_USER_SWITCH_FROM_USER,
+    PLAN_CONTEXT_USER_SWITCH_STALE_USER,
     FlowPlan,
 )
 from authentik.flows.stage import PLAN_CONTEXT_PENDING_USER_IDENTIFIER
 from authentik.flows.tests import FlowTestCase
 from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.root.middleware import USER_SWITCHING_COOKIE_NAME, SessionMiddleware
+from authentik.stages.dummy.models import DummyStage
+from authentik.stages.identification.models import IdentificationStage
 from authentik.stages.user_login.models import UserLoginStage
 
 
-class TestAccountSwitch(FlowTestCase):
-    """Test starting the brand's account switch flow"""
+class TestUserSwitch(FlowTestCase):
+    """Test starting the brand's user switch flow"""
 
     def setUp(self):
         super().setUp()
@@ -42,10 +43,10 @@ class TestAccountSwitch(FlowTestCase):
             stage=UserLoginStage.objects.create(name="login"),
             order=0,
         )
-        self.brand = create_test_brand(flow_account_switch=self.flow)
+        self.brand = create_test_brand(flow_user_switch=self.flow)
 
     def switch_url(self, user) -> str:
-        return reverse("authentik_core:account-switch", kwargs={"user_pk": user.pk})
+        return reverse("authentik_core:user-switch", kwargs={"user_pk": user.pk})
 
     def login(self, user) -> str:
         """Log the test client in through the flow executor, returning the session key"""
@@ -72,8 +73,8 @@ class TestAccountSwitch(FlowTestCase):
         return user_switching_token
 
     def test_no_brand_flow_disables_switching(self):
-        """Test switching shows an error when the brand has no account switch flow"""
-        self.brand.flow_account_switch = None
+        """Test switching shows an error when the brand has no user switch flow"""
+        self.brand.flow_user_switch = None
         self.brand.save()
         self.login(self.user)
         user_switching_token = self.user_switching_token()
@@ -95,7 +96,7 @@ class TestAccountSwitch(FlowTestCase):
 
     def test_no_brand_flow_does_not_redirect_to_next(self):
         """Test disabled switching renders the endpoint instead of redirecting to next"""
-        self.brand.flow_account_switch = None
+        self.brand.flow_user_switch = None
         self.brand.save()
         self.login(self.user)
 
@@ -154,7 +155,7 @@ class TestAccountSwitch(FlowTestCase):
             plan.context[PLAN_CONTEXT_PENDING_USER_IDENTIFIER],
             self.other_user.username,
         )
-        self.assertEqual(plan.context[PLAN_CONTEXT_ACCOUNT_SWITCH_FROM_USER], self.user)
+        self.assertEqual(plan.context[PLAN_CONTEXT_USER_SWITCH_FROM_USER], self.user)
 
     def test_switch_without_live_session(self):
         """Test an unknown or stale target starts the flow without switch context"""
@@ -165,9 +166,9 @@ class TestAccountSwitch(FlowTestCase):
         self.assertEqual(response.status_code, 302)
         plan: FlowPlan = self.client.session[SESSION_KEY_PLAN]
         self.assertNotIn(PLAN_CONTEXT_PENDING_USER, plan.context)
-        self.assertNotIn(PLAN_CONTEXT_ACCOUNT_SWITCH_FROM_USER, plan.context)
+        self.assertNotIn(PLAN_CONTEXT_USER_SWITCH_FROM_USER, plan.context)
         self.assertEqual(
-            plan.context[PLAN_CONTEXT_ACCOUNT_SWITCH_STALE_USER],
+            plan.context[PLAN_CONTEXT_USER_SWITCH_STALE_USER],
             str(self.other_user.pk),
         )
 
@@ -182,16 +183,28 @@ class TestAccountSwitch(FlowTestCase):
         plan: FlowPlan = self.client.session[SESSION_KEY_PLAN]
         self.assertNotIn(PLAN_CONTEXT_PENDING_USER, plan.context)
         self.assertEqual(
-            plan.context[PLAN_CONTEXT_ACCOUNT_SWITCH_STALE_USER],
+            plan.context[PLAN_CONTEXT_USER_SWITCH_STALE_USER],
             str(self.other_user.pk),
         )
 
-    @apply_blueprint("default/flow-default-authentication-flow.yaml")
-    def test_default_flow_skips_identification(self):
-        """Test a switch through the default authentication flow doesn't ask for the
-        username again and goes straight to the password stage"""
-        flow = Flow.objects.get(slug="default-authentication-flow")
-        self.brand.flow_account_switch = flow
+    def test_identification_stage_skips_prefilled_user(self):
+        """Test a switch through an authentication flow doesn't ask for the
+        username again and goes straight to the next stage"""
+        flow = create_test_flow(FlowDesignation.AUTHENTICATION)
+        FlowStageBinding.objects.create(
+            target=flow,
+            stage=IdentificationStage.objects.create(
+                name=f"{flow.slug}-identification",
+                user_fields=["username"],
+            ),
+            order=10,
+        )
+        FlowStageBinding.objects.create(
+            target=flow,
+            stage=DummyStage.objects.create(name=f"{flow.slug}-next"),
+            order=20,
+        )
+        self.brand.flow_user_switch = flow
         self.brand.save()
         self.login(self.user)
         user_switching_token = self.user_switching_token()
@@ -207,7 +220,7 @@ class TestAccountSwitch(FlowTestCase):
         self.assertEqual(response.status_code, 302)
         response = self.client.get(response.url)
 
-        self.assertStageResponse(response, flow, component="ak-stage-password")
+        self.assertStageResponse(response, flow, component="ak-stage-dummy")
 
     def test_full_switch(self):
         """Test the full switch: the new login takes over, the old session survives
@@ -237,15 +250,15 @@ class TestAccountSwitch(FlowTestCase):
         self.assertEqual(first.user, self.user)
         self.assertFalse(first.is_current)
         self.assertTrue(Session.objects.filter(session_key=first_session_key).exists())
-        # The login is audited as an account switch from the first user
+        # The login is audited as a user switch from the first user
         event = Event.objects.filter(
             action=EventAction.LOGIN,
-            context__is_account_switch=True,
+            context__is_user_switch=True,
         ).first()
         self.assertIsNotNone(event)
         self.assertEqual(event.user["username"], self.other_user.username)
         self.assertEqual(
-            event.context[PLAN_CONTEXT_ACCOUNT_SWITCH_FROM_USER]["username"],
+            event.context[PLAN_CONTEXT_USER_SWITCH_FROM_USER]["username"],
             self.user.username,
         )
         # Replaying the first session cookie doesn't authenticate anymore

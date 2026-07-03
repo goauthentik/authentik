@@ -8,11 +8,8 @@ import { WithSession } from "#elements/mixins/session";
 import type { SlottedTemplateResult } from "#elements/types";
 import { isDefaultAvatar } from "#elements/utils/images";
 
-import {
-    type BrowserLocalAccount,
-    syncStoredAccounts,
-} from "#components/ak-account-switcher-storage";
-import Styles from "#components/ak-account-switcher.css";
+import { type BrowserLocalUser, syncStoredUsers } from "#components/ak-user-switcher-storage";
+import Styles from "#components/ak-user-switcher.css";
 
 import { msg } from "@lit/localize";
 import { html, type PropertyValues } from "lit";
@@ -21,16 +18,16 @@ import { customElement } from "lit/decorators.js";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFDropdown from "@patternfly/patternfly/components/Dropdown/dropdown.css";
 
-@customElement("ak-account-switcher")
-export class AccountSwitcher extends WithSession(AKElement) {
+@customElement("ak-user-switcher")
+export class UserSwitcher extends WithSession(AKElement) {
     static styles = [PFButton, PFDropdown, Styles];
 
-    protected accounts: BrowserLocalAccount[] = [];
+    protected users: BrowserLocalUser[] = [];
 
     protected override willUpdate(changed: PropertyValues<this>): void {
         super.willUpdate(changed);
         if (changed.has("session")) {
-            this.accounts = syncStoredAccounts(this.currentUser);
+            this.users = syncStoredUsers(this.currentUser);
         }
     }
 
@@ -51,26 +48,26 @@ export class AccountSwitcher extends WithSession(AKElement) {
         return `${url.pathname}${url.search}${url.hash}`;
     }
 
-    protected accountSwitchURL(account: BrowserLocalAccount): string {
-        return this.rootURL(`account/switch/${account.pk}/`, this.nextQuery);
+    protected userSwitchURL(user: BrowserLocalUser): string {
+        return this.rootURL(`user/switch/${user.pk}/`, this.nextQuery);
     }
 
-    protected addAccountURL(): string {
+    protected addUserURL(): string {
         return this.rootURL("flows/-/default/authentication/", this.nextQuery);
     }
 
-    protected get currentAccount(): BrowserLocalAccount | undefined {
-        return this.accounts.find((account) => account.isCurrent);
+    protected get currentLocalUser(): BrowserLocalUser | undefined {
+        return this.users.find((user) => user.isCurrent);
     }
 
-    protected accountLabel(account: BrowserLocalAccount): string {
-        return formatUserDisplayName(account, this.uiConfig) || account.username;
+    protected userLabel(user: BrowserLocalUser): string {
+        return formatUserDisplayName(user, this.uiConfig) || user.username;
     }
 
-    protected renderAvatar(account?: { avatar?: string }): SlottedTemplateResult {
-        if (account?.avatar && !isDefaultAvatar(account.avatar)) {
+    protected renderAvatar(user?: { avatar?: string }): SlottedTemplateResult {
+        if (user?.avatar && !isDefaultAvatar(user.avatar)) {
             return html`<span part="avatar">
-                <img part="avatar-image" src=${account.avatar} alt="" />
+                <img part="avatar-image" src=${user.avatar} alt="" />
             </span>`;
         }
         return html`<span part="avatar">
@@ -78,22 +75,22 @@ export class AccountSwitcher extends WithSession(AKElement) {
         </span>`;
     }
 
-    protected renderAccount(account: BrowserLocalAccount): SlottedTemplateResult {
-        const label = this.accountLabel(account);
-        const description = formatUserSecondaryIdentifier(account, label);
+    protected renderUser(user: BrowserLocalUser): SlottedTemplateResult {
+        const label = this.userLabel(user);
+        const description = formatUserSecondaryIdentifier(user, label);
 
         const content = html`<span class="pf-c-dropdown__menu-item-main" part="item">
-            ${this.renderAvatar(account)}
+            ${this.renderAvatar(user)}
             <span part="labels">
                 <span part="name">${label}</span>
                 ${description ? html`<span part="description">${description}</span>` : null}
             </span>
-            ${account.isCurrent
+            ${user.isCurrent
                 ? html`<i class="fas fa-check" part="current-indicator" aria-hidden="true"></i>`
                 : null}
         </span>`;
 
-        if (account.isCurrent) {
+        if (user.isCurrent) {
             return html`<li role="presentation">
                 <button class="pf-c-dropdown__menu-item" part="menu-item" role="menuitem" disabled>
                     ${content}
@@ -106,7 +103,7 @@ export class AccountSwitcher extends WithSession(AKElement) {
                 class="pf-c-dropdown__menu-item"
                 part="menu-item"
                 role="menuitem"
-                href=${this.accountSwitchURL(account)}
+                href=${this.userSwitchURL(user)}
             >
                 ${content}
             </a>
@@ -121,8 +118,8 @@ export class AccountSwitcher extends WithSession(AKElement) {
             href=${this.rootURL("flows/-/default/invalidation/")}
         >
             <i class="fas fa-sign-out-alt" aria-hidden="true"></i>
-            ${msg("Sign out current account", {
-                id: "account-switcher.actions.sign-out-current.label",
+            ${msg("Sign out current user", {
+                id: "user-switcher.actions.sign-out-current.label",
             })}
         </a>`;
     }
@@ -138,14 +135,14 @@ export class AccountSwitcher extends WithSession(AKElement) {
                     class="pf-c-dropdown__toggle pf-m-plain"
                     part="toggle"
                     type="button"
-                    id="account-switcher-toggle"
+                    id="user-switcher-toggle"
                     aria-haspopup="menu"
-                    aria-controls="account-switcher-menu"
-                    aria-label=${msg("Switch account", {
-                        id: "account-switcher.toggle.label",
+                    aria-controls="user-switcher-menu"
+                    aria-label=${msg("Switch user", {
+                        id: "user-switcher.toggle.label",
                     })}
                 >
-                    ${this.renderAvatar(this.currentAccount)}
+                    ${this.renderAvatar(this.currentLocalUser)}
                     <i
                         class="fas fa-caret-down pf-c-dropdown__toggle-icon"
                         part="toggle-icon"
@@ -156,12 +153,12 @@ export class AccountSwitcher extends WithSession(AKElement) {
                     class="pf-c-dropdown__menu pf-m-align-right"
                     part="menu"
                     hidden
-                    id="account-switcher-menu"
-                    aria-labelledby="account-switcher-toggle"
+                    id="user-switcher-menu"
+                    aria-labelledby="user-switcher-toggle"
                     tabindex="-1"
                 >
-                    ${this.accounts.map((account) => this.renderAccount(account))}
-                    ${this.accounts.length
+                    ${this.users.map((user) => this.renderUser(user))}
+                    ${this.users.length
                         ? html`<li class="pf-c-dropdown__separator" role="separator"></li>`
                         : null}
                     <li role="presentation">
@@ -169,11 +166,11 @@ export class AccountSwitcher extends WithSession(AKElement) {
                             class="pf-c-dropdown__menu-item"
                             part="menu-item"
                             role="menuitem"
-                            href=${this.addAccountURL()}
+                            href=${this.addUserURL()}
                         >
                             <i class="fas fa-plus" aria-hidden="true"></i>
-                            ${msg("Add another account", {
-                                id: "account-switcher.actions.add-account.label",
+                            ${msg("Add another user", {
+                                id: "user-switcher.actions.add-user.label",
                             })}
                         </a>
                     </li>
@@ -186,6 +183,6 @@ export class AccountSwitcher extends WithSession(AKElement) {
 
 declare global {
     interface HTMLElementTagNameMap {
-        "ak-account-switcher": AccountSwitcher;
+        "ak-user-switcher": UserSwitcher;
     }
 }

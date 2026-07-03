@@ -3158,11 +3158,6 @@ paths:
         schema:
           type: string
       - in: query
-        name: flow_account_switch
-        schema:
-          type: string
-          format: uuid
-      - in: query
         name: flow_authentication
         schema:
           type: string
@@ -3194,6 +3189,11 @@ paths:
           format: uuid
       - in: query
         name: flow_user_settings
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: flow_user_switch
         schema:
           type: string
           format: uuid
@@ -36107,7 +36107,7 @@ components:
           type: string
           format: uuid
           nullable: true
-        flow_account_switch:
+        flow_user_switch:
           type: string
           format: uuid
           nullable: true
@@ -36187,7 +36187,7 @@ components:
           type: string
           format: uuid
           nullable: true
-        flow_account_switch:
+        flow_user_switch:
           type: string
           format: uuid
           nullable: true
@@ -36897,7 +36897,7 @@ components:
           type: string
         layout:
           $ref: '#/components/schemas/ContextualFlowInfoLayoutEnum'
-        account_switch_stale_user:
+        user_switch_stale_user:
           type: string
       required:
       - cancel_url
@@ -37200,7 +37200,7 @@ components:
           default: automatic
         flow_authentication:
           type: string
-        flow_account_switch:
+        flow_user_switch:
           type: string
         flow_invalidation:
           type: string
@@ -48217,7 +48217,7 @@ components:
           type: string
           format: uuid
           nullable: true
-        flow_account_switch:
+        flow_user_switch:
           type: string
           format: uuid
           nullable: true
