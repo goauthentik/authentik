@@ -339,4 +339,39 @@ class TestOffboardingAPI(APITestCase):
             reverse("authentik_api:useroffboarding-detail", kwargs={"pk": offboarding.pk})
         )
         self.assertEqual(response.status_code, 204)
-        self.assertFalse(UserOffboarding.objects.filter(pk=offboarding.pk).exists())
+        # The row is retained as an audit record, transitioned to CANCELED.
+        offboarding.refresh_from_db()
+        self.assertEqual(offboarding.status, OffboardingStatus.CANCELED)
+        self.assertIsNotNone(offboarding.executed_on)
+
+    def test_cancel_frees_user_for_rescheduling(self):
+        """A cancelled offboarding no longer blocks the unique-pending constraint."""
+        offboarding = UserOffboarding.objects.create(
+            user=self.user,
+            scheduled_for=now() + timedelta(days=1),
+            action=OffboardingAction.DEACTIVATE,
+        )
+        offboarding.cancel()
+        response = self.client.post(
+            reverse("authentik_api:useroffboarding-list"),
+            {
+                "user": self.user.pk,
+                "scheduled_for": (now() + timedelta(days=2)).isoformat(),
+                "action": OffboardingAction.DEACTIVATE,
+            },
+        )
+        self.assertEqual(response.status_code, 201)
+
+    def test_cancel_non_pending_rejected(self):
+        offboarding = UserOffboarding.objects.create(
+            user=self.user,
+            scheduled_for=now() + timedelta(days=1),
+            action=OffboardingAction.DEACTIVATE,
+            status=OffboardingStatus.COMPLETED,
+        )
+        response = self.client.delete(
+            reverse("authentik_api:useroffboarding-detail", kwargs={"pk": offboarding.pk})
+        )
+        self.assertEqual(response.status_code, 400)
+        offboarding.refresh_from_db()
+        self.assertEqual(offboarding.status, OffboardingStatus.COMPLETED)

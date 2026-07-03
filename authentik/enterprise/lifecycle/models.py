@@ -351,6 +351,16 @@ class UserOffboarding(SerializerModel):
     def __str__(self):
         return f"User offboarding for {self.user} ({self.action}) at {self.scheduled_for}"
 
+    def cancel(self):
+        """Cancel a pending offboarding, keeping the row as an audit record.
+
+        The status change is picked up by the audit middleware as a
+        `model_updated` event, so the actor who cancelled is recorded.
+        """
+        self.status = OffboardingStatus.CANCELED
+        self.executed_on = timezone.now()
+        self.save(update_fields=["status", "executed_on"])
+
     def execute(self, request: HttpRequest | None = None):
         """Run the offboarding action and record the outcome.
 

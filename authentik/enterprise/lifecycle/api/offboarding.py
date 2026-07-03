@@ -1,6 +1,8 @@
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from rest_framework.exceptions import ValidationError
+from rest_framework.request import Request
+from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
 from authentik.core.api.groups import PartialUserSerializer
@@ -77,3 +79,15 @@ class UserOffboardingViewSet(ModelViewSet):
 
     def perform_create(self, serializer: UserOffboardingSerializer) -> None:
         serializer.save(created_by=self.request.user)
+
+    def destroy(self, request: Request, *args, **kwargs) -> Response:
+        """Cancel a pending offboarding instead of deleting the record.
+
+        The row is retained (as `CANCELED`) so the offboarding stays visible in
+        the audit history; deletion would erase who scheduled and cancelled it.
+        """
+        offboarding: UserOffboarding = self.get_object()
+        if offboarding.status != OffboardingStatus.PENDING:
+            raise ValidationError(_("Only a pending offboarding can be cancelled."))
+        offboarding.cancel()
+        return Response(status=204)
