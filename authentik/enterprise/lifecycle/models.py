@@ -349,7 +349,7 @@ class UserOffboarding(SerializerModel):
         return UserOffboardingSerializer
 
     def __str__(self):
-        return f"User offboarding for {self.user} ({self.action}) at {self.scheduled_for}"
+        return f"User offboarding for user {self.user_id} ({self.action}) at {self.scheduled_for}"
 
     def cancel(self):
         """Cancel a pending offboarding, keeping the row as an audit record.
