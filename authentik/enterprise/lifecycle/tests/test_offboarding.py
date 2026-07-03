@@ -17,6 +17,7 @@ from authentik.core.models import (
     Token,
     TokenIntents,
     User,
+    UserTypes,
 )
 from authentik.core.tests.utils import create_test_admin_user, create_test_user
 from authentik.enterprise.lifecycle.models import (
@@ -295,6 +296,33 @@ class TestOffboardingAPI(APITestCase):
             {
                 "user": self.user.pk,
                 "scheduled_for": (now() + timedelta(days=2)).isoformat(),
+                "action": OffboardingAction.DEACTIVATE,
+            },
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("user", response.data)
+
+    def test_offboard_self_rejected(self):
+        response = self.client.post(
+            reverse("authentik_api:useroffboarding-list"),
+            {
+                "user": self.admin.pk,
+                "scheduled_for": (now() + timedelta(days=1)).isoformat(),
+                "action": OffboardingAction.DEACTIVATE,
+            },
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("user", response.data)
+
+    def test_offboard_internal_service_account_rejected(self):
+        service_account = User.objects.create(
+            username=generate_id(), type=UserTypes.INTERNAL_SERVICE_ACCOUNT
+        )
+        response = self.client.post(
+            reverse("authentik_api:useroffboarding-list"),
+            {
+                "user": service_account.pk,
+                "scheduled_for": (now() + timedelta(days=1)).isoformat(),
                 "action": OffboardingAction.DEACTIVATE,
             },
         )
