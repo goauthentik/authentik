@@ -727,8 +727,6 @@ export * from "./RequestContentTypeEnum";
 export * from "./RequestStatus";
 export * from "./Review";
 export * from "./ReviewRequest";
-export * from "./ReviewerGroup";
-export * from "./ReviewerUser";
 export * from "./Role";
 export * from "./RoleAssignedObjectPermission";
 export * from "./RoleModelPermission";
