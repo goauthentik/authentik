@@ -103,6 +103,7 @@ export class UserOffboardingForm extends ModelForm<UserOffboarding, string> {
                 <input
                     id="offboarding-date-input"
                     type="datetime-local"
+                    data-type="datetime-local"
                     value=${dateTimeLocal(this.scheduledFor)}
                     min=${dateTimeLocal(this.scheduledMinimumDate)}
                     class="pf-c-form-control"
