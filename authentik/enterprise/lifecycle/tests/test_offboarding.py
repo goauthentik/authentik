@@ -80,8 +80,26 @@ class TestOffboardingService(APITestCase):
 
 
 class TestOffboardingSweeper(APITestCase):
+    @classmethod
+    def setUpTestData(cls):
+        config = apps.get_app_config("authentik_tasks_schedules")
+        config._on_startup_callback(None)
+
     def setUp(self):
         self.user = create_test_user()
+
+    def test_due_offboarding_dispatched_under_schedule(self):
+        """The sweeper dispatches each due offboarding (and its schedule resolves)."""
+        UserOffboarding.objects.create(
+            user=self.user,
+            scheduled_for=now() - timedelta(minutes=1),
+            action=OffboardingAction.DEACTIVATE,
+        )
+        with patch(
+            "authentik.enterprise.lifecycle.tasks.execute_offboarding.send_with_options"
+        ) as send:
+            execute_due_offboardings()
+        send.assert_called_once()
 
     def test_due_offboarding_executed(self):
         offboarding = UserOffboarding.objects.create(

@@ -38,12 +38,19 @@ def apply_lifecycle_rule(rule_id: str):
 
 @actor(description=_("Execute due user offboardings."))
 def execute_due_offboardings():
-    due = UserOffboarding.objects.filter(
+    # Only the pk is dispatched, so fetch pks alone rather than whole rows.
+    due_pks = UserOffboarding.objects.filter(
         status=OffboardingStatus.PENDING,
         scheduled_for__lte=timezone.now(),
-    ).select_related("user")
-    for offboarding in due:
-        execute_offboarding.send(str(offboarding.pk))
+    ).values_list("pk", flat=True)
+    if not due_pks:
+        return
+    schedule = Schedule.objects.get(
+        actor_name="authentik.enterprise.lifecycle.tasks.execute_due_offboardings"
+    )
+    for pk in due_pks:
+        # rel_obj groups each execution under the sweeper's schedule in the UI.
+        execute_offboarding.send_with_options(args=(str(pk),), rel_obj=schedule)
 
 
 @actor(description=_("Execute a single user offboarding."))
