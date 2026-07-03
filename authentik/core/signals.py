@@ -49,7 +49,7 @@ def post_save_application(sender: type[Model], instance, created: bool, **_):
 def user_logged_in_session(sender, request: HttpRequest, user: User, **_):
     """Create an AuthenticatedSession from request"""
 
-    AuthenticatedSession.from_request(request, user)
+    AuthenticatedSession.create_from_request(request, user)
 
     if not RefreshOtherFlowsAfterAuthentication.get():
         return

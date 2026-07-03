@@ -1396,7 +1396,23 @@ class AuthenticatedSession(SerializerModel):
 
     @classmethod
     def from_request(cls, request: HttpRequest, user: User) -> Self | None:
-        """Create a new authenticated session from an HTTP request."""
+        """Return an in-memory authenticated session for the request's session.
+
+        This does not touch the database; because ``session`` is the primary key the
+        returned instance can be used to look up related objects. Callers that want to
+        persist a login should use ``create_from_request`` instead."""
+        if not hasattr(request, "session") or not request.session.exists(
+            request.session.session_key
+        ):
+            return None
+        return cls(
+            session=Session.objects.filter(session_key=request.session.session_key).first(),
+            user=user,
+        )
+
+    @classmethod
+    def create_from_request(cls, request: HttpRequest, user: User) -> Self | None:
+        """Persist the request's session as the current login and bind the switching token."""
         if not hasattr(request, "session") or not request.session.exists(
             request.session.session_key
         ):

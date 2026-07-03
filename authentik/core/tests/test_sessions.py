@@ -102,7 +102,7 @@ class TestSessionSuperseding(TestCase):
         request.user_switching_token = user_switching_token
         request.session = SessionStore()
         request.session.create()
-        new_session = AuthenticatedSession.from_request(request, self.user)
+        new_session = AuthenticatedSession.create_from_request(request, self.user)
 
         self.assertEqual(new_session.user_switching_token, user_switching_token)
         self.assertTrue(new_session.is_current)
