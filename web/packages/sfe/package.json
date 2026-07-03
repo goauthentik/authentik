@@ -27,7 +27,7 @@
         "formdata-polyfill": "workspace:*",
         "globby": "16.2.0",
         "jquery": "^3.7.1",
-        "lit-html": "^1.4.1",
+        "lit-html": "^3.3.3",
         "rollup": "^4.61.1",
         "weakmap-polyfill": "^2.0.4"
     },
