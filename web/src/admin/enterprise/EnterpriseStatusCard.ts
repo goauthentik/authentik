@@ -51,16 +51,23 @@ export class EnterpriseStatusCard extends AKElement {
         if (!this.forecast || !this.summary) {
             return html`${msg("Loading")}`;
         }
+
+        // Actual current usage counts (not the forecasted/projected fields).
+        const currentInternalUsers = this.forecast.internalUsers;
+        const currentExternalUsers = this.forecast.externalUsers;
+        const licensedInternalUsers = this.summary.internalUsers;
+        const licensedExternalUsers = this.summary.externalUsers;
+
         let internalUserPercentage = 0;
         let externalUserPercentage = 0;
         if (this.summary.status !== LicenseSummaryStatusEnum.Unlicensed) {
             internalUserPercentage = this.calcUserPercentage(
-                this.summary.internalUsers,
-                this.forecast.internalUsers,
+                licensedInternalUsers,
+                currentInternalUsers,
             );
             externalUserPercentage = this.calcUserPercentage(
-                this.summary.externalUsers,
-                this.forecast.externalUsers,
+                licensedExternalUsers,
+                currentExternalUsers,
             );
         }
         return html`<div class="pf-c-card">
@@ -82,36 +89,34 @@ export class EnterpriseStatusCard extends AKElement {
                         </div>
                     </dl>
                     <div class="pf-l-split__item pf-m-fill">
-                        <p class="pf-u-font-size-sm pf-u-color-200">
-                            ${msg(
-                                str`${this.forecast.internalUsers}/${this.summary.internalUsers} internal users`,
-                            )}
-                        </p>
                         <ak-progress-bar
                             class="${internalUserPercentage > 100
                                 ? "pf-m-danger"
                                 : ""} ${internalUserPercentage >= 80 ? "pf-m-warning" : ""}"
                             value=${internalUserPercentage}
                         >
-                            <span slot="description">${msg("Internal user usage")}</span>
+                            <span slot="description">
+                                ${msg(
+                                    str`Internal user usage (${currentInternalUsers}/${licensedInternalUsers})`,
+                                )}
+                            </span>
                             <span slot="status">
                                 ${msg(
                                     str`${internalUserPercentage < Infinity ? internalUserPercentage : "∞"}%`,
                                 )}
                             </span>
                         </ak-progress-bar>
-                        <p class="pf-u-font-size-sm pf-u-color-200 pf-u-mt-md">
-                            ${msg(
-                                str`${this.forecast.externalUsers}/${this.summary.externalUsers} external users`,
-                            )}
-                        </p>
                         <ak-progress-bar
                             class="${externalUserPercentage > 100
                                 ? "pf-m-danger"
                                 : ""} ${externalUserPercentage >= 80 ? "pf-m-warning" : ""}"
                             value=${externalUserPercentage}
                         >
-                            <span slot="description">${msg("External user usage")}</span>
+                            <span slot="description">
+                                ${msg(
+                                    str`External user usage (${currentExternalUsers}/${licensedExternalUsers})`,
+                                )}
+                            </span>
                             <span slot="status">
                                 ${msg(
                                     str`${externalUserPercentage < Infinity ? externalUserPercentage : "∞"}%`,
