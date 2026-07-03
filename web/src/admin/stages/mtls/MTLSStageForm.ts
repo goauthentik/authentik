@@ -25,23 +25,13 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-stage-mtls-form")
 export class MTLSStageForm extends BaseStageForm<MutualTLSStage> {
-    loadInstance(pk: string): Promise<MutualTLSStage> {
-        return aki(StagesApi).stagesMtlsRetrieve({
-            stageUuid: pk,
-        });
-    }
-
-    async send(data: MutualTLSStage): Promise<MutualTLSStage> {
-        if (this.instance) {
-            return aki(StagesApi).stagesMtlsUpdate({
-                stageUuid: this.instance.pk || "",
-                mutualTLSStageRequest: data,
-            });
-        }
-        return aki(StagesApi).stagesMtlsCreate({
-            mutualTLSStageRequest: data,
-        });
-    }
+    protected endpoints = {
+        load: (stageUuid: string) => aki(StagesApi).stagesMtlsRetrieve({ stageUuid }),
+        create: (mutualTLSStageRequest: MutualTLSStage) =>
+            aki(StagesApi).stagesMtlsCreate({ mutualTLSStageRequest }),
+        update: (stageUuid: string, mutualTLSStageRequest: MutualTLSStage) =>
+            aki(StagesApi).stagesMtlsUpdate({ stageUuid, mutualTLSStageRequest }),
+    };
 
     protected override renderForm(): TemplateResult {
         return html`
