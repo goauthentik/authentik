@@ -14,10 +14,10 @@
 
 import type { ContentTypeEnum } from "./ContentTypeEnum";
 import { ContentTypeEnumFromJSON, ContentTypeEnumToJSON } from "./ContentTypeEnum";
-import type { ReviewerGroup } from "./ReviewerGroup";
-import { ReviewerGroupFromJSON } from "./ReviewerGroup";
-import type { ReviewerUser } from "./ReviewerUser";
-import { ReviewerUserFromJSON } from "./ReviewerUser";
+import type { PartialGroup } from "./PartialGroup";
+import { PartialGroupFromJSON } from "./PartialGroup";
+import type { PartialUser } from "./PartialUser";
+import { PartialUserFromJSON } from "./PartialUser";
 
 /**
  * Mixin to validate that a valid enterprise license
@@ -70,10 +70,10 @@ export interface LifecycleRule {
     reviewerGroups?: Array<string>;
     /**
      *
-     * @type {Array<ReviewerGroup>}
+     * @type {Array<PartialGroup>}
      * @memberof LifecycleRule
      */
-    readonly reviewerGroupsObj: Array<ReviewerGroup>;
+    readonly reviewerGroupsObj: Array<PartialGroup>;
     /**
      *
      * @type {number}
@@ -94,10 +94,10 @@ export interface LifecycleRule {
     reviewers: Array<string>;
     /**
      *
-     * @type {Array<ReviewerUser>}
+     * @type {Array<PartialUser>}
      * @memberof LifecycleRule
      */
-    readonly reviewersObj: Array<ReviewerUser>;
+    readonly reviewersObj: Array<PartialUser>;
     /**
      * Select which transports should be used to notify the reviewers. If none are selected, the notification will only be shown in the authentik UI.
      * @type {Array<string>}
@@ -142,14 +142,14 @@ export function LifecycleRuleFromJSONTyped(json: any, ignoreDiscriminator: boole
         interval: json["interval"] == null ? undefined : json["interval"],
         gracePeriod: json["grace_period"] == null ? undefined : json["grace_period"],
         reviewerGroups: json["reviewer_groups"] == null ? undefined : json["reviewer_groups"],
-        reviewerGroupsObj: (json["reviewer_groups_obj"] as Array<any>).map(ReviewerGroupFromJSON),
+        reviewerGroupsObj: (json["reviewer_groups_obj"] as Array<any>).map(PartialGroupFromJSON),
         minReviewers: json["min_reviewers"] == null ? undefined : json["min_reviewers"],
         minReviewersIsPerGroup:
             json["min_reviewers_is_per_group"] == null
                 ? undefined
                 : json["min_reviewers_is_per_group"],
         reviewers: json["reviewers"],
-        reviewersObj: (json["reviewers_obj"] as Array<any>).map(ReviewerUserFromJSON),
+        reviewersObj: (json["reviewers_obj"] as Array<any>).map(PartialUserFromJSON),
         notificationTransports:
             json["notification_transports"] == null ? undefined : json["notification_transports"],
         targetVerbose: json["target_verbose"],
