@@ -27,23 +27,13 @@ import { customElement } from "lit/decorators.js";
 
 @customElement("ak-stage-password-form")
 export class PasswordStageForm extends BaseStageForm<PasswordStage> {
-    loadInstance(pk: string): Promise<PasswordStage> {
-        return aki(StagesApi).stagesPasswordRetrieve({
-            stageUuid: pk,
-        });
-    }
-
-    async send(data: PasswordStage): Promise<PasswordStage> {
-        if (this.instance) {
-            return aki(StagesApi).stagesPasswordUpdate({
-                stageUuid: this.instance.pk || "",
-                passwordStageRequest: data,
-            });
-        }
-        return aki(StagesApi).stagesPasswordCreate({
-            passwordStageRequest: data,
-        });
-    }
+    protected endpoints = {
+        load: (stageUuid: string) => aki(StagesApi).stagesPasswordRetrieve({ stageUuid }),
+        create: (passwordStageRequest: PasswordStage) =>
+            aki(StagesApi).stagesPasswordCreate({ passwordStageRequest }),
+        update: (stageUuid: string, passwordStageRequest: PasswordStage) =>
+            aki(StagesApi).stagesPasswordUpdate({ stageUuid, passwordStageRequest }),
+    };
 
     isBackendSelected(field: BackendsEnum): boolean {
         if (!this.instance) {

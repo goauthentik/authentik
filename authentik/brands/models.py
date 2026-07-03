@@ -17,6 +17,9 @@ from authentik.lib.models import SerializerModel
 
 LOGGER = get_logger()
 
+# Session flag marking a "safe mode" session (e.g. one created via a recovery link).
+SESSION_KEY_BRAND_SAFE_MODE = "authentik/brands/safe_mode"
+
 
 # Brand FKs read on the request hot path. select_related pulls them into the
 # same SELECT to avoid N+1 lazy loads; CurrentBrandSerializer alone reads 7.
