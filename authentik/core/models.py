@@ -1316,6 +1316,13 @@ class PropertyMapping(SerializerModel, ManagedModel):
         verbose_name_plural = _("Property Mappings")
 
 
+class SessionSuperseded(SuspiciousOperation):
+    """Raised when a session was replaced by a newer login in the same browser.
+
+    A SuspiciousOperation so the session store discards the session, but an expected,
+    routine outcome of user switching rather than a genuinely suspicious request."""
+
+
 class Session(ExpiringModel, AbstractBaseSession):
     """User session with extra fields for fast access"""
 
@@ -1352,7 +1359,7 @@ class Session(ExpiringModel, AbstractBaseSession):
     def validate_not_superseded(self):
         """Reject browser logins superseded by a newer login."""
         if self.is_superseded:
-            raise SuspiciousOperation("Session denied: superseded by a newer login")
+            raise SessionSuperseded("Session denied: superseded by a newer login")
 
     class Keys(StrEnum):
         """

@@ -9,6 +9,7 @@ from django.utils import timezone
 from django.utils.functional import cached_property
 from structlog.stdlib import get_logger
 
+from authentik.core.models import SessionSuperseded
 from authentik.root.middleware import ClientIPMiddleware
 
 LOGGER = get_logger()
@@ -32,6 +33,15 @@ class SessionStore(SessionBase):
     def model_fields(self):
         return [k.value for k in self.model.Keys]
 
+    def _discard_session_on_load_error(self, exc: Exception):
+        """Log why a stored session was rejected and forget its key."""
+        if isinstance(exc, SessionSuperseded):
+            # An expected, routine outcome of user switching.
+            LOGGER.info(str(exc))
+        elif isinstance(exc, SuspiciousOperation):
+            LOGGER.warning(str(exc))
+        self._session_key = None
+
     def _get_session_from_db(self):
         try:
             session = self.model.objects.select_related(
@@ -44,9 +54,7 @@ class SessionStore(SessionBase):
             session.validate_not_superseded()
             return session
         except (self.model.DoesNotExist, SuspiciousOperation) as exc:
-            if isinstance(exc, SuspiciousOperation):
-                LOGGER.warning(str(exc))
-            self._session_key = None
+            self._discard_session_on_load_error(exc)
 
     async def _aget_session_from_db(self):
         try:
@@ -60,9 +68,7 @@ class SessionStore(SessionBase):
             session.validate_not_superseded()
             return session
         except (self.model.DoesNotExist, SuspiciousOperation) as exc:
-            if isinstance(exc, SuspiciousOperation):
-                LOGGER.warning(str(exc))
-            self._session_key = None
+            self._discard_session_on_load_error(exc)
 
     def encode(self, session_dict):
         return pickle.dumps(session_dict, protocol=pickle.HIGHEST_PROTOCOL)
