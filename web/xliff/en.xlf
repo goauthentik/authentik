@@ -4253,9 +4253,6 @@ doesn't pass when either or both of the selected options are equal or above the 
 <trans-unit id="sc44bae5cde0083fa">
   <source>Actions over the last week (per 8 hours)</source>
 </trans-unit>
-<trans-unit id="sb57dbcda1929c642">
-  <source>Edit the notes attribute of this user to add notes here.</source>
-</trans-unit>
 <trans-unit id="s27586544c447d9e3">
   <source>User events</source>
 </trans-unit>
@@ -7395,12 +7392,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s1bb47213a314465b">
   <source>Create link</source>
 </trans-unit>
-<trans-unit id="s776c1b64a71fba39">
-  <source>To email a recovery link, set an email address for this user.</source>
-</trans-unit>
-<trans-unit id="s8899399356b8ed1a">
-  <source>To create a recovery link, set a recovery flow for the current brand.</source>
-</trans-unit>
 <trans-unit id="s68be8f284274370a">
   <source>Recovery link</source>
 </trans-unit>
@@ -9389,6 +9380,15 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="user.library.view-toggle.to-grid">
   <source>Switch to grid view</source>
   <note from="lit-localize">Tooltip on the library view toggle when list view is active</note>
+</trans-unit>
+<trans-unit id="users.recovery.no-email.description">
+  <source>This user does not have an email address, so authentik cannot email a recovery link. Add an email address to enable email recovery.</source>
+</trans-unit>
+<trans-unit id="users.recovery.no-brand-flow.description">
+  <source>This brand does not have a recovery flow, so recovery links cannot be created. Configure a recovery flow in the brand settings to enable recovery.</source>
+</trans-unit>
+<trans-unit id="s7445550f2bfb2f2f">
+  <source>No notes.</source>
 </trans-unit>
 </body>
 </file>
