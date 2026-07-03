@@ -118,6 +118,7 @@ class TesOAuth2DeviceInit(OAuthTestCase):
             res.content,
             {
                 "component": "xak-flow-redirect",
+                "final_redirect": False,
                 "to": reverse(
                     "authentik_core:if-flow",
                     kwargs={
