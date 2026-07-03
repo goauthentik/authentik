@@ -1,3 +1,4 @@
+import { globalAK } from "#common/global";
 import { StorageAccessor } from "#common/storage";
 
 import type { UserSelf } from "@goauthentik/api";
@@ -41,10 +42,13 @@ function readCookie(name: string): string | null {
 
 function writeUserSwitchingCookie(value: string): void {
     const secure = window.location.protocol === "https:";
+    // Match the server's SESSION_COOKIE_PATH (the configured web base path) so instances
+    // served under a sub-path don't end up with duplicate cookies on different paths.
+    const path = globalAK().api.relBase || "/";
     document.cookie = [
         `${USER_SWITCHING_COOKIE_NAME}=${encodeURIComponent(value)}`,
         `Max-Age=${USER_SWITCHING_COOKIE_AGE_SECONDS}`,
-        "Path=/",
+        `Path=${path}`,
         `SameSite=${secure ? "None" : "Lax"}`,
         secure ? "Secure" : "",
     ]
