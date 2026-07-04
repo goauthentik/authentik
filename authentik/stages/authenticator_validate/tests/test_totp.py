@@ -10,6 +10,7 @@ from jwt import encode
 from rest_framework.exceptions import ValidationError
 
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
+from authentik.events.models import Event, EventAction, LoginFailedReason
 from authentik.flows.models import FlowDesignation, FlowStageBinding, NotConfiguredAction
 from authentik.flows.stage import StageView
 from authentik.flows.tests import FlowTestCase
@@ -300,3 +301,6 @@ class AuthenticatorValidateStageTOTPTests(FlowTestCase):
             validate_challenge_code(
                 "1234", StageView(FlowExecutorView(current_stage=stage), request=request), self.user
             )
+        event = Event.objects.filter(action=EventAction.LOGIN_FAILED, user__pk=self.user.pk).first()
+        self.assertIsNotNone(event)
+        self.assertEqual(event.context["reason"], LoginFailedReason.MFA_INVALID_OTP.value)
