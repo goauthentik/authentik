@@ -8,9 +8,9 @@ import SAMLProvider20265Warning from "../../\_saml-provider-2026-5-warning.mdx";
 
 ## What is GitHub Enterprise Server?
 
-> GitHub Enterprise Server is a self-hosted platform for software development within your enterprise.
+> GitHub Enterprise Server is the self-hosted version of GitHub Enterprise. It is installed on-premises or on a private cloud and provides organizations with a secure and customizable source code management and collaboration platform.
 >
-> -- https://docs.github.com/en/enterprise-server@latest/admin/overview/about-github-enterprise-server
+> -- https://github.com/enterprise
 
 ## Preparation
 
@@ -29,13 +29,13 @@ This documentation lists only the settings that you need to change from their de
 
 To support the integration of GitHub Enterprise Server with authentik, you need to create an application/provider pair in authentik. If you want to use SCIM provisioning, you also need to create application entitlements and a SCIM property mapping.
 
-### Create an application and provider in authentik
+### Create an application and provider
 
 <SAMLProvider20265Warning />
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **New Application** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
-    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Note the application **Slug**, because it is required later.
     - **Choose a Provider type**: select **SAML Provider** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
         - Set **ACS URL** to `https://github.company/saml/consume`.
@@ -47,14 +47,16 @@ To support the integration of GitHub Enterprise Server with authentik, you need 
 
 3. Click **Submit** to save the new application and provider.
 
-### Create application entitlements
+### Create application entitlements _(optional)_
+
+Create application entitlements if you want authentik to provision GitHub Enterprise Server user roles with SCIM.
 
 1. In the authentik Admin interface, open the GitHub Enterprise Server application that you created.
 2. Click the **Application entitlements** tab.
 3. Create two entitlements named `GitHub Users` and `GitHub Admins`.
 4. Open each entitlement and bind the users or groups that should receive it.
 
-### Create a SCIM property mapping
+### Create a SCIM property mapping _(optional)_
 
 1. In the authentik Admin interface, navigate to **Customization** > **Property Mappings** and click **Create**.
 2. Select **SCIM Provider Mapping** and click **Next**.
@@ -85,12 +87,15 @@ To support the integration of GitHub Enterprise Server with authentik, you need 
 
 ## GitHub Enterprise Server configuration
 
-### Create the SCIM token
+### Create the SCIM token _(optional)_
 
-1. Log in to GitHub Enterprise Server with the administrator account that you use for SCIM provisioning.
-2. Navigate to `https://github.company/settings/tokens`.
-3. Generate a new classic personal access token with the `scim:enterprise` scope.
-4. Copy the token. This value is used in the authentik SCIM provider.
+Complete this section if you want to use SCIM provisioning.
+
+1. Create or use a built-in enterprise owner account that is not managed through SCIM. GitHub recommends the username `scim-admin`.
+2. Log in to GitHub Enterprise Server with the built-in setup user.
+3. Navigate to `https://github.company/settings/tokens`.
+4. Generate a new classic personal access token with the `scim:enterprise` scope and no expiration.
+5. Copy the token. This value is used in the authentik SCIM provider.
 
 ### Configure SAML
 
@@ -99,25 +104,27 @@ To support the integration of GitHub Enterprise Server with authentik, you need 
 3. Go to **Authentication**.
 4. Configure the following settings:
     - Select **SAML**.
-    - **Sign on URL**: enter the **SAML Endpoint** from the SAML provider that you created in authentik.
+    - **Single sign-on URL**: enter the **SAML Endpoint** from the SAML provider that you created in authentik.
     - **Issuer**: `https://authentik.company/application/saml/<application_slug>/metadata/`.
     - **Signature method** and **Digest method**: select the methods that match the authentik SAML provider settings.
-    - **Validation certificate**: upload the signing certificate that you downloaded from authentik.
+    - **Verification certificate**: upload the signing certificate that you downloaded from authentik.
     - If you plan to use SCIM, select **Allow creation of accounts with built-in authentication** and **Disable administrator demotion/promotion**.
     - In the **User attributes** section, do not configure a different username attribute unless it returns the same value as the SCIM `userName` attribute.
 5. Click **Save settings** and wait for the changes to apply.
 
 ![Screenshot showing populated GitHub Enterprise Server SAML settings](ghes_saml_settings.png)
 
-### Enable SCIM
+### Enable SCIM _(optional)_
 
-1. Log in to GitHub Enterprise Server with an administrator account.
-2. Open **Enterprise settings**.
-3. In the left sidebar, click **Settings** > **Authentication security**.
+Complete this section if you want to use SCIM provisioning.
+
+1. Log in to GitHub Enterprise Server with the built-in setup user.
+2. In the upper-right corner, click your profile picture, then click **Enterprise settings**.
+3. Click **Settings** > **Authentication security**.
 4. Select **Enable SCIM configuration**.
 5. Click **Save**.
 
-### Create a SCIM provider in authentik
+### Create a SCIM provider _(optional)_
 
 1. In the authentik Admin interface, navigate to **Applications** > **Providers** and click **Create**.
 2. Select **SCIM Provider** as the provider type and click **Next**.
@@ -132,13 +139,25 @@ To support the integration of GitHub Enterprise Server with authentik, you need 
 6. Add the SCIM provider to **Backchannel Providers**.
 7. Click **Update**.
 
+### Update GitHub Enterprise Server settings _(optional)_
+
+Complete this section after SCIM sync is working if you use SCIM provisioning.
+
+1. Navigate to the GitHub Enterprise Server Management Console at `https://github.company:8443`.
+2. Sign in as an administrator.
+3. Go to **Authentication**.
+4. Clear **Disable administrator demotion/promotion**.
+5. If you want all users to be provisioned from authentik, clear **Allow creation of accounts with built-in authentication**.
+6. Click **Save settings** and wait for the changes to apply.
+
 ## Configuration verification
 
-To confirm that authentik is properly configured with GitHub Enterprise Server, assign a test user to the `GitHub Users` entitlement and ensure that the user can view the application in authentik.
+To confirm that authentik is properly configured with GitHub Enterprise Server, log out of GitHub Enterprise Server and open GitHub Enterprise Server. It should redirect you to authentik for SAML authentication.
 
-Open the SCIM provider and click **Run sync again**. After the sync completes, confirm that the user is provisioned in GitHub Enterprise Server. Then, log in to GitHub Enterprise Server as the test user and confirm that GitHub redirects the user to authentik for SAML authentication.
+If you configured SCIM provisioning, assign a test user to the `GitHub Users` entitlement and ensure that the user can view the application in authentik. Open the SCIM provider and click **Run sync again**. After the sync completes, confirm that the user is provisioned in GitHub Enterprise Server.
 
 ## Resources
 
 - [GitHub Enterprise Server: configuring SAML single sign-on for your enterprise](https://docs.github.com/en/enterprise-server@latest/admin/managing-iam/using-saml-for-enterprise-iam/configuring-saml-single-sign-on-for-your-enterprise)
+- [GitHub Enterprise Server: configuring SCIM provisioning to manage users](https://docs.github.com/en/enterprise-server@latest/admin/managing-iam/provisioning-user-accounts-with-scim/configuring-scim-provisioning-for-users)
 - [GitHub Enterprise Server: REST API endpoints for SCIM](https://docs.github.com/en/enterprise-server@latest/rest/enterprise-admin/scim)
