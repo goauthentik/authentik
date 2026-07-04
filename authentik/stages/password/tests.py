@@ -6,6 +6,7 @@ from django.core.exceptions import PermissionDenied
 from django.urls import reverse
 
 from authentik.core.tests.utils import create_test_admin_user, create_test_brand, create_test_flow
+from authentik.events.models import Event, EventAction, LoginFailedReason
 from authentik.flows.markers import StageMarker
 from authentik.flows.models import FlowDesignation, FlowStageBinding
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
@@ -111,6 +112,9 @@ class TestPasswordStage(FlowTestCase):
             self.flow,
             response_errors={"password": [{"string": "Invalid password", "code": "invalid"}]},
         )
+        event = Event.objects.filter(action=EventAction.LOGIN_FAILED, user__pk=self.user.pk).first()
+        self.assertIsNotNone(event)
+        self.assertEqual(event.context["reason"], LoginFailedReason.INCORRECT_PASSWORD.value)
 
     def test_invalid_password(self):
         """Test with a valid pending user and invalid password"""
@@ -126,6 +130,9 @@ class TestPasswordStage(FlowTestCase):
             {"password": self.user.username + "test"},
         )
         self.assertEqual(response.status_code, 200)
+        event = Event.objects.filter(action=EventAction.LOGIN_FAILED, user__pk=self.user.pk).first()
+        self.assertIsNotNone(event)
+        self.assertEqual(event.context["reason"], LoginFailedReason.INCORRECT_PASSWORD.value)
 
     def test_invalid_password_lockout(self):
         """Test with a valid pending user and invalid password (trigger logout counter)"""
@@ -197,3 +204,6 @@ class TestPasswordStage(FlowTestCase):
             component="ak-stage-access-denied",
             error_message="Unknown error",
         )
+        event = Event.objects.filter(action=EventAction.LOGIN_FAILED, user__pk=self.user.pk).first()
+        self.assertIsNotNone(event)
+        self.assertEqual(event.context["reason"], LoginFailedReason.ACCOUNT_INACTIVE.value)
