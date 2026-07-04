@@ -34,7 +34,7 @@ export abstract class SimpleEventTable extends Table<Event> {
     }
 
     protected override rowLabel(item: Event): string {
-        return actionToLabel(item.action);
+        return actionToLabel(item.action, item.context);
     }
 
     protected columns: TableColumn[] = [

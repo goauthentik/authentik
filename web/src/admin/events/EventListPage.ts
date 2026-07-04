@@ -62,7 +62,7 @@ export class EventListPage extends WithLicenseSummary(TablePage<Event>) {
     ];
 
     protected override rowLabel(item: Event): string | null {
-        return actionToLabel(item.action);
+        return actionToLabel(item.action, item.context);
     }
 
     renderSectionBefore(): TemplateResult {
