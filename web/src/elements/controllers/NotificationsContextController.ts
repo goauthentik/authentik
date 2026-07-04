@@ -119,7 +119,7 @@ export class NotificationsContextController extends ReactiveContextController<No
     #messageListener = ({ notification }: AKNotificationEvent) => {
         showMessage({
             level: MessageLevel.info,
-            message: actionToLabel(notification.event?.action) ?? notification.body,
+            message: actionToLabel(notification.event?.action, notification.event?.context) ?? notification.body,
             description: html`${notification.body}
             ${notification.hyperlink
                 ? html`<br /><a href=${notification.hyperlink}>${notification.hyperlinkLabel}</a>`

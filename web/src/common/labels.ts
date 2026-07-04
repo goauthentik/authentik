@@ -35,7 +35,10 @@ export const EventActionLabelRecord: Record<
     MessageFormatter<string, [context?: EventContext]>
 > = {
     [EventActions.Login]: () => msg("Login"),
-    [EventActions.LoginFailed]: () => msg("Failed login"),
+    [EventActions.LoginFailed]: (context?: EventContext) =>
+            context && 'reason' in context
+                ? msg(str`Failed login (${loginFailedReasonToLabel(context.reason as LoginFailedReason)})`)
+                : msg("Failed login"),
     [EventActions.Logout]: () => msg("Logout"),
     [EventActions.UserWrite]: () => msg("User was written to"),
     [EventActions.SuspiciousRequest]: () => msg("Suspicious request"),
@@ -59,15 +62,15 @@ export const EventActionLabelRecord: Record<
     [EventActions.ConfigurationError]: () => msg("Configuration error"),
     [EventActions.ConfigurationWarning]: () => msg("Configuration warning"),
     [EventActions.ModelCreated]: (context?: EventContext) =>
-        context
+        context?.model
             ? msg(str`Model created (${(context.model as EventModel).model_name})`)
             : msg("Model created"),
     [EventActions.ModelUpdated]: (context?: EventContext) =>
-        context
+        context?.model
             ? msg(str`Model updated (${(context.model as EventModel).model_name})`)
             : msg("Model updated"),
     [EventActions.ModelDeleted]: (context?: EventContext) =>
-        context
+        context?.model
             ? msg(str`Model deleted (${(context.model as EventModel).model_name})`)
             : msg("Model deleted"),
     [EventActions.EmailSent]: () => msg("Email sent"),
@@ -154,4 +157,25 @@ export function userTypeToLabel(type?: UserTypeEnum): string {
     const formatter = type ? UserTypeLabelRecord[type] : null;
 
     return formatter?.() || "";
+}
+
+export enum LoginFailedReason {
+    IncorrectPassword = "incorrect_password",
+    AccountInactive = "account_inactive",
+    MFAInvalidOTP = "mfa_invalid_otp",
+    MFAWebAuthnFailed = "mfa_webauthn_failed",
+    MFADuoDenied = "mfa_duo_denied",
+}
+
+const LoginFailedReasonRecord: Record<LoginFailedReason, MessageFormatter<string>> = {
+    [LoginFailedReason.IncorrectPassword]: () => msg("incorrect password"),
+    [LoginFailedReason.AccountInactive]: () => msg("account inactive"),
+    [LoginFailedReason.MFAInvalidOTP]: () => msg("invalid OTP code"),
+    [LoginFailedReason.MFAWebAuthnFailed]: () => msg("WebAuthn assertion failed"),
+    [LoginFailedReason.MFADuoDenied]: () => msg("Duo denied access"),
+};
+
+export function loginFailedReasonToLabel(reason?: LoginFailedReason): string {
+    const formatter = reason ? LoginFailedReasonRecord[reason] : null;
+    return formatter?.() || msg("unknown");
 }
