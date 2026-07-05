@@ -4,12 +4,13 @@ sidebar_label: Rancher
 support_level: authentik
 ---
 
+import RedirectURI20265Note from "../../\_redirect-uri-2026-5-note.mdx";
+
 ## What is Rancher?
 
-> An enterprise platform for managing Kubernetes Everywhere
-> Rancher is a platform built to address the needs of the DevOps teams deploying applications with Kubernetes, and the IT staff responsible for delivering an enterprise-critical service.
+> Rancher is a complete software stack for teams adopting containers.
 >
-> -- https://rancher.com/products/rancher
+> -- https://www.rancher.com/
 
 ## Preparation
 
@@ -22,38 +23,50 @@ The following placeholders are used in this guide:
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
-Under **Customization > Property Mappings**, create a **SAML Property Mapping**. Give it a name like "SAML Rancher User ID". Set the SAML name to `rancherUidUsername` and the expression to the following
+## authentik configuration
 
-```python
-return f"{user.pk}-{user.username}"
-```
+<RedirectURI20265Note />
 
-Create an application in authentik. Set the Launch URL to `https://rancher.company`, as Rancher does not currently support IdP-initiated logins.
+To support the integration of Rancher with authentik, you need to create an application/provider pair in authentik.
 
-Create a SAML provider with the following parameters:
+### Create an application and provider
 
-- ACS URL: `https://rancher.company/v1-saml/adfs/saml/acs`
-- Audience: `https://rancher.company/v1-saml/adfs/saml/metadata`
-- Property mappings: Select all default mappings and the mapping you've created above.
-- Signing Certificate: Select the authentik self-signed certificate.
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
 
-You can of course use a custom signing certificate, and adjust durations.
+- **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
+    - Set **Launch URL** to `https://rancher.company`.
+    - Note the **Slug** because it will be required later.
+- **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
+- **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+    - Note the **Client ID** and **Client Secret** values because they will be required later.
+    - Add a **Redirect URI** of type `Strict` `Authorization` as `https://rancher.company/verify-auth`.
+    - Select any available signing key.
+- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 
-## Rancher
+3. Click **Submit** to save the new application and provider.
 
-In Rancher, navigate to _Global_ > _Security_ > _Authentication_, and select ADFS.
+Rancher uses the OIDC `sub` claim as its unique user identifier. After users have logged in with this provider, keep the authentik provider's subject mode stable unless you plan to remap users in Rancher.
 
-Fill in the fields
+## Rancher configuration
 
-- Display Name Field: `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name`
-- User Name Field: `http://schemas.goauthentik.io/2021/02/saml/username`
-- UID Field: `rancherUidUsername`
-- Groups Field: `http://schemas.xmlsoap.org/claims/Group`
+1. Log in to Rancher as an administrator.
+2. In the upper-left corner, click ☰ > **Users & Authentication**.
+3. In the left navigation menu, click **Auth Provider**, then select **Generic OIDC**.
+4. Complete the **Configure an OIDC account** form with the following values:
+    - **Client ID**: enter the Client ID from authentik.
+    - **Client Secret**: enter the Client Secret from authentik.
+    - **Rancher URL**: `https://rancher.company/verify-auth`.
+    - **Issuer**: `https://authentik.company/application/o/<application_slug>/`.
+    - **Scopes**: `openid profile email`.
+    - **Rancher API Host**: if this field is shown, enter `https://rancher.company`.
+5. If you changed the default OIDC claim names in authentik, use Rancher's custom claim fields to map the `name`, `email`, or `groups` claims. Rancher can use authentik's default `groups` claim without additional configuration.
+6. Click **Enable**. Rancher redirects you to authentik to validate the configuration.
 
-For the private key and certificate, you can either generate a new pair (in authentik, navigate to _Identity & Cryptography_ > _Certificates_ and select Generate), or use an existing pair.
+## Configuration verification
 
-Copy the metadata from authentik, and paste it in the metadata field.
+To confirm that authentik is properly configured with Rancher, open Rancher and log in with authentik.
 
-Click on save to test the authentication.
+## Resources
 
-![](./rancher.png)
+- [Rancher documentation - Configure Generic OIDC](https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/authentication-permissions-and-global-configuration/authentication-config/configure-generic-oidc)
