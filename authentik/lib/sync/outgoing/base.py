@@ -54,19 +54,9 @@ class BaseOutgoingSyncClient[
         self.provider = provider
 
     def get_identifier(self, connection: TConnection) -> str:
-        """Return the remote object identifier stored on a connection object.
-
-        Connection models store the remote id in a single non-relational
-        TextField (scim_id / google_id / microsoft_id depending on provider).
-        Resolve it generically so cleanup works across all providers."""
-        for field in connection._meta.get_fields():
-            if (
-                field.get_internal_type() == "TextField"
-                and not field.is_relation
-                and field.name != "attributes"
-            ):
-                return getattr(connection, field.name)
-        raise AttributeError(f"No remote identifier field found on {type(connection).__name__}")
+        """Return the remote object identifier stored on a connection object
+        (e.g. scim_id / google_id / microsoft_id)"""
+        raise NotImplementedError()
 
     def create(self, obj: TModel) -> TConnection:
         """Create object in remote destination"""

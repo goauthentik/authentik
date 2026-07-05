@@ -375,7 +375,7 @@ class GoogleWorkspaceUserTests(TestCase):
         """Test cleanup of out-of-scope connections (regression for #scim_id).
 
         _sync_cleanup is shared across all outgoing-sync providers and must
-        resolve the remote identifier generically. Previously it referenced
+        resolve the remote identifier via the client. Previously it referenced
         connection.scim_id, which does not exist on GoogleWorkspaceProviderUser
         (it uses google_id), raising AttributeError during cleanup."""
         uid = generate_id()
