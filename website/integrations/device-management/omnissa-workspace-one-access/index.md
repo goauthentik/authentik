@@ -8,7 +8,7 @@ import RedirectURI20265Note from "../../\_redirect-uri-2026-5-note.mdx";
 
 ## What is Omnissa Workspace ONE Access?
 
-> Omnissa Workspace ONE Access, now Omnissa Access, is the identity and access service for the Omnissa Workspace ONE platform. It provides single sign-on, access policies, and identity federation for applications and devices, and can delegate authentication to external identity providers such as authentik.
+> Omnissa Access, formerly Workspace ONE Access, is an identity and access management solution that provides SSO, adaptive access policies, and identity federation for applications and devices.
 >
 > -- https://www.omnissa.com/products/omnissa-access/
 
@@ -22,7 +22,7 @@ The following placeholders are used in this guide:
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
-## Omnissa Workspace ONE Access pre-configuration
+Before you configure authentik, start the OpenID Connect (OIDC) identity provider setup in Omnissa Workspace ONE Access so that you can copy the redirect URI that Omnissa generates.
 
 1. Log in to your Omnissa Workspace ONE Access tenant as an administrator.
 2. Navigate to **Integrations** > **Identity Providers**.
@@ -41,13 +41,13 @@ To support the integration of Omnissa Workspace ONE Access with authentik, you n
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
-    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Note the **slug** value because you will use it when configuring Omnissa Workspace ONE Access.
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Note the **Slug** value because you will use it when configuring Omnissa Workspace ONE Access.
     - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
         - Note the **Client ID** and **Client Secret** values because they will be required later.
         - **Protocol Settings**:
             - **Redirect URI**:
-                - `Strict` `Authorization`: the redirect URI you noted in the Omnissa Workspace ONE Access pre-configuration step.
+                - `Strict` `Authorization`: the redirect URI that you noted in the Preparation section.
                 - `Strict` `Authorization`: `awgb://oauth2`. This URI is used by the Workspace ONE mobile applications.
             - **Signing Key**: select any available signing key.
     - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
@@ -56,7 +56,7 @@ To support the integration of Omnissa Workspace ONE Access with authentik, you n
 
 ## Omnissa Workspace ONE Access configuration
 
-1. Return to the OpenID Connect IDP form you opened during the pre-configuration step. If you closed it, navigate again to **Integrations** > **Identity Providers**, click **Add**, and select **OpenID Connect IDP**.
+1. Return to the OpenID Connect IDP form you opened during the Preparation section. If you closed it, navigate again to **Integrations** > **Identity Providers**, click **Add**, and select **OpenID Connect IDP**.
 2. Configure the form as follows:
     - Under **General Information**:
         - **Identity Provider Name**: a descriptive name, for example `authentik`.
@@ -77,15 +77,13 @@ To support the integration of Omnissa Workspace ONE Access with authentik, you n
 
 ### Add the new authentication method to an access policy
 
-Creating the identity provider alone does not make it usable; you also need to add the new authentication method to one or more **Access Policies** so Omnissa Workspace ONE Access knows when to apply it.
+Creating the identity provider alone does not make it usable. Add the new authentication method to one or more **Access Policies** so that Omnissa Workspace ONE Access knows when to apply it.
 
 1. Navigate to **Resources** > **Policies**.
 2. Open the access policy that targets the applications you want to use authentik for (typically the **default_access_policy_set**, or an application-specific policy).
 3. Edit the relevant policy rules and add the **Authentication Method Name** you configured above (for example, `authentik`) to the ordered list of authentication methods.
 
-:::info
 The exact policy structure depends on your Omnissa Workspace ONE Access deployment, the network ranges, device types, and user groups you want to target, and is out of scope for this guide. Refer to the Omnissa Workspace ONE Access documentation for details on access policies.
-:::
 
 ## Configuration verification
 
@@ -93,6 +91,5 @@ To confirm that authentik is properly configured with Omnissa Workspace ONE Acce
 
 ## Resources
 
-- [Omnissa Access](https://www.omnissa.com/products/omnissa-access/)
 - [Omnissa Product Documentation - Add and Configure an OpenID Connect Third-Party Identity Provider in Omnissa Access](https://docs.omnissa.com/bundle/workspace-one-access-managing-authentication-guideVSaaS/page/AddandConfigureanOpenIDConnectThird-PartyIdentityProviderinWorkspaceONEAccessCloudOnly.html)
-- [Omnissa Product Documentation - Managing Access Policies in the Omnissa Access Service](https://docs.omnissa.com/bundle/workspace-one-access-managing-authentication-guideVSaaS/page/ManagingAccessPoliciesintheWorkspaceONEAccessService.html)
+- [Omnissa Product Documentation - Managing the Default Access Policy in Omnissa Access](https://docs.omnissa.com/bundle/workspace-one-access-managing-authentication-guideVSaaS/page/ManagingtheDefaultAccessPolicyinWorkspaceONEAccess.html)
