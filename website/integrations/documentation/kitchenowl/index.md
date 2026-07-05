@@ -29,7 +29,7 @@ This documentation lists only the settings that you need to change from their de
 
 To support the integration of KitchenOwl with authentik, you need to create an application/provider pair in authentik.
 
-### Create an application and provider in authentik
+### Create an application and provider
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
@@ -45,7 +45,7 @@ To support the integration of KitchenOwl with authentik, you need to create an a
 
 To enable OIDC login with KitchenOwl, update your backend environment variables to include the following:
 
-```yaml showLineNumbers
+```env title=".env"
 FRONT_URL=https://kitchenowl.company
 OIDC_ISSUER=https://authentik.company/application/o/<application_slug>
 OIDC_CLIENT_ID=<Client ID from authentik>
@@ -54,17 +54,27 @@ OIDC_CLIENT_SECRET=<Client Secret from authentik>
 
 Restart the KitchenOwl backend service for the changes to take effect.
 
-## Configuration verification
+### Use the legacy mobile redirect URI _(optional)_
 
-To confirm that authentik is properly configured with KitchenOwl, log out and log back in via authentik. You should see a **Sign in with OIDC** button at the bottom of the login page. Click on it and ensure you can successfully log in using single sign-on.
+KitchenOwl uses `kitchenowl:/signin/redirect` for mobile app sign-in. If the mobile app cannot complete sign-in with your OIDC provider, set the following environment variable:
 
-## Linking accounts
+```env title=".env"
+OIDC_RFC_COMPLIANT_REDIRECT=False
+```
 
-When signing in using OIDC, you're either logged into the linked account or, if none exists, a new account is created. The account creation will fail if an email already associated with a KitchenOwl account is provided by the identity management.
+Then update the authentik provider and replace `kitchenowl:/signin/redirect` with `kitchenowl:///signin/redirect`.
+
+### Link existing accounts
+
+When signing in using OIDC, you're either logged into the linked account or, if none exists, a new account is created. Account creation will fail if the identity provider returns an email address that is already associated with a KitchenOwl account.
 
 If you've already started using KitchenOwl or created an account first, you can link an OIDC account to your existing KitchenOwl account. Navigate to **Settings**, click your profile in the top-right corner, and then click **Linked Accounts** and follow the on-screen instructions to link your account.
 
 Account links are permanent and can only be removed by deleting the KitchenOwl account. Users that signed in using OIDC are normal users that, after setting a password, can also sign in using their username and password. Deleting a user from your OIDC authority will not delete a user from KitchenOwl.
+
+## Configuration verification
+
+To confirm that authentik is properly configured with KitchenOwl, log out and log back in via authentik. You should see a **Sign in with OIDC** button at the bottom of the login page. Click on it and ensure you can successfully log in using single sign-on.
 
 ## Resources
 
