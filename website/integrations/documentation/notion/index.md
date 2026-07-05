@@ -4,6 +4,8 @@ sidebar_label: Notion
 support_level: community
 ---
 
+import SAMLProvider20265Warning from "../../\_saml-provider-2026-5-warning.mdx";
+
 ## What is Notion?
 
 > Notion is a workspace for notes, docs, projects, wikis, and collaboration.
@@ -26,16 +28,18 @@ SAML SSO requires a Notion Business or Enterprise plan. SCIM provisioning requir
 
 ## authentik configuration
 
-To support the integration of Notion with authentik, you need to create property mappings and an application/provider pair in authentik.
+To support the integration of Notion with authentik, you need to create SAML property mappings and an application/provider pair in authentik.
 
 ### Create property mappings
+
+Notion uses the SAML NameID as the user's email address. It can also consume SAML attributes for the user's email address, first name, last name, and profile photo.
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Customization** > **Property Mappings** and click **Create**.
 3. Create four **SAML Provider Property Mapping**s with the following settings:
     - **Email mapping**:
-        - **Name**: `Notion email`
-        - **SAML Attribute Name**: `email`
+        - **Name**: `Notion emailAddress`
+        - **SAML Attribute Name**: `emailAddress`
         - **Expression**:
 
             ```python
@@ -48,7 +52,8 @@ To support the integration of Notion with authentik, you need to create property
         - **Expression**:
 
             ```python
-            return request.user.name
+            name = request.user.name.strip()
+            return name.split(" ", 1)[0] if name else request.user.username
             ```
 
     - **Last name mapping**:
@@ -57,7 +62,8 @@ To support the integration of Notion with authentik, you need to create property
         - **Expression**:
 
             ```python
-            return ""
+            name = request.user.name.strip()
+            return name.rsplit(" ", 1)[1] if " " in name else ""
             ```
 
     - **Profile photo mapping**:
@@ -74,6 +80,8 @@ To support the integration of Notion with authentik, you need to create property
 
 ### Create an application and provider in authentik
 
+<SAMLProvider20265Warning />
+
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
     - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Take note of the **Slug** as it will be required later.
@@ -84,8 +92,9 @@ To support the integration of Notion with authentik, you need to create property
         - Under **Advanced protocol settings**:
             - Select an available **Signing Certificate**.
             - Set **NameID Property Mapping** to `authentik default SAML Mapping: Email`.
+            - Set **Default NameID Policy** to `Email address`.
             - Add the four property mappings that you created in the previous section.
-    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page. If you add the SCIM provider as a backchannel provider later, only users who can view this application are synchronized.
 3. Click **Submit** to save the new application and provider.
 
 ## Notion configuration
@@ -101,29 +110,23 @@ To support the integration of Notion with authentik, you need to create property
 5. Copy the **Assertion Consumer Service (ACS) URL** from Notion.
 6. Save the SAML SSO configuration.
 
-## Reconfigure authentik provider
+### Update the authentik provider
 
 1. In authentik, navigate to **Applications** > **Providers**.
 2. Edit the SAML provider that you created for Notion.
 3. Set **ACS URL** to the **Assertion Consumer Service (ACS) URL** that you copied from Notion.
 4. Click **Update**.
 
-## SCIM provisioning _(optional)_
+### Create a SCIM API token _(optional)_
 
 You can configure SCIM provisioning to sync users and groups from authentik to Notion. Notion requires one SCIM API token per workspace. If you add the SCIM provider as a backchannel provider later, only users who can view this application are synchronized.
-
-### Notion configuration
-
-#### Create a SCIM API token
 
 1. Log in to Notion as an Enterprise Plan organization owner.
 2. Open the workspace switcher and select **Manage organization**.
 3. In the **General** tab, select **SCIM provisioning**.
 4. Copy an existing token or click **Add token** to create a new token.
 
-### authentik configuration
-
-#### Create a SCIM property mapping
+### Create a SCIM property mapping _(optional)_
 
 Notion requires the SCIM `userName` field to contain the user's email address.
 
@@ -169,7 +172,7 @@ Notion requires the SCIM `userName` field to contain the user's email address.
 
 5. Click **Finish**.
 
-#### Create a SCIM provider in authentik
+### Create a SCIM provider _(optional)_
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Providers** and click **Create**.
@@ -182,7 +185,7 @@ Notion requires the SCIM `userName` field to contain the user's email address.
             - Under **Selected Group Property Mappings**, add `authentik default SCIM Mapping: Group`.
 3. Click **Finish** to save the provider.
 
-#### Set the SCIM provider as a backchannel provider
+### Set the SCIM provider as a backchannel provider _(optional)_
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click the name of your Notion application.
