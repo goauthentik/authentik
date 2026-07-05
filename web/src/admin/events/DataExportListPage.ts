@@ -3,11 +3,11 @@ import "#elements/buttons/ActionButton/index";
 import "#elements/buttons/SpinnerButton/index";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
-import "#elements/tasks/TaskList";
+import "#components/tasks/TaskList";
 import "#components/ak-status-label";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { PFColor } from "#elements/Label";
 import { PaginatedResponse, TableColumn, Timestamp } from "#elements/table/Table";
@@ -41,9 +41,7 @@ export class DataExportListPage extends TablePage<DataExport> {
     static styles = [...TablePage.styles, PFDescriptionList];
 
     async apiEndpoint(): Promise<PaginatedResponse<DataExport>> {
-        return new ReportsApi(DEFAULT_CONFIG).reportsExportsList(
-            await this.defaultEndpointConfig(),
-        );
+        return aki(ReportsApi).reportsExportsList(await this.defaultEndpointConfig());
     }
 
     protected columns: TableColumn[] = [
@@ -67,7 +65,7 @@ export class DataExportListPage extends TablePage<DataExport> {
                 ];
             }}
             .delete=${(item: DataExport) => {
-                return new ReportsApi(DEFAULT_CONFIG).reportsExportsDestroy({
+                return aki(ReportsApi).reportsExportsDestroy({
                     id: item.id,
                 });
             }}

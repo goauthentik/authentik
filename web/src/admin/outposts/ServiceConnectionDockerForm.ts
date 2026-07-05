@@ -3,7 +3,7 @@ import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/index";
 import "#components/ak-switch-input";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { ModelForm } from "#elements/forms/ModelForm";
 
@@ -16,28 +16,26 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-service-connection-docker-form")
 export class ServiceConnectionDockerForm extends ModelForm<DockerServiceConnection, string> {
-    loadInstance(pk: string): Promise<DockerServiceConnection> {
-        return new OutpostsApi(DEFAULT_CONFIG).outpostsServiceConnectionsDockerRetrieve({
-            uuid: pk,
-        });
-    }
+    protected endpoints = {
+        load: (uuid: string) =>
+            aki(OutpostsApi).outpostsServiceConnectionsDockerRetrieve({
+                uuid,
+            }),
+        create: (dockerServiceConnectionRequest: DockerServiceConnection) =>
+            aki(OutpostsApi).outpostsServiceConnectionsDockerCreate({
+                dockerServiceConnectionRequest,
+            }),
+        update: (uuid: string, dockerServiceConnectionRequest: DockerServiceConnection) =>
+            aki(OutpostsApi).outpostsServiceConnectionsDockerUpdate({
+                uuid,
+                dockerServiceConnectionRequest,
+            }),
+    };
 
     getSuccessMessage(): string {
         return this.instance
             ? msg("Successfully updated integration.")
             : msg("Successfully created integration.");
-    }
-
-    async send(data: DockerServiceConnection): Promise<DockerServiceConnection> {
-        if (this.instance) {
-            return new OutpostsApi(DEFAULT_CONFIG).outpostsServiceConnectionsDockerUpdate({
-                uuid: this.instance.pk || "",
-                dockerServiceConnectionRequest: data,
-            });
-        }
-        return new OutpostsApi(DEFAULT_CONFIG).outpostsServiceConnectionsDockerCreate({
-            dockerServiceConnectionRequest: data,
-        });
     }
 
     protected override renderForm(): TemplateResult {

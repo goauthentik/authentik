@@ -20,7 +20,7 @@ import {
     SAMLSupportedKeyTypes,
 } from "./SAMLProviderOptions.js";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { RadioOption } from "#elements/forms/Radio";
 
@@ -315,9 +315,10 @@ export function renderForm({
                             if (query !== undefined) {
                                 args.search = query;
                             }
-                            const items = await new PropertymappingsApi(
-                                DEFAULT_CONFIG,
-                            ).propertymappingsProviderSamlList(args);
+                            const items =
+                                await aki(PropertymappingsApi).propertymappingsProviderSamlList(
+                                    args,
+                                );
                             return items.results;
                         }}
                         .renderElement=${(item: SAMLPropertyMapping): string => {
@@ -350,9 +351,10 @@ export function renderForm({
                             if (query !== undefined) {
                                 args.search = query;
                             }
-                            const items = await new PropertymappingsApi(
-                                DEFAULT_CONFIG,
-                            ).propertymappingsProviderSamlList(args);
+                            const items =
+                                await aki(PropertymappingsApi).propertymappingsProviderSamlList(
+                                    args,
+                                );
                             return items.results;
                         }}
                         .renderElement=${(item: SAMLPropertyMapping): string => {

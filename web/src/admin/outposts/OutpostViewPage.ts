@@ -1,14 +1,14 @@
 import "#elements/Tabs";
 import "#admin/events/ObjectChangelog";
 import "#admin/rbac/ak-rbac-object-permission-page";
-import "#elements/tasks/ScheduleList";
-import "#elements/tasks/TaskList";
+import "#components/tasks/ScheduleList";
+import "#components/tasks/TaskList";
 import "#admin/outposts/OutpostForm";
 import "#admin/outposts/OutpostHealthList";
 import "#admin/outposts/OutpostProviderList";
 import "#elements/buttons/TokenCopyButton/ak-token-copy-button";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { docLink } from "#common/global";
 
 import { AKElement } from "#elements/Base";
@@ -53,7 +53,7 @@ export class OutpostViewPage extends AKElement {
         PFProgress,
     ];
 
-    #api = new OutpostsApi(DEFAULT_CONFIG);
+    #api = aki(OutpostsApi);
 
     @property({ type: String, attribute: "outpost-id" })
     set outpostID(id: string) {

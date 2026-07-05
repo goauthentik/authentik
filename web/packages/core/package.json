@@ -44,14 +44,13 @@
         }
     },
     "dependencies": {
-        "@goauthentik/tsconfig": "^1.0.9",
-        "@types/node": "^25.7.0",
+        "@goauthentik/tsconfig": "^2.0.0",
+        "@types/node": "^25.9.1",
         "@types/semver": "^7.7.1",
-        "semver": "^7.7.4",
+        "semver": "^7.8.5",
         "typescript": "^6.0.3"
     },
     "engines": {
-        "node": ">=24",
-        "npm": ">=11.14.1"
+        "node": ">=24"
     }
 }

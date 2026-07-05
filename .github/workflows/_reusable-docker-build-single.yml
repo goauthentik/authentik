@@ -42,7 +42,7 @@ jobs:
       # Needed for checkout
       contents: read
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v5
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v5
       - uses: docker/setup-qemu-action@06116385d9baf250c9f4dcb4858b16962ea869c3 # v4.1.0
       - uses: docker/setup-buildx-action@d7f5e7f509e45cec5c76c4d5afdd7de93d0b3df5 # v4.1.0
       - name: prepare variables
@@ -67,16 +67,23 @@ jobs:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - uses: ./.github/actions/setup-node
+      - uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # v6.0.9
+      - name: Pin pnpm store directory
+        run: |
+          echo "PNPM_HOME=${RUNNER_TEMP}/pnpm-home" >> "$GITHUB_ENV"
+          echo "npm_config_store_dir=${RUNNER_TEMP}/pnpm-home/store" >> "$GITHUB_ENV"
+      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v4
         with:
-          working-directory: web
-          dependencies: "monorepo"
-      - uses: actions/setup-go@4a3601121dd01d1626a1e23e37211e3254c1c06c # v6
+          node-version-file: package.json
+          cache: pnpm
+          cache-dependency-path: |
+            pnpm-lock.yaml
+            web/pnpm-lock.yaml
+      - name: Install monorepo dependencies
+        run: pnpm install --frozen-lockfile
+      - uses: actions/setup-go@924ae3a1cded613372ab5595356fb5720e22ba16 # v6
         with:
           go-version-file: "go.mod"
-      - name: Generate API Clients
-        run: |
-          make gen-client-ts
       - name: Build Docker Image
         uses: docker/build-push-action@f9f3042f7e2789586610d6e8b85c8f03e5195baf # v7.2.0
         id: push
@@ -93,7 +100,7 @@ jobs:
           platforms: linux/${{ inputs.image_arch }}
           cache-from: type=registry,ref=${{ steps.ev.outputs.attestImageNames }}:buildcache-${{ inputs.image_arch }}
           cache-to: ${{ steps.ev.outputs.cacheTo }}
-      - uses: actions/attest-build-provenance@a2bbfa25375fe432b6a289bc6b6cd05ecd0c4c32 # v3
+      - uses: actions/attest-build-provenance@0f67c3f4856b2e3261c31976d6725780e5e4c373 # v3
         id: attest
         if: ${{ steps.ev.outputs.shouldPush == 'true' }}
         with:

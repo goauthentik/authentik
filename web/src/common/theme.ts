@@ -178,7 +178,9 @@ export function createUIThemeEffect(
     };
 
     const themeChoiceListener = () => {
-        let theme = formatColorScheme(document.documentElement.dataset.themeChoice);
+        const { documentElement } = document;
+
+        let theme = formatColorScheme(documentElement.dataset.themeChoice);
 
         if (theme === "auto") {
             theme = mediaQueryList.matches
@@ -186,7 +188,8 @@ export function createUIThemeEffect(
                 : UIThemeInversion[colorSchemeTarget];
         }
 
-        document.documentElement.dataset.theme = theme;
+        documentElement.dataset.theme = theme;
+        documentElement.classList.toggle("pf-theme-dark", theme === "dark");
 
         effect(theme);
     };
@@ -261,26 +264,30 @@ declare global {
  * @param hint The color scheme hint to use.
  * @param doc The document to apply the theme to.
  */
-export const applyDocumentTheme = ((currentUITheme = resolveUITheme(), doc = document): void => {
+export const applyDocumentTheme = ((
+    currentUITheme = resolveUITheme(),
+    ownerDocument = document,
+): void => {
     console.debug(`authentik/theme (document): want to switch to ${currentUITheme} theme`);
 
-    const { themeChoice } = doc.documentElement.dataset;
+    const { themeChoice } = ownerDocument.documentElement.dataset;
 
     if (themeChoice && themeChoice !== "auto") {
         console.debug(
             `authentik/theme (document): skipping theme application due to explicit choice (${themeChoice})`,
         );
 
-        doc.dispatchEvent(new ThemeChangeEvent(themeChoice));
+        ownerDocument.dispatchEvent(new ThemeChangeEvent(themeChoice));
 
         return;
     }
 
-    doc.documentElement.dataset.theme = currentUITheme;
+    ownerDocument.documentElement.dataset.theme = currentUITheme;
+    document.documentElement.classList.toggle("pf-theme-dark", currentUITheme === "dark");
 
     console.debug(`authentik/theme (document): switching to ${currentUITheme} theme`);
 
-    doc.dispatchEvent(new ThemeChangeEvent(currentUITheme));
+    ownerDocument.dispatchEvent(new ThemeChangeEvent(currentUITheme));
 }) satisfies UIThemeListener;
 
 /**
@@ -305,6 +312,7 @@ export function applyThemeChoice(hint?: CSSColorSchemeValue, doc: Document = doc
     const themeChoice = !hint || hint === "auto" ? "auto" : resolveUITheme(hint);
 
     doc.documentElement.dataset.themeChoice = themeChoice;
+    document.documentElement.classList.toggle("pf-theme-dark", themeChoice === "dark");
 }
 
 /**

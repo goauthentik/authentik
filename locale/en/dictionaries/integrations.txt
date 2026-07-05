@@ -6,9 +6,11 @@ Authy
 Beszel
 Bitnami
 Budibase
+Coolify
 Doki
 Doku
 dokuwiki
+Dozzle
 Engomo
 Espo
 espocrm
@@ -38,6 +40,7 @@ Kubeconfig
 Mautic
 Mobilizon
 myabsorb
+n8n
 Nexterm
 Observium
 Ofair

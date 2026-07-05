@@ -3,7 +3,7 @@ import "#components/ak-text-input";
 import "#elements/CodeMirror";
 import "#elements/forms/HorizontalFormElement";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { ModelForm } from "#elements/forms/ModelForm";
 
@@ -22,28 +22,26 @@ export class CryptoCertificateForm extends ModelForm<CertificateKeyPair, string>
     public static override submitVerb = msg("Import");
     public static override submittingVerb = msg("Importing");
 
-    loadInstance(pk: string): Promise<CertificateKeyPair> {
-        return new CryptoApi(DEFAULT_CONFIG).cryptoCertificatekeypairsRetrieve({
-            kpUuid: pk,
-        });
-    }
+    protected endpoints = {
+        load: (kpUuid: string) =>
+            aki(CryptoApi).cryptoCertificatekeypairsRetrieve({
+                kpUuid,
+            }),
+        create: (data: CertificateKeyPair) =>
+            aki(CryptoApi).cryptoCertificatekeypairsCreate({
+                certificateKeyPairRequest: data as unknown as CertificateKeyPairRequest,
+            }),
+        update: (kpUuid: string, patchedCertificateKeyPairRequest: CertificateKeyPair) =>
+            aki(CryptoApi).cryptoCertificatekeypairsPartialUpdate({
+                kpUuid,
+                patchedCertificateKeyPairRequest,
+            }),
+    };
 
     getSuccessMessage(): string {
         return this.instance
             ? msg("Successfully updated certificate-key pair.")
             : msg("Successfully created certificate-key pair.");
-    }
-
-    async send(data: CertificateKeyPair): Promise<CertificateKeyPair> {
-        if (this.instance) {
-            return new CryptoApi(DEFAULT_CONFIG).cryptoCertificatekeypairsPartialUpdate({
-                kpUuid: this.instance.pk || "",
-                patchedCertificateKeyPairRequest: data,
-            });
-        }
-        return new CryptoApi(DEFAULT_CONFIG).cryptoCertificatekeypairsCreate({
-            certificateKeyPairRequest: data as unknown as CertificateKeyPairRequest,
-        });
     }
 
     protected override renderForm(): TemplateResult {

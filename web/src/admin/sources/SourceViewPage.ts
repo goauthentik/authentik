@@ -8,7 +8,7 @@ import "#admin/sources/telegram/TelegramSourceViewPage";
 import "#elements/EmptyState";
 import "#elements/buttons/SpinnerButton/ak-spinner-button";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { AKElement } from "#elements/Base";
 
@@ -23,7 +23,7 @@ import { customElement, property } from "lit/decorators.js";
 export class SourceViewPage extends AKElement {
     @property({ type: String })
     set sourceSlug(slug: string) {
-        new SourcesApi(DEFAULT_CONFIG)
+        aki(SourcesApi)
             .sourcesAllRetrieve({
                 slug: slug,
             })

@@ -3,7 +3,7 @@ import "#elements/events/LogViewer";
 import "#elements/forms/HorizontalFormElement";
 import "#components/ak-toggle-group";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { PFSize } from "#common/enums";
 
 import { Form } from "#elements/forms/Form";
@@ -69,7 +69,7 @@ export class BlueprintImportForm extends Form<ManagedBlueprintsImportCreateReque
             }
             data.file = file;
         }
-        const result = await new ManagedApi(DEFAULT_CONFIG).managedBlueprintsImportCreate(data);
+        const result = await aki(ManagedApi).managedBlueprintsImportCreate(data);
         if (!result.success) {
             this.result = result;
             throw new PreventFormSubmit("Failed to import blueprint");
@@ -152,9 +152,7 @@ export class BlueprintImportForm extends Form<ManagedBlueprintsImportCreateReque
                       <ak-search-select
                           placeholder=${msg("Select a blueprint...")}
                           .fetchObjects=${async (query?: string): Promise<BlueprintFile[]> => {
-                              const items = await new ManagedApi(
-                                  DEFAULT_CONFIG,
-                              ).managedBlueprintsAvailableList();
+                              const items = await aki(ManagedApi).managedBlueprintsAvailableList();
                               return items.filter((item) =>
                                   query ? item.path.includes(query) : true,
                               );

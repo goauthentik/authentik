@@ -55,7 +55,7 @@ type APIController struct {
 	instanceUUID uuid.UUID
 }
 
-// NewAPIController initialise new API Controller instance from URL and API token
+// NewAPIController initialize new API Controller instance from URL and API token
 func NewAPIController(akURL url.URL, token string) *APIController {
 	rsp := sentry.StartSpan(context.Background(), "authentik.outposts.init")
 	log := log.WithField("logger", "authentik.outpost.ak-api-controller")
