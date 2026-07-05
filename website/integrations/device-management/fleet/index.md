@@ -8,133 +8,103 @@ tags:
 authentik_preview: true
 ---
 
+import SAMLProvider20265Warning from "../../\_saml-provider-2026-5-warning.mdx";
+
 ## What is Fleet?
 
-> Fleet is an open source device management (MDM) platform for vulnerability reporting, detection engineering, device health monitoring, posture-based access control, managing unused software licenses, and more.
+> Fleet is an open source device management platform for managing and securing laptops, desktops, servers, and mobile devices across an organization.
 >
-> -- [Fleet](https://fleetdm.com/)
+> -- https://fleetdm.com/
 
 ## Preparation
 
 By the end of this integration, your users will be able to log in to Fleet using their authentik credentials.
 
-Your authentik and Fleet instances must both be running and accessible on an HTTPS domain.
-
-### Placeholders
-
 The following placeholders are used in this guide:
 
-- `authentik.company`: The FQDN of the authentik installation.
-- `fleet.company`: The FQDN of the Fleet installation.
+- `fleet.company` is the FQDN of the Fleet installation.
+- `authentik.company` is the FQDN of the authentik installation.
+
+:::info
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
+
+Your authentik and Fleet instances must both be accessible over HTTPS.
 
 ## authentik configuration
 
-The workflow to configure authentik as a single sign-on provider for Fleet involves creating an application and SAML provider pair. Following this configuration process will generate the necessary metadata you will use to configure Fleet to trust authentik as an identity provider.
+To support the integration of Fleet with authentik, you need to create an application/provider pair in authentik.
+
+The values below configure SSO for Fleet users. If you also need SSO for end-user authentication in the macOS setup experience, create a separate application/provider pair and use the end-user Assertion Consumer Service (ACS) URL listed below.
 
 ### Create an application and provider
 
-1. From the authentik Admin interface, navigate to **Applications > Applications** and click **New Application** to create an application and provider pair.
+<SAMLProvider20265Warning />
 
-2. For the **App name** enter `Fleet` and click **Next**.
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
+    - **Choose a Provider type**: select **SAML Provider** as the provider type.
+    - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+        - Set **ACS URL** to `https://fleet.company/api/v1/fleet/sso/callback`.
+            - For end-user authentication in the macOS setup experience, set **ACS URL** to `https://fleet.company/api/v1/fleet/mdm/sso/callback` instead.
+        - Set **Audience** to `https://fleet.company`.
+        - Under **Advanced protocol settings**, select an available **Signing Certificate** and ensure that **Sign assertions** and **Sign responses** are enabled.
+        - Set **NameID Property Mapping** to `authentik default SAML Mapping: Email`.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 
-3. For the **Provider Type** select **SAML**, click **Next**, and use the following values.
-    - **Name**: `Fleet`
-    - **Authorization flow**: Select a flow that suits your organization's requirements.
-    - **Protocol settings**:
-        - **Assertion Consumer Service URL**: `https://fleet.company/api/v1/fleet/sso/callback`
-
-            :::info Requiring an End User License Agreement
-
-            If you require end users to agree to an end user license agreement (EULA) before they can use their device, you will need to modify the **Assertion Consumer Service URL**.
-
-            ```diff
-            - https://fleet.company/api/v1/fleet/sso/callback
-            + https://fleet.company/api/v1/fleet/mdm/sso/callback
-            ```
-
-            You will also need to configure Fleet with additional settings to enable the EULA. For more information, refer to Fleet's [end user authentication guide](https://fleetdm.com/docs/using-fleet/mdm-macos-setup-experience#end-user-authentication-and-eula).
-            :::
-
-        - **Audience**: `https://fleet.company`
-        - **Advanced protocol settings**:
-          (Any fields that can be left as their default values are omitted from the list below).
-            - **Signing Certificate**: Select a certificate, then enable **Sign assertions** and **Sign responses**.
-            - **NameID Property Mapping**: `authentik default SAML Mapping: Email`
-
-4. Click **Next**, review the configuration details, and click **Submit**.
+3. Click **Create Application** to save the new application and provider.
 
 ### Retrieve provider metadata
 
-1. From the authentik Admin interface, navigate to **Applications > Providers** and click the Fleet SAML provider.
-
-2. In the **Related Objects** section, click **Copy download URL** to copy the metadata URL to your clipboard. Paste this URL to a text editor as you will need it when configuring Fleet.
-
-    :::tip Downloading the metadata file
-
-    If you prefer to download the metadata file, clicking **Download** will save an XML file to your local machine. The choice to download or copy the metadata URL will have no impact on the configuration process in Fleet.
-
-    :::
+1. Navigate to **Applications** > **Providers** and click the Fleet SAML provider.
+2. Under **Related objects** > **Metadata**, click **Copy download URL**. This metadata URL is required when configuring Fleet.
 
 ## Fleet configuration
 
-With these prerequisites in place, authentik is now configured to act as a single sign-on provider for Fleet. The next step is to configure Fleet to trust authentik as an identity provider.
+Configure Fleet to trust authentik as the SAML identity provider.
 
-1. From the Fleet dashboard, click your avatar in the page header and select **Settings**.
+### Configure Fleet users
 
-2. In the **Organization settings** tab, click **Single sign-on options**.
+1. Log in to Fleet as an administrator.
+2. Navigate to **Settings** > **Integrations** > **Single sign-on (SSO)** > **Fleet users**.
+3. Check **Enable single sign-on** and use the following values:
+    - **Identity provider name**: `authentik`.
+    - **Entity ID**: `https://fleet.company`. This value must match the **Audience** value configured in authentik.
+    - **Metadata URL**: the metadata URL that you copied from authentik.
 
-3. Check the box next to **Enable single sign-on** and use the following values:
-    - **Identity provider name**: `authentik`
-    - **Entity ID**: `https://authentik.company/application/saml/<application_slug>/metadata/`
+        If you downloaded the metadata file from authentik instead, paste the contents of the XML file into **Metadata**.
 
-    - **Metadata/Metadata URL**
+    - **Allow SSO login initiated by identity provider**: check this box to allow users to log in to Fleet from authentik.
+    - **Create user and sync permissions on login** _(optional)_: check this box if you use Fleet Premium and want Fleet to create users on their first SSO login. If authentik does not send Fleet role attributes, Fleet creates new users with the global observer role.
 
-        Fleet's SSO configuration form will include two fields: **Metadata URL** and **Metadata**.
-        Only one of these fields is required, but you must provide at least one of them.
-        - If you copied the **Metadata URL** from authentik, paste the URL you copied earlier into the **Metadata URL** field.
+4. Click **Save**.
 
-        - If you downloaded the metadata file from authentik, paste the contents of the XML file into the **Metadata** field.
+If you do not enable just-in-time user provisioning, create each Fleet user before they log in with SSO. The Fleet user's email address must match their authentik email address, and their Fleet **Authentication** method must be set to **Single sign-on**.
 
-    - **Allow SSO login initiated by identity provider**: Check this box to allow users to log in to Fleet using the authentik login page.
+### Configure end-user authentication _(optional)_
 
-4. Click **Save** to apply the changes.
+Use this section only if you created an authentik application/provider pair with the end-user ACS URL for the macOS setup experience.
+
+1. In Fleet, navigate to **Settings** > **Integrations** > **Single sign-on (SSO)** > **End users**.
+2. Configure the form with the following values:
+    - **Identity provider name**: `authentik`.
+    - **Entity ID**: `https://fleet.company`. This value must match the **Audience** value configured in authentik.
+    - **Metadata URL**: the metadata URL for the authentik provider that uses the end-user ACS URL.
+
+        If you downloaded the metadata file from authentik instead, paste the contents of the XML file into **Metadata**.
+
+3. Click **Save**.
+
+Fleet setup experience settings, EULA requirements, and Apple MDM enrollment settings are outside the scope of this guide.
 
 ## Configuration verification
 
-To verify that authentik and Fleet are correctly configured, you can test the SSO flow with a user account.
+To confirm that authentik is properly configured with Fleet, open Fleet and click **Sign on with authentik**. After authenticating with authentik, you should be redirected back to Fleet and logged in.
 
-### Create a test user
+For end-user authentication, start the setup experience on a test macOS device assigned to Fleet and confirm that Fleet redirects the user to authentik.
 
-1. From the authentik Admin interface, navigate to **Directory > Users** and click **Create**.
-2. Enter the following details for the test user. All other fields can be left as their default values.
-    - **Name**: `Jessie Lorem`
-    - **Email**: `jessie@authentik.company`
+## Resources
 
-3. Click **Create** and verify that the user is listed in the **Users** table.
-
-4. From the Fleet Admin interface, navigate to **Settings > Users** and click **Add user**.
-
-5. Enter the following details for the test user. All other fields can be left as their default values.
-    - **Full Name**: `Jessie Lorem`
-    - **Email**: `jessie@authentik.company`
-    - **Authentication**: `Single sign-on`
-    - **Role**: `Observer`
-
-6. Click **Add** and verify that the user is listed in the **Users** table.
-
-### Test the SSO flow
-
-1. In a private browsing window, navigate to your Fleet instance and click **Sign on with authentik**.
-2. After being redirected to the authentik login page, enter the test user's email address and password.
-
-After you are authenticated, you should be redirected back to Fleet and logged in as the test user. This confirms that the SSO flow is working as expected.
-
-#### Troubleshooting
-
-If the SSO authentication fails, your configuration may be incorrect. Here are some common issues to check:
-
-- [x] Verify that your authentik instance is accessible over HTTPS.
-- [x] Verify that the Fleet instance is accessible over HTTPS.
-- [x] Ensure that your test user is not the default super-admin user.
-- [x] Check that your test user has a matching email address in both authentik and Fleet.
-- [x] Check that the test user has Single sign-on authentication enabled in Fleet.
+- [Fleet documentation - Single sign-on (SSO)](https://fleetdm.com/docs/deploy/single-sign-on-sso)
+- [Fleet guide - End-user authentication](https://fleetdm.com/guides/end-user-authentication)
