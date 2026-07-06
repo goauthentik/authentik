@@ -97,7 +97,7 @@ sqlx = { version = "= 0.9.0", default-features = false, features = [
 ] }
 tempfile = "= 3.27.0"
 thiserror = "= 2.0.18"
-time = { version = "= 0.3.51", features = ["macros"] }
+time = { version = "= 0.3.53", features = ["macros"] }
 tokio = { version = "= 1.52.3", features = ["full", "tracing"] }
 tokio-retry2 = "= 0.9.1"
 tokio-rustls = "= 0.26.4"
