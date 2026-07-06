@@ -1,0 +1,104 @@
+{
+    "name": "@goauthentik/truncator",
+    "version": "1.0.1",
+    "description": "Structure-aware string truncation for display",
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/goauthentik/authentik.git",
+        "directory": "packages/truncator"
+    },
+    "scripts": {
+        "build": "tsc -p .",
+        "lint": "eslint --fix .",
+        "lint-check": "eslint --max-warnings 0 .",
+        "prepare": "tsc -p .",
+        "prettier": "prettier --write .",
+        "prettier-check": "prettier --check .",
+        "test": "vitest run",
+        "test:watch": "vitest",
+        "watch": "tsc -p . --watch"
+    },
+    "type": "module",
+    "types": "./dist/index.d.ts",
+    "exports": {
+        "./package.json": "./package.json",
+        ".": "./dist/index.js",
+        "./measurer": "./dist/measurer.js",
+        "./resize-observer": "./dist/resize-observer.js",
+        "./lit": "./dist/lit/index.js",
+        "./url": "./dist/url.js",
+        "./hash": "./dist/hash.js",
+        "./mac-address": "./dist/mac-address.js",
+        "./ip-address": "./dist/ip-address.js",
+        "./email": "./dist/email.js",
+        "./uuid": "./dist/uuid.js",
+        "./user-agent": "./dist/user-agent.js",
+        "./string": "./dist/string.js",
+        "./ak-truncate-email": "./dist/lit/ak-truncate-email.js",
+        "./ak-truncate-hash": "./dist/lit/ak-truncate-hash.js",
+        "./ak-truncate-ip-address": "./dist/lit/ak-truncate-ip-address.js",
+        "./ak-truncate-mac-address": "./dist/lit/ak-truncate-mac-address.js",
+        "./ak-truncate-url": "./dist/lit/ak-truncate-url.js",
+        "./ak-truncate-user-agent": "./dist/lit/ak-truncate-user-agent.js",
+        "./ak-truncate-uuid": "./dist/lit/ak-truncate-uuid.js",
+        "./ak-truncate": "./dist/lit/ak-truncate.js"
+    },
+    "devDependencies": {
+        "@eslint/js": "^9.39.4",
+        "@goauthentik/prettier-config": "link:../prettier-config",
+        "@goauthentik/tsconfig": "link:../tsconfig",
+        "@lit/localize": "^0.12.2",
+        "@lit/localize-tools": "^0.8.2",
+        "@types/node": "^25.9.4",
+        "eslint": "^9.39.4",
+        "lit": "^3.3.3",
+        "lit-html": "^3.3.3",
+        "prettier": "3.8.3",
+        "prettier-plugin-packagejson": "^3.0.2",
+        "typescript": "^6.0.3",
+        "typescript-eslint": "^8.62.1",
+        "vitest": "^4.1.9"
+    },
+    "peerDependencies": {
+        "@lit/localize": "^0.12.2",
+        "@lit/localize-tools": "^0.8.2",
+        "lit": "^3.3.3"
+    },
+    "files": [
+        "dist/**"
+    ],
+    "engines": {
+        "node": ">=24"
+    },
+    "devEngines": {
+        "runtime": {
+            "name": "node",
+            "version": ">=24",
+            "onFail": "ignore"
+        },
+        "packageManager": {
+            "name": "pnpm",
+            "version": ">=11.5.1",
+            "onFail": "ignore"
+        }
+    },
+    "prettier": "@goauthentik/prettier-config",
+    "peerDependenciesMeta": {
+        "@lit/localize": {
+            "optional": true
+        },
+        "@lit/localize-tools": {
+            "optional": true
+        },
+        "lit": {
+            "optional": true
+        },
+        "lit-html": {
+            "optional": true
+        }
+    },
+    "publishConfig": {
+        "access": "public"
+    }
+}

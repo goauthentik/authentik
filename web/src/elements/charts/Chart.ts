@@ -87,7 +87,7 @@ export abstract class AKChart<T> extends AKElement {
 
     connectedCallback(): void {
         super.connectedCallback();
-        window.addEventListener("resize", this.resizeHandler);
+        window.addEventListener("resize", this.resizeHandler, { passive: true });
         this.addEventListener(EVENT_REFRESH, this.refreshHandler);
         this.addEventListener(ThemeChangeEvent.eventName, ((ev: CustomEvent<UiThemeEnum>) => {
             if (ev.detail === UiThemeEnum.Light) {
@@ -113,11 +113,17 @@ export abstract class AKChart<T> extends AKElement {
         });
     }
 
+    #resizeAnimationFrameID = -1;
+
     resizeHandler(): void {
         if (!this.chart) {
             return;
         }
-        this.chart.resize();
+
+        cancelAnimationFrame(this.#resizeAnimationFrameID);
+        this.#resizeAnimationFrameID = requestAnimationFrame(() => {
+            this.chart?.resize();
+        });
     }
 
     firstUpdated(): void {

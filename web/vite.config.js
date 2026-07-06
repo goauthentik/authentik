@@ -19,10 +19,18 @@ export default defineConfig({
             "./assets/fonts": join(patternflyPath, "assets", "fonts"),
             "./assets/pficon": join(patternflyPath, "assets", "pficon"),
         },
+        // `@goauthentik/truncator/lit` carries its own linked `lit`; force a
+        // single copy so Lit doesn't warn about (or break on) duplicate versions.
+        dedupe: ["lit", "lit-html", "lit-element", "@lit/reactive-element"],
     },
     optimizeDeps: {
         // Fixes dependency resolution issue associated with `npm link`ed packages.
-        include: ["@goauthentik/api"],
+        include: [
+            // ---
+            "@goauthentik/api",
+            "@goauthentik/truncator",
+            "@goauthentik/truncator/lit",
+        ],
     },
     plugins: [
         // ---

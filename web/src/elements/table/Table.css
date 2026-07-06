@@ -163,6 +163,11 @@ time {
     text-transform: capitalize;
 }
 
+td ak-truncate-ip-address {
+    display: block;
+    max-width: max(10ch, 80%);
+}
+
 .pf-c-pagination {
     ak-timestamp {
         font-size: 0.75rem;
