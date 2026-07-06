@@ -2,6 +2,7 @@ from typing import Any
 from uuid import uuid4
 
 from django.db import models, transaction
+from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import Serializer
 
 from authentik.core.models import CreatedUpdatedModel, ExpiringModel, User
@@ -23,6 +24,13 @@ class Persona(ExpiringModel, User):
     def create_for_user(user: User) -> Persona:
         return Persona.objects.create(username="", name=user.name, parent=user)
 
+    class Meta(ExpiringModel.Meta):
+        verbose_name = _("Persona")
+        verbose_name_plural = _("Personas")
+
+    def __str__(self):
+        return f"Persona {self.username} for {self.parent_id}"
+
 
 class Grant(ExpiringModel, CreatedUpdatedModel):
     """Grant for a persona to access `target`, given after manual/automatic approval."""
@@ -31,6 +39,13 @@ class Grant(ExpiringModel, CreatedUpdatedModel):
 
     persona = models.ForeignKey(Persona, on_delete=models.CASCADE)
     target = models.ForeignKey(PolicyBindingModel, on_delete=models.CASCADE)
+
+    class Meta(ExpiringModel.Meta):
+        verbose_name = _("Grant")
+        verbose_name_plural = _("Grants")
+
+    def __str__(self):
+        return f"Grant {self.uuid}"
 
 
 class RequestStatus(models.TextChoices):
@@ -91,15 +106,25 @@ class GrantRequest(SerializerModel, ExpiringModel, CreatedUpdatedModel):
             target.binding = target_binding
             target.save()
 
+    class Meta:
+        verbose_name = _("Grant Request")
+        verbose_name_plural = _("Grant Requests")
+
+    def __str__(self):
+        return f"Grant Request {self.uuid}"
+
 
 class GrantRequestTarget(InternallyManagedMixin, models.Model):
-    """Concrete m2m to make gergo happy"""
 
     uuid = models.UUIDField(default=uuid4, primary_key=True)
 
     request = models.ForeignKey(GrantRequest, on_delete=models.CASCADE)
     binding = models.ForeignKey(PolicyBinding, on_delete=models.CASCADE, null=True)
     target = models.ForeignKey(PolicyBindingModel, on_delete=models.CASCADE)
+
+    class Meta:
+        verbose_name = _("Grant Request Target")
+        verbose_name_plural = _("Grant Request Targets")
 
     def __str__(self):
         return f"Grant Request-target {self.request_id} to {self.target_id}"
@@ -124,3 +149,10 @@ class PolicyBindingModelRequestRule(SerializerModel, CreatedUpdatedModel, Policy
         from authentik.pam.api.request_rules import PolicyBindingModelRequestRuleSerializer
 
         return PolicyBindingModelRequestRuleSerializer
+
+    class Meta:
+        verbose_name = _("Policy Binding Model Request Rule")
+        verbose_name_plural = _("Policy Binding Model Request Rules")
+
+    def __str__(self):
+        return f"Policy Binding Model Request rule {self.uuid} to {self.pbm_id}"

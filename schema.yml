@@ -11110,7 +11110,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this grant request.
+        description: A UUID string identifying this Grant Request.
         required: true
       tags:
       - pam
@@ -11135,7 +11135,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this grant request.
+        description: A UUID string identifying this Grant Request.
         required: true
       tags:
       - pam
@@ -11157,7 +11157,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this grant request.
+        description: A UUID string identifying this Grant Request.
         required: true
       tags:
       - pam
@@ -11206,7 +11206,7 @@ paths:
         name: id
         schema:
           type: integer
-        description: A unique integer value identifying this persona.
+        description: A unique integer value identifying this Persona.
         required: true
       tags:
       - pam
@@ -11230,7 +11230,7 @@ paths:
         name: id
         schema:
           type: integer
-        description: A unique integer value identifying this persona.
+        description: A unique integer value identifying this Persona.
         required: true
       tags:
       - pam
@@ -11307,7 +11307,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this policy binding model request rule.
+        description: A UUID string identifying this Policy Binding Model Request Rule.
         required: true
       tags:
       - pam
@@ -11333,7 +11333,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this policy binding model request rule.
+        description: A UUID string identifying this Policy Binding Model Request Rule.
         required: true
       tags:
       - pam
@@ -11365,7 +11365,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this policy binding model request rule.
+        description: A UUID string identifying this Policy Binding Model Request Rule.
         required: true
       tags:
       - pam
@@ -11396,7 +11396,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this policy binding model request rule.
+        description: A UUID string identifying this Policy Binding Model Request Rule.
         required: true
       tags:
       - pam
@@ -11419,7 +11419,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this policy binding model request rule.
+        description: A UUID string identifying this Policy Binding Model Request Rule.
         required: true
       tags:
       - pam
