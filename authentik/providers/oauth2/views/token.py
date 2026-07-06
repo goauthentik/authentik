@@ -67,6 +67,7 @@ from authentik.providers.oauth2.utils import (
     TokenResponse,
     cors_allow,
     extract_client_auth,
+    is_all_vschar,
     pkce_s256_challenge,
 )
 from authentik.providers.oauth2.views.authorize import FORBIDDEN_URI_SCHEMES
@@ -162,15 +163,34 @@ class TokenParams:
                 raise TokenError("invalid_grant")
 
     def __post_init__(self, raw_code: str, raw_token: str, request: HttpRequest):
+<<<<<<< HEAD
         if self.grant_type in [GRANT_TYPE_AUTHORIZATION_CODE, GRANT_TYPE_REFRESH_TOKEN]:
             if self.provider.client_type == ClientTypes.CONFIDENTIAL and not compare_digest(
                 self.provider.client_secret, self.client_secret
+=======
+        if self.grant_type not in self.provider.grant_types:
+            LOGGER.warning("Invalid grant_type for provider", grant_type=self.grant_type)
+            raise TokenError("invalid_grant").with_cause("grant_type_not_configured")
+
+        # Confidential clients MUST authenticate to the token endpoint per
+        # RFC 6749 §2.3.1. The device code grant (RFC 8628 §3.4) inherits
+        # that requirement - the device_code alone is not a substitute for
+        # client credentials.
+        if self.grant_type in [
+            GRANT_TYPE_AUTHORIZATION_CODE,
+            GRANT_TYPE_REFRESH_TOKEN,
+            GRANT_TYPE_DEVICE_CODE,
+        ]:
+            if self.provider.client_type == ClientType.CONFIDENTIAL and (
+                not is_all_vschar(self.client_secret)
+                or not compare_digest(self.provider.client_secret, self.client_secret)
+>>>>>>> 79fdcac270 (providers/oauth2: enforce VSCHAR for client_id and client_secret (#23760))
             ):
                 LOGGER.warning(
                     "Invalid client secret",
                     client_id=self.provider.client_id,
                 )
-                raise TokenError("invalid_client")
+                raise TokenError("invalid_client").with_cause("invalid_secret")
         self.__check_scopes()
         if self.grant_type == GRANT_TYPE_AUTHORIZATION_CODE:
             with start_span(
