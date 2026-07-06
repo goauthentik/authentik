@@ -145,8 +145,5 @@ async function main(): Promise<void> {
 }
 
 main()
-    .then(() => {
-        logger.info("✅ Catalog linting completed successfully.");
-        process.exit(0);
-    })
+    .then(() => process.exit(0))
     .catch((error) => reportAndExit(error, logger));
