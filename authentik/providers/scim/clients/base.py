@@ -40,6 +40,8 @@ class SCIMClient[TModel: "Model", TConnection: "Model", TSchema: "BaseModel"](
     _session: Session
     _config: ServiceProviderConfiguration
 
+    can_discover = True
+
     def __init__(self, provider: SCIMProvider):
         super().__init__(provider)
         self._session = get_http_session()

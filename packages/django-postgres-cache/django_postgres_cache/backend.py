@@ -57,11 +57,11 @@ class DatabaseCache(BaseDatabaseCache):
         return int((entry.expires - now()).total_seconds())
 
     def _base_set_expiry(self, timeout: float | None) -> datetime:
+        tz = UTC if settings.USE_TZ else None
         timeout = self.get_backend_timeout(timeout)
         if timeout is None:
-            exp = datetime.max
+            exp = datetime.max.replace(tzinfo=tz)
         else:
-            tz = UTC if settings.USE_TZ else None
             exp = datetime.fromtimestamp(timeout, tz=tz)
         exp.replace(microsecond=0)
         return exp

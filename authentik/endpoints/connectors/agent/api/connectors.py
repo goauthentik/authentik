@@ -7,7 +7,7 @@ from drf_spectacular.utils import OpenApiParameter, OpenApiResponse, extend_sche
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.fields import ChoiceField
-from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.relations import PrimaryKeyRelatedField
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -117,8 +117,7 @@ class AgentConnectorViewSet(
         methods=["POST"],
         detail=False,
         authentication_classes=[AgentEnrollmentAuth],
-        # Permissions are handled via AgentEnrollmentAuth
-        permission_classes=[AllowAny],
+        permission_classes=[IsAuthenticated],
     )
     def enroll(self, request: Request):
         token: EnrollmentToken = request.auth
@@ -153,8 +152,7 @@ class AgentConnectorViewSet(
         methods=["GET"],
         detail=False,
         authentication_classes=[AgentAuth],
-        # Permissions are handled via AgentAuth
-        permission_classes=[AllowAny],
+        permission_classes=[IsAuthenticated],
     )
     def agent_config(self, request: Request):
         token: DeviceToken = request.auth
@@ -173,8 +171,7 @@ class AgentConnectorViewSet(
         methods=["POST"],
         detail=False,
         authentication_classes=[AgentAuth],
-        # Permissions are handled via AgentAuth
-        permission_classes=[AllowAny],
+        permission_classes=[IsAuthenticated],
     )
     def check_in(self, request: Request):
         token: DeviceToken = request.auth
