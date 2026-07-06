@@ -235,7 +235,7 @@ REST_FRAMEWORK = {
     ],
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
     "TEST_REQUEST_DEFAULT_FORMAT": "json",
-    "DEFAULT_THROTTLE_CLASSES": ["rest_framework.throttling.AnonRateThrottle"],
+    "DEFAULT_THROTTLE_CLASSES": ["authentik.api.throttle.LocalAnonRateThrottle"],
     "DEFAULT_THROTTLE_RATES": {
         "anon": CONFIG.get("throttle.default"),
     },
@@ -247,7 +247,16 @@ CACHES = {
         "BACKEND": "django_postgres_cache.backend.DatabaseCache",
         "KEY_FUNCTION": "django_tenants.cache.make_key",
         "REVERSE_KEY_FUNCTION": "django_tenants.cache.reverse_key",
-    }
+    },
+    # In-process cache for DRF throttle counters. Per-worker rather than
+    # cluster-wide, so the per-IP ceiling is ``throttle.default`` × (pods × workers)
+    "throttle": {
+        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+        "LOCATION": "authentik-throttle",
+        "OPTIONS": {
+            "MAX_ENTRIES": 10000,
+        },
+    },
 }
 SESSION_ENGINE = "authentik.core.sessions"
 # Configured via custom SessionMiddleware
