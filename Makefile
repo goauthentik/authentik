@@ -297,17 +297,17 @@ integrations-build:
 	pnpm --dir website run build:integrations
 
 integrations-watch:  ## Build and watch the Integrations documentation
-	pnpm --filter "./website/integrations" run start
+	pnpm --dir website/integrations run start
 
 docs-api-build:
 	pnpm --dir website run build:api
 
 docs-api-watch:  ## Build and watch the API documentation
-	pnpm --filter "./website/api" run generate
-	pnpm --filter "./website/api" run start
+	pnpm --dir website/api run generate
+	pnpm --dir website/api run start
 
 docs-api-clean:  ## Clean generated API documentation
-	pnpm --filter "./website/api" run clean
+	pnpm --dir website/api run clean
 
 #########################
 ## Docker
@@ -359,6 +359,9 @@ ci-lint-rustfmt: ci--meta-debug
 
 ci-lint-clippy: ci--meta-debug
 	$(CARGO) clippy --workspace -- -D warnings
+
+ci-lint-catalogs: ci--meta-debug
+	node ./scripts/node/lint-catalogs.ts
 
 ci-test: ci--meta-debug
 	$(UV) run coverage run manage.py test --keepdb --parallel auto authentik
