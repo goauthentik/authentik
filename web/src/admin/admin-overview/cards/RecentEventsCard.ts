@@ -78,7 +78,7 @@ export class RecentEventsCard extends Table<Event> {
         ];
     }
 
-    renderEmpty(inner?: SlottedTemplateResult): TemplateResult {
+    protected override renderEmpty(inner?: SlottedTemplateResult): SlottedTemplateResult {
         if (this.error) {
             return super.renderEmpty(inner);
         }

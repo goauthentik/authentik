@@ -127,7 +127,7 @@ export class BoundStagesList extends Table<FlowStageBinding> {
         </div>`;
     }
 
-    renderEmpty(): TemplateResult {
+    protected override renderEmpty(): SlottedTemplateResult {
         return super.renderEmpty(
             html`<ak-empty-state icon="pf-icon-module">
                 <span>${msg("No Stages bound")}</span>
