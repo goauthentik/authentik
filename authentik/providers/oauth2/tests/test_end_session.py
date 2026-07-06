@@ -5,6 +5,7 @@ from django.urls import reverse
 
 from authentik.core.models import Application
 from authentik.core.tests.utils import create_test_admin_user, create_test_brand, create_test_flow
+from authentik.flows.models import FlowDesignation, FlowStageBinding
 from authentik.lib.generators import generate_id
 from authentik.providers.oauth2.models import (
     OAuth2Provider,
@@ -14,6 +15,7 @@ from authentik.providers.oauth2.models import (
 )
 from authentik.providers.oauth2.tests.utils import OAuthTestCase
 from authentik.providers.oauth2.views.end_session import EndSessionView
+from authentik.stages.dummy.models import DummyStage
 
 
 class TestEndSessionView(OAuthTestCase):
@@ -178,6 +180,31 @@ class TestEndSessionView(OAuthTestCase):
             HTTP_HOST=self.brand.domain,
         )
         self.assertEqual(response.status_code, 302)
+
+    def test_unauthenticated_logout_runs_invalidation_flow(self):
+        """An unauthenticated logout request must run the provider's invalidation flow,
+        instead of redirecting the user into the authentication flow to log in first."""
+        authentication_flow = create_test_flow(FlowDesignation.AUTHENTICATION)
+        FlowStageBinding.objects.create(
+            target=authentication_flow,
+            stage=DummyStage.objects.create(name=generate_id()),
+            order=0,
+        )
+        self.provider.authentication_flow = authentication_flow
+        self.provider.save()
+
+        # No force_login: the request is unauthenticated.
+        response = self.client.get(
+            reverse(
+                "authentik_providers_oauth2:end-session",
+                kwargs={"application_slug": self.app.slug},
+            ),
+            HTTP_HOST=self.brand.domain,
+        )
+
+        self.assertEqual(response.status_code, 302)
+        self.assertIn(f"/if/flow/{self.invalidation_flow.slug}/", response.url)
+        self.assertNotIn(authentication_flow.slug, response.url)
 
 
 class TestEndSessionAPI(OAuthTestCase):
