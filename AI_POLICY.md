@@ -1,10 +1,10 @@
-# AI Usage Policy
+# AI-Assisted Contributions Policy
 
-The authentik project welcomes community contributions, but has strict rules for AI usage:
+authentik welcomes community contributions, including AI-assisted contributions, as long as contributors understand, review, and take responsibility for what they submit.
 
 - **All AI usage in any form must be disclosed.** You must state the tool you used (e.g. Claude Code, Cursor, Amp) along with the extent that the work was AI-assisted.
-- **The human-in-the-loop must fully understand all code.** If you can't explain what your changes do and how they interact with the greater system without the aid of AI tools, please do not contribute these changes to this project.
-- **Issues and discussions can use AI assistance but must have a human-in-the-loop.** This means that any content generated with AI must have been reviewed _and edited_ by a human before submission. AI is often overly verbose, with noise that distracts from the main point. Humans must do their research and trim this down.
+- **The human-in-the-loop must fully understand all code.** If you cannot explain what your changes do, why they are correct, and how they affect the relevant parts of authentik without AI assistance, do not submit them.
+- **Issues and discussions can use AI assistance but must have a human-in-the-loop.** This means that any content generated with AI must have been reviewed _and edited_ by a human before submission. AI is often overly verbose, with noise that distracts from the main point. Contributors are expected to verify claims, include relevant context, and remove generic or speculative content.
 - **No AI-generated media is allowed (art, images, videos, audio, etc.).** Text and code are the only acceptable AI-generated content.
 - If a code contribution or discussion appears to be entirely AI-driven and lacking human judgement, the maintainers will close the issue/PR/discussion.
 
@@ -12,7 +12,7 @@ These rules apply to all external contributions to authentik. Maintainers use AI
 
 ## There are Humans Here
 
-Please remember that authentik is maintained by humans.
+authentik is maintained by people with limited time and attention.
 
 Every discussion, issue, and pull request is read and reviewed by humans (and sometimes machines, too). It is a boundary point at which people interact with each other and the work done. It is disrespectful and unscalable to approach this boundary with low-effort, unqualified work, since it puts the burden of validation on the maintainer.
 
