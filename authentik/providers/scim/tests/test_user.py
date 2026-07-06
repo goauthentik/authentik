@@ -18,6 +18,7 @@ from authentik.tasks.models import Task
 from authentik.tenants.models import Tenant
 
 
+@patch("authentik.providers.scim.clients.base.SCIMClient.can_discover", False)
 class SCIMUserTests(TestCase):
     """SCIM User tests"""
 

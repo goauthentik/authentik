@@ -3,6 +3,7 @@ import { formatLocaleDisplayNames } from "#common/ui/locale/format";
 import { setSessionLocale } from "#common/ui/locale/utils";
 
 import { AKElement } from "#elements/Base";
+import { listen } from "#elements/decorators/listen";
 import Styles from "#elements/locale/ak-locale-select.css";
 import { LocaleOptions } from "#elements/locale/utils";
 import { WithCapabilitiesConfig } from "#elements/mixins/capabilities";
@@ -12,8 +13,8 @@ import { CapabilitiesEnum } from "@goauthentik/api";
 
 import { LOCALE_STATUS_EVENT, LocaleStatusEventDetail, msg } from "@lit/localize";
 import { html, PropertyValues } from "lit";
+import { guard } from "lit-html/directives/guard.js";
 import { customElement, state } from "lit/decorators.js";
-import { guard } from "lit/directives/guard.js";
 import { createRef, ref } from "lit/directives/ref.js";
 
 @customElement("ak-locale-select")
@@ -25,21 +26,52 @@ export class AKLocaleSelect extends WithLocale(WithCapabilitiesConfig(AKElement)
 
     public static readonly styles = [Styles];
 
+    #previousActiveLanguageTag: TargetLanguageTag | null = null;
+
     //#region Listeners
 
-    #localeChangeListener = (event: Event) => {
+    /**
+     * An event listener for when the user selects a different locale from the dropdown.
+     *
+     * Note that their choice may not be immediately reflected in the UI.
+     */
+    protected localeChangeListener = (event: Event) => {
         const select = event.target as HTMLSelectElement;
-        const locale = select.value as TargetLanguageTag;
+        const nextActiveLanguageTag = select.value as TargetLanguageTag;
 
         this.blur();
 
         requestAnimationFrame(() => {
-            this.activeLanguageTag = locale;
-            setSessionLocale(locale);
+            this.#previousActiveLanguageTag = this.activeLanguageTag;
+            this.activeLanguageTag = nextActiveLanguageTag;
+
+            setSessionLocale(nextActiveLanguageTag);
         });
     };
 
-    #localeStatusListener = (event: CustomEvent<LocaleStatusEventDetail>) => {
+    @listen(LOCALE_STATUS_EVENT, { target: window })
+    protected localeStatusListener = (event: CustomEvent<LocaleStatusEventDetail>) => {
+        if (!this.ready || event.detail.status !== "ready") {
+            return;
+        }
+
+        const { readyLocale } = event.detail;
+
+        this.requestUpdate(
+            "activeLanguageTag",
+            this.#previousActiveLanguageTag,
+            undefined,
+            true,
+            readyLocale,
+        );
+    };
+
+    /**
+     * An event listener which only reacts to the locale being ready.
+     * This is used to delay showing the select until the locale is loaded,
+     * preventing a flash of unlocalized content and avoiding expensive localization operations during initial render.
+     */
+    protected localeReadyStatusListener = (event: CustomEvent<LocaleStatusEventDetail>) => {
         if (event.detail.status !== "ready") {
             return;
         }
@@ -90,7 +122,7 @@ export class AKLocaleSelect extends WithLocale(WithCapabilitiesConfig(AKElement)
     public override connectedCallback(): void {
         super.connectedCallback();
 
-        window.addEventListener(LOCALE_STATUS_EVENT, this.#localeStatusListener, {
+        window.addEventListener(LOCALE_STATUS_EVENT, this.localeReadyStatusListener, {
             once: true,
             passive: true,
         });
@@ -99,7 +131,7 @@ export class AKLocaleSelect extends WithLocale(WithCapabilitiesConfig(AKElement)
     public override disconnectedCallback(): void {
         super.disconnectedCallback();
         window.clearTimeout(this.#readyTimeout);
-        window.removeEventListener(LOCALE_STATUS_EVENT, this.#localeStatusListener);
+        window.removeEventListener(LOCALE_STATUS_EVENT, this.localeReadyStatusListener);
     }
 
     public override firstUpdated(changed: PropertyValues<this>): void {
@@ -108,7 +140,7 @@ export class AKLocaleSelect extends WithLocale(WithCapabilitiesConfig(AKElement)
         // Fallback to ready if the network is taking too long.
         this.#readyTimeout = window.setTimeout(() => {
             this.ready = true;
-            window.removeEventListener(LOCALE_STATUS_EVENT, this.#localeStatusListener);
+            window.removeEventListener(LOCALE_STATUS_EVENT, this.localeReadyStatusListener);
         }, 250);
     }
 
@@ -154,7 +186,7 @@ export class AKLocaleSelect extends WithLocale(WithCapabilitiesConfig(AKElement)
                     ${ref(this.#selectRef)}
                     part="select"
                     id="locale-selector"
-                    @change=${this.#localeChangeListener}
+                    @change=${this.localeChangeListener}
                     class="ak-m-capitalize"
                     name="locale"
                 >
