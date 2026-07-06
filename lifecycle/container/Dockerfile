@@ -2,7 +2,7 @@
 
 # Tag must track the root package.json `packageManager` version. ${BUILDPLATFORM}
 # keeps the binary's arch aligned with the builder stage on cross-arch builds.
-FROM --platform=${BUILDPLATFORM} ghcr.io/pnpm/pnpm:11.5.1@sha256:3cbdefab0d887dee497ddc8dfe6d871257317d69520fe30f9ccec0a84bde6e89 AS pnpm
+FROM --platform=${BUILDPLATFORM} ghcr.io/pnpm/pnpm:11.10.0@sha256:9a6eb06d5f861d830fe27d85a91415e60527fa45ec45b52ee43c92a8aaf3bf8a AS pnpm
 
 # Stage: Build webui
 FROM --platform=${BUILDPLATFORM} docker.io/library/node:26-trixie-slim@sha256:a1d9d671994fc2d26e297ac56b4b1522a8bc7fa71c43b14cd1b1fe6c5116f7dc AS node-builder
@@ -124,7 +124,7 @@ RUN cat /root/.rustup/settings.toml
 # Stage: Download uv
 FROM ghcr.io/astral-sh/uv:0.11.26@sha256:3d868e555f8f1dbc324afa005066cd11e1053fc4743b9808ca8025283e65efa5 AS uv
 # Stage: Base python image
-FROM ghcr.io/goauthentik/fips-python:3.14.6-slim-trixie-fips@sha256:949684a5a16e0aedc15e6c9ebdba469cd2e93212b041be6582ef3354132daa24 AS python-base
+FROM ghcr.io/goauthentik/fips-python:3.14.6-slim-trixie-fips@sha256:3bb603d688388b6baed98cb51e53d36095a618ce101bce4ab0201ea3cafd7717 AS python-base
 
 ENV VENV_PATH="/ak-root/.venv" \
     PATH="/lifecycle:/ak-root/.venv/bin:$PATH" \

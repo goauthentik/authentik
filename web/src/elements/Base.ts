@@ -7,8 +7,8 @@ import {
 } from "#common/stylesheets";
 import { applyUITheme, ResolvedUITheme, resolveUITheme, ThemeChangeEvent } from "#common/theme";
 
-import AKBase from "#styles/authentik/base.css" with { type: "bundled-text" };
-import PFBase from "#styles/patternfly/base.css" with { type: "bundled-text" };
+import AKBase from "#styles/shadow/authentik-base.css" with { type: "bundled-text" };
+import PFBase from "#styles/shadow/patternfly-base.css" with { type: "bundled-text" };
 
 import { CSSResult, CSSResultGroup, CSSResultOrNative, LitElement, PropertyValues } from "lit";
 import { property } from "lit/decorators.js";
