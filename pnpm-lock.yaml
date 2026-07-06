@@ -7,7 +7,7 @@ settings:
 overrides:
   '@typescript-eslint/eslint-plugin>typescript': ^6.0.3
   '@typescript-eslint/parser>typescript': ^6.0.3
-  format-imports>eslint: ^9.39.3
+  format-imports>eslint: ^9.39.4
   typescript-eslint>typescript: ^6.0.3
 
 importers:
@@ -59,6 +59,9 @@ importers:
       typescript-eslint:
         specifier: ^8.62.1
         version: 8.62.1(eslint@9.39.4(jiti@1.21.7))(typescript@6.0.3)
+      yaml:
+        specifier: ^2.9.0
+        version: 2.9.0
 
   lifecycle/aws:
     devDependencies:
@@ -141,7 +144,7 @@ importers:
         version: 3.1.1
     devDependencies:
       '@eslint/js':
-        specifier: ^9.39.3
+        specifier: ^9.39.4
         version: 9.39.4
       '@goauthentik/eslint-config':
         specifier: link:../eslint-config
@@ -162,7 +165,7 @@ importers:
         specifier: ^0.28.1
         version: 0.28.1
       eslint:
-        specifier: ^9.39.3
+        specifier: ^9.39.4
         version: 9.39.4(jiti@1.21.7)
       pino:
         specifier: ^10.3.1
