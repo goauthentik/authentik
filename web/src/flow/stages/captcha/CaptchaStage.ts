@@ -362,9 +362,12 @@ export class CaptchaStage
 
         let synchronizeHeight: () => void;
 
-        if (this.activeController instanceof GReCaptchaController) {
-            // reCAPTCHA's use of nested iframes prevents their internal resize observer from
-            // reporting the correct height back to our iframe, so we have to do it ourselves.
+        if (
+            this.activeController instanceof GReCaptchaController ||
+            this.activeController instanceof HCaptchaController
+        ) {
+            // reCAPTCHA and hCaptcha use nested iframes that prevent their internal resize
+            // observer from reporting the correct height back to our iframe, so we have to do it ourselves.
 
             synchronizeHeight = () => {
                 if (!this.iframeRef) return;
@@ -373,38 +376,38 @@ export class CaptchaStage
 
                 if (!target) return;
 
-                const innerIFrame = contentDocument.querySelector<HTMLIFrameElement>(
-                    'iframe[style~="height:"]',
-                );
+                // Check all iframes. hCaptcha appends the step-2 challenge popup as a
+                // second iframe directly on the body
+                let maxHeight = target.clientHeight;
+                for (const iframe of contentDocument.querySelectorAll("iframe")) {
+                    const styleHeight = parseFloat(iframe.style.height);
+                    const rectBottom = iframe.getBoundingClientRect().bottom;
+                    maxHeight = Math.max(maxHeight, styleHeight || 0, rectBottom);
 
-                const innerBottom = innerIFrame?.getBoundingClientRect().bottom ?? 0;
-
-                const actualHeight = Math.max(innerBottom, target.clientHeight);
-
-                this.iframeHeight = Math.round(actualHeight * 1.1);
-
-                if (innerIFrame?.parentElement) {
-                    innerIFrame.parentElement.style.height = `${actualHeight}px`;
+                    if (iframe.parentElement) {
+                        const height = styleHeight || iframe.getBoundingClientRect().height;
+                        if (height > 0) iframe.parentElement.style.height = `${height}px`;
+                    }
                 }
+
+                this.iframeHeight = Math.round(maxHeight * 1.1);
             };
 
-            // We watch for any newly inserted iframes, as they may alter the height
-            // of the parent iframe...
+            // Watch for new iframes AND style changes on existing iframes.
+            // hCaptcha sometimes resizes its popup by mutating the style attribute
+            // rather than replacing the element entirely.
             this.#mutationObserver = new MutationObserver((mutations) => {
                 for (const mutation of mutations) {
-                    if (mutation.type !== "childList") continue;
-
-                    for (const node of mutation.addedNodes as NodeListOf<HTMLElement>) {
-                        if (node.tagName !== "IFRAME") continue;
-
-                        // And then resize the iframe to match the new size.
-                        //
-                        // This doesn't fix the issue entirely since the challenge frame
-                        // doesn't yet know the correct height, but at least the user can
-                        // try to load the challenge again with the correct height.
-
-                        this.#resizeObserver?.observe(node as HTMLIFrameElement);
-
+                    if (mutation.type === "childList") {
+                        for (const node of mutation.addedNodes as NodeListOf<HTMLElement>) {
+                            if (node.tagName !== "IFRAME") continue;
+                            this.#resizeObserver?.observe(node as HTMLIFrameElement);
+                            requestAnimationFrame(synchronizeHeight);
+                        }
+                    } else if (
+                        mutation.type === "attributes" &&
+                        mutation.target instanceof HTMLIFrameElement
+                    ) {
                         requestAnimationFrame(synchronizeHeight);
                     }
                 }
@@ -413,6 +416,8 @@ export class CaptchaStage
             this.#mutationObserver.observe(contentDocument.body, {
                 childList: true,
                 subtree: true,
+                attributes: true,
+                attributeFilter: ["style"],
             });
         } else {
             synchronizeHeight = () => {
