@@ -40,13 +40,13 @@
         "@goauthentik/tsconfig": "link:../tsconfig",
         "@types/node": "^25.9.4",
         "eslint": "^9.39.4",
-        "prettier": "3.8.3",
+        "prettier": "3.9.1",
         "prettier-plugin-packagejson": "^3.0.2",
         "typescript": "^6.0.3",
         "typescript-eslint": "^8.62.1"
     },
     "peerDependencies": {
-        "prettier": "3.8.3",
+        "prettier": "3.9.1",
         "prettier-plugin-packagejson": "^3.0.2"
     },
     "files": [
