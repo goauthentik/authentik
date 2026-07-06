@@ -337,8 +337,9 @@ updates:
       - /packages/client-go
       - /packages/client-rust
       - /packages/client-ts
-      # - /scripts # Maybe
+      - /scripts
       - /tests/e2e
+      - /tests/openid_conformance
     schedule:
       interval: daily
       time: "04:00"
