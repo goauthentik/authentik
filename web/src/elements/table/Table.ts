@@ -11,7 +11,6 @@ import { BaseTableListRequest, TableLike } from "./shared.js";
 import { renderTableColumn, TableColumn } from "./TableColumn.js";
 
 import { type PaginatedResponse } from "#common/api/responses";
-import { EVENT_REFRESH } from "#common/constants";
 import { APIError, parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
 import { AKRefreshEvent } from "#common/events";
 import { truncateWords } from "#common/strings";
@@ -425,6 +424,9 @@ export abstract class Table<T extends object, D = T>
 
     protected refreshListener = (event?: Event) => {
         this.logger.debug("Received refresh event:", event);
+        if (!(event instanceof AKRefreshEvent)) {
+            this.dispatchEvent(new AKRefreshEvent());
+        }
         return this.fetch();
     };
 
@@ -459,7 +461,7 @@ export abstract class Table<T extends object, D = T>
 
     public override disconnectedCallback(): void {
         super.disconnectedCallback();
-        this.removeEventListener(EVENT_REFRESH, this.refreshListener);
+        this.removeEventListener(AKRefreshEvent.eventName, this.refreshListener);
         window.removeEventListener("submit", this.refreshListener);
     }
 

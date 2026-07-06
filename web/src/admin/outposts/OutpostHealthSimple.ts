@@ -1,7 +1,7 @@
 import "#elements/Spinner";
 
 import { aki } from "#common/api/client";
-import { EVENT_REFRESH } from "#common/constants";
+import { AKRefreshEvent } from "#common/events";
 import { formatElapsedTime } from "#common/temporal";
 
 import { AKElement } from "#elements/Base";
@@ -29,7 +29,7 @@ export class OutpostHealthSimpleElement extends AKElement {
 
     constructor() {
         super();
-        window.addEventListener(EVENT_REFRESH, () => {
+        window.addEventListener(AKRefreshEvent.eventName, () => {
             this.outpostHealths = [];
             this.firstUpdated();
         });
