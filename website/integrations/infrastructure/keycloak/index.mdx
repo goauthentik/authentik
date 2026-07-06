@@ -13,7 +13,7 @@ import Tabs from "@theme/Tabs";
 
 > Keycloak is an open-source Identity and Access Management (IAM) platform. It can be used both as an Identity Provider and as an application.
 >
-> -- https://keycloak.org
+> -- https://www.keycloak.org
 
 ## Preparation
 
@@ -21,98 +21,108 @@ The following placeholders are used in this guide:
 
 - `keycloak.company` is the FQDN of the Keycloak installation.
 - `authentik.company` is the FQDN of the authentik installation.
+- `<keycloak_realm_name>` is the name of the Keycloak realm where users log in.
 
 :::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
-## Configuration methods
+## authentik configuration
 
 Keycloak can be configured to use either OIDC or SAML for federated login sources. This guide covers both methods.
+
+To support the integration of Keycloak with authentik, you need to create an application/provider pair in authentik. Select the protocol that you want to use in the Keycloak configuration section and follow the complete flow in that tab.
+
+## Keycloak configuration
 
 <Tabs
   defaultValue="oidc"
   values={[
     { label: "Log in with OIDC", value: "oidc" },
     { label: "Log in with SAML", value: "saml" },
-  ]}>
+]}>
   <TabItem value="oidc">
 
-## authentik configuration
+### Configure OIDC
 
 <RedirectURI20265Note />
 
-To support the integration of Keycloak with authentik, you need to create an application/provider pair in authentik.
-
-### Create an application and provider in authentik
+#### Create an application and provider
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **New Application** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
-    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Note the **slug** value because it will be required later.
     - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
-        - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
-        - Add a **Redirect URI** of type `Strict` `Authorization` as `https://keycloak.company/access/oidc/callback`.
-        - Set the **Logout URI** to `https://keycloak.company/realms/<keycloak-realm-name>/protocol/openid-connect/logout/backchannel-logout`.
-        - Set the **Logout Method** to `Back-channel`.
+        - Note the **Client ID** and **Client Secret** values because they will be required later.
+        - Add a **Redirect URI** of type `Strict` `Authorization` as `https://keycloak.company/realms/<keycloak_realm_name>/broker/authentik/endpoint`.
         - Select any available signing key.
     - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 
 3. Click **Submit** to save the new application and provider.
 
-## Keycloak configuration
+#### Create an OIDC identity provider
 
 1. Log in to Keycloak as an administrator.
-2. Navigate to **Configure** > **Identity Providers**, click **OpenID Connect v1.0** and set the following fields:
-    - **Discovery URL**: `https://authentik.company/application/o/<slug>/.well-known/openid-configuration`
+2. Select the realm where you want users to log in.
+3. Navigate to **Identity Providers** and click **OpenID Connect v1.0**.
+4. Set the following fields:
+    - **Alias**: `authentik`
+    - **Display name**: `authentik`
+    - **Discovery endpoint**: `https://authentik.company/application/o/<application_slug>/.well-known/openid-configuration`
     - **Client ID**: enter the client ID from authentik.
-    - **Client secret**: enter the client secret from authentik.
+    - **Client Secret**: enter the client secret from authentik.
 
-3. Click **Submit**.
+5. Click **Save**.
 
   </TabItem>
   <TabItem value="saml">
 
-## authentik configuration
+### Configure SAML
 
-To support the integration of Keycloak with authentik, you need to create an application/provider pair in authentik.
-
-### Create an application and provider in authentik
+#### Create an application and provider
 
 <SAMLProvider20265Warning />
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **New Application** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
-    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Take note of the **slug** as it will be required later.
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Note the **slug** value because it will be required later.
     - **Choose a Provider type**: select **SAML Provider** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
-        - Note the **slug** value because it will be required later.
-        - Set the **ACS URL** to `https://keycloak.company/realms/<keycloak-realm-name>/broker/saml/endpoint`.
-        - Set the **SLS URL** to `https://keycloak.company/realms/<keycloak-realm-name>/broker/saml/endpoint`.
+        - Set the **ACS URL** to `https://keycloak.company/realms/<keycloak_realm_name>/broker/authentik/endpoint`.
+        - Set the **SLS URL** to `https://keycloak.company/realms/<keycloak_realm_name>/broker/authentik/endpoint`.
         - Set the **SLS Binding** to `Post`.
         - Set the **Logout Method** to `Back-channel (POST)`.
-        - Set the **Audience** to `https://keycloak.company/realms/<keycloak-realm-name>`.
+        - Set the **Audience** to `https://keycloak.company/realms/<keycloak_realm_name>`.
         - Under **Advanced protocol settings**, set **Signing Certificate** to use any available certificate.
-
-- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 
 3. Click **Submit** to save the new application and provider.
 
-## Keycloak configuration
+#### Create a SAML identity provider
 
 1. Log in to Keycloak as an administrator.
-2. Navigate to **Configure** > **Identity Providers** and click **SAML v2.0**.
-3. Set the **Service provider entity ID** to `https://authentik.company/application/saml/<slug>/metadata/`
-4. Click **Submit**.
+2. Select the realm where you want users to log in.
+3. Navigate to **Identity Providers** and click **SAML v2.0**.
+4. Set the following fields:
+    - **Alias**: `authentik`
+    - **Display name**: `authentik`
+    - **Service provider entity ID**: `https://keycloak.company/realms/<keycloak_realm_name>`
+    - **Use metadata descriptor URL**: enable this option.
+    - **Metadata descriptor URL**: `https://authentik.company/application/saml/<application_slug>/metadata/`
+
+5. Click **Add**.
 
   </TabItem>
 </Tabs>
 
 ## Configuration verification
 
-To ensure that authentik is correctly integrated with Keycloak, log out and then log back in by clicking **SAML** or **OIDC** on the login screen. You should be redirected to authentik to log in, and if the process is successful, you'll be taken to the Keycloak dashboard.
+To confirm that authentik is properly configured with Keycloak, open Keycloak and log in by selecting **authentik** on the login screen.
 
 ## Resources
 
-- [Keycloak Docs — Managing OpenID Connect and SAML Clients](https://www.keycloak.org/docs/latest/server_admin/index.html#assembly-managing-clients_server_administration_guide)
-- [Keycloak Docs — Configuring Realms](https://www.keycloak.org/docs/latest/server_admin/index.html#_configuring-realms)
+- [Keycloak Docs - Integrating identity providers](https://www.keycloak.org/docs/latest/server_admin/index.html#_identity_broker)
+- [Keycloak Docs - OpenID Connect v1.0 identity providers](https://www.keycloak.org/docs/latest/server_admin/index.html#_identity_broker_oidc)
+- [Keycloak Docs - SAML v2.0 identity providers](https://www.keycloak.org/docs/latest/server_admin/index.html#saml-v2-0-identity-providers)
+- [Keycloak Docs - SAML SP descriptor](https://www.keycloak.org/docs/latest/server_admin/index.html#_identity_broker_saml_sp_descriptor)
