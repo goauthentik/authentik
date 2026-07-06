@@ -2,6 +2,7 @@ import "#elements/messages/Message";
 
 import { APIError, pluckErrorDetail } from "#common/errors/network";
 import { APIMessage, MessageLevel } from "#common/messages";
+import { tryParsingJSON } from "#common/objects";
 
 import { AKElement } from "#elements/Base";
 import { ifPresent } from "#elements/utils/attributes";
@@ -12,7 +13,7 @@ import { instanceOfValidationError } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { css, CSSResult, html } from "lit";
-import { customElement, property, state } from "lit/decorators.js";
+import { customElement, property } from "lit/decorators.js";
 
 import PFAlertGroup from "@patternfly/patternfly/components/AlertGroup/alert-group.css";
 
@@ -88,8 +89,10 @@ export function showAPIErrorMessage(error: APIError, unique = false): void {
 
 @customElement("ak-message-container")
 export class MessageContainer extends AKElement {
-    @state()
-    protected messages: APIMessage[] = [];
+    public static readonly serializedSelector = "script[data-id=authentik-messages]";
+
+    @property({ attribute: false })
+    public messages: APIMessage[] = [];
 
     @property()
     alignment: "top" | "bottom" = "top";
@@ -119,14 +122,48 @@ export class MessageContainer extends AKElement {
         });
     }
 
-    public addMessage(message: APIMessage, unique = false): void {
+    public override connectedCallback(): void {
+        super.connectedCallback();
+
+        requestAnimationFrame(this.drainMessages);
+    }
+
+    protected drainMessages = (): void => {
+        const selector = (this.constructor as typeof MessageContainer).serializedSelector;
+        const container = this.ownerDocument.querySelector<HTMLScriptElement>(selector);
+
+        if (!container) {
+            logger.warn(`Expected to find a script tag with ${selector}, but none was found.`);
+            return;
+        }
+
+        const messages = tryParsingJSON<APIMessage[]>(container.textContent);
+
+        if (!messages?.length) {
+            return;
+        }
+
+        for (const message of messages) {
+            this.addMessage(message);
+        }
+    };
+
+    public addMessage(message: APIMessage, unique?: boolean): boolean {
+        if (message.key) {
+            this.messages = [...this.messages.filter((m) => m.key !== message.key), message];
+
+            return true;
+        }
+
         if (unique) {
             const match = this.messages.some((m) => m.message === message.message);
 
-            if (match) return;
+            if (match) return false;
         }
 
         this.messages = [...this.messages, message];
+
+        return true;
     }
 
     #removeMessage = (message: APIMessage) => {
