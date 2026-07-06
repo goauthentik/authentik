@@ -800,6 +800,20 @@ Defaults to `120s`
 
 ## Advanced settings
 
+##### `AUTHENTIK_GUNICORN__TIMEOUT`
+
+The number of seconds a gunicorn worker may go without notifying the gunicorn master before it is considered unresponsive, killed, and restarted. Maps to gunicorn's `timeout` setting.
+
+Defaults to `30`.
+
+##### `AUTHENTIK_GUNICORN__TIMEOUT_GRACEFUL_SHUTDOWN`
+
+The maximum number of seconds the gunicorn uvicorn worker waits for in-flight connections and background tasks to finish when shutting down (for example during worker recycling triggered by `AUTHENTIK_WEB__MAX_REQUESTS`) before remaining tasks are cancelled and the worker exits. Passed to uvicorn's `timeout_graceful_shutdown` option. Set to `0` or `null` to wait indefinitely.
+
+This value should be kept below `AUTHENTIK_GUNICORN__TIMEOUT` so that recycled workers exit cleanly instead of being forcibly aborted by gunicorn. For example, to allow longer graceful drains, raise both together (such as `AUTHENTIK_GUNICORN__TIMEOUT=45` with `AUTHENTIK_GUNICORN__TIMEOUT_GRACEFUL_SHUTDOWN=30`).
+
+Defaults to `10`.
+
 ##### `AUTHENTIK_SKIP_MIGRATIONS`
 
 Whether to skip running migrations on starting authentik. This is destined to advanced setups and not recommended in normal use.
