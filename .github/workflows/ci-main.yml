@@ -35,6 +35,8 @@ jobs:
             deps: python
           - job: spellcheck
             deps: node
+          - job: catalogs
+            deps: node
           - job: pending-migrations
             deps: python,runtime
           - job: ruff
