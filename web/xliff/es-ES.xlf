@@ -7727,17 +7727,9 @@ Las vinculaciones a grupos/usuarios se verifican en función del usuario del eve
   <source>Overall license status</source>
   <target>Estado general de la licencia</target>
 </trans-unit>
-<trans-unit id="sc4804358f202968c">
-  <source>Internal user usage</source>
-  <target>Uso de usuario interno</target>
-</trans-unit>
 <trans-unit id="s087d6f07b52b30ec">
   <source><x id="0" equiv-text="${internalUserPercentage &lt; Infinity ? internalUserPercentage : &quot;∞&quot;}"/>%</source>
   <target><x id="0" equiv-text="${internalUserPercentage &lt; Infinity ? internalUserPercentage : &quot;∞&quot;}"/>%</target>
-</trans-unit>
-<trans-unit id="sae72e1569d34fb02">
-  <source>External user usage</source>
-  <target>Uso de usuario externo</target>
 </trans-unit>
 <trans-unit id="s2e109263b73c12d5">
   <source>Licenses</source>
@@ -11315,6 +11307,12 @@ Las vinculaciones a grupos/usuarios se verifican en función del usuario del eve
 </trans-unit>
 <trans-unit id="s7445550f2bfb2f2f">
   <source>No notes.</source>
+</trans-unit>
+<trans-unit id="s4891ccdb173626ba">
+  <source>Internal user usage (<x id="0" equiv-text="${currentInternalUsers}"/>/<x id="1" equiv-text="${licensedInternalUsers}"/>)</source>
+</trans-unit>
+<trans-unit id="scad748da438c56d4">
+  <source>External user usage (<x id="0" equiv-text="${currentExternalUsers}"/>/<x id="1" equiv-text="${licensedExternalUsers}"/>)</source>
 </trans-unit>
 </body>
 </file>
