@@ -14,7 +14,7 @@ class Migration(migrations.Migration):
             model_name="authenticatorwebauthnstage",
             name="prevent_duplicate_devices",
             field=models.BooleanField(
-                default=True, help_text="When enabled, a given device can only be registered once."
+                default=False, help_text="When enabled, a given device can only be registered once."
             ),
         ),
         migrations.AddField(
@@ -26,12 +26,5 @@ class Migration(migrations.Migration):
             model_name="webauthndevice",
             name="attestation_certificate_pem",
             field=models.TextField(default=None, null=True),
-        ),
-        migrations.AlterField(
-            model_name="authenticatorwebauthnstage",
-            name="prevent_duplicate_devices",
-            field=models.BooleanField(
-                default=False, help_text="When enabled, a given device can only be registered once."
-            ),
         ),
     ]
