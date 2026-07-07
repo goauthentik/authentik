@@ -173,17 +173,17 @@ export interface PatchedLDAPSourceRequest {
      */
     groupObjectFilter?: string;
     /**
-     * Field which contains members of a group.
+     * Field which contains a list of members/memberships.
      * @type {string}
      * @memberof PatchedLDAPSourceRequest
      */
-    groupMembershipField?: string;
+    membershipField?: string;
     /**
-     * Attribute which matches the value of `group_membership_field`.
+     * Attribute which matches the value of `membership_field`.
      * @type {string}
      * @memberof PatchedLDAPSourceRequest
      */
-    userMembershipAttribute?: string;
+    membershipReference?: string;
     /**
      * Field which contains a unique Identifier.
      * @type {string}
@@ -219,13 +219,13 @@ export interface PatchedLDAPSourceRequest {
      * @type {string}
      * @memberof PatchedLDAPSourceRequest
      */
-    syncParentGroup?: string | null;
+    additionalParentGroup?: string | null;
     /**
      * Lookup group membership based on a user attribute instead of a group attribute. This allows nested group resolution on systems like FreeIPA and Active Directory
      * @type {boolean}
      * @memberof PatchedLDAPSourceRequest
      */
-    lookupGroupsFromUser?: boolean;
+    lookupGroupsFromMember?: boolean;
     /**
      * Delete authentik users and groups which were previously supplied by this source, but are now missing from it.
      * @type {boolean}
@@ -238,6 +238,12 @@ export interface PatchedLDAPSourceRequest {
      * @memberof PatchedLDAPSourceRequest
      */
     syncOutgoingTriggerMode?: SyncOutgoingTriggerModeEnum;
+    /**
+     * Sync group parentage/hierarchy from LDAP directories.
+     * @type {boolean}
+     * @memberof PatchedLDAPSourceRequest
+     */
+    syncGroupParents?: boolean;
 }
 
 /**
@@ -300,12 +306,9 @@ export function PatchedLDAPSourceRequestFromJSONTyped(
             json["user_object_filter"] == null ? undefined : json["user_object_filter"],
         groupObjectFilter:
             json["group_object_filter"] == null ? undefined : json["group_object_filter"],
-        groupMembershipField:
-            json["group_membership_field"] == null ? undefined : json["group_membership_field"],
-        userMembershipAttribute:
-            json["user_membership_attribute"] == null
-                ? undefined
-                : json["user_membership_attribute"],
+        membershipField: json["membership_field"] == null ? undefined : json["membership_field"],
+        membershipReference:
+            json["membership_reference"] == null ? undefined : json["membership_reference"],
         objectUniquenessField:
             json["object_uniqueness_field"] == null ? undefined : json["object_uniqueness_field"],
         passwordLoginUpdateInternalPassword:
@@ -316,15 +319,20 @@ export function PatchedLDAPSourceRequestFromJSONTyped(
         syncUsersPassword:
             json["sync_users_password"] == null ? undefined : json["sync_users_password"],
         syncGroups: json["sync_groups"] == null ? undefined : json["sync_groups"],
-        syncParentGroup: json["sync_parent_group"] == null ? undefined : json["sync_parent_group"],
-        lookupGroupsFromUser:
-            json["lookup_groups_from_user"] == null ? undefined : json["lookup_groups_from_user"],
+        additionalParentGroup:
+            json["additional_parent_group"] == null ? undefined : json["additional_parent_group"],
+        lookupGroupsFromMember:
+            json["lookup_groups_from_member"] == null
+                ? undefined
+                : json["lookup_groups_from_member"],
         deleteNotFoundObjects:
             json["delete_not_found_objects"] == null ? undefined : json["delete_not_found_objects"],
         syncOutgoingTriggerMode:
             json["sync_outgoing_trigger_mode"] == null
                 ? undefined
                 : SyncOutgoingTriggerModeEnumFromJSON(json["sync_outgoing_trigger_mode"]),
+        syncGroupParents:
+            json["sync_group_parents"] == null ? undefined : json["sync_group_parents"],
     };
 }
 
@@ -365,18 +373,19 @@ export function PatchedLDAPSourceRequestToJSONTyped(
         additional_group_dn: value["additionalGroupDn"],
         user_object_filter: value["userObjectFilter"],
         group_object_filter: value["groupObjectFilter"],
-        group_membership_field: value["groupMembershipField"],
-        user_membership_attribute: value["userMembershipAttribute"],
+        membership_field: value["membershipField"],
+        membership_reference: value["membershipReference"],
         object_uniqueness_field: value["objectUniquenessField"],
         password_login_update_internal_password: value["passwordLoginUpdateInternalPassword"],
         sync_users: value["syncUsers"],
         sync_users_password: value["syncUsersPassword"],
         sync_groups: value["syncGroups"],
-        sync_parent_group: value["syncParentGroup"],
-        lookup_groups_from_user: value["lookupGroupsFromUser"],
+        additional_parent_group: value["additionalParentGroup"],
+        lookup_groups_from_member: value["lookupGroupsFromMember"],
         delete_not_found_objects: value["deleteNotFoundObjects"],
         sync_outgoing_trigger_mode: SyncOutgoingTriggerModeEnumToJSON(
             value["syncOutgoingTriggerMode"],
         ),
+        sync_group_parents: value["syncGroupParents"],
     };
 }
