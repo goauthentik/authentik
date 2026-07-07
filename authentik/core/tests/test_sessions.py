@@ -11,7 +11,6 @@ from django.urls import reverse
 from django.utils.crypto import get_random_string
 
 from authentik.core import user_switching
-from authentik.core.exceptions import SessionSuperseded
 from authentik.core.models import AuthenticatedSession
 from authentik.core.sessions import SessionStore
 from authentik.core.tests.utils import create_test_session, create_test_user
@@ -68,16 +67,6 @@ class TestSessionSuperseding(TestCase):
         response = self.client.get(reverse("authentik_api:user-me"))
 
         self.assertEqual(response.status_code, 403)
-
-    def test_superseded_session_raises_typed_exception(self):
-        """Test superseding is signalled as a SessionSuperseded, not a bare SuspiciousOperation"""
-        target = create_test_session(
-            self.user, user_switching_token=get_random_string(user_switching.TOKEN_LENGTH)
-        )
-        target.is_current = False
-        target.save(update_fields=["is_current"])
-        with self.assertRaises(SessionSuperseded):
-            target.session.validate_not_superseded()
 
     def test_login_supersedes_other_browser_sessions(self):
         """Test a new login marks the browser's previous logins as not current"""

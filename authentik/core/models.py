@@ -34,7 +34,6 @@ from authentik.admin.files.manager import get_file_manager
 from authentik.admin.files.usage import FileUsage
 from authentik.blueprints.models import ManagedModel
 from authentik.core import user_switching
-from authentik.core.exceptions import SessionSuperseded
 from authentik.core.expression.exceptions import PropertyMappingExpressionException
 from authentik.core.types import UILoginButton, UserSettingSerializer
 from authentik.lib.avatars import get_avatar
@@ -1348,11 +1347,6 @@ class Session(ExpiringModel, AbstractBaseSession):
             and authenticated_session.user_switching_token
             and not authenticated_session.is_current
         )
-
-    def validate_not_superseded(self):
-        """Reject browser logins superseded by a newer login."""
-        if self.is_superseded:
-            raise SessionSuperseded("Session denied: superseded by a newer login")
 
     class Keys(StrEnum):
         """

@@ -9,7 +9,6 @@ from django.utils import timezone
 from django.utils.functional import cached_property
 from structlog.stdlib import get_logger
 
-from authentik.core.exceptions import SessionSuperseded
 from authentik.root.middleware import ClientIPMiddleware
 
 LOGGER = get_logger()
@@ -35,11 +34,13 @@ class SessionStore(SessionBase):
 
     def _discard_session_on_load_error(self, exc: Exception):
         """Log why a stored session was rejected and forget its key."""
-        if isinstance(exc, SessionSuperseded):
-            # An expected, routine outcome of user switching.
-            LOGGER.info(str(exc))
-        elif isinstance(exc, SuspiciousOperation):
+        if isinstance(exc, SuspiciousOperation):
             LOGGER.warning(str(exc))
+        self._session_key = None
+
+    def _discard_superseded_session(self):
+        """Forget a session replaced by a newer login in the same browser."""
+        LOGGER.info("Session denied: superseded by a newer login")
         self._session_key = None
 
     def _get_session_from_db(self):
@@ -51,7 +52,9 @@ class SessionStore(SessionBase):
                 session_key=self.session_key,
                 expires__gt=timezone.now(),
             )
-            session.validate_not_superseded()
+            if session.is_superseded:
+                self._discard_superseded_session()
+                return None
             return session
         except (self.model.DoesNotExist, SuspiciousOperation) as exc:
             self._discard_session_on_load_error(exc)
@@ -65,7 +68,9 @@ class SessionStore(SessionBase):
                 session_key=self.session_key,
                 expires__gt=timezone.now(),
             )
-            session.validate_not_superseded()
+            if session.is_superseded:
+                self._discard_superseded_session()
+                return None
             return session
         except (self.model.DoesNotExist, SuspiciousOperation) as exc:
             self._discard_session_on_load_error(exc)
