@@ -15,7 +15,7 @@ overrides:
   docusaurus-theme-openapi-docs>postman-code-generators: ^2.1.1
   docusaurus-theme-openapi-docs>detect-package-manager: workspace:*
   docusaurus-theme-openapi-docs>shelljs: 0.10.0
-  format-imports>eslint: ^9.39.3
+  format-imports>eslint: ^9.39.4
   lodash: ^4.18.1
   postman-code-generators>detect-package-manager: workspace:*
   postman-code-generators>shelljs: 0.10.0
