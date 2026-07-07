@@ -26,12 +26,14 @@ import {
 } from "#elements/dialogs/shared";
 import { WithSession } from "#elements/mixins/session";
 import { getURLParam, updateURLParams } from "#elements/router/RouteMatch";
+import { AKTableRefreshEvent } from "#elements/table/events";
 import Styles from "#elements/table/Table.css";
 import { TableSearchForm } from "#elements/table/TableSearch";
 import { SlottedTemplateResult } from "#elements/types";
 import { ifPresent } from "#elements/utils/attributes";
 import { isInteractiveElement } from "#elements/utils/interactivity";
 import { isEventTargetingListener } from "#elements/utils/pointer";
+import { dateProperty } from "#elements/utils/properties";
 
 import { ConsoleLogger, Logger } from "#logger/browser";
 import AKFadeIn from "#styles/authentik/components/Modifiers/fade-in.css";
@@ -191,8 +193,8 @@ export abstract class Table<T extends object, D = T>
     /**
      * A timestamp of the last attempt to refresh the table data.
      */
-    @state()
-    protected lastRefreshedAt: Date | null = null;
+    @property(dateProperty)
+    public lastRefreshedAt: Date | null = null;
 
     /**
      * Logger instance for this table.
@@ -424,10 +426,9 @@ export abstract class Table<T extends object, D = T>
 
     protected refreshListener = (event?: Event) => {
         this.logger.debug("Received refresh event:", event);
-        if (!(event instanceof AKRefreshEvent)) {
-            this.dispatchEvent(new AKRefreshEvent());
-        }
-        return this.fetch();
+        return this.fetch().then(() => {
+            this.dispatchEvent(new AKTableRefreshEvent(this));
+        });
     };
 
     constructor() {
