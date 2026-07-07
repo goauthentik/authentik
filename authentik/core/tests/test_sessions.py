@@ -120,31 +120,29 @@ class TestSessionSuperseding(TestCase):
         other_browser.refresh_from_db()
         self.assertTrue(other_browser.is_current)
 
-    def test_bind_retries_on_concurrent_conflict(self):
-        """Test a lost race on the current-session constraint is retried, not raised"""
+    def test_bind_conflict_is_raised(self):
+        """Test a lost race on the current-session constraint is surfaced."""
         token = get_random_string(user_switching.TOKEN_LENGTH)
         target = create_test_session(self.user, is_current=False)
-        original_save = AuthenticatedSession.save
         calls = []
 
-        def flaky_save(instance, *args, **kwargs):
+        def failing_save(instance, *args, **kwargs):
             calls.append(instance.pk)
-            if len(calls) == 1:
-                raise IntegrityError("duplicate current session")
-            return original_save(instance, *args, **kwargs)
+            raise IntegrityError("duplicate current session")
 
         with patch.object(
             AuthenticatedSession,
             "save",
             autospec=True,
-            side_effect=flaky_save,
+            side_effect=failing_save,
         ):
-            target.bind_to_user_switching_token(token)
+            with self.assertRaises(IntegrityError):
+                target.bind_to_user_switching_token(token)
 
-        self.assertEqual(len(calls), 2)
+        self.assertEqual(len(calls), 1)
         target.refresh_from_db()
-        self.assertEqual(target.user_switching_token, token)
-        self.assertTrue(target.is_current)
+        self.assertIsNone(target.user_switching_token)
+        self.assertFalse(target.is_current)
 
 
 class TestUserSwitchingCookie(TestCase):
