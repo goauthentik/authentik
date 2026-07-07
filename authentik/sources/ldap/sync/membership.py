@@ -55,7 +55,7 @@ class MembershipLDAPSynchronizer(BaseLDAPSynchronizer):
             return -1
         membership_count = 0
         for group_data in page_data:
-            if self._source.lookup_groups_from_user:
+            if self._source.lookup_groups_from_member:
                 group_dn = group_data.get("dn", {})
                 escaped_dn = escape_filter_chars(group_dn)
                 group_filter = f"({self._source.membership_field}={escaped_dn})"
@@ -94,7 +94,7 @@ class MembershipLDAPSynchronizer(BaseLDAPSynchronizer):
                 Q(**{f"attributes__{self._source.membership_reference}__in": members})
                 | Q(
                     **{
-                        f"attributes__{self._source.membership_attribute}__isnull": True,
+                        f"attributes__{self._source.membership_reference}__isnull": True,
                         "groups__in": [group],
                     }
                 )
@@ -108,7 +108,7 @@ class MembershipLDAPSynchronizer(BaseLDAPSynchronizer):
                     Q(**{f"attributes__{self._source.membership_reference}__in": members})
                     | Q(
                         **{
-                            f"attributes__{self._source.membership_attribute}__isnull": True,
+                            f"attributes__{self._source.membership_reference}__isnull": True,
                             "parents__in": [group],
                         }
                     )
