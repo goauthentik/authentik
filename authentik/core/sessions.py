@@ -9,7 +9,7 @@ from django.utils import timezone
 from django.utils.functional import cached_property
 from structlog.stdlib import get_logger
 
-from authentik.core.models import SessionSuperseded
+from authentik.core.exceptions import SessionSuperseded
 from authentik.root.middleware import ClientIPMiddleware
 
 LOGGER = get_logger()

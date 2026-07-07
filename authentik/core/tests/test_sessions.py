@@ -11,7 +11,8 @@ from django.urls import reverse
 from django.utils.crypto import get_random_string
 
 from authentik.core import user_switching
-from authentik.core.models import AuthenticatedSession, SessionSuperseded
+from authentik.core.exceptions import SessionSuperseded
+from authentik.core.models import AuthenticatedSession
 from authentik.core.sessions import SessionStore
 from authentik.core.tests.utils import create_test_session, create_test_user
 from authentik.root.middleware import SessionMiddleware

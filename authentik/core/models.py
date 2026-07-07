@@ -14,7 +14,6 @@ from django.contrib.auth.hashers import check_password, identify_hasher
 from django.contrib.auth.models import AbstractUser, Permission
 from django.contrib.auth.models import UserManager as DjangoUserManager
 from django.contrib.sessions.base_session import AbstractBaseSession
-from django.core.exceptions import SuspiciousOperation
 from django.core.validators import validate_slug
 from django.db import IntegrityError, models, transaction
 from django.db.models import Manager, Q, QuerySet, options
@@ -35,6 +34,7 @@ from authentik.admin.files.manager import get_file_manager
 from authentik.admin.files.usage import FileUsage
 from authentik.blueprints.models import ManagedModel
 from authentik.core import user_switching
+from authentik.core.exceptions import SessionSuperseded
 from authentik.core.expression.exceptions import PropertyMappingExpressionException
 from authentik.core.types import UILoginButton, UserSettingSerializer
 from authentik.lib.avatars import get_avatar
@@ -1314,13 +1314,6 @@ class PropertyMapping(SerializerModel, ManagedModel):
     class Meta:
         verbose_name = _("Property Mapping")
         verbose_name_plural = _("Property Mappings")
-
-
-class SessionSuperseded(SuspiciousOperation):
-    """Raised when a session was replaced by a newer login in the same browser.
-
-    A SuspiciousOperation so the session store discards the session, but an expected,
-    routine outcome of user switching rather than a genuinely suspicious request."""
 
 
 class Session(ExpiringModel, AbstractBaseSession):
