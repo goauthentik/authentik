@@ -163,15 +163,11 @@ export class OutpostViewPage extends AKElement {
         return html`
             ${(this.outpost?.config.authentik_host ?? "") === ""
                 ? html`<div slot="header" class="pf-c-banner pf-m-warning">
-                      ${msg(
-                          "Warning: authentik Domain is not configured, authentication will not work.",
-                      )}
+                      ${msg("Warning: authentik Domain is not configured, authentication will not work.")}
                   </div>`
                 : null}
             <div class="pf-l-grid pf-m-gutter pf-c-page__main-section pf-m-no-padding-mobile">
-                <div
-                    class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-3-col-on-xl pf-m-3-col-on-2xl"
-                >
+                <div class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-3-col-on-xl pf-m-3-col-on-2xl">
                     <div class="pf-c-card__title">${msg("Outpost Info")}</div>
                     <div class="pf-c-card__body">
                         ${renderDescriptionList([
@@ -179,8 +175,7 @@ export class OutpostViewPage extends AKElement {
                             [msg("Type"), outpostTypeToLabel(this.outpost?.type)],
                             [
                                 msg("Integration"),
-                                this.outpost?.serviceConnectionObj?.name ||
-                                    msg("No integration active"),
+                                this.outpost?.serviceConnectionObj?.name || msg("No integration active"),
                             ],
                             [msg("Health"), this.renderHealthSummary()],
                             [
@@ -188,9 +183,7 @@ export class OutpostViewPage extends AKElement {
                                 html`<button
                                     @click=${this.openEditModal}
                                     class="pf-c-button pf-m-block pf-m-secondary"
-                                    aria-label=${msg(
-                                        str`Edit "${this.outpost?.name || "outpost"}"`,
-                                    )}
+                                    aria-label=${msg(str`Edit "${this.outpost?.name || "outpost"}"`)}
                                 >
                                     ${msg("Edit")}
                                 </button>`,
@@ -198,18 +191,12 @@ export class OutpostViewPage extends AKElement {
                         ])}
                     </div>
                 </div>
-                <div
-                    class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-9-col-on-xl pf-m-9-col-on-2xl"
-                >
+                <div class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-9-col-on-xl pf-m-9-col-on-2xl">
                     <div class="pf-c-card__title">${msg("Configured providers")}</div>
-                    <ak-outposts-provider-list
-                        .items=${this.outpost?.providersObj}
-                    ></ak-outposts-provider-list>
+                    <ak-outposts-provider-list .items=${this.outpost?.providersObj}></ak-outposts-provider-list>
                 </div>
                 <div class="pf-c-card pf-l-grid__item pf-m-12-col">
-                    <div class="pf-c-card__title">
-                        ${msg("Detailed health (data is cached so may be out of date)")}
-                    </div>
+                    <div class="pf-c-card__title">${msg("Detailed health (data is cached so may be out of date)")}</div>
                     <ak-outpost-health-list .items=${this.health}></ak-outpost-health-list>
                 </div>
                 ${this.renderOutpostDeploymentInfo()}
@@ -226,10 +213,7 @@ export class OutpostViewPage extends AKElement {
             <div class="pf-c-card__title">${msg("Outpost Deployment Info")}</div>
             <div class="pf-c-card__body">
                 <p>
-                    <a
-                        target="_blank"
-                        href=${docLink("/add-secure-apps/outposts#deploy")}
-                        rel="noopener noreferrer"
+                    <a target="_blank" href=${docLink("/add-secure-apps/outposts#deploy")} rel="noopener noreferrer"
                         >${msg("View deployment documentation")}</a
                     >
                 </p>
@@ -238,12 +222,7 @@ export class OutpostViewPage extends AKElement {
                         <label class="pf-c-form__label">
                             <span class="pf-c-form__label-text">AUTHENTIK_HOST</span>
                         </label>
-                        <input
-                            class="pf-c-form-control"
-                            readonly
-                            type="text"
-                            value="${document.location.origin}"
-                        />
+                        <input class="pf-c-form-control" readonly type="text" value="${document.location.origin}" />
                     </div>
                     <div class="pf-c-form__group">
                         <label class="pf-c-form__label">
@@ -251,11 +230,7 @@ export class OutpostViewPage extends AKElement {
                         </label>
                         <div>${IconTokenCopyButton(this.outpost?.tokenIdentifier)}</div>
                     </div>
-                    <h3>
-                        ${msg(
-                            "If your authentik Instance is using a self-signed certificate, set this value.",
-                        )}
-                    </h3>
+                    <h3>${msg("If your authentik Instance is using a self-signed certificate, set this value.")}</h3>
                     <div class="pf-c-form__group">
                         <label class="pf-c-form__label">
                             <span class="pf-c-form__label-text">AUTHENTIK_INSECURE</span>
@@ -266,14 +241,12 @@ export class OutpostViewPage extends AKElement {
                         ? html`
                               <h3>
                                   ${msg(
-                                      "If your authentik_host setting does not match the URL you want to login with, add this setting.",
+                                      "If your authentik_host setting does not match the URL you want to login with, add this setting."
                                   )}
                               </h3>
                               <div class="pf-c-form__group">
                                   <label class="pf-c-form__label">
-                                      <span class="pf-c-form__label-text"
-                                          >AUTHENTIK_HOST_BROWSER</span
-                                      >
+                                      <span class="pf-c-form__label-text">AUTHENTIK_HOST_BROWSER</span>
                                   </label>
                                   <input
                                       class="pf-c-form-control"
@@ -290,9 +263,7 @@ export class OutpostViewPage extends AKElement {
     }
 
     protected renderTabTasks(outpost: Outpost): SlottedTemplateResult {
-        return html`<div
-            class="pf-c-page__main-section pf-m-no-padding-mobile pf-l-grid pf-m-gutter"
-        >
+        return html`<div class="pf-c-page__main-section pf-m-no-padding-mobile pf-l-grid pf-m-gutter">
             <div class="pf-l-grid__item pf-m-12-col pf-l-stack__item">
                 <div class="pf-c-card">
                     <div class="pf-c-card__header">
@@ -305,9 +276,7 @@ export class OutpostViewPage extends AKElement {
                     ></ak-schedule-list>
                 </div>
             </div>
-            <div class="pf-l-grid__item pf-m-12-col pf-l-stack__item">
-                ${taskCard(OUTPOST_TYPE, outpost.pk)}
-            </div>
+            <div class="pf-l-grid__item pf-m-12-col pf-l-stack__item">${taskCard(OUTPOST_TYPE, outpost.pk)}</div>
         </div> `;
     }
 
@@ -327,13 +296,7 @@ export class OutpostViewPage extends AKElement {
                 >
                     ${this.renderTabOverview()}
                 </div>
-                <div
-                    role="tabpanel"
-                    tabindex="0"
-                    slot="page-tasks"
-                    id="page-tasks"
-                    aria-label=${msg("Tasks")}
-                >
+                <div role="tabpanel" tabindex="0" slot="page-tasks" id="page-tasks" aria-label=${msg("Tasks")}>
                     ${this.renderTabTasks(this.outpost)}
                 </div>
                 <div
