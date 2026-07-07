@@ -5506,10 +5506,6 @@ Hier können nur Policies verwendet werden, da der Zugriff geprüft wird, bevor 
   <source>Actions over the last week (per 8 hours)</source>
   <target>Aktionen der letzten Woche (pro 8 Stunden)</target>
 </trans-unit>
-<trans-unit id="sb57dbcda1929c642">
-  <source>Edit the notes attribute of this user to add notes here.</source>
-  <target>Bearbeite das Attribut „notes“ dieses Benutzers, um hier Notizen hinzuzufügen.</target>
-</trans-unit>
 <trans-unit id="s27586544c447d9e3">
   <source>User events</source>
   <target>Benutzerereignisse</target>
@@ -6870,14 +6866,6 @@ Beim Erstellen eines festen Auswahlfelds aktiviere „Als Ausdruck interpretiere
   <source>Import devices</source>
   <target>Geräte importieren</target>
 </trans-unit>
-<trans-unit id="s48cf8fd56b1237ed">
-  <source>Successfully updated flow.</source>
-  <target>Flow erfolgreich aktualisiert.</target>
-</trans-unit>
-<trans-unit id="sc3e0c240b159fbce">
-  <source>Successfully created flow.</source>
-  <target>Flow erfolgreich erstellt.</target>
-</trans-unit>
 <trans-unit id="s925936f647ae52cc">
   <source>Shown as the Title in Flow pages.</source>
   <target>Wird als Titel auf den Flow-Seiten angezeigt.</target>
@@ -7810,17 +7798,9 @@ Bindings zu Gruppen/Benutzern werden mit dem Benutzer des Ereignisses abgegliche
   <source>Overall license status</source>
   <target>Allgemeiner Lizenzstatus</target>
 </trans-unit>
-<trans-unit id="sc4804358f202968c">
-  <source>Internal user usage</source>
-  <target>Interne Benutzerverwendung</target>
-</trans-unit>
 <trans-unit id="s087d6f07b52b30ec">
   <source><x id="0" equiv-text="${internalUserPercentage &lt; Infinity ? internalUserPercentage : &quot;∞&quot;}"/>%</source>
   <target><x id="0" equiv-text="${internalUserPercentage &lt; Infinity ? internalUserPercentage : &quot;∞&quot;}"/>%</target>
-</trans-unit>
-<trans-unit id="sae72e1569d34fb02">
-  <source>External user usage</source>
-  <target>Externe Benutzerverwendung</target>
 </trans-unit>
 <trans-unit id="s2e109263b73c12d5">
   <source>Licenses</source>
@@ -9402,12 +9382,6 @@ Bindings zu Gruppen/Benutzern werden mit dem Benutzer des Ereignisses abgegliche
 </trans-unit>
 <trans-unit id="s1bb47213a314465b">
   <source>Create link</source>
-</trans-unit>
-<trans-unit id="s776c1b64a71fba39">
-  <source>To email a recovery link, set an email address for this user.</source>
-</trans-unit>
-<trans-unit id="s8899399356b8ed1a">
-  <source>To create a recovery link, set a recovery flow for the current brand.</source>
 </trans-unit>
 <trans-unit id="s68be8f284274370a">
   <source>Recovery link</source>
@@ -11363,6 +11337,55 @@ Bindings zu Gruppen/Benutzern werden mit dem Benutzer des Ereignisses abgegliche
 </trans-unit>
 <trans-unit id="sb45f9fb4dba6e71a">
   <source>Unset</source>
+</trans-unit>
+<trans-unit id="s02e9603605609ae6">
+  <source>Successfully created <x id="0" equiv-text="${this.verboseName}"/></source>
+</trans-unit>
+<trans-unit id="s58273fbf883b497d">
+  <source>Successfully updated <x id="0" equiv-text="${this.verboseName}"/></source>
+</trans-unit>
+<trans-unit id="s221db22dbb4e0105">
+  <source>Unknown Field</source>
+</trans-unit>
+<trans-unit id="s47ff2d052ccbcaf3">
+  <source>Unknown Field <x id="0" equiv-text="${fieldLike}"/></source>
+</trans-unit>
+<trans-unit id="form.submit.verb.created">
+  <source>Created</source>
+</trans-unit>
+<trans-unit id="form.submit.changes-saved">
+  <source>Changes Saved</source>
+</trans-unit>
+<trans-unit id="library.application.row.aria-label">
+  <source>Open "<x id="0" equiv-text="${application.name}"/>"</source>
+  <note from="lit-localize">Screen reader label for the application list row</note>
+</trans-unit>
+<trans-unit id="form.submitted.verb-entity">
+  <source><x id="0" equiv-text="${verb} ${noun}"/></source>
+  <note from="lit-localize">The message shown after a form is successfully submitted.</note>
+</trans-unit>
+<trans-unit id="user.library.view-toggle.to-list">
+  <source>Switch to list view</source>
+  <note from="lit-localize">Tooltip on the library view toggle when grid view is active</note>
+</trans-unit>
+<trans-unit id="user.library.view-toggle.to-grid">
+  <source>Switch to grid view</source>
+  <note from="lit-localize">Tooltip on the library view toggle when list view is active</note>
+</trans-unit>
+<trans-unit id="users.recovery.no-email.description">
+  <source>This user does not have an email address, so authentik cannot email a recovery link. Add an email address to enable email recovery.</source>
+</trans-unit>
+<trans-unit id="users.recovery.no-brand-flow.description">
+  <source>This brand does not have a recovery flow, so recovery links cannot be created. Configure a recovery flow in the brand settings to enable recovery.</source>
+</trans-unit>
+<trans-unit id="s7445550f2bfb2f2f">
+  <source>No notes.</source>
+</trans-unit>
+<trans-unit id="s4891ccdb173626ba">
+  <source>Internal user usage (<x id="0" equiv-text="${currentInternalUsers}"/>/<x id="1" equiv-text="${licensedInternalUsers}"/>)</source>
+</trans-unit>
+<trans-unit id="scad748da438c56d4">
+  <source>External user usage (<x id="0" equiv-text="${currentExternalUsers}"/>/<x id="1" equiv-text="${licensedExternalUsers}"/>)</source>
 </trans-unit>
 </body>
 </file>

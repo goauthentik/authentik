@@ -484,10 +484,7 @@ class TestAuthenticatorWebAuthnStage(FlowTestCase):
             response_errors={
                 "response": [
                     {
-                        "string": (
-                            "Registration failed. Error: Unable to decode "
-                            "client_data_json bytes as JSON"
-                        ),
+                        "string": "Registration failed. Please contact your administrator.",
                         "code": "invalid",
                     }
                 ]

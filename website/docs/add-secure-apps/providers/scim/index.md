@@ -1,5 +1,7 @@
 ---
 title: SCIM Provider
+sidebar_position: 11
+sidebar_label: "SCIM Provider"
 ---
 
 SCIM (System for Cross-domain Identity Management) is a set of APIs to provision users and groups. The SCIM provider in authentik supports SCIM 2.0 and can be used to provision and sync users from authentik into other applications.

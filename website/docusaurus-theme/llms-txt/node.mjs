@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 /**
  * @file Pure node-side logic for the llms.txt plugin: discovery, parsing, URLs.
  *
@@ -7,6 +6,8 @@
 
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
+
+import { trimTrailingSlashes } from "./common.mjs";
 
 import { parseFileContentFrontMatter } from "@docusaurus/utils/lib/markdownUtils.js";
 import FastGlob from "fast-glob";
@@ -67,33 +68,6 @@ function extractTitle(frontMatter, body, relPathNoExt) {
 }
 
 /**
- * Extract a short description: frontmatter, else the first usable prose
- * paragraph. Headings, MDX imports/exports, admonitions, JSX/HTML, CVE reporter
- * attributions, and bullet lists (prerequisites/feature enumerations) are
- * skipped so the description is a clean sentence, not a flattened block.
- *
- * @param {Record<string, any>} frontMatter
- * @param {string} body
- * @returns {string}
- */
-function extractDescription(frontMatter, body) {
-    if (typeof frontMatter.description === "string" && frontMatter.description.trim()) {
-        return cleanDescriptionText(frontMatter.description);
-    }
-    for (const para of body.split("\n\n")) {
-        const trimmed = para.trim();
-        if (!trimmed) continue;
-        if (trimmed.startsWith("#")) continue; // headings
-        if (/^(import\s|export\s)/.test(trimmed)) continue; // MDX imports/exports
-        if (/^(:::|<)/.test(trimmed)) continue; // admonitions, JSX, HTML comments
-        if (/^_*\s*reported by\b/i.test(trimmed)) continue; // CVE reporter attribution
-        if (isListBlock(trimmed)) continue; // prerequisite/feature bullet lists
-        return firstSentence(cleanDescriptionText(trimmed));
-    }
-    return "";
-}
-
-/**
  * Normalize a description for use in an index line: strip blockquote markers,
  * `-- <source>` attribution lines, list bullets, and inline Markdown (links,
  * emphasis, code, images) down to their text, then collapse to a single line.
@@ -147,6 +121,33 @@ function isListBlock(block) {
 }
 
 /**
+ * Extract a short description: frontmatter, else the first usable prose
+ * paragraph. Headings, MDX imports/exports, admonitions, JSX/HTML, CVE reporter
+ * attributions, and bullet lists (prerequisites/feature enumerations) are
+ * skipped so the description is a clean sentence, not a flattened block.
+ *
+ * @param {Record<string, any>} frontMatter
+ * @param {string} body
+ * @returns {string}
+ */
+function extractDescription(frontMatter, body) {
+    if (typeof frontMatter.description === "string" && frontMatter.description.trim()) {
+        return cleanDescriptionText(frontMatter.description);
+    }
+    for (const para of body.split("\n\n")) {
+        const trimmed = para.trim();
+        if (!trimmed) continue;
+        if (trimmed.startsWith("#")) continue; // headings
+        if (/^(import\s|export\s)/.test(trimmed)) continue; // MDX imports/exports
+        if (/^(:::|<)/.test(trimmed)) continue; // admonitions, JSX, HTML comments
+        if (/^_*\s*reported by\b/i.test(trimmed)) continue; // CVE reporter attribution
+        if (isListBlock(trimmed)) continue; // prerequisite/feature bullet lists
+        return firstSentence(cleanDescriptionText(trimmed));
+    }
+    return "";
+}
+
+/**
  * Title-case a slug for display (e.g. "endpoint-devices" -> "Endpoint Devices").
  * A configured label (see {@link groupLabel}) overrides this for slugs whose
  * words need real expansion (e.g. "sys-mgmt" -> "System Management").
@@ -161,7 +162,7 @@ function isListBlock(block) {
 function humanizeSlug(slug) {
     return slug
         .normalize("NFKD")
-        .replace(/[̀-ͯ]/g, "") // strip combining diacritics
+        .replace(/[\u0300-\u036f]/g, "") // strip combining diacritics
         .replace(/[^a-zA-Z0-9]+/g, " ") // any separator run -> word boundary
         .trim()
         .split(/\s+/)
@@ -205,11 +206,11 @@ export function parseDocFile(filePath, baseDir) {
  * @returns {string | undefined}
  */
 function findMatchingRoute(routesPaths, tail) {
-    const normalized = tail.toLowerCase().replace(/\/+$/, "");
+    const normalized = trimTrailingSlashes(tail.toLowerCase());
     if (!normalized) return undefined;
 
     const matches = routesPaths.filter((route) => {
-        const r = route.toLowerCase().replace(/\/+$/, "");
+        const r = trimTrailingSlashes(route.toLowerCase());
         return r === `/${normalized}` || r.endsWith(`/${normalized}`);
     });
 

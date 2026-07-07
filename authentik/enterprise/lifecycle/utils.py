@@ -6,8 +6,7 @@ from django.db.models import Model
 from django.urls import reverse
 from rest_framework.serializers import ChoiceField, Serializer, UUIDField
 
-from authentik.core.api.utils import ModelSerializer
-from authentik.core.models import Application, Group, User
+from authentik.core.models import Application, Group
 from authentik.rbac.models import Role
 
 
@@ -58,18 +57,3 @@ class ContentTypeField(ChoiceField):
 class GenericForeignKeySerializer(Serializer):
     content_type = ContentTypeField()
     object_id = UUIDField()
-
-
-class ReviewerGroupSerializer(ModelSerializer):
-    class Meta:
-        model = Group
-        fields = [
-            "pk",
-            "name",
-        ]
-
-
-class ReviewerUserSerializer(ModelSerializer):
-    class Meta:
-        model = User
-        fields = ["pk", "uuid", "username", "name"]

@@ -7,7 +7,6 @@ updates:
       - /
       # Required to update composite actions
       # https://github.com/dependabot/dependabot-core/issues/6704
-      - /.github/actions/cherry-pick
       - /.github/actions/setup
       - /.github/actions/docker-push-variables
       - /.github/actions/comment-pr-instructions
@@ -243,6 +242,8 @@ updates:
         patterns:
           - "@docusaurus/*"
           - "@goauthentik/docusaurus-config"
+          - "docusaurus-plugin-openapi-docs"
+          - "docusaurus-theme-openapi-docs"
       build:
         patterns:
           - "@swc/*"
