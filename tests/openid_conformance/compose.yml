@@ -1,6 +1,6 @@
 services:
   mongodb:
-    image: docker.io/library/mongo:6.0.13
+    image: docker.io/library/mongo:8.2.11
   nginx:
     image: registry.gitlab.com/openid/conformance-suite/nginx:release-v5.2.0
     healthcheck:
