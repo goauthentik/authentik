@@ -43,6 +43,7 @@
 
 <trans-unit id="s12d6dde9b30c3093">
   <source>Dismiss</source>
+  <target>Odrzuć</target>
 </trans-unit>
 <trans-unit id="sfe629863ba1338c2">
   <source>Connection error, reconnecting...</source>
@@ -50,12 +51,15 @@
 </trans-unit>
 <trans-unit id="sdaecc3c29a27c5c5">
   <source>An unknown error occurred</source>
+  <target>Wystąpił nieznany błąd</target>
 </trans-unit>
 <trans-unit id="se84ba7f105934495">
   <source>Please check the browser console for more details.</source>
+  <target>Sprawdź konsolę przeglądarki, aby uzyskać więcej szczegółów.</target>
 </trans-unit>
 <trans-unit id="sdea479482318489d">
   <source>Status messages</source>
+  <target>Komunikaty o stanie</target>
 </trans-unit>
 <trans-unit id="s9d8b8aa2b404c2c8">
   <source>Settings</source>
@@ -79,15 +83,19 @@
 </trans-unit>
 <trans-unit id="s6abb1cd87fe0114e">
   <source>Home</source>
+  <target>Strona główna</target>
 </trans-unit>
 <trans-unit id="s91ae4b6bf981682b">
   <source>authentik Logo</source>
+  <target>Logo authentik</target>
 </trans-unit>
 <trans-unit id="se58e6ed983bf34b0">
   <source>Collapse navigation</source>
+  <target>Zwiń nawigację</target>
 </trans-unit>
 <trans-unit id="sc6ef25894ed00175">
   <source>Expand navigation</source>
+  <target>Rozwiń nawigację</target>
 </trans-unit>
 <trans-unit id="s7031e6928c44cedd">
   <source>User interface</source>
@@ -306,6 +314,7 @@
 </trans-unit>
 <trans-unit id="s44872da71d5307c8">
   <source>There was an error submitting the form.</source>
+  <target>Wystąpił błąd podczas przesyłania formularza.</target>
 </trans-unit>
 <trans-unit id="se166e95fe447ebcd">
   <source>Close dialog</source>
@@ -461,21 +470,27 @@
 </trans-unit>
 <trans-unit id="s482bc55a78891ef7">
   <source>A code has been sent to your address: <x id="0" equiv-text="${email}"/></source>
+  <target>Kod został wysłany na Twój adres: <x id="0" equiv-text="${email}"/></target>
 </trans-unit>
 <trans-unit id="s5afa3fc77ce8d94d">
   <source>A code has been sent to your email address.</source>
+  <target>Kod został wysłany na Twój adres e-mail.</target>
 </trans-unit>
 <trans-unit id="s37f47fa981493c3b">
   <source>A one-time use code has been sent to you via SMS text message.</source>
+  <target>Jednorazowy kod został do Ciebie wysłany w wiadomości SMS.</target>
 </trans-unit>
 <trans-unit id="sc92a7248dba5f388">
   <source>Open your authenticator app to retrieve a one-time use code.</source>
+  <target>Otwórz Twoją aplikację uwierzytelniania aby pobrać jednorazowy kod</target>
 </trans-unit>
 <trans-unit id="s21d95b4651ad7a1e">
   <source>Enter a one-time recovery code for this user.</source>
+  <target>Podaj jednorazowy kod odzyskiwania dla tego użytkownika</target>
 </trans-unit>
 <trans-unit id="s2e1d5a7d320c25ef">
   <source>Enter the code from your authenticator device.</source>
+  <target>Podaj kod z Twojego urządzenia uwierzytelniającego</target>
 </trans-unit>
 <trans-unit id="se2d65e13768468e0">
   <source>Internal</source>
@@ -499,6 +514,7 @@
 </trans-unit>
 <trans-unit id="s3633ffed92acaecb">
   <source><x id="0" equiv-text="${this.label || &quot;&quot;}"/> table pagination</source>
+  <target><x id="0" equiv-text="${this.label || &quot;&quot;}"/> paginacja tabeli</target>
 </trans-unit>
 <trans-unit id="s04c5a637328c9b67">
   <source><x id="0" equiv-text="${startIndex}"/> - <x id="1" equiv-text="${endIndex}"/> of <x id="2" equiv-text="${pageCount}"/></source>
@@ -517,6 +533,7 @@
 </trans-unit>
 <trans-unit id="sc57b150b53a3b9e6">
   <source>This field is required.</source>
+  <target>To pole jest wymagane.</target>
 </trans-unit>
 <trans-unit id="sffa721bb6aa3128d">
   <source>Search...</source>
@@ -524,15 +541,19 @@
 </trans-unit>
 <trans-unit id="s5d929ff1619ac0c9">
   <source>Search</source>
+  <target>Szukaj</target>
 </trans-unit>
 <trans-unit id="sbe3756d568bb048e">
   <source>Query suggestions</source>
+  <target>Sugestie zapytań</target>
 </trans-unit>
 <trans-unit id="sf6e7447df476939f">
   <source>Query input</source>
+  <target>Wprowadzenie zapytania</target>
 </trans-unit>
 <trans-unit id="s5638954badbd5b21">
   <source>Table Search</source>
+  <target>Wyszukiwanie w tabeli</target>
 </trans-unit>
 <trans-unit id="s5f4586bc1e2740e6">
   <source>Clear search</source>
@@ -540,6 +561,7 @@
 </trans-unit>
 <trans-unit id="sd9b15395dd103f80">
   <source>Sort by "<x id="0" equiv-text="${label}"/>"</source>
+  <target>Sortuj według "<x id="0" equiv-text="${label}"/>"</target>
 </trans-unit>
 <trans-unit id="sfd44ce578f643145">
   <source>Failed to fetch objects.</source>
@@ -547,12 +569,15 @@
 </trans-unit>
 <trans-unit id="s7dd64bb0c1fa8e87">
   <source>Select "<x id="0" equiv-text="${rowLabel}"/>" row</source>
+  <target>Wybierz wiersz "<x id="0" equiv-text="${rowLabel}"/>"</target>
 </trans-unit>
 <trans-unit id="sd26f670ca5d5b0c6">
   <source>Collapse row</source>
+  <target>Zwiń wiersz</target>
 </trans-unit>
 <trans-unit id="s73f51a3532f29159">
   <source>Expand row</source>
+  <target>Rozwiń wiersz</target>
 </trans-unit>
 <trans-unit id="s7b7163270e57e8b4">
   <source>Refresh</source>
@@ -560,21 +585,27 @@
 </trans-unit>
 <trans-unit id="sda170fd79bca1616">
   <source><x id="0" equiv-text="${this.label ?? &quot;Table&quot;}"/> actions</source>
+  <target><x id="0" equiv-text="${this.label ?? &quot;tabeli&quot;}"/> akcje</target>
 </trans-unit>
 <trans-unit id="sd09354b0220a13ce">
   <source>Select all rows on page (<x id="0" equiv-text="${selectedCount}"/> of <x id="1" equiv-text="${pageItemCount}"/> selected)</source>
+  <target>Wybierz wszystkie wiersze na stronie (zaznaczono <x id="0" equiv-text="${selectedCount}"/> z <x id="1" equiv-text="${pageItemCount}"/>)</target>
 </trans-unit>
 <trans-unit id="s76ef34813bff563f">
   <source>Last refreshed</source>
+  <target>Ostatnio odświeżono</target>
 </trans-unit>
 <trans-unit id="s59c9e8f57e3a0075">
   <source><x id="0" equiv-text="${this.label}"/> table</source>
+  <target><x id="0" equiv-text="${this.label}"/> tabela</target>
 </trans-unit>
 <trans-unit id="sa25b60b4fac481aa">
   <source>Table content</source>
+  <target>Zawartość tabeli</target>
 </trans-unit>
 <trans-unit id="s15a7e4227737b7c4">
   <source>Column actions</source>
+  <target>Akcje kolumn</target>
 </trans-unit>
 <trans-unit id="sa65e7bc7ddd3484d">
   <source>Anonymous user</source>
@@ -587,6 +618,7 @@
 </trans-unit>
 <trans-unit id="s7225aacf0eee94d2">
   <source>Authenticated as <x id="0" equiv-text="${renderUsername(event.user.authenticated_as)}"/></source>
+  <target>Uwierzytelniono jako <x id="0" equiv-text="${renderUsername(event.user.authenticated_as)}"/></target>
 </trans-unit>
 <trans-unit id="s2152f3482784705f">
   <source>Recent events</source>
@@ -618,6 +650,7 @@
 </trans-unit>
 <trans-unit id="sd2fa988f1774cfde">
   <source>System Status</source>
+  <target>Status systemu</target>
 </trans-unit>
 <trans-unit id="s113c05ef9996ca4b">
   <source>Embedded outpost is not configured correctly.</source>
@@ -655,6 +688,7 @@
 </trans-unit>
 <trans-unit id="s08272eeeddfd244e">
   <source>An outpost is on an incorrect version!</source>
+  <target>Placówka ma nieprawidłową wersję!</target>
 </trans-unit>
 <trans-unit id="s713d147e1761d0f0">
   <source>Up-to-date!</source>
@@ -674,6 +708,7 @@
 </trans-unit>
 <trans-unit id="s82cced87e15e0665">
   <source>Worker with incorrect version connected.</source>
+  <target>Połączono workera o nieprawidłowej wersji.</target>
 </trans-unit>
 <trans-unit id="s98327528f00365a7">
   <source>Failed to fetch data.</source>
@@ -681,9 +716,11 @@
 </trans-unit>
 <trans-unit id="s66f26fdcbe2101eb">
   <source>Chart</source>
+  <target>Wykres</target>
 </trans-unit>
 <trans-unit id="s7b58d033cc5112ab">
   <source>Event volume chart</source>
+  <target>Wykres wolumenu zdarzeń</target>
 </trans-unit>
 <trans-unit id="s11bc220e8fa9d797">
   <source>Authorizations</source>
@@ -703,6 +740,7 @@
 </trans-unit>
 <trans-unit id="s0914f91b3f985f0f">
   <source>Synchronization status chart</source>
+  <target>Wykres statusu synchronizacji</target>
 </trans-unit>
 <trans-unit id="s477de089b505a6ea">
   <source>SCIM Provider</source>
@@ -722,6 +760,7 @@
 </trans-unit>
 <trans-unit id="s334b3924d2bd5d55">
   <source>Kerberos Source</source>
+  <target>Źródło Kerberos</target>
 </trans-unit>
 <trans-unit id="s8a75e83497a183a2">
   <source>Healthy</source>
@@ -737,6 +776,7 @@
 </trans-unit>
 <trans-unit id="s3f01dbc864d2a8b9">
   <source>Outpost status chart</source>
+  <target>Wykres statusu placówki</target>
 </trans-unit>
 <trans-unit id="sfeb82261bcf99edd">
   <source>Healthy outposts</source>
@@ -752,6 +792,7 @@
 </trans-unit>
 <trans-unit id="s74d86eb7e5a10fdf">
   <source>Operation failed to complete</source>
+  <target>Operacja nie powiodła się</target>
 </trans-unit>
 <trans-unit id="sc381422c585b867f">
   <source>Quick actions</source>
@@ -772,6 +813,7 @@
 </trans-unit>
 <trans-unit id="sd5e9b70ffb7a8b46">
   <source>Skip to content</source>
+  <target>Przejdź do treści</target>
 </trans-unit>
 <trans-unit id="sfd13ca8ebd857c2e">
   <source>Create a new application</source>
@@ -815,9 +857,11 @@
 </trans-unit>
 <trans-unit id="s85a488cacb57688b">
   <source>Welcome, <x id="0" equiv-text="${displayName}"/></source>
+  <target>Witaj, <x id="0" equiv-text="${displayName}"/></target>
 </trans-unit>
 <trans-unit id="scdb1bac161852c73">
   <source>Welcome</source>
+  <target>Witaj</target>
 </trans-unit>
 <trans-unit id="s41e035c4bb8d15f2">
   <source>General system status</source>
@@ -928,27 +972,35 @@
 </trans-unit>
 <trans-unit id="s7f073c746d0f6324">
   <source>Form actions</source>
+  <target>Akcje formularza</target>
 </trans-unit>
 <trans-unit id="sfd81bd296e2f7585">
+  <source>Submit action</source>
   <source>Submit action</source>
 </trans-unit>
 <trans-unit id="s5baec8151f4a4433">
   <source>Cancel action</source>
+  <target>Anuluj akcję</target>
 </trans-unit>
 <trans-unit id="sbcdf61483337948a">
   <source>Successfully updated schedule.</source>
+  <target>Pomyślnie zaktualizowano harmonogram.</target>
 </trans-unit>
 <trans-unit id="sd372fe5b712f6b30">
   <source>Crontab</source>
+  <target>Crontab</target>
 </trans-unit>
 <trans-unit id="s95bc8722b2708f8b">
   <source>Paused</source>
+  <target>Wstrzymano</target>
 </trans-unit>
 <trans-unit id="se41af830054194bc">
   <source>Pause this schedule</source>
+  <target>Wstrzymaj ten harmonogram</target>
 </trans-unit>
 <trans-unit id="sc0448bc8a76227cb">
   <source>Failed to fetch objects: </source>
+  <target>Nie udało się pobrać obiektów: </target>
 </trans-unit>
 <trans-unit id="sf485014051ad0cf7">
   <source>Successfully assigned permission.</source>
@@ -1000,6 +1052,7 @@
 </trans-unit>
 <trans-unit id="s7753c012594cc69e">
   <source>Assigned to role</source>
+  <target>Przypisano do roli</target>
 </trans-unit>
 <trans-unit id="s67e136af8fc1107b">
   <source>Assign permission</source>
@@ -1035,18 +1088,23 @@
 </trans-unit>
 <trans-unit id="sd091e43d5e99dea4">
   <source>Waiting to run</source>
+  <target>Oczekiwanie na uruchomienie</target>
 </trans-unit>
 <trans-unit id="s2f06038e5cfd09df">
   <source>Consumed</source>
+  <target>Skonsumowano</target>
 </trans-unit>
 <trans-unit id="s556a7cc7c0c9f032">
   <source>Pre-processing</source>
+  <target>Przetwarzanie wstępne</target>
 </trans-unit>
 <trans-unit id="s85994a70cd39166c">
   <source>Running</source>
+  <target>Uruchomiono</target>
 </trans-unit>
 <trans-unit id="sb37a630168e1e0e5">
   <source>Post-processing</source>
+  <target>Przetwarzanie końcowe</target>
 </trans-unit>
 <trans-unit id="sbe9a51f29a4a2c5b">
   <source>Successful</source>
@@ -1062,30 +1120,39 @@
 </trans-unit>
 <trans-unit id="s94f08f46277af7d6">
   <source>Running tasks</source>
+  <target>Działające zadania</target>
 </trans-unit>
 <trans-unit id="s8b551364b894d1ee">
   <source>Queued tasks</source>
+  <target>Zadania w kolejce</target>
 </trans-unit>
 <trans-unit id="s2139d19009989a19">
   <source>Successful tasks</source>
+  <target>Zadania zakończone pomyślnie</target>
 </trans-unit>
 <trans-unit id="s0787cd9eab5aa6e3">
   <source>Error tasks</source>
+  <target>Zadania z błędami</target>
 </trans-unit>
 <trans-unit id="s03ee3cfb0919c62c">
   <source>Task</source>
+  <target>Zadanie</target>
 </trans-unit>
 <trans-unit id="sc7637275f670c938">
   <source>Queue</source>
+  <target>Kolejka</target>
 </trans-unit>
 <trans-unit id="s84fb675fb17d4455">
   <source>Retries</source>
+  <target>Ponowienia</target>
 </trans-unit>
 <trans-unit id="s1d300a2f13c19ab4">
   <source>Planned execution time</source>
+  <target>Planowany czas wykonania</target>
 </trans-unit>
 <trans-unit id="sb91d1be10eb2c7da">
   <source>Last updated</source>
+  <target>Ostatnio zaktualizowano</target>
 </trans-unit>
 <trans-unit id="sad3e3c8146fc920f">
   <source>Status</source>
@@ -1097,39 +1164,51 @@
 </trans-unit>
 <trans-unit id="sa3242c7021e01280">
   <source>Row Actions</source>
+  <target>Akcje wiersza</target>
 </trans-unit>
 <trans-unit id="s911c2c952e64b223">
   <source>Show only standalone tasks</source>
+  <target>Pokaż tylko samodzielne zadania</target>
 </trans-unit>
 <trans-unit id="s14053a4609676b8b">
   <source>Exclude successful tasks</source>
+  <target>Wyklucz zadania zakończone pomyślnie</target>
 </trans-unit>
 <trans-unit id="s8ff646d0515aab2a">
   <source>Retry task</source>
+  <target>Ponów zadanie</target>
 </trans-unit>
 <trans-unit id="sac44b0f4dc14c227">
   <source>Current execution logs</source>
+  <target>Dzienniki bieżącego wykonania</target>
 </trans-unit>
 <trans-unit id="s5e13dff03b580216">
   <source>Previous executions logs</source>
+  <target>Dzienniki poprzednich wykonań</target>
 </trans-unit>
 <trans-unit id="s9b8dccb514a0e34c">
   <source>Schedule</source>
+  <target>Harmonogram</target>
 </trans-unit>
 <trans-unit id="sf92789320708efed">
   <source>Next run</source>
+  <target>Następne uruchomienie</target>
 </trans-unit>
 <trans-unit id="s1aecc6c0d6cbf4ed">
   <source>Last status</source>
+  <target>Ostatni status</target>
 </trans-unit>
 <trans-unit id="s6089c283e28012fb">
   <source>Show only standalone schedules</source>
+  <target>Pokaż tylko samodzielne harmonogramy</target>
 </trans-unit>
 <trans-unit id="s48006fb6e0b1860a">
   <source>Run scheduled task now</source>
+  <target>Uruchom zaplanowane zadanie teraz</target>
 </trans-unit>
 <trans-unit id="s6492593d534108e1">
   <source>Update Schedule</source>
+  <target>Aktualizuj harmonogram</target>
 </trans-unit>
 <trans-unit id="s64ef2a6c2dd1d3d1">
   <source>Edit</source>
@@ -1137,9 +1216,11 @@
 </trans-unit>
 <trans-unit id="sc797fd9076cc136d">
   <source>Tasks</source>
+  <target>Zadania</target>
 </trans-unit>
 <trans-unit id="sf2d616b20d62240d">
   <source>Schedules</source>
+  <target>Harmonogramy</target>
 </trans-unit>
 <trans-unit id="s3b34d9930e33bd46">
   <source>System Tasks</source>
@@ -1159,9 +1240,11 @@
 </trans-unit>
 <trans-unit id="s56e7ff6cc2abeb0d">
   <source>Wizard steps</source>
+  <target>Kroki kreatora</target>
 </trans-unit>
 <trans-unit id="s04e09c193d15e4b4">
   <source>Wizard navigation</source>
+  <target>Nawigacja kreatora</target>
 </trans-unit>
 <trans-unit id="s0c9670f429e74283">
   <source>New application</source>
@@ -1169,6 +1252,7 @@
 </trans-unit>
 <trans-unit id="s140111d464591e6b">
   <source>Create a new application and configure a provider for it.</source>
+  <target>Utwórz nową aplikację i skonfiguruj dla niej dostawcę.</target>
 </trans-unit>
 <trans-unit id="s1a0e95458b44d7f8">
   <source>Any policy must match to grant access</source>
@@ -1180,21 +1264,27 @@
 </trans-unit>
 <trans-unit id="sb80507bed88545a6">
   <source>An application name is required</source>
+  <target>Nazwa aplikacji jest wymagana</target>
 </trans-unit>
 <trans-unit id="s39c052006b2b141a">
   <source>Not a valid URL</source>
+  <target>Nieprawidłowy adres URL</target>
 </trans-unit>
 <trans-unit id="s317f3ab0da3d068a">
   <source>Not a valid slug</source>
+  <target>Nieprawidłowy ciąg (slug)</target>
 </trans-unit>
 <trans-unit id="s0268ce9f2abb84de">
   <source>Configure the Application</source>
+  <target>Skonfiguruj aplikację</target>
 </trans-unit>
 <trans-unit id="s07b0bf005510fe29">
   <source>Type an application name...</source>
+  <target>Wpisz nazwę aplikacji...</target>
 </trans-unit>
 <trans-unit id="s972540f502b0f4dc">
   <source>Application Name</source>
+  <target>Nazwa aplikacji</target>
 </trans-unit>
 <trans-unit id="s91f70424f5d5d23e">
   <source>Slug</source>
@@ -1210,6 +1300,7 @@
 </trans-unit>
 <trans-unit id="sc22c7703fd074f5f">
   <source>e.g. Collaboration, Communication, Internal, etc.</source>
+  <target>np. Współpraca, Komunikacja, Wewnętrzne, itp.</target>
 </trans-unit>
 <trans-unit id="sdae55084f6cb2662">
   <source>Optionally enter a group name. Applications with identical groups are shown grouped together.</source>
@@ -1229,6 +1320,7 @@
 </trans-unit>
 <trans-unit id="s71e967b36e080e3c">
   <source>https://...</source>
+  <target>https://...</target>
 </trans-unit>
 <trans-unit id="s992f8d1a776e763c">
   <source>If left empty, authentik will try to extract the launch URL based on the selected provider.</source>
@@ -1260,6 +1352,7 @@
 </trans-unit>
 <trans-unit id="s030ed8a3f12c23ff">
   <source>Configure Bindings</source>
+  <target>Konfiguruj powiązania</target>
 </trans-unit>
 <trans-unit id="s030ac0829bb50a49">
   <source>Policy <x id="0" equiv-text="${item.policyObj?.name}"/></source>
@@ -1278,6 +1371,7 @@
 </trans-unit>
 <trans-unit id="sc387b20e6d629087">
   <source>Configure Policy/User/Group Bindings</source>
+  <target>Konfiguruj powiązania Zasad/Użytkownika/Grupy</target>
 </trans-unit>
 <trans-unit id="s473f0143efa3f706">
   <source>These policies control which users can access this application.</source>
@@ -1285,6 +1379,7 @@
 </trans-unit>
 <trans-unit id="s71c3ec95efe723ca">
   <source>No bound policies.</source>
+  <target>Brak powiązanych zasad.</target>
 </trans-unit>
 <trans-unit id="sc15d60377cc8aaac">
   <source>No policies are currently bound to this object.</source>
@@ -1292,9 +1387,11 @@
 </trans-unit>
 <trans-unit id="sab1786ef3c0383ba">
   <source>Bind policy/group/user</source>
+  <target>Powiąż zasadę/grupę/użytkownika</target>
 </trans-unit>
 <trans-unit id="s082ea0f3c0a854ff">
   <source>Configure Policy Bindings</source>
+  <target>Skonfiguruj powiązania zasad</target>
 </trans-unit>
 <trans-unit id="s2e422519ed38f7d8">
   <source>Pass</source>
@@ -1302,6 +1399,7 @@
 </trans-unit>
 <trans-unit id="sac315d5bd28d4efa">
   <source>Don't Pass</source>
+  <target>Nie przepuść</target>
 </trans-unit>
 <trans-unit id="s40b80eb4cc1f0e0c">
   <source>Edit Binding</source>
@@ -1309,9 +1407,11 @@
 </trans-unit>
 <trans-unit id="s54a37223ce938349">
   <source>Save Binding</source>
+  <target>Zapisz powiązanie</target>
 </trans-unit>
 <trans-unit id="s931754aabd4a6a47">
   <source>Create a Policy/User/Group Binding</source>
+  <target>Utwórz powiązanie Zasady/Użytkownika/Grupy</target>
 </trans-unit>
 <trans-unit id="s042baf59902a711f">
   <source>Policy</source>
@@ -1327,6 +1427,7 @@
 </trans-unit>
 <trans-unit id="s5eba8fa19126f70a">
   <source>Learn more about the enterprise license.</source>
+  <target>Dowiedz się więcej o licencji enterprise.</target>
 </trans-unit>
 <trans-unit id="s7181a5504472e856">
   <source>Apply changes</source>
@@ -1334,9 +1435,11 @@
 </trans-unit>
 <trans-unit id="s498d08fb8f63727f">
   <source>UNNAMED</source>
+  <target>BEZ NAZWY</target>
 </trans-unit>
 <trans-unit id="s74b47e964bb82e5f">
   <source>Wizard content</source>
+  <target>Treść kreatora</target>
 </trans-unit>
 <trans-unit id="sad59707375956ad2">
   <source>Finish</source>
@@ -1348,12 +1451,15 @@
 </trans-unit>
 <trans-unit id="s7d4ec232535a36f0">
   <source>Choose a Provider</source>
+  <target>Wybierz dostawcę</target>
 </trans-unit>
 <trans-unit id="sb7be945aa799b8d7">
   <source>Please choose a provider type before proceeding.</source>
+  <target>Przed kontynuacją wybierz typ dostawcy.</target>
 </trans-unit>
 <trans-unit id="s2289ff3b411251d8">
   <source>Choose a Provider Type</source>
+  <target>Wybierz typ dostawcy</target>
 </trans-unit>
 <trans-unit id="sb157267c85fdff30">
   <source>Certificate</source>
@@ -1361,6 +1467,7 @@
 </trans-unit>
 <trans-unit id="s9bcd7cad5f5e2b15">
   <source>Select a certificate...</source>
+  <target>Wybierz certyfikat...</target>
 </trans-unit>
 <trans-unit id="sc25edca57df81461">
   <source>Authentication</source>
@@ -1416,6 +1523,7 @@
 </trans-unit>
 <trans-unit id="sd939185840181160">
   <source>Select a flow...</source>
+  <target>Wybierz przepływ...</target>
 </trans-unit>
 <trans-unit id="s0db494ff61b48438">
   <source>Add All Available</source>
@@ -1447,12 +1555,15 @@
 </trans-unit>
 <trans-unit id="s4127b943d6826b8b">
   <source>Search <x id="0" equiv-text="${this.availableLabel}"/>...</source>
+  <target>Szukaj <x id="0" equiv-text="${this.availableLabel}"/>...</target>
 </trans-unit>
 <trans-unit id="ha8e91858b300a3b7">
   <source>(Format: <x id="0" equiv-text="&lt;code&gt;"/>hours=-1;minutes=-2;seconds=-3)<x id="1" equiv-text="&lt;/code&gt;"/>.</source>
+  <target>(Format: <x id="0" equiv-text="&lt;code&gt;"/>hours=-1;minutes=-2;seconds=-3)<x id="1" equiv-text="&lt;/code&gt;"/>.</target>
 </trans-unit>
 <trans-unit id="hbe8e6353371ecb22">
   <source>(Format: <x id="0" equiv-text="&lt;code&gt;"/>hours=1;minutes=2;seconds=3).<x id="1" equiv-text="&lt;/code&gt;"/></source>
+  <target>(Format: <x id="0" equiv-text="&lt;code&gt;"/>hours=1;minutes=2;seconds=3).<x id="1" equiv-text="&lt;/code&gt;"/></target>
 </trans-unit>
 <trans-unit id="sbb8ad22c83d375b1">
   <source>The following keywords are supported:</source>
@@ -1696,6 +1807,7 @@
 </trans-unit>
 <trans-unit id="s91675ea72a0ebe3e">
   <source>Select an authentication flow...</source>
+  <target>Wybierz metodę uwierzytelnienia</target>
 </trans-unit>
 <trans-unit id="sa72a3bd1e7e89926">
   <source>Flow used when a user access this provider and is not authenticated.</source>
@@ -3450,6 +3562,7 @@ nie przechodzi, gdy jedna lub obie wybrane opcje są równe lub wyższe od progu
 </trans-unit>
 <trans-unit id="s66f572bec2bde9c4">
   <source>External applications that use <x id="0" equiv-text="${this.brandingTitle}"/> as an identity provider via protocols like OAuth2 and SAML. All applications are shown here, even ones you cannot access.</source>
+  <target>Aplikacje zewnętrzne, które używają <x id="0" equiv-text="${this.brandingTitle}"/> jako dostawcy tożsamości za pośrednictwem protokołów takich jak OAuth2 i SAML. Tutaj wyświetlane są wszystkie aplikacje, nawet te, do których nie masz dostępu.</target>
 </trans-unit>
 <trans-unit id="sb564f81eb057342e">
   <source>Application Icon</source>
@@ -5939,9 +6052,11 @@ Można tu używać tylko zasad, ponieważ dostęp jest sprawdzany przed uwierzyt
 </trans-unit>
 <trans-unit id="s2e5226fcf269689b">
   <source>Consent given lasts indefinitely</source>
+  <target>Zgoda udzielona na czas nieokreślony</target>
 </trans-unit>
 <trans-unit id="s7eff620292ed9349">
   <source>Consent expires</source>
+  <target>Zgoda wygasa</target>
 </trans-unit>
 <trans-unit id="s6f328f2d8382d998">
   <source>Consent expires in</source>
@@ -6534,15 +6649,18 @@ w toku, tworzony jest nowy użytkownik i zapisywane są do niego dane.</target>
 </trans-unit>
 <trans-unit id="s0d7dea184036a74d">
   <source>Require no authentication</source>
+  <target>Nie wymagaj uwierzytelnienia</target>
 </trans-unit>
 <trans-unit id="s66f533986ba6182c">
   <source>Require superuser</source>
+  <target>Wymagaj superużytkownika</target>
 </trans-unit>
 <trans-unit id="s26c0a8789930b5fd">
   <source>Require being redirected from another flow</source>
 </trans-unit>
 <trans-unit id="sbfaee8cfbf4e44e8">
   <source>Require Outpost (flow can only be executed from an outpost)</source>
+   <target>Wymagaj placówki (przepływ można wykonać tylko z placówki).</target>
 </trans-unit>
 <trans-unit id="sfad9279cc42c6b61">
   <source>Required authentication level for this flow.</source>
@@ -7883,6 +8001,7 @@ Powiązania z grupami/użytkownikami są sprawdzane względem użytkownika zdarz
 </trans-unit>
 <trans-unit id="s98bb2ae796f1ceef">
   <source>Select another authentication method</source>
+  <target>Wybierz inną metodę autoryzacji</target>
 </trans-unit>
 <trans-unit id="s844fea0bfb10a72a">
   <source>Authentication code</source>
@@ -7956,6 +8075,7 @@ Powiązania z grupami/użytkownikami są sprawdzane względem użytkownika zdarz
 </trans-unit>
 <trans-unit id="s958cedec1cb3fc52">
   <source>Select a configuration stage</source>
+  <target>Wybierz etap konfiguracji</target>
 </trans-unit>
 <trans-unit id="sac17f177f884e238">
   <source>Stay signed in?</source>
@@ -7978,15 +8098,19 @@ Powiązania z grupami/użytkownikami są sprawdzane względem użytkownika zdarz
 </trans-unit>
 <trans-unit id="sac88482c48453fc8">
   <source>You've logged out of <x id="0" equiv-text="${challenge.applicationName}"/>. You can go back to the overview to launch another application, or log out of your authentik account.</source>
+  <target>Zostałeś wylogowany z <x id="0" equiv-text="${this.challenge.applicationName}"/>. Możesz wrócić do przeglądu, aby uruchomić inną aplikację lub wylogować się całkowicie ze Swojego konta.</target>
 </trans-unit>
 <trans-unit id="s3108167b562674e2">
   <source>Go back to overview</source>
+  <target>Powróć do przeglądu aplikacji</target>
 </trans-unit>
 <trans-unit id="sdb749e793de55478">
   <source>Log out of <x id="0" equiv-text="${challenge.brandName}"/></source>
+  <target>Wyloguj się z <x id="0" equiv-text="${this.challenge.brandName}"/></target>
 </trans-unit>
 <trans-unit id="s521681ed1d5ff814">
   <source>Log back into <x id="0" equiv-text="${challenge.applicationName}"/></source>
+  <target>Zaloguj się ponownie do <x id="0" equiv-text="${this.challenge.applicationName}"/></target>
 </trans-unit>
 <trans-unit id="s78869b8b2bc26d0d">
   <source>SAML Provider</source>
