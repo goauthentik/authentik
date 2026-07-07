@@ -27,6 +27,7 @@ import {
     TransclusionChildSymbol,
 } from "#elements/dialogs/shared";
 import { reportInvalidFields } from "#elements/forms/errors";
+import { AKFormSubmittedEvent } from "#elements/forms/events";
 import Styles from "#elements/forms/Form.css";
 import { reportValidityDeep } from "#elements/forms/FormGroup";
 import { PreventFormSubmit } from "#elements/forms/helpers";
@@ -78,7 +79,7 @@ export interface AKFormSubmitEvent<T> extends SubmitEvent {
  *
  * @slot - Where the form goes if `renderForm()` returns undefined.
  * @fires ak-refresh - Dispatched when the form has been successfully submitted and data has changed.
- * @fires ak-submitted - Dispatched when the form is submitted.
+ * @fires ak-form-submitted - Dispatched after a successful submission, carrying the `send()` response.
  * @fires submit - The native submit event, re-dispatched after a successful submission for parent components to listen for.
  * @csspart partname - description
  *
@@ -564,6 +565,8 @@ export class Form<T = Record<string, unknown>, D = T>
                         composed: true,
                     }),
                 );
+
+                this.dispatchEvent(new AKFormSubmittedEvent(response));
 
                 // Re-dispatch the submit event so that parent components can listen for it.
                 this.dispatchEvent(submitEvent);
