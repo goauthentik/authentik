@@ -214,6 +214,7 @@ dependencies = [
  "arc-swap",
  "argh",
  "authentik-axum",
+ "authentik-client",
  "authentik-common",
  "axum",
  "color-eyre",

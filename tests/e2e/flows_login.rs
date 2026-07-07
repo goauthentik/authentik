@@ -1,177 +1,346 @@
 use std::time::Duration;
 
+use ak_client::{
+    apis::{configuration::Configuration, flows_api::flows_instances_partial_update},
+    models::PatchedFlowRequest,
+};
 use eyre::Result;
 use reqwest::{Method, StatusCode};
+use serde_json::Value;
 use testcontainers::{
     compose::DockerCompose,
     core::{WaitFor, wait::HttpWaitStrategy},
 };
 use thirtyfour::prelude::*;
-use tokio::time::Instant;
+use tokio::time::{Instant, sleep};
 
-async fn wait_for_url(
-    driver: &WebDriver,
-    target: &str,
-    timeout: Duration,
-    poll: Duration,
-) -> WebDriverResult<()> {
-    let start = Instant::now();
-    loop {
-        if driver.current_url().await?.as_str() == target {
-            return Ok(());
+pub struct AuthentikStackBuilder {
+    wait_for_flows: Vec<String>,
+}
+
+impl AuthentikStackBuilder {
+    pub fn new() -> Self {
+        Self::default()
+    }
+
+    pub fn wait_for_flow(mut self, flow: &str) -> Self {
+        self.wait_for_flows.push(flow.to_string());
+        self
+    }
+
+    pub async fn run(self) -> Result<AuthentikStack> {
+        let compose = {
+            let mut compose = DockerCompose::with_local_client(&[concat!(
+                env!("CARGO_MANIFEST_DIR"),
+                "/tests/e2e/compose.yml"
+            )])
+            .with_env("PG_PASS", "password")
+            .with_env("AUTHENTIK_SECRET_KEY", "secret_key")
+            .with_env("AUTHENTIK_TAG", "gh-next");
+
+            for flow in self.wait_for_flows {
+                compose = compose.with_wait_for_service(
+                    "server",
+                    WaitFor::http(
+                        HttpWaitStrategy::new(format!("/if/flow/{flow}/"))
+                            .with_port(9000_u16.into())
+                            .with_method(Method::GET)
+                            .with_expected_status_code(StatusCode::OK),
+                    ),
+                )
+            }
+
+            compose.up().await?;
+
+            compose
+        };
+
+        let driver = {
+            let caps = DesiredCapabilities::chrome();
+            let driver_url = format!(
+                "http://{}:{}",
+                compose
+                    .service("selenium")
+                    .expect("a selenium to be started")
+                    .get_host()
+                    .await?,
+                compose
+                    .service("selenium")
+                    .expect("a selenium to be started")
+                    .get_host_port_ipv4(4444)
+                    .await?,
+            );
+            WebDriver::new(driver_url, caps).await?
+        };
+
+        let api_config = {
+            let mut api_config = Configuration::default();
+            api_config.base_path = format!(
+                "http://{}:{}/api/v3",
+                compose
+                    .service("server")
+                    .expect("a server to be started")
+                    .get_host()
+                    .await?,
+                compose
+                    .service("server")
+                    .expect("a server to be started")
+                    .get_host_port_ipv4(9000)
+                    .await?,
+            );
+            api_config.bearer_access_token = Some("akadmin".to_owned());
+            api_config
+        };
+
+        Ok(AuthentikStack {
+            compose,
+            driver,
+            api_config,
+        })
+    }
+}
+
+impl Default for AuthentikStackBuilder {
+    fn default() -> Self {
+        Self {
+            wait_for_flows: vec![],
+        }
+    }
+}
+
+#[derive(Default)]
+pub enum Dom {
+    #[default]
+    Shadow,
+    Shady,
+}
+
+#[derive(Default)]
+pub struct LoginOptions {
+    pub dom: Dom,
+    pub skip_stages: Vec<String>,
+}
+
+pub struct AuthentikStack {
+    pub compose: DockerCompose,
+    pub driver: WebDriver,
+    api_config: Configuration,
+}
+
+impl AuthentikStack {
+    pub fn builder() -> AuthentikStackBuilder {
+        Default::default()
+    }
+
+    pub fn api_config(&self) -> &Configuration {
+        &self.api_config
+    }
+
+    pub async fn goto(&self, url: &str) -> Result<()> {
+        self.driver.goto(url).await?;
+        Ok(())
+    }
+
+    pub async fn wait_for_url(&self, url: &str) -> Result<()> {
+        let start = Instant::now();
+        loop {
+            if self.driver.current_url().await?.as_str() == url {
+                return Ok(());
+            }
+
+            if start.elapsed() > Duration::from_secs(20) {
+                return Err(WebDriverError::Timeout(format!("URL did not become {url}")).into());
+            }
+
+            sleep(Duration::from_millis(500)).await;
+        }
+    }
+
+    pub async fn get_shadow_root(
+        &self,
+        selector: &str,
+        container: Option<WebElement>,
+    ) -> Result<WebElement> {
+        if let Some(container) = container {
+            Ok(container
+                .query(By::Css(selector))
+                .single()
+                .await?
+                .get_shadow_root()
+                .await?)
+        } else {
+            Ok(self
+                .driver
+                .query(By::Css(selector))
+                .single()
+                .await?
+                .get_shadow_root()
+                .await?)
+        }
+    }
+
+    pub async fn get_shady_dom(&self, selector: &str) -> Result<WebElement> {
+        Ok(self
+            .driver
+            .execute_async(
+                "return document.__shady_native_querySelector(arguments[0])",
+                vec![Value::String(selector.to_string())],
+            )
+            .await?
+            .element()?)
+    }
+
+    pub async fn login(&self, options: LoginOptions) -> Result<()> {
+        if !options
+            .skip_stages
+            .iter()
+            .any(|s| s == "ak-stage-identification")
+        {
+            let username_field = match options.dom {
+                Dom::Shadow => {
+                    let flow_executor = self.get_shadow_root("ak-flow-executor", None).await?;
+                    let identification_stage = self
+                        .get_shadow_root("ak-stage-identification", Some(flow_executor))
+                        .await?;
+                    identification_stage
+                        .query(By::Css("input[name=uidField]"))
+                        .single()
+                        .await?
+                }
+                Dom::Shady => self.get_shady_dom("input[name=uidField]").await?,
+            };
+
+            username_field.click().await?;
+            username_field.send_keys("akadmin").await?;
+            username_field.send_keys(Key::Enter).await?;
         }
 
-        if start.elapsed() > timeout {
-            return Err(WebDriverError::Timeout(format!(
-                "URL did not become {target}"
-            )));
+        if !options.skip_stages.iter().any(|s| s == "ak-stage-password") {
+            let password_field = match options.dom {
+                Dom::Shadow => {
+                    let flow_executor = self.get_shadow_root("ak-flow-executor", None).await?;
+                    let password_stage = self
+                        .get_shadow_root("ak-stage-password", Some(flow_executor))
+                        .await?;
+                    password_stage
+                        .query(By::Css("input[name=password]"))
+                        .single()
+                        .await?
+                }
+                Dom::Shady => self.get_shady_dom("input[name=password]").await?,
+            };
+
+            password_field.click().await?;
+            password_field.send_keys("akadmin").await?;
+            password_field.send_keys(Key::Enter).await?;
         }
 
-        tokio::time::sleep(poll).await;
+        sleep(Duration::from_secs(1)).await;
+
+        Ok(())
+    }
+
+    pub async fn parse_json_content(&self) -> Result<Value> {
+        let body = self
+            .driver
+            .query(By::Tag("pre"))
+            .single()
+            .await?
+            .text()
+            .await?;
+        Ok(serde_json::from_str(&body)?)
+    }
+
+    pub async fn assert_user(&self, username: &str, name: &str, email: &str) -> Result<()> {
+        self.goto("http://server:9000/api/v3/core/users/me/")
+            .await?;
+        self.wait_for_url("http://server:9000/api/v3/core/users/me/")
+            .await?;
+
+        let user_data = self.parse_json_content().await?;
+
+        assert!(user_data.get("user").is_some());
+        assert_eq!(user_data["user"]["username"], username);
+        assert_eq!(user_data["user"]["name"], name);
+        assert_eq!(user_data["user"]["email"], email);
+
+        Ok(())
+    }
+
+    pub async fn quit(self) -> Result<()> {
+        let AuthentikStack {
+            compose, driver, ..
+        } = self;
+
+        let driver = driver.quit().await;
+        let compose = compose.down().await;
+
+        compose?;
+        driver?;
+
+        Ok(())
     }
 }
 
 #[tokio::test]
-async fn trying_stuff_out() -> Result<()> {
-    let mut compose = DockerCompose::with_local_client(&[concat!(
-        env!("CARGO_MANIFEST_DIR"),
-        "/tests/e2e/compose.authentik.yml"
-    )])
-    .with_env("PG_PASS", "password")
-    .with_env("AUTHENTIK_SECRET_KEY", "secret_key")
-    .with_env("AUTHENTIK_TAG", "gh-next")
-    .with_wait_for_service(
-        "server",
-        WaitFor::http(
-            HttpWaitStrategy::new("/if/flow/default-authentication-flow/")
-                .with_port(9000_u16.into())
-                .with_method(Method::GET)
-                .with_expected_status_code(StatusCode::OK),
-        ),
-    );
-
-    dbg!(&compose);
-
-    compose.up().await?;
-
-    dbg!(&compose);
-
-    let caps = DesiredCapabilities::chrome();
-    let driver_url = format!(
-        "http://{}:{}",
-        compose
-            .service("selenium")
-            .expect("selenium")
-            .get_host()
-            .await?,
-        compose
-            .service("selenium")
-            .expect("selenium")
-            .get_host_port_ipv4(4444)
-            .await?,
-    );
-    dbg!(&driver_url);
-    let driver = WebDriver::new(driver_url, caps).await?;
-
-    let url = format!(
-        "http://{}:{}/if/flow/default-authentication-flow/",
-        // compose
-        //     .service("server")
-        //     .expect("server")
-        //     .get_host()
-        //     .await?,
-        // compose
-        //     .service("server")
-        //     .expect("server")
-        //     .get_host_port_ipv4(9000)
-        //     .await?
-        "server",
-        "9000",
-    );
-
-    dbg!(&url);
-
-    driver.goto(url).await?;
-
-    dbg!("we're there");
-
-    let flow_executor = driver.query(By::Css("ak-flow-executor")).single().await?;
-    dbg!(&flow_executor);
-
-    let identification_stage = flow_executor
-        .get_shadow_root()
-        .await?
-        .query(By::Css("ak-stage-identification"))
-        .single()
+async fn login() -> Result<()> {
+    let stack = AuthentikStack::builder()
+        .wait_for_flow("default-authentication-flow")
+        .run()
         .await?;
-    dbg!(&identification_stage);
 
-    let username_field = identification_stage
-        .get_shadow_root()
-        .await?
-        .query(By::Css("input[name=uidField]"))
-        .single()
+    stack
+        .goto("http://server:9000/if/flow/default-authentication-flow/")
         .await?;
-    dbg!(&username_field);
 
-    username_field.click().await?;
-    username_field.send_keys("akadmin").await?;
-    username_field.send_keys(Key::Enter).await?;
+    stack.login(LoginOptions::default()).await?;
 
-    let flow_executor = driver.query(By::Css("ak-flow-executor")).single().await?;
-    dbg!(&flow_executor);
-
-    let password_stage = flow_executor
-        .get_shadow_root()
-        .await?
-        .query(By::Css("ak-stage-password"))
-        .single()
+    stack
+        .wait_for_url("http://server:9000/if/user/#/library")
         .await?;
-    dbg!(&password_stage);
 
-    let password_field = password_stage
-        .get_shadow_root()
-        .await?
-        .query(By::Css("input[name=password]"))
-        .single()
+    stack
+        .assert_user("akadmin", "authentik Default Admin", "root@example.com")
         .await?;
-    dbg!(&password_field);
 
-    password_field.click().await?;
-    password_field.send_keys("akadmin").await?;
-    password_field.send_keys(Key::Enter).await?;
+    stack.quit().await
+}
 
-    tokio::time::sleep(Duration::from_secs(1)).await;
+#[tokio::test]
+async fn login_compatibility_mode() -> Result<()> {
+    let stack = AuthentikStack::builder()
+        .wait_for_flow("default-authentication-flow")
+        .run()
+        .await?;
 
-    wait_for_url(
-        &driver,
-        "http://server:9000/if/user/#/library",
-        Duration::from_secs(20),
-        Duration::from_millis(500),
+    flows_instances_partial_update(
+        &stack.api_config,
+        "default-authentication-flow",
+        Some(PatchedFlowRequest {
+            compatibility_mode: Some(true),
+            ..Default::default()
+        }),
     )
     .await?;
 
-    driver
-        .goto("http://server:9000/api/v3/core/users/me/")
+    stack
+        .goto("http://server:9000/if/flow/default-authentication-flow/")
         .await?;
-    wait_for_url(
-        &driver,
-        "http://server:9000/api/v3/core/users/me/",
-        Duration::from_secs(20),
-        Duration::from_millis(500),
-    )
-    .await?;
 
-    let body = driver.query(By::Tag("pre")).single().await?.text().await?;
-    let data: serde_json::Value = serde_json::from_str(&body)?;
-    dbg!(&data);
+    stack
+        .login(LoginOptions {
+            dom: Dom::Shady,
+            ..Default::default()
+        })
+        .await?;
 
-    assert!(data.get("user").is_some());
-    assert_eq!(data["user"]["username"], "akadmin");
-    assert_eq!(data["user"]["name"], "authentik Default Admin");
-    assert_eq!(data["user"]["email"], "root@example.com");
+    stack
+        .wait_for_url("http://server:9000/if/user/#/library")
+        .await?;
 
-    driver.quit().await?;
+    stack
+        .assert_user("akadmin", "authentik Default Admin", "root@example.com")
+        .await?;
 
-    Ok(())
+    stack.quit().await
 }

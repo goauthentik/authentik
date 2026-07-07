@@ -1,22 +1,74 @@
+---
 services:
-  chromium:
+  postgresql:
+    environment:
+      POSTGRES_DB: authentik
+      POSTGRES_USER: authentik
+      POSTGRES_PASSWORD: ${PG_PASS:?database password required}
+    healthcheck:
+      interval: 30s
+      retries: 5
+      start_period: 20s
+      test:
+        - CMD-SHELL
+        - pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}
+      timeout: 5s
+    image: docker.io/library/postgres:18-alpine
+    restart: unless-stopped
+  server:
+    command: server
+    depends_on:
+      postgresql:
+        condition: service_healthy
+    environment:
+      AUTHENTIK_POSTGRESQL__HOST: postgresql
+      AUTHENTIK_POSTGRESQL__NAME: authentik
+      AUTHENTIK_POSTGRESQL__USER: authentik
+      AUTHENTIK_POSTGRESQL__PASSWORD: ${PG_PASS}
+      AUTHENTIK_SECRET_KEY: ${AUTHENTIK_SECRET_KEY:?secret key required}
+      AUTHENTIK_LOG_LEVEL: debug
+      AUTHENTIK_BOOTSTRAP_EMAIL: root@example.com
+      AUTHENTIK_BOOTSTRAP_PASSWORD: akadmin
+      AUTHENTIK_BOOTSTRAP_TOKEN: akadmin
+    image: ${AUTHENTIK_IMAGE:-ghcr.io/goauthentik/dev-server}:${AUTHENTIK_TAG:?tag}
+    ports:
+      - "9000"
+      - "9443"
+    restart: unless-stopped
+    shm_size: 512mb
+  worker:
+    command: worker
+    depends_on:
+      postgresql:
+        condition: service_healthy
+    environment:
+      AUTHENTIK_POSTGRESQL__HOST: postgresql
+      AUTHENTIK_POSTGRESQL__NAME: authentik
+      AUTHENTIK_POSTGRESQL__USER: authentik
+      AUTHENTIK_POSTGRESQL__PASSWORD: ${PG_PASS}
+      AUTHENTIK_LOG_LEVEL: debug
+      AUTHENTIK_SECRET_KEY: ${AUTHENTIK_SECRET_KEY:?secret key required}
+      AUTHENTIK_BOOTSTRAP_EMAIL: root@example.com
+      AUTHENTIK_BOOTSTRAP_PASSWORD: akadmin
+      AUTHENTIK_BOOTSTRAP_TOKEN: akadmin
+    image: ${AUTHENTIK_IMAGE:-ghcr.io/goauthentik/dev-server}:${AUTHENTIK_TAG:?tag}
+    restart: unless-stopped
+    shm_size: 512mb
+    user: root
+  selenium:
     image: ghcr.io/goauthentik/selenium:148.0-ak-0.44.3
     shm_size: 2g
-    network_mode: host
     restart: always
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
-    labels:
-      - io.goauthentik.tests=selenium
-    profiles:
-      - selenium
     environment:
       VIDEO_READY_PORT: 9912
+    ports:
+      - "4444"
+      - "7900"
+      - "5900"
   mailpit:
     image: docker.io/axllent/mailpit:v1.30.3
     ports:
-      - 1025:1025
-      - 8025:8025
+      - "8025"
     healthcheck:
       test: ["CMD", "wget", "--spider", "http://localhost:8025"]
       interval: 5s
