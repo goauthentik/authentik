@@ -53,7 +53,7 @@ await Promise.all(
 /**
  * Documentation site configuration for Docusaurus.
  */
-export default createDocusaurusConfig({
+const config = createDocusaurusConfig({
     url: "https://api.goauthentik.io",
 
     staticDirectories: [
@@ -176,3 +176,5 @@ export default createDocusaurusConfig({
 });
 
 //#endregion
+
+export default config;
