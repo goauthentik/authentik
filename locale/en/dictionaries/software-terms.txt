@@ -86,7 +86,10 @@ docsmg
 doseq
 dsa
 dsquery
+ellipsize
 ellipsized
+ellipsizing
+ellipsizes
 esbuild
 falsey
 frie
@@ -105,6 +108,7 @@ hibp
 hotp
 hres
 kadmin
+KHTML
 kiprop
 kubeadm
 labelledby
@@ -150,6 +154,7 @@ tgcsp
 tguacd
 tgunicorn
 totp
+truncator
 tscsp
 ttotp
 tuisp

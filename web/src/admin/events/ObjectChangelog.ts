@@ -14,6 +14,7 @@ import { SlottedTemplateResult } from "#elements/types";
 import { EventGeo, renderEventUser } from "#admin/events/utils";
 
 import { Event, EventsApi } from "@goauthentik/api";
+import { TruncateIPAddress } from "@goauthentik/truncator/ak-truncate-ip-address";
 
 import { msg } from "@lit/localize";
 import { html, PropertyValues } from "lit";
@@ -21,31 +22,33 @@ import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-object-changelog")
 export class ObjectChangelog extends Table<Event> {
-    expandable = true;
+    public override expandable = true;
+
+    public override order = "-created";
 
     @property()
-    order = "-created";
+    public targetModelPk!: string | number;
 
     @property()
-    targetModelPk!: string | number;
+    public targetModelApp?: string;
 
     @property()
-    targetModelApp?: string;
+    public targetModelName = "";
 
-    @property()
-    targetModelName = "";
-
-    async apiEndpoint(): Promise<PaginatedResponse<Event>> {
+    protected override async apiEndpoint(): Promise<PaginatedResponse<Event>> {
         let modelName = this.targetModelName;
         let appName = this.targetModelApp;
+
         if (this.targetModelName.indexOf(".") !== -1) {
             const parts = this.targetModelName.split(".", 1);
             appName = parts[0];
             modelName = parts[1];
         }
+
         if (this.targetModelName === "") {
             return Promise.reject();
         }
+
         return aki(EventsApi).eventsEventsList({
             ...(await this.defaultEndpointConfig()),
             action: "model_",
@@ -66,27 +69,26 @@ export class ObjectChangelog extends Table<Event> {
         [msg("Client IP"), "client_ip"],
     ];
 
-    willUpdate(changedProperties: PropertyValues<this>) {
+    protected override willUpdate(changedProperties: PropertyValues<this>) {
         if (changedProperties.has("targetModelName") && this.targetModelName) {
             this.fetch();
         }
     }
 
-    row(item: EventWithContext): SlottedTemplateResult[] {
+    protected override row(item: EventWithContext): SlottedTemplateResult[] {
         return [
-            html`${actionToLabel(item.action)}`,
+            actionToLabel(item.action),
             renderEventUser(item),
             Timestamp(item.created),
-            html`<div>${item.clientIp || msg("-")}</div>
-                <small>${EventGeo(item)}</small>`,
+            html`${TruncateIPAddress(item.clientIp)}<small>${EventGeo(item)}</small>`,
         ];
     }
 
-    renderExpanded(item: Event): SlottedTemplateResult {
+    protected override renderExpanded(item: Event): SlottedTemplateResult {
         return html`<ak-event-info .event=${item as EventWithContext}></ak-event-info>`;
     }
 
-    renderEmpty(): SlottedTemplateResult {
+    protected override renderEmpty(): SlottedTemplateResult {
         return super.renderEmpty(
             html`<ak-empty-state
                 ><span>${msg("No Events found.")}</span>

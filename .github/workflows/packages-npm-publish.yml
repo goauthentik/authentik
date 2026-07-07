@@ -11,6 +11,8 @@ on:
       - packages/docusaurus-config/**
       - packages/logger-js/**
       - packages/esbuild-plugin-live-reload/**
+      - packages/logger-js/**
+      - packages/truncator/**
   workflow_dispatch:
 
 permissions:
@@ -31,6 +33,7 @@ jobs:
           - packages/prettier-config
           - packages/docusaurus-config
           - packages/logger-js
+          - packages/truncator
           - packages/esbuild-plugin-live-reload
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v5

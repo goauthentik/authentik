@@ -5,6 +5,7 @@ packages:
     # it cannot represent in this lockfile. Link it as an external local package
     # instead (see web + sfe package.json).
     - "!packages/client-ts"
+    - "!packages/truncator"
 
 # pnpm's default isolated linker exposes packages strictly — only declared
 # dependencies are visible. The web bundle relies on a handful of phantom
