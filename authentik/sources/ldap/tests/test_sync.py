@@ -420,6 +420,10 @@ class LDAPSyncTests(TestCase):
 
     def test_sync_group_parentship_ad(self):
         """Test group parentship sync"""
+        self.source.base_dn = "dc=t,dc=goauthentik,dc=io"
+        self.source.additional_user_dn = ""
+        self.source.additional_group_dn = ""
+        self.source.save()
         self.source.user_property_mappings.set(
             LDAPSourcePropertyMapping.objects.filter(
                 Q(managed__startswith="goauthentik.io/sources/ldap/default")
@@ -431,6 +435,7 @@ class LDAPSyncTests(TestCase):
                 managed="goauthentik.io/sources/ldap/default-name"
             )
         )
+        connection = MagicMock(return_value=mock_ad_connection())
         self.source.sync_group_parents = True
         connection = MagicMock(return_value=mock_ad_connection())
         with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
@@ -442,20 +447,31 @@ class LDAPSyncTests(TestCase):
             group_sync.sync_full()
             membership_sync = MembershipLDAPSynchronizer(self.source, Task())
             membership_sync.sync_full()
-            group: Group = Group.objects.filter(name="test-group").first()
-            parent_ad_group = Group.objects.filter(name="test-group-containing-groups").first()
-            self.assertTrue(parent_ad_group in group.parents.all(), "Parent AD group missing")
+            child_group_name = "Test Group"
+            parent_group_name = "Domain Admins"
+            group: Group = Group.objects.filter(name=child_group_name).first()
+            parent_ad_group = Group.objects.filter(name=parent_group_name).first()
+            self.assertIsNotNone(group, f"Child group {child_group_name} not found")
+            self.assertIsNotNone(parent_ad_group, f"Parent group {parent_group_name} not found")
+            self.assertTrue(
+                parent_ad_group in group.parents.all(),
+                f"Parent group {parent_group_name} not synced as parent of {child_group_name}",
+            )
             self.assertTrue(
                 additional_parent_group in group.parents.all(),
-                "Additional parent group missing from test-group",
+                f"Additional parent group missing from {child_group_name}'s parents",
             )
             self.assertTrue(
                 additional_parent_group in parent_ad_group.parents.all(),
-                "Additional parent group missing from test-group-containing-groups",
+                f"Additional parent group missing from {parent_group_name}'s parents",
             )
 
     def test_sync_group_parentship_ad_memberOf(self):
         """Test group parentship sync"""
+        self.source.base_dn = "dc=t,dc=goauthentik,dc=io"
+        self.source.additional_user_dn = ""
+        self.source.additional_group_dn = ""
+        self.source.save()
         self.source.user_property_mappings.set(
             LDAPSourcePropertyMapping.objects.filter(
                 Q(managed__startswith="goauthentik.io/sources/ldap/default")
@@ -480,17 +496,25 @@ class LDAPSyncTests(TestCase):
             group_sync.sync_full()
             membership_sync = MembershipLDAPSynchronizer(self.source, Task())
             membership_sync.sync_full()
-            group: Group = Group.objects.filter(name="test-group").first()
-            parent_ad_group = Group.objects.filter(name="test-group-containing-groups").first()
-            self.assertTrue(parent_ad_group in group.parents.all(), "Parent AD group missing.")
+            child_group_name = "Test Group"
+            parent_group_name = "Domain Admins"
+            group: Group = Group.objects.filter(name=child_group_name).first()
+            parent_ad_group = Group.objects.filter(name=parent_group_name).first()
+            self.assertIsNotNone(group, f"Child group {child_group_name} not found")
+            self.assertIsNotNone(parent_ad_group, f"Parent group {parent_group_name} not found")
+            self.assertTrue(
+                parent_ad_group in group.parents.all(),
+                f"Parent group {parent_group_name} not synced as parent of {child_group_name}",
+            )
             self.assertTrue(
                 additional_parent_group in group.parents.all(),
-                "Additional parent group missing from test-group",
+                f"Additional parent group missing from {child_group_name}'s parents",
             )
             self.assertTrue(
                 additional_parent_group in parent_ad_group.parents.all(),
-                "Additional parent group missing from test-group-containing-groups",
+                f"Additional parent group missing from {parent_group_name}'s parents",
             )
+
 
     def test_tasks_ad(self):
         """Test Scheduled tasks"""

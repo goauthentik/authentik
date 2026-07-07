@@ -16347,6 +16347,7 @@
                 "instanceType": 4,
                 "isCriticalSystemObject": true,
                 "member": [
+                    "CN=Test Group,OU=ak-test,DC=t,DC=goauthentik,DC=io",
                     "CN=Administrator,CN=Users,DC=t,DC=goauthentik,DC=io"
                 ],
                 "memberOf": [
@@ -16397,6 +16398,7 @@
                     "TRUE"
                 ],
                 "member": [
+                    "CN=Test Group,OU=ak-test,DC=t,DC=goauthentik,DC=io",
                     "CN=Administrator,CN=Users,DC=t,DC=goauthentik,DC=io"
                 ],
                 "memberOf": [
@@ -21499,6 +21501,12 @@
                 "distinguishedName": "CN=Test Group,OU=ak-test,DC=t,DC=goauthentik,DC=io",
                 "groupType": -2147483646,
                 "instanceType": 4,
+                "member": [
+                    "CN=Erin M. Hagens,OU=ak-test,DC=t,DC=goauthentik,DC=io"
+                ],
+                "memberOf": [
+                    "CN=Domain Admins,CN=Users,DC=t,DC=goauthentik,DC=io"
+                ],
                 "name": "Test Group",
                 "objectCategory": "CN=Group,CN=Schema,CN=Configuration,DC=t,DC=goauthentik,DC=io",
                 "objectClass": [
@@ -21530,6 +21538,12 @@
                 ],
                 "instanceType": [
                     "4"
+                ],
+                "member": [
+                    "CN=Erin M. Hagens,OU=ak-test,DC=t,DC=goauthentik,DC=io"
+                ],
+                "memberOf": [
+                    "CN=Domain Admins,CN=Users,DC=t,DC=goauthentik,DC=io"
                 ],
                 "name": [
                     "Test Group"
@@ -21590,6 +21604,9 @@
                 "lastLogoff": "1601-01-01 00:00:00+00:00",
                 "lastLogon": "1601-01-01 00:00:00+00:00",
                 "logonCount": 0,
+                "memberOf": [
+                    "CN=Test Group,OU=ak-test,DC=t,DC=goauthentik,DC=io"
+                ],
                 "name": "Erin M. Hagens",
                 "objectCategory": "CN=Person,CN=Schema,CN=Configuration,DC=t,DC=goauthentik,DC=io",
                 "objectClass": [
@@ -21652,6 +21669,9 @@
                 ],
                 "logonCount": [
                     "0"
+                ],
+                "memberOf": [
+                    "CN=Test Group,OU=ak-test,DC=t,DC=goauthentik,DC=io"
                 ],
                 "name": [
                     "Erin M. Hagens"
