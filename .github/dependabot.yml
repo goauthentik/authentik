@@ -256,15 +256,10 @@ updates:
       prefix: "core:"
     labels:
       - dependencies
-<<<<<<< HEAD
-=======
-    cooldown:
-      default-days: 3
     groups:
       openid-conformance:
         patterns:
           - registry.gitlab.com/openid/conformance-suite
           - registry.gitlab.com/openid/conformance-suite/nginx
->>>>>>> 89729a952 (tests/openid_conformance: migrate to upstream images (#23828))
 
   #endregion

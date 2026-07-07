@@ -1,39 +1,15 @@
 services:
   mongodb:
-<<<<<<< HEAD
-    image: mongo:6.0.13
-  httpd:
-    image: ghcr.io/beryju/oidc-conformance-suite-httpd:v5.1.32
-=======
     image: docker.io/library/mongo:6.0.13
   nginx:
     image: registry.gitlab.com/openid/conformance-suite/nginx:release-v5.2.0
     healthcheck:
       test: ["CMD", "curl", "-fk", "https://localhost:8443"]
->>>>>>> 89729a952 (tests/openid_conformance: migrate to upstream images (#23828))
     ports:
       - "8443:8443"
     depends_on:
       - server
   server:
-<<<<<<< HEAD
-    image: ghcr.io/beryju/oidc-conformance-suite-server:v5.1.32
-    ports:
-      - "9999:9999"
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
-    command: >
-      java
-      -Xdebug -Xrunjdwp:transport=dt_socket,address=*:9999,server=y,suspend=n
-      -jar /server/fapi-test-suite.jar
-      -Djdk.tls.maxHandshakeMessageSize=65536
-      --fintechlabs.base_url=https://host.docker.internal:8443
-      --fintechlabs.base_mtls_url=https://host.docker.internal:8444
-      --fintechlabs.devmode=true
-      --fintechlabs.startredir=true
-    links:
-      - mongodb:mongodb
-=======
     image: registry.gitlab.com/openid/conformance-suite:release-v5.2.0
     extra_hosts:
       - "host.docker.internal:host-gateway"
@@ -50,6 +26,5 @@ services:
       OIDC_GOOGLE_SECRET: ${OIDC_GOOGLE_SECRET:-google-secret}
       OIDC_GITLAB_CLIENTID: ${OIDC_GITLAB_CLIENTID:-gitlab-client}
       OIDC_GITLAB_SECRET: ${OIDC_GITLAB_SECRET:-gitlab-secret}
->>>>>>> 89729a952 (tests/openid_conformance: migrate to upstream images (#23828))
     depends_on:
       - mongodb
