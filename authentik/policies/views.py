@@ -48,11 +48,6 @@ class PolicyAccessView(AccessMixin, View):
 
     provider: Provider | None = None
     application: Application | None = None
-    # When True (default), unauthenticated requests are redirected to the authentication
-    # flow. Views that should be reachable without a session (e.g. logout/end-session,
-    # where an unauthenticated request is a no-op) can set this to False, in which case
-    # anonymous requests are dispatched directly without an access-policy check.
-    require_authentication: bool = True
 
     def pre_permission_check(self):
         """Optionally hook in before permission check to check if a request is valid.
@@ -81,11 +76,7 @@ class PolicyAccessView(AccessMixin, View):
         # Check if user is unauthenticated, so we pass the application
         # for the identification stage
         if not request.user.is_authenticated:
-            if self.require_authentication:
-                return self.handle_no_permission()
-            # View explicitly allows anonymous access (e.g. logout). There is no
-            # user to run access policies against, so dispatch directly.
-            return super().dispatch(request, *args, **kwargs)
+            return self.handle_no_permission()
         # Check permissions
         result = self.user_has_access()
         if not result.passing:

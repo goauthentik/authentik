@@ -41,8 +41,6 @@ class EndSessionView(PolicyAccessView):
 
     flow: Flow
     post_logout_redirect_uri: str | None
-    # Ending a session with an unauthenticated user should still execute the invalidation flow
-    require_authentication = False
 
     def resolve_provider_application(self):
         self.application = get_object_or_404(Application, slug=self.kwargs["application_slug"])
@@ -52,6 +50,12 @@ class EndSessionView(PolicyAccessView):
         self.flow = self.provider.invalidation_flow or self.request.brand.flow_invalidation
         if not self.flow:
             raise Http404
+
+    def handle_no_permission(self) -> HttpResponse:
+        """RP-Initiated Logout is idempotent: an unauthenticated request is a
+        valid no-op, so run the invalidation flow instead of redirecting to
+        the authentication flow."""
+        return self.get(self.request, *self.args, **self.kwargs)
 
     def validate(self):
         # Parse end session parameters
