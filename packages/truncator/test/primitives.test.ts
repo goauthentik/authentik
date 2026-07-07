@@ -9,6 +9,8 @@ import { describe, expect, it } from "vitest";
 
 const cc = (maxWidth: number) => ({ maxWidth });
 
+/* spellchecker:ignore longv */
+
 describe("endEllipsis", () => {
     it("returns the input unchanged when it already fits", () => {
         expect(endEllipsis("hello", cc(10))).toBe("hello");

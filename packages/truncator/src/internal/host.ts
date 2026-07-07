@@ -1,5 +1,5 @@
 /**
- * @file Hostname shrinking shared by url and email truncators.
+ * @file Hostname shrinking utilities.
  */
 
 import { characterMeasurer } from "../measurer.js";
