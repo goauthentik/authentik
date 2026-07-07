@@ -7397,14 +7397,8 @@ Powiązania z grupami/użytkownikami są sprawdzane względem użytkownika zdarz
 <trans-unit id="se10fb73c1f1039c5">
   <source>Overall license status</source>
 </trans-unit>
-<trans-unit id="sc4804358f202968c">
-  <source>Internal user usage</source>
-</trans-unit>
 <trans-unit id="s087d6f07b52b30ec">
   <source><x id="0" equiv-text="${internalUserPercentage &lt; Infinity ? internalUserPercentage : &quot;∞&quot;}"/>%</source>
-</trans-unit>
-<trans-unit id="sae72e1569d34fb02">
-  <source>External user usage</source>
 </trans-unit>
 <trans-unit id="s2e109263b73c12d5">
   <source>Licenses</source>
@@ -10940,6 +10934,12 @@ Powiązania z grupami/użytkownikami są sprawdzane względem użytkownika zdarz
 </trans-unit>
 <trans-unit id="s7445550f2bfb2f2f">
   <source>No notes.</source>
+</trans-unit>
+<trans-unit id="s4891ccdb173626ba">
+  <source>Internal user usage (<x id="0" equiv-text="${currentInternalUsers}"/>/<x id="1" equiv-text="${licensedInternalUsers}"/>)</source>
+</trans-unit>
+<trans-unit id="scad748da438c56d4">
+  <source>External user usage (<x id="0" equiv-text="${currentExternalUsers}"/>/<x id="1" equiv-text="${licensedExternalUsers}"/>)</source>
 </trans-unit>
 </body>
 </file>
