@@ -10,19 +10,19 @@ import { dirname, join } from "node:path";
 import { $ } from "./commands.mjs";
 
 /**
- * Find the nearest directory containing both package.json and package-lock.json,
+ * Find the nearest directory containing both package.json and pnpm-lock.yaml,
  * starting from the given directory and walking upward.
  *
  * @param {string} start The directory to start searching from.
  * @returns {Promise<{ packageJSONPath: string, packageLockPath: string }>}
- * @throws {Error} If no co-located package.json and package-lock.json are found.
+ * @throws {Error} If no co-located package.json and pnpm-lock.yaml are found.
  */
 export async function findNPMPackage(start) {
     let currentDir = start;
 
     while (currentDir !== dirname(currentDir)) {
         const packageJSONPath = join(currentDir, "package.json");
-        const packageLockPath = join(currentDir, "package-lock.json");
+        const packageLockPath = join(currentDir, "pnpm-lock.yaml");
 
         try {
             await Promise.all([fs.access(packageJSONPath), fs.access(packageLockPath)]);
@@ -37,7 +37,7 @@ export async function findNPMPackage(start) {
         currentDir = dirname(currentDir);
     }
 
-    throw new Error(`No co-located package.json and package-lock.json found above ${start}`);
+    throw new Error(`No co-located package.json and pnpm-lock.yaml found above ${start}`);
 }
 
 /**
@@ -130,29 +130,13 @@ export function compareVersions(a, b) {
 export const node = $.bind("node");
 
 /**
- * @typedef {object} NPMCommandOptions
- * @property {boolean} [useCorepack] Whether to prefix the command with "corepack " to use Corepack's shims.
- * @returns {Promise<string>}
- */
-
-/**
- * Runs an npm command and returns its stdout output as a string.
+ * Runs a pnpm command and returns its stdout output as a string.
  *
  * @param {TemplateStringsArray} strings
  * @param  {...unknown} expressions
- * @returns {(options?: ExecOptions & NPMCommandOptions) => Promise<string>}
+ * @returns {(options?: ExecOptions) => Promise<string>}
  */
-export function npm(strings, ...expressions) {
-    const subcommand = String.raw(strings, ...expressions);
-
-    return ({ useCorepack, ...options } = {}) => {
-        const command = [useCorepack ? "corepack" : "", "npm", subcommand]
-            .filter(Boolean)
-            .join(" ");
-
-        return $`${command}`(options);
-    };
-}
+export const pnpm = $.bind("pnpm");
 
 /**
  * Parses a version range string, stripping any leading >= and normalizing to three parts.

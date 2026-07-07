@@ -36333,6 +36333,8 @@ components:
           type: string
         api_url:
           type: string
+        request_content_type:
+          $ref: '#/components/schemas/RequestContentTypeEnum'
         interactive:
           type: boolean
         score_min_threshold:
@@ -36378,6 +36380,8 @@ components:
         api_url:
           type: string
           minLength: 1
+        request_content_type:
+          $ref: '#/components/schemas/RequestContentTypeEnum'
         interactive:
           type: boolean
         score_min_threshold:
@@ -36604,6 +36608,7 @@ components:
       - aws
       - slack
       - sfdc
+      - gitlab
       - webex
       - vcenter
       type: string
@@ -42641,6 +42646,7 @@ components:
       - zh-hant
     LastTaskStatusEnum:
       enum:
+      - waiting_for_dependencies
       - queued
       - consumed
       - preprocess
@@ -42864,7 +42870,7 @@ components:
         reviewer_groups_obj:
           type: array
           items:
-            $ref: '#/components/schemas/ReviewerGroup'
+            $ref: '#/components/schemas/PartialGroup'
           readOnly: true
         min_reviewers:
           type: integer
@@ -42880,7 +42886,7 @@ components:
         reviewers_obj:
           type: array
           items:
-            $ref: '#/components/schemas/ReviewerUser'
+            $ref: '#/components/schemas/PartialUser'
           readOnly: true
         notification_transports:
           type: array
@@ -48260,6 +48266,8 @@ components:
         api_url:
           type: string
           minLength: 1
+        request_content_type:
+          $ref: '#/components/schemas/RequestContentTypeEnum'
         interactive:
           type: boolean
         score_min_threshold:
@@ -53520,6 +53528,9 @@ components:
               $ref: '#/components/schemas/ErrorDetail'
         to:
           type: string
+        final_redirect:
+          type: boolean
+          default: false
       required:
       - to
     RedirectChallengeResponseRequest:
@@ -53687,7 +53698,7 @@ components:
         reviewer_groups:
           type: array
           items:
-            $ref: '#/components/schemas/ReviewerGroup'
+            $ref: '#/components/schemas/PartialGroup'
           readOnly: true
         min_reviewers:
           type: integer
@@ -53695,7 +53706,7 @@ components:
         reviewers:
           type: array
           items:
-            $ref: '#/components/schemas/ReviewerUser'
+            $ref: '#/components/schemas/PartialUser'
           readOnly: true
       required:
       - min_reviewers
@@ -53805,6 +53816,11 @@ components:
           minimum: -2147483648
       required:
       - name
+    RequestContentTypeEnum:
+      enum:
+      - application/x-www-form-urlencoded
+      - application/json
+      type: string
     Review:
       type: object
       description: |-
@@ -53820,7 +53836,7 @@ components:
           format: uuid
         reviewer:
           allOf:
-          - $ref: '#/components/schemas/ReviewerUser'
+          - $ref: '#/components/schemas/PartialUser'
           readOnly: true
         timestamp:
           type: string
@@ -53849,44 +53865,6 @@ components:
           minLength: 1
       required:
       - iteration
-    ReviewerGroup:
-      type: object
-      properties:
-        pk:
-          type: string
-          format: uuid
-          readOnly: true
-          title: Group uuid
-        name:
-          type: string
-      required:
-      - name
-      - pk
-    ReviewerUser:
-      type: object
-      properties:
-        pk:
-          type: integer
-          readOnly: true
-          title: ID
-        uuid:
-          type: string
-          format: uuid
-          readOnly: true
-        username:
-          type: string
-          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
-            only.
-          pattern: ^[\w.@+-]+$
-          maxLength: 150
-        name:
-          type: string
-          description: User's display name.
-      required:
-      - name
-      - pk
-      - username
-      - uuid
     Role:
       type: object
       description: Role serializer
@@ -56734,6 +56712,7 @@ components:
       - uid
     TaskAggregatedStatusEnum:
       enum:
+      - waiting_for_dependencies
       - queued
       - consumed
       - preprocess
@@ -56747,6 +56726,7 @@ components:
       type: string
     TaskStatusEnum:
       enum:
+      - waiting_for_dependencies
       - queued
       - consumed
       - preprocess

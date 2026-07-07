@@ -122,6 +122,31 @@ class TestToken(OAuthTestCase):
         with self.assertRaises(TokenError):
             TokenParams.parse(request, provider, provider.client_id, provider.client_secret)
 
+    def test_client_secret_non_ascii(self):
+        """test non-ascii client_secret"""
+        provider = OAuth2Provider.objects.create(
+            name=generate_id(),
+            authorization_flow=create_test_flow(),
+            grant_types=[GrantType.AUTHORIZATION_CODE],
+            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://testserver")],
+            signing_key=self.keypair,
+            client_secret="à",
+        )
+        header = b64encode(f"{provider.client_id}:{provider.client_secret}".encode()).decode()
+        request = self.factory.post(
+            "/",
+            data={
+                "grant_type": GRANT_TYPE_AUTHORIZATION_CODE,
+                "code": "foo",
+                "redirect_uri": "http://testserver",
+            },
+            HTTP_AUTHORIZATION=f"Basic {header}",
+        )
+        with self.assertRaises(TokenError) as cm:
+            TokenParams.parse(request, provider, provider.client_id, provider.client_secret)
+        self.assertEqual(cm.exception.error, "invalid_client")
+        self.assertEqual(cm.exception.cause, "invalid_secret")
+
     def test_request_refresh_token(self):
         """test request param"""
         provider = OAuth2Provider.objects.create(

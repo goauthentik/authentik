@@ -4,6 +4,7 @@ sidebar_label: Bitwarden
 support_level: community
 ---
 
+import RedirectURI20265Note from "../../_redirect-uri-2026-5-note.mdx";
 import SAMLProvider20265Warning from "../../_saml-provider-2026-5-warning.mdx";
 import TabItem from "@theme/TabItem";
 import Tabs from "@theme/Tabs";
@@ -43,26 +44,28 @@ You can configure Bitwarden to use either OIDC or SAML; this guide explains both
 
 ## authentik configuration
 
+<RedirectURI20265Note />
+
 To support the integration of Bitwarden with authentik, you need to create an application/provider pair in authentik.
 
-### Create an application and provider in authentik
+### Create an application and provider
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
-    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Note the **Slug** value because it will be required later.
     - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
-        - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
+        - Note the **Client ID** and **Client Secret** values because they will be required later.
         - Add the redirect URIs for your Bitwarden deployment:
             - For Bitwarden Cloud US:
-                - Set a `Strict` `Authorization` redirect URI to `https://sso.bitwarden.com/oidc-signin`.
-                - Set a `Strict` `Post Logout` redirect URI to `https://sso.bitwarden.com/oidc-signedout`.
+                - Add a **Redirect URI** of type `Strict` `Authorization` as `https://sso.bitwarden.com/oidc-signin`.
+                - Add a **Redirect URI** of type `Strict` `Post Logout` as `https://sso.bitwarden.com/oidc-signedout`.
             - For Bitwarden Cloud EU:
-                - Set a `Strict` `Authorization` redirect URI to `https://sso.bitwarden.eu/oidc-signin`.
-                - Set a `Strict` `Post Logout` redirect URI to `https://sso.bitwarden.eu/oidc-signedout`.
+                - Add a **Redirect URI** of type `Strict` `Authorization` as `https://sso.bitwarden.eu/oidc-signin`.
+                - Add a **Redirect URI** of type `Strict` `Post Logout` as `https://sso.bitwarden.eu/oidc-signedout`.
             - For self-hosted Bitwarden:
-                - Set a `Strict` `Authorization` redirect URI to `https://bitwarden.company/sso/oidc-signin`.
-                - Set a `Strict` `Post Logout` redirect URI to `https://bitwarden.company/sso/oidc-signedout`.
+                - Add a **Redirect URI** of type `Strict` `Authorization` as `https://bitwarden.company/sso/oidc-signin`.
+                - Add a **Redirect URI** of type `Strict` `Post Logout` as `https://bitwarden.company/sso/oidc-signedout`.
         - Select any available **Signing Key**.
     - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 
@@ -92,13 +95,13 @@ To support the integration of Bitwarden with authentik, you need to create an ap
 
 To support the integration of Bitwarden with authentik, you need to create an application/provider pair in authentik.
 
-### Create an application and provider in authentik
+### Create an application and provider
 
 <SAMLProvider20265Warning />
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
-    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Note the **slug** value because it will be required later.
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Note the **Slug** value because it will be required later.
     - **Choose a Provider type**: select **SAML Provider** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
         - Temporarily set the **ACS URL** to `https://temp.temp`
