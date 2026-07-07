@@ -181,8 +181,6 @@ export async function startAccountLockdown(user?: number): Promise<void> {
 /**
  * Retrieve the current user session.
  *
- * This is a memoized function, so it will only make one request per page load.
- *
  * @see {@linkcode refreshMe} to force a refresh.
  *
  * @category Session
