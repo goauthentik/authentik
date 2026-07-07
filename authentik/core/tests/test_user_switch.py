@@ -25,6 +25,7 @@ from authentik.flows.planner import (
 from authentik.flows.stage import PLAN_CONTEXT_PENDING_USER_IDENTIFIER
 from authentik.flows.tests import FlowTestCase
 from authentik.flows.views.executor import SESSION_KEY_PLAN
+from authentik.policies.models import PolicyBinding
 from authentik.stages.dummy.models import DummyStage
 from authentik.stages.identification.models import IdentificationStage
 from authentik.stages.user_login.models import UserLoginStage
@@ -156,6 +157,19 @@ class TestUserSwitch(FlowTestCase):
             self.other_user.username,
         )
         self.assertEqual(plan.context[PLAN_CONTEXT_USER_SWITCH_FROM_USER], self.user)
+
+    def test_switch_flow_must_apply_to_current_user(self):
+        """Test switching rejects flows the source user cannot access."""
+        self.login(self.user)
+        user_switching_token = self.user_switching_token()
+        create_test_session(
+            self.other_user, user_switching_token=user_switching_token, is_current=False
+        )
+        PolicyBinding.objects.create(target=self.flow, user=self.other_user, order=0)
+
+        response = self.client.get(self.switch_url(self.other_user))
+
+        self.assertEqual(response.status_code, 404)
 
     def test_switch_without_live_session(self):
         """Test an unknown or stale target starts the flow without switch context"""

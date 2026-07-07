@@ -1,6 +1,6 @@
 """User switch view"""
 
-from typing import Any
+from typing import Any, cast
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import Http404, HttpRequest, HttpResponse
@@ -8,7 +8,7 @@ from django.utils import timezone
 from django.utils.translation import gettext as _
 from django.views import View
 
-from authentik.core.models import AuthenticatedSession
+from authentik.core.models import AuthenticatedSession, User
 from authentik.flows.exceptions import FlowNonApplicableException
 from authentik.flows.models import Flow
 from authentik.flows.planner import (
@@ -19,6 +19,7 @@ from authentik.flows.planner import (
 )
 from authentik.flows.stage import PLAN_CONTEXT_PENDING_USER_IDENTIFIER
 from authentik.lib.views import bad_request_message
+from authentik.policies.engine import PolicyEngine
 
 
 class UserSwitchView(LoginRequiredMixin, View):
@@ -32,6 +33,7 @@ class UserSwitchView(LoginRequiredMixin, View):
                 _("User switching is disabled."),
                 title=_("User switching disabled"),
             )
+        self.ensure_flow_applicable_to_current_user(request, flow)
         context = {}
         session = self.get_user_switching_session(request, user_pk)
         if not session:
@@ -60,6 +62,15 @@ class UserSwitchView(LoginRequiredMixin, View):
         except FlowNonApplicableException:
             raise Http404 from None
         return plan.to_redirect(request, flow)
+
+    @staticmethod
+    def ensure_flow_applicable_to_current_user(request: HttpRequest, flow: Flow) -> None:
+        """Reject switch flows that the current source user cannot access."""
+        engine = PolicyEngine(flow, cast(User, request.user), request)
+        engine.use_cache = False
+        engine.build()
+        if not engine.result.passing:
+            raise Http404
 
     @staticmethod
     def get_user_switching_session(
