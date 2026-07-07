@@ -7,7 +7,6 @@ updates:
       - /
       # Required to update composite actions
       # https://github.com/dependabot/dependabot-core/issues/6704
-      - /.github/actions/cherry-pick
       - /.github/actions/setup
       - /.github/actions/docker-push-variables
       - /.github/actions/comment-pr-instructions
