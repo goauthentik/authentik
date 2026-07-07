@@ -182,7 +182,7 @@ impl AuthentikStack {
     pub async fn get_shady_dom(&self, selector: &str) -> Result<WebElement> {
         Ok(self
             .driver
-            .execute_async(
+            .execute(
                 "return document.__shady_native_querySelector(arguments[0])",
                 vec![Value::String(selector.to_string())],
             )
