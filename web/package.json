@@ -134,7 +134,7 @@
         "@typescript-eslint/eslint-plugin": "^8.62.1",
         "@typescript-eslint/parser": "^8.62.1",
         "@typescript-eslint/utils": "^8.62.1",
-        "@typescript/native-preview": "7.0.0-dev.20260628.1",
+        "@typescript/native-preview": "7.0.0-dev.20260630.1",
         "@vitest/browser": "^4.1.9",
         "@vitest/browser-playwright": "^4.1.9",
         "@webcomponents/webcomponentsjs": "^2.8.0",
