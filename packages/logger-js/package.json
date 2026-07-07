@@ -31,7 +31,7 @@
         "@eslint/js": "^9.39.4",
         "@goauthentik/prettier-config": "link:../prettier-config",
         "@goauthentik/tsconfig": "link:../tsconfig",
-        "@types/node": "^25.9.4",
+        "@types/node": "^26.0.0",
         "eslint": "^9.39.4",
         "pino": "^10.3.1",
         "pino-pretty": "^13.1.3",
