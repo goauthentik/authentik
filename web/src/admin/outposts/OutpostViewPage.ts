@@ -286,9 +286,6 @@ export class OutpostViewPage extends AKElement {
     }
 
     protected renderTabTasks(outpost: Outpost): SlottedTemplateResult {
-        const OUTPOST_TYPE = ModelEnum.AuthentikOutpostsOutpost;
-        const [OUTPOST_TYPE_LABEL, OUTPOST_MODEL_NAME] = OUTPOST_TYPE.split(".");
-
         return html`<div
             class="pf-c-page__main-section pf-m-no-padding-mobile pf-l-grid pf-m-gutter"
         >
