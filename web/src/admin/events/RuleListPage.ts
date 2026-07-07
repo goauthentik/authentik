@@ -5,7 +5,6 @@ import "#components/ak-status-label";
 import "#elements/buttons/SpinnerButton/index";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
-import "#components/tasks/TaskList";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { aki } from "#common/api/client";
@@ -16,6 +15,8 @@ import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
 
+import { taskCard } from "#components/tasks/taskCard";
+
 import { RuleForm } from "#admin/events/RuleForm";
 
 import { EventsApi, ModelEnum, NotificationRule } from "@goauthentik/api";
@@ -23,6 +24,8 @@ import { EventsApi, ModelEnum, NotificationRule } from "@goauthentik/api";
 import { msg } from "@lit/localize";
 import { html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
+
+const NOTIFICATION_MODEL = ModelEnum.AuthentikEventsNotificationtransport;
 
 @customElement("ak-event-rule-list")
 export class RuleListPage extends TablePage<NotificationRule> {
@@ -105,8 +108,6 @@ export class RuleListPage extends TablePage<NotificationRule> {
     }
 
     protected override renderExpanded(item: NotificationRule): TemplateResult {
-        const [appLabel, modelName] = ModelEnum.AuthentikEventsNotificationrule.split(".");
-
         return html`<p>
                 ${msg(
                     `These bindings control upon which events this rule triggers.
@@ -114,22 +115,7 @@ Bindings to groups/users are checked against the user of the event.`,
                 )}
             </p>
             <ak-bound-policies-list .target=${item.pk}> </ak-bound-policies-list>
-            <dl class="pf-c-description-list pf-m-horizontal">
-                <div class="pf-c-description-list__group">
-                    <dt class="pf-c-description-list__term">
-                        <span class="pf-c-description-list__text">${msg("Tasks")}</span>
-                    </dt>
-                    <dd class="pf-c-description-list__description">
-                        <div class="pf-c-description-list__text">
-                            <ak-task-list
-                                .relObjAppLabel=${appLabel}
-                                .relObjModel=${modelName}
-                                .relObjId="${item.pk}"
-                            ></ak-task-list>
-                        </div>
-                    </dd>
-                </div>
-            </dl>`;
+            ${taskCard(NOTIFICATION_MODEL, item.pk)}`;
     }
 }
 
