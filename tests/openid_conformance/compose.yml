@@ -1,6 +1,6 @@
 services:
   mongodb:
-    image: mongo:6.0.13
+    image: mongo:8.2.11
   nginx:
     image: ghcr.io/beryju/oidc-conformance-suite-nginx:v5.1.43
     ports:
