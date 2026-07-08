@@ -19,6 +19,11 @@ Logins performed through a user switch are recorded in the event log.
 User switches authenticate through the brand's **User switch flow**. If no user switch
 flow is set, the switcher is disabled and the switch endpoint cannot be used.
 
+Users start switches from the User interface header. To add another switch target,
+users select **Add user** from the header menu and complete a normal login in the same
+browser. After the login completes, that user appears in the same menu and can be
+selected as long as the browser still has a live session for that user.
+
 1. Log in to authentik as an administrator and open the Admin interface.
 2. Navigate to **System** > **Brands** and edit the brand you want to configure.
 3. Under **Default flows**, set **User switch flow** to the authentication flow users should complete when switching users.
