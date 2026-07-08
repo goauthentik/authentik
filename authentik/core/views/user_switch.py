@@ -41,8 +41,7 @@ class UserSwitchView(LoginRequiredMixin, View):
             context[PLAN_CONTEXT_USER_SWITCH_STALE_USER] = str(user_pk)
             return self.redirect_to_flow(request, flow, context)
         context[PLAN_CONTEXT_PENDING_USER] = session.user
-        # Pre-fill the identification stage so the target user doesn't have to be retyped,
-        # letting a policy-free switch flow skip straight to the next stage.
+        # Pre-fill the identification stage so the target user doesn't have to be retyped.
         context[PLAN_CONTEXT_PENDING_USER_IDENTIFIER] = session.user.username
         context[PLAN_CONTEXT_USER_SWITCH_FROM_USER] = request.user
         context[PLAN_CONTEXT_USER_SWITCH_TARGET_SESSION] = session.session.session_key
