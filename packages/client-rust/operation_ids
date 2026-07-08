@@ -17,3 +17,5 @@ outposts_proxy_list
 outposts_radius_access_check
 outposts_radius_list
 root_config_retrieve
+stages_authenticator_validate_list
+stages_authenticator_validate_partial_update

@@ -1,0 +1,128 @@
+use std::time::Duration;
+
+use ak_client::{
+    apis::stages_api::{
+        stages_authenticator_validate_list, stages_authenticator_validate_partial_update,
+    },
+    models::{
+        DeviceClassesEnum, NotConfiguredActionEnum, PatchedAuthenticatorValidateStageRequest,
+    },
+};
+use eyre::Result;
+use thirtyfour::prelude::*;
+
+mod stack;
+use stack::AuthentikStack;
+use tokio::time::sleep;
+
+impl AuthentikStack {
+    async fn login_sfe(&self) -> Result<()> {
+        let flow_executor = self
+            .driver
+            .query(By::Id("flow-sfe-container"))
+            .single()
+            .await?;
+
+        let identification_stage = flow_executor.query(By::Id("ident-form")).single().await?;
+
+        let username_field = identification_stage
+            .query(By::Css("input[name=uid_field]"))
+            .single()
+            .await?;
+        username_field.click().await?;
+        username_field.send_keys("akadmin").await?;
+        username_field.send_keys(Key::Enter).await?;
+
+        let password_stage = flow_executor
+            .query(By::Id("password-form"))
+            .single()
+            .await?;
+        let password_field = password_stage
+            .query(By::Css("input[name=password]"))
+            .single()
+            .await?;
+        password_field.click().await?;
+        password_field.send_keys("akadmin").await?;
+        password_field.send_keys(Key::Enter).await?;
+
+        sleep(Duration::from_secs(1)).await;
+
+        Ok(())
+    }
+}
+
+#[tokio::test]
+async fn login() -> Result<()> {
+    let stack = AuthentikStack::builder()
+        .wait_for_flow("default-authentication-flow")
+        .run()
+        .await?;
+
+    stack
+        .goto("http://server:9000/if/flow/default-authentication-flow/?sfe=true")
+        .await?;
+
+    stack.login_sfe().await?;
+
+    stack
+        .wait_for_url("http://server:9000/if/user/#/library")
+        .await?;
+
+    stack
+        .assert_user("akadmin", "authentik Default Admin", "root@example.com")
+        .await?;
+
+    stack.quit().await
+}
+
+#[tokio::test]
+async fn login_mfa_static_deny() -> Result<()> {
+    let stack = AuthentikStack::builder()
+        .wait_for_flow("default-authentication-flow")
+        .run()
+        .await?;
+
+    let authenticator_validate_stages = stages_authenticator_validate_list(
+        stack.api_config(),
+        None,
+        Some("default-authentication-mfa-validation"),
+        None,
+        None,
+        None,
+        None,
+        None,
+    )
+    .await?;
+
+    let authenticator_validate_stage = authenticator_validate_stages
+        .results
+        .first()
+        .expect("no mfa validate stage found");
+
+    stages_authenticator_validate_partial_update(
+        stack.api_config(),
+        &authenticator_validate_stage.pk.to_string(),
+        Some(PatchedAuthenticatorValidateStageRequest {
+            not_configured_action: Some(NotConfiguredActionEnum::Deny),
+            device_classes: Some(vec![DeviceClassesEnum::Static]),
+            ..Default::default()
+        }),
+    )
+    .await?;
+
+    stack
+        .goto("http://server:9000/if/flow/default-authentication-flow/?sfe=true")
+        .await?;
+
+    stack.login_sfe().await?;
+
+    let msg = stack
+        .driver
+        .query(By::Css("#access-denied > p"))
+        .single()
+        .await?;
+    let msg_text = msg.text().await?;
+    assert_eq!(msg_text, "No (allowed) MFA authenticator configured.");
+
+    stack.quit().await
+}

@@ -1,3 +1,4 @@
+#![allow(dead_code)]
 use std::time::Duration;
 
 use ak_client::apis::configuration::Configuration;
@@ -11,13 +12,19 @@ use testcontainers::{
 use thirtyfour::prelude::*;
 use tokio::time::{Instant, sleep};
 
+#[derive(Default)]
 pub(crate) struct AuthentikStackBuilder {
-    wait_for_flows: Vec<String>,
+    wait_for_flow: Option<String>,
 }
 
 impl AuthentikStackBuilder {
     pub(crate) fn wait_for_flow(mut self, flow: &str) -> Self {
-        self.wait_for_flows.push(flow.to_string());
+        self.wait_for_flow = Some(flow.to_string());
+        self
+    }
+
+    pub(crate) fn no_wait_for_flow(mut self) -> Self {
+        self.wait_for_flow = None;
         self
     }
 
@@ -31,7 +38,7 @@ impl AuthentikStackBuilder {
             .with_env("AUTHENTIK_SECRET_KEY", "secret_key")
             .with_env("AUTHENTIK_TAG", "gh-next");
 
-            for flow in self.wait_for_flows {
+            if let Some(flow) = self.wait_for_flow {
                 compose = compose.with_wait_for_service(
                     "server",
                     WaitFor::http(
@@ -91,14 +98,6 @@ impl AuthentikStackBuilder {
             driver,
             api_config,
         })
-    }
-}
-
-impl Default for AuthentikStackBuilder {
-    fn default() -> Self {
-        Self {
-            wait_for_flows: vec![],
-        }
     }
 }
 
