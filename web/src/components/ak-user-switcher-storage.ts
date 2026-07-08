@@ -1,13 +1,10 @@
-import { globalAK } from "#common/global";
 import { StorageAccessor } from "#common/storage";
 
 import type { UserSelf } from "@goauthentik/api";
 
 const USER_STORAGE_KEY = "authentik.users";
-const USER_SWITCHING_STORAGE_KEY = "authentik.user_switching";
-// Keep these in sync with authentik/core/user_switching.py.
+// Keep this in sync with authentik/core/user_switching.py.
 const USER_SWITCHING_COOKIE_NAME = "authentik_user_switching";
-const USER_SWITCHING_COOKIE_AGE_SECONDS = 60 * 60 * 24 * 365;
 
 export interface BrowserLocalUser {
     pk: number;
@@ -28,10 +25,6 @@ function userStorage(): StorageAccessor {
     return StorageAccessor.local(USER_STORAGE_KEY);
 }
 
-function userSwitchingStorage(): StorageAccessor {
-    return StorageAccessor.local(USER_SWITCHING_STORAGE_KEY);
-}
-
 function readCookie(name: string): string | null {
     const prefix = `${name}=`;
     const cookie = document.cookie
@@ -41,34 +34,8 @@ function readCookie(name: string): string | null {
     return cookie ? decodeURIComponent(cookie.substring(prefix.length)) : null;
 }
 
-function writeUserSwitchingCookie(value: string): void {
-    const secure = window.location.protocol === "https:";
-    // Match the server's SESSION_COOKIE_PATH (the configured web base path) so instances
-    // served under a sub-path don't end up with duplicate cookies on different paths.
-    const path = globalAK().api.relBase || "/";
-    document.cookie = [
-        `${USER_SWITCHING_COOKIE_NAME}=${encodeURIComponent(value)}`,
-        `Max-Age=${USER_SWITCHING_COOKIE_AGE_SECONDS}`,
-        `Path=${path}`,
-        `SameSite=${secure ? "None" : "Lax"}`,
-        secure ? "Secure" : "",
-    ]
-        .filter(Boolean)
-        .join("; ");
-}
-
-export function syncUserSwitchingToken(): string | null {
-    const token = readCookie(USER_SWITCHING_COOKIE_NAME);
-    if (token) {
-        userSwitchingStorage().write(token);
-        return token;
-    }
-
-    const stored = userSwitchingStorage().read<string>();
-    if (stored) {
-        writeUserSwitchingCookie(stored);
-    }
-    return stored;
+export function hasUserSwitchingToken(): boolean {
+    return Boolean(readCookie(USER_SWITCHING_COOKIE_NAME));
 }
 
 export function coerceStoredUser(value: unknown): BrowserLocalUser | null {
@@ -161,12 +128,14 @@ export function mergeStoredUsers(
 
 /** Persist the current user into the deduped local user list. */
 export function syncStoredUsers(user: Readonly<UserSelf> | null): BrowserLocalUser[] {
-    syncUserSwitchingToken();
+    if (!hasUserSwitchingToken()) {
+        writeStoredUsers([]);
+        return [];
+    }
 
     if (!user) {
         return readStoredUsers();
     }
-
     const users = mergeStoredUsers(localUserFromUser(user), readStoredUsers());
     writeStoredUsers(users);
     return users;
