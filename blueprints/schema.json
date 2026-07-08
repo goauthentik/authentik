@@ -7683,6 +7683,15 @@
                     "title": "AuthnContextClassRef Property Mapping",
                     "description": "Configure how the AuthnContextClassRef value will be created. When left empty, the AuthnContextClassRef will be set based on which authentication methods the user used to authenticate."
                 },
+                "saml_version": {
+                    "type": "string",
+                    "enum": [
+                        "1.1",
+                        "2.0"
+                    ],
+                    "title": "Saml version",
+                    "description": "SAML assertion version to issue in the security token. Microsoft Entra ID and classic ADFS-style relying parties typically require SAML 1.1."
+                },
                 "digest_algorithm": {
                     "type": "string",
                     "enum": [

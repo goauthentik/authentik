@@ -20232,6 +20232,14 @@ paths:
             format: uuid
         explode: true
         style: form
+      - in: query
+        name: saml_version
+        schema:
+          allOf:
+          - $ref: '#/components/schemas/SamlVersionEnum'
+          description: |+
+            SAML assertion version to issue in the security token. Microsoft Entra ID and classic ADFS-style relying parties typically require SAML 1.1.
+
       - $ref: '#/components/parameters/QuerySearch'
       - in: query
         name: session_valid_not_on_or_after
@@ -51700,6 +51708,12 @@ components:
           description: Configure how the AuthnContextClassRef value will be created.
             When left empty, the AuthnContextClassRef will be set based on which authentication
             methods the user used to authenticate.
+        saml_version:
+          allOf:
+          - $ref: '#/components/schemas/SamlVersionEnum'
+          description: SAML assertion version to issue in the security token. Microsoft
+            Entra ID and classic ADFS-style relying parties typically require SAML
+            1.1.
         digest_algorithm:
           $ref: '#/components/schemas/DigestAlgorithmEnum'
         signature_algorithm:
@@ -55675,6 +55689,11 @@ components:
       - disabled
       - disabled_deleted
       type: string
+    SamlVersionEnum:
+      enum:
+      - '1.1'
+      - '2.0'
+      type: string
     Schedule:
       type: object
       properties:
@@ -58815,6 +58834,12 @@ components:
           description: Configure how the AuthnContextClassRef value will be created.
             When left empty, the AuthnContextClassRef will be set based on which authentication
             methods the user used to authenticate.
+        saml_version:
+          allOf:
+          - $ref: '#/components/schemas/SamlVersionEnum'
+          description: SAML assertion version to issue in the security token. Microsoft
+            Entra ID and classic ADFS-style relying parties typically require SAML
+            1.1.
         digest_algorithm:
           $ref: '#/components/schemas/DigestAlgorithmEnum'
         signature_algorithm:
@@ -58928,6 +58953,12 @@ components:
           description: Configure how the AuthnContextClassRef value will be created.
             When left empty, the AuthnContextClassRef will be set based on which authentication
             methods the user used to authenticate.
+        saml_version:
+          allOf:
+          - $ref: '#/components/schemas/SamlVersionEnum'
+          description: SAML assertion version to issue in the security token. Microsoft
+            Entra ID and classic ADFS-style relying parties typically require SAML
+            1.1.
         digest_algorithm:
           $ref: '#/components/schemas/DigestAlgorithmEnum'
         signature_algorithm:

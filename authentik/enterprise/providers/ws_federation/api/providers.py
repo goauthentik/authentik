@@ -60,6 +60,7 @@ class WSFederationProviderSerializer(EnterpriseRequiredMixin, SAMLProviderSerial
             "property_mappings",
             "name_id_mapping",
             "authn_context_class_ref_mapping",
+            "saml_version",
             "digest_algorithm",
             "signature_algorithm",
             "signing_kp",

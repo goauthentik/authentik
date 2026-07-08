@@ -16,6 +16,8 @@ import type { DigestAlgorithmEnum } from "./DigestAlgorithmEnum";
 import { DigestAlgorithmEnumFromJSON, DigestAlgorithmEnumToJSON } from "./DigestAlgorithmEnum";
 import type { SAMLNameIDPolicyEnum } from "./SAMLNameIDPolicyEnum";
 import { SAMLNameIDPolicyEnumFromJSON, SAMLNameIDPolicyEnumToJSON } from "./SAMLNameIDPolicyEnum";
+import type { SamlVersionEnum } from "./SamlVersionEnum";
+import { SamlVersionEnumFromJSON, SamlVersionEnumToJSON } from "./SamlVersionEnum";
 import type { SignatureAlgorithmEnum } from "./SignatureAlgorithmEnum";
 import {
     SignatureAlgorithmEnumFromJSON,
@@ -155,6 +157,12 @@ export interface WSFederationProvider {
      */
     authnContextClassRefMapping?: string | null;
     /**
+     * SAML assertion version to issue in the security token. Microsoft Entra ID and classic ADFS-style relying parties typically require SAML 1.1.
+     * @type {SamlVersionEnum}
+     * @memberof WSFederationProvider
+     */
+    samlVersion?: SamlVersionEnum;
+    /**
      *
      * @type {DigestAlgorithmEnum}
      * @memberof WSFederationProvider
@@ -290,6 +298,10 @@ export function WSFederationProviderFromJSONTyped(
             json["authn_context_class_ref_mapping"] == null
                 ? undefined
                 : json["authn_context_class_ref_mapping"],
+        samlVersion:
+            json["saml_version"] == null
+                ? undefined
+                : SamlVersionEnumFromJSON(json["saml_version"]),
         digestAlgorithm:
             json["digest_algorithm"] == null
                 ? undefined
@@ -350,6 +362,7 @@ export function WSFederationProviderToJSONTyped(
         session_valid_not_on_or_after: value["sessionValidNotOnOrAfter"],
         name_id_mapping: value["nameIdMapping"],
         authn_context_class_ref_mapping: value["authnContextClassRefMapping"],
+        saml_version: SamlVersionEnumToJSON(value["samlVersion"]),
         digest_algorithm: DigestAlgorithmEnumToJSON(value["digestAlgorithm"]),
         signature_algorithm: SignatureAlgorithmEnumToJSON(value["signatureAlgorithm"]),
         signing_kp: value["signingKp"],
