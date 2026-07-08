@@ -1,4 +1,3 @@
-import "#components/tasks/ScheduleList";
 import "#admin/rbac/ak-rbac-object-permission-page";
 import "#admin/sources/kerberos/KerberosSourceConnectivity";
 import "#admin/sources/kerberos/KerberosSourceForm";
@@ -17,6 +16,8 @@ import { EVENT_REFRESH } from "#common/constants";
 import { AKElement } from "#elements/Base";
 import { SlottedTemplateResult } from "#elements/types";
 
+import { scheduleCard } from "#components/tasks/scheduleCard";
+
 import { KerberosSource, ModelEnum, SourcesApi } from "@goauthentik/api";
 
 import MDSourceKerberosBrowser from "~docs/users-sources/sources/protocols/kerberos/browser.md";
@@ -33,6 +34,8 @@ import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList
 import PFList from "@patternfly/patternfly/components/List/list.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
+
+const SOURCE_MODEL = ModelEnum.AuthentikSourcesKerberosKerberossource;
 
 @customElement("ak-source-kerberos-view")
 export class KerberosSourceViewPage extends AKElement {
@@ -73,7 +76,6 @@ export class KerberosSourceViewPage extends AKElement {
         if (!this.source) {
             return nothing;
         }
-        const [appLabel, modelName] = ModelEnum.AuthentikSourcesKerberosKerberossource.split(".");
         return html`<main>
             <ak-tabs>
                 <div
@@ -158,15 +160,8 @@ export class KerberosSourceViewPage extends AKElement {
                                 ></ak-source-kerberos-connectivity>
                             </div>
                         </div>
-                        <div class="pf-c-card pf-l-grid__item pf-m-12-col">
-                            <div class="pf-c-card__title">
-                                <p>${msg("Schedules")}</p>
-                            </div>
-                            <ak-schedule-list
-                                .relObjAppLabel=${appLabel}
-                                .relObjModel=${modelName}
-                                .relObjId="${this.source.pk}"
-                            ></ak-schedule-list>
+                        <div class="pf-l-grid__item pf-m-12-col">
+                            ${scheduleCard(SOURCE_MODEL, this.source.pk)}
                         </div>
                         <div class="pf-c-card pf-l-grid__item pf-m-12-col">
                             <div class="pf-c-card__body">
