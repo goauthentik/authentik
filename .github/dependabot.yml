@@ -256,5 +256,10 @@ updates:
       prefix: "core:"
     labels:
       - dependencies
+    groups:
+      openid-conformance:
+        patterns:
+          - registry.gitlab.com/openid/conformance-suite
+          - registry.gitlab.com/openid/conformance-suite/nginx
 
   #endregion
