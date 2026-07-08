@@ -1,5 +1,7 @@
 ---
 title: authentik bindings
+sidebar_position: 4
+sidebar_label: "Bindings"
 ---
 
 A binding is a connection between two components. In practice, a binding adds behavior to an existing authentik object by telling authentik where to evaluate a policy, user, or group, or where to insert a stage into a flow.

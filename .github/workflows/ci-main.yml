@@ -100,6 +100,8 @@ jobs:
             deps: python
           - job: spellcheck
             deps: node
+          - job: catalogs
+            deps: node
           - job: pending-migrations
             deps: python,runtime
           - job: ruff
@@ -199,6 +201,11 @@ jobs:
         uses: ./.github/actions/setup
         with:
           postgresql_version: ${{ matrix.psql }}
+          # The stable checkout predates the pnpm migration, so its
+          # package.json still pins npm as the package manager. Skip node here
+          # (migrating to stable only needs Python + the database); pnpm/node is
+          # set up again for the current checkout below.
+          dependencies: "system,python,runtime"
       - name: run migrations to stable
         run: |
           docker ps
@@ -338,22 +345,33 @@ jobs:
           COMPOSE_PROFILES: ${{ matrix.job.profiles }}
         run: |
           docker compose -f tests/e2e/compose.yml up -d --quiet-pull
-      - uses: ./.github/actions/setup-node
+      - uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # v6.0.9
+      - name: Pin pnpm store directory
+        run: |
+          echo "PNPM_HOME=${RUNNER_TEMP}/pnpm-home" >> "$GITHUB_ENV"
+          echo "npm_config_store_dir=${RUNNER_TEMP}/pnpm-home/store" >> "$GITHUB_ENV"
+      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v4
+        with:
+          node-version-file: package.json
+          cache: pnpm
+          cache-dependency-path: pnpm-lock.yaml
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
       - id: cache-web
         uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v4
         if: contains(matrix.job.profiles, 'selenium')
         with:
           path: web/dist
-          key: ${{ runner.os }}-web-${{ hashFiles('web/package-lock.json', 'package-lock.json', 'web/src/**', 'web/packages/sfe/src/**') }}-b
+          key: ${{ runner.os }}-web-${{ hashFiles('web/pnpm-lock.yaml', 'pnpm-lock.yaml', 'web/src/**', 'web/packages/sfe/src/**') }}-b
       - name: prepare web ui
         if: steps.cache-web.outputs.cache-hit != 'true' && contains(matrix.job.profiles, 'selenium')
         working-directory: web
         env:
           NODE_ENV: "production"
         run: |
-          corepack npm ci
-          corepack npm run build
-          corepack npm run build:sfe
+          pnpm install --frozen-lockfile
+          pnpm run build
+          pnpm run build:sfe
       - name: run e2e
         run: |
           uv run coverage run manage.py test ${{ matrix.job.glob }}
@@ -394,20 +412,20 @@ jobs:
           docker compose -f tests/e2e/compose.yml up -d --quiet-pull
       - name: Setup conformance suite
         run: |
-          docker compose -f tests/openid_conformance/compose.yml up -d --quiet-pull
+          docker compose -f tests/openid_conformance/compose.yml up -d --quiet-pull --wait
       - id: cache-web
         uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v4
         with:
           path: web/dist
-          key: ${{ runner.os }}-web-${{ hashFiles('web/package-lock.json', 'web/src/**', 'web/packages/sfe/src/**') }}-b
+          key: ${{ runner.os }}-web-${{ hashFiles('web/pnpm-lock.yaml', 'web/src/**', 'web/packages/sfe/src/**') }}-b
       - name: prepare web ui
         if: steps.cache-web.outputs.cache-hit != 'true'
         env:
           NODE_ENV: "production"
         run: |
-          corepack npm ci --prefix web
-          corepack npm run build --prefix web
-          corepack npm run build:sfe --prefix web
+          pnpm --dir web install --frozen-lockfile
+          pnpm --dir web run build
+          pnpm --dir web run build:sfe
       - name: run conformance
         run: |
           uv run coverage run manage.py test ${{ matrix.job.glob }}

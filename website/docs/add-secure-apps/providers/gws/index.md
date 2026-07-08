@@ -1,6 +1,8 @@
 ---
 title: Google Workspace provider
 authentik_enterprise: true
+sidebar_position: 3
+sidebar_label: "Google Workspace Provider"
 ---
 
 The Google Workspace provider allows you to integrate with your Google Workspace organization. It supports syncing users and groups from authentik to Google Workspace, allowing authentik to act as a source of truth for all users and groups.
