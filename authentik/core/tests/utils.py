@@ -45,7 +45,7 @@ def create_test_user(name: str | None = None, **kwargs) -> User:
 def create_test_session(
     user: User, user_switching_token: str | None = None, is_current: bool = True
 ) -> AuthenticatedSession:
-    """Create a live login for the given user, optionally bound for user switching."""
+    """Create a live login for the given user."""
     store = SessionStore()
     store.create()
     return AuthenticatedSession.objects.create(
