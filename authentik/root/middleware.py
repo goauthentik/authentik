@@ -1,7 +1,6 @@
 """Dynamically set SameSite depending if the upstream connection is TLS or not"""
 
 from collections.abc import Callable
-from hashlib import sha512
 from ipaddress import ip_address
 from time import perf_counter, time
 from typing import Any
@@ -25,10 +24,11 @@ from structlog.stdlib import get_logger
 from authentik.core import user_switching
 from authentik.core.models import Token, TokenIntents, User, UserTypes
 from authentik.lib.config import CONFIG
+from authentik.lib.utils.crypto import get_cookie_signing_key
 
 LOGGER = get_logger("authentik.asgi")
 ACR_AUTHENTIK_SESSION = "goauthentik.io/core/default"
-SIGNING_HASH = sha512(settings.SECRET_KEY.encode()).hexdigest()
+SIGNING_HASH = get_cookie_signing_key()
 
 
 class SessionMiddleware(UpstreamSessionMiddleware):

@@ -10,21 +10,18 @@ and the login path. Keeping it here avoids an ``authentik.core.models`` <->
 """
 
 from datetime import timedelta
-from hashlib import sha512
-
-from django.conf import settings
 from django.http.request import HttpRequest
 from django.utils.crypto import get_random_string
 from jwt import PyJWTError, decode, encode
+
+from authentik.lib.utils.crypto import get_cookie_signing_key
 
 TOKEN_LENGTH = 32
 # Keep these in sync with web/src/components/ak-user-switcher-storage.ts.
 COOKIE_NAME = "authentik_user_switching"
 COOKIE_AGE = int(timedelta(days=365).total_seconds())
 
-# Mirrors the session-signing hash in authentik.root.middleware; kept local so this
-# module has no dependency on the middleware it is imported by.
-_SIGNING_HASH = sha512(settings.SECRET_KEY.encode()).hexdigest()
+_SIGNING_HASH = get_cookie_signing_key()
 
 
 def generate_token() -> str:
