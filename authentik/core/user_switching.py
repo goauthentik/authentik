@@ -17,8 +17,9 @@ from django.http.request import HttpRequest
 from django.utils.crypto import get_random_string
 from jwt import PyJWTError, decode, encode
 
-COOKIE_NAME = "authentik_user_switching"
 TOKEN_LENGTH = 32
+# Keep these in sync with web/src/components/ak-user-switcher-storage.ts.
+COOKIE_NAME = "authentik_user_switching"
 COOKIE_AGE = int(timedelta(days=365).total_seconds())
 
 # Mirrors the session-signing hash in authentik.root.middleware; kept local so this

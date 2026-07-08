@@ -5,6 +5,7 @@ import type { UserSelf } from "@goauthentik/api";
 
 const USER_STORAGE_KEY = "authentik.users";
 const USER_SWITCHING_STORAGE_KEY = "authentik.user_switching";
+// Keep these in sync with authentik/core/user_switching.py.
 const USER_SWITCHING_COOKIE_NAME = "authentik_user_switching";
 const USER_SWITCHING_COOKIE_AGE_SECONDS = 60 * 60 * 24 * 365;
 
