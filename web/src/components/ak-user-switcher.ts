@@ -2,6 +2,7 @@ import "#elements/buttons/Dropdown";
 
 import { globalAK } from "#common/global";
 import { formatUserDisplayName, formatUserSecondaryIdentifier } from "#common/users";
+import { getCookie } from "#common/utils";
 
 import { AKElement } from "#elements/Base";
 import { WithSession } from "#elements/mixins/session";
@@ -48,8 +49,8 @@ export class UserSwitcher extends WithSession(AKElement) {
         return `${url.pathname}${url.search}${url.hash}`;
     }
 
-    protected userSwitchURL(user: BrowserLocalUser): string {
-        return this.rootURL(`user/switch/${user.pk}/`, this.nextQuery);
+    protected userSwitchURL(): string {
+        return this.rootURL("api/v3/core/users/switch/", this.nextQuery);
     }
 
     protected addUserURL(): string {
@@ -103,14 +104,22 @@ export class UserSwitcher extends WithSession(AKElement) {
         }
 
         return html`<li role="presentation">
-            <a
-                class="pf-c-dropdown__menu-item"
-                part="menu-item"
-                role="menuitem"
-                href=${this.userSwitchURL(user)}
-            >
-                ${content}
-            </a>
+            <form part="switch-form" method="post" action=${this.userSwitchURL()}>
+                <input
+                    type="hidden"
+                    name="csrfmiddlewaretoken"
+                    value=${getCookie("authentik_csrf")}
+                />
+                <input type="hidden" name="user_pk" value=${user.pk} />
+                <button
+                    class="pf-c-dropdown__menu-item"
+                    part="menu-item"
+                    role="menuitem"
+                    type="submit"
+                >
+                    ${content}
+                </button>
+            </form>
         </li>`;
     }
 

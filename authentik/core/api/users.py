@@ -9,6 +9,7 @@ from django.contrib.auth.models import AnonymousUser, Permission
 from django.db.models import Exists, OuterRef, Prefetch, Q
 from django.db.transaction import atomic
 from django.db.utils import IntegrityError
+from django.http import HttpResponse
 from django.urls import reverse_lazy
 from django.utils.http import urlencode
 from django.utils.text import slugify
@@ -88,6 +89,7 @@ from authentik.core.models import (
     UserTypes,
     default_token_duration,
 )
+from authentik.core.views.user_switch import user_switch_response
 from authentik.endpoints.connectors.agent.auth import AgentAuth
 from authentik.events.models import Event, EventAction
 from authentik.flows.exceptions import FlowNonApplicableException
@@ -660,6 +662,19 @@ class UserViewSet(
     )
     def list(self, request, *args, **kwargs):
         return super().list(request, *args, **kwargs)
+
+    @extend_schema(exclude=True)
+    @action(
+        detail=False,
+        methods=["POST"],
+        permission_classes=[IsAuthenticated],
+        pagination_class=None,
+        filter_backends=[],
+        url_path="switch",
+    )
+    def switch(self, request: Request) -> HttpResponse:
+        """Start browser user switching."""
+        return user_switch_response(request._request)
 
     def _create_recovery_link(
         self, token_duration: str | None, for_email=False

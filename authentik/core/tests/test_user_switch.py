@@ -1,7 +1,5 @@
 """User switch view tests"""
 
-from urllib.parse import parse_qs, urlsplit
-
 from django.conf import settings
 from django.urls import reverse
 
@@ -47,8 +45,19 @@ class TestUserSwitch(FlowTestCase):
         )
         self.brand = create_test_brand(flow_user_switch=self.flow)
 
-    def switch_url(self, user) -> str:
-        return reverse("authentik_core:user-switch", kwargs={"user_pk": user.pk})
+    def switch_url(self) -> str:
+        return reverse("authentik_api:user-switch")
+
+    def switch_data(self, user) -> dict[str, int]:
+        return {"user_pk": user.pk}
+
+    def post_switch(self, user, data: dict | None = None, **kwargs):
+        return self.client.post(
+            self.switch_url(),
+            {**self.switch_data(user), **(data or {})},
+            format="multipart",
+            **kwargs,
+        )
 
     def login(self, user) -> str:
         """Log the test client in through the flow executor, returning the session key"""
@@ -84,10 +93,7 @@ class TestUserSwitch(FlowTestCase):
             self.other_user, user_switching_token=user_switching_token, is_current=False
         )
 
-        response = self.client.get(
-            self.switch_url(self.other_user),
-            {"next": "/if/admin/#/core/brands"},
-        )
+        response = self.post_switch(self.other_user, {"next": "/if/admin/#/core/brands"})
 
         self.assertEqual(response.status_code, 400)
         self.assertContains(
@@ -102,10 +108,7 @@ class TestUserSwitch(FlowTestCase):
         self.brand.save()
         self.login(self.user)
 
-        response = self.client.get(
-            self.switch_url(self.other_user),
-            {"next": "https://example.invalid/"},
-        )
+        response = self.post_switch(self.other_user, {"next": "https://example.invalid/"})
 
         self.assertEqual(response.status_code, 400)
         self.assertContains(
@@ -113,6 +116,18 @@ class TestUserSwitch(FlowTestCase):
             "User switching is disabled.",
             status_code=400,
         )
+
+    def test_switch_get_not_allowed(self):
+        """Test switching cannot be started with a safe HTTP method."""
+        self.login(self.user)
+        user_switching_token = self.user_switching_token()
+        create_test_session(
+            self.other_user, user_switching_token=user_switching_token, is_current=False
+        )
+
+        response = self.client.get(self.switch_url())
+
+        self.assertEqual(response.status_code, 405)
 
     def test_switch_requires_authenticated_source_user(self):
         """Test switching is rejected when there is no current login to switch from"""
@@ -124,17 +139,9 @@ class TestUserSwitch(FlowTestCase):
             self.other_user, user_switching_token=user_switching_token, is_current=False
         )
 
-        response = self.client.get(self.switch_url(self.other_user))
+        response = self.post_switch(self.other_user)
 
-        self.assertEqual(response.status_code, 302)
-        self.assertEqual(
-            urlsplit(response.url).path,
-            reverse("authentik_flows:default-authentication"),
-        )
-        self.assertEqual(
-            parse_qs(urlsplit(response.url).query)["next"],
-            [self.switch_url(self.other_user)],
-        )
+        self.assertEqual(response.status_code, 403)
 
     def test_switch_with_live_session(self):
         """Test a live login of this browser is passed to the flow as context"""
@@ -144,7 +151,7 @@ class TestUserSwitch(FlowTestCase):
             self.other_user, user_switching_token=user_switching_token, is_current=False
         )
 
-        response = self.client.get(self.switch_url(self.other_user))
+        response = self.post_switch(self.other_user)
 
         self.assertEqual(response.status_code, 302)
         self.assertEqual(
@@ -170,7 +177,7 @@ class TestUserSwitch(FlowTestCase):
             self.other_user, user_switching_token=user_switching_token, is_current=False
         )
 
-        response = self.client.get(self.switch_url(self.other_user))
+        response = self.post_switch(self.other_user)
         self.assertEqual(response.status_code, 302)
         target_session.session.delete()
         response = self.client.get(
@@ -192,7 +199,7 @@ class TestUserSwitch(FlowTestCase):
         )
         PolicyBinding.objects.create(target=self.flow, user=self.other_user, order=0)
 
-        response = self.client.get(self.switch_url(self.other_user))
+        response = self.post_switch(self.other_user)
 
         self.assertEqual(response.status_code, 404)
 
@@ -200,7 +207,7 @@ class TestUserSwitch(FlowTestCase):
         """Test an unknown or stale target starts the flow without switch context"""
         self.login(self.user)
 
-        response = self.client.get(self.switch_url(self.other_user))
+        response = self.post_switch(self.other_user)
 
         self.assertEqual(response.status_code, 302)
         plan: FlowPlan = self.client.session[SESSION_KEY_PLAN]
@@ -216,7 +223,7 @@ class TestUserSwitch(FlowTestCase):
         self.login(self.user)
         create_test_session(self.other_user, user_switching_token="A" * 32)
 
-        response = self.client.get(self.switch_url(self.other_user))
+        response = self.post_switch(self.other_user)
 
         self.assertEqual(response.status_code, 302)
         plan: FlowPlan = self.client.session[SESSION_KEY_PLAN]
@@ -251,7 +258,7 @@ class TestUserSwitch(FlowTestCase):
             self.other_user, user_switching_token=user_switching_token, is_current=False
         )
 
-        response = self.client.get(self.switch_url(self.other_user))
+        response = self.post_switch(self.other_user)
         self.assertEqual(response.status_code, 302)
         response = self.client.get(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug})
@@ -270,7 +277,7 @@ class TestUserSwitch(FlowTestCase):
             self.other_user, user_switching_token=user_switching_token, is_current=False
         )
 
-        response = self.client.get(self.switch_url(self.other_user), follow=True)
+        response = self.post_switch(self.other_user, follow=True)
         self.assertEqual(response.status_code, 200)
         response = self.client.get(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})

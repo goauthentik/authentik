@@ -26,7 +26,6 @@ from authentik.core.views.interface import (
     InterfaceView,
     RootRedirectView,
 )
-from authentik.core.views.user_switch import UserSwitchView
 from authentik.flows.views.interface import FlowInterfaceView
 from authentik.root.asgi_middleware import AuthMiddlewareStack
 from authentik.root.middleware import ChannelsLoggingMiddleware
@@ -44,11 +43,6 @@ urlpatterns = [
         "application/launch/<slug:application_slug>/",
         RedirectToAppLaunch.as_view(),
         name="application-launch",
-    ),
-    path(
-        "user/switch/<int:user_pk>/",
-        UserSwitchView.as_view(),
-        name="user-switch",
     ),
     # Interfaces
     path(
