@@ -12,8 +12,8 @@ from authentik.flows.models import Flow
 from authentik.flows.planner import (
     PLAN_CONTEXT_PENDING_USER,
     PLAN_CONTEXT_USER_SWITCH_FROM_USER,
-    PLAN_CONTEXT_USER_SWITCH_TARGET_SESSION,
     PLAN_CONTEXT_USER_SWITCH_STALE_USER,
+    PLAN_CONTEXT_USER_SWITCH_TARGET_SESSION,
     FlowPlanner,
 )
 from authentik.flows.stage import PLAN_CONTEXT_PENDING_USER_IDENTIFIER
@@ -70,9 +70,7 @@ def flow_applicable_to_current_user(request: HttpRequest, flow: Flow) -> bool:
     return engine.result.passing
 
 
-def get_user_switching_session(
-    request: HttpRequest, user_pk: int
-) -> AuthenticatedSession | None:
+def get_user_switching_session(request: HttpRequest, user_pk: int) -> AuthenticatedSession | None:
     """Live login bound to this request's user switching token, if any."""
     user_switching_token = getattr(request, "user_switching_token", None)
     if not user_switching_token:

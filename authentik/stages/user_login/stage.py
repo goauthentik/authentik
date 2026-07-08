@@ -16,7 +16,10 @@ from authentik.core.models import AuthenticatedSession, Session, User
 from authentik.core.sessions import SessionStore
 from authentik.events.middleware import audit_ignore
 from authentik.flows.challenge import ChallengeResponse, WithUserInfoChallenge
-from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, PLAN_CONTEXT_USER_SWITCH_TARGET_SESSION
+from authentik.flows.planner import (
+    PLAN_CONTEXT_PENDING_USER,
+    PLAN_CONTEXT_USER_SWITCH_TARGET_SESSION,
+)
 from authentik.flows.stage import ChallengeStageView
 from authentik.flows.views.executor import SESSION_KEY_GET, SESSION_KEY_PLAN
 from authentik.lib.utils.time import timedelta_from_string
