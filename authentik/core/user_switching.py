@@ -30,11 +30,15 @@ def generate_token() -> str:
     return generate_id(TOKEN_LENGTH)
 
 
-def validate_token(raw: str | None) -> str | None:
+def validate_token(token: str | None) -> str | None:
     """Return the token if it is a well-formed opaque token, else None."""
-    if raw and len(raw) == TOKEN_LENGTH and raw.isalnum():
-        return raw
-    return None
+    if not token:
+        return None
+    if len(token) != TOKEN_LENGTH:
+        return None
+    if not token.isalnum():
+        return None
+    return token
 
 
 def encode_cookie(token: str) -> str:
