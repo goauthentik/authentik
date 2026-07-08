@@ -131,7 +131,7 @@ export class UserSwitcher extends WithSession(AKElement) {
                 part="menu-item"
                 role="menuitem"
                 type="button"
-                @click=${() => void this.switchUser(user)}
+                @click=${() => this.switchUser(user)}
             >
                 ${content}
             </button>
