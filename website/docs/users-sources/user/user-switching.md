@@ -62,7 +62,7 @@ target_session_id = None
 if flow_plan:
     user = flow_plan.context.get("pending_user")
     is_user_switch = bool(flow_plan.context.get("user_switch_from_user"))
-    target_session_id = flow_plan.context.get("user_switch_session")
+    target_session_id = flow_plan.context.get("user_switch_target_session")
 
 now = timezone.now()
 if not is_user_switch or not user or not target_session_id:

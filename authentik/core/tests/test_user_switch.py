@@ -19,7 +19,7 @@ from authentik.flows.models import FlowDesignation, FlowStageBinding
 from authentik.flows.planner import (
     PLAN_CONTEXT_PENDING_USER,
     PLAN_CONTEXT_USER_SWITCH_FROM_USER,
-    PLAN_CONTEXT_USER_SWITCH_SESSION,
+    PLAN_CONTEXT_USER_SWITCH_TARGET_SESSION,
     PLAN_CONTEXT_USER_SWITCH_STALE_USER,
     FlowPlan,
 )
@@ -159,7 +159,7 @@ class TestUserSwitch(FlowTestCase):
         )
         self.assertEqual(plan.context[PLAN_CONTEXT_USER_SWITCH_FROM_USER], self.user)
         self.assertEqual(
-            plan.context[PLAN_CONTEXT_USER_SWITCH_SESSION], target_session.session.session_key
+            plan.context[PLAN_CONTEXT_USER_SWITCH_TARGET_SESSION], target_session.session.session_key
         )
 
     def test_switch_rejects_target_session_deleted_after_planning(self):

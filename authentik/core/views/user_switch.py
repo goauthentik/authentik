@@ -14,7 +14,7 @@ from authentik.flows.models import Flow
 from authentik.flows.planner import (
     PLAN_CONTEXT_PENDING_USER,
     PLAN_CONTEXT_USER_SWITCH_FROM_USER,
-    PLAN_CONTEXT_USER_SWITCH_SESSION,
+    PLAN_CONTEXT_USER_SWITCH_TARGET_SESSION,
     PLAN_CONTEXT_USER_SWITCH_STALE_USER,
     FlowPlanner,
 )
@@ -45,7 +45,7 @@ class UserSwitchView(LoginRequiredMixin, View):
         # letting a policy-free switch flow skip straight to the next stage.
         context[PLAN_CONTEXT_PENDING_USER_IDENTIFIER] = session.user.username
         context[PLAN_CONTEXT_USER_SWITCH_FROM_USER] = request.user
-        context[PLAN_CONTEXT_USER_SWITCH_SESSION] = session.session.session_key
+        context[PLAN_CONTEXT_USER_SWITCH_TARGET_SESSION] = session.session.session_key
         return self.redirect_to_flow(request, flow, context)
 
     @staticmethod
