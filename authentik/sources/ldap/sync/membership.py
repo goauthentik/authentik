@@ -12,19 +12,79 @@ from authentik.sources.ldap.models import (
     LDAP_DISTINGUISHED_NAME,
     GroupLDAPSourceConnection,
     LDAPSource,
+    UserLDAPSourceConnection,
 )
 from authentik.sources.ldap.sync.base import BaseLDAPSynchronizer
 from authentik.tasks.models import Task
 
 
-class MembershipLDAPSynchronizer(BaseLDAPSynchronizer):
-    """Sync LDAP Users and groups into authentik"""
+class BaseMembershipLDAPSynchronizer(BaseLDAPSynchronizer):
+    """Sync membership of LDAP Users and Groups into authentik"""
 
+    user_cache: dict[str, User]
     group_cache: dict[str, Group]
 
     def __init__(self, source: LDAPSource, task: Task):
         super().__init__(source, task)
+        self.user_cache: dict[str, User] = {}
         self.group_cache: dict[str, Group] = {}
+
+    def get_user(self, user_dict: dict[str, Any]) -> User | None:
+        """Check if we fetched the user already, and if not cache it for later"""
+        user_dn = user_dict.get("dn", {})
+        user_uniq = user_dict.get("attributes", {}).get(self._source.object_uniqueness_field, [])
+        # user_uniq might be a single string or an array with (hopefully) a single string
+        if isinstance(user_uniq, list):
+            if len(user_uniq) < 1:
+                self._task.info(
+                    f"User does not have a uniqueness attribute: '{user_dn}'",
+                    user=user_dn,
+                )
+                return None
+            user_uniq = user_uniq[0]
+        if user_uniq not in self.user_cache:
+            users = UserLDAPSourceConnection.objects.filter(identifier=user_uniq).select_related(
+                "user"
+            )
+            if not users.exists():
+                self._task.info(
+                    f"User does not exist in our DB yet, run sync_users first: '{user_dn}'",
+                    user=user_dn,
+                )
+                return None
+            self.user_cache[user_uniq] = users.first()
+        return self.user_cache[user_uniq]
+
+    def get_group(self, group_dict: dict[str, Any]) -> Group | None:
+        """Check if we fetched the group already, and if not cache it for later"""
+        group_dn = group_dict.get("attributes", {}).get(LDAP_DISTINGUISHED_NAME, [])
+        group_uniq = group_dict.get("attributes", {}).get(self._source.object_uniqueness_field, [])
+        # group_uniq might be a single string or an array with (hopefully) a single string
+        if isinstance(group_uniq, list):
+            if len(group_uniq) < 1:
+                self._task.info(
+                    f"Group does not have a uniqueness attribute: '{group_dn}'",
+                    group=group_dn,
+                )
+                return None
+            group_uniq = group_uniq[0]
+        if group_uniq not in self.group_cache:
+            groups = GroupLDAPSourceConnection.objects.filter(identifier=group_uniq).select_related(
+                "group"
+            )
+            if not groups.exists():
+                if self._source.sync_groups:
+                    self._task.info(
+                        f"Group does not exist in our DB yet, run sync_groups first: '{group_dn}'",
+                        group=group_dn,
+                    )
+                return None
+            self.group_cache[group_uniq] = groups.first().group
+        return self.group_cache[group_uniq]
+
+
+class MembershipLDAPSynchronizer(BaseMembershipLDAPSynchronizer):
+    """Sync membership of LDAP Users into authentik"""
 
     @staticmethod
     def name() -> str:
@@ -93,30 +153,3 @@ class MembershipLDAPSynchronizer(BaseLDAPSynchronizer):
             group.save()
         self._logger.debug("Successfully updated group membership")
         return membership_count
-
-    def get_group(self, group_dict: dict[str, Any]) -> Group | None:
-        """Check if we fetched the group already, and if not cache it for later"""
-        group_dn = group_dict.get("attributes", {}).get(LDAP_DISTINGUISHED_NAME, [])
-        group_uniq = group_dict.get("attributes", {}).get(self._source.object_uniqueness_field, [])
-        # group_uniq might be a single string or an array with (hopefully) a single string
-        if isinstance(group_uniq, list):
-            if len(group_uniq) < 1:
-                self._task.info(
-                    f"Group does not have a uniqueness attribute: '{group_dn}'",
-                    group=group_dn,
-                )
-                return None
-            group_uniq = group_uniq[0]
-        if group_uniq not in self.group_cache:
-            groups = GroupLDAPSourceConnection.objects.filter(identifier=group_uniq).select_related(
-                "group"
-            )
-            if not groups.exists():
-                if self._source.sync_groups:
-                    self._task.info(
-                        f"Group does not exist in our DB yet, run sync_groups first: '{group_dn}'",
-                        group=group_dn,
-                    )
-                return None
-            self.group_cache[group_uniq] = groups.first().group
-        return self.group_cache[group_uniq]
