@@ -9,7 +9,6 @@ import "#elements/Tabs";
 import "#elements/buttons/ActionButton/index";
 import "#elements/buttons/ModalButton";
 import "#components/sync/SyncStatusCard";
-import "#components/tasks/ScheduleList";
 
 import { aki } from "#common/api/client";
 import { EVENT_REFRESH } from "#common/constants";
