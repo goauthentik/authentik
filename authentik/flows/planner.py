@@ -43,6 +43,7 @@ PLAN_CONTEXT_DEVICE = "device"
 PLAN_CONTEXT_SOURCE = "source"
 PLAN_CONTEXT_OUTPOST = "outpost"
 PLAN_CONTEXT_USER_SWITCH_FROM_USER = "user_switch_from_user"
+PLAN_CONTEXT_USER_SWITCH_SESSION = "user_switch_session"
 PLAN_CONTEXT_USER_SWITCH_STALE_USER = "user_switch_stale_user"
 PLAN_CONTEXT_POST = "goauthentik.io/http/post"
 # Is set by the Flow Planner when a FlowToken was used, and the currently active flow plan

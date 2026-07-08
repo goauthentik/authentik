@@ -7,6 +7,7 @@ from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import login
 from django.http import HttpRequest, HttpResponse
+from django.utils import timezone
 from django.utils.translation import gettext as _
 from jwt import PyJWTError, decode, encode
 from rest_framework.fields import BooleanField, CharField
@@ -15,7 +16,7 @@ from authentik.core.models import AuthenticatedSession, Session, User
 from authentik.core.sessions import SessionStore
 from authentik.events.middleware import audit_ignore
 from authentik.flows.challenge import ChallengeResponse, WithUserInfoChallenge
-from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
+from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, PLAN_CONTEXT_USER_SWITCH_SESSION
 from authentik.flows.stage import ChallengeStageView
 from authentik.flows.views.executor import SESSION_KEY_GET, SESSION_KEY_PLAN
 from authentik.lib.utils.time import timedelta_from_string
@@ -162,6 +163,26 @@ class UserLoginStageView(ChallengeStageView):
         if flow_query_params is not None:
             self.request.session[SESSION_KEY_GET] = flow_query_params
 
+    def get_valid_user_switch_target(self, user: User) -> AuthenticatedSession | None:
+        """Return the live target session for an in-progress user switch."""
+        target_session_id = self.executor.plan.context.get(PLAN_CONTEXT_USER_SWITCH_SESSION)
+        if not target_session_id:
+            return None
+        user_switching_token = getattr(self.request, "user_switching_token", None)
+        if not user_switching_token:
+            return None
+        return (
+            AuthenticatedSession.objects.filter(
+                session__session_key=target_session_id,
+                session__expires__gt=timezone.now(),
+                user__is_active=True,
+                user_id=user.pk,
+                user_switching_token=user_switching_token,
+            )
+            .select_related("session", "user")
+            .first()
+        )
+
     def do_login(self, request: HttpRequest, remember: bool | None = None) -> HttpResponse:
         """Attach the currently pending user to the current session.
         `remember` Argument should be `None` if not configured, otherwise set to `True`/`False`
@@ -175,6 +196,12 @@ class UserLoginStageView(ChallengeStageView):
             PLAN_CONTEXT_AUTHENTICATION_BACKEND, BACKEND_INBUILT
         )
         user: User = self.executor.plan.context[PLAN_CONTEXT_PENDING_USER]
+        if PLAN_CONTEXT_USER_SWITCH_SESSION in self.executor.plan.context:
+            target_session = self.get_valid_user_switch_target(user)
+            if not target_session:
+                self.logger.warning("User switch target session is no longer valid.")
+                return self.executor.stage_invalid()
+            user = target_session.user
         if not user.is_active:
             self.logger.warning("User is not active, login will not work.")
             return self.executor.stage_invalid()

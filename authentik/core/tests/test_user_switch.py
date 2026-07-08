@@ -19,6 +19,7 @@ from authentik.flows.models import FlowDesignation, FlowStageBinding
 from authentik.flows.planner import (
     PLAN_CONTEXT_PENDING_USER,
     PLAN_CONTEXT_USER_SWITCH_FROM_USER,
+    PLAN_CONTEXT_USER_SWITCH_SESSION,
     PLAN_CONTEXT_USER_SWITCH_STALE_USER,
     FlowPlan,
 )
@@ -139,7 +140,7 @@ class TestUserSwitch(FlowTestCase):
         """Test a live login of this browser is passed to the flow as context"""
         self.login(self.user)
         user_switching_token = self.user_switching_token()
-        create_test_session(
+        target_session = create_test_session(
             self.other_user, user_switching_token=user_switching_token, is_current=False
         )
 
@@ -157,6 +158,30 @@ class TestUserSwitch(FlowTestCase):
             self.other_user.username,
         )
         self.assertEqual(plan.context[PLAN_CONTEXT_USER_SWITCH_FROM_USER], self.user)
+        self.assertEqual(
+            plan.context[PLAN_CONTEXT_USER_SWITCH_SESSION], target_session.session.session_key
+        )
+
+    def test_switch_rejects_target_session_deleted_after_planning(self):
+        """Test a switch target is revalidated immediately before login."""
+        first_session_key = self.login(self.user)
+        user_switching_token = self.user_switching_token()
+        target_session = create_test_session(
+            self.other_user, user_switching_token=user_switching_token, is_current=False
+        )
+
+        response = self.client.get(self.switch_url(self.other_user))
+        self.assertEqual(response.status_code, 302)
+        target_session.session.delete()
+        response = self.client.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
+        )
+
+        self.assertStageResponse(response, self.flow, component="ak-stage-access-denied")
+        self.assertEqual(self.client.session.session_key, first_session_key)
+        current = AuthenticatedSession.objects.get(session__session_key=first_session_key)
+        self.assertEqual(current.user, self.user)
+        self.assertTrue(current.is_current)
 
     def test_switch_flow_must_apply_to_current_user(self):
         """Test switching rejects flows the source user cannot access."""
