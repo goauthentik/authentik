@@ -29,6 +29,16 @@ class BaseMembershipLDAPSynchronizer(BaseLDAPSynchronizer):
         self.user_cache: dict[str, User] = {}
         self.group_cache: dict[str, Group] = {}
 
+    @staticmethod
+    def name() -> str:
+        raise NotImplementedError
+
+    def get_objects(self, **kwargs) -> Generator:
+        raise NotImplementedError
+
+    def sync(self, page_data: list) -> int:
+        raise NotImplementedError
+
     def get_user(self, user_dict: dict[str, Any]) -> User | None:
         """Check if we fetched the user already, and if not cache it for later"""
         user_dn = user_dict.get("dn", {})
@@ -119,7 +129,7 @@ class MembershipLDAPSynchronizer(BaseMembershipLDAPSynchronizer):
                 group_dn = group_data.get("dn", {})
                 escaped_dn = escape_filter_chars(group_dn)
                 group_filter = f"({self._source.membership_field}={escaped_dn})"
-                group_members = self._source.connection().extend.standard.paged_search(
+                group_members = self.search_paginator(
                     search_base=self.base_dn_users,
                     search_filter=group_filter,
                     search_scope=SUBTREE,
@@ -153,3 +163,85 @@ class MembershipLDAPSynchronizer(BaseMembershipLDAPSynchronizer):
             group.save()
         self._logger.debug("Successfully updated group membership")
         return membership_count
+
+
+class ParentshipLDAPSynchronizer(BaseMembershipLDAPSynchronizer):
+    """Sync parentship of LDAP Groups into authentik"""
+
+    @staticmethod
+    def name() -> str:
+        return "parentship"
+
+    def get_objects(self, **kwargs) -> Generator:
+        if not self._source.sync_groups:
+            self._task.info("Group syncing is disabled for this Source")
+            return iter(())
+
+        attributes = [
+            self._source.membership_field,
+            self._source.membership_reference,
+            self._source.object_uniqueness_field,
+            LDAP_DISTINGUISHED_NAME,
+        ]
+
+        return self.search_paginator(
+            search_base=self.base_dn_groups,
+            search_filter=self._source.group_object_filter,
+            search_scope=SUBTREE,
+            attributes=attributes,
+            **kwargs,
+        )
+
+    def sync(self, page_data: list) -> int:
+        """Iterate over all Groups and assign their parents"""
+        if not self._source.sync_groups:
+            self._task.info("Group syncing is disabled for this Source")
+            return -1
+        parentship_count = 0
+        for group_data in page_data:
+            if (attributes := self.get_attributes(group_data)) is None:
+                continue
+            if self._source.lookup_groups_from_member:
+                parents = attributes.get(self._source.membership_field, [])
+            else:
+                group_ref = group_data.get(self._source.membership_reference, {})
+                escaped_ref = escape_filter_chars(group_ref)
+                group_filter = (
+                    f"(&({self._source.group_object_filter})"
+                    f"({self._source.membership_field}={escaped_ref}))"
+                )
+
+                parents = [
+                    self.get_group(parent)
+                    for parent in self.search_paginator(
+                        search_base=self.base_dn_groups,
+                        search_filter=group_filter,
+                        search_scope=SUBTREE,
+                        attributes=[self._source.object_uniqueness_field],
+                    )
+                ]
+
+            group = self.get_group(group_data)
+            if not group:
+                continue
+
+            # add preexisting parents that are not managed by this source to the list of parents
+            parents.extend(
+                parent
+                for parent in group.parents.filter(
+                    Q(groupldapsourceconnection__isnull=True)
+                    | Q(groupldapsourceconnection__source__ne=self._source)
+                ).distinct()
+            )
+
+            parent_set_orig = set(group.parents.all())
+            parent_set_new = set(parents)
+
+            parentship_count += len(parent_set_orig - parent_set_new)
+            parentship_count += len(parent_set_new - parent_set_orig)
+
+            group.parents.set(parents)
+
+            group.save()
+        self._logger.debug("Successfully updated group parentship")
+        return parentship_count

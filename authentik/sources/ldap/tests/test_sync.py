@@ -22,7 +22,10 @@ from authentik.sources.ldap.models import (
 )
 from authentik.sources.ldap.sync.forward_delete_users import DELETE_CHUNK_SIZE
 from authentik.sources.ldap.sync.groups import GroupLDAPSynchronizer
-from authentik.sources.ldap.sync.membership import MembershipLDAPSynchronizer
+from authentik.sources.ldap.sync.membership import (
+    MembershipLDAPSynchronizer,
+    ParentshipLDAPSynchronizer,
+)
 from authentik.sources.ldap.sync.users import UserLDAPSynchronizer
 from authentik.sources.ldap.tasks import ldap_sync, ldap_sync_page
 from authentik.sources.ldap.tests.mock_ad import mock_ad_connection
@@ -445,8 +448,8 @@ class LDAPSyncTests(TestCase):
             self.source.save()
             group_sync = GroupLDAPSynchronizer(self.source, Task())
             group_sync.sync_full()
-            membership_sync = MembershipLDAPSynchronizer(self.source, Task())
-            membership_sync.sync_full()
+            parentship_sync = ParentshipLDAPSynchronizer(self.source, Task())
+            parentship_sync.sync_full()
             child_group_name = "Test Group"
             parent_group_name = "Domain Admins"
             group: Group = Group.objects.filter(name=child_group_name).first()
@@ -494,8 +497,8 @@ class LDAPSyncTests(TestCase):
             self.source.save()
             group_sync = GroupLDAPSynchronizer(self.source, Task())
             group_sync.sync_full()
-            membership_sync = MembershipLDAPSynchronizer(self.source, Task())
-            membership_sync.sync_full()
+            parentship_sync = ParentshipLDAPSynchronizer(self.source, Task())
+            parentship_sync.sync_full()
             child_group_name = "Test Group"
             parent_group_name = "Domain Admins"
             group: Group = Group.objects.filter(name=child_group_name).first()
