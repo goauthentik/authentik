@@ -25,7 +25,7 @@ import { msg } from "@lit/localize";
 import { html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-const NOTIFICATION_MODEL = ModelEnum.AuthentikEventsNotificationtransport;
+const NOTIFICATION_MODEL = ModelEnum.AuthentikEventsNotificationrule;
 
 @customElement("ak-event-rule-list")
 export class RuleListPage extends TablePage<NotificationRule> {
