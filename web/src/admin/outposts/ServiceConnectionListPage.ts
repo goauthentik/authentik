@@ -38,7 +38,7 @@ import { ifDefined } from "lit/directives/if-defined.js";
 export class OutpostServiceConnectionListPage extends TablePage<ServiceConnection> {
     public pageTitle = msg("Outpost integrations");
     public pageDescription = msg(
-        "Outpost integrations define how authentik connects to external platforms to manage and deploy Outposts.",
+        "Outpost integrations define how authentik connects to external platforms to manage and deploy Outposts."
     );
 
     public pageIcon = "pf-icon pf-icon-integration";
@@ -48,12 +48,12 @@ export class OutpostServiceConnectionListPage extends TablePage<ServiceConnectio
     public override expandable = true;
     public override clearOnRefresh = true;
     public override searchPlaceholder = msg(
-        "Search for an outpost integration by name, type or assigned integration...",
+        "Search for an outpost integration by name, type or assigned integration..."
     );
 
     async apiEndpoint(): Promise<PaginatedResponse<ServiceConnection>> {
         const connections = await aki(OutpostsApi).outpostsServiceConnectionsAllList(
-            await this.defaultEndpointConfig(),
+            await this.defaultEndpointConfig()
         );
         await Promise.all(
             connections.results.map((connection) => {
@@ -64,7 +64,7 @@ export class OutpostServiceConnectionListPage extends TablePage<ServiceConnectio
                     .then((state) => {
                         this.state[connection.pk] = state;
                     });
-            }),
+            })
         );
         return connections;
     }
@@ -103,7 +103,6 @@ export class OutpostServiceConnectionListPage extends TablePage<ServiceConnectio
     }
 
     renderExpanded(item: ServiceConnection): TemplateResult {
-        const [appLabel, modelName] = item.metaModelName.split(".");
         return html`
             ${scheduleCard(item.metaModelName as ModelEnum, item.pk)}
             ${taskCard(item.metaModelName as ModelEnum, item.pk)}
