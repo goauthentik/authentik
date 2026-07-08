@@ -104,7 +104,12 @@ export class UserSwitcher extends WithSession(AKElement) {
         }
 
         return html`<li role="presentation">
-            <form part="switch-form" method="post" action=${this.userSwitchURL()}>
+            <form
+                part="switch-form"
+                method="post"
+                action=${this.userSwitchURL()}
+                enctype="multipart/form-data"
+            >
                 <input
                     type="hidden"
                     name="csrfmiddlewaretoken"
