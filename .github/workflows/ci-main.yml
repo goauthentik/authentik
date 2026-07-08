@@ -305,7 +305,7 @@ jobs:
           docker compose -f tests/e2e/compose.yml up -d --quiet-pull
       - name: Setup conformance suite
         run: |
-          docker compose -f tests/openid_conformance/compose.yml up -d --quiet-pull
+          docker compose -f tests/openid_conformance/compose.yml up -d --quiet-pull --wait
       - id: cache-web
         uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v4
         with:
