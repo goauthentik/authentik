@@ -15,7 +15,7 @@ export function scheduleCard(model: ModelEnum, objId: string | number | undefine
         <ak-schedule-list
             .relObjAppLabel=${appLabel}
             .relObjModel=${modelName}
-            .relObjId="${objId}"
+            .relObjId=${objId}
         ></ak-schedule-list>
     </div>`;
 }
