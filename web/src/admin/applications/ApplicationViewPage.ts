@@ -12,7 +12,7 @@ import "#elements/Tabs";
 import "#elements/buttons/SpinnerButton/ak-spinner-button";
 import "#admin/applications/ApplicationEvents";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { APIError, parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
 
 import { AKElement } from "#elements/Base";
@@ -94,7 +94,7 @@ export class ApplicationViewPage extends WithLicenseSummary(AKElement) {
     //#region Lifecycle
 
     protected fetchIsMissingOutpost(providersByPk: Array<number>) {
-        new OutpostsApi(DEFAULT_CONFIG)
+        aki(OutpostsApi)
             .outpostsInstancesList({
                 providersByPk,
                 pageSize: 1,
@@ -107,7 +107,7 @@ export class ApplicationViewPage extends WithLicenseSummary(AKElement) {
     }
 
     protected fetchApplication(slug: string) {
-        new CoreApi(DEFAULT_CONFIG)
+        aki(CoreApi)
             .coreApplicationsRetrieve({ slug })
             .then((app) => {
                 this.application = app;
@@ -120,7 +120,7 @@ export class ApplicationViewPage extends WithLicenseSummary(AKElement) {
                 ) {
                     this.fetchIsMissingOutpost([app.provider || 0]);
                 }
-                return new EventsApi(DEFAULT_CONFIG)
+                return aki(EventsApi)
                     .eventsEventsStatsRetrieve({
                         action: EventActions.AuthorizeApplication,
                         contextAuthorizedApp: app.pk.replaceAll("-", ""),

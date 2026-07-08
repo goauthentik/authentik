@@ -28,7 +28,7 @@ type LDAPOutpostConfig struct {
 	BindFlowSlug string  `json:"bind_flow_slug"`
 	// Get slug for unbind flow, defaulting to brand's default flow.
 	UnbindFlowSlug NullableString `json:"unbind_flow_slug"`
-	// Prioritise backchannel slug over direct application slug
+	// Prioritize backchannel slug over direct application slug
 	ApplicationSlug string         `json:"application_slug"`
 	Certificate     NullableString `json:"certificate,omitempty"`
 	TlsServerName   *string        `json:"tls_server_name,omitempty"`

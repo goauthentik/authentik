@@ -12,20 +12,20 @@
  * Do not edit the class manually.
  */
 
-import type {
-    ExpiringBaseGrantModel,
-    PaginatedExpiringBaseGrantModelList,
-    PaginatedTokenModelList,
-    TokenModel,
-    UsedBy,
-} from "../models/index";
 import {
+    type ExpiringBaseGrantModel,
     ExpiringBaseGrantModelFromJSON,
+} from "../models/ExpiringBaseGrantModel";
+import {
+    type PaginatedExpiringBaseGrantModelList,
     PaginatedExpiringBaseGrantModelListFromJSON,
+} from "../models/PaginatedExpiringBaseGrantModelList";
+import {
+    type PaginatedTokenModelList,
     PaginatedTokenModelListFromJSON,
-    TokenModelFromJSON,
-    UsedByFromJSON,
-} from "../models/index";
+} from "../models/PaginatedTokenModelList";
+import { type TokenModel, TokenModelFromJSON } from "../models/TokenModel";
+import { type UsedBy, UsedByFromJSON } from "../models/UsedBy";
 import * as runtime from "../runtime";
 
 export interface Oauth2AccessTokensDestroyRequest {
@@ -122,7 +122,7 @@ export class Oauth2Api extends runtime.BaseAPI {
         }
 
         let urlPath = `/oauth2/access_tokens/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
@@ -261,7 +261,7 @@ export class Oauth2Api extends runtime.BaseAPI {
         }
 
         let urlPath = `/oauth2/access_tokens/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
@@ -322,7 +322,7 @@ export class Oauth2Api extends runtime.BaseAPI {
         }
 
         let urlPath = `/oauth2/access_tokens/{id}/used_by/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
@@ -387,7 +387,7 @@ export class Oauth2Api extends runtime.BaseAPI {
         }
 
         let urlPath = `/oauth2/authorization_codes/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
@@ -531,7 +531,7 @@ export class Oauth2Api extends runtime.BaseAPI {
         }
 
         let urlPath = `/oauth2/authorization_codes/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
@@ -598,7 +598,7 @@ export class Oauth2Api extends runtime.BaseAPI {
         }
 
         let urlPath = `/oauth2/authorization_codes/{id}/used_by/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
@@ -663,7 +663,7 @@ export class Oauth2Api extends runtime.BaseAPI {
         }
 
         let urlPath = `/oauth2/refresh_tokens/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
@@ -802,7 +802,7 @@ export class Oauth2Api extends runtime.BaseAPI {
         }
 
         let urlPath = `/oauth2/refresh_tokens/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
@@ -866,7 +866,7 @@ export class Oauth2Api extends runtime.BaseAPI {
         }
 
         let urlPath = `/oauth2/refresh_tokens/{id}/used_by/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
