@@ -28,10 +28,6 @@
     gap: var(--pf-global--spacer--sm);
 }
 
-[part="switch-form"] {
-    margin: 0;
-}
-
 /*
  * The class selector matches PatternFly's `.pf-c-dropdown__toggle.pf-m-plain`
  * specificity so this `display: flex` wins; a bare `[part="toggle"]` loses to

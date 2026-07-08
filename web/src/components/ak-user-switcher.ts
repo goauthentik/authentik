@@ -1,8 +1,8 @@
 import "#elements/buttons/Dropdown";
 
+import { aki } from "#common/api/client";
 import { globalAK } from "#common/global";
 import { formatUserDisplayName, formatUserSecondaryIdentifier } from "#common/users";
-import { getCookie } from "#common/utils";
 
 import { AKElement } from "#elements/Base";
 import { WithSession } from "#elements/mixins/session";
@@ -12,12 +12,27 @@ import { isDefaultAvatar } from "#elements/utils/images";
 import { type BrowserLocalUser, syncStoredUsers } from "#components/ak-user-switcher-storage";
 import Styles from "#components/ak-user-switcher.css";
 
+import { BaseAPI } from "@goauthentik/api";
+
 import { msg } from "@lit/localize";
 import { html, type PropertyValues } from "lit";
 import { customElement } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFDropdown from "@patternfly/patternfly/components/Dropdown/dropdown.css";
+
+class UserSwitchAPI extends BaseAPI {
+    async switch(userPk: number, next: string): Promise<{ redirect: string }> {
+        const response = await this.request({
+            path: "/core/users/switch/",
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            query: { next },
+            body: { user_pk: userPk },
+        });
+        return response.json();
+    }
+}
 
 @customElement("ak-user-switcher")
 export class UserSwitcher extends WithSession(AKElement) {
@@ -49,8 +64,8 @@ export class UserSwitcher extends WithSession(AKElement) {
         return `${url.pathname}${url.search}${url.hash}`;
     }
 
-    protected userSwitchURL(): string {
-        return this.rootURL("api/v3/core/users/switch/", this.nextQuery);
+    protected userSwitchNext(): string {
+        return new URLSearchParams(this.nextQuery).get("next") ?? "";
     }
 
     protected addUserURL(): string {
@@ -67,6 +82,13 @@ export class UserSwitcher extends WithSession(AKElement) {
 
     protected userLabel(user: BrowserLocalUser): string {
         return formatUserDisplayName(user, this.uiConfig) || user.username;
+    }
+
+    protected async switchUser(user: BrowserLocalUser): Promise<void> {
+        const { redirect } = await aki(UserSwitchAPI).switch(user.pk, this.userSwitchNext());
+        if (redirect) {
+            window.location.assign(redirect);
+        }
     }
 
     protected renderAvatar(user?: { avatar?: string }): SlottedTemplateResult {
@@ -104,27 +126,15 @@ export class UserSwitcher extends WithSession(AKElement) {
         }
 
         return html`<li role="presentation">
-            <form
-                part="switch-form"
-                method="post"
-                action=${this.userSwitchURL()}
-                enctype="multipart/form-data"
+            <button
+                class="pf-c-dropdown__menu-item"
+                part="menu-item"
+                role="menuitem"
+                type="button"
+                @click=${() => void this.switchUser(user)}
             >
-                <input
-                    type="hidden"
-                    name="csrfmiddlewaretoken"
-                    value=${getCookie("authentik_csrf")}
-                />
-                <input type="hidden" name="user_pk" value=${user.pk} />
-                <button
-                    class="pf-c-dropdown__menu-item"
-                    part="menu-item"
-                    role="menuitem"
-                    type="submit"
-                >
-                    ${content}
-                </button>
-            </form>
+                ${content}
+            </button>
         </li>`;
     }
 

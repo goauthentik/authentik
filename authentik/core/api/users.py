@@ -677,9 +677,16 @@ class UserViewSet(
         filter_backends=[],
         url_path="switch",
     )
-    def switch(self, request: Request) -> HttpResponse:
+    def switch(self, request: Request) -> HttpResponse | Response:
         """Start browser user switching."""
-        return user_switch_response(request._request)
+        try:
+            user_pk = int(request.data.get("user_pk", ""))
+        except (TypeError, ValueError):
+            return Response({"detail": _("Invalid user switch target.")}, status=400)
+        response = user_switch_response(request._request, user_pk)
+        if 300 <= response.status_code < 400 and response.has_header("Location"):
+            return Response({"redirect": response["Location"]})
+        return response
 
     def _create_recovery_link(
         self, token_duration: str | None, for_email=False

@@ -2,6 +2,7 @@
 
 from django.conf import settings
 from django.urls import reverse
+from django.utils.http import urlencode
 
 from authentik.core import user_switching
 from authentik.core.models import AuthenticatedSession, Session
@@ -45,18 +46,28 @@ class TestUserSwitch(FlowTestCase):
         )
         self.brand = create_test_brand(flow_user_switch=self.flow)
 
-    def switch_url(self) -> str:
-        return reverse("authentik_api:user-switch")
+    def switch_url(self, query: dict | None = None) -> str:
+        url = reverse("authentik_api:user-switch")
+        if query:
+            return f"{url}?{urlencode(query)}"
+        return url
 
     def switch_data(self, user) -> dict[str, int]:
         return {"user_pk": user.pk}
 
-    def post_switch(self, user, data: dict | None = None, **kwargs):
+    def post_switch(self, user, data: dict | None = None, query: dict | None = None, **kwargs):
         return self.client.post(
-            self.switch_url(),
+            self.switch_url(query),
             {**self.switch_data(user), **(data or {})},
-            format="multipart",
+            format="json",
             **kwargs,
+        )
+
+    def assert_switch_redirect(self, response, flow=None):
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.json()["redirect"],
+            reverse("authentik_core:if-flow", kwargs={"flow_slug": (flow or self.flow).slug}),
         )
 
     def login(self, user) -> str:
@@ -93,7 +104,9 @@ class TestUserSwitch(FlowTestCase):
             self.other_user, user_switching_token=user_switching_token, is_current=False
         )
 
-        response = self.post_switch(self.other_user, {"next": "/if/admin/#/core/brands"})
+        response = self.post_switch(
+            self.other_user, query={"next": "/if/admin/#/core/brands"}
+        )
 
         self.assertEqual(response.status_code, 400)
         self.assertContains(
@@ -108,7 +121,7 @@ class TestUserSwitch(FlowTestCase):
         self.brand.save()
         self.login(self.user)
 
-        response = self.post_switch(self.other_user, {"next": "https://example.invalid/"})
+        response = self.post_switch(self.other_user, query={"next": "https://example.invalid/"})
 
         self.assertEqual(response.status_code, 400)
         self.assertContains(
@@ -153,11 +166,7 @@ class TestUserSwitch(FlowTestCase):
 
         response = self.post_switch(self.other_user)
 
-        self.assertEqual(response.status_code, 302)
-        self.assertEqual(
-            response.url,
-            reverse("authentik_core:if-flow", kwargs={"flow_slug": self.flow.slug}),
-        )
+        self.assert_switch_redirect(response)
         plan: FlowPlan = self.client.session[SESSION_KEY_PLAN]
         self.assertEqual(plan.context[PLAN_CONTEXT_PENDING_USER], self.other_user)
         self.assertEqual(
@@ -178,7 +187,7 @@ class TestUserSwitch(FlowTestCase):
         )
 
         response = self.post_switch(self.other_user)
-        self.assertEqual(response.status_code, 302)
+        self.assert_switch_redirect(response)
         target_session.session.delete()
         response = self.client.get(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
@@ -209,7 +218,7 @@ class TestUserSwitch(FlowTestCase):
 
         response = self.post_switch(self.other_user)
 
-        self.assertEqual(response.status_code, 302)
+        self.assert_switch_redirect(response)
         plan: FlowPlan = self.client.session[SESSION_KEY_PLAN]
         self.assertNotIn(PLAN_CONTEXT_PENDING_USER, plan.context)
         self.assertNotIn(PLAN_CONTEXT_USER_SWITCH_FROM_USER, plan.context)
@@ -225,7 +234,7 @@ class TestUserSwitch(FlowTestCase):
 
         response = self.post_switch(self.other_user)
 
-        self.assertEqual(response.status_code, 302)
+        self.assert_switch_redirect(response)
         plan: FlowPlan = self.client.session[SESSION_KEY_PLAN]
         self.assertNotIn(PLAN_CONTEXT_PENDING_USER, plan.context)
         self.assertEqual(
@@ -259,7 +268,7 @@ class TestUserSwitch(FlowTestCase):
         )
 
         response = self.post_switch(self.other_user)
-        self.assertEqual(response.status_code, 302)
+        self.assert_switch_redirect(response, flow)
         response = self.client.get(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug})
         )

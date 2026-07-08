@@ -21,7 +21,7 @@ from authentik.lib.views import bad_request_message
 from authentik.policies.engine import PolicyEngine
 
 
-def user_switch_response(request: HttpRequest) -> HttpResponse:
+def user_switch_response(request: HttpRequest, user_pk: int) -> HttpResponse:
     """Authenticate another login held by this browser."""
     flow = request.brand.flow_user_switch
     if not flow:
@@ -29,14 +29,6 @@ def user_switch_response(request: HttpRequest) -> HttpResponse:
             request,
             _("User switching is disabled."),
             title=_("User switching disabled"),
-        )
-    try:
-        user_pk = int(request.POST.get("user_pk", ""))
-    except ValueError:
-        return bad_request_message(
-            request,
-            _("Invalid user switch target."),
-            title=_("Invalid user switch target"),
         )
     if not flow_applicable_to_current_user(request, flow):
         return HttpResponseNotFound()
