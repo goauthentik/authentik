@@ -4,7 +4,7 @@ description: "Setup authentik testing environment"
 inputs:
   dependencies:
     description: "List of dependencies to setup"
-    default: "system,python,rust,node,go,runtime"
+    default: "system,python,rust,node,go,runtime,web"
   postgresql_version:
     description: "Optional postgresql image tag"
     default: "16"
@@ -85,12 +85,16 @@ runs:
         cache-dependency-path: |
           pnpm-lock.yaml
           web/pnpm-lock.yaml
-    - name: Install node dependencies (root, web)
+    - name: Install node dependencies (root)
       if: ${{ contains(inputs.dependencies, 'node') }}
       shell: bash
-      run: |
-        pnpm install --frozen-lockfile
-        pnpm --dir web install --frozen-lockfile
+      run: pnpm install --frozen-lockfile
+    - name: Install node dependencies (web)
+      # The web workspace install is a multi-minute step that most node jobs
+      # (e.g. root-only lints) don't need — request it with the `web` token.
+      if: ${{ contains(inputs.dependencies, 'node') && contains(inputs.dependencies, 'web') }}
+      shell: bash
+      run: pnpm --dir web install --frozen-lockfile
     - name: Setup go
       if: ${{ contains(inputs.dependencies, 'go') }}
       uses: actions/setup-go@924ae3a1cded613372ab5595356fb5720e22ba16 # v5
@@ -113,7 +117,7 @@ runs:
       # above, and the web workspace needs a pnpm lockfile to install from. This
       # keeps runtime-only jobs (e.g. rust, pending-migrations) and the legacy
       # stable checkout — which predates the pnpm migration — from invoking pnpm.
-      if: ${{ contains(inputs.dependencies, 'runtime') && contains(inputs.dependencies, 'node') }}
+      if: ${{ contains(inputs.dependencies, 'runtime') && contains(inputs.dependencies, 'node') && contains(inputs.dependencies, 'web') }}
       shell: bash
       working-directory: ${{ inputs.working-directory }}
       run: pnpm --dir web install --frozen-lockfile

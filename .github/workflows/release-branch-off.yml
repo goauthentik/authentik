@@ -69,7 +69,7 @@ jobs:
       - name: Setup authentik env
         uses: ./.github/actions/setup
         with:
-          dependencies: "system,python,go,node,runtime,rust-nightly"
+          dependencies: "system,python,go,node,runtime,rust-nightly,web"
       - name: Run migrations
         run: make migrate
       - name: Bump version
