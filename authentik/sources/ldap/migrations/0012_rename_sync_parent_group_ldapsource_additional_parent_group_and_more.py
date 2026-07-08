@@ -37,4 +37,19 @@ class Migration(migrations.Migration):
                 default=True, help_text="Sync group parentage/hierarchy from LDAP directories."
             ),
         ),
+        migrations.AlterField(
+            model_name="ldapsource",
+            name="membership_field",
+            field=models.TextField(
+                default="member", help_text="Field which contains a list of members/memberships."
+            ),
+        ),
+        migrations.AlterField(
+            model_name="ldapsource",
+            name="membership_reference",
+            field=models.TextField(
+                default="distinguishedName",
+                help_text="Attribute which matches the value of `membership_field`.",
+            ),
+        ),
     ]
