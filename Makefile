@@ -88,6 +88,9 @@ lint-fix: lint-fix-rust  ## Lint and automatically fix errors in the python sour
 lint-spellcheck:  ## Reports spelling errors.
 	npm run lint:spellcheck
 
+lint-catalogs:  ## Reports pnpm catalog pins that drifted between the root, web, and website workspaces.
+	node ./scripts/node/lint-catalogs.ts
+
 lint: ci-lint-bandit ci-lint-mypy ci-lint-cargo-deny ci-lint-cargo-machete  ## Lint the python and golang sources
 	golangci-lint run -v
 
@@ -297,17 +300,17 @@ integrations-build:
 	pnpm --dir website run build:integrations
 
 integrations-watch:  ## Build and watch the Integrations documentation
-	pnpm --filter "./website/integrations" run start
+	pnpm --dir website/integrations run start
 
 docs-api-build:
 	pnpm --dir website run build:api
 
 docs-api-watch:  ## Build and watch the API documentation
-	pnpm --filter "./website/api" run generate
-	pnpm --filter "./website/api" run start
+	pnpm --dir website/api run generate
+	pnpm --dir website/api run start
 
 docs-api-clean:  ## Clean generated API documentation
-	pnpm --filter "./website/api" run clean
+	pnpm --dir website/api run clean
 
 #########################
 ## Docker
@@ -359,6 +362,9 @@ ci-lint-rustfmt: ci--meta-debug
 
 ci-lint-clippy: ci--meta-debug
 	$(CARGO) clippy --workspace -- -D warnings
+
+ci-lint-catalogs: ci--meta-debug
+	node ./scripts/node/lint-catalogs.ts
 
 ci-test: ci--meta-debug
 	$(UV) run coverage run manage.py test --keepdb --parallel auto authentik

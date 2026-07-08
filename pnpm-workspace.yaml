@@ -10,7 +10,7 @@ packages:
 # Shared version references for the `catalog:` protocol. Keep these in sync with
 # the root package.json so overrides pin transitive deps to the versions we use.
 catalog:
-  eslint: "^9.39.3"
+  eslint: "^9.39.4"
   typescript: "^6.0.3"
 
 overrides:

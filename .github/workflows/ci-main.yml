@@ -35,6 +35,8 @@ jobs:
             deps: python
           - job: spellcheck
             deps: node
+          - job: catalogs
+            deps: node
           - job: pending-migrations
             deps: python,runtime
           - job: ruff
@@ -332,7 +334,7 @@ jobs:
           docker compose -f tests/e2e/compose.yml up -d --quiet-pull
       - name: Setup conformance suite
         run: |
-          docker compose -f tests/openid_conformance/compose.yml up -d --quiet-pull
+          docker compose -f tests/openid_conformance/compose.yml up -d --quiet-pull --wait
       - id: cache-web
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v4
         with:
