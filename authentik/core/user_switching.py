@@ -10,10 +10,11 @@ and the login path. Keeping it here avoids an ``authentik.core.models`` <->
 """
 
 from datetime import timedelta
+
 from django.http.request import HttpRequest
-from django.utils.crypto import get_random_string
 from jwt import PyJWTError, decode, encode
 
+from authentik.lib.generators import generate_id
 from authentik.lib.utils.crypto import get_cookie_signing_key
 
 TOKEN_LENGTH = 32
@@ -26,7 +27,7 @@ _SIGNING_HASH = get_cookie_signing_key()
 
 def generate_token() -> str:
     """Generate a new opaque user switching token."""
-    return get_random_string(TOKEN_LENGTH)
+    return generate_id(TOKEN_LENGTH)
 
 
 def validate_token(raw: str | None) -> str | None:
