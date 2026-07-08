@@ -16,6 +16,7 @@ import { SlottedTemplateResult } from "#elements/types";
 
 import { setPageDetails } from "#components/ak-page-navbar";
 import renderDescriptionList from "#components/DescriptionList";
+import { scheduleCard } from "#components/tasks/scheduleCard";
 import { taskCard } from "#components/tasks/taskCard";
 
 import { OutpostForm } from "#admin/outposts/OutpostForm";
@@ -40,7 +41,6 @@ import PFProgress from "@patternfly/patternfly/components/Progress/progress.css"
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 
 const OUTPOST_TYPE = ModelEnum.AuthentikOutpostsOutpost;
-const [OUTPOST_TYPE_LABEL, OUTPOST_MODEL_NAME] = OUTPOST_TYPE.split(".");
 
 @customElement("ak-outpost-view")
 export class OutpostViewPage extends AKElement {
@@ -290,16 +290,7 @@ export class OutpostViewPage extends AKElement {
             class="pf-c-page__main-section pf-m-no-padding-mobile pf-l-grid pf-m-gutter"
         >
             <div class="pf-l-grid__item pf-m-12-col pf-l-stack__item">
-                <div class="pf-c-card">
-                    <div class="pf-c-card__header">
-                        <div class="pf-c-card__title">${msg("Schedules")}</div>
-                    </div>
-                    <ak-schedule-list
-                        .relObjAppLabel=${OUTPOST_TYPE_LABEL}
-                        .relObjModel=${OUTPOST_MODEL_NAME}
-                        .relObjId="${outpost.pk}"
-                    ></ak-schedule-list>
-                </div>
+                ${scheduleCard(OUTPOST_TYPE, outpost.pk)}
             </div>
             <div class="pf-l-grid__item pf-m-12-col pf-l-stack__item">
                 ${taskCard(OUTPOST_TYPE, outpost.pk)}

@@ -17,6 +17,7 @@ import { EVENT_REFRESH } from "#common/constants";
 import { AKElement } from "#elements/Base";
 import { SlottedTemplateResult } from "#elements/types";
 
+import { scheduleCard } from "#components/tasks/scheduleCard";
 import { taskCard } from "#components/tasks/taskCard";
 
 import { GoogleWorkspaceProvider, ModelEnum, ProvidersApi } from "@goauthentik/api";
@@ -37,7 +38,6 @@ import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFStack from "@patternfly/patternfly/layouts/Stack/stack.css";
 
 const PROVIDER_TYPE = ModelEnum.AuthentikProvidersGoogleWorkspaceGoogleworkspaceprovider;
-const [PROVIDER_TYPE_LABEL, PROVIDER_MODEL_NAME] = PROVIDER_TYPE.split(".");
 
 @customElement("ak-provider-google-workspace-view")
 export class GoogleWorkspaceProviderViewPage extends AKElement {
@@ -220,16 +220,7 @@ export class GoogleWorkspaceProviderViewPage extends AKElement {
                     ></ak-sync-status-card>
                 </div>
                 <div class="pf-l-grid__item pf-m-12-col pf-l-stack__item">
-                    <div class="pf-c-card">
-                        <div class="pf-c-card__header">
-                            <div class="pf-c-card__title">${msg("Schedules")}</div>
-                        </div>
-                        <ak-schedule-list
-                            .relObjAppLabel=${PROVIDER_TYPE_LABEL}
-                            .relObjModel=${PROVIDER_MODEL_NAME}
-                            .relObjId="${provider.pk}"
-                        ></ak-schedule-list>
-                    </div>
+                    ${scheduleCard(PROVIDER_TYPE, provider.pk)}
                 </div>
                 <div class="pf-l-grid__item pf-m-12-col pf-l-stack__item">
                     ${taskCard(PROVIDER_TYPE, provider.pk)}

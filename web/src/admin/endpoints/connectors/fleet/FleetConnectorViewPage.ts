@@ -10,6 +10,7 @@ import { APIError, parseAPIResponseError } from "#common/errors/network";
 import { AKElement } from "#elements/Base";
 
 import { setPageDetails } from "#components/ak-page-navbar";
+import { scheduleCard } from "#components/tasks/scheduleCard";
 import { taskCard } from "#components/tasks/taskCard";
 
 import { EndpointsApi, FleetConnector, ModelEnum } from "@goauthentik/api";
@@ -25,7 +26,6 @@ import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 
 const FLEET_CONNECTOR_MODEL = ModelEnum.AuthentikEndpointsConnectorsFleetFleetconnector;
-const [FLEET_CONNECTOR_APP_LABEL, FLEET_CONNECTOR_MODEL_NAME] = FLEET_CONNECTOR_MODEL.split(".");
 
 @customElement("ak-endpoints-connector-fleet-view")
 export class FleetConnectorViewPage extends AKElement {
@@ -71,16 +71,7 @@ export class FleetConnectorViewPage extends AKElement {
             class="pf-c-page__main-section pf-m-no-padding-mobile pf-l-grid pf-m-gutter"
         >
             <div class="pf-l-grid__item pf-m-12-col pf-l-stack__item">
-                <div class="pf-c-card">
-                    <div class="pf-c-card__header">
-                        <div class="pf-c-card__title">${msg("Schedules")}</div>
-                    </div>
-                    <ak-schedule-list
-                        .relObjAppLabel=${FLEET_CONNECTOR_APP_LABEL}
-                        .relObjModel=${FLEET_CONNECTOR_MODEL_NAME}
-                        .relObjId="${connector.connectorUuid}"
-                    ></ak-schedule-list>
-                </div>
+                ${scheduleCard(FLEET_CONNECTOR_MODEL, connector.connectorUuid)}
             </div>
             <div class="pf-l-grid__item pf-m-12-col pf-l-stack__item">
                 ${taskCard(FLEET_CONNECTOR_MODEL, connector.connectorUuid)}
