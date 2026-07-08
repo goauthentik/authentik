@@ -1,13 +1,4 @@
-"""User switching token.
-
-An opaque, per-browser identifier that groups the logins a browser can switch
-between. Unlike the session cookie, it survives individual logins and logouts.
-
-This module is the single owner of the token: generation, validation, signed-cookie
-(de)serialization, and the per-request lazy creation shared by the session middleware
-and the login path. Keeping it here avoids an ``authentik.core.models`` <->
-``authentik.root.middleware`` import cycle.
-"""
+"""Helpers for the user-switching browser token cookie."""
 
 from datetime import timedelta
 
