@@ -515,7 +515,6 @@ class LDAPSyncTests(TestCase):
                 f"Additional parent group missing from {parent_group_name}'s parents",
             )
 
-
     def test_tasks_ad(self):
         """Test Scheduled tasks"""
         self.source.user_property_mappings.set(
