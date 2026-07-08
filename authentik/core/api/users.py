@@ -1,6 +1,7 @@
 """User API Views"""
 
 from datetime import timedelta
+from http import HTTPStatus
 from json import loads
 from typing import Any
 
@@ -681,10 +682,13 @@ class UserViewSet(
         """Start browser user switching."""
         try:
             user_pk = int(request.data.get("user_pk", ""))
-        except (TypeError, ValueError):
+        except TypeError, ValueError:
             return Response({"detail": _("Invalid user switch target.")}, status=400)
         response = user_switch_response(request._request, user_pk)
-        if 300 <= response.status_code < 400 and response.has_header("Location"):
+        if (
+            HTTPStatus.MULTIPLE_CHOICES <= response.status_code < HTTPStatus.BAD_REQUEST
+            and response.has_header("Location")
+        ):
             return Response({"redirect": response["Location"]})
         return response
 
