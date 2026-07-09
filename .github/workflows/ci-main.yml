@@ -32,31 +32,9 @@ jobs:
       tag-branch: "${{ steps.compute-tags.outputs.tag-branch }}"
       tag-flux: "${{ steps.compute-tags.outputs.tag-flux }}"
     steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v5
       - id: compute-tags
-        shell: python
-        env:
-          SHA: "${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha }}"
-        run: |
-          import os
-          from time import time
-
-          sha = os.environ["SHA"]
-          short_sha = sha[:7]
-
-          branch_name = os.environ["GITHUB_REF"]
-          if os.environ.get("GITHUB_HEAD_REF", "") != "":
-              branch_name = os.environ["GITHUB_HEAD_REF"]
-          safe_branch_name = branch_name.replace("refs/heads/", "").replace("/", "-").replace("'", "-")
-
-          tag_full = f"gh-{sha}"
-          tag_branch = f"gh-{safe_branch_name}"
-          tag_flux = f"gh-{int(time())}-{short_sha}"
-
-          with open(os.environ["GITHUB_OUTPUT"], "a+", encoding="utf-8") as _output:
-              print(f"safe-branch-name={safe_branch_name}", file=_output)
-              print(f"tag-full={tag_full}", file=_output)
-              print(f"tag-branch={tag_branch}", file=_output)
-              print(f"tag-flux={tag_flux}", file=_output)
+        uses: ./.github/actions/compute-container-tags
   build:
     needs:
       - build-compute-tags

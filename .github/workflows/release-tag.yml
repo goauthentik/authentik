@@ -30,9 +30,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - id: check
+        env:
+          VERSION: "${{ inputs.version }}"
         run: |
-          echo "${{ inputs.version }}" | grep -E '^[0-9]{4}\.(0?[1-9]|1[0-2])\.[0-9]+(-rc[0-9]+)?$'
-          echo "major-version=${{ inputs.version }}" | grep -oE "^major-version=[0-9]{4}\.[0-9]{1,2}" >> "$GITHUB_OUTPUT"
+          echo "${VERSION}" | grep -E '^[0-9]{4}\.(0?[1-9]|1[0-2])\.[0-9]+(-rc[0-9]+)?$'
+          echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
+          echo "major-version=${VERSION}" | grep -oE "^major-version=[0-9]{4}\.[0-9]{1,2}" >> "$GITHUB_OUTPUT"
       - id: changelog-url
         run: |
           if [ "${{ inputs.release_reason }}" = "feature" ]; then
@@ -40,10 +43,11 @@ jobs:
           elif [ "${{ inputs.release_reason }}" = "prerelease" ]; then
             changelog_url="https://next.goauthentik.io/docs/releases/${{ steps.check.outputs.major-version }}"
           else
-            changelog_url="https://docs.goauthentik.io/docs/releases/${{ steps.check.outputs.major-version }}#fixed-in-$(echo -n ${{ inputs.version }} | sed 's/\.//g')"
+            changelog_url="https://docs.goauthentik.io/docs/releases/${{ steps.check.outputs.major-version }}#fixed-in-$(echo -n "${{ steps.check.outputs.version }}" | sed 's/\.//g')"}
           fi
           echo "changelog-url=${changelog_url}" >> "$GITHUB_OUTPUT"
     outputs:
+      version: "${{ steps.check.outputs.version }}"
       major-version: "${{ steps.check.outputs.major-version }}"
       changelog-url: "${{ steps.changelog-url.outputs.changelog-url }}"
   bump-version:
@@ -76,7 +80,7 @@ jobs:
       - name: Run migrations
         run: make migrate
       - name: Bump version
-        run: "make bump version=${{ inputs.version }}"
+        run: "make bump version=${{ needs.check-inputs.outputs.version }}"
       - name: Re-generate API Clients
         run: make gen
       - id: commit
@@ -86,11 +90,12 @@ jobs:
           git config --global user.name '${{ steps.app-token.outputs.app-slug }}[bot]'
           git config --global user.email '${{ steps.get-user-id.outputs.user-id }}+${{ steps.app-token.outputs.app-slug }}[bot]@users.noreply.github.com'
           git pull
-          git commit -a -m "release: ${{ inputs.version }}" --allow-empty
+          git commit -a -m "release: ${{ needs.check-inputs.outputs.version }}" --allow-empty
           git push
           echo "release-commit=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
   build-container:
     needs:
+      - check-inputs
       - bump-version
     permissions:
       # Needed to upload cache to ghcr.io. Even if we don't cache those builds, it's still needed
@@ -119,7 +124,7 @@ jobs:
       image-name: "${{ matrix.name }}"
       image-dockerfile: "lifecycle/container/${{ matrix.dockerfile }}"
       image-build-args: |
-        VERSION=${{ inputs.version }}
+        VERSION=${{ needs.check-inputs.outputs.version }}
   build-binaries:
     needs:
       - bump-version
@@ -179,7 +184,7 @@ jobs:
           name: container-build-server-amd64
       - name: Load container images
         run: |
-          skopeo copy "oci-archive:container/server-amd64.oci.tar" "docker-daemon:authentik.invalid/goauthentik/server:${{ inputs.version }}"
+          skopeo copy "oci-archive:container/server-amd64.oci.tar" "docker-daemon:authentik.invalid/goauthentik/server:${{ needs.check-inputs.outputs.version }}"
           rm -rf container/
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v5
         with:
@@ -187,7 +192,7 @@ jobs:
       - name: Run test in Docker
         env:
           AUTHENTIK_IMAGE: authentik.invalid/goauthentik/server
-          AUTHENTIK_TAG: "${{ inputs.version }}"
+          AUTHENTIK_TAG: "${{ needs.check-inputs.outputs.version }}"
         run: ./scripts/test_docker.sh
   create-release:
     name: Create release
@@ -220,11 +225,11 @@ jobs:
           git config --global user.name '${{ steps.app-token.outputs.app-slug }}[bot]'
           git config --global user.email '${{ steps.get-user-id.outputs.user-id }}+${{ steps.app-token.outputs.app-slug }}[bot]@users.noreply.github.com'
           git pull
-          git tag "version/${{ inputs.version }}" "${{ needs.bump-version.outputs.release-commit }}" -m "version/${{ inputs.version }}"
+          git tag "version/${{ needs.check-inputs.outputs.version }}" "${{ needs.bump-version.outputs.release-commit }}" -m "version/${{ needs.check-inputs.outputs.version }}"
           git push --tags
       - name: Create metadata file
         run: |
-          echo '{"version": "${{ inputs.version }}", "major_version": "${{ needs.check-inputs.outputs.major-version }}", "release_reason": "${{ inputs.release_reason }}", "changelog_url": "${{ needs.check-inputs.outputs.changelog-url }}"}' > metadata.json
+          echo '{"version": "${{ needs.check-inputs.outputs.version }}", "major_version": "${{ needs.check-inputs.outputs.major-version }}", "release_reason": "${{ inputs.release_reason }}", "changelog_url": "${{ needs.check-inputs.outputs.changelog-url }}"}' > metadata.json
       - name: Fetch container images
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v5
         with:
@@ -250,8 +255,8 @@ jobs:
         uses: softprops/action-gh-release@718ea10b132b3b2eba29c1007bb80653f286566b # v3.0.1
         with:
           token: "${{ steps.app-token.outputs.token }}"
-          tag_name: "version/${{ inputs.version }}"
-          name: Release ${{ inputs.version }}
+          tag_name: "version/${{ needs.check-inputs.outputs.version }}"
+          name: Release ${{ needs.check-inputs.outputs.version }}
           draft: true
           prerelease: ${{ inputs.release_reason == 'prerelease' }}
           generate_release_notes: true

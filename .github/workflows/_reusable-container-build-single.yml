@@ -81,7 +81,7 @@ jobs:
             type=registry,ref=ghcr.io/goauthentik/dev-${{ inputs.image-name }}:buildcache-${{ inputs.image-arch }}${{ inputs.cache-suffix }}
           cache-to: "${{ inputs.should-cache && format('type=registry,ref=ghcr.io/goauthentik/dev-{0}:buildcache-{1}{2},mode=max', inputs.image-name, inputs.image-arch, inputs.cache-suffix) || '' }}"
           attests: |
-            type=provenance,mod=max
+            type=provenance,mode=max
           outputs: |
             type=oci,dest=build/container/${{ inputs.image-name }}-${{ inputs.image-arch }}.oci.tar
           # params

@@ -5,7 +5,7 @@ SHELL := /usr/bin/env bash
 PWD = $(shell pwd)
 UID = $(shell id -u)
 GID = $(shell id -g)
-PY_SOURCES = authentik packages tests scripts lifecycle .github
+PY_SOURCES = authentik packages tests scripts lifecycle
 DOCKER_IMAGE ?= "authentik:test"
 
 UNAME_S := $(shell uname -s)

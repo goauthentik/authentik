@@ -17,7 +17,7 @@ jobs:
       - id: metadata
         name: Compute variables
         run: |
-          tag_name="$(echo "${{ github.ref }}" | sed "s;refs/tags/;;")"
+          tag_name="$(echo "$GITHUB_REF" | sed "s;refs/tags/;;")"
           echo "tag-name=$tag_name" >> "$GITHUB_OUTPUT"
           gh release download "$tag_name" --pattern metadata.json
           gh attestation verify metadata.json --owner goauthentik
