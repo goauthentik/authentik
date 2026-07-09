@@ -273,7 +273,7 @@ When any of these are set, authentik:
 - Routes the dramatiq worker's `_listen_connection` and `_locks_connection` through the `direct` alias. The main task-table ORM queries (enqueue, status updates) continue to use the `default` alias.
 - Opens the startup migration advisory-lock connection against the direct endpoint.
 
-If `AUTHENTIK_POSTGRESQL__DIRECT__*` is not set, the legacy behavior is preserved: all of these connections share the same endpoint as the rest of ORM traffic, and putting a transaction-pool pooler in front of `AUTHENTIK_POSTGRESQL__HOST` will silently break LISTEN/NOTIFY and the dramatiq advisory locks.
+If `AUTHENTIK_POSTGRESQL__DIRECT__*` is not set, all of these connections share the same endpoint as the rest of ORM traffic, and putting a transaction-pool pooler in front of `AUTHENTIK_POSTGRESQL__HOST` will silently break LISTEN/NOTIFY and the dramatiq advisory locks.
 
 ### Recommended starting points
 
