@@ -3,8 +3,6 @@
  *
  * @import { UserThemeConfig, UserThemeConfigExtra } from "@goauthentik/docusaurus-config";
  * @import { AKReleasesPluginOptions } from "@goauthentik/docusaurus-theme/releases/common"
- * @import { AKRedirectsPluginOptions } from "@goauthentik/docusaurus-theme/redirects/plugin"
- * @import { Options as RedirectsPluginOptions } from "@docusaurus/plugin-client-redirects";
  * @import { NormalizedSidebar, NormalizedSidebarItemCategory, SidebarItemsGeneratorArgs } from "@docusaurus/plugin-content-docs/src/sidebars/types.ts";
  */
 
@@ -13,14 +11,16 @@ import { createRequire } from "node:module";
 import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { createDocusaurusConfig } from "@goauthentik/docusaurus-config";
+import topics from "./topics.mjs";
+
+import { createDocusaurusConfig, DocusaurusURL } from "@goauthentik/docusaurus-config";
 import {
     createAlgoliaConfig,
     createClassicPreset,
+    createLLMSPlugin,
     extendConfig,
 } from "@goauthentik/docusaurus-theme/config";
-import { RewriteIndex } from "@goauthentik/docusaurus-theme/redirects";
-import { parse } from "@goauthentik/docusaurus-theme/redirects/node";
+import { createRedirectPlugins } from "@goauthentik/docusaurus-theme/redirects/node";
 import { prepareReleaseEnvironment } from "@goauthentik/docusaurus-theme/releases/node";
 import { remarkLinkRewrite } from "@goauthentik/docusaurus-theme/remark";
 
@@ -56,9 +56,7 @@ await Promise.all(
     }),
 );
 
-const redirectsFile = resolve(packageStaticDirectory, "_redirects");
-const redirects = await parse(redirectsFile);
-const redirectsIndex = new RewriteIndex(redirects);
+const redirectPlugins = await createRedirectPlugins(resolve(packageStaticDirectory, "_redirects"));
 
 //#endregion
 
@@ -108,7 +106,7 @@ export default createDocusaurusConfig(
             faster: true,
         },
         clientModules: ["../docusaurus-theme/theme/utils/mermaid_icons.js"],
-        url: "https://docs.goauthentik.io",
+        url: DocusaurusURL.Docs,
         //#region Preset
 
         presets: [
@@ -142,7 +140,7 @@ export default createDocusaurusConfig(
                     beforeDefaultRemarkPlugins: [
                         remarkLinkRewrite([
                             ["/api", "https://api.goauthentik.io"],
-                            ["/integrations", "https://integrations.goauthentik.io"],
+                            ["/integrations", DocusaurusURL.Integrations],
                         ]),
                     ],
                 },
@@ -162,33 +160,22 @@ export default createDocusaurusConfig(
                 }),
             ],
 
-            // Inject redirects for later use during runtime,
-            // such as navigating to non-existent page with the client-side router.
-
-            [
-                "@goauthentik/docusaurus-theme/redirects/plugin",
-                /** @type {AKRedirectsPluginOptions} */ ({
-                    redirects,
-                }),
-            ],
-
-            // Create build-time redirects for later use in HTTP responses,
-            // such as when navigating to a page for the first time.
-            //
-            // The existence of the _redirects file is also picked up by
-            // Netlify's deployment, which will redirect to the correct URL, even
-            // if the source is no longer present within the build output,
-            // such as when a page is removed, renamed, or moved.
-            [
-                "@docusaurus/plugin-client-redirects",
-                /** @type {RedirectsPluginOptions} */ ({
-                    createRedirects(existingPath) {
-                        const redirects = redirectsIndex.findAliases(existingPath);
-
-                        return redirects;
+            createLLMSPlugin({
+                sections: [{ path: ".", routeBasePath: "/" }],
+                groupBy: "topic",
+                // Normalized section headings for the top-level topics.
+                categories: topics,
+                // Split the glossary out of "Core Concepts" into its own section.
+                regroup: [["core/glossary", "glossary"]],
+                crossLinks: [
+                    {
+                        label: "Integrations",
+                        url: new URL("llms.txt", DocusaurusURL.Integrations).toString(),
                     },
-                }),
-            ],
+                ],
+            }),
+
+            ...redirectPlugins,
         ],
 
         //#endregion
