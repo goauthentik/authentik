@@ -1,6 +1,7 @@
 import "#admin/stages/prompt/PromptForm";
 import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
 import "#elements/forms/FormGroup";
+import "#components/ak-text-input";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/ModalForm";
 
@@ -21,7 +22,6 @@ import { PromptStage, StagesApi } from "@goauthentik/api";
 import { msg } from "@lit/localize";
 import { html, nothing, TemplateResult } from "lit";
 import { customElement } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-stage-prompt-form")
 export class PromptStageForm extends BaseStageForm<PromptStage> {
@@ -41,14 +41,18 @@ export class PromptStageForm extends BaseStageForm<PromptStage> {
                         <code class="ak-m-code-emphasis">prompt_data</code> variable.`,
                 )}
             </p>
-            <ak-form-element-horizontal label=${msg("Name")} required name="name">
-                <input
-                    type="text"
-                    value="${ifDefined(this.instance?.name || "")}"
-                    class="pf-c-form-control"
-                    required
-                />
-            </ak-form-element-horizontal>
+            <ak-text-input
+                label=${msg("Stage Name", {
+                    id: "stage.name.label",
+                })}
+                required
+                name="name"
+                value=${this.instance?.name || ""}
+                placeholder=${msg("Type a name for this stage...", {
+                    id: "stage.name.placeholder",
+                })}
+                ?autofocus=${!this.instance}
+            ></ak-text-input>
             <ak-form-group open label="${msg("Stage-specific settings")}">
                 <div class="pf-c-form">
                     <ak-form-element-horizontal label=${msg("Fields")} required name="fields">
