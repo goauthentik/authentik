@@ -24,6 +24,49 @@ permissions:
   id-token: write
 
 jobs:
+  build-compute-tags:
+    runs-on: ubuntu-latest
+    outputs:
+      safe-branch-name: "${{ steps.compute-tags.outputs.safe-branch-name }}"
+      tag-full: "${{ steps.compute-tags.outputs.tag-full }}"
+      tag-branch: "${{ steps.compute-tags.outputs.tag-branch }}"
+      tag-flux: "${{ steps.compute-tags.outputs.tag-flux }}"
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v5
+      - id: compute-tags
+        uses: ./.github/actions/compute-container-tags
+  build:
+    needs:
+      - build-compute-tags
+    permissions:
+      # Needed to upload cache to ghcr.io
+      packages: write
+      # Needed for checkout
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: server
+            dockerfile: Dockerfile
+          - name: proxy
+            dockerfile: proxy.Dockerfile
+          - name: ldap
+            dockerfile: ldap.Dockerfile
+          - name: radius
+            dockerfile: radius.Dockerfile
+          - name: rac
+            dockerfile: rac.Dockerfile
+    uses: ./.github/workflows/_reusable-container-build.yml
+    secrets: inherit
+    with:
+      ref: "${{ github.ref }}"
+      image-name: "${{ matrix.name }}"
+      image-dockerfile: "lifecycle/container/${{ matrix.dockerfile }}"
+      image-build-args: |
+        GIT_BUILD_HASH=${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha }}
+      should-cache: "${{ github.repository == 'goauthentik/authentik' }}"
+      cache-suffix: "-${{ needs.build-compute-tags.outputs.safe-branch-name }}"
   lint:
     strategy:
       fail-fast: false
@@ -224,6 +267,9 @@ jobs:
     name: test-e2e (${{ matrix.job.name }})
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    needs:
+      - build-compute-tags
+      - build
     strategy:
       fail-fast: false
       matrix:
@@ -259,6 +305,16 @@ jobs:
             glob: tests/e2e/test_endpoints_*
             profiles: selenium
     steps:
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v5
+        with:
+          pattern: container-build-*-amd64
+          merge-multiple: true
+      - name: Load Docker images
+        run: |
+          for image in proxy ldap radius rac; do
+            skopeo copy "oci-archive:container/${image}-amd64.oci.tar" "docker-daemon:ghcr.io/goauthentik/dev-${image}:${{ needs.build-compute-tags.outputs.tag-full }}"
+          done
+          rm -rf container/
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v5
       - name: Setup authentik env
         uses: ./.github/actions/setup
@@ -280,7 +336,7 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
       - id: cache-web
-        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v4
+        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v4
         if: contains(matrix.job.profiles, 'selenium')
         with:
           path: web/dist
@@ -336,7 +392,7 @@ jobs:
         run: |
           docker compose -f tests/openid_conformance/compose.yml up -d --quiet-pull --wait
       - id: cache-web
-        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v4
+        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v4
         with:
           path: web/dist
           key: ${{ runner.os }}-web-${{ hashFiles('web/pnpm-lock.yaml', 'web/src/**', 'web/packages/sfe/src/**') }}-b
@@ -388,6 +444,7 @@ jobs:
   ci-core-mark:
     if: always()
     needs:
+      - build
       - lint
       - test-gen
       - test-migrations
@@ -400,43 +457,70 @@ jobs:
       - uses: re-actors/alls-green@05ac9388f0aebcb5727afa17fcccfecd6f8ec5fe # release/v1
         with:
           jobs: ${{ toJSON(needs) }}
-  build:
+  publish:
+    if: "${{ github.repository == 'goauthentik/authentik' }}"
+    needs:
+      - build-compute-tags
+      - build
+      - ci-core-mark
     permissions:
       # Needed to upload container images to ghcr.io
       packages: write
       # Needed for attestation
       id-token: write
       attestations: write
+      artifact-metadata: write
       # Needed for checkout
       contents: read
-    needs: ci-core-mark
-    uses: ./.github/workflows/_reusable-docker-build.yml
-    secrets: inherit
-    with:
-      image_name: ${{ github.repository == 'goauthentik/authentik-internal' && 'ghcr.io/goauthentik/internal-server' || 'ghcr.io/goauthentik/dev-server' }}
-      release: false
-  pr-comment:
-    needs:
-      - build
     runs-on: ubuntu-latest
-    if: ${{ github.event_name == 'pull_request' }}
+    strategy:
+      fail-fast: false
+      matrix:
+        name:
+          - server
+          - proxy
+          - ldap
+          - radius
+          - rac
+    steps:
+      - uses: regclient/actions/regctl-installer@4b4db1dcc7dad75ad67a788a380f75a20cc8a040
+      # logs in to ghcr.io by default
+      - uses: regclient/actions/regctl-login@4b4db1dcc7dad75ad67a788a380f75a20cc8a040
+      # Docker login is required for attestations
+      - uses: docker/login-action@650006c6eb7dba73a995cc03b0b2d7f5ca915bee
+        with:
+          registry: ghcr.io
+          username: "${{ github.actor }}"
+          password: "${{ secrets.GITHUB_TOKEN }}"
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v5
+        with:
+          name: "container-build-${{ matrix.name }}"
+      - id: publish
+        name: publish
+        run: |
+          regctl image import "ocidir://${{ matrix.name }}:${{ needs.build-compute-tags.outputs.tag-full }}" "container/${{ matrix.name }}.oci.tar"
+          echo "digest=$(regctl image digest "ocidir://${{ matrix.name }}:${{ needs.build-compute-tags.outputs.tag-full }}")" >> "$GITHUB_OUTPUT"
+          regctl image import "ghcr.io/goauthentik/dev-${{ matrix.name }}:${{ needs.build-compute-tags.outputs.tag-full }}" "container/${{ matrix.name }}.oci.tar"
+          regctl image import "ghcr.io/goauthentik/dev-${{ matrix.name }}:${{ needs.build-compute-tags.outputs.tag-branch }}" "container/${{ matrix.name }}.oci.tar"
+          regctl image import "ghcr.io/goauthentik/dev-${{ matrix.name }}:${{ needs.build-compute-tags.outputs.tag-flux }}" "container/${{ matrix.name }}.oci.tar"
+      - uses: actions/attest@59d89421af93a897026c735860bf21b6eb4f7b26
+        with:
+          subject-name: "ghcr.io/goauthentik/dev-${{ matrix.name }}"
+          subject-digest: "${{ steps.publish.outputs.digest }}"
+          push-to-registry: true
+  pr-comment:
+    if: "${{ github.repository == 'goauthentik/authentik' && github.event_name == 'pull_request' }}"
+    needs:
+      - build-compute-tags
+      - publish
+    runs-on: ubuntu-latest
     permissions:
       # Needed to write comments on PRs
       pull-requests: write
     timeout-minutes: 120
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v5
-        with:
-          ref: ${{ github.event.pull_request.head.sha }}
-      - name: prepare variables
-        uses: ./.github/actions/docker-push-variables
-        id: ev
-        env:
-          DOCKER_USERNAME: ${{ secrets.DOCKER_CORP_USERNAME }}
-        with:
-          image-name: ghcr.io/goauthentik/dev-server
       - name: Comment on PR
-        if: ${{ steps.ev.outputs.shouldPush == 'true' }}
         uses: ./.github/actions/comment-pr-instructions
         with:
-          tag: ${{ steps.ev.outputs.imageMainTag }}
+          tag: "${{ needs.build-compute-tags.outputs.tag-full }}"
