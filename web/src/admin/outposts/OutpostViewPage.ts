@@ -1,3 +1,7 @@
+/**
+ * @file Display details for an Outpost: Overview, Changelog, Tasks, Permissions
+ */
+
 import "#elements/Tabs";
 import "#admin/events/ObjectChangelog";
 import "#admin/rbac/ak-rbac-object-permission-page";
