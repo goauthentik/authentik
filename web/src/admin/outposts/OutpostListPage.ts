@@ -12,6 +12,7 @@ import { PFColor } from "#elements/Label";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
+import { ifPresent } from "#elements/utils/attributes";
 
 import { OutpostForm } from "#admin/outposts/OutpostForm";
 import { embeddedOutpostManaged, outpostTypeToLabel } from "#admin/outposts/utils";
@@ -21,7 +22,6 @@ import { Outpost, OutpostHealth, OutpostsApi } from "@goauthentik/api";
 import { msg, str } from "@lit/localize";
 import { html, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-outpost-list")
 export class OutpostListPage extends TablePage<Outpost> {
@@ -41,7 +41,8 @@ export class OutpostListPage extends TablePage<Outpost> {
         const outposts = await new OutpostsApi(DEFAULT_CONFIG).outpostsInstancesList(
             await this.defaultEndpointConfig(),
         );
-        await Promise.all(
+
+        return Promise.all(
             outposts.results.map((outpost) => {
                 return new OutpostsApi(DEFAULT_CONFIG)
                     .outpostsInstancesHealthList({
@@ -51,8 +52,7 @@ export class OutpostListPage extends TablePage<Outpost> {
                         this.health[outpost.pk] = health;
                     });
             }),
-        );
-        return outposts;
+        ).then(() => outposts);
     }
 
     @state()
@@ -104,7 +104,7 @@ export class OutpostListPage extends TablePage<Outpost> {
             this.renderItemProviders(item),
             html`${item.serviceConnectionObj?.name || msg("No integration active")}`,
             html`<ak-outpost-health-simple
-                outpostId=${ifDefined(item.pk)}
+                outpost-id=${ifPresent(item.pk)}
             ></ak-outpost-health-simple>`,
             html`<div class="ak-c-table__actions">
                 ${IconEditButton(OutpostForm, item.pk, item.name, {
