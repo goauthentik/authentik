@@ -1,3 +1,7 @@
+/**
+ * @file Display details for a SCIM provider: Overview, Changelog, Permissions
+ */
+
 import "#admin/providers/RelatedApplicationButton";
 import "#admin/providers/ssf/StreamTable";
 import "#admin/events/ObjectChangelog";
@@ -176,7 +180,7 @@ export class SSFProviderViewPage extends AKElement {
                 <ak-provider-ssf-stream-list .providerId=${this.providerID}>
                 </ak-provider-ssf-stream-list>
             </div>
-            <div class="pf-c-card pf-l-grid__item pf-m-12-col-on-2xl">
+            <div class="pf-l-grid__item pf-m-12-col-on-2xl">
                 ${taskCard(PROVIDER_MODEL, this.provider.pk)}
             </div>
         </div>`;
