@@ -15,9 +15,14 @@ export default defineConfig({
             "@goauthentik/lit-jsx": src("index.ts"),
         },
     },
-    esbuild: {
-        jsx: "automatic",
-        jsxImportSource: "@goauthentik/lit-jsx",
+    // Vite 8 transforms TS/JSX with oxc (rolldown-based), not esbuild. The
+    // `esbuild` option is only honored when `oxc` is unset, so the JSX
+    // runtime/import source must be configured here instead.
+    oxc: {
+        jsx: {
+            runtime: "automatic",
+            importSource: "@goauthentik/lit-jsx",
+        },
     },
     test: {
         projects: [

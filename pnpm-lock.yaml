@@ -269,10 +269,10 @@ importers:
         specifier: link:../tsconfig
         version: link:../tsconfig
       '@vitest/browser':
-        specifier: ^4.1.9
+        specifier: ^4.1.10
         version: 4.1.10(vite@8.1.4(@types/node@26.1.0)(esbuild@0.28.1)(jiti@1.21.7)(terser@5.48.0)(yaml@2.9.0))(vitest@4.1.10)
       '@vitest/browser-playwright':
-        specifier: ^4.1.9
+        specifier: ^4.1.10
         version: 4.1.10(playwright@1.61.1)(vite@8.1.4(@types/node@26.1.0)(esbuild@0.28.1)(jiti@1.21.7)(terser@5.48.0)(yaml@2.9.0))(vitest@4.1.10)
       eslint:
         specifier: 'catalog:'
@@ -293,7 +293,7 @@ importers:
         specifier: 'catalog:'
         version: 6.0.3
       vitest:
-        specifier: ^4.1.9
+        specifier: ^4.1.10
         version: 4.1.10(@types/node@26.1.0)(@vitest/browser-playwright@4.1.10)(vite@8.1.4(@types/node@26.1.0)(esbuild@0.28.1)(jiti@1.21.7)(terser@5.48.0)(yaml@2.9.0))
 
   packages/logger-js:
@@ -3722,9 +3722,6 @@ packages:
   es-iterator-helpers@1.3.3:
     resolution: {integrity: sha512-0PuBxFi+4uPanB97iDxCLWuHeYud2FALrw5HFZGtAF38UpJDbDC8frwp2cnDyae692CQ0dou60UwWfhgsa4U/g==}
     engines: {node: '>= 0.4'}
-
-  es-module-lexer@2.2.0:
-    resolution: {integrity: sha512-3lGxdTXCLfe1MYfTz1y2ksAAUM4NAOP6rPEjxGJVKO7TZ5+tvHCaQWGpC4Y3IXvW3ece0Cz1cIP4FWBxOnGCTQ==}
 
   es-module-lexer@2.3.0:
     resolution: {integrity: sha512-KLdwQm2NvGLDkQDCGvmiQrhkd0JbMzXthwQAUgWjQuQdBLFa3eiBP5arXZyA+f8x+x7OXgud6bq2rxjGtHV2tw==}
@@ -11768,8 +11765,6 @@ snapshots:
       iterator.prototype: 1.1.5
       math-intrinsics: 1.1.0
 
-  es-module-lexer@2.2.0: {}
-
   es-module-lexer@2.3.0: {}
 
   es-object-atoms@1.1.2:
@@ -15850,7 +15845,7 @@ snapshots:
       magic-string: 0.30.21
       obug: 2.1.3
       pathe: 2.0.3
-      picomatch: 4.0.4
+      picomatch: 4.0.5
       std-env: 4.2.0
       tinybench: 2.9.0
       tinyexec: 1.2.4
@@ -15974,7 +15969,7 @@ snapshots:
       browserslist: 4.28.4
       chrome-trace-event: 1.0.4
       enhanced-resolve: 5.24.1
-      es-module-lexer: 2.2.0
+      es-module-lexer: 2.3.0
       eslint-scope: 5.1.1
       events: 3.3.0
       graceful-fs: 4.2.11
@@ -16012,7 +16007,7 @@ snapshots:
       browserslist: 4.28.4
       chrome-trace-event: 1.0.4
       enhanced-resolve: 5.24.1
-      es-module-lexer: 2.2.0
+      es-module-lexer: 2.3.0
       eslint-scope: 5.1.1
       events: 3.3.0
       graceful-fs: 4.2.11
