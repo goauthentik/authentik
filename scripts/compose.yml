@@ -1,7 +1,7 @@
 services:
   postgresql:
     container_name: postgres
-    image: docker.io/library/postgres:16
+    image: docker.io/library/postgres:18
     volumes:
       - db-data:/var/lib/postgresql/data
     environment:

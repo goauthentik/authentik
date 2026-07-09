@@ -196,7 +196,7 @@ Domain creation and DNS verification are outside the scope of this guide. Ensure
 
 ```powershell showLineNumbers
 # 1. Connect to Microsoft Graph
-Connect-MgGraph -Scopes "Domain.ReadWrite.All"
+Connect-MgGraph -Scopes "Domain.ReadWrite.All", "Directory.AccessAsUser.All"
 
 # 2. Define all variables
 $domain = "domain.company"

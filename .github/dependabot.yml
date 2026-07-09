@@ -7,7 +7,6 @@ updates:
       - /
       # Required to update composite actions
       # https://github.com/dependabot/dependabot-core/issues/6704
-      - /.github/actions/cherry-pick
       - /.github/actions/setup
       - /.github/actions/docker-push-variables
       - /.github/actions/comment-pr-instructions
@@ -159,11 +158,12 @@ updates:
 
   - package-ecosystem: npm
     directories:
-      - "/packages/esbuild-plugin-live-reload"
       - "/packages/prettier-config"
       - "/packages/tsconfig"
       - "/packages/docusaurus-config"
       - "/packages/eslint-config"
+      - "/packages/logger-js"
+      - "/packages/esbuild-plugin-live-reload"
     schedule:
       interval: daily
       time: "04:00"
@@ -243,6 +243,8 @@ updates:
         patterns:
           - "@docusaurus/*"
           - "@goauthentik/docusaurus-config"
+          - "docusaurus-plugin-openapi-docs"
+          - "docusaurus-theme-openapi-docs"
       build:
         patterns:
           - "@swc/*"
@@ -335,8 +337,9 @@ updates:
       - /packages/client-go
       - /packages/client-rust
       - /packages/client-ts
-      # - /scripts # Maybe
+      - /scripts
       - /tests/e2e
+      - /tests/openid_conformance
     schedule:
       interval: daily
       time: "04:00"
@@ -347,5 +350,10 @@ updates:
       - dependencies
     cooldown:
       default-days: 3
+    groups:
+      openid-conformance:
+        patterns:
+          - registry.gitlab.com/openid/conformance-suite
+          - registry.gitlab.com/openid/conformance-suite/nginx
 
   #endregion

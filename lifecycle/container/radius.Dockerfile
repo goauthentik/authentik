@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 
 # Stage 1: Build
-FROM --platform=${BUILDPLATFORM} docker.io/library/golang:1.26.4-trixie@sha256:0dcba0d95dbfb072e9917a106b9e07d7cc298097dc83e9307056ef1889de654d AS builder
+FROM --platform=${BUILDPLATFORM} docker.io/library/golang:1.27rc2-trixie@sha256:ee5a79585a523739f9090e49dcff25fd1e13d2b80fd85e826b27241280748d5f AS builder
 
 ARG TARGETOS
 ARG TARGETARCH

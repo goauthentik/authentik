@@ -542,10 +542,6 @@
 <trans-unit id="sd9b15395dd103f80">
   <source>Sort by "<x id="0" equiv-text="${label}"/>"</source>
 </trans-unit>
-<trans-unit id="s7bc8c327f1f7c82c">
-  <source>No objects found.</source>
-  <target>Объекты не найдены.</target>
-</trans-unit>
 <trans-unit id="sfd44ce578f643145">
   <source>Failed to fetch objects.</source>
   <target>Не удалось получить объекты.</target>
@@ -3226,26 +3222,6 @@
   <source>If the password's score is less than or equal this value, the policy will fail.</source>
   <target>Если оценка пароля меньше или равна этому значению, политика будет провалена.</target>
 </trans-unit>
-<trans-unit id="sd94e99af8b41ff54">
-  <source>0: Too guessable: risky password. (guesses &amp;lt; 10^3)</source>
-  <target>0: Слишком легко угадываемый: рискованный пароль. (попыток &lt; 10^3)</target>
-</trans-unit>
-<trans-unit id="sc926385d1a624c3a">
-  <source>1: Very guessable: protection from throttled online attacks. (guesses &amp;lt; 10^6)</source>
-  <target>1: Очень легко угадываемый: защита от дросселируемых онлайн-атак. (попыток &lt; 10^6)</target>
-</trans-unit>
-<trans-unit id="s8aae61c41319602c">
-  <source>2: Somewhat guessable: protection from unthrottled online attacks. (guesses &amp;lt; 10^8)</source>
-  <target>2: Относительно легко угадываемый: защита от неконтролируемых онлайн-атак. (попыток &lt; 10^8)</target>
-</trans-unit>
-<trans-unit id="sc1f4b57e722a89d6">
-  <source>3: Safely unguessable: moderate protection from offline slow-hash scenario. (guesses &amp;lt; 10^10)</source>
-  <target>3: Безопасный не угадываемый: умеренная защита от сценария медленного хэширования в автономном режиме. (попыток &lt; 10^10)</target>
-</trans-unit>
-<trans-unit id="sd47f3d3c9741343d">
-  <source>4: Very unguessable: strong protection from offline slow-hash scenario. (guesses &amp;gt;= 10^10)</source>
-  <target>4: Очень не угадываемый: надежная защита от сценария медленного хэширования в автономном режиме. (попыток &gt;= 10^10)</target>
-</trans-unit>
 <trans-unit id="sd6cd7ce2310a73a4">
   <source>Checks the value from the policy request against several rules, mostly used to ensure password strength.</source>
   <target>Проверяет значение из запроса политики на соответствие нескольким правилам, в основном используемым для обеспечения надежности паролей.</target>
@@ -5286,10 +5262,6 @@ doesn't pass when either or both of the selected options are equal or above the 
   <source>Actions over the last week (per 8 hours)</source>
   <target>Действия за последнюю неделю (за 8 часов)</target>
 </trans-unit>
-<trans-unit id="sb57dbcda1929c642">
-  <source>Edit the notes attribute of this user to add notes here.</source>
-  <target>Отредактируйте атрибут заметок этого пользователя, чтобы добавить сюда заметки.</target>
-</trans-unit>
 <trans-unit id="s27586544c447d9e3">
   <source>User events</source>
   <target>Пользовательские события</target>
@@ -5359,10 +5331,6 @@ doesn't pass when either or both of the selected options are equal or above the 
 <trans-unit id="sfcebd18506f1e535">
   <source>Flow</source>
   <target>Поток</target>
-</trans-unit>
-<trans-unit id="sa84a7fd11ba85e88">
-  <source>When selected, the invite will only be usable with the flow. By default the invite is accepted on all flows with invitation stages.</source>
-  <target>Если выбран этот пункт, приглашение можно будет использовать только в этом потоке. По умолчанию приглашение принимается во всех потоках с этапами приглашения.</target>
 </trans-unit>
 <trans-unit id="sd18b18f91b804c3f">
   <source>Custom attributes</source>
@@ -6591,14 +6559,6 @@ doesn't pass when either or both of the selected options are equal or above the 
   <source>Import devices</source>
   <target>Импорт устройств</target>
 </trans-unit>
-<trans-unit id="s48cf8fd56b1237ed">
-  <source>Successfully updated flow.</source>
-  <target>Поток успешно обновлен.</target>
-</trans-unit>
-<trans-unit id="sc3e0c240b159fbce">
-  <source>Successfully created flow.</source>
-  <target>Поток успешно создан.</target>
-</trans-unit>
 <trans-unit id="s925936f647ae52cc">
   <source>Shown as the Title in Flow pages.</source>
   <target>Указывается в качестве заголовка на страницах потока.</target>
@@ -7494,14 +7454,8 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>Overall license status</source>
   <target>Общий статус лицензии</target>
 </trans-unit>
-<trans-unit id="sc4804358f202968c">
-  <source>Internal user usage</source>
-</trans-unit>
 <trans-unit id="s087d6f07b52b30ec">
   <source><x id="0" equiv-text="${internalUserPercentage &lt; Infinity ? internalUserPercentage : &quot;∞&quot;}"/>%</source>
-</trans-unit>
-<trans-unit id="sae72e1569d34fb02">
-  <source>External user usage</source>
 </trans-unit>
 <trans-unit id="s2e109263b73c12d5">
   <source>Licenses</source>
@@ -8981,7 +8935,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="captcha.provider-link">
   <source>API keys can be obtained from the
-                        <x id="0" equiv-text="${html `&lt;a target=&quot;_blank&quot; rel=&quot;noopener noreferrer&quot; href=${keyURL}&#10;                                &gt;${formatAPISource()}&lt;/a&#10;                            &gt;.`}"/></source>
+                                        <x id="0" equiv-text="${html `&lt;a&#10;                                                target=&quot;_blank&quot;&#10;                                                rel=&quot;noopener noreferrer&quot;&#10;                                                href=${keyURL}&#10;                                                &gt;${formatAPISource()}&lt;/a&#10;                                            &gt;.`}"/></source>
   <note from="lit-localize">Supplementary help text with link to provider dashboard.</note>
 </trans-unit>
 <trans-unit id="s87f858ca3c8e5579">
@@ -9064,12 +9018,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s1bb47213a314465b">
   <source>Create link</source>
-</trans-unit>
-<trans-unit id="s776c1b64a71fba39">
-  <source>To email a recovery link, set an email address for this user.</source>
-</trans-unit>
-<trans-unit id="s8899399356b8ed1a">
-  <source>To create a recovery link, set a recovery flow for the current brand.</source>
 </trans-unit>
 <trans-unit id="s68be8f284274370a">
   <source>Recovery link</source>
@@ -10301,17 +10249,9 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>Wizard</source>
   <note from="lit-localize">ARIA label for the creation wizard when no entity singular is provided.</note>
 </trans-unit>
-<trans-unit id="wizard.ariaLabel.entity-singular">
-  <source>New <x id="0" equiv-text="${verboseName}"/> Wizard</source>
-  <note from="lit-localize">ARIA label for the creation wizard, where the entity singular is interpolated.</note>
-</trans-unit>
 <trans-unit id="wizard.header.default">
   <source>Create New Entity</source>
   <note from="lit-localize">Header for the creation wizard when no entity singular is provided.</note>
-</trans-unit>
-<trans-unit id="wizard.header.entity-singular">
-  <source>Create New <x id="0" equiv-text="${verboseName}"/></source>
-  <note from="lit-localize">Header for the creation wizard, where the entity singular is interpolated.</note>
 </trans-unit>
 <trans-unit id="form.submitting">
   <source><x id="0" equiv-text="${submittingVerb} ${verboseName}"/>...</source>
@@ -10489,10 +10429,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="table.empty">
   <source>No <x id="0" equiv-text="${verboseNamePlural.toLocaleLowerCase(this.activeLanguageTag)}"/> found.</source>
   <note from="lit-localize">The message to show when a table has no content. The placeholder {0} is replaced with the pluralized name of the type of entity being shown in the table.</note>
-</trans-unit>
-<trans-unit id="user.display.emailInAngleBrackets">
-  <source>&lt;<x id="0" equiv-text="${email}"/>&gt;</source>
-  <note from="lit-localize">The user's email in angle brackets, used when the email is different from the username</note>
 </trans-unit>
 <trans-unit id="user.display.nameInParens">
   <source>(<x id="0" equiv-text="${name}"/>)</source>
@@ -10699,83 +10635,17 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s1baea1b8ac34d554">
   <source>New Invitation</source>
 </trans-unit>
-<trans-unit id="s03eef6107e28d042">
-  <source>New Invitation options</source>
-</trans-unit>
-<trans-unit id="s0832ff81b9665e6f">
-  <source>Opens the new invitation wizard and binds the invitation to an existing enrollment flow.</source>
-</trans-unit>
-<trans-unit id="sc0819dc3d82d9320">
-  <source>with Existing Enrollment Flow...</source>
-</trans-unit>
-<trans-unit id="s79108cb25e7bf07b">
-  <source>Opens the new invitation wizard, which will create a new enrollment flow and invitation stage.</source>
-</trans-unit>
-<trans-unit id="sb7809157a3ccf613">
-  <source>with New Enrollment Flow and Invitation Stage...</source>
-</trans-unit>
-<trans-unit id="seb418067e7d6c6e2">
-  <source>Create a new invitation with an enrollment flow.</source>
-</trans-unit>
 <trans-unit id="sfd74a380e957d0d3">
   <source>Enrollment Flow</source>
 </trans-unit>
 <trans-unit id="scc869d556216d748">
   <source>Invitation Details</source>
 </trans-unit>
-<trans-unit id="se1fba44a9b284052">
-  <source>Invitation Link</source>
-</trans-unit>
-<trans-unit id="s967a2db7049dc90e">
-  <source><x id="0" equiv-text="${step}"/> failed</source>
-</trans-unit>
-<trans-unit id="s971d4cc0ecd106b7">
-  <source>Importing enrollment flow blueprint</source>
-</trans-unit>
 <trans-unit id="sf3b89a70e20af6c8">
   <source>Blueprint validation failed</source>
 </trans-unit>
 <trans-unit id="sa04b7204708f4f74">
-  <source>Flow with slug "<x id="0" equiv-text="${slugToLookup}"/>" not found after import</source>
-</trans-unit>
-<trans-unit id="s3354be88ad29d171">
-  <source>Creating invitation</source>
-</trans-unit>
-<trans-unit id="s07f41353777196ea">
-  <source>The flow selected in the previous step. The invitation will be bound to this flow.</source>
-</trans-unit>
-<trans-unit id="s7209a11f97da9aff">
-  <source>No invitation available to send</source>
-</trans-unit>
-<trans-unit id="s2772d8285b905006">
-  <source>Failed to queue invitation emails</source>
-</trans-unit>
-<trans-unit id="s3b7910ab9c47a2e3">
-  <source>No enrollment flows with invitation stages found</source>
-</trans-unit>
-<trans-unit id="sa3ca03297e00591c">
-  <source>You can create a new enrollment flow and invitation stage right here, or cancel and bind an invitation stage to an existing flow manually.</source>
-</trans-unit>
-<trans-unit id="s06db43e56ca76be8">
-  <source>Create a new enrollment flow</source>
-</trans-unit>
-<trans-unit id="s8acc687c55e8ccbf">
-  <source>Only enrollment flows that have an invitation stage bound to them are listed here.</source>
-</trans-unit>
-<trans-unit id="s5b3bafd8ffe553ec">
-  <source>Flow name</source>
-</trans-unit>
-<trans-unit id="s699cd34b0dcb4c56">
-  <source>Name for the new enrollment flow.</source>
-</trans-unit>
-<trans-unit id="s8fb6d1bb698d32a0">
-  <source>Flow slug</source>
-</trans-unit>
-<trans-unit id="s0211c07612cf8c97">
-  <source>Invitation stage name</source>
-</trans-unit>
-<trans-unit id="s42b97ef63fb1a795">
-  <source>Name for the new invitation stage.</source>
+  <source>Flow with slug "<x id="0" equiv-text="${data.slug}"/>" not found after import</source>
 </trans-unit>
 <trans-unit id="saaa9fd0d3ebc35aa">
   <source>Enrolled users are created as external (e.g. customers, guests). New users will be placed under users/external.</source>
@@ -10785,9 +10655,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sc1358130ac327120">
   <source>If enabled, the stage will jump to the next stage when no invitation is given. If disabled, the flow will be cancelled without a valid invitation.</source>
-</trans-unit>
-<trans-unit id="s09fdd952c6eaf7da">
-  <source>No invitation was created.</source>
 </trans-unit>
 <trans-unit id="s00febd85a4889bb1">
   <source>Redirect the user to a static URL or another flow, optionally with all gathered context.</source>
@@ -10902,6 +10769,235 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sd1b98c71ea0d603b">
   <source>Flags allow you to enable new functionality and behavior in authentik early.</source>
+</trans-unit>
+<trans-unit id="s00640d26256c4878">
+  <source>Cap Endpoint</source>
+</trans-unit>
+<trans-unit id="s40bf0fb50dad7090">
+  <source>https://cap.example.com/site-key/</source>
+</trans-unit>
+<trans-unit id="sc18a73a5831aca7b">
+  <source>For Cap, prefer the self-hosted widget asset, for example https://cap.example.com/assets/widget.js. If using a CDN, pin a reviewed release.</source>
+</trans-unit>
+<trans-unit id="s4e1e8db555003a9a">
+  <source>Cap's server-side verification endpoint, for example https://cap.example.com/site-key/siteverify.</source>
+</trans-unit>
+<trans-unit id="sdb752cddc543357d">
+  <source>Request Content Type</source>
+</trans-unit>
+<trans-unit id="s8afdb5c5a27d37eb">
+  <source>Content-Type used for server-side verification. Cap requires JSON; most other providers use form-encoded requests.</source>
+</trans-unit>
+<trans-unit id="captcha.request-content-type.form">
+  <source>Form encoded</source>
+</trans-unit>
+<trans-unit id="captcha.request-content-type.json">
+  <source>JSON</source>
+</trans-unit>
+<trans-unit id="captcha.providers.cap">
+  <source>Cap</source>
+</trans-unit>
+<trans-unit id="captcha.providers.cap.description">
+  <source>Cap is a self-hostable CAPTCHA server that uses proof-of-work challenges.</source>
+</trans-unit>
+<trans-unit id="captcha.providers.cap.setup-guide">
+  <source>Cap documentation</source>
+</trans-unit>
+<trans-unit id="captcha.cap-endpoint.description">
+  <source>The public site-key endpoint of your Cap server.</source>
+  <note from="lit-localize">Description for Cap endpoint field.</note>
+</trans-unit>
+<trans-unit id="captcha.provider-link.cap">
+  <source>Use the
+                                        <x id="0" equiv-text="${html `&lt;a&#10;                                            target=&quot;_blank&quot;&#10;                                            rel=&quot;noopener noreferrer&quot;&#10;                                            href=${keyURL}&#10;                                            &gt;${formatAPISource()}&lt;/a&#10;                                        &gt;`}"/>
+                                        to self-host Cap and configure the endpoint.</source>
+  <note from="lit-localize">Supplementary help text with link to Cap documentation.</note>
+</trans-unit>
+<trans-unit id="s71fed01f96762c78">
+  <source>Connection Token</source>
+</trans-unit>
+<trans-unit id="s2a27b0acaaccd6b1">
+  <source>Connection Tokens</source>
+</trans-unit>
+<trans-unit id="sd2e443fc08b24046">
+  <source>Access Token</source>
+</trans-unit>
+<trans-unit id="s0c1fba42c6e31a0f">
+  <source>Access Tokens</source>
+</trans-unit>
+<trans-unit id="s113536ad62a8b179">
+  <source>Refresh Token</source>
+</trans-unit>
+<trans-unit id="se61cf29ea4a4d3fe">
+  <source>Refresh Tokens</source>
+</trans-unit>
+<trans-unit id="sb5cad46bad03dc19">
+  <source>Unknown action</source>
+</trans-unit>
+<trans-unit id="scc03df1c8a965428">
+  <source>Custom action</source>
+</trans-unit>
+<trans-unit id="s08670bea6a90a4e0">
+  <source>Unknown user type</source>
+</trans-unit>
+<trans-unit id="s8dfeaf9950df0ffa">
+  <source>object</source>
+</trans-unit>
+<trans-unit id="s26d3ea846b0765cb">
+  <source>objects</source>
+</trans-unit>
+<trans-unit id="s7d041f0b6a10e8ea">
+  <source>Consents</source>
+</trans-unit>
+<trans-unit id="s8fd7c31e67f73d4c">
+  <source>Reputation score</source>
+</trans-unit>
+<trans-unit id="wizard.ariaLabel.verbose-name.one">
+  <source>New <x id="0" equiv-text="${verboseName}"/> Wizard</source>
+  <note from="lit-localize">ARIA label for the creation wizard, where the entity singular is interpolated.</note>
+</trans-unit>
+<trans-unit id="tokens.clipboard-copy.description">
+  <source><x id="0" equiv-text="${formatIntentLabel(intent)}"/> token for <x id="1" equiv-text="${userObj.username}"/></source>
+  <note from="lit-localize">Description for a clipboard copy action for tokens, with the token intent and username as variables.</note>
+</trans-unit>
+<trans-unit id="table.emptyState.default">
+  <source>No <x id="0" equiv-text="${pluralNoun}"/> found.</source>
+  <note from="lit-localize">Empty state message when no objects are found, where the entity plural is interpolated.</note>
+</trans-unit>
+<trans-unit id="table.emptyState.search">
+  <source>No <x id="0" equiv-text="${singularNoun}"/> matches "<x id="1" equiv-text="${truncateWords(this.search, 50)}"/>"</source>
+  <note from="lit-localize">Empty state message when no objects match the search query, where the entity singular is interpolated, followed by the search query truncated to 50 characters.</note>
+</trans-unit>
+<trans-unit id="wizard.header.verbose-name.one">
+  <source>Create New <x id="0" equiv-text="${verboseName}"/></source>
+  <note from="lit-localize">Header for the creation wizard, where the entity singular is interpolated.</note>
+</trans-unit>
+<trans-unit id="tokens.copy-button.label">
+  <source>Copy token</source>
+  <note from="lit-localize">Label for a button that copies a token to the clipboard.</note>
+</trans-unit>
+<trans-unit id="tokens.copy-button.entity-label">
+  <source>Token</source>
+  <note from="lit-localize">Label for a token entity, used in clipboard copy success messages.</note>
+</trans-unit>
+<trans-unit id="table.search.placeholder">
+  <source>Search for <x id="0" equiv-text="${pluralNoun}"/>...</source>
+  <note from="lit-localize">Placeholder text for the search input, where the entity plural is interpolated.</note>
+</trans-unit>
+<trans-unit id="s7a72b0fd722d51e0">
+  <source>Waiting for dependencies</source>
+</trans-unit>
+<trans-unit id="policy.password.score-threshold.description.too-guessable">
+  <source>0: Too guessable: risky password. (guesses &lt; 10^3)</source>
+</trans-unit>
+<trans-unit id="policy.password.score-threshold.description.very-guessable">
+  <source>1: Very guessable: protection from throttled online attacks. (guesses &lt; 10^6)</source>
+</trans-unit>
+<trans-unit id="policy.password.score-threshold.description.somewhat-guessable">
+  <source>2: Somewhat guessable: protection from unthrottled online attacks. (guesses &lt; 10^8)</source>
+</trans-unit>
+<trans-unit id="policy.password.score-threshold.description.safely-unguessable">
+  <source>3: Safely unguessable: moderate protection from offline slow-hash scenario. (guesses &lt; 10^10)</source>
+</trans-unit>
+<trans-unit id="policy.password.score-threshold.description.very-unguessable">
+  <source>4: Very unguessable: strong protection from offline slow-hash scenario. (guesses &gt;= 10^10)</source>
+</trans-unit>
+<trans-unit id="sb45f9fb4dba6e71a">
+  <source>Unset</source>
+</trans-unit>
+<trans-unit id="s02e9603605609ae6">
+  <source>Successfully created <x id="0" equiv-text="${this.verboseName}"/></source>
+</trans-unit>
+<trans-unit id="s58273fbf883b497d">
+  <source>Successfully updated <x id="0" equiv-text="${this.verboseName}"/></source>
+</trans-unit>
+<trans-unit id="s221db22dbb4e0105">
+  <source>Unknown Field</source>
+</trans-unit>
+<trans-unit id="s47ff2d052ccbcaf3">
+  <source>Unknown Field <x id="0" equiv-text="${fieldLike}"/></source>
+</trans-unit>
+<trans-unit id="form.submit.verb.created">
+  <source>Created</source>
+</trans-unit>
+<trans-unit id="form.submit.changes-saved">
+  <source>Changes Saved</source>
+</trans-unit>
+<trans-unit id="library.application.row.aria-label">
+  <source>Open "<x id="0" equiv-text="${application.name}"/>"</source>
+  <note from="lit-localize">Screen reader label for the application list row</note>
+</trans-unit>
+<trans-unit id="form.submitted.verb-entity">
+  <source><x id="0" equiv-text="${verb} ${noun}"/></source>
+  <note from="lit-localize">The message shown after a form is successfully submitted.</note>
+</trans-unit>
+<trans-unit id="user.library.view-toggle.to-list">
+  <source>Switch to list view</source>
+  <note from="lit-localize">Tooltip on the library view toggle when grid view is active</note>
+</trans-unit>
+<trans-unit id="user.library.view-toggle.to-grid">
+  <source>Switch to grid view</source>
+  <note from="lit-localize">Tooltip on the library view toggle when list view is active</note>
+</trans-unit>
+<trans-unit id="users.recovery.no-email.description">
+  <source>This user does not have an email address, so authentik cannot email a recovery link. Add an email address to enable email recovery.</source>
+</trans-unit>
+<trans-unit id="users.recovery.no-brand-flow.description">
+  <source>This brand does not have a recovery flow, so recovery links cannot be created. Configure a recovery flow in the brand settings to enable recovery.</source>
+</trans-unit>
+<trans-unit id="s7445550f2bfb2f2f">
+  <source>No notes.</source>
+</trans-unit>
+<trans-unit id="s4891ccdb173626ba">
+  <source>Internal user usage (<x id="0" equiv-text="${currentInternalUsers}"/>/<x id="1" equiv-text="${licensedInternalUsers}"/>)</source>
+</trans-unit>
+<trans-unit id="scad748da438c56d4">
+  <source>External user usage (<x id="0" equiv-text="${currentExternalUsers}"/>/<x id="1" equiv-text="${licensedExternalUsers}"/>)</source>
+</trans-unit>
+<trans-unit id="s0502740c80377fe0">
+  <source>Enrollment Flows</source>
+</trans-unit>
+<trans-unit id="s36d3e9e28a1b4ffd">
+  <source>Successfully created enrollment flow with invitation stage.</source>
+</trans-unit>
+<trans-unit id="seb916cadb4a7c437">
+  <source>Type a name for the new enrollment flow...</source>
+</trans-unit>
+<trans-unit id="sba43d2c76afbf380">
+  <source>Flow Slug</source>
+</trans-unit>
+<trans-unit id="sc0b5b66c35a4c34f">
+  <source>Internal flow name used in URLs.</source>
+</trans-unit>
+<trans-unit id="s6e59fc2534d00751">
+  <source>e.g. my-enrollment-flow</source>
+</trans-unit>
+<trans-unit id="se53244cd28aeccd7">
+  <source>Invitation Stage Name</source>
+</trans-unit>
+<trans-unit id="s82c71ab0a2d18257">
+  <source>Type a name for the stage...</source>
+</trans-unit>
+<trans-unit id="s10dd794d4839378e">
+  <source>Select an enrollment flow.</source>
+</trans-unit>
+<trans-unit id="sece0e7e9d7ad08bf">
+  <source>e.g. my-invite</source>
+</trans-unit>
+<trans-unit id="s0bce09e0fcbb5931">
+  <source>Create a new enrollment flow with invitation stage...</source>
+</trans-unit>
+<trans-unit id="s6d4209fcf153eda5">
+  <source>The enrollment flow the invitation link will use. The flow should have an invitation stage bound to it for the invitation to be accepted.</source>
+</trans-unit>
+<trans-unit id="s0d66a3b9441ea7f4">
+  <source>Invitation Stage</source>
+</trans-unit>
+<trans-unit id="se40fbacec016aa65">
+  <source>Invitation Stages</source>
+</trans-unit>
+<trans-unit id="sb401ca35f1d61eed">
+  <source>e.g. invitation-stage</source>
 </trans-unit>
 </body>
 </file>

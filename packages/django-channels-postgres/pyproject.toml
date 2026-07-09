@@ -37,7 +37,7 @@ dependencies = [
   "django-pgtrigger >=4,<5",
   "msgpack >=1,<2",
   "psycopg[pool] >=3.3.4,<4",
-  "structlog >=25,<26",
+  "structlog >=26,<27",
 ]
 
 [project.urls]

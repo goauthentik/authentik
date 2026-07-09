@@ -1,38 +1,44 @@
 # syntax=docker/dockerfile:1
 
+# Tag must track the root package.json `packageManager` version. ${BUILDPLATFORM}
+# keeps the binary's arch aligned with the builder stage on cross-arch builds.
+FROM --platform=${BUILDPLATFORM} ghcr.io/pnpm/pnpm:11.10.0@sha256:9a6eb06d5f861d830fe27d85a91415e60527fa45ec45b52ee43c92a8aaf3bf8a AS pnpm
+
 # Stage 1: Build web
 FROM --platform=${BUILDPLATFORM} docker.io/library/node:26 AS web-builder
 
 ENV NODE_ENV=production
 WORKDIR /static
 
-# These files need to be copied and cannot be mounted as `npm ci` will build the client's typescript
+# These files need to be copied and cannot be mounted as `pnpm install` will build the client's typescript
 COPY ./packages /packages
 COPY ./web/packages /static/packages
 
+COPY --from=pnpm /opt/pnpm /opt/pnpm
+ENV PATH="/opt/pnpm:${PATH}"
+
 RUN --mount=type=bind,target=/static/package.json,src=./package.json \
-    --mount=type=bind,target=/static/package-lock.json,src=./package-lock.json \
     --mount=type=bind,target=/static/web/package.json,src=./web/package.json \
-    --mount=type=bind,target=/static/web/package-lock.json,src=./web/package-lock.json \
+    --mount=type=bind,target=/static/web/pnpm-lock.yaml,src=./web/pnpm-lock.yaml \
     --mount=type=bind,target=/static/scripts/node/,src=./scripts/node/ \
     --mount=type=bind,target=/static/packages/logger-js/,src=./packages/logger-js/ \
-    node ./scripts/node/setup-corepack.mjs --force && \
     node ./scripts/node/lint-runtime.mjs ./web
 
 COPY package.json /
 
 RUN --mount=type=bind,target=/static/.npmrc,src=./.npmrc \
     --mount=type=bind,target=/static/package.json,src=./web/package.json \
-    --mount=type=bind,target=/static/package-lock.json,src=./web/package-lock.json \
+    --mount=type=bind,target=/static/pnpm-lock.yaml,src=./web/pnpm-lock.yaml \
+    --mount=type=bind,target=/static/pnpm-workspace.yaml,src=./web/pnpm-workspace.yaml \
     --mount=type=bind,target=/static/scripts,src=./web/scripts \
-    --mount=type=cache,target=/root/.npm \
-    corepack npm ci
+    --mount=type=cache,target=/root/.local/share/pnpm/store \
+    pnpm install --frozen-lockfile
 
 COPY web .
-RUN npm run build-proxy
+RUN pnpm run build-proxy
 
 # Stage 2: Build
-FROM --platform=${BUILDPLATFORM} docker.io/library/golang:1.26.4-trixie@sha256:0dcba0d95dbfb072e9917a106b9e07d7cc298097dc83e9307056ef1889de654d AS builder
+FROM --platform=${BUILDPLATFORM} docker.io/library/golang:1.27rc2-trixie@sha256:ee5a79585a523739f9090e49dcff25fd1e13d2b80fd85e826b27241280748d5f AS builder
 
 ARG TARGETOS
 ARG TARGETARCH

@@ -7,7 +7,7 @@ import "#elements/EmptyState";
 import "#elements/Tabs";
 import "#elements/buttons/ModalButton";
 import "#elements/buttons/SpinnerButton/index";
-import "#elements/tasks/TaskList";
+import "#components/tasks/TaskList";
 
 import { aki } from "#common/api/client";
 import { EVENT_REFRESH } from "#common/constants";

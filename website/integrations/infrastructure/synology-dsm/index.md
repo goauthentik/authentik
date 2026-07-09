@@ -4,6 +4,8 @@ sidebar_label: Synology DSM (DiskStation Manager)
 support_level: community
 ---
 
+import RedirectURI20265Note from "../../\_redirect-uri-2026-5-note.mdx";
+
 ## What is Synology DSM?
 
 > Synology Inc. is a Taiwanese corporation that specializes in network-attached storage (NAS) appliances. Synology's line of NAS is known as the DiskStation for desktop models, FlashStation for all-flash models, and RackStation for rack-mount models. Synology's products are distributed worldwide and localized in several languages.
@@ -27,6 +29,8 @@ This documentation lists only the settings that you need to change from their de
 
 ## authentik configuration
 
+<RedirectURI20265Note />
+
 To support the integration of Synology DSM with authentik, you need to create an application/provider pair in authentik.
 
 ### Create an application and provider in authentik
@@ -38,7 +42,7 @@ To support the integration of Synology DSM with authentik, you need to create an
 - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
 - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
     - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
-    - Set a `Strict` redirect URI to `https://synology.company`.
+    - Add a **Redirect URI** of type `Strict` `Authorization` as `https://synology.company`.
     - Select any available signing key.
     - Under **Advanced protocol settings**, set the **subject mode** to be based on the user's email.
 - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.

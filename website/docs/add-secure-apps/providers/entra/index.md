@@ -1,6 +1,8 @@
 ---
 title: Microsoft Entra ID provider
 authentik_enterprise: true
+sidebar_position: 5
+sidebar_label: "Microsoft Entra ID Provider"
 ---
 
 The Entra ID provider allows you to integrate with your Entra ID tenant. It supports syncing users and groups from authentik to Entra ID, allowing authentik to act as a source of truth for all users and groups.
