@@ -14,7 +14,6 @@ from django.http.request import HttpRequest
 from django.http.response import HttpResponse, HttpResponseServerError
 from django.middleware.csrf import CSRF_SESSION_KEY
 from django.middleware.csrf import CsrfViewMiddleware as UpstreamCsrfViewMiddleware
-from django.utils import timezone
 from django.utils.cache import patch_vary_headers
 from django.utils.http import http_date
 from jwt import PyJWTError, decode, encode
@@ -83,7 +82,7 @@ class SessionMiddleware(UpstreamSessionMiddleware):
     def process_request(self, request: HttpRequest):
         raw_session = request.COOKIES.get(settings.SESSION_COOKIE_NAME)
         session_key = SessionMiddleware.decode_session_key(raw_session)
-        request.user_switching_token = user_switching.decode_cookie(
+        request.user_switching_token = user_switching._decode_cookie(
             request.COOKIES.get(user_switching.COOKIE_NAME)
         )
         request.user_switching_token_needs_update = False
@@ -93,34 +92,6 @@ class SessionMiddleware(UpstreamSessionMiddleware):
             last_user_agent=request.META.get("HTTP_USER_AGENT", ""),
         )
 
-    @staticmethod
-    def ensure_authenticated_session_user_switching_token(request: HttpRequest):
-        """Ensure the current authenticated session is bound to a user switching token."""
-        if not hasattr(request, "session") or not request.session.session_key:
-            return
-        if getattr(request, "user_switching_token", None) and not getattr(
-            request, "user_switching_token_needs_update", False
-        ):
-            return
-        from authentik.core.models import AuthenticatedSession
-
-        authenticated_session = AuthenticatedSession.objects.filter(
-            session_id=request.session.session_key,
-            session__expires__gt=timezone.now(),
-        ).first()
-        if not authenticated_session:
-            return
-        if authenticated_session.user_switching_token and not getattr(
-            request, "user_switching_token", None
-        ):
-            request.user_switching_token = authenticated_session.user_switching_token
-            request.user_switching_token_needs_update = True
-            return
-        if not authenticated_session.user_switching_token:
-            token = user_switching.ensure_request_token(request)
-            if token:
-                authenticated_session.bind_to_user_switching_token(token)
-
     def process_response(self, request: HttpRequest, response: HttpResponse) -> HttpResponse:
         """
         If request.session was modified, or if the configuration is to save the
@@ -128,7 +99,7 @@ class SessionMiddleware(UpstreamSessionMiddleware):
         the session cookie if the session has been emptied.
         """
         try:
-            SessionMiddleware.ensure_authenticated_session_user_switching_token(request)
+            user_switching._reconcile_session(request)
             accessed = request.session.accessed
             modified = request.session.modified
             empty = request.session.is_empty()
@@ -185,7 +156,7 @@ class SessionMiddleware(UpstreamSessionMiddleware):
         if request.user_switching_token and request.user_switching_token_needs_update:
             response.set_cookie(
                 user_switching.COOKIE_NAME,
-                user_switching.encode_cookie(request.user_switching_token),
+                user_switching._encode_cookie(request.user_switching_token),
                 max_age=user_switching.COOKIE_AGE,
                 domain=settings.SESSION_COOKIE_DOMAIN,
                 path=settings.SESSION_COOKIE_PATH,

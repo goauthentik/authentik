@@ -32,48 +32,50 @@ class SessionStore(SessionBase):
     def model_fields(self):
         return [k.value for k in self.model.Keys]
 
-    def _discard_session_on_load_error(self, exc: Exception):
-        """Log why a stored session was rejected and forget its key."""
-        if isinstance(exc, SuspiciousOperation):
-            LOGGER.warning(str(exc))
-        self._session_key = None
-
-    def _discard_superseded_session(self):
-        """Forget a session replaced by a newer login in the same browser."""
-        LOGGER.info("Session denied: superseded by a newer login")
-        self._session_key = None
+    @staticmethod
+    def _is_superseded(session) -> bool:
+        authenticated_session = getattr(session, "authenticatedsession", None)
+        return bool(authenticated_session and authenticated_session.is_superseded)
 
     def _get_session_from_db(self):
         try:
             session = self.model.objects.select_related(
                 "authenticatedsession",
                 "authenticatedsession__user",
+                "authenticatedsession__user_switching_session",
             ).get(
                 session_key=self.session_key,
                 expires__gt=timezone.now(),
             )
-            if session.is_superseded:
-                self._discard_superseded_session()
+            if self._is_superseded(session):
+                LOGGER.info("Session denied: superseded by a newer login")
+                self._session_key = None
                 return None
             return session
         except (self.model.DoesNotExist, SuspiciousOperation) as exc:
-            self._discard_session_on_load_error(exc)
+            if isinstance(exc, SuspiciousOperation):
+                LOGGER.warning(str(exc))
+            self._session_key = None
 
     async def _aget_session_from_db(self):
         try:
             session = await self.model.objects.select_related(
                 "authenticatedsession",
                 "authenticatedsession__user",
+                "authenticatedsession__user_switching_session",
             ).aget(
                 session_key=self.session_key,
                 expires__gt=timezone.now(),
             )
-            if session.is_superseded:
-                self._discard_superseded_session()
+            if self._is_superseded(session):
+                LOGGER.info("Session denied: superseded by a newer login")
+                self._session_key = None
                 return None
             return session
         except (self.model.DoesNotExist, SuspiciousOperation) as exc:
-            self._discard_session_on_load_error(exc)
+            if isinstance(exc, SuspiciousOperation):
+                LOGGER.warning(str(exc))
+            self._session_key = None
 
     def encode(self, session_dict):
         return pickle.dumps(session_dict, protocol=pickle.HIGHEST_PROTOCOL)

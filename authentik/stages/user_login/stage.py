@@ -7,11 +7,11 @@ from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import login
 from django.http import HttpRequest, HttpResponse
-from django.utils import timezone
 from django.utils.translation import gettext as _
 from jwt import PyJWTError, decode, encode
 from rest_framework.fields import BooleanField, CharField
 
+from authentik.core import user_switching
 from authentik.core.models import AuthenticatedSession, Session, User
 from authentik.core.sessions import SessionStore
 from authentik.events.middleware import audit_ignore
@@ -145,13 +145,12 @@ class UserLoginStageView(ChallengeStageView):
             self.logger.info("eh", exc=exc)
             return False
 
-    def detach_session(self):
+    def _detach_session(self) -> None:
         """Continue on a new session so the current login stays usable as a switch target."""
         old_session = self.request.session
         flow_query_params = old_session.get(SESSION_KEY_GET)
         # Move the active plan so audit events keep context and old logins cannot resume it.
-        if SESSION_KEY_PLAN in old_session:
-            del old_session[SESSION_KEY_PLAN]
+        old_session.pop(SESSION_KEY_PLAN, None)
         old_session.save()
         session_keys = old_session.model.Keys
         self.request.session = SessionStore(
@@ -162,7 +161,7 @@ class UserLoginStageView(ChallengeStageView):
         if flow_query_params is not None:
             self.request.session[SESSION_KEY_GET] = flow_query_params
 
-    def get_valid_user_switch_target(self, user: User) -> AuthenticatedSession | None:
+    def _get_valid_user_switch_target(self, user: User) -> AuthenticatedSession | None:
         """Return the live target session for an in-progress user switch."""
         target_session_id = self.executor.plan.context.get(PLAN_CONTEXT_USER_SWITCH_TARGET_SESSION)
         if not target_session_id:
@@ -171,12 +170,10 @@ class UserLoginStageView(ChallengeStageView):
         if not user_switching_token:
             return None
         return (
-            AuthenticatedSession.objects.filter(
+            user_switching._live_sessions(user_switching_token)
+            .filter(
                 session__session_key=target_session_id,
-                session__expires__gt=timezone.now(),
-                user__is_active=True,
                 user_id=user.pk,
-                user_switching_token=user_switching_token,
             )
             .select_related("session", "user")
             .first()
@@ -196,7 +193,7 @@ class UserLoginStageView(ChallengeStageView):
         )
         user: User = self.executor.plan.context[PLAN_CONTEXT_PENDING_USER]
         if PLAN_CONTEXT_USER_SWITCH_TARGET_SESSION in self.executor.plan.context:
-            target_session = self.get_valid_user_switch_target(user)
+            target_session = self._get_valid_user_switch_target(user)
             if not target_session:
                 self.logger.warning("User switch target session is no longer valid.")
                 return self.executor.stage_invalid()
@@ -208,12 +205,18 @@ class UserLoginStageView(ChallengeStageView):
             PLAN_CONTEXT_USER_SWITCH_ADD_USER in self.executor.plan.context
             or PLAN_CONTEXT_USER_SWITCH_TARGET_SESSION in self.executor.plan.context
         )
+        user_switching_token = getattr(self.request, "user_switching_token", None)
         if (
             is_user_switch_login
             and self.request.user.is_authenticated
             and self.request.user.pk != user.pk
         ):
-            self.detach_session()
+            self._detach_session()
+            if user_switching_token:
+                Session.objects.filter(
+                    authenticatedsession__user=user,
+                    authenticatedsession__user_switching_session_id=user_switching_token,
+                ).delete()
         delta = self.set_session_duration(bool(remember))
         self.set_session_ip()
         # Check if the login request is coming from a known device

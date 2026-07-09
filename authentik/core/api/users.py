@@ -91,9 +91,9 @@ from authentik.core.models import (
     default_token_duration,
 )
 from authentik.core.views.user_switch import (
-    get_user_switching_sessions,
-    user_add_response,
-    user_switch_response,
+    _get_user_switching_sessions,
+    _user_add_response,
+    _user_switch_response,
 )
 from authentik.endpoints.connectors.agent.auth import AgentAuth
 from authentik.events.models import Event, EventAction
@@ -666,7 +666,7 @@ class UserViewSet(
         if not self.request.user.is_authenticated:
             return []
         targets = [self._serialize_user_switch_target(self.request.user, True)]
-        for authenticated_session in get_user_switching_sessions(self.request._request):
+        for authenticated_session in _get_user_switching_sessions(self.request._request):
             if authenticated_session.user_id == self.request.user.pk:
                 continue
             targets.append(self._serialize_user_switch_target(authenticated_session.user, False))
@@ -721,13 +721,13 @@ class UserViewSet(
     def switch(self, request: Request) -> HttpResponse | Response:
         """Start browser user switching."""
         if request.data.get("action") == "add":
-            response = user_add_response(request._request)
+            response = _user_add_response(request._request)
         else:
             try:
                 user_pk = int(request.data.get("user_pk", ""))
             except TypeError, ValueError:
                 return Response({"detail": _("Invalid user switch target.")}, status=400)
-            response = user_switch_response(request._request, user_pk)
+            response = _user_switch_response(request._request, user_pk)
         if (
             HTTPStatus.MULTIPLE_CHOICES <= response.status_code < HTTPStatus.BAD_REQUEST
             and response.has_header("Location")

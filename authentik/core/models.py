@@ -15,7 +15,7 @@ from django.contrib.auth.models import AbstractUser, Permission
 from django.contrib.auth.models import UserManager as DjangoUserManager
 from django.contrib.sessions.base_session import AbstractBaseSession
 from django.core.validators import validate_slug
-from django.db import models, transaction
+from django.db import models
 from django.db.models import Manager, Q, QuerySet, options
 from django.http import HttpRequest
 from django.utils.functional import cached_property
@@ -1338,16 +1338,6 @@ class Session(ExpiringModel, AbstractBaseSession):
     def __str__(self):
         return self.session_key
 
-    @property
-    def is_superseded(self) -> bool:
-        """Check if this session was replaced by a newer login in the same browser."""
-        authenticated_session = getattr(self, "authenticatedsession", None)
-        return bool(
-            authenticated_session
-            and authenticated_session.user_switching_token
-            and not authenticated_session.is_current
-        )
-
     class Keys(StrEnum):
         """
         Keys to be set with the session interface for the fields above to be updated.
@@ -1379,9 +1369,20 @@ class AuthenticatedSession(SerializerModel):
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
-    # This is matched against the value of the `authentik_user_switching` cookie.
-    user_switching_token = models.CharField(max_length=64, null=True, db_index=True)
-    is_current = models.BooleanField(default=False)
+    user_switching_session = models.ForeignKey(
+        user_switching.UserSwitchingSession,
+        null=True,
+        on_delete=models.SET_NULL,
+        related_name="authenticated_sessions",
+    )
+
+    @property
+    def is_superseded(self) -> bool:
+        """Whether a newer login replaced this one for the same browser."""
+        return bool(
+            self.user_switching_session_id
+            and self.user_switching_session.current_session_id != self.session_id
+        )
 
     @property
     def serializer(self) -> type[Serializer]:
@@ -1417,45 +1418,17 @@ class AuthenticatedSession(SerializerModel):
             return None
         authenticated_session, _ = cls.objects.update_or_create(
             session=session,
-            defaults={
-                "user": user,
-                "is_current": True,
-            },
+            defaults={"user": user},
         )
-        token = user_switching.ensure_request_token(request)
+        token = user_switching._ensure_request_token(request)
         if token:
-            authenticated_session.bind_to_user_switching_token(token)
+            user_switching._activate_session(session.session_key, token)
+            authenticated_session.user_switching_session_id = token
         return authenticated_session
-
-    def bind_to_user_switching_token(self, user_switching_token: str) -> Self:
-        """Mark this session as the browser's current login for the given user switching
-        token, superseding the other logins that share it.
-
-        Concurrent binds for the same token race on the partial unique constraint that
-        keeps a single current session per token. Let the database error surface instead
-        of hiding a failed bind."""
-        if not user_switching_token:
-            return self
-        with transaction.atomic():
-            type(self).objects.filter(user_switching_token=user_switching_token).exclude(
-                session=self.session
-            ).update(is_current=False)
-            if self.user_switching_token != user_switching_token or not self.is_current:
-                self.user_switching_token = user_switching_token
-                self.is_current = True
-                self.save(update_fields=["user_switching_token", "is_current"])
-        return self
 
     class Meta:
         verbose_name = _("Authenticated Session")
         verbose_name_plural = _("Authenticated Sessions")
-        constraints = [
-            models.UniqueConstraint(
-                fields=["user_switching_token"],
-                condition=Q(user_switching_token__isnull=False, is_current=True),
-                name="authentik_core_authenticatedsession_current_user_switching_token",
-            ),
-        ]
 
     def __str__(self) -> str:
         return f"Authenticated Session {str(self.pk)[:10]}"

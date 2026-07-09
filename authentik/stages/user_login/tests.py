@@ -164,7 +164,7 @@ class TestUserLoginStage(FlowTestCase):
         self.assertNotEqual(first_session_key, second_session_key)
         second = AuthenticatedSession.objects.get(session__session_key=second_session_key)
         self.assertEqual(second.user, other_user)
-        self.assertTrue(second.is_current)
+        self.assertFalse(second.is_superseded)
         self.assertFalse(
             AuthenticatedSession.objects.filter(session__session_key=first_session_key).exists()
         )
@@ -186,7 +186,9 @@ class TestUserLoginStage(FlowTestCase):
             self.assertEqual(response.status_code, 200)
 
         self.assertEqual(AuthenticatedSession.objects.filter(user=self.user).count(), 1)
-        self.assertIsNotNone(AuthenticatedSession.objects.get(user=self.user).user_switching_token)
+        self.assertIsNotNone(
+            AuthenticatedSession.objects.get(user=self.user).user_switching_session_id
+        )
 
     def test_expiry(self):
         """Test with expiry"""

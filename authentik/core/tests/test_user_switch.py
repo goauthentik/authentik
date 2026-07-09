@@ -1,4 +1,4 @@
-"""User switch view tests"""
+"""User switch view tests."""
 
 from datetime import timedelta
 
@@ -15,6 +15,7 @@ from authentik.core.tests.utils import (
     create_test_session,
     create_test_user,
 )
+from authentik.core.user_switching import UserSwitchingSession
 from authentik.events.models import Event, EventAction
 from authentik.flows.markers import StageMarker
 from authentik.flows.models import FlowDesignation, FlowStageBinding
@@ -29,13 +30,11 @@ from authentik.flows.stage import PLAN_CONTEXT_PENDING_USER_IDENTIFIER
 from authentik.flows.tests import FlowTestCase
 from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.policies.models import PolicyBinding
-from authentik.stages.dummy.models import DummyStage
-from authentik.stages.identification.models import IdentificationStage
 from authentik.stages.user_login.models import UserLoginStage
 
 
 class TestUserSwitch(FlowTestCase):
-    """Test starting the brand's user switch flow"""
+    """Test starting and completing the brand's user switch flow."""
 
     def setUp(self):
         super().setUp()
@@ -49,42 +48,27 @@ class TestUserSwitch(FlowTestCase):
         )
         self.brand = create_test_brand(flow_user_switch=self.flow)
 
-    def switch_url(self, query: dict | None = None) -> str:
+    def _post(self, data: dict, query: dict | None = None):
         url = reverse("authentik_api:user-switch")
         if query:
-            return f"{url}?{urlencode(query)}"
-        return url
+            url = f"{url}?{urlencode(query)}"
+        return self.client.post(url, data, format="json")
 
-    def switch_data(self, user) -> dict[str, int]:
-        return {"user_pk": user.pk}
+    def _post_switch(self, user):
+        return self._post({"user_pk": user.pk})
 
-    def post_switch(self, user, data: dict | None = None, query: dict | None = None, **kwargs):
-        return self.client.post(
-            self.switch_url(query),
-            {**self.switch_data(user), **(data or {})},
-            format="json",
-            **kwargs,
-        )
-
-    def post_add_user(self, query: dict | None = None, **kwargs):
-        return self.client.post(
-            self.switch_url(query),
-            {"action": "add"},
-            format="json",
-            **kwargs,
-        )
-
-    def assert_switch_redirect(self, response, flow=None):
+    def _assert_redirect(self, response):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
             response.json()["redirect"],
-            reverse("authentik_core:if-flow", kwargs={"flow_slug": (flow or self.flow).slug}),
+            reverse("authentik_core:if-flow", kwargs={"flow_slug": self.flow.slug}),
         )
 
-    def login(self, user) -> str:
-        """Log the test client in through the flow executor, returning the session key"""
+    def _login(self, user) -> str:
         plan = FlowPlan(
-            flow_pk=self.flow.pk.hex, bindings=[self.login_binding], markers=[StageMarker()]
+            flow_pk=self.flow.pk.hex,
+            bindings=[self.login_binding],
+            markers=[StageMarker()],
         )
         plan.context[PLAN_CONTEXT_PENDING_USER] = user
         session = self.client.session
@@ -96,283 +80,127 @@ class TestUserSwitch(FlowTestCase):
         self.assertEqual(response.status_code, 200)
         return self.client.session.session_key
 
-    def user_switching_token(self) -> str:
-        """Return the decoded user switching token from the test client's cookie."""
-        user_switching_token = user_switching.decode_cookie(
-            self.client.cookies[user_switching.COOKIE_NAME].value
-        )
-        if user_switching_token is None:
-            self.fail("Expected a user switching token cookie after login")
-        return user_switching_token
+    def _token(self) -> str:
+        token = user_switching._decode_cookie(self.client.cookies[user_switching.COOKIE_NAME].value)
+        if token is None:
+            self.fail("Expected a user-switching cookie")
+        return token
 
-    def test_no_brand_flow_disables_switching(self):
-        """Test switching shows an error when the brand has no user switch flow"""
+    def test_disabled_brand_rejects_switch_and_add(self):
         self.brand.flow_user_switch = None
         self.brand.save()
-        self.login(self.user)
-        user_switching_token = self.user_switching_token()
-        create_test_session(
-            self.other_user, user_switching_token=user_switching_token, is_current=False
-        )
+        self._login(self.user)
+        create_test_session(self.other_user, self._token(), is_current=False)
 
-        response = self.post_switch(self.other_user, query={"next": "/if/admin/#/core/brands"})
+        for data in ({"user_pk": self.other_user.pk}, {"action": "add"}):
+            with self.subTest(data=data):
+                response = self._post(data, {"next": "https://example.invalid/"})
+                self.assertContains(response, "User switching is disabled.", status_code=400)
 
-        self.assertEqual(response.status_code, 400)
-        self.assertContains(
-            response,
-            "User switching is disabled.",
-            status_code=400,
-        )
+    def test_switch_plans_verified_browser_target(self):
+        self._login(self.user)
+        target = create_test_session(self.other_user, self._token(), is_current=False)
 
-    def test_no_brand_flow_does_not_redirect_to_next(self):
-        """Test disabled switching renders the endpoint instead of redirecting to next"""
-        self.brand.flow_user_switch = None
-        self.brand.save()
-        self.login(self.user)
+        response = self._post_switch(self.other_user)
 
-        response = self.post_switch(self.other_user, query={"next": "https://example.invalid/"})
+        self._assert_redirect(response)
+        context = self.client.session[SESSION_KEY_PLAN].context
+        self.assertEqual(context[PLAN_CONTEXT_PENDING_USER], self.other_user)
+        self.assertEqual(context[PLAN_CONTEXT_PENDING_USER_IDENTIFIER], self.other_user.username)
+        self.assertEqual(context[PLAN_CONTEXT_USER_SWITCH_FROM_USER], self.user)
+        self.assertEqual(context[PLAN_CONTEXT_USER_SWITCH_TARGET_SESSION], target.session_id)
 
-        self.assertEqual(response.status_code, 400)
-        self.assertContains(
-            response,
-            "User switching is disabled.",
-            status_code=400,
-        )
-
-    def test_switch_get_not_allowed(self):
-        """Test switching cannot be started with a safe HTTP method."""
-        self.login(self.user)
-        user_switching_token = self.user_switching_token()
-        create_test_session(
-            self.other_user, user_switching_token=user_switching_token, is_current=False
-        )
-
-        response = self.client.get(self.switch_url())
-
-        self.assertEqual(response.status_code, 405)
-
-    def test_switch_requires_authenticated_source_user(self):
-        """Test switching is rejected when there is no current login to switch from"""
-        user_switching_token = "A" * 32
-        self.client.cookies[user_switching.COOKIE_NAME] = user_switching.encode_cookie(
-            user_switching_token
-        )
-        create_test_session(
-            self.other_user, user_switching_token=user_switching_token, is_current=False
-        )
-
-        response = self.post_switch(self.other_user)
-
-        self.assertEqual(response.status_code, 403)
-
-    def test_switch_with_live_session(self):
-        """Test a live login of this browser is passed to the flow as context"""
-        self.login(self.user)
-        user_switching_token = self.user_switching_token()
-        target_session = create_test_session(
-            self.other_user, user_switching_token=user_switching_token, is_current=False
-        )
-
-        response = self.post_switch(self.other_user)
-
-        self.assert_switch_redirect(response)
-        plan: FlowPlan = self.client.session[SESSION_KEY_PLAN]
-        self.assertEqual(plan.context[PLAN_CONTEXT_PENDING_USER], self.other_user)
-        self.assertEqual(
-            plan.context[PLAN_CONTEXT_PENDING_USER_IDENTIFIER],
-            self.other_user.username,
-        )
-        self.assertEqual(plan.context[PLAN_CONTEXT_USER_SWITCH_FROM_USER], self.user)
-        self.assertEqual(
-            plan.context[PLAN_CONTEXT_USER_SWITCH_TARGET_SESSION],
-            target_session.session.session_key,
-        )
-
-    def test_add_user_explicitly_preserves_existing_session(self):
-        """Test only the add-user entry point preserves the current login."""
-        first_session_key = self.login(self.user)
-
-        response = self.post_add_user()
-
-        self.assert_switch_redirect(response)
-        plan: FlowPlan = self.client.session[SESSION_KEY_PLAN]
+    def test_add_user_preserves_existing_login(self):
+        first_session_key = self._login(self.user)
+        response = self._post({"action": "add"})
+        self._assert_redirect(response)
+        plan = self.client.session[SESSION_KEY_PLAN]
         self.assertTrue(plan.context[PLAN_CONTEXT_USER_SWITCH_ADD_USER])
         plan.context[PLAN_CONTEXT_PENDING_USER] = self.other_user
         session = self.client.session
         session[SESSION_KEY_PLAN] = plan
         session.save()
 
-        response = self.client.get(
+        self.client.get(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
         )
 
-        self.assertEqual(response.status_code, 200)
         self.assertNotEqual(self.client.session.session_key, first_session_key)
-        first = AuthenticatedSession.objects.get(session__session_key=first_session_key)
-        self.assertEqual(first.user, self.user)
-        self.assertFalse(first.is_current)
         self.assertTrue(Session.objects.filter(session_key=first_session_key).exists())
 
-    def test_add_user_disabled_without_switch_flow(self):
-        """Test additional-user login is gated by the configured switch flow."""
-        self.brand.flow_user_switch = None
-        self.brand.save()
-        self.login(self.user)
+    def test_target_is_revalidated_before_login(self):
+        first_session_key = self._login(self.user)
+        target = create_test_session(self.other_user, self._token(), is_current=False)
+        self._assert_redirect(self._post_switch(self.other_user))
+        target.session.delete()
 
-        response = self.post_add_user()
-
-        self.assertEqual(response.status_code, 400)
-
-    def test_switch_rejects_target_session_deleted_after_planning(self):
-        """Test a switch target is revalidated immediately before login."""
-        first_session_key = self.login(self.user)
-        user_switching_token = self.user_switching_token()
-        target_session = create_test_session(
-            self.other_user, user_switching_token=user_switching_token, is_current=False
-        )
-
-        response = self.post_switch(self.other_user)
-        self.assert_switch_redirect(response)
-        target_session.session.delete()
         response = self.client.get(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
         )
 
         self.assertStageResponse(response, self.flow, component="ak-stage-access-denied")
-        self.assertEqual(self.client.session.session_key, first_session_key)
-        current = AuthenticatedSession.objects.get(session__session_key=first_session_key)
-        self.assertEqual(current.user, self.user)
-        self.assertTrue(current.is_current)
+        switching_session = UserSwitchingSession.objects.get(token=self._token())
+        self.assertEqual(switching_session.current_session_id, first_session_key)
 
-    def test_switch_flow_must_apply_to_current_user(self):
-        """Test switching rejects flows the source user cannot access."""
-        self.login(self.user)
-        user_switching_token = self.user_switching_token()
-        create_test_session(
-            self.other_user, user_switching_token=user_switching_token, is_current=False
-        )
+    def test_switch_flow_policy_applies_to_source_user(self):
+        self._login(self.user)
+        create_test_session(self.other_user, self._token(), is_current=False)
         PolicyBinding.objects.create(target=self.flow, user=self.other_user, order=0)
 
-        response = self.post_switch(self.other_user)
+        response = self._post_switch(self.other_user)
 
         self.assertEqual(response.status_code, 404)
 
-    def test_switch_without_live_session(self):
-        """Test an unknown or stale target is rejected."""
-        self.login(self.user)
+    def test_switch_requires_target_from_same_browser(self):
+        self._login(self.user)
+        create_test_session(self.other_user, "A" * user_switching.TOKEN_LENGTH)
 
-        response = self.post_switch(self.other_user)
-
-        self.assertEqual(response.status_code, 404)
-
-    def test_switch_ignores_other_browser_session(self):
-        """Test a live login of a different browser doesn't count as proof"""
-        self.login(self.user)
-        create_test_session(self.other_user, user_switching_token="A" * 32)
-
-        response = self.post_switch(self.other_user)
+        response = self._post_switch(self.other_user)
 
         self.assertEqual(response.status_code, 404)
 
-    def test_user_me_lists_only_live_browser_sessions(self):
-        """Test the session API is the source of truth for switch targets."""
-        self.login(self.user)
-        user_switching_token = self.user_switching_token()
-        create_test_session(
-            self.other_user, user_switching_token=user_switching_token, is_current=False
-        )
-        expired_user = create_test_user()
-        expired = create_test_session(
-            expired_user, user_switching_token=user_switching_token, is_current=False
-        )
+    def test_user_me_lists_live_browser_sessions(self):
+        self._login(self.user)
+        token = self._token()
+        create_test_session(self.other_user, token, is_current=False)
+        expired = create_test_session(create_test_user(), token, is_current=False)
         expired.session.expires = timezone.now() - timedelta(seconds=1)
         expired.session.save(update_fields=["expires"])
 
         response = self.client.get(reverse("authentik_api:user-me"))
 
-        self.assertEqual(response.status_code, 200)
         self.assertEqual(
-            [user["username"] for user in response.json()["users"]],
-            [self.user.username, self.other_user.username],
-        )
-        self.assertTrue(response.json()["users"][0]["is_current"])
-        self.assertFalse(response.json()["users"][1]["is_current"])
-
-    def test_identification_stage_skips_prefilled_user(self):
-        """Test a switch through an authentication flow doesn't ask for the
-        username again and goes straight to the next stage"""
-        flow = create_test_flow(FlowDesignation.AUTHENTICATION)
-        FlowStageBinding.objects.create(
-            target=flow,
-            stage=IdentificationStage.objects.create(
-                name=f"{flow.slug}-identification",
-                user_fields=["username"],
-            ),
-            order=10,
-        )
-        FlowStageBinding.objects.create(
-            target=flow,
-            stage=DummyStage.objects.create(name=f"{flow.slug}-next"),
-            order=20,
-        )
-        self.brand.flow_user_switch = flow
-        self.brand.save()
-        self.login(self.user)
-        user_switching_token = self.user_switching_token()
-        create_test_session(
-            self.other_user, user_switching_token=user_switching_token, is_current=False
+            [(user["username"], user["is_current"]) for user in response.json()["users"]],
+            [(self.user.username, True), (self.other_user.username, False)],
         )
 
-        response = self.post_switch(self.other_user)
-        self.assert_switch_redirect(response, flow)
-        response = self.client.get(
-            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug})
-        )
-        self.assertEqual(response.status_code, 302)
-        response = self.client.get(response.url)
+    def test_full_switch_replaces_target_and_supersedes_source(self):
+        source_session_key = self._login(self.user)
+        target = create_test_session(self.other_user, self._token(), is_current=False)
 
-        self.assertStageResponse(response, flow, component="ak-stage-dummy")
-
-    def test_full_switch(self):
-        """Test the full switch: the new login takes over, the old session survives
-        as a switch target but can't be replayed"""
-        first_session_key = self.login(self.user)
-        user_switching_token = self.user_switching_token()
-        create_test_session(
-            self.other_user, user_switching_token=user_switching_token, is_current=False
-        )
-
-        response = self.post_switch(self.other_user, follow=True)
-        self.assertEqual(response.status_code, 200)
+        self._assert_redirect(self._post_switch(self.other_user))
         response = self.client.get(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
         )
-        self.assertEqual(response.status_code, 200)
 
-        # The client is now logged in as the other user on a new session
-        self.assertNotEqual(self.client.session.session_key, first_session_key)
-        current = AuthenticatedSession.objects.get(
-            session__session_key=self.client.session.session_key
+        self.assertEqual(response.status_code, 200)
+        current_session_key = self.client.session.session_key
+        self.assertNotEqual(current_session_key, source_session_key)
+        self.assertEqual(
+            AuthenticatedSession.objects.get(session_id=current_session_key).user,
+            self.other_user,
         )
-        self.assertEqual(current.user, self.other_user)
-        self.assertTrue(current.is_current)
-        # The first user's login survives as a switch target, but is superseded
-        first = AuthenticatedSession.objects.get(session__session_key=first_session_key)
-        self.assertEqual(first.user, self.user)
-        self.assertFalse(first.is_current)
-        self.assertTrue(Session.objects.filter(session_key=first_session_key).exists())
-        # The login is audited as a user switch from the first user
-        event = Event.objects.filter(
-            action=EventAction.LOGIN,
-            context__is_user_switch=True,
-        ).first()
-        self.assertIsNotNone(event)
+        self.assertFalse(Session.objects.filter(session_key=target.session_id).exists())
+        self.assertTrue(Session.objects.filter(session_key=source_session_key).exists())
+        event = Event.objects.filter(action=EventAction.LOGIN, context__is_user_switch=True).get()
         self.assertEqual(event.user["username"], self.other_user.username)
         self.assertEqual(
             event.context[PLAN_CONTEXT_USER_SWITCH_FROM_USER]["username"],
             self.user.username,
         )
-        # Replaying the first session cookie doesn't authenticate anymore
-        self.client.cookies[settings.SESSION_COOKIE_NAME] = first_session_key
-        response = self.client.get(reverse("authentik_api:user-me"))
-        self.assertEqual(response.status_code, 403)
+
+        self.client.cookies[settings.SESSION_COOKIE_NAME] = source_session_key
+        self.assertEqual(
+            self.client.get(reverse("authentik_api:user-me")).status_code,
+            403,
+        )

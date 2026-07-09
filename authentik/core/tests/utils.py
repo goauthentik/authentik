@@ -12,6 +12,7 @@ from django.utils.text import slugify
 from authentik.brands.models import Brand
 from authentik.core.models import AuthenticatedSession, Group, Session, User
 from authentik.core.sessions import SessionStore
+from authentik.core.user_switching import UserSwitchingSession
 from authentik.crypto.builder import CertificateBuilder, PrivateKeyAlg
 from authentik.crypto.models import CertificateKeyPair
 from authentik.flows.models import Flow, FlowDesignation
@@ -48,12 +49,20 @@ def create_test_session(
     """Create a live login for the given user."""
     store = SessionStore()
     store.create()
-    return AuthenticatedSession.objects.create(
+    switching_session = None
+    if user_switching_token:
+        switching_session, _ = UserSwitchingSession.objects.get_or_create(
+            token=user_switching_token
+        )
+    authenticated_session = AuthenticatedSession.objects.create(
         session=Session.objects.get(session_key=store.session_key),
         user=user,
-        user_switching_token=user_switching_token,
-        is_current=is_current,
+        user_switching_session=switching_session,
     )
+    if switching_session and is_current:
+        switching_session.current_session = authenticated_session
+        switching_session.save(update_fields=["current_session"])
+    return authenticated_session
 
 
 def create_test_admin_user(name: str | None = None, **kwargs) -> User:
