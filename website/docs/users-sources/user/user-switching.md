@@ -56,31 +56,9 @@ Then bind the following expression policy to the Password stage binding:
 ```python
 from datetime import timedelta
 
-from django.utils import timezone
+from authentik.core.user_switching import is_user_switch_target_recent
 
-from authentik.core.models import AuthenticatedSession
-
-flow_plan = request.context.get("flow_plan")
-user = None
-is_user_switch = False
-target_session_id = None
-if flow_plan:
-    user = flow_plan.context.get("pending_user")
-    is_user_switch = bool(flow_plan.context.get("user_switch_from_user"))
-    target_session_id = flow_plan.context.get("user_switch_target_session")
-
-now = timezone.now()
-if not is_user_switch or not user or not target_session_id:
-    return True
-
-recently_used = AuthenticatedSession.objects.filter(
-    session__session_key=target_session_id,
-    user=user,
-    session__expires__gt=now,
-    session__last_used__gte=now - timedelta(hours=24),
-).exists()
-
-return not recently_used
+return not is_user_switch_target_recent(request, timedelta(hours=24))
 ```
 
 When the policy returns `False`, authentik skips the Password stage and continues to the
