@@ -1,3 +1,7 @@
+/**
+ * @file Display the table of available Notification Transports, with pending tasks for each
+ */
+
 import "#admin/events/TransportForm";
 import "#admin/rbac/ObjectPermissionModal";
 import "#elements/buttons/ActionButton/index";

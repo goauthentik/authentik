@@ -1,3 +1,7 @@
+/**
+ * @file Display the table of Notification Rules, as well as associated policies and pending tasks
+ */
+
 import "#admin/events/RuleForm";
 import "#admin/policies/BoundPoliciesList";
 import "#admin/rbac/ObjectPermissionModal";
