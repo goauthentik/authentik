@@ -1,3 +1,7 @@
+/**
+ * @file Display details for a federated Kerberos Identity Source: Overview, Changelog, Permissions
+ */
+
 import "#admin/rbac/ak-rbac-object-permission-page";
 import "#admin/sources/kerberos/KerberosSourceConnectivity";
 import "#admin/sources/kerberos/KerberosSourceForm";

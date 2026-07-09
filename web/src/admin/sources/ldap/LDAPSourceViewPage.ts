@@ -1,3 +1,7 @@
+/**
+ * @file Display details for a federated LDAP Identity Source: Overview, Synced Users, Synced Groups, Changelog, Permissions
+ */
+
 import "#admin/rbac/ak-rbac-object-permission-page";
 import "#admin/sources/ldap/LDAPSourceConnectivity";
 import "#admin/sources/ldap/LDAPSourceUserList";
