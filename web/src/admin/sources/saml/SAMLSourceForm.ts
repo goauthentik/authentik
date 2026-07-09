@@ -14,6 +14,8 @@ import { propertyMappingsProvider, propertyMappingsSelector } from "./SAMLSource
 
 import { aki } from "#common/api/client";
 
+import { AKLabel } from "#components/ak-label";
+
 import { type AkCryptoCertificateSearch } from "#admin/common/ak-crypto-certificate-search";
 import { iconHelperText, placeholderHelperText } from "#admin/helperText";
 import { policyEngineModes } from "#admin/policies/PolicyEngineModes";
@@ -111,12 +113,17 @@ export class SAMLSourceForm extends BaseSourceForm<SAMLSource> {
                     "When enabled, this source will be displayed as a prominent button on the login page, instead of a small icon.",
                 )}
             ></ak-switch-input>
-            <ak-form-element-horizontal
-                label=${msg("User matching mode")}
-                required
-                name="userMatchingMode"
-            >
-                <select class="pf-c-form-control">
+            <ak-form-element-horizontal required name="userMatchingMode">
+                ${AKLabel(
+                    {
+                        slot: "label",
+                        className: "pf-c-form__group-label",
+                        htmlFor: "userMatchingMode",
+                        required: true,
+                    },
+                    msg("User matching mode"),
+                )}
+                <select id="userMatchingMode" class="pf-c-form-control">
                     <option
                         value=${UserMatchingModeEnum.Identifier}
                         ?selected=${this.instance?.userMatchingMode ===
@@ -154,12 +161,17 @@ export class SAMLSourceForm extends BaseSourceForm<SAMLSource> {
                     </option>
                 </select>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal
-                label=${msg("Group matching mode")}
-                required
-                name="groupMatchingMode"
-            >
-                <select class="pf-c-form-control">
+            <ak-form-element-horizontal required name="groupMatchingMode">
+                ${AKLabel(
+                    {
+                        slot: "label",
+                        className: "pf-c-form__group-label",
+                        htmlFor: "groupMatchingMode",
+                        required: true,
+                    },
+                    msg("Group matching mode"),
+                )}
+                <select id="groupMatchingMode" class="pf-c-form-control">
                     <option
                         value=${GroupMatchingModeEnum.Identifier}
                         ?selected=${this.instance?.groupMatchingMode ===
@@ -194,8 +206,18 @@ export class SAMLSourceForm extends BaseSourceForm<SAMLSource> {
 
             <ak-form-group open label="${msg("Protocol settings")}">
                 <div class="pf-c-form">
-                    <ak-form-element-horizontal label=${msg("SSO URL")} required name="ssoUrl">
+                    <ak-form-element-horizontal required name="ssoUrl">
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "ssoUrl",
+                                required: true,
+                            },
+                            msg("SSO URL"),
+                        )}
                         <input
+                            id="ssoUrl"
                             type="text"
                             value="${ifDefined(this.instance?.ssoUrl)}"
                             class="pf-c-form-control"
@@ -205,8 +227,17 @@ export class SAMLSourceForm extends BaseSourceForm<SAMLSource> {
                             ${msg("URL that the initial Login request is sent to.")}
                         </p>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal label=${msg("SLO URL")} name="sloUrl">
+                    <ak-form-element-horizontal name="sloUrl">
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "sloUrl",
+                            },
+                            msg("SLO URL"),
+                        )}
                         <input
+                            id="sloUrl"
                             type="text"
                             value="${ifDefined(this.instance?.sloUrl || "")}"
                             class="pf-c-form-control"
@@ -215,8 +246,17 @@ export class SAMLSourceForm extends BaseSourceForm<SAMLSource> {
                             ${msg("Optional URL if the IDP supports Single-Logout.")}
                         </p>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal label=${msg("Issuer")} name="issuer">
+                    <ak-form-element-horizontal name="issuer">
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "issuer",
+                            },
+                            msg("Issuer"),
+                        )}
                         <input
+                            id="issuer"
                             type="text"
                             value="${ifDefined(this.instance?.issuer)}"
                             class="pf-c-form-control"
@@ -225,12 +265,18 @@ export class SAMLSourceForm extends BaseSourceForm<SAMLSource> {
                             ${msg("Also known as Entity ID. Defaults the Metadata URL.")}
                         </p>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${msg("Binding Type")}
-                        required
-                        name="bindingType"
-                    >
+                    <ak-form-element-horizontal required name="bindingType">
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "bindingType",
+                                required: true,
+                            },
+                            msg("Binding Type"),
+                        )}
                         <ak-radio
+                            id="bindingType"
                             .options=${[
                                 {
                                     label: msg("Redirect binding"),
@@ -253,8 +299,17 @@ export class SAMLSourceForm extends BaseSourceForm<SAMLSource> {
                         >
                         </ak-radio>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal label=${msg("Signing keypair")} name="signingKp">
+                    <ak-form-element-horizontal name="signingKp">
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "signingKp",
+                            },
+                            msg("Signing keypair"),
+                        )}
                         <ak-crypto-certificate-search
+                            id="signingKp"
                             .certificate=${this.instance?.signingKp}
                         ></ak-crypto-certificate-search>
                         <p class="pf-c-form__helper-text">
@@ -263,11 +318,17 @@ export class SAMLSourceForm extends BaseSourceForm<SAMLSource> {
                             )}
                         </p>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${msg("Verification Certificate")}
-                        name="verificationKp"
-                    >
+                    <ak-form-element-horizontal name="verificationKp">
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "verificationKp",
+                            },
+                            msg("Verification Certificate"),
+                        )}
                         <ak-crypto-certificate-search
+                            id="verificationKp"
                             .certificate=${this.instance?.verificationKp}
                             @input=${this.setHasSigningCert}
                             nokey
@@ -299,12 +360,17 @@ export class SAMLSourceForm extends BaseSourceForm<SAMLSource> {
                             "When enabled, the IdP is requested to force re-authentication of the user, even if the user has an existing session.",
                         )}
                     ></ak-switch-input>
-                    <ak-form-element-horizontal
-                        label=${msg("NameID Policy")}
-                        required
-                        name="nameIdPolicy"
-                    >
-                        <select class="pf-c-form-control">
+                    <ak-form-element-horizontal required name="nameIdPolicy">
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "nameIdPolicy",
+                                required: true,
+                            },
+                            msg("NameID Policy"),
+                        )}
+                        <select id="nameIdPolicy" class="pf-c-form-control">
                             <option
                                 value=${SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml20NameidFormatPersistent}
                                 ?selected=${this.instance?.nameIdPolicy ===
@@ -342,8 +408,17 @@ export class SAMLSourceForm extends BaseSourceForm<SAMLSource> {
                             </option>
                         </select>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal label=${msg("User path")} name="userPathTemplate">
+                    <ak-form-element-horizontal name="userPathTemplate">
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "userPathTemplate",
+                            },
+                            msg("User path"),
+                        )}
                         <input
+                            id="userPathTemplate"
                             type="text"
                             value="${this.instance?.userPathTemplate ??
                             "goauthentik.io/sources/%(slug)s"}"
@@ -351,12 +426,18 @@ export class SAMLSourceForm extends BaseSourceForm<SAMLSource> {
                         />
                         <p class="pf-c-form__helper-text">${placeholderHelperText}</p>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${msg("Delete temporary users after")}
-                        required
-                        name="temporaryUserDeleteAfter"
-                    >
+                    <ak-form-element-horizontal required name="temporaryUserDeleteAfter">
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "temporaryUserDeleteAfter",
+                                required: true,
+                            },
+                            msg("Delete temporary users after"),
+                        )}
                         <input
+                            id="temporaryUserDeleteAfter"
                             type="text"
                             value="${this.instance?.temporaryUserDeleteAfter || "days=1"}"
                             class="pf-c-form-control"
@@ -369,12 +450,18 @@ export class SAMLSourceForm extends BaseSourceForm<SAMLSource> {
                         </p>
                         <ak-utils-time-delta-help></ak-utils-time-delta-help>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${msg("Digest algorithm")}
-                        required
-                        name="digestAlgorithm"
-                    >
+                    <ak-form-element-horizontal required name="digestAlgorithm">
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "digestAlgorithm",
+                                required: true,
+                            },
+                            msg("Digest algorithm"),
+                        )}
                         <ak-radio
+                            id="digestAlgorithm"
                             .options=${[
                                 {
                                     label: "SHA1",
@@ -398,12 +485,18 @@ export class SAMLSourceForm extends BaseSourceForm<SAMLSource> {
                         >
                         </ak-radio>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${msg("Signature algorithm")}
-                        required
-                        name="signatureAlgorithm"
-                    >
+                    <ak-form-element-horizontal required name="signatureAlgorithm">
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "signatureAlgorithm",
+                                required: true,
+                            },
+                            msg("Signature algorithm"),
+                        )}
                         <ak-radio
+                            id="signatureAlgorithm"
                             .options=${[
                                 {
                                     label: "RSA-SHA1",
@@ -431,11 +524,17 @@ export class SAMLSourceForm extends BaseSourceForm<SAMLSource> {
                         >
                         </ak-radio>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${msg("Encryption Certificate")}
-                        name="encryptionKp"
-                    >
+                    <ak-form-element-horizontal name="encryptionKp">
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "encryptionKp",
+                            },
+                            msg("Encryption Certificate"),
+                        )}
                         <ak-crypto-certificate-search
+                            id="encryptionKp"
                             .certificate=${this.instance?.encryptionKp}
                         ></ak-crypto-certificate-search>
                         <p class="pf-c-form__helper-text">
@@ -448,11 +547,17 @@ export class SAMLSourceForm extends BaseSourceForm<SAMLSource> {
             </ak-form-group>
             <ak-form-group open label="${msg("SAML Attribute mapping")}">
                 <div class="pf-c-form">
-                    <ak-form-element-horizontal
-                        label=${msg("User Property Mappings")}
-                        name="userPropertyMappings"
-                    >
+                    <ak-form-element-horizontal name="userPropertyMappings">
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "userPropertyMappings",
+                            },
+                            msg("User Property Mappings"),
+                        )}
                         <ak-dual-select-dynamic-selected
+                            id="userPropertyMappings"
                             .provider=${propertyMappingsProvider}
                             .selector=${propertyMappingsSelector(
                                 this.instance?.userPropertyMappings,
@@ -464,11 +569,17 @@ export class SAMLSourceForm extends BaseSourceForm<SAMLSource> {
                             ${msg("Property mappings for user creation.")}
                         </p>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${msg("Group Property Mappings")}
-                        name="groupPropertyMappings"
-                    >
+                    <ak-form-element-horizontal name="groupPropertyMappings">
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "groupPropertyMappings",
+                            },
+                            msg("Group Property Mappings"),
+                        )}
                         <ak-dual-select-dynamic-selected
+                            id="groupPropertyMappings"
                             .provider=${propertyMappingsProvider}
                             .selector=${propertyMappingsSelector(
                                 this.instance?.groupPropertyMappings,
@@ -484,12 +595,18 @@ export class SAMLSourceForm extends BaseSourceForm<SAMLSource> {
             </ak-form-group>
             <ak-form-group label="${msg("Flow settings")}">
                 <div class="pf-c-form">
-                    <ak-form-element-horizontal
-                        label=${msg("Pre-authentication flow")}
-                        required
-                        name="preAuthenticationFlow"
-                    >
+                    <ak-form-element-horizontal required name="preAuthenticationFlow">
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "preAuthenticationFlow",
+                                required: true,
+                            },
+                            msg("Pre-authentication flow"),
+                        )}
                         <ak-source-flow-search
+                            id="preAuthenticationFlow"
                             flowType=${FlowDesignationEnum.StageConfiguration}
                             .currentFlow=${this.instance?.preAuthenticationFlow}
                             .instanceId=${this.instance?.pk}
@@ -499,11 +616,17 @@ export class SAMLSourceForm extends BaseSourceForm<SAMLSource> {
                             ${msg("Flow used before authentication.")}
                         </p>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${msg("Authentication Flow")}
-                        name="authenticationFlow"
-                    >
+                    <ak-form-element-horizontal name="authenticationFlow">
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "authenticationFlow",
+                            },
+                            msg("Authentication Flow"),
+                        )}
                         <ak-source-flow-search
+                            id="authenticationFlow"
                             flowType=${FlowDesignationEnum.Authentication}
                             .currentFlow=${this.instance?.authenticationFlow}
                             .instanceId=${this.instance?.pk}
@@ -513,11 +636,17 @@ export class SAMLSourceForm extends BaseSourceForm<SAMLSource> {
                             ${msg("Flow to use when authenticating existing users.")}
                         </p>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${msg("Enrollment flow")}
-                        name="enrollmentFlow"
-                    >
+                    <ak-form-element-horizontal name="enrollmentFlow">
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "enrollmentFlow",
+                            },
+                            msg("Enrollment flow"),
+                        )}
                         <ak-source-flow-search
+                            id="enrollmentFlow"
                             flowType=${FlowDesignationEnum.Enrollment}
                             .currentFlow=${this.instance?.enrollmentFlow}
                             .instanceId=${this.instance?.pk}
@@ -531,12 +660,18 @@ export class SAMLSourceForm extends BaseSourceForm<SAMLSource> {
             </ak-form-group>
             <ak-form-group label=${msg("Advanced settings")}>
                 <div class="pf-c-form">
-                    <ak-form-element-horizontal
-                        label=${msg("Policy engine mode")}
-                        required
-                        name="policyEngineMode"
-                    >
+                    <ak-form-element-horizontal required name="policyEngineMode">
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "policyEngineMode",
+                                required: true,
+                            },
+                            msg("Policy engine mode"),
+                        )}
                         <ak-radio
+                            id="policyEngineMode"
                             .options=${policyEngineModes}
                             .value=${this.instance?.policyEngineMode}
                         >
