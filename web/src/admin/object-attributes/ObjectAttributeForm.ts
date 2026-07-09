@@ -63,6 +63,7 @@ export class ObjectAttributeForm extends ModelForm<ObjectAttribute, string> {
                 label=${msg("Label")}
                 placeholder=${msg("Type a human-readable name...")}
                 required
+                help=${msg("Human-readable name of this attribute.")}
             ></ak-text-input>
             <ak-text-input
                 name="key"
@@ -70,12 +71,14 @@ export class ObjectAttributeForm extends ModelForm<ObjectAttribute, string> {
                 label=${msg("Key")}
                 placeholder=${msg("Type a unique identifier...")}
                 required
+                help=${msg("Unique identifier per object type, which is used as a key in the attributes field.")}
             ></ak-text-input>
             <ak-text-input
                 name="group"
                 value="${this.instance?.group ?? ""}"
                 label=${msg("Group")}
                 placeholder=${msg("Type an optional group identifier...")}
+                help=${msg("Optional grouping for this attribute in forms.")}
             ></ak-text-input>
             <ak-switch-input
                 name="enabled"
