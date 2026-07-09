@@ -1,0 +1,59 @@
+{
+    "name": "@goauthentik/lit-jsx",
+    "version": "1.0.0",
+    "description": "JSX runtime for Lit templates",
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/goauthentik/authentik.git",
+        "directory": "packages/lit-jsx"
+    },
+    "scripts": {
+        "build": "tsc -p .",
+        "lint": "eslint --fix .",
+        "lint-check": "eslint --max-warnings 0 .",
+        "lint:types": "tsc -p tsconfig.test.json --noEmit",
+        "prepare": "tsc -p .",
+        "prettier": "prettier --write .",
+        "prettier-check": "prettier --check .",
+        "test": "vitest run",
+        "test:watch": "vitest",
+        "watch": "tsc -p . --watch"
+    },
+    "type": "module",
+    "types": "./dist/index.d.ts",
+    "exports": {
+        "./package.json": "./package.json",
+        ".": "./dist/index.js",
+        "./jsx-runtime": "./dist/jsx-runtime.js",
+        "./jsx-dev-runtime": "./dist/jsx-dev-runtime.js"
+    },
+    "dependencies": {
+        "@open-wc/lit-helpers": "^0.7.0"
+    },
+    "devDependencies": {
+        "@goauthentik/eslint-config": "link:../eslint-config",
+        "@goauthentik/prettier-config": "link:../prettier-config",
+        "@goauthentik/tsconfig": "link:../tsconfig",
+        "@vitest/browser": "^4.1.9",
+        "@vitest/browser-playwright": "^4.1.9",
+        "eslint": "catalog:",
+        "lit": "^3.3.3",
+        "playwright": "^1.61.1",
+        "prettier": "3.8.3",
+        "prettier-plugin-packagejson": "^3.0.2",
+        "typescript": "catalog:",
+        "vitest": "^4.1.9"
+    },
+    "peerDependencies": {
+        "lit": "^3.3.3"
+    },
+    "files": ["dist/**"],
+    "engines": {
+        "node": ">=24"
+    },
+    "prettier": "@goauthentik/prettier-config",
+    "publishConfig": {
+        "access": "public"
+    }
+}

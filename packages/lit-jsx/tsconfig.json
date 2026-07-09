@@ -1,0 +1,17 @@
+{
+    "extends": "@goauthentik/tsconfig",
+    "compilerOptions": {
+        "lib": ["ESNext", "DOM", "DOM.Iterable"],
+        "outDir": "dist",
+        "rootDir": "src",
+        "composite": false,
+        "incremental": false,
+        "declaration": true,
+        "declarationMap": true,
+        "sourceMap": true,
+        "jsxImportSource": "@goauthentik/lit-jsx",
+        "types": []
+    },
+    "include": ["src/**/*"],
+    "exclude": ["dist", "node_modules", "test"]
+}

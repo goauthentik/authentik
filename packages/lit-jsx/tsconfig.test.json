@@ -1,0 +1,14 @@
+{
+    "extends": "./tsconfig.json",
+    "compilerOptions": {
+        "noEmit": true,
+        "rootDir": ".",
+        "types": ["node"],
+        "paths": {
+            "@goauthentik/lit-jsx": ["./src/index.ts"],
+            "@goauthentik/lit-jsx/jsx-runtime": ["./src/jsx-runtime.ts"],
+            "@goauthentik/lit-jsx/jsx-dev-runtime": ["./src/jsx-dev-runtime.ts"]
+        }
+    },
+    "include": ["src/**/*", "test/**/*", "vitest.config.ts"]
+}
