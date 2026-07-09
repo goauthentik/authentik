@@ -46,6 +46,12 @@ export interface RedirectChallenge {
      * @memberof RedirectChallenge
      */
     to: string;
+    /**
+     *
+     * @type {boolean}
+     * @memberof RedirectChallenge
+     */
+    finalRedirect?: boolean;
 }
 
 /**
@@ -73,6 +79,7 @@ export function RedirectChallengeFromJSONTyped(
         component: json["component"] == null ? undefined : json["component"],
         responseErrors: json["response_errors"] == null ? undefined : json["response_errors"],
         to: json["to"],
+        finalRedirect: json["final_redirect"] == null ? undefined : json["final_redirect"],
     };
 }
 
@@ -93,5 +100,6 @@ export function RedirectChallengeToJSONTyped(
         component: value["component"],
         response_errors: value["responseErrors"],
         to: value["to"],
+        final_redirect: value["finalRedirect"],
     };
 }

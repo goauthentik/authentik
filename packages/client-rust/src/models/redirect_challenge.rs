@@ -21,6 +21,8 @@ pub struct RedirectChallenge {
     pub response_errors: Option<std::collections::HashMap<String, Vec<models::ErrorDetail>>>,
     #[serde(rename = "to")]
     pub to: String,
+    #[serde(rename = "final_redirect", skip_serializing_if = "Option::is_none")]
+    pub final_redirect: Option<bool>,
 }
 
 impl RedirectChallenge {
@@ -31,6 +33,7 @@ impl RedirectChallenge {
             component: None,
             response_errors: None,
             to,
+            final_redirect: None,
         }
     }
 }
