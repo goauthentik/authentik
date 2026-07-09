@@ -12,7 +12,11 @@ import { isDefaultAvatar } from "#elements/utils/images";
 
 import Styles from "#components/ak-user-switcher.css";
 
-import { BaseAPI, type UserSwitchTarget } from "@goauthentik/api";
+import {
+    CoreApi,
+    UserSwitchActionEnum,
+    type UserSwitchTarget,
+} from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html } from "lit";
@@ -20,30 +24,6 @@ import { customElement } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFDropdown from "@patternfly/patternfly/components/Dropdown/dropdown.css";
-
-class UserSwitchAPI extends BaseAPI {
-    async add(next: string): Promise<{ redirect: string }> {
-        const response = await this.request({
-            path: "/core/users/switch/",
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            query: { next },
-            body: { action: "add" },
-        });
-        return response.json();
-    }
-
-    async switch(userPk: number, next: string): Promise<{ redirect: string }> {
-        const response = await this.request({
-            path: "/core/users/switch/",
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            query: { next },
-            body: { user_pk: userPk },
-        });
-        return response.json();
-    }
-}
 
 @customElement("ak-user-switcher")
 export class UserSwitcher extends WithSession(AKElement) {
@@ -53,29 +33,8 @@ export class UserSwitcher extends WithSession(AKElement) {
         return isAPIResultReady(this.session) ? (this.session.users ?? []) : [];
     }
 
-    protected get nextQuery(): string {
-        const next = `${window.location.pathname}${window.location.search}${window.location.hash}`;
-        return new URLSearchParams({ next }).toString();
-    }
-
-    protected rootURL(path: string, query?: string): string {
-        const base = new URL(globalAK().api.base, window.location.origin);
-        if (!base.pathname.endsWith("/")) {
-            base.pathname = `${base.pathname}/`;
-        }
-        const url = new URL(path, base);
-        if (query) {
-            url.search = query;
-        }
-        return `${url.pathname}${url.search}${url.hash}`;
-    }
-
-    protected userSwitchNext(): string {
-        return new URLSearchParams(this.nextQuery).get("next") ?? "";
-    }
-
-    protected get currentLocalUser(): UserSwitchTarget | undefined {
-        return this.users.find((user) => user.isCurrent);
+    protected get next(): string {
+        return `${window.location.pathname}${window.location.search}${window.location.hash}`;
     }
 
     protected get userSwitchingEnabled(): boolean {
@@ -86,18 +45,18 @@ export class UserSwitcher extends WithSession(AKElement) {
         return formatUserDisplayName(user, this.uiConfig) || user.username;
     }
 
-    protected async switchUser(user: UserSwitchTarget): Promise<void> {
-        const { redirect } = await aki(UserSwitchAPI).switch(user.pk, this.userSwitchNext());
-        if (redirect) {
-            window.location.assign(redirect);
-        }
-    }
-
-    protected async addUser(): Promise<void> {
-        const { redirect } = await aki(UserSwitchAPI).add(this.userSwitchNext());
-        if (redirect) {
-            window.location.assign(redirect);
-        }
+    protected async startSwitch(userPk?: number): Promise<void> {
+        const { redirect } = await aki(CoreApi).coreUsersSwitchCreate({
+            next: this.next,
+            userSwitchRequest: {
+                action:
+                    userPk === undefined
+                        ? UserSwitchActionEnum.Add
+                        : UserSwitchActionEnum.Switch,
+                userPk,
+            },
+        });
+        window.location.assign(redirect);
     }
 
     protected renderAvatar(user?: { avatar?: string }): SlottedTemplateResult {
@@ -140,7 +99,7 @@ export class UserSwitcher extends WithSession(AKElement) {
                 part="menu-item"
                 role="menuitem"
                 type="button"
-                @click=${() => this.switchUser(user)}
+                @click=${() => this.startSwitch(user.pk)}
             >
                 ${content}
             </button>
@@ -152,7 +111,7 @@ export class UserSwitcher extends WithSession(AKElement) {
             class="pf-c-dropdown__menu-item"
             part="menu-item"
             role="menuitem"
-            href=${this.rootURL("flows/-/default/invalidation/")}
+            href=${`${globalAK().api.base}flows/-/default/invalidation/`}
         >
             <i class="fas fa-sign-out-alt" aria-hidden="true"></i>
             ${msg("Sign out current user", {
@@ -186,7 +145,7 @@ export class UserSwitcher extends WithSession(AKElement) {
                         id: "user-switcher.toggle.label",
                     })}
                 >
-                    ${this.renderAvatar(this.currentLocalUser)}
+                    ${this.renderAvatar(this.currentUser)}
                     <i
                         class="fas fa-caret-down pf-c-dropdown__toggle-icon"
                         part="toggle-icon"
@@ -212,7 +171,7 @@ export class UserSwitcher extends WithSession(AKElement) {
                                   part="menu-item"
                                   role="menuitem"
                                   type="button"
-                                  @click=${this.addUser}
+                                  @click=${() => this.startSwitch()}
                               >
                                   <i class="fas fa-plus" aria-hidden="true"></i>
                                   ${msg("Add another user", {

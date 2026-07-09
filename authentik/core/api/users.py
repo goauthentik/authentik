@@ -474,6 +474,24 @@ class UserSwitchTargetSerializer(PassiveSerializer):
     is_current = BooleanField(read_only=True)
 
 
+class UserSwitchSerializer(PassiveSerializer):
+    """Request to add or switch users in the current browser."""
+
+    action = ChoiceField(choices=["add", "switch"], default="switch")
+    user_pk = IntegerField(required=False)
+
+    def validate(self, attrs: dict) -> dict:
+        if attrs["action"] == "switch" and "user_pk" not in attrs:
+            raise ValidationError({"user_pk": _("This field is required.")})
+        return attrs
+
+
+class UserSwitchResponseSerializer(PassiveSerializer):
+    """Redirect returned after planning a user switch."""
+
+    redirect = CharField(read_only=True)
+
+
 class SessionUserSerializer(PassiveSerializer):
     """Response for the /user/me endpoint, returns the currently active user (as `user` property)
     and, if this user is being impersonated, the original user in the `original` property.
@@ -709,7 +727,11 @@ class UserViewSet(
     def list(self, request, *args, **kwargs):
         return super().list(request, *args, **kwargs)
 
-    @extend_schema(exclude=True)
+    @extend_schema(
+        parameters=[OpenApiParameter("next", str, required=False)],
+        request=UserSwitchSerializer,
+        responses={200: UserSwitchResponseSerializer},
+    )
     @action(
         detail=False,
         methods=["POST"],
@@ -718,16 +740,13 @@ class UserViewSet(
         filter_backends=[],
         url_path="switch",
     )
-    def switch(self, request: Request) -> HttpResponse | Response:
+    @validate(UserSwitchSerializer)
+    def switch(self, request: Request, body: UserSwitchSerializer) -> HttpResponse | Response:
         """Start browser user switching."""
-        if request.data.get("action") == "add":
+        if body.validated_data["action"] == "add":
             response = _user_add_response(request._request)
         else:
-            try:
-                user_pk = int(request.data.get("user_pk", ""))
-            except TypeError, ValueError:
-                return Response({"detail": _("Invalid user switch target.")}, status=400)
-            response = _user_switch_response(request._request, user_pk)
+            response = _user_switch_response(request._request, body.validated_data["user_pk"])
         if (
             HTTPStatus.MULTIPLE_CHOICES <= response.status_code < HTTPStatus.BAD_REQUEST
             and response.has_header("Location")

@@ -4857,6 +4857,35 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+  /core/users/switch/:
+    post:
+      operationId: core_users_switch_create
+      description: Start browser user switching.
+      parameters:
+      - in: query
+        name: next
+        schema:
+          type: string
+      tags:
+      - core
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserSwitchRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserSwitchResponse'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
   /crypto/certificatekeypairs/:
     get:
       operationId: crypto_certificatekeypairs_list
@@ -58531,6 +58560,30 @@ components:
       required:
       - identifier
       - source
+    UserSwitchActionEnum:
+      enum:
+      - add
+      - switch
+      type: string
+    UserSwitchRequest:
+      type: object
+      description: Request to add or switch users in the current browser.
+      properties:
+        action:
+          allOf:
+          - $ref: '#/components/schemas/UserSwitchActionEnum'
+          default: switch
+        user_pk:
+          type: integer
+    UserSwitchResponse:
+      type: object
+      description: Redirect returned after planning a user switch.
+      properties:
+        redirect:
+          type: string
+          readOnly: true
+      required:
+      - redirect
     UserSwitchTarget:
       type: object
       description: Live user session available to the current browser.

@@ -122,6 +122,8 @@ import {
     type UserServiceAccountResponse,
     UserServiceAccountResponseFromJSON,
 } from "../models/UserServiceAccountResponse";
+import { type UserSwitchRequest, UserSwitchRequestToJSON } from "../models/UserSwitchRequest";
+import { type UserSwitchResponse, UserSwitchResponseFromJSON } from "../models/UserSwitchResponse";
 import { type UserTypeEnum } from "../models/UserTypeEnum";
 import * as runtime from "../runtime";
 
@@ -528,6 +530,11 @@ export interface CoreUsersSetPasswordCreateRequest {
 export interface CoreUsersSetPasswordHashCreateRequest {
     id: number;
     userPasswordHashSetRequest: UserPasswordHashSetRequest;
+}
+
+export interface CoreUsersSwitchCreateRequest {
+    next?: string;
+    userSwitchRequest?: UserSwitchRequest;
 }
 
 export interface CoreUsersUpdateRequest {
@@ -5420,6 +5427,68 @@ export class CoreApi extends runtime.BaseAPI {
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<void> {
         await this.coreUsersSetPasswordHashCreateRaw(requestParameters, initOverrides);
+    }
+
+    /**
+     * Creates request options for coreUsersSwitchCreate without sending the request
+     */
+    async coreUsersSwitchCreateRequestOpts(
+        requestParameters: CoreUsersSwitchCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        const queryParameters: any = {};
+
+        if (requestParameters["next"] != null) {
+            queryParameters["next"] = requestParameters["next"];
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters["Content-Type"] = "application/json";
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/core/users/switch/`;
+
+        return {
+            path: urlPath,
+            method: "POST",
+            headers: headerParameters,
+            query: queryParameters,
+            body: UserSwitchRequestToJSON(requestParameters["userSwitchRequest"]),
+        };
+    }
+
+    /**
+     * Start browser user switching.
+     */
+    async coreUsersSwitchCreateRaw(
+        requestParameters: CoreUsersSwitchCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<UserSwitchResponse>> {
+        const requestOptions = await this.coreUsersSwitchCreateRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            UserSwitchResponseFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * Start browser user switching.
+     */
+    async coreUsersSwitchCreate(
+        requestParameters: CoreUsersSwitchCreateRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<UserSwitchResponse> {
+        const response = await this.coreUsersSwitchCreateRaw(requestParameters, initOverrides);
+        return await response.value();
     }
 
     /**
