@@ -111,7 +111,7 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@bb05f3f5519dd87d3ba754cc423b652a5edd6d2c # v4.2.0
       - name: Login to Container Registry
-        if: ${{ github.event_name != 'pull_request' || github.pull_request.head.repo.full_name == 'goauthentik/authentik' }}
+        if: "${{ github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository) }}"
         uses: docker/login-action@af1e73f918a031802d376d3c8bbc3fe56130a9b0 # v4.4.0
         with:
           registry: ghcr.io
@@ -124,8 +124,8 @@ jobs:
           context: .
           platforms: linux/amd64,linux/arm64
           cache-from: type=registry,ref=ghcr.io/goauthentik/dev-docs:buildcache
-          cache-to: "${{ (github.event_name != 'pull_request' || github.pull_request.head.repo.full_name == 'goauthentik/authentik') && 'type=registry,ref=ghcr.io/goauthentik/dev-docs:buildcache,mode=max' || '' }}"
-          push: ${{ github.event_name != 'pull_request' || github.pull_request.head.repo.full_name == 'goauthentik/authentik' }}
+          cache-to: "${{ (github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository)) && 'type=registry,ref=ghcr.io/goauthentik/dev-docs:buildcache,mode=max' || '' }}"
+          push: "${{ github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository) }}"
           tags: |
             ghcr.io/goauthentik/dev-docs:gh-${{ steps.compute-tags.outputs.tag-full }}
             ghcr.io/goauthentik/dev-docs:gh-${{ steps.compute-tags.outputs.tag-branch }}
