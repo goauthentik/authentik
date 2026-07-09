@@ -47,7 +47,7 @@ class TestUserSwitch(FlowTestCase):
             stage=UserLoginStage.objects.create(name="login"),
             order=0,
         )
-        self.brand = create_test_brand(flow_user_switch=self.flow)
+        self.brand = create_test_brand(flow_authentication=self.flow, flow_user_switch=self.flow)
 
     def _post(self, data: dict, query: dict | None = None):
         url = reverse("authentik_api:user-switch")
