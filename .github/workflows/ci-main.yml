@@ -65,7 +65,7 @@ jobs:
       image-dockerfile: "lifecycle/container/${{ matrix.dockerfile }}"
       image-build-args: |
         GIT_BUILD_HASH=${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha }}
-      should-cache: "${{ github.repository == 'goauthentik/authentik' }}"
+      should-cache: ${{ github.event_name != 'pull_request' || github.pull_request.head.repo.full_name == 'goauthentik/authentik' }}
       cache-suffix: "-${{ needs.build-compute-tags.outputs.safe-branch-name }}"
   lint:
     strategy:
@@ -458,7 +458,7 @@ jobs:
         with:
           jobs: ${{ toJSON(needs) }}
   publish:
-    if: "${{ github.repository == 'goauthentik/authentik' }}"
+    if: ${{ github.event_name != 'pull_request' || github.pull_request.head.repo.full_name == 'goauthentik/authentik' }}
     needs:
       - build-compute-tags
       - build
@@ -509,7 +509,7 @@ jobs:
           subject-digest: "${{ steps.publish.outputs.digest }}"
           push-to-registry: true
   pr-comment:
-    if: "${{ github.repository == 'goauthentik/authentik' && github.event_name == 'pull_request' }}"
+    if: ${{ github.event_name != 'pull_request' || github.pull_request.head.repo.full_name == 'goauthentik/authentik' }}
     needs:
       - build-compute-tags
       - publish
