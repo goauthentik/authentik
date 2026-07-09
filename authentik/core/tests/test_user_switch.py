@@ -20,6 +20,7 @@ from authentik.flows.markers import StageMarker
 from authentik.flows.models import FlowDesignation, FlowStageBinding
 from authentik.flows.planner import (
     PLAN_CONTEXT_PENDING_USER,
+    PLAN_CONTEXT_USER_SWITCH_ADD_USER,
     PLAN_CONTEXT_USER_SWITCH_FROM_USER,
     PLAN_CONTEXT_USER_SWITCH_TARGET_SESSION,
     FlowPlan,
@@ -61,6 +62,14 @@ class TestUserSwitch(FlowTestCase):
         return self.client.post(
             self.switch_url(query),
             {**self.switch_data(user), **(data or {})},
+            format="json",
+            **kwargs,
+        )
+
+    def post_add_user(self, query: dict | None = None, **kwargs):
+        return self.client.post(
+            self.switch_url(query),
+            {"action": "add"},
             format="json",
             **kwargs,
         )
@@ -178,6 +187,41 @@ class TestUserSwitch(FlowTestCase):
             plan.context[PLAN_CONTEXT_USER_SWITCH_TARGET_SESSION],
             target_session.session.session_key,
         )
+
+    def test_add_user_explicitly_preserves_existing_session(self):
+        """Test only the add-user entry point preserves the current login."""
+        first_session_key = self.login(self.user)
+
+        response = self.post_add_user()
+
+        self.assert_switch_redirect(response)
+        plan: FlowPlan = self.client.session[SESSION_KEY_PLAN]
+        self.assertTrue(plan.context[PLAN_CONTEXT_USER_SWITCH_ADD_USER])
+        plan.context[PLAN_CONTEXT_PENDING_USER] = self.other_user
+        session = self.client.session
+        session[SESSION_KEY_PLAN] = plan
+        session.save()
+
+        response = self.client.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertNotEqual(self.client.session.session_key, first_session_key)
+        first = AuthenticatedSession.objects.get(session__session_key=first_session_key)
+        self.assertEqual(first.user, self.user)
+        self.assertFalse(first.is_current)
+        self.assertTrue(Session.objects.filter(session_key=first_session_key).exists())
+
+    def test_add_user_disabled_without_switch_flow(self):
+        """Test additional-user login is gated by the configured switch flow."""
+        self.brand.flow_user_switch = None
+        self.brand.save()
+        self.login(self.user)
+
+        response = self.post_add_user()
+
+        self.assertEqual(response.status_code, 400)
 
     def test_switch_rejects_target_session_deleted_after_planning(self):
         """Test a switch target is revalidated immediately before login."""

@@ -8,14 +8,16 @@ from django.utils.translation import gettext as _
 
 from authentik.core.models import AuthenticatedSession, User
 from authentik.flows.exceptions import FlowNonApplicableException
-from authentik.flows.models import Flow
+from authentik.flows.models import Flow, FlowDesignation
 from authentik.flows.planner import (
     PLAN_CONTEXT_PENDING_USER,
+    PLAN_CONTEXT_USER_SWITCH_ADD_USER,
     PLAN_CONTEXT_USER_SWITCH_FROM_USER,
     PLAN_CONTEXT_USER_SWITCH_TARGET_SESSION,
     FlowPlanner,
 )
 from authentik.flows.stage import PLAN_CONTEXT_PENDING_USER_IDENTIFIER
+from authentik.flows.views.executor import ToDefaultFlow
 from authentik.lib.views import bad_request_message
 from authentik.policies.engine import PolicyEngine
 
@@ -41,6 +43,18 @@ def user_switch_response(request: HttpRequest, user_pk: int) -> HttpResponse:
     context[PLAN_CONTEXT_USER_SWITCH_FROM_USER] = request.user
     context[PLAN_CONTEXT_USER_SWITCH_TARGET_SESSION] = session.session.session_key
     return redirect_to_flow(request, flow, context)
+
+
+def user_add_response(request: HttpRequest) -> HttpResponse:
+    """Start an explicit additional-user login for this browser."""
+    if not request.brand.flow_user_switch:
+        return bad_request_message(
+            request,
+            _("User switching is disabled."),
+            title=_("User switching disabled"),
+        )
+    flow = ToDefaultFlow.get_flow(request, FlowDesignation.AUTHENTICATION)
+    return redirect_to_flow(request, flow, {PLAN_CONTEXT_USER_SWITCH_ADD_USER: True})
 
 
 def redirect_to_flow(

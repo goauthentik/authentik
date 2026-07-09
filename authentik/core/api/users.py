@@ -92,6 +92,7 @@ from authentik.core.models import (
 )
 from authentik.core.views.user_switch import (
     get_user_switching_sessions,
+    user_add_response,
     user_switch_response,
 )
 from authentik.endpoints.connectors.agent.auth import AgentAuth
@@ -719,11 +720,14 @@ class UserViewSet(
     )
     def switch(self, request: Request) -> HttpResponse | Response:
         """Start browser user switching."""
-        try:
-            user_pk = int(request.data.get("user_pk", ""))
-        except TypeError, ValueError:
-            return Response({"detail": _("Invalid user switch target.")}, status=400)
-        response = user_switch_response(request._request, user_pk)
+        if request.data.get("action") == "add":
+            response = user_add_response(request._request)
+        else:
+            try:
+                user_pk = int(request.data.get("user_pk", ""))
+            except TypeError, ValueError:
+                return Response({"detail": _("Invalid user switch target.")}, status=400)
+            response = user_switch_response(request._request, user_pk)
         if (
             HTTPStatus.MULTIPLE_CHOICES <= response.status_code < HTTPStatus.BAD_REQUEST
             and response.has_header("Location")

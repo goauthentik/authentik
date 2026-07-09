@@ -18,6 +18,7 @@ from authentik.events.middleware import audit_ignore
 from authentik.flows.challenge import ChallengeResponse, WithUserInfoChallenge
 from authentik.flows.planner import (
     PLAN_CONTEXT_PENDING_USER,
+    PLAN_CONTEXT_USER_SWITCH_ADD_USER,
     PLAN_CONTEXT_USER_SWITCH_TARGET_SESSION,
 )
 from authentik.flows.stage import ChallengeStageView
@@ -203,7 +204,15 @@ class UserLoginStageView(ChallengeStageView):
         if not user.is_active:
             self.logger.warning("User is not active, login will not work.")
             return self.executor.stage_invalid()
-        if self.request.user.is_authenticated and self.request.user.pk != user.pk:
+        is_user_switch_login = (
+            PLAN_CONTEXT_USER_SWITCH_ADD_USER in self.executor.plan.context
+            or PLAN_CONTEXT_USER_SWITCH_TARGET_SESSION in self.executor.plan.context
+        )
+        if (
+            is_user_switch_login
+            and self.request.user.is_authenticated
+            and self.request.user.pk != user.pk
+        ):
             self.detach_session()
         delta = self.set_session_duration(bool(remember))
         self.set_session_ip()

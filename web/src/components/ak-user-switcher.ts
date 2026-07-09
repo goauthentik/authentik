@@ -22,6 +22,17 @@ import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFDropdown from "@patternfly/patternfly/components/Dropdown/dropdown.css";
 
 class UserSwitchAPI extends BaseAPI {
+    async add(next: string): Promise<{ redirect: string }> {
+        const response = await this.request({
+            path: "/core/users/switch/",
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            query: { next },
+            body: { action: "add" },
+        });
+        return response.json();
+    }
+
     async switch(userPk: number, next: string): Promise<{ redirect: string }> {
         const response = await this.request({
             path: "/core/users/switch/",
@@ -63,10 +74,6 @@ export class UserSwitcher extends WithSession(AKElement) {
         return new URLSearchParams(this.nextQuery).get("next") ?? "";
     }
 
-    protected addUserURL(): string {
-        return this.rootURL("flows/-/default/authentication/", this.nextQuery);
-    }
-
     protected get currentLocalUser(): UserSwitchTarget | undefined {
         return this.users.find((user) => user.isCurrent);
     }
@@ -81,6 +88,13 @@ export class UserSwitcher extends WithSession(AKElement) {
 
     protected async switchUser(user: UserSwitchTarget): Promise<void> {
         const { redirect } = await aki(UserSwitchAPI).switch(user.pk, this.userSwitchNext());
+        if (redirect) {
+            window.location.assign(redirect);
+        }
+    }
+
+    protected async addUser(): Promise<void> {
+        const { redirect } = await aki(UserSwitchAPI).add(this.userSwitchNext());
         if (redirect) {
             window.location.assign(redirect);
         }
@@ -193,17 +207,18 @@ export class UserSwitcher extends WithSession(AKElement) {
                         : null}
                     ${this.userSwitchingEnabled
                         ? html`<li role="presentation">
-                              <a
+                              <button
                                   class="pf-c-dropdown__menu-item"
                                   part="menu-item"
                                   role="menuitem"
-                                  href=${this.addUserURL()}
+                                  type="button"
+                                  @click=${this.addUser}
                               >
                                   <i class="fas fa-plus" aria-hidden="true"></i>
                                   ${msg("Add another user", {
                                       id: "user-switcher.actions.add-user.label",
                                   })}
-                              </a>
+                              </button>
                           </li>`
                         : null}
                     <li role="presentation">${this.renderSignOut()}</li>

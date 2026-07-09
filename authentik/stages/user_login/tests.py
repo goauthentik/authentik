@@ -136,8 +136,8 @@ class TestUserLoginStage(FlowTestCase):
         self.assertFalse(AuthenticatedSession.objects.filter(session__session_key=key))
         self.assertFalse(Session.objects.filter(session_key=key).exists())
 
-    def test_second_login_preserves_existing_session(self):
-        """Test logging in as a second user keeps the first user's session alive"""
+    def test_second_login_replaces_existing_session(self):
+        """Test ordinary cross-user login keeps Django's session replacement behavior."""
         other_user = create_test_user()
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
         plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
@@ -162,15 +162,13 @@ class TestUserLoginStage(FlowTestCase):
         self.assertEqual(response.status_code, 200)
         second_session_key = self.client.session.session_key
         self.assertNotEqual(first_session_key, second_session_key)
-        first = AuthenticatedSession.objects.get(session__session_key=first_session_key)
         second = AuthenticatedSession.objects.get(session__session_key=second_session_key)
-        self.assertEqual(first.user, self.user)
         self.assertEqual(second.user, other_user)
-        # Both logins are bound to the same browser, only the newest one is current
-        self.assertIsNotNone(first.user_switching_token)
-        self.assertEqual(first.user_switching_token, second.user_switching_token)
-        self.assertFalse(first.is_current)
         self.assertTrue(second.is_current)
+        self.assertFalse(
+            AuthenticatedSession.objects.filter(session__session_key=first_session_key).exists()
+        )
+        self.assertFalse(Session.objects.filter(session_key=first_session_key).exists())
 
     def test_relogin_same_user_keeps_single_session(self):
         """Test re-logging in as the same user doesn't accumulate sessions"""
