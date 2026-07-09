@@ -166,15 +166,8 @@ class UserLoginStageView(ChallengeStageView):
         target_session_id = self.executor.plan.context.get(PLAN_CONTEXT_USER_SWITCH_TARGET_SESSION)
         if not target_session_id:
             return None
-        user_switching_token = getattr(self.request, "user_switching_token", None)
-        if not user_switching_token:
-            return None
         return (
-            user_switching._live_sessions(user_switching_token)
-            .filter(
-                session__session_key=target_session_id,
-                user_id=user.pk,
-            )
+            user_switching._target_sessions(self.request, user.pk, target_session_id)
             .select_related("session", "user")
             .first()
         )

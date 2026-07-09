@@ -30,6 +30,7 @@ from authentik.flows.stage import PLAN_CONTEXT_PENDING_USER_IDENTIFIER
 from authentik.flows.tests import FlowTestCase
 from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.policies.models import PolicyBinding
+from authentik.policies.types import PolicyRequest
 from authentik.stages.user_login.models import UserLoginStage
 
 
@@ -172,6 +173,29 @@ class TestUserSwitch(FlowTestCase):
         self.assertEqual(
             [(user["username"], user["is_current"]) for user in response.json()["users"]],
             [(self.user.username, True), (self.other_user.username, False)],
+        )
+
+    def test_recent_user_switch_target(self):
+        self._login(self.user)
+        target = create_test_session(self.other_user, self._token(), is_current=False)
+        http_request = self.client.get(reverse("authentik_api:user-me")).wsgi_request
+        policy_request = PolicyRequest(self.user)
+        policy_request.http_request = http_request
+        policy_request.context.update(
+            {
+                PLAN_CONTEXT_PENDING_USER: self.other_user,
+                PLAN_CONTEXT_USER_SWITCH_TARGET_SESSION: target.session_id,
+            }
+        )
+
+        self.assertTrue(
+            user_switching.is_user_switch_target_recent(policy_request, timedelta(hours=24))
+        )
+        Session.objects.filter(pk=target.session_id).update(
+            last_used=timezone.now() - timedelta(days=2)
+        )
+        self.assertFalse(
+            user_switching.is_user_switch_target_recent(policy_request, timedelta(hours=24))
         )
 
     def test_full_switch_replaces_target_and_supersedes_source(self):

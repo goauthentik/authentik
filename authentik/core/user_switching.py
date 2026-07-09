@@ -11,6 +11,7 @@ from jwt import PyJWTError, decode, encode
 
 from authentik.lib.generators import generate_id
 from authentik.lib.utils.crypto import get_cookie_signing_key
+from authentik.policies.types import PolicyRequest
 
 TOKEN_LENGTH = 32
 COOKIE_NAME = "authentik_user_switching"
@@ -141,4 +142,32 @@ def _live_sessions(token: str) -> QuerySet:
         user_switching_session_id=token,
         session__expires__gt=timezone.now(),
         user__is_active=True,
+    )
+
+
+def _target_sessions(request: HttpRequest, user_id: int, session_key: str) -> QuerySet:
+    """Filter to an exact live switch target held by this browser."""
+    from authentik.core.models import AuthenticatedSession
+
+    token = getattr(request, "user_switching_token", None)
+    if not token:
+        return AuthenticatedSession.objects.none()
+    return _live_sessions(token).filter(session_id=session_key, user_id=user_id)
+
+
+def is_user_switch_target_recent(request: PolicyRequest, max_age: timedelta) -> bool:
+    """Return whether a policy is evaluating a live, recently used switch target."""
+    from authentik.flows.planner import (
+        PLAN_CONTEXT_PENDING_USER,
+        PLAN_CONTEXT_USER_SWITCH_TARGET_SESSION,
+    )
+
+    user = request.context.get(PLAN_CONTEXT_PENDING_USER)
+    session_key = request.context.get(PLAN_CONTEXT_USER_SWITCH_TARGET_SESSION)
+    if not request.http_request or not user or not session_key:
+        return False
+    return (
+        _target_sessions(request.http_request, user.pk, session_key)
+        .filter(session__last_used__gte=timezone.now() - max_age)
+        .exists()
     )
