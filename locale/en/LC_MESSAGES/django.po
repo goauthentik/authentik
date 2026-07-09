@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-03 00:30+0000\n"
+"POT-Creation-Date: 2026-07-09 00:29+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -253,11 +253,11 @@ msgid "No empty segments in user path allowed."
 msgstr ""
 
 #: authentik/core/api/users.py
-msgid "Can't change internal service account to other user type."
+msgid "Can't create internal service accounts"
 msgstr ""
 
 #: authentik/core/api/users.py
-msgid "Setting a user to internal service account is not allowed."
+msgid "Can't change internal service account to other user type."
 msgstr ""
 
 #: authentik/core/api/users.py
