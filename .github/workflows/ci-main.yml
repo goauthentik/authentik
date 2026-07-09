@@ -32,6 +32,7 @@ jobs:
       tag-branch: "${{ steps.compute-tags.outputs.tag-branch }}"
       tag-flux: "${{ steps.compute-tags.outputs.tag-flux }}"
     steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v5
       - id: compute-tags
         uses: ./.github/actions/compute-container-tags
   build:
