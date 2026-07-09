@@ -9,7 +9,6 @@ from authentik.lib.generators import generate_id
 from authentik.lib.utils.crypto import get_cookie_signing_key
 
 TOKEN_LENGTH = 32
-# Keep COOKIE_NAME in sync with web/src/components/ak-user-switcher-storage.ts.
 COOKIE_NAME = "authentik_user_switching"
 COOKIE_AGE = int(timedelta(days=365).total_seconds())
 

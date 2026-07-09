@@ -50,7 +50,6 @@ class ContextualFlowInfo(PassiveSerializer):
     background_themed_urls = ThemedUrlsSerializer(required=False, allow_null=True)
     cancel_url = CharField()
     layout = ChoiceField(choices=[(x.value, x.name) for x in FlowLayout])
-    user_switch_stale_user = CharField(required=False)
 
 
 class Challenge(PassiveSerializer):

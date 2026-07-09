@@ -26,7 +26,6 @@ type ContextualFlowInfo struct {
 	BackgroundThemedUrls NullableThemedUrls           `json:"background_themed_urls,omitempty"`
 	CancelUrl            string                       `json:"cancel_url"`
 	Layout               ContextualFlowInfoLayoutEnum `json:"layout"`
-	UserSwitchStaleUser  *string                      `json:"user_switch_stale_user,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -206,38 +205,6 @@ func (o *ContextualFlowInfo) SetLayout(v ContextualFlowInfoLayoutEnum) {
 	o.Layout = v
 }
 
-// GetUserSwitchStaleUser returns the UserSwitchStaleUser field value if set, zero value otherwise.
-func (o *ContextualFlowInfo) GetUserSwitchStaleUser() string {
-	if o == nil || IsNil(o.UserSwitchStaleUser) {
-		var ret string
-		return ret
-	}
-	return *o.UserSwitchStaleUser
-}
-
-// GetUserSwitchStaleUserOk returns a tuple with the UserSwitchStaleUser field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ContextualFlowInfo) GetUserSwitchStaleUserOk() (*string, bool) {
-	if o == nil || IsNil(o.UserSwitchStaleUser) {
-		return nil, false
-	}
-	return o.UserSwitchStaleUser, true
-}
-
-// HasUserSwitchStaleUser returns a boolean if a field has been set.
-func (o *ContextualFlowInfo) HasUserSwitchStaleUser() bool {
-	if o != nil && !IsNil(o.UserSwitchStaleUser) {
-		return true
-	}
-
-	return false
-}
-
-// SetUserSwitchStaleUser gets a reference to the given string and assigns it to the UserSwitchStaleUser field.
-func (o *ContextualFlowInfo) SetUserSwitchStaleUser(v string) {
-	o.UserSwitchStaleUser = &v
-}
-
 func (o ContextualFlowInfo) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -259,9 +226,6 @@ func (o ContextualFlowInfo) ToMap() (map[string]interface{}, error) {
 	}
 	toSerialize["cancel_url"] = o.CancelUrl
 	toSerialize["layout"] = o.Layout
-	if !IsNil(o.UserSwitchStaleUser) {
-		toSerialize["user_switch_stale_user"] = o.UserSwitchStaleUser
-	}
 
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
@@ -311,7 +275,6 @@ func (o *ContextualFlowInfo) UnmarshalJSON(data []byte) (err error) {
 		delete(additionalProperties, "background_themed_urls")
 		delete(additionalProperties, "cancel_url")
 		delete(additionalProperties, "layout")
-		delete(additionalProperties, "user_switch_stale_user")
 		o.AdditionalProperties = additionalProperties
 	}
 

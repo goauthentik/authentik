@@ -21,8 +21,9 @@ var _ MappedNullable = &SessionUser{}
 
 // SessionUser Response for the /user/me endpoint, returns the currently active user (as `user` property) and, if this user is being impersonated, the original user in the `original` property.
 type SessionUser struct {
-	User                 UserSelf  `json:"user"`
-	Original             *UserSelf `json:"original,omitempty"`
+	User                 UserSelf           `json:"user"`
+	Original             *UserSelf          `json:"original,omitempty"`
+	Users                []UserSwitchTarget `json:"users"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -32,9 +33,10 @@ type _SessionUser SessionUser
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewSessionUser(user UserSelf) *SessionUser {
+func NewSessionUser(user UserSelf, users []UserSwitchTarget) *SessionUser {
 	this := SessionUser{}
 	this.User = user
+	this.Users = users
 	return &this
 }
 
@@ -102,6 +104,30 @@ func (o *SessionUser) SetOriginal(v UserSelf) {
 	o.Original = &v
 }
 
+// GetUsers returns the Users field value
+func (o *SessionUser) GetUsers() []UserSwitchTarget {
+	if o == nil {
+		var ret []UserSwitchTarget
+		return ret
+	}
+
+	return o.Users
+}
+
+// GetUsersOk returns a tuple with the Users field value
+// and a boolean to check if the value has been set.
+func (o *SessionUser) GetUsersOk() ([]UserSwitchTarget, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.Users, true
+}
+
+// SetUsers sets field value
+func (o *SessionUser) SetUsers(v []UserSwitchTarget) {
+	o.Users = v
+}
+
 func (o SessionUser) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -116,6 +142,7 @@ func (o SessionUser) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.Original) {
 		toSerialize["original"] = o.Original
 	}
+	toSerialize["users"] = o.Users
 
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
@@ -130,6 +157,7 @@ func (o *SessionUser) UnmarshalJSON(data []byte) (err error) {
 	// that every required field exists as a key in the generic map.
 	requiredProperties := []string{
 		"user",
+		"users",
 	}
 
 	allProperties := make(map[string]interface{})
@@ -161,6 +189,7 @@ func (o *SessionUser) UnmarshalJSON(data []byte) (err error) {
 	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "user")
 		delete(additionalProperties, "original")
+		delete(additionalProperties, "users")
 		o.AdditionalProperties = additionalProperties
 	}
 

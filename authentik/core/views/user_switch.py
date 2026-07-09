@@ -12,7 +12,6 @@ from authentik.flows.models import Flow
 from authentik.flows.planner import (
     PLAN_CONTEXT_PENDING_USER,
     PLAN_CONTEXT_USER_SWITCH_FROM_USER,
-    PLAN_CONTEXT_USER_SWITCH_STALE_USER,
     PLAN_CONTEXT_USER_SWITCH_TARGET_SESSION,
     FlowPlanner,
 )
@@ -35,8 +34,7 @@ def user_switch_response(request: HttpRequest, user_pk: int) -> HttpResponse:
     context = {}
     session = get_user_switching_session(request, user_pk)
     if not session:
-        context[PLAN_CONTEXT_USER_SWITCH_STALE_USER] = str(user_pk)
-        return redirect_to_flow(request, flow, context)
+        return HttpResponseNotFound()
     context[PLAN_CONTEXT_PENDING_USER] = session.user
     # Pre-fill the identification stage so the target user doesn't have to be retyped.
     context[PLAN_CONTEXT_PENDING_USER_IDENTIFIER] = session.user.username
@@ -86,3 +84,27 @@ def get_user_switching_session(request: HttpRequest, user_pk: int) -> Authentica
         .order_by("-session__last_used")
         .first()
     )
+
+
+def get_user_switching_sessions(request: HttpRequest) -> list[AuthenticatedSession]:
+    """Return the newest live login for each user held by this browser."""
+    user_switching_token = getattr(request, "user_switching_token", None)
+    if not user_switching_token:
+        return []
+    sessions = (
+        AuthenticatedSession.objects.filter(
+            user_switching_token=user_switching_token,
+            session__expires__gt=timezone.now(),
+            user__is_active=True,
+        )
+        .select_related("session", "user")
+        .order_by("-is_current", "-session__last_used")
+    )
+    users = set()
+    latest_sessions = []
+    for session in sessions:
+        if session.user_id in users:
+            continue
+        users.add(session.user_id)
+        latest_sessions.append(session)
+    return latest_sessions

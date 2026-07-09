@@ -133,6 +133,7 @@ function createGuestSession(): SessionUser {
             settings: {},
             systemPermissions: [],
         },
+        users: [],
     };
 
     return guest;

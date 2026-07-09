@@ -1,7 +1,10 @@
 """User switch view tests"""
 
+from datetime import timedelta
+
 from django.conf import settings
 from django.urls import reverse
+from django.utils import timezone
 from django.utils.http import urlencode
 
 from authentik.core import user_switching
@@ -18,7 +21,6 @@ from authentik.flows.models import FlowDesignation, FlowStageBinding
 from authentik.flows.planner import (
     PLAN_CONTEXT_PENDING_USER,
     PLAN_CONTEXT_USER_SWITCH_FROM_USER,
-    PLAN_CONTEXT_USER_SWITCH_STALE_USER,
     PLAN_CONTEXT_USER_SWITCH_TARGET_SESSION,
     FlowPlan,
 )
@@ -212,19 +214,12 @@ class TestUserSwitch(FlowTestCase):
         self.assertEqual(response.status_code, 404)
 
     def test_switch_without_live_session(self):
-        """Test an unknown or stale target starts the flow without switch context"""
+        """Test an unknown or stale target is rejected."""
         self.login(self.user)
 
         response = self.post_switch(self.other_user)
 
-        self.assert_switch_redirect(response)
-        plan: FlowPlan = self.client.session[SESSION_KEY_PLAN]
-        self.assertNotIn(PLAN_CONTEXT_PENDING_USER, plan.context)
-        self.assertNotIn(PLAN_CONTEXT_USER_SWITCH_FROM_USER, plan.context)
-        self.assertEqual(
-            plan.context[PLAN_CONTEXT_USER_SWITCH_STALE_USER],
-            str(self.other_user.pk),
-        )
+        self.assertEqual(response.status_code, 404)
 
     def test_switch_ignores_other_browser_session(self):
         """Test a live login of a different browser doesn't count as proof"""
@@ -233,13 +228,31 @@ class TestUserSwitch(FlowTestCase):
 
         response = self.post_switch(self.other_user)
 
-        self.assert_switch_redirect(response)
-        plan: FlowPlan = self.client.session[SESSION_KEY_PLAN]
-        self.assertNotIn(PLAN_CONTEXT_PENDING_USER, plan.context)
-        self.assertEqual(
-            plan.context[PLAN_CONTEXT_USER_SWITCH_STALE_USER],
-            str(self.other_user.pk),
+        self.assertEqual(response.status_code, 404)
+
+    def test_user_me_lists_only_live_browser_sessions(self):
+        """Test the session API is the source of truth for switch targets."""
+        self.login(self.user)
+        user_switching_token = self.user_switching_token()
+        create_test_session(
+            self.other_user, user_switching_token=user_switching_token, is_current=False
         )
+        expired_user = create_test_user()
+        expired = create_test_session(
+            expired_user, user_switching_token=user_switching_token, is_current=False
+        )
+        expired.session.expires = timezone.now() - timedelta(seconds=1)
+        expired.session.save(update_fields=["expires"])
+
+        response = self.client.get(reverse("authentik_api:user-me"))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            [user["username"] for user in response.json()["users"]],
+            [self.user.username, self.other_user.username],
+        )
+        self.assertTrue(response.json()["users"][0]["is_current"])
+        self.assertFalse(response.json()["users"][1]["is_current"])
 
     def test_identification_stage_skips_prefilled_user(self):
         """Test a switch through an authentication flow doesn't ask for the

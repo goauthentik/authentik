@@ -1,6 +1,7 @@
 import "#elements/buttons/Dropdown";
 
 import { aki } from "#common/api/client";
+import { isAPIResultReady } from "#common/api/responses";
 import { globalAK } from "#common/global";
 import { formatUserDisplayName, formatUserSecondaryIdentifier } from "#common/users";
 
@@ -9,13 +10,12 @@ import { WithSession } from "#elements/mixins/session";
 import type { SlottedTemplateResult } from "#elements/types";
 import { isDefaultAvatar } from "#elements/utils/images";
 
-import { type BrowserLocalUser, syncStoredUsers } from "#components/ak-user-switcher-storage";
 import Styles from "#components/ak-user-switcher.css";
 
-import { BaseAPI } from "@goauthentik/api";
+import { BaseAPI, type UserSwitchTarget } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { html, type PropertyValues } from "lit";
+import { html } from "lit";
 import { customElement } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -38,13 +38,8 @@ class UserSwitchAPI extends BaseAPI {
 export class UserSwitcher extends WithSession(AKElement) {
     static styles = [PFButton, PFDropdown, Styles];
 
-    protected users: BrowserLocalUser[] = [];
-
-    protected override willUpdate(changed: PropertyValues<this>): void {
-        super.willUpdate(changed);
-        if (changed.has("session")) {
-            this.users = syncStoredUsers(this.currentUser);
-        }
+    protected get users(): readonly UserSwitchTarget[] {
+        return isAPIResultReady(this.session) ? (this.session.users ?? []) : [];
     }
 
     protected get nextQuery(): string {
@@ -72,7 +67,7 @@ export class UserSwitcher extends WithSession(AKElement) {
         return this.rootURL("flows/-/default/authentication/", this.nextQuery);
     }
 
-    protected get currentLocalUser(): BrowserLocalUser | undefined {
+    protected get currentLocalUser(): UserSwitchTarget | undefined {
         return this.users.find((user) => user.isCurrent);
     }
 
@@ -80,11 +75,11 @@ export class UserSwitcher extends WithSession(AKElement) {
         return Boolean(globalAK().brand.flowUserSwitch);
     }
 
-    protected userLabel(user: BrowserLocalUser): string {
+    protected userLabel(user: UserSwitchTarget): string {
         return formatUserDisplayName(user, this.uiConfig) || user.username;
     }
 
-    protected async switchUser(user: BrowserLocalUser): Promise<void> {
+    protected async switchUser(user: UserSwitchTarget): Promise<void> {
         const { redirect } = await aki(UserSwitchAPI).switch(user.pk, this.userSwitchNext());
         if (redirect) {
             window.location.assign(redirect);
@@ -102,7 +97,7 @@ export class UserSwitcher extends WithSession(AKElement) {
         </span>`;
     }
 
-    protected renderUser(user: BrowserLocalUser): SlottedTemplateResult {
+    protected renderUser(user: UserSwitchTarget): SlottedTemplateResult {
         const label = this.userLabel(user);
         const description = formatUserSecondaryIdentifier(user, label);
 

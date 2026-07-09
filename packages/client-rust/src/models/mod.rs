@@ -236,6 +236,8 @@ pub mod user_self_groups;
 pub use self::user_self_groups::UserSelfGroups;
 pub mod user_self_roles;
 pub use self::user_self_roles::UserSelfRoles;
+pub mod user_switch_target;
+pub use self::user_switch_target::UserSwitchTarget;
 pub mod user_type_enum;
 pub use self::user_type_enum::UserTypeEnum;
 pub mod validation_error;

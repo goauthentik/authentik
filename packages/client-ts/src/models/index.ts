@@ -865,6 +865,7 @@ export * from "./UserServiceAccountResponse";
 export * from "./UserSetting";
 export * from "./UserSourceConnection";
 export * from "./UserSourceConnectionRequest";
+export * from "./UserSwitchTarget";
 export * from "./UserTelegramSourceConnection";
 export * from "./UserTelegramSourceConnectionRequest";
 export * from "./UserTypeEnum";

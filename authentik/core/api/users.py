@@ -90,7 +90,10 @@ from authentik.core.models import (
     UserTypes,
     default_token_duration,
 )
-from authentik.core.views.user_switch import user_switch_response
+from authentik.core.views.user_switch import (
+    get_user_switching_sessions,
+    user_switch_response,
+)
 from authentik.endpoints.connectors.agent.auth import AgentAuth
 from authentik.events.models import Event, EventAction
 from authentik.flows.exceptions import FlowNonApplicableException
@@ -459,6 +462,17 @@ class UserSelfSerializer(ModelSerializer):
         }
 
 
+class UserSwitchTargetSerializer(PassiveSerializer):
+    """Live user session available to the current browser."""
+
+    pk = IntegerField(read_only=True)
+    username = CharField(read_only=True)
+    name = CharField(read_only=True, allow_blank=True)
+    email = CharField(read_only=True, allow_blank=True)
+    avatar = CharField(read_only=True)
+    is_current = BooleanField(read_only=True)
+
+
 class SessionUserSerializer(PassiveSerializer):
     """Response for the /user/me endpoint, returns the currently active user (as `user` property)
     and, if this user is being impersonated, the original user in the `original` property.
@@ -466,6 +480,7 @@ class SessionUserSerializer(PassiveSerializer):
 
     user = UserSelfSerializer()
     original = UserSelfSerializer(required=False)
+    users = UserSwitchTargetSerializer(many=True)
 
 
 class UserPasswordSetSerializer(PassiveSerializer):
@@ -631,6 +646,30 @@ class UserViewSet(
             ChoiceSearchField(User, "type"),
             JSONSearchField(User, "attributes"),
         ]
+
+    def _serialize_user_switch_target(
+        self, user: User, is_current: bool
+    ) -> dict[str, str | int | bool]:
+        """Serialize the small user shape needed by the browser switcher."""
+        return {
+            "pk": user.pk,
+            "username": user.username,
+            "name": user.name,
+            "email": user.email,
+            "avatar": get_avatar(user, self.request),
+            "is_current": is_current,
+        }
+
+    def _get_user_switch_targets(self) -> list[dict[str, str | int | bool]]:
+        """Return live browser sessions with the request user first."""
+        if not self.request.user.is_authenticated:
+            return []
+        targets = [self._serialize_user_switch_target(self.request.user, True)]
+        for authenticated_session in get_user_switching_sessions(self.request._request):
+            if authenticated_session.user_id == self.request.user.pk:
+                continue
+            targets.append(self._serialize_user_switch_target(authenticated_session.user, False))
+        return targets
 
     def get_queryset(self):
         base_qs = User.objects.all().exclude_anonymous()
@@ -839,7 +878,10 @@ class UserViewSet(
         """Get information about current user"""
         context = {"request": request}
         serializer = SessionUserSerializer(
-            data={"user": UserSelfSerializer(instance=request.user, context=context).data}
+            data={
+                "user": UserSelfSerializer(instance=request.user, context=context).data,
+                "users": self._get_user_switch_targets(),
+            }
         )
         if SESSION_KEY_IMPERSONATE_USER in request._request.session:
             serializer.initial_data["original"] = UserSelfSerializer(

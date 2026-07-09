@@ -14,6 +14,8 @@
 
 import type { UserSelf } from "./UserSelf";
 import { UserSelfFromJSON, UserSelfToJSON } from "./UserSelf";
+import type { UserSwitchTarget } from "./UserSwitchTarget";
+import { UserSwitchTargetFromJSON, UserSwitchTargetToJSON } from "./UserSwitchTarget";
 
 /**
  * Response for the /user/me endpoint, returns the currently active user (as `user` property)
@@ -34,6 +36,12 @@ export interface SessionUser {
      * @memberof SessionUser
      */
     original?: UserSelf;
+    /**
+     *
+     * @type {Array<UserSwitchTarget>}
+     * @memberof SessionUser
+     */
+    users: Array<UserSwitchTarget>;
 }
 
 /**
@@ -41,6 +49,7 @@ export interface SessionUser {
  */
 export function instanceOfSessionUser(value: object): value is SessionUser {
     if (!("user" in value) || value["user"] === undefined) return false;
+    if (!("users" in value) || value["users"] === undefined) return false;
     return true;
 }
 
@@ -55,6 +64,7 @@ export function SessionUserFromJSONTyped(json: any, ignoreDiscriminator: boolean
     return {
         user: UserSelfFromJSON(json["user"]),
         original: json["original"] == null ? undefined : UserSelfFromJSON(json["original"]),
+        users: (json["users"] as Array<any>).map(UserSwitchTargetFromJSON),
     };
 }
 
@@ -73,5 +83,6 @@ export function SessionUserToJSONTyped(
     return {
         user: UserSelfToJSON(value["user"]),
         original: UserSelfToJSON(value["original"]),
+        users: (value["users"] as Array<any>).map(UserSwitchTargetToJSON),
     };
 }

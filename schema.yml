@@ -36947,8 +36947,6 @@ components:
           type: string
         layout:
           $ref: '#/components/schemas/ContextualFlowInfoLayoutEnum'
-        user_switch_stale_user:
-          type: string
       required:
       - cancel_url
       - layout
@@ -55967,8 +55965,13 @@ components:
           $ref: '#/components/schemas/UserSelf'
         original:
           $ref: '#/components/schemas/UserSelf'
+        users:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserSwitchTarget'
       required:
       - user
+      - users
     Settings:
       type: object
       description: Settings Serializer
@@ -58528,6 +58531,35 @@ components:
       required:
       - identifier
       - source
+    UserSwitchTarget:
+      type: object
+      description: Live user session available to the current browser.
+      properties:
+        pk:
+          type: integer
+          readOnly: true
+        username:
+          type: string
+          readOnly: true
+        name:
+          type: string
+          readOnly: true
+        email:
+          type: string
+          readOnly: true
+        avatar:
+          type: string
+          readOnly: true
+        is_current:
+          type: boolean
+          readOnly: true
+      required:
+      - avatar
+      - email
+      - is_current
+      - name
+      - pk
+      - username
     UserTelegramSourceConnection:
       type: object
       description: User source connection
