@@ -1,3 +1,7 @@
+/**
+ * @file Display the table of Blueprints, along with their status and tasks associated with each one
+ */
+
 import "#admin/blueprints/BlueprintForm";
 import "#admin/rbac/ObjectPermissionModal";
 import "#components/ak-status-label";

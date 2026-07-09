@@ -1,3 +1,7 @@
+/**
+ * @file Display details for a SCIM provider: Overview, Changelog, Permissions
+ */
+
 import "#admin/providers/RelatedApplicationButton";
 import "#admin/providers/ssf/StreamTable";
 import "#admin/events/ObjectChangelog";
