@@ -27,9 +27,10 @@ class TestUserSwitchingSessions(TestCase):
 
         self.assertEqual(response.status_code, 200)
         target.refresh_from_db()
+        print(f"session superseded={target.is_superseded}")
         cookie = response.cookies[user_switching.COOKIE_NAME]
         self.assertEqual(
-            user_switching._decode_cookie(cookie.value),
+            user_switching.decode_cookie(cookie.value),
             target.user_switching_session_id,
         )
 
@@ -47,9 +48,9 @@ class TestUserSwitchingSessions(TestCase):
     def test_cookie_validation(self):
         """Only signed, well-formed switching tokens are accepted."""
         valid = get_random_string(user_switching.TOKEN_LENGTH)
-        self.assertEqual(user_switching._decode_cookie(user_switching._encode_cookie(valid)), valid)
+        self.assertEqual(user_switching.decode_cookie(user_switching.encode_cookie(valid)), valid)
         for invalid in (None, "", valid, "too-short", "!" * user_switching.TOKEN_LENGTH):
-            self.assertIsNone(user_switching._decode_cookie(invalid))
+            self.assertIsNone(user_switching.decode_cookie(invalid))
 
 
 class TestUserSwitchingConcurrency(TransactionTestCase):
@@ -64,7 +65,7 @@ class TestUserSwitchingConcurrency(TransactionTestCase):
             close_old_connections()
             try:
                 barrier.wait()
-                user_switching._activate_session(session_key, token)
+                user_switching.activate_session(session_key, token)
             finally:
                 close_old_connections()
 

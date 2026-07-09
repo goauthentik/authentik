@@ -82,7 +82,7 @@ class SessionMiddleware(UpstreamSessionMiddleware):
     def process_request(self, request: HttpRequest):
         raw_session = request.COOKIES.get(settings.SESSION_COOKIE_NAME)
         session_key = SessionMiddleware.decode_session_key(raw_session)
-        request.user_switching_token = user_switching._decode_cookie(
+        request.user_switching_token = user_switching.decode_cookie(
             request.COOKIES.get(user_switching.COOKIE_NAME)
         )
         request.user_switching_token_needs_update = False
@@ -99,7 +99,7 @@ class SessionMiddleware(UpstreamSessionMiddleware):
         the session cookie if the session has been emptied.
         """
         try:
-            user_switching._reconcile_session(request)
+            user_switching.reconcile_session(request)
             accessed = request.session.accessed
             modified = request.session.modified
             empty = request.session.is_empty()
@@ -156,7 +156,7 @@ class SessionMiddleware(UpstreamSessionMiddleware):
         if request.user_switching_token and request.user_switching_token_needs_update:
             response.set_cookie(
                 user_switching.COOKIE_NAME,
-                user_switching._encode_cookie(request.user_switching_token),
+                user_switching.encode_cookie(request.user_switching_token),
                 max_age=user_switching.COOKIE_AGE,
                 domain=settings.SESSION_COOKIE_DOMAIN,
                 path=settings.SESSION_COOKIE_PATH,

@@ -22,7 +22,7 @@ from authentik.lib.views import bad_request_message
 from authentik.policies.engine import PolicyEngine
 
 
-def _user_switch_response(request: HttpRequest, user_pk: int) -> HttpResponse:
+def user_switch_response(request: HttpRequest, user_pk: int) -> HttpResponse:
     """Authenticate another login held by this browser."""
     if request.user.pk == user_pk:
         return HttpResponseNotFound()
@@ -46,7 +46,7 @@ def _user_switch_response(request: HttpRequest, user_pk: int) -> HttpResponse:
     )
 
 
-def _user_add_response(request: HttpRequest) -> HttpResponse:
+def user_add_response(request: HttpRequest) -> HttpResponse:
     """Start an explicit additional-user login for this browser."""
     if not request.brand.flow_user_switch:
         return _disabled_response(request)
@@ -93,7 +93,7 @@ def _get_user_switching_session(request: HttpRequest, user_pk: int) -> Authentic
     if not user_switching_token:
         return None
     return (
-        user_switching._live_sessions(user_switching_token)
+        user_switching.live_sessions(user_switching_token)
         .filter(user_id=user_pk)
         .select_related("session", "user")
         .order_by("-session__last_used")
@@ -101,13 +101,13 @@ def _get_user_switching_session(request: HttpRequest, user_pk: int) -> Authentic
     )
 
 
-def _get_user_switching_sessions(request: HttpRequest) -> list[AuthenticatedSession]:
+def get_user_switching_sessions(request: HttpRequest) -> list[AuthenticatedSession]:
     """Return the newest live login for each user held by this browser."""
     user_switching_token = getattr(request, "user_switching_token", None)
     if not user_switching_token:
         return []
     return list(
-        user_switching._live_sessions(user_switching_token)
+        user_switching.live_sessions(user_switching_token)
         .select_related("session", "user")
         .order_by("user_id", "-session__last_used")
         .distinct("user_id")

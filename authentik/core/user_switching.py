@@ -40,7 +40,7 @@ class UserSwitchingSession(models.Model):
         return f"User Switching Session {self.token[:10]}"
 
 
-def _activate_session(session_key: str, token: str) -> None:
+def activate_session(session_key: str, token: str) -> None:
     """Atomically make a login current for a browser token."""
     if not token:
         return
@@ -72,7 +72,7 @@ def _validate_token(token: str | None) -> str | None:
     return token
 
 
-def _encode_cookie(token: str) -> str:
+def encode_cookie(token: str) -> str:
     """Encode the opaque token as a signed cookie value."""
     return encode(
         {
@@ -84,7 +84,7 @@ def _encode_cookie(token: str) -> str:
     )
 
 
-def _decode_cookie(raw: str | None) -> str | None:
+def decode_cookie(raw: str | None) -> str | None:
     """Decode and validate the signed user switching cookie."""
     if not raw:
         return None
@@ -95,7 +95,7 @@ def _decode_cookie(raw: str | None) -> str | None:
     return _validate_token(payload.get("user_switching"))
 
 
-def _ensure_request_token(request: HttpRequest) -> str | None:
+def ensure_request_token(request: HttpRequest) -> str | None:
     """Return the request's user switching token, creating one if the session
     middleware initialized the request but no token is present yet."""
     if not hasattr(request, "user_switching_token"):
@@ -106,7 +106,7 @@ def _ensure_request_token(request: HttpRequest) -> str | None:
     return request.user_switching_token
 
 
-def _reconcile_session(request: HttpRequest) -> None:
+def reconcile_session(request: HttpRequest) -> None:
     """Restore or add switching state for an authenticated session."""
     if not hasattr(request, "session") or not request.session.session_key:
         return
@@ -129,12 +129,12 @@ def _reconcile_session(request: HttpRequest) -> None:
         request.user_switching_token_needs_update = True
         return
     if not authenticated_session.user_switching_session_id:
-        token = _ensure_request_token(request)
+        token = ensure_request_token(request)
         if token:
-            _activate_session(authenticated_session.session_id, token)
+            activate_session(authenticated_session.session_id, token)
 
 
-def _live_sessions(token: str) -> QuerySet:
+def live_sessions(token: str) -> QuerySet:
     """Return active users' unexpired logins for a browser token."""
     from authentik.core.models import AuthenticatedSession
 
@@ -145,14 +145,14 @@ def _live_sessions(token: str) -> QuerySet:
     )
 
 
-def _target_sessions(request: HttpRequest, user_id: int, session_key: str) -> QuerySet:
+def target_sessions(request: HttpRequest, user_id: int, session_key: str) -> QuerySet:
     """Filter to an exact live switch target held by this browser."""
     from authentik.core.models import AuthenticatedSession
 
     token = getattr(request, "user_switching_token", None)
     if not token:
         return AuthenticatedSession.objects.none()
-    return _live_sessions(token).filter(session_id=session_key, user_id=user_id)
+    return live_sessions(token).filter(session_id=session_key, user_id=user_id)
 
 
 def is_user_switch_target_recent(request: PolicyRequest, max_age: timedelta) -> bool:
@@ -167,7 +167,7 @@ def is_user_switch_target_recent(request: PolicyRequest, max_age: timedelta) -> 
     if not request.http_request or not user or not session_key:
         return False
     return (
-        _target_sessions(request.http_request, user.pk, session_key)
+        target_sessions(request.http_request, user.pk, session_key)
         .filter(session__last_used__gte=timezone.now() - max_age)
         .exists()
     )

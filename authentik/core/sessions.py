@@ -9,6 +9,7 @@ from django.utils import timezone
 from django.utils.functional import cached_property
 from structlog.stdlib import get_logger
 
+from authentik.core.user_switching import activate_session
 from authentik.root.middleware import ClientIPMiddleware
 
 LOGGER = get_logger()
@@ -173,6 +174,4 @@ class SessionStore(SessionBase):
         if (authenticated_session := data.get("authenticatedsession")) is not None:
             authenticated_session.session_id = self.session_key
             authenticated_session.save(force_insert=True)
-            from authentik.core.user_switching import _activate_session
-
-            _activate_session(self.session_key, authenticated_session.user_switching_session_id)
+            activate_session(self.session_key, authenticated_session.user_switching_session_id)

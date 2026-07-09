@@ -167,7 +167,7 @@ class UserLoginStageView(ChallengeStageView):
         if not target_session_id:
             return None
         return (
-            user_switching._target_sessions(self.request, user.pk, target_session_id)
+            user_switching.target_sessions(self.request, user.pk, target_session_id)
             .select_related("session", "user")
             .first()
         )

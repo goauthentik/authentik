@@ -1420,9 +1420,9 @@ class AuthenticatedSession(SerializerModel):
             session=session,
             defaults={"user": user},
         )
-        token = user_switching._ensure_request_token(request)
+        token = user_switching.ensure_request_token(request)
         if token:
-            user_switching._activate_session(session.session_key, token)
+            user_switching.activate_session(session.session_key, token)
             authenticated_session.user_switching_session_id = token
         return authenticated_session
 

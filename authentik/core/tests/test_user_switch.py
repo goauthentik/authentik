@@ -82,7 +82,7 @@ class TestUserSwitch(FlowTestCase):
         return self.client.session.session_key
 
     def _token(self) -> str:
-        token = user_switching._decode_cookie(self.client.cookies[user_switching.COOKIE_NAME].value)
+        token = user_switching.decode_cookie(self.client.cookies[user_switching.COOKIE_NAME].value)
         if token is None:
             self.fail("Expected a user-switching cookie")
         return token
