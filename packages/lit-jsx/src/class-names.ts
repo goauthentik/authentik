@@ -1,7 +1,7 @@
 /**
  * Accepted shapes for a JSX `class` prop, mirroring clsx: strings, numbers,
- * nullish/false (dropped), arrays of the same, and records whose truthy keys
- * are included.
+ * nullish/false/0/NaN (dropped), arrays of the same, and records whose truthy
+ * keys are included.
  */
 export type ClassValue =
     | string
@@ -13,7 +13,7 @@ export type ClassValue =
     | Record<string, unknown>;
 
 export function normalizeClassValue(value: ClassValue): string {
-    if (value === null || value === undefined || value === false || value === "") {
+    if (!value) {
         return "";
     }
 

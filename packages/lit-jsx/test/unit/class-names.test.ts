@@ -25,4 +25,11 @@ describe("normalizeClassValue", () => {
         expect(normalizeClassValue(null)).toBe("");
         expect(normalizeClassValue(undefined)).toBe("");
     });
+
+    it("drops falsy numbers but keeps truthy ones", () => {
+        expect(normalizeClassValue(0)).toBe("");
+        expect(normalizeClassValue(NaN)).toBe("");
+        expect(normalizeClassValue(1)).toBe("1");
+        expect(normalizeClassValue(["a", 0, 1])).toBe("a 1");
+    });
 });
