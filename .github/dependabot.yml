@@ -8,7 +8,6 @@ updates:
       # Required to update composite actions
       # https://github.com/dependabot/dependabot-core/issues/6704
       - /.github/actions/setup
-      - /.github/actions/docker-push-variables
       - /.github/actions/comment-pr-instructions
       - /.github/actions/test-results
     schedule:
@@ -350,5 +349,9 @@ updates:
       - dependencies
     cooldown:
       default-days: 3
-
+    groups:
+      openid-conformance:
+        patterns:
+          - registry.gitlab.com/openid/conformance-suite
+          - registry.gitlab.com/openid/conformance-suite/nginx
   #endregion

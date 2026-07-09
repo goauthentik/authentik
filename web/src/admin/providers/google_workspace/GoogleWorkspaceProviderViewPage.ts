@@ -1,3 +1,7 @@
+/**
+ * @file Display details for a Google Workspace provider: Overview, changelog, provisioned users, provisioned groups, and permissions
+ */
+
 import "#admin/providers/google_workspace/GoogleWorkspaceProviderForm";
 import "#admin/providers/google_workspace/GoogleWorkspaceProviderGroupList";
 import "#admin/providers/google_workspace/GoogleWorkspaceProviderUserList";

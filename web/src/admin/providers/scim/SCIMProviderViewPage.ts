@@ -1,3 +1,7 @@
+/**
+ * @file Display details for a SCIM provider: Overview, changelog, provisioned users, provisioned groups, and permissions
+ */
+
 import "#admin/providers/RelatedApplicationButton";
 import "#admin/providers/scim/SCIMProviderForm";
 import "#admin/providers/scim/SCIMProviderGroupList";
