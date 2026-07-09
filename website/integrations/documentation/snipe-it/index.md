@@ -125,6 +125,9 @@ Create another application in authentik and note the slug you choose, as this wi
 
 - ACS URL: `https://inventory.company/saml/acs`
 - Audience: `https://inventory.company`
+- SLS URL: `https://inventory.company/saml/sls`
+- SLS Binding: `Redirect`
+- Logout Method: `Front-channel (Iframe)`
 - Signing certificate: Select any certificate you have.
 - Property mappings: Select all Managed mappings.
 - NameID Property Mapping: authentik default SAML Mapping: Email
@@ -150,6 +153,10 @@ Configure Snipe-IT SAML settings by going to settings (the gear icon), and selec
 - SAML Single Log Out: **Checked**
 
 All other fields can be left blank.
+
+:::info
+Snipe-IT has a known issue validating signed SAML Single Logout messages, which produces the error `There was an error with SAML SLS: invalid_logout_response Reason: Signature validation failed. Logout Response rejected`. If you encounter this, add `security.logoutResponseSigned=false` to the **SAML Custom Settings** field on the Snipe-IT SAML settings page. See the [Snipe-IT SAML documentation](https://snipe-it.readme.io/docs/saml) for details.
+:::
 
 ## Resources
 

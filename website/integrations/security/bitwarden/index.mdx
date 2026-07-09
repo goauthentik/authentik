@@ -134,6 +134,10 @@ To support the integration of Bitwarden with authentik, you need to create an ap
 4. Under **SAML service provider configuration**, note the **SP entity ID** and **Assertion consumer service (ACS) URL** values because they will be required in the next section.
 5. Click **Save**.
 
+:::info
+Bitwarden [does not yet support Single Logout](https://bitwarden.com/help/configure-sso-saml/) but recommends pre-configuring the **Single log-out service URL** for future use.
+:::
+
 ## Reconfigure authentik provider
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
