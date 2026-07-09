@@ -1,3 +1,7 @@
+/**
+ * @file Display the table of Outpost Integrations, along with Schedules and Tasks for each
+ */
+
 import "#admin/outposts/ServiceConnectionDockerForm";
 import "#admin/outposts/ServiceConnectionKubernetesForm";
 import "#admin/outposts/ak-service-connection-wizard";

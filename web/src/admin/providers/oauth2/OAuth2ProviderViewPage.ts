@@ -1,3 +1,7 @@
+/**
+ * @file Display details for an OAuth2 provider: Overview, Preview, Changelog, Permissions
+ */
+
 import "#admin/providers/RelatedApplicationButton";
 import "#admin/events/ObjectChangelog";
 import "#admin/rbac/ak-rbac-object-permission-page";
