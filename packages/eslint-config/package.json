@@ -37,7 +37,7 @@
         }
     },
     "dependencies": {
-        "eslint": "^9.39.4",
+        "eslint": "catalog:",
         "eslint-plugin-import": "^2.32.0",
         "eslint-plugin-lit": "^2.3.1",
         "eslint-plugin-react": "^7.37.5",
@@ -49,7 +49,8 @@
         "@goauthentik/tsconfig": "link:../tsconfig",
         "@types/eslint": "^9.6.1",
         "@types/node": "^26.1.0",
-        "typescript": "^6.0.3",
+        "@typescript-eslint/parser": "^8.62.1",
+        "typescript": "catalog:",
         "typescript-eslint": "^8.62.1"
     },
     "peerDependencies": {
