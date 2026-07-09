@@ -34,11 +34,13 @@ export class PromptStageForm extends BaseStageForm<PromptStage> {
     };
 
     protected override renderForm(): TemplateResult {
-        return html` <span>
+        return html`<p>
                 ${msg(
-                    "Show arbitrary input fields to the user, for example during enrollment. Data is saved in the flow context under the 'prompt_data' variable.",
+                    html`Show arbitrary input fields to the user, for example during enrollment.
+                        Data is saved in the flow context under the
+                        <code class="ak-m-code-emphasis">prompt_data</code> variable.`,
                 )}
-            </span>
+            </p>
             <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"
