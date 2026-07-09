@@ -110,7 +110,6 @@
     &.secondary {
         display: flex;
         align-items: center;
-        justify-content: flex-end;
         grid-area: secondary;
         flex: 0 0 auto;
         justify-self: end;
@@ -146,32 +145,18 @@
 }
 
 .logo {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
     flex: 0 0 auto;
     height: var(--ak-c-page-navbar__brand-logo--Height);
-    line-height: 1;
 
     & img {
-        display: block;
         height: 100%;
     }
 
     & i {
-        display: inline-flex;
-        align-items: center;
         font-size: var(--ak-c-page-navbar__brand-logo--Height);
         height: var(--ak-c-page-navbar__brand-logo--Height);
-        line-height: 1;
+        line-height: var(--ak-c-page-navbar__brand-logo--Height);
     }
-}
-
-.brand a {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    line-height: 1;
 }
 
 ::slotted([slot="toggle"]) {

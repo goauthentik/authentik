@@ -5,19 +5,10 @@
 }
 
 [part="switcher"] {
-    font-size: var(--pf-global--FontSize--md);
-    line-height: var(--pf-global--LineHeight--md);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-wrap: wrap;
-}
-
-[part="container"] {
     display: inline-flex;
     align-items: center;
-    min-height: 2rem;
-    line-height: 1;
+    font-size: var(--pf-global--FontSize--md);
+    line-height: var(--pf-global--LineHeight--md);
 }
 
 [part="menu"] {
@@ -28,12 +19,6 @@
     gap: var(--pf-global--spacer--sm);
 }
 
-/*
- * The class selector matches PatternFly's `.pf-c-dropdown__toggle.pf-m-plain`
- * specificity so this `display: flex` wins; a bare `[part="toggle"]` loses to
- * PatternFly's `display: inline-block`, which left the avatar, label, and caret
- * laid out on a text baseline instead of vertically centered with the toolbar.
- */
 .pf-c-dropdown__toggle.pf-m-plain[part="toggle"] {
     display: flex;
     align-items: center;
@@ -56,13 +41,11 @@
 
 [part="avatar"] {
     display: inline-flex;
-    flex: 0 0 2rem;
+    flex: none;
     align-items: center;
     justify-content: center;
     width: 2rem;
-    max-width: 2rem;
     height: 2rem;
-    max-height: 2rem;
     border-radius: 50%;
     color: var(--pf-global--Color--200);
     background-color: var(--pf-global--BackgroundColor--light-200);
@@ -74,9 +57,7 @@
 [part="avatar-image"] {
     display: block;
     width: 100%;
-    max-width: 100%;
     height: 100%;
-    max-height: 100%;
     object-fit: cover;
 }
 
