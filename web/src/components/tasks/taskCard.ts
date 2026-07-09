@@ -1,3 +1,7 @@
+/**
+ * @file A function that returns a TaskList ready to drop into any view
+ */
+
 import "#components/tasks/TaskList";
 
 import { ModelEnum } from "@goauthentik/api";

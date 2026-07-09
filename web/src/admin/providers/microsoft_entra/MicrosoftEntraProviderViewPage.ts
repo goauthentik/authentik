@@ -1,3 +1,7 @@
+/**
+ * @file Display details for a Microsoft Entra provider: Overview, changelog, provisioned users, provisioned groups, and permissions
+ */
+
 import "#admin/providers/microsoft_entra/MicrosoftEntraProviderForm";
 import "#admin/providers/microsoft_entra/MicrosoftEntraProviderGroupList";
 import "#admin/providers/microsoft_entra/MicrosoftEntraProviderUserList";
