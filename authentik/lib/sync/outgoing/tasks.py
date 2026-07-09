@@ -39,7 +39,7 @@ class SyncTasks:
         self,
         current_task: Task,
         provider: OutgoingSyncProvider,
-        sync_objects: Actor[[str, int, int, bool], None],
+        sync_objects: Actor[[str, int, int, bool, bool], None],
         paginator: Paginator,
         object_type: type[User | Group],
         **options,
@@ -49,6 +49,7 @@ class SyncTasks:
         for page in paginator.page_range:
             page_sync = sync_objects.message_with_options(
                 args=(class_to_path(object_type), page, provider.pk),
+                kwargs={"discover": False},
                 time_limit=time_limit,
                 # Assign tasks to the same schedule as the current one
                 rel_obj=current_task.rel_obj,
@@ -61,7 +62,7 @@ class SyncTasks:
     def sync(
         self,
         provider_pk: int,
-        sync_objects: Actor[[str, int, int, bool], None],
+        sync_objects: Actor[[str, int, int, bool, bool], None],
     ):
         task = CurrentTask.get_task()
         self.logger = get_logger().bind(
@@ -101,7 +102,9 @@ class SyncTasks:
                         object_type=Group,
                     )
                 )
+                self._discover(provider, User)
                 users_tasks.run().wait(timeout=provider.get_object_sync_time_limit_ms(User))
+                self._discover(provider, Group)
                 group_tasks.run().wait(timeout=provider.get_object_sync_time_limit_ms(Group))
                 self._sync_cleanup(provider, task)
             except TransientSyncException as exc:
@@ -111,6 +114,13 @@ class SyncTasks:
             except StopSync as exc:
                 task.error(exc)
                 return
+
+    def _discover(self, provider: OutgoingSyncProvider, object_type: type[User | Group]):
+        client = provider.client_for_model(object_type)
+        if not client.can_discover:
+            return
+        self.logger.debug("starting discover", object_type=object_type._meta.model_name)
+        client.discover()
 
     def _sync_cleanup(self, provider: OutgoingSyncProvider, task: Task):
         """Delete remote objects that are no longer in scope"""
@@ -147,6 +157,7 @@ class SyncTasks:
         page: int,
         provider_pk: int,
         override_dry_run=False,
+        discover=True,
         **filter,
     ):
         task = CurrentTask.get_task()
@@ -175,7 +186,7 @@ class SyncTasks:
             provider.get_object_qs(_object_type, **filter),
             provider.sync_page_size,
         )
-        if client.can_discover:
+        if discover and client.can_discover:
             self.logger.debug("starting discover")
             client.discover()
         self.logger.debug("starting sync for page", page=page)
