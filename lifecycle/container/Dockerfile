@@ -286,6 +286,6 @@ ENV TMPDIR=/dev/shm/ \
     PYTHONUNBUFFERED=1 \
     GOFIPS=1
 
-HEALTHCHECK --interval=30s --timeout=30s --start-period=60s --retries=3 CMD [ "ak", "healthcheck" ]
+HEALTHCHECK --interval=30s --timeout=30s --start-period=120s --retries=3 CMD [ "ak", "healthcheck" ]
 
 ENTRYPOINT [ "dumb-init", "--", "ak" ]
