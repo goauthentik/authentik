@@ -30,17 +30,21 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - id: check
+        env:
+          VERSION: "${{ inputs.version }}"
         run: |
-          echo "${{ inputs.version }}" | grep -E '^[0-9]{4}\.(0?[1-9]|1[0-2])\.[0-9]+(-rc[0-9]+)?$'
-          echo "major-version=${{ inputs.version }}" | grep -oE "^major-version=[0-9]{4}\.[0-9]{1,2}" >> "$GITHUB_OUTPUT"
+          echo "${VERSION}" | grep -E '^[0-9]{4}\.(0?[1-9]|1[0-2])\.[0-9]+(-rc[0-9]+)?$'
+          echo "major-version=${VERSION}" | grep -oE "^major-version=[0-9]{4}\.[0-9]{1,2}" >> "$GITHUB_OUTPUT"
       - id: changelog-url
+        env:
+          VERSION: "${{ inputs.version }}"
         run: |
           if [ "${{ inputs.release_reason }}" = "feature" ]; then
             changelog_url="https://docs.goauthentik.io/docs/releases/${{ steps.check.outputs.major-version }}"
           elif [ "${{ inputs.release_reason }}" = "prerelease" ]; then
             changelog_url="https://next.goauthentik.io/docs/releases/${{ steps.check.outputs.major-version }}"
           else
-            changelog_url="https://docs.goauthentik.io/docs/releases/${{ steps.check.outputs.major-version }}#fixed-in-$(echo -n ${{ inputs.version }} | sed 's/\.//g')"
+            changelog_url="https://docs.goauthentik.io/docs/releases/${{ steps.check.outputs.major-version }}#fixed-in-$(echo -n "${VERSION}" | sed 's/\.//g')"
           fi
           echo "changelog-url=${changelog_url}" >> "$GITHUB_OUTPUT"
     outputs:

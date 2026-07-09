@@ -123,7 +123,9 @@ jobs:
           cache-from: type=registry,ref=ghcr.io/goauthentik/dev-docs:buildcache
           cache-to: "${{ github.event_name == 'pull_request' && 'type=registry,ref=ghcr.io/goauthentik/dev-docs:buildcache,mode=max' || '' }}"
           push: "${{ github.event_name != 'pull_request' }}"
-          tags: ghcr.io/goauthentik/dev-docs:gh-${{ github.sha }},ghcr.io/goauthentik/dev-docs:gh-main
+          tags: |
+            ghcr.io/goauthentik/dev-docs:gh-${{ github.sha }}
+            ghcr.io/goauthentik/dev-docs:gh-main
   ci-website-mark:
     if: always()
     needs:
