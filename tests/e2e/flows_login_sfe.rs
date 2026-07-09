@@ -52,7 +52,7 @@ impl AuthentikStack {
 }
 
 #[tokio::test]
-async fn login() -> Result<()> {
+async fn login_sfe() -> Result<()> {
     let stack = AuthentikStack::builder()
         .wait_for_flow("default-authentication-flow")
         .run()
@@ -76,7 +76,7 @@ async fn login() -> Result<()> {
 }
 
 #[tokio::test]
-async fn login_mfa_static_deny() -> Result<()> {
+async fn login_sfe_mfa_static_deny() -> Result<()> {
     let stack = AuthentikStack::builder()
         .wait_for_flow("default-authentication-flow")
         .run()
