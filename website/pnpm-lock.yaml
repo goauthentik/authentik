@@ -4,6 +4,18 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+catalogs:
+  default:
+    eslint:
+      specifier: ^9.39.4
+      version: 9.39.4
+    prettier-plugin-packagejson:
+      specifier: ^3.0.2
+      version: 3.0.2
+    typescript:
+      specifier: ^6.0.3
+      version: 6.0.3
+
 overrides:
   '@goauthentik/docusaurus-config>react': ^19.2.6
   '@goauthentik/docusaurus-config>react-dom': ^19.2.6
@@ -52,7 +64,7 @@ importers:
         specifier: ^5.0.0
         version: 5.0.0
       eslint:
-        specifier: ^9.39.4
+        specifier: 'catalog:'
         version: 9.39.4(jiti@1.21.7)
       netlify-plugin-cache:
         specifier: ^1.0.3
@@ -70,10 +82,10 @@ importers:
         specifier: 3.8.3
         version: 3.8.3
       prettier-plugin-packagejson:
-        specifier: ^3.0.2
+        specifier: 'catalog:'
         version: 3.0.2(prettier@3.8.3)
       typescript:
-        specifier: ^6.0.3
+        specifier: 'catalog:'
         version: 6.0.3
       typescript-eslint:
         specifier: ^8.62.1
@@ -194,7 +206,7 @@ importers:
         specifier: ^19.2.7
         version: 19.2.7(react@19.2.7)
       typescript:
-        specifier: ^6.0.3
+        specifier: 'catalog:'
         version: 6.0.3
     optionalDependencies:
       '@rspack/binding-darwin-arm64':
@@ -294,7 +306,7 @@ importers:
         specifier: ^19.2.7
         version: 19.2.7(react@19.2.7)
       typescript:
-        specifier: ^6.0.3
+        specifier: 'catalog:'
         version: 6.0.3
       unist-util-visit:
         specifier: ^5.1.0
@@ -342,7 +354,7 @@ importers:
         specifier: ^7.8.5
         version: 7.8.5
       typescript:
-        specifier: ^6.0.3
+        specifier: 'catalog:'
         version: 6.0.3
       unified:
         specifier: ^11.0.5
@@ -399,7 +411,7 @@ importers:
         specifier: ^19.2.7
         version: 19.2.7(react@19.2.7)
       typescript:
-        specifier: ^6.0.3
+        specifier: 'catalog:'
         version: 6.0.3
 
   vendored/detect-package-manager: {}
@@ -15431,9 +15443,9 @@ snapshots:
     dependencies:
       websocket-driver: 0.7.5
 
-  fdir@6.5.0(picomatch@4.0.4):
+  fdir@6.5.0(picomatch@4.0.5):
     optionalDependencies:
-      picomatch: 4.0.4
+      picomatch: 4.0.5
 
   feed@4.2.2:
     dependencies:
@@ -17616,8 +17628,7 @@ snapshots:
 
   picomatch@4.0.4: {}
 
-  picomatch@4.0.5:
-    optional: true
+  picomatch@4.0.5: {}
 
   pidtree@0.3.1: {}
 
@@ -19198,8 +19209,8 @@ snapshots:
 
   tinyglobby@0.2.17:
     dependencies:
-      fdir: 6.5.0(picomatch@4.0.4)
-      picomatch: 4.0.4
+      fdir: 6.5.0(picomatch@4.0.5)
+      picomatch: 4.0.5
 
   tinypool@1.1.1: {}
 
