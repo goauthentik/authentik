@@ -32,7 +32,7 @@
     "dependencies": {
         "@docusaurus/preset-classic": "^3.10.1",
         "@docusaurus/utils": "^3.10.1",
-        "@goauthentik/docusaurus-config": "../../packages/docusaurus-config",
+        "@goauthentik/docusaurus-config": "link:../../packages/docusaurus-config",
         "@types/semver": "^7.7.1",
         "clsx": "^2.1.1",
         "fast-glob": "^3.3.3",
@@ -43,8 +43,8 @@
         "remark-parse": "^11.0.0",
         "remark-stringify": "^11.0.0",
         "semver": "^7.8.5",
-        "typescript": "^6.0.3",
+        "typescript": "catalog:",
         "unified": "^11.0.5",
-        "unist-util-visit": "^5.0.0"
+        "unist-util-visit": "^5.1.0"
     }
 }

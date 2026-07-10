@@ -15,23 +15,21 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-policy-password-expiry-form")
 export class PasswordExpiryPolicyForm extends BasePolicyForm<PasswordExpiryPolicy> {
-    loadInstance(pk: string): Promise<PasswordExpiryPolicy> {
-        return aki(PoliciesApi).policiesPasswordExpiryRetrieve({
-            policyUuid: pk,
-        });
-    }
-
-    async send(data: PasswordExpiryPolicy): Promise<PasswordExpiryPolicy> {
-        if (this.instance) {
-            return aki(PoliciesApi).policiesPasswordExpiryUpdate({
-                policyUuid: this.instance.pk || "",
-                passwordExpiryPolicyRequest: data,
-            });
-        }
-        return aki(PoliciesApi).policiesPasswordExpiryCreate({
-            passwordExpiryPolicyRequest: data,
-        });
-    }
+    protected endpoints = {
+        load: (policyUuid: string) =>
+            aki(PoliciesApi).policiesPasswordExpiryRetrieve({
+                policyUuid,
+            }),
+        create: (passwordExpiryPolicyRequest: PasswordExpiryPolicy) =>
+            aki(PoliciesApi).policiesPasswordExpiryCreate({
+                passwordExpiryPolicyRequest,
+            }),
+        update: (policyUuid: string, passwordExpiryPolicyRequest: PasswordExpiryPolicy) =>
+            aki(PoliciesApi).policiesPasswordExpiryUpdate({
+                policyUuid,
+                passwordExpiryPolicyRequest,
+            }),
+    };
 
     protected override renderForm(): TemplateResult {
         return html` <span>

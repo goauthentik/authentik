@@ -107,6 +107,7 @@ make web-test          # Web UI tests (delegates to web/)
 make lint-fix          # Auto-fix: black + ruff (Python) and rustfmt (Rust)
 make lint              # Check: bandit, mypy --strict, golangci-lint, cargo deny/machete
 make lint-spellcheck   # cspell across the repo (shared dictionaries in locale/en/dictionaries/)
+make lint-catalogs     # pnpm catalog pins in sync across the root/web/website workspaces
 ```
 
 CI mirrors these as `ci-lint-*` / `ci-test` targets. Run the matching `make lint` / `make test` (plus `make web` / `make docs` for those subtrees) before pushing — CI runs the same checks.
