@@ -33,7 +33,7 @@
         "@docusaurus/theme-common": "^3.10.1",
         "@docusaurus/theme-search-algolia": "^3.10.1",
         "@docusaurus/types": "^3.10.1",
-        "@eslint/js": "^9.39.4",
+        "@eslint/js": "^10.0.1",
         "@goauthentik/eslint-config": "link:../eslint-config",
         "@goauthentik/prettier-config": "link:../prettier-config",
         "@goauthentik/tsconfig": "link:../tsconfig",
