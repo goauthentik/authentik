@@ -662,6 +662,7 @@ export * from "./Permission";
 export * from "./PermissionAssignRequest";
 export * from "./PermissionAssignResult";
 export * from "./Persona";
+export * from "./PersonaCreateRequest";
 export * from "./PlexAuthenticationChallenge";
 export * from "./PlexAuthenticationChallengeResponseRequest";
 export * from "./PlexSource";

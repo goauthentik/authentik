@@ -40,6 +40,10 @@ import {
 } from "../models/PatchedPolicyBindingModelRequestRuleRequest";
 import { type Persona, PersonaFromJSON } from "../models/Persona";
 import {
+    type PersonaCreateRequest,
+    PersonaCreateRequestToJSON,
+} from "../models/PersonaCreateRequest";
+import {
     type PolicyBindingModelRequestRule,
     PolicyBindingModelRequestRuleFromJSON,
 } from "../models/PolicyBindingModelRequestRule";
@@ -72,6 +76,10 @@ export interface PamGrantRequestsListRequest {
 
 export interface PamGrantRequestsRetrieveRequest {
     uuid: string;
+}
+
+export interface PamPersonasCreateRequest {
+    personaCreateRequest: PersonaCreateRequest;
 }
 
 export interface PamPersonasDestroyRequest {
@@ -438,6 +446,67 @@ export class PamApi extends runtime.BaseAPI {
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<GrantRequest> {
         const response = await this.pamGrantRequestsRetrieveRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for pamPersonasCreate without sending the request
+     */
+    async pamPersonasCreateRequestOpts(
+        requestParameters: PamPersonasCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["personaCreateRequest"] == null) {
+            throw new runtime.RequiredError(
+                "personaCreateRequest",
+                'Required parameter "personaCreateRequest" was null or undefined when calling pamPersonasCreate().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters["Content-Type"] = "application/json";
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/pam/personas/`;
+
+        return {
+            path: urlPath,
+            method: "POST",
+            headers: headerParameters,
+            query: queryParameters,
+            body: PersonaCreateRequestToJSON(requestParameters["personaCreateRequest"]),
+        };
+    }
+
+    /**
+     */
+    async pamPersonasCreateRaw(
+        requestParameters: PamPersonasCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Persona>> {
+        const requestOptions = await this.pamPersonasCreateRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => PersonaFromJSON(jsonValue));
+    }
+
+    /**
+     */
+    async pamPersonasCreate(
+        requestParameters: PamPersonasCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Persona> {
+        const response = await this.pamPersonasCreateRaw(requestParameters, initOverrides);
         return await response.value();
     }
 

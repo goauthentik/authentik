@@ -11248,6 +11248,29 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+    post:
+      operationId: pam_personas_create
+      tags:
+      - pam
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PersonaCreateRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Persona'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
   /pam/personas/{id}/:
     get:
       operationId: pam_personas_retrieve
@@ -52436,6 +52459,17 @@ components:
       - uid
       - username
       - uuid
+    PersonaCreateRequest:
+      type: object
+      description: Base serializer class which doesn't implement create/update methods
+      properties:
+        name:
+          type: string
+          minLength: 1
+        as_user:
+          type: integer
+      required:
+      - name
     PlexAuthenticationChallenge:
       type: object
       description: Challenge shown to the user in identification stage

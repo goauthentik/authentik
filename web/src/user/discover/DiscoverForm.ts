@@ -46,11 +46,11 @@ export class DiscoverForm extends Form<GrantRequestCreateRequest> {
         this.apps = await aki(CoreApi).coreApplicationsRequestableList({});
     }
 
-    protected send(data: GrantRequestCreateRequest): Promise<unknown> {
+    protected send(_data: GrantRequestCreateRequest): Promise<unknown> {
         return aki(PamApi)
             .pamGrantRequestsCreate({
                 grantRequestCreateRequest: {
-                    pbms: this.selected.map(a => a.pbmUuid),
+                    pbms: this.selected.map((a) => a.pbmUuid),
                 },
             })
             .then((v) => {

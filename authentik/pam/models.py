@@ -21,8 +21,8 @@ class Persona(ExpiringModel, User):
     parent = models.ForeignKey(User, on_delete=models.CASCADE, related_name="personas")
 
     @staticmethod
-    def create_for_user(user: User) -> Persona:
-        return Persona.objects.create(username="", name=user.name, parent=user)
+    def create_for_user(name: str, user: User) -> Persona:
+        return Persona.objects.create(username=name, name=user.name, parent=user)
 
     class Meta(ExpiringModel.Meta):
         verbose_name = _("Persona")
