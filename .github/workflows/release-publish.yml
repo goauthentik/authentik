@@ -47,8 +47,8 @@ jobs:
     steps:
       - uses: regclient/actions/regctl-installer@4b4db1dcc7dad75ad67a788a380f75a20cc8a040
       # logs in to ghcr.io by default
-      - uses: regclient/actions/regctl-login@4b4db1dcc7dad75ad67a788a380f75a20cc8a040
-      - uses: regclient/actions/regctl-login@4b4db1dcc7dad75ad67a788a380f75a20cc8a040
+      - uses: regclient/actions/regctl-login@39bf30ced4be9d147faaabbde2682e9725fb8bd1
+      - uses: regclient/actions/regctl-login@39bf30ced4be9d147faaabbde2682e9725fb8bd1
         with:
           registry: docker.io
           username: "${{ secrets.DOCKER_CORP_USERNAME }}"
