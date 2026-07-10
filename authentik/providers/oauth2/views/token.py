@@ -615,6 +615,8 @@ class TokenParams:
 
         method_args = {
             "jwt": token,
+            "subject_token_type": subject_token_type,
+            "requested_token_type": self.requested_token_type,
         }
         if source:
             method_args["source"] = source
