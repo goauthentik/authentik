@@ -111,6 +111,19 @@ class TestUsersAPI(APITestCase):
         self.assertEqual(response.status_code, 400)
         self.assertJSONEqual(response.content, {"non_field_errors": "No recovery flow set."})
 
+    def test_set_type(self):
+        """Test type set"""
+        self.client.force_login(self.admin)
+        response = self.client.patch(
+            reverse("authentik_api:user-detail", kwargs={"pk": self.admin.pk}),
+            data={"type": UserTypes.INTERNAL_SERVICE_ACCOUNT},
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertJSONEqual(
+            response.content,
+            {"type": ["Can't change internal service account to other user type."]},
+        )
+
     def test_set_password(self):
         """Test Direct password set"""
         self.client.force_login(self.admin)

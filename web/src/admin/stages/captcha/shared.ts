@@ -215,7 +215,17 @@ export function detectProviderFromInstance(stage?: CaptchaStage | null): Captcha
             return key;
         }
 
-        if (stage.jsUrl === preset.jsUrl && stage.apiUrl === preset.apiUrl) {
+        const hasScore =
+            stage.scoreMinThreshold !== undefined && stage.scoreMaxThreshold !== undefined;
+
+        const scoreValueMatchesPreset = preset.supportsScore === hasScore;
+
+        if (
+            stage.jsUrl === preset.jsUrl &&
+            stage.apiUrl === preset.apiUrl &&
+            stage.interactive === preset.interactive &&
+            scoreValueMatchesPreset
+        ) {
             return key;
         }
     }

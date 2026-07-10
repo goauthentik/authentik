@@ -3,6 +3,7 @@ import { formatElapsedTime } from "#common/temporal";
 import { AKElement } from "#elements/Base";
 import { intersectionObserver } from "#elements/decorators/intersection-observer";
 import { ifPresent } from "#elements/utils/attributes";
+import { dateProperty } from "#elements/utils/properties";
 
 import { html, nothing, PropertyValues } from "lit";
 import { customElement, property } from "lit/decorators.js";
@@ -27,15 +28,7 @@ export class AKTimestamp extends AKElement {
 
     #timestamp: Date | null = null;
 
-    @property({
-        attribute: false,
-        hasChanged(value, previousValue) {
-            if (value instanceof Date && previousValue instanceof Date) {
-                return value.getTime() !== previousValue.getTime();
-            }
-            return value !== previousValue;
-        },
-    })
+    @property(dateProperty)
     public get timestamp(): Date | null {
         return this.#timestamp;
     }

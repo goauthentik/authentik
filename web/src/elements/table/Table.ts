@@ -11,7 +11,6 @@ import { BaseTableListRequest, TableLike } from "./shared.js";
 import { renderTableColumn, TableColumn } from "./TableColumn.js";
 
 import { type PaginatedResponse } from "#common/api/responses";
-import { EVENT_REFRESH } from "#common/constants";
 import { APIError, parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
 import { AKRefreshEvent } from "#common/events";
 import { truncateWords } from "#common/strings";
@@ -27,12 +26,14 @@ import {
 } from "#elements/dialogs/shared";
 import { WithSession } from "#elements/mixins/session";
 import { getURLParam, updateURLParams } from "#elements/router/RouteMatch";
+import { AKTableRefreshEvent } from "#elements/table/events";
 import Styles from "#elements/table/Table.css";
 import { TableSearchForm } from "#elements/table/TableSearch";
 import { SlottedTemplateResult } from "#elements/types";
 import { ifPresent } from "#elements/utils/attributes";
 import { isInteractiveElement } from "#elements/utils/interactivity";
 import { isEventTargetingListener } from "#elements/utils/pointer";
+import { dateProperty } from "#elements/utils/properties";
 
 import { ConsoleLogger, Logger } from "#logger/browser";
 import AKFadeIn from "#styles/authentik/components/Modifiers/fade-in.css";
@@ -192,8 +193,8 @@ export abstract class Table<T extends object, D = T>
     /**
      * A timestamp of the last attempt to refresh the table data.
      */
-    @state()
-    protected lastRefreshedAt: Date | null = null;
+    @property(dateProperty)
+    public lastRefreshedAt: Date | null = null;
 
     /**
      * Logger instance for this table.
@@ -425,7 +426,9 @@ export abstract class Table<T extends object, D = T>
 
     protected refreshListener = (event?: Event) => {
         this.logger.debug("Received refresh event:", event);
-        return this.fetch();
+        return this.fetch().then(() => {
+            this.dispatchEvent(new AKTableRefreshEvent(this));
+        });
     };
 
     constructor() {
@@ -459,7 +462,7 @@ export abstract class Table<T extends object, D = T>
 
     public override disconnectedCallback(): void {
         super.disconnectedCallback();
-        this.removeEventListener(EVENT_REFRESH, this.refreshListener);
+        this.removeEventListener(AKRefreshEvent.eventName, this.refreshListener);
         window.removeEventListener("submit", this.refreshListener);
     }
 

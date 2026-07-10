@@ -14,8 +14,9 @@ packages:
 # npm's behavior.
 nodeLinker: hoisted
 
-# Shared version references for the `catalog:` protocol. Keep these in sync with
-# web/package.json so overrides pin transitive deps to the versions we use.
+# Shared version references for the `catalog:` protocol. Workspace members reference
+# these via `catalog:`, and overrides pin transitive deps to the same versions.
+# `scripts/node/lint-catalogs.ts` keeps them in sync with the other workspace roots.
 catalog:
     esbuild: "^0.28.1"
     eslint: "^9.39.4"

@@ -67,8 +67,9 @@ class OAuthSourceSerializer(SourceSerializer):
 
         well_known = attrs.get("oidc_well_known_url") or source_type.oidc_well_known_url
         inferred_oidc_jwks_url = None
+        enabled = attrs.get("enabled", self.instance.enabled if self.instance else True)
 
-        if well_known and well_known != "":
+        if enabled and well_known and well_known != "":
             try:
                 well_known_config = session.get(well_known)
                 well_known_config.raise_for_status()
@@ -105,7 +106,7 @@ class OAuthSourceSerializer(SourceSerializer):
 
         # Prefer user-entered URL to inferred URL to default URL
         jwks_url = attrs.get("oidc_jwks_url") or inferred_oidc_jwks_url or source_type.oidc_jwks_url
-        if jwks_url and jwks_url != "":
+        if enabled and jwks_url and jwks_url != "":
             attrs["oidc_jwks_url"] = jwks_url
             try:
                 jwks_config = session.get(jwks_url)

@@ -1,0 +1,100 @@
+---
+# Re-usable workflow for a single architecture container build
+
+on:
+  workflow_call:
+    inputs:
+      runs-on:
+        description: "Runner to use to build the image"
+        type: string
+        required: true
+      ref:
+        description: "Git ref to build the image from"
+        type: string
+        required: true
+      image-name:
+        description: "Name of the image to build"
+        type: string
+        required: true
+      image-arch:
+        description: "Target architecture to build the image. Will be prefixed by linux/ and passed to docker buildx build --platform"
+        type: string
+        required: true
+      image-dockerfile:
+        description: "Path to the Dockerfile to build from"
+        type: string
+        required: true
+      image-build-args:
+        description: "Build args to pass to Docker"
+        type: string
+        default: ""
+      should-cache:
+        description: "Whether a build cache should be created"
+        type: boolean
+        default: false
+      cache-suffix:
+        description: "Suffix to add to the buildcache tag"
+        type: string
+        default: ""
+    outputs:
+      artifact-id:
+        value: "${{ jobs.build.outputs.artifact-id }}"
+
+jobs:
+  build:
+    permissions:
+      # Needed to upload cache to ghcr.io
+      packages: write
+      # Needed for checkout
+      contents: read
+    name: "Build ${{ inputs.image-name }} on ${{ inputs.image-arch }}"
+    runs-on: "${{ inputs.runs-on }}"
+    outputs:
+      image-digest: "${{ steps.build.outputs.digest }}"
+      artifact-id: "${{ steps.upload.outputs.artifact-id }}"
+    steps:
+      - name: Make space on disk
+        run: |
+          sudo mkdir -p /tmp/empty/
+          sudo rsync -a --delete /tmp/empty/ /usr/local/lib/android/
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v5
+        with:
+          ref: "${{ inputs.ref }}"
+      - uses: docker/setup-qemu-action@06116385d9baf250c9f4dcb4858b16962ea869c3 # v4.1.0
+      - uses: docker/setup-buildx-action@d7f5e7f509e45cec5c76c4d5afdd7de93d0b3df5 # v4.1.0
+      - if: "${{ inputs.should-cache }}"
+        uses: docker/login-action@650006c6eb7dba73a995cc03b0b2d7f5ca915bee # v4.2.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - id: build
+        uses: docker/build-push-action@f9f3042f7e2789586610d6e8b85c8f03e5195baf # v7.2.0
+        with:
+          # inputs
+          context: .
+          file: "${{ inputs.image-dockerfile }}"
+          build-args: "${{ inputs.image-build-args }}"
+          secrets: |
+            GEOIPUPDATE_ACCOUNT_ID=${{ secrets.GEOIPUPDATE_ACCOUNT_ID }}
+            GEOIPUPDATE_LICENSE_KEY=${{ secrets.GEOIPUPDATE_LICENSE_KEY }}
+          # outputs
+          push: false
+          cache-from: |
+            type=registry,ref=ghcr.io/goauthentik/dev-${{ inputs.image-name }}:buildcache-${{ inputs.image-arch }}-main
+            type=registry,ref=ghcr.io/goauthentik/dev-${{ inputs.image-name }}:buildcache-${{ inputs.image-arch }}${{ inputs.cache-suffix }}
+          cache-to: "${{ inputs.should-cache && format('type=registry,ref=ghcr.io/goauthentik/dev-{0}:buildcache-{1}{2},mode=max', inputs.image-name, inputs.image-arch, inputs.cache-suffix) || '' }}"
+          attests: |
+            type=provenance,mode=max
+          outputs: |
+            type=oci,dest=build/container/${{ inputs.image-name }}-${{ inputs.image-arch }}.oci.tar
+          # params
+          platforms: "linux/${{ inputs.image-arch }}"
+      - id: upload
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v4
+        with:
+          name: "container-build-${{ inputs.image-name }}-${{ inputs.image-arch }}"
+          path: build/
+          if-no-files-found: error
+          retention-days: 2
+          include-hidden-files: true

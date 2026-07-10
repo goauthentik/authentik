@@ -19,3 +19,13 @@ export const onlyBinding: PropertyDeclaration<unknown> = {
     useDefault: true,
     hasChanged: ifPreviousValue,
 };
+
+export const dateProperty: PropertyDeclaration<Date | null> = {
+    attribute: false,
+    hasChanged(value, previousValue) {
+        if (value instanceof Date && previousValue instanceof Date) {
+            return value.getTime() !== previousValue.getTime();
+        }
+        return value !== previousValue;
+    },
+};

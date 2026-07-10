@@ -55,14 +55,7 @@ class DockerTestCase(TestCase):
 
     def get_container_image(self, base: str) -> str:
         """Try to pull docker image based on git branch, fallback to main if not found."""
-        image = f"{base}:gh-main"
-        try:
-            branch_image = f"{base}:{get_docker_tag()}"
-            self.docker_client.images.pull(branch_image)
-            return branch_image
-        except DockerException:
-            self.docker_client.images.pull(image)
-        return image
+        return f"{base}:{get_docker_tag()}"
 
     def run_container(self, **specs: Any) -> Container:
         if "network_mode" not in specs:
