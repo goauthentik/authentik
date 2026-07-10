@@ -95,6 +95,7 @@ export interface StageHost {
     loading: boolean;
     reset?: () => void;
     refresh?: () => Promise<boolean>;
+    resendSelectedChallenge?: () => Promise<unknown>;
     submit(payload: unknown, options?: SubmitOptions): Promise<boolean>;
 
     readonly brand?: CurrentBrand;
