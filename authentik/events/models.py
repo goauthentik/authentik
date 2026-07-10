@@ -14,6 +14,9 @@ from django.db import models
 from django.db.models import Q
 from django.http import HttpRequest
 from django.http.request import QueryDict
+from django.template.exceptions import TemplateDoesNotExist
+from django.template.loader import render_to_string
+from django.utils import translation
 from django.utils.timezone import now
 from django.utils.translation import gettext as _
 from requests import RequestException
@@ -577,6 +580,21 @@ class NotificationTransport(TasksModel, SerializerModel):
             response.text,
         ]
 
+    def render_email_subject(self, context: dict[str, Any], language: str) -> str:
+        """Render the subject for an email notification. Templates can provide a
+        human-readable subject by shipping a `<template>_subject.txt` next to the body
+        template; without one, context["title"] is used."""
+        if self.email_template.endswith(".html"):
+            subject_template = self.email_template.removesuffix(".html") + "_subject.txt"
+            try:
+                with translation.override(language):
+                    rendered = render_to_string(subject_template, context)
+                if rendered.strip():
+                    return " ".join(rendered.split())
+            except TemplateDoesNotExist:
+                pass
+        return context["title"]
+
     def send_email(self, notification: Notification) -> list[str]:
         """Send notification via global email configuration"""
         from authentik.stages.email.tasks import send_mail
@@ -621,10 +639,12 @@ class NotificationTransport(TasksModel, SerializerModel):
             context["source"] = {
                 "from": self.name,
             }
+        language = notification.user.locale()
+        subject = self.email_subject_prefix + self.render_email_subject(context, language)
         mail = TemplateEmailMessage(
-            subject=self.email_subject_prefix + context["title"],
+            subject=subject,
             to=[(notification.user.name, notification.user.email)],
-            language=notification.user.locale(),
+            language=language,
             template_name=self.email_template,
             template_context=context,
         )
