@@ -80,24 +80,15 @@ jobs:
         run: |
           pnpm install --frozen-lockfile
           pnpm --dir web install --frozen-lockfile
-      - name: Rewrite web manifest for publish
-        # Runs once (on the web/ leg); core doesn't need the rewrite because its
-        # manifest has no `link:` refs and its version is bumped inline.
-        if: matrix.package.name == '@goauthentik/web'
+      - name: Rewrite manifests for publish
+        # Stamps both web/ and web/packages/core/ manifests to the release
+        # version. The web leg is a separate checkout from the core leg, so it
+        # needs to see core@release-version locally — `pnpm publish` rewrites
+        # `workspace:^` for `@goauthentik/core` against that manifest's version.
         run: |
           node web/scripts/prepare-publish.mjs \
             --version "${{ steps.version.outputs.release }}" \
             --api-version "${{ steps.version.outputs.api }}"
-      - name: Bump core version
-        if: matrix.package.name == '@goauthentik/core'
-        run: |
-          node -e "
-            const fs = require('node:fs');
-            const path = 'web/packages/core/package.json';
-            const pkg = JSON.parse(fs.readFileSync(path, 'utf8'));
-            pkg.version = '${{ steps.version.outputs.release }}';
-            fs.writeFileSync(path, JSON.stringify(pkg, null, 4) + '\n');
-          "
       - name: Pack
         working-directory: ${{ matrix.package.path }}
         run: pnpm pack --pack-destination "$RUNNER_TEMP"
