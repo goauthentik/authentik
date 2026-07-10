@@ -504,7 +504,7 @@ jobs:
           regctl image import "ghcr.io/goauthentik/dev-${{ matrix.name }}:${{ needs.build-compute-tags.outputs.tag-full }}" "container/${{ matrix.name }}.oci.tar"
           regctl image import "ghcr.io/goauthentik/dev-${{ matrix.name }}:${{ needs.build-compute-tags.outputs.tag-branch }}" "container/${{ matrix.name }}.oci.tar"
           regctl image import "ghcr.io/goauthentik/dev-${{ matrix.name }}:${{ needs.build-compute-tags.outputs.tag-flux }}" "container/${{ matrix.name }}.oci.tar"
-      - uses: actions/attest@59d89421af93a897026c735860bf21b6eb4f7b26
+      - uses: actions/attest@a1948c3f048ba23858d222213b7c278aabede763
         with:
           subject-name: "ghcr.io/goauthentik/dev-${{ matrix.name }}"
           subject-digest: "${{ steps.publish.outputs.digest }}"
