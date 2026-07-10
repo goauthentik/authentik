@@ -14,10 +14,11 @@ from authentik.api.validation import validate
 from authentik.core.api.groups import PartialUserSerializer
 from authentik.core.api.utils import PassiveSerializer
 from authentik.core.models import User
-from authentik.pam.models import Persona
+from authentik.enterprise.api import EnterpriseRequiredMixin
+from authentik.enterprise.pam.models import Persona
 
 
-class PersonaSerializer(PartialUserSerializer):
+class PersonaSerializer(EnterpriseRequiredMixin, PartialUserSerializer):
 
     parent = PartialUserSerializer(read_only=True)
 

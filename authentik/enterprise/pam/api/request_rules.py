@@ -2,10 +2,11 @@ from rest_framework.viewsets import ModelViewSet
 
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import ModelSerializer
-from authentik.pam.models import PolicyBindingModelRequestRule
+from authentik.enterprise.api import EnterpriseRequiredMixin
+from authentik.enterprise.pam.models import PolicyBindingModelRequestRule
 
 
-class PolicyBindingModelRequestRuleSerializer(ModelSerializer):
+class PolicyBindingModelRequestRuleSerializer(EnterpriseRequiredMixin, ModelSerializer):
 
     class Meta:
         model = PolicyBindingModelRequestRule

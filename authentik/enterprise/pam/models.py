@@ -81,7 +81,7 @@ class GrantRequest(SerializerModel, ExpiringModel, CreatedUpdatedModel):
 
     @property
     def serializer(self) -> type[Serializer]:
-        from authentik.pam.api.grant_requests import GrantRequestSerializer
+        from authentik.enterprise.pam.api.grant_requests import GrantRequestSerializer
 
         return GrantRequestSerializer
 
@@ -146,7 +146,7 @@ class PolicyBindingModelRequestRule(SerializerModel, CreatedUpdatedModel, Policy
 
     @property
     def serializer(self):
-        from authentik.pam.api.request_rules import PolicyBindingModelRequestRuleSerializer
+        from authentik.enterprise.pam.api.request_rules import PolicyBindingModelRequestRuleSerializer
 
         return PolicyBindingModelRequestRuleSerializer
 

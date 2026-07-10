@@ -21,10 +21,17 @@ from authentik.core.api.utils import (
     ModelSerializer,
     PassiveSerializer,
 )
+from authentik.enterprise.pam.models import (
+    GrantRequest,
+    PolicyBindingModelRequestRule,
+    RequestStatus,
+)
+from authentik.enterprise.pam.stage import (
+    PLAN_CONTEXT_GRANT_REQUESTED_PBMS,
+    GrantRequestFinalStageView,
+)
 from authentik.flows.models import Flow, in_memory_stage
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlanner
-from authentik.pam.models import GrantRequest, PolicyBindingModelRequestRule, RequestStatus
-from authentik.pam.stage import PLAN_CONTEXT_GRANT_REQUESTED_PBMS, GrantRequestFinalStageView
 from authentik.policies.models import PolicyBindingModel
 
 

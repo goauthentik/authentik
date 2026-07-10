@@ -2975,51 +2975,6 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
-  /core/applications/requestable/:
-    get:
-      operationId: core_applications_requestable_list
-      description: List applications which the current user can request access to
-      parameters:
-      - in: query
-        name: group
-        schema:
-          type: string
-      - in: query
-        name: meta_description
-        schema:
-          type: string
-      - in: query
-        name: meta_launch_url
-        schema:
-          type: string
-      - in: query
-        name: meta_publisher
-        schema:
-          type: string
-      - $ref: '#/components/parameters/QueryName'
-      - $ref: '#/components/parameters/QueryPaginationOrdering'
-      - $ref: '#/components/parameters/QueryPaginationPage'
-      - $ref: '#/components/parameters/QueryPaginationPageSize'
-      - $ref: '#/components/parameters/QuerySearch'
-      - in: query
-        name: slug
-        schema:
-          type: string
-      tags:
-      - core
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PaginatedApplicationList'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
   /core/authenticated_sessions/:
     get:
       operationId: core_authenticated_sessions_list
@@ -34780,7 +34735,6 @@ components:
       - authentik.admin.files
       - authentik.flows
       - authentik.outposts
-      - authentik.pam
       - authentik.policies.dummy
       - authentik.policies.event_matcher
       - authentik.policies.expiry
@@ -34847,6 +34801,7 @@ components:
       - authentik.enterprise.stages.authenticator_endpoint_gdtc
       - authentik.enterprise.stages.mtls
       - authentik.enterprise.stages.source
+      - authentik.enterprise.pam
       type: string
     AppleChallengeResponseRequest:
       type: object
@@ -43991,9 +43946,6 @@ components:
       - authentik_outposts.dockerserviceconnection
       - authentik_outposts.kubernetesserviceconnection
       - authentik_outposts.outpost
-      - authentik_pam.persona
-      - authentik_pam.grantrequest
-      - authentik_pam.policybindingmodelrequestrule
       - authentik_policies_dummy.dummypolicy
       - authentik_policies_event_matcher.eventmatcherpolicy
       - authentik_policies_expiry.passwordexpirypolicy
@@ -44092,6 +44044,9 @@ components:
       - authentik_stages_authenticator_endpoint_gdtc.authenticatorendpointgdtcstage
       - authentik_stages_mtls.mutualtlsstage
       - authentik_stages_source.sourcestage
+      - authentik_pam.persona
+      - authentik_pam.grantrequest
+      - authentik_pam.policybindingmodelrequestrule
       type: string
     MutualTLSStage:
       type: object
@@ -50867,6 +50822,9 @@ components:
           description: Plex token used to check friends
     PatchedPolicyBindingModelRequestRuleRequest:
       type: object
+      description: |-
+        Mixin to validate that a valid enterprise license
+        exists before allowing to save the object
       properties:
         uuid:
           type: string
@@ -52404,7 +52362,9 @@ components:
       - id
     Persona:
       type: object
-      description: Partial User Serializer, does not include child relations.
+      description: |-
+        Mixin to validate that a valid enterprise license
+        exists before allowing to save the object
       properties:
         pk:
           type: integer
@@ -52890,6 +52850,9 @@ components:
       - user_obj
     PolicyBindingModelRequestRule:
       type: object
+      description: |-
+        Mixin to validate that a valid enterprise license
+        exists before allowing to save the object
       properties:
         uuid:
           type: string
@@ -52921,6 +52884,9 @@ components:
       - pbm
     PolicyBindingModelRequestRuleRequest:
       type: object
+      description: |-
+        Mixin to validate that a valid enterprise license
+        exists before allowing to save the object
       properties:
         uuid:
           type: string

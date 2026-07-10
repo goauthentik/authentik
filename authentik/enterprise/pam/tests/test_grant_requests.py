@@ -4,7 +4,7 @@ from rest_framework.test import APITestCase
 from authentik.core.models import Application, Group
 from authentik.core.tests.utils import create_test_user
 from authentik.lib.generators import generate_id
-from authentik.pam.models import GrantRequest, GrantRequestTarget, PolicyBindingModelRequestRule
+from authentik.enterprise.pam.models import GrantRequest, GrantRequestTarget, PolicyBindingModelRequestRule
 
 
 class GrantRequestsTests(APITestCase):

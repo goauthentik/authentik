@@ -16,7 +16,8 @@ import type { PartialUser } from "./PartialUser";
 import { PartialUserFromJSON } from "./PartialUser";
 
 /**
- * Partial User Serializer, does not include child relations.
+ * Mixin to validate that a valid enterprise license
+ * exists before allowing to save the object
  * @export
  * @interface Persona
  */

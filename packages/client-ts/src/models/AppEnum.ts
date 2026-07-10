@@ -31,7 +31,6 @@ export const AppEnum = {
     AuthentikAdminFiles: "authentik.admin.files",
     AuthentikFlows: "authentik.flows",
     AuthentikOutposts: "authentik.outposts",
-    AuthentikPam: "authentik.pam",
     AuthentikPoliciesDummy: "authentik.policies.dummy",
     AuthentikPoliciesEventMatcher: "authentik.policies.event_matcher",
     AuthentikPoliciesExpiry: "authentik.policies.expiry",
@@ -100,6 +99,7 @@ export const AppEnum = {
         "authentik.enterprise.stages.authenticator_endpoint_gdtc",
     AuthentikEnterpriseStagesMtls: "authentik.enterprise.stages.mtls",
     AuthentikEnterpriseStagesSource: "authentik.enterprise.stages.source",
+    AuthentikEnterprisePam: "authentik.enterprise.pam",
     UnknownDefaultOpenApi: "11184809",
 } as const;
 export type AppEnum = (typeof AppEnum)[keyof typeof AppEnum];
