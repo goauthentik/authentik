@@ -124,7 +124,7 @@ RUN cat /root/.rustup/settings.toml
 # Stage: Download uv
 FROM ghcr.io/astral-sh/uv:0.11.28@sha256:0f36cb9361a3346885ca3677e3767016687b5a170c1a6b88465ec14aefec90aa AS uv
 # Stage: Base python image
-FROM ghcr.io/goauthentik/fips-python:3.14.6-slim-trixie-fips@sha256:80d28af5ed541c6d5a199e1678ed36af81e5ea6f8dc6602f2c8c8fe8c7c4f70f AS python-base
+FROM ghcr.io/goauthentik/fips-python:3.14.6-slim-trixie-fips@sha256:aaaab4652e76bd58b6c819a79424b4a607a98a1e33d40b5072eba66648126755 AS python-base
 
 ENV VENV_PATH="/ak-root/.venv" \
     PATH="/lifecycle:/ak-root/.venv/bin:$PATH" \
@@ -286,6 +286,6 @@ ENV TMPDIR=/dev/shm/ \
     PYTHONUNBUFFERED=1 \
     GOFIPS=1
 
-HEALTHCHECK --interval=30s --timeout=30s --start-period=60s --retries=3 CMD [ "ak", "healthcheck" ]
+HEALTHCHECK --interval=30s --timeout=30s --start-period=120s --retries=3 CMD [ "ak", "healthcheck" ]
 
 ENTRYPOINT [ "dumb-init", "--", "ak" ]

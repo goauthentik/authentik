@@ -65,7 +65,7 @@ jobs:
       image-dockerfile: "lifecycle/container/${{ matrix.dockerfile }}"
       image-build-args: |
         GIT_BUILD_HASH=${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha }}
-      should-cache: "${{ github.repository == 'goauthentik/authentik' }}"
+      should-cache: "${{ github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository) }}"
       cache-suffix: "-${{ needs.build-compute-tags.outputs.safe-branch-name }}"
   lint:
     strategy:
@@ -313,6 +313,7 @@ jobs:
         run: |
           for image in proxy ldap radius rac; do
             skopeo copy "oci-archive:container/${image}-amd64.oci.tar" "docker-daemon:ghcr.io/goauthentik/dev-${image}:${{ needs.build-compute-tags.outputs.tag-full }}"
+            skopeo copy "oci-archive:container/${image}-amd64.oci.tar" "docker-daemon:ghcr.io/goauthentik/dev-${image}:${{ needs.build-compute-tags.outputs.tag-branch }}"
           done
           rm -rf container/
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v5
@@ -458,7 +459,7 @@ jobs:
         with:
           jobs: ${{ toJSON(needs) }}
   publish:
-    if: "${{ github.repository == 'goauthentik/authentik' }}"
+    if: "${{ github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository) }}"
     needs:
       - build-compute-tags
       - build
@@ -487,7 +488,7 @@ jobs:
       # logs in to ghcr.io by default
       - uses: regclient/actions/regctl-login@4b4db1dcc7dad75ad67a788a380f75a20cc8a040
       # Docker login is required for attestations
-      - uses: docker/login-action@650006c6eb7dba73a995cc03b0b2d7f5ca915bee
+      - uses: docker/login-action@af1e73f918a031802d376d3c8bbc3fe56130a9b0
         with:
           registry: ghcr.io
           username: "${{ github.actor }}"
@@ -503,13 +504,13 @@ jobs:
           regctl image import "ghcr.io/goauthentik/dev-${{ matrix.name }}:${{ needs.build-compute-tags.outputs.tag-full }}" "container/${{ matrix.name }}.oci.tar"
           regctl image import "ghcr.io/goauthentik/dev-${{ matrix.name }}:${{ needs.build-compute-tags.outputs.tag-branch }}" "container/${{ matrix.name }}.oci.tar"
           regctl image import "ghcr.io/goauthentik/dev-${{ matrix.name }}:${{ needs.build-compute-tags.outputs.tag-flux }}" "container/${{ matrix.name }}.oci.tar"
-      - uses: actions/attest@59d89421af93a897026c735860bf21b6eb4f7b26
+      - uses: actions/attest@a1948c3f048ba23858d222213b7c278aabede763
         with:
           subject-name: "ghcr.io/goauthentik/dev-${{ matrix.name }}"
           subject-digest: "${{ steps.publish.outputs.digest }}"
           push-to-registry: true
   pr-comment:
-    if: "${{ github.repository == 'goauthentik/authentik' && github.event_name == 'pull_request' }}"
+    if: "${{ github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository) }}"
     needs:
       - build-compute-tags
       - publish

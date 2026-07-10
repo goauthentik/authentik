@@ -1,8 +1,11 @@
+/**
+ * @file Display details for an Outpost: Overview, Changelog, Tasks, Permissions
+ */
+
 import "#elements/Tabs";
 import "#admin/events/ObjectChangelog";
 import "#admin/rbac/ak-rbac-object-permission-page";
 import "#components/tasks/ScheduleList";
-import "#components/tasks/TaskList";
 import "#admin/outposts/OutpostForm";
 import "#admin/outposts/OutpostHealthList";
 import "#admin/outposts/OutpostProviderList";
@@ -17,6 +20,7 @@ import { SlottedTemplateResult } from "#elements/types";
 
 import { setPageDetails } from "#components/ak-page-navbar";
 import renderDescriptionList from "#components/DescriptionList";
+import { taskCard } from "#components/tasks/taskCard";
 
 import { OutpostForm } from "#admin/outposts/OutpostForm";
 import { embeddedOutpostManaged, outpostTypeToLabel } from "#admin/outposts/utils";
@@ -38,6 +42,9 @@ import PFFormControl from "@patternfly/patternfly/components/FormControl/form-co
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFProgress from "@patternfly/patternfly/components/Progress/progress.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
+
+const OUTPOST_TYPE = ModelEnum.AuthentikOutpostsOutpost;
+const [OUTPOST_TYPE_LABEL, OUTPOST_MODEL_NAME] = OUTPOST_TYPE.split(".");
 
 @customElement("ak-outpost-view")
 export class OutpostViewPage extends AKElement {
@@ -282,9 +289,7 @@ export class OutpostViewPage extends AKElement {
         </div>`;
     }
 
-    protected renderTabTasks(): SlottedTemplateResult {
-        const [appLabel, modelName] = ModelEnum.AuthentikOutpostsOutpost.split(".");
-
+    protected renderTabTasks(outpost: Outpost): SlottedTemplateResult {
         return html`<div
             class="pf-c-page__main-section pf-m-no-padding-mobile pf-l-grid pf-m-gutter"
         >
@@ -294,23 +299,14 @@ export class OutpostViewPage extends AKElement {
                         <div class="pf-c-card__title">${msg("Schedules")}</div>
                     </div>
                     <ak-schedule-list
-                        .relObjAppLabel=${appLabel}
-                        .relObjModel=${modelName}
-                        .relObjId="${this.outpost?.pk}"
+                        .relObjAppLabel=${OUTPOST_TYPE_LABEL}
+                        .relObjModel=${OUTPOST_MODEL_NAME}
+                        .relObjId="${outpost.pk}"
                     ></ak-schedule-list>
                 </div>
             </div>
             <div class="pf-l-grid__item pf-m-12-col pf-l-stack__item">
-                <div class="pf-c-card">
-                    <div class="pf-c-card__header">
-                        <div class="pf-c-card__title">${msg("Tasks")}</div>
-                    </div>
-                    <ak-task-list
-                        .relObjAppLabel=${appLabel}
-                        .relObjModel=${modelName}
-                        .relObjId="${this.outpost?.pk}"
-                    ></ak-task-list>
-                </div>
+                ${taskCard(OUTPOST_TYPE, outpost.pk)}
             </div>
         </div> `;
     }
@@ -338,7 +334,7 @@ export class OutpostViewPage extends AKElement {
                     id="page-tasks"
                     aria-label=${msg("Tasks")}
                 >
-                    ${this.renderTabTasks()}
+                    ${this.renderTabTasks(this.outpost)}
                 </div>
                 <div
                     role="tabpanel"
