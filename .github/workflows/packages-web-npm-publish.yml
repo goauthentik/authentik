@@ -1,0 +1,107 @@
+---
+name: Packages - Publish web NPM packages
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Semver to publish (defaults to the manifest version).
+        required: false
+        type: string
+      api-version:
+        description: '`@goauthentik/api` version to pin. Defaults to the release version.'
+        required: false
+        type: string
+      dry-run:
+        description: Skip the publish step and stop after packing.
+        required: false
+        type: boolean
+        default: false
+
+permissions:
+  # Required for the NPM OIDC trusted publisher exchange.
+  id-token: write
+  contents: read
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    strategy:
+      # Sequential — `@goauthentik/web` depends on `@goauthentik/core` and needs
+      # the core version resolved to the same release before its manifest is
+      # rewritten.
+      max-parallel: 1
+      fail-fast: true
+      matrix:
+        package:
+          - path: web/packages/core
+            name: "@goauthentik/core"
+          - path: web
+            name: "@goauthentik/web"
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v5
+        with:
+          fetch-depth: 2
+          ref: ${{ github.event.release.tag_name || github.ref }}
+      - uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # v6.0.9
+      - name: Pin pnpm store directory
+        run: |
+          echo "PNPM_HOME=${RUNNER_TEMP}/pnpm-home" >> "$GITHUB_ENV"
+          echo "npm_config_store_dir=${RUNNER_TEMP}/pnpm-home/store" >> "$GITHUB_ENV"
+      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v4
+        with:
+          node-version-file: package.json
+          registry-url: https://registry.npmjs.org
+          cache: pnpm
+          cache-dependency-path: |
+            pnpm-lock.yaml
+            web/pnpm-lock.yaml
+      - name: Resolve release version
+        id: version
+        run: |
+          version="${{ inputs.version || github.event.release.tag_name }}"
+          version="${version#v}"
+          version="${version#version/}"
+          if [ -z "$version" ]; then
+            version=$(node -p "require('./web/package.json').version")
+          fi
+          api_version="${{ inputs.api-version }}"
+          if [ -z "$api_version" ]; then api_version="$version"; fi
+          {
+            echo "release=$version"
+            echo "api=$api_version"
+          } >> "$GITHUB_OUTPUT"
+      - name: Install dependencies
+        # Root install materialises the shared config packages; web install
+        # materialises the web workspace so `pnpm publish` inside it can rewrite
+        # `workspace:^` references against the local manifests.
+        run: |
+          pnpm install --frozen-lockfile
+          pnpm --dir web install --frozen-lockfile
+      - name: Rewrite web manifest for publish
+        # Runs once (on the web/ leg); core doesn't need the rewrite because its
+        # manifest has no `link:` refs and its version is bumped inline.
+        if: matrix.package.name == '@goauthentik/web'
+        run: |
+          node web/scripts/prepare-publish.mjs \
+            --version "${{ steps.version.outputs.release }}" \
+            --api-version "${{ steps.version.outputs.api }}"
+      - name: Bump core version
+        if: matrix.package.name == '@goauthentik/core'
+        run: |
+          node -e "
+            const fs = require('node:fs');
+            const path = 'web/packages/core/package.json';
+            const pkg = JSON.parse(fs.readFileSync(path, 'utf8'));
+            pkg.version = '${{ steps.version.outputs.release }}';
+            fs.writeFileSync(path, JSON.stringify(pkg, null, 4) + '\n');
+          "
+      - name: Pack
+        working-directory: ${{ matrix.package.path }}
+        run: pnpm pack --pack-destination "$RUNNER_TEMP"
+      - name: Publish
+        if: ${{ !inputs.dry-run }}
+        working-directory: ${{ matrix.package.path }}
+        run: pnpm publish --no-git-checks --access public

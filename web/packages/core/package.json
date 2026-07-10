@@ -1,9 +1,18 @@
 {
     "name": "@goauthentik/core",
-    "version": "1.0.0",
-    "description": "Core functionality for the authentik monorepo",
+    "version": "2026.8.0-rc1",
+    "description": "Core utilities shared by the authentik web UI: ID generation, environment introspection, path helpers, promise utilities, semver.",
     "license": "MIT",
-    "private": true,
+    "author": "Authentik Security Inc.",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/goauthentik/authentik.git",
+        "directory": "web/packages/core"
+    },
+    "bugs": {
+        "url": "https://github.com/goauthentik/authentik/issues"
+    },
+    "homepage": "https://goauthentik.io",
     "scripts": {
         "build": "tsc -p ."
     },
@@ -44,13 +53,41 @@
         }
     },
     "dependencies": {
+        "@types/semver": "^7.7.1",
+        "semver": "^7.8.5"
+    },
+    "devDependencies": {
         "@goauthentik/tsconfig": "^2.0.0",
         "@types/node": "^26.1.0",
-        "@types/semver": "^7.7.1",
-        "semver": "^7.8.5",
         "typescript": "catalog:"
     },
+    "files": [
+        "environment/**",
+        "id/**",
+        "paths/**",
+        "promises/**",
+        "scripting/**",
+        "types/**",
+        "version/**",
+        "index.js",
+        "LICENSE.txt",
+        "README.md",
+        "!**/node_modules/**",
+        "!**/tsconfig*.tsbuildinfo",
+        "!**/*.test.ts",
+        "!**/*.tests.ts"
+    ],
     "engines": {
         "node": ">=24"
+    },
+    "keywords": [
+        "authentik",
+        "utility",
+        "monorepo",
+        "core"
+    ],
+    "publishConfig": {
+        "access": "public",
+        "registry": "https://registry.npmjs.org"
     }
 }
