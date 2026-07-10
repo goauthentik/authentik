@@ -640,7 +640,10 @@ class NotificationTransport(TasksModel, SerializerModel):
                 "from": self.name,
             }
         language = notification.user.locale()
-        subject = self.email_subject_prefix + self.render_email_subject(context, language)
+        subject = self.render_email_subject(context, language)
+        subject_prefix = self.email_subject_prefix.strip()
+        if subject_prefix:
+            subject = " ".join((subject_prefix, subject))
         mail = TemplateEmailMessage(
             subject=subject,
             to=[(notification.user.name, notification.user.email)],

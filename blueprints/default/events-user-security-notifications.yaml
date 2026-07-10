@@ -1,0 +1,110 @@
+version: 1
+metadata:
+  name: Default - User security event notifications
+entries:
+- model: authentik_events.notificationtransport
+  id: default-security-email-transport
+  attrs:
+    mode: email
+    email_template: email/security_notification.html
+    # The subject comes from email/security_notification_subject.txt
+    email_subject_prefix: "authentik Notification:"
+  identifiers:
+    name: default-security-email-transport
+
+- model: authentik_policies_event_matcher.eventmatcherpolicy
+  id: default-match-password-set
+  attrs:
+    action: password_set
+  identifiers:
+    name: default-match-password-set
+- model: authentik_events.notificationrule
+  id: default-notify-user-password-change
+  identifiers:
+    name: default-notify-user-password-change
+  attrs:
+    severity: notice
+    destination_event_subject: true
+    transports:
+      - !KeyOf default-security-email-transport
+- model: authentik_policies.policybinding
+  identifiers:
+    order: 0
+    policy: !KeyOf default-match-password-set
+    target: !KeyOf default-notify-user-password-change
+
+- model: authentik_policies_event_matcher.eventmatcherpolicy
+  id: default-match-mfa-device-added
+  attrs:
+    action: mfa_device_added
+  identifiers:
+    name: default-match-mfa-device-added
+- model: authentik_policies_event_matcher.eventmatcherpolicy
+  id: default-match-mfa-device-removed
+  attrs:
+    action: mfa_device_removed
+  identifiers:
+    name: default-match-mfa-device-removed
+- model: authentik_events.notificationrule
+  id: default-notify-user-mfa-device-change
+  identifiers:
+    name: default-notify-user-mfa-device-change
+  attrs:
+    severity: notice
+    destination_event_subject: true
+    transports:
+      - !KeyOf default-security-email-transport
+- model: authentik_policies.policybinding
+  identifiers:
+    order: 0
+    policy: !KeyOf default-match-mfa-device-added
+    target: !KeyOf default-notify-user-mfa-device-change
+- model: authentik_policies.policybinding
+  identifiers:
+    order: 1
+    policy: !KeyOf default-match-mfa-device-removed
+    target: !KeyOf default-notify-user-mfa-device-change
+
+- model: authentik_policies_event_matcher.eventmatcherpolicy
+  id: default-match-impossible-travel
+  attrs:
+    action: login_blocked
+    query: 'context.reasons ~ "impossible_travel"'
+  identifiers:
+    name: default-match-impossible-travel
+- model: authentik_events.notificationrule
+  id: default-notify-user-impossible-travel
+  identifiers:
+    name: default-notify-user-impossible-travel
+  attrs:
+    severity: alert
+    destination_event_subject: true
+    transports:
+      - !KeyOf default-security-email-transport
+- model: authentik_policies.policybinding
+  identifiers:
+    order: 0
+    policy: !KeyOf default-match-impossible-travel
+    target: !KeyOf default-notify-user-impossible-travel
+
+- model: authentik_policies_event_matcher.eventmatcherpolicy
+  id: default-match-account-lockdown
+  attrs:
+    action: user_write
+    query: 'context.action_id = "account_lockdown"'
+  identifiers:
+    name: default-match-account-lockdown
+- model: authentik_events.notificationrule
+  id: default-notify-user-account-lockdown
+  identifiers:
+    name: default-notify-user-account-lockdown
+  attrs:
+    severity: alert
+    destination_event_subject: true
+    transports:
+      - !KeyOf default-security-email-transport
+- model: authentik_policies.policybinding
+  identifiers:
+    order: 0
+    policy: !KeyOf default-match-account-lockdown
+    target: !KeyOf default-notify-user-account-lockdown
