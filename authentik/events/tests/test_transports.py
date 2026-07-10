@@ -14,6 +14,7 @@ from authentik.crypto.models import CertificateKeyPair
 from authentik.events.api.notification_transports import NotificationTransportSerializer
 from authentik.events.models import (
     Event,
+    EventAction,
     Notification,
     NotificationSeverity,
     NotificationTransport,
@@ -229,6 +230,47 @@ class TestEventTransports(TestCase):
             transport.send(self.notification)
             self.assertEqual(len(mail.outbox), 1)
             self.assertEqual(mail.outbox[0].subject, "[CUSTOM] custom_foo")
+
+    def test_transport_email_subject_template(self):
+        """Test email transport with a template that ships a subject template"""
+        transport: NotificationTransport = NotificationTransport.objects.create(
+            name=generate_id(),
+            mode=TransportMode.EMAIL,
+            email_template="email/security_notification.html",
+        )
+        with patch(
+            "authentik.stages.email.models.EmailStage.backend_class",
+            PropertyMock(return_value=EmailBackend),
+        ):
+            transport.send(self.notification)
+            self.assertEqual(len(mail.outbox), 1)
+            self.assertEqual(
+                mail.outbox[0].subject, "authentik Notification: security notification"
+            )
+
+    def test_transport_email_subject_template_event_action(self):
+        """Test the subject template renders event-specific subjects"""
+        event = Event.new(EventAction.PASSWORD_SET).set_user(self.user)
+        event.save()
+        notification = Notification.objects.create(
+            severity=NotificationSeverity.NOTICE,
+            body="foo",
+            event=event,
+            user=self.user,
+        )
+        transport: NotificationTransport = NotificationTransport.objects.create(
+            name=generate_id(),
+            mode=TransportMode.EMAIL,
+            email_template="email/security_notification.html",
+            email_subject_prefix="",
+        )
+        with patch(
+            "authentik.stages.email.models.EmailStage.backend_class",
+            PropertyMock(return_value=EmailBackend),
+        ):
+            transport.send(notification)
+            self.assertEqual(len(mail.outbox), 1)
+            self.assertEqual(mail.outbox[0].subject, "your password was changed")
 
     def test_transport_email_validation(self):
         """Test email transport template validation"""

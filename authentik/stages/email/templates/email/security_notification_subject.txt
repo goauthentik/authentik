@@ -1,0 +1,19 @@
+{% load i18n %}{% autoescape off %}
+{% if event_action == "password_set" %}
+{% trans "your password was changed" %}
+{% elif event_action == "mfa_device_added" %}
+{% trans "a new MFA device was added" %}
+{% elif event_action == "mfa_device_removed" %}
+{% trans "an MFA device was removed" %}
+{% elif event_action == "login_blocked" %}
+{% if "impossible_travel" in event_context.reasons %}
+{% trans "a sign-in from an unusual location was blocked" %}
+{% else %}
+{% trans "a sign-in to your account was blocked" %}
+{% endif %}
+{% elif event_action == "user_write" and event_context.action_id == "account_lockdown" %}
+{% trans "your account has been locked" %}
+{% else %}
+{% trans "security notification" %}
+{% endif %}
+{% endautoescape %}
