@@ -9,9 +9,8 @@ from structlog.stdlib import get_logger
 from authentik.core.models import USER_ATTRIBUTE_DELETE_ON_LOGOUT, AuthenticatedSession, User
 from authentik.flows.challenge import PLAN_CONTEXT_ATTRS, PLAN_CONTEXT_TITLE, PLAN_CONTEXT_URL
 from authentik.flows.models import in_memory_stage
-from authentik.flows.stage import RedirectStage, SessionEndStage
+from authentik.flows.stage import RedirectStage
 from authentik.flows.views.executor import FlowExecutorView
-from authentik.providers.saml.native_logout import NativeLogoutStageView
 from authentik.sources.saml.models import SAMLSLOBindingTypes, SAMLSourceSession
 from authentik.sources.saml.processors.logout_request import LogoutRequestProcessor
 from authentik.sources.saml.views import PLAN_CONTEXT_SAML_RELAY_STATE, AutosubmitStageView
@@ -20,22 +19,9 @@ from authentik.stages.user_logout.stage import flow_pre_user_logout
 
 LOGGER = get_logger()
 
-# Stages that redirect the user away from authentik. Source SLO stages must be
-# inserted before these so they have a chance to execute.
-TERMINAL_STAGE_VIEWS = {SessionEndStage, NativeLogoutStageView}
-
-
-def _insert_before_terminal_stage(plan, stage):
-    """Insert a stage before any terminal stage (SessionEndStage, NativeLogoutStageView)
-    in the plan. Falls back to append if no terminal stage is found."""
-    for i, binding in enumerate(plan.bindings):
-        try:
-            if binding.stage.view in TERMINAL_STAGE_VIEWS:
-                plan.insert_stage(stage, index=i)
-                return
-        except NotImplementedError:
-            continue
-    plan.append_stage(stage)
+# Runs after UserLogoutStage (index 0) and the provider front-channel logout stages
+# (indices 1-2), but ahead of the SessionEndStage that's always appended last.
+SOURCE_SLO_STAGE_INDEX = 3
 
 
 @receiver(user_logged_out)
@@ -100,10 +86,6 @@ def handle_saml_source_pre_user_logout(
                 relay_state=relay_state,
             )
 
-            # Insert before terminal stages (SessionEndStage, NativeLogoutStageView)
-            # so the SLO redirect runs before the flow ends or the user is
-            # redirected away. Provider logout stages (at index 1/2) still run
-            # first since they're inserted earlier.
             if source.slo_binding == SAMLSLOBindingTypes.REDIRECT:
                 redirect_url = processor.get_redirect_url()
                 stage = in_memory_stage(RedirectStage, destination=redirect_url)
@@ -115,7 +97,7 @@ def handle_saml_source_pre_user_logout(
                 executor.plan.context[PLAN_CONTEXT_ATTRS] = form_data
                 stage = in_memory_stage(AutosubmitStageView)
 
-            _insert_before_terminal_stage(executor.plan, stage)
+            executor.plan.insert_stage(stage, index=SOURCE_SLO_STAGE_INDEX)
 
             LOGGER.debug(
                 "Injected SAML source SLO into logout flow",
