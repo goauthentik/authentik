@@ -16,6 +16,7 @@
         "target": "esnext",
         "module": "preserve",
         "moduleResolution": "bundler",
+        "jsxImportSource": "@goauthentik/lit-jsx",
         "lib": ["DOM", "DOM.Iterable", "ESNext"],
 
         // TODO: We should enable this when when we're ready to enforce it.
@@ -73,6 +74,7 @@
         // them here pulls ~1k files (notably the OpenAPI client in
         // packages/client-ts) into every `tsc -p .` for no benefit.
         "packages/client-ts",
+        "packages/lit-jsx",
         "packages/sfe",
         // TODO: @lit/localize-tools v0.8.0 has a nullish coalescing typing error.
         // Remove when we upgrade past that.

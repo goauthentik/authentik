@@ -1,3 +1,4 @@
+/** @jsxImportSource react */
 import { useMDXModule } from "#elements/ak-mdx/MDXModuleContext";
 
 import React from "react";

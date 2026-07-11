@@ -2,6 +2,7 @@ packages:
   - "packages/docusaurus-config"
   - "packages/esbuild-plugin-live-reload"
   - "packages/eslint-config"
+  - "packages/lit-jsx"
   - "packages/logger-js"
   - "packages/prettier-config"
   - "packages/tsconfig"
