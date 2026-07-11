@@ -1,32 +1,41 @@
 import { LitFC } from "#elements/types";
-import { ifPresent } from "#elements/utils/attributes";
-
-import { spread } from "@open-wc/lit-helpers";
-import type { LabelHTMLAttributes } from "react";
 
 import { msg } from "@lit/localize";
-import { html, nothing } from "lit";
+import { nothing } from "lit";
 
-export interface FormLabelProps extends LabelHTMLAttributes<HTMLLabelElement> {
-    required?: boolean;
+export interface FormLabelProps {
+    "required"?: boolean;
+    "htmlFor"?: string;
+    "className"?: string;
+    /**
+     * Slot to project the label into, e.g. a form group's `label` slot.
+     */
+    "slot"?: string;
+    "id"?: string;
+    "aria-label"?: string;
 }
 
 export const AKLabel: LitFC<FormLabelProps> = (
-    { required, htmlFor, className, ...labelAttributes } = {},
+    { required, htmlFor, className, slot, id, "aria-label": ariaLabel } = {},
     children,
 ) => {
     if (!children) return nothing;
 
-    return html`<label
-        class="pf-c-form__label ${className || ""}"
-        for=${ifPresent(htmlFor)}
-        aria-required=${required ? "true" : "false"}
-        ${spread(labelAttributes)}
-    >
-        <span
-            class="pf-c-form__label-text"
-            data-required-label=${required ? msg("Required") : nothing}
-            >${children}</span
+    return (
+        <label
+            id={id}
+            slot={slot}
+            className={["pf-c-form__label", className]}
+            htmlFor={htmlFor}
+            aria-label={ariaLabel}
+            aria-required={required ? "true" : "false"}
         >
-    </label>`;
+            <span
+                className="pf-c-form__label-text"
+                data-required-label={required ? msg("Required") : nothing}
+            >
+                {children}
+            </span>
+        </label>
+    );
 };
