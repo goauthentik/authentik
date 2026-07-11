@@ -95,6 +95,25 @@ describe("mapJSXProps", () => {
             const mapped = mapJSXProps({ level: "warning" }, FakeBadgeElement);
             expect(mapped.bindings).toEqual({ "data-level": "warning" });
         });
+
+        it("treats a declaration without an attribute key as an attribute (lit default)", () => {
+            const BareDeclarationElement = {
+                elementProperties: new Map<PropertyKey, PropertyDeclaration>([
+                    ["label", { type: String }],
+                    ["active", { type: Boolean }],
+                    ["items", { attribute: false }],
+                ]),
+                prototype: {},
+            };
+
+            const mapped = mapJSXProps({ label: "hi", active: true, items: [] }, BareDeclarationElement);
+
+            expect(mapped.bindings).toEqual({
+                "label": "hi",
+                "?active": true,
+                ".items": [],
+            });
+        });
     });
 
     describe("fallback heuristics (native elements and undeclared props)", () => {
