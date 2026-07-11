@@ -16,8 +16,7 @@ export type FC<P extends object = object> = (
     props: P & { children?: JSXTypes.JSXChildren },
 ) => SlottedTemplateResult | SlottedTemplateResult[];
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type ElementType = string | FC<any> | CustomElementConstructor;
+export type ElementType = string | FC<never> | CustomElementConstructor;
 
 function isCustomElementConstructor(type: object): type is CustomElementConstructor {
     return typeof type === "function" && "prototype" in type
