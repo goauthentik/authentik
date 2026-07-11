@@ -1,4 +1,5 @@
 import { createElementTemplate } from "./element.js";
+import type * as JSXTypes from "./jsx.js";
 import { mapJSXProps, type ReactiveElementConstructorLike } from "./properties.js";
 import type { SlottedTemplateResult } from "./types.js";
 
@@ -12,10 +13,11 @@ export type CustomElementConstructor<T extends HTMLElement = HTMLElement> = new 
  * `LitFC` in `web/`, which continues to work as a plain function call.
  */
 export type FC<P extends object = object> = (
-    props: P & { children?: unknown },
+    props: P & { children?: JSXTypes.JSXChildren },
 ) => SlottedTemplateResult | SlottedTemplateResult[];
 
-export type ElementType = string | FC | CustomElementConstructor;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type ElementType = string | FC<any> | CustomElementConstructor;
 
 function isCustomElementConstructor(type: object): type is CustomElementConstructor {
     return typeof type === "function" && "prototype" in type
@@ -46,7 +48,16 @@ export function jsx(
 ): unknown {
     if (typeof type === "function") {
         if (isCustomElementConstructor(type)) {
-            const tagName = customElements.getName(type);
+            // `customElements.getName` expects the DOM lib's own
+            // `CustomElementConstructor` (`new (...params: any[]) => HTMLElement`),
+            // which doesn't structurally unify with this package's more permissive
+            // `CustomElementConstructor` (a `never[]`-param constructor type, chosen
+            // so any class — regardless of its own constructor signature — satisfies
+            // it). The runtime value is unaffected; only the DOM lib type needs
+            // satisfying here.
+            const tagName = customElements.getName(
+                type as unknown as Parameters<typeof customElements.getName>[0],
+            );
 
             if (!tagName) {
                 throw new TypeError(
@@ -82,4 +93,27 @@ export const jsxs = jsx;
  */
 export function Fragment(props: { children?: unknown }): unknown {
     return filterChildren(props.children);
+}
+
+/**
+ * The JSX namespace TypeScript resolves for `jsxImportSource`.
+ */
+export namespace JSX {
+    export type Element = SlottedTemplateResult | SlottedTemplateResult[];
+    export type ElementType = import("./jsx-runtime.js").ElementType;
+
+    // TypeScript's JSX class-component check requires `ElementClass` to be an
+    // interface (not a type alias); it has no members of its own to add.
+    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+    export interface ElementClass extends HTMLElement {}
+
+    export interface ElementChildrenAttribute {
+        children: object;
+    }
+
+    export interface IntrinsicAttributes {
+        key?: PropertyKey;
+    }
+
+    export type IntrinsicElements = JSXTypes.IntrinsicElements;
 }

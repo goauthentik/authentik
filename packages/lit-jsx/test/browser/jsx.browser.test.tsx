@@ -25,6 +25,7 @@ describe("jsx runtime", () => {
     });
 
     it("renders a registered custom element class as a tag", async () => {
+        // @ts-expect-error - TODO(task-8): class-as-JSX-tag prop typing lands in Task 8
         const host = mount(<AkTestBadge label="hi" active items={["a", "b"]} />);
         const badge = host.querySelector("ak-test-badge")!;
         await badge.updateComplete;
@@ -80,7 +81,10 @@ describe("jsx runtime", () => {
         const host = mount(
             <div>
                 <button onClick={onClick}>go</button>
-                <AkTestBadge label="evt" onAkChange={onAkChange} />
+                {
+                    // @ts-expect-error - TODO(task-8): class-as-JSX-tag prop typing lands in Task 8
+                    <AkTestBadge label="evt" onAkChange={onAkChange} />
+                }
             </div>,
         );
 

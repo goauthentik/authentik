@@ -32,6 +32,11 @@ export default defineConfig({
                     name: "unit",
                     environment: "node",
                     include: ["test/unit/**/*.test.{ts,tsx}"],
+                    typecheck: {
+                        enabled: true,
+                        include: ["test/unit/**/*.test-d.{ts,tsx}"],
+                        tsconfig: "./tsconfig.test.json",
+                    },
                 },
             },
             {

@@ -10,5 +10,6 @@
             "@goauthentik/lit-jsx/jsx-dev-runtime": ["./src/jsx-dev-runtime.ts"]
         }
     },
-    "include": ["src/**/*", "test/**/*", "vitest.config.ts"]
+    "include": ["src/**/*", "test/**/*", "vitest.config.ts"],
+    "exclude": ["dist", "node_modules"]
 }
