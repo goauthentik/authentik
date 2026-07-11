@@ -103,6 +103,7 @@
         "@goauthentik/core": "workspace:*",
         "@goauthentik/esbuild-plugin-live-reload": "^2.0.1",
         "@goauthentik/eslint-config": "^1.3.0",
+        "@goauthentik/lit-jsx": "link:packages/lit-jsx",
         "@goauthentik/prettier-config": "^3.5.0",
         "@goauthentik/tsconfig": "^1.0.9",
         "@hcaptcha/types": "^1.2.0",

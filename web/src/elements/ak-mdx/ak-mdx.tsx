@@ -1,3 +1,4 @@
+/** @jsxImportSource react */
 import "#elements/Alert";
 
 import { globalAK } from "#common/global";
