@@ -115,4 +115,17 @@ export namespace JSX {
     }
 
     export type IntrinsicElements = JSXTypes.IntrinsicElements;
+
+    /**
+     * Compute a class tag's props from its instance type. TypeScript calls
+     * this for every capitalized tag with a construct signature; function
+     * components pass through their declared props (`P`) untouched.
+     */
+    export type LibraryManagedAttributes<C, P> = C extends abstract new (
+        ...args: never[]
+    ) => infer E
+        ? E extends HTMLElement
+            ? JSXTypes.CustomElementProps<E>
+            : never
+        : P;
 }

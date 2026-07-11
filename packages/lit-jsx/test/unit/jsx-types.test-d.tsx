@@ -1,4 +1,7 @@
 import { DOMEventHandlerNames } from "@goauthentik/lit-jsx";
+import type { FC } from "@goauthentik/lit-jsx";
+
+import { html, LitElement } from "lit";
 
 import { describe, expectTypeOf, it } from "vitest";
 
@@ -52,5 +55,77 @@ describe("intrinsic elements", () => {
     it("rejects wrong prop value types", () => {
         // @ts-expect-error - width is numeric
         <img width="not-a-number-type" src="/x.png" alt="" />;
+    });
+});
+
+class AkTypedWidget extends LitElement {
+    static properties = {
+        label: { type: String },
+        count: { type: Number },
+        active: { type: Boolean },
+    };
+
+    declare label: string;
+    declare count: number;
+    declare active: boolean;
+
+    render() {
+        return html`${this.label}`;
+    }
+}
+
+describe("custom element classes as tags", () => {
+    it("accepts declared properties and custom event handlers", () => {
+        <AkTypedWidget
+            label="hi"
+            count={3}
+            active
+            onAkChange={(event) => {
+                expectTypeOf(event).toEqualTypeOf<Event>();
+            }}
+        />;
+    });
+
+    it("accepts base props and refs", () => {
+        <AkTypedWidget
+            label="hi"
+            class="x"
+            slot="s"
+            data-x="1"
+            ref={(element) => {
+                expectTypeOf(element).toEqualTypeOf<AkTypedWidget | undefined>();
+            }}
+        />;
+    });
+
+    it("rejects wrong property types and non-element classes", () => {
+        // @ts-expect-error - count is a number
+        <AkTypedWidget count="three" />;
+
+        class NotAnElement {}
+        // @ts-expect-error - not an HTMLElement subclass
+        <NotAnElement />;
+    });
+});
+
+describe("function components", () => {
+    const Panel: FC<{ heading: string }> = ({ heading, children }) => (
+        <section>
+            <h2>{heading}</h2>
+            {children}
+        </section>
+    );
+
+    it("accepts declared props and children", () => {
+        <Panel heading="h">
+            <p>body</p>
+        </Panel>;
+    });
+
+    it("rejects missing and unknown props", () => {
+        // @ts-expect-error - heading is required
+        <Panel />;
+        // @ts-expect-error - unknown prop
+        <Panel heading="h" mystery={1} />;
     });
 });
