@@ -1,7 +1,7 @@
 # lit-jsx: JSX for Lit templates in the authentik web UI
 
 **Date:** 2026-07-09
-**Status:** Approved (pending spec review)
+**Status:** Implemented (package + web opt-in + ak-label pilot); migration steps 3–4 (unsafe.ts refactor, broad migration) deferred
 **Package:** `@goauthentik/lit-jsx` (`packages/lit-jsx`)
 
 ## Goal
@@ -32,9 +32,9 @@ Exports:
 | Entry | Contents |
 | --- | --- |
 | `./jsx-runtime`, `./jsx-dev-runtime` | `jsx`, `jsxs`, `jsxDEV`, `Fragment`, and the `JSX` namespace types. What `jsxImportSource` resolves. |
-| `.` | Public API: prop-mapping core (`mapElementProps`, `resolveEventName`, prefix resolution), `Fragment`, `FC`, and public types. |
+| `.` | Public API: prop-mapping core (`mapJSXProps`, `resolveEventName`, prefix resolution), `Fragment`, `FC`, and public types. |
 
-`web/src/elements/utils/unsafe.ts` becomes a thin consumer of the prop-mapping core; `StrictUnsafe` keeps its name and strictness as the server-provided-tag-name entry point.
+`web/src/elements/utils/unsafe.ts` becomes a thin consumer of the prop-mapping core in a follow-up; `StrictUnsafe` keeps its name and strictness as the server-provided-tag-name entry point.
 
 ## Runtime semantics
 
@@ -63,7 +63,7 @@ Exports:
 
 Authored `JSX` namespace, no `@types/react`:
 
-- `JSX.Element` = `SlottedTemplateResult`. The type-level vocabulary this package needs (`SlottedTemplateResult`, `TemplatedProperties`, `LitPropertyRecord`) moves *into* the package — it cannot depend on `web/` — and `web/src/elements/types.ts` re-exports them so existing imports keep working.
+- `JSX.Element` = `SlottedTemplateResult`. The type-level vocabulary this package needs (`SlottedTemplateResult`, `TemplatedProperties`, `LitPropertyRecord`) moves *into* the package — it cannot depend on `web/` — and `web/src/elements/types.ts` will re-export them so existing imports keep working; deferred alongside the `unsafe.ts` refactor below.
 - `JSX.IntrinsicElements`: mapped type over `HTMLElementTagNameMap` — global + element-specific attributes plus `on*` handler props generated from event-map types. `ak-*` registrations get `TemplatedProperties`-style prop typing automatically.
 - **Class-as-tag** via `JSX.LibraryManagedAttributes`: constructor ↦ `TemplatedProperties<InstanceType<C>>` + event handler props. This is where round one drowned, so it gets the densest test coverage.
 - `FC<P>`: this package's function-component type (children-in-props). **`LitFC` in `web/src/elements/types.ts` is unchanged** — all ~15 existing `LitFC` components destructure props only, so they remain callable both as plain functions and as JSX tags; they migrate to `FC` opportunistically.

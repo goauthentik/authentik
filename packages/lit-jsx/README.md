@@ -47,12 +47,19 @@ const template = (
   property. Undeclared props fall back to: `value`/`checked`/`selected` →
   property; booleans → boolean attribute; objects/functions → property;
   other primitives → attribute.
-- **Events**: resolved through a generated map covering the full DOM event
-  set — `onClick` → `click`, `onBeforeMatch` → `beforematch`, `onCommand` →
-  `command`, `onPointerRawUpdate` → `pointerrawupdate`, and so on. Names
-  outside that map kebab-case, so `onAkChange` → `ak-change`. No casing
-  surprises: the runtime map and the JSX event-handler types share one
+- **Events**: resolved through a hand-authored map covering the full DOM
+  event set, completeness-verified at the type level (a `satisfies` clause
+  plus a type test that every `GlobalEventHandlersEventMap` name is
+  covered) — `onClick` → `click`, `onBeforeMatch` → `beforematch`,
+  `onCommand` → `command`, `onPointerRawUpdate` → `pointerrawupdate`, and so
+  on. Names outside that map kebab-case, so `onAkChange` → `ak-change`. No
+  casing surprises: the runtime map and the JSX event-handler types share one
   source of truth.
+- **Intrinsic `ak-*` tag names** resolve `elementProperties` only when the
+  element is registered in `customElements` at render time. An unregistered
+  tag name falls back to the undeclared-prop heuristics above silently;
+  an unregistered **class** tag (`<AppIcon />`) throws instead (see Class
+  tags, above).
 - **`class`** accepts strings, numbers, arrays, records (clsx-style), or the
   `classMap` directive. Falsy values — `false`, `null`, `undefined`, `0`,
   `NaN` — are dropped, same as clsx. `className` and `htmlFor` are accepted

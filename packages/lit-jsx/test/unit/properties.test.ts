@@ -6,8 +6,7 @@ import { nothing, type PropertyDeclaration } from "lit";
 
 /**
  * A stand-in for a LitElement constructor: `mapJSXProps` only reads
- * `elementProperties`, `observedAttributes`, and `prototype`, so unit tests
- * need no DOM.
+ * `elementProperties`, so unit tests need no DOM.
  */
 const FakeBadgeElement = {
     elementProperties: new Map<PropertyKey, PropertyDeclaration>([
@@ -17,8 +16,6 @@ const FakeBadgeElement = {
         ["items", { attribute: false }],
         ["count", { type: Number, attribute: true }],
     ]),
-    observedAttributes: ["label", "active", "data-level", "count"],
-    prototype: {},
 };
 
 describe("mapJSXProps", () => {
@@ -103,7 +100,6 @@ describe("mapJSXProps", () => {
                     ["active", { type: Boolean }],
                     ["items", { attribute: false }],
                 ]),
-                prototype: {},
             };
 
             const mapped = mapJSXProps(

@@ -58,6 +58,11 @@ function styleBinding(styleValue: unknown): unknown {
  * directives work; everything else flows through the spread directive.
  * Lit's static-html cache keys on the assembled strings, so each tag name
  * reuses one cached template shape.
+ *
+ * Expects `mapped.children` to already be filtered (booleans/nullish
+ * dropped) — `jsx()` does this filtering before calling in here. Callers that
+ * invoke this directly with, e.g., `children: false` for a void element will
+ * throw, since only `undefined`/`null` are treated as "no children".
  */
 export function createElementTemplate(tagName: string, mapped: MappedProps): TemplateResult {
     const tag = staticTag(tagName);

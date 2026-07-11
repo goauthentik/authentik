@@ -50,6 +50,9 @@ function renderTag(
     return createElementTemplate(tagName, mapped);
 }
 
+// The `unknown` return is deliberate: TypeScript types a JSX expression from
+// the `JSX` namespace below (`JSX.Element`), not from this function's own
+// signature, so the precise return type here is never surfaced to callers.
 export function jsx(
     type: ElementType,
     props: Record<string, unknown>,

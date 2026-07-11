@@ -81,8 +81,6 @@ export function isDirectiveResult(value: unknown): boolean {
  */
 export interface ReactiveElementConstructorLike {
     elementProperties?: Map<PropertyKey, PropertyDeclaration>;
-    observedAttributes?: readonly string[];
-    prototype: object;
 }
 
 export interface MappedProps {
