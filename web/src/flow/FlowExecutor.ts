@@ -123,6 +123,8 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
 
     #api: FlowsApi;
 
+    #activeRequest?: Promise<ChallengeTypes>;
+
     // Listen for challenge-forwarding events from iframe-based third-party verifiers (Device Compliance)
     #flowIframeMessageController = new FlowIframeMessageController(this);
 
@@ -225,13 +227,19 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
             return Promise.resolve();
         }
 
+        if (this.#activeRequest) {
+            this.#logger.debug("Refresh already in progress, reusing active request");
+            return this.#activeRequest.then(() => true).catch(() => false);
+        }
+
         this.loading = true;
 
-        return this.#api
-            .flowsExecutorGet({
-                flowSlug: this.flowSlug,
-                query: window.location.search.substring(1),
-            })
+        this.#activeRequest = this.#api.flowsExecutorGet({
+            flowSlug: this.flowSlug,
+            query: window.location.search.substring(1),
+        });
+
+        return this.#activeRequest
             .then((challenge) => {
                 this.challenge = challenge;
                 return !!this.challenge;
@@ -244,6 +252,7 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
             })
             .finally(() => {
                 this.loading = false;
+                this.#activeRequest = undefined;
             });
     };
 
