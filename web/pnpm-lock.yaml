@@ -320,6 +320,9 @@ importers:
       knip:
         specifier: ^6.23.0
         version: 6.23.0
+      lex:
+        specifier: workspace:*
+        version: link:packages/lex
       lit-analyzer:
         specifier: ^2.0.3
         version: 2.0.3

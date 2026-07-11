@@ -41,10 +41,18 @@ if (!values.version) {
 const releaseVersion = values.version.replace(/^v/, "");
 const apiVersion = (values["api-version"] || releaseVersion).replace(/^v/, "");
 
+/**
+ * @param {string} path
+ * @returns {Promise<any>}
+ */
 async function readManifest(path) {
     return JSON.parse(await readFile(path, "utf8"));
 }
 
+/**
+ * @param {string} path
+ * @param {any} manifest
+ */
 async function writeManifest(path, manifest) {
     await writeFile(path, `${JSON.stringify(manifest, null, 4)}\n`);
 }
