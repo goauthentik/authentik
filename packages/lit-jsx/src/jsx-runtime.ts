@@ -40,6 +40,16 @@ function filterChildren(children: unknown): unknown {
     return children;
 }
 
+function renderTag(
+    tagName: string,
+    props: Record<string, unknown>,
+    ElementConstructor?: ReactiveElementConstructorLike,
+): unknown {
+    const mapped = mapJSXProps(props, ElementConstructor);
+    mapped.children = filterChildren(mapped.children);
+    return createElementTemplate(tagName, mapped);
+}
+
 export function jsx(
     type: ElementType,
     props: Record<string, unknown>,
@@ -73,16 +83,6 @@ export function jsx(
     }
 
     return renderTag(type, props, customElements.get(type) as ReactiveElementConstructorLike);
-}
-
-function renderTag(
-    tagName: string,
-    props: Record<string, unknown>,
-    ElementConstructor?: ReactiveElementConstructorLike,
-): unknown {
-    const mapped = mapJSXProps(props, ElementConstructor);
-    mapped.children = filterChildren(mapped.children);
-    return createElementTemplate(tagName, mapped);
 }
 
 export const jsxs = jsx;

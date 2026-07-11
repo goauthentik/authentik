@@ -1,12 +1,12 @@
-import { createElementTemplate, mapJSXProps } from "@goauthentik/lit-jsx";
+import { AkTestBadge } from "../fixtures/elements.js";
 
-import { render } from "lit";
-import { classMap } from "lit/directives/class-map.js";
-import { createRef, ref } from "lit/directives/ref.js";
+import { createElementTemplate, mapJSXProps } from "@goauthentik/lit-jsx";
 
 import { describe, expect, it } from "vitest";
 
-import { AkTestBadge } from "../fixtures/elements.js";
+import { render } from "lit";
+import { classMap } from "lit/directives/class-map.js";
+import { createRef } from "lit/directives/ref.js";
 
 function mount(template: unknown): HTMLDivElement {
     const host = document.createElement("div");
@@ -26,7 +26,12 @@ function renderProps(
 describe("createElementTemplate", () => {
     it("renders attributes, class, and children on an intrinsic element", () => {
         const host = mount(
-            renderProps("section", { "id": "hello", "class": "a b", "children": "Hi", "data-x": "1" }),
+            renderProps("section", {
+                "id": "hello",
+                "class": "a b",
+                "children": "Hi",
+                "data-x": "1",
+            }),
         );
         const section = host.querySelector("section#hello");
 

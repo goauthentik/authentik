@@ -1,10 +1,10 @@
-import type { FC } from "@goauthentik/lit-jsx";
+import { AkTestBadge, AkTestUnregistered } from "../fixtures/elements.js";
 
-import { html, render } from "lit";
+import type { FC } from "@goauthentik/lit-jsx";
 
 import { describe, expect, it, vi } from "vitest";
 
-import { AkTestBadge, AkTestUnregistered } from "../fixtures/elements.js";
+import { html, render } from "lit";
 
 function mount(template: unknown): HTMLDivElement {
     const host = document.createElement("div");
@@ -17,6 +17,7 @@ describe("jsx runtime", () => {
     it("renders intrinsic elements with children", () => {
         const host = mount(
             <section id="root">
+                {/* eslint-disable-next-line react/no-unknown-property -- lit-jsx uses `class`, not `className` like React */}
                 <p class="lead">Hello</p>
             </section>,
         );
@@ -48,6 +49,7 @@ describe("jsx runtime", () => {
 
     it("calls function components with children in props", () => {
         const Wrapper: FC<{ title: string }> = ({ title, children }) => (
+            // eslint-disable-next-line react/no-unknown-property -- lit-jsx uses `class`, not `className` like React
             <div class="wrapper" title={title}>
                 {children}
             </div>
@@ -111,7 +113,7 @@ describe("jsx runtime", () => {
         const host = mount(
             <ul>
                 {items.map((item) => (
-                    <li>{item}</li>
+                    <li key={item}>{item}</li>
                 ))}
                 {false}
                 {null}

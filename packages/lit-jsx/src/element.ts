@@ -1,10 +1,10 @@
-import { nothing, type TemplateResult } from "lit";
-import { ref, type RefOrCallback } from "lit/directives/ref.js";
-import { styleMap, type StyleInfo } from "lit/directives/style-map.js";
-import { html as staticHTML, unsafeStatic, type StaticValue } from "lit/static-html.js";
-
 import { isDirectiveResult, type MappedProps } from "./properties.js";
 import { spread } from "./spread.js";
+
+import { nothing, type TemplateResult } from "lit";
+import { ref, type RefOrCallback } from "lit/directives/ref.js";
+import { type StyleInfo, styleMap } from "lit/directives/style-map.js";
+import { html as staticHTML, type StaticValue, unsafeStatic } from "lit/static-html.js";
 
 /**
  * HTML elements that cannot have children or a closing tag.
@@ -67,7 +67,9 @@ export function createElementTemplate(tagName: string, mapped: MappedProps): Tem
 
     if (VoidElementTagNames.has(tagName)) {
         if (mapped.children !== undefined && mapped.children !== null) {
-            throw new TypeError(`lit-jsx: <${tagName}> is a void element and cannot have children.`);
+            throw new TypeError(
+                `lit-jsx: <${tagName}> is a void element and cannot have children.`,
+            );
         }
 
         return staticHTML`<${tag} class=${classBinding} style=${style} ${refDirective} ${spread(mapped.bindings)}>`;

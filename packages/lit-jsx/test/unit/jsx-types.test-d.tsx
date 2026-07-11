@@ -1,9 +1,9 @@
-import { DOMEventHandlerNames } from "@goauthentik/lit-jsx";
 import type { FC } from "@goauthentik/lit-jsx";
-
-import { html, LitElement } from "lit";
+import { DOMEventHandlerNames } from "@goauthentik/lit-jsx";
 
 import { describe, expectTypeOf, it } from "vitest";
+
+import { html, LitElement } from "lit";
 
 describe("DOMEventHandlerNames completeness", () => {
     it("covers every GlobalEventHandlersEventMap event", () => {
@@ -18,6 +18,7 @@ describe("intrinsic elements", () => {
     it("accepts global attributes, class values, and typed event handlers", () => {
         <div
             id="a"
+            // eslint-disable-next-line react/no-unknown-property -- lit-jsx uses `class`, not `className` like React
             class={["x", { y: true }]}
             slot="body"
             title="t"
@@ -49,7 +50,8 @@ describe("intrinsic elements", () => {
         // @ts-expect-error - not a real element
         <notarealtag />;
         // @ts-expect-error - misspelled handler
-        <div onClik={() => {}} />;
+        // eslint-disable-next-line react/no-unknown-property -- deliberately misspelled handler for the negative type-test above
+        <div onClik={() => undefined} />;
     });
 
     it("rejects wrong prop value types", () => {

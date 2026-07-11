@@ -1,7 +1,7 @@
-import { nothing, type PropertyDeclaration } from "lit";
-
-import { normalizeClassValue, type ClassValue } from "./class-names.js";
+import { type ClassValue, normalizeClassValue } from "./class-names.js";
 import { resolveEventName } from "./events.js";
+
+import { nothing, type PropertyDeclaration } from "lit";
 
 export const Prefix = {
     Property: ".",

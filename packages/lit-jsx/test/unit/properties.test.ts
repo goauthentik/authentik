@@ -1,8 +1,8 @@
 import { mapJSXProps } from "@goauthentik/lit-jsx";
 
-import { nothing, type PropertyDeclaration } from "lit";
+import { describe, expect, it, vi } from "vitest";
 
-import { describe, expect, it } from "vitest";
+import { nothing, type PropertyDeclaration } from "lit";
 
 /**
  * A stand-in for a LitElement constructor: `mapJSXProps` only reads
@@ -24,7 +24,7 @@ const FakeBadgeElement = {
 describe("mapJSXProps", () => {
     describe("special props", () => {
         it("captures children, class, style, and ref out of the bindings", () => {
-            const onRef = () => {};
+            const onRef = vi.fn();
             const mapped = mapJSXProps({
                 children: "text",
                 class: ["a", { b: true }],
@@ -48,7 +48,7 @@ describe("mapJSXProps", () => {
         });
 
         it("maps htmlFor to the for attribute", () => {
-            expect(mapJSXProps({ htmlFor: "field-1" }).bindings).toEqual({ "for": "field-1" });
+            expect(mapJSXProps({ htmlFor: "field-1" }).bindings).toEqual({ for: "field-1" });
         });
 
         it("ignores key", () => {
@@ -64,8 +64,8 @@ describe("mapJSXProps", () => {
 
     describe("event props", () => {
         it("binds DOM and custom events with the @ sigil", () => {
-            const onClick = () => {};
-            const onAkChange = () => {};
+            const onClick = vi.fn();
+            const onAkChange = vi.fn();
             const mapped = mapJSXProps({ onClick, onAkChange });
 
             expect(mapped.bindings).toEqual({
@@ -106,7 +106,10 @@ describe("mapJSXProps", () => {
                 prototype: {},
             };
 
-            const mapped = mapJSXProps({ label: "hi", active: true, items: [] }, BareDeclarationElement);
+            const mapped = mapJSXProps(
+                { label: "hi", active: true, items: [] },
+                BareDeclarationElement,
+            );
 
             expect(mapped.bindings).toEqual({
                 "label": "hi",
@@ -131,7 +134,7 @@ describe("mapJSXProps", () => {
         });
 
         it("binds objects and functions as properties", () => {
-            const callback = () => {};
+            const callback = vi.fn();
             const options = { a: 1 };
             const mapped = mapJSXProps({ callback, options });
             expect(mapped.bindings).toEqual({ ".callback": callback, ".options": options });
@@ -139,7 +142,7 @@ describe("mapJSXProps", () => {
 
         it("binds primitives as attributes", () => {
             const mapped = mapJSXProps({ id: "x", tabindex: 0, title: "t" });
-            expect(mapped.bindings).toEqual({ "id": "x", "tabindex": 0, "title": "t" });
+            expect(mapped.bindings).toEqual({ id: "x", tabindex: 0, title: "t" });
         });
     });
 });

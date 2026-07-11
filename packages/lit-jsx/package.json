@@ -11,8 +11,8 @@
     "scripts": {
         "build": "tsc -p .",
         "lint": "eslint --fix .",
-        "lint-check": "eslint --max-warnings 0 .",
         "lint:types": "tsc -p tsconfig.test.json --noEmit",
+        "lint-check": "eslint --max-warnings 0 .",
         "prepare": "tsc -p .",
         "prettier": "prettier --write .",
         "prettier-check": "prettier --check .",
@@ -45,7 +45,9 @@
     "peerDependencies": {
         "lit": "^3.3.3"
     },
-    "files": ["dist/**"],
+    "files": [
+        "dist/**"
+    ],
     "engines": {
         "node": ">=24"
     },

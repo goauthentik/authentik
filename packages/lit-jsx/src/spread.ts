@@ -24,7 +24,8 @@ import { nothing } from "lit";
 import { AsyncDirective, directive } from "lit/async-directive.js";
 import type { ElementPart } from "lit/directive.js";
 
-type EventListenerWithOptions = EventListenerOrEventListenerObject & Partial<AddEventListenerOptions>;
+type EventListenerWithOptions = EventListenerOrEventListenerObject &
+    Partial<AddEventListenerOptions>;
 
 type SpreadData = Record<string, unknown>;
 
@@ -79,7 +80,11 @@ class SpreadDirective extends AsyncDirective {
                     const prevHandler = prevData[key];
 
                     if (prevHandler) {
-                        element.removeEventListener(name, this, prevHandler as EventListenerWithOptions);
+                        element.removeEventListener(
+                            name,
+                            this,
+                            prevHandler as EventListenerWithOptions,
+                        );
                     }
 
                     element.addEventListener(name, this, value as EventListenerWithOptions);
@@ -122,7 +127,8 @@ class SpreadDirective extends AsyncDirective {
         for (const key in prevData) {
             if (!Object.prototype.hasOwnProperty.call(prevData, key)) continue;
 
-            const removed = !data || !(key in data) || data[key] === undefined || data[key] === null;
+            const removed =
+                !data || !(key in data) || data[key] === undefined || data[key] === null;
 
             if (!removed) continue;
 
