@@ -19,6 +19,11 @@ export default defineConfig({
             "./assets/fonts": join(patternflyPath, "assets", "fonts"),
             "./assets/pficon": join(patternflyPath, "assets", "pficon"),
         },
+        // `@goauthentik/lit-jsx` carries its own linked `lit`; force a
+        // single copy so Lit doesn't warn about (or break on) duplicate versions.
+        // @see web/scripts/build-web.mjs's `litDedupeAlias` for the esbuild (production build)
+        // equivalent.
+        dedupe: ["lit", "lit-html", "lit-element", "@lit/reactive-element"],
     },
     optimizeDeps: {
         // Fixes dependency resolution issue associated with `npm link`ed packages.

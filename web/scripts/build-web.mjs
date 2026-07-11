@@ -4,7 +4,9 @@
 
 import "@goauthentik/core/environment/load/node";
 
+import { existsSync } from "node:fs";
 import * as fs from "node:fs/promises";
+import { createRequire } from "node:module";
 import * as path from "node:path";
 
 import { copyAssets } from "./build-assets.mjs";
@@ -67,6 +69,60 @@ const BASE_ESBUILD_PLUGINS = [
 ];
 
 /**
+ * Packages whose copy must be forced to resolve to this workspace's own install, mirroring
+ * `web/vite.config.js`'s `resolve.dedupe`.
+ *
+ * `packages/lit-jsx/dist` (and `packages/truncator`) depend on `lit` themselves, so without this
+ * an entry point can end up bundling two separate copies of the same Lit version, which Lit
+ * detects at runtime and warns about (and which can also silently break custom element
+ * registration).
+ *
+ * @type {ReadonlyArray<string>}
+ */
+const LIT_DEDUPE_PACKAGES = ["lit", "lit-html", "lit-element", "@lit/reactive-element"];
+
+const nodeRequire = createRequire(import.meta.url);
+
+/**
+ * Resolve a bare package name to the absolute directory of the copy Node's resolution algorithm
+ * would find first.
+ *
+ * This intentionally doesn't use `resolvePackage()` from `@goauthentik/core/paths/node`: that
+ * helper resolves via the package's `./package.json` export, but none of the `LIT_DEDUPE_PACKAGES`
+ * expose that subpath in their `exports` map. Instead, this walks the same `node_modules` lookup
+ * order Node would use (`require.resolve.paths`) and takes the first directory that actually
+ * contains the package.
+ *
+ * @param {string} packageName
+ * @returns {string}
+ */
+function resolvePackageDirectory(packageName) {
+    const candidateRoots = nodeRequire.resolve.paths(packageName) ?? [];
+
+    for (const root of candidateRoots) {
+        const candidate = path.join(root, packageName);
+
+        if (existsSync(path.join(candidate, "package.json"))) {
+            return candidate;
+        }
+    }
+
+    throw new Error(`🚫 Failed to resolve package "${packageName}"`);
+}
+
+/**
+ * Force a single copy so Lit doesn't warn about (or break on) duplicate versions in the
+ * production bundle.
+ *
+ * @see web/vite.config.js's `resolve.dedupe` for the Vite dev/test equivalent.
+ *
+ * @type {Record<string, string>}
+ */
+const litDedupeAlias = Object.fromEntries(
+    LIT_DEDUPE_PACKAGES.map((packageName) => [packageName, resolvePackageDirectory(packageName)]),
+);
+
+/**
  * @type {BuildOptions}
  */
 const BASE_ESBUILD_OPTIONS = {
@@ -98,6 +154,7 @@ const BASE_ESBUILD_OPTIONS = {
      * @see https://nodejs.org/api/packages.html#packages_conditional_exports
      */
     conditions: NodeEnvironment === "production" ? ["production"] : ["development", "production"],
+    alias: litDedupeAlias,
     plugins: BASE_ESBUILD_PLUGINS,
     define: bundleDefinitions,
     format: "esm",
