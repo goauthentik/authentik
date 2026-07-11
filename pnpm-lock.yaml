@@ -254,10 +254,6 @@ importers:
         version: 8.62.1(eslint@9.39.4(jiti@1.21.7))(typescript@6.0.3)
 
   packages/lit-jsx:
-    dependencies:
-      '@open-wc/lit-helpers':
-        specifier: ^0.7.0
-        version: 0.7.0(lit@3.3.3)
     devDependencies:
       '@goauthentik/eslint-config':
         specifier: link:../eslint-config
@@ -2134,11 +2130,6 @@ packages:
   '@nodelib/fs.walk@1.2.8':
     resolution: {integrity: sha512-oGB+UxlgWcgQkgwo8GcEGwemoTFt3FIO9ababBmaGwXIoBKZ+GTy0pP185beGg7Llih/NSHSV2XAs1lnznocSg==}
     engines: {node: '>= 8'}
-
-  '@open-wc/lit-helpers@0.7.0':
-    resolution: {integrity: sha512-4NBlx5ve0EvZplCRJbESm0MdMbRCw16alP2y76KAAAwzmFFXXrUj5hFwhw55+sSg5qaRRx6sY+s7usKgnNo3TQ==}
-    peerDependencies:
-      lit: ^2.0.0 || ^3.0.0
 
   '@oxc-project/types@0.139.0':
     resolution: {integrity: sha512-r9gHphtCs+1M7J0pw6Sn/hh/Wpa/iQrOOkrNAlVLF/gHq+/CJmHIWKKUUhdWjcD6CIa8idarspCsASiXCXvFUw==}
@@ -9848,10 +9839,6 @@ snapshots:
     dependencies:
       '@nodelib/fs.scandir': 2.1.5
       fastq: 1.20.1
-
-  '@open-wc/lit-helpers@0.7.0(lit@3.3.3)':
-    dependencies:
-      lit: 3.3.3
 
   '@oxc-project/types@0.139.0': {}
 

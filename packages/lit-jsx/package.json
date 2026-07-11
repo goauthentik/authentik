@@ -28,9 +28,6 @@
         "./jsx-runtime": "./dist/jsx-runtime.js",
         "./jsx-dev-runtime": "./dist/jsx-dev-runtime.js"
     },
-    "dependencies": {
-        "@open-wc/lit-helpers": "^0.7.0"
-    },
     "devDependencies": {
         "@goauthentik/eslint-config": "link:../eslint-config",
         "@goauthentik/prettier-config": "link:../prettier-config",

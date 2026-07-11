@@ -18,10 +18,17 @@ type WrappedPropertyDeclaration = PropertyDeclaration<unknown, unknown> & { wrap
  * Given a Lit property declaration, determine the sigil for rendering the
  * property as a property, attribute, or boolean attribute.
  *
- * Ported from `web/src/elements/utils/unsafe.ts`.
+ * Ported from `web/src/elements/utils/unsafe.ts`, with one correction: Lit's
+ * `elementProperties` map stores each declaration exactly as authored, so an
+ * omitted `attribute` key is `undefined`, not the normalized default of
+ * `true`. Only an *explicit* `attribute: false` should fall back to a
+ * property binding; `unsafe.ts`'s `!declaration.attribute` check treats the
+ * common no-`attribute`-key case (e.g. `{ type: String }`) the same as
+ * `attribute: false`, which misses reactive properties declared without
+ * spelling out `attribute: true`.
  */
 export function resolvePrefix(declaration: WrappedPropertyDeclaration): Prefix {
-    if (!declaration.attribute) {
+    if (declaration.attribute === false) {
         return Prefix.Property;
     }
 
