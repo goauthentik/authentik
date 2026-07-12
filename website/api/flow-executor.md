@@ -3,7 +3,7 @@ title: Flow executor (backend)
 sidebar_position: 2
 ---
 
-A big focus of authentik is the flows system, which allows you to combine and build complex conditional processes using stages and policies. Normally, these flows are automatically executed in the browser using authentik's [standard browser-based flow executor (/if/flows)](../add-secure-apps/flows-stages/flow/executors/if-flow).
+A big focus of authentik is the flows system, which allows you to combine and build complex conditional processes using stages and policies. Normally, these flows are automatically executed in the browser using authentik's [standard browser-based flow executor (/if/flows)](/docs/add-secure-apps/flows-stages/flow/executors/if-flow).
 
 However, any flow can be executed via an API from anywhere; in fact, that is what every flow executor does. With a few requests you can execute flows from anywhere, and integrate authentik even better — for example, to build a fully custom login UI in your own application.
 
@@ -11,7 +11,7 @@ However, any flow can be executed via an API from anywhere; in fact, that is wha
 The flow executor stores its state in the HTTP session, so you need to ensure that cookies are persisted between flow executor requests. If cookies are not persisted, each request creates a new session and the flow restarts from the beginning — the typical symptom is receiving the first challenge again after submitting a response.
 :::
 
-When a flow execution starts, authentik creates a [flow plan](../add-secure-apps/flows-stages/flow/planner) for the current session. The flow executor advances through that plan as each stage completes.
+When a flow execution starts, authentik creates a [flow plan](/docs/add-secure-apps/flows-stages/flow/planner) for the current session. The flow executor advances through that plan as each stage completes.
 
 The main endpoint for flow execution is `/api/v3/flows/executor/:slug`.
 
@@ -100,7 +100,7 @@ The `component` string acts as a discriminator: each challenge component maps to
 
 The officially supported [API clients](./clients) are generated from the same schema and include typed models for every challenge and response, which removes most of the guesswork when building a custom executor.
 
-For debugging flow executions — including inspecting the current plan and session — see the [Flow Inspector](../add-secure-apps/flows-stages/flow/inspector).
+For debugging flow executions — including inspecting the current plan and session — see the [Flow Inspector](/docs/add-secure-apps/flows-stages/flow/inspector).
 
 ## Example: username, password and TOTP login
 
@@ -165,5 +165,5 @@ If a stage with the component `ak-stage-access-denied` is returned, the flow has
 If a stage with the component `xak-flow-redirect` is returned, the flow has been executed successfully. The `to` field contains the URL the user should be redirected to.
 
 :::info
-Completing an authentication flow only results in an authenticated session if the flow includes a [User Login stage](../add-secure-apps/flows-stages/stages/user_login/). Without it, all stages will validate successfully and the flow will complete, but the session remains anonymous.
+Completing an authentication flow only results in an authenticated session if the flow includes a [User Login stage](/docs/add-secure-apps/flows-stages/stages/user_login/). Without it, all stages will validate successfully and the flow will complete, but the session remains anonymous.
 :::
