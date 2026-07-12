@@ -6,6 +6,8 @@ const scope: InterceptScope = {
     origin: "https://id.example.com",
     base: "/",
     interfaceName: "admin",
+    currentPathname: "/if/admin/overview",
+    currentSearch: "",
 };
 
 function ctx(overrides: Partial<AnchorClickContext> = {}): AnchorClickContext {
@@ -71,6 +73,30 @@ describe("decideInterception", () => {
         expect(
             decideInterception(ctx({ href: "https://id.example.com/media/x.png" }), scope),
         ).toBeNull();
+    });
+
+    it("lets the browser own a hash-only link on the current page", () => {
+        expect(
+            decideInterception(
+                ctx({ href: "https://id.example.com/if/admin/overview#section" }),
+                scope,
+            ),
+        ).toBeNull();
+    });
+
+    it("lets the browser own a link to the exact current URL", () => {
+        expect(
+            decideInterception(ctx({ href: "https://id.example.com/if/admin/overview" }), scope),
+        ).toBeNull();
+    });
+
+    it("claims a link to the current pathname with a different search", () => {
+        expect(
+            decideInterception(
+                ctx({ href: "https://id.example.com/if/admin/overview?page=2" }),
+                scope,
+            )?.pathname,
+        ).toBe("/if/admin/overview");
     });
 
     it("respects a non-root base path", () => {
