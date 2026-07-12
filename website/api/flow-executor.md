@@ -35,7 +35,7 @@ If your client encounters a `component` it does not implement, a practical fallb
 
 To initiate a new flow, execute a GET request:
 
-### `GET /api/v3/flows/executor/test-flow/?query=`
+### `GET /api/v3/flows/executor/test-flow/`
 
 Below is the response, for example for an Identification stage:
 
@@ -65,7 +65,7 @@ Note that the stage-specific fields describe what to render (for example, which 
 
 To respond to this challenge, send a response:
 
-### `POST /api/v3/flows/executor/test-flow/?query=`
+### `POST /api/v3/flows/executor/test-flow/`
 
 With this body:
 
@@ -110,7 +110,7 @@ Initiate the flow:
 
 ```shell
 curl -sS -L -c cookies.txt -b cookies.txt \
-  'https://authentik.company/api/v3/flows/executor/default-authentication-flow/?query=' \
+  'https://authentik.company/api/v3/flows/executor/default-authentication-flow/' \
   -H 'Accept: application/json'
 # -> challenge: ak-stage-identification
 ```
@@ -119,7 +119,7 @@ Submit the username:
 
 ```shell
 curl -sS -L -c cookies.txt -b cookies.txt \
-  'https://authentik.company/api/v3/flows/executor/default-authentication-flow/?query=' \
+  'https://authentik.company/api/v3/flows/executor/default-authentication-flow/' \
   -H 'Content-Type: application/json' -H 'Accept: application/json' \
   -d '{"component": "ak-stage-identification", "uid_field": "jens"}'
 # -> challenge: ak-stage-password
@@ -129,7 +129,7 @@ Submit the password:
 
 ```shell
 curl -sS -L -c cookies.txt -b cookies.txt \
-  'https://authentik.company/api/v3/flows/executor/default-authentication-flow/?query=' \
+  'https://authentik.company/api/v3/flows/executor/default-authentication-flow/' \
   -H 'Content-Type: application/json' -H 'Accept: application/json' \
   -d '{"component": "ak-stage-password", "password": "..."}'
 # -> challenge: ak-stage-authenticator-validate (if the user has a device enrolled)
@@ -139,7 +139,7 @@ If the user has an authenticator enrolled, the Authenticator Validation stage re
 
 ```shell
 curl -sS -L -c cookies.txt -b cookies.txt \
-  'https://authentik.company/api/v3/flows/executor/default-authentication-flow/?query=' \
+  'https://authentik.company/api/v3/flows/executor/default-authentication-flow/' \
   -H 'Content-Type: application/json' -H 'Accept: application/json' \
   -d '{"component": "ak-stage-authenticator-validate", "code": "123456"}'
 # -> challenge: xak-flow-redirect
