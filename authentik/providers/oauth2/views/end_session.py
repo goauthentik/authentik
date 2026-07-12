@@ -121,7 +121,7 @@ class EndSessionView(PolicyAccessView):
         queued after the iframe logout stage.
         """
         if SESSION_KEY_PLAN in request.session:
-            return HttpResponse(status=204)
+            return HttpResponse(status=200)
         return super().dispatch(request, *args, **kwargs)
 
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:

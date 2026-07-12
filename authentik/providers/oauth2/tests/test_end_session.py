@@ -226,7 +226,7 @@ class TestEndSessionView(OAuthTestCase):
             HTTP_HOST=self.brand.domain,
         )
 
-        self.assertEqual(response.status_code, 204)
+        self.assertEqual(response.status_code, 200)
         self.assertEqual(self.client.session[SESSION_KEY_PLAN].flow_pk, plan.flow_pk)
 
     def test_frontchannel_iframe_callback_preserves_injected_stages(self):
