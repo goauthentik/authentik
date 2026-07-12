@@ -193,6 +193,7 @@
         "typescript": "catalog:",
         "typescript-eslint": "^8.62.1",
         "unist-util-visit": "^5.1.0",
+        "urlpattern-polyfill": "^10.1.0",
         "vite": "^8.1.3",
         "vitest": "^4.1.10",
         "webcomponent-qr-code": "^1.3.0",
