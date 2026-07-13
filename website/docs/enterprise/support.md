@@ -1,7 +1,6 @@
 ---
-title: Get Enterprise support
+title: Enterprise support
 description: "Open and manage authentik Enterprise support tickets"
-sidebar_label: Enterprise support
 sidebar_position: 4
 ---
 
