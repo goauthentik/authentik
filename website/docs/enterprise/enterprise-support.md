@@ -33,7 +33,7 @@ Do not use a support ticket to report a suspected vulnerability. Follow the [sec
 
 ## Product version support
 
-authentik provides product support for the current release series and the immediately preceding release series. A release series is identified by year and month, such as `2026.5`. Support applies to the latest patch release in each supported series.
+authentik provides product support for the current major release and the immediately preceding major release. A major release is identified by year and month, such as `2026.5`.
 
 
 The [supported versions table](../security/policy.mdx#supported-versions) lists the release that currently receive fixes. 
