@@ -12,7 +12,7 @@ packages:
 # `scripts/node/lint-catalogs.ts` keeps them in sync with the other workspace roots.
 catalog:
   esbuild: "^0.28.1"
-  eslint: "^9.39.4"
+  eslint: "^10.6.0"
   prettier-plugin-packagejson: "^3.0.2"
   typescript: "^6.0.3"
 
