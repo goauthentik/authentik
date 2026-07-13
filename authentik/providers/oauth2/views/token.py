@@ -56,7 +56,7 @@ from authentik.events.signals import get_login_event
 from authentik.flows.planner import PLAN_CONTEXT_APPLICATION
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.policies.engine import PolicyEngine
-from authentik.providers.oauth2.dpop import DPoPError, DPoPValidator, code_sha256
+from authentik.providers.oauth2.dpop import DPoPError, DPoPValidator
 from authentik.providers.oauth2.errors import DeviceCodeError, TokenError, UserAuthError
 from authentik.providers.oauth2.id_token import IDToken
 from authentik.providers.oauth2.models import (
@@ -197,7 +197,7 @@ class TokenParams:
         try:
             kwargs = {}
             if raw_code is not None:
-                kwargs["expected_c_s256"] = code_sha256(raw_code)
+                kwargs["expected_c_s256"] = pkce_s256_challenge(raw_code)
             token_url = request.build_absolute_uri(reverse("authentik_providers_oauth2:token"))
             self.dpop_jwk = DPoPValidator().validate(
                 self.dpop_proof,

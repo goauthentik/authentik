@@ -20,7 +20,6 @@ from authentik.common.oauth.constants import (
 from authentik.core.models import Application
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
 from authentik.lib.generators import generate_id
-from authentik.providers.oauth2.dpop import code_sha256
 from authentik.providers.oauth2.models import (
     DeviceToken,
     GrantType,
@@ -32,6 +31,7 @@ from authentik.providers.oauth2.models import (
 )
 from authentik.providers.oauth2.tests.test_dpop import DPoPProofBuilder
 from authentik.providers.oauth2.tests.utils import OAuthTestCase
+from authentik.providers.oauth2.utils import pkce_s256_challenge
 
 
 class TestKeyBindingDevice(OAuthTestCase):
@@ -63,7 +63,7 @@ class TestKeyBindingDevice(OAuthTestCase):
             scope=[SCOPE_OPENID, SCOPE_OFFLINE_ACCESS, SCOPE_BOUND_KEY],
             dpop_jkt=self.dpop_builder.jkt,
         )
-        c_s256 = code_sha256(device_token.device_code)
+        c_s256 = pkce_s256_challenge(device_token.device_code)
         response = self.client.post(
             reverse("authentik_providers_oauth2:token"),
             data={

@@ -19,9 +19,9 @@ from jwt import encode as jwt_encode
 from authentik.providers.oauth2.dpop import (
     DPoPError,
     DPoPValidator,
-    code_sha256,
     jwk_thumbprint,
 )
+from authentik.providers.oauth2.utils import pkce_s256_challenge
 
 
 class DPoPProofBuilder:
@@ -203,14 +203,14 @@ class TestComputeCS256(TestCase):
             .rstrip(b"=")
             .decode("ascii")
         )
-        self.assertEqual(code_sha256(value), expected)
+        self.assertEqual(pkce_s256_challenge(value), expected)
 
     def test_code_sha256_empty(self):
         """Test c_s256 with empty string"""
         expected = (
             base64.urlsafe_b64encode(hashlib.sha256(b"").digest()).rstrip(b"=").decode("ascii")
         )
-        self.assertEqual(code_sha256(""), expected)
+        self.assertEqual(pkce_s256_challenge(""), expected)
 
 
 class TestDPoPValidator(TestCase):
@@ -227,7 +227,7 @@ class TestDPoPValidator(TestCase):
 
     def test_valid_proof(self):
         """Test a completely valid DPoP proof"""
-        c_s256 = code_sha256("test-code")
+        c_s256 = pkce_s256_challenge("test-code")
         proof = self.builder.build(c_s256=c_s256)
         result = self.validator.validate(
             proof,
@@ -346,14 +346,14 @@ class TestDPoPValidator(TestCase):
                 proof,
                 expected_htm="POST",
                 expected_htu=self.htu,
-                expected_c_s256=code_sha256("correct-code"),
+                expected_c_s256=pkce_s256_challenge("correct-code"),
             )
         self.assertIn("c_s256", str(cm.exception).lower())
 
     def test_c_s256_match(self):
         """Test acceptance when c_s256 matches"""
         code = "test-auth-code-123"
-        c_s256 = code_sha256(code)
+        c_s256 = pkce_s256_challenge(code)
         proof = self.builder.build(c_s256=c_s256)
         result = self.validator.validate(
             proof, expected_htm="POST", expected_htu=self.htu, expected_c_s256=c_s256
@@ -368,7 +368,7 @@ class TestDPoPValidator(TestCase):
                 proof,
                 expected_htm="POST",
                 expected_htu=self.htu,
-                expected_c_s256=code_sha256("some-code"),
+                expected_c_s256=pkce_s256_challenge("some-code"),
             )
         self.assertIn("c_s256", str(cm.exception).lower())
 

@@ -1,6 +1,5 @@
 """DPoP (Demonstrating Proof-of-Possession) utils"""
 
-import base64
 import hashlib
 import re
 import time
@@ -77,12 +76,6 @@ def jwk_thumbprint(jwk: dict) -> str:
 def is_valid_jkt(value: str) -> bool:
     """True if value is a well-formed base64url SHA-256 JWK thumbprint."""
     return bool(DPOP_JKT_RE.fullmatch(value))
-
-
-def code_sha256(value: str) -> str:
-    """Compute c_s256: BASE64URL(SHA256(ASCII(value)))"""
-    digest = hashlib.sha256(value.encode("ascii")).digest()
-    return base64.urlsafe_b64encode(digest).rstrip(b"=").decode("ascii")
 
 
 def canonical_public_jwk(jwk: dict) -> dict:
