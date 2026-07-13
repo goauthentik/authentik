@@ -116,10 +116,10 @@ class DPoPValidator:
         :raises DPoPError: If validation fails
         """
         header = self._extract_header(dpop_proof)
-        jwk = self._get_and_validate_jwk(header)
+        jwk, key = self._get_and_validate_jwk(header)
         jwk = canonical_public_jwk(jwk)
         alg = self._get_and_validate_alg(header)
-        payload = self._verify_signature(dpop_proof, jwk, alg)
+        payload = self._verify_signature(dpop_proof, jwk, alg, key)
         jti = self._validate_payload_claims(payload, expected_htm, expected_htu)
         self._check_jti_replay(jti)
         self._validate_optional_claims(payload, expected_c_s256, expected_jkt, jwk)
@@ -140,13 +140,18 @@ class DPoPValidator:
             raise DPoPError(f"Invalid DPoP typ header: {header.get('typ')}")
         return header
 
-    def _get_and_validate_jwk(self, header: dict) -> dict:
-        """Extract jwk from header and validate it."""
+    def _get_and_validate_jwk(self, header: dict) -> tuple[dict, PyJWK | None]:
+        """Extract jwk from header and validate it.
+
+        Returns the raw jwk dict together with the PyJWK already constructed
+        while validating an RSA key (or None for EC), so `_verify_signature`
+        can reuse it instead of re-parsing the same key material.
+        """
         jwk = header.get("jwk")
         if not isinstance(jwk, dict):
             raise DPoPError("Missing jwk in DPoP header")
-        self._validate_jwk(jwk)
-        return jwk
+        key = self._validate_jwk(jwk)
+        return jwk, key
 
     def _get_and_validate_alg(self, header: dict) -> str:
         """Extract and validate the alg header."""
@@ -157,10 +162,12 @@ class DPoPValidator:
             raise DPoPError(f"Unsupported DPoP algorithm: {alg}")
         return alg
 
-    def _verify_signature(self, dpop_proof: str, jwk: dict, alg: str) -> dict:
+    def _verify_signature(
+        self, dpop_proof: str, jwk: dict, alg: str, key: PyJWK | None = None
+    ) -> dict:
         """Verify the DPoP proof signature and return the payload."""
         try:
-            key = PyJWK.from_dict(jwk)
+            key = key or PyJWK.from_dict(jwk)
             return jwt_decode(dpop_proof, key.key, algorithms=[alg], options={"verify_iat": False})
         except (PyJWTError, InvalidTokenError, TypeError, ValueError) as exc:
             raise DPoPError("DPoP proof signature verification failed") from exc
@@ -224,12 +231,17 @@ class DPoPValidator:
             if not compare_digest(thumbprint, expected_jkt):
                 raise DPoPError("DPoP proof JWK thumbprint mismatch")
 
-    def _validate_jwk(self, jwk: dict) -> None:
-        """Ensure the JWK is a public asymmetric key without private material"""
+    def _validate_jwk(self, jwk: dict) -> PyJWK | None:
+        """Ensure the JWK is a public asymmetric key without private material.
+
+        Returns the PyJWK constructed while checking the RSA key size, so
+        `_verify_signature` can reuse it instead of re-parsing the same key.
+        """
         kty = jwk.get("kty")
         if kty not in DPOP_SUPPORTED_KTYS:
             raise DPoPError(f"Unsupported JWK kty for DPoP: {kty}")
 
+        key = None
         if kty == "RSA":
             key = PyJWK.from_dict(jwk)
             if isinstance(key.key, RSAPublicKey) and key.key.key_size < DPOP_RSA_MIN_KEY_SIZE:
@@ -244,6 +256,8 @@ class DPoPValidator:
         private_fields = {"d", "p", "q", "dp", "dq", "qi"}
         if any(field in jwk for field in private_fields):
             raise DPoPError("DPoP JWK must not contain private key material")
+
+        return key
 
     def _htu_matches(self, proof_htu: str, expected_htu: str) -> bool:
         """Compare htu values ignoring query string and fragment"""
