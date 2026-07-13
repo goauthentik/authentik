@@ -29,7 +29,7 @@ For each additional tenant (beyond the default one), one or more licenses are re
 
 A single tenant and its corresponding installation can have multiple license keys. For example, a company might purchase one license for 50 users, and then later in the same year need to buy another license for 50 more users, due to company growth. Both licenses are associated to the one installation, the one tenant.
 
-Learn more in [Manage Enterprise licensing](../enterprise/customer-portal.md#license-management).
+Learn more in [Manage Enterprise licensing](../enterprise/manage-enterprise.mdx#license-management).
 
 ### Important considerations
 

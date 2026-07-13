@@ -31,7 +31,7 @@ In a [multi-tenant deployment](../sys-mgmt/tenancy.md), each tenant has its own 
 
 You can purchase a license from the **Your Install ID** card in the Admin interface or directly from the [Customer Portal](https://customers.goauthentik.io/).
 
-When you purchase a license, provide the Install ID and the required internal and external user capacity. For the complete purchase workflow, see [Purchase a license](./customer-portal.md#purchase-a-license).
+When you purchase a license, provide the Install ID and the required internal and external user capacity. For the complete purchase workflow, see [Purchase a license](./manage-enterprise.mdx#purchase-a-license).
 
 To request a trial or discuss an Enterprise Plus agreement, contact [hello@goauthentik.io](mailto:hello@goauthentik.io).
 
@@ -49,5 +49,5 @@ If authentik rejects the key, verify that you copied the complete key and that i
 ## Next steps
 
 - Review the [Enterprise features](./enterprise-features.md) and configure the features that you need in the standard authentik documentation.
-- Learn how authentik [counts licensed users](./customer-portal.md#about-users-and-licenses).
+- Learn how authentik [counts licensed users](./manage-enterprise.mdx#about-users-and-licenses).
 - Configure additional Customer Portal users to avoid relying on a single account for license access.
