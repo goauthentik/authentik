@@ -19,7 +19,7 @@ Refer to our documentation to learn how to [create a SSF provider](./create-ssf-
 
 ## Example use cases
 
-One important use case for SSF is to [integrate Apple Business Manager](https://integrations.goauthentik.io/device-management/apple/) or any of the Apple device management platforms with authentik, so that users can enroll their Apple devices using their authentik credentials. When a user signs in with their email address, Apple redirects them to authentik for authentication. Once authenticated, Apple enrolls the user's device and grants access to Apple services.
+One important use case for SSF is to [integrate Apple Business Manager](https://integrations.goauthentik.io/device-management/apple/) or any of the Apple device management platforms with authentik, so that users can enroll their Apple devices using their authentik credentials. When a user signs in with their email address, Apple redirects them to authentik for authentication. After authentication, Apple enrolls the user's device and grants access to Apple services.
 
 Another use case for SSF is when an administrator wants to know when a user logs out of authentik, so that the user is then also automatically logged out of all other work-focused applications.
 

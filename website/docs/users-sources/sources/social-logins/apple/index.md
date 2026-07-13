@@ -38,7 +38,7 @@ To integrate Apple with authentik, you need to register two identifiers and a ke
 
 ### Configure an identifier
 
-11. Once back at the overview list, click the just-created identifier.
+11. After you return to the overview list, click the identifier that you created.
 12. Enable the checkbox next to **Sign In with Apple**, and click **Configure**
 13. Under **Domains and Subdomains**, enter `authentik.company`.
 14. Under **Return URLs**, enter `https://authentik.company/source/oauth/callback/apple/`.
