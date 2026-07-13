@@ -45,7 +45,7 @@ See the [pricing page](https://goauthentik.io/pricing/) for current plan details
 ### Device security
 
 - The [Google Chrome connector](../endpoint-devices/device-compliance/connectors/google-chrome.md) uses Chrome Enterprise Device Trust signals in device-aware access decisions.
-- [Local device login](../endpoint-devices/authentik-agent/device-authentication/local-device-login/index.mdx) enables users to sign in to supported Windows and Linux devices with authentik credentials. This feature is in preview.
+- [Local device login](../endpoint-devices/authentik-agent/device-authentication/local-device-login/index.mdx) enables users to sign in to Windows and Linux devices with authentik credentials. This feature is in preview.
 - Advanced device compliance adds device facts and integrations to device-aware access decisions. This feature is in development; see the [Endpoint Devices feature overview](../endpoint-devices/index.mdx#features-overview).
 
 Feature availability can change as preview features mature. Refer to the linked technical documentation for current platform support and configuration requirements.
