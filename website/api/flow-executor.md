@@ -7,7 +7,7 @@ A big focus of authentik is the flows system, which allows you to combine and bu
 
 However, any flow can be executed via an API from anywhere; in fact, that is what every flow executor does. With a few requests you can execute flows from anywhere, and integrate authentik even better — for example, to build a fully custom login UI in your own application.
 
-:::info
+:::info Cookie persistence
 The flow executor stores its state in the HTTP session, so you need to ensure that cookies are persisted between flow executor requests. If cookies are not persisted, each request creates a new session and the flow restarts from the beginning — the typical symptom is receiving the first challenge again after submitting a response.
 :::
 
