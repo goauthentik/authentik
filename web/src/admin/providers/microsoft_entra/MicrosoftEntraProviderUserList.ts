@@ -1,9 +1,9 @@
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
-import "#elements/sync/SyncObjectForm";
-import "#admin/common/ak-flow-search/ak-flow-search-no-default";
+import "#components/sync/SyncObjectForm";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
+import { formatUserDisplayName } from "#common/users";
 
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
@@ -32,16 +32,14 @@ export class MicrosoftEntraProviderUserList extends Table<MicrosoftEntraProvider
     clearOnRefresh = true;
 
     renderToolbar(): TemplateResult {
-        return html`<ak-forms-modal cancelText=${msg("Close")} ?closeAfterSuccessfulSubmit=${false}>
+        return html`<ak-forms-modal cancelText=${msg("Close")} keep-open-after-submit>
                 <span slot="submit">${msg("Sync")}</span>
                 <span slot="header">${msg("Sync User")}</span>
                 <ak-sync-object-form
                     .provider=${this.providerId}
                     model=${SyncObjectModelEnum.AuthentikCoreModelsUser}
                     .sync=${(data: ProvidersMicrosoftEntraSyncObjectCreateRequest) => {
-                        return new ProvidersApi(
-                            DEFAULT_CONFIG,
-                        ).providersMicrosoftEntraSyncObjectCreate(data);
+                        return aki(ProvidersApi).providersMicrosoftEntraSyncObjectCreate(data);
                     }}
                     slot="form"
                 >
@@ -57,7 +55,7 @@ export class MicrosoftEntraProviderUserList extends Table<MicrosoftEntraProvider
             object-label=${msg("Microsoft Entra User(s)")}
             .objects=${this.selectedElements}
             .delete=${(item: MicrosoftEntraProviderUser) => {
-                return new ProvidersApi(DEFAULT_CONFIG).providersMicrosoftEntraUsersDestroy({
+                return aki(ProvidersApi).providersMicrosoftEntraUsersDestroy({
                     id: item.id,
                 });
             }}
@@ -69,14 +67,14 @@ export class MicrosoftEntraProviderUserList extends Table<MicrosoftEntraProvider
     }
 
     async apiEndpoint(): Promise<PaginatedResponse<MicrosoftEntraProviderUser>> {
-        return new ProvidersApi(DEFAULT_CONFIG).providersMicrosoftEntraUsersList({
+        return aki(ProvidersApi).providersMicrosoftEntraUsersList({
             ...(await this.defaultEndpointConfig()),
             providerId: this.providerId,
         });
     }
 
     protected override rowLabel(item: MicrosoftEntraProviderUser): string {
-        return item.userObj.name || item.userObj.username;
+        return formatUserDisplayName(item.userObj);
     }
 
     protected columns: TableColumn[] = [

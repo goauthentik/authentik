@@ -9,14 +9,17 @@ use arc_swap::ArcSwap;
 use eyre::Result;
 use notify::{RecommendedWatcher, Watcher as _};
 use serde_json::{Map, Value};
-use tokio::sync::mpsc;
+use tokio::{sync::mpsc, task::spawn_blocking};
 use tracing::{error, info, warn};
 use url::Url;
 
 pub mod schema;
 pub use schema::Config;
 
-use crate::arbiter::{Arbiter, Event, Tasks};
+use crate::{
+    arbiter::{Arbiter, Event, Tasks},
+    config::schema::KEYS_TO_PARSE_AS_LIST,
+};
 
 static DEFAULT_CONFIG: &str = include_str!("../../../../authentik/lib/default.yml");
 static CONFIG_MANAGER: OnceLock<ConfigManager> = OnceLock::new();
@@ -65,7 +68,7 @@ fn config_paths() -> Vec<PathBuf> {
 impl Config {
     /// Load the configuration from files and environment into a [`Value`], allowing for extra
     /// processing later.
-    fn load_raw(config_paths: &[PathBuf]) -> Result<Value> {
+    fn load_raw(config_paths: &[PathBuf], overrides: Option<Value>) -> Result<Value> {
         let mut builder = config_rs::Config::builder().add_source(config_rs::File::from_str(
             DEFAULT_CONFIG,
             config_rs::FileFormat::Yaml,
@@ -75,11 +78,21 @@ impl Config {
                 config_rs::File::from(path.as_path()).format(config_rs::FileFormat::Yaml),
             );
         }
-        builder = builder.add_source(
-            config_rs::Environment::with_prefix("AUTHENTIK")
-                .prefix_separator("_")
-                .separator("__"),
-        );
+        let mut env_source = config_rs::Environment::with_prefix("AUTHENTIK")
+            .prefix_separator("_")
+            .separator("__")
+            .try_parsing(true)
+            .list_separator(",");
+        for key in KEYS_TO_PARSE_AS_LIST {
+            env_source = env_source.with_list_parse_key(key);
+        }
+        builder = builder.add_source(env_source);
+        if let Some(overrides) = overrides {
+            builder = builder.add_source(config_rs::File::from_str(
+                &overrides.to_string(),
+                config_rs::FileFormat::Json,
+            ));
+        }
         let config = builder.build()?;
         let raw = config.try_deserialize::<Value>()?;
         Ok(raw)
@@ -98,7 +111,10 @@ impl Config {
                     match read_to_string(path).map(|s| s.trim().to_owned()) {
                         Ok(value) => return (value, Some(PathBuf::from(path))),
                         Err(err) => {
-                            error!("failed to read config value from {path}: {err}");
+                            error!(
+                                ?err,
+                                "failed to read config value from '{path}', using fallback"
+                            );
                             return (fallback, Some(PathBuf::from(path)));
                         }
                     }
@@ -155,8 +171,8 @@ impl Config {
     }
 
     /// Load the configuration.
-    fn load(config_paths: &[PathBuf]) -> Result<(Self, Vec<PathBuf>)> {
-        let raw = Self::load_raw(config_paths)?;
+    fn load(config_paths: &[PathBuf], overrides: Option<Value>) -> Result<(Self, Vec<PathBuf>)> {
+        let raw = Self::load_raw(config_paths, overrides)?;
         let (expanded, file_paths) = Self::expand(raw);
         let config: Self = serde_json::from_value(expanded)?;
         Ok((config, file_paths))
@@ -182,7 +198,7 @@ pub fn init() -> Result<()> {
 
 /// Initialize the configuration from a list of specific paths to read if from.
 fn init_with_paths(config_paths: Vec<PathBuf>) -> Result<()> {
-    let (config, mut other_paths) = Config::load(&config_paths)?;
+    let (config, mut other_paths) = Config::load(&config_paths, None)?;
     let mut watch_paths = config_paths.clone();
     watch_paths.append(&mut other_paths);
     let manager = ConfigManager {
@@ -218,7 +234,7 @@ async fn watch_config(arbiter: Arbiter) -> Result<()> {
     }
 
     let _ = arbiter.send_event(Event::ConfigChanged);
-    info!("config file watcher started on paths: {:?}", watch_paths);
+    info!(paths = ?watch_paths, "config file watcher started");
 
     loop {
         tokio::select! {
@@ -228,17 +244,17 @@ async fn watch_config(arbiter: Arbiter) -> Result<()> {
                     break;
                 }
                 let manager = CONFIG_MANAGER.get().expect("failed to get config, has it been initialized?");
-                match tokio::task::spawn_blocking(|| Config::load(&manager.config_paths)).await? {
+                match spawn_blocking(|| Config::load(&manager.config_paths, None)).await? {
                     Ok((new_config, _)) => {
                         info!("configuration reloaded");
                         manager.config.store(Arc::new(new_config));
                         if let Err(err) = arbiter.send_event(Event::ConfigChanged) {
-                            warn!("failed to notify of config change, aborting: {err:?}");
+                            warn!(?err, "failed to notify of config change, aborting");
                             break;
                         }
                     }
                     Err(err) => {
-                        warn!("failed to reload config, continuing with previous config: {err:?}");
+                        warn!(?err, "failed to reload config, continuing with previous config");
                     }
                 }
             },
@@ -254,7 +270,7 @@ async fn watch_config(arbiter: Arbiter) -> Result<()> {
 /// Start the configuration watcher.
 ///
 /// [`init`] must be called before this is used.
-pub fn run(tasks: &mut Tasks) -> Result<()> {
+pub fn start(tasks: &mut Tasks) -> Result<()> {
     info!("starting config file watcher");
     let arbiter = tasks.arbiter();
     tasks
@@ -274,17 +290,29 @@ pub fn get() -> arc_swap::Guard<Arc<Config>> {
     manager.config.load()
 }
 
+/// Test helper to set arbitrary config values.
+#[cfg(test)]
+pub fn set(value: Value) -> Result<()> {
+    let manager = CONFIG_MANAGER
+        .get()
+        .expect("failed to get config, has it been initialized?");
+    let (new_config, _) = Config::load(&manager.config_paths, Some(value))?;
+    manager.config.store(Arc::new(new_config));
+    Ok(())
+}
+
 #[cfg(test)]
 mod tests {
     use std::{env, fs::File, io::Write as _, path::PathBuf};
 
+    use serde_json::json;
     use tempfile::tempdir;
 
     use crate::arbiter::{Event, Tasks};
 
     #[test]
     fn default_config() {
-        let (config, _) = super::Config::load(&[]).expect("default config doesn't load");
+        let (config, _) = super::Config::load(&[], None).expect("default config doesn't load");
         assert_eq!(config.secret_key, "");
     }
 
@@ -342,11 +370,47 @@ mod tests {
         }
 
         let (config, config_paths) =
-            super::Config::load(&[config_file_path]).expect("failed to load config");
+            super::Config::load(&[config_file_path], None).expect("failed to load config");
 
         assert_eq!(config.secret_key, "my_secret_key");
         assert_eq!(config.postgresql.password, "my_postgres_pass");
         assert_eq!(config_paths, &[secret_key_path]);
+    }
+
+    #[test]
+    fn expand_typed() {
+        let temp_dir = tempdir().expect("failed to create temp dir");
+
+        // A numeric value destined for an integer field (postgresql.port: u16) must be coerced
+        // from the string a file:// reference resolves to.
+        let port_path = temp_dir.path().join("port");
+        let mut port_file = File::create(&port_path).expect("failed to create file");
+        write!(port_file, "5432").expect("failed to write to file");
+        drop(port_file);
+
+        // A numeric-looking value destined for a string field (postgresql.password) must stay a
+        // string and never be coerced into a number.
+        let password_path = temp_dir.path().join("password");
+        let mut password_file = File::create(&password_path).expect("failed to create file");
+        write!(password_file, "12345").expect("failed to write to file");
+        drop(password_file);
+
+        let config_file_path = temp_dir.path().join("config");
+        let mut config_file = File::create(&config_file_path).expect("failed to create file");
+        writeln!(
+            config_file,
+            "postgresql:\n  port: file://{}\n  password: file://{}",
+            port_path.display(),
+            password_path.display()
+        )
+        .expect("failed to write to file");
+        drop(config_file);
+
+        let (config, _) =
+            super::Config::load(&[config_file_path], None).expect("failed to load config");
+
+        assert_eq!(config.postgresql.port, 5432);
+        assert_eq!(config.postgresql.password, "12345");
     }
 
     #[test]
@@ -379,7 +443,7 @@ mod tests {
         let arbiter = tasks.arbiter();
         let mut events_rx = arbiter.events_subscribe();
 
-        super::run(&mut tasks).expect("failed to start watcher");
+        super::start(&mut tasks).expect("failed to start watcher");
 
         assert_eq!(super::get().secret_key, "my_secret_key");
         assert_eq!(super::get().postgresql.password, "my_postgres_pass");
@@ -425,5 +489,101 @@ mod tests {
 
         assert_eq!(super::get().secret_key, "my_other_secret_key");
         assert_eq!(super::get().postgresql.password, "my_new_postgres_pass");
+    }
+
+    #[test]
+    fn set() {
+        super::init_with_paths(vec![]).expect("failed to init config");
+        assert_eq!(super::get().secret_key, String::new());
+        super::set(json!({"secret_key": "my_new_secret_key"})).expect("failed to set config");
+        assert_eq!(super::get().secret_key, "my_new_secret_key");
+    }
+
+    #[test]
+    fn env_bool_true() {
+        #[expect(unsafe_code, reason = "testing")]
+        // SAFETY: testing
+        unsafe {
+            env::set_var("AUTHENTIK_DEBUG", "true");
+        }
+
+        let (config, _) = super::Config::load(&[], None).expect("failed to load config");
+
+        assert!(config.debug);
+    }
+
+    #[test]
+    fn env_bool_false() {
+        #[expect(unsafe_code, reason = "testing")]
+        // SAFETY: testing
+        unsafe {
+            env::set_var("AUTHENTIK_DEBUG", "false");
+        }
+
+        let (config, _) = super::Config::load(&[], None).expect("failed to load config");
+
+        assert!(!config.debug);
+    }
+
+    // See https://github.com/rust-cli/config-rs/issues/443
+    // #[test]
+    // fn env_list_empty() {
+    //     #[expect(unsafe_code, reason = "testing")]
+    //     // SAFETY: testing
+    //     unsafe {
+    //         env::set_var("AUTHENTIK_LISTEN__HTTP", "");
+    //     }
+    //
+    //     let (config, _) = super::Config::load(&[], None).expect("failed to load config");
+    //
+    //     assert_eq!(config.listen.http, []);
+    // }
+
+    #[test]
+    fn env_list_one_element() {
+        #[expect(unsafe_code, reason = "testing")]
+        // SAFETY: testing
+        unsafe {
+            env::set_var("AUTHENTIK_LISTEN__HTTP", "[::1]:9000");
+        }
+
+        let (config, _) = super::Config::load(&[], None).expect("failed to load config");
+
+        assert_eq!(
+            config.listen.http,
+            ["[::1]:9000".parse().expect("infallible")]
+        );
+    }
+
+    #[test]
+    fn env_list_many_elements() {
+        #[expect(unsafe_code, reason = "testing")]
+        // SAFETY: testing
+        unsafe {
+            env::set_var("AUTHENTIK_LISTEN__HTTP", "[::1]:9000,[::1]:9001");
+        }
+
+        let (config, _) = super::Config::load(&[], None).expect("failed to load config");
+
+        assert_eq!(
+            config.listen.http,
+            [
+                "[::1]:9000".parse().expect("infallible"),
+                "[::1]:9001".parse().expect("infallible")
+            ]
+        );
+    }
+
+    #[test]
+    fn env_string() {
+        #[expect(unsafe_code, reason = "testing")]
+        // SAFETY: testing
+        unsafe {
+            env::set_var("AUTHENTIK_SECRET_KEY", "my_secret_key");
+        }
+
+        let (config, _) = super::Config::load(&[], None).expect("failed to load config");
+
+        assert_eq!(config.secret_key, "my_secret_key",);
     }
 }

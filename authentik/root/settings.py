@@ -5,7 +5,6 @@ from collections import OrderedDict
 from hashlib import sha512
 from pathlib import Path
 
-import orjson
 from django.utils import http as utils_http
 from sentry_sdk import set_tag
 from xmlsec import enable_debug_trace
@@ -172,6 +171,7 @@ SPECTACULAR_SETTINGS = {
     },
     "ENUM_NAME_OVERRIDES": {
         "AppEnum": "authentik.lib.api.Apps",
+        "AuthenticationEnum": "authentik.flows.models.FlowAuthenticationRequirement",
         "ConsentModeEnum": "authentik.stages.consent.models.ConsentMode",
         "CountryCodeEnum": "django_countries.countries",
         "DeviceClassesEnum": "authentik.stages.authenticator_validate.models.DeviceClasses",
@@ -186,6 +186,7 @@ SPECTACULAR_SETTINGS = {
         "PolicyEngineMode": "authentik.policies.models.PolicyEngineMode",
         "PromptTypeEnum": "authentik.stages.prompt.models.FieldTypes",
         "ProxyMode": "authentik.providers.proxy.models.ProxyMode",
+        "RedirectURITypeEnum": "authentik.providers.oauth2.models.RedirectURIType",
         "SAMLBindingsEnum": "authentik.providers.saml.models.SAMLBindings",
         "SAMLLogoutMethods": "authentik.providers.saml.models.SAMLLogoutMethods",
         "SAMLNameIDPolicyEnum": "authentik.sources.saml.models.SAMLNameIDPolicy",
@@ -208,6 +209,7 @@ SPECTACULAR_SETTINGS = {
         "authentik.api.v3.schema.response.postprocess_schema_responses",
         "authentik.api.v3.schema.query.postprocess_schema_query_params",
         "authentik.api.v3.schema.cleanup.postprocess_schema_remove_unused",
+        "authentik.api.v3.schema.search.postprocess_schema_search_autocomplete",
         "authentik.api.v3.schema.enum.postprocess_schema_enums",
     ],
 }
@@ -215,10 +217,10 @@ SPECTACULAR_SETTINGS = {
 REST_FRAMEWORK = {
     "DEFAULT_PAGINATION_CLASS": "authentik.api.pagination.Pagination",
     "DEFAULT_FILTER_BACKENDS": [
+        "authentik.api.search.ql.QLSearch",
         "authentik.rbac.filters.ObjectFilter",
         "django_filters.rest_framework.DjangoFilterBackend",
-        "rest_framework.filters.OrderingFilter",
-        "rest_framework.filters.SearchFilter",
+        "authentik.api.ordering.NullsAwareOrderingFilter",
     ],
     "DEFAULT_PERMISSION_CLASSES": ("authentik.rbac.permissions.ObjectPermissions",),
     "DEFAULT_AUTHENTICATION_CLASSES": (
@@ -226,18 +228,14 @@ REST_FRAMEWORK = {
         "rest_framework.authentication.SessionAuthentication",
     ),
     "DEFAULT_RENDERER_CLASSES": [
-        "drf_orjson_renderer.renderers.ORJSONRenderer",
-    ],
-    "ORJSON_RENDERER_OPTIONS": [
-        orjson.OPT_NON_STR_KEYS,
-        orjson.OPT_UTC_Z,
+        "authentik.api.renderers.MsgspecJSONRenderer",
     ],
     "DEFAULT_PARSER_CLASSES": [
-        "drf_orjson_renderer.parsers.ORJSONParser",
+        "authentik.api.parsers.MsgspecJSONParser",
     ],
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
     "TEST_REQUEST_DEFAULT_FORMAT": "json",
-    "DEFAULT_THROTTLE_CLASSES": ["rest_framework.throttling.AnonRateThrottle"],
+    "DEFAULT_THROTTLE_CLASSES": ["authentik.api.throttle.LocalAnonRateThrottle"],
     "DEFAULT_THROTTLE_RATES": {
         "anon": CONFIG.get("throttle.default"),
     },
@@ -249,7 +247,16 @@ CACHES = {
         "BACKEND": "django_postgres_cache.backend.DatabaseCache",
         "KEY_FUNCTION": "django_tenants.cache.make_key",
         "REVERSE_KEY_FUNCTION": "django_tenants.cache.reverse_key",
-    }
+    },
+    # In-process cache for DRF throttle counters. Per-worker rather than
+    # cluster-wide, so the per-IP ceiling is ``throttle.default`` × (pods × workers)
+    "throttle": {
+        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+        "LOCATION": "authentik-throttle",
+        "OPTIONS": {
+            "MAX_ENTRIES": 10000,
+        },
+    },
 }
 SESSION_ENGINE = "authentik.core.sessions"
 # Configured via custom SessionMiddleware
@@ -445,8 +452,6 @@ DRAMATIQ = {
         ("authentik.tasks.middleware.TaskLogMiddleware", {}),
         ("authentik.tasks.middleware.LoggingMiddleware", {}),
         ("authentik.tasks.middleware.DescriptionMiddleware", {}),
-        ("authentik.tasks.middleware.WorkerHealthcheckMiddleware", {}),
-        ("authentik.tasks.middleware.WorkerStatusMiddleware", {}),
         (
             "authentik.tasks.middleware.MetricsMiddleware",
             {
@@ -561,9 +566,6 @@ except ImportError:
 
 
 if DEBUG:
-    REST_FRAMEWORK["DEFAULT_RENDERER_CLASSES"].append(
-        "rest_framework.renderers.BrowsableAPIRenderer"
-    )
     SHARED_APPS.insert(SHARED_APPS.index("django.contrib.staticfiles"), "daphne")
     enable_debug_trace(True)
 

@@ -3,8 +3,10 @@ import "#elements/chips/Chip";
 import "#elements/chips/ChipGroup";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/index";
+import "#components/ak-text-input";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
+import { PFSize } from "#common/enums";
 
 import { DataProvision, DualSelectPair } from "#elements/ak-dual-select/types";
 import { ModelForm } from "#elements/forms/ModelForm";
@@ -36,11 +38,26 @@ export function rbacPermissionPair(item: Permission): DualSelectPair {
 
 @customElement("ak-initial-permissions-form")
 export class InitialPermissionsForm extends ModelForm<InitialPermissions, string> {
-    loadInstance(pk: string): Promise<InitialPermissions> {
-        return new RbacApi(DEFAULT_CONFIG).rbacInitialPermissionsRetrieve({
-            id: Number(pk),
-        });
-    }
+    public static override verboseName = msg("Initial Permissions");
+    public static override verboseNamePlural = msg("Initial Permissions");
+
+    public override size = PFSize.XLarge;
+
+    protected endpoints = {
+        load: (pk: string) =>
+            aki(RbacApi).rbacInitialPermissionsRetrieve({
+                id: Number(pk),
+            }),
+        create: (initialPermissionsRequest: InitialPermissions) =>
+            aki(RbacApi).rbacInitialPermissionsCreate({
+                initialPermissionsRequest,
+            }),
+        update: (pk: string, patchedInitialPermissionsRequest: InitialPermissions) =>
+            aki(RbacApi).rbacInitialPermissionsPartialUpdate({
+                id: Number(pk),
+                patchedInitialPermissionsRequest,
+            }),
+    };
 
     getSuccessMessage(): string {
         return this.instance
@@ -48,30 +65,19 @@ export class InitialPermissionsForm extends ModelForm<InitialPermissions, string
             : msg("Successfully created initial permissions.");
     }
 
-    async send(data: InitialPermissions): Promise<InitialPermissions> {
-        if (this.instance?.pk) {
-            return new RbacApi(DEFAULT_CONFIG).rbacInitialPermissionsPartialUpdate({
-                id: this.instance.pk,
-                patchedInitialPermissionsRequest: data,
-            });
-        }
-        return new RbacApi(DEFAULT_CONFIG).rbacInitialPermissionsCreate({
-            initialPermissionsRequest: data,
-        });
-    }
-
     protected override renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
-            <ak-form-element-horizontal label=${msg("Name")} required name="name">
-                <input
-                    type="text"
-                    value="${ifDefined(this.instance?.name)}"
-                    class="pf-c-form-control"
-                    required
-                />
-            </ak-form-element-horizontal>
+            <ak-text-input
+                label=${msg("Initial Permission Name")}
+                placeholder=${msg("Type a name for these initial permissions...")}
+                required
+                name="name"
+                value="${ifDefined(this.instance?.name)}"
+            >
+            </ak-text-input>
             <ak-form-element-horizontal label=${msg("Role")} required name="role">
                 <ak-search-select
+                    placeholder=${msg("Select a role...")}
                     .fetchObjects=${async (query?: string): Promise<Role[]> => {
                         const args: RbacRolesListRequest = {
                             ordering: "name",
@@ -79,7 +85,7 @@ export class InitialPermissionsForm extends ModelForm<InitialPermissions, string
                         if (query !== undefined) {
                             args.search = query;
                         }
-                        const roles = await new RbacApi(DEFAULT_CONFIG).rbacRolesList(args);
+                        const roles = await aki(RbacApi).rbacRolesList(args);
                         return roles.results;
                     }}
                     .renderElement=${(role: Role): string => {
@@ -105,7 +111,7 @@ export class InitialPermissionsForm extends ModelForm<InitialPermissions, string
             <ak-form-element-horizontal label=${msg("Permissions")} name="permissions">
                 <ak-dual-select-provider
                     .provider=${(page: number, search?: string): Promise<DataProvision> => {
-                        return new RbacApi(DEFAULT_CONFIG)
+                        return aki(RbacApi)
                             .rbacPermissionsList({
                                 page: page,
                                 search: search,

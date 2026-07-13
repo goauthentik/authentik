@@ -1,6 +1,6 @@
 import "#elements/buttons/SpinnerButton/index";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { createPaginatedResponse } from "#common/api/responses";
 import { EVENT_REFRESH } from "#common/constants";
 import { MessageLevel } from "#common/messages";
@@ -31,7 +31,7 @@ export class UserBulkRevokeSessionsTable extends StaticTable<User> {
         // Fetch session counts for each user
         for (const user of this.items ?? []) {
             try {
-                const sessions = await new CoreApi(DEFAULT_CONFIG).coreAuthenticatedSessionsList({
+                const sessions = await aki(CoreApi).coreAuthenticatedSessionsList({
                     userUsername: user.username,
                 });
                 this.sessionCounts.set(user.pk, sessions.pagination.count);
@@ -87,9 +87,7 @@ export class UserBulkRevokeSessionsForm extends ModalButton {
 
             // Delete all sessions for these users in a single API call
             if (userIds.length > 0) {
-                const response = await new CoreApi(
-                    DEFAULT_CONFIG,
-                ).coreAuthenticatedSessionsBulkDeleteDestroy({
+                const response = await aki(CoreApi).coreAuthenticatedSessionsBulkDeleteDestroy({
                     userPks: userIds,
                 });
                 this.revokedCount = response.deleted || 0;
@@ -159,7 +157,7 @@ export class UserBulkRevokeSessionsForm extends ModalButton {
                 >
                 </ak-user-bulk-revoke-sessions-table>
             </section>
-            <fieldset class="pf-c-modal-box__footer">
+            <fieldset class="ak-c-fieldset pf-c-modal-box__footer">
                 <legend class="sr-only">${msg("Form actions")}</legend>
                 <ak-spinner-button
                     .callAction=${async () => {

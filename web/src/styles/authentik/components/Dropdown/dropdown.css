@@ -1,3 +1,16 @@
+.pf-c-dropdown {
+    --pf-c-dropdown__toggle--PaddingLeft: var(--pf-global--spacer--md);
+    --pf-c-dropdown__toggle--m-split-button--first-child--PaddingLeft: var(--pf-global--spacer--md);
+    --pf-c-dropdown__toggle--m-split-button--m-action--child--PaddingRight: var(
+        --pf-global--spacer--md
+    );
+
+    --pf-c-dropdown__toggle--m-split-button--last-child--PaddingRight: var(--pf-global--spacer--md);
+    --pf-c-dropdown__toggle--m-split-button--m-action--child--PaddingLeft: var(
+        --pf-global--spacer--md
+    );
+}
+
 .pf-c-dropdown__menu-item[role="contentinfo"] {
     &,
     &:hover,

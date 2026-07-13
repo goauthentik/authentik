@@ -10,7 +10,7 @@ import { FlowMultitabController } from "./controllers/FlowMultitabController";
 import { FlowWebsocketClientController } from "./controllers/FlowWebsocketClientController";
 import Styles from "./FlowExecutor.css" with { type: "bundled-text" };
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { APIError, parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
 import { globalAK } from "#common/global";
 import { configureSentry } from "#common/sentry/index";
@@ -47,7 +47,7 @@ import {
 import { spread } from "@open-wc/lit-helpers";
 import { match, P } from "ts-pattern";
 
-import { msg } from "@lit/localize";
+import { LOCALE_STATUS_EVENT, LocaleStatusEventDetail, msg } from "@lit/localize";
 import { CSSResult, html, nothing, PropertyValues } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { guard } from "lit/directives/guard.js";
@@ -159,7 +159,7 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
     constructor() {
         configureSentry();
         super();
-        this.#api = new FlowsApi(DEFAULT_CONFIG);
+        this.#api = aki(FlowsApi);
         this.addController(this.#flowIframeMessageController);
         this.addController(this.#flowMultitabController);
         this.addController(this.#flowWebsocketClientController);
@@ -194,7 +194,7 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
 
     //#region Listeners
 
-    @listen(AKSessionAuthenticatedEvent)
+    @listen(AKSessionAuthenticatedEvent, { target: window })
     protected sessionAuthenticatedListener = () => {
         if (!document.hidden) {
             return;
@@ -202,6 +202,13 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
 
         console.debug("authentik/ws: Reloading after session authenticated event");
         window.location.reload();
+    };
+
+    @listen(LOCALE_STATUS_EVENT, { target: window })
+    protected localeStatusListener = (event: CustomEvent<LocaleStatusEventDetail>) => {
+        if (event.detail.status === "ready") {
+            this.refresh();
+        }
     };
 
     private setFlowErrorChallenge(error: APIError) {
@@ -424,7 +431,8 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
     protected override render(): SlottedTemplateResult {
         const { challenge, loading } = this;
 
-        return html`<ak-locale-select
+        return html`<div class="pf-c-login" data-layout=${this.layout} part="login">
+            <ak-locale-select
                 part="locale-select"
                 exportparts="label:locale-select-label,select:locale-select-select"
                 class="pf-m-dark"
@@ -455,7 +463,8 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
                         : this.renderLoading();
                 })}
             </main>
-            ${this.renderFooter()}`;
+            ${this.renderFooter()}
+        </div>`;
     }
 
     //#endregion

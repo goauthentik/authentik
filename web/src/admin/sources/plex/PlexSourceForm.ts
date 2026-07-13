@@ -2,6 +2,7 @@ import "#elements/forms/Radio";
 import "#admin/common/ak-flow-search/ak-source-flow-search";
 import "#components/ak-file-search-input";
 import "#components/ak-slug-input";
+import "#components/ak-text-input";
 import "#components/ak-switch-input";
 import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
 import "#elements/ak-dual-select/ak-dual-select-provider";
@@ -11,7 +12,7 @@ import "#elements/forms/SearchSelect/index";
 
 import { propertyMappingsProvider, propertyMappingsSelector } from "./PlexSourceFormHelpers.js";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { PlexAPIClient, PlexResource, popupCenterScreen } from "#common/helpers/plex";
 import { ascii_letters, digits, randomString } from "#common/utils";
 
@@ -37,7 +38,7 @@ import { ifDefined } from "lit/directives/if-defined.js";
 @customElement("ak-source-plex-form")
 export class PlexSourceForm extends BaseSourceForm<PlexSource> {
     async loadInstance(pk: string): Promise<PlexSource> {
-        const source = await new SourcesApi(DEFAULT_CONFIG).sourcesPlexRetrieve({
+        const source = await aki(SourcesApi).sourcesPlexRetrieve({
             slug: pk,
         });
         this.plexToken = source.plexToken;
@@ -51,7 +52,7 @@ export class PlexSourceForm extends BaseSourceForm<PlexSource> {
     @property({ attribute: false })
     plexResources?: PlexResource[];
 
-    get defaultInstance(): PlexSource | undefined {
+    public override createDefaultInstance(): PlexSource {
         return {
             clientId: randomString(40, ascii_letters + digits),
         } as PlexSource;
@@ -60,13 +61,13 @@ export class PlexSourceForm extends BaseSourceForm<PlexSource> {
     async send(data: PlexSource): Promise<PlexSource> {
         data.plexToken = this.plexToken || "";
         if (this.instance?.pk) {
-            return new SourcesApi(DEFAULT_CONFIG).sourcesPlexUpdate({
+            return aki(SourcesApi).sourcesPlexUpdate({
                 slug: this.instance.slug,
                 plexSourceRequest: data,
             });
         }
 
-        return new SourcesApi(DEFAULT_CONFIG).sourcesPlexCreate({
+        return aki(SourcesApi).sourcesPlexCreate({
             plexSourceRequest: data,
         });
     }
@@ -142,23 +143,21 @@ export class PlexSourceForm extends BaseSourceForm<PlexSource> {
     }
 
     protected override renderForm(): TemplateResult {
-        return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
-                <input
-                    type="text"
-                    value="${ifDefined(this.instance?.name)}"
-                    class="pf-c-form-control"
-                    required
-                />
-            </ak-form-element-horizontal>
-
+        return html`<ak-text-input
+                label=${msg("Source Name")}
+                placeholder=${msg("Type a name for this source...")}
+                required
+                name="name"
+                value="${ifDefined(this.instance?.name)}"
+            ></ak-text-input>
             <ak-slug-input
                 name="slug"
+                placeholder=${msg("e.g. my-plex-source")}
                 value=${ifDefined(this.instance?.slug)}
                 label=${msg("Slug")}
                 required
                 input-hint="code"
             ></ak-slug-input>
-
             <ak-switch-input
                 name="enabled"
                 label=${msg("Enabled")}
@@ -276,7 +275,7 @@ export class PlexSourceForm extends BaseSourceForm<PlexSource> {
             <ak-form-group label="${msg("Flow settings")}">
                 <div class="pf-c-form">
                     <ak-form-element-horizontal
-                        label=${msg("Authentication flow")}
+                        label=${msg("Authentication Flow")}
                         name="authenticationFlow"
                     >
                         <ak-source-flow-search

@@ -5,8 +5,9 @@ import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
+import { IconEditButton, ModalInvokerButton } from "#elements/dialogs";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
@@ -39,7 +40,7 @@ export class GroupListPage extends TablePage<Group> {
     public order = "name";
 
     protected async apiEndpoint(): Promise<PaginatedResponse<Group>> {
-        return new CoreApi(DEFAULT_CONFIG).coreGroupsList({
+        return aki(CoreApi).coreGroupsList({
             ...(await this.defaultEndpointConfig()),
             includeUsers: false,
         });
@@ -58,12 +59,12 @@ export class GroupListPage extends TablePage<Group> {
             object-label=${msg("Group(s)")}
             .objects=${this.selectedElements}
             .usedBy=${(item: Group) => {
-                return new CoreApi(DEFAULT_CONFIG).coreGroupsUsedByList({
+                return aki(CoreApi).coreGroupsUsedByList({
                     groupUuid: item.pk,
                 });
             }}
             .delete=${(item: Group) => {
-                return new CoreApi(DEFAULT_CONFIG).coreGroupsDestroy({
+                return aki(CoreApi).coreGroupsDestroy({
                     groupUuid: item.pk,
                 });
             }}
@@ -83,24 +84,14 @@ export class GroupListPage extends TablePage<Group> {
             >`,
             html`${Array.from(item.users || []).length}`,
             html`<ak-status-label type="neutral" ?good=${item.isSuperuser}></ak-status-label>`,
-            html`<div>
-                <button
-                    class="pf-c-button pf-m-plain"
-                    aria-label=${msg(str`Edit "${item.name}"`)}
-                    ${GroupForm.asEditModalInvoker(item.pk)}
-                >
-                    <pf-tooltip position="top" content=${msg("Edit")}>
-                        <i class="fas fa-edit" aria-hidden="true"></i>
-                    </pf-tooltip>
-                </button>
+            html`<div class="ak-c-table__actions">
+                ${IconEditButton(GroupForm, item.pk, item.name)}
             </div>`,
         ];
     }
 
-    protected renderObjectCreate(): TemplateResult {
-        return html`<button class="pf-c-button pf-m-primary" ${GroupForm.asModalInvoker()}>
-            ${msg("New Group")}
-        </button>`;
+    protected renderObjectCreate(): SlottedTemplateResult {
+        return ModalInvokerButton(GroupForm);
     }
 }
 

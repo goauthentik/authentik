@@ -20,6 +20,7 @@ from rest_framework.validators import UniqueValidator
 from rest_framework.viewsets import ModelViewSet
 
 from authentik.brands.models import Brand
+from authentik.brands.utils import session_safe_mode
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import ModelSerializer, PassiveSerializer, ThemedUrlsSerializer
 from authentik.rbac.filters import SecretKeyFilter
@@ -64,6 +65,7 @@ class BrandSerializer(ModelSerializer):
             "flow_unenrollment",
             "flow_user_settings",
             "flow_device_code",
+            "flow_lockdown",
             "default_application",
             "web_certificate",
             "client_certificates",
@@ -117,6 +119,7 @@ class CurrentBrandSerializer(PassiveSerializer):
     flow_unenrollment = CharField(source="flow_unenrollment.slug", required=False)
     flow_user_settings = CharField(source="flow_user_settings.slug", required=False)
     flow_device_code = CharField(source="flow_device_code.slug", required=False)
+    flow_lockdown = CharField(source="flow_lockdown.slug", required=False)
 
     default_locale = CharField(read_only=True)
     flags = SerializerMethodField()
@@ -127,6 +130,15 @@ class CurrentBrandSerializer(PassiveSerializer):
         for flag in Flag.available(visibility="public"):
             values[flag().key] = flag.get()
         return values
+
+    def to_representation(self, instance: Brand) -> dict[str, Any]:
+        data = super().to_representation(instance)
+        # Suppress custom CSS for safe-mode sessions (e.g. recovery links) so that
+        # misconfigured branding cannot prevent a user from reaching the UI to fix it.
+        request = self.context.get("request")
+        if request is not None and session_safe_mode(request):
+            data["branding_custom_css"] = ""
+        return data
 
 
 class BrandViewSet(UsedByMixin, ModelViewSet):
@@ -154,6 +166,7 @@ class BrandViewSet(UsedByMixin, ModelViewSet):
         "flow_unenrollment",
         "flow_user_settings",
         "flow_device_code",
+        "flow_lockdown",
         "web_certificate",
         "client_certificates",
     ]

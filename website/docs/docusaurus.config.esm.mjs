@@ -3,27 +3,29 @@
  *
  * @import { UserThemeConfig, UserThemeConfigExtra } from "@goauthentik/docusaurus-config";
  * @import { AKReleasesPluginOptions } from "@goauthentik/docusaurus-theme/releases/common"
- * @import { AKRedirectsPluginOptions } from "@goauthentik/docusaurus-theme/redirects/plugin"
- * @import { Options as RedirectsPluginOptions } from "@docusaurus/plugin-client-redirects";
  * @import { NormalizedSidebar, NormalizedSidebarItemCategory, SidebarItemsGeneratorArgs } from "@docusaurus/plugin-content-docs/src/sidebars/types.ts";
  */
 
 import { cp } from "node:fs/promises";
-import { basename, resolve } from "node:path";
+import { createRequire } from "node:module";
+import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { createDocusaurusConfig } from "@goauthentik/docusaurus-config";
+import topics from "./topics.mjs";
+
+import { createDocusaurusConfig, DocusaurusURL } from "@goauthentik/docusaurus-config";
 import {
     createAlgoliaConfig,
     createClassicPreset,
+    createLLMSPlugin,
     extendConfig,
 } from "@goauthentik/docusaurus-theme/config";
-import { RewriteIndex } from "@goauthentik/docusaurus-theme/redirects";
-import { parse } from "@goauthentik/docusaurus-theme/redirects/node";
+import { createRedirectPlugins } from "@goauthentik/docusaurus-theme/redirects/node";
 import { prepareReleaseEnvironment } from "@goauthentik/docusaurus-theme/releases/node";
 import { remarkLinkRewrite } from "@goauthentik/docusaurus-theme/remark";
 
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
+const require = createRequire(import.meta.url);
 
 const rootStaticDirectory = resolve(__dirname, "..", "static");
 const packageStaticDirectory = resolve(__dirname, "static");
@@ -33,22 +35,28 @@ const releaseEnvironment = prepareReleaseEnvironment();
 
 //#region Copy static files
 
-const files = [
-    // ---
-    resolve(authentikModulePath, "lifecycle/container/compose.yml"),
-];
+const brandFiles = new Map([
+    [resolve(authentikModulePath, "lifecycle/container/compose.yml"), "compose.yml"],
+    ["@goauthentik/brand-assets/icon.png", "img/icon.png"],
+    ["@goauthentik/brand-assets/icon.svg", "img/icon.svg"],
+    ["@goauthentik/brand-assets/social.png", "img/social.png"],
+    // cspell:disable-next-line
+    ["@goauthentik/brand-assets/icon_left_brand.svg", "img/icon_left_brand_colour.svg"],
+    ["@goauthentik/brand-assets/icon_left_brand_white.svg", "img/icon_left_brand.svg"],
+    // cspell:disable-next-line
+    ["@goauthentik/brand-assets/icon_top_brand.svg", "img/icon_top_brand_colour.svg"],
+    ["@goauthentik/brand-assets/icon_top_brand_white.svg", "img/icon_top_brand.svg"],
+]);
 
 await Promise.all(
-    files.map((file) => {
-        const fileName = basename(file);
-        const destPath = resolve(rootStaticDirectory, fileName);
-        return cp(file, destPath, { recursive: true });
+    Array.from(brandFiles.entries(), async ([src, dest]) => {
+        const srcPath = require.resolve(src);
+        const destPath = resolve(rootStaticDirectory, dest);
+        return cp(srcPath, destPath, { recursive: true });
     }),
 );
 
-const redirectsFile = resolve(packageStaticDirectory, "_redirects");
-const redirects = await parse(redirectsFile);
-const redirectsIndex = new RewriteIndex(redirects);
+const redirectPlugins = await createRedirectPlugins(resolve(packageStaticDirectory, "_redirects"));
 
 //#endregion
 
@@ -95,10 +103,10 @@ export function generateCVESidebar(args) {
 export default createDocusaurusConfig(
     extendConfig({
         future: {
-            experimental_faster: true,
+            faster: true,
         },
         clientModules: ["../docusaurus-theme/theme/utils/mermaid_icons.js"],
-        url: "https://docs.goauthentik.io",
+        url: DocusaurusURL.Docs,
         //#region Preset
 
         presets: [
@@ -132,7 +140,7 @@ export default createDocusaurusConfig(
                     beforeDefaultRemarkPlugins: [
                         remarkLinkRewrite([
                             ["/api", "https://api.goauthentik.io"],
-                            ["/integrations", "https://integrations.goauthentik.io"],
+                            ["/integrations", DocusaurusURL.Integrations],
                         ]),
                     ],
                 },
@@ -152,33 +160,22 @@ export default createDocusaurusConfig(
                 }),
             ],
 
-            // Inject redirects for later use during runtime,
-            // such as navigating to non-existent page with the client-side router.
-
-            [
-                "@goauthentik/docusaurus-theme/redirects/plugin",
-                /** @type {AKRedirectsPluginOptions} */ ({
-                    redirects,
-                }),
-            ],
-
-            // Create build-time redirects for later use in HTTP responses,
-            // such as when navigating to a page for the first time.
-            //
-            // The existence of the _redirects file is also picked up by
-            // Netlify's deployment, which will redirect to the correct URL, even
-            // if the source is no longer present within the build output,
-            // such as when a page is removed, renamed, or moved.
-            [
-                "@docusaurus/plugin-client-redirects",
-                /** @type {RedirectsPluginOptions} */ ({
-                    createRedirects(existingPath) {
-                        const redirects = redirectsIndex.findAliases(existingPath);
-
-                        return redirects;
+            createLLMSPlugin({
+                sections: [{ path: ".", routeBasePath: "/" }],
+                groupBy: "topic",
+                // Normalized section headings for the top-level topics.
+                categories: topics,
+                // Split the glossary out of "Core Concepts" into its own section.
+                regroup: [["core/glossary", "glossary"]],
+                crossLinks: [
+                    {
+                        label: "Integrations",
+                        url: new URL("llms.txt", DocusaurusURL.Integrations).toString(),
                     },
-                }),
-            ],
+                ],
+            }),
+
+            ...redirectPlugins,
         ],
 
         //#endregion

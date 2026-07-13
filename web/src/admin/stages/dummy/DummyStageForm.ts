@@ -1,7 +1,7 @@
 import "#components/ak-switch-input";
 import "#elements/forms/HorizontalFormElement";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { BaseStageForm } from "#admin/stages/BaseStageForm";
 
@@ -14,23 +14,13 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-stage-dummy-form")
 export class DummyStageForm extends BaseStageForm<DummyStage> {
-    loadInstance(pk: string): Promise<DummyStage> {
-        return new StagesApi(DEFAULT_CONFIG).stagesDummyRetrieve({
-            stageUuid: pk,
-        });
-    }
-
-    async send(data: DummyStage): Promise<DummyStage> {
-        if (this.instance) {
-            return new StagesApi(DEFAULT_CONFIG).stagesDummyUpdate({
-                stageUuid: this.instance.pk || "",
-                dummyStageRequest: data,
-            });
-        }
-        return new StagesApi(DEFAULT_CONFIG).stagesDummyCreate({
-            dummyStageRequest: data,
-        });
-    }
+    protected endpoints = {
+        load: (stageUuid: string) => aki(StagesApi).stagesDummyRetrieve({ stageUuid }),
+        create: (dummyStageRequest: DummyStage) =>
+            aki(StagesApi).stagesDummyCreate({ dummyStageRequest }),
+        update: (stageUuid: string, dummyStageRequest: DummyStage) =>
+            aki(StagesApi).stagesDummyUpdate({ stageUuid, dummyStageRequest }),
+    };
 
     protected override renderForm(): TemplateResult {
         return html` <span>

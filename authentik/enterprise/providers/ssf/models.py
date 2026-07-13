@@ -24,8 +24,31 @@ class EventTypes(models.TextChoices):
     """SSF Event types supported by authentik"""
 
     CAEP_SESSION_REVOKED = "https://schemas.openid.net/secevent/caep/event-type/session-revoked"
+    """https://openid.net/specs/openid-caep-1_0-final.html#section-3.1"""
+    CAEP_TOKEN_CLAIMS_CHANGE = (
+        "https://schemas.openid.net/secevent/caep/event-type/token-claims-change"
+    )
+    """https://openid.net/specs/openid-caep-1_0-final.html#section-3.2"""
     CAEP_CREDENTIAL_CHANGE = "https://schemas.openid.net/secevent/caep/event-type/credential-change"
+    """https://openid.net/specs/openid-caep-1_0-final.html#section-3.3"""
+    CAEP_ASSURANCE_LEVEL_CHANGE = (
+        "https://schemas.openid.net/secevent/caep/event-type/assurance-level-change"
+    )
+    """https://openid.net/specs/openid-caep-1_0-final.html#section-3.4"""
+    CAEP_DEVICE_COMPLIANCE_CHANGE = (
+        "https://schemas.openid.net/secevent/caep/event-type/device-compliance-change"
+    )
+    """https://openid.net/specs/openid-caep-1_0-final.html#section-3.5"""
+    CAEP_SESSION_ESTABLISHED = (
+        "https://schemas.openid.net/secevent/caep/event-type/session-established"
+    )
+    """https://openid.net/specs/openid-caep-1_0-final.html#section-3.6"""
+    CAEP_SESSION_PRESENTED = "https://schemas.openid.net/secevent/caep/event-type/session-presented"
+    """https://openid.net/specs/openid-caep-1_0-final.html#section-3.7"""
+    CAEP_RISK_LEVEL_CHANGE = "https://schemas.openid.net/secevent/caep/event-type/risk-level-change"
+    """https://openid.net/specs/openid-caep-1_0-final.html#section-3.8"""
     SET_VERIFICATION = "https://schemas.openid.net/secevent/ssf/event-type/verification"
+    """https://openid.net/specs/openid-sharedsignals-framework-1_0.html#section-8.1.4.1"""
 
 
 class DeliveryMethods(models.TextChoices):
@@ -46,10 +69,12 @@ class SSFEventStatus(models.TextChoices):
 
 
 class StreamStatus(models.TextChoices):
+    """SSF Stream status"""
 
     ENABLED = "enabled"
     PAUSED = "paused"
     DISABLED = "disabled"
+    DISABLED_DELETED = "disabled_deleted"
 
 
 class SSFProvider(TasksModel, BackchannelProvider):

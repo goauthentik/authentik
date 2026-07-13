@@ -1,6 +1,6 @@
 import "#elements/buttons/SpinnerButton/index";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
@@ -8,7 +8,6 @@ import { SlottedTemplateResult } from "#elements/types";
 import { Provider, ProvidersApi } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-provider-table")
@@ -23,29 +22,24 @@ export class ProviderTable extends Table<Provider> {
 
     public override order = "name";
 
-    protected async apiEndpoint(): Promise<PaginatedResponse<Provider>> {
-        return new ProvidersApi(DEFAULT_CONFIG).providersAllList({
+    protected override async apiEndpoint(): Promise<PaginatedResponse<Provider>> {
+        return aki(ProvidersApi).providersAllList({
             ...(await this.defaultEndpointConfig()),
             backchannel: this.backchannel,
         });
     }
 
-    protected columns: TableColumn[] = [
+    protected override columns: TableColumn[] = [
         // ---
         [msg("Name"), "username"],
         [msg("Type")],
     ];
 
-    protected row(item: Provider): SlottedTemplateResult[] {
-        return [
-            html`<div>
-                <div>${item.name}</div>
-            </div>`,
-            html`${item.verboseName}`,
-        ];
+    protected override row(item: Provider): SlottedTemplateResult[] {
+        return [item.name, item.verboseName];
     }
 
-    protected renderSelectedChip(item: Provider): SlottedTemplateResult {
+    protected override renderSelectedChip(item: Provider): SlottedTemplateResult {
         return item.name;
     }
 }

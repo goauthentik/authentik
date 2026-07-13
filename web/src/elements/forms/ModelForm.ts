@@ -1,17 +1,47 @@
 import "#elements/EmptyState";
 
+import { APIError, parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
 import { AKRefreshEvent } from "#common/events";
 
 import { listen } from "#elements/decorators/listen";
+import { asInstanceInvoker } from "#elements/dialogs";
 import { Form } from "#elements/forms/Form";
-import { asEditModalInvoker } from "#elements/modals/utils";
 import { SlottedTemplateResult } from "#elements/types";
 
 import { ConsoleLogger } from "#logger/browser";
+import AKFadeIn from "#styles/authentik/components/Modifiers/fade-in.css";
 
 import { msg, str } from "@lit/localize";
-import { html } from "lit";
-import { property } from "lit/decorators.js";
+import type { CSSResult } from "lit";
+import { html } from "lit-html";
+import { property, state } from "lit/decorators.js";
+
+interface NamedInstance {
+    verboseName?: string;
+    verboseNamePlural?: string;
+}
+
+/*
+ * Type for saving and retrieving data ops from the Authentik API.
+ */
+export interface ModelEndpoints<T, PKT extends string | number = string, D = T> {
+    load: (pk: PKT) => Promise<T>;
+    create: (data: NonNullable<D>) => Promise<unknown>;
+    update: (pk: PKT, data: NonNullable<D>) => Promise<unknown>;
+}
+
+/**
+ * Predicate to determine if a given instance has verbose name properties.
+ *
+ * This is useful for plucking out the labels for dynamic forms.
+ */
+function isNamedInstance(instance: unknown): instance is NamedInstance {
+    if (!instance || typeof instance !== "object") {
+        return false;
+    }
+
+    return "verboseName" in instance || "verboseNamePlural" in instance;
+}
 
 /**
  * A base form that automatically tracks the server-side object (instance)
@@ -25,10 +55,42 @@ import { property } from "lit/decorators.js";
  * @prop {PKT} instancePk - The primary key of the instance to load.
  */
 export abstract class ModelForm<
-    T extends object = object,
+    T extends object | null = object,
     PKT extends string | number = string | number,
     D = T,
 > extends Form<T, D> {
+    public static styles: CSSResult[] = [...Form.styles, AKFadeIn];
+
+    /**
+     * The modifier to use in the default headline when editing an instance, e.g. "Edit".
+     */
+    public static modifierLabel: string | null = msg("Edit", {
+        id: "form.modifier.edit",
+    });
+
+    /**
+     * The label to use for the submit button when editing an instance, e.g. "Save Changes".
+     */
+    public static saveLabel: string | null = msg("Save Changes", {
+        id: "form.submit.save-changes",
+    });
+
+    /**
+     * The label to use for the submit button while the form is being submitted
+     * when editing an instance, e.g. "Saving Changes...".
+     */
+    public static savingLabel: string | null = msg("Saving Changes...", {
+        id: "form.submit.saving-changes",
+    });
+
+    /**
+     * The message shown after the form has been successfully submitted when
+     * editing an instance, e.g. "Changes Saved".
+     */
+    public static savedLabel: string | null = msg("Changes Saved", {
+        id: "form.submit.changes-saved",
+    });
+
     /**
      * A helper method to create an invoker for editing an instance of this form.
      *
@@ -37,9 +99,19 @@ export abstract class ModelForm<
      * @see {@linkcode Form.asModalInvoker} for opening a blank form in a modal.
      * @see {@linkcode asInvoker} for the underlying implementation.
      */
-    public static asEditModalInvoker = asEditModalInvoker;
+    public static asInstanceInvoker = asInstanceInvoker;
 
-    protected logger = ConsoleLogger.prefix(`model-form/${this.tagName.toLowerCase()}`);
+    protected endpoints?: ModelEndpoints<NonNullable<T>, PKT, D>;
+
+    protected logger = ConsoleLogger.prefix(`model-form/${this.localName}`);
+
+    @state()
+    protected error: APIError | null = null;
+
+    @state()
+    protected loading = false;
+
+    protected abortController: AbortController | null = null;
 
     /**
      * An overridable method for loading an instance.
@@ -47,137 +119,248 @@ export abstract class ModelForm<
      * @param pk The primary key of the instance to load.
      * @returns A promise that resolves to the loaded instance.
      */
-    protected abstract loadInstance(pk: PKT): Promise<T>;
+    protected loadInstance(pk: PKT): Promise<T | null> {
+        if (!this.endpoints) {
+            throw new TypeError(
+                "Neither 'endpoints' or 'loadInstance' defined on ${this.localName}",
+            );
+        }
+        return this.endpoints.load(pk);
+    }
+
+    protected override send(data: NonNullable<D>) {
+        if (!this.endpoints) {
+            throw new TypeError("Neither 'endpoints' or 'send' defined on ${this.localName}");
+        }
+        return this.instancePk === null
+            ? this.endpoints.create(data)
+            : this.endpoints.update(this.instancePk, data);
+    }
+
+    public override getSuccessMessage() {
+        if (!this.verboseName) return super.getSuccessMessage();
+        return this.instancePk === null
+            ? msg(str`Successfully created ${this.verboseName}`)
+            : msg(str`Successfully updated ${this.verboseName}`);
+    }
+
+    /**
+     * An overridable method for assigning the loaded instance to the form's state.
+     *
+     * This can be used to intercept the loaded instance before it's set on the form.
+     */
+    protected assignInstance(instance: T | null): void {
+        this.instance = instance;
+
+        if (instance && isNamedInstance(instance)) {
+            this.verboseName = instance.verboseName ?? this.verboseName;
+            this.verboseNamePlural = instance.verboseNamePlural ?? this.verboseNamePlural;
+        }
+    }
 
     /**
      * An overridable method for loading any data, beyond the instance.
      *
+     *
      * @see {@linkcode loadInstance}
      * @returns A promise that resolves when the data has been loaded.
      */
-    protected async load(): Promise<void> {
-        return Promise.resolve();
-    }
+    protected async load?(): Promise<void | boolean>;
 
-    @property({ attribute: "pk", converter: { fromAttribute: (value) => value as PKT } })
-    public set instancePk(value: PKT) {
-        this.#instancePk = value;
+    /**
+     * Timestamp of last call to {@linkcode load}.
+     * Used to prevent multiple calls to `load` when the form is rapidly shown and hidden.
+     */
+    #loadedAt: Date | null = null;
 
-        if (this.viewportCheck && !this.isInViewport) {
-            return;
-        }
-
-        if (this.#loading) {
-            return;
-        }
-
-        this.#loading = true;
-
-        this.load().then(() => {
-            this.loadInstance(value).then((instance) => {
-                this.instance = instance;
-                this.#loading = false;
-                this.requestUpdate();
-            });
-        });
-    }
-
-    #instancePk: PKT | null = null;
-
-    public get instancePk(): PKT | null {
-        return this.#instancePk;
-    }
-
-    // Keep track if we've loaded the model instance
-    #initialLoad = false;
-
-    // Keep track if we've done the general data loading of load()
-    #initialDataLoad = false;
-
-    #loading = false;
-
-    @property({ attribute: false })
-    instance?: T = this.defaultInstance;
-
-    get defaultInstance(): T | undefined {
-        return undefined;
-    }
-
-    @listen(AKRefreshEvent, {
-        target: null,
+    @property({
+        attribute: "pk",
+        useDefault: true,
+        converter: { fromAttribute: (value) => value as PKT },
     })
-    protected refresh = async () => {
-        await new Promise((resolve) => requestAnimationFrame(resolve));
+    public instancePk: PKT | null = null;
 
-        if (!this.#instancePk) return;
-
-        const viewportVisible = this.isInViewport || !this.viewportCheck;
-
-        if (!viewportVisible) {
-            this.logger.debug(`Instance not in viewport, skipping refresh`);
-            return;
-        }
-
-        return this.loadInstance(this.#instancePk).then((instance) => {
-            this.instance = instance;
-        });
-    };
-
-    protected override formatSubmitLabel(): string {
-        if (this.#instancePk) {
-            return msg(str`Save Changes`, {
-                id: "model-form.apply-submit",
-            });
-        }
-
-        return super.formatSubmitLabel();
-    }
-
-    protected override formatHeadline(): string {
-        return super.formatHeadline(this.headline, this.#instancePk ? msg("Edit") : null);
-    }
+    @property({ attribute: false, useDefault: true })
+    public instance: T | null = this.createDefaultInstance();
 
     //#region Public methods
 
+    /**
+     * Resets the form to its initial state, including clearing the loaded instance and any errors.
+     */
     public override reset(): void {
         super.reset();
 
-        this.instance = undefined;
-        this.#initialLoad = false;
-        this.#initialDataLoad = false;
+        this.instance = null;
+        this.error = null;
+    }
 
-        this.requestUpdate();
+    /**
+     * A helper method to create a default instance when the form is used for creation instead of editing.
+     *
+     * By default, this returns `null`, but it can be overridden to provide a default instance with pre-filled values.
+     *
+     * @returns A default instance of the model, or null if not applicable.
+     */
+    public createDefaultInstance(): T | null {
+        return null;
     }
 
     //#endregion
 
-    //#region Rendering
+    protected override formatSubmitLabel(submitLabel?: string): string {
+        const { saveLabel } = this.constructor as typeof ModelForm;
 
-    protected override renderVisible(): SlottedTemplateResult {
-        if ((this.#instancePk && !this.instance) || !this.#initialDataLoad) {
-            return html`<ak-empty-state loading></ak-empty-state>`;
+        if (this.instancePk && saveLabel) {
+            return saveLabel;
         }
-        return super.renderVisible();
+
+        return super.formatSubmitLabel(submitLabel);
     }
 
-    protected override render(): SlottedTemplateResult {
-        // if we're in viewport now and haven't loaded AND have a PK set, load now
-        // Or if we don't check for viewport in some cases
-        const viewportVisible = this.isInViewport || !this.viewportCheck;
-        if (this.#instancePk && !this.#initialLoad && viewportVisible) {
-            this.instancePk = this.#instancePk;
-            this.#initialLoad = true;
-        } else if (!this.#initialDataLoad && viewportVisible) {
-            // else if since if the above case triggered that will also call this.load(), so
-            // ensure we don't load again
-            this.load().then(() => {
-                this.#initialDataLoad = true;
-                // Class attributes changed in this.load() might not be @property()
-                // or @state() so let's trigger a re-render to be sure we get updated
-                this.requestUpdate();
-            });
+    protected override formatSubmittingLabel(submittingLabel?: string): string {
+        const { savingLabel } = this.constructor as typeof ModelForm;
+
+        if (this.instancePk && savingLabel) {
+            return savingLabel;
         }
 
+        return super.formatSubmittingLabel(submittingLabel);
+    }
+
+    protected override formatSubmittedLabel(submittedLabel?: string): string {
+        const { savedLabel } = this.constructor as typeof ModelForm;
+
+        if (this.instancePk && savedLabel) {
+            return savedLabel;
+        }
+
+        return super.formatSubmittedLabel(submittedLabel);
+    }
+
+    protected override formatHeadline(modifier?: string | null): string {
+        modifier ||= this.instancePk ? (this.constructor as typeof ModelForm).modifierLabel : null;
+
+        return super.formatHeadline(this.headline, modifier);
+    }
+
+    //#region Lifecycle
+
+    /**
+     * Loads the instance when the form is shown, handing loading and error states.
+     */
+    protected doLoad() {
+        if (this.#loadedAt || this.loading) {
+            return Promise.resolve();
+        }
+
+        if (this.load) {
+            this.loading = true;
+        }
+
+        const loadPromise = this.load?.() || Promise.resolve(true);
+
+        return loadPromise
+            .then((result) => {
+                this.#loadedAt = new Date();
+
+                if (result === false) {
+                    this.logger.debug("Load method returned false, skipping instance load");
+                    return;
+                }
+
+                return this.refresh();
+            })
+            .catch(this.delegateError)
+            .finally(() => {
+                this.loading = false;
+            });
+    }
+
+    /**
+     * A helper method to retry loading the instance after an error has occurred.
+     */
+    protected retryLoad = (): Promise<void> => {
+        this.error = null;
+        this.#loadedAt = null;
+        return this.doLoad();
+    };
+
+    /**
+     * Refreshes the instance by re-calling `loadInstance` with the current `instancePk`.
+     */
+    @listen(AKRefreshEvent)
+    public refresh = async (): Promise<void> => {
+        if (!this.instancePk) {
+            this.logger.info("Skipping refresh. No instance PK provided.");
+            return;
+        }
+
+        this.error = null;
+        this.loading = true;
+
+        return this.loadInstance(this.instancePk)
+            .then((instance) => this.assignInstance(instance))
+            .catch(this.delegateError)
+            .finally(() => {
+                this.loading = false;
+            });
+    };
+
+    /**
+     * Prepares a loading error for display in the form's template.
+     *
+     * @param error The error to prepare.
+     */
+    protected delegateError = async (error: unknown): Promise<void> => {
+        this.error = await parseAPIResponseError(error);
+    };
+
+    protected override render(): SlottedTemplateResult {
+        if (!this.visible) {
+            return null;
+        }
+
+        if (!this.#loadedAt) {
+            // If there is anything to do load, we do so asynchronously,
+            // possibly updating our loading flag to avoid an unnecessary
+            // visual change if the load is very fast.
+            this.doLoad();
+        }
+
+        if (this.loading) {
+            // We avoid the delayed fade-in of the loading state to prevent flickering.
+            const ready = this.instance || this.#loadedAt;
+
+            this.logger.debug("Form is loading, showing loading state", {
+                ready,
+                instance: !!this.instance,
+                loadedAt: !!this.#loadedAt,
+            });
+            return html`<ak-empty-state
+                class="${ready ? "" : "ak-fade-in ak-m-delayed"}"
+                loading
+            ></ak-empty-state>`;
+        }
+
+        if (this.error && !this.#loadedAt) {
+            // The form is in an error state and has not successfully loaded before.
+            return html`<ak-empty-state icon="pf-icon-warning-triangle" part="error-state">
+                <span>${msg(str`An error occurred while loading ${this.verboseName}.`)}</span>
+                <div slot="body">
+                    <p>${pluckErrorDetail(this.error)}</p>
+
+                    <button class="pf-c-button pf-m-primary" @click=${this.retryLoad}>
+                        ${msg("Retry")}
+                    </button>
+                </div>
+            </ak-empty-state>`;
+        }
+
+        // Otherwise, render the form as normal.
+        // If there was an error but we have successfully loaded before,
+        // we allow the form to render with the previous data and show the
+        // error message through the normal channels (e.g. non-field errors).
         return super.render();
     }
 

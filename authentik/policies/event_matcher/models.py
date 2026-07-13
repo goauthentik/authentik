@@ -4,9 +4,11 @@ from itertools import chain
 
 from django.db import models
 from django.utils.translation import gettext as _
+from djangoql.queryset import apply_search
 from rest_framework.serializers import BaseSerializer
 from structlog.stdlib import get_logger
 
+from authentik.api.search.ql import BaseSchema
 from authentik.events.models import Event, EventAction
 from authentik.policies.models import Policy
 from authentik.policies.types import PolicyRequest, PolicyResult
@@ -17,6 +19,10 @@ LOGGER = get_logger()
 class EventMatcherPolicy(Policy):
     """Passes when Event matches selected criteria."""
 
+    query = models.TextField(
+        null=True,
+        default=None,
+    )
     action = models.TextField(
         choices=EventAction.choices,
         null=True,
@@ -69,6 +75,7 @@ class EventMatcherPolicy(Policy):
         matches: list[PolicyResult] = []
         messages = []
         checks = [
+            self.passes_query,
             self.passes_action,
             self.passes_client_ip,
             self.passes_app,
@@ -89,6 +96,20 @@ class EventMatcherPolicy(Policy):
         result = PolicyResult(passing, *messages)
         result.source_results = matches
         return result
+
+    def passes_query(self, request: PolicyRequest, event: Event) -> PolicyResult | None:
+        """Check AKQL query"""
+        if not self.query:
+            return None
+        from authentik.events.api.events import EventViewSet
+
+        class InlineSchema(BaseSchema):
+            def get_fields(self, model):
+                return EventViewSet().get_ql_fields()
+
+        print(Event.objects.filter(pk=event.pk))
+        qs = apply_search(Event.objects.filter(pk=event.pk), self.query, InlineSchema)
+        return PolicyResult(qs.exists(), "Query matched.")
 
     def passes_action(self, request: PolicyRequest, event: Event) -> PolicyResult | None:
         """Check if `self.action` matches"""

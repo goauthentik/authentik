@@ -8,7 +8,7 @@ The device code flow is also known as _device flow_ or _device authorization gra
 
 ### Requirements
 
-This device flow is only possible if the active [brand](../../../sys-mgmt/brands/index.md) has a device code flow configured. This flow is run _after_ the user logs in, and before the user authenticates.
+This device flow is only possible if the active [brand](../../../customize/branding/index.md) has a device code flow configured. This flow is run _after_ the user logs in, and before the user authenticates.
 
 authentik does not include a default flow for this use case, so it is necessary to create a new one with a **Designation** of `Stage Configuration`.
 
@@ -64,7 +64,7 @@ If the user _has_ finished the authentication and authorization, the response wi
 ### Create and apply a device code flow
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Flows and Stages** > **Flows** and click **Create**.
+2. Navigate to **Flows and Stages** > **Flows** and click **New Flow**.
 3. Set the following required configurations:
     - **Name**: provide a name (e.g. `default-device-code-flow`)
     - **Title**: provide a title (e.g. `Device code flow`)

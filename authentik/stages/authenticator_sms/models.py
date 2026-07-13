@@ -20,7 +20,7 @@ from authentik.events.utils import sanitize_item
 from authentik.flows.models import ConfigurableStage, FriendlyNamedStage, Stage
 from authentik.lib.models import SerializerModel
 from authentik.lib.utils.http import get_http_session
-from authentik.stages.authenticator.models import SideChannelDevice
+from authentik.stages.authenticator.models import SideChannelDevice, ThrottlingMixin
 
 LOGGER = get_logger()
 
@@ -197,7 +197,7 @@ def hash_phone_number(phone_number: str) -> str:
     return "hash:" + sha256(phone_number.encode()).hexdigest()
 
 
-class SMSDevice(SerializerModel, SideChannelDevice):
+class SMSDevice(SerializerModel, ThrottlingMixin, SideChannelDevice):
     """SMS Device"""
 
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
@@ -224,11 +224,19 @@ class SMSDevice(SerializerModel, SideChannelDevice):
 
         return SMSDeviceSerializer
 
-    def verify_token(self, token):
-        valid = super().verify_token(token)
-        if valid:
-            self.save()
-        return valid
+    def verify_token(self, token: str) -> bool:
+        verify_allowed, _ = self.verify_is_allowed()
+        if verify_allowed:
+            verified = super().verify_token(token)
+
+            if verified:
+                self.throttle_reset()
+            else:
+                self.throttle_increment()
+        else:
+            verified = False
+
+        return verified
 
     def __str__(self):
         return str(self.name) or str(self.user_id)

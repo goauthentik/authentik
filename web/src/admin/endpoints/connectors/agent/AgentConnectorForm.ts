@@ -9,7 +9,7 @@ import "#admin/common/ak-crypto-certificate-search";
 import "#elements/utils/TimeDeltaHelp";
 import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { ModelForm } from "#elements/forms/ModelForm";
 import { WithBrandConfig } from "#elements/mixins/branding";
@@ -34,28 +34,26 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-endpoints-connector-agent-form")
 export class AgentConnectorForm extends WithBrandConfig(ModelForm<AgentConnector, string>) {
-    loadInstance(pk: string): Promise<AgentConnector> {
-        return new EndpointsApi(DEFAULT_CONFIG).endpointsAgentsConnectorsRetrieve({
-            connectorUuid: pk,
-        });
-    }
+    protected endpoints = {
+        load: (connectorUuid: string) =>
+            aki(EndpointsApi).endpointsAgentsConnectorsRetrieve({
+                connectorUuid,
+            }),
+        create: (data: AgentConnector) =>
+            aki(EndpointsApi).endpointsAgentsConnectorsCreate({
+                agentConnectorRequest: data as unknown as AgentConnectorRequest,
+            }),
+        update: (connectorUuid: string, patchedAgentConnectorRequest: AgentConnector) =>
+            aki(EndpointsApi).endpointsAgentsConnectorsPartialUpdate({
+                connectorUuid,
+                patchedAgentConnectorRequest,
+            }),
+    };
 
     getSuccessMessage(): string {
         return this.instance
             ? msg("Successfully updated agent connector.")
             : msg("Successfully created agent connector.");
-    }
-
-    async send(data: AgentConnector): Promise<AgentConnector> {
-        if (this.instance) {
-            return new EndpointsApi(DEFAULT_CONFIG).endpointsAgentsConnectorsPartialUpdate({
-                connectorUuid: this.instance.connectorUuid!,
-                patchedAgentConnectorRequest: data,
-            });
-        }
-        return new EndpointsApi(DEFAULT_CONFIG).endpointsAgentsConnectorsCreate({
-            agentConnectorRequest: data as unknown as AgentConnectorRequest,
-        });
     }
 
     renderForm() {
@@ -89,11 +87,11 @@ export class AgentConnectorForm extends WithBrandConfig(ModelForm<AgentConnector
             <ak-form-group label="${msg("Authentication settings")}">
                 <div class="pf-c-form">
                     <ak-form-element-horizontal
-                        label=${msg("Authorization flow")}
+                        label=${msg("Authorization Flow")}
                         name="authorizationFlow"
                     >
                         <ak-flow-search
-                            label=${msg("Authorization flow")}
+                            label=${msg("Authorization Flow")}
                             flowType=${FlowDesignationEnum.Authorization}
                             .currentFlow=${this.instance?.authorizationFlow}
                         ></ak-flow-search>

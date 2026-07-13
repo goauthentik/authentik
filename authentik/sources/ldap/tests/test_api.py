@@ -11,7 +11,7 @@ from rest_framework.test import APITestCase
 from authentik.blueprints.tests import apply_blueprint
 from authentik.core.tests.utils import create_test_admin_user
 from authentik.lib.generators import generate_id
-from authentik.sources.ldap.api import LDAPSourceSerializer
+from authentik.sources.ldap.api.sources import LDAPSourceSerializer
 from authentik.sources.ldap.models import LDAPSource, LDAPSourcePropertyMapping
 from authentik.sources.ldap.tests.mock_ad import mock_ad_connection
 

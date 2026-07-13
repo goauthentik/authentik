@@ -42,11 +42,11 @@ Configure how long [Events](./events/index.md) are retained for within authentik
 
 ### Reputation: lower limit
 
-Configure a lower limit for [Reputation](../../customize/policies/#reputation-policy). Defaults to `-5`.
+Configure a lower limit for [Reputation Policy](../customize/policies/types/reputation.md). Defaults to `-5`.
 
 ### Reputation: upper limit
 
-Configure an upper limit for [Reputation](../../customize/policies/#reputation-policy). Defaults to `5`.
+Configure an upper limit for [Reputation Policy](../customize/policies/types/reputation.md). Defaults to `5`.
 
 ### Footer links
 

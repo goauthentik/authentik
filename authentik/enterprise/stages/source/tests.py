@@ -76,9 +76,12 @@ class TestSourceStage(FlowTestCase):
             follow=True,
         )
         self.assertEqual(response.status_code, 200)
-        self.assertStageRedirects(
+        self.assertStageResponse(
             response,
-            reverse("authentik_sources_saml:login", kwargs={"source_slug": self.source.slug}),
+            flow,
+            component="xak-flow-redirect",
+            to=reverse("authentik_sources_saml:login", kwargs={"source_slug": self.source.slug}),
+            final_redirect=False,
         )
 
         # Hijack flow plan so we don't have to emulate the source

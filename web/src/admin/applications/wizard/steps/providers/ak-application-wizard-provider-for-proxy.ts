@@ -1,5 +1,3 @@
-import "#admin/applications/wizard/ak-wizard-title";
-
 import { WizardUpdateEvent } from "#components/ak-wizard/events";
 
 import { ApplicationWizardProviderForm } from "#admin/applications/wizard/steps/providers/ApplicationWizardProviderForm";
@@ -39,7 +37,7 @@ export class ApplicationWizardProxyProviderForm extends ApplicationWizardProvide
             this.showHttpBasic = el.checked;
         };
 
-        return html` <ak-wizard-title>${this.label}</ak-wizard-title>
+        return html`<h3 class="pf-c-wizard__main-title">${this.label}</h3>
             <form id="providerform" class="pf-c-form pf-m-horizontal" slot="form">
                 ${renderForm({
                     provider,

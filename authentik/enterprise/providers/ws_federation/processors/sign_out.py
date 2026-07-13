@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from urllib.parse import urlparse
 
 from django.http import HttpRequest
 from django.shortcuts import get_object_or_404
@@ -32,7 +33,9 @@ class SignOutRequest:
         _, provider = req.get_app_provider()
         if not req.wreply:
             req.wreply = provider.acs_url
-        if not req.wreply.startswith(provider.acs_url):
+        reply = urlparse(req.wreply)
+        configured = urlparse(provider.acs_url)
+        if not (reply[:2] == configured[:2] and reply.path.startswith(configured.path)):
             raise ValueError("Invalid wreply")
         return req
 

@@ -4,10 +4,12 @@ sidebar_label: Zammad
 support_level: community
 ---
 
+import RedirectURI20265Note from "../../\_redirect-uri-2026-5-note.mdx";
+import SAMLProvider20265Warning from "../../\_saml-provider-2026-5-warning.mdx";
 import TabItem from "@theme/TabItem";
 import Tabs from "@theme/Tabs";
 
-## What is Zammad
+## What is Zammad?
 
 > Zammad is a web-based, open source user support/ticketing solution.
 > Download and install it on your own servers. For free.
@@ -39,24 +41,26 @@ values={[
 
 ## authentik configuration
 
+<RedirectURI20265Note />
+
 To support the integration of Zammad with authentik, you need to create an application/provider pair in authentik.
 
 ### Create an application and provider in authentik
 
+<SAMLProvider20265Warning />
+
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
+2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
     - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Take note of the **slug** as it will be required later.
     - **Choose a Provider type**: select **SAML Provider** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
         - Set the **ACS URL** to `https://zammad.company/auth/saml/callback`.
-        - Set the **Issuer** to `https://zammad.company/auth/saml/metadata`.
         - Set the **Audience** to `https://zammad.company/auth/saml/metadata`.
-        - Set the **Service Provider Binding** to `Post`.
         - Set the **SLS URL** to `https://zammad.company/auth/saml/slo`.
         - Set the **SLS Binding** to `Redirect`.
         - Set the **Logout Method** to `Front-channel (Iframe)`.
         - Under **Advanced protocol settings**, select an available **Signing certificate**.
-    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 
 3. Click **Submit** to save the new application and provider.
 
@@ -72,8 +76,8 @@ To configure Zammad's integration with authentik, go to **Settings** (the gear i
 
 1. Set the following fields:
     - **Display name**: authentik
-    - **IDP SSO target URL**: `https://authentik.company/application/saml/<application_slug>/sso/binding/redirect/`
-    - **IDP single logout target URL**: `https://authentik.company/application/saml/<application_slug>/slo/binding/redirect/`
+    - **IDP SSO target URL**: `https://authentik.company/application/saml/<application_slug>/`
+    - **IDP single logout target URL**: `https://authentik.company/application/saml/<application_slug>/`
     - **IDP Certificate**: paste the contents of your certificate file.
     - **IDP certificate fingerprint**: Leave this empty.
     - **Name Identifier Format**: `urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress`
@@ -95,16 +99,16 @@ To support the integration of Zammad with authentik, you need to create an appli
 ### Create an application and provider in authentik
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
+2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
     - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
     - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
         - Set the **Client type** to `Public`.
         - Take note of the **Client ID** and **slug** values because they will be required later.
-        - Set the **Redirect URIs/Origins** to `Strict` / `https://zammad.company/auth/openid_connect/callback`.
+        - Add a **Redirect URI** of type `Strict` `Authorization` as `https://zammad.company/auth/openid_connect/callback`.
         - Select a **Signing Key**.
         - Under **Advanced protocol settings**, set **Subject mode** to **Based on the User's Email**.
-    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 
 3. Click **Submit** to save the new application and provider.
 

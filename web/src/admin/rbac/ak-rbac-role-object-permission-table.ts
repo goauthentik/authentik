@@ -3,12 +3,14 @@ import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { createPaginatedResponse } from "#common/api/responses";
 
+import { ModalInvokerButton } from "#elements/dialogs";
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
-import { ifPresent } from "#elements/utils/attributes";
+
+import { RoleObjectPermissionForm } from "#admin/rbac/ak-rbac-role-object-permission-form";
 
 import {
     ModelEnum,
@@ -18,7 +20,7 @@ import {
 } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { html, TemplateResult } from "lit";
+import { html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
 @customElement("ak-rbac-role-object-permission-table")
@@ -26,30 +28,31 @@ export class RoleAssignedObjectPermissionTable extends Table<RoleAssignedObjectP
     @property({ type: String })
     public model: ModelEnum | null = null;
 
-    // TODO: Use attribute casing.
-    // @property({ attribute: "object-pk" })
-    @property()
-    public objectPk?: string | number;
+    // TODO: Switch this to attribute-casing when we all the RBAC components are settled.
+    @property({ type: String, attribute: "objectPk" })
+    public objectPk: string | null = null;
 
     @state()
-    modelPermissions?: PaginatedPermissionList;
+    protected modelPermissions?: PaginatedPermissionList;
 
-    checkbox = true;
-    clearOnRefresh = true;
+    public override checkbox = true;
+    public override clearOnRefresh = true;
 
     protected override searchEnabled = true;
 
-    async apiEndpoint(): Promise<PaginatedResponse<RoleAssignedObjectPermission>> {
+    protected override async apiEndpoint(): Promise<
+        PaginatedResponse<RoleAssignedObjectPermission>
+    > {
         if (!this.objectPk || !this.model) {
             return createPaginatedResponse([]);
         }
-        const perms = await new RbacApi(DEFAULT_CONFIG).rbacPermissionsAssignedByRolesList({
+        const perms = await aki(RbacApi).rbacPermissionsAssignedByRolesList({
             ...(await this.defaultEndpointConfig()),
             model: this.model,
             objectPk: this.objectPk.toString(),
         });
         const [appLabel, modelName] = this.model.split(".");
-        const modelPermissions = await new RbacApi(DEFAULT_CONFIG).rbacPermissionsList({
+        const modelPermissions = await aki(RbacApi).rbacPermissionsList({
             contentTypeModel: modelName,
             contentTypeAppLabel: appLabel,
             ordering: "codename",
@@ -73,23 +76,14 @@ export class RoleAssignedObjectPermissionTable extends Table<RoleAssignedObjectP
         ];
     }
 
-    renderObjectCreate(): TemplateResult {
-        return html`<ak-forms-modal>
-            <span slot="submit">${msg("Assign")}</span>
-            <span slot="header">${msg("Assign object permissions to role")}</span>
-            <ak-rbac-role-object-permission-form
-                model=${ifPresent(this.model)}
-                objectPk=${ifPresent(this.objectPk)}
-                slot="form"
-            >
-            </ak-rbac-role-object-permission-form>
-            <button slot="trigger" class="pf-c-button pf-m-primary">
-                ${msg("Assign Object Permission")}
-            </button>
-        </ak-forms-modal>`;
+    protected override renderObjectCreate(): SlottedTemplateResult {
+        return ModalInvokerButton(RoleObjectPermissionForm, {
+            model: this.model,
+            objectPk: this.objectPk,
+        });
     }
 
-    renderToolbarSelected(): TemplateResult {
+    protected override renderToolbarSelected(): SlottedTemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
             object-label=${msg("Permission(s)")}
@@ -98,9 +92,7 @@ export class RoleAssignedObjectPermissionTable extends Table<RoleAssignedObjectP
                 return [{ key: msg("Permission"), value: item.name }];
             }}
             .delete=${(item: RoleAssignedObjectPermission) => {
-                return new RbacApi(
-                    DEFAULT_CONFIG,
-                ).rbacPermissionsAssignedByRolesUnassignPartialUpdate({
+                return aki(RbacApi).rbacPermissionsAssignedByRolesUnassignPartialUpdate({
                     uuid: item.rolePk,
                     patchedPermissionAssignRequest: {
                         objectPk: this.objectPk?.toString(),
@@ -118,7 +110,7 @@ export class RoleAssignedObjectPermissionTable extends Table<RoleAssignedObjectP
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: RoleAssignedObjectPermission): SlottedTemplateResult[] {
+    protected override row(item: RoleAssignedObjectPermission): SlottedTemplateResult[] {
         const baseRow = [html` <a href="#/identity/roles/${item.rolePk}">${item.name}</a>`];
         this.modelPermissions?.results.forEach((perm) => {
             const assignedToModel = item.modelPermissions.some(

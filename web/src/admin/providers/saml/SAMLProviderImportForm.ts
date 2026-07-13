@@ -1,6 +1,6 @@
 import { renderForm } from "./SAMLProviderImportFormForm.js";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { SentryIgnoredError } from "#common/sentry/index";
 
 import { Form } from "#elements/forms/Form";
@@ -21,7 +21,7 @@ export class SAMLProviderImportForm extends Form<SAMLProvider> {
         if (!file) {
             throw new SentryIgnoredError("No form data");
         }
-        return new ProvidersApi(DEFAULT_CONFIG).providersSamlImportMetadataCreate({
+        return aki(ProvidersApi).providersSamlImportMetadataCreate({
             file: file,
             name: data.name,
             authorizationFlow: data.authorizationFlow || "",

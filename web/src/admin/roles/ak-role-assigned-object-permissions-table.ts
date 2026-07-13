@@ -1,7 +1,7 @@
 import "#elements/forms/DeleteBulkForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { groupBy } from "#common/utils";
 
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
@@ -15,35 +15,37 @@ import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-role-assigned-object-permissions-table")
 export class RoleAssignedObjectPermissionTable extends Table<ExtraRoleObjectPermission> {
-    @property()
-    roleUuid?: string;
+    @property({ type: String, attribute: "role-uuid" })
+    public roleUUID: string | null = null;
 
     protected override searchEnabled = true;
 
-    checkbox = true;
-    clearOnRefresh = true;
+    public override checkbox = true;
+    public override clearOnRefresh = true;
 
-    async apiEndpoint(): Promise<PaginatedResponse<ExtraRoleObjectPermission>> {
-        return new RbacApi(DEFAULT_CONFIG).rbacPermissionsRolesList({
+    protected override async apiEndpoint(): Promise<PaginatedResponse<ExtraRoleObjectPermission>> {
+        return aki(RbacApi).rbacPermissionsRolesList({
             ...(await this.defaultEndpointConfig()),
-            uuid: this.roleUuid || "",
+            uuid: this.roleUUID || "",
         });
     }
 
-    groupBy(items: ExtraRoleObjectPermission[]): [string, ExtraRoleObjectPermission[]][] {
+    protected override groupBy(
+        items: ExtraRoleObjectPermission[],
+    ): [string, ExtraRoleObjectPermission[]][] {
         return groupBy(items, (obj) => {
             return obj.appLabelVerbose;
         });
     }
 
-    protected columns: TableColumn[] = [
+    protected override columns: TableColumn[] = [
         [msg("Model"), "model"],
         [msg("Permission"), ""],
         [msg("Object"), ""],
         [""],
     ];
 
-    renderToolbarSelected(): TemplateResult {
+    protected override renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
             object-label=${msg("Permission(s)")}
@@ -55,10 +57,8 @@ export class RoleAssignedObjectPermissionTable extends Table<ExtraRoleObjectPerm
                 ];
             }}
             .delete=${(item: ExtraRoleObjectPermission) => {
-                return new RbacApi(
-                    DEFAULT_CONFIG,
-                ).rbacPermissionsAssignedByRolesUnassignPartialUpdate({
-                    uuid: this.roleUuid || "",
+                return aki(RbacApi).rbacPermissionsAssignedByRolesUnassignPartialUpdate({
+                    uuid: this.roleUUID || "",
                     patchedPermissionAssignRequest: {
                         permissions: [`${item.appLabel}.${item.codename}`],
                         objectPk: item.objectPk,
@@ -73,7 +73,7 @@ export class RoleAssignedObjectPermissionTable extends Table<ExtraRoleObjectPerm
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: ExtraRoleObjectPermission): SlottedTemplateResult[] {
+    protected override row(item: ExtraRoleObjectPermission): SlottedTemplateResult[] {
         return [
             html`${item.modelVerbose}`,
             html`${item.name}`,

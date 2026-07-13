@@ -5,12 +5,12 @@ import "#elements/ak-mdx/ak-mdx";
 import "#elements/buttons/SpinnerButton/ak-spinner-button";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
-import "#elements/modals/ak-modal";
+import "#elements/dialogs/ak-modal";
 import "#admin/applications/ApplicationForm";
-import "#admin/applications/ApplicationWizardHint";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
+import { IconEditButton } from "#elements/dialogs";
 import { WithBrandConfig } from "#elements/mixins/branding";
 import { getURLParam } from "#elements/router/RouteMatch";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
@@ -20,7 +20,7 @@ import { ifPresent } from "#elements/utils/attributes";
 
 import { ApplicationForm } from "#admin/applications/ApplicationForm";
 import Styles from "#admin/applications/ApplicationListPage.css";
-import { AkApplicationWizard } from "#admin/applications/wizard/ak-application-wizard";
+import { AKApplicationWizard } from "#admin/applications/wizard/ak-application-wizard";
 
 import { Application, CoreApi, PoliciesApi } from "@goauthentik/api";
 
@@ -45,6 +45,9 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
 
     protected override searchEnabled = true;
     public pageTitle = msg("Applications");
+    public searchLabel = msg("Applications search");
+    public searchPlaceholder = msg("Search for application by name, group or provider...");
+
     public get pageDescription() {
         return msg(
             str`External applications that use ${this.brandingTitle} as an identity provider via protocols like OAuth2 and SAML. All applications are shown here, even ones you cannot access.`,
@@ -59,7 +62,7 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
     public order = "name";
 
     async apiEndpoint(): Promise<PaginatedResponse<Application>> {
-        return new CoreApi(DEFAULT_CONFIG).coreApplicationsList({
+        return aki(CoreApi).coreApplicationsList({
             ...(await this.defaultEndpointConfig()),
             superuserFullList: true,
         });
@@ -69,7 +72,7 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
         super.firstUpdated(changed);
 
         if (getURLParam("createWizard", false)) {
-            AkApplicationWizard.showModal();
+            AKApplicationWizard.showModal();
         } else if (getURLParam("createForm", false)) {
             ApplicationForm.showModal();
         }
@@ -103,12 +106,12 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
             object-label=${msg("Application(s)")}
             .objects=${this.selectedElements}
             .usedBy=${(item: Application) => {
-                return new CoreApi(DEFAULT_CONFIG).coreApplicationsUsedByList({
+                return aki(CoreApi).coreApplicationsUsedByList({
                     slug: item.slug,
                 });
             }}
             .delete=${(item: Application) => {
-                return new CoreApi(DEFAULT_CONFIG).coreApplicationsDestroy({
+                return aki(CoreApi).coreApplicationsDestroy({
                     slug: item.slug,
                 });
             }}
@@ -123,6 +126,7 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
         return [
             html`<ak-app-icon
                 aria-label=${msg(str`Application icon for "${item.name}"`)}
+                role="img"
                 name=${item.name}
                 icon=${ifPresent(item.metaIconUrl)}
                 .iconThemedUrls=${item.metaIconThemedUrls}
@@ -138,16 +142,8 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
                   </a>`
                 : html`-`,
             html`${item.providerObj?.verboseName || msg("-")}`,
-            html`<div>
-                <button
-                    class="pf-c-button pf-m-plain"
-                    aria-label=${msg(str`Edit "${item.name}"`)}
-                    ${ApplicationForm.asEditModalInvoker(item.slug)}
-                >
-                    <pf-tooltip position="top" content=${msg("Edit")}>
-                        <i class="fas fa-edit" aria-hidden="true"></i>
-                    </pf-tooltip>
-                </button>
+            html`<div class="ak-c-table__actions">
+                ${IconEditButton(ApplicationForm, item.slug)}
                 ${item.launchUrl
                     ? html`<a
                           href=${item.launchUrl}
@@ -166,17 +162,28 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
 
     protected override renderObjectCreate(): TemplateResult {
         return html`<ak-dropdown class="pf-c-dropdown">
-            <button
-                class="pf-c-button pf-m-primary pf-c-dropdown__toggle"
-                type="button"
-                id="new-application-toggle"
-                aria-haspopup="menu"
-                aria-controls="new-application-menu"
-                tabindex="0"
-            >
-                <span class="pf-c-dropdown__toggle-text">${msg("New Application")}</span>
-                <i class="fas fa-caret-down pf-c-dropdown__toggle-icon" aria-hidden="true"></i>
-            </button>
+            <div class="pf-c-dropdown__toggle pf-m-primary pf-m-split-button pf-m-action">
+                <button
+                    class="pf-c-dropdown__toggle-button"
+                    type="button"
+                    ${AKApplicationWizard.asModalInvoker()}
+                >
+                    ${msg("New Application")}
+                </button>
+
+                <button
+                    class="pf-c-dropdown__toggle-button"
+                    type="button"
+                    id="new-application-toggle"
+                    aria-haspopup="menu"
+                    aria-controls="new-application-menu"
+                    tabindex="0"
+                    aria-label=${msg("New Application options")}
+                >
+                    <i class="fas fa-caret-down" aria-hidden="true"></i>
+                </button>
+            </div>
+
             <menu
                 class="pf-c-dropdown__menu"
                 hidden
@@ -189,12 +196,12 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
                         type="button"
                         role="menuitem"
                         class="pf-c-dropdown__menu-item"
-                        ${AkApplicationWizard.asModalInvoker()}
+                        ${AKApplicationWizard.asModalInvoker()}
                         aria-description=${msg(
                             "Opens the new application wizard, which will guide you through creating a new application with an existing provider.",
                         )}
                     >
-                        ${msg("With New Provider...")}
+                        ${msg("with New Provider...")}
                     </button>
                 </li>
                 <li role="presentation">
@@ -207,7 +214,7 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
                             "Opens the new application form, which will guide you through creating a new application with an existing provider.",
                         )}
                     >
-                        ${msg("With Existing Provider...")}
+                        ${msg("with Existing Provider...")}
                     </button>
                 </li>
             </menu>
@@ -221,7 +228,7 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
                 errorMessage=${msg("Failed to delete application cache")}
                 action=${msg("Clear Cache")}
                 .onConfirm=${() => {
-                    return new PoliciesApi(DEFAULT_CONFIG).policiesAllCacheClearCreate();
+                    return aki(PoliciesApi).policiesAllCacheClearCreate();
                 }}
             >
                 <span slot="header">${msg("Clear Application cache")}</span>

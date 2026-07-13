@@ -27,6 +27,10 @@ To create a super-user, you need to add the user to a group that has super-user 
 Super-user permission is inherited by all descendant groups. Make sure you review every member of every descendant group to prevent accidentally granting super-user permission.
 :::
 
+## Advanced queries for groups {#advanced-queries}
+
+You can use AKQL to filter the group list in **Directory** > **Groups**. For the group fields, operators, examples, and keyboard shortcuts, see the [AKQL reference](../../sys-mgmt/akql.mdx).
+
 ## Modify a group
 
 To edit the group's name, parent groups, whether the group grants superuser permissions, associated roles, and any custom attributes, click the Edit icon beside the role's name. Make the changes and then click **Update**.
@@ -53,7 +57,7 @@ Roles are inherited through group hierarchy. If a parent group has a role assign
 
 ## Bind a group to an application
 
-These bindings control which groups can access an application, and whether or not the application is visible in a group member's **My applications** page. If no bindings for an application are defined, this means that all users and groups can access the application.
+These bindings control which groups can access an application, and whether or not the application is visible in a group member's **Application Dashboard** page. If no bindings for an application are defined, this means that all users and groups can access the application.
 
 For instructions refer to [Manage applications](../../add-secure-apps/applications/manage_apps.mdx#bind-a-user-or-group-to-an-application).
 

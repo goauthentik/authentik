@@ -9,7 +9,7 @@ import "#components/ak-radio-input";
 import "#components/ak-number-input";
 import "#components/ak-switch-input";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { DataProvision, DualSelectPair } from "#elements/ak-dual-select/types";
 import { ModelForm } from "#elements/forms/ModelForm";
@@ -26,10 +26,11 @@ import {
     Group,
     LifecycleApi,
     LifecycleRule,
+    PartialGroup,
+    PartialUser,
     RbacApi,
-    ReviewerGroup,
-    ReviewerUser,
     Role,
+    User,
 } from "@goauthentik/api";
 
 import { match } from "ts-pattern";
@@ -43,11 +44,7 @@ import { createRef, ref } from "lit/directives/ref.js";
 
 type TargetObject = Application | Group | Role;
 
-function userToPair(item: ReviewerUser): DualSelectPair {
-    return [item.uuid, html`<div class="selection-main">${item.name}</div>`, item.name];
-}
-
-function groupToPair(item: ReviewerGroup): DualSelectPair {
+function userGroupToPair(item: PartialUser | PartialGroup): DualSelectPair {
     return [item.pk, html`<div class="selection-main">${item.name}</div>`, item.name];
 }
 
@@ -84,13 +81,16 @@ function formatContentTypePlaceholder(contentType: ContentTypeEnum): string {
 
 @customElement("ak-lifecycle-rule-form")
 export class LifecycleRuleForm extends ModelForm<LifecycleRule, string, LifecycleRule | null> {
+    public static override verboseName = msg("Lifecycle Rule");
+    public static override verboseNamePlural = msg("Lifecycle Rules");
+
     #targetSelectRef = createRef<SearchSelect<TargetObject>>();
     #reviewerGroupsSelectRef = createRef<SearchSelect<Group>>();
-    #reviewerUsersSelectRef = createRef<SearchSelect<Group>>();
+    #reviewerUsersSelectRef = createRef<SearchSelect<User>>();
 
-    #coreApi = new CoreApi(DEFAULT_CONFIG);
-    #lifecycleApi = new LifecycleApi(DEFAULT_CONFIG);
-    #rbacApi = new RbacApi(DEFAULT_CONFIG);
+    #coreApi = aki(CoreApi);
+    #lifecycleApi = aki(LifecycleApi);
+    #rbacApi = aki(RbacApi);
 
     @state()
     protected selectedContentType: ContentTypeEnum = ContentTypeEnum.AuthentikCoreApplication;
@@ -114,7 +114,7 @@ export class LifecycleRuleForm extends ModelForm<LifecycleRule, string, Lifecycl
             .then((results) => {
                 return {
                     pagination: results.pagination,
-                    options: results.results.map(groupToPair),
+                    options: results.results.map(userGroupToPair),
                 };
             });
     };
@@ -128,7 +128,7 @@ export class LifecycleRuleForm extends ModelForm<LifecycleRule, string, Lifecycl
             .then((results) => {
                 return {
                     pagination: results.pagination,
-                    options: results.results.map(userToPair),
+                    options: results.results.map(userGroupToPair),
                 };
             });
     };
@@ -231,7 +231,7 @@ export class LifecycleRuleForm extends ModelForm<LifecycleRule, string, Lifecycl
                 ${this.renderReviewerGroupsSelection()}
             </ak-form-element-horizontal>
             <ak-number-input
-                label=${msg("Min reviewers")}
+                label=${msg("Minimum reviewers")}
                 min=${1}
                 name="minReviewers"
                 value="${this.instance?.minReviewers ?? 1}"
@@ -242,7 +242,7 @@ export class LifecycleRuleForm extends ModelForm<LifecycleRule, string, Lifecycl
             <ak-switch-input
                 name="minReviewersIsPerGroup"
                 ?checked=${this.instance?.minReviewersIsPerGroup ?? false}
-                label=${msg("Min reviewers is per-group")}
+                label=${msg("Minimum reviewers is per-group")}
                 .help=${msg(
                     html`If checked, approving a review will require at least that many users from
                         <em>each</em> of the selected groups. When disabled, the value is a total
@@ -296,7 +296,7 @@ export class LifecycleRuleForm extends ModelForm<LifecycleRule, string, Lifecycl
         return html`<ak-dual-select-provider
             ${ref(this.#reviewerGroupsSelectRef)}
             .provider=${this.#fetchGroups}
-            .selected=${(this.instance?.reviewerGroupsObj ?? []).map(groupToPair)}
+            .selected=${(this.instance?.reviewerGroupsObj ?? []).map(userGroupToPair)}
             available-label=${msg("Available Groups")}
             selected-label=${msg("Selected Groups")}
         ></ak-dual-select-provider>`;
@@ -306,7 +306,7 @@ export class LifecycleRuleForm extends ModelForm<LifecycleRule, string, Lifecycl
         return html`<ak-dual-select-provider
                 ${ref(this.#reviewerUsersSelectRef)}
                 .provider=${this.#fetchUsers}
-                .selected=${(this.instance?.reviewersObj ?? []).map(userToPair)}
+                .selected=${(this.instance?.reviewersObj ?? []).map(userGroupToPair)}
                 available-label=${msg("Available Users")}
                 selected-label=${msg("Selected Users")}
             ></ak-dual-select-provider>
