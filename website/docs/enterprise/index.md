@@ -4,7 +4,7 @@ description: "Licensed authentik features, license management, and commercial su
 sidebar_position: 0
 ---
 
-authentik Enterprise adds licensed capabilities and commercial support to a self-hosted authentik installation. You install and upgrade authentik in the same way with or without an Enterprise license. Installing a license unlocks the Enterprise features that are already included in the release.
+authentik Enterprise adds licensed capabilities and commercial support to a self-hosted authentik installation. You install and upgrade authentik in the same way with or without an Enterprise license. Installing a license unlocks the Enterprise features.
 
 ## Choose an Enterprise plan
 
