@@ -30,11 +30,14 @@ from authentik.common.oauth.constants import (
     GRANT_TYPE_DEVICE_CODE,
     GRANT_TYPE_PASSWORD,
     GRANT_TYPE_REFRESH_TOKEN,
+    GRANT_TYPE_TOKEN_EXCHANGE,
     JWT_TYPE_DPOP_ID_TOKEN,
     PKCE_METHOD_S256,
     SCOPE_BOUND_KEY,
     SCOPE_OFFLINE_ACCESS,
+    TOKEN_EXCHANGE_TOKEN_TYPES,
     TOKEN_TYPE,
+    TOKEN_TYPE_URI_ACCESS_TOKEN,
 )
 from authentik.core.apps import AppAccessWithoutBindings
 from authentik.core.middleware import CTX_AUTH_VIA
@@ -57,7 +60,12 @@ from authentik.flows.planner import PLAN_CONTEXT_APPLICATION
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.policies.engine import PolicyEngine
 from authentik.providers.oauth2.dpop import DPoPError, DPoPValidator
-from authentik.providers.oauth2.errors import DeviceCodeError, TokenError, UserAuthError
+from authentik.providers.oauth2.errors import (
+    DeviceCodeError,
+    TokenError,
+    TokenExchangeError,
+    UserAuthError,
+)
 from authentik.providers.oauth2.id_token import IDToken
 from authentik.providers.oauth2.models import (
     AccessToken,
@@ -105,6 +113,8 @@ class TokenParams:
     dpop_proof: str | None = None
     dpop_jwk: dict | None = None
 
+    requested_token_type: str | None = None
+
     raw_code: InitVar[str] = ""
     raw_token: InitVar[str] = ""
     request: InitVar[HttpRequest | None] = None
@@ -134,6 +144,8 @@ class TokenParams:
             code_verifier=request.POST.get("code_verifier"),
             # DPoP proof-of-possession header (RFC 9449)
             dpop_proof=request.headers.get("DPoP"),
+            # Token exchange parameter.
+            requested_token_type=request.POST.get("requested_token_type"),
         )
 
     def __check_scopes(self):
@@ -216,13 +228,14 @@ class TokenParams:
             raise TokenError("invalid_grant").with_cause("grant_type_not_configured")
 
         # Confidential clients MUST authenticate to the token endpoint per
-        # RFC 6749 §2.3.1. The device code grant (RFC 8628 §3.4) inherits
-        # that requirement - the device_code alone is not a substitute for
-        # client credentials.
+        # RFC 6749 §2.3.1. The device code grant (RFC 8628 §3.4) and the token
+        # exchange grant (RFC 8693 §2.1) inherit that requirement - neither the
+        # device_code nor the subject_token is a substitute for client credentials.
         if self.grant_type in [
             GRANT_TYPE_AUTHORIZATION_CODE,
             GRANT_TYPE_REFRESH_TOKEN,
             GRANT_TYPE_DEVICE_CODE,
+            GRANT_TYPE_TOKEN_EXCHANGE,
         ]:
             if self.provider.client_type == ClientType.CONFIDENTIAL and (
                 not is_all_vschar(self.client_secret)
@@ -254,6 +267,11 @@ class TokenParams:
                 op="authentik.providers.oauth2.post.parse.device_code",
             ):
                 self.__post_init_device_code(request)
+        elif self.grant_type == GRANT_TYPE_TOKEN_EXCHANGE:
+            with start_span(
+                op="authentik.providers.oauth2.post.parse.token_exchange",
+            ):
+                self.__post_init_token_exchange(request)
         else:
             LOGGER.warning("Invalid grant type", grant_type=self.grant_type)
             raise TokenError("unsupported_grant_type")
@@ -615,6 +633,72 @@ class TokenParams:
                 flow_name="device code",
             )
 
+    def __post_init_token_exchange(self, request: HttpRequest):
+        """See https://datatracker.ietf.org/doc/html/rfc8693#section-2.1"""
+        # Delegation is not implemented. An actor token is rejected rather than ignored, so a
+        # client cannot believe it delegated authority while an impersonation token was issued.
+        if request.POST.get("actor_token") or request.POST.get("actor_token_type"):
+            LOGGER.warning("Delegation is not supported")
+            raise TokenExchangeError("invalid_request").with_cause("actor_token_unsupported")
+        # Token targeting is not implemented. RFC 8693 §2.2.2 requires invalid_target when the
+        # requested target cannot be honored, so the parameters are refused rather than ignored.
+        if request.POST.getlist("audience") or request.POST.getlist("resource"):
+            LOGGER.warning("Token targeting is not supported")
+            raise TokenExchangeError("invalid_target").with_cause("target_unsupported")
+
+        subject_token = request.POST.get("subject_token", "")
+        subject_token_type = request.POST.get("subject_token_type", "")
+        if not subject_token or not subject_token_type:
+            LOGGER.warning("Missing subject_token or subject_token_type")
+            raise TokenExchangeError("invalid_request").with_cause("missing_subject_token")
+        if subject_token_type not in TOKEN_EXCHANGE_TOKEN_TYPES:
+            LOGGER.warning("Unsupported subject token type", token_type=subject_token_type)
+            raise TokenExchangeError("invalid_request").with_cause("unsupported_subject_token_type")
+        if self.requested_token_type is None:
+            self.requested_token_type = TOKEN_TYPE_URI_ACCESS_TOKEN
+        if self.requested_token_type not in TOKEN_EXCHANGE_TOKEN_TYPES:
+            LOGGER.warning("Unsupported requested token type", token_type=self.requested_token_type)
+            raise TokenExchangeError("invalid_request").with_cause(
+                "unsupported_requested_token_type"
+            )
+
+        source = provider = None
+        token, source = self.__validate_jwt_from_source(subject_token)
+        if not token:
+            token, provider = self.__validate_jwt_from_provider(subject_token)
+        if not token:
+            # Expiry is enforced by PyJWT during signature verification, so an expired
+            # subject token also lands here.
+            LOGGER.warning("No subject token could be verified")
+            raise TokenExchangeError("invalid_grant").with_cause("subject_token_not_verified")
+
+        app = Application.objects.filter(provider=self.provider).first()
+        if not app or not app.provider:
+            LOGGER.info("token_exchange grant for provider without application")
+            raise TokenExchangeError("invalid_grant").with_cause("provider_without_application")
+
+        self.__check_policy_access(app, request, oauth_jwt=token)
+        if not provider:
+            self.__create_user_from_jwt(token, app, source, request)
+
+        method_args = {
+            "jwt": token,
+            "subject_token_type": subject_token_type,
+            "requested_token_type": self.requested_token_type,
+        }
+        if source:
+            method_args["source"] = source
+        if provider:
+            method_args["provider"] = provider
+        Event.new(
+            action=EventAction.LOGIN,
+            **{
+                PLAN_CONTEXT_METHOD: "token_exchange",
+                PLAN_CONTEXT_METHOD_ARGS: method_args,
+                PLAN_CONTEXT_APPLICATION: app,
+            },
+        ).from_http(request, user=self.user)
+
     def __create_user_from_jwt(
         self, token: dict[str, Any], app: Application, source: OAuthSource, request: HttpRequest
     ):
@@ -700,6 +784,9 @@ class TokenView(View):
                 if self.params.grant_type == GRANT_TYPE_DEVICE_CODE:
                     LOGGER.debug("Device code grant")
                     return TokenResponse(self.create_device_code_response())
+                if self.params.grant_type == GRANT_TYPE_TOKEN_EXCHANGE:
+                    LOGGER.debug("Token exchange grant")
+                    return TokenResponse(self.create_token_exchange_response())
                 raise TokenError("unsupported_grant_type")
         except (TokenError, DeviceCodeError) as error:
             return TokenResponse(error.create_dict(request), status=400)
@@ -935,3 +1022,33 @@ class TokenView(View):
         # Delete device code
         self.params.device_code.delete()
         return response
+
+    def create_token_exchange_response(self) -> dict[str, Any]:
+        """See https://datatracker.ietf.org/doc/html/rfc8693#section-2.2.1"""
+        now = timezone.now()
+        access_token_expiry = now + timedelta_from_string(self.provider.access_token_validity)
+        access_token = AccessToken(
+            provider=self.provider,
+            user=self.params.user,
+            expires=access_token_expiry,
+            scope=self.params.scope,
+            auth_time=now,
+        )
+        access_token.id_token = IDToken.new(
+            self.provider,
+            access_token,
+            self.request,
+        )
+        access_token.save()
+
+        return {
+            "access_token": access_token.token,
+            # Access tokens are themselves JWTs, so the issued token satisfies either
+            # identifier the client may have requested.
+            "issued_token_type": self.params.requested_token_type,
+            "token_type": TOKEN_TYPE,
+            "scope": " ".join(access_token.scope),
+            "expires_in": int(
+                timedelta_from_string(self.provider.access_token_validity).total_seconds()
+            ),
+        }

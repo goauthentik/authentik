@@ -42,6 +42,7 @@ from authentik.common.oauth.constants import (
     GRANT_TYPE_IMPLICIT,
     GRANT_TYPE_PASSWORD,
     GRANT_TYPE_REFRESH_TOKEN,
+    GRANT_TYPE_TOKEN_EXCHANGE,
     SubModes,
 )
 from authentik.core.models import (
@@ -86,6 +87,7 @@ class GrantType(models.TextChoices):
     CLIENT_CREDENTIALS = GRANT_TYPE_CLIENT_CREDENTIALS
     PASSWORD = GRANT_TYPE_PASSWORD
     DEVICE_CODE = GRANT_TYPE_DEVICE_CODE
+    TOKEN_EXCHANGE = GRANT_TYPE_TOKEN_EXCHANGE
 
 
 # Fallback for decoding previous sessions from 2026.2 to 2026.5

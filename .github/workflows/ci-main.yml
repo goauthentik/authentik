@@ -337,7 +337,7 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
       - id: cache-web
-        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v4
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v4
         if: contains(matrix.job.profiles, 'selenium')
         with:
           path: web/dist
@@ -393,7 +393,7 @@ jobs:
         run: |
           docker compose -f tests/openid_conformance/compose.yml up -d --quiet-pull --wait
       - id: cache-web
-        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v4
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v4
         with:
           path: web/dist
           key: ${{ runner.os }}-web-${{ hashFiles('web/pnpm-lock.yaml', 'web/src/**', 'web/packages/sfe/src/**') }}-b
@@ -488,7 +488,7 @@ jobs:
       # logs in to ghcr.io by default
       - uses: regclient/actions/regctl-login@4b4db1dcc7dad75ad67a788a380f75a20cc8a040
       # Docker login is required for attestations
-      - uses: docker/login-action@650006c6eb7dba73a995cc03b0b2d7f5ca915bee
+      - uses: docker/login-action@af1e73f918a031802d376d3c8bbc3fe56130a9b0
         with:
           registry: ghcr.io
           username: "${{ github.actor }}"
@@ -504,7 +504,7 @@ jobs:
           regctl image import "ghcr.io/goauthentik/dev-${{ matrix.name }}:${{ needs.build-compute-tags.outputs.tag-full }}" "container/${{ matrix.name }}.oci.tar"
           regctl image import "ghcr.io/goauthentik/dev-${{ matrix.name }}:${{ needs.build-compute-tags.outputs.tag-branch }}" "container/${{ matrix.name }}.oci.tar"
           regctl image import "ghcr.io/goauthentik/dev-${{ matrix.name }}:${{ needs.build-compute-tags.outputs.tag-flux }}" "container/${{ matrix.name }}.oci.tar"
-      - uses: actions/attest@59d89421af93a897026c735860bf21b6eb4f7b26
+      - uses: actions/attest@a1948c3f048ba23858d222213b7c278aabede763
         with:
           subject-name: "ghcr.io/goauthentik/dev-${{ matrix.name }}"
           subject-digest: "${{ steps.publish.outputs.digest }}"
