@@ -5,6 +5,7 @@ TENANT_APPS = [
     "authentik.enterprise.endpoints.connectors.agent",
     "authentik.enterprise.endpoints.connectors.fleet",
     "authentik.enterprise.endpoints.connectors.google_chrome",
+    "authentik.enterprise.endpoints.connectors.microsoft_intune",
     "authentik.enterprise.lifecycle",
     "authentik.enterprise.policies.unique_password",
     "authentik.enterprise.providers.google_workspace",

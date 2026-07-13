@@ -7084,6 +7084,196 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+  /endpoints/microsoft_intune/connectors/:
+    get:
+      operationId: endpoints_microsoft_intune_connectors_list
+      description: MicrosoftIntuneConnector Viewset
+      parameters:
+      - $ref: '#/components/parameters/QueryName'
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
+      tags:
+      - endpoints
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedMicrosoftIntuneConnectorList'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    post:
+      operationId: endpoints_microsoft_intune_connectors_create
+      description: MicrosoftIntuneConnector Viewset
+      tags:
+      - endpoints
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MicrosoftIntuneConnectorRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MicrosoftIntuneConnector'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /endpoints/microsoft_intune/connectors/{connector_uuid}/:
+    get:
+      operationId: endpoints_microsoft_intune_connectors_retrieve
+      description: MicrosoftIntuneConnector Viewset
+      parameters:
+      - in: path
+        name: connector_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Microsoft Intune Connector.
+        required: true
+      tags:
+      - endpoints
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MicrosoftIntuneConnector'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    put:
+      operationId: endpoints_microsoft_intune_connectors_update
+      description: MicrosoftIntuneConnector Viewset
+      parameters:
+      - in: path
+        name: connector_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Microsoft Intune Connector.
+        required: true
+      tags:
+      - endpoints
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MicrosoftIntuneConnectorRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MicrosoftIntuneConnector'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    patch:
+      operationId: endpoints_microsoft_intune_connectors_partial_update
+      description: MicrosoftIntuneConnector Viewset
+      parameters:
+      - in: path
+        name: connector_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Microsoft Intune Connector.
+        required: true
+      tags:
+      - endpoints
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedMicrosoftIntuneConnectorRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MicrosoftIntuneConnector'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    delete:
+      operationId: endpoints_microsoft_intune_connectors_destroy
+      description: MicrosoftIntuneConnector Viewset
+      parameters:
+      - in: path
+        name: connector_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Microsoft Intune Connector.
+        required: true
+      tags:
+      - endpoints
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /endpoints/microsoft_intune/connectors/{connector_uuid}/used_by/:
+    get:
+      operationId: endpoints_microsoft_intune_connectors_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: connector_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Microsoft Intune Connector.
+        required: true
+      tags:
+      - endpoints
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
   /enterprise/license/:
     get:
       operationId: enterprise_license_list
@@ -34332,6 +34522,7 @@ components:
       - authentik.enterprise.endpoints.connectors.agent
       - authentik.enterprise.endpoints.connectors.fleet
       - authentik.enterprise.endpoints.connectors.google_chrome
+      - authentik.enterprise.endpoints.connectors.microsoft_intune
       - authentik.enterprise.lifecycle
       - authentik.enterprise.policies.unique_password
       - authentik.enterprise.providers.google_workspace
@@ -43392,6 +43583,72 @@ components:
       - microsoft_id
       - provider
       - user
+    MicrosoftIntuneConnector:
+      type: object
+      description: MicrosoftIntuneConnector Serializer
+      properties:
+        connector_uuid:
+          type: string
+          format: uuid
+        name:
+          type: string
+        enabled:
+          type: boolean
+        component:
+          type: string
+          description: Get object component so that we know how to edit the object
+          readOnly: true
+        verbose_name:
+          type: string
+          description: Return object's verbose_name
+          readOnly: true
+        verbose_name_plural:
+          type: string
+          description: Return object's plural verbose_name
+          readOnly: true
+        meta_model_name:
+          type: string
+          description: Return internal model name
+          readOnly: true
+        client_id:
+          type: string
+        tenant_id:
+          type: string
+      required:
+      - client_id
+      - component
+      - meta_model_name
+      - name
+      - tenant_id
+      - verbose_name
+      - verbose_name_plural
+    MicrosoftIntuneConnectorRequest:
+      type: object
+      description: MicrosoftIntuneConnector Serializer
+      properties:
+        connector_uuid:
+          type: string
+          format: uuid
+        name:
+          type: string
+          minLength: 1
+        enabled:
+          type: boolean
+        client_id:
+          type: string
+          minLength: 1
+        client_secret:
+          type: string
+          writeOnly: true
+          minLength: 1
+        tenant_id:
+          type: string
+          minLength: 1
+      required:
+      - client_id
+      - client_secret
+      - name
+      - tenant_id
     ModelEnum:
       enum:
       - authentik_tenants.domain
@@ -43501,6 +43758,7 @@ components:
       - authentik_blueprints.blueprintinstance
       - authentik_endpoints_connectors_fleet.fleetconnector
       - authentik_endpoints_connectors_google_chrome.googlechromeconnector
+      - authentik_endpoints_connectors_microsoft_intune.microsoftintuneconnector
       - authentik_lifecycle.lifecyclerule
       - authentik_lifecycle.lifecycleiteration
       - authentik_lifecycle.review
@@ -46105,6 +46363,21 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/MicrosoftEntraProviderUser'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    PaginatedMicrosoftIntuneConnectorList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/MicrosoftIntuneConnector'
         autocomplete:
           $ref: '#/components/schemas/Autocomplete'
       required:
@@ -49646,6 +49919,28 @@ components:
           type: boolean
           description: When enabled, provider will not modify or create objects in
             the remote system.
+    PatchedMicrosoftIntuneConnectorRequest:
+      type: object
+      description: MicrosoftIntuneConnector Serializer
+      properties:
+        connector_uuid:
+          type: string
+          format: uuid
+        name:
+          type: string
+          minLength: 1
+        enabled:
+          type: boolean
+        client_id:
+          type: string
+          minLength: 1
+        client_secret:
+          type: string
+          writeOnly: true
+          minLength: 1
+        tenant_id:
+          type: string
+          minLength: 1
     PatchedMutualTLSStageRequest:
       type: object
       description: MutualTLSStage Serializer
@@ -58648,6 +58943,7 @@ components:
       - goauthentik.io/platform
       - fleetdm.com
       - chrome.google.com
+      - intune.microsoft.com
       type: string
     Version:
       type: object
