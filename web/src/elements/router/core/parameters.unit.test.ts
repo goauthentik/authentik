@@ -50,4 +50,18 @@ describe("searchParamsToRecord", () => {
 
         expect(restored).toEqual(original);
     });
+
+    it("keeps leading-zero digit strings as strings", () => {
+        expect(searchParamsToRecord(new URLSearchParams("code=007"))).toEqual({ code: "007" });
+    });
+
+    it("keeps digit strings that lose precision as strings", () => {
+        expect(searchParamsToRecord(new URLSearchParams("id=123456789012345678"))).toEqual({
+            id: "123456789012345678",
+        });
+    });
+
+    it("still coerces safe integers", () => {
+        expect(searchParamsToRecord(new URLSearchParams("page=42"))).toEqual({ page: 42 });
+    });
 });

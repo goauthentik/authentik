@@ -31,9 +31,12 @@ export function initRouter(config: RouterConfig): void {
 
 /**
  * Read the current router configuration.
+ *
+ * @returns A shallow copy — mutations of the returned object do not affect the
+ * stored config.
  */
 export function getRouterConfig(): RouterConfig {
-    return currentConfig;
+    return { ...currentConfig };
 }
 
 /**
