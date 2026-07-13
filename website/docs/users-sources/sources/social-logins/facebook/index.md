@@ -7,7 +7,7 @@ tags:
     - meta
 ---
 
-Allows users to authenticate using their Facebook credentials by configuring Facebook as a federated identity provider via OAuth2.
+This source lets users authenticate with their Facebook credentials by configuring Facebook as a federated identity provider with OAuth 2.0.
 
 ## Preparation
 
@@ -17,7 +17,7 @@ The following placeholders are used in this guide:
 
 ## Facebook configuration
 
-To integrate Facebook with authentik you will need to create an OAuth application in the Meta for Developers Dashboard.
+To integrate Facebook with authentik, create an OAuth application in the Meta for Developers Dashboard.
 
 1. Log in to the [Meta for Developers Dashboard](https://developers.facebook.com/) with your Facebook account.
 2. After logging in, [register as a developer](https://developers.facebook.com/async/registration). Refer to the [Facebook development documentation](https://developers.facebook.com/docs/development) for more information.
@@ -37,7 +37,7 @@ After creating the application you need to customize its login settings.
 
 Next, you need to obtain the **App ID** and **App Secret** for the Facebook app. These will be required when creating the source in authentik.
 
-10. Go back to the Dashboard, and in the bottom left of the navigation pane, click **App settings** > **Basic**.
+10. Go back to the Dashboard, and in the bottom-left of the navigation pane, click **App settings** > **Basic**.
 11. Take note of the **App ID** and the **App secret** values.
 
 Finally, you need to publish the Facebook app.
@@ -51,7 +51,7 @@ To support the integration of Facebook with authentik, you need to create a Face
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Directory** > **Federation and Social login**, click **New Source**, and then configure the following settings:
     - **Select type**: select **Facebook OAuth Source** as the source type.
-    - **Create Facebook OAuth Source**: provide a name, a slug which must match the slug used in the Facebook `Valid OAuth redirect URIs` field (e.g. `facebook`), and the following required configurations:
+    - **Create Facebook OAuth Source**: provide a name, a slug that must match the slug used in the Facebook `Valid OAuth redirect URIs` field (e.g. `facebook`), and the following required configurations:
         - **Protocol settings**
             - **Consumer Key**: enter the **App ID** from Facebook.
             - **Consumer Secret**: enter the **App Secret** from Facebook.

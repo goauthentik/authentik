@@ -2,6 +2,7 @@ import "#elements/messages/Message";
 
 import { parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
 import { APIMessage, MessageLevel } from "#common/messages";
+import { tryParsingJSON } from "#common/objects";
 
 import { AKElement } from "#elements/Base";
 import Styles from "#elements/messages/styles.css";
@@ -106,11 +107,13 @@ export type MessageContainerAlignment = "top-left" | "top-right" | "bottom-left"
 
 @customElement("ak-message-container")
 export class MessageContainer extends AKElement {
+    public static readonly serializedSelector = "script[data-id=authentik-messages]";
+
     @property({ attribute: false })
     public messages: APIMessage[] = [];
 
     @property({ type: String, reflect: true, useDefault: true })
-    public alignment: MessageContainerAlignment = "bottom-right";
+    public alignment: MessageContainerAlignment = "bottom-left";
 
     static styles: CSSResult[] = [PFAlertGroup, Styles];
 
@@ -129,7 +132,29 @@ export class MessageContainer extends AKElement {
         super.connectedCallback();
 
         this.popover = "manual";
+
+        requestAnimationFrame(this.drainMessages);
     }
+
+    protected drainMessages = (): void => {
+        const selector = (this.constructor as typeof MessageContainer).serializedSelector;
+        const container = this.ownerDocument.querySelector<HTMLScriptElement>(selector);
+
+        if (!container) {
+            logger.warn(`Expected to find a script tag with ${selector}, but none was found.`);
+            return;
+        }
+
+        const messages = tryParsingJSON<APIMessage[]>(container.textContent);
+
+        if (!messages?.length) {
+            return;
+        }
+
+        for (const message of messages) {
+            this.addMessage(message);
+        }
+    };
 
     public updated(changedProperties: PropertyValues<this>) {
         super.updated(changedProperties);

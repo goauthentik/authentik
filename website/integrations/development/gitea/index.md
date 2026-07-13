@@ -4,6 +4,8 @@ sidebar_label: Gitea
 support_level: community
 ---
 
+import RedirectURI20265Note from "../../\_redirect-uri-2026-5-note.mdx";
+
 ## What is Gitea?
 
 > Gitea is a community managed lightweight code hosting solution written in Go. It is published under the MIT license.
@@ -23,6 +25,8 @@ This documentation lists only the settings that you need to change from their de
 
 ## authentik configuration
 
+<RedirectURI20265Note />
+
 To support the integration of Gitea with authentik, you need to create an application/provider pair in authentik.
 
 ### Create an application and provider in authentik
@@ -34,16 +38,16 @@ To support the integration of Gitea with authentik, you need to create an applic
 - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
 - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
     - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
-    - Set a `Strict` redirect URI to `https://<gitea.company>/user/oauth2/authentik/callback`.
+    - Add a **Redirect URI** of type `Strict` `Authorization` as `https://<gitea.company>/user/oauth2/authentik/callback`.
     - Select any available signing key.
     - Under **Advanced protocol settings** > **Selected Scopes**, add `authentik default OAuth Mapping: OpenID 'entitlements'`.
-- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 
 3. Click **Submit** to save the new application and provider.
 
 ## Gitea configuration
 
-1. Log in to Gitea as an administrator, then click on your profile icon at the top right and select **Site Administration**.
+1. Log in to Gitea as an administrator, then click your profile icon in the top-right corner and select **Site Administration**.
 2. Select the **Authentication Sources** tab and then click on **Add Authentication Source**.
 3. Set the following required configurations:
     - **Authentication Name**: `authentik` (This must match the name used in the **Redirect URI** in the previous section)
@@ -125,22 +129,24 @@ Users who are assigned none of these entitlements will not be able to log in to 
 For this to function, the Gitea `ENABLE_AUTO_REGISTRATION: true` variable must be set. More information on configuration variables is available in the [Gitea Configuration Cheat Sheet](https://docs.gitea.com/administration/config-cheat-sheet).
 :::
 
-1. Log in to Gitea as an admin. Click on your profile icon at the top right > **Site Administration**.
+1. Log in to Gitea as an admin. Click your profile icon in the top-right corner, and then click **Site Administration**.
 2. Select the **Authentication Sources** tab and edit the **authentik** Authentication Source.
 3. Set the following configurations:
     - **Additional Scopes**: `email profile gitea`
     - **Required Claim Name**: `gitea`
-    - **Claim name providing group names for this source.** (Optional): `gitea`
-    - **Group Claim value for administrator users.** (Optional - requires claim name to be set): `admin`
-    - **Group Claim value for restricted users.** (Optional - requires claim name to be set): `restricted`
-4. Click **Update Authentication Source**.
+    - **Claim name providing group names for this source. (Optional)**: `gitea`
+    - **Group Claim value for administrator users. (Optional - requires claim name to be set)**: `admin`
+    - **Group Claim value for restricted users. (Optional - requires claim name to be set)**: `restricted`
+4. (Optional) It is possible to assign users to Organizational teams based upon their group. For example, members of the group `admin` could be made owners of the `Acme` group in this way:
+    - **Map claimed groups to Organization teams.**: `{"admin":{"Acme":["Owners"]}}`
+5. Click **Update Authentication Source**.
 
 :::info
 Users who are assigned none of the defined entitlements will be denied login access.
 In contrast, users assigned the `gitadmin` entitlement will have full administrative privileges, while users assigned the `gitrestricted` entitlement will have limited access.
 :::
 
-### Helm Chart Configuration
+### Helm chart configuration
 
 authentik authentication can be configured automatically in Kubernetes deployments using its [Helm chart](https://gitea.com/gitea/helm-chart/).
 

@@ -2,6 +2,7 @@
 title: Manage Enterprise licensing
 description: "The authentik Customer Portal to manage accounts and licenses"
 toc_max_heading_level: 5
+sidebar_position: 3
 ---
 
 The authentik [Customer Portal](https://customers.goauthentik.io/) allows you to purchase Enterprise licenses, control which users are able to access your licenses, and manage your billing information.
@@ -37,7 +38,7 @@ In the Customer Portal, you can invite new users to your organization and remove
 
 ## License management
 
-Authentik licenses are linked to a specific authentik deployment based on its Installation ID. You can obtain your Installation ID by first logging in to the Admin interface of your authentik deployment. Then, navigate to **Enterprise** > **Licenses** where your installation ID is displayed.
+authentik licenses are linked to a specific authentik deployment based on its Installation ID. You can obtain your Installation ID by first logging in to the Admin interface of your authentik deployment. Then, navigate to **Enterprise** > **Licenses** where your installation ID is displayed.
 
 A license covers a specified number of users; however, additional users can be added to a license. Alternatively, additional licenses can be purchased for the same deployment.
 
@@ -100,9 +101,9 @@ Accounts that are disabled, as well as service accounts, are excluded from the l
 
 ### Internal vs external users
 
-An **internal** user is typically a team member, such as a company employee, who is granted access to the full Enterprise feature set. This includes the ability to view and use the **My Applications** and **User Settings** pages.
+An **internal** user is typically a team member, such as a company employee, who is granted access to the full Enterprise feature set. This includes the ability to view and use the **Application Dashboard** and **User Settings** pages.
 
-An **external** user might be an external consultant, a volunteer in a charitable site, or a B2C customer. External users can't access the **My Applications** and **User Settings** pages. Instead, external users are typically authenticated and then redirected to log directly into their [default application](../sys-mgmt/brands/index.md#external-user-settings).
+An **external** user might be an external consultant, a volunteer in a charitable site, or a B2C customer. External users can't access the **Application Dashboard** and **User Settings** pages. Instead, external users are typically authenticated and then redirected to log directly into their [default application](../customize/branding/index.md#external-user-settings).
 
 ### License violation notifications
 

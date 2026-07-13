@@ -4,6 +4,8 @@ sidebar_label: Zot
 support_level: community
 ---
 
+import RedirectURI20265Note from "../../\_redirect-uri-2026-5-note.mdx";
+
 ## What is Zot?
 
 > Zot is an OCI-native container registry for distributing container images and OCI artifacts.
@@ -23,6 +25,8 @@ This documentation lists only the settings that you need to change from their de
 
 ## authentik configuration
 
+<RedirectURI20265Note />
+
 To support the integration of Zot with authentik, you need to create an application/provider pair in authentik.
 
 ### Create an application and provider in authentik
@@ -35,12 +39,10 @@ To support the integration of Zot with authentik, you need to create an applicat
 - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
     - **Protocol Settings**:
         - **Redirect URI**:
-            - Strict: `https://zot.company/zot/auth/callback/oidc`.
+            - `Strict` `Authorization`: `https://zot.company/zot/auth/callback/oidc`.
         - **Signing Key**: select any available signing key.
     - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
-    - Set a `Strict` redirect URI to `https://zot.company/zot/auth/callback/oidc`.
-    - Select any available signing key.
-- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 
 3. Click **Submit** to save the new application and provider.
 

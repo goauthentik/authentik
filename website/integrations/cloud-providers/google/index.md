@@ -21,24 +21,23 @@ The following placeholders are used in this guide:
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
-## authentik Configuration
+## authentik configuration
 
 Create an application in authentik and note the slug, as this will be used later. Set the _Launch URL_ to `https://mail.google.com/a/example.com`.
 
 Create a SAML provider with the following parameters:
 
 - ACS URL: `https://www.google.com/a/example.com/acs`
-- Issuer: `google.com/a/example.com`
 - Binding: `Post`
 - Audience: `google.com/a/example.com`
 
 Under _Advanced protocol settings_, set the option _NameID Property Mapping_ to the default E-mail property mapping called _authentik default SAML Mapping: Email_. Also make sure a _Signing Certificate_ is selected in the same section.
 
-Copy the values of _SSO URL (Redirect)_ and _SLO URL (Redirect)_ fields from the provider page.
+Copy the value of the _SAML Endpoint_ field from the provider page.
 
 Click the _Download_ button next to the _Download signing certificate_ label.
 
-## Google Workspace Configuration
+## Google Workspace configuration
 
 Log in to the Google Workspace Admin portal by navigating to https://admin.google.com/, and authenticating with a super-admin account.
 
@@ -48,9 +47,9 @@ Open the _Third-party SSO profile for your organization_ section.
 
 Check the checkbox _Set up SSO with third-party identity provider_.
 
-Set the value of _Sign-in page URL_ to the copied _SSO URL (Redirect)_ from above.
+Set the value of _Sign-in page URL_ to the copied _SAML Endpoint_ from above.
 
-Set the value of _Sign-out page URL_ to the copied _SLO URL (Redirect)_ from above.
+Set the value of _Sign-out page URL_ to the same _SAML Endpoint_ value (the unified endpoint handles both SSO and SLO).
 
 For _Verification certificate_, upload the certificate that you downloaded previously.
 

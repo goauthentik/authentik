@@ -5,10 +5,10 @@ import "#components/ak-status-label";
 import "#elements/buttons/SpinnerButton/index";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
-import "#elements/tasks/TaskList";
+import "#components/tasks/TaskList";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { severityToLabel } from "#common/labels";
 
 import { IconEditButton, ModalInvokerButton } from "#elements/dialogs";
@@ -44,7 +44,7 @@ export class RuleListPage extends TablePage<NotificationRule> {
     public order = "name";
 
     protected override async apiEndpoint(): Promise<PaginatedResponse<NotificationRule>> {
-        return new EventsApi(DEFAULT_CONFIG).eventsRulesList(await this.defaultEndpointConfig());
+        return aki(EventsApi).eventsRulesList(await this.defaultEndpointConfig());
     }
 
     protected columns: TableColumn[] = [
@@ -61,12 +61,12 @@ export class RuleListPage extends TablePage<NotificationRule> {
             object-label=${msg("Notification rule(s)")}
             .objects=${this.selectedElements}
             .usedBy=${(item: NotificationRule) => {
-                return new EventsApi(DEFAULT_CONFIG).eventsRulesUsedByList({
+                return aki(EventsApi).eventsRulesUsedByList({
                     pbmUuid: item.pk,
                 });
             }}
             .delete=${(item: NotificationRule) => {
-                return new EventsApi(DEFAULT_CONFIG).eventsRulesDestroy({
+                return aki(EventsApi).eventsRulesDestroy({
                     pbmUuid: item.pk,
                 });
             }}

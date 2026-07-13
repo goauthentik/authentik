@@ -1,6 +1,6 @@
 import "#elements/LoadingOverlay";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { isCausedByAbortError } from "#common/errors/network";
 
 import { AKCommandPaletteModal } from "#elements/commands/ak-command-palette-modal";
@@ -17,7 +17,7 @@ import { customElement, state } from "lit/decorators.js";
 
 @customElement("ak-command-palette-user-modal")
 export class AKCommandPaletteUserModal extends AKCommandPaletteModal {
-    #api = new CoreApi(DEFAULT_CONFIG);
+    #api = aki(CoreApi);
     protected loadingOverlay = this.ownerDocument.createElement("ak-loading-overlay");
 
     public override placeholder = msg("Type a username or email address...", {

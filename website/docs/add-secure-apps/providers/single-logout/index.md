@@ -1,6 +1,8 @@
 ---
 title: Single Logout (SLO)
 authentik_version: "2025.10.0"
+sidebar_position: 2
+sidebar_label: "Single Logout"
 ---
 
 Single Logout (SLO) is a security feature that logs users out of all active applications when they log out of authentik. It uses the OAuth2/OpenID Connect front-channel and back-channel logout specifications in combination with SAML's Single Logout specification.
@@ -82,9 +84,9 @@ By default, when a user logs out from an application (RP-initiated logout), only
 2. Navigate to **Flows and Stages** > **Flows**.
 3. Click `default-provider-invalidation-flow` to open the flow.
 4. Click the **Stage Bindings** tab.
-5. Click **Bind Existing Stage**.
-6. In the **Stage** dropdown, select `default-invalidation-logout`.
-7. Click **Create**.
+5. Click **Create or bind...** and select **Existing stage**.
+6. In the **Stage** field, select `default-invalidation-logout` from the drop-down list.
+7. Configure any other settings, and then click **Create**.
 
 After this change, when users log out from any application, they will be logged out of authentik and all other connected applications.
 

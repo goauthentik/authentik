@@ -4,6 +4,8 @@ sidebar_label: GLPI
 support_level: community
 ---
 
+import SAMLProvider20265Warning from "../../\_saml-provider-2026-5-warning.mdx";
+
 ## What is GLPI?
 
 > GLPI (Gestionnaire Libre de Parc Informatique) is an open-source IT asset management and service desk software. It helps organizations manage hardware, software, tickets, users, and IT services in a centralized environment.
@@ -81,19 +83,20 @@ To support the integration of GLPI with authentik, you need to create property m
 
 ### Create an application and provider in authentik
 
+<SAMLProvider20265Warning />
+
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
     - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Take note of the **Slug** value as it will be required later.
     - **Choose a Provider type**: select **SAML Provider** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
         - Set the **ACS URL** to the **AcsURL** value from GLPI.
-        - Set the **Service Provider Binding** to `Post`.
         - Set the **SLS URL** to the **sloURL** value from GLPI.
         - Under **Advanced protocol settings**:
             - Select any available **Signing Certificate** and enable **Sign assertions**.
             - Set **NameID Property Mapping** to `authentik default SAML Mapping: Email`.
             - Under **Property mappings**, add the two property mappings that you created in the previous section: `givenname` and `surname`.
-    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 
 3. Click **Submit** to save the new application and provider.
 
@@ -108,9 +111,9 @@ To support the integration of GLPI with authentik, you need to create property m
 1. Log in to GLPI as an administrator and navigate to **Setup** > **samlSSO**.
 2. Click on the **authentik** samlSSO instance and configure the following settings:
     - On the **Identity Provider** tab:
-        - Set the **Entity ID** to `authentik`
-        - Set the **SSO URL** to `https://authentik.company/application/saml/<application_slug>/sso/binding/redirect/`.
-        - Set the **SLO URL** to `https://authentik.company/application/saml/<application_slug>/slo/binding/redirect/`.
+        - Set the **Entity ID** to `https://authentik.company/application/saml/<application_slug>/metadata/`
+        - Set the **SSO URL** to `https://authentik.company/application/saml/<application_slug>/`.
+        - Set the **SLO URL** to `https://authentik.company/application/saml/<application_slug>/`.
         - Set **X509 certificate** to the contents of the certificate file that you downloaded from authentik.
 
 3. Click **Save** to apply the changes.

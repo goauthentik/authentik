@@ -62,23 +62,6 @@ export class AKWizard<S = Record<string, unknown>> extends AKElement {
                 display: block;
                 height: min(var(--ak-c-dialog--AspectRatioHeight), var(--ak-c-dialog--MaxHeight));
             }
-
-            .pf-c-wizard__main {
-                overscroll-behavior: contain;
-                display: flex;
-                flex-flow: column;
-            }
-
-            .pf-c-wizard__main,
-            .pf-c-wizard__main-body {
-                transform: translate3d(0, 0, 0);
-                will-change: transform;
-            }
-
-            .pf-c-wizard__main-body {
-                display: flex;
-                flex: 1 1 auto;
-            }
         `,
     ];
 
@@ -94,7 +77,7 @@ export class AKWizard<S = Record<string, unknown>> extends AKElement {
     public formatARIALabel(verboseName = this.verboseName): string {
         return verboseName
             ? msg(str`New ${verboseName} Wizard`, {
-                  id: "wizard.ariaLabel.entity-singular",
+                  id: "wizard.ariaLabel.verbose-name.one",
                   desc: "ARIA label for the creation wizard, where the entity singular is interpolated.",
               })
             : msg("Wizard", {
@@ -109,7 +92,7 @@ export class AKWizard<S = Record<string, unknown>> extends AKElement {
     public formatHeader(verboseName = this.verboseName): string {
         if (verboseName) {
             return msg(str`Create New ${verboseName}`, {
-                id: "wizard.header.entity-singular",
+                id: "wizard.header.verbose-name.one",
                 desc: "Header for the creation wizard, where the entity singular is interpolated.",
             });
         }
@@ -147,7 +130,7 @@ export class AKWizard<S = Record<string, unknown>> extends AKElement {
      *
      * Overrides the static `verboseName` property for this instance.
      */
-    @property({ type: String, attribute: "entity-singular" })
+    @property({ type: String, attribute: "verbose-name" })
     public set verboseName(value: string | null) {
         this.#verboseName = value;
 
@@ -163,7 +146,7 @@ export class AKWizard<S = Record<string, unknown>> extends AKElement {
     /**
      * Optional plural label for the type of entity this wizard creates, used in messages and the like.
      */
-    @property({ type: String, attribute: "entity-plural" })
+    @property({ type: String, attribute: "verbose-name-plural" })
     public verboseNamePlural: string | null = null;
 
     /**
@@ -521,6 +504,12 @@ export class AKWizard<S = Record<string, unknown>> extends AKElement {
                     return html`<p>Unexpected missing step: ${step}</p>`;
                 }
 
+                // By default, disable steps ahead of the current step
+                let disabled = activeStepIndex < idx;
+                // If this wizard is at the end, disable navigation back
+                if (activeStepIndex === this.steps.length - 1 && idx !== activeStepIndex) {
+                    disabled = true;
+                }
                 return html`<li role="presentation" class="pf-c-wizard__nav-item">
                     <button
                         class=${classMap({
@@ -528,8 +517,9 @@ export class AKWizard<S = Record<string, unknown>> extends AKElement {
                             "pf-m-current": idx === activeStepIndex,
                         })}
                         type="button"
-                        ?disabled=${activeStepIndex < idx}
+                        ?disabled=${disabled}
                         @click=${() => {
+                            if (idx === activeStepIndex) return;
                             this.activeStepElement = stepEl;
                         }}
                     >

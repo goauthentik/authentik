@@ -32,7 +32,7 @@ export interface GroupOAuthSourceConnection {
      * @type {string}
      * @memberof GroupOAuthSourceConnection
      */
-    group: string;
+    readonly group: string;
     /**
      *
      * @type {string}
@@ -110,7 +110,7 @@ export function GroupOAuthSourceConnectionToJSON(json: any): GroupOAuthSourceCon
 export function GroupOAuthSourceConnectionToJSONTyped(
     value?: Omit<
         GroupOAuthSourceConnection,
-        "pk" | "source_obj" | "created" | "last_updated"
+        "pk" | "group" | "source_obj" | "created" | "last_updated"
     > | null,
     ignoreDiscriminator: boolean = false,
 ): any {
@@ -119,7 +119,6 @@ export function GroupOAuthSourceConnectionToJSONTyped(
     }
 
     return {
-        group: value["group"],
         source: value["source"],
         identifier: value["identifier"],
     };

@@ -4,6 +4,8 @@ sidebar_label: Homarr
 support_level: community
 ---
 
+import RedirectURI20265Note from "../../\_redirect-uri-2026-5-note.mdx";
+
 ## What is Homarr?
 
 > A sleek, modern dashboard that puts all of your apps and services at your fingertips. Control everything in one convenient location. Seamlessly integrates with the apps you've added, providing you with valuable information.
@@ -23,6 +25,8 @@ This documentation lists only the settings that you need to change from their de
 
 ## authentik configuration
 
+<RedirectURI20265Note />
+
 To support the integration of Homarr with authentik, you need to create an application/provider pair in authentik.
 
 ### Create an application and provider in authentik
@@ -34,9 +38,9 @@ To support the integration of Homarr with authentik, you need to create an appli
 - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
 - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
     - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
-    - Create two `Strict` redirect URIs: `https://homarr.company/api/auth/callback/oidc` and `http://localhost:50575/api/auth/callback/oidc`.
+    - Add two **Redirect URIs** of type `Strict` `Authorization` as `https://homarr.company/api/auth/callback/oidc` and `http://localhost:50575/api/auth/callback/oidc`.
     - Select any available signing key.
-- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 
 3. Click **Submit** to save the new application and provider.
 

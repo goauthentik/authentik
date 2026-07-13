@@ -17,6 +17,7 @@
  * @export
  */
 export const TaskAggregatedStatusEnum = {
+    WaitingForDependencies: "waiting_for_dependencies",
     Queued: "queued",
     Consumed: "consumed",
     Preprocess: "preprocess",

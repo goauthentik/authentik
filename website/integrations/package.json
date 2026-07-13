@@ -4,7 +4,7 @@
     "license": "MIT",
     "private": true,
     "scripts": {
-        "build": "run-s build:docusaurus",
+        "build": "docusaurus build",
         "build:docusaurus": "docusaurus build",
         "clear": "docusaurus clear",
         "docusaurus": "docusaurus",
@@ -18,19 +18,18 @@
         "@docusaurus/preset-classic": "^3.10.1",
         "@docusaurus/theme-mermaid": "^3.10.1",
         "@docusaurus/tsconfig": "^3.10.1",
-        "@docusaurus/types": "^3.9.2",
-        "@goauthentik/docusaurus-config": "^2.6.0",
-        "@goauthentik/docusaurus-theme": "*",
+        "@docusaurus/types": "^3.10.1",
+        "@goauthentik/docusaurus-config": "link:../../packages/docusaurus-config",
+        "@goauthentik/docusaurus-theme": "workspace:*",
         "@mdx-js/react": "^3.1.1",
-        "@types/react": "^19.2.14",
+        "@types/react": "^19.2.16",
         "@types/react-dom": "^19.2.3",
         "prism-react-renderer": "^2.4.1",
-        "react": "^19.2.0",
-        "react-dom": "^19.2.5",
-        "typescript": "^6.0.2"
+        "react": "^19.2.7",
+        "react-dom": "^19.2.7",
+        "typescript": "catalog:"
     },
     "engines": {
-        "node": ">=24",
-        "npm": ">=11.6.2"
+        "node": ">=24"
     }
 }

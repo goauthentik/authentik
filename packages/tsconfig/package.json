@@ -1,6 +1,6 @@
 {
     "name": "@goauthentik/tsconfig",
-    "version": "1.0.9",
+    "version": "2.0.0",
     "description": "authentik's base TypeScript configuration.",
     "license": "MIT",
     "repository": {
@@ -14,8 +14,7 @@
     "main": "tsconfig.json",
     "type": "module",
     "engines": {
-        "node": ">=24",
-        "npm": ">=11.10.1"
+        "node": ">=24"
     },
     "devEngines": {
         "runtime": {
@@ -24,8 +23,8 @@
             "onFail": "warn"
         },
         "packageManager": {
-            "name": "npm",
-            "version": ">=11.10.1",
+            "name": "pnpm",
+            "version": ">=11.5.1",
             "onFail": "warn"
         }
     },

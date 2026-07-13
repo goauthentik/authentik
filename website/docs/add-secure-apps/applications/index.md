@@ -1,8 +1,9 @@
 ---
 title: Applications
+sidebar_position: 1
 ---
 
-Applications, as defined in authentik, are used to configure and separate the authorization/access control and the appearance of a specific software application in the **My applications** page.
+Applications, as defined in authentik, are used to configure and separate the authorization/access control and the appearance of a specific software application in the **Application Dashboard** page.
 
 When a user logs into authentik, they see a list of the applications for which authentik is configured to provide authentication and authorization (the applications that they are authorized to use).
 
@@ -26,11 +27,11 @@ The following options can be configured:
 - _Name_: This is the name shown for the application card
 - _Launch URL_: The URL that is opened when a user clicks on the application. When left empty, authentik tries to guess it based on the provider
 
-    You can use placeholders in the launch url to build them dynamically based on the logged in user. For example, you can set the Launch URL to `https://goauthentik.io/%(username)s`, which will be replaced with the currently logged in user's username.
+    You can use placeholders in the launch URL to build them dynamically based on the logged-in user. For example, you can set the Launch URL to `https://goauthentik.io/%(username)s`, which will be replaced with the currently logged-in user's username.
 
     For a reference of all fields available, see [the API schema for the User object](https://api.goauthentik.io/reference/core-users-retrieve/).
 
-    Only apps with launch URLs that begin with `http://` or `https://`, or that use relative paths, appear on the user's **My applications** page. To keep an app accessible but remove it from that page, use the **Hide from My applications** option (see [Hide applications](./manage_apps.mdx#hide-applications)).
+    Only apps with launch URLs that begin with `http://` or `https://`, or that use relative paths, appear on the user's **Application Dashboard** page. To keep an app accessible but remove it from that page, use the **Hide from Application Dashboard** option (see [Hide applications](./manage_apps.mdx#hide-applications)).
 
 - _Icon (URL)_: Optionally configure an icon for the application. You can select from files uploaded to the [Files](../../customize/files.md) library or enter an absolute URL.
 

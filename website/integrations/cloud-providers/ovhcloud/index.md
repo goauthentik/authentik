@@ -4,6 +4,8 @@ sidebar_label: OVHcloud
 support_level: community
 ---
 
+import SAMLProvider20265Warning from "../../\_saml-provider-2026-5-warning.mdx";
+
 ## What is OVHcloud?
 
 > OVHcloud is a French cloud provider. They provide public and private cloud products, shared hosting, and dedicated servers in 140 countries.
@@ -22,6 +24,8 @@ To support the integration of OVHcloud with authentik, you need to create an app
 
 ### Create an application and provider in authentik
 
+<SAMLProvider20265Warning />
+
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
     - **Application**: Provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
@@ -31,10 +35,9 @@ To support the integration of OVHcloud with authentik, you need to create an app
             - `https://www.ovhcloud.com/eu/auth/saml/acs` for EU region.
             - `https://www.ovhcloud.com/ca/auth/saml/acs` for CA region.
             - `https://us.ovhcloud.com/auth/` for US region.
-        - Set the **Service Provider Binding** to `Post`.
         - Under **Advanced protocol settings**, set an available **Signing certificate**.
 
-    - **Configure Bindings** _(optional)_: You can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+    - **Configure Bindings** _(optional)_: You can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 
 3. Click **Submit** to save the new application and provider.
 
@@ -44,10 +47,10 @@ To support the integration of OVHcloud with authentik, you need to create an app
 2. Navigate to **Applications** > **Providers** and click on the name of the provider that you created in the previous section.
 3. Under **Related objects** > **Metadata**, click on **Download**. This downloaded file is your **SAML Metadata** file and it will be required in the next section.
 
-## OVHcloud Configuration
+## OVHcloud configuration
 
 1. Log in to the OVHcloud Control Panel.
-2. Click your name in the top right corner, and in the sidebar that appears, click your name again.
+2. Click your name in the top-right corner, and in the sidebar that appears, click your name again.
 3. Select **Identity and Access Management (IAM)** from the left-hand menu.
 4. Click the **Identities** tab to access local users management and switch to the **SSO** tab.
 5. Click on the **SSO Connection** button.

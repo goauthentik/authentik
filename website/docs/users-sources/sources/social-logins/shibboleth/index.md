@@ -7,7 +7,7 @@ tags:
     - saml
 ---
 
-Allows users to authenticate using their [Shibboleth](https://www.shibboleth.net/about-us/the-shibboleth-project/) credentials by configuring Shibboleth as a federated identity provider via SAML.
+This source lets users authenticate with their [Shibboleth](https://www.shibboleth.net/about-us/the-shibboleth-project/) credentials by configuring Shibboleth as a federated identity provider with SAML.
 
 ## Preparation
 
@@ -15,11 +15,11 @@ The following placeholders are used in this guide:
 
 - `authentik.company` is the FQDN of the authentik installation.
 - `shibboleth.company` is the FQDN of the Shibboleth IdP installation.
-- `shibboleth-slug` is the slug you will assign to the SAML source in authentik (e.g., `shibboleth`).
+- `shibboleth-slug` is the slug to assign to the SAML source in authentik (for example, `shibboleth`).
 
 ## authentik configuration
 
-To integrate Shibboleth with authentik you will need to create a SAML source in authentik.
+To integrate Shibboleth with authentik, create a SAML source in authentik.
 
 ### Create a SAML source in authentik
 
@@ -27,13 +27,13 @@ To integrate Shibboleth with authentik you will need to create a SAML source in 
 2. Navigate to **Directory** > **Federation and Social login** and click **New Source**.
 3. Select **SAML Source** and configure the following settings:
     - Set **Name** to `Shibboleth`.
-    - Set **Slug** to `shibboleth` (this sets the slug used in Shibboleth's metadata url).
+    - Set **Slug** to `shibboleth` (this sets the slug used in Shibboleth's metadata URL).
     - Set **SSO URL** to `https://shibboleth.company/idp/profile/SAML2/Redirect/SSO`.
     - Set **Binding Type** to `Redirect`.
     - Set **Issuer** to `https://authentik.company/source/saml/<shibboleth-slug>/metadata/`.
     - Set **NameID Policy** to `Transient`.
       :::warning NameID Policy
-      Shibboleth supports the `Transient` NameID by default. You will need to reconfigure Shibboleth to use other NameIDs.
+      Shibboleth supports the `Transient` NameID by default. You need to reconfigure Shibboleth to use other NameIDs.
       :::
     - Set **Signing Keypair** to an authentik certificate (e.g., the default `authentik Self-signed Certificate`).
     - Set **Encryption Certificate** to an authentik certificate (e.g., the default `authentik Self-signed Certificate`).
@@ -49,9 +49,9 @@ For instructions on embedding the new source within a flow, such as an authoriza
 
 ## Shibboleth configuration
 
-To integrate Shibboleth with authentik you will need to add authentik as a service provider in your Shibboleth IdP.
+To integrate Shibboleth with authentik, add authentik as a service provider in your Shibboleth IdP.
 
-### Add authentik as a Service Provider
+### Add authentik as a service provider
 
 1. Edit `/opt/shibboleth-idp/conf/metadata-providers.xml` on the Shibboleth IdP server.
 2. Add the following `MetadataProvider` element before the final closing tag of the existing `MetadataProvider` block:

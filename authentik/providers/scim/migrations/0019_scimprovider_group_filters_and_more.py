@@ -93,6 +93,7 @@ class Migration(migrations.Migration):
                     ("aws", "AWS"),
                     ("slack", "Slack"),
                     ("sfdc", "Salesforce"),
+                    ("gitlab", "GitLab"),
                     ("webex", "Webex"),
                     ("vcenter", "vCenter"),
                 ],
@@ -100,6 +101,18 @@ class Migration(migrations.Migration):
                 help_text="Alter authentik behavior for vendor-specific SCIM implementations.",
                 max_length=30,
                 verbose_name="SCIM Compatibility Mode",
+            ),
+        ),
+        migrations.AlterField(
+            model_name="scimprovider",
+            name="auth_mode",
+            field=models.TextField(
+                choices=[
+                    ("token", "Token"),
+                    ("oauth", "OAuth (Silent)"),
+                    ("oauth_interactive", "OAuth (interactive)"),
+                ],
+                default="token",
             ),
         ),
     ]

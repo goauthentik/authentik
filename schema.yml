@@ -5430,6 +5430,8 @@ paths:
         using this object
       tags:
       - endpoints
+      security:
+      - {}
       responses:
         '200':
           content:
@@ -7737,9 +7739,59 @@ paths:
         schema:
           type: string
       - in: query
+        name: actions
+        schema:
+          type: array
+          items:
+            $ref: '#/components/schemas/EventActions'
+        explode: true
+        style: form
+      - in: query
+        name: brand_name
+        schema:
+          type: string
+        description: Brand name
+      - in: query
+        name: client_ip
+        schema:
+          type: string
+      - in: query
+        name: context_authorized_app
+        schema:
+          type: string
+        description: Context Authorized application
+      - in: query
+        name: context_device
+        schema:
+          type: string
+        description: Context Device Primary Key
+      - in: query
+        name: context_model_app
+        schema:
+          type: string
+        description: Context Model App
+      - in: query
+        name: context_model_name
+        schema:
+          type: string
+        description: Context Model Name
+      - in: query
+        name: context_model_pk
+        schema:
+          type: string
+        description: Context Model Primary Key
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QuerySearch'
+      - in: query
         name: top_n
         schema:
           type: integer
+          default: 15
+      - in: query
+        name: username
+        schema:
+          type: string
+        description: Username
       tags:
       - events
       security:
@@ -36331,6 +36383,8 @@ components:
           type: string
         api_url:
           type: string
+        request_content_type:
+          $ref: '#/components/schemas/RequestContentTypeEnum'
         interactive:
           type: boolean
         score_min_threshold:
@@ -36376,6 +36430,8 @@ components:
         api_url:
           type: string
           minLength: 1
+        request_content_type:
+          $ref: '#/components/schemas/RequestContentTypeEnum'
         interactive:
           type: boolean
         score_min_threshold:
@@ -36602,6 +36658,7 @@ components:
       - aws
       - slack
       - sfdc
+      - gitlab
       - webex
       - vcenter
       type: string
@@ -39078,7 +39135,7 @@ components:
           readOnly: true
           title: ID
         provider:
-          $ref: '#/components/schemas/OAuth2Provider'
+          $ref: '#/components/schemas/Provider'
         user:
           $ref: '#/components/schemas/User'
         is_expired:
@@ -40418,6 +40475,7 @@ components:
       - client_credentials
       - password
       - urn:ietf:params:oauth:grant-type:device_code
+      - urn:ietf:params:oauth:grant-type:token-exchange
       type: string
     Group:
       type: object
@@ -40509,6 +40567,7 @@ components:
         group:
           type: string
           format: uuid
+          readOnly: true
         source:
           type: string
           format: uuid
@@ -40538,9 +40597,6 @@ components:
       type: object
       description: Group Source Connection
       properties:
-        group:
-          type: string
-          format: uuid
         source:
           type: string
           format: uuid
@@ -40548,7 +40604,6 @@ components:
           type: string
           minLength: 1
       required:
-      - group
       - identifier
       - source
     GroupLDAPSourceConnection:
@@ -40562,6 +40617,7 @@ components:
         group:
           type: string
           format: uuid
+          readOnly: true
         source:
           type: string
           format: uuid
@@ -40596,9 +40652,6 @@ components:
       type: object
       description: Group Source Connection
       properties:
-        group:
-          type: string
-          format: uuid
         source:
           type: string
           format: uuid
@@ -40606,7 +40659,6 @@ components:
           type: string
           minLength: 1
       required:
-      - group
       - identifier
       - source
     GroupMatchingModeEnum:
@@ -40626,6 +40678,7 @@ components:
         group:
           type: string
           format: uuid
+          readOnly: true
         source:
           type: string
           format: uuid
@@ -40655,9 +40708,6 @@ components:
       type: object
       description: Group Source Connection
       properties:
-        group:
-          type: string
-          format: uuid
         source:
           type: string
           format: uuid
@@ -40665,7 +40715,6 @@ components:
           type: string
           minLength: 1
       required:
-      - group
       - identifier
       - source
     GroupPlexSourceConnection:
@@ -40679,6 +40728,7 @@ components:
         group:
           type: string
           format: uuid
+          readOnly: true
         source:
           type: string
           format: uuid
@@ -40708,9 +40758,6 @@ components:
       type: object
       description: Group Source Connection
       properties:
-        group:
-          type: string
-          format: uuid
         source:
           type: string
           format: uuid
@@ -40718,7 +40765,6 @@ components:
           type: string
           minLength: 1
       required:
-      - group
       - identifier
       - source
     GroupRequest:
@@ -40761,6 +40807,7 @@ components:
         group:
           type: string
           format: uuid
+          readOnly: true
         source:
           type: string
           format: uuid
@@ -40790,9 +40837,6 @@ components:
       type: object
       description: Group Source Connection
       properties:
-        group:
-          type: string
-          format: uuid
         source:
           type: string
           format: uuid
@@ -40800,7 +40844,6 @@ components:
           type: string
           minLength: 1
       required:
-      - group
       - identifier
       - source
     GroupSourceConnection:
@@ -40814,6 +40857,7 @@ components:
         group:
           type: string
           format: uuid
+          readOnly: true
         source:
           type: string
           format: uuid
@@ -40843,9 +40887,6 @@ components:
       type: object
       description: Group Source Connection
       properties:
-        group:
-          type: string
-          format: uuid
         source:
           type: string
           format: uuid
@@ -40853,7 +40894,6 @@ components:
           type: string
           minLength: 1
       required:
-      - group
       - identifier
       - source
     GroupTelegramSourceConnection:
@@ -40867,6 +40907,7 @@ components:
         group:
           type: string
           format: uuid
+          readOnly: true
         source:
           type: string
           format: uuid
@@ -40896,9 +40937,6 @@ components:
       type: object
       description: Group Source Connection
       properties:
-        group:
-          type: string
-          format: uuid
         source:
           type: string
           format: uuid
@@ -40906,7 +40944,6 @@ components:
           type: string
           minLength: 1
       required:
-      - group
       - identifier
       - source
     Hardware:
@@ -41935,7 +41972,7 @@ components:
           readOnly: true
         application_slug:
           type: string
-          description: Prioritise backchannel slug over direct application slug
+          description: Prioritize backchannel slug over direct application slug
           readOnly: true
         certificate:
           type: string
@@ -42660,6 +42697,7 @@ components:
       - zh-hant
     LastTaskStatusEnum:
       enum:
+      - waiting_for_dependencies
       - queued
       - consumed
       - preprocess
@@ -42883,7 +42921,7 @@ components:
         reviewer_groups_obj:
           type: array
           items:
-            $ref: '#/components/schemas/ReviewerGroup'
+            $ref: '#/components/schemas/PartialGroup'
           readOnly: true
         min_reviewers:
           type: integer
@@ -42899,7 +42937,7 @@ components:
         reviewers_obj:
           type: array
           items:
-            $ref: '#/components/schemas/ReviewerUser'
+            $ref: '#/components/schemas/PartialUser'
           readOnly: true
         notification_transports:
           type: array
@@ -43892,7 +43930,7 @@ components:
           type: string
           format: uuid
           nullable: true
-          description: When set, the selected ceritifcate is used to validate the
+          description: When set, the selected certificate is used to validate the
             certificate of the webhook server.
         webhook_mapping_body:
           type: string
@@ -43934,7 +43972,7 @@ components:
           type: string
           format: uuid
           nullable: true
-          description: When set, the selected ceritifcate is used to validate the
+          description: When set, the selected certificate is used to validate the
             certificate of the webhook server.
         webhook_mapping_body:
           type: string
@@ -48279,6 +48317,8 @@ components:
         api_url:
           type: string
           minLength: 1
+        request_content_type:
+          $ref: '#/components/schemas/RequestContentTypeEnum'
         interactive:
           type: boolean
         score_min_threshold:
@@ -48954,9 +48994,6 @@ components:
       type: object
       description: Group Source Connection
       properties:
-        group:
-          type: string
-          format: uuid
         source:
           type: string
           format: uuid
@@ -48967,9 +49004,6 @@ components:
       type: object
       description: Group Source Connection
       properties:
-        group:
-          type: string
-          format: uuid
         source:
           type: string
           format: uuid
@@ -48980,9 +49014,6 @@ components:
       type: object
       description: Group Source Connection
       properties:
-        group:
-          type: string
-          format: uuid
         source:
           type: string
           format: uuid
@@ -48993,9 +49024,6 @@ components:
       type: object
       description: Group Source Connection
       properties:
-        group:
-          type: string
-          format: uuid
         source:
           type: string
           format: uuid
@@ -49033,9 +49061,6 @@ components:
       type: object
       description: Group Source Connection
       properties:
-        group:
-          type: string
-          format: uuid
         source:
           type: string
           format: uuid
@@ -49046,9 +49071,6 @@ components:
       type: object
       description: Group Source Connection
       properties:
-        group:
-          type: string
-          format: uuid
         source:
           type: string
           format: uuid
@@ -49059,9 +49081,6 @@ components:
       type: object
       description: Group Source Connection
       properties:
-        group:
-          type: string
-          format: uuid
         source:
           type: string
           format: uuid
@@ -49761,7 +49780,7 @@ components:
           type: string
           format: uuid
           nullable: true
-          description: When set, the selected ceritifcate is used to validate the
+          description: When set, the selected certificate is used to validate the
             certificate of the webhook server.
         webhook_mapping_body:
           type: string
@@ -51435,8 +51454,6 @@ components:
       type: object
       description: User source connection
       properties:
-        user:
-          type: integer
         source:
           type: string
           format: uuid
@@ -51447,8 +51464,6 @@ components:
       type: object
       description: User source connection
       properties:
-        user:
-          type: integer
         source:
           type: string
           format: uuid
@@ -51502,8 +51517,6 @@ components:
       type: object
       description: User source connection
       properties:
-        user:
-          type: integer
         source:
           type: string
           format: uuid
@@ -51521,8 +51534,6 @@ components:
       type: object
       description: User source connection
       properties:
-        user:
-          type: integer
         source:
           type: string
           format: uuid
@@ -51580,8 +51591,6 @@ components:
       type: object
       description: User source connection
       properties:
-        user:
-          type: integer
         source:
           type: string
           format: uuid
@@ -51592,8 +51601,6 @@ components:
       type: object
       description: User source connection
       properties:
-        user:
-          type: integer
         source:
           type: string
           format: uuid
@@ -51604,8 +51611,6 @@ components:
       type: object
       description: User source connection
       properties:
-        user:
-          type: integer
         source:
           type: string
           format: uuid
@@ -52718,10 +52723,9 @@ components:
     ProviderTypeEnum:
       enum:
       - apple
+      - discord
       - openidconnect
       - entraid
-      - azuread
-      - discord
       - facebook
       - github
       - gitlab
@@ -53575,6 +53579,9 @@ components:
               $ref: '#/components/schemas/ErrorDetail'
         to:
           type: string
+        final_redirect:
+          type: boolean
+          default: false
       required:
       - to
     RedirectChallengeResponseRequest:
@@ -53742,7 +53749,7 @@ components:
         reviewer_groups:
           type: array
           items:
-            $ref: '#/components/schemas/ReviewerGroup'
+            $ref: '#/components/schemas/PartialGroup'
           readOnly: true
         min_reviewers:
           type: integer
@@ -53750,7 +53757,7 @@ components:
         reviewers:
           type: array
           items:
-            $ref: '#/components/schemas/ReviewerUser'
+            $ref: '#/components/schemas/PartialUser'
           readOnly: true
       required:
       - min_reviewers
@@ -53860,6 +53867,11 @@ components:
           minimum: -2147483648
       required:
       - name
+    RequestContentTypeEnum:
+      enum:
+      - application/x-www-form-urlencoded
+      - application/json
+      type: string
     Review:
       type: object
       description: |-
@@ -53875,7 +53887,7 @@ components:
           format: uuid
         reviewer:
           allOf:
-          - $ref: '#/components/schemas/ReviewerUser'
+          - $ref: '#/components/schemas/PartialUser'
           readOnly: true
         timestamp:
           type: string
@@ -53904,44 +53916,6 @@ components:
           minLength: 1
       required:
       - iteration
-    ReviewerGroup:
-      type: object
-      properties:
-        pk:
-          type: string
-          format: uuid
-          readOnly: true
-          title: Group uuid
-        name:
-          type: string
-      required:
-      - name
-      - pk
-    ReviewerUser:
-      type: object
-      properties:
-        pk:
-          type: integer
-          readOnly: true
-          title: ID
-        uuid:
-          type: string
-          format: uuid
-          readOnly: true
-        username:
-          type: string
-          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
-            only.
-          pattern: ^[\w.@+-]+$
-          maxLength: 150
-        name:
-          type: string
-          description: User's display name.
-      required:
-      - name
-      - pk
-      - username
-      - uuid
     Role:
       type: object
       description: Role serializer
@@ -54328,6 +54302,14 @@ components:
           type: string
           description: Get Issuer/EntityID URL
           readOnly: true
+        url_unified:
+          type: string
+          description: Get unified SAML endpoint URL (handles SSO and SLO)
+          readOnly: true
+        url_unified_init:
+          type: string
+          description: Get IdP-initiated SAML URL
+          readOnly: true
         url_sso_post:
           type: string
           description: Get SSO Post URL
@@ -54367,6 +54349,8 @@ components:
       - url_sso_init
       - url_sso_post
       - url_sso_redirect
+      - url_unified
+      - url_unified_init
       - verbose_name
       - verbose_name_plural
     SAMLProviderImportRequest:
@@ -54898,6 +54882,7 @@ components:
       enum:
       - token
       - oauth
+      - oauth_interactive
       type: string
     SCIMMapping:
       type: object
@@ -55032,6 +55017,24 @@ components:
           type: object
           additionalProperties: {}
           description: Additional OAuth parameters, such as grant_type
+        auth_oauth_token_last_updated:
+          type: string
+          format: date-time
+          nullable: true
+          readOnly: true
+        auth_oauth_token_expires:
+          type: string
+          format: date-time
+          nullable: true
+          readOnly: true
+        auth_oauth_url_callback:
+          type: string
+          nullable: true
+          readOnly: true
+        auth_oauth_url_start:
+          type: string
+          nullable: true
+          readOnly: true
         compatibility_mode:
           allOf:
           - $ref: '#/components/schemas/CompatibilityModeEnum'
@@ -55064,6 +55067,10 @@ components:
       required:
       - assigned_backchannel_application_name
       - assigned_backchannel_application_slug
+      - auth_oauth_token_expires
+      - auth_oauth_token_last_updated
+      - auth_oauth_url_callback
+      - auth_oauth_url_start
       - component
       - meta_model_name
       - name
@@ -55922,6 +55929,8 @@ components:
           type: string
         invalidation_flow_url:
           type: string
+        overview_url:
+          type: string
         brand_name:
           type: string
       required:
@@ -56754,6 +56763,7 @@ components:
       - uid
     TaskAggregatedStatusEnum:
       enum:
+      - waiting_for_dependencies
       - queued
       - consumed
       - preprocess
@@ -56767,6 +56777,7 @@ components:
       type: string
     TaskStatusEnum:
       enum:
+      - waiting_for_dependencies
       - queued
       - consumed
       - preprocess
@@ -57243,7 +57254,7 @@ components:
           readOnly: true
           title: ID
         provider:
-          $ref: '#/components/schemas/OAuth2Provider'
+          $ref: '#/components/schemas/Provider'
         user:
           $ref: '#/components/schemas/User'
         is_expired:
@@ -57753,6 +57764,7 @@ components:
           title: ID
         user:
           type: integer
+          readOnly: true
         source:
           type: string
           format: uuid
@@ -57782,8 +57794,6 @@ components:
       type: object
       description: User source connection
       properties:
-        user:
-          type: integer
         source:
           type: string
           format: uuid
@@ -57793,7 +57803,6 @@ components:
       required:
       - identifier
       - source
-      - user
     UserLDAPSourceConnection:
       type: object
       description: User source connection
@@ -57804,6 +57813,7 @@ components:
           title: ID
         user:
           type: integer
+          readOnly: true
         source:
           type: string
           format: uuid
@@ -57838,8 +57848,6 @@ components:
       type: object
       description: User source connection
       properties:
-        user:
-          type: integer
         source:
           type: string
           format: uuid
@@ -57849,7 +57857,6 @@ components:
       required:
       - identifier
       - source
-      - user
     UserLoginChallenge:
       type: object
       description: Empty challenge
@@ -58055,6 +58062,7 @@ components:
           title: ID
         user:
           type: integer
+          readOnly: true
         source:
           type: string
           format: uuid
@@ -58087,8 +58095,6 @@ components:
       type: object
       description: User source connection
       properties:
-        user:
-          type: integer
         source:
           type: string
           format: uuid
@@ -58105,7 +58111,6 @@ components:
       required:
       - identifier
       - source
-      - user
     UserPasswordHashSetRequest:
       type: object
       description: Payload to set a users' password hash directly
@@ -58144,6 +58149,7 @@ components:
           title: ID
         user:
           type: integer
+          readOnly: true
         source:
           type: string
           format: uuid
@@ -58173,8 +58179,6 @@ components:
       type: object
       description: User source connection
       properties:
-        user:
-          type: integer
         source:
           type: string
           format: uuid
@@ -58189,7 +58193,6 @@ components:
       - identifier
       - plex_token
       - source
-      - user
     UserRecoveryEmailRequest:
       type: object
       description: Payload to create and email a recovery link
@@ -58265,6 +58268,7 @@ components:
           title: ID
         user:
           type: integer
+          readOnly: true
         source:
           type: string
           format: uuid
@@ -58294,8 +58298,6 @@ components:
       type: object
       description: User source connection
       properties:
-        user:
-          type: integer
         source:
           type: string
           format: uuid
@@ -58305,7 +58307,6 @@ components:
       required:
       - identifier
       - source
-      - user
     UserSelf:
       type: object
       description: User Serializer for information a user can retrieve about themselves
@@ -58468,6 +58469,7 @@ components:
           title: ID
         user:
           type: integer
+          readOnly: true
         source:
           type: string
           format: uuid
@@ -58497,8 +58499,6 @@ components:
       type: object
       description: User source connection
       properties:
-        user:
-          type: integer
         source:
           type: string
           format: uuid
@@ -58508,7 +58508,6 @@ components:
       required:
       - identifier
       - source
-      - user
     UserTelegramSourceConnection:
       type: object
       description: User source connection
@@ -58519,6 +58518,7 @@ components:
           title: ID
         user:
           type: integer
+          readOnly: true
         source:
           type: string
           format: uuid
@@ -58548,8 +58548,6 @@ components:
       type: object
       description: User source connection
       properties:
-        user:
-          type: integer
         source:
           type: string
           format: uuid
@@ -58559,7 +58557,6 @@ components:
       required:
       - identifier
       - source
-      - user
     UserTypeEnum:
       enum:
       - internal

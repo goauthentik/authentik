@@ -6,7 +6,7 @@ support_level: community
 
 ## What is Knocknoc?
 
-> Knocknoc links your single-sign on experience to existing network access controls. It can dynamically orchestrate network access controls (e.g., managing firewall rules in real-time without exposing target machines) or function as an identity-aware gateway.
+> Knocknoc links your single sign-on experience to existing network access controls. It can dynamically orchestrate network access controls (e.g., managing firewall rules in real-time without exposing target machines) or function as an identity-aware gateway.
 >
 > -- https://knocknoc.io/
 
@@ -23,89 +23,91 @@ This documentation lists only the settings that you need to change from their de
 
 ## authentik configuration
 
-To support the integration of Knocknoc with authentik, you need to create an application/provider pair and three property mappings in authentik.
+To support the integration of Knocknoc with authentik, create three SAML property mappings and an application/provider pair in authentik.
 
 ### Create property mappings in authentik
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Customization** > **Property Mappings** and click **Create** to create a property mapping.
+2. Navigate to **Customization** > **Property Mappings** and click **Create**. Create the following **SAML Provider Property Mapping** entries:
+    - **Real name mapping**:
+        - **Name**: `SAML to Knocknoc realName`
+        - **SAML Attribute Name**: `realName`
+        - **Expression**:
 
-- **Select type**: Select **SAML Provider Property Mapping** as the type and click **Next**.
-- **Create SAML Provider Property Mapping**:
-    - **Name**: provide a descriptive name (e.g. `SAML to Knocknoc realName`)
-    - **SAML Attribute Name**: `realName`
-    - **Expression**:
+            ```python
+            return user.name
+            ```
 
-    ```python
-    return user.name
-    ```
+    - **Groups mapping**:
+        - **Name**: `SAML to Knocknoc groups`
+        - **SAML Attribute Name**: `groups`
+        - **Expression**:
 
-3. Click **Finish** to save the new property mapping.
-4. Repeat steps 1-3 two more times, with the following configurations:
+            ```python
+            for group in user.groups.all():
+                yield group.name
+            ```
 
-- **Select type**: Select **SAML Provider Property Mapping** as the type and click **Next**.
-- **Create SAML Provider Property Mapping**:
-    - **Name**: provide a descriptive name (e.g. `SAML to Knocknoc groups`)
-    - **SAML Attribute Name**: `groups`
-    - **Expression**:
+    - **Session duration mapping**:
+        - **Name**: `SAML to Knocknoc session duration`
+        - **SAML Attribute Name**: `sessionDuration`
+        - **Expression**:
 
-    ```python
-    for group in user.groups.all(): yield group.name
-    ```
+            ```python
+            return 540
+            ```
 
-- **Select type**: Select **SAML Provider Property Mapping** as the type and click **Next**.
-- **Create SAML Provider Property Mapping**:
-    - **Name**: provide a descriptive name (e.g. `SAML to Knocknoc session duration`)
-    - **SAML Attribute Name**: `sessionDuration`
-    - **Expression**:
-
-    ```python
-    return 540
-    ```
-
-:::info
-This example sets the session duration to 540 minutes. Change the value to match your desired session duration in minutes.
+:::info Group names
+Knocknoc users are created automatically after SAML login, but their group membership must match an existing Knocknoc group or Knoc definition before they receive access. Ensure the group names sent by authentik match the group names configured in Knocknoc.
 :::
 
 ### Create an application and provider in authentik
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
-
-- **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
-- **Choose a Provider type**: select **SAML Provider** as the provider type.
-- **Configure Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
-  **Protocol Settings**:
-    - **ACS URL**: `https://knocknoc.company/api/saml/acs`
-    - **Issuer**: `https://authentik.company`
-    - **Service Provider Binding**: `Post`
-    - **Audience**: `https://knocknoc.company/api/saml/metadata`
-    - Under **Advanced protocol settings**, add the three **Property Mappings** you created in the previous section, then set the **NameID Property Mapping** to `Authentik default SAML Mapping: Username`.
-- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
+    - **Choose a Provider type**: select **SAML Provider** as the provider type.
+    - **Configure Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+        - **Protocol settings**:
+            - **ACS URL**: `https://knocknoc.company/api/saml/acs`
+            - **Audience**: `https://knocknoc.company/api/saml/metadata`
+        - **Advanced protocol settings**:
+            - Select any available **Signing Certificate**.
+            - Add the three property mappings you created in the previous section to **Selected User Property Mappings**.
+            - Set **NameID Property Mapping** to `authentik default SAML Mapping: Username`.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 
 3. Click **Submit** to save the new application and provider.
 
-### Get the metadata URL of the Knocknoc provider
+### Copy the metadata URL of the Knocknoc provider
 
-1. Navigate to **Applications** > **Providers** and click on the name of the Knocknoc provider (e.g. `Provider for Knocknoc`).
-2. Navigate to the **Related objects** section and click on **Copy download URL**. This is the `SAML Metadata URL` and will be needed in the next section.
+1. Navigate to **Applications** > **Providers** and click the name of the Knocknoc provider (e.g. `Provider for Knocknoc`).
+2. In the **Related objects** section, under **Metadata**, click **Copy download URL**. This SAML metadata URL is required in the Knocknoc configuration.
 
 ## Knocknoc configuration
 
-1. Log in to Knocknoc and navigate to **Admin** > **Settings** > **SAML**
-2. Set the following configuration:
-    - **Metadata URL**: **SAML Metadata URL** copied from the authentik provider.
+1. Log in to the Knocknoc admin interface and navigate to **Settings**.
+2. Configure the following settings:
     - **Public URL**: `https://knocknoc.company`
-    - **Key file**: select a key file.
-    - **Cert file**: select a certificate file.
+    - **Metadata URL**: paste the metadata URL copied from authentik.
+3. Click **Generate new keypair**.
+4. Click **Save**.
 
-3. Click on **Save**.
+:::info Manual keypair generation
+If you want to generate the Knocknoc keypair manually instead, run the following command on a Linux host and upload the generated certificate and key files in Knocknoc.
 
-:::info
-Key file and Cert file are currently required fields in Knocknoc. You can generate a certificate and key on a Linux host with this command:
-`openssl req -new -x509 -days 3650 -nodes -subj /CN=Knocknoc/ -out <certificate_filename>.crt -keyout <certificate_key_filename>.key`
+```shell
+openssl req -new -x509 -days 3650 -nodes -subj /CN=Knocknoc/ -out <certificate_filename>.crt -keyout <certificate_key_filename>.key
+```
+
 :::
 
 ## Configuration verification
 
-To confirm that authentik is properly configured with Knocknoc, log out and log back in using authentik credentials.
+To confirm that authentik is properly configured with Knocknoc, log out and open Knocknoc. Click **SSO Login** and authenticate with authentik.
+
+## Resources
+
+- [Knocknoc Docs - SAML](https://docs.knocknoc.io/books/admin-guide/page/saml)
+- [Knocknoc Docs - SAML with Authentik](https://docs.knocknoc.io/books/admin-guide/page/saml-with-authentik)
+- [Knocknoc Docs - Settings](https://docs.knocknoc.io/books/admin-guide/page/settings)
