@@ -19,6 +19,16 @@ function stripLeadingSlash(value: string): string {
     return value.replace(/^\/+/, "");
 }
 
+/**
+ * Build the pathname prefix owned by an interface, e.g. `/auth/if/admin/`.
+ *
+ * The single source of truth for prefix construction — the href builders,
+ * click interceptor, and hash shim must all agree byte-for-byte.
+ */
+export function formatInterfacePrefix(base: string, interfaceName: string): string {
+    return `${ensureTrailingSlash(base)}if/${interfaceName}/`;
+}
+
 function buildSearch(params?: RouterParameterInit): string {
     if (!params) return "";
 
@@ -40,7 +50,7 @@ export function formatInterfaceURL(
     params?: RouterParameterInit,
 ): string {
     const { base } = getRouterConfig();
-    const prefix = `${ensureTrailingSlash(base)}if/${interfaceName}/`;
+    const prefix = formatInterfacePrefix(base, interfaceName);
 
     return `${prefix}${stripLeadingSlash(path)}${buildSearch(params)}`;
 }
