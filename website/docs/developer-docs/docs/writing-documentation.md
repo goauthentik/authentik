@@ -34,7 +34,7 @@ Adhering to the following guidelines will help us get your PRs merged more easil
     - [docs templates](./templates/index.md)
     - [integration guide template](https://integrations.goauthentik.io/applications#add-a-new-application)
 
-## Setting up a docs development environment
+## Set up a docs development environment
 
 ### Prerequisites
 
@@ -85,7 +85,7 @@ This command installs or updates the build dependencies such as Docusaurus, Pret
 If you have the [full development environment](../setup/full-dev-environment.mdx) installed you can run `make install` to get all of the latest build tools and dependencies, not just those for building documentation.
 :::
 
-## Writing or modifying technical docs
+## Write or modify technical docs
 
 In addition to following the [Style Guide](./style-guide.mdx) please review the following guidelines about our technical documentation (https://docs.goauthentik.io/docs/):
 
@@ -112,7 +112,7 @@ make docs-watch
 
 Starts a local development server for the documentation site and opens a preview in your browser. This command will automatically rebuild your local documentation site in real time, as you write or make changes to the Markdown files in the `website/docs` directory.
 
-## Writing or modifying integration guides
+## Write or modify integration guides
 
 In addition to following the [Style Guide](./style-guide.mdx) please review the following guidelines about our integration guides (https://integrations.goauthentik.io/).
 
@@ -148,7 +148,7 @@ Starts a local development server for the integrations site and opens a preview 
 
 The [authentik glossary](/core/glossary/) provides definitions for both industry-standard terms (like LDAP, OAuth2, SAML) and authentik-specific concepts (like Flows, Stages, Blueprints).
 
-### Adding a new glossary term
+### Add a new glossary term
 
 1. Create a new `.mdx` file in `website/docs/core/glossary/terms/` (e.g., `my-term.mdx`).
 
@@ -192,7 +192,7 @@ sidebar_custom_props:
 
 Every documentation page you see on our website starts as a simple Markdown file in our repository. When you create or edit these files, our build system automatically transforms them into web pages with predictable URLs.
 
-### Converting file paths to URLs
+### Convert file paths to URLs
 
 Let's take a look at the file path of the [Style Guide page](https://docs.goauthentik.io/developer-docs/docs/style-guide/):
 
@@ -258,7 +258,7 @@ When a reader first visits a documentation page or refreshes their browser:
 3. If not, it checks our `_redirects` file for a matching rule.
 4. The server sends back the correct page, or a 404 if no matching rule exists.
 
-#### Navigating between pages (client-side)
+#### Navigate between pages (client-side)
 
 When a reader clicks a link to another documentation page:
 
@@ -270,7 +270,7 @@ If Docusaurus's router attempts to render a page that does not exist, the `_redi
 
 Whether the reader is viewing a page for the first time or navigating between pages, this arrangement allows us to have a single source of truth for all URLs, ensuring that each page remains consistently accessible across authentik versions and throughout our three Docusaurus deployments (Topics, Integrations, and API).
 
-### Updating a page's URL
+### Update a page's URL
 
 :::danger[Every URL is a promise]
 

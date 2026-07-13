@@ -18,7 +18,7 @@ Apple mandates the use of a [registered top-level domain](https://en.wikipedia.o
 
 To integrate Apple with authentik, you need to register two identifiers and a key in the Apple Developer Portal.
 
-### Registering identifiers
+### Register identifiers
 
 1. Log in to the [Apple Developer Portal](https://developer.apple.com/account/), and navigate to **Account** > **Certificates, IDs & Profiles**, then click **Identifiers** in the sidebar.
 2. Register a new identifier with the type of **App IDs**, and the subtype **App**.
@@ -36,7 +36,7 @@ To integrate Apple with authentik, you need to register two identifiers and a ke
 
 ![](./service_id.png)
 
-### Configuring identifier
+### Configure an identifier
 
 11. Once back at the overview list, click the just-created identifier.
 12. Enable the checkbox next to **Sign In with Apple**, and click **Configure**
@@ -45,7 +45,7 @@ To integrate Apple with authentik, you need to register two identifiers and a ke
 
 ![](./app_service_config.png)
 
-### Registering a key
+### Register a key
 
 15. Click **Keys** in the sidebar, then register a new key with any name, and select **Sign in with Apple**.
 16. Click **Configure**, then select the App ID that you created.

@@ -25,7 +25,7 @@ Another use case for SSF is when an administrator wants to know when a user logs
 
 Another example use case is when an application uses SSF to subscribe to authorization events because the application needs to know if a user changed their password in authentik. If a user did change their password, then the application receives a POST request to write the fact that the password was changed.
 
-## Using the authentik SSF provider
+## Use the authentik SSF provider
 
 The SSF provider serves as a [backchannel provider](../../applications/manage_apps#backchannel-providers). Backchannel providers are used to augment the functionality of the main provider for an application.
 
