@@ -1,17 +1,13 @@
 import "#admin/rbac/ObjectPermissionModal";
 import "#admin/stages/invitation/InvitationForm";
 import "#admin/stages/invitation/InvitationListLink";
-import "#admin/stages/invitation/wizard/InvitationWizard";
-import "#elements/buttons/Dropdown";
-import "#elements/buttons/ModalButton";
 import "#elements/buttons/SpinnerButton/ak-spinner-button";
 import "#elements/forms/DeleteBulkForm";
-import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
-import { IconEditButton, modalInvoker } from "#elements/dialogs";
+import { IconEditButton } from "#elements/dialogs";
 import { PFColor } from "#elements/Label";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
@@ -20,12 +16,11 @@ import { SlottedTemplateResult } from "#elements/types";
 import { setPageDetails } from "#components/ak-page-navbar";
 
 import { InvitationForm } from "#admin/stages/invitation/InvitationForm";
-import { InvitationWizard } from "#admin/stages/invitation/wizard/InvitationWizard";
 
 import { FlowDesignationEnum, Invitation, ModelEnum, StagesApi } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { CSSResult, html, PropertyValues, TemplateResult } from "lit";
+import { CSSResult, html, PropertyValues } from "lit";
 import { customElement, state } from "lit/decorators.js";
 
 import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
@@ -58,7 +53,7 @@ export class InvitationListPage extends TablePage<Invitation> {
     protected override async apiEndpoint(): Promise<PaginatedResponse<Invitation>> {
         try {
             // Check if any invitation stages exist
-            const stages = await new StagesApi(DEFAULT_CONFIG).stagesInvitationStagesList({
+            const stages = await aki(StagesApi).stagesInvitationStagesList({
                 noFlows: false,
             });
             this.invitationStageExists = stages.pagination.count > 0;
@@ -74,7 +69,7 @@ export class InvitationListPage extends TablePage<Invitation> {
         } catch {
             // assuming we can't fetch stages, ignore the error
         }
-        return new StagesApi(DEFAULT_CONFIG).stagesInvitationInvitationsList({
+        return aki(StagesApi).stagesInvitationInvitationsList({
             ...(await this.defaultEndpointConfig()),
         });
     }
@@ -92,12 +87,12 @@ export class InvitationListPage extends TablePage<Invitation> {
             object-label=${msg("Invitation(s)")}
             .objects=${this.selectedElements}
             .usedBy=${(item: Invitation) => {
-                return new StagesApi(DEFAULT_CONFIG).stagesInvitationInvitationsUsedByList({
+                return aki(StagesApi).stagesInvitationInvitationsUsedByList({
                     inviteUuid: item.pk,
                 });
             }}
             .delete=${(item: Invitation) => {
-                return new StagesApi(DEFAULT_CONFIG).stagesInvitationInvitationsDestroy({
+                return aki(StagesApi).stagesInvitationInvitationsDestroy({
                     inviteUuid: item.pk,
                 });
             }}
@@ -142,66 +137,13 @@ export class InvitationListPage extends TablePage<Invitation> {
     }
 
     protected override renderObjectCreate(): SlottedTemplateResult {
-        return html`${this.renderNewInvitationDropdown()}`;
-    }
-
-    protected renderNewInvitationDropdown(): TemplateResult {
-        return html`<ak-dropdown class="pf-c-dropdown">
-            <div class="pf-c-dropdown__toggle pf-m-primary pf-m-split-button pf-m-action">
-                <button
-                    class="pf-c-dropdown__toggle-button"
-                    type="button"
-                    ${modalInvoker(InvitationWizard, { mode: "existing" })}
-                >
-                    ${msg("New Invitation")}
-                </button>
-                <button
-                    class="pf-c-dropdown__toggle-button"
-                    type="button"
-                    id="new-invitation-toggle"
-                    aria-haspopup="menu"
-                    aria-controls="new-invitation-menu"
-                    tabindex="0"
-                    aria-label=${msg("New Invitation options")}
-                >
-                    <i class="fas fa-caret-down" aria-hidden="true"></i>
-                </button>
-            </div>
-            <menu
-                class="pf-c-dropdown__menu"
-                hidden
-                id="new-invitation-menu"
-                aria-labelledby="new-invitation-toggle"
-                tabindex="-1"
-            >
-                <li role="presentation">
-                    <button
-                        type="button"
-                        role="menuitem"
-                        class="pf-c-dropdown__menu-item"
-                        ${modalInvoker(InvitationWizard, { mode: "existing" })}
-                        aria-description=${msg(
-                            "Opens the new invitation wizard and binds the invitation to an existing enrollment flow.",
-                        )}
-                    >
-                        ${msg("with Existing Enrollment Flow...")}
-                    </button>
-                </li>
-                <li role="presentation">
-                    <button
-                        type="button"
-                        role="menuitem"
-                        class="pf-c-dropdown__menu-item"
-                        ${modalInvoker(InvitationWizard, { mode: "create" })}
-                        aria-description=${msg(
-                            "Opens the new invitation wizard, which will create a new enrollment flow and invitation stage.",
-                        )}
-                    >
-                        ${msg("with New Enrollment Flow and Invitation Stage...")}
-                    </button>
-                </li>
-            </menu>
-        </ak-dropdown>`;
+        return html`<button
+            class="pf-c-button pf-m-primary"
+            type="button"
+            ${InvitationForm.asModalInvoker()}
+        >
+            ${msg("New Invitation")}
+        </button>`;
     }
 
     protected override render(): SlottedTemplateResult {

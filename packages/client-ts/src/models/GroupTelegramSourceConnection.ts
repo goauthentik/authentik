@@ -32,7 +32,7 @@ export interface GroupTelegramSourceConnection {
      * @type {string}
      * @memberof GroupTelegramSourceConnection
      */
-    group: string;
+    readonly group: string;
     /**
      *
      * @type {string}
@@ -110,7 +110,7 @@ export function GroupTelegramSourceConnectionToJSON(json: any): GroupTelegramSou
 export function GroupTelegramSourceConnectionToJSONTyped(
     value?: Omit<
         GroupTelegramSourceConnection,
-        "pk" | "source_obj" | "created" | "last_updated"
+        "pk" | "group" | "source_obj" | "created" | "last_updated"
     > | null,
     ignoreDiscriminator: boolean = false,
 ): any {
@@ -119,7 +119,6 @@ export function GroupTelegramSourceConnectionToJSONTyped(
     }
 
     return {
-        group: value["group"],
         source: value["source"],
         identifier: value["identifier"],
     };

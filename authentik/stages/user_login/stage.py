@@ -50,7 +50,7 @@ class UserLoginChallengeResponse(ChallengeResponse):
 
 
 class UserLoginStageView(ChallengeStageView):
-    """Finalise Authentication flow by logging the user in"""
+    """Finalize Authentication flow by logging the user in"""
 
     response_class = UserLoginChallengeResponse
 

@@ -14,11 +14,13 @@ media
 # Node
 
 node_modules
-corepack.tgz
-.corepack
 
 .cspellcache
 cspell-report.*
+
+# Release generation artifacts
+/changelog.md
+/diff.md
 
 # If your build process includes running collectstatic, then you probably don't need or want to include staticfiles/
 # in your Git repository. Update and uncomment the following line accordingly.

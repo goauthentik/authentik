@@ -4,6 +4,8 @@ sidebar_label: Arcane
 support_level: community
 ---
 
+import RedirectURI20265Note from "../../\_redirect-uri-2026-5-note.mdx";
+
 ## What is Arcane?
 
 > Modern Docker Management, Designed for Everyone.
@@ -22,6 +24,8 @@ This documentation lists only the settings that you need to change from their de
 :::
 
 ## authentik configuration
+
+<RedirectURI20265Note />
 
 To support the integration of Arcane with authentik, you need to create an application/provider pair in authentik.
 
@@ -53,7 +57,7 @@ Arcane either requires the email scope to return a `true` value for whether the 
     - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
         - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
-        - Set a `Strict` redirect URI to `https://arcane.company/auth/oidc/callback`.
+        - Add a **Redirect URI** of type `Strict` `Authorization` as `https://arcane.company/auth/oidc/callback`.
         - Select any available signing key.
         - Under **Advanced protocol settings**:
             - Remove the `authentik default OAuth Mapping: OpenID 'email'` scope, and add the custom scope mapping you created above.

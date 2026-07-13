@@ -34,7 +34,7 @@ export interface GroupLDAPSourceConnection {
      * @type {string}
      * @memberof GroupLDAPSourceConnection
      */
-    group: string;
+    readonly group: string;
     /**
      *
      * @type {string}
@@ -120,7 +120,7 @@ export function GroupLDAPSourceConnectionToJSON(json: any): GroupLDAPSourceConne
 export function GroupLDAPSourceConnectionToJSONTyped(
     value?: Omit<
         GroupLDAPSourceConnection,
-        "pk" | "source_obj" | "created" | "last_updated" | "group_obj"
+        "pk" | "group" | "source_obj" | "created" | "last_updated" | "group_obj"
     > | null,
     ignoreDiscriminator: boolean = false,
 ): any {
@@ -129,7 +129,6 @@ export function GroupLDAPSourceConnectionToJSONTyped(
     }
 
     return {
-        group: value["group"],
         source: value["source"],
         identifier: value["identifier"],
     };
