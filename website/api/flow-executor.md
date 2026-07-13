@@ -100,7 +100,7 @@ If a submitted response fails validation, the same challenge is returned again w
 
 The `component` string acts as a discriminator: each challenge component maps to a corresponding response schema in the API. For example, `ak-stage-identification` maps to `IdentificationChallengeResponseRequest`. To inspect the payload structure for all possible stages, refer to the [API Browser](../reference/flows-executor-get) or fetch the OpenAPI schema from your own instance at `/api/v3/schema/`.
 
-The officially supported [API clients](./clients) are generated from the same schema and include typed models for every challenge and response, which removes most of the guesswork when building a custom executor.
+The officially supported [API clients](./clients.mdx) are generated from the same schema and include typed models for every challenge and response, which removes most of the guesswork when building a custom executor.
 
 For debugging flow executions — including inspecting the current plan and session — see the [Flow Inspector](/docs/add-secure-apps/flows-stages/flow/inspector).
 
