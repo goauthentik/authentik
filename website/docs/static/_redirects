@@ -71,10 +71,8 @@
 #region Enterprise
 /enterprise/entsupport                                      /enterprise/support/ 301!
 /enterprise/entsupport/                                     /enterprise/support/ 301!
-/enterprise/enterprise-features                             https://goauthentik.io/pricing/ 301!
-/enterprise/enterprise-features/                            https://goauthentik.io/pricing/ 301!
-/enterprise/features                                       https://goauthentik.io/pricing/ 301!
-/enterprise/features/                                      https://goauthentik.io/pricing/ 301!
+/enterprise/features                                       /enterprise/enterprise-features/ 301!
+/enterprise/features/                                      /enterprise/enterprise-features/ 301!
 /enterprise/get-started                                     /enterprise/install-license/ 301!
 /enterprise/get-started/                                    /enterprise/install-license/ 301!
 /enterprise/manage-enterprise                               /enterprise/customer-portal/ 301!

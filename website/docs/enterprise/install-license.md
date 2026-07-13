@@ -48,6 +48,6 @@ If authentik rejects the key, verify that you copied the complete key and that i
 
 ## Next steps
 
-- Review the [Enterprise plans and features](https://goauthentik.io/pricing/) and configure the features that you need in the standard authentik documentation.
+- Review the [Enterprise features](./enterprise-features.md) and configure the features that you need in the standard authentik documentation.
 - Learn how authentik [counts licensed users](./customer-portal.md#about-users-and-licenses).
 - Configure additional Customer Portal users to avoid relying on a single account for license access.

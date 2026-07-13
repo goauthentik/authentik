@@ -20,7 +20,7 @@ See [authentik pricing](https://goauthentik.io/pricing/) for current plan detail
 
 Use these pages based on what you need to do:
 
-- [Compare plans and features](https://goauthentik.io/pricing/) to choose an Enterprise plan.
+- [Compare Enterprise features](./enterprise-features.md) and review [current plan pricing](https://goauthentik.io/pricing/).
 - [Get started with authentik Enterprise](./install-license.md) on a new or existing authentik installation.
 - [Manage Enterprise licensing](./customer-portal.md) to control organization access, purchase and manage licenses, and manage billing.
 - [Enterprise support](./support.md) to open and track support tickets.
