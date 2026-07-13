@@ -11,7 +11,9 @@ describe("translateHashRoute", () => {
     });
 
     it("translates a bare hash path with no params", () => {
-        expect(translateHashRoute("#/core/applications", scope)).toBe("/if/admin/core/applications");
+        expect(translateHashRoute("#/core/applications", scope)).toBe(
+            "/if/admin/core/applications",
+        );
     });
 
     it("translates a percent-encoded JSON blob", () => {
