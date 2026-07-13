@@ -7739,9 +7739,59 @@ paths:
         schema:
           type: string
       - in: query
+        name: actions
+        schema:
+          type: array
+          items:
+            $ref: '#/components/schemas/EventActions'
+        explode: true
+        style: form
+      - in: query
+        name: brand_name
+        schema:
+          type: string
+        description: Brand name
+      - in: query
+        name: client_ip
+        schema:
+          type: string
+      - in: query
+        name: context_authorized_app
+        schema:
+          type: string
+        description: Context Authorized application
+      - in: query
+        name: context_device
+        schema:
+          type: string
+        description: Context Device Primary Key
+      - in: query
+        name: context_model_app
+        schema:
+          type: string
+        description: Context Model App
+      - in: query
+        name: context_model_name
+        schema:
+          type: string
+        description: Context Model Name
+      - in: query
+        name: context_model_pk
+        schema:
+          type: string
+        description: Context Model Primary Key
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QuerySearch'
+      - in: query
         name: top_n
         schema:
           type: integer
+          default: 15
+      - in: query
+        name: username
+        schema:
+          type: string
+        description: Username
       tags:
       - events
       security:
@@ -40425,6 +40475,7 @@ components:
       - client_credentials
       - password
       - urn:ietf:params:oauth:grant-type:device_code
+      - urn:ietf:params:oauth:grant-type:token-exchange
       type: string
     Group:
       type: object
@@ -42646,6 +42697,7 @@ components:
       - zh-hant
     LastTaskStatusEnum:
       enum:
+      - waiting_for_dependencies
       - queued
       - consumed
       - preprocess
@@ -42869,7 +42921,7 @@ components:
         reviewer_groups_obj:
           type: array
           items:
-            $ref: '#/components/schemas/ReviewerGroup'
+            $ref: '#/components/schemas/PartialGroup'
           readOnly: true
         min_reviewers:
           type: integer
@@ -42885,7 +42937,7 @@ components:
         reviewers_obj:
           type: array
           items:
-            $ref: '#/components/schemas/ReviewerUser'
+            $ref: '#/components/schemas/PartialUser'
           readOnly: true
         notification_transports:
           type: array
@@ -53527,6 +53579,9 @@ components:
               $ref: '#/components/schemas/ErrorDetail'
         to:
           type: string
+        final_redirect:
+          type: boolean
+          default: false
       required:
       - to
     RedirectChallengeResponseRequest:
@@ -53694,7 +53749,7 @@ components:
         reviewer_groups:
           type: array
           items:
-            $ref: '#/components/schemas/ReviewerGroup'
+            $ref: '#/components/schemas/PartialGroup'
           readOnly: true
         min_reviewers:
           type: integer
@@ -53702,7 +53757,7 @@ components:
         reviewers:
           type: array
           items:
-            $ref: '#/components/schemas/ReviewerUser'
+            $ref: '#/components/schemas/PartialUser'
           readOnly: true
       required:
       - min_reviewers
@@ -53832,7 +53887,7 @@ components:
           format: uuid
         reviewer:
           allOf:
-          - $ref: '#/components/schemas/ReviewerUser'
+          - $ref: '#/components/schemas/PartialUser'
           readOnly: true
         timestamp:
           type: string
@@ -53861,44 +53916,6 @@ components:
           minLength: 1
       required:
       - iteration
-    ReviewerGroup:
-      type: object
-      properties:
-        pk:
-          type: string
-          format: uuid
-          readOnly: true
-          title: Group uuid
-        name:
-          type: string
-      required:
-      - name
-      - pk
-    ReviewerUser:
-      type: object
-      properties:
-        pk:
-          type: integer
-          readOnly: true
-          title: ID
-        uuid:
-          type: string
-          format: uuid
-          readOnly: true
-        username:
-          type: string
-          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
-            only.
-          pattern: ^[\w.@+-]+$
-          maxLength: 150
-        name:
-          type: string
-          description: User's display name.
-      required:
-      - name
-      - pk
-      - username
-      - uuid
     Role:
       type: object
       description: Role serializer
@@ -56746,6 +56763,7 @@ components:
       - uid
     TaskAggregatedStatusEnum:
       enum:
+      - waiting_for_dependencies
       - queued
       - consumed
       - preprocess
@@ -56759,6 +56777,7 @@ components:
       type: string
     TaskStatusEnum:
       enum:
+      - waiting_for_dependencies
       - queued
       - consumed
       - preprocess

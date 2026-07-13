@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING
 
 from django.core.cache import cache
 from django.http import HttpResponseBadRequest, HttpResponseNotFound
+from msgspec.json import Encoder as JSONEncoder
 from pydantic import ValidationError
 from requests import JSONDecodeError, RequestException, Session
 
@@ -40,8 +41,11 @@ class SCIMClient[TModel: "Model", TConnection: "Model", TSchema: "BaseModel"](
     _session: Session
     _config: ServiceProviderConfiguration
 
+    can_discover = True
+
     def __init__(self, provider: SCIMProvider):
         super().__init__(provider)
+        self._json_encoder = JSONEncoder(order="deterministic")
         self._session = get_http_session()
         self._session.verify = provider.verify_certificates
         self.provider = provider

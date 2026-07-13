@@ -13,23 +13,19 @@ import { customElement } from "lit/decorators.js";
 export class PropertyMappingSourceOAuthForm extends BasePropertyMappingForm<OAuthSourcePropertyMapping> {
     protected override docLink = "/users-sources/sources/property-mappings/expressions";
 
-    loadInstance(pk: string): Promise<OAuthSourcePropertyMapping> {
-        return aki(PropertymappingsApi).propertymappingsSourceOauthRetrieve({
-            pmUuid: pk,
-        });
-    }
-
-    async send(data: OAuthSourcePropertyMapping): Promise<OAuthSourcePropertyMapping> {
-        if (this.instance) {
-            return aki(PropertymappingsApi).propertymappingsSourceOauthUpdate({
-                pmUuid: this.instance.pk,
-                oAuthSourcePropertyMappingRequest: data,
-            });
-        }
-        return aki(PropertymappingsApi).propertymappingsSourceOauthCreate({
-            oAuthSourcePropertyMappingRequest: data,
-        });
-    }
+    protected endpoints = {
+        load: (pk: string) =>
+            aki(PropertymappingsApi).propertymappingsSourceOauthRetrieve({ pmUuid: pk }),
+        create: (oAuthSourcePropertyMappingRequest: OAuthSourcePropertyMapping) =>
+            aki(PropertymappingsApi).propertymappingsSourceOauthCreate({
+                oAuthSourcePropertyMappingRequest,
+            }),
+        update: (pk: string, oAuthSourcePropertyMappingRequest: OAuthSourcePropertyMapping) =>
+            aki(PropertymappingsApi).propertymappingsSourceOauthUpdate({
+                pmUuid: pk,
+                oAuthSourcePropertyMappingRequest,
+            }),
+    };
 }
 
 declare global {
