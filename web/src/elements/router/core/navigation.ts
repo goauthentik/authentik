@@ -11,6 +11,8 @@
  * touching route tables or outlets.
  */
 
+import { formatInterfacePrefix } from "#elements/router/core/interfaces";
+
 export type NavigationMode = "push" | "replace" | "assign";
 
 export interface NavigateOptions {
@@ -138,8 +140,7 @@ export function decideInterception(ctx: AnchorClickContext, scope: InterceptScop
     // browser owns it: claiming would suppress the native fragment scroll.
     if (url.pathname === scope.currentPathname && url.search === scope.currentSearch) return null;
 
-    const base = scope.base.endsWith("/") ? scope.base : `${scope.base}/`;
-    const prefix = `${base}if/${scope.interfaceName}/`;
+    const prefix = formatInterfacePrefix(scope.base, scope.interfaceName);
 
     if (!url.pathname.startsWith(prefix)) return null;
 

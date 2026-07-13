@@ -1,7 +1,22 @@
 import { initRouter, resetRouterConfig } from "./config.js";
-import { toAdminInterface, toFlowInterface, toUserInterface } from "./interfaces.js";
+import {
+    formatInterfacePrefix,
+    toAdminInterface,
+    toFlowInterface,
+    toUserInterface,
+} from "./interfaces.js";
 
 import { afterEach, describe, expect, it } from "vitest";
+
+describe("formatInterfacePrefix", () => {
+    it("appends a trailing slash to a base without one", () => {
+        expect(formatInterfacePrefix("/auth", "admin")).toBe("/auth/if/admin/");
+    });
+
+    it("does not double the slash on a root base", () => {
+        expect(formatInterfacePrefix("/", "user")).toBe("/if/user/");
+    });
+});
 
 describe("interface href builders", () => {
     afterEach(() => resetRouterConfig());
