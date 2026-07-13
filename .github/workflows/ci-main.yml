@@ -337,7 +337,7 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
       - id: cache-web
-        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v4
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v4
         if: contains(matrix.job.profiles, 'selenium')
         with:
           path: web/dist
@@ -393,7 +393,7 @@ jobs:
         run: |
           docker compose -f tests/openid_conformance/compose.yml up -d --quiet-pull --wait
       - id: cache-web
-        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v4
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v4
         with:
           path: web/dist
           key: ${{ runner.os }}-web-${{ hashFiles('web/pnpm-lock.yaml', 'web/src/**', 'web/packages/sfe/src/**') }}-b
