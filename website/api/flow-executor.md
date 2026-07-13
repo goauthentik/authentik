@@ -79,7 +79,7 @@ With this body:
 }
 ```
 
-Depending on the flow, you'll either get a 200 response with another challenge, or a 302 redirect. The redirect typically points back at the executor endpoint itself and has an empty body; follow it (preserving cookies and the `Accept: application/json` header) and the response will contain the next challenge, or the final result. Command-line HTTP clients often don't follow redirects or show empty bodies by default, so an apparently "empty" response after a POST usually means a redirect that wasn't followed.
+Depending on the flow, the server will either return a 200 response with another challenge or a 302 redirect. The redirect usually points back to the executor endpoint and has an empty body. Follow this redirect (preserving cookies and the `Accept: application/json` header) to receive either the next challenge or the final result. Command-line HTTP clients often do not follow redirects or display empty response bodies by default, so an apparently "empty" response after a POST usually indicates a redirect that was not followed.
 
 Depending also on the stage, a response might take longer to be returned (especially with the Duo Authenticator validation).
 
