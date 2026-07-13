@@ -4,7 +4,7 @@ title: Duo authenticator setup stage
 
 The Duo Authenticator Setup stage enrolls a Duo authenticator for the current user.
 
-## Overview
+## About the Duo authenticator setup stage
 
 This stage connects authentik to Duo and stores a Duo-backed authenticator for the user. Duo can then be used with the [Authenticator Validation stage](../authenticator_validate/index.md).
 

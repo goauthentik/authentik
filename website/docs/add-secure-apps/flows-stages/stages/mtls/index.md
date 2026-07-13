@@ -6,7 +6,7 @@ toc_max_heading_level: 5
 
 The Mutual TLS stage authenticates or enrolls users by validating a presented client certificate.
 
-## Overview
+## About the mutual TLS stage
 
 This stage uses a client certificate from the browser or device, such as one stored locally or on a smart card, PIV card, or hardware token.
 
