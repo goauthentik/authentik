@@ -1,67 +1,23 @@
-# Releasing authentik
+# Release authentik
 
-### Creating a standard release
+### Create a standard release
 
-- Ensure a branch exists for the version family (for 2022.12.2 the branch would be `version-2022.12`)
-- Merge all the commits that should be released on the version branch
+The release workflows are the source of truth for version branches, version bumps, tags, and artifacts. Do not run `bumpversion` or create release tags manually.
 
-    If backporting commits to a non-current version branch, cherry-pick the commits.
+1. Confirm that the `version-<year>.<month>` branch exists and includes every change intended for the release. Use the matching `backport/version-<year>.<month>` label for backports.
+2. Wait for CI on the version branch to pass.
+3. Create or update the release notes:
+    - For an initial release, copy `website/docs/releases/_template.md` to the matching year directory, such as `website/docs/releases/2026/v2026.8.md`.
+    - For a patch release, add a `Fixed in <version>` section to the existing version-family page.
+    - Run `make gen-changelog` and curate `changelog.md`. Remove routine dependency, lint, and documentation-only commits unless they are notable.
+    - Run `make gen-diff` and add the generated API changes where applicable.
+    - Run `make docs` and review the rendered release notes.
+4. From GitHub Actions, run **Release - Tag new version** with the full version and release reason. The workflow validates the version, runs `make bump`, regenerates API clients, commits the version change, builds and tests artifacts, creates the `version/<version>` tag, and creates the GitHub release.
+5. Review the generated GitHub release and its changelog link before publishing it. Publishing triggers the release workflow that distributes container and documentation images and updates the version and Helm repositories.
 
-- Check if any of the changes merged to the branch make changes to the API schema, and if so update the package `@goauthentik/api` in `/web`
-- Push the branch, which will run the CI pipeline to make sure all tests pass
-- Create the version subdomain for the version branch ([see](https://github.com/goauthentik/terraform/commit/87792678ed525711be9c8c15dd4b931077dbaac2)) and add the subdomain in Netlify ([here](https://app.netlify.com/sites/authentik/settings/domain))
-- Create/update the release notes
+Use **Release - Branch-off** when starting a new version family. It creates the current version branch and backport label, then opens the pull request that bumps `main` to the next release candidate.
 
-    #### For initial releases:
-    - Copy `website/docs/releases/_template.md` to `website/docs/releases/v2022.12.md` and replace `xxxx.x` with the version that is being released
-
-    - Fill in the section of `Breaking changes` and `New features`, or remove the headers if there's nothing applicable
-
-    - Run `git log --pretty=format:'- %s' version/2022.11.3...version-2022.12`, where `version/2022.11.3` is the tag of the previous stable release. This will output a list of all commits since the previous release.
-
-    - Paste the list of commits since the previous release under the `Minor changes/fixes` section.
-
-        Run `make gen-changelog` and use the contents of `changelog.md`. Remove merged PRs from bumped dependencies unless they fix security issues or are otherwise notable. Remove merged PRs with the `website/` prefix.
-
-    - Sort the list of commits alphabetically and remove all commits that have little importance, like dependency updates and linting fixes
-
-    - Run `make gen-diff` and copy the contents of `diff.md` under `API Changes`
-
-    - Update `website/sidebars.js` to include the new release notes, and move the oldest release into the `Previous versions` category.
-
-        If the release notes are created in advance without a fixed date for the release, only add them to the sidebar once the release is published.
-
-    - Run `make docs`
-
-    #### For subsequent releases:
-    - Paste the list of commits since the previous release into `website/docs/releases/v2022.12.md`, creating a new section called `## Fixed in 2022.12.2` underneath the `Minor changes/fixes` section
-
-    - Run `make gen-changelog` and use the contents of `changelog.md`. Remove merged PRs from bumped dependencies unless they fix security issues or are otherwise notable. Remove merged PRs with the `website/` prefix.
-
-    - Run `make gen-diff` and copy the contents of `diff.md` under `API Changes`, replacing the previous changes
-
-    - Run `make docs`
-
-- Run `bumpversion` on the version branch with the new version (i.e. `bumpversion --new-version 2022.12.2 minor --verbose`)
-- Push the tag and commit
-- A GitHub actions workflow will start to run a last test in container images and create a draft release on GitHub
-- Edit the draft GitHub release
-    - Make sure the title is formatted `Release 2022.12.0`
-    - Add the following to the release notes
-
-        ```
-        See https://docs.goauthentik.io/releases/2022.12
-        ```
-
-        Or if creating a subsequent release
-
-        ```
-        See https://docs.goauthentik.io/releases/2022.12#fixed-in-2022121
-        ```
-
-    - Auto-generate the full release notes using the GitHub _Generate Release Notes_ feature
-
-### Preparing a security release
+### Prepare a security release
 
 - Create a draft GitHub Security advisory
 
@@ -121,10 +77,10 @@ If you have any questions or comments about this advisory:
 <details>
 <summary>Mailing list template</summary>
 
-Subject: `Notice of upcoming authentik Security releases 2022.10.3 and 2022.11.3`
+Subject: `Notice of upcoming authentik security releases <versions>`
 
 ```markdown
-We'll be publishing a security Issue (CVE-2022-xxxxx) and accompanying fix on _date_, 13:00 UTC with the Severity level High. Fixed versions x, y and z will be released alongside a workaround for previous versions. For more info, see the authentik Security policy here: https://docs.goauthentik.io/security/policy.
+We will publish a security issue (`CVE-YYYY-NNNNN`) and its fix on _date_ at 13:00 UTC with _severity_. Fixed versions will be released alongside a workaround for previous versions. For details, see the [authentik security policy](/security/policy/).
 ```
 
 </details>
@@ -133,40 +89,38 @@ We'll be publishing a security Issue (CVE-2022-xxxxx) and accompanying fix on _d
 <summary>Discord template</summary>
 
 ```markdown
-@everyone We'll be publishing a security Issue (CVE-2022-xxxxx) and accompanying fix on _date_, 13:00 UTC with the Severity level High. Fixed versions x, y and z will be released alongside a workaround for previous versions. For more info, see the authentik Security policy here: https://docs.goauthentik.io/security/policy.
+@everyone We will publish a security issue (`CVE-YYYY-NNNNN`) and its fix on _date_ at 13:00 UTC with _severity_. Fixed versions will be released alongside a workaround for previous versions. For details, see the [authentik security policy](/security/policy/).
 ```
 
 </details>
 
-### Creating a security release
+### Create a security release
 
 - On the date specified in the announcement, retag the image from `authentik-internal` to the main image:
 
     ```
-    docker buildx imagetools create -t ghcr.io/goauthentik/server:xxxx.x ghcr.io/goauthentik/internal-server:gh-cve-2022-xxx
-    docker buildx imagetools create -t ghcr.io/goauthentik/server:xxxx.x.x ghcr.io/goauthentik/internal-server:gh-cve-2022-xxx
+    docker buildx imagetools create -t ghcr.io/goauthentik/server:VERSION_FAMILY ghcr.io/goauthentik/internal-server:INTERNAL_TAG
+    docker buildx imagetools create -t ghcr.io/goauthentik/server:VERSION ghcr.io/goauthentik/internal-server:INTERNAL_TAG
     ```
 
-    Where xxxx.x is the version family and xxxx.x.x is the full version.
+    Replace `VERSION_FAMILY`, `VERSION`, and `INTERNAL_TAG` with the release values.
 
     This will make the fixed container image available instantly, while the full release is running on the main repository.
 
-- Push the local `security/CVE-2022-xxxxx` branch into a PR, and squash merge it if the pipeline passes
-- If the fix made any changes to the API schema, merge the PR to update the web API client
+- Push the local `security/CVE-YYYY-NNNNN` branch into a PR, and squash merge it if the pipeline passes
 - Cherry-pick the merge commit onto the version branch
-- If the fix made any changes to the API schema, manually install the latest version of the API client in `/web`
-- Resume the instructions above, starting with the `bumpversion` step
+- Run **Release - Tag new version** for each fixed version. The workflow bumps versions and regenerates API clients.
 - After the release has been published, update the Discord announcement and send another mail to the mailing list to point to the new releases
 
 <details>
 <summary>Mailing list template</summary>
 
-Subject: `Release of authentik Security releases 2022.10.3 and 2022.11.3`
+Subject: `Release of authentik security releases <versions>`
 
 ```markdown
-The security advisory for CVE-2022-xxxxx has been published: https://github.com/goauthentik/authentik/security/advisories/GHSA-mjfw-54m5-fvjf
+The security advisory for `CVE-YYYY-NNNNN` has been published: `<advisory_url>`
 
-Releases 2022.10.3 and 2022.11.3 with fixes included are available here: https://github.com/goauthentik/authentik/releases
+The fixed releases are available from the [authentik releases page](https://github.com/goauthentik/authentik/releases).
 ```
 
 </details>
@@ -179,9 +133,9 @@ Releases 2022.10.3 and 2022.11.3 with fixes included are available here: https:/
 
 Edit:
 
-Advisory for CVE-2022-xxxxx has been published here https://github.com/goauthentik/authentik/security/advisories/GHSA-mjfw-54m5-fvjf
+The advisory for `CVE-YYYY-NNNNN` is available at `<advisory_url>`.
 
-The fixed versions 2022.10.3 and 2022.11.3 are available here: https://github.com/goauthentik/authentik/releases
+The fixed releases are available from the [authentik releases page](https://github.com/goauthentik/authentik/releases).
 ```
 
 </details>
