@@ -1,7 +1,6 @@
 ---
-title: Install an Enterprise license
+title: Get started with authentik Enterprise
 description: "Enable authentik Enterprise on a new or existing installation"
-sidebar_label: Get started with authentik Enterprise
 sidebar_position: 1
 ---
 
