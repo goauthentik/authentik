@@ -35,8 +35,7 @@ Do not use a support ticket to report a suspected vulnerability. Follow the [sec
 
 authentik provides product support for the current major release and the immediately preceding major release. A major release is identified by year and month, such as `2026.5`.
 
-
-The [supported versions table](../security/policy.mdx#supported-versions) lists the release that currently receive fixes. 
+The [supported versions table](../security/policy.mdx#supported-versions) lists the release that currently receive fixes.
 
 ## Community support
 
