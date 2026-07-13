@@ -164,6 +164,6 @@ If a stage with the component `ak-stage-access-denied` is returned, the flow has
 
 If a stage with the component `xak-flow-redirect` is returned, the flow has been executed successfully. The `to` field contains the URL the user should be redirected to.
 
-:::info
+:::info Resulting authenticated session
 Completing an authentication flow only results in an authenticated session if the flow includes a [User Login stage](/docs/add-secure-apps/flows-stages/stages/user_login/). Without it, all stages will validate successfully and the flow will complete, but the session remains anonymous.
 :::
