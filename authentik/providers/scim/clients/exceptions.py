@@ -27,9 +27,7 @@ class SCIMRequestException(TransientSyncException):
             return error.detail
         except ValidationError:
             pass
-        return self._message
+        return self._response.text
 
     def __str__(self):
-        if self._response:
-            return self._response.text
-        return super().__str__()
+        return self.detail()
