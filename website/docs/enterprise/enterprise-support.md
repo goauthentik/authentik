@@ -36,7 +36,7 @@ Do not use a support ticket to report a suspected vulnerability. Follow the [sec
 authentik provides product support for the current release series and the immediately preceding release series. A release series is identified by year and month, such as `2026.5`. Support applies to the latest patch release in each supported series.
 
 
-The [supported versions table](../security/policy.mdx#supported-versions) lists the release series that currently receive fixes. Upgrade installations on an older release to a supported version before requesting technical support.
+The [supported versions table](../security/policy.mdx#supported-versions) lists the release that currently receive fixes. 
 
 ## Community support
 
