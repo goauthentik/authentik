@@ -1,7 +1,10 @@
 ---
 title: Mutual TLS stage
+<<<<<<< HEAD
 authentik_version: "2025.6"
 authentik_preview: true
+=======
+>>>>>>> 76c711371 (website/docs: remove preview tag from mtls stage doc (#23951))
 authentik_enterprise: true
 toc_max_heading_level: 5
 ---
