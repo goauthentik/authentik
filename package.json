@@ -13,7 +13,7 @@
         "#logger": "./packages/logger-js/lib/node.js"
     },
     "dependencies": {
-        "@eslint/js": "^9.39.4",
+        "@eslint/js": "^10.0.1",
         "@goauthentik/docusaurus-config": "workspace:*",
         "@goauthentik/eslint-config": "workspace:*",
         "@goauthentik/logger-js": "workspace:*",
