@@ -40,4 +40,4 @@ The [supported versions table](../security/policy.mdx#supported-versions) lists 
 
 ## Community support
 
-Ticket-based support is not included with the open-source edition or Enterprise subscriptions of US$1,000 or less per year. For community support, join the [authentik Discord server](https://goauthentik.io/discord). To report a reproducible product defect, open an issue in the [authentik GitHub repository](https://github.com/goauthentik/authentik/issues).
+For community support, join the [authentik Discord server](https://goauthentik.io/discord). To report a reproducible product defect, open an issue in the [authentik GitHub repository](https://github.com/goauthentik/authentik/issues).
