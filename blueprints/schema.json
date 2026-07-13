@@ -10100,7 +10100,8 @@
                             "refresh_token",
                             "client_credentials",
                             "password",
-                            "urn:ietf:params:oauth:grant-type:device_code"
+                            "urn:ietf:params:oauth:grant-type:device_code",
+                            "urn:ietf:params:oauth:grant-type:token-exchange"
                         ],
                         "title": "Grant types"
                     },
@@ -11226,6 +11227,7 @@
                         "aws",
                         "slack",
                         "sfdc",
+                        "gitlab",
                         "webex",
                         "vcenter"
                     ],
@@ -15104,6 +15106,14 @@
                     "type": "string",
                     "minLength": 1,
                     "title": "Api url"
+                },
+                "request_content_type": {
+                    "type": "string",
+                    "enum": [
+                        "application/x-www-form-urlencoded",
+                        "application/json"
+                    ],
+                    "title": "Request content type"
                 },
                 "interactive": {
                     "type": "boolean",

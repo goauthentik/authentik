@@ -1,3 +1,7 @@
+/**
+ * @file Display details for a Google Workspace provider: Overview, changelog, provisioned users, provisioned groups, and permissions
+ */
+
 import "#admin/providers/google_workspace/GoogleWorkspaceProviderForm";
 import "#admin/providers/google_workspace/GoogleWorkspaceProviderGroupList";
 import "#admin/providers/google_workspace/GoogleWorkspaceProviderUserList";
@@ -9,14 +13,15 @@ import "#elements/Tabs";
 import "#elements/buttons/ActionButton/index";
 import "#elements/buttons/ModalButton";
 import "#components/sync/SyncStatusCard";
-import "#elements/tasks/ScheduleList";
-import "#elements/tasks/TaskList";
+import "#components/tasks/ScheduleList";
 
 import { aki } from "#common/api/client";
 import { EVENT_REFRESH } from "#common/constants";
 
 import { AKElement } from "#elements/Base";
 import { SlottedTemplateResult } from "#elements/types";
+
+import { taskCard } from "#components/tasks/taskCard";
 
 import { GoogleWorkspaceProvider, ModelEnum, ProvidersApi } from "@goauthentik/api";
 
@@ -34,6 +39,9 @@ import PFList from "@patternfly/patternfly/components/List/list.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFStack from "@patternfly/patternfly/layouts/Stack/stack.css";
+
+const PROVIDER_TYPE = ModelEnum.AuthentikProvidersGoogleWorkspaceGoogleworkspaceprovider;
+const [PROVIDER_TYPE_LABEL, PROVIDER_MODEL_NAME] = PROVIDER_TYPE.split(".");
 
 @customElement("ak-provider-google-workspace-view")
 export class GoogleWorkspaceProviderViewPage extends AKElement {
@@ -89,7 +97,7 @@ export class GoogleWorkspaceProviderViewPage extends AKElement {
                     id="page-overview"
                     aria-label="${msg("Overview")}"
                 >
-                    ${this.renderTabOverview()}
+                    ${this.renderTabOverview(this.provider)}
                 </section>
                 <section
                     role="tabpanel"
@@ -148,13 +156,8 @@ export class GoogleWorkspaceProviderViewPage extends AKElement {
         </main>`;
     }
 
-    renderTabOverview(): SlottedTemplateResult {
-        if (!this.provider) {
-            return nothing;
-        }
-        const [appLabel, modelName] =
-            ModelEnum.AuthentikProvidersGoogleWorkspaceGoogleworkspaceprovider.split(".");
-        return html`${!this.provider?.assignedBackchannelApplicationName
+    renderTabOverview(provider: GoogleWorkspaceProvider): SlottedTemplateResult {
+        return html`${!provider.assignedBackchannelApplicationName
                 ? html`<div slot="header" class="pf-c-banner pf-m-warning">
                       ${msg(
                           "Warning: Provider is not assigned to an application as backchannel provider.",
@@ -172,9 +175,7 @@ export class GoogleWorkspaceProviderViewPage extends AKElement {
                                     <span class="pf-c-description-list__text">${msg("Name")}</span>
                                 </dt>
                                 <dd class="pf-c-description-list__description">
-                                    <div class="pf-c-description-list__text">
-                                        ${this.provider.name}
-                                    </div>
+                                    <div class="pf-c-description-list__text">${provider.name}</div>
                                 </dd>
                             </div>
                             <div class="pf-c-description-list__group">
@@ -186,7 +187,7 @@ export class GoogleWorkspaceProviderViewPage extends AKElement {
                                 <dd class="pf-c-description-list__description">
                                     <div class="pf-c-description-list__text">
                                         <ak-status-label
-                                            ?good=${!this.provider.dryRun}
+                                            ?good=${!provider.dryRun}
                                             type="info"
                                             good-label=${msg("No")}
                                             bad-label=${msg("Yes")}
@@ -202,7 +203,7 @@ export class GoogleWorkspaceProviderViewPage extends AKElement {
                             <span slot="header">${msg("Update Google Workspace Provider")}</span>
                             <ak-provider-google-workspace-form
                                 slot="form"
-                                .instancePk=${this.provider.pk}
+                                .instancePk=${provider.pk}
                             >
                             </ak-provider-google-workspace-form>
                             <button slot="trigger" class="pf-c-button pf-m-primary">
@@ -217,7 +218,7 @@ export class GoogleWorkspaceProviderViewPage extends AKElement {
                     <ak-sync-status-card
                         .fetch=${() => {
                             return aki(ProvidersApi).providersGoogleWorkspaceSyncStatusRetrieve({
-                                id: this.provider?.pk || 0,
+                                id: provider.pk || 0,
                             });
                         }}
                     ></ak-sync-status-card>
@@ -228,23 +229,14 @@ export class GoogleWorkspaceProviderViewPage extends AKElement {
                             <div class="pf-c-card__title">${msg("Schedules")}</div>
                         </div>
                         <ak-schedule-list
-                            .relObjAppLabel=${appLabel}
-                            .relObjModel=${modelName}
-                            .relObjId="${this.provider.pk}"
+                            .relObjAppLabel=${PROVIDER_TYPE_LABEL}
+                            .relObjModel=${PROVIDER_MODEL_NAME}
+                            .relObjId="${provider.pk}"
                         ></ak-schedule-list>
                     </div>
                 </div>
                 <div class="pf-l-grid__item pf-m-12-col pf-l-stack__item">
-                    <div class="pf-c-card">
-                        <div class="pf-c-card__header">
-                            <div class="pf-c-card__title">${msg("Tasks")}</div>
-                        </div>
-                        <ak-task-list
-                            .relObjAppLabel=${appLabel}
-                            .relObjModel=${modelName}
-                            .relObjId="${this.provider.pk}"
-                        ></ak-task-list>
-                    </div>
+                    ${taskCard(PROVIDER_TYPE, provider.pk)}
                 </div>
             </div>`;
     }

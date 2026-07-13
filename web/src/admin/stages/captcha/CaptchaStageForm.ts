@@ -14,9 +14,11 @@ import { SlottedTemplateResult } from "#elements/types";
 import { BaseStageForm } from "#admin/stages/BaseStageForm";
 import {
     CAPTCHA_PROVIDERS,
+    CAPTCHA_REQUEST_CONTENT_TYPES,
     CaptchaProviderKey,
     CaptchaProviderKeys,
     CaptchaProviderPreset,
+    deriveCapSiteVerifyURL,
     detectProviderFromInstance,
     pluckFormValues,
 } from "#admin/stages/captcha/shared";
@@ -34,6 +36,10 @@ import { html, PropertyValues } from "lit";
 import { customElement, state } from "lit/decorators.js";
 import { guard } from "lit/directives/guard.js";
 import { ifDefined } from "lit/directives/if-defined.js";
+
+type CaptchaStageFormRequest = (CaptchaStageRequest | PatchedCaptchaStageRequest) & {
+    capEndpoint?: string;
+};
 
 @customElement("ak-stage-captcha-form")
 export class CaptchaStageForm extends BaseStageForm<CaptchaStage> {
@@ -83,6 +89,26 @@ export class CaptchaStageForm extends BaseStageForm<CaptchaStage> {
     public async send(
         data: CaptchaStageRequest | PatchedCaptchaStageRequest,
     ): Promise<CaptchaStage> {
+        const formData = data as CaptchaStageFormRequest;
+
+        if (this.selectedProvider === "cap" && (formData.capEndpoint || formData.publicKey)) {
+            const capEndpoint = formData.capEndpoint || formData.publicKey || "";
+
+            formData.publicKey = capEndpoint;
+            delete formData.capEndpoint;
+
+            const presetURL = CAPTCHA_PROVIDERS.cap.apiUrl;
+            // The Cap verification URL includes the site key, so derive it from the
+            // widget endpoint unless the advanced field was explicitly customized.
+            if (!data.apiUrl || data.apiUrl === presetURL) {
+                const siteVerifyURL = deriveCapSiteVerifyURL(capEndpoint);
+
+                if (siteVerifyURL) {
+                    data.apiUrl = siteVerifyURL;
+                }
+            }
+        }
+
         if (this.instance) {
             return this.#api.stagesCaptchaPartialUpdate({
                 stageUuid: this.instance.pk || "",
@@ -117,43 +143,77 @@ export class CaptchaStageForm extends BaseStageForm<CaptchaStage> {
             </p>
 
             ${guard([this.#currentPreset], () => {
-                const { formatAPISource, keyURL } = this.#currentPreset;
+                const { formatAPISource, formatDescription, keyURL } = this.#currentPreset;
 
-                if (!formatAPISource || !keyURL) {
-                    return null;
-                }
+                const description = formatDescription
+                    ? html`<p class="pf-c-form__helper-text">${formatDescription()}</p>`
+                    : null;
+                const providerLink =
+                    formatAPISource && keyURL
+                        ? html`<ak-alert level=${Level.Info} icon="fa-key">
+                              ${this.selectedProvider === "cap"
+                                  ? msg(
+                                        html`Use the
+                                        ${html`<a
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            href=${keyURL}
+                                            >${formatAPISource()}</a
+                                        >`}
+                                        to self-host Cap and configure the endpoint.`,
+                                        {
+                                            id: "captcha.provider-link.cap",
+                                            desc: "Supplementary help text with link to Cap documentation.",
+                                        },
+                                    )
+                                  : msg(
+                                        html`API keys can be obtained from the
+                                        ${html`<a
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                href=${keyURL}
+                                                >${formatAPISource()}</a
+                                            >.`}`,
+                                        {
+                                            id: "captcha.provider-link",
+                                            desc: "Supplementary help text with link to provider dashboard.",
+                                        },
+                                    )}
+                          </ak-alert>`
+                        : null;
 
-                return html`<ak-alert level=${Level.Info} icon="fa-key">
-                    ${msg(
-                        html`API keys can be obtained from the
-                        ${html`<a target="_blank" rel="noopener noreferrer" href=${keyURL}
-                                >${formatAPISource()}</a
-                            >.`}`,
-                        {
-                            id: "captcha.provider-link",
-                            desc: "Supplementary help text with link to provider dashboard.",
-                        },
-                    )}
-                </ak-alert>`;
+                return html`${description} ${providerLink}`;
             })}
         </ak-form-element-horizontal>`;
     }
 
     protected renderKeyFields(): SlottedTemplateResult {
+        const isCapProvider = this.selectedProvider === "cap";
+        const publicKeyLabel = isCapProvider ? msg("Cap Endpoint") : msg("Public Key");
+        const publicKeyPlaceholder = isCapProvider
+            ? msg("https://cap.example.com/site-key/")
+            : msg("Paste your CAPTCHA public key...");
+        const publicKeyHelp = isCapProvider
+            ? msg("The public site-key endpoint of your Cap server.", {
+                  id: "captcha.cap-endpoint.description",
+                  desc: "Description for Cap endpoint field.",
+              })
+            : msg("The public key is used by authentik to render the CAPTCHA widget.", {
+                  id: "captcha.public-key.description",
+                  desc: "Description for CAPTCHA public key field.",
+              });
+
         return html`
             <ak-text-input
-                label=${msg("Public Key")}
+                label=${publicKeyLabel}
                 required
-                name="publicKey"
-                type="text"
+                name=${isCapProvider ? "capEndpoint" : "publicKey"}
+                type=${isCapProvider ? "url" : "text"}
                 value="${ifDefined(this.instance?.publicKey || "")}"
                 autocomplete="off"
                 input-hint="code"
-                placeholder=${msg("Paste your CAPTCHA public key...")}
-                help=${msg("The public key is used by authentik to render the CAPTCHA widget.", {
-                    id: "captcha.public-key.description",
-                    desc: "Description for CAPTCHA public key field.",
-                })}
+                placeholder=${publicKeyPlaceholder}
+                help=${publicKeyHelp}
             >
             </ak-text-input>
 
@@ -161,6 +221,7 @@ export class CaptchaStageForm extends BaseStageForm<CaptchaStage> {
                 name="privateKey"
                 label=${msg("Secret Key")}
                 input-hint="code"
+                plaintext
                 ?required=${!this.instance}
                 ?revealed=${!this.instance}
                 placeholder=${msg("Paste your CAPTCHA secret key...")}
@@ -203,6 +264,7 @@ export class CaptchaStageForm extends BaseStageForm<CaptchaStage> {
                     help=${msg(
                         "Minimum required score to allow continuing. Lower scores indicate more suspicious behavior.",
                     )}
+                    ?allowFloat=${true}
                 ></ak-number-input>
                 <ak-number-input
                     label=${msg("Score Maximum Threshold")}
@@ -212,6 +274,7 @@ export class CaptchaStageForm extends BaseStageForm<CaptchaStage> {
                     help=${msg(
                         "Maximum allowed score to allow continuing. Set to -1 to disable upper bound checking.",
                     )}
+                    ?allowFloat=${true}
                 ></ak-number-input>
                 <ak-switch-input
                     ?checked=${formValues.errorOnInvalidScore}
@@ -236,9 +299,13 @@ export class CaptchaStageForm extends BaseStageForm<CaptchaStage> {
                     type="url"
                     value="${ifDefined(formValues.jsUrl)}"
                     required
-                    help=${msg(
-                        "URL to fetch the CAPTCHA JavaScript library from. Automatically set based on provider selection but can be customized.",
-                    )}
+                    help=${this.selectedProvider === "cap"
+                        ? msg(
+                              "For Cap, prefer the self-hosted widget asset, for example https://cap.example.com/assets/widget.js. If using a CDN, pin a reviewed release.",
+                          )
+                        : msg(
+                              "URL to fetch the CAPTCHA JavaScript library from. Automatically set based on provider selection but can be customized.",
+                          )}
                 ></ak-text-input>
                 <ak-text-input
                     label=${msg("API Verification URL")}
@@ -246,10 +313,35 @@ export class CaptchaStageForm extends BaseStageForm<CaptchaStage> {
                     type="url"
                     value="${ifDefined(formValues.apiUrl)}"
                     required
-                    help=${msg(
-                        "URL used to validate CAPTCHA response on the backend. Automatically set based on provider selection but can be customized.",
-                    )}
+                    help=${this.selectedProvider === "cap"
+                        ? msg(
+                              "Cap's server-side verification endpoint, for example https://cap.example.com/site-key/siteverify.",
+                          )
+                        : msg(
+                              "URL used to validate CAPTCHA response on the backend. Automatically set based on provider selection but can be customized.",
+                          )}
                 ></ak-text-input>
+                <ak-form-element-horizontal
+                    label=${msg("Request Content Type")}
+                    name="requestContentType"
+                >
+                    <select class="pf-c-form-control" name="requestContentType">
+                        ${CAPTCHA_REQUEST_CONTENT_TYPES.map(
+                            (type) =>
+                                html`<option
+                                    value=${type.value}
+                                    ?selected=${type.value === formValues.requestContentType}
+                                >
+                                    ${type.formatDisplayName()}
+                                </option>`,
+                        )}
+                    </select>
+                    <p class="pf-c-form__helper-text">
+                        ${msg(
+                            "Content-Type used for server-side verification. Cap requires JSON; most other providers use form-encoded requests.",
+                        )}
+                    </p>
+                </ak-form-element-horizontal>
             </div>
         </ak-form-group>`;
     }

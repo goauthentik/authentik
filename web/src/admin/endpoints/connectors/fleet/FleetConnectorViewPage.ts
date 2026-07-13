@@ -1,9 +1,12 @@
+/**
+ * @file Display details for a Fleet Connector: Overview, Changelog, Permissions
+ */
+
 import "#elements/Tabs";
 import "#admin/events/ObjectChangelog";
 import "#admin/rbac/ak-rbac-object-permission-page";
 import "#admin/rbac/ObjectPermissionModal";
-import "#elements/tasks/ScheduleList";
-import "#elements/tasks/TaskList";
+import "#components/tasks/ScheduleList";
 
 import { aki } from "#common/api/client";
 import { APIError, parseAPIResponseError } from "#common/errors/network";
@@ -11,6 +14,7 @@ import { APIError, parseAPIResponseError } from "#common/errors/network";
 import { AKElement } from "#elements/Base";
 
 import { setPageDetails } from "#components/ak-page-navbar";
+import { taskCard } from "#components/tasks/taskCard";
 
 import { EndpointsApi, FleetConnector, ModelEnum } from "@goauthentik/api";
 
@@ -24,8 +28,8 @@ import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 
-const [FLEET_CONNECTOR_APP_LABEL, FLEET_CONNECTOR_MODEL_NAME] =
-    ModelEnum.AuthentikEndpointsConnectorsFleetFleetconnector.split(".");
+const FLEET_CONNECTOR_MODEL = ModelEnum.AuthentikEndpointsConnectorsFleetFleetconnector;
+const [FLEET_CONNECTOR_APP_LABEL, FLEET_CONNECTOR_MODEL_NAME] = FLEET_CONNECTOR_MODEL.split(".");
 
 @customElement("ak-endpoints-connector-fleet-view")
 export class FleetConnectorViewPage extends AKElement {
@@ -66,7 +70,7 @@ export class FleetConnectorViewPage extends AKElement {
         });
     }
 
-    protected renderTabOverview() {
+    protected renderTabOverview(connector: FleetConnector) {
         return html`<div
             class="pf-c-page__main-section pf-m-no-padding-mobile pf-l-grid pf-m-gutter"
         >
@@ -78,21 +82,12 @@ export class FleetConnectorViewPage extends AKElement {
                     <ak-schedule-list
                         .relObjAppLabel=${FLEET_CONNECTOR_APP_LABEL}
                         .relObjModel=${FLEET_CONNECTOR_MODEL_NAME}
-                        .relObjId="${this.connector?.connectorUuid}"
+                        .relObjId="${connector.connectorUuid}"
                     ></ak-schedule-list>
                 </div>
             </div>
             <div class="pf-l-grid__item pf-m-12-col pf-l-stack__item">
-                <div class="pf-c-card">
-                    <div class="pf-c-card__header">
-                        <div class="pf-c-card__title">${msg("Tasks")}</div>
-                    </div>
-                    <ak-task-list
-                        .relObjAppLabel=${FLEET_CONNECTOR_APP_LABEL}
-                        .relObjModel=${FLEET_CONNECTOR_MODEL_NAME}
-                        .relObjId="${this.connector?.connectorUuid}"
-                    ></ak-task-list>
-                </div>
+                ${taskCard(FLEET_CONNECTOR_MODEL, connector.connectorUuid)}
             </div>
         </div> `;
     }
@@ -109,7 +104,7 @@ export class FleetConnectorViewPage extends AKElement {
                 id="page-overview"
                 aria-label="${msg("Overview")}"
             >
-                ${this.renderTabOverview()}
+                ${this.renderTabOverview(this.connector)}
             </div>
             <div
                 role="tabpanel"

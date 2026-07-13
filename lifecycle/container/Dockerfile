@@ -1,7 +1,11 @@
 # syntax=docker/dockerfile:1
 
+# Tag must track the root package.json `packageManager` version. ${BUILDPLATFORM}
+# keeps the binary's arch aligned with the builder stage on cross-arch builds.
+FROM --platform=${BUILDPLATFORM} ghcr.io/pnpm/pnpm:11.11.0@sha256:6c9e1706e8c0b653143c9ce8c2b09caa05ff099281437c54f1e5fb9b89df0709 AS pnpm
+
 # Stage: Build webui
-FROM --platform=${BUILDPLATFORM} docker.io/library/node:26-trixie-slim@sha256:aa27a5fbf5acb298116a38133794f080406c6f8dfe52e2e2836bb55dc7cae8f0 AS node-builder
+FROM --platform=${BUILDPLATFORM} docker.io/library/node:26-trixie-slim@sha256:ffc78385a788964bb3cbab5e434ff79a10bdc25b8ae6db03fe5fe6cb14053c09 AS node-builder
 
 ARG GIT_BUILD_HASH
 ENV GIT_BUILD_HASH=$GIT_BUILD_HASH
@@ -9,39 +13,41 @@ ENV NODE_ENV=production
 
 WORKDIR /work
 
+COPY --from=pnpm /opt/pnpm /opt/pnpm
+ENV PATH="/opt/pnpm:${PATH}"
+
 RUN --mount=type=bind,target=/work/package.json,src=./package.json \
-    --mount=type=bind,target=/work/package-lock.json,src=./package-lock.json \
     --mount=type=bind,target=/work/web/package.json,src=./web/package.json \
-    --mount=type=bind,target=/work/web/package-lock.json,src=./web/package-lock.json \
+    --mount=type=bind,target=/work/web/pnpm-lock.yaml,src=./web/pnpm-lock.yaml \
     --mount=type=bind,target=/work/scripts/node/,src=./scripts/node/ \
     --mount=type=bind,target=/work/packages/logger-js/,src=./packages/logger-js/ \
-    node ./scripts/node/setup-corepack.mjs --force && \
     node ./scripts/node/lint-runtime.mjs ./web
 
 WORKDIR /work/web
 
-# These files need to be copied and cannot be mounted as `npm ci` will build the client's typescript
+# These files need to be copied and cannot be mounted as `pnpm install` will build the client's typescript
 COPY ./packages /work/packages
 COPY ./web/packages /work/web/packages
 
 RUN --mount=type=bind,target=/work/.npmrc,src=./.npmrc \
     --mount=type=bind,target=/work/web/package.json,src=./web/package.json \
-    --mount=type=bind,target=/work/web/package-lock.json,src=./web/package-lock.json \
+    --mount=type=bind,target=/work/web/pnpm-lock.yaml,src=./web/pnpm-lock.yaml \
+    --mount=type=bind,target=/work/web/pnpm-workspace.yaml,src=./web/pnpm-workspace.yaml \
     --mount=type=bind,target=/work/web/packages/sfe/package.json,src=./web/packages/sfe/package.json \
     --mount=type=bind,target=/work/web/scripts,src=./web/scripts \
-    --mount=type=cache,id=npm-ak,sharing=shared,target=/root/.npm \
-    corepack npm ci
+    --mount=type=cache,id=pnpm-ak,sharing=shared,target=/root/.local/share/pnpm/store \
+    pnpm install --frozen-lockfile
 
 COPY ./package.json /work
 COPY ./web /work/web/
 # TODO: Update this after moving website to docs
 COPY ./website /work/website/
 
-RUN npm run build && \
-    npm run build:sfe
+RUN pnpm run build && \
+    pnpm run build:sfe
 
 # Stage: Build go proxy
-FROM --platform=${BUILDPLATFORM} docker.io/library/golang:1.26.4-trixie@sha256:0dcba0d95dbfb072e9917a106b9e07d7cc298097dc83e9307056ef1889de654d AS go-builder
+FROM --platform=${BUILDPLATFORM} docker.io/library/golang:1.27rc2-trixie@sha256:ee5a79585a523739f9090e49dcff25fd1e13d2b80fd85e826b27241280748d5f AS go-builder
 
 ARG TARGETOS
 ARG TARGETARCH
@@ -94,7 +100,7 @@ RUN --mount=type=secret,id=GEOIPUPDATE_ACCOUNT_ID \
     /bin/sh -c "GEOIPUPDATE_LICENSE_KEY_FILE=/run/secrets/GEOIPUPDATE_LICENSE_KEY /usr/bin/entry.sh || echo 'Failed to get GeoIP database, disabling'; exit 0"
 
 # Stage: download Rust toolchain
-FROM ghcr.io/goauthentik/fips-debian:trixie-slim-fips@sha256:7726387c78b5787d2146868c2ccc8948a3591d0a5a6436f7780c8c28acc76341 AS rust-toolchain
+FROM ghcr.io/goauthentik/fips-debian:trixie-slim-fips@sha256:f18dbc487a2c3148b62e46c394445aa87189861bca262e095496dca5b1f0ae39 AS rust-toolchain
 
 ARG TARGETARCH
 ARG TARGETVARIANT
@@ -116,9 +122,9 @@ RUN --mount=type=bind,target=rust-toolchain.toml,src=rust-toolchain.toml \
 RUN cat /root/.rustup/settings.toml
 
 # Stage: Download uv
-FROM ghcr.io/astral-sh/uv:0.11.19@sha256:b46b03ddfcfbf8f547af7e9eaefdf8a39c8cebcba7c98858d3162bd28cf536f6 AS uv
+FROM ghcr.io/astral-sh/uv:0.11.28@sha256:0f36cb9361a3346885ca3677e3767016687b5a170c1a6b88465ec14aefec90aa AS uv
 # Stage: Base python image
-FROM ghcr.io/goauthentik/fips-python:3.14.5-slim-trixie-fips@sha256:ede0a006a873bfd3e66fd0e56827bc8e46ea75341e1a6a35dae6edd6ad6be691 AS python-base
+FROM ghcr.io/goauthentik/fips-python:3.14.6-slim-trixie-fips@sha256:0798f3b69b3f6f716792442cb2263fd0405fcf0215defc7b05f581849ffe11ec AS python-base
 
 ENV VENV_PATH="/ak-root/.venv" \
     PATH="/lifecycle:/ak-root/.venv/bin:$PATH" \
@@ -280,6 +286,6 @@ ENV TMPDIR=/dev/shm/ \
     PYTHONUNBUFFERED=1 \
     GOFIPS=1
 
-HEALTHCHECK --interval=30s --timeout=30s --start-period=60s --retries=3 CMD [ "ak", "healthcheck" ]
+HEALTHCHECK --interval=30s --timeout=30s --start-period=120s --retries=3 CMD [ "ak", "healthcheck" ]
 
 ENTRYPOINT [ "dumb-init", "--", "ak" ]

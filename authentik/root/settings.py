@@ -5,7 +5,6 @@ from collections import OrderedDict
 from hashlib import sha512
 from pathlib import Path
 
-import orjson
 from django.utils import http as utils_http
 from sentry_sdk import set_tag
 from xmlsec import enable_debug_trace
@@ -229,18 +228,14 @@ REST_FRAMEWORK = {
         "rest_framework.authentication.SessionAuthentication",
     ),
     "DEFAULT_RENDERER_CLASSES": [
-        "drf_orjson_renderer.renderers.ORJSONRenderer",
-    ],
-    "ORJSON_RENDERER_OPTIONS": [
-        orjson.OPT_NON_STR_KEYS,
-        orjson.OPT_UTC_Z,
+        "authentik.api.renderers.MsgspecJSONRenderer",
     ],
     "DEFAULT_PARSER_CLASSES": [
-        "drf_orjson_renderer.parsers.ORJSONParser",
+        "authentik.api.parsers.MsgspecJSONParser",
     ],
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
     "TEST_REQUEST_DEFAULT_FORMAT": "json",
-    "DEFAULT_THROTTLE_CLASSES": ["rest_framework.throttling.AnonRateThrottle"],
+    "DEFAULT_THROTTLE_CLASSES": ["authentik.api.throttle.LocalAnonRateThrottle"],
     "DEFAULT_THROTTLE_RATES": {
         "anon": CONFIG.get("throttle.default"),
     },
@@ -252,7 +247,16 @@ CACHES = {
         "BACKEND": "django_postgres_cache.backend.DatabaseCache",
         "KEY_FUNCTION": "django_tenants.cache.make_key",
         "REVERSE_KEY_FUNCTION": "django_tenants.cache.reverse_key",
-    }
+    },
+    # In-process cache for DRF throttle counters. Per-worker rather than
+    # cluster-wide, so the per-IP ceiling is ``throttle.default`` × (pods × workers)
+    "throttle": {
+        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+        "LOCATION": "authentik-throttle",
+        "OPTIONS": {
+            "MAX_ENTRIES": 10000,
+        },
+    },
 }
 SESSION_ENGINE = "authentik.core.sessions"
 # Configured via custom SessionMiddleware
@@ -562,9 +566,6 @@ except ImportError:
 
 
 if DEBUG:
-    REST_FRAMEWORK["DEFAULT_RENDERER_CLASSES"].append(
-        "rest_framework.renderers.BrowsableAPIRenderer"
-    )
     SHARED_APPS.insert(SHARED_APPS.index("django.contrib.staticfiles"), "daphne")
     enable_debug_trace(True)
 

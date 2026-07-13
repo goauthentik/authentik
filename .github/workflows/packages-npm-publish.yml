@@ -9,6 +9,7 @@ on:
       - packages/eslint-config/**
       - packages/prettier-config/**
       - packages/docusaurus-config/**
+      - packages/logger-js/**
       - packages/esbuild-plugin-live-reload/**
   workflow_dispatch:
 
@@ -32,12 +33,22 @@ jobs:
           - packages/logger-js
           - packages/esbuild-plugin-live-reload
     steps:
-      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v5
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v5
         with:
           fetch-depth: 2
-      - uses: ./.github/actions/setup-node
+      - uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # v6.0.9
+      - name: Pin pnpm store directory
+        run: |
+          echo "PNPM_HOME=${RUNNER_TEMP}/pnpm-home" >> "$GITHUB_ENV"
+          echo "npm_config_store_dir=${RUNNER_TEMP}/pnpm-home/store" >> "$GITHUB_ENV"
+      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v4
         with:
-          working-directory: ${{ matrix.package }}
+          node-version-file: package.json
+          registry-url: https://registry.npmjs.org
+          cache: pnpm
+          cache-dependency-path: pnpm-lock.yaml
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
       - name: Get changed files
         id: changed-files
         uses: tj-actions/changed-files@9426d40962ed5378910ee2e21d5f8c6fcbf2dd96 # 24d32ffd492484c1d75e0c0b894501ddb9d30d62
@@ -48,6 +59,5 @@ jobs:
         if: steps.changed-files.outputs.any_changed == 'true'
         working-directory: ${{ matrix.package }}
         run: |
-          corepack npm ci
-          corepack npm run build
-          corepack npm publish
+          pnpm run build
+          pnpm publish --no-git-checks

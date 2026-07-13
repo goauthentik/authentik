@@ -15,6 +15,9 @@ import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-user-consent-list")
 export class UserConsentList extends Table<UserConsent> {
+    public static override verboseName = msg("Consent");
+    public static override verboseNamePlural = msg("Consents");
+
     @property({ type: Number })
     userId?: number;
 

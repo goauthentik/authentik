@@ -15,6 +15,9 @@ import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-user-session-list")
 export class AuthenticatedSessionList extends Table<AuthenticatedSession> {
+    public static override verboseName = msg("Session");
+    public static override verboseNamePlural = msg("Sessions");
+
     @property()
     targetUser!: string;
 

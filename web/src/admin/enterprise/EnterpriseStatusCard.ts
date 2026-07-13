@@ -51,16 +51,23 @@ export class EnterpriseStatusCard extends AKElement {
         if (!this.forecast || !this.summary) {
             return html`${msg("Loading")}`;
         }
+
+        // Actual current usage counts (not the forecasted/projected fields).
+        const currentInternalUsers = this.forecast.internalUsers;
+        const currentExternalUsers = this.forecast.externalUsers;
+        const licensedInternalUsers = this.summary.internalUsers;
+        const licensedExternalUsers = this.summary.externalUsers;
+
         let internalUserPercentage = 0;
         let externalUserPercentage = 0;
         if (this.summary.status !== LicenseSummaryStatusEnum.Unlicensed) {
             internalUserPercentage = this.calcUserPercentage(
-                this.summary.internalUsers,
-                this.forecast.internalUsers,
+                licensedInternalUsers,
+                currentInternalUsers,
             );
             externalUserPercentage = this.calcUserPercentage(
-                this.summary.externalUsers,
-                this.forecast.externalUsers,
+                licensedExternalUsers,
+                currentExternalUsers,
             );
         }
         return html`<div class="pf-c-card">
@@ -88,7 +95,11 @@ export class EnterpriseStatusCard extends AKElement {
                                 : ""} ${internalUserPercentage >= 80 ? "pf-m-warning" : ""}"
                             value=${internalUserPercentage}
                         >
-                            <span slot="description">${msg("Internal user usage")}</span>
+                            <span slot="description">
+                                ${msg(
+                                    str`Internal user usage (${currentInternalUsers}/${licensedInternalUsers})`,
+                                )}
+                            </span>
                             <span slot="status">
                                 ${msg(
                                     str`${internalUserPercentage < Infinity ? internalUserPercentage : "∞"}%`,
@@ -101,7 +112,11 @@ export class EnterpriseStatusCard extends AKElement {
                                 : ""} ${externalUserPercentage >= 80 ? "pf-m-warning" : ""}"
                             value=${externalUserPercentage}
                         >
-                            <span slot="description">${msg("External user usage")}</span>
+                            <span slot="description">
+                                ${msg(
+                                    str`External user usage (${currentExternalUsers}/${licensedExternalUsers})`,
+                                )}
+                            </span>
                             <span slot="status">
                                 ${msg(
                                     str`${externalUserPercentage < Infinity ? externalUserPercentage : "∞"}%`,
