@@ -31,7 +31,7 @@ The shared file picker is a UI on top of the files API and the storage backends.
 
 ```mermaid
 flowchart LR
-    A["Admin user"] --> B["Admin UI<br/>ak-file-search-input / ak-file-upload-form"]
+    A["Admin user"] --> B["Admin interface<br/>ak-file-search-input / ak-file-upload-form"]
     B --> C["authentik server router<br/>(lightweight Go router / proxy)"]
     C --> D["authentik Core backend"]
     D --> E["FileView API<br/>/api/v3/admin/file/"]
