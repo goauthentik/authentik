@@ -99,7 +99,7 @@ See the [Envoy mTLS documentation](https://www.envoyproxy.io/docs/envoy/latest/s
 
 #### No reverse proxy
 
-If authentik terminates TLS itself, configure the trusted client certificate authorities on the active [brand](../../../../sys-mgmt/brands/index.md#client-certificates).
+If authentik terminates TLS itself, configure the trusted client certificate authorities on the active [brand](../../../../customize/branding/index.md#client-certificates).
 
 ### Stage setup outline
 
