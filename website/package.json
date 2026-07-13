@@ -21,10 +21,19 @@
     "dependencies": {
         "@eslint/js": "^9.39.3",
         "@goauthentik/brand-assets": "^2.0.0",
+<<<<<<< HEAD
         "@goauthentik/eslint-config": "../packages/eslint-config",
         "@goauthentik/prettier-config": "../packages/prettier-config",
         "@goauthentik/tsconfig": "../packages/tsconfig",
         "@types/node": "^25.5.0",
+=======
+        "@goauthentik/docusaurus-theme": "workspace:*",
+        "@goauthentik/eslint-config": "link:../packages/eslint-config",
+        "@goauthentik/prettier-config": "link:../packages/prettier-config",
+        "@goauthentik/tsconfig": "link:../packages/tsconfig",
+        "@types/node": "^26.1.0",
+        "deepmerge-ts": "^7.1.5",
+>>>>>>> c7841e311 (website/docs: Revamp Enterprise Docs. (#23920))
         "escape-string-regexp": "^5.0.0",
         "eslint": "^9.39.3",
         "netlify-plugin-cache": "^1.0.3",
