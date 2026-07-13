@@ -104,4 +104,4 @@ jobs:
           pnpm --dir web install --frozen-lockfile
       - name: test
         working-directory: web/
-        run: pnpm run test || exit 0
+        run: pnpm exec vitest run --project "Unit Tests"
