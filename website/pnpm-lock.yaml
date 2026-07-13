@@ -45,6 +45,9 @@ importers:
       '@goauthentik/brand-assets':
         specifier: ^2.0.0
         version: 2.0.0
+      '@goauthentik/docusaurus-theme':
+        specifier: workspace:*
+        version: link:docusaurus-theme
       '@goauthentik/eslint-config':
         specifier: link:../packages/eslint-config
         version: link:../packages/eslint-config
