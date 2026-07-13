@@ -242,19 +242,19 @@ class LDAPSource(IncomingSyncSource):
             tls_kwargs["local_certificate_file"] = certificate_file
         if ciphers := CONFIG.get("ldap.tls.ciphers", None):
             tls_kwargs["ciphers"] = ciphers.strip()
-        if self.sni:
-            tls_kwargs["sni"] = self.server_uri.split(",", maxsplit=1)[0].strip()
         server_kwargs = {
             "get_info": ALL,
             "connect_timeout": LDAP_TIMEOUT,
-            "tls": Tls(**tls_kwargs),
         }
         server_kwargs.update(kwargs)
-        if "," in self.server_uri:
-            for server in self.server_uri.split(","):
-                servers.append(Server(server, **server_kwargs))
-        else:
-            servers = [Server(self.server_uri, **server_kwargs)]
+        for server_uri in self.server_uri.split(","):
+            server = Server(server_uri.strip(), **server_kwargs)
+            # The TLS SNI server name must be a bare hostname. ldap3 has already
+            # parsed the scheme and port out of the URI into `server.host`;
+            # passing the raw URI (e.g. `ldaps://host`) as the SNI name breaks
+            # the handshake against SNI-strict servers. See #7756.
+            server.tls = Tls(**tls_kwargs, sni=server.host if self.sni else None)
+            servers.append(server)
         return ServerPool(servers, RANDOM, active=5, exhaust=True)
 
     def connection(
