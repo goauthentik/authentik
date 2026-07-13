@@ -67,7 +67,20 @@
 #endregion
 
 #region Enterprise
-/enterprise/entsupport                                      /enterprise/enterprise-support/  301!
+/enterprise/entsupport                                      /enterprise/support/ 301!
+/enterprise/entsupport/                                     /enterprise/support/ 301!
+/enterprise/enterprise-features                             https://goauthentik.io/pricing/ 301!
+/enterprise/enterprise-features/                            https://goauthentik.io/pricing/ 301!
+/enterprise/features                                       https://goauthentik.io/pricing/ 301!
+/enterprise/features/                                      https://goauthentik.io/pricing/ 301!
+/enterprise/get-started                                     /enterprise/install-license/ 301!
+/enterprise/get-started/                                    /enterprise/install-license/ 301!
+/enterprise/manage-enterprise                               /enterprise/customer-portal/ 301!
+/enterprise/manage-enterprise/                              /enterprise/customer-portal/ 301!
+/enterprise/licenses                                       /enterprise/customer-portal/ 301!
+/enterprise/licenses/                                      /enterprise/customer-portal/ 301!
+/enterprise/enterprise-support                              /enterprise/support/ 301!
+/enterprise/enterprise-support/                             /enterprise/support/ 301!
 #endregion
 
 #region System Management

@@ -1,6 +1,5 @@
 ---
 title: Google Chrome Device Trust authenticator stage
-authentik_version: "2024.10"
 authentik_enterprise: true
 support_level: deprecated
 ---

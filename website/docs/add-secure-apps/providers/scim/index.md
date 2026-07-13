@@ -23,7 +23,7 @@ In authentik, there are two ways to authenticate SCIM requests:
 
 When the authentication mode is set to **Static token**, authentik sends the token provided by the application with outgoing SCIM requests to authenticate each request.
 
-### OAuth token :ak-enterprise
+### OAuth token :ak-enterprise {#oauth-token}
 
 When you configure a SCIM provider to use OAuth for authentication, authentik generates short-lived tokens through an OAuth flow and sends them to the SCIM endpoint. This offers improved security and control compared with a static token.
 

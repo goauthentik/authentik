@@ -19,7 +19,7 @@ Here is a non-exhaustive list of what background tasks are used for:
     - [SSF Provider](../add-secure-apps/providers/ssf/index.md)
     - [Kerberos Source](../users-sources/sources/protocols/kerberos/index.md)
     - [LDAP Source](../users-sources/sources/protocols/ldap/index.md)
-- Enterprise [license management](../enterprise/manage-enterprise.mdx#license-management)
+- Enterprise [license management](../enterprise/customer-portal.md#license-management)
 - Event Notifications: send [Notifications](./events/notifications.md) when events are created
 - Emails: send emails when triggered by one of the email stages or otherwise
 

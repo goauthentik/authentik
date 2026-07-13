@@ -1,0 +1,137 @@
+---
+title: Manage Enterprise licensing
+description: "Manage authentik Customer Portal organizations, licenses, and billing"
+sidebar_position: 3
+---
+
+Use the authentik [Customer Portal](https://customers.goauthentik.io/) to manage customer organizations, purchase licenses, retrieve license keys, access billing, and open support tickets. Use the authentik Admin interface to install licenses and monitor their status and capacity.
+
+## Manage an organization
+
+A Customer Portal organization contains its members, licenses, subscriptions, and billing information.
+
+### Create an organization
+
+1. Log in to the [Customer Portal](https://customers.goauthentik.io/).
+2. On the **My organizations** page, click **Create an organization**.
+3. Enter the organization name and notification email address.
+4. Click **Create**.
+
+To delete an organization, contact [hello@goauthentik.io](mailto:hello@goauthentik.io).
+
+### Manage organization members
+
+Customer Portal membership controls access to license keys and billing. It does not grant access to the authentik Admin interface.
+
+- A **Member** can view the organization's licenses and license keys.
+- An **Owner** has Member access and can invite or remove members, purchase or renew licenses, and edit the organization.
+
+To invite a member:
+
+1. On **My organizations**, select the organization.
+2. Under **Pending invitations**, enter the person's email address and select a role.
+3. Click **Invite**.
+
+The person becomes a member after accepting the invitation from their email.
+
+To remove a member, open the organization, find the person under **Membership**, and click **Remove**.
+
+## Purchase a license
+
+Before purchasing a license, copy the authentik installation's [Install ID](./install-license.md#1-copy-the-install-id).
+
+1. Log in to the [Customer Portal](https://customers.goauthentik.io/) and select the organization that will own the license.
+2. Click **Purchase license**.
+3. Enter the required internal and external user capacity.
+4. Enter the **Install ID**.
+5. Optionally, change the license name. The Customer Portal and authentik Admin interface use this name to identify the license.
+6. Click **Continue**.
+7. Enter the payment details, then click **Pay and subscribe**.
+
+After the payment is validated, the license appears on the organization page. Click **Details** next to the license to copy its key, then [install the license key](./install-license.md#3-install-the-license-key) in authentik.
+
+For a trial, Enterprise Plus, invoice billing, or a custom purchase, contact [hello@goauthentik.io](mailto:hello@goauthentik.io).
+
+## Manage licenses {#license-management}
+
+An authentik Enterprise license is bound to one Install ID and defines an expiry date and separate capacity for internal and external users. You can install multiple active licenses for the same Install ID; authentik adds their user capacities together.
+
+In the Admin interface, navigate to **Enterprise** > **Licenses** to view:
+
+- The Install ID for the current installation or tenant.
+- Forecasts for internal and external user counts.
+- The combined expiry, status, and user capacity of installed licenses.
+- The name, capacity, and expiry date of each license.
+
+To install the first license, follow [Install an Enterprise license](./install-license.md).
+
+### Update a license key
+
+When a renewal or capacity change provides a replacement key:
+
+1. Navigate to **Enterprise** > **Licenses**.
+2. Edit the license that the new key replaces.
+3. Paste the replacement into **License key**.
+4. Click **Update**.
+
+Verify the new expiry date and capacity on the **Licenses** page.
+
+### Remove a license
+
+Select a license on the **Licenses** page and click **Delete**. Removing an active license immediately removes its capacity from the combined license total. Install any replacement key before deleting the old key to avoid an unintended capacity violation.
+
+## About users and licenses {#about-users-and-licenses}
+
+authentik counts active internal and external users separately. Disabled users, the anonymous user, and service accounts do not consume licensed capacity.
+
+- An **internal user** can access the authentik application dashboard and user settings. Employees and other members of your organization are typically internal users.
+- An **external user** cannot access the application dashboard or user settings. Customers, partners, volunteers, and contractors who use authentik only to access another application can be external users.
+
+You configure a user's type on the user account. To send external users directly to an application after authentication, configure the brand's [default application](../customize/branding/index.md#external-user-settings).
+
+The license status becomes invalid if either user type exceeds its licensed capacity. Unused internal capacity does not cover excess external users, and unused external capacity does not cover excess internal users.
+
+### Expand license capacity
+
+To add capacity, either [purchase another license](#purchase-a-license) for the same Install ID or [open a support ticket](./support.md) to change an existing subscription. Multiple active licenses add together, but their billing and renewal dates can differ.
+
+Use the forecasts on **Enterprise** > **Licenses** as planning estimates. Before purchasing, compare the proposed capacity with the current counts for both user types.
+
+## License expiry and capacity enforcement
+
+authentik displays warnings before restricting changes to the installation:
+
+| Condition                                                | authentik behavior                                                                                                                                         |
+| -------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| A license expires within two weeks                       | Administrators see an expiry warning.                                                                                                                      |
+| A license has expired                                    | Administrators see an expired-license warning. The installation enters read-only mode six weeks after expiry if no valid replacement restores the license. |
+| A user type remains over capacity for two weeks          | Administrators see a user-capacity warning.                                                                                                                |
+| A user type remains over capacity for four weeks         | All users see the user-capacity warning.                                                                                                                   |
+| A license remains expired or over capacity for six weeks | The installation enters read-only mode.                                                                                                                    |
+
+In read-only mode:
+
+- Users can continue to authenticate and authorize access to applications.
+- Administrators can read configuration but cannot change most objects.
+- Administrators can still install, update, or remove licenses.
+- Administrators can still update or delete users to restore licensed capacity.
+
+After you install a valid license, renew an expired license, or reduce the relevant user count, authentik returns to standard read-write operation and removes the associated warning.
+
+:::info
+License status is recorded periodically. A corrected status can take a short time to appear across every authentik interface.
+:::
+
+## Manage billing
+
+1. In the Customer Portal, navigate to **Organizations** > **My organizations**.
+2. Select the organization.
+3. Click **Manage Billing**.
+
+The billing page lets an organization owner update billing details and tax information, add payment methods, review invoices and payments, and manage subscriptions.
+
+### Cancel a subscription
+
+On the billing page, select the subscription and click **Cancel subscription**. The associated license remains valid through the end of the current billing period and does not renew automatically.
+
+Canceling a subscription does not remove its license key from authentik. See [License expiry and capacity enforcement](#license-expiry-and-capacity-enforcement) to understand what happens after the license expires.
