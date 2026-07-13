@@ -145,7 +145,7 @@ curl -sS -L -c cookies.txt -b cookies.txt \
 # -> challenge: xak-flow-redirect
 ```
 
-If instead the user has no device and the validation stage is configured to force enrollment, the injected TOTP setup stage returns an `ak-stage-authenticator-totp` challenge containing a `config_url` — a standard `otpauth://` provisioning URI. Render this value as a QR code for the user to scan (this is exactly what authentik's own UI does client-side), then confirm with the first generated code:
+If the user does not have an MFA device enrolled and the validation stage is configured to require enrollment, the injected TOTP setup stage returns an `ak-stage-authenticator-totp` challenge containing a `config_url`, which is a standard `otpauth://` provisioning URI. Render this value as a QR code for the user to scan (this is the same behavior as authentik's built-in UI), then verify enrollment using the first generated code:
 
 ```json
 { "component": "ak-stage-authenticator-totp", "code": "123456" }
