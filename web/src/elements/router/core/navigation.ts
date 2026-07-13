@@ -150,12 +150,12 @@ export function decideInterception(ctx: AnchorClickContext, scope: InterceptScop
 export type InterceptedNavigateHandler = (url: URL) => void;
 
 /**
- * Create a capture-phase click handler that claims in-interface navigations.
+ * Create a capture-phase click handler that claims in-interface link clicks.
  *
  * @param scope A getter returning the current {@linkcode InterceptScope}. It is
  * invoked per event, so it must read `currentPathname` and `currentSearch` from
  * the live location at event time — otherwise fragment-only clicks cannot be
- * distinguished from real path navigations.
+ * distinguished from real path navigation.
  * @param onIntercept Called with the resolved URL when a click is claimed.
  */
 export function createClickInterceptor(
