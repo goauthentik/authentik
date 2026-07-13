@@ -38,7 +38,7 @@
     "devDependencies": {
         "@eslint/js": "^9.39.4",
         "@goauthentik/tsconfig": "link:../tsconfig",
-        "@types/node": "^26.1.0",
+        "@types/node": "^26.1.1",
         "eslint": "catalog:",
         "prettier": "3.8.3",
         "prettier-plugin-packagejson": "catalog:",
