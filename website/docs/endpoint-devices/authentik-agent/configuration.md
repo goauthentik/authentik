@@ -56,7 +56,7 @@ The authentik Agent [Connector](../device-compliance/connectors/authentik-agent.
 3. Select **Agent Connector** as the agent type and click **Next**.
 4. Configure the following required settings:
     - **Connector name**: provide a descriptive name (e.g. `authentik Agent`)
-    - **Refresh interval**: select how often the agent will attempt to update its configuration.
+    - **Refresh interval**: Select how often the agent updates its configuration.
     - **Enabled**: toggle to enable the connector.
     - Under **Authentication settings**:
         - **Federated OIDC Providers**: add the `authentik-cli` provider that you created in the previous section.

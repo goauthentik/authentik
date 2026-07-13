@@ -11,7 +11,7 @@ authentik_version: "2025.12.0"
 ## Prerequisites
 
 - The authentik Agent deployed on the Linux device. See [Deploy the authentik Agent on Linux](../../agent-deployment/linux.mdx) for more details.
-- A **[Device access group](../device-access-groups.mdx)** configured with the appropriate user or group bindings. Without this, all login attempts will be denied. See [Configure device access](#configure-device-access) below.
+- A **[device access group](../device-access-groups.mdx)** configured with the appropriate user or group bindings. Without this group, all login attempts are denied. See [Configure device access](#configure-device-access).
 
 ## How it works
 
@@ -30,7 +30,7 @@ When configured correctly, when you log in you should see a prompt for **authent
 
 ## Configure device access
 
-Local device login requires that the authenticating user is authorized to access the device. Access is controlled via [device access groups](../device-access-groups.mdx), which always apply. On Enterprise, direct device bindings (users, groups, or policies bound directly to the device) also affect access. If no device access group or direct binding is configured with the appropriate bindings, **all login attempts will be denied**.
+Local device login requires the authenticating user to have access to the device. [Device access groups](../device-access-groups.mdx) always control access. On Enterprise, direct device bindings for users, groups, or policies also affect access. Without an appropriately configured device access group or direct binding, **all login attempts are denied**.
 
 1. In the Admin interface, navigate to **Endpoint Devices** > **Device access groups** and click **New Device Access Group**.
 2. Provide a **Group name** (e.g. `linux-devices`) and click **Create Device Access Group**.
