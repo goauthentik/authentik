@@ -6,7 +6,7 @@ authentik welcomes community contributions, including AI-assisted contributions,
 - **The human-in-the-loop must fully understand all code.** If you cannot explain what your changes do, why they are correct, and how they affect the relevant parts of authentik without AI assistance, do not submit them.
 - **Issues and discussions can use AI assistance but must have a human-in-the-loop.** This means that any content generated with AI must have been reviewed _and edited_ by a human before submission. AI is often overly verbose, with noise that distracts from the main point. Contributors are expected to verify claims, include relevant context, and remove generic or speculative content.
 - **No AI-generated media is allowed (art, images, videos, audio, etc.).** Text and code are the only acceptable AI-generated content.
-- If a code contribution or discussion appears to be entirely AI-driven and lacking human judgement, the maintainers will close the issue/PR/discussion.
+- If a code contribution or discussion appears to be entirely AI-driven and lacking human judgement, the maintainers will close the issue/PR/discussion. Common examples include unexplained large diffs, invented API endpoints, irrelevant changes, generic issue reports, repeated AI-generated replies, or contributors being unable to answer review questions.
 
 These rules apply to all external contributions to authentik. Our [maintainers](https://github.com/orgs/goauthentik/people) use AI tools at the internal team's discretion; we are already constantly discussing our work with each other and checking in as humans.
 
