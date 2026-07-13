@@ -258,7 +258,10 @@ RUN apt-get update && \
     ln -s /media /data/media && \
     mkdir -p /authentik/.ssh && \
     mkdir -p /ak-root && \
-    chown authentik:authentik /certs /data /data/media /media /authentik/.ssh /ak-root
+    chown authentik:authentik /certs /data /data/media /media /authentik/.ssh /ak-root && \
+    # remove runtime-unused packages until we have separate build/run images
+    dpkg --purge --force-remove-essential --force-depends \
+      curl libcurl4t64 perl perl-base perl-modules-5.40 libperl5.40 sysuser-helper
 
 COPY ./authentik/ /authentik
 COPY ./pyproject.toml /
