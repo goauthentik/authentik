@@ -27,6 +27,10 @@ import {
     PaginatedPersonaListFromJSON,
 } from "../models/PaginatedPersonaList";
 import {
+    type PaginatedPersonaTemplateList,
+    PaginatedPersonaTemplateListFromJSON,
+} from "../models/PaginatedPersonaTemplateList";
+import {
     type PaginatedPolicyBindingModelRequestRuleList,
     PaginatedPolicyBindingModelRequestRuleListFromJSON,
 } from "../models/PaginatedPolicyBindingModelRequestRuleList";
@@ -34,6 +38,14 @@ import {
     type PatchedGrantRequestFulfillRequest,
     PatchedGrantRequestFulfillRequestToJSON,
 } from "../models/PatchedGrantRequestFulfillRequest";
+import {
+    type PatchedPersonaRequest,
+    PatchedPersonaRequestToJSON,
+} from "../models/PatchedPersonaRequest";
+import {
+    type PatchedPersonaTemplateRequest,
+    PatchedPersonaTemplateRequestToJSON,
+} from "../models/PatchedPersonaTemplateRequest";
 import {
     type PatchedPolicyBindingModelRequestRuleRequest,
     PatchedPolicyBindingModelRequestRuleRequestToJSON,
@@ -43,6 +55,12 @@ import {
     type PersonaCreateRequest,
     PersonaCreateRequestToJSON,
 } from "../models/PersonaCreateRequest";
+import { type PersonaRequest, PersonaRequestToJSON } from "../models/PersonaRequest";
+import { type PersonaTemplate, PersonaTemplateFromJSON } from "../models/PersonaTemplate";
+import {
+    type PersonaTemplateRequest,
+    PersonaTemplateRequestToJSON,
+} from "../models/PersonaTemplateRequest";
 import {
     type PolicyBindingModelRequestRule,
     PolicyBindingModelRequestRuleFromJSON,
@@ -78,6 +96,40 @@ export interface PamGrantRequestsRetrieveRequest {
     uuid: string;
 }
 
+export interface PamPersonaTemplatesCreateRequest {
+    personaTemplateRequest: PersonaTemplateRequest;
+}
+
+export interface PamPersonaTemplatesDestroyRequest {
+    uuid: string;
+}
+
+export interface PamPersonaTemplatesListRequest {
+    name?: string;
+    ordering?: string;
+    page?: number;
+    pageSize?: number;
+    search?: string;
+}
+
+export interface PamPersonaTemplatesPartialUpdateRequest {
+    uuid: string;
+    patchedPersonaTemplateRequest?: PatchedPersonaTemplateRequest;
+}
+
+export interface PamPersonaTemplatesRetrieveRequest {
+    uuid: string;
+}
+
+export interface PamPersonaTemplatesUpdateRequest {
+    uuid: string;
+    personaTemplateRequest: PersonaTemplateRequest;
+}
+
+export interface PamPersonaTemplatesUsedByListRequest {
+    uuid: string;
+}
+
 export interface PamPersonasCreateRequest {
     personaCreateRequest: PersonaCreateRequest;
 }
@@ -93,8 +145,18 @@ export interface PamPersonasListRequest {
     search?: string;
 }
 
+export interface PamPersonasPartialUpdateRequest {
+    id: number;
+    patchedPersonaRequest?: PatchedPersonaRequest;
+}
+
 export interface PamPersonasRetrieveRequest {
     id: number;
+}
+
+export interface PamPersonasUpdateRequest {
+    id: number;
+    personaRequest: PersonaRequest;
 }
 
 export interface PamRequestRulesCreateRequest {
@@ -450,6 +512,482 @@ export class PamApi extends runtime.BaseAPI {
     }
 
     /**
+     * Creates request options for pamPersonaTemplatesCreate without sending the request
+     */
+    async pamPersonaTemplatesCreateRequestOpts(
+        requestParameters: PamPersonaTemplatesCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["personaTemplateRequest"] == null) {
+            throw new runtime.RequiredError(
+                "personaTemplateRequest",
+                'Required parameter "personaTemplateRequest" was null or undefined when calling pamPersonaTemplatesCreate().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters["Content-Type"] = "application/json";
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/pam/persona_templates/`;
+
+        return {
+            path: urlPath,
+            method: "POST",
+            headers: headerParameters,
+            query: queryParameters,
+            body: PersonaTemplateRequestToJSON(requestParameters["personaTemplateRequest"]),
+        };
+    }
+
+    /**
+     * Admin-defined Persona templates. Listing/retrieval is open to any authenticated user so they can discover and self-request instantiation via a GrantRequest, same as requesting access to an Application; creation/modification stays RBAC-gated like any other admin object (skipping the default ObjectFilter, which would otherwise 403 users without a global view_personatemplate permission).
+     */
+    async pamPersonaTemplatesCreateRaw(
+        requestParameters: PamPersonaTemplatesCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PersonaTemplate>> {
+        const requestOptions = await this.pamPersonaTemplatesCreateRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PersonaTemplateFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * Admin-defined Persona templates. Listing/retrieval is open to any authenticated user so they can discover and self-request instantiation via a GrantRequest, same as requesting access to an Application; creation/modification stays RBAC-gated like any other admin object (skipping the default ObjectFilter, which would otherwise 403 users without a global view_personatemplate permission).
+     */
+    async pamPersonaTemplatesCreate(
+        requestParameters: PamPersonaTemplatesCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PersonaTemplate> {
+        const response = await this.pamPersonaTemplatesCreateRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for pamPersonaTemplatesDestroy without sending the request
+     */
+    async pamPersonaTemplatesDestroyRequestOpts(
+        requestParameters: PamPersonaTemplatesDestroyRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["uuid"] == null) {
+            throw new runtime.RequiredError(
+                "uuid",
+                'Required parameter "uuid" was null or undefined when calling pamPersonaTemplatesDestroy().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/pam/persona_templates/{uuid}/`;
+        urlPath = urlPath.replace("{uuid}", encodeURIComponent(String(requestParameters["uuid"])));
+
+        return {
+            path: urlPath,
+            method: "DELETE",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * Admin-defined Persona templates. Listing/retrieval is open to any authenticated user so they can discover and self-request instantiation via a GrantRequest, same as requesting access to an Application; creation/modification stays RBAC-gated like any other admin object (skipping the default ObjectFilter, which would otherwise 403 users without a global view_personatemplate permission).
+     */
+    async pamPersonaTemplatesDestroyRaw(
+        requestParameters: PamPersonaTemplatesDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
+        const requestOptions = await this.pamPersonaTemplatesDestroyRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.VoidApiResponse(response);
+    }
+
+    /**
+     * Admin-defined Persona templates. Listing/retrieval is open to any authenticated user so they can discover and self-request instantiation via a GrantRequest, same as requesting access to an Application; creation/modification stays RBAC-gated like any other admin object (skipping the default ObjectFilter, which would otherwise 403 users without a global view_personatemplate permission).
+     */
+    async pamPersonaTemplatesDestroy(
+        requestParameters: PamPersonaTemplatesDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
+        await this.pamPersonaTemplatesDestroyRaw(requestParameters, initOverrides);
+    }
+
+    /**
+     * Creates request options for pamPersonaTemplatesList without sending the request
+     */
+    async pamPersonaTemplatesListRequestOpts(
+        requestParameters: PamPersonaTemplatesListRequest,
+    ): Promise<runtime.RequestOpts> {
+        const queryParameters: any = {};
+
+        if (requestParameters["name"] != null) {
+            queryParameters["name"] = requestParameters["name"];
+        }
+
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
+        }
+
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
+        }
+
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
+        }
+
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/pam/persona_templates/`;
+
+        return {
+            path: urlPath,
+            method: "GET",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * Admin-defined Persona templates. Listing/retrieval is open to any authenticated user so they can discover and self-request instantiation via a GrantRequest, same as requesting access to an Application; creation/modification stays RBAC-gated like any other admin object (skipping the default ObjectFilter, which would otherwise 403 users without a global view_personatemplate permission).
+     */
+    async pamPersonaTemplatesListRaw(
+        requestParameters: PamPersonaTemplatesListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PaginatedPersonaTemplateList>> {
+        const requestOptions = await this.pamPersonaTemplatesListRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedPersonaTemplateListFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * Admin-defined Persona templates. Listing/retrieval is open to any authenticated user so they can discover and self-request instantiation via a GrantRequest, same as requesting access to an Application; creation/modification stays RBAC-gated like any other admin object (skipping the default ObjectFilter, which would otherwise 403 users without a global view_personatemplate permission).
+     */
+    async pamPersonaTemplatesList(
+        requestParameters: PamPersonaTemplatesListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PaginatedPersonaTemplateList> {
+        const response = await this.pamPersonaTemplatesListRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for pamPersonaTemplatesPartialUpdate without sending the request
+     */
+    async pamPersonaTemplatesPartialUpdateRequestOpts(
+        requestParameters: PamPersonaTemplatesPartialUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["uuid"] == null) {
+            throw new runtime.RequiredError(
+                "uuid",
+                'Required parameter "uuid" was null or undefined when calling pamPersonaTemplatesPartialUpdate().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters["Content-Type"] = "application/json";
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/pam/persona_templates/{uuid}/`;
+        urlPath = urlPath.replace("{uuid}", encodeURIComponent(String(requestParameters["uuid"])));
+
+        return {
+            path: urlPath,
+            method: "PATCH",
+            headers: headerParameters,
+            query: queryParameters,
+            body: PatchedPersonaTemplateRequestToJSON(
+                requestParameters["patchedPersonaTemplateRequest"],
+            ),
+        };
+    }
+
+    /**
+     * Admin-defined Persona templates. Listing/retrieval is open to any authenticated user so they can discover and self-request instantiation via a GrantRequest, same as requesting access to an Application; creation/modification stays RBAC-gated like any other admin object (skipping the default ObjectFilter, which would otherwise 403 users without a global view_personatemplate permission).
+     */
+    async pamPersonaTemplatesPartialUpdateRaw(
+        requestParameters: PamPersonaTemplatesPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PersonaTemplate>> {
+        const requestOptions =
+            await this.pamPersonaTemplatesPartialUpdateRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PersonaTemplateFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * Admin-defined Persona templates. Listing/retrieval is open to any authenticated user so they can discover and self-request instantiation via a GrantRequest, same as requesting access to an Application; creation/modification stays RBAC-gated like any other admin object (skipping the default ObjectFilter, which would otherwise 403 users without a global view_personatemplate permission).
+     */
+    async pamPersonaTemplatesPartialUpdate(
+        requestParameters: PamPersonaTemplatesPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PersonaTemplate> {
+        const response = await this.pamPersonaTemplatesPartialUpdateRaw(
+            requestParameters,
+            initOverrides,
+        );
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for pamPersonaTemplatesRetrieve without sending the request
+     */
+    async pamPersonaTemplatesRetrieveRequestOpts(
+        requestParameters: PamPersonaTemplatesRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["uuid"] == null) {
+            throw new runtime.RequiredError(
+                "uuid",
+                'Required parameter "uuid" was null or undefined when calling pamPersonaTemplatesRetrieve().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/pam/persona_templates/{uuid}/`;
+        urlPath = urlPath.replace("{uuid}", encodeURIComponent(String(requestParameters["uuid"])));
+
+        return {
+            path: urlPath,
+            method: "GET",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * Admin-defined Persona templates. Listing/retrieval is open to any authenticated user so they can discover and self-request instantiation via a GrantRequest, same as requesting access to an Application; creation/modification stays RBAC-gated like any other admin object (skipping the default ObjectFilter, which would otherwise 403 users without a global view_personatemplate permission).
+     */
+    async pamPersonaTemplatesRetrieveRaw(
+        requestParameters: PamPersonaTemplatesRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PersonaTemplate>> {
+        const requestOptions = await this.pamPersonaTemplatesRetrieveRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PersonaTemplateFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * Admin-defined Persona templates. Listing/retrieval is open to any authenticated user so they can discover and self-request instantiation via a GrantRequest, same as requesting access to an Application; creation/modification stays RBAC-gated like any other admin object (skipping the default ObjectFilter, which would otherwise 403 users without a global view_personatemplate permission).
+     */
+    async pamPersonaTemplatesRetrieve(
+        requestParameters: PamPersonaTemplatesRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PersonaTemplate> {
+        const response = await this.pamPersonaTemplatesRetrieveRaw(
+            requestParameters,
+            initOverrides,
+        );
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for pamPersonaTemplatesUpdate without sending the request
+     */
+    async pamPersonaTemplatesUpdateRequestOpts(
+        requestParameters: PamPersonaTemplatesUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["uuid"] == null) {
+            throw new runtime.RequiredError(
+                "uuid",
+                'Required parameter "uuid" was null or undefined when calling pamPersonaTemplatesUpdate().',
+            );
+        }
+
+        if (requestParameters["personaTemplateRequest"] == null) {
+            throw new runtime.RequiredError(
+                "personaTemplateRequest",
+                'Required parameter "personaTemplateRequest" was null or undefined when calling pamPersonaTemplatesUpdate().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters["Content-Type"] = "application/json";
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/pam/persona_templates/{uuid}/`;
+        urlPath = urlPath.replace("{uuid}", encodeURIComponent(String(requestParameters["uuid"])));
+
+        return {
+            path: urlPath,
+            method: "PUT",
+            headers: headerParameters,
+            query: queryParameters,
+            body: PersonaTemplateRequestToJSON(requestParameters["personaTemplateRequest"]),
+        };
+    }
+
+    /**
+     * Admin-defined Persona templates. Listing/retrieval is open to any authenticated user so they can discover and self-request instantiation via a GrantRequest, same as requesting access to an Application; creation/modification stays RBAC-gated like any other admin object (skipping the default ObjectFilter, which would otherwise 403 users without a global view_personatemplate permission).
+     */
+    async pamPersonaTemplatesUpdateRaw(
+        requestParameters: PamPersonaTemplatesUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PersonaTemplate>> {
+        const requestOptions = await this.pamPersonaTemplatesUpdateRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PersonaTemplateFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * Admin-defined Persona templates. Listing/retrieval is open to any authenticated user so they can discover and self-request instantiation via a GrantRequest, same as requesting access to an Application; creation/modification stays RBAC-gated like any other admin object (skipping the default ObjectFilter, which would otherwise 403 users without a global view_personatemplate permission).
+     */
+    async pamPersonaTemplatesUpdate(
+        requestParameters: PamPersonaTemplatesUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PersonaTemplate> {
+        const response = await this.pamPersonaTemplatesUpdateRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for pamPersonaTemplatesUsedByList without sending the request
+     */
+    async pamPersonaTemplatesUsedByListRequestOpts(
+        requestParameters: PamPersonaTemplatesUsedByListRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["uuid"] == null) {
+            throw new runtime.RequiredError(
+                "uuid",
+                'Required parameter "uuid" was null or undefined when calling pamPersonaTemplatesUsedByList().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/pam/persona_templates/{uuid}/used_by/`;
+        urlPath = urlPath.replace("{uuid}", encodeURIComponent(String(requestParameters["uuid"])));
+
+        return {
+            path: urlPath,
+            method: "GET",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * Get a list of all objects that use this object
+     */
+    async pamPersonaTemplatesUsedByListRaw(
+        requestParameters: PamPersonaTemplatesUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+        const requestOptions =
+            await this.pamPersonaTemplatesUsedByListRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
+    }
+
+    /**
+     * Get a list of all objects that use this object
+     */
+    async pamPersonaTemplatesUsedByList(
+        requestParameters: PamPersonaTemplatesUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Array<UsedBy>> {
+        const response = await this.pamPersonaTemplatesUsedByListRaw(
+            requestParameters,
+            initOverrides,
+        );
+        return await response.value();
+    }
+
+    /**
      * Creates request options for pamPersonasCreate without sending the request
      */
     async pamPersonasCreateRequestOpts(
@@ -638,6 +1176,68 @@ export class PamApi extends runtime.BaseAPI {
     }
 
     /**
+     * Creates request options for pamPersonasPartialUpdate without sending the request
+     */
+    async pamPersonasPartialUpdateRequestOpts(
+        requestParameters: PamPersonasPartialUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
+            throw new runtime.RequiredError(
+                "id",
+                'Required parameter "id" was null or undefined when calling pamPersonasPartialUpdate().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters["Content-Type"] = "application/json";
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/pam/personas/{id}/`;
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
+
+        return {
+            path: urlPath,
+            method: "PATCH",
+            headers: headerParameters,
+            query: queryParameters,
+            body: PatchedPersonaRequestToJSON(requestParameters["patchedPersonaRequest"]),
+        };
+    }
+
+    /**
+     */
+    async pamPersonasPartialUpdateRaw(
+        requestParameters: PamPersonasPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Persona>> {
+        const requestOptions = await this.pamPersonasPartialUpdateRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => PersonaFromJSON(jsonValue));
+    }
+
+    /**
+     */
+    async pamPersonasPartialUpdate(
+        requestParameters: PamPersonasPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Persona> {
+        const response = await this.pamPersonasPartialUpdateRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
      * Creates request options for pamPersonasRetrieve without sending the request
      */
     async pamPersonasRetrieveRequestOpts(
@@ -693,6 +1293,75 @@ export class PamApi extends runtime.BaseAPI {
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<Persona> {
         const response = await this.pamPersonasRetrieveRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for pamPersonasUpdate without sending the request
+     */
+    async pamPersonasUpdateRequestOpts(
+        requestParameters: PamPersonasUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
+            throw new runtime.RequiredError(
+                "id",
+                'Required parameter "id" was null or undefined when calling pamPersonasUpdate().',
+            );
+        }
+
+        if (requestParameters["personaRequest"] == null) {
+            throw new runtime.RequiredError(
+                "personaRequest",
+                'Required parameter "personaRequest" was null or undefined when calling pamPersonasUpdate().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters["Content-Type"] = "application/json";
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/pam/personas/{id}/`;
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
+
+        return {
+            path: urlPath,
+            method: "PUT",
+            headers: headerParameters,
+            query: queryParameters,
+            body: PersonaRequestToJSON(requestParameters["personaRequest"]),
+        };
+    }
+
+    /**
+     */
+    async pamPersonasUpdateRaw(
+        requestParameters: PamPersonasUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Persona>> {
+        const requestOptions = await this.pamPersonasUpdateRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => PersonaFromJSON(jsonValue));
+    }
+
+    /**
+     */
+    async pamPersonasUpdate(
+        requestParameters: PamPersonasUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Persona> {
+        const response = await this.pamPersonasUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
 

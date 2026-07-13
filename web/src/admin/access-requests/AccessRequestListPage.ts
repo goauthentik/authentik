@@ -48,7 +48,9 @@ export class AccessRequestListPage extends TablePage<GrantRequest> {
             return nothing;
         }
         const overflow = item.targetApps.length - 1;
-        const base = html`<a href="">${item.targetApps[0].name}</a> ${overflow > 0 ? `+${overflow}` : ""}`;
+        const base = html`<a href="">${item.targetApps[0].name}</a> ${overflow > 0
+                ? `+${overflow}`
+                : ""}`;
         return base;
     }
 

@@ -1,10 +1,5 @@
 import "#components/ak-status-label";
-import "#elements/buttons/Dropdown";
-import "#elements/buttons/ModalButton";
-import "#elements/buttons/TokenCopyButton/index";
 import "#elements/forms/DeleteBulkForm";
-import "#elements/forms/ModalForm";
-import "#user/user-settings/tokens/UserTokenForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { aki } from "#common/api/client";
@@ -13,7 +8,7 @@ import { formatElapsedTime } from "#common/temporal";
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
 
-import { IntentEnum, PamApi, Persona } from "@goauthentik/api";
+import { PamApi, Persona } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { CSSResult, html, TemplateResult } from "lit";
@@ -61,18 +56,6 @@ export class PersonasList extends Table<Persona> {
 
     protected override rowLabel(item: Persona): string | null {
         return item.uuid;
-    }
-
-    renderToolbar(): TemplateResult {
-        return html`
-            <ak-forms-modal>
-                <span slot="submit">${msg("Create Token")}</span>
-                <span slot="header">${msg("New Token")}</span>
-                <ak-user-token-form intent=${IntentEnum.Api} slot="form"> </ak-user-token-form>
-                <button slot="trigger" class="pf-c-button pf-m-primary">${msg("New Token")}</button>
-            </ak-forms-modal>
-            ${super.renderToolbar()}
-        `;
     }
 
     renderExpanded(item: Persona): TemplateResult {

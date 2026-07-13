@@ -2975,6 +2975,51 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+  /core/applications/requestable/:
+    get:
+      operationId: core_applications_requestable_list
+      description: List applications which the current user can request access to
+      parameters:
+      - in: query
+        name: group
+        schema:
+          type: string
+      - in: query
+        name: meta_description
+        schema:
+          type: string
+      - in: query
+        name: meta_launch_url
+        schema:
+          type: string
+      - in: query
+        name: meta_publisher
+        schema:
+          type: string
+      - $ref: '#/components/parameters/QueryName'
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
+      - in: query
+        name: slug
+        schema:
+          type: string
+      tags:
+      - core
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedApplicationList'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
   /core/authenticated_sessions/:
     get:
       operationId: core_authenticated_sessions_list
@@ -11180,6 +11225,226 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+  /pam/persona_templates/:
+    get:
+      operationId: pam_persona_templates_list
+      description: |-
+        Admin-defined Persona templates. Listing/retrieval is open to any authenticated user
+        so they can discover and self-request instantiation via a GrantRequest, same as
+        requesting access to an Application; creation/modification stays RBAC-gated like any
+        other admin object (skipping the default ObjectFilter, which would otherwise 403 users
+        without a global view_personatemplate permission).
+      parameters:
+      - $ref: '#/components/parameters/QueryName'
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
+      tags:
+      - pam
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedPersonaTemplateList'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    post:
+      operationId: pam_persona_templates_create
+      description: |-
+        Admin-defined Persona templates. Listing/retrieval is open to any authenticated user
+        so they can discover and self-request instantiation via a GrantRequest, same as
+        requesting access to an Application; creation/modification stays RBAC-gated like any
+        other admin object (skipping the default ObjectFilter, which would otherwise 403 users
+        without a global view_personatemplate permission).
+      tags:
+      - pam
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PersonaTemplateRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PersonaTemplate'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /pam/persona_templates/{uuid}/:
+    get:
+      operationId: pam_persona_templates_retrieve
+      description: |-
+        Admin-defined Persona templates. Listing/retrieval is open to any authenticated user
+        so they can discover and self-request instantiation via a GrantRequest, same as
+        requesting access to an Application; creation/modification stays RBAC-gated like any
+        other admin object (skipping the default ObjectFilter, which would otherwise 403 users
+        without a global view_personatemplate permission).
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Persona Template.
+        required: true
+      tags:
+      - pam
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PersonaTemplate'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    put:
+      operationId: pam_persona_templates_update
+      description: |-
+        Admin-defined Persona templates. Listing/retrieval is open to any authenticated user
+        so they can discover and self-request instantiation via a GrantRequest, same as
+        requesting access to an Application; creation/modification stays RBAC-gated like any
+        other admin object (skipping the default ObjectFilter, which would otherwise 403 users
+        without a global view_personatemplate permission).
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Persona Template.
+        required: true
+      tags:
+      - pam
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PersonaTemplateRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PersonaTemplate'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    patch:
+      operationId: pam_persona_templates_partial_update
+      description: |-
+        Admin-defined Persona templates. Listing/retrieval is open to any authenticated user
+        so they can discover and self-request instantiation via a GrantRequest, same as
+        requesting access to an Application; creation/modification stays RBAC-gated like any
+        other admin object (skipping the default ObjectFilter, which would otherwise 403 users
+        without a global view_personatemplate permission).
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Persona Template.
+        required: true
+      tags:
+      - pam
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedPersonaTemplateRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PersonaTemplate'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    delete:
+      operationId: pam_persona_templates_destroy
+      description: |-
+        Admin-defined Persona templates. Listing/retrieval is open to any authenticated user
+        so they can discover and self-request instantiation via a GrantRequest, same as
+        requesting access to an Application; creation/modification stays RBAC-gated like any
+        other admin object (skipping the default ObjectFilter, which would otherwise 403 users
+        without a global view_personatemplate permission).
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Persona Template.
+        required: true
+      tags:
+      - pam
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /pam/persona_templates/{uuid}/used_by/:
+    get:
+      operationId: pam_persona_templates_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Persona Template.
+        required: true
+      tags:
+      - pam
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
   /pam/personas/:
     get:
       operationId: pam_personas_list
@@ -11238,6 +11503,65 @@ paths:
         required: true
       tags:
       - pam
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Persona'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    put:
+      operationId: pam_personas_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Persona.
+        required: true
+      tags:
+      - pam
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PersonaRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Persona'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    patch:
+      operationId: pam_personas_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Persona.
+        required: true
+      tags:
+      - pam
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedPersonaRequest'
       security:
       - authentik: []
       responses:
@@ -40901,6 +41225,9 @@ components:
           allOf:
           - $ref: '#/components/schemas/PartialUser'
           readOnly: true
+        persona:
+          type: integer
+          nullable: true
         requester_data:
           type: object
           additionalProperties: {}
@@ -40941,6 +41268,9 @@ components:
           items:
             type: string
             format: uuid
+        persona:
+          type: integer
+          nullable: true
       required:
       - pbms
     GrantTypesEnum:
@@ -44044,6 +44374,7 @@ components:
       - authentik_stages_authenticator_endpoint_gdtc.authenticatorendpointgdtcstage
       - authentik_stages_mtls.mutualtlsstage
       - authentik_stages_source.sourcestage
+      - authentik_pam.personatemplate
       - authentik_pam.persona
       - authentik_pam.grantrequest
       - authentik_pam.policybindingmodelrequestrule
@@ -46861,6 +47192,21 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Persona'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    PaginatedPersonaTemplateList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/PersonaTemplate'
         autocomplete:
           $ref: '#/components/schemas/Autocomplete'
       required:
@@ -50727,6 +51073,73 @@ components:
         object_pk:
           type: string
           minLength: 1
+    PatchedPersonaRequest:
+      type: object
+      description: |-
+        Mixin to validate that a valid enterprise license
+        exists before allowing to save the object
+      properties:
+        username:
+          type: string
+          minLength: 1
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        name:
+          type: string
+          minLength: 1
+          description: User's display name.
+        is_active:
+          type: boolean
+          title: Active
+          description: Designates whether this user should be treated as active. Unselect
+            this instead of deleting accounts.
+        last_login:
+          type: string
+          format: date-time
+          nullable: true
+        email:
+          type: string
+          format: email
+          title: Email address
+          maxLength: 254
+        attributes:
+          type: object
+          additionalProperties: {}
+        expiring:
+          type: boolean
+        expires:
+          type: string
+          format: date-time
+          nullable: true
+        template:
+          type: string
+          format: uuid
+          nullable: true
+    PatchedPersonaTemplateRequest:
+      type: object
+      description: |-
+        Mixin to validate that a valid enterprise license
+        exists before allowing to save the object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+        policy_engine_mode:
+          $ref: '#/components/schemas/PolicyEngineMode'
+        name:
+          type: string
+          minLength: 1
+        actor_providers:
+          type: array
+          items:
+            type: integer
+        actor_sources:
+          type: array
+          items:
+            type: string
+            format: uuid
     PatchedPlexSourcePropertyMappingRequest:
       type: object
       description: PlexSourcePropertyMapping Serializer
@@ -52413,6 +52826,10 @@ components:
           allOf:
           - $ref: '#/components/schemas/PartialUser'
           readOnly: true
+        template:
+          type: string
+          format: uuid
+          nullable: true
       required:
       - name
       - parent
@@ -52429,6 +52846,107 @@ components:
           minLength: 1
         as_user:
           type: integer
+        template:
+          type: string
+          format: uuid
+          nullable: true
+      required:
+      - as_user
+      - name
+    PersonaRequest:
+      type: object
+      description: |-
+        Mixin to validate that a valid enterprise license
+        exists before allowing to save the object
+      properties:
+        username:
+          type: string
+          minLength: 1
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        name:
+          type: string
+          minLength: 1
+          description: User's display name.
+        is_active:
+          type: boolean
+          title: Active
+          description: Designates whether this user should be treated as active. Unselect
+            this instead of deleting accounts.
+        last_login:
+          type: string
+          format: date-time
+          nullable: true
+        email:
+          type: string
+          format: email
+          title: Email address
+          maxLength: 254
+        attributes:
+          type: object
+          additionalProperties: {}
+        expiring:
+          type: boolean
+        expires:
+          type: string
+          format: date-time
+          nullable: true
+        template:
+          type: string
+          format: uuid
+          nullable: true
+      required:
+      - name
+      - username
+    PersonaTemplate:
+      type: object
+      description: |-
+        Mixin to validate that a valid enterprise license
+        exists before allowing to save the object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+        policy_engine_mode:
+          $ref: '#/components/schemas/PolicyEngineMode'
+        name:
+          type: string
+        actor_providers:
+          type: array
+          items:
+            type: integer
+        actor_sources:
+          type: array
+          items:
+            type: string
+            format: uuid
+      required:
+      - name
+    PersonaTemplateRequest:
+      type: object
+      description: |-
+        Mixin to validate that a valid enterprise license
+        exists before allowing to save the object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+        policy_engine_mode:
+          $ref: '#/components/schemas/PolicyEngineMode'
+        name:
+          type: string
+          minLength: 1
+        actor_providers:
+          type: array
+          items:
+            type: integer
+        actor_sources:
+          type: array
+          items:
+            type: string
+            format: uuid
       required:
       - name
     PlexAuthenticationChallenge:

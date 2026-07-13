@@ -12,140 +12,106 @@
  * Do not edit the class manually.
  */
 
-import type { PartialUser } from "./PartialUser";
-import { PartialUserFromJSON } from "./PartialUser";
-
 /**
  * Mixin to validate that a valid enterprise license
  * exists before allowing to save the object
  * @export
- * @interface Persona
+ * @interface PatchedPersonaRequest
  */
-export interface Persona {
-    /**
-     *
-     * @type {number}
-     * @memberof Persona
-     */
-    readonly pk: number;
+export interface PatchedPersonaRequest {
     /**
      * Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.
      * @type {string}
-     * @memberof Persona
+     * @memberof PatchedPersonaRequest
      */
-    username: string;
+    username?: string;
     /**
      * User's display name.
      * @type {string}
-     * @memberof Persona
+     * @memberof PatchedPersonaRequest
      */
-    name: string;
+    name?: string;
     /**
      * Designates whether this user should be treated as active. Unselect this instead of deleting accounts.
      * @type {boolean}
-     * @memberof Persona
+     * @memberof PatchedPersonaRequest
      */
     isActive?: boolean;
     /**
      *
      * @type {Date}
-     * @memberof Persona
+     * @memberof PatchedPersonaRequest
      */
     lastLogin?: Date | null;
     /**
      *
      * @type {string}
-     * @memberof Persona
+     * @memberof PatchedPersonaRequest
      */
     email?: string;
     /**
      *
      * @type {{ [key: string]: any; }}
-     * @memberof Persona
+     * @memberof PatchedPersonaRequest
      */
     attributes?: { [key: string]: any };
     /**
      *
-     * @type {string}
-     * @memberof Persona
-     */
-    readonly uid: string;
-    /**
-     *
-     * @type {string}
-     * @memberof Persona
-     */
-    readonly uuid: string;
-    /**
-     *
      * @type {boolean}
-     * @memberof Persona
+     * @memberof PatchedPersonaRequest
      */
     expiring?: boolean;
     /**
      *
      * @type {Date}
-     * @memberof Persona
+     * @memberof PatchedPersonaRequest
      */
     expires?: Date | null;
     /**
      *
-     * @type {PartialUser}
-     * @memberof Persona
-     */
-    readonly parent: PartialUser;
-    /**
-     *
      * @type {string}
-     * @memberof Persona
+     * @memberof PatchedPersonaRequest
      */
     template?: string | null;
 }
 
 /**
- * Check if a given object implements the Persona interface.
+ * Check if a given object implements the PatchedPersonaRequest interface.
  */
-export function instanceOfPersona(value: object): value is Persona {
-    if (!("pk" in value) || value["pk"] === undefined) return false;
-    if (!("username" in value) || value["username"] === undefined) return false;
-    if (!("name" in value) || value["name"] === undefined) return false;
-    if (!("uid" in value) || value["uid"] === undefined) return false;
-    if (!("uuid" in value) || value["uuid"] === undefined) return false;
-    if (!("parent" in value) || value["parent"] === undefined) return false;
+export function instanceOfPatchedPersonaRequest(value: object): value is PatchedPersonaRequest {
     return true;
 }
 
-export function PersonaFromJSON(json: any): Persona {
-    return PersonaFromJSONTyped(json, false);
+export function PatchedPersonaRequestFromJSON(json: any): PatchedPersonaRequest {
+    return PatchedPersonaRequestFromJSONTyped(json, false);
 }
 
-export function PersonaFromJSONTyped(json: any, ignoreDiscriminator: boolean): Persona {
+export function PatchedPersonaRequestFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): PatchedPersonaRequest {
     if (json == null) {
         return json;
     }
     return {
-        pk: json["pk"],
-        username: json["username"],
-        name: json["name"],
+        username: json["username"] == null ? undefined : json["username"],
+        name: json["name"] == null ? undefined : json["name"],
         isActive: json["is_active"] == null ? undefined : json["is_active"],
         lastLogin: json["last_login"] == null ? undefined : new Date(json["last_login"]),
         email: json["email"] == null ? undefined : json["email"],
         attributes: json["attributes"] == null ? undefined : json["attributes"],
-        uid: json["uid"],
-        uuid: json["uuid"],
         expiring: json["expiring"] == null ? undefined : json["expiring"],
         expires: json["expires"] == null ? undefined : new Date(json["expires"]),
-        parent: PartialUserFromJSON(json["parent"]),
         template: json["template"] == null ? undefined : json["template"],
     };
 }
 
-export function PersonaToJSON(json: any): Persona {
-    return PersonaToJSONTyped(json, false);
+export function PatchedPersonaRequestToJSON(json: any): PatchedPersonaRequest {
+    return PatchedPersonaRequestToJSONTyped(json, false);
 }
 
-export function PersonaToJSONTyped(
-    value?: Omit<Persona, "pk" | "uid" | "uuid" | "parent"> | null,
+export function PatchedPersonaRequestToJSONTyped(
+    value?: PatchedPersonaRequest | null,
     ignoreDiscriminator: boolean = false,
 ): any {
     if (value == null) {

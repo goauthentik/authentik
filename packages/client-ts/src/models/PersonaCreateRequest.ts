@@ -29,7 +29,13 @@ export interface PersonaCreateRequest {
      * @type {number}
      * @memberof PersonaCreateRequest
      */
-    asUser?: number;
+    asUser: number;
+    /**
+     *
+     * @type {string}
+     * @memberof PersonaCreateRequest
+     */
+    template?: string | null;
 }
 
 /**
@@ -37,6 +43,7 @@ export interface PersonaCreateRequest {
  */
 export function instanceOfPersonaCreateRequest(value: object): value is PersonaCreateRequest {
     if (!("name" in value) || value["name"] === undefined) return false;
+    if (!("asUser" in value) || value["asUser"] === undefined) return false;
     return true;
 }
 
@@ -53,7 +60,8 @@ export function PersonaCreateRequestFromJSONTyped(
     }
     return {
         name: json["name"],
-        asUser: json["as_user"] == null ? undefined : json["as_user"],
+        asUser: json["as_user"],
+        template: json["template"] == null ? undefined : json["template"],
     };
 }
 
@@ -72,5 +80,6 @@ export function PersonaCreateRequestToJSONTyped(
     return {
         name: value["name"],
         as_user: value["asUser"],
+        template: value["template"],
     };
 }

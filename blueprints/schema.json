@@ -984,6 +984,46 @@
                     ],
                     "properties": {
                         "model": {
+                            "const": "authentik_pam.personatemplate"
+                        },
+                        "id": {
+                            "type": "string"
+                        },
+                        "state": {
+                            "type": "string",
+                            "enum": [
+                                "absent",
+                                "created",
+                                "must_created",
+                                "present"
+                            ],
+                            "default": "present"
+                        },
+                        "conditions": {
+                            "type": "array",
+                            "items": {
+                                "type": "boolean"
+                            }
+                        },
+                        "permissions": {
+                            "$ref": "#/$defs/model_authentik_pam.personatemplate_permissions"
+                        },
+                        "attrs": {
+                            "$ref": "#/$defs/model_authentik_pam.personatemplate"
+                        },
+                        "identifiers": {
+                            "$ref": "#/$defs/model_authentik_pam.personatemplate"
+                        }
+                    }
+                },
+                {
+                    "type": "object",
+                    "required": [
+                        "model",
+                        "identifiers"
+                    ],
+                    "properties": {
+                        "model": {
                             "const": "authentik_pam.policybindingmodelrequestrule"
                         },
                         "id": {
@@ -5940,21 +5980,25 @@
                             "authentik_pam.add_grantrequest",
                             "authentik_pam.add_grantrequesttarget",
                             "authentik_pam.add_persona",
+                            "authentik_pam.add_personatemplate",
                             "authentik_pam.add_policybindingmodelrequestrule",
                             "authentik_pam.change_grant",
                             "authentik_pam.change_grantrequest",
                             "authentik_pam.change_grantrequesttarget",
                             "authentik_pam.change_persona",
+                            "authentik_pam.change_personatemplate",
                             "authentik_pam.change_policybindingmodelrequestrule",
                             "authentik_pam.delete_grant",
                             "authentik_pam.delete_grantrequest",
                             "authentik_pam.delete_grantrequesttarget",
                             "authentik_pam.delete_persona",
+                            "authentik_pam.delete_personatemplate",
                             "authentik_pam.delete_policybindingmodelrequestrule",
                             "authentik_pam.view_grant",
                             "authentik_pam.view_grantrequest",
                             "authentik_pam.view_grantrequesttarget",
                             "authentik_pam.view_persona",
+                            "authentik_pam.view_personatemplate",
                             "authentik_pam.view_policybindingmodelrequestrule",
                             "authentik_policies.add_policy",
                             "authentik_policies.add_policybinding",
@@ -7297,6 +7341,10 @@
         "model_authentik_pam.grantrequest": {
             "type": "object",
             "properties": {
+                "persona": {
+                    "type": "integer",
+                    "title": "Persona"
+                },
                 "requester_data": {
                     "type": "object",
                     "additionalProperties": true,
@@ -7673,21 +7721,25 @@
                             "authentik_pam.add_grantrequest",
                             "authentik_pam.add_grantrequesttarget",
                             "authentik_pam.add_persona",
+                            "authentik_pam.add_personatemplate",
                             "authentik_pam.add_policybindingmodelrequestrule",
                             "authentik_pam.change_grant",
                             "authentik_pam.change_grantrequest",
                             "authentik_pam.change_grantrequesttarget",
                             "authentik_pam.change_persona",
+                            "authentik_pam.change_personatemplate",
                             "authentik_pam.change_policybindingmodelrequestrule",
                             "authentik_pam.delete_grant",
                             "authentik_pam.delete_grantrequest",
                             "authentik_pam.delete_grantrequesttarget",
                             "authentik_pam.delete_persona",
+                            "authentik_pam.delete_personatemplate",
                             "authentik_pam.delete_policybindingmodelrequestrule",
                             "authentik_pam.view_grant",
                             "authentik_pam.view_grantrequest",
                             "authentik_pam.view_grantrequesttarget",
                             "authentik_pam.view_persona",
+                            "authentik_pam.view_personatemplate",
                             "authentik_pam.view_policybindingmodelrequestrule",
                             "authentik_policies.add_policy",
                             "authentik_policies.add_policybinding",
@@ -8200,6 +8252,70 @@
                             "change_persona",
                             "delete_persona",
                             "view_persona"
+                        ]
+                    },
+                    "user": {
+                        "type": "integer"
+                    },
+                    "role": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "model_authentik_pam.personatemplate": {
+            "type": "object",
+            "properties": {
+                "uuid": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Uuid"
+                },
+                "policy_engine_mode": {
+                    "type": "string",
+                    "enum": [
+                        "all",
+                        "any"
+                    ],
+                    "title": "Policy engine mode"
+                },
+                "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Name"
+                },
+                "actor_providers": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    },
+                    "title": "Actor providers"
+                },
+                "actor_sources": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    },
+                    "title": "Actor sources"
+                }
+            },
+            "required": []
+        },
+        "model_authentik_pam.personatemplate_permissions": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "permission"
+                ],
+                "properties": {
+                    "permission": {
+                        "type": "string",
+                        "enum": [
+                            "add_personatemplate",
+                            "change_personatemplate",
+                            "delete_personatemplate",
+                            "view_personatemplate"
                         ]
                     },
                     "user": {
@@ -10345,6 +10461,7 @@
                         "authentik_stages_authenticator_endpoint_gdtc.authenticatorendpointgdtcstage",
                         "authentik_stages_mtls.mutualtlsstage",
                         "authentik_stages_source.sourcestage",
+                        "authentik_pam.personatemplate",
                         "authentik_pam.persona",
                         "authentik_pam.grantrequest",
                         "authentik_pam.policybindingmodelrequestrule"
@@ -12736,21 +12853,25 @@
                             "authentik_pam.add_grantrequest",
                             "authentik_pam.add_grantrequesttarget",
                             "authentik_pam.add_persona",
+                            "authentik_pam.add_personatemplate",
                             "authentik_pam.add_policybindingmodelrequestrule",
                             "authentik_pam.change_grant",
                             "authentik_pam.change_grantrequest",
                             "authentik_pam.change_grantrequesttarget",
                             "authentik_pam.change_persona",
+                            "authentik_pam.change_personatemplate",
                             "authentik_pam.change_policybindingmodelrequestrule",
                             "authentik_pam.delete_grant",
                             "authentik_pam.delete_grantrequest",
                             "authentik_pam.delete_grantrequesttarget",
                             "authentik_pam.delete_persona",
+                            "authentik_pam.delete_personatemplate",
                             "authentik_pam.delete_policybindingmodelrequestrule",
                             "authentik_pam.view_grant",
                             "authentik_pam.view_grantrequest",
                             "authentik_pam.view_grantrequesttarget",
                             "authentik_pam.view_persona",
+                            "authentik_pam.view_personatemplate",
                             "authentik_pam.view_policybindingmodelrequestrule",
                             "authentik_policies.add_policy",
                             "authentik_policies.add_policybinding",

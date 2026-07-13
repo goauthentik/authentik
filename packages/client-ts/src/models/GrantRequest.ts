@@ -39,6 +39,12 @@ export interface GrantRequest {
     readonly createdBy: PartialUser;
     /**
      *
+     * @type {number}
+     * @memberof GrantRequest
+     */
+    persona?: number | null;
+    /**
+     *
      * @type {{ [key: string]: any; }}
      * @memberof GrantRequest
      */
@@ -103,6 +109,7 @@ export function GrantRequestFromJSONTyped(json: any, ignoreDiscriminator: boolea
     return {
         created: new Date(json["created"]),
         createdBy: PartialUserFromJSON(json["created_by"]),
+        persona: json["persona"] == null ? undefined : json["persona"],
         requesterData: json["requester_data"] == null ? undefined : json["requester_data"],
         fulfillerData: json["fulfiller_data"] == null ? undefined : json["fulfiller_data"],
         expires: json["expires"] == null ? undefined : new Date(json["expires"]),
@@ -126,6 +133,7 @@ export function GrantRequestToJSONTyped(
     }
 
     return {
+        persona: value["persona"],
         requester_data: value["requesterData"],
         fulfiller_data: value["fulfillerData"],
         expires: value["expires"] == null ? value["expires"] : value["expires"].toISOString(),
