@@ -3,9 +3,11 @@ title: Flow executor (backend)
 sidebar_position: 2
 ---
 
-A big focus of authentik is the flows system, which allows you to combine and build complex conditional processes using stages and policies. Normally, these flows are automatically executed in the browser using authentik's [standard browser-based flow executor (/if/flows)](/docs/add-secure-apps/flows-stages/flow/executors/if-flow).
+A core feature of authentik is its flow system, which lets you design complex, conditional processes by combining stages and policies.
 
-However, any flow can be executed via an API from anywhere; in fact, that is what every flow executor does. With a few requests you can execute flows from anywhere, and integrate authentik even better — for example, to build a fully custom login UI in your own application.
+Normally, these flows are automatically executed in the browser using authentik's [standard browser-based flow executor (/if/flows)](/docs/add-secure-apps/flows-stages/flow/executors/if-flow).
+
+However, flows are not limited to the browser. Every flow can also be executed via the API — the same mechanism used by flow executors internally. With just a few API requests, you can trigger flows from anywhere and integrate authentik more deeply into your systems. For example, you could build a fully custom login interface within your own application while still relying on authentik’s flow logic.
 
 :::info Cookie persistence
 The flow executor stores its state in the HTTP session, so you need to ensure that cookies are persisted between flow executor requests. If cookies are not persisted, each request creates a new session and the flow restarts from the beginning — the typical symptom is receiving the first challenge again after submitting a response.
