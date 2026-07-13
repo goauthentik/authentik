@@ -6,7 +6,6 @@ tags:
     - password
     - security
     - enterprise
-authentik_version: "2025.4.0"
 authentik_enterprise: true
 ---
 
