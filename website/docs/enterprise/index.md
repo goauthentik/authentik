@@ -1,7 +1,6 @@
 ---
 title: authentik Enterprise
 description: "Licensed authentik features, license management, and commercial support"
-sidebar_label: Overview
 sidebar_position: 0
 ---
 
