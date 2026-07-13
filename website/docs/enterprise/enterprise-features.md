@@ -34,7 +34,7 @@ See the [pricing page](https://goauthentik.io/pricing/) for current plan details
 ### Authentication and network access
 
 - [Password history compliance](../customize/policies/types/password-uniqueness.md) prevents users from reusing previous passwords.
-- [Client certificate authentication](../add-secure-apps/flows-stages/stages/mtls/index.md) authenticates or enrolls users with client certificates from devices, smart cards, PIV cards, or hardware tokens. This feature is in preview.
+- [Client certificate authentication](../add-secure-apps/flows-stages/stages/mtls/index.md) authenticates or enrolls users with client certificates from devices, smart cards, PIV cards, or hardware tokens.
 - [RADIUS EAP-TLS](../add-secure-apps/providers/radius/index.mdx#eap) authenticates network clients with EAP-TLS and client certificates.
 
 ### Audit and reporting
