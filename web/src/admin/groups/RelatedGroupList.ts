@@ -14,7 +14,7 @@ import { SlottedTemplateResult } from "#elements/types";
 
 import { GroupForm } from "#admin/groups/ak-group-form";
 
-import { CoreApi, Group, User } from "@goauthentik/api";
+import { CoreApi, Group, RbacApi, Role, User } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
 import { html, nothing, TemplateResult } from "lit";
@@ -30,22 +30,34 @@ export class RelatedGroupAdd extends Form<{ groups: string[] }> {
     @property({ attribute: false })
     public user?: User;
 
+    @property({ attribute: false })
+    public targetRole?: Role | null = null;
+
     @state()
     public groupsToAdd: Group[] = [];
 
     public override getSuccessMessage(): string {
-        return msg("Successfully added user to group(s).");
+        return msg("Successfully added group(s).");
     }
 
     protected async send(data: { groups: string[] }): Promise<unknown> {
         await Promise.all(
             data.groups.map((group) => {
-                return aki(CoreApi).coreGroupsAddUserCreate({
-                    groupUuid: group,
-                    userAccountRequest: {
-                        pk: this.user?.pk || 0,
-                    },
-                });
+                if (this.user) {
+                    return aki(CoreApi).coreGroupsAddUserCreate({
+                        groupUuid: group,
+                        userAccountRequest: {
+                            pk: this.user?.pk || 0,
+                        },
+                    });
+                } else if (this.targetRole) {
+                    return aki(RbacApi).rbacRolesAddGroupCreate({
+                        uuid: this.targetRole!.pk,
+                        groupSerializerForRoleRequest: {
+                            pk: group,
+                        }
+                    });
+                }
             }),
         );
 
@@ -114,10 +126,14 @@ export class RelatedGroupList extends Table<Group> {
     @property({ attribute: false })
     targetUser?: User;
 
+    @property({ attribute: false})
+    targetRole: Role | null = null;
+
     async apiEndpoint(): Promise<PaginatedResponse<Group>> {
         return aki(CoreApi).coreGroupsList({
             ...(await this.defaultEndpointConfig()),
-            membersByPk: this.targetUser ? [this.targetUser.pk] : [],
+            ...(this.targetUser && {membersByPk: [this.targetUser.pk]}),
+            ...(this.targetRole && {rolesByPk: [this.targetRole.pk]}),
             includeUsers: false,
         });
     }
@@ -130,6 +146,32 @@ export class RelatedGroupList extends Table<Group> {
 
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
+
+        if (this.targetRole) {
+            return html`<ak-forms-delete-bulk
+                object-label=${msg("Group(s)")}
+                submit-label=${msg("Remove from Role")}
+                action-subtext=${msg(
+                    str`Are you sure you want to remove the following groups from role ${this.targetRole.name}?`,
+                )}
+                button-label=${msg("Remove")}
+                .objects=${this.selectedElements}
+                .delete=${(item: Group) => {
+                    if (!this.targetRole) return;
+                    return aki(RbacApi).rbacRolesRemoveGroupCreate({
+                        uuid: this.targetRole.pk,
+                        groupSerializerForRoleRequest: {
+                            pk: item.pk,
+                        },
+                    });
+                }}
+            >
+                <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-danger">
+                    ${msg("Remove")}
+                </button>
+            </ak-forms-delete-bulk>`;
+        }
+
         return html`<ak-forms-delete-bulk
             object-label=${msg("Group(s)")}
             submit-label=${msg("Remove from Group(s)")}
@@ -179,11 +221,25 @@ export class RelatedGroupList extends Table<Group> {
                       ${msg("Add to existing group")}
                   </button>`
                 : nothing}
-            <button class="pf-c-button pf-m-secondary" ${modalInvoker(GroupForm)}>
-                ${msg("Add new group")}
-            </button>
+            ${this.targetRole
+                ? html`<button
+                       class="pf-c-button pf-m-primary"
+                       @click=${this.openAddGroupToTargetRoleModal}
+                  >
+                    ${msg("Add Existing Group")}
+                  </button>`
+                : html`<button class="pf-c-button pf-m-secondary" ${modalInvoker(GroupForm)}>
+                        ${msg("Add new group")}
+                      </button>`}
             ${super.renderToolbar()}
         `;
+    }
+
+    protected openAddGroupToTargetRoleModal = () => {
+        return renderModal(
+            html`<ak-group-related-add .targetRole=${this.targetRole}>
+            </ak-group-related-add>`
+        )
     }
 }
 

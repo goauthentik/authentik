@@ -244,6 +244,7 @@ pub async fn core_groups_list(
     ordering: Option<&str>,
     page: Option<i32>,
     page_size: Option<i32>,
+    roles_by_pk: Option<Vec<uuid::Uuid>>,
     search: Option<&str>,
 ) -> Result<models::PaginatedGroupList, Error<CoreGroupsListError>> {
     // add a prefix to parameters to efficiently prevent name collisions
@@ -259,6 +260,7 @@ pub async fn core_groups_list(
     let p_query_ordering = ordering;
     let p_query_page = page;
     let p_query_page_size = page_size;
+    let p_query_roles_by_pk = roles_by_pk;
     let p_query_search = search;
 
     let uri_str = format!("{}/core/groups/", configuration.base_path);
@@ -331,6 +333,25 @@ pub async fn core_groups_list(
     }
     if let Some(ref param_value) = p_query_page_size {
         req_builder = req_builder.query(&[("page_size", &param_value.to_string())]);
+    }
+    if let Some(ref param_value) = p_query_roles_by_pk {
+        req_builder = match "multi" {
+            "multi" => req_builder.query(
+                &param_value
+                    .into_iter()
+                    .map(|p| ("roles_by_pk".to_owned(), p.to_string()))
+                    .collect::<Vec<(std::string::String, std::string::String)>>(),
+            ),
+            _ => req_builder.query(&[(
+                "roles_by_pk",
+                &param_value
+                    .into_iter()
+                    .map(|p| p.to_string())
+                    .collect::<Vec<String>>()
+                    .join(",")
+                    .to_string(),
+            )]),
+        };
     }
     if let Some(ref param_value) = p_query_search {
         req_builder = req_builder.query(&[("search", &param_value.to_string())]);
