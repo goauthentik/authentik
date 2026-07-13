@@ -16,7 +16,7 @@ class SCIMRequestException(TransientSyncException):
     def __init__(self, response: Response | None = None, message: str | None = None) -> None:
         super().__init__(response)
         self._response = response
-        self._message = message
+        self._message = message or self.error_default
 
     def detail(self) -> str:
         """Get human readable details of this error"""
