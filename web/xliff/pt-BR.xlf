@@ -11507,6 +11507,9 @@ por exemplo: <x id="0" equiv-text="&lt;code&gt;"/>oci://registry.domain.tld/path
 <trans-unit id="sb401ca35f1d61eed">
   <source>e.g. invitation-stage</source>
 </trans-unit>
+<trans-unit id="sc30c9b42e2a1ebe7">
+  <source>Token exchange</source>
+</trans-unit>
 </body>
 </file>
 </xliff>
