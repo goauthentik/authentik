@@ -27,7 +27,7 @@ See the [pricing page](https://goauthentik.io/pricing/) for current plan details
 
 - [Google Workspace integration](../add-secure-apps/providers/gws/index.md) synchronizes users and groups from authentik to Google Workspace.
 - [Microsoft Entra ID integration](../add-secure-apps/providers/entra/index.md) synchronizes users and groups from authentik to Microsoft Entra ID.
-- [External OAuth and SAML sources](../add-secure-apps/flows-stages/stages/source/index.md) embed an external identity provider in a flow for migration or additional verification.
+- [External OAuth and SAML sources](../add-secure-apps/flows-stages/stages/source/index.md) embed an external identity provider in a flow for migration or additional verification. For example, dynamically redirect users to authenticate against Entra ID or GWS before continuing with a flow.
 - The [Shared Signals Framework provider](../add-secure-apps/providers/ssf/index.md) sends security events to subscribed applications, including Apple Business Manager.
 - [OAuth authentication for SCIM](../add-secure-apps/providers/scim/index.md#oauth-token) uses short-lived OAuth tokens instead of a static token for SCIM provisioning.
 
