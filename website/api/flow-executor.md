@@ -59,7 +59,7 @@ Below is the response, for example for an Identification stage:
 }
 ```
 
-Note that the stage-specific fields describe what to render (for example, which kinds of user identifiers the stage accepts) — they are not the field names of the response body. The response body layout for each stage is defined in the API schema (see [Discovering stage payloads](#discovering-stage-payloads) below).
+Note that stage-specific fields describe what should be rendered — for example, which types of user identifiers a stage accepts. They do not correspond to the field names in the response body. The structure of each stage's response body is defined in the API schema; see [Discovering stage payloads](#discovering-stage-payloads) below.
 
 ## Responding to a challenge
 
