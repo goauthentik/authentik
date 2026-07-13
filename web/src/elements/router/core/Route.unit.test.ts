@@ -1,7 +1,8 @@
 import { Route } from "./Route.js";
 
-import { html } from "lit";
 import { describe, expect, it, vi } from "vitest";
+
+import { html } from "lit";
 
 describe("Route", () => {
     it("compiles the pattern once at construction", () => {

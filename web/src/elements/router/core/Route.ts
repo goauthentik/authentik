@@ -8,7 +8,6 @@
  */
 
 import { type RouteParameterRecord } from "#elements/router/core/parameters";
-
 import { type SlottedTemplateResult } from "#elements/types";
 
 import { html, nothing, TemplateResult } from "lit";
