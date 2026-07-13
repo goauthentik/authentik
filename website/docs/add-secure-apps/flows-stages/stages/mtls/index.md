@@ -1,6 +1,5 @@
 ---
 title: Mutual TLS stage
-authentik_preview: true
 authentik_enterprise: true
 toc_max_heading_level: 5
 ---
