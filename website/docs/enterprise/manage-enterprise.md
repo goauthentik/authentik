@@ -4,7 +4,7 @@ description: "Manage authentik Customer Portal organizations, licenses, and bill
 sidebar_position: 3
 ---
 
-The authentik [Customer Portal](https://customers.goauthentik.io/) lets you manage customer organizations, purchase licenses, retrieve license keys, access billing, and open support tickets. Use the authentik Admin interface to install licenses and monitor their status and capacity.
+Use the authentik [Customer Portal](https://customers.goauthentik.io/) to manage customer organizations, purchase licenses, retrieve license keys, access billing, and open support tickets. Use the authentik Admin interface to install licenses and monitor their status and capacity.
 
 ## Manage an organization
 
