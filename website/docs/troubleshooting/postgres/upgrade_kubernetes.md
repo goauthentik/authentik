@@ -17,7 +17,7 @@ For this guide, we assume the PostgreSQL pod is named `authentik-postgresql-0`, 
 
 Review [Backup and restore](../../sys-mgmt/ops/backup-restore.md) before proceeding.
 
-## Overview
+## Upgrade process
 
 The upgrade flow is:
 
