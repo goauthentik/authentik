@@ -12,11 +12,12 @@ Enterprise includes all the product features on this page and ticket-based suppo
 
 Enterprise Plus includes everything in Enterprise, with additional options for organizations that need a customized agreement:
 
-- Invoiced billing
-- Customized support and service-level agreements
-- Volume pricing
-- Multi-instance deployment support
-- FIPS compliance for FedRAMP requirements
+- Dedicated support channels (Slack and/or scheduled calls)
+- Assistance with onboarding best practices
+- SLA-backed response times
+- Volume discounts for large teams
+- Auditable FIPS-compliant deployments to meet FedRAMP requirements
+- Billing and purchase via invoice
 
 See the [pricing page](https://goauthentik.io/pricing/) for current plan details.
 
