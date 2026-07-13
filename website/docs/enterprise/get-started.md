@@ -4,7 +4,7 @@ description: "Enable authentik Enterprise on a new or existing installation"
 sidebar_position: 1
 ---
 
-An authentik Enterprise license unlocks licensed features on an existing authentik installation. You do not need a separate Enterprise package or a different installation process.
+Installing authentik is exactly the same process for both the Enterprise version and our open source version. Enterprise features are enabled by installing a license.
 
 ## Before you begin
 
