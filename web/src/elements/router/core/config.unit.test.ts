@@ -21,4 +21,13 @@ describe("router config", () => {
 
         expect(getRouterConfig()).toEqual({ base: "/", interfaceName: "unknown" });
     });
+
+    it("returns a copy so mutations do not affect the stored config", () => {
+        initRouter({ base: "/auth/", interfaceName: "admin" });
+
+        const config = getRouterConfig();
+        config.base = "/mutated/";
+
+        expect(getRouterConfig().base).toBe("/auth/");
+    });
 });

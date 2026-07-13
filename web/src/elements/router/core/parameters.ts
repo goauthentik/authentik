@@ -72,7 +72,14 @@ export function recordToSearchParams(params: RouterParameterInit): URLSearchPara
 function deserialize(value: string): PrimitiveRouteParameter {
     if (value === "true") return true;
     if (value === "false") return false;
-    if (/^\d+$/.test(value)) return Number.parseInt(value, 10);
+
+    if (/^\d+$/.test(value)) {
+        const parsed = Number(value);
+
+        if (Number.isSafeInteger(parsed) && String(parsed) === value) {
+            return parsed;
+        }
+    }
 
     return value;
 }

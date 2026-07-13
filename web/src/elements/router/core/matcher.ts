@@ -22,8 +22,10 @@ export interface RouteMatch<R extends RoutePatternLike> {
 /**
  * Match a pathname against a route table, first-match-wins.
  *
- * @param pathname The pathname to match (already stripped of base + interface
- * prefix by the caller).
+ * @param pathname The interface-relative pathname, beginning with `/`.
+ * The interface root is `/`. Callers stripping the interface prefix from
+ * `location.pathname` must keep (or restore) the leading slash:
+ * `/if/admin/users/42` → `/users/42`, `/if/admin/` → `/`.
  * @param routes The route table, scanned in order.
  * @returns The first match, or `null` when nothing matches.
  */
