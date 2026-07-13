@@ -11,6 +11,7 @@
  */
 
 import { getRouterConfig } from "#elements/router/core/config";
+import { formatInterfacePrefix } from "#elements/router/core/interfaces";
 import {
     recordToSearchParams,
     type RouteParameterRecord,
@@ -70,8 +71,7 @@ export function translateHashRoute(hash: string, scope: HashRouteScope): string 
     const params = decodeLegacyParams(rawParams);
     const search = recordToSearchParams(params).toString();
 
-    const base = scope.base.endsWith("/") ? scope.base : `${scope.base}/`;
-    const prefix = `${base}if/${scope.interfaceName}/`;
+    const prefix = formatInterfacePrefix(scope.base, scope.interfaceName);
 
     return `${prefix}${segment}${search ? `?${search}` : ""}`;
 }
