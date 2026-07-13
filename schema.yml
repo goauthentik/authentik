@@ -7739,9 +7739,59 @@ paths:
         schema:
           type: string
       - in: query
+        name: actions
+        schema:
+          type: array
+          items:
+            $ref: '#/components/schemas/EventActions'
+        explode: true
+        style: form
+      - in: query
+        name: brand_name
+        schema:
+          type: string
+        description: Brand name
+      - in: query
+        name: client_ip
+        schema:
+          type: string
+      - in: query
+        name: context_authorized_app
+        schema:
+          type: string
+        description: Context Authorized application
+      - in: query
+        name: context_device
+        schema:
+          type: string
+        description: Context Device Primary Key
+      - in: query
+        name: context_model_app
+        schema:
+          type: string
+        description: Context Model App
+      - in: query
+        name: context_model_name
+        schema:
+          type: string
+        description: Context Model Name
+      - in: query
+        name: context_model_pk
+        schema:
+          type: string
+        description: Context Model Primary Key
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QuerySearch'
+      - in: query
         name: top_n
         schema:
           type: integer
+          default: 15
+      - in: query
+        name: username
+        schema:
+          type: string
+        description: Username
       tags:
       - events
       security:
@@ -40425,6 +40475,7 @@ components:
       - client_credentials
       - password
       - urn:ietf:params:oauth:grant-type:device_code
+      - urn:ietf:params:oauth:grant-type:token-exchange
       type: string
     Group:
       type: object

@@ -27,7 +27,7 @@
         "prism-react-renderer": "^2.4.1",
         "react": "^19.2.7",
         "react-dom": "^19.2.7",
-        "typescript": "^6.0.3"
+        "typescript": "catalog:"
     },
     "engines": {
         "node": ">=24"

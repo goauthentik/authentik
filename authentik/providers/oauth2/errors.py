@@ -247,6 +247,26 @@ class TokenError(OAuth2Error):
         self.description = self.errors[error]
 
 
+class TokenExchangeError(TokenError):
+    """
+    Token exchange errors
+    See https://datatracker.ietf.org/doc/html/rfc8693#section-2.2.2
+    Can also use codes from TokenError
+    """
+
+    errors = TokenError.errors | {
+        "invalid_target": (
+            "The authorization server is unable to issue a token for the target service "
+            "indicated by the 'resource' or 'audience' parameter"
+        ),
+    }
+
+    def __init__(self, error: str):
+        super().__init__(error)
+        self.error = error
+        self.description = self.errors[error]
+
+
 class TokenRevocationError(OAuth2Error):
     """
     Specific to the revocation endpoint.
