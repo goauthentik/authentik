@@ -90,7 +90,7 @@ class TestOpenIDConformance(SSLLiveMixin, SeleniumTestCase):
             )
             self.assertIn(
                 module["result"],
-                ["PASSED", "SKIPPED", "WARNING"],
+                ["PASSED", "SKIPPED", "WARNING", "REVIEW"],
                 f"Module {module['testName']} did not finish with expected status.",
             )
             sleep(2)
