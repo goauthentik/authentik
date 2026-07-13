@@ -17,7 +17,7 @@ Enterprise licenses can be purchased via our [Customer Portal](https://customers
 
 ## Start using authentik Enterprise
 
-Use these pages based on what you need to do:
+Refer to our Enterprise documentation for further information:
 
 - [Compare Enterprise features](./enterprise-features.md) and review [current plan pricing](https://goauthentik.io/pricing/).
 - [Get started with authentik Enterprise](./get-started.md) on a new or existing authentik installation.
