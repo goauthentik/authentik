@@ -185,7 +185,7 @@ Templates can extend the base email template and use standard Django template ta
             </tr>
             <tr>
                 <td class="content-block">
-                    {% blocktrans with expires=expires|naturaltime %} If you did not request a
+                    {% blocktrans with expires=expires|timeuntil %} If you did not request a
                     password change, please ignore this email. The link above is valid for {{
                     expires }}. {% endblocktrans %}
                 </td>
