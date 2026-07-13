@@ -24,4 +24,4 @@ Use these pages based on what you need to do:
 - [Manage Enterprise licensing](./manage-enterprise.md) to control organization access, purchase and manage licenses, and manage billing.
 - [Enterprise support](./enterprise-support.md) to open and track support tickets.
 
-After you install a license, use the standard authentik documentation to configure the features that you need. Each applicable feature guide identifies Enterprise-only and preview functionality.
+After you install a license, use the standard authentik documentation to configure the features that you need.
