@@ -4,7 +4,7 @@ description: "Open and manage authentik Enterprise support tickets"
 sidebar_position: 4
 ---
 
-Ticket-based support is included with authentik Enterprise subscriptions over US$1,000 per year. Enterprise Plus subscriptions include the support channels and response-time commitments defined in your agreement.
+authentik Enterprise subscriptions over US$1,000 per year include ticket-based support. Enterprise Plus subscriptions include the support channels and response-time commitments defined in your agreement.
 
 ## Open and manage support tickets {#managing-tickets}
 

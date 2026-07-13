@@ -4,7 +4,7 @@ description: "Enable authentik Enterprise on a new or existing installation"
 sidebar_position: 1
 ---
 
-An Enterprise license unlocks licensed features on an existing authentik installation. You do not need a separate Enterprise package or a different installation process.
+An authentik Enterprise license unlocks licensed features on an existing authentik installation. You do not need a separate Enterprise package or a different installation process.
 
 ## Before you begin
 
@@ -43,7 +43,7 @@ To request a trial or discuss an Enterprise Plus agreement, contact [hello@goaut
 
 The **Licenses** page displays the installed license, its internal and external user capacity, and its expiry date. The **Current license status** card displays the combined status and capacity of all active licenses for the installation.
 
-If authentik rejects the key, verify that you copied the complete key and that its Install ID matches the current installation. Contact [Enterprise support](./support.md) if a valid key still cannot be installed.
+If authentik rejects the key, verify that you copied the complete key and that its Install ID matches the current installation. Contact [Enterprise support](./enterprise-support.md) if a valid key still cannot be installed.
 
 ## Next steps
 

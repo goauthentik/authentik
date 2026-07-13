@@ -69,16 +69,7 @@
 #endregion
 
 #region Enterprise
-/enterprise/entsupport                                      /enterprise/support/ 301!
-/enterprise/entsupport/                                     /enterprise/support/ 301!
-/enterprise/features                                       /enterprise/enterprise-features/ 301!
-/enterprise/features/                                      /enterprise/enterprise-features/ 301!
-/enterprise/get-started                                     /enterprise/install-license/ 301!
-/enterprise/get-started/                                    /enterprise/install-license/ 301!
-/enterprise/licenses                                       /enterprise/manage-enterprise/ 301!
-/enterprise/licenses/                                      /enterprise/manage-enterprise/ 301!
-/enterprise/enterprise-support                              /enterprise/support/ 301!
-/enterprise/enterprise-support/                             /enterprise/support/ 301!
+/enterprise/entsupport                                      /enterprise/enterprise-support/  301!
 #endregion
 
 #region System Management

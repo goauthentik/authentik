@@ -38,7 +38,7 @@ To remove a member, open the organization, find the person under **Membership**,
 
 ## Purchase a license
 
-Before purchasing a license, copy the authentik installation's [Install ID](./install-license.md#1-copy-the-install-id).
+Before purchasing a license, copy the authentik installation's [Install ID](./get-started.md#1-copy-the-install-id).
 
 1. Log in to the [Customer Portal](https://customers.goauthentik.io/) and select the organization that will own the license.
 2. Click **Purchase license**.
@@ -48,7 +48,7 @@ Before purchasing a license, copy the authentik installation's [Install ID](./in
 6. Click **Continue**.
 7. Enter the payment details, then click **Pay and subscribe**.
 
-After the payment is validated, the license appears on the organization page. Click **Details** next to the license to copy its key, then [install the license key](./install-license.md#3-install-the-license-key) in authentik.
+After the payment is validated, the license appears on the organization page. Click **Details** next to the license to copy its key, then [install the license key](./get-started.md#3-install-the-license-key) in authentik.
 
 For a trial, Enterprise Plus, invoice billing, or a custom purchase, contact [hello@goauthentik.io](mailto:hello@goauthentik.io).
 
@@ -63,7 +63,7 @@ In the Admin interface, navigate to **Enterprise** > **Licenses** to view:
 - The combined expiry, status, and user capacity of installed licenses.
 - The name, capacity, and expiry date of each license.
 
-To install the first license, follow [Install an Enterprise license](./install-license.md).
+To install the first license, follow [Get started with authentik Enterprise](./get-started.md).
 
 ### Update a license key
 
@@ -93,7 +93,7 @@ The license status becomes invalid if either user type exceeds its licensed capa
 
 ### Expand license capacity
 
-To add capacity, either [purchase another license](#purchase-a-license) for the same Install ID or [open a support ticket](./support.md) to change an existing subscription. Multiple active licenses add together, but their billing and renewal dates can differ.
+To add capacity, either [purchase another license](#purchase-a-license) for the same Install ID or [open a support ticket](./enterprise-support.md) to change an existing subscription. Multiple active licenses add together, but their billing and renewal dates can differ.
 
 Use the forecasts on **Enterprise** > **Licenses** as planning estimates. Before purchasing, compare the proposed capacity with the current counts for both user types.
 
