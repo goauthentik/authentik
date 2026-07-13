@@ -13,7 +13,7 @@ authentik offers two Enterprise plans:
 - **Enterprise** adds Enterprise features and ticket-based support for qualifying subscriptions.
 - **Enterprise Plus** adds customized support and service-level agreements, invoiced billing, volume pricing, multi-instance deployment support, and FIPS-compliant deployments for FedRAMP requirements.
 
-See [authentik pricing](https://goauthentik.io/pricing/) for current plan details and pricing. To discuss a trial, a custom agreement, or deployment requirements, contact [hello@goauthentik.io](mailto:hello@goauthentik.io).
+Enterprise licenses can be purchased via our [Customer Portal](https://customers.goauthentik.io/). Alternatively, if you'd like to organize a call with our team to discuss your needs, contact us via [hello@goauthentik.io](mailto:hello@goauthentik.io).
 
 ## Start using authentik Enterprise
 
