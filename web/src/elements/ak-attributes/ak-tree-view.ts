@@ -1,8 +1,12 @@
-import { match, P } from "ts-pattern";
+import Styles from "./ak-tree-view.styles";
+
+import { classList } from "#elements/directives/class-list";
+
+import { isMatching, match, P } from "ts-pattern";
 
 import { msg } from "@lit/localize";
-import { html, LitElement } from "lit";
-import { property } from "lit/decorators.js";
+import { html, LitElement, type TemplateResult } from "lit";
+import { customElement, property, state } from "lit/decorators.js";
 
 // string, number, object, array, true, false, null
 
@@ -11,54 +15,78 @@ type JsonObject = { [key: string]: JsonValue };
 type JsonArray = JsonValue[];
 export type JsonValue = JsonScalar | JsonObject | JsonArray;
 
+const isJsonArray = (v: unknown): v is JsonArray => Array.isArray(v);
+const isJsonObject = (v: unknown): v is JsonObject => v !== null && !Array.isArray(v) && typeof v === "object";
+const PStringable = P.union(P.string, P.number, P.boolean, P.nullish);
+const PIndexable = P.union(P.when(isJsonArray), P.when(isJsonObject));
+
 @customElement("ak-tree-view")
 export class AkAttributeView extends LitElement {
+    static readonly styles = [Styles];
+
     @property({ type: Boolean, attribute: "show-expand" })
     showExpand = false;
 
     @property({ attribute: false })
-    public value: unknown;
+    public value: JsonValue = null;
 
-    @property({ attribute: false })
-    public value: unknown;
+    @state()
+    public expanded: Record<string, boolean> = {};
 
-    @property({ type: String, reflect: true })
-    public mode: Mode = "json";
+    connectedCallback() {
+        super.connectedCallback();
+        if (!this.hasAttribute("value") && typeof this.value === "undefined") {
+            this.setAttribute("value", this.innerText);
+        }
+        this.setAttribute("role", "node");
+    }
 
-    handleToggle = (ev: CustomEvent) => {
-        this.mode = ev.detail.value;
+    protected handleClick = (e: Event) => {
+        e.preventDefault();
+        console.log(e);
     };
 
-    get cleanedValue() {
-        const cleanObject = (ob: unknown) =>
-            match(ob)
-                .with(P.string, (s) =>
-                    // Clean some artifacts from the way Django sends the data
-                    s.replace(/\\n/g, String.fromCharCode(10)).replace(/\\'/g, "'")
-                )
-                .with(P.record(PJsonKey, P._), (r) =>
-                    Object.fromEntries(
-                        Object.entries(r).map(([key, value]) => [key, cleanObject(value)])
-                    )
-                )
-                .with(P.array(P._), (a) => a.map((o) => cleanObject(o)))
-                .otherwise((a) => a);
-        return cleanObject(this.value);
+    renderIndexable(ob: JsonObject | JsonArray, path = ""): TemplateResult {
+        const entries = Object.entries(ob);
+
+        return html` <ul part="indexable">
+            ${entries.map(([key, value]) => {
+                const nodePath = path ? `${path}.${key}` : path;
+                const scalar = isMatching(PStringable, value);
+                const expanded = this.expanded[nodePath];
+                const show = scalar || expanded;
+                const classes = classList([!scalar && "collapsable", !this.expanded && "collapsable--collapsed"]);
+
+                return html`
+                    <li
+                        part="tree-item"
+                        role="treeitem"
+                        data-path=${nodePath}
+                        aria-expanded=${expanded ? "true" : "false"}
+                    >
+                        <span part="tree-key" class=${classes} @click=${scalar ? null : this.handleClick}>
+                            ${key}:
+                        </span>
+                        ${this.renderValue(value)}
+                    </li>
+                `;
+            })}
+        </ul>`;
+    }
+
+    renderPreview(v: JsonObject | JsonArray) {
+        return Array.isArray(v) ? html`[${msg("Array")}]` : html`{${msg("Object")}}`;
+    }
+
+    renderValue(value: JsonValue, path = "") {
+        // @ts-ignore
+        return match(value)
+            .with(PStringable, (v) => html`${JSON.stringify(v).replace(/^"/, "").replace(/"$/, "")}`)
+            .with(PIndexable, (v: JsonArray | JsonObject) => this.renderIndexable(v, path))
+            .otherwise(() => html`<em>${msg("Unrepresentable")}</em>`);
     }
 
     render() {
-        const json = () => JSON.stringify(this.cleanedValue, null, 2);
-        const yaml = () => YAML.stringify(this.cleanedValue, { blockQuote: "folded" });
-
-        return html`
-            <ak-toggle-group compact @ak-toggle=${this.handleToggle}>
-                <option value="json">${msg("JSON")}</option>
-                <option value="yaml">${msg("YAML")}</option>
-            </ak-toggle-group>
-            <div style="position: relative;">
-                <button @click=${() => this.copy(this.mode === "json" ? json : yaml)}>Copy</button>
-                <pre>${this.mode === "json" ? json() : yaml()}</pre>
-            </div>
-        `;
+        return html`<div part="tree-viewer">${this.renderValue(this.value)}</div>`;
     }
 }
