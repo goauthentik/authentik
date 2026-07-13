@@ -4,6 +4,8 @@ sidebar_label: GitHub Enterprise Server
 support_level: community
 ---
 
+import SAMLProvider20265Warning from "../../\_saml-provider-2026-5-warning.mdx";
+
 ## What is GitHub Enterprise Server?
 
 > GitHub Enterprise Server is a self-hosted platform for software development within your enterprise.
@@ -28,6 +30,8 @@ This documentation lists only the settings that you need to change from their de
 To support the integration of GitHub Enterprise Server with authentik, you need to create an application/provider pair in authentik. If you want to use SCIM provisioning, you also need to create application entitlements and a SCIM property mapping.
 
 ### Create an application and provider in authentik
+
+<SAMLProvider20265Warning />
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **New Application** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)

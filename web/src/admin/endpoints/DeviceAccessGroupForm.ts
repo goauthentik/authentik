@@ -1,7 +1,7 @@
 import "#components/ak-text-input";
 import "#elements/forms/HorizontalFormElement";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { PFSize } from "#common/enums";
 
 import { ModelForm } from "#elements/forms/ModelForm";
@@ -26,29 +26,26 @@ export class DeviceAccessGroupForm extends WithBrandConfig(ModelForm<DeviceAcces
 
     public override size = PFSize.Small;
 
-    protected override loadInstance(pk: string): Promise<DeviceAccessGroup> {
-        return new EndpointsApi(DEFAULT_CONFIG).endpointsDeviceAccessGroupsRetrieve({
-            pbmUuid: pk,
-        });
-    }
+    protected endpoints = {
+        load: (pbmUuid: string) =>
+            aki(EndpointsApi).endpointsDeviceAccessGroupsRetrieve({
+                pbmUuid,
+            }),
+        create: (data: DeviceAccessGroup) =>
+            aki(EndpointsApi).endpointsDeviceAccessGroupsCreate({
+                deviceAccessGroupRequest: data as unknown as DeviceAccessGroupRequest,
+            }),
+        update: (pbmUuid: string, patchedDeviceAccessGroupRequest: DeviceAccessGroup) =>
+            aki(EndpointsApi).endpointsDeviceAccessGroupsPartialUpdate({
+                pbmUuid,
+                patchedDeviceAccessGroupRequest,
+            }),
+    };
 
     public override getSuccessMessage(): string {
         return this.instance
             ? msg("Successfully updated group.")
             : msg("Successfully created group.");
-    }
-
-    protected override async send(data: DeviceAccessGroup): Promise<DeviceAccessGroup> {
-        if (this.instance) {
-            return new EndpointsApi(DEFAULT_CONFIG).endpointsDeviceAccessGroupsPartialUpdate({
-                pbmUuid: this.instance.pbmUuid,
-                patchedDeviceAccessGroupRequest: data,
-            });
-        }
-
-        return new EndpointsApi(DEFAULT_CONFIG).endpointsDeviceAccessGroupsCreate({
-            deviceAccessGroupRequest: data as unknown as DeviceAccessGroupRequest,
-        });
     }
 
     protected override renderForm() {

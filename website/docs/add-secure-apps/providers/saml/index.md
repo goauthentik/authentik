@@ -1,5 +1,7 @@
 ---
 title: SAML Provider
+sidebar_position: 10
+sidebar_label: "SAML Provider"
 ---
 
 The SAML provider allows you to integrate with Service Providers using the SAML2 protocol. It supports [importing and exporting SAML metadata](#saml-metadata), [signed requests](#certificates) and uses [property mappings](../property-mappings/index.md#saml-property-mappings) to align, or "map", Service Provider and authentik attributes.
@@ -139,13 +141,13 @@ In authentik, it's possible to configure which property mapping will be used to 
 
 In authentik, it's also possible to configure the default SAML NameID policy used for IDP-initiated logins or when an incoming SP assertion doesn't specify a NameID policy (also applies when using a custom NameID Mapping). The following table outlines how NameID policies are handled:
 
-| Default NameID policy                                                            | How authentik will handle the NameID                                                                                                                                                               |
-| -------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Persistent - `urn:oasis:names:tc:SAML:2.0:nameid-format:persistent`              | NameID will be set to the user's hashed ID.                                                                                                                                                        |
-| x509 Subject - `urn:oasis:names:tc:SAML:2.0:nameid-format:X509SubjectName`       | NameID will be set to the user's `distinguishedName` attribute. This attribute is set by the LDAP source by default. If the attribute does not exist, it will fall back the persistent identifier. |
-| Windows - `urn:oasis:names:tc:SAML:2.0:nameid-format:WindowsDomainQualifiedName` | NameID will be set to the user's UPN. This is also set by the LDAP source, and also falls back to the persistent identifier.                                                                       |
-| Transient - `urn:oasis:names:tc:SAML:2.0:nameid-format:transient`                | NameID will be set based on the user's session ID.                                                                                                                                                 |
-| Email address - `urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress`         | NameID will be set to the user's email address.                                                                                                                                                    |
+| Default NameID policy                                                            | How authentik will handle the NameID                                                                                                                                                                  |
+| -------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Persistent - `urn:oasis:names:tc:SAML:2.0:nameid-format:persistent`              | NameID will be set to the user's hashed ID.                                                                                                                                                           |
+| x509 Subject - `urn:oasis:names:tc:SAML:2.0:nameid-format:X509SubjectName`       | NameID will be set to the user's `distinguishedName` attribute. This attribute is set by the LDAP source by default. If the attribute does not exist, it will fall back to the persistent identifier. |
+| Windows - `urn:oasis:names:tc:SAML:2.0:nameid-format:WindowsDomainQualifiedName` | NameID will be set to the user's UPN. This is also set by the LDAP source, and also falls back to the persistent identifier.                                                                          |
+| Transient - `urn:oasis:names:tc:SAML:2.0:nameid-format:transient`                | NameID will be set based on the user's session ID.                                                                                                                                                    |
+| Email address - `urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress`         | NameID will be set to the user's email address.                                                                                                                                                       |
 
 :::warning Email based NameID attribute
 By default, users are free to change their email addresses. Therefore, it is recommended to either: avoid using a user's email address as the NameID attribute or, if possible, disallow changing email addresses.

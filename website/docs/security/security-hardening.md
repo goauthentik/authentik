@@ -1,5 +1,6 @@
 ---
 title: Hardening authentik
+sidebar_position: 2
 ---
 
 While authentik is secure out of the box, you can take steps to further increase the security of an authentik instance. As everyone knows, there is a consequential tradeoff between security and convenience. All of these hardening practices have an impact on the user experience and should only be applied knowing this tradeoff.
@@ -17,7 +18,7 @@ For further options, see [Password Policy](../customize/policies/types/password.
 
 ### Expressions
 
-[Expressions](../customize/policies/types/expression/index.mdx) allow super-users and other highly privileged users to create custom logic within authentik to modify its behaviour. Editing/creating these expressions is, by default, limited to super-users and any related events are fully logged.
+[Expressions](../customize/policies/types/expression/index.mdx) allow super-users and other highly privileged users to create custom logic within authentik to modify its behavior. Editing/creating these expressions is, by default, limited to super-users and any related events are fully logged.
 
 However, for further hardening, it is possible to prevent any user (even super-users) from using expressions to create or edit any objects. To do so, configure your deployment to block API requests to these endpoints:
 

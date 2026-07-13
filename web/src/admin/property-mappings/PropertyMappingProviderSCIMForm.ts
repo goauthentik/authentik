@@ -1,7 +1,7 @@
 import "#elements/CodeMirror";
 import "#elements/forms/HorizontalFormElement";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { BasePropertyMappingForm } from "#admin/property-mappings/BasePropertyMappingForm";
 
@@ -11,23 +11,17 @@ import { customElement } from "lit/decorators.js";
 
 @customElement("ak-property-mapping-provider-scim-form")
 export class PropertyMappingProviderSCIMForm extends BasePropertyMappingForm<SCIMMapping> {
-    loadInstance(pk: string): Promise<SCIMMapping> {
-        return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsProviderScimRetrieve({
-            pmUuid: pk,
-        });
-    }
-
-    async send(data: SCIMMapping): Promise<SCIMMapping> {
-        if (this.instance) {
-            return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsProviderScimUpdate({
-                pmUuid: this.instance.pk,
-                sCIMMappingRequest: data,
-            });
-        }
-        return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsProviderScimCreate({
-            sCIMMappingRequest: data,
-        });
-    }
+    protected endpoints = {
+        load: (pk: string) =>
+            aki(PropertymappingsApi).propertymappingsProviderScimRetrieve({ pmUuid: pk }),
+        create: (sCIMMappingRequest: SCIMMapping) =>
+            aki(PropertymappingsApi).propertymappingsProviderScimCreate({ sCIMMappingRequest }),
+        update: (pk: string, sCIMMappingRequest: SCIMMapping) =>
+            aki(PropertymappingsApi).propertymappingsProviderScimUpdate({
+                pmUuid: pk,
+                sCIMMappingRequest,
+            }),
+    };
 }
 
 declare global {

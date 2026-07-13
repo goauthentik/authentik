@@ -24,7 +24,7 @@ func NewDirectBinder(si server.LDAPServerInstance) *DirectBinder {
 		si:  si,
 		log: log.WithField("logger", "authentik.outpost.ldap.binder.direct"),
 	}
-	db.log.Info("initialised direct binder")
+	db.log.Info("initialized direct binder")
 	return db
 }
 

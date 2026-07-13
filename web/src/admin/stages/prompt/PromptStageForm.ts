@@ -11,7 +11,7 @@ import {
     promptFieldsSelector,
 } from "./PromptStageFormHelpers.js";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { PFSize } from "#common/enums";
 
 import { BaseStageForm } from "#admin/stages/BaseStageForm";
@@ -25,23 +25,13 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-stage-prompt-form")
 export class PromptStageForm extends BaseStageForm<PromptStage> {
-    loadInstance(pk: string): Promise<PromptStage> {
-        return new StagesApi(DEFAULT_CONFIG).stagesPromptStagesRetrieve({
-            stageUuid: pk,
-        });
-    }
-
-    async send(data: PromptStage): Promise<PromptStage> {
-        if (this.instance) {
-            return new StagesApi(DEFAULT_CONFIG).stagesPromptStagesUpdate({
-                stageUuid: this.instance.pk || "",
-                promptStageRequest: data,
-            });
-        }
-        return new StagesApi(DEFAULT_CONFIG).stagesPromptStagesCreate({
-            promptStageRequest: data,
-        });
-    }
+    protected endpoints = {
+        load: (stageUuid: string) => aki(StagesApi).stagesPromptStagesRetrieve({ stageUuid }),
+        create: (promptStageRequest: PromptStage) =>
+            aki(StagesApi).stagesPromptStagesCreate({ promptStageRequest }),
+        update: (stageUuid: string, promptStageRequest: PromptStage) =>
+            aki(StagesApi).stagesPromptStagesUpdate({ stageUuid, promptStageRequest }),
+    };
 
     protected override renderForm(): TemplateResult {
         return html` <span>

@@ -17,9 +17,9 @@ jobs:
       - id: generate_token
         uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v2
         with:
-          app-id: ${{ secrets.GH_APP_ID }}
+          client-id: ${{ secrets.GH_APP_ID }}
           private-key: ${{ secrets.GH_APP_PRIV_KEY }}
-      - uses: actions/stale@b5d41d4e1d5dceea10e7104786b73624c18a190f # v10
+      - uses: actions/stale@1e223db275d687790206a7acac4d1a11bd6fe629 # v10
         with:
           repo-token: ${{ steps.generate_token.outputs.token }}
           days-before-stale: 60

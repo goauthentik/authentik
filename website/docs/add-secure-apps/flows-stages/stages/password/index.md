@@ -23,7 +23,7 @@ The stage supports authentik's built-in password database, app passwords, LDAP-b
 
 ## Flow integration
 
-This stage is typically bound after an [Identification](../identification/index.md) stage and before a [Authenticator Validation](../authenticator_validate/index.md) or [User Login](../user_login/index.md) stage.
+This stage is typically bound after an [Identification](../identification/index.md) stage and before an [Authenticator Validation](../authenticator_validate/index.md) or [User Login](../user_login/index.md) stage.
 
 If the [Identification stage](../identification/index.md) has its **Password stage** option set, the password prompt is rendered as part of the identification step and the Password stage should not also be bound separately in the same flow.
 
@@ -53,7 +53,7 @@ To configure this setup:
 3. Configure the expression so that it returns `True` only when the Password stage should run. Use one of the expressions below, depending on the authenticator type.
 4. Navigate to **Flows and Stages** > **Flows** and open your authentication flow.
 5. Open the **Stage Bindings** tab, expand the Password stage binding, and bind the Expression Policy there. Do not bind it to the flow itself or directly to the stage object. For more background, see [Bind a policy to a stage binding](../../../../customize/policies/working_with_policies.md#bind-a-policy-to-a-stage-binding).
-6. On the Password stage binding, enable **Evaluate when stage is run**. Disable **Evaluate when flow is planned** unless the user is already known before the flow starts.
+6. On the Password stage binding, enable **Evaluate when stage is run**. Disable **Evaluate when flow is planned** unless the user is already known before the flow starts. See [Planning and stage policies](../../flow/planner.md#planning-and-stage-policies).
 
 #### WebAuthn
 

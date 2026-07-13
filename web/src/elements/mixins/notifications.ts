@@ -1,12 +1,13 @@
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { APIResult, isAPIResultReady } from "#common/api/responses";
 import { MessageLevel } from "#common/messages";
 
 import { ContextControllerRegistry } from "#elements/controllers/ContextControllerRegistry";
 import { showMessage } from "#elements/messages/MessageContainer";
-import { AKDrawerChangeEvent } from "#elements/notifications/events";
-import { createPaginatedNotificationListFrom } from "#elements/notifications/utils";
 import { createMixin } from "#elements/types";
+
+import { AKDrawerChangeEvent } from "#components/notifications/events";
+import { createPaginatedNotificationListFrom } from "#components/notifications/utils";
 
 import { ConsoleLogger } from "#logger/browser";
 
@@ -116,7 +117,7 @@ export const WithNotifications = createMixin<NotificationsMixin>(
             ): Promise<void> => {
                 this.#logger.debug(`Marking notification ${notificationID} as read...`);
 
-                return new EventsApi(DEFAULT_CONFIG)
+                return aki(EventsApi)
                     .eventsNotificationsPartialUpdate(
                         {
                             uuid: notificationID || "",
@@ -130,7 +131,7 @@ export const WithNotifications = createMixin<NotificationsMixin>(
             };
 
             public clearNotifications = (): Promise<void> => {
-                return new EventsApi(DEFAULT_CONFIG)
+                return aki(EventsApi)
                     .eventsNotificationsMarkAllSeenCreate()
                     .then(() => {
                         showMessage({
