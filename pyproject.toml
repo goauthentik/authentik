@@ -101,7 +101,7 @@ dev = [
   "pytest-timeout==2.4.0",
   "pytest==9.1.1",
   "requests-mock==1.12.1",
-  "ruff==0.15.20",
+  "ruff==0.15.21",
   "selenium==4.45.0",
   "types-channels==4.3.0.20260518",
   "types-docker==7.1.0.20260518",
