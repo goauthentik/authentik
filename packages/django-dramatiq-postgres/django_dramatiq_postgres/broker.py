@@ -272,6 +272,13 @@ class _PostgresConsumer(Consumer):
     def locks_connection(self) -> DatabaseWrapper:
         if self._locks_connection is not None and self._locks_connection.is_usable():
             return self._locks_connection
+
+        if self._locks_connection is not None:
+            try:
+                self._locks_connection.close()
+            except DATABASE_ERRORS as exc:
+                self.logger.warning("Failed to close old unusable locks connection", exc=exc)
+
         self._locks_connection = cast(DatabaseWrapper, connections.create_connection(self.db_alias))
         return self._locks_connection
 
@@ -279,6 +286,13 @@ class _PostgresConsumer(Consumer):
     def listen_connection(self) -> DatabaseWrapper:
         if self._listen_connection is not None and self._listen_connection.is_usable():
             return self._listen_connection
+
+        if self._listen_connection is not None:
+            try:
+                self._listen_connection.close()
+            except DATABASE_ERRORS as exc:
+                self.logger.warning("Failed to close old unusable listen connection", exc=exc)
+
         self._listen_connection = cast(
             DatabaseWrapper, connections.create_connection(self.db_alias)
         )
