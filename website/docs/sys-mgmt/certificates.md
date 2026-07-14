@@ -24,7 +24,7 @@ For SAML use-cases, you can generate a certificate with a longer validity period
 
 Not every key algorithm can be used for every purpose. The algorithm is detected from the certificate when it is generated or imported, and authentik only offers a certificate where its key algorithm is usable.
 
-| Key algorithm  | OAuth2/OIDC token signing | SAML signing | TLS (proxy, LDAP, RADIUS, brands) |
+| Key algorithm  | OAuth2/OIDC token signing | SAML signing | proxy, LDAP, RADIUS, brands       |
 | -------------- | ------------------------- | ------------ | --------------------------------- |
 | RSA            | Yes (`RS256`)             | Yes          | Yes                               |
 | Elliptic Curve | Yes (`ES256`/`384`/`512`) | Yes          | Yes                               |
@@ -32,7 +32,7 @@ Not every key algorithm can be used for every purpose. The algorithm is detected
 | Ed448          | Yes (`EdDSA`)             | No           | No                                |
 | DSA            | No                        | Yes          | No                                |
 
-Ed25519 and Ed448 are signed as `EdDSA` and published in the provider's JWKS as `OKP` keys, as defined in [RFC 8037](https://www.rfc-editor.org/rfc/rfc8037). Before selecting one, confirm that your application's OIDC library supports `EdDSA` — support is less widespread than for `RS256`, and the default self-signed certificate remains RSA.
+Ed25519 and Ed448 are both signed as `EdDSA`. Before selecting one, check that your application supports it, as `EdDSA` is not as widely supported as `RS256`.
 
 ## Certificate considerations
 

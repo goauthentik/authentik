@@ -17,8 +17,8 @@ JWE_ENCRYPTION_KEY_TYPES = [KeyType.RSA]
 # Key types that have an XML-DSIG signature transform in libxmlsec1.
 XML_SIGNING_KEY_TYPES = [KeyType.RSA, KeyType.EC, KeyType.DSA]
 
-# Key types Go's crypto/tls can build a certificate from. Outposts and brand certificates are
-# loaded by tls.X509KeyPair, which handles RSA, ECDSA and Ed25519, but not Ed448.
+# Key types the Go outposts can serve TLS with. Ed448 will never be supported
+# See https://github.com/golang/go/issues/29390#issuecomment-614175576
 TLS_KEY_TYPES = [KeyType.RSA, KeyType.EC, KeyType.ED25519]
 
 
@@ -29,7 +29,7 @@ def validate_key_type(keypair: CertificateKeyPair | None, allowed: list[KeyType]
     that field for us.
 
     A keypair whose `key_type` is null is rejected rather than allowed through: null means
-    `detect_key_type` did not recognise the certificate's public key, so we cannot vouch for it
+    `detect_key_type` did not recognize the certificate's public key, so we cannot vouch for it
     being usable, and letting it through is what causes downstream signing to raise instead of
     returning a validation error."""
     if not keypair:
