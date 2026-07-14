@@ -5,7 +5,7 @@ authentik_version: "2025.2"
 
 The Email Authenticator Setup stage registers an email-based authenticator for the current user, enabling one-time codes to be sent via email during subsequent authentications.
 
-## Overview
+## About the email authenticator setup stage
 
 During enrollment, the user supplies an email address if one is not already known, then confirms ownership by entering a one-time code.
 
@@ -24,11 +24,21 @@ The enrolled email address can later be used with the [Authenticator Validation 
 - **From address**: sender address used for enrollment emails.
 - **Token expiry**: how long the one-time code stays valid.
 - **Subject**: subject line for the enrollment email.
-- **Template**: email template used for the one-time code email.
+- **Template**: email template used for the one-time code email. See [Custom templates](#custom-templates) below.
 - **Authenticator type name**: optional friendly name shown to the user in self-service settings.
 - **Configuration flow**: optional authenticated flow that lets users enroll this authenticator from user settings.
 
 For SMTP requirements and global email delivery settings, see [Email configuration](../../../../install-config/email.mdx).
+
+## Custom templates
+
+This stage supports custom email templates in the same way as the [Email stage](../email/index.md#custom-templates). Mount your custom templates into authentik's template directory, and they will appear in the stage's **Template** dropdown.
+
+For the full mounting instructions (Docker Compose and Kubernetes), a list of available template variables, and an example template, see [Custom templates](../email/index.md#custom-templates) in the Email stage documentation.
+
+:::info
+If a custom template does not appear in the **Template** selector, check the worker container logs. Templates are discovered when the stage configuration form loads.
+:::
 
 ## Flow integration
 

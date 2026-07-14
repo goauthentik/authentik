@@ -1,4 +1,4 @@
-import { RedirectEntry } from "@goauthentik/docusaurus-theme/redirects";
+import { RedirectEntry, REDIRECTS_PLUGIN_NAME } from "@goauthentik/docusaurus-theme/redirects";
 import type { AKRedirectsPluginData } from "@goauthentik/docusaurus-theme/redirects/plugin";
 
 import { usePluginData } from "@docusaurus/useGlobalData";
@@ -7,7 +7,7 @@ import { usePluginData } from "@docusaurus/useGlobalData";
  * Hook to retrieve redirects provided by the client-side redirects plugin.
  */
 export function useRedirectEntries(): RedirectEntry[] | null {
-    const pluginData = usePluginData("ak-redirects-plugin", undefined) as
+    const pluginData = usePluginData(REDIRECTS_PLUGIN_NAME, undefined) as
         | AKRedirectsPluginData
         | undefined;
 

@@ -1,4 +1,5 @@
 import "#components/ak-switch-input";
+import "#components/ak-text-input";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 
@@ -14,48 +15,35 @@ import { customElement } from "lit/decorators.js";
 
 @customElement("ak-stage-invitation-form")
 export class InvitationStageForm extends BaseStageForm<InvitationStage> {
-    loadInstance(pk: string): Promise<InvitationStage> {
-        return aki(StagesApi).stagesInvitationStagesRetrieve({
-            stageUuid: pk,
-        });
-    }
+    public static override verboseName = msg("Invitation Stage");
+    public static override verboseNamePlural = msg("Invitation Stages");
 
-    async send(data: InvitationStage): Promise<InvitationStage> {
-        if (this.instance) {
-            return aki(StagesApi).stagesInvitationStagesUpdate({
-                stageUuid: this.instance.pk || "",
-                invitationStageRequest: data,
-            });
-        }
-        return aki(StagesApi).stagesInvitationStagesCreate({
-            invitationStageRequest: data,
-        });
-    }
+    protected endpoints = {
+        load: (stageUuid: string) => aki(StagesApi).stagesInvitationStagesRetrieve({ stageUuid }),
+        create: (invitationStageRequest: InvitationStage) =>
+            aki(StagesApi).stagesInvitationStagesCreate({ invitationStageRequest }),
+        update: (stageUuid: string, invitationStageRequest: InvitationStage) =>
+            aki(StagesApi).stagesInvitationStagesUpdate({ stageUuid, invitationStageRequest }),
+    };
 
     protected override renderForm(): TemplateResult {
-        return html` <span>
-                ${msg("This stage can be included in enrollment flows to accept invitations.")}
-            </span>
-            <ak-form-element-horizontal label=${msg("Name")} required name="name">
-                <input
-                    type="text"
-                    value="${this.instance?.name || ""}"
-                    class="pf-c-form-control"
-                    required
-                />
-            </ak-form-element-horizontal>
-            <ak-form-group open label="${msg("Stage-specific settings")}">
-                <div class="pf-c-form">
-                    <ak-switch-input
-                        name="continueFlowWithoutInvitation"
-                        label=${msg("Continue flow without invitation")}
-                        ?checked=${this.instance?.continueFlowWithoutInvitation ?? false}
-                        help=${msg(
-                            "If this flag is set, this Stage will jump to the next Stage when no Invitation is given. By default this Stage will cancel the Flow when no invitation is given.",
-                        )}
-                    ></ak-switch-input>
-                </div>
-            </ak-form-group>`;
+        return html`<ak-text-input
+                label=${msg("Stage Name")}
+                required
+                name="name"
+                value="${this.instance?.name || ""}"
+                help=${msg("This stage can be included in enrollment flows to accept invitations.")}
+                placeholder=${msg("e.g. invitation-stage")}
+                input-hint="code"
+            ></ak-text-input>
+            <ak-switch-input
+                name="continueFlowWithoutInvitation"
+                label=${msg("Continue flow without invitation")}
+                ?checked=${this.instance?.continueFlowWithoutInvitation ?? false}
+                help=${msg(
+                    "If this flag is set, this Stage will jump to the next Stage when no Invitation is given. By default this Stage will cancel the Flow when no invitation is given.",
+                )}
+            ></ak-switch-input>`;
     }
 }
 

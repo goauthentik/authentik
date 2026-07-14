@@ -11,6 +11,7 @@ from structlog.stdlib import get_logger
 from authentik.core.models import Application
 from authentik.events.models import Event, EventAction
 from authentik.events.signals import get_login_event
+from authentik.flows.apps import ContinuousLogin
 from authentik.flows.exceptions import FlowNonApplicableException
 from authentik.flows.models import in_memory_stage
 from authentik.flows.planner import PLAN_CONTEXT_APPLICATION, PLAN_CONTEXT_SSO, FlowPlanner
@@ -59,6 +60,10 @@ class SAMLSSOView(PolicyAccessView):
         """Handler to verify the SAML Request. Must be implemented by a subclass"""
         raise NotImplementedError
 
+    def get_resume_url(self) -> str | None:
+        """URL to re-enter this SAML request after another tab authenticated."""
+        return None
+
     def get(self, request: HttpRequest, application_slug: str) -> HttpResponse:
         """Verify the SAML Request, and if valid initiate the FlowPlanner for the application"""
         # Call the method handler, which checks the SAML
@@ -96,8 +101,11 @@ class SAMLSSOView(PolicyAccessView):
         return plan.to_redirect(
             request,
             self.provider.authorization_flow,
+            next=self.get_resume_url(),
             allowed_silent_types=(
-                [SAMLFlowFinalView] if self.provider.sp_binding in [SAMLBindings.REDIRECT] else []
+                [SAMLFlowFinalView]
+                if self.provider.sp_binding in [SAMLBindings.REDIRECT] and not ContinuousLogin.get()
+                else []
             ),
         )
 
@@ -127,6 +135,9 @@ class SAMLSSOView(PolicyAccessView):
 
 class SAMLSSOBindingRedirectView(SAMLSSOView):
     """SAML Handler for SSO/Redirect bindings, which are sent via GET"""
+
+    def get_resume_url(self) -> str | None:
+        return self.request.get_full_path()
 
     def check_saml_request(self) -> HttpRequest | None:
         """Handle REDIRECT bindings"""
