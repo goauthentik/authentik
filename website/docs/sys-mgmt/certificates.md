@@ -22,7 +22,7 @@ For SAML use-cases, you can generate a certificate with a longer validity period
 
 ## Supported key algorithms
 
-Not every key algorithm can be used for every purpose. The algorithm is detected from the certificate when it is generated or imported, and authentik only offers a certificate where its key algorithm is usable.
+Not every key algorithm is suitable for every use case. When a certificate is generated or imported, authentik determines its key algorithm and will only present that certificate for operations where its algorithm is supported.
 
 | Key algorithm  | OAuth2/OIDC token signing | SAML signing | proxy, LDAP, RADIUS, brands |
 | -------------- | ------------------------- | ------------ | --------------------------- |
