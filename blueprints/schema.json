@@ -10100,7 +10100,8 @@
                             "refresh_token",
                             "client_credentials",
                             "password",
-                            "urn:ietf:params:oauth:grant-type:device_code"
+                            "urn:ietf:params:oauth:grant-type:device_code",
+                            "urn:ietf:params:oauth:grant-type:token-exchange"
                         ],
                         "title": "Grant types"
                     },
@@ -13605,10 +13606,10 @@
                     "title": "Pre authentication flow",
                     "description": "Flow used before authentication."
                 },
-                "issuer": {
+                "issuer_override": {
                     "type": "string",
-                    "title": "Issuer",
-                    "description": "Also known as Entity ID. Defaults the Metadata URL."
+                    "title": "Issuer override",
+                    "description": "Also known as Entity ID. Defaults to the Metadata URL."
                 },
                 "sso_url": {
                     "type": "string",
