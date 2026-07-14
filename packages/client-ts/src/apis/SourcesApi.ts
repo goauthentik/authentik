@@ -870,7 +870,7 @@ export interface SourcesSamlListRequest {
     enabled?: boolean;
     enrollmentFlow?: string;
     forceAuthn?: boolean;
-    issuer?: string;
+    issuerOverride?: string;
     managed?: string;
     name?: string;
     nameIdPolicy?: SAMLNameIDPolicyEnum;
@@ -7741,8 +7741,8 @@ export class SourcesApi extends runtime.BaseAPI {
             queryParameters["force_authn"] = requestParameters["forceAuthn"];
         }
 
-        if (requestParameters["issuer"] != null) {
-            queryParameters["issuer"] = requestParameters["issuer"];
+        if (requestParameters["issuerOverride"] != null) {
+            queryParameters["issuer_override"] = requestParameters["issuerOverride"];
         }
 
         if (requestParameters["managed"] != null) {
