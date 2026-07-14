@@ -55,7 +55,7 @@
         "pino": "^10.3.1",
         "prettier": "3.8.3",
         "prettier-plugin-packagejson": "catalog:",
-        "typedoc": "^0.28.18",
+        "typedoc": "^0.28.20",
         "typedoc-plugin-markdown": "^4.11.0",
         "typescript": "catalog:",
         "typescript-eslint": "^8.59.3"
