@@ -4,7 +4,7 @@ title: Prompt stage
 
 The Prompt stage prompts the user to enter information. The submitted values are then stored in the flow context.
 
-## Overview
+## About the prompt stage
 
 Use this stage to collect user input, such as profile attributes, passwords, invitation tokens, file uploads, or approval choices.
 

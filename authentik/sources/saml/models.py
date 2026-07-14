@@ -88,11 +88,10 @@ class SAMLSource(Source):
         related_name="source_pre_authentication",
     )
 
-    issuer = models.TextField(
+    issuer_override = models.TextField(
         blank=True,
         default=None,
-        verbose_name=_("Issuer"),
-        help_text=_("Also known as Entity ID. Defaults the Metadata URL."),
+        help_text=_("Also known as Entity ID. Defaults to the Metadata URL."),
     )
 
     sso_url = models.TextField(
@@ -256,9 +255,9 @@ class SAMLSource(Source):
 
     def get_issuer(self, request: HttpRequest) -> str:
         """Get Source's Issuer, falling back to our Metadata URL if none is set"""
-        if self.issuer is None:
+        if not self.issuer_override:
             return self.build_full_url(request, view="metadata")
-        return self.issuer
+        return self.issuer_override
 
     def build_full_url(self, request: HttpRequest, view: str = "acs") -> str:
         """Build Full ACS URL to be used in IDP"""
