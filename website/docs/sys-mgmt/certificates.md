@@ -26,10 +26,10 @@ Not every key algorithm can be used for every purpose. The algorithm is detected
 
 | Key algorithm  | OAuth2/OIDC token signing | SAML signing | proxy, LDAP, RADIUS, brands |
 | -------------- | ------------------------- | ------------ | --------------------------- |
-| RSA            | Yes (`RS256`)             | Yes          | Yes                         |
-| Elliptic Curve | Yes (`ES256`/`384`/`512`) | Yes          | Yes                         |
-| Ed25519        | Yes (`EdDSA`)             | No           | Yes                         |
-| Ed448          | Yes (`EdDSA`)             | No           | No                          |
+| RSA            | Yes                       | Yes          | Yes                         |
+| Elliptic Curve | Yes                       | Yes          | Yes                         |
+| Ed25519        | Yes                       | No           | Yes                         |
+| Ed448          | Yes                       | No           | No                          |
 | DSA            | No                        | Yes          | No                          |
 
 Ed25519 and Ed448 are both signed as `EdDSA`. Before selecting one, check that your application supports it, as `EdDSA` is not as widely supported as `RS256`.
