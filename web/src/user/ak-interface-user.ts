@@ -2,7 +2,7 @@ import "#components/ak-nav-buttons";
 import "#elements/banner/EnterpriseStatusBanner";
 import "#components/notifications/APIDrawer";
 import "#components/notifications/NotificationDrawer";
-import "#elements/router/RouterOutlet";
+import "#elements/router/core/RouterView";
 
 import { globalAK } from "#common/global";
 import { configureSentry } from "#common/sentry/index";
@@ -13,6 +13,7 @@ import { AuthenticatedInterface } from "#elements/AuthenticatedInterface";
 import { listen } from "#elements/decorators/listen";
 import { WithBrandConfig } from "#elements/mixins/branding";
 import { canAccessAdmin, WithSession } from "#elements/mixins/session";
+import { formatInterfacePrefix, toUserInterface } from "#elements/router/core/interfaces";
 import { ifPresent } from "#elements/utils/attributes";
 import { ThemedImage } from "#elements/utils/images";
 
@@ -25,7 +26,7 @@ import {
 } from "#components/notifications/utils";
 
 import Styles from "#user/ak-interface-user.css";
-import { ROUTES } from "#user/Routes";
+import { DEFAULT_PATH, ROUTES } from "#user/Routes";
 
 import { ConsoleLogger } from "#logger/browser";
 
@@ -146,7 +147,7 @@ class UserInterface extends WithBrandConfig(WithSession(AuthenticatedInterface))
                     class="pf-c-page__header"
                 >
                     <div part="brand" class="pf-c-page__header-brand">
-                        <a href="#/" class="pf-c-page__header-brand-link">
+                        <a href=${toUserInterface()} class="pf-c-page__header-brand-link">
                             ${ThemedImage({
                                 src: this.brandingLogo,
                                 alt: this.brandingTitle,
@@ -167,14 +168,18 @@ class UserInterface extends WithBrandConfig(WithSession(AuthenticatedInterface))
                         <div class="pf-c-drawer__main">
                             <div class="pf-c-drawer__content">
                                 <div class="pf-c-drawer__body">
-                                    <ak-router-outlet
+                                    <ak-router-view
                                         class="pf-l-bullseye__item pf-c-page__main"
                                         tabindex="-1"
                                         id="main-content"
-                                        default-url="/library"
                                         .routes=${ROUTES}
+                                        .prefix=${formatInterfacePrefix(
+                                            globalAK().api.relBase,
+                                            "user",
+                                        )}
+                                        .defaultPath=${DEFAULT_PATH}
                                     >
-                                    </ak-router-outlet>
+                                    </ak-router-view>
                                 </div>
                             </div>
                             ${renderNotificationDrawerPanel(this.drawer)}
