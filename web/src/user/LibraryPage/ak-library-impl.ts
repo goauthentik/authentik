@@ -16,7 +16,7 @@ import { AKSkipToContent } from "#elements/a11y/ak-skip-to-content";
 import { AKElement } from "#elements/Base";
 import { intersectionObserver } from "#elements/decorators/intersection-observer";
 import { canAccessAdmin, WithSession } from "#elements/mixins/session";
-import { getURLParam, updateURLParams } from "#elements/router/RouteMatch";
+import { navigate } from "#elements/router/core/navigation";
 import { SlottedTemplateResult } from "#elements/types";
 import { ifPresent } from "#elements/utils/attributes";
 import { FocusTarget } from "#elements/utils/focus";
@@ -207,9 +207,15 @@ export class LibraryPage extends WithSession(AKElement) {
             this.visibleApplications = this.apps.filter(appHasLaunchUrl);
         }
 
-        updateURLParams({
-            q: this.#query,
-        });
+        const url = new URL(window.location.href);
+
+        if (this.#query) {
+            url.searchParams.set("q", this.#query);
+        } else {
+            url.searchParams.delete("q");
+        }
+
+        navigate(url, { mode: "replace" });
     }
 
     protected fuse = new Fuse<Application>([], {
@@ -242,7 +248,7 @@ export class LibraryPage extends WithSession(AKElement) {
     public override connectedCallback() {
         super.connectedCallback();
 
-        this.query = getURLParam<string | null>("q", "");
+        this.query = new URLSearchParams(window.location.search).get("q") || "";
 
         this.addEventListener(
             "focus",
