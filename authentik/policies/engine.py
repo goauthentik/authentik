@@ -3,7 +3,6 @@
 from collections.abc import Iterable
 from multiprocessing import Pipe, current_process
 from multiprocessing.connection import Connection
-from warnings import deprecated
 
 from django.core.cache import cache
 from django.db.models import Count, Q, QuerySet
@@ -275,7 +274,9 @@ class PolicyEngine(_PolicyEngineBase):
             if isinstance(bindings, QuerySet):
                 self.compute_static_bindings(bindings)
                 policy_bindings = [x for x in bindings if x.policy]
-            self.__dynamic_results = self._evaluate_dynamic_bindings(policy_bindings, self.request)
+            self.__dynamic_results = self._evaluate_dynamic_bindings(
+                list(policy_bindings), self.request
+            )
             return self
 
     @property
@@ -287,10 +288,9 @@ class PolicyEngine(_PolicyEngineBase):
         return self._combine_results(self.mode, self.empty_result, all_results)
 
     @property
-    @deprecated("Access result directly or use bool(result)")
     def passing(self) -> bool:
         """Only get true/false if user passes"""
-        return bool(self.result)
+        return self.result.passing
 
 
 class FilterPolicyEngine(_PolicyEngineBase):
