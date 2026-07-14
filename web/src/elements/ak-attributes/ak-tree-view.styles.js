@@ -3,14 +3,31 @@ import { css } from "lit";
 export const styles = css`
     :host {
         display: block;
+        font-family: var(--pf-global--FontFamily--monospace, "monospace");
+    }
+
+    .collapsable {
+        display: inline-flex;
+        font-size: 0.8rem;
+        content: "▶";
+        align-items: center;
+        justify-content: center;
+        transition: transform 225ms ease-out;
+        transform: rotate(90deg);
+    }
+
+    .collapsable--collapsed::before {
+        transform: rotate(0);
     }
 
     [part="tree-key"] {
         display: inline-flex;
         align-items: flex-start;
+        color: var(--pf-global--Color--300);
     }
 
     ul {
+        color: var(--pf-global--Color--100);
         padding: 0;
         clear: both;
     }

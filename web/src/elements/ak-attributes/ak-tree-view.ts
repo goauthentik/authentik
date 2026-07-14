@@ -43,19 +43,24 @@ export class AkAttributeView extends LitElement {
 
     protected handleClick = (e: Event) => {
         e.preventDefault();
-        console.log(e);
+        const clickedPath = ((e.target as Element)?.closest('[part="tree-item"]') as HTMLElement)?.dataset.path;
+        if (!clickedPath) {
+            console.debug(`ak-tree-view: Could not identify dataset.path from ${e.target}`);
+            return;
+        }
+        this.expanded = { ...this.expanded, [clickedPath]: !this.expanded[clickedPath] };
     };
 
-    renderIndexable(ob: JsonObject | JsonArray, path = ""): TemplateResult {
+    renderIndexable(ob: JsonObject | JsonArray, path: string): TemplateResult {
         const entries = Object.entries(ob);
 
         return html` <ul part="indexable">
             ${entries.map(([key, value]) => {
-                const nodePath = path ? `${path}.${key}` : path;
+                const nodePath = path ? `${path}.${key}` : key;
                 const scalar = isMatching(PStringable, value);
                 const expanded = this.expanded[nodePath];
                 const show = scalar || expanded;
-                const classes = classList([!scalar && "collapsable", !this.expanded && "collapsable--collapsed"]);
+                const classes = classList([!scalar && "collapsable", !this.expanded && "collapsed"]);
 
                 return html`
                     <li
@@ -64,10 +69,8 @@ export class AkAttributeView extends LitElement {
                         data-path=${nodePath}
                         aria-expanded=${expanded ? "true" : "false"}
                     >
-                        <span part="tree-key" class=${classes} @click=${scalar ? null : this.handleClick}>
-                            ${key}:
-                        </span>
-                        ${this.renderValue(value)}
+                        <span part="tree-key" class=${classes} @click=${scalar ? null : this.handleClick}> </span>
+                        ${key}: ${show ? this.renderValue(value, nodePath) : this.renderPreview(value)}
                     </li>
                 `;
             })}
