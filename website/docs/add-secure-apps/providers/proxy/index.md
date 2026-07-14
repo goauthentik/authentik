@@ -85,7 +85,7 @@ The outpost listens on port `9000` for HTTP and port `9443` for HTTPS.
 If your upstream host is HTTPS, and you're not using forward auth, you need to access the outpost over HTTPS too.
 :::
 
-## Logging out
+## Log out
 
 Login is initiated automatically when you visit the protected application without a valid cookie.
 
@@ -96,7 +96,7 @@ To log out, navigate to `/outpost.goauthentik.io/sign_out` on the host that serv
 
 Logging out of a provider invalidates all sessions for that user within the respective outpost.
 
-## Allowing unauthenticated requests
+## Allow unauthenticated requests
 
 To allow unauthenticated requests to specific paths or URLs, use the **Unauthenticated Paths** or **Unauthenticated URLs** field on the proxy provider.
 
