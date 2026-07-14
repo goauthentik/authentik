@@ -6,6 +6,7 @@ Authy
 Beszel
 Bitnami
 Budibase
+Chatwoot
 Coolify
 Doki
 Doku
