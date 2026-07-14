@@ -51,4 +51,16 @@ export class Route<P extends RouteParameterRecord = RouteParameterRecord> {
     render(params: P): TemplateResult {
         return html`${until(this.#render(params), nothing)}`;
     }
+
+    /**
+     * Resolve the route's template for the given path parameters as a promise.
+     *
+     * Unlike {@linkcode render}, this exposes the render callback's result —
+     * synchronous or asynchronous — as a promise and lets rejections
+     * propagate, so the outlet can own the loading and error states. A
+     * synchronous throw in the callback becomes a rejected promise.
+     */
+    async resolve(params: P): Promise<SlottedTemplateResult> {
+        return this.#render(params);
+    }
 }
