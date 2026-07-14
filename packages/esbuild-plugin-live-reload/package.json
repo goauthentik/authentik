@@ -49,7 +49,7 @@
         "@goauthentik/logger-js": "link:../logger-js",
         "@goauthentik/prettier-config": "link:../prettier-config",
         "@goauthentik/tsconfig": "link:../tsconfig",
-        "@types/node": "^26.1.0",
+        "@types/node": "^26.1.1",
         "esbuild": "catalog:",
         "eslint": "catalog:",
         "pino": "^10.3.1",
