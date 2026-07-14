@@ -7,17 +7,15 @@ import {
     DualSelectPairSource,
 } from "#elements/ak-dual-select/types";
 
+import { TLSKeyTypes } from "#admin/common/certificate-key-types";
+
 import { CertificateKeyPair, CryptoApi, KeyTypeEnum } from "@goauthentik/api";
 
 const certToSelect = (cert: CertificateKeyPair): DualSelectPair<CertificateKeyPair> => {
     return [cert.pk, cert.name, cert.name, cert];
 };
 
-/**
- * Build a certificate {@linkcode DataProvider}, optionally restricted to certificates whose key
- * algorithm is one of `allowedKeyTypes`.
- */
-export function certificateProviderFor(allowedKeyTypes?: KeyTypeEnum[]): DataProvider {
+function createCertificateProvider(allowedKeyTypes?: KeyTypeEnum[]): DataProvider {
     return async (page = 1, search = ""): Promise<DataProvision> => {
         return aki(CryptoApi)
             .cryptoCertificatekeypairsList({
@@ -37,7 +35,13 @@ export function certificateProviderFor(allowedKeyTypes?: KeyTypeEnum[]): DataPro
     };
 }
 
-export const certificateProvider: DataProvider = certificateProviderFor();
+export const certificateProvider: DataProvider = createCertificateProvider();
+
+/**
+ * Certificates that can be used for TLS. Restricted to the key types Go's x509 verifier can
+ * chain-validate, since these are consumed by the outposts.
+ */
+export const tlsCertificateProvider: DataProvider = createCertificateProvider(TLSKeyTypes);
 
 export function certificateSelector(
     instanceMappings?: string[],
