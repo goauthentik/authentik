@@ -12946,9 +12946,9 @@
                 "provider_type": {
                     "type": "string",
                     "enum": [
+                        "openidconnect",
                         "apple",
                         "discord",
-                        "openidconnect",
                         "entraid",
                         "facebook",
                         "github",
