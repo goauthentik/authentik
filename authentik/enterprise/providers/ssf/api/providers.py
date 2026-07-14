@@ -8,6 +8,8 @@ from rest_framework.viewsets import ModelViewSet
 from authentik.core.api.providers import ProviderSerializer
 from authentik.core.api.tokens import TokenSerializer
 from authentik.core.api.used_by import UsedByMixin
+from authentik.crypto.models import CertificateKeyPair
+from authentik.crypto.validators import JWT_SIGNING_KEY_TYPES, validate_key_type
 from authentik.enterprise.api import EnterpriseRequiredMixin
 from authentik.enterprise.providers.ssf.models import SSFProvider
 
@@ -21,6 +23,10 @@ class SSFProviderSerializer(EnterpriseRequiredMixin, ProviderSerializer):
     oidc_auth_providers_obj = ProviderSerializer(
         read_only=True, source="oidc_auth_providers", many=True
     )
+
+    def validate_signing_key(self, keypair: CertificateKeyPair) -> CertificateKeyPair:
+        validate_key_type(keypair, JWT_SIGNING_KEY_TYPES)
+        return keypair
 
     def get_ssf_url(self, instance: SSFProvider) -> str | None:
         request: Request = self._context.get("request")

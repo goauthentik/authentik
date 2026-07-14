@@ -23,6 +23,8 @@ from authentik.brands.models import Brand
 from authentik.brands.utils import session_safe_mode
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import ModelSerializer, PassiveSerializer, ThemedUrlsSerializer
+from authentik.crypto.models import CertificateKeyPair
+from authentik.crypto.validators import TLS_KEY_TYPES, validate_key_type
 from authentik.rbac.filters import SecretKeyFilter
 from authentik.tenants.api.settings import FlagJSONField
 from authentik.tenants.flags import Flag
@@ -38,6 +40,17 @@ class FooterLinkSerializer(PassiveSerializer):
 
 class BrandSerializer(ModelSerializer):
     """Brand Serializer"""
+
+    def validate_web_certificate(self, keypair: CertificateKeyPair) -> CertificateKeyPair:
+        validate_key_type(keypair, TLS_KEY_TYPES)
+        return keypair
+
+    def validate_client_certificates(
+        self, keypairs: list[CertificateKeyPair]
+    ) -> list[CertificateKeyPair]:
+        for keypair in keypairs:
+            validate_key_type(keypair, TLS_KEY_TYPES)
+        return keypairs
 
     def validate(self, attrs: dict[str, Any]) -> dict[str, Any]:
         if attrs.get("default", False):

@@ -7,31 +7,37 @@ import {
     DualSelectPairSource,
 } from "#elements/ak-dual-select/types";
 
-import { CertificateKeyPair, CryptoApi } from "@goauthentik/api";
+import { CertificateKeyPair, CryptoApi, KeyTypeEnum } from "@goauthentik/api";
 
 const certToSelect = (cert: CertificateKeyPair): DualSelectPair<CertificateKeyPair> => {
     return [cert.pk, cert.name, cert.name, cert];
 };
 
-export const certificateProvider: DataProvider = async (
-    page = 1,
-    search = "",
-): Promise<DataProvision> => {
-    return aki(CryptoApi)
-        .cryptoCertificatekeypairsList({
-            ordering: "name",
-            pageSize: 20,
-            search: search.trim(),
-            page,
-            hasKey: undefined,
-        })
-        .then(({ pagination, results }) => {
-            return {
-                pagination,
-                options: results.map(certToSelect),
-            };
-        });
-};
+/**
+ * Build a certificate {@linkcode DataProvider}, optionally restricted to certificates whose key
+ * algorithm is one of `allowedKeyTypes`.
+ */
+export function certificateProviderFor(allowedKeyTypes?: KeyTypeEnum[]): DataProvider {
+    return async (page = 1, search = ""): Promise<DataProvision> => {
+        return aki(CryptoApi)
+            .cryptoCertificatekeypairsList({
+                ordering: "name",
+                pageSize: 20,
+                search: search.trim(),
+                page,
+                hasKey: undefined,
+                keyType: allowedKeyTypes,
+            })
+            .then(({ pagination, results }) => {
+                return {
+                    pagination,
+                    options: results.map(certToSelect),
+                };
+            });
+    };
+}
+
+export const certificateProvider: DataProvider = certificateProviderFor();
 
 export function certificateSelector(
     instanceMappings?: string[],

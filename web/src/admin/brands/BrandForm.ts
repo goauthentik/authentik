@@ -19,7 +19,8 @@ import { DefaultFlowBackground } from "#elements/utils/images";
 
 import { AKLabel } from "#components/ak-label";
 
-import { certificateProvider, certificateSelector } from "#admin/brands/Certificates";
+import { certificateProviderFor, certificateSelector } from "#admin/brands/Certificates";
+import { TLSKeyTypes } from "#admin/common/certificate-key-types";
 
 import {
     Application,
@@ -38,6 +39,9 @@ import YAML from "yaml";
 import { msg } from "@lit/localize";
 import { html, TemplateResult } from "lit";
 import { customElement, state } from "lit/decorators.js";
+
+/** Client certificates are chain-validated by Go's x509 verifier, so restrict them to key types it supports. */
+const clientCertificateProvider = certificateProviderFor(TLSKeyTypes);
 
 @customElement("ak-brand-form")
 export class BrandForm extends ModelForm<Brand, string> {
@@ -354,6 +358,7 @@ export class BrandForm extends ModelForm<Brand, string> {
                     >
                         <ak-crypto-certificate-search
                             .certificate=${this.instance?.webCertificate}
+                            .allowedKeyTypes=${TLSKeyTypes}
                         ></ak-crypto-certificate-search>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
@@ -361,7 +366,7 @@ export class BrandForm extends ModelForm<Brand, string> {
                         name="clientCertificates"
                     >
                         <ak-dual-select-dynamic-selected
-                            .provider=${certificateProvider}
+                            .provider=${clientCertificateProvider}
                             .selector=${certificateSelector(this.instance?.clientCertificates)}
                             available-label=${msg("Available Certificates")}
                             selected-label=${msg("Selected Certificates")}

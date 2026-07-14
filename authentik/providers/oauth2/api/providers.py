@@ -22,6 +22,12 @@ from authentik.core.api.providers import ProviderSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import PassiveSerializer, PropertyMappingPreviewSerializer
 from authentik.core.models import Provider
+from authentik.crypto.models import CertificateKeyPair
+from authentik.crypto.validators import (
+    JWE_ENCRYPTION_KEY_TYPES,
+    JWT_SIGNING_KEY_TYPES,
+    validate_key_type,
+)
 from authentik.providers.oauth2.id_token import IDToken
 from authentik.providers.oauth2.models import (
     AccessToken,
@@ -58,6 +64,14 @@ class OAuth2ProviderSerializer(ProviderSerializer):
         if not is_all_vschar(secret):
             raise ValidationError("Client secret must consist of only ASCII characters.")
         return secret
+
+    def validate_signing_key(self, keypair: CertificateKeyPair) -> CertificateKeyPair:
+        validate_key_type(keypair, JWT_SIGNING_KEY_TYPES)
+        return keypair
+
+    def validate_encryption_key(self, keypair: CertificateKeyPair) -> CertificateKeyPair:
+        validate_key_type(keypair, JWE_ENCRYPTION_KEY_TYPES)
+        return keypair
 
     def validate_redirect_uris(self, data: list) -> list:
         for entry in data:

@@ -9,7 +9,8 @@ from rest_framework.test import APITestCase
 
 from authentik.blueprints.tests import apply_blueprint
 from authentik.core.models import Application
-from authentik.core.tests.utils import create_test_admin_user, create_test_flow
+from authentik.core.tests.utils import create_test_admin_user, create_test_cert, create_test_flow
+from authentik.crypto.builder import PrivateKeyAlg
 from authentik.lib.generators import generate_id
 from authentik.providers.oauth2.models import (
     OAuth2Provider,
@@ -33,6 +34,43 @@ class TestAPI(APITestCase):
         self.app = Application.objects.create(name="test", slug="test", provider=self.provider)
         self.user = create_test_admin_user()
         self.client.force_login(self.user)
+
+    def test_validate_signing_key_unsupported_type(self):
+        """Test that a key type JWTAlgorithms cannot map is rejected rather than 500ing later"""
+        cert = create_test_cert(PrivateKeyAlg.ED25519)
+        response = self.client.patch(
+            reverse("authentik_api:oauth2provider-detail", kwargs={"pk": self.provider.pk}),
+            data={"signing_key": str(cert.pk)},
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertJSONEqual(
+            response.content,
+            {
+                "signing_key": [
+                    "Key type Ed25519 is not supported. "
+                    "Supported key types are: RSA, Elliptic Curve."
+                ]
+            },
+        )
+
+    def test_validate_encryption_key_unsupported_type(self):
+        """Test that a non-RSA encryption key is rejected, as RSA-OAEP-256 is hardcoded"""
+        cert = create_test_cert(PrivateKeyAlg.ECDSA)
+        response = self.client.patch(
+            reverse("authentik_api:oauth2provider-detail", kwargs={"pk": self.provider.pk}),
+            data={"encryption_key": str(cert.pk)},
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("encryption_key", loads(response.content))
+
+    def test_validate_signing_key_supported_type(self):
+        """Test that an RSA signing key is still accepted"""
+        cert = create_test_cert(PrivateKeyAlg.RSA)
+        response = self.client.patch(
+            reverse("authentik_api:oauth2provider-detail", kwargs={"pk": self.provider.pk}),
+            data={"signing_key": str(cert.pk)},
+        )
+        self.assertEqual(response.status_code, 200)
 
     def test_preview(self):
         """Test Preview API Endpoint"""

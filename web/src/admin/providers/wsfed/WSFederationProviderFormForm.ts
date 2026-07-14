@@ -14,6 +14,7 @@ import { aki } from "#common/api/client";
 
 import { withQuery } from "#elements/forms/SearchSelect/utils";
 
+import { XMLSigningKeyTypes } from "#admin/common/certificate-key-types";
 import {
     propertyMappingsProvider,
     propertyMappingsSelector,
@@ -23,7 +24,6 @@ import {
     DEFAULT_HASH_ALGORITHM,
     digestAlgorithmOptions,
     retrieveSignatureAlgorithm,
-    SAMLSupportedKeyTypes,
 } from "#admin/providers/saml/SAMLProviderOptions";
 
 import {
@@ -177,7 +177,7 @@ export function renderForm({
                         .certificate=${provider.signingKp}
                         @input=${setHasSigningKp}
                         singleton
-                        .allowedKeyTypes=${SAMLSupportedKeyTypes}
+                        .allowedKeyTypes=${XMLSigningKeyTypes}
                     ></ak-crypto-certificate-search>
                     <p class="pf-c-form__helper-text">
                         ${msg(
@@ -211,7 +211,7 @@ export function renderForm({
                     <ak-crypto-certificate-search
                         .certificate=${provider.encryptionKp}
                         nokey
-                        .allowedKeyTypes=${SAMLSupportedKeyTypes}
+                        .allowedKeyTypes=${XMLSigningKeyTypes}
                     ></ak-crypto-certificate-search>
                     <p class="pf-c-form__helper-text">
                         ${msg("When selected, assertions will be encrypted using this keypair.")}
