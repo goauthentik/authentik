@@ -12655,8 +12655,8 @@
                 "provider_type": {
                     "type": "string",
                     "enum": [
-                        "apple",
                         "openidconnect",
+                        "apple",
                         "entraid",
                         "azuread",
                         "discord",
