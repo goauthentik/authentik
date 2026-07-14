@@ -49,47 +49,47 @@ authentik
 ├── lib - Generic library of functions, few dependencies on other packages.
 ├── outposts - Configure and deploy outposts on Kubernetes and Docker.
 ├── policies - General PolicyEngine
-│   ├── dummy - A Dummy policy used for testing
-│   ├── event_matcher - Match events based on different criteria
-│   ├── expiry - Check when a user's password was last set
-│   ├── expression - Execute any arbitrary python code
-│   ├── password - Check a password against several rules
-│   └── reputation - Check the user's/client's reputation
+│   ├── dummy - A Dummy policy used for testing
+│   ├── event_matcher - Match events based on different criteria
+│   ├── expiry - Check when a user's password was last set
+│   ├── expression - Execute any arbitrary python code
+│   ├── password - Check a password against several rules
+│   └── reputation - Check the user's/client's reputation
 ├── providers
-│   ├── ldap - Provide LDAP access to authentik users/groups using an outpost
-│   ├── oauth2 - OIDC-compliant OAuth2 provider
-│   ├── proxy - Provides an identity-aware proxy using an outpost
-│   ├── radius - Provides a RADIUS server that authenticates using flows
-│   ├── saml - SAML2 provider
-│   └── scim - SCIM provider
+│   ├── ldap - Provide LDAP access to authentik users/groups using an outpost
+│   ├── oauth2 - OIDC-compliant OAuth2 provider
+│   ├── proxy - Provides an identity-aware proxy using an outpost
+│   ├── radius - Provides a RADIUS server that authenticates using flows
+│   ├── saml - SAML2 provider
+│   └── scim - SCIM provider
 ├── recovery - Generate keys to use in case you lock yourself out
 ├── root - Root Django application, contains global settings and routes
 ├── sources
-│   ├── kerberos - Sync Kerberos users into authentik
-│   ├── ldap - Sync LDAP users from OpenLDAP or Active Directory into authentik
-│   ├── oauth - OAuth1 and OAuth2 source
-│   ├── plex - Plex source
-│   ├── saml - SAML2 source
-│   └── telegram - Telegram source
+│   ├── kerberos - Sync Kerberos users into authentik
+│   ├── ldap - Sync LDAP users from OpenLDAP or Active Directory into authentik
+│   ├── oauth - OAuth1 and OAuth2 source
+│   ├── plex - Plex source
+│   ├── saml - SAML2 source
+│   └── telegram - Telegram source
 ├── stages
-│   ├── authenticator_duo - Configure a DUO authenticator
-│   ├── authenticator_static - Configure TOTP backup keys
-│   ├── authenticator_totp - Configure a TOTP authenticator
-│   ├── authenticator_validate - Validate any authenticator
-│   ├── authenticator_webauthn - Configure a WebAuthn / Passkeys authenticator
-│   ├── captcha - Make the user pass a captcha
-│   ├── consent - Let the user decide if they want to consent to an action
-│   ├── deny - Static deny, can be used with policies
-│   ├── dummy - Dummy stage to test
-│   ├── email - Send the user an email and block execution until they click the link
-│   ├── identification - Identify a user with any combination of fields
-│   ├── invitation - Invitation system to limit flows to certain users
-│   ├── password - Password authentication
-│   ├── prompt - Arbitrary prompts
-│   ├── user_delete - Delete the currently pending user
-│   ├── user_login - Login the currently pending user
-│   ├── user_logout - Logout the currently pending user
-│   └── user_write - Write any currently pending data to the user.
+│   ├── authenticator_duo - Configure a DUO authenticator
+│   ├── authenticator_static - Configure TOTP backup keys
+│   ├── authenticator_totp - Configure a TOTP authenticator
+│   ├── authenticator_validate - Validate any authenticator
+│   ├── authenticator_webauthn - Configure a WebAuthn / Passkeys authenticator
+│   ├── captcha - Make the user pass a captcha
+│   ├── consent - Let the user decide if they want to consent to an action
+│   ├── deny - Static deny, can be used with policies
+│   ├── dummy - Dummy stage to test
+│   ├── email - Send the user an email and block execution until they click the link
+│   ├── identification - Identify a user with any combination of fields
+│   ├── invitation - Invitation system to limit flows to certain users
+│   ├── password - Password authentication
+│   ├── prompt - Arbitrary prompts
+│   ├── user_delete - Delete the currently pending user
+│   ├── user_login - Login the currently pending user
+│   ├── user_logout - Logout the currently pending user
+│   └── user_write - Write any currently pending data to the user.
 ├── tasks - Background tasks
 └── tenants - Soft tenancy, configure defaults and branding per domain
 ```
@@ -120,7 +120,7 @@ When you are creating an enhancement suggestion, please fill in [the template](h
 
 authentik can be run locally, although depending on which part you want to work on, different prerequisites are required.
 
-This is documented in the [developer docs](./setup/frontend-dev-environment.md).
+This is documented in the [developer docs](./setup/frontend-dev-environment.mdx).
 
 ### Help with the docs
 
@@ -196,7 +196,7 @@ While the prerequisites above must be satisfied prior to having your pull reques
 - Reference issues and pull requests liberally after the first line
 - Naming of commits within a PR does not need to adhere to the guidelines as we squash merge PRs
 
-### Python Style Guide
+### Python style guide
 
 All Python code is linted with [black](https://black.readthedocs.io/en/stable/) and [Ruff](https://docs.astral.sh/ruff).
 
@@ -207,13 +207,13 @@ authentik runs on Python 3.14 at the time of writing this.
 - Ensure any database migrations work properly from the last stable version (this is checked via CI)
 - If your code changes central functions, make sure nothing else is broken.
 
-### Documentation Style Guide
+### Documentation style guide
 
 Refer to the full [Style Guide](../developer-docs/docs/style-guide.mdx) for details, but here are some important highlights:
 
-- Our product name is authentik, with a lower-case "a" and a "k" on the end. Our company name is Authentik Security.
+- Our product name is authentik, with a lowercase "a" and a "k" on the end. Our company name is Authentik Security.
 
-- We use sentence style case in our titles and headings.
+- We use sentence case in our titles and headings.
 
 - We use **bold** text to name UI components, and _italic_ text for variables.
 

@@ -19,19 +19,38 @@ from authentik.tenants.models import Tenant
 
 class FlagJSONField(JSONDictField):
 
+    def to_internal_value(self, data: str):
+        flags = super().to_internal_value(data)
+        for flag in Flag.available(visibility="system", exclude_system=False):
+            flags[flag().key] = flag.get()
+        return flags
+
+    def to_representation(self, value: dict) -> dict:
+        new_value = value.copy()
+        for flag in Flag.available(exclude_system=False):
+            _flag = flag()
+            # Exclude any system flags that aren't modifiable
+            if _flag.visibility == "system":
+                new_value.pop(_flag.key, None)
+            # Explicitly present unset flags as if they were set to default
+            if _flag.key not in value:
+                value[_flag.key] = _flag.default
+        return super().to_representation(new_value)
+
     def run_validators(self, value: dict):
         super().run_validators(value)
         for flag in Flag.available():
             _flag = flag()
-            if _flag.key in value:
-                flag_value = value.get(_flag.key)
-                flag_type = get_args(_flag.__orig_bases__[0])[0]
-                if flag_value and not isinstance(flag_value, flag_type):
-                    raise ValidationError(
-                        _("Value for flag {flag_key} needs to be of type {type}.").format(
-                            flag_key=_flag.key, type=flag_type.__name__
-                        )
+            if _flag.key not in value:
+                continue
+            flag_value = value.get(_flag.key)
+            flag_type = get_args(_flag.__orig_bases__[0])[0]
+            if flag_value and not isinstance(flag_value, flag_type):
+                raise ValidationError(
+                    _("Value for flag {flag_key} needs to be of type {type}.").format(
+                        flag_key=_flag.key, type=flag_type.__name__
                     )
+                )
 
 
 class FlagsJSONExtension(OpenApiSerializerFieldExtension):
@@ -44,6 +63,10 @@ class FlagsJSONExtension(OpenApiSerializerFieldExtension):
         for flag in Flag.available():
             _flag = flag()
             props[_flag.key] = build_basic_type(get_args(_flag.__orig_bases__[0])[0])
+            if _flag.description:
+                props[_flag.key]["description"] = _flag.description
+            if _flag.deprecated:
+                props[_flag.key]["deprecated"] = _flag.deprecated
         return build_object_type(props, required=props.keys())
 
 

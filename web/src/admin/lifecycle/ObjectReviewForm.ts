@@ -1,7 +1,7 @@
 import "#components/ak-textarea-input";
 import "#elements/forms/ModalForm";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { ModelForm } from "#elements/forms/ModelForm";
 
@@ -12,7 +12,12 @@ import { html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-object-review-form")
-export class ObjectReviewForm extends ModelForm<Review, string> {
+export class ObjectReviewForm extends ModelForm<Review, string, Review | null> {
+    public static override verboseName = msg("Review");
+    public static override verboseNamePlural = msg("Reviews");
+    public static override submitVerb = msg("Confirm");
+    public static override createLabel = msg("Confirm");
+
     @property({ attribute: false })
     public iteration: LifecycleIteration | null = null;
 
@@ -21,13 +26,13 @@ export class ObjectReviewForm extends ModelForm<Review, string> {
     }
 
     protected send(data: Review): Promise<unknown> {
-        return new LifecycleApi(DEFAULT_CONFIG).lifecycleReviewsCreate({
+        return aki(LifecycleApi).lifecycleReviewsCreate({
             reviewRequest: data,
         });
     }
 
-    protected override serialize(): Review | null {
-        const review = super.serialize();
+    public override toJSON(): Review | null {
+        const review = super.toJSON();
 
         if (!review || !this.iteration) return null;
 

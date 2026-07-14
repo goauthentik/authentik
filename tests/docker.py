@@ -1,6 +1,5 @@
 """authentik e2e testing utilities"""
 
-from os import environ
 from time import sleep
 from typing import Any
 from unittest.case import TestCase
@@ -12,8 +11,6 @@ from docker.models.networks import Network
 
 from authentik.lib.generators import generate_id
 from authentik.root.test_runner import get_docker_tag
-
-IS_CI = "CI" in environ
 
 
 class DockerTestCase(TestCase):
@@ -58,14 +55,7 @@ class DockerTestCase(TestCase):
 
     def get_container_image(self, base: str) -> str:
         """Try to pull docker image based on git branch, fallback to main if not found."""
-        image = f"{base}:gh-main"
-        try:
-            branch_image = f"{base}:{get_docker_tag()}"
-            self.docker_client.images.pull(branch_image)
-            return branch_image
-        except DockerException:
-            self.docker_client.images.pull(image)
-        return image
+        return f"{base}:{get_docker_tag()}"
 
     def run_container(self, **specs: Any) -> Container:
         if "network_mode" not in specs:
@@ -87,15 +77,13 @@ class DockerTestCase(TestCase):
         """Output the container logs to our STDOUT"""
         if not container:
             return
-        if IS_CI:
-            image = container.image
-            if image:
-                tags = image.tags[0] if len(image.tags) > 0 else str(image)
-                print(f"::group::Container logs - {tags}")
+        image = container.image
+        if image:
+            tags = image.tags[0] if len(image.tags) > 0 else str(image)
+            print(f"::group::Container logs - {tags}")
         for log in container.logs().decode().split("\n"):
             print(log)
-        if IS_CI:
-            print("::endgroup::")
+        print("::endgroup::")
 
     def tearDown(self) -> None:
         containers: list[Container] = self.docker_client.containers.list(

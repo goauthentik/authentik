@@ -276,7 +276,7 @@ class ConfigLoader:
         try:
             return int(value)
         except (ValueError, TypeError) as exc:
-            if value is None or (isinstance(value, str) and value.lower() == "null"):
+            if value is None or (isinstance(value, str) and value.lower() in ("", "null", "none")):
                 return None
             self.log("warning", "Failed to parse config as int", path=path, exc=str(exc))
             return default
@@ -423,4 +423,5 @@ if __name__ == "__main__":
     if len(argv) < 2:  # noqa: PLR2004
         print(dumps(CONFIG.raw, indent=4, cls=AttrEncoder))
     else:
-        print(CONFIG.get(argv[-1]))
+        for arg in argv[1:]:
+            print(CONFIG.get(arg))

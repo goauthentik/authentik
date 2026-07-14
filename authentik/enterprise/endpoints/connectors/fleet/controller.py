@@ -1,12 +1,16 @@
 import re
+from plistlib import loads
 from typing import Any
 
+from cryptography.hazmat.primitives import serialization
+from cryptography.x509 import load_der_x509_certificate
 from django.db import transaction
 from requests import RequestException
 from rest_framework.exceptions import ValidationError
 
 from authentik.core.models import User
-from authentik.endpoints.controller import BaseController, ConnectorSyncException, EnrollmentMethods
+from authentik.crypto.models import CertificateKeyPair
+from authentik.endpoints.controller import BaseController, Capabilities, ConnectorSyncException
 from authentik.endpoints.facts import (
     DeviceFacts,
     OSFamily,
@@ -26,6 +30,10 @@ from authentik.policies.utils import delete_none_values
 class FleetController(BaseController[DBC]):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        base_url = self.connector.url
+        if base_url.endswith("/"):
+            base_url = base_url[:-1]
+        self._base_url = base_url
         self._session = get_http_session()
         self._session.headers["Authorization"] = f"Bearer {self.connector.token}"
         if self.connector.headers_mapping:
@@ -43,11 +51,11 @@ class FleetController(BaseController[DBC]):
     def vendor_identifier() -> str:
         return "fleetdm.com"
 
-    def supported_enrollment_methods(self) -> list[EnrollmentMethods]:
-        return [EnrollmentMethods.AUTOMATIC_API]
+    def capabilities(self) -> list[Capabilities]:
+        return [Capabilities.STAGE_ENDPOINTS, Capabilities.ENROLL_AUTOMATIC_API]
 
     def _url(self, path: str) -> str:
-        return f"{self.connector.url}{path}"
+        return f"{self._base_url}{path}"
 
     def _paginate_hosts(self):
         try:
@@ -76,8 +84,44 @@ class FleetController(BaseController[DBC]):
         except RequestException as exc:
             raise ConnectorSyncException(exc) from exc
 
+    @property
+    def mtls_ca_managed(self) -> str:
+        return f"goauthentik.io/endpoints/connectors/fleet/{self.connector.pk}"
+
+    def _sync_mtls_ca(self):
+        """Sync conditional access Root CA for mTLS"""
+        try:
+            # Fleet doesn't have an API to just get the Conditional Access Root CA Cert (yet),
+            # hence we fetch the apple config profile and extract it
+            res = self._session.get(self._url("/api/v1/fleet/conditional_access/idp/apple/profile"))
+            res.raise_for_status()
+            profile = loads(res.text).get("PayloadContent", [])
+            raw_cert = None
+            for payload in profile:
+                if payload.get("PayloadIdentifier", "") != "com.fleetdm.conditional-access-ca":
+                    continue
+                raw_cert = payload.get("PayloadContent")
+            if not raw_cert:
+                raise ConnectorSyncException("Failed to get conditional acccess CA")
+        except RequestException as exc:
+            raise ConnectorSyncException(exc) from exc
+        cert = load_der_x509_certificate(raw_cert)
+        CertificateKeyPair.objects.update_or_create(
+            managed=self.mtls_ca_managed,
+            defaults={
+                "name": f"Fleet Endpoint connector {self.connector.name}",
+                "certificate_data": cert.public_bytes(
+                    encoding=serialization.Encoding.PEM,
+                ).decode("utf-8"),
+            },
+        )
+
     @transaction.atomic
     def sync_endpoints(self) -> None:
+        try:
+            self._sync_mtls_ca()
+        except ConnectorSyncException as exc:
+            self.logger.warning("Failed to sync conditional access CA", exc=exc)
         for host in self._paginate_hosts():
             serial = host["hardware_serial"]
             device, _ = Device.objects.get_or_create(
@@ -198,6 +242,8 @@ class FleetController(BaseController[DBC]):
                         for policy in host.get("policies", [])
                     ],
                     "agent_version": fleet_version,
+                    # Host UUID is required for conditional access matching
+                    "uuid": host.get("uuid", "").lower(),
                 },
             },
         }

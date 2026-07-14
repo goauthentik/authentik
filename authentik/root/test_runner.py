@@ -1,10 +1,12 @@
 """Integrate ./manage.py test with pytest"""
 
 import os
+import re
 from argparse import ArgumentParser
 from unittest import TestCase
 from unittest.mock import patch
 
+import freezegun
 import pytest
 from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
@@ -29,7 +31,7 @@ def get_docker_tag() -> str:
     branch_name = os.environ.get(default_branch, "main")
     if os.environ.get(env_pr_branch, "") != "":
         branch_name = os.environ[env_pr_branch]
-    branch_name = branch_name.replace("refs/heads/", "").replace("/", "-")
+    branch_name = re.sub(r"[^a-zA-Z0-9-]", "-", branch_name.replace("refs/heads/", ""))
     return f"gh-{branch_name}"
 
 
@@ -69,8 +71,8 @@ class PytestTestRunner(DiscoverRunner):  # pragma: no cover
 
         # Test-specific configuration
         test_config = {
-            "events.context_processors.geoip": "tests/GeoLite2-City-Test.mmdb",
-            "events.context_processors.asn": "tests/GeoLite2-ASN-Test.mmdb",
+            "events.context_processors.geoip": "tests/geoip/GeoLite2-City-Test.mmdb",
+            "events.context_processors.asn": "tests/geoip/GeoLite2-ASN-Test.mmdb",
             "blueprints_dir": "./blueprints",
             "outposts.container_image_base": f"ghcr.io/goauthentik/dev-%(type)s:{get_docker_tag()}",
             "tenants.enabled": False,
@@ -89,7 +91,9 @@ class PytestTestRunner(DiscoverRunner):  # pragma: no cover
         sentry_init()
         self.logger.debug("Test environment configured")
 
-        use_test_broker()
+        self.task_broker = use_test_broker()
+
+        freezegun.configure(extend_ignore_list=["cryptography"])
 
         # Send startup signals
         pre_startup.send(sender=self, mode="test")
@@ -185,7 +189,9 @@ class PytestTestRunner(DiscoverRunner):  # pragma: no cover
         self.logger.info("Running tests", test_files=self.args)
         with patch("guardian.shortcuts._get_ct_cached", patched__get_ct_cached):
             try:
-                return pytest.main(self.args)
-            except Exception as e:  # noqa
-                self.logger.error("Error running tests", error=str(e), test_files=self.args)
+                ret = pytest.main(self.args)
+                self.task_broker.close()
+                return ret
+            except Exception as exc:  # noqa
+                self.logger.error("Error running tests", exc=exc, test_files=self.args)
                 return 1

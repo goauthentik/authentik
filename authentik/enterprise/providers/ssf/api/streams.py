@@ -1,6 +1,7 @@
 """SSF Stream API Views"""
 
-from rest_framework.viewsets import ReadOnlyModelViewSet
+from rest_framework import mixins
+from rest_framework.viewsets import GenericViewSet
 
 from authentik.core.api.utils import ModelSerializer
 from authentik.enterprise.providers.ssf.api.providers import SSFProviderSerializer
@@ -16,6 +17,7 @@ class SSFStreamSerializer(ModelSerializer):
         model = Stream
         fields = [
             "pk",
+            "status",
             "provider",
             "provider_obj",
             "delivery_method",
@@ -27,7 +29,12 @@ class SSFStreamSerializer(ModelSerializer):
         ]
 
 
-class SSFStreamViewSet(ReadOnlyModelViewSet):
+class SSFStreamViewSet(
+    mixins.RetrieveModelMixin,
+    mixins.DestroyModelMixin,
+    mixins.ListModelMixin,
+    GenericViewSet,
+):
     """SSFStream Viewset"""
 
     queryset = Stream.objects.all()

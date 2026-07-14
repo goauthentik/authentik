@@ -1,6 +1,8 @@
 ---
 title: Single Logout (SLO)
 authentik_version: "2025.10.0"
+sidebar_position: 2
+sidebar_label: "Single Logout"
 ---
 
 Single Logout (SLO) is a security feature that logs users out of all active applications when they log out of authentik. It uses the OAuth2/OpenID Connect front-channel and back-channel logout specifications in combination with SAML's Single Logout specification.
@@ -15,7 +17,7 @@ Check with your service provider to see if they support SAML Single Logout or OI
 
 Single Logout behavior depends on where the user initiates logout:
 
-- **Logout from authentik**: When a user logs out directly from authentik, the `default-invalidation-flow` runs. This flow includes a [User Logout stage](../../flows-stages/stages/user_logout.md) that ends the user's authentik session and triggers Single Logout for all connected applications.
+- **Logout from authentik**: When a user logs out directly from authentik, the `default-invalidation-flow` runs. This flow includes a [User Logout stage](../../flows-stages/stages/user_logout/index.md) that ends the user's authentik session and triggers Single Logout for all connected applications.
 
 - **Logout from an application**: When a user logs out from an OIDC or SAML application, the `default-provider-invalidation-flow` runs. By default, this flow does **not** include a User Logout stage, so only that application's session is ended while the user's authentik session and other application sessions remain active.
 
@@ -82,9 +84,9 @@ By default, when a user logs out from an application (RP-initiated logout), only
 2. Navigate to **Flows and Stages** > **Flows**.
 3. Click `default-provider-invalidation-flow` to open the flow.
 4. Click the **Stage Bindings** tab.
-5. Click **Bind Existing Stage**.
-6. In the **Stage** dropdown, select `default-invalidation-logout`.
-7. Click **Create**.
+5. Click **Create or bind...** and select **Existing stage**.
+6. In the **Stage** field, select `default-invalidation-logout` from the drop-down list.
+7. Configure any other settings, and then click **Create**.
 
 After this change, when users log out from any application, they will be logged out of authentik and all other connected applications.
 
@@ -94,7 +96,7 @@ If you need different logout behaviors for different applications, you can creat
 
 1. Create a new flow with the **Invalidation** designation.
 2. Add stages as needed:
-    - Include a [User Logout stage](../../flows-stages/stages/user_logout.md) if you want full Single Logout.
+    - Include a [User Logout stage](../../flows-stages/stages/user_logout/index.md) if you want full Single Logout.
     - Omit the User Logout stage if you only want to end the specific application session.
 3. When configuring a provider, select your custom flow in the **Invalidation flow** field.
 
@@ -143,7 +145,7 @@ These requests are processed asynchronously to avoid blocking administrative ope
 
 - [SAML Single Logout](../saml/saml_single_logout.md)
 - [OIDC Front-channel and Back-channel Logout](../oauth2/frontchannel_and_backchannel_logout.mdx)
-- [User Logout Stage](../../flows-stages/stages/user_logout.md)
+- [User Logout Stage](../../flows-stages/stages/user_logout/index.md)
 - [SAML Profiles 2.0 Specification](https://docs.oasis-open.org/security/saml/v2.0/saml-profiles-2.0-os.pdf)
 - [OpenID Connect Front-Channel Logout 1.0](https://openid.net/specs/openid-connect-frontchannel-1_0.html)
 - [OpenID Connect Back-Channel Logout 1.0](https://openid.net/specs/openid-connect-backchannel-1_0.html)

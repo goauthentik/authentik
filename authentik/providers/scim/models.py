@@ -12,6 +12,7 @@ from requests.auth import AuthBase
 from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
 
+from authentik.core.apps import AppAccessWithoutBindings
 from authentik.core.models import BackchannelProvider, Group, PropertyMapping, User, UserTypes
 from authentik.lib.models import InternallyManagedMixin, SerializerModel
 from authentik.lib.sync.outgoing.base import BaseOutgoingSyncClient
@@ -71,7 +72,8 @@ class SCIMAuthenticationMode(models.TextChoices):
     """SCIM authentication modes"""
 
     TOKEN = "token", _("Token")
-    OAUTH = "oauth", _("OAuth")
+    OAUTH_SILENT = "oauth", _("OAuth (Silent)")
+    OAUTH_INTERACTIVE = "oauth_interactive", _("OAuth (interactive)")
 
 
 class SCIMCompatibilityMode(models.TextChoices):
@@ -81,6 +83,9 @@ class SCIMCompatibilityMode(models.TextChoices):
     AWS = "aws", _("AWS")
     SLACK = "slack", _("Slack")
     SALESFORCE = "sfdc", _("Salesforce")
+    GITLAB = "gitlab", _("GitLab")
+    WEBEX = "webex", _("Webex")
+    VCENTER = "vcenter", _("vCenter")
 
 
 class SCIMProvider(OutgoingSyncProvider, BackchannelProvider):
@@ -141,7 +146,10 @@ class SCIMProvider(OutgoingSyncProvider, BackchannelProvider):
     )
 
     def scim_auth(self) -> AuthBase:
-        if self.auth_mode == SCIMAuthenticationMode.OAUTH:
+        if self.auth_mode in [
+            SCIMAuthenticationMode.OAUTH_SILENT,
+            SCIMAuthenticationMode.OAUTH_INTERACTIVE,
+        ]:
             try:
                 from authentik.enterprise.providers.scim.auth_oauth2 import SCIMOAuthAuth
 
@@ -193,13 +201,14 @@ class SCIMProvider(OutgoingSyncProvider, BackchannelProvider):
             # Filter users by their access to the backchannel application if an application is set
             # This handles both policy bindings and group_filters
             if self.backchannel_application:
-                base = base.filter(
-                    pk__in=[
-                        user.pk
-                        for user in base
-                        if PolicyEngine(self.backchannel_application, user, None).build().passing
-                    ]
-                )
+                pks = []
+                for user in base:
+                    engine = PolicyEngine(self.backchannel_application, user, None)
+                    engine.empty_result = AppAccessWithoutBindings.get()
+                    engine.build()
+                    if engine.passing:
+                        pks.append(user.pk)
+                base = base.filter(pk__in=pks)
             return base.order_by("pk")
 
         if type == Group:

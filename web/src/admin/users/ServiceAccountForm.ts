@@ -4,11 +4,12 @@ import "#components/ak-text-input";
 import "#components/ak-radio-input";
 import "#components/ak-switch-input";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { dateTimeLocal } from "#common/temporal";
 
 import { Form } from "#elements/forms/Form";
 import { ModalForm } from "#elements/forms/ModalForm";
+import { SlottedTemplateResult } from "#elements/types";
 
 import { AKLabel } from "#components/ak-label";
 
@@ -30,6 +31,10 @@ const EXPIRATION_DURATION = 1000 * 60 ** 2 * 24 * 360; // 360 days
 
 @customElement("ak-user-service-account-form")
 export class ServiceAccountForm extends Form<UserServiceAccountRequest> {
+    public static override verboseName = msg("Service Account");
+    public static override verboseNamePlural = msg("Service Accounts");
+    public override cancelButtonLabel = msg("Close");
+
     @state()
     protected expiresAt: Date | null = new Date(Date.now() + EXPIRATION_DURATION);
 
@@ -54,13 +59,15 @@ export class ServiceAccountForm extends Form<UserServiceAccountRequest> {
     }
 
     async send(data: UserServiceAccountRequest): Promise<UserServiceAccountResponse> {
-        const result = await new CoreApi(DEFAULT_CONFIG).coreUsersServiceAccountCreate({
+        const result = await aki(CoreApi).coreUsersServiceAccountCreate({
             userServiceAccountRequest: data,
         });
         this.result = result;
-        (this.parentElement as ModalForm).showSubmitButton = false;
+        if (this.parentElement instanceof ModalForm) {
+            this.parentElement.showSubmitButton = false;
+        }
         if (this.targetGroup) {
-            await new CoreApi(DEFAULT_CONFIG).coreGroupsAddUserCreate({
+            await aki(CoreApi).coreGroupsAddUserCreate({
                 groupUuid: this.targetGroup.pk,
                 userAccountRequest: {
                     pk: this.result.userPk,
@@ -68,7 +75,7 @@ export class ServiceAccountForm extends Form<UserServiceAccountRequest> {
             });
         }
         if (this.targetRole) {
-            await new RbacApi(DEFAULT_CONFIG).rbacRolesAddUserCreate({
+            await aki(RbacApi).rbacRolesAddUserCreate({
                 uuid: this.targetRole.pk,
                 userAccountSerializerForRoleRequest: {
                     pk: this.result.userPk,
@@ -83,7 +90,9 @@ export class ServiceAccountForm extends Form<UserServiceAccountRequest> {
         this.result = null;
 
         this.expiresAt = new Date(Date.now() + EXPIRATION_DURATION);
-        (this.parentElement as ModalForm).showSubmitButton = true;
+        if (this.parentElement instanceof ModalForm) {
+            this.parentElement.showSubmitButton = true;
+        }
     }
 
     //#region Event Listeners
@@ -104,7 +113,7 @@ export class ServiceAccountForm extends Form<UserServiceAccountRequest> {
         return html`<ak-text-input
                 name="name"
                 label=${msg("Username")}
-                placeholder=${msg("Type a username for the user...")}
+                placeholder=${msg("Type a username for the service account...")}
                 value=""
                 input-hint="code"
                 required
@@ -153,7 +162,7 @@ export class ServiceAccountForm extends Form<UserServiceAccountRequest> {
             </ak-form-element-horizontal>`;
     }
 
-    renderResponseForm(): TemplateResult {
+    protected renderResponseForm(): SlottedTemplateResult {
         return html`<p>
                 ${msg(
                     "Use the username and password below to authenticate. The password can be retrieved later on the Tokens page.",
@@ -182,7 +191,7 @@ export class ServiceAccountForm extends Form<UserServiceAccountRequest> {
             </form>`;
     }
 
-    renderFormWrapper(): TemplateResult {
+    protected override renderFormWrapper(): SlottedTemplateResult {
         if (this.result) {
             return this.renderResponseForm();
         }

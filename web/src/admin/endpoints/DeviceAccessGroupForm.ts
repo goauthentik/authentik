@@ -1,7 +1,8 @@
 import "#components/ak-text-input";
 import "#elements/forms/HorizontalFormElement";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
+import { PFSize } from "#common/enums";
 
 import { ModelForm } from "#elements/forms/ModelForm";
 import { WithBrandConfig } from "#elements/mixins/branding";
@@ -20,35 +21,39 @@ import { ifDefined } from "lit/directives/if-defined.js";
  */
 @customElement("ak-endpoints-device-access-groups-form")
 export class DeviceAccessGroupForm extends WithBrandConfig(ModelForm<DeviceAccessGroup, string>) {
-    loadInstance(pk: string): Promise<DeviceAccessGroup> {
-        return new EndpointsApi(DEFAULT_CONFIG).endpointsDeviceAccessGroupsRetrieve({
-            pbmUuid: pk,
-        });
-    }
+    public static override verboseName = msg("Device Access Group");
+    public static override verboseNamePlural = msg("Device Access Groups");
 
-    getSuccessMessage(): string {
+    public override size = PFSize.Small;
+
+    protected endpoints = {
+        load: (pbmUuid: string) =>
+            aki(EndpointsApi).endpointsDeviceAccessGroupsRetrieve({
+                pbmUuid,
+            }),
+        create: (data: DeviceAccessGroup) =>
+            aki(EndpointsApi).endpointsDeviceAccessGroupsCreate({
+                deviceAccessGroupRequest: data as unknown as DeviceAccessGroupRequest,
+            }),
+        update: (pbmUuid: string, patchedDeviceAccessGroupRequest: DeviceAccessGroup) =>
+            aki(EndpointsApi).endpointsDeviceAccessGroupsPartialUpdate({
+                pbmUuid,
+                patchedDeviceAccessGroupRequest,
+            }),
+    };
+
+    public override getSuccessMessage(): string {
         return this.instance
             ? msg("Successfully updated group.")
             : msg("Successfully created group.");
     }
 
-    async send(data: DeviceAccessGroup): Promise<DeviceAccessGroup> {
-        if (this.instance) {
-            return new EndpointsApi(DEFAULT_CONFIG).endpointsDeviceAccessGroupsPartialUpdate({
-                pbmUuid: this.instance.pbmUuid,
-                patchedDeviceAccessGroupRequest: data,
-            });
-        }
-        return new EndpointsApi(DEFAULT_CONFIG).endpointsDeviceAccessGroupsCreate({
-            deviceAccessGroupRequest: data as unknown as DeviceAccessGroupRequest,
-        });
-    }
-
-    renderForm() {
+    protected override renderForm() {
         return html`<ak-text-input
             name="name"
-            placeholder=${msg("Group name...")}
-            label=${msg("Group name")}
+            autocomplete="off"
+            placeholder=${msg("Type a group name...")}
+            label=${msg("Group Name")}
             value=${ifDefined(this.instance?.name)}
             required
         ></ak-text-input>`;

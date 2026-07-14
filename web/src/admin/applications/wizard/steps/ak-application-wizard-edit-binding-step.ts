@@ -1,5 +1,4 @@
 import "#components/ak-number-input";
-import "#admin/applications/wizard/ak-wizard-title";
 import "#components/ak-radio-input";
 import "#components/ak-switch-input";
 import "#components/ak-text-input";
@@ -9,31 +8,33 @@ import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/ak-search-select-ez";
 import "#elements/forms/SearchSelect/index";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
-import { groupBy } from "#common/utils";
-
-import { ISearchSelectConfig } from "#elements/forms/SearchSelect/ak-search-select-ez";
-import { type SearchSelectBase } from "#elements/forms/SearchSelect/SearchSelect";
-
-import { type NavigableButton, type WizardButton } from "#components/ak-wizard/types";
-
-import { ApplicationWizardStep } from "#admin/applications/wizard/ApplicationWizardStep";
+import { aki } from "#common/api/client";
 import {
     createPassFailOptions,
     PolicyBindingCheckTarget,
     PolicyObjectKeys,
-} from "#admin/policies/utils";
+} from "#common/policies/utils";
+import { groupBy } from "#common/utils";
+
+import { ISearchSelectConfig } from "#elements/forms/SearchSelect/ak-search-select-ez";
+import { type SearchSelectBase } from "#elements/forms/SearchSelect/SearchSelect";
+import { withQuery } from "#elements/forms/SearchSelect/utils";
+
+import { type NavigableButton, type WizardButton } from "#components/ak-wizard/shared";
+
+import { ApplicationWizardStep } from "#admin/applications/wizard/ApplicationWizardStep";
 
 import { CoreApi, Group, PoliciesApi, Policy, PolicyBinding, User } from "@goauthentik/api";
 
-import { msg } from "@lit/localize";
+import { msg, str } from "@lit/localize";
 import { html, nothing } from "lit";
 import { customElement, query, state } from "lit/decorators.js";
 
-const withQuery = <T>(search: string | undefined, args: T) => (search ? { ...args, search } : args);
-
+/**
+ * @prop wizard - The current state of the application wizard, shared across all steps.
+ */
 @customElement("ak-application-wizard-edit-binding-step")
-export class ApplicationWizardEditBindingStep extends ApplicationWizardStep {
+export class ApplicationWizardEditBindingStep extends ApplicationWizardStep<PolicyBinding> {
     label = msg("Edit Binding");
 
     hide = true;
@@ -48,19 +49,17 @@ export class ApplicationWizardEditBindingStep extends ApplicationWizardStep {
     @state()
     policyGroupUser: PolicyBindingCheckTarget = PolicyBindingCheckTarget.Policy;
 
-    instanceId = -1;
+    protected instanceId = -1;
 
-    instance?: PolicyBinding;
+    protected instance: PolicyBinding | null = null;
 
-    get buttons(): WizardButton[] {
-        return [
-            { kind: "next", label: msg("Save Binding"), destination: "bindings" },
-            { kind: "back", destination: "bindings" },
-            { kind: "cancel" },
-        ];
-    }
+    protected buttons: WizardButton[] = [
+        { kind: "cancel" },
+        { kind: "back", destination: "bindings" },
+        { kind: "next", label: msg("Save Binding"), destination: "bindings" },
+    ];
 
-    override handleButton(button: NavigableButton) {
+    public override handleButton(button: NavigableButton) {
         if (button.kind === "next") {
             if (!this.form?.checkValidity()) {
                 return;
@@ -69,7 +68,7 @@ export class ApplicationWizardEditBindingStep extends ApplicationWizardStep {
             const policyObject = this.searchSelect.selectedObject;
             const policyKey = PolicyObjectKeys[this.policyGroupUser];
             const newBinding: PolicyBinding = {
-                ...(this.formValues as unknown as PolicyBinding),
+                ...this.formValues,
                 [policyKey]: policyObject,
             };
 
@@ -82,12 +81,14 @@ export class ApplicationWizardEditBindingStep extends ApplicationWizardStep {
             }
 
             this.instanceId = -1;
-            this.handleUpdate({ bindings }, "bindings");
 
-            return;
+            return this.dispatchEvents({
+                update: { bindings },
+                destination: "bindings",
+            });
         }
 
-        super.handleButton(button);
+        return super.handleButton(button);
     }
 
     // The search select configurations for the three different types of fetches that we care about,
@@ -99,7 +100,7 @@ export class ApplicationWizardEditBindingStep extends ApplicationWizardStep {
             case PolicyBindingCheckTarget.Policy:
                 return {
                     fetchObjects: async (query) => {
-                        const policies = await new PoliciesApi(DEFAULT_CONFIG).policiesAllList(
+                        const policies = await aki(PoliciesApi).policiesAllList(
                             withQuery(query, {
                                 ordering: "name",
                             }),
@@ -116,7 +117,7 @@ export class ApplicationWizardEditBindingStep extends ApplicationWizardStep {
             case PolicyBindingCheckTarget.Group:
                 return {
                     fetchObjects: async (query) => {
-                        const groups = await new CoreApi(DEFAULT_CONFIG).coreGroupsList(
+                        const groups = await aki(CoreApi).coreGroupsList(
                             withQuery(query, {
                                 ordering: "name",
                                 includeUsers: false,
@@ -132,7 +133,7 @@ export class ApplicationWizardEditBindingStep extends ApplicationWizardStep {
             case PolicyBindingCheckTarget.User:
                 return {
                     fetchObjects: async (query) => {
-                        const users = await new CoreApi(DEFAULT_CONFIG).coreUsersList(
+                        const users = await aki(CoreApi).coreUsersList(
                             withQuery(query, {
                                 ordering: "username",
                             }),
@@ -151,7 +152,7 @@ export class ApplicationWizardEditBindingStep extends ApplicationWizardStep {
         }
     }
 
-    renderSearch(title: string, policyKind: PolicyBindingCheckTarget) {
+    protected renderSearch(title: string, policyKind: PolicyBindingCheckTarget) {
         if (policyKind !== this.policyGroupUser) {
             return nothing;
         }
@@ -161,12 +162,15 @@ export class ApplicationWizardEditBindingStep extends ApplicationWizardStep {
                 .config=${this.searchSelectConfigs(policyKind)}
                 class="policy-search-select"
                 blankable
+                placeholder=${msg(str`Select a ${title}...`)}
             ></ak-search-select-ez>
         </ak-form-element-horizontal>`;
     }
 
-    renderForm(instance?: PolicyBinding) {
-        return html`<ak-wizard-title>${msg("Create a Policy/User/Group Binding")}</ak-wizard-title>
+    protected renderForm(instance?: PolicyBinding | null) {
+        return html`<h3 class="pf-c-wizard__main-title">
+                ${msg("Create a Policy/User/Group Binding")}
+            </h3>
             <form id="bindingform" class="pf-c-form pf-m-horizontal" slot="form">
                 <div class="pf-c-card pf-m-selectable pf-m-selected">
                     <div class="pf-c-card__body">
@@ -197,7 +201,7 @@ export class ApplicationWizardEditBindingStep extends ApplicationWizardStep {
                 <ak-switch-input
                     name="negate"
                     ?checked=${instance?.negate ?? false}
-                    label=${msg("Negate result")}
+                    label=${msg("Negate Result")}
                     help=${msg("Negates the outcome of the binding. Messages are unaffected.")}
                 ></ak-switch-input>
                 <ak-number-input
@@ -214,22 +218,25 @@ export class ApplicationWizardEditBindingStep extends ApplicationWizardStep {
                 ></ak-number-input>
                 <ak-radio-input
                     name="failureResult"
-                    label=${msg("Failure result")}
+                    label=${msg("Failure Result")}
                     .options=${createPassFailOptions}
+                    required
                 ></ak-radio-input>
             </form>`;
     }
 
-    renderMain() {
+    protected renderMain() {
         if (!(this.wizard.bindings && this.wizard.errors)) {
             throw new Error("Application Step received uninitialized wizard context.");
         }
+
         const currentBinding = this.wizard.currentBinding ?? -1;
+
         if (this.instanceId !== currentBinding) {
             this.instanceId = currentBinding;
-            this.instance =
-                this.instanceId === -1 ? undefined : this.wizard.bindings[this.instanceId];
+            this.instance = this.instanceId === -1 ? null : this.wizard.bindings[this.instanceId];
         }
+
         return this.renderForm(this.instance);
     }
 }

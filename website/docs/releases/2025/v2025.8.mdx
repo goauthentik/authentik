@@ -11,7 +11,7 @@ slug: "/releases/2025.8"
 
 ![Screenshot of the admin interface showing events plotted on a histogram chart and on a map](../../sys-mgmt/events/event-map-chart.png)
 
-- **Advanced search**: :ak-enterprise Search for [users](../../users-sources/user/user_basic_operations.md#tell-me-more) and [event logs](../../sys-mgmt/events/logging-events.mdx#tell-me-more) with custom query language to filter on their properties and attributes.
+- **Advanced search**: :ak-enterprise Search with [AKQL](../../sys-mgmt/akql.mdx) to filter users and event logs by their properties and attributes.
 
 - **Email stage rate limiting**: The email stage can now be configured to set a maximum number of emails that can be sent within a specified time period.
 
@@ -193,7 +193,7 @@ helm upgrade authentik authentik/authentik -f values.yaml --version ^2025.8
 - blueprints: add File tag (#15727)
 - blueprints: add FindObject tag (#12415)
 - blueprints: add JSON tag to parse JSON from string (#15235)
-- blueprints: add section support for organisation (#15045)
+- blueprints: add section support for organization (#15045)
 - blueprints: sort schema items (#15022)
 - brands: revert sort matched brand by match length (revert #15413) (cherry-pick #16233) (#16235)
 - brands: sort matched brand by match length (#15413)
@@ -402,7 +402,7 @@ helm upgrade authentik authentik/authentik -f values.yaml --version ^2025.8
 - \*/bindings: order by pk (cherry-pick #17027) (#17053)
 - cmd/server/healthcheck: info log success instead of debug (cherry-pick #17093 to version-2025.8) (#17097)
 - core: add index on Group.is_superuser (cherry-pick #17011) (#17017)
-- lib: match exception_to_dict locals behaviour (cherry-pick #17006) (#17016)
+- lib: match exception_to_dict locals behavior (cherry-pick #17006) (#17016)
 - lib/config: fix listen settings (cherry-pick #17005) (#17023)
 - outposts/ldap: add pwdChangeTime attribute (cherry-pick #17010 to version-2025.8) (#17101)
 - packages/django-dramatiq-postgres: broker: fix new messages not being picked up when too many messages are waiting (cherry-pick #17106 to version-2025.8) (#17108)

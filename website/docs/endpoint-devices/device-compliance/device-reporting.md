@@ -14,7 +14,7 @@ tags:
 authentik_version: "2025.12.0"
 ---
 
-Endpoint Devices registered with authentik via a [connector](./connectors/index.mdx), such as the [authentik Agent](./connectors/authentik-agent.md) connector, regularly [check-in](#device-check-in) with authentik and report their [device facts](#device-facts).
+Endpoint Devices registered with authentik via a [connector](./connectors/index.mdx), such as the [authentik Agent](./connectors/authentik-agent.md) connector, regularly [check in](#device-check-in) with authentik and report their [device facts](#device-facts).
 
 These facts are shown on the [Devices](../manage-devices.mdx) page and are also accessible to policies and can be used to make policy decisions. See [Device Compliance Policy](./device-compliance-policy.md) for more details.
 
@@ -26,7 +26,7 @@ When a device registered with authentik reports its [device facts](#device-facts
 
 Device facts are informational snippets about a device, such as its operating system, serial number, installed applications, running processes, and more. These facts are supplied to authentik flows via the [authentik browser extension](browser-extension.mdx) to be used in making policy decisions. For example, you can create a policy that only allows endpoint devices that are running a recent OS version to access an application.
 
-JL: the facts are supplied either by ak-sysd or from other connectors, and the browser extension is only used to associate the device the user is using with the device in the authentik database
+The facts are supplied either by `ak-sysd` or other connectors, and the browser extension is only used to associate the device the user is using with the device record in the authentik database.
 
 ### Advanced device facts :ak-enterprise
 
@@ -34,7 +34,7 @@ This feature is still in development and will be announced soon.
 
 ## Example facts
 
-For an example of the facts provided for a Linux device, see [here](./facts-linux.json).
+See [example facts from a Linux device](./facts-linux.json).
 
 ## Endpoint devices in event logs
 

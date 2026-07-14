@@ -1,4 +1,5 @@
 import { randomId } from "#elements/utils/randomId";
+import { findTopmost } from "#elements/utils/render-roots";
 
 import { autoUpdate, computePosition, flip, hide } from "@floating-ui/dom";
 
@@ -68,13 +69,15 @@ export class Portal extends LitElement implements IPortal {
         this.setAttribute("data-ouia-component-type", "ak-portal");
         this.setAttribute("data-ouia-component-id", this.getAttribute("id") || randomId());
 
-        this.dropdownContainer = document.createElement("div");
+        this.dropdownContainer = this.ownerDocument.createElement("div");
         this.dropdownContainer.dataset.managedBy = "ak-portal";
         if (this.name) {
             this.dropdownContainer.dataset.managedFor = this.name;
         }
 
-        document.body.append(this.dropdownContainer);
+        const topmost = findTopmost(this.ownerDocument);
+
+        topmost.append(this.dropdownContainer);
 
         if (!this.anchor) {
             throw new Error("Tether entrance initialized incorrectly: missing anchor");

@@ -1,14 +1,15 @@
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/index";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
+import { docLink } from "#common/global";
 
 import { AKElement } from "#elements/Base";
 
 import { AKLabel } from "#components/ak-label";
 
-import { AdminApi, AdminFileListUsageEnum } from "@goauthentik/api";
+import { AdminApi, UsageEnum } from "@goauthentik/api";
 import { IDGenerator } from "@goauthentik/core/id";
 
 import { msg } from "@lit/localize";
@@ -59,7 +60,7 @@ export class AKFileSearchInput extends AKElement {
     public help: string | null = null;
 
     @property({ type: String, useDefault: true })
-    public usage: AdminFileListUsageEnum = AdminFileListUsageEnum.Media;
+    public usage: UsageEnum = UsageEnum.Media;
 
     @property({ type: String, reflect: false })
     public fieldID?: string = IDGenerator.elementID().toString();
@@ -78,10 +79,10 @@ export class AKFileSearchInput extends AKElement {
     }
 
     async #fetch(query?: string): Promise<FileItem[]> {
-        const api = new AdminApi(DEFAULT_CONFIG);
+        const api = aki(AdminApi);
         return api
             .adminFileList({
-                usage: this.usage as AdminFileListUsageEnum,
+                usage: this.usage as UsageEnum,
                 ...(query ? { search: query } : {}),
             })
             .then((response) => {
@@ -143,13 +144,20 @@ export class AKFileSearchInput extends AKElement {
                 creatable
             >
             </ak-search-select>
-            ${this.help
-                ? html`<p class="pf-c-form__helper-text">${this.help}</p>`
-                : html`<p class="pf-c-form__helper-text">
-                      ${msg(
+            <p class="pf-c-form__helper-text">
+                ${this.help
+                    ? this.help
+                    : msg(
                           "You can also enter a URL (https://...), Font Awesome icon (fa://fa-icon-name), or upload a new file.",
                       )}
-                  </p>`}
+                <a
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    href=${docLink("/customize/file-picker/")}
+                >
+                    ${msg("See documentation for supported values.")}
+                </a>
+            </p>
         </ak-form-element-horizontal>`;
     }
 }

@@ -120,7 +120,7 @@ aws s3 cp \
 The `Content-Type` header is not set when files are programmatically uploaded to S3 via Terraform.
 :::
 
-### Configuring authentik
+### Configure authentik
 
 Add the following to your `.env` file:
 
@@ -144,6 +144,14 @@ AUTHENTIK_STORAGE__S3__ENDPOINT=https://s3.provider
 AUTHENTIK_STORAGE__S3__CUSTOM_DOMAIN=s3.provider/authentik-media
 ```
 
+If your provider only supports legacy S3 signatures, also set:
+
+```env
+AUTHENTIK_STORAGE__S3__SIGNATURE_VERSION=s3
+```
+
+By default, authentik uses signature version `s3v4`.
+
 The `AUTHENTIK_STORAGE__S3__ENDPOINT` setting controls how authentik communicates with the S3 provider. When set, it overrides region/`USE_SSL`.
 
 The `AUTHENTIK_STORAGE__S3__CUSTOM_DOMAIN` setting controls how media URLs are built for the web interface. It must include the bucket name and must not include a scheme.
@@ -158,7 +166,7 @@ You can omit `ACCESS_KEY` and `SECRET_KEY` when using AWS SDK authentication (in
 
 For more options (including `AUTHENTIK_STORAGE__S3__USE_SSL`, session profiles, and security tokens), see the [configuration reference](../../install-config/configuration/configuration.mdx#storage-settings).
 
-## Migrating between storage backends
+## Migrate between storage backends
 
 The following assumes the local storage path is `/data` and the bucket is `authentik-data`. Ensure your `aws` CLI is configured to talk to your provider (add `--endpoint-url` or `--region` as needed).
 

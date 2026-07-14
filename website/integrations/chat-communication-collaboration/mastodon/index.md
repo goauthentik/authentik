@@ -4,9 +4,11 @@ sidebar_label: Mastodon
 support_level: community
 ---
 
-## What is Mastodon
+import RedirectURI20265Note from "../../\_redirect-uri-2026-5-note.mdx";
 
-> Mastodon is free and open-source software for running self-hosted social networking services. It has microblogging features similar to Twitter
+## What is Mastodon?
+
+> Mastodon is free and open-source software for running self-hosted social networking services. It has microblogging features similar to Twitter.
 >
 > -- https://joinmastodon.org/
 
@@ -14,7 +16,7 @@ support_level: community
 
 The following placeholders are used in this guide:
 
-- `mastodon.company` is the FQDN of the mastodon installation.
+- `mastodon.company` is the FQDN of the Mastodon installation.
 - `authentik.company` is the FQDN of the authentik installation.
 
 :::info
@@ -23,52 +25,55 @@ This documentation lists only the settings that you need to change from their de
 
 ## authentik configuration
 
+<RedirectURI20265Note />
+
 To support the integration of Mastodon with authentik, you need to create an application/provider pair in authentik.
 
-### Create an application and provider in authentik
+### Create an application and provider
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
-
-- **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
-- **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
-- **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
-    - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
-    - Set a `Strict` redirect URI to `https://mastodon.company/auth/auth/openid_connect/callback`.
-    - Select any available signing key.
-- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Note the application **Slug** because you will use it later as `<application_slug>`.
+    - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
+    - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+        - Note the **Client ID** and **Client Secret** values because they will be required later.
+        - Add a **Redirect URI** of type `Strict` `Authorization` as `https://mastodon.company/auth/auth/openid_connect/callback`.
+        - Select any available signing key.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 
 3. Click **Submit** to save the new application and provider.
 
 ## Mastodon configuration
 
-Configure Mastodon `OIDC_` settings by editing the `.env.production` and add the following:
+Configure Mastodon's `OIDC_` settings by editing `.env.production` and adding the following values:
 
-:::warning
-When using `preferred_username` as the user identifier, ensure that the [Allow users to change username setting](https://docs.goauthentik.io/docs/sys-mgmt/settings#allow-users-to-change-username) is disabled to prevent authentication issues.
-:::
-
-:::info
-You can configure Mastodon to use either the `sub` or `preferred_username` as the UID field under `OIDC_UID_FIELD`. The `sub` option uses a unique, stable identifier for the user, while `preferred_username` uses the username configured in authentik.
-:::
-
-```
+```env title=".env.production"
 OIDC_ENABLED=true
 OIDC_DISPLAY_NAME=authentik
 OIDC_DISCOVERY=true
-OIDC_ISSUER=< OpenID Configuration Issuer>
-OIDC_AUTH_ENDPOINT=https://authentik.company/application/o/authorize/
+OIDC_ISSUER=https://authentik.company/application/o/<application_slug>/
 OIDC_SCOPE=openid,profile,email
 OIDC_UID_FIELD=preferred_username
-OIDC_CLIENT_ID=<Client ID>
-OIDC_CLIENT_SECRET=<Client Secret>
+OIDC_CLIENT_ID=<Client ID from authentik>
+OIDC_CLIENT_SECRET=<Client Secret from authentik>
 OIDC_REDIRECT_URI=https://mastodon.company/auth/auth/openid_connect/callback
 OIDC_SECURITY_ASSUME_EMAIL_IS_VERIFIED=true
 ```
 
-Restart mastodon-web.service
+:::warning Stable Mastodon usernames
+This configuration uses the authentik `preferred_username` claim as the Mastodon user identifier so that new Mastodon usernames match authentik usernames. Disable the [**Allow users to change username** setting](/docs/sys-mgmt/settings#allow-users-to-change-username) in authentik to prevent authentication issues after username changes.
+:::
 
-## Additional Resources
+Alternatively, you can set `OIDC_UID_FIELD=sub` to use authentik's stable subject identifier instead of the username.
 
-- https://github.com/mastodon/mastodon/pull/16221
-- https://forum.fedimins.net/t/sso-fuer-verschiedene-dienste/42
+Restart the Mastodon web service for the changes to take effect.
+
+## Configuration verification
+
+To confirm that authentik is properly configured with Mastodon, open Mastodon and log in using the **authentik** login option.
+
+## Resources
+
+- [Mastodon documentation - Configuring your environment](https://docs.joinmastodon.org/admin/config/#external-authentication)
+- [Mastodon source - OmniAuth initializer](https://github.com/mastodon/mastodon/blob/main/config/initializers/3_omniauth.rb)
+- [Mastodon source - authentication routes](https://github.com/mastodon/mastodon/blob/main/config/routes.rb)

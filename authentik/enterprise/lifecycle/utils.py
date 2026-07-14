@@ -1,3 +1,4 @@
+from datetime import datetime
 from urllib import parse
 
 from django.contrib.contenttypes.models import ContentType
@@ -5,8 +6,7 @@ from django.db.models import Model
 from django.urls import reverse
 from rest_framework.serializers import ChoiceField, Serializer, UUIDField
 
-from authentik.core.api.utils import ModelSerializer
-from authentik.core.models import Application, Group, User
+from authentik.core.models import Application, Group
 from authentik.rbac.models import Role
 
 
@@ -39,6 +39,10 @@ def link_for_model(model: Model) -> str:
     return f"{reverse("authentik_core:if-admin")}#{admin_link_for_model(model)}"
 
 
+def start_of_day(dt: datetime) -> datetime:
+    return dt.replace(hour=0, minute=0, second=0, microsecond=0)
+
+
 class ContentTypeField(ChoiceField):
     def __init__(self, **kwargs):
         super().__init__(choices=model_choices(), **kwargs)
@@ -53,18 +57,3 @@ class ContentTypeField(ChoiceField):
 class GenericForeignKeySerializer(Serializer):
     content_type = ContentTypeField()
     object_id = UUIDField()
-
-
-class ReviewerGroupSerializer(ModelSerializer):
-    class Meta:
-        model = Group
-        fields = [
-            "pk",
-            "name",
-        ]
-
-
-class ReviewerUserSerializer(ModelSerializer):
-    class Meta:
-        model = User
-        fields = ["pk", "uuid", "username", "name"]

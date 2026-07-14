@@ -30,12 +30,20 @@ PLAN_CONTEXT_USER_PATH = "user_path"
 
 
 class UserWriteStageView(StageView):
-    """Finalise Enrollment flow by creating a user object."""
+    """Finalize Enrollment flow by creating a user object."""
 
     def __init__(self, executor: FlowExecutorView, **kwargs):
         super().__init__(executor, **kwargs)
         self.disallowed_user_attributes = [
             "groups",
+            # Block attribute writes that would otherwise land on the model's
+            # primary key. An IdP that returns an `id` claim (mocksaml is one
+            # example) used to crash the enrollment flow with
+            # ValueError: Field 'id' expected a number but got '<hex>'
+            # because hasattr(user, "id") is true and setattr(user, "id", ...)
+            # was taken unchecked. See #21580.
+            "id",
+            "pk",
         ]
 
     @staticmethod

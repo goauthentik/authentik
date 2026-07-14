@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 
 # Stage 1: Build
-FROM --platform=${BUILDPLATFORM} docker.io/library/golang:1.26.0-trixie@sha256:889885d7cc1275935e3f9920aabadc5fadbe873f633d92a746f1bc401dd40f69 AS builder
+FROM --platform=${BUILDPLATFORM} docker.io/library/golang:1.27rc2-trixie@sha256:ee5a79585a523739f9090e49dcff25fd1e13d2b80fd85e826b27241280748d5f AS builder
 
 ARG TARGETOS
 ARG TARGETARCH
@@ -19,7 +19,6 @@ RUN --mount=type=cache,id=apt-$TARGETARCH$TARGETVARIANT,sharing=locked,target=/v
 
 RUN --mount=type=bind,target=/go/src/goauthentik.io/go.mod,src=./go.mod \
     --mount=type=bind,target=/go/src/goauthentik.io/go.sum,src=./go.sum \
-    --mount=type=bind,target=/go/src/goauthentik.io/gen-go-api,src=./gen-go-api \
     --mount=type=cache,target=/go/pkg/mod \
     go mod download
 
@@ -31,7 +30,7 @@ RUN --mount=type=cache,sharing=locked,target=/go/pkg/mod \
     go build -o /go/radius ./cmd/radius
 
 # Stage 2: Run
-FROM ghcr.io/goauthentik/fips-debian:trixie-slim-fips@sha256:44197493dc934baab7b88a3eef9646cecd48a6179acbe64625354e3a78773196
+FROM ghcr.io/goauthentik/fips-debian:trixie-slim-fips@sha256:7726387c78b5787d2146868c2ccc8948a3591d0a5a6436f7780c8c28acc76341
 
 ARG VERSION
 ARG GIT_BUILD_HASH
@@ -43,7 +42,6 @@ LABEL org.opencontainers.image.authors="Authentik Security Inc." \
     org.opencontainers.image.documentation="https://docs.goauthentik.io" \
     org.opencontainers.image.licenses="https://github.com/goauthentik/authentik/blob/main/LICENSE" \
     org.opencontainers.image.revision=${GIT_BUILD_HASH} \
-    org.opencontainers.image.source="https://github.com/goauthentik/authentik" \
     org.opencontainers.image.title="authentik RADIUS outpost image" \
     org.opencontainers.image.url="https://goauthentik.io" \
     org.opencontainers.image.vendor="Authentik Security Inc." \

@@ -11,7 +11,7 @@ authentik_version: "2025.12.0"
 - SSH to Linux hosts using authentik credentials, see [SSH authentication](../../authentik-agent/device-authentication/ssh-authentication.mdx).
 - Authenticate CLI applications using authentik credentials, see [CLI application authentication](../../authentik-agent/device-authentication/cli-app-authentication/index.mdx).
 
-:::warning Supported Windows Versions
+:::warning Supported Windows versions
 The authentik Agent is currently only tested on Windows 11 and Windows Server 2022. Other versions may work but are untested.
 :::
 
@@ -23,7 +23,7 @@ It currently only supports local login; RDP login is not supported.
 
 :::warning
 
-- When WCP is enabled, the password of the Windows user account that's used to login is set to a random string.
+- When WCP is enabled, the password of the Windows user account that's used to log in is set to a random string.
 - WCP can cause issues with user encrypted directories.
 - Support with Active Directory has not been confirmed yet.
 - Offline login is currently not supported.
@@ -41,7 +41,7 @@ If you already have an enrollment token, skip to the [next section](#install-the
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Endpoint Devices** > **Connectors**.
 3. Click on the authentik Agent connector that you created when [configuring your authentik deployment](../configuration.md) to support the authentik agent.
-4. Under **Enrollment Tokens**, click **Create**, and configure the following settings:
+4. Under **Enrollment Tokens**, click **New Enrollment Token**, and configure the following settings:
     - **Token name**: provide a descriptive name for the token
     - **Device group _(optional)_**: select a device access group for the device to be added to after completing enrollment
     - **Expiring _(optional)_**: set whether or not the enrollment token will expire
@@ -52,10 +52,6 @@ If you already have an enrollment token, skip to the [next section](#install-the
 
 :::info Automated deployment is recommended
 It's recommended to deploy the Agent via [MDM or automation tools](./automated.mdx) instead of manually configuring it.
-:::
-
-:::info Serial number required
-The Agent requires a serial number be presented by Windows. Some hypervisors don't set serial numbers. When deploying on a virtual machine, ensure that it has a serial number set.
 :::
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
@@ -75,7 +71,7 @@ To enable [device compliance features](../../device-compliance/index.mdx), you m
 1. Open a Terminal session as Administrator and run the following command:
 
 ```sh
-ak-sysd domains join <deployment_name> --authentik-url https://authentik.company
+"C:\Program Files\Authentik Security Inc\sysd\ak-sysd.exe" domains join <deployment_name> --authentik-url https://authentik.company
 ```
 
 - `deployment_name` is the name that will be used to identify the authentik deployment on the device.

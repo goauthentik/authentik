@@ -15,6 +15,7 @@ from authentik.core.models import (
     ExpiringModel,
     User,
 )
+from authentik.lib.sync.models import Sync
 from authentik.lib.utils.db import chunked_queryset
 from authentik.tasks.middleware import CurrentTask
 
@@ -25,9 +26,11 @@ LOGGER = get_logger()
 def clean_expired_models():
     self = CurrentTask.get_task()
     for cls in ExpiringModel.__subclasses__():
-        cls: ExpiringModel
         objects = (
-            cls.objects.all().exclude(expiring=False).exclude(expiring=True, expires__gt=now())
+            cls.objects.including_expired()
+            .all()
+            .exclude(expiring=False)
+            .exclude(expiring=True, expires__gt=now())
         )
         amount = objects.count()
         for obj in chunked_queryset(objects):
@@ -42,6 +45,9 @@ def clean_expired_models():
             obj.delete()
         LOGGER.debug("Expired models", model=cls, amount=amount)
         self.info(f"Expired {amount} {cls._meta.verbose_name_plural}")
+    for cls in Sync.__subclasses__():
+        amount = cls.cleanup()
+        LOGGER.debug("Expired models", model=cls, amount=amount)
 
 
 @actor(description=_("Remove temporary users created by SAML Sources."))

@@ -1,8 +1,12 @@
 """Event API tests"""
 
+from datetime import timedelta
 from json import loads
 
 from django.urls import reverse
+from django.utils.datastructures import MultiValueDict
+from django.utils.http import urlencode
+from django.utils.timezone import now
 from rest_framework.test import APITestCase
 
 from authentik.core.tests.utils import create_test_admin_user
@@ -47,12 +51,17 @@ class TestEventsAPI(APITestCase):
     def test_top_n(self):
         """Test top_per_user"""
         event = Event.new(EventAction.AUTHORIZE_APPLICATION)
+        event.context["authorized_application"] = {"name": "foo"}
         event.save()  # We save to ensure nothing is un-saveable
         response = self.client.get(
             reverse("authentik_api:event-top-per-user"),
-            data={"filter_action": EventAction.AUTHORIZE_APPLICATION},
+            data={"action": EventAction.AUTHORIZE_APPLICATION},
         )
         self.assertEqual(response.status_code, 200)
+        self.assertJSONEqual(
+            response.content,
+            [{"application": {"name": "foo"}, "counted_events": 1, "unique_users": 0}],
+        )
 
     def test_actions(self):
         """Test actions"""
@@ -91,3 +100,52 @@ class TestEventsAPI(APITestCase):
             },
         )
         self.assertEqual(response.status_code, 400)
+
+    def test_volume(self):
+        Event.objects.all().delete()
+        Event.new(EventAction.LOGIN).set_user(self.user).save()
+        evt = Event.new(EventAction.LOGIN).set_user(self.user)
+        evt.created = now() - timedelta(days=6)
+        evt.save()
+        res = self.client.get(
+            reverse("authentik_api:event-volume")
+            + "?"
+            + urlencode(
+                {
+                    "action": EventAction.LOGIN,
+                }
+            )
+        )
+        self.assertEqual(res.status_code, 200)
+        data = loads(res.content)
+        self.assertEqual(len(data), 1)
+
+    def test_stats(self):
+        Event.objects.all().delete()
+        Event.new(EventAction.LOGIN).set_user(self.user).save()
+        evt = Event.new(EventAction.LOGIN).set_user(self.user)
+        evt.created = now() - timedelta(days=6)
+        evt.save()
+        res = self.client.get(
+            reverse("authentik_api:event-stats")
+            + "?"
+            + urlencode(
+                MultiValueDict({"count_steps": ["hours=24", "days=7", "days=240"]}), doseq=True
+            )
+        )
+        self.assertEqual(res.status_code, 200, res.content)
+        self.assertJSONEqual(
+            res.content, {"unique_users": 1, "count_step": {"hours24": 2, "days7": 2, "days240": 2}}
+        )
+
+    def test_stats_invalid(self):
+        res = self.client.get(
+            reverse("authentik_api:event-stats")
+            + "?"
+            + urlencode({"count_steps": "24d"}, doseq=True)
+        )
+        self.assertEqual(res.status_code, 400)
+        self.assertJSONEqual(
+            res.content,
+            {"count_steps": {"0": ["24d is not in the correct format of 'hours=3;minutes=1'."]}},
+        )

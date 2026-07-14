@@ -3,7 +3,7 @@ import "#components/ak-switch-input";
 import "#components/ak-text-input";
 import "#elements/forms/FormGroup";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { ModelForm } from "#elements/forms/ModelForm";
 
@@ -15,11 +15,21 @@ import { customElement } from "lit/decorators.js";
 
 @customElement("ak-endpoints-connector-fleet-form")
 export class FleetConnectorForm extends ModelForm<FleetConnector, string> {
-    loadInstance(pk: string): Promise<FleetConnector> {
-        return new EndpointsApi(DEFAULT_CONFIG).endpointsFleetConnectorsRetrieve({
-            connectorUuid: pk,
-        });
-    }
+    protected endpoints = {
+        load: (connectorUuid: string) =>
+            aki(EndpointsApi).endpointsFleetConnectorsRetrieve({
+                connectorUuid,
+            }),
+        create: (data: FleetConnector) =>
+            aki(EndpointsApi).endpointsFleetConnectorsCreate({
+                fleetConnectorRequest: data as unknown as FleetConnectorRequest,
+            }),
+        update: (connectorUuid: string, patchedFleetConnectorRequest: FleetConnector) =>
+            aki(EndpointsApi).endpointsFleetConnectorsPartialUpdate({
+                connectorUuid,
+                patchedFleetConnectorRequest,
+            }),
+    };
 
     public override getSuccessMessage(): string {
         return this.instance
@@ -27,22 +37,11 @@ export class FleetConnectorForm extends ModelForm<FleetConnector, string> {
             : msg("Successfully created Fleet connector.");
     }
 
-    async send(data: FleetConnector): Promise<FleetConnector> {
-        if (this.instance) {
-            return new EndpointsApi(DEFAULT_CONFIG).endpointsFleetConnectorsPartialUpdate({
-                connectorUuid: this.instance.connectorUuid!,
-                patchedFleetConnectorRequest: data,
-            });
-        }
-        return new EndpointsApi(DEFAULT_CONFIG).endpointsFleetConnectorsCreate({
-            fleetConnectorRequest: data as unknown as FleetConnectorRequest,
-        });
-    }
-
     renderForm() {
         return html`<ak-text-input
                 name="name"
-                placeholder=${msg("Connector name...")}
+                autofocus
+                placeholder=${msg("Type a connector name...")}
                 label=${msg("Connector name")}
                 value=${this.instance?.name ?? ""}
                 required
@@ -57,6 +56,7 @@ export class FleetConnectorForm extends ModelForm<FleetConnector, string> {
                     <ak-text-input
                         name="url"
                         label=${msg("Fleet Server URL")}
+                        inputmode="url"
                         value=${this.instance?.url ?? ""}
                         required
                         input-hint="code"
@@ -64,7 +64,9 @@ export class FleetConnectorForm extends ModelForm<FleetConnector, string> {
                     </ak-text-input>
                     <ak-secret-text-input
                         label=${msg("Fleet API Token")}
+                        placeholder=${msg("Provide your Fleet API token...")}
                         name="token"
+                        plaintext
                         ?revealed=${!this.instance}
                     ></ak-secret-text-input>
                     <ak-switch-input

@@ -126,7 +126,7 @@ export class ConsentStage extends BaseStage<ConsentChallenge, ConsentChallengeRe
                     ? this.renderAdditional()
                     : this.renderNoPrevious()}
 
-                <fieldset class="pf-c-form__group pf-m-action">
+                <fieldset class="ak-c-fieldset pf-c-form__group pf-m-action">
                     <legend class="sr-only">${msg("Form actions")}</legend>
                     <button
                         name="continue"

@@ -9,6 +9,7 @@
     },
     "main": "index.js",
     "type": "module",
+    "types": "./out/index.d.ts",
     "exports": {
         "./package.json": "./package.json",
         "./*/browser": {
@@ -43,15 +44,13 @@
         }
     },
     "dependencies": {
-        "@goauthentik/tsconfig": "^1.0.5",
-        "@types/node": "^25.3.0",
+        "@goauthentik/tsconfig": "^2.0.0",
+        "@types/node": "^26.1.0",
         "@types/semver": "^7.7.1",
-        "semver": "^7.7.4",
-        "typescript": "^5.9.3"
+        "semver": "^7.8.5",
+        "typescript": "catalog:"
     },
     "engines": {
-        "node": ">=24",
-        "npm": ">=11.6.2"
-    },
-    "types": "./out/index.d.ts"
+        "node": ">=24"
+    }
 }

@@ -2,8 +2,11 @@
 title: SSH authentication
 sidebar_label: SSH authentication
 tags: [ssh, authentik Agent]
-authentik_version: "2025.12.0"
+authentik_version: "2026.2.4"
 ---
+
+import TabItem from "@theme/TabItem";
+import Tabs from "@theme/Tabs";
 
 You can use the [authentik Agent](../index.mdx) to authenticate SSH connections between endpoint devices using authentik credentials.
 
@@ -13,17 +16,43 @@ When connected to an endpoint device in this way, sudo authorization can be hand
 
 ## Prerequisites
 
-- The [authentik Agent must be deployed](../agent-deployment/index.mdx) on both the source and SSH target devices to use the `ak ssh` command. Alternatively, if you're using the standard SSH client (`ssh user@host`) instead of `ak ssh`, the authentik Agent is not required to be deployed on the source and you'll need to authenticate interactively.
+- The [authentik Agent must be deployed](../agent-deployment/index.mdx) on both the source and SSH target devices.
 - The target device needs to be configured, see the [Configure SSH authentication on an endpoint device](#configure-ssh-authentication-on-an-endpoint-device) section below.
 
 ## How to SSH to an endpoint device
 
 To SSH to a configured [Linux host](../agent-deployment/linux.mdx) using the authentik Agent:
 
-1. Open a Terminal session and run the following command:
+1. Configure your SSH config to use the authentik Agent's SSH Identity Agent:
 
+<Tabs defaultValue="macOS">
+<TabItem value="macOS">
+
+Edit `~/.ssh/config` and add the following:
+
+```shell
+Host *
+    IdentityAgent "~/Library/Application Support/authentik/agent-ssh.sock"
 ```
-ak ssh <hostname>
+
+</TabItem>
+<TabItem value="Linux">
+
+Edit `~/.ssh/config` and add the following:
+
+```shell
+Host *
+    ForwardAgent yes
+    IdentityAgent "~/.local/share/authentik/agent-ssh.sock"
+```
+
+</TabItem>
+</Tabs>
+
+2. Open a Terminal session and run the following command:
+
+```shell
+ssh <hostname>
 ```
 
 2. If not already authenticated, you will be prompted for authentik credentials.
@@ -31,29 +60,7 @@ ak ssh <hostname>
 
 ## Configure SSH authentication on an endpoint device
 
-If you want a Linux Endpoint Device to support accepting SSH connections using authentik credentials, you will need to install the `libpam-authentik` package in addition to the authentik Agent. This is a PAM Module, which provides token-based and interactive authentication via authentik.
-
 Authentication is only possible if the Linux device is aware of the authentik user which is attempting to authenticate. This can be achieved in one of two ways:
 
 1. **Provision user accounts** - Create users on the Linux device with usernames that match authentik users that need to authenticate to the device. This can be done manually or via automation tools like Ansible.
 2. **`libnss-authentik`** - This is a package that can be installed on the Linux device. It is an NSS module that makes the Linux device aware of authentik users. Similar to adding a Linux device to an Active Directory or LDAP domain.
-
-### Install the `libpam-authentik` package _(required)_
-
-:::info Prerequisites
-You must have already deployed and configured the authentik Agent on the device.
-:::
-
-Run the following command to install the `libpam-authentik` package:
-
-```sh
-sudo apt install libpam-authentik
-```
-
-### Install the `libnss-authentik` package _(optional)_
-
-Run the following command to install the `libnss-authentik` package:
-
-```sh
-sudo apt install libnss-authentik
-```

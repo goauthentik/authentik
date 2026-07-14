@@ -121,9 +121,10 @@ export class InputPassword extends AKElement {
 
     //#region Refs
 
-    inputRef: Ref<HTMLInputElement> = createRef();
+    @property({ attribute: false, useDefault: true })
+    public inputRef: Ref<HTMLInputElement> = createRef();
 
-    toggleVisibilityRef: Ref<HTMLButtonElement> = createRef();
+    public toggleVisibilityRef = createRef<HTMLButtonElement>();
 
     //#endregion
 

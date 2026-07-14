@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from urllib.parse import urlparse
 
 from django.http import HttpRequest
 from django.shortcuts import get_object_or_404
@@ -55,7 +56,9 @@ class SignInRequest:
         _, provider = req.get_app_provider()
         if not req.wreply:
             req.wreply = provider.acs_url
-        if not req.wreply.startswith(provider.acs_url):
+        reply = urlparse(req.wreply)
+        configured = urlparse(provider.acs_url)
+        if not (reply[:2] == configured[:2] and reply.path.startswith(configured.path)):
             raise ValueError("Invalid wreply")
         return req
 
@@ -81,6 +84,8 @@ class SignInProcessor:
         self.sign_in_request = sign_in_request
         self.saml_processor = AssertionProcessor(self.provider, self.request, AuthNRequest())
         self.saml_processor.provider.audience = self.sign_in_request.wtrealm
+        if self.provider.signing_kp:
+            self.saml_processor.provider.sign_assertion = True
 
     def create_response_token(self):
         root = Element(f"{{{NS_WS_FED_TRUST}}}RequestSecurityTokenResponse", nsmap=NS_MAP)
@@ -148,7 +153,8 @@ class SignInProcessor:
     def response(self) -> dict[str, str]:
         root = self.create_response_token()
         assertion = root.xpath("//saml:Assertion", namespaces=NS_MAP)[0]
-        self.saml_processor._sign(assertion)
+        if self.provider.signing_kp:
+            self.saml_processor._sign(assertion)
         str_token = etree.tostring(root).decode("utf-8")  # nosec
         return delete_none_values(
             {

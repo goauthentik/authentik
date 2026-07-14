@@ -2,8 +2,8 @@
 set -e -x -o pipefail
 hash="$(git rev-parse HEAD || openssl rand -base64 36 | sha256sum)"
 
-AUTHENTIK_IMAGE="authentik.invalid/goauthentik/server"
-AUTHENTIK_TAG="$(echo "$hash" | cut -c1-15)"
+AUTHENTIK_IMAGE="${AUTHENTIK_IMAGE:-authentik.invalid/goauthentik/server}"
+AUTHENTIK_TAG="${AUTHENTIK_TAG:-$(echo "$hash" | cut -c1-15)}"
 
 if [ -f lifecycle/container/.env ]; then
     echo "Existing .env file, aborting"
@@ -20,8 +20,6 @@ if [[ -v BUILD ]]; then
 
     # Ensure buildx is installed
     docker buildx install
-    make gen-client-ts
-    make gen-client-go
     touch lifecycle/container/.env
 
     docker build -t "${AUTHENTIK_IMAGE}:${AUTHENTIK_TAG}" -f lifecycle/container/Dockerfile .

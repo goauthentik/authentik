@@ -103,6 +103,7 @@ class SyncTasks:
                 )
                 users_tasks.run().wait(timeout=provider.get_object_sync_time_limit_ms(User))
                 group_tasks.run().wait(timeout=provider.get_object_sync_time_limit_ms(Group))
+                self._sync_cleanup(provider, task)
             except TransientSyncException as exc:
                 self.logger.warning("transient sync exception", exc=exc)
                 task.warning("Sync encountered a transient exception. Retrying", exc=exc)
@@ -110,6 +111,35 @@ class SyncTasks:
             except StopSync as exc:
                 task.error(exc)
                 return
+
+    def _sync_cleanup(self, provider: OutgoingSyncProvider, task: Task):
+        """Delete remote objects that are no longer in scope"""
+        for object_type in (User, Group):
+            try:
+                client = provider.client_for_model(object_type)
+            except TransientSyncException:
+                continue
+            in_scope_pks = set(provider.get_object_qs(object_type).values_list("pk", flat=True))
+            stale = client.connection_type.objects.filter(provider=provider).exclude(
+                **{f"{client.connection_type_query}__pk__in": in_scope_pks}
+            )
+            for connection in stale:
+                try:
+                    client.delete(connection.scim_id)
+                    task.info(
+                        f"Deleted out-of-scope {object_type._meta.verbose_name}",
+                        scim_id=connection.scim_id,
+                    )
+                except NotFoundSyncException:
+                    pass
+                except TransientSyncException as exc:
+                    self.logger.warning("transient error during cleanup", exc=exc)
+                    self.logger.warning(
+                        "Cleanup encountered a transient exception. Retrying", exc=exc
+                    )
+                    raise Retry() from exc
+                except DryRunRejected as exc:
+                    self.logger.info("Rejected dry-run cleanup event", exc=exc)
 
     def sync_objects(
         self,

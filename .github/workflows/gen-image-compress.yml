@@ -16,33 +16,29 @@ on:
       - "**.jpeg"
       - "**.png"
       - "**.webp"
-  workflow_dispatch:
 
 jobs:
   compress:
     name: compress
     runs-on: ubuntu-latest
     # Don't run on forks. Token will not be available. Will run on main and open a PR anyway
-    if: |
-      github.repository == 'goauthentik/authentik' &&
-      (github.event_name != 'pull_request' ||
-       github.event.pull_request.head.repo.full_name == github.repository)
+    if: "${{ github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository) }}"
     steps:
       - id: generate_token
-        uses: actions/create-github-app-token@29824e69f54612133e76f7eaac726eef6c875baf # v2
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v2
         with:
-          app-id: ${{ secrets.GH_APP_ID }}
-          private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v5
+          client-id: ${{ secrets.GH_APP_ID }}
+          private-key: ${{ secrets.GH_APP_PRIV_KEY }}
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v5
         with:
           token: ${{ steps.generate_token.outputs.token }}
       - name: Compress images
         id: compress
-        uses: calibreapp/image-actions@d9c8ee5c3dc52ae4622c82ead88d658f4b16b65f # main
+        uses: calibreapp/image-actions@9d037c06280028c110ff61c433ad4dc7d33c3c43 # main
         with:
           GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }}
           compressOnly: ${{ github.event_name != 'pull_request' }}
-      - uses: peter-evans/create-pull-request@c0f553fe549906ede9cf27b5156039d195d2ece0 # v7
+      - uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v7
         if: "${{ github.event_name != 'pull_request' && steps.compress.outputs.markdown != '' }}"
         id: cpr
         with:

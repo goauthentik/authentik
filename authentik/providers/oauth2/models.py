@@ -15,10 +15,13 @@ from cryptography.hazmat.primitives.asymmetric.ec import (
     SECP521R1,
     EllipticCurvePrivateKey,
 )
+from cryptography.hazmat.primitives.asymmetric.ed448 import Ed448PrivateKey
+from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey
 from cryptography.hazmat.primitives.asymmetric.rsa import RSAPrivateKey
 from cryptography.hazmat.primitives.asymmetric.types import PrivateKeyTypes
 from dacite import Config
 from dacite.core import from_dict
+from django.contrib.postgres.fields import ArrayField
 from django.contrib.postgres.indexes import HashIndex
 from django.db import models
 from django.http import HttpRequest
@@ -33,7 +36,17 @@ from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
 
 from authentik.brands.models import WebfingerProvider
-from authentik.common.oauth.constants import SubModes
+from authentik.common.oauth.constants import (
+    GRANT_TYPE_AUTHORIZATION_CODE,
+    GRANT_TYPE_CLIENT_CREDENTIALS,
+    GRANT_TYPE_DEVICE_CODE,
+    GRANT_TYPE_HYBRID,
+    GRANT_TYPE_IMPLICIT,
+    GRANT_TYPE_PASSWORD,
+    GRANT_TYPE_REFRESH_TOKEN,
+    GRANT_TYPE_TOKEN_EXCHANGE,
+    SubModes,
+)
 from authentik.core.models import (
     AuthenticatedSession,
     ExpiringModel,
@@ -58,7 +71,7 @@ def generate_client_secret() -> str:
     return generate_id(128)
 
 
-class ClientTypes(models.TextChoices):
+class ClientType(models.TextChoices):
     """Confidential clients are capable of maintaining the confidentiality
     of their credentials. Public clients are incapable."""
 
@@ -66,12 +79,23 @@ class ClientTypes(models.TextChoices):
     PUBLIC = "public", _("Public")
 
 
-class GrantTypes(models.TextChoices):
+class GrantType(models.TextChoices):
     """OAuth2 Grant types we support"""
 
-    AUTHORIZATION_CODE = "authorization_code"
-    IMPLICIT = "implicit"
-    HYBRID = "hybrid"
+    AUTHORIZATION_CODE = GRANT_TYPE_AUTHORIZATION_CODE
+    IMPLICIT = GRANT_TYPE_IMPLICIT
+    HYBRID = GRANT_TYPE_HYBRID
+    REFRESH_TOKEN = GRANT_TYPE_REFRESH_TOKEN
+    CLIENT_CREDENTIALS = GRANT_TYPE_CLIENT_CREDENTIALS
+    PASSWORD = GRANT_TYPE_PASSWORD
+    DEVICE_CODE = GRANT_TYPE_DEVICE_CODE
+    TOKEN_EXCHANGE = GRANT_TYPE_TOKEN_EXCHANGE
+
+
+# Fallback for decoding previous sessions from 2026.2 to 2026.5
+# https://github.com/goauthentik/authentik/issues/22588
+# TODO: Remove after 2026.8
+GrantTypes = GrantType
 
 
 class ResponseMode(models.TextChoices):
@@ -97,6 +121,11 @@ class RedirectURIMatchingMode(models.TextChoices):
     REGEX = "regex", _("Regular Expression URL matching")
 
 
+class RedirectURIType(models.TextChoices):
+    AUTHORIZATION = "authorization", _("Authorization")
+    LOGOUT = "logout", _("Logout")
+
+
 class OAuth2LogoutMethod(models.TextChoices):
     """OAuth2/OIDC Logout methods"""
 
@@ -110,6 +139,7 @@ class RedirectURI:
 
     matching_mode: RedirectURIMatchingMode
     url: str
+    redirect_uri_type: RedirectURIType = RedirectURIType.AUTHORIZATION
 
 
 class ResponseTypes(models.TextChoices):
@@ -131,6 +161,7 @@ class JWTAlgorithms(models.TextChoices):
     ES256 = "ES256", _("ES256 (Asymmetric Encryption)")
     ES384 = "ES384", _("ES384 (Asymmetric Encryption)")
     ES512 = "ES512", _("ES512 (Asymmetric Encryption)")
+    EDDSA = "EdDSA", _("EdDSA (Asymmetric Encryption)")
 
     @classmethod
     def from_private_key(cls, private_key: PrivateKeyTypes | None) -> str:
@@ -144,6 +175,8 @@ class JWTAlgorithms(models.TextChoices):
                 return cls.ES384
             if isinstance(curve, SECP521R1):
                 return cls.ES512
+        if isinstance(private_key, Ed25519PrivateKey | Ed448PrivateKey):
+            return cls.EDDSA
         raise ValueError(f"Invalid private key type: {type(private_key)}")
 
 
@@ -182,14 +215,15 @@ class OAuth2Provider(WebfingerProvider, Provider):
 
     client_type = models.CharField(
         max_length=30,
-        choices=ClientTypes.choices,
-        default=ClientTypes.CONFIDENTIAL,
+        choices=ClientType.choices,
+        default=ClientType.CONFIDENTIAL,
         verbose_name=_("Client Type"),
         help_text=_(
             "Confidential clients are capable of maintaining the confidentiality "
             "of their credentials. Public clients are incapable"
         ),
     )
+    grant_types = ArrayField(models.TextField(choices=GrantType.choices), default=list)
     client_id = models.CharField(
         max_length=255,
         unique=True,
@@ -220,7 +254,6 @@ class OAuth2Provider(WebfingerProvider, Provider):
             "Frontchannel uses iframes in your browser"
         ),
     )
-
     include_claims_in_id_token = models.BooleanField(
         default=True,
         verbose_name=_("Include claims in id_token"),
@@ -343,7 +376,12 @@ class OAuth2Provider(WebfingerProvider, Provider):
                 from_dict(
                     RedirectURI,
                     entry,
-                    config=Config(type_hooks={RedirectURIMatchingMode: RedirectURIMatchingMode}),
+                    config=Config(
+                        type_hooks={
+                            RedirectURIMatchingMode: RedirectURIMatchingMode,
+                            RedirectURIType: RedirectURIType,
+                        }
+                    ),
                 )
             )
         return uris
@@ -356,9 +394,23 @@ class OAuth2Provider(WebfingerProvider, Provider):
         self._redirect_uris = cleansed
 
     @property
+    def authorization_redirect_uris(self) -> list[RedirectURI]:
+        return [
+            uri
+            for uri in self.redirect_uris
+            if uri.redirect_uri_type == RedirectURIType.AUTHORIZATION
+        ]
+
+    @property
+    def post_logout_redirect_uris(self) -> list[RedirectURI]:
+        return [
+            uri for uri in self.redirect_uris if uri.redirect_uri_type == RedirectURIType.LOGOUT
+        ]
+
+    @property
     def launch_url(self) -> str | None:
         """Guess launch_url based on first redirect_uri"""
-        redirects = self.redirect_uris
+        redirects = self.authorization_redirect_uris
         if len(redirects) < 1:
             return None
         main_url = redirects[0].url
