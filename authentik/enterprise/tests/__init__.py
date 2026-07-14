@@ -34,17 +34,24 @@ def enterprise_test(
 
         @wraps(func)
         def wrapper(*args, **kwargs):
-            with patch(
-                "authentik.enterprise.license.LicenseKey.validate",
-                MagicMock(
-                    return_value=LicenseKey(
-                        aud="",
-                        exp=expiry,
-                        name=generate_id(),
-                        internal_users=internal_users,
-                        external_users=external_users,
-                    )
+            with (
+                patch(
+                    "authentik.enterprise.license.LicenseKey.validate",
+                    MagicMock(
+                        return_value=LicenseKey(
+                            aud="",
+                            exp=expiry,
+                            name=generate_id(),
+                            internal_users=internal_users,
+                            external_users=external_users,
+                        )
+                    ),
                 ),
+                # `License.save()`/`.delete()` synchronously dispatch `enterprise_update_usage`
+                # in tests (see `authentik.tasks.test.TestBroker`), which would otherwise call
+                # the real `record_usage()` here, before the caller's own mocks are active, and
+                # cache a bogus license status for the rest of the test.
+                patch("authentik.enterprise.license.LicenseKey.record_usage", MagicMock()),
             ):
                 if create_key:
                     License.objects.all().delete()
