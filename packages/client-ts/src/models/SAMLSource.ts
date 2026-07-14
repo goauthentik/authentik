@@ -174,11 +174,17 @@ export interface SAMLSource {
      */
     preAuthenticationFlow: string;
     /**
-     * Also known as Entity ID. Defaults the Metadata URL.
+     * Also known as Entity ID. Defaults to the Metadata URL.
      * @type {string}
      * @memberof SAMLSource
      */
-    issuer?: string;
+    issuerOverride?: string;
+    /**
+     * Get the resolved Issuer, falling back to the metadata URL when unset
+     * @type {string}
+     * @memberof SAMLSource
+     */
+    readonly urlIssuer: string;
     /**
      * URL that the initial Login request is sent to.
      * @type {string}
@@ -281,6 +287,7 @@ export function instanceOfSAMLSource(value: object): value is SAMLSource {
     if (!("iconThemedUrls" in value) || value["iconThemedUrls"] === undefined) return false;
     if (!("preAuthenticationFlow" in value) || value["preAuthenticationFlow"] === undefined)
         return false;
+    if (!("urlIssuer" in value) || value["urlIssuer"] === undefined) return false;
     if (!("ssoUrl" in value) || value["ssoUrl"] === undefined) return false;
     return true;
 }
@@ -329,7 +336,8 @@ export function SAMLSourceFromJSONTyped(json: any, ignoreDiscriminator: boolean)
                 ? undefined
                 : GroupMatchingModeEnumFromJSON(json["group_matching_mode"]),
         preAuthenticationFlow: json["pre_authentication_flow"],
-        issuer: json["issuer"] == null ? undefined : json["issuer"],
+        issuerOverride: json["issuer_override"] == null ? undefined : json["issuer_override"],
+        urlIssuer: json["url_issuer"],
         ssoUrl: json["sso_url"],
         sloUrl: json["slo_url"] == null ? undefined : json["slo_url"],
         allowIdpInitiated:
@@ -378,6 +386,7 @@ export function SAMLSourceToJSONTyped(
         | "managed"
         | "icon_url"
         | "icon_themed_urls"
+        | "url_issuer"
     > | null,
     ignoreDiscriminator: boolean = false,
 ): any {
@@ -400,7 +409,7 @@ export function SAMLSourceToJSONTyped(
         icon: value["icon"],
         group_matching_mode: GroupMatchingModeEnumToJSON(value["groupMatchingMode"]),
         pre_authentication_flow: value["preAuthenticationFlow"],
-        issuer: value["issuer"],
+        issuer_override: value["issuerOverride"],
         sso_url: value["ssoUrl"],
         slo_url: value["sloUrl"],
         allow_idp_initiated: value["allowIdpInitiated"],

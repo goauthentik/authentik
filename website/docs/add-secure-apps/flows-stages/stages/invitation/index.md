@@ -4,7 +4,7 @@ title: Invitation stage
 
 The Invitation stage is used to invite users to enroll in authentik. It can optionally enroll users with preset values.
 
-## Overview
+## About the invitation stage
 
 This stage is typically used in enrollment flows where users should only be allowed to continue if they were invited by an administrator.
 
