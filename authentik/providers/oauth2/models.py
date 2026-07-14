@@ -175,8 +175,6 @@ class JWTAlgorithms(models.TextChoices):
                 return cls.ES384
             if isinstance(curve, SECP521R1):
                 return cls.ES512
-        # Per RFC 8037 both Ed25519 and Ed448 use the single "EdDSA" algorithm identifier; the
-        # curve is carried in the JWK's `crv` parameter rather than in `alg`.
         if isinstance(private_key, Ed25519PrivateKey | Ed448PrivateKey):
             return cls.EDDSA
         raise ValueError(f"Invalid private key type: {type(private_key)}")
