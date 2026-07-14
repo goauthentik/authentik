@@ -55,7 +55,7 @@ func newTestApplication() *Application {
 			CookieDomain:               new(""),
 			CookieSecret:               new(ak.TestSecret()),
 			ExternalHost:               "https://ext.t.goauthentik.io",
-			InternalHost:               new("http://backend"),
+			InternalHost:               &api.ProxyOutpostConfigInternalHost{String: new("http://backend")},
 			InternalHostSslValidation:  new(true),
 			Mode:                       api.PROXYMODE_FORWARD_SINGLE.Ptr(),
 			SkipPathRegex:              new("/skip.*"),

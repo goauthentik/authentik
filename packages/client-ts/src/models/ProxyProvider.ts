@@ -12,6 +12,11 @@
  * Do not edit the class manually.
  */
 
+import type { ApplicationMetaLaunchUrl } from "./ApplicationMetaLaunchUrl";
+import {
+    ApplicationMetaLaunchUrlFromJSON,
+    ApplicationMetaLaunchUrlToJSON,
+} from "./ApplicationMetaLaunchUrl";
 import type { ProxyMode } from "./ProxyMode";
 import { ProxyModeFromJSON, ProxyModeToJSON } from "./ProxyMode";
 import type { RedirectURI } from "./RedirectURI";
@@ -115,10 +120,10 @@ export interface ProxyProvider {
     readonly clientId: string;
     /**
      *
-     * @type {string}
+     * @type {ApplicationMetaLaunchUrl}
      * @memberof ProxyProvider
      */
-    internalHost?: string;
+    internalHost?: ApplicationMetaLaunchUrl;
     /**
      *
      * @type {string}
@@ -275,7 +280,10 @@ export function ProxyProviderFromJSONTyped(json: any, ignoreDiscriminator: boole
         verboseNamePlural: json["verbose_name_plural"],
         metaModelName: json["meta_model_name"],
         clientId: json["client_id"],
-        internalHost: json["internal_host"] == null ? undefined : json["internal_host"],
+        internalHost:
+            json["internal_host"] == null
+                ? undefined
+                : ApplicationMetaLaunchUrlFromJSON(json["internal_host"]),
         externalHost: json["external_host"],
         internalHostSslValidation:
             json["internal_host_ssl_validation"] == null
@@ -342,7 +350,7 @@ export function ProxyProviderToJSONTyped(
         authorization_flow: value["authorizationFlow"],
         invalidation_flow: value["invalidationFlow"],
         property_mappings: value["propertyMappings"],
-        internal_host: value["internalHost"],
+        internal_host: ApplicationMetaLaunchUrlToJSON(value["internalHost"]),
         external_host: value["externalHost"],
         internal_host_ssl_validation: value["internalHostSslValidation"],
         certificate: value["certificate"],

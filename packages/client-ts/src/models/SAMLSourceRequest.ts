@@ -21,6 +21,11 @@ import {
     GroupMatchingModeEnumFromJSON,
     GroupMatchingModeEnumToJSON,
 } from "./GroupMatchingModeEnum";
+import type { PatchedSAMLSourceRequestSloUrl } from "./PatchedSAMLSourceRequestSloUrl";
+import {
+    PatchedSAMLSourceRequestSloUrlFromJSON,
+    PatchedSAMLSourceRequestSloUrlToJSON,
+} from "./PatchedSAMLSourceRequestSloUrl";
 import type { PolicyEngineMode } from "./PolicyEngineMode";
 import { PolicyEngineModeFromJSON, PolicyEngineModeToJSON } from "./PolicyEngineMode";
 import type { SAMLNameIDPolicyEnum } from "./SAMLNameIDPolicyEnum";
@@ -136,11 +141,11 @@ export interface SAMLSourceRequest {
      */
     ssoUrl: string;
     /**
-     * Optional URL if your IDP supports Single-Logout.
-     * @type {string}
+     *
+     * @type {PatchedSAMLSourceRequestSloUrl}
      * @memberof SAMLSourceRequest
      */
-    sloUrl?: string | null;
+    sloUrl?: PatchedSAMLSourceRequestSloUrl | null;
     /**
      * Allows authentication flows initiated by the IdP. This can be a security risk, as no validation of the request ID is done.
      * @type {boolean}
@@ -268,7 +273,10 @@ export function SAMLSourceRequestFromJSONTyped(
         preAuthenticationFlow: json["pre_authentication_flow"],
         issuerOverride: json["issuer_override"] == null ? undefined : json["issuer_override"],
         ssoUrl: json["sso_url"],
-        sloUrl: json["slo_url"] == null ? undefined : json["slo_url"],
+        sloUrl:
+            json["slo_url"] == null
+                ? undefined
+                : PatchedSAMLSourceRequestSloUrlFromJSON(json["slo_url"]),
         allowIdpInitiated:
             json["allow_idp_initiated"] == null ? undefined : json["allow_idp_initiated"],
         forceAuthn: json["force_authn"] == null ? undefined : json["force_authn"],
@@ -329,7 +337,7 @@ export function SAMLSourceRequestToJSONTyped(
         pre_authentication_flow: value["preAuthenticationFlow"],
         issuer_override: value["issuerOverride"],
         sso_url: value["ssoUrl"],
-        slo_url: value["sloUrl"],
+        slo_url: PatchedSAMLSourceRequestSloUrlToJSON(value["sloUrl"]),
         allow_idp_initiated: value["allowIdpInitiated"],
         force_authn: value["forceAuthn"],
         name_id_policy: SAMLNameIDPolicyEnumToJSON(value["nameIdPolicy"]),

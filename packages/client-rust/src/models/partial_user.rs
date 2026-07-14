@@ -33,7 +33,7 @@ pub struct PartialUser {
     )]
     pub last_login: Option<Option<chrono::DateTime<chrono::FixedOffset>>>,
     #[serde(rename = "email", skip_serializing_if = "Option::is_none")]
-    pub email: Option<String>,
+    pub email: Option<models::EmailAddress>,
     #[serde(rename = "attributes", skip_serializing_if = "Option::is_none")]
     pub attributes: Option<std::collections::HashMap<String, serde_json::Value>>,
     #[serde(rename = "uid")]

@@ -30,7 +30,7 @@ type PartialUser struct {
 	// Designates whether this user should be treated as active. Unselect this instead of deleting accounts.
 	IsActive             *bool                  `json:"is_active,omitempty"`
 	LastLogin            NullableTime           `json:"last_login,omitempty"`
-	Email                *string                `json:"email,omitempty"`
+	Email                *EmailAddress          `json:"email,omitempty"`
 	Attributes           map[string]interface{} `json:"attributes,omitempty"`
 	Uid                  string                 `json:"uid"`
 	AdditionalProperties map[string]interface{}
@@ -207,9 +207,9 @@ func (o *PartialUser) UnsetLastLogin() {
 }
 
 // GetEmail returns the Email field value if set, zero value otherwise.
-func (o *PartialUser) GetEmail() string {
+func (o *PartialUser) GetEmail() EmailAddress {
 	if o == nil || IsNil(o.Email) {
-		var ret string
+		var ret EmailAddress
 		return ret
 	}
 	return *o.Email
@@ -217,7 +217,7 @@ func (o *PartialUser) GetEmail() string {
 
 // GetEmailOk returns a tuple with the Email field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *PartialUser) GetEmailOk() (*string, bool) {
+func (o *PartialUser) GetEmailOk() (*EmailAddress, bool) {
 	if o == nil || IsNil(o.Email) {
 		return nil, false
 	}
@@ -233,8 +233,8 @@ func (o *PartialUser) HasEmail() bool {
 	return false
 }
 
-// SetEmail gets a reference to the given string and assigns it to the Email field.
-func (o *PartialUser) SetEmail(v string) {
+// SetEmail gets a reference to the given EmailAddress and assigns it to the Email field.
+func (o *PartialUser) SetEmail(v EmailAddress) {
 	o.Email = &v
 }
 

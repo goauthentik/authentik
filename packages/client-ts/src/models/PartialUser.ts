@@ -12,6 +12,9 @@
  * Do not edit the class manually.
  */
 
+import type { EmailAddress } from "./EmailAddress";
+import { EmailAddressFromJSON, EmailAddressToJSON } from "./EmailAddress";
+
 /**
  * Partial User Serializer, does not include child relations.
  * @export
@@ -50,10 +53,10 @@ export interface PartialUser {
     lastLogin?: Date | null;
     /**
      *
-     * @type {string}
+     * @type {EmailAddress}
      * @memberof PartialUser
      */
-    email?: string;
+    email?: EmailAddress;
     /**
      *
      * @type {{ [key: string]: any; }}
@@ -93,7 +96,7 @@ export function PartialUserFromJSONTyped(json: any, ignoreDiscriminator: boolean
         name: json["name"],
         isActive: json["is_active"] == null ? undefined : json["is_active"],
         lastLogin: json["last_login"] == null ? undefined : new Date(json["last_login"]),
-        email: json["email"] == null ? undefined : json["email"],
+        email: json["email"] == null ? undefined : EmailAddressFromJSON(json["email"]),
         attributes: json["attributes"] == null ? undefined : json["attributes"],
         uid: json["uid"],
     };
@@ -117,7 +120,7 @@ export function PartialUserToJSONTyped(
         is_active: value["isActive"],
         last_login:
             value["lastLogin"] == null ? value["lastLogin"] : value["lastLogin"].toISOString(),
-        email: value["email"],
+        email: EmailAddressToJSON(value["email"]),
         attributes: value["attributes"],
     };
 }

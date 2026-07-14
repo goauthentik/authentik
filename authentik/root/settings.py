@@ -180,6 +180,7 @@ SPECTACULAR_SETTINGS = {
         "FlowDesignationEnum": "authentik.flows.models.FlowDesignation",
         "FlowLayoutEnum": "authentik.flows.models.FlowLayout",
         "LDAPAPIAccessMode": "authentik.providers.ldap.models.APIAccessMode",
+        "LicenseStatusEnum": "authentik.enterprise.models.LicenseUsageStatus",
         "ModelEnum": "authentik.lib.api.Models",
         "OutgoingSyncDeleteAction": "authentik.lib.sync.outgoing.models.OutgoingSyncDeleteAction",
         "PKCEMethodEnum": "authentik.sources.oauth.models.PKCEMethod",

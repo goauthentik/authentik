@@ -23,8 +23,8 @@ import {
     EnterpriseApi,
     License,
     LicenseForecast,
+    LicenseStatusEnum,
     LicenseSummary,
-    LicenseSummaryStatusEnum,
     ModelEnum,
 } from "@goauthentik/api";
 
@@ -181,8 +181,7 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
                         icon="pf-icon pf-icon-user"
                         label=${msg("Expiry")}
                         subtext=${msg("Cumulative license expiry")}
-                        >${this.summary &&
-                        this.summary?.status !== LicenseSummaryStatusEnum.Unlicensed
+                        >${this.summary && this.summary?.status !== LicenseStatusEnum.Unlicensed
                             ? Timestamp(this.summary.latestValid)
                             : html`<span aria-label=${msg("No expiry")}
                                   >-</span

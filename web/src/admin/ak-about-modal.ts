@@ -13,7 +13,7 @@ import { DefaultFlowBackground, ThemedImage } from "#elements/utils/images";
 import {
     AdminApi,
     CapabilitiesEnum,
-    LicenseSummaryStatusEnum,
+    LicenseStatusEnum,
     SystemInfo,
     Version,
 } from "@goauthentik/api";
@@ -177,7 +177,7 @@ export class AboutModal extends WithLicenseSummary(WithBrandConfig(AKModal)) {
     protected override render() {
         let product = this.brandingTitle;
 
-        if (this.licenseSummary?.status !== LicenseSummaryStatusEnum.Unlicensed) {
+        if (this.licenseSummary?.status !== LicenseStatusEnum.Unlicensed) {
             product += ` ${msg("Enterprise")}`;
         }
 

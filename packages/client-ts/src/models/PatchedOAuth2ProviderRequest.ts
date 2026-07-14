@@ -12,6 +12,11 @@
  * Do not edit the class manually.
  */
 
+import type { ApplicationMetaLaunchUrl } from "./ApplicationMetaLaunchUrl";
+import {
+    ApplicationMetaLaunchUrlFromJSON,
+    ApplicationMetaLaunchUrlToJSON,
+} from "./ApplicationMetaLaunchUrl";
 import type { ClientTypeEnum } from "./ClientTypeEnum";
 import { ClientTypeEnumFromJSON, ClientTypeEnumToJSON } from "./ClientTypeEnum";
 import type { GrantTypesEnum } from "./GrantTypesEnum";
@@ -138,10 +143,10 @@ export interface PatchedOAuth2ProviderRequest {
     redirectUris?: Array<RedirectURIRequest>;
     /**
      *
-     * @type {string}
+     * @type {ApplicationMetaLaunchUrl}
      * @memberof PatchedOAuth2ProviderRequest
      */
-    logoutUri?: string;
+    logoutUri?: ApplicationMetaLaunchUrl;
     /**
      * Backchannel logs out with server to server calls. Frontchannel uses iframes in your browser
      * @type {OAuth2ProviderLogoutMethodEnum}
@@ -228,7 +233,10 @@ export function PatchedOAuth2ProviderRequestFromJSONTyped(
             json["redirect_uris"] == null
                 ? undefined
                 : (json["redirect_uris"] as Array<any>).map(RedirectURIRequestFromJSON),
-        logoutUri: json["logout_uri"] == null ? undefined : json["logout_uri"],
+        logoutUri:
+            json["logout_uri"] == null
+                ? undefined
+                : ApplicationMetaLaunchUrlFromJSON(json["logout_uri"]),
         logoutMethod:
             json["logout_method"] == null
                 ? undefined
@@ -279,7 +287,7 @@ export function PatchedOAuth2ProviderRequestToJSONTyped(
             value["redirectUris"] == null
                 ? undefined
                 : (value["redirectUris"] as Array<any>).map(RedirectURIRequestToJSON),
-        logout_uri: value["logoutUri"],
+        logout_uri: ApplicationMetaLaunchUrlToJSON(value["logoutUri"]),
         logout_method: OAuth2ProviderLogoutMethodEnumToJSON(value["logoutMethod"]),
         sub_mode: SubModeEnumToJSON(value["subMode"]),
         issuer_mode: IssuerModeEnumToJSON(value["issuerMode"]),

@@ -12,6 +12,11 @@
  * Do not edit the class manually.
  */
 
+import type { ApplicationMetaLaunchUrl } from "./ApplicationMetaLaunchUrl";
+import {
+    ApplicationMetaLaunchUrlFromJSON,
+    ApplicationMetaLaunchUrlToJSON,
+} from "./ApplicationMetaLaunchUrl";
 import type { TransportModeEnum } from "./TransportModeEnum";
 import { TransportModeEnumFromJSON, TransportModeEnumToJSON } from "./TransportModeEnum";
 
@@ -35,10 +40,10 @@ export interface NotificationTransportRequest {
     mode?: TransportModeEnum;
     /**
      *
-     * @type {string}
+     * @type {ApplicationMetaLaunchUrl}
      * @memberof NotificationTransportRequest
      */
-    webhookUrl?: string;
+    webhookUrl?: ApplicationMetaLaunchUrl;
     /**
      * When set, the selected certificate is used to validate the certificate of the webhook server.
      * @type {string}
@@ -101,7 +106,10 @@ export function NotificationTransportRequestFromJSONTyped(
     return {
         name: json["name"],
         mode: json["mode"] == null ? undefined : TransportModeEnumFromJSON(json["mode"]),
-        webhookUrl: json["webhook_url"] == null ? undefined : json["webhook_url"],
+        webhookUrl:
+            json["webhook_url"] == null
+                ? undefined
+                : ApplicationMetaLaunchUrlFromJSON(json["webhook_url"]),
         webhookCa: json["webhook_ca"] == null ? undefined : json["webhook_ca"],
         webhookMappingBody:
             json["webhook_mapping_body"] == null ? undefined : json["webhook_mapping_body"],
@@ -129,7 +137,7 @@ export function NotificationTransportRequestToJSONTyped(
     return {
         name: value["name"],
         mode: TransportModeEnumToJSON(value["mode"]),
-        webhook_url: value["webhookUrl"],
+        webhook_url: ApplicationMetaLaunchUrlToJSON(value["webhookUrl"]),
         webhook_ca: value["webhookCa"],
         webhook_mapping_body: value["webhookMappingBody"],
         webhook_mapping_headers: value["webhookMappingHeaders"],

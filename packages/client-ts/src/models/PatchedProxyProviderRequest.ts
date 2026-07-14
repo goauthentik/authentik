@@ -12,6 +12,11 @@
  * Do not edit the class manually.
  */
 
+import type { ApplicationMetaLaunchUrl } from "./ApplicationMetaLaunchUrl";
+import {
+    ApplicationMetaLaunchUrlFromJSON,
+    ApplicationMetaLaunchUrlToJSON,
+} from "./ApplicationMetaLaunchUrl";
 import type { ProxyMode } from "./ProxyMode";
 import { ProxyModeFromJSON, ProxyModeToJSON } from "./ProxyMode";
 
@@ -53,10 +58,10 @@ export interface PatchedProxyProviderRequest {
     propertyMappings?: Array<string>;
     /**
      *
-     * @type {string}
+     * @type {ApplicationMetaLaunchUrl}
      * @memberof PatchedProxyProviderRequest
      */
-    internalHost?: string;
+    internalHost?: ApplicationMetaLaunchUrl;
     /**
      *
      * @type {string}
@@ -171,7 +176,10 @@ export function PatchedProxyProviderRequestFromJSONTyped(
             json["authorization_flow"] == null ? undefined : json["authorization_flow"],
         invalidationFlow: json["invalidation_flow"] == null ? undefined : json["invalidation_flow"],
         propertyMappings: json["property_mappings"] == null ? undefined : json["property_mappings"],
-        internalHost: json["internal_host"] == null ? undefined : json["internal_host"],
+        internalHost:
+            json["internal_host"] == null
+                ? undefined
+                : ApplicationMetaLaunchUrlFromJSON(json["internal_host"]),
         externalHost: json["external_host"] == null ? undefined : json["external_host"],
         internalHostSslValidation:
             json["internal_host_ssl_validation"] == null
@@ -222,7 +230,7 @@ export function PatchedProxyProviderRequestToJSONTyped(
         authorization_flow: value["authorizationFlow"],
         invalidation_flow: value["invalidationFlow"],
         property_mappings: value["propertyMappings"],
-        internal_host: value["internalHost"],
+        internal_host: ApplicationMetaLaunchUrlToJSON(value["internalHost"]),
         external_host: value["externalHost"],
         internal_host_ssl_validation: value["internalHostSslValidation"],
         certificate: value["certificate"],
