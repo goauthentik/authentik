@@ -1,11 +1,13 @@
 # Integrations
 ADOM
 appflowy
+appsmith
 Ascensio
 Authy
 Beszel
 Bitnami
 Budibase
+Chatwoot
 Coolify
 Doki
 Doku
