@@ -48,7 +48,7 @@ For more code examples, see [notification rule expression policies](./notificati
 
 After you create the policies to match the relevant events, create a notification rule.
 
-1. Log in as an administrator, open the authentik Admin interface, and navigate to **Event > Notification Rules**.
+1. Log in as an administrator, open the authentik Admin interface, and navigate to **Events** > **Notification Rules**.
 
 2. Click **New Notification Rule** to add a new notification rule or click the **Edit** icon next to an existing rule to modify it.
 

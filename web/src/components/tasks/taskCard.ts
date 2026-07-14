@@ -15,10 +15,7 @@ export function taskCard(model: ModelEnum, objId: string | number | undefined) {
         <div class="pf-c-card__header">
             <div class="pf-c-card__title">${msg("Tasks")}</div>
         </div>
-        <ak-task-list
-            .relObjAppLabel=${appLabel}
-            .relObjModel=${modelName}
-            .relObjId=${objId}
-        ></ak-task-list>
+        </div>
+        <ak-task-list .relObjAppLabel=${appLabel} .relObjModel=${modelName} .relObjId=${objId}></ak-task-list>
     </div>`;
 }

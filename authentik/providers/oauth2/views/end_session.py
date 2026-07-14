@@ -21,6 +21,7 @@ from authentik.flows.planner import (
     FlowPlanner,
 )
 from authentik.flows.stage import SessionEndStage
+from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.lib.views import bad_request_message
 from authentik.policies.views import PolicyAccessView
 from authentik.providers.iframe_logout import IframeLogoutStageView
@@ -115,6 +116,19 @@ class EndSessionView(PolicyAccessView):
             self.post_logout_redirect_uri = (
                 f"{self.post_logout_redirect_uri}{separator}state={quote(state, safe='')}"
             )
+
+    def dispatch(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
+        """Return early when a flow plan is already executing in this session.
+
+        Front-channel logout iframes navigate to this endpoint while the invalidation flow
+        is still running, and `UserLogoutStage` has already made the request anonymous.
+        Falling through to `PolicyAccessView` would plan an authentication flow and store it
+        in `SESSION_KEY_PLAN`, replacing the invalidation plan and discarding every stage
+        queued after the iframe logout stage.
+        """
+        if SESSION_KEY_PLAN in request.session:
+            return HttpResponse(status=200)
+        return super().dispatch(request, *args, **kwargs)
 
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         """Dispatch the flow planner for the invalidation flow"""

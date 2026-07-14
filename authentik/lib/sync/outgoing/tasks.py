@@ -63,6 +63,7 @@ class SyncTasks:
         provider_pk: int,
         sync_objects: Actor[[str, int, int, bool], None],
     ):
+        """Run full provider sync"""
         task = CurrentTask.get_task()
         self.logger = get_logger().bind(
             provider_type=class_to_path(self._provider_model),
@@ -83,6 +84,8 @@ class SyncTasks:
                 self.logger.debug("Failed to acquire sync lock, skipping", provider=provider.name)
                 return
             try:
+                self._discover(provider, User)
+                self._discover(provider, Group)
                 users_tasks = group(
                     self.sync_paginator(
                         current_task=task,
@@ -111,6 +114,13 @@ class SyncTasks:
             except StopSync as exc:
                 task.error(exc)
                 return
+
+    def _discover(self, provider: OutgoingSyncProvider, object_type: type[User | Group]):
+        client = provider.client_for_model(object_type)
+        if not client.can_discover:
+            return
+        self.logger.debug("starting discover", object_type=object_type._meta.model_name)
+        client.discover()
 
     def _sync_cleanup(self, provider: OutgoingSyncProvider, task: Task):
         """Delete remote objects that are no longer in scope"""
@@ -149,6 +159,7 @@ class SyncTasks:
         override_dry_run=False,
         **filter,
     ):
+        """Sync a single page of a given object type"""
         task = CurrentTask.get_task()
         _object_type: type[Model] = path_to_class(object_type)
         self.logger = get_logger().bind(
@@ -175,9 +186,6 @@ class SyncTasks:
             provider.get_object_qs(_object_type, **filter),
             provider.sync_page_size,
         )
-        if client.can_discover:
-            self.logger.debug("starting discover")
-            client.discover()
         self.logger.debug("starting sync for page", page=page)
         task.info(f"Syncing page {page} or {_object_type._meta.verbose_name_plural}")
         for obj in paginator.page(page).object_list:
