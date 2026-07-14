@@ -15,6 +15,8 @@ from cryptography.hazmat.primitives.asymmetric.ec import (
     SECP521R1,
     EllipticCurvePrivateKey,
 )
+from cryptography.hazmat.primitives.asymmetric.ed448 import Ed448PrivateKey
+from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey
 from cryptography.hazmat.primitives.asymmetric.rsa import RSAPrivateKey
 from cryptography.hazmat.primitives.asymmetric.types import PrivateKeyTypes
 from dacite import Config
@@ -159,6 +161,7 @@ class JWTAlgorithms(models.TextChoices):
     ES256 = "ES256", _("ES256 (Asymmetric Encryption)")
     ES384 = "ES384", _("ES384 (Asymmetric Encryption)")
     ES512 = "ES512", _("ES512 (Asymmetric Encryption)")
+    EDDSA = "EdDSA", _("EdDSA (Asymmetric Encryption)")
 
     @classmethod
     def from_private_key(cls, private_key: PrivateKeyTypes | None) -> str:
@@ -172,6 +175,10 @@ class JWTAlgorithms(models.TextChoices):
                 return cls.ES384
             if isinstance(curve, SECP521R1):
                 return cls.ES512
+        # Per RFC 8037 both Ed25519 and Ed448 use the single "EdDSA" algorithm identifier; the
+        # curve is carried in the JWK's `crv` parameter rather than in `alg`.
+        if isinstance(private_key, Ed25519PrivateKey | Ed448PrivateKey):
+            return cls.EDDSA
         raise ValueError(f"Invalid private key type: {type(private_key)}")
 
 
