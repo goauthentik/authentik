@@ -1,6 +1,7 @@
 # Integrations
 ADOM
 appflowy
+appsmith
 Ascensio
 Authy
 Beszel
