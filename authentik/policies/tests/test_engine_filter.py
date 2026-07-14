@@ -136,6 +136,50 @@ class TestFilterPolicyEngine(TestCase):
         self.assertLess(ctx.final_queries, 1000)
         self.assertEqual(result, {self.user_a.pk, self.user_b.pk})
 
+    def test_dynamic_path_query_count_independent_of_user_count(self):
+        """The slow (per-user Policy) path must not re-fetch bindings or re-run the
+        static-binding aggregate per user -- query count must not scale with the
+        number of candidate users.
+
+        Cache backend here is DB-backed (django_postgres_cache), so a cache *write*
+        for a never-before-seen user is itself a DB INSERT -- that's an unavoidable,
+        real cost unrelated to what this test checks. Both runs are pre-warmed first
+        so the measured query count reflects only bindings/static-aggregate fetching
+        and cache *reads*, not first-time policy evaluation writes.
+        """
+        pbm = PolicyBindingModel.objects.create()
+        PolicyBinding.objects.create(target=pbm, group=self.group_a, order=0)
+        PolicyBinding.objects.create(target=pbm, policy=self.policy_true, order=1)
+
+        FilterPolicyEngine(pbm, self.users).build()  # warm cache for the small set
+        with CaptureQueriesContext(connections["default"]) as ctx_small:
+            list(FilterPolicyEngine(pbm, self.users).build().result)
+        baseline_queries = len(ctx_small.captured_queries)
+
+        new_pks = []
+        for _ in range(50):
+            uid = generate_id()
+            user = User.objects.create(username=uid, name=uid, email=f"{uid}@goauthentik.io")
+            user.groups.add(self.group_a)
+            new_pks.append(user.pk)
+        larger_users = User.objects.filter(
+            pk__in=[self.user_a.pk, self.user_b.pk, self.user_c.pk] + new_pks
+        )
+
+        FilterPolicyEngine(pbm, larger_users).build()  # warm cache for the larger set
+        with CaptureQueriesContext(connections["default"]) as ctx_large:
+            list(FilterPolicyEngine(pbm, larger_users).build().result)
+
+        self.assertLessEqual(
+            len(ctx_large.captured_queries),
+            baseline_queries + 2,
+            (
+                f"Query count grew from {baseline_queries} to "
+                f"{len(ctx_large.captured_queries)} after adding 50 users -- bindings "
+                "or the static aggregate are being re-evaluated per user."
+            ),
+        )
+
     def test_multi_engine_no_policy_engine_instantiated_for_static_path(self):
         """Purely static bindings must never instantiate a per-user PolicyEngine."""
         pbm = PolicyBindingModel.objects.create()
@@ -224,7 +268,7 @@ class TestFilterPolicyEngine(TestCase):
                 for user in all_users:
                     single = PolicyEngine(pbm, user)
                     single.use_cache = False
-                    expected = single.build().passing
+                    expected = bool(single.build().result)
                     self.assertEqual(
                         user.pk in batch_passing,
                         expected,
