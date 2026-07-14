@@ -5,9 +5,10 @@ from rest_framework.exceptions import ValidationError
 
 from authentik.crypto.models import CertificateKeyPair, KeyType
 
-# Key types that can be signed with via JOSE/JWT. Bounded by JWTAlgorithms.from_private_key,
-# which maps RSA to RS256 and EC to ES256/384/512 and raises for anything else.
-JWT_SIGNING_KEY_TYPES = [KeyType.RSA, KeyType.EC]
+# Key types that can be signed with via JOSE/JWT. Bounded by JWTAlgorithms.from_private_key, which
+# maps RSA to RS256, EC to ES256/384/512, and both Edwards curves to EdDSA (RFC 8037). DSA has no
+# JWA signature algorithm at all.
+JWT_SIGNING_KEY_TYPES = [KeyType.RSA, KeyType.EC, KeyType.ED25519, KeyType.ED448]
 
 # Key types that can be encrypted to via JOSE/JWE. OAuth2Provider.encrypt hardcodes the
 # RSA-OAEP-256 key management algorithm, which has no non-RSA counterpart.

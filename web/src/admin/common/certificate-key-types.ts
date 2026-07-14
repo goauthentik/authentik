@@ -9,7 +9,12 @@ import { KeyTypeEnum } from "@goauthentik/api";
  */
 
 /** Signing a JWT. Bounded by the algorithms `JWTAlgorithms.from_private_key` can map to. */
-export const JWTSigningKeyTypes = [KeyTypeEnum.Rsa, KeyTypeEnum.Ec];
+export const JWTSigningKeyTypes = [
+    KeyTypeEnum.Rsa,
+    KeyTypeEnum.Ec,
+    KeyTypeEnum.Ed25519,
+    KeyTypeEnum.Ed448,
+];
 
 /** Encrypting a JWT. `RSA-OAEP-256` is hardcoded, and has no non-RSA counterpart. */
 export const JWEEncryptionKeyTypes = [KeyTypeEnum.Rsa];
