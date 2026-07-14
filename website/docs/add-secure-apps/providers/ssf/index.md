@@ -2,7 +2,6 @@
 title: Shared Signals Framework (SSF) Provider
 sidebar_label: "SSF Provider"
 description: "Overview of SSF and the authentik SSF provider"
-authentik_version: "2025.2.0"
 authentik_enterprise: true
 tags: [Shared Signals Framework, SSF, Apple Business Manager, Apple School Manager]
 sidebar_position: 12
