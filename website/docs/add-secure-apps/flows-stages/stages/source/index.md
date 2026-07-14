@@ -5,7 +5,7 @@ authentik_enterprise: true
 
 The Source stage sends the user to an [OAuth](../../../../users-sources/sources/protocols/oauth/index.mdx) or [SAML](../../../../users-sources/sources/protocols/saml/index.md) source before returning to the flow.
 
-## Overview
+## About the source stage
 
 Use this stage when an external identity provider should be part of the current authentik flow, for example during staged migrations or additional external verification.
 

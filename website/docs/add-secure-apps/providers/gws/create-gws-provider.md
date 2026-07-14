@@ -38,7 +38,7 @@ To create a Google Workspace provider in authentik, you must have already [confi
 ## Create a Google Workspace application in authentik
 
 :::info Backchannel Provider
-If you have configured the [Google Workspace SAML integration](/integrations/services/google/) to enable authenticating to Google Workspace with authentik, you can add the provider created in the previous section as a backchannel provider to the existing application, instead of creating a new one.
+If you have configured the [Google Workspace SAML integration](/integrations/cloud-providers/google/) to enable authenticating to Google Workspace with authentik, you can add the provider created in the previous section as a backchannel provider to the existing application, instead of creating a new one.
 :::
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
