@@ -5,12 +5,14 @@ support_level: community
 ---
 
 import RedirectURI20265Note from "../../_redirect-uri-2026-5-note.mdx";
+import TabItem from "@theme/TabItem";
+import Tabs from "@theme/Tabs";
 
 ## What is Paperless-ngx?
 
-> Paperless-ngx is an application that indexes your scanned documents and allows you to easily search for documents and store metadata alongside your documents. It was a fork from Paperless-ng, in turn a fork from the original Paperless, neither of which are maintained any longer.
+> Paperless-ngx is a community-supported open-source document management system that transforms your physical documents into a searchable online archive.
 >
-> -- https://github.com/paperless-ngx/paperless-ngx
+> -- https://docs.paperless-ngx.com/
 
 ## Preparation
 
@@ -29,119 +31,107 @@ This documentation lists only the settings that you need to change from their de
 
 To support the integration of Paperless-ngx with authentik, you need to create an application/provider pair in authentik.
 
-### Create an application and provider in authentik
+### Create an application and provider
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **New Application** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
-    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Note the **Slug** value because it is required later.
     - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
-        - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
+        - Note the **Client ID** and **Client Secret** values because they will be required later.
         - Add a **Redirect URI** of type `Strict` `Authorization` as `https://paperless.company/accounts/oidc/authentik/login/callback/`.
     - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
-    - **Advanced protocol settings**:
-        - **Selected Scopes**: Add the following
-            - `authentik default OAuth Mapping: OpenID 'openid'`
-            - `authentik default OAuth Mapping: OpenID 'email'`
-            - `authentik default OAuth Mapping: OpenID 'profile'`
-        - **Encryption Key**: Ensure that no encryption key is selected.
 
 3. Click **Submit** to save the new application and provider.
 
 ## Paperless-ngx configuration
 
-import TabItem from "@theme/TabItem";
-import Tabs from "@theme/Tabs";
+Add the following settings to your Paperless-ngx configuration file:
 
 <Tabs
   defaultValue="docker"
   values={[
-    {label: 'Docker', value: 'docker'},
-    {label: 'Standalone', value: 'standalone'},
+    { label: "Docker", value: "docker" },
+    { label: "Standalone", value: "standalone" },
   ]}>
   <TabItem value="docker">
-If you have Paperless-ngx set up in Docker, add the following environment variables to your Paperless-ngx compose file:
 
-```yaml
-environment:
-    PAPERLESS_APPS: allauth.socialaccount.providers.openid_connect
-    PAPERLESS_SOCIALACCOUNT_PROVIDERS: >
-        {
-          "openid_connect": {
-            "OAUTH_PKCE_ENABLED": true,
-            "APPS": [
-              {
-                "provider_id": "authentik",
-                "name": "authentik",
-                "client_id": "<client_id>",
-                "secret": "<client_secret>",
-                "settings": {
-                  "server_url": "https://authentik.company/application/o/<application_slug>/.well-known/openid-configuration",
-                  "fetch_userinfo": true
-                }
-              }
-            ],
-            "SCOPE": ["openid", "profile", "email"]
-          }
-        }
-    PAPERLESS_LOGOUT_REDIRECT_URL: "https://authentik.company/application/o/<application_slug>/end-session/"
-    PAPERLESS_SOCIAL_AUTO_SIGNUP: true
-    PAPERLESS_SOCIALACCOUNT_ALLOW_SIGNUPS: true
-```
+Paperless-ngx reads Docker configuration from `docker-compose.env`.
 
-Alternatively, add the variables directly to your environment file:
-
-```sh
+```env title="docker-compose.env"
 PAPERLESS_APPS=allauth.socialaccount.providers.openid_connect
-PAPERLESS_SOCIALACCOUNT_PROVIDERS={"openid_connect": {"OAUTH_PKCE_ENABLED": true, "APPS": [{"provider_id": "authentik", "name": "authentik", "client_id": "<client_id>", "secret": "<client_secret>", "settings": {"server_url": "https://authentik.company/application/o/<application_slug>/.well-known/openid-configuration", "fetch_userinfo": true}}], "SCOPE": ["openid", "profile", "email"]}}
+PAPERLESS_SOCIALACCOUNT_PROVIDERS={"openid_connect":{"OAUTH_PKCE_ENABLED":true,"APPS":[{"provider_id":"authentik","name":"authentik","client_id":"<Client ID from authentik>","secret":"<Client Secret from authentik>","settings":{"server_url":"https://authentik.company/application/o/<application_slug>/.well-known/openid-configuration","fetch_userinfo":true}}],"SCOPE":["openid","profile","email"]}}
 PAPERLESS_LOGOUT_REDIRECT_URL=https://authentik.company/application/o/<application_slug>/end-session/
 PAPERLESS_SOCIAL_AUTO_SIGNUP=true
 PAPERLESS_SOCIALACCOUNT_ALLOW_SIGNUPS=true
 ```
 
-Remove `PAPERLESS_SOCIAL_AUTO_SIGNUP` if you want to allow only pre-created Paperless-ngx users.
+Restart Paperless-ngx for the changes to take effect:
 
-To add authentik authentication to an existing Paperless-ngx user, the user can log in to Paperless-ngx with local authentication, click the profile icon in the top-right, click **My Profile**, then **Connect new social account**.
-
-To sync groups from your IdP, enable [PAPERLESS_SOCIAL_ACCOUNT_SYNC_GROUPS](https://docs.paperless-ngx.com/configuration/#PAPERLESS_SOCIAL_ACCOUNT_SYNC_GROUPS) and include `groups` in the provider `SCOPE`. Paperless expects a `groups` claim, so map your IdP's group claim to `groups` if it uses a different name.
-
-If you want to disable local logins after validating SSO, set [PAPERLESS_DISABLE_REGULAR_LOGIN](https://docs.paperless-ngx.com/configuration/#PAPERLESS_DISABLE_REGULAR_LOGIN) and optionally [PAPERLESS_REDIRECT_LOGIN_TO_SSO](https://docs.paperless-ngx.com/configuration/#PAPERLESS_REDIRECT_LOGIN_TO_SSO) to true.
-
-Now restart your container:
-`docker compose down && docker compose up -d`
+```shell
+docker compose down && docker compose up -d
+```
 
   </TabItem>
   <TabItem value="standalone">
 
-You need to update your `paperless.conf` configuration file. Paperless-ngx will search for this configuration file in the following locations and use the first one it finds:
+For standalone installations, Paperless-ngx searches for `paperless.conf` in the following locations and uses the first file that it finds:
 
-- The environment variable `PAPERLESS_CONFIGURATION_PATH`
-- `/path/to/paperless/paperless.conf`
-- `/etc/paperless.conf`
-- `/usr/local/etc/paperless.conf`
+- The path defined by `PAPERLESS_CONFIGURATION_PATH`.
+- `/path/to/paperless/paperless.conf`.
+- `/etc/paperless.conf`.
+- `/usr/local/etc/paperless.conf`.
 
-Edit your `paperless.conf` and add the following:
-
-```ini
+```env title="paperless.conf"
 PAPERLESS_APPS=allauth.socialaccount.providers.openid_connect
-PAPERLESS_SOCIALACCOUNT_PROVIDERS={"openid_connect":{"OAUTH_PKCE_ENABLED":true,"APPS":[{"provider_id":"authentik","name":"authentik","client_id":"<Client ID>","secret":"<Client Secret>","settings":{"server_url":"https://authentik.company/application/o/paperless/.well-known/openid-configuration","fetch_userinfo":true}}],"SCOPE":["openid","profile","email"]}}
+PAPERLESS_SOCIALACCOUNT_PROVIDERS={"openid_connect":{"OAUTH_PKCE_ENABLED":true,"APPS":[{"provider_id":"authentik","name":"authentik","client_id":"<Client ID from authentik>","secret":"<Client Secret from authentik>","settings":{"server_url":"https://authentik.company/application/o/<application_slug>/.well-known/openid-configuration","fetch_userinfo":true}}],"SCOPE":["openid","profile","email"]}}
+PAPERLESS_LOGOUT_REDIRECT_URL=https://authentik.company/application/o/<application_slug>/end-session/
 PAPERLESS_SOCIAL_AUTO_SIGNUP=true
 PAPERLESS_SOCIALACCOUNT_ALLOW_SIGNUPS=true
 ```
 
-Remove `PAPERLESS_SOCIAL_AUTO_SIGNUP` if you want to allow only pre-created Paperless-ngx users.
+Restart Paperless-ngx for the changes to take effect:
 
-To add authentik authentication to an existing Paperless-ngx user, the user can log in to Paperless-ngx with local authentication, click the profile icon in the top-right, click **My Profile**, then **Connect new social account**.
-
-To sync groups from your IdP, enable [PAPERLESS_SOCIAL_ACCOUNT_SYNC_GROUPS](https://docs.paperless-ngx.com/configuration/#PAPERLESS_SOCIAL_ACCOUNT_SYNC_GROUPS) and include `groups` in the provider `SCOPE`. Paperless expects a `groups` claim, so map your IdP's group claim to `groups` if it uses a different name.
-
-If you want to disable local logins after validating SSO, set [PAPERLESS_DISABLE_REGULAR_LOGIN](https://docs.paperless-ngx.com/configuration/#PAPERLESS_DISABLE_REGULAR_LOGIN) and optionally [PAPERLESS_REDIRECT_LOGIN_TO_SSO](https://docs.paperless-ngx.com/configuration/#PAPERLESS_REDIRECT_LOGIN_TO_SSO) to true.
-
-Now restart your Paperless-ngx services using `sudo systemctl restart paperless-*`
+```shell
+sudo systemctl restart paperless-*
+```
 
   </TabItem>
 </Tabs>
 
+Remove `PAPERLESS_SOCIAL_AUTO_SIGNUP` if you want to allow only pre-created Paperless-ngx users to sign in with authentik.
+
+### Link existing users _(optional)_
+
+To add authentik authentication to an existing Paperless-ngx user, log in to Paperless-ngx with local authentication, click the profile icon in the top-right, click **My Profile**, and then click **Connect new social account**.
+
+### Configure group sync _(optional)_
+
+To sync groups from authentik, create matching groups in Paperless-ngx and add the following setting to your Paperless-ngx configuration file:
+
+```env title="docker-compose.env or paperless.conf"
+PAPERLESS_SOCIAL_ACCOUNT_SYNC_GROUPS=true
+```
+
+With the default authentik `profile` scope, Paperless-ngx can read the `groups` claim. If you use a custom authentik scope mapping that publishes group names under another claim, set `PAPERLESS_SOCIAL_ACCOUNT_SYNC_GROUPS_CLAIM` to that claim name and include the scope that contains the claim in `PAPERLESS_SOCIALACCOUNT_PROVIDERS`.
+
+### Disable local login _(optional)_
+
+After you have validated SSO, you can disable the Paperless-ngx username and password login form:
+
+```env title="docker-compose.env or paperless.conf"
+PAPERLESS_DISABLE_REGULAR_LOGIN=true
+PAPERLESS_REDIRECT_LOGIN_TO_SSO=true
+```
+
+This does not disable the Django admin login or local credential authentication through the Paperless-ngx API.
+
 ## Configuration verification
 
-To confirm that authentik is properly configured with Paperless-ngx, log out and click the **authentik** button. You will be redirected to authentik and once authenticated, you will be signed in to Paperless-ngx.
+To confirm that authentik is properly configured with Paperless-ngx, open Paperless-ngx, click the **authentik** login button, and complete the authentik sign-in flow.
+
+## Resources
+
+- [Paperless-ngx documentation - Configuration](https://docs.paperless-ngx.com/configuration/#authentication-sso)
+- [Paperless-ngx documentation - OpenID Connect and social authentication](https://docs.paperless-ngx.com/advanced_usage/#openid-connect-and-social-authentication)
+- [django-allauth documentation - OpenID Connect](https://docs.allauth.org/en/latest/socialaccount/providers/openid_connect.html)
