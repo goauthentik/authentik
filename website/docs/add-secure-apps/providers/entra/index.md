@@ -58,7 +58,7 @@ By default, authentik only maps a group's name, `mail_enabled` status, `security
 
 Refer to the Entra ID documentation for further details on these attributes and which attributes can be mapped: [Microsoft Graph - Create Group](https://learn.microsoft.com/en-us/graph/api/group-post-groups?view=graph-rest-1.0&tabs=http#request-body)
 
-### Skipping objects during synchronization
+### Skip objects during synchronization
 
 To exclude specific users or groups from Entra ID synchronization, you can create a property mapping that raises the `SkipObject` exception. When this exception is raised during the evaluation of a property mapping, the object is skipped and the sync continues with the next object.
 
