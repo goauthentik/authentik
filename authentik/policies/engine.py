@@ -61,13 +61,7 @@ class _PolicyEngineBase:
 
     @staticmethod
     def _bindings_for(pbm: PolicyBindingModel) -> QuerySet[PolicyBinding]:
-        """Get enabled bindings for `pbm`, ordered.
-
-        Note: deliberately no `select_related("policy")` -- `policy` is an
-        `InheritanceForeignKey` with a custom descriptor that downcasts to the
-        concrete `Policy` subclass on access; a plain `select_related` would cache
-        the base `Policy` row instead and break that downcast.
-        """
+        # purposefully not selecting policy as a related field due to inheritance
         return (
             PolicyBinding.objects.filter(target=pbm, enabled=True)
             .select_related("user", "group")
@@ -123,14 +117,7 @@ class _PolicyEngineBase:
         prefetched_cache: dict[str, PolicyResult] | None = None,
     ) -> list[PolicyResult]:
         """Evaluate `policy_bindings` (bindings with a real Policy attached) against a
-        single PolicyRequest.
-
-        Bindings served from cache resolve immediately; the rest are run through a
-        forked PolicyProcess per binding -- spawned together, then joined together, so
-        multiple dynamic policies for one request still evaluate in parallel exactly
-        like a single-user `PolicyEngine.build()` always did. Returns one PolicyResult
-        per binding, in `policy_bindings` order.
-        """
+        single PolicyRequest."""
         results: list[PolicyResult | None] = [None] * len(policy_bindings)
         pending: list[tuple[int, PolicyProcessInfo]] = []
         for idx, binding in enumerate(policy_bindings):
@@ -170,12 +157,7 @@ class _PolicyEngineBase:
     def _combine_results(
         mode: PolicyEngineMode, empty_result: bool, all_results: list[PolicyResult]
     ) -> PolicyResult:
-        """Combine per-binding PolicyResults into one overall PolicyResult.
-
-        MODE_ALL: every result must pass. MODE_ANY: any one result passing is enough.
-        `empty_result` decides the outcome when there's nothing to combine (no
-        bindings configured at all).
-        """
+        """Combine per-binding PolicyResults into one overall PolicyResult."""
         if not all_results:
             return PolicyResult(empty_result)
         passing = False
