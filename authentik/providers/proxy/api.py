@@ -12,8 +12,7 @@ from rest_framework.viewsets import GenericViewSet, ModelViewSet
 from authentik.core.api.providers import ProviderSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import ModelSerializer, PassiveSerializer
-from authentik.crypto.models import CertificateKeyPair
-from authentik.crypto.validators import TLS_KEY_TYPES, validate_key_type
+from authentik.crypto.validators import TLS_KEY_TYPES, KeyTypeValidator
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.providers.oauth2.api.providers import RedirectURISerializer
 from authentik.providers.oauth2.models import ScopeMapping
@@ -56,10 +55,6 @@ class ProxyProviderSerializer(ProviderSerializer):
                     _("User and password attributes must be set when basic auth is enabled.")
                 )
         return value
-
-    def validate_certificate(self, keypair: CertificateKeyPair) -> CertificateKeyPair:
-        validate_key_type(keypair, TLS_KEY_TYPES)
-        return keypair
 
     def validate(self, attrs) -> dict[Any, str]:
         """Check that internal_host is set when mode is Proxy"""
@@ -106,7 +101,10 @@ class ProxyProviderSerializer(ProviderSerializer):
             "refresh_token_validity",
             "outpost_set",
         ]
-        extra_kwargs = ProviderSerializer.Meta.extra_kwargs
+        extra_kwargs = {
+            **ProviderSerializer.Meta.extra_kwargs,
+            "certificate": {"validators": [KeyTypeValidator(*TLS_KEY_TYPES)]},
+        }
 
 
 class ProxyProviderViewSet(UsedByMixin, ModelViewSet):

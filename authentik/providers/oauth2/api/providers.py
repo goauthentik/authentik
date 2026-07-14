@@ -22,11 +22,10 @@ from authentik.core.api.providers import ProviderSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import PassiveSerializer, PropertyMappingPreviewSerializer
 from authentik.core.models import Provider
-from authentik.crypto.models import CertificateKeyPair
 from authentik.crypto.validators import (
     JWE_ENCRYPTION_KEY_TYPES,
     JWT_SIGNING_KEY_TYPES,
-    validate_key_type,
+    KeyTypeValidator,
 )
 from authentik.providers.oauth2.id_token import IDToken
 from authentik.providers.oauth2.models import (
@@ -65,14 +64,6 @@ class OAuth2ProviderSerializer(ProviderSerializer):
             raise ValidationError("Client secret must consist of only ASCII characters.")
         return secret
 
-    def validate_signing_key(self, keypair: CertificateKeyPair) -> CertificateKeyPair:
-        validate_key_type(keypair, JWT_SIGNING_KEY_TYPES)
-        return keypair
-
-    def validate_encryption_key(self, keypair: CertificateKeyPair) -> CertificateKeyPair:
-        validate_key_type(keypair, JWE_ENCRYPTION_KEY_TYPES)
-        return keypair
-
     def validate_redirect_uris(self, data: list) -> list:
         for entry in data:
             if entry.get("matching_mode") == RedirectURIMatchingMode.REGEX:
@@ -109,7 +100,11 @@ class OAuth2ProviderSerializer(ProviderSerializer):
             "jwt_federation_sources",
             "jwt_federation_providers",
         ]
-        extra_kwargs = ProviderSerializer.Meta.extra_kwargs
+        extra_kwargs = {
+            **ProviderSerializer.Meta.extra_kwargs,
+            "signing_key": {"validators": [KeyTypeValidator(*JWT_SIGNING_KEY_TYPES)]},
+            "encryption_key": {"validators": [KeyTypeValidator(*JWE_ENCRYPTION_KEY_TYPES)]},
+        }
 
 
 class OAuth2ProviderSetupURLs(PassiveSerializer):

@@ -33,8 +33,7 @@ from authentik.core.api.providers import ProviderSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import PassiveSerializer, PropertyMappingPreviewSerializer
 from authentik.core.models import Provider
-from authentik.crypto.models import CertificateKeyPair
-from authentik.crypto.validators import XML_SIGNING_KEY_TYPES, validate_key_type
+from authentik.crypto.validators import XML_SIGNING_KEY_TYPES, KeyTypeValidator
 from authentik.flows.models import Flow, FlowDesignation
 from authentik.providers.saml.models import SAMLLogoutMethods, SAMLProvider
 from authentik.providers.saml.processors.assertion import AssertionProcessor
@@ -218,10 +217,6 @@ class SAMLProviderSerializer(ProviderSerializer):
         except Provider.application.RelatedObjectDoesNotExist:
             return "-"
 
-    def validate_signing_kp(self, keypair: CertificateKeyPair) -> CertificateKeyPair:
-        validate_key_type(keypair, XML_SIGNING_KEY_TYPES)
-        return keypair
-
     def validate(self, attrs: dict):
         signing_kp = attrs.get("signing_kp")
         if signing_kp:
@@ -280,7 +275,10 @@ class SAMLProviderSerializer(ProviderSerializer):
             "url_slo_post",
             "url_slo_redirect",
         ]
-        extra_kwargs = ProviderSerializer.Meta.extra_kwargs
+        extra_kwargs = {
+            **ProviderSerializer.Meta.extra_kwargs,
+            "signing_kp": {"validators": [KeyTypeValidator(*XML_SIGNING_KEY_TYPES)]},
+        }
 
 
 class SAMLMetadataSerializer(PassiveSerializer):

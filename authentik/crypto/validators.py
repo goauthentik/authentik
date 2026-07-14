@@ -2,6 +2,7 @@
 
 from django.utils.translation import gettext_lazy as _
 from rest_framework.exceptions import ValidationError
+from rest_framework.utils.representation import smart_repr
 
 from authentik.crypto.models import CertificateKeyPair, KeyType
 
@@ -22,32 +23,42 @@ XML_SIGNING_KEY_TYPES = [KeyType.RSA, KeyType.EC, KeyType.DSA]
 TLS_KEY_TYPES = [KeyType.RSA, KeyType.EC, KeyType.ED25519]
 
 
-def validate_key_type(keypair: CertificateKeyPair | None, allowed: list[KeyType]) -> None:
-    """Raise a ValidationError if `keypair` uses a key algorithm not in `allowed`.
+class KeyTypeValidator:
+    """Field-level validator that ensures a Certificate-Key Pair uses a key algorithm the
+    consuming protocol can actually handle.
 
-    Intended to be called from a `validate_<field>` serializer method, which nests the error under
-    that field for us.
+    Accepts either a single keypair or a list of them, so it can be attached to both a
+    ForeignKey and a ManyToMany field.
 
     A keypair whose `key_type` is null is rejected rather than allowed through: null means
     `detect_key_type` did not recognize the certificate's public key, so we cannot vouch for it
     being usable, and letting it through is what causes downstream signing to raise instead of
     returning a validation error."""
-    if not keypair:
-        return
-    allowed_labels = ", ".join(str(KeyType(key_type).label) for key_type in allowed)
-    if not keypair.key_type:
-        raise ValidationError(
-            _(
-                "Unable to determine the key type of this certificate. Supported key types "
-                "are: {allowed}.".format(allowed=allowed_labels)
-            )
-        )
-    if keypair.key_type not in allowed:
-        raise ValidationError(
-            _(
-                "Key type {key_type} is not supported. Supported key types are: {allowed}.".format(
-                    key_type=KeyType(keypair.key_type).label,
-                    allowed=allowed_labels,
+
+    allowed: list[KeyType]
+    message = _("Key type {key_type} is not supported. Supported key types are: {allowed}.")
+    unknown_message = _(
+        "Unable to determine the key type of this certificate. "
+        "Supported key types are: {allowed}."
+    )
+
+    def __init__(self, *allowed: KeyType, message: str | None = None) -> None:
+        self.allowed = list(allowed)
+        self.message = message or self.message
+
+    def __call__(self, value: CertificateKeyPair | list[CertificateKeyPair] | None):
+        keypairs = value if isinstance(value, list) else [value]
+        allowed = ", ".join(str(KeyType(key_type).label) for key_type in self.allowed)
+        for keypair in keypairs:
+            if not keypair:
+                continue
+            if not keypair.key_type:
+                raise ValidationError(self.unknown_message.format(allowed=allowed), code="invalid")
+            if keypair.key_type not in self.allowed:
+                raise ValidationError(
+                    self.message.format(key_type=KeyType(keypair.key_type).label, allowed=allowed),
+                    code="invalid",
                 )
-            )
-        )
+
+    def __repr__(self):
+        return f"<{self.__class__.__name__}(allowed={smart_repr(self.allowed)})>"
