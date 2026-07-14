@@ -3,6 +3,7 @@
 from collections.abc import Iterable
 from multiprocessing import Pipe, current_process
 from multiprocessing.connection import Connection
+from warnings import deprecated
 
 from django.core.cache import cache
 from django.db.models import Count, Q, QuerySet
@@ -37,7 +38,7 @@ class PolicyProcessInfo:
 
 
 class _PolicyEngineBase:
-    """State and binding helpers shared between `PolicyEngine` (single user) and
+    """State and evaluation helpers shared between `PolicyEngine` (single user) and
     `FilterPolicyEngine` (queryset of users).
 
     Kept as composition rather than one engine subclassing the other: their
@@ -80,6 +81,114 @@ class _PolicyEngineBase:
         if binding.policy is not None and binding.policy.__class__ == Policy:
             raise PolicyEngineException(f"Policy '{binding.policy}' is root type")
 
+    def _cached_result(
+        self,
+        binding: PolicyBinding,
+        request: PolicyRequest,
+        prefetched_cache: dict[str, PolicyResult] | None,
+    ) -> PolicyResult | None:
+        """Look up a cached PolicyResult for (binding, request.user).
+
+        Served from `prefetched_cache` when supplied (a single bulk cache.get_many()
+        result, see `FilterPolicyEngine._prefetch_cache`), otherwise via an individual
+        cache.get() round trip -- the same cost a standalone `PolicyEngine` always paid.
+        """
+        if not self.use_cache:
+            return None
+        key = cache_key(binding, request)
+        if prefetched_cache is not None:
+            cached_policy = prefetched_cache.get(key)
+        else:
+            # It's a bit silly to time this, but
+            with HIST_POLICIES_EXECUTION_TIME.labels(
+                binding_order=binding.order,
+                binding_target_type=binding.target_type,
+                binding_target_name=binding.target_name,
+                object_type=class_to_path(request.obj.__class__) if request.obj else "",
+                mode="cache_retrieve",
+            ).time():
+                cached_policy = cache.get(key, None)
+        if cached_policy is not None:
+            self.logger.debug(
+                "P_ENG: Taking result from cache",
+                binding=binding,
+                cache_key=key,
+                request=request,
+            )
+        return cached_policy
+
+    def _evaluate_dynamic_bindings(
+        self,
+        policy_bindings: list[PolicyBinding],
+        request: PolicyRequest,
+        prefetched_cache: dict[str, PolicyResult] | None = None,
+    ) -> list[PolicyResult]:
+        """Evaluate `policy_bindings` (bindings with a real Policy attached) against a
+        single PolicyRequest.
+
+        Bindings served from cache resolve immediately; the rest are run through a
+        forked PolicyProcess per binding -- spawned together, then joined together, so
+        multiple dynamic policies for one request still evaluate in parallel exactly
+        like a single-user `PolicyEngine.build()` always did. Returns one PolicyResult
+        per binding, in `policy_bindings` order.
+        """
+        results: list[PolicyResult | None] = [None] * len(policy_bindings)
+        pending: list[tuple[int, PolicyProcessInfo]] = []
+        for idx, binding in enumerate(policy_bindings):
+            self._check_policy_type(binding)
+            cached = self._cached_result(binding, request, prefetched_cache)
+            if cached is not None:
+                results[idx] = cached
+                continue
+            self.logger.debug("P_ENG: Evaluating policy", binding=binding, request=request)
+            our_end, task_end = Pipe(False)
+            task = PolicyProcess(binding, request, task_end)
+            task.daemon = False
+            self.logger.debug("P_ENG: Starting Process", binding=binding, request=request)
+            if not CURRENT_PROCESS._config.get("daemon"):
+                task.run()
+            else:
+                task.start()
+            pending.append(
+                (idx, PolicyProcessInfo(process=task, connection=our_end, binding=binding))
+            )
+        for idx, proc_info in pending:
+            if proc_info.process.is_alive():
+                proc_info.process.join(proc_info.binding.timeout)
+            result = proc_info.connection.recv()
+            if result is not None and result._exec_time:
+                HIST_POLICIES_EXECUTION_TIME.labels(
+                    binding_order=proc_info.binding.order,
+                    binding_target_type=proc_info.binding.target_type,
+                    binding_target_name=proc_info.binding.target_name,
+                    object_type=class_to_path(request.obj.__class__) if request.obj else "",
+                    mode="execute_process",
+                ).observe(result._exec_time)
+            results[idx] = result
+        return results
+
+    @staticmethod
+    def _combine_results(
+        mode: PolicyEngineMode, empty_result: bool, all_results: list[PolicyResult]
+    ) -> PolicyResult:
+        """Combine per-binding PolicyResults into one overall PolicyResult.
+
+        MODE_ALL: every result must pass. MODE_ANY: any one result passing is enough.
+        `empty_result` decides the outcome when there's nothing to combine (no
+        bindings configured at all).
+        """
+        if not all_results:
+            return PolicyResult(empty_result)
+        passing = False
+        if mode == PolicyEngineMode.MODE_ALL:
+            passing = all(x.passing for x in all_results)
+        if mode == PolicyEngineMode.MODE_ANY:
+            passing = any(x.passing for x in all_results)
+        result = PolicyResult(passing)
+        result.source_results = all_results
+        result.messages = tuple(y for x in all_results for y in x.messages)
+        return result
+
 
 class PolicyEngine(_PolicyEngineBase):
     """Orchestrate policy checking, launch tasks and return result"""
@@ -97,45 +206,12 @@ class PolicyEngine(_PolicyEngineBase):
         self.request.obj = pbm
         if request:
             self.request.set_http_request(request)
-        self.__cached_policies: list[PolicyResult] = []
-        self.__processes: list[PolicyProcessInfo] = []
-        self.__expected_result_count = 0
+        self.__dynamic_results: list[PolicyResult] = []
         self.__static_result: PolicyResult | None = None
-        # Populated by FilterPolicyEngine with the result of a single bulk
-        # cache.get_many() call, so _check_cache below can serve every binding for
-        # every candidate user from one dict instead of one cache round trip each.
-        self._prefetched_cache: dict[str, PolicyResult] | None = None
 
     def bindings(self) -> QuerySet[PolicyBinding] | Iterable[PolicyBinding]:
         """Make sure all Policies are their respective classes"""
         return self._bindings_for(self.__pbm)
-
-    def _check_cache(self, binding: PolicyBinding):
-        if not self.use_cache:
-            return False
-        key = cache_key(binding, self.request)
-        if self._prefetched_cache is not None:
-            cached_policy = self._prefetched_cache.get(key)
-        else:
-            # It's a bit silly to time this, but
-            with HIST_POLICIES_EXECUTION_TIME.labels(
-                binding_order=binding.order,
-                binding_target_type=binding.target_type,
-                binding_target_name=binding.target_name,
-                object_type=class_to_path(self.request.obj.__class__),
-                mode="cache_retrieve",
-            ).time():
-                cached_policy = cache.get(key, None)
-        if not cached_policy:
-            return False
-        self.logger.debug(
-            "P_ENG: Taking result from cache",
-            binding=binding,
-            cache_key=key,
-            request=self.request,
-        )
-        self.__cached_policies.append(cached_policy)
-        return True
 
     def compute_static_bindings(self, bindings: QuerySet[PolicyBinding]):
         """Check static bindings if possible"""
@@ -199,70 +275,22 @@ class PolicyEngine(_PolicyEngineBase):
             if isinstance(bindings, QuerySet):
                 self.compute_static_bindings(bindings)
                 policy_bindings = [x for x in bindings if x.policy]
-            for binding in policy_bindings:
-                self.__expected_result_count += 1
-
-                self._check_policy_type(binding)
-                if self._check_cache(binding):
-                    continue
-                self.logger.debug("P_ENG: Evaluating policy", binding=binding, request=self.request)
-                our_end, task_end = Pipe(False)
-                task = PolicyProcess(binding, self.request, task_end)
-                task.daemon = False
-                self.logger.debug("P_ENG: Starting Process", binding=binding, request=self.request)
-                if not CURRENT_PROCESS._config.get("daemon"):
-                    task.run()
-                else:
-                    task.start()
-                self.__processes.append(
-                    PolicyProcessInfo(process=task, connection=our_end, binding=binding)
-                )
-            # If all policies are cached, we have an empty list here.
-            for proc_info in self.__processes:
-                if proc_info.process.is_alive():
-                    proc_info.process.join(proc_info.binding.timeout)
-                # Only call .recv() if no result is saved, otherwise we just deadlock here
-                if not proc_info.result:
-                    proc_info.result = proc_info.connection.recv()
-                if proc_info.result and proc_info.result._exec_time:
-                    HIST_POLICIES_EXECUTION_TIME.labels(
-                        binding_order=proc_info.binding.order,
-                        binding_target_type=proc_info.binding.target_type,
-                        binding_target_name=proc_info.binding.target_name,
-                        object_type=(
-                            class_to_path(self.request.obj.__class__) if self.request.obj else ""
-                        ),
-                        mode="execute_process",
-                    ).observe(proc_info.result._exec_time)
+            self.__dynamic_results = self._evaluate_dynamic_bindings(policy_bindings, self.request)
             return self
 
     @property
     def result(self) -> PolicyResult:
         """Get policy-checking result"""
-        self.__processes.sort(key=lambda x: x.binding.order)
-        process_results: list[PolicyResult] = [x.result for x in self.__processes if x.result]
-        all_results = list(process_results + self.__cached_policies)
-        if len(all_results) < self.__expected_result_count:  # pragma: no cover
-            raise AssertionError("Got less results than polices")
-        if self.__static_result:
+        all_results = list(self.__dynamic_results)
+        if self.__static_result is not None:
             all_results.append(self.__static_result)
-        # No results, no policies attached -> passing
-        if len(all_results) == 0:
-            return PolicyResult(self.empty_result)
-        passing = False
-        if self.mode == PolicyEngineMode.MODE_ALL:
-            passing = all(x.passing for x in all_results)
-        if self.mode == PolicyEngineMode.MODE_ANY:
-            passing = any(x.passing for x in all_results)
-        result = PolicyResult(passing)
-        result.source_results = all_results
-        result.messages = tuple(y for x in all_results for y in x.messages)
-        return result
+        return self._combine_results(self.mode, self.empty_result, all_results)
 
     @property
+    @deprecated("Access result directly or use bool(result)")
     def passing(self) -> bool:
         """Only get true/false if user passes"""
-        return self.result.passing
+        return bool(self.result)
 
 
 class FilterPolicyEngine(_PolicyEngineBase):
@@ -299,41 +327,53 @@ class FilterPolicyEngine(_PolicyEngineBase):
                 self.__result = self.__users if self.empty_result else self.__users.none()
                 return self
 
-            has_policy_bindings = any(binding.policy_id is not None for binding in bindings)
+            dynamic_bindings = [binding for binding in bindings if binding.policy_id is not None]
             static_bindings = [
                 binding
                 for binding in bindings
                 if binding.policy_id is None and (binding.group_id or binding.user_id)
             ]
 
-            if not has_policy_bindings:
-                # Fast path: purely static bindings -> SQL only, zero PolicyEngine instantiations
+            if not dynamic_bindings:
+                # Fast path: purely static bindings -> SQL only, zero per-user evaluation
                 if not static_bindings:
                     self.__result = self.__users if self.empty_result else self.__users.none()
                 else:
                     self.__result = self._filter_static(self.__users, static_bindings, self.mode)
                 return self
 
-            # Slow path: real Policy objects need per-user evaluation. Shrink the candidate
-            # set first when MODE_ALL allows it (a static-failing user can never satisfy
-            # MODE_ALL overall); for MODE_ANY every user must be evaluated, since a user might
-            # fail static and still pass via policy.
+            # Slow path: real Policy objects can't be translated to SQL and need
+            # per-user evaluation. Pre-compute the static verdict ONCE via SQL (reused
+            # per user as a set-membership check) instead of re-running an aggregate
+            # query per user, and shrink the candidate set first when MODE_ALL allows
+            # it (a static-failing user can never satisfy MODE_ALL overall).
+            static_passing_pks = None
+            if static_bindings:
+                static_passing_pks = set(
+                    self._filter_static(self.__users, static_bindings, self.mode).values_list(
+                        "pk", flat=True
+                    )
+                )
+
             candidates = self.__users
             if self.mode == PolicyEngineMode.MODE_ALL and static_bindings:
-                candidates = self._filter_static(candidates, static_bindings, self.mode)
+                candidates = candidates.filter(pk__in=static_passing_pks)
             candidates = list(candidates)
 
-            dynamic_bindings = [binding for binding in bindings if binding.policy_id is not None]
             prefetched_cache = self._prefetch_cache(candidates, dynamic_bindings)
 
             passing_pks = []
             for user in candidates:
-                engine = PolicyEngine(self.__pbm, user, self.__http_request)
-                engine.use_cache = self.use_cache
-                engine.empty_result = self.empty_result
-                engine._prefetched_cache = prefetched_cache
-                engine.build()
-                if engine.passing:
+                request = PolicyRequest(user)
+                request.obj = self.__pbm
+                if self.__http_request:
+                    request.set_http_request(self.__http_request)
+                all_results = self._evaluate_dynamic_bindings(
+                    dynamic_bindings, request, prefetched_cache
+                )
+                if static_passing_pks is not None:
+                    all_results.append(PolicyResult(user.pk in static_passing_pks))
+                if self._combine_results(self.mode, self.empty_result, all_results).passing:
                     passing_pks.append(user.pk)
             self.__result = self.__users.filter(pk__in=passing_pks)
             return self
@@ -342,14 +382,19 @@ class FilterPolicyEngine(_PolicyEngineBase):
         self, candidates: list[User], dynamic_bindings: list[PolicyBinding]
     ) -> dict[str, PolicyResult]:
         """Bulk-fetch cached PolicyResults for every (dynamic binding, candidate) pair
-        with a single cache.get_many() call."""
+        with a single cache.get_many() call.
+
+        Without this, each candidate's `_evaluate_dynamic_bindings` call would do its
+        own cache.get() per binding -- N candidates x M dynamic bindings individual
+        round trips to the cache backend collapse into one.
+        """
         if not self.use_cache or not dynamic_bindings or not candidates:
             return {}
         keys = []
         for user in candidates:
             # Bypass set_http_request()'s context-processor enrichment (geoip etc.) --
             # cache_key() only reads .http_request and .user, so this produces the
-            # exact same key each per-user PolicyEngine will independently compute.
+            # exact same key each per-user evaluation will independently compute.
             request = PolicyRequest(user)
             request.http_request = self.__http_request
             for binding in dynamic_bindings:

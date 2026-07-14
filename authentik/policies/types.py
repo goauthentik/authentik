@@ -95,3 +95,6 @@ class PolicyResult:
         if self.messages:
             return f"<PolicyResult passing={self.passing} messages={self.messages}>"
         return f"<PolicyResult passing={self.passing}>"
+
+    def __bool__(self):
+        return self.passing
