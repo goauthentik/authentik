@@ -10,9 +10,9 @@ import Tabs from "@theme/Tabs";
 
 ## What it can do
 
-- Retrieves information about the host and reports it to authentik, see [Device Compliance](../../device-compliance/index.mdx).
-- SSH to Linux hosts using authentik credentials, see [SSH authentication](../../authentik-agent/device-authentication/ssh-authentication.mdx).
-- Authenticate CLI applications using authentik credentials, see [CLI application authentication](../../authentik-agent/device-authentication/cli-app-authentication/index.mdx).
+- Retrieve host information and report it to authentik for [device compliance](../../device-compliance/index.mdx).
+- Connect to Linux hosts through [SSH authentication](../../authentik-agent/device-authentication/ssh-authentication.mdx).
+- Authenticate to CLI applications through [CLI application authentication](../../authentik-agent/device-authentication/cli-app-authentication/index.mdx).
 
 ## Prerequisites
 
@@ -20,17 +20,17 @@ You must [configure your authentik deployment](../configuration.md) to support t
 
 ## Create an enrollment token
 
-If you have already created have an enrollment token, skip to the [next section](#install-the-authentik-agent-on-linux).
+If you already have an enrollment token, skip to [Install the authentik Agent on Linux](#install-the-authentik-agent-on-linux).
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Endpoint Devices** > **Connectors**.
 3. Click on the authentik Agent connector that you created when [configuring your authentik deployment](../configuration.md) to support the authentik agent.
 4. Under **Enrollment Tokens**, click **New Enrollment Token**, and configure the following settings:
-    - **Token name**: provide a descriptive name for the token
-    - **Device group _(optional)_**: select a device access group for the device to be added to after completing enrollment
-    - **Expiring _(optional)_**: set whether or not the enrollment token will expire
+    - **Token name**: Provide a descriptive name for the token.
+    - **Device group _(optional)_**: Select a device access group to add the device to after enrollment.
+    - **Expiring _(optional)_**: Set whether the enrollment token expires.
 5. Click **Create**.
-6. _(Optional)_ Click the **Copy** icon in the **Actions** column to copy the enrollment token. This value will be required if [enabling a device for device compliance](#enable-device-compliance-ssh-server-authentication-and-local-device-login).
+6. _(Optional)_ Click the **Copy** icon in the **Actions** column. You need this value to [enable device compliance](#enable-device-compliance-ssh-server-authentication-and-local-device-login).
 
 ## Install the authentik Agent on Linux
 
@@ -58,7 +58,7 @@ sudo apt update
 sudo apt install authentik-cli authentik-agent authentik-sysd
 ```
 
-4. _(optional)_ If you plan to enable [SSH server authentication and local device login](#enable-device-compliance-ssh-server-authentication-and-local-device-login), you will need to install two additional packages:
+4. _(Optional)_ To enable [SSH server authentication and local device login](#enable-device-compliance-ssh-server-authentication-and-local-device-login), install two additional packages:
 
 ```sh
 sudo apt install libnss-authentik libpam-authentik
@@ -69,7 +69,7 @@ sudo apt install libnss-authentik libpam-authentik
     You should see a response that starts with: `authentik CLI v<version_number>`
 
 :::note Headless server
-On a headless server, the system agent (sysd) does not start the user agent (ak-agent). You will need to manually start the user agent with this command:
+On a headless server, the system agent (sysd) does not start the user agent (ak-agent). Start the user agent manually:
 
 ```bash
 systemctl start --user ak-agent
@@ -100,7 +100,7 @@ EOF
 sudo yum install -y authentik-cli authentik-agent authentik-sysd
 ```
 
-3. _(optional)_ If you plan to enable [SSH server authentication and local device login](#enable-device-compliance-ssh-server-authentication-and-local-device-login), you will need to install two additional packages:
+3. _(Optional)_ To enable [SSH server authentication and local device login](#enable-device-compliance-ssh-server-authentication-and-local-device-login), install two additional packages:
 
 ```sh
 sudo yum install -y libnss-authentik libpam-authentik
@@ -111,7 +111,7 @@ sudo yum install -y libnss-authentik libpam-authentik
     You should see a response that starts with: `authentik CLI v<version_number>`
 
 :::note Headless server
-On a headless server, the system agent (sysd) does not start the user agent (ak-agent). You will need to manually start the user agent with this command:
+On a headless server, the system agent (sysd) does not start the user agent (ak-agent). Start the user agent manually:
 
 ```bash
 systemctl start --user ak-agent
@@ -132,11 +132,11 @@ To enable [device compliance features](../../device-compliance/index.mdx) and th
 sudo ak-sysd domains join <deployment_name> --authentik-url https://authentik.company
 ```
 
-- `deployment_name` is the name that will be used to identify the authentik deployment on the device.
+- `deployment_name` identifies the authentik deployment on the device.
 - `https://authentik.company` is the fully qualified domain name of the authentik deployment.
 
-2. You will be prompted to enter your [enrollment token](#create-an-enrollment-token).
-3. Once provided, the device will be enrolled with your authentik deployment and should appear on the [Devices page](../../manage-devices.mdx) after a [check-in](../../device-compliance/device-reporting.md) is completed.
+2. Enter your [enrollment token](#create-an-enrollment-token) when prompted.
+3. After you enter the token, authentik enrolls the device. The device appears on the [Devices page](../../manage-devices.mdx) after it [checks in](../../device-compliance/device-reporting.md).
 
 ### Configure device login on non-Debian systems
 
@@ -177,7 +177,7 @@ To enable [initiating SSH connections](../../authentik-agent/device-authenticati
 ak config setup --authentik-url https://authentik.company
 ```
 
-2. Your default browser will open and direct you to the authentik login page. Once authenticated, the authentik Agent will be configured.
+2. Your default browser opens the authentik login page. After you authenticate, the authentik Agent is configured.
 
 ## Check version of installed components
 
@@ -187,10 +187,10 @@ You can check the version of all installed authentik components by running the f
 ak version
 ```
 
-## Logging
+## View logs
 
 authentik Agent logs are available via the systemd journal (`journalctl`) or `syslog`, depending on the distribution.
 
-## Reporting issues
+## Report issues
 
 Please report issues and bugs via the [authentik Platform GitHub repository](https://github.com/goauthentik/platform).

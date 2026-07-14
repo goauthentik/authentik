@@ -24,7 +24,7 @@ Currently, only local login is supported; RDP login is not yet available and is 
 ## Prerequisites
 
 - The authentik Agent (including the WCP component) deployed on the Windows device. See [Deploy the authentik Agent on Windows](../../agent-deployment/windows.md) for more details.
-- A **[Device access group](../device-access-groups.mdx)** configured with the appropriate user or group bindings. Without this, all login attempts will be denied. See [Configure device access](#configure-device-access) below.
+- A **[device access group](../device-access-groups.mdx)** configured with the appropriate user or group bindings. Without this group, all login attempts are denied. See [Configure device access](#configure-device-access).
 
 ## How it works
 
@@ -39,12 +39,12 @@ Currently, only local login is supported; RDP login is not yet available and is 
 
 ![Windows login screen](authentik-login.png)
 
-2. A browser window will open and prompt you for your authentik credentials.
+2. A browser window opens and prompts you for your authentik credentials.
 3. After you authenticate, you are logged in to the Windows device.
 
 ## Configure device access
 
-Local device login requires that the authenticating user is authorized to access the device. Access is controlled via [device access groups](../device-access-groups.mdx), which always apply. On Enterprise, direct device bindings (users, groups, or policies bound directly to the device) also affect access. If no device access group or direct binding is configured with the appropriate bindings, **all login attempts will be denied**.
+Local device login requires the authenticating user to have access to the device. [Device access groups](../device-access-groups.mdx) always control access. On Enterprise, direct device bindings for users, groups, or policies also affect access. Without an appropriately configured device access group or direct binding, **all login attempts are denied**.
 
 1. In the Admin interface, navigate to **Endpoint Devices** > **Device access groups** and click **New Device Access Group**.
 2. Provide a **Group name** (e.g. `windows-devices`) and click **Create Device Access Group**.
