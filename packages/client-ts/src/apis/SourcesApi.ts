@@ -295,6 +295,7 @@ import {
     SCIMSourceUserRequestToJSON,
 } from "../models/SCIMSourceUserRequest";
 import { type SignatureAlgorithmEnum } from "../models/SignatureAlgorithmEnum";
+import { type SloBindingEnum } from "../models/SloBindingEnum";
 import { type Source, SourceFromJSON } from "../models/Source";
 import { type SourceType, SourceTypeFromJSON } from "../models/SourceType";
 import { type SyncStatus, SyncStatusFromJSON } from "../models/SyncStatus";
@@ -881,10 +882,13 @@ export interface SourcesSamlListRequest {
     policyEngineMode?: PolicyEngineMode;
     preAuthenticationFlow?: string;
     search?: string;
+    signAuthnRequest?: boolean;
+    signLogoutRequest?: boolean;
     signatureAlgorithm?: SignatureAlgorithmEnum;
     signedAssertion?: boolean;
     signedResponse?: boolean;
     signingKp?: string;
+    sloBinding?: SloBindingEnum;
     sloUrl?: string;
     slug?: string;
     ssoUrl?: string;
@@ -7785,6 +7789,14 @@ export class SourcesApi extends runtime.BaseAPI {
             queryParameters["search"] = requestParameters["search"];
         }
 
+        if (requestParameters["signAuthnRequest"] != null) {
+            queryParameters["sign_authn_request"] = requestParameters["signAuthnRequest"];
+        }
+
+        if (requestParameters["signLogoutRequest"] != null) {
+            queryParameters["sign_logout_request"] = requestParameters["signLogoutRequest"];
+        }
+
         if (requestParameters["signatureAlgorithm"] != null) {
             queryParameters["signature_algorithm"] = requestParameters["signatureAlgorithm"];
         }
@@ -7799,6 +7811,10 @@ export class SourcesApi extends runtime.BaseAPI {
 
         if (requestParameters["signingKp"] != null) {
             queryParameters["signing_kp"] = requestParameters["signingKp"];
+        }
+
+        if (requestParameters["sloBinding"] != null) {
+            queryParameters["slo_binding"] = requestParameters["sloBinding"];
         }
 
         if (requestParameters["sloUrl"] != null) {

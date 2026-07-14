@@ -43,6 +43,7 @@ class SAMLSourceSerializer(SourceSerializer):
             "force_authn",
             "name_id_policy",
             "binding_type",
+            "slo_binding",
             "verification_kp",
             "signing_kp",
             "digest_algorithm",
@@ -51,6 +52,8 @@ class SAMLSourceSerializer(SourceSerializer):
             "encryption_kp",
             "signed_assertion",
             "signed_response",
+            "sign_authn_request",
+            "sign_logout_request",
         ]
 
 
@@ -78,6 +81,7 @@ class SAMLSourceViewSet(UsedByMixin, ModelViewSet):
         "force_authn",
         "name_id_policy",
         "binding_type",
+        "slo_binding",
         "verification_kp",
         "signing_kp",
         "digest_algorithm",
@@ -85,6 +89,8 @@ class SAMLSourceViewSet(UsedByMixin, ModelViewSet):
         "temporary_user_delete_after",
         "signed_assertion",
         "signed_response",
+        "sign_authn_request",
+        "sign_logout_request",
     ]
     search_fields = ["name", "slug"]
     ordering = ["name"]

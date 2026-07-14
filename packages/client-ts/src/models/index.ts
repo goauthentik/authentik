@@ -770,6 +770,7 @@ export * from "./SettingsRequest";
 export * from "./SeverityEnum";
 export * from "./ShellChallenge";
 export * from "./SignatureAlgorithmEnum";
+export * from "./SloBindingEnum";
 export * from "./Software";
 export * from "./SoftwareRequest";
 export * from "./Source";

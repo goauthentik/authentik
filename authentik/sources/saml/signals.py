@@ -3,11 +3,25 @@
 from django.contrib.auth.signals import user_logged_out
 from django.dispatch import receiver
 from django.http import HttpRequest
+from django.urls import reverse
 from structlog.stdlib import get_logger
 
-from authentik.core.models import USER_ATTRIBUTE_DELETE_ON_LOGOUT, User
+from authentik.core.models import USER_ATTRIBUTE_DELETE_ON_LOGOUT, AuthenticatedSession, User
+from authentik.flows.challenge import PLAN_CONTEXT_ATTRS, PLAN_CONTEXT_TITLE, PLAN_CONTEXT_URL
+from authentik.flows.models import in_memory_stage
+from authentik.flows.stage import RedirectStage
+from authentik.flows.views.executor import FlowExecutorView
+from authentik.sources.saml.models import SAMLSLOBindingTypes, SAMLSourceSession
+from authentik.sources.saml.processors.logout_request import LogoutRequestProcessor
+from authentik.sources.saml.views import PLAN_CONTEXT_SAML_RELAY_STATE, AutosubmitStageView
+from authentik.stages.user_logout.models import UserLogoutStage
+from authentik.stages.user_logout.stage import flow_pre_user_logout
 
 LOGGER = get_logger()
+
+# Runs after UserLogoutStage (index 0) and the provider front-channel logout stages
+# (indices 1-2), but ahead of the SessionEndStage that's always appended last.
+SOURCE_SLO_STAGE_INDEX = 3
 
 
 @receiver(user_logged_out)
@@ -18,3 +32,85 @@ def on_user_logged_out(sender, request: HttpRequest, user: User, **_):
     if user.attributes.get(USER_ATTRIBUTE_DELETE_ON_LOGOUT, False):
         LOGGER.debug("Deleted temporary user", user=user)
         user.delete()
+
+
+@receiver(flow_pre_user_logout)
+def handle_saml_source_pre_user_logout(
+    sender, request: HttpRequest, user: User, executor: FlowExecutorView, **kwargs
+):
+    """Handle SAML source SP-initiated SLO when user logs out via flow.
+    Injects a stage into the logout flow to redirect the user to the IdP's SLO URL."""
+    if not isinstance(executor.current_stage, UserLogoutStage):
+        return
+
+    if not user.is_authenticated:
+        return
+
+    auth_session = AuthenticatedSession.from_request(request, user)
+    if not auth_session:
+        return
+
+    # Find SAMLSourceSessions for this user's current session
+    saml_source_sessions = SAMLSourceSession.objects.filter(
+        session=auth_session,
+        user=user,
+    ).select_related("source")
+
+    for saml_session in saml_source_sessions:
+        source = saml_session.source
+        if not source.slo_url or not source.enabled:
+            continue
+
+        try:
+            # Use the flow executor URL as relay_state so that after the IdP
+            # processes the LogoutRequest and sends a LogoutResponse, the user
+            # is redirected back to the flow to continue remaining stages.
+            relay_state = request.build_absolute_uri(
+                reverse(
+                    "authentik_core:if-flow",
+                    kwargs={"flow_slug": executor.flow.slug},
+                )
+            )
+
+            # Stash the outbound relay_state so the SLOView can redirect to a
+            # server-known value rather than trusting the echoed request param.
+            executor.plan.context[PLAN_CONTEXT_SAML_RELAY_STATE] = relay_state
+
+            processor = LogoutRequestProcessor(
+                source=source,
+                http_request=request,
+                destination=source.slo_url,
+                name_id=saml_session.name_id,
+                name_id_format=saml_session.name_id_format,
+                session_index=saml_session.session_index,
+                relay_state=relay_state,
+            )
+
+            if source.slo_binding == SAMLSLOBindingTypes.REDIRECT:
+                redirect_url = processor.get_redirect_url()
+                stage = in_memory_stage(RedirectStage, destination=redirect_url)
+            else:
+                # POST binding
+                form_data = processor.get_post_form_data()
+                executor.plan.context[PLAN_CONTEXT_TITLE] = f"Logging out of {source.name}..."
+                executor.plan.context[PLAN_CONTEXT_URL] = source.slo_url
+                executor.plan.context[PLAN_CONTEXT_ATTRS] = form_data
+                stage = in_memory_stage(AutosubmitStageView)
+
+            executor.plan.insert_stage(stage, index=SOURCE_SLO_STAGE_INDEX)
+
+            LOGGER.debug(
+                "Injected SAML source SLO into logout flow",
+                source=source.name,
+                binding=source.slo_binding,
+            )
+
+        except (KeyError, AttributeError) as exc:
+            LOGGER.warning(
+                "Failed to generate SAML source logout request",
+                source=source.name,
+                exc=exc,
+            )
+
+    # Clean up SAMLSourceSessions for this auth session
+    saml_source_sessions.delete()
