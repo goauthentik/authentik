@@ -3,7 +3,7 @@ import { globalAK } from "#common/global";
 import { AKElement } from "#elements/Base";
 import { WithLicenseSummary } from "#elements/mixins/license";
 
-import { LicenseFlagsEnum, LicenseSummaryStatusEnum } from "@goauthentik/api";
+import { LicenseFlagsEnum, LicenseStatusEnum } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html, nothing } from "lit";
@@ -22,7 +22,7 @@ export class EnterpriseStatusBanner extends WithLicenseSummary(AKElement) {
         // Check if we're in the correct interface to render a banner
         switch (this.licenseSummary?.status) {
             // user warning is both on admin interface and user interface
-            case LicenseSummaryStatusEnum.LimitExceededUser:
+            case LicenseStatusEnum.LimitExceededUser:
                 if (
                     this.interface.toLowerCase() !== "user" &&
                     this.interface.toLowerCase() !== "admin"
@@ -30,37 +30,37 @@ export class EnterpriseStatusBanner extends WithLicenseSummary(AKElement) {
                     return nothing;
                 }
                 break;
-            case LicenseSummaryStatusEnum.ExpirySoon:
-            case LicenseSummaryStatusEnum.Expired:
-            case LicenseSummaryStatusEnum.LimitExceededAdmin:
+            case LicenseStatusEnum.ExpirySoon:
+            case LicenseStatusEnum.Expired:
+            case LicenseStatusEnum.LimitExceededAdmin:
                 if (this.interface.toLowerCase() !== "admin") {
                     return nothing;
                 }
                 break;
-            case LicenseSummaryStatusEnum.Unlicensed:
-            case LicenseSummaryStatusEnum.Valid:
+            case LicenseStatusEnum.Unlicensed:
+            case LicenseStatusEnum.Valid:
                 return nothing;
-            case LicenseSummaryStatusEnum.ReadOnly:
+            case LicenseStatusEnum.ReadOnly:
             default:
                 break;
         }
         let message = "";
         switch (this.licenseSummary?.status) {
-            case LicenseSummaryStatusEnum.LimitExceededAdmin:
-            case LicenseSummaryStatusEnum.LimitExceededUser:
+            case LicenseStatusEnum.LimitExceededAdmin:
+            case LicenseStatusEnum.LimitExceededUser:
                 message = msg(
                     "Warning: The current user count has exceeded the configured licenses.",
                 );
                 break;
-            case LicenseSummaryStatusEnum.Expired:
+            case LicenseStatusEnum.Expired:
                 message = msg("Warning: One or more license(s) have expired.");
                 break;
-            case LicenseSummaryStatusEnum.ExpirySoon:
+            case LicenseStatusEnum.ExpirySoon:
                 message = msg(
                     "Warning: One or more license(s) will expire within the next 2 weeks.",
                 );
                 break;
-            case LicenseSummaryStatusEnum.ReadOnly:
+            case LicenseStatusEnum.ReadOnly:
                 message = msg(
                     "Caution: This authentik instance has entered read-only mode due to expired/exceeded licenses.",
                 );
@@ -70,7 +70,7 @@ export class EnterpriseStatusBanner extends WithLicenseSummary(AKElement) {
         }
         return html`<div
             class="pf-c-banner pf-m-sticky ${this.licenseSummary?.status ===
-            LicenseSummaryStatusEnum.ReadOnly
+            LicenseStatusEnum.ReadOnly
                 ? "pf-m-red"
                 : "pf-m-gold"}"
         >

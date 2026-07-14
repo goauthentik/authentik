@@ -3,7 +3,7 @@ import "#elements/ak-progress-bar";
 import { AKElement } from "#elements/Base";
 import { PFColor } from "#elements/Label";
 
-import { LicenseForecast, LicenseSummary, LicenseSummaryStatusEnum } from "@goauthentik/api";
+import { LicenseForecast, LicenseStatusEnum, LicenseSummary } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
 import { CSSResult, html, nothing } from "lit";
@@ -26,15 +26,15 @@ export class EnterpriseStatusCard extends AKElement {
 
     renderSummaryBadge() {
         switch (this.summary?.status) {
-            case LicenseSummaryStatusEnum.Expired:
+            case LicenseStatusEnum.Expired:
                 return html`<ak-label color=${PFColor.Red}>${msg("Expired")}</ak-label>`;
-            case LicenseSummaryStatusEnum.ExpirySoon:
+            case LicenseStatusEnum.ExpirySoon:
                 return html`<ak-label color=${PFColor.Orange}>${msg("Expiring soon")}</ak-label>`;
-            case LicenseSummaryStatusEnum.Unlicensed:
+            case LicenseStatusEnum.Unlicensed:
                 return html`<ak-label color=${PFColor.Gray}>${msg("Unlicensed")}</ak-label>`;
-            case LicenseSummaryStatusEnum.ReadOnly:
+            case LicenseStatusEnum.ReadOnly:
                 return html`<ak-label color=${PFColor.Red}>${msg("Read Only")}</ak-label>`;
-            case LicenseSummaryStatusEnum.Valid:
+            case LicenseStatusEnum.Valid:
                 return html`<ak-label color=${PFColor.Green}>${msg("Valid")}</ak-label>`;
             default:
                 return nothing;
@@ -60,7 +60,7 @@ export class EnterpriseStatusCard extends AKElement {
 
         let internalUserPercentage = 0;
         let externalUserPercentage = 0;
-        if (this.summary.status !== LicenseSummaryStatusEnum.Unlicensed) {
+        if (this.summary.status !== LicenseStatusEnum.Unlicensed) {
             internalUserPercentage = this.calcUserPercentage(
                 licensedInternalUsers,
                 currentInternalUsers,

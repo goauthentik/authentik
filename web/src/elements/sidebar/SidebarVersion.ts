@@ -7,7 +7,7 @@ import { WithVersion } from "#elements/mixins/version";
 
 import { AboutModal } from "#admin/ak-about-modal";
 
-import { LicenseSummaryStatusEnum } from "@goauthentik/api";
+import { LicenseStatusEnum } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
 import { css, CSSResult, html, nothing } from "lit";
@@ -47,7 +47,7 @@ export class SidebarVersion extends WithLicenseSummary(WithVersion(AKElement)) {
             return nothing;
         }
         let product = globalAK().brand.brandingTitle || DefaultBrand.brandingTitle;
-        if (this.licenseSummary.status !== LicenseSummaryStatusEnum.Unlicensed) {
+        if (this.licenseSummary.status !== LicenseStatusEnum.Unlicensed) {
             product += ` ${msg("Enterprise")}`;
         }
 

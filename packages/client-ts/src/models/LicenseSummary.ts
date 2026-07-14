@@ -14,8 +14,8 @@
 
 import type { LicenseFlagsEnum } from "./LicenseFlagsEnum";
 import { LicenseFlagsEnumFromJSON, LicenseFlagsEnumToJSON } from "./LicenseFlagsEnum";
-import type { Status646Enum } from "./Status646Enum";
-import { Status646EnumFromJSON, Status646EnumToJSON } from "./Status646Enum";
+import type { LicenseStatusEnum } from "./LicenseStatusEnum";
+import { LicenseStatusEnumFromJSON, LicenseStatusEnumToJSON } from "./LicenseStatusEnum";
 
 /**
  * Serializer for license status
@@ -37,10 +37,10 @@ export interface LicenseSummary {
     externalUsers: number;
     /**
      *
-     * @type {Status646Enum}
+     * @type {LicenseStatusEnum}
      * @memberof LicenseSummary
      */
-    status: Status646Enum;
+    status: LicenseStatusEnum;
     /**
      *
      * @type {Date}
@@ -81,7 +81,7 @@ export function LicenseSummaryFromJSONTyped(
     return {
         internalUsers: json["internal_users"],
         externalUsers: json["external_users"],
-        status: Status646EnumFromJSON(json["status"]),
+        status: LicenseStatusEnumFromJSON(json["status"]),
         latestValid: new Date(json["latest_valid"]),
         licenseFlags: (json["license_flags"] as Array<any>).map(LicenseFlagsEnumFromJSON),
     };
@@ -102,7 +102,7 @@ export function LicenseSummaryToJSONTyped(
     return {
         internal_users: value["internalUsers"],
         external_users: value["externalUsers"],
-        status: Status646EnumToJSON(value["status"]),
+        status: LicenseStatusEnumToJSON(value["status"]),
         latest_valid: value["latestValid"].toISOString(),
         license_flags: (value["licenseFlags"] as Array<any>).map(LicenseFlagsEnumToJSON),
     };

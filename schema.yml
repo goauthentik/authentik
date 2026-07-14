@@ -42781,7 +42781,7 @@ components:
         external_users:
           type: integer
         status:
-          $ref: '#/components/schemas/Status646Enum'
+          $ref: '#/components/schemas/LicenseStatusEnum'
         latest_valid:
           type: string
           format: date-time
@@ -56566,16 +56566,6 @@ components:
           maxLength: 100
       required:
       - token
-    Status646Enum:
-      enum:
-      - unlicensed
-      - valid
-      - expired
-      - expiry_soon
-      - limit_exceeded_admin
-      - limit_exceeded_user
-      - read_only
-      type: string
     SubModeEnum:
       enum:
       - hashed_user_id

@@ -1,6 +1,6 @@
 import { createMixin } from "#elements/types";
 
-import { type LicenseSummary, LicenseSummaryStatusEnum } from "@goauthentik/api";
+import { LicenseStatusEnum, type LicenseSummary } from "@goauthentik/api";
 
 import { consume, Context, createContext } from "@lit/context";
 
@@ -41,8 +41,8 @@ export const WithLicenseSummary = createMixin<LicenseMixin>(
 
             get hasEnterpriseLicense() {
                 return (
-                    this.licenseSummary?.status === LicenseSummaryStatusEnum.Valid ||
-                    this.licenseSummary?.status === LicenseSummaryStatusEnum.ExpirySoon
+                    this.licenseSummary?.status === LicenseStatusEnum.Valid ||
+                    this.licenseSummary?.status === LicenseStatusEnum.ExpirySoon
                 );
             }
         }
