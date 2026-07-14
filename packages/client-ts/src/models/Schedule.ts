@@ -12,8 +12,8 @@
  * Do not edit the class manually.
  */
 
-import type { LastTaskStatusEnum } from "./LastTaskStatusEnum";
-import { LastTaskStatusEnumFromJSON } from "./LastTaskStatusEnum";
+import type { TaskAggregatedStatusEnum } from "./TaskAggregatedStatusEnum";
+import { TaskAggregatedStatusEnumFromJSON } from "./TaskAggregatedStatusEnum";
 
 /**
  *
@@ -89,10 +89,10 @@ export interface Schedule {
     readonly description: string | null;
     /**
      *
-     * @type {LastTaskStatusEnum}
+     * @type {TaskAggregatedStatusEnum}
      * @memberof Schedule
      */
-    readonly lastTaskStatus: LastTaskStatusEnum | null;
+    readonly lastTaskStatus: TaskAggregatedStatusEnum | null;
 }
 
 /**
@@ -132,7 +132,7 @@ export function ScheduleFromJSONTyped(json: any, ignoreDiscriminator: boolean): 
         paused: json["paused"] == null ? undefined : json["paused"],
         nextRun: new Date(json["next_run"]),
         description: json["description"],
-        lastTaskStatus: LastTaskStatusEnumFromJSON(json["last_task_status"]),
+        lastTaskStatus: TaskAggregatedStatusEnumFromJSON(json["last_task_status"]),
     };
 }
 

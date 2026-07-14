@@ -12,6 +12,11 @@
  * Do not edit the class manually.
  */
 
+import type { ApplicationMetaLaunchUrl } from "./ApplicationMetaLaunchUrl";
+import {
+    ApplicationMetaLaunchUrlFromJSON,
+    ApplicationMetaLaunchUrlToJSON,
+} from "./ApplicationMetaLaunchUrl";
 import type { PolicyEngineMode } from "./PolicyEngineMode";
 import { PolicyEngineModeFromJSON, PolicyEngineModeToJSON } from "./PolicyEngineMode";
 
@@ -53,10 +58,10 @@ export interface PatchedApplicationRequest {
     openInNewTab?: boolean;
     /**
      *
-     * @type {string}
+     * @type {ApplicationMetaLaunchUrl}
      * @memberof PatchedApplicationRequest
      */
-    metaLaunchUrl?: string;
+    metaLaunchUrl?: ApplicationMetaLaunchUrl;
     /**
      *
      * @type {string}
@@ -122,7 +127,10 @@ export function PatchedApplicationRequestFromJSONTyped(
         backchannelProviders:
             json["backchannel_providers"] == null ? undefined : json["backchannel_providers"],
         openInNewTab: json["open_in_new_tab"] == null ? undefined : json["open_in_new_tab"],
-        metaLaunchUrl: json["meta_launch_url"] == null ? undefined : json["meta_launch_url"],
+        metaLaunchUrl:
+            json["meta_launch_url"] == null
+                ? undefined
+                : ApplicationMetaLaunchUrlFromJSON(json["meta_launch_url"]),
         metaIcon: json["meta_icon"] == null ? undefined : json["meta_icon"],
         metaDescription: json["meta_description"] == null ? undefined : json["meta_description"],
         metaPublisher: json["meta_publisher"] == null ? undefined : json["meta_publisher"],
@@ -153,7 +161,7 @@ export function PatchedApplicationRequestToJSONTyped(
         provider: value["provider"],
         backchannel_providers: value["backchannelProviders"],
         open_in_new_tab: value["openInNewTab"],
-        meta_launch_url: value["metaLaunchUrl"],
+        meta_launch_url: ApplicationMetaLaunchUrlToJSON(value["metaLaunchUrl"]),
         meta_icon: value["metaIcon"],
         meta_description: value["metaDescription"],
         meta_publisher: value["metaPublisher"],

@@ -14,6 +14,11 @@
 
 import type { DigestAlgorithmEnum } from "./DigestAlgorithmEnum";
 import { DigestAlgorithmEnumFromJSON, DigestAlgorithmEnumToJSON } from "./DigestAlgorithmEnum";
+import type { PatchedSAMLProviderRequestSlsUrl } from "./PatchedSAMLProviderRequestSlsUrl";
+import {
+    PatchedSAMLProviderRequestSlsUrlFromJSON,
+    PatchedSAMLProviderRequestSlsUrlToJSON,
+} from "./PatchedSAMLProviderRequestSlsUrl";
 import type { SAMLBindingsEnum } from "./SAMLBindingsEnum";
 import { SAMLBindingsEnumFromJSON, SAMLBindingsEnumToJSON } from "./SAMLBindingsEnum";
 import type { SAMLLogoutMethods } from "./SAMLLogoutMethods";
@@ -69,11 +74,11 @@ export interface PatchedSAMLProviderRequest {
      */
     acsUrl?: string;
     /**
-     * Single Logout Service URL where the logout response should be sent.
-     * @type {string}
+     *
+     * @type {PatchedSAMLProviderRequestSlsUrl}
      * @memberof PatchedSAMLProviderRequest
      */
-    slsUrl?: string;
+    slsUrl?: PatchedSAMLProviderRequestSlsUrl;
     /**
      * Value of the audience restriction field of the assertion. When left empty, no audience restriction will be added.
      * @type {string}
@@ -231,7 +236,10 @@ export function PatchedSAMLProviderRequestFromJSONTyped(
         invalidationFlow: json["invalidation_flow"] == null ? undefined : json["invalidation_flow"],
         propertyMappings: json["property_mappings"] == null ? undefined : json["property_mappings"],
         acsUrl: json["acs_url"] == null ? undefined : json["acs_url"],
-        slsUrl: json["sls_url"] == null ? undefined : json["sls_url"],
+        slsUrl:
+            json["sls_url"] == null
+                ? undefined
+                : PatchedSAMLProviderRequestSlsUrlFromJSON(json["sls_url"]),
         audience: json["audience"] == null ? undefined : json["audience"],
         issuerOverride: json["issuer_override"] == null ? undefined : json["issuer_override"],
         assertionValidNotBefore:
@@ -304,7 +312,7 @@ export function PatchedSAMLProviderRequestToJSONTyped(
         invalidation_flow: value["invalidationFlow"],
         property_mappings: value["propertyMappings"],
         acs_url: value["acsUrl"],
-        sls_url: value["slsUrl"],
+        sls_url: PatchedSAMLProviderRequestSlsUrlToJSON(value["slsUrl"]),
         audience: value["audience"],
         issuer_override: value["issuerOverride"],
         assertion_valid_not_before: value["assertionValidNotBefore"],

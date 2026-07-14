@@ -12,6 +12,8 @@
  * Do not edit the class manually.
  */
 
+import type { EmailAddress } from "./EmailAddress";
+import { EmailAddressFromJSON, EmailAddressToJSON } from "./EmailAddress";
 import type { UserTypeEnum } from "./UserTypeEnum";
 import { UserTypeEnumFromJSON, UserTypeEnumToJSON } from "./UserTypeEnum";
 
@@ -59,10 +61,10 @@ export interface UserRequest {
     roles?: Array<string>;
     /**
      *
-     * @type {string}
+     * @type {EmailAddress}
      * @memberof UserRequest
      */
-    email?: string;
+    email?: EmailAddress;
     /**
      *
      * @type {{ [key: string]: any; }}
@@ -107,7 +109,7 @@ export function UserRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean
         lastLogin: json["last_login"] == null ? undefined : new Date(json["last_login"]),
         groups: json["groups"] == null ? undefined : json["groups"],
         roles: json["roles"] == null ? undefined : json["roles"],
-        email: json["email"] == null ? undefined : json["email"],
+        email: json["email"] == null ? undefined : EmailAddressFromJSON(json["email"]),
         attributes: json["attributes"] == null ? undefined : json["attributes"],
         path: json["path"] == null ? undefined : json["path"],
         type: json["type"] == null ? undefined : UserTypeEnumFromJSON(json["type"]),
@@ -134,7 +136,7 @@ export function UserRequestToJSONTyped(
             value["lastLogin"] == null ? value["lastLogin"] : value["lastLogin"].toISOString(),
         groups: value["groups"],
         roles: value["roles"],
-        email: value["email"],
+        email: EmailAddressToJSON(value["email"]),
         attributes: value["attributes"],
         path: value["path"],
         type: UserTypeEnumToJSON(value["type"]),

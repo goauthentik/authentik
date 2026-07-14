@@ -31,7 +31,7 @@ type UserSelf struct {
 	IsSuperuser bool             `json:"is_superuser"`
 	Groups      []UserSelfGroups `json:"groups"`
 	Roles       []UserSelfRoles  `json:"roles"`
-	Email       *string          `json:"email,omitempty"`
+	Email       *EmailAddress    `json:"email,omitempty"`
 	// User's avatar, either a http/https URL or a data URI
 	Avatar string `json:"avatar"`
 	Uid    string `json:"uid"`
@@ -242,9 +242,9 @@ func (o *UserSelf) SetRoles(v []UserSelfRoles) {
 }
 
 // GetEmail returns the Email field value if set, zero value otherwise.
-func (o *UserSelf) GetEmail() string {
+func (o *UserSelf) GetEmail() EmailAddress {
 	if o == nil || IsNil(o.Email) {
-		var ret string
+		var ret EmailAddress
 		return ret
 	}
 	return *o.Email
@@ -252,7 +252,7 @@ func (o *UserSelf) GetEmail() string {
 
 // GetEmailOk returns a tuple with the Email field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *UserSelf) GetEmailOk() (*string, bool) {
+func (o *UserSelf) GetEmailOk() (*EmailAddress, bool) {
 	if o == nil || IsNil(o.Email) {
 		return nil, false
 	}
@@ -268,8 +268,8 @@ func (o *UserSelf) HasEmail() bool {
 	return false
 }
 
-// SetEmail gets a reference to the given string and assigns it to the Email field.
-func (o *UserSelf) SetEmail(v string) {
+// SetEmail gets a reference to the given EmailAddress and assigns it to the Email field.
+func (o *UserSelf) SetEmail(v EmailAddress) {
 	o.Email = &v
 }
 

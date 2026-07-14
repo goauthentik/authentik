@@ -12,6 +12,11 @@
  * Do not edit the class manually.
  */
 
+import type { ApplicationMetaLaunchUrl } from "./ApplicationMetaLaunchUrl";
+import {
+    ApplicationMetaLaunchUrlFromJSON,
+    ApplicationMetaLaunchUrlToJSON,
+} from "./ApplicationMetaLaunchUrl";
 import type { ClientTypeEnum } from "./ClientTypeEnum";
 import { ClientTypeEnumFromJSON, ClientTypeEnumToJSON } from "./ClientTypeEnum";
 import type { GrantTypesEnum } from "./GrantTypesEnum";
@@ -138,10 +143,10 @@ export interface OAuth2ProviderRequest {
     redirectUris: Array<RedirectURIRequest>;
     /**
      *
-     * @type {string}
+     * @type {ApplicationMetaLaunchUrl}
      * @memberof OAuth2ProviderRequest
      */
-    logoutUri?: string;
+    logoutUri?: ApplicationMetaLaunchUrl;
     /**
      * Backchannel logs out with server to server calls. Frontchannel uses iframes in your browser
      * @type {OAuth2ProviderLogoutMethodEnum}
@@ -226,7 +231,10 @@ export function OAuth2ProviderRequestFromJSONTyped(
         signingKey: json["signing_key"] == null ? undefined : json["signing_key"],
         encryptionKey: json["encryption_key"] == null ? undefined : json["encryption_key"],
         redirectUris: (json["redirect_uris"] as Array<any>).map(RedirectURIRequestFromJSON),
-        logoutUri: json["logout_uri"] == null ? undefined : json["logout_uri"],
+        logoutUri:
+            json["logout_uri"] == null
+                ? undefined
+                : ApplicationMetaLaunchUrlFromJSON(json["logout_uri"]),
         logoutMethod:
             json["logout_method"] == null
                 ? undefined
@@ -274,7 +282,7 @@ export function OAuth2ProviderRequestToJSONTyped(
         signing_key: value["signingKey"],
         encryption_key: value["encryptionKey"],
         redirect_uris: (value["redirectUris"] as Array<any>).map(RedirectURIRequestToJSON),
-        logout_uri: value["logoutUri"],
+        logout_uri: ApplicationMetaLaunchUrlToJSON(value["logoutUri"]),
         logout_method: OAuth2ProviderLogoutMethodEnumToJSON(value["logoutMethod"]),
         sub_mode: SubModeEnumToJSON(value["subMode"]),
         issuer_mode: IssuerModeEnumToJSON(value["issuerMode"]),

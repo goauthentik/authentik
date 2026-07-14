@@ -12,6 +12,8 @@
  * Do not edit the class manually.
  */
 
+import type { EmailAddress } from "./EmailAddress";
+import { EmailAddressFromJSON, EmailAddressToJSON } from "./EmailAddress";
 import type { PartialGroup } from "./PartialGroup";
 import { PartialGroupFromJSON } from "./PartialGroup";
 import type { Role } from "./Role";
@@ -93,10 +95,10 @@ export interface User {
     readonly rolesObj: Array<Role> | null;
     /**
      *
-     * @type {string}
+     * @type {EmailAddress}
      * @memberof User
      */
-    email?: string;
+    email?: EmailAddress;
     /**
      * User's avatar, either a http/https URL or a data URI
      * @type {string}
@@ -190,7 +192,7 @@ export function UserFromJSONTyped(json: any, ignoreDiscriminator: boolean): User
         roles: json["roles"] == null ? undefined : json["roles"],
         rolesObj:
             json["roles_obj"] == null ? null : (json["roles_obj"] as Array<any>).map(RoleFromJSON),
-        email: json["email"] == null ? undefined : json["email"],
+        email: json["email"] == null ? undefined : EmailAddressFromJSON(json["email"]),
         avatar: json["avatar"],
         attributes: json["attributes"] == null ? undefined : json["attributes"],
         uid: json["uid"],
@@ -234,7 +236,7 @@ export function UserToJSONTyped(
             value["lastLogin"] == null ? value["lastLogin"] : value["lastLogin"].toISOString(),
         groups: value["groups"],
         roles: value["roles"],
-        email: value["email"],
+        email: EmailAddressToJSON(value["email"]),
         attributes: value["attributes"],
         path: value["path"],
         type: UserTypeEnumToJSON(value["type"]),

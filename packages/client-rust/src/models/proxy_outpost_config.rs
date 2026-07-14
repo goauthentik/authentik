@@ -18,7 +18,7 @@ pub struct ProxyOutpostConfig {
     #[serde(rename = "name")]
     pub name: String,
     #[serde(rename = "internal_host", skip_serializing_if = "Option::is_none")]
-    pub internal_host: Option<String>,
+    pub internal_host: Option<models::ProxyOutpostConfigInternalHost>,
     #[serde(rename = "external_host")]
     pub external_host: String,
     /// Validate SSL Certificates of upstream servers
