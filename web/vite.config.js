@@ -61,6 +61,7 @@ export default defineConfig({
                 },
             },
             {
+                plugins: [inlineCSSPlugin()],
                 test: {
                     setupFiles: ["./test/lit/setup.js"],
 
