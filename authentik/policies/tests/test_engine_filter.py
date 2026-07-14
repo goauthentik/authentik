@@ -2,6 +2,7 @@
 
 from unittest.mock import patch
 
+from django.core.cache import cache
 from django.db import connections
 from django.test import TestCase
 from django.test.utils import CaptureQueriesContext
@@ -229,3 +230,48 @@ class TestFilterPolicyEngine(TestCase):
                         expected,
                         f"{message}: mismatch for user {user.pk}",
                     )
+
+    def test_bulk_cache_prefetch_single_round_trip(self):
+        """The slow (per-user Policy) path must fetch cache entries via a single
+        cache.get_many() call instead of one cache.get() per (binding, user) pair."""
+        pbm = PolicyBindingModel.objects.create()
+        PolicyBinding.objects.create(target=pbm, policy=self.policy_true, order=0)
+
+        with (
+            patch(
+                "authentik.policies.engine.cache.get_many", wraps=cache.get_many
+            ) as mock_get_many,
+            patch("authentik.policies.engine.cache.get", wraps=cache.get) as mock_get,
+        ):
+            engine = FilterPolicyEngine(pbm, self.users)
+            result = set(engine.build().result.values_list("pk", flat=True))
+
+        self.assertEqual(result, {self.user_a.pk, self.user_b.pk, self.user_c.pk})
+        mock_get_many.assert_called_once()
+        mock_get.assert_not_called()
+
+    def test_cache_reused_across_builds(self):
+        """A second FilterPolicyEngine.build() must reuse the PolicyResults cached by
+        the first build (bulk-prefetched via one cache.get_many()) instead of
+        re-evaluating the (slow, per-user) DummyPolicy again."""
+        pbm = PolicyBindingModel.objects.create()
+        PolicyBinding.objects.create(target=pbm, policy=self.policy_true, order=0)
+
+        # First build populates the cache (real DummyPolicy evaluation happens).
+        first = set(FilterPolicyEngine(pbm, self.users).build().result.values_list("pk", flat=True))
+        self.assertEqual(first, {self.user_a.pk, self.user_b.pk, self.user_c.pk})
+
+        with (
+            patch(
+                "authentik.policies.engine.cache.get_many", wraps=cache.get_many
+            ) as mock_get_many,
+            patch(
+                "authentik.policies.dummy.models.DummyPolicy.passes",
+                side_effect=AssertionError("policy should be served from cache, not re-evaluated"),
+            ),
+        ):
+            engine = FilterPolicyEngine(pbm, self.users)
+            second = set(engine.build().result.values_list("pk", flat=True))
+
+        self.assertEqual(second, {self.user_a.pk, self.user_b.pk, self.user_c.pk})
+        mock_get_many.assert_called_once()

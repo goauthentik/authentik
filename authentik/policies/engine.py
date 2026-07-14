@@ -8,7 +8,6 @@ from django.core.cache import cache
 from django.db.models import Count, Q, QuerySet
 from django.http import HttpRequest
 from sentry_sdk import start_span
-from sentry_sdk.tracing import Span
 from structlog.stdlib import BoundLogger, get_logger
 
 from authentik.core.models import Group, User
@@ -102,6 +101,10 @@ class PolicyEngine(_PolicyEngineBase):
         self.__processes: list[PolicyProcessInfo] = []
         self.__expected_result_count = 0
         self.__static_result: PolicyResult | None = None
+        # Populated by FilterPolicyEngine with the result of a single bulk
+        # cache.get_many() call, so _check_cache below can serve every binding for
+        # every candidate user from one dict instead of one cache round trip each.
+        self._prefetched_cache: dict[str, PolicyResult] | None = None
 
     def bindings(self) -> QuerySet[PolicyBinding] | Iterable[PolicyBinding]:
         """Make sure all Policies are their respective classes"""
@@ -110,18 +113,21 @@ class PolicyEngine(_PolicyEngineBase):
     def _check_cache(self, binding: PolicyBinding):
         if not self.use_cache:
             return False
-        # It's a bit silly to time this, but
-        with HIST_POLICIES_EXECUTION_TIME.labels(
-            binding_order=binding.order,
-            binding_target_type=binding.target_type,
-            binding_target_name=binding.target_name,
-            object_type=class_to_path(self.request.obj.__class__),
-            mode="cache_retrieve",
-        ).time():
-            key = cache_key(binding, self.request)
-            cached_policy = cache.get(key, None)
-            if not cached_policy:
-                return False
+        key = cache_key(binding, self.request)
+        if self._prefetched_cache is not None:
+            cached_policy = self._prefetched_cache.get(key)
+        else:
+            # It's a bit silly to time this, but
+            with HIST_POLICIES_EXECUTION_TIME.labels(
+                binding_order=binding.order,
+                binding_target_type=binding.target_type,
+                binding_target_name=binding.target_name,
+                object_type=class_to_path(self.request.obj.__class__),
+                mode="cache_retrieve",
+            ).time():
+                cached_policy = cache.get(key, None)
+        if not cached_policy:
+            return False
         self.logger.debug(
             "P_ENG: Taking result from cache",
             binding=binding,
@@ -186,7 +192,6 @@ class PolicyEngine(_PolicyEngineBase):
                 obj_pk=str(self.__pbm.pk),
             ).time(),
         ):
-            span: Span
             span.set_data("pbm", self.__pbm)
             span.set_data("request", self.request)
             bindings = self.bindings()
@@ -276,9 +281,15 @@ class FilterPolicyEngine(_PolicyEngineBase):
 
     def build(self) -> FilterPolicyEngine:
         """Evaluate bindings against the user queryset"""
-        with start_span(
-            op="authentik.policy.engine_filter.build",
-            name=self.__pbm,
+        with (
+            start_span(
+                op="authentik.policy.engine_filter.build",
+                name=self.__pbm,
+            ),
+            HIST_POLICIES_ENGINE_TOTAL_TIME.labels(
+                obj_type=class_to_path(self.__pbm.__class__),
+                obj_pk=str(self.__pbm.pk),
+            ).time(),
         ):
             bindings = list(self.bindings())
             for binding in bindings:
@@ -310,17 +321,47 @@ class FilterPolicyEngine(_PolicyEngineBase):
             candidates = self.__users
             if self.mode == PolicyEngineMode.MODE_ALL and static_bindings:
                 candidates = self._filter_static(candidates, static_bindings, self.mode)
+            candidates = list(candidates)
+
+            dynamic_bindings = [binding for binding in bindings if binding.policy_id is not None]
+            prefetched_cache = self._prefetch_cache(candidates, dynamic_bindings)
 
             passing_pks = []
-            for user in candidates.iterator():
+            for user in candidates:
                 engine = PolicyEngine(self.__pbm, user, self.__http_request)
                 engine.use_cache = self.use_cache
                 engine.empty_result = self.empty_result
+                engine._prefetched_cache = prefetched_cache
                 engine.build()
                 if engine.passing:
                     passing_pks.append(user.pk)
             self.__result = self.__users.filter(pk__in=passing_pks)
             return self
+
+    def _prefetch_cache(
+        self, candidates: list[User], dynamic_bindings: list[PolicyBinding]
+    ) -> dict[str, PolicyResult]:
+        """Bulk-fetch cached PolicyResults for every (dynamic binding, candidate) pair
+        with a single cache.get_many() call."""
+        if not self.use_cache or not dynamic_bindings or not candidates:
+            return {}
+        keys = []
+        for user in candidates:
+            # Bypass set_http_request()'s context-processor enrichment (geoip etc.) --
+            # cache_key() only reads .http_request and .user, so this produces the
+            # exact same key each per-user PolicyEngine will independently compute.
+            request = PolicyRequest(user)
+            request.http_request = self.__http_request
+            for binding in dynamic_bindings:
+                keys.append(cache_key(binding, request))
+        with HIST_POLICIES_EXECUTION_TIME.labels(
+            binding_order=-1,
+            binding_target_type="bulk",
+            binding_target_name="",
+            object_type=class_to_path(self.__pbm.__class__),
+            mode="cache_retrieve_bulk",
+        ).time():
+            return cache.get_many(keys)
 
     @property
     def result(self) -> QuerySet[User]:
