@@ -17,8 +17,8 @@
  * @export
  */
 export const ProviderTypeEnum = {
-    Apple: "apple",
     Openidconnect: "openidconnect",
+    Apple: "apple",
     Entraid: "entraid",
     Azuread: "azuread",
     Discord: "discord",

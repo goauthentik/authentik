@@ -52663,8 +52663,8 @@ components:
       type: string
     ProviderTypeEnum:
       enum:
-      - apple
       - openidconnect
+      - apple
       - entraid
       - azuread
       - discord
