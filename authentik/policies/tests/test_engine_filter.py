@@ -268,7 +268,7 @@ class TestFilterPolicyEngine(TestCase):
                 for user in all_users:
                     single = PolicyEngine(pbm, user)
                     single.use_cache = False
-                    expected = bool(single.build().result)
+                    expected = single.build().passing
                     self.assertEqual(
                         user.pk in batch_passing,
                         expected,
