@@ -4,7 +4,7 @@ title: Email stage
 
 The Email stage sends a verification or action email from within a flow.
 
-## Overview
+## About the email stage
 
 This stage is used for email verification, account recovery, invitations, and similar flow steps where authentik should send a tokenized link or message to a user.
 
