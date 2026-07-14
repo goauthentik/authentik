@@ -2,58 +2,35 @@
 title: Manage users
 ---
 
-The following topics are for the basic management of users: how to create, modify, delete or deactivate users, and using a recovery email.
+Use these procedures to create, modify, deactivate, delete, and recover users.
 
-[Policies](../../customize/policies/index.md) can be used to further manage how users are authenticated. For example, by default authentik does not require email addresses be unique, but you can use a policy to [enforce unique email addresses](../../customize/policies/expression/unique_email.md).
+[Policies](../../customize/policies/index.md) can be used to further manage how users are authenticated. For example, by default authentik does not require email addresses be unique, but you can use a policy to [enforce unique email addresses](../../customize/policies/types/expression/unique_email.md).
 
 ## Create a user
 
-> If you want to automate user creation, you can do that either by [invitations](./invitations.md), [`user_write` stage](../../add-secure-apps/flows-stages/stages/user_write.md), or [using the API](/api/reference/core-users-create).
+> If you want to automate user creation, you can do that either by [invitations](./invitations.md), [`user_write` stage](../../add-secure-apps/flows-stages/stages/user_write/index.md), or [using the API](/api/reference/core-users-create).
 
-1. In the Admin interface of your authentik instance, select **Directory** > **Users** in the left side menu.
+1. In the Admin interface of your authentik instance, select **Directory** > **Users** in the left menu.
 2. In the **User folders** area, select the folder where you want to create a user.
-3. Click **Create** (for a default user).
+3. Click **New User**, and then select either **Internal User** or **External User**.
 4. Fill in the required fields:
+    - **Username**: This value must be unique across all users.
+    - **Display Name** (_optional_): The display name of the user.
+    - **Email** (_optional_): The email address of the user. For more information, see the [email documentation](../../install-config/email.mdx).
+    - **Active** (_optional_): Whether the user account is active. Selected by default.
+    - **Path**: The path where authentik creates the user. The field is populated with the folder selected in the previous step.
+    - **Attributes**: Custom user attributes in YAML or JSON format. The default value is an empty dictionary.
 
-- **Username**: This value must be unique across your user folders.
-- **Path**: The path where the user will be created. It will be automatically populated with the folder you selected in the previous step.
-
-5. Fill the **_optional_** fields if needed:
-
-- **Name**: The display name of the user.
-- **Email**: The email address of the user. Email addresses are used in [email stages](../../add-secure-apps/flows-stages/stages/email/index.mdx) and to receive [notifications](../../sys-mgmt/events/notifications.md), if configured.
-- **Is active**: Define if the newly created user account is active. Selected by default.
-- **Attributes**: Custom attributes definition for the user, in YAML or JSON format. These attributes can be used to enforce additional prompts on authentication stages or define conditions to enforce specific policies if the current implementation does not fit your use case. The value is an empty dictionary by default.
-
-6. Click **Create**
-
-You should see a confirmation pop-up on the top-right of the screen that the user has been created, and see the new user in the user list. You can directly click the username if you want to [modify your user](./user_basic_operations.md#modify-a-user).
+5. Click **Create**.
+   A confirmation notification appears in the upper-right corner, and the new user appears in the user list. Click the username to [modify the user](#modify-a-user).
 
 :::info
 To create a super-user, you need to add the user to a group that has super-user permissions. For more information, refer to [Create a Group](../groups/manage_groups.mdx#create-a-group).
 :::
 
-## Advanced queries for users:ak-enterprise {#advanced-queries}
+## Advanced queries for users {#advanced-queries}
 
-You can create advanced queries to locate specific users within the list shown under **Directory** > **Users** in the Admin interface. Use the auto-complete in the **Search** field or enter your own queries to return results with greater specificity.
-
-- **Field**: `username`, `path`, `name`, `email`, `path`, `is_active`, `type`, `attributes`
-
-- **Operators**: `=`, `!=`, `~`, `!~`, `startswith`, `not startswith`, `endswith`, `not endswith`, `in`, `not in`
-
-- **Values**: `True`, `False`, `None`, and more
-
-- **Example queries**:
-    - search user by status: `is_active = False`
-    - search user by username: `username = "bob"`
-    - search user by email address: `email = "bob@authentik.company"`
-    - search user by attribute: `attribute.my_custom_attribute = "foo"`
-
-:::info
-
-1. To dismiss the drop-down menu option, click **ESC**.
-2. If the list of operators does not appear in a drop-down menu you will need to manually enter it.
-   :::
+You can use AKQL to filter the user list in **Directory** > **Users**. For the user fields, operators, examples, and keyboard shortcuts, see the [AKQL reference](../../sys-mgmt/akql.mdx).
 
 ## View user details
 
@@ -68,8 +45,8 @@ To view details about a specific user:
 2. To see further details, click any of the other tabs:
     - **Session** shows the active sessions established by the user. If there is any need, you can clean up the connected devices for a user by selecting the device(s) and then clicking **Delete**. This forces the user to authenticate again on the deleted devices.
     - **Groups** allows you to manage the group membership of the user. You can find more details on [groups](../groups/index.mdx).
-    - **User events** displays all the events generated by the user during a session, such as login, logout, application authorisation, password reset, user info update, etc.
-    - **Explicit consent** lists all the permissions the user has given explicitly to an application. Entries will only appear if the user is validating an [explicit consent flow in an OAuth2 provider](../../add-secure-apps/providers/oauth2/index.mdx). If you want to delete the explicit consent (because the application is requiring new permissions, or the user has explicitly asked to reset his consent on third-party apps), select the applications and click **Delete**. The user will be asked to again give explicit consent to share information with the application.
+    - **User events** displays all the events generated by the user during a session, such as login, logout, application authorization, password reset, user info update, etc.
+    - **Explicit consent** lists permissions that the user explicitly granted to an application. Entries appear only when the user validates an [explicit consent flow in an OAuth2 provider](../../add-secure-apps/providers/oauth2/index.mdx). To reset consent because an application requires new permissions or the user requested a reset, select the applications and click **Delete**. The application prompts the user to grant consent again.
     - **OAuth Refresh Tokens** lists all the OAuth tokens currently distributed. You can remove the tokens by selecting the applications and then clicking **Delete**.
     - **MFA Authenticators** shows all the authenticators that the user has registered to their profile. You can remove the tokens if the user has lost their authenticator and wants to enroll a new one.
 
@@ -103,7 +80,7 @@ Users also inherit roles from the groups they belong to. The **Roles** tab has t
 
 ## Bind a user to an application
 
-These bindings control which users can access an application, and whether or not the application is visible in the user's **My applications** page. If no bindings for an application are defined, this means that all users and groups can access the application.
+These bindings control which users can access an application, and whether or not the application is visible in the user's **Application Dashboard** page. If no bindings for an application are defined, this means that all users and groups can access the application.
 
 For instructions refer to [Manage applications](../../add-secure-apps/applications/manage_apps.mdx#bind-a-user-or-group-to-an-application).
 
@@ -116,9 +93,11 @@ If a user has lost their credentials and needs to recover their account, there a
 
 Both options require you to configure a recovery flow and set it as the **Default recovery flow** for the active brand.
 
+If the user only needs their password reset, see these [instructions](#reset-a-password).
+
 ### Configure a recovery flow
 
-To get started, you can [import](../../add-secure-apps/flows-stages/flow/index.md#import-or-export-a-flow) this example flow: [Recovery with email verification flow](../../add-secure-apps/flows-stages/flow/examples/flows.md#recovery-with-email-verification)
+To get started, you can [import](../../add-secure-apps/flows-stages/flow/index.md#import-or-export-a-flow) this example flow: [Recovery with email verification flow](../../add-secure-apps/flows-stages/flow/examples/flows.md#recovery-with-email-and-mfa-verification)
 
 Then, set this as the default recovery flow for the active brand:
 
@@ -138,15 +117,15 @@ The example recovery flow includes an email stage. However, if you're manually s
 2. Click the name of the user to display the full User details page.
 3. To generate a recovery link, which you can then send to the user, click **Create recovery link**.
 
-A pop-up will appear on your browser with the link for you to copy and to send to the user.
+A dialog displays the recovery link. Copy the link and send it to the user.
 
 ### 2. Email a recovery link
 
 :::info Email stage required
-This option is only available if the default recovery flow has an [Email Stage](../../add-secure-apps/flows-stages/stages/email/index.mdx) bound to it. The example recovery flow includes an email stage.
+This option is only available if the recovery flow has an [Email Stage](../../add-secure-apps/flows-stages/stages/email/index.md) bound to it. The example recovery flow includes an email stage.
 :::
 
-You can send a link with the URL for the user to reset their password via Email. This option will only work if you have [configured email](../../install-config/email.mdx) and set an email address for the user.
+You can email a password-reset link to the user. This option requires [configured email](../../install-config/email.mdx) and an email address on the user account.
 
 1. In the Admin interface, navigate to **Directory** > **Users** to display all users.
 2. Click the name of the user to display the full User details page.
@@ -154,24 +133,30 @@ You can send a link with the URL for the user to reset their password via Email.
 
 If the user does not receive the email, check if the mail server parameters [are properly configured](../../troubleshooting/emails.md).
 
-## Reset the password for the user
+## Reset a password
 
-As an Admin, you can simply reset the password for the user.
+### Administrator resets a user's password
+
+As an administrator, you can reset a user's password.
 
 1. In the Admin interface, navigate to **Directory** > **Users** to display all users.
 2. Either click the name of the user to display the full User details page, or click the chevron beside their name to expand the options.
 3. To reset the user's password, click **Reset password**, and then define the new value.
 
-## Deactivate or Delete user
+### User resets their password
 
-### To deactivate a user:
+If a [Recovery flow](#configure-a-recovery-flow) has been applied to the brand, users can reset their own passwords in the [User interface](../user/user-interface.mdx).
+
+## Deactivate or delete a user
+
+### Deactivate a user
 
 1. Go into the user list or detail, and click **Deactivate**.
 2. Review the changes and click **Update**.
 
 The active sessions are revoked and the authentication of the user blocked. You can reactivate the account by following the same procedure.
 
-### To delete a user:
+### Delete a user
 
 :::caution
 This deletion is not reversible, so be sure you do not need to recover any identity data of the user.
@@ -185,7 +170,7 @@ The user list refreshes and no longer displays the removed users.
 
 ## Impersonate a user
 
-With authentik, an Admin can impersonate a user, meaning that the Admin temporarily assumes the identity of the user.
+An administrator can impersonate a user, temporarily assuming that user's identity.
 
 1. In the Admin interface, navigate to **Directory** > **Users** to display all users.
 2. Click the name of the user to display the full User details page.
@@ -193,9 +178,9 @@ With authentik, an Admin can impersonate a user, meaning that the Admin temporar
 4. At the prompt, provide a reason why you are impersonating this user, and then click **Impersonate**.
 
 :::info
-An Admin can globally enable or disable impersonation in the [System Settings](../../sys-mgmt/settings.md#impersonation). By default, this option is set to true, meaning all users can be impersonated.
+An administrator can globally enable or disable impersonation in the [system settings](../../sys-mgmt/settings.md#impersonation). By default, this option is enabled, meaning all users can be impersonated.
 
-An Admin can also configure whether inputting a reason for impersonation is required in the [System Settings](../../sys-mgmt/settings.md#require-reason-for-impersonation).
+An administrator can also require a reason for impersonation in the [system settings](../../sys-mgmt/settings.md#require-reason-for-impersonation).
 :::
 
 ## Export users :ak-enterprise
@@ -207,7 +192,7 @@ You can export your authentik instance's user data to a CSV file. To generate a 
 3. Set a [search query](#advanced-queries) as well as the ordering for the data export.
 4. Click **Export** above the event list.
 5. Confirm the export parameters in the confirmation dialog.
-6. The export is processed in the background. When it's ready, you will receive a notification in the Admin interface's notification area.
+6. authentik processes the export in the background and sends a notification when it is ready.
 7. In the notification, click **Download**.
 
 To review, download, or delete past data exports, navigate to **Events** > **Data Exports** in the Admin interface.

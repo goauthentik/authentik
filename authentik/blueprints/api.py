@@ -1,22 +1,72 @@
 """Serializer mixin for managed models"""
 
+from json import JSONDecodeError, loads
+from typing import cast
+
+from django.conf import settings
+from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.utils.translation import gettext_lazy as _
 from drf_spectacular.utils import extend_schema, inline_serializer
 from rest_framework.decorators import action
-from rest_framework.exceptions import ValidationError
-from rest_framework.fields import CharField, DateTimeField
+from rest_framework.exceptions import PermissionDenied, ValidationError
+from rest_framework.fields import (
+    BooleanField,
+    CharField,
+    DateTimeField,
+    FileField,
+)
+from rest_framework.parsers import MultiPartParser
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.serializers import ListSerializer
 from rest_framework.viewsets import ModelViewSet
 
+from authentik.api.validation import validate
 from authentik.blueprints.models import BlueprintInstance
+from authentik.blueprints.v1.common import Blueprint
 from authentik.blueprints.v1.importer import Importer
 from authentik.blueprints.v1.oci import OCI_PREFIX
 from authentik.blueprints.v1.tasks import apply_blueprint, blueprints_find_dict
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import JSONDictField, ModelSerializer, PassiveSerializer
+from authentik.core.models import User
+from authentik.events.logs import LogEventSerializer
 from authentik.rbac.decorators import permission_required
+
+
+def get_blueprints():
+    if settings.DEBUG:
+        return blueprints_find_dict()
+    return blueprints_find_dict.send().get_result(block=True)
+
+
+class BlueprintUploadSerializer(PassiveSerializer):
+    """Serializer to upload file"""
+
+    file = FileField(required=False)
+    path = CharField(required=False)
+    context = CharField(required=False, allow_blank=True)
+
+    def validate_path(self, path: str) -> str:
+        """Ensure the path (if set) specified is retrievable"""
+        if path == "":
+            return path
+        files: list[dict] = get_blueprints()
+        if path not in [file["path"] for file in files]:
+            raise ValidationError(_("Blueprint file does not exist"))
+        return path
+
+    def validate_context(self, context: str) -> dict:
+        """Parse context as a JSON object"""
+        if not context:
+            return {}
+        try:
+            parsed = loads(context)
+        except JSONDecodeError as exc:
+            raise ValidationError(_("Context must be valid JSON")) from exc
+        if not isinstance(parsed, dict):
+            raise ValidationError(_("Context must be a JSON object"))
+        return parsed
 
 
 class ManagedSerializer:
@@ -39,7 +89,7 @@ class BlueprintInstanceSerializer(ModelSerializer):
         """Ensure the path (if set) specified is retrievable"""
         if path == "" or path.startswith(OCI_PREFIX):
             return path
-        files: list[dict] = blueprints_find_dict.send().get_result(block=True)
+        files: list[dict] = get_blueprints()
         if path not in [file["path"] for file in files]:
             raise ValidationError(_("Blueprint file does not exist"))
         return path
@@ -88,6 +138,33 @@ class BlueprintInstanceSerializer(ModelSerializer):
         }
 
 
+def check_blueprint_perms(blueprint: Blueprint, user: User, explicit_action: str | None = None):
+    """Check for individual permissions for each model in a blueprint"""
+    for entry in blueprint.iter_entries():
+        full_model = entry.get_model(blueprint)
+        app, __, model = full_model.partition(".")
+        perms = [
+            f"{app}.add_{model}",
+            f"{app}.change_{model}",
+            f"{app}.delete_{model}",
+        ]
+        if explicit_action:
+            perms = [f"{app}.{explicit_action}_{model}"]
+        for perm in perms:
+            if not user.has_perm(perm):
+                raise PermissionDenied(
+                    {
+                        entry.id: _(
+                            "User lacks permission to create {model}".format_map(
+                                {
+                                    "model": full_model,
+                                }
+                            )
+                        )
+                    }
+                )
+
+
 class BlueprintInstanceViewSet(UsedByMixin, ModelViewSet):
     """Blueprint instances"""
 
@@ -96,6 +173,12 @@ class BlueprintInstanceViewSet(UsedByMixin, ModelViewSet):
     search_fields = ["name", "path"]
     filterset_fields = ["name", "path"]
     ordering = ["name"]
+
+    class BlueprintImportResultSerializer(PassiveSerializer):
+        """Logs of an attempted blueprint import"""
+
+        logs = LogEventSerializer(many=True, read_only=True)
+        success = BooleanField(read_only=True)
 
     @extend_schema(
         responses={
@@ -115,7 +198,7 @@ class BlueprintInstanceViewSet(UsedByMixin, ModelViewSet):
     @action(detail=False, pagination_class=None, filter_backends=[])
     def available(self, request: Request) -> Response:
         """Get blueprints"""
-        files: list[dict] = blueprints_find_dict.send().get_result(block=True)
+        files: list[dict] = get_blueprints()
         return Response(files)
 
     @permission_required("authentik_blueprints.view_blueprintinstance")
@@ -131,3 +214,43 @@ class BlueprintInstanceViewSet(UsedByMixin, ModelViewSet):
         blueprint = self.get_object()
         apply_blueprint.send_with_options(args=(blueprint.pk,), rel_obj=blueprint)
         return self.retrieve(request, *args, **kwargs)
+
+    @extend_schema(
+        request={"multipart/form-data": BlueprintUploadSerializer},
+        responses={200: BlueprintImportResultSerializer},
+    )
+    @action(url_path="import", detail=False, methods=["POST"], parser_classes=(MultiPartParser,))
+    @validate(
+        BlueprintUploadSerializer,
+    )
+    def import_(self, request: Request, body: BlueprintUploadSerializer) -> Response:
+        """Import blueprint from .yaml file and apply it once, without creating an instance"""
+        string_contents = ""
+        if body.validated_data.get("file"):
+            file = cast(InMemoryUploadedFile, body.validated_data["file"])
+            string_contents = file.read().decode()
+        elif body.validated_data.get("path"):
+            string_contents = BlueprintInstance(
+                path=body.validated_data.get("path")
+            ).retrieve_file()
+        else:
+            raise ValidationError("Either path or file must be set")
+        context = body.validated_data.get("context") or {}
+        importer = Importer.from_string(string_contents, context)
+
+        check_blueprint_perms(importer.blueprint, request.user)
+
+        valid, logs = importer.validate()
+
+        import_response = self.BlueprintImportResultSerializer(
+            data={
+                "logs": [LogEventSerializer(log).data for log in logs],
+                "success": valid,
+            }
+        )
+        import_response.is_valid(raise_exception=True)
+
+        if valid:
+            import_response.initial_data["success"] = importer.apply()
+            import_response.is_valid()
+        return Response(data=import_response.initial_data, status=200)

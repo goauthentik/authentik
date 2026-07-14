@@ -4,7 +4,6 @@ from django.db.models.signals import post_save, pre_delete
 from django.dispatch import receiver
 from django.http import HttpRequest
 from django.urls import reverse
-from django.utils import timezone
 from structlog.stdlib import get_logger
 
 from authentik.core.models import AuthenticatedSession, User
@@ -47,8 +46,6 @@ def handle_saml_iframe_pre_user_logout(
         SAMLSession.objects.filter(
             session=auth_session,
             user=user,
-            expires__gt=timezone.now(),
-            expiring=True,
             provider__logout_method=SAMLLogoutMethods.FRONTCHANNEL_IFRAME,
         )
         .exclude(provider__sls_url="")
@@ -78,6 +75,7 @@ def handle_saml_iframe_pre_user_logout(
                 name_id_format=session.name_id_format,
                 session_index=session.session_index,
                 relay_state=relay_state,
+                issuer=session.issuer,
             )
 
             if session.provider.sls_binding == SAMLBindings.POST:
@@ -137,8 +135,6 @@ def handle_flow_pre_user_logout(
         SAMLSession.objects.filter(
             session=auth_session,
             user=user,
-            expires__gt=timezone.now(),
-            expiring=True,
             provider__logout_method=SAMLLogoutMethods.FRONTCHANNEL_NATIVE,
         )
         .exclude(provider__sls_url="")
@@ -168,6 +164,7 @@ def handle_flow_pre_user_logout(
                 name_id_format=session.name_id_format,
                 session_index=session.session_index,
                 relay_state=relay_state,
+                issuer=session.issuer,
             )
 
             if session.provider.sls_binding == SAMLBindings.POST:
@@ -229,6 +226,7 @@ def user_session_deleted_saml_logout(sender, instance: AuthenticatedSession, **_
             name_id=saml_session.name_id,
             name_id_format=saml_session.name_id_format,
             session_index=saml_session.session_index,
+            issuer=saml_session.issuer,
         )
 
 
@@ -262,4 +260,5 @@ def user_deactivated_saml_logout(sender, instance: User, **kwargs):
             name_id=saml_session.name_id,
             name_id_format=saml_session.name_id_format,
             session_index=saml_session.session_index,
+            issuer=saml_session.issuer,
         )

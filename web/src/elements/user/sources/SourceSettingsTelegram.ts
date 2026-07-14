@@ -2,7 +2,7 @@ import "#elements/Spinner";
 
 import { loadTelegramWidget, TelegramUserResponse } from "../../../flow/sources/telegram/utils";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { EVENT_REFRESH } from "#common/constants";
 import { parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
 import { MessageLevel } from "#common/messages";
@@ -23,7 +23,7 @@ export class SourceSettingsTelegram extends BaseUserSettings {
     connectBtnRef = createRef();
 
     protected disconnectSource(): Promise<void> {
-        return new SourcesApi(DEFAULT_CONFIG)
+        return aki(SourcesApi)
             .sourcesUserConnectionsTelegramDestroy({
                 id: this.connectionPk,
             })
@@ -74,7 +74,7 @@ export class SourceSettingsTelegram extends BaseUserSettings {
             botUsername,
             requestMessageAccess,
             (user: TelegramUserResponse) => {
-                new SourcesApi(DEFAULT_CONFIG)
+                aki(SourcesApi)
                     .sourcesTelegramConnectUserCreate({
                         slug: this.objectId,
                         telegramAuthRequest: {

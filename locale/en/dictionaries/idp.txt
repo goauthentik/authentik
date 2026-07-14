@@ -4,3 +4,5 @@ Yubi
 Yubikey
 Yubikeys
 mycorp
+mocksaml
+VSCHAR

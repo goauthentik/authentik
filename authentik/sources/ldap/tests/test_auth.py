@@ -33,13 +33,17 @@ class LDAPSyncTests(TestCase):
 
     def test_auth_direct_user_ad(self):
         """Test direct auth"""
+        self.source.base_dn = "dc=t,dc=goauthentik,dc=io"
+        self.source.additional_user_dn = ""
+        self.source.additional_group_dn = ""
+        self.source.save()
         self.source.user_property_mappings.set(
             LDAPSourcePropertyMapping.objects.filter(
                 Q(managed__startswith="goauthentik.io/sources/ldap/default-")
                 | Q(managed__startswith="goauthentik.io/sources/ldap/ms-")
             )
         )
-        raw_conn = mock_ad_connection(LDAP_PASSWORD)
+        raw_conn = mock_ad_connection()
         bind_mock = Mock(wraps=raw_conn.bind)
         raw_conn.bind = bind_mock
         connection = MagicMock(return_value=raw_conn)
@@ -47,16 +51,16 @@ class LDAPSyncTests(TestCase):
             user_sync = UserLDAPSynchronizer(self.source, Task())
             user_sync.sync_full()
 
-            user = User.objects.get(username="user0_sn")
+            user = User.objects.get(username="erin.h")
             # auth_user_by_bind = Mock(return_value=user)
             backend = LDAPBackend()
             self.assertEqual(
-                backend.authenticate(None, username="user0_sn", password=LDAP_PASSWORD),
+                backend.authenticate(None, username="erin.h", password=LDAP_PASSWORD),
                 user,
             )
             connection.assert_called_with(
                 connection_kwargs={
-                    "user": "cn=user0,ou=foo,ou=users,dc=goauthentik,dc=io",
+                    "user": "CN=Erin M. Hagens,OU=ak-test,DC=t,DC=goauthentik,DC=io",
                     "password": LDAP_PASSWORD,
                 }
             )
@@ -64,18 +68,22 @@ class LDAPSyncTests(TestCase):
 
     def test_auth_synced_user_ad(self):
         """Test Cached auth"""
+        self.source.base_dn = "dc=t,dc=goauthentik,dc=io"
+        self.source.additional_user_dn = ""
+        self.source.additional_group_dn = ""
+        self.source.save()
         self.source.user_property_mappings.set(
             LDAPSourcePropertyMapping.objects.filter(
                 Q(managed__startswith="goauthentik.io/sources/ldap/default-")
                 | Q(managed__startswith="goauthentik.io/sources/ldap/ms-")
             )
         )
-        connection = MagicMock(return_value=mock_ad_connection(LDAP_PASSWORD))
+        connection = MagicMock(return_value=mock_ad_connection())
         with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
             user_sync = UserLDAPSynchronizer(self.source, Task())
             user_sync.sync_full()
 
-            user = User.objects.get(username="user0_sn")
+            user = User.objects.get(username="erin.h")
             auth_user_by_bind = Mock(return_value=user)
             with patch(
                 "authentik.sources.ldap.auth.LDAPBackend.auth_user_by_bind",
@@ -83,7 +91,7 @@ class LDAPSyncTests(TestCase):
             ):
                 backend = LDAPBackend()
                 self.assertEqual(
-                    backend.authenticate(None, username="user0_sn", password=LDAP_PASSWORD),
+                    backend.authenticate(None, username="erin.h", password=LDAP_PASSWORD),
                     user,
                 )
 

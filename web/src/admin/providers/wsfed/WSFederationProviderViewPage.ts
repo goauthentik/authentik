@@ -1,7 +1,7 @@
 import "#admin/providers/RelatedApplicationButton";
 import "#admin/providers/wsfed/WSFederationProviderForm";
-import "#admin/rbac/ObjectPermissionsPage";
-import "#components/events/ObjectChangelog";
+import "#admin/rbac/ak-rbac-object-permission-page";
+import "#admin/events/ObjectChangelog";
 import "#elements/CodeMirror";
 import "#elements/EmptyState";
 import "#elements/Tabs";
@@ -9,7 +9,7 @@ import "#elements/buttons/ActionButton/index";
 import "#elements/buttons/ModalButton";
 import "#elements/buttons/SpinnerButton/index";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { EVENT_REFRESH } from "#common/constants";
 import { MessageLevel } from "#common/messages";
 
@@ -26,8 +26,8 @@ import {
     CoreApi,
     CoreUsersListRequest,
     CryptoApi,
+    ModelEnum,
     ProvidersApi,
-    RbacPermissionsAssignedByRolesListModelEnum,
     SAMLMetadata,
     User,
     WSFederationProvider,
@@ -94,7 +94,7 @@ export class WSFederationProviderViewPage extends AKElement {
     }
 
     fetchPreview(): void {
-        new ProvidersApi(DEFAULT_CONFIG)
+        aki(ProvidersApi)
             .providersWsfedPreviewUserRetrieve({
                 id: this.provider?.pk || 0,
                 forUser: this.previewUser?.pk,
@@ -105,7 +105,7 @@ export class WSFederationProviderViewPage extends AKElement {
     }
 
     fetchCertificate(kpUuid: string) {
-        return new CryptoApi(DEFAULT_CONFIG).cryptoCertificatekeypairsRetrieve({ kpUuid });
+        return aki(CryptoApi).cryptoCertificatekeypairsRetrieve({ kpUuid });
     }
 
     fetchSigningCertificate(kpUuid: string) {
@@ -116,15 +116,17 @@ export class WSFederationProviderViewPage extends AKElement {
     }
 
     fetchProvider(id: number) {
-        new ProvidersApi(DEFAULT_CONFIG).providersWsfedRetrieve({ id }).then((prov) => {
-            this.provider = prov;
-            // Clear existing signing certificate if the provider has none
-            if (!this.provider.signingKp) {
-                this.signer = null;
-            } else {
-                this.fetchSigningCertificate(this.provider.signingKp);
-            }
-        });
+        aki(ProvidersApi)
+            .providersWsfedRetrieve({ id })
+            .then((prov) => {
+                this.provider = prov;
+                // Clear existing signing certificate if the provider has none
+                if (!this.provider.signingKp) {
+                    this.signer = null;
+                } else {
+                    this.fetchSigningCertificate(this.provider.signingKp);
+                }
+            });
     }
 
     protected override willUpdate(changedProperties: PropertyValues<this>) {
@@ -240,23 +242,20 @@ export class WSFederationProviderViewPage extends AKElement {
                     class="pf-c-page__main-section pf-m-no-padding-mobile"
                 >
                     <div class="pf-c-card">
-                        <div class="pf-c-card__body">
-                            <ak-object-changelog
-                                targetModelPk=${this.provider?.pk || ""}
-                                targetModelName=${this.provider?.metaModelName || ""}
-                            >
-                            </ak-object-changelog>
-                        </div>
+                        <ak-object-changelog
+                            targetModelPk=${this.provider?.pk || ""}
+                            targetModelName=${this.provider?.metaModelName || ""}
+                        >
+                        </ak-object-changelog>
                     </div>
                 </div>
                 <ak-rbac-object-permission-page
-                    class="pf-c-page__main-section pf-m-no-padding-mobile"
                     role="tabpanel"
                     tabindex="0"
                     slot="page-permissions"
                     id="page-permissions"
                     aria-label="${msg("Permissions")}"
-                    model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikProvidersWsFederationWsfederationprovider}
+                    model=${ModelEnum.AuthentikProvidersWsFederationWsfederationprovider}
                     objectPk=${this.provider.pk}
                 ></ak-rbac-object-permission-page>
             </ak-tabs>
@@ -267,13 +266,7 @@ export class WSFederationProviderViewPage extends AKElement {
         if (!this.provider) {
             return nothing;
         }
-        return html`${
-            this.provider?.assignedApplicationName
-                ? nothing
-                : html`<div slot="header" class="pf-c-banner pf-m-warning">
-                      ${msg("Warning: Provider is not used by an Application.")}
-                  </div>`
-        }
+        return html`${this.provider?.assignedApplicationName ? nothing : html`<div slot="header" class="pf-c-banner pf-m-warning">${msg("Warning: Provider is not used by an Application.")}</div>`}
             <div class="pf-c-page__main-section pf-m-no-padding-mobile pf-l-grid pf-m-gutter">
                 <div class="pf-c-card pf-l-grid__item pf-m-12-col">
                     <div class="pf-c-card__body">
@@ -293,7 +286,7 @@ export class WSFederationProviderViewPage extends AKElement {
                     </div>
                     <div class="pf-c-card__footer">
                         <ak-forms-modal>
-                            <span slot="submit">${msg("Update")}</span>
+                            <span slot="submit">${msg("Save Changes")}</span>
                             <span slot="header">${msg("Update WS-Federation Provider")}</span>
                             <ak-provider-wsfed-form slot="form" .instancePk=${this.provider.pk || 0}>
                             </ak-provider-wsfed-form>
@@ -360,7 +353,7 @@ export class WSFederationProviderViewPage extends AKElement {
                       id="page-metadata"
                       aria-label="${msg("Metadata")}"
                       @activate=${() => {
-                          new ProvidersApi(DEFAULT_CONFIG)
+                          aki(ProvidersApi)
                               .providersWsfedMetadataRetrieve({
                                   id: this.provider?.pk || 0,
                               })
@@ -436,9 +429,7 @@ export class WSFederationProviderViewPage extends AKElement {
                                         if (query !== undefined) {
                                             args.search = query;
                                         }
-                                        const users = await new CoreApi(
-                                            DEFAULT_CONFIG,
-                                        ).coreUsersList(args);
+                                        const users = await aki(CoreApi).coreUsersList(args);
                                         return users.results;
                                     }}
                                     .renderElement=${(user: User): string => {

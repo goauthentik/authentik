@@ -7,7 +7,7 @@ import { EVENT_REFRESH } from "#common/constants";
 import { APIError, parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
 import { groupBy } from "#common/utils";
 
-import { AkControlElement } from "#elements/AkControlElement";
+import { AKControlElement } from "#elements/ControlElement";
 import { PreventFormSubmit } from "#elements/forms/helpers";
 import type {
     GroupedOptions,
@@ -30,13 +30,14 @@ export interface ISearchSelectBase<T> {
     query?: string;
     objects?: T[];
     selectedObject: T | null;
-    name?: string;
+    name?: string | null;
     placeholder: string | null;
     emptyOption?: string;
+    actionLabel?: string;
 }
 
 export abstract class SearchSelectBase<T>
-    extends AkControlElement<string>
+    extends AKControlElement<string>
     implements ISearchSelectBase<T>
 {
     static styles = [];
@@ -128,8 +129,8 @@ export abstract class SearchSelectBase<T>
      * Used to inform the form of the name of the object
      * @property
      */
-    @property()
-    public name?: string;
+    @property({ type: String })
+    public name: string | null = null;
 
     /**
      * A unique ID to associate with the input and label.
@@ -153,7 +154,7 @@ export abstract class SearchSelectBase<T>
      * @attr
      */
     @property({ type: String })
-    public placeholder: string | null = msg("Select an object.");
+    public placeholder: string | null = msg("Select an object...");
 
     /**
      * A textual string representing "The user has affirmed they want to leave the selection blank."
@@ -163,6 +164,17 @@ export abstract class SearchSelectBase<T>
      */
     @property({ type: String })
     public emptyOption?: string = "---------";
+
+    /**
+     * An optional label for a pinned action item rendered at the end of the dropdown, e.g.
+     * "Create new...". Activating it fires an `ak-search-select-action` event
+     * instead of changing the selection.
+     *
+     * @property
+     * @attr
+     */
+    @property({ type: String, attribute: "action-label" })
+    public actionLabel?: string;
 
     //#endregion
 
@@ -207,7 +219,7 @@ export abstract class SearchSelectBase<T>
         return String(this.value(this.selectedObject ?? null) ?? "");
     }
 
-    public json() {
+    public toJSON() {
         return this.toForm();
     }
 
@@ -404,6 +416,7 @@ export abstract class SearchSelectBase<T>
             name=${ifPresent(this.name)}
             placeholder=${ifPresent(this.placeholder)}
             emptyOption=${ifPresent(this.blankable ? this.emptyOption : undefined)}
+            action-label=${ifPresent(this.actionLabel)}
             @input=${this.#searchListener}
             @change=${this.onSelect}
         ></ak-search-select-view> `;

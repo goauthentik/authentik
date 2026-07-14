@@ -1,21 +1,17 @@
 import "#elements/Tabs";
-import "#components/events/ObjectChangelog";
-import "#admin/rbac/ObjectPermissionsPage";
+import "#admin/events/ObjectChangelog";
+import "#admin/rbac/ak-rbac-object-permission-page";
 import "#admin/endpoints/connectors/agent/EnrollmentTokenListPage";
 import "#admin/endpoints/connectors/agent/AgentConnectorSetup";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { APIError, parseAPIResponseError } from "#common/errors/network";
 
 import { AKElement } from "#elements/Base";
 
 import { setPageDetails } from "#components/ak-page-navbar";
 
-import {
-    AgentConnector,
-    EndpointsApi,
-    RbacPermissionsAssignedByRolesListModelEnum,
-} from "@goauthentik/api";
+import { AgentConnector, EndpointsApi, ModelEnum } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { CSSResult, html, nothing, PropertyValues } from "lit";
@@ -41,7 +37,7 @@ export class AgentConnectorViewPage extends AKElement {
     static styles: CSSResult[] = [PFCard, PFPage, PFGrid, PFButton, PFDescriptionList];
 
     protected fetchDevice(id: string) {
-        new EndpointsApi(DEFAULT_CONFIG)
+        aki(EndpointsApi)
             .endpointsAgentsConnectorsRetrieve({ connectorUuid: id })
             .then((conn) => {
                 this.connector = conn;
@@ -109,13 +105,11 @@ export class AgentConnectorViewPage extends AKElement {
                 class="pf-c-page__main-section pf-m-no-padding-mobile"
             >
                 <div class="pf-c-card">
-                    <div class="pf-c-card__body">
-                        <ak-object-changelog
-                            targetModelPk=${this.connector?.connectorUuid || ""}
-                            targetModelName=${this.connector?.metaModelName || ""}
-                        >
-                        </ak-object-changelog>
-                    </div>
+                    <ak-object-changelog
+                        targetModelPk=${this.connector?.connectorUuid || ""}
+                        targetModelName=${this.connector?.metaModelName || ""}
+                    >
+                    </ak-object-changelog>
                 </div>
             </div>
             <ak-rbac-object-permission-page
@@ -124,7 +118,7 @@ export class AgentConnectorViewPage extends AKElement {
                 slot="page-permissions"
                 id="page-permissions"
                 aria-label="${msg("Permissions")}"
-                model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikEndpointsConnectorsAgentAgentconnector}
+                model=${ModelEnum.AuthentikEndpointsConnectorsAgentAgentconnector}
                 objectPk=${this.connector.connectorUuid!}
             ></ak-rbac-object-permission-page>
         </ak-tabs> `;

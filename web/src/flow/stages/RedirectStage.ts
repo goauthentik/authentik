@@ -3,7 +3,11 @@ import "#flow/components/ak-flow-card";
 import { SlottedTemplateResult } from "#elements/types";
 
 import { BaseStage } from "#flow/stages/base";
-import { multiTabOrchestrateResume } from "#flow/tabs/orchestrator";
+import {
+    multiTabOrchestrateLeave,
+    multiTabOrchestrateResume,
+    suppressNextExitForSameOriginNavigation,
+} from "#flow/tabs/orchestrator";
 
 import { FlowChallengeResponseRequest, RedirectChallenge } from "@goauthentik/api";
 
@@ -64,24 +68,30 @@ export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeRes
         this.redirect();
     }
 
-    isForeignURL() {
-        try {
-            const destination = new URL(this.challenge!.to, window.origin);
-            return destination.origin === window.origin;
-        } catch {
-            return true;
-        }
-    }
-
     async redirect() {
         console.debug(
             "authentik/stages/redirect: redirecting to url from server",
             this.challenge?.to,
         );
 
-        if (this.isForeignURL()) {
+        // `final_redirect` marks the terminal redirect out of a completed flow. Only then do we
+        // resume other continuous-login tabs; intermediate hops (source stages, the same-origin
+        // SAML resume re-entry) skip orchestration entirely.
+        const finalRedirect = this.challenge?.finalRedirect ?? false;
+        if (finalRedirect) {
             await multiTabOrchestrateResume();
         }
+
+        // A foreign final redirect means we're leaving authentik for good, so signal our exit.
+        // Same-origin navigation suppress it, otherwise we'd look like we left mid-flow.
+        const url = new URL(this.challenge!.to, window.location.origin);
+
+        if (finalRedirect && url.origin !== window.location.origin) {
+            multiTabOrchestrateLeave();
+        } else {
+            suppressNextExitForSameOriginNavigation();
+        }
+
         window.location.assign(this.challenge!.to);
         this.startedRedirect = true;
     }
@@ -118,14 +128,15 @@ export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeRes
                     <p>${msg("You're about to be redirected to the following URL.")}</p>
                     <code>${this.getURL()}</code>
                 </div>
-                <fieldset class="pf-c-form__group pf-m-action">
+                <fieldset class="ak-c-fieldset pf-c-form__group pf-m-action">
                     <legend class="sr-only">${msg("Form actions")}</legend>
                     <a
                         type="submit"
                         class="pf-c-button pf-m-primary pf-m-block"
                         href=${this.challenge.to}
-                        @click=${() => {
-                            this.startedRedirect = true;
+                        @click=${(ev: Event) => {
+                            ev.preventDefault();
+                            this.redirect();
                         }}
                     >
                         ${msg("Follow redirect")}

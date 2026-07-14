@@ -1,9 +1,9 @@
 services:
   postgresql:
     container_name: postgres
-    image: docker.io/library/postgres:16
+    image: docker.io/library/postgres:18
     volumes:
-      - db-data:/var/lib/postgresql/data
+      - db-data:/var/lib/postgresql
     environment:
       POSTGRES_HOST_AUTH_METHOD: trust
       POSTGRES_DB: authentik
@@ -30,6 +30,15 @@ services:
     ports:
       - 127.0.0.1:8969:8969
     restart: always
+  diff:
+    image: docker.io/openapitools/openapi-diff:2.1.7
+    # Only run when explicitly invoked (e.g. `make gen-diff`), never on `docker compose up`.
+    profiles:
+      - diff
+    restart: no
+    network_mode: none
+    volumes:
+      - ../:/local
 
 volumes:
   db-data:

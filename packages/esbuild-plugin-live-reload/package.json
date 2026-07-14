@@ -1,6 +1,6 @@
 {
     "name": "@goauthentik/esbuild-plugin-live-reload",
-    "version": "1.6.1",
+    "version": "2.0.2",
     "description": "ESBuild + browser refresh. Build completes, page reloads.",
     "license": "MIT",
     "repository": {
@@ -34,6 +34,7 @@
             "types": "./out/client/index.d.ts",
             "import": "./client/index.js"
         },
+        "./client/types": "./client/types.d.ts",
         "./plugin": {
             "types": "./out/plugin/index.d.ts",
             "import": "./plugin/index.js"
@@ -43,25 +44,25 @@
         "find-free-ports": "^3.1.1"
     },
     "devDependencies": {
-        "@eslint/js": "^9.39.3",
-        "@goauthentik/eslint-config": "../eslint-config",
-        "@goauthentik/prettier-config": "../prettier-config",
-        "@goauthentik/tsconfig": "../tsconfig",
-        "@types/node": "^25.3.0",
-        "@typescript-eslint/eslint-plugin": "^8.56.1",
-        "@typescript-eslint/parser": "^8.56.1",
-        "esbuild": "^0.27.3",
-        "eslint": "^9.39.3",
+        "@eslint/js": "^9.39.4",
+        "@goauthentik/eslint-config": "link:../eslint-config",
+        "@goauthentik/logger-js": "link:../logger-js",
+        "@goauthentik/prettier-config": "link:../prettier-config",
+        "@goauthentik/tsconfig": "link:../tsconfig",
+        "@types/node": "^26.1.1",
+        "esbuild": "catalog:",
+        "eslint": "catalog:",
         "pino": "^10.3.1",
-        "prettier": "^3.8.1",
-        "prettier-plugin-packagejson": "^3.0.0",
-        "typedoc": "^0.28.15",
-        "typedoc-plugin-markdown": "^4.9.0",
-        "typescript": "^5.9.3",
-        "typescript-eslint": "^8.56.1"
+        "prettier": "3.8.3",
+        "prettier-plugin-packagejson": "catalog:",
+        "typedoc": "^0.28.20",
+        "typedoc-plugin-markdown": "^4.11.0",
+        "typescript": "catalog:",
+        "typescript-eslint": "^8.59.3"
     },
     "peerDependencies": {
-        "esbuild": "^0.27.3"
+        "@goauthentik/logger-js": "^1.0.1",
+        "esbuild": "^0.28.1"
     },
     "files": [
         "./index.js",
@@ -71,8 +72,7 @@
         "out/**/*"
     ],
     "engines": {
-        "node": ">=24",
-        "npm": ">=11.10.1"
+        "node": ">=24"
     },
     "devEngines": {
         "runtime": {
@@ -81,8 +81,8 @@
             "version": ">=24"
         },
         "packageManager": {
-            "name": "npm",
-            "version": ">=11.10.1",
+            "name": "pnpm",
+            "version": ">=11.5.1",
             "onFail": "warn"
         }
     },
@@ -95,6 +95,11 @@
         "reload",
         "authentik"
     ],
+    "peerDependenciesMeta": {
+        "@goauthentik/logger-js": {
+            "optional": true
+        }
+    },
     "publishConfig": {
         "access": "public"
     }

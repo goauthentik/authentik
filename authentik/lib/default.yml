@@ -22,6 +22,7 @@ postgresql:
   port: 5432
   password: "env://POSTGRES_PASSWORD"
   sslmode: disable
+  conn_max_age: 0
   conn_health_checks: false
   use_pool: False
   test:
@@ -47,6 +48,7 @@ listen:
     - "[::]:9300"
   debug: 0.0.0.0:9900
   debug_py: 0.0.0.0:9901
+  debug_tokio: "[::]:6669"
   trusted_proxy_cidrs:
     - 127.0.0.0/8
     - 10.0.0.0/8
@@ -73,6 +75,19 @@ log_level: info
 log:
   http_headers:
     - User-Agent
+  rust_log:
+    "console_subscriber": info
+    "h2": info
+    "hyper_util": warn
+    "mio": info
+    "notify": info
+    "reqwest": info
+    "runtime": info
+    "rustls": info
+    "sqlx": info
+    "sqlx_postgres": info
+    "tokio": info
+    "tungstenite": info
 
 sessions:
   unauthenticated_age: days=1

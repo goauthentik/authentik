@@ -1,6 +1,8 @@
 ---
 title: Microsoft Entra ID provider
 authentik_enterprise: true
+sidebar_position: 5
+sidebar_label: "Microsoft Entra ID Provider"
 ---
 
 The Entra ID provider allows you to integrate with your Entra ID tenant. It supports syncing users and groups from authentik to Entra ID, allowing authentik to act as a source of truth for all users and groups.
@@ -56,7 +58,7 @@ By default, authentik only maps a group's name, `mail_enabled` status, `security
 
 Refer to the Entra ID documentation for further details on these attributes and which attributes can be mapped: [Microsoft Graph - Create Group](https://learn.microsoft.com/en-us/graph/api/group-post-groups?view=graph-rest-1.0&tabs=http#request-body)
 
-### Skipping objects during synchronization
+### Skip objects during synchronization
 
 To exclude specific users or groups from Entra ID synchronization, you can create a property mapping that raises the `SkipObject` exception. When this exception is raised during the evaluation of a property mapping, the object is skipped and the sync continues with the next object.
 

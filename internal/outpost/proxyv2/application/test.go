@@ -6,8 +6,8 @@ import (
 	"net/url"
 	"testing"
 
-	"goauthentik.io/api/v3"
 	"goauthentik.io/internal/outpost/ak"
+	api "goauthentik.io/packages/client-go"
 )
 
 type testServer struct {

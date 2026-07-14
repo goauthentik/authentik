@@ -1,18 +1,21 @@
 import "#elements/messages/Message";
 
-import { APIError, pluckErrorDetail } from "#common/errors/network";
+import { parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
 import { APIMessage, MessageLevel } from "#common/messages";
+import { tryParsingJSON } from "#common/objects";
 
 import { AKElement } from "#elements/Base";
+import Styles from "#elements/messages/styles.css";
 import { ifPresent } from "#elements/utils/attributes";
+import { findTopmost } from "#elements/utils/render-roots";
 
 import { ConsoleLogger } from "#logger/browser";
 
 import { instanceOfValidationError } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { css, CSSResult, html } from "lit";
-import { customElement, property, state } from "lit/decorators.js";
+import { CSSResult, html, PropertyValues } from "lit";
+import { customElement, property } from "lit/decorators.js";
 
 import PFAlertGroup from "@patternfly/patternfly/components/AlertGroup/alert-group.css";
 
@@ -26,9 +29,9 @@ const logger = ConsoleLogger.prefix("messages");
  *
  * @todo Consider making this a static method on singleton {@linkcode MessageContainer}
  */
-export function showMessage(message: APIMessage | null, unique = false): void {
+export function showMessage(message: APIMessage | null, unique: boolean = false): boolean {
     if (!message) {
-        return;
+        return false;
     }
 
     if (!message.message.trim()) {
@@ -38,17 +41,21 @@ export function showMessage(message: APIMessage | null, unique = false): void {
         message.description ??= msg("Please check the browser console for more details.");
     }
 
-    const container = document.querySelector<MessageContainer>("ak-message-container");
+    const topmost = findTopmost();
+
+    const container = topmost.querySelector<MessageContainer>("ak-message-container");
 
     if (!container) {
         logger.warn("authentik/messages: No message container found in DOM");
         logger.info("authentik/messages: Message to show:", message);
 
-        return;
+        return false;
     }
 
     container.addMessage(message, unique);
     container.requestUpdate();
+
+    return true;
 }
 
 /**
@@ -58,8 +65,13 @@ export function showMessage(message: APIMessage | null, unique = false): void {
  * @param unique Whether to only display the message if the title is unique.
  * @see {@link parseAPIResponseError} for more information on how to handle API errors.
  */
-export function showAPIErrorMessage(error: APIError, unique = false): void {
+export function showAPIErrorMessage(error: unknown, unique = false): Promise<void> {
+    if (!error) {
+        return Promise.resolve();
+    }
+
     if (
+        typeof error === "object" &&
         instanceOfValidationError(error) &&
         Array.isArray(error.nonFieldErrors) &&
         error.nonFieldErrors.length
@@ -74,39 +86,36 @@ export function showAPIErrorMessage(error: APIError, unique = false): void {
             );
         }
 
-        return;
+        return Promise.resolve();
     }
 
-    showMessage(
-        {
-            level: MessageLevel.error,
-            message: pluckErrorDetail(error),
-        },
-        unique,
-    );
+    return parseAPIResponseError(error)
+        .then((parsedError) => pluckErrorDetail(parsedError))
+        .catch(() => pluckErrorDetail(error, msg("An unknown error occurred")))
+        .then((message) => {
+            showMessage(
+                {
+                    level: MessageLevel.error,
+                    message: message,
+                },
+                unique,
+            );
+        });
 }
+
+export type MessageContainerAlignment = "top-left" | "top-right" | "bottom-left" | "bottom-right";
 
 @customElement("ak-message-container")
 export class MessageContainer extends AKElement {
-    @state()
-    protected messages: APIMessage[] = [];
+    public static readonly serializedSelector = "script[data-id=authentik-messages]";
 
-    @property()
-    alignment: "top" | "bottom" = "top";
+    @property({ attribute: false })
+    public messages: APIMessage[] = [];
 
-    static styles: CSSResult[] = [
-        PFAlertGroup,
-        css`
-            /* Fix spacing between messages */
-            ak-message {
-                display: block;
-            }
-            :host([alignment="bottom"]) .pf-c-alert-group.pf-m-toast {
-                bottom: var(--pf-c-alert-group--m-toast--Top);
-                top: unset;
-            }
-        `,
-    ];
+    @property({ type: String, reflect: true, useDefault: true })
+    public alignment: MessageContainerAlignment = "bottom-left";
+
+    static styles: CSSResult[] = [PFAlertGroup, Styles];
 
     constructor() {
         super();
@@ -119,25 +128,82 @@ export class MessageContainer extends AKElement {
         });
     }
 
-    public addMessage(message: APIMessage, unique = false): void {
-        if (unique) {
-            const match = this.messages.some((m) => m.message === message.message);
+    public override connectedCallback(): void {
+        super.connectedCallback();
 
-            if (match) return;
+        this.popover = "manual";
+
+        requestAnimationFrame(this.drainMessages);
+    }
+
+    protected drainMessages = (): void => {
+        const selector = (this.constructor as typeof MessageContainer).serializedSelector;
+        const container = this.ownerDocument.querySelector<HTMLScriptElement>(selector);
+
+        if (!container) {
+            logger.warn(`Expected to find a script tag with ${selector}, but none was found.`);
+            return;
+        }
+
+        const messages = tryParsingJSON<APIMessage[]>(container.textContent);
+
+        if (!messages?.length) {
+            return;
+        }
+
+        for (const message of messages) {
+            this.addMessage(message);
+        }
+    };
+
+    public updated(changedProperties: PropertyValues<this>) {
+        super.updated(changedProperties);
+
+        if (changedProperties.has("messages") && this.messages.length) {
+            // Invoking the popover is only needed for browsers that support dialogs
+            // that support HTMLDialogElement.showModal()
+            const source = findTopmost(this.ownerDocument);
+
+            this.showPopover?.({ source });
+        }
+    }
+
+    public addMessage(message: APIMessage, unique?: boolean): boolean {
+        if (message.key) {
+            this.messages = [...this.messages.filter((m) => m.key !== message.key), message];
+
+            return true;
+        }
+
+        if (unique) {
+            const existing = this.messages.find((m) => m.message === message.message);
+
+            if (existing) {
+                return false;
+            }
         }
 
         this.messages = [...this.messages, message];
+
+        return true;
     }
 
     #removeMessage = (message: APIMessage) => {
         this.messages = this.messages.filter((v) => v !== message);
+
+        if (this.messages.length === 0) {
+            // Just the same, hide the popover for browsers that support native dialogs.
+            this.hidePopover?.();
+        }
     };
 
     render() {
         return html`<ul
             role="region"
+            part="messages"
             aria-label="${msg("Status messages")}"
             class="pf-c-alert-group pf-m-toast"
+            data-alignment=${this.alignment}
         >
             ${this.messages.toReversed().map((message, idx) => {
                 const { message: title, description, level, icon } = message;

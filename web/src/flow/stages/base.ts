@@ -44,7 +44,7 @@ export abstract class BaseStage<Tin extends StageChallengeLike, Tout = unknown>
         delegatesFocus: true,
     };
 
-    protected logger = ConsoleLogger.prefix(`flow:${this.tagName.toLowerCase()}`);
+    protected logger = ConsoleLogger.prefix(`flow:${this.localName}`);
 
     @property({ type: Object, attribute: false })
     public host!: StageHost;
@@ -55,7 +55,7 @@ export abstract class BaseStage<Tin extends StageChallengeLike, Tout = unknown>
     @intersectionObserver()
     public visible = false;
 
-    protected autofocusTarget = new FocusTarget();
+    protected autofocusTarget = new FocusTarget<HTMLInputElement>();
     focus = this.autofocusTarget.focus;
 
     #visibilityListener = () => {

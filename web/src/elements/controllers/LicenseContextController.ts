@@ -1,4 +1,4 @@
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { EVENT_REFRESH_ENTERPRISE } from "#common/constants";
 import { isGuest } from "#common/users";
 
@@ -29,7 +29,7 @@ export class LicenseContextController extends ReactiveContextController<LicenseS
     }
 
     protected apiEndpoint(requestInit?: RequestInit) {
-        return new EnterpriseApi(DEFAULT_CONFIG).enterpriseLicenseSummaryRetrieve({}, requestInit);
+        return aki(EnterpriseApi).enterpriseLicenseSummaryRetrieve({}, requestInit);
     }
 
     protected doRefresh(licenseSummary: LicenseSummary) {

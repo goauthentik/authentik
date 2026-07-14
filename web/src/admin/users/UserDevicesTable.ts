@@ -1,6 +1,7 @@
 import "#elements/forms/DeleteBulkForm";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
+import { createPaginatedResponse } from "#common/api/responses";
 import { deviceTypeName } from "#common/labels";
 import { SentryIgnoredError } from "#common/sentry/index";
 
@@ -15,6 +16,9 @@ import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-user-device-table")
 export class UserDeviceTable extends Table<Device> {
+    public static override verboseName = msg("Device");
+    public static override verboseNamePlural = msg("Devices");
+
     @property({ type: Number })
     userId?: number;
 
@@ -22,23 +26,12 @@ export class UserDeviceTable extends Table<Device> {
     clearOnRefresh = true;
 
     async apiEndpoint(): Promise<PaginatedResponse<Device>> {
-        return new AuthenticatorsApi(DEFAULT_CONFIG)
+        return aki(AuthenticatorsApi)
             .authenticatorsAdminAllList({
                 user: this.userId,
             })
             .then((res) => {
-                return {
-                    pagination: {
-                        count: res.length,
-                        current: 1,
-                        totalPages: 1,
-                        startIndex: 1,
-                        endIndex: res.length,
-                        next: 0,
-                        previous: 0,
-                    },
-                    results: res,
-                };
+                return createPaginatedResponse(res);
             });
     }
 
@@ -52,7 +45,7 @@ export class UserDeviceTable extends Table<Device> {
     ];
 
     async deleteWrapper(device: Device) {
-        const api = new AuthenticatorsApi(DEFAULT_CONFIG);
+        const api = aki(AuthenticatorsApi);
         switch (device.type) {
             case "authentik_stages_authenticator_duo.DuoDevice":
                 return api.authenticatorsAdminDuoDestroy({ id: parseInt(device.pk, 10) });

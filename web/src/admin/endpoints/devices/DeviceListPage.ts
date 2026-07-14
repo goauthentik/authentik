@@ -1,14 +1,15 @@
 import "#elements/cards/AggregateCard";
 import "#elements/forms/DeleteBulkForm";
-import "#admin/endpoints/devices/DeviceForm";
 import "#admin/endpoints/devices/DeviceAddHowTo";
-import "#elements/forms/ModalForm";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
+import { modalInvoker } from "#elements/dialogs";
 import { PaginatedResponse, TableColumn, Timestamp } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
+
+import { EndpointDeviceForm } from "#admin/endpoints/devices/DeviceForm";
 
 import { DeviceSummary, EndpointDevice, EndpointsApi } from "@goauthentik/api";
 
@@ -21,13 +22,7 @@ import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 
 @customElement("ak-endpoints-device-list")
 export class DeviceListPage extends TablePage<EndpointDevice> {
-    public pageTitle = msg("Devices");
-    public pageDescription = "";
-    public pageIcon = "fa fa-laptop";
-
-    checkbox = true;
-
-    static styles: CSSResult[] = [
+    public static styles: CSSResult[] = [
         ...super.styles,
         PFGrid,
         PFBanner,
@@ -37,6 +32,13 @@ export class DeviceListPage extends TablePage<EndpointDevice> {
             }
         `,
     ];
+    public override pageTitle = msg("Devices");
+    public override pageDescription = "";
+    public override pageIcon = "fa fa-laptop";
+
+    public override checkbox = true;
+
+    public override searchPlaceholder = msg("Search devices by name, OS, or group...");
 
     protected searchEnabled: boolean = true;
     protected columns: TableColumn[] = [
@@ -53,18 +55,16 @@ export class DeviceListPage extends TablePage<EndpointDevice> {
     summary?: DeviceSummary;
 
     async apiEndpoint(): Promise<PaginatedResponse<EndpointDevice>> {
-        this.summary = await new EndpointsApi(DEFAULT_CONFIG).endpointsDevicesSummaryRetrieve();
-        return new EndpointsApi(DEFAULT_CONFIG).endpointsDevicesList(
-            await this.defaultEndpointConfig(),
-        );
+        this.summary = await aki(EndpointsApi).endpointsDevicesSummaryRetrieve();
+        return aki(EndpointsApi).endpointsDevicesList(await this.defaultEndpointConfig());
     }
 
-    protected renderEmpty(inner?: TemplateResult): TemplateResult {
+    protected renderEmpty(inner?: TemplateResult): SlottedTemplateResult {
         return super.renderEmpty(html`
             ${inner
                 ? inner
                 : html`<ak-empty-state icon=${this.pageIcon}
-                      ><span>${msg("No objects found.")}</span>
+                      ><span>${this.formatEmptyStateMessage()}</span>
                       <div slot="body">
                           ${this.search ? this.renderEmptyClearSearch() : nothing}
                           <p>
@@ -131,17 +131,14 @@ export class DeviceListPage extends TablePage<EndpointDevice> {
             html`${item.facts.data.os?.name} ${item.facts.data.os?.version}`,
             html`${item.accessGroupObj?.name || "-"}`,
             item.facts.created ? Timestamp(item.facts.created) : html`-`,
-            html`<ak-forms-modal>
-                <span slot="submit">${msg("Update")}</span>
-                <span slot="header">${msg("Update Device")}</span>
-                <ak-endpoints-device-form slot="form" .instancePk=${item.deviceUuid}>
-                </ak-endpoints-device-form>
-                <button slot="trigger" class="pf-c-button pf-m-plain">
-                    <pf-tooltip position="top" content=${msg("Edit")}>
-                        <i class="fas fa-edit" aria-hidden="true"></i>
-                    </pf-tooltip>
-                </button>
-            </ak-forms-modal>`,
+            html`<button
+                class="pf-c-button pf-m-plain"
+                ${modalInvoker(EndpointDeviceForm, { instancePk: item.deviceUuid })}
+            >
+                <pf-tooltip position="top" content=${msg("Edit")}>
+                    <i class="fas fa-edit" aria-hidden="true"></i>
+                </pf-tooltip>
+            </button>`,
         ];
     }
 
@@ -154,12 +151,12 @@ export class DeviceListPage extends TablePage<EndpointDevice> {
                 return [{ key: msg("Name"), value: item.name }];
             }}
             .usedBy=${(item: EndpointDevice) => {
-                return new EndpointsApi(DEFAULT_CONFIG).endpointsDevicesUsedByList({
+                return aki(EndpointsApi).endpointsDevicesUsedByList({
                     deviceUuid: item.deviceUuid!,
                 });
             }}
             .delete=${(item: EndpointDevice) => {
-                return new EndpointsApi(DEFAULT_CONFIG).endpointsDevicesDestroy({
+                return aki(EndpointsApi).endpointsDevicesDestroy({
                     deviceUuid: item.deviceUuid!,
                 });
             }}

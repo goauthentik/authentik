@@ -63,7 +63,7 @@ const LogLevelColors = /** @type {const} */ ({
  * Creates a logger with the given prefix.
  *
  * @param {string} [prefix]
- * @param {...string} args
+ * @param {...string[]} args
  * @returns {Logger}
  *
  */

@@ -1,7 +1,7 @@
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/index";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
 import { docLink } from "#common/global";
 
@@ -9,7 +9,7 @@ import { AKElement } from "#elements/Base";
 
 import { AKLabel } from "#components/ak-label";
 
-import { AdminApi, AdminFileListUsageEnum } from "@goauthentik/api";
+import { AdminApi, UsageEnum } from "@goauthentik/api";
 import { IDGenerator } from "@goauthentik/core/id";
 
 import { msg } from "@lit/localize";
@@ -60,7 +60,7 @@ export class AKFileSearchInput extends AKElement {
     public help: string | null = null;
 
     @property({ type: String, useDefault: true })
-    public usage: AdminFileListUsageEnum = AdminFileListUsageEnum.Media;
+    public usage: UsageEnum = UsageEnum.Media;
 
     @property({ type: String, reflect: false })
     public fieldID?: string = IDGenerator.elementID().toString();
@@ -79,10 +79,10 @@ export class AKFileSearchInput extends AKElement {
     }
 
     async #fetch(query?: string): Promise<FileItem[]> {
-        const api = new AdminApi(DEFAULT_CONFIG);
+        const api = aki(AdminApi);
         return api
             .adminFileList({
-                usage: this.usage as AdminFileListUsageEnum,
+                usage: this.usage as UsageEnum,
                 ...(query ? { search: query } : {}),
             })
             .then((response) => {

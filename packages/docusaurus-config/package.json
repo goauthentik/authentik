@@ -1,6 +1,6 @@
 {
     "name": "@goauthentik/docusaurus-config",
-    "version": "2.5.1",
+    "version": "3.0.1",
     "description": "authentik's Docusaurus config",
     "license": "MIT",
     "repository": {
@@ -30,35 +30,33 @@
         "prism-react-renderer": "^2.4.1"
     },
     "devDependencies": {
-        "@docusaurus/theme-common": "3.9.2",
-        "@docusaurus/theme-search-algolia": "^3.9.2",
-        "@docusaurus/types": "^3.9.2",
-        "@eslint/js": "^9.39.3",
-        "@goauthentik/eslint-config": "../eslint-config",
-        "@goauthentik/prettier-config": "../prettier-config",
-        "@goauthentik/tsconfig": "../tsconfig",
-        "@types/node": "^25.3.0",
-        "@types/react": "^19.2.14",
+        "@docusaurus/theme-common": "^3.10.1",
+        "@docusaurus/theme-search-algolia": "^3.10.1",
+        "@docusaurus/types": "^3.10.1",
+        "@eslint/js": "^9.39.4",
+        "@goauthentik/eslint-config": "link:../eslint-config",
+        "@goauthentik/prettier-config": "link:../prettier-config",
+        "@goauthentik/tsconfig": "link:../tsconfig",
+        "@types/node": "^26.1.1",
+        "@types/react": "^19.2.17",
         "@types/react-dom": "^19.2.3",
-        "@typescript-eslint/eslint-plugin": "^8.56.1",
-        "@typescript-eslint/parser": "^8.56.1",
-        "eslint": "^9.39.3",
+        "eslint": "catalog:",
         "pino": "^10.3.1",
-        "prettier": "^3.8.1",
-        "prettier-plugin-packagejson": "^3.0.0",
-        "typescript": "^5.9.3",
-        "typescript-eslint": "^8.56.1"
+        "prettier": "3.8.3",
+        "prettier-plugin-packagejson": "catalog:",
+        "typescript": "catalog:",
+        "typescript-eslint": "^8.62.1"
     },
     "peerDependencies": {
-        "@docusaurus/theme-common": "^3.9.2",
-        "@docusaurus/theme-search-algolia": "^3.9.2",
-        "@docusaurus/types": "^3.9.2",
-        "react": ">=18",
-        "react-dom": ">=18"
+        "@docusaurus/theme-common": "^3.10.1",
+        "@docusaurus/theme-search-algolia": "^3.10.1",
+        "@docusaurus/types": "^3.10.1",
+        "react": ">=19",
+        "react-dom": ">=19"
     },
     "optionalDependencies": {
-        "react": ">=18",
-        "react-dom": ">=18"
+        "react": "^19.2.7",
+        "react-dom": "^19.2.7"
     },
     "files": [
         "./index.js",
@@ -67,8 +65,7 @@
         "out/**/*"
     ],
     "engines": {
-        "node": ">=24",
-        "npm": ">=11.10.1"
+        "node": ">=24"
     },
     "devEngines": {
         "runtime": {
@@ -77,8 +74,8 @@
             "version": ">=24"
         },
         "packageManager": {
-            "name": "npm",
-            "version": ">=11.10.1",
+            "name": "pnpm",
+            "version": ">=11.5.1",
             "onFail": "warn"
         }
     },

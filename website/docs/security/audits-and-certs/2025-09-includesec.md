@@ -2,7 +2,7 @@
 
 In September of 2025, we had a pentest conducted by [Include Security](https://includesecurity.com). This resulted in a number of code improvements to our application, however did not result in any assigned CVEs.
 
-> IncludeSec performed a security assessment of Authentik Security's Web Apps, APIs, Deployment Config, Servers, & ETL. The assessment team performed a 8 day effort spanning from September 4 through September 15, 2025, using a Standard Grey Box assessment methodology.
+> IncludeSec performed a security assessment of Authentik Security's Web Apps, APIs, Deployment Config, Servers, & ETL. The assessment team performed a 8 day effort spanning from September 4 through September 15, 2025, using a Standard Gray Box assessment methodology.
 
 View the full report of our original [test](https://goauthentik.io/resources/includesec-Q3-2025-Multi-Report.pdf) and the [retest results](https://goauthentik.io/resources/includesec-Q3-2025-Multi-Remediation-Report.pdf), completed in January/February 2026.
 
@@ -100,4 +100,4 @@ _Improvement:_ This was initially [fixed](https://github.com/goauthentik/authent
 
 ## Conclusion
 
-We encourage an open and ongoing communication with our users and community. For more information abut our security stance, read our [Security Policy](https://docs.goauthentik.io/security/policy), [Hardening authentik](https://docs.goauthentik.io/security/security-hardening/), and our other security-related documentation. If you have any questions or feedback you can reach us on [GitHub](https://github.com/goauthentik/authentik/), [Discord](https://discord.com/invite/jg33eMhnj6), or via [email](mailto:hello@goauthentik.io). Please follow our [security policy](https://docs.goauthentik.io/security/policy/#reporting-a-vulnerability) for reporting any security concerns or vulnerabilities.
+We encourage an open and ongoing communication with our users and community. For more information about our security stance, read our [Security Policy](https://docs.goauthentik.io/security/policy), [Hardening authentik](https://docs.goauthentik.io/security/security-hardening/), and our other security-related documentation. If you have any questions or feedback you can reach us on [GitHub](https://github.com/goauthentik/authentik/), [Discord](https://discord.com/invite/jg33eMhnj6), or via [email](mailto:hello@goauthentik.io). Please follow our [security policy](https://docs.goauthentik.io/security/policy/#reporting-a-vulnerability) for reporting any security concerns or vulnerabilities.
