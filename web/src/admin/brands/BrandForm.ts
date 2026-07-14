@@ -19,7 +19,8 @@ import { DefaultFlowBackground } from "#elements/utils/images";
 
 import { AKLabel } from "#components/ak-label";
 
-import { certificateProvider, certificateSelector } from "#admin/brands/Certificates";
+import { certificateSelector, tlsCertificateProvider } from "#admin/brands/Certificates";
+import { TLSKeyTypes } from "#admin/common/certificate-key-types";
 
 import {
     Application,
@@ -354,6 +355,7 @@ export class BrandForm extends ModelForm<Brand, string> {
                     >
                         <ak-crypto-certificate-search
                             .certificate=${this.instance?.webCertificate}
+                            .allowedKeyTypes=${TLSKeyTypes}
                         ></ak-crypto-certificate-search>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
@@ -361,7 +363,7 @@ export class BrandForm extends ModelForm<Brand, string> {
                         name="clientCertificates"
                     >
                         <ak-dual-select-dynamic-selected
-                            .provider=${certificateProvider}
+                            .provider=${tlsCertificateProvider}
                             .selector=${certificateSelector(this.instance?.clientCertificates)}
                             available-label=${msg("Available Certificates")}
                             selected-label=${msg("Selected Certificates")}

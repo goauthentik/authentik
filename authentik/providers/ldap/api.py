@@ -19,6 +19,7 @@ from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import ModelSerializer, PassiveSerializer
 from authentik.core.apps import AppAccessWithoutBindings
 from authentik.core.models import Application
+from authentik.crypto.validators import TLS_KEY_TYPES, KeyTypeValidator
 from authentik.policies.api.exec import PolicyTestResultSerializer
 from authentik.policies.engine import PolicyEngine
 from authentik.policies.types import PolicyResult
@@ -43,7 +44,10 @@ class LDAPProviderSerializer(ProviderSerializer):
             "bind_mode",
             "mfa_support",
         ]
-        extra_kwargs = ProviderSerializer.Meta.extra_kwargs
+        extra_kwargs = {
+            **ProviderSerializer.Meta.extra_kwargs,
+            "certificate": {"validators": [KeyTypeValidator(*TLS_KEY_TYPES)]},
+        }
 
 
 class LDAPProviderFilter(FilterSet):

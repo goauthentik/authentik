@@ -2,8 +2,6 @@ from datetime import datetime
 from functools import cached_property
 from uuid import uuid4
 
-from cryptography.hazmat.primitives.asymmetric.ec import EllipticCurvePrivateKey
-from cryptography.hazmat.primitives.asymmetric.rsa import RSAPrivateKey
 from cryptography.hazmat.primitives.asymmetric.types import PrivateKeyTypes
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
@@ -104,11 +102,7 @@ class SSFProvider(TasksModel, BackchannelProvider):
         """Get either the configured certificate or the client secret"""
         key: CertificateKeyPair = self.signing_key
         private_key = key.private_key
-        if isinstance(private_key, RSAPrivateKey):
-            return private_key, JWTAlgorithms.RS256
-        if isinstance(private_key, EllipticCurvePrivateKey):
-            return private_key, JWTAlgorithms.ES256
-        raise ValueError(f"Invalid private key type: {type(private_key)}")
+        return private_key, JWTAlgorithms.from_private_key(private_key)
 
     @property
     def service_account_identifier(self) -> str:

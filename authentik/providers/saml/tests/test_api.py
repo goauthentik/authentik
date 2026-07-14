@@ -99,7 +99,12 @@ class TestSAMLProviderAPI(APITestCase):
         self.assertIn("signing_kp", loads(response.content))
         self.assertJSONEqual(
             response.content,
-            {"signing_kp": ["Only RSA, EC, and DSA key types are supported for SAML signing."]},
+            {
+                "signing_kp": [
+                    "Key type Ed25519 is not supported. "
+                    "Supported key types are: RSA, Elliptic Curve, DSA."
+                ]
+            },
         )
 
     def test_metadata(self):
