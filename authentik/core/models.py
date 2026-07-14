@@ -1377,11 +1377,11 @@ class AuthenticatedSession(SerializerModel):
     )
 
     @property
-    def is_superseded(self) -> bool:
-        """Whether a newer login replaced this one for the same browser."""
-        return bool(
-            self.user_switching_session_id
-            and self.user_switching_session.current_session_id != self.session_id
+    def is_current(self) -> bool:
+        """Whether this is the current login for its browser."""
+        return (
+            self.user_switching_session_id is None
+            or self.user_switching_session.current_session_id == self.session_id
         )
 
     @property

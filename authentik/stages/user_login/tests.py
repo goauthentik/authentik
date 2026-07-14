@@ -164,7 +164,7 @@ class TestUserLoginStage(FlowTestCase):
         self.assertNotEqual(first_session_key, second_session_key)
         second = AuthenticatedSession.objects.get(session__session_key=second_session_key)
         self.assertEqual(second.user, other_user)
-        self.assertFalse(second.is_superseded)
+        self.assertTrue(second.is_current)
         self.assertFalse(
             AuthenticatedSession.objects.filter(session__session_key=first_session_key).exists()
         )

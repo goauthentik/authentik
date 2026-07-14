@@ -34,9 +34,9 @@ class SessionStore(SessionBase):
         return [k.value for k in self.model.Keys]
 
     @staticmethod
-    def _is_superseded(session) -> bool:
+    def _is_current(session) -> bool:
         authenticated_session = getattr(session, "authenticatedsession", None)
-        return bool(authenticated_session and authenticated_session.is_superseded)
+        return authenticated_session is None or authenticated_session.is_current
 
     def _get_session_from_db(self):
         try:
@@ -48,7 +48,7 @@ class SessionStore(SessionBase):
                 session_key=self.session_key,
                 expires__gt=timezone.now(),
             )
-            if self._is_superseded(session):
+            if not self._is_current(session):
                 LOGGER.info("Session denied: superseded by a newer login")
                 self._session_key = None
                 return None
@@ -68,7 +68,7 @@ class SessionStore(SessionBase):
                 session_key=self.session_key,
                 expires__gt=timezone.now(),
             )
-            if self._is_superseded(session):
+            if not self._is_current(session):
                 LOGGER.info("Session denied: superseded by a newer login")
                 self._session_key = None
                 return None

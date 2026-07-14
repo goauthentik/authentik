@@ -27,7 +27,7 @@ class TestUserSwitchingSessions(TestCase):
 
         self.assertEqual(response.status_code, 200)
         target.refresh_from_db()
-        print(f"session superseded={target.is_superseded}")
+        self.assertTrue(target.is_current)
         cookie = response.cookies[user_switching.COOKIE_NAME]
         self.assertEqual(
             user_switching.decode_cookie(cookie.value),
@@ -39,6 +39,8 @@ class TestUserSwitchingSessions(TestCase):
         token = get_random_string(user_switching.TOKEN_LENGTH)
         target = create_test_session(create_test_user(), token)
         create_test_session(create_test_user(), token)
+        target.refresh_from_db()
+        self.assertFalse(target.is_current)
         self.client.cookies[settings.SESSION_COOKIE_NAME] = target.session_id
 
         response = self.client.get(reverse("authentik_api:user-me"))
