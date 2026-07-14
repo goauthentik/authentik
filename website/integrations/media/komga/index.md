@@ -4,6 +4,8 @@ sidebar_label: Komga
 support_level: community
 ---
 
+import RedirectURI20265Note from "../../\_redirect-uri-2026-5-note.mdx";
+
 ## What is Komga?
 
 > Komga is an open-source comic and manga server that lets users organize, read, and stream their digital comic collections with ease.
@@ -23,13 +25,15 @@ This documentation lists only the settings that you need to change from their de
 
 ## authentik configuration
 
+<RedirectURI20265Note />
+
 To support the integration of Komga with authentik, you need to create an application/provider pair in authentik.
 
 ### Create an email verification scope mapping in authentik
 
 Komga requires the email scope to return a value of `email_verified: True`. As of [authentik 2025.10](/docs/releases/2025/v2025.10.md#default-oauth-scope-mappings) the default behavior is to return `email_verified: False`, so a custom scope mapping is required for Komga to allow authentication.
 
-Refer to [Email scope verification](/docs/add-secure-apps/providers/oauth2/index.mdx#email-scope-verification) for instructions on how to create the required custom scope mapping.
+Refer to [Email scope verification](/docs/add-secure-apps/providers/oauth2/#email-scope-verification) for instructions on how to create the required custom scope mapping.
 
 ### Create an application and provider in authentik
 
@@ -40,12 +44,12 @@ Refer to [Email scope verification](/docs/add-secure-apps/providers/oauth2/index
 - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
 - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
     - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
-    - Set a `Strict` redirect URI to `https://komga.company/login/oauth2/code/authentik`.
+    - Add a **Redirect URI** of type `Strict` `Authorization` as `https://komga.company/login/oauth2/code/authentik`.
     - Select any available signing key.
     - **Advanced protocol settings** > **Scopes**:
         - Add `OAuth Mapping: OpenID 'email' with "email_verified"` to the **Selected Scopes**.
         - Remove the `authentik default OAuth Mapping: OpenID 'email'` scope.
-- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 
 3. Click **Submit** to save the new application and provider.
 

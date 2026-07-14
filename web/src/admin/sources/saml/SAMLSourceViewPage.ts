@@ -7,7 +7,7 @@ import "#elements/Tabs";
 import "#elements/buttons/SpinnerButton/index";
 import "#elements/forms/ModalForm";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { EVENT_REFRESH } from "#common/constants";
 
 import { AKElement } from "#elements/Base";
@@ -32,7 +32,7 @@ import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 export class SAMLSourceViewPage extends AKElement {
     @property({ type: String })
     set sourceSlug(slug: string) {
-        new SourcesApi(DEFAULT_CONFIG)
+        aki(SourcesApi)
             .sourcesSamlRetrieve({
                 slug: slug,
             })
@@ -168,7 +168,7 @@ export class SAMLSourceViewPage extends AKElement {
                     aria-label="${msg("Metadata")}"
                     class="pf-c-page__main-section pf-m-no-padding-mobile"
                     @activate=${() => {
-                        new SourcesApi(DEFAULT_CONFIG)
+                        aki(SourcesApi)
                             .sourcesSamlMetadataRetrieve({
                                 slug: this.source?.slug || "",
                             })

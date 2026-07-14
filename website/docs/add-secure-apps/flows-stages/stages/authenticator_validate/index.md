@@ -4,7 +4,7 @@ title: Authenticator validation stage
 
 The Authenticator Validation stage validates an already enrolled authenticator.
 
-## Overview
+## About the authenticator validation stage
 
 This stage is used during authentication after a user has already enrolled one or more authenticators with a setup stage, such as:
 
@@ -129,7 +129,11 @@ If the user has multiple compatible authenticators, authentik lets them choose o
 
 ### WebAuthn authenticator type restrictions
 
-If you restrict allowed WebAuthn authenticator types, those restrictions only apply to WebAuthn authenticators that authentik knows how to classify. This is useful when you need to limit authentication to specific hardware families or compliance profiles.
+**WebAuthn device type restrictions** are an allowlist for already-enrolled WebAuthn authenticators. When no device types are selected, any enrolled WebAuthn authenticator that matches the stage's **Device classes** can be used. When one or more device types are selected, authentik only allows WebAuthn authentication from enrolled devices whose recorded device type matches one of the selected entries.
+
+The available device-type entries are populated from the [FIDO Alliance Metadata Service](https://fidoalliance.org/metadata/) data and additional AAGUID metadata bundled with the authentik release. This is useful when you need to limit authentication to specific hardware families or compliance profiles.
+
+These restrictions only apply to WebAuthn devices that have a stored device type. Devices enrolled in authentik 2024.4 or later store this information when the authenticator returns a known AAGUID. Older WebAuthn enrollments or devices without a stored type cannot be matched by this filter. To enforce a device-type policy for enrollment and later authentication, configure the same allowlist on the [WebAuthn / FIDO2 / Passkeys Authenticator setup stage](../authenticator_webauthn/index.md) and have users re-enroll devices that predate stored device types.
 
 ### Throttling
 

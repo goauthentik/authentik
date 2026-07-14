@@ -9,9 +9,11 @@ import type { PropSidebarItem } from "@docusaurus/plugin-content-docs";
 import {
     filterDocCardListItems,
     useCurrentSidebarSiblings,
+    useDocById,
 } from "@docusaurus/plugin-content-docs/client";
 import { useLocation } from "@docusaurus/router";
 import DocCard from "@theme/DocCard";
+import Layout from "@theme/DocCard/Layout";
 import type { Props } from "@theme/DocCardList";
 import clsx from "clsx";
 import React, { ReactNode, useMemo } from "react";
@@ -21,6 +23,10 @@ const EMPTY_SIDEBAR_ITEMS: PropSidebarItem[] = [];
 
 // Type aliases for clarity
 type SidebarDocLike = Extract<PropSidebarItem, { type: "link" }>;
+
+function isReleaseDocLink(item: PropSidebarItem): item is SidebarDocLike {
+    return item.type === "link" && !!item.docId?.startsWith("releases/");
+}
 
 /**
  * Type-safe property existence checker with proper typing
@@ -46,12 +52,32 @@ function getStableKey(item: GlossaryItem | PropSidebarItem, idx: number): string
 }
 
 /**
+ * Release documentation card item
+ */
+function ReleaseDocCard({ item }: { item: SidebarDocLike }) {
+    const doc = useDocById(item.docId ?? undefined);
+
+    // Docusaurus treats leading digits as emoji-like graphemes and splits the
+    // "2" out into the card icon slot, making version labels look broken.
+    return (
+        <Layout
+            item={item}
+            className={item.className}
+            href={item.href}
+            icon={null}
+            title={item.label}
+            description={item.description ?? doc?.description}
+        />
+    );
+}
+
+/**
  * Standard documentation card item for non-glossary content
  */
 function DocCardListItem({ item }: { item: React.ComponentProps<typeof DocCard>["item"] }) {
     return (
         <article className={clsx(styles.docCardListItem, "col col--6")}>
-            <DocCard item={item} />
+            {isReleaseDocLink(item) ? <ReleaseDocCard item={item} /> : <DocCard item={item} />}
         </article>
     );
 }

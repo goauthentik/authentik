@@ -4,6 +4,8 @@ sidebar_label: Mautic
 support_level: community
 ---
 
+import SAMLProvider20265Warning from "../../\_saml-provider-2026-5-warning.mdx";
+
 ## What is Mautic?
 
 > Mautic provides free and open source marketing automation software available to everyone. Free email marketing and lead management software.
@@ -16,183 +18,111 @@ The following placeholders are used in this guide:
 
 - `mautic.company` is the FQDN of the Mautic installation.
 - `authentik.company` is the FQDN of the authentik installation.
-- `mautic-provider` is the [SAML provider](/docs/add-secure-apps/providers/saml) whose settings will be imported into Mautic.
 
 :::info
-This documentation lists only the settings that you need to change from their default values.
-Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
-:::
-
-:::warning
-Mautic and authentik both require X.509 certificates.
-However, Mautic specifically requires the key to contain the phrase `RSA` or `ENCRYPTED` in its header.
-
-See [Troubleshooting](#troubleshooting) if the following error occurs in Mautic:
-
-> Private key is invalid. It should begin with `-----BEGIN RSA PRIVATE KEY-----` or `-----BEGIN ENCRYPTED PRIVATE KEY-----`
-
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
 ## authentik configuration
 
-To support the integration of Mautic with authentik, you need to create property mappings and an application/provider pair in authentik.
+To support the integration of Mautic with authentik, create two SAML property mappings and an application/provider pair in authentik.
 
 ### Create property mappings
 
-Because Mautic requires a first name and last name attribute, create two [SAML provider property mappings](/docs/users-sources/sources/property-mappings):
+Mautic requires first name and last name attributes in the SAML response. Create two [SAML provider property mappings](/docs/users-sources/sources/property-mappings):
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Customization** > **Property Mappings** and click **Create**:
+2. Navigate to **Customization** > **Property Mappings** and click **Create**.
+3. Select **SAML Provider Property Mapping** and click **Next**.
+4. Configure the property mapping with the following settings:
     - **Name**: `SAML-FirstName-from-Name`
     - **SAML Attribute Name**: `FirstName`
+    - **Friendly Name**: leave blank.
     - **Expression**:
-        ```py
+
+        ```python
         names = request.user.name.split(" ", 1)
-        if (len(names) == 1):
-          return ""
+        if len(names) == 1:
+            return request.user.name
         return names[0]
         ```
-        This first name mapping will return everything up to the first space (or an empty string if there is no space).
-3. Again, click **Create**:
+
+5. Click **Finish** to save the property mapping.
+6. Again, navigate to **Customization** > **Property Mappings** and click **Create**.
+7. Select **SAML Provider Property Mapping** and click **Next**.
+8. Configure the property mapping with the following settings:
     - **Name**: `SAML-LastName-from-Name`
     - **SAML Attribute Name**: `LastName`
+    - **Friendly Name**: leave blank.
     - **Expression**:
-        ```py
+
+        ```python
         return request.user.name.split(" ", 1)[-1]
         ```
-        This second name mapping returns everything after the first space (or the whole name if there is no space).
 
-### Create an application and provider in authentik
+9. Click **Finish** to save the property mapping.
+
+### Create an application and provider pair
+
+<SAMLProvider20265Warning />
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
-    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
-    - **Choose a Provider**: select **SAML Provider** as the provider type.
-    - **Configure the Provider**:
-        - Set the **Name** to `mautic-provider`
-        - Set the **ACS URL** to `https://mautic.company/s/saml/login_check`
-        - Set the **Audience** to `mautic.company`
-        - Set the **Service Provider Binding** to `Post`
-        - Under **Advanced protocol settings**, select an available **Signing certificate**, check **Sign assertions** and **Sign responses**, and add the two **Property Mappings** you created in the previous section.
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Take note of the **Slug** value because it is required later.
+    - **Choose a Provider type**: select **SAML Provider** as the provider type.
+    - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+        - Set **ACS URL** to `https://mautic.company/s/saml/login_check`.
+        - Set **Audience** to `https://mautic.company`.
+        - Under **Advanced protocol settings**:
+            - Select an available **Signing Certificate**.
+            - Enable **Sign responses**.
+            - Add `SAML-FirstName-from-Name` and `SAML-LastName-from-Name` to **Selected User Property Mappings**.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 3. Click **Submit** to save the new application and provider.
-4. Go to **Applications** > **Providers** and click on `mautic-provider`.
-    - Under **Metadata** click on **Download** to save the file as `mautic-provider\_authentik_meta.xml`.
+
+### Download the metadata
+
+1. Navigate to **Applications** > **Providers** and click the name of the SAML provider that you created.
+2. Under **Metadata**, click **Download** to save the metadata XML file. This file is required in the next section.
 
 ## Mautic configuration
 
-:::info
-
-When running behind an SSL-terminating reverse proxy (e.g. traefik): In **Configuration > System Settings**, make sure that:
+If Mautic runs behind an SSL-terminating reverse proxy, first navigate to **Configuration** > **System Settings** in Mautic and make sure that:
 
 - the **Site URL** starts with `https://`
-- **trusted proxies** includes the IP-address of the reverse proxy
+- **Trusted proxies** includes the IP address of the reverse proxy
 
-:::
+Then configure SAML in Mautic:
 
-In **Configuration > User/Authentication Settings**, set the following values:
+1. Log in to Mautic as an administrator.
+2. Click the settings cogwheel in the top-right corner.
+3. Navigate to **Configuration** > **User/Authentication Settings**.
+4. In **SAML SSO Settings**, set the following values:
+    - **Entity ID for the IDP**: select `https://mautic.company`.
+    - **Identity provider metadata file**: upload the metadata XML file from authentik.
+    - **Default role for created users**: select the role to assign to users created through SAML login. Leave this empty only if all SAML users already exist in Mautic.
+    - **Email**: `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress`
+    - **Username**: `http://schemas.goauthentik.io/2021/02/saml/username`
+    - **First name**: `FirstName`
+    - **Last name**: `LastName`
+5. Click **Save**.
 
-- **Entity ID for the IDP**: `https://authentik.company/application/saml/<application_slug>/metadata/`
-- **Identity provider metadata file**: The `mautic-provider\_authentik_meta.xml` file
-- **Default role for created users**: Choose one to enable creating users.
-- **Email**: `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress` (as per provider > preview in authentik)
-- **Username**: `http://schemas.goauthentik.io/2021/02/saml/username` (as per provider > preview in authentik)
-- **First name**: `FirstName` (as per Provider > Preview in authentik)
-- **Last name**: `LastName` (as per Provider > Preview in authentik)
-- **X.509 certificate**: The `certificate.crt` file
-- **Private key**: The `private_key.pem` file
-  Click on **Save**.
+Leave **X.509 certificate** and **Private key** unset unless you intentionally configure Mautic with its own SAML certificate and stricter SAML trust options. Those fields are for a Mautic-owned certificate and private key, not for authentik's signing key. If you configure them, also configure the matching verification and encryption settings in authentik.
+
+### Common SAML errors
+
+The following errors usually indicate a mismatch between authentik and Mautic configuration:
+
+- `Uncaught PHP Exception TypeError: "Mautic\UserBundle\Entity\User::getUserIdentifier(): Return value must be of type string, null returned"`: Mautic did not receive the expected email or username attribute. Check the **Email**, **Username**, **First name**, and **Last name** attribute names in Mautic and the selected property mappings in authentik.
+- `Unable to verify Signature`: the metadata file uploaded to Mautic does not match the signing certificate currently used by the authentik SAML provider. Download the provider metadata again and upload the new file to Mautic.
+- `Assertions must be signed`: the authentik SAML provider does not have a **Signing Certificate** selected, or **Sign assertions** is not enabled.
+- `Private key is invalid. It should begin with -----BEGIN RSA PRIVATE KEY----- or -----BEGIN ENCRYPTED PRIVATE KEY-----`: Mautic rejected a private key uploaded to its **Private key** field. Leave the field unset unless you intentionally configure Mautic with its own SAML certificate and stricter SAML trust options.
 
 ## Configuration verification
 
-To confirm that authentik is properly configured with Mautic, open a new incognito/private window or another browser and login at `mautic.company`.
-By using an incognito/private window or other browser, you can still access the configuration interface of Mautic if anything went wrong.
+To confirm that authentik is properly configured with Mautic, open Mautic in a new incognito/private window or another browser and log in. Using a separate browser session lets you keep access to the Mautic configuration interface if the SAML login fails.
 
-## Troubleshooting
+## Resources
 
-### `Uncaught PHP Exception TypeError`
-
-> ```
-> mautic.CRITICAL: Uncaught PHP Exception TypeError: "Mautic\UserBundle\Entity\User::getUserIdentifier(): Return value must be of type string, null returned" at /app/bundles/UserBundle/Entity/User.php line 335 {"exception":"[object] (TypeError(code: 0): Mautic\\UserBundle\\Entity\\User::getUserIdentifier(): Return value must be of type string, null returned at /app/bundles/UserBundle/Entity/User.php:335)"}
-> ```
-
-This message in Mautic's **System Info > Log in** with an error 500 on its login page indicates a problem with the mapping of the attributes.
-(See [Mautic configuration](#mautic-configuration) > Email/Username/First Name/Last Name or [Create property mappings](#create-property-mappings) > Step 2 or [Create an application and provider in authentik](#create-an-application-and-provider-in-authentik) > Step 2.)
-
-### Unable to verify Signature
-
-> Unable to verify Signature
-
-This error occurs when logging in, and indicates that the certificate does not match the private key.
-(E.g. when the certificate was generated without the `RSA` and only the private key was changed afterwards.)
-
-### Assertions
-
-> Assertions must be signed
-
-This error occurs when logging in, and indicates that the **Sign assertions** and **Sign responses** settings were not checked in authentik.
-(See [Create an application and provider in authentik](#create-an-application-and-provider-in-authentik) > Step 2.)
-
-### Invalid private key
-
-> Private key is invalid. It should begin with `-----BEGIN RSA PRIVATE KEY-----` or `-----BEGIN ENCRYPTED PRIVATE KEY-----`
-
-The private key does not provide the header and footer which Mautic expects.
-(E.g., Mautic requires the phrases `RSA` or `ENCRYPTED` in the header and footer.)
-To fix this, a new certificate must be generated.
-Therefore, follow these steps (where the placeholder `Mautic Self-signed Certificate` is used for the new certificate):
-
-To avoid changing certificates in authentik, go to the authentik Admin interface and generate a new one:
-
-1. Go to **System > Certificates** and click on **Generate**. Use the following values:
-    - **Common Name**: `Mautic Self-signed Certificate`
-    - **Private key Algorithm**: `RSA`
-2. Click the caret (**>**) next to the newly generated certificate, then select **Download certificate** to get the `Mautic Self-signed Certificate\_certificate.pem` file and **Download Private key** to get the `Mautic Self-signed Certificate\_private_key.pem` file.
-3. Make sure that the `Mautic Self-signed Certificate\_private_key.pem` is in PKCS#1 format.
-   To verify, use `grep` to check for `RSA` in the header and footer of the file:
-    ```sh
-    grep "RSA PRIVATE KEY" "Mautic Self-signed Certificate_private_key.pem"
-    ```
-    If the command returns the correct match (e.g., `-----BEGIN RSA PRIVATE KEY-----` and `-----END RSA PRIVATE KEY-----`), the key is in PKCS#1 format, and you can skip steps 4 to 6.
-4. If the key is not in PKCS#1 format, add RSA after `BEGIN` and `END` in `Mautic Self-signed Certificate\_private_key.pem` as shown below and save the file as `private_key_new.pem`:
-    ```diff
-    - -----BEGIN PRIVATE KEY-----
-    + -----BEGIN RSA PRIVATE KEY-----
-    ```
-    and
-    ```diff
-    - -----END PRIVATE KEY-----
-    + -----END RSA PRIVATE KEY-----
-    ```
-5. Regenerate the X.509-certificate by first creating a signing request, using the following command:
-
-    ```sh
-    openssl req -new -key private_key_new.pem -out request.csr
-    ```
-
-    This will prompt you to enter values for the certificate which you can choose freely.
-    For some, you can use authentik's generated values:
-    - **Organization Name**: `authentik`
-    - **Organizational Unit Name**: `Self-signed`
-    - **Common Name**: `Mautic Self-signed Certificate`
-
-6. Next, generate the certificate with the (now) PKCS#1-compliant key and the previously generated signing request using the following command:
-
-    ```sh
-    openssl x509 -req -days 365 -in request.csr -signkey private_key_new.pem -out certificate_new.pem
-    ```
-
-7. In authentik, navigate to **System > Certificates** and click **Edit** on the previously generated certificate.
-   Click on the description below the text inputs to activate the inputs.
-    - **Certificate**: Enter the contents of `certificate_new.pem` or, if steps 4 to 6 were skipped, `Mautic Self-signed Certificate\_certificate.pem`
-    - **Private Key**: Enter the contents of `private_key_new.pem` or, if steps 4 to 6 were skipped, `Mautic Self-signed Certificate\_private_key.pem`
-    - Click on **Update**
-8. Navigate to **Applications > Providers** and **Edit** `mautic-provider` (which was created in [Create an application and provider in authentik](#create-an-application-and-provider-in-authentik)).
-   In **Advanced protocol settings**, change **Signing Certificate** to `Mautic Self-signed Certificate`
-9. Save the provider, view it, and download the metadata file to `mautic-provider\_authentik_meta.xml`
-10. In Mautic, navigate to **Configuration > User/Authentication Settings** and set the following values:
-
-- **X.509 certificate**: The `certificate_new.crt` file
-- **Private key**: The `private_key_new.pem` file
-- **Identity provider metadata file**: The new `mautic-provider\_authentik_meta.xml` file
-
-11. Click on **Save**.
+- [Mautic documentation - SAML/SSO settings](https://docs.mautic.org/en/7.0/configuration/settings.html#saml-sso-settings)
+- [Mautic documentation - Authentication](https://docs.mautic.org/en/4.x/authentication/authentication.html#saml)

@@ -11,7 +11,7 @@ import "#components/ak-text-input";
 import "#components/ak-switch-input";
 import "#components/ak-file-search-input";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { DefaultBrand } from "#common/ui/config";
 
 import { ModelForm } from "#elements/forms/ModelForm";
@@ -44,8 +44,8 @@ export class BrandForm extends ModelForm<Brand, string> {
     public static override verboseName = msg("Brand");
     public static override verboseNamePlural = msg("Brands");
 
-    #coreAPI = new CoreApi(DEFAULT_CONFIG);
-    #flowsAPI = new FlowsApi(DEFAULT_CONFIG);
+    #coreAPI = aki(CoreApi);
+    #flowsAPI = aki(FlowsApi);
 
     @state()
     protected lockdownFlowAuthentication: AuthenticationEnum | null = null;
@@ -217,9 +217,7 @@ export class BrandForm extends ModelForm<Brand, string> {
                                 if (query !== undefined) {
                                     args.search = query;
                                 }
-                                const users = await new CoreApi(
-                                    DEFAULT_CONFIG,
-                                ).coreApplicationsList(args);
+                                const users = await aki(CoreApi).coreApplicationsList(args);
 
                                 return users.results;
                             }}

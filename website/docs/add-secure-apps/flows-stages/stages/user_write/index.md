@@ -4,7 +4,7 @@ title: User write stage
 
 The User Write stage writes data from the current flow context into a user object.
 
-## Overview
+## About the user write stage
 
 This stage updates the current `pending_user`, or creates a new user if the flow does not already have one and the configured creation mode allows it.
 

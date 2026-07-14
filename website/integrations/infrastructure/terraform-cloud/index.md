@@ -4,6 +4,8 @@ sidebar_label: Terraform Cloud
 support_level: community
 ---
 
+import SAMLProvider20265Warning from "../../\_saml-provider-2026-5-warning.mdx";
+
 ## What is Terraform Cloud?
 
 > Terraform Cloud is a managed SaaS platform by HashiCorp that enables teams to collaborate on infrastructure-as-code by running, storing state, enforcing policies, and automating workflows for Terraform configurations.
@@ -26,16 +28,17 @@ To support the integration of Terraform with authentik, you need to create an ap
 
 ### Create an application and provider in authentik
 
+<SAMLProvider20265Warning />
+
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
     - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
     - **Choose a Provider type**: select **SAML Provider** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations:
         - Set the **ACS URL** to `https://temporary.domain`.
-        - Set the **Service Provider Binding** to `Post`.
         - Set the **Audience** to `https://temporary.domain`.
         - Under **Advanced protocol settings**, select an available **Signing Certificate**.
-    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 
 3. Click **Submit** to save the new application and provider.
 

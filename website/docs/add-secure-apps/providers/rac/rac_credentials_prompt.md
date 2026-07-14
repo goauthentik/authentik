@@ -55,7 +55,7 @@ You can optionally add other prompt fields such as `domain` (e.g. `connection_se
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Flows and Stages** > **Flows**.
 3. Click the name of the newly created authorization flow.
-4. Click on **Stage bindings**, click **New Stage**, and enter the following required settings:
+4. Click **Stage Bindings**, click **Create or bind...**, select **New Stage**, and enter the following required settings:
     - **Select Type**: Select `Prompt stage` as the prompt type.
     - **Create Prompt Stage**:
         - **Name**: Enter a name for the prompt stage.
@@ -91,4 +91,4 @@ Other options for the connection security type are: `any`, `nla`, `nla-ext`, `vm
 
 ## Configuration verification
 
-Log in to authentik with a user account that has the required privileges to access the RAC application. Open the User interface, and on the **My applications** page click the RAC application. You should then be redirected to the prompt stage and prompted for a username and password. Enter the credentials for the RAC endpoint and if the credentials are valid the RDP/SSH/VNC connection should be established.
+Log in to authentik with a user account that has the required privileges to access the RAC application. Open the User interface, and on the **Application Dashboard** page click the RAC application. You should then be redirected to the prompt stage and prompted for a username and password. Enter the credentials for the RAC endpoint and if the credentials are valid the RDP/SSH/VNC connection should be established.

@@ -1,5 +1,7 @@
 ---
 title: RADIUS Provider
+sidebar_position: 9
+sidebar_label: "RADIUS Provider"
 ---
 
 import { HashSupport } from "./HashSupport";
@@ -47,7 +49,7 @@ This table represents the password-hash compatibility with various RADIUS protoc
 <HashSupport />
 </details>
 
-### EAP :ak-enterprise :ak-version[2025.10]
+### EAP :ak-enterprise {#eap}
 
 authentik supports EAP with TLS as the inner protocol, between the application and transport layers to encrypt and secure communications. To set this up, a certificate authority needs to be available and client certificates need to be installed on machines, the configuration of which is outside of the scope of this document.
 

@@ -19,7 +19,7 @@ Here is a non-exhaustive list of what background tasks are used for:
     - [SSF Provider](../add-secure-apps/providers/ssf/index.md)
     - [Kerberos Source](../users-sources/sources/protocols/kerberos/index.md)
     - [LDAP Source](../users-sources/sources/protocols/ldap/index.md)
-- Enterprise [license management](../enterprise/manage-enterprise.mdx#license-management)
+- Enterprise [license management](../enterprise/manage-enterprise.md#license-management)
 - Event Notifications: send [Notifications](./events/notifications.md) when events are created
 - Emails: send emails when triggered by one of the email stages or otherwise
 
@@ -39,6 +39,7 @@ A task can have the following statuses:
 - **Warning**: the task emitted a warning. Look at the task logs for further information. See [Failed tasks](#failed-tasks) for more details.
 - **Error**: the task failed to process. Either the task threw an exception, or reported another error. Look at the task logs for further information. See [Failed tasks](#failed-tasks) for more details.
 - **Waiting to run**: the task has been queued for running, but no worker has picked it up yet, either because none are available, they are already busy, or because it's just been queued.
+- **Waiting for dependencies**: the task is waiting for other tasks to finish before starting.
 - **Consumed**: the task has been picked up by a worker.
 - **Pre-processing**: the task is being prepared to run.
 - **Running**: the task is currently running.

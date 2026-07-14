@@ -12,7 +12,7 @@ import "#elements/utils/TimeDeltaHelp";
 
 import { propertyMappingsProvider, propertyMappingsSelector } from "./SAMLSourceFormHelpers.js";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { type AkCryptoCertificateSearch } from "#admin/common/ak-crypto-certificate-search";
 import { iconHelperText, placeholderHelperText } from "#admin/helperText";
@@ -40,6 +40,14 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-source-saml-form")
 export class SAMLSourceForm extends BaseSourceForm<SAMLSource> {
+    protected endpoints = {
+        load: (slug: string) => aki(SourcesApi).sourcesSamlRetrieve({ slug }),
+        create: (sAMLSourceRequest: SAMLSource) =>
+            aki(SourcesApi).sourcesSamlCreate({ sAMLSourceRequest }),
+        update: (slug: string, sAMLSourceRequest: SAMLSource) =>
+            aki(SourcesApi).sourcesSamlUpdate({ slug, sAMLSourceRequest }),
+    };
+
     @state()
     protected hasSigningCert = false;
 
@@ -53,25 +61,6 @@ export class SAMLSourceForm extends BaseSourceForm<SAMLSource> {
         const target = ev.target as AkCryptoCertificateSearch;
         if (!target) return;
         this.hasSigningCert = !!target.selectedKeypair;
-    }
-
-    async loadInstance(pk: string): Promise<SAMLSource> {
-        return new SourcesApi(DEFAULT_CONFIG).sourcesSamlRetrieve({
-            slug: pk,
-        });
-    }
-
-    async send(data: SAMLSource): Promise<SAMLSource> {
-        if (this.instance) {
-            return new SourcesApi(DEFAULT_CONFIG).sourcesSamlUpdate({
-                slug: this.instance.slug,
-                sAMLSourceRequest: data,
-            });
-        }
-
-        return new SourcesApi(DEFAULT_CONFIG).sourcesSamlCreate({
-            sAMLSourceRequest: data,
-        });
     }
 
     renderHasSigningCert(): TemplateResult {

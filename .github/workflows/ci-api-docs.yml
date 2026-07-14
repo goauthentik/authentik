@@ -21,40 +21,60 @@ jobs:
         command:
           - prettier-check
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v5
-      - name: Install Dependencies
-        working-directory: website/
-        run: npm ci
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v5
+      - uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # v6.0.9
+      - name: Pin pnpm store directory
+        run: |
+          echo "PNPM_HOME=${RUNNER_TEMP}/pnpm-home" >> "$GITHUB_ENV"
+          echo "npm_config_store_dir=${RUNNER_TEMP}/pnpm-home/store" >> "$GITHUB_ENV"
+      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v4
+        with:
+          node-version-file: package.json
+          cache: pnpm
+          cache-dependency-path: |
+            pnpm-lock.yaml
+            website/pnpm-lock.yaml
+      - name: Install dependencies
+        run: |
+          pnpm install --frozen-lockfile
+          pnpm --dir website install --frozen-lockfile
       - name: Lint
-        working-directory: website/
-        run: npm run ${{ matrix.command }}
+        run: pnpm --dir website run ${{ matrix.command }}
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v5
-      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v5
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v5
+      - uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # v6.0.9
+      - name: Pin pnpm store directory
+        run: |
+          echo "PNPM_HOME=${RUNNER_TEMP}/pnpm-home" >> "$GITHUB_ENV"
+          echo "npm_config_store_dir=${RUNNER_TEMP}/pnpm-home/store" >> "$GITHUB_ENV"
+      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v4
         with:
-          node-version-file: website/package.json
-          cache: "npm"
-          cache-dependency-path: website/package-lock.json
-      - working-directory: website/
-        name: Install Dependencies
-        run: npm ci
-      - uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v4
+          node-version-file: package.json
+          cache: pnpm
+          cache-dependency-path: |
+            pnpm-lock.yaml
+            website/pnpm-lock.yaml
+      - name: Install dependencies
+        run: |
+          pnpm install --frozen-lockfile
+          pnpm --dir website install --frozen-lockfile
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v4
         with:
           path: |
             ${{ github.workspace }}/website/api/.docusaurus
             ${{ github.workspace }}/website/api/**/.cache
           key: |
-            ${{ runner.os }}-docusaurus-${{ hashFiles('**/package-lock.json') }}-${{ hashFiles('**.[jt]s', '**.[jt]sx') }}
+            ${{ runner.os }}-docusaurus-${{ hashFiles('**/pnpm-lock.yaml') }}-${{ hashFiles('**.[jt]s', '**.[jt]sx') }}
           restore-keys: |
-            ${{ runner.os }}-docusaurus-${{ hashFiles('**/package-lock.json') }}
+            ${{ runner.os }}-docusaurus-${{ hashFiles('**/pnpm-lock.yaml') }}
       - name: Build API Docs via Docusaurus
         working-directory: website
         env:
           NODE_ENV: production
-        run: npm run build -w api
+        run: pnpm run build:api
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v4
         with:
           name: api-docs
@@ -66,23 +86,35 @@ jobs:
       - lint
       - build
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v5
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v5
       - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v5
         with:
           name: api-docs
           path: website/api/build
-      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v5
+      - uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # v6.0.9
+      - name: Pin pnpm store directory
+        run: |
+          echo "PNPM_HOME=${RUNNER_TEMP}/pnpm-home" >> "$GITHUB_ENV"
+          echo "npm_config_store_dir=${RUNNER_TEMP}/pnpm-home/store" >> "$GITHUB_ENV"
+      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v4
         with:
-          node-version-file: website/package.json
-          cache: "npm"
-          cache-dependency-path: website/package-lock.json
+          node-version-file: package.json
+          cache: pnpm
+          cache-dependency-path: |
+            pnpm-lock.yaml
+            website/pnpm-lock.yaml
+      - name: Install dependencies
+        run: |
+          pnpm install --frozen-lockfile
+          pnpm --dir website install --frozen-lockfile
       - name: Deploy Netlify (Production)
         working-directory: website/api
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         env:
           NETLIFY_SITE_ID: authentik-api-docs.netlify.app
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
-        run: npx netlify deploy --no-build --prod
+        run: |
+          npx netlify deploy --no-build -d ./build --prod
       - name: Deploy Netlify (Preview)
         if: github.event_name == 'pull_request' || github.ref != 'refs/heads/main'
         working-directory: website/api
@@ -90,6 +122,6 @@ jobs:
           NETLIFY_SITE_ID: authentik-api-docs.netlify.app
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
         run: |
-          if [ -n "${VAR}" ]; then
-            npx netlify deploy --no-build --alias=deploy-preview-${{ github.event.number }}
+          if [ -n "${NETLIFY_AUTH_TOKEN}" ]; then
+            npx netlify deploy --no-build -d ./build --alias=deploy-preview-${{ github.event.number }}
           fi
