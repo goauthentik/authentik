@@ -30,7 +30,7 @@ func (pi *ProviderInstance) UserEntry(u api.User) *ldap.Entry {
 		u.IsActive = new(false)
 	}
 	if u.Email == nil {
-		u.Email = new("")
+		u.Email = &api.EmailAddress{String: new("")}
 	}
 	attrs = utils.EnsureAttributes(attrs, map[string][]string{
 		"ak-active":      {strings.ToUpper(strconv.FormatBool(*u.IsActive))},
@@ -41,7 +41,7 @@ func (pi *ProviderInstance) UserEntry(u api.User) *ldap.Entry {
 		"uid":            {u.Uid},
 		"name":           {u.Name},
 		"displayName":    {u.Name},
-		"mail":           {*u.Email},
+		"mail":           {*u.Email.String},
 		"objectClass": {
 			constants.OCTop,
 			constants.OCPerson,

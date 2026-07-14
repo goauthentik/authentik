@@ -23,7 +23,7 @@ func (a *Application) getUpstreamTransport() http.RoundTripper {
 
 func (a *Application) configureProxy() error {
 	// Reverse proxy to the application server
-	u, err := url.Parse(*a.proxyConfig.InternalHost)
+	u, err := url.Parse(*a.proxyConfig.InternalHost.String)
 	if err != nil {
 		return err
 	}
