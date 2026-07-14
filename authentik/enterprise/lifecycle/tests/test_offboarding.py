@@ -78,6 +78,32 @@ class TestOffboardingService(APITestCase):
         self.assertTrue(AuthenticatedSession.objects.filter(user=self.user).exists())
         self.assertTrue(Token.objects.filter(user=self.user).exists())
 
+    def test_revoke_sessions_only(self):
+        """Sessions and tokens toggle independently: sessions on, tokens off."""
+        _add_session(self.user)
+        _add_token(self.user)
+        offboard_user(
+            self.user,
+            OffboardingAction.DEACTIVATE,
+            revoke_sessions=True,
+            revoke_tokens=False,
+        )
+        self.assertFalse(AuthenticatedSession.objects.filter(user=self.user).exists())
+        self.assertTrue(Token.objects.filter(user=self.user).exists())
+
+    def test_revoke_tokens_only(self):
+        """Sessions and tokens toggle independently: tokens on, sessions off."""
+        _add_session(self.user)
+        _add_token(self.user)
+        offboard_user(
+            self.user,
+            OffboardingAction.DEACTIVATE,
+            revoke_sessions=False,
+            revoke_tokens=True,
+        )
+        self.assertTrue(AuthenticatedSession.objects.filter(user=self.user).exists())
+        self.assertFalse(Token.objects.filter(user=self.user).exists())
+
 
 class TestOffboardingSweeper(APITestCase):
     @classmethod

@@ -9,23 +9,12 @@ from django.http import HttpRequest
 from django.utils.translation import gettext as _
 from structlog.stdlib import get_logger
 
-from authentik.core.models import AuthenticatedSession, Token, User
+from authentik.core.models import User
+from authentik.enterprise.core.revocation import revoke_user_access
 from authentik.enterprise.lifecycle.models import OffboardingAction
 from authentik.events.models import Event, EventAction
 
 LOGGER = get_logger()
-
-
-def revoke_sessions_for_user(user: User) -> int:
-    """Delete all of a user's authenticated sessions."""
-    deleted, _ = AuthenticatedSession.objects.filter(user=user).delete()
-    return deleted
-
-
-def revoke_tokens_for_user(user: User) -> int:
-    """Delete all of a user's tokens (API access, app passwords, recovery, ...)."""
-    deleted, _ = Token.objects.filter(user=user).delete()
-    return deleted
 
 
 def offboard_user(
@@ -48,10 +37,7 @@ def offboard_user(
     username = user.username
     user_pk = user.pk
 
-    if revoke_sessions:
-        revoke_sessions_for_user(user)
-    if revoke_tokens:
-        revoke_tokens_for_user(user)
+    revoke_user_access(user, sessions=revoke_sessions, tokens=revoke_tokens)
 
     event = Event.new(
         EventAction.USER_OFFBOARDED,
