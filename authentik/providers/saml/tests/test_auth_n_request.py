@@ -112,7 +112,7 @@ class TestAuthNRequest(TestCase):
         )
         self.source = SAMLSource.objects.create(
             slug="provider",
-            issuer="authentik",
+            issuer_override="authentik",
             pre_authentication_flow=create_test_flow(),
             signing_kp=self.cert,
             verification_kp=self.cert,
