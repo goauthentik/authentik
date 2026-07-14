@@ -17,7 +17,7 @@ TWITTER_USER_WITH_EMAIL = {
 }
 
 
-class TestTypeGitHub(TestCase):
+class TestTypeTwitter(TestCase):
     """OAuth Source tests"""
 
     def setUp(self):
