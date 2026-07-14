@@ -67,7 +67,7 @@ reqwest-middleware = { version = "= 0.5.2", features = [
   "query",
   "rustls",
 ] }
-rustls = { version = "= 0.23.41", features = ["fips"] }
+rustls = { version = "= 0.23.42", features = ["fips"] }
 sentry = { version = "= 0.48.4", default-features = false, features = [
   "backtrace",
   "contexts",
