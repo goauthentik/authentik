@@ -43,6 +43,7 @@ Mautic
 Mobilizon
 myabsorb
 n8n
+NocoDB
 Nexterm
 Observium
 Ofair
