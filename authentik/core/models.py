@@ -44,6 +44,7 @@ from authentik.lib.models import (
     DomainlessFormattedURLValidator,
     ExpiringModel,
     SerializerModel,
+    SimpleThroughModel,
 )
 from authentik.lib.utils.inheritance import get_deepest_child
 from authentik.lib.utils.time import timedelta_from_string
@@ -1259,7 +1260,7 @@ class PropertyMapping(SerializerModel, ManagedModel):
         verbose_name_plural = _("Property Mappings")
 
 
-class SourceUserPropertyMapping(models.Model):
+class SourceUserPropertyMapping(SimpleThroughModel):
     property_mapping = models.ForeignKey(
         PropertyMapping, on_delete=models.CASCADE, db_column="propertymapping_id"
     )
@@ -1268,6 +1269,8 @@ class SourceUserPropertyMapping(models.Model):
     class Meta:
         db_table = "authentik_core_source_user_property_mappings"
         unique_together = (("property_mapping", "source"),)
+        verbose_name = _("Source User Property Mapping")
+        verbose_name_plural = _("Source User Property Mappings")
 
     def __str__(self):
         return (
@@ -1276,7 +1279,7 @@ class SourceUserPropertyMapping(models.Model):
         )
 
 
-class SourceGroupPropertyMapping(models.Model):
+class SourceGroupPropertyMapping(SimpleThroughModel):
     property_mapping = models.ForeignKey(
         PropertyMapping, on_delete=models.CASCADE, db_column="propertymapping_id"
     )
@@ -1285,6 +1288,8 @@ class SourceGroupPropertyMapping(models.Model):
     class Meta:
         db_table = "authentik_core_source_group_property_mappings"
         unique_together = (("property_mapping", "source"),)
+        verbose_name = _("Source Group Property Mapping")
+        verbose_name_plural = _("Source Group Property Mappings")
 
     def __str__(self):
         return (
@@ -1293,7 +1298,7 @@ class SourceGroupPropertyMapping(models.Model):
         )
 
 
-class ProviderPropertyMapping(models.Model):
+class ProviderPropertyMapping(SimpleThroughModel):
     property_mapping = models.ForeignKey(
         PropertyMapping, on_delete=models.CASCADE, db_column="propertymapping_id"
     )
@@ -1302,6 +1307,8 @@ class ProviderPropertyMapping(models.Model):
     class Meta:
         db_table = "authentik_core_provider_property_mappings"
         unique_together = (("property_mapping", "provider"),)
+        verbose_name = _("Provider Property Mapping")
+        verbose_name_plural = _("Provider Property Mappings")
 
     def __str__(self):
         return (
@@ -1310,37 +1317,43 @@ class ProviderPropertyMapping(models.Model):
         )
 
 
-class UserRole(models.Model):
+class UserRole(SimpleThroughModel):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     role = models.ForeignKey(Role, on_delete=models.CASCADE)
 
     class Meta:
         db_table = "authentik_core_user_roles"
         unique_together = (("user", "role"),)
+        verbose_name = _("User Role")
+        verbose_name_plural = _("User Roles")
 
     def __str__(self):
         return f"UserRole for User {self.user_id} and Role {self.role_id}."
 
 
-class GroupRole(models.Model):
+class GroupRole(SimpleThroughModel):
     group = models.ForeignKey(Group, on_delete=models.CASCADE)
     role = models.ForeignKey(Role, on_delete=models.CASCADE)
 
     class Meta:
         db_table = "authentik_core_group_roles"
         unique_together = (("group", "role"),)
+        verbose_name = _("Group Role")
+        verbose_name_plural = _("Group Roles")
 
     def __str__(self):
         return f"GroupRole for Group {self.group_id} and Role {self.role_id}."
 
 
-class UserGroup(models.Model):
+class UserGroup(SimpleThroughModel):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     group = models.ForeignKey(Group, on_delete=models.CASCADE)
 
     class Meta:
         db_table = "authentik_core_user_groups"
         unique_together = (("user", "group"),)
+        verbose_name = _("User Group")
+        verbose_name_plural = _("User Groups")
 
     def __str__(self):
         return f"UserGroup for User {self.user_id} and Group {self.group_id}."

@@ -27,7 +27,7 @@ from authentik.core.expression.evaluator import PropertyMappingEvaluator
 from authentik.core.expression.exceptions import PropertyMappingExpressionException
 from authentik.core.models import User
 from authentik.flows.models import Stage
-from authentik.lib.models import SerializerModel
+from authentik.lib.models import SerializerModel, SimpleThroughModel
 from authentik.policies.models import Policy
 
 CHOICES_CONTEXT_SUFFIX = "__choices"
@@ -378,7 +378,7 @@ class PromptStage(Stage):
         verbose_name_plural = _("Prompt Stages")
 
 
-class PromptStageField(models.Model):
+class PromptStageField(SimpleThroughModel):
     prompt_stage = models.ForeignKey(
         PromptStage,
         on_delete=models.CASCADE,
@@ -389,6 +389,8 @@ class PromptStageField(models.Model):
     class Meta:
         db_table = "authentik_stages_prompt_promptstage_fields"
         unique_together = (("prompt_stage", "prompt"),)
+        verbose_name = _("Prompt Stage Field")
+        verbose_name_plural = _("Prompt Stage Fields")
 
     def __str__(self):
         return (
@@ -397,7 +399,7 @@ class PromptStageField(models.Model):
         )
 
 
-class PromptStageValidationPolicy(models.Model):
+class PromptStageValidationPolicy(SimpleThroughModel):
     prompt_stage = models.ForeignKey(
         PromptStage,
         on_delete=models.CASCADE,
@@ -408,6 +410,8 @@ class PromptStageValidationPolicy(models.Model):
     class Meta:
         db_table = "authentik_stages_prompt_promptstage_validation_policies"
         unique_together = (("prompt_stage", "policy"),)
+        verbose_name = _("Prompt Stage Validation Policy")
+        verbose_name_plural = _("Prompt Stage Validation Policys")
 
     def __str__(self):
         return (

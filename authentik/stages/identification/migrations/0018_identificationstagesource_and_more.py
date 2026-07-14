@@ -46,6 +46,8 @@ class Migration(migrations.Migration):
                     options={
                         "db_table": "authentik_stages_identification_identificationstage_sources",
                         "unique_together": {("identification_stage", "source")},
+                        "verbose_name": "Identification Stage Source",
+                        "verbose_name_plural": "Identification Stage Sources",
                     },
                 ),
                 migrations.AlterField(

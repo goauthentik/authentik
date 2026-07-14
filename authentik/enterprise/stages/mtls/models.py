@@ -6,6 +6,7 @@ from authentik.crypto.models import CertificateKeyPair
 from authentik.endpoints.models import StageMode
 from authentik.flows.models import Stage
 from authentik.flows.stage import StageView
+from authentik.lib.models import SimpleThroughModel
 
 
 class CertAttributes(models.TextChoices):
@@ -66,7 +67,7 @@ class MutualTLSStage(Stage):
         ]
 
 
-class MutualTLSStageCertificateAuthority(models.Model):
+class MutualTLSStageCertificateAuthority(SimpleThroughModel):
     mutual_tls_stage = models.ForeignKey(
         MutualTLSStage,
         on_delete=models.CASCADE,
@@ -79,6 +80,8 @@ class MutualTLSStageCertificateAuthority(models.Model):
     class Meta:
         db_table = "authentik_stages_mtls_mutualtlsstage_certificate_authorities"
         unique_together = (("mutual_tls_stage", "certificate_key_pair"),)
+        verbose_name = _("Mutual TLS Stage Certificate Authority")
+        verbose_name_plural = _("Mutual TLS Stage Certificate Authoritys")
 
     def __str__(self):
         return (

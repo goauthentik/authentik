@@ -58,6 +58,8 @@ class Migration(migrations.Migration):
                         "unique_together": {
                             ("authenticator_validate_stage", "configuration_stage")
                         },
+                        "verbose_name": "Authenticator Validate Stage Configuration Stage",
+                        "verbose_name_plural": "Authenticator Validate Stage Configuration Stages",
                     },
                 ),
                 migrations.AlterField(
@@ -113,6 +115,8 @@ class Migration(migrations.Migration):
                         "unique_together": {
                             ("authenticator_validate_stage", "webauthn_allowed_device_type")
                         },
+                        "verbose_name": "Authenticator Validate Stage WebAuthn Allowed Device Type",
+                        "verbose_name_plural": "Authenticator Validate Stage WebAuthn Allowed Device Types",
                     },
                 ),
                 migrations.AlterField(

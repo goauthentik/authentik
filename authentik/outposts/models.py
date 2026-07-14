@@ -31,7 +31,7 @@ from authentik.core.models import (
 from authentik.crypto.models import CertificateKeyPair
 from authentik.events.models import Event, EventAction
 from authentik.lib.config import CONFIG
-from authentik.lib.models import InheritanceForeignKey, SerializerModel
+from authentik.lib.models import InheritanceForeignKey, SerializerModel, SimpleThroughModel
 from authentik.lib.sentry import SentryIgnoredException
 from authentik.lib.utils.time import fqdn_rand
 from authentik.outposts.controllers.k8s.utils import get_namespace
@@ -457,13 +457,15 @@ class Outpost(ScheduledModel, SerializerModel, ManagedModel):
         verbose_name_plural = _("Outposts")
 
 
-class OutpostProvider(models.Model):
+class OutpostProvider(SimpleThroughModel):
     outpost = models.ForeignKey(Outpost, on_delete=models.CASCADE)
     provider = models.ForeignKey(Provider, on_delete=models.CASCADE)
 
     class Meta:
         db_table = "authentik_outposts_outpost_providers"
         unique_together = (("outpost", "provider"),)
+        verbose_name = _("Outpost Provider")
+        verbose_name_plural = _("Outpost Providers")
 
     def __str__(self):
         return f"OutpostProvider for Outpost {self.outpost_id} and Provider {self.provider_id}."

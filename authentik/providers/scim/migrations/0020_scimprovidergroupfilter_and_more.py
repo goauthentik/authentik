@@ -46,6 +46,8 @@ class Migration(migrations.Migration):
                     options={
                         "db_table": "authentik_providers_scim_scimprovider_group_filters",
                         "unique_together": {("group", "scim_provider")},
+                        "verbose_name": "SCIM Provider Group Filter",
+                        "verbose_name_plural": "SCIM Provider Group Filters",
                     },
                 ),
                 migrations.AlterField(
@@ -96,6 +98,8 @@ class Migration(migrations.Migration):
                     options={
                         "db_table": "authentik_providers_scim_scimprovider_property_mappings_group",
                         "unique_together": {("property_mapping", "scim_provider")},
+                        "verbose_name": "SCIMProvider Group Property Mapping",
+                        "verbose_name_plural": "SCIMProvider Group Property Mappings",
                     },
                 ),
                 migrations.AlterField(

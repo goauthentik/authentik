@@ -51,6 +51,8 @@ class Migration(migrations.Migration):
                         "unique_together": {
                             ("authenticator_webauthn_stage", "device_type_restriction")
                         },
+                        "verbose_name": "Authenticator WebAuthn Stage Device Type Restriction",
+                        "verbose_name_plural": "Authenticator WebAuthn Stage Device Type Restrictions",
                     },
                 ),
                 migrations.AlterField(

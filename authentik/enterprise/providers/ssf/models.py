@@ -14,7 +14,12 @@ from jwt import encode
 
 from authentik.core.models import BackchannelProvider, Token
 from authentik.crypto.models import CertificateKeyPair
-from authentik.lib.models import CreatedUpdatedModel, ExpiringModel, InternallyManagedMixin
+from authentik.lib.models import (
+    CreatedUpdatedModel,
+    ExpiringModel,
+    InternallyManagedMixin,
+    SimpleThroughModel,
+)
 from authentik.lib.utils.time import timedelta_from_string, timedelta_string_validator
 from authentik.providers.oauth2.models import JWTAlgorithms, OAuth2Provider
 from authentik.tasks.models import TasksModel
@@ -140,7 +145,7 @@ class SSFProvider(TasksModel, BackchannelProvider):
         ]
 
 
-class SSFProviderOIDCAuthProvider(models.Model):
+class SSFProviderOIDCAuthProvider(SimpleThroughModel):
     ssf_provider = models.ForeignKey(
         SSFProvider, on_delete=models.CASCADE, db_column="ssfprovider_id"
     )
@@ -153,6 +158,8 @@ class SSFProviderOIDCAuthProvider(models.Model):
     class Meta:
         db_table = "authentik_providers_ssf_ssfprovider_oidc_auth_providers"
         unique_together = (("ssf_provider", "oauth2_provider"),)
+        verbose_name = _("SSF Provider OIDC Auth Provider")
+        verbose_name_plural = _("SSF Provider OIDC Auth Providers")
 
     def __str__(self):
         return (

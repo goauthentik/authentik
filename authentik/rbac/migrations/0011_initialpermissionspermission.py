@@ -45,6 +45,8 @@ class Migration(migrations.Migration):
                     options={
                         "db_table": "authentik_rbac_initialpermissions_permissions",
                         "unique_together": {("initial_permissions", "permission")},
+                        "verbose_name": "Initial Permissions Permission",
+                        "verbose_name_plural": "Initial Permissions Permissions",
                     },
                 ),
                 migrations.AlterField(

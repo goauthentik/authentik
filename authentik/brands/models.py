@@ -13,7 +13,7 @@ from authentik.admin.files.manager import get_file_manager
 from authentik.admin.files.usage import FileUsage
 from authentik.crypto.models import CertificateKeyPair
 from authentik.flows.models import Flow
-from authentik.lib.models import SerializerModel
+from authentik.lib.models import SerializerModel, SimpleThroughModel
 
 LOGGER = get_logger()
 
@@ -170,7 +170,7 @@ class Brand(SerializerModel):
         ]
 
 
-class BrandClientCertificate(models.Model):
+class BrandClientCertificate(SimpleThroughModel):
     brand = models.ForeignKey(Brand, on_delete=models.CASCADE)
     certificate_key_pair = models.ForeignKey(
         CertificateKeyPair, on_delete=models.CASCADE, db_column="certificatekeypair_id"
@@ -179,6 +179,8 @@ class BrandClientCertificate(models.Model):
     class Meta:
         db_table = "authentik_brands_brand_client_certificates"
         unique_together = (("brand", "certificate_key_pair"),)
+        verbose_name = _("Brand Client Certificate")
+        verbose_name_plural = _("Brand Client Certificates")
 
     def __str__(self):
         return (

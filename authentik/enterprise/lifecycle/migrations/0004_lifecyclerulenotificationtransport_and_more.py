@@ -52,6 +52,8 @@ class Migration(migrations.Migration):
                     options={
                         "db_table": "authentik_lifecycle_lifecyclerule_reviewer_groups",
                         "unique_together": {("lifecycle_rule", "group")},
+                        "verbose_name": "Lifecycle Rule Reviewer Group",
+                        "verbose_name_plural": "Lifecycle Rule Reviewer Groups",
                     },
                 ),
                 migrations.AlterField(
@@ -99,6 +101,8 @@ class Migration(migrations.Migration):
                     options={
                         "db_table": "authentik_lifecycle_lifecyclerule_reviewers",
                         "unique_together": {("lifecycle_rule", "user")},
+                        "verbose_name": "Lifecycle Rule Reviewer",
+                        "verbose_name_plural": "Lifecycle Rule Reviewers",
                     },
                 ),
                 migrations.AlterField(
@@ -147,6 +151,8 @@ class Migration(migrations.Migration):
                     options={
                         "db_table": "authentik_lifecycle_lifecyclerule_notification_transports",
                         "unique_together": {("lifecycle_rule", "notification_transport")},
+                        "verbose_name": "Lifecycle Rule Notification Transport",
+                        "verbose_name_plural": "Lifecycle Rule Notification Transports",
                     },
                 ),
                 migrations.AlterField(

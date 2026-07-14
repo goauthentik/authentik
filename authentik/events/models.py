@@ -37,7 +37,12 @@ from authentik.events.utils import (
     sanitize_dict,
     sanitize_item,
 )
-from authentik.lib.models import DomainlessURLValidator, ExpiringModel, SerializerModel
+from authentik.lib.models import (
+    DomainlessURLValidator,
+    ExpiringModel,
+    SerializerModel,
+    SimpleThroughModel,
+)
 from authentik.lib.sentry import SentryIgnoredException
 from authentik.lib.utils.errors import exception_to_dict
 from authentik.lib.utils.http import get_http_session
@@ -716,7 +721,7 @@ class NotificationRule(TasksModel, SerializerModel, PolicyBindingModel):
         verbose_name_plural = _("Notification Rules")
 
 
-class NotificationRuleNotificationTransport(models.Model):
+class NotificationRuleNotificationTransport(SimpleThroughModel):
     notification_rule = models.ForeignKey(
         NotificationRule, on_delete=models.CASCADE, db_column="notificationrule_id"
     )
@@ -729,6 +734,8 @@ class NotificationRuleNotificationTransport(models.Model):
     class Meta:
         db_table = "authentik_events_notificationrule_transports"
         unique_together = (("notification_rule", "notification_transport"),)
+        verbose_name = _("Notification Rule Notification Transport")
+        verbose_name_plural = _("Notification Rule Notification Transports")
 
     def __str__(self):
         return (

@@ -46,6 +46,8 @@ class Migration(migrations.Migration):
                     options={
                         "db_table": "authentik_stages_prompt_promptstage_fields",
                         "unique_together": {("prompt_stage", "prompt")},
+                        "verbose_name": "Prompt Stage Field",
+                        "verbose_name_plural": "Prompt Stage Fields",
                     },
                 ),
                 migrations.AlterField(
@@ -92,6 +94,8 @@ class Migration(migrations.Migration):
                     options={
                         "db_table": "authentik_stages_prompt_promptstage_validation_policies",
                         "unique_together": {("prompt_stage", "policy")},
+                        "verbose_name": "Prompt Stage Validation Policy",
+                        "verbose_name_plural": "Prompt Stage Validation Policys",
                     },
                 ),
                 migrations.AlterField(

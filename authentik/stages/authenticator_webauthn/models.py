@@ -13,7 +13,7 @@ from webauthn.helpers.structs import PublicKeyCredentialDescriptor
 
 from authentik.core.types import UserSettingSerializer
 from authentik.flows.models import ConfigurableStage, FriendlyNamedStage, Stage
-from authentik.lib.models import InternallyManagedMixin, SerializerModel
+from authentik.lib.models import InternallyManagedMixin, SerializerModel, SimpleThroughModel
 from authentik.stages.authenticator.models import Device
 
 UNKNOWN_DEVICE_TYPE_AAGUID = "00000000-0000-0000-0000-000000000000"
@@ -227,7 +227,7 @@ class WebAuthnDeviceType(InternallyManagedMixin, SerializerModel):
         return f"WebAuthn device type {self.description} ({self.aaguid})"
 
 
-class AuthenticatorWebAuthnStageDeviceTypeRestriction(models.Model):
+class AuthenticatorWebAuthnStageDeviceTypeRestriction(SimpleThroughModel):
     authenticator_webauthn_stage = models.ForeignKey(
         AuthenticatorWebAuthnStage,
         on_delete=models.CASCADE,
@@ -242,6 +242,8 @@ class AuthenticatorWebAuthnStageDeviceTypeRestriction(models.Model):
     class Meta:
         db_table = "authentik_stages_authenticator_webauthn_authenticatorwebaute3a7"
         unique_together = (("authenticator_webauthn_stage", "device_type_restriction"),)
+        verbose_name = _("Authenticator WebAuthn Stage Device Type Restriction")
+        verbose_name_plural = _("Authenticator WebAuthn Stage Device Type Restrictions")
 
     def __str__(self):
         return (

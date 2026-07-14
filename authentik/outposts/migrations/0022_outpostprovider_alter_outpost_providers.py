@@ -45,6 +45,8 @@ class Migration(migrations.Migration):
                     options={
                         "db_table": "authentik_outposts_outpost_providers",
                         "unique_together": {("outpost", "provider")},
+                        "verbose_name": "Outpost Provider",
+                        "verbose_name_plural": "Outpost Providers",
                     },
                 ),
                 migrations.AlterField(

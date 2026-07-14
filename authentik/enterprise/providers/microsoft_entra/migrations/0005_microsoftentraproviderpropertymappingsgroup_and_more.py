@@ -50,6 +50,8 @@ class Migration(migrations.Migration):
                     options={
                         "db_table": "authentik_providers_microsoft_entra_microsoftentraprovider_9f0b",
                         "unique_together": {("microsoft_entra_provider", "property_mapping")},
+                        "verbose_name": "Microsoft Entra Provider Property Mappings Group",
+                        "verbose_name_plural": "Microsoft Entra Provider Property Mappings Groups",
                     },
                 ),
                 migrations.AlterField(

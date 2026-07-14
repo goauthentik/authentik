@@ -46,6 +46,8 @@ class Migration(migrations.Migration):
                     options={
                         "db_table": "authentik_brands_brand_client_certificates",
                         "unique_together": {("brand", "certificate_key_pair")},
+                        "verbose_name": "Brand Client Certificate",
+                        "verbose_name_plural": "Brand Client Certificates",
                     },
                 ),
                 migrations.AlterField(

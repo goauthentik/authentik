@@ -16,7 +16,7 @@ from authentik.blueprints.models import ManagedModel
 from authentik.core.models import Group, User
 from authentik.enterprise.lifecycle.utils import link_for_model, start_of_day
 from authentik.events.models import Event, EventAction, NotificationSeverity, NotificationTransport
-from authentik.lib.models import SerializerModel
+from authentik.lib.models import SerializerModel, SimpleThroughModel
 from authentik.lib.utils.time import timedelta_from_string, timedelta_string_validator
 
 
@@ -166,7 +166,7 @@ class LifecycleRule(SerializerModel):
                     break
 
 
-class LifecycleRuleReviewerGroup(models.Model):
+class LifecycleRuleReviewerGroup(SimpleThroughModel):
     lifecycle_rule = models.ForeignKey(
         LifecycleRule,
         on_delete=models.CASCADE,
@@ -177,6 +177,8 @@ class LifecycleRuleReviewerGroup(models.Model):
     class Meta:
         db_table = "authentik_lifecycle_lifecyclerule_reviewer_groups"
         unique_together = (("lifecycle_rule", "group"),)
+        verbose_name = _("Lifecycle Rule Reviewer Group")
+        verbose_name_plural = _("Lifecycle Rule Reviewer Groups")
 
     def __str__(self):
         return (
@@ -186,7 +188,7 @@ class LifecycleRuleReviewerGroup(models.Model):
         )
 
 
-class LifecycleRuleReviewer(models.Model):
+class LifecycleRuleReviewer(SimpleThroughModel):
     lifecycle_rule = models.ForeignKey(
         LifecycleRule,
         on_delete=models.CASCADE,
@@ -197,6 +199,8 @@ class LifecycleRuleReviewer(models.Model):
     class Meta:
         db_table = "authentik_lifecycle_lifecyclerule_reviewers"
         unique_together = (("lifecycle_rule", "user"),)
+        verbose_name = _("Lifecycle Rule Reviewer")
+        verbose_name_plural = _("Lifecycle Rule Reviewers")
 
     def __str__(self):
         return (
@@ -206,7 +210,7 @@ class LifecycleRuleReviewer(models.Model):
         )
 
 
-class LifecycleRuleNotificationTransport(models.Model):
+class LifecycleRuleNotificationTransport(SimpleThroughModel):
     lifecycle_rule = models.ForeignKey(
         LifecycleRule,
         on_delete=models.CASCADE,
@@ -219,6 +223,8 @@ class LifecycleRuleNotificationTransport(models.Model):
     class Meta:
         db_table = "authentik_lifecycle_lifecyclerule_notification_transports"
         unique_together = (("lifecycle_rule", "notification_transport"),)
+        verbose_name = _("Lifecycle Rule Notification Transport")
+        verbose_name_plural = _("Lifecycle Rule Notification Transports")
 
     def __str__(self):
         return (

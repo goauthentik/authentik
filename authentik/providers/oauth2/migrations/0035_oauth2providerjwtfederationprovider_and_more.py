@@ -7,7 +7,10 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("authentik_providers_oauth2", "0034_authorizationcode_dpop_jkt_devicetoken_dpop_jkt_and_more"),
+        (
+            "authentik_providers_oauth2",
+            "0034_authorizationcode_dpop_jkt_devicetoken_dpop_jkt_and_more",
+        ),
         ("authentik_sources_oauth", "0014_migrate_azuread_to_entraid"),
     ]
 
@@ -47,6 +50,8 @@ class Migration(migrations.Migration):
                     options={
                         "db_table": "authentik_providers_oauth2_oauth2provider_jwt_federation_so2b48",
                         "unique_together": {("oauth2_provider", "oauth_source")},
+                        "verbose_name": "OAuth2 Provider JWT Federation Source",
+                        "verbose_name_plural": "OAuth2 Provider JWT Federation Sources",
                     },
                 ),
                 migrations.AlterField(
@@ -100,6 +105,8 @@ class Migration(migrations.Migration):
                     options={
                         "db_table": "authentik_providers_oauth2_oauth2provider_jwt_federation_pr9002",
                         "unique_together": {("oauth2_provider", "jwt_federation_provider")},
+                        "verbose_name": "OAuth2 Provider JWT Federation Provider",
+                        "verbose_name_plural": "OAuth2 Provider JWT Federation Providers",
                     },
                 ),
                 migrations.AlterField(

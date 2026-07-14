@@ -7,6 +7,7 @@ from django.views import View
 from rest_framework.serializers import BaseSerializer
 
 from authentik.flows.models import NotConfiguredAction, Stage
+from authentik.lib.models import SimpleThroughModel
 from authentik.lib.utils.time import timedelta_string_validator
 from authentik.stages.authenticator_webauthn.models import UserVerification, WebAuthnHint
 
@@ -128,7 +129,7 @@ class AuthenticatorValidateStage(Stage):
         verbose_name_plural = _("Authenticator Validation Stages")
 
 
-class AuthenticatorValidateStageConfigurationStage(models.Model):
+class AuthenticatorValidateStageConfigurationStage(SimpleThroughModel):
     authenticator_validate_stage = models.ForeignKey(
         AuthenticatorValidateStage,
         on_delete=models.CASCADE,
@@ -145,6 +146,8 @@ class AuthenticatorValidateStageConfigurationStage(models.Model):
     class Meta:
         db_table = "authentik_stages_authenticator_validate_authenticatorvalida3e25"
         unique_together = (("authenticator_validate_stage", "configuration_stage"),)
+        verbose_name = _("Authenticator Validate Stage Configuration Stage")
+        verbose_name_plural = _("Authenticator Validate Stage Configuration Stages")
 
     def __str__(self):
         return (
@@ -154,7 +157,7 @@ class AuthenticatorValidateStageConfigurationStage(models.Model):
         )
 
 
-class AuthenticatorValidateStageWebAuthnAllowedDeviceType(models.Model):
+class AuthenticatorValidateStageWebAuthnAllowedDeviceType(SimpleThroughModel):
     authenticator_validate_stage = models.ForeignKey(
         AuthenticatorValidateStage,
         on_delete=models.CASCADE,
@@ -171,6 +174,8 @@ class AuthenticatorValidateStageWebAuthnAllowedDeviceType(models.Model):
     class Meta:
         db_table = "authentik_stages_authenticator_validate_authenticatorvalida8318"
         unique_together = (("authenticator_validate_stage", "webauthn_allowed_device_type"),)
+        verbose_name = _("Authenticator Validate Stage WebAuthn Allowed Device Type")
+        verbose_name_plural = _("Authenticator Validate Stage WebAuthn Allowed Device Types")
 
     def __str__(self):
         return (

@@ -47,6 +47,8 @@ class Migration(migrations.Migration):
                     options={
                         "db_table": "authentik_stages_mtls_mutualtlsstage_certificate_authorities",
                         "unique_together": {("mutual_tls_stage", "certificate_key_pair")},
+                        "verbose_name": "Mutual TLS Stage Certificate Authority",
+                        "verbose_name_plural": "Mutual TLS Stage Certificate Authoritys",
                     },
                 ),
                 migrations.AlterField(

@@ -47,6 +47,8 @@ class Migration(migrations.Migration):
                     options={
                         "db_table": "authentik_core_source_user_property_mappings",
                         "unique_together": {("property_mapping", "source")},
+                        "verbose_name": "Source User Property Mapping",
+                        "verbose_name_plural": "Source User Property Mappings",
                     },
                 ),
                 migrations.AlterField(
@@ -96,6 +98,8 @@ class Migration(migrations.Migration):
                     options={
                         "db_table": "authentik_core_source_group_property_mappings",
                         "unique_together": {("property_mapping", "source")},
+                        "verbose_name": "Source Group Property Mapping",
+                        "verbose_name_plural": "Source Group Property Mappings",
                     },
                 ),
                 migrations.AlterField(
@@ -145,6 +149,8 @@ class Migration(migrations.Migration):
                     options={
                         "db_table": "authentik_core_provider_property_mappings",
                         "unique_together": {("property_mapping", "provider")},
+                        "verbose_name": "Provider Property Mapping",
+                        "verbose_name_plural": "Provider Property Mappings",
                     },
                 ),
                 migrations.AlterField(
@@ -192,6 +198,8 @@ class Migration(migrations.Migration):
                     options={
                         "db_table": "authentik_core_user_roles",
                         "unique_together": {("user", "role")},
+                        "verbose_name": "User Role",
+                        "verbose_name_plural": "User Roles",
                     },
                 ),
             ],
@@ -229,6 +237,8 @@ class Migration(migrations.Migration):
                     options={
                         "db_table": "authentik_core_group_roles",
                         "unique_together": {("group", "role")},
+                        "verbose_name": "Group Role",
+                        "verbose_name_plural": "Group Roles",
                     },
                 ),
             ],
@@ -286,6 +296,8 @@ class Migration(migrations.Migration):
                     options={
                         "db_table": "authentik_core_user_groups",
                         "unique_together": {("user", "group")},
+                        "verbose_name": "User Group",
+                        "verbose_name_plural": "User Groups",
                     },
                 ),
                 migrations.AlterField(

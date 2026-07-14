@@ -17,7 +17,12 @@ from authentik.endpoints.models import (
 )
 from authentik.flows.stage import StageView
 from authentik.lib.generators import generate_key
-from authentik.lib.models import ExpiringModel, InternallyManagedMixin, SerializerModel
+from authentik.lib.models import (
+    ExpiringModel,
+    InternallyManagedMixin,
+    SerializerModel,
+    SimpleThroughModel,
+)
 from authentik.lib.utils.time import timedelta_string_validator
 from authentik.stages.authenticator.models import Device as Authenticator
 
@@ -91,7 +96,7 @@ class AgentConnector(Connector):
         verbose_name_plural = _("Agent Connectors")
 
 
-class AgentConnectorJWTFederationProvider(models.Model):
+class AgentConnectorJWTFederationProvider(SimpleThroughModel):
     agent_connector = models.ForeignKey(
         AgentConnector, on_delete=models.CASCADE, db_column="agentconnector_id"
     )
@@ -104,6 +109,8 @@ class AgentConnectorJWTFederationProvider(models.Model):
     class Meta:
         db_table = "authentik_endpoints_connectors_agent_agentconnector_jwt_fed2bc6"
         unique_together = (("agent_connector", "oauth2_provider"),)
+        verbose_name = _("Agent Connector JWT Federation Provider")
+        verbose_name_plural = _("Agent Connector JWT Federation Providers")
 
     def __str__(self):
         return (

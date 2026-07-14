@@ -18,7 +18,7 @@ from authentik.core.models import (
     User,
     UserTypes,
 )
-from authentik.lib.models import InternallyManagedMixin, SerializerModel
+from authentik.lib.models import InternallyManagedMixin, SerializerModel, SimpleThroughModel
 from authentik.lib.sync.outgoing.base import BaseOutgoingSyncClient
 from authentik.lib.sync.outgoing.models import OutgoingSyncDeleteAction, OutgoingSyncProvider
 
@@ -196,7 +196,7 @@ class GoogleWorkspaceProvider(OutgoingSyncProvider, BackchannelProvider):
         verbose_name_plural = _("Google Workspace Providers")
 
 
-class GoogleWorkspaceProviderPropertyMappingsGroup(models.Model):
+class GoogleWorkspaceProviderPropertyMappingsGroup(SimpleThroughModel):
     google_workspace_provider = models.ForeignKey(
         GoogleWorkspaceProvider,
         on_delete=models.CASCADE,
@@ -209,6 +209,8 @@ class GoogleWorkspaceProviderPropertyMappingsGroup(models.Model):
     class Meta:
         db_table = "authentik_providers_google_workspace_googleworkspaceprovide63d9"
         unique_together = (("google_workspace_provider", "property_mapping"),)
+        verbose_name = _("Google Workspace Provider Property Mappings Group")
+        verbose_name_plural = _("Google Workspace Provider Property Mappings Groups")
 
     def __str__(self):
         return (

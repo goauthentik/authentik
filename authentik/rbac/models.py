@@ -11,7 +11,7 @@ from guardian.shortcuts import assign_perm, remove_perm
 from rest_framework.serializers import BaseSerializer
 
 from authentik.blueprints.models import ManagedModel
-from authentik.lib.models import SerializerModel
+from authentik.lib.models import SerializerModel, SimpleThroughModel
 from authentik.lib.utils.reflection import get_apps
 
 
@@ -108,7 +108,7 @@ class InitialPermissions(SerializerModel):
         verbose_name_plural = _("Initial Permissions")
 
 
-class InitialPermissionsPermission(models.Model):
+class InitialPermissionsPermission(SimpleThroughModel):
     initial_permissions = models.ForeignKey(
         InitialPermissions, on_delete=models.CASCADE, db_column="initialpermissions_id"
     )
@@ -117,6 +117,8 @@ class InitialPermissionsPermission(models.Model):
     class Meta:
         db_table = "authentik_rbac_initialpermissions_permissions"
         unique_together = (("initial_permissions", "permission"),)
+        verbose_name = _("Initial Permissions Permission")
+        verbose_name_plural = _("Initial Permissions Permissions")
 
     def __str__(self):
         return (

@@ -46,6 +46,8 @@ class Migration(migrations.Migration):
                     options={
                         "db_table": "authentik_providers_rac_endpoint_property_mappings",
                         "unique_together": {("property_mapping", "endpoint")},
+                        "verbose_name": "Endpoint Property Mapping",
+                        "verbose_name_plural": "Endpoint Property Mappings",
                     },
                 ),
                 migrations.AlterField(

@@ -50,6 +50,8 @@ class Migration(migrations.Migration):
                     options={
                         "db_table": "authentik_providers_google_workspace_googleworkspaceprovide63d9",
                         "unique_together": {("google_workspace_provider", "property_mapping")},
+                        "verbose_name": "Google Workspace Provider Property Mappings Group",
+                        "verbose_name_plural": "Google Workspace Provider Property Mappings Groups",
                     },
                 ),
                 migrations.AlterField(

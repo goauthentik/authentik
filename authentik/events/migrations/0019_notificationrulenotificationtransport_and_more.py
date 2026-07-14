@@ -46,6 +46,8 @@ class Migration(migrations.Migration):
                     options={
                         "db_table": "authentik_events_notificationrule_transports",
                         "unique_together": {("notification_rule", "notification_transport")},
+                        "verbose_name": "Notification Rule Notification Transport",
+                        "verbose_name_plural": "Notification Rule Notification Transports",
                     },
                 ),
                 migrations.AlterField(

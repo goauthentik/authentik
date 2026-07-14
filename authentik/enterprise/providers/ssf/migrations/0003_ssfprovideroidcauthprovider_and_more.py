@@ -47,6 +47,8 @@ class Migration(migrations.Migration):
                     options={
                         "db_table": "authentik_providers_ssf_ssfprovider_oidc_auth_providers",
                         "unique_together": {("ssf_provider", "oauth2_provider")},
+                        "verbose_name": "SSF Provider OIDC Auth Provider",
+                        "verbose_name_plural": "SSF Provider OIDC Auth Providers",
                     },
                 ),
                 migrations.AlterField(

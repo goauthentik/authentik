@@ -73,6 +73,13 @@ class InternallyManagedMixin:
     """Mixin for models that should _not_ be manageable via blueprint."""
 
 
+class SimpleThroughModel(models.Model):
+    """Mixin for explicit many-to-many through models"""
+
+    class Meta:
+        abstract = True
+
+
 class DomainlessURLValidator(URLValidator):
     """Subclass of URLValidator which doesn't check the domain
     (to allow hostnames without domain)"""

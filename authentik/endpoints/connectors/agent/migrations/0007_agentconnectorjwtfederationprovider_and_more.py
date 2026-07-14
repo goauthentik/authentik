@@ -7,7 +7,10 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("authentik_endpoints_connectors_agent", "0006_alter_agentdeviceuserbinding_options_and_more"),
+        (
+            "authentik_endpoints_connectors_agent",
+            "0006_alter_agentdeviceuserbinding_options_and_more",
+        ),
         ("authentik_providers_oauth2", "0032_oauth2provider_grant_types"),
     ]
 
@@ -47,6 +50,8 @@ class Migration(migrations.Migration):
                     options={
                         "db_table": "authentik_endpoints_connectors_agent_agentconnector_jwt_fed2bc6",
                         "unique_together": {("agent_connector", "oauth2_provider")},
+                        "verbose_name": "Agent Connector JWT Federation Provider",
+                        "verbose_name_plural": "Agent Connector JWT Federation Providers",
                     },
                 ),
                 migrations.AlterField(
