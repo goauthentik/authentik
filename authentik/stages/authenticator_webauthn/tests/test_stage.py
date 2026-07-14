@@ -78,8 +78,8 @@ class TestAuthenticatorWebAuthnStage(FlowTestCase):
                 },
                 "challenge": bytes_to_base64url(plan.context[PLAN_CONTEXT_WEBAUTHN_CHALLENGE]),
                 "pubKeyCredParams": [
-                    {"type": "public-key", "alg": -7},
                     {"type": "public-key", "alg": -8},
+                    {"type": "public-key", "alg": -7},
                     {"type": "public-key", "alg": -257},
                 ],
                 "timeout": 60000,
