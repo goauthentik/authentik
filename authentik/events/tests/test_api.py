@@ -51,12 +51,17 @@ class TestEventsAPI(APITestCase):
     def test_top_n(self):
         """Test top_per_user"""
         event = Event.new(EventAction.AUTHORIZE_APPLICATION)
+        event.context["authorized_application"] = {"name": "foo"}
         event.save()  # We save to ensure nothing is un-saveable
         response = self.client.get(
             reverse("authentik_api:event-top-per-user"),
-            data={"filter_action": EventAction.AUTHORIZE_APPLICATION},
+            data={"action": EventAction.AUTHORIZE_APPLICATION},
         )
         self.assertEqual(response.status_code, 200)
+        self.assertJSONEqual(
+            response.content,
+            [{"application": {"name": "foo"}, "counted_events": 1, "unique_users": 0}],
+        )
 
     def test_actions(self):
         """Test actions"""

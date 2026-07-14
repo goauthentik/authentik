@@ -34,24 +34,13 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-provider-ssf-form")
 export class SSFProviderFormPage extends BaseProviderForm<SSFProvider> {
-    async loadInstance(pk: number): Promise<SSFProvider> {
-        const provider = await aki(ProvidersApi).providersSsfRetrieve({
-            id: pk,
-        });
-        return provider;
-    }
-
-    async send(data: SSFProvider): Promise<SSFProvider> {
-        if (this.instance) {
-            return aki(ProvidersApi).providersSsfUpdate({
-                id: this.instance.pk,
-                sSFProviderRequest: data,
-            });
-        }
-        return aki(ProvidersApi).providersSsfCreate({
-            sSFProviderRequest: data,
-        });
-    }
+    protected endpoints = {
+        load: (id: number) => aki(ProvidersApi).providersSsfRetrieve({ id }),
+        create: (sSFProviderRequest: SSFProvider) =>
+            aki(ProvidersApi).providersSsfCreate({ sSFProviderRequest }),
+        update: (id: number, sSFProviderRequest: SSFProvider) =>
+            aki(ProvidersApi).providersSsfUpdate({ id, sSFProviderRequest }),
+    };
 
     protected override renderForm(): TemplateResult {
         const provider = this.instance;

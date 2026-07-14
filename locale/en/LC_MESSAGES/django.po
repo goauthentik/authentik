@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-06-19 00:49+0000\n"
+"POT-Creation-Date: 2026-07-09 00:29+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -253,11 +253,11 @@ msgid "No empty segments in user path allowed."
 msgstr ""
 
 #: authentik/core/api/users.py
-msgid "Can't change internal service account to other user type."
+msgid "Can't create internal service accounts"
 msgstr ""
 
 #: authentik/core/api/users.py
-msgid "Setting a user to internal service account is not allowed."
+msgid "Can't change internal service account to other user type."
 msgstr ""
 
 #: authentik/core/api/users.py
@@ -587,6 +587,10 @@ msgstr ""
 
 #: authentik/core/tasks.py
 msgid "Remove temporary users created by SAML Sources."
+msgstr ""
+
+#: authentik/core/templates/base/skeleton.html
+msgid "Recovery session is active. Custom branding is disabled."
 msgstr ""
 
 #: authentik/core/templates/if/error.html
@@ -2381,6 +2385,20 @@ msgstr ""
 msgid "Handle backchannel logout notifications dispatched via signal"
 msgstr ""
 
+#: authentik/providers/oauth2/templates/if/oauth_form_post.html
+msgid "Redirecting..."
+msgstr ""
+
+#: authentik/providers/oauth2/templates/if/oauth_form_post.html
+msgid ""
+"Your browser does not support JavaScript, please click below to continue."
+msgstr ""
+
+#: authentik/providers/oauth2/templates/if/oauth_form_post.html
+#: authentik/stages/identification/stage.py
+msgid "Continue"
+msgstr ""
+
 #: authentik/providers/oauth2/views/device_init.py
 msgid "Invalid code"
 msgstr ""
@@ -3742,6 +3760,16 @@ msgstr ""
 msgid "Duo Devices"
 msgstr ""
 
+#: authentik/stages/authenticator_duo/stage.py
+msgid ""
+"A Duo user with this username already exists. Ask an administrator to import "
+"the existing Duo authenticator or delete the Duo user before enrolling again."
+msgstr ""
+
+#: authentik/stages/authenticator_duo/stage.py
+msgid "Failed to enroll with Duo. Please contact an administrator."
+msgstr ""
+
 #: authentik/stages/authenticator_email/models.py
 #: authentik/stages/email/models.py
 msgid ""
@@ -4410,10 +4438,6 @@ msgstr ""
 
 #: authentik/stages/identification/stage.py
 msgid "Log in"
-msgstr ""
-
-#: authentik/stages/identification/stage.py
-msgid "Continue"
 msgstr ""
 
 #: authentik/stages/invitation/models.py

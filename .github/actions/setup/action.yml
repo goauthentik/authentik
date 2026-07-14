@@ -23,7 +23,7 @@ runs:
       run: sudo apt-get remove --purge man-db
     - name: Install apt deps
       if: ${{ contains(inputs.dependencies, 'system') || contains(inputs.dependencies, 'python') }}
-      uses: gerlero/apt-install@f4fa5265092af9e750549565d28c99aec7189639
+      uses: gerlero/apt-install@c0fa73fe5c4a22deecf6d629565be92a15dd2026
       with:
         packages: libpq-dev openssl libxmlsec1-dev pkg-config gettext libclang-dev libkadm5clnt-mit12 libkadm5clnt7t64-heimdal libkrb5-dev krb5-kdc krb5-user krb5-admin-server
         update: true
@@ -37,12 +37,12 @@ runs:
         sudo rsync -a --delete /tmp/empty/ /usr/local/lib/android/
     - name: Install uv
       if: ${{ contains(inputs.dependencies, 'python') }}
-      uses: astral-sh/setup-uv@fac544c07dec837d0ccb6301d7b5580bf5edae39 # v5
+      uses: astral-sh/setup-uv@11f9893b081a58869d3b5fccaea48c9e9e46f990 # v5
       with:
         enable-cache: true
     - name: Setup python
       if: ${{ contains(inputs.dependencies, 'python') }}
-      uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v5
+      uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v5
       with:
         python-version-file: "${{ inputs.working-directory }}pyproject.toml"
     - name: Install Python deps
@@ -52,29 +52,48 @@ runs:
       run: uv sync --all-extras --dev --locked
     - name: Setup rust (stable)
       if: ${{ contains(inputs.dependencies, 'rust') && !contains(inputs.dependencies, 'rust-nightly') }}
-      uses: actions-rust-lang/setup-rust-toolchain@46268bd060767258de96ed93c1251119784f2ab6 # v1
+      uses: actions-rust-lang/setup-rust-toolchain@166cdcfd11aee3cb47222f9ddb555ce30ddb9659 # v1
       with:
         rustflags: ""
     - name: Setup rust (nightly)
       if: ${{ contains(inputs.dependencies, 'rust-nightly') }}
-      uses: actions-rust-lang/setup-rust-toolchain@46268bd060767258de96ed93c1251119784f2ab6 # v1
+      uses: actions-rust-lang/setup-rust-toolchain@166cdcfd11aee3cb47222f9ddb555ce30ddb9659 # v1
       with:
         toolchain: nightly
         components: rustfmt
         rustflags: ""
     - name: Setup rust dependencies
       if: ${{ contains(inputs.dependencies, 'rust') }}
-      uses: taiki-e/install-action@9e1e5806d4a4822de933115878265be9aaa786d9 # v2
+      uses: taiki-e/install-action@4684b8405694ae9dd42c9f39ba901a70ae83f4a3 # v2
       with:
         tool: cargo-deny cargo-machete cargo-llvm-cov nextest
+    - name: Setup pnpm
+      if: ${{ contains(inputs.dependencies, 'node') }}
+      uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # v6.0.9
+    - name: Pin pnpm store directory
+      if: ${{ contains(inputs.dependencies, 'node') }}
+      shell: bash
+      run: |
+        echo "PNPM_HOME=${RUNNER_TEMP}/pnpm-home" >> "$GITHUB_ENV"
+        echo "npm_config_store_dir=${RUNNER_TEMP}/pnpm-home/store" >> "$GITHUB_ENV"
     - name: Setup node (root, web)
       if: ${{ contains(inputs.dependencies, 'node') }}
-      uses: ./.github/actions/setup-node
+      uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v4
       with:
-        working-directory: web
+        node-version-file: package.json
+        cache: pnpm
+        cache-dependency-path: |
+          pnpm-lock.yaml
+          web/pnpm-lock.yaml
+    - name: Install node dependencies (root, web)
+      if: ${{ contains(inputs.dependencies, 'node') }}
+      shell: bash
+      run: |
+        pnpm install --frozen-lockfile
+        pnpm --dir web install --frozen-lockfile
     - name: Setup go
       if: ${{ contains(inputs.dependencies, 'go') }}
-      uses: actions/setup-go@4a3601121dd01d1626a1e23e37211e3254c1c06c # v5
+      uses: actions/setup-go@924ae3a1cded613372ab5595356fb5720e22ba16 # v5
       with:
         go-version-file: "${{ inputs.working-directory }}go.mod"
     - name: Setup docker cache
@@ -89,7 +108,15 @@ runs:
       run: |
         export PSQL_TAG=${{ inputs.postgresql_version }}
         docker compose -f .github/actions/setup/compose.yml up -d --wait
-        corepack npm ci --prefix web
+    - name: Install web dependencies
+      # Only when node is also requested: pnpm is provided by the node setup
+      # above, and the web workspace needs a pnpm lockfile to install from. This
+      # keeps runtime-only jobs (e.g. rust, pending-migrations) and the legacy
+      # stable checkout — which predates the pnpm migration — from invoking pnpm.
+      if: ${{ contains(inputs.dependencies, 'runtime') && contains(inputs.dependencies, 'node') }}
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      run: pnpm --dir web install --frozen-lockfile
     - name: Generate config
       if: ${{ contains(inputs.dependencies, 'python') }}
       shell: uv run python {0}

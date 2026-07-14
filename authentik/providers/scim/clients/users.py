@@ -5,7 +5,6 @@ from typing import Any
 from django.db import transaction
 from django.db.models import Q
 from django.utils.http import urlencode
-from orjson import dumps
 from pydantic import ValidationError
 
 from authentik.core.models import User
@@ -99,7 +98,7 @@ class SCIMUserClient(SCIMClient[User, SCIMProviderUser, SCIMUserSchema]):
         local_updated = {}
         MERGE_LIST_UNIQUE.merge(local_updated, local_known)
         MERGE_LIST_UNIQUE.merge(local_updated, local_created)
-        return dumps(local_updated) != dumps(local_known)
+        return self._json_encoder.encode(local_updated) != self._json_encoder.encode(local_known)
 
     def update(self, user: User, connection: SCIMProviderUser):
         """Update existing user"""
@@ -133,14 +132,14 @@ class SCIMUserClient(SCIMClient[User, SCIMProviderUser, SCIMUserSchema]):
                 seen_items += 1
             if seen_items >= expected_items:
                 break
-            res = self._request("GET", f"/Users?startIndex={seen_items+1}")
+            res = self._request("GET", f"/Users?startIndex={seen_items + 1}")
 
     def _discover_user_single(self, user: dict):
         scim_user = SCIMUserSchema.model_validate(user)
         if SCIMProviderUser.objects.filter(scim_id=scim_user.id, provider=self.provider).exists():
             return
         user_query = Q(username=scim_user.userName)
-        for email in scim_user.emails:
+        for email in scim_user.emails or []:
             user_query |= Q(username=email.value) | Q(email=email.value)
         ak_user = User.objects.filter(user_query).first()
         if not ak_user:
