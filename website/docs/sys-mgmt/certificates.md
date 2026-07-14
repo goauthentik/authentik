@@ -52,7 +52,7 @@ We recommend using a certificate generated outside of authentik that matches you
 
 We recommend using a certificate generated outside of authentik. A privately issued certificate is sufficient.
 
-## Downloading SAML certificates
+## Download SAML certificates
 
 To download a certificate for SAML configuration:
 

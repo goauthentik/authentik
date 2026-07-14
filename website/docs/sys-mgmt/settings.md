@@ -1,8 +1,8 @@
 ---
-title: System Settings
+title: System settings
 ---
 
-These settings are similar to the configuration options listed [here](../install-config/configuration/configuration.mdx), however they can only be adjusted through the authentik Admin interface or API.
+Runtime settings control behavior that can be changed through the authentik Admin interface or API. Environment-level and deployment settings are documented in the [configuration options](../install-config/configuration/configuration.mdx).
 
 ### Avatars
 
