@@ -2,7 +2,9 @@
 title: System settings
 ---
 
-Runtime settings control behavior that can be changed through the authentik Admin interface or API. Environment-level and deployment settings are documented in the [configuration options](../install-config/configuration/configuration.mdx).
+System settings control system-wide behavior. They can be changed through the authentik Admin interface or API.
+
+Environment-level and deployment settings are documented in the [configuration options](../install-config/configuration/configuration.mdx).
 
 ### Avatars
 

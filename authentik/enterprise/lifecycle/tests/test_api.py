@@ -6,11 +6,11 @@ from rest_framework.test import APITestCase
 from authentik.core.models import Application, Group
 from authentik.core.tests.utils import create_test_admin_user, create_test_user
 from authentik.enterprise.lifecycle.models import LifecycleIteration, LifecycleRule, ReviewState
-from authentik.enterprise.reports.tests.utils import patch_license
+from authentik.enterprise.tests import enterprise_test
 from authentik.lib.generators import generate_id
 
 
-@patch_license
+@enterprise_test()
 class TestLifecycleRuleAPI(APITestCase):
 
     def setUp(self):
@@ -185,7 +185,7 @@ class TestLifecycleRuleAPI(APITestCase):
         self.assertFalse(LifecycleRule.objects.filter(pk=rule.pk).exists())
 
 
-@patch_license
+@enterprise_test()
 class TestIterationAPI(APITestCase):
 
     def setUp(self):
@@ -280,7 +280,7 @@ class TestIterationAPI(APITestCase):
         self.assertIn("user_can_review", response.data["results"][0])
 
 
-@patch_license
+@enterprise_test()
 class TestReviewAPI(APITestCase):
 
     def setUp(self):

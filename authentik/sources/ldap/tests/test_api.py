@@ -9,7 +9,7 @@ from rest_framework.exceptions import ErrorDetail
 from rest_framework.test import APITestCase
 
 from authentik.blueprints.tests import apply_blueprint
-from authentik.core.tests.utils import create_test_admin_user
+from authentik.core.tests.utils import create_test_admin_user, create_test_user
 from authentik.lib.generators import generate_id
 from authentik.sources.ldap.api.sources import LDAPSourceSerializer
 from authentik.sources.ldap.models import LDAPSource, LDAPSourcePropertyMapping
@@ -130,3 +130,37 @@ class LDAPAPITests(APITestCase):
             self.assertIn("users", body)
             self.assertIn("groups", body)
             self.assertIn("membership", body)
+
+    def _create_debug_source(self) -> LDAPSource:
+        return LDAPSource.objects.create(
+            name=generate_id(),
+            slug=generate_id(),
+            base_dn="dc=goauthentik,dc=io",
+            additional_user_dn="ou=users",
+            additional_group_dn="ou=groups",
+        )
+
+    @apply_blueprint("system/sources-ldap.yaml")
+    def test_debug_denied_for_anonymous(self):
+        """debug must enforce RBAC: an anonymous caller may not read LDAP data."""
+        source = self._create_debug_source()
+        # NOTE: no self.client.force_login() -> caller is AnonymousUser
+        connection = MagicMock(return_value=mock_ad_connection())
+        with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
+            res = self.client.get(
+                reverse("authentik_api:ldapsource-debug", kwargs={"slug": source.slug})
+            )
+        self.assertEqual(res.status_code, 403)
+
+    @apply_blueprint("system/sources-ldap.yaml")
+    def test_debug_denied_for_unauthorized_user(self):
+        """debug must enforce RBAC: a user without view_ldapsource may not read LDAP data."""
+        source = self._create_debug_source()
+        # Authenticated, but holds no permission on the source object
+        self.client.force_login(create_test_user())
+        connection = MagicMock(return_value=mock_ad_connection())
+        with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
+            res = self.client.get(
+                reverse("authentik_api:ldapsource-debug", kwargs={"slug": source.slug})
+            )
+        self.assertEqual(res.status_code, 403)
