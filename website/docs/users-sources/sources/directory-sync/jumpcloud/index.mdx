@@ -88,7 +88,7 @@ authentik can receive users and groups from JumpCloud through **SCIM**. In this 
 The following placeholders are used in this guide:
 
 - `authentik.company` is the FQDN of the authentik installation.
-- `<scim-slug>` is the slug of the SCIM source you create in authentik.
+- `jumpcloud` is the slug assigned to the SCIM source in authentik.
 
 ### authentik configuration
 
@@ -96,8 +96,8 @@ Create the SCIM source first — it generates the endpoint URL and token that Ju
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Directory** > **Federation and Social login**, click **Create**, and select **SCIM Source**.
-3. Provide a **Name** and **Slug** (for example, `jumpcloud`), then click **Finish**.
-4. Open the newly created source. Note the **SCIM Base URL** (`https://authentik.company/source/scim/<scim-slug>/v2`), then use **Click to copy token** to copy the bearer token. Both are required in the next section.
+3. Provide a **Name**, set the **Slug** to `jumpcloud`, and click **Finish**. The slug is used in the **SCIM Base URL** in the next step.
+4. Open the newly created source. Note the **SCIM Base URL** (`https://authentik.company/source/scim/jumpcloud/v2`), then use **Click to copy token** to copy the bearer token. Both are required in the next section.
 
 ### JumpCloud configuration
 
@@ -108,7 +108,7 @@ Configure a custom application in JumpCloud that provisions to the authentik SCI
 3. Select **Custom Application**, then click **Next** and select **Export users to this app**.
 4. Set a **Display Label** (for example, `authentik`) and save the application, then open it to configure.
 5. Open the **Provisioning** tab and configure the following settings:
-    - **Base URL**: `https://authentik.company/source/scim/<scim-slug>/v2`
+    - **Base URL**: `https://authentik.company/source/scim/jumpcloud/v2`
     - **Token Key**: the bearer token copied from the authentik SCIM source.
     - **Test User Email**: any address that does not already exist in authentik. It is used only to validate the connection and is not provisioned.
 6. Click **Test Connection**.
