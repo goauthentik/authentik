@@ -21,6 +21,8 @@ from authentik.core.api.utils import (
     ModelSerializer,
     PassiveSerializer,
 )
+from authentik.core.models import Application
+from authentik.enterprise.pam.api.apps import user_can_request
 from authentik.enterprise.pam.models import (
     GrantRequest,
     PolicyBindingModelRequestRule,
@@ -32,7 +34,6 @@ from authentik.enterprise.pam.stage import (
 )
 from authentik.flows.models import Flow, in_memory_stage
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlanner
-from authentik.policies.models import PolicyBindingModel
 
 
 class GrantRequestSerializer(ModelSerializer):
@@ -68,7 +69,14 @@ class GrantRequestViewSet(RetrieveModelMixin, DestroyModelMixin, ListModelMixin,
     serializer_class = GrantRequestSerializer
 
     class GrantRequestCreateSerializer(PassiveSerializer):
-        pbms = PrimaryKeyRelatedField(queryset=PolicyBindingModel.objects.all(), many=True)
+        pbms = PrimaryKeyRelatedField(queryset=Application.objects.all(), many=True)
+
+        def validate_pbms(self, pbms: list[Application]) -> list[Application]:
+            request = self.context["request"]
+            for app in pbms:
+                if not user_can_request(app, request.user, request):
+                    raise ValidationError(f"Cannot request access to '{app.name}'")
+            return pbms
 
     class GrantRequestFulfillSerializer(PassiveSerializer):
         data = JSONDictField()

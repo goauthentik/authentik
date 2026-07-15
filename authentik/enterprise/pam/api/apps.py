@@ -9,8 +9,21 @@ from rest_framework.response import Response
 from authentik.api.pagination import Pagination
 from authentik.core.api.applications import ApplicationSerializer
 from authentik.core.apps import AppAccessWithoutBindings
-from authentik.core.models import Application
+from authentik.core.models import Application, User
 from authentik.policies.engine import ListPolicyEngine
+
+
+def user_can_request(app: Application, user: User, request: Request) -> bool:
+    """Whether `user` is eligible to request access to `app`, per the
+    PolicyBindingModelRequestRule(s) attached to it. An app with no rule attached at all
+    is never requestable, however permissive - a rule is what makes an app requestable
+    in the first place."""
+    rules = app.request_rules.all()
+    if not rules.exists():
+        return False
+    engine = ListPolicyEngine(rules)
+    engine.empty_result = AppAccessWithoutBindings.get()
+    return len(list(engine.evaluate_for(user, request))) > 0
 
 
 class ApplicationsRequestableMixin:
@@ -29,13 +42,9 @@ class ApplicationsRequestableMixin:
             "request_rules"
         )
 
-        requestable_apps = []
-        for app in all_requestable_apps:
-            engine = ListPolicyEngine(app.request_rules.all())
-            engine.empty_result = AppAccessWithoutBindings.get()
-            applicable_rules = list(engine.evaluate_for(request.user, request))
-            if len(applicable_rules) > 0:
-                requestable_apps.append(app)
+        requestable_apps = [
+            app for app in all_requestable_apps if user_can_request(app, request.user, request)
+        ]
 
         paginator: Pagination = self.paginator
         paginated_apps = paginator.paginate_queryset(requestable_apps, request)
