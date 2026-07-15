@@ -1421,7 +1421,7 @@ class ObjectAttribute(SerializerModel, ManagedModel, CreatedUpdatedModel):
     is_array = models.BooleanField(default=False)
 
     def run_validation(self, value: Any) -> None:
-        err_key = f"attributes_{self.key.replace('.', '_')}"
+        err_key = f"attributes_{self.key}"
 
         if self.is_required and value is None:
             raise ValidationError({err_key: _("This field is required")})
