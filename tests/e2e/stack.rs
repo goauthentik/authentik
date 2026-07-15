@@ -1,34 +1,52 @@
-#![allow(dead_code)]
+#![expect(dead_code, reason = "Not every test uses every feature.")]
 use std::time::Duration;
 
-use ak_client::apis::configuration::Configuration;
+use ak_client::{
+    apis::{configuration::Configuration, core_api::core_tokens_view_key_retrieve},
+    models::Outpost,
+};
 use eyre::Result;
 use reqwest::{Method, StatusCode};
 use serde_json::Value;
 use testcontainers::{
     compose::DockerCompose,
-    core::{WaitFor, wait::HttpWaitStrategy},
+    core::{ExecCommand, WaitFor, wait::HttpWaitStrategy},
 };
 use thirtyfour::prelude::*;
 use tokio::time::{Instant, sleep};
 
 #[derive(Default)]
 pub(crate) struct AuthentikStackBuilder {
-    wait_for_flow: Option<String>,
+    blueprint_paths: Vec<String>,
+    selenium: bool,
+    mailpit: bool,
+    whoami: bool,
 }
 
 impl AuthentikStackBuilder {
-    pub(crate) fn wait_for_flow(mut self, flow: &str) -> Self {
-        self.wait_for_flow = Some(flow.to_string());
+    pub(crate) fn with_blueprint(mut self, blueprint_path: &str) -> Self {
+        self.blueprint_paths.push(blueprint_path.to_owned());
         self
     }
 
-    pub(crate) fn no_wait_for_flow(mut self) -> Self {
-        self.wait_for_flow = None;
+    pub(crate) fn with_selenium(mut self, selenium: bool) -> Self {
+        self.selenium = selenium;
+        self
+    }
+
+    pub(crate) fn with_mailpit(mut self, mailpit: bool) -> Self {
+        self.mailpit = mailpit;
+        self
+    }
+
+    pub(crate) fn with_whoami(mut self, whoami: bool) -> Self {
+        self.whoami = whoami;
         self
     }
 
     pub(crate) async fn run(self) -> Result<AuthentikStack> {
+        let mut compose_profiles = Vec::with_capacity(3);
+
         let compose = {
             let mut compose = DockerCompose::with_local_client(&[concat!(
                 env!("CARGO_MANIFEST_DIR"),
@@ -36,26 +54,35 @@ impl AuthentikStackBuilder {
             )])
             .with_env("PG_PASS", "password")
             .with_env("AUTHENTIK_SECRET_KEY", "secret_key")
-            .with_env("AUTHENTIK_TAG", "gh-next");
+            .with_env("AUTHENTIK_TAG", "gh-next")
+            .with_wait_for_service(
+                "server",
+                WaitFor::http(
+                    HttpWaitStrategy::new("/if/flow/default-authentication-flow/")
+                        .with_port(9000_u16.into())
+                        .with_method(Method::GET)
+                        .with_expected_status_code(StatusCode::OK),
+                ),
+            );
 
-            if let Some(flow) = self.wait_for_flow {
-                compose = compose.with_wait_for_service(
-                    "server",
-                    WaitFor::http(
-                        HttpWaitStrategy::new(format!("/if/flow/{flow}/"))
-                            .with_port(9000_u16.into())
-                            .with_method(Method::GET)
-                            .with_expected_status_code(StatusCode::OK),
-                    ),
-                )
+            if self.selenium {
+                compose_profiles.push("selenium".to_owned());
             }
+            if self.mailpit {
+                compose_profiles.push("mailpit".to_owned());
+            }
+            if self.whoami {
+                compose_profiles.push("whoami".to_owned());
+            }
+
+            compose = compose.with_env("COMPOSE_PROFILES", compose_profiles.join(","));
 
             compose.up().await?;
 
             compose
         };
 
-        let driver = {
+        let driver = if self.selenium {
             let mut caps = DesiredCapabilities::chrome();
             caps.set_browser_log_level(thirtyfour::LoggingPrefsLogLevel::All)?;
             let driver_url = format!(
@@ -71,12 +98,13 @@ impl AuthentikStackBuilder {
                     .get_host_port_ipv4(4444)
                     .await?,
             );
-            WebDriver::new(driver_url, caps).await?
+            Some(WebDriver::new(driver_url, caps).await?)
+        } else {
+            None
         };
 
-        let api_config = {
-            let mut api_config = Configuration::default();
-            api_config.base_path = format!(
+        let api_config = Configuration {
+            base_path: format!(
                 "http://{}:{}/api/v3",
                 compose
                     .service("server")
@@ -88,16 +116,25 @@ impl AuthentikStackBuilder {
                     .expect("a server to be started")
                     .get_host_port_ipv4(9000)
                     .await?,
-            );
-            api_config.bearer_access_token = Some("akadmin".to_owned());
-            api_config
+            ),
+            bearer_access_token: Some("akadmin".to_owned()),
+            ..Default::default()
         };
 
-        Ok(AuthentikStack {
-            compose,
+        let mut stack = AuthentikStack {
+            compose_profiles,
+            compose: Some(compose),
             driver,
             api_config,
-        })
+        };
+
+        for blueprint_path in self.blueprint_paths {
+            stack.apply_blueprint(&blueprint_path).await?;
+        }
+
+        sleep(Duration::from_secs(5)).await;
+
+        Ok(stack)
     }
 }
 
@@ -115,29 +152,81 @@ pub(crate) struct LoginOptions {
 }
 
 pub(crate) struct AuthentikStack {
-    pub(crate) compose: DockerCompose,
-    pub(crate) driver: WebDriver,
+    compose_profiles: Vec<String>,
+    compose: Option<DockerCompose>,
+    driver: Option<WebDriver>,
     api_config: Configuration,
 }
 
 impl AuthentikStack {
     pub(crate) fn builder() -> AuthentikStackBuilder {
-        Default::default()
+        AuthentikStackBuilder::default()
     }
 
     pub(crate) fn api_config(&self) -> &Configuration {
         &self.api_config
     }
 
+    pub(crate) fn compose(&mut self) -> &mut DockerCompose {
+        self.compose
+            .as_mut()
+            .expect("a docker compose instance to be present")
+    }
+
+    pub(crate) fn driver(&self) -> &WebDriver {
+        self.driver
+            .as_ref()
+            .expect("with_selenium must be set to true to use the selenium driver")
+    }
+
+    pub(crate) async fn start_outpost(&mut self, outpost: &Outpost) -> Result<()> {
+        self.compose_profiles.push(outpost.r#type.to_string());
+
+        let token =
+            core_tokens_view_key_retrieve(self.api_config(), &outpost.token_identifier).await?;
+
+        self.compose = Some(
+            self.compose
+                .take()
+                .expect("compose")
+                .with_env(
+                    format!(
+                        "AUTHENTIK_{}_TOKEN",
+                        outpost.r#type.to_string().to_uppercase()
+                    ),
+                    token.key,
+                )
+                .with_env("COMPOSE_PROFILES", self.compose_profiles.join(",")),
+        );
+
+        self.compose().up().await?;
+
+        Ok(())
+    }
+
+    pub(crate) async fn apply_blueprint(&mut self, blueprint_path: &str) -> Result<()> {
+        let mut res = self
+            .compose()
+            .service("worker")
+            .expect("a worker to be started")
+            .exec(ExecCommand::new(&[
+                "ak".to_owned(),
+                "apply_blueprint".to_owned(),
+                blueprint_path.to_owned(),
+            ]))
+            .await?;
+        Ok(())
+    }
+
     pub(crate) async fn goto(&self, url: &str) -> Result<()> {
-        self.driver.goto(url).await?;
+        self.driver().goto(url).await?;
         Ok(())
     }
 
     pub(crate) async fn wait_for_url(&self, url: &str) -> Result<()> {
         let start = Instant::now();
         loop {
-            if self.driver.current_url().await?.as_str() == url {
+            if self.driver().current_url().await?.as_str() == url {
                 return Ok(());
             }
 
@@ -163,7 +252,7 @@ impl AuthentikStack {
                 .await?)
         } else {
             Ok(self
-                .driver
+                .driver()
                 .query(By::Css(selector))
                 .single()
                 .await?
@@ -176,7 +265,7 @@ impl AuthentikStack {
         let start = Instant::now();
         loop {
             let res = self
-                .driver
+                .driver()
                 .execute(
                     "return document.__shady_native_querySelector(arguments[0])",
                     vec![Value::String(selector.to_string())],
@@ -250,7 +339,7 @@ impl AuthentikStack {
 
     pub(crate) async fn parse_json_content(&self) -> Result<Value> {
         let body = self
-            .driver
+            .driver()
             .query(By::Tag("pre"))
             .single()
             .await?
@@ -276,12 +365,20 @@ impl AuthentikStack {
     }
 
     pub(crate) async fn quit(self) -> Result<()> {
-        let AuthentikStack {
+        let Self {
             compose, driver, ..
         } = self;
 
-        let driver = driver.quit().await;
-        let compose = compose.down().await;
+        let driver = if let Some(driver) = driver {
+            driver.quit().await
+        } else {
+            Ok(())
+        };
+        let compose = if let Some(compose) = compose {
+            compose.down().await
+        } else {
+            Ok(())
+        };
 
         compose?;
         driver?;

@@ -5,6 +5,8 @@ services:
       POSTGRES_DB: authentik
       POSTGRES_USER: authentik
       POSTGRES_PASSWORD: ${PG_PASS:?database password required}
+    ports:
+      - "5432"
     healthcheck:
       interval: 30s
       retries: 5
@@ -34,6 +36,7 @@ services:
     ports:
       - "9000"
       - "9443"
+      - "9300"
     restart: unless-stopped
     shm_size: 512mb
   worker:
@@ -55,7 +58,11 @@ services:
     restart: unless-stopped
     shm_size: 512mb
     user: root
+    ports:
+      - "9300"
   selenium:
+    profiles:
+      - selenium
     image: ghcr.io/goauthentik/selenium:149.0-ak-0.50.2
     shm_size: 2g
     restart: always
@@ -66,6 +73,8 @@ services:
       - "7900"
       - "5900"
   mailpit:
+    profiles:
+      - mailpit
     image: docker.io/axllent/mailpit:v1.30.4
     ports:
       - "8025"
@@ -73,3 +82,20 @@ services:
       test: ["CMD", "wget", "--spider", "http://localhost:8025"]
       interval: 5s
       start_period: 1s
+  whoami:
+    profiles:
+      - whoami
+    image: docker.io/traefik/whoami:v1.11.0
+    ports:
+      - "80"
+  proxy:
+    profiles:
+      - proxy
+    image: ${AUTHENTIK_IMAGE:-ghcr.io/goauthentik/dev-proxy}:${AUTHENTIK_TAG:?tag}
+    environment:
+      AUTHENTIK_HOST: http://server:9000
+      AUTHENTIK_TOKEN: ${AUTHENTIK_PROXY_TOKEN:-}
+    ports:
+      - "9000"
+      - "9443"
+      - "9300"
