@@ -1,33 +1,8 @@
-import {
-    CSRFMiddleware,
-    DevRepeatedRequestsMiddleware,
-    EventMiddleware,
-    LocaleMiddleware,
-    LoggingMiddleware,
-} from "#common/api/middleware";
-import { globalAK } from "#common/global";
-import { SentryMiddleware } from "#common/sentry/middleware";
+/**
+ * @file brandSetFavicon() and AndNext(), which is used for redirects and flow steps
+ */
 
-import { CapabilitiesEnum, Configuration, CurrentBrand } from "@goauthentik/api";
-
-const { locale, api, brand, config } = globalAK();
-
-export const DEFAULT_CONFIG = new Configuration({
-    basePath: `${api.base}api/v3`,
-    middleware: [
-        new CSRFMiddleware(),
-        new EventMiddleware(),
-        new LoggingMiddleware(brand),
-        new SentryMiddleware(),
-        new LocaleMiddleware(locale),
-        ...(config.capabilities.includes(CapabilitiesEnum.CanDebug)
-            ? [new DevRepeatedRequestsMiddleware()]
-            : []),
-    ],
-});
-
-// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/freeze
-Object.freeze(DEFAULT_CONFIG);
+import type { CurrentBrand } from "@goauthentik/api";
 
 export function brandSetFavicon(brand: CurrentBrand) {
     /**
@@ -52,7 +27,3 @@ export function brandSetFavicon(brand: CurrentBrand) {
 export function AndNext(url: string): string {
     return `?next=${encodeURIComponent(url)}`;
 }
-
-console.debug(
-    `authentik(early): version ${import.meta.env.AK_VERSION}, apiBase ${DEFAULT_CONFIG.basePath}`,
-);
