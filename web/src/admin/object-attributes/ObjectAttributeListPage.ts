@@ -99,7 +99,7 @@ export class ObjectAttributeListPage extends TablePage<ObjectAttribute> {
     protected override row(item: ObjectAttribute): SlottedTemplateResult[] {
         return [
             html`<div>
-                <div>${item.group}: ${item.label}</div>
+                <div>${item.group ? html`${item.group}: ${item.label}` : html`${item.label}`}</div>
                 <code>${item.key}</code>
             </div>`,
             html`${formatObjectAttributeType(item.type)}`,
