@@ -10,7 +10,7 @@ from typing import Any
 from psycopg import Connection, Cursor, connect
 from structlog.stdlib import get_logger
 
-from authentik.lib.config import CONFIG, django_db_config
+from authentik.lib.config import CONFIG, django_db_config, postgresql_direct_connection_kwargs
 
 LOGGER = get_logger()
 ADV_LOCK_UID = 1000
@@ -76,19 +76,11 @@ def release_lock(conn: Connection, cursor: Cursor):
 def run_migrations():
     if CONFIG.get_bool("skip_migrations", False):
         return
-    conn_opts = CONFIG.get_dict_from_b64_json("postgresql.conn_options", default={})
-    conn = connect(
-        dbname=CONFIG.get("postgresql.name"),
-        user=CONFIG.get("postgresql.user"),
-        password=CONFIG.get("postgresql.password"),
-        host=CONFIG.get("postgresql.host"),
-        port=CONFIG.get_int("postgresql.port"),
-        sslmode=CONFIG.get("postgresql.sslmode"),
-        sslrootcert=CONFIG.get("postgresql.sslrootcert"),
-        sslcert=CONFIG.get("postgresql.sslcert"),
-        sslkey=CONFIG.get("postgresql.sslkey"),
-        **conn_opts,
-    )
+    # `wait_for_lock` issues `pg_advisory_lock(1000)` and holds it for the full
+    # migrate + check pass. Open this against the direct endpoint when
+    # configured, otherwise a transaction-pooling pooler in front of
+    # ``postgresql.host`` would make the session-scoped lock unreachable.
+    conn = connect(**postgresql_direct_connection_kwargs(CONFIG))
     curr = conn.cursor()
     try:
         wait_for_lock(conn, curr)

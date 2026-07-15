@@ -1,14 +1,12 @@
 ---
 title: Mutual TLS stage
-authentik_version: "2025.6"
-authentik_preview: true
 authentik_enterprise: true
 toc_max_heading_level: 5
 ---
 
 The Mutual TLS stage authenticates or enrolls users by validating a presented client certificate.
 
-## Overview
+## About the mutual TLS stage
 
 This stage uses a client certificate from the browser or device, such as one stored locally or on a smart card, PIV card, or hardware token.
 
@@ -99,7 +97,7 @@ See the [Envoy mTLS documentation](https://www.envoyproxy.io/docs/envoy/latest/s
 
 #### No reverse proxy
 
-If authentik terminates TLS itself, configure the trusted client certificate authorities on the active [brand](../../../../sys-mgmt/brands/index.md#client-certificates).
+If authentik terminates TLS itself, configure the trusted client certificate authorities on the active [brand](../../../../customize/branding/index.md#client-certificates).
 
 ### Stage setup outline
 
