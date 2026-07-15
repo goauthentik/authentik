@@ -1,18 +1,18 @@
 ---
-title: Integrate with Docker Hub and Docker Desktop
-sidebar_label: Docker Hub and Docker Desktop
+title: Integrate with Docker Platforms
+sidebar_label: Docker Platforms
 support_level: community
 ---
 
 import SAMLProvider20265Warning from "../../_saml-provider-2026-5-warning.mdx";
 
-## What are Docker Hub and Docker Desktop?
+## What are Docker platforms?
 
-> Docker Hub is a service for storing and sharing container images. Docker Desktop is an application for building and running containers locally.
+> Docker provides services and applications for sharing container images, building and running containers, and running AI coding agents in isolated environments.
 >
 > -- https://www.docker.com/
 
-This guide configures authentik as a SAML identity provider for Docker Hub and Docker Desktop.
+This guide configures authentik as a SAML identity provider for Docker platforms through Docker SSO. Users can access Docker Hub, Docker Desktop, and Docker Sandboxes with the same Docker authentication and organization membership. Docker Sandboxes run AI coding agents in isolated microVMs.
 
 ## Preparation
 
@@ -20,7 +20,7 @@ The following placeholder is used in this guide:
 
 - `authentik.company` is the FQDN of the authentik installation.
 
-SSO for Docker Hub and Docker Desktop requires a Docker Business subscription and an organization owner account. Each user must have an email address in authentik that matches their Docker account email address and belongs to a verified domain. Domain verification is a Docker-side prerequisite and is outside the scope of this guide.
+Docker SSO requires a Docker Business subscription and an organization owner account. Each user must have an email address in authentik that matches their Docker account email address and belongs to a verified domain. Domain verification is a Docker-side prerequisite and is outside the scope of this guide.
 
 :::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
@@ -35,7 +35,7 @@ This documentation lists only the settings that you need to change from their de
 
 ## authentik configuration
 
-To support the integration of Docker Hub and Docker Desktop with authentik, create an application/provider pair in authentik.
+To support the integration of Docker platforms with authentik, create an application/provider pair in authentik.
 
 ### Create an application and provider
 
@@ -54,7 +54,7 @@ To support the integration of Docker Hub and Docker Desktop with authentik, crea
             - Select an available **Signing Certificate**.
             - Set **NameID Property Mapping** to `authentik default SAML Mapping: Email`.
             - Set **Default NameID Policy** to **Email address**.
-    - **Configure Bindings** _(optional)_: create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage which users can access Docker Hub and Docker Desktop from their **Application Dashboard** page.
+    - **Configure Bindings** _(optional)_: create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage which users can access Docker platforms from their **Application Dashboard** page.
 3. Click **Submit** to save the application and provider.
 
 ### Download the signing certificate
@@ -62,7 +62,7 @@ To support the integration of Docker Hub and Docker Desktop with authentik, crea
 1. Navigate to **Applications** > **Providers** and click the name of the SAML provider that you created.
 2. Under **Related objects** > **Download signing certificate**, click **Download**. The certificate is required to complete the Docker SSO connection.
 
-## Docker Hub and Docker Desktop configuration
+## Docker SSO configuration
 
 ### Complete the SAML connection
 
@@ -88,10 +88,12 @@ Test SSO with an organization owner account before enabling enforcement. Ensure 
 
 ## Configuration verification
 
-To confirm that authentik is properly configured with Docker Hub and Docker Desktop, open the integration from the authentik Application Dashboard and sign in with an email address from the verified domain. You should be redirected to authentik and then returned to Docker Hub.
+To confirm that authentik is properly configured with Docker platforms, open the integration from the authentik Application Dashboard and sign in with an email address from the verified domain. You should be redirected to authentik and then returned to Docker Hub.
 
 ## Resources
 
 - [Docker Docs - Set up single sign-on](https://docs.docker.com/enterprise/security/single-sign-on/connect/)
 - [Docker Docs - Single sign-on overview](https://docs.docker.com/enterprise/security/single-sign-on/)
 - [Docker Docs - Provision users](https://docs.docker.com/enterprise/security/provisioning/)
+- [Docker Docs - Get started with Docker Sandboxes](https://docs.docker.com/ai/sandboxes/get-started/)
+- [Docker Docs - Docker Sandboxes sign-in enforcement](https://docs.docker.com/ai/sandboxes/governance/sign-in-enforcement/)
