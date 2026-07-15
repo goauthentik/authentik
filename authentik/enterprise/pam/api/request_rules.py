@@ -1,12 +1,21 @@
+from rest_framework.exceptions import ValidationError
 from rest_framework.viewsets import ModelViewSet
 
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import ModelSerializer
+from authentik.core.models import Application
 from authentik.enterprise.api import EnterpriseRequiredMixin
 from authentik.enterprise.pam.models import PolicyBindingModelRequestRule
+from authentik.policies.models import PolicyBindingModel
 
 
 class PolicyBindingModelRequestRuleSerializer(EnterpriseRequiredMixin, ModelSerializer):
+
+    def validate_pbm(self, pbm: PolicyBindingModel) -> PolicyBindingModel:
+        subc =  PolicyBindingModel.objects.filter(pk=pbm.pk).select_subclasses()
+        if not isinstance(subc, Application):
+            raise ValidationError("Must be app")
+        return pbm
 
     class Meta:
         model = PolicyBindingModelRequestRule

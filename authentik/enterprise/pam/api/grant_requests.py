@@ -21,6 +21,7 @@ from authentik.core.api.utils import (
     ModelSerializer,
     PassiveSerializer,
 )
+from authentik.core.models import Application
 from authentik.enterprise.pam.models import (
     GrantRequest,
     PolicyBindingModelRequestRule,
@@ -58,6 +59,9 @@ class GrantRequestSerializer(ModelSerializer):
             "target_apps",
             "uuid",
         ]
+        extra_kwargs = {
+            "status": {"read_only": True},
+        }
 
 
 class GrantRequestViewSet(RetrieveModelMixin, DestroyModelMixin, ListModelMixin, GenericViewSet):
