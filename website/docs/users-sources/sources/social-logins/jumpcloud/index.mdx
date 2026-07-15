@@ -1,0 +1,156 @@
+---
+title: Log in with JumpCloud
+sidebar_label: JumpCloud
+description: "Integrate JumpCloud as a source in authentik"
+tags:
+    - source
+    - jumpcloud
+    - saml
+    - oidc
+---
+
+import TabItem from "@theme/TabItem";
+import Tabs from "@theme/Tabs";
+
+This source lets users authenticate with their [JumpCloud](https://jumpcloud.com/) credentials by configuring JumpCloud as a federated identity provider using SAML or OpenID Connect (OIDC).
+
+## Preparation
+
+The following placeholders are used in this guide:
+
+- `authentik.company` is the FQDN of the authentik installation.
+- `jumpcloud-slug` is the slug to assign to the source in authentik (for example, `jumpcloud`).
+
+## Configuration methods
+
+You can integrate JumpCloud with authentik using either SAML or OpenID Connect (OIDC). Select a tab below for the corresponding instructions.
+
+<Tabs
+    defaultValue="saml"
+    values={[
+        { label: "SAML", value: "saml" },
+        { label: "OIDC", value: "oidc" },
+    ]}
+>
+<TabItem value="saml">
+
+### JumpCloud configuration
+
+To integrate JumpCloud with authentik, create a custom SAML application in the JumpCloud Admin Portal.
+
+1. Log in to the [JumpCloud Admin Portal](https://console.jumpcloud.com/) as an administrator.
+2. Navigate to **Access** > **SSO Applications** and click **Add New Application**.
+3. Select **Custom Application** and click **Next**.
+4. Under **Manage Single Sign-On (SSO)**, select **Configure SSO with SAML**, then click **Next**.
+5. Set the **Display Label** to `authentik` and click **Save Application**, then click **Configure Application**.
+6. On the **SSO** tab, configure the following settings:
+    - **SP Entity ID**: `https://authentik.company/source/saml/jumpcloud/metadata/`
+    - **ACS URL**: `https://authentik.company/source/saml/jumpcloud/acs/`
+    - **SAMLSubject NameID**: `email`
+    - **SAMLSubject NameID Format**: `urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress`
+
+7. Open the application's **User Groups** tab, check the **All Users** group.
+8. Click **Save** in the bottom right to create the application.
+9. On the **SSO** tab, note the **IDP URL** (`https://sso.jumpcloud.com/saml2/authentik`) and the SAML **Metadata URL** (`https://sso.jumpcloud.com/saml2/metadata/authentik`). Both are used in the next section.
+
+### authentik configuration
+
+To support the integration of JumpCloud with authentik, you need to import the JumpCloud signing certificate and create a JumpCloud SAML source in authentik.
+
+#### Import the JumpCloud certificate
+
+JumpCloud does not offer a direct certificate download; the signing certificate is embedded in the application's SAML metadata. You need to extract it and wrap it in PEM markers before importing it into authentik.
+
+1. Open the JumpCloud SAML **Metadata URL** (`https://sso.jumpcloud.com/saml2/metadata/authentik`) in a browser.
+2. Locate the `<X509Certificate>` element inside the `<md:KeyDescriptor use="signing">` block and copy its contents (the value between the opening and closing tags).
+3. Log in to authentik as an administrator and open the authentik Admin interface.
+4. Navigate to **System** > **Certificates** and click **Create**.
+5. Provide a name (for example, `JumpCloud SAML`) and paste the copied value into the **Certificate** field, manually adding the PEM header and footer lines so that it matches the following format:
+
+    ```
+    -----BEGIN CERTIFICATE-----
+    <X509Certificate content copied from the JumpCloud metadata>
+    -----END CERTIFICATE-----
+    ```
+
+6. Leave the **Private Key** field empty and click **Create**.
+
+#### Create a SAML source in authentik
+
+1. Navigate to **Directory** > **Federation and Social login** and click **New Source**.
+2. Select **SAML Source** and configure the following settings:
+    - Set **Name** to `jumpcloud`.
+    - Set **Slug** to `jumpcloud` (this must match the `<jumpcloud-slug>` used in the SP Entity ID and ACS URL above).
+    - Set **SSO URL** to `https://sso.jumpcloud.com/saml2/authentik`.
+    - Set **Binding Type** to `Post-auto Binding`.
+    - Set **Verification Certificate** to the `JumpCloud SAML` certificate imported above, so authentik validates the signature on incoming responses.
+    - Uncheck **Verify Assertion Signature**.
+    - Check **Verify Response Signature**.
+
+    :::info
+    JumpCloud signs the SAML response rather than the individual assertion, so these two options must be inverted from their defaults. If they are left at their defaults, signature verification fails.
+    :::
+
+3. Click **Finish**.
+
+</TabItem>
+<TabItem value="oidc">
+
+### JumpCloud configuration
+
+To integrate JumpCloud with authentik, create a custom OIDC application in the JumpCloud Admin Portal.
+
+1. Log in to the [JumpCloud Admin Portal](https://console.jumpcloud.com/) as an administrator.
+2. Navigate to **Access** > **SSO Applications** and click **Add New Application**.
+3. Select **Custom Application** and click **Next**.
+4. Under **Manage Single Sign-On (SSO)**, select **Configure SSO with OIDC**, then click **Next**.
+5. Set the **Display Label** to `authentik` and click **Save Application**, then click **Configure Application**.
+6. On the **SSO** tab, configure the following settings:
+    - **Redirect URIs**: `https://authentik.company/source/oauth/callback/jumpcloud/`
+    - **Client Authentication Type**: `Client Secret Basic`
+    - **Grant Types**: leave **Authorization Code** selected (the default).
+    - Under **Attribute Mapping**, enable the `email` and `profile` scopes so those claims are returned.
+
+7. Open the application's **User Groups** tab, check the **All Users** group.
+8. Click **Save** in the bottom right to create the application.
+9. After saving, JumpCloud will display a popup with the **Client ID** and **Client Secret**. Both are required in the next section.
+
+### authentik configuration
+
+To support the integration of JumpCloud with authentik, create a JumpCloud OpenID Connect source in authentik.
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Directory** > **Federation and Social login** and click **New Source**.
+3. Select **OpenID Connect OAuth Source** and configure the following settings:
+    - Set **Name** to `jumpcloud`.
+    - Set **Slug** to `jumpcloud` (this must match the `<jumpcloud-slug>` used in the redirect URI above).
+    - Under **Protocol settings**:
+        - Set **Consumer key** to the **Client ID** from JumpCloud.
+        - Set **Consumer secret** to the **Client Secret** from JumpCloud.
+    - Under **URL settings**:
+        - Set **Authorization URL** to `https://oauth.id.jumpcloud.com/oauth2/auth`.
+        - Set **Access Token URL** to `https://oauth.id.jumpcloud.com/oauth2/token`.
+        - Set **Profile URL** to `https://oauth.id.jumpcloud.com/userinfo`.
+        - Set **OIDC Well-known URL** to `https://oauth.id.jumpcloud.com/.well-known/openid-configuration`.
+        - Set **OIDC JWKS URL** to `https://oauth.id.jumpcloud.com/.well-known/jwks.json`.
+
+    :::info Regional endpoints
+    The URLs above are for the US region. For the EU or IN regions, replace `oauth.id.jumpcloud.com` with `oauth.id.eu.jumpcloud.com` or `oauth.id.in.jumpcloud.com`.
+    :::
+
+4. Click **Finish**.
+
+</TabItem>
+</Tabs>
+
+:::info Display new source on login screen
+For instructions on how to display the new source on the authentik login page, refer to the [Add sources to default login page documentation](../../index.md#add-sources-to-default-login-page).
+:::
+
+## Source property mappings
+
+Source property mappings allow you to modify or gather extra information from sources. See the [overview](../../property-mappings/index.md) for more information.
+
+## Resources
+
+- [JumpCloud - Get Started: SSO Applications](https://jumpcloud.com/support/get-started-applications-sso)
