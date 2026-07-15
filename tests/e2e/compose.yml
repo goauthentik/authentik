@@ -56,7 +56,7 @@ services:
     shm_size: 512mb
     user: root
   selenium:
-    image: ghcr.io/goauthentik/selenium:148.0-ak-0.44.3
+    image: ghcr.io/goauthentik/selenium:149.0-ak-0.50.2
     shm_size: 2g
     restart: always
     environment:

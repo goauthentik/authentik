@@ -1,0 +1,120 @@
+---
+title: Integrate with Chatwoot
+sidebar_label: Chatwoot
+support_level: community
+---
+
+import SAMLProvider20265Warning from "../../_saml-provider-2026-5-warning.mdx";
+
+## What is Chatwoot?
+
+> Chatwoot is an open source customer support platform for managing conversations across websites, email, social media, and messaging channels.
+>
+> -- https://www.chatwoot.com
+
+## Preparation
+
+The following placeholders are used in this guide:
+
+- `chatwoot.company` is the FQDN of the Chatwoot installation. For Chatwoot Cloud, use `app.chatwoot.com`.
+- `authentik.company` is the FQDN of the authentik installation.
+
+:::info
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
+
+:::info Chatwoot requirements
+SAML SSO requires a Chatwoot Enterprise plan and a Chatwoot account administrator.
+:::
+
+## authentik configuration
+
+To support the integration of Chatwoot with authentik, create SAML property mappings and an application/provider pair.
+
+### Create property mappings
+
+Chatwoot requires the SAML assertion to include `email`, `first_name`, and `last_name` attributes.
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Customization** > **Property Mappings** and click **Create**.
+3. Select **SAML Provider Property Mapping** and click **Next**.
+4. Create the following property mapping:
+    - **Name**: `Chatwoot email`
+    - **SAML Attribute Name**: `email`
+    - **Expression**:
+
+        ```python
+        return request.user.email
+        ```
+
+5. Click **Finish**.
+6. Repeat steps 2-5 to create the following property mappings:
+    - **First name mapping**:
+        - **Name**: `Chatwoot first name`
+        - **SAML Attribute Name**: `first_name`
+        - **Expression**:
+            ```python
+            name = request.user.name.strip()
+            return name.split(" ", 1)[0] if name else request.user.username
+            ```
+    - **Last name mapping**:
+        - **Name**: `Chatwoot last name`
+        - **SAML Attribute Name**: `last_name`
+        - **Expression**:
+            ```python
+            name = request.user.name.strip()
+            return name.rsplit(" ", 1)[1] if " " in name else ""
+            ```
+
+### Create an application and provider
+
+<SAMLProvider20265Warning />
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. In Chatwoot, note the numeric account ID in the current page URL. It is the number after `/app/accounts/`.
+3. In authentik, navigate to **Applications** > **Applications** and click **New Application** to create an application and provider pair.
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Note the **Slug** value because you will use it when configuring Chatwoot.
+    - **Choose a Provider type**: select **SAML Provider**.
+    - **Configure the Provider**: provide a name or accept the auto-provided name, select the authorization flow to use for this provider, and configure the following settings:
+        - **ACS URL**: `https://chatwoot.company/omniauth/saml/callback?account_id=<account_id>`
+        - **Audience**: `https://chatwoot.company/saml/sp/<account_id>`
+        - Under **Advanced protocol settings**:
+            - Select an available **Signing Certificate**.
+            - Set **NameID Property Mapping** to `Chatwoot email`.
+            - Set **Default NameID Policy** to **Email address**.
+            - Add `Chatwoot email`, `Chatwoot first name`, and `Chatwoot last name` to **Selected User Property Mappings**.
+    - **Configure Bindings** _(optional)_: create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
+4. Click **Submit** to save the application and provider.
+
+### Download the signing certificate
+
+1. Navigate to **Applications** > **Providers** and click the name of the SAML provider that you created.
+2. Under **Related objects** > **Download signing certificate**, click **Download**. The certificate contents are required when configuring Chatwoot.
+
+## Chatwoot configuration
+
+:::warning Authentication behavior
+After you enable SAML, users in the Chatwoot account must log in through the SAML identity provider instead of using their Chatwoot passwords. A user who belongs to multiple Chatwoot accounts must use SAML if any of those accounts has SAML configured.
+:::
+
+1. Log in to Chatwoot as an account administrator.
+2. Navigate to **Settings** > **Security**.
+3. Enable **SAML SSO**.
+4. Configure the following settings:
+    - **SSO URL**: `https://authentik.company/application/saml/<application_slug>/`
+    - **Identity Provider Entity ID**: `https://authentik.company/application/saml/<application_slug>/metadata/`
+    - **Signing certificate in PEM format**: paste the contents of the certificate that you downloaded from authentik.
+5. Click **Update SAML Settings**.
+6. Under **Service Provider Information**, confirm that the **ACS URL** and **SP Entity ID** match the values that you configured in authentik.
+
+Chatwoot uses the SAML attributes to create a user's profile during their first SAML login. Later SAML logins do not update that profile data.
+
+## Configuration verification
+
+To confirm that authentik is properly configured with Chatwoot, open Chatwoot, click **Login via SSO**, enter the email address of a user who belongs to the configured account, and click **Continue with SSO**. You should be redirected to authentik and then back to Chatwoot.
+
+## Resources
+
+- [Chatwoot user guide - Setting up SAML authentication](https://www.chatwoot.com/hc/user-guide/articles/1758635327-setting-up-saml)
+- [Chatwoot Cloud pricing](https://www.chatwoot.com/pricing)
+- [Chatwoot self-hosted pricing](https://www.chatwoot.com/pricing/self-hosted-plans)

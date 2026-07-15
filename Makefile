@@ -355,7 +355,7 @@ ci-lint-pending-migrations: ci--meta-debug
 	$(UV) run ak makemigrations --check
 
 ci-lint-cargo-deny: ci--meta-debug
-	$(CARGO) deny --locked --workspace check --config "${PWD}/.cargo/deny.toml"
+	$(CARGO) deny --config "${PWD}/.cargo/deny.toml" --locked --workspace check
 
 ci-lint-cargo-machete: ci--meta-debug
 	$(CARGO) machete
