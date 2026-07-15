@@ -4,7 +4,7 @@ title: Consent stage
 
 The Consent stage asks the user to approve sharing data with an application or relying party.
 
-## Overview
+## About the consent stage
 
 This stage is commonly used in authorization flows, where a user should explicitly consent before authentik shares profile data or other claims with an application.
 
