@@ -4,7 +4,7 @@ title: Identification stage
 
 The Identification stage is the primary user-identification step in most authentik login flows.
 
-## Overview
+## About the identification stage
 
 This stage lets the user identify themselves by username, email address, UPN, or external source. You can also embed password entry, CAPTCHA verification, and passkey autofill directly into the identification step.
 
