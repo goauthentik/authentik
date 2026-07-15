@@ -294,6 +294,43 @@ test.describe("Groups", () => {
             await groupsPanel.getByRole("button", { name: "Add to existing group" }).click();
 
             await expect(addGroupDialog, "Add dialog opens").toBeVisible();
+
+            await test.step("Select group and verify loader message", async () => {
+                const selectGroupsDialog = page.getByRole("dialog", {
+                    name: "Select Groups",
+                });
+ 
+                await addGroupDialog
+                    .getByRole("button", { name: "Add group" })
+                    .click();
+
+                await expect(selectGroupsDialog, "Select groups dialog opens").toBeVisible();
+                const groupRow = await search(groupName, selectGroupsDialog);
+
+                await expect(groupRow, "Group is visible in selection").toBeVisible();
+                
+                await groupRow.getByRole("checkbox").check();
+
+                await selectGroupsDialog
+                    .getByRole("button", { name: "Confirm" })
+                    .click();
+
+                await expect(selectGroupsDialog, "Select groups dialog closes").toBeHidden();
+
+                await addGroupDialog.getByRole("button", { name: "Add Group" }).click();
+
+                await expect(
+                    page.getByText("Adding Group..."),
+                    "Loader shows 'Adding Group...' not 'Creating Group...'",
+                ).toBeVisible({ timeout: 5_000 });
+
+
+                await expect(
+                    page.getByText("Successfully added user to group(s)."),
+                    "Success message confirms user was added to group",
+                ).toBeVisible({ timeout: 10_000 });
+
+            });
         });
     });
 
