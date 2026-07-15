@@ -33,14 +33,19 @@ export type AttributesMixin = {
 /**
  * Renders a single attribute based on its definition and the provided values.
  *
- * @param the current values of the attributes.
+ * @param values the current values of the attributes.
  * @param def the definition of the attribute to render.
  */
 function renderSingleAttribute(
     values: Record<string, unknown>,
     def: Pick<ObjectAttribute, "key" | "label" | "isRequired" | "type">,
 ): SlottedTemplateResult {
-    const value = values[def.key] || "";
+    const defaultValue = match(def.type)
+        .with(ObjectAttributeTypeEnum.Text, () => "")
+        .with(ObjectAttributeTypeEnum.Number, () => 0)
+        .with(ObjectAttributeTypeEnum.Boolean, () => false)
+        .otherwise(() => "");
+    const value = values[def.key] || defaultValue;
     const name = def.key ? `attributes.${def.key}` : "";
     const { label, isRequired, type } = def;
 
