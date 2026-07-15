@@ -49,9 +49,9 @@
         "@goauthentik/tsconfig": "link:../tsconfig",
         "@types/eslint": "^9.6.1",
         "@types/node": "^26.1.1",
-        "@typescript-eslint/parser": "^8.62.1",
+        "@typescript-eslint/parser": "^8.63.0",
         "typescript": "catalog:",
-        "typescript-eslint": "^8.62.1"
+        "typescript-eslint": "^8.63.0"
     },
     "peerDependencies": {
         "react": "^18.0.0 || ^19.0.0",

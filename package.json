@@ -13,7 +13,7 @@
         "#logger": "./packages/logger-js/lib/node.js"
     },
     "dependencies": {
-        "@eslint/js": "^9.39.4",
+        "@eslint/js": "^10.0.1",
         "@goauthentik/docusaurus-config": "workspace:*",
         "@goauthentik/eslint-config": "workspace:*",
         "@goauthentik/logger-js": "workspace:*",
@@ -27,7 +27,7 @@
         "prettier": "3.8.3",
         "prettier-plugin-packagejson": "catalog:",
         "typescript": "catalog:",
-        "typescript-eslint": "^8.62.1",
+        "typescript-eslint": "^8.63.0",
         "yaml": "^2.9.0"
     },
     "engines": {
