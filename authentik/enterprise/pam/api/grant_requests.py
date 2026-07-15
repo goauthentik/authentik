@@ -23,13 +23,11 @@ from authentik.core.api.utils import (
 )
 from authentik.enterprise.pam.models import (
     GrantRequest,
-    Persona,
     PolicyBindingModelRequestRule,
     RequestStatus,
 )
 from authentik.enterprise.pam.stage import (
     PLAN_CONTEXT_GRANT_REQUESTED_PBMS,
-    PLAN_CONTEXT_GRANT_REQUESTED_PERSONA,
     GrantRequestFinalStageView,
 )
 from authentik.flows.models import Flow, in_memory_stage
@@ -52,7 +50,6 @@ class GrantRequestSerializer(ModelSerializer):
         fields = [
             "created",
             "created_by",
-            "persona",
             "requester_data",
             "fulfiller_data",
             "expires",
@@ -69,11 +66,6 @@ class GrantRequestViewSet(RetrieveModelMixin, DestroyModelMixin, ListModelMixin,
 
     class GrantRequestCreateSerializer(PassiveSerializer):
         pbms = PrimaryKeyRelatedField(queryset=PolicyBindingModel.objects.all(), many=True)
-        # Optional: request the access for a persona owned by the requesting user,
-        # instead of the requesting user directly.
-        persona = PrimaryKeyRelatedField(
-            queryset=Persona.objects.all(), required=False, allow_null=True
-        )
 
     class GrantRequestFulfillSerializer(PassiveSerializer):
         data = JSONDictField()
@@ -82,9 +74,6 @@ class GrantRequestViewSet(RetrieveModelMixin, DestroyModelMixin, ListModelMixin,
     @extend_schema(request=GrantRequestCreateSerializer, responses={200: LinkSerializer})
     @validate(GrantRequestCreateSerializer)
     def create(self, request: Request, body: GrantRequestCreateSerializer) -> Response:
-        persona = body.validated_data.get("persona")
-        if persona and persona.parent_id != request.user.pk:
-            raise ValidationError("Persona does not belong to the requesting user")
         # TODO: Select a flow somewhere
         flow = Flow.objects.get(slug="request-access")
         planner = FlowPlanner(flow)
@@ -93,7 +82,6 @@ class GrantRequestViewSet(RetrieveModelMixin, DestroyModelMixin, ListModelMixin,
             request,
             {
                 PLAN_CONTEXT_GRANT_REQUESTED_PBMS: body.validated_data["pbms"],
-                PLAN_CONTEXT_GRANT_REQUESTED_PERSONA: persona,
                 PLAN_CONTEXT_PENDING_USER: request.user,
             },
         )

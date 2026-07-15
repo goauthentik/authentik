@@ -94,12 +94,6 @@ export interface Persona {
      * @memberof Persona
      */
     readonly parent: PartialUser;
-    /**
-     *
-     * @type {string}
-     * @memberof Persona
-     */
-    template?: string | null;
 }
 
 /**
@@ -136,7 +130,6 @@ export function PersonaFromJSONTyped(json: any, ignoreDiscriminator: boolean): P
         expiring: json["expiring"] == null ? undefined : json["expiring"],
         expires: json["expires"] == null ? undefined : new Date(json["expires"]),
         parent: PartialUserFromJSON(json["parent"]),
-        template: json["template"] == null ? undefined : json["template"],
     };
 }
 
@@ -162,6 +155,5 @@ export function PersonaToJSONTyped(
         attributes: value["attributes"],
         expiring: value["expiring"],
         expires: value["expires"] == null ? value["expires"] : value["expires"].toISOString(),
-        template: value["template"],
     };
 }

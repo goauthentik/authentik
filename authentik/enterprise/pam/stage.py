@@ -5,14 +5,13 @@ from django.http import HttpRequest, HttpResponse
 from django.urls import reverse
 from django.utils.timezone import now
 
-from authentik.enterprise.pam.models import GrantRequest, GrantRequestTarget, RequestStatus
 from authentik.events.middleware import audit_ignore
 from authentik.events.models import Event, EventAction
 from authentik.flows.stage import StageView
+from authentik.enterprise.pam.models import GrantRequest, GrantRequestTarget, RequestStatus
 from authentik.stages.prompt.stage import PLAN_CONTEXT_PROMPT
 
 PLAN_CONTEXT_GRANT_REQUESTED_PBMS = "goauthentik.io/pam/requested-pbms"
-PLAN_CONTEXT_GRANT_REQUESTED_PERSONA = "goauthentik.io/pam/requested-persona"
 
 
 class GrantRequestFinalStageView(StageView):
@@ -20,12 +19,10 @@ class GrantRequestFinalStageView(StageView):
     def get(self, request: HttpRequest) -> HttpResponse:
         user = self.get_pending_user()
         pbms = self.executor.plan.context.get(PLAN_CONTEXT_GRANT_REQUESTED_PBMS)
-        persona = self.executor.plan.context.get(PLAN_CONTEXT_GRANT_REQUESTED_PERSONA)
         expires = now() + timedelta(hours=1)
         with transaction.atomic(), audit_ignore():
             req = GrantRequest.objects.create(
                 created_by=user,
-                persona=persona,
                 requester_data=self.executor.plan.context.get(PLAN_CONTEXT_PROMPT, {}),
                 expiring=True,
                 expires=expires,

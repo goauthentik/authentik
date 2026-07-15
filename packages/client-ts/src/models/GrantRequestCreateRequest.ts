@@ -24,12 +24,6 @@ export interface GrantRequestCreateRequest {
      * @memberof GrantRequestCreateRequest
      */
     pbms: Array<string>;
-    /**
-     *
-     * @type {number}
-     * @memberof GrantRequestCreateRequest
-     */
-    persona?: number | null;
 }
 
 /**
@@ -55,7 +49,6 @@ export function GrantRequestCreateRequestFromJSONTyped(
     }
     return {
         pbms: json["pbms"],
-        persona: json["persona"] == null ? undefined : json["persona"],
     };
 }
 
@@ -73,6 +66,5 @@ export function GrantRequestCreateRequestToJSONTyped(
 
     return {
         pbms: value["pbms"],
-        persona: value["persona"],
     };
 }

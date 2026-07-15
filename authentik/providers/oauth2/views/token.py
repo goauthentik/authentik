@@ -10,7 +10,6 @@ from re import fullmatch
 from typing import Any
 from urllib.parse import urlparse
 
-from django.apps import apps
 from django.http import HttpRequest, HttpResponse
 from django.utils import timezone
 from django.utils.decorators import method_decorator
@@ -105,12 +104,6 @@ class TokenParams:
     refresh_token: RefreshToken | None = None
     device_code: DeviceToken | None = None
     user: User | None = None
-    # Set when a token_exchange grant resolves `user` to a Persona acting for
-    # the original subject: the subject is kept here so an `act` claim can be added.
-    delegation_subject: User | None = None
-    # Name of the verified actor (OAuth2Provider or OAuthSource) that presented the
-    # actor_token authorizing the above delegation, kept for the audit event.
-    delegation_actor: str | None = None
 
     code_verifier: str | None = None
 
@@ -574,8 +567,11 @@ class TokenParams:
 
     def __post_init_token_exchange(self, request: HttpRequest):
         """See https://datatracker.ietf.org/doc/html/rfc8693#section-2.1"""
-        # Delegation (`actor_token` + `persona`) is handled by __resolve_persona_delegation
-        # below, once the subject is known.
+        # Delegation is not implemented. An actor token is rejected rather than ignored, so a
+        # client cannot believe it delegated authority while an impersonation token was issued.
+        if request.POST.get("actor_token") or request.POST.get("actor_token_type"):
+            LOGGER.warning("Delegation is not supported")
+            raise TokenExchangeError("invalid_request").with_cause("actor_token_unsupported")
         # Token targeting is not implemented. RFC 8693 §2.2.2 requires invalid_target when the
         # requested target cannot be honored, so the parameters are refused rather than ignored.
         if request.POST.getlist("audience") or request.POST.getlist("resource"):
@@ -613,12 +609,9 @@ class TokenParams:
             LOGGER.info("token_exchange grant for provider without application")
             raise TokenExchangeError("invalid_grant").with_cause("provider_without_application")
 
+        self.__check_policy_access(app, request, oauth_jwt=token)
         if not provider:
             self.__create_user_from_jwt(token, app, source, request)
-        # Resolve persona delegation before the policy check below, so that a persona-scoped
-        # exchange is checked against the persona's own access, not the subject's.
-        self.__resolve_persona_delegation(request, app)
-        self.__check_policy_access(app, request, oauth_jwt=token)
 
         method_args = {
             "jwt": token,
@@ -629,9 +622,6 @@ class TokenParams:
             method_args["source"] = source
         if provider:
             method_args["provider"] = provider
-        if self.delegation_subject:
-            method_args["persona"] = self.user.username
-            method_args["actor"] = self.delegation_actor
         Event.new(
             action=EventAction.LOGIN,
             **{
@@ -640,70 +630,6 @@ class TokenParams:
                 PLAN_CONTEXT_APPLICATION: app,
             },
         ).from_http(request, user=self.user)
-
-    def __resolve_persona_delegation(self, request: HttpRequest, app: Application):
-        """RFC 8693 §2.1 delegation: a verified actor presents `actor_token` alongside
-        `persona`, requesting the resulting token be issued for one of the subject's PAM
-        Personas rather than the subject itself. Two checks answer the delegation-authority
-        question the impersonation-only exchange leaves open (RFC 8693 §4.1 `act` claim):
-        the actor_token must be verified through the same jwt_federation trust used for the
-        subject_token, and the resulting actor (an OAuth2Provider or OAuthSource) must be on
-        the persona's template's allowlist, in addition to the `enterprise.pam.Grant` that
-        already authorizes the persona for this target application."""
-        persona_pk = request.POST.get("persona")
-        actor_token = request.POST.get("actor_token", "")
-        actor_token_type = request.POST.get("actor_token_type", "")
-        if not persona_pk and not actor_token:
-            return
-        if not persona_pk or not actor_token:
-            LOGGER.warning("Delegation requires both persona and actor_token")
-            raise TokenExchangeError("invalid_request").with_cause("persona_requires_actor_token")
-        if actor_token_type and actor_token_type not in TOKEN_EXCHANGE_TOKEN_TYPES:
-            LOGGER.warning("Unsupported actor token type", token_type=actor_token_type)
-            raise TokenExchangeError("invalid_request").with_cause("unsupported_actor_token_type")
-        if not apps.is_installed("authentik.enterprise.pam"):
-            LOGGER.warning("Persona delegation requested but PAM is not installed")
-            raise TokenExchangeError("invalid_request").with_cause("persona_unsupported")
-        from authentik.enterprise.pam.models import Grant, Persona
-
-        subject = self.user
-        persona = Persona.objects.filter(pk=persona_pk, parent=subject).first()
-        if not persona:
-            LOGGER.warning("Persona not found or not owned by subject", persona=persona_pk)
-            raise TokenExchangeError("invalid_grant").with_cause("persona_not_found")
-        if not Grant.objects.filter(persona=persona, target=app).exists():
-            LOGGER.warning("No grant authorizes persona for target application", persona=persona.pk)
-            raise TokenExchangeError("invalid_grant").with_cause("persona_not_authorized")
-
-        actor_claims, actor_source = self.__validate_jwt_from_source(actor_token)
-        actor_provider = None
-        if not actor_claims:
-            actor_claims, actor_provider = self.__validate_jwt_from_provider(actor_token)
-            # __validate_jwt_from_provider sets self.user as a side effect intended for
-            # subject_token verification; we're validating the actor here, so restore it.
-            self.user = subject
-        if not actor_claims:
-            LOGGER.warning("No actor token could be verified")
-            raise TokenExchangeError("invalid_grant").with_cause("actor_token_not_verified")
-
-        if not persona.template:
-            LOGGER.warning(
-                "Persona has no template, so no actors are authorized", persona=persona.pk
-            )
-            raise TokenExchangeError("invalid_grant").with_cause("actor_not_authorized")
-        if (
-            actor_provider
-            and persona.template.actor_providers.filter(pk=actor_provider.pk).exists()
-        ):
-            self.delegation_actor = actor_provider.name
-        elif actor_source and persona.template.actor_sources.filter(pk=actor_source.pk).exists():
-            self.delegation_actor = actor_source.name
-        else:
-            LOGGER.warning("Actor is not authorized to act as persona", persona=persona.pk)
-            raise TokenExchangeError("invalid_grant").with_cause("actor_not_authorized")
-
-        self.delegation_subject = subject
-        self.user = persona
 
     def __create_user_from_jwt(
         self, token: dict[str, Any], app: Application, source: OAuthSource, request: HttpRequest
@@ -1020,10 +946,6 @@ class TokenView(View):
             access_token,
             self.request,
         )
-        if self.params.delegation_subject:
-            # RFC 8693 §4.1: record who the token now represents (`sub`, the persona) was
-            # obtained on behalf of the originally-verified subject.
-            access_token.id_token.claims["act"] = {"sub": self.params.delegation_subject.uid}
         access_token.save()
 
         return {

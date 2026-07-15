@@ -41,14 +41,6 @@ export const ROUTES: Route[] = [
         await import("#admin/access-requests/AccessRequestListPage");
         return html`<ak-access-requests-list></ak-access-requests-list>`;
     }),
-    new Route(new RegExp("^/pam/personas$"), async () => {
-        await import("#admin/personas/PersonaListPage");
-        return html`<ak-persona-list></ak-persona-list>`;
-    }),
-    new Route(new RegExp("^/pam/persona-templates$"), async () => {
-        await import("#admin/persona-templates/PersonaTemplateListPage");
-        return html`<ak-persona-template-list></ak-persona-template-list>`;
-    }),
     new Route(new RegExp("^/endpoints/devices$"), async () => {
         await import("#admin/endpoints/devices/DeviceListPage");
         return html`<ak-endpoints-device-list></ak-endpoints-device-list>`;
