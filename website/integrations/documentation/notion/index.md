@@ -78,7 +78,7 @@ Notion uses the SAML NameID as the user's email address. It can also consume SAM
             return avatar
             ```
 
-### Create an application and provider in authentik
+### Create an application and provider
 
 <SAMLProvider20265Warning />
 
