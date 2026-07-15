@@ -9,6 +9,7 @@ on:
       - packages/eslint-config/**
       - packages/prettier-config/**
       - packages/docusaurus-config/**
+      - packages/logger-js/**
       - packages/esbuild-plugin-live-reload/**
   workflow_dispatch:
 

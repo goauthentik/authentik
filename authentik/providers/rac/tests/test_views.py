@@ -106,3 +106,47 @@ class TestRACViews(APITestCase):
         self.client.logout()
         final_response = self.client.get(next_url)
         self.assertEqual(final_response.url, reverse("authentik_core:if-user"))
+
+    def test_cross_provider_endpoint(self):
+        """An endpoint must only be reachable through its own provider's
+        application. Pairing the slug of an application the user can access with
+        the PK of an endpoint from another provider must not resolve."""
+        other_provider = RACProvider.objects.create(
+            name=generate_id(), authorization_flow=self.flow
+        )
+        other_app = Application.objects.create(
+            name=generate_id(),
+            slug=generate_id(),
+            provider=other_provider,
+        )
+        PolicyBinding.objects.create(
+            target=other_app,
+            policy=DummyPolicy.objects.create(
+                name=f"deny-{generate_id()}", result=False, wait_min=1, wait_max=2
+            ),
+            order=0,
+        )
+        other_endpoint = Endpoint.objects.create(
+            name=generate_id(),
+            host=f"{generate_id()}:3389",
+            protocol=Protocols.RDP,
+            provider=other_provider,
+        )
+        self.client.force_login(self.user)
+        # Control: the endpoint's own application correctly denies access.
+        denied = self.client.get(
+            reverse(
+                "authentik_providers_rac:start",
+                kwargs={"app": other_app.slug, "endpoint": str(other_endpoint.pk)},
+            )
+        )
+        self.assertIsInstance(denied, AccessDeniedResponse)
+        # Pairing an accessible application with the other provider's endpoint
+        # must not resolve.
+        response = self.client.get(
+            reverse(
+                "authentik_providers_rac:start",
+                kwargs={"app": self.app.slug, "endpoint": str(other_endpoint.pk)},
+            )
+        )
+        self.assertEqual(response.status_code, 404)

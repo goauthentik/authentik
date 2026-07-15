@@ -47,9 +47,11 @@ To support the integration of ONLYOFFICE Workspace with authentik, you need to c
     - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 3. Click **Submit** to save the new application and provider.
 4. Navigate to **Applications** > **Providers** and click the provider you created.
-5. Click **Edit**, open **Advanced protocol settings**, and set the following values:
-    - **Signing Certificate**: select any available certificate.
-    - **Sign responses**: enable this option.
+5. Click **Edit** and set the following values:
+    - Confirm that the **SLS URL** and **SLS Binding** were imported from the ONLYOFFICE SP metadata, then set **Logout Method** to `Front-channel (Iframe)`.
+    - Under **Advanced protocol settings**:
+        - **Signing Certificate**: select any available certificate.
+        - **Sign responses**: enable this option.
 6. Click **Update**.
 7. Under **Related objects** > **Metadata**, click **Copy download URL**. This metadata download URL will be required in the next section.
 
@@ -57,11 +59,12 @@ To support the integration of ONLYOFFICE Workspace with authentik, you need to c
 
 1. Return to the ONLYOFFICE Control Panel and open **SSO**.
 2. Paste the metadata download URL from authentik into **URL to IdP Metadata XML** and click the upload button next to the field.
-3. Under **Attribute Mapping**, set the following values:
+3. Confirm that **IdP Single Logout Endpoint URL** is populated from the uploaded authentik metadata, and select the **Binding** that matches the **SLS Binding** shown on the authentik provider.
+4. Under **Attribute Mapping**, set the following values:
     - **First Name**: `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name`
     - **Last Name**: `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name`
     - **Email**: `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress`
-4. Click **Save**.
+5. Click **Save**.
 
 ## Configuration verification
 

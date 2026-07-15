@@ -7739,9 +7739,59 @@ paths:
         schema:
           type: string
       - in: query
+        name: actions
+        schema:
+          type: array
+          items:
+            $ref: '#/components/schemas/EventActions'
+        explode: true
+        style: form
+      - in: query
+        name: brand_name
+        schema:
+          type: string
+        description: Brand name
+      - in: query
+        name: client_ip
+        schema:
+          type: string
+      - in: query
+        name: context_authorized_app
+        schema:
+          type: string
+        description: Context Authorized application
+      - in: query
+        name: context_device
+        schema:
+          type: string
+        description: Context Device Primary Key
+      - in: query
+        name: context_model_app
+        schema:
+          type: string
+        description: Context Model App
+      - in: query
+        name: context_model_name
+        schema:
+          type: string
+        description: Context Model Name
+      - in: query
+        name: context_model_pk
+        schema:
+          type: string
+        description: Context Model Primary Key
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QuerySearch'
+      - in: query
         name: top_n
         schema:
           type: integer
+          default: 15
+      - in: query
+        name: username
+        schema:
+          type: string
+        description: Username
       tags:
       - events
       security:
@@ -24375,7 +24425,7 @@ paths:
         schema:
           type: boolean
       - in: query
-        name: issuer
+        name: issuer_override
         schema:
           type: string
       - in: query
@@ -40425,6 +40475,7 @@ components:
       - client_credentials
       - password
       - urn:ietf:params:oauth:grant-type:device_code
+      - urn:ietf:params:oauth:grant-type:token-exchange
       type: string
     Group:
       type: object
@@ -50815,9 +50866,9 @@ components:
           type: string
           format: uuid
           description: Flow used before authentication.
-        issuer:
+        issuer_override:
           type: string
-          description: Also known as Entity ID. Defaults the Metadata URL.
+          description: Also known as Entity ID. Defaults to the Metadata URL.
         sso_url:
           type: string
           minLength: 1
@@ -52671,9 +52722,9 @@ components:
       type: string
     ProviderTypeEnum:
       enum:
+      - openidconnect
       - apple
       - discord
-      - openidconnect
       - entraid
       - facebook
       - github
@@ -54554,9 +54605,14 @@ components:
           type: string
           format: uuid
           description: Flow used before authentication.
-        issuer:
+        issuer_override:
           type: string
-          description: Also known as Entity ID. Defaults the Metadata URL.
+          description: Also known as Entity ID. Defaults to the Metadata URL.
+        url_issuer:
+          type: string
+          description: Get the resolved Issuer, falling back to the metadata URL when
+            unset
+          readOnly: true
         sso_url:
           type: string
           description: URL that the initial Login request is sent to.
@@ -54628,6 +54684,7 @@ components:
       - pre_authentication_flow
       - slug
       - sso_url
+      - url_issuer
       - verbose_name
       - verbose_name_plural
     SAMLSourcePropertyMapping:
@@ -54757,9 +54814,9 @@ components:
           type: string
           format: uuid
           description: Flow used before authentication.
-        issuer:
+        issuer_override:
           type: string
-          description: Also known as Entity ID. Defaults the Metadata URL.
+          description: Also known as Entity ID. Defaults to the Metadata URL.
         sso_url:
           type: string
           minLength: 1

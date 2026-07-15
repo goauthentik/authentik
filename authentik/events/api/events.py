@@ -13,9 +13,7 @@ from django.utils.text import slugify
 from django.utils.timezone import now
 from djangoql.schema import DateTimeField as QLDateTimeFIeld
 from djangoql.schema import IntField, StrField
-from drf_spectacular.types import OpenApiTypes
-from drf_spectacular.utils import OpenApiParameter, extend_schema
-from guardian.shortcuts import get_objects_for_user
+from drf_spectacular.utils import extend_schema
 from rest_framework.decorators import action
 from rest_framework.fields import (
     CharField,
@@ -218,33 +216,21 @@ class EventViewSet(
             QLDateTimeFIeld(Event, "created", suggest_options=True),
         ]
 
+    class TopPerUserSerializer(PassiveSerializer):
+        top_n = IntegerField(default=15)
+
     @extend_schema(
         methods=["GET"],
         responses={200: EventTopPerUserSerializer(many=True)},
-        filters=[],
-        parameters=[
-            OpenApiParameter(
-                "action",
-                type=OpenApiTypes.STR,
-                location=OpenApiParameter.QUERY,
-                required=False,
-            ),
-            OpenApiParameter(
-                "top_n",
-                type=OpenApiTypes.INT,
-                location=OpenApiParameter.QUERY,
-                required=False,
-            ),
-        ],
+        parameters=[TopPerUserSerializer],
     )
+    @validate(TopPerUserSerializer, location="query")
     @action(detail=False, methods=["GET"], pagination_class=None)
-    def top_per_user(self, request: Request):
+    def top_per_user(self, request: Request, query: TopPerUserSerializer):
         """Get the top_n events grouped by user count"""
-        filtered_action = request.query_params.get("action", EventAction.LOGIN)
-        top_n = int(request.query_params.get("top_n", "15"))
+        top_n = query.validated_data.get("top_n")
         events = (
-            get_objects_for_user(request.user, "authentik_events.view_event")
-            .filter(action=filtered_action)
+            self.filter_queryset(self.get_queryset())
             .exclude(context__authorized_application=None)
             .annotate(application=KeyTransform("authorized_application", "context"))
             .annotate(user_pk=KeyTextTransform("pk", "user"))

@@ -7,10 +7,13 @@ packages:
   - "packages/tsconfig"
   - "lifecycle/aws"
 
-# Shared version references for the `catalog:` protocol. Keep these in sync with
-# the root package.json so overrides pin transitive deps to the versions we use.
+# Shared version references for the `catalog:` protocol. Workspace members reference
+# these via `catalog:`, and overrides pin transitive deps to the same versions.
+# `scripts/node/lint-catalogs.ts` keeps them in sync with the other workspace roots.
 catalog:
-  eslint: "^9.39.3"
+  esbuild: "^0.28.1"
+  eslint: "^9.39.4"
+  prettier-plugin-packagejson: "^3.0.2"
   typescript: "^6.0.3"
 
 overrides:
