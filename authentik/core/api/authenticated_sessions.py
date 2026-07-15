@@ -8,7 +8,7 @@ from drf_spectacular.utils import (
 )
 from rest_framework import mixins, serializers
 from rest_framework.decorators import action
-from rest_framework.fields import SerializerMethodField
+from rest_framework.fields import BooleanField, SerializerMethodField
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.serializers import (
@@ -66,10 +66,19 @@ class UserAgentDict(TypedDict):
 
 
 class BulkDeleteSessionSerializer(PassiveSerializer):
-    """Serializer for bulk deleting authenticated sessions by user"""
+    """Serializer for bulk deleting authenticated sessions"""
 
     user_pks = ListField(
-        child=serializers.IntegerField(), help_text="List of user IDs to revoke all sessions for"
+        child=serializers.IntegerField(),
+        help_text="List of user IDs to revoke all sessions for, or empty to revoke all sessions.",
+        required=False,
+        default=[],
+    )
+
+    include_current_session = BooleanField(
+        help_text="Whether or not the current session should be included in the revocation",
+        default=False,
+        required=False,
     )
 
 
@@ -152,6 +161,13 @@ class AuthenticatedSessionViewSet(
     def bulk_delete(self, request: Request, *, query: BulkDeleteSessionSerializer) -> Response:
         """Bulk revoke all sessions for multiple users"""
         user_pks = query.validated_data.get("user_pks", [])
-        deleted_count, _ = AuthenticatedSession.objects.filter(user_id__in=user_pks).delete()
+        include_current_session = query.validated_data.get("include_current_session", False)
+        sessions = AuthenticatedSession.objects.all()
+        if len(user_pks) != 0:
+            sessions = sessions.filter(user_id__in=user_pks)
+        if not include_current_session:
+            sessions = sessions.exclude(session__session_key=request.session.session_key)
+        _, deleted = sessions.delete()
+        deleted_count = deleted.get("authentik_core.AuthenticatedSession")
 
         return Response({"deleted": deleted_count}, status=200)

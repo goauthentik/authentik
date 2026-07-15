@@ -3092,13 +3092,21 @@ paths:
       description: Bulk revoke all sessions for multiple users
       parameters:
       - in: query
+        name: include_current_session
+        schema:
+          type: boolean
+          default: false
+        description: Whether or not the current session should be included in the
+          revocation
+      - in: query
         name: user_pks
         schema:
           type: array
           items:
             type: integer
-        description: List of user IDs to revoke all sessions for
-        required: true
+          default: []
+        description: List of user IDs to revoke all sessions for, or empty to revoke
+          all sessions.
       tags:
       - core
       security:
