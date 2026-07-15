@@ -45,6 +45,15 @@ class EndpointSerializer(ModelSerializer):
         except Provider.application.RelatedObjectDoesNotExist:
             return None
 
+    def to_representation(self, instance: Endpoint) -> dict:
+        data = super().to_representation(instance)
+        request = self.context.get("request")
+        # `settings` may hold static-auth connection credentials; only callers who can
+        # view the endpoint should receive it, not end-users listing it to launch.
+        if request and not request.user.has_perm("authentik_providers_rac.view_endpoint", instance):
+            data["settings"] = {}
+        return data
+
     class Meta:
         model = Endpoint
         fields = [
@@ -81,7 +90,23 @@ class EndpointViewSet(UsedByMixin, ModelViewSet):
 
     def _get_allowed_endpoints(self, queryset: QuerySet) -> list[Endpoint]:
         endpoints = []
+        # An endpoint is only reachable through its provider's application, so it must
+        # not be listed to a user who has no access to that application - this mirrors
+        # the launch flow (PolicyAccessView.user_has_access). Endpoints have no policy
+        # bindings by default, so the per-endpoint check alone would let any caller see
+        # every endpoint.
+        application_access: dict[str, bool] = {}
         for endpoint in queryset:
+            try:
+                application = endpoint.provider.application
+            except Provider.application.RelatedObjectDoesNotExist:
+                continue
+            if application.pk not in application_access:
+                app_engine = PolicyEngine(application, self.request.user, self.request)
+                app_engine.build()
+                application_access[application.pk] = app_engine.passing
+            if not application_access[application.pk]:
+                continue
             engine = PolicyEngine(endpoint, self.request.user, self.request)
             engine.build()
             if engine.passing:
