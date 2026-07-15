@@ -244,6 +244,5 @@ class ListPolicyEngine[T: PolicyBindingModel]:
             engine = PolicyEngine(obj, request.user, request)
             engine.empty_result = self.empty_result
             engine.build()
-            print(engine.result)
             if engine.passing:
                 yield obj

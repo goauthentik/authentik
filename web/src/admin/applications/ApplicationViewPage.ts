@@ -11,7 +11,6 @@ import "#elements/EmptyState";
 import "#elements/Tabs";
 import "#elements/buttons/SpinnerButton/ak-spinner-button";
 import "#admin/applications/ApplicationEvents";
-import "#admin/access-requests/PolicyBindingModelRequestRuleTable";
 
 import { aki } from "#common/api/client";
 import { APIError, parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
@@ -382,20 +381,7 @@ export class ApplicationViewPage extends WithLicenseSummary(AKElement) {
                     objectPk=${this.application.pk}
                 ></ak-rbac-object-permission-page>
                 ${this.hasEnterpriseLicense
-                    ? html`<div
-                              role="tabpanel"
-                              tabindex="0"
-                              slot="page-request-rules"
-                              id="page-request-rules"
-                              aria-label="${msg("Request Rules")}"
-                              class="pf-c-page__main-section pf-m-no-padding-mobile"
-                          >
-                              <div class="pf-c-card">
-                                  <ak-pbm-request-rule-table pbmUuid=${this.application.pbmUuid}>
-                                  </ak-pbm-request-rule-table>
-                              </div>
-                          </div>
-                          <ak-object-lifecycle-page
+                    ? html`<ak-object-lifecycle-page
                               role="tabpanel"
                               tabindex="0"
                               slot="page-lifecycle"

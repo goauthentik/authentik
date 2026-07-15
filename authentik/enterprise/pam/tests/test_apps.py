@@ -31,7 +31,8 @@ class AppRequestTests(APITestCase):
             name=generate_id(),
             slug=generate_id(),
         )
-        PolicyBindingModelRequestRule.objects.create(pbm=app)
+        rule = PolicyBindingModelRequestRule.objects.create()
+        rule.pbms.add(app)
 
         res = self.client.get(reverse("authentik_api:application-requestable"))
         content = loads(res.content.decode())
@@ -49,7 +50,8 @@ class AppRequestTests(APITestCase):
             name=generate_id(),
             slug=generate_id(),
         )
-        rule = PolicyBindingModelRequestRule.objects.create(pbm=app, name=generate_id())
+        rule = PolicyBindingModelRequestRule.objects.create(name=generate_id())
+        rule.pbms.add(app)
         PolicyBinding.objects.create(target=rule, user=other_user, order=0)
 
         res = self.client.get(reverse("authentik_api:application-requestable"))
@@ -65,7 +67,8 @@ class AppRequestTests(APITestCase):
             name=generate_id(),
             slug=generate_id(),
         )
-        rule = PolicyBindingModelRequestRule.objects.create(pbm=app, name=generate_id())
+        rule = PolicyBindingModelRequestRule.objects.create(name=generate_id())
+        rule.pbms.add(app)
         PolicyBinding.objects.create(target=rule, user=user, order=0)
 
         res = self.client.get(reverse("authentik_api:application-requestable"))

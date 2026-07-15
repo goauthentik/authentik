@@ -11,6 +11,7 @@ import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
 
 import { AccessRequestFulfillForm } from "#admin/access-requests/AccessRequestFulfillForm";
+import { renderTargetSummary } from "#admin/access-requests/RequestableTargetHelpers";
 
 import { GrantRequest, PamApi, RequestStatus } from "@goauthentik/api";
 
@@ -57,20 +58,6 @@ export class AccessRequestListPage extends TablePage<GrantRequest> {
         return html`${JSON.stringify(item.requesterData)}<br />${item.targets}`;
     }
 
-    renderApps(item: GrantRequest): SlottedTemplateResult {
-        if (item.targetApps.length < 1) {
-            return nothing;
-        }
-        const target = item.targetApps[0];
-        const overflow = item.targetApps.length - 1;
-        const label =
-            target.label === target.parent.name
-                ? target.label
-                : `${target.parent.name} / ${target.label}`;
-        const base = html`<a href="">${label}</a> ${overflow > 0 ? `+${overflow}` : ""}`;
-        return base;
-    }
-
     renderActions(item: GrantRequest): SlottedTemplateResult {
         if (item.status === RequestStatus.Created) {
             return html`<button
@@ -112,7 +99,7 @@ export class AccessRequestListPage extends TablePage<GrantRequest> {
                 <small>${item.createdBy.name}</small>
             </a>`,
             Timestamp(item.created),
-            this.renderApps(item),
+            renderTargetSummary(item.targetApps),
             html`<ak-status-label
                 .good=${item.isActive}
                 good-label=${statusLabel(item.status)}

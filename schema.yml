@@ -11296,7 +11296,7 @@ paths:
       - $ref: '#/components/parameters/QueryPaginationPage'
       - $ref: '#/components/parameters/QueryPaginationPageSize'
       - in: query
-        name: pbm__pbm_uuid
+        name: pbms__pbm_uuid
         schema:
           type: string
           format: uuid
@@ -50872,9 +50872,11 @@ components:
           minimum: 0
         min_reviewers_is_per_group:
           type: boolean
-        pbm:
-          type: string
-          format: uuid
+        pbms:
+          type: array
+          items:
+            type: string
+            format: uuid
         reviewer_groups:
           type: array
           items:
@@ -52825,6 +52827,10 @@ components:
         uuid:
           type: string
           format: uuid
+        pbm_uuid:
+          type: string
+          format: uuid
+          readOnly: true
         policy_engine_mode:
           $ref: '#/components/schemas/PolicyEngineMode'
         name:
@@ -52835,9 +52841,16 @@ components:
           minimum: 0
         min_reviewers_is_per_group:
           type: boolean
-        pbm:
-          type: string
-          format: uuid
+        pbms:
+          type: array
+          items:
+            type: string
+            format: uuid
+        pbm_targets:
+          type: array
+          items:
+            $ref: '#/components/schemas/RequestableTarget'
+          readOnly: true
         reviewer_groups:
           type: array
           items:
@@ -52856,7 +52869,9 @@ components:
           $ref: '#/components/schemas/NotificationModeEnum'
       required:
       - name
-      - pbm
+      - pbm_targets
+      - pbm_uuid
+      - pbms
     PolicyBindingModelRequestRuleRequest:
       type: object
       description: |-
@@ -52877,9 +52892,11 @@ components:
           minimum: 0
         min_reviewers_is_per_group:
           type: boolean
-        pbm:
-          type: string
-          format: uuid
+        pbms:
+          type: array
+          items:
+            type: string
+            format: uuid
         reviewer_groups:
           type: array
           items:
@@ -52898,7 +52915,7 @@ components:
           $ref: '#/components/schemas/NotificationModeEnum'
       required:
       - name
-      - pbm
+      - pbms
     PolicyBindingRequest:
       type: object
       description: PolicyBinding Serializer

@@ -56,10 +56,10 @@ export interface PatchedPolicyBindingModelRequestRuleRequest {
     minReviewersIsPerGroup?: boolean;
     /**
      *
-     * @type {string}
+     * @type {Array<string>}
      * @memberof PatchedPolicyBindingModelRequestRuleRequest
      */
-    pbm?: string;
+    pbms?: Array<string>;
     /**
      *
      * @type {Array<string>}
@@ -120,7 +120,7 @@ export function PatchedPolicyBindingModelRequestRuleRequestFromJSONTyped(
             json["min_reviewers_is_per_group"] == null
                 ? undefined
                 : json["min_reviewers_is_per_group"],
-        pbm: json["pbm"] == null ? undefined : json["pbm"],
+        pbms: json["pbms"] == null ? undefined : json["pbms"],
         reviewerGroups: json["reviewer_groups"] == null ? undefined : json["reviewer_groups"],
         reviewers: json["reviewers"] == null ? undefined : json["reviewers"],
         notificationTransports:
@@ -152,7 +152,7 @@ export function PatchedPolicyBindingModelRequestRuleRequestToJSONTyped(
         name: value["name"],
         min_reviewers: value["minReviewers"],
         min_reviewers_is_per_group: value["minReviewersIsPerGroup"],
-        pbm: value["pbm"],
+        pbms: value["pbms"],
         reviewer_groups: value["reviewerGroups"],
         reviewers: value["reviewers"],
         notification_transports: value["notificationTransports"],

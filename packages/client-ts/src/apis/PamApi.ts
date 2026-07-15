@@ -86,7 +86,7 @@ export interface PamRequestRulesListRequest {
     ordering?: string;
     page?: number;
     pageSize?: number;
-    pbmPbmUuid?: string;
+    pbmsPbmUuid?: string;
     search?: string;
 }
 
@@ -637,8 +637,8 @@ export class PamApi extends runtime.BaseAPI {
             queryParameters["page_size"] = requestParameters["pageSize"];
         }
 
-        if (requestParameters["pbmPbmUuid"] != null) {
-            queryParameters["pbm__pbm_uuid"] = requestParameters["pbmPbmUuid"];
+        if (requestParameters["pbmsPbmUuid"] != null) {
+            queryParameters["pbms__pbm_uuid"] = requestParameters["pbmsPbmUuid"];
         }
 
         if (requestParameters["search"] != null) {

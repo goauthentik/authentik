@@ -56,10 +56,10 @@ export interface PolicyBindingModelRequestRuleRequest {
     minReviewersIsPerGroup?: boolean;
     /**
      *
-     * @type {string}
+     * @type {Array<string>}
      * @memberof PolicyBindingModelRequestRuleRequest
      */
-    pbm: string;
+    pbms: Array<string>;
     /**
      *
      * @type {Array<string>}
@@ -93,7 +93,7 @@ export function instanceOfPolicyBindingModelRequestRuleRequest(
     value: object,
 ): value is PolicyBindingModelRequestRuleRequest {
     if (!("name" in value) || value["name"] === undefined) return false;
-    if (!("pbm" in value) || value["pbm"] === undefined) return false;
+    if (!("pbms" in value) || value["pbms"] === undefined) return false;
     return true;
 }
 
@@ -122,7 +122,7 @@ export function PolicyBindingModelRequestRuleRequestFromJSONTyped(
             json["min_reviewers_is_per_group"] == null
                 ? undefined
                 : json["min_reviewers_is_per_group"],
-        pbm: json["pbm"],
+        pbms: json["pbms"],
         reviewerGroups: json["reviewer_groups"] == null ? undefined : json["reviewer_groups"],
         reviewers: json["reviewers"] == null ? undefined : json["reviewers"],
         notificationTransports:
@@ -154,7 +154,7 @@ export function PolicyBindingModelRequestRuleRequestToJSONTyped(
         name: value["name"],
         min_reviewers: value["minReviewers"],
         min_reviewers_is_per_group: value["minReviewersIsPerGroup"],
-        pbm: value["pbm"],
+        pbms: value["pbms"],
         reviewer_groups: value["reviewerGroups"],
         reviewers: value["reviewers"],
         notification_transports: value["notificationTransports"],

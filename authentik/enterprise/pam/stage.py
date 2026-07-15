@@ -54,8 +54,10 @@ class GrantRequestFinalStageView(StageView):
     def _notify_reviewers(self, pbms: list, event: Event):
         """Notify reviewers of each rule attached to any of the requested targets,
         per that rule's own notification_transports/notification_mode."""
-        rules = PolicyBindingModelRequestRule.objects.filter(pbm__in=pbms).prefetch_related(
-            "notification_transports", "reviewers", "reviewer_groups"
+        rules = (
+            PolicyBindingModelRequestRule.objects.filter(pbms__in=pbms)
+            .distinct()
+            .prefetch_related("notification_transports", "reviewers", "reviewer_groups")
         )
         for rule in rules:
             transports = list(rule.notification_transports.all())

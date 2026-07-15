@@ -16,6 +16,8 @@ import type { NotificationModeEnum } from "./NotificationModeEnum";
 import { NotificationModeEnumFromJSON, NotificationModeEnumToJSON } from "./NotificationModeEnum";
 import type { PolicyEngineMode } from "./PolicyEngineMode";
 import { PolicyEngineModeFromJSON, PolicyEngineModeToJSON } from "./PolicyEngineMode";
+import type { RequestableTarget } from "./RequestableTarget";
+import { RequestableTargetFromJSON } from "./RequestableTarget";
 
 /**
  * Mixin to validate that a valid enterprise license
@@ -30,6 +32,12 @@ export interface PolicyBindingModelRequestRule {
      * @memberof PolicyBindingModelRequestRule
      */
     uuid?: string;
+    /**
+     *
+     * @type {string}
+     * @memberof PolicyBindingModelRequestRule
+     */
+    readonly pbmUuid: string;
     /**
      *
      * @type {PolicyEngineMode}
@@ -56,10 +64,16 @@ export interface PolicyBindingModelRequestRule {
     minReviewersIsPerGroup?: boolean;
     /**
      *
-     * @type {string}
+     * @type {Array<string>}
      * @memberof PolicyBindingModelRequestRule
      */
-    pbm: string;
+    pbms: Array<string>;
+    /**
+     *
+     * @type {Array<RequestableTarget>}
+     * @memberof PolicyBindingModelRequestRule
+     */
+    readonly pbmTargets: Array<RequestableTarget>;
     /**
      *
      * @type {Array<string>}
@@ -92,8 +106,10 @@ export interface PolicyBindingModelRequestRule {
 export function instanceOfPolicyBindingModelRequestRule(
     value: object,
 ): value is PolicyBindingModelRequestRule {
+    if (!("pbmUuid" in value) || value["pbmUuid"] === undefined) return false;
     if (!("name" in value) || value["name"] === undefined) return false;
-    if (!("pbm" in value) || value["pbm"] === undefined) return false;
+    if (!("pbms" in value) || value["pbms"] === undefined) return false;
+    if (!("pbmTargets" in value) || value["pbmTargets"] === undefined) return false;
     return true;
 }
 
@@ -110,6 +126,7 @@ export function PolicyBindingModelRequestRuleFromJSONTyped(
     }
     return {
         uuid: json["uuid"] == null ? undefined : json["uuid"],
+        pbmUuid: json["pbm_uuid"],
         policyEngineMode:
             json["policy_engine_mode"] == null
                 ? undefined
@@ -120,7 +137,8 @@ export function PolicyBindingModelRequestRuleFromJSONTyped(
             json["min_reviewers_is_per_group"] == null
                 ? undefined
                 : json["min_reviewers_is_per_group"],
-        pbm: json["pbm"],
+        pbms: json["pbms"],
+        pbmTargets: (json["pbm_targets"] as Array<any>).map(RequestableTargetFromJSON),
         reviewerGroups: json["reviewer_groups"] == null ? undefined : json["reviewer_groups"],
         reviewers: json["reviewers"] == null ? undefined : json["reviewers"],
         notificationTransports:
@@ -137,7 +155,7 @@ export function PolicyBindingModelRequestRuleToJSON(json: any): PolicyBindingMod
 }
 
 export function PolicyBindingModelRequestRuleToJSONTyped(
-    value?: PolicyBindingModelRequestRule | null,
+    value?: Omit<PolicyBindingModelRequestRule, "pbm_uuid" | "pbm_targets"> | null,
     ignoreDiscriminator: boolean = false,
 ): any {
     if (value == null) {
@@ -150,7 +168,7 @@ export function PolicyBindingModelRequestRuleToJSONTyped(
         name: value["name"],
         min_reviewers: value["minReviewers"],
         min_reviewers_is_per_group: value["minReviewersIsPerGroup"],
-        pbm: value["pbm"],
+        pbms: value["pbms"],
         reviewer_groups: value["reviewerGroups"],
         reviewers: value["reviewers"],
         notification_transports: value["notificationTransports"],

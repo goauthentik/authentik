@@ -37,7 +37,7 @@ class TestRequestRules(APITestCase):
         app = Application.objects.create(name=generate_id(), slug=generate_id())
         res = self.client.post(
             reverse("authentik_api:policybindingmodelrequestrule-list"),
-            data={"name": generate_id(), "pbm": str(app.pbm_uuid)},
+            data={"name": generate_id(), "pbms": [str(app.pbm_uuid)]},
         )
         self.assertEqual(res.status_code, 201, res.content)
 
@@ -56,11 +56,12 @@ class TestRequestRules(APITestCase):
     def test_create_rule_for_non_application_rejected(self):
         License.objects.create(key=generate_id())
         app = Application.objects.create(name=generate_id(), slug=generate_id())
-        other_rule = PolicyBindingModelRequestRule.objects.create(name=generate_id(), pbm=app)
+        other_rule = PolicyBindingModelRequestRule.objects.create(name=generate_id())
+        other_rule.pbms.add(app)
         res = self.client.post(
             reverse("authentik_api:policybindingmodelrequestrule-list"),
-            data={"name": generate_id(), "pbm": str(other_rule.pbm_uuid)},
+            data={"name": generate_id(), "pbms": [str(other_rule.pbm_uuid)]},
         )
         self.assertEqual(res.status_code, 400, res.content)
         body = loads(res.content.decode())
-        self.assertIn("pbm", body)
+        self.assertIn("pbms", body)

@@ -94,9 +94,10 @@ class GrantRequestViewSet(RetrieveModelMixin, DestroyModelMixin, ListModelMixin,
 
     def _assert_reviewer(self, request: Request, grant: GrantRequest):
         unauthorized_rules = (
-            PolicyBindingModelRequestRule.objects.filter(pbm__in=grant.targets.all())
+            PolicyBindingModelRequestRule.objects.filter(pbms__in=grant.targets.all())
             .exclude(reviewers=request.user)
             .exclude(reviewer_groups__users=request.user)
+            .distinct()
         )
         if unauthorized_rules.exists():
             raise ValidationError("User does not have permissions to act on this object")

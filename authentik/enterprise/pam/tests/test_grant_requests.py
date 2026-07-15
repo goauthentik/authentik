@@ -25,10 +25,8 @@ class GrantRequestsTests(APITestCase):
             name=generate_id(),
             slug=generate_id(),
         )
-        rule = PolicyBindingModelRequestRule.objects.create(
-            name=generate_id(),
-            pbm=app,
-        )
+        rule = PolicyBindingModelRequestRule.objects.create(name=generate_id())
+        rule.pbms.add(app)
         rule.reviewers.add(reviewer)
 
         requester = create_test_user()
@@ -65,10 +63,8 @@ class GrantRequestsTests(APITestCase):
             name=generate_id(),
             slug=generate_id(),
         )
-        rule = PolicyBindingModelRequestRule.objects.create(
-            name=generate_id(),
-            pbm=app,
-        )
+        rule = PolicyBindingModelRequestRule.objects.create(name=generate_id())
+        rule.pbms.add(app)
         group = Group.objects.create(name=generate_id())
         group.users.add(reviewer)
         rule.reviewer_groups.add(group)
@@ -107,10 +103,8 @@ class GrantRequestsTests(APITestCase):
             name=generate_id(),
             slug=generate_id(),
         )
-        PolicyBindingModelRequestRule.objects.create(
-            name=generate_id(),
-            pbm=app,
-        )
+        rule = PolicyBindingModelRequestRule.objects.create(name=generate_id())
+        rule.pbms.add(app)
 
         req = GrantRequest.objects.create(
             created_by=create_test_user(),
@@ -148,9 +142,9 @@ class GrantRequestsTests(APITestCase):
         )
         rule = PolicyBindingModelRequestRule.objects.create(
             name=generate_id(),
-            pbm=app,
             min_reviewers=2,
         )
+        rule.pbms.add(app)
         group = Group.objects.create(name=generate_id())
         group.users.add(reviewer_a, reviewer_b)
         rule.reviewer_groups.add(group)
@@ -194,9 +188,9 @@ class GrantRequestsTests(APITestCase):
         )
         rule = PolicyBindingModelRequestRule.objects.create(
             name=generate_id(),
-            pbm=app,
             min_reviewers=2,
         )
+        rule.pbms.add(app)
         group = Group.objects.create(name=generate_id())
         group.users.add(reviewer_a, reviewer_b)
         rule.reviewer_groups.add(group)
@@ -233,9 +227,9 @@ class GrantRequestsTests(APITestCase):
         )
         rule = PolicyBindingModelRequestRule.objects.create(
             name=generate_id(),
-            pbm=app,
             min_reviewers=2,
         )
+        rule.pbms.add(app)
         group = Group.objects.create(name=generate_id())
         group.users.add(reviewer)
         rule.reviewer_groups.add(group)
@@ -262,10 +256,8 @@ class GrantRequestsTests(APITestCase):
             name=generate_id(),
             slug=generate_id(),
         )
-        rule = PolicyBindingModelRequestRule.objects.create(
-            name=generate_id(),
-            pbm=app,
-        )
+        rule = PolicyBindingModelRequestRule.objects.create(name=generate_id())
+        rule.pbms.add(app)
         rule.reviewers.add(reviewer)
 
         requester = create_test_user()
@@ -305,10 +297,8 @@ class GrantRequestsTests(APITestCase):
             name=generate_id(),
             slug=generate_id(),
         )
-        rule = PolicyBindingModelRequestRule.objects.create(
-            name=generate_id(),
-            pbm=app,
-        )
+        rule = PolicyBindingModelRequestRule.objects.create(name=generate_id())
+        rule.pbms.add(app)
         rule.reviewers.add(reviewer)
 
         requester = create_test_user()
@@ -339,10 +329,8 @@ class GrantRequestsTests(APITestCase):
             name=generate_id(),
             slug=generate_id(),
         )
-        rule = PolicyBindingModelRequestRule.objects.create(
-            name=generate_id(),
-            pbm=app,
-        )
+        rule = PolicyBindingModelRequestRule.objects.create(name=generate_id())
+        rule.pbms.add(app)
         rule.reviewers.add(reviewer)
 
         req = GrantRequest.objects.create(created_by=create_test_user())

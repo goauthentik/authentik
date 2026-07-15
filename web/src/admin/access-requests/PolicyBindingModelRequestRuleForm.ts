@@ -12,6 +12,10 @@ import { RadioOption } from "#elements/forms/Radio";
 import { SlottedTemplateResult } from "#elements/types";
 
 import {
+    pbmApplicationsProvider,
+    pbmApplicationsSelector,
+    pbmEntitlementsProvider,
+    pbmEntitlementsSelector,
     reviewerGroupsProvider,
     reviewerGroupsSelector,
     reviewerUsersProvider,
@@ -19,7 +23,12 @@ import {
 } from "#admin/access-requests/RequestRuleFormHelpers";
 import { eventTransportsProvider, eventTransportsSelector } from "#admin/events/RuleFormHelpers";
 
-import { NotificationModeEnum, PamApi, PolicyBindingModelRequestRule } from "@goauthentik/api";
+import {
+    Application,
+    NotificationModeEnum,
+    PamApi,
+    PolicyBindingModelRequestRule,
+} from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html } from "lit-html";
@@ -61,8 +70,10 @@ export class PolicyBindingModelRequestRuleForm extends ModelForm<
     public static override verboseName = msg("Request Rule");
     public static override verboseNamePlural = msg("Request Rules");
 
-    @property()
-    pbmUuid?: string;
+    /** The Application the form was opened from, pre-selected in the Applications picker
+     * on create. Editing an existing rule ignores this - its targets come from `pbmTargets`. */
+    @property({ attribute: false })
+    initialApp?: Application;
 
     protected async loadInstance(pk: string): Promise<PolicyBindingModelRequestRule | null> {
         return aki(PamApi).pamRequestRulesRetrieve({
@@ -73,14 +84,19 @@ export class PolicyBindingModelRequestRuleForm extends ModelForm<
     protected override async send(
         data: PolicyBindingModelRequestRule,
     ): Promise<PolicyBindingModelRequestRule> {
+        const formData = data as PolicyBindingModelRequestRule & {
+            pbmApplications?: string[];
+            pbmEntitlements?: string[];
+        };
+        formData.pbms = [...(formData.pbmApplications ?? []), ...(formData.pbmEntitlements ?? [])];
+        delete formData.pbmApplications;
+        delete formData.pbmEntitlements;
         if (this.instance) {
-            data.pbm = this.instance.pbm;
             return aki(PamApi).pamRequestRulesUpdate({
                 uuid: this.instance.uuid!,
                 policyBindingModelRequestRuleRequest: data,
             });
         }
-        data.pbm = this.pbmUuid!;
         return aki(PamApi).pamRequestRulesCreate({
             policyBindingModelRequestRuleRequest: data,
         });
@@ -94,6 +110,28 @@ export class PolicyBindingModelRequestRuleForm extends ModelForm<
                 value="${ifDefined(this.instance?.name)}"
                 placeholder=${msg("Type a name for this request rule...")}
             ></ak-text-input>
+            <ak-form-element-horizontal label=${msg("Applications")} name="pbmApplications">
+                <ak-dual-select-dynamic-selected
+                    .provider=${pbmApplicationsProvider}
+                    .selector=${pbmApplicationsSelector(this.instance?.pbmTargets, this.initialApp)}
+                    available-label=${msg("Available Applications")}
+                    selected-label=${msg("Selected Applications")}
+                ></ak-dual-select-dynamic-selected>
+            </ak-form-element-horizontal>
+            <ak-form-element-horizontal
+                label=${msg("Application entitlements")}
+                name="pbmEntitlements"
+            >
+                <ak-dual-select-dynamic-selected
+                    .provider=${pbmEntitlementsProvider}
+                    .selector=${pbmEntitlementsSelector(this.instance?.pbmTargets)}
+                    available-label=${msg("Available Entitlements")}
+                    selected-label=${msg("Selected Entitlements")}
+                ></ak-dual-select-dynamic-selected>
+                <p class="pf-c-form__helper-text">
+                    ${msg("At least one Application or Application Entitlement must be selected.")}
+                </p>
+            </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${msg("Reviewer groups")} name="reviewerGroups">
                 <ak-dual-select-dynamic-selected
                     .provider=${reviewerGroupsProvider}

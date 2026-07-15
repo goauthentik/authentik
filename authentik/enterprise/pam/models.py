@@ -85,7 +85,7 @@ class GrantRequest(SerializerModel, ExpiringModel, CreatedUpdatedModel):
         approving_users = GrantRequestApproval.objects.filter(
             request=self, status=RequestStatus.APPROVED
         ).values_list("reviewer", flat=True)
-        rules = PolicyBindingModelRequestRule.objects.filter(pbm__in=self.targets.all())
+        rules = PolicyBindingModelRequestRule.objects.filter(pbms__in=self.targets.all()).distinct()
         if not rules.exists():
             return approving_users.exists()
         return all(self._rule_satisfied(rule, approving_users) for rule in rules)
@@ -212,8 +212,10 @@ class PolicyBindingModelRequestRule(SerializerModel, CreatedUpdatedModel, Policy
     uuid = models.UUIDField(default=uuid4, primary_key=True)
 
     name = models.TextField()
-    pbm = models.ForeignKey(
-        PolicyBindingModel, on_delete=models.CASCADE, related_name="request_rules"
+    pbms = models.ManyToManyField(
+        PolicyBindingModel,
+        related_name="request_rules",
+        through="PolicyBindingModelRequestRuleTarget",
     )
 
     reviewer_groups = models.ManyToManyField("authentik_core.Group", blank=True)
@@ -256,4 +258,23 @@ class PolicyBindingModelRequestRule(SerializerModel, CreatedUpdatedModel, Policy
         verbose_name_plural = _("Policy Binding Model Request Rules")
 
     def __str__(self):
-        return f"Policy Binding Model Request rule {self.uuid} to {self.pbm_id}"
+        return f"Policy Binding Model Request rule {self.uuid} ({self.name})"
+
+
+class PolicyBindingModelRequestRuleTarget(models.Model):
+    """Through model for PolicyBindingModelRequestRule.pbms"""
+
+    uuid = models.UUIDField(default=uuid4, primary_key=True)
+
+    rule = models.ForeignKey(
+        PolicyBindingModelRequestRule, on_delete=models.CASCADE, related_name="+"
+    )
+    pbm = models.ForeignKey(PolicyBindingModel, on_delete=models.CASCADE, related_name="+")
+
+    class Meta:
+        unique_together = ("rule", "pbm")
+        verbose_name = _("Policy Binding Model Request Rule Target")
+        verbose_name_plural = _("Policy Binding Model Request Rule Targets")
+
+    def __str__(self):
+        return f"Policy Binding Model Request Rule Target {self.rule_id} to {self.pbm_id}"
