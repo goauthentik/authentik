@@ -86,8 +86,8 @@ importers:
         specifier: ^2.0.2
         version: 2.0.2(esbuild@0.28.1)
       '@goauthentik/eslint-config':
-        specifier: ^2.0.0
-        version: 2.0.0(@typescript-eslint/parser@8.62.1(eslint@9.39.4(jiti@2.7.0))(typescript@6.0.3))(jiti@2.7.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(typescript-eslint@8.62.1(eslint@9.39.4(jiti@2.7.0))(typescript@6.0.3))(typescript@6.0.3)
+        specifier: ^2.0.2
+        version: 2.0.2(@typescript-eslint/parser@8.62.1(eslint@9.39.4(jiti@2.7.0))(typescript@6.0.3))(jiti@2.7.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(typescript-eslint@8.62.1(eslint@9.39.4(jiti@2.7.0))(typescript@6.0.3))(typescript@6.0.3)
       '@goauthentik/prettier-config':
         specifier: ^3.5.0
         version: 3.5.0(jiti@2.7.0)(prettier-plugin-packagejson@3.0.2(prettier@3.8.3))(prettier@3.8.3)
@@ -433,7 +433,7 @@ importers:
         specifier: link:../tsconfig
         version: link:../tsconfig
       '@types/node':
-        specifier: ^26.1.0
+        specifier: ^26.1.1
         version: 26.1.1
       eslint:
         specifier: 'catalog:'
@@ -1000,9 +1000,9 @@ packages:
       '@goauthentik/logger-js':
         optional: true
 
-  '@goauthentik/eslint-config@2.0.0':
-    resolution: {integrity: sha512-LQF0chVzYRnlaZt79Cp7sa3L/kwgMiSPQRs6cEqIvL3vJxx+WOEBvewxYVLv3RLCyCzDBaP4Pz4l6TSo6hoPOw==}
-    engines: {node: '>=24', npm: '>=11.14.1'}
+  '@goauthentik/eslint-config@2.0.2':
+    resolution: {integrity: sha512-sFYoZQgqO1VzRhOzrAys2M7zJ8xY0cCI/hQhn6dzcVXDG07VMP/M0ZdcKcNXOv/vEgTWpFvwh/N6Tgi7MYh5uw==}
+    engines: {node: '>=24'}
     peerDependencies:
       react: ^18.0.0 || ^19.0.0
       react-dom: ^18.0.0 || ^19.0.0
@@ -7120,7 +7120,7 @@ snapshots:
       esbuild: 0.28.1
       find-free-ports: 3.1.1
 
-  '@goauthentik/eslint-config@2.0.0(@typescript-eslint/parser@8.62.1(eslint@9.39.4(jiti@2.7.0))(typescript@6.0.3))(jiti@2.7.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(typescript-eslint@8.62.1(eslint@9.39.4(jiti@2.7.0))(typescript@6.0.3))(typescript@6.0.3)':
+  '@goauthentik/eslint-config@2.0.2(@typescript-eslint/parser@8.62.1(eslint@9.39.4(jiti@2.7.0))(typescript@6.0.3))(jiti@2.7.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(typescript-eslint@8.62.1(eslint@9.39.4(jiti@2.7.0))(typescript@6.0.3))(typescript@6.0.3)':
     dependencies:
       eslint: 9.39.4(jiti@2.7.0)
       eslint-plugin-import: 2.32.0(@typescript-eslint/parser@8.62.1(eslint@9.39.4(jiti@2.7.0))(typescript@6.0.3))(eslint@9.39.4(jiti@2.7.0))
