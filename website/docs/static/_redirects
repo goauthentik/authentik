@@ -59,6 +59,8 @@
 /customize/policies/unique_password                        /customize/policies/types/password-uniqueness/ 301!
 /interfaces/*                                               /customize/interfaces/:splat 301!
 /policies/*                                                 /customize/policies/:splat 301!
+/brands/*                                                  /customize/branding/:splat 301!
+/branding/*                                                /customize/branding/:splat 301!
 #endregion
 
 #region Endpoint Devices

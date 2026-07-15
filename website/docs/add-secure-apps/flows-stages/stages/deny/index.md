@@ -4,7 +4,7 @@ title: Deny stage
 
 The Deny stage stops the current flow immediately.
 
-## Overview
+## About the deny stage
 
 Use this stage when the flow should end with access denied, including cases where the user is not signed in yet and group-based permissions are not available.
 

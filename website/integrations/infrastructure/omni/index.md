@@ -47,6 +47,18 @@ To support the integration of Omni with authentik, you need to create a property
 
 <SAMLProvider20265Warning />
 
+- **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+    - **ACS URL**: `https://omni.company/saml/acs`
+    - **Audience**: `https://omni.company/saml/metadata`
+    - **SLS URL**: `https://omni.company/saml/slo`
+    - **SLS Binding**: `Redirect`
+    - **Logout Method**: `Front-channel (Iframe)`
+    - **Signing Certificate**: select a signing certificate, either the `authentik Self-signed Certificate` or generate a certificate via **System** > **Certificate**
+    - **Sign assertions**: `true`
+    - **Sign responses**: `true`
+    - **Property mappings**: `*property_mapping_name*` (e.g. `Omni Mapping`)
+    - **NameID Property Mapping**: `*property_mapping_name*` (e.g. `Omni Mapping`)
+
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
     - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Note the **Slug** value because it will be required later.
