@@ -2728,6 +2728,42 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+  /core/application_entitlements/requestable/:
+    get:
+      operationId: core_application_entitlements_requestable_list
+      description: List application entitlements which the current user can request
+        access to
+      parameters:
+      - in: query
+        name: app
+        schema:
+          type: string
+          format: uuid
+      - $ref: '#/components/parameters/QueryName'
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - in: query
+        name: pbm_uuid
+        schema:
+          type: string
+          format: uuid
+      - $ref: '#/components/parameters/QuerySearch'
+      tags:
+      - core
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedRequestableTargetList'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
   /core/applications/:
     get:
       operationId: core_applications_list
@@ -40910,7 +40946,7 @@ components:
         target_apps:
           type: array
           items:
-            $ref: '#/components/schemas/Application'
+            $ref: '#/components/schemas/RequestableTarget'
           readOnly: true
         uuid:
           type: string
@@ -47127,6 +47163,21 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ReputationPolicy'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    PaginatedRequestableTargetList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/RequestableTarget'
         autocomplete:
           $ref: '#/components/schemas/Autocomplete'
       required:
@@ -54526,6 +54577,28 @@ components:
       - denied
       - revoked
       type: string
+    RequestableTarget:
+      type: object
+      description: |-
+        Generic representation of a single PAM request target: whatever was actually
+        requested (an Application, an Application Entitlement, ...), always paired with the
+        parent it belongs to, so the UI/audit trail has that context even when the
+        request itself was scoped narrower than the whole app.
+      properties:
+        pbm_uuid:
+          type: string
+          readOnly: true
+        label:
+          type: string
+          readOnly: true
+        parent:
+          allOf:
+          - $ref: '#/components/schemas/Application'
+          readOnly: true
+      required:
+      - label
+      - parent
+      - pbm_uuid
     Review:
       type: object
       description: |-

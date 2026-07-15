@@ -12,10 +12,10 @@
  * Do not edit the class manually.
  */
 
-import type { Application } from "./Application";
-import { ApplicationFromJSON } from "./Application";
 import type { PartialUser } from "./PartialUser";
 import { PartialUserFromJSON } from "./PartialUser";
+import type { RequestableTarget } from "./RequestableTarget";
+import { RequestableTargetFromJSON } from "./RequestableTarget";
 import type { RequestStatus } from "./RequestStatus";
 import { RequestStatusFromJSON } from "./RequestStatus";
 
@@ -81,10 +81,10 @@ export interface GrantRequest {
     readonly targets: Array<string>;
     /**
      *
-     * @type {Array<Application>}
+     * @type {Array<RequestableTarget>}
      * @memberof GrantRequest
      */
-    readonly targetApps: Array<Application>;
+    readonly targetApps: Array<RequestableTarget>;
     /**
      *
      * @type {string}
@@ -125,7 +125,7 @@ export function GrantRequestFromJSONTyped(json: any, ignoreDiscriminator: boolea
         expires: json["expires"] == null ? undefined : new Date(json["expires"]),
         status: RequestStatusFromJSON(json["status"]),
         targets: json["targets"],
-        targetApps: (json["target_apps"] as Array<any>).map(ApplicationFromJSON),
+        targetApps: (json["target_apps"] as Array<any>).map(RequestableTargetFromJSON),
         uuid: json["uuid"] == null ? undefined : json["uuid"],
     };
 }

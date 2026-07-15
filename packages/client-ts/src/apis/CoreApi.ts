@@ -56,6 +56,10 @@ import {
 } from "../models/PaginatedAuthenticatedSessionList";
 import { type PaginatedBrandList, PaginatedBrandListFromJSON } from "../models/PaginatedBrandList";
 import { type PaginatedGroupList, PaginatedGroupListFromJSON } from "../models/PaginatedGroupList";
+import {
+    type PaginatedRequestableTargetList,
+    PaginatedRequestableTargetListFromJSON,
+} from "../models/PaginatedRequestableTargetList";
 import { type PaginatedTokenList, PaginatedTokenListFromJSON } from "../models/PaginatedTokenList";
 import {
     type PaginatedUserConsentList,
@@ -146,6 +150,16 @@ export interface CoreApplicationEntitlementsListRequest {
 export interface CoreApplicationEntitlementsPartialUpdateRequest {
     pbmUuid: string;
     patchedApplicationEntitlementRequest?: PatchedApplicationEntitlementRequest;
+}
+
+export interface CoreApplicationEntitlementsRequestableListRequest {
+    app?: string;
+    name?: string;
+    ordering?: string;
+    page?: number;
+    pageSize?: number;
+    pbmUuid?: string;
+    search?: string;
 }
 
 export interface CoreApplicationEntitlementsRetrieveRequest {
@@ -846,6 +860,93 @@ export class CoreApi extends runtime.BaseAPI {
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<ApplicationEntitlement> {
         const response = await this.coreApplicationEntitlementsPartialUpdateRaw(
+            requestParameters,
+            initOverrides,
+        );
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for coreApplicationEntitlementsRequestableList without sending the request
+     */
+    async coreApplicationEntitlementsRequestableListRequestOpts(
+        requestParameters: CoreApplicationEntitlementsRequestableListRequest,
+    ): Promise<runtime.RequestOpts> {
+        const queryParameters: any = {};
+
+        if (requestParameters["app"] != null) {
+            queryParameters["app"] = requestParameters["app"];
+        }
+
+        if (requestParameters["name"] != null) {
+            queryParameters["name"] = requestParameters["name"];
+        }
+
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
+        }
+
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
+        }
+
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
+        }
+
+        if (requestParameters["pbmUuid"] != null) {
+            queryParameters["pbm_uuid"] = requestParameters["pbmUuid"];
+        }
+
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/core/application_entitlements/requestable/`;
+
+        return {
+            path: urlPath,
+            method: "GET",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * List application entitlements which the current user can request access to
+     */
+    async coreApplicationEntitlementsRequestableListRaw(
+        requestParameters: CoreApplicationEntitlementsRequestableListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PaginatedRequestableTargetList>> {
+        const requestOptions =
+            await this.coreApplicationEntitlementsRequestableListRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedRequestableTargetListFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * List application entitlements which the current user can request access to
+     */
+    async coreApplicationEntitlementsRequestableList(
+        requestParameters: CoreApplicationEntitlementsRequestableListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PaginatedRequestableTargetList> {
+        const response = await this.coreApplicationEntitlementsRequestableListRaw(
             requestParameters,
             initOverrides,
         );

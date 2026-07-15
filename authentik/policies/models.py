@@ -53,6 +53,24 @@ class PolicyBindingModel(models.Model):
         return ["policy", "user", "group"]
 
 
+class RequestableMixin:
+    """Mixin for PolicyBindingModel subclasses that may be the target of a PAM access
+    request, identifies which parent owns this object
+    for display/audit context, and how to label the specific thing being requested (which,
+    for anything narrower than the parent itself, is not the same as the app's name)."""
+
+    @property
+    def requestable_parent(self) -> models.Model:
+        """The parent this object belongs to, always present even when the object
+        being requested is narrower than the whole app (e.g. a specific entitlement)."""
+        raise NotImplementedError
+
+    @property
+    def requestable_label(self) -> str:
+        """Human-readable label for the specific thing being requested."""
+        raise NotImplementedError
+
+
 class BoundPolicyQuerySet(models.QuerySet):
     """QuerySet for filtering enabled bindings for a Policy type"""
 

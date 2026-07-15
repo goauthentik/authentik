@@ -11,6 +11,12 @@ import { ModelForm } from "#elements/forms/ModelForm";
 import { RadioOption } from "#elements/forms/Radio";
 import { SlottedTemplateResult } from "#elements/types";
 
+import {
+    reviewerGroupsProvider,
+    reviewerGroupsSelector,
+    reviewerUsersProvider,
+    reviewerUsersSelector,
+} from "#admin/access-requests/RequestRuleFormHelpers";
 import { eventTransportsProvider, eventTransportsSelector } from "#admin/events/RuleFormHelpers";
 
 import { NotificationModeEnum, PamApi, PolicyBindingModelRequestRule } from "@goauthentik/api";
@@ -68,6 +74,7 @@ export class PolicyBindingModelRequestRuleForm extends ModelForm<
         data: PolicyBindingModelRequestRule,
     ): Promise<PolicyBindingModelRequestRule> {
         if (this.instance) {
+            data.pbm = this.instance.pbm;
             return aki(PamApi).pamRequestRulesUpdate({
                 uuid: this.instance.uuid!,
                 policyBindingModelRequestRuleRequest: data,
@@ -87,6 +94,14 @@ export class PolicyBindingModelRequestRuleForm extends ModelForm<
                 value="${ifDefined(this.instance?.name)}"
                 placeholder=${msg("Type a name for this request rule...")}
             ></ak-text-input>
+            <ak-form-element-horizontal label=${msg("Reviewer groups")} name="reviewerGroups">
+                <ak-dual-select-dynamic-selected
+                    .provider=${reviewerGroupsProvider}
+                    .selector=${reviewerGroupsSelector(this.instance?.reviewerGroups)}
+                    available-label=${msg("Available Groups")}
+                    selected-label=${msg("Selected Groups")}
+                ></ak-dual-select-dynamic-selected>
+            </ak-form-element-horizontal>
             <ak-number-input
                 label=${msg("Minimum reviewers")}
                 min=${1}
@@ -107,6 +122,19 @@ export class PolicyBindingModelRequestRuleForm extends ModelForm<
                 )}
             >
             </ak-switch-input>
+            <ak-form-element-horizontal label=${msg("Reviewers")} name="reviewers">
+                <ak-dual-select-dynamic-selected
+                    .provider=${reviewerUsersProvider}
+                    .selector=${reviewerUsersSelector(this.instance?.reviewers)}
+                    available-label=${msg("Available Users")}
+                    selected-label=${msg("Selected Users")}
+                ></ak-dual-select-dynamic-selected>
+                <p class="pf-c-form__helper-text">
+                    ${msg(
+                        "A request will additionally be approvable by each of the users selected here, on top of the reviewer groups above.",
+                    )}
+                </p>
+            </ak-form-element-horizontal>
             <ak-form-element-horizontal
                 label=${msg("Notification transports")}
                 name="notificationTransports"

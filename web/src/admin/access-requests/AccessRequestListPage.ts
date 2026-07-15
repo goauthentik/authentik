@@ -61,10 +61,13 @@ export class AccessRequestListPage extends TablePage<GrantRequest> {
         if (item.targetApps.length < 1) {
             return nothing;
         }
+        const target = item.targetApps[0];
         const overflow = item.targetApps.length - 1;
-        const base = html`<a href="">${item.targetApps[0].name}</a> ${overflow > 0
-                ? `+${overflow}`
-                : ""}`;
+        const label =
+            target.label === target.parent.name
+                ? target.label
+                : `${target.parent.name} / ${target.label}`;
+        const base = html`<a href="">${label}</a> ${overflow > 0 ? `+${overflow}` : ""}`;
         return base;
     }
 

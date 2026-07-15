@@ -7,13 +7,11 @@ from rest_framework.mixins import (
     ListModelMixin,
     RetrieveModelMixin,
 )
-from rest_framework.relations import PrimaryKeyRelatedField
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
 from authentik.api.validation import validate
-from authentik.core.api.applications import ApplicationSerializer
 from authentik.core.api.groups import PartialUserSerializer
 from authentik.core.api.utils import (
     JSONDictField,
@@ -21,8 +19,7 @@ from authentik.core.api.utils import (
     ModelSerializer,
     PassiveSerializer,
 )
-from authentik.core.models import Application
-from authentik.enterprise.pam.api.apps import user_can_request
+from authentik.enterprise.pam.api.apps import RequestableTargetSerializer, user_can_request
 from authentik.enterprise.pam.models import (
     GrantRequest,
     PolicyBindingModelRequestRule,
@@ -34,6 +31,8 @@ from authentik.enterprise.pam.stage import (
 )
 from authentik.flows.models import Flow, in_memory_stage
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlanner
+from authentik.policies.api.bindings import PolicyBindingModelForeignKey
+from authentik.policies.models import PolicyBindingModel, RequestableMixin
 
 
 class GrantRequestSerializer(ModelSerializer):
@@ -45,9 +44,9 @@ class GrantRequestSerializer(ModelSerializer):
     # TODO: Optimize this
     target_apps = SerializerMethodField()
 
-    @extend_schema_field(ApplicationSerializer(many=True))
-    def get_target_apps(self, inst: GrantRequest) -> list[ApplicationSerializer]:
-        return ApplicationSerializer(inst.targets.all().select_subclasses(), many=True).data
+    @extend_schema_field(RequestableTargetSerializer(many=True))
+    def get_target_apps(self, inst: GrantRequest) -> list[RequestableTargetSerializer]:
+        return RequestableTargetSerializer(inst.targets.all().select_subclasses(), many=True).data
 
     class Meta:
         model = GrantRequest
@@ -76,13 +75,17 @@ class GrantRequestViewSet(RetrieveModelMixin, DestroyModelMixin, ListModelMixin,
     serializer_class = GrantRequestSerializer
 
     class GrantRequestCreateSerializer(PassiveSerializer):
-        pbms = PrimaryKeyRelatedField(queryset=Application.objects.all(), many=True)
+        pbms = PolicyBindingModelForeignKey(
+            queryset=PolicyBindingModel.objects.select_subclasses(), many=True
+        )
 
-        def validate_pbms(self, pbms: list[Application]) -> list[Application]:
+        def validate_pbms(self, pbms: list[PolicyBindingModel]) -> list[PolicyBindingModel]:
             request = self.context["request"]
-            for app in pbms:
-                if not user_can_request(app, request.user, request):
-                    raise ValidationError(f"Cannot request access to '{app.name}'")
+            for pbm in pbms:
+                if not isinstance(pbm, RequestableMixin):
+                    raise ValidationError(f"'{pbm}' is not requestable")
+                if not user_can_request(pbm, request.user, request):
+                    raise ValidationError(f"Cannot request access to '{pbm.requestable_label}'")
             return pbms
 
     class GrantRequestFulfillSerializer(PassiveSerializer):

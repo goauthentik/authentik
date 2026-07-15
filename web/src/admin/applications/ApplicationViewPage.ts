@@ -11,7 +11,7 @@ import "#elements/EmptyState";
 import "#elements/Tabs";
 import "#elements/buttons/SpinnerButton/ak-spinner-button";
 import "#admin/applications/ApplicationEvents";
-import "../access-requests/PolicyBindingModelRequestRuleTable";
+import "#admin/access-requests/PolicyBindingModelRequestRuleTable";
 
 import { aki } from "#common/api/client";
 import { APIError, parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";

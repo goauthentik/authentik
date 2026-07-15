@@ -3,18 +3,19 @@ from rest_framework.viewsets import ModelViewSet
 
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import ModelSerializer
-from authentik.core.models import Application
 from authentik.enterprise.api import EnterpriseRequiredMixin
 from authentik.enterprise.pam.models import PolicyBindingModelRequestRule
-from authentik.policies.models import PolicyBindingModel
+from authentik.policies.models import PolicyBindingModel, RequestableMixin
 
 
 class PolicyBindingModelRequestRuleSerializer(EnterpriseRequiredMixin, ModelSerializer):
 
     def validate_pbm(self, pbm: PolicyBindingModel) -> PolicyBindingModel:
         concrete = PolicyBindingModel.objects.filter(pk=pbm.pk).select_subclasses().first()
-        if not isinstance(concrete, Application):
-            raise ValidationError("Must be an Application")
+        if not isinstance(concrete, RequestableMixin):
+            raise ValidationError(
+                "Must be a requestable object (e.g. an Application or Application Entitlement)"
+            )
         return pbm
 
     class Meta:
