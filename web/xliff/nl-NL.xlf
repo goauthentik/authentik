@@ -4080,10 +4080,6 @@ slaagt niet wanneer een of beide geselecteerde opties gelijk zijn aan of boven d
   <source>Optional URL if the IDP supports Single-Logout.</source>
   <target>Optionele URL als de IDP Single Logout ondersteunt.</target>
 </trans-unit>
-<trans-unit id="se7430794fa89005a">
-  <source>Also known as Entity ID. Defaults the Metadata URL.</source>
-  <target>Ook wel bekend als Entiteit-ID. Standaard de Metagegevens-URL.</target>
-</trans-unit>
 <trans-unit id="s5615bb595ad6ded6">
   <source>Binding Type</source>
   <target>Bindings type</target>
@@ -10582,6 +10578,12 @@ Bindingen naar groepen/gebruikers worden gecontroleerd tegen de gebruiker van de
 </trans-unit>
 <trans-unit id="sc30c9b42e2a1ebe7">
   <source>Token exchange</source>
+</trans-unit>
+<trans-unit id="s466fe1c428b4b61a">
+  <source>Issuer override</source>
+</trans-unit>
+<trans-unit id="s19ccfb86a879e6b9">
+  <source>Also known as Entity ID. Defaults to the Metadata URL.</source>
 </trans-unit>
 </body>
 </file>
