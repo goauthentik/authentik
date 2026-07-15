@@ -191,8 +191,8 @@ importers:
         specifier: ^4.1.5
         version: 4.1.5
       openapi-to-postmanv2:
-        specifier: ^6.1.0
-        version: 6.2.0
+        specifier: ^6.3.0
+        version: 6.3.0
       postman-code-generators:
         specifier: ^2.1.1
         version: 2.1.1
@@ -5724,8 +5724,8 @@ packages:
     resolution: {integrity: sha512-7x81NCL719oNbsq/3mh+hVrAWmFuEYUqrq/Iw3kUzH8ReypT9QQ0BLoJS7/G9k6N81XjW4qHWtjWwe/9eLy1EQ==}
     engines: {node: '>=12'}
 
-  openapi-to-postmanv2@6.2.0:
-    resolution: {integrity: sha512-kKGHW5df7Fti9/tpFDNr9oX1ZGLJySuZane7YuehP/gzyVpp/q9tq86g4dRko+PyA7VBkyFN1prXcDoaWOiFNw==}
+  openapi-to-postmanv2@6.3.0:
+    resolution: {integrity: sha512-Gx047TkS+GlAVzNlUIz2Kfgk9GquxAvO2P2uQgF/qRPkaF0SGQZ9fVlev3xKaboweXZly1QSnhJOo+yNEFnM6A==}
     engines: {node: '>=18'}
     hasBin: true
 
@@ -15293,7 +15293,7 @@ snapshots:
       json5: 2.2.3
       lodash: 4.18.1
       mustache: 4.2.0
-      openapi-to-postmanv2: 6.2.0
+      openapi-to-postmanv2: 6.3.0
       postman-collection: 5.3.0
       react: 19.2.7
       slugify: 1.6.9
@@ -17616,7 +17616,7 @@ snapshots:
       oas-kit-common: 1.0.8
       path-browserify: 1.0.1
       reftools: 1.1.9
-      yaml: 1.10.2
+      yaml: 1.10.3
       yargs: 17.7.3
 
   oas-resolver@2.5.6:
@@ -17682,7 +17682,7 @@ snapshots:
       is-docker: 2.2.1
       is-wsl: 2.2.0
 
-  openapi-to-postmanv2@6.2.0:
+  openapi-to-postmanv2@6.3.0:
     dependencies:
       ajv: 8.20.0
       ajv-draft-04: 1.0.0(ajv@8.20.0)
