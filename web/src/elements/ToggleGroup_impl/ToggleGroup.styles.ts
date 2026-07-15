@@ -1,3 +1,7 @@
+/**
+ * @file ShadowDOM CSS for the ToggleGroup component
+ */
+
 import { css } from "lit";
 
 export const styles = css`

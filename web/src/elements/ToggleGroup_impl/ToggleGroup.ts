@@ -1,3 +1,7 @@
+/**
+ * @file Implementation code for the ToggleGroup component
+ */
+
 import Styles from "./ToggleGroup.styles";
 
 import { CustomEmitterElement } from "#elements/utils/eventEmitter";

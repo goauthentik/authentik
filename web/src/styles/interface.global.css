@@ -1,4 +1,6 @@
-/* Entrypoint file for the styles used by the User & Admin applications */
+/**
+ * @file Entrypoint file for the styles used by the User & Admin applications
+ */
 
 @import "#styles/layers.css";
 

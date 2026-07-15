@@ -1,3 +1,7 @@
+/**
+ * @file Storybook stories for the default ToggleGroup component implementation
+ */
+
 import "#elements/messages/MessageContainer";
 import "../ToggleGroup";
 

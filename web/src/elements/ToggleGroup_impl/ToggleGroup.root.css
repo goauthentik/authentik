@@ -1,3 +1,7 @@
+/**
+ * @file Document-level CSS Custom Properties for ToggleGroup components.
+ */
+
 :root {
     --pf-c-toggle-group__button--PaddingTop: var(--pf-global--spacer--form-element);
     --pf-c-toggle-group__button--PaddingRight: var(--pf-global--spacer--md);
