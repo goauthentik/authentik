@@ -28,6 +28,7 @@ from model_utils.managers import InheritanceManager
 from psqlextra.indexes import UniqueIndex
 from psqlextra.models import PostgresMaterializedViewModel
 from rest_framework.exceptions import ValidationError
+from rest_framework.fields import BooleanField, CharField, IntegerField, ListField
 from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
 
@@ -1420,24 +1421,46 @@ class ObjectAttribute(SerializerModel, ManagedModel, CreatedUpdatedModel):
     is_array = models.BooleanField(default=False)
 
     def run_validation(self, value: Any) -> None:
-        err_key = f"attributes_{self.key.replace(".", "_")}"
+        err_key = f"attributes_{self.key.replace('.', '_')}"
+
         if self.is_required and value is None:
             raise ValidationError({err_key: _("This field is required")})
+        if value is None:
+            return
+
+        match (self.type):
+            case self.AttributeType.TEXT:
+                field_cls = CharField
+            case self.AttributeType.NUMBER:
+                field_cls = IntegerField
+            case self.AttributeType.BOOLEAN:
+                field_cls = BooleanField
+            case _:
+                raise ValidationError("Invalid field type")
+
+        field = field_cls(required=False)
         if self.is_array:
-            if not isinstance(value, (list, tuple)):
-                raise ValidationError({err_key: _("Value must be an array.")})
-            if self.regex != "":
-                if not all(re.fullmatch(self.regex, v) for v in value):
-                    raise ValidationError({err_key: _("Value does not match configured pattern.")})
-        else:
-            if self.is_unique:
-                model: type[models.Model] = self.object_type.model_class()
-                lookup_key = f"attributes__{self.key.replace(".", "__")}"
-                if model.objects.filter(**{lookup_key: value}).exists():
-                    raise ValidationError({err_key: _("Value is not unique.")})
-            if self.regex != "":
-                if not re.fullmatch(self.regex, value):
-                    raise ValidationError({err_key: _("Value does not match configured pattern.")})
+            field = ListField(
+                child=field,
+                required=False,
+                error_messages={"not_a_list": _("Value must be an array.")},
+            )
+
+        try:
+            field.run_validation(value)
+        except ValidationError as exc:
+            raise ValidationError({err_key: exc.detail}) from exc
+
+        if self.regex != "":
+            values = value if self.is_array else [value]
+            if not all(re.fullmatch(self.regex, str(v)) for v in values):
+                raise ValidationError({err_key: _("Value does not match configured pattern.")})
+
+        if not self.is_array and self.is_unique:
+            model: type[models.Model] = self.object_type.model_class()
+            lookup_key = f"attributes__{self.key.replace('.', '__')}"
+            if model.objects.filter(**{lookup_key: value}).exists():
+                raise ValidationError({err_key: _("Value is not unique.")})
 
     @property
     def serializer(self) -> type[Serializer]:

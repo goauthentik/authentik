@@ -1,6 +1,7 @@
 """Test object attributes API"""
 
 from django.urls import reverse
+from rest_framework.exceptions import ValidationError
 from rest_framework.test import APITestCase
 
 from authentik.core.api.object_attributes import ContentType
@@ -9,7 +10,7 @@ from authentik.core.tests.utils import create_test_admin_user, create_test_user
 from authentik.lib.generators import generate_id
 
 
-class TestObjectAttributesAPI(APITestCase):
+class TestObjectAttributes(APITestCase):
     """Test object attributes API"""
 
     def setUp(self) -> None:
@@ -196,3 +197,41 @@ class TestObjectAttributesAPI(APITestCase):
         self.assertJSONEqual(
             res.content, {f"attributes_{attr.key}": ["Value does not match configured pattern."]}
         )
+
+    def test_types_str(self):
+        attr = ObjectAttribute.objects.create(
+            object_type=ContentType.objects.get_for_model(User),
+            label="foo",
+            key=generate_id(),
+            type=ObjectAttribute.AttributeType.TEXT,
+        )
+        attr.run_validation("foo")
+        attr.run_validation(3)
+        with self.assertRaises(ValidationError):
+            attr.run_validation(False)
+
+    def test_types_number(self):
+        attr = ObjectAttribute.objects.create(
+            object_type=ContentType.objects.get_for_model(User),
+            label="foo",
+            key=generate_id(),
+            type=ObjectAttribute.AttributeType.NUMBER,
+        )
+        attr.run_validation(3)
+        with self.assertRaises(ValidationError):
+            attr.run_validation("foo")
+        with self.assertRaises(ValidationError):
+            attr.run_validation(False)
+
+    def test_types_bool(self):
+        attr = ObjectAttribute.objects.create(
+            object_type=ContentType.objects.get_for_model(User),
+            label="foo",
+            key=generate_id(),
+            type=ObjectAttribute.AttributeType.BOOLEAN,
+        )
+        attr.run_validation(False)
+        with self.assertRaises(ValidationError):
+            attr.run_validation("foo")
+        with self.assertRaises(ValidationError):
+            attr.run_validation(3)
