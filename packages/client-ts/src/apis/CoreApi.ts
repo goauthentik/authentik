@@ -195,6 +195,19 @@ export interface CoreApplicationsPartialUpdateRequest {
     patchedApplicationRequest?: PatchedApplicationRequest;
 }
 
+export interface CoreApplicationsRequestableListRequest {
+    group?: string;
+    metaDescription?: string;
+    metaLaunchUrl?: string;
+    metaPublisher?: string;
+    name?: string;
+    ordering?: string;
+    page?: number;
+    pageSize?: number;
+    search?: string;
+    slug?: string;
+}
+
 export interface CoreApplicationsRetrieveRequest {
     slug: string;
 }
@@ -1422,6 +1435,105 @@ export class CoreApi extends runtime.BaseAPI {
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<Application> {
         const response = await this.coreApplicationsPartialUpdateRaw(
+            requestParameters,
+            initOverrides,
+        );
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for coreApplicationsRequestableList without sending the request
+     */
+    async coreApplicationsRequestableListRequestOpts(
+        requestParameters: CoreApplicationsRequestableListRequest,
+    ): Promise<runtime.RequestOpts> {
+        const queryParameters: any = {};
+
+        if (requestParameters["group"] != null) {
+            queryParameters["group"] = requestParameters["group"];
+        }
+
+        if (requestParameters["metaDescription"] != null) {
+            queryParameters["meta_description"] = requestParameters["metaDescription"];
+        }
+
+        if (requestParameters["metaLaunchUrl"] != null) {
+            queryParameters["meta_launch_url"] = requestParameters["metaLaunchUrl"];
+        }
+
+        if (requestParameters["metaPublisher"] != null) {
+            queryParameters["meta_publisher"] = requestParameters["metaPublisher"];
+        }
+
+        if (requestParameters["name"] != null) {
+            queryParameters["name"] = requestParameters["name"];
+        }
+
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
+        }
+
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
+        }
+
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
+        }
+
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
+        }
+
+        if (requestParameters["slug"] != null) {
+            queryParameters["slug"] = requestParameters["slug"];
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/core/applications/requestable/`;
+
+        return {
+            path: urlPath,
+            method: "GET",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * List applications which the current user can request access to
+     */
+    async coreApplicationsRequestableListRaw(
+        requestParameters: CoreApplicationsRequestableListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PaginatedApplicationList>> {
+        const requestOptions =
+            await this.coreApplicationsRequestableListRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedApplicationListFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * List applications which the current user can request access to
+     */
+    async coreApplicationsRequestableList(
+        requestParameters: CoreApplicationsRequestableListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PaginatedApplicationList> {
+        const response = await this.coreApplicationsRequestableListRaw(
             requestParameters,
             initOverrides,
         );

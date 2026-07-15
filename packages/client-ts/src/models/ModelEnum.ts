@@ -181,7 +181,6 @@ export const ModelEnum = {
         "authentik_stages_authenticator_endpoint_gdtc.authenticatorendpointgdtcstage",
     AuthentikStagesMtlsMutualtlsstage: "authentik_stages_mtls.mutualtlsstage",
     AuthentikStagesSourceSourcestage: "authentik_stages_source.sourcestage",
-    AuthentikPamPersona: "authentik_pam.persona",
     AuthentikPamGrantrequest: "authentik_pam.grantrequest",
     AuthentikPamPolicybindingmodelrequestrule: "authentik_pam.policybindingmodelrequestrule",
     UnknownDefaultOpenApi: "11184809",

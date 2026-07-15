@@ -1,18 +1,51 @@
 import "#components/ak-text-input";
-import "../../components/ak-number-input";
-import "../../components/ak-switch-input";
+import "#components/ak-number-input";
+import "#components/ak-switch-input";
+import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
+import "#elements/forms/HorizontalFormElement";
+import "#components/ak-radio-input";
 
 import { aki } from "#common/api/client";
 
 import { ModelForm } from "#elements/forms/ModelForm";
+import { RadioOption } from "#elements/forms/Radio";
 import { SlottedTemplateResult } from "#elements/types";
 
-import { PamApi, PolicyBindingModelRequestRule } from "@goauthentik/api";
+import { eventTransportsProvider, eventTransportsSelector } from "#admin/events/RuleFormHelpers";
+
+import { NotificationModeEnum, PamApi, PolicyBindingModelRequestRule } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html } from "lit-html";
 import { ifDefined } from "lit-html/directives/if-defined.js";
 import { customElement, property } from "lit/decorators.js";
+
+function createNotificationModeOptions(): RadioOption<NotificationModeEnum>[] {
+    return [
+        {
+            value: NotificationModeEnum.All,
+            label: msg("Everyone who can approve"),
+            default: true,
+            description: html`${msg(
+                "Notify every individually-selected reviewer and every member of the selected reviewer groups.",
+            )}`,
+        },
+        {
+            value: NotificationModeEnum.Direct,
+            label: msg("Only direct reviewers"),
+            description: html`${msg(
+                "Notify only the individually-selected reviewers, not reviewer group members.",
+            )}`,
+        },
+        {
+            value: NotificationModeEnum.RandomMinReviewers,
+            label: msg("Random subset"),
+            description: html`${msg(
+                "Notify a random subset, sized to Minimum reviewers, of everyone who can approve.",
+            )}`,
+        },
+    ];
+}
 
 @customElement("ak-pbm-request-rule-form")
 export class PolicyBindingModelRequestRuleForm extends ModelForm<
@@ -73,7 +106,29 @@ export class PolicyBindingModelRequestRuleForm extends ModelForm<
                         across all groups.`,
                 )}
             >
-            </ak-switch-input>`;
+            </ak-switch-input>
+            <ak-form-element-horizontal
+                label=${msg("Notification transports")}
+                name="notificationTransports"
+            >
+                <ak-dual-select-dynamic-selected
+                    .provider=${eventTransportsProvider}
+                    .selector=${eventTransportsSelector(this.instance?.notificationTransports)}
+                    available-label=${msg("Available Transports")}
+                    selected-label=${msg("Selected Transports")}
+                ></ak-dual-select-dynamic-selected>
+                <p class="pf-c-form__helper-text">
+                    ${msg(
+                        "Transports used to notify reviewers when a request is created. Leave empty to send no notification.",
+                    )}
+                </p>
+            </ak-form-element-horizontal>
+            <ak-radio-input
+                label=${msg("Notify")}
+                name="notificationMode"
+                .options=${createNotificationModeOptions()}
+                .value=${this.instance?.notificationMode}
+            ></ak-radio-input>`;
     }
 }
 

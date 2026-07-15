@@ -1,3 +1,4 @@
+from random import sample
 from typing import Any
 from uuid import uuid4
 
@@ -142,7 +143,7 @@ class GrantRequestTarget(InternallyManagedMixin, models.Model):
 class GrantRequestApproval(CreatedUpdatedModel):
     """A single reviewer's approval or denial of a GrantRequest. A request needs enough of
     these, per PolicyBindingModelRequestRule attached to its targets, before it is actually
-    fulfilled - see GrantRequest.is_satisfied."""
+    fulfilled."""
 
     uuid = models.UUIDField(default=uuid4, primary_key=True)
 
@@ -160,6 +161,16 @@ class GrantRequestApproval(CreatedUpdatedModel):
         return f"Grant Request Approval {self.uuid}"
 
 
+class RequestNotificationMode(models.TextChoices):
+    """Who to notify when a request is created against a rule."""
+
+    ALL = "all", _("Everyone who can approve")
+    DIRECT = "direct", _("Only individually-selected reviewers")
+    RANDOM_MIN_REVIEWERS = "random_min_reviewers", _(
+        "A random subset of size min_reviewers, from everyone who can approve"
+    )
+
+
 class PolicyBindingModelRequestRule(SerializerModel, CreatedUpdatedModel, PolicyBindingModel):
 
     uuid = models.UUIDField(default=uuid4, primary_key=True)
@@ -173,6 +184,28 @@ class PolicyBindingModelRequestRule(SerializerModel, CreatedUpdatedModel, Policy
     min_reviewers = models.PositiveSmallIntegerField(default=1)
     min_reviewers_is_per_group = models.BooleanField(default=False)
     reviewers = models.ManyToManyField("authentik_core.User", blank=True)
+
+    notification_transports = models.ManyToManyField(
+        "authentik_events.NotificationTransport", blank=True
+    )
+    notification_mode = models.TextField(
+        choices=RequestNotificationMode.choices, default=RequestNotificationMode.ALL
+    )
+
+    def notification_recipients(self) -> models.QuerySet[User]:
+        """Users who should be notified when a request against this rule is created,
+        per `notification_mode`."""
+        individual = self.reviewers.all()
+        if self.notification_mode == RequestNotificationMode.DIRECT:
+            return individual
+        eligible = User.objects.filter(
+            models.Q(pk__in=individual) | models.Q(groups__in=self.reviewer_groups.all())
+        ).distinct()
+        if self.notification_mode == RequestNotificationMode.RANDOM_MIN_REVIEWERS:
+            pks = list(eligible.values_list("pk", flat=True))
+            chosen = sample(pks, min(self.min_reviewers, len(pks)))
+            return User.objects.filter(pk__in=chosen)
+        return eligible
 
     @property
     def serializer(self):

@@ -12,6 +12,8 @@
  * Do not edit the class manually.
  */
 
+import type { NotificationModeEnum } from "./NotificationModeEnum";
+import { NotificationModeEnumFromJSON, NotificationModeEnumToJSON } from "./NotificationModeEnum";
 import type { PolicyEngineMode } from "./PolicyEngineMode";
 import { PolicyEngineModeFromJSON, PolicyEngineModeToJSON } from "./PolicyEngineMode";
 
@@ -70,6 +72,18 @@ export interface PolicyBindingModelRequestRuleRequest {
      * @memberof PolicyBindingModelRequestRuleRequest
      */
     reviewers?: Array<number>;
+    /**
+     *
+     * @type {Array<string>}
+     * @memberof PolicyBindingModelRequestRuleRequest
+     */
+    notificationTransports?: Array<string>;
+    /**
+     *
+     * @type {NotificationModeEnum}
+     * @memberof PolicyBindingModelRequestRuleRequest
+     */
+    notificationMode?: NotificationModeEnum;
 }
 
 /**
@@ -111,6 +125,12 @@ export function PolicyBindingModelRequestRuleRequestFromJSONTyped(
         pbm: json["pbm"],
         reviewerGroups: json["reviewer_groups"] == null ? undefined : json["reviewer_groups"],
         reviewers: json["reviewers"] == null ? undefined : json["reviewers"],
+        notificationTransports:
+            json["notification_transports"] == null ? undefined : json["notification_transports"],
+        notificationMode:
+            json["notification_mode"] == null
+                ? undefined
+                : NotificationModeEnumFromJSON(json["notification_mode"]),
     };
 }
 
@@ -137,5 +157,7 @@ export function PolicyBindingModelRequestRuleRequestToJSONTyped(
         pbm: value["pbm"],
         reviewer_groups: value["reviewerGroups"],
         reviewers: value["reviewers"],
+        notification_transports: value["notificationTransports"],
+        notification_mode: NotificationModeEnumToJSON(value["notificationMode"]),
     };
 }

@@ -17,7 +17,7 @@ import { ApplicationFromJSON } from "./Application";
 import type { PartialUser } from "./PartialUser";
 import { PartialUserFromJSON } from "./PartialUser";
 import type { RequestStatus } from "./RequestStatus";
-import { RequestStatusFromJSON, RequestStatusToJSON } from "./RequestStatus";
+import { RequestStatusFromJSON } from "./RequestStatus";
 
 /**
  *
@@ -60,7 +60,7 @@ export interface GrantRequest {
      * @type {RequestStatus}
      * @memberof GrantRequest
      */
-    status?: RequestStatus;
+    readonly status: RequestStatus;
     /**
      *
      * @type {Array<string>}
@@ -87,6 +87,7 @@ export interface GrantRequest {
 export function instanceOfGrantRequest(value: object): value is GrantRequest {
     if (!("created" in value) || value["created"] === undefined) return false;
     if (!("createdBy" in value) || value["createdBy"] === undefined) return false;
+    if (!("status" in value) || value["status"] === undefined) return false;
     if (!("targets" in value) || value["targets"] === undefined) return false;
     if (!("targetApps" in value) || value["targetApps"] === undefined) return false;
     return true;
@@ -106,7 +107,7 @@ export function GrantRequestFromJSONTyped(json: any, ignoreDiscriminator: boolea
         requesterData: json["requester_data"] == null ? undefined : json["requester_data"],
         fulfillerData: json["fulfiller_data"] == null ? undefined : json["fulfiller_data"],
         expires: json["expires"] == null ? undefined : new Date(json["expires"]),
-        status: json["status"] == null ? undefined : RequestStatusFromJSON(json["status"]),
+        status: RequestStatusFromJSON(json["status"]),
         targets: json["targets"],
         targetApps: (json["target_apps"] as Array<any>).map(ApplicationFromJSON),
         uuid: json["uuid"] == null ? undefined : json["uuid"],
@@ -118,7 +119,10 @@ export function GrantRequestToJSON(json: any): GrantRequest {
 }
 
 export function GrantRequestToJSONTyped(
-    value?: Omit<GrantRequest, "created" | "created_by" | "targets" | "target_apps"> | null,
+    value?: Omit<
+        GrantRequest,
+        "created" | "created_by" | "status" | "targets" | "target_apps"
+    > | null,
     ignoreDiscriminator: boolean = false,
 ): any {
     if (value == null) {
@@ -129,7 +133,6 @@ export function GrantRequestToJSONTyped(
         requester_data: value["requesterData"],
         fulfiller_data: value["fulfillerData"],
         expires: value["expires"] == null ? value["expires"] : value["expires"].toISOString(),
-        status: RequestStatusToJSON(value["status"]),
         uuid: value["uuid"],
     };
 }

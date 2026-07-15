@@ -28,6 +28,8 @@ class PolicyBindingModelRequestRuleSerializer(EnterpriseRequiredMixin, ModelSeri
             "pbm",
             "reviewer_groups",
             "reviewers",
+            "notification_transports",
+            "notification_mode",
         ]
 
 
