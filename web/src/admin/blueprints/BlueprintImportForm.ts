@@ -1,7 +1,7 @@
 import "#components/ak-status-label";
 import "#elements/events/LogViewer";
 import "#elements/forms/HorizontalFormElement";
-import "#components/ak-toggle-group";
+import "#elements/ToggleGroup";
 
 import { aki } from "#common/api/client";
 import { PFSize } from "#common/enums";

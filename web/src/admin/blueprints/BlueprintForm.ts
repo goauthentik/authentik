@@ -1,5 +1,5 @@
 import "#components/ak-text-input";
-import "#components/ak-toggle-group";
+import "#elements/ToggleGroup";
 import "#components/ak-switch-input";
 import "#elements/CodeMirror";
 import "#elements/forms/FormGroup";

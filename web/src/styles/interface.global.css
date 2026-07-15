@@ -27,6 +27,7 @@
 @import "#styles/global/mode/contrast.css" layer(mode);
 
 @import "#styles/authentik/components/Placeholder/placeholder.css" layer(components);
+@import "#elements/ToggleGroup_impl/ToggleGroup.root.css" layer(components);
 @import "#styles/global/locales/ja/globals.css" layer(components);
 @import "#styles/global/locales/ko/globals.css" layer(components);
 @import "#styles/global/locales/zh/globals.css" layer(components);
