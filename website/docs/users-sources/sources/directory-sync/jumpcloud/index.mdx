@@ -2,9 +2,23 @@
 title: JumpCloud
 ---
 
+import TabItem from "@theme/TabItem";
+import Tabs from "@theme/Tabs";
+
+authentik can synchronize JumpCloud users and groups into its directory using either JumpCloud's **Cloud LDAP** service or **SCIM** provisioning. Select a tab below for the corresponding instructions.
+
+<Tabs
+    defaultValue="ldap"
+    values={[
+        { label: "LDAP", value: "ldap" },
+        { label: "SCIM", value: "scim" },
+    ]}
+>
+<TabItem value="ldap">
+
 authentik federates with [JumpCloud](https://jumpcloud.com/) through JumpCloud's **Cloud LDAP** service (LDAP-as-a-Service), using an LDAP source. Once configured, authentik synchronizes JumpCloud users and groups and can authenticate them against their JumpCloud credentials.
 
-## Preparation
+### Preparation
 
 The following placeholders are used in this guide:
 
@@ -13,9 +27,9 @@ The following placeholders are used in this guide:
 - `<ORG_ID>` is your JumpCloud Organization ID.
 - `ldapservice` is the username of the JumpCloud user that authentik binds as.
 
-## JumpCloud configuration
+### JumpCloud configuration
 
-### 1. Enable Cloud LDAP and create a binding user
+#### 1. Enable Cloud LDAP and create a binding user
 
 JumpCloud requires a dedicated user to bind to LDAP.
 
@@ -28,7 +42,7 @@ JumpCloud requires a dedicated user to bind to LDAP.
 More than one user may be designated as an LDAP binding user. The binding user must also be bound to the LDAP directory (next step) in order to authenticate.
 :::
 
-### 2. Bind users and groups to the LDAP directory
+#### 2. Bind users and groups to the LDAP directory
 
 Only users and groups that are explicitly bound to the LDAP directory are visible over Cloud LDAP.
 
@@ -38,7 +52,7 @@ Only users and groups that are explicitly bound to the LDAP directory are visibl
 4. Save your changes.
 5. Note your JumpCloud **Organization ID**; it is used in the **Bind CN** and **Base DN** in the next section.
 
-## authentik setup
+### authentik setup
 
 To create a new LDAP source in authentik:
 
@@ -63,3 +77,43 @@ To create a new LDAP source in authentik:
     - **Object uniqueness field**: `uid`
 
 4. Click **Finish** to save the LDAP source. An LDAP synchronization begins in the background.
+
+</TabItem>
+<TabItem value="scim">
+
+authentik can receive users and groups from JumpCloud through **SCIM**. In this model JumpCloud provisions (creates, updates, and deprovisions) accounts into an authentik SCIM source. Unlike the LDAP method, authentik does not authenticate users against JumpCloud — SCIM synchronizes directory data only.
+
+### Preparation
+
+The following placeholders are used in this guide:
+
+- `authentik.company` is the FQDN of the authentik installation.
+- `<scim-slug>` is the slug of the SCIM source you create in authentik.
+
+### authentik configuration
+
+Create the SCIM source first — it generates the endpoint URL and token that JumpCloud provisions to.
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Directory** > **Federation and Social login**, click **Create**, and select **SCIM Source**.
+3. Provide a **Name** and **Slug** (for example, `jumpcloud`), then click **Finish**.
+4. Open the newly created source. Note the **SCIM Base URL** (`https://authentik.company/source/scim/<scim-slug>/v2`), then use **Click to copy token** to copy the bearer token. Both are required in the next section.
+
+### JumpCloud configuration
+
+Configure a custom application in JumpCloud that provisions to the authentik SCIM source.
+
+1. Log in to the [JumpCloud Admin Portal](https://console.jumpcloud.com/) as an administrator.
+2. Navigate to **Access** > **SSO Applications** and click **Add New Application**.
+3. Select **Custom Application**, then click **Next** and select **Export users to this app**.
+4. Set a **Display Label** (for example, `authentik`) and save the application, then open it to configure.
+5. Open the **Provisioning** tab and configure the following settings:
+    - **Base URL**: `https://authentik.company/source/scim/<scim-slug>/v2`
+    - **Token Key**: the bearer token copied from the authentik SCIM source.
+    - **Test User Email**: any address that does not already exist in authentik. It is used only to validate the connection and is not provisioned.
+6. Click **Test Connection**.
+7. Once the connection succeeds, click **Activate**.
+8. Open the application's **User Groups** tab and bind the groups whose members JumpCloud should provision into authentik. Users and groups are provisioned based on their assignment to this application.
+
+</TabItem>
+</Tabs>
