@@ -11,7 +11,6 @@ from authentik.core.api.applications import ApplicationSerializer
 from authentik.core.apps import AppAccessWithoutBindings
 from authentik.core.models import Application
 from authentik.policies.engine import ListPolicyEngine
-from authentik.policies.models import PolicyBinding
 
 
 class ApplicationsRequestableMixin:
@@ -32,17 +31,11 @@ class ApplicationsRequestableMixin:
 
         requestable_apps = []
         for app in all_requestable_apps:
-            print(app.request_rules.all())
             engine = ListPolicyEngine(app.request_rules.all())
             engine.empty_result = AppAccessWithoutBindings.get()
-            print(request.user)
-            print(PolicyBinding.objects.filter(user=request.user))
-            print(PolicyBinding.objects.filter(target=app.request_rules.first()))
             applicable_rules = list(engine.evaluate_for(request.user, request))
-            print(applicable_rules)
             if len(applicable_rules) > 0:
                 requestable_apps.append(app)
-        print(requestable_apps)
 
         paginator: Pagination = self.paginator
         paginated_apps = paginator.paginate_queryset(requestable_apps, request)

@@ -12,9 +12,9 @@ from authentik.policies.models import PolicyBindingModel
 class PolicyBindingModelRequestRuleSerializer(EnterpriseRequiredMixin, ModelSerializer):
 
     def validate_pbm(self, pbm: PolicyBindingModel) -> PolicyBindingModel:
-        subc =  PolicyBindingModel.objects.filter(pk=pbm.pk).select_subclasses()
-        if not isinstance(subc, Application):
-            raise ValidationError("Must be app")
+        concrete = PolicyBindingModel.objects.filter(pk=pbm.pk).select_subclasses().first()
+        if not isinstance(concrete, Application):
+            raise ValidationError("Must be an Application")
         return pbm
 
     class Meta:

@@ -21,7 +21,6 @@ from authentik.core.api.utils import (
     ModelSerializer,
     PassiveSerializer,
 )
-from authentik.core.models import Application
 from authentik.enterprise.pam.models import (
     GrantRequest,
     PolicyBindingModelRequestRule,
@@ -109,8 +108,9 @@ class GrantRequestViewSet(RetrieveModelMixin, DestroyModelMixin, ListModelMixin,
         )
         if unauthorized_rules.exists():
             raise ValidationError("User does not have permissions to approve object")
-        # TODO: Check if this user can fulfill this grant
-        grant.fulfill(
-            body.validated_data.get("status"), request.user, data=body.validated_data.get("data")
+        grant.record_approval(
+            request.user,
+            body.validated_data.get("status"),
+            data=body.validated_data.get("data"),
         )
         return Response(status=204)

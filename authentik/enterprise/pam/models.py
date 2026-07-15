@@ -47,15 +47,62 @@ class GrantRequest(SerializerModel, ExpiringModel, CreatedUpdatedModel):
 
         return GrantRequestSerializer
 
+    def _rule_satisfied(self, rule: PolicyBindingModelRequestRule, approving_users) -> bool:
+        """Whether `approving_users` (pks) satisfies a single rule's reviewer requirements.
+        An approval from any individually-named `reviewers` satisfies the rule outright;
+        otherwise `min_reviewers` distinct approvers are needed from the reviewer groups,
+        either in total or from *each* group when `min_reviewers_is_per_group` is set."""
+        if rule.reviewers.filter(pk__in=approving_users).exists():
+            return True
+        if not rule.min_reviewers_is_per_group:
+            return (
+                rule.reviewer_groups.filter(users__pk__in=approving_users)
+                .values_list("users", flat=True)
+                .distinct()
+                .count()
+                >= rule.min_reviewers
+            )
+        if not rule.reviewer_groups.exists():
+            return False
+        for group in rule.reviewer_groups.all():
+            if group.users.filter(pk__in=approving_users).distinct().count() < rule.min_reviewers:
+                return False
+        return True
+
+    def is_satisfied(self) -> bool:
+        """Whether enough reviewers have approved to fulfill every rule attached to this
+        request's targets. A target with no rule attached needs no more than one approval."""
+        approving_users = GrantRequestApproval.objects.filter(
+            request=self, status=RequestStatus.APPROVED
+        ).values_list("reviewer", flat=True)
+        rules = PolicyBindingModelRequestRule.objects.filter(pbm__in=self.targets.all())
+        if not rules.exists():
+            return approving_users.exists()
+        return all(self._rule_satisfied(rule, approving_users) for rule in rules)
+
     @transaction.atomic
-    def fulfill(self, status: RequestStatus, user: User, data: dict[str, Any]):
+    def record_approval(self, user: User, status: RequestStatus, data: dict[str, Any]):
+        """Record a single reviewer's approval/denial. A denial immediately finalizes the
+        request as denied; an approval only finalizes it (and grants access) once
+        `is_satisfied` is true across every rule attached to the request's targets."""
         if self.status != RequestStatus.CREATED:
             return
+        GrantRequestApproval.objects.update_or_create(
+            request=self, reviewer=user, defaults={"status": status, "data": data}
+        )
+        if status == RequestStatus.DENIED:
+            self._finalize(RequestStatus.DENIED, user, data)
+            return
+        if not self.is_satisfied():
+            return
+        self._finalize(RequestStatus.APPROVED, user, data)
+
+    def _finalize(self, status: RequestStatus, user: User, data: dict[str, Any]):
         self.fulfilled_by = user
         self.fulfiller_data = data
         self.status = status
         self.save()
-        if self.status != RequestStatus.APPROVED:
+        if status != RequestStatus.APPROVED:
             return
         for target in GrantRequestTarget.objects.filter(request=self).all():
             target_binding = PolicyBinding.objects.create(
@@ -90,6 +137,27 @@ class GrantRequestTarget(InternallyManagedMixin, models.Model):
 
     def __str__(self):
         return f"Grant Request-target {self.request_id} to {self.target_id}"
+
+
+class GrantRequestApproval(CreatedUpdatedModel):
+    """A single reviewer's approval or denial of a GrantRequest. A request needs enough of
+    these, per PolicyBindingModelRequestRule attached to its targets, before it is actually
+    fulfilled - see GrantRequest.is_satisfied."""
+
+    uuid = models.UUIDField(default=uuid4, primary_key=True)
+
+    request = models.ForeignKey(GrantRequest, on_delete=models.CASCADE, related_name="approvals")
+    reviewer = models.ForeignKey(User, on_delete=models.CASCADE)
+    status = models.TextField(choices=RequestStatus.choices)
+    data = models.JSONField(default=dict)
+
+    class Meta:
+        unique_together = ("request", "reviewer")
+        verbose_name = _("Grant Request Approval")
+        verbose_name_plural = _("Grant Request Approvals")
+
+    def __str__(self):
+        return f"Grant Request Approval {self.uuid}"
 
 
 class PolicyBindingModelRequestRule(SerializerModel, CreatedUpdatedModel, PolicyBindingModel):
