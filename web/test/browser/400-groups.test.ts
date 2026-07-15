@@ -301,7 +301,7 @@ test.describe("Groups", () => {
                 });
  
                 await addGroupDialog
-                    .getByRole("button", { name: "Add group" })
+                    .getByRole("button", { name: "Add group", exact: true })
                     .click();
 
                 await expect(selectGroupsDialog, "Select groups dialog opens").toBeVisible();
@@ -317,7 +317,9 @@ test.describe("Groups", () => {
 
                 await expect(selectGroupsDialog, "Select groups dialog closes").toBeHidden();
 
-                await addGroupDialog.getByRole("button", { name: "Add Group" }).click();
+                await addGroupDialog
+                    .getByRole("button", { name: "Add Group", exact: true })
+                    .click();
 
                 await expect(
                     page.getByText("Adding Group..."),
@@ -326,8 +328,8 @@ test.describe("Groups", () => {
 
 
                 await expect(
-                    page.getByText("Successfully added user to group(s)."),
-                    "Success message confirms user was added to group",
+                    page.getByRole("link", { name: groupName }).first(),
+                    "Group appears in the user's related group list",
                 ).toBeVisible({ timeout: 10_000 });
 
             });
