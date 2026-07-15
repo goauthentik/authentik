@@ -71,7 +71,9 @@ export class ObjectAttributeForm extends ModelForm<ObjectAttribute, string> {
                 label=${msg("Key")}
                 placeholder=${msg("Type a unique identifier...")}
                 required
-                help=${msg("Unique identifier per object type, which is used as a key in the attributes field.")}
+                help=${msg(
+                    "Unique identifier per object type, which is used as a key in the attributes field.",
+                )}
             ></ak-text-input>
             <ak-text-input
                 name="group"
