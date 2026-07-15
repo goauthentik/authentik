@@ -121,6 +121,10 @@ class StreamView(SSFView):
         return Response(response, status=201)
 
     def delete(self, request: Request, *args, **kwargs) -> Response:
+        if not request.user.has_perm("authentik_providers_ssf.add_stream", self.provider):
+            raise PermissionDenied(
+                "User does not have permission to delete stream for this provider."
+            )
         streams = Stream.objects.filter(provider=self.provider)
         # Technically this parameter is required by the spec...
         if "stream_id" in request.query_params:

@@ -6,7 +6,12 @@ from django.utils import timezone
 from rest_framework.test import APITestCase
 
 from authentik.core.models import Application
-from authentik.core.tests.utils import create_test_admin_user, create_test_cert, create_test_flow
+from authentik.core.tests.utils import (
+    create_test_admin_user,
+    create_test_cert,
+    create_test_flow,
+    create_test_user,
+)
 from authentik.enterprise.providers.ssf.models import (
     SSFEventStatus,
     SSFProvider,
@@ -152,3 +157,46 @@ class TestStream(APITestCase):
         )
         self.assertEqual(res.status_code, 204)
         self.assertFalse(Stream.objects.filter(pk=stream.pk).exists())
+
+
+class TestStreamAuthorization(APITestCase):
+    """The stream deletion endpoint requires the add_stream permission on the provider.
+    A user authenticated with an ordinary access token issued by the backchannel
+    application's provider does not hold that permission and must be rejected."""
+
+    def setUp(self):
+        self.application = Application.objects.create(name=generate_id(), slug=generate_id())
+        self.provider = SSFProvider.objects.create(
+            name=generate_id(),
+            signing_key=create_test_cert(),
+            backchannel_application=self.application,
+        )
+        self.oauth_provider = OAuth2Provider.objects.create(
+            name=generate_id(),
+            authorization_flow=create_test_flow(),
+        )
+        self.application.provider = self.oauth_provider
+        self.application.save()
+        self.user = create_test_user()
+        self.token = AccessToken.objects.create(
+            provider=self.oauth_provider,
+            user=self.user,
+            token=generate_id(),
+            auth_time=timezone.now(),
+            _scope="openid user profile",
+            _id_token=json.dumps(asdict(IDToken("foo", "bar"))),
+        )
+
+    def test_stream_delete(self):
+        """delete stream without add_stream permission"""
+        self.assertFalse(self.user.has_perm("authentik_providers_ssf.add_stream", self.provider))
+        stream = Stream.objects.create(provider=self.provider)
+        res = self.client.delete(
+            reverse(
+                "authentik_providers_ssf:stream",
+                kwargs={"application_slug": self.application.slug},
+            ),
+            HTTP_AUTHORIZATION=f"Bearer {self.token.token}",
+        )
+        self.assertEqual(res.status_code, 403)
+        self.assertTrue(Stream.objects.filter(pk=stream.pk).exists())
