@@ -4,6 +4,7 @@ import "#admin/roles/ak-role-assigned-object-permissions-table";
 import "#elements/Tabs";
 
 import { AKElement } from "#elements/Base";
+import { ifPresent } from "#elements/utils/attributes";
 
 import { ModelEnum } from "@goauthentik/api";
 
@@ -34,7 +35,7 @@ export class ObjectPermissionPage extends AKElement {
     // TODO: Use attribute casing.
     // @property({ attribute: "object-pk" })
     @property()
-    public objectPk?: string | null;
+    public objectPk: string | null = null;
 
     @property({ type: Boolean })
     public embedded = false;
@@ -74,7 +75,9 @@ export class ObjectPermissionPage extends AKElement {
                             "Permissions assigned to this role which affect all object instances of a given type.",
                         )}
                     </div>
-                    <ak-role-assigned-global-permissions-table roleUuid=${this.objectPk as string}>
+                    <ak-role-assigned-global-permissions-table
+                        role-uuid=${ifPresent(this.objectPk)}
+                    >
                     </ak-role-assigned-global-permissions-table>
                 </div>
             </div>
@@ -93,7 +96,9 @@ export class ObjectPermissionPage extends AKElement {
                             "Permissions assigned to this role affecting specific object instances.",
                         )}
                     </div>
-                    <ak-role-assigned-object-permissions-table roleUuid=${this.objectPk as string}>
+                    <ak-role-assigned-object-permissions-table
+                        role-uuid=${ifPresent(this.objectPk)}
+                    >
                     </ak-role-assigned-object-permissions-table>
                 </div>
             </div>

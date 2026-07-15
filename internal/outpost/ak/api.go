@@ -3,6 +3,7 @@ package ak
 import (
 	"context"
 	"crypto/fips140"
+	"errors"
 	"fmt"
 	"math/rand"
 	"net"
@@ -11,6 +12,7 @@ import (
 	"os"
 	"os/signal"
 	"runtime"
+	"sync"
 	"syscall"
 	"time"
 
@@ -45,6 +47,7 @@ type APIController struct {
 	reloadOffset time.Duration
 
 	eventConn        *websocket.Conn
+	eventConnMu      sync.Mutex
 	lastWsReconnect  time.Time
 	wsIsReconnecting bool
 	eventHandlers    []EventHandler
@@ -53,7 +56,7 @@ type APIController struct {
 	instanceUUID uuid.UUID
 }
 
-// NewAPIController initialise new API Controller instance from URL and API token
+// NewAPIController initialize new API Controller instance from URL and API token
 func NewAPIController(akURL url.URL, token string) *APIController {
 	rsp := sentry.StartSpan(context.Background(), "authentik.outposts.init")
 	log := log.WithField("logger", "authentik.outpost.ak-api-controller")
@@ -218,6 +221,9 @@ func (a *APIController) OnRefresh() error {
 	if err != nil {
 		log.WithError(err).Error("Failed to fetch outpost configuration")
 		return err
+	}
+	if outposts == nil || len(outposts.Results) < 1 {
+		return errors.New("no outposts found")
 	}
 	a.Outpost = outposts.Results[0]
 

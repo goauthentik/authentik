@@ -1,11 +1,13 @@
 ---
 title: LDAP Provider
 toc_max_heading_level: 5
+sidebar_position: 4
+sidebar_label: "LDAP Provider"
 ---
 
-The LDAP provider allows you to integrate with Service Providers using LDAP. It supports secure connections via LDAPS, code-based MFA authentication, basic LDAP schema compatibility, and can also be integrated with [SSSD](/integrations/services/sssd/) for authentication on Linux-based systems.
+The LDAP provider allows you to integrate with Service Providers using LDAP. It supports secure connections via LDAPS, code-based MFA authentication, basic LDAP schema compatibility, and can also be integrated with [SSSD](/integrations/infrastructure/sssd/) for authentication on Linux-based systems.
 
-Refer to our documentation to learn how to [create a LDAP provider](./create-ldap-provider.mdx).
+Refer to our documentation to learn how to [create an LDAP provider](./create-ldap-provider.mdx).
 
 ## LDAP directory
 
@@ -84,12 +86,12 @@ The **Bind flow** determines the flow used for binding/authenticating users, and
 
 The following flow stages are supported by the LDAP provider:
 
-- [Identification stage](../../flows-stages/stages/identification/index.mdx)
+- [Identification stage](../../flows-stages/stages/identification/index.md)
 - [Password stage](../../flows-stages/stages/password/index.md)
-- [Authenticator validation stage](../../flows-stages/stages/authenticator_validate/index.mdx)
-- [User Logout stage](../../flows-stages/stages/user_logout.md)
+- [Authenticator validation stage](../../flows-stages/stages/authenticator_validate/index.md)
+- [User Logout stage](../../flows-stages/stages/user_logout/index.md)
 - [User Login stage](../../flows-stages/stages/user_login/index.md)
-- [Deny stage](../../flows-stages/stages/deny.md)
+- [Deny stage](../../flows-stages/stages/deny/index.md)
 
 ### Bind modes
 
@@ -133,7 +135,7 @@ Authenticator validation currently only supports DUO, TOTP and static authentica
 
 The LDAP provider supports code-based MFA.
 
-Code-based authenticators are only supported when the **Code-based MFA Support** setting is enabled on the provider and the configured **Bind flow** includes a [Authenticator Validation stage](../../flows-stages/stages/authenticator_validate/index.mdx).
+Code-based authenticators are only supported when the **Code-based MFA Support** setting is enabled on the provider and the configured **Bind flow** includes a [Authenticator Validation stage](../../flows-stages/stages/authenticator_validate/index.md).
 
 When enabled, all users that bind to the LDAP provider should have a supported authenticator configured, as otherwise a password might be incorrectly rejected if it contains a semicolon.
 

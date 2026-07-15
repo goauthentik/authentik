@@ -59,7 +59,7 @@ def avatar_mode_gravatar(user: User, mode: str) -> str | None:
 
 
 def generate_colors(text: str) -> tuple[str, str]:
-    """Generate colours based on `text`"""
+    """Generate colors based on `text`"""
     color = (
         int(md5(text.lower().encode("utf-8"), usedforsecurity=False).hexdigest(), 16) % 0xFFFFFF
     )  # nosec
@@ -155,15 +155,24 @@ def avatar_mode_generated(user: User, mode: str) -> str | None:
     return f"data:image/svg+xml;base64,{b64encode(svg.encode('utf-8')).decode('utf-8')}"
 
 
+def format_avatar_url(user: User, mode: str) -> str:
+    """Format avatar URL placeholders while preserving URL percent-encoding."""
+    mail_hash = md5(user.email.lower().encode("utf-8"), usedforsecurity=False).hexdigest()  # nosec
+    replacements = {
+        "%(username)s": user.username,
+        "%(mail_hash)s": mail_hash,
+        "%(upn)s": str(user.attributes.get("upn", "")),
+    }
+    formatted_url = mode
+    for placeholder, value in replacements.items():
+        formatted_url = formatted_url.replace(placeholder, value)
+    return formatted_url
+
+
 def avatar_mode_url(user: User, mode: str) -> str | None:
     """Format url"""
     mail_hash = md5(user.email.lower().encode("utf-8"), usedforsecurity=False).hexdigest()  # nosec
-
-    formatted_url = mode % {
-        "username": user.username,
-        "mail_hash": mail_hash,
-        "upn": user.attributes.get("upn", ""),
-    }
+    formatted_url = format_avatar_url(user, mode)
 
     hostname = urlparse(formatted_url).hostname
     cache_key_hostname_available = f"goauthentik.io/lib/avatars/{hostname}/available"

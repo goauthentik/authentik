@@ -48,7 +48,7 @@ export class Message extends AKElement {
     public live?: boolean;
 
     @property({ type: Number })
-    public lifetime?: number = 8_000;
+    public lifetime?: number = 8000;
 
     //#endregion
 

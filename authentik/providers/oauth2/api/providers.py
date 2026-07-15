@@ -27,8 +27,10 @@ from authentik.providers.oauth2.models import (
     AccessToken,
     OAuth2Provider,
     RedirectURIMatchingMode,
+    RedirectURIType,
     ScopeMapping,
 )
+from authentik.providers.oauth2.utils import is_all_vschar
 from authentik.rbac.decorators import permission_required
 
 
@@ -37,12 +39,25 @@ class RedirectURISerializer(PassiveSerializer):
 
     matching_mode = ChoiceField(choices=RedirectURIMatchingMode.choices)
     url = CharField()
+    redirect_uri_type = ChoiceField(
+        choices=RedirectURIType.choices, default=RedirectURIType.AUTHORIZATION, required=False
+    )
 
 
 class OAuth2ProviderSerializer(ProviderSerializer):
     """OAuth2Provider Serializer"""
 
     redirect_uris = RedirectURISerializer(many=True, source="_redirect_uris")
+
+    def validate_client_id(self, secret: str) -> str:
+        if not is_all_vschar(secret):
+            raise ValidationError("Client ID must consist of only ASCII characters.")
+        return secret
+
+    def validate_client_secret(self, secret: str) -> str:
+        if not is_all_vschar(secret):
+            raise ValidationError("Client secret must consist of only ASCII characters.")
+        return secret
 
     def validate_redirect_uris(self, data: list) -> list:
         for entry in data:
@@ -61,6 +76,7 @@ class OAuth2ProviderSerializer(ProviderSerializer):
         fields = ProviderSerializer.Meta.fields + [
             "authorization_flow",
             "client_type",
+            "grant_types",
             "client_id",
             "client_secret",
             "access_code_validity",

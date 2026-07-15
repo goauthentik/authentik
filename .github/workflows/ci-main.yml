@@ -24,6 +24,49 @@ permissions:
   id-token: write
 
 jobs:
+  build-compute-tags:
+    runs-on: ubuntu-latest
+    outputs:
+      safe-branch-name: "${{ steps.compute-tags.outputs.safe-branch-name }}"
+      tag-full: "${{ steps.compute-tags.outputs.tag-full }}"
+      tag-branch: "${{ steps.compute-tags.outputs.tag-branch }}"
+      tag-flux: "${{ steps.compute-tags.outputs.tag-flux }}"
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v5
+      - id: compute-tags
+        uses: ./.github/actions/compute-container-tags
+  build:
+    needs:
+      - build-compute-tags
+    permissions:
+      # Needed to upload cache to ghcr.io
+      packages: write
+      # Needed for checkout
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: server
+            dockerfile: Dockerfile
+          - name: proxy
+            dockerfile: proxy.Dockerfile
+          - name: ldap
+            dockerfile: ldap.Dockerfile
+          - name: radius
+            dockerfile: radius.Dockerfile
+          - name: rac
+            dockerfile: rac.Dockerfile
+    uses: ./.github/workflows/_reusable-container-build.yml
+    secrets: inherit
+    with:
+      ref: "${{ github.ref }}"
+      image-name: "${{ matrix.name }}"
+      image-dockerfile: "lifecycle/container/${{ matrix.dockerfile }}"
+      image-build-args: |
+        GIT_BUILD_HASH=${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha }}
+      should-cache: "${{ github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository) }}"
+      cache-suffix: "-${{ needs.build-compute-tags.outputs.safe-branch-name }}"
   lint:
     strategy:
       fail-fast: false
@@ -34,6 +77,8 @@ jobs:
           - job: black
             deps: python
           - job: spellcheck
+            deps: node
+          - job: catalogs
             deps: node
           - job: pending-migrations
             deps: python,runtime
@@ -51,7 +96,7 @@ jobs:
             deps: rust-nightly
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v5
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v5
       - name: Setup authentik env
         uses: ./.github/actions/setup
         with:
@@ -61,7 +106,7 @@ jobs:
   test-gen:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v5
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v5
         with:
           ref: ${{ github.event.pull_request.head.sha }}
       - name: Setup authentik env
@@ -77,7 +122,7 @@ jobs:
   test-migrations:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v5
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v5
       - name: Setup authentik env
         uses: ./.github/actions/setup
       - name: run migrations
@@ -103,14 +148,19 @@ jobs:
           - 18-alpine
         run_id: [1, 2, 3, 4, 5]
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v5
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v5
         with:
           fetch-depth: 0
       - name: checkout stable
         run: |
           set -e -o pipefail
+
           cp -R .github ..
           cp -R scripts ..
+
+          mkdir -p ../packages
+          cp -R packages/logger-js ../packages/logger-js
+
           # Previous stable tag
           prev_stable=$(git tag --sort=version:refname | grep '^version/' | grep -vE -- '-rc[0-9]+$' | tail -n1)
           # Current version family based on
@@ -118,16 +168,27 @@ jobs:
           if [[ -n $current_version_family ]]; then
               prev_stable="version/${current_version_family}"
           fi
+
           echo "::notice::Checking out ${prev_stable} as stable version..."
           git checkout ${prev_stable}
-          rm -rf .github/ scripts/
+
+          rm -rf .github/ scripts/ packages/logger-js/
           mv ../.github ../scripts .
+          mv ../packages/logger-js ./packages/
       - name: Setup authentik env (stable)
         uses: ./.github/actions/setup
         with:
           postgresql_version: ${{ matrix.psql }}
+          # The stable checkout predates the pnpm migration, so its
+          # package.json still pins npm as the package manager. Skip node here
+          # (migrating to stable only needs Python + the database); pnpm/node is
+          # set up again for the current checkout below.
+          dependencies: "system,python,runtime"
       - name: run migrations to stable
-        run: uv run python -m lifecycle.migrate
+        run: |
+          docker ps
+          docker logs setup-postgresql-1
+          uv run python -m lifecycle.migrate
       - name: checkout current code
         run: |
           set -x
@@ -168,7 +229,7 @@ jobs:
           - 18-alpine
         run_id: [1, 2, 3, 4, 5]
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v5
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v5
       - name: Setup authentik env
         uses: ./.github/actions/setup
         with:
@@ -188,7 +249,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v5
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v5
       - name: Setup authentik env
         uses: ./.github/actions/setup
       - name: Create k8s Kind Cluster
@@ -196,6 +257,7 @@ jobs:
       - name: run integration
         run: |
           uv run coverage run manage.py test tests/integration
+          uv run coverage combine
           uv run coverage xml
       - uses: ./.github/actions/test-results
         if: ${{ always() }}
@@ -205,6 +267,9 @@ jobs:
     name: test-e2e (${{ matrix.job.name }})
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    needs:
+      - build-compute-tags
+      - build
     strategy:
       fail-fast: false
       matrix:
@@ -223,6 +288,9 @@ jobs:
             profiles: selenium
           - name: ldap
             glob: tests/e2e/test_provider_ldap* tests/e2e/test_source_ldap*
+          - name: rac
+            glob: tests/e2e/test_provider_rac*
+            profiles: selenium
           - name: ws-fed
             glob: tests/e2e/test_provider_ws_fed*
             profiles: selenium
@@ -237,7 +305,18 @@ jobs:
             glob: tests/e2e/test_endpoints_*
             profiles: selenium
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v5
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v5
+        with:
+          pattern: container-build-*-amd64
+          merge-multiple: true
+      - name: Load Docker images
+        run: |
+          for image in proxy ldap radius rac; do
+            skopeo copy "oci-archive:container/${image}-amd64.oci.tar" "docker-daemon:ghcr.io/goauthentik/dev-${image}:${{ needs.build-compute-tags.outputs.tag-full }}"
+            skopeo copy "oci-archive:container/${image}-amd64.oci.tar" "docker-daemon:ghcr.io/goauthentik/dev-${image}:${{ needs.build-compute-tags.outputs.tag-branch }}"
+          done
+          rm -rf container/
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v5
       - name: Setup authentik env
         uses: ./.github/actions/setup
       - name: Setup e2e env
@@ -245,21 +324,37 @@ jobs:
           COMPOSE_PROFILES: ${{ matrix.job.profiles }}
         run: |
           docker compose -f tests/e2e/compose.yml up -d --quiet-pull
+      - uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # v6.0.9
+      - name: Pin pnpm store directory
+        run: |
+          echo "PNPM_HOME=${RUNNER_TEMP}/pnpm-home" >> "$GITHUB_ENV"
+          echo "npm_config_store_dir=${RUNNER_TEMP}/pnpm-home/store" >> "$GITHUB_ENV"
+      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v4
+        with:
+          node-version-file: package.json
+          cache: pnpm
+          cache-dependency-path: pnpm-lock.yaml
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
       - id: cache-web
-        uses: actions/cache@668228422ae6a00e4ad889ee87cd7109ec5666a7 # v4
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v4
+        if: contains(matrix.job.profiles, 'selenium')
         with:
           path: web/dist
-          key: ${{ runner.os }}-web-${{ hashFiles('web/package-lock.json', 'package-lock.json', 'web/src/**', 'web/packages/sfe/src/**') }}-b
+          key: ${{ runner.os }}-web-${{ hashFiles('web/pnpm-lock.yaml', 'pnpm-lock.yaml', 'web/src/**', 'web/packages/sfe/src/**') }}-b
       - name: prepare web ui
-        if: steps.cache-web.outputs.cache-hit != 'true'
+        if: steps.cache-web.outputs.cache-hit != 'true' && contains(matrix.job.profiles, 'selenium')
         working-directory: web
+        env:
+          NODE_ENV: "production"
         run: |
-          npm ci
-          npm run build
-          npm run build:sfe
+          pnpm install --frozen-lockfile
+          pnpm run build
+          pnpm run build:sfe
       - name: run e2e
         run: |
           uv run coverage run manage.py test ${{ matrix.job.glob }}
+          uv run coverage combine
           uv run coverage xml
       - uses: ./.github/actions/test-results
         if: ${{ always() }}
@@ -273,12 +368,22 @@ jobs:
       fail-fast: false
       matrix:
         job:
-          - name: basic
-            glob: tests/openid_conformance/test_basic.py
-          - name: implicit
-            glob: tests/openid_conformance/test_implicit.py
+          - name: oidc_basic
+            glob: tests/openid_conformance/test_oidc_basic.py
+          - name: oidc_config
+            glob: tests/openid_conformance/test_oidc_config.py
+          - name: oidc_implicit
+            glob: tests/openid_conformance/test_oidc_implicit.py
+          - name: oidc_rp-initiated
+            glob: tests/openid_conformance/test_oidc_rp_initiated.py
+          - name: oidc_frontchannel
+            glob: tests/openid_conformance/test_oidc_frontchannel.py
+          - name: oidc_backchannel
+            glob: tests/openid_conformance/test_oidc_backchannel.py
+          - name: ssf_transmitter
+            glob: tests/openid_conformance/test_ssf_transmitter.py
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v5
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v5
       - name: Setup authentik env
         uses: ./.github/actions/setup
       - name: Setup e2e env (chrome, etc)
@@ -288,29 +393,31 @@ jobs:
           docker compose -f tests/e2e/compose.yml up -d --quiet-pull
       - name: Setup conformance suite
         run: |
-          docker compose -f tests/openid_conformance/compose.yml up -d --quiet-pull
+          docker compose -f tests/openid_conformance/compose.yml up -d --quiet-pull --wait
       - id: cache-web
-        uses: actions/cache@668228422ae6a00e4ad889ee87cd7109ec5666a7 # v4
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v4
         with:
           path: web/dist
-          key: ${{ runner.os }}-web-${{ hashFiles('web/package-lock.json', 'web/src/**', 'web/packages/sfe/src/**') }}-b
+          key: ${{ runner.os }}-web-${{ hashFiles('web/pnpm-lock.yaml', 'web/src/**', 'web/packages/sfe/src/**') }}-b
       - name: prepare web ui
         if: steps.cache-web.outputs.cache-hit != 'true'
-        working-directory: web
+        env:
+          NODE_ENV: "production"
         run: |
-          npm ci
-          npm run build
-          npm run build:sfe
+          pnpm --dir web install --frozen-lockfile
+          pnpm --dir web run build
+          pnpm --dir web run build:sfe
       - name: run conformance
         run: |
           uv run coverage run manage.py test ${{ matrix.job.glob }}
+          uv run coverage combine
           uv run coverage xml
       - uses: ./.github/actions/test-results
         if: ${{ always() }}
         with:
           flags: conformance
       - if: ${{ !cancelled() }}
-        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: conformance-certification-${{ matrix.job.name }}
           path: tests/openid_conformance/exports/
@@ -318,11 +425,11 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v5
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v5
       - name: Setup authentik env
         uses: ./.github/actions/setup
         with:
-          dependencies: rust
+          dependencies: rust,runtime
       - name: run tests
         run: |
           cargo llvm-cov --no-report nextest --workspace
@@ -333,13 +440,14 @@ jobs:
           files: target/llvm-cov-target/rust.json
           flags: rust
       - if: ${{ !cancelled() }}
-        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: test-rust
           path: target/llvm-cov-target/rust.json
   ci-core-mark:
     if: always()
     needs:
+      - build
       - lint
       - test-gen
       - test-migrations
@@ -352,43 +460,70 @@ jobs:
       - uses: re-actors/alls-green@05ac9388f0aebcb5727afa17fcccfecd6f8ec5fe # release/v1
         with:
           jobs: ${{ toJSON(needs) }}
-  build:
+  publish:
+    if: "${{ github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository) }}"
+    needs:
+      - build-compute-tags
+      - build
+      - ci-core-mark
     permissions:
       # Needed to upload container images to ghcr.io
       packages: write
       # Needed for attestation
       id-token: write
       attestations: write
+      artifact-metadata: write
       # Needed for checkout
       contents: read
-    needs: ci-core-mark
-    uses: ./.github/workflows/_reusable-docker-build.yml
-    secrets: inherit
-    with:
-      image_name: ${{ github.repository == 'goauthentik/authentik-internal' && 'ghcr.io/goauthentik/internal-server' || 'ghcr.io/goauthentik/dev-server' }}
-      release: false
-  pr-comment:
-    needs:
-      - build
     runs-on: ubuntu-latest
-    if: ${{ github.event_name == 'pull_request' }}
+    strategy:
+      fail-fast: false
+      matrix:
+        name:
+          - server
+          - proxy
+          - ldap
+          - radius
+          - rac
+    steps:
+      - uses: regclient/actions/regctl-installer@39bf30ced4be9d147faaabbde2682e9725fb8bd1
+      # logs in to ghcr.io by default
+      - uses: regclient/actions/regctl-login@39bf30ced4be9d147faaabbde2682e9725fb8bd1
+      # Docker login is required for attestations
+      - uses: docker/login-action@af1e73f918a031802d376d3c8bbc3fe56130a9b0
+        with:
+          registry: ghcr.io
+          username: "${{ github.actor }}"
+          password: "${{ secrets.GITHUB_TOKEN }}"
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v5
+        with:
+          name: "container-build-${{ matrix.name }}"
+      - id: publish
+        name: publish
+        run: |
+          regctl image import "ocidir://${{ matrix.name }}:${{ needs.build-compute-tags.outputs.tag-full }}" "container/${{ matrix.name }}.oci.tar"
+          echo "digest=$(regctl image digest "ocidir://${{ matrix.name }}:${{ needs.build-compute-tags.outputs.tag-full }}")" >> "$GITHUB_OUTPUT"
+          regctl image import "ghcr.io/goauthentik/dev-${{ matrix.name }}:${{ needs.build-compute-tags.outputs.tag-full }}" "container/${{ matrix.name }}.oci.tar"
+          regctl image import "ghcr.io/goauthentik/dev-${{ matrix.name }}:${{ needs.build-compute-tags.outputs.tag-branch }}" "container/${{ matrix.name }}.oci.tar"
+          regctl image import "ghcr.io/goauthentik/dev-${{ matrix.name }}:${{ needs.build-compute-tags.outputs.tag-flux }}" "container/${{ matrix.name }}.oci.tar"
+      - uses: actions/attest@a1948c3f048ba23858d222213b7c278aabede763
+        with:
+          subject-name: "ghcr.io/goauthentik/dev-${{ matrix.name }}"
+          subject-digest: "${{ steps.publish.outputs.digest }}"
+          push-to-registry: true
+  pr-comment:
+    if: "${{ github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository) }}"
+    needs:
+      - build-compute-tags
+      - publish
+    runs-on: ubuntu-latest
     permissions:
       # Needed to write comments on PRs
       pull-requests: write
     timeout-minutes: 120
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v5
-        with:
-          ref: ${{ github.event.pull_request.head.sha }}
-      - name: prepare variables
-        uses: ./.github/actions/docker-push-variables
-        id: ev
-        env:
-          DOCKER_USERNAME: ${{ secrets.DOCKER_CORP_USERNAME }}
-        with:
-          image-name: ghcr.io/goauthentik/dev-server
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v5
       - name: Comment on PR
-        if: ${{ steps.ev.outputs.shouldPush == 'true' }}
         uses: ./.github/actions/comment-pr-instructions
         with:
-          tag: ${{ steps.ev.outputs.imageMainTag }}
+          tag: "${{ needs.build-compute-tags.outputs.tag-full }}"

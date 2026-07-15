@@ -1,12 +1,14 @@
 ---
-title: Integrate with FortiGate SSLVPN
-sidebar_label: FortiGate SSLVPN
+title: Integrate with FortiGate SSL VPN
+sidebar_label: FortiGate SSL VPN
 support_level: community
 ---
 
-## What is FortiGate SSLVPN
+import SAMLProvider20265Warning from "../../\_saml-provider-2026-5-warning.mdx";
 
-> FortiGate is a firewall from Fortinet. It is an NGFW with layer 7 inspection and can become part of a Fortinet security fabric.
+## What is FortiGate SSL VPN?
+
+> FortiGate is Fortinet's next-generation firewall. Its SSL VPN feature lets remote users connect to protected network resources through a FortiGate firewall.
 >
 > -- https://www.fortinet.com/products/next-generation-firewall
 
@@ -14,8 +16,8 @@ support_level: community
 
 The following placeholders are used in this guide:
 
-- `authentik.company` is the FQDN of your authentik installation.
-- `fortigate.company` is the FQDN of your FortiGate firewall.
+- `fortigate.company` is the FQDN of your FortiGate SSL VPN.
+- `authentik.company` is the FQDN of the authentik installation.
 
 :::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
@@ -23,63 +25,72 @@ This documentation lists only the settings that you need to change from their de
 
 ### Prerequisites
 
-- A working SSLVPN (portal or tunnel) configuration in FortiGate
-- A certificate for signing and encryption uploaded to both authentik and FortiGate
-- FortiGate version 7.2.8 or later
-- authentik version 2024.2.2 or later
+- A working FortiGate SSL VPN configuration.
+- A FortiGate local certificate to use for the SAML service provider (SP).
+- An authentik certificate to use for signing SAML responses.
 
 ## authentik configuration
 
-To support the integration of FortiGate SSLVPN with authentik, you need to create an application/provider pair and user group in authentik.
+To support the integration of FortiGate SSL VPN with authentik, you need to create an application/provider pair in authentik.
 
 ### Create a user group
 
-1. Log in to authentik as an administrator and navigate to the Admin interface.
+1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Directory** > **Groups** and click **Create**.
-3. Set a descriptive name for the group (e.g. "FortiGate SSLVPN Users").
-4. Add the users who should have access to the SSLVPN.
+3. Set a descriptive name for the group, for example `FortiGate SSL VPN Users`.
+4. Add the users who should have access to FortiGate SSL VPN.
 5. Click **Save**.
 
 ### Create an application and provider in authentik
 
-1. Log in to authentik as an admin and navigate to the Admin interface.
-2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair.
+<SAMLProvider20265Warning />
 
-- **Application**: provide a descriptive name (e.g. "FortiGate SSLVPN"), an optional group for the type of application, the policy engine mode, and optional UI settings.
-- **Choose a Provider type**: select **SAML Provider from metadata** as the provider type.
-- **Configure the Provider**: provide a name (or accept the auto-provided name), and configure the following required settings:
-    - Upload the metadata file from FortiGate (you will get this in the FortiGate configuration steps).
-    - Set the **ACS URL** to `https://fortigate.company/remote/saml/login`.
-    - Set the **Audience** to `http://fortigate.company/remote/saml/metadata/`.
-    - Under **Advanced protocol settings**:
-        - Set **Signing certificate** to use any available certificate.
-            - Enable both **Sign assertions** and **Sign responses**.
-        - Set **Assertion valid not before** to `minutes=5`.
-        - Set **Assertion valid not on or after** to `minutes=5`.
-        - Set **Digest algorithm** to `sha256`.
-        - Set **Signature algorithm** to `sha256`.
-- **Configure Bindings**: create a binding to the user group you created earlier to manage access to the SSLVPN.
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Note the **Slug** value because it will be required later.
+    - **Choose a Provider type**: select **SAML Provider** as the provider type.
+    - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+        - Set the **ACS URL** to `https://fortigate.company/remote/saml/login`.
+        - Set the **Audience** to `https://fortigate.company/remote/saml/metadata`.
+        - Set the **SLS URL** to `https://fortigate.company/remote/saml/logout`.
+        - Under **Advanced protocol settings**:
+            - Set **Signing Certificate** to the certificate authentik should use to sign SAML responses.
+            - Enable **Sign responses**.
+    - **Configure Bindings**: create a [binding](/docs/add-secure-apps/bindings-overview/) to the FortiGate SSL VPN user group.
 
 3. Click **Submit** to save the new application and provider.
 
+### Download the signing certificate
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Applications** > **Providers** and click the FortiGate SSL VPN provider.
+3. Click **Download** under **Download signing certificate**. You will import this certificate into FortiGate.
+
 ## FortiGate configuration
 
-### Setup SAML SP
+### Import the authentik signing certificate
 
-1. SSH into the FortiGate (if you are using vdom, change to the correct vdom).
-2. The configuration will be written to `/data/config/config.conf`. Copy and paste the following configuration, replacing the placeholders with your values:
+1. Log in to the FortiGate administrative interface.
+2. Navigate to **System** > **Certificates**.
+3. Select **Create/Import** > **Remote Certificate**.
+4. Upload the authentik signing certificate you downloaded earlier.
+5. Note the certificate name that FortiGate assigns to the imported certificate.
 
-```
+### Create the SAML single sign-on server
+
+SSH into FortiGate and run the following commands, replacing `authentik-signing-certificate` with the imported authentik certificate name and `Fortinet_Factory` with the FortiGate local certificate that FortiGate should use as the SP certificate.
+
+```text
 config user saml
     edit "authentik-sso"
-        set cert "your-fortigate-cert"
-        set entity-id "http://fortigate.company/remote/saml/metadata/"
+        set cert "<Your Fortinet Cert>"
+        set entity-id "https://fortigate.company/remote/saml/metadata"
         set single-sign-on-url "https://fortigate.company/remote/saml/login"
         set single-logout-url "https://fortigate.company/remote/saml/logout"
-        set idp-entity-id "https://authentik.company"
-        set idp-single-sign-on-url "https://authentik.company/application/saml/fortigate-sslvpn/sso/binding/redirect/"
-        set idp-single-logout-url "https://authentik.company/application/saml/fortigate-sslvpn/slo/binding/redirect/"
-        set idp-cert "your-authentik-cert"
+        set idp-entity-id "https://authentik.company/application/saml/<application_slug>/metadata/"
+        set idp-single-sign-on-url "https://authentik.company/application/saml/<application_slug>/"
+        set idp-single-logout-url "https://authentik.company/application/saml/<application_slug>/"
+        set idp-cert "authentik-signing-certificate"
         set user-name "http://schemas.goauthentik.io/2021/02/saml/username"
         set group-name "http://schemas.xmlsoap.org/claims/Group"
         set digest-method sha256
@@ -87,59 +98,54 @@ config user saml
 end
 ```
 
-### Add SAML SSO to a user group
+### Create the FortiGate user group
 
-Configure the FortiGate user group:
+Run the following commands, replacing `FortiGate SSL VPN Users` with the exact name of the authentik group whose members should have VPN access.
 
-```
+```text
 config user group
     edit "sslvpn-users"
         set member "authentik-sso"
         config match
             edit 1
                 set server-name "authentik-sso"
-                set group-name "FortiGate SSLVPN Users"
+                set group-name "FortiGate SSL VPN Users"
             next
         end
     next
 end
 ```
 
-:::info
-Remember to map the user group to a portal in the 'SSL-VPN Settings' page and add it to firewall rules, or users will be redirected back to authentik with a logout immediately upon each login attempt.
-:::
+### Add the group to SSL VPN
 
-### Download SAML metadata
+1. In the FortiGate administrative interface, navigate to **VPN** > **SSL-VPN Settings**.
+2. In the **Authentication/Portal Mapping** table, create a mapping for the `sslvpn-users` group and select the SSL VPN portal that group should use.
+3. Apply your changes.
+4. Ensure that the SSL VPN firewall policy includes the `sslvpn-users` group.
 
-1. Navigate to your FortiGate web interface at `https://fortigate.company`
-2. Go to **User & Authentication** > **SAML** > **Single Sign-On Server**
-3. Click on the "authentik-sso" server you created
-4. Click **Download** to get the SAML metadata file
-5. Return to authentik and upload this metadata file in the provider configuration
+If users are redirected back to authentik with an immediate logout after authentication, confirm that the FortiGate user group is mapped to an SSL VPN portal and included in the relevant firewall policy.
 
 ## Configuration verification
 
-To verify the integration:
+To confirm that authentik is properly configured with FortiGate SSL VPN, open the FortiGate SSL VPN portal. You should be redirected to authentik to authenticate, and then redirected back to the FortiGate SSL VPN portal.
 
-1. Navigate to your FortiGate SSLVPN portal at `https://fortigate.company`
-2. You should be redirected to authentik to authenticate
-3. After successful authentication, you should be redirected back to the FortiGate SSLVPN portal
-4. Verify that you can establish a VPN connection
+If you use FortiClient tunnel mode, enable **Enable Single Sign On (SSO) for VPN Tunnel** in the FortiClient SSL VPN connection settings.
 
-:::info
-If you encounter any issues:
+## Troubleshooting
 
-- Check that the user group bindings are correctly configured in both authentik and FortiGate
-- Verify the SAML metadata and certificates are correctly uploaded
-- Enable debug logging in FortiGate:
-    ```
-    diagnose debug enable
-    diag debug application samld -1
-    ```
-- Check the FortiGate logs for SAML-related errors
-  :::
+To enable SAML debug logging in FortiGate, run the following commands:
+
+```text
+diagnose debug console timestamp enable
+diagnose debug application samld -1
+diagnose debug enable
+```
+
+Check that the `user-name` and `group-name` values in FortiGate exactly match the SAML attribute names sent by authentik, and that the FortiGate user group match uses the exact authentik group name.
 
 ## Resources
 
-- [FortiGate SSLVPN Documentation](https://docs.fortinet.com/document/fortigate/7.2.8/administration-guide/397719/ssl-vpn)
-- [FortiGate SAML Configuration Guide](https://docs.fortinet.com/document/fortigate/7.2.8/administration-guide/954635/saml-sp)
+- [Fortinet - Configuring SAML SSO](https://docs.fortinet.com/document/fortigate/8.0.0/administration-guide/254248/configuring-saml-sso)
+- [Fortinet - Configuring SAML SSO login for SSL VPN with Entra ID acting as SAML IdP](https://docs.fortinet.com/document/fortigate-public-cloud/8.0.0/azure-administration-guide/584456/configuring-saml-sso-login-for-ssl-vpn-with-entra-id-acting-as-saml-idp)
+- [Fortinet - Configuring SAML SSO in the GUI](https://docs.fortinet.com/document/fortigate/7.0.0/new-features/989067/configuring-saml-sso-in-the-gui-7-0-2)
+- [Fortinet - Remote certificate](https://docs.fortinet.com/document/fortigate/8.0.0/administration-guide/212403/remote-certificate)

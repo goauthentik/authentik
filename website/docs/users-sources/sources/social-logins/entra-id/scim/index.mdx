@@ -25,17 +25,17 @@ To integrate authentik with Entra ID via SCIM, you need to create a SCIM source 
 ### Create SCIM source
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Directory** > **Federation and Social login**, click **Create**, and then configure the following settings:
+2. Navigate to **Directory** > **Federation and Social login**, click **New Source**, and then configure the following settings:
     - **Select type**: select **SCIM Source**.
     - **Create SCIM Source**: provide a name and a slug.
     - All other configurations are optional.
 3. Click **Finish**.
-4. On the **Federation and Social login** page, click on the name of the newly created SCIM source.
+4. On the **Federation and Social login** page, click the name of the newly created SCIM source.
 5. Take note of the **SCIM Base URL**. This value will be required in the next section.
 6. Under **Token**, click **Click to copy token** and securely store the value. This value will also be required in the next section.
 
 :::warning Copying the token
-If authentik has the required browser permissions, the token will be copied to your clipboard after you click the **Click to copy token** button. However, some browsers do not allow this. In those cases, a notification will appear in the bottom-right corner with the token, and you will need to copy it manually.
+If authentik has the required browser permissions, the token will be copied to your clipboard after you click the **Click to copy token** button. However, some browsers do not allow this. In those cases, a notification will appear in the bottom-right corner with the token, and you need to copy it manually.
 :::
 
 :::warning Entra ID SCIM requirements
@@ -108,5 +108,5 @@ Group assignment is only available for Microsoft Entra Suite, Microsoft Entra ID
 ## Confirm provisioning in authentik
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Directory** > **Federation and Social login** and click on the name of the SCIM source.
+2. Navigate to **Directory** > **Federation and Social login** and click the name of the SCIM source.
 3. Open the **Provisioned Users** and **Provisioned Groups** tabs to confirm whether the correct users and groups have been provisioned from Entra ID.

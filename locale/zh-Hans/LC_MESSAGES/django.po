@@ -8,18 +8,19 @@
 # 刘松, 2025
 # deluxghost, 2025
 # Marc Schmitt, 2025
-# Jens L. <jens@goauthentik.io>, 2025
 # Kuang Jr, 2025
 # RocketDev, 2026
+# Lei Kou, 2026
+# Jens L. <jens@goauthentik.io>, 2026
 # 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-02-10 19:27+0000\n"
+"POT-Creation-Date: 2026-05-06 00:27+0000\n"
 "PO-Revision-Date: 2025-12-01 19:09+0000\n"
-"Last-Translator: RocketDev, 2026\n"
+"Last-Translator: Jens L. <jens@goauthentik.io>, 2026\n"
 "Language-Team: Chinese Simplified (https://app.transifex.com/authentik/teams/119923/zh-Hans/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -114,12 +115,25 @@ msgid "Blueprint file does not exist"
 msgstr "蓝图文件不存在"
 
 #: authentik/blueprints/api.py
+msgid "Context must be valid JSON"
+msgstr ""
+
+#: authentik/blueprints/api.py
+msgid "Context must be a JSON object"
+msgstr ""
+
+#: authentik/blueprints/api.py
 msgid "Failed to validate blueprint"
 msgstr "验证蓝图失败"
 
 #: authentik/blueprints/api.py
 msgid "Either path or content must be set."
 msgstr "必须设置路径或内容。"
+
+#: authentik/blueprints/api.py
+#, python-brace-format
+msgid "User lacks permission to create {model}"
+msgstr "用户缺少创建 {model} 的权限"
 
 #: authentik/blueprints/models.py
 msgid "Managed by authentik"
@@ -234,10 +248,13 @@ msgid ""
 "excluded"
 msgstr "如果未设置，则返回所有提供程序。如果启用，仅返回反向通道提供程序。如果禁用，则返回非反向通道提供程序"
 
-#: authentik/core/api/transactional_applications.py
-#, python-brace-format
-msgid "User lacks permission to create {model}"
-msgstr "用户缺少创建 {model} 的权限"
+#: authentik/core/api/users.py
+msgid "Invalid password hash format. Must be a valid Django password hash."
+msgstr ""
+
+#: authentik/core/api/users.py
+msgid "Cannot set both password and password_hash. Use only one."
+msgstr ""
 
 #: authentik/core/api/users.py
 msgid "No leading or trailing slashes allowed."
@@ -298,6 +315,12 @@ msgstr "未找到电子邮件阶段。"
 #: authentik/core/api/users.py
 msgid "This field is required."
 msgstr "此字段是必需的。"
+
+#: authentik/core/apps.py
+msgid ""
+"Configure if applications without any policy/group/user bindings should be "
+"accessible to any user."
+msgstr ""
 
 #: authentik/core/models.py
 msgid "name"
@@ -400,6 +423,10 @@ msgstr "应用的内部名称，在 URL 中使用。"
 #: authentik/core/models.py
 msgid "Open launch URL in a new browser tab or window."
 msgstr "在新浏览器标签页或窗口中打开启动 URL。"
+
+#: authentik/core/models.py
+msgid "Hide this application from the user's My applications page."
+msgstr ""
 
 #: authentik/core/models.py
 msgid "Application"
@@ -572,6 +599,14 @@ msgid "Go home"
 msgstr "前往首页"
 
 #: authentik/core/templates/login/base_full.html
+msgid "Site footer"
+msgstr "网站页脚"
+
+#: authentik/core/templates/login/base_full.html
+msgid "Flow links"
+msgstr ""
+
+#: authentik/core/templates/login/base_full.html
 #: authentik/flows/templates/if/flow-sfe.html
 msgid "Powered by authentik"
 msgstr "由 authentik 强力驱动"
@@ -675,6 +710,10 @@ msgstr "查看证书-密钥对的私钥"
 msgid "Discover, import and update certificates from the filesystem."
 msgstr "从文件系统中发现、导入并更新证书。"
 
+#: authentik/endpoints/api/stages.py
+msgid "Selected connector is not compatible with this stage."
+msgstr ""
+
 #: authentik/endpoints/connectors/agent/api/connectors.py
 msgid "Selected platform not supported"
 msgstr "所选平台不受支持"
@@ -728,6 +767,14 @@ msgstr "Apple 随机数"
 #: authentik/endpoints/connectors/agent/models.py
 msgid "Apple Nonces"
 msgstr "Apple 随机数"
+
+#: authentik/endpoints/connectors/agent/models.py
+msgid "Apple Independent Secure Enclave"
+msgstr ""
+
+#: authentik/endpoints/connectors/agent/models.py
+msgid "Apple Independent Secure Enclaves"
+msgstr ""
 
 #: authentik/endpoints/facts.py
 msgid "Operating System name, such as 'Server 2022' or 'Ubuntu'"
@@ -799,6 +846,12 @@ msgstr "创建/更新此对象需要企业版。"
 msgid "Enterprise is required to use this endpoint."
 msgstr "企业要求使用这个端点。"
 
+#: authentik/enterprise/audit/apps.py
+msgid ""
+"Include additional information in audit logs, may incur a performance "
+"penalty."
+msgstr ""
+
 #: authentik/enterprise/endpoints/connectors/fleet/models.py
 #: authentik/events/models.py
 msgid ""
@@ -814,13 +867,26 @@ msgstr ""
 msgid "Fleet Connectors"
 msgstr ""
 
+#: authentik/enterprise/endpoints/connectors/google_chrome/models.py
+msgid "Google Device Trust Connector"
+msgstr ""
+
+#: authentik/enterprise/endpoints/connectors/google_chrome/models.py
+msgid "Google Device Trust Connectors"
+msgstr ""
+
+#: authentik/enterprise/endpoints/connectors/google_chrome/stage.py
+#: authentik/enterprise/stages/authenticator_endpoint_gdtc/stage.py
+msgid "Verifying your browser..."
+msgstr "正在验证您的浏览器…"
+
 #: authentik/enterprise/lifecycle/api/reviews.py
 msgid "You are not allowed to submit a review for this object."
-msgstr ""
+msgstr "您不能为此对象提交评论。"
 
 #: authentik/enterprise/lifecycle/api/rules.py
 msgid "Object does not exist"
-msgstr ""
+msgstr "对象不存在"
 
 #: authentik/enterprise/lifecycle/api/rules.py
 msgid "Either a reviewer group or a reviewer must be set."
@@ -828,10 +894,6 @@ msgstr ""
 
 #: authentik/enterprise/lifecycle/api/rules.py
 msgid "Grace period must be shorter than the interval."
-msgstr ""
-
-#: authentik/enterprise/lifecycle/api/rules.py
-msgid "Only one type-wide rule for each object type is allowed."
 msgstr ""
 
 #: authentik/enterprise/lifecycle/models.py
@@ -842,26 +904,27 @@ msgstr ""
 
 #: authentik/enterprise/lifecycle/models.py
 msgid "Reviewed"
-msgstr ""
+msgstr "已审核"
 
 #: authentik/enterprise/lifecycle/models.py
 msgid "Pending"
-msgstr ""
+msgstr "待处理"
 
 #: authentik/enterprise/lifecycle/models.py
 msgid "Overdue"
-msgstr ""
+msgstr "逾期"
 
 #: authentik/enterprise/lifecycle/models.py
 msgid "Canceled"
-msgstr ""
+msgstr "已取消"
 
 #: authentik/enterprise/lifecycle/models.py
 msgid "Go to {self._get_model_name()}"
 msgstr ""
 
 #: authentik/enterprise/lifecycle/models.py
-msgid "Access review is due for {self.content_type.name} {str(self.object)}"
+msgid ""
+"Access review is due for {self.content_type.name.lower()} {object_label}"
 msgstr ""
 
 #: authentik/enterprise/lifecycle/models.py
@@ -875,7 +938,7 @@ msgid ""
 msgstr ""
 
 #: authentik/enterprise/lifecycle/tasks.py
-msgid "Dispatch tasks to validate lifecycle rules."
+msgid "Dispatch tasks to apply lifecycle rules."
 msgstr ""
 
 #: authentik/enterprise/lifecycle/tasks.py
@@ -1101,6 +1164,14 @@ msgid "Enterprise is required to use the OAuth mode."
 msgstr "使用 OAuth 模式需要企业版。"
 
 #: authentik/enterprise/providers/ssf/models.py
+msgid "SSF RFC Push"
+msgstr ""
+
+#: authentik/enterprise/providers/ssf/models.py
+msgid "SSF RFC Pull"
+msgstr ""
+
+#: authentik/enterprise/providers/ssf/models.py
 #: authentik/providers/oauth2/models.py
 msgid "Signing Key"
 msgstr "签名密钥"
@@ -1181,6 +1252,78 @@ msgstr "下载"
 msgid "Generate data export."
 msgstr "生成数据导出文件。"
 
+#: authentik/enterprise/stages/account_lockdown/api.py
+msgid "User to lock. If omitted, locks the current user (self-service)."
+msgstr ""
+
+#: authentik/enterprise/stages/account_lockdown/api.py
+msgid "No lockdown flow configured."
+msgstr ""
+
+#: authentik/enterprise/stages/account_lockdown/api.py
+msgid "Lockdown flow is not applicable."
+msgstr ""
+
+#: authentik/enterprise/stages/account_lockdown/api.py
+msgid "Choose the target account, then return a flow link."
+msgstr ""
+
+#: authentik/enterprise/stages/account_lockdown/api.py
+msgid "No lockdown flow configured or the flow is not applicable"
+msgstr ""
+
+#: authentik/enterprise/stages/account_lockdown/api.py
+msgid "Permission denied (when targeting another user)"
+msgstr ""
+
+#: authentik/enterprise/stages/account_lockdown/models.py
+msgid "Deactivate the user account (set is_active to False)"
+msgstr ""
+
+#: authentik/enterprise/stages/account_lockdown/models.py
+msgid "Set an unusable password for the user"
+msgstr ""
+
+#: authentik/enterprise/stages/account_lockdown/models.py
+msgid "Delete all active sessions for the user"
+msgstr ""
+
+#: authentik/enterprise/stages/account_lockdown/models.py
+msgid ""
+"Revoke all tokens for the user (API, app password, recovery, verification, "
+"OAuth)"
+msgstr ""
+
+#: authentik/enterprise/stages/account_lockdown/models.py
+msgid ""
+"Flow to redirect users to after self-service lockdown. This flow should not "
+"require authentication since the user's session is deleted."
+msgstr ""
+
+#: authentik/enterprise/stages/account_lockdown/models.py
+msgid "Account Lockdown Stage"
+msgstr ""
+
+#: authentik/enterprise/stages/account_lockdown/models.py
+msgid "Account Lockdown Stages"
+msgstr ""
+
+#: authentik/enterprise/stages/account_lockdown/stage.py
+msgid "No target user specified for account lockdown"
+msgstr ""
+
+#: authentik/enterprise/stages/account_lockdown/stage.py
+msgid "You do not have permission to lock down this account."
+msgstr ""
+
+#: authentik/enterprise/stages/account_lockdown/stage.py
+msgid "Account lockdown failed for this account."
+msgstr ""
+
+#: authentik/enterprise/stages/account_lockdown/stage.py
+msgid "Self-service account lockdown requires a completion flow."
+msgstr ""
+
 #: authentik/enterprise/stages/authenticator_endpoint_gdtc/models.py
 msgid "Endpoint Authenticator Google Device Trust Connector Stage"
 msgstr "端点身份验证器 Google 设备信任连接器阶段"
@@ -1196,10 +1339,6 @@ msgstr "端点设备"
 #: authentik/enterprise/stages/authenticator_endpoint_gdtc/models.py
 msgid "Endpoint Devices"
 msgstr "端点设备"
-
-#: authentik/enterprise/stages/authenticator_endpoint_gdtc/stage.py
-msgid "Verifying your browser..."
-msgstr "正在验证您的浏览器…"
 
 #: authentik/enterprise/stages/mtls/models.py
 msgid ""
@@ -1276,6 +1415,12 @@ msgid ""
 "Only send notification once, for example when sending a webhook into a chat "
 "channel."
 msgstr "仅发送一次通知，例如在向聊天频道发送 Webhook 时。"
+
+#: authentik/events/models.py
+msgid ""
+"When set, the selected ceritifcate is used to validate the certificate of "
+"the webhook server."
+msgstr ""
 
 #: authentik/events/models.py
 msgid ""
@@ -1435,6 +1580,15 @@ msgstr "流程前置策略"
 msgid "Flow"
 msgstr "流程"
 
+#: authentik/flows/apps.py
+msgid "Refresh other tabs after successful authentication."
+msgstr ""
+
+#: authentik/flows/apps.py
+msgid ""
+"Upon successful authentication, re-start authentication in other open tabs."
+msgstr ""
+
 #: authentik/flows/exceptions.py
 msgid "Flow does not apply to current user."
 msgstr "流程不应用于当前用户。"
@@ -1536,9 +1690,9 @@ msgstr "流程令牌"
 msgid "Flow Tokens"
 msgstr "流程令牌"
 
-#: authentik/flows/templates/if/flow.html
-msgid "Site footer"
-msgstr "网站页脚"
+#: authentik/flows/planner.py
+msgid "This link is invalid or has expired. Please request a new one."
+msgstr ""
 
 #: authentik/flows/views/executor.py
 msgid "Invalid next URL"
@@ -1546,7 +1700,7 @@ msgstr "无效的 next URL"
 
 #: authentik/lib/sync/incoming/models.py
 msgid "When to trigger sync for outgoing providers"
-msgstr ""
+msgstr "何时触发对外提供商的同步"
 
 #: authentik/lib/sync/outgoing/models.py
 msgid "Controls the number of objects synced in a single task"
@@ -1894,20 +2048,6 @@ msgstr "信誉分数"
 msgid "Reputation Scores"
 msgstr "信誉分数"
 
-#: authentik/policies/templates/policies/buffer.html
-msgid "Waiting for authentication..."
-msgstr "正在等待身份验证…"
-
-#: authentik/policies/templates/policies/buffer.html
-msgid ""
-"You're already authenticating in another tab. This page will refresh once "
-"authentication is completed."
-msgstr "您正在另一个标签页中验证身份。身份验证完成后，此页面会刷新。"
-
-#: authentik/policies/templates/policies/buffer.html
-msgid "Authenticate in this tab"
-msgstr "在此标签页中验证身份"
-
 #: authentik/policies/templates/policies/denied.html
 msgid "Permission denied"
 msgstr "权限被拒绝"
@@ -2025,6 +2165,14 @@ msgstr "严格 URL 比较"
 #: authentik/providers/oauth2/models.py
 msgid "Regular Expression URL matching"
 msgstr "正则表达式 URL 匹配"
+
+#: authentik/providers/oauth2/models.py
+msgid "Authorization"
+msgstr "授权"
+
+#: authentik/providers/oauth2/models.py
+msgid "Logout"
+msgstr "登出"
 
 #: authentik/providers/oauth2/models.py
 msgid "Back-channel"
@@ -2352,10 +2500,6 @@ msgstr "代理提供程序"
 msgid "Proxy Providers"
 msgstr "代理提供程序"
 
-#: authentik/providers/proxy/tasks.py
-msgid "Terminate session on Proxy outpost."
-msgstr "终止代理前哨的会话。"
-
 #: authentik/providers/rac/models.py authentik/stages/user_login/models.py
 msgid ""
 "Determines how long a session lasts. Default of 0 means that the sessions "
@@ -2473,8 +2617,10 @@ msgid ""
 msgstr "断言的 Audience 受限字段的值。留空时，不会添加  Audience 限制。"
 
 #: authentik/providers/saml/models.py
-msgid "Also known as EntityID"
-msgstr "也称为 EntityID"
+msgid ""
+"Also known as EntityID. Providing a value overrides the default issuer "
+"generated by authentik."
+msgstr ""
 
 #: authentik/providers/saml/models.py
 msgid "SLS URL"
@@ -2669,6 +2815,10 @@ msgid "SAML NameID format"
 msgstr "SAML NameID 格式"
 
 #: authentik/providers/saml/models.py
+msgid "SAML Issuer used for this session"
+msgstr ""
+
+#: authentik/providers/saml/models.py
 msgid "SAML Session"
 msgstr "SAML 会话"
 
@@ -2695,6 +2845,14 @@ msgstr "Slack"
 #: authentik/providers/scim/models.py
 msgid "Salesforce"
 msgstr "Salesforce"
+
+#: authentik/providers/scim/models.py
+msgid "Webex"
+msgstr ""
+
+#: authentik/providers/scim/models.py
+msgid "vCenter"
+msgstr ""
 
 #: authentik/providers/scim/models.py
 msgid "Group filters used to define sync-scope for groups."
@@ -2960,7 +3118,7 @@ msgstr ""
 "                    请联系您的管理员。\n"
 "                "
 
-#: authentik/sources/ldap/api.py
+#: authentik/sources/ldap/api/sources.py
 msgid "Only a single LDAP Source with password synchronization is allowed"
 msgstr "仅允许使用密码同步的单个 LDAP 源"
 
@@ -3470,6 +3628,12 @@ msgstr "允许由 IdP 启动的身份验证流程。这可能存在安全风险�
 
 #: authentik/sources/saml/models.py
 msgid ""
+"When enabled, the IdP will re-authenticate the user even if a session "
+"exists."
+msgstr ""
+
+#: authentik/sources/saml/models.py
+msgid ""
 "NameID Policy sent to the IdP. Can be unset, in which case no Policy is "
 "sent."
 msgstr "发送给 IdP 的 NameID 策略。可以取消设置，此时不会发送任何策略。"
@@ -3871,6 +4035,10 @@ msgid "No (allowed) MFA authenticator configured."
 msgstr "未配置（允许的）MFA 身份验证器。"
 
 #: authentik/stages/authenticator_webauthn/models.py
+msgid "When enabled, a given device can only be registered once."
+msgstr ""
+
+#: authentik/stages/authenticator_webauthn/models.py
 msgid "WebAuthn Authenticator Setup Stage"
 msgstr "WebAuthn 身份验证器设置阶段"
 
@@ -4000,6 +4168,10 @@ msgstr "电子邮件 OTP"
 msgid "Event Notification"
 msgstr "事件通知"
 
+#: authentik/stages/email/models.py authentik/stages/invitation/models.py
+msgid "Invitation"
+msgstr "邀请"
+
 #: authentik/stages/email/models.py
 msgid ""
 "The time window used to count recent account recovery attempts. If the "
@@ -4111,6 +4283,62 @@ msgid ""
 msgstr ""
 "\n"
 "此邮件由通知递送 %(name)s 发送。\n"
+
+#: authentik/stages/email/templates/email/invitation.html
+msgid ""
+"\n"
+"      You're Invited!\n"
+"      "
+msgstr ""
+
+#: authentik/stages/email/templates/email/invitation.html
+#, python-format
+msgid ""
+"\n"
+"          You have been invited to join %(host)s. Click the button below to get started.\n"
+"          "
+msgstr ""
+
+#: authentik/stages/email/templates/email/invitation.html
+#, python-format
+msgid ""
+"\n"
+"          This invitation expires %(expires)s.\n"
+"          "
+msgstr ""
+
+#: authentik/stages/email/templates/email/invitation.html
+#: authentik/stages/email/templates/email/invitation.txt
+msgid "Accept Invitation"
+msgstr "接受邀请"
+
+#: authentik/stages/email/templates/email/invitation.html
+msgid ""
+"\n"
+"    If you cannot click the button above, please copy and paste the following URL into your browser:\n"
+"    "
+msgstr ""
+
+#: authentik/stages/email/templates/email/invitation.txt
+msgid "You're Invited!"
+msgstr "你被邀请了！"
+
+#: authentik/stages/email/templates/email/invitation.txt
+#, python-format
+msgid ""
+"You have been invited to join %(host)s. Use the link below to get started."
+msgstr ""
+
+#: authentik/stages/email/templates/email/invitation.txt
+#, python-format
+msgid "This invitation expires %(expires)s."
+msgstr "此邀请已失效 %(expires)s"
+
+#: authentik/stages/email/templates/email/invitation.txt
+msgid ""
+"If you cannot click the link above, please copy and paste the following URL "
+"into your browser:"
+msgstr "如果无法点击上方链接，请将以下网址复制并粘贴到浏览器中："
 
 #: authentik/stages/email/templates/email/password_reset.html
 msgid ""
@@ -4273,10 +4501,6 @@ msgid "Optional fixed data to enforce on user enrollment."
 msgstr "在用户注册时强制设置的可选固定数据。"
 
 #: authentik/stages/invitation/models.py
-msgid "Invitation"
-msgstr "邀请"
-
-#: authentik/stages/invitation/models.py
 msgid "Invitations"
 msgstr "邀请"
 
@@ -4385,6 +4609,18 @@ msgstr "隐藏：隐藏字段，可用于将数据插入表单。"
 #: authentik/stages/prompt/models.py
 msgid "Static: Static value, displayed as-is."
 msgstr "静态：静态值，按原样显示。"
+
+#: authentik/stages/prompt/models.py
+msgid "Alert (Info): Static alert box with info styling"
+msgstr ""
+
+#: authentik/stages/prompt/models.py
+msgid "Alert (Warning): Static alert box with warning styling"
+msgstr ""
+
+#: authentik/stages/prompt/models.py
+msgid "Alert (Danger): Static alert box with danger styling"
+msgstr ""
 
 #: authentik/stages/prompt/models.py
 msgid "authentik: Selection of locales authentik supports"

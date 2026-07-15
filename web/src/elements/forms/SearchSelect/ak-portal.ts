@@ -1,5 +1,5 @@
 import { randomId } from "#elements/utils/randomId";
-import { resolveInterface } from "#elements/utils/render-roots";
+import { findTopmost } from "#elements/utils/render-roots";
 
 import { autoUpdate, computePosition, flip, hide } from "@floating-ui/dom";
 
@@ -75,11 +75,9 @@ export class Portal extends LitElement implements IPortal {
             this.dropdownContainer.dataset.managedFor = this.name;
         }
 
-        const interfaceElement = resolveInterface();
-        const container =
-            interfaceElement.renderRoot.querySelector("dialog:open") || this.ownerDocument.body;
+        const topmost = findTopmost(this.ownerDocument);
 
-        container.append(this.dropdownContainer);
+        topmost.append(this.dropdownContainer);
 
         if (!this.anchor) {
             throw new Error("Tether entrance initialized incorrectly: missing anchor");

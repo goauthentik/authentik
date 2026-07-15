@@ -12,14 +12,18 @@ import "#elements/Tabs";
 import "#elements/buttons/SpinnerButton/ak-spinner-button";
 import "#admin/applications/ApplicationEvents";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { APIError, parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
 
 import { AKElement } from "#elements/Base";
+import { modalInvoker } from "#elements/dialogs";
 import { WithLicenseSummary } from "#elements/mixins/license";
 
 import { setPageDetails } from "#components/ak-page-navbar";
 import renderDescriptionList from "#components/DescriptionList";
+
+import { ApplicationCheckAccessForm } from "#admin/applications/ApplicationCheckAccessForm";
+import { ApplicationForm } from "#admin/applications/ApplicationForm";
 
 import {
     Application,
@@ -90,7 +94,7 @@ export class ApplicationViewPage extends WithLicenseSummary(AKElement) {
     //#region Lifecycle
 
     protected fetchIsMissingOutpost(providersByPk: Array<number>) {
-        new OutpostsApi(DEFAULT_CONFIG)
+        aki(OutpostsApi)
             .outpostsInstancesList({
                 providersByPk,
                 pageSize: 1,
@@ -103,7 +107,7 @@ export class ApplicationViewPage extends WithLicenseSummary(AKElement) {
     }
 
     protected fetchApplication(slug: string) {
-        new CoreApi(DEFAULT_CONFIG)
+        aki(CoreApi)
             .coreApplicationsRetrieve({ slug })
             .then((app) => {
                 this.application = app;
@@ -116,7 +120,7 @@ export class ApplicationViewPage extends WithLicenseSummary(AKElement) {
                 ) {
                     this.fetchIsMissingOutpost([app.provider || 0]);
                 }
-                return new EventsApi(DEFAULT_CONFIG)
+                return aki(EventsApi)
                     .eventsEventsStatsRetrieve({
                         action: EventActions.AuthorizeApplication,
                         contextAuthorizedApp: app.pk.replaceAll("-", ""),
@@ -181,36 +185,28 @@ export class ApplicationViewPage extends WithLicenseSummary(AKElement) {
                         ],
                         [
                             msg("Related actions"),
-                            html`<ak-forms-modal>
-                                    <span slot="submit">${msg("Save Changes")}</span>
-                                    <span slot="header"> ${msg("Update Application")} </span>
-                                    <ak-application-form
-                                        slot="form"
-                                        .instancePk=${this.application.slug}
-                                    >
-                                    </ak-application-form>
-                                    <button
-                                        slot="trigger"
-                                        class="pf-c-button pf-m-secondary pf-m-block"
-                                    >
-                                        ${msg("Edit")}
-                                    </button>
-                                </ak-forms-modal>
-                                <ak-forms-modal .closeAfterSuccessfulSubmit=${false}>
-                                    <span slot="submit">${msg("Check")}</span>
-                                    <span slot="header"> ${msg("Check Application access")} </span>
-                                    <ak-application-check-access-form
-                                        slot="form"
-                                        .application=${this.application}
-                                    >
-                                    </ak-application-check-access-form>
-                                    <button
-                                        slot="trigger"
-                                        class="pf-c-button pf-m-secondary pf-m-block"
-                                    >
-                                        ${msg("Check access")}
-                                    </button>
-                                </ak-forms-modal>
+                            html`<button
+                                    class="pf-c-button pf-m-secondary pf-m-block"
+                                    ${modalInvoker(ApplicationForm, {
+                                        instancePk: this.application.slug,
+                                    })}
+                                >
+                                    ${msg("Edit")}
+                                </button>
+                                <button
+                                    class="pf-c-button pf-m-secondary pf-m-block"
+                                    ${modalInvoker(
+                                        ApplicationCheckAccessForm,
+                                        {
+                                            application: this.application,
+                                        },
+                                        {
+                                            closedBy: "closerequest",
+                                        },
+                                    )}
+                                >
+                                    ${msg("Check access")}
+                                </button>
                                 ${this.application.launchUrl
                                     ? html`<a
                                           target="_blank"
@@ -220,7 +216,7 @@ export class ApplicationViewPage extends WithLicenseSummary(AKElement) {
                                       >
                                           ${msg("Launch")}
                                       </a>`
-                                    : nothing}`,
+                                    : null}`,
                         ],
                     ])}
                 </div>
@@ -326,30 +322,6 @@ export class ApplicationViewPage extends WithLicenseSummary(AKElement) {
                     id="page-app-entitlements"
                     aria-label="${msg("Application entitlements")}"
                 >
-                    <div
-                        slot="header"
-                        class="pf-c-banner pf-m-info"
-                        role="status"
-                        aria-live="polite"
-                    >
-                        <div class="pf-l-flex pf-m-space-items-sm">
-                            <div class="pf-l-flex__item">
-                                <i class="fas fa-info-circle" aria-hidden="true"></i>
-                            </div>
-                            <div class="pf-l-flex__item">
-                                ${msg("Application entitlements are in preview.", {
-                                    id: "application.entitlements.preview.info",
-                                })}
-                            </div>
-                            <div class="pf-l-flex__item">
-                                <a href="mailto:hello+feature/app-ent@goauthentik.io"
-                                    >${msg("Send us feedback!", {
-                                        id: "preview.send-us-feedback",
-                                    })}</a
-                                >
-                            </div>
-                        </div>
-                    </div>
                     <div class="pf-c-page__main-section pf-m-no-padding-mobile">
                         <div class="pf-c-card">
                             <div class="pf-c-card__title">

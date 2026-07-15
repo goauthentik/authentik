@@ -39,7 +39,7 @@
 <script src="{% versioned_script 'dist/flow/FlowInterface-%v.js' %}" type="module"></script>
 <style data-id="flow-css">
   :root {
-      --ak-global--background-image: url("{{ flow_background_url }}");
+      --ak-global--background-image: url("{{ flow_background_url|iriencode|safe }}");
   }
 </style>
 {% endblock %}
@@ -50,7 +50,6 @@
 <ak-drawer id="flow-drawer">
     <ak-flow-executor
         slug="{{ flow.slug }}"
-        class="pf-c-login"
         data-layout="{{ flow.layout|default:'stacked' }}"
         loading
     >

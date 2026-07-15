@@ -3,7 +3,7 @@ authentik
 
 Making authentication simple.
 
-API version: 2026.5.0-rc1
+API version: 2026.8.0-rc1
 Contact: hello@goauthentik.io
 */
 
@@ -28,7 +28,7 @@ type LDAPOutpostConfig struct {
 	BindFlowSlug string  `json:"bind_flow_slug"`
 	// Get slug for unbind flow, defaulting to brand's default flow.
 	UnbindFlowSlug NullableString `json:"unbind_flow_slug"`
-	// Prioritise backchannel slug over direct application slug
+	// Prioritize backchannel slug over direct application slug
 	ApplicationSlug string         `json:"application_slug"`
 	Certificate     NullableString `json:"certificate,omitempty"`
 	TlsServerName   *string        `json:"tls_server_name,omitempty"`

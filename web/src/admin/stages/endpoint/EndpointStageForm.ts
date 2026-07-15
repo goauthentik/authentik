@@ -3,7 +3,7 @@ import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/index";
 import "#elements/forms/FormGroup";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { BaseStageForm } from "#admin/stages/BaseStageForm";
 
@@ -23,23 +23,13 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-endpoints-stage-form")
 export class EndpointStageForm extends BaseStageForm<EndpointStage> {
-    loadInstance(pk: string): Promise<EndpointStage> {
-        return new StagesApi(DEFAULT_CONFIG).stagesEndpointsRetrieve({
-            stageUuid: pk,
-        });
-    }
-
-    async send(data: EndpointStage): Promise<EndpointStage> {
-        if (this.instance) {
-            return new StagesApi(DEFAULT_CONFIG).stagesEndpointsUpdate({
-                stageUuid: this.instance.pk || "",
-                endpointStageRequest: data,
-            });
-        }
-        return new StagesApi(DEFAULT_CONFIG).stagesEndpointsCreate({
-            endpointStageRequest: data,
-        });
-    }
+    protected endpoints = {
+        load: (stageUuid: string) => aki(StagesApi).stagesEndpointsRetrieve({ stageUuid }),
+        create: (endpointStageRequest: EndpointStage) =>
+            aki(StagesApi).stagesEndpointsCreate({ endpointStageRequest }),
+        update: (stageUuid: string, endpointStageRequest: EndpointStage) =>
+            aki(StagesApi).stagesEndpointsUpdate({ stageUuid, endpointStageRequest }),
+    };
 
     protected override renderForm(): TemplateResult {
         return html` <span>
@@ -64,9 +54,7 @@ export class EndpointStageForm extends BaseStageForm<EndpointStage> {
                                 if (query !== undefined) {
                                     args.search = query;
                                 }
-                                const users = await new EndpointsApi(
-                                    DEFAULT_CONFIG,
-                                ).endpointsConnectorsList(args);
+                                const users = await aki(EndpointsApi).endpointsConnectorsList(args);
                                 return users.results;
                             }}
                             .renderElement=${(connector: Connector): string => {

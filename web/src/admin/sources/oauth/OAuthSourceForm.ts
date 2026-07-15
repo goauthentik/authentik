@@ -3,6 +3,7 @@ import "#components/ak-file-search-input";
 import "#components/ak-radio-input";
 import "#components/ak-secret-textarea-input";
 import "#components/ak-slug-input";
+import "#components/ak-text-input";
 import "#components/ak-switch-input";
 import "#elements/CodeMirror";
 import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
@@ -13,7 +14,7 @@ import "#elements/forms/SearchSelect/index";
 
 import { propertyMappingsProvider, propertyMappingsSelector } from "./OAuthSourceFormHelpers.js";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { SlottedTemplateResult } from "#elements/types";
 import { ifPreviousValue } from "#elements/utils/properties";
@@ -81,7 +82,7 @@ export class OAuthSourceForm extends BaseSourceForm<OAuthSource> {
     //#region Lifecycle
 
     protected async loadInstance(pk: string): Promise<OAuthSource> {
-        const source = await new SourcesApi(DEFAULT_CONFIG).sourcesOauthRetrieve({
+        const source = await aki(SourcesApi).sourcesOauthRetrieve({
             slug: pk,
         });
         this.providerType = source.type;
@@ -98,19 +99,19 @@ export class OAuthSourceForm extends BaseSourceForm<OAuthSource> {
         data.providerType = (this.providerType?.name || "") as ProviderTypeEnum;
 
         if (this.instance) {
-            return new SourcesApi(DEFAULT_CONFIG).sourcesOauthPartialUpdate({
+            return aki(SourcesApi).sourcesOauthPartialUpdate({
                 slug: this.instance.slug,
                 patchedOAuthSourceRequest: data,
             });
         }
 
-        return new SourcesApi(DEFAULT_CONFIG).sourcesOauthCreate({
+        return aki(SourcesApi).sourcesOauthCreate({
             oAuthSourceRequest: data as unknown as OAuthSourceRequest,
         });
     }
 
     protected fetchProviderType(modelName: string): Promise<void> {
-        return new SourcesApi(DEFAULT_CONFIG)
+        return aki(SourcesApi)
             .sourcesOauthSourceTypesList({
                 name: modelName?.replace("oauthsource", ""),
             })
@@ -270,16 +271,16 @@ export class OAuthSourceForm extends BaseSourceForm<OAuthSource> {
     }
 
     protected override renderForm(): TemplateResult {
-        return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
-                <input
-                    type="text"
-                    value="${ifDefined(this.instance?.name)}"
-                    class="pf-c-form-control"
-                    required
-                />
-            </ak-form-element-horizontal>
+        return html`<ak-text-input
+                label=${msg("Source Name")}
+                placeholder=${msg("Type a name for this source...")}
+                required
+                name="name"
+                value="${ifDefined(this.instance?.name)}"
+            ></ak-text-input>
             <ak-slug-input
                 name="slug"
+                placeholder=${msg("e.g. my-oauth-source")}
                 value=${ifDefined(this.instance?.slug)}
                 label=${msg("Slug")}
                 required
@@ -470,7 +471,7 @@ export class OAuthSourceForm extends BaseSourceForm<OAuthSource> {
             <ak-form-group label="${msg("Flow settings")}">
                 <div class="pf-c-form">
                     <ak-form-element-horizontal
-                        label=${msg("Authentication flow")}
+                        label=${msg("Authentication Flow")}
                         name="authenticationFlow"
                     >
                         <ak-source-flow-search

@@ -2,7 +2,7 @@ import "#elements/CodeMirror";
 import "#elements/buttons/ActionButton/index";
 import "#elements/Expand";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { downloadFile } from "#common/download";
 import { parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
 import { MessageLevel } from "#common/messages";
@@ -52,7 +52,7 @@ export class ConfigModal extends ModalButton {
         super.connectedCallback();
         this.addEventListener("ak-modal-show", () => {
             if (!this.request) return;
-            new EndpointsApi(DEFAULT_CONFIG)
+            aki(EndpointsApi)
                 .endpointsAgentsConnectorsMdmConfigCreate(this.request)
                 .then((e) => {
                     this.config = e;
@@ -86,7 +86,7 @@ export class ConfigModal extends ModalButton {
                     ></ak-codemirror>
                 </ak-expand>
             </div>
-            <fieldset class="pf-c-modal-box__footer">
+            <fieldset class="ak-c-fieldset pf-c-modal-box__footer">
                 <legend class="sr-only">${msg("Form actions")}</legend>
                 <button
                     class="pf-c-button pf-m-plain"

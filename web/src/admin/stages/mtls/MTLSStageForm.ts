@@ -5,7 +5,7 @@ import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/Radio";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { certificateProvider, certificateSelector } from "#admin/brands/Certificates";
 import { BaseStageForm } from "#admin/stages/BaseStageForm";
@@ -25,23 +25,13 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-stage-mtls-form")
 export class MTLSStageForm extends BaseStageForm<MutualTLSStage> {
-    loadInstance(pk: string): Promise<MutualTLSStage> {
-        return new StagesApi(DEFAULT_CONFIG).stagesMtlsRetrieve({
-            stageUuid: pk,
-        });
-    }
-
-    async send(data: MutualTLSStage): Promise<MutualTLSStage> {
-        if (this.instance) {
-            return new StagesApi(DEFAULT_CONFIG).stagesMtlsUpdate({
-                stageUuid: this.instance.pk || "",
-                mutualTLSStageRequest: data,
-            });
-        }
-        return new StagesApi(DEFAULT_CONFIG).stagesMtlsCreate({
-            mutualTLSStageRequest: data,
-        });
-    }
+    protected endpoints = {
+        load: (stageUuid: string) => aki(StagesApi).stagesMtlsRetrieve({ stageUuid }),
+        create: (mutualTLSStageRequest: MutualTLSStage) =>
+            aki(StagesApi).stagesMtlsCreate({ mutualTLSStageRequest }),
+        update: (stageUuid: string, mutualTLSStageRequest: MutualTLSStage) =>
+            aki(StagesApi).stagesMtlsUpdate({ stageUuid, mutualTLSStageRequest }),
+    };
 
     protected override renderForm(): TemplateResult {
         return html`

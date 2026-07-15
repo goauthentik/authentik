@@ -3,7 +3,7 @@ authentik
 
 Making authentication simple.
 
-API version: 2026.5.0-rc1
+API version: 2026.8.0-rc1
 Contact: hello@goauthentik.io
 */
 
@@ -41,7 +41,7 @@ var (
 	queryDescape    = strings.NewReplacer("%5B", "[", "%5D", "]")
 )
 
-// APIClient manages communication with the authentik API v2026.5.0-rc1
+// APIClient manages communication with the authentik API v2026.8.0-rc1
 // In most cases there should be only one, shared, APIClient.
 type APIClient struct {
 	cfg    *Configuration
@@ -49,55 +49,17 @@ type APIClient struct {
 
 	// API Services
 
-	AdminAPI *AdminAPIService
-
-	AuthenticatorsAPI *AuthenticatorsAPIService
-
 	CoreAPI *CoreAPIService
 
 	CryptoAPI *CryptoAPIService
-
-	EndpointsAPI *EndpointsAPIService
-
-	EnterpriseAPI *EnterpriseAPIService
 
 	EventsAPI *EventsAPIService
 
 	FlowsAPI *FlowsAPIService
 
-	LifecycleAPI *LifecycleAPIService
-
-	ManagedAPI *ManagedAPIService
-
-	Oauth2API *Oauth2APIService
-
 	OutpostsAPI *OutpostsAPIService
 
-	PoliciesAPI *PoliciesAPIService
-
-	PropertymappingsAPI *PropertymappingsAPIService
-
-	ProvidersAPI *ProvidersAPIService
-
-	RacAPI *RacAPIService
-
-	RbacAPI *RbacAPIService
-
-	ReportsAPI *ReportsAPIService
-
 	RootAPI *RootAPIService
-
-	SchemaAPI *SchemaAPIService
-
-	SourcesAPI *SourcesAPIService
-
-	SsfAPI *SsfAPIService
-
-	StagesAPI *StagesAPIService
-
-	TasksAPI *TasksAPIService
-
-	TenantsAPI *TenantsAPIService
 }
 
 type service struct {
@@ -116,31 +78,12 @@ func NewAPIClient(cfg *Configuration) *APIClient {
 	c.common.client = c
 
 	// API Services
-	c.AdminAPI = (*AdminAPIService)(&c.common)
-	c.AuthenticatorsAPI = (*AuthenticatorsAPIService)(&c.common)
 	c.CoreAPI = (*CoreAPIService)(&c.common)
 	c.CryptoAPI = (*CryptoAPIService)(&c.common)
-	c.EndpointsAPI = (*EndpointsAPIService)(&c.common)
-	c.EnterpriseAPI = (*EnterpriseAPIService)(&c.common)
 	c.EventsAPI = (*EventsAPIService)(&c.common)
 	c.FlowsAPI = (*FlowsAPIService)(&c.common)
-	c.LifecycleAPI = (*LifecycleAPIService)(&c.common)
-	c.ManagedAPI = (*ManagedAPIService)(&c.common)
-	c.Oauth2API = (*Oauth2APIService)(&c.common)
 	c.OutpostsAPI = (*OutpostsAPIService)(&c.common)
-	c.PoliciesAPI = (*PoliciesAPIService)(&c.common)
-	c.PropertymappingsAPI = (*PropertymappingsAPIService)(&c.common)
-	c.ProvidersAPI = (*ProvidersAPIService)(&c.common)
-	c.RacAPI = (*RacAPIService)(&c.common)
-	c.RbacAPI = (*RbacAPIService)(&c.common)
-	c.ReportsAPI = (*ReportsAPIService)(&c.common)
 	c.RootAPI = (*RootAPIService)(&c.common)
-	c.SchemaAPI = (*SchemaAPIService)(&c.common)
-	c.SourcesAPI = (*SourcesAPIService)(&c.common)
-	c.SsfAPI = (*SsfAPIService)(&c.common)
-	c.StagesAPI = (*StagesAPIService)(&c.common)
-	c.TasksAPI = (*TasksAPIService)(&c.common)
-	c.TenantsAPI = (*TenantsAPIService)(&c.common)
 
 	return c
 }
@@ -509,6 +452,15 @@ func (c *APIClient) decode(v interface{}, b []byte, contentType string) (err err
 	}
 	if s, ok := v.(*string); ok {
 		*s = string(b)
+		return nil
+	}
+	if r, ok := v.(*io.Reader); ok {
+		*r = bytes.NewReader(b)
+		return nil
+	}
+	// Must stay before the JSON branch: json.Unmarshal would base64-decode into *[]byte.
+	if p, ok := v.(*[]byte); ok {
+		*p = b
 		return nil
 	}
 	if f, ok := v.(*os.File); ok {

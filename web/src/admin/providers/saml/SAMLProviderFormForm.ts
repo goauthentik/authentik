@@ -13,12 +13,14 @@ import "#elements/utils/TimeDeltaHelp";
 import { propertyMappingsProvider, propertyMappingsSelector } from "./SAMLProviderFormHelpers.js";
 import {
     availableHashes,
+    DEFAULT_HASH_ALGORITHM,
     digestAlgorithmOptions,
+    logoutMethodOptions,
     retrieveSignatureAlgorithm,
     SAMLSupportedKeyTypes,
 } from "./SAMLProviderOptions.js";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { RadioOption } from "#elements/forms/Radio";
 
@@ -28,7 +30,6 @@ import {
     PropertymappingsApi,
     PropertymappingsProviderSamlListRequest,
     SAMLBindingsEnum,
-    SAMLLogoutMethods,
     SAMLNameIDPolicyEnum,
     SAMLPropertyMapping,
     SAMLProvider,
@@ -89,23 +90,6 @@ function renderHasSlsUrl(
     logoutMethod: string,
     setLogoutMethod?: (ev: Event) => void,
 ) {
-    const logoutMethodOptions: RadioOption<string>[] = [
-        {
-            label: msg("Front-channel (Iframe)"),
-            value: SAMLLogoutMethods.FrontchannelIframe,
-            default: true,
-        },
-        {
-            label: msg("Front-channel (Native)"),
-            value: SAMLLogoutMethods.FrontchannelNative,
-        },
-        {
-            label: msg("Back-channel (POST)"),
-            value: SAMLLogoutMethods.Backchannel,
-            disabled: !hasPostBinding,
-        },
-    ];
-
     return html`<ak-radio-input
             label=${msg("SLS Binding")}
             name="slsBinding"
@@ -120,7 +104,7 @@ function renderHasSlsUrl(
         <ak-radio-input
             label=${msg("Logout Method")}
             name="logoutMethod"
-            .options=${logoutMethodOptions}
+            .options=${logoutMethodOptions(hasPostBinding)}
             .value=${logoutMethod}
             help=${msg("Method to use for logout when SLS URL is configured.")}
             @change=${setLogoutMethod}
@@ -128,8 +112,8 @@ function renderHasSlsUrl(
         </ak-radio-input>`;
 }
 export interface SAMLProviderFormProps {
-    provider?: Partial<SAMLProvider>;
-    errors?: ValidationError;
+    provider?: Partial<SAMLProvider> | null;
+    errors?: ValidationError | null;
     setHasSigningKp: (ev: InputEvent) => void;
     hasSigningKp: boolean;
     signingKeyType: KeyTypeEnum | null;
@@ -142,8 +126,8 @@ export interface SAMLProviderFormProps {
 }
 
 export function renderForm({
-    provider = {},
-    errors = {},
+    provider,
+    errors,
     setHasSigningKp,
     hasSigningKp,
     signingKeyType,
@@ -154,6 +138,9 @@ export function renderForm({
     logoutMethod,
     setLogoutMethod,
 }: SAMLProviderFormProps) {
+    provider ||= {};
+    errors ||= {};
+
     // Get available hash algorithms for the selected key type
     const keyType = signingKeyType ?? KeyTypeEnum.Rsa;
 
@@ -166,7 +153,7 @@ export function renderForm({
         ></ak-text-input>
         <ak-form-element-horizontal
             name="authorizationFlow"
-            label=${msg("Authorization flow")}
+            label=${msg("Authorization Flow")}
             required
         >
             <ak-flow-search
@@ -191,15 +178,6 @@ export function renderForm({
                     value="${ifDefined(provider.acsUrl)}"
                     required
                     .errorMessages=${errors.acsUrl}
-                ></ak-text-input>
-                <ak-text-input
-                    label=${msg("Issuer")}
-                    input-hint="code"
-                    name="issuer"
-                    value="${provider.issuer || "authentik"}"
-                    required
-                    .errorMessages=${errors.issuer}
-                    help=${msg("Also known as Entity ID.")}
                 ></ak-text-input>
                 <ak-text-input
                     name="audience"
@@ -238,7 +216,7 @@ export function renderForm({
         <ak-form-group label="${msg("Advanced flow settings")}">
             <div class="pf-c-form">
                 <ak-form-element-horizontal
-                    label=${msg("Authentication flow")}
+                    label=${msg("Authentication Flow")}
                     name="authenticationFlow"
                 >
                     <ak-flow-search
@@ -252,7 +230,7 @@ export function renderForm({
                     </p>
                 </ak-form-element-horizontal>
                 <ak-form-element-horizontal
-                    label=${msg("Invalidation flow")}
+                    label=${msg("Invalidation Flow")}
                     name="invalidationFlow"
                     required
                 >
@@ -337,9 +315,10 @@ export function renderForm({
                             if (query !== undefined) {
                                 args.search = query;
                             }
-                            const items = await new PropertymappingsApi(
-                                DEFAULT_CONFIG,
-                            ).propertymappingsProviderSamlList(args);
+                            const items =
+                                await aki(PropertymappingsApi).propertymappingsProviderSamlList(
+                                    args,
+                                );
                             return items.results;
                         }}
                         .renderElement=${(item: SAMLPropertyMapping): string => {
@@ -372,9 +351,10 @@ export function renderForm({
                             if (query !== undefined) {
                                 args.search = query;
                             }
-                            const items = await new PropertymappingsApi(
-                                DEFAULT_CONFIG,
-                            ).propertymappingsProviderSamlList(args);
+                            const items =
+                                await aki(PropertymappingsApi).propertymappingsProviderSamlList(
+                                    args,
+                                );
                             return items.results;
                         }}
                         .renderElement=${(item: SAMLPropertyMapping): string => {
@@ -430,6 +410,15 @@ export function renderForm({
                     .errorMessages=${errors.sessionValidNotOnOrAfter}
                     help=${msg(
                         "When using IDP-initiated logins, the relay state will be set to this value.",
+                    )}
+                ></ak-text-input>
+                <ak-text-input
+                    label=${msg("EntityID/Issuer override")}
+                    name="issuerOverride"
+                    value="${ifDefined(provider.issuerOverride ?? undefined)}"
+                    .errorMessages=${errors.issuerOverride}
+                    help=${msg(
+                        "Sets a custom EntityID/Issuer to override the authentik generated default.",
                     )}
                 ></ak-text-input>
                 <ak-radio-input
@@ -532,7 +521,8 @@ export function renderForm({
                                 <option
                                     value=${algorithmValue}
                                     ?selected=${provider?.signatureAlgorithm === algorithmValue ||
-                                    (!isCurrentAlgorithmAvailable && hash === "SHA256")}
+                                    (!isCurrentAlgorithmAvailable &&
+                                        hash === DEFAULT_HASH_ALGORITHM)}
                                 >
                                     ${hash}
                                 </option>

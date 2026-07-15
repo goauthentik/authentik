@@ -1,4 +1,4 @@
-import type { TemplateResult } from "lit";
+import { SlottedTemplateResult } from "#elements/types";
 
 export enum MessageLevel {
     error = "error",
@@ -18,8 +18,14 @@ export enum MessageLevel {
 export interface APIMessage {
     level: MessageLevel;
     message: string;
-    description?: string | TemplateResult;
+    description?: SlottedTemplateResult;
     icon?: string;
+    /**
+     * An optional key to determine uniqueness of the message.
+     *
+     * Defaults to the message text.
+     */
+    key?: PropertyKey;
 }
 
 export class AKMessageEvent extends Event {

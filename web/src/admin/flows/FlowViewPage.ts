@@ -1,21 +1,23 @@
 import "#admin/flows/BoundStagesList";
 import "#admin/flows/FlowDiagram";
-import "#admin/flows/FlowForm";
 import "#admin/policies/BoundPoliciesList";
 import "#admin/rbac/ak-rbac-object-permission-page";
 import "#admin/events/ObjectChangelog";
 import "#elements/Tabs";
 import "#elements/buttons/SpinnerButton/ak-spinner-button";
 
-import { AndNext, DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
+import { AndNext } from "#common/api/config";
 import { isResponseErrorLike } from "#common/errors/network";
 
 import { AKElement } from "#elements/Base";
+import { modalInvoker } from "#elements/dialogs";
 import { SlottedTemplateResult } from "#elements/types";
 
 import { setPageDetails } from "#components/ak-page-navbar";
 import renderDescriptionList from "#components/DescriptionList";
 
+import { FlowForm } from "#admin/flows/FlowForm";
 import { DesignationToLabel } from "#admin/flows/utils";
 
 import { Flow, FlowsApi, ModelEnum } from "@goauthentik/api";
@@ -57,9 +59,11 @@ export class FlowViewPage extends AKElement {
     ];
 
     fetchFlow(slug: string) {
-        new FlowsApi(DEFAULT_CONFIG).flowsInstancesRetrieve({ slug }).then((flow) => {
-            this.flow = flow;
-        });
+        aki(FlowsApi)
+            .flowsInstancesRetrieve({ slug })
+            .then((flow) => {
+                this.flow = flow;
+            });
     }
 
     willUpdate(changedProperties: PropertyValues<this>) {
@@ -97,21 +101,14 @@ export class FlowViewPage extends AKElement {
                                     ],
                                     [
                                         msg("Related actions"),
-                                        html`<ak-forms-modal>
-                                                <span slot="submit">${msg("Save Changes")}</span>
-                                                <span slot="header"> ${msg("Update Flow")} </span>
-                                                <ak-flow-form
-                                                    slot="form"
-                                                    .instancePk=${this.flow.slug}
-                                                >
-                                                </ak-flow-form>
-                                                <button
-                                                    slot="trigger"
-                                                    class="pf-c-button pf-m-block pf-m-secondary"
-                                                >
-                                                    ${msg("Edit")}
-                                                </button>
-                                            </ak-forms-modal>
+                                        html`<button
+                                                class="pf-c-button pf-m-block pf-m-secondary"
+                                                ${modalInvoker(FlowForm, {
+                                                    instancePk: this.flow.slug,
+                                                })}
+                                            >
+                                                ${msg("Edit")}
+                                            </button>
                                             <a
                                                 class="pf-c-button pf-m-block pf-m-secondary"
                                                 href=${this.flow.exportUrl}
@@ -127,11 +124,7 @@ export class FlowViewPage extends AKElement {
                                                 )}
                                                 class="pf-c-button pf-m-block pf-m-primary"
                                                 @click=${() => {
-                                                    const finalURL = `${
-                                                        window.location.origin
-                                                    }/if/flow/${this.flow.slug}/${AndNext(
-                                                        `${window.location.pathname}#${window.location.hash}`,
-                                                    )}`;
+                                                    const finalURL = `${window.location.origin}/if/flow/${this.flow.slug}/${AndNext(`${window.location.pathname}#${window.location.hash}`)}`;
                                                     window.open(finalURL, "_blank");
                                                 }}
                                             >
@@ -143,14 +136,12 @@ export class FlowViewPage extends AKElement {
                                                 )}
                                                 class="pf-c-button pf-m-block pf-m-secondary"
                                                 @click=${() => {
-                                                    new FlowsApi(DEFAULT_CONFIG)
+                                                    aki(FlowsApi)
                                                         .flowsInstancesExecuteRetrieve({
                                                             slug: this.flow.slug,
                                                         })
                                                         .then((link) => {
-                                                            const finalURL = `${link.link}${AndNext(
-                                                                `${window.location.pathname}#${window.location.hash}`,
-                                                            )}`;
+                                                            const finalURL = `${link.link}${AndNext(`${window.location.pathname}#${window.location.hash}`)}`;
                                                             window.open(finalURL, "_blank");
                                                         });
                                                 }}
@@ -163,14 +154,12 @@ export class FlowViewPage extends AKElement {
                                                 )}
                                                 class="pf-c-button pf-m-block pf-m-secondary"
                                                 @click=${() => {
-                                                    new FlowsApi(DEFAULT_CONFIG)
+                                                    aki(FlowsApi)
                                                         .flowsInstancesExecuteRetrieve({
                                                             slug: this.flow.slug,
                                                         })
                                                         .then((link) => {
-                                                            const finalURL = `${link.link}?${encodeURI(
-                                                                `inspector=open&next=/#${window.location.hash}`,
-                                                            )}`;
+                                                            const finalURL = `${link.link}?${encodeURI(`inspector=open&next=/#${window.location.hash}`)}`;
                                                             window.open(finalURL, "_blank");
                                                         })
                                                         .catch(async (error: unknown) => {

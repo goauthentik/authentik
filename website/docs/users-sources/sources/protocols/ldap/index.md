@@ -1,13 +1,13 @@
 ---
-title: LDAP Source
+title: LDAP source
 ---
 
 Sources allow you to connect authentik to an existing user directory. This source allows you to import users and groups from an LDAP server.
 
 :::info
-For Active Directory, follow the [Active Directory Integration](../../directory-sync/active-directory/index.md)
+For Active Directory, follow the [Active Directory integration](../../directory-sync/active-directory/index.md).
 
-For FreeIPA, follow the [FreeIPA Integration](../../directory-sync/freeipa/index.md)
+For FreeIPA, follow the [FreeIPA integration](../../directory-sync/freeipa/index.md).
 :::
 
 ## Configuration options for LDAP sources
@@ -17,21 +17,25 @@ To create or edit a source in authentik, open the Admin interface and navigate t
 - **Enabled**: Toggle this option on to allow authentik to use the defined LDAP source.
 - **Update internal password on login**: When the user logs in to authentik using the LDAP password backend, the password is stored as a hashed value in authentik. Toggle off (default setting) if you do not want to store the hashed passwords in authentik.
 - **Sync users**: Enable or disable user synchronization between authentik and the LDAP source.
-- **User password writeback**: Enable this option if you want to write password changes that are made in authentik back to LDAP.
+- **User password writeback**: Enable this option if you want to write password changes that are made in authentik back to LDAP. This requires authentik to receive the raw password; [hashed-password imports](../../../../install-config/automated-install.mdx#authentik_bootstrap_password_hash) are not written back to LDAP.
 - **Sync groups**: Enable/disable group synchronization between authentik and the LDAP source.
 - **Delete Not Found Objects**: :ak-version[2025.6] This option synchronizes user and group deletions from LDAP sources to authentik. User deletion requires enabling **Sync users** and group deletion requires enabling **Sync groups**.
 
 #### Connection settings
 
-- **Server URI**: URI to your LDAP server/Domain Controller. You can specify multiple servers by separating URIs with a comma, like `ldap://ldap1.company,ldap://ldap2.company`. When using a DNS entry with multiple Records, authentik will select a random entry when first connecting.
+- **Server URI**: URI to your LDAP server or domain controller. You can specify multiple servers by separating URIs with a comma, such as `ldap://ldap1.company,ldap://ldap2.company`. When using a DNS entry with multiple records, authentik selects a random entry when first connecting.
     - **Enable StartTLS**: Enables StartTLS functionality. To use LDAPS instead, use port `636`.
     - **Use Server URI for SNI verification**: this setting is required for servers using TLS 1.3+
 
-- **TLS Verification Certificate**: Specify a keypair to validate the remote certificate.
-- **TLS Client authentication certificate**: Client certificate keypair to authenticate against the LDAP Server's Certificate.
+- **TLS Verification Certificate**: Select a certificate/keypair containing the LDAP server CA chain to validate the remote certificate. Leave this field empty to skip certificate validation for LDAPS and StartTLS connections. Leaving it empty does not use the container or operating system trust store.
+- **TLS Client authentication certificate**: Client certificate keypair to authenticate against the LDAP server's certificate.
 - **Bind CN**: CN of the bind user. This can also be a UPN in the format of `user@domain.tld`.
 - **Bind Password**: Password used during the bind process.
 - **Base DN**: Base DN (distinguished name) used for all LDAP queries.
+
+:::note TLS handshake failures
+If the LDAP server rejects the TLS handshake, verify that **Server URI**, **Enable StartTLS**, and **Use Server URI for SNI verification** match the server configuration. You can also configure `AUTHENTIK_LDAP__TLS__CIPHERS` if the server requires a specific cipher suite.
+:::
 
 #### LDAP Attribute mapping
 
@@ -41,7 +45,7 @@ To create or edit a source in authentik, open the Admin interface and navigate t
     When the **Sync users** and/or the **Sync groups** options are enabled, their respective property mapping options must have at least one mapping selected, otherwise the sync will not start.
     :::
 
-#### Additional Settings
+#### Additional settings
 
 - **Parent Group**: Parent group for all the groups imported from LDAP. An example use case would be to import Active Directory groups under a root `imported-from-ad` group.
 - **User path**: Path template for all new users created.
@@ -51,7 +55,7 @@ To create or edit a source in authentik, open the Admin interface and navigate t
 - **Group object filter**: Consider objects matching this filter to be groups.
 - **Lookup using a user attribute**: Acquire group membership from a User object attribute (`memberOf`) instead of a Group attribute (`member`). This works with directories with nested group memberships (Active Directory, RedHat IDM/FreeIPA), using `memberOf:1.2.840.113556.1.4.1941:` as the group membership field.
 - **Group membership field**: The user object attribute or the group object attribute that determines the group membership for a user. If **Lookup using a user attribute** is set, this should be a user object attribute, otherwise a group object attribute.
-- **User membership attribute**: Attribute name on authentik user objects which is checked against the **Group membership field**. Two common cases are:
+- **User membership attribute**: Attribute name on authentik user objects that is checked against the **Group membership field**. Two common cases are:
     - If your groups have `member` attributes containing DNs, set this to `distinguishedName`. (The `distinguishedName` attribute for User objects in authentik is set automatically.)
     - If your groups have `memberUid` attributes containing `uid`s, set this to `uid`. Make sure that you've created a property mapping that creates an attribute called `uid`.
 - **Object uniqueness field**: This field contains a unique identifier.
@@ -73,6 +77,33 @@ return {
 }
 ```
 
+The same LDAP source property mapping type is used for both users and groups. A mapping only applies to groups when you assign it under **Group Property Mappings** on the LDAP source. If you only use the built-in group property mappings, synced groups will keep the automatically populated LDAP attributes, such as `distinguishedName`, but custom LDAP attributes won't be copied unless you add your own group mapping.
+
+### Copy a custom LDAP group attribute
+
+To store a custom LDAP group attribute in authentik's group `attributes`, create an **LDAP Source Property Mapping** and assign it to **Group Property Mappings** on the source:
+
+```python
+return {
+    "attributes": {
+        "acl": list_flatten(ldap.get("acl")),
+    },
+}
+```
+
+If your LDAP server stores the value as JSON text and you want authentik to keep it as structured data instead of a string, decode it in the mapping:
+
+```python
+import json
+
+raw_acl = list_flatten(ldap.get("acl"))
+return {
+    "attributes": {
+        "acl": json.loads(raw_acl) if raw_acl else None,
+    },
+}
+```
+
 ### Built-in property mappings
 
 LDAP property mappings are used when you define an LDAP source. These mappings define which LDAP property maps to which authentik property. By default, the following mappings are created:
@@ -86,11 +117,11 @@ LDAP property mappings are used when you define an LDAP source. These mappings d
 - `authentik default OpenLDAP Mapping: cn`
 - `authentik default OpenLDAP Mapping: uid`
 
-These are configured with most common LDAP setups.
+These are configured for most common LDAP setups.
 
 ### Expression data
 
-The following variables are available to LDAP source property mappings:
+The following variables are available to LDAP source property mappings:
 
 - `ldap`: A Python dictionary containing data from LDAP.
 - `dn`: The object DN.

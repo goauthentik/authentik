@@ -75,6 +75,7 @@ aaguid
 adsi
 akflow
 akprox
+allinone
 asns
 cbor
 copylefted
@@ -92,6 +93,7 @@ frie
 gcsp
 geoip
 glpi
+gosaml
 grecaptcha
 guac
 guacd
@@ -106,12 +108,15 @@ kadmin
 kiprop
 kubeadm
 labelledby
+LLM
+LLMS
 mcomplete
 mermaidjs
 microsoft
 mmdb
 noopener
 noreferrer
+oktadev
 openidc
 ouia
 ouid
@@ -153,6 +158,7 @@ unenrollment
 unhashed
 unmigrate
 unskippable
+unsynchronized
 uperm
 uwsgi
 wireit
@@ -164,3 +170,4 @@ yamltags
 zxcvbn
 ~uuid
 ~uuids
+wreply

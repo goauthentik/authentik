@@ -2,7 +2,7 @@
     "$schema": "http://json-schema.org/draft-07/schema",
     "$id": "https://goauthentik.io/blueprints/schema.json",
     "type": "object",
-    "title": "authentik 2026.5.0-rc1 Blueprint schema",
+    "title": "authentik 2026.8.0-rc1 Blueprint schema",
     "required": [
         "version",
         "entries"
@@ -1213,6 +1213,46 @@
                         },
                         "identifiers": {
                             "$ref": "#/$defs/model_authentik_reports.dataexport"
+                        }
+                    }
+                },
+                {
+                    "type": "object",
+                    "required": [
+                        "model",
+                        "identifiers"
+                    ],
+                    "properties": {
+                        "model": {
+                            "const": "authentik_stages_account_lockdown.accountlockdownstage"
+                        },
+                        "id": {
+                            "type": "string"
+                        },
+                        "state": {
+                            "type": "string",
+                            "enum": [
+                                "absent",
+                                "created",
+                                "must_created",
+                                "present"
+                            ],
+                            "default": "present"
+                        },
+                        "conditions": {
+                            "type": "array",
+                            "items": {
+                                "type": "boolean"
+                            }
+                        },
+                        "permissions": {
+                            "$ref": "#/$defs/model_authentik_stages_account_lockdown.accountlockdownstage_permissions"
+                        },
+                        "attrs": {
+                            "$ref": "#/$defs/model_authentik_stages_account_lockdown.accountlockdownstage"
+                        },
+                        "identifiers": {
+                            "$ref": "#/$defs/model_authentik_stages_account_lockdown.accountlockdownstage"
                         }
                     }
                 },
@@ -5100,6 +5140,11 @@
                     "format": "uuid",
                     "title": "Flow device code"
                 },
+                "flow_lockdown": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Flow lockdown"
+                },
                 "default_application": {
                     "type": "string",
                     "format": "uuid",
@@ -5214,6 +5259,11 @@
                 "group": {
                     "type": "string",
                     "title": "Group"
+                },
+                "meta_hide": {
+                    "type": "boolean",
+                    "title": "Meta hide",
+                    "description": "Hide this application from the user's My applications page."
                 },
                 "icon": {
                     "type": "string",
@@ -5532,6 +5582,14 @@
                     "minLength": 1,
                     "title": "Password"
                 },
+                "password_hash": {
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "minLength": 1,
+                    "title": "Password hash"
+                },
                 "permissions": {
                     "type": "array",
                     "items": {
@@ -5644,6 +5702,7 @@
                             "authentik_endpoints_connectors_agent.add_agentconnector",
                             "authentik_endpoints_connectors_agent.add_agentdeviceconnection",
                             "authentik_endpoints_connectors_agent.add_agentdeviceuserbinding",
+                            "authentik_endpoints_connectors_agent.add_appleindependentsecureenclave",
                             "authentik_endpoints_connectors_agent.add_applenonce",
                             "authentik_endpoints_connectors_agent.add_deviceauthenticationtoken",
                             "authentik_endpoints_connectors_agent.add_devicetoken",
@@ -5651,6 +5710,7 @@
                             "authentik_endpoints_connectors_agent.change_agentconnector",
                             "authentik_endpoints_connectors_agent.change_agentdeviceconnection",
                             "authentik_endpoints_connectors_agent.change_agentdeviceuserbinding",
+                            "authentik_endpoints_connectors_agent.change_appleindependentsecureenclave",
                             "authentik_endpoints_connectors_agent.change_applenonce",
                             "authentik_endpoints_connectors_agent.change_deviceauthenticationtoken",
                             "authentik_endpoints_connectors_agent.change_devicetoken",
@@ -5658,6 +5718,7 @@
                             "authentik_endpoints_connectors_agent.delete_agentconnector",
                             "authentik_endpoints_connectors_agent.delete_agentdeviceconnection",
                             "authentik_endpoints_connectors_agent.delete_agentdeviceuserbinding",
+                            "authentik_endpoints_connectors_agent.delete_appleindependentsecureenclave",
                             "authentik_endpoints_connectors_agent.delete_applenonce",
                             "authentik_endpoints_connectors_agent.delete_deviceauthenticationtoken",
                             "authentik_endpoints_connectors_agent.delete_devicetoken",
@@ -5665,6 +5726,7 @@
                             "authentik_endpoints_connectors_agent.view_agentconnector",
                             "authentik_endpoints_connectors_agent.view_agentdeviceconnection",
                             "authentik_endpoints_connectors_agent.view_agentdeviceuserbinding",
+                            "authentik_endpoints_connectors_agent.view_appleindependentsecureenclave",
                             "authentik_endpoints_connectors_agent.view_applenonce",
                             "authentik_endpoints_connectors_agent.view_deviceauthenticationtoken",
                             "authentik_endpoints_connectors_agent.view_devicetoken",
@@ -6077,6 +6139,10 @@
                             "authentik_sources_telegram.view_telegramsource",
                             "authentik_sources_telegram.view_telegramsourcepropertymapping",
                             "authentik_sources_telegram.view_usertelegramsourceconnection",
+                            "authentik_stages_account_lockdown.add_accountlockdownstage",
+                            "authentik_stages_account_lockdown.change_accountlockdownstage",
+                            "authentik_stages_account_lockdown.delete_accountlockdownstage",
+                            "authentik_stages_account_lockdown.view_accountlockdownstage",
                             "authentik_stages_authenticator_duo.add_authenticatorduostage",
                             "authentik_stages_authenticator_duo.add_duodevice",
                             "authentik_stages_authenticator_duo.change_authenticatorduostage",
@@ -7507,6 +7573,10 @@
                     "type": "string",
                     "minLength": 1,
                     "title": "Event retention"
+                },
+                "push_verify_certificates": {
+                    "type": "boolean",
+                    "title": "Push verify certificates"
                 }
             },
             "required": []
@@ -7725,6 +7795,69 @@
                             "change_dataexport",
                             "delete_dataexport",
                             "view_dataexport"
+                        ]
+                    },
+                    "user": {
+                        "type": "integer"
+                    },
+                    "role": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "model_authentik_stages_account_lockdown.accountlockdownstage": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Name"
+                },
+                "deactivate_user": {
+                    "type": "boolean",
+                    "title": "Deactivate user",
+                    "description": "Deactivate the user account (set is_active to False)"
+                },
+                "set_unusable_password": {
+                    "type": "boolean",
+                    "title": "Set unusable password",
+                    "description": "Set an unusable password for the user"
+                },
+                "delete_sessions": {
+                    "type": "boolean",
+                    "title": "Delete sessions",
+                    "description": "Delete all active sessions for the user"
+                },
+                "revoke_tokens": {
+                    "type": "boolean",
+                    "title": "Revoke tokens",
+                    "description": "Revoke all tokens for the user (API, app password, recovery, verification, OAuth)"
+                },
+                "self_service_completion_flow": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Self service completion flow",
+                    "description": "Flow to redirect users to after self-service lockdown. This flow should not require authentication since the user's session is deleted."
+                }
+            },
+            "required": []
+        },
+        "model_authentik_stages_account_lockdown.accountlockdownstage_permissions": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "permission"
+                ],
+                "properties": {
+                    "permission": {
+                        "type": "string",
+                        "enum": [
+                            "add_accountlockdownstage",
+                            "change_accountlockdownstage",
+                            "delete_accountlockdownstage",
+                            "view_accountlockdownstage"
                         ]
                     },
                     "user": {
@@ -8240,7 +8373,7 @@
                     "type": "string",
                     "format": "uuid",
                     "title": "Webhook ca",
-                    "description": "When set, the selected ceritifcate is used to validate the certificate of the webhook server."
+                    "description": "When set, the selected certificate is used to validate the certificate of the webhook server."
                 },
                 "webhook_mapping_body": {
                     "type": "string",
@@ -8422,7 +8555,8 @@
                         "require_unauthenticated",
                         "require_superuser",
                         "require_redirect",
-                        "require_outpost"
+                        "require_outpost",
+                        "require_token"
                     ],
                     "title": "Authentication",
                     "description": "Required level of authentication and authorization to access a flow."
@@ -8930,7 +9064,7 @@
                         "authentik.enterprise.providers.ssf",
                         "authentik.enterprise.providers.ws_federation",
                         "authentik.enterprise.reports",
-                        "authentik.enterprise.search",
+                        "authentik.enterprise.stages.account_lockdown",
                         "authentik.enterprise.stages.authenticator_endpoint_gdtc",
                         "authentik.enterprise.stages.mtls",
                         "authentik.enterprise.stages.source"
@@ -9063,12 +9197,21 @@
                         "authentik_providers_ssf.ssfprovider",
                         "authentik_providers_ws_federation.wsfederationprovider",
                         "authentik_reports.dataexport",
+                        "authentik_stages_account_lockdown.accountlockdownstage",
                         "authentik_stages_authenticator_endpoint_gdtc.authenticatorendpointgdtcstage",
                         "authentik_stages_mtls.mutualtlsstage",
                         "authentik_stages_source.sourcestage"
                     ],
                     "title": "Model",
                     "description": "Match events created by selected model. When left empty, all models are matched. When an app is selected, all the application's models are matched."
+                },
+                "query": {
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "minLength": 1,
+                    "title": "Query"
                 }
             },
             "required": []
@@ -9946,6 +10089,24 @@
                     "title": "Client Type",
                     "description": "Confidential clients are capable of maintaining the confidentiality of their credentials. Public clients are incapable"
                 },
+                "grant_types": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "enum": [
+                            "authorization_code",
+                            "implicit",
+                            "hybrid",
+                            "refresh_token",
+                            "client_credentials",
+                            "password",
+                            "urn:ietf:params:oauth:grant-type:device_code",
+                            "urn:ietf:params:oauth:grant-type:token-exchange"
+                        ],
+                        "title": "Grant types"
+                    },
+                    "title": "Grant types"
+                },
                 "client_id": {
                     "type": "string",
                     "maxLength": 255,
@@ -10015,6 +10176,14 @@
                                 "type": "string",
                                 "minLength": 1,
                                 "title": "Url"
+                            },
+                            "redirect_uri_type": {
+                                "type": "string",
+                                "enum": [
+                                    "authorization",
+                                    "logout"
+                                ],
+                                "title": "Redirect uri type"
                             }
                         },
                         "required": [
@@ -10771,11 +10940,10 @@
                     "title": "Audience",
                     "description": "Value of the audience restriction field of the assertion. When left empty, no audience restriction will be added."
                 },
-                "issuer": {
+                "issuer_override": {
                     "type": "string",
-                    "minLength": 1,
-                    "title": "Issuer",
-                    "description": "Also known as EntityID"
+                    "title": "Issuer override",
+                    "description": "Also known as EntityID. Providing a value overrides the default issuer generated by authentik."
                 },
                 "assertion_valid_not_before": {
                     "type": "string",
@@ -11036,7 +11204,8 @@
                     "type": "string",
                     "enum": [
                         "token",
-                        "oauth"
+                        "oauth",
+                        "oauth_interactive"
                     ],
                     "title": "Auth mode"
                 },
@@ -11058,7 +11227,9 @@
                         "aws",
                         "slack",
                         "sfdc",
-                        "webex"
+                        "gitlab",
+                        "webex",
+                        "vcenter"
                     ],
                     "title": "SCIM Compatibility Mode",
                     "description": "Alter authentik behavior for vendor-specific SCIM implementations."
@@ -11300,6 +11471,7 @@
                             "authentik_endpoints_connectors_agent.add_agentconnector",
                             "authentik_endpoints_connectors_agent.add_agentdeviceconnection",
                             "authentik_endpoints_connectors_agent.add_agentdeviceuserbinding",
+                            "authentik_endpoints_connectors_agent.add_appleindependentsecureenclave",
                             "authentik_endpoints_connectors_agent.add_applenonce",
                             "authentik_endpoints_connectors_agent.add_deviceauthenticationtoken",
                             "authentik_endpoints_connectors_agent.add_devicetoken",
@@ -11307,6 +11479,7 @@
                             "authentik_endpoints_connectors_agent.change_agentconnector",
                             "authentik_endpoints_connectors_agent.change_agentdeviceconnection",
                             "authentik_endpoints_connectors_agent.change_agentdeviceuserbinding",
+                            "authentik_endpoints_connectors_agent.change_appleindependentsecureenclave",
                             "authentik_endpoints_connectors_agent.change_applenonce",
                             "authentik_endpoints_connectors_agent.change_deviceauthenticationtoken",
                             "authentik_endpoints_connectors_agent.change_devicetoken",
@@ -11314,6 +11487,7 @@
                             "authentik_endpoints_connectors_agent.delete_agentconnector",
                             "authentik_endpoints_connectors_agent.delete_agentdeviceconnection",
                             "authentik_endpoints_connectors_agent.delete_agentdeviceuserbinding",
+                            "authentik_endpoints_connectors_agent.delete_appleindependentsecureenclave",
                             "authentik_endpoints_connectors_agent.delete_applenonce",
                             "authentik_endpoints_connectors_agent.delete_deviceauthenticationtoken",
                             "authentik_endpoints_connectors_agent.delete_devicetoken",
@@ -11321,6 +11495,7 @@
                             "authentik_endpoints_connectors_agent.view_agentconnector",
                             "authentik_endpoints_connectors_agent.view_agentdeviceconnection",
                             "authentik_endpoints_connectors_agent.view_agentdeviceuserbinding",
+                            "authentik_endpoints_connectors_agent.view_appleindependentsecureenclave",
                             "authentik_endpoints_connectors_agent.view_applenonce",
                             "authentik_endpoints_connectors_agent.view_deviceauthenticationtoken",
                             "authentik_endpoints_connectors_agent.view_devicetoken",
@@ -11733,6 +11908,10 @@
                             "authentik_sources_telegram.view_telegramsource",
                             "authentik_sources_telegram.view_telegramsourcepropertymapping",
                             "authentik_sources_telegram.view_usertelegramsourceconnection",
+                            "authentik_stages_account_lockdown.add_accountlockdownstage",
+                            "authentik_stages_account_lockdown.change_accountlockdownstage",
+                            "authentik_stages_account_lockdown.delete_accountlockdownstage",
+                            "authentik_stages_account_lockdown.view_accountlockdownstage",
                             "authentik_stages_authenticator_duo.add_authenticatorduostage",
                             "authentik_stages_authenticator_duo.add_duodevice",
                             "authentik_stages_authenticator_duo.change_authenticatorduostage",
@@ -11933,11 +12112,6 @@
         "model_authentik_sources_kerberos.groupkerberossourceconnection": {
             "type": "object",
             "properties": {
-                "group": {
-                    "type": "string",
-                    "format": "uuid",
-                    "title": "Group"
-                },
                 "source": {
                     "type": "string",
                     "format": "uuid",
@@ -12231,10 +12405,6 @@
         "model_authentik_sources_kerberos.userkerberossourceconnection": {
             "type": "object",
             "properties": {
-                "user": {
-                    "type": "integer",
-                    "title": "User"
-                },
                 "source": {
                     "type": "string",
                     "format": "uuid",
@@ -12277,11 +12447,6 @@
         "model_authentik_sources_ldap.groupldapsourceconnection": {
             "type": "object",
             "properties": {
-                "group": {
-                    "type": "string",
-                    "format": "uuid",
-                    "title": "Group"
-                },
                 "source": {
                     "type": "string",
                     "format": "uuid",
@@ -12606,10 +12771,6 @@
         "model_authentik_sources_ldap.userldapsourceconnection": {
             "type": "object",
             "properties": {
-                "user": {
-                    "type": "integer",
-                    "title": "User"
-                },
                 "source": {
                     "type": "string",
                     "format": "uuid",
@@ -12652,11 +12813,6 @@
         "model_authentik_sources_oauth.groupoauthsourceconnection": {
             "type": "object",
             "properties": {
-                "group": {
-                    "type": "string",
-                    "format": "uuid",
-                    "title": "Group"
-                },
                 "source": {
                     "type": "string",
                     "format": "uuid",
@@ -12790,11 +12946,10 @@
                 "provider_type": {
                     "type": "string",
                     "enum": [
-                        "apple",
                         "openidconnect",
-                        "entraid",
-                        "azuread",
+                        "apple",
                         "discord",
+                        "entraid",
                         "facebook",
                         "github",
                         "gitlab",
@@ -12974,10 +13129,6 @@
         "model_authentik_sources_oauth.useroauthsourceconnection": {
             "type": "object",
             "properties": {
-                "user": {
-                    "type": "integer",
-                    "title": "User"
-                },
                 "source": {
                     "type": "string",
                     "format": "uuid",
@@ -13032,11 +13183,6 @@
         "model_authentik_sources_plex.groupplexsourceconnection": {
             "type": "object",
             "properties": {
-                "group": {
-                    "type": "string",
-                    "format": "uuid",
-                    "title": "Group"
-                },
                 "source": {
                     "type": "string",
                     "format": "uuid",
@@ -13277,10 +13423,6 @@
         "model_authentik_sources_plex.userplexsourceconnection": {
             "type": "object",
             "properties": {
-                "user": {
-                    "type": "integer",
-                    "title": "User"
-                },
                 "source": {
                     "type": "string",
                     "format": "uuid",
@@ -13328,11 +13470,6 @@
         "model_authentik_sources_saml.groupsamlsourceconnection": {
             "type": "object",
             "properties": {
-                "group": {
-                    "type": "string",
-                    "format": "uuid",
-                    "title": "Group"
-                },
                 "source": {
                     "type": "string",
                     "format": "uuid",
@@ -13469,10 +13606,10 @@
                     "title": "Pre authentication flow",
                     "description": "Flow used before authentication."
                 },
-                "issuer": {
+                "issuer_override": {
                     "type": "string",
-                    "title": "Issuer",
-                    "description": "Also known as Entity ID. Defaults the Metadata URL."
+                    "title": "Issuer override",
+                    "description": "Also known as Entity ID. Defaults to the Metadata URL."
                 },
                 "sso_url": {
                     "type": "string",
@@ -13660,10 +13797,6 @@
         "model_authentik_sources_saml.usersamlsourceconnection": {
             "type": "object",
             "properties": {
-                "user": {
-                    "type": "integer",
-                    "title": "User"
-                },
                 "source": {
                     "type": "string",
                     "format": "uuid",
@@ -13826,11 +13959,6 @@
         "model_authentik_sources_telegram.grouptelegramsourceconnection": {
             "type": "object",
             "properties": {
-                "group": {
-                    "type": "string",
-                    "format": "uuid",
-                    "title": "Group"
-                },
                 "source": {
                     "type": "string",
                     "format": "uuid",
@@ -14057,10 +14185,6 @@
         "model_authentik_sources_telegram.usertelegramsourceconnection": {
             "type": "object",
             "properties": {
-                "user": {
-                    "type": "integer",
-                    "title": "User"
-                },
                 "source": {
                     "type": "string",
                     "format": "uuid",
@@ -14760,6 +14884,22 @@
                         "format": "uuid"
                     },
                     "title": "Webauthn allowed device types"
+                },
+                "email_otp_throttling_factor": {
+                    "type": "number",
+                    "title": "Email otp throttling factor"
+                },
+                "sms_otp_throttling_factor": {
+                    "type": "number",
+                    "title": "Sms otp throttling factor"
+                },
+                "totp_otp_throttling_factor": {
+                    "type": "number",
+                    "title": "Totp otp throttling factor"
+                },
+                "static_otp_throttling_factor": {
+                    "type": "number",
+                    "title": "Static otp throttling factor"
                 }
             },
             "required": []
@@ -14966,6 +15106,14 @@
                     "type": "string",
                     "minLength": 1,
                     "title": "Api url"
+                },
+                "request_content_type": {
+                    "type": "string",
+                    "enum": [
+                        "application/x-www-form-urlencoded",
+                        "application/json"
+                    ],
+                    "title": "Request content type"
                 },
                 "interactive": {
                     "type": "boolean",
@@ -15599,6 +15747,9 @@
                         "separator",
                         "hidden",
                         "static",
+                        "alert_info",
+                        "alert_warning",
+                        "alert_danger",
                         "ak-locale"
                     ],
                     "title": "Type"

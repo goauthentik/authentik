@@ -1,8 +1,10 @@
 ---
-title: System Settings
+title: System settings
 ---
 
-These settings are similar to the configuration options listed [here](../install-config/configuration/configuration.mdx), however they can only be adjusted through the authentik Admin interface or API.
+System settings control system-wide behavior. They can be changed through the authentik Admin interface or API.
+
+Environment-level and deployment settings are documented in the [configuration options](../install-config/configuration/configuration.mdx).
 
 ### Avatars
 
@@ -42,11 +44,11 @@ Configure how long [Events](./events/index.md) are retained for within authentik
 
 ### Reputation: lower limit
 
-Configure a lower limit for [Reputation](../../customize/policies/#reputation-policy). Defaults to `-5`.
+Configure a lower limit for [Reputation Policy](../customize/policies/types/reputation.md). Defaults to `-5`.
 
 ### Reputation: upper limit
 
-Configure an upper limit for [Reputation](../../customize/policies/#reputation-policy). Defaults to `5`.
+Configure an upper limit for [Reputation Policy](../customize/policies/types/reputation.md). Defaults to `5`.
 
 ### Footer links
 

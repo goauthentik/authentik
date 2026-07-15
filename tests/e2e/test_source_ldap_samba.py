@@ -12,7 +12,8 @@ from authentik.sources.ldap.sync.groups import GroupLDAPSynchronizer
 from authentik.sources.ldap.sync.membership import MembershipLDAPSynchronizer
 from authentik.sources.ldap.sync.users import UserLDAPSynchronizer
 from authentik.tasks.models import Task
-from tests.e2e.utils import E2ETestCase, retry
+from tests.decorators import retry
+from tests.live import E2ETestCase
 
 
 class TestSourceLDAPSamba(E2ETestCase):

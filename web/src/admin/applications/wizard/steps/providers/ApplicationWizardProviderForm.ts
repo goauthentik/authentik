@@ -11,7 +11,7 @@ import { serializeForm } from "#elements/forms/serialization";
 import { ApplicationWizardStyles } from "#admin/applications/wizard/ApplicationWizardFormStepStyles.styles";
 import {
     ApplicationTransactionValidationError,
-    type ApplicationWizardState,
+    type ApplicationWizardContext,
     ApplicationWizardStateError,
     type OneOfProvider,
 } from "#admin/applications/wizard/steps/providers/shared";
@@ -30,7 +30,7 @@ export abstract class ApplicationWizardProviderForm<
     public abstract label: string;
 
     @property({ type: Object, attribute: false })
-    public wizard!: ApplicationWizardState<P, E>;
+    public wizard!: ApplicationWizardContext<P, E>;
 
     @property({ type: Object, attribute: false })
     public errors: E = {} as E;

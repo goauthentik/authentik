@@ -2,6 +2,7 @@ import "#admin/common/ak-crypto-certificate-search";
 import "#admin/common/ak-flow-search/ak-source-flow-search";
 import "#components/ak-file-search-input";
 import "#components/ak-slug-input";
+import "#components/ak-text-input";
 import "#components/ak-switch-input";
 import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
 import "#elements/forms/FormGroup";
@@ -11,7 +12,7 @@ import "#elements/utils/TimeDeltaHelp";
 
 import { propertyMappingsProvider, propertyMappingsSelector } from "./SAMLSourceFormHelpers.js";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { type AkCryptoCertificateSearch } from "#admin/common/ak-crypto-certificate-search";
 import { iconHelperText, placeholderHelperText } from "#admin/helperText";
@@ -39,6 +40,14 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-source-saml-form")
 export class SAMLSourceForm extends BaseSourceForm<SAMLSource> {
+    protected endpoints = {
+        load: (slug: string) => aki(SourcesApi).sourcesSamlRetrieve({ slug }),
+        create: (sAMLSourceRequest: SAMLSource) =>
+            aki(SourcesApi).sourcesSamlCreate({ sAMLSourceRequest }),
+        update: (slug: string, sAMLSourceRequest: SAMLSource) =>
+            aki(SourcesApi).sourcesSamlUpdate({ slug, sAMLSourceRequest }),
+    };
+
     @state()
     protected hasSigningCert = false;
 
@@ -52,25 +61,6 @@ export class SAMLSourceForm extends BaseSourceForm<SAMLSource> {
         const target = ev.target as AkCryptoCertificateSearch;
         if (!target) return;
         this.hasSigningCert = !!target.selectedKeypair;
-    }
-
-    async loadInstance(pk: string): Promise<SAMLSource> {
-        return new SourcesApi(DEFAULT_CONFIG).sourcesSamlRetrieve({
-            slug: pk,
-        });
-    }
-
-    async send(data: SAMLSource): Promise<SAMLSource> {
-        if (this.instance) {
-            return new SourcesApi(DEFAULT_CONFIG).sourcesSamlUpdate({
-                slug: this.instance.slug,
-                sAMLSourceRequest: data,
-            });
-        }
-
-        return new SourcesApi(DEFAULT_CONFIG).sourcesSamlCreate({
-            sAMLSourceRequest: data,
-        });
     }
 
     renderHasSigningCert(): TemplateResult {
@@ -93,23 +83,21 @@ export class SAMLSourceForm extends BaseSourceForm<SAMLSource> {
     }
 
     protected override renderForm(): TemplateResult {
-        return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
-                <input
-                    type="text"
-                    value="${ifDefined(this.instance?.name)}"
-                    class="pf-c-form-control"
-                    required
-                />
-            </ak-form-element-horizontal>
-
+        return html`<ak-text-input
+                label=${msg("Source Name")}
+                placeholder=${msg("Type a name for this source...")}
+                required
+                name="name"
+                value="${ifDefined(this.instance?.name)}"
+            ></ak-text-input>
             <ak-slug-input
                 name="slug"
+                placeholder=${msg("e.g. my-saml-source")}
                 value=${ifDefined(this.instance?.slug)}
                 label=${msg("Slug")}
                 required
                 input-hint="code"
             ></ak-slug-input>
-
             <ak-switch-input
                 name="enabled"
                 label=${msg("Enabled")}
@@ -227,16 +215,6 @@ export class SAMLSourceForm extends BaseSourceForm<SAMLSource> {
                             ${msg("Optional URL if the IDP supports Single-Logout.")}
                         </p>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal label=${msg("Issuer")} name="issuer">
-                        <input
-                            type="text"
-                            value="${ifDefined(this.instance?.issuer)}"
-                            class="pf-c-form-control"
-                        />
-                        <p class="pf-c-form__helper-text">
-                            ${msg("Also known as Entity ID. Defaults the Metadata URL.")}
-                        </p>
-                    </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Binding Type")}
                         required
@@ -311,6 +289,19 @@ export class SAMLSourceForm extends BaseSourceForm<SAMLSource> {
                             "When enabled, the IdP is requested to force re-authentication of the user, even if the user has an existing session.",
                         )}
                     ></ak-switch-input>
+                    <ak-form-element-horizontal
+                        label=${msg("Issuer override")}
+                        name="issuerOverride"
+                    >
+                        <input
+                            type="text"
+                            value="${ifDefined(this.instance?.issuerOverride)}"
+                            class="pf-c-form-control"
+                        />
+                        <p class="pf-c-form__helper-text">
+                            ${msg("Also known as Entity ID. Defaults to the Metadata URL.")}
+                        </p>
+                    </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("NameID Policy")}
                         required
@@ -512,7 +503,7 @@ export class SAMLSourceForm extends BaseSourceForm<SAMLSource> {
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
-                        label=${msg("Authentication flow")}
+                        label=${msg("Authentication Flow")}
                         name="authenticationFlow"
                     >
                         <ak-source-flow-search

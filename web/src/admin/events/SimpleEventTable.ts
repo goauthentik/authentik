@@ -1,17 +1,18 @@
 import "#components/ak-event-info";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { EventWithContext } from "#common/events";
 import { actionToLabel } from "#common/labels";
 
 import { PaginatedResponse, RowType, Table, TableColumn, Timestamp } from "#elements/table/Table";
+import { SlottedTemplateResult } from "#elements/types";
 
 import { EventGeo, renderEventUser } from "#admin/events/utils";
 
 import { Event, EventsApi, EventsEventsListRequest } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { html, TemplateResult } from "lit-html";
+import { html } from "lit-html";
 import { property } from "lit/decorators.js";
 
 export abstract class SimpleEventTable extends Table<Event> {
@@ -25,7 +26,7 @@ export abstract class SimpleEventTable extends Table<Event> {
     expandable = true;
 
     async apiEndpoint(): Promise<PaginatedResponse<Event>> {
-        return new EventsApi(DEFAULT_CONFIG).eventsEventsList({
+        return aki(EventsApi).eventsEventsList({
             ...(await this.defaultEndpointConfig()),
             pageSize: this.pageSize,
             ...(await this.apiParameters()),
@@ -57,11 +58,11 @@ export abstract class SimpleEventTable extends Table<Event> {
         ];
     }
 
-    renderExpanded(item: Event): TemplateResult {
+    protected override renderExpanded(item: Event): SlottedTemplateResult {
         return html`<ak-event-info .event=${item as EventWithContext}></ak-event-info>`;
     }
 
-    renderEmpty(): TemplateResult {
+    protected override renderEmpty(): SlottedTemplateResult {
         return super.renderEmpty(
             html`<ak-empty-state
                 ><span>${msg("No Events found.")}</span>

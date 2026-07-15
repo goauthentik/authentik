@@ -2,58 +2,95 @@
 title: Password stage
 ---
 
-This is a generic password prompt that authenticates the current `pending_user`. This stage allows the selection of how the user's credentials are validated, with either a standard password, an App password, or source (LDAP or Kerberos) against which the user is authenticated.
+The Password stage prompts the current `pending_user` for a password and validates it against one or more configured backends.
 
-## Create a Password stage
+## About the password stage
 
-1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Flows and Stages > Stages** and click **Create**.
-3. In the **New Stage** dialog select **Password stage**, and then click **Next**.
-4. Provide the following settings:
+Use this stage in authentication or password-change flows when a user should prove possession of a password.
 
-- **Name**: enter a descriptive name.
-- **Stage-specific settings**:
-    - **Backends**: select one or more of the following options:
-        - **User database + standard password**: configures the stage to use the authentik database, accessed with the credentials and standard password of the user who is logging in.
-        - **User database + app passwords**: configures the stage to use the authentik database, accessed with the user's credentials and an App password (created by the user on the User interface, or an administrator on the Admin interface).
-        - **User database + LDAP password**: configures the stage to use the authentik database, accessed with the user identifier (User ID) and the password provided by the [LDAP source](../../../../users-sources/sources/protocols/ldap/index.md).
-        - **User database + Kerberos password**: configures the stage to use the authentik database, accessed with the user identifier (User ID) and the password provided by the [Kerberos source](../../../../users-sources/sources/protocols/kerberos/index.md).
-          If you select multiple backend settings, authentik goes through them each in order.
-- **Configuration flow**: you are able to select any of the default flows, but typically you should select `default-password-change (Change Password)`. However, you might have created a specific flow for passwords, that adds a stage for MFA or some such, so you could select that flow here instead.
-- **Failed attempts before cancel**: indicate how many times a user is allowed to attempt the password.
-- **Allow Show Password**: toggle this option to allow the user to view in plain text the password that they are entering.
+The stage supports authentik's built-in password database, app passwords, LDAP-backed passwords, and Kerberos-backed passwords.
 
-5. Click **Finish** to create the new Password stage.
+## Configuration options
+
+- **Backends**: select one or more password backends to test in order.
+    - **User database + standard password**
+    - **User database + app passwords**
+    - **User database + LDAP password**
+    - **User database + Kerberos password**
+- **Failed attempts before cancel**: how many failed password submissions are allowed before the flow is canceled.
+- **Allow show password**: show a button that reveals the entered password.
+- **Configuration flow**: optional authenticated flow that lets users configure or change their password from user settings.
+
+## Flow integration
+
+This stage is typically bound after an [Identification](../identification/index.md) stage and before an [Authenticator Validation](../authenticator_validate/index.md) or [User Login](../user_login/index.md) stage.
+
+If the [Identification stage](../identification/index.md) has its **Password stage** option set, the password prompt is rendered as part of the identification step and the Password stage should not also be bound separately in the same flow.
+
+## Notes
 
 :::tip
-If you create a service account, that account has an automatically generated App password. If you impersonate the service account, you can view it under the **Settings** > **Tokens and App passwords** section of the User interface or under **Directory** > **Tokens and App passwords** of the Admin interface.
+Service accounts have automatically generated app passwords. Those can be viewed from the service account's user settings or from the admin interface.
 :::
 
-## Passwordless login
+### Passwordless patterns
 
-There are two different ways to configure passwordless authentication;
+There are two common ways to avoid prompting for a password:
 
-- allow users to directly authenticate with their authenticator (only supported for WebAuthn devices), by following [these instructions](../authenticator_validate/index.mdx#passwordless-authentication).
-- dynamically skip a Password stage (depending on the user's device), as documented on this page.
+- Use an [Authenticator Validation](../authenticator_validate/index.md#passwordless-authentication) stage with WebAuthn for a dedicated passwordless flow.
+- Conditionally skip the Password stage by binding a policy to its stage binding.
 
-If you want users to be able to pick a passkey from the browser's passkey/autofill UI without entering a username first, configure **Passkey autofill (WebAuthn conditional UI)** in the [Identification stage](../identification/index.mdx#passkey-autofill-webauthn-conditional-ui). This is separate from configuring a dedicated passwordless flow, and can be used alongside normal identification flows.
+If you want users to be able to pick a passkey from the browser's passkey/autofill UI without entering a username first, configure **Passkey autofill (WebAuthn conditional UI)** in the [Identification stage](../identification/index.md#passkey-autofill-webauthn-conditional-ui). This is separate from configuring a dedicated passwordless flow, and can be used alongside normal identification flows.
 
-Depending on what kind of device you want to require the user to have:
+### Dynamically skip a Password stage
+
+This setup keeps a normal identification flow, but skips the Password stage for users who already have a supported authenticator configured.
+
+To configure this setup:
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Customization** > **Policies** and create an [Expression Policy](../../../../customize/policies/types/expression/index.mdx).
+3. Configure the expression so that it returns `True` only when the Password stage should run. Use one of the expressions below, depending on the authenticator type.
+4. Navigate to **Flows and Stages** > **Flows** and open your authentication flow.
+5. Open the **Stage Bindings** tab, expand the Password stage binding, and bind the Expression Policy there. Do not bind it to the flow itself or directly to the stage object. For more background, see [Bind a policy to a stage binding](../../../../customize/policies/working_with_policies.md#bind-a-policy-to-a-stage-binding).
+6. On the Password stage binding, enable **Evaluate when stage is run**. Disable **Evaluate when flow is planned** unless the user is already known before the flow starts. See [Planning and stage policies](../../flow/planner.md#planning-and-stage-policies).
 
 #### WebAuthn
 
 ```python
 from authentik.stages.authenticator_webauthn.models import WebAuthnDevice
-return WebAuthnDevice.objects.filter(user=request.context['pending_user'], confirmed=True).exists()
+
+pending_user = request.context.get("pending_user")
+if not pending_user:
+    return True
+
+return not WebAuthnDevice.objects.filter(user=pending_user, confirmed=True).exists()
 ```
 
-#### Duo
+Or for Duo:
 
 ```python
 from authentik.stages.authenticator_duo.models import DuoDevice
-return DuoDevice.objects.filter(user=request.context['pending_user'], confirmed=True).exists()
+
+pending_user = request.context.get("pending_user")
+if not pending_user:
+    return True
+
+return not DuoDevice.objects.filter(user=pending_user, confirmed=True).exists()
 ```
 
-Afterwards, bind the policy you've created to the stage binding of the password stage.
+Because the expression already returns whether the Password stage should run, you do not need to enable **Negate result** on the policy binding.
 
-Make sure to uncheck _Evaluate when flow is planned_ and check _Evaluate when stage is run_, otherwise an invalid result will be cached.
+If the Password stage binding has more than one policy attached, review its **Policy engine mode** carefully:
+
+- With only this policy attached, either mode works.
+- If multiple policies are attached, `all` requires every policy to pass before the Password stage runs.
+- If multiple policies are attached, `any` runs the Password stage when any bound policy passes.
+
+#### Default authentication flow
+
+The built-in `default-authentication-flow` already includes a policy binding on its Password stage, `default-authentication-flow-password-stage`, which controls whether the Password stage should appear.
+
+If you add a second policy to that same Password stage binding, set the stage binding's **Policy engine mode** to `all` so both the built-in policy and your Expression Policy must pass before the Password stage runs.
+
+Keep **Evaluate when stage is run** enabled on that binding. In the default blueprint, this is already configured.

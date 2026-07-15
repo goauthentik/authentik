@@ -5,72 +5,61 @@ import "#admin/endpoints/connectors/gdtc/GoogleChromeConnectorForm";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
-import { CustomFormElementTagName } from "#elements/forms/unsafe";
+import { IconEditButtonByTagName, ModalInvokerButton } from "#elements/dialogs";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
-import { StrictUnsafe } from "#elements/utils/unsafe";
+
+import { AKEndpointConnectorWizard } from "#admin/endpoints/connectors/ConnectorWizard";
 
 import { Connector, EndpointsApi } from "@goauthentik/api";
 
-import { msg, str } from "@lit/localize";
+import { msg } from "@lit/localize";
 import { html } from "lit";
 import { customElement } from "lit/decorators.js";
 
 @customElement("ak-endpoints-connectors-list")
 export class ConnectorsListPage extends TablePage<Connector> {
-    public pageIcon = "pf-icon pf-icon-data-source";
-    public pageTitle = msg("Connectors");
-    public pageDescription = msg(
+    public static override verboseName = msg("Connector");
+    public static override verboseNamePlural = msg("Connectors");
+
+    public override searchPlaceholder = msg("Search connectors by name or type...");
+    public override pageIcon = "pf-icon pf-icon-data-source";
+    public override pageTitle = msg("Connectors");
+    public override pageDescription = msg(
         "Configure how devices connect with authentik and ingest external device data.",
     );
 
-    protected searchEnabled: boolean = true;
-    protected columns: TableColumn[] = [
+    protected override searchEnabled: boolean = true;
+    protected override columns: TableColumn[] = [
         [msg("Name"), "name"],
         [msg("Type")],
         [msg("Actions"), null, msg("Row Actions")],
     ];
 
-    checkbox = true;
+    public override checkbox = true;
 
-    async apiEndpoint(): Promise<PaginatedResponse<Connector>> {
-        return new EndpointsApi(DEFAULT_CONFIG).endpointsConnectorsList(
-            await this.defaultEndpointConfig(),
-        );
+    protected override async apiEndpoint(): Promise<PaginatedResponse<Connector>> {
+        return aki(EndpointsApi).endpointsConnectorsList(await this.defaultEndpointConfig());
     }
 
-    row(item: Connector): SlottedTemplateResult[] {
+    protected override row(item: Connector): SlottedTemplateResult[] {
         return [
             html`<a href="#/endpoints/connectors/${item.connectorUuid}">${item.name}</a>`,
-            html`${item.verboseName}`,
-            html`<div>
-                <ak-forms-modal>
-                    ${StrictUnsafe<CustomFormElementTagName>(item.component, {
-                        slot: "form",
-                        instancePk: item.connectorUuid,
-                        submitLabel: msg("Save Changes"),
-                        headline: msg(str`Update ${item.verboseName}`, {
-                            id: "form.headline.update",
-                        }),
-                    })}
-                    <button slot="trigger" class="pf-c-button pf-m-plain">
-                        <pf-tooltip position="top" content=${msg("Edit")}>
-                            <i class="fas fa-edit" aria-hidden="true"></i>
-                        </pf-tooltip>
-                    </button>
-                </ak-forms-modal>
+            item.verboseName,
+            html`<div class="ak-c-table__actions">
+                ${IconEditButtonByTagName(item.component, item.connectorUuid, item.verboseName)}
             </div>`,
         ];
     }
 
-    renderObjectCreate() {
-        return html`<ak-endpoint-connector-wizard></ak-endpoint-connector-wizard> `;
+    protected override renderObjectCreate(): SlottedTemplateResult {
+        return ModalInvokerButton(AKEndpointConnectorWizard);
     }
 
-    renderToolbarSelected() {
+    protected override renderToolbarSelected(): SlottedTemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
             object-label=${msg("Connector(s)")}
@@ -79,12 +68,12 @@ export class ConnectorsListPage extends TablePage<Connector> {
                 return [{ key: msg("Name"), value: item.name }];
             }}
             .usedBy=${(item: Connector) => {
-                return new EndpointsApi(DEFAULT_CONFIG).endpointsConnectorsUsedByList({
+                return aki(EndpointsApi).endpointsConnectorsUsedByList({
                     connectorUuid: item.connectorUuid!,
                 });
             }}
             .delete=${(item: Connector) => {
-                return new EndpointsApi(DEFAULT_CONFIG).endpointsConnectorsDestroy({
+                return aki(EndpointsApi).endpointsConnectorsDestroy({
                     connectorUuid: item.connectorUuid!,
                 });
             }}

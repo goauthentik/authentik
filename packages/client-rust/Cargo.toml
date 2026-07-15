@@ -12,14 +12,13 @@ publish = false
 
 [dependencies]
 aws-lc-rs.workspace = true
+chrono.workspace = true
 serde.workspace = true
 serde_with.workspace = true
 serde_json.workspace = true
 serde_repr.workspace = true
 url.workspace = true
 uuid.workspace = true
-tokio.workspace = true
-tokio-util.workspace = true
 reqwest.workspace = true
 reqwest-middleware.workspace = true
 rustls.workspace = true

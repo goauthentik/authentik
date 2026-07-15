@@ -7,7 +7,7 @@ import "#elements/buttons/ModalButton";
 import "#elements/buttons/SpinnerButton/ak-spinner-button";
 import "#elements/forms/ModalForm";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { AKElement } from "#elements/Base";
 
@@ -57,28 +57,29 @@ export class AdminSettingsPage extends AKElement {
     }
 
     #refresh = () => {
-        return new AdminApi(DEFAULT_CONFIG).adminSettingsRetrieve().then((settings) => {
-            this.settings = settings;
-        });
+        return aki(AdminApi)
+            .adminSettingsRetrieve()
+            .then((settings) => {
+                this.settings = settings;
+            });
     };
 
     render() {
         if (!this.settings) return nothing;
 
         return html`
-            <section class="pf-c-page__main-section pf-m-no-padding-mobile pf-l-grid pf-m-gutter">
+            <main class="pf-c-page__main-section pf-m-no-padding-mobile pf-l-grid pf-m-gutter">
                 <div class="pf-c-card">
                     <div class="pf-c-card__body">
                         <ak-admin-settings-form
                             id="form"
                             .settings=${this.settings}
-                            action-label=${msg("Update settings")}
                             @ak-form-submitted=${{ handleEvent: this.#refresh, passive: true }}
                         >
                         </ak-admin-settings-form>
                     </div>
                 </div>
-            </section>
+            </main>
         `;
     }
 

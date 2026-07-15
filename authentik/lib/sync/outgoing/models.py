@@ -1,3 +1,4 @@
+import math
 from typing import Any, Self
 
 import pglock
@@ -9,6 +10,7 @@ from django.utils.translation import gettext_lazy as _
 from dramatiq.actor import Actor
 
 from authentik.core.models import Group, User
+from authentik.lib.config import advisory_lock_db_alias
 from authentik.lib.sync.outgoing.base import BaseOutgoingSyncClient
 from authentik.lib.utils.time import fqdn_rand, timedelta_from_string, timedelta_string_validator
 from authentik.tasks.schedules.common import ScheduleSpec
@@ -68,7 +70,12 @@ class OutgoingSyncProvider(ScheduledModel, Model):
         return Paginator(self.get_object_qs(type), self.sync_page_size)
 
     def get_object_sync_time_limit_ms[T: User | Group](self, type: type[T]) -> int:
-        num_pages: int = self.get_paginator(type).num_pages
+        # Use a simple COUNT(*) on the model instead of materializing get_object_qs(),
+        # which for some providers (e.g. SCIM) runs PolicyEngine per-user and is
+        # extremely expensive. The time limit is an upper-bound estimate, so using
+        # the total count (without policy filtering) is a safe overestimate.
+        total_count = type.objects.count()
+        num_pages = math.ceil(total_count / self.sync_page_size) if total_count > 0 else 1
         page_timeout_ms = timedelta_from_string(self.sync_page_timeout).total_seconds() * 1000
         return int(num_pages * page_timeout_ms * 1.5)
 
@@ -85,6 +92,7 @@ class OutgoingSyncProvider(ScheduledModel, Model):
             lock_id=f"goauthentik.io/{connection.schema_name}/providers/outgoing-sync/{str(self.pk)}",
             timeout=0,
             side_effect=pglock.Return,
+            using=advisory_lock_db_alias(),
         )
 
     @property

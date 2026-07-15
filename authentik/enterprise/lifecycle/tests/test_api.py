@@ -1,3 +1,4 @@
+from django.apps import apps
 from django.contrib.contenttypes.models import ContentType
 from django.urls import reverse
 from rest_framework.test import APITestCase
@@ -5,11 +6,11 @@ from rest_framework.test import APITestCase
 from authentik.core.models import Application, Group
 from authentik.core.tests.utils import create_test_admin_user, create_test_user
 from authentik.enterprise.lifecycle.models import LifecycleIteration, LifecycleRule, ReviewState
-from authentik.enterprise.reports.tests.utils import patch_license
+from authentik.enterprise.tests import enterprise_test
 from authentik.lib.generators import generate_id
 
 
-@patch_license
+@enterprise_test()
 class TestLifecycleRuleAPI(APITestCase):
 
     def setUp(self):
@@ -18,6 +19,11 @@ class TestLifecycleRuleAPI(APITestCase):
         self.app = Application.objects.create(name=generate_id(), slug=generate_id())
         self.content_type = ContentType.objects.get_for_model(Application)
         self.reviewer_group = Group.objects.create(name=generate_id())
+
+    @classmethod
+    def setUpTestData(cls):
+        config = apps.get_app_config("authentik_tasks_schedules")
+        config._on_startup_callback(None)
 
     def test_list_rules(self):
         rule = LifecycleRule.objects.create(
@@ -179,7 +185,7 @@ class TestLifecycleRuleAPI(APITestCase):
         self.assertFalse(LifecycleRule.objects.filter(pk=rule.pk).exists())
 
 
-@patch_license
+@enterprise_test()
 class TestIterationAPI(APITestCase):
 
     def setUp(self):
@@ -189,6 +195,11 @@ class TestIterationAPI(APITestCase):
         self.content_type = ContentType.objects.get_for_model(Application)
         self.reviewer_group = Group.objects.create(name=generate_id())
         self.reviewer_group.users.add(self.user)
+
+    @classmethod
+    def setUpTestData(cls):
+        config = apps.get_app_config("authentik_tasks_schedules")
+        config._on_startup_callback(None)
 
     def test_open_iterations(self):
         rule = LifecycleRule.objects.create(
@@ -231,7 +242,7 @@ class TestIterationAPI(APITestCase):
 
         response = self.client.get(
             reverse(
-                "authentik_api:lifecycleiteration-latest-iteration",
+                "authentik_api:lifecycleiteration-latest-iterations",
                 kwargs={
                     "content_type": f"{self.content_type.app_label}.{self.content_type.model}",
                     "object_id": str(self.app.pk),
@@ -239,19 +250,20 @@ class TestIterationAPI(APITestCase):
             )
         )
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.data["object_id"], str(self.app.pk))
+        self.assertEqual(len(response.data), 1)
+        self.assertEqual(response.data[0]["object_id"], str(self.app.pk))
 
     def test_latest_iteration_not_found(self):
         response = self.client.get(
             reverse(
-                "authentik_api:lifecycleiteration-latest-iteration",
+                "authentik_api:lifecycleiteration-latest-iterations",
                 kwargs={
                     "content_type": f"{self.content_type.app_label}.{self.content_type.model}",
                     "object_id": "00000000-0000-0000-0000-000000000000",
                 },
             )
         )
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.data, [])
 
     def test_iteration_includes_user_can_review(self):
         rule = LifecycleRule.objects.create(
@@ -268,7 +280,7 @@ class TestIterationAPI(APITestCase):
         self.assertIn("user_can_review", response.data["results"][0])
 
 
-@patch_license
+@enterprise_test()
 class TestReviewAPI(APITestCase):
 
     def setUp(self):
@@ -278,6 +290,11 @@ class TestReviewAPI(APITestCase):
         self.content_type = ContentType.objects.get_for_model(Application)
         self.reviewer_group = Group.objects.create(name=generate_id())
         self.reviewer_group.users.add(self.user)
+
+    @classmethod
+    def setUpTestData(cls):
+        config = apps.get_app_config("authentik_tasks_schedules")
+        config._on_startup_callback(None)
 
     def test_create_review(self):
         rule = LifecycleRule.objects.create(

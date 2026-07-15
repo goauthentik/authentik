@@ -1,5 +1,5 @@
 [alias]
-t = ["nextest", "run"]
+t = ["nextest", "run", "--workspace"]
 
 [build]
 rustflags = ["--cfg", "tokio_unstable"]

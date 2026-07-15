@@ -14,3 +14,10 @@
 .pf-c-dropdown {
     --pf-c-dropdown__toggle--PaddingLeft: var(--pf-global--spacer--md);
 }
+
+.empty-state-primary {
+    display: flex;
+    justify-content: center;
+    gap: var(--pf-global--spacer--sm);
+    justify-content: center;
+}

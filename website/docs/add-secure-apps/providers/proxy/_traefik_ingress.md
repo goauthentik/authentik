@@ -23,6 +23,9 @@ spec:
             - X-authentik-meta-provider
             - X-authentik-meta-app
             - X-authentik-meta-version
+            # Add the 'authorization' header to authResponseHeaders if you need proxy providers which
+            # send a custom HTTP-Basic Authentication header based on values from authentik
+            # - authorization
 ```
 
 :::info
@@ -33,7 +36,7 @@ Add the following settings to your IngressRoute
 
 By default traefik does not allow cross-namespace references for middlewares:
 
-See [here](https://doc.traefik.io/traefik/v2.4/providers/kubernetes-crd/#allowcrossnamespace) to enable it.
+See the [Traefik cross-namespace reference documentation](https://doc.traefik.io/traefik/v2.4/providers/kubernetes-crd/#allowcrossnamespace) to enable it.
 
 ```yaml
 spec:

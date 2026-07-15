@@ -69,11 +69,11 @@ async fn watch_signals(streams: SignalStreams, arbiter: Arbiter) -> Result<()> {
                 arbiter.do_graceful_shutdown().await;
             },
             _ = usr1.recv() => {
-                info!("signal URS1 received");
+                info!("signal USR1 received");
                 let _ = arbiter.send_event(SignalKind::user_defined1().into());
             },
             _ = usr2.recv() => {
-                info!("USR2 received.");
+                info!("signal USR2 received");
                 let _ = arbiter.send_event(SignalKind::user_defined2().into());
             },
             () = arbiter.shutdown() => {
@@ -210,7 +210,7 @@ impl Arbiter {
     /// Consumers listening on this must also listen on [`Arbiter::graceful_shutdown`], as only one
     /// of those is set upon shutdown.
     ///
-    /// It is also possible to use [`Arbiter::shutdown`] when the behaviour is the same between a
+    /// It is also possible to use [`Arbiter::shutdown`] when the behavior is the same between a
     /// fast and a graceful shutdown.
     pub fn fast_shutdown(&self) -> WaitForCancellationFuture<'_> {
         self.fast_shutdown.cancelled()
@@ -221,7 +221,7 @@ impl Arbiter {
     /// Consumers listening on this must also listen on [`Arbiter::fast_shutdown`], as only one
     /// of those is set upon shutdown.
     ///
-    /// It is also possible to use [`Arbiter::shutdown`] when the behaviour is the same between a
+    /// It is also possible to use [`Arbiter::shutdown`] when the behavior is the same between a
     /// fast and a graceful shutdown.
     pub fn graceful_shutdown(&self) -> WaitForCancellationFuture<'_> {
         self.graceful_shutdown.cancelled()
@@ -235,7 +235,7 @@ impl Arbiter {
     }
 
     /// Shutdown the application immediately.
-    async fn do_fast_shutdown(&self) {
+    pub async fn do_fast_shutdown(&self) {
         info!("arbiter has been told to shutdown immediately");
         self.unix_handles
             .lock()
@@ -253,7 +253,7 @@ impl Arbiter {
     }
 
     /// Shutdown the application gracefully.
-    async fn do_graceful_shutdown(&self) {
+    pub async fn do_graceful_shutdown(&self) {
         info!("arbiter has been told to shutdown gracefully");
         // Match the value in lifecycle/gunicorn.conf.py for graceful shutdown
         let timeout = Some(Duration::from_secs(30 + 5));
@@ -307,12 +307,13 @@ impl From<SignalKind> for Event {
 mod tests {
     mod events {
         use nix::sys::signal::{Signal, raise};
+        use tokio::time::sleep;
 
         use super::super::*;
 
         async fn signal_self(signal: Signal) {
             raise(signal).expect("failed to send signal");
-            tokio::time::sleep(Duration::from_millis(50)).await;
+            sleep(Duration::from_millis(50)).await;
         }
 
         #[tokio::test]

@@ -9,6 +9,7 @@ on:
       - packages/eslint-config/**
       - packages/prettier-config/**
       - packages/docusaurus-config/**
+      - packages/logger-js/**
       - packages/esbuild-plugin-live-reload/**
   workflow_dispatch:
 
@@ -32,25 +33,31 @@ jobs:
           - packages/logger-js
           - packages/esbuild-plugin-live-reload
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v5
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v5
         with:
           fetch-depth: 2
-      - uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v5
+      - uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # v6.0.9
+      - name: Pin pnpm store directory
+        run: |
+          echo "PNPM_HOME=${RUNNER_TEMP}/pnpm-home" >> "$GITHUB_ENV"
+          echo "npm_config_store_dir=${RUNNER_TEMP}/pnpm-home/store" >> "$GITHUB_ENV"
+      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v4
         with:
-          node-version-file: ${{ matrix.package }}/package.json
-          registry-url: "https://registry.npmjs.org"
+          node-version-file: package.json
+          registry-url: https://registry.npmjs.org
+          cache: pnpm
+          cache-dependency-path: pnpm-lock.yaml
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
       - name: Get changed files
         id: changed-files
-        uses: tj-actions/changed-files@22103cc46bda19c2b464ffe86db46df6922fd323 # 24d32ffd492484c1d75e0c0b894501ddb9d30d62
+        uses: tj-actions/changed-files@9426d40962ed5378910ee2e21d5f8c6fcbf2dd96 # 24d32ffd492484c1d75e0c0b894501ddb9d30d62
         with:
           files: |
             ${{ matrix.package }}/package.json
-      - name: Install Dependencies
-        run: npm ci
       - name: Publish package
         if: steps.changed-files.outputs.any_changed == 'true'
         working-directory: ${{ matrix.package }}
         run: |
-          npm ci
-          npm run build
-          npm publish
+          pnpm run build
+          pnpm publish --no-git-checks

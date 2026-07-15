@@ -15,7 +15,35 @@ ak-message {
     display: block;
 }
 
-:host([alignment="bottom"]) .pf-c-alert-group.pf-m-toast {
-    bottom: var(--pf-c-alert-group--m-toast--Top);
-    top: unset;
+/* TODO: Revisit after PF4 upgrade. Our usage is has diverged from the original intent
+ * and this may no longer be the best base style to use. */
+
+.pf-c-alert-group.pf-m-toast {
+    --pf-c-alert-group--m-toast--Bottom: var(--pf-global--spacer--md);
+    --pf-c-alert-group--m-toast--Right: var(--pf-global--spacer--md);
+    --pf-c-alert-group--m-toast--Left: var(--pf-global--spacer--md);
+
+    max-width: clamp(10rem, var(--pf-c-alert-group--m-toast--MaxWidth), 25dvw);
+    min-width: max-content;
+
+    &[data-alignment^="bottom"] {
+        bottom: var(--pf-global--spacer--md);
+        top: unset;
+    }
+
+    &[data-alignment^="top"] {
+        top: var(--pf-global--spacer--md);
+        bottom: unset;
+    }
+
+    &[data-alignment$="left"],
+    &[data-alignment="bottom"] {
+        left: var(--pf-global--spacer--md);
+        right: unset;
+    }
+
+    &[data-alignment$="right"] {
+        right: var(--pf-global--spacer--md);
+        left: unset;
+    }
 }

@@ -22,7 +22,7 @@ class ObjectPermissions(DjangoObjectPermissions):
         lookup = getattr(view, "lookup_url_kwarg", None) or getattr(view, "lookup_field", None)
         if lookup and lookup in view.kwargs:
             return True
-        # Legacy behaviour:
+        # Legacy behavior:
         # Allow creation of objects even without explicit permission
         queryset = self._queryset(view)
         required_perms = self.get_required_permissions(request.method, queryset.model)
