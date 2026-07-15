@@ -4596,10 +4596,6 @@ doesn't pass when either or both of the selected options are equal or above the 
   <source>Optional URL if the IDP supports Single-Logout.</source>
   <target>URL opcional se o IDP suportar Single-Logout.</target>
 </trans-unit>
-<trans-unit id="se7430794fa89005a">
-  <source>Also known as Entity ID. Defaults the Metadata URL.</source>
-  <target>Também conhecido como Entity ID. Por padrão, é a URL de Metadados.</target>
-</trans-unit>
 <trans-unit id="s5615bb595ad6ded6">
   <source>Binding Type</source>
   <target>Tipo de ligação</target>
@@ -11506,6 +11502,15 @@ por exemplo: <x id="0" equiv-text="&lt;code&gt;"/>oci://registry.domain.tld/path
 </trans-unit>
 <trans-unit id="sb401ca35f1d61eed">
   <source>e.g. invitation-stage</source>
+</trans-unit>
+<trans-unit id="sc30c9b42e2a1ebe7">
+  <source>Token exchange</source>
+</trans-unit>
+<trans-unit id="s466fe1c428b4b61a">
+  <source>Issuer override</source>
+</trans-unit>
+<trans-unit id="s19ccfb86a879e6b9">
+  <source>Also known as Entity ID. Defaults to the Metadata URL.</source>
 </trans-unit>
 </body>
 </file>
