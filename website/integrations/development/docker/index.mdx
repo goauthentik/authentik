@@ -1,18 +1,18 @@
 ---
-title: Integrate with Docker Hub
-sidebar_label: Docker Hub
+title: Integrate with Docker
+sidebar_label: Docker
 support_level: community
 ---
 
 import SAMLProvider20265Warning from "../../_saml-provider-2026-5-warning.mdx";
 
-## What is Docker Hub?
+## What is Docker?
 
-> Docker Hub is a hosted container registry for finding, sharing, and managing container images.
+> Docker provides tools and services for building, sharing, and running containerized applications.
 >
-> -- https://www.docker.com/products/docker-hub/
+> -- https://www.docker.com/
 
-This guide configures authentik as a SAML identity provider for Docker Hub.
+This guide configures authentik as a SAML identity provider for Docker Hub and Docker Desktop.
 
 ## Preparation
 
@@ -35,7 +35,7 @@ This documentation lists only the settings that you need to change from their de
 
 ## authentik configuration
 
-To support the integration of Docker Hub with authentik, create an application/provider pair in authentik.
+To support the integration of Docker with authentik, create an application/provider pair in authentik.
 
 ### Create an application and provider
 
@@ -54,7 +54,7 @@ To support the integration of Docker Hub with authentik, create an application/p
             - Select an available **Signing Certificate**.
             - Set **NameID Property Mapping** to `authentik default SAML Mapping: Email`.
             - Set **Default NameID Policy** to **Email address**.
-    - **Configure Bindings** _(optional)_: create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage which users can access Docker Hub from their **Application Dashboard** page.
+    - **Configure Bindings** _(optional)_: create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage which users can access Docker from their **Application Dashboard** page.
 3. Click **Submit** to save the application and provider.
 
 ### Download the signing certificate
@@ -62,7 +62,7 @@ To support the integration of Docker Hub with authentik, create an application/p
 1. Navigate to **Applications** > **Providers** and click the name of the SAML provider that you created.
 2. Under **Related objects** > **Download signing certificate**, click **Download**. The certificate is required to complete the Docker SSO connection.
 
-## Docker Hub configuration
+## Docker configuration
 
 ### Complete the SAML connection
 
@@ -88,7 +88,7 @@ Test SSO with an organization owner account before enabling enforcement. Ensure 
 
 ## Configuration verification
 
-To confirm that authentik is properly configured with Docker Hub, open Docker Hub from the authentik Application Dashboard and sign in with an email address from the verified domain. You should be redirected to authentik and then returned to Docker Hub.
+To confirm that authentik is properly configured with Docker, open Docker from the authentik Application Dashboard and sign in with an email address from the verified domain. You should be redirected to authentik and then returned to Docker Hub.
 
 ## Resources
 
