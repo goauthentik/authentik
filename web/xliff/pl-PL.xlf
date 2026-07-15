@@ -4247,10 +4247,6 @@ nie przechodzi, gdy jedna lub obie wybrane opcje są równe lub wyższe od progu
   <source>Optional URL if the IDP supports Single-Logout.</source>
   <target>Opcjonalny URL, jeśli dostawca tożsamości obsługuje pojedyncze wylogowanie.</target>
 </trans-unit>
-<trans-unit id="se7430794fa89005a">
-  <source>Also known as Entity ID. Defaults the Metadata URL.</source>
-  <target>Znany również jako Entity ID. Domyślny adres URL metadanych.</target>
-</trans-unit>
 <trans-unit id="s5615bb595ad6ded6">
   <source>Binding Type</source>
   <target>Typ wiązania</target>
@@ -10915,6 +10911,12 @@ Powiązania z grupami/użytkownikami są sprawdzane względem użytkownika zdarz
 </trans-unit>
 <trans-unit id="sc30c9b42e2a1ebe7">
   <source>Token exchange</source>
+</trans-unit>
+<trans-unit id="s466fe1c428b4b61a">
+  <source>Issuer override</source>
+</trans-unit>
+<trans-unit id="s19ccfb86a879e6b9">
+  <source>Also known as Entity ID. Defaults to the Metadata URL.</source>
 </trans-unit>
 </body>
 </file>
