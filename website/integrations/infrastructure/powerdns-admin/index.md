@@ -25,6 +25,9 @@ Create a SAML provider with the following parameters:
 
 - ACS URL: `https://pdns-admin.company/saml/authorized`
 - Audience: `pdns-admin`
+- SLS URL: `https://pdns-admin.company/saml/sls`
+- SLS Binding: `Redirect`
+- Logout Method: `Front-channel (Iframe)`
 - Signing Keypair: Select any certificate you have.
 - Property mappings: Select all Managed mappings.
 

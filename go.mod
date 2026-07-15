@@ -18,7 +18,7 @@ require (
 	github.com/gorilla/securecookie v1.1.2
 	github.com/gorilla/sessions v1.4.0
 	github.com/gorilla/websocket v1.5.3
-	github.com/grafana/pyroscope-go v1.4.0
+	github.com/grafana/pyroscope-go v1.4.1
 	github.com/jackc/pgx/v5 v5.10.0
 	github.com/jellydator/ttlcache/v3 v3.4.1
 	github.com/mitchellh/mapstructure v1.5.0

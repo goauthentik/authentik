@@ -24425,7 +24425,7 @@ paths:
         schema:
           type: boolean
       - in: query
-        name: issuer
+        name: issuer_override
         schema:
           type: string
       - in: query
@@ -50866,9 +50866,9 @@ components:
           type: string
           format: uuid
           description: Flow used before authentication.
-        issuer:
+        issuer_override:
           type: string
-          description: Also known as Entity ID. Defaults the Metadata URL.
+          description: Also known as Entity ID. Defaults to the Metadata URL.
         sso_url:
           type: string
           minLength: 1
@@ -52722,9 +52722,9 @@ components:
       type: string
     ProviderTypeEnum:
       enum:
+      - openidconnect
       - apple
       - discord
-      - openidconnect
       - entraid
       - facebook
       - github
@@ -54605,9 +54605,14 @@ components:
           type: string
           format: uuid
           description: Flow used before authentication.
-        issuer:
+        issuer_override:
           type: string
-          description: Also known as Entity ID. Defaults the Metadata URL.
+          description: Also known as Entity ID. Defaults to the Metadata URL.
+        url_issuer:
+          type: string
+          description: Get the resolved Issuer, falling back to the metadata URL when
+            unset
+          readOnly: true
         sso_url:
           type: string
           description: URL that the initial Login request is sent to.
@@ -54679,6 +54684,7 @@ components:
       - pre_authentication_flow
       - slug
       - sso_url
+      - url_issuer
       - verbose_name
       - verbose_name_plural
     SAMLSourcePropertyMapping:
@@ -54808,9 +54814,9 @@ components:
           type: string
           format: uuid
           description: Flow used before authentication.
-        issuer:
+        issuer_override:
           type: string
-          description: Also known as Entity ID. Defaults the Metadata URL.
+          description: Also known as Entity ID. Defaults to the Metadata URL.
         sso_url:
           type: string
           minLength: 1

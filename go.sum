@@ -108,8 +108,8 @@ github.com/gorilla/sessions v1.4.0/go.mod h1:FLWm50oby91+hl7p/wRxDth9bWSuk0qVL2e
 github.com/gorilla/websocket v1.4.1/go.mod h1:YR8l580nyteQvAITg2hZ9XVh4b55+EU/adAjf1fMHhE=
 github.com/gorilla/websocket v1.5.3 h1:saDtZ6Pbx/0u+bgYQ3q96pZgCzfhKXGPqt7kZ72aNNg=
 github.com/gorilla/websocket v1.5.3/go.mod h1:YR8l580nyteQvAITg2hZ9XVh4b55+EU/adAjf1fMHhE=
-github.com/grafana/pyroscope-go v1.4.0 h1:WD0vVpwdmj206XaHyt0dO+N82Ae3PXVGF/I8Kvux5Lo=
-github.com/grafana/pyroscope-go v1.4.0/go.mod h1:YiILNniTN5GG9QcJRskdAyZPUN8DGWtGLI5aq29Re7E=
+github.com/grafana/pyroscope-go v1.4.1 h1:SKvuZz1qTFpNXjHY3XGlm92mS9wJeCI/TZR42XcDs9w=
+github.com/grafana/pyroscope-go v1.4.1/go.mod h1:WQY21vHNiD2o/icxqVPM0AmofabycbhnPPHoV1/4X6s=
 github.com/grafana/pyroscope-go/godeltaprof v0.1.11 h1:el5LYpXissAiCKZ5/6yjlr6mhYVV6Cp5lahTocxraXM=
 github.com/grafana/pyroscope-go/godeltaprof v0.1.11/go.mod h1:jl1V8M4cWsXciROCPIDDG7CtjSjT/ECbp6eLVuMxYRI=
 github.com/hashicorp/go-uuid v1.0.3 h1:2gKiV6YVmrJ1i2CKKa9obLvRieoRGviZFL26PcT/Co8=
