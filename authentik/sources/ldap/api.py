@@ -209,7 +209,7 @@ class LDAPSourceViewSet(UsedByMixin, ModelViewSet):
             ),
         }
     )
-    @action(methods=["GET"], detail=True, pagination_class=None, filter_backends=[])
+    @action(methods=["GET"], detail=True, pagination_class=None, filter_backends=[ObjectFilter])
     def debug(self, request: Request, slug: str) -> Response:
         """Get raw LDAP data to debug"""
         source = self.get_object()
