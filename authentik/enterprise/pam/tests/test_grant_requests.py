@@ -251,3 +251,107 @@ class GrantRequestsTests(APITestCase):
             )
             self.assertEqual(res.status_code, 204, res.content)
         self.assertEqual(GrantRequestApproval.objects.filter(request=req).count(), 1)
+
+    def test_revoke_active_grant(self):
+        """A reviewer can revoke an approved (active) grant, expiring its PolicyBinding"""
+        reviewer = create_test_user()
+        reviewer.assign_perms_to_managed_role("authentik_pam.change_grantrequest")
+        reviewer.assign_perms_to_managed_role("authentik_pam.view_grantrequest")
+
+        app = Application.objects.create(
+            name=generate_id(),
+            slug=generate_id(),
+        )
+        rule = PolicyBindingModelRequestRule.objects.create(
+            name=generate_id(),
+            pbm=app,
+        )
+        rule.reviewers.add(reviewer)
+
+        requester = create_test_user()
+        req = GrantRequest.objects.create(created_by=requester)
+        GrantRequestTarget.objects.create(request=req, target=app)
+
+        self.client.force_login(reviewer)
+        self.client.patch(
+            reverse("authentik_api:grantrequest-fulfill", kwargs={"pk": req.pk}),
+            data={"status": "approved", "data": {}},
+        )
+        req.refresh_from_db()
+        self.assertTrue(req.is_active)
+
+        res = self.client.post(
+            reverse("authentik_api:grantrequest-revoke", kwargs={"pk": req.pk}),
+        )
+        self.assertEqual(res.status_code, 204, res.content)
+        req.refresh_from_db()
+        self.assertEqual(req.status, RequestStatus.REVOKED)
+        self.assertEqual(req.revoked_by, reviewer)
+        self.assertFalse(req.is_active)
+
+        binding = PolicyBinding.objects.get(user=requester, target=app)
+        self.assertTrue(binding.is_expired)
+
+    def test_revoke_requires_reviewer_permission(self):
+        """A user who isn't an eligible reviewer for the rule cannot revoke"""
+        reviewer = create_test_user()
+        reviewer.assign_perms_to_managed_role("authentik_pam.change_grantrequest")
+        reviewer.assign_perms_to_managed_role("authentik_pam.view_grantrequest")
+        outsider = create_test_user()
+        outsider.assign_perms_to_managed_role("authentik_pam.change_grantrequest")
+        outsider.assign_perms_to_managed_role("authentik_pam.view_grantrequest")
+
+        app = Application.objects.create(
+            name=generate_id(),
+            slug=generate_id(),
+        )
+        rule = PolicyBindingModelRequestRule.objects.create(
+            name=generate_id(),
+            pbm=app,
+        )
+        rule.reviewers.add(reviewer)
+
+        requester = create_test_user()
+        req = GrantRequest.objects.create(created_by=requester)
+        GrantRequestTarget.objects.create(request=req, target=app)
+
+        self.client.force_login(reviewer)
+        self.client.patch(
+            reverse("authentik_api:grantrequest-fulfill", kwargs={"pk": req.pk}),
+            data={"status": "approved", "data": {}},
+        )
+
+        self.client.force_login(outsider)
+        res = self.client.post(
+            reverse("authentik_api:grantrequest-revoke", kwargs={"pk": req.pk}),
+        )
+        self.assertEqual(res.status_code, 400)
+        req.refresh_from_db()
+        self.assertEqual(req.status, RequestStatus.APPROVED)
+
+    def test_revoke_before_approval_is_noop(self):
+        """Revoking a request that was never approved does nothing"""
+        reviewer = create_test_user()
+        reviewer.assign_perms_to_managed_role("authentik_pam.change_grantrequest")
+        reviewer.assign_perms_to_managed_role("authentik_pam.view_grantrequest")
+
+        app = Application.objects.create(
+            name=generate_id(),
+            slug=generate_id(),
+        )
+        rule = PolicyBindingModelRequestRule.objects.create(
+            name=generate_id(),
+            pbm=app,
+        )
+        rule.reviewers.add(reviewer)
+
+        req = GrantRequest.objects.create(created_by=create_test_user())
+        GrantRequestTarget.objects.create(request=req, target=app)
+
+        self.client.force_login(reviewer)
+        res = self.client.post(
+            reverse("authentik_api:grantrequest-revoke", kwargs={"pk": req.pk}),
+        )
+        self.assertEqual(res.status_code, 204, res.content)
+        req.refresh_from_db()
+        self.assertEqual(req.status, RequestStatus.CREATED)

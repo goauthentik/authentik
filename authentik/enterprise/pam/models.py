@@ -3,6 +3,7 @@ from typing import Any
 from uuid import uuid4
 
 from django.db import models, transaction
+from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import Serializer
 
@@ -16,6 +17,7 @@ class RequestStatus(models.TextChoices):
     CREATED = "created"
     APPROVED = "approved"
     DENIED = "denied"
+    REVOKED = "revoked"
 
 
 class GrantRequest(SerializerModel, ExpiringModel, CreatedUpdatedModel):
@@ -30,6 +32,13 @@ class GrantRequest(SerializerModel, ExpiringModel, CreatedUpdatedModel):
         User,
         on_delete=models.SET_DEFAULT,
         related_name="grant_requests_fulfilled",
+        null=True,
+        default=None,
+    )
+    revoked_by = models.ForeignKey(
+        User,
+        on_delete=models.SET_DEFAULT,
+        related_name="grant_requests_revoked",
         null=True,
         default=None,
     )
@@ -115,6 +124,33 @@ class GrantRequest(SerializerModel, ExpiringModel, CreatedUpdatedModel):
             )
             target.binding = target_binding
             target.save()
+
+    @property
+    def is_active(self) -> bool:
+        """Whether this request currently grants live access: approved, and neither
+        revoked nor naturally expired yet."""
+        if self.status != RequestStatus.APPROVED:
+            return False
+        if self.expiring and self.expires and self.expires < now():
+            return False
+        return True
+
+    @transaction.atomic
+    def revoke(self, user: User):
+        """End an active grant immediately, and mark the request revoked. A no-op unless the
+        request is currently approved."""
+        if self.status != RequestStatus.APPROVED:
+            return
+        for target in GrantRequestTarget.objects.filter(request=self, binding__isnull=False):
+            # Expire the PolicyBindings created (rather than deleting them,
+            # since GrantRequestTarget.binding cascades on delete and would
+            # take the audit trail with it)
+            target.binding.expiring = True
+            target.binding.expires = now()
+            target.binding.save()
+        self.revoked_by = user
+        self.status = RequestStatus.REVOKED
+        self.save()
 
     class Meta:
         verbose_name = _("Grant Request")

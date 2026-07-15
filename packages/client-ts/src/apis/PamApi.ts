@@ -69,6 +69,10 @@ export interface PamGrantRequestsRetrieveRequest {
     uuid: string;
 }
 
+export interface PamGrantRequestsRevokeCreateRequest {
+    uuid: string;
+}
+
 export interface PamRequestRulesCreateRequest {
     policyBindingModelRequestRuleRequest: PolicyBindingModelRequestRuleRequest;
 }
@@ -419,6 +423,67 @@ export class PamApi extends runtime.BaseAPI {
     ): Promise<GrantRequest> {
         const response = await this.pamGrantRequestsRetrieveRaw(requestParameters, initOverrides);
         return await response.value();
+    }
+
+    /**
+     * Creates request options for pamGrantRequestsRevokeCreate without sending the request
+     */
+    async pamGrantRequestsRevokeCreateRequestOpts(
+        requestParameters: PamGrantRequestsRevokeCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["uuid"] == null) {
+            throw new runtime.RequiredError(
+                "uuid",
+                'Required parameter "uuid" was null or undefined when calling pamGrantRequestsRevokeCreate().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/pam/grant_requests/{uuid}/revoke/`;
+        urlPath = urlPath.replace("{uuid}", encodeURIComponent(String(requestParameters["uuid"])));
+
+        return {
+            path: urlPath,
+            method: "POST",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * Immediately end an active grant. Available to the same reviewers who could approve it in the first place.
+     */
+    async pamGrantRequestsRevokeCreateRaw(
+        requestParameters: PamGrantRequestsRevokeCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
+        const requestOptions =
+            await this.pamGrantRequestsRevokeCreateRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.VoidApiResponse(response);
+    }
+
+    /**
+     * Immediately end an active grant. Available to the same reviewers who could approve it in the first place.
+     */
+    async pamGrantRequestsRevokeCreate(
+        requestParameters: PamGrantRequestsRevokeCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
+        await this.pamGrantRequestsRevokeCreateRaw(requestParameters, initOverrides);
     }
 
     /**

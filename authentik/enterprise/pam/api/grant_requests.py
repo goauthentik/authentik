@@ -1,7 +1,7 @@
 from drf_spectacular.utils import OpenApiResponse, extend_schema, extend_schema_field
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
-from rest_framework.fields import ChoiceField, SerializerMethodField
+from rest_framework.fields import BooleanField, ChoiceField, SerializerMethodField
 from rest_framework.mixins import (
     DestroyModelMixin,
     ListModelMixin,
@@ -37,7 +37,10 @@ from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlanner
 
 
 class GrantRequestSerializer(ModelSerializer):
+
     created_by = PartialUserSerializer(read_only=True)
+    revoked_by = PartialUserSerializer(read_only=True)
+    is_active = BooleanField(read_only=True)
 
     # TODO: Optimize this
     target_apps = SerializerMethodField()
@@ -53,6 +56,8 @@ class GrantRequestSerializer(ModelSerializer):
             "created_by",
             "requester_data",
             "fulfiller_data",
+            "revoked_by",
+            "is_active",
             "expires",
             "status",
             "targets",
@@ -65,7 +70,9 @@ class GrantRequestSerializer(ModelSerializer):
 
 
 class GrantRequestViewSet(RetrieveModelMixin, DestroyModelMixin, ListModelMixin, GenericViewSet):
-    queryset = GrantRequest.objects.all()
+
+    # All requests are visible to users even if they're expired
+    queryset = GrantRequest.objects.including_expired()
     serializer_class = GrantRequestSerializer
 
     class GrantRequestCreateSerializer(PassiveSerializer):
@@ -81,6 +88,15 @@ class GrantRequestViewSet(RetrieveModelMixin, DestroyModelMixin, ListModelMixin,
     class GrantRequestFulfillSerializer(PassiveSerializer):
         data = JSONDictField()
         status = ChoiceField(choices=RequestStatus.choices)
+
+    def _assert_reviewer(self, request: Request, grant: GrantRequest):
+        unauthorized_rules = (
+            PolicyBindingModelRequestRule.objects.filter(pbm__in=grant.targets.all())
+            .exclude(reviewers=request.user)
+            .exclude(reviewer_groups__users=request.user)
+        )
+        if unauthorized_rules.exists():
+            raise ValidationError("User does not have permissions to act on this object")
 
     @extend_schema(request=GrantRequestCreateSerializer, responses={200: LinkSerializer})
     @validate(GrantRequestCreateSerializer)
@@ -109,16 +125,25 @@ class GrantRequestViewSet(RetrieveModelMixin, DestroyModelMixin, ListModelMixin,
     @validate(GrantRequestFulfillSerializer)
     def fulfill(self, request: Request, body: GrantRequestFulfillSerializer, *args, **kwargs):
         grant: GrantRequest = self.get_object()
-        unauthorized_rules = (
-            PolicyBindingModelRequestRule.objects.filter(pbm__in=grant.targets.all())
-            .exclude(reviewers=request.user)
-            .exclude(reviewer_groups__users=request.user)
-        )
-        if unauthorized_rules.exists():
-            raise ValidationError("User does not have permissions to approve object")
+        self._assert_reviewer(request, grant)
         grant.record_approval(
             request.user,
             body.validated_data.get("status"),
             data=body.validated_data.get("data"),
         )
+        return Response(status=204)
+
+    @extend_schema(
+        request=None,
+        responses={
+            204: OpenApiResponse(description="Grant revoked"),
+        },
+    )
+    @action(["POST"], detail=True)
+    def revoke(self, request: Request, *args, **kwargs):
+        """Immediately end an active grant. Available to the same reviewers who could
+        approve it in the first place."""
+        grant: GrantRequest = self.get_object()
+        self._assert_reviewer(request, grant)
+        grant.revoke(request.user)
         return Response(status=204)

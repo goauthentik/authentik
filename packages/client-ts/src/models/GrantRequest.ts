@@ -51,6 +51,18 @@ export interface GrantRequest {
     fulfillerData?: { [key: string]: any };
     /**
      *
+     * @type {PartialUser}
+     * @memberof GrantRequest
+     */
+    readonly revokedBy: PartialUser;
+    /**
+     *
+     * @type {boolean}
+     * @memberof GrantRequest
+     */
+    readonly isActive: boolean;
+    /**
+     *
      * @type {Date}
      * @memberof GrantRequest
      */
@@ -87,6 +99,8 @@ export interface GrantRequest {
 export function instanceOfGrantRequest(value: object): value is GrantRequest {
     if (!("created" in value) || value["created"] === undefined) return false;
     if (!("createdBy" in value) || value["createdBy"] === undefined) return false;
+    if (!("revokedBy" in value) || value["revokedBy"] === undefined) return false;
+    if (!("isActive" in value) || value["isActive"] === undefined) return false;
     if (!("status" in value) || value["status"] === undefined) return false;
     if (!("targets" in value) || value["targets"] === undefined) return false;
     if (!("targetApps" in value) || value["targetApps"] === undefined) return false;
@@ -106,6 +120,8 @@ export function GrantRequestFromJSONTyped(json: any, ignoreDiscriminator: boolea
         createdBy: PartialUserFromJSON(json["created_by"]),
         requesterData: json["requester_data"] == null ? undefined : json["requester_data"],
         fulfillerData: json["fulfiller_data"] == null ? undefined : json["fulfiller_data"],
+        revokedBy: PartialUserFromJSON(json["revoked_by"]),
+        isActive: json["is_active"],
         expires: json["expires"] == null ? undefined : new Date(json["expires"]),
         status: RequestStatusFromJSON(json["status"]),
         targets: json["targets"],
@@ -121,7 +137,7 @@ export function GrantRequestToJSON(json: any): GrantRequest {
 export function GrantRequestToJSONTyped(
     value?: Omit<
         GrantRequest,
-        "created" | "created_by" | "status" | "targets" | "target_apps"
+        "created" | "created_by" | "revoked_by" | "is_active" | "status" | "targets" | "target_apps"
     > | null,
     ignoreDiscriminator: boolean = false,
 ): any {

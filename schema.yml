@@ -11225,6 +11225,31 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+  /pam/grant_requests/{uuid}/revoke/:
+    post:
+      operationId: pam_grant_requests_revoke_create
+      description: |-
+        Immediately end an active grant. Available to the same reviewers who could
+        approve it in the first place.
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Grant Request.
+        required: true
+      tags:
+      - pam
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: Grant revoked
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
   /pam/request_rules/:
     get:
       operationId: pam_request_rules_list
@@ -40861,6 +40886,13 @@ components:
         fulfiller_data:
           type: object
           additionalProperties: {}
+        revoked_by:
+          allOf:
+          - $ref: '#/components/schemas/PartialUser'
+          readOnly: true
+        is_active:
+          type: boolean
+          readOnly: true
         expires:
           type: string
           format: date-time
@@ -40886,6 +40918,8 @@ components:
       required:
       - created
       - created_by
+      - is_active
+      - revoked_by
       - status
       - target_apps
       - targets
@@ -54490,6 +54524,7 @@ components:
       - created
       - approved
       - denied
+      - revoked
       type: string
     Review:
       type: object

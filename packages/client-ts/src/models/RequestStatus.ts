@@ -20,6 +20,7 @@ export const RequestStatus = {
     Created: "created",
     Approved: "approved",
     Denied: "denied",
+    Revoked: "revoked",
     UnknownDefaultOpenApi: "11184809",
 } as const;
 export type RequestStatus = (typeof RequestStatus)[keyof typeof RequestStatus];

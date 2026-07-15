@@ -1,4 +1,5 @@
-import "../../components/ak-status-label";
+import "#components/ak-status-label";
+import "#elements/forms/ConfirmationForm";
 
 import { aki } from "#common/api/client";
 import { PaginatedResponse } from "#common/api/responses";
@@ -16,6 +17,19 @@ import { GrantRequest, PamApi, RequestStatus } from "@goauthentik/api";
 import { msg } from "@lit/localize";
 import { html, nothing } from "lit-html";
 import { customElement } from "lit/decorators.js";
+
+function statusLabel(status: RequestStatus): string {
+    switch (status) {
+        case RequestStatus.Approved:
+            return msg("Active");
+        case RequestStatus.Denied:
+            return msg("Denied");
+        case RequestStatus.Revoked:
+            return msg("Revoked");
+        default:
+            return msg("Pending");
+    }
+}
 
 @customElement("ak-access-requests-list")
 export class AccessRequestListPage extends TablePage<GrantRequest> {
@@ -48,8 +62,44 @@ export class AccessRequestListPage extends TablePage<GrantRequest> {
             return nothing;
         }
         const overflow = item.targetApps.length - 1;
-        const base = html`<a href="">${item.targetApps[0].name}</a> ${overflow > 0 ? `+${overflow}` : ""}`;
+        const base = html`<a href="">${item.targetApps[0].name}</a> ${overflow > 0
+                ? `+${overflow}`
+                : ""}`;
         return base;
+    }
+
+    renderActions(item: GrantRequest): SlottedTemplateResult {
+        if (item.status === RequestStatus.Created) {
+            return html`<button
+                class="pf-c-button pf-m-secondary pf-m-block"
+                ${modalInvoker(AccessRequestFulfillForm, {
+                    request: item,
+                })}
+            >
+                ${msg("Fulfill")}
+            </button>`;
+        }
+        if (item.isActive) {
+            return html`<ak-forms-confirm
+                successMessage=${msg("Successfully revoked grant")}
+                errorMessage=${msg("Failed to revoke grant")}
+                action=${msg("Revoke")}
+                .onConfirm=${() => {
+                    return aki(PamApi).pamGrantRequestsRevokeCreate({ uuid: item.uuid || "" });
+                }}
+            >
+                <span slot="header">${msg("Revoke grant")}</span>
+                <p slot="body">
+                    ${msg(
+                        "Are you sure you want to revoke this grant? Access will be removed immediately.",
+                    )}
+                </p>
+                <button slot="trigger" class="pf-c-button pf-m-danger" type="button">
+                    ${msg("Revoke")}
+                </button>
+            </ak-forms-confirm>`;
+        }
+        return nothing;
     }
 
     protected row(item: GrantRequest): RowType[] {
@@ -61,19 +111,12 @@ export class AccessRequestListPage extends TablePage<GrantRequest> {
             Timestamp(item.created),
             this.renderApps(item),
             html`<ak-status-label
-                .good=${item.status === RequestStatus.Approved}
-                good-label=${msg("Approved")}
-                bad-label=${msg("Pending")}
+                .good=${item.isActive}
+                good-label=${statusLabel(item.status)}
+                bad-label=${statusLabel(item.status)}
                 type="info"
             ></ak-status-label>`,
-            html`<button
-                class="pf-c-button pf-m-secondary pf-m-block"
-                ${modalInvoker(AccessRequestFulfillForm, {
-                    request: item,
-                })}
-            >
-                ${msg("Fulfill")}
-            </button>`,
+            this.renderActions(item),
         ];
     }
 }

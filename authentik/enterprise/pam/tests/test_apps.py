@@ -5,8 +5,8 @@ from rest_framework.test import APITestCase
 
 from authentik.core.models import Application
 from authentik.core.tests.utils import create_test_user
-from authentik.lib.generators import generate_id
 from authentik.enterprise.pam.models import PolicyBindingModelRequestRule
+from authentik.lib.generators import generate_id
 from authentik.policies.models import PolicyBinding
 
 
