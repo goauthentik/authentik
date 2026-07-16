@@ -27,23 +27,14 @@ function check_if_root {
         # add ourselves to it
         DOCKER_GID=$(stat -c '%g' $SOCKET)
         # Ensure group for the id exists
-<<<<<<< HEAD
         getent group $DOCKER_GID || groupadd -f -g $DOCKER_GID docker
         usermod -a -G $DOCKER_GID authentik
-        # since the name of the group might not be docker, we need to lookup the group id
-        GROUP_NAME=$(getent group $DOCKER_GID | sed 's/:/\n/g' | head -1)
-        GROUP="authentik:${GROUP_NAME}"
-=======
-        getent group "${DOCKER_GID}" || groupadd -f -g "${DOCKER_GID}" docker
-        usermod -a -G "${DOCKER_GID}" authentik
->>>>>>> 1c36f09c6 (lifecycle/container: drop curl and runit (#24008))
     fi
     # Fix permissions of certs and media
     chown -R authentik:authentik /data /certs "${PROMETHEUS_MULTIPROC_DIR}"
     chmod ug+rwx /data
     chmod ug+rx /certs
-<<<<<<< HEAD
-    exec chpst -u authentik:$GROUP env HOME=/authentik $1
+    exec setpriv --reuid authentik --regid authentik --init-groups -- env HOME=/authentik $1
 }
 
 function run_authentik {
@@ -61,9 +52,6 @@ function set_mode {
 
 function cleanup {
     rm -f ${MODE_FILE}
-=======
-    exec setpriv --reuid authentik --regid authentik --init-groups -- env HOME=/authentik $(run_authentik "$@")
->>>>>>> 1c36f09c6 (lifecycle/container: drop curl and runit (#24008))
 }
 
 function prepare_debug {
