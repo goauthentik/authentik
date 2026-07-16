@@ -58873,6 +58873,10 @@ components:
           type: string
           description: Get WS-Fed url
           readOnly: true
+        url_issuer:
+          type: string
+          description: Get Issuer/EntityID URL
+          readOnly: true
       required:
       - assigned_application_name
       - assigned_application_slug
@@ -58886,6 +58890,7 @@ components:
       - pk
       - reply_url
       - url_download_metadata
+      - url_issuer
       - url_wsfed
       - verbose_name
       - verbose_name_plural

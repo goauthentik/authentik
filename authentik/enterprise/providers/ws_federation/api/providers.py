@@ -19,6 +19,7 @@ class WSFederationProviderSerializer(EnterpriseRequiredMixin, SAMLProviderSerial
     reply_url = URLField(source="acs_url")
     wtrealm = CharField(source="audience")
     url_wsfed = SerializerMethodField()
+    url_issuer = SerializerMethodField()
 
     def get_url_download_metadata(self, instance: WSFederationProvider) -> str:
         """Get metadata download URL"""
@@ -88,6 +89,7 @@ class WSFederationProviderSerializer(EnterpriseRequiredMixin, SAMLProviderSerial
             "default_name_id_policy",
             "url_download_metadata",
             "url_wsfed",
+            "url_issuer",
         ]
         extra_kwargs = ProviderSerializer.Meta.extra_kwargs
 

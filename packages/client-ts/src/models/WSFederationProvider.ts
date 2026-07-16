@@ -216,6 +216,12 @@ export interface WSFederationProvider {
      * @memberof WSFederationProvider
      */
     readonly urlWsfed: string;
+    /**
+     * Get Issuer/EntityID URL
+     * @type {string}
+     * @memberof WSFederationProvider
+     */
+    readonly urlIssuer: string;
 }
 
 /**
@@ -249,6 +255,7 @@ export function instanceOfWSFederationProvider(value: object): value is WSFedera
     if (!("urlDownloadMetadata" in value) || value["urlDownloadMetadata"] === undefined)
         return false;
     if (!("urlWsfed" in value) || value["urlWsfed"] === undefined) return false;
+    if (!("urlIssuer" in value) || value["urlIssuer"] === undefined) return false;
     return true;
 }
 
@@ -321,6 +328,7 @@ export function WSFederationProviderFromJSONTyped(
                 : SAMLNameIDPolicyEnumFromJSON(json["default_name_id_policy"]),
         urlDownloadMetadata: json["url_download_metadata"],
         urlWsfed: json["url_wsfed"],
+        urlIssuer: json["url_issuer"],
     };
 }
 
@@ -342,6 +350,7 @@ export function WSFederationProviderToJSONTyped(
         | "meta_model_name"
         | "url_download_metadata"
         | "url_wsfed"
+        | "url_issuer"
     > | null,
     ignoreDiscriminator: boolean = false,
 ): any {
