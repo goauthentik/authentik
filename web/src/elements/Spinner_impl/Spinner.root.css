@@ -13,9 +13,9 @@
     --ak-c-spinner--m-inline--Diameter: 1em;
     --ak-c-spinner--AnimationDuration: 1.4s;
     --ak-c-spinner--AnimationDuration--reduced-motion: 25s;
-    --ak-c-spinner__path--AnimationTimingFunction: ease-in-out;
-    --ak-c-spinner--path--AnimationTimingFunction--reduced-motion: linear;
     --ak-c-spinner--AnimationTimingFunction: linear;
     --ak-c-spinner--StrokeWidth: 10;
+    --ak-c-spinner__path--AnimationTimingFunction: ease-in-out;
+    --ak-c-spinner__path--AnimationTimingFunction--reduced-motion: linear;
     --ak-c-spinner__path--StrokeWidth: var(--ak-c-spinner--StrokeWidth);
 }
