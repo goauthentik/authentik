@@ -120,18 +120,23 @@ export class ApplicationViewPage extends WithLicenseSummary(AKElement) {
                 ) {
                     this.fetchIsMissingOutpost([app.provider || 0]);
                 }
+            })
+            .catch(async (error) => {
+                this.error = await parseAPIResponseError(error);
+            })
+            .finally(() => {
                 return aki(EventsApi)
                     .eventsEventsStatsRetrieve({
                         action: EventActions.AuthorizeApplication,
-                        contextAuthorizedApp: app.pk.replaceAll("-", ""),
+                        contextAuthorizedApp: this.application?.pk.replaceAll("-", ""),
                         countSteps: ["hours=24", "days=7", "days=30"],
                     })
                     .then((stats) => {
                         this.stats = stats;
+                    })
+                    .catch(() => {
+                        // TODO
                     });
-            })
-            .catch(async (error) => {
-                this.error = await parseAPIResponseError(error);
             });
     }
 
