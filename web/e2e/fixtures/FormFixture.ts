@@ -183,8 +183,9 @@ export class FormFixture extends PageFixture {
         }
 
         const button = this.page
-            // ---
-            .locator(`div[data-managed-for*="${fieldName}"] button`, {
+            .locator("ak-search-select-view")
+            .filter({ has: this.page.locator(`input[name="${fieldName}"]`) })
+            .locator("ak-list-select [part='ak-list-select-button']", {
                 hasText: pattern,
             });
 
