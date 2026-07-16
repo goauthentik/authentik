@@ -4,7 +4,7 @@ import { findFlatOptions, findOptionsSubset, groupOptions, optionsToFlat } from 
 
 import { ListSelect } from "#elements/ak-list-select/ak-list-select";
 import { AKElement } from "#elements/Base";
-import { AnchorPositionSupported } from "#elements/dialogs/positioning";
+import { AnchorPositionSupported, AnchorSizeSupported } from "#elements/dialogs/positioning";
 import type { GroupedOptions, SelectOption, SelectOptions } from "#elements/types";
 import { ifPresent } from "#elements/utils/attributes";
 import { randomId } from "#elements/utils/randomId";
@@ -293,6 +293,10 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
 
         if (this.open && !this.readOnly && !popoverOpen) {
             menu.showPopover();
+            // Start tracking synchronously (not via the async `toggle` event) so the
+            // fallback places the menu in the same frame it becomes visible — no flash
+            // at the UA default position.
+            this.#startAnchorTracking();
         } else if ((!this.open || this.readOnly) && popoverOpen) {
             menu.hidePopover();
         }
@@ -340,14 +344,9 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
      * into `this.open`, keeping component state authoritative.
      */
     #menuToggleListener = (event: ToggleEvent) => {
-        const nowOpen = event.newState === "open";
-
-        if (nowOpen) {
-            // Track the anchor while the menu is open: close if it scrolls out of
-            // view, and (where CSS anchor positioning is unavailable) place the menu.
-            this.#startAnchorTracking();
-            return;
-        }
+        // Opening is handled synchronously in #syncMenuVisibility; here we only
+        // react to closes (including browser-driven light dismiss / Esc).
+        if (event.newState === "open") return;
 
         this.#stopAnchorTracking();
 
@@ -361,7 +360,6 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
     };
 
     #anchorObserver?: IntersectionObserver;
-    #anchorReflowCleanup?: () => void;
 
     #startAnchorTracking() {
         const input = this.#inputRef.value;
@@ -383,27 +381,47 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
         );
         this.#anchorObserver.observe(input);
 
-        if (AnchorPositionSupported) return;
+        // When the browser can both position (`anchor()`) and size (`anchor-size()`)
+        // against the anchor, the CSS in `styles` handles everything and tracks
+        // scrolling natively — nothing more to do.
+        if (AnchorPositionSupported && AnchorSizeSupported) return;
 
-        // Fallback placement for browsers without CSS anchor positioning.
-        this.#positionMenu();
+        // Fallback placement. We can't rely on a global scroll listener: `scroll`
+        // events are `composed: false`, so scrolling inside a shadow-rendered
+        // container (e.g. a modal dialog body) never reaches `window`. Instead we
+        // re-place the menu each animation frame while open, which also covers
+        // nested scrollers, layout shifts, and resizes.
+        let lastGeometry = "";
 
-        const reflow = () => this.#positionMenu();
-        window.addEventListener("scroll", reflow, { capture: true, passive: true });
-        window.addEventListener("resize", reflow, { passive: true });
+        const reflow = () => {
+            const rect = this.#inputRef.value?.getBoundingClientRect();
 
-        this.#anchorReflowCleanup = () => {
-            window.removeEventListener("scroll", reflow, { capture: true });
-            window.removeEventListener("resize", reflow);
+            if (rect) {
+                const geometry = `${rect.left},${rect.top},${rect.bottom},${rect.width},${window.innerHeight}`;
+
+                if (geometry !== lastGeometry) {
+                    lastGeometry = geometry;
+                    this.#positionMenu();
+                }
+            }
+
+            this.#reflowFrame = requestAnimationFrame(reflow);
         };
+
+        this.#positionMenu();
+        this.#reflowFrame = requestAnimationFrame(reflow);
     }
+
+    #reflowFrame?: number;
 
     #stopAnchorTracking() {
         this.#anchorObserver?.disconnect();
         this.#anchorObserver = undefined;
 
-        this.#anchorReflowCleanup?.();
-        this.#anchorReflowCleanup = undefined;
+        if (this.#reflowFrame !== undefined) {
+            cancelAnimationFrame(this.#reflowFrame);
+            this.#reflowFrame = undefined;
+        }
     }
 
     /**
@@ -426,6 +444,10 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
         const spaceBelow = viewportHeight - rect.bottom;
         const flipUp = spaceBelow < menuHeight && rect.top > spaceBelow;
 
+        // Neutralize any partially-supported CSS anchor positioning (e.g. Firefox
+        // ships `anchor()` but not `anchor-size()`), so our explicit placement wins
+        // and no half-applied flip fights it.
+        menu.style.positionTryFallbacks = "none";
         menu.style.position = "fixed";
         menu.style.left = `${Math.round(rect.left)}px`;
         menu.style.width = `${Math.round(rect.width)}px`;
