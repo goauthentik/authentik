@@ -217,3 +217,12 @@ class Policy(SerializerModel, CreatedUpdatedModel):
         indexes = [
             models.Index(fields=["policy_ptr_id"]),
         ]
+
+
+class RequestableModel:
+    """Mixin for models which access can be requested to"""
+
+
+class RequestableChildModel:
+    """Mixin for models which are related of models that access can be requested too
+    and should be equally offered"""

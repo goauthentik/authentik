@@ -14,6 +14,7 @@ TENANT_APPS = [
     "authentik.enterprise.providers.ssf",
     "authentik.enterprise.providers.ws_federation",
     "authentik.enterprise.reports",
+    "authentik.enterprise.requests",
     "authentik.enterprise.stages.account_lockdown",
     "authentik.enterprise.stages.authenticator_endpoint_gdtc",
     "authentik.enterprise.stages.mtls",

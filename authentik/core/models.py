@@ -47,7 +47,7 @@ from authentik.lib.models import (
 from authentik.lib.utils.inheritance import get_deepest_child
 from authentik.lib.utils.reflection import class_to_path
 from authentik.lib.utils.time import timedelta_from_string
-from authentik.policies.models import PolicyBindingModel
+from authentik.policies.models import PolicyBindingModel, RequestableChildModel, RequestableModel
 from authentik.rbac.models import Role
 from authentik.tenants.models import DEFAULT_TOKEN_DURATION, DEFAULT_TOKEN_LENGTH
 from authentik.tenants.utils import get_current_tenant, get_unique_identifier
@@ -734,7 +734,7 @@ class ApplicationQuerySet(QuerySet):
         return qs
 
 
-class Application(SerializerModel, PolicyBindingModel):
+class Application(RequestableModel, SerializerModel, PolicyBindingModel):
     """Every Application which uses authentik for authentication/identification/authorization
     needs an Application record. Other authentication types can subclass this Model to
     add custom fields and other properties"""
@@ -844,7 +844,9 @@ class Application(SerializerModel, PolicyBindingModel):
         verbose_name_plural = _("Applications")
 
 
-class ApplicationEntitlement(AttributesMixin, SerializerModel, PolicyBindingModel):
+class ApplicationEntitlement(
+    RequestableChildModel, AttributesMixin, SerializerModel, PolicyBindingModel
+):
     """Application-scoped entitlement to control authorization in an application"""
 
     name = models.TextField()
