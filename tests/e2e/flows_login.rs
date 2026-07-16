@@ -1,3 +1,4 @@
+#![expect(clippy::tests_outside_test_module, reason = "we don't care here")]
 use ak_client::{apis::flows_api::flows_instances_partial_update, models::PatchedFlowRequest};
 use eyre::Result;
 

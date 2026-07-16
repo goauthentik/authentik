@@ -1,3 +1,5 @@
+#![expect(clippy::tests_outside_test_module, reason = "we don't care here")]
+#![expect(clippy::panic_in_result_fn, reason = "We need assert! in tests")]
 use std::time::Duration;
 
 use ak_client::{
@@ -11,12 +13,12 @@ use ak_client::{
 use eyre::Result;
 use thirtyfour::prelude::*;
 
-use authentik_tests::{AuthentikStack, LoginOptions};
+use authentik_tests::AuthentikStack;
 use tokio::time::sleep;
 
-async fn login_sfe(&self) -> Result<()> {
-    let flow_executor = self
-        .driver
+async fn do_login_sfe(stack: &AuthentikStack) -> Result<()> {
+    let flow_executor = stack
+        .driver()
         .query(By::Id("flow-sfe-container"))
         .single()
         .await?;
@@ -50,7 +52,7 @@ async fn login_sfe(&self) -> Result<()> {
 
 #[tokio::test(flavor = "multi_thread")]
 async fn login_sfe() -> Result<()> {
-    let stack = AuthentikStack::builder()
+    let mut stack = AuthentikStack::builder()
         .with_blueprint("default/flow-default-authentication-flow.yaml")
         .with_blueprint("default/flow-default-invalidation-flow.yaml")
         .with_selenium(true)
@@ -61,7 +63,7 @@ async fn login_sfe() -> Result<()> {
         .goto("http://server:9000/if/flow/default-authentication-flow/?sfe=true")
         .await?;
 
-    login_sfe(&stack).await?;
+    do_login_sfe(&stack).await?;
 
     stack
         .wait_for_url("http://server:9000/if/user/#/library")
@@ -76,7 +78,7 @@ async fn login_sfe() -> Result<()> {
 
 #[tokio::test(flavor = "multi_thread")]
 async fn login_sfe_mfa_static_deny() -> Result<()> {
-    let stack = AuthentikStack::builder()
+    let mut stack = AuthentikStack::builder()
         .with_blueprint("default/flow-default-authentication-flow.yaml")
         .with_blueprint("default/flow-default-invalidation-flow.yaml")
         .with_selenium(true)
@@ -115,7 +117,7 @@ async fn login_sfe_mfa_static_deny() -> Result<()> {
         .goto("http://server:9000/if/flow/default-authentication-flow/?sfe=true")
         .await?;
 
-    login_sfe(&stack).await?;
+    do_login_sfe(&stack).await?;
 
     let msg = stack
         .driver()

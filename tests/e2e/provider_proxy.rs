@@ -1,7 +1,4 @@
-#![expect(
-    clippy::tests_outside_test_module,
-    reason = "e2e tests don't need a test module"
-)]
+#![expect(clippy::tests_outside_test_module, reason = "we don't care here")]
 #![expect(clippy::panic_in_result_fn, reason = "We need assert! in tests")]
 
 use std::time::Duration;
