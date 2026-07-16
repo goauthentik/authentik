@@ -4,6 +4,7 @@ import { findFlatOptions, findOptionsSubset, groupOptions, optionsToFlat } from 
 
 import { ListSelect } from "#elements/ak-list-select/ak-list-select";
 import { AKElement } from "#elements/Base";
+import { AnchorPositionSupported } from "#elements/dialogs/positioning";
 import type { GroupedOptions, SelectOption, SelectOptions } from "#elements/types";
 import { ifPresent } from "#elements/utils/attributes";
 import { randomId } from "#elements/utils/randomId";
@@ -359,13 +360,6 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
         }
     };
 
-    /**
-     * Whether the browser supports CSS anchor positioning. When false (e.g.
-     * Firefox), the menu is positioned imperatively via {@link #positionMenu}.
-     */
-    #anchorPositioningSupported =
-        CSS.supports("position-anchor", "--x") && CSS.supports("top", "anchor(bottom)");
-
     #anchorObserver?: IntersectionObserver;
     #anchorReflowCleanup?: () => void;
 
@@ -389,7 +383,7 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
         );
         this.#anchorObserver.observe(input);
 
-        if (this.#anchorPositioningSupported) return;
+        if (AnchorPositionSupported) return;
 
         // Fallback placement for browsers without CSS anchor positioning.
         this.#positionMenu();
