@@ -14,10 +14,19 @@ class RequestRuleChildBinding(SerializerModel):
     binding = models.ForeignKey("RequestRuleBinding", on_delete=models.CASCADE)
     target = models.ForeignKey(PolicyBindingModel, on_delete=models.CASCADE, related_name="+")
 
+    @property
+    def serializer(self):
+        from authentik.enterprise.requests.api.request_rule_child_bindings import (
+            RequestRuleChildBindingSerializer,
+        )
+
+        return RequestRuleChildBindingSerializer
+
     class Meta:
         verbose_name = _("Request Rule Child Binding")
         verbose_name_plural = _("Request Rule Child Bindings")
         unique_together = ("binding", "target")
+
 
 # PBM here configures who can request access
 class RequestRuleBinding(SerializerModel, PolicyBindingModel):
@@ -35,6 +44,14 @@ class RequestRuleBinding(SerializerModel, PolicyBindingModel):
         through=RequestRuleChildBinding,
         related_name="request_rule_child_bindings",
     )
+
+    @property
+    def serializer(self):
+        from authentik.enterprise.requests.api.request_rule_bindings import (
+            RequestRuleBindingSerializer,
+        )
+
+        return RequestRuleBindingSerializer
 
     class Meta:
         verbose_name = _("Request Rule Binding")
@@ -55,6 +72,12 @@ class RequestRule(CreatedUpdatedModel, SerializerModel, PolicyBindingModel):
         related_name="request_rules",
         through_fields=("rule", "target"),
     )
+
+    @property
+    def serializer(self):
+        from authentik.enterprise.requests.api.request_rules import RequestRuleSerializer
+
+        return RequestRuleSerializer
 
     class Meta:
         verbose_name = _("Request Rule")

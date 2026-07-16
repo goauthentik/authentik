@@ -1224,6 +1224,126 @@
                     ],
                     "properties": {
                         "model": {
+                            "const": "authentik_requests.requestrule"
+                        },
+                        "id": {
+                            "type": "string"
+                        },
+                        "state": {
+                            "type": "string",
+                            "enum": [
+                                "absent",
+                                "created",
+                                "must_created",
+                                "present"
+                            ],
+                            "default": "present"
+                        },
+                        "conditions": {
+                            "type": "array",
+                            "items": {
+                                "type": "boolean"
+                            }
+                        },
+                        "permissions": {
+                            "$ref": "#/$defs/model_authentik_requests.requestrule_permissions"
+                        },
+                        "attrs": {
+                            "$ref": "#/$defs/model_authentik_requests.requestrule"
+                        },
+                        "identifiers": {
+                            "$ref": "#/$defs/model_authentik_requests.requestrule"
+                        }
+                    }
+                },
+                {
+                    "type": "object",
+                    "required": [
+                        "model",
+                        "identifiers"
+                    ],
+                    "properties": {
+                        "model": {
+                            "const": "authentik_requests.requestrulebinding"
+                        },
+                        "id": {
+                            "type": "string"
+                        },
+                        "state": {
+                            "type": "string",
+                            "enum": [
+                                "absent",
+                                "created",
+                                "must_created",
+                                "present"
+                            ],
+                            "default": "present"
+                        },
+                        "conditions": {
+                            "type": "array",
+                            "items": {
+                                "type": "boolean"
+                            }
+                        },
+                        "permissions": {
+                            "$ref": "#/$defs/model_authentik_requests.requestrulebinding_permissions"
+                        },
+                        "attrs": {
+                            "$ref": "#/$defs/model_authentik_requests.requestrulebinding"
+                        },
+                        "identifiers": {
+                            "$ref": "#/$defs/model_authentik_requests.requestrulebinding"
+                        }
+                    }
+                },
+                {
+                    "type": "object",
+                    "required": [
+                        "model",
+                        "identifiers"
+                    ],
+                    "properties": {
+                        "model": {
+                            "const": "authentik_requests.requestrulechildbinding"
+                        },
+                        "id": {
+                            "type": "string"
+                        },
+                        "state": {
+                            "type": "string",
+                            "enum": [
+                                "absent",
+                                "created",
+                                "must_created",
+                                "present"
+                            ],
+                            "default": "present"
+                        },
+                        "conditions": {
+                            "type": "array",
+                            "items": {
+                                "type": "boolean"
+                            }
+                        },
+                        "permissions": {
+                            "$ref": "#/$defs/model_authentik_requests.requestrulechildbinding_permissions"
+                        },
+                        "attrs": {
+                            "$ref": "#/$defs/model_authentik_requests.requestrulechildbinding"
+                        },
+                        "identifiers": {
+                            "$ref": "#/$defs/model_authentik_requests.requestrulechildbinding"
+                        }
+                    }
+                },
+                {
+                    "type": "object",
+                    "required": [
+                        "model",
+                        "identifiers"
+                    ],
+                    "properties": {
+                        "model": {
                             "const": "authentik_stages_account_lockdown.accountlockdownstage"
                         },
                         "id": {
@@ -6027,6 +6147,18 @@
                             "authentik_reports.change_dataexport",
                             "authentik_reports.delete_dataexport",
                             "authentik_reports.view_dataexport",
+                            "authentik_requests.add_requestrule",
+                            "authentik_requests.add_requestrulebinding",
+                            "authentik_requests.add_requestrulechildbinding",
+                            "authentik_requests.change_requestrule",
+                            "authentik_requests.change_requestrulebinding",
+                            "authentik_requests.change_requestrulechildbinding",
+                            "authentik_requests.delete_requestrule",
+                            "authentik_requests.delete_requestrulebinding",
+                            "authentik_requests.delete_requestrulechildbinding",
+                            "authentik_requests.view_requestrule",
+                            "authentik_requests.view_requestrulebinding",
+                            "authentik_requests.view_requestrulechildbinding",
                             "authentik_sources_kerberos.add_groupkerberossourceconnection",
                             "authentik_sources_kerberos.add_kerberossource",
                             "authentik_sources_kerberos.add_kerberossourcepropertymapping",
@@ -7806,6 +7938,142 @@
                 }
             }
         },
+        "model_authentik_requests.requestrule": {
+            "type": "object",
+            "properties": {
+                "uuid": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Uuid"
+                },
+                "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Name"
+                }
+            },
+            "required": []
+        },
+        "model_authentik_requests.requestrule_permissions": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "permission"
+                ],
+                "properties": {
+                    "permission": {
+                        "type": "string",
+                        "enum": [
+                            "add_requestrule",
+                            "change_requestrule",
+                            "delete_requestrule",
+                            "view_requestrule"
+                        ]
+                    },
+                    "user": {
+                        "type": "integer"
+                    },
+                    "role": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "model_authentik_requests.requestrulebinding": {
+            "type": "object",
+            "properties": {
+                "uuid": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Uuid"
+                },
+                "rule": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Rule"
+                },
+                "target": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Target"
+                }
+            },
+            "required": []
+        },
+        "model_authentik_requests.requestrulebinding_permissions": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "permission"
+                ],
+                "properties": {
+                    "permission": {
+                        "type": "string",
+                        "enum": [
+                            "add_requestrulebinding",
+                            "change_requestrulebinding",
+                            "delete_requestrulebinding",
+                            "view_requestrulebinding"
+                        ]
+                    },
+                    "user": {
+                        "type": "integer"
+                    },
+                    "role": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "model_authentik_requests.requestrulechildbinding": {
+            "type": "object",
+            "properties": {
+                "uuid": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Uuid"
+                },
+                "binding": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Binding"
+                },
+                "target": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Target"
+                }
+            },
+            "required": []
+        },
+        "model_authentik_requests.requestrulechildbinding_permissions": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "permission"
+                ],
+                "properties": {
+                    "permission": {
+                        "type": "string",
+                        "enum": [
+                            "add_requestrulechildbinding",
+                            "change_requestrulechildbinding",
+                            "delete_requestrulechildbinding",
+                            "view_requestrulechildbinding"
+                        ]
+                    },
+                    "user": {
+                        "type": "integer"
+                    },
+                    "role": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
         "model_authentik_stages_account_lockdown.accountlockdownstage": {
             "type": "object",
             "properties": {
@@ -9064,6 +9332,7 @@
                         "authentik.enterprise.providers.ssf",
                         "authentik.enterprise.providers.ws_federation",
                         "authentik.enterprise.reports",
+                        "authentik.enterprise.requests",
                         "authentik.enterprise.stages.account_lockdown",
                         "authentik.enterprise.stages.authenticator_endpoint_gdtc",
                         "authentik.enterprise.stages.mtls",
@@ -9197,6 +9466,9 @@
                         "authentik_providers_ssf.ssfprovider",
                         "authentik_providers_ws_federation.wsfederationprovider",
                         "authentik_reports.dataexport",
+                        "authentik_requests.requestrulechildbinding",
+                        "authentik_requests.requestrulebinding",
+                        "authentik_requests.requestrule",
                         "authentik_stages_account_lockdown.accountlockdownstage",
                         "authentik_stages_authenticator_endpoint_gdtc.authenticatorendpointgdtcstage",
                         "authentik_stages_mtls.mutualtlsstage",
@@ -11796,6 +12068,18 @@
                             "authentik_reports.change_dataexport",
                             "authentik_reports.delete_dataexport",
                             "authentik_reports.view_dataexport",
+                            "authentik_requests.add_requestrule",
+                            "authentik_requests.add_requestrulebinding",
+                            "authentik_requests.add_requestrulechildbinding",
+                            "authentik_requests.change_requestrule",
+                            "authentik_requests.change_requestrulebinding",
+                            "authentik_requests.change_requestrulechildbinding",
+                            "authentik_requests.delete_requestrule",
+                            "authentik_requests.delete_requestrulebinding",
+                            "authentik_requests.delete_requestrulechildbinding",
+                            "authentik_requests.view_requestrule",
+                            "authentik_requests.view_requestrulebinding",
+                            "authentik_requests.view_requestrulechildbinding",
                             "authentik_sources_kerberos.add_groupkerberossourceconnection",
                             "authentik_sources_kerberos.add_kerberossource",
                             "authentik_sources_kerberos.add_kerberossourcepropertymapping",
