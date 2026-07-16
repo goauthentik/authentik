@@ -27,6 +27,7 @@
 
 @import "#styles/authentik/components/Placeholder/placeholder.css" layer(components);
 @import "#elements/ak-drawer/ak-drawer.root.css" layer(components);
+@import "#elements/Divider_impl/Divider.root.css" layer(components);
 @import "#styles/global/locales/ja/globals.css" layer(components);
 @import "#styles/global/locales/ko/globals.css" layer(components);
 @import "#styles/global/locales/zh/globals.css" layer(components);

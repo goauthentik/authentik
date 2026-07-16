@@ -123,30 +123,6 @@ export const styles = css`
     [part="label"] + [part="icon"] {
         margin-left: var(--pf-c-toggle-group__icon--text--MarginLeft);
     }
-
-    [part="divider"] {
-        display: inline-flex;
-        flex-direction: column;
-        align-items: center;
-        align-self: stretch;
-        flex-shrink: 0;
-        justify-content: center;
-        border: 0;
-        width: auto;
-        height: inherit;
-    }
-
-    [part="divider"]::after {
-        align-self: stretch;
-        width: var(--pf-c-divider--m-vertical--after--Width);
-        height: var(--pf-c-divider--m-vertical--after--Height);
-        content: "";
-        background-color: var(--pf-c-divider--after--BackgroundColor);
-        justify-self: center;
-        flex-basis: calc(
-            var(--pf-c-divider--m-vertical--after--FlexBasis) - var(--pf-c-divider--after--Inset)
-        );
-    }
 `;
 
 export default styles;
