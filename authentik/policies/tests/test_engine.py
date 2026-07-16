@@ -162,6 +162,7 @@ class TestPolicyEngine(TestCase):
         pbm = PolicyBindingModel.objects.create()
         binding = PolicyBinding.objects.create(target=pbm, policy=self.policy_true, order=0)
         engine = PolicyEngine(pbm, self.user)
+        engine.empty_result = False
         self.assertEqual(engine.build().passing, True)
         self.assertEqual(len(cache.keys(f"{CACHE_PREFIX}{binding.policy_binding_uuid.hex}*")), 1)
 
@@ -170,6 +171,7 @@ class TestPolicyEngine(TestCase):
         binding.save()
 
         engine = PolicyEngine(pbm, self.user)
+        engine.empty_result = False
         self.assertEqual(engine.build().passing, False)
 
     def test_engine_static_bindings(self):
@@ -239,6 +241,7 @@ class TestPolicyEngine(TestCase):
             expires=now() - timedelta(minutes=10),
         )
         engine = PolicyEngine(pbm, self.user)
+        engine.empty_result = False
         result = engine.build().result
         self.assertEqual(result.passing, False)
         self.assertEqual(result.messages, ())
