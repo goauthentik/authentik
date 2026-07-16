@@ -49,14 +49,18 @@ from authentik.common.oauth.constants import (
 )
 from authentik.core.models import (
     AuthenticatedSession,
-    ExpiringModel,
     PropertyMapping,
     Provider,
     User,
 )
 from authentik.crypto.models import CertificateKeyPair
 from authentik.lib.generators import generate_code_fixed_length, generate_id, generate_key
-from authentik.lib.models import DomainlessURLValidator, InternallyManagedMixin, SerializerModel
+from authentik.lib.models import (
+    DomainlessURLValidator,
+    ExpiringModel,
+    InternallyManagedMixin,
+    SerializerModel,
+)
 from authentik.lib.utils.time import timedelta_string_validator
 from authentik.sources.oauth.models import OAuthSource
 
