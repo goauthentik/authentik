@@ -57,6 +57,7 @@ onlyBuiltDependencies:
     - esbuild
     - tree-sitter
     - tree-sitter-json
+    - "@sentry/cli"
     - "@tree-sitter-grammars/tree-sitter-yaml"
 
 # Explicit approval map for pnpm 11+. `true` = allowed (mirror
@@ -64,6 +65,7 @@ onlyBuiltDependencies:
 # "pending approval" prompt without running the install script.
 allowBuilds:
     "@scarf/scarf": false
+    "@sentry/cli": true
     "@swc/core": false
     "@tree-sitter-grammars/tree-sitter-yaml": true
     chromedriver: true
