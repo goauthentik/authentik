@@ -17,7 +17,7 @@ type StoryArgs = ILoadingOverlay & {
 const metadata: Meta<StoryArgs> = {
     title: "Elements/ <ak-loading-overlay>",
     component: "ak-loading-overlay",
-    tags: ["autodocs"],
+    tags: ["autodocs", "no-snapshot"],
     parameters: {
         docs: {
             description: {

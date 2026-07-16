@@ -5,6 +5,7 @@ import { flowFactory } from "#stories/flow-interface";
 
 export default {
     title: "Flow / Stages / <ak-stage-autosubmit>",
+    tags: ["no-snapshot"],
 };
 
 export const StandardChallenge = flowFactory("ak-stage-autosubmit", {
