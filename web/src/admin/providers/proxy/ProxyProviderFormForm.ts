@@ -12,6 +12,8 @@ import "#elements/utils/TimeDeltaHelp";
 
 import { propertyMappingsProvider, propertyMappingsSelector } from "./ProxyProviderFormHelpers.js";
 
+import { ToggleGroupEvent } from "#elements/ToggleGroup";
+
 import {
     oauth2ProviderSelector,
     oauth2ProvidersProvider,
@@ -29,8 +31,7 @@ import { msg } from "@lit/localize";
 import { html, nothing } from "lit";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-export type ProxyModeValue = { value: ProxyMode };
-export type SetMode = (ev: CustomEvent<ProxyModeValue>) => void;
+export type SetMode = (ev: ToggleGroupEvent<ProxyMode>) => void;
 export type SetShowHttpBasic = (ev: Event) => void;
 
 export interface ProxyModeExtraArgs {

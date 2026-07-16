@@ -5,7 +5,7 @@
 import "#elements/messages/MessageContainer";
 import "../ToggleGroup";
 
-import { ToggleGroup } from "../ToggleGroup";
+import { ToggleGroup, ToggleGroupEvent } from "../ToggleGroup";
 
 import { Meta } from "@storybook/web-components";
 
@@ -47,10 +47,8 @@ const testOptions = [
 ];
 
 export const Default = () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const displayChange = (ev: any) => {
-        document.getElementById("toggle-message-pad")!.innerText =
-            `Value selected: ${ev.detail.value}`;
+    const displayChange = (ev: ToggleGroupEvent) => {
+        document.getElementById("toggle-message-pad")!.innerText = `Value selected: ${ev.value}`;
     };
 
     return container(
@@ -61,10 +59,8 @@ export const Default = () => {
 };
 
 export const Compact = () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const displayChange = (ev: any) => {
-        document.getElementById("toggle-message-pad")!.innerText =
-            `Value selected: ${ev.detail.value}`;
+    const displayChange = (ev: ToggleGroupEvent) => {
+        document.getElementById("toggle-message-pad")!.innerText = `Value selected: ${ev.value}`;
     };
 
     return container(

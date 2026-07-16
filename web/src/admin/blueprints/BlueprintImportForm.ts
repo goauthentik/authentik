@@ -8,6 +8,7 @@ import { PFSize } from "#common/enums";
 
 import { Form } from "#elements/forms/Form";
 import { PreventFormSubmit } from "#elements/forms/helpers";
+import { ToggleGroupEvent } from "#elements/ToggleGroup";
 
 import { AKLabel } from "#components/ak-label";
 
@@ -97,9 +98,9 @@ export class BlueprintImportForm extends Form<ManagedBlueprintsImportCreateReque
     protected override renderForm(): TemplateResult {
         return html` <ak-toggle-group
                 value=${this.source}
-                @ak-toggle=${(ev: CustomEvent<{ value: BlueprintSource }>) => {
+                @ak-toggle=${(ev: ToggleGroupEvent<BlueprintSource>) => {
                     this.reset();
-                    this.source = ev.detail.value;
+                    this.source = ev.value;
                 }}
             >
                 <option value=${BlueprintSource.Upload}>${msg("File upload")}</option>
