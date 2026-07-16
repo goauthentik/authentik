@@ -192,6 +192,7 @@ impl AuthentikStack {
     pub(crate) async fn start_outpost(&mut self, outpost: &Outpost) -> Result<()> {
         self.compose_profiles.push(outpost.r#type.to_string());
 
+        sleep(Duration::from_secs(3)).await;
         let token =
             core_tokens_view_key_retrieve(self.api_config(), &outpost.token_identifier).await?;
 
@@ -211,6 +212,7 @@ impl AuthentikStack {
         );
 
         self.compose().up().await?;
+        sleep(Duration::from_secs(3)).await;
 
         Ok(())
     }

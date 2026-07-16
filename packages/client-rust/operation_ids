@@ -16,6 +16,7 @@ flows_instances_list
 flows_instances_partial_update
 outposts_instances_create
 outposts_instances_default_settings_retrieve
+outposts_instances_health_list
 outposts_instances_list
 outposts_ldap_access_check
 outposts_ldap_list

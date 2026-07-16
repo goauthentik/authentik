@@ -168,6 +168,8 @@ pub mod outpost;
 pub use self::outpost::Outpost;
 pub mod outpost_default_config;
 pub use self::outpost_default_config::OutpostDefaultConfig;
+pub mod outpost_health;
+pub use self::outpost_health::OutpostHealth;
 pub mod outpost_request;
 pub use self::outpost_request::OutpostRequest;
 pub mod outpost_type_enum;
