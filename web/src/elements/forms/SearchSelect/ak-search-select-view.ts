@@ -5,6 +5,14 @@ import { findFlatOptions, findOptionsSubset, groupOptions, optionsToFlat } from 
 import { ListSelect } from "#elements/ak-list-select/ak-list-select";
 import { AKElement } from "#elements/Base";
 import { AnchorPositionSupported, AnchorSizeSupported } from "#elements/dialogs/positioning";
+
+/**
+ * Whether the browser can both position (`anchor()`) *and* size (`anchor-size()`)
+ * against an anchor. Only then does the pure-CSS placement work; otherwise the menu
+ * is positioned imperatively. See {@link SearchSelectView.styles} and
+ * {@link SearchSelectView.startAnchorTracking}.
+ */
+const CSSAnchorPositioningSupported = AnchorPositionSupported && AnchorSizeSupported;
 import type { GroupedOptions, SelectOption, SelectOptions } from "#elements/types";
 import { ifPresent } from "#elements/utils/attributes";
 import { randomId } from "#elements/utils/randomId";
@@ -86,7 +94,8 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
             }
 
             ak-list-select[popover] {
-                /* Override the UA popover default (fixed + centered) with anchored placement. */
+                /* Base popover reset, shared by both positioning modes: strip the UA
+                   default (centered, bordered) so the menu is a bare positioned box. */
                 position: absolute;
                 margin: 0;
                 inset: auto;
@@ -94,12 +103,19 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
                 border: 0;
                 background: transparent;
                 overflow: visible;
+                max-height: 40vh;
+            }
 
+            /* CSS anchor positioning — applied ONLY when the browser fully supports it
+               (both anchor() and anchor-size()). When it doesn't, the menu is placed
+               imperatively (#positionMenu) and these declarations must not partially
+               apply: e.g. Firefox honors anchor() but not anchor-size(), which would
+               fight the JS placement and collapse the menu to min-content width. */
+            :host([data-anchor-css]) ak-list-select[popover] {
                 position-anchor: --ak-search-select-anchor;
                 top: anchor(bottom);
                 left: anchor(left);
                 width: anchor-size(width);
-                max-height: 40vh;
 
                 /* Flip above the input when there is no room below. */
                 position-try-fallbacks: flip-block;
@@ -306,6 +322,8 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
         super.connectedCallback();
         this.setAttribute("data-ouia-component-type", "ak-search-select-view");
         this.setAttribute("data-ouia-component-id", this.getAttribute("id") || randomId());
+        // Styling hook: gate the CSS anchor-positioning block (see `styles`).
+        this.toggleAttribute("data-anchor-css", CSSAnchorPositioningSupported);
     }
 
     disconnectedCallback() {
@@ -381,10 +399,9 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
         );
         this.#anchorObserver.observe(input);
 
-        // When the browser can both position (`anchor()`) and size (`anchor-size()`)
-        // against the anchor, the CSS in `styles` handles everything and tracks
-        // scrolling natively — nothing more to do.
-        if (AnchorPositionSupported && AnchorSizeSupported) return;
+        // When the browser fully supports CSS anchor positioning, the CSS in `styles`
+        // handles placement and tracks scrolling natively — nothing more to do.
+        if (CSSAnchorPositioningSupported) return;
 
         // Fallback placement. We can't rely on a global scroll listener: `scroll`
         // events are `composed: false`, so scrolling inside a shadow-rendered
@@ -444,10 +461,6 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
         const spaceBelow = viewportHeight - rect.bottom;
         const flipUp = spaceBelow < menuHeight && rect.top > spaceBelow;
 
-        // Neutralize any partially-supported CSS anchor positioning (e.g. Firefox
-        // ships `anchor()` but not `anchor-size()`), so our explicit placement wins
-        // and no half-applied flip fights it.
-        menu.style.positionTryFallbacks = "none";
         menu.style.position = "fixed";
         menu.style.left = `${Math.round(rect.left)}px`;
         menu.style.width = `${Math.round(rect.width)}px`;
