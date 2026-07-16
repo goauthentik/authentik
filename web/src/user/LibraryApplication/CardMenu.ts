@@ -4,6 +4,7 @@ import "#elements/buttons/Dropdown";
 
 import { truncateWords } from "#common/strings";
 
+import { AnchorPositionSupported } from "#elements/dialogs/positioning";
 import { LitFC } from "#elements/types";
 
 import { Application } from "@goauthentik/api";
@@ -13,8 +14,6 @@ import type { HTMLAttributes } from "react";
 
 import { msg, str } from "@lit/localize";
 import { html } from "lit";
-
-export const AnchorPositionSupported = CSS.supports("position-anchor", "--test");
 
 export interface CardMenuProps extends HTMLAttributes<HTMLDivElement> {
     cardID: string;
