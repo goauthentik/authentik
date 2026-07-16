@@ -13,6 +13,10 @@ from authentik.core.signals import password_changed, password_hash_changed
 from authentik.events.models import Event
 from authentik.lib.generators import generate_id
 
+# Recognized algorithm prefix, but the $-separated fields were eaten by an env var
+# interpolating the hash. Only decoding the body catches this.
+CORRUPT_PASSWORD_HASH = "pbkdf2_sha256$1000000/K4wGpWYKfJPSCcNM="
+
 
 class TestUsers(TestCase):
     """Test user"""
@@ -83,6 +87,36 @@ class TestUsers(TestCase):
         ldap_sources_filter.assert_not_called()
         kerberos_connections_select.assert_not_called()
 
+    def test_set_password_from_hash_rejects_corrupt_hash(self):
+        """Test a hash with a recognized prefix but a corrupt body is rejected."""
+        user = User.objects.create(username=generate_id())
+        original = make_password("original-password")  # nosec
+        user.set_password_from_hash(original)
+        user.save()
+
+        with self.assertRaises(ValueError):
+            user.set_password_from_hash(CORRUPT_PASSWORD_HASH)
+
+        user.refresh_from_db()
+        self.assertEqual(user.password, original)
+        self.assertTrue(user.check_password("original-password"))
+
+    def test_validate_password_hash_rejects_malformed_bodies(self):
+        """Test hashes are validated past their algorithm prefix."""
+        for password_hash in (
+            CORRUPT_PASSWORD_HASH,
+            "pbkdf2_sha256$whatever",
+            "pbkdf2_sha256$not-a-number$salt$hash",
+            "argon2$garbage",
+            "scrypt$1$2",
+        ):
+            with self.subTest(password_hash=password_hash), self.assertRaises(ValueError):
+                User.validate_password_hash(password_hash)
+
+    def test_validate_password_hash_accepts_valid_hash(self):
+        """Test a well-formed hash still validates."""
+        User.validate_password_hash(make_password(generate_id()))
+
 
 class TestUserSerializerPasswordHash(TestCase):
     """Test UserSerializer password_hash support in blueprint context."""
@@ -114,6 +148,23 @@ class TestUserSerializerPasswordHash(TestCase):
                 "username": generate_id(),
                 "name": "Test User",
                 "password_hash": "not-a-valid-hash",
+            },
+            context={SERIALIZER_CONTEXT_BLUEPRINT: True},
+        )
+
+        self.assertTrue(serializer.is_valid(), serializer.errors)
+        with self.assertRaises(ValidationError) as ctx:
+            serializer.save()
+
+        self.assertIn("Invalid password hash format", str(ctx.exception))
+
+    def test_password_hash_rejects_corrupt_body(self):
+        """Test a hash with a recognized prefix but a corrupt body is rejected."""
+        serializer = UserSerializer(
+            data={
+                "username": generate_id(),
+                "name": "Test User",
+                "password_hash": CORRUPT_PASSWORD_HASH,
             },
             context={SERIALIZER_CONTEXT_BLUEPRINT: True},
         )

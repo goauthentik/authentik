@@ -563,7 +563,8 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
     @staticmethod
     def validate_password_hash(password_hash: str):
         """Validate that the value is a recognized Django password hash."""
-        identify_hasher(password_hash)  # Raises ValueError if invalid
+        hasher = identify_hasher(password_hash)  # Raises ValueError if unrecognized
+        hasher.decode(password_hash)  # Raises ValueError if the body is malformed
 
     def set_password_from_hash(self, password_hash: str, signal=True, sender=None, request=None):
         """Set password directly from a pre-hashed value.

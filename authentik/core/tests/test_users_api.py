@@ -30,6 +30,9 @@ from authentik.rbac.models import Role
 from authentik.stages.email.models import EmailStage
 
 INVALID_PASSWORD_HASH = "not-a-valid-hash"
+# Recognized algorithm prefix, but the $-separated fields were eaten by an env var
+# interpolating the hash. Only decoding the body catches this.
+CORRUPT_PASSWORD_HASH = "pbkdf2_sha256$1000000/K4wGpWYKfJPSCcNM="
 INVALID_PASSWORD_HASH_ERROR = "Invalid password hash format. Must be a valid Django password hash."
 
 
@@ -165,6 +168,20 @@ class TestUsersAPI(APITestCase):
             response.content,
             {"password": [INVALID_PASSWORD_HASH_ERROR]},
         )
+
+    def test_set_password_hash_corrupt_body(self):
+        """Test a hash with a recognized prefix but a corrupt body is rejected."""
+        self.client.force_login(self.admin)
+        original_password = self.user.password
+        response = self._set_password_hash(self.user, CORRUPT_PASSWORD_HASH)
+
+        self.assertEqual(response.status_code, 400)
+        self.assertJSONEqual(
+            response.content,
+            {"password": [INVALID_PASSWORD_HASH_ERROR]},
+        )
+        self.user.refresh_from_db()
+        self.assertEqual(self.user.password, original_password)
 
     def test_recovery(self):
         """Test user recovery link"""
