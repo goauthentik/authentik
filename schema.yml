@@ -51284,6 +51284,8 @@ components:
         uuid:
           type: string
           format: uuid
+        policy_engine_mode:
+          $ref: '#/components/schemas/PolicyEngineMode'
         rule:
           type: string
           format: uuid
@@ -51308,6 +51310,8 @@ components:
         uuid:
           type: string
           format: uuid
+        policy_engine_mode:
+          $ref: '#/components/schemas/PolicyEngineMode'
         name:
           type: string
           minLength: 1
@@ -54579,6 +54583,8 @@ components:
           type: string
           format: uuid
           readOnly: true
+        policy_engine_mode:
+          $ref: '#/components/schemas/PolicyEngineMode'
         name:
           type: string
         targets:
@@ -54601,6 +54607,8 @@ components:
           type: string
           format: uuid
           readOnly: true
+        policy_engine_mode:
+          $ref: '#/components/schemas/PolicyEngineMode'
         rule:
           type: string
           format: uuid
@@ -54629,6 +54637,8 @@ components:
         uuid:
           type: string
           format: uuid
+        policy_engine_mode:
+          $ref: '#/components/schemas/PolicyEngineMode'
         rule:
           type: string
           format: uuid
@@ -54674,6 +54684,8 @@ components:
         uuid:
           type: string
           format: uuid
+        policy_engine_mode:
+          $ref: '#/components/schemas/PolicyEngineMode'
         name:
           type: string
           minLength: 1

@@ -12,6 +12,7 @@ class RequestRuleSerializer(ModelSerializer):
         fields = [
             "uuid",
             "pbm_uuid",
+            "policy_engine_mode",
             "name",
             "targets",
         ]

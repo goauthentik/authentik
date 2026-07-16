@@ -12,6 +12,8 @@
  * Do not edit the class manually.
  */
 
+import type { PolicyEngineMode } from "./PolicyEngineMode";
+import { PolicyEngineModeFromJSON, PolicyEngineModeToJSON } from "./PolicyEngineMode";
 import type { RequestRule } from "./RequestRule";
 import { RequestRuleFromJSON } from "./RequestRule";
 
@@ -33,6 +35,12 @@ export interface RequestRuleBinding {
      * @memberof RequestRuleBinding
      */
     readonly pbmUuid: string;
+    /**
+     *
+     * @type {PolicyEngineMode}
+     * @memberof RequestRuleBinding
+     */
+    policyEngineMode?: PolicyEngineMode;
     /**
      *
      * @type {string}
@@ -85,6 +93,10 @@ export function RequestRuleBindingFromJSONTyped(
     return {
         uuid: json["uuid"] == null ? undefined : json["uuid"],
         pbmUuid: json["pbm_uuid"],
+        policyEngineMode:
+            json["policy_engine_mode"] == null
+                ? undefined
+                : PolicyEngineModeFromJSON(json["policy_engine_mode"]),
         rule: json["rule"],
         ruleObj: RequestRuleFromJSON(json["rule_obj"]),
         target: json["target"],
@@ -106,6 +118,7 @@ export function RequestRuleBindingToJSONTyped(
 
     return {
         uuid: value["uuid"],
+        policy_engine_mode: PolicyEngineModeToJSON(value["policyEngineMode"]),
         rule: value["rule"],
         target: value["target"],
     };
