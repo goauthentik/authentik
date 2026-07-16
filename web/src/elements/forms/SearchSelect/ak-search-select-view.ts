@@ -5,12 +5,13 @@ import { findFlatOptions, findOptionsSubset, groupOptions, optionsToFlat } from 
 import { ListSelect } from "#elements/ak-list-select/ak-list-select";
 import { AKElement } from "#elements/Base";
 import { AnchorPositionSupported, AnchorSizeSupported } from "#elements/dialogs/positioning";
+import Styles from "#elements/forms/SearchSelect/ak-search-select-view.css";
 import type { GroupedOptions, SelectOption, SelectOptions } from "#elements/types";
 import { ifPresent } from "#elements/utils/attributes";
 import { randomId } from "#elements/utils/randomId";
 
 import { msg } from "@lit/localize";
-import { css, CSSResult, html, PropertyValues } from "lit";
+import { CSSResult, html, PropertyValues } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 import { createRef, ref, Ref } from "lit/directives/ref.js";
@@ -82,86 +83,11 @@ export interface ISearchSelectView {
 @customElement("ak-search-select-view")
 export class SearchSelectView extends AKElement implements ISearchSelectView {
     static styles: CSSResult[] = [
+        // ---
         PFForm,
         PFFormControl,
         PFSelect,
-        css`
-            .pf-c-select {
-                --pf-c-select__toggle-wrapper--MaxWidth: initial;
-            }
-
-            input.pf-c-select__toggle-typeahead {
-                anchor-name: --ak-search-select-anchor;
-            }
-
-            ak-list-select[popover] {
-                /* Strip the UA popover default (centered, bordered) so the menu is a
-                   bare box. Placement is done either with CSS anchor positioning (see
-                   the [data-anchor-css] rule) or imperatively in #positionMenu. */
-                position: fixed;
-                margin: 0;
-                inset: auto;
-                padding: 0;
-                border: 0;
-                background: transparent;
-                max-height: 40vh;
-                /* Host is the single scroll container (see the part rule below), so
-                   scroll state is readable here for wheel forwarding. */
-                overflow-y: auto;
-            }
-
-            /* Native CSS anchor positioning — used only where it is both supported and
-               reliable (not Firefox; see #elements/dialogs/positioning). It tracks
-               scrolling for free, so no per-frame JS placement is needed. */
-            :host([data-anchor-css]) ak-list-select[popover] {
-                position: absolute;
-                position-anchor: --ak-search-select-anchor;
-                top: anchor(bottom);
-                left: anchor(left);
-                width: anchor-size(width);
-
-                /* Flip above the input when there is no room below. */
-                position-try-fallbacks: flip-block;
-            }
-
-            /* The inner PatternFly dropdown is inline-block (content width); stretch it
-               to fill the (input-width) host so the menu matches the input. */
-            ak-list-select[popover]::part(ak-list-select-wrapper) {
-                width: 100%;
-            }
-
-            /* Neutralize ak-list-select's own scroll cap so the popover host is the
-               sole scroll container. */
-            ak-list-select[popover]::part(ak-list-select) {
-                max-height: none;
-                overflow: visible;
-            }
-
-            /* PatternFly menu items are white-space: nowrap; let long option labels
-               wrap inside the anchor-width menu instead of overflowing. */
-            ak-list-select[popover]::part(ak-list-select-button),
-            ak-list-select[popover]::part(ak-list-select-label),
-            ak-list-select[popover]::part(ak-list-select-desc) {
-                white-space: normal;
-                overflow-wrap: anywhere;
-            }
-
-            /* Brief fade-in when the menu opens. */
-            @media (prefers-reduced-motion: no-preference) {
-                @keyframes ak-search-select-menu-in {
-                    from {
-                        opacity: 0;
-                    }
-                    to {
-                        opacity: 1;
-                    }
-                }
-
-                ak-list-select[popover]:popover-open {
-                    animation: ak-search-select-menu-in 120ms ease-out;
-                }
-            }
-        `,
+        Styles,
     ];
 
     //#region Properties
@@ -445,7 +371,8 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
             if (!(node instanceof HTMLElement)) continue;
 
             const { overflowY } = getComputedStyle(node);
-            const scrollable = overflowY === "auto" || overflowY === "scroll" || overflowY === "overlay";
+            const scrollable =
+                overflowY === "auto" || overflowY === "scroll" || overflowY === "overlay";
 
             if (scrollable && node.scrollHeight > node.clientHeight) {
                 return node;
