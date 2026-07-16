@@ -1,5 +1,4 @@
 import "#elements/ak-list-select/ak-list-select";
-import "#elements/forms/SearchSelect/ak-portal";
 
 import { findFlatOptions, findOptionsSubset, groupOptions, optionsToFlat } from "./utils.js";
 
@@ -10,7 +9,7 @@ import { ifPresent } from "#elements/utils/attributes";
 import { randomId } from "#elements/utils/randomId";
 
 import { msg } from "@lit/localize";
-import { css, CSSResult, html, nothing, PropertyValues } from "lit";
+import { css, CSSResult, html, PropertyValues } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 import { createRef, ref, Ref } from "lit/directives/ref.js";
@@ -79,6 +78,30 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
         css`
             .pf-c-select {
                 --pf-c-select__toggle-wrapper--MaxWidth: initial;
+            }
+
+            input.pf-c-select__toggle-typeahead {
+                anchor-name: --ak-search-select-anchor;
+            }
+
+            ak-list-select[popover] {
+                /* Override the UA popover default (fixed + centered) with anchored placement. */
+                position: absolute;
+                margin: 0;
+                inset: auto;
+                padding: 0;
+                border: 0;
+                background: transparent;
+                overflow: visible;
+
+                position-anchor: --ak-search-select-anchor;
+                top: anchor(bottom);
+                left: anchor(left);
+                width: anchor-size(width);
+                max-height: 40vh;
+
+                /* Flip above the input when there is no room below. */
+                position-try-fallbacks: flip-block;
             }
         `,
     ];
@@ -217,11 +240,6 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
     @state()
     protected displayValue = "";
 
-    // Tracks when the inputRef is populated, so we can safely reschedule the
-    // render of the dropdown with respect to it.
-    @state()
-    protected inputRefIsAvailable = false;
-
     /**
      * Permanent identity with the portal so focus events can be checked.
      */
@@ -243,16 +261,25 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
     //#region Lifecycle
 
     public override updated() {
+        this.#syncMenuVisibility();
         this.setAttribute("data-ouia-component-safe", "true");
     }
 
-    public override firstUpdated(changed: PropertyValues<this>) {
-        super.firstUpdated(changed);
+    /**
+     * Reconcile the popover's actual open state with `this.open`.
+     * Called from `updated()` so it runs after the menu has rendered.
+     */
+    #syncMenuVisibility() {
+        const menu = this.#menuRef.value;
+        if (!menu) return;
 
-        // Route around Lit's scheduling algorithm complaining about re-renders
-        requestAnimationFrame(() => {
-            this.inputRefIsAvailable = Boolean(this.#inputRef?.value);
-        });
+        const popoverOpen = menu.matches(":popover-open");
+
+        if (this.open && !this.readOnly && !popoverOpen) {
+            menu.showPopover();
+        } else if ((!this.open || this.readOnly) && popoverOpen) {
+            menu.hidePopover();
+        }
     }
 
     connectedCallback() {
@@ -273,11 +300,36 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
 
     //#region Event Listeners
 
-    #clickListener = (_ev: Event) => {
+    /** Timestamp of the last browser-driven popover close (see reopen guard). */
+    #lastLightDismiss = -Infinity;
+
+    #clickListener = (event: Event) => {
         if (this.readOnly) return;
 
-        this.open = !this.open;
+        // If this same click just light-dismissed the open popover, treat it as a
+        // close: leave `open` false instead of toggling it back on.
+        const dismissedByThisClick = event.timeStamp - this.#lastLightDismiss < 250;
+
+        this.open = dismissedByThisClick ? false : !this.open;
         this.#inputRef.value?.focus();
+    };
+
+    /**
+     * Reflect browser-driven popover state changes (light dismiss, Esc) back
+     * into `this.open`, keeping component state authoritative.
+     */
+    #menuToggleListener = (event: ToggleEvent) => {
+        const nowOpen = event.newState === "open";
+
+        if (nowOpen) return;
+
+        // Record when the browser closes the popover so a click on the input
+        // that *caused* the dismiss doesn't immediately reopen it.
+        this.#lastLightDismiss = event.timeStamp;
+
+        if (this.open) {
+            this.open = false;
+        }
     };
 
     setFromMatchList(value?: string) {
@@ -325,25 +377,26 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
         }
     };
 
-    #blurListener = (event: FocusEvent) => {
-        // If we lost focus but the menu got it, don't do anything;
-        const relatedTarget = event.relatedTarget as HTMLElement | undefined;
-        if (
-            relatedTarget &&
-            (this.contains(relatedTarget) ||
-                this.renderRoot.contains(relatedTarget) ||
-                this.#menuRef.value?.contains(relatedTarget) ||
-                this.#menuRef.value?.renderRoot.contains(relatedTarget))
-        ) {
-            return;
-        }
-        this.open = false;
-        if (!this.value) {
-            if (this.#inputRef.value) {
-                this.#inputRef.value.value = "";
-            }
-            this.setValue(undefined);
-        }
+    #blurListener = (_event: FocusEvent) => {
+        // TODO: Disabled while debugging
+        // // If we lost focus but the menu got it, don't do anything;
+        // const relatedTarget = event.relatedTarget as HTMLElement | undefined;
+        // if (
+        //     relatedTarget &&
+        //     (this.contains(relatedTarget) ||
+        //         this.renderRoot.contains(relatedTarget) ||
+        //         this.#menuRef.value?.contains(relatedTarget) ||
+        //         this.#menuRef.value?.renderRoot.contains(relatedTarget))
+        // ) {
+        //     return;
+        // }
+        // this.open = false;
+        // if (!this.value) {
+        //     if (this.#inputRef.value) {
+        //         this.#inputRef.value.value = "";
+        //     }
+        //     this.setValue(undefined);
+        // }
     };
 
     setValue(newValue: string | undefined) {
@@ -474,8 +527,6 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
     //#region Render
 
     public override render() {
-        const { open } = this;
-
         const emptyOption = this.blankable
             ? this.emptyOption || this.placeholder || msg("Select an option...")
             : null;
@@ -506,29 +557,21 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
                     </div>
                 </div>
             </div>
-            ${this.inputRefIsAvailable
-                ? html`
-                      <ak-portal
-                          name=${ifDefined(this.name)}
-                          .anchor=${this.#inputRef.value}
-                          ?open=${open}
-                      >
-                          <ak-list-select
-                              id="menu-${this.getAttribute("data-ouia-component-id")}"
-                              ${ref(this.#menuRef)}
-                              .options=${this.managedOptions}
-                              value=${ifDefined(this.value)}
-                              @change=${this.#changeListener}
-                              @blur=${this.#blurListener}
-                              emptyOption=${ifPresent(emptyOption)}
-                              actionLabel=${ifPresent(this.actionLabel)}
-                              @ak-select-action=${this.#actionListener}
-                              @keydown=${this.#listKeydownListener}
-                              @keyup=${this.#listKeyupListener}
-                          ></ak-list-select>
-                      </ak-portal>
-                  `
-                : nothing}`;
+            <ak-list-select
+                popover="auto"
+                id="menu-${this.getAttribute("data-ouia-component-id")}"
+                ${ref(this.#menuRef)}
+                .options=${this.managedOptions}
+                value=${ifDefined(this.value)}
+                @change=${this.#changeListener}
+                @blur=${this.#blurListener}
+                @toggle=${this.#menuToggleListener}
+                emptyOption=${ifPresent(emptyOption)}
+                actionLabel=${ifPresent(this.actionLabel)}
+                @ak-select-action=${this.#actionListener}
+                @keydown=${this.#listKeydownListener}
+                @keyup=${this.#listKeyupListener}
+            ></ak-list-select>`;
     }
 
     //#endregion
