@@ -94,6 +94,13 @@ class DomainlessURLValidator(URLValidator):
         super().__call__(value)
 
 
+class WildcardDomainlessURLValidator(DomainlessURLValidator):
+    """Like DomainlessURLValidator but allows '*' wildcards in the URL."""
+
+    def __call__(self, value: str):
+        super().__call__(value.replace("*", "wildcard"))
+
+
 class DomainlessFormattedURLValidator(DomainlessURLValidator):
     """URL validator which allows for python format strings"""
 
