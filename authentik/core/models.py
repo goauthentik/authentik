@@ -16,7 +16,7 @@ from django.contrib.auth.models import UserManager as DjangoUserManager
 from django.contrib.sessions.base_session import AbstractBaseSession
 from django.core.validators import validate_slug
 from django.db import models
-from django.db.models import Manager, Q, QuerySet, options
+from django.db.models import Q, QuerySet, options
 from django.http import HttpRequest
 from django.utils.functional import cached_property
 from django.utils.timezone import now
@@ -42,10 +42,10 @@ from authentik.lib.merge import MERGE_LIST_UNIQUE
 from authentik.lib.models import (
     CreatedUpdatedModel,
     DomainlessFormattedURLValidator,
+    ExpiringModel,
     SerializerModel,
 )
 from authentik.lib.utils.inheritance import get_deepest_child
-from authentik.lib.utils.reflection import class_to_path
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.policies.models import PolicyBindingModel, RequestableChildModel, RequestableModel
 from authentik.rbac.models import Role
@@ -1132,75 +1132,6 @@ class GroupSourceConnection(SerializerModel, CreatedUpdatedModel):
 
     class Meta:
         unique_together = (("group", "source"),)
-
-
-class ExpiringManager(Manager):
-    """Manager for expiring objects which filters out expired objects by default"""
-
-    def get_queryset(self):
-        return QuerySet(self.model, using=self._db).exclude(expires__lt=now(), expiring=True)
-
-    def including_expired(self):
-        return QuerySet(self.model, using=self._db)
-
-
-class ExpiringModel(models.Model):
-    """Base Model which can expire, and is automatically cleaned up."""
-
-    expires = models.DateTimeField(default=None, null=True)
-    expiring = models.BooleanField(default=True)
-
-    objects = ExpiringManager()
-
-    class Meta:
-        abstract = True
-        indexes = [
-            models.Index(fields=["expires"]),
-            models.Index(fields=["expiring"]),
-            models.Index(fields=["expiring", "expires"]),
-        ]
-
-    def expire_action(self, *args, **kwargs):
-        """Handler which is called when this object is expired. By
-        default the object is deleted. This is less efficient compared
-        to bulk deleting objects, but classes like Token() need to change
-        values instead of being deleted."""
-        try:
-            return self.delete(*args, **kwargs)
-        except self.DoesNotExist:
-            # Object has already been deleted, so this should be fine
-            return None
-
-    @classmethod
-    def filter_not_expired(cls, **kwargs) -> QuerySet[Self]:
-        """Filer for tokens which are not expired yet or are not expiring,
-        and match filters in `kwargs`"""
-        from authentik.events.models import Event
-
-        deprecation_id = f"{class_to_path(cls)}.filter_not_expired"
-
-        Event.log_deprecation(
-            deprecation_id,
-            message=(
-                ".filter_not_expired() is deprecated as the default lookup now excludes "
-                "expired objects."
-            ),
-        )
-
-        for obj in (
-            cls.objects.including_expired()
-            .filter(**kwargs)
-            .filter(Q(expires__lt=now(), expiring=True))
-        ):
-            obj.delete()
-        return cls.objects.filter(**kwargs)
-
-    @property
-    def is_expired(self) -> bool:
-        """Check if token is expired yet."""
-        if not self.expiring:
-            return False
-        return now() > self.expires
 
 
 class TokenIntents(models.TextChoices):
