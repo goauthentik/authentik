@@ -67,6 +67,7 @@ class FleetController(BaseController[DBC]):
                         "device_mapping": "true",
                         "populate_software": "true",
                         "populate_users": "true",
+                        "populate_policies": "true",
                     },
                 )
                 res.raise_for_status()
