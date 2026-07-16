@@ -1,7 +1,6 @@
 import "#elements/Spinner";
 
 import { EVENT_REFRESH } from "#common/constants";
-import { PFSize } from "#common/enums";
 import { APIError, parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
 
 import { AggregateCard } from "#elements/cards/AggregateCard";
@@ -138,7 +137,7 @@ export abstract class AdminStatusCard<T> extends AggregateCard {
      * @returns TemplateResult for loading spinner
      */
     private renderLoading(): SlottedTemplateResult {
-        return html`<ak-spinner size="${PFSize.Large}"></ak-spinner>`;
+        return html`<ak-spinner size="lg"></ak-spinner>`;
     }
 
     /**

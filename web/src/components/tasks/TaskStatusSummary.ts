@@ -70,7 +70,7 @@ export class TaskStatusSummary extends AKElement {
                             class="pf-l-grid__item"
                             icon=${c[1]}
                             label=${c[0]}
-                            >${c[2] === null ? html`<ak-spinner></ak-spinner>` : c[2]}
+                            >${c[2] === null ? html`<ak-spinner size="md"></ak-spinner>` : c[2]}
                         </ak-aggregate-card>`,
                 )}
             </div>

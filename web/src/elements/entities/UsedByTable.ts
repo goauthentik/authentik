@@ -1,5 +1,3 @@
-import { PFSize } from "#common/enums";
-
 import { UsedByListItem } from "#elements/entities/used-by";
 import { StaticTable } from "#elements/table/StaticTable";
 import { TableColumn } from "#elements/table/TableColumn";
@@ -78,7 +76,7 @@ export class UsedByTable<T extends object> extends StaticTable<T> {
             return this.renderUsedBy(this.usedByData.get(item) || []);
         };
         return html`${this.usedBy
-            ? until(handler(), html`<ak-spinner size=${PFSize.Large}></ak-spinner>`)
+            ? until(handler(), html`<ak-spinner size="lg"></ak-spinner>`)
             : null}`;
     }
 

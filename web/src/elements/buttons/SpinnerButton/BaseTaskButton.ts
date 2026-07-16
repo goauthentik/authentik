@@ -1,7 +1,6 @@
 import "#elements/Spinner";
 
 import { ERROR_CLASS, PROGRESS_CLASS, SUCCESS_CLASS } from "#common/constants";
-import { PFSize } from "#common/enums";
 
 import { AKElement } from "#elements/Base";
 import { ifPresent } from "#elements/utils/attributes";
@@ -22,7 +21,10 @@ const buttonStyles = [
     css`
         #spinner-button {
             transition: all var(--pf-c-button--m-progress--TransitionDuration) ease 0s;
+            --ak-c-spinner--Color: #fdcac1;
+            --ak-c-spinner--stroke-width: 20;
         }
+
         #spinner-button.working {
             pointer-events: none;
         }
@@ -123,7 +125,7 @@ export abstract class BaseTaskButton<R = unknown> extends CustomEmitterElement(A
     }
 
     #spinner = html`<span class="pf-c-button__progress">
-        <ak-spinner size=${PFSize.Medium}></ak-spinner>
+        <ak-spinner inline></ak-spinner>
     </span>`;
 
     public get buttonClasses() {

@@ -1,4 +1,5 @@
 import "#elements/AppIcon";
+import "#elements/Spinner";
 import "#user/LibraryApplication/RACLaunchEndpointModal";
 
 import { PFSize } from "#common/enums";
@@ -41,7 +42,7 @@ export const AKLibraryApp: LitFC<AKLibraryAppProps> = ({
     ...props
 }) => {
     if (!application) {
-        return html`<ak-spinner></ak-spinner>`;
+        return html`<ak-spinner size="md"></ak-spinner>`;
     }
 
     const classes = {

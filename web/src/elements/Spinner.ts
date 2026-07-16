@@ -1,33 +1,13 @@
-import { PFSize } from "#common/enums";
+/**
+ * @file Barrel file and default registry ('ak-spinner') for the Spinner component
+ */
 
-import { AKElement } from "#elements/Base";
+import { akSpinner, Spinner, type SpinnerProps } from "./Spinner_impl/Spinner";
 
-import { msg } from "@lit/localize";
-import { CSSResult, html, TemplateResult } from "lit";
-import { customElement, property } from "lit/decorators.js";
+export { akSpinner, Spinner };
+export type { SpinnerProps };
 
-import PFSpinner from "@patternfly/patternfly/components/Spinner/spinner.css";
-
-@customElement("ak-spinner")
-export class Spinner extends AKElement {
-    @property()
-    size: PFSize = PFSize.Medium;
-
-    static styles: CSSResult[] = [PFSpinner];
-
-    render(): TemplateResult {
-        return html`<span
-            class="pf-c-spinner ${this.size.toString()}"
-            role="progressbar"
-            aria-valuetext="${msg("Loading...")}"
-        >
-            <span class="pf-c-spinner__clipper"></span>
-            <span class="pf-c-spinner__lead-ball"></span>
-            <span class="pf-c-spinner__tail-ball"></span>
-            <slot></slot>
-        </span>`;
-    }
-}
+window.customElements.define("ak-spinner", Spinner);
 
 declare global {
     interface HTMLElementTagNameMap {

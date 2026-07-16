@@ -57,7 +57,7 @@ export class OutpostHealthSimpleElement extends AKElement {
 
     protected override render(): SlottedTemplateResult {
         if (!this.outpostID || !this.lastRefreshedAt) {
-            return html`<ak-spinner></ak-spinner>`;
+            return html`<ak-spinner size="md"></ak-spinner>`;
         }
 
         if (!this.outpostHealths || this.outpostHealths.length === 0) {
