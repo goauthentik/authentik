@@ -5,7 +5,7 @@ from typing import Self
 
 from django.core.validators import URLValidator
 from django.db import models
-from django.db.models import Q, QuerySet
+from django.db.models import Manager, Q, QuerySet
 from django.utils.regex_helper import _lazy_re_compile
 from django.utils.timezone import now
 from model_utils.managers import InheritanceManager
@@ -118,7 +118,7 @@ class DomainlessFormattedURLValidator(DomainlessURLValidator):
         self.schemes = ["http", "https", "blank", "ssh", "sftp"] + list(self.schemes)
 
 
-class ExpiringManager(models.Manager):
+class ExpiringManager(Manager):
     """Manager for expiring objects which filters out expired objects by default"""
 
     def get_queryset(self):

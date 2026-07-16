@@ -40,7 +40,7 @@ An object permission grants permission (via a role) on a single, specific object
 
 For example, a role with the object permission to change only the Default Authentication flow will not be able to change any other flow.
 
-## Viewing permissions
+## View permissions
 
 Many objects in authentik's Admin interface have a **Permissions** tab, where you can check which roles have rights on that particular object. Those permissions describe what those roles can do _to_ the object detailed on the page.
 

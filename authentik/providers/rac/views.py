@@ -32,9 +32,12 @@ class RACStartView(PolicyAccessView):
 
     def resolve_provider_application(self):
         self.application = get_object_or_404(Application, slug=self.kwargs["app"])
-        # Endpoint permissions are validated in the RACFinalStage below
-        self.endpoint = get_object_or_404(Endpoint, pk=self.kwargs["endpoint"])
         self.provider = RACProvider.objects.get(application=self.application)
+        # The endpoint must belong to this application's provider; its own
+        # policies are validated in the RACFinalStage below
+        self.endpoint = get_object_or_404(
+            Endpoint, pk=self.kwargs["endpoint"], provider=self.provider
+        )
 
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         """Start flow planner for RAC provider"""
