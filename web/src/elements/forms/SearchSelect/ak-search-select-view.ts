@@ -103,6 +103,21 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
                 /* Flip above the input when there is no room below. */
                 position-try-fallbacks: flip-block;
             }
+
+            /* The inner PatternFly dropdown is inline-block (content width); stretch it
+               to fill the anchor-width host so the menu matches the input. */
+            ak-list-select[popover]::part(ak-list-select-wrapper) {
+                width: 100%;
+            }
+
+            /* PatternFly menu items are white-space: nowrap; let long option labels
+               wrap inside the anchor-width menu instead of overflowing. */
+            ak-list-select[popover]::part(ak-list-select-button),
+            ak-list-select[popover]::part(ak-list-select-label),
+            ak-list-select[popover]::part(ak-list-select-desc) {
+                white-space: normal;
+                overflow-wrap: anywhere;
+            }
         `,
     ];
 
