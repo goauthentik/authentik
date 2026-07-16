@@ -135,7 +135,7 @@ export class ApplicationViewPage extends WithLicenseSummary(AKElement) {
                         this.stats = stats;
                     })
                     .catch(() => {
-                        // TODO
+                        console.warn("Failed to fetch events");
                     });
             });
     }
