@@ -19,7 +19,7 @@ class RequestRuleChildBinding(SerializerModel):
         verbose_name_plural = _("Request Rule Child Bindings")
         unique_together = ("binding", "target")
 
-
+# PBM here configures who can request access
 class RequestRuleBinding(SerializerModel, PolicyBindingModel):
     """Binding between a request rule and a requestable model, optionally also
     carrying n RequestableChildModel"""
@@ -39,9 +39,9 @@ class RequestRuleBinding(SerializerModel, PolicyBindingModel):
     class Meta:
         verbose_name = _("Request Rule Binding")
         verbose_name_plural = _("Request Rule Bindings")
-        unique_together = ("rule", "target")
 
 
+# PBM here configures who can approve
 class RequestRule(CreatedUpdatedModel, SerializerModel, PolicyBindingModel):
     """A rule defining who can request access and who can approve access to any of the
     requestable models this rule is bound to."""
