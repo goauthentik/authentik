@@ -555,20 +555,16 @@
   <target>Изчисти търсенето</target>
 </trans-unit>
 <trans-unit id="sd9b15395dd103f80">
-  <source>Sort by &quot;<x id="0" equiv-text="${label}"/>&quot;</source>
-  <target>Сортирай по &quot;<x id="0" equiv-text="${label}"/>&quot;</target>
-</trans-unit>
-<trans-unit id="s7bc8c327f1f7c82c">
-  <source>No objects found.</source>
-  <target>Няма намерени обекти.</target>
+  <source>Sort by "<x id="0" equiv-text="${label}"/>"</source>
+  <target>Сортирай по "<x id="0" equiv-text="${label}"/>"</target>
 </trans-unit>
 <trans-unit id="sfd44ce578f643145">
   <source>Failed to fetch objects.</source>
   <target>Неуспешно зареждане на обекти.</target>
 </trans-unit>
 <trans-unit id="s7dd64bb0c1fa8e87">
-  <source>Select &quot;<x id="0" equiv-text="${rowLabel}"/>&quot; row</source>
-  <target>Избери ред &quot;<x id="0" equiv-text="${rowLabel}"/>&quot;</target>
+  <source>Select "<x id="0" equiv-text="${rowLabel}"/>" row</source>
+  <target>Избери ред "<x id="0" equiv-text="${rowLabel}"/>"</target>
 </trans-unit>
 <trans-unit id="sd26f670ca5d5b0c6">
   <source>Collapse row</source>
@@ -799,8 +795,8 @@
   <target>Не е намерено</target>
 </trans-unit>
 <trans-unit id="saa0e2675da69651b">
-  <source>The URL &quot;<x id="0" equiv-text="${this.url}"/>&quot; was not found.</source>
-  <target>URL адресът &quot;<x id="0" equiv-text="${this.url}"/>&quot; не е намерен.</target>
+  <source>The URL "<x id="0" equiv-text="${this.url}"/>" was not found.</source>
+  <target>URL адресът "<x id="0" equiv-text="${this.url}"/>" не е намерен.</target>
 </trans-unit>
 <trans-unit id="s58cd9c2fe836d9c6">
   <source>Return home</source>
@@ -1051,7 +1047,7 @@
   <target>Присвои право</target>
 </trans-unit>
 <trans-unit id="s14bfa8fd1bec8889">
-  <source>Role doesn&apos;t have view permission so description cannot be retrieved.</source>
+  <source>Role doesn't have view permission so description cannot be retrieved.</source>
   <target>Ролята няма разрешение за преглед, така че описанието не може да бъде извлечено.</target>
 </trans-unit>
 <trans-unit id="s37d1b74df205b528">
@@ -1278,10 +1274,6 @@
   <source>Application Name</source>
   <target>Име на приложение</target>
 </trans-unit>
-<trans-unit id="s704091f8e3dbd721">
-  <source>The name displayed in the application library.</source>
-  <target>Името, показвано в библиотеката с приложения.</target>
-</trans-unit>
 <trans-unit id="s91f70424f5d5d23e">
   <source>Slug</source>
   <target>Слъг</target>
@@ -1391,7 +1383,7 @@
   <target>Премина</target>
 </trans-unit>
 <trans-unit id="sac315d5bd28d4efa">
-  <source>Don&apos;t Pass</source>
+  <source>Don't Pass</source>
   <target>Не премина</target>
 </trans-unit>
 <trans-unit id="s40b80eb4cc1f0e0c">
@@ -1607,11 +1599,11 @@
   <target>DNS име, за което трябва да се използва конфигурираният по-горе сертификат. Сертификатът не може да бъде открит въз основа на base DN, тъй като SSL/TLS преговорите се извършват преди обменът на такива данни.</target>
 </trans-unit>
 <trans-unit id="s60edbcfac8ed1f90">
-  <source>The start for uidNumbers, this number is added to the user.Pk to make sure that the numbers aren&apos;t too low for POSIX users. Default is 2000 to ensure that we don&apos;t collide with local users uidNumber</source>
+  <source>The start for uidNumbers, this number is added to the user.Pk to make sure that the numbers aren't too low for POSIX users. Default is 2000 to ensure that we don't collide with local users uidNumber</source>
   <target>Начало за uidNumbers, този номер се добавя към user.Pk, за да се гарантира, че номерата не са твърде ниски за POSIX потребители. По подразбиране е 2000, за да се гарантира, че няма да се сблъскаме с uidNumber на локалните потребители</target>
 </trans-unit>
 <trans-unit id="s1c8e9816dcae6d9c">
-  <source>The start for gidNumbers, this number is added to a number generated from the group.Pk to make sure that the numbers aren&apos;t too low for POSIX groups. Default is 4000 to ensure that we don&apos;t collide with local groups or users primary groups gidNumber</source>
+  <source>The start for gidNumbers, this number is added to a number generated from the group.Pk to make sure that the numbers aren't too low for POSIX groups. Default is 4000 to ensure that we don't collide with local groups or users primary groups gidNumber</source>
   <target>Начало за gidNumbers, този номер се добавя към номер, генериран от group.Pk, за да се гарантира, че номерата не са твърде ниски за POSIX групи. По подразбиране е 4000, за да се гарантира, че няма да се сблъскаме с gidNumber на локални групи или основни групи на потребители</target>
 </trans-unit>
 <trans-unit id="sdb16a3d366135cef">
@@ -1627,7 +1619,7 @@
   <target>Конфигуриране как отдалеченият пост автентикира заявките.</target>
 </trans-unit>
 <trans-unit id="s8b87df5664de7eb8">
-  <source>Configure how the outpost queries the core authentik server&apos;s users.</source>
+  <source>Configure how the outpost queries the core authentik server's users.</source>
   <target>Конфигуриране как отдалеченият пост заявява потребителите на основния authentik сървър.</target>
 </trans-unit>
 <trans-unit id="s254d527e3a53dbb7">
@@ -1719,23 +1711,23 @@
   <target>Известия за изход чрез браузър iframe</target>
 </trans-unit>
 <trans-unit id="sccc47f82044453f9">
-  <source>Based on the User&apos;s hashed ID</source>
+  <source>Based on the User's hashed ID</source>
   <target>Базирано на хеширания ID на потребителя</target>
 </trans-unit>
 <trans-unit id="sbd5be4fb7442a34c">
-  <source>Based on the User&apos;s ID</source>
+  <source>Based on the User's ID</source>
   <target>Базирано на ID на потребителя</target>
 </trans-unit>
 <trans-unit id="sc9cf9ecaf9e5d67e">
-  <source>Based on the User&apos;s UUID</source>
+  <source>Based on the User's UUID</source>
   <target>Базирано на UUID на потребителя</target>
 </trans-unit>
 <trans-unit id="s4291727352c4f295">
-  <source>Based on the User&apos;s username</source>
+  <source>Based on the User's username</source>
   <target>Базирано на потребителското име на потребителя</target>
 </trans-unit>
 <trans-unit id="sd62cfc27ad4aa33b">
-  <source>Based on the User&apos;s Email</source>
+  <source>Based on the User's Email</source>
   <target>Базирано на имейла на потребителя</target>
 </trans-unit>
 <trans-unit id="s55eb75bedf96be0f">
@@ -1743,12 +1735,12 @@
   <target>Препоръчва се пред режима UPN.</target>
 </trans-unit>
 <trans-unit id="sf80e9547166117e6">
-  <source>Based on the User&apos;s UPN</source>
+  <source>Based on the User's UPN</source>
   <target>Базирано на UPN на потребителя</target>
 </trans-unit>
 <trans-unit id="sde949d0ef44572eb">
-  <source>Requires the user to have a &apos;upn&apos; attribute set, and falls back to hashed user ID. Use this mode only if you have different UPN and Mail domains.</source>
-  <target>Изисква потребителят да има зададен атрибут &apos;upn&apos; и се връща към хеширан потребителски ID. Използвайте този режим само ако имате различни UPN и Mail домейни.</target>
+  <source>Requires the user to have a 'upn' attribute set, and falls back to hashed user ID. Use this mode only if you have different UPN and Mail domains.</source>
+  <target>Изисква потребителят да има зададен атрибут 'upn' и се връща към хеширан потребителски ID. Използвайте този режим само ако имате различни UPN и Mail домейни.</target>
 </trans-unit>
 <trans-unit id="sde56783222b527d6">
   <source>Each provider has a different issuer, based on the application slug</source>
@@ -1759,8 +1751,8 @@
   <target>За всички доставчици се използва един и същ идентификатор</target>
 </trans-unit>
 <trans-unit id="s4c49d27de60a532b">
-  <source>To allow any redirect URI, set the mode to Regex and the value to &quot;.*&quot;. Be aware of the possible security implications this can have.</source>
-  <target>За да разрешите всеки URI за пренасочване, задайте режима на Регулярен израз и стойността на &quot;.*&quot;. Имайте предвид възможните последици за сигурността, които това може да има.</target>
+  <source>To allow any redirect URI, set the mode to Regex and the value to ".*". Be aware of the possible security implications this can have.</source>
+  <target>За да разрешите всеки URI за пренасочване, задайте режима на Регулярен израз и стойността на ".*". Имайте предвид възможните последици за сигурността, които това може да има.</target>
 </trans-unit>
 <trans-unit id="s62f7c59b0606a8d6">
   <source>Authorization flow</source>
@@ -1851,7 +1843,7 @@
   <target>Конфигурирайте за колко време refresh токените са валидни.</target>
 </trans-unit>
 <trans-unit id="sdff424992223a264">
-  <source>When renewing a refresh token, if the existing refresh token&apos;s expiry is within this threshold, the refresh token will be renewed. Set to seconds=0 to always renew the refresh token.</source>
+  <source>When renewing a refresh token, if the existing refresh token's expiry is within this threshold, the refresh token will be renewed. Set to seconds=0 to always renew the refresh token.</source>
   <target>При подновяване на refresh токен, ако изтичането на съществуващия refresh токен е в рамките на този праг, refresh токенът ще бъде подновен. Задайте на seconds=0, за да подновявате винаги refresh токена.</target>
 </trans-unit>
 <trans-unit id="s2e3ef41a0edd8608">
@@ -1895,7 +1887,7 @@
   <target>Включи твърдения в id_token</target>
 </trans-unit>
 <trans-unit id="sbf41e0db12834133">
-  <source>Include User claims from scopes in the id_token, for applications that don&apos;t access the userinfo endpoint.</source>
+  <source>Include User claims from scopes in the id_token, for applications that don't access the userinfo endpoint.</source>
   <target>Включи потребителски твърдения от обхвати в id_token за приложения, които не осъществяват достъп до крайната точка userinfo.</target>
 </trans-unit>
 <trans-unit id="s850a58c683682809">
@@ -1963,7 +1955,7 @@
   <target>HTTP-Basic ключ за потребителско име</target>
 </trans-unit>
 <trans-unit id="sb2bb6f93773a4594">
-  <source>User/Group Attribute used for the user part of the HTTP-Basic Header. If not set, the user&apos;s Email address is used.</source>
+  <source>User/Group Attribute used for the user part of the HTTP-Basic Header. If not set, the user's Email address is used.</source>
   <target>Атрибут на потребител/група, използван за частта user на HTTP-Basic заглавката. Ако не е зададен, се използва имейл адресът на потребителя.</target>
 </trans-unit>
 <trans-unit id="s70f6471de355b98c">
@@ -1995,7 +1987,7 @@
   <target>Външен хост</target>
 </trans-unit>
 <trans-unit id="s764bccb30868bf62">
-  <source>The external URL you&apos;ll access the application at. Include any non-standard port.</source>
+  <source>The external URL you'll access the application at. Include any non-standard port.</source>
   <target>Външният URL, на който ще получите достъп до приложението. Включете всеки нестандартен порт.</target>
 </trans-unit>
 <trans-unit id="scb317851cbcc6b12">
@@ -2019,11 +2011,11 @@
   <target>Валидиране на SSL сертификати на upstream сървъри.</target>
 </trans-unit>
 <trans-unit id="sff0ac1ace2d90709">
-  <source>Use this provider with nginx&apos;s auth_request or traefik&apos;s forwardAuth. Each application/domain needs its own provider. Additionally, on each domain, /outpost.goauthentik.io must be routed to the outpost (when using a managed outpost, this is done for you).</source>
+  <source>Use this provider with nginx's auth_request or traefik's forwardAuth. Each application/domain needs its own provider. Additionally, on each domain, /outpost.goauthentik.io must be routed to the outpost (when using a managed outpost, this is done for you).</source>
   <target>Използвайте този доставчик с auth_request на nginx или forwardAuth на traefik. Всяко приложение/домейн се нуждае от собствен доставчик. Освен това, на всеки домейн, /outpost.goauthentik.io трябва да бъде маршрутизиран към отдалечения пост (при използване на управляван отдалечен пост това се прави автоматично).</target>
 </trans-unit>
 <trans-unit id="s44c90273f08fb718">
-  <source>Use this provider with nginx&apos;s auth_request or traefik&apos;s forwardAuth. Only a single provider is required per root domain. You can&apos;t do per-application authorization, but you don&apos;t have to create a provider for each application.</source>
+  <source>Use this provider with nginx's auth_request or traefik's forwardAuth. Only a single provider is required per root domain. You can't do per-application authorization, but you don't have to create a provider for each application.</source>
   <target>Използвайте този доставчик с auth_request на nginx или forwardAuth на traefik. Изисква се само един доставчик на основен домейн. Не можете да правите оторизация на ниво приложение, но не е необходимо да създавате доставчик за всяко приложение.</target>
 </trans-unit>
 <trans-unit id="sf55d28d4dff0e41b">
@@ -2039,7 +2031,7 @@
   <target>app1 работи на app1.example.com</target>
 </trans-unit>
 <trans-unit id="sf813a72d8fadd765">
-  <source>In this case, you&apos;d set the Authentication URL to auth.example.com and Cookie domain to example.com.</source>
+  <source>In this case, you'd set the Authentication URL to auth.example.com and Cookie domain to example.com.</source>
   <target>В този случай бихте задали URL за автентикация на auth.example.com и Cookie домейн на example.com.</target>
 </trans-unit>
 <trans-unit id="s31d15c6f16951464">
@@ -2047,7 +2039,7 @@
   <target>URL за автентикация</target>
 </trans-unit>
 <trans-unit id="sa03fe48e892df2d8">
-  <source>The external URL you&apos;ll authenticate at. The authentik core server should be reachable under this URL.</source>
+  <source>The external URL you'll authenticate at. The authentik core server should be reachable under this URL.</source>
   <target>Външният URL, на който ще се автентикирате. Основният сървър на authentik трябва да е достъпен на този URL.</target>
 </trans-unit>
 <trans-unit id="s7def067ed3ad3ad9">
@@ -2059,8 +2051,8 @@
   <target>domain.tld</target>
 </trans-unit>
 <trans-unit id="s211b75e868072162">
-  <source>Set this to the domain you wish the authentication to be valid for. Must be a parent domain of the URL above. If you&apos;re running applications as app1.domain.tld, app2.domain.tld, set this to &apos;domain.tld&apos;.</source>
-  <target>Задайте това на домейна, за който искате автентикацията да е валидна. Трябва да е родителски домейн на URL по-горе. Ако изпълнявате приложения като app1.domain.tld, app2.domain.tld, задайте това на &apos;domain.tld&apos;.</target>
+  <source>Set this to the domain you wish the authentication to be valid for. Must be a parent domain of the URL above. If you're running applications as app1.domain.tld, app2.domain.tld, set this to 'domain.tld'.</source>
+  <target>Задайте това на домейна, за който искате автентикацията да е валидна. Трябва да е родителски домейн на URL по-горе. Ако изпълнявате приложения като app1.domain.tld, app2.domain.tld, задайте това на 'domain.tld'.</target>
 </trans-unit>
 <trans-unit id="s7c10976de6411844">
   <source>Token validity</source>
@@ -2259,7 +2251,7 @@
   <target>Сертификат за проверка</target>
 </trans-unit>
 <trans-unit id="s7c27e113f90a89e0">
-  <source>When selected, incoming assertion&apos;s Signatures will be validated against this certificate. To allow unsigned Requests, leave on default.</source>
+  <source>When selected, incoming assertion's Signatures will be validated against this certificate. To allow unsigned Requests, leave on default.</source>
   <target>Когато е избрано, подписите на входящите assertion ще бъдат валидирани спрямо този сертификат. За да разрешите неподписани заявки, оставете по подразбиране.</target>
 </trans-unit>
 <trans-unit id="s6135938c50ad8a4b">
@@ -2351,7 +2343,7 @@
   <target>Преходен</target>
 </trans-unit>
 <trans-unit id="s0c48c5f754275796">
-  <source>Configure the default NameID Policy used by IDP-initiated logins and when an incoming assertion doesn&apos;t specify a NameID Policy (also applies when using a custom NameID Mapping).</source>
+  <source>Configure the default NameID Policy used by IDP-initiated logins and when an incoming assertion doesn't specify a NameID Policy (also applies when using a custom NameID Mapping).</source>
   <target>Конфигурирайте политиката NameID по подразбиране, използвана от IDP-инициирани влизания и когато входящо assertion не посочва NameID Policy (важи и при използване на персонализирано NameID съпоставяне).</target>
 </trans-unit>
 <trans-unit id="s2a0f60e74b478804">
@@ -2395,7 +2387,7 @@
   <target>Базов SCIM URL, обикновено завършва на /v2.</target>
 </trans-unit>
 <trans-unit id="s99060120f626df5b">
-  <source>Verify SCIM server&apos;s certificates</source>
+  <source>Verify SCIM server's certificates</source>
   <target>Проверявай сертификатите на SCIM сървъра</target>
 </trans-unit>
 <trans-unit id="s6e4af789dec357dc">
@@ -2405,10 +2397,6 @@
 <trans-unit id="s24d7ac2fc280ca5e">
   <source>Authenticate SCIM requests using a static token.</source>
   <target>Автентикирай SCIM заявки чрез статичен токен.</target>
-</trans-unit>
-<trans-unit id="s0e1641692e0dac94">
-  <source>OAuth</source>
-  <target>OAuth</target>
 </trans-unit>
 <trans-unit id="s1c34cb0a4cccc041">
   <source>Authenticate SCIM requests using OAuth.</source>
@@ -2451,7 +2439,7 @@
   <target>Променено поведение за използване със Salesforce.</target>
 </trans-unit>
 <trans-unit id="s054cb3c0a84eefe5">
-  <source>Alter authentik&apos;s behavior for vendor-specific SCIM implementations.</source>
+  <source>Alter authentik's behavior for vendor-specific SCIM implementations.</source>
   <target>Променя поведението на authentik за специфични за доставчика SCIM реализации.</target>
 </trans-unit>
 <trans-unit id="s4d3933feb8dc7cee">
@@ -2635,7 +2623,7 @@
   <target>authentik не успя да завърши този процес.</target>
 </trans-unit>
 <trans-unit id="s71c5d51d5a357dbd">
-  <source>Don&apos;t show this message again.</source>
+  <source>Don't show this message again.</source>
   <target>Не показвай това съобщение отново.</target>
 </trans-unit>
 <trans-unit id="sd1a5560fde6f2271">
@@ -2679,7 +2667,7 @@
   <target>Имейл домейн на група по подразбиране</target>
 </trans-unit>
 <trans-unit id="s64a0a6da6ed6d680">
-  <source>Default domain that is used to generate a group&apos;s email address. Can be customized using property mappings.</source>
+  <source>Default domain that is used to generate a group's email address. Can be customized using property mappings.</source>
   <target>Домейн по подразбиране, използван за генериране на имейл адрес на група. Може да се персонализира чрез съпоставяния на свойства.</target>
 </trans-unit>
 <trans-unit id="sd061e65955e036ca">
@@ -2883,8 +2871,8 @@
   <target>Обнови Google Workspace доставчик</target>
 </trans-unit>
 <trans-unit id="sa90b7809586c35ce">
-  <source>Either input a full URL, a relative path, or use &apos;fa://fa-test&apos; to use the Font Awesome icon &quot;fa-test&quot;.</source>
-  <target>Въведете пълен URL, относителен път или използвайте &apos;fa://fa-test&apos;, за да използвате Font Awesome икона &quot;fa-test&quot;.</target>
+  <source>Either input a full URL, a relative path, or use 'fa://fa-test' to use the Font Awesome icon "fa-test".</source>
+  <target>Въведете пълен URL, относителен път или използвайте 'fa://fa-test', за да използвате Font Awesome икона "fa-test".</target>
 </trans-unit>
 <trans-unit id="s0410779cb47de312">
   <source>Path template for users created. Use placeholders like `%(slug)s` to insert the source slug.</source>
@@ -3211,7 +3199,7 @@
   <target>Избрани роли</target>
 </trans-unit>
 <trans-unit id="s96d2bb4be3f5e8aa">
-  <source>Select roles to grant this groups&apos; users&apos; permissions from the selected roles.</source>
+  <source>Select roles to grant this groups' users' permissions from the selected roles.</source>
   <target>Изберете роли, за да предоставите на потребителите на тази група разрешенията от избраните роли.</target>
 </trans-unit>
 <trans-unit id="sec97cdaf7af8648b">
@@ -3279,7 +3267,7 @@
   <target>Сравни създадените събития с този тип действие. Ако е оставено празно, ще се сравняват всички типове действия.</target>
 </trans-unit>
 <trans-unit id="sa82f8948649d0989">
-  <source>Matches Event&apos;s Client IP (strict matching, for network matching use an Expression Policy).</source>
+  <source>Matches Event's Client IP (strict matching, for network matching use an Expression Policy).</source>
   <target>Сравнява клиентския IP на събитието (стриктно съвпадение, за мрежово съвпадение използвайте Expression Policy).</target>
 </trans-unit>
 <trans-unit id="s5a15a8f39c699273">
@@ -3291,7 +3279,7 @@
   <target>Сравни събитията, създадени от избрания модел. Ако е оставено празно, се сравняват всички модели.</target>
 </trans-unit>
 <trans-unit id="s5a13f4bbe004503f">
-  <source>Checks if the request&apos;s user&apos;s password has been changed in the last x days, and denys based on settings.</source>
+  <source>Checks if the request's user's password has been changed in the last x days, and denys based on settings.</source>
   <target>Проверява дали паролата на потребителя на заявката е била променена през последните x дни и отказва въз основа на настройките.</target>
 </trans-unit>
 <trans-unit id="sfad8af8ce38104a3">
@@ -3299,7 +3287,7 @@
   <target>Максимална възраст (в дни)</target>
 </trans-unit>
 <trans-unit id="s9307f3dbb07a73b5">
-  <source>Only fail the policy, don&apos;t invalidate user&apos;s password</source>
+  <source>Only fail the policy, don't invalidate user's password</source>
   <target>Само неуспешна политика, не анулирай паролата на потребителя</target>
 </trans-unit>
 <trans-unit id="scea1f16238093e35">
@@ -3447,28 +3435,8 @@
   <target>Праг на оценката</target>
 </trans-unit>
 <trans-unit id="s7b3148ffba9f4527">
-  <source>If the password&apos;s score is less than or equal this value, the policy will fail.</source>
+  <source>If the password's score is less than or equal this value, the policy will fail.</source>
   <target>Ако оценката на паролата е по-малка или равна на тази стойност, политиката ще се провали.</target>
-</trans-unit>
-<trans-unit id="sd94e99af8b41ff54">
-  <source>0: Too guessable: risky password. (guesses &amp;lt; 10^3)</source>
-  <target>0: Твърде лесна за отгатване: рискована парола. (предположения &amp;lt; 10^3)</target>
-</trans-unit>
-<trans-unit id="sc926385d1a624c3a">
-  <source>1: Very guessable: protection from throttled online attacks. (guesses &amp;lt; 10^6)</source>
-  <target>1: Много лесна за отгатване: защита от ограничени онлайн атаки. (предположения &amp;lt; 10^6)</target>
-</trans-unit>
-<trans-unit id="s8aae61c41319602c">
-  <source>2: Somewhat guessable: protection from unthrottled online attacks. (guesses &amp;lt; 10^8)</source>
-  <target>2: Донякъде лесна за отгатване: защита от неограничени онлайн атаки. (предположения &amp;lt; 10^8)</target>
-</trans-unit>
-<trans-unit id="sc1f4b57e722a89d6">
-  <source>3: Safely unguessable: moderate protection from offline slow-hash scenario. (guesses &amp;lt; 10^10)</source>
-  <target>3: Безопасно неотгатваема: умерена защита срещу офлайн сценарий с бавен хеш. (предположения &amp;lt; 10^10)</target>
-</trans-unit>
-<trans-unit id="sd47f3d3c9741343d">
-  <source>4: Very unguessable: strong protection from offline slow-hash scenario. (guesses &amp;gt;= 10^10)</source>
-  <target>4: Много неотгатваема: силна защита срещу офлайн сценарий с бавен хеш. (предположения &amp;gt;= 10^10)</target>
 </trans-unit>
 <trans-unit id="sd6cd7ce2310a73a4">
   <source>Checks the value from the policy request against several rules, mostly used to ensure password strength.</source>
@@ -3507,14 +3475,14 @@
   <target>Разрешава/отказва заявки въз основа на репутацията на потребителите и/или IP адресите.</target>
 </trans-unit>
 <trans-unit id="scf4afecb0f1e69b2">
-  <source>Invalid login attempts will decrease the score for the client&apos;s IP, and the
+  <source>Invalid login attempts will decrease the score for the client's IP, and the
 username they are attempting to login as, by one.</source>
   <target>Невалидните опити за вход ще намалят оценката за IP на клиента и
 потребителското име, с което се опитва да влезе, с едно.</target>
 </trans-unit>
 <trans-unit id="s8323a9af28e10502">
   <source>The policy passes when the reputation score is below the threshold, and
-doesn&apos;t pass when either or both of the selected options are equal or above the threshold.</source>
+doesn't pass when either or both of the selected options are equal or above the threshold.</source>
   <target>Политиката преминава, когато оценката на репутацията е под прага, и
 не преминава, когато една или двете избрани опции са равни или над прага.</target>
 </trans-unit>
@@ -3531,7 +3499,7 @@ doesn&apos;t pass when either or both of the selected options are equal or above
   <target>Праг</target>
 </trans-unit>
 <trans-unit id="s86cf007b861152ca">
-  <source>Ensure that the user&apos;s new password is different from their previous passwords. The number of past passwords to check is configurable.</source>
+  <source>Ensure that the user's new password is different from their previous passwords. The number of past passwords to check is configurable.</source>
   <target>Уверете се, че новата парола на потребителя е различна от предишните му пароли. Броят на минали пароли за проверка може да се конфигурира.</target>
 </trans-unit>
 <trans-unit id="s79b3fcd40dd63921">
@@ -3571,7 +3539,7 @@ doesn&apos;t pass when either or both of the selected options are equal or above
   <target>Потребителят е успешно създаден.</target>
 </trans-unit>
 <trans-unit id="s7819072445baceee">
-  <source>The user&apos;s primary identifier used for authentication. 150 characters or fewer.</source>
+  <source>The user's primary identifier used for authentication. 150 characters or fewer.</source>
   <target>Основният идентификатор на потребителя, използван за автентикация. 150 знака или по-малко.</target>
 </trans-unit>
 <trans-unit id="s11b2e9ecce28690c">
@@ -3583,7 +3551,7 @@ doesn&apos;t pass when either or both of the selected options are equal or above
   <target>Въведете незадължително показвано име...</target>
 </trans-unit>
 <trans-unit id="sc82cf82ad6cb26cc">
-  <source>The user&apos;s display name.</source>
+  <source>The user's display name.</source>
   <target>Показваното име на потребителя.</target>
 </trans-unit>
 <trans-unit id="s9f9492d30a96b9c6">
@@ -3706,25 +3674,9 @@ doesn&apos;t pass when either or both of the selected options are equal or above
   <source>EntityID/Issuer</source>
   <target>EntityID/Издател</target>
 </trans-unit>
-<trans-unit id="scd2984ee5552643a">
-  <source>SSO URL (Post)</source>
-  <target>SSO URL (Post)</target>
-</trans-unit>
-<trans-unit id="saa79b47f60c66458">
-  <source>SSO URL (Redirect)</source>
-  <target>SSO URL (Redirect)</target>
-</trans-unit>
 <trans-unit id="s2da51a6287118ba8">
   <source>SSO URL (IdP-initiated Login)</source>
   <target>SSO URL (IdP-инициирано влизане)</target>
-</trans-unit>
-<trans-unit id="s0a57e911e457302b">
-  <source>SLO URL (Post)</source>
-  <target>SLO URL (Post)</target>
-</trans-unit>
-<trans-unit id="s1e7308bb1ca323e1">
-  <source>SLO URL (Redirect)</source>
-  <target>SLO URL (Redirect)</target>
 </trans-unit>
 <trans-unit id="sd2c58d7c6dddc515">
   <source>SAML Metadata</source>
@@ -3791,20 +3743,20 @@ doesn&apos;t pass when either or both of the selected options are equal or above
   <target>Приложение(я)</target>
 </trans-unit>
 <trans-unit id="sf07bfbe5316e7cc7">
-  <source>Application icon for &quot;<x id="0" equiv-text="${item.name}"/>&quot;</source>
-  <target>Икона на приложение за &quot;<x id="0" equiv-text="${item.name}"/>&quot;</target>
+  <source>Application icon for "<x id="0" equiv-text="${item.name}"/>"</source>
+  <target>Икона на приложение за "<x id="0" equiv-text="${item.name}"/>"</target>
 </trans-unit>
 <trans-unit id="sa347e31efbb60be2">
   <source>Update Application</source>
   <target>Обнови приложение</target>
 </trans-unit>
 <trans-unit id="s037f22187581bf8f">
-  <source>Edit &quot;<x id="0" equiv-text="${this.outpost?.name || &quot;outpost&quot;}"/>&quot;</source>
-  <target>Редактирай &quot;<x id="0" equiv-text="${this.outpost?.name || &quot;outpost&quot;}"/>&quot;</target>
+  <source>Edit "<x id="0" equiv-text="${this.outpost?.name || &quot;outpost&quot;}"/>"</source>
+  <target>Редактирай "<x id="0" equiv-text="${this.outpost?.name || &quot;outpost&quot;}"/>"</target>
 </trans-unit>
 <trans-unit id="sdb3b903354fbfb17">
-  <source>Open &quot;<x id="0" equiv-text="${item.name}"/>&quot;</source>
-  <target>Отвори &quot;<x id="0" equiv-text="${item.name}"/>&quot;</target>
+  <source>Open "<x id="0" equiv-text="${item.name}"/>"</source>
+  <target>Отвори "<x id="0" equiv-text="${item.name}"/>"</target>
 </trans-unit>
 <trans-unit id="s1f7698c061c208c9">
   <source>Open</source>
@@ -3871,8 +3823,8 @@ doesn&apos;t pass when either or both of the selected options are equal or above
   <target>Създай правомощие</target>
 </trans-unit>
 <trans-unit id="sb6fcdabf769208a1">
-  <source>Failed to fetch application &quot;<x id="0" equiv-text="${this.applicationSlug}"/>&quot;.</source>
-  <target>Неуспешно извличане на приложение &quot;<x id="0" equiv-text="${this.applicationSlug}"/>&quot;.</target>
+  <source>Failed to fetch application "<x id="0" equiv-text="${this.applicationSlug}"/>".</source>
+  <target>Неуспешно извличане на приложение "<x id="0" equiv-text="${this.applicationSlug}"/>".</target>
 </trans-unit>
 <trans-unit id="application.outpost.missing.warning">
   <source>Warning: Application is not used by any Outpost.</source>
@@ -4007,7 +3959,7 @@ doesn&apos;t pass when either or both of the selected options are equal or above
   <target>Недостъпни устройства</target>
 </trans-unit>
 <trans-unit id="sf1580fcb88cbcfd8">
-  <source>Devices that authentik hasn&apos;t received information about in 24h.</source>
+  <source>Devices that authentik hasn't received information about in 24h.</source>
   <target>Устройства, за които authentik не е получил информация през последните 24 часа.</target>
 </trans-unit>
 <trans-unit id="s303ef08d87cd21fd">
@@ -4207,11 +4159,11 @@ doesn&apos;t pass when either or both of the selected options are equal or above
   <target>Свържи потребители по уникален идентификатор</target>
 </trans-unit>
 <trans-unit id="s6c70a73265e14521">
-  <source>Link to a user with identical email address. Can have security implications when a source doesn&apos;t validate email addresses</source>
+  <source>Link to a user with identical email address. Can have security implications when a source doesn't validate email addresses</source>
   <target>Свържи с потребител с идентичен имейл адрес. Може да има последствия за сигурността, когато източникът не валидира имейл адреси</target>
 </trans-unit>
 <trans-unit id="s995535e7af30d754">
-  <source>Use the user&apos;s email address, but deny enrollment when the email address already exists</source>
+  <source>Use the user's email address, but deny enrollment when the email address already exists</source>
   <target>Използвай имейл адреса на потребителя, но откажи регистрация, когато имейл адресът вече съществува</target>
 </trans-unit>
 <trans-unit id="s542ecb4130f6cea5">
@@ -4219,7 +4171,7 @@ doesn&apos;t pass when either or both of the selected options are equal or above
   <target>Свържи с потребител с идентично потребителско име. Може да има последствия за сигурността, когато потребителско име се използва с друг източник</target>
 </trans-unit>
 <trans-unit id="s2a1debf34e5aeba4">
-  <source>Use the user&apos;s username, but deny enrollment when the username already exists</source>
+  <source>Use the user's username, but deny enrollment when the username already exists</source>
   <target>Използвай потребителското име на потребителя, но откажи регистрация, когато потребителското име вече съществува</target>
 </trans-unit>
 <trans-unit id="s81ce0d54727f42d2">
@@ -4231,7 +4183,7 @@ doesn&apos;t pass when either or both of the selected options are equal or above
   <target>Свържи с група с идентично име. Може да има последствия за сигурността, когато група се използва с друг източник</target>
 </trans-unit>
 <trans-unit id="s485964f83b5ed044">
-  <source>Use the group&apos;s name, but deny enrollment when the name already exists</source>
+  <source>Use the group's name, but deny enrollment when the name already exists</source>
   <target>Използвай името на групата, но откажи регистрация, когато името вече съществува</target>
 </trans-unit>
 <trans-unit id="s8bf373b1a2bfefed">
@@ -4427,8 +4379,8 @@ doesn&apos;t pass when either or both of the selected options are equal or above
   <target>Активирай StartTLS</target>
 </trans-unit>
 <trans-unit id="s33683c3b1dbaf264">
-  <source>To use SSL instead, use &apos;ldaps://&apos; and disable this option.</source>
-  <target>За да използвате SSL вместо това, използвайте &apos;ldaps://&apos; и деактивирайте тази опция.</target>
+  <source>To use SSL instead, use 'ldaps://' and disable this option.</source>
+  <target>За да използвате SSL вместо това, използвайте 'ldaps://' и деактивирайте тази опция.</target>
 </trans-unit>
 <trans-unit id="s1024166475850a65">
   <source>Use Server URI for SNI verification</source>
@@ -4447,7 +4399,7 @@ doesn&apos;t pass when either or both of the selected options are equal or above
   <target>TLS клиентски сертификат за автентикация</target>
 </trans-unit>
 <trans-unit id="s5506b35a1bceb141">
-  <source>Client certificate keypair to authenticate against the LDAP Server&apos;s Certificate.</source>
+  <source>Client certificate keypair to authenticate against the LDAP Server's Certificate.</source>
   <target>Клиентска двойка ключове за автентикация спрямо сертификата на LDAP сървъра.</target>
 </trans-unit>
 <trans-unit id="sb7684e2910a33a1f">
@@ -4515,8 +4467,8 @@ doesn&apos;t pass when either or both of the selected options are equal or above
   <target>Търси чрез потребителски атрибут</target>
 </trans-unit>
 <trans-unit id="s17359123e1f24504">
-  <source>Field which contains DNs of groups the user is a member of. This field is used to lookup groups from users, e.g. &apos;memberOf&apos;. To lookup nested groups in an Active Directory environment use &apos;memberOf:1.2.840.113556.1.4.1941:&apos;.</source>
-  <target>Поле, което съдържа DN на групи, в които потребителят членува. Това поле се използва за търсене на групи от потребители, напр. &apos;memberOf&apos;. За търсене на вложени групи в среда Active Directory използвайте &apos;memberOf:1.2.840.113556.1.4.1941:&apos;.</target>
+  <source>Field which contains DNs of groups the user is a member of. This field is used to lookup groups from users, e.g. 'memberOf'. To lookup nested groups in an Active Directory environment use 'memberOf:1.2.840.113556.1.4.1941:'.</source>
+  <target>Поле, което съдържа DN на групи, в които потребителят членува. Това поле се използва за търсене на групи от потребители, напр. 'memberOf'. За търсене на вложени групи в среда Active Directory използвайте 'memberOf:1.2.840.113556.1.4.1941:'.</target>
 </trans-unit>
 <trans-unit id="s026555347e589f0e">
   <source>Object uniqueness field</source>
@@ -4651,7 +4603,7 @@ doesn&apos;t pass when either or both of the selected options are equal or above
   <target>Повторно автентикиране с Plex</target>
 </trans-unit>
 <trans-unit id="sc297b2e13c28ecf9">
-  <source>Allow friends to authenticate via Plex, even if you don&apos;t share any servers</source>
+  <source>Allow friends to authenticate via Plex, even if you don't share any servers</source>
   <target>Разреши на приятели да се автентикират чрез Plex, дори ако не споделяте сървъри</target>
 </trans-unit>
 <trans-unit id="sfee91e08b8b47477">
@@ -4698,10 +4650,6 @@ doesn&apos;t pass when either or both of the selected options are equal or above
   <source>Optional URL if the IDP supports Single-Logout.</source>
   <target>Незадължителен URL, ако IDP поддържа Single-Logout.</target>
 </trans-unit>
-<trans-unit id="se7430794fa89005a">
-  <source>Also known as Entity ID. Defaults the Metadata URL.</source>
-  <target>Известен още като Entity ID. По подразбиране е URL на метаданните.</target>
-</trans-unit>
 <trans-unit id="s5615bb595ad6ded6">
   <source>Binding Type</source>
   <target>Тип обвързване</target>
@@ -4715,7 +4663,7 @@ doesn&apos;t pass when either or both of the selected options are equal or above
   <target>Post-auto обвързване</target>
 </trans-unit>
 <trans-unit id="sc2c70fd56f5d0b48">
-  <source>Post binding but the request is automatically sent and the user doesn&apos;t have to confirm.</source>
+  <source>Post binding but the request is automatically sent and the user doesn't have to confirm.</source>
   <target>Post обвързване, но заявката се изпраща автоматично и потребителят не трябва да потвърждава.</target>
 </trans-unit>
 <trans-unit id="s968c90258dcf7562">
@@ -4747,8 +4695,8 @@ doesn&apos;t pass when either or both of the selected options are equal or above
   <target>Изтрий временните потребители след</target>
 </trans-unit>
 <trans-unit id="s3198c384c2f68b08">
-  <source>Time offset when temporary users should be deleted. This only applies if your IDP uses the NameID Format &apos;transient&apos;, and the user doesn&apos;t log out manually.</source>
-  <target>Изместване на времето, когато временните потребители трябва да бъдат изтрити. Това важи само ако вашият IDP използва формат NameID &apos;transient&apos; и потребителят не излезе ръчно.</target>
+  <source>Time offset when temporary users should be deleted. This only applies if your IDP uses the NameID Format 'transient', and the user doesn't log out manually.</source>
+  <target>Изместване на времето, когато временните потребители трябва да бъдат изтрити. Това важи само ако вашият IDP използва формат NameID 'transient' и потребителят не излезе ръчно.</target>
 </trans-unit>
 <trans-unit id="s37b8d48b9416fc25">
   <source>When selected, encrypted assertions will be decrypted using this keypair.</source>
@@ -4791,7 +4739,7 @@ doesn&apos;t pass when either or both of the selected options are equal or above
   <target>Федерация и социално влизане</target>
 </trans-unit>
 <trans-unit id="s6152026c364ad974">
-  <source>Sources of identities, which can either be synced into authentik&apos;s database, or can be used by users to authenticate and enroll themselves.</source>
+  <source>Sources of identities, which can either be synced into authentik's database, or can be used by users to authenticate and enroll themselves.</source>
   <target>Източници на идентичности, които могат или да бъдат синхронизирани в базата данни на authentik, или да бъдат използвани от потребителите за автентикация и регистрация.</target>
 </trans-unit>
 <trans-unit id="s0a0ca63b967f1630">
@@ -4949,8 +4897,8 @@ doesn&apos;t pass when either or both of the selected options are equal or above
   <target>Приятелско име</target>
 </trans-unit>
 <trans-unit id="s9f8aac89fe318acc">
-  <source>Optionally set the &apos;FriendlyName&apos; value of the Assertion attribute.</source>
-  <target>По избор задайте стойността &apos;FriendlyName&apos; на атрибута на assertion.</target>
+  <source>Optionally set the 'FriendlyName' value of the Assertion attribute.</source>
+  <target>По избор задайте стойността 'FriendlyName' на атрибута на assertion.</target>
 </trans-unit>
 <trans-unit id="s851c108679653d2a">
   <source>Scope name</source>
@@ -4961,7 +4909,7 @@ doesn&apos;t pass when either or both of the selected options are equal or above
   <target>Обхват, който клиентът може да посочи за достъп до тези свойства.</target>
 </trans-unit>
 <trans-unit id="s7754f0e34f27fb6e">
-  <source>Description shown to the user when consenting. If left empty, the user won&apos;t be informed.</source>
+  <source>Description shown to the user when consenting. If left empty, the user won't be informed.</source>
   <target>Описание, показвано на потребителя при даване на съгласие. Ако е оставено празно, потребителят няма да бъде информиран.</target>
 </trans-unit>
 <trans-unit id="s4a697f0b36c4fe83">
@@ -5061,7 +5009,7 @@ doesn&apos;t pass when either or both of the selected options are equal or above
   <target>Съпоставянето се прави въз основа на суфикса на домейна, така че ако въведете domain.tld, foo.domain.tld също ще съвпадне.</target>
 </trans-unit>
 <trans-unit id="s41b3f9b4c98aabd9">
-  <source>Use this brand for each domain that doesn&apos;t have a dedicated brand.</source>
+  <source>Use this brand for each domain that doesn't have a dedicated brand.</source>
   <target>Използвай този бранд за всеки домейн, който няма специално определен бранд.</target>
 </trans-unit>
 <trans-unit id="sc19838ca8c135c1b">
@@ -5313,8 +5261,8 @@ doesn&apos;t pass when either or both of the selected options are equal or above
   <target>Група(и)</target>
 </trans-unit>
 <trans-unit id="s79683026e49e4866">
-  <source>View details of group &quot;<x id="0" equiv-text="${item.name}"/>&quot;</source>
-  <target>Виж детайли за група &quot;<x id="0" equiv-text="${item.name}"/>&quot;</target>
+  <source>View details of group "<x id="0" equiv-text="${item.name}"/>"</source>
+  <target>Виж детайли за група "<x id="0" equiv-text="${item.name}"/>"</target>
 </trans-unit>
 <trans-unit id="s7c5774fad9d050ce">
   <source>Create group</source>
@@ -5425,7 +5373,7 @@ doesn&apos;t pass when either or both of the selected options are equal or above
   <target>Активирай</target>
 </trans-unit>
 <trans-unit id="s547b687213f48489">
-  <source>Update <x id="0" equiv-text="${formatUserDisplayName(user)}"/>&apos;s password</source>
+  <source>Update <x id="0" equiv-text="${formatUserDisplayName(user)}"/>'s password</source>
 </trans-unit>
 <trans-unit id="sce8d867ca5f35304">
   <source>Set password</source>
@@ -5456,8 +5404,8 @@ doesn&apos;t pass when either or both of the selected options are equal or above
   <target>Нов потребител</target>
 </trans-unit>
 <trans-unit id="s824e0943a7104668">
-  <source>This user will be added to the group &quot;<x id="0" equiv-text="${this.targetGroup.name}"/>&quot;.</source>
-  <target>Този потребител ще бъде добавен към групата &quot;<x id="0" equiv-text="${this.targetGroup.name}"/>&quot;.</target>
+  <source>This user will be added to the group "<x id="0" equiv-text="${this.targetGroup.name}"/>".</source>
+  <target>Този потребител ще бъде добавен към групата "<x id="0" equiv-text="${this.targetGroup.name}"/>".</target>
 </trans-unit>
 <trans-unit id="sc744f3691efe310d">
   <source>Hide service-accounts</source>
@@ -5480,20 +5428,20 @@ doesn&apos;t pass when either or both of the selected options are equal or above
   <target>Без име</target>
 </trans-unit>
 <trans-unit id="s326ee20bba2564a0">
-  <source>Collapse &quot;<x id="0" equiv-text="${itemLabel}"/>&quot;</source>
-  <target>Свий &quot;<x id="0" equiv-text="${itemLabel}"/>&quot;</target>
+  <source>Collapse "<x id="0" equiv-text="${itemLabel}"/>"</source>
+  <target>Свий "<x id="0" equiv-text="${itemLabel}"/>"</target>
 </trans-unit>
 <trans-unit id="s27df1f36ba8e269f">
-  <source>Expand &quot;<x id="0" equiv-text="${itemLabel}"/>&quot;</source>
-  <target>Разшири &quot;<x id="0" equiv-text="${itemLabel}"/>&quot;</target>
+  <source>Expand "<x id="0" equiv-text="${itemLabel}"/>"</source>
+  <target>Разшири "<x id="0" equiv-text="${itemLabel}"/>"</target>
 </trans-unit>
 <trans-unit id="sf2b5d3236e6f1ab3">
-  <source>Select &quot;<x id="0" equiv-text="${itemLabel}"/>&quot;</source>
-  <target>Избери &quot;<x id="0" equiv-text="${itemLabel}"/>&quot;</target>
+  <source>Select "<x id="0" equiv-text="${itemLabel}"/>"</source>
+  <target>Избери "<x id="0" equiv-text="${itemLabel}"/>"</target>
 </trans-unit>
 <trans-unit id="sb7c2715df863a6ce">
-  <source>Items of &quot;<x id="0" equiv-text="${itemLabel}"/>&quot;</source>
-  <target>Елементи на &quot;<x id="0" equiv-text="${itemLabel}"/>&quot;</target>
+  <source>Items of "<x id="0" equiv-text="${itemLabel}"/>"</source>
+  <target>Елементи на "<x id="0" equiv-text="${itemLabel}"/>"</target>
 </trans-unit>
 <trans-unit id="sca7cfe2bef51b2a5">
   <source>Root</source>
@@ -5628,8 +5576,8 @@ doesn&apos;t pass when either or both of the selected options are equal or above
   <target>Грешка: неподдържани настройки на източник: <x id="0" equiv-text="${source.component}"/></target>
 </trans-unit>
 <trans-unit id="source-settings-list-item-label">
-  <source>&quot;<x id="0" equiv-text="${source.title}"/>&quot; source</source>
-  <target>Източник &quot;<x id="0" equiv-text="${source.title}"/>&quot;</target>
+  <source>"<x id="0" equiv-text="${source.title}"/>" source</source>
+  <target>Източник "<x id="0" equiv-text="${source.title}"/>"</target>
 </trans-unit>
 <trans-unit id="s7968dbed9b106c29">
   <source>No services available.</source>
@@ -5715,10 +5663,6 @@ doesn&apos;t pass when either or both of the selected options are equal or above
   <source>Actions over the last week (per 8 hours)</source>
   <target>Действия за последната седмица (на всеки 8 часа)</target>
 </trans-unit>
-<trans-unit id="sb57dbcda1929c642">
-  <source>Edit the notes attribute of this user to add notes here.</source>
-  <target>Редактирайте атрибута notes на този потребител, за да добавите бележки тук.</target>
-</trans-unit>
 <trans-unit id="s27586544c447d9e3">
   <source>User events</source>
   <target>Потребителски събития</target>
@@ -5799,17 +5743,13 @@ doesn&apos;t pass when either or both of the selected options are equal or above
   <source>Flow</source>
   <target>Поток</target>
 </trans-unit>
-<trans-unit id="sa84a7fd11ba85e88">
-  <source>When selected, the invite will only be usable with the flow. By default the invite is accepted on all flows with invitation stages.</source>
-  <target>Когато е избрано, поканата ще може да се използва само с потока. По подразбиране поканата се приема на всички потоци със стъпки за покана.</target>
-</trans-unit>
 <trans-unit id="sd18b18f91b804c3f">
   <source>Custom attributes</source>
   <target>Персонализирани атрибути</target>
 </trans-unit>
 <trans-unit id="s7520286c8419a266">
-  <source>Optional data which is loaded into the flow&apos;s &apos;prompt_data&apos; context variable. YAML or JSON.</source>
-  <target>Незадължителни данни, които се зареждат в контекстната променлива &apos;prompt_data&apos; на потока. YAML или JSON.</target>
+  <source>Optional data which is loaded into the flow's 'prompt_data' context variable. YAML or JSON.</source>
+  <target>Незадължителни данни, които се зареждат в контекстната променлива 'prompt_data' на потока. YAML или JSON.</target>
 </trans-unit>
 <trans-unit id="sb8795b799c70776a">
   <source>Single use</source>
@@ -6356,7 +6296,7 @@ doesn&apos;t pass when either or both of the selected options are equal or above
   <target>Избрани стъпки</target>
 </trans-unit>
 <trans-unit id="s6941a67f0038ba4c">
-  <source>Stages used to configure Authenticator when user doesn&apos;t have any compatible devices. After this configuration Stage passes, the user is not prompted again.</source>
+  <source>Stages used to configure Authenticator when user doesn't have any compatible devices. After this configuration Stage passes, the user is not prompted again.</source>
   <target>Стъпки, използвани за конфигуриране на автентикатор, когато потребителят няма съвместими устройства. След като тази стъпка за конфигуриране премине, потребителят не се подканва отново.</target>
 </trans-unit>
 <trans-unit id="s7e5af9c6ba6f5cc6">
@@ -6399,10 +6339,6 @@ doesn&apos;t pass when either or both of the selected options are equal or above
   <source>Optionally restrict which WebAuthn device types may be used. When no device types are selected, all devices are allowed.</source>
   <target>По избор ограничете кои типове WebAuthn устройства могат да се използват. Когато не са избрани типове устройства, всички устройства са разрешени.</target>
 </trans-unit>
-<trans-unit id="s11274960b13cf21a">
-  <source>This restriction only applies to devices created in authentik 2024.4 or later.</source>
-  <target>Това ограничение важи само за устройства, създадени в authentik 2024.4 или по-нови.</target>
-</trans-unit>
 <trans-unit id="s24bce955914b1f0a">
   <source>Stage used to configure a WebAuthn authenticator (i.e. Yubikey, FaceID/Windows Hello).</source>
   <target>Стъпка, използвана за конфигуриране на WebAuthn автентикатор (т.е. Yubikey, FaceID/Windows Hello).</target>
@@ -6432,7 +6368,7 @@ doesn&apos;t pass when either or both of the selected options are equal or above
   <target>Задължително: Автентикаторът ТРЯБВА да създаде специален идентификатор. Ако не може, RP е подготвен за възникване на грешка</target>
 </trans-unit>
 <trans-unit id="s33e3766d4a02b042">
-  <source>Preferred: The authenticator can create and store a dedicated credential, but if it doesn&apos;t that&apos;s alright too</source>
+  <source>Preferred: The authenticator can create and store a dedicated credential, but if it doesn't that's alright too</source>
   <target>Предпочитано: Автентикаторът може да създаде и съхрани специален идентификатор, но ако не го направи също е добре</target>
 </trans-unit>
 <trans-unit id="sfb852dd507c25c24">
@@ -6468,7 +6404,7 @@ doesn&apos;t pass when either or both of the selected options are equal or above
   <target>Интерактивно</target>
 </trans-unit>
 <trans-unit id="s1cd617e7bbe278d0">
-  <source>Prompt for the user&apos;s consent. The consent can either be permanent or expire in a defined amount of time.</source>
+  <source>Prompt for the user's consent. The consent can either be permanent or expire in a defined amount of time.</source>
   <target>Подкана за съгласието на потребителя. Съгласието може да е или постоянно, или да изтече в определен период от време.</target>
 </trans-unit>
 <trans-unit id="s26513c9dd154f041">
@@ -6512,7 +6448,7 @@ doesn&apos;t pass when either or both of the selected options are equal or above
   <target>Хвърли грешка?</target>
 </trans-unit>
 <trans-unit id="sa248e1021d2c27b5">
-  <source>Verify the user&apos;s email address by sending them a one-time-link. Can also be used for recovery to verify the user&apos;s authenticity.</source>
+  <source>Verify the user's email address by sending them a one-time-link. Can also be used for recovery to verify the user's authenticity.</source>
   <target>Проверете имейл адреса на потребителя, като му изпратите еднократна връзка. Може да се използва и за възстановяване, за да се потвърди автентичността на потребителя.</target>
 </trans-unit>
 <trans-unit id="s87b7e3bc944c728c">
@@ -6592,12 +6528,12 @@ doesn&apos;t pass when either or both of the selected options are equal or above
   <target>Покажи съпоставения потребител</target>
 </trans-unit>
 <trans-unit id="se50a08ab71bb96ed">
-  <source>When a valid username/email has been entered, and this option is enabled, the user&apos;s username and avatar will be shown. Otherwise, the text that the user entered will be shown.</source>
+  <source>When a valid username/email has been entered, and this option is enabled, the user's username and avatar will be shown. Otherwise, the text that the user entered will be shown.</source>
   <target>Когато е въведено валидно потребителско име/имейл и тази опция е активирана, ще бъдат показани потребителското име и аватарът на потребителя. В противен случай ще се покаже текстът, който потребителят е въвел.</target>
 </trans-unit>
 <trans-unit id="s844baf19a6c4a9b4">
-  <source>Enable &quot;Remember me on this device&quot;</source>
-  <target>Активирай &quot;Запомни ме на това устройство&quot;</target>
+  <source>Enable "Remember me on this device"</source>
+  <target>Активирай "Запомни ме на това устройство"</target>
 </trans-unit>
 <trans-unit id="sfa72bca733f40692">
   <source>When enabled, the user can save their username in a cookie, allowing them to skip directly to entering their password.</source>
@@ -6616,7 +6552,7 @@ doesn&apos;t pass when either or both of the selected options are equal or above
   <target>Изберете кои източници да се показват за автентикация на потребителите. Това засяга само уеб базирани източници, не LDAP.</target>
 </trans-unit>
 <trans-unit id="sa41aee3ae04c9216">
-  <source>Show sources&apos; labels</source>
+  <source>Show sources' labels</source>
   <target>Покажи етикетите на източниците</target>
 </trans-unit>
 <trans-unit id="s54cd35e6224ba65d">
@@ -6716,7 +6652,7 @@ doesn&apos;t pass when either or both of the selected options are equal or above
   <target>Потребителска база данни + Kerberos парола</target>
 </trans-unit>
 <trans-unit id="sdc30bddeda2f0225">
-  <source>Validate the user&apos;s password against the selected backend(s).</source>
+  <source>Validate the user's password against the selected backend(s).</source>
   <target>Валидирай паролата на потребителя спрямо избрания backend(и).</target>
 </trans-unit>
 <trans-unit id="sb8d4f44a1d5b9a14">
@@ -6740,16 +6676,16 @@ doesn&apos;t pass when either or both of the selected options are equal or above
   <target>Колко опита има потребителят, преди потокът да бъде отменен. За да заключите потребителя, използвайте политика за репутация и стъпка user_write.</target>
 </trans-unit>
 <trans-unit id="s9dda0789d278f5c5">
-  <source>Provide users with a &apos;show password&apos; button.</source>
-  <target>Предоставете на потребителите бутон &apos;покажи парола&apos;.</target>
+  <source>Provide users with a 'show password' button.</source>
+  <target>Предоставете на потребителите бутон 'покажи парола'.</target>
 </trans-unit>
 <trans-unit id="s2d5f69929bb7221d">
-  <source><x id="0" equiv-text="${p.name}"/> (&quot;<x id="1" equiv-text="${p.fieldKey}"/>&quot;, of type <x id="2" equiv-text="${p.type}"/>)</source>
-  <target><x id="0" equiv-text="${p.name}"/> (&quot;<x id="1" equiv-text="${p.fieldKey}"/>&quot;, от тип <x id="2" equiv-text="${p.type}"/>)</target>
+  <source><x id="0" equiv-text="${p.name}"/> ("<x id="1" equiv-text="${p.fieldKey}"/>", of type <x id="2" equiv-text="${p.type}"/>)</source>
+  <target><x id="0" equiv-text="${p.name}"/> ("<x id="1" equiv-text="${p.fieldKey}"/>", от тип <x id="2" equiv-text="${p.type}"/>)</target>
 </trans-unit>
 <trans-unit id="s5170f9ef331949c0">
-  <source>Show arbitrary input fields to the user, for example during enrollment. Data is saved in the flow context under the &apos;prompt_data&apos; variable.</source>
-  <target>Показва произволни входни полета на потребителя, например по време на регистрация. Данните се записват в контекста на потока под променливата &apos;prompt_data&apos;.</target>
+  <source>Show arbitrary input fields to the user, for example during enrollment. Data is saved in the flow context under the 'prompt_data' variable.</source>
+  <target>Показва произволни входни полета на потребителя, например по време на регистрация. Данните се записват в контекста на потока под променливата 'prompt_data'.</target>
 </trans-unit>
 <trans-unit id="s36cb242ac90353bc">
   <source>Fields</source>
@@ -6844,8 +6780,8 @@ doesn&apos;t pass when either or both of the selected options are equal or above
   <target>Изместване за оставане в системата</target>
 </trans-unit>
 <trans-unit id="s1608b2f94fa0dbd4">
-  <source>If set to a duration above 0, the user will have the option to choose to &quot;stay signed in&quot;, which will extend their session by the time specified here.</source>
-  <target>Ако е зададена продължителност над 0, потребителят ще има опцията да избере &quot;остани в системата&quot;, което ще удължи сесията му с посоченото тук време.</target>
+  <source>If set to a duration above 0, the user will have the option to choose to "stay signed in", which will extend their session by the time specified here.</source>
+  <target>Ако е зададена продължителност над 0, потребителят ще има опцията да избере "остани в системата", което ще удължи сесията му с посоченото тук време.</target>
 </trans-unit>
 <trans-unit id="sa3ff409b84679db8">
   <source>Remember device</source>
@@ -6912,9 +6848,9 @@ doesn&apos;t pass when either or both of the selected options are equal or above
   <target>Премахни потребителя от текущата сесия.</target>
 </trans-unit>
 <trans-unit id="s927398c400970760">
-  <source>Write any data from the flow&apos;s context&apos;s &apos;prompt_data&apos; to the currently pending user. If no user
+  <source>Write any data from the flow's context's 'prompt_data' to the currently pending user. If no user
         is pending, a new user is created, and data is written to them.</source>
-  <target>Записва всички данни от &apos;prompt_data&apos; на контекста на потока в текущо чакащия потребител. Ако няма чакащ
+  <target>Записва всички данни от 'prompt_data' на контекста на потока в текущо чакащия потребител. Ако няма чакащ
         потребител, се създава нов потребител и данните се записват в него.</target>
 </trans-unit>
 <trans-unit id="sb379d861cbed0b47">
@@ -6954,7 +6890,7 @@ doesn&apos;t pass when either or both of the selected options are equal or above
   <target>Вътрешните потребители могат да бъдат потребители като служители на компанията, които ще получат достъп до пълния набор от корпоративни функции.</target>
 </trans-unit>
 <trans-unit id="sf66389b04fcc219c">
-  <source>External users might be external consultants or B2C customers. These users don&apos;t get access to enterprise features.</source>
+  <source>External users might be external consultants or B2C customers. These users don't get access to enterprise features.</source>
   <target>Външните потребители могат да бъдат външни консултанти или B2C клиенти. Тези потребители не получават достъп до корпоративните функции.</target>
 </trans-unit>
 <trans-unit id="s77e8668a27dbc402">
@@ -7058,7 +6994,7 @@ doesn&apos;t pass when either or both of the selected options are equal or above
   <target>Endpoint Google Chrome Device Trust е в предварителна версия.</target>
 </trans-unit>
 <trans-unit id="s336936629cdeb3e5">
-  <source>Stage used to verify users&apos; browsers using Google Chrome Device Trust. This stage can be used in authentication/authorization flows.</source>
+  <source>Stage used to verify users' browsers using Google Chrome Device Trust. This stage can be used in authentication/authorization flows.</source>
   <target>Стъпка, използвана за проверка на браузърите на потребителите чрез Google Chrome Device Trust. Тази стъпка може да се използва в потоци за автентикация/оторизация.</target>
 </trans-unit>
 <trans-unit id="s85fe794c71b4ace8">
@@ -7084,14 +7020,6 @@ doesn&apos;t pass when either or both of the selected options are equal or above
 <trans-unit id="s254a9a23dc1635df">
   <source>Import devices</source>
   <target>Импортирай устройства</target>
-</trans-unit>
-<trans-unit id="s48cf8fd56b1237ed">
-  <source>Successfully updated flow.</source>
-  <target>Потокът е успешно обновен.</target>
-</trans-unit>
-<trans-unit id="sc3e0c240b159fbce">
-  <source>Successfully created flow.</source>
-  <target>Потокът е успешно създаден.</target>
 </trans-unit>
 <trans-unit id="s925936f647ae52cc">
   <source>Shown as the Title in Flow pages.</source>
@@ -7162,7 +7090,7 @@ doesn&apos;t pass when either or both of the selected options are equal or above
   <target>Ще следва или параметъра ?next, или ще пренасочи към интерфейса по подразбиране</target>
 </trans-unit>
 <trans-unit id="s22b0e8c5277dd5a9">
-  <source>Will notify the user the flow isn&apos;t applicable</source>
+  <source>Will notify the user the flow isn't applicable</source>
   <target>Ще уведоми потребителя, че потокът не е приложим</target>
 </trans-unit>
 <trans-unit id="s2eeca5cfc99ef19b">
@@ -7198,16 +7126,16 @@ doesn&apos;t pass when either or both of the selected options are equal or above
   <target>Поток(ци)</target>
 </trans-unit>
 <trans-unit id="s5d90aeadfcb34286">
-  <source>Execute &quot;<x id="0" equiv-text="${item.name}"/>&quot;</source>
-  <target>Изпълни &quot;<x id="0" equiv-text="${item.name}"/>&quot;</target>
+  <source>Execute "<x id="0" equiv-text="${item.name}"/>"</source>
+  <target>Изпълни "<x id="0" equiv-text="${item.name}"/>"</target>
 </trans-unit>
 <trans-unit id="sc4fdeccf14be5378">
   <source>Execute</source>
   <target>Изпълни</target>
 </trans-unit>
 <trans-unit id="saa25eac2952d918d">
-  <source>Export &quot;<x id="0" equiv-text="${item.name}"/>&quot;</source>
-  <target>Експортирай &quot;<x id="0" equiv-text="${item.name}"/>&quot;</target>
+  <source>Export "<x id="0" equiv-text="${item.name}"/>"</source>
+  <target>Експортирай "<x id="0" equiv-text="${item.name}"/>"</target>
 </trans-unit>
 <trans-unit id="s293aa6a6446fb153">
   <source>Export</source>
@@ -7272,24 +7200,24 @@ doesn&apos;t pass when either or both of the selected options are equal or above
   <target>Изпълни потока</target>
 </trans-unit>
 <trans-unit id="s61e5043203e94d0a">
-  <source>Execute &quot;<x id="0" equiv-text="${this.flow.name}"/>&quot; normally</source>
-  <target>Изпълни &quot;<x id="0" equiv-text="${this.flow.name}"/>&quot; нормално</target>
+  <source>Execute "<x id="0" equiv-text="${this.flow.name}"/>" normally</source>
+  <target>Изпълни "<x id="0" equiv-text="${this.flow.name}"/>" нормално</target>
 </trans-unit>
 <trans-unit id="s9ff3121d30f88d52">
   <source>Normal</source>
   <target>Нормален</target>
 </trans-unit>
 <trans-unit id="s02eb960c270a837e">
-  <source>Execute &quot;<x id="0" equiv-text="${this.flow.name}"/>&quot; as current user</source>
-  <target>Изпълни &quot;<x id="0" equiv-text="${this.flow.name}"/>&quot; като текущ потребител</target>
+  <source>Execute "<x id="0" equiv-text="${this.flow.name}"/>" as current user</source>
+  <target>Изпълни "<x id="0" equiv-text="${this.flow.name}"/>" като текущ потребител</target>
 </trans-unit>
 <trans-unit id="saf579a36a54c92e1">
   <source>Current user</source>
   <target>Текущ потребител</target>
 </trans-unit>
 <trans-unit id="sd149e44e50455923">
-  <source>Execute &quot;<x id="0" equiv-text="${this.flow.name}"/>&quot; with inspector</source>
-  <target>Изпълни &quot;<x id="0" equiv-text="${this.flow.name}"/>&quot; с инспектор</target>
+  <source>Execute "<x id="0" equiv-text="${this.flow.name}"/>" with inspector</source>
+  <target>Изпълни "<x id="0" equiv-text="${this.flow.name}"/>" с инспектор</target>
 </trans-unit>
 <trans-unit id="s45c530a48bcf74ad">
   <source>Use inspector</source>
@@ -7582,7 +7510,7 @@ Bindings to groups/users are checked against the user of the event.</source>
                             <x id="4" equiv-text="&lt;code&gt;"/>https://:2376<x id="5" equiv-text="&lt;/code&gt;"/> при свързване с отдалечена система.</target>
 </trans-unit>
 <trans-unit id="saf1d289e3137c2ea">
-  <source>CA which the endpoint&apos;s Certificate is verified against. Can be left empty for no validation.</source>
+  <source>CA which the endpoint's Certificate is verified against. Can be left empty for no validation.</source>
   <target>CA, спрямо който се проверява сертификатът на крайната точка. Може да бъде оставено празно за липса на валидиране.</target>
 </trans-unit>
 <trans-unit id="s0f2e070d38cd36df">
@@ -7746,11 +7674,11 @@ Bindings to groups/users are checked against the user of the event.</source>
   <target>Деактивира аватарите за всеки потребител и просто показва прозрачно изображение от 1x1 пиксел</target>
 </trans-unit>
 <trans-unit id="s5446842a7e4a963b">
-  <source>Uses gravatar with the user&apos;s email address</source>
+  <source>Uses gravatar with the user's email address</source>
   <target>Използва gravatar с имейл адреса на потребителя</target>
 </trans-unit>
 <trans-unit id="s35363b9e1cc2abd3">
-  <source>Generated avatars based on the user&apos;s name</source>
+  <source>Generated avatars based on the user's name</source>
   <target>Генерирани аватари въз основа на името на потребителя</target>
 </trans-unit>
 <trans-unit id="s48110ca292cad513">
@@ -7758,7 +7686,7 @@ Bindings to groups/users are checked against the user of the event.</source>
   <target>Всеки URL: Ако искате да използвате изображения, хоствани на друг сървър, можете да зададете всеки URL. Освен това могат да се използват тези заместители:</target>
 </trans-unit>
 <trans-unit id="sbe1dfda044bdc93b">
-  <source>The user&apos;s username</source>
+  <source>The user's username</source>
   <target>Потребителското име на потребителя</target>
 </trans-unit>
 <trans-unit id="s653f257c9c2d4dc5">
@@ -7766,7 +7694,7 @@ Bindings to groups/users are checked against the user of the event.</source>
   <target>Имейл адресът, md5 хеширан</target>
 </trans-unit>
 <trans-unit id="s9c9183cd80916b4f">
-  <source>The user&apos;s UPN, if set (otherwise an empty string)</source>
+  <source>The user's UPN, if set (otherwise an empty string)</source>
   <target>UPN на потребителя, ако е зададен (иначе празен низ)</target>
 </trans-unit>
 <trans-unit id="h4963ed14d7e239a9">
@@ -7862,7 +7790,7 @@ Bindings to groups/users are checked against the user of the event.</source>
   <target>GDPR съответствие</target>
 </trans-unit>
 <trans-unit id="sb8b23770f899e5bb">
-  <source>When enabled, all the events caused by a user will be deleted upon the user&apos;s deletion.</source>
+  <source>When enabled, all the events caused by a user will be deleted upon the user's deletion.</source>
   <target>Когато е активирано, всички събития, причинени от потребител, ще бъдат изтрити при изтриване на потребителя.</target>
 </trans-unit>
 <trans-unit id="s29501761df0fe837">
@@ -7976,8 +7904,8 @@ Bindings to groups/users are checked against the user of the event.</source>
   <target>Blueprint(и)</target>
 </trans-unit>
 <trans-unit id="s6f8d15b5494ac41a">
-  <source>Apply &quot;<x id="0" equiv-text="${item.name}"/>&quot; blueprint</source>
-  <target>Приложи blueprint &quot;<x id="0" equiv-text="${item.name}"/>&quot;</target>
+  <source>Apply "<x id="0" equiv-text="${item.name}"/>" blueprint</source>
+  <target>Приложи blueprint "<x id="0" equiv-text="${item.name}"/>"</target>
 </trans-unit>
 <trans-unit id="sb8f855b49234b81b">
   <source>Apply</source>
@@ -8027,17 +7955,9 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>Overall license status</source>
   <target>Общ статус на лиценз</target>
 </trans-unit>
-<trans-unit id="sc4804358f202968c">
-  <source>Internal user usage</source>
-  <target>Използване от вътрешни потребители</target>
-</trans-unit>
 <trans-unit id="s087d6f07b52b30ec">
   <source><x id="0" equiv-text="${internalUserPercentage &lt; Infinity ? internalUserPercentage : &quot;∞&quot;}"/>%</source>
   <target><x id="0" equiv-text="${internalUserPercentage &lt; Infinity ? internalUserPercentage : &quot;∞&quot;}"/>%</target>
-</trans-unit>
-<trans-unit id="sae72e1569d34fb02">
-  <source>External user usage</source>
-  <target>Използване от външни потребители</target>
 </trans-unit>
 <trans-unit id="s2e109263b73c12d5">
   <source>Licenses</source>
@@ -8260,7 +8180,7 @@ Bindings to groups/users are checked against the user of the event.</source>
   <target>Не са намерени известия.</target>
 </trans-unit>
 <trans-unit id="scf8d5cdc8b434982">
-  <source>You don&apos;t have any notifications currently.</source>
+  <source>You don't have any notifications currently.</source>
   <target>В момента нямате никакви известия.</target>
 </trans-unit>
 <trans-unit id="s5be3c6d61cd9182f">
@@ -8664,7 +8584,7 @@ Bindings to groups/users are checked against the user of the event.</source>
   <target>Да останете ли влезли?</target>
 </trans-unit>
 <trans-unit id="s859b2e00391da380">
-  <source>Select Yes to reduce the number of times you&apos;re asked to sign in.</source>
+  <source>Select Yes to reduce the number of times you're asked to sign in.</source>
   <target>Изберете Да, за да намалите броя пъти, когато ви се иска да влезете.</target>
 </trans-unit>
 <trans-unit id="s23da7320dee28a60">
@@ -8676,11 +8596,11 @@ Bindings to groups/users are checked against the user of the event.</source>
   <target>Моля, въведете кода си</target>
 </trans-unit>
 <trans-unit id="s455a8fc21077e7f9">
-  <source>You&apos;ve successfully authenticated your device.</source>
+  <source>You've successfully authenticated your device.</source>
   <target>Успешно удостоверихте устройството си.</target>
 </trans-unit>
 <trans-unit id="sac88482c48453fc8">
-  <source>You&apos;ve logged out of <x id="0" equiv-text="${challenge.applicationName}"/>. You can go back to the overview to launch another application, or log out of your authentik account.</source>
+  <source>You've logged out of <x id="0" equiv-text="${challenge.applicationName}"/>. You can go back to the overview to launch another application, or log out of your authentik account.</source>
   <target>Излязохте от <x id="0" equiv-text="${this.challenge.applicationName}"/>. Можете да се върнете към прегледа, за да стартирате друго приложение, или да излезете от акаунта си.</target>
 </trans-unit>
 <trans-unit id="s3108167b562674e2">
@@ -8792,8 +8712,8 @@ Bindings to groups/users are checked against the user of the event.</source>
   <target>приложение</target>
 </trans-unit>
 <trans-unit id="s33b2f30214a2e99d">
-  <source>Actions for &quot;<x id="0" equiv-text="${applicationName}"/>&quot;</source>
-  <target>Действия за &quot;<x id="0" equiv-text="${applicationName}"/>&quot;</target>
+  <source>Actions for "<x id="0" equiv-text="${applicationName}"/>"</source>
+  <target>Действия за "<x id="0" equiv-text="${applicationName}"/>"</target>
 </trans-unit>
 <trans-unit id="sfa660d9e563c346f">
   <source>Edit application...</source>
@@ -9097,7 +9017,7 @@ Bindings to groups/users are checked against the user of the event.</source>
   <target>URL, използван за валидиране на CAPTCHA отговор на backend. Автоматично се задава въз основа на избора на доставчик, но може да се персонализира.</target>
 </trans-unit>
 <trans-unit id="s7fed8c29d9963f53">
-  <source>This stage checks the user&apos;s current session against a CAPTCHA service to prevent automated abuse.</source>
+  <source>This stage checks the user's current session against a CAPTCHA service to prevent automated abuse.</source>
   <target>Тази стъпка проверява текущата сесия на потребителя спрямо CAPTCHA услуга, за да предотврати автоматична злоупотреба.</target>
 </trans-unit>
 <trans-unit id="s9b8e5c6f87ca887e">
@@ -9213,8 +9133,8 @@ Bindings to groups/users are checked against the user of the event.</source>
   <target>Сигурни ли сте, че искате да премахнете избраните потребители?</target>
 </trans-unit>
 <trans-unit id="s86f283ed16448157">
-  <source>This user will be added to the role &quot;<x id="0" equiv-text="${this.targetRole.name}"/>&quot;.</source>
-  <target>Този потребител ще бъде добавен към роля &quot;<x id="0" equiv-text="${this.targetRole.name}"/>&quot;.</target>
+  <source>This user will be added to the role "<x id="0" equiv-text="${this.targetRole.name}"/>".</source>
+  <target>Този потребител ще бъде добавен към роля "<x id="0" equiv-text="${this.targetRole.name}"/>".</target>
 </trans-unit>
 <trans-unit id="sed582fb69fd1eed8">
   <source>Successfully added user to role(s).</source>
@@ -9247,10 +9167,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s3b4ad8abf4f08c35">
   <source>Hide managed roles</source>
   <target>Скрий управляваните роли</target>
-</trans-unit>
-<trans-unit id="s7dcfe418b8d601f6">
-  <source>Flags allow you to enable new functionality and behaviour in authentik early.</source>
-  <target>Флаговете ви позволяват да активирате нови функционалности и поведение в authentik по-рано.</target>
 </trans-unit>
 <trans-unit id="s8aa73079812f56b2">
   <source>Refresh other flow tabs upon authentication</source>
@@ -9349,7 +9265,7 @@ Bindings to groups/users are checked against the user of the event.</source>
   <target>WebAuthn стъпка за валидиране на автентикатор</target>
 </trans-unit>
 <trans-unit id="s05a4cbce470ede73">
-  <source>When set, allows users to authenticate using passkeys directly from the browser&apos;s autofill dropdown without entering a username first.</source>
+  <source>When set, allows users to authenticate using passkeys directly from the browser's autofill dropdown without entering a username first.</source>
   <target>Когато е зададено, позволява на потребителите да се автентикират чрез passkey директно от падащото меню за автоматично попълване на браузъра, без първо да въвеждат потребителско име.</target>
 </trans-unit>
 <trans-unit id="s51610dc462a5a034">
@@ -9413,11 +9329,11 @@ Bindings to groups/users are checked against the user of the event.</source>
   <target>Използване на основен диск</target>
 </trans-unit>
 <trans-unit id="s7b68229d885a34d3">
-  <source>The start for user ID numbers, this number is added to the user ID to make sure that the numbers aren&apos;t too low for POSIX users. Default is 2000 to prevent collisions with local users.</source>
+  <source>The start for user ID numbers, this number is added to the user ID to make sure that the numbers aren't too low for POSIX users. Default is 2000 to prevent collisions with local users.</source>
   <target>Началото за номера на ID на потребителя, този номер се добавя към ID на потребителя, за да се гарантира, че номерата не са твърде ниски за POSIX потребители. По подразбиране е 2000, за да се предотвратят сблъсъци с локални потребители.</target>
 </trans-unit>
 <trans-unit id="s284f44964466ef38">
-  <source>The start for group ID numbers, this number is added to a number generated from the groups&apos; ID to make sure that the numbers aren&apos;t too low for POSIX groups. Default is 4000 to prevent collisions with local groups.</source>
+  <source>The start for group ID numbers, this number is added to a number generated from the groups' ID to make sure that the numbers aren't too low for POSIX groups. Default is 4000 to prevent collisions with local groups.</source>
   <target>Началото за номера на ID на група, този номер се добавя към номер, генериран от ID на групата, за да се гарантира, че номерата не са твърде ниски за POSIX групи. По подразбиране е 4000, за да се предотвратят сблъсъци с локални групи.</target>
 </trans-unit>
 <trans-unit id="s01f8cd92a0204da2">
@@ -9597,20 +9513,20 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="stage.authenticator.email.sent-to-address">
   <source>A verification token has been sent to your configured email address: <x id="0" equiv-text="${email}"/></source>
   <target>Токен за проверка е изпратен на вашия конфигуриран имейл адрес: <x id="0" equiv-text="${email}"/></target>
-  <note from="lit-localize">Displayed when a verification token has been sent to the user&apos;s configured email address.</note>
+  <note from="lit-localize">Displayed when a verification token has been sent to the user's configured email address.</note>
 </trans-unit>
 <trans-unit id="stage.authenticator.email.sent">
   <source>A verification token has been sent to your email address.</source>
   <target>Токен за проверка е изпратен на вашия имейл адрес.</target>
-  <note from="lit-localize">Displayed when a verification token has been sent to the user&apos;s email address.</note>
+  <note from="lit-localize">Displayed when a verification token has been sent to the user's email address.</note>
 </trans-unit>
 <trans-unit id="user.library.application-count-singular-with-query">
-  <source><x id="0" equiv-text="${count}"/> application found for &quot;<x id="1" equiv-text="${query}"/>&quot;</source>
-  <target><x id="0" equiv-text="${count}"/> намерено приложение за &quot;<x id="1" equiv-text="${query}"/>&quot;</target>
+  <source><x id="0" equiv-text="${count}"/> application found for "<x id="1" equiv-text="${query}"/>"</source>
+  <target><x id="0" equiv-text="${count}"/> намерено приложение за "<x id="1" equiv-text="${query}"/>"</target>
 </trans-unit>
 <trans-unit id="user.library.application-count-plural-with-query">
-  <source><x id="0" equiv-text="${count}"/> applications found for &quot;<x id="1" equiv-text="${query}"/>&quot;</source>
-  <target><x id="0" equiv-text="${count}"/> намерени приложения за &quot;<x id="1" equiv-text="${query}"/>&quot;</target>
+  <source><x id="0" equiv-text="${count}"/> applications found for "<x id="1" equiv-text="${query}"/>"</source>
+  <target><x id="0" equiv-text="${count}"/> намерени приложения за "<x id="1" equiv-text="${query}"/>"</target>
 </trans-unit>
 <trans-unit id="user.library.application-count-singular">
   <source><x id="0" equiv-text="${count}"/> application available</source>
@@ -9636,8 +9552,8 @@ Bindings to groups/users are checked against the user of the event.</source>
   <note from="lit-localize">Screen reader hint to inform the user they can open the selected application by pressing Enter</note>
 </trans-unit>
 <trans-unit id="library.application.card.aria-label">
-  <source>Open &quot;<x id="0" equiv-text="${application.name}"/>&quot;</source>
-  <target>Отвори &quot;<x id="0" equiv-text="${application.name}"/>&quot;</target>
+  <source>Open "<x id="0" equiv-text="${application.name}"/>"</source>
+  <target>Отвори "<x id="0" equiv-text="${application.name}"/>"</target>
   <note from="lit-localize">Screen reader label for the application card</note>
 </trans-unit>
 <trans-unit id="sc1e9c9bab6765c74">
@@ -9817,11 +9733,9 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="captcha.provider-link">
   <source>API keys can be obtained from the
-                        <x id="0" equiv-text="${html `&lt;a target=&quot;_blank&quot; rel=&quot;noopener noreferrer&quot; href=${keyURL}&#10;                                &gt;${formatAPISource()}&lt;/a&#10;                            &gt;.`}"/></source>
+                                        <x id="0" equiv-text="${html `&lt;a&#10;                                                target=&quot;_blank&quot;&#10;                                                rel=&quot;noopener noreferrer&quot;&#10;                                                href=${keyURL}&#10;                                                &gt;${formatAPISource()}&lt;/a&#10;                                            &gt;.`}"/></source>
   <target>API ключове могат да бъдат получени от
-                        <x id="0" equiv-text="${html `&lt;a target=&quot;_blank&quot; rel=&quot;noopener noreferrer&quot; href=${keyURL}
-                                &gt;${formatAPISource()}&lt;/a
-                            &gt;.`}"/></target>
+                        <x id="0" equiv-text="${html `&lt;a target=&quot;_blank&quot; rel=&quot;noopener noreferrer&quot; href=${keyURL}                                 &gt;${formatAPISource()}&lt;/a                             &gt;.`}"/></target>
   <note from="lit-localize">Supplementary help text with link to provider dashboard.</note>
 </trans-unit>
 <trans-unit id="s87f858ca3c8e5579">
@@ -9931,14 +9845,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s1bb47213a314465b">
   <source>Create link</source>
   <target>Създай връзка</target>
-</trans-unit>
-<trans-unit id="s776c1b64a71fba39">
-  <source>To email a recovery link, set an email address for this user.</source>
-  <target>За да изпратите по имейл връзка за възстановяване, задайте имейл адрес за този потребител.</target>
-</trans-unit>
-<trans-unit id="s8899399356b8ed1a">
-  <source>To create a recovery link, set a recovery flow for the current brand.</source>
-  <target>За да създадете връзка за възстановяване, задайте поток за възстановяване за текущия бранд.</target>
 </trans-unit>
 <trans-unit id="s68be8f284274370a">
   <source>Recovery link</source>
@@ -10333,7 +10239,7 @@ Bindings to groups/users are checked against the user of the event.</source>
   <target>Въведете имейл адреса или потребителското име, свързано с вашия акаунт.</target>
 </trans-unit>
 <trans-unit id="s6e858c4c4c3b6b76">
-  <source>You&apos;re about to be redirected to the following URL.</source>
+  <source>You're about to be redirected to the following URL.</source>
   <target>На път сте да бъдете пренасочени към следния URL.</target>
 </trans-unit>
 <trans-unit id="sd5d2b94a1ccba1a9">
@@ -10488,14 +10394,6 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>e.g. my-application</source>
   <target>напр. my-application</target>
 </trans-unit>
-<trans-unit id="s96d43986e69a9db8">
-  <source>The publisher is shown in the application library.</source>
-  <target>Издателят е показан в библиотеката с приложения.</target>
-</trans-unit>
-<trans-unit id="s4107487a961394e2">
-  <source>The description is shown in the application library and may provide additional information about the application to end users.</source>
-  <target>Описанието е показано в библиотеката с приложения и може да предостави допълнителна информация за приложението на крайните потребители.</target>
-</trans-unit>
 <trans-unit id="sfafe0cba4a679e37">
   <source>Select Groups</source>
   <target>Избери групи</target>
@@ -10569,8 +10467,8 @@ Bindings to groups/users are checked against the user of the event.</source>
   <target>Задай парола</target>
 </trans-unit>
 <trans-unit id="sd29ddaadcc30d22c">
-  <source>User &quot;<x id="0" equiv-text="${query}"/>&quot;</source>
-  <target>Потребител &quot;<x id="0" equiv-text="${query}"/>&quot;</target>
+  <source>User "<x id="0" equiv-text="${query}"/>"</source>
+  <target>Потребител "<x id="0" equiv-text="${query}"/>"</target>
 </trans-unit>
 <trans-unit id="s220bcce27242e1e9">
   <source>search</source>
@@ -10581,8 +10479,8 @@ Bindings to groups/users are checked against the user of the event.</source>
   <target>намери</target>
 </trans-unit>
 <trans-unit id="s1809b50e79923494">
-  <source>Search the docs for &quot;<x id="0" equiv-text="${query}"/>&quot;</source>
-  <target>Търси в документацията за &quot;<x id="0" equiv-text="${query}"/>&quot;</target>
+  <source>Search the docs for "<x id="0" equiv-text="${query}"/>"</source>
+  <target>Търси в документацията за "<x id="0" equiv-text="${query}"/>"</target>
 </trans-unit>
 <trans-unit id="command-palette.suffix.view-docs">
   <source>New Tab</source>
@@ -10842,7 +10740,7 @@ Bindings to groups/users are checked against the user of the event.</source>
   <target>Информация</target>
 </trans-unit>
 <trans-unit id="s83cb0a6bd0b57d0c">
-  <source>Verify Push stream endpoints&apos; certificate</source>
+  <source>Verify Push stream endpoints' certificate</source>
   <target>Проверявай сертификата на крайните точки на Push потока</target>
 </trans-unit>
 <trans-unit id="s2044fd89e1e779ff">
@@ -10902,8 +10800,8 @@ Bindings to groups/users are checked against the user of the event.</source>
   <target>Потребителят е успешно свързан.</target>
 </trans-unit>
 <trans-unit id="sf5c3def20e22e0ac">
-  <source>The unique identifier of this object in LDAP, the value of the &apos;<x id="0" equiv-text="${this.source?.objectUniquenessField}"/>&apos; attribute.</source>
-  <target>Уникалният идентификатор на този обект в LDAP, стойността на атрибута &apos;<x id="0" equiv-text="${this.source?.objectUniquenessField}"/>&apos;.</target>
+  <source>The unique identifier of this object in LDAP, the value of the '<x id="0" equiv-text="${this.source?.objectUniquenessField}"/>' attribute.</source>
+  <target>Уникалният идентификатор на този обект в LDAP, стойността на атрибута '<x id="0" equiv-text="${this.source?.objectUniquenessField}"/>'.</target>
 </trans-unit>
 <trans-unit id="s6e982a7b2b65c859">
   <source>LDAP User(s)</source>
@@ -11506,16 +11404,16 @@ Bindings to groups/users are checked against the user of the event.</source>
   <target>Обект</target>
 </trans-unit>
 <trans-unit id="entity.edit.named">
-  <source>Edit &quot;<x id="0" equiv-text="${itemName}"/>&quot; <x id="1" equiv-text="${noun}"/></source>
-  <target>Редактирай &quot;<x id="0" equiv-text="${itemName}"/>&quot; <x id="1" equiv-text="${noun}"/></target>
+  <source>Edit "<x id="0" equiv-text="${itemName}"/>" <x id="1" equiv-text="${noun}"/></source>
+  <target>Редактирай "<x id="0" equiv-text="${itemName}"/>" <x id="1" equiv-text="${noun}"/></target>
 </trans-unit>
 <trans-unit id="entity.edit">
   <source>Edit <x id="0" equiv-text="${noun}"/></source>
   <target>Редактирай <x id="0" equiv-text="${noun}"/></target>
 </trans-unit>
 <trans-unit id="permissions.modal-invoker.named">
-  <source>Open &quot;<x id="0" equiv-text="${itemName}"/>&quot; permissions</source>
-  <target>Отвори разрешенията на &quot;<x id="0" equiv-text="${itemName}"/>&quot;</target>
+  <source>Open "<x id="0" equiv-text="${itemName}"/>" permissions</source>
+  <target>Отвори разрешенията на "<x id="0" equiv-text="${itemName}"/>"</target>
 </trans-unit>
 <trans-unit id="permissions.modal-invoker">
   <source>Open permissions</source>
@@ -11563,18 +11461,6 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>Select an option...</source>
   <target>Изберете опция...</target>
 </trans-unit>
-<trans-unit id="s4a45bb66596356ce">
-  <source>Choose <x id="0" equiv-text="${this.verboseName}"/> Type</source>
-  <target>Изберете тип на <x id="0" equiv-text="${this.verboseName}"/></target>
-</trans-unit>
-<trans-unit id="sdec65ee663d8a048">
-  <source>Choose type</source>
-  <target>Изберете тип</target>
-</trans-unit>
-<trans-unit id="s32db18dac74db6c3">
-  <source><x id="0" equiv-text="${entityLabel}"/> Details</source>
-  <target>Детайли за <x id="0" equiv-text="${entityLabel}"/></target>
-</trans-unit>
 <trans-unit id="s195ea6447a6b5486">
   <source>Cancel wizard</source>
   <target>Отказ от съветника</target>
@@ -11596,20 +11482,10 @@ Bindings to groups/users are checked against the user of the event.</source>
   <target>Съветник</target>
   <note from="lit-localize">ARIA label for the creation wizard when no entity singular is provided.</note>
 </trans-unit>
-<trans-unit id="wizard.ariaLabel.entity-singular">
-  <source>New <x id="0" equiv-text="${verboseName}"/> Wizard</source>
-  <target>Нов съветник за <x id="0" equiv-text="${verboseName}"/></target>
-  <note from="lit-localize">ARIA label for the creation wizard, where the entity singular is interpolated.</note>
-</trans-unit>
 <trans-unit id="wizard.header.default">
   <source>Create New Entity</source>
   <target>Създай нов обект</target>
   <note from="lit-localize">Header for the creation wizard when no entity singular is provided.</note>
-</trans-unit>
-<trans-unit id="wizard.header.entity-singular">
-  <source>Create New <x id="0" equiv-text="${verboseName}"/></source>
-  <target>Създай нов <x id="0" equiv-text="${verboseName}"/></target>
-  <note from="lit-localize">Header for the creation wizard, where the entity singular is interpolated.</note>
 </trans-unit>
 <trans-unit id="form.submitting">
   <source><x id="0" equiv-text="${submittingVerb} ${verboseName}"/>...</source>
@@ -11724,10 +11600,6 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>Create or bind...</source>
   <target>Създай или обвържи...</target>
 </trans-unit>
-<trans-unit id="s9ec971c7789af83a">
-  <source>Bind New Stage</source>
-  <target>Обвържи нова стъпка</target>
-</trans-unit>
 <trans-unit id="s0bc6ba00a01970db">
   <source>Select the type of stage you want to create.</source>
   <target>Изберете типа стъпка, която искате да създадете.</target>
@@ -11827,12 +11699,12 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="used-by.consequence.cascade">
   <source><x id="0" equiv-text="${relationName}"/> will be deleted</source>
   <target><x id="0" equiv-text="${relationName}"/> ще бъде изтрит</target>
-  <note from="lit-localize">Consequence of deletion, when the related object will also be deleted. The name of the related object will be included, in the format &apos;Related object will be deleted&apos;.</note>
+  <note from="lit-localize">Consequence of deletion, when the related object will also be deleted. The name of the related object will be included, in the format 'Related object will be deleted'.</note>
 </trans-unit>
 <trans-unit id="user.display.unknownUser">
   <source>Unknown user</source>
   <target>Неизвестен потребител</target>
-  <note from="lit-localize">Placeholder for an unknown user, in the format &apos;Unknown user&apos;.</note>
+  <note from="lit-localize">Placeholder for an unknown user, in the format 'Unknown user'.</note>
 </trans-unit>
 <trans-unit id="usedBy.count.other">
   <source><x id="0" equiv-text="${verboseName}"/> is associated with <x id="1" equiv-text="${usedByList.length}"/> objects.</source>
@@ -11849,15 +11721,10 @@ Bindings to groups/users are checked against the user of the event.</source>
   <target>Не са намерени <x id="0" equiv-text="${verboseNamePlural.toLocaleLowerCase(this.activeLanguageTag)}"/>.</target>
   <note from="lit-localize">The message to show when a table has no content. The placeholder {0} is replaced with the pluralized name of the type of entity being shown in the table.</note>
 </trans-unit>
-<trans-unit id="user.display.emailInAngleBrackets">
-  <source>&lt;<x id="0" equiv-text="${email}"/>&gt;</source>
-  <target>&lt;&lt;x id=&quot;0&quot; equiv-text=&quot;${email}&quot;/&gt;&gt;</target>
-  <note from="lit-localize">The user&apos;s email in angle brackets, used when the email is different from the username</note>
-</trans-unit>
 <trans-unit id="user.display.nameInParens">
   <source>(<x id="0" equiv-text="${name}"/>)</source>
   <target>(<x id="0" equiv-text="${name}"/>)</target>
-  <note from="lit-localize">The user&apos;s name in parentheses, used when the name is different from the username</note>
+  <note from="lit-localize">The user's name in parentheses, used when the name is different from the username</note>
 </trans-unit>
 <trans-unit id="used-by-list-item">
   <source><x id="0" equiv-text="${formattedName}"/> (<x id="1" equiv-text="${consequence}"/>)</source>
@@ -11934,10 +11801,10 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>Account lockdown flows should require authentication so they can only be started from a signed-in session.</source>
 </trans-unit>
 <trans-unit id="sc9e81e2f575bcf24">
-  <source>If no group is selected and &apos;Send notification to event user&apos; is disabled, the rule is disabled.</source>
+  <source>If no group is selected and 'Send notification to event user' is disabled, the rule is disabled.</source>
 </trans-unit>
 <trans-unit id="sd30f00ff2135589c">
-  <source>When enabled, notification will be sent to the user that triggered the event in addition to any users in the group above. The event user will always be the first user, to send a notification only to the event user enabled &apos;Send once&apos; in the notification transport.</source>
+  <source>When enabled, notification will be sent to the user that triggered the event in addition to any users in the group above. The event user will always be the first user, to send a notification only to the event user enabled 'Send once' in the notification transport.</source>
 </trans-unit>
 <trans-unit id="s1c0267488c33401b">
   <source>Minimum reviewers</source>
@@ -11997,7 +11864,7 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>Select a completion flow...</source>
 </trans-unit>
 <trans-unit id="s7f8967e8077f2734">
-  <source>Flow to redirect users to after self-service lockdown. This flow must not require authentication since the user&apos;s session is deleted.</source>
+  <source>Flow to redirect users to after self-service lockdown. This flow must not require authentication since the user's session is deleted.</source>
 </trans-unit>
 <trans-unit id="se84707d40ed8f349">
   <source>Alert (Info): Static alert box with info styling</source>
@@ -12047,16 +11914,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s02b73793e5b4e1ba">
   <source>This flag is deprecated.</source>
 </trans-unit>
-<trans-unit id="s8655c52824caac63">
-  <source>If checked, the launch URL will open in a new browser tab or window from the user&apos;s application library.</source>
-  <target>Ако е отметнато, URL за стартиране ще се отвори в нов раздел или прозорец на браузъра от библиотеката с приложения на потребителя.</target>
-</trans-unit>
-<trans-unit id="s9eda7101f63a8652">
-  <source>Hide from My applications</source>
-</trans-unit>
-<trans-unit id="s30f30e9c42594a33">
-  <source>If checked, this application will not be shown on the user&apos;s My applications page.</source>
-</trans-unit>
 <trans-unit id="sc98037ccab57d329">
   <source>No preference: the browser may offer any available authenticator</source>
 </trans-unit>
@@ -12067,28 +11924,10 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>Cross-platform: a roaming authenticator, such as a YubiKey or Google Titan</source>
 </trans-unit>
 <trans-unit id="sc157c7dcb3d1b096">
-  <source>Controls the authenticatorAttachment parameter sent to the browser during WebAuthn registration. If Hints are configured and this is left as &apos;No preference&apos;, a value is inferred from the selected hints for backward compatibility with older browsers.</source>
+  <source>Controls the authenticatorAttachment parameter sent to the browser during WebAuthn registration. If Hints are configured and this is left as 'No preference', a value is inferred from the selected hints for backward compatibility with older browsers.</source>
 </trans-unit>
 <trans-unit id="s1baea1b8ac34d554">
   <source>New Invitation</source>
-</trans-unit>
-<trans-unit id="s03eef6107e28d042">
-  <source>New Invitation options</source>
-</trans-unit>
-<trans-unit id="s0832ff81b9665e6f">
-  <source>Opens the new invitation wizard and binds the invitation to an existing enrollment flow.</source>
-</trans-unit>
-<trans-unit id="sc0819dc3d82d9320">
-  <source>with Existing Enrollment Flow...</source>
-</trans-unit>
-<trans-unit id="s79108cb25e7bf07b">
-  <source>Opens the new invitation wizard, which will create a new enrollment flow and invitation stage.</source>
-</trans-unit>
-<trans-unit id="sb7809157a3ccf613">
-  <source>with New Enrollment Flow and Invitation Stage...</source>
-</trans-unit>
-<trans-unit id="seb418067e7d6c6e2">
-  <source>Create a new invitation with an enrollment flow.</source>
 </trans-unit>
 <trans-unit id="sfd74a380e957d0d3">
   <source>Enrollment Flow</source>
@@ -12096,59 +11935,11 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="scc869d556216d748">
   <source>Invitation Details</source>
 </trans-unit>
-<trans-unit id="se1fba44a9b284052">
-  <source>Invitation Link</source>
-</trans-unit>
-<trans-unit id="s967a2db7049dc90e">
-  <source><x id="0" equiv-text="${step}"/> failed</source>
-</trans-unit>
-<trans-unit id="s971d4cc0ecd106b7">
-  <source>Importing enrollment flow blueprint</source>
-</trans-unit>
 <trans-unit id="sf3b89a70e20af6c8">
   <source>Blueprint validation failed</source>
 </trans-unit>
 <trans-unit id="sa04b7204708f4f74">
-  <source>Flow with slug &quot;<x id="0" equiv-text="${slugToLookup}"/>&quot; not found after import</source>
-</trans-unit>
-<trans-unit id="s3354be88ad29d171">
-  <source>Creating invitation</source>
-</trans-unit>
-<trans-unit id="s07f41353777196ea">
-  <source>The flow selected in the previous step. The invitation will be bound to this flow.</source>
-</trans-unit>
-<trans-unit id="s7209a11f97da9aff">
-  <source>No invitation available to send</source>
-</trans-unit>
-<trans-unit id="s2772d8285b905006">
-  <source>Failed to queue invitation emails</source>
-</trans-unit>
-<trans-unit id="s3b7910ab9c47a2e3">
-  <source>No enrollment flows with invitation stages found</source>
-</trans-unit>
-<trans-unit id="sa3ca03297e00591c">
-  <source>You can create a new enrollment flow and invitation stage right here, or cancel and bind an invitation stage to an existing flow manually.</source>
-</trans-unit>
-<trans-unit id="s06db43e56ca76be8">
-  <source>Create a new enrollment flow</source>
-</trans-unit>
-<trans-unit id="s8acc687c55e8ccbf">
-  <source>Only enrollment flows that have an invitation stage bound to them are listed here.</source>
-</trans-unit>
-<trans-unit id="s5b3bafd8ffe553ec">
-  <source>Flow name</source>
-</trans-unit>
-<trans-unit id="s699cd34b0dcb4c56">
-  <source>Name for the new enrollment flow.</source>
-</trans-unit>
-<trans-unit id="s8fb6d1bb698d32a0">
-  <source>Flow slug</source>
-</trans-unit>
-<trans-unit id="s0211c07612cf8c97">
-  <source>Invitation stage name</source>
-</trans-unit>
-<trans-unit id="s42b97ef63fb1a795">
-  <source>Name for the new invitation stage.</source>
+  <source>Flow with slug "<x id="0" equiv-text="${data.slug}"/>" not found after import</source>
 </trans-unit>
 <trans-unit id="saaa9fd0d3ebc35aa">
   <source>Enrolled users are created as external (e.g. customers, guests). New users will be placed under users/external.</source>
@@ -12158,9 +11949,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sc1358130ac327120">
   <source>If enabled, the stage will jump to the next stage when no invitation is given. If disabled, the flow will be cancelled without a valid invitation.</source>
-</trans-unit>
-<trans-unit id="s09fdd952c6eaf7da">
-  <source>No invitation was created.</source>
 </trans-unit>
 <trans-unit id="s00febd85a4889bb1">
   <source>Redirect the user to a static URL or another flow, optionally with all gathered context.</source>
@@ -12174,13 +11962,345 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="se2f00b2619675217">
   <source>Failed to load element</source>
 </trans-unit>
-<trans-unit id="s1cf2298d92c327a6">
-  <source>My Applications</source>
-  <target>Моите приложения</target>
+<trans-unit id="sd1b98c71ea0d603b">
+  <source>Flags allow you to enable new functionality and behavior in authentik early.</source>
 </trans-unit>
-<trans-unit id="s2656433a3b1f7e86">
-  <source>My applications</source>
-  <target>Моите приложения</target>
+<trans-unit id="s2736fa38f8fb1b04">
+  <source>The name displayed in the Application Dashboard.</source>
+</trans-unit>
+<trans-unit id="sb8bbbd3b5cd45ad2">
+  <source>If checked, the launch URL will open in a new browser tab or window from the user's Application Dashboard.</source>
+</trans-unit>
+<trans-unit id="s55272b9955f1d985">
+  <source>Hide from Application Dashboard</source>
+</trans-unit>
+<trans-unit id="s4e8256e5793952d7">
+  <source>If checked, this application will not be shown on the user's Application Dashboard.</source>
+</trans-unit>
+<trans-unit id="s7d9707524fb7e539">
+  <source>The publisher is shown in the Application Dashboard.</source>
+</trans-unit>
+<trans-unit id="sf04a246ad842c3cf">
+  <source>The description is shown in the Application Dashboard and may provide additional information about the application to end users.</source>
+</trans-unit>
+<trans-unit id="s4891ccdb173626ba">
+  <source>Internal user usage (<x id="0" equiv-text="${currentInternalUsers}"/>/<x id="1" equiv-text="${licensedInternalUsers}"/>)</source>
+</trans-unit>
+<trans-unit id="scad748da438c56d4">
+  <source>External user usage (<x id="0" equiv-text="${currentExternalUsers}"/>/<x id="1" equiv-text="${licensedExternalUsers}"/>)</source>
+</trans-unit>
+<trans-unit id="policy.password.score-threshold.description.too-guessable">
+  <source>0: Too guessable: risky password. (guesses &lt; 10^3)</source>
+</trans-unit>
+<trans-unit id="policy.password.score-threshold.description.very-guessable">
+  <source>1: Very guessable: protection from throttled online attacks. (guesses &lt; 10^6)</source>
+</trans-unit>
+<trans-unit id="policy.password.score-threshold.description.somewhat-guessable">
+  <source>2: Somewhat guessable: protection from unthrottled online attacks. (guesses &lt; 10^8)</source>
+</trans-unit>
+<trans-unit id="policy.password.score-threshold.description.safely-unguessable">
+  <source>3: Safely unguessable: moderate protection from offline slow-hash scenario. (guesses &lt; 10^10)</source>
+</trans-unit>
+<trans-unit id="policy.password.score-threshold.description.very-unguessable">
+  <source>4: Very unguessable: strong protection from offline slow-hash scenario. (guesses &gt;= 10^10)</source>
+</trans-unit>
+<trans-unit id="sc30c9b42e2a1ebe7">
+  <source>Token exchange</source>
+</trans-unit>
+<trans-unit id="s71fed01f96762c78">
+  <source>Connection Token</source>
+</trans-unit>
+<trans-unit id="s2a27b0acaaccd6b1">
+  <source>Connection Tokens</source>
+</trans-unit>
+<trans-unit id="sac974f7c36f0c5c1">
+  <source>SAML Endpoint</source>
+</trans-unit>
+<trans-unit id="sfb0aa7e424580866">
+  <source>SAML provider endpoint. Use this URL for SP configuration.</source>
+</trans-unit>
+<trans-unit id="s7cbd6ddbb3cdbda4">
+  <source>OAuth (Silent)</source>
+</trans-unit>
+<trans-unit id="sf74719393c9d600b">
+  <source>OAuth (Interactive)</source>
+</trans-unit>
+<trans-unit id="s364366c872ccd349">
+  <source>Authenticate SCIM requests using OAuth, interactively authorized.</source>
+</trans-unit>
+<trans-unit id="s67dbb822a17bf6fc">
+  <source>OAuth Token last updated</source>
+</trans-unit>
+<trans-unit id="sb586db2f11959745">
+  <source>OAuth Token expires</source>
+</trans-unit>
+<trans-unit id="s4011de0d7365d106">
+  <source>OAuth Status</source>
+</trans-unit>
+<trans-unit id="s169a1a1dce3987b8">
+  <source>Authenticated</source>
+</trans-unit>
+<trans-unit id="s02e7dfce69646f50">
+  <source>No token saved</source>
+</trans-unit>
+<trans-unit id="sde2c41117de5db9d">
+  <source>(Re-)authenticate</source>
+</trans-unit>
+<trans-unit id="s13c4adf0d185f12e">
+  <source>OAuth Callback URL</source>
+</trans-unit>
+<trans-unit id="s633e3919f46a8cd3">
+  <source>View details of role "<x id="0" equiv-text="${item.name}"/>"</source>
+</trans-unit>
+<trans-unit id="s466fe1c428b4b61a">
+  <source>Issuer override</source>
+</trans-unit>
+<trans-unit id="s19ccfb86a879e6b9">
+  <source>Also known as Entity ID. Defaults to the Metadata URL.</source>
+</trans-unit>
+<trans-unit id="sc1fc93e04011152f">
+  <source>New Stage</source>
+</trans-unit>
+<trans-unit id="s2be14ff0704995c7">
+  <source>Throttling settings</source>
+</trans-unit>
+<trans-unit id="s05b71dc850552880">
+  <source>Email OTP throttling factor</source>
+</trans-unit>
+<trans-unit id="s55c0221c9247ad7d">
+  <source>SMS OTP throttling factor</source>
+</trans-unit>
+<trans-unit id="sd63868fff5022ef6">
+  <source>TOTP throttling factor</source>
+</trans-unit>
+<trans-unit id="s89361efde7c66054">
+  <source>Static OTP throttling factor</source>
+</trans-unit>
+<trans-unit id="s00640d26256c4878">
+  <source>Cap Endpoint</source>
+</trans-unit>
+<trans-unit id="s40bf0fb50dad7090">
+  <source>https://cap.example.com/site-key/</source>
+</trans-unit>
+<trans-unit id="sc18a73a5831aca7b">
+  <source>For Cap, prefer the self-hosted widget asset, for example https://cap.example.com/assets/widget.js. If using a CDN, pin a reviewed release.</source>
+</trans-unit>
+<trans-unit id="s4e1e8db555003a9a">
+  <source>Cap's server-side verification endpoint, for example https://cap.example.com/site-key/siteverify.</source>
+</trans-unit>
+<trans-unit id="sdb752cddc543357d">
+  <source>Request Content Type</source>
+</trans-unit>
+<trans-unit id="s8afdb5c5a27d37eb">
+  <source>Content-Type used for server-side verification. Cap requires JSON; most other providers use form-encoded requests.</source>
+</trans-unit>
+<trans-unit id="captcha.request-content-type.form">
+  <source>Form encoded</source>
+</trans-unit>
+<trans-unit id="captcha.request-content-type.json">
+  <source>JSON</source>
+</trans-unit>
+<trans-unit id="captcha.providers.cap">
+  <source>Cap</source>
+</trans-unit>
+<trans-unit id="captcha.providers.cap.description">
+  <source>Cap is a self-hostable CAPTCHA server that uses proof-of-work challenges.</source>
+</trans-unit>
+<trans-unit id="captcha.providers.cap.setup-guide">
+  <source>Cap documentation</source>
+</trans-unit>
+<trans-unit id="s0502740c80377fe0">
+  <source>Enrollment Flows</source>
+</trans-unit>
+<trans-unit id="s36d3e9e28a1b4ffd">
+  <source>Successfully created enrollment flow with invitation stage.</source>
+</trans-unit>
+<trans-unit id="seb916cadb4a7c437">
+  <source>Type a name for the new enrollment flow...</source>
+</trans-unit>
+<trans-unit id="sba43d2c76afbf380">
+  <source>Flow Slug</source>
+</trans-unit>
+<trans-unit id="sc0b5b66c35a4c34f">
+  <source>Internal flow name used in URLs.</source>
+</trans-unit>
+<trans-unit id="s6e59fc2534d00751">
+  <source>e.g. my-enrollment-flow</source>
+</trans-unit>
+<trans-unit id="se53244cd28aeccd7">
+  <source>Invitation Stage Name</source>
+</trans-unit>
+<trans-unit id="s82c71ab0a2d18257">
+  <source>Type a name for the stage...</source>
+</trans-unit>
+<trans-unit id="s10dd794d4839378e">
+  <source>Select an enrollment flow.</source>
+</trans-unit>
+<trans-unit id="sece0e7e9d7ad08bf">
+  <source>e.g. my-invite</source>
+</trans-unit>
+<trans-unit id="s0bce09e0fcbb5931">
+  <source>Create a new enrollment flow with invitation stage...</source>
+</trans-unit>
+<trans-unit id="s6d4209fcf153eda5">
+  <source>The enrollment flow the invitation link will use. The flow should have an invitation stage bound to it for the invitation to be accepted.</source>
+</trans-unit>
+<trans-unit id="s0d66a3b9441ea7f4">
+  <source>Invitation Stage</source>
+</trans-unit>
+<trans-unit id="se40fbacec016aa65">
+  <source>Invitation Stages</source>
+</trans-unit>
+<trans-unit id="sb401ca35f1d61eed">
+  <source>e.g. invitation-stage</source>
+</trans-unit>
+<trans-unit id="s3162a5abea92514e">
+  <source>View Credentials</source>
+</trans-unit>
+<trans-unit id="sd2e443fc08b24046">
+  <source>Access Token</source>
+</trans-unit>
+<trans-unit id="s0c1fba42c6e31a0f">
+  <source>Access Tokens</source>
+</trans-unit>
+<trans-unit id="s113536ad62a8b179">
+  <source>Refresh Token</source>
+</trans-unit>
+<trans-unit id="se61cf29ea4a4d3fe">
+  <source>Refresh Tokens</source>
+</trans-unit>
+<trans-unit id="users.recovery.no-email.description">
+  <source>This user does not have an email address, so authentik cannot email a recovery link. Add an email address to enable email recovery.</source>
+</trans-unit>
+<trans-unit id="users.recovery.no-brand-flow.description">
+  <source>This brand does not have a recovery flow, so recovery links cannot be created. Configure a recovery flow in the brand settings to enable recovery.</source>
+</trans-unit>
+<trans-unit id="s7445550f2bfb2f2f">
+  <source>No notes.</source>
+</trans-unit>
+<trans-unit id="sb5cad46bad03dc19">
+  <source>Unknown action</source>
+</trans-unit>
+<trans-unit id="scc03df1c8a965428">
+  <source>Custom action</source>
+</trans-unit>
+<trans-unit id="s08670bea6a90a4e0">
+  <source>Unknown user type</source>
+</trans-unit>
+<trans-unit id="s7a72b0fd722d51e0">
+  <source>Waiting for dependencies</source>
+</trans-unit>
+<trans-unit id="sb45f9fb4dba6e71a">
+  <source>Unset</source>
+</trans-unit>
+<trans-unit id="form.submit.verb.created">
+  <source>Created</source>
+</trans-unit>
+<trans-unit id="form.submit.changes-saved">
+  <source>Changes Saved</source>
+</trans-unit>
+<trans-unit id="s02e9603605609ae6">
+  <source>Successfully created <x id="0" equiv-text="${this.verboseName}"/></source>
+</trans-unit>
+<trans-unit id="s58273fbf883b497d">
+  <source>Successfully updated <x id="0" equiv-text="${this.verboseName}"/></source>
+</trans-unit>
+<trans-unit id="s8dfeaf9950df0ffa">
+  <source>object</source>
+</trans-unit>
+<trans-unit id="s26d3ea846b0765cb">
+  <source>objects</source>
+</trans-unit>
+<trans-unit id="s7d041f0b6a10e8ea">
+  <source>Consents</source>
+</trans-unit>
+<trans-unit id="s8fd7c31e67f73d4c">
+  <source>Reputation score</source>
+</trans-unit>
+<trans-unit id="s88c83ac92bfb1f6c">
+  <source>You've logged out of <x id="0" equiv-text="${challenge.applicationName}"/>. You can log out of your authentik account.</source>
+</trans-unit>
+<trans-unit id="sa5c3a21cbc762ce9">
+  <source>You've logged out of <x id="0" equiv-text="${challenge.applicationName}"/>.</source>
+</trans-unit>
+<trans-unit id="s221db22dbb4e0105">
+  <source>Unknown Field</source>
+</trans-unit>
+<trans-unit id="s47ff2d052ccbcaf3">
+  <source>Unknown Field <x id="0" equiv-text="${fieldLike}"/></source>
+</trans-unit>
+<trans-unit id="s92c038a5e1dade49">
+  <source>Application Dashboard</source>
+</trans-unit>
+<trans-unit id="wizard.ariaLabel.verbose-name.one">
+  <source>New <x id="0" equiv-text="${verboseName}"/> Wizard</source>
+  <note from="lit-localize">ARIA label for the creation wizard, where the entity singular is interpolated.</note>
+</trans-unit>
+<trans-unit id="tokens.clipboard-copy.description">
+  <source><x id="0" equiv-text="${formatIntentLabel(intent)}"/> token for <x id="1" equiv-text="${userObj.username}"/></source>
+  <note from="lit-localize">Description for a clipboard copy action for tokens, with the token intent and username as variables.</note>
+</trans-unit>
+<trans-unit id="captcha.cap-endpoint.description">
+  <source>The public site-key endpoint of your Cap server.</source>
+  <note from="lit-localize">Description for Cap endpoint field.</note>
+</trans-unit>
+<trans-unit id="table.emptyState.default">
+  <source>No <x id="0" equiv-text="${pluralNoun}"/> found.</source>
+  <note from="lit-localize">Empty state message when no objects are found, where the entity plural is interpolated.</note>
+</trans-unit>
+<trans-unit id="table.emptyState.search">
+  <source>No <x id="0" equiv-text="${singularNoun}"/> matches "<x id="1" equiv-text="${truncateWords(this.search, 50)}"/>"</source>
+  <note from="lit-localize">Empty state message when no objects match the search query, where the entity singular is interpolated, followed by the search query truncated to 50 characters.</note>
+</trans-unit>
+<trans-unit id="wizard.step.choose-type.generic">
+  <source>Choose type</source>
+  <note from="lit-localize">Generic label for the initial step in the creation wizard where the type of the entity being created is selected, used when no singular entity name is provided.</note>
+</trans-unit>
+<trans-unit id="wizard.header.verbose-name.one">
+  <source>Create New <x id="0" equiv-text="${verboseName}"/></source>
+  <note from="lit-localize">Header for the creation wizard, where the entity singular is interpolated.</note>
+</trans-unit>
+<trans-unit id="tokens.copy-button.label">
+  <source>Copy token</source>
+  <note from="lit-localize">Label for a button that copies a token to the clipboard.</note>
+</trans-unit>
+<trans-unit id="tokens.copy-button.entity-label">
+  <source>Token</source>
+  <note from="lit-localize">Label for a token entity, used in clipboard copy success messages.</note>
+</trans-unit>
+<trans-unit id="wizard.step.choose-type">
+  <source>Choose <x id="0" equiv-text="${this.verboseName}"/> Type</source>
+  <note from="lit-localize">Label for the initial step in the creation wizard where the type of the entity being created is selected. The placeholder {entity} is replaced with the singular name of the entity, for example 'Choose User Type' or 'Choose Group Type'.</note>
+</trans-unit>
+<trans-unit id="wizard.step.details">
+  <source><x id="0" equiv-text="${entityLabel}"/> Details</source>
+  <note from="lit-localize">Label for the step in the creation wizard where the details of the entity being created are filled in. The placeholder {entity} is replaced with the name of the entity type, for example 'User Details' or 'Group Details'.</note>
+</trans-unit>
+<trans-unit id="table.search.placeholder">
+  <source>Search for <x id="0" equiv-text="${pluralNoun}"/>...</source>
+  <note from="lit-localize">Placeholder text for the search input, where the entity plural is interpolated.</note>
+</trans-unit>
+<trans-unit id="library.application.row.aria-label">
+  <source>Open "<x id="0" equiv-text="${application.name}"/>"</source>
+  <note from="lit-localize">Screen reader label for the application list row</note>
+</trans-unit>
+<trans-unit id="captcha.provider-link.cap">
+  <source>Use the
+                                        <x id="0" equiv-text="${html `&lt;a&#10;                                            target=&quot;_blank&quot;&#10;                                            rel=&quot;noopener noreferrer&quot;&#10;                                            href=${keyURL}&#10;                                            &gt;${formatAPISource()}&lt;/a&#10;                                        &gt;`}"/>
+                                        to self-host Cap and configure the endpoint.</source>
+  <note from="lit-localize">Supplementary help text with link to Cap documentation.</note>
+</trans-unit>
+<trans-unit id="form.submitted.verb-entity">
+  <source><x id="0" equiv-text="${verb} ${noun}"/></source>
+  <note from="lit-localize">The message shown after a form is successfully submitted.</note>
+</trans-unit>
+<trans-unit id="user.library.view-toggle.to-list">
+  <source>Switch to list view</source>
+  <note from="lit-localize">Tooltip on the library view toggle when grid view is active</note>
+</trans-unit>
+<trans-unit id="user.library.view-toggle.to-grid">
+  <source>Switch to grid view</source>
+  <note from="lit-localize">Tooltip on the library view toggle when list view is active</note>
 </trans-unit>
 </body>
 </file>
