@@ -178,7 +178,6 @@ class PolicyBinding(ExpiringModel, SerializerModel):
             return f"Binding - #{self.order} to {suffix}"
         return ""
 
-    objects = models.Manager()
     in_use = BoundPolicyQuerySet.as_manager()
 
     class Meta:
