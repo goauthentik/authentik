@@ -19,6 +19,9 @@ const ROOT = fileURLToPath(new URL("..", import.meta.url));
 const STATIC_DIR = join(ROOT, "storybook-static");
 const OUTPUT_DIR = join(ROOT, "snapshots");
 
+/**
+ * @type {Record<string, string>}
+ */
 const MIME_TYPES = {
     ".html": "text/html",
     ".js": "text/javascript",
@@ -29,9 +32,12 @@ const MIME_TYPES = {
     ".woff2": "font/woff2",
 };
 
+/**
+ * @param {string} root
+ */
 function serveStatic(root) {
     const server = createServer(async (req, res) => {
-        const url = new URL(req.url, "http://localhost");
+        const url = new URL(req.url ?? "/", "http://localhost");
         let path = join(root, decodeURIComponent(url.pathname));
 
         try {
@@ -56,6 +62,9 @@ function serveStatic(root) {
     });
 }
 
+/**
+ * @param {string} segment
+ */
 function sanitize(segment) {
     return segment.replace(/[^a-zA-Z0-9._-]+/g, "-");
 }
