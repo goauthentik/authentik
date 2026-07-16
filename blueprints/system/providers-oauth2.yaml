@@ -79,3 +79,12 @@ entries:
         # This scope grants the application the ability to access the authentik API
         # on behalf of the authorizing user
         return {}
+  - identifiers:
+      managed: goauthentik.io/providers/oauth2/scope-bound_key
+    model: authentik_providers_oauth2.scopemapping
+    attrs:
+      name: "authentik default OAuth Mapping: OpenID 'bound_key'"
+      scope_name: bound_key
+      description: "Request a key-bound ID Token (OpenID Connect Key Binding)"
+      expression: |
+        return {}
