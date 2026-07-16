@@ -1,4 +1,3 @@
-#![expect(dead_code, reason = "Not every test uses every feature.")]
 use std::time::Duration;
 
 use ak_client::{
@@ -20,7 +19,7 @@ use tokio::{
 };
 
 #[derive(Default)]
-pub(crate) struct AuthentikStackBuilder {
+pub struct AuthentikStackBuilder {
     blueprint_paths: Vec<String>,
     selenium: bool,
     mailpit: bool,
@@ -28,27 +27,35 @@ pub(crate) struct AuthentikStackBuilder {
 }
 
 impl AuthentikStackBuilder {
-    pub(crate) fn with_blueprint(mut self, blueprint_path: &str) -> Self {
+    #[must_use]
+    pub fn with_blueprint(mut self, blueprint_path: &str) -> Self {
         self.blueprint_paths.push(blueprint_path.to_owned());
         self
     }
 
-    pub(crate) fn with_selenium(mut self, selenium: bool) -> Self {
+    #[must_use]
+    pub fn with_selenium(mut self, selenium: bool) -> Self {
         self.selenium = selenium;
         self
     }
 
-    pub(crate) fn with_mailpit(mut self, mailpit: bool) -> Self {
+    #[must_use]
+    pub fn with_mailpit(mut self, mailpit: bool) -> Self {
         self.mailpit = mailpit;
         self
     }
 
-    pub(crate) fn with_whoami(mut self, whoami: bool) -> Self {
+    #[must_use]
+    pub fn with_whoami(mut self, whoami: bool) -> Self {
         self.whoami = whoami;
         self
     }
 
-    pub(crate) async fn run(self) -> Result<AuthentikStack> {
+    #[expect(
+        clippy::future_not_send,
+        reason = "So this future cannot be sent between threads, but we don't care in tests."
+    )]
+    pub async fn run(self) -> Result<AuthentikStack> {
         assert_eq!(
             RuntimeFlavor::MultiThread,
             Handle::current().runtime_flavor()
@@ -149,19 +156,19 @@ impl AuthentikStackBuilder {
 }
 
 #[derive(Default)]
-pub(crate) enum Dom {
+pub enum Dom {
     #[default]
     Shadow,
     Shady,
 }
 
 #[derive(Default)]
-pub(crate) struct LoginOptions {
-    pub(crate) dom: Dom,
-    pub(crate) skip_stages: Vec<String>,
+pub struct LoginOptions {
+    pub dom: Dom,
+    pub skip_stages: Vec<String>,
 }
 
-pub(crate) struct AuthentikStack {
+pub struct AuthentikStack {
     compose_profiles: Vec<String>,
     compose: Option<DockerCompose>,
     driver: Option<WebDriver>,
@@ -169,27 +176,27 @@ pub(crate) struct AuthentikStack {
 }
 
 impl AuthentikStack {
-    pub(crate) fn builder() -> AuthentikStackBuilder {
+    pub fn builder() -> AuthentikStackBuilder {
         AuthentikStackBuilder::default()
     }
 
-    pub(crate) fn api_config(&self) -> &Configuration {
+    pub fn api_config(&self) -> &Configuration {
         &self.api_config
     }
 
-    pub(crate) fn compose(&mut self) -> &mut DockerCompose {
+    pub fn compose(&mut self) -> &mut DockerCompose {
         self.compose
             .as_mut()
             .expect("a docker compose instance to be present")
     }
 
-    pub(crate) fn driver(&self) -> &WebDriver {
+    pub fn driver(&self) -> &WebDriver {
         self.driver
             .as_ref()
             .expect("with_selenium must be set to true to use the selenium driver")
     }
 
-    pub(crate) async fn start_outpost(&mut self, outpost: &Outpost) -> Result<()> {
+    pub async fn start_outpost(&mut self, outpost: &Outpost) -> Result<()> {
         self.compose_profiles.push(outpost.r#type.to_string());
 
         sleep(Duration::from_secs(3)).await;
@@ -217,7 +224,11 @@ impl AuthentikStack {
         Ok(())
     }
 
-    pub(crate) async fn apply_blueprint(&mut self, blueprint_path: &str) -> Result<()> {
+    #[expect(
+        clippy::future_not_send,
+        reason = "So this future cannot be sent between threads, but we don't care in tests."
+    )]
+    pub async fn apply_blueprint(&mut self, blueprint_path: &str) -> Result<()> {
         let mut res = self
             .compose()
             .service("worker")
@@ -244,12 +255,12 @@ impl AuthentikStack {
         Ok(())
     }
 
-    pub(crate) async fn goto(&self, url: &str) -> Result<()> {
+    pub async fn goto(&self, url: &str) -> Result<()> {
         self.driver().goto(url).await?;
         Ok(())
     }
 
-    pub(crate) async fn wait_for_url(&self, url: &str) -> Result<()> {
+    pub async fn wait_for_url(&self, url: &str) -> Result<()> {
         let start = Instant::now();
         loop {
             if self.driver().current_url().await?.as_str() == url {
@@ -264,7 +275,7 @@ impl AuthentikStack {
         }
     }
 
-    pub(crate) async fn get_shadow_root(
+    pub async fn get_shadow_root(
         &self,
         selector: &str,
         container: Option<WebElement>,
@@ -287,7 +298,7 @@ impl AuthentikStack {
         }
     }
 
-    pub(crate) async fn get_shady_dom(&self, selector: &str) -> Result<WebElement> {
+    pub async fn get_shady_dom(&self, selector: &str) -> Result<WebElement> {
         let start = Instant::now();
         loop {
             let res = self
@@ -313,7 +324,7 @@ impl AuthentikStack {
         }
     }
 
-    pub(crate) async fn login(&self, options: LoginOptions) -> Result<()> {
+    pub async fn login(&self, options: LoginOptions) -> Result<()> {
         if !options
             .skip_stages
             .iter()
@@ -363,7 +374,7 @@ impl AuthentikStack {
         Ok(())
     }
 
-    pub(crate) async fn parse_json_content(&self) -> Result<Value> {
+    pub async fn parse_json_content(&self) -> Result<Value> {
         let body = self
             .driver()
             .query(By::Tag("pre"))
@@ -374,7 +385,7 @@ impl AuthentikStack {
         Ok(serde_json::from_str(&body)?)
     }
 
-    pub(crate) async fn assert_user(&self, username: &str, name: &str, email: &str) -> Result<()> {
+    pub async fn assert_user(&self, username: &str, name: &str, email: &str) -> Result<()> {
         self.goto("http://server:9000/api/v3/core/users/me/")
             .await?;
         self.wait_for_url("http://server:9000/api/v3/core/users/me/")
@@ -390,7 +401,7 @@ impl AuthentikStack {
         Ok(())
     }
 
-    pub(crate) async fn quit(&mut self) -> Result<()> {
+    pub async fn quit(&mut self) -> Result<()> {
         let driver = if let Some(driver) = self.driver.take() {
             driver.quit().await
         } else {

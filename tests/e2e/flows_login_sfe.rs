@@ -11,50 +11,49 @@ use ak_client::{
 use eyre::Result;
 use thirtyfour::prelude::*;
 
-mod stack;
-use stack::AuthentikStack;
+use authentik_tests::{AuthentikStack, LoginOptions};
 use tokio::time::sleep;
 
-impl AuthentikStack {
-    async fn login_sfe(&self) -> Result<()> {
-        let flow_executor = self
-            .driver
-            .query(By::Id("flow-sfe-container"))
-            .single()
-            .await?;
+async fn login_sfe(&self) -> Result<()> {
+    let flow_executor = self
+        .driver
+        .query(By::Id("flow-sfe-container"))
+        .single()
+        .await?;
 
-        let identification_stage = flow_executor.query(By::Id("ident-form")).single().await?;
+    let identification_stage = flow_executor.query(By::Id("ident-form")).single().await?;
 
-        let username_field = identification_stage
-            .query(By::Css("input[name=uid_field]"))
-            .single()
-            .await?;
-        username_field.click().await?;
-        username_field.send_keys("akadmin").await?;
-        username_field.send_keys(Key::Enter).await?;
+    let username_field = identification_stage
+        .query(By::Css("input[name=uid_field]"))
+        .single()
+        .await?;
+    username_field.click().await?;
+    username_field.send_keys("akadmin").await?;
+    username_field.send_keys(Key::Enter).await?;
 
-        let password_stage = flow_executor
-            .query(By::Id("password-form"))
-            .single()
-            .await?;
-        let password_field = password_stage
-            .query(By::Css("input[name=password]"))
-            .single()
-            .await?;
-        password_field.click().await?;
-        password_field.send_keys("akadmin").await?;
-        password_field.send_keys(Key::Enter).await?;
+    let password_stage = flow_executor
+        .query(By::Id("password-form"))
+        .single()
+        .await?;
+    let password_field = password_stage
+        .query(By::Css("input[name=password]"))
+        .single()
+        .await?;
+    password_field.click().await?;
+    password_field.send_keys("akadmin").await?;
+    password_field.send_keys(Key::Enter).await?;
 
-        sleep(Duration::from_secs(1)).await;
+    sleep(Duration::from_secs(1)).await;
 
-        Ok(())
-    }
+    Ok(())
 }
 
-#[tokio::test]
+#[tokio::test(flavor = "multi_thread")]
 async fn login_sfe() -> Result<()> {
     let stack = AuthentikStack::builder()
-        .wait_for_flow("default-authentication-flow")
+        .with_blueprint("default/flow-default-authentication-flow.yaml")
+        .with_blueprint("default/flow-default-invalidation-flow.yaml")
+        .with_selenium(true)
         .run()
         .await?;
 
@@ -62,7 +61,7 @@ async fn login_sfe() -> Result<()> {
         .goto("http://server:9000/if/flow/default-authentication-flow/?sfe=true")
         .await?;
 
-    stack.login_sfe().await?;
+    login_sfe(&stack).await?;
 
     stack
         .wait_for_url("http://server:9000/if/user/#/library")
@@ -75,10 +74,12 @@ async fn login_sfe() -> Result<()> {
     stack.quit().await
 }
 
-#[tokio::test]
+#[tokio::test(flavor = "multi_thread")]
 async fn login_sfe_mfa_static_deny() -> Result<()> {
     let stack = AuthentikStack::builder()
-        .wait_for_flow("default-authentication-flow")
+        .with_blueprint("default/flow-default-authentication-flow.yaml")
+        .with_blueprint("default/flow-default-invalidation-flow.yaml")
+        .with_selenium(true)
         .run()
         .await?;
 
@@ -114,10 +115,10 @@ async fn login_sfe_mfa_static_deny() -> Result<()> {
         .goto("http://server:9000/if/flow/default-authentication-flow/?sfe=true")
         .await?;
 
-    stack.login_sfe().await?;
+    login_sfe(&stack).await?;
 
     let msg = stack
-        .driver
+        .driver()
         .query(By::Css("#access-denied > p"))
         .single()
         .await?;

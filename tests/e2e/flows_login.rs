@@ -1,13 +1,14 @@
 use ak_client::{apis::flows_api::flows_instances_partial_update, models::PatchedFlowRequest};
 use eyre::Result;
 
-mod stack;
-use stack::{AuthentikStack, Dom, LoginOptions};
+use authentik_tests::{AuthentikStack, Dom, LoginOptions};
 
-#[tokio::test]
+#[tokio::test(flavor = "multi_thread")]
 async fn login() -> Result<()> {
-    let stack = AuthentikStack::builder()
-        .wait_for_flow("default-authentication-flow")
+    let mut stack = AuthentikStack::builder()
+        .with_blueprint("default/flow-default-authentication-flow.yaml")
+        .with_blueprint("default/flow-default-invalidation-flow.yaml")
+        .with_selenium(true)
         .run()
         .await?;
 
@@ -28,10 +29,12 @@ async fn login() -> Result<()> {
     stack.quit().await
 }
 
-#[tokio::test]
+#[tokio::test(flavor = "multi_thread")]
 async fn login_compatibility_mode() -> Result<()> {
-    let stack = AuthentikStack::builder()
-        .wait_for_flow("default-authentication-flow")
+    let mut stack = AuthentikStack::builder()
+        .with_blueprint("default/flow-default-authentication-flow.yaml")
+        .with_blueprint("default/flow-default-invalidation-flow.yaml")
+        .with_selenium(true)
         .run()
         .await?;
 

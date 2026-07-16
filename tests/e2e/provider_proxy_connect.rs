@@ -20,8 +20,7 @@ use ak_client::{
 use eyre::{Result, eyre};
 use tokio::time::sleep;
 
-mod stack;
-use stack::AuthentikStack;
+use authentik_tests::AuthentikStack;
 
 #[tokio::test(flavor = "multi_thread")]
 async fn proxy_connectivity() -> Result<()> {

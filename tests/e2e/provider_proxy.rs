@@ -23,12 +23,9 @@ use eyre::Result;
 use thirtyfour::prelude::*;
 use tokio::time::sleep;
 
-mod stack;
+use authentik_tests::{AuthentikStack, LoginOptions};
 use jsonwebtoken::dangerous::insecure_decode;
 use serde::Deserialize;
-use stack::AuthentikStack;
-
-use crate::stack::LoginOptions;
 
 #[derive(Debug, Clone, Deserialize)]
 struct ProxyClaims {
