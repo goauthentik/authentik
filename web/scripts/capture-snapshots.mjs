@@ -8,7 +8,7 @@
  */
 
 import { createReadStream } from "node:fs";
-import { mkdir } from "node:fs/promises";
+import { mkdir, stat } from "node:fs/promises";
 import { createServer } from "node:http";
 import { extname, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -30,18 +30,26 @@ const MIME_TYPES = {
 };
 
 function serveStatic(root) {
-    const server = createServer((req, res) => {
+    const server = createServer(async (req, res) => {
         const url = new URL(req.url, "http://localhost");
-        const path = join(root, decodeURIComponent(url.pathname));
-        const stream = createReadStream(path);
-        stream.on("error", () => {
+        let path = join(root, decodeURIComponent(url.pathname));
+
+        try {
+            const info = await stat(path);
+            if (info.isDirectory()) {
+                path = join(path, "index.html");
+                await stat(path);
+            }
+        } catch {
             res.writeHead(404);
             res.end();
-        });
+            return;
+        }
+
         res.writeHead(200, {
             "Content-Type": MIME_TYPES[extname(path)] ?? "application/octet-stream",
         });
-        stream.pipe(res);
+        createReadStream(path).pipe(res);
     });
     return new Promise((resolve) => {
         server.listen(0, "127.0.0.1", () => resolve(server));
