@@ -43,7 +43,7 @@ glob = "= 0.3.3"
 hyper-unix-socket = "= 0.6.1"
 hyper-util = "= 0.1.20"
 ipnet = { version = "= 2.12.0", features = ["serde"] }
-json-subscriber = "= 0.2.8"
+json-subscriber = "= 0.3.0"
 metrics = "= 0.24.6"
 metrics-exporter-prometheus = { version = "= 0.18.3", default-features = false }
 nix = { version = "= 0.31.3", features = ["hostname", "signal"] }
@@ -67,7 +67,7 @@ reqwest-middleware = { version = "= 0.5.2", features = [
   "query",
   "rustls",
 ] }
-rustls = { version = "= 0.23.41", features = ["fips"] }
+rustls = { version = "= 0.23.42", features = ["fips"] }
 sentry = { version = "= 0.48.4", default-features = false, features = [
   "backtrace",
   "contexts",
@@ -113,7 +113,7 @@ tracing-subscriber = { version = "= 0.3.23", features = [
   "tracing-log",
 ] }
 url = "= 2.5.8"
-uuid = { version = "= 1.23.4", features = ["serde", "v4"] }
+uuid = { version = "= 1.23.5", features = ["serde", "v4"] }
 which = "= 8.0.4"
 
 ak-axum = { package = "authentik-axum", version = "2026.8.0-rc1", path = "./packages/ak-axum" }

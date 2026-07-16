@@ -6,7 +6,7 @@ from django.templatetags.static import static
 from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import Serializer
 
-from authentik.core.models import ExpiringModel, User, default_token_key
+from authentik.core.models import User, default_token_key
 from authentik.crypto.models import CertificateKeyPair
 from authentik.endpoints.models import (
     Connector,
@@ -17,7 +17,7 @@ from authentik.endpoints.models import (
 )
 from authentik.flows.stage import StageView
 from authentik.lib.generators import generate_key
-from authentik.lib.models import InternallyManagedMixin, SerializerModel
+from authentik.lib.models import ExpiringModel, InternallyManagedMixin, SerializerModel
 from authentik.lib.utils.time import timedelta_string_validator
 from authentik.stages.authenticator.models import Device as Authenticator
 
@@ -101,6 +101,10 @@ class AgentDeviceUserBinding(DeviceUserBinding):
 
     apple_secure_enclave_key = models.TextField()
     apple_enclave_key_id = models.TextField()
+
+    class Meta:
+        verbose_name = _("Agent Device User binding")
+        verbose_name_plural = _("Agent Device User bindings")
 
 
 class DeviceToken(InternallyManagedMixin, ExpiringModel):

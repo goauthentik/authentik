@@ -4490,10 +4490,6 @@ neprojde, když jedna nebo obě z vybraných možností jsou rovny nebo nad prah
   <source>Optional URL if the IDP supports Single-Logout.</source>
   <target>Volitelná URL, pokud IDP podporuje Single-Logout.</target>
 </trans-unit>
-<trans-unit id="se7430794fa89005a">
-  <source>Also known as Entity ID. Defaults the Metadata URL.</source>
-  <target>Také známý jako Entity ID. Výchozí je Metadata URL.</target>
-</trans-unit>
 <trans-unit id="s5615bb595ad6ded6">
   <source>Binding Type</source>
   <target>Typ vazby</target>
@@ -11329,6 +11325,12 @@ Vazby na skupiny/uživatele jsou kontrolovány vůči uživateli události.</tar
 </trans-unit>
 <trans-unit id="sc30c9b42e2a1ebe7">
   <source>Token exchange</source>
+</trans-unit>
+<trans-unit id="s466fe1c428b4b61a">
+  <source>Issuer override</source>
+</trans-unit>
+<trans-unit id="s19ccfb86a879e6b9">
+  <source>Also known as Entity ID. Defaults to the Metadata URL.</source>
 </trans-unit>
 </body>
 </file>
