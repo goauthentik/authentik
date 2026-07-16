@@ -14,10 +14,9 @@ use ak_client::{
     },
     models::{ApplicationRequest, OutpostRequest, OutpostTypeEnum, ProxyProviderRequest},
 };
+use authentik_tests::AuthentikStack;
 use eyre::{Result, eyre};
 use tokio::time::sleep;
-
-use authentik_tests::AuthentikStack;
 
 #[tokio::test(flavor = "multi_thread")]
 async fn proxy_connectivity() -> Result<()> {

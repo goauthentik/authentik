@@ -15,14 +15,13 @@ use ak_client::{
         ProxyProviderRequest,
     },
 };
+use authentik_tests::{AuthentikStack, LoginOptions};
 use base64::prelude::*;
 use eyre::Result;
-use thirtyfour::prelude::*;
-use tokio::time::sleep;
-
-use authentik_tests::{AuthentikStack, LoginOptions};
 use jsonwebtoken::dangerous::insecure_decode;
 use serde::Deserialize;
+use thirtyfour::prelude::*;
+use tokio::time::sleep;
 
 #[derive(Debug, Clone, Deserialize)]
 struct ProxyClaims {

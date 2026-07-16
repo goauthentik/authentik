@@ -1,8 +1,7 @@
 #![expect(clippy::tests_outside_test_module, reason = "we don't care here")]
 use ak_client::{apis::flows_api::flows_instances_partial_update, models::PatchedFlowRequest};
-use eyre::Result;
-
 use authentik_tests::{AuthentikStack, Dom, LoginOptions};
+use eyre::Result;
 
 #[tokio::test(flavor = "multi_thread")]
 async fn login() -> Result<()> {

@@ -10,10 +10,9 @@ use ak_client::{
         DeviceClassesEnum, NotConfiguredActionEnum, PatchedAuthenticatorValidateStageRequest,
     },
 };
+use authentik_tests::AuthentikStack;
 use eyre::Result;
 use thirtyfour::prelude::*;
-
-use authentik_tests::AuthentikStack;
 use tokio::time::sleep;
 
 async fn do_login_sfe(stack: &AuthentikStack) -> Result<()> {
