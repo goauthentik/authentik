@@ -4,15 +4,6 @@ import { findFlatOptions, findOptionsSubset, groupOptions, optionsToFlat } from 
 
 import { ListSelect } from "#elements/ak-list-select/ak-list-select";
 import { AKElement } from "#elements/Base";
-import { AnchorPositionSupported, AnchorSizeSupported } from "#elements/dialogs/positioning";
-
-/**
- * Whether the browser can both position (`anchor()`) *and* size (`anchor-size()`)
- * against an anchor. Only then does the pure-CSS placement work; otherwise the menu
- * is positioned imperatively. See {@link SearchSelectView.styles} and
- * {@link SearchSelectView.startAnchorTracking}.
- */
-const CSSAnchorPositioningSupported = AnchorPositionSupported && AnchorSizeSupported;
 import type { GroupedOptions, SelectOption, SelectOptions } from "#elements/types";
 import { ifPresent } from "#elements/utils/attributes";
 import { randomId } from "#elements/utils/randomId";
@@ -89,14 +80,13 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
                 --pf-c-select__toggle-wrapper--MaxWidth: initial;
             }
 
-            input.pf-c-select__toggle-typeahead {
-                anchor-name: --ak-search-select-anchor;
-            }
-
             ak-list-select[popover] {
-                /* Base popover reset, shared by both positioning modes: strip the UA
-                   default (centered, bordered) so the menu is a bare positioned box. */
-                position: absolute;
+                /* Strip the UA popover default (centered, bordered) so the menu is a
+                   bare box. Placement/sizing is done imperatively in #positionMenu —
+                   CSS anchor positioning proved unreliable across browsers (Firefox
+                   through 152 mis-renders it inside a modal <dialog> while still
+                   reporting support via CSS.supports). */
+                position: fixed;
                 margin: 0;
                 inset: auto;
                 padding: 0;
@@ -106,23 +96,8 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
                 max-height: 40vh;
             }
 
-            /* CSS anchor positioning — applied ONLY when the browser fully supports it
-               (both anchor() and anchor-size()). When it doesn't, the menu is placed
-               imperatively (#positionMenu) and these declarations must not partially
-               apply: e.g. Firefox honors anchor() but not anchor-size(), which would
-               fight the JS placement and collapse the menu to min-content width. */
-            :host([data-anchor-css]) ak-list-select[popover] {
-                position-anchor: --ak-search-select-anchor;
-                top: anchor(bottom);
-                left: anchor(left);
-                width: anchor-size(width);
-
-                /* Flip above the input when there is no room below. */
-                position-try-fallbacks: flip-block;
-            }
-
             /* The inner PatternFly dropdown is inline-block (content width); stretch it
-               to fill the anchor-width host so the menu matches the input. */
+               to fill the (input-width) host so the menu matches the input. */
             ak-list-select[popover]::part(ak-list-select-wrapper) {
                 width: 100%;
             }
@@ -322,8 +297,6 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
         super.connectedCallback();
         this.setAttribute("data-ouia-component-type", "ak-search-select-view");
         this.setAttribute("data-ouia-component-id", this.getAttribute("id") || randomId());
-        // Styling hook: gate the CSS anchor-positioning block (see `styles`).
-        this.toggleAttribute("data-anchor-css", CSSAnchorPositioningSupported);
     }
 
     disconnectedCallback() {
@@ -399,15 +372,11 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
         );
         this.#anchorObserver.observe(input);
 
-        // When the browser fully supports CSS anchor positioning, the CSS in `styles`
-        // handles placement and tracks scrolling natively — nothing more to do.
-        if (CSSAnchorPositioningSupported) return;
-
-        // Fallback placement. We can't rely on a global scroll listener: `scroll`
-        // events are `composed: false`, so scrolling inside a shadow-rendered
-        // container (e.g. a modal dialog body) never reaches `window`. Instead we
-        // re-place the menu each animation frame while open, which also covers
-        // nested scrollers, layout shifts, and resizes.
+        // Position the menu imperatively and keep it in sync. We can't rely on a
+        // global scroll listener: `scroll` events are `composed: false`, so scrolling
+        // inside a shadow-rendered container (e.g. a modal dialog body) never reaches
+        // `window`. Instead we re-place the menu each animation frame while open,
+        // which also covers nested scrollers, layout shifts, and resizes.
         let lastGeometry = "";
 
         const reflow = () => {
