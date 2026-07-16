@@ -1,4 +1,5 @@
-use std::time::Duration;
+use regex::Regex;
+use std::{env, time::Duration};
 
 use ak_client::{
     apis::{configuration::Configuration, core_api::core_tokens_view_key_retrieve},
@@ -61,6 +62,22 @@ impl AuthentikStackBuilder {
             Handle::current().runtime_flavor()
         );
 
+        let tag = {
+            let branch_name = if let Ok(env_pr_branch) = env::var("GITHUB_HEAD_REF")
+                && !env_pr_branch.is_empty()
+            {
+                env_pr_branch
+            } else {
+                env::var("GITHUB_REF").unwrap_or_else(|_| "main".to_owned())
+            };
+            let branch_name = branch_name.replace("refs/heads/", "");
+            let branch_name = Regex::new("[^a-zA-Z0-9-]")
+                .expect("regex")
+                .replace_all(&branch_name, "-");
+
+            format!("gh-{branch_name}")
+        };
+
         let mut compose_profiles = Vec::with_capacity(3);
 
         let compose = {
@@ -70,7 +87,7 @@ impl AuthentikStackBuilder {
             )])
             .with_env("PG_PASS", "password")
             .with_env("AUTHENTIK_SECRET_KEY", "secret_key")
-            .with_env("AUTHENTIK_TAG", "gh-next")
+            .with_env("AUTHENTIK_TAG", &tag)
             .with_wait_for_service("worker", WaitFor::healthcheck())
             .with_wait_for_service(
                 "server",

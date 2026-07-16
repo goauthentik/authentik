@@ -79,8 +79,8 @@ test: ## Run the server tests and produce a coverage report (locally)
 	$(UV) run coverage report
 
 test-e2e-build-containers:  ## Build containers for the e2e tests
-	DOCKER_BUILDKIT=1 docker build . -f lifecycle/container/Dockerfile --progress plain --tag authentik.invalid/goauthentik/dev-server:latest
-	DOCKER_BUILDKIT=1 docker build . -f lifecycle/container/proxy.Dockerfile --progress plain --tag authentik.invalid/goauthentik/dev-proxy:latest
+	DOCKER_BUILDKIT=1 docker build . -f lifecycle/container/Dockerfile --progress plain --tag authentik.invalid/goauthentik/dev-server:gh-main --load
+	DOCKER_BUILDKIT=1 docker build . -f lifecycle/container/proxy.Dockerfile --progress plain --tag authentik.invalid/goauthentik/dev-proxy:gh-main --load
 
 test-e2e:  ## Run the e2e tests
 	$(CARGO) nextest run --workspace --filterset 'kind(test)'

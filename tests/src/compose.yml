@@ -32,7 +32,7 @@ services:
       AUTHENTIK_BOOTSTRAP_EMAIL: root@example.com
       AUTHENTIK_BOOTSTRAP_PASSWORD: akadmin
       AUTHENTIK_BOOTSTRAP_TOKEN: akadmin
-    image: ${AUTHENTIK_IMAGE:-ghcr.io/goauthentik/dev-server}:${AUTHENTIK_TAG:?tag}
+    image: authentik.invalid/goauthentik/dev-server:${AUTHENTIK_TAG:?tag}
     ports:
       - "9000"
       - "9443"
@@ -54,7 +54,7 @@ services:
       AUTHENTIK_BOOTSTRAP_EMAIL: root@example.com
       AUTHENTIK_BOOTSTRAP_PASSWORD: akadmin
       AUTHENTIK_BOOTSTRAP_TOKEN: akadmin
-    image: ${AUTHENTIK_IMAGE:-ghcr.io/goauthentik/dev-server}:${AUTHENTIK_TAG:?tag}
+    image: authentik.invalid/goauthentik/dev-server:${AUTHENTIK_TAG:?tag}
     restart: unless-stopped
     shm_size: 512mb
     user: root
@@ -91,7 +91,7 @@ services:
   proxy:
     profiles:
       - proxy
-    image: ${AUTHENTIK_IMAGE:-ghcr.io/goauthentik/dev-proxy}:${AUTHENTIK_TAG:?tag}
+    image: authentik.invalid/goauthentik/dev-proxy:${AUTHENTIK_TAG:?tag}
     environment:
       AUTHENTIK_HOST: http://server:9000
       AUTHENTIK_TOKEN: ${AUTHENTIK_PROXY_TOKEN:-}
