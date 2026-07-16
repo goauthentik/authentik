@@ -102,6 +102,10 @@ class AgentDeviceUserBinding(DeviceUserBinding):
     apple_secure_enclave_key = models.TextField()
     apple_enclave_key_id = models.TextField()
 
+    class Meta:
+        verbose_name = _("Agent Device User binding")
+        verbose_name_plural = _("Agent Device User bindings")
+
 
 class DeviceToken(InternallyManagedMixin, ExpiringModel):
     """Per-device token used for authentication."""
