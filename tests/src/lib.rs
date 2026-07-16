@@ -66,7 +66,7 @@ impl AuthentikStackBuilder {
         let compose = {
             let mut compose = DockerCompose::with_local_client(&[concat!(
                 env!("CARGO_MANIFEST_DIR"),
-                "/tests/e2e/compose.yml"
+                "/src/compose.yml"
             )])
             .with_env("PG_PASS", "password")
             .with_env("AUTHENTIK_SECRET_KEY", "secret_key")
