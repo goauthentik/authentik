@@ -33,6 +33,7 @@ export interface ISearchSelectBase<T> {
     name?: string | null;
     placeholder: string | null;
     emptyOption?: string;
+    actionLabel?: string;
 }
 
 export abstract class SearchSelectBase<T>
@@ -163,6 +164,17 @@ export abstract class SearchSelectBase<T>
      */
     @property({ type: String })
     public emptyOption?: string = "---------";
+
+    /**
+     * An optional label for a pinned action item rendered at the end of the dropdown, e.g.
+     * "Create new...". Activating it fires an `ak-search-select-action` event
+     * instead of changing the selection.
+     *
+     * @property
+     * @attr
+     */
+    @property({ type: String, attribute: "action-label" })
+    public actionLabel?: string;
 
     //#endregion
 
@@ -404,6 +416,7 @@ export abstract class SearchSelectBase<T>
             name=${ifPresent(this.name)}
             placeholder=${ifPresent(this.placeholder)}
             emptyOption=${ifPresent(this.blankable ? this.emptyOption : undefined)}
+            action-label=${ifPresent(this.actionLabel)}
             @input=${this.#searchListener}
             @change=${this.onSelect}
         ></ak-search-select-view> `;

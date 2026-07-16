@@ -15,6 +15,8 @@ from cryptography.hazmat.primitives.asymmetric.ec import (
     SECP521R1,
     EllipticCurvePrivateKey,
 )
+from cryptography.hazmat.primitives.asymmetric.ed448 import Ed448PrivateKey
+from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey
 from cryptography.hazmat.primitives.asymmetric.rsa import RSAPrivateKey
 from cryptography.hazmat.primitives.asymmetric.types import PrivateKeyTypes
 from dacite import Config
@@ -42,18 +44,23 @@ from authentik.common.oauth.constants import (
     GRANT_TYPE_IMPLICIT,
     GRANT_TYPE_PASSWORD,
     GRANT_TYPE_REFRESH_TOKEN,
+    GRANT_TYPE_TOKEN_EXCHANGE,
     SubModes,
 )
 from authentik.core.models import (
     AuthenticatedSession,
-    ExpiringModel,
     PropertyMapping,
     Provider,
     User,
 )
 from authentik.crypto.models import CertificateKeyPair
 from authentik.lib.generators import generate_code_fixed_length, generate_id, generate_key
-from authentik.lib.models import DomainlessURLValidator, InternallyManagedMixin, SerializerModel
+from authentik.lib.models import (
+    DomainlessURLValidator,
+    ExpiringModel,
+    InternallyManagedMixin,
+    SerializerModel,
+)
 from authentik.lib.utils.time import timedelta_string_validator
 from authentik.sources.oauth.models import OAuthSource
 
@@ -86,6 +93,7 @@ class GrantType(models.TextChoices):
     CLIENT_CREDENTIALS = GRANT_TYPE_CLIENT_CREDENTIALS
     PASSWORD = GRANT_TYPE_PASSWORD
     DEVICE_CODE = GRANT_TYPE_DEVICE_CODE
+    TOKEN_EXCHANGE = GRANT_TYPE_TOKEN_EXCHANGE
 
 
 # Fallback for decoding previous sessions from 2026.2 to 2026.5
@@ -157,6 +165,7 @@ class JWTAlgorithms(models.TextChoices):
     ES256 = "ES256", _("ES256 (Asymmetric Encryption)")
     ES384 = "ES384", _("ES384 (Asymmetric Encryption)")
     ES512 = "ES512", _("ES512 (Asymmetric Encryption)")
+    EDDSA = "EdDSA", _("EdDSA (Asymmetric Encryption)")
 
     @classmethod
     def from_private_key(cls, private_key: PrivateKeyTypes | None) -> str:
@@ -170,6 +179,8 @@ class JWTAlgorithms(models.TextChoices):
                 return cls.ES384
             if isinstance(curve, SECP521R1):
                 return cls.ES512
+        if isinstance(private_key, Ed25519PrivateKey | Ed448PrivateKey):
+            return cls.EDDSA
         raise ValueError(f"Invalid private key type: {type(private_key)}")
 
 
@@ -523,6 +534,9 @@ class AuthorizationCode(InternallyManagedMixin, SerializerModel, ExpiringModel, 
     code_challenge_method = models.CharField(
         max_length=255, null=True, verbose_name=_("Code Challenge Method")
     )
+    dpop_jkt = models.CharField(
+        max_length=255, null=True, default=None, verbose_name=_("DPoP JWK Thumbprint")
+    )
 
     class Meta:
         verbose_name = _("Authorization Code")
@@ -602,6 +616,9 @@ class RefreshToken(InternallyManagedMixin, SerializerModel, ExpiringModel, BaseG
 
     token = models.TextField(default=generate_client_secret)
     _id_token = models.TextField(verbose_name=_("ID Token"))
+    dpop_jkt = models.CharField(
+        max_length=255, null=True, default=None, verbose_name=_("DPoP JWK Thumbprint")
+    )
     # Shadow the `session` field from `BaseGrantModel` as we want refresh tokens to persist even
     # when the session is terminated.
     session = models.ForeignKey(
@@ -647,6 +664,9 @@ class DeviceToken(InternallyManagedMixin, ExpiringModel):
     device_code = models.TextField(default=generate_key)
     user_code = models.TextField(default=generate_code_fixed_length)
     _scope = models.TextField(default="", verbose_name=_("Scopes"))
+    dpop_jkt = models.CharField(
+        max_length=255, null=True, default=None, verbose_name=_("DPoP JWK Thumbprint")
+    )
     session = models.ForeignKey(
         AuthenticatedSession, null=True, on_delete=models.SET_DEFAULT, default=None
     )

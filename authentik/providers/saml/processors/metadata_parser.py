@@ -4,7 +4,7 @@ from dataclasses import dataclass
 
 import xmlsec
 from cryptography.hazmat.backends import default_backend
-from cryptography.x509 import load_pem_x509_certificate
+from cryptography.x509 import InvalidVersion, load_pem_x509_certificate
 from defusedxml.lxml import fromstring
 from lxml import etree  # nosec
 from structlog.stdlib import get_logger
@@ -90,7 +90,10 @@ class ServiceProviderMetadataParser:
             return None
         raw_cert = format_cert(signing_certs[0])
         # sanity check, make sure the certificate is valid.
-        load_pem_x509_certificate(raw_cert.encode("utf-8"), default_backend())
+        try:
+            load_pem_x509_certificate(raw_cert.encode("utf-8"), default_backend())
+        except InvalidVersion as exc:
+            raise ValueError("Certificate in metadata is not a valid X.509 version") from exc
         return CertificateKeyPair(
             certificate_data=raw_cert,
         )
@@ -105,7 +108,10 @@ class ServiceProviderMetadataParser:
             return None
         raw_cert = format_cert(encryption_certs[0])
         # sanity check, make sure the certificate is valid.
-        load_pem_x509_certificate(raw_cert.encode("utf-8"), default_backend())
+        try:
+            load_pem_x509_certificate(raw_cert.encode("utf-8"), default_backend())
+        except InvalidVersion as exc:
+            raise ValueError("Certificate in metadata is not a valid X.509 version") from exc
         return CertificateKeyPair(
             certificate_data=raw_cert,
         )
