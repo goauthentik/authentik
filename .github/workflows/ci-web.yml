@@ -147,4 +147,4 @@ jobs:
           SENTRY_PROJECT: authentik
         # Non-blocking while baselines stabilize.
         continue-on-error: true
-        run: npx @sentry/cli snapshots upload ./snapshots --app-id web --project authentik
+        run: pnpm sentry-cli snapshots upload ./snapshots --app-id web --project authentik
