@@ -18,10 +18,7 @@ class Command(BaseCommand):
             "password",
             type=str,
             nargs="?",
-            help=_(
-                "Password to hash. Supplying this argument exposes it in shell history and "
-                "the process list; omit it to be prompted securely."
-            ),
+            help=_("Password to hash. If omitted, prompt for the password."),
         )
 
     def handle(self, *args, **options):
