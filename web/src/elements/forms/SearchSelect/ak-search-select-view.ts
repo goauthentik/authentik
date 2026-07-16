@@ -92,14 +92,23 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
                 padding: 0;
                 border: 0;
                 background: transparent;
-                overflow: visible;
                 max-height: 40vh;
+                /* Host is the single scroll container (see the part rule below), so
+                   scroll state is readable here for wheel forwarding. */
+                overflow-y: auto;
             }
 
             /* The inner PatternFly dropdown is inline-block (content width); stretch it
                to fill the (input-width) host so the menu matches the input. */
             ak-list-select[popover]::part(ak-list-select-wrapper) {
                 width: 100%;
+            }
+
+            /* Neutralize ak-list-select's own scroll cap so the popover host is the
+               sole scroll container. */
+            ak-list-select[popover]::part(ak-list-select) {
+                max-height: none;
+                overflow: visible;
             }
 
             /* PatternFly menu items are white-space: nowrap; let long option labels
@@ -365,6 +374,58 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
             this.open = false;
         }
     };
+
+    /**
+     * Forward wheel scrolling to the input's nearest scrollable ancestor once the
+     * menu itself can't scroll any further in that direction. The menu is a
+     * top-layer, fixed-position popover, so the browser chains its overscroll to the
+     * viewport rather than to the (e.g. modal dialog) container behind it — meaning
+     * scrolling over the menu would otherwise appear stuck.
+     */
+    #menuWheelListener = (event: WheelEvent) => {
+        const menu = this.#menuRef.value;
+        if (!menu) return;
+
+        const goingDown = event.deltaY > 0;
+        const menuCanScroll = goingDown
+            ? Math.ceil(menu.scrollTop + menu.clientHeight) < menu.scrollHeight
+            : menu.scrollTop > 0;
+
+        if (menuCanScroll) return;
+
+        const scroller = this.#findScrollableAncestor();
+        if (!scroller) return;
+
+        scroller.scrollTop += event.deltaY;
+        event.preventDefault();
+    };
+
+    /**
+     * Walk the flattened (composed) tree upward from this element — crossing shadow
+     * boundaries and slots — to the nearest vertically scrollable ancestor.
+     */
+    #findScrollableAncestor(): HTMLElement | null {
+        const composedParent = (node: Node): Node | null => {
+            const slot = (node as Element).assignedSlot;
+            if (slot) return slot;
+
+            const parent = node.parentNode;
+            return parent instanceof ShadowRoot ? parent.host : parent;
+        };
+
+        for (let node = composedParent(this); node; node = composedParent(node)) {
+            if (!(node instanceof HTMLElement)) continue;
+
+            const { overflowY } = getComputedStyle(node);
+            const scrollable = overflowY === "auto" || overflowY === "scroll" || overflowY === "overlay";
+
+            if (scrollable && node.scrollHeight > node.clientHeight) {
+                return node;
+            }
+        }
+
+        return null;
+    }
 
     #anchorObserver?: IntersectionObserver;
 
@@ -694,6 +755,7 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
                 @change=${this.#changeListener}
                 @blur=${this.#blurListener}
                 @toggle=${this.#menuToggleListener}
+                @wheel=${this.#menuWheelListener}
                 emptyOption=${ifPresent(emptyOption)}
                 actionLabel=${ifPresent(this.actionLabel)}
                 @ak-select-action=${this.#actionListener}
