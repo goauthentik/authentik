@@ -100,9 +100,11 @@ def revoke_user_access(user: User, *, sessions: bool = True, tokens: bool = True
     if not sessions and not tokens:
         return
     with atomic():
-        for queryset in _revocable_querysets(user, sessions=sessions, tokens=tokens):
-            queryset.delete()
-    while has_revocable_artifacts(user, sessions=sessions, tokens=tokens):
-        with atomic():
+        while True:
             for queryset in _revocable_querysets(user, sessions=sessions, tokens=tokens):
                 queryset.delete()
+            # The re-check sees concurrently committed rows because READ COMMITTED
+            # gives every statement a fresh snapshot; under a stricter isolation
+            # level this loop would be blind to them.
+            if not has_revocable_artifacts(user, sessions=sessions, tokens=tokens):
+                break
