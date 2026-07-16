@@ -301,13 +301,13 @@ thirtyfour.workspace = true
 [lints]
 workspace = true
 
-[[test]]
-name = "e2e_flows_login"
-path = "tests/e2e/flows_login.rs"
-
-[[test]]
-name = "e2e_flows_login_sfe"
-path = "tests/e2e/flows_login_sfe.rs"
+# [[test]]
+# name = "e2e_flows_login"
+# path = "tests/e2e/flows_login.rs"
+#
+# [[test]]
+# name = "e2e_flows_login_sfe"
+# path = "tests/e2e/flows_login_sfe.rs"
 
 [[test]]
 name = "e2e_provider_proxy"

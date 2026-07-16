@@ -9,7 +9,7 @@ use ak_client::{
     apis::{
         core_api::{core_applications_create, core_users_list, core_users_partial_update},
         flows_api::flows_instances_list,
-        outposts_api::outposts_instances_create,
+        outposts_api::{outposts_instances_create, outposts_instances_default_settings_retrieve},
         providers_api::providers_proxy_create,
     },
     models::{
@@ -21,18 +21,20 @@ use eyre::Result;
 
 mod stack;
 use stack::AuthentikStack;
-use testcontainers::{GenericImage, ImageExt as _, runners::AsyncRunner as _};
 use tokio::time::sleep;
 
-#[tokio::test]
+use crate::stack::LoginOptions;
+
+#[tokio::test(flavor = "multi_thread")]
 async fn proxy_simple() -> Result<()> {
     let mut stack = AuthentikStack::builder()
-        .with_blueprint("default/flow-authentication-flow.yaml")
+        .with_blueprint("default/flow-default-authentication-flow.yaml")
         .with_blueprint("default/flow-default-invalidation-flow.yaml")
         .with_blueprint("default/flow-default-provider-authorization-implicit-consent.yaml")
         .with_blueprint("default/flow-default-provider-invalidation.yaml")
         .with_blueprint("system/providers-oauth2.yaml")
         .with_blueprint("system/providers-proxy.yaml")
+        .with_selenium(true)
         .with_whoami(true)
         .run()
         .await?;
@@ -150,52 +152,33 @@ async fn proxy_simple() -> Result<()> {
     )
     .await?;
 
+    let outpost_default_config =
+        outposts_instances_default_settings_retrieve(stack.api_config()).await?;
+
     let outpost = outposts_instances_create(
         stack.api_config(),
         OutpostRequest {
             name: "test".to_owned(),
             r#type: OutpostTypeEnum::Proxy,
             providers: vec![provider.pk],
+            config: outpost_default_config.config,
             ..Default::default()
         },
     )
     .await?;
 
-    sleep(Duration::from_secs(3)).await;
+    sleep(Duration::from_secs(1)).await;
 
     stack.start_outpost(&outpost).await?;
 
-    dbg!("DO THE THING");
-    sleep(Duration::from_secs(30)).await;
+    stack.goto("http://proxy:9000/api").await?;
 
-    // flows_instances_partial_update(
-    //     stack.api_config(),
-    //     "default-authentication-flow",
-    //     Some(PatchedFlowRequest {
-    //         compatibility_mode: Some(true),
-    //         ..Default::default()
-    //     }),
-    // )
-    // .await?;
-    //
-    // stack
-    //     .goto("http://server:9000/if/flow/default-authentication-flow/")
-    //     .await?;
-    //
-    // stack
-    //     .login(LoginOptions {
-    //         dom: Dom::Shady,
-    //         ..Default::default()
-    //     })
-    //     .await?;
-    //
-    // stack
-    //     .wait_for_url("http://server:9000/if/user/#/library")
-    //     .await?;
-    //
-    // stack
-    //     .assert_user("akadmin", "authentik Default Admin", "root@example.com")
-    //     .await?;
+    stack.login(LoginOptions::default()).await?;
+
+    let json = stack.parse_json_content().await?;
+    dbg!(json);
+
+    sleep(Duration::from_secs(15)).await;
 
     stack.quit().await
 }

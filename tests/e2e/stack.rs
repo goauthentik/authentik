@@ -5,7 +5,7 @@ use ak_client::{
     apis::{configuration::Configuration, core_api::core_tokens_view_key_retrieve},
     models::Outpost,
 };
-use eyre::Result;
+use eyre::{Result, eyre};
 use reqwest::{Method, StatusCode};
 use serde_json::Value;
 use testcontainers::{
@@ -13,7 +13,11 @@ use testcontainers::{
     core::{ExecCommand, WaitFor, wait::HttpWaitStrategy},
 };
 use thirtyfour::prelude::*;
-use tokio::time::{Instant, sleep};
+use tokio::{
+    runtime::{Handle, RuntimeFlavor},
+    task::block_in_place,
+    time::{Instant, sleep},
+};
 
 #[derive(Default)]
 pub(crate) struct AuthentikStackBuilder {
@@ -45,6 +49,11 @@ impl AuthentikStackBuilder {
     }
 
     pub(crate) async fn run(self) -> Result<AuthentikStack> {
+        assert_eq!(
+            RuntimeFlavor::MultiThread,
+            Handle::current().runtime_flavor()
+        );
+
         let mut compose_profiles = Vec::with_capacity(3);
 
         let compose = {
@@ -55,6 +64,7 @@ impl AuthentikStackBuilder {
             .with_env("PG_PASS", "password")
             .with_env("AUTHENTIK_SECRET_KEY", "secret_key")
             .with_env("AUTHENTIK_TAG", "gh-next")
+            .with_wait_for_service("worker", WaitFor::healthcheck())
             .with_wait_for_service(
                 "server",
                 WaitFor::http(
@@ -196,7 +206,8 @@ impl AuthentikStack {
                     ),
                     token.key,
                 )
-                .with_env("COMPOSE_PROFILES", self.compose_profiles.join(",")),
+                .with_env("COMPOSE_PROFILES", self.compose_profiles.join(","))
+                .with_wait_for_service(outpost.r#type.to_string(), WaitFor::healthcheck()),
         );
 
         self.compose().up().await?;
@@ -215,6 +226,19 @@ impl AuthentikStack {
                 blueprint_path.to_owned(),
             ]))
             .await?;
+        eprintln!("::group::apply_blueprint logs - {blueprint_path} - stdout");
+        let _ = tokio::io::copy(&mut res.stdout(), &mut tokio::io::stderr()).await;
+        eprintln!("::endgroup::");
+        eprintln!("::group::apply_blueprint logs - {blueprint_path} - stderr");
+        let _ = tokio::io::copy(&mut res.stderr(), &mut tokio::io::stderr()).await;
+        eprintln!("::endgroup::");
+        if let Some(exit_code) = res.exit_code().await?
+            && exit_code != 0
+        {
+            return Err(eyre!(
+                "Apply blueprint {blueprint_path} failed with exit code {exit_code}"
+            ));
+        }
         Ok(())
     }
 
@@ -268,7 +292,7 @@ impl AuthentikStack {
                 .driver()
                 .execute(
                     "return document.__shady_native_querySelector(arguments[0])",
-                    vec![Value::String(selector.to_string())],
+                    vec![Value::String(selector.to_owned())],
                 )
                 .await?;
 
@@ -364,17 +388,24 @@ impl AuthentikStack {
         Ok(())
     }
 
-    pub(crate) async fn quit(self) -> Result<()> {
-        let Self {
-            compose, driver, ..
-        } = self;
-
-        let driver = if let Some(driver) = driver {
+    pub(crate) async fn quit(&mut self) -> Result<()> {
+        let driver = if let Some(driver) = self.driver.take() {
             driver.quit().await
         } else {
             Ok(())
         };
-        let compose = if let Some(compose) = compose {
+        let compose = if let Some(compose) = self.compose.take() {
+            for service in compose.services() {
+                if let Some(svc) = compose.service(service) {
+                    eprintln!("::group::Container logs - {service} - stdout");
+                    let _ = tokio::io::copy(&mut svc.stdout(false), &mut tokio::io::stderr()).await;
+                    eprintln!("::endgroup::");
+                    eprintln!("::group::Container logs - {service} - stderr");
+                    let _ = tokio::io::copy(&mut svc.stderr(false), &mut tokio::io::stderr()).await;
+                    eprintln!("::endgroup::");
+                }
+            }
+
             compose.down().await
         } else {
             Ok(())
@@ -384,5 +415,15 @@ impl AuthentikStack {
         driver?;
 
         Ok(())
+    }
+}
+
+#[expect(clippy::missing_trait_methods, reason = "We don't use pin_drop")]
+impl Drop for AuthentikStack {
+    fn drop(&mut self) {
+        let rt = Handle::current();
+        if let Err(err) = block_in_place(move || rt.block_on(async { self.quit().await })) {
+            eprintln!("Failed to cleanly shutdown stack: {err}");
+        }
     }
 }
