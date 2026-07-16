@@ -303,6 +303,11 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
         this.setAttribute("data-ouia-component-id", this.getAttribute("id") || randomId());
     }
 
+    disconnectedCallback() {
+        this.#stopAnchorTracking();
+        super.disconnectedCallback();
+    }
+
     // TODO: Reconcile value <-> display value, Reconcile option changes to value <-> displayValue
 
     // If the user has changed the content of the input box, they are manipulating the *Label*, not
@@ -336,7 +341,14 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
     #menuToggleListener = (event: ToggleEvent) => {
         const nowOpen = event.newState === "open";
 
-        if (nowOpen) return;
+        if (nowOpen) {
+            // Track the anchor while the menu is open: close if it scrolls out of
+            // view, and (where CSS anchor positioning is unavailable) place the menu.
+            this.#startAnchorTracking();
+            return;
+        }
+
+        this.#stopAnchorTracking();
 
         // Record when the browser closes the popover so a click on the input
         // that *caused* the dismiss doesn't immediately reopen it.
@@ -346,6 +358,93 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
             this.open = false;
         }
     };
+
+    /**
+     * Whether the browser supports CSS anchor positioning. When false (e.g.
+     * Firefox), the menu is positioned imperatively via {@link #positionMenu}.
+     */
+    #anchorPositioningSupported =
+        CSS.supports("position-anchor", "--x") && CSS.supports("top", "anchor(bottom)");
+
+    #anchorObserver?: IntersectionObserver;
+    #anchorReflowCleanup?: () => void;
+
+    #startAnchorTracking() {
+        const input = this.#inputRef.value;
+        const menu = this.#menuRef.value;
+
+        if (!input || !menu) return;
+
+        // Close the menu when its anchor input is no longer visible — scrolled out
+        // of the viewport, clipped away by a scroll container, or hidden. This works
+        // in every browser regardless of anchor-positioning support.
+        this.#anchorObserver?.disconnect();
+        this.#anchorObserver = new IntersectionObserver(
+            (entries) => {
+                if (entries.some((entry) => !entry.isIntersecting)) {
+                    this.open = false;
+                }
+            },
+            { threshold: 0 },
+        );
+        this.#anchorObserver.observe(input);
+
+        if (this.#anchorPositioningSupported) return;
+
+        // Fallback placement for browsers without CSS anchor positioning.
+        this.#positionMenu();
+
+        const reflow = () => this.#positionMenu();
+        window.addEventListener("scroll", reflow, { capture: true, passive: true });
+        window.addEventListener("resize", reflow, { passive: true });
+
+        this.#anchorReflowCleanup = () => {
+            window.removeEventListener("scroll", reflow, { capture: true });
+            window.removeEventListener("resize", reflow);
+        };
+    }
+
+    #stopAnchorTracking() {
+        this.#anchorObserver?.disconnect();
+        this.#anchorObserver = undefined;
+
+        this.#anchorReflowCleanup?.();
+        this.#anchorReflowCleanup = undefined;
+    }
+
+    /**
+     * Position the menu against the input imperatively, matching the CSS
+     * anchor-positioning behavior (below by default, flip above when there's no
+     * room, width matched to the input, capped height). Only used where CSS anchor
+     * positioning is unavailable.
+     */
+    #positionMenu() {
+        const input = this.#inputRef.value;
+        const menu = this.#menuRef.value;
+
+        if (!input || !menu) return;
+
+        const rect = input.getBoundingClientRect();
+        const viewportHeight = window.innerHeight;
+        const maxHeight = Math.round(viewportHeight * 0.4);
+        const menuHeight = Math.min(menu.offsetHeight || maxHeight, maxHeight);
+
+        const spaceBelow = viewportHeight - rect.bottom;
+        const flipUp = spaceBelow < menuHeight && rect.top > spaceBelow;
+
+        menu.style.position = "fixed";
+        menu.style.left = `${Math.round(rect.left)}px`;
+        menu.style.width = `${Math.round(rect.width)}px`;
+        menu.style.maxHeight = `${maxHeight}px`;
+
+        if (flipUp) {
+            menu.style.top = "auto";
+            menu.style.bottom = `${Math.round(viewportHeight - rect.top)}px`;
+        } else {
+            menu.style.bottom = "auto";
+            menu.style.top = `${Math.round(rect.bottom)}px`;
+        }
+    }
 
     setFromMatchList(value?: string) {
         if (!value) return;
