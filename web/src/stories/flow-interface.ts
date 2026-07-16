@@ -67,9 +67,6 @@ export class StoryFlowInterface extends AKElement {
     }
 }
 
-let backgroundSeed = Date.now();
-let avatarSeed = backgroundSeed + 1;
-
 function createChallenge<T extends FlowChallengeLike>(
     component: ChallengeTypes["component"],
     overrides?: DeepPartial<T>,
@@ -77,12 +74,12 @@ function createChallenge<T extends FlowChallengeLike>(
     const challenge = deepmerge(
         {
             pendingUser: "Jessie Lorem",
-            pendingUserAvatar: `https://picsum.photos/seed/${avatarSeed++}/64`,
+            pendingUserAvatar: `https://picsum.photos/id/40/64`,
             flowInfo: {
                 title: `<${component}>`,
                 layout: ContextualFlowInfoLayoutEnum.Stacked,
                 cancelUrl: "",
-                background: `https://picsum.photos/seed/${backgroundSeed++}/1920/1080`,
+                background: `https://picsum.photos/id/28/1920/1080`,
             },
         } satisfies FlowChallengeLike,
         overrides,
