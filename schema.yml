@@ -21850,10 +21850,20 @@ paths:
       description: Mixin to add a used_by endpoint to return a list of all objects
         using this object
       parameters:
+      - in: query
+        name: binding
+        schema:
+          type: string
+          format: uuid
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
       - $ref: '#/components/parameters/QueryPaginationPageSize'
       - $ref: '#/components/parameters/QuerySearch'
+      - in: query
+        name: target
+        schema:
+          type: string
+          format: uuid
       tags:
       - requests
       security:

@@ -20,3 +20,4 @@ class RequestRuleChildBindingViewSet(UsedByMixin, ModelViewSet):
 
     queryset = RequestRuleChildBinding.objects.all()
     serializer_class = RequestRuleChildBindingSerializer
+    filterset_fields = ["binding", "target"]

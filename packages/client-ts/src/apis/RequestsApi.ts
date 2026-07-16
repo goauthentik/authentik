@@ -98,10 +98,12 @@ export interface RequestsRuleChildBindingsDestroyRequest {
 }
 
 export interface RequestsRuleChildBindingsListRequest {
+    binding?: string;
     ordering?: string;
     page?: number;
     pageSize?: number;
     search?: string;
+    target?: string;
 }
 
 export interface RequestsRuleChildBindingsPartialUpdateRequest {
@@ -780,6 +782,10 @@ export class RequestsApi extends runtime.BaseAPI {
     ): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
+        if (requestParameters["binding"] != null) {
+            queryParameters["binding"] = requestParameters["binding"];
+        }
+
         if (requestParameters["ordering"] != null) {
             queryParameters["ordering"] = requestParameters["ordering"];
         }
@@ -794,6 +800,10 @@ export class RequestsApi extends runtime.BaseAPI {
 
         if (requestParameters["search"] != null) {
             queryParameters["search"] = requestParameters["search"];
+        }
+
+        if (requestParameters["target"] != null) {
+            queryParameters["target"] = requestParameters["target"];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};

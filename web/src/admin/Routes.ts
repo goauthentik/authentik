@@ -87,6 +87,10 @@ export const ROUTES: Route[] = [
         await import("#admin/policies/reputation/ReputationListPage");
         return html`<ak-policy-reputation-list></ak-policy-reputation-list>`;
     }),
+    new Route(new RegExp("^/requests/rules$"), async () => {
+        await import("#admin/requests/RequestRuleListPage");
+        return html`<ak-request-rule-list></ak-request-rule-list>`;
+    }),
     new Route(new RegExp("^/identity/groups$"), async () => {
         await import("#admin/groups/GroupListPage");
         return html`<ak-group-list></ak-group-list>`;

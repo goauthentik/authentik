@@ -3,6 +3,7 @@ import "#admin/applications/ApplicationCheckAccessForm";
 import "#admin/applications/ApplicationForm";
 import "#admin/applications/entitlements/ApplicationEntitlementPage";
 import "#admin/policies/BoundPoliciesList";
+import "#admin/requests/BoundRequestRulesTable";
 import "#admin/rbac/ak-rbac-object-permission-page";
 import "#admin/lifecycle/ObjectLifecyclePage";
 import "#admin/events/ObjectChangelog";
@@ -381,15 +382,33 @@ export class ApplicationViewPage extends WithLicenseSummary(AKElement) {
                     objectPk=${this.application.pk}
                 ></ak-rbac-object-permission-page>
                 ${this.hasEnterpriseLicense
-                    ? html`<ak-object-lifecycle-page
-                          role="tabpanel"
-                          tabindex="0"
-                          slot="page-lifecycle"
-                          id="page-lifecycle"
-                          aria-label=${msg("Lifecycle")}
-                          model=${ContentTypeEnum.AuthentikCoreApplication}
-                          object-pk=${this.application.pk}
-                      ></ak-object-lifecycle-page>`
+                    ? html` <section
+                              role="tabpanel"
+                              tabindex="0"
+                              slot="page-rule-bindings"
+                              id="page-rule-bindings"
+                              aria-label="${msg("Request rules")}"
+                              class="pf-c-page__main-section pf-m-no-padding-mobile"
+                          >
+                              <div class="pf-c-card">
+                                  <div class="pf-c-card__title">
+                                      ${msg(
+                                          "These policies control which users can access this application.",
+                                      )}
+                                  </div>
+                                  <ak-bound-request-rules-table .target=${this.application.pk}>
+                                  </ak-bound-request-rules-table>
+                              </div>
+                          </section>
+                          <ak-object-lifecycle-page
+                              role="tabpanel"
+                              tabindex="0"
+                              slot="page-lifecycle"
+                              id="page-lifecycle"
+                              aria-label=${msg("Lifecycle")}
+                              model=${ContentTypeEnum.AuthentikCoreApplication}
+                              object-pk=${this.application.pk}
+                          ></ak-object-lifecycle-page>`
                     : nothing}
             </ak-tabs>
         </main>`;
