@@ -82,6 +82,8 @@ class PolicyEngine:
     def _check_cache(self, binding: PolicyBinding):
         if not self.use_cache:
             return False
+        if binding.is_expired:
+            return False
         # It's a bit silly to time this, but
         with HIST_POLICIES_EXECUTION_TIME.labels(
             binding_order=binding.order,
