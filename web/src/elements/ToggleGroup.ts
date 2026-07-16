@@ -2,9 +2,9 @@
  * @file Barrel file and default registry ('ak-toggle-group') for the ToggleGroup component
  */
 
-import { ToggleGroup } from "./ToggleGroup_impl/ToggleGroup";
+import { ToggleGroup, ToggleGroupEvent } from "./ToggleGroup_impl/ToggleGroup";
 
-export { ToggleGroup };
+export { ToggleGroup, ToggleGroupEvent };
 
 window.customElements.define("ak-toggle-group", ToggleGroup);
 

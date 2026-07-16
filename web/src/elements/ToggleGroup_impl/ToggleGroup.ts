@@ -4,27 +4,32 @@
 
 import Styles from "./ToggleGroup.styles";
 
-import { CustomEmitterElement } from "#elements/utils/eventEmitter";
-
 import { html, LitElement } from "lit";
 import { property } from "lit/decorators.js";
 
 type Option = [string, string, { disabled?: boolean }];
 
+export class ToggleGroupEvent<T = string> extends Event {
+    static readonly eventName = "ak-toggle";
+    public value: T;
+    constructor(value: T) {
+        super(ToggleGroupEvent.eventName, { composed: true, bubbles: true });
+        this.value = value;
+    }
+}
+
 /**
  * Toggle Group
  *
- * An implementation of the Patternfly Toggle Group as a LitElement
+ * An implementation of the Patternfly Toggle Group as a LitElement. This component is not intended
+ * to be used as a control. If you need that, use RadioGroup.
  *
  * @element ak-toggle-group
  *
  * @fires ak-toggle - Fired when someone clicks on a toggle option. Carries the value of the option.
  */
 
-// MYNIS:
-// A 'name' property so that the event carries *which* toggle group emitted the event.
-
-export class ToggleGroup extends CustomEmitterElement(LitElement) {
+export class ToggleGroup extends LitElement {
     static styles = [Styles];
 
     /**
@@ -85,7 +90,7 @@ export class ToggleGroup extends CustomEmitterElement(LitElement) {
     render() {
         const values = this.values;
         const mkClick = (v: string) => () => {
-            this.dispatchCustomEvent("ak-toggle", { value: v });
+            this.dispatchEvent(new ToggleGroupEvent(v));
         };
 
         return html` <div role=${this.multi ? "group" : "radiogroup"} part="toggle-group">

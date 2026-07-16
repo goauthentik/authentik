@@ -13,6 +13,7 @@ import {
 import { groupBy } from "#common/utils";
 
 import { ModelForm } from "#elements/forms/ModelForm";
+import { ToggleGroupEvent } from "#elements/ToggleGroup";
 
 import {
     CoreApi,
@@ -110,7 +111,7 @@ export class PolicyBindingForm<T extends PolicyBinding = PolicyBinding> extends 
         this.defaultOrder = 0;
     }
 
-    getSuccessMessage(): string {
+    getSuccessMessagef(): string {
         if (this.instance?.pk) {
             return msg("Successfully updated binding.");
         }
@@ -159,8 +160,8 @@ export class PolicyBindingForm<T extends PolicyBinding = PolicyBinding> extends 
     renderModeSelector(): TemplateResult {
         return html` <ak-toggle-group
             value=${this.policyGroupUser}
-            @ak-toggle=${(ev: CustomEvent<{ value: PolicyBindingCheckTarget }>) => {
-                this.policyGroupUser = ev.detail.value;
+            @ak-toggle=${(ev: ToggleGroupEvent<PolicyBindingCheckTarget>) => {
+                this.policyGroupUser = ev.value;
             }}
         >
             ${Object.values(PolicyBindingCheckTarget).map((ct) => {
