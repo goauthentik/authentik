@@ -370,6 +370,8 @@ jobs:
         job:
           - name: oidc_basic
             glob: tests/openid_conformance/test_oidc_basic.py
+          - name: oidc_config
+            glob: tests/openid_conformance/test_oidc_config.py
           - name: oidc_implicit
             glob: tests/openid_conformance/test_oidc_implicit.py
           - name: oidc_rp-initiated
@@ -484,9 +486,9 @@ jobs:
           - radius
           - rac
     steps:
-      - uses: regclient/actions/regctl-installer@4b4db1dcc7dad75ad67a788a380f75a20cc8a040
+      - uses: regclient/actions/regctl-installer@39bf30ced4be9d147faaabbde2682e9725fb8bd1
       # logs in to ghcr.io by default
-      - uses: regclient/actions/regctl-login@4b4db1dcc7dad75ad67a788a380f75a20cc8a040
+      - uses: regclient/actions/regctl-login@39bf30ced4be9d147faaabbde2682e9725fb8bd1
       # Docker login is required for attestations
       - uses: docker/login-action@af1e73f918a031802d376d3c8bbc3fe56130a9b0
         with:
