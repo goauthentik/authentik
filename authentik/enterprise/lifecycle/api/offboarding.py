@@ -2,9 +2,15 @@ from django.db import IntegrityError, transaction
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from rest_framework.exceptions import ValidationError
+from rest_framework.mixins import (
+    CreateModelMixin,
+    DestroyModelMixin,
+    ListModelMixin,
+    RetrieveModelMixin,
+)
 from rest_framework.request import Request
 from rest_framework.response import Response
-from rest_framework.viewsets import ModelViewSet
+from rest_framework.viewsets import GenericViewSet
 
 from authentik.core.api.groups import PartialUserSerializer
 from authentik.core.api.utils import ModelSerializer
@@ -70,17 +76,23 @@ class UserOffboardingSerializer(EnterpriseRequiredMixin, ModelSerializer):
         return attrs
 
 
-class UserOffboardingViewSet(ModelViewSet):
+# Offboarding records are immutable: they can be scheduled (POST), cancelled
+# (DELETE → soft-cancel), and read — but never edited. The update mixins are
+# deliberately left out so PUT/PATCH cannot rewrite a terminal audit row's
+# action/schedule/user after the fact.
+class UserOffboardingViewSet(
+    CreateModelMixin,
+    RetrieveModelMixin,
+    ListModelMixin,
+    DestroyModelMixin,
+    GenericViewSet,
+):
     queryset = UserOffboarding.objects.select_related("user", "created_by").all()
     serializer_class = UserOffboardingSerializer
     search_fields = ["user__username"]
     ordering = ["scheduled_for"]
     ordering_fields = ["scheduled_for", "created_at", "status"]
     filterset_fields = ["user__uuid", "status", "action"]
-    # Offboarding records are immutable: they can be scheduled (POST), cancelled
-    # (DELETE → soft-cancel), and read — but never edited. PUT/PATCH would let a
-    # terminal audit row's action/schedule/user be rewritten after the fact.
-    http_method_names = ["get", "post", "delete", "head", "options"]
 
     def perform_create(self, serializer: UserOffboardingSerializer) -> None:
         # Two concurrent requests can both pass validate()'s duplicate check and
