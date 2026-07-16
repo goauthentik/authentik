@@ -2,7 +2,6 @@ import "#elements/Spinner";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { ClipboardItemSource, writeToClipboard } from "#common/clipboard";
-import { PFSize } from "#common/enums";
 
 import { SlottedTemplateResult } from "#elements/types";
 
@@ -32,10 +31,9 @@ export function IconCopyButton({
         const button = event.currentTarget as HTMLButtonElement;
 
         const spinner = button.ownerDocument.createElement("ak-spinner");
-        spinner.size = PFSize.Large;
-
         spinner.classList.add("ak-c-button--icon__progress");
         spinner.setAttribute("aria-hidden", "true");
+        spinner.setAttribute("size", "lg");
 
         button.prepend(spinner);
 

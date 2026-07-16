@@ -55,7 +55,7 @@ export class TopApplicationsTable extends AKElement {
             <tbody role="rowgroup">
                 ${this.topN
                     ? this.topN.map((e) => this.renderRow(e))
-                    : html`<ak-spinner></ak-spinner>`}
+                    : html`<ak-spinner size="md"></ak-spinner>`}
             </tbody>
         </table>`;
     }

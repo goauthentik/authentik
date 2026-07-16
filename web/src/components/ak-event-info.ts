@@ -200,7 +200,7 @@ export class EventInfo extends AKElement {
 
     render(): TemplateResult {
         if (!this.event) {
-            return html`<ak-spinner size=${PFSize.Medium}></ak-spinner>`;
+            return html`<ak-spinner size="md"></ak-spinner>`;
         }
 
         switch (this.event?.action) {

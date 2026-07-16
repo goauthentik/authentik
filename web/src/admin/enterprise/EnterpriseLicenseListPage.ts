@@ -232,7 +232,7 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
     protected renderGetLicenseCard() {
         const renderSpinner = () =>
             html` <div class="pf-c-card__body">
-                <ak-spinner></ak-spinner>
+                <ak-spinner size="md"></ak-spinner>
             </div>`;
 
         const installURL = (installID: string) =>

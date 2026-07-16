@@ -1,0 +1,21 @@
+/**
+ * @file * @file Document-level CSS Custom Properties for Spinner component.
+ */
+
+:root {
+    --ak-c-spinner--Diameter: var(--pf-global--icon--FontSize--xl);
+    --ak-c-spinner--Color: var(--pf-global--primary-color--100);
+    --ak-c-spinner--m-sm--Diameter: var(--pf-global--icon--FontSize--sm);
+    --ak-c-spinner--m-md--Diameter: var(--pf-global--icon--FontSize--md);
+    --ak-c-spinner--m-lg--Diameter: var(--pf-global--icon--FontSize--lg);
+    --ak-c-spinner--m-xl--Diameter: var(--pf-global--icon--FontSize--xl);
+    /* Note: Not `rem`. Must match the text context in which it is used. */
+    --ak-c-spinner--m-inline--Diameter: 1em;
+    --ak-c-spinner--AnimationDuration: 1.4s;
+    --ak-c-spinner--AnimationDuration--reduced-motion: 25s;
+    --ak-c-spinner__path--AnimationTimingFunction: ease-in-out;
+    --ak-c-spinner--path--AnimationTimingFunction--reduced-motion: linear;
+    --ak-c-spinner--AnimationTimingFunction: linear;
+    --ak-c-spinner--StrokeWidth: 10;
+    --ak-c-spinner__path--StrokeWidth: var(--ak-c-spinner--StrokeWidth);
+}

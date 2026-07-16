@@ -42,7 +42,7 @@ export const LibraryAppRow: LitFC<LibraryAppRowProps> = ({
     ...props
 }) => {
     if (!application) {
-        return html`<ak-spinner></ak-spinner>`;
+        return html`<ak-spinner size="md"></ak-spinner>`;
     }
 
     const dataID = kebabCase(application.name);
