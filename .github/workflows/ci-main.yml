@@ -360,6 +360,45 @@ jobs:
         if: ${{ always() }}
         with:
           flags: e2e
+  test-e2e-container:
+    name: test-e2e-container (${{ matrix.name }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    needs:
+      - build-compute-tags
+      - build
+    strategy:
+      fail-fast: false
+      matrix:
+        name:
+          - provider_proxy
+          - flows
+    steps:
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v5
+        with:
+          pattern: container-build-*-amd64
+          merge-multiple: true
+      - name: Load Docker images
+        run: |
+          for image in server proxy ldap radius rac; do
+            skopeo copy "oci-archive:container/${image}-amd64.oci.tar" "docker-daemon:authentik.invalid/goauthentik/dev-${image}:${{ needs.build-compute-tags.outputs.tag-full }}"
+            skopeo copy "oci-archive:container/${image}-amd64.oci.tar" "docker-daemon:authentik.invalid/goauthentik/dev-${image}:${{ needs.build-compute-tags.outputs.tag-branch }}"
+          done
+          rm -rf container/
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v5
+      - name: Setup authentik env
+        uses: ./.github/actions/setup
+        with:
+          dependencies: rust
+      - name: Run tests
+        run: |
+          cargo nextest run \
+            --package authentik-tests \
+            --success-output final \
+            --failure-output final \
+            --no-output-indent \
+            --retries 3 \
+            --filterset 'kind(test) & binary_id(#authentik-tests::e2e_${{ matrix.name }}*)'
   test-openid-conformance:
     name: test-openid-conformance (${{ matrix.job.name }})
     runs-on: ubuntu-latest
