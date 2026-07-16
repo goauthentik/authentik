@@ -1,5 +1,6 @@
 """SAML 1.1 Assertion generator for WS-Federation"""
 
+from hashlib import sha256
 from types import GeneratorType
 
 import xmlsec
@@ -73,7 +74,9 @@ class SAML11AssertionProcessor(AssertionProcessor):
         auth_statement = Element(f"{{{NS_SAML11_ASSERTION}}}AuthenticationStatement")
         auth_statement.attrib["AuthenticationInstant"] = self._auth_instant
         auth_statement.attrib["AuthenticationMethod"] = SAML11_AM_UNSPECIFIED
-
+        self.session_index = sha256(
+            self.http_request.session.session_key.encode("ascii")
+        ).hexdigest()
         event = get_login_event(self.http_request)
         if event and event.context.get(PLAN_CONTEXT_METHOD, "") == "password":
             auth_statement.attrib["AuthenticationMethod"] = SAML11_AM_PASSWORD
