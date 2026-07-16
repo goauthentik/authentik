@@ -90,12 +90,16 @@ async function main() {
                 const dir = join(OUTPUT_DIR, groupPath);
                 await mkdir(dir, { recursive: true });
 
-                await page.goto(`${baseUrl}/iframe.html?id=${story.id}&viewMode=story`, {
-                    waitUntil: "networkidle",
-                });
-                await page.screenshot({ path: join(dir, `${sanitize(story.name)}.png`) });
+                try {
+                    await page.goto(`${baseUrl}/iframe.html?id=${story.id}&viewMode=story`, {
+                        waitUntil: "networkidle",
+                    });
+                    await page.screenshot({ path: join(dir, `${sanitize(story.name)}.png`) });
 
-                console.log(`Captured ${story.title}/${story.name}`);
+                    console.log(`Captured ${story.title}/${story.name}`);
+                } catch (error) {
+                    console.warn(`Skipping ${story.title}/${story.name}: ${error}`);
+                }
             }
         } finally {
             await browser.close();
