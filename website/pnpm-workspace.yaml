@@ -15,7 +15,7 @@ nodeLinker: hoisted
 # these via `catalog:`, and overrides pin transitive deps to the same versions.
 # `scripts/node/lint-catalogs.ts` keeps them in sync with the other workspace roots.
 catalog:
-  eslint: "^9.39.4"
+  eslint: "^10.6.0"
   typescript: "^6.0.3"
   prettier-plugin-packagejson: "^3.0.2"
 
