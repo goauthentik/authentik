@@ -103,6 +103,18 @@ export interface PolicyBinding {
      * @memberof PolicyBinding
      */
     failureResult?: boolean;
+    /**
+     *
+     * @type {Date}
+     * @memberof PolicyBinding
+     */
+    readonly expires: Date | null;
+    /**
+     *
+     * @type {boolean}
+     * @memberof PolicyBinding
+     */
+    readonly expiring: boolean;
 }
 
 /**
@@ -115,6 +127,8 @@ export function instanceOfPolicyBinding(value: object): value is PolicyBinding {
     if (!("userObj" in value) || value["userObj"] === undefined) return false;
     if (!("target" in value) || value["target"] === undefined) return false;
     if (!("order" in value) || value["order"] === undefined) return false;
+    if (!("expires" in value) || value["expires"] === undefined) return false;
+    if (!("expiring" in value) || value["expiring"] === undefined) return false;
     return true;
 }
 
@@ -140,6 +154,8 @@ export function PolicyBindingFromJSONTyped(json: any, ignoreDiscriminator: boole
         order: json["order"],
         timeout: json["timeout"] == null ? undefined : json["timeout"],
         failureResult: json["failure_result"] == null ? undefined : json["failure_result"],
+        expires: json["expires"] == null ? null : new Date(json["expires"]),
+        expiring: json["expiring"],
     };
 }
 
@@ -148,7 +164,10 @@ export function PolicyBindingToJSON(json: any): PolicyBinding {
 }
 
 export function PolicyBindingToJSONTyped(
-    value?: Omit<PolicyBinding, "pk" | "policy_obj" | "group_obj" | "user_obj"> | null,
+    value?: Omit<
+        PolicyBinding,
+        "pk" | "policy_obj" | "group_obj" | "user_obj" | "expires" | "expiring"
+    > | null,
     ignoreDiscriminator: boolean = false,
 ): any {
     if (value == null) {

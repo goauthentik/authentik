@@ -555,16 +555,16 @@
   <target>مسح البحث</target>
 </trans-unit>
 <trans-unit id="sd9b15395dd103f80">
-  <source>Sort by &quot;<x id="0" equiv-text="${label}"/>&quot;</source>
-  <target>رتب حسب &quot;<x id="0" equiv-text="${label}"/>&quot;</target>
+  <source>Sort by "<x id="0" equiv-text="${label}"/>"</source>
+  <target>رتب حسب "<x id="0" equiv-text="${label}"/>"</target>
 </trans-unit>
 <trans-unit id="sfd44ce578f643145">
   <source>Failed to fetch objects.</source>
   <target>فشل في جلب الكائنات.</target>
 </trans-unit>
 <trans-unit id="s7dd64bb0c1fa8e87">
-  <source>Select &quot;<x id="0" equiv-text="${rowLabel}"/>&quot; row</source>
-  <target>تحديد الصف &quot;<x id="0" equiv-text="${rowLabel}"/>&quot;</target>
+  <source>Select "<x id="0" equiv-text="${rowLabel}"/>" row</source>
+  <target>تحديد الصف "<x id="0" equiv-text="${rowLabel}"/>"</target>
 </trans-unit>
 <trans-unit id="sd26f670ca5d5b0c6">
   <source>Collapse row</source>
@@ -795,8 +795,8 @@
   <target>Not found</target>
 </trans-unit>
 <trans-unit id="saa0e2675da69651b">
-  <source>The URL &quot;<x id="0" equiv-text="${this.url}"/>&quot; was not found.</source>
-  <target>The URL &quot;<x id="0" equiv-text="${this.url}"/>&quot; was not found.</target>
+  <source>The URL "<x id="0" equiv-text="${this.url}"/>" was not found.</source>
+  <target>The URL "<x id="0" equiv-text="${this.url}"/>" was not found.</target>
 </trans-unit>
 <trans-unit id="s58cd9c2fe836d9c6">
   <source>Return home</source>
@@ -1047,8 +1047,8 @@
   <target>Assign permission</target>
 </trans-unit>
 <trans-unit id="s14bfa8fd1bec8889">
-  <source>Role doesn&apos;t have view permission so description cannot be retrieved.</source>
-  <target>Role doesn&apos;t have view permission so description cannot be retrieved.</target>
+  <source>Role doesn't have view permission so description cannot be retrieved.</source>
+  <target>Role doesn't have view permission so description cannot be retrieved.</target>
 </trans-unit>
 <trans-unit id="s37d1b74df205b528">
   <source>Permissions set on roles which affect this object.</source>
@@ -1383,8 +1383,8 @@
   <target>Pass</target>
 </trans-unit>
 <trans-unit id="sac315d5bd28d4efa">
-  <source>Don&apos;t Pass</source>
-  <target>Don&apos;t Pass</target>
+  <source>Don't Pass</source>
+  <target>Don't Pass</target>
 </trans-unit>
 <trans-unit id="s40b80eb4cc1f0e0c">
   <source>Edit Binding</source>
@@ -1599,12 +1599,12 @@
   <target>DNS name for which the above configured certificate should be used. The certificate cannot be detected based on the base DN, as the SSL/TLS negotiation happens before such data is exchanged.</target>
 </trans-unit>
 <trans-unit id="s60edbcfac8ed1f90">
-  <source>The start for uidNumbers, this number is added to the user.Pk to make sure that the numbers aren&apos;t too low for POSIX users. Default is 2000 to ensure that we don&apos;t collide with local users uidNumber</source>
-  <target>The start for uidNumbers, this number is added to the user.Pk to make sure that the numbers aren&apos;t too low for POSIX users. Default is 2000 to ensure that we don&apos;t collide with local users uidNumber</target>
+  <source>The start for uidNumbers, this number is added to the user.Pk to make sure that the numbers aren't too low for POSIX users. Default is 2000 to ensure that we don't collide with local users uidNumber</source>
+  <target>The start for uidNumbers, this number is added to the user.Pk to make sure that the numbers aren't too low for POSIX users. Default is 2000 to ensure that we don't collide with local users uidNumber</target>
 </trans-unit>
 <trans-unit id="s1c8e9816dcae6d9c">
-  <source>The start for gidNumbers, this number is added to a number generated from the group.Pk to make sure that the numbers aren&apos;t too low for POSIX groups. Default is 4000 to ensure that we don&apos;t collide with local groups or users primary groups gidNumber</source>
-  <target>The start for gidNumbers, this number is added to a number generated from the group.Pk to make sure that the numbers aren&apos;t too low for POSIX groups. Default is 4000 to ensure that we don&apos;t collide with local groups or users primary groups gidNumber</target>
+  <source>The start for gidNumbers, this number is added to a number generated from the group.Pk to make sure that the numbers aren't too low for POSIX groups. Default is 4000 to ensure that we don't collide with local groups or users primary groups gidNumber</source>
+  <target>The start for gidNumbers, this number is added to a number generated from the group.Pk to make sure that the numbers aren't too low for POSIX groups. Default is 4000 to ensure that we don't collide with local groups or users primary groups gidNumber</target>
 </trans-unit>
 <trans-unit id="sdb16a3d366135cef">
   <source>Provider Name</source>
@@ -1619,8 +1619,8 @@
   <target>Configure how the outpost authenticates requests.</target>
 </trans-unit>
 <trans-unit id="s8b87df5664de7eb8">
-  <source>Configure how the outpost queries the core authentik server&apos;s users.</source>
-  <target>Configure how the outpost queries the core authentik server&apos;s users.</target>
+  <source>Configure how the outpost queries the core authentik server's users.</source>
+  <target>Configure how the outpost queries the core authentik server's users.</target>
 </trans-unit>
 <trans-unit id="s254d527e3a53dbb7">
   <source>Code-based MFA Support</source>
@@ -1711,36 +1711,36 @@
   <target>Browser iframe logout notifications</target>
 </trans-unit>
 <trans-unit id="sccc47f82044453f9">
-  <source>Based on the User&apos;s hashed ID</source>
-  <target>Based on the User&apos;s hashed ID</target>
+  <source>Based on the User's hashed ID</source>
+  <target>Based on the User's hashed ID</target>
 </trans-unit>
 <trans-unit id="sbd5be4fb7442a34c">
-  <source>Based on the User&apos;s ID</source>
-  <target>Based on the User&apos;s ID</target>
+  <source>Based on the User's ID</source>
+  <target>Based on the User's ID</target>
 </trans-unit>
 <trans-unit id="sc9cf9ecaf9e5d67e">
-  <source>Based on the User&apos;s UUID</source>
-  <target>Based on the User&apos;s UUID</target>
+  <source>Based on the User's UUID</source>
+  <target>Based on the User's UUID</target>
 </trans-unit>
 <trans-unit id="s4291727352c4f295">
-  <source>Based on the User&apos;s username</source>
-  <target>Based on the User&apos;s username</target>
+  <source>Based on the User's username</source>
+  <target>Based on the User's username</target>
 </trans-unit>
 <trans-unit id="sd62cfc27ad4aa33b">
-  <source>Based on the User&apos;s Email</source>
-  <target>Based on the User&apos;s Email</target>
+  <source>Based on the User's Email</source>
+  <target>Based on the User's Email</target>
 </trans-unit>
 <trans-unit id="s55eb75bedf96be0f">
   <source>This is recommended over the UPN mode.</source>
   <target>This is recommended over the UPN mode.</target>
 </trans-unit>
 <trans-unit id="sf80e9547166117e6">
-  <source>Based on the User&apos;s UPN</source>
-  <target>Based on the User&apos;s UPN</target>
+  <source>Based on the User's UPN</source>
+  <target>Based on the User's UPN</target>
 </trans-unit>
 <trans-unit id="sde949d0ef44572eb">
-  <source>Requires the user to have a &apos;upn&apos; attribute set, and falls back to hashed user ID. Use this mode only if you have different UPN and Mail domains.</source>
-  <target>Requires the user to have a &apos;upn&apos; attribute set, and falls back to hashed user ID. Use this mode only if you have different UPN and Mail domains.</target>
+  <source>Requires the user to have a 'upn' attribute set, and falls back to hashed user ID. Use this mode only if you have different UPN and Mail domains.</source>
+  <target>Requires the user to have a 'upn' attribute set, and falls back to hashed user ID. Use this mode only if you have different UPN and Mail domains.</target>
 </trans-unit>
 <trans-unit id="sde56783222b527d6">
   <source>Each provider has a different issuer, based on the application slug</source>
@@ -1751,8 +1751,8 @@
   <target>Same identifier is used for all providers</target>
 </trans-unit>
 <trans-unit id="s4c49d27de60a532b">
-  <source>To allow any redirect URI, set the mode to Regex and the value to &quot;.*&quot;. Be aware of the possible security implications this can have.</source>
-  <target>To allow any redirect URI, set the mode to Regex and the value to &quot;.*&quot;. Be aware of the possible security implications this can have.</target>
+  <source>To allow any redirect URI, set the mode to Regex and the value to ".*". Be aware of the possible security implications this can have.</source>
+  <target>To allow any redirect URI, set the mode to Regex and the value to ".*". Be aware of the possible security implications this can have.</target>
 </trans-unit>
 <trans-unit id="s62f7c59b0606a8d6">
   <source>Authorization flow</source>
@@ -1843,8 +1843,8 @@
   <target>Configure how long refresh tokens are valid for.</target>
 </trans-unit>
 <trans-unit id="sdff424992223a264">
-  <source>When renewing a refresh token, if the existing refresh token&apos;s expiry is within this threshold, the refresh token will be renewed. Set to seconds=0 to always renew the refresh token.</source>
-  <target>When renewing a refresh token, if the existing refresh token&apos;s expiry is within this threshold, the refresh token will be renewed. Set to seconds=0 to always renew the refresh token.</target>
+  <source>When renewing a refresh token, if the existing refresh token's expiry is within this threshold, the refresh token will be renewed. Set to seconds=0 to always renew the refresh token.</source>
+  <target>When renewing a refresh token, if the existing refresh token's expiry is within this threshold, the refresh token will be renewed. Set to seconds=0 to always renew the refresh token.</target>
 </trans-unit>
 <trans-unit id="s2e3ef41a0edd8608">
   <source>Scopes</source>
@@ -1887,8 +1887,8 @@
   <target>Include claims in id_token</target>
 </trans-unit>
 <trans-unit id="sbf41e0db12834133">
-  <source>Include User claims from scopes in the id_token, for applications that don&apos;t access the userinfo endpoint.</source>
-  <target>Include User claims from scopes in the id_token, for applications that don&apos;t access the userinfo endpoint.</target>
+  <source>Include User claims from scopes in the id_token, for applications that don't access the userinfo endpoint.</source>
+  <target>Include User claims from scopes in the id_token, for applications that don't access the userinfo endpoint.</target>
 </trans-unit>
 <trans-unit id="s850a58c683682809">
   <source>Issuer mode</source>
@@ -1955,8 +1955,8 @@
   <target>HTTP-Basic Username Key</target>
 </trans-unit>
 <trans-unit id="sb2bb6f93773a4594">
-  <source>User/Group Attribute used for the user part of the HTTP-Basic Header. If not set, the user&apos;s Email address is used.</source>
-  <target>User/Group Attribute used for the user part of the HTTP-Basic Header. If not set, the user&apos;s Email address is used.</target>
+  <source>User/Group Attribute used for the user part of the HTTP-Basic Header. If not set, the user's Email address is used.</source>
+  <target>User/Group Attribute used for the user part of the HTTP-Basic Header. If not set, the user's Email address is used.</target>
 </trans-unit>
 <trans-unit id="s70f6471de355b98c">
   <source>HTTP-Basic Password Key</source>
@@ -1987,8 +1987,8 @@
   <target>External host</target>
 </trans-unit>
 <trans-unit id="s764bccb30868bf62">
-  <source>The external URL you&apos;ll access the application at. Include any non-standard port.</source>
-  <target>The external URL you&apos;ll access the application at. Include any non-standard port.</target>
+  <source>The external URL you'll access the application at. Include any non-standard port.</source>
+  <target>The external URL you'll access the application at. Include any non-standard port.</target>
 </trans-unit>
 <trans-unit id="scb317851cbcc6b12">
   <source>Internal host</source>
@@ -2011,12 +2011,12 @@
   <target>Validate SSL Certificates of upstream servers.</target>
 </trans-unit>
 <trans-unit id="sff0ac1ace2d90709">
-  <source>Use this provider with nginx&apos;s auth_request or traefik&apos;s forwardAuth. Each application/domain needs its own provider. Additionally, on each domain, /outpost.goauthentik.io must be routed to the outpost (when using a managed outpost, this is done for you).</source>
-  <target>Use this provider with nginx&apos;s auth_request or traefik&apos;s forwardAuth. Each application/domain needs its own provider. Additionally, on each domain, /outpost.goauthentik.io must be routed to the outpost (when using a managed outpost, this is done for you).</target>
+  <source>Use this provider with nginx's auth_request or traefik's forwardAuth. Each application/domain needs its own provider. Additionally, on each domain, /outpost.goauthentik.io must be routed to the outpost (when using a managed outpost, this is done for you).</source>
+  <target>Use this provider with nginx's auth_request or traefik's forwardAuth. Each application/domain needs its own provider. Additionally, on each domain, /outpost.goauthentik.io must be routed to the outpost (when using a managed outpost, this is done for you).</target>
 </trans-unit>
 <trans-unit id="s44c90273f08fb718">
-  <source>Use this provider with nginx&apos;s auth_request or traefik&apos;s forwardAuth. Only a single provider is required per root domain. You can&apos;t do per-application authorization, but you don&apos;t have to create a provider for each application.</source>
-  <target>Use this provider with nginx&apos;s auth_request or traefik&apos;s forwardAuth. Only a single provider is required per root domain. You can&apos;t do per-application authorization, but you don&apos;t have to create a provider for each application.</target>
+  <source>Use this provider with nginx's auth_request or traefik's forwardAuth. Only a single provider is required per root domain. You can't do per-application authorization, but you don't have to create a provider for each application.</source>
+  <target>Use this provider with nginx's auth_request or traefik's forwardAuth. Only a single provider is required per root domain. You can't do per-application authorization, but you don't have to create a provider for each application.</target>
 </trans-unit>
 <trans-unit id="sf55d28d4dff0e41b">
   <source>An example setup can look like this:</source>
@@ -2031,16 +2031,16 @@
   <target>app1 running on app1.example.com</target>
 </trans-unit>
 <trans-unit id="sf813a72d8fadd765">
-  <source>In this case, you&apos;d set the Authentication URL to auth.example.com and Cookie domain to example.com.</source>
-  <target>In this case, you&apos;d set the Authentication URL to auth.example.com and Cookie domain to example.com.</target>
+  <source>In this case, you'd set the Authentication URL to auth.example.com and Cookie domain to example.com.</source>
+  <target>In this case, you'd set the Authentication URL to auth.example.com and Cookie domain to example.com.</target>
 </trans-unit>
 <trans-unit id="s31d15c6f16951464">
   <source>Authentication URL</source>
   <target>Authentication URL</target>
 </trans-unit>
 <trans-unit id="sa03fe48e892df2d8">
-  <source>The external URL you&apos;ll authenticate at. The authentik core server should be reachable under this URL.</source>
-  <target>The external URL you&apos;ll authenticate at. The authentik core server should be reachable under this URL.</target>
+  <source>The external URL you'll authenticate at. The authentik core server should be reachable under this URL.</source>
+  <target>The external URL you'll authenticate at. The authentik core server should be reachable under this URL.</target>
 </trans-unit>
 <trans-unit id="s7def067ed3ad3ad9">
   <source>Cookie domain</source>
@@ -2051,8 +2051,8 @@
   <target>domain.tld</target>
 </trans-unit>
 <trans-unit id="s211b75e868072162">
-  <source>Set this to the domain you wish the authentication to be valid for. Must be a parent domain of the URL above. If you&apos;re running applications as app1.domain.tld, app2.domain.tld, set this to &apos;domain.tld&apos;.</source>
-  <target>Set this to the domain you wish the authentication to be valid for. Must be a parent domain of the URL above. If you&apos;re running applications as app1.domain.tld, app2.domain.tld, set this to &apos;domain.tld&apos;.</target>
+  <source>Set this to the domain you wish the authentication to be valid for. Must be a parent domain of the URL above. If you're running applications as app1.domain.tld, app2.domain.tld, set this to 'domain.tld'.</source>
+  <target>Set this to the domain you wish the authentication to be valid for. Must be a parent domain of the URL above. If you're running applications as app1.domain.tld, app2.domain.tld, set this to 'domain.tld'.</target>
 </trans-unit>
 <trans-unit id="s7c10976de6411844">
   <source>Token validity</source>
@@ -2251,8 +2251,8 @@
   <target>Verification Certificate</target>
 </trans-unit>
 <trans-unit id="s7c27e113f90a89e0">
-  <source>When selected, incoming assertion&apos;s Signatures will be validated against this certificate. To allow unsigned Requests, leave on default.</source>
-  <target>When selected, incoming assertion&apos;s Signatures will be validated against this certificate. To allow unsigned Requests, leave on default.</target>
+  <source>When selected, incoming assertion's Signatures will be validated against this certificate. To allow unsigned Requests, leave on default.</source>
+  <target>When selected, incoming assertion's Signatures will be validated against this certificate. To allow unsigned Requests, leave on default.</target>
 </trans-unit>
 <trans-unit id="s6135938c50ad8a4b">
   <source>Encryption Certificate</source>
@@ -2343,8 +2343,8 @@
   <target>Transient</target>
 </trans-unit>
 <trans-unit id="s0c48c5f754275796">
-  <source>Configure the default NameID Policy used by IDP-initiated logins and when an incoming assertion doesn&apos;t specify a NameID Policy (also applies when using a custom NameID Mapping).</source>
-  <target>Configure the default NameID Policy used by IDP-initiated logins and when an incoming assertion doesn&apos;t specify a NameID Policy (also applies when using a custom NameID Mapping).</target>
+  <source>Configure the default NameID Policy used by IDP-initiated logins and when an incoming assertion doesn't specify a NameID Policy (also applies when using a custom NameID Mapping).</source>
+  <target>Configure the default NameID Policy used by IDP-initiated logins and when an incoming assertion doesn't specify a NameID Policy (also applies when using a custom NameID Mapping).</target>
 </trans-unit>
 <trans-unit id="s2a0f60e74b478804">
   <source>Digest algorithm</source>
@@ -2387,8 +2387,8 @@
   <target>SCIM base url, usually ends in /v2.</target>
 </trans-unit>
 <trans-unit id="s99060120f626df5b">
-  <source>Verify SCIM server&apos;s certificates</source>
-  <target>Verify SCIM server&apos;s certificates</target>
+  <source>Verify SCIM server's certificates</source>
+  <target>Verify SCIM server's certificates</target>
 </trans-unit>
 <trans-unit id="s6e4af789dec357dc">
   <source>Authentication Mode</source>
@@ -2439,8 +2439,8 @@
   <target>Altered behavior for usage with Salesforce.</target>
 </trans-unit>
 <trans-unit id="s054cb3c0a84eefe5">
-  <source>Alter authentik&apos;s behavior for vendor-specific SCIM implementations.</source>
-  <target>Alter authentik&apos;s behavior for vendor-specific SCIM implementations.</target>
+  <source>Alter authentik's behavior for vendor-specific SCIM implementations.</source>
+  <target>Alter authentik's behavior for vendor-specific SCIM implementations.</target>
 </trans-unit>
 <trans-unit id="s4d3933feb8dc7cee">
   <source>Enable dry-run mode</source>
@@ -2623,8 +2623,8 @@
   <target>authentik was unable to complete this process.</target>
 </trans-unit>
 <trans-unit id="s71c5d51d5a357dbd">
-  <source>Don&apos;t show this message again.</source>
-  <target>Don&apos;t show this message again.</target>
+  <source>Don't show this message again.</source>
+  <target>Don't show this message again.</target>
 </trans-unit>
 <trans-unit id="sd1a5560fde6f2271">
   <source>Successfully imported provider.</source>
@@ -2667,8 +2667,8 @@
   <target>Default group email domain</target>
 </trans-unit>
 <trans-unit id="s64a0a6da6ed6d680">
-  <source>Default domain that is used to generate a group&apos;s email address. Can be customized using property mappings.</source>
-  <target>Default domain that is used to generate a group&apos;s email address. Can be customized using property mappings.</target>
+  <source>Default domain that is used to generate a group's email address. Can be customized using property mappings.</source>
+  <target>Default domain that is used to generate a group's email address. Can be customized using property mappings.</target>
 </trans-unit>
 <trans-unit id="sd061e65955e036ca">
   <source>User deletion action</source>
@@ -2871,8 +2871,8 @@
   <target>Update Google Workspace Provider</target>
 </trans-unit>
 <trans-unit id="sa90b7809586c35ce">
-  <source>Either input a full URL, a relative path, or use &apos;fa://fa-test&apos; to use the Font Awesome icon &quot;fa-test&quot;.</source>
-  <target>Either input a full URL, a relative path, or use &apos;fa://fa-test&apos; to use the Font Awesome icon &quot;fa-test&quot;.</target>
+  <source>Either input a full URL, a relative path, or use 'fa://fa-test' to use the Font Awesome icon "fa-test".</source>
+  <target>Either input a full URL, a relative path, or use 'fa://fa-test' to use the Font Awesome icon "fa-test".</target>
 </trans-unit>
 <trans-unit id="s0410779cb47de312">
   <source>Path template for users created. Use placeholders like `%(slug)s` to insert the source slug.</source>
@@ -3199,8 +3199,8 @@
   <target>Selected Roles</target>
 </trans-unit>
 <trans-unit id="s96d2bb4be3f5e8aa">
-  <source>Select roles to grant this groups&apos; users&apos; permissions from the selected roles.</source>
-  <target>Select roles to grant this groups&apos; users&apos; permissions from the selected roles.</target>
+  <source>Select roles to grant this groups' users' permissions from the selected roles.</source>
+  <target>Select roles to grant this groups' users' permissions from the selected roles.</target>
 </trans-unit>
 <trans-unit id="sec97cdaf7af8648b">
   <source>Set custom attributes using YAML or JSON.</source>
@@ -3267,8 +3267,8 @@
   <target>Match created events with this action type. When left empty, all action types will be matched.</target>
 </trans-unit>
 <trans-unit id="sa82f8948649d0989">
-  <source>Matches Event&apos;s Client IP (strict matching, for network matching use an Expression Policy).</source>
-  <target>Matches Event&apos;s Client IP (strict matching, for network matching use an Expression Policy).</target>
+  <source>Matches Event's Client IP (strict matching, for network matching use an Expression Policy).</source>
+  <target>Matches Event's Client IP (strict matching, for network matching use an Expression Policy).</target>
 </trans-unit>
 <trans-unit id="s5a15a8f39c699273">
   <source>Match events created by selected application. When left empty, all applications are matched.</source>
@@ -3279,16 +3279,16 @@
   <target>Match events created by selected model. When left empty, all models are matched.</target>
 </trans-unit>
 <trans-unit id="s5a13f4bbe004503f">
-  <source>Checks if the request&apos;s user&apos;s password has been changed in the last x days, and denys based on settings.</source>
-  <target>Checks if the request&apos;s user&apos;s password has been changed in the last x days, and denys based on settings.</target>
+  <source>Checks if the request's user's password has been changed in the last x days, and denys based on settings.</source>
+  <target>Checks if the request's user's password has been changed in the last x days, and denys based on settings.</target>
 </trans-unit>
 <trans-unit id="sfad8af8ce38104a3">
   <source>Maximum age (in days)</source>
   <target>Maximum age (in days)</target>
 </trans-unit>
 <trans-unit id="s9307f3dbb07a73b5">
-  <source>Only fail the policy, don&apos;t invalidate user&apos;s password</source>
-  <target>Only fail the policy, don&apos;t invalidate user&apos;s password</target>
+  <source>Only fail the policy, don't invalidate user's password</source>
+  <target>Only fail the policy, don't invalidate user's password</target>
 </trans-unit>
 <trans-unit id="scea1f16238093e35">
   <source>Executes the python snippet to determine whether to allow or deny a request.</source>
@@ -3435,8 +3435,8 @@
   <target>Score threshold</target>
 </trans-unit>
 <trans-unit id="s7b3148ffba9f4527">
-  <source>If the password&apos;s score is less than or equal this value, the policy will fail.</source>
-  <target>If the password&apos;s score is less than or equal this value, the policy will fail.</target>
+  <source>If the password's score is less than or equal this value, the policy will fail.</source>
+  <target>If the password's score is less than or equal this value, the policy will fail.</target>
 </trans-unit>
 <trans-unit id="sd6cd7ce2310a73a4">
   <source>Checks the value from the policy request against several rules, mostly used to ensure password strength.</source>
@@ -3475,16 +3475,16 @@
   <target>Allows/denys requests based on the users and/or the IPs reputation.</target>
 </trans-unit>
 <trans-unit id="scf4afecb0f1e69b2">
-  <source>Invalid login attempts will decrease the score for the client&apos;s IP, and the
+  <source>Invalid login attempts will decrease the score for the client's IP, and the
 username they are attempting to login as, by one.</source>
-  <target>Invalid login attempts will decrease the score for the client&apos;s IP, and the
+  <target>Invalid login attempts will decrease the score for the client's IP, and the
 username they are attempting to login as, by one.</target>
 </trans-unit>
 <trans-unit id="s8323a9af28e10502">
   <source>The policy passes when the reputation score is below the threshold, and
-doesn&apos;t pass when either or both of the selected options are equal or above the threshold.</source>
+doesn't pass when either or both of the selected options are equal or above the threshold.</source>
   <target>The policy passes when the reputation score is below the threshold, and
-doesn&apos;t pass when either or both of the selected options are equal or above the threshold.</target>
+doesn't pass when either or both of the selected options are equal or above the threshold.</target>
 </trans-unit>
 <trans-unit id="s1828fbfc2c56379c">
   <source>Check IP</source>
@@ -3499,8 +3499,8 @@ doesn&apos;t pass when either or both of the selected options are equal or above
   <target>Threshold</target>
 </trans-unit>
 <trans-unit id="s86cf007b861152ca">
-  <source>Ensure that the user&apos;s new password is different from their previous passwords. The number of past passwords to check is configurable.</source>
-  <target>Ensure that the user&apos;s new password is different from their previous passwords. The number of past passwords to check is configurable.</target>
+  <source>Ensure that the user's new password is different from their previous passwords. The number of past passwords to check is configurable.</source>
+  <target>Ensure that the user's new password is different from their previous passwords. The number of past passwords to check is configurable.</target>
 </trans-unit>
 <trans-unit id="s79b3fcd40dd63921">
   <source>Number of previous passwords to check</source>
@@ -3539,8 +3539,8 @@ doesn&apos;t pass when either or both of the selected options are equal or above
   <target>Successfully created user.</target>
 </trans-unit>
 <trans-unit id="s7819072445baceee">
-  <source>The user&apos;s primary identifier used for authentication. 150 characters or fewer.</source>
-  <target>The user&apos;s primary identifier used for authentication. 150 characters or fewer.</target>
+  <source>The user's primary identifier used for authentication. 150 characters or fewer.</source>
+  <target>The user's primary identifier used for authentication. 150 characters or fewer.</target>
 </trans-unit>
 <trans-unit id="s11b2e9ecce28690c">
   <source>Display Name</source>
@@ -3551,8 +3551,8 @@ doesn&apos;t pass when either or both of the selected options are equal or above
   <target>Type an optional display name...</target>
 </trans-unit>
 <trans-unit id="sc82cf82ad6cb26cc">
-  <source>The user&apos;s display name.</source>
-  <target>The user&apos;s display name.</target>
+  <source>The user's display name.</source>
+  <target>The user's display name.</target>
 </trans-unit>
 <trans-unit id="s9f9492d30a96b9c6">
   <source>User type</source>
@@ -3743,20 +3743,20 @@ doesn&apos;t pass when either or both of the selected options are equal or above
   <target>Application(s)</target>
 </trans-unit>
 <trans-unit id="sf07bfbe5316e7cc7">
-  <source>Application icon for &quot;<x id="0" equiv-text="${item.name}"/>&quot;</source>
-  <target>Application icon for &quot;<x id="0" equiv-text="${item.name}"/>&quot;</target>
+  <source>Application icon for "<x id="0" equiv-text="${item.name}"/>"</source>
+  <target>Application icon for "<x id="0" equiv-text="${item.name}"/>"</target>
 </trans-unit>
 <trans-unit id="sa347e31efbb60be2">
   <source>Update Application</source>
   <target>Update Application</target>
 </trans-unit>
 <trans-unit id="s037f22187581bf8f">
-  <source>Edit &quot;<x id="0" equiv-text="${this.outpost?.name || &quot;outpost&quot;}"/>&quot;</source>
-  <target>Edit &quot;<x id="0" equiv-text="${this.outpost?.name || &quot;outpost&quot;}"/>&quot;</target>
+  <source>Edit "<x id="0" equiv-text="${this.outpost?.name || &quot;outpost&quot;}"/>"</source>
+  <target>Edit "<x id="0" equiv-text="${this.outpost?.name || &quot;outpost&quot;}"/>"</target>
 </trans-unit>
 <trans-unit id="sdb3b903354fbfb17">
-  <source>Open &quot;<x id="0" equiv-text="${item.name}"/>&quot;</source>
-  <target>Open &quot;<x id="0" equiv-text="${item.name}"/>&quot;</target>
+  <source>Open "<x id="0" equiv-text="${item.name}"/>"</source>
+  <target>Open "<x id="0" equiv-text="${item.name}"/>"</target>
 </trans-unit>
 <trans-unit id="s1f7698c061c208c9">
   <source>Open</source>
@@ -3823,8 +3823,8 @@ doesn&apos;t pass when either or both of the selected options are equal or above
   <target>Create entitlement</target>
 </trans-unit>
 <trans-unit id="sb6fcdabf769208a1">
-  <source>Failed to fetch application &quot;<x id="0" equiv-text="${this.applicationSlug}"/>&quot;.</source>
-  <target>Failed to fetch application &quot;<x id="0" equiv-text="${this.applicationSlug}"/>&quot;.</target>
+  <source>Failed to fetch application "<x id="0" equiv-text="${this.applicationSlug}"/>".</source>
+  <target>Failed to fetch application "<x id="0" equiv-text="${this.applicationSlug}"/>".</target>
 </trans-unit>
 <trans-unit id="application.outpost.missing.warning">
   <source>Warning: Application is not used by any Outpost.</source>
@@ -3959,8 +3959,8 @@ doesn&apos;t pass when either or both of the selected options are equal or above
   <target>Unreachable devices</target>
 </trans-unit>
 <trans-unit id="sf1580fcb88cbcfd8">
-  <source>Devices that authentik hasn&apos;t received information about in 24h.</source>
-  <target>Devices that authentik hasn&apos;t received information about in 24h.</target>
+  <source>Devices that authentik hasn't received information about in 24h.</source>
+  <target>Devices that authentik hasn't received information about in 24h.</target>
 </trans-unit>
 <trans-unit id="s303ef08d87cd21fd">
   <source>Outdated agents</source>
@@ -4159,20 +4159,20 @@ doesn&apos;t pass when either or both of the selected options are equal or above
   <target>Link users on unique identifier</target>
 </trans-unit>
 <trans-unit id="s6c70a73265e14521">
-  <source>Link to a user with identical email address. Can have security implications when a source doesn&apos;t validate email addresses</source>
-  <target>Link to a user with identical email address. Can have security implications when a source doesn&apos;t validate email addresses</target>
+  <source>Link to a user with identical email address. Can have security implications when a source doesn't validate email addresses</source>
+  <target>Link to a user with identical email address. Can have security implications when a source doesn't validate email addresses</target>
 </trans-unit>
 <trans-unit id="s995535e7af30d754">
-  <source>Use the user&apos;s email address, but deny enrollment when the email address already exists</source>
-  <target>Use the user&apos;s email address, but deny enrollment when the email address already exists</target>
+  <source>Use the user's email address, but deny enrollment when the email address already exists</source>
+  <target>Use the user's email address, but deny enrollment when the email address already exists</target>
 </trans-unit>
 <trans-unit id="s542ecb4130f6cea5">
   <source>Link to a user with identical username. Can have security implications when a username is used with another source</source>
   <target>Link to a user with identical username. Can have security implications when a username is used with another source</target>
 </trans-unit>
 <trans-unit id="s2a1debf34e5aeba4">
-  <source>Use the user&apos;s username, but deny enrollment when the username already exists</source>
-  <target>Use the user&apos;s username, but deny enrollment when the username already exists</target>
+  <source>Use the user's username, but deny enrollment when the username already exists</source>
+  <target>Use the user's username, but deny enrollment when the username already exists</target>
 </trans-unit>
 <trans-unit id="s81ce0d54727f42d2">
   <source>Unknown user matching mode</source>
@@ -4183,8 +4183,8 @@ doesn&apos;t pass when either or both of the selected options are equal or above
   <target>Link to a group with identical name. Can have security implications when a group is used with another source</target>
 </trans-unit>
 <trans-unit id="s485964f83b5ed044">
-  <source>Use the group&apos;s name, but deny enrollment when the name already exists</source>
-  <target>Use the group&apos;s name, but deny enrollment when the name already exists</target>
+  <source>Use the group's name, but deny enrollment when the name already exists</source>
+  <target>Use the group's name, but deny enrollment when the name already exists</target>
 </trans-unit>
 <trans-unit id="s8bf373b1a2bfefed">
   <source>Promoted</source>
@@ -4379,8 +4379,8 @@ doesn&apos;t pass when either or both of the selected options are equal or above
   <target>Enable StartTLS</target>
 </trans-unit>
 <trans-unit id="s33683c3b1dbaf264">
-  <source>To use SSL instead, use &apos;ldaps://&apos; and disable this option.</source>
-  <target>To use SSL instead, use &apos;ldaps://&apos; and disable this option.</target>
+  <source>To use SSL instead, use 'ldaps://' and disable this option.</source>
+  <target>To use SSL instead, use 'ldaps://' and disable this option.</target>
 </trans-unit>
 <trans-unit id="s1024166475850a65">
   <source>Use Server URI for SNI verification</source>
@@ -4399,8 +4399,8 @@ doesn&apos;t pass when either or both of the selected options are equal or above
   <target>TLS Client authentication certificate</target>
 </trans-unit>
 <trans-unit id="s5506b35a1bceb141">
-  <source>Client certificate keypair to authenticate against the LDAP Server&apos;s Certificate.</source>
-  <target>Client certificate keypair to authenticate against the LDAP Server&apos;s Certificate.</target>
+  <source>Client certificate keypair to authenticate against the LDAP Server's Certificate.</source>
+  <target>Client certificate keypair to authenticate against the LDAP Server's Certificate.</target>
 </trans-unit>
 <trans-unit id="sb7684e2910a33a1f">
   <source>Bind CN</source>
@@ -4467,8 +4467,8 @@ doesn&apos;t pass when either or both of the selected options are equal or above
   <target>Lookup using user attribute</target>
 </trans-unit>
 <trans-unit id="s17359123e1f24504">
-  <source>Field which contains DNs of groups the user is a member of. This field is used to lookup groups from users, e.g. &apos;memberOf&apos;. To lookup nested groups in an Active Directory environment use &apos;memberOf:1.2.840.113556.1.4.1941:&apos;.</source>
-  <target>Field which contains DNs of groups the user is a member of. This field is used to lookup groups from users, e.g. &apos;memberOf&apos;. To lookup nested groups in an Active Directory environment use &apos;memberOf:1.2.840.113556.1.4.1941:&apos;.</target>
+  <source>Field which contains DNs of groups the user is a member of. This field is used to lookup groups from users, e.g. 'memberOf'. To lookup nested groups in an Active Directory environment use 'memberOf:1.2.840.113556.1.4.1941:'.</source>
+  <target>Field which contains DNs of groups the user is a member of. This field is used to lookup groups from users, e.g. 'memberOf'. To lookup nested groups in an Active Directory environment use 'memberOf:1.2.840.113556.1.4.1941:'.</target>
 </trans-unit>
 <trans-unit id="s026555347e589f0e">
   <source>Object uniqueness field</source>
@@ -4603,8 +4603,8 @@ doesn&apos;t pass when either or both of the selected options are equal or above
   <target>Re-authenticate with Plex</target>
 </trans-unit>
 <trans-unit id="sc297b2e13c28ecf9">
-  <source>Allow friends to authenticate via Plex, even if you don&apos;t share any servers</source>
-  <target>Allow friends to authenticate via Plex, even if you don&apos;t share any servers</target>
+  <source>Allow friends to authenticate via Plex, even if you don't share any servers</source>
+  <target>Allow friends to authenticate via Plex, even if you don't share any servers</target>
 </trans-unit>
 <trans-unit id="sfee91e08b8b47477">
   <source>Allowed servers</source>
@@ -4650,10 +4650,6 @@ doesn&apos;t pass when either or both of the selected options are equal or above
   <source>Optional URL if the IDP supports Single-Logout.</source>
   <target>Optional URL if the IDP supports Single-Logout.</target>
 </trans-unit>
-<trans-unit id="se7430794fa89005a">
-  <source>Also known as Entity ID. Defaults the Metadata URL.</source>
-  <target>Also known as Entity ID. Defaults the Metadata URL.</target>
-</trans-unit>
 <trans-unit id="s5615bb595ad6ded6">
   <source>Binding Type</source>
   <target>Binding Type</target>
@@ -4667,8 +4663,8 @@ doesn&apos;t pass when either or both of the selected options are equal or above
   <target>Post-auto binding</target>
 </trans-unit>
 <trans-unit id="sc2c70fd56f5d0b48">
-  <source>Post binding but the request is automatically sent and the user doesn&apos;t have to confirm.</source>
-  <target>Post binding but the request is automatically sent and the user doesn&apos;t have to confirm.</target>
+  <source>Post binding but the request is automatically sent and the user doesn't have to confirm.</source>
+  <target>Post binding but the request is automatically sent and the user doesn't have to confirm.</target>
 </trans-unit>
 <trans-unit id="s968c90258dcf7562">
   <source>Post binding</source>
@@ -4699,8 +4695,8 @@ doesn&apos;t pass when either or both of the selected options are equal or above
   <target>Delete temporary users after</target>
 </trans-unit>
 <trans-unit id="s3198c384c2f68b08">
-  <source>Time offset when temporary users should be deleted. This only applies if your IDP uses the NameID Format &apos;transient&apos;, and the user doesn&apos;t log out manually.</source>
-  <target>Time offset when temporary users should be deleted. This only applies if your IDP uses the NameID Format &apos;transient&apos;, and the user doesn&apos;t log out manually.</target>
+  <source>Time offset when temporary users should be deleted. This only applies if your IDP uses the NameID Format 'transient', and the user doesn't log out manually.</source>
+  <target>Time offset when temporary users should be deleted. This only applies if your IDP uses the NameID Format 'transient', and the user doesn't log out manually.</target>
 </trans-unit>
 <trans-unit id="s37b8d48b9416fc25">
   <source>When selected, encrypted assertions will be decrypted using this keypair.</source>
@@ -4743,8 +4739,8 @@ doesn&apos;t pass when either or both of the selected options are equal or above
   <target>Federation and Social login</target>
 </trans-unit>
 <trans-unit id="s6152026c364ad974">
-  <source>Sources of identities, which can either be synced into authentik&apos;s database, or can be used by users to authenticate and enroll themselves.</source>
-  <target>Sources of identities, which can either be synced into authentik&apos;s database, or can be used by users to authenticate and enroll themselves.</target>
+  <source>Sources of identities, which can either be synced into authentik's database, or can be used by users to authenticate and enroll themselves.</source>
+  <target>Sources of identities, which can either be synced into authentik's database, or can be used by users to authenticate and enroll themselves.</target>
 </trans-unit>
 <trans-unit id="s0a0ca63b967f1630">
   <source>Source(s)</source>
@@ -4901,8 +4897,8 @@ doesn&apos;t pass when either or both of the selected options are equal or above
   <target>Friendly Name</target>
 </trans-unit>
 <trans-unit id="s9f8aac89fe318acc">
-  <source>Optionally set the &apos;FriendlyName&apos; value of the Assertion attribute.</source>
-  <target>Optionally set the &apos;FriendlyName&apos; value of the Assertion attribute.</target>
+  <source>Optionally set the 'FriendlyName' value of the Assertion attribute.</source>
+  <target>Optionally set the 'FriendlyName' value of the Assertion attribute.</target>
 </trans-unit>
 <trans-unit id="s851c108679653d2a">
   <source>Scope name</source>
@@ -4913,8 +4909,8 @@ doesn&apos;t pass when either or both of the selected options are equal or above
   <target>Scope which the client can specify to access these properties.</target>
 </trans-unit>
 <trans-unit id="s7754f0e34f27fb6e">
-  <source>Description shown to the user when consenting. If left empty, the user won&apos;t be informed.</source>
-  <target>Description shown to the user when consenting. If left empty, the user won&apos;t be informed.</target>
+  <source>Description shown to the user when consenting. If left empty, the user won't be informed.</source>
+  <target>Description shown to the user when consenting. If left empty, the user won't be informed.</target>
 </trans-unit>
 <trans-unit id="s4a697f0b36c4fe83">
   <source>Active Directory User</source>
@@ -5013,8 +5009,8 @@ doesn&apos;t pass when either or both of the selected options are equal or above
   <target>Matching is done based on domain suffix, so if you enter domain.tld, foo.domain.tld will still match.</target>
 </trans-unit>
 <trans-unit id="s41b3f9b4c98aabd9">
-  <source>Use this brand for each domain that doesn&apos;t have a dedicated brand.</source>
-  <target>Use this brand for each domain that doesn&apos;t have a dedicated brand.</target>
+  <source>Use this brand for each domain that doesn't have a dedicated brand.</source>
+  <target>Use this brand for each domain that doesn't have a dedicated brand.</target>
 </trans-unit>
 <trans-unit id="sc19838ca8c135c1b">
   <source>Branding settings</source>
@@ -5265,8 +5261,8 @@ doesn&apos;t pass when either or both of the selected options are equal or above
   <target>Group(s)</target>
 </trans-unit>
 <trans-unit id="s79683026e49e4866">
-  <source>View details of group &quot;<x id="0" equiv-text="${item.name}"/>&quot;</source>
-  <target>View details of group &quot;<x id="0" equiv-text="${item.name}"/>&quot;</target>
+  <source>View details of group "<x id="0" equiv-text="${item.name}"/>"</source>
+  <target>View details of group "<x id="0" equiv-text="${item.name}"/>"</target>
 </trans-unit>
 <trans-unit id="s7c5774fad9d050ce">
   <source>Create group</source>
@@ -5377,8 +5373,8 @@ doesn&apos;t pass when either or both of the selected options are equal or above
   <target>تفعيل</target>
 </trans-unit>
 <trans-unit id="s547b687213f48489">
-  <source>Update <x id="0" equiv-text="${formatUserDisplayName(user)}"/>&apos;s password</source>
-  <target>Update <x id="0" equiv-text="${formatUserDisplayName(user)}"/>&apos;s password</target>
+  <source>Update <x id="0" equiv-text="${formatUserDisplayName(user)}"/>'s password</source>
+  <target>Update <x id="0" equiv-text="${formatUserDisplayName(user)}"/>'s password</target>
 </trans-unit>
 <trans-unit id="sce8d867ca5f35304">
   <source>Set password</source>
@@ -5409,8 +5405,8 @@ doesn&apos;t pass when either or both of the selected options are equal or above
   <target>New User</target>
 </trans-unit>
 <trans-unit id="s824e0943a7104668">
-  <source>This user will be added to the group &quot;<x id="0" equiv-text="${this.targetGroup.name}"/>&quot;.</source>
-  <target>This user will be added to the group &quot;<x id="0" equiv-text="${this.targetGroup.name}"/>&quot;.</target>
+  <source>This user will be added to the group "<x id="0" equiv-text="${this.targetGroup.name}"/>".</source>
+  <target>This user will be added to the group "<x id="0" equiv-text="${this.targetGroup.name}"/>".</target>
 </trans-unit>
 <trans-unit id="sc744f3691efe310d">
   <source>Hide service-accounts</source>
@@ -5433,20 +5429,20 @@ doesn&apos;t pass when either or both of the selected options are equal or above
   <target>Unnamed</target>
 </trans-unit>
 <trans-unit id="s326ee20bba2564a0">
-  <source>Collapse &quot;<x id="0" equiv-text="${itemLabel}"/>&quot;</source>
-  <target>Collapse &quot;<x id="0" equiv-text="${itemLabel}"/>&quot;</target>
+  <source>Collapse "<x id="0" equiv-text="${itemLabel}"/>"</source>
+  <target>Collapse "<x id="0" equiv-text="${itemLabel}"/>"</target>
 </trans-unit>
 <trans-unit id="s27df1f36ba8e269f">
-  <source>Expand &quot;<x id="0" equiv-text="${itemLabel}"/>&quot;</source>
-  <target>Expand &quot;<x id="0" equiv-text="${itemLabel}"/>&quot;</target>
+  <source>Expand "<x id="0" equiv-text="${itemLabel}"/>"</source>
+  <target>Expand "<x id="0" equiv-text="${itemLabel}"/>"</target>
 </trans-unit>
 <trans-unit id="sf2b5d3236e6f1ab3">
-  <source>Select &quot;<x id="0" equiv-text="${itemLabel}"/>&quot;</source>
-  <target>Select &quot;<x id="0" equiv-text="${itemLabel}"/>&quot;</target>
+  <source>Select "<x id="0" equiv-text="${itemLabel}"/>"</source>
+  <target>Select "<x id="0" equiv-text="${itemLabel}"/>"</target>
 </trans-unit>
 <trans-unit id="sb7c2715df863a6ce">
-  <source>Items of &quot;<x id="0" equiv-text="${itemLabel}"/>&quot;</source>
-  <target>Items of &quot;<x id="0" equiv-text="${itemLabel}"/>&quot;</target>
+  <source>Items of "<x id="0" equiv-text="${itemLabel}"/>"</source>
+  <target>Items of "<x id="0" equiv-text="${itemLabel}"/>"</target>
 </trans-unit>
 <trans-unit id="sca7cfe2bef51b2a5">
   <source>Root</source>
@@ -5581,8 +5577,8 @@ doesn&apos;t pass when either or both of the selected options are equal or above
   <target>Error: unsupported source settings: <x id="0" equiv-text="${source.component}"/></target>
 </trans-unit>
 <trans-unit id="source-settings-list-item-label">
-  <source>&quot;<x id="0" equiv-text="${source.title}"/>&quot; source</source>
-  <target>&quot;<x id="0" equiv-text="${source.title}"/>&quot; source</target>
+  <source>"<x id="0" equiv-text="${source.title}"/>" source</source>
+  <target>"<x id="0" equiv-text="${source.title}"/>" source</target>
 </trans-unit>
 <trans-unit id="s7968dbed9b106c29">
   <source>No services available.</source>
@@ -5668,10 +5664,6 @@ doesn&apos;t pass when either or both of the selected options are equal or above
   <source>Actions over the last week (per 8 hours)</source>
   <target>Actions over the last week (per 8 hours)</target>
 </trans-unit>
-<trans-unit id="sb57dbcda1929c642">
-  <source>Edit the notes attribute of this user to add notes here.</source>
-  <target>Edit the notes attribute of this user to add notes here.</target>
-</trans-unit>
 <trans-unit id="s27586544c447d9e3">
   <source>User events</source>
   <target>User events</target>
@@ -5752,17 +5744,13 @@ doesn&apos;t pass when either or both of the selected options are equal or above
   <source>Flow</source>
   <target>تدفق</target>
 </trans-unit>
-<trans-unit id="sa84a7fd11ba85e88">
-  <source>When selected, the invite will only be usable with the flow. By default the invite is accepted on all flows with invitation stages.</source>
-  <target>When selected, the invite will only be usable with the flow. By default the invite is accepted on all flows with invitation stages.</target>
-</trans-unit>
 <trans-unit id="sd18b18f91b804c3f">
   <source>Custom attributes</source>
   <target>Custom attributes</target>
 </trans-unit>
 <trans-unit id="s7520286c8419a266">
-  <source>Optional data which is loaded into the flow&apos;s &apos;prompt_data&apos; context variable. YAML or JSON.</source>
-  <target>Optional data which is loaded into the flow&apos;s &apos;prompt_data&apos; context variable. YAML or JSON.</target>
+  <source>Optional data which is loaded into the flow's 'prompt_data' context variable. YAML or JSON.</source>
+  <target>Optional data which is loaded into the flow's 'prompt_data' context variable. YAML or JSON.</target>
 </trans-unit>
 <trans-unit id="sb8795b799c70776a">
   <source>Single use</source>
@@ -6309,8 +6297,8 @@ doesn&apos;t pass when either or both of the selected options are equal or above
   <target>Selected Stages</target>
 </trans-unit>
 <trans-unit id="s6941a67f0038ba4c">
-  <source>Stages used to configure Authenticator when user doesn&apos;t have any compatible devices. After this configuration Stage passes, the user is not prompted again.</source>
-  <target>Stages used to configure Authenticator when user doesn&apos;t have any compatible devices. After this configuration Stage passes, the user is not prompted again.</target>
+  <source>Stages used to configure Authenticator when user doesn't have any compatible devices. After this configuration Stage passes, the user is not prompted again.</source>
+  <target>Stages used to configure Authenticator when user doesn't have any compatible devices. After this configuration Stage passes, the user is not prompted again.</target>
 </trans-unit>
 <trans-unit id="s7e5af9c6ba6f5cc6">
   <source>When multiple stages are selected, the user can choose which one they want to enroll.</source>
@@ -6381,8 +6369,8 @@ doesn&apos;t pass when either or both of the selected options are equal or above
   <target>Required: The authenticator MUST create a dedicated credential. If it cannot, the RP is prepared for an error to occur</target>
 </trans-unit>
 <trans-unit id="s33e3766d4a02b042">
-  <source>Preferred: The authenticator can create and store a dedicated credential, but if it doesn&apos;t that&apos;s alright too</source>
-  <target>Preferred: The authenticator can create and store a dedicated credential, but if it doesn&apos;t that&apos;s alright too</target>
+  <source>Preferred: The authenticator can create and store a dedicated credential, but if it doesn't that's alright too</source>
+  <target>Preferred: The authenticator can create and store a dedicated credential, but if it doesn't that's alright too</target>
 </trans-unit>
 <trans-unit id="sfb852dd507c25c24">
   <source>Discouraged: The authenticator should not create a dedicated credential</source>
@@ -6417,8 +6405,8 @@ doesn&apos;t pass when either or both of the selected options are equal or above
   <target>Interactive</target>
 </trans-unit>
 <trans-unit id="s1cd617e7bbe278d0">
-  <source>Prompt for the user&apos;s consent. The consent can either be permanent or expire in a defined amount of time.</source>
-  <target>Prompt for the user&apos;s consent. The consent can either be permanent or expire in a defined amount of time.</target>
+  <source>Prompt for the user's consent. The consent can either be permanent or expire in a defined amount of time.</source>
+  <target>Prompt for the user's consent. The consent can either be permanent or expire in a defined amount of time.</target>
 </trans-unit>
 <trans-unit id="s26513c9dd154f041">
   <source>Always require consent</source>
@@ -6461,8 +6449,8 @@ doesn&apos;t pass when either or both of the selected options are equal or above
   <target>Throw error?</target>
 </trans-unit>
 <trans-unit id="sa248e1021d2c27b5">
-  <source>Verify the user&apos;s email address by sending them a one-time-link. Can also be used for recovery to verify the user&apos;s authenticity.</source>
-  <target>Verify the user&apos;s email address by sending them a one-time-link. Can also be used for recovery to verify the user&apos;s authenticity.</target>
+  <source>Verify the user's email address by sending them a one-time-link. Can also be used for recovery to verify the user's authenticity.</source>
+  <target>Verify the user's email address by sending them a one-time-link. Can also be used for recovery to verify the user's authenticity.</target>
 </trans-unit>
 <trans-unit id="s87b7e3bc944c728c">
   <source>Activate pending user on success</source>
@@ -6541,12 +6529,12 @@ doesn&apos;t pass when either or both of the selected options are equal or above
   <target>Show matched user</target>
 </trans-unit>
 <trans-unit id="se50a08ab71bb96ed">
-  <source>When a valid username/email has been entered, and this option is enabled, the user&apos;s username and avatar will be shown. Otherwise, the text that the user entered will be shown.</source>
-  <target>When a valid username/email has been entered, and this option is enabled, the user&apos;s username and avatar will be shown. Otherwise, the text that the user entered will be shown.</target>
+  <source>When a valid username/email has been entered, and this option is enabled, the user's username and avatar will be shown. Otherwise, the text that the user entered will be shown.</source>
+  <target>When a valid username/email has been entered, and this option is enabled, the user's username and avatar will be shown. Otherwise, the text that the user entered will be shown.</target>
 </trans-unit>
 <trans-unit id="s844baf19a6c4a9b4">
-  <source>Enable &quot;Remember me on this device&quot;</source>
-  <target>Enable &quot;Remember me on this device&quot;</target>
+  <source>Enable "Remember me on this device"</source>
+  <target>Enable "Remember me on this device"</target>
 </trans-unit>
 <trans-unit id="sfa72bca733f40692">
   <source>When enabled, the user can save their username in a cookie, allowing them to skip directly to entering their password.</source>
@@ -6565,8 +6553,8 @@ doesn&apos;t pass when either or both of the selected options are equal or above
   <target>Select sources should be shown for users to authenticate with. This only affects web-based sources, not LDAP.</target>
 </trans-unit>
 <trans-unit id="sa41aee3ae04c9216">
-  <source>Show sources&apos; labels</source>
-  <target>Show sources&apos; labels</target>
+  <source>Show sources' labels</source>
+  <target>Show sources' labels</target>
 </trans-unit>
 <trans-unit id="s54cd35e6224ba65d">
   <source>By default, only icons are shown for sources. Enable this to show their full names.</source>
@@ -6665,8 +6653,8 @@ doesn&apos;t pass when either or both of the selected options are equal or above
   <target>User database + Kerberos password</target>
 </trans-unit>
 <trans-unit id="sdc30bddeda2f0225">
-  <source>Validate the user&apos;s password against the selected backend(s).</source>
-  <target>Validate the user&apos;s password against the selected backend(s).</target>
+  <source>Validate the user's password against the selected backend(s).</source>
+  <target>Validate the user's password against the selected backend(s).</target>
 </trans-unit>
 <trans-unit id="sb8d4f44a1d5b9a14">
   <source>Backends</source>
@@ -6689,16 +6677,16 @@ doesn&apos;t pass when either or both of the selected options are equal or above
   <target>How many attempts a user has before the flow is canceled. To lock the user out, use a reputation policy and a user_write stage.</target>
 </trans-unit>
 <trans-unit id="s9dda0789d278f5c5">
-  <source>Provide users with a &apos;show password&apos; button.</source>
-  <target>Provide users with a &apos;show password&apos; button.</target>
+  <source>Provide users with a 'show password' button.</source>
+  <target>Provide users with a 'show password' button.</target>
 </trans-unit>
 <trans-unit id="s2d5f69929bb7221d">
-  <source><x id="0" equiv-text="${p.name}"/> (&quot;<x id="1" equiv-text="${p.fieldKey}"/>&quot;, of type <x id="2" equiv-text="${p.type}"/>)</source>
-  <target><x id="0" equiv-text="${p.name}"/> (&quot;<x id="1" equiv-text="${p.fieldKey}"/>&quot;, of type <x id="2" equiv-text="${p.type}"/>)</target>
+  <source><x id="0" equiv-text="${p.name}"/> ("<x id="1" equiv-text="${p.fieldKey}"/>", of type <x id="2" equiv-text="${p.type}"/>)</source>
+  <target><x id="0" equiv-text="${p.name}"/> ("<x id="1" equiv-text="${p.fieldKey}"/>", of type <x id="2" equiv-text="${p.type}"/>)</target>
 </trans-unit>
 <trans-unit id="s5170f9ef331949c0">
-  <source>Show arbitrary input fields to the user, for example during enrollment. Data is saved in the flow context under the &apos;prompt_data&apos; variable.</source>
-  <target>Show arbitrary input fields to the user, for example during enrollment. Data is saved in the flow context under the &apos;prompt_data&apos; variable.</target>
+  <source>Show arbitrary input fields to the user, for example during enrollment. Data is saved in the flow context under the 'prompt_data' variable.</source>
+  <target>Show arbitrary input fields to the user, for example during enrollment. Data is saved in the flow context under the 'prompt_data' variable.</target>
 </trans-unit>
 <trans-unit id="s36cb242ac90353bc">
   <source>Fields</source>
@@ -6793,8 +6781,8 @@ doesn&apos;t pass when either or both of the selected options are equal or above
   <target>Stay signed in offset</target>
 </trans-unit>
 <trans-unit id="s1608b2f94fa0dbd4">
-  <source>If set to a duration above 0, the user will have the option to choose to &quot;stay signed in&quot;, which will extend their session by the time specified here.</source>
-  <target>If set to a duration above 0, the user will have the option to choose to &quot;stay signed in&quot;, which will extend their session by the time specified here.</target>
+  <source>If set to a duration above 0, the user will have the option to choose to "stay signed in", which will extend their session by the time specified here.</source>
+  <target>If set to a duration above 0, the user will have the option to choose to "stay signed in", which will extend their session by the time specified here.</target>
 </trans-unit>
 <trans-unit id="sa3ff409b84679db8">
   <source>Remember device</source>
@@ -6861,9 +6849,9 @@ doesn&apos;t pass when either or both of the selected options are equal or above
   <target>Remove the user from the current session.</target>
 </trans-unit>
 <trans-unit id="s927398c400970760">
-  <source>Write any data from the flow&apos;s context&apos;s &apos;prompt_data&apos; to the currently pending user. If no user
+  <source>Write any data from the flow's context's 'prompt_data' to the currently pending user. If no user
         is pending, a new user is created, and data is written to them.</source>
-  <target>Write any data from the flow&apos;s context&apos;s &apos;prompt_data&apos; to the currently pending user. If no user
+  <target>Write any data from the flow's context's 'prompt_data' to the currently pending user. If no user
         is pending, a new user is created, and data is written to them.</target>
 </trans-unit>
 <trans-unit id="sb379d861cbed0b47">
@@ -6903,8 +6891,8 @@ doesn&apos;t pass when either or both of the selected options are equal or above
   <target>Internal users might be users such as company employees, which will get access to the full Enterprise feature set.</target>
 </trans-unit>
 <trans-unit id="sf66389b04fcc219c">
-  <source>External users might be external consultants or B2C customers. These users don&apos;t get access to enterprise features.</source>
-  <target>External users might be external consultants or B2C customers. These users don&apos;t get access to enterprise features.</target>
+  <source>External users might be external consultants or B2C customers. These users don't get access to enterprise features.</source>
+  <target>External users might be external consultants or B2C customers. These users don't get access to enterprise features.</target>
 </trans-unit>
 <trans-unit id="s77e8668a27dbc402">
   <source>Service accounts should be used for machine-to-machine authentication or other automations.</source>
@@ -7007,8 +6995,8 @@ doesn&apos;t pass when either or both of the selected options are equal or above
   <target>Endpoint Google Chrome Device Trust is in preview.</target>
 </trans-unit>
 <trans-unit id="s336936629cdeb3e5">
-  <source>Stage used to verify users&apos; browsers using Google Chrome Device Trust. This stage can be used in authentication/authorization flows.</source>
-  <target>Stage used to verify users&apos; browsers using Google Chrome Device Trust. This stage can be used in authentication/authorization flows.</target>
+  <source>Stage used to verify users' browsers using Google Chrome Device Trust. This stage can be used in authentication/authorization flows.</source>
+  <target>Stage used to verify users' browsers using Google Chrome Device Trust. This stage can be used in authentication/authorization flows.</target>
 </trans-unit>
 <trans-unit id="s85fe794c71b4ace8">
   <source>Google Verified Access API</source>
@@ -7033,14 +7021,6 @@ doesn&apos;t pass when either or both of the selected options are equal or above
 <trans-unit id="s254a9a23dc1635df">
   <source>Import devices</source>
   <target>Import devices</target>
-</trans-unit>
-<trans-unit id="s48cf8fd56b1237ed">
-  <source>Successfully updated flow.</source>
-  <target>Successfully updated flow.</target>
-</trans-unit>
-<trans-unit id="sc3e0c240b159fbce">
-  <source>Successfully created flow.</source>
-  <target>Successfully created flow.</target>
 </trans-unit>
 <trans-unit id="s925936f647ae52cc">
   <source>Shown as the Title in Flow pages.</source>
@@ -7111,8 +7091,8 @@ doesn&apos;t pass when either or both of the selected options are equal or above
   <target>Will either follow the ?next parameter or redirect to the default interface</target>
 </trans-unit>
 <trans-unit id="s22b0e8c5277dd5a9">
-  <source>Will notify the user the flow isn&apos;t applicable</source>
-  <target>Will notify the user the flow isn&apos;t applicable</target>
+  <source>Will notify the user the flow isn't applicable</source>
+  <target>Will notify the user the flow isn't applicable</target>
 </trans-unit>
 <trans-unit id="s2eeca5cfc99ef19b">
   <source>Decides the response when a policy denies access to this flow for a user.</source>
@@ -7147,16 +7127,16 @@ doesn&apos;t pass when either or both of the selected options are equal or above
   <target>Flow(s)</target>
 </trans-unit>
 <trans-unit id="s5d90aeadfcb34286">
-  <source>Execute &quot;<x id="0" equiv-text="${item.name}"/>&quot;</source>
-  <target>Execute &quot;<x id="0" equiv-text="${item.name}"/>&quot;</target>
+  <source>Execute "<x id="0" equiv-text="${item.name}"/>"</source>
+  <target>Execute "<x id="0" equiv-text="${item.name}"/>"</target>
 </trans-unit>
 <trans-unit id="sc4fdeccf14be5378">
   <source>Execute</source>
   <target>تنفيذ</target>
 </trans-unit>
 <trans-unit id="saa25eac2952d918d">
-  <source>Export &quot;<x id="0" equiv-text="${item.name}"/>&quot;</source>
-  <target>Export &quot;<x id="0" equiv-text="${item.name}"/>&quot;</target>
+  <source>Export "<x id="0" equiv-text="${item.name}"/>"</source>
+  <target>Export "<x id="0" equiv-text="${item.name}"/>"</target>
 </trans-unit>
 <trans-unit id="s293aa6a6446fb153">
   <source>Export</source>
@@ -7221,24 +7201,24 @@ doesn&apos;t pass when either or both of the selected options are equal or above
   <target>Execute flow</target>
 </trans-unit>
 <trans-unit id="s61e5043203e94d0a">
-  <source>Execute &quot;<x id="0" equiv-text="${this.flow.name}"/>&quot; normally</source>
-  <target>Execute &quot;<x id="0" equiv-text="${this.flow.name}"/>&quot; normally</target>
+  <source>Execute "<x id="0" equiv-text="${this.flow.name}"/>" normally</source>
+  <target>Execute "<x id="0" equiv-text="${this.flow.name}"/>" normally</target>
 </trans-unit>
 <trans-unit id="s9ff3121d30f88d52">
   <source>Normal</source>
   <target>Normal</target>
 </trans-unit>
 <trans-unit id="s02eb960c270a837e">
-  <source>Execute &quot;<x id="0" equiv-text="${this.flow.name}"/>&quot; as current user</source>
-  <target>Execute &quot;<x id="0" equiv-text="${this.flow.name}"/>&quot; as current user</target>
+  <source>Execute "<x id="0" equiv-text="${this.flow.name}"/>" as current user</source>
+  <target>Execute "<x id="0" equiv-text="${this.flow.name}"/>" as current user</target>
 </trans-unit>
 <trans-unit id="saf579a36a54c92e1">
   <source>Current user</source>
   <target>Current user</target>
 </trans-unit>
 <trans-unit id="sd149e44e50455923">
-  <source>Execute &quot;<x id="0" equiv-text="${this.flow.name}"/>&quot; with inspector</source>
-  <target>Execute &quot;<x id="0" equiv-text="${this.flow.name}"/>&quot; with inspector</target>
+  <source>Execute "<x id="0" equiv-text="${this.flow.name}"/>" with inspector</source>
+  <target>Execute "<x id="0" equiv-text="${this.flow.name}"/>" with inspector</target>
 </trans-unit>
 <trans-unit id="s45c530a48bcf74ad">
   <source>Use inspector</source>
@@ -7531,8 +7511,8 @@ Bindings to groups/users are checked against the user of the event.</target>
                             <x id="4" equiv-text="&lt;code&gt;"/>https://:2376<x id="5" equiv-text="&lt;/code&gt;"/> when connecting to a remote system.</target>
 </trans-unit>
 <trans-unit id="saf1d289e3137c2ea">
-  <source>CA which the endpoint&apos;s Certificate is verified against. Can be left empty for no validation.</source>
-  <target>CA which the endpoint&apos;s Certificate is verified against. Can be left empty for no validation.</target>
+  <source>CA which the endpoint's Certificate is verified against. Can be left empty for no validation.</source>
+  <target>CA which the endpoint's Certificate is verified against. Can be left empty for no validation.</target>
 </trans-unit>
 <trans-unit id="s0f2e070d38cd36df">
   <source>TLS Authentication Certificate/SSH Keypair</source>
@@ -7695,28 +7675,28 @@ Bindings to groups/users are checked against the user of the event.</target>
   <target>Disables per-user avatars and just shows a 1x1 pixel transparent picture</target>
 </trans-unit>
 <trans-unit id="s5446842a7e4a963b">
-  <source>Uses gravatar with the user&apos;s email address</source>
-  <target>Uses gravatar with the user&apos;s email address</target>
+  <source>Uses gravatar with the user's email address</source>
+  <target>Uses gravatar with the user's email address</target>
 </trans-unit>
 <trans-unit id="s35363b9e1cc2abd3">
-  <source>Generated avatars based on the user&apos;s name</source>
-  <target>Generated avatars based on the user&apos;s name</target>
+  <source>Generated avatars based on the user's name</source>
+  <target>Generated avatars based on the user's name</target>
 </trans-unit>
 <trans-unit id="s48110ca292cad513">
   <source>Any URL: If you want to use images hosted on another server, you can set any URL. Additionally, these placeholders can be used:</source>
   <target>Any URL: If you want to use images hosted on another server, you can set any URL. Additionally, these placeholders can be used:</target>
 </trans-unit>
 <trans-unit id="sbe1dfda044bdc93b">
-  <source>The user&apos;s username</source>
-  <target>The user&apos;s username</target>
+  <source>The user's username</source>
+  <target>The user's username</target>
 </trans-unit>
 <trans-unit id="s653f257c9c2d4dc5">
   <source>The email address, md5 hashed</source>
   <target>The email address, md5 hashed</target>
 </trans-unit>
 <trans-unit id="s9c9183cd80916b4f">
-  <source>The user&apos;s UPN, if set (otherwise an empty string)</source>
-  <target>The user&apos;s UPN, if set (otherwise an empty string)</target>
+  <source>The user's UPN, if set (otherwise an empty string)</source>
+  <target>The user's UPN, if set (otherwise an empty string)</target>
 </trans-unit>
 <trans-unit id="h4963ed14d7e239a9">
   <source>An attribute path like
@@ -7811,8 +7791,8 @@ Bindings to groups/users are checked against the user of the event.</target>
   <target>GDPR compliance</target>
 </trans-unit>
 <trans-unit id="sb8b23770f899e5bb">
-  <source>When enabled, all the events caused by a user will be deleted upon the user&apos;s deletion.</source>
-  <target>When enabled, all the events caused by a user will be deleted upon the user&apos;s deletion.</target>
+  <source>When enabled, all the events caused by a user will be deleted upon the user's deletion.</source>
+  <target>When enabled, all the events caused by a user will be deleted upon the user's deletion.</target>
 </trans-unit>
 <trans-unit id="s29501761df0fe837">
   <source>Impersonation</source>
@@ -7925,8 +7905,8 @@ Bindings to groups/users are checked against the user of the event.</target>
   <target>Blueprint(s)</target>
 </trans-unit>
 <trans-unit id="s6f8d15b5494ac41a">
-  <source>Apply &quot;<x id="0" equiv-text="${item.name}"/>&quot; blueprint</source>
-  <target>Apply &quot;<x id="0" equiv-text="${item.name}"/>&quot; blueprint</target>
+  <source>Apply "<x id="0" equiv-text="${item.name}"/>" blueprint</source>
+  <target>Apply "<x id="0" equiv-text="${item.name}"/>" blueprint</target>
 </trans-unit>
 <trans-unit id="sb8f855b49234b81b">
   <source>Apply</source>
@@ -7976,17 +7956,9 @@ Bindings to groups/users are checked against the user of the event.</target>
   <source>Overall license status</source>
   <target>Overall license status</target>
 </trans-unit>
-<trans-unit id="sc4804358f202968c">
-  <source>Internal user usage</source>
-  <target>Internal user usage</target>
-</trans-unit>
 <trans-unit id="s087d6f07b52b30ec">
   <source><x id="0" equiv-text="${internalUserPercentage &lt; Infinity ? internalUserPercentage : &quot;∞&quot;}"/>%</source>
   <target><x id="0" equiv-text="${internalUserPercentage &lt; Infinity ? internalUserPercentage : &quot;∞&quot;}"/>%</target>
-</trans-unit>
-<trans-unit id="sae72e1569d34fb02">
-  <source>External user usage</source>
-  <target>External user usage</target>
 </trans-unit>
 <trans-unit id="s2e109263b73c12d5">
   <source>Licenses</source>
@@ -8209,8 +8181,8 @@ Bindings to groups/users are checked against the user of the event.</target>
   <target>No notifications found.</target>
 </trans-unit>
 <trans-unit id="scf8d5cdc8b434982">
-  <source>You don&apos;t have any notifications currently.</source>
-  <target>You don&apos;t have any notifications currently.</target>
+  <source>You don't have any notifications currently.</source>
+  <target>You don't have any notifications currently.</target>
 </trans-unit>
 <trans-unit id="s5be3c6d61cd9182f">
   <source>Notifications</source>
@@ -8613,8 +8585,8 @@ Bindings to groups/users are checked against the user of the event.</target>
   <target>Stay signed in?</target>
 </trans-unit>
 <trans-unit id="s859b2e00391da380">
-  <source>Select Yes to reduce the number of times you&apos;re asked to sign in.</source>
-  <target>Select Yes to reduce the number of times you&apos;re asked to sign in.</target>
+  <source>Select Yes to reduce the number of times you're asked to sign in.</source>
+  <target>Select Yes to reduce the number of times you're asked to sign in.</target>
 </trans-unit>
 <trans-unit id="s23da7320dee28a60">
   <source>Device Code</source>
@@ -8625,12 +8597,12 @@ Bindings to groups/users are checked against the user of the event.</target>
   <target>Please enter your code</target>
 </trans-unit>
 <trans-unit id="s455a8fc21077e7f9">
-  <source>You&apos;ve successfully authenticated your device.</source>
-  <target>You&apos;ve successfully authenticated your device.</target>
+  <source>You've successfully authenticated your device.</source>
+  <target>You've successfully authenticated your device.</target>
 </trans-unit>
 <trans-unit id="sac88482c48453fc8">
-  <source>You&apos;ve logged out of <x id="0" equiv-text="${challenge.applicationName}"/>. You can go back to the overview to launch another application, or log out of your authentik account.</source>
-  <target>You&apos;ve logged out of <x id="0" equiv-text="${challenge.applicationName}"/>. You can go back to the overview to launch another application, or log out of your authentik account.</target>
+  <source>You've logged out of <x id="0" equiv-text="${challenge.applicationName}"/>. You can go back to the overview to launch another application, or log out of your authentik account.</source>
+  <target>You've logged out of <x id="0" equiv-text="${challenge.applicationName}"/>. You can go back to the overview to launch another application, or log out of your authentik account.</target>
 </trans-unit>
 <trans-unit id="s3108167b562674e2">
   <source>Go back to overview</source>
@@ -8741,8 +8713,8 @@ Bindings to groups/users are checked against the user of the event.</target>
   <target>application</target>
 </trans-unit>
 <trans-unit id="s33b2f30214a2e99d">
-  <source>Actions for &quot;<x id="0" equiv-text="${applicationName}"/>&quot;</source>
-  <target>Actions for &quot;<x id="0" equiv-text="${applicationName}"/>&quot;</target>
+  <source>Actions for "<x id="0" equiv-text="${applicationName}"/>"</source>
+  <target>Actions for "<x id="0" equiv-text="${applicationName}"/>"</target>
 </trans-unit>
 <trans-unit id="sfa660d9e563c346f">
   <source>Edit application...</source>
@@ -9046,8 +9018,8 @@ Bindings to groups/users are checked against the user of the event.</target>
   <target>URL used to validate CAPTCHA response on the backend. Automatically set based on provider selection but can be customized.</target>
 </trans-unit>
 <trans-unit id="s7fed8c29d9963f53">
-  <source>This stage checks the user&apos;s current session against a CAPTCHA service to prevent automated abuse.</source>
-  <target>This stage checks the user&apos;s current session against a CAPTCHA service to prevent automated abuse.</target>
+  <source>This stage checks the user's current session against a CAPTCHA service to prevent automated abuse.</source>
+  <target>This stage checks the user's current session against a CAPTCHA service to prevent automated abuse.</target>
 </trans-unit>
 <trans-unit id="s9b8e5c6f87ca887e">
   <source>CAPTCHA Provider</source>
@@ -9162,8 +9134,8 @@ Bindings to groups/users are checked against the user of the event.</target>
   <target>Are you sure you want to remove the selected users?</target>
 </trans-unit>
 <trans-unit id="s86f283ed16448157">
-  <source>This user will be added to the role &quot;<x id="0" equiv-text="${this.targetRole.name}"/>&quot;.</source>
-  <target>This user will be added to the role &quot;<x id="0" equiv-text="${this.targetRole.name}"/>&quot;.</target>
+  <source>This user will be added to the role "<x id="0" equiv-text="${this.targetRole.name}"/>".</source>
+  <target>This user will be added to the role "<x id="0" equiv-text="${this.targetRole.name}"/>".</target>
 </trans-unit>
 <trans-unit id="sed582fb69fd1eed8">
   <source>Successfully added user to role(s).</source>
@@ -9294,8 +9266,8 @@ Bindings to groups/users are checked against the user of the event.</target>
   <target>WebAuthn Authenticator Validation Stage</target>
 </trans-unit>
 <trans-unit id="s05a4cbce470ede73">
-  <source>When set, allows users to authenticate using passkeys directly from the browser&apos;s autofill dropdown without entering a username first.</source>
-  <target>When set, allows users to authenticate using passkeys directly from the browser&apos;s autofill dropdown without entering a username first.</target>
+  <source>When set, allows users to authenticate using passkeys directly from the browser's autofill dropdown without entering a username first.</source>
+  <target>When set, allows users to authenticate using passkeys directly from the browser's autofill dropdown without entering a username first.</target>
 </trans-unit>
 <trans-unit id="s51610dc462a5a034">
   <source>Pagination: default page size</source>
@@ -9358,12 +9330,12 @@ Bindings to groups/users are checked against the user of the event.</target>
   <target>Primary disk usage</target>
 </trans-unit>
 <trans-unit id="s7b68229d885a34d3">
-  <source>The start for user ID numbers, this number is added to the user ID to make sure that the numbers aren&apos;t too low for POSIX users. Default is 2000 to prevent collisions with local users.</source>
-  <target>The start for user ID numbers, this number is added to the user ID to make sure that the numbers aren&apos;t too low for POSIX users. Default is 2000 to prevent collisions with local users.</target>
+  <source>The start for user ID numbers, this number is added to the user ID to make sure that the numbers aren't too low for POSIX users. Default is 2000 to prevent collisions with local users.</source>
+  <target>The start for user ID numbers, this number is added to the user ID to make sure that the numbers aren't too low for POSIX users. Default is 2000 to prevent collisions with local users.</target>
 </trans-unit>
 <trans-unit id="s284f44964466ef38">
-  <source>The start for group ID numbers, this number is added to a number generated from the groups&apos; ID to make sure that the numbers aren&apos;t too low for POSIX groups. Default is 4000 to prevent collisions with local groups.</source>
-  <target>The start for group ID numbers, this number is added to a number generated from the groups&apos; ID to make sure that the numbers aren&apos;t too low for POSIX groups. Default is 4000 to prevent collisions with local groups.</target>
+  <source>The start for group ID numbers, this number is added to a number generated from the groups' ID to make sure that the numbers aren't too low for POSIX groups. Default is 4000 to prevent collisions with local groups.</source>
+  <target>The start for group ID numbers, this number is added to a number generated from the groups' ID to make sure that the numbers aren't too low for POSIX groups. Default is 4000 to prevent collisions with local groups.</target>
 </trans-unit>
 <trans-unit id="s01f8cd92a0204da2">
   <source>Data exports are not available as storage for reports is not configured.</source>
@@ -9542,20 +9514,20 @@ Bindings to groups/users are checked against the user of the event.</target>
 <trans-unit id="stage.authenticator.email.sent-to-address">
   <source>A verification token has been sent to your configured email address: <x id="0" equiv-text="${email}"/></source>
   <target>A verification token has been sent to your configured email address: <x id="0" equiv-text="${email}"/></target>
-  <note from="lit-localize">Displayed when a verification token has been sent to the user&apos;s configured email address.</note>
+  <note from="lit-localize">Displayed when a verification token has been sent to the user's configured email address.</note>
 </trans-unit>
 <trans-unit id="stage.authenticator.email.sent">
   <source>A verification token has been sent to your email address.</source>
   <target>A verification token has been sent to your email address.</target>
-  <note from="lit-localize">Displayed when a verification token has been sent to the user&apos;s email address.</note>
+  <note from="lit-localize">Displayed when a verification token has been sent to the user's email address.</note>
 </trans-unit>
 <trans-unit id="user.library.application-count-singular-with-query">
-  <source><x id="0" equiv-text="${count}"/> application found for &quot;<x id="1" equiv-text="${query}"/>&quot;</source>
-  <target><x id="0" equiv-text="${count}"/> application found for &quot;<x id="1" equiv-text="${query}"/>&quot;</target>
+  <source><x id="0" equiv-text="${count}"/> application found for "<x id="1" equiv-text="${query}"/>"</source>
+  <target><x id="0" equiv-text="${count}"/> application found for "<x id="1" equiv-text="${query}"/>"</target>
 </trans-unit>
 <trans-unit id="user.library.application-count-plural-with-query">
-  <source><x id="0" equiv-text="${count}"/> applications found for &quot;<x id="1" equiv-text="${query}"/>&quot;</source>
-  <target><x id="0" equiv-text="${count}"/> applications found for &quot;<x id="1" equiv-text="${query}"/>&quot;</target>
+  <source><x id="0" equiv-text="${count}"/> applications found for "<x id="1" equiv-text="${query}"/>"</source>
+  <target><x id="0" equiv-text="${count}"/> applications found for "<x id="1" equiv-text="${query}"/>"</target>
 </trans-unit>
 <trans-unit id="user.library.application-count-singular">
   <source><x id="0" equiv-text="${count}"/> application available</source>
@@ -9581,8 +9553,8 @@ Bindings to groups/users are checked against the user of the event.</target>
   <note from="lit-localize">Screen reader hint to inform the user they can open the selected application by pressing Enter</note>
 </trans-unit>
 <trans-unit id="library.application.card.aria-label">
-  <source>Open &quot;<x id="0" equiv-text="${application.name}"/>&quot;</source>
-  <target>Open &quot;<x id="0" equiv-text="${application.name}"/>&quot;</target>
+  <source>Open "<x id="0" equiv-text="${application.name}"/>"</source>
+  <target>Open "<x id="0" equiv-text="${application.name}"/>"</target>
   <note from="lit-localize">Screen reader label for the application card</note>
 </trans-unit>
 <trans-unit id="sc1e9c9bab6765c74">
@@ -9764,12 +9736,7 @@ Bindings to groups/users are checked against the user of the event.</target>
   <source>API keys can be obtained from the
                                         <x id="0" equiv-text="${html `&lt;a&#10;                                                target=&quot;_blank&quot;&#10;                                                rel=&quot;noopener noreferrer&quot;&#10;                                                href=${keyURL}&#10;                                                &gt;${formatAPISource()}&lt;/a&#10;                                            &gt;.`}"/></source>
   <target>API keys can be obtained from the
-                                        <x id="0" equiv-text="${html `&lt;a
-                                                target=&quot;_blank&quot;
-                                                rel=&quot;noopener noreferrer&quot;
-                                                href=${keyURL}
-                                                &gt;${formatAPISource()}&lt;/a
-                                            &gt;.`}"/></target>
+                                        <x id="0" equiv-text="${html `&lt;a                                                 target=&quot;_blank&quot;                                                 rel=&quot;noopener noreferrer&quot;                                                 href=${keyURL}                                                 &gt;${formatAPISource()}&lt;/a                                             &gt;.`}"/></target>
   <note from="lit-localize">Supplementary help text with link to provider dashboard.</note>
 </trans-unit>
 <trans-unit id="s87f858ca3c8e5579">
@@ -9879,14 +9846,6 @@ Bindings to groups/users are checked against the user of the event.</target>
 <trans-unit id="s1bb47213a314465b">
   <source>Create link</source>
   <target>Create link</target>
-</trans-unit>
-<trans-unit id="s776c1b64a71fba39">
-  <source>To email a recovery link, set an email address for this user.</source>
-  <target>To email a recovery link, set an email address for this user.</target>
-</trans-unit>
-<trans-unit id="s8899399356b8ed1a">
-  <source>To create a recovery link, set a recovery flow for the current brand.</source>
-  <target>To create a recovery link, set a recovery flow for the current brand.</target>
 </trans-unit>
 <trans-unit id="s68be8f284274370a">
   <source>Recovery link</source>
@@ -10281,8 +10240,8 @@ Bindings to groups/users are checked against the user of the event.</target>
   <target>Enter the email address or username associated with your account.</target>
 </trans-unit>
 <trans-unit id="s6e858c4c4c3b6b76">
-  <source>You&apos;re about to be redirected to the following URL.</source>
-  <target>You&apos;re about to be redirected to the following URL.</target>
+  <source>You're about to be redirected to the following URL.</source>
+  <target>You're about to be redirected to the following URL.</target>
 </trans-unit>
 <trans-unit id="sd5d2b94a1ccba1a9">
   <source>Log in to continue to <x id="0" equiv-text="${prelude}"/>.</source>
@@ -10509,8 +10468,8 @@ Bindings to groups/users are checked against the user of the event.</target>
   <target>Set Password</target>
 </trans-unit>
 <trans-unit id="sd29ddaadcc30d22c">
-  <source>User &quot;<x id="0" equiv-text="${query}"/>&quot;</source>
-  <target>User &quot;<x id="0" equiv-text="${query}"/>&quot;</target>
+  <source>User "<x id="0" equiv-text="${query}"/>"</source>
+  <target>User "<x id="0" equiv-text="${query}"/>"</target>
 </trans-unit>
 <trans-unit id="s220bcce27242e1e9">
   <source>search</source>
@@ -10521,8 +10480,8 @@ Bindings to groups/users are checked against the user of the event.</target>
   <target>find</target>
 </trans-unit>
 <trans-unit id="s1809b50e79923494">
-  <source>Search the docs for &quot;<x id="0" equiv-text="${query}"/>&quot;</source>
-  <target>Search the docs for &quot;<x id="0" equiv-text="${query}"/>&quot;</target>
+  <source>Search the docs for "<x id="0" equiv-text="${query}"/>"</source>
+  <target>Search the docs for "<x id="0" equiv-text="${query}"/>"</target>
 </trans-unit>
 <trans-unit id="command-palette.suffix.view-docs">
   <source>New Tab</source>
@@ -10783,8 +10742,8 @@ Bindings to groups/users are checked against the user of the event.</target>
   <target>Info</target>
 </trans-unit>
 <trans-unit id="s83cb0a6bd0b57d0c">
-  <source>Verify Push stream endpoints&apos; certificate</source>
-  <target>Verify Push stream endpoints&apos; certificate</target>
+  <source>Verify Push stream endpoints' certificate</source>
+  <target>Verify Push stream endpoints' certificate</target>
 </trans-unit>
 <trans-unit id="s2044fd89e1e779ff">
   <source>Stream(s)</source>
@@ -10843,8 +10802,8 @@ Bindings to groups/users are checked against the user of the event.</target>
   <target>Successfully connected user.</target>
 </trans-unit>
 <trans-unit id="sf5c3def20e22e0ac">
-  <source>The unique identifier of this object in LDAP, the value of the &apos;<x id="0" equiv-text="${this.source?.objectUniquenessField}"/>&apos; attribute.</source>
-  <target>The unique identifier of this object in LDAP, the value of the &apos;<x id="0" equiv-text="${this.source?.objectUniquenessField}"/>&apos; attribute.</target>
+  <source>The unique identifier of this object in LDAP, the value of the '<x id="0" equiv-text="${this.source?.objectUniquenessField}"/>' attribute.</source>
+  <target>The unique identifier of this object in LDAP, the value of the '<x id="0" equiv-text="${this.source?.objectUniquenessField}"/>' attribute.</target>
 </trans-unit>
 <trans-unit id="s6e982a7b2b65c859">
   <source>LDAP User(s)</source>
@@ -11447,16 +11406,16 @@ Bindings to groups/users are checked against the user of the event.</target>
   <target>كيان</target>
 </trans-unit>
 <trans-unit id="entity.edit.named">
-  <source>Edit &quot;<x id="0" equiv-text="${itemName}"/>&quot; <x id="1" equiv-text="${noun}"/></source>
-  <target>Edit &quot;<x id="0" equiv-text="${itemName}"/>&quot; <x id="1" equiv-text="${noun}"/></target>
+  <source>Edit "<x id="0" equiv-text="${itemName}"/>" <x id="1" equiv-text="${noun}"/></source>
+  <target>Edit "<x id="0" equiv-text="${itemName}"/>" <x id="1" equiv-text="${noun}"/></target>
 </trans-unit>
 <trans-unit id="entity.edit">
   <source>Edit <x id="0" equiv-text="${noun}"/></source>
   <target>Edit <x id="0" equiv-text="${noun}"/></target>
 </trans-unit>
 <trans-unit id="permissions.modal-invoker.named">
-  <source>Open &quot;<x id="0" equiv-text="${itemName}"/>&quot; permissions</source>
-  <target>Open &quot;<x id="0" equiv-text="${itemName}"/>&quot; permissions</target>
+  <source>Open "<x id="0" equiv-text="${itemName}"/>" permissions</source>
+  <target>Open "<x id="0" equiv-text="${itemName}"/>" permissions</target>
 </trans-unit>
 <trans-unit id="permissions.modal-invoker">
   <source>Open permissions</source>
@@ -11744,12 +11703,12 @@ Bindings to groups/users are checked against the user of the event.</target>
 <trans-unit id="used-by.consequence.cascade">
   <source><x id="0" equiv-text="${relationName}"/> will be deleted</source>
   <target>سيتم حذف <x id="0" equiv-text="${relationName}"/></target>
-  <note from="lit-localize">Consequence of deletion, when the related object will also be deleted. The name of the related object will be included, in the format &apos;Related object will be deleted&apos;.</note>
+  <note from="lit-localize">Consequence of deletion, when the related object will also be deleted. The name of the related object will be included, in the format 'Related object will be deleted'.</note>
 </trans-unit>
 <trans-unit id="user.display.unknownUser">
   <source>Unknown user</source>
   <target>مستخدم غير معروف</target>
-  <note from="lit-localize">Placeholder for an unknown user, in the format &apos;Unknown user&apos;.</note>
+  <note from="lit-localize">Placeholder for an unknown user, in the format 'Unknown user'.</note>
 </trans-unit>
 <trans-unit id="usedBy.count.other">
   <source><x id="0" equiv-text="${verboseName}"/> is associated with <x id="1" equiv-text="${usedByList.length}"/> objects.</source>
@@ -11769,7 +11728,7 @@ Bindings to groups/users are checked against the user of the event.</target>
 <trans-unit id="user.display.nameInParens">
   <source>(<x id="0" equiv-text="${name}"/>)</source>
   <target>(<x id="0" equiv-text="${name}"/>)</target>
-  <note from="lit-localize">The user&apos;s name in parentheses, used when the name is different from the username</note>
+  <note from="lit-localize">The user's name in parentheses, used when the name is different from the username</note>
 </trans-unit>
 <trans-unit id="used-by-list-item">
   <source><x id="0" equiv-text="${formattedName}"/> (<x id="1" equiv-text="${consequence}"/>)</source>
@@ -11867,12 +11826,12 @@ Bindings to groups/users are checked against the user of the event.</target>
   <target>يجب أن تتطلب تدفقات قفل الحساب المصادقة حتى لا تُبدأ إلا من جلسة مسجّل الدخول فيها.</target>
 </trans-unit>
 <trans-unit id="sc9e81e2f575bcf24">
-  <source>If no group is selected and &apos;Send notification to event user&apos; is disabled, the rule is disabled.</source>
-  <target>إذا لم يتم اختيار أي مجموعة وكان خيار &apos;إرسال الإشعار إلى مستخدم الحدث&apos; معطّلاً، فستكون القاعدة معطّلة.</target>
+  <source>If no group is selected and 'Send notification to event user' is disabled, the rule is disabled.</source>
+  <target>إذا لم يتم اختيار أي مجموعة وكان خيار 'إرسال الإشعار إلى مستخدم الحدث' معطّلاً، فستكون القاعدة معطّلة.</target>
 </trans-unit>
 <trans-unit id="sd30f00ff2135589c">
-  <source>When enabled, notification will be sent to the user that triggered the event in addition to any users in the group above. The event user will always be the first user, to send a notification only to the event user enabled &apos;Send once&apos; in the notification transport.</source>
-  <target>عند التفعيل، سيتم إرسال الإشعار إلى المستخدم الذي أطلق الحدث بالإضافة إلى أي مستخدمين في المجموعة أعلاه. سيكون مستخدم الحدث دائماً المستخدم الأول، ولإرسال إشعار إلى مستخدم الحدث فقط فعّل &apos;إرسال مرة واحدة&apos; في ناقل الإشعارات.</target>
+  <source>When enabled, notification will be sent to the user that triggered the event in addition to any users in the group above. The event user will always be the first user, to send a notification only to the event user enabled 'Send once' in the notification transport.</source>
+  <target>عند التفعيل، سيتم إرسال الإشعار إلى المستخدم الذي أطلق الحدث بالإضافة إلى أي مستخدمين في المجموعة أعلاه. سيكون مستخدم الحدث دائماً المستخدم الأول، ولإرسال إشعار إلى مستخدم الحدث فقط فعّل 'إرسال مرة واحدة' في ناقل الإشعارات.</target>
 </trans-unit>
 <trans-unit id="s1c0267488c33401b">
   <source>Minimum reviewers</source>
@@ -11951,7 +11910,7 @@ Bindings to groups/users are checked against the user of the event.</target>
   <target>اختر تدفق الاكتمال...</target>
 </trans-unit>
 <trans-unit id="s7f8967e8077f2734">
-  <source>Flow to redirect users to after self-service lockdown. This flow must not require authentication since the user&apos;s session is deleted.</source>
+  <source>Flow to redirect users to after self-service lockdown. This flow must not require authentication since the user's session is deleted.</source>
   <target>التدفق الذي يُعاد توجيه المستخدمين إليه بعد الإغلاق الذاتي للخدمة. يجب ألا يتطلب هذا التدفق مصادقة لأن جلسة المستخدم تُحذف.</target>
 </trans-unit>
 <trans-unit id="se84707d40ed8f349">
@@ -12031,36 +11990,12 @@ Bindings to groups/users are checked against the user of the event.</target>
   <target>عبر المنصات: مصادق متنقل، مثل YubiKey أو Google Titan</target>
 </trans-unit>
 <trans-unit id="sc157c7dcb3d1b096">
-  <source>Controls the authenticatorAttachment parameter sent to the browser during WebAuthn registration. If Hints are configured and this is left as &apos;No preference&apos;, a value is inferred from the selected hints for backward compatibility with older browsers.</source>
-  <target>يتحكم في معامل authenticatorAttachment المُرسل إلى المتصفح أثناء تسجيل WebAuthn. إذا تم ضبط التلميحات Hints وتُرك هذا الخيار على &apos;لا تفضيل&apos;، فسيُستنتج قيمة من التلميحات المختارة للتوافق مع المتصفحات القديمة.</target>
+  <source>Controls the authenticatorAttachment parameter sent to the browser during WebAuthn registration. If Hints are configured and this is left as 'No preference', a value is inferred from the selected hints for backward compatibility with older browsers.</source>
+  <target>يتحكم في معامل authenticatorAttachment المُرسل إلى المتصفح أثناء تسجيل WebAuthn. إذا تم ضبط التلميحات Hints وتُرك هذا الخيار على 'لا تفضيل'، فسيُستنتج قيمة من التلميحات المختارة للتوافق مع المتصفحات القديمة.</target>
 </trans-unit>
 <trans-unit id="s1baea1b8ac34d554">
   <source>New Invitation</source>
   <target>دعوة جديدة</target>
-</trans-unit>
-<trans-unit id="s03eef6107e28d042">
-  <source>New Invitation options</source>
-  <target>خيارات الدعوة الجديدة</target>
-</trans-unit>
-<trans-unit id="s0832ff81b9665e6f">
-  <source>Opens the new invitation wizard and binds the invitation to an existing enrollment flow.</source>
-  <target>يفتح معالج الدعوة الجديد ويربط الدعوة بتدفق تسجيل موجود.</target>
-</trans-unit>
-<trans-unit id="sc0819dc3d82d9320">
-  <source>with Existing Enrollment Flow...</source>
-  <target>مع تدفق تسجيل موجود...</target>
-</trans-unit>
-<trans-unit id="s79108cb25e7bf07b">
-  <source>Opens the new invitation wizard, which will create a new enrollment flow and invitation stage.</source>
-  <target>يفتح معالج الدعوة الجديد، الذي سيقوم بإنشاء تدفق تسجيل جديد ومرحلة دعوة.</target>
-</trans-unit>
-<trans-unit id="sb7809157a3ccf613">
-  <source>with New Enrollment Flow and Invitation Stage...</source>
-  <target>مع تدفق تسجيل جديد ومرحلة دعوة...</target>
-</trans-unit>
-<trans-unit id="seb418067e7d6c6e2">
-  <source>Create a new invitation with an enrollment flow.</source>
-  <target>إنشاء دعوة جديدة مع تدفق التسجيل.</target>
 </trans-unit>
 <trans-unit id="sfd74a380e957d0d3">
   <source>Enrollment Flow</source>
@@ -12070,77 +12005,13 @@ Bindings to groups/users are checked against the user of the event.</target>
   <source>Invitation Details</source>
   <target>تفاصيل الدعوة</target>
 </trans-unit>
-<trans-unit id="se1fba44a9b284052">
-  <source>Invitation Link</source>
-  <target>رابط الدعوة</target>
-</trans-unit>
-<trans-unit id="s967a2db7049dc90e">
-  <source><x id="0" equiv-text="${step}"/> failed</source>
-  <target><x id="0" equiv-text="${step}"/> failed</target>
-</trans-unit>
-<trans-unit id="s971d4cc0ecd106b7">
-  <source>Importing enrollment flow blueprint</source>
-  <target>جارٍ استيراد مخطط تدفق التسجيل</target>
-</trans-unit>
 <trans-unit id="sf3b89a70e20af6c8">
   <source>Blueprint validation failed</source>
   <target>فشل التحقق من المخطط</target>
 </trans-unit>
 <trans-unit id="sa04b7204708f4f74">
-  <source>Flow with slug &quot;<x id="0" equiv-text="${slugToLookup}"/>&quot; not found after import</source>
-  <target>Flow with slug &quot;<x id="0" equiv-text="${slugToLookup}"/>&quot; not found after import</target>
-</trans-unit>
-<trans-unit id="s3354be88ad29d171">
-  <source>Creating invitation</source>
-  <target>جارٍ إنشاء الدعوة</target>
-</trans-unit>
-<trans-unit id="s07f41353777196ea">
-  <source>The flow selected in the previous step. The invitation will be bound to this flow.</source>
-  <target>التدفق المحدد في الخطوة السابقة. ستتم ربط الدعوة بهذا التدفق.</target>
-</trans-unit>
-<trans-unit id="s7209a11f97da9aff">
-  <source>No invitation available to send</source>
-  <target>لا توجد دعوة متاحة للإرسال</target>
-</trans-unit>
-<trans-unit id="s2772d8285b905006">
-  <source>Failed to queue invitation emails</source>
-  <target>فشل في وضع رسائل الدعوة في قائمة الانتظار</target>
-</trans-unit>
-<trans-unit id="s3b7910ab9c47a2e3">
-  <source>No enrollment flows with invitation stages found</source>
-  <target>لم يتم العثور على تدفقات تسجيل مع مراحل دعوة</target>
-</trans-unit>
-<trans-unit id="sa3ca03297e00591c">
-  <source>You can create a new enrollment flow and invitation stage right here, or cancel and bind an invitation stage to an existing flow manually.</source>
-  <target>يمكنك إنشاء تدفق تسجيل جديد ومرحلة دعوة هنا، أو إلغاء الأمر وربط مرحلة دعوة بتدفق موجود يدوياً.</target>
-</trans-unit>
-<trans-unit id="s06db43e56ca76be8">
-  <source>Create a new enrollment flow</source>
-  <target>إنشاء تدفق تسجيل جديد</target>
-</trans-unit>
-<trans-unit id="s8acc687c55e8ccbf">
-  <source>Only enrollment flows that have an invitation stage bound to them are listed here.</source>
-  <target>يتم سرد تدفقات التسجيل التي لديها مرحلة دعوة مرتبطة بها فقط هنا.</target>
-</trans-unit>
-<trans-unit id="s5b3bafd8ffe553ec">
-  <source>Flow name</source>
-  <target>اسم التدفق</target>
-</trans-unit>
-<trans-unit id="s699cd34b0dcb4c56">
-  <source>Name for the new enrollment flow.</source>
-  <target>الاسم لتدفق التسجيل الجديد.</target>
-</trans-unit>
-<trans-unit id="s8fb6d1bb698d32a0">
-  <source>Flow slug</source>
-  <target>المعرف المختصر للتدفق</target>
-</trans-unit>
-<trans-unit id="s0211c07612cf8c97">
-  <source>Invitation stage name</source>
-  <target>اسم مرحلة الدعوة</target>
-</trans-unit>
-<trans-unit id="s42b97ef63fb1a795">
-  <source>Name for the new invitation stage.</source>
-  <target>الاسم للمرحلة الجديدة للدعوة.</target>
+  <source>Flow with slug "<x id="0" equiv-text="${data.slug}"/>" not found after import</source>
+  <target>Flow with slug "<x id="0" equiv-text="${slugToLookup}"/>" not found after import</target>
 </trans-unit>
 <trans-unit id="saaa9fd0d3ebc35aa">
   <source>Enrolled users are created as external (e.g. customers, guests). New users will be placed under users/external.</source>
@@ -12153,10 +12024,6 @@ Bindings to groups/users are checked against the user of the event.</target>
 <trans-unit id="sc1358130ac327120">
   <source>If enabled, the stage will jump to the next stage when no invitation is given. If disabled, the flow will be cancelled without a valid invitation.</source>
   <target>إذا كان مُفعَّلاً، ستنتقل المرحلة إلى المرحلة التالية عندما لا تُقدَّم دعوة. إذا كان مُعطَّلاً، سيتم إلغاء التدفق بدون دعوة صالحة.</target>
-</trans-unit>
-<trans-unit id="s09fdd952c6eaf7da">
-  <source>No invitation was created.</source>
-  <target>لم يتم إنشاء أي دعوة.</target>
 </trans-unit>
 <trans-unit id="s00febd85a4889bb1">
   <source>Redirect the user to a static URL or another flow, optionally with all gathered context.</source>
@@ -12251,7 +12118,7 @@ Bindings to groups/users are checked against the user of the event.</target>
   <target>الاسم المعروض في لوحة تحكم التطبيقات.</target>
 </trans-unit>
 <trans-unit id="sb8bbbd3b5cd45ad2">
-  <source>If checked, the launch URL will open in a new browser tab or window from the user&apos;s Application Dashboard.</source>
+  <source>If checked, the launch URL will open in a new browser tab or window from the user's Application Dashboard.</source>
   <target>إذا تم تحديده، سيتم فتح رابط التشغيل في علامة تبويب أو نافذة متصفح جديدة من لوحة تطبيقات المستخدم.</target>
 </trans-unit>
 <trans-unit id="s55272b9955f1d985">
@@ -12259,7 +12126,7 @@ Bindings to groups/users are checked against the user of the event.</target>
   <target>إخفاء من لوحة تحكم التطبيقات</target>
 </trans-unit>
 <trans-unit id="s4e8256e5793952d7">
-  <source>If checked, this application will not be shown on the user&apos;s Application Dashboard.</source>
+  <source>If checked, this application will not be shown on the user's Application Dashboard.</source>
   <target>إذا تم تحديده، فلن يظهر هذا التطبيق في لوحة تطبيقات المستخدم.</target>
 </trans-unit>
 <trans-unit id="s7d9707524fb7e539">
@@ -12271,20 +12138,20 @@ Bindings to groups/users are checked against the user of the event.</target>
   <target>يظهر الوصف في لوحة تحكم التطبيقات وقد يوفر معلومات إضافية عن التطبيق للمستخدمين النهائيين.</target>
 </trans-unit>
 <trans-unit id="s88c83ac92bfb1f6c">
-  <source>You&apos;ve logged out of <x id="0" equiv-text="${challenge.applicationName}"/>. You can log out of your authentik account.</source>
-  <target>You&apos;ve logged out of <x id="0" equiv-text="${challenge.applicationName}"/>. You can log out of your authentik account.</target>
+  <source>You've logged out of <x id="0" equiv-text="${challenge.applicationName}"/>. You can log out of your authentik account.</source>
+  <target>You've logged out of <x id="0" equiv-text="${challenge.applicationName}"/>. You can log out of your authentik account.</target>
 </trans-unit>
 <trans-unit id="sa5c3a21cbc762ce9">
-  <source>You&apos;ve logged out of <x id="0" equiv-text="${challenge.applicationName}"/>.</source>
-  <target>You&apos;ve logged out of <x id="0" equiv-text="${challenge.applicationName}"/>.</target>
+  <source>You've logged out of <x id="0" equiv-text="${challenge.applicationName}"/>.</source>
+  <target>You've logged out of <x id="0" equiv-text="${challenge.applicationName}"/>.</target>
 </trans-unit>
 <trans-unit id="s92c038a5e1dade49">
   <source>Application Dashboard</source>
   <target>لوحة تحكم التطبيقات</target>
 </trans-unit>
 <trans-unit id="s633e3919f46a8cd3">
-  <source>View details of role &quot;<x id="0" equiv-text="${item.name}"/>&quot;</source>
-  <target>View details of role &quot;<x id="0" equiv-text="${item.name}"/>&quot;</target>
+  <source>View details of role "<x id="0" equiv-text="${item.name}"/>"</source>
+  <target>View details of role "<x id="0" equiv-text="${item.name}"/>"</target>
 </trans-unit>
 <trans-unit id="sc1fc93e04011152f">
   <source>New Stage</source>
@@ -12298,12 +12165,12 @@ Bindings to groups/users are checked against the user of the event.</target>
 <trans-unit id="wizard.step.choose-type">
   <source>Choose <x id="0" equiv-text="${this.verboseName}"/> Type</source>
   <target>اختر نوع <x id="0" equiv-text="${this.verboseName}"/></target>
-  <note from="lit-localize">Label for the initial step in the creation wizard where the type of the entity being created is selected. The placeholder {entity} is replaced with the singular name of the entity, for example &apos;Choose User Type&apos; or &apos;Choose Group Type&apos;.</note>
+  <note from="lit-localize">Label for the initial step in the creation wizard where the type of the entity being created is selected. The placeholder {entity} is replaced with the singular name of the entity, for example 'Choose User Type' or 'Choose Group Type'.</note>
 </trans-unit>
 <trans-unit id="wizard.step.details">
   <source><x id="0" equiv-text="${entityLabel}"/> Details</source>
   <target>تفاصيل <x id="0" equiv-text="${entityLabel}"/></target>
-  <note from="lit-localize">Label for the step in the creation wizard where the details of the entity being created are filled in. The placeholder {entity} is replaced with the name of the entity type, for example &apos;User Details&apos; or &apos;Group Details&apos;.</note>
+  <note from="lit-localize">Label for the step in the creation wizard where the details of the entity being created are filled in. The placeholder {entity} is replaced with the name of the entity type, for example 'User Details' or 'Group Details'.</note>
 </trans-unit>
 <trans-unit id="sd1b98c71ea0d603b">
   <source>Flags allow you to enable new functionality and behavior in authentik early.</source>
@@ -12322,8 +12189,8 @@ Bindings to groups/users are checked against the user of the event.</target>
   <target>بالنسبة لـ Cap، يُفضَّل استخدام أصل الأداة المستضافة ذاتياً، مثال https://cap.example.com/assets/widget.js. إذا كنت تستخدم CDN، فحدّد إصداراً مراجَعاً.</target>
 </trans-unit>
 <trans-unit id="s4e1e8db555003a9a">
-  <source>Cap&apos;s server-side verification endpoint, for example https://cap.example.com/site-key/siteverify.</source>
-  <target>Cap&apos;s server-side verification endpoint, for example https://cap.example.com/site-key/siteverify.</target>
+  <source>Cap's server-side verification endpoint, for example https://cap.example.com/site-key/siteverify.</source>
+  <target>Cap's server-side verification endpoint, for example https://cap.example.com/site-key/siteverify.</target>
 </trans-unit>
 <trans-unit id="sdb752cddc543357d">
   <source>Request Content Type</source>
@@ -12363,12 +12230,7 @@ Bindings to groups/users are checked against the user of the event.</target>
                                         <x id="0" equiv-text="${html `&lt;a&#10;                                            target=&quot;_blank&quot;&#10;                                            rel=&quot;noopener noreferrer&quot;&#10;                                            href=${keyURL}&#10;                                            &gt;${formatAPISource()}&lt;/a&#10;                                        &gt;`}"/>
                                         to self-host Cap and configure the endpoint.</source>
   <target>Use the
-                                        <x id="0" equiv-text="${html `&lt;a
-                                            target=&quot;_blank&quot;
-                                            rel=&quot;noopener noreferrer&quot;
-                                            href=${keyURL}
-                                            &gt;${formatAPISource()}&lt;/a
-                                        &gt;`}"/>
+                                        <x id="0" equiv-text="${html `&lt;a                                             target=&quot;_blank&quot;                                             rel=&quot;noopener noreferrer&quot;                                             href=${keyURL}                                             &gt;${formatAPISource()}&lt;/a                                         &gt;`}"/>
                                         to self-host Cap and configure the endpoint.</target>
   <note from="lit-localize">Supplementary help text with link to Cap documentation.</note>
 </trans-unit>
@@ -12440,8 +12302,8 @@ Bindings to groups/users are checked against the user of the event.</target>
   <note from="lit-localize">Empty state message when no objects are found, where the entity plural is interpolated.</note>
 </trans-unit>
 <trans-unit id="table.emptyState.search">
-  <source>No <x id="0" equiv-text="${singularNoun}"/> matches &quot;<x id="1" equiv-text="${truncateWords(this.search, 50)}"/>&quot;</source>
-  <target>No <x id="0" equiv-text="${singularNoun}"/> matches &quot;<x id="1" equiv-text="${truncateWords(this.search, 50)}"/>&quot;</target>
+  <source>No <x id="0" equiv-text="${singularNoun}"/> matches "<x id="1" equiv-text="${truncateWords(this.search, 50)}"/>"</source>
+  <target>No <x id="0" equiv-text="${singularNoun}"/> matches "<x id="1" equiv-text="${truncateWords(this.search, 50)}"/>"</target>
   <note from="lit-localize">Empty state message when no objects match the search query, where the entity singular is interpolated, followed by the search query truncated to 50 characters.</note>
 </trans-unit>
 <trans-unit id="wizard.header.verbose-name.one">
@@ -12491,6 +12353,109 @@ Bindings to groups/users are checked against the user of the event.</target>
 <trans-unit id="sb45f9fb4dba6e71a">
   <source>Unset</source>
   <target>غير محدد</target>
+</trans-unit>
+<trans-unit id="s4891ccdb173626ba">
+  <source>Internal user usage (<x id="0" equiv-text="${currentInternalUsers}"/>/<x id="1" equiv-text="${licensedInternalUsers}"/>)</source>
+</trans-unit>
+<trans-unit id="scad748da438c56d4">
+  <source>External user usage (<x id="0" equiv-text="${currentExternalUsers}"/>/<x id="1" equiv-text="${licensedExternalUsers}"/>)</source>
+</trans-unit>
+<trans-unit id="sc30c9b42e2a1ebe7">
+  <source>Token exchange</source>
+</trans-unit>
+<trans-unit id="s466fe1c428b4b61a">
+  <source>Issuer override</source>
+</trans-unit>
+<trans-unit id="s19ccfb86a879e6b9">
+  <source>Also known as Entity ID. Defaults to the Metadata URL.</source>
+</trans-unit>
+<trans-unit id="s0502740c80377fe0">
+  <source>Enrollment Flows</source>
+</trans-unit>
+<trans-unit id="s36d3e9e28a1b4ffd">
+  <source>Successfully created enrollment flow with invitation stage.</source>
+</trans-unit>
+<trans-unit id="seb916cadb4a7c437">
+  <source>Type a name for the new enrollment flow...</source>
+</trans-unit>
+<trans-unit id="sba43d2c76afbf380">
+  <source>Flow Slug</source>
+</trans-unit>
+<trans-unit id="sc0b5b66c35a4c34f">
+  <source>Internal flow name used in URLs.</source>
+</trans-unit>
+<trans-unit id="s6e59fc2534d00751">
+  <source>e.g. my-enrollment-flow</source>
+</trans-unit>
+<trans-unit id="se53244cd28aeccd7">
+  <source>Invitation Stage Name</source>
+</trans-unit>
+<trans-unit id="s82c71ab0a2d18257">
+  <source>Type a name for the stage...</source>
+</trans-unit>
+<trans-unit id="s10dd794d4839378e">
+  <source>Select an enrollment flow.</source>
+</trans-unit>
+<trans-unit id="sece0e7e9d7ad08bf">
+  <source>e.g. my-invite</source>
+</trans-unit>
+<trans-unit id="s0bce09e0fcbb5931">
+  <source>Create a new enrollment flow with invitation stage...</source>
+</trans-unit>
+<trans-unit id="s6d4209fcf153eda5">
+  <source>The enrollment flow the invitation link will use. The flow should have an invitation stage bound to it for the invitation to be accepted.</source>
+</trans-unit>
+<trans-unit id="s0d66a3b9441ea7f4">
+  <source>Invitation Stage</source>
+</trans-unit>
+<trans-unit id="se40fbacec016aa65">
+  <source>Invitation Stages</source>
+</trans-unit>
+<trans-unit id="sb401ca35f1d61eed">
+  <source>e.g. invitation-stage</source>
+</trans-unit>
+<trans-unit id="users.recovery.no-email.description">
+  <source>This user does not have an email address, so authentik cannot email a recovery link. Add an email address to enable email recovery.</source>
+</trans-unit>
+<trans-unit id="users.recovery.no-brand-flow.description">
+  <source>This brand does not have a recovery flow, so recovery links cannot be created. Configure a recovery flow in the brand settings to enable recovery.</source>
+</trans-unit>
+<trans-unit id="s7445550f2bfb2f2f">
+  <source>No notes.</source>
+</trans-unit>
+<trans-unit id="form.submit.verb.created">
+  <source>Created</source>
+</trans-unit>
+<trans-unit id="form.submit.changes-saved">
+  <source>Changes Saved</source>
+</trans-unit>
+<trans-unit id="s02e9603605609ae6">
+  <source>Successfully created <x id="0" equiv-text="${this.verboseName}"/></source>
+</trans-unit>
+<trans-unit id="s58273fbf883b497d">
+  <source>Successfully updated <x id="0" equiv-text="${this.verboseName}"/></source>
+</trans-unit>
+<trans-unit id="s221db22dbb4e0105">
+  <source>Unknown Field</source>
+</trans-unit>
+<trans-unit id="s47ff2d052ccbcaf3">
+  <source>Unknown Field <x id="0" equiv-text="${fieldLike}"/></source>
+</trans-unit>
+<trans-unit id="library.application.row.aria-label">
+  <source>Open "<x id="0" equiv-text="${application.name}"/>"</source>
+  <note from="lit-localize">Screen reader label for the application list row</note>
+</trans-unit>
+<trans-unit id="form.submitted.verb-entity">
+  <source><x id="0" equiv-text="${verb} ${noun}"/></source>
+  <note from="lit-localize">The message shown after a form is successfully submitted.</note>
+</trans-unit>
+<trans-unit id="user.library.view-toggle.to-list">
+  <source>Switch to list view</source>
+  <note from="lit-localize">Tooltip on the library view toggle when grid view is active</note>
+</trans-unit>
+<trans-unit id="user.library.view-toggle.to-grid">
+  <source>Switch to grid view</source>
+  <note from="lit-localize">Tooltip on the library view toggle when list view is active</note>
 </trans-unit>
 </body>
 </file>
