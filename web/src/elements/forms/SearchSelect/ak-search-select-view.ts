@@ -102,12 +102,6 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
                 width: 100%;
             }
 
-            /* Keep scrolling contained to the menu: reaching the top/bottom of the
-               list shouldn't chain out and scroll the dialog or page behind it. */
-            ak-list-select[popover]::part(ak-list-select) {
-                overscroll-behavior: contain;
-            }
-
             /* PatternFly menu items are white-space: nowrap; let long option labels
                wrap inside the anchor-width menu instead of overflowing. */
             ak-list-select[popover]::part(ak-list-select-button),
