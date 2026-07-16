@@ -86,7 +86,7 @@ class DeviceUserBinding(PolicyBinding):
     # by a connector and not manually
     connector = models.ForeignKey("Connector", on_delete=models.CASCADE, null=True)
 
-    class Meta(PolicyBinding.Meta):
+    class Meta:
         verbose_name = _("Device User binding")
         verbose_name_plural = _("Device User bindings")
 
@@ -231,6 +231,6 @@ class EndpointStage(Stage):
     def component(self) -> str:
         return "ak-endpoints-stage-form"
 
-    class Meta(PolicyBinding.Meta):
+    class Meta:
         verbose_name = _("Endpoint Stage")
         verbose_name_plural = _("Endpoint Stages")
