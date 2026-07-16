@@ -226,12 +226,14 @@ class ParentshipLDAPSynchronizer(BaseMembershipLDAPSynchronizer):
                 continue
 
             # add preexisting parents that are not managed by this source to the list of parents
+            parent_source_connections = GroupLDAPSourceConnection.objects.filter(
+                Q(source=self._source) & Q(group__in=group.parents.all())
+            )
             parents.extend(
                 parent
-                for parent in group.parents.filter(
-                    Q(groupldapsourceconnection__isnull=True)
-                    | Q(groupldapsourceconnection__source__ne=self._source)
-                ).distinct()
+                for parent in group.parents.exclude(ldapsource__in=parent_source_connections)
+                .select_related("group")
+                .distinct()
             )
 
             parent_set_orig = set(group.parents.all())
