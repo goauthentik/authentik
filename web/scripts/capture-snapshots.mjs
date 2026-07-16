@@ -5,6 +5,9 @@
  * Expects `storybook-static/` to already exist (`pnpm run storybook:build`).
  * Output goes to `snapshots/<title-path>/<story-name>.png`, grouped by the
  * story's `title` (e.g. "Elements/ak-alert" -> snapshots/Elements/ak-alert/<story>.png).
+ *
+ * A story (or an entire `Meta`) can opt out of snapshotting by adding the
+ * `"no-snapshot"` tag, e.g. `tags: ["no-snapshot"]`.
  */
 
 import { createReadStream } from "node:fs";
@@ -18,6 +21,7 @@ import { chromium } from "playwright";
 const ROOT = fileURLToPath(new URL("..", import.meta.url));
 const STATIC_DIR = join(ROOT, "storybook-static");
 const OUTPUT_DIR = join(ROOT, "snapshots");
+const SKIP_TAG = "no-snapshot";
 
 /**
  * @type {Record<string, string>}
@@ -77,10 +81,13 @@ async function main() {
     try {
         const index = await fetch(`${baseUrl}/index.json`).then((res) => res.json());
         const stories = Object.values(index.entries ?? index.stories ?? {}).filter(
-            (entry) => entry.type === "story",
+            (entry) => entry.type === "story" && !entry.tags?.includes(SKIP_TAG),
         );
 
         await mkdir(OUTPUT_DIR, { recursive: true });
+
+        /** @type {string[]} */
+        const failures = [];
 
         const browser = await chromium.launch();
         try {
@@ -99,10 +106,21 @@ async function main() {
                     console.log(`Captured ${story.title}/${story.name}`);
                 } catch (error) {
                     console.warn(`Skipping ${story.title}/${story.name}: ${error}`);
+                    failures.push(`${story.title}/${story.name}`);
                 }
             }
         } finally {
             await browser.close();
+        }
+
+        if (failures.length > 0) {
+            console.error(
+                `\n${failures.length} stor${failures.length === 1 ? "y" : "ies"} failed to capture:`,
+            );
+            for (const failure of failures) {
+                console.error(`  - ${failure}`);
+            }
+            process.exitCode = 1;
         }
     } finally {
         server.close();

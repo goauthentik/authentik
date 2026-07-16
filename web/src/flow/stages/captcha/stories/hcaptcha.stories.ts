@@ -7,6 +7,7 @@ import { Meta } from "@storybook/web-components";
 
 export default {
     title: "Flow / Stages / <ak-stage-captcha> / hCaptcha",
+    tags: ["no-snapshot"],
 } satisfies Meta<typeof import("../CaptchaStage.js").CaptchaStage>;
 
 export const VisibleChallengePasses = flowFactory(
