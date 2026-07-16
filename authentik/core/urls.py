@@ -1,7 +1,7 @@
 """authentik URL Configuration"""
 
 from django.conf import settings
-from django.urls import path
+from django.urls import path, re_path
 
 from authentik.core.api.application_entitlements import ApplicationEntitlementViewSet
 from authentik.core.api.applications import ApplicationViewSet
@@ -50,10 +50,20 @@ urlpatterns = [
         BrandDefaultRedirectView.as_view(template_name="if/admin.html"),
         name="if-admin",
     ),
+    re_path(
+        r"^if/admin/(?P<path>.*)$",
+        BrandDefaultRedirectView.as_view(template_name="if/admin.html"),
+        name="if-admin-path",
+    ),
     path(
         "if/user/",
         BrandDefaultRedirectView.as_view(template_name="if/user.html"),
         name="if-user",
+    ),
+    re_path(
+        r"^if/user/(?P<path>.*)$",
+        BrandDefaultRedirectView.as_view(template_name="if/user.html"),
+        name="if-user-path",
     ),
     path(
         "if/flow/<slug:flow_slug>/",

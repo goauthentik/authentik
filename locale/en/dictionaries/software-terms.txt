@@ -114,6 +114,7 @@ mcomplete
 mermaidjs
 microsoft
 mmdb
+navigations
 noopener
 noreferrer
 oktadev
