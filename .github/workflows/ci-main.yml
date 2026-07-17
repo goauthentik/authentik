@@ -402,12 +402,14 @@ jobs:
               pull
       - name: Run tests
         run: |
+          # Currently runs only two jobs concurrently since our runners are a bit small for more
           cargo nextest run \
             --package authentik-tests \
             --success-output final \
             --failure-output final \
             --no-output-indent \
             --retries 3 \
+            --jobs 2 \
             --no-fail-fast \
             --filterset 'kind(test) & binary_id(#authentik-tests::e2e_${{ matrix.name }}*)'
   test-openid-conformance:
