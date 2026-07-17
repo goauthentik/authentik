@@ -1,5 +1,6 @@
 """event tests"""
 
+from unittest.mock import patch
 from urllib.parse import urlencode
 
 from django.contrib.auth.hashers import make_password
@@ -13,10 +14,12 @@ from authentik.brands.models import Brand
 from authentik.core.models import Group, Source, User
 from authentik.core.tests.utils import create_test_admin_user, create_test_user
 from authentik.events.models import Event, EventAction
+from authentik.events.tasks import gdpr_cleanup
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
 from authentik.flows.views.executor import QS_QUERY, SESSION_KEY_PLAN
 from authentik.lib.generators import generate_id
 from authentik.policies.dummy.models import DummyPolicy
+from authentik.tenants.utils import get_current_tenant
 
 
 class TestEvents(TestCase):
@@ -287,6 +290,39 @@ class TestEvents(TestCase):
                 action=EventAction.USER_CREATED, context__subject_uuid=user.uuid.hex
             ).exists()
         )
+
+    def test_gdpr_cleanup_subject_events(self):
+        """GDPR cleanup should remove events about the user, not only events by them"""
+        admin = create_test_admin_user()
+        user = create_test_user()
+        actored_by_user = Event.new("some_action").set_user(user)
+        actored_by_user.save()
+        about_user = Event.new(EventAction.USER_CREATED, subject_uuid=user.uuid).set_user(admin)
+        about_user.save()
+        unrelated = Event.new("some_action").set_user(admin)
+        unrelated.save()
+
+        gdpr_cleanup(user.pk, user.uuid.hex)
+
+        self.assertFalse(Event.objects.filter(pk=actored_by_user.pk).exists())
+        self.assertFalse(Event.objects.filter(pk=about_user.pk).exists())
+        self.assertTrue(Event.objects.filter(pk=unrelated.pk).exists())
+
+    def test_gdpr_cleanup_dispatched_with_uuid(self):
+        """Deleting a user with gdpr_compliance should dispatch cleanup with pk and uuid"""
+        user = create_test_user()
+        user_pk = user.pk
+        user_uuid = user.uuid.hex
+        tenant = get_current_tenant()
+        tenant.gdpr_compliance = True
+        tenant.save()
+        try:
+            with patch("authentik.events.tasks.gdpr_cleanup.send") as send_mock:
+                user.delete()
+            send_mock.assert_called_once_with(user_pk, user_uuid)
+        finally:
+            tenant.gdpr_compliance = False
+            tenant.save()
 
     def test_log_deprecation(self):
         """Test Event.log_deprecation"""
