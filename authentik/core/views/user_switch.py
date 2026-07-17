@@ -4,6 +4,7 @@ from typing import Any, cast
 
 from django.http import HttpRequest, HttpResponse, HttpResponseNotFound
 from django.utils.translation import gettext as _
+from django.views import View
 
 from authentik.core import user_switching
 from authentik.core.models import AuthenticatedSession, User
@@ -22,36 +23,40 @@ from authentik.lib.views import bad_request_message
 from authentik.policies.engine import PolicyEngine
 
 
-def user_switch_response(request: HttpRequest, user_pk: int) -> HttpResponse:
+class UserSwitchView(View):
     """Authenticate another login held by this browser."""
-    if request.user.pk == user_pk:
-        return HttpResponseNotFound()
-    flow = request.brand.flow_user_switch
-    if not flow:
-        return _disabled_response(request)
-    if not _flow_applicable_to_current_user(request, flow):
-        return HttpResponseNotFound()
-    session = _get_user_switching_session(request, user_pk)
-    if not session:
-        return HttpResponseNotFound()
-    return _redirect_to_flow(
-        request,
-        flow,
-        {
-            PLAN_CONTEXT_PENDING_USER: session.user,
-            PLAN_CONTEXT_PENDING_USER_IDENTIFIER: session.user.username,
-            PLAN_CONTEXT_USER_SWITCH_FROM_USER: request.user,
-            PLAN_CONTEXT_USER_SWITCH_TARGET_SESSION: session.session_id,
-        },
-    )
+
+    def post(self, request: HttpRequest, user_pk: int) -> HttpResponse:
+        if request.user.pk == user_pk:
+            return HttpResponseNotFound()
+        flow = request.brand.flow_user_switch
+        if not flow:
+            return _disabled_response(request)
+        if not _flow_applicable_to_current_user(request, flow):
+            return HttpResponseNotFound()
+        session = _get_user_switching_session(request, user_pk)
+        if not session:
+            return HttpResponseNotFound()
+        return _redirect_to_flow(
+            request,
+            flow,
+            {
+                PLAN_CONTEXT_PENDING_USER: session.user,
+                PLAN_CONTEXT_PENDING_USER_IDENTIFIER: session.user.username,
+                PLAN_CONTEXT_USER_SWITCH_FROM_USER: request.user,
+                PLAN_CONTEXT_USER_SWITCH_TARGET_SESSION: session.session_id,
+            },
+        )
 
 
-def user_add_response(request: HttpRequest) -> HttpResponse:
+class UserAddView(View):
     """Start an explicit additional-user login for this browser."""
-    if not request.brand.flow_user_switch:
-        return _disabled_response(request)
-    flow = ToDefaultFlow.get_flow(request, FlowDesignation.AUTHENTICATION)
-    return _redirect_to_flow(request, flow, {PLAN_CONTEXT_USER_SWITCH_ADD_USER: True})
+
+    def post(self, request: HttpRequest) -> HttpResponse:
+        if not request.brand.flow_user_switch:
+            return _disabled_response(request)
+        flow = ToDefaultFlow.get_flow(request, FlowDesignation.AUTHENTICATION)
+        return _redirect_to_flow(request, flow, {PLAN_CONTEXT_USER_SWITCH_ADD_USER: True})
 
 
 def _disabled_response(request: HttpRequest) -> HttpResponse:

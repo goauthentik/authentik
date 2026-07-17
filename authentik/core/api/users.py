@@ -91,9 +91,9 @@ from authentik.core.models import (
     default_token_duration,
 )
 from authentik.core.views.user_switch import (
+    UserAddView,
+    UserSwitchView,
     get_user_switching_sessions,
-    user_add_response,
-    user_switch_response,
 )
 from authentik.endpoints.connectors.agent.auth import AgentAuth
 from authentik.events.models import Event, EventAction
@@ -737,9 +737,11 @@ class UserViewSet(
     def switch(self, request: Request, body: UserSwitchSerializer) -> HttpResponse | Response:
         """Start browser user switching."""
         if body.validated_data["action"] == UserSwitchAction.ADD:
-            response = user_add_response(request._request)
+            response = UserAddView.as_view()(request._request)
         else:
-            response = user_switch_response(request._request, body.validated_data["user_pk"])
+            response = UserSwitchView.as_view()(
+                request._request, user_pk=body.validated_data["user_pk"]
+            )
         if isinstance(response, HttpResponseRedirect):
             return Response({"redirect": response.url})
         return response
