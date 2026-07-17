@@ -170,9 +170,11 @@ class TestUserSwitch(FlowTestCase):
 
         response = self.client.get(reverse("authentik_api:user-me"))
 
+        body = response.json()
+        self.assertTrue(body["user"]["is_current"])
         self.assertEqual(
-            [(user["username"], user["is_current"]) for user in response.json()["users"]],
-            [(self.user.username, True), (self.other_user.username, False)],
+            [(user["username"], user["is_current"]) for user in body["users"]],
+            [(self.other_user.username, False)],
         )
 
     def test_recent_user_switch_target(self):

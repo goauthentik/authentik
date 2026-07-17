@@ -868,7 +868,6 @@ export * from "./UserSourceConnectionRequest";
 export * from "./UserSwitchActionEnum";
 export * from "./UserSwitchRequest";
 export * from "./UserSwitchResponse";
-export * from "./UserSwitchTarget";
 export * from "./UserTelegramSourceConnection";
 export * from "./UserTelegramSourceConnectionRequest";
 export * from "./UserTypeEnum";

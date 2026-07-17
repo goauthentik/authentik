@@ -56024,7 +56024,7 @@ components:
         users:
           type: array
           items:
-            $ref: '#/components/schemas/UserSwitchTarget'
+            $ref: '#/components/schemas/UserSelf'
       required:
       - user
       - users
@@ -58412,6 +58412,10 @@ components:
         is_superuser:
           type: boolean
           readOnly: true
+        is_current:
+          type: boolean
+          description: Return whether this user owns the current browser session.
+          readOnly: true
         groups:
           type: array
           items:
@@ -58451,6 +58455,7 @@ components:
       - avatar
       - groups
       - is_active
+      - is_current
       - is_superuser
       - name
       - pk
@@ -58611,35 +58616,6 @@ components:
           readOnly: true
       required:
       - redirect
-    UserSwitchTarget:
-      type: object
-      description: Live user session available to the current browser.
-      properties:
-        pk:
-          type: integer
-          readOnly: true
-        username:
-          type: string
-          readOnly: true
-        name:
-          type: string
-          readOnly: true
-        email:
-          type: string
-          readOnly: true
-        avatar:
-          type: string
-          readOnly: true
-        is_current:
-          type: boolean
-          readOnly: true
-      required:
-      - avatar
-      - email
-      - is_current
-      - name
-      - pk
-      - username
     UserTelegramSourceConnection:
       type: object
       description: User source connection

@@ -21,9 +21,9 @@ var _ MappedNullable = &SessionUser{}
 
 // SessionUser Response for the /user/me endpoint, returns the currently active user (as `user` property) and, if this user is being impersonated, the original user in the `original` property.
 type SessionUser struct {
-	User                 UserSelf           `json:"user"`
-	Original             *UserSelf          `json:"original,omitempty"`
-	Users                []UserSwitchTarget `json:"users"`
+	User                 UserSelf   `json:"user"`
+	Original             *UserSelf  `json:"original,omitempty"`
+	Users                []UserSelf `json:"users"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -33,7 +33,7 @@ type _SessionUser SessionUser
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewSessionUser(user UserSelf, users []UserSwitchTarget) *SessionUser {
+func NewSessionUser(user UserSelf, users []UserSelf) *SessionUser {
 	this := SessionUser{}
 	this.User = user
 	this.Users = users
@@ -105,9 +105,9 @@ func (o *SessionUser) SetOriginal(v UserSelf) {
 }
 
 // GetUsers returns the Users field value
-func (o *SessionUser) GetUsers() []UserSwitchTarget {
+func (o *SessionUser) GetUsers() []UserSelf {
 	if o == nil {
-		var ret []UserSwitchTarget
+		var ret []UserSelf
 		return ret
 	}
 
@@ -116,7 +116,7 @@ func (o *SessionUser) GetUsers() []UserSwitchTarget {
 
 // GetUsersOk returns a tuple with the Users field value
 // and a boolean to check if the value has been set.
-func (o *SessionUser) GetUsersOk() ([]UserSwitchTarget, bool) {
+func (o *SessionUser) GetUsersOk() ([]UserSelf, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -124,7 +124,7 @@ func (o *SessionUser) GetUsersOk() ([]UserSwitchTarget, bool) {
 }
 
 // SetUsers sets field value
-func (o *SessionUser) SetUsers(v []UserSwitchTarget) {
+func (o *SessionUser) SetUsers(v []UserSelf) {
 	o.Users = v
 }
 

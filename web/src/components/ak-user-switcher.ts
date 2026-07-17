@@ -12,7 +12,7 @@ import { isDefaultAvatar } from "#elements/utils/images";
 
 import Styles from "#components/ak-user-switcher.css";
 
-import { CoreApi, UserSwitchActionEnum, type UserSwitchTarget } from "@goauthentik/api";
+import { CoreApi, type UserSelf, UserSwitchActionEnum } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html } from "lit";
@@ -25,8 +25,10 @@ import PFDropdown from "@patternfly/patternfly/components/Dropdown/dropdown.css"
 export class UserSwitcher extends WithSession(AKElement) {
     static styles = [PFButton, PFDropdown, Styles];
 
-    get #users(): readonly UserSwitchTarget[] {
-        return isAPIResultReady(this.session) ? (this.session.users ?? []) : [];
+    get #users(): readonly UserSelf[] {
+        return isAPIResultReady(this.session)
+            ? [this.session.user, ...(this.session.users ?? [])]
+            : [];
     }
 
     async #startSwitch(userPk?: number): Promise<void> {
@@ -52,7 +54,7 @@ export class UserSwitcher extends WithSession(AKElement) {
         </span>`;
     }
 
-    #renderUser(user: UserSwitchTarget): SlottedTemplateResult {
+    #renderUser(user: UserSelf): SlottedTemplateResult {
         const label = formatUserDisplayName(user, this.uiConfig) || user.username;
         const description =
             [user.email, user.username].find((identifier) => identifier && identifier !== label) ??
