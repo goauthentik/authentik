@@ -58,6 +58,9 @@ class TestUserSwitchingSessions(TestCase):
     def test_cookie_validation(self):
         """Only signed, well-formed switching tokens are accepted."""
         valid = get_random_string(user_switching.TOKEN_LENGTH)
+        UserSwitchingSession.objects.create(token=valid)
         self.assertEqual(user_switching.decode_cookie(user_switching.encode_cookie(valid)), valid)
+        orphaned = get_random_string(user_switching.TOKEN_LENGTH)
+        self.assertIsNone(user_switching.decode_cookie(user_switching.encode_cookie(orphaned)))
         for invalid in (None, "", valid, "too-short", "!" * user_switching.TOKEN_LENGTH):
             self.assertIsNone(user_switching.decode_cookie(invalid))

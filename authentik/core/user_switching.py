@@ -70,7 +70,10 @@ def decode_cookie(raw: str | None) -> str | None:
         payload = decode(raw, _SIGNING_HASH, algorithms=["HS256"])
     except PyJWTError:
         return None
-    return _validate_token(payload.get("user_switching"))
+    token = _validate_token(payload.get("user_switching"))
+    if token and UserSwitchingSession.objects.filter(token=token).exists():
+        return token
+    return None
 
 
 def ensure_request_token(request: HttpRequest) -> str | None:

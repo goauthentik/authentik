@@ -8,7 +8,8 @@ from django.urls import reverse
 from django.utils.timezone import now
 
 from authentik.blueprints.tests import apply_blueprint
-from authentik.core.models import AuthenticatedSession, Session, User
+from authentik.core import user_switching
+from authentik.core.models import AuthenticatedSession, Session, User, UserSwitchingSession
 from authentik.core.tests.utils import create_test_flow, create_test_user
 from authentik.events.models import Event, EventAction
 from authentik.events.utils import get_user
@@ -55,6 +56,33 @@ class TestUserLoginStage(FlowTestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertStageRedirects(response, reverse("authentik_core:root-redirect"))
+
+    def test_stale_user_switching_cookie_is_replaced(self):
+        """A signed cookie without a switching session does not break login."""
+        stale_token = generate_id(user_switching.TOKEN_LENGTH)
+        self.client.cookies[user_switching.COOKIE_NAME] = user_switching.encode_cookie(stale_token)
+        plan = FlowPlan(
+            flow_pk=self.flow.pk.hex,
+            bindings=[self.binding],
+            markers=[StageMarker()],
+        )
+        plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
+        session = self.client.session
+        session[SESSION_KEY_PLAN] = plan
+        session.save()
+
+        response = self.client.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertStageRedirects(response, reverse("authentik_core:root-redirect"))
+        switching_session = UserSwitchingSession.objects.get(authenticated_sessions__user=self.user)
+        self.assertNotEqual(switching_session.token, stale_token)
+        self.assertEqual(
+            user_switching.decode_cookie(self.client.cookies[user_switching.COOKIE_NAME].value),
+            switching_session.token,
+        )
 
     def test_valid_post(self):
         """Test with a valid pending user and backend"""
