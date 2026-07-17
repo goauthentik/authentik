@@ -19,6 +19,7 @@ use tokio::{
     time::{Instant, sleep},
 };
 
+#[expect(clippy::struct_excessive_bools, reason = "It's a builder, it's ok.")]
 #[derive(Default)]
 pub struct AuthentikStackBuilder {
     blueprint_paths: Vec<String>,
@@ -110,10 +111,10 @@ impl AuthentikStackBuilder {
 
         let compose = {
             let mut compose = DockerCompose::with_local_client(&[
-                concat!(env!("CARGO_MANIFEST_DIR"), "/compose/compose.authen),
-                concat!(env!("CARGO_MANIFEST_DIR"), "/compose/compose.ut),
-                concat!(env!("CARGO_MANIFEST_DIR"), "/compose/compose.outpo),
-                concat!(env!("CARGO_MANIFEST_DIR"), "/compose/compose.prox),
+                concat!(env!("CARGO_MANIFEST_DIR"), "/compose/compose.authentik.yml"),
+                concat!(env!("CARGO_MANIFEST_DIR"), "/compose/compose.utils.yml"),
+                concat!(env!("CARGO_MANIFEST_DIR"), "/compose/compose.outposts.yml"),
+                concat!(env!("CARGO_MANIFEST_DIR"), "/compose/compose.proxies.yml"),
             ])
             .with_env("PG_PASS", "password")
             .with_env("AUTHENTIK_SECRET_KEY", "secret_key")
