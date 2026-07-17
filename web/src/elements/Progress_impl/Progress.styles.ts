@@ -39,12 +39,8 @@ export const styles = css`
         font-size: var(--ak-c-progress--m-sm__measure--FontSize);
     }
 
-    :host([size="sm"]) [part="description"] {
-        font-size: var(--ak-c-progress--m-sm__description--FontSize);
-    }
-
-    :host([variant="outside"]) [part="description"] {
-        grid-column: 1/3;
+    :host([variant="outside"]) [part="main"] {
+        grid-template-columns: 1fr fit-content(50%);
     }
 
     :host([variant="outside"]) [part="measure"] {
@@ -58,7 +54,8 @@ export const styles = css`
         align-self: center;
     }
 
-    :host([variant="outside"]) [part="bar"] {
+    :host([variant="outside"]) [part="bar"],
+    :host([variant="outside"]) [part="indicator"] {
         grid-column: 1/2;
     }
 
@@ -66,9 +63,11 @@ export const styles = css`
         --ak-c-progress__bar--before--BackgroundColor: var(
             --ak-c-progress--m-success__bar--BackgroundColor
         );
-        --ak-c-progress__status-icon--Color: var(--ak-c-progress--m-success__status-icon--Color);
         --ak-c-progress--m-inside__measure--Color: var(
             --ak-c-progress--m-success--m-inside__measure--Color
+        );
+        --ak-c-progress__indicator--BackgroundColor: var(
+            --ak-c-progress--m-success__bar--BackgroundColor
         );
     }
 
@@ -76,9 +75,11 @@ export const styles = css`
         --ak-c-progress__bar--before--BackgroundColor: var(
             --ak-c-progress--m-warning__bar--BackgroundColor
         );
-        --ak-c-progress__status-icon--Color: var(--ak-c-progress--m-warning__status-icon--Color);
         --ak-c-progress--m-inside__measure--Color: var(
             --ak-c-progress--m-warning--m-inside__measure--Color
+        );
+        --ak-c-progress__indicator--BackgroundColor: var(
+            --ak-c-progress--m-warning__bar--BackgroundColor
         );
     }
 
@@ -86,11 +87,9 @@ export const styles = css`
         --ak-c-progress__bar--before--BackgroundColor: var(
             --ak-c-progress--m-danger__bar--BackgroundColor
         );
-        --ak-c-progress__status-icon--Color: var(--ak-c-progress--m-danger__status-icon--Color);
-    }
-
-    [part="status-icon"] {
-        color: var(--ak-c-progress__status-icon--Color);
+        --ak-c-progress__indicator--BackgroundColor: var(
+            --ak-c-progress--m-danger__bar--BackgroundColor
+        );
     }
 
     [part="indicator"] {

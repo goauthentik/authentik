@@ -158,9 +158,15 @@ export function akProgress(options: ProgressProps) {
     const { variant, size, severity, min, max, value, oneWay, displayValue, label, ...rest } =
         options;
 
+    // Route around a bug in lit-analyzer about passing undefined to a property that has a default.
+    const others = {
+        ...rest,
+        ...(displayValue ? { ".displayValue": displayValue } : {}),
+    };
+
     return html`
         <ak-progress
-            ${spread(rest)}
+            ${spread(others)}
             variant=${ifDefined(variant)}
             size=${ifDefined(size)}
             severity=${ifDefined(severity)}
@@ -168,7 +174,6 @@ export function akProgress(options: ProgressProps) {
             min=${ifDefined(min)}
             max=${ifDefined(max)}
             value=${ifDefined(value)}
-            .displayValue=${displayValue}
         >
             ${label ? html`<div slot="label">${label}</div>` : nothing}
         </ak-progress>
