@@ -158,4 +158,4 @@ def event_user_pre_delete_cleanup(sender, instance: User, **_):
     from authentik.events.tasks import gdpr_cleanup
 
     if get_current_tenant().gdpr_compliance:
-        gdpr_cleanup.send(instance.pk)
+        gdpr_cleanup.send(instance.pk, instance.uuid.hex)
