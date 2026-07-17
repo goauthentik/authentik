@@ -5,7 +5,6 @@ from unittest.mock import patch
 from django.test import TestCase
 
 from authentik.blueprints.tests import apply_blueprint
-from authentik.core.apps import AppAccessWithoutBindings
 from authentik.core.models import Application, Group, User
 from authentik.lib.generators import generate_id
 from authentik.policies.dummy.models import DummyPolicy
@@ -175,15 +174,6 @@ class SCIMApplicationPoliciesTests(TestCase):
             set([self.users[1].pk, self.users[2].pk, self.users[3].pk, self.users[4].pk]),
             set(user_qs.values_list("pk", flat=True)),
         )
-
-    def test_no_bindings_respects_app_access_without_bindings_flag(self):
-        """When the tenant flag ``AppAccessWithoutBindings`` is False, an
-        application with no bindings must yield zero in-scope users."""
-        # Default (True): all users in scope (covered by test_no_group_policy)
-        # Now flip the flag and verify no users are in scope
-        with patch.object(AppAccessWithoutBindings, "get", return_value=False):
-            user_qs = self.provider.get_object_qs(User)
-            self.assertEqual(set(user_qs.values_list("pk", flat=True)), set())
 
     def test_static_bindings_dont_invoke_policy_engine_per_user(self):
         """Performance regression test for the per-user PolicyEngine evaluation

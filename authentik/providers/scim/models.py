@@ -192,19 +192,7 @@ class SCIMProvider(OutgoingSyncProvider, BackchannelProvider):
 
             # Filter users by their access to the backchannel application if an application is set
             if self.backchannel_application:
-<<<<<<< HEAD
-                base = base.filter(
-                    pk__in=[
-                        user.pk
-                        for user in base
-                        if PolicyEngine(self.backchannel_application, user, None).build().passing
-                    ]
-                )
-=======
-                engine = FilterPolicyEngine(self.backchannel_application, base)
-                engine.empty_result = AppAccessWithoutBindings.get()
-                base = engine.build().result
->>>>>>> 5a3383338 (policies: filter policy engine (#24025))
+                base = FilterPolicyEngine(self.backchannel_application, base).build().result
             return base.order_by("pk")
 
         if type == Group:

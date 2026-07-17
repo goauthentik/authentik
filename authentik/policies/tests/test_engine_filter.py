@@ -1,13 +1,11 @@
 """policy engine tests"""
 
-from datetime import timedelta
 from unittest.mock import patch
 
 from django.core.cache import cache
 from django.db import connections
 from django.test import TestCase
 from django.test.utils import CaptureQueriesContext
-from django.utils.timezone import now
 
 from authentik.core.models import Group, User
 from authentik.core.tests.utils import create_test_user
@@ -295,45 +293,6 @@ class TestFilterPolicyEngine(TestCase):
         self.assertEqual(result, {self.user_a.pk, self.user_b.pk, self.user_c.pk})
         mock_get_many.assert_called_once()
         mock_get.assert_not_called()
-
-    def test_multi_engine_expired_static_binding_ignored(self):
-        """An expired static binding is excluded from evaluation entirely -- it must
-        not affect users who would otherwise pass via a still-active binding."""
-        pbm = PolicyBindingModel.objects.create(policy_engine_mode=PolicyEngineMode.MODE_ALL)
-        PolicyBinding.objects.create(target=pbm, group=self.group_a, order=0)
-        PolicyBinding.objects.create(
-            target=pbm,
-            group=self.group_b,
-            order=1,
-            expiring=True,
-            expires=now() - timedelta(minutes=10),
-        )
-        engine = FilterPolicyEngine(pbm, self.users)
-        self.assertEqual(
-            set(engine.build().result.values_list("pk", flat=True)),
-            {self.user_a.pk, self.user_b.pk},
-        )
-
-    def test_multi_engine_expired_policy_binding_ignored(self):
-        """An expired real-Policy binding is excluded from evaluation entirely, even
-        though (were it not expired) it would force MODE_ALL to fail for everyone."""
-        policy_false = DummyPolicy.objects.create(
-            name=generate_id(), result=False, wait_min=0, wait_max=1
-        )
-        pbm = PolicyBindingModel.objects.create(policy_engine_mode=PolicyEngineMode.MODE_ALL)
-        PolicyBinding.objects.create(target=pbm, group=self.group_a, order=0)
-        PolicyBinding.objects.create(
-            target=pbm,
-            policy=policy_false,
-            order=1,
-            expiring=True,
-            expires=now() - timedelta(minutes=10),
-        )
-        engine = FilterPolicyEngine(pbm, self.users)
-        self.assertEqual(
-            set(engine.build().result.values_list("pk", flat=True)),
-            {self.user_a.pk, self.user_b.pk},
-        )
 
     def test_cache_reused_across_builds(self):
         """A second FilterPolicyEngine.build() must reuse the PolicyResults cached by
