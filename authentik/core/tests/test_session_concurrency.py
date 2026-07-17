@@ -13,7 +13,7 @@ from authentik.core.models import AuthenticatedSession, UserSwitchingSession
 from authentik.core.tests.utils import create_test_session, create_test_user
 
 
-def activate_session(session_key: str, token: str, barrier: Barrier) -> None:
+def _activate_session(session_key: str, token: str, barrier: Barrier) -> None:
     """Activate a session from an independent database connection."""
     close_old_connections()
     try:
@@ -35,7 +35,7 @@ class TestUserSwitchingConcurrency(TransactionTestCase):
         with ThreadPoolExecutor(max_workers=len(sessions)) as executor:
             list(
                 executor.map(
-                    partial(activate_session, token=token, barrier=barrier),
+                    partial(_activate_session, token=token, barrier=barrier),
                     [session.session_id for session in sessions],
                 )
             )
