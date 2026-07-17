@@ -28,6 +28,7 @@ class TestUserSwitchingConcurrency(TransactionTestCase):
 
     def test_concurrent_activation_has_one_current_session(self):
         token = get_random_string(user_switching.TOKEN_LENGTH)
+        UserSwitchingSession.objects.create(token=token)
         sessions = [create_test_session(create_test_user()) for _ in range(2)]
         barrier = Barrier(len(sessions))
 

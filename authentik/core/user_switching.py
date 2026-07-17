@@ -26,7 +26,6 @@ def activate_session(session_key: str, token: str) -> None:
         return
 
     with transaction.atomic():
-        UserSwitchingSession.objects.get_or_create(token=token)
         switching_session = UserSwitchingSession.objects.select_for_update().get(token=token)
         AuthenticatedSession.objects.filter(pk=session_key).update(
             user_switching_session=switching_session
@@ -80,7 +79,8 @@ def ensure_request_token(request: HttpRequest) -> str | None:
     if not hasattr(request, "user_switching_token"):
         return None
     if not request.user_switching_token:
-        request.user_switching_token = _generate_token()
+        switching_session = UserSwitchingSession.objects.create(token=_generate_token())
+        request.user_switching_token = switching_session.token
         request.user_switching_token_needs_update = True
     return request.user_switching_token
 

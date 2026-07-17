@@ -6,6 +6,7 @@ from django.urls import reverse
 from django.utils.crypto import get_random_string
 
 from authentik.core import user_switching
+from authentik.core.models import UserSwitchingSession
 from authentik.core.tests.utils import create_test_session, create_test_user
 
 
@@ -40,6 +41,19 @@ class TestUserSwitchingSessions(TestCase):
         response = self.client.get(reverse("authentik_api:user-me"))
 
         self.assertEqual(response.status_code, 403)
+
+    def test_activation_requires_existing_switching_session(self):
+        """Activating an unknown switching group fails instead of creating it."""
+        target = create_test_session(create_test_user())
+
+        with self.assertRaises(UserSwitchingSession.DoesNotExist):
+            user_switching.activate_session(
+                target.session_id,
+                get_random_string(user_switching.TOKEN_LENGTH),
+            )
+
+        target.refresh_from_db()
+        self.assertIsNone(target.user_switching_session_id)
 
     def test_cookie_validation(self):
         """Only signed, well-formed switching tokens are accepted."""
