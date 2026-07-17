@@ -43,13 +43,15 @@ class UserLDAPSynchronizer(BaseLDAPSynchronizer):
     def search_users(self, username: str) -> list[dict]:
         jit_search_filter = self._source.user_just_in_time_search_filter % {"id": username}
         self._connection.search(
-            search_base=self.base_dn_users,
-            search_filter=f"(&{jit_search_filter}{self._source.user_object_filter})",
-            search_scope=SUBTREE,
-            attributes=[ALL_ATTRIBUTES, ALL_OPERATIONAL_ATTRIBUTES],
-        )
-        return self._connection.response
-
+                    search_base=self.base_dn_users,
+                    search_filter=f"(&{jit_search_filter}{self._source.user_object_filter})",
+                    search_scope=SUBTREE,
+                    attributes=[ALL_ATTRIBUTES, ALL_OPERATIONAL_ATTRIBUTES],
+                )
+        raw_response = self._connection.response
+        response = list(filter(lambda d: d['type'] in "searchResEntry", raw_response))
+        return  response
+    
     def get_objects(self, **kwargs) -> Generator:
         if not self._source.sync_users:
             self._task.info("User syncing is disabled for this Source")
