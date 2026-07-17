@@ -4,6 +4,8 @@ import "#elements/forms/HorizontalFormElement";
 
 import { aki } from "#common/api/client";
 
+import { AKLabel } from "#components/ak-label";
+
 import { BaseStageForm } from "#admin/stages/BaseStageForm";
 
 import { AuthenticatorEndpointGDTCStage, StagesApi } from "@goauthentik/api";
@@ -45,8 +47,18 @@ export class AuthenticatorEndpointGDTCStageForm extends BaseStageForm<Authentica
                     "Stage used to verify users' browsers using Google Chrome Device Trust. This stage can be used in authentication/authorization flows.",
                 )}
             </span>
-            <ak-form-element-horizontal label=${msg("Name")} required name="name">
+            <ak-form-element-horizontal required name="name">
+                ${AKLabel(
+                    {
+                        slot: "label",
+                        className: "pf-c-form__group-label",
+                        htmlFor: "name",
+                        required: true,
+                    },
+                    msg("Name"),
+                )}
                 <input
+                    id="name"
                     type="text"
                     value="${this.instance?.name ?? ""}"
                     class="pf-c-form-control"
@@ -55,12 +67,18 @@ export class AuthenticatorEndpointGDTCStageForm extends BaseStageForm<Authentica
             </ak-form-element-horizontal>
             <ak-form-group open label="${msg("Google Verified Access API")}">
                 <div class="pf-c-form">
-                    <ak-form-element-horizontal
-                        label=${msg("Credentials")}
-                        required
-                        name="credentials"
-                    >
+                    <ak-form-element-horizontal required name="credentials">
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "credentials",
+                                required: true,
+                            },
+                            msg("Credentials"),
+                        )}
                         <ak-codemirror
+                            id="credentials"
                             mode="javascript"
                             .value="${this.instance?.credentials ?? {}}"
                         ></ak-codemirror>
