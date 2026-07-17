@@ -192,40 +192,7 @@ class PolicyEngine(_PolicyEngineBase):
 
     def bindings(self) -> QuerySet[PolicyBinding] | Iterable[PolicyBinding]:
         """Make sure all Policies are their respective classes"""
-<<<<<<< HEAD
-        return PolicyBinding.objects.filter(target=self.__pbm, enabled=True).order_by("order")
-
-    def _check_policy_type(self, binding: PolicyBinding):
-        """Check policy type, make sure it's not the root class as that has no logic implemented"""
-        if binding.policy is not None and binding.policy.__class__ == Policy:
-            raise PolicyEngineException(f"Policy '{binding.policy}' is root type")
-
-    def _check_cache(self, binding: PolicyBinding):
-        if not self.use_cache:
-            return False
-        # It's a bit silly to time this, but
-        with HIST_POLICIES_EXECUTION_TIME.labels(
-            binding_order=binding.order,
-            binding_target_type=binding.target_type,
-            binding_target_name=binding.target_name,
-            object_type=class_to_path(self.request.obj.__class__),
-            mode="cache_retrieve",
-        ).time():
-            key = cache_key(binding, self.request)
-            cached_policy = cache.get(key, None)
-            if not cached_policy:
-                return False
-        self.logger.debug(
-            "P_ENG: Taking result from cache",
-            binding=binding,
-            cache_key=key,
-            request=self.request,
-        )
-        self.__cached_policies.append(cached_policy)
-        return True
-=======
         return self._bindings_for(self.__pbm)
->>>>>>> 5a3383338 (policies: filter policy engine (#24025))
 
     def compute_static_bindings(self, bindings: QuerySet[PolicyBinding]):
         """Check static bindings if possible"""
