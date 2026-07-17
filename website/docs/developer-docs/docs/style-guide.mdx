@@ -1,8 +1,8 @@
 ---
-title: Style Guide
+title: Style guide
 ---
 
-This Style Guide provides guidelines to ensure that the authentik documentation is consistent, clear, and easy to follow. It standardizes aspects like phrasing, formatting, tone, and structure across all documentation.
+This style guide helps keep authentik documentation consistent, clear, and easy to follow. It standardizes phrasing, formatting, tone, and structure.
 
 We appreciate all contributions to our documentation — whether it's fixing a typo, adding new content, or writing an entirely new topic. To help us review and merge your contributions more efficiently, please follow our [writing documentation](./writing-documentation.md) guidelines. If you notice any inconsistencies, feel free to open an [Issue](https://github.com/goauthentik/authentik/issues) or submit a [Pull Request](https://github.com/goauthentik/authentik/pulls) to fix them.
 
@@ -42,7 +42,7 @@ Always include cross-references to related content. If a concept is referenced e
 
 ### Relative vs. absolute paths
 
-Use relative paths when linking to other documentation files. This will ensure links are automatically updated if file paths change in the future. If you are linking between another authentik resource that is not in the same repository and our regular technical docs, then use an absolute path.
+Use relative paths when linking to other documentation files in this repository. Relative paths make links portable across documentation deployments, but they do not update automatically when files move. Use an absolute URL for resources outside this repository.
 
 ### Markdown file type
 
@@ -97,7 +97,7 @@ Use **active voice** and **present tense** for clear, direct communication.
 
 ### User-friendly phrasing
 
-Avoid phrasing that blames the user. Be subjective and polite when providing instructions.
+Avoid phrasing that blames the user. Be objective and polite when providing instructions.
 
 - **DON'T:** "Never modify the default file."
 - **DO:** "We recommend that you do not modify the default file, as doing so may result in unexpected issues."
@@ -181,17 +181,39 @@ When writing out steps in a procedural topic, avoid starting with "Once...". Ins
     - File paths, file names, and directory names (e.g., `/usr/local/bin/`).
     - Inline code snippets (e.g., `.env`).
 
-### Lists
+### List punctuation {#lists}
 
 Add a period at the end of a bulleted item if it is a complete sentence. Try not to mix incomplete and complete sentences in the same list.
 
 If there is a [colon](#following-a-colon) used in a bulleted list item, follow the capitalization rules.
 
-### Notes and warnings
+### Admonitions
 
-We use Info, Warning, and Danger boxes, to provide supplemental information. Info boxes can optionally have a title, but do not use a title with Warning or Danger boxes.
+Use `note`, `tip`, `info`, `warning`, and `danger` admonitions for supplemental information. Choose the least severe type that accurately communicates the content:
+
+- `note`: Additional context.
+- `tip`: Optional advice that makes a task easier.
+- `info`: Important supporting information.
+- `warning`: A risk, limitation, or action that might cause problems.
+- `danger`: An irreversible action or serious security or data-loss risk.
 
 Use the following syntax for these components:
+
+**Note**:
+
+```md
+:::note
+This is additional context.
+:::
+```
+
+**Tip**:
+
+```md
+:::tip
+This is optional advice.
+:::
+```
 
 **Info**:
 
@@ -220,7 +242,7 @@ This level is for extremely serious situations, such as an action permanently re
 ### URLs
 
 - When mentioning URLs in text or within procedural instructions, omit code formatting. For instance: "In your browser, go to https://example.com."
-- For URLs entered as values or defined in fields, enclose any variables inside angle brackets (`< >`) and use underscores between words. See more about variables below (#variables).
+- For URLs entered as values or defined in fields, enclose variables in angle brackets (`< >`) and use underscores between words. See [Variables](#variables).
 
 ### Variables
 
@@ -289,7 +311,7 @@ and_backend_roles: []
 description: "Maps admin to all_access"
 ```
 
-- ` ` ` `yaml `defines the language used for syntax highlighting. Other languages can be used such as`jsx`, `python`, `bash`, and `text`.
+- ` ```yaml ` defines the language used for syntax highlighting. Other supported languages include `jsx`, `python`, `bash`, and `text`.
 
 Optional configurations:
 
@@ -305,7 +327,7 @@ For more details, see the [Docusaurus code block documentation](https://docusaur
 
 Use tables to compare options, list parameters, or summarize information. Ensure tables are concise and avoid nesting complex content. Only use a table when there are 4 or more items. For only 2 or 3 items, use a bullet list.
 
-### Lists
+### List structure
 
 - Use bullet points for unordered lists.
 - Use numbered lists for sequential steps.
