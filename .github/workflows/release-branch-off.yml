@@ -15,16 +15,8 @@ env:
   POSTGRES_PASSWORD: "EK-5jnKfjrGRm<77"
 
 jobs:
-  check-inputs:
-    name: Check inputs validity
-    runs-on: ubuntu-latest
-    steps:
-      - run: |
-          echo "${{ inputs.next_version }}" | grep -E "^[0-9]{4}\.[0-9]{1,2}$"
   bump-version-pr:
     name: Open version bump PR
-    needs:
-      - check-inputs
     runs-on: ubuntu-latest
     steps:
       - id: generate_token
