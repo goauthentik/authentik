@@ -2,13 +2,13 @@
 
 from datetime import timedelta
 
-from django.db import models, transaction
+from django.db import transaction
 from django.db.models import QuerySet
 from django.http.request import HttpRequest
 from django.utils import timezone
-from django.utils.translation import gettext_lazy as _
 from jwt import PyJWTError, decode, encode
 
+from authentik.core.models import AuthenticatedSession, UserSwitchingSession
 from authentik.lib.generators import generate_id
 from authentik.lib.utils.crypto import get_cookie_signing_key
 from authentik.policies.types import PolicyRequest
@@ -20,31 +20,10 @@ COOKIE_AGE = int(timedelta(days=365).total_seconds())
 _SIGNING_HASH = get_cookie_signing_key()
 
 
-class UserSwitchingSession(models.Model):
-    """Sessions grouped by one browser's user-switching cookie."""
-
-    token = models.CharField(max_length=64, primary_key=True)
-    current_session = models.OneToOneField(
-        "authentik_core.AuthenticatedSession",
-        null=True,
-        on_delete=models.SET_NULL,
-        related_name="+",
-    )
-
-    class Meta:
-        verbose_name = _("User Switching Session")
-        verbose_name_plural = _("User Switching Sessions")
-        default_permissions = []
-
-    def __str__(self) -> str:
-        return f"User Switching Session {self.token[:10]}"
-
-
 def activate_session(session_key: str, token: str) -> None:
     """Atomically make a login current for a browser token."""
     if not token:
         return
-    from authentik.core.models import AuthenticatedSession
 
     with transaction.atomic():
         UserSwitchingSession.objects.get_or_create(token=token)
@@ -112,8 +91,6 @@ def reconcile_session(request: HttpRequest) -> None:
         return
     if request.user_switching_token and not request.user_switching_token_needs_update:
         return
-    from authentik.core.models import AuthenticatedSession
-
     authenticated_session = (
         AuthenticatedSession.objects.filter(
             session_id=request.session.session_key,
@@ -136,8 +113,6 @@ def reconcile_session(request: HttpRequest) -> None:
 
 def live_sessions(token: str) -> QuerySet:
     """Return active users' unexpired logins for a browser token."""
-    from authentik.core.models import AuthenticatedSession
-
     return AuthenticatedSession.objects.filter(
         user_switching_session_id=token,
         session__expires__gt=timezone.now(),
@@ -147,8 +122,6 @@ def live_sessions(token: str) -> QuerySet:
 
 def target_sessions(request: HttpRequest, user_id: int, session_key: str) -> QuerySet:
     """Filter to an exact live switch target held by this browser."""
-    from authentik.core.models import AuthenticatedSession
-
     token = getattr(request, "user_switching_token", None)
     if not token:
         return AuthenticatedSession.objects.none()

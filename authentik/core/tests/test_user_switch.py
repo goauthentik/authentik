@@ -12,14 +12,13 @@ from rest_framework.response import Response
 from rest_framework.test import APIClient
 
 from authentik.core import user_switching
-from authentik.core.models import AuthenticatedSession, Session, User
+from authentik.core.models import AuthenticatedSession, Session, User, UserSwitchingSession
 from authentik.core.tests.utils import (
     create_test_brand,
     create_test_flow,
     create_test_session,
     create_test_user,
 )
-from authentik.core.user_switching import UserSwitchingSession
 from authentik.events.models import Event, EventAction
 from authentik.flows.markers import StageMarker
 from authentik.flows.models import Flow, FlowDesignation, FlowStageBinding

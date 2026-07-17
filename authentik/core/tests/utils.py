@@ -10,9 +10,14 @@ from django.test import RequestFactory as BaseRequestFactory
 from django.utils.text import slugify
 
 from authentik.brands.models import Brand
-from authentik.core.models import AuthenticatedSession, Group, Session, User
+from authentik.core.models import (
+    AuthenticatedSession,
+    Group,
+    Session,
+    User,
+    UserSwitchingSession,
+)
 from authentik.core.sessions import SessionStore
-from authentik.core.user_switching import UserSwitchingSession
 from authentik.crypto.builder import CertificateBuilder, PrivateKeyAlg
 from authentik.crypto.models import CertificateKeyPair
 from authentik.flows.models import Flow, FlowDesignation

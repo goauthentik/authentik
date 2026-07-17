@@ -33,7 +33,6 @@ from authentik.admin.files.fields import FileField
 from authentik.admin.files.manager import get_file_manager
 from authentik.admin.files.usage import FileUsage
 from authentik.blueprints.models import ManagedModel
-from authentik.core import user_switching
 from authentik.core.expression.exceptions import PropertyMappingExpressionException
 from authentik.core.types import UILoginButton, UserSettingSerializer
 from authentik.lib.avatars import get_avatar
@@ -1292,6 +1291,26 @@ class Session(ExpiringModel, AbstractBaseSession):
         raise NotImplementedError
 
 
+class UserSwitchingSession(models.Model):
+    """Sessions grouped by one browser's user-switching cookie."""
+
+    token = models.CharField(max_length=64, primary_key=True)
+    current_session = models.OneToOneField(
+        "authentik_core.AuthenticatedSession",
+        null=True,
+        on_delete=models.SET_NULL,
+        related_name="+",
+    )
+
+    class Meta:
+        verbose_name = _("User Switching Session")
+        verbose_name_plural = _("User Switching Sessions")
+        default_permissions = []
+
+    def __str__(self) -> str:
+        return f"User Switching Session {self.token[:10]}"
+
+
 class AuthenticatedSession(SerializerModel):
     session = models.OneToOneField(Session, on_delete=models.CASCADE, primary_key=True)
     # We use the session as primary key, but we need the API to be able to reference
@@ -1301,7 +1320,7 @@ class AuthenticatedSession(SerializerModel):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     user_switching_session = models.ForeignKey(
-        user_switching.UserSwitchingSession,
+        UserSwitchingSession,
         null=True,
         on_delete=models.SET_NULL,
         related_name="authenticated_sessions",
@@ -1340,6 +1359,8 @@ class AuthenticatedSession(SerializerModel):
     @classmethod
     def create_from_request(cls, request: HttpRequest, user: User) -> Self | None:
         """Persist the request's session as the current login and bind the switching token."""
+        from authentik.core import user_switching
+
         if not hasattr(request, "session") or not request.session.exists(
             request.session.session_key
         ):

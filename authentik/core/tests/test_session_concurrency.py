@@ -9,9 +9,8 @@ from django.test import TransactionTestCase
 from django.utils.crypto import get_random_string
 
 from authentik.core import user_switching
-from authentik.core.models import AuthenticatedSession
+from authentik.core.models import AuthenticatedSession, UserSwitchingSession
 from authentik.core.tests.utils import create_test_session, create_test_user
-from authentik.core.user_switching import UserSwitchingSession
 
 
 def activate_session(session_key: str, token: str, barrier: Barrier) -> None:
