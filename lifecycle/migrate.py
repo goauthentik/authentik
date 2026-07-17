@@ -127,7 +127,6 @@ def run_migrations():
         for migration_path in sorted(
             Path(__file__).parent.absolute().glob("system_migrations/*.py")
         ):
-            print(migration_path)
             spec = spec_from_file_location("lifecycle.system_migrations", migration_path)
             if not spec:
                 continue
