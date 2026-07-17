@@ -6,6 +6,14 @@ System settings control system-wide behavior. They can be changed through the au
 
 Environment-level and deployment settings are documented in the [configuration options](../install-config/configuration/configuration.mdx).
 
+### Base URL:ak-version[2026.8]
+
+The base URL under which this authentik instance is reachable, for example `https://authentik.company`.
+
+While this setting is empty, authentik displays a warning in the Admin interface until a value is provided. You can seed it at install time with the [`AUTHENTIK_WEB__BASE_URL`](../install-config/configuration/configuration.mdx) configuration option, but the value set here always takes precedence. A trailing slash is removed automatically. Defaults to an empty string.
+
+This setting is currently unused until it can be marked as required, starting from authentik version 2026.11.
+
 ### Avatars
 
 Configure how authentik should show avatars for users. The following values can be set:

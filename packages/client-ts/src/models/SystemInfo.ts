@@ -69,6 +69,12 @@ export interface SystemInfo {
      * @memberof SystemInfo
      */
     readonly embeddedOutpostHost: string;
+    /**
+     * Configured external base URL. Can be empty
+     * @type {string}
+     * @memberof SystemInfo
+     */
+    readonly baseUrl: string;
 }
 
 /**
@@ -85,6 +91,7 @@ export function instanceOfSystemInfo(value: object): value is SystemInfo {
         return false;
     if (!("embeddedOutpostHost" in value) || value["embeddedOutpostHost"] === undefined)
         return false;
+    if (!("baseUrl" in value) || value["baseUrl"] === undefined) return false;
     return true;
 }
 
@@ -105,6 +112,7 @@ export function SystemInfoFromJSONTyped(json: any, ignoreDiscriminator: boolean)
         serverTime: new Date(json["server_time"]),
         embeddedOutpostDisabled: json["embedded_outpost_disabled"],
         embeddedOutpostHost: json["embedded_outpost_host"],
+        baseUrl: json["base_url"],
     };
 }
 
@@ -122,6 +130,7 @@ export function SystemInfoToJSONTyped(
         | "server_time"
         | "embedded_outpost_disabled"
         | "embedded_outpost_host"
+        | "base_url"
     > | null,
     ignoreDiscriminator: boolean = false,
 ): any {
