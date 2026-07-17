@@ -73,8 +73,8 @@ class InternallyManagedMixin:
     """Mixin for models that should _not_ be manageable via blueprint."""
 
 
-class SimpleThroughModel(models.Model):
-    """Mixin for explicit many-to-many through models"""
+class SimpleThroughModel(models.Model, InternallyManagedMixin):
+    """Base class for explicit many-to-many through models"""
 
     class Meta:
         abstract = True
