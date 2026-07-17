@@ -372,7 +372,6 @@ class _PostgresConsumer(Consumer):
                     "state": TaskState.CONSUMED.value,
                     "mtime": timezone.now(),
                     "message_id": message_id,
-<<<<<<< HEAD
                     "consumable_states": [state.value for state in CONSUMABLE_TASK_STATES],
                     "maximum_eta": timezone.now() + timedelta(seconds=self.timeout),
                     "lock_id": self._get_message_lock_id(message_id),
