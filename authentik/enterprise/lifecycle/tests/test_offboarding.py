@@ -32,7 +32,7 @@ from authentik.enterprise.lifecycle.tasks import (
     execute_due_offboardings,
     execute_offboarding,
 )
-from authentik.enterprise.reports.tests.utils import patch_license
+from authentik.enterprise.tests import enterprise_test
 from authentik.events.models import Event, EventAction
 from authentik.lib.generators import generate_id
 
@@ -356,7 +356,7 @@ class TestOffboardingConcurrency(TransactionTestCase):
         self.assertFalse(self.user.is_active)
 
 
-@patch_license
+@enterprise_test()
 class TestOffboardingAPI(APITestCase):
     def setUp(self):
         self.admin = create_test_admin_user()
