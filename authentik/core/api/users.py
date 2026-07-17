@@ -733,7 +733,6 @@ class UserViewSet(
         permission_classes=[IsAuthenticated],
         pagination_class=None,
         filter_backends=[],
-        url_path="switch",
     )
     @validate(UserSwitchSerializer)
     def switch(self, request: Request, body: UserSwitchSerializer) -> HttpResponse | Response:
