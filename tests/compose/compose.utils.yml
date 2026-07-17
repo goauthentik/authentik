@@ -1,0 +1,30 @@
+---
+services:
+  selenium:
+    profiles:
+      - selenium
+    image: ghcr.io/goauthentik/selenium:149.0-ak-0.50.2
+    shm_size: 2g
+    restart: always
+    environment:
+      VIDEO_READY_PORT: 9912
+    ports:
+      - "4444"
+      - "7900"
+      - "5900"
+  mailpit:
+    profiles:
+      - mailpit
+    image: docker.io/axllent/mailpit:v1.30.4
+    ports:
+      - "8025"
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "http://localhost:8025"]
+      interval: 5s
+      start_period: 1s
+  whoami:
+    profiles:
+      - whoami
+    image: docker.io/traefik/whoami:v1.11.0
+    ports:
+      - "80"

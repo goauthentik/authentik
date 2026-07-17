@@ -65,7 +65,9 @@ jobs:
       image-dockerfile: "lifecycle/container/${{ matrix.dockerfile }}"
       image-build-args: |
         GIT_BUILD_HASH=${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha }}
-      should-cache: "${{ github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository) }}"
+      should-cache: "${{ github.event_name == 'push' || (github.event_name ==
+        'pull_request' && github.event.pull_request.head.repo.full_name ==
+        github.repository) }}"
       cache-suffix: "-${{ needs.build-compute-tags.outputs.safe-branch-name }}"
   lint:
     strategy:
@@ -118,7 +120,8 @@ jobs:
       - name: generate API clients
         run: make gen-clients
       - name: ensure schema is up-to-date
-        run: git diff --exit-code -- schema.yml blueprints/schema.json packages/client-go packages/client-rust packages/client-ts
+        run: git diff --exit-code -- schema.yml blueprints/schema.json
+          packages/client-go packages/client-rust packages/client-ts
   test-migrations:
     runs-on: ubuntu-latest
     steps:
@@ -136,7 +139,8 @@ jobs:
     outputs:
       seed: ${{ steps.seed.outputs.seed }}
   test-migrations-from-stable:
-    name: test-migrations-from-stable - PostgreSQL ${{ matrix.psql }} - Run ${{ matrix.run_id }}/5
+    name: test-migrations-from-stable - PostgreSQL ${{ matrix.psql }} - Run ${{
+      matrix.run_id }}/5
     runs-on: ubuntu-latest
     timeout-minutes: 30
     needs: test-make-seed
@@ -274,9 +278,6 @@ jobs:
       fail-fast: false
       matrix:
         job:
-          - name: proxy
-            glob: tests/e2e/test_provider_proxy*
-            profiles: selenium
           - name: oauth
             glob: tests/e2e/test_provider_oauth2* tests/e2e/test_source_oauth*
             profiles: selenium
@@ -341,9 +342,11 @@ jobs:
         if: contains(matrix.job.profiles, 'selenium')
         with:
           path: web/dist
-          key: ${{ runner.os }}-web-${{ hashFiles('web/pnpm-lock.yaml', 'pnpm-lock.yaml', 'web/src/**', 'web/packages/sfe/src/**') }}-b
+          key: ${{ runner.os }}-web-${{ hashFiles('web/pnpm-lock.yaml', 'pnpm-lock.yaml',
+            'web/src/**', 'web/packages/sfe/src/**') }}-b
       - name: prepare web ui
-        if: steps.cache-web.outputs.cache-hit != 'true' && contains(matrix.job.profiles, 'selenium')
+        if: steps.cache-web.outputs.cache-hit != 'true' && contains(matrix.job.profiles,
+          'selenium')
         working-directory: web
         env:
           NODE_ENV: "production"
@@ -437,7 +440,8 @@ jobs:
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v4
         with:
           path: web/dist
-          key: ${{ runner.os }}-web-${{ hashFiles('web/pnpm-lock.yaml', 'web/src/**', 'web/packages/sfe/src/**') }}-b
+          key: ${{ runner.os }}-web-${{ hashFiles('web/pnpm-lock.yaml', 'web/src/**',
+            'web/packages/sfe/src/**') }}-b
       - name: prepare web ui
         if: steps.cache-web.outputs.cache-hit != 'true'
         env:
@@ -501,7 +505,8 @@ jobs:
         with:
           jobs: ${{ toJSON(needs) }}
   publish:
-    if: "${{ github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository) }}"
+    if: "${{ github.event_name == 'push' || (github.event_name == 'pull_request' &&
+      github.event.pull_request.head.repo.full_name == github.repository) }}"
     needs:
       - build-compute-tags
       - build
@@ -552,7 +557,8 @@ jobs:
           subject-digest: "${{ steps.publish.outputs.digest }}"
           push-to-registry: true
   pr-comment:
-    if: "${{ github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository) }}"
+    if: "${{ github.event_name == 'push' || (github.event_name == 'pull_request' &&
+      github.event.pull_request.head.repo.full_name == github.repository) }}"
     needs:
       - build-compute-tags
       - publish

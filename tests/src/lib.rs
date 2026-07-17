@@ -25,6 +25,10 @@ pub struct AuthentikStackBuilder {
     selenium: bool,
     mailpit: bool,
     whoami: bool,
+    caddy_single: bool,
+    envoy_single: bool,
+    nginx_single: bool,
+    traefik_single: bool,
 }
 
 impl AuthentikStackBuilder {
@@ -49,6 +53,30 @@ impl AuthentikStackBuilder {
     #[must_use]
     pub fn with_whoami(mut self, whoami: bool) -> Self {
         self.whoami = whoami;
+        self
+    }
+
+    #[must_use]
+    pub fn with_caddy_single(mut self, caddy_single: bool) -> Self {
+        self.caddy_single = caddy_single;
+        self
+    }
+
+    #[must_use]
+    pub fn with_envoy_single(mut self, envoy_single: bool) -> Self {
+        self.envoy_single = envoy_single;
+        self
+    }
+
+    #[must_use]
+    pub fn with_nginx_single(mut self, nginx_single: bool) -> Self {
+        self.nginx_single = nginx_single;
+        self
+    }
+
+    #[must_use]
+    pub fn with_traefik_single(mut self, traefik_single: bool) -> Self {
+        self.traefik_single = traefik_single;
         self
     }
 
@@ -81,10 +109,12 @@ impl AuthentikStackBuilder {
         let mut compose_profiles = Vec::with_capacity(3);
 
         let compose = {
-            let mut compose = DockerCompose::with_local_client(&[concat!(
-                env!("CARGO_MANIFEST_DIR"),
-                "/src/compose.yml"
-            )])
+            let mut compose = DockerCompose::with_local_client(&[
+                concat!(env!("CARGO_MANIFEST_DIR"), "/compose/compose.authen),
+                concat!(env!("CARGO_MANIFEST_DIR"), "/compose/compose.ut),
+                concat!(env!("CARGO_MANIFEST_DIR"), "/compose/compose.outpo),
+                concat!(env!("CARGO_MANIFEST_DIR"), "/compose/compose.prox),
+            ])
             .with_env("PG_PASS", "password")
             .with_env("AUTHENTIK_SECRET_KEY", "secret_key")
             .with_env("AUTHENTIK_TAG", &tag)
@@ -107,6 +137,18 @@ impl AuthentikStackBuilder {
             }
             if self.whoami {
                 compose_profiles.push("whoami".to_owned());
+            }
+            if self.caddy_single {
+                compose_profiles.push("caddy-single".to_owned());
+            }
+            if self.envoy_single {
+                compose_profiles.push("envoy-single".to_owned());
+            }
+            if self.nginx_single {
+                compose_profiles.push("nginx-single".to_owned());
+            }
+            if self.traefik_single {
+                compose_profiles.push("traefik-single".to_owned());
             }
 
             compose = compose.with_env("COMPOSE_PROFILES", compose_profiles.join(","));
@@ -162,9 +204,7 @@ impl AuthentikStackBuilder {
             api_config,
         };
 
-        for blueprint_path in self.blueprint_paths {
-            stack.apply_blueprint(&blueprint_path).await?;
-        }
+        stack.apply_blueprints(self.blueprint_paths).await?;
 
         sleep(Duration::from_secs(5)).await;
 
@@ -245,29 +285,27 @@ impl AuthentikStack {
         clippy::future_not_send,
         reason = "So this future cannot be sent between threads, but we don't care in tests."
     )]
-    pub async fn apply_blueprint(&mut self, blueprint_path: &str) -> Result<()> {
+    pub async fn apply_blueprints(&mut self, blueprint_paths: Vec<String>) -> Result<()> {
+        let mut args = Vec::with_capacity(2 + blueprint_paths.len());
+        args.push("ak".to_owned());
+        args.push("apply_blueprint".to_owned());
+        args.extend(blueprint_paths.clone());
         let mut res = self
             .compose()
             .service("worker")
             .expect("a worker to be started")
-            .exec(ExecCommand::new(&[
-                "ak".to_owned(),
-                "apply_blueprint".to_owned(),
-                blueprint_path.to_owned(),
-            ]))
+            .exec(ExecCommand::new(args))
             .await?;
-        eprintln!("::group::apply_blueprint logs - {blueprint_path} - stdout");
-        let _ = tokio::io::copy(&mut res.stdout(), &mut tokio::io::stderr()).await;
-        eprintln!("::endgroup::");
-        eprintln!("::group::apply_blueprint logs - {blueprint_path} - stderr");
+        eprintln!(
+            "::group::apply_blueprint logs - {}",
+            blueprint_paths.join(" ")
+        );
         let _ = tokio::io::copy(&mut res.stderr(), &mut tokio::io::stderr()).await;
         eprintln!("::endgroup::");
         if let Some(exit_code) = res.exit_code().await?
             && exit_code != 0
         {
-            return Err(eyre!(
-                "Apply blueprint {blueprint_path} failed with exit code {exit_code}"
-            ));
+            return Err(eyre!("Apply blueprint failed with exit code {exit_code}"));
         }
         Ok(())
     }

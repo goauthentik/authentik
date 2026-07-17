@@ -11,7 +11,7 @@ use ak_client::{
         providers_api::providers_proxy_create,
     },
     models::{
-        ApplicationRequest, OutpostRequest, OutpostTypeEnum, PatchedUserRequest,
+        ApplicationRequest, OutpostRequest, OutpostTypeEnum, PatchedUserRequest, ProxyMode,
         ProxyProviderRequest,
     },
 };
@@ -29,20 +29,13 @@ struct ProxyClaims {
     ak_proxy: Option<serde_json::Value>,
 }
 
-#[tokio::test(flavor = "multi_thread")]
-async fn proxy_simple() -> Result<()> {
-    let mut stack = AuthentikStack::builder()
-        .with_blueprint("default/flow-default-authentication-flow.yaml")
-        .with_blueprint("default/flow-default-invalidation-flow.yaml")
-        .with_blueprint("default/flow-default-provider-authorization-implicit-consent.yaml")
-        .with_blueprint("default/flow-default-provider-invalidation.yaml")
-        .with_blueprint("system/providers-oauth2.yaml")
-        .with_blueprint("system/providers-proxy.yaml")
-        .with_selenium(true)
-        .with_whoami(true)
-        .run()
-        .await?;
-
+async fn prepare(
+    stack: &mut AuthentikStack,
+    user_attributes: serde_json::Map<String, serde_json::Value>,
+    basic_auth_enabled: Option<bool>,
+    basic_auth_user_attribute: Option<String>,
+    basic_auth_password_attribute: Option<String>,
+) -> Result<()> {
     let users = core_users_list(
         stack.api_config(),
         None,
@@ -79,15 +72,7 @@ async fn proxy_simple() -> Result<()> {
     .await?;
     let me = users.results.first().expect("unable to find akadmin");
     let mut attributes = me.attributes.clone().unwrap_or_default();
-    let mut additional_headers = serde_json::Map::new();
-    additional_headers.insert(
-        "X-Foo".to_owned(),
-        serde_json::Value::String("bar".to_owned()),
-    );
-    attributes.insert(
-        "additionalHeaders".to_owned(),
-        serde_json::Value::Object(additional_headers),
-    );
+    attributes.extend(user_attributes);
     core_users_partial_update(
         stack.api_config(),
         me.pk,
@@ -137,10 +122,14 @@ async fn proxy_simple() -> Result<()> {
         stack.api_config(),
         ProxyProviderRequest {
             name: "test".to_owned(),
+            mode: Some(ProxyMode::Proxy),
             authorization_flow: authorization_flow.pk,
             invalidation_flow: invalidation_flow.pk,
             internal_host: Some("http://whoami".to_owned()),
             external_host: "http://proxy:9000".to_owned(),
+            basic_auth_enabled,
+            basic_auth_user_attribute,
+            basic_auth_password_attribute,
             ..Default::default()
         },
     )
@@ -184,6 +173,34 @@ async fn proxy_simple() -> Result<()> {
     .await?;
 
     stack.start_outpost(&outpost).await?;
+    Ok(())
+}
+
+#[tokio::test(flavor = "multi_thread")]
+async fn proxy_simple() -> Result<()> {
+    let mut stack = AuthentikStack::builder()
+        .with_blueprint("default/flow-default-authentication-flow.yaml")
+        .with_blueprint("default/flow-default-invalidation-flow.yaml")
+        .with_blueprint("default/flow-default-provider-authorization-implicit-consent.yaml")
+        .with_blueprint("default/flow-default-provider-invalidation.yaml")
+        .with_blueprint("system/providers-oauth2.yaml")
+        .with_blueprint("system/providers-proxy.yaml")
+        .with_selenium(true)
+        .with_whoami(true)
+        .run()
+        .await?;
+
+    let mut user_attributes = serde_json::Map::new();
+    let mut additional_headers = serde_json::Map::new();
+    additional_headers.insert(
+        "X-Foo".to_owned(),
+        serde_json::Value::String("bar".to_owned()),
+    );
+    user_attributes.insert(
+        "additionalHeaders".to_owned(),
+        serde_json::Value::Object(additional_headers),
+    );
+    prepare(&mut stack, user_attributes, None, None, None).await?;
 
     stack.goto("http://proxy:9000/api").await?;
 
@@ -247,150 +264,25 @@ async fn proxy_basic_auth() -> Result<()> {
         .run()
         .await?;
 
-    let users = core_users_list(
-        stack.api_config(),
-        None,
-        None,
-        None,
-        None,
-        None,
-        None,
-        None,
-        None,
-        None,
-        None,
-        None,
-        None,
-        None,
-        None,
-        None,
-        None,
-        None,
-        None,
-        None,
-        None,
-        None,
-        None,
-        None,
-        None,
-        None,
-        None,
-        None,
-        None,
-        Some("akadmin"),
-        None,
-    )
-    .await?;
-    let me = users.results.first().expect("unable to find akadmin");
-    let mut attributes = me.attributes.clone().unwrap_or_default();
-    attributes.insert(
+    let mut user_attributes = serde_json::Map::new();
+    user_attributes.insert(
         "basic-username".to_owned(),
         serde_json::Value::String("akadmin-cred".to_owned()),
     );
-    attributes.insert(
+    user_attributes.insert(
         "basic-password".to_owned(),
         serde_json::Value::String("akadmin-password".to_owned()),
     );
-    core_users_partial_update(
-        stack.api_config(),
-        me.pk,
-        Some(PatchedUserRequest {
-            attributes: Some(attributes),
-            ..Default::default()
-        }),
-    )
-    .await?;
     let expected_base64_header = BASE64_STANDARD.encode("akadmin-cred:akadmin-password");
 
-    let authorization_flows = flows_instances_list(
-        stack.api_config(),
-        None,
-        None,
-        None,
-        None,
-        None,
-        None,
-        None,
-        None,
-        Some("default-provider-authorization-implicit-consent"),
+    prepare(
+        &mut stack,
+        user_attributes,
+        Some(true),
+        Some("basic-username".to_owned()),
+        Some("basic-password".to_owned()),
     )
     .await?;
-    let authorization_flow = authorization_flows
-        .results
-        .first()
-        .expect("unable to find authorization flow");
-    let invalidation_flows = flows_instances_list(
-        stack.api_config(),
-        None,
-        None,
-        None,
-        None,
-        None,
-        None,
-        None,
-        None,
-        Some("default-provider-invalidation-flow"),
-    )
-    .await?;
-    let invalidation_flow = invalidation_flows
-        .results
-        .first()
-        .expect("unable to find invalidation flow");
-
-    let provider = providers_proxy_create(
-        stack.api_config(),
-        ProxyProviderRequest {
-            name: "test".to_owned(),
-            authorization_flow: authorization_flow.pk,
-            invalidation_flow: invalidation_flow.pk,
-            internal_host: Some("http://whoami".to_owned()),
-            external_host: "http://proxy:9000".to_owned(),
-            basic_auth_enabled: Some(true),
-            basic_auth_user_attribute: Some("basic-username".to_owned()),
-            basic_auth_password_attribute: Some("basic-password".to_owned()),
-            ..Default::default()
-        },
-    )
-    .await?;
-    core_applications_create(
-        stack.api_config(),
-        ApplicationRequest {
-            name: "test".to_owned(),
-            slug: "test".to_owned(),
-            provider: Some(Some(provider.pk)),
-            ..Default::default()
-        },
-    )
-    .await?;
-
-    let outpost_config = {
-        let mut config = outposts_instances_default_settings_retrieve(stack.api_config())
-            .await?
-            .config;
-        config.insert(
-            "authentik_host".to_owned(),
-            serde_json::Value::String("http://server:9000".to_owned()),
-        );
-        config.insert(
-            "log_level".to_owned(),
-            serde_json::Value::String("debug".to_owned()),
-        );
-        config
-    };
-
-    let outpost = outposts_instances_create(
-        stack.api_config(),
-        OutpostRequest {
-            name: "test".to_owned(),
-            r#type: OutpostTypeEnum::Proxy,
-            providers: vec![provider.pk],
-            config: outpost_config,
-            ..Default::default()
-        },
-    )
-    .await?;
-
-    stack.start_outpost(&outpost).await?;
 
     stack.goto("http://proxy:9000/api").await?;
 

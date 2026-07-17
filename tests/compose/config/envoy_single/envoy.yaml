@@ -5,7 +5,7 @@ static_resources:
       address:
         socket_address:
           address: 0.0.0.0
-          port_value: 10000
+          port_value: 80
       filter_chains:
         - filters:
             - name: envoy.filters.network.http_connection_manager
@@ -26,7 +26,7 @@ static_resources:
                       http_service:
                         path_prefix: /outpost.goauthentik.io/auth/envoy
                         server_uri:
-                          uri: http://ak-test-outpost:9000
+                          uri: http://proxy:9000
                           cluster: authentik_outpost
                           timeout: 0.25s
                         authorization_request:
@@ -52,7 +52,7 @@ static_resources:
                   name: local_route
                   virtual_hosts:
                     - name: local_service
-                      domains: ["localhost"]
+                      domains: ["envoy-single"]
                       routes:
                         - match:
                             prefix: "/outpost.goauthentik.io"
@@ -84,7 +84,7 @@ static_resources:
               - endpoint:
                   address:
                     socket_address:
-                      address: ak-test-outpost
+                      address: proxy
                       port_value: 9000
     - name: whoami
       type: LOGICAL_DNS
@@ -95,5 +95,5 @@ static_resources:
               - endpoint:
                   address:
                     socket_address:
-                      address: ak-whoami
+                      address: whoami
                       port_value: 80

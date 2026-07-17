@@ -41,5 +41,9 @@ name = "e2e_provider_proxy"
 path = "e2e/provider_proxy.rs"
 
 [[test]]
+name = "e2e_provider_proxy_forward"
+path = "e2e/provider_proxy_forward.rs"
+
+[[test]]
 name = "e2e_provider_proxy_connect"
 path = "e2e/provider_proxy_connect.rs"

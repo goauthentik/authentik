@@ -337,7 +337,7 @@ updates:
       - /packages/client-rust
       - /packages/client-ts
       - /scripts
-      - /tests/src
+      - /tests/compose
       - /tests/e2e
       - /tests/openid_conformance
     schedule:
