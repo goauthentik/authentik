@@ -116,7 +116,7 @@ async fn proxy_connectivity() -> Result<()> {
 
     let mut retries = 0_usize;
     loop {
-        if retries > 50 {
+        if retries >= 120 {
             let _ = stack.quit().await;
             return Err(eyre!("Failed to check outpost state."));
         }
