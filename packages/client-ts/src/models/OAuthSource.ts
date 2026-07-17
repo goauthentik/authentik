@@ -251,6 +251,12 @@ export interface OAuthSource {
      * @memberof OAuthSource
      */
     authorizationCodeAuthMethod?: AuthorizationCodeAuthMethodEnum;
+    /**
+     * The Discord guild ID to sync roles from
+     * @type {string}
+     * @memberof OAuthSource
+     */
+    discordGuildId?: string;
 }
 
 /**
@@ -335,6 +341,7 @@ export function OAuthSourceFromJSONTyped(json: any, ignoreDiscriminator: boolean
             json["authorization_code_auth_method"] == null
                 ? undefined
                 : AuthorizationCodeAuthMethodEnumFromJSON(json["authorization_code_auth_method"]),
+        discordGuildId: json["discord_guild_id"] == null ? undefined : json["discord_guild_id"],
     };
 }
 
@@ -390,5 +397,6 @@ export function OAuthSourceToJSONTyped(
         authorization_code_auth_method: AuthorizationCodeAuthMethodEnumToJSON(
             value["authorizationCodeAuthMethod"],
         ),
+        discord_guild_id: value["discordGuildId"],
     };
 }
