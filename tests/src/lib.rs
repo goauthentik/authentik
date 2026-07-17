@@ -1,4 +1,3 @@
-use regex::Regex;
 use std::{env, time::Duration};
 
 use ak_client::{
@@ -6,6 +5,7 @@ use ak_client::{
     models::Outpost,
 };
 use eyre::{Result, eyre};
+use regex::Regex;
 use reqwest::{Method, StatusCode};
 use serde_json::Value;
 use testcontainers::{
