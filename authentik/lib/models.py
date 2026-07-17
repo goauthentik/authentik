@@ -74,7 +74,10 @@ class InternallyManagedMixin:
 
 
 class SimpleThroughModel(models.Model, InternallyManagedMixin):
-    """Base class for explicit many-to-many through models"""
+    """
+    Base class for explicit many-to-many through models, mainly used for adjusting API behaviour as
+    if there were no explicit through models
+    """
 
     class Meta:
         abstract = True
