@@ -2,6 +2,8 @@
  * @file Contains various label maps for API enums and other values that we want to display in the UI.
  */
 
+import { EventContext, EventModel } from "./events";
+
 import { MessageFormatter } from "#common/ui/locale/format";
 
 import {
@@ -28,9 +30,15 @@ export function formatIntentLabel(intent: IntentEnum = IntentEnum.Api): string {
     return IntentLabelRecord[intent]();
 }
 
-export const EventActionLabelRecord: Record<EventActions, MessageFormatter<string>> = {
+export const EventActionLabelRecord: Record<
+    EventActions,
+    MessageFormatter<string, [context?: EventContext]>
+> = {
     [EventActions.Login]: () => msg("Login"),
-    [EventActions.LoginFailed]: () => msg("Failed login"),
+    [EventActions.LoginFailed]: (context?: EventContext) =>
+            context && 'reason' in context
+                ? msg(str`Failed login (${loginFailedReasonToLabel(context.reason as LoginFailedReason)})`)
+                : msg("Failed login"),
     [EventActions.Logout]: () => msg("Logout"),
     [EventActions.UserWrite]: () => msg("User was written to"),
     [EventActions.SuspiciousRequest]: () => msg("Suspicious request"),
@@ -53,9 +61,18 @@ export const EventActionLabelRecord: Record<EventActions, MessageFormatter<strin
     [EventActions.SystemException]: () => msg("General system exception"),
     [EventActions.ConfigurationError]: () => msg("Configuration error"),
     [EventActions.ConfigurationWarning]: () => msg("Configuration warning"),
-    [EventActions.ModelCreated]: () => msg("Model created"),
-    [EventActions.ModelUpdated]: () => msg("Model updated"),
-    [EventActions.ModelDeleted]: () => msg("Model deleted"),
+    [EventActions.ModelCreated]: (context?: EventContext) =>
+        context?.model
+            ? msg(str`Model created (${(context.model as EventModel).model_name})`)
+            : msg("Model created"),
+    [EventActions.ModelUpdated]: (context?: EventContext) =>
+        context?.model
+            ? msg(str`Model updated (${(context.model as EventModel).model_name})`)
+            : msg("Model updated"),
+    [EventActions.ModelDeleted]: (context?: EventContext) =>
+        context?.model
+            ? msg(str`Model deleted (${(context.model as EventModel).model_name})`)
+            : msg("Model deleted"),
     [EventActions.EmailSent]: () => msg("Email sent"),
     [EventActions.UpdateAvailable]: () => msg("Update available"),
     [EventActions.ExportReady]: () => msg("Data export ready"),
@@ -67,10 +84,10 @@ export const EventActionLabelRecord: Record<EventActions, MessageFormatter<strin
     [EventActions.Custom]: () => msg("Custom action"),
 };
 
-export function actionToLabel(action?: EventActions): string {
+export function actionToLabel(action?: EventActions, context?: EventContext): string {
     const formatter = action ? EventActionLabelRecord[action] : null;
 
-    return formatter?.() || "";
+    return formatter?.(context) || "";
 }
 
 const SeverityEnumLabelRecord: Record<SeverityEnum, MessageFormatter<string>> = {
@@ -140,4 +157,25 @@ export function userTypeToLabel(type?: UserTypeEnum): string {
     const formatter = type ? UserTypeLabelRecord[type] : null;
 
     return formatter?.() || "";
+}
+
+export enum LoginFailedReason {
+    IncorrectPassword = "incorrect_password",
+    AccountInactive = "account_inactive",
+    MFAInvalidOTP = "mfa_invalid_otp",
+    MFAWebAuthnFailed = "mfa_webauthn_failed",
+    MFADuoDenied = "mfa_duo_denied",
+}
+
+const LoginFailedReasonRecord: Record<LoginFailedReason, MessageFormatter<string>> = {
+    [LoginFailedReason.IncorrectPassword]: () => msg("incorrect password"),
+    [LoginFailedReason.AccountInactive]: () => msg("account inactive"),
+    [LoginFailedReason.MFAInvalidOTP]: () => msg("invalid OTP code"),
+    [LoginFailedReason.MFAWebAuthnFailed]: () => msg("WebAuthn assertion failed"),
+    [LoginFailedReason.MFADuoDenied]: () => msg("Duo denied access"),
+};
+
+export function loginFailedReasonToLabel(reason?: LoginFailedReason): string {
+    const formatter = reason ? LoginFailedReasonRecord[reason] : null;
+    return formatter?.() || msg("unknown");
 }

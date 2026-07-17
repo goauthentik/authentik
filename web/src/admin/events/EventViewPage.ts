@@ -65,7 +65,7 @@ export class EventViewPage extends AKElement {
                                 </dt>
                                 <dd class="pf-c-description-list__description">
                                     <div class="pf-c-description-list__text">
-                                        ${actionToLabel(this.event.action)}
+                                        ${actionToLabel(this.event.action, this.event.context)}
                                     </div>
                                 </dd>
                             </div>

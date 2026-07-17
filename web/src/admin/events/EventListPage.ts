@@ -62,7 +62,7 @@ export class EventListPage extends WithLicenseSummary(TablePage<Event>) {
     ];
 
     protected override rowLabel(item: Event): string | null {
-        return actionToLabel(item.action);
+        return actionToLabel(item.action, item.context);
     }
 
     renderSectionBefore(): TemplateResult {
@@ -101,7 +101,7 @@ export class EventListPage extends WithLicenseSummary(TablePage<Event>) {
 
     row(item: EventWithContext): SlottedTemplateResult[] {
         return [
-            html`<div>${actionToLabel(item.action)}</div>
+            html`<div>${actionToLabel(item.action, item.context)}</div>
                 <small>${item.app}</small>`,
             renderEventUser(item),
             Timestamp(item.created),

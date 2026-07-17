@@ -133,6 +133,16 @@ class EventAction(models.TextChoices):
     CUSTOM_PREFIX = "custom_"
 
 
+class LoginFailedReason(models.TextChoices):
+    """All possible reasons a login failed, to be shown in event log"""
+
+    INCORRECT_PASSWORD = "incorrect_password"
+    ACCOUNT_INACTIVE = "account_inactive"
+    MFA_INVALID_OTP = "mfa_invalid_otp"
+    MFA_WEBAUTHN_FAILED = "mfa_webauthn_failed"
+    MFA_DUO_DENIED = "mfa_duo_denied"
+
+
 class Event(SerializerModel, ExpiringModel):
     """An individual Audit/Metrics/Notification/Error Event"""
 
