@@ -98,6 +98,7 @@ class EventAction(models.TextChoices):
     LOGIN_BLOCKED = "login_blocked"
     LOGOUT = "logout"
 
+    USER_CREATED = "user_created"
     USER_WRITE = "user_write"
     USER_OFFBOARDED = "user_offboarded"
     SUSPICIOUS_REQUEST = "suspicious_request"
@@ -273,7 +274,7 @@ class Event(SerializerModel, ExpiringModel):
         self.save()
         return self
 
-    def from_ctx_request(self):
+    def from_ctx_request(self, require_request=False):
         from authentik.events.middleware import _CTX_IGNORE, _CTX_REQUEST
 
         if _CTX_IGNORE.get():
@@ -281,7 +282,7 @@ class Event(SerializerModel, ExpiringModel):
         request = _CTX_REQUEST.get()
         if request:
             self.from_http(request, request.user)
-        else:
+        elif not require_request:
             self.save()
 
     @staticmethod

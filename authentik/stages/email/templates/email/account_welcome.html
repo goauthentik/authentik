@@ -1,0 +1,26 @@
+{% extends "email/base.html" %}
+
+{% load i18n %}
+
+{% block content %}
+<tr>
+  <td align="center">
+    <h1>
+      {% trans "Welcome!" %}
+    </h1>
+  </td>
+</tr>
+<tr>
+  <td align="center">
+    <table border="0">
+      <tr>
+        <td align="center" style="max-width: 300px; padding: 20px 0; color: #212124;">
+          {% blocktrans with username=key_value.user_username %}
+          An account has been created for you. Your username is <strong>{{ username }}</strong>.
+          {% endblocktrans %}
+        </td>
+      </tr>
+    </table>
+  </td>
+</tr>
+{% endblock %}

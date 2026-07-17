@@ -48,6 +48,10 @@ class EmailTemplates(models.TextChoices):
         "email/security_notification.html",
         _("Security Notification"),
     )
+    ACCOUNT_WELCOME = (
+        "email/account_welcome.html",
+        _("Account Welcome"),
+    )
 
 
 def get_template_choices():

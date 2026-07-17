@@ -5,12 +5,13 @@ from urllib.parse import urlencode
 from django.contrib.auth.hashers import make_password
 from django.contrib.contenttypes.models import ContentType
 from django.test import RequestFactory, TestCase
+from django.urls import reverse
 from django.views.debug import SafeExceptionReporterFilter
 from guardian.shortcuts import get_anonymous_user
 
 from authentik.brands.models import Brand
-from authentik.core.models import Group, User
-from authentik.core.tests.utils import create_test_user
+from authentik.core.models import Group, Source, User
+from authentik.core.tests.utils import create_test_admin_user, create_test_user
 from authentik.events.models import Event, EventAction
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
 from authentik.flows.views.executor import QS_QUERY, SESSION_KEY_PLAN
@@ -225,6 +226,67 @@ class TestEvents(TestCase):
 
         new_count = Event.objects.filter(action=EventAction.PASSWORD_SET, user__pk=user.pk).count()
         self.assertEqual(new_count, old_count + 1)
+
+    def test_password_set_event(self):
+        """Password changes should carry subject_uuid and synced_from_source"""
+        user = create_test_user()
+
+        user.set_password(generate_id())
+        user.save()
+
+        event = (
+            Event.objects.filter(action=EventAction.PASSWORD_SET, user__pk=user.pk)
+            .order_by("-created")
+            .first()
+        )
+        self.assertFalse(event.context["synced_from_source"])
+        self.assertEqual(event.context["subject_uuid"], user.uuid.hex)
+
+    def test_password_set_synced_from_source(self):
+        """Passwords cached from a source login should be flagged as synced_from_source"""
+        user = create_test_user()
+
+        source = Source.objects.create(name=generate_id(), slug=generate_id())
+        user.set_password(generate_id(), sender=source)
+        user.save()
+
+        event = (
+            Event.objects.filter(action=EventAction.PASSWORD_SET, user__pk=user.pk)
+            .order_by("-created")
+            .first()
+        )
+        self.assertTrue(event.context["synced_from_source"])
+
+    def test_user_created_event(self):
+        """Creating a user in a request context should emit a user_created event"""
+        admin = create_test_admin_user()
+        self.client.force_login(admin)
+        username = generate_id()
+
+        response = self.client.post(
+            reverse("authentik_api:user-list"),
+            data={"username": username, "name": username},
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 201)
+
+        user = User.objects.get(username=username)
+        event = Event.objects.filter(
+            action=EventAction.USER_CREATED, context__subject_uuid=user.uuid.hex
+        ).first()
+        self.assertIsNotNone(event)
+        self.assertEqual(event.context["username"], username)
+        self.assertEqual(event.context["user_type"], "internal")
+        self.assertEqual(event.user["pk"], admin.pk)
+
+    def test_user_created_event_requires_request(self):
+        """Creating a user outside a request context should not emit user_created"""
+        user = create_test_user()
+        self.assertFalse(
+            Event.objects.filter(
+                action=EventAction.USER_CREATED, context__subject_uuid=user.uuid.hex
+            ).exists()
+        )
 
     def test_log_deprecation(self):
         """Test Event.log_deprecation"""

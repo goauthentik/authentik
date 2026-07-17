@@ -1,0 +1,7 @@
+{% load i18n %}{% autoescape off %}{% trans "Welcome!" %}
+
+{% blocktrans with username=key_value.user_username %}An account has been created for you. Your username is {{ username }}.{% endblocktrans %}
+
+--
+Powered by goauthentik.io.
+{% endautoescape %}

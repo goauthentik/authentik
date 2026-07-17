@@ -40363,6 +40363,7 @@ components:
       - login_failed
       - login_blocked
       - logout
+      - user_created
       - user_write
       - user_offboarded
       - suspicious_request

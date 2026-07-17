@@ -272,6 +272,31 @@ class TestEventTransports(TestCase):
             self.assertEqual(len(mail.outbox), 1)
             self.assertEqual(mail.outbox[0].subject, "your password was changed")
 
+    def test_transport_email_welcome_template(self):
+        """Test email transport with the account welcome template"""
+        event = Event.new(EventAction.USER_CREATED, user_type="internal").set_user(self.user)
+        event.save()
+        notification = Notification.objects.create(
+            severity=NotificationSeverity.NOTICE,
+            body="foo",
+            event=event,
+            user=self.user,
+        )
+        transport: NotificationTransport = NotificationTransport.objects.create(
+            name=generate_id(),
+            mode=TransportMode.EMAIL,
+            email_template="email/account_welcome.html",
+            email_subject_prefix="",
+        )
+        with patch(
+            "authentik.stages.email.models.EmailStage.backend_class",
+            PropertyMock(return_value=EmailBackend),
+        ):
+            transport.send(notification)
+            self.assertEqual(len(mail.outbox), 1)
+            self.assertEqual(mail.outbox[0].subject, "Welcome to authentik")
+            self.assertIn(self.user.username, mail.outbox[0].alternatives[0][0])
+
     def test_transport_email_validation(self):
         """Test email transport template validation"""
 
