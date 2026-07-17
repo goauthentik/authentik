@@ -43,7 +43,7 @@ glob = "= 0.3.3"
 hyper-unix-socket = "= 0.6.1"
 hyper-util = "= 0.1.20"
 ipnet = { version = "= 2.12.0", features = ["serde"] }
-json-subscriber = "= 0.2.8"
+json-subscriber = "= 0.3.0"
 metrics = "= 0.24.6"
 metrics-exporter-prometheus = { version = "= 0.18.3", default-features = false }
 nix = { version = "= 0.31.3", features = ["hostname", "signal"] }
@@ -51,7 +51,7 @@ notify = "= 8.2.0"
 pin-project-lite = "= 0.2.17"
 pyo3 = "= 0.29.0"
 pyo3-build-config = "= 0.29.0"
-regex = "= 1.12.4"
+regex = "= 1.13.0"
 reqwest = { version = "= 0.13.4", features = [
   "form",
   "json",
@@ -113,7 +113,7 @@ tracing-subscriber = { version = "= 0.3.23", features = [
   "tracing-log",
 ] }
 url = "= 2.5.8"
-uuid = { version = "= 1.23.4", features = ["serde", "v4"] }
+uuid = { version = "= 1.23.5", features = ["serde", "v4"] }
 which = "= 8.0.4"
 
 ak-axum = { package = "authentik-axum", version = "2026.8.0-rc1", path = "./packages/ak-axum" }

@@ -7,6 +7,7 @@ from multiprocessing.connection import Connection
 from django.core.cache import cache
 from django.db.models import Count, Q, QuerySet
 from django.http import HttpRequest
+from django.utils.timezone import now
 from sentry_sdk import start_span
 from structlog.stdlib import BoundLogger, get_logger
 
@@ -215,6 +216,7 @@ class PolicyEngine(_PolicyEngineBase):
                         | Q(~Q(group__in=all_groups), group__isnull=False),
                         negate=True,
                     ),
+                    Q(expiring=False) | Q(expiring=True, expires__gte=now()),
                     enabled=True,
                 ),
             )
