@@ -99,3 +99,33 @@ services:
       - "9000"
       - "9443"
       - "9300"
+  ldap:
+    profiles:
+      - ldap
+    image: authentik.invalid/goauthentik/dev-ldap:${AUTHENTIK_TAG:?tag}
+    environment:
+      AUTHENTIK_HOST: http://server:9000
+      AUTHENTIK_TOKEN: ${AUTHENTIK_LDAP_TOKEN:-}
+    ports:
+      - "3389"
+      - "6636"
+      - "9300"
+  radius:
+    profiles:
+      - radius
+    image: authentik.invalid/goauthentik/dev-radius:${AUTHENTIK_TAG:?tag}
+    environment:
+      AUTHENTIK_HOST: http://server:9000
+      AUTHENTIK_TOKEN: ${AUTHENTIK_RADIUS_TOKEN:-}
+    ports:
+      - "1812/udp"
+      - "9300"
+  rac:
+    profiles:
+      - rac
+    image: authentik.invalid/goauthentik/dev-rac:${AUTHENTIK_TAG:?tag}
+    environment:
+      AUTHENTIK_HOST: http://server:9000
+      AUTHENTIK_TOKEN: ${AUTHENTIK_RAC_TOKEN:-}
+    ports:
+      - "9300"
