@@ -22,7 +22,7 @@ If the new password matches one of those historical entries, the policy fails an
 Password history is maintained automatically while the policy is in use.
 
 :::info Password History Start
-This policy only starts building password history once it is in use. The first password change after you enable it seeds the history; there is no older password history to compare against before that point.
+This policy starts building password history after you enable it. The first subsequent password change seeds the history; there is no older password history to compare against before that point.
 :::
 
 ## When to use it
