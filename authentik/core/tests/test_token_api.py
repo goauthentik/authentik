@@ -57,7 +57,6 @@ class TestTokenAPI(APITestCase):
             reverse("authentik_api:token-set-key", kwargs={"identifier": token.identifier}),
             {"key": new_key},
         )
-        print(f"token owner={token.user_id}, acting user={self.admin.pk}")
         self.assertEqual(response.status_code, 204)
         token.refresh_from_db()
         self.assertEqual(token.key, new_key)
