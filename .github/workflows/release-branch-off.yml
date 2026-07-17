@@ -72,6 +72,12 @@ jobs:
           dependencies: "system,python,go,node,runtime,rust-nightly"
       - name: Run migrations
         run: make migrate
+      - name: Update previous version
+        run: |
+          VERSION="$(<"${PWD}/internal/constants/VERSION")"
+          sed -i -E \
+            "s/^VERSION_PREVIOUS_MAJOR = .*/VERSION_PREVIOUS_MAJOR = \"${VERSION}\"/" \
+            "${PWD}/authentik/__init__.py"
       - name: Bump version
         run: "make bump version=${{ inputs.next_version }}.0-rc1"
       - name: Re-generate API Clients
