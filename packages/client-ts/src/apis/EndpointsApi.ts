@@ -87,6 +87,14 @@ import {
 import { type MDMConfigRequest, MDMConfigRequestToJSON } from "../models/MDMConfigRequest";
 import { type MDMConfigResponse, MDMConfigResponseFromJSON } from "../models/MDMConfigResponse";
 import {
+    type MicrosoftIntuneConnector,
+    MicrosoftIntuneConnectorFromJSON,
+} from "../models/MicrosoftIntuneConnector";
+import {
+    type MicrosoftIntuneConnectorRequest,
+    MicrosoftIntuneConnectorRequestToJSON,
+} from "../models/MicrosoftIntuneConnectorRequest";
+import {
     type PaginatedAgentConnectorList,
     PaginatedAgentConnectorListFromJSON,
 } from "../models/PaginatedAgentConnectorList";
@@ -123,6 +131,10 @@ import {
     PaginatedGoogleChromeConnectorListFromJSON,
 } from "../models/PaginatedGoogleChromeConnectorList";
 import {
+    type PaginatedMicrosoftIntuneConnectorList,
+    PaginatedMicrosoftIntuneConnectorListFromJSON,
+} from "../models/PaginatedMicrosoftIntuneConnectorList";
+import {
     type PatchedAgentConnectorRequest,
     PatchedAgentConnectorRequestToJSON,
 } from "../models/PatchedAgentConnectorRequest";
@@ -154,6 +166,10 @@ import {
     type PatchedGoogleChromeConnectorRequest,
     PatchedGoogleChromeConnectorRequestToJSON,
 } from "../models/PatchedGoogleChromeConnectorRequest";
+import {
+    type PatchedMicrosoftIntuneConnectorRequest,
+    PatchedMicrosoftIntuneConnectorRequestToJSON,
+} from "../models/PatchedMicrosoftIntuneConnectorRequest";
 import { type TokenView, TokenViewFromJSON } from "../models/TokenView";
 import { type TypeCreate, TypeCreateFromJSON } from "../models/TypeCreate";
 import { type UsedBy, UsedByFromJSON } from "../models/UsedBy";
@@ -484,6 +500,40 @@ export interface EndpointsGoogleChromeConnectorsUpdateRequest {
 }
 
 export interface EndpointsGoogleChromeConnectorsUsedByListRequest {
+    connectorUuid: string;
+}
+
+export interface EndpointsMicrosoftIntuneConnectorsCreateRequest {
+    microsoftIntuneConnectorRequest: MicrosoftIntuneConnectorRequest;
+}
+
+export interface EndpointsMicrosoftIntuneConnectorsDestroyRequest {
+    connectorUuid: string;
+}
+
+export interface EndpointsMicrosoftIntuneConnectorsListRequest {
+    name?: string;
+    ordering?: string;
+    page?: number;
+    pageSize?: number;
+    search?: string;
+}
+
+export interface EndpointsMicrosoftIntuneConnectorsPartialUpdateRequest {
+    connectorUuid: string;
+    patchedMicrosoftIntuneConnectorRequest?: PatchedMicrosoftIntuneConnectorRequest;
+}
+
+export interface EndpointsMicrosoftIntuneConnectorsRetrieveRequest {
+    connectorUuid: string;
+}
+
+export interface EndpointsMicrosoftIntuneConnectorsUpdateRequest {
+    connectorUuid: string;
+    microsoftIntuneConnectorRequest: MicrosoftIntuneConnectorRequest;
+}
+
+export interface EndpointsMicrosoftIntuneConnectorsUsedByListRequest {
     connectorUuid: string;
 }
 
@@ -5358,6 +5408,517 @@ export class EndpointsApi extends runtime.BaseAPI {
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<Array<UsedBy>> {
         const response = await this.endpointsGoogleChromeConnectorsUsedByListRaw(
+            requestParameters,
+            initOverrides,
+        );
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for endpointsMicrosoftIntuneConnectorsCreate without sending the request
+     */
+    async endpointsMicrosoftIntuneConnectorsCreateRequestOpts(
+        requestParameters: EndpointsMicrosoftIntuneConnectorsCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["microsoftIntuneConnectorRequest"] == null) {
+            throw new runtime.RequiredError(
+                "microsoftIntuneConnectorRequest",
+                'Required parameter "microsoftIntuneConnectorRequest" was null or undefined when calling endpointsMicrosoftIntuneConnectorsCreate().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters["Content-Type"] = "application/json";
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/endpoints/microsoft_intune/connectors/`;
+
+        return {
+            path: urlPath,
+            method: "POST",
+            headers: headerParameters,
+            query: queryParameters,
+            body: MicrosoftIntuneConnectorRequestToJSON(
+                requestParameters["microsoftIntuneConnectorRequest"],
+            ),
+        };
+    }
+
+    /**
+     * MicrosoftIntuneConnector Viewset
+     */
+    async endpointsMicrosoftIntuneConnectorsCreateRaw(
+        requestParameters: EndpointsMicrosoftIntuneConnectorsCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<MicrosoftIntuneConnector>> {
+        const requestOptions =
+            await this.endpointsMicrosoftIntuneConnectorsCreateRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            MicrosoftIntuneConnectorFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * MicrosoftIntuneConnector Viewset
+     */
+    async endpointsMicrosoftIntuneConnectorsCreate(
+        requestParameters: EndpointsMicrosoftIntuneConnectorsCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<MicrosoftIntuneConnector> {
+        const response = await this.endpointsMicrosoftIntuneConnectorsCreateRaw(
+            requestParameters,
+            initOverrides,
+        );
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for endpointsMicrosoftIntuneConnectorsDestroy without sending the request
+     */
+    async endpointsMicrosoftIntuneConnectorsDestroyRequestOpts(
+        requestParameters: EndpointsMicrosoftIntuneConnectorsDestroyRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["connectorUuid"] == null) {
+            throw new runtime.RequiredError(
+                "connectorUuid",
+                'Required parameter "connectorUuid" was null or undefined when calling endpointsMicrosoftIntuneConnectorsDestroy().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/endpoints/microsoft_intune/connectors/{connector_uuid}/`;
+        urlPath = urlPath.replace(
+            "{connector_uuid}",
+            encodeURIComponent(String(requestParameters["connectorUuid"])),
+        );
+
+        return {
+            path: urlPath,
+            method: "DELETE",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * MicrosoftIntuneConnector Viewset
+     */
+    async endpointsMicrosoftIntuneConnectorsDestroyRaw(
+        requestParameters: EndpointsMicrosoftIntuneConnectorsDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
+        const requestOptions =
+            await this.endpointsMicrosoftIntuneConnectorsDestroyRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.VoidApiResponse(response);
+    }
+
+    /**
+     * MicrosoftIntuneConnector Viewset
+     */
+    async endpointsMicrosoftIntuneConnectorsDestroy(
+        requestParameters: EndpointsMicrosoftIntuneConnectorsDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
+        await this.endpointsMicrosoftIntuneConnectorsDestroyRaw(requestParameters, initOverrides);
+    }
+
+    /**
+     * Creates request options for endpointsMicrosoftIntuneConnectorsList without sending the request
+     */
+    async endpointsMicrosoftIntuneConnectorsListRequestOpts(
+        requestParameters: EndpointsMicrosoftIntuneConnectorsListRequest,
+    ): Promise<runtime.RequestOpts> {
+        const queryParameters: any = {};
+
+        if (requestParameters["name"] != null) {
+            queryParameters["name"] = requestParameters["name"];
+        }
+
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
+        }
+
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
+        }
+
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
+        }
+
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/endpoints/microsoft_intune/connectors/`;
+
+        return {
+            path: urlPath,
+            method: "GET",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * MicrosoftIntuneConnector Viewset
+     */
+    async endpointsMicrosoftIntuneConnectorsListRaw(
+        requestParameters: EndpointsMicrosoftIntuneConnectorsListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PaginatedMicrosoftIntuneConnectorList>> {
+        const requestOptions =
+            await this.endpointsMicrosoftIntuneConnectorsListRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedMicrosoftIntuneConnectorListFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * MicrosoftIntuneConnector Viewset
+     */
+    async endpointsMicrosoftIntuneConnectorsList(
+        requestParameters: EndpointsMicrosoftIntuneConnectorsListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PaginatedMicrosoftIntuneConnectorList> {
+        const response = await this.endpointsMicrosoftIntuneConnectorsListRaw(
+            requestParameters,
+            initOverrides,
+        );
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for endpointsMicrosoftIntuneConnectorsPartialUpdate without sending the request
+     */
+    async endpointsMicrosoftIntuneConnectorsPartialUpdateRequestOpts(
+        requestParameters: EndpointsMicrosoftIntuneConnectorsPartialUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["connectorUuid"] == null) {
+            throw new runtime.RequiredError(
+                "connectorUuid",
+                'Required parameter "connectorUuid" was null or undefined when calling endpointsMicrosoftIntuneConnectorsPartialUpdate().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters["Content-Type"] = "application/json";
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/endpoints/microsoft_intune/connectors/{connector_uuid}/`;
+        urlPath = urlPath.replace(
+            "{connector_uuid}",
+            encodeURIComponent(String(requestParameters["connectorUuid"])),
+        );
+
+        return {
+            path: urlPath,
+            method: "PATCH",
+            headers: headerParameters,
+            query: queryParameters,
+            body: PatchedMicrosoftIntuneConnectorRequestToJSON(
+                requestParameters["patchedMicrosoftIntuneConnectorRequest"],
+            ),
+        };
+    }
+
+    /**
+     * MicrosoftIntuneConnector Viewset
+     */
+    async endpointsMicrosoftIntuneConnectorsPartialUpdateRaw(
+        requestParameters: EndpointsMicrosoftIntuneConnectorsPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<MicrosoftIntuneConnector>> {
+        const requestOptions =
+            await this.endpointsMicrosoftIntuneConnectorsPartialUpdateRequestOpts(
+                requestParameters,
+            );
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            MicrosoftIntuneConnectorFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * MicrosoftIntuneConnector Viewset
+     */
+    async endpointsMicrosoftIntuneConnectorsPartialUpdate(
+        requestParameters: EndpointsMicrosoftIntuneConnectorsPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<MicrosoftIntuneConnector> {
+        const response = await this.endpointsMicrosoftIntuneConnectorsPartialUpdateRaw(
+            requestParameters,
+            initOverrides,
+        );
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for endpointsMicrosoftIntuneConnectorsRetrieve without sending the request
+     */
+    async endpointsMicrosoftIntuneConnectorsRetrieveRequestOpts(
+        requestParameters: EndpointsMicrosoftIntuneConnectorsRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["connectorUuid"] == null) {
+            throw new runtime.RequiredError(
+                "connectorUuid",
+                'Required parameter "connectorUuid" was null or undefined when calling endpointsMicrosoftIntuneConnectorsRetrieve().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/endpoints/microsoft_intune/connectors/{connector_uuid}/`;
+        urlPath = urlPath.replace(
+            "{connector_uuid}",
+            encodeURIComponent(String(requestParameters["connectorUuid"])),
+        );
+
+        return {
+            path: urlPath,
+            method: "GET",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * MicrosoftIntuneConnector Viewset
+     */
+    async endpointsMicrosoftIntuneConnectorsRetrieveRaw(
+        requestParameters: EndpointsMicrosoftIntuneConnectorsRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<MicrosoftIntuneConnector>> {
+        const requestOptions =
+            await this.endpointsMicrosoftIntuneConnectorsRetrieveRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            MicrosoftIntuneConnectorFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * MicrosoftIntuneConnector Viewset
+     */
+    async endpointsMicrosoftIntuneConnectorsRetrieve(
+        requestParameters: EndpointsMicrosoftIntuneConnectorsRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<MicrosoftIntuneConnector> {
+        const response = await this.endpointsMicrosoftIntuneConnectorsRetrieveRaw(
+            requestParameters,
+            initOverrides,
+        );
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for endpointsMicrosoftIntuneConnectorsUpdate without sending the request
+     */
+    async endpointsMicrosoftIntuneConnectorsUpdateRequestOpts(
+        requestParameters: EndpointsMicrosoftIntuneConnectorsUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["connectorUuid"] == null) {
+            throw new runtime.RequiredError(
+                "connectorUuid",
+                'Required parameter "connectorUuid" was null or undefined when calling endpointsMicrosoftIntuneConnectorsUpdate().',
+            );
+        }
+
+        if (requestParameters["microsoftIntuneConnectorRequest"] == null) {
+            throw new runtime.RequiredError(
+                "microsoftIntuneConnectorRequest",
+                'Required parameter "microsoftIntuneConnectorRequest" was null or undefined when calling endpointsMicrosoftIntuneConnectorsUpdate().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters["Content-Type"] = "application/json";
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/endpoints/microsoft_intune/connectors/{connector_uuid}/`;
+        urlPath = urlPath.replace(
+            "{connector_uuid}",
+            encodeURIComponent(String(requestParameters["connectorUuid"])),
+        );
+
+        return {
+            path: urlPath,
+            method: "PUT",
+            headers: headerParameters,
+            query: queryParameters,
+            body: MicrosoftIntuneConnectorRequestToJSON(
+                requestParameters["microsoftIntuneConnectorRequest"],
+            ),
+        };
+    }
+
+    /**
+     * MicrosoftIntuneConnector Viewset
+     */
+    async endpointsMicrosoftIntuneConnectorsUpdateRaw(
+        requestParameters: EndpointsMicrosoftIntuneConnectorsUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<MicrosoftIntuneConnector>> {
+        const requestOptions =
+            await this.endpointsMicrosoftIntuneConnectorsUpdateRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            MicrosoftIntuneConnectorFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * MicrosoftIntuneConnector Viewset
+     */
+    async endpointsMicrosoftIntuneConnectorsUpdate(
+        requestParameters: EndpointsMicrosoftIntuneConnectorsUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<MicrosoftIntuneConnector> {
+        const response = await this.endpointsMicrosoftIntuneConnectorsUpdateRaw(
+            requestParameters,
+            initOverrides,
+        );
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for endpointsMicrosoftIntuneConnectorsUsedByList without sending the request
+     */
+    async endpointsMicrosoftIntuneConnectorsUsedByListRequestOpts(
+        requestParameters: EndpointsMicrosoftIntuneConnectorsUsedByListRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["connectorUuid"] == null) {
+            throw new runtime.RequiredError(
+                "connectorUuid",
+                'Required parameter "connectorUuid" was null or undefined when calling endpointsMicrosoftIntuneConnectorsUsedByList().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/endpoints/microsoft_intune/connectors/{connector_uuid}/used_by/`;
+        urlPath = urlPath.replace(
+            "{connector_uuid}",
+            encodeURIComponent(String(requestParameters["connectorUuid"])),
+        );
+
+        return {
+            path: urlPath,
+            method: "GET",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * Get a list of all objects that use this object
+     */
+    async endpointsMicrosoftIntuneConnectorsUsedByListRaw(
+        requestParameters: EndpointsMicrosoftIntuneConnectorsUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+        const requestOptions =
+            await this.endpointsMicrosoftIntuneConnectorsUsedByListRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
+    }
+
+    /**
+     * Get a list of all objects that use this object
+     */
+    async endpointsMicrosoftIntuneConnectorsUsedByList(
+        requestParameters: EndpointsMicrosoftIntuneConnectorsUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Array<UsedBy>> {
+        const response = await this.endpointsMicrosoftIntuneConnectorsUsedByListRaw(
             requestParameters,
             initOverrides,
         );

@@ -237,7 +237,7 @@ class FleetController(BaseController[DBC]):
                 for x in (host.get("software") or [])
             ],
             "vendor": {
-                "fleetdm.com": {
+                self.vendor_identifier(): {
                     "policies": [
                         delete_none_values({"name": policy["name"], "status": policy["response"]})
                         for policy in host.get("policies", [])
