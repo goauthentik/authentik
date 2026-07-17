@@ -23,7 +23,10 @@ from authentik.tasks.middleware import CurrentTask
 LOGGER = get_logger()
 
 
-@actor(description=_("Dispatch new event notifications."))
+@actor(
+    description=_("Dispatch new event notifications."),
+    queue_name="event_dispatcher",
+)
 def event_trigger_dispatch(event_uuid: UUID):
     for trigger in NotificationRule.objects.all():
         event_trigger_handler.send_with_options(args=(event_uuid, trigger.name), rel_obj=trigger)
@@ -33,7 +36,8 @@ def event_trigger_dispatch(event_uuid: UUID):
     description=_(
         "Check if policies attached to NotificationRule match event "
         "and dispatch notification tasks."
-    )
+    ),
+    queue_name="event_dispatcher",
 )
 def event_trigger_handler(event_uuid: UUID, trigger_name: str):
     """Check if policies attached to NotificationRule match event"""
@@ -97,7 +101,10 @@ def event_trigger_handler(event_uuid: UUID, trigger_name: str):
     self.info(f"Created {count} notification tasks")
 
 
-@actor(description=_("Send notification."))
+@actor(
+    description=_("Send notification."),
+    queue_name="event_dispatcher",
+)
 def notification_transport(transport_pk: int, event_pk: str, user_pk: int, trigger_pk: str):
     """Send notification over specified transport"""
     event = Event.objects.filter(pk=event_pk).first()
@@ -123,7 +130,10 @@ def notification_transport(transport_pk: int, event_pk: str, user_pk: int, trigg
     transport.send(notification)
 
 
-@actor(description=_("Cleanup events for GDPR compliance."))
+@actor(
+    description=_("Cleanup events for GDPR compliance."),
+    queue_name="gdpr_cleanup",
+)
 def gdpr_cleanup(user_pk: int):
     """cleanup events from gdpr_compliance"""
     events = Event.objects.filter(user__pk=user_pk)
@@ -132,7 +142,10 @@ def gdpr_cleanup(user_pk: int):
         event.delete()
 
 
-@actor(description=_("Cleanup seen notifications and notifications whose event expired."))
+@actor(
+    description=_("Cleanup seen notifications and notifications whose event expired."),
+    queue_name="event_dispatcher",
+)
 def notification_cleanup():
     """Cleanup seen notifications and notifications whose event expired."""
     self = CurrentTask.get_task()
