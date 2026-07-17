@@ -7,6 +7,7 @@ from typing import Any
 
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.models import AnonymousUser, Permission
+from django.db import models
 from django.db.models import Exists, OuterRef, Prefetch, Q
 from django.db.transaction import atomic
 from django.db.utils import IntegrityError
@@ -469,14 +470,21 @@ class UserSelfSerializer(ModelSerializer):
         }
 
 
+class UserSwitchAction(models.TextChoices):
+    """Actions supported by the user switch endpoint."""
+
+    ADD = "add"
+    SWITCH = "switch"
+
+
 class UserSwitchSerializer(PassiveSerializer):
     """Request to add or switch users in the current browser."""
 
-    action = ChoiceField(choices=["add", "switch"], default="switch")
+    action = ChoiceField(choices=UserSwitchAction.choices, default=UserSwitchAction.SWITCH)
     user_pk = IntegerField(required=False)
 
     def validate(self, attrs: dict) -> dict:
-        if attrs["action"] == "switch" and "user_pk" not in attrs:
+        if attrs["action"] == UserSwitchAction.SWITCH and "user_pk" not in attrs:
             raise ValidationError({"user_pk": _("This field is required.")})
         return attrs
 
@@ -730,7 +738,7 @@ class UserViewSet(
     @validate(UserSwitchSerializer)
     def switch(self, request: Request, body: UserSwitchSerializer) -> HttpResponse | Response:
         """Start browser user switching."""
-        if body.validated_data["action"] == "add":
+        if body.validated_data["action"] == UserSwitchAction.ADD:
             response = user_add_response(request._request)
         else:
             response = user_switch_response(request._request, body.validated_data["user_pk"])
