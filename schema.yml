@@ -39095,6 +39095,7 @@ components:
       - login_failed
       - login_blocked
       - logout
+      - user_created
       - user_write
       - suspicious_request
       - password_set

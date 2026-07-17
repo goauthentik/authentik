@@ -16,6 +16,9 @@ entries:
   id: default-match-password-set
   attrs:
     action: password_set
+    # Passwords cached from a source login (LDAP/Kerberos) are excluded: those
+    # change in the directory, not in authentik
+    query: 'context.synced_from_source = False'
   identifiers:
     name: default-match-password-set
 - model: authentik_events.notificationrule
@@ -108,3 +111,35 @@ entries:
     order: 0
     policy: !KeyOf default-match-account-lockdown
     target: !KeyOf default-notify-user-account-lockdown
+
+- model: authentik_events.notificationtransport
+  id: default-welcome-email-transport
+  attrs:
+    mode: email
+    email_template: email/account_welcome.html
+    # The subject comes from email/account_welcome_subject.txt
+    email_subject_prefix: ""
+  identifiers:
+    name: default-welcome-email-transport
+- model: authentik_policies_event_matcher.eventmatcherpolicy
+  id: default-match-user-created
+  attrs:
+    action: user_created
+    # Only welcome people - not service accounts
+    query: 'context.user_type in ("internal", "external")'
+  identifiers:
+    name: default-match-user-created
+- model: authentik_events.notificationrule
+  id: default-notify-user-welcome
+  identifiers:
+    name: default-notify-user-welcome
+  attrs:
+    severity: notice
+    destination_event_subject: true
+    transports:
+      - !KeyOf default-welcome-email-transport
+- model: authentik_policies.policybinding
+  identifiers:
+    order: 0
+    policy: !KeyOf default-match-user-created
+    target: !KeyOf default-notify-user-welcome

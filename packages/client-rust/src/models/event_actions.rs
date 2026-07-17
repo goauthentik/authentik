@@ -21,6 +21,8 @@ pub enum EventActions {
     LoginBlocked,
     #[serde(rename = "logout")]
     Logout,
+    #[serde(rename = "user_created")]
+    UserCreated,
     #[serde(rename = "user_write")]
     UserWrite,
     #[serde(rename = "suspicious_request")]
@@ -94,6 +96,7 @@ impl std::fmt::Display for EventActions {
             Self::LoginFailed => write!(f, "login_failed"),
             Self::LoginBlocked => write!(f, "login_blocked"),
             Self::Logout => write!(f, "logout"),
+            Self::UserCreated => write!(f, "user_created"),
             Self::UserWrite => write!(f, "user_write"),
             Self::SuspiciousRequest => write!(f, "suspicious_request"),
             Self::PasswordSet => write!(f, "password_set"),

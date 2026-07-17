@@ -25,6 +25,7 @@ const (
 	EVENTACTIONS_LOGIN_FAILED               EventActions = "login_failed"
 	EVENTACTIONS_LOGIN_BLOCKED              EventActions = "login_blocked"
 	EVENTACTIONS_LOGOUT                     EventActions = "logout"
+	EVENTACTIONS_USER_CREATED               EventActions = "user_created"
 	EVENTACTIONS_USER_WRITE                 EventActions = "user_write"
 	EVENTACTIONS_SUSPICIOUS_REQUEST         EventActions = "suspicious_request"
 	EVENTACTIONS_PASSWORD_SET               EventActions = "password_set"
@@ -65,6 +66,7 @@ var AllowedEventActionsEnumValues = []EventActions{
 	"login_failed",
 	"login_blocked",
 	"logout",
+	"user_created",
 	"user_write",
 	"suspicious_request",
 	"password_set",

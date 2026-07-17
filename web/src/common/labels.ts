@@ -33,6 +33,7 @@ export const EventActionLabelRecord: Record<EventActions, MessageFormatter<strin
     [EventActions.LoginFailed]: () => msg("Failed login"),
     [EventActions.LoginBlocked]: () => msg("Login blocked by policy"),
     [EventActions.Logout]: () => msg("Logout"),
+    [EventActions.UserCreated]: () => msg("User created"),
     [EventActions.UserWrite]: () => msg("User was written to"),
     [EventActions.SuspiciousRequest]: () => msg("Suspicious request"),
     [EventActions.PasswordSet]: () => msg("Password set"),
