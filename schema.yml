@@ -37833,6 +37833,14 @@ components:
         failure_result:
           type: boolean
           description: Result if the Policy execution fails.
+        expires:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        expiring:
+          type: boolean
+          readOnly: true
         is_primary:
           type: boolean
         connector:
@@ -37847,6 +37855,8 @@ components:
       required:
       - connector
       - connector_obj
+      - expires
+      - expiring
       - group_obj
       - order
       - pk
@@ -52242,7 +52252,17 @@ components:
         failure_result:
           type: boolean
           description: Result if the Policy execution fails.
+        expires:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        expiring:
+          type: boolean
+          readOnly: true
       required:
+      - expires
+      - expiring
       - group_obj
       - order
       - pk
