@@ -98,7 +98,9 @@ class TestUserSwitch(FlowTestCase):
                 response = self._post(data, {"next": "https://example.invalid/"})
                 self.assertContains(response, "User switching is disabled.", status_code=400)
 
-    def test_switch_plans_verified_browser_target(self):
+    def test_low_permission_user_can_switch_verified_browser_target(self):
+        self.assertFalse(self.user.is_superuser)
+        self.assertEqual(self.user.get_all_permissions(), set())
         self._login(self.user)
         target = create_test_session(self.other_user, self._token(), is_current=False)
 
