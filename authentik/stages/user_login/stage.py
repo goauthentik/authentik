@@ -195,8 +195,9 @@ class UserLoginStageView(ChallengeStageView):
         if PLAN_CONTEXT_USER_SWITCH_TARGET_SESSION in self.executor.plan.context:
             target_session = self._get_valid_user_switch_target(user)
             if not target_session:
-                self.logger.warning("User switch target session is no longer valid.")
-                return self.executor.stage_invalid()
+                message = _("The selected session is no longer available. Please try again.")
+                self.logger.warning(message)
+                return self.executor.stage_invalid(message)
             user = target_session.user
         if not user.is_active:
             self.logger.warning("User is not active, login will not work.")

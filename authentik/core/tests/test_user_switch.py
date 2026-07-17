@@ -172,7 +172,12 @@ class TestUserSwitch(FlowTestCase):
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
         )
 
-        self.assertStageResponse(response, self.flow, component="ak-stage-access-denied")
+        self.assertStageResponse(
+            response,
+            self.flow,
+            component="ak-stage-access-denied",
+            error_message="The selected session is no longer available. Please try again.",
+        )
         switching_session = UserSwitchingSession.objects.get(token=get_switching_token(self.client))
         self.assertEqual(switching_session.current_session_id, first_session_key)
 
