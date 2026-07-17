@@ -49,14 +49,18 @@ from authentik.common.oauth.constants import (
 )
 from authentik.core.models import (
     AuthenticatedSession,
-    ExpiringModel,
     PropertyMapping,
     Provider,
     User,
 )
 from authentik.crypto.models import CertificateKeyPair
 from authentik.lib.generators import generate_code_fixed_length, generate_id, generate_key
-from authentik.lib.models import DomainlessURLValidator, InternallyManagedMixin, SerializerModel
+from authentik.lib.models import (
+    DomainlessURLValidator,
+    ExpiringModel,
+    InternallyManagedMixin,
+    SerializerModel,
+)
 from authentik.lib.utils.time import timedelta_string_validator
 from authentik.sources.oauth.models import OAuthSource
 
@@ -530,6 +534,9 @@ class AuthorizationCode(InternallyManagedMixin, SerializerModel, ExpiringModel, 
     code_challenge_method = models.CharField(
         max_length=255, null=True, verbose_name=_("Code Challenge Method")
     )
+    dpop_jkt = models.CharField(
+        max_length=255, null=True, default=None, verbose_name=_("DPoP JWK Thumbprint")
+    )
 
     class Meta:
         verbose_name = _("Authorization Code")
@@ -609,6 +616,9 @@ class RefreshToken(InternallyManagedMixin, SerializerModel, ExpiringModel, BaseG
 
     token = models.TextField(default=generate_client_secret)
     _id_token = models.TextField(verbose_name=_("ID Token"))
+    dpop_jkt = models.CharField(
+        max_length=255, null=True, default=None, verbose_name=_("DPoP JWK Thumbprint")
+    )
     # Shadow the `session` field from `BaseGrantModel` as we want refresh tokens to persist even
     # when the session is terminated.
     session = models.ForeignKey(
@@ -654,6 +664,9 @@ class DeviceToken(InternallyManagedMixin, ExpiringModel):
     device_code = models.TextField(default=generate_key)
     user_code = models.TextField(default=generate_code_fixed_length)
     _scope = models.TextField(default="", verbose_name=_("Scopes"))
+    dpop_jkt = models.CharField(
+        max_length=255, null=True, default=None, verbose_name=_("DPoP JWK Thumbprint")
+    )
     session = models.ForeignKey(
         AuthenticatedSession, null=True, on_delete=models.SET_DEFAULT, default=None
     )
