@@ -4,6 +4,8 @@ import "#components/ak-text-input";
 import "#elements/CodeMirror";
 import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
 
+import { AKLabel } from "#components/ak-label";
+
 import { ApplicationWizardProviderForm } from "#admin/applications/wizard/steps/providers/ApplicationWizardProviderForm";
 import {
     propertyMappingsProvider,
@@ -32,12 +34,18 @@ export class ApplicationWizardRACProviderForm extends ApplicationWizardProviderF
                     required
                 ></ak-text-input>
 
-                <ak-form-element-horizontal
-                    name="authorizationFlow"
-                    label=${msg("Authorization Flow")}
-                    required
-                >
+                <ak-form-element-horizontal name="authorizationFlow" required>
+                    ${AKLabel(
+                        {
+                            slot: "label",
+                            className: "pf-c-form__group-label",
+                            htmlFor: "authorizationFlow",
+                            required: true,
+                        },
+                        msg("Authorization Flow"),
+                    )}
                     <ak-flow-search
+                        id="authorizationFlow"
                         flowType=${FlowDesignationEnum.Authorization}
                         .currentFlow=${provider.authorizationFlow}
                         required
@@ -60,11 +68,17 @@ export class ApplicationWizardRACProviderForm extends ApplicationWizardProviderF
 
                 <ak-form-group open label="${msg("Protocol settings")}">
                     <div class="pf-c-form">
-                        <ak-form-element-horizontal
-                            label=${msg("Property mappings")}
-                            name="propertyMappings"
-                        >
+                        <ak-form-element-horizontal name="propertyMappings">
+                            ${AKLabel(
+                                {
+                                    slot: "label",
+                                    className: "pf-c-form__group-label",
+                                    htmlFor: "propertyMappings",
+                                },
+                                msg("Property mappings"),
+                            )}
                             <ak-dual-select-dynamic-selected
+                                id="propertyMappings"
                                 .provider=${propertyMappingsProvider}
                                 .selector=${propertyMappingsSelector(provider?.propertyMappings)}
                                 available-label="${msg("Available Property Mappings")}"

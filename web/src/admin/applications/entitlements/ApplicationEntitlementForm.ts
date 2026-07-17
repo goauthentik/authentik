@@ -7,6 +7,8 @@ import { aki } from "#common/api/client";
 
 import { ModelForm } from "#elements/forms/ModelForm";
 
+import { AKLabel } from "#components/ak-label";
+
 import { ApplicationEntitlement, CoreApi } from "@goauthentik/api";
 
 import YAML from "yaml";
@@ -53,16 +55,35 @@ export class ApplicationEntitlementForm extends ModelForm<ApplicationEntitlement
     }
 
     protected override renderForm(): TemplateResult {
-        return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
+        return html` <ak-form-element-horizontal required name="name">
+                ${AKLabel(
+                    {
+                        slot: "label",
+                        className: "pf-c-form__group-label",
+                        htmlFor: "name",
+                        required: true,
+                    },
+                    msg("Name"),
+                )}
                 <input
+                    id="name"
                     type="text"
                     value="${this.instance?.name ?? ""}"
                     class="pf-c-form-control"
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("Attributes")} name="attributes">
+            <ak-form-element-horizontal name="attributes">
+                ${AKLabel(
+                    {
+                        slot: "label",
+                        className: "pf-c-form__group-label",
+                        htmlFor: "attributes",
+                    },
+                    msg("Attributes"),
+                )}
                 <ak-codemirror
+                    id="attributes"
                     mode="yaml"
                     value="${YAML.stringify(this.instance?.attributes ?? {})}"
                 >

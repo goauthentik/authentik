@@ -3,6 +3,8 @@ import "#elements/forms/HorizontalFormElement";
 
 import { aki } from "#common/api/client";
 
+import { AKLabel } from "#components/ak-label";
+
 import { BasePropertyMappingForm } from "#admin/property-mappings/BasePropertyMappingForm";
 
 import { PropertymappingsApi, ScopeMapping } from "@goauthentik/api";
@@ -27,12 +29,18 @@ export class PropertyMappingProviderScopeForm extends BasePropertyMappingForm<Sc
     };
 
     renderExtraFields(): TemplateResult {
-        return html` <ak-form-element-horizontal
-                label=${msg("Scope name")}
-                required
-                name="scopeName"
-            >
+        return html` <ak-form-element-horizontal required name="scopeName">
+                ${AKLabel(
+                    {
+                        slot: "label",
+                        className: "pf-c-form__group-label",
+                        htmlFor: "scopeName",
+                        required: true,
+                    },
+                    msg("Scope name"),
+                )}
                 <input
+                    id="scopeName"
                     type="text"
                     value="${ifDefined(this.instance?.scopeName)}"
                     class="pf-c-form-control"
@@ -42,8 +50,17 @@ export class PropertyMappingProviderScopeForm extends BasePropertyMappingForm<Sc
                     ${msg("Scope which the client can specify to access these properties.")}
                 </p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("Description")} name="description">
+            <ak-form-element-horizontal name="description">
+                ${AKLabel(
+                    {
+                        slot: "label",
+                        className: "pf-c-form__group-label",
+                        htmlFor: "description",
+                    },
+                    msg("Description"),
+                )}
                 <input
+                    id="description"
                     type="text"
                     value="${ifDefined(this.instance?.description)}"
                     class="pf-c-form-control"

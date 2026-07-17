@@ -8,6 +8,8 @@ import { docLink } from "#common/global";
 
 import type { RadioOption } from "#elements/forms/Radio";
 
+import { AKLabel } from "#components/ak-label";
+
 import { BasePropertyMappingForm } from "#admin/property-mappings/BasePropertyMappingForm";
 
 import { PropertymappingsApi, RACPropertyMapping } from "@goauthentik/api";
@@ -52,8 +54,18 @@ export class PropertyMappingProviderRACForm extends BasePropertyMappingForm<RACP
 
     protected override renderForm(): TemplateResult {
         return html`
-            <ak-form-element-horizontal label=${msg("Name")} required name="name">
+            <ak-form-element-horizontal required name="name">
+                ${AKLabel(
+                    {
+                        slot: "label",
+                        className: "pf-c-form__group-label",
+                        htmlFor: "name",
+                        required: true,
+                    },
+                    msg("Name"),
+                )}
                 <input
+                    id="name"
                     type="text"
                     value="${ifDefined(this.instance?.name)}"
                     class="pf-c-form-control"
@@ -62,21 +74,33 @@ export class PropertyMappingProviderRACForm extends BasePropertyMappingForm<RACP
             </ak-form-element-horizontal>
             <ak-form-group open label="${msg("General settings")}">
                 <div class="pf-c-form">
-                    <ak-form-element-horizontal
-                        label=${msg("Username")}
-                        name="staticSettings.username"
-                    >
+                    <ak-form-element-horizontal name="staticSettings.username">
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "staticSettings.username",
+                            },
+                            msg("Username"),
+                        )}
                         <input
+                            id="staticSettings.username"
                             type="text"
                             value="${ifDefined(this.instance?.staticSettings.username)}"
                             class="pf-c-form-control"
                         />
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${msg("Password")}
-                        name="staticSettings.password"
-                    >
+                    <ak-form-element-horizontal name="staticSettings.password">
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "staticSettings.password",
+                            },
+                            msg("Password"),
+                        )}
                         <input
+                            id="staticSettings.password"
                             type="password"
                             value="${ifDefined(this.instance?.staticSettings.password)}"
                             class="pf-c-form-control"
@@ -86,41 +110,65 @@ export class PropertyMappingProviderRACForm extends BasePropertyMappingForm<RACP
             </ak-form-group>
             <ak-form-group label="${msg("RDP settings")}">
                 <div class="pf-c-form">
-                    <ak-form-element-horizontal
-                        label=${msg("Ignore server certificate")}
-                        name="staticSettings.ignore-cert"
-                    >
+                    <ak-form-element-horizontal name="staticSettings.ignore-cert">
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "staticSettings.ignore-cert",
+                            },
+                            msg("Ignore server certificate"),
+                        )}
                         <ak-radio
+                            id="staticSettings.ignore-cert"
                             .options=${staticSettingOptions}
                             .value=${this.instance?.staticSettings["ignore-cert"]}
                         >
                         </ak-radio>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${msg("Enable wallpaper")}
-                        name="staticSettings.enable-wallpaper"
-                    >
+                    <ak-form-element-horizontal name="staticSettings.enable-wallpaper">
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "staticSettings.enable-wallpaper",
+                            },
+                            msg("Enable wallpaper"),
+                        )}
                         <ak-radio
+                            id="staticSettings.enable-wallpaper"
                             .options=${staticSettingOptions}
                             .value=${this.instance?.staticSettings["enable-wallpaper"]}
                         >
                         </ak-radio>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${msg("Enable font-smoothing")}
-                        name="staticSettings.enable-font-smoothing"
-                    >
+                    <ak-form-element-horizontal name="staticSettings.enable-font-smoothing">
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "staticSettings.enable-font-smoothing",
+                            },
+                            msg("Enable font-smoothing"),
+                        )}
                         <ak-radio
+                            id="staticSettings.enable-font-smoothing"
                             .options=${staticSettingOptions}
                             .value=${this.instance?.staticSettings["enable-font-smoothing"]}
                         >
                         </ak-radio>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${msg("Enable full window dragging")}
-                        name="staticSettings.enable-full-window-drag"
-                    >
+                    <ak-form-element-horizontal name="staticSettings.enable-full-window-drag">
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "staticSettings.enable-full-window-drag",
+                            },
+                            msg("Enable full window dragging"),
+                        )}
                         <ak-radio
+                            id="staticSettings.enable-full-window-drag"
                             .options=${staticSettingOptions}
                             .value=${this.instance?.staticSettings["enable-full-window-drag"]}
                         >
@@ -130,8 +178,17 @@ export class PropertyMappingProviderRACForm extends BasePropertyMappingForm<RACP
             </ak-form-group>
             <ak-form-group label="${msg("Advanced settings")}">
                 <div class="pf-c-form">
-                    <ak-form-element-horizontal label=${msg("Expression")} name="expression">
+                    <ak-form-element-horizontal name="expression">
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "expression",
+                            },
+                            msg("Expression"),
+                        )}
                         <ak-codemirror
+                            id="expression"
                             mode="python"
                             value="${ifDefined(this.instance?.expression)}"
                         >

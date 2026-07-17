@@ -20,6 +20,7 @@ import { ISearchSelectConfig } from "#elements/forms/SearchSelect/ak-search-sele
 import { type SearchSelectBase } from "#elements/forms/SearchSelect/SearchSelect";
 import { withQuery } from "#elements/forms/SearchSelect/utils";
 
+import { AKLabel } from "#components/ak-label";
 import { type NavigableButton, type WizardButton } from "#components/ak-wizard/shared";
 
 import { ApplicationWizardStep } from "#admin/applications/wizard/ApplicationWizardStep";
@@ -157,8 +158,17 @@ export class ApplicationWizardEditBindingStep extends ApplicationWizardStep<Poli
             return nothing;
         }
 
-        return html`<ak-form-element-horizontal label=${title} name=${policyKind}>
+        return html`<ak-form-element-horizontal name=${policyKind}>
+            ${AKLabel(
+                {
+                    slot: "label",
+                    className: "pf-c-form__group-label",
+                    htmlFor: policyKind,
+                },
+                title,
+            )}
             <ak-search-select-ez
+                id=${policyKind}
                 .config=${this.searchSelectConfigs(policyKind)}
                 class="policy-search-select"
                 blankable
