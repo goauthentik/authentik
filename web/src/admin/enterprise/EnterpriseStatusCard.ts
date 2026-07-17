@@ -7,38 +7,38 @@ import { LicenseForecast, LicenseSummary, LicenseSummaryStatusEnum } from "@goau
 
 import { msg, str } from "@lit/localize";
 import { CSSResult, html, nothing } from "lit";
-import { customElement, state } from "lit/decorators.js";
+import { customElement, property } from "lit/decorators.js";
 
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 import PFProgress from "@patternfly/patternfly/components/Progress/progress.css";
 import PFSplit from "@patternfly/patternfly/layouts/Split/split.css";
 
+const badgeDetails = {
+    [LicenseSummaryStatusEnum.Expired]: [PFColor.Red, msg("Expired")],
+    [LicenseSummaryStatusEnum.ExpirySoon]: [PFColor.Orange, msg("Expiring soon")],
+    [LicenseSummaryStatusEnum.Unlicensed]: [PFColor.Gray, msg("Unlicensed")],
+    [LicenseSummaryStatusEnum.ReadOnly]: [PFColor.Red, msg("Read Only")],
+    [LicenseSummaryStatusEnum.LimitExceededAdmin]: [PFColor.Orange, msg("User Count Exceeded")],
+    [LicenseSummaryStatusEnum.LimitExceededUser]: [PFColor.Red, msg("User Count Exceeded")],
+    [LicenseSummaryStatusEnum.Valid]: [PFColor.Green, msg("Valid")],
+    [LicenseSummaryStatusEnum.UnknownDefaultOpenApi]: [null, null],
+};
+
 @customElement("ak-enterprise-status-card")
 export class EnterpriseStatusCard extends AKElement {
-    @state()
+    @property({ attribute: false })
     forecast?: LicenseForecast;
 
-    @state()
+    @property({ attribute: false })
     summary?: LicenseSummary;
 
     static styles: CSSResult[] = [PFDescriptionList, PFCard, PFSplit, PFProgress];
 
     renderSummaryBadge() {
-        switch (this.summary?.status) {
-            case LicenseSummaryStatusEnum.Expired:
-                return html`<ak-label color=${PFColor.Red}>${msg("Expired")}</ak-label>`;
-            case LicenseSummaryStatusEnum.ExpirySoon:
-                return html`<ak-label color=${PFColor.Orange}>${msg("Expiring soon")}</ak-label>`;
-            case LicenseSummaryStatusEnum.Unlicensed:
-                return html`<ak-label color=${PFColor.Gray}>${msg("Unlicensed")}</ak-label>`;
-            case LicenseSummaryStatusEnum.ReadOnly:
-                return html`<ak-label color=${PFColor.Red}>${msg("Read Only")}</ak-label>`;
-            case LicenseSummaryStatusEnum.Valid:
-                return html`<ak-label color=${PFColor.Green}>${msg("Valid")}</ak-label>`;
-            default:
-                return nothing;
-        }
+        const status = this.summary?.status ?? LicenseSummaryStatusEnum.UnknownDefaultOpenApi;
+        const [color, message] = badgeDetails[status] ?? [null, null];
+        return color ? html`<ak-label color=${color}>${message}</ak-label>` : nothing;
     }
 
     calcUserPercentage(licensed: number, current: number) {
