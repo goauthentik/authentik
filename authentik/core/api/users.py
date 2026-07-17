@@ -1,7 +1,6 @@
 """User API Views"""
 
 from datetime import timedelta
-from http import HTTPStatus
 from json import loads
 from typing import Any
 
@@ -11,7 +10,7 @@ from django.db import models
 from django.db.models import Exists, OuterRef, Prefetch, Q
 from django.db.transaction import atomic
 from django.db.utils import IntegrityError
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse_lazy
 from django.utils.http import urlencode
 from django.utils.text import slugify
@@ -741,11 +740,8 @@ class UserViewSet(
             response = user_add_response(request._request)
         else:
             response = user_switch_response(request._request, body.validated_data["user_pk"])
-        if (
-            HTTPStatus.MULTIPLE_CHOICES <= response.status_code < HTTPStatus.BAD_REQUEST
-            and response.has_header("Location")
-        ):
-            return Response({"redirect": response["Location"]})
+        if isinstance(response, HttpResponseRedirect):
+            return Response({"redirect": response.url})
         return response
 
     def _create_recovery_link(
