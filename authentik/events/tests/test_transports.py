@@ -4,7 +4,7 @@ from unittest.mock import PropertyMock, patch
 
 from django.core import mail
 from django.core.mail.backends.locmem import EmailBackend
-from django.test import TestCase
+from django.test import TestCase, override_settings
 from django.urls import reverse
 from requests_mock import Mocker
 
@@ -22,8 +22,10 @@ from authentik.events.models import (
 )
 from authentik.lib.generators import generate_id
 from authentik.stages.email.models import get_template_choices
+from authentik.stages.email.tests import STATICFILES_DIRS
 
 
+@override_settings(STATICFILES_DIRS=STATICFILES_DIRS)
 class TestEventTransports(TestCase):
     """Test Event Transports"""
 
