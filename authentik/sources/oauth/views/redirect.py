@@ -7,9 +7,12 @@ from django.urls import reverse
 from django.views.generic import RedirectView
 from structlog.stdlib import get_logger
 
+from authentik.core.models import User
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
 from authentik.flows.stage import PLAN_CONTEXT_PENDING_USER_IDENTIFIER
 from authentik.flows.views.executor import SESSION_KEY_PLAN
+from authentik.lib.expression.evaluator import BaseEvaluator
+from authentik.policies.types import PolicyRequest
 from authentik.sources.oauth.models import OAuthSource
 from authentik.sources.oauth.views.base import OAuthClientMixin
 
@@ -46,6 +49,45 @@ class OAuthRedirect(OAuthClientMixin, RedirectView):
             params["login_hint"] = identifier
         return params
 
+    def _eval_additional_url_parameters(self, source: OAuthSource) -> dict[str, str]:
+        if source.additional_url_params == "":
+            return {}
+
+        plan: FlowPlan = self.request.session.get(SESSION_KEY_PLAN, None)
+        req = PolicyRequest(user=User())
+        req.http_request = self.request
+        if plan:
+            req.context = plan.context
+            if user := plan.context.get(PLAN_CONTEXT_PENDING_USER):
+                req.user = user
+
+        evaluator = BaseEvaluator()
+        evaluator._context = {
+            "context": req.context,
+            "http_request": self.request,
+            "request": req,
+        }
+
+        try:
+            result = evaluator.evaluate(source.additional_url_params)
+            if isinstance(result, dict):
+                reserved_params = {
+                    "client_id",
+                    "code_challenge",
+                    "code_challenge_method",
+                    "oauth_callback",
+                    "oauth_token",
+                    "redirect_uri",
+                    "response_type",
+                    "scope",
+                    "state",
+                }
+                return {k: v for k, v in result.items() if k not in reserved_params}
+        except Exception as exc:  # noqa: BLE001
+            LOGGER.warning("Failed to evaluate additional_url_params", exc=exc, source=source)
+
+        return {}
+
     def get_redirect_url(self, **kwargs) -> str:
         "Build redirect url for a given source."
         slug = kwargs.get("source_slug", "")
@@ -64,4 +106,6 @@ class OAuthRedirect(OAuthClientMixin, RedirectView):
             else:
                 params["scope"] += source.additional_scopes.split(" ")
         params.update(self._try_login_hint_extract())
+        params.update(self._eval_additional_url_parameters(source))
+
         return client.get_redirect_url(params)
