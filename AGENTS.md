@@ -95,7 +95,7 @@ make migrate           # Apply Django migrations
 ### Test
 
 ```bash
-make test              # Python/Django tests + coverage. Append an app to scope: `make test authentik.core`
+make test              # Python/Django tests + coverage. Append a path to scope: `make test authentik/providers/saml`
 make go-test           # Go tests (race + cover)
 make rust-test         # Rust tests (cargo nextest)
 make web-test          # Web UI tests (delegates to web/)
