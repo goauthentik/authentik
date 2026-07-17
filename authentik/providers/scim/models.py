@@ -17,7 +17,7 @@ from authentik.lib.models import InternallyManagedMixin, SerializerModel
 from authentik.lib.sync.outgoing.base import BaseOutgoingSyncClient
 from authentik.lib.sync.outgoing.models import OutgoingSyncProvider
 from authentik.lib.utils.time import timedelta_from_string, timedelta_string_validator
-from authentik.policies.engine import PolicyEngine
+from authentik.policies.engine import FilterPolicyEngine
 from authentik.providers.scim.clients.auth import SCIMTokenAuth
 
 LOGGER = get_logger()
@@ -191,21 +191,18 @@ class SCIMProvider(OutgoingSyncProvider, BackchannelProvider):
                 )
 
             # Filter users by their access to the backchannel application if an application is set
-            # This handles both policy bindings and group_filters
             if self.backchannel_application:
-                base = base.filter(
-                    pk__in=[
-                        user.pk
-                        for user in base
-                        if PolicyEngine(self.backchannel_application, user, None).build().passing
-                    ]
-                )
+                base = FilterPolicyEngine(self.backchannel_application, base).build().result
             return base.order_by("pk")
 
         if type == Group:
             # Get queryset of all groups with consistent ordering
-            # according to the provider's settings
-            base = Group.objects.prefetch_related("scimprovidergroup_set").all().filter(**kwargs)
+            # according to the provider's settings.
+            # Note: a previous prefetch_related on scimprovidergroup_set was removed
+            # because the data was never accessed during sync iteration; .write() does
+            # its own per-object connection lookup, and .values_list() (used by cleanup)
+            # bypasses prefetches entirely.
+            base = Group.objects.all().filter(**kwargs)
 
             # Filter groups by group_filters if set
             if self.group_filters.exists():
