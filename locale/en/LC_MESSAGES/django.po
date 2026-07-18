@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-15 00:23+0000\n"
+"POT-Creation-Date: 2026-07-17 00:27+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -732,6 +732,14 @@ msgstr ""
 
 #: authentik/endpoints/connectors/agent/models.py
 msgid "Agent Connectors"
+msgstr ""
+
+#: authentik/endpoints/connectors/agent/models.py
+msgid "Agent Device User binding"
+msgstr ""
+
+#: authentik/endpoints/connectors/agent/models.py
+msgid "Agent Device User bindings"
 msgstr ""
 
 #: authentik/endpoints/connectors/agent/models.py
@@ -2351,6 +2359,10 @@ msgstr ""
 
 #: authentik/providers/oauth2/models.py
 msgid "Code Challenge Method"
+msgstr ""
+
+#: authentik/providers/oauth2/models.py
+msgid "DPoP JWK Thumbprint"
 msgstr ""
 
 #: authentik/providers/oauth2/models.py
