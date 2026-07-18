@@ -135,7 +135,9 @@ class RequestRule(CreatedUpdatedModel, SerializerModel, PolicyBindingModel):
         direct = self.reviewers
         if self.notification_mode == RequestNotificationMode.DIRECT:
             return direct
-        all_reviewers = (direct | User.objects.filter(groups__in=self.reviewer_groups.all())).distinct()
+        all_reviewers = (
+            direct | User.objects.filter(groups__in=self.reviewer_groups.all())
+        ).distinct()
         if self.notification_mode == RequestNotificationMode.RANDOM_MIN_REVIEWERS:
             return all_reviewers.order_by("?")[: self.min_reviewers]
         return all_reviewers

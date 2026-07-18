@@ -234,7 +234,7 @@ class RequestableModel:
         return str(self)
 
     @property
-    def requestable_parent(self) -> "RequestableModel | None":
+    def requestable_parent(self) -> RequestableModel | None:
         return None
 
 
