@@ -2,7 +2,7 @@
 title: "Markdown template: procedural"
 ---
 
-add brief description of the feature/functionality
+Add a brief description of the feature or functionality.
 
 :::info Add a title here
 If needed, use this syntax to add a note (info) or warning (warning) anywhere in the document that is appropriate.
@@ -10,26 +10,26 @@ If needed, use this syntax to add a note (info) or warning (warning) anywhere in
 
 ## Prerequisites
 
-bullet list of pre-reqs
+Add a bullet list of prerequisites.
 
-## Overview of steps/workflow
+## About the workflow
 
-describe the 50,000 meter view before they dive into the detailed steps, using a bullet list of the main steps, or even a diagram of the workflow.
+Summarize the workflow before the detailed steps, using a bullet list of the main steps or a diagram.
 
-## first several group steps
+## Complete the first group of steps
 
-1. first step
+1. First step.
 
-2. second step
+2. Second step.
 
-3. third step
+3. Third step.
 
-if you need a tabbed section to represent diff processes or code snippets for diff install environments, use an MDX tabbed component.
+If you need tabs for different processes or installation environments, convert the file to MDX and use the tabs component.
 
-## next step of grouped steps, if needed
+## Complete the next group of steps
 
 Continue with the steps...
 
-## verify the steps
+## Verify the result
 
-add verification steps
+Add verification steps.
