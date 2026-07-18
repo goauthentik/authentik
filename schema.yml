@@ -3011,51 +3011,6 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
-  /core/applications/requestable/:
-    get:
-      operationId: core_applications_requestable_list
-      description: List applications which the current user can request access to
-      parameters:
-      - in: query
-        name: group
-        schema:
-          type: string
-      - in: query
-        name: meta_description
-        schema:
-          type: string
-      - in: query
-        name: meta_launch_url
-        schema:
-          type: string
-      - in: query
-        name: meta_publisher
-        schema:
-          type: string
-      - $ref: '#/components/parameters/QueryName'
-      - $ref: '#/components/parameters/QueryPaginationOrdering'
-      - $ref: '#/components/parameters/QueryPaginationPage'
-      - $ref: '#/components/parameters/QueryPaginationPageSize'
-      - $ref: '#/components/parameters/QuerySearch'
-      - in: query
-        name: slug
-        schema:
-          type: string
-      tags:
-      - core
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PaginatedApplicationList'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
   /core/authenticated_sessions/:
     get:
       operationId: core_authenticated_sessions_list
@@ -5467,6 +5422,8 @@ paths:
         using this object
       tags:
       - endpoints
+      security:
+      - authentik_device_auth: []
       responses:
         '200':
           content:
@@ -5491,6 +5448,8 @@ paths:
         required: true
       tags:
       - endpoints
+      security:
+      - authentik_device_federation: []
       responses:
         '200':
           content:
@@ -5536,6 +5495,8 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/DeviceFactsRequest'
+      security:
+      - authentik_device_auth: []
       responses:
         '204':
           description: Successfully checked in
@@ -5556,6 +5517,8 @@ paths:
             schema:
               $ref: '#/components/schemas/EnrollRequest'
         required: true
+      security:
+      - authentik_device_enroll: []
       responses:
         '200':
           content:
@@ -34965,17 +34928,12 @@ components:
         meta_hide:
           type: boolean
           description: Hide this application from the user's My applications page.
-        pbm_uuid:
-          type: string
-          format: uuid
-          readOnly: true
       required:
       - backchannel_providers_obj
       - launch_url
       - meta_icon_themed_urls
       - meta_icon_url
       - name
-      - pbm_uuid
       - pk
       - provider_obj
       - slug

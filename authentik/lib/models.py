@@ -156,7 +156,7 @@ class ExpiringModel(models.Model):
             return None
 
     @classmethod
-    def filter_not_expired(cls, **kwargs) -> QuerySet[Self]:
+    def filter_not_expired(cls, **kwargs) -> models.QuerySet[Self]:
         """Filer for tokens which are not expired yet or are not expiring,
         and match filters in `kwargs`"""
         from authentik.events.models import Event

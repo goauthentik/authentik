@@ -28,7 +28,6 @@ from authentik.core.api.utils import ModelSerializer, ThemedUrlsSerializer
 from authentik.core.apps import AppAccessWithoutBindings
 from authentik.core.models import Application, User
 from authentik.events.logs import LogEventSerializer, capture_logs
-from authentik.lib.utils.reflection import ConditionalInheritance
 from authentik.policies.api.exec import PolicyTestResultSerializer
 from authentik.policies.engine import ListPolicyEngine, PolicyEngine
 from authentik.policies.types import CACHE_PREFIX, PolicyResult
@@ -122,18 +121,13 @@ class ApplicationSerializer(ModelSerializer):
             "policy_engine_mode",
             "group",
             "meta_hide",
-            "pbm_uuid",
         ]
         extra_kwargs = {
             "backchannel_providers": {"required": False},
         }
 
 
-class ApplicationViewSet(
-    ConditionalInheritance("authentik.enterprise.pam.api.apps.ApplicationsRequestableMixin"),
-    UsedByMixin,
-    ModelViewSet,
-):
+class ApplicationViewSet(UsedByMixin, ModelViewSet):
     """Application Viewset"""
 
     queryset = (
@@ -173,13 +167,22 @@ class ApplicationViewSet(
     def _get_allowed_applications(
         self, paginated_apps: Iterator[Application], user: User | None = None
     ) -> list[Application]:
+        apps = list(paginated_apps)
+        if not apps:
+            return []
         request = self.request._request
         if user:
             request = copy(request)
             request.user = user
-        engine = ListPolicyEngine(paginated_apps)
+        engine = ListPolicyEngine(
+            Application.objects.filter(pk__in=[app.pk for app in apps]), request.user, request
+        )
         engine.empty_result = AppAccessWithoutBindings.get()
-        return list(engine.evaluate_for(request.user, request))
+        engine.build()
+        passing_pks = set(engine.result.values_list("pk", flat=True))
+        # Filter (rather than re-fetch from engine.result) to preserve the original
+        # pagination order and the prefetching already applied by get_queryset().
+        return [app for app in apps if app.pk in passing_pks]
 
     def _expand_applications(self, applications: list[Application]) -> QuerySet[Application]:
         """

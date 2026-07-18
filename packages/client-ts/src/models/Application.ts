@@ -133,12 +133,6 @@ export interface Application {
      * @memberof Application
      */
     metaHide?: boolean;
-    /**
-     *
-     * @type {string}
-     * @memberof Application
-     */
-    readonly pbmUuid: string;
 }
 
 /**
@@ -154,7 +148,6 @@ export function instanceOfApplication(value: object): value is Application {
     if (!("launchUrl" in value) || value["launchUrl"] === undefined) return false;
     if (!("metaIconUrl" in value) || value["metaIconUrl"] === undefined) return false;
     if (!("metaIconThemedUrls" in value) || value["metaIconThemedUrls"] === undefined) return false;
-    if (!("pbmUuid" in value) || value["pbmUuid"] === undefined) return false;
     return true;
 }
 
@@ -191,7 +184,6 @@ export function ApplicationFromJSONTyped(json: any, ignoreDiscriminator: boolean
                 : PolicyEngineModeFromJSON(json["policy_engine_mode"]),
         group: json["group"] == null ? undefined : json["group"],
         metaHide: json["meta_hide"] == null ? undefined : json["meta_hide"],
-        pbmUuid: json["pbm_uuid"],
     };
 }
 
@@ -208,7 +200,6 @@ export function ApplicationToJSONTyped(
         | "launch_url"
         | "meta_icon_url"
         | "meta_icon_themed_urls"
-        | "pbm_uuid"
     > | null,
     ignoreDiscriminator: boolean = false,
 ): any {
