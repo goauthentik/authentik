@@ -63,19 +63,19 @@ export class EnterpriseStatusCard extends AKElement {
         const currentExternalUsers = this.forecast.externalUsers;
         const licensedInternalUsers = this.summary.internalUsers;
         const licensedExternalUsers = this.summary.externalUsers;
-        const isLicensed = this.summary.status !== LicenseSummaryStatusEnum.Unlicensed;
+        const licensed = this.summary.status !== LicenseSummaryStatusEnum.Unlicensed;
 
-        const progressBar = (label: string, current: number, licensed: number) => {
-            const percentage = isLicensed ? this.calcUserPercentage(licensed, current) : 0;
+        const progressBar = (label: string, current: number, allowed: number) => {
+            const percentage = licensed ? this.calcUserPercentage(allowed, current) : 0;
             const severity = classMap({
-                "pf-m-success": isLicensed && percentage <= 80,
-                "pf-m-warning": isLicensed && percentage > 80 && percentage <= 100,
-                "pf-m-danger": isLicensed && percentage > 100,
+                "pf-m-success": licensed && percentage <= 80,
+                "pf-m-warning": licensed && percentage > 80 && percentage <= 100,
+                "pf-m-danger": licensed && percentage > 100,
             });
 
             return html`
                 <ak-progress-bar class="${severity}" value=${percentage}>
-                    <span slot="description">${label} (${current} / ${licensed})</span>
+                    <span slot="description">${label} (${current} / ${allowed})</span>
                     <span slot="status"> ${percentage < Infinity ? `${percentage}` : "∞"}% </span>
                 </ak-progress-bar>
             `;
