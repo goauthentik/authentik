@@ -1,191 +1,274 @@
-import "@goauthentik/admin/users/GroupSelectModal";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { first } from "@goauthentik/common/utils";
-import "@goauthentik/elements/CodeMirror";
-import { CodeMirrorMode } from "@goauthentik/elements/CodeMirror";
-import "@goauthentik/elements/forms/HorizontalFormElement";
-import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
-import "@goauthentik/elements/forms/Radio";
+import "#admin/users/ak-user-group-table";
+import "#elements/CodeMirror";
+import "#elements/forms/HorizontalFormElement";
+import "#elements/forms/Radio";
+import "#components/ak-text-input";
+import "#components/ak-radio-input";
+import "#components/ak-switch-input";
+
+import { aki } from "#common/api/client";
+import { DefaultUIConfig } from "#common/ui/config";
+
+import { ModelForm } from "#elements/forms/ModelForm";
+import { RadioOption } from "#elements/forms/Radio";
+import { SlottedTemplateResult } from "#elements/types";
+
+import { CoreApi, Group, RbacApi, Role, User, UserTypeEnum } from "@goauthentik/api";
+
+import { match } from "ts-pattern";
 import YAML from "yaml";
 
 import { msg, str } from "@lit/localize";
-import { CSSResult, TemplateResult, css, html } from "lit";
+import { css, CSSResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-import { CoreApi, Group, User, UserTypeEnum } from "@goauthentik/api";
-
+const UserTypeOptions: readonly RadioOption<UserTypeEnum>[] = [
+    {
+        label: msg("Internal"),
+        value: UserTypeEnum.Internal,
+        default: true,
+        description: html`${msg(
+            "Company employees with access to the full enterprise feature set.",
+        )}`,
+    },
+    {
+        label: msg("External"),
+        value: UserTypeEnum.External,
+        description: html`${msg(
+            "External consultants or B2C customers without access to enterprise features.",
+        )}`,
+    },
+    {
+        label: msg("Service account"),
+        value: UserTypeEnum.ServiceAccount,
+        description: html`${msg("Machine-to-machine authentication or other automations.")}`,
+    },
+];
 @customElement("ak-user-form")
 export class UserForm extends ModelForm<User, number> {
+    #coreAPI = aki(CoreApi);
+    #rbacAPI = aki(RbacApi);
+
+    public static override verboseName = msg("User");
+    public static override verboseNamePlural = msg("Users");
+
     @property({ attribute: false })
-    group?: Group;
+    public targetGroup: Group | null = null;
+
+    @property({ attribute: false })
+    public targetRole: Role | null = null;
+
+    @property({ type: String, attribute: "default-path", useDefault: true })
+    public defaultPath: string = DefaultUIConfig.defaults.userPath;
+
+    @property({ attribute: false })
+    public userType: UserTypeEnum | null = null;
 
     static get defaultUserAttributes(): { [key: string]: unknown } {
         return {};
     }
 
-    static get styles(): CSSResult[] {
-        return super.styles.concat(css`
+    static styles: CSSResult[] = [
+        ...super.styles,
+        css`
             .pf-c-button.pf-m-control {
                 height: 100%;
             }
             .pf-c-form-control {
                 height: auto !important;
             }
-        `);
-    }
+        `,
+    ];
 
-    loadInstance(pk: number): Promise<User> {
-        return new CoreApi(DEFAULT_CONFIG).coreUsersRetrieve({
+    protected override loadInstance(pk: number): Promise<User> {
+        return this.#coreAPI.coreUsersRetrieve({
             id: pk,
         });
     }
 
+    protected override assignInstance(instance: User): void {
+        super.assignInstance(instance);
+
+        const { verboseName, verboseNamePlural } = match(instance.type)
+            .with(UserTypeEnum.Internal, () => ({
+                verboseName: msg("Internal User"),
+                verboseNamePlural: msg("Internal Users"),
+            }))
+            .with(UserTypeEnum.External, () => ({
+                verboseName: msg("External User"),
+                verboseNamePlural: msg("External Users"),
+            }))
+            .with(UserTypeEnum.ServiceAccount, () => ({
+                verboseName: msg("Service Account"),
+                verboseNamePlural: msg("Service Accounts"),
+            }))
+            .otherwise(() => ({
+                verboseName: msg("User"),
+                verboseNamePlural: msg("Users"),
+            }));
+
+        this.verboseName = verboseName;
+        this.verboseNamePlural = verboseNamePlural;
+    }
+
     getSuccessMessage(): string {
         if (this.instance) {
-            return msg("Successfully updated user.");
-        } else {
-            if (this.group) {
-                return msg(str`Successfully created user and added to group ${this.group.name}`);
-            }
-            return msg("Successfully created user.");
+            return msg("User updated.");
         }
+        if (this.targetGroup) {
+            return msg(str`User created and added to group ${this.targetGroup.name}`);
+        }
+        if (this.targetRole) {
+            return msg(str`User created and added to role ${this.targetRole.name}`);
+        }
+
+        return msg("User created.");
     }
 
     async send(data: User): Promise<User> {
         if (data.attributes === null) {
             data.attributes = UserForm.defaultUserAttributes;
         }
+
+        if (this.userType) {
+            data.type = this.userType;
+        }
+
         let user;
+
         if (this.instance?.pk) {
-            user = await new CoreApi(DEFAULT_CONFIG).coreUsersPartialUpdate({
+            user = await this.#coreAPI.coreUsersPartialUpdate({
                 id: this.instance.pk,
                 patchedUserRequest: data,
             });
         } else {
             data.groups = [];
-            user = await new CoreApi(DEFAULT_CONFIG).coreUsersCreate({
+            data.roles = [];
+
+            user = await this.#coreAPI.coreUsersCreate({
                 userRequest: data,
             });
         }
-        if (this.group) {
-            await new CoreApi(DEFAULT_CONFIG).coreGroupsAddUserCreate({
-                groupUuid: this.group.pk,
+
+        if (this.targetGroup) {
+            await this.#coreAPI.coreGroupsAddUserCreate({
+                groupUuid: this.targetGroup.pk,
                 userAccountRequest: {
                     pk: user.pk,
                 },
             });
         }
+
+        if (this.targetRole) {
+            await this.#rbacAPI.rbacRolesAddUserCreate({
+                uuid: this.targetRole.pk,
+                userAccountSerializerForRoleRequest: {
+                    pk: user.pk,
+                },
+            });
+        }
+
         return user;
     }
 
-    renderForm(): TemplateResult {
-        return html`<ak-form-element-horizontal
-                label=${msg("Username")}
-                ?required=${true}
+    protected override renderForm(): SlottedTemplateResult {
+        const placeholder =
+            this.userType === UserTypeEnum.Internal
+                ? msg("Type a username for the internal user...")
+                : msg("Type a username for the external user...");
+
+        return html`<ak-text-input
                 name="username"
+                label=${msg("Username")}
+                placeholder=${placeholder}
+                autocomplete="off"
+                value="${ifDefined(this.instance?.username)}"
+                input-hint="code"
+                required
+                maxlength=${150}
+                help=${msg(
+                    "The user's primary identifier used for authentication. 150 characters or fewer.",
+                )}
+            ></ak-text-input>
+
+            <ak-text-input
+                name="name"
+                label=${msg("Display Name")}
+                placeholder=${msg("Type an optional display name...")}
+                autocomplete="off"
+                value="${ifDefined(this.instance?.name)}"
+                input-hint="code"
+                help=${msg("The user's display name.")}
+            ></ak-text-input>
+
+            ${this.userType
+                ? null
+                : html`<ak-radio-input
+                      label=${msg("User type")}
+                      required
+                      name="type"
+                      .value=${this.instance?.type}
+                      .options=${[
+                          ...UserTypeOptions,
+                          ...(this.instance
+                              ? [
+                                    {
+                                        label: msg("Internal Service account"),
+                                        value: UserTypeEnum.InternalServiceAccount,
+                                        disabled: true,
+                                        description: html`${msg(
+                                            "Managed by authentik and cannot be assigned manually.",
+                                        )}`,
+                                    },
+                                ]
+                              : []),
+                      ] satisfies RadioOption<UserTypeEnum>[]}
+                  ></ak-radio-input>`}
+            <ak-text-input
+                name="email"
+                label=${msg("Email Address")}
+                placeholder=${msg("Type an optional email address...")}
+                autocomplete="off"
+                value="${ifDefined(this.instance?.email)}"
+                input-hint="code"
+            ></ak-text-input>
+
+            <ak-switch-input
+                name="isActive"
+                label=${msg("Active")}
+                ?checked=${this.instance?.isActive ?? true}
+                help=${msg(
+                    "Whether this user is active and allowed to authenticate. Setting this to inactive can be used to temporarily disable a user without deleting their account.",
+                )}
             >
-                <input
-                    type="text"
-                    value="${ifDefined(this.instance?.username)}"
-                    class="pf-c-form-control"
-                    required
-                />
-                <p class="pf-c-form__helper-text">
-                    ${msg("User's primary identifier. 150 characters or fewer.")}
-                </p>
-            </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("Name")} name="name">
-                <input
-                    type="text"
-                    value="${ifDefined(this.instance?.name)}"
-                    class="pf-c-form-control"
-                />
-                <p class="pf-c-form__helper-text">${msg("User's display name.")}</p>
-            </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("User type")} ?required=${true} name="type">
-                <ak-radio
-                    .options=${[
-                        {
-                            label: "Internal",
-                            value: UserTypeEnum.Internal,
-                            default: true,
-                            description: html`${msg(
-                                "Internal users might be users such as company employees, which will get access to the full Enterprise feature set.",
-                            )}`,
-                        },
-                        {
-                            label: "External",
-                            value: UserTypeEnum.External,
-                            description: html`${msg(
-                                "External users might be external consultants or B2C customers. These users don't get access to enterprise features.",
-                            )}`,
-                        },
-                        {
-                            label: "Service account",
-                            value: UserTypeEnum.ServiceAccount,
-                            description: html`${msg(
-                                "Service accounts should be used for machine-to-machine authentication or other automations.",
-                            )}`,
-                        },
-                        {
-                            label: "Internal Service account",
-                            value: UserTypeEnum.InternalServiceAccount,
-                            disabled: true,
-                            description: html`${msg(
-                                "Internal Service accounts are created and managed by authentik and cannot be created manually.",
-                            )}`,
-                        },
-                    ]}
-                    .value=${this.instance?.type}
-                >
-                </ak-radio>
-            </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("Email")} name="email">
-                <input
-                    type="email"
-                    autocomplete="off"
-                    value="${ifDefined(this.instance?.email)}"
-                    class="pf-c-form-control"
-                />
-            </ak-form-element-horizontal>
-            <ak-form-element-horizontal name="isActive">
-                <label class="pf-c-switch">
-                    <input
-                        class="pf-c-switch__input"
-                        type="checkbox"
-                        ?checked=${first(this.instance?.isActive, true)}
-                    />
-                    <span class="pf-c-switch__toggle">
-                        <span class="pf-c-switch__toggle-icon">
-                            <i class="fas fa-check" aria-hidden="true"></i>
-                        </span>
-                    </span>
-                    <span class="pf-c-switch__label">${msg("Is active")}</span>
-                </label>
-                <p class="pf-c-form__helper-text">
-                    ${msg(
-                        "Designates whether this user should be treated as active. Unselect this instead of deleting accounts.",
-                    )}
-                </p>
-            </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("Path")} ?required=${true} name="path">
-                <input
-                    type="text"
-                    value="${first(this.instance?.path, "users")}"
-                    class="pf-c-form-control"
-                    required
-                />
-            </ak-form-element-horizontal>
-            <ak-form-element-horizontal
-                label=${msg("Attributes")}
-                ?required=${false}
-                name="attributes"
-            >
+            </ak-switch-input>
+
+            <ak-text-input
+                name="path"
+                label=${msg("Path")}
+                placeholder=${msg("Type a path for the user...")}
+                autocomplete="off"
+                value="${this.instance?.path ?? this.defaultPath}"
+                input-hint="code"
+                required
+                .bighelp=${html`<p class="pf-c-form__helper-text">
+                        ${msg(
+                            "Paths can be used to organize users into folders depending on which source created them or organizational structure.",
+                        )}
+                    </p>
+                    <p class="pf-c-form__helper-text">
+                        ${msg(
+                            "Paths may not start or end with a slash, but they can contain any other character as path segments. The paths are currently purely used for organization, it does not affect their permissions, group memberships, or anything else.",
+                        )}
+                    </p>`}
+            ></ak-text-input>
+
+            <ak-form-element-horizontal label=${msg("Attributes")} name="attributes">
                 <ak-codemirror
-                    mode=${CodeMirrorMode.YAML}
+                    mode="yaml"
                     value="${YAML.stringify(
-                        first(this.instance?.attributes, UserForm.defaultUserAttributes),
+                        this.instance?.attributes ?? UserForm.defaultUserAttributes,
                     )}"
                 >
                 </ak-codemirror>
@@ -193,5 +276,11 @@ export class UserForm extends ModelForm<User, number> {
                     ${msg("Set custom attributes using YAML or JSON.")}
                 </p>
             </ak-form-element-horizontal>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-user-form": UserForm;
     }
 }

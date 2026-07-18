@@ -1,66 +1,91 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { EVENT_REFRESH } from "@goauthentik/common/constants";
-import { AKElement } from "@goauthentik/elements/Base";
-import { PFColor } from "@goauthentik/elements/Label";
-import "@goauthentik/elements/Spinner";
+import "#elements/Spinner";
 
-import { msg, str } from "@lit/localize";
-import { CSSResult, TemplateResult, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { aki } from "#common/api/client";
+import { formatElapsedTime } from "#common/temporal";
 
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
+import { AKElement } from "#elements/Base";
+import { listen } from "#elements/decorators/listen";
+import { PFColor } from "#elements/Label";
+import { AKTableRefreshEvent } from "#elements/table/events";
+import { SlottedTemplateResult } from "#elements/types";
+import { dateProperty } from "#elements/utils/properties";
 
 import { OutpostHealth, OutpostsApi } from "@goauthentik/api";
 
+import { msg, str } from "@lit/localize";
+import { html } from "lit";
+import { customElement, property, state } from "lit/decorators.js";
+
 @customElement("ak-outpost-health-simple")
 export class OutpostHealthSimpleElement extends AKElement {
-    @property()
-    outpostId?: string;
+    @property({ type: String, attribute: "outpost-id" })
+    public outpostID: string | null = null;
 
-    @property({ attribute: false })
-    outpostHealth?: OutpostHealth;
+    @state()
+    protected outpostHealths: OutpostHealth[] = [];
 
-    @property({ attribute: false })
-    loaded = false;
+    /**
+     * A timestamp of the last attempt to refresh the outpost health.
+     */
+    @property(dateProperty)
+    public lastRefreshedAt: Date | null = null;
 
-    @property({ attribute: false })
-    showVersion = true;
+    @listen(AKTableRefreshEvent, { target: window })
+    public refresh = (event?: AKTableRefreshEvent) => {
+        if (!this.outpostID) return;
 
-    static get styles(): CSSResult[] {
-        return [PFBase];
-    }
+        if (event) {
+            if (!this.lastRefreshedAt) return;
+            if (!event.table.renderRoot.contains(this)) return;
+        }
 
-    constructor() {
-        super();
-        window.addEventListener(EVENT_REFRESH, () => {
-            this.outpostHealth = undefined;
-            this.firstUpdated();
-        });
-    }
+        this.outpostHealths = [];
 
-    firstUpdated(): void {
-        if (!this.outpostId) return;
-        new OutpostsApi(DEFAULT_CONFIG)
+        return aki(OutpostsApi)
             .outpostsInstancesHealthList({
-                uuid: this.outpostId,
+                uuid: this.outpostID,
             })
             .then((health) => {
-                this.loaded = true;
-                if (health.length >= 1) {
-                    this.outpostHealth = health[0];
-                }
+                this.lastRefreshedAt = new Date();
+                this.outpostHealths = health;
             });
+    };
+
+    protected override firstUpdated(): void {
+        this.refresh();
     }
 
-    render(): TemplateResult {
-        if (!this.outpostId || !this.loaded) {
+    protected override render(): SlottedTemplateResult {
+        if (!this.outpostID || !this.lastRefreshedAt) {
             return html`<ak-spinner></ak-spinner>`;
         }
-        if (!this.outpostHealth) {
-            return html`<ak-label color=${PFColor.Grey}>${msg("Not available")}</ak-label>`;
+
+        if (!this.outpostHealths || this.outpostHealths.length === 0) {
+            return html`<ak-label color=${PFColor.Gray}>${msg("Not available")}</ak-label>`;
         }
+
+        const outdatedOutposts = this.outpostHealths.filter((h) => h.versionOutdated);
+
+        if (outdatedOutposts.length) {
+            return html`<ak-label color=${PFColor.Red}>
+                ${msg(
+                    str`${outdatedOutposts[0].version}, should be ${outdatedOutposts[0].versionShould}`,
+                )}</ak-label
+            >`;
+        }
+
+        const lastSeen = this.outpostHealths[0].lastSeen;
+
         return html`<ak-label color=${PFColor.Green}>
-            ${msg(str`Last seen: ${this.outpostHealth.lastSeen?.toLocaleTimeString()}`)}</ak-label
+            ${msg(
+                str`Last seen: ${formatElapsedTime(lastSeen)} (${lastSeen.toLocaleTimeString()})`,
+            )}</ak-label
         >`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-outpost-health-simple": OutpostHealthSimpleElement;
     }
 }

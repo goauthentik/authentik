@@ -16,6 +16,7 @@ class PasswordStageSerializer(StageSerializer):
             "backends",
             "configure_flow",
             "failed_attempts_before_cancel",
+            "allow_show_password",
         ]
 
 
@@ -28,6 +29,7 @@ class PasswordStageViewSet(UsedByMixin, ModelViewSet):
         "name",
         "configure_flow",
         "failed_attempts_before_cancel",
+        "allow_show_password",
     ]
     search_fields = ["name"]
     ordering = ["name"]

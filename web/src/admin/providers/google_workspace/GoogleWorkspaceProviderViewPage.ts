@@ -1,0 +1,239 @@
+/**
+ * @file Display details for a Google Workspace provider: Overview, changelog, provisioned users, provisioned groups, and permissions
+ */
+
+import "#admin/providers/google_workspace/GoogleWorkspaceProviderForm";
+import "#admin/providers/google_workspace/GoogleWorkspaceProviderGroupList";
+import "#admin/providers/google_workspace/GoogleWorkspaceProviderUserList";
+import "#admin/rbac/ak-rbac-object-permission-page";
+import "#admin/rbac/ObjectPermissionModal";
+import "#components/ak-status-label";
+import "#admin/events/ObjectChangelog";
+import "#elements/Tabs";
+import "#elements/buttons/ActionButton/index";
+import "#elements/buttons/ModalButton";
+import "#components/sync/SyncStatusCard";
+
+import { aki } from "#common/api/client";
+import { EVENT_REFRESH } from "#common/constants";
+
+import { AKElement } from "#elements/Base";
+import { SlottedTemplateResult } from "#elements/types";
+
+import { scheduleCard } from "#components/tasks/scheduleCard";
+import { taskCard } from "#components/tasks/taskCard";
+
+import { GoogleWorkspaceProvider, ModelEnum, ProvidersApi } from "@goauthentik/api";
+
+import { msg } from "@lit/localize";
+import { CSSResult, html, nothing, PropertyValues } from "lit";
+import { customElement, property, state } from "lit/decorators.js";
+
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFCard from "@patternfly/patternfly/components/Card/card.css";
+import PFContent from "@patternfly/patternfly/components/Content/content.css";
+import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
+import PFForm from "@patternfly/patternfly/components/Form/form.css";
+import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
+import PFList from "@patternfly/patternfly/components/List/list.css";
+import PFPage from "@patternfly/patternfly/components/Page/page.css";
+import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
+import PFStack from "@patternfly/patternfly/layouts/Stack/stack.css";
+
+const PROVIDER_TYPE = ModelEnum.AuthentikProvidersGoogleWorkspaceGoogleworkspaceprovider;
+
+@customElement("ak-provider-google-workspace-view")
+export class GoogleWorkspaceProviderViewPage extends AKElement {
+    @property({ type: Number })
+    providerID?: number;
+
+    @state()
+    provider?: GoogleWorkspaceProvider;
+
+    static styles: CSSResult[] = [
+        PFButton,
+        PFForm,
+        PFFormControl,
+        PFStack,
+        PFList,
+        PFGrid,
+        PFPage,
+        PFContent,
+        PFCard,
+        PFDescriptionList,
+    ];
+
+    constructor() {
+        super();
+        this.addEventListener(EVENT_REFRESH, () => {
+            if (!this.provider?.pk) return;
+            this.providerID = this.provider?.pk;
+        });
+    }
+
+    fetchProvider(id: number) {
+        aki(ProvidersApi)
+            .providersGoogleWorkspaceRetrieve({ id })
+            .then((prov) => (this.provider = prov));
+    }
+
+    willUpdate(changedProperties: PropertyValues<this>) {
+        if (changedProperties.has("providerID") && this.providerID) {
+            this.fetchProvider(this.providerID);
+        }
+    }
+
+    render(): SlottedTemplateResult {
+        if (!this.provider) {
+            return nothing;
+        }
+        return html`<main part="main">
+            <ak-tabs part="tabs">
+                <section
+                    role="tabpanel"
+                    tabindex="0"
+                    slot="page-overview"
+                    id="page-overview"
+                    aria-label="${msg("Overview")}"
+                >
+                    ${this.renderTabOverview(this.provider)}
+                </section>
+                <section
+                    role="tabpanel"
+                    tabindex="0"
+                    slot="page-changelog"
+                    id="page-changelog"
+                    aria-label="${msg("Changelog")}"
+                    class="pf-c-page__main-section pf-m-no-padding-mobile"
+                >
+                    <div class="pf-c-card">
+                        <ak-object-changelog
+                            targetModelPk=${this.provider?.pk || ""}
+                            targetModelName=${this.provider?.metaModelName || ""}
+                        >
+                        </ak-object-changelog>
+                    </div>
+                </section>
+                <section
+                    role="tabpanel"
+                    tabindex="0"
+                    slot="page-users"
+                    id="page-users"
+                    aria-label="${msg("Provisioned Users")}"
+                    class="pf-c-page__main-section pf-m-no-padding-mobile"
+                >
+                    <div class="pf-l-grid pf-m-gutter">
+                        <ak-provider-google-workspace-users-list
+                            providerId=${this.provider.pk}
+                        ></ak-provider-google-workspace-users-list>
+                    </div>
+                </section>
+                <section
+                    role="tabpanel"
+                    tabindex="0"
+                    slot="page-groups"
+                    id="page-groups"
+                    aria-label="${msg("Provisioned Groups")}"
+                    class="pf-c-page__main-section pf-m-no-padding-mobile"
+                >
+                    <div class="pf-l-grid pf-m-gutter">
+                        <ak-provider-google-workspace-groups-list
+                            providerId=${this.provider.pk}
+                        ></ak-provider-google-workspace-groups-list>
+                    </div>
+                </section>
+                <ak-rbac-object-permission-page
+                    role="tabpanel"
+                    tabindex="0"
+                    slot="page-permissions"
+                    id="page-permissions"
+                    aria-label="${msg("Permissions")}"
+                    model=${ModelEnum.AuthentikProvidersGoogleWorkspaceGoogleworkspaceprovider}
+                    objectPk=${this.provider.pk}
+                ></ak-rbac-object-permission-page>
+            </ak-tabs>
+        </main>`;
+    }
+
+    renderTabOverview(provider: GoogleWorkspaceProvider): SlottedTemplateResult {
+        return html`${!provider.assignedBackchannelApplicationName
+                ? html`<div slot="header" class="pf-c-banner pf-m-warning">
+                      ${msg(
+                          "Warning: Provider is not assigned to an application as backchannel provider.",
+                      )}
+                  </div>`
+                : nothing}
+            <div class="pf-c-page__main-section pf-m-no-padding-mobile pf-l-grid pf-m-gutter">
+                <div
+                    class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-6-col-on-xl pf-m-6-col-on-2xl"
+                >
+                    <div class="pf-c-card__body">
+                        <dl class="pf-c-description-list pf-m-3-col-on-lg">
+                            <div class="pf-c-description-list__group">
+                                <dt class="pf-c-description-list__term">
+                                    <span class="pf-c-description-list__text">${msg("Name")}</span>
+                                </dt>
+                                <dd class="pf-c-description-list__description">
+                                    <div class="pf-c-description-list__text">${provider.name}</div>
+                                </dd>
+                            </div>
+                            <div class="pf-c-description-list__group">
+                                <dt class="pf-c-description-list__term">
+                                    <span class="pf-c-description-list__text"
+                                        >${msg("Dry-run")}</span
+                                    >
+                                </dt>
+                                <dd class="pf-c-description-list__description">
+                                    <div class="pf-c-description-list__text">
+                                        <ak-status-label
+                                            ?good=${!provider.dryRun}
+                                            type="info"
+                                            good-label=${msg("No")}
+                                            bad-label=${msg("Yes")}
+                                        ></ak-status-label>
+                                    </div>
+                                </dd>
+                            </div>
+                        </dl>
+                    </div>
+                    <div class="pf-c-card__footer">
+                        <ak-forms-modal>
+                            <span slot="submit">${msg("Save Changes")}</span>
+                            <span slot="header">${msg("Update Google Workspace Provider")}</span>
+                            <ak-provider-google-workspace-form
+                                slot="form"
+                                .instancePk=${provider.pk}
+                            >
+                            </ak-provider-google-workspace-form>
+                            <button slot="trigger" class="pf-c-button pf-m-primary">
+                                ${msg("Edit")}
+                            </button>
+                        </ak-forms-modal>
+                    </div>
+                </div>
+                <div
+                    class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-6-col-on-xl pf-m-6-col-on-2xl"
+                >
+                    <ak-sync-status-card
+                        .fetch=${() => {
+                            return aki(ProvidersApi).providersGoogleWorkspaceSyncStatusRetrieve({
+                                id: provider.pk || 0,
+                            });
+                        }}
+                    ></ak-sync-status-card>
+                </div>
+                <div class="pf-l-grid__item pf-m-12-col pf-l-stack__item">
+                    ${scheduleCard(PROVIDER_TYPE, provider.pk)}
+                </div>
+                <div class="pf-l-grid__item pf-m-12-col pf-l-stack__item">
+                    ${taskCard(PROVIDER_TYPE, provider.pk)}
+                </div>
+            </div>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-provider-google-workspace-view": GoogleWorkspaceProviderViewPage;
+    }
+}

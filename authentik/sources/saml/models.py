@@ -1,33 +1,33 @@
 """saml sp models"""
 
+from typing import Any
+
 from django.db import models
 from django.http import HttpRequest
 from django.templatetags.static import static
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
+from lxml.etree import _Element  # nosec
 from rest_framework.serializers import Serializer
 
-from authentik.core.models import Source, UserSourceConnection
-from authentik.core.types import UILoginButton, UserSettingSerializer
-from authentik.crypto.models import CertificateKeyPair
-from authentik.flows.challenge import ChallengeTypes, RedirectChallenge
-from authentik.flows.models import Flow
-from authentik.lib.utils.time import timedelta_string_validator
-from authentik.sources.saml.processors.constants import (
+from authentik.common.saml.constants import (
     DSA_SHA1,
     ECDSA_SHA1,
     ECDSA_SHA256,
     ECDSA_SHA384,
     ECDSA_SHA512,
+    NS_SAML_ASSERTION,
     RSA_SHA1,
     RSA_SHA256,
     RSA_SHA384,
     RSA_SHA512,
+    SAML_ATTRIBUTES_GROUP,
     SAML_BINDING_POST,
     SAML_BINDING_REDIRECT,
     SAML_NAME_ID_FORMAT_EMAIL,
     SAML_NAME_ID_FORMAT_PERSISTENT,
     SAML_NAME_ID_FORMAT_TRANSIENT,
+    SAML_NAME_ID_FORMAT_UNSPECIFIED,
     SAML_NAME_ID_FORMAT_WINDOWS,
     SAML_NAME_ID_FORMAT_X509,
     SHA1,
@@ -35,6 +35,20 @@ from authentik.sources.saml.processors.constants import (
     SHA384,
     SHA512,
 )
+from authentik.common.saml.utils import get_element_text
+from authentik.core.models import (
+    GroupSourceConnection,
+    PropertyMapping,
+    Source,
+    UserSourceConnection,
+)
+from authentik.core.types import UILoginButton, UserSettingSerializer
+from authentik.crypto.models import CertificateKeyPair
+from authentik.flows.challenge import RedirectChallenge
+from authentik.flows.models import Flow
+from authentik.lib.expression.evaluator import BaseEvaluator
+from authentik.lib.models import DomainlessURLValidator
+from authentik.lib.utils.time import timedelta_string_validator
 
 
 class SAMLBindingTypes(models.TextChoices):
@@ -62,6 +76,7 @@ class SAMLNameIDPolicy(models.TextChoices):
     X509 = SAML_NAME_ID_FORMAT_X509
     WINDOWS = SAML_NAME_ID_FORMAT_WINDOWS
     TRANSIENT = SAML_NAME_ID_FORMAT_TRANSIENT
+    UNSPECIFIED = SAML_NAME_ID_FORMAT_UNSPECIFIED
 
 
 class SAMLSource(Source):
@@ -74,18 +89,19 @@ class SAMLSource(Source):
         related_name="source_pre_authentication",
     )
 
-    issuer = models.TextField(
+    issuer_override = models.TextField(
         blank=True,
         default=None,
-        verbose_name=_("Issuer"),
-        help_text=_("Also known as Entity ID. Defaults the Metadata URL."),
+        help_text=_("Also known as Entity ID. Defaults to the Metadata URL."),
     )
 
-    sso_url = models.URLField(
+    sso_url = models.TextField(
+        validators=[DomainlessURLValidator(schemes=("http", "https"))],
         verbose_name=_("SSO URL"),
         help_text=_("URL that the initial Login request is sent to."),
     )
-    slo_url = models.URLField(
+    slo_url = models.TextField(
+        validators=[DomainlessURLValidator(schemes=("http", "https"))],
         default=None,
         blank=True,
         null=True,
@@ -98,6 +114,12 @@ class SAMLSource(Source):
         help_text=_(
             "Allows authentication flows initiated by the IdP. This can be a security risk, "
             "as no validation of the request ID is done."
+        ),
+    )
+    force_authn = models.BooleanField(
+        default=False,
+        help_text=_(
+            "When enabled, the IdP will re-authenticate the user even if a session exists."
         ),
     )
     name_id_policy = models.TextField(
@@ -146,6 +168,20 @@ class SAMLSource(Source):
         on_delete=models.SET_NULL,
         verbose_name=_("Signing Keypair"),
     )
+    encryption_kp = models.ForeignKey(
+        CertificateKeyPair,
+        default=None,
+        null=True,
+        blank=True,
+        help_text=_(
+            "When selected, incoming assertions are encrypted by the IdP using the public "
+            "key of the encryption keypair. The assertion is decrypted by the SP using the "
+            "the private key."
+        ),
+        on_delete=models.SET_NULL,
+        verbose_name=_("Encryption Keypair"),
+        related_name="+",
+    )
 
     digest_algorithm = models.TextField(
         choices=(
@@ -171,6 +207,9 @@ class SAMLSource(Source):
         default=RSA_SHA256,
     )
 
+    signed_assertion = models.BooleanField(default=True)
+    signed_response = models.BooleanField(default=False)
+
     @property
     def component(self) -> str:
         return "ak-source-saml-form"
@@ -181,11 +220,45 @@ class SAMLSource(Source):
 
         return SAMLSourceSerializer
 
+    @property
+    def property_mapping_type(self) -> type[PropertyMapping]:
+        return SAMLSourcePropertyMapping
+
+    def get_base_user_properties(self, root: _Element, assertion: _Element, name_id: Any, **kwargs):
+        attributes = {}
+        if assertion is None:
+            raise ValueError("Assertion element not found")
+        attribute_statement = assertion.find(f"{{{NS_SAML_ASSERTION}}}AttributeStatement")
+        if attribute_statement is None:
+            raise ValueError("Attribute statement element not found")
+        # Get all attributes and their values into a dict
+        for attribute in attribute_statement.iterchildren():
+            key = attribute.attrib["Name"]
+            attributes.setdefault(key, [])
+            for value in attribute.iterchildren():
+                attributes[key].append(get_element_text(value))
+        if SAML_ATTRIBUTES_GROUP in attributes:
+            attributes["groups"] = attributes[SAML_ATTRIBUTES_GROUP]
+            del attributes[SAML_ATTRIBUTES_GROUP]
+        # Flatten all lists in the dict
+        for key, value in attributes.items():
+            if key == "groups":
+                continue
+            attributes[key] = BaseEvaluator.expr_flatten(value)
+        attributes["username"] = get_element_text(name_id)
+
+        return attributes
+
+    def get_base_group_properties(self, group_id: str, **kwargs):
+        return {
+            "name": group_id,
+        }
+
     def get_issuer(self, request: HttpRequest) -> str:
         """Get Source's Issuer, falling back to our Metadata URL if none is set"""
-        if self.issuer is None:
+        if not self.issuer_override:
             return self.build_full_url(request, view="metadata")
-        return self.issuer
+        return self.issuer_override
 
     def build_full_url(self, request: HttpRequest, view: str = "acs") -> str:
         """Build Full ACS URL to be used in IDP"""
@@ -193,11 +266,17 @@ class SAMLSource(Source):
             reverse(f"authentik_sources_saml:{view}", kwargs={"source_slug": self.slug})
         )
 
+    @property
+    def icon_url(self) -> str:
+        icon = super().icon_url
+        if not icon:
+            return static("authentik/sources/saml.png")
+        return icon
+
     def ui_login_button(self, request: HttpRequest) -> UILoginButton:
         return UILoginButton(
             challenge=RedirectChallenge(
                 data={
-                    "type": ChallengeTypes.REDIRECT.value,
                     "to": reverse(
                         "authentik_sources_saml:login",
                         kwargs={"source_slug": self.slug},
@@ -205,13 +284,11 @@ class SAMLSource(Source):
                 }
             ),
             name=self.name,
-            icon_url=self.icon_url,
+            icon_url=self.get_icon_url(request, use_cache=False) or self.icon_url,
+            promoted=self.promoted,
         )
 
     def ui_user_settings(self) -> UserSettingSerializer | None:
-        icon = self.icon_url
-        if not icon:
-            icon = static(f"authentik/sources/{self.slug}.svg")
         return UserSettingSerializer(
             data={
                 "title": self.name,
@@ -220,7 +297,7 @@ class SAMLSource(Source):
                     "authentik_sources_saml:login",
                     kwargs={"source_slug": self.slug},
                 ),
-                "icon_url": icon,
+                "icon_url": self.icon_url,
             }
         )
 
@@ -232,10 +309,26 @@ class SAMLSource(Source):
         verbose_name_plural = _("SAML Sources")
 
 
+class SAMLSourcePropertyMapping(PropertyMapping):
+    """Map SAML properties to User or Group object attributes"""
+
+    @property
+    def component(self) -> str:
+        return "ak-property-mapping-source-saml-form"
+
+    @property
+    def serializer(self) -> type[Serializer]:
+        from authentik.sources.saml.api.property_mappings import SAMLSourcePropertyMappingSerializer
+
+        return SAMLSourcePropertyMappingSerializer
+
+    class Meta:
+        verbose_name = _("SAML Source Property Mapping")
+        verbose_name_plural = _("SAML Source Property Mappings")
+
+
 class UserSAMLSourceConnection(UserSourceConnection):
     """Connection to configured SAML Sources."""
-
-    identifier = models.TextField()
 
     @property
     def serializer(self) -> Serializer:
@@ -246,3 +339,19 @@ class UserSAMLSourceConnection(UserSourceConnection):
     class Meta:
         verbose_name = _("User SAML Source Connection")
         verbose_name_plural = _("User SAML Source Connections")
+
+
+class GroupSAMLSourceConnection(GroupSourceConnection):
+    """Group-source connection"""
+
+    @property
+    def serializer(self) -> type[Serializer]:
+        from authentik.sources.saml.api.source_connection import (
+            GroupSAMLSourceConnectionSerializer,
+        )
+
+        return GroupSAMLSourceConnectionSerializer
+
+    class Meta:
+        verbose_name = _("Group SAML Source Connection")
+        verbose_name_plural = _("Group SAML Source Connections")

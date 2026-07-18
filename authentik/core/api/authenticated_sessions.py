@@ -2,39 +2,49 @@
 
 from typing import TypedDict
 
-from django_filters.rest_framework import DjangoFilterBackend
-from guardian.utils import get_anonymous_user
-from rest_framework import mixins
+from drf_spectacular.utils import (
+    extend_schema,
+    inline_serializer,
+)
+from rest_framework import mixins, serializers
+from rest_framework.decorators import action
 from rest_framework.fields import SerializerMethodField
-from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.request import Request
-from rest_framework.serializers import ModelSerializer
+from rest_framework.response import Response
+from rest_framework.serializers import (
+    CharField,
+    DateTimeField,
+    IPAddressField,
+    ListField,
+)
 from rest_framework.viewsets import GenericViewSet
 from ua_parser import user_agent_parser
 
-from authentik.api.authorization import OwnerSuperuserPermissions
+from authentik.api.validation import validate
 from authentik.core.api.used_by import UsedByMixin
+from authentik.core.api.utils import ModelSerializer, PassiveSerializer
 from authentik.core.models import AuthenticatedSession
 from authentik.events.context_processors.asn import ASN_CONTEXT_PROCESSOR, ASNDict
 from authentik.events.context_processors.geoip import GEOIP_CONTEXT_PROCESSOR, GeoIPDict
+from authentik.rbac.decorators import permission_required
 
 
 class UserAgentDeviceDict(TypedDict):
     """User agent device"""
 
-    brand: str
+    brand: str | None = None
     family: str
-    model: str
+    model: str | None = None
 
 
 class UserAgentOSDict(TypedDict):
     """User agent os"""
 
     family: str
-    major: str
-    minor: str
-    patch: str
-    patch_minor: str
+    major: str | None = None
+    minor: str | None = None
+    patch: str | None = None
+    patch_minor: str | None = None
 
 
 class UserAgentBrowserDict(TypedDict):
@@ -55,8 +65,21 @@ class UserAgentDict(TypedDict):
     string: str
 
 
+class BulkDeleteSessionSerializer(PassiveSerializer):
+    """Serializer for bulk deleting authenticated sessions by user"""
+
+    user_pks = ListField(
+        child=serializers.IntegerField(), help_text="List of user IDs to revoke all sessions for"
+    )
+
+
 class AuthenticatedSessionSerializer(ModelSerializer):
     """AuthenticatedSession Serializer"""
+
+    expires = DateTimeField(source="session.expires", read_only=True)
+    last_ip = IPAddressField(source="session.last_ip", read_only=True)
+    last_user_agent = CharField(source="session.last_user_agent", read_only=True)
+    last_used = DateTimeField(source="session.last_used", read_only=True)
 
     current = SerializerMethodField()
     user_agent = SerializerMethodField()
@@ -66,19 +89,19 @@ class AuthenticatedSessionSerializer(ModelSerializer):
     def get_current(self, instance: AuthenticatedSession) -> bool:
         """Check if session is currently active session"""
         request: Request = self.context["request"]
-        return request._request.session.session_key == instance.session_key
+        return request._request.session.session_key == instance.session.session_key
 
     def get_user_agent(self, instance: AuthenticatedSession) -> UserAgentDict:
         """Get parsed user agent"""
-        return user_agent_parser.Parse(instance.last_user_agent)
+        return user_agent_parser.Parse(instance.session.last_user_agent)
 
     def get_geo_ip(self, instance: AuthenticatedSession) -> GeoIPDict | None:  # pragma: no cover
         """Get GeoIP Data"""
-        return GEOIP_CONTEXT_PROCESSOR.city_dict(instance.last_ip)
+        return GEOIP_CONTEXT_PROCESSOR.city_dict(instance.session.last_ip)
 
     def get_asn(self, instance: AuthenticatedSession) -> ASNDict | None:  # pragma: no cover
         """Get ASN Data"""
-        return ASN_CONTEXT_PROCESSOR.asn_dict(instance.last_ip)
+        return ASN_CONTEXT_PROCESSOR.asn_dict(instance.session.last_ip)
 
     class Meta:
         model = AuthenticatedSession
@@ -94,6 +117,7 @@ class AuthenticatedSessionSerializer(ModelSerializer):
             "last_used",
             "expires",
         ]
+        extra_args = {"uuid": {"read_only": True}}
 
 
 class AuthenticatedSessionViewSet(
@@ -105,16 +129,29 @@ class AuthenticatedSessionViewSet(
 ):
     """AuthenticatedSession Viewset"""
 
-    queryset = AuthenticatedSession.objects.all()
+    lookup_field = "uuid"
+    queryset = AuthenticatedSession.objects.select_related("session").all()
     serializer_class = AuthenticatedSessionSerializer
-    search_fields = ["user__username", "last_ip", "last_user_agent"]
-    filterset_fields = ["user__username", "last_ip", "last_user_agent"]
+    search_fields = ["user__username", "session__last_ip", "session__last_user_agent"]
+    filterset_fields = ["user__username", "session__last_ip", "session__last_user_agent"]
     ordering = ["user__username"]
-    permission_classes = [OwnerSuperuserPermissions]
-    filter_backends = [DjangoFilterBackend, OrderingFilter, SearchFilter]
+    owner_field = "user"
 
-    def get_queryset(self):
-        user = self.request.user if self.request else get_anonymous_user()
-        if user.is_superuser:
-            return super().get_queryset()
-        return super().get_queryset().filter(user=user.pk)
+    @permission_required("authentik_core.delete_authenticatedsession")
+    @extend_schema(
+        parameters=[BulkDeleteSessionSerializer],
+        responses={
+            200: inline_serializer(
+                "BulkDeleteSessionResponse",
+                {"deleted": serializers.IntegerField()},
+            ),
+        },
+    )
+    @validate(BulkDeleteSessionSerializer, location="query")
+    @action(detail=False, methods=["DELETE"], pagination_class=None, filter_backends=[])
+    def bulk_delete(self, request: Request, *, query: BulkDeleteSessionSerializer) -> Response:
+        """Bulk revoke all sessions for multiple users"""
+        user_pks = query.validated_data.get("user_pks", [])
+        deleted_count, _ = AuthenticatedSession.objects.filter(user_id__in=user_pks).delete()
+
+        return Response({"deleted": deleted_count}, status=200)

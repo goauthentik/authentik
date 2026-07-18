@@ -1,5 +1,6 @@
 """OAuth Callback Views"""
 
+from datetime import timedelta
 from json import JSONDecodeError
 from typing import Any
 
@@ -7,13 +8,19 @@ from django.conf import settings
 from django.contrib import messages
 from django.http import Http404, HttpRequest, HttpResponse
 from django.shortcuts import redirect
+from django.utils.timezone import now
 from django.utils.translation import gettext as _
 from django.views.generic import View
 from structlog.stdlib import get_logger
 
 from authentik.core.sources.flow_manager import SourceFlowManager
 from authentik.events.models import Event, EventAction
-from authentik.sources.oauth.models import OAuthSource, UserOAuthSourceConnection
+from authentik.sources.oauth.clients.base import BaseOAuthClient
+from authentik.sources.oauth.models import (
+    GroupOAuthSourceConnection,
+    OAuthSource,
+    UserOAuthSourceConnection,
+)
 from authentik.sources.oauth.views.base import OAuthClientMixin
 
 LOGGER = get_logger()
@@ -23,7 +30,7 @@ class OAuthCallback(OAuthClientMixin, View):
     "Base OAuth callback view."
 
     source: OAuthSource
-    token: dict | None = None
+    token: dict[str, Any] | None = None
 
     def dispatch(self, request: HttpRequest, *_, **kwargs) -> HttpResponse:
         """View Get handler"""
@@ -44,31 +51,48 @@ class OAuthCallback(OAuthClientMixin, View):
             return self.handle_login_failure(self.token["error"])
         # Fetch profile info
         try:
+            res = self.redirect_flow_manager(client)
+        except ValueError as exc:
+            # if we're authenticated and not in a source stage and this new flag is enabled,
+            # just continue
+            if self.request.user.is_authenticated:
+                pass
+            return self.handle_login_failure(exc.args[0])
+        return res
+
+    def redirect_flow_manager(self, client: BaseOAuthClient) -> HttpResponse:
+        try:
             raw_info = client.get_profile_info(self.token)
             if raw_info is None:
-                return self.handle_login_failure("Could not retrieve profile.")
+                raise ValueError("Could not retrieve profile.")
         except JSONDecodeError as exc:
             Event.new(
                 EventAction.CONFIGURATION_ERROR,
                 message="Failed to JSON-decode profile.",
                 raw_profile=exc.doc,
             ).from_http(self.request)
-            return self.handle_login_failure("Could not retrieve profile.")
+            raise ValueError("Could not retrieve profile.") from None
         identifier = self.get_user_id(info=raw_info)
         if identifier is None:
-            return self.handle_login_failure("Could not determine id.")
-        # Get or create access record
-        enroll_info = self.get_user_enroll_context(raw_info)
+            raise ValueError("Could not determine id.")
         sfm = OAuthSourceFlowManager(
             source=self.source,
             request=self.request,
             identifier=identifier,
-            enroll_info=enroll_info,
+            user_info={
+                "info": raw_info,
+                "client": client,
+                "token": self.token,
+            },
+            policy_context={
+                "oauth_userinfo": raw_info,
+            },
         )
-        sfm.policy_context = {"oauth_userinfo": raw_info}
         return sfm.get_flow(
             raw_info=raw_info,
             access_token=self.token.get("access_token"),
+            refresh_token=self.token.get("refresh_token"),
+            expires=self.token.get("expires_in"),
         )
 
     def get_callback_url(self, source: OAuthSource) -> str:
@@ -79,17 +103,10 @@ class OAuthCallback(OAuthClientMixin, View):
         "Return url to redirect on login failure."
         return settings.LOGIN_URL
 
-    def get_user_enroll_context(
-        self,
-        info: dict[str, Any],
-    ) -> dict[str, Any]:
-        """Create a dict of User data"""
-        raise NotImplementedError()
-
     def get_user_id(self, info: dict[str, Any]) -> str | None:
         """Return unique identifier from the profile info."""
         if "id" in info:
-            return info["id"]
+            return str(info["id"])
         return None
 
     def handle_login_failure(self, reason: str) -> HttpResponse:
@@ -111,14 +128,19 @@ class OAuthCallback(OAuthClientMixin, View):
 class OAuthSourceFlowManager(SourceFlowManager):
     """Flow manager for oauth sources"""
 
-    connection_type = UserOAuthSourceConnection
+    user_connection_type = UserOAuthSourceConnection
+    group_connection_type = GroupOAuthSourceConnection
 
-    def update_connection(
+    def update_user_connection(
         self,
         connection: UserOAuthSourceConnection,
         access_token: str | None = None,
+        refresh_token: str | None = None,
+        expires_in: int | None = None,
         **_,
     ) -> UserOAuthSourceConnection:
-        """Set the access_token on the connection"""
+        """Set the access_token and refresh_token on the connection"""
         connection.access_token = access_token
+        connection.refresh_token = refresh_token
+        connection.expires = now() + timedelta(seconds=expires_in) if expires_in else now()
         return connection

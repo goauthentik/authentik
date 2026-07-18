@@ -5,6 +5,7 @@ from hashlib import sha256
 
 from django.conf import settings
 from django.http import HttpRequest, HttpResponse
+from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from jwt import PyJWTError, decode, encode
 from rest_framework.fields import CharField, IntegerField, ListField, UUIDField
@@ -12,15 +13,18 @@ from rest_framework.serializers import ValidationError
 
 from authentik.core.api.utils import JSONDictField, PassiveSerializer
 from authentik.core.models import User
+from authentik.events.middleware import audit_ignore
 from authentik.events.models import Event, EventAction
-from authentik.flows.challenge import ChallengeResponse, ChallengeTypes, WithUserInfoChallenge
+from authentik.flows.challenge import ChallengeResponse, WithUserInfoChallenge
 from authentik.flows.exceptions import FlowSkipStageException, StageInvalidException
 from authentik.flows.models import FlowDesignation, NotConfiguredAction, Stage
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
 from authentik.flows.stage import ChallengeStageView
 from authentik.lib.utils.time import timedelta_from_string
+from authentik.policies.reputation.signals import update_score
 from authentik.stages.authenticator import devices_for_user
 from authentik.stages.authenticator.models import Device
+from authentik.stages.authenticator_email.models import EmailDevice
 from authentik.stages.authenticator_sms.models import SMSDevice
 from authentik.stages.authenticator_validate.challenge import (
     DeviceChallenge,
@@ -82,7 +86,9 @@ class AuthenticatorValidationChallengeResponse(ChallengeResponse):
 
     def validate_code(self, code: str) -> str:
         """Validate code-based response, raise error if code isn't allowed"""
-        self._challenge_allowed([DeviceClasses.TOTP, DeviceClasses.STATIC, DeviceClasses.SMS])
+        self._challenge_allowed(
+            [DeviceClasses.TOTP, DeviceClasses.STATIC, DeviceClasses.SMS, DeviceClasses.EMAIL]
+        )
         self.device = validate_challenge_code(code, self.stage, self.stage.get_pending_user())
         return code
 
@@ -115,12 +121,17 @@ class AuthenticatorValidationChallengeResponse(ChallengeResponse):
         if not allowed:
             raise ValidationError("invalid challenge selected")
 
-        if challenge.get("device_class", "") != "sms":
-            return challenge
-        devices = SMSDevice.objects.filter(pk=int(challenge.get("device_uid", "0")))
-        if not devices.exists():
-            raise ValidationError("invalid challenge selected")
-        select_challenge(self.stage.request, devices.first())
+        device_class = challenge.get("device_class", "")
+        if device_class == "sms":
+            devices = SMSDevice.objects.filter(pk=int(challenge.get("device_uid", "0")))
+            if not devices.exists():
+                raise ValidationError("invalid challenge selected")
+            select_challenge(self.stage.request, devices.first())
+        elif device_class == "email":
+            devices = EmailDevice.objects.filter(pk=int(challenge.get("device_uid", "0")))
+            if not devices.exists():
+                raise ValidationError("invalid challenge selected")
+            select_challenge(self.stage.request, devices.first())
         return challenge
 
     def validate_selected_stage(self, stage_pk: str) -> str:
@@ -143,6 +154,9 @@ class AuthenticatorValidationChallengeResponse(ChallengeResponse):
         self.stage.executor.plan.context[PLAN_CONTEXT_METHOD_ARGS]["mfa_devices"].append(
             self.device
         )
+        with audit_ignore():
+            self.device.last_used = now()
+            self.device.save()
         return attrs
 
 
@@ -211,7 +225,8 @@ class AuthenticatorValidateStageView(ChallengeStageView):
                 data={
                     "device_class": device_class,
                     "device_uid": device.pk,
-                    "challenge": get_challenge_for_device(self.request, stage, device),
+                    "challenge": get_challenge_for_device(self, stage, device),
+                    "last_used": device.last_used,
                 }
             )
             challenge.is_valid()
@@ -229,9 +244,10 @@ class AuthenticatorValidateStageView(ChallengeStageView):
                 "device_class": DeviceClasses.WEBAUTHN,
                 "device_uid": -1,
                 "challenge": get_webauthn_challenge_without_user(
-                    self.request,
+                    self,
                     self.executor.current_stage,
                 ),
+                "last_used": None,
             }
         )
         challenge.is_valid()
@@ -325,7 +341,7 @@ class AuthenticatorValidateStageView(ChallengeStageView):
             serializer = SelectableStageSerializer(
                 data={
                     "pk": stage.pk,
-                    "name": stage.friendly_name or stage.name,
+                    "name": getattr(stage, "friendly_name", stage.name) or stage.name,
                     "verbose_name": str(stage._meta.verbose_name)
                     .replace("Setup Stage", "")
                     .strip(),
@@ -337,7 +353,6 @@ class AuthenticatorValidateStageView(ChallengeStageView):
         return AuthenticatorValidationChallenge(
             data={
                 "component": "ak-stage-authenticator-validate",
-                "type": ChallengeTypes.NATIVE.value,
                 "device_challenges": challenges,
                 "configuration_stages": stage_challenges,
             }
@@ -404,6 +419,10 @@ class AuthenticatorValidateStageView(ChallengeStageView):
         )
         return response
 
+    def challenge_invalid(self, response: AuthenticatorValidationChallengeResponse) -> HttpResponse:
+        update_score(self.request, self.get_pending_user().username, -1)
+        return super().challenge_invalid(response)
+
     def challenge_valid(self, response: AuthenticatorValidationChallengeResponse) -> HttpResponse:
         # All validation is done by the serializer
         user = self.executor.plan.context.get(PLAN_CONTEXT_PENDING_USER)
@@ -411,9 +430,14 @@ class AuthenticatorValidateStageView(ChallengeStageView):
             webauthn_device: WebAuthnDevice = response.device
             self.logger.debug("Set user from user-less flow", user=webauthn_device.user)
             self.executor.plan.context[PLAN_CONTEXT_PENDING_USER] = webauthn_device.user
+            # We already set a default method in the validator above
+            # so this needs to have higher priority
             self.executor.plan.context[PLAN_CONTEXT_METHOD] = "auth_webauthn_pwl"
-            self.executor.plan.context[PLAN_CONTEXT_METHOD_ARGS] = {
-                "device": webauthn_device,
-                "device_type": webauthn_device.device_type,
-            }
+            self.executor.plan.context.setdefault(PLAN_CONTEXT_METHOD_ARGS, {})
+            self.executor.plan.context[PLAN_CONTEXT_METHOD_ARGS].update(
+                {
+                    "device": webauthn_device,
+                    "device_type": webauthn_device.device_type,
+                }
+            )
         return self.set_valid_mfa_cookie(response.device)

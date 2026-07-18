@@ -1,43 +1,34 @@
-import { BaseStageForm } from "@goauthentik/admin/stages/BaseStageForm";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { first } from "@goauthentik/common/utils";
-import "@goauthentik/elements/forms/HorizontalFormElement";
+import "#components/ak-switch-input";
+import "#elements/forms/HorizontalFormElement";
 
-import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
-import { customElement } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
+import { aki } from "#common/api/client";
+
+import { BaseStageForm } from "#admin/stages/BaseStageForm";
 
 import { DummyStage, StagesApi } from "@goauthentik/api";
 
+import { msg } from "@lit/localize";
+import { html, TemplateResult } from "lit";
+import { customElement } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
+
 @customElement("ak-stage-dummy-form")
 export class DummyStageForm extends BaseStageForm<DummyStage> {
-    loadInstance(pk: string): Promise<DummyStage> {
-        return new StagesApi(DEFAULT_CONFIG).stagesDummyRetrieve({
-            stageUuid: pk,
-        });
-    }
+    protected endpoints = {
+        load: (stageUuid: string) => aki(StagesApi).stagesDummyRetrieve({ stageUuid }),
+        create: (dummyStageRequest: DummyStage) =>
+            aki(StagesApi).stagesDummyCreate({ dummyStageRequest }),
+        update: (stageUuid: string, dummyStageRequest: DummyStage) =>
+            aki(StagesApi).stagesDummyUpdate({ stageUuid, dummyStageRequest }),
+    };
 
-    async send(data: DummyStage): Promise<DummyStage> {
-        if (this.instance) {
-            return new StagesApi(DEFAULT_CONFIG).stagesDummyUpdate({
-                stageUuid: this.instance.pk || "",
-                dummyStageRequest: data,
-            });
-        } else {
-            return new StagesApi(DEFAULT_CONFIG).stagesDummyCreate({
-                dummyStageRequest: data,
-            });
-        }
-    }
-
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html` <span>
                 ${msg(
                     "Dummy stage used for testing. Shows a simple continue button and always passes.",
                 )}
             </span>
-            <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
+            <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name || "")}"
@@ -45,20 +36,16 @@ export class DummyStageForm extends BaseStageForm<DummyStage> {
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal name="throwError">
-                <label class="pf-c-switch">
-                    <input
-                        class="pf-c-switch__input"
-                        type="checkbox"
-                        ?checked=${first(this.instance?.throwError, false)}
-                    />
-                    <span class="pf-c-switch__toggle">
-                        <span class="pf-c-switch__toggle-icon">
-                            <i class="fas fa-check" aria-hidden="true"></i>
-                        </span>
-                    </span>
-                    <span class="pf-c-switch__label">${msg("Throw error?")}</span>
-                </label>
-            </ak-form-element-horizontal>`;
+            <ak-switch-input
+                name="throwError"
+                label=${msg("Throw error?")}
+                ?checked=${this.instance?.throwError ?? false}
+            ></ak-switch-input>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-stage-dummy-form": DummyStageForm;
     }
 }

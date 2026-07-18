@@ -1,87 +1,76 @@
-import "@goauthentik/admin/common/ak-crypto-certificate-search";
-import "@goauthentik/admin/common/ak-flow-search/ak-branded-flow-search";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { first } from "@goauthentik/common/utils";
-import "@goauthentik/elements/CodeMirror";
-import "@goauthentik/elements/forms/FormGroup";
-import "@goauthentik/elements/forms/HorizontalFormElement";
-import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
-import "@goauthentik/elements/forms/Radio";
-import "@goauthentik/elements/forms/SearchSelect";
-import "@goauthentik/elements/utils/TimeDeltaHelp";
+import "#admin/common/ak-flow-search/ak-flow-search";
+import "#admin/common/ak-crypto-certificate-search";
+import "#admin/common/ak-flow-search/ak-branded-flow-search";
+import "#components/ak-text-input";
+import "#components/ak-switch-input";
+import "#elements/CodeMirror";
+import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
+import "#elements/forms/FormGroup";
+import "#elements/forms/HorizontalFormElement";
+import "#elements/forms/Radio";
+import "#elements/forms/SearchSelect/index";
+import "#elements/utils/TimeDeltaHelp";
+
+import { propertyMappingsProvider, propertyMappingsSelector } from "./RACProviderFormHelpers.js";
+
+import { aki } from "#common/api/client";
+
+import { ModelForm } from "#elements/forms/ModelForm";
+
+import { AKLabel } from "#components/ak-label";
+
+import { FlowDesignationEnum, ProvidersApi, RACProvider } from "@goauthentik/api";
+
 import YAML from "yaml";
 
 import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
-import { customElement, state } from "lit/decorators.js";
+import { html, TemplateResult } from "lit";
+import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
-
-import {
-    FlowsInstancesListDesignationEnum,
-    PaginatedRACPropertyMappingList,
-    PropertymappingsApi,
-    ProvidersApi,
-    RACProvider,
-} from "@goauthentik/api";
 
 @customElement("ak-provider-rac-form")
 export class RACProviderFormPage extends ModelForm<RACProvider, number> {
-    @state()
-    propertyMappings?: PaginatedRACPropertyMappingList;
-
-    async load(): Promise<void> {
-        this.propertyMappings = await new PropertymappingsApi(
-            DEFAULT_CONFIG,
-        ).propertymappingsRacList({
-            ordering: "name",
-        });
-    }
-
-    async loadInstance(pk: number): Promise<RACProvider> {
-        return new ProvidersApi(DEFAULT_CONFIG).providersRacRetrieve({
-            id: pk,
-        });
-    }
+    protected endpoints = {
+        load: (id: number) => aki(ProvidersApi).providersRacRetrieve({ id }),
+        create: (rACProviderRequest: RACProvider) =>
+            aki(ProvidersApi).providersRacCreate({ rACProviderRequest }),
+        update: (id: number, rACProviderRequest: RACProvider) =>
+            aki(ProvidersApi).providersRacUpdate({ id, rACProviderRequest }),
+    };
 
     getSuccessMessage(): string {
         if (this.instance) {
             return msg("Successfully updated provider.");
-        } else {
-            return msg("Successfully created provider.");
         }
+        return msg("Successfully created provider.");
     }
 
-    async send(data: RACProvider): Promise<RACProvider> {
-        if (this.instance) {
-            return new ProvidersApi(DEFAULT_CONFIG).providersRacUpdate({
-                id: this.instance.pk || 0,
-                rACProviderRequest: data,
-            });
-        } else {
-            return new ProvidersApi(DEFAULT_CONFIG).providersRacCreate({
-                rACProviderRequest: data,
-            });
-        }
-    }
-
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html`
-            <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
-                <input
-                    type="text"
-                    value="${ifDefined(this.instance?.name)}"
-                    class="pf-c-form-control"
-                    required
-                />
-            </ak-form-element-horizontal>
+            <ak-text-input
+                label=${msg("Provider Name")}
+                required
+                name="name"
+                value="${ifDefined(this.instance?.name)}"
+                placeholder=${msg("Type a provider name...")}
+                spellcheck="false"
+                ?autofocus=${!this.instance}
+            ></ak-text-input>
 
-            <ak-form-element-horizontal
-                name="authorizationFlow"
-                label=${msg("Authorization flow")}
-                ?required=${true}
-            >
+            <ak-form-element-horizontal name="authorizationFlow" required>
+                ${AKLabel(
+                    {
+                        className: "pf-c-form__group-label",
+                        slot: "label",
+                        htmlFor: "authorizationFlow",
+                        required: true,
+                    },
+                    msg("Authorization Flow"),
+                )}
                 <ak-flow-search
-                    flowType=${FlowsInstancesListDesignationEnum.Authorization}
+                    id="authorizationFlow"
+                    label=${msg("Authorization Flow")}
+                    flowType=${FlowDesignationEnum.Authorization}
                     .currentFlow=${this.instance?.authorizationFlow}
                     required
                 ></ak-flow-search>
@@ -91,13 +80,15 @@ export class RACProviderFormPage extends ModelForm<RACProvider, number> {
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
                 label=${msg("Connection expiry")}
-                ?required=${true}
+                required
                 name="connectionExpiry"
             >
                 <input
                     type="text"
-                    value="${first(this.instance?.connectionExpiry, "hours=8")}"
-                    class="pf-c-form-control"
+                    value="${this.instance?.connectionExpiry ?? "hours=8"}"
+                    class="pf-c-form-control pf-m-monospace"
+                    autocomplete="off"
+                    spellcheck="false"
                     required
                 />
                 <p class="pf-c-form__helper-text">
@@ -107,62 +98,33 @@ export class RACProviderFormPage extends ModelForm<RACProvider, number> {
                 </p>
                 <ak-utils-time-delta-help></ak-utils-time-delta-help>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal name="deleteTokenOnDisconnect">
-                <label class="pf-c-switch">
-                    <input
-                        class="pf-c-switch__input"
-                        type="checkbox"
-                        ?checked=${first(this.instance?.deleteTokenOnDisconnect, false)}
-                    />
-                    <span class="pf-c-switch__toggle">
-                        <span class="pf-c-switch__toggle-icon">
-                            <i class="fas fa-check" aria-hidden="true"></i>
-                        </span>
-                    </span>
-                    <span class="pf-c-switch__label"
-                        >${msg("Delete authorization on disconnect")}</span
-                    >
-                </label>
-                <p class="pf-c-form__helper-text">
-                    ${msg(
-                        "When enabled, connection authorizations will be deleted when a client disconnects. This will force clients with flaky internet connections to re-authorize the endpoint.",
-                    )}
-                </p>
-            </ak-form-element-horizontal>
+            <ak-switch-input
+                name="deleteTokenOnDisconnect"
+                label=${msg("Delete authorization on disconnect")}
+                ?checked=${this.instance?.deleteTokenOnDisconnect ?? false}
+                help=${msg(
+                    "When enabled, connection authorizations will be deleted when a client disconnects. This will force clients with flaky internet connections to re-authorize the endpoint.",
+                )}
+            >
+            </ak-switch-input>
 
-            <ak-form-group .expanded=${true}>
-                <span slot="header"> ${msg("Protocol settings")} </span>
-                <div slot="body" class="pf-c-form">
+            <ak-form-group open label="${msg("Protocol settings")}">
+                <div class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${msg("Property mappings")}
                         name="propertyMappings"
                     >
-                        <select class="pf-c-form-control" multiple>
-                            ${this.propertyMappings?.results.map((mapping) => {
-                                let selected = false;
-                                if (this.instance?.propertyMappings) {
-                                    selected = Array.from(this.instance?.propertyMappings).some(
-                                        (su) => {
-                                            return su == mapping.pk;
-                                        },
-                                    );
-                                }
-                                return html`<option
-                                    value=${ifDefined(mapping.pk)}
-                                    ?selected=${selected}
-                                >
-                                    ${mapping.name}
-                                </option>`;
-                            })}
-                        </select>
-                        <p class="pf-c-form__helper-text">
-                            ${msg("Hold control/command to select multiple items.")}
-                        </p>
+                        <ak-dual-select-dynamic-selected
+                            .provider=${propertyMappingsProvider}
+                            .selector=${propertyMappingsSelector(this.instance?.propertyMappings)}
+                            available-label="${msg("Available Property Mappings")}"
+                            selected-label="${msg("Selected Property Mappings")}"
+                        ></ak-dual-select-dynamic-selected>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal label=${msg("Settings")} name="settings">
                         <ak-codemirror
                             mode="yaml"
-                            value="${YAML.stringify(first(this.instance?.settings, {}))}"
+                            value="${YAML.stringify(this.instance?.settings ?? {})}"
                         >
                         </ak-codemirror>
                         <p class="pf-c-form__helper-text">${msg("Connection settings.")}</p>
@@ -170,5 +132,11 @@ export class RACProviderFormPage extends ModelForm<RACProvider, number> {
                 </div>
             </ak-form-group>
         `;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-provider-rac-form": RACProviderFormPage;
     }
 }

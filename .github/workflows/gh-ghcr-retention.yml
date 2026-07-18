@@ -1,0 +1,32 @@
+---
+name: GH - GHCR retention
+
+on:
+  # schedule:
+  #   - cron: "0 0 * * *" # every day at midnight
+  workflow_dispatch:
+    inputs:
+      dry-run:
+        type: boolean
+        description: Enable dry-run mode
+
+jobs:
+  clean-ghcr:
+    name: Delete old unused container images
+    runs-on: ubuntu-latest
+    steps:
+      - id: generate_token
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v2
+        with:
+          app-id: ${{ secrets.GH_APP_ID }}
+          private-key: ${{ secrets.GH_APP_PRIV_KEY }}
+      - name: Delete 'dev' containers older than a week
+        uses: snok/container-retention-policy@d3bdcf5ce9b05f685154e4a16c39233b245e3d53 # v3.1.0
+        with:
+          image-names: dev-server,dev-ldap,dev-proxy
+          image-tags: "!gh-next,!gh-main"
+          cut-off: One week ago UTC
+          account: goauthentik
+          tag-selection: untagged
+          token: ${{ steps.generate_token.outputs.token }}
+          dry-run: ${{ inputs.dry-run }}

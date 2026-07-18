@@ -1,0 +1,37 @@
+---
+title: Sources
+sidebar_position: 5
+sidebar_label: "Federated and Social Sources"
+---
+
+Sources allow you to connect authentik to an external user directory. Sources can also be used with social login providers such as Facebook, X, or GitHub.
+
+## Find your source
+
+Sources are in the following general categories:
+
+- **Protocols** ([Kerberos](./protocols/kerberos/index.md), [LDAP](./protocols/ldap/index.md), [OAuth](./protocols/oauth/index.mdx), [SAML](./protocols/saml/index.md), and [SCIM](./protocols/scim/index.md))
+- [**Property mappings**](./property-mappings/index.md) or how to import data from a source
+- **Directory synchronization** (Active Directory, FreeIPA)
+- **Social logins** (Apple, Discord, Twitch, Twitter, and many others)
+
+For instructions to add a specific source, refer to the documentation links in the left navigation pane.
+
+Several source types also expose an **Icon** field that uses the shared file picker. See [File picker values](../../customize/file-picker.md).
+
+## Add sources to default login page
+
+To show sources on the default login screen, add them to the flow. The process below assumes that you have not created or renamed the default stages and flows.
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Flows and Stages** > **Flows**.
+3. Click the **default-authentication-flow**.
+4. Click the **Stage Bindings** tab.
+5. Click **Edit Stage** on the **default-authentication-identification** stage.
+6. Under **Source settings**, add sources to **Selected sources** to have them displayed on the authentik login page.
+
+## Bind a policy to a source
+
+You can bind a policy to a source to control whether or not the users from the source can access an application.
+
+For instructions, refer to [Bind a policy to a source](../../customize/policies/working_with_policies.md#bind-a-policy-to-a-source).

@@ -1,8 +1,8 @@
-import { customElement } from "lit/decorators.js";
+import { FlowSearch } from "./FlowSearch.js";
 
 import type { Flow } from "@goauthentik/api";
 
-import FlowSearch from "./FlowSearch";
+import { customElement } from "lit/decorators.js";
 
 /**
  * @element ak-flow-search
@@ -13,4 +13,8 @@ import FlowSearch from "./FlowSearch";
 @customElement("ak-flow-search")
 export class AkFlowSearch<T extends Flow> extends FlowSearch<T> {}
 
-export default AkFlowSearch;
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-flow-search": AkFlowSearch<Flow>;
+    }
+}

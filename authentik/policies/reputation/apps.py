@@ -2,8 +2,6 @@
 
 from authentik.blueprints.apps import ManagedAppConfig
 
-CACHE_KEY_PREFIX = "goauthentik.io/policies/reputation/scores/"
-
 
 class AuthentikPolicyReputationConfig(ManagedAppConfig):
     """Authentik reputation app config"""

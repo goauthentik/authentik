@@ -1,0 +1,9 @@
+version: 1
+entries:
+  - model: authentik_core.user
+    identifiers:
+      username: "%(id)s"
+    attrs:
+      name: "%(id)s"
+      permissions:
+        - authentik_blueprints.view_blueprintinstance

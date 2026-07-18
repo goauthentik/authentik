@@ -6,13 +6,12 @@ import (
 	"strconv"
 	"sync"
 
-	"github.com/mitchellh/mapstructure"
 	log "github.com/sirupsen/logrus"
 	"github.com/wwt/guac"
 
+	"goauthentik.io/internal/config"
 	"goauthentik.io/internal/outpost/ak"
 	"goauthentik.io/internal/outpost/rac/connection"
-	"goauthentik.io/internal/outpost/rac/metrics"
 )
 
 type RACServer struct {
@@ -23,14 +22,14 @@ type RACServer struct {
 	conns map[string]connection.Connection
 }
 
-func NewServer(ac *ak.APIController) *RACServer {
+func NewServer(ac *ak.APIController) ak.Outpost {
 	rs := &RACServer{
 		log:   log.WithField("logger", "authentik.outpost.rac"),
 		ac:    ac,
 		connm: sync.RWMutex{},
 		conns: map[string]connection.Connection{},
 	}
-	ac.AddWSHandler(rs.wsHandler)
+	ac.AddEventHandler(rs.wsHandler)
 	return rs
 }
 
@@ -52,12 +51,14 @@ func parseIntOrZero(input string) int {
 	return x
 }
 
-func (rs *RACServer) wsHandler(ctx context.Context, args map[string]interface{}) {
+func (rs *RACServer) wsHandler(ctx context.Context, msg ak.Event) error {
+	if msg.Instruction != ak.EventKindProviderSpecific {
+		return nil
+	}
 	wsm := WSMessage{}
-	err := mapstructure.Decode(args, &wsm)
+	err := msg.ArgsAs(&wsm)
 	if err != nil {
-		rs.log.WithError(err).Warning("invalid ws message")
-		return
+		return err
 	}
 	config := guac.NewGuacamoleConfiguration()
 	config.Protocol = wsm.Protocol
@@ -71,32 +72,30 @@ func (rs *RACServer) wsHandler(ctx context.Context, args map[string]interface{})
 	}
 	cc, err := connection.NewConnection(rs.ac, wsm.DestChannelID, config)
 	if err != nil {
-		rs.log.WithError(err).Warning("failed to setup connection")
-		return
+		return err
 	}
 	cc.OnError = func(err error) {
 		rs.connm.Lock()
 		delete(rs.conns, wsm.ConnID)
-		_ = rs.ac.SendWSHello(map[string]interface{}{
+		_ = rs.ac.SendEventHello(map[string]any{
 			"active_connections": len(rs.conns),
 		})
 		rs.connm.Unlock()
 	}
 	rs.connm.Lock()
 	rs.conns[wsm.ConnID] = *cc
-	_ = rs.ac.SendWSHello(map[string]interface{}{
+	_ = rs.ac.SendEventHello(map[string]any{
 		"active_connections": len(rs.conns),
 	})
 	rs.connm.Unlock()
+	return nil
 }
 
 func (rs *RACServer) Start() error {
+	listenMetrics := config.Get().Listen.Metrics
+	metricsRouter := ak.MetricsRouter()
 	wg := sync.WaitGroup{}
-	wg.Add(2)
-	go func() {
-		defer wg.Done()
-		metrics.RunServer()
-	}()
+	wg.Add(1 + 1 + len(listenMetrics))
 	go func() {
 		defer wg.Done()
 		err := rs.startGuac()
@@ -104,6 +103,16 @@ func (rs *RACServer) Start() error {
 			panic(err)
 		}
 	}()
+	go func() {
+		defer wg.Done()
+		ak.RunMetricsUnix(metricsRouter)
+	}()
+	for _, listen := range listenMetrics {
+		go func() {
+			defer wg.Done()
+			ak.RunMetricsServer(listen, metricsRouter)
+		}()
+	}
 	wg.Wait()
 	return nil
 }

@@ -1,0 +1,14 @@
+{
+    "kind": "admin#directory#domains",
+    "etag": "\"a1kA7zE2sFLsHiFwgXN9G3effoc9grR2OwUu8_95xD4/uvC5HsKHylhnUtnRV6ZxINODtV0\"",
+    "domains": [
+        {
+            "kind": "admin#directory#domain",
+            "etag": "\"a1kA7zE2sFLsHiFwgXN9G3effoc9grR2OwUu8_95xD4/V4koSPWBFIWuIpAmUamO96QhTLo\"",
+            "domainName": "goauthentik.io",
+            "isPrimary": true,
+            "verified": true,
+            "creationTime": "1543048869840"
+        }
+    ]
+}

@@ -9,6 +9,7 @@ from rest_framework.serializers import BaseSerializer
 
 from authentik.lib.models import (
     CreatedUpdatedModel,
+    ExpiringModel,
     InheritanceAutoManager,
     InheritanceForeignKey,
     SerializerModel,
@@ -47,13 +48,26 @@ class PolicyBindingModel(models.Model):
     def __str__(self) -> str:
         return f"PolicyBindingModel {self.pbm_uuid}"
 
+    def supported_policy_binding_targets(self):
+        """Return the list of objects that can be bound to this object."""
+        return ["policy", "user", "group"]
 
-class PolicyBinding(SerializerModel):
+
+class BoundPolicyQuerySet(models.QuerySet):
+    """QuerySet for filtering enabled bindings for a Policy type"""
+
+    def for_policy(self, policy: Policy):
+        return self.filter(policy__in=policy._default_manager.all()).filter(enabled=True)
+
+
+class PolicyBinding(ExpiringModel, SerializerModel):
     """Relationship between a Policy and a PolicyBindingModel."""
 
     policy_binding_uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
 
     enabled = models.BooleanField(default=True)
+    # Shadow's field from ExpiringModel, as we don't want to default expire
+    expiring = models.BooleanField(default=False)
 
     policy = InheritanceForeignKey(
         "Policy",
@@ -81,7 +95,9 @@ class PolicyBinding(SerializerModel):
         blank=True,
     )
 
-    target = InheritanceForeignKey(PolicyBindingModel, on_delete=models.CASCADE, related_name="+")
+    target = InheritanceForeignKey(
+        PolicyBindingModel, on_delete=models.CASCADE, related_name="bindings"
+    )
     negate = models.BooleanField(
         default=False,
         help_text=_("Negates the outcome of the policy. Messages are unaffected."),
@@ -97,6 +113,8 @@ class PolicyBinding(SerializerModel):
 
     def passes(self, request: PolicyRequest) -> PolicyResult:
         """Check if request passes this PolicyBinding, check policy, group or user"""
+        if self.is_expired:
+            return PolicyResult(False)
         if self.policy:
             self.policy: Policy
             return self.policy.passes(request)
@@ -142,11 +160,13 @@ class PolicyBinding(SerializerModel):
             return f"Binding - #{self.order} to {suffix}"
         return ""
 
+    in_use = BoundPolicyQuerySet.as_manager()
+
     class Meta:
         verbose_name = _("Policy Binding")
         verbose_name_plural = _("Policy Bindings")
         unique_together = ("policy", "target", "order")
-        indexes = [
+        indexes = ExpiringModel.Meta.indexes + [
             models.Index(fields=["policy"]),
             models.Index(fields=["group"]),
             models.Index(fields=["user"]),

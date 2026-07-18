@@ -1,74 +1,306 @@
-[tool.poetry]
+[project]
 name = "authentik"
-version = "2024.4.1"
+version = "2026.8.0-rc1"
 description = ""
-authors = ["authentik Team <hello@goauthentik.io>"]
+authors = [{ name = "authentik Team", email = "hello@goauthentik.io" }]
+requires-python = "==3.14.*"
+dependencies = [
+  "ak-guardian==3.2.0",
+  "argon2-cffi==25.1.0",
+  "cachetools==7.1.4",
+  "channels==4.3.2",
+  "cryptography==49.0.0",
+  "dacite==1.9.2",
+  "deepmerge==2.1.0",
+  "defusedxml==0.7.1",
+  "django-channels-postgres",
+  "django-countries==9.0.0",
+  "django-dramatiq-postgres",
+  "django-filter==25.2",
+  "django-model-utils==5.0.0",
+  "django-pglock==1.8.0",
+  "django-pgtrigger==4.17.0",
+  "django-postgres-cache",
+  "django-postgres-extra==2.0.9",
+  "django-prometheus==2.5.0",
+  "django-storages[s3]==1.14.6",
+  "django-tenants==3.10.2",
+  "django==5.2.15",
+  "djangoql==0.19.1",
+  "djangorestframework==3.17.1",
+  "docker==7.2.0",
+  "drf-spectacular==0.29.0",
+  "dumb-init==1.2.5.post1",
+  "duo-client==5.6.1",
+  "fido2==2.2.1",
+  "geoip2==5.2.0",
+  "geopy==2.4.1",
+  "google-api-python-client==2.198.0",
+  "gssapi==1.11.1",
+  "gunicorn==26.0.0",
+  "jsonpatch==1.33",
+  "jwcrypto==1.5.8",
+  "kubernetes==36.0.3",
+  "ldap3==2.9.1",
+  "lxml==6.1.1",
+  "msgraph-sdk==1.58.0",
+  "msgspec==0.21.1",
+  "opencontainers==0.0.15",
+  "packaging==26.2",
+  "paramiko==5.0.0",
+  "psycopg[c,pool]==3.3.4",
+  "pydantic-scim==0.0.8",
+  "pydantic==2.13.4",
+  "pyjwt==2.13.0",
+  "pyrad==2.5.4",
+  "python-kadmin-rs==0.7.2",
+  "pyyaml==6.0.3",
+  "requests-oauthlib==2.0.0",
+  "scim2-filter-parser==0.7.0",
+  "sentry-sdk==2.64.0",
+  "service-identity==26.1.0",
+  "setproctitle==1.3.7",
+  "structlog==26.1.0",
+  "swagger-spec-validator==3.0.4",
+  "twilio==9.10.9",
+  "ua-parser==1.0.2",
+  "unidecode==1.4.0",
+  "urllib3<3",
+  "uvicorn[standard]==0.51.0",
+  "watchdog==6.0.0",
+  "webauthn==3.0.0",
+  "wsproto==1.3.2",
+  "xmlsec==1.3.17",
+  "zxcvbn==4.5.0",
+]
+
+[dependency-groups]
+dev = [
+  "aws-cdk-lib==2.261.0",
+  "bandit==1.9.4",
+  "black==26.5.1",
+  "bpython==0.26",
+  "colorama==0.4.6",
+  "constructs==10.6.0",
+  "coverage[toml]==7.15.1",
+  "daphne==4.2.2",
+  "debugpy==1.8.21",
+  "django-stubs[compatible-mypy]==6.0.6",
+  "djangorestframework-stubs[compatible-mypy]==3.17.0",
+  "drf-jsonschema-serializer==3.0.0",
+  "freezegun==1.5.5",
+  "importlib-metadata==9.0.0",
+  "k5test==0.10.4",
+  "lxml-stubs==0.5.1",
+  "mypy==2.1.0",
+  "pdoc==16.0.0",
+  "pytest-django==4.12.0",
+  "pytest-flakefinder==1.1.0",
+  "pytest-github-actions-annotate-failures==0.4.2",
+  "pytest-randomly==4.1.0",
+  "pytest-timeout==2.4.0",
+  "pytest==9.1.1",
+  "requests-mock==1.12.1",
+  "ruff==0.15.21",
+  "selenium==4.45.0",
+  "types-channels==4.3.0.20260518",
+  "types-docker==7.1.0.20260518",
+  "types-jwcrypto==1.5.7.20260518",
+  "types-ldap3==2.9.13.20260518",
+  "types-requests==2.33.0.20260518",
+  "types-zxcvbn==4.5.0.20260518",
+]
+
+[tool.uv]
+no-binary-package = [
+  # This differs from the no-binary packages in the Dockerfile. This is due to the fact
+  # that these packages are built from source for different reasons than cryptography and kadmin.
+  # These packages are built from source to link against the libxml2 on the system which is
+  # required for functionality and to stay up-to-date on both libraries.
+  # The other packages specified in the dockerfile are compiled from source to link against the
+  # correct FIPS OpenSSL libraries
+  "lxml",
+  "xmlsec",
+]
+
+[tool.uv.sources]
+ak-guardian = { workspace = true }
+django-channels-postgres = { workspace = true }
+django-dramatiq-postgres = { workspace = true }
+django-postgres-cache = { workspace = true }
+opencontainers = { git = "https://github.com/vsoch/oci-python", rev = "ceb4fcc090851717a3069d78e85ceb1e86c2740c" }
+
+[tool.uv.workspace]
+members = [
+  "packages/ak-guardian",
+  "packages/django-channels-postgres",
+  "packages/django-dramatiq-postgres",
+  "packages/django-postgres-cache",
+]
+
+[project.scripts]
+ak = "lifecycle.ak:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.bandit]
+exclude_dirs = ["**/node_modules/**"]
 
 [tool.black]
 line-length = 100
-target-version = ['py312']
+target-version = ['py314']
 exclude = 'node_modules'
 
 [tool.ruff]
 line-length = 100
-target-version = "py312"
+target-version = "py314"
 exclude = ["**/migrations/**", "**/node_modules/**"]
 
 [tool.ruff.lint]
 select = [
-    # pycodestyle
-    "E",
-    # Pyflakes
-    "F",
-    # isort
-    "I",
-    # pyupgrade
-    "UP",
-    # flake8-bugbear
-    "B",
-    # django
-    "DJ",
-    # pylint
-    "PL",
+  "E",   # pycodestyle
+  "F",   # Pyflakes
+  "I",   # isort
+  "UP",  # pyupgrade
+  "B",   # flake8-bugbear
+  "DJ",  # django
+  "PL",  # pylint
+  "BLE", # flake8-blind-except
 ]
 ignore = [
-    "DJ001" # Avoid using `null=True` on string-based fields,
+  "DJ001",   # Avoid using `null=True` on string-based fields,
+  "PLC0415", # `import` should be at the top-level of a file
 ]
+
 [tool.ruff.lint.pylint]
 max-args = 7
 max-branches = 18
 max-returns = 10
 
+[tool.mypy]
+plugins = ["mypy_django_plugin.main", "mypy_drf_plugin.main", "pydantic.mypy"]
+
+[[tool.mypy.overrides]]
+module = ["django_tenants.*", "dramatiq.*", "pglock.*"]
+follow_untyped_imports = true
+
+[[tool.mypy.overrides]]
+module = ["cron_converter.*", "msgpack.*"]
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = [
+  "authentik.admin.*",
+  "authentik.api.*",
+  "authentik.blueprints.*",
+  "authentik.brands.*",
+  "authentik.core.*",
+  "authentik.crypto.*",
+  "authentik.endpoints.*",
+  "authentik.enterprise.*",
+  "authentik.events.*",
+  "authentik.flows.*",
+  "authentik.lib.*",
+  "authentik.outposts.*",
+  "authentik.policies.*",
+  "authentik.policies.dummy.*",
+  "authentik.policies.event_matcher.*",
+  "authentik.policies.expiry.*",
+  "authentik.policies.expression.*",
+  "authentik.policies.geoip.*",
+  "authentik.policies.password.*",
+  "authentik.policies.reputation.*",
+  "authentik.providers.ldap.*",
+  "authentik.providers.oauth2.*",
+  "authentik.providers.proxy.*",
+  "authentik.providers.rac.*",
+  "authentik.providers.radius.*",
+  "authentik.providers.saml.*",
+  "authentik.providers.scim.*",
+  "authentik.rbac.*",
+  "authentik.recovery.*",
+  "authentik.root.*",
+  "authentik.sources.kerberos.*",
+  "authentik.sources.ldap.*",
+  "authentik.sources.oauth.*",
+  "authentik.sources.plex.*",
+  "authentik.sources.saml.*",
+  "authentik.sources.scim.*",
+  "authentik.sources.telegram.*",
+  "authentik.stages.authenticator_duo.*",
+  "authentik.stages.authenticator_email.*",
+  "authentik.stages.authenticator_sms.*",
+  "authentik.stages.authenticator_static.*",
+  "authentik.stages.authenticator_totp.*",
+  "authentik.stages.authenticator_validate.*",
+  "authentik.stages.authenticator_webauthn.*",
+  "authentik.stages.authenticator.*",
+  "authentik.stages.captcha.*",
+  "authentik.stages.consent.*",
+  "authentik.stages.deny.*",
+  "authentik.stages.dummy.*",
+  "authentik.stages.email.*",
+  "authentik.stages.identification.*",
+  "authentik.stages.invitation.*",
+  "authentik.stages.password.*",
+  "authentik.stages.prompt.*",
+  "authentik.stages.redirect.*",
+  "authentik.stages.user_delete.*",
+  "authentik.stages.user_login.*",
+  "authentik.stages.user_logout.*",
+  "authentik.stages.user_write.*",
+  "authentik.tasks.*",
+  "authentik.tasks.schedules.*",
+  "authentik.tenants.*",
+  "guardian.*",
+  "lifecycle.*",
+  "tests.*",
+  "tests.e2e.*",
+  "tests.integration.*",
+  "tests.openid_conformance.*",
+]
+ignore_errors = true
+
+[tool.django-stubs]
+django_settings_module = "authentik.root.settings"
+
 [tool.coverage.run]
 source = ["authentik"]
 relative_files = true
 omit = [
-    "*/asgi.py",
-    "manage.py",
-    "*/migrations/*",
-    "*/management/commands/*",
-    "*/apps.py",
-    "website/",
+  "*/asgi.py",
+  "manage.py",
+  "*/migrations/*",
+  "*/management/commands/*",
+  "*/apps.py",
+  # TODO: Remove this after moving website to docs
+  "website/",
+  "docs/",
 ]
+concurrency = ["thread", "multiprocessing"]
+parallel = true
+sigterm = true
 
 [tool.coverage.report]
 sort = "Cover"
 skip_covered = true
 precision = 2
 exclude_lines = [
-    "pragma: no cover",
-    # Don't complain about missing debug-only code:
-    "def __unicode__",
-    "def __str__",
-    "def __repr__",
-    "if self.debug",
-    "if TYPE_CHECKING",
-    # Don't complain if tests don't hit defensive assertion code:
-    "raise AssertionError",
-    "raise NotImplementedError",
-    # Don't complain if non-runnable code isn't run:
-    "if 0:",
-    "if __name__ == .__main__.:",
+  "pragma: no cover",
+  # Don't complain about missing debug-only code:
+  "def __unicode__",
+  "def __str__",
+  "def __repr__",
+  "if self.debug",
+  "if TYPE_CHECKING",
+  # Don't complain if tests don't hit defensive assertion code:
+  "raise AssertionError",
+  "raise NotImplementedError",
+  # Don't complain if non-runnable code isn't run:
+  "if 0:",
+  "if __name__ == .__main__.:",
 ]
 show_missing = true
 
@@ -76,100 +308,8 @@ show_missing = true
 DJANGO_SETTINGS_MODULE = "authentik.root.settings"
 python_files = ["tests.py", "test_*.py", "*_tests.py"]
 junit_family = "xunit2"
-addopts = "-p no:celery -p authentik.root.test_plugin --junitxml=unittest.xml -vv --full-trace --doctest-modules"
+addopts = "-p authentik.root.test_plugin --junitxml=unittest.xml -vv --full-trace --doctest-modules --import-mode=importlib --ignore=authentik/tasks/setup.py"
 filterwarnings = [
-    "ignore:defusedxml.lxml is no longer supported and will be removed in a future release.:DeprecationWarning",
-    "ignore:SelectableGroups dict interface is deprecated. Use select.:DeprecationWarning",
+  "ignore:defusedxml.lxml is no longer supported and will be removed in a future release.:DeprecationWarning",
+  "ignore:SelectableGroups dict interface is deprecated. Use select.:DeprecationWarning",
 ]
-
-[tool.poetry.dependencies]
-argon2-cffi = "*"
-celery = "*"
-channels = { version = "*", extras = ["daphne"] }
-channels-redis = "*"
-codespell = "*"
-colorama = "*"
-cryptography = "*"
-dacite = "*"
-deepmerge = "*"
-defusedxml = "*"
-django = "*"
-django-filter = "*"
-django-guardian = "*"
-django-model-utils = "*"
-django-prometheus = "*"
-django-redis = "*"
-django-storages = { extras = ["s3"], version = "*" }
-# See https://github.com/django-tenants/django-tenants/pull/997
-django-tenants = { git = "https://github.com/rissson/django-tenants.git", branch="authentik-fixes" }
-djangorestframework = "3.14.0"
-djangorestframework-guardian = "*"
-docker = "*"
-drf-spectacular = "*"
-dumb-init = "*"
-duo-client = "*"
-facebook-sdk = "*"
-fido2 = "*"
-flower = "*"
-geoip2 = "*"
-gunicorn = "*"
-jsonpatch = "*"
-kubernetes = "*"
-ldap3 = "*"
-lxml = "*"
-opencontainers = { extras = ["reggie"], version = "*" }
-packaging = "*"
-paramiko = "*"
-psycopg = { extras = ["c"], version = "*" }
-pydantic = "*"
-pydantic-scim = "*"
-pyjwt = "*"
-python = "~3.12"
-pyyaml = "*"
-requests-oauthlib = "*"
-scim2-filter-parser = "*"
-sentry-sdk = "*"
-service_identity = "*"
-setproctitle = "*"
-structlog = "*"
-swagger-spec-validator = "*"
-tenant-schemas-celery = "*"
-twilio = "*"
-twisted = "*"
-ua-parser = "*"
-# Pinned because of botocore https://github.com/orgs/python-poetry/discussions/7937
-urllib3 = { extras = ["secure"], version = "<3" }
-uvicorn = { extras = ["standard"], version = "*" }
-watchdog = "*"
-webauthn = "*"
-wsproto = "*"
-xmlsec = "*"
-zxcvbn = "*"
-
-[tool.poetry.dev-dependencies]
-bandit = "*"
-black = "*"
-bump2version = "*"
-colorama = "*"
-coverage = { extras = ["toml"], version = "*" }
-debugpy = "*"
-drf-jsonschema-serializer = "*"
-freezegun = "*"
-importlib-metadata = "*"
-pdoc = "*"
-pyrad = "*"
-pytest = "*"
-pytest-django = "*"
-pytest-github-actions-annotate-failures = "*"
-pytest-randomly = "*"
-pytest-timeout = "*"
-requests-mock = "*"
-ruff = "*"
-selenium = "*"
-
-[build-system]
-requires = ["poetry-core>=1.0.0"]
-build-backend = "poetry.core.masonry.api"
-
-[tool.poetry.scripts]
-ak = "lifecycle.ak:main"

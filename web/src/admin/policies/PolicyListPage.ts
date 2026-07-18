@@ -1,127 +1,111 @@
-import "@goauthentik/admin/policies/PolicyTestForm";
-import "@goauthentik/admin/policies/PolicyWizard";
-import "@goauthentik/admin/policies/dummy/DummyPolicyForm";
-import "@goauthentik/admin/policies/event_matcher/EventMatcherPolicyForm";
-import "@goauthentik/admin/policies/expiry/ExpiryPolicyForm";
-import "@goauthentik/admin/policies/expression/ExpressionPolicyForm";
-import "@goauthentik/admin/policies/password/PasswordPolicyForm";
-import "@goauthentik/admin/policies/reputation/ReputationPolicyForm";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { uiConfig } from "@goauthentik/common/ui/config";
-import { PFColor } from "@goauthentik/elements/Label";
-import "@goauthentik/elements/forms/ConfirmationForm";
-import "@goauthentik/elements/forms/DeleteBulkForm";
-import "@goauthentik/elements/forms/ModalForm";
-import "@goauthentik/elements/forms/ProxyForm";
-import "@goauthentik/elements/rbac/ObjectPermissionModal";
-import { PaginatedResponse } from "@goauthentik/elements/table/Table";
-import { TableColumn } from "@goauthentik/elements/table/Table";
-import { TablePage } from "@goauthentik/elements/table/TablePage";
+import "#admin/policies/PolicyTestForm";
+import "#admin/policies/ak-policy-wizard";
+import "#admin/policies/dummy/DummyPolicyForm";
+import "#admin/policies/event_matcher/EventMatcherPolicyForm";
+import "#admin/policies/expiry/ExpiryPolicyForm";
+import "#admin/policies/expression/ExpressionPolicyForm";
+import "#admin/policies/password/PasswordPolicyForm";
+import "#admin/policies/reputation/ReputationPolicyForm";
+import "#admin/policies/unique_password/UniquePasswordPolicyForm";
+import "#admin/rbac/ObjectPermissionModal";
+import "#elements/forms/ConfirmationForm";
+import "#elements/forms/DeleteBulkForm";
+import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
-import { msg, str } from "@lit/localize";
-import { TemplateResult, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
+import { aki } from "#common/api/client";
 
-import { PoliciesApi, Policy } from "@goauthentik/api";
+import { IconEditButtonByTagName, modalInvoker } from "#elements/dialogs";
+import { IconPermissionButton } from "#elements/dialogs/components/IconPermissionButton";
+import { PFColor } from "#elements/Label";
+import { PaginatedResponse, TableColumn } from "#elements/table/Table";
+import { TablePage } from "#elements/table/TablePage";
+import { SlottedTemplateResult } from "#elements/types";
+
+import { PolicyWizard } from "#admin/policies/ak-policy-wizard";
+import { PolicyTestForm } from "#admin/policies/PolicyTestForm";
+
+import { ModelEnum, PoliciesApi, Policy } from "@goauthentik/api";
+
+import { msg, str } from "@lit/localize";
+import { html } from "lit";
+import { customElement } from "lit/decorators.js";
 
 @customElement("ak-policy-list")
 export class PolicyListPage extends TablePage<Policy> {
-    searchEnabled(): boolean {
-        return true;
-    }
-    pageTitle(): string {
-        return msg("Policies");
-    }
-    pageDescription(): string {
-        return msg(
-            "Allow users to use Applications based on properties, enforce Password Criteria and selectively apply Stages.",
-        );
-    }
-    pageIcon(): string {
-        return "pf-icon pf-icon-infrastructure";
+    protected override searchEnabled = true;
+
+    public override pageTitle = msg("Policies");
+    public override pageDescription = msg(
+        "Allow users to use Applications based on properties, enforce Password Criteria and selectively apply Stages.",
+    );
+    public override pageIcon = "pf-icon pf-icon-infrastructure";
+
+    public override searchPlaceholder = msg("Search for a policy by name or type...");
+
+    public override checkbox = true;
+    public override clearOnRefresh = true;
+    public override order = "name";
+
+    async apiEndpoint(): Promise<PaginatedResponse<Policy>> {
+        return aki(PoliciesApi).policiesAllList(await this.defaultEndpointConfig());
     }
 
-    checkbox = true;
-    clearOnRefresh = true;
+    protected columns: TableColumn[] = [
+        // ---
+        [msg("Name"), "name"],
+        [msg("Type")],
+        [msg("Actions")],
+    ];
 
-    @property()
-    order = "name";
-
-    async apiEndpoint(page: number): Promise<PaginatedResponse<Policy>> {
-        return new PoliciesApi(DEFAULT_CONFIG).policiesAllList({
-            ordering: this.order,
-            page: page,
-            pageSize: (await uiConfig()).pagination.perPage,
-            search: this.search || "",
-        });
-    }
-
-    columns(): TableColumn[] {
-        return [
-            new TableColumn(msg("Name"), "name"),
-            new TableColumn(msg("Type")),
-            new TableColumn(msg("Actions")),
-        ];
-    }
-
-    row(item: Policy): TemplateResult[] {
+    protected override row(item: Policy): SlottedTemplateResult[] {
         return [
             html`<div>${item.name}</div>
                 ${(item.boundTo || 0) > 0
-                    ? html`<ak-label color=${PFColor.Green} ?compact=${true}>
+                    ? html`<ak-label color=${PFColor.Green} compact>
                           ${msg(str`Assigned to ${item.boundTo} object(s).`)}
                       </ak-label>`
-                    : html`<ak-label color=${PFColor.Orange} ?compact=${true}>
+                    : html`<ak-label color=${PFColor.Orange} compact>
                           ${msg("Warning: Policy is not assigned.")}
                       </ak-label>`}`,
             html`${item.verboseName}`,
-            html` <ak-forms-modal>
-                    <span slot="submit"> ${msg("Update")} </span>
-                    <span slot="header"> ${msg(str`Update ${item.verboseName}`)} </span>
-                    <ak-proxy-form
-                        slot="form"
-                        .args=${{
-                            instancePk: item.pk,
-                        }}
-                        type=${ifDefined(item.component)}
-                    >
-                    </ak-proxy-form>
-                    <button slot="trigger" class="pf-c-button pf-m-plain">
-                        <pf-tooltip position="top" content=${msg("Edit")}>
-                            <i class="fas fa-edit"></i>
-                        </pf-tooltip>
-                    </button>
-                </ak-forms-modal>
+            html`<div class="ak-c-table__actions">
+                ${IconEditButtonByTagName(item.component, item.pk)}
+                ${IconPermissionButton(item.name, {
+                    model: item.metaModelName as ModelEnum,
+                    objectPk: item.pk,
+                })}
 
-                <ak-rbac-object-permission-modal model=${item.metaModelName} objectPk=${item.pk}>
-                </ak-rbac-object-permission-modal>
-                <ak-forms-modal .closeAfterSuccessfulSubmit=${false}>
-                    <span slot="submit"> ${msg("Test")} </span>
-                    <span slot="header"> ${msg("Test Policy")} </span>
-                    <ak-policy-test-form slot="form" .policy=${item}> </ak-policy-test-form>
-                    <button slot="trigger" class="pf-c-button pf-m-plain">
-                        <pf-tooltip position="top" content=${msg("Test")}>
-                            <i class="fas fa-vial" aria-hidden="true"></i>
-                        </pf-tooltip>
-                    </button>
-                </ak-forms-modal>`,
+                <button
+                    class="pf-c-button pf-m-plain"
+                    ${modalInvoker(
+                        PolicyTestForm,
+                        { policy: item },
+                        {
+                            closedBy: "closerequest",
+                        },
+                    )}
+                >
+                    <pf-tooltip position="top" content=${msg("Test")}>
+                        <i class="fas fa-vial" aria-hidden="true"></i>
+                    </pf-tooltip>
+                </button>
+            </div>`,
         ];
     }
 
-    renderToolbarSelected(): TemplateResult {
+    protected override renderToolbarSelected(): SlottedTemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
-            objectLabel=${msg("Policy / Policies")}
+            object-label=${msg("Policy / Policies")}
             .objects=${this.selectedElements}
             .usedBy=${(item: Policy) => {
-                return new PoliciesApi(DEFAULT_CONFIG).policiesAllUsedByList({
+                return aki(PoliciesApi).policiesAllUsedByList({
                     policyUuid: item.pk,
                 });
             }}
             .delete=${(item: Policy) => {
-                return new PoliciesApi(DEFAULT_CONFIG).policiesAllDestroy({
+                return aki(PoliciesApi).policiesAllDestroy({
                     policyUuid: item.pk,
                 });
             }}
@@ -132,21 +116,30 @@ export class PolicyListPage extends TablePage<Policy> {
         </ak-forms-delete-bulk>`;
     }
 
-    renderObjectCreate(): TemplateResult {
-        return html`<ak-policy-wizard> </ak-policy-wizard>`;
+    protected override renderObjectCreate(): SlottedTemplateResult {
+        return html`
+            <button
+                class="pf-c-button pf-m-primary"
+                type="button"
+                aria-description="${msg("Open the wizard to create a new policy.")}"
+                ${PolicyWizard.asModalInvoker()}
+            >
+                ${msg("New Policy")}
+            </button>
+        `;
     }
 
-    renderToolbar(): TemplateResult {
-        return html` ${super.renderToolbar()}
+    protected override renderToolbar(): SlottedTemplateResult {
+        return html`${super.renderToolbar()}
             <ak-forms-confirm
                 successMessage=${msg("Successfully cleared policy cache")}
                 errorMessage=${msg("Failed to delete policy cache")}
-                action=${msg("Clear cache")}
+                action=${msg("Clear Cache")}
                 .onConfirm=${() => {
-                    return new PoliciesApi(DEFAULT_CONFIG).policiesAllCacheClearCreate();
+                    return aki(PoliciesApi).policiesAllCacheClearCreate();
                 }}
             >
-                <span slot="header"> ${msg("Clear Policy cache")} </span>
+                <span slot="header">${msg("Clear Policy cache")}</span>
                 <p slot="body">
                     ${msg(
                         "Are you sure you want to clear the policy cache? This will cause all policies to be re-evaluated on their next usage.",
@@ -157,5 +150,11 @@ export class PolicyListPage extends TablePage<Policy> {
                 </button>
                 <div slot="modal"></div>
             </ak-forms-confirm>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-policy-list": PolicyListPage;
     }
 }

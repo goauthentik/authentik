@@ -1,27 +1,30 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { uiConfig } from "@goauthentik/common/ui/config";
-import { getRelativeTime } from "@goauthentik/common/utils";
-import "@goauthentik/elements/forms/DeleteBulkForm";
-import { PaginatedResponse } from "@goauthentik/elements/table/Table";
-import { Table, TableColumn } from "@goauthentik/elements/table/Table";
+import "#elements/chips/Chip";
+import "#elements/chips/ChipGroup";
+import "#elements/forms/DeleteBulkForm";
 
-import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { aki } from "#common/api/client";
+
+import { PaginatedResponse, Table, TableColumn, Timestamp } from "#elements/table/Table";
+import { SlottedTemplateResult } from "#elements/types";
 
 import { CoreApi, UserConsent } from "@goauthentik/api";
 
+import { msg } from "@lit/localize";
+import { html, TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators.js";
+
 @customElement("ak-user-consent-list")
 export class UserConsentList extends Table<UserConsent> {
+    public static override verboseName = msg("Consent");
+    public static override verboseNamePlural = msg("Consents");
+
     @property({ type: Number })
     userId?: number;
 
-    async apiEndpoint(page: number): Promise<PaginatedResponse<UserConsent>> {
-        return new CoreApi(DEFAULT_CONFIG).coreUserConsentList({
+    async apiEndpoint(): Promise<PaginatedResponse<UserConsent>> {
+        return aki(CoreApi).coreUserConsentList({
+            ...(await this.defaultEndpointConfig()),
             user: this.userId,
-            ordering: this.order,
-            page: page,
-            pageSize: (await uiConfig()).pagination.perPage,
         });
     }
 
@@ -29,26 +32,38 @@ export class UserConsentList extends Table<UserConsent> {
     clearOnRefresh = true;
     order = "-expires";
 
-    columns(): TableColumn[] {
-        return [
-            new TableColumn(msg("Application"), "application"),
-            new TableColumn(msg("Expires"), "expires"),
-            new TableColumn(msg("Permissions"), "permissions"),
-        ];
+    protected override rowLabel(item: UserConsent): string | null {
+        return item.application?.name ?? null;
     }
+
+    protected columns: TableColumn[] = [
+        [msg("Application"), "application"],
+        [msg("Expires"), "expires"],
+        [msg("Permissions"), "permissions"],
+    ];
 
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
-            objectLabel=${msg("Consent(s)")}
+            object-label=${msg("Consent(s)")}
             .objects=${this.selectedElements}
+            .metadata=${(item: UserConsent) => {
+                return [
+                    { key: msg("Application"), value: item.application.name },
+                    {
+                        key: msg("Expires"),
+                        value: Timestamp(item.expires && item.expiring ? item.expires : null),
+                    },
+                    { key: msg("Permissions"), value: item.permissions ?? "-" },
+                ];
+            }}
             .usedBy=${(item: UserConsent) => {
-                return new CoreApi(DEFAULT_CONFIG).coreUserConsentUsedByList({
+                return aki(CoreApi).coreUserConsentUsedByList({
                     id: item.pk,
                 });
             }}
             .delete=${(item: UserConsent) => {
-                return new CoreApi(DEFAULT_CONFIG).coreUserConsentDestroy({
+                return aki(CoreApi).coreUserConsentDestroy({
                     id: item.pk,
                 });
             }}
@@ -59,14 +74,23 @@ export class UserConsentList extends Table<UserConsent> {
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: UserConsent): TemplateResult[] {
+    row(item: UserConsent): SlottedTemplateResult[] {
         return [
             html`${item.application.name}`,
-            html`${item.expires && item.expiring
-                ? html`<div>${getRelativeTime(item.expires)}</div>
-                      <small>${item.expires.toLocaleString()}</small>`
-                : msg("-")}`,
-            html`${item.permissions || "-"}`,
+            Timestamp(item.expires && item.expiring ? item.expires : null),
+            html`${item.permissions
+                ? html`<ak-chip-group>
+                      ${item.permissions.split(" ").map((perm) => {
+                          return html`<ak-chip .removable=${false}>${perm}</ak-chip>`;
+                      })}
+                  </ak-chip-group>`
+                : html`-`}`,
         ];
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-user-consent-list": UserConsentList;
     }
 }

@@ -2,61 +2,46 @@
 
 from base64 import b64encode
 from dataclasses import asdict
-from sys import platform
+from json import dumps
 from time import sleep
-from typing import Any
-from unittest.case import skip, skipUnless
 
-from channels.testing import ChannelsLiveServerTestCase
-from docker.client import DockerClient, from_env
-from docker.models.containers import Container
+from jwt import decode
 from selenium.webdriver.common.by import By
 
 from authentik.blueprints.tests import apply_blueprint, reconcile_app
 from authentik.core.models import Application
 from authentik.flows.models import Flow
 from authentik.lib.generators import generate_id
-from authentik.outposts.models import DockerServiceConnection, Outpost, OutpostConfig, OutpostType
-from authentik.outposts.tasks import outpost_connection_discovery
+from authentik.outposts.models import Outpost, OutpostConfig, OutpostType
 from authentik.providers.proxy.models import ProxyProvider
-from tests.e2e.utils import SeleniumTestCase, retry
+from tests.decorators import retry
+from tests.live import ChannelsE2ETestCase
+from tests.selenium import SeleniumTestCase
 
 
 class TestProviderProxy(SeleniumTestCase):
     """Proxy and Outpost e2e tests"""
 
-    proxy_container: Container
-
-    def tearDown(self) -> None:
-        super().tearDown()
-        self.output_container_logs(self.proxy_container)
-        self.proxy_container.kill()
-
-    def get_container_specs(self) -> dict[str, Any] | None:
-        return {
-            "image": "traefik/whoami:latest",
-            "detach": True,
-            "ports": {
+    def setUp(self):
+        super().setUp()
+        self.run_container(
+            image="traefik/whoami:latest",
+            ports={
                 "80": "80",
             },
-            "auto_remove": True,
-        }
+        )
 
-    def start_proxy(self, outpost: Outpost) -> Container:
+    def start_proxy(self, outpost: Outpost):
         """Start proxy container based on outpost created"""
-        client: DockerClient = from_env()
-        container = client.containers.run(
+        self.run_container(
             image=self.get_container_image("ghcr.io/goauthentik/dev-proxy"),
-            detach=True,
             ports={
                 "9000": "9000",
             },
             environment={
-                "AUTHENTIK_HOST": self.live_server_url,
                 "AUTHENTIK_TOKEN": outpost.token.key,
             },
         )
-        return container
 
     @retry()
     @apply_blueprint(
@@ -65,6 +50,7 @@ class TestProviderProxy(SeleniumTestCase):
     )
     @apply_blueprint(
         "default/flow-default-provider-authorization-implicit-consent.yaml",
+        "default/flow-default-provider-invalidation.yaml",
     )
     @apply_blueprint(
         "system/providers-oauth2.yaml",
@@ -82,6 +68,7 @@ class TestProviderProxy(SeleniumTestCase):
             authorization_flow=Flow.objects.get(
                 slug="default-provider-authorization-implicit-consent"
             ),
+            invalidation_flow=Flow.objects.get(slug="default-provider-invalidation-flow"),
             internal_host=f"http://{self.host}",
             external_host="http://localhost:9000",
         )
@@ -97,31 +84,47 @@ class TestProviderProxy(SeleniumTestCase):
         outpost.providers.add(proxy)
         outpost.build_user_permissions(outpost.user)
 
-        self.proxy_container = self.start_proxy(outpost)
+        self.start_proxy(outpost)
 
-        # Wait until outpost healthcheck succeeds
-        healthcheck_retries = 0
-        while healthcheck_retries < 50:  # noqa: PLR2004
-            if len(outpost.state) > 0:
-                state = outpost.state[0]
-                if state.last_seen:
-                    break
-            healthcheck_retries += 1
-            sleep(0.5)
         sleep(5)
 
-        self.driver.get("http://localhost:9000")
+        self.driver.get("http://localhost:9000/api")
         self.login()
         sleep(1)
 
-        full_body_text = self.driver.find_element(By.CSS_SELECTOR, "pre").text
-        self.assertIn(f"X-Authentik-Username: {self.user.username}", full_body_text)
-        self.assertIn("X-Foo: bar", full_body_text)
+        body = self.parse_json_content()
+        headers = body.get("headers", {})
+        snippet = dumps(body, indent=2)[:500].replace("\n", " ")
+
+        self.assertEqual(
+            headers.get("X-Authentik-Username"),
+            [self.user.username],
+            f"X-Authentik-Username header mismatch at {self.driver.current_url}: {snippet}",
+        )
+        self.assertEqual(
+            headers.get("X-Foo"),
+            ["bar"],
+            f"X-Foo header mismatch at {self.driver.current_url}: {snippet}",
+        )
+        raw_jwt: str = headers.get("X-Authentik-Jwt", [None])[0]
+        jwt = decode(raw_jwt, options={"verify_signature": False})
+
+        self.assertIsNotNone(jwt["sid"], "Missing 'sid' in JWT")
+        self.assertIsNotNone(jwt["ak_proxy"], "Missing 'ak_proxy' in JWT")
 
         self.driver.get("http://localhost:9000/outpost.goauthentik.io/sign_out")
         sleep(2)
-        full_body_text = self.driver.find_element(By.CSS_SELECTOR, ".pf-c-title.pf-m-3xl").text
-        self.assertIn("You've logged out of", full_body_text)
+
+        flow_executor = self.get_shadow_root("ak-flow-executor")
+        session_end_stage = self.get_shadow_root("ak-stage-session-end", flow_executor)
+        flow_card = self.get_shadow_root("ak-flow-card", session_end_stage)
+        title = flow_card.find_element(By.CSS_SELECTOR, ".pf-c-title.pf-m-3xl").text
+
+        self.assertIn(
+            "You've logged out of",
+            title,
+            f"Logout title mismatch at {self.driver.current_url}: {title}",
+        )
 
     @retry()
     @apply_blueprint(
@@ -130,6 +133,7 @@ class TestProviderProxy(SeleniumTestCase):
     )
     @apply_blueprint(
         "default/flow-default-provider-authorization-implicit-consent.yaml",
+        "default/flow-default-provider-invalidation.yaml",
     )
     @apply_blueprint(
         "system/providers-oauth2.yaml",
@@ -149,6 +153,7 @@ class TestProviderProxy(SeleniumTestCase):
             authorization_flow=Flow.objects.get(
                 slug="default-provider-authorization-implicit-consent"
             ),
+            invalidation_flow=Flow.objects.get(slug="default-provider-invalidation-flow"),
             internal_host=f"http://{self.host}",
             external_host="http://localhost:9000",
             basic_auth_enabled=True,
@@ -167,38 +172,48 @@ class TestProviderProxy(SeleniumTestCase):
         outpost.providers.add(proxy)
         outpost.build_user_permissions(outpost.user)
 
-        self.proxy_container = self.start_proxy(outpost)
+        self.start_proxy(outpost)
 
-        # Wait until outpost healthcheck succeeds
-        healthcheck_retries = 0
-        while healthcheck_retries < 50:  # noqa: PLR2004
-            if len(outpost.state) > 0:
-                state = outpost.state[0]
-                if state.last_seen:
-                    break
-            healthcheck_retries += 1
-            sleep(0.5)
         sleep(5)
 
-        self.driver.get("http://localhost:9000")
+        self.driver.get("http://localhost:9000/api")
         self.login()
         sleep(1)
 
-        full_body_text = self.driver.find_element(By.CSS_SELECTOR, "pre").text
-        self.assertIn(f"X-Authentik-Username: {self.user.username}", full_body_text)
+        body = self.parse_json_content()
+        headers = body.get("headers", {})
+        snippet = dumps(body, indent=2)[:500].replace("\n", " ")
+
+        self.assertEqual(
+            headers.get("X-Authentik-Username"),
+            [self.user.username],
+            f"X-Authentik-Username header mismatch at {self.driver.current_url}: {snippet}",
+        )
+
         auth_header = b64encode(f"{cred}:{cred}".encode()).decode()
-        self.assertIn(f"Authorization: Basic {auth_header}", full_body_text)
+
+        self.assertEqual(
+            headers.get("Authorization"),
+            [f"Basic {auth_header}"],
+            f"Authorization header mismatch at {self.driver.current_url}: {snippet}",
+        )
 
         self.driver.get("http://localhost:9000/outpost.goauthentik.io/sign_out")
         sleep(2)
-        full_body_text = self.driver.find_element(By.CSS_SELECTOR, ".pf-c-title.pf-m-3xl").text
-        self.assertIn("You've logged out of", full_body_text)
+
+        flow_executor = self.get_shadow_root("ak-flow-executor")
+        session_end_stage = self.get_shadow_root("ak-stage-session-end", flow_executor)
+        flow_card = self.get_shadow_root("ak-flow-card", session_end_stage)
+        title = flow_card.find_element(By.CSS_SELECTOR, ".pf-c-title.pf-m-3xl").text
+
+        self.assertIn(
+            "You've logged out of",
+            title,
+            f"Logout title mismatch at {self.driver.current_url}: {title}",
+        )
 
 
-# TODO: Fix flaky test
-@skip("Flaky test")
-@skipUnless(platform.startswith("linux"), "requires local docker")
-class TestProviderProxyConnect(ChannelsLiveServerTestCase):
+class TestProviderProxyConnect(ChannelsE2ETestCase):
     """Test Proxy connectivity over websockets"""
 
     @retry(exceptions=[AssertionError])
@@ -212,7 +227,6 @@ class TestProviderProxyConnect(ChannelsLiveServerTestCase):
     @reconcile_app("authentik_crypto")
     def test_proxy_connectivity(self):
         """Test proxy connectivity over websocket"""
-        outpost_connection_discovery()
         proxy: ProxyProvider = ProxyProvider.objects.create(
             name=generate_id(),
             authorization_flow=Flow.objects.get(
@@ -226,15 +240,24 @@ class TestProviderProxyConnect(ChannelsLiveServerTestCase):
         proxy.save()
         # we need to create an application to actually access the proxy
         Application.objects.create(name=generate_id(), slug=generate_id(), provider=proxy)
-        service_connection = DockerServiceConnection.objects.get(local=True)
+
         outpost: Outpost = Outpost.objects.create(
             name=generate_id(),
             type=OutpostType.PROXY,
-            service_connection=service_connection,
             _config=asdict(OutpostConfig(authentik_host=self.live_server_url, log_level="debug")),
         )
         outpost.providers.add(proxy)
         outpost.build_user_permissions(outpost.user)
+
+        self.run_container(
+            image=self.get_container_image("ghcr.io/goauthentik/dev-proxy"),
+            ports={
+                "9000": "9000",
+            },
+            environment={
+                "AUTHENTIK_TOKEN": outpost.token.key,
+            },
+        )
 
         # Wait until outpost healthcheck succeeds
         healthcheck_retries = 0

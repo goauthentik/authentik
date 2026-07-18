@@ -2,32 +2,38 @@ package ak
 
 import (
 	"context"
+	"crypto/fips140"
+	"errors"
 	"fmt"
 	"math/rand"
+	"net"
 	"net/http"
 	"net/url"
 	"os"
 	"os/signal"
+	"runtime"
+	"sync"
 	"syscall"
 	"time"
 
+	"github.com/avast/retry-go/v4"
 	"github.com/getsentry/sentry-go"
 	"github.com/google/uuid"
 	"github.com/gorilla/websocket"
 	"github.com/prometheus/client_golang/prometheus"
-	"goauthentik.io/api/v3"
-	"goauthentik.io/internal/constants"
-	"goauthentik.io/internal/utils/web"
-
 	log "github.com/sirupsen/logrus"
-)
 
-type WSHandler func(ctx context.Context, args map[string]interface{})
+	"goauthentik.io/internal/constants"
+	cryptobackend "goauthentik.io/internal/crypto/backend"
+	"goauthentik.io/internal/utils/web"
+	api "goauthentik.io/packages/client-go"
+)
 
 const ConfigLogLevel = "log_level"
 
 // APIController main controller which connects to the authentik api via http and ws
 type APIController struct {
+	akURL        url.URL
 	Client       *api.APIClient
 	Outpost      api.Outpost
 	GlobalConfig *api.Config
@@ -40,55 +46,88 @@ type APIController struct {
 
 	reloadOffset time.Duration
 
-	wsConn              *websocket.Conn
-	lastWsReconnect     time.Time
-	wsIsReconnecting    bool
-	wsBackoffMultiplier int
-	wsHandlers          []WSHandler
-	refreshHandlers     []func()
+	eventConn        *websocket.Conn
+	eventConnMu      sync.Mutex
+	lastWsReconnect  time.Time
+	wsIsReconnecting bool
+	eventHandlers    []EventHandler
+	refreshHandlers  []func()
 
 	instanceUUID uuid.UUID
 }
 
-// NewAPIController initialise new API Controller instance from URL and API token
+// NewAPIController initialize new API Controller instance from URL and API token
 func NewAPIController(akURL url.URL, token string) *APIController {
 	rsp := sentry.StartSpan(context.Background(), "authentik.outposts.init")
+	log := log.WithField("logger", "authentik.outpost.ak-api-controller")
 
-	config := api.NewConfiguration()
-	config.Host = akURL.Host
-	config.Scheme = akURL.Scheme
-	config.HTTPClient = &http.Client{
-		Transport: web.NewUserAgentTransport(
-			constants.OutpostUserAgent(),
-			web.NewTracingTransport(
-				rsp.Context(),
-				GetTLSTransport(),
+	originalAkURL := akURL
+	var client http.Client
+	if akURL.Scheme == "unix" {
+		log.WithField("host", akURL.Host).WithField("path", akURL.Path).Debug("using unix socket")
+		socketPath := akURL.Host
+		client = http.Client{
+			Transport: web.NewUserAgentTransport(
+				constants.UserAgentOutpost(),
+				web.NewTracingTransport(
+					rsp.Context(),
+					&http.Transport{
+						DialContext: func(_ context.Context, _, _ string) (net.Conn, error) {
+							return net.Dial("unix", socketPath)
+						},
+					},
+				),
 			),
-		),
+		}
+		akURL.Scheme = "http"
+		akURL.Host = "localhost"
+	} else {
+		client = http.Client{
+			Transport: web.NewUserAgentTransport(
+				constants.UserAgentOutpost(),
+				web.NewTracingTransport(
+					rsp.Context(),
+					GetTLSTransport(),
+				),
+			),
+		}
 	}
-	config.AddDefaultHeader("Authorization", fmt.Sprintf("Bearer %s", token))
+
+	apiConfig := api.NewConfiguration()
+	apiConfig.Host = akURL.Host
+	apiConfig.Scheme = akURL.Scheme
+	apiConfig.HTTPClient = &client
+	apiConfig.Servers = api.ServerConfigurations{
+		{
+			URL: fmt.Sprintf("%sapi/v3", akURL.Path),
+		},
+	}
+	apiConfig.AddDefaultHeader("Authorization", fmt.Sprintf("Bearer %s", token))
 
 	// create the API client, with the transport
-	apiClient := api.NewAPIClient(config)
-
-	log := log.WithField("logger", "authentik.outpost.ak-api-controller")
+	apiClient := api.NewAPIClient(apiConfig)
 
 	// Because we don't know the outpost UUID, we simply do a list and pick the first
 	// The service account this token belongs to should only have access to a single outpost
-	outposts, _, err := apiClient.OutpostsApi.OutpostsInstancesList(context.Background()).Execute()
-	if err != nil {
-		log.WithError(err).Error("Failed to fetch outpost configuration, retrying in 3 seconds")
-		time.Sleep(time.Second * 3)
-		return NewAPIController(akURL, token)
-	}
+	outposts, _ := retry.DoWithData[*api.PaginatedOutpostList](
+		func() (*api.PaginatedOutpostList, error) {
+			outposts, _, err := apiClient.OutpostsAPI.OutpostsInstancesList(context.Background()).Execute()
+			return outposts, err
+		},
+		retry.Attempts(0),
+		retry.Delay(time.Second*3),
+		retry.OnRetry(func(attempt uint, err error) {
+			log.WithError(err).Error("Failed to fetch outpost configuration, retrying in 3 seconds")
+		}),
+	)
 	if len(outposts.Results) < 1 {
-		panic("No outposts found with given token, ensure the given token corresponds to an authenitk Outpost")
+		log.Panic("No outposts found with given token, ensure the given token corresponds to an authentik Outpost")
 	}
 	outpost := outposts.Results[0]
 
 	log.WithField("name", outpost.Name).Debug("Fetched outpost configuration")
 
-	akConfig, _, err := apiClient.RootApi.RootConfigRetrieve(context.Background()).Execute()
+	akConfig, _, err := apiClient.RootAPI.RootConfigRetrieve(context.Background()).Execute()
 	if err != nil {
 		log.WithError(err).Error("Failed to fetch global configuration")
 		return nil
@@ -99,26 +138,38 @@ func NewAPIController(akURL url.URL, token string) *APIController {
 	// doGlobalSetup(outpost, akConfig)
 
 	ac := &APIController{
+		akURL:        originalAkURL,
 		Client:       apiClient,
 		GlobalConfig: akConfig,
 
 		token:  token,
 		logger: log,
 
-		reloadOffset:        time.Duration(rand.Intn(10)) * time.Second,
-		instanceUUID:        uuid.New(),
-		Outpost:             outpost,
-		wsHandlers:          []WSHandler{},
-		wsBackoffMultiplier: 1,
-		refreshHandlers:     make([]func(), 0),
+		reloadOffset:    time.Duration(rand.Intn(10)) * time.Second,
+		instanceUUID:    uuid.New(),
+		Outpost:         outpost,
+		eventHandlers:   []EventHandler{},
+		refreshHandlers: make([]func(), 0),
 	}
+	ac.logger.WithField("embedded", ac.IsEmbedded()).Info("Outpost mode")
 	ac.logger.WithField("offset", ac.reloadOffset.String()).Debug("HA Reload offset")
-	err = ac.initWS(akURL, outpost.Pk)
+	err = ac.initEvent(outpost.Pk, 0)
 	if err != nil {
-		go ac.reconnectWS()
+		go ac.recentEvents()
 	}
 	ac.configureRefreshSignal()
 	return ac
+}
+
+func (a *APIController) Log() *log.Entry {
+	return a.logger
+}
+
+func (a *APIController) IsEmbedded() bool {
+	if m := a.Outpost.Managed.Get(); m != nil {
+		return *m == "goauthentik.io/outposts/embedded"
+	}
+	return false
 }
 
 // Start Starts all handlers, non-blocking
@@ -166,10 +217,13 @@ func (a *APIController) Token() string {
 func (a *APIController) OnRefresh() error {
 	// Because we don't know the outpost UUID, we simply do a list and pick the first
 	// The service account this token belongs to should only have access to a single outpost
-	outposts, _, err := a.Client.OutpostsApi.OutpostsInstancesList(context.Background()).Execute()
+	outposts, _, err := a.Client.OutpostsAPI.OutpostsInstancesList(context.Background()).Execute()
 	if err != nil {
 		log.WithError(err).Error("Failed to fetch outpost configuration")
 		return err
+	}
+	if outposts == nil || len(outposts.Results) < 1 {
+		return errors.New("no outposts found")
 	}
 	a.Outpost = outposts.Results[0]
 
@@ -182,11 +236,15 @@ func (a *APIController) OnRefresh() error {
 	return err
 }
 
-func (a *APIController) getWebsocketPingArgs() map[string]interface{} {
-	args := map[string]interface{}{
-		"version":   constants.VERSION,
-		"buildHash": constants.BUILD("tagged"),
-		"uuid":      a.instanceUUID.String(),
+func (a *APIController) getEventPingArgs() map[string]any {
+	args := map[string]any{
+		"version":        constants.VERSION(),
+		"buildHash":      constants.BUILD(""),
+		"uuid":           a.instanceUUID.String(),
+		"golangVersion":  runtime.Version(),
+		"opensslEnabled": cryptobackend.OpensslEnabled,
+		"opensslVersion": cryptobackend.OpensslVersion(),
+		"fipsEnabled":    fips140.Enabled(),
 	}
 	hostname, err := os.Hostname()
 	if err == nil {
@@ -200,16 +258,16 @@ func (a *APIController) StartBackgroundTasks() error {
 		"outpost_name": a.Outpost.Name,
 		"outpost_type": a.Server.Type(),
 		"uuid":         a.instanceUUID.String(),
-		"version":      constants.VERSION,
-		"build":        constants.BUILD("tagged"),
+		"version":      constants.VERSION(),
+		"build":        constants.BUILD(""),
 	}).Set(1)
 	go func() {
-		a.logger.Debug("Starting WS Handler...")
-		a.startWSHandler()
+		a.logger.Debug("Starting Event Handler...")
+		a.startEventHandler()
 	}()
 	go func() {
-		a.logger.Debug("Starting WS Health notifier...")
-		a.startWSHealth()
+		a.logger.Debug("Starting Event health notifier...")
+		a.startEventHealth()
 	}()
 	go func() {
 		a.logger.Debug("Starting Interval updater...")

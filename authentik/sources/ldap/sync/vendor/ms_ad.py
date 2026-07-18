@@ -60,7 +60,7 @@ class MicrosoftActiveDirectory(BaseLDAPSynchronizer):
         pwd_last_set: datetime = attributes.get("pwdLastSet", datetime.now())
         pwd_last_set = pwd_last_set.replace(tzinfo=UTC)
         if created or pwd_last_set >= user.password_change_date:
-            self.message(f"'{user.username}': Reset user's password")
+            self._task.info(f"'{user.username}': Reset user's password")
             self._logger.debug(
                 "Reset user's password",
                 user=user.username,
@@ -78,7 +78,9 @@ class MicrosoftActiveDirectory(BaseLDAPSynchronizer):
         #   /useraccountcontrol-manipulate-account-properties
         uac_bit = attributes.get("userAccountControl", 512)
         uac = UserAccountControl(uac_bit)
-        is_active = UserAccountControl.ACCOUNTDISABLE not in uac
+        is_active = (
+            UserAccountControl.ACCOUNTDISABLE not in uac and UserAccountControl.LOCKOUT not in uac
+        )
         if is_active != user.is_active:
             user.is_active = is_active
             user.save()

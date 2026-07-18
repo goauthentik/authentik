@@ -8,7 +8,7 @@ from authentik.events.models import Event, EventAction
 from authentik.lib.generators import generate_key
 from authentik.sources.plex.models import PlexSource
 from authentik.sources.plex.plex import PlexAuth
-from authentik.sources.plex.tasks import check_plex_token_all
+from authentik.sources.plex.tasks import check_plex_token
 
 USER_INFO_RESPONSE = {
     "id": 1234123419,
@@ -54,7 +54,7 @@ class TestPlexSource(TestCase):
             self.assertEqual(
                 api.get_user_info(),
                 (
-                    {"username": "username", "email": "foo@bar.baz", "name": "title"},
+                    USER_INFO_RESPONSE,
                     1234123419,
                 ),
             )
@@ -76,9 +76,27 @@ class TestPlexSource(TestCase):
         """Test token check task"""
         with Mocker() as mocker:
             mocker.get("https://plex.tv/api/v2/user", json=USER_INFO_RESPONSE)
-            check_plex_token_all()
+            check_plex_token.send(self.source.pk)
             self.assertFalse(Event.objects.filter(action=EventAction.CONFIGURATION_ERROR).exists())
         with Mocker() as mocker:
             mocker.get("https://plex.tv/api/v2/user", exc=RequestException())
-            check_plex_token_all()
+            check_plex_token.send(self.source.pk)
             self.assertTrue(Event.objects.filter(action=EventAction.CONFIGURATION_ERROR).exists())
+
+    def test_user_base_properties(self):
+        """Test user base properties"""
+        properties = self.source.get_base_user_properties(info=USER_INFO_RESPONSE)
+        self.assertEqual(
+            properties,
+            {
+                "username": "username",
+                "name": "title",
+                "email": "foo@bar.baz",
+            },
+        )
+
+    def test_group_base_properties(self):
+        """Test group base properties"""
+        for group_id in ["group 1", "group 2"]:
+            properties = self.source.get_base_group_properties(group_id=group_id)
+            self.assertEqual(properties, {"name": group_id})

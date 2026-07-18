@@ -1,13 +1,27 @@
 ---
-title: Welcome to authentik Enterprise
+title: authentik Enterprise
+description: "Licensed authentik features, license management, and commercial support"
+sidebar_position: 0
 ---
 
-The Enterprise release of authentik provides all of the functionality that we have spent years building in our open source product, with a full support plan and an expanded feature set.
+authentik Enterprise adds licensed capabilities and commercial support to a self-hosted authentik installation. You install and upgrade authentik in the same way with or without an Enterprise license. Installing a license unlocks the Enterprise features.
 
-Refer to our Enterprise documentation for information about creating and managing your organization, purchasing and activating a license, support, and managing billing and organization members.
+## Choose an Enterprise plan
 
--   [Get started with Enterprise](./get-started.md)
--   [Manage your Enterprise account](./manage-enterprise.md)
--   [Support for Enterprise accounts](./entsupport.md)
+authentik offers two Enterprise plans:
 
-Our standard technical documentation covers how to configure, customize, and use authentik, whether the open source version that we have built our reputation on, or our Enterprise version with dedicated support.
+- **Enterprise** adds Enterprise features and ticket-based support for qualifying subscriptions.
+- **Enterprise Plus** adds customized support and service-level agreements, invoiced billing, volume pricing, multi-instance deployment support, and FIPS-compliant deployments for FedRAMP requirements.
+
+Enterprise licenses can be purchased via our [Customer Portal](https://customers.goauthentik.io/). Alternatively, if you'd like to organize a call with our team to discuss your needs, contact us via [hello@goauthentik.io](mailto:hello@goauthentik.io).
+
+## Start using authentik Enterprise
+
+Refer to our Enterprise documentation for further information:
+
+- [Compare Enterprise features](./enterprise-features.md) and review [current plan pricing](https://goauthentik.io/pricing/).
+- [Get started with authentik Enterprise](./get-started.md) on a new or existing authentik installation.
+- [Manage Enterprise licensing](./manage-enterprise.md) to control organization access, purchase and manage licenses, and manage billing.
+- [Enterprise support](./enterprise-support.md) to open and track support tickets.
+
+After you install a license, use the standard authentik documentation to configure the features that you need.

@@ -1,77 +1,54 @@
-import { BaseStageForm } from "@goauthentik/admin/stages/BaseStageForm";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { first } from "@goauthentik/common/utils";
-import "@goauthentik/elements/forms/FormGroup";
-import "@goauthentik/elements/forms/HorizontalFormElement";
+import "#components/ak-switch-input";
+import "#components/ak-text-input";
+import "#elements/forms/FormGroup";
+import "#elements/forms/HorizontalFormElement";
 
-import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
-import { customElement } from "lit/decorators.js";
+import { aki } from "#common/api/client";
+
+import { BaseStageForm } from "#admin/stages/BaseStageForm";
 
 import { InvitationStage, StagesApi } from "@goauthentik/api";
 
+import { msg } from "@lit/localize";
+import { html, TemplateResult } from "lit";
+import { customElement } from "lit/decorators.js";
+
 @customElement("ak-stage-invitation-form")
 export class InvitationStageForm extends BaseStageForm<InvitationStage> {
-    loadInstance(pk: string): Promise<InvitationStage> {
-        return new StagesApi(DEFAULT_CONFIG).stagesInvitationStagesRetrieve({
-            stageUuid: pk,
-        });
-    }
+    public static override verboseName = msg("Invitation Stage");
+    public static override verboseNamePlural = msg("Invitation Stages");
 
-    async send(data: InvitationStage): Promise<InvitationStage> {
-        if (this.instance) {
-            return new StagesApi(DEFAULT_CONFIG).stagesInvitationStagesUpdate({
-                stageUuid: this.instance.pk || "",
-                invitationStageRequest: data,
-            });
-        } else {
-            return new StagesApi(DEFAULT_CONFIG).stagesInvitationStagesCreate({
-                invitationStageRequest: data,
-            });
-        }
-    }
+    protected endpoints = {
+        load: (stageUuid: string) => aki(StagesApi).stagesInvitationStagesRetrieve({ stageUuid }),
+        create: (invitationStageRequest: InvitationStage) =>
+            aki(StagesApi).stagesInvitationStagesCreate({ invitationStageRequest }),
+        update: (stageUuid: string, invitationStageRequest: InvitationStage) =>
+            aki(StagesApi).stagesInvitationStagesUpdate({ stageUuid, invitationStageRequest }),
+    };
 
-    renderForm(): TemplateResult {
-        return html` <span>
-                ${msg("This stage can be included in enrollment flows to accept invitations.")}
-            </span>
-            <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
-                <input
-                    type="text"
-                    value="${this.instance?.name || ""}"
-                    class="pf-c-form-control"
-                    required
-                />
-            </ak-form-element-horizontal>
-            <ak-form-group .expanded=${true}>
-                <span slot="header"> ${msg("Stage-specific settings")} </span>
-                <div slot="body" class="pf-c-form">
-                    <ak-form-element-horizontal name="continueFlowWithoutInvitation">
-                        <label class="pf-c-switch">
-                            <input
-                                class="pf-c-switch__input"
-                                type="checkbox"
-                                ?checked=${first(
-                                    this.instance?.continueFlowWithoutInvitation,
-                                    false,
-                                )}
-                            />
-                            <span class="pf-c-switch__toggle">
-                                <span class="pf-c-switch__toggle-icon">
-                                    <i class="fas fa-check" aria-hidden="true"></i>
-                                </span>
-                            </span>
-                            <span class="pf-c-switch__label"
-                                >${msg("Continue flow without invitation")}</span
-                            >
-                        </label>
-                        <p class="pf-c-form__helper-text">
-                            ${msg(
-                                "If this flag is set, this Stage will jump to the next Stage when no Invitation is given. By default this Stage will cancel the Flow when no invitation is given.",
-                            )}
-                        </p>
-                    </ak-form-element-horizontal>
-                </div>
-            </ak-form-group>`;
+    protected override renderForm(): TemplateResult {
+        return html`<ak-text-input
+                label=${msg("Stage Name")}
+                required
+                name="name"
+                value="${this.instance?.name || ""}"
+                help=${msg("This stage can be included in enrollment flows to accept invitations.")}
+                placeholder=${msg("e.g. invitation-stage")}
+                input-hint="code"
+            ></ak-text-input>
+            <ak-switch-input
+                name="continueFlowWithoutInvitation"
+                label=${msg("Continue flow without invitation")}
+                ?checked=${this.instance?.continueFlowWithoutInvitation ?? false}
+                help=${msg(
+                    "If this flag is set, this Stage will jump to the next Stage when no Invitation is given. By default this Stage will cancel the Flow when no invitation is given.",
+                )}
+            ></ak-switch-input>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-stage-invitation-form": InvitationStageForm;
     }
 }

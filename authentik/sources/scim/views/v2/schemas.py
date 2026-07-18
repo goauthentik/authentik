@@ -2,14 +2,18 @@
 
 from json import loads
 
-from django.http import Http404
+from django.conf import settings
 from django.urls import reverse
 from rest_framework.request import Request
 from rest_framework.response import Response
 
 from authentik.sources.scim.views.v2.base import SCIMView
+from authentik.sources.scim.views.v2.exceptions import SCIMNotFoundError
 
-with open("authentik/sources/scim/schemas/schema.json", encoding="utf-8") as SCHEMA_FILE:
+with open(
+    settings.BASE_DIR / "authentik" / "sources" / "scim" / "schemas" / "schema.json",
+    encoding="utf-8",
+) as SCHEMA_FILE:
     _raw_schemas = loads(SCHEMA_FILE.read())
 
 
@@ -40,7 +44,7 @@ class SchemaView(SCIMView):
             schema = [x for x in schemas if x.get("id") == schema_uri]
             if schema:
                 return Response(schema[0])
-            raise Http404
+            raise SCIMNotFoundError("Schema not found.")
         return Response(
             {
                 "schemas": ["urn:ietf:params:scim:api:messages:2.0:ListResponse"],

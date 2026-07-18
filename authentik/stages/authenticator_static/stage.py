@@ -3,7 +3,7 @@
 from django.http import HttpRequest, HttpResponse
 from rest_framework.fields import CharField, ListField
 
-from authentik.flows.challenge import ChallengeResponse, ChallengeTypes, WithUserInfoChallenge
+from authentik.flows.challenge import ChallengeResponse, WithUserInfoChallenge
 from authentik.flows.stage import ChallengeStageView
 from authentik.lib.generators import generate_id
 from authentik.stages.authenticator_static.models import (
@@ -38,7 +38,6 @@ class AuthenticatorStaticStageView(ChallengeStageView):
         tokens: list[StaticToken] = self.request.session[SESSION_STATIC_TOKENS]
         return AuthenticatorStaticChallenge(
             data={
-                "type": ChallengeTypes.NATIVE.value,
                 "codes": [token.token for token in tokens],
             }
         )

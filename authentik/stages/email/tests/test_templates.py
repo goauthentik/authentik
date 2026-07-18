@@ -54,7 +54,7 @@ class TestEmailStageTemplates(FlowTestCase):
             chmod(file2, 0o000)  # Remove all permissions so we can't read the file
             choices = get_template_choices()
             self.assertEqual(choices[-1][0], Path(file).name)
-            self.assertEqual(len(choices), 3)
+            self.assertEqual(len(choices), 6)
             unlink(file)
             unlink(file2)
 
@@ -96,7 +96,7 @@ class TestEmailStageTemplates(FlowTestCase):
         """Test addresses are correctly parsed"""
         message = TemplateEmailMessage(to=[("foo@bar.baz", "foo@bar.baz")])
         [sanitize_address(addr, "utf-8") for addr in message.recipients()]
-        self.assertEqual(message.recipients(), ["foo@bar.baz"])
+        self.assertEqual(message.recipients(), ['"foo@bar.baz" <foo@bar.baz>'])
         message = TemplateEmailMessage(to=[("some-name", "foo@bar.baz")])
         [sanitize_address(addr, "utf-8") for addr in message.recipients()]
         self.assertEqual(message.recipients(), ["some-name <foo@bar.baz>"])

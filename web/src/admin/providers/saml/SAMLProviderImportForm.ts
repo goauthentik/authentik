@@ -1,15 +1,14 @@
-import "@goauthentik/admin/common/ak-flow-search/ak-flow-search-no-default";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { SentryIgnoredError } from "@goauthentik/common/errors";
-import { Form } from "@goauthentik/elements/forms/Form";
-import "@goauthentik/elements/forms/HorizontalFormElement";
-import "@goauthentik/elements/forms/SearchSelect";
+import { renderForm } from "./SAMLProviderImportFormForm.js";
+
+import { aki } from "#common/api/client";
+import { SentryIgnoredError } from "#common/sentry/index";
+
+import { Form } from "#elements/forms/Form";
+
+import { ProvidersApi, SAMLProvider } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
-
-import { FlowsInstancesListDesignationEnum, ProvidersApi, SAMLProvider } from "@goauthentik/api";
 
 @customElement("ak-provider-saml-import-form")
 export class SAMLProviderImportForm extends Form<SAMLProvider> {
@@ -17,38 +16,26 @@ export class SAMLProviderImportForm extends Form<SAMLProvider> {
         return msg("Successfully imported provider.");
     }
 
-    async send(data: SAMLProvider): Promise<void> {
-        const file = this.getFormFiles()["metadata"];
+    async send(data: SAMLProvider): Promise<unknown> {
+        const file = this.files().get("file");
         if (!file) {
             throw new SentryIgnoredError("No form data");
         }
-        return new ProvidersApi(DEFAULT_CONFIG).providersSamlImportMetadataCreate({
+        return aki(ProvidersApi).providersSamlImportMetadataCreate({
             file: file,
             name: data.name,
             authorizationFlow: data.authorizationFlow || "",
+            invalidationFlow: data.invalidationFlow || "",
         });
     }
 
-    renderForm(): TemplateResult {
-        return html`<ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
-                <input type="text" class="pf-c-form-control" required />
-            </ak-form-element-horizontal>
-            <ak-form-element-horizontal
-                label=${msg("Authorization flow")}
-                ?required=${true}
-                name="authorizationFlow"
-            >
-                <ak-flow-search-no-default
-                    flowType=${FlowsInstancesListDesignationEnum.Authorization}
-                    required
-                ></ak-flow-search-no-default>
-                <p class="pf-c-form__helper-text">
-                    ${msg("Flow used when authorizing this provider.")}
-                </p>
-            </ak-form-element-horizontal>
+    renderForm() {
+        return renderForm();
+    }
+}
 
-            <ak-form-element-horizontal label=${msg("Metadata")} name="metadata">
-                <input type="file" value="" class="pf-c-form-control" />
-            </ak-form-element-horizontal>`;
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-provider-saml-import-form": SAMLProviderImportForm;
     }
 }

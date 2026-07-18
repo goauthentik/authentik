@@ -5,6 +5,7 @@ from defusedxml.lxml import fromstring
 from django.test import RequestFactory, TestCase
 from lxml import etree  # nosec
 
+from authentik.common.saml.constants import ECDSA_SHA256, NS_MAP, NS_SAML_METADATA
 from authentik.core.models import Application
 from authentik.core.tests.utils import create_test_cert, create_test_flow
 from authentik.crypto.builder import PrivateKeyAlg
@@ -14,7 +15,7 @@ from authentik.lib.xml import lxml_from_string
 from authentik.providers.saml.models import SAMLBindings, SAMLPropertyMapping, SAMLProvider
 from authentik.providers.saml.processors.metadata import MetadataProcessor
 from authentik.providers.saml.processors.metadata_parser import ServiceProviderMetadataParser
-from authentik.sources.saml.processors.constants import ECDSA_SHA256, NS_MAP, NS_SAML_METADATA
+from authentik.sources.saml.models import SAMLNameIDPolicy
 
 
 class TestServiceProviderMetadataParser(TestCase):
@@ -54,7 +55,11 @@ class TestServiceProviderMetadataParser(TestCase):
         request = self.factory.get("/")
         metadata = lxml_from_string(MetadataProcessor(provider, request).build_entity_descriptor())
 
-        schema = etree.XMLSchema(etree.parse("schemas/saml-schema-metadata-2.0.xsd"))  # nosec
+        schema = etree.XMLSchema(
+            etree.parse(
+                source="schemas/saml-schema-metadata-2.0.xsd", parser=etree.XMLParser()
+            )  # nosec
+        )
         self.assertTrue(schema.validate(metadata))
 
     def test_schema_want_authn_requests_signed(self):
@@ -78,10 +83,10 @@ class TestServiceProviderMetadataParser(TestCase):
     def test_simple(self):
         """Test simple metadata without Signing"""
         metadata = ServiceProviderMetadataParser().parse(load_fixture("fixtures/simple.xml"))
-        provider = metadata.to_provider("test", self.flow)
+        provider = metadata.to_provider("test", self.flow, self.flow)
         self.assertEqual(provider.acs_url, "http://localhost:8080/saml/acs")
-        self.assertEqual(provider.issuer, "http://localhost:8080/saml/metadata")
         self.assertEqual(provider.sp_binding, SAMLBindings.POST)
+        self.assertEqual(provider.default_name_id_policy, SAMLNameIDPolicy.EMAIL)
         self.assertEqual(
             len(provider.property_mappings.all()),
             len(SAMLPropertyMapping.objects.exclude(managed__isnull=True)),
@@ -91,15 +96,14 @@ class TestServiceProviderMetadataParser(TestCase):
         """Test Metadata with signing cert"""
         create_test_cert()
         metadata = ServiceProviderMetadataParser().parse(load_fixture("fixtures/cert.xml"))
-        provider = metadata.to_provider("test", self.flow)
+        provider = metadata.to_provider("test", self.flow, self.flow)
         self.assertEqual(provider.acs_url, "http://localhost:8080/apps/user_saml/saml/acs")
-        self.assertEqual(provider.issuer, "http://localhost:8080/apps/user_saml/saml/metadata")
         self.assertEqual(provider.sp_binding, SAMLBindings.POST)
         self.assertEqual(
             provider.verification_kp.certificate_data, load_fixture("fixtures/cert.pem")
         )
         self.assertIsNotNone(provider.signing_kp)
-        self.assertEqual(provider.audience, "")
+        self.assertEqual(provider.audience, "http://localhost:8080/apps/user_saml/saml/metadata")
 
     def test_with_signing_cert_invalid_signature(self):
         """Test Metadata with signing cert (invalid signature)"""

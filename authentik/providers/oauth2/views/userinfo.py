@@ -11,17 +11,16 @@ from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 from structlog.stdlib import get_logger
 
-from authentik.core.exceptions import PropertyMappingExpressionException
-from authentik.events.models import Event, EventAction
-from authentik.flows.challenge import PermissionDict
-from authentik.providers.oauth2.constants import (
-    SCOPE_AUTHENTIK_API,
+from authentik.common.oauth.constants import (
     SCOPE_GITHUB_ORG_READ,
     SCOPE_GITHUB_USER,
     SCOPE_GITHUB_USER_EMAIL,
     SCOPE_GITHUB_USER_READ,
     SCOPE_OPENID,
 )
+from authentik.core.expression.exceptions import PropertyMappingExpressionException
+from authentik.events.models import Event, EventAction
+from authentik.flows.challenge import PermissionDict
 from authentik.providers.oauth2.models import (
     BaseGrantModel,
     OAuth2Provider,
@@ -57,12 +56,11 @@ class UserInfoView(View):
             SCOPE_GITHUB_USER_READ: _("GitHub Compatibility: Access your User Information"),
             SCOPE_GITHUB_USER_EMAIL: _("GitHub Compatibility: Access you Email addresses"),
             SCOPE_GITHUB_ORG_READ: _("GitHub Compatibility: Access your Groups"),
-            SCOPE_AUTHENTIK_API: _("authentik API Access on behalf of your user"),
         }
         for scope in scopes:
             if scope in special_scope_map:
                 scope_descriptions.append(
-                    PermissionDict(id=scope, name=str(special_scope_map[scope]))
+                    PermissionDict(id=str(scope), name=str(special_scope_map[scope]))
                 )
         return scope_descriptions
 
@@ -110,7 +108,7 @@ class UserInfoView(View):
         response = super().dispatch(request, *args, **kwargs)
         allowed_origins = []
         if self.token:
-            allowed_origins = self.token.provider.redirect_uris.split("\n")
+            allowed_origins = [x.url for x in self.token.provider.redirect_uris]
         cors_allow(self.request, response, *allowed_origins)
         return response
 

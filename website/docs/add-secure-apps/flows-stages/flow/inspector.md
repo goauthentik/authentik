@@ -1,0 +1,64 @@
+---
+title: Flow Inspector
+---
+
+The Flow Inspector allows administrators to visually determine how custom flows work, inspect the current [flow context](./context/index.mdx) by stepping through the flow process and observing the Inspector with each step, and investigate issues. It shows details from the active [flow plan](./planner.md).
+
+As shown in the screenshot below, the Flow Inspector displays to the right, beside the selected flow (in this case, "Change Password"), with [information](#flow-inspector-details) about that specific flow and flow context.
+
+![](./flow-inspector.png)
+
+## Access the Flow Inspector
+
+:::warning
+Be aware that when running a flow with the Inspector enabled, the flow is still executed normally. This means that, for example, a [User write](../stages/user_write/index.md) stage _will_ write user data.
+:::
+
+The Inspector is accessible to users that have been granted the [permission](../../../users-sources/access-control/permissions.md) **Can inspect a Flow's execution**, either directly or through a role. Superusers can always inspect flow executions.
+
+### Manually run a flow with the Inspector
+
+1. To access the Inspector, open the Admin interface and navigate to **Flows and Stages > Flows**.
+
+2. Select the specific flow that you want to inspect by clicking its name in the list.
+
+3. On the flow's detail page, on the left side under **Execute Flow**, click **Use Inspector**.
+
+4. The selected flow launches in a new browser tab, with the Flow Inspector displayed to the right.
+
+### Additional ways to access the Flow Inspector
+
+Alternatively, a user with the correct permission can launch the Inspector by adding the query parameter `?inspector` to the URL after the URL opens on a flow.
+
+Users with permissions to access the Flow Inspector see a button in the top-right corner of the [default flow executor](./executors/if-flow.md) to open the Inspector.
+
+When developing authentik with the debug mode enabled, the Inspector is enabled by default and can be accessed by both unauthenticated users and standard users. However, debug mode should only be used for the development of authentik. Unless you are a developer and need the more verbose error information, the best practice for using the Flow Inspector is to assign the permission, not use debug mode.
+
+:::info Troubleshooting
+
+- If the Flow Inspector does not launch and a "Bad request" error displays, this is likely either because you selected a flow that has a policy bound directly to it that prevents access (so the Inspector won't open because the flow can't be executed) or because you do not have [view permission](../../../users-sources/access-control/manage_permissions.md#view-permissions) on that specific flow.
+  :::
+
+### Flow Inspector details
+
+The following information is shown in the Inspector:
+
+#### Next stage
+
+This is the currently planned next stage. Stages that are evaluated when they run can still be skipped before they are shown. For more information, see [Planning and stage policies](./planner.md#planning-and-stage-policies).
+
+The name and kind of the stage, as well as the unique ID, are shown.
+
+#### Plan history
+
+Here you can see an overview of which stages have run, which is currently active, and which is planned to come next.
+
+#### Current plan context
+
+This shows the current context. The fields depend on the active stage; after an identification stage, for example, you would see "pending_user" defined.
+
+This data is not cleaned, so if your flow involves inputting a password, it is shown here too.
+
+#### Session ID
+
+The unique ID for the currently used session. This can be used to debug issues with flows restarting/losing state.

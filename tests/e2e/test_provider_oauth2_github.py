@@ -1,7 +1,6 @@
 """test OAuth Provider flow"""
 
 from time import sleep
-from typing import Any
 
 from docker.types import Healthcheck
 from selenium.webdriver.common.by import By
@@ -13,8 +12,15 @@ from authentik.flows.models import Flow
 from authentik.lib.generators import generate_id, generate_key
 from authentik.policies.expression.models import ExpressionPolicy
 from authentik.policies.models import PolicyBinding
-from authentik.providers.oauth2.models import ClientTypes, OAuth2Provider
-from tests.e2e.utils import SeleniumTestCase, retry
+from authentik.providers.oauth2.models import (
+    ClientType,
+    GrantType,
+    OAuth2Provider,
+    RedirectURI,
+    RedirectURIMatchingMode,
+)
+from tests.decorators import retry
+from tests.selenium import SeleniumTestCase
 
 
 class TestProviderOAuth2Github(SeleniumTestCase):
@@ -24,22 +30,17 @@ class TestProviderOAuth2Github(SeleniumTestCase):
         self.client_id = generate_id()
         self.client_secret = generate_key()
         super().setUp()
-
-    def get_container_specs(self) -> dict[str, Any] | None:
-        """Setup client grafana container which we test OAuth against"""
-        return {
-            "image": "grafana/grafana:7.1.0",
-            "detach": True,
-            "ports": {
+        self.run_container(
+            image="grafana/grafana:7.1.0",
+            ports={
                 "3000": "3000",
             },
-            "auto_remove": True,
-            "healthcheck": Healthcheck(
+            healthcheck=Healthcheck(
                 test=["CMD", "wget", "--spider", "http://localhost:3000"],
                 interval=5 * 1_000 * 1_000_000,
                 start_period=1 * 1_000 * 1_000_000,
             ),
-            "environment": {
+            environment={
                 "GF_AUTH_GITHUB_ENABLED": "true",
                 "GF_AUTH_GITHUB_ALLOW_SIGN_UP": "true",
                 "GF_AUTH_GITHUB_CLIENT_ID": self.client_id,
@@ -54,7 +55,7 @@ class TestProviderOAuth2Github(SeleniumTestCase):
                 "GF_AUTH_GITHUB_API_URL": self.url("authentik_providers_oauth2_root:github-user"),
                 "GF_LOG_LEVEL": "debug",
             },
-        }
+        )
 
     @retry()
     @apply_blueprint(
@@ -78,9 +79,12 @@ class TestProviderOAuth2Github(SeleniumTestCase):
             name=generate_id(),
             client_id=self.client_id,
             client_secret=self.client_secret,
-            client_type=ClientTypes.CONFIDENTIAL,
-            redirect_uris="http://localhost:3000/login/github",
+            client_type=ClientType.CONFIDENTIAL,
+            redirect_uris=[
+                RedirectURI(RedirectURIMatchingMode.STRICT, "http://localhost:3000/login/github")
+            ],
             authorization_flow=authorization_flow,
+            grant_types=[GrantType.AUTHORIZATION_CODE],
         )
         Application.objects.create(
             name=generate_id(),
@@ -133,9 +137,12 @@ class TestProviderOAuth2Github(SeleniumTestCase):
             name=generate_id(),
             client_id=self.client_id,
             client_secret=self.client_secret,
-            client_type=ClientTypes.CONFIDENTIAL,
-            redirect_uris="http://localhost:3000/login/github",
+            client_type=ClientType.CONFIDENTIAL,
+            redirect_uris=[
+                RedirectURI(RedirectURIMatchingMode.STRICT, "http://localhost:3000/login/github")
+            ],
             authorization_flow=authorization_flow,
+            grant_types=[GrantType.AUTHORIZATION_CODE],
         )
         app = Application.objects.create(
             name=generate_id(),
@@ -155,7 +162,7 @@ class TestProviderOAuth2Github(SeleniumTestCase):
 
         self.assertIn(
             app.name,
-            consent_stage.find_element(By.CSS_SELECTOR, "#header-text").text,
+            consent_stage.find_element(By.CSS_SELECTOR, "[data-test-id='stage-heading']").text,
         )
         self.assertEqual(
             "GitHub Compatibility: Access you Email addresses",
@@ -204,9 +211,12 @@ class TestProviderOAuth2Github(SeleniumTestCase):
             name=generate_id(),
             client_id=self.client_id,
             client_secret=self.client_secret,
-            client_type=ClientTypes.CONFIDENTIAL,
-            redirect_uris="http://localhost:3000/login/github",
+            client_type=ClientType.CONFIDENTIAL,
+            redirect_uris=[
+                RedirectURI(RedirectURIMatchingMode.STRICT, "http://localhost:3000/login/github")
+            ],
             authorization_flow=authorization_flow,
+            grant_types=[GrantType.AUTHORIZATION_CODE],
         )
         app = Application.objects.create(
             name=generate_id(),
@@ -215,7 +225,7 @@ class TestProviderOAuth2Github(SeleniumTestCase):
         )
 
         negative_policy = ExpressionPolicy.objects.create(
-            name="negative-static", expression="return False"
+            name=generate_id(), expression="return False"
         )
         PolicyBinding.objects.create(target=app, policy=negative_policy, order=0)
 
@@ -223,8 +233,10 @@ class TestProviderOAuth2Github(SeleniumTestCase):
         self.driver.find_element(By.CLASS_NAME, "btn-service--github").click()
         self.login()
 
-        self.wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, "header > h1")))
+        self.wait.until(
+            ec.presence_of_element_located((By.CSS_SELECTOR, "[data-test-id='card-title']"))
+        )
         self.assertEqual(
-            self.driver.find_element(By.CSS_SELECTOR, "header > h1").text,
+            self.driver.find_element(By.CSS_SELECTOR, "[data-test-id='card-title']").text,
             "Permission denied",
         )

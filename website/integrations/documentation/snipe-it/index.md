@@ -1,0 +1,164 @@
+---
+title: Integrate with Snipe-IT
+sidebar_label: Snipe-IT
+support_level: community
+---
+
+## What is Snipe-IT?
+
+> A free open source IT asset/license management system.
+>
+> -- https://snipeitapp.com
+
+:::caution
+This setup assumes you will be using HTTPS as Snipe-It dynamically generates the ACS and other settings based on the complete URL.
+:::
+
+:::caution
+In case something goes wrong with the configuration, you can use the URL `http://inventory.company/login?nosaml` to log in using the
+built-in authentication.
+:::
+
+## Preparation
+
+The following placeholders are used in this guide:
+
+- `inventory.company` is the FQDN of the snipe-it installation.
+- `authentik.company` is the FQDN of the authentik installation.
+- `snipeit-user` is the name of the authentik service account we will create.
+- `DC=ldap,DC=authentik,DC=io` is the Base DN of the LDAP Provider (default)
+
+:::info
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
+
+## authentik configuration
+
+### Step 1: Service account
+
+In authentik, create a service account (under _Directory/Users_) for Snipe-IT to use as the LDAP Binder and take note of the password generated.
+
+In this example, we'll use `snipeit-user` as the Service account's username
+
+:::info
+If you didn't keep the password, you can copy it from _Directory/Tokens & App password_.
+:::
+
+### Step 2: LDAP provider
+
+In authentik, create an LDAP provider (under _Applications/Providers_) with these settings:
+
+- Name: Snipe IT-LDAP
+- Bind DN: `DC=ldap,DC=goauthentik,DC=io`
+- Certificate: `authentik Self-signed Certificate`
+
+### Step 3: Application
+
+In authentik, create an application (under _Resources/Applications_) with these settings:
+
+- Name: Snipe IT-LDAP
+- Slug: snipe-it-ldap
+- Provider: Snipe IT-LDAP
+
+### Step 4: Outpost
+
+In authentik, create an outpost (under _Applications/Outposts_) of type `LDAP` that uses the LDAP Application you created in _Step 3_.
+
+- Name: LDAP
+- Type: LDAP
+
+## Snipe-IT LDAP setup
+
+Configure Snipe-IT LDAP settings by going to settings (the gear icon), and selecting `LDAP`.
+
+Change the following fields:
+
+- LDAP Integration: **Checked**
+- LDAP Password Sync: **Checked**
+- Active Directory: **Unchecked**
+- LDAP Client-Side TLS Key: (taken from authentik)
+- LDAP Server: `ldap://authentik.company`
+- Use TLS: **Unchecked**
+- LDAP SSL certificate validation: **Checked**
+- Bind credentials:
+    - LDAP Bind Username: `cn=snipeit-user,ou=users,dc=ldap,dc=goauthentik,dc=io`
+    - LDAP Bind Password: `<snipeit-user password from step 2>`
+- Base Bind DN: `ou=users,DC=ldap,DC=goauthentik,DC=io`
+  :::info
+  ou=users is the default OU for users. If you are using authentik's virtual groups, or have your users in a different organizational unit (ou), change accordingly.
+  :::
+- LDAP Filter: &(objectClass=user)
+- Username Field: mail
+  :::info
+  Setting the Username field to mail is recommended in order to ensure the username is unique. See https://snipe-it.readme.io/docs/ldap-sync-login
+  :::
+- Allow unauthenticated bind: **Unchecked**
+- Last Name: sn
+- LDAP First Name: givenname
+- LDAP Authentication query: cn=
+- LDAP Email: mail
+
+:::info
+authentik does not support other LDAP attributes such as Employee Number and Department out of the box. If you need these fields, you will need to set up custom attributes.
+:::
+
+Save your configuration, then click **Test LDAP Synchronization**. This does not import any users; it only verifies that everything is working and the account can search the directory.
+
+To test your settings, enter a username and password and click **Test LDAP**.
+
+## Snipe-IT LDAP sync
+
+You must sync your LDAP database with Snipe-IT. Go to People on the sidebar menu.
+
+- Click `LDAP Sync`
+- Select your location.
+- Click **Synchronize**.
+  :::info
+  Snipe-IT will only import users with both a first and last name set. You need to create user attributes with first and last names.
+  :::
+
+## authentik SAML configuration
+
+### Step 1
+
+Create another application in authentik and note the slug you choose, as this will be used later. In the Admin interface, go to **Applications > Providers**. Create a SAML provider with the following parameters:
+
+- ACS URL: `https://inventory.company/saml/acs`
+- Audience: `https://inventory.company`
+- SLS URL: `https://inventory.company/saml/sls`
+- SLS Binding: `Redirect`
+- Logout Method: `Front-channel (Iframe)`
+- Signing certificate: Select any certificate you have.
+- Property mappings: Select all Managed mappings.
+- NameID Property Mapping: authentik default SAML Mapping: Email
+  :::info
+  This is to match setting the username as **mail**. If you are using another field as the username, set it here.
+  :::
+
+### Step 2
+
+After saving your new application and provider, go to _Applications/Providers_ and select your newly created provider.
+
+Either copy the information under SAML Metadata, or click the Download button under SAML Metadata.
+
+## Snipe-IT SAML configuration
+
+Configure Snipe-IT SAML settings by going to settings (the gear icon), and selecting `SAML`.
+
+- SAML enabled: **Checked**
+- SAML IdP Metadata: paste the information copied in Step 2 above, or
+- Click **Select File** and select the file you downloaded in Step 2.
+- Attribute Mapping - Username: mail
+- SAML Force Login: **Checked**
+- SAML Single Log Out: **Checked**
+
+All other fields can be left blank.
+
+:::info Snipe-IT Single Logout issue
+Snipe-IT has a known issue validating signed SAML Single Logout messages, which produces the error `There was an error with SAML SLS: invalid_logout_response Reason: Signature validation failed. Logout Response rejected`. If you encounter this, add `security.logoutResponseSigned=false` to the **SAML Custom Settings** field on the Snipe-IT SAML settings page. See the [Snipe-IT SAML documentation](https://snipe-it.readme.io/docs/saml) for details.
+:::
+
+## Resources
+
+- https://snipe-it.readme.io/docs/ldap-sync-login
+- https://snipe-it.readme.io/docs/saml

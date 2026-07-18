@@ -1,10 +1,11 @@
-import "@goauthentik/elements/messages/MessageContainer";
+import "#elements/messages/MessageContainer";
+import "./ak-token-copy-button.js";
+
+import AKTokenCopyButton from "./ak-token-copy-button.js";
+
 import { Meta } from "@storybook/web-components";
 
-import { TemplateResult, html } from "lit";
-
-import "./ak-token-copy-button";
-import AKTokenCopyButton from "./ak-token-copy-button";
+import { html, TemplateResult } from "lit";
 
 // For this test, we want each key to be unique so that the tester can
 // be assured that the returned result is in fact going into the
@@ -22,7 +23,7 @@ function makeid(length: number) {
 // a styled wrapper for the return messages, and a styled wrapper for each message.
 
 const container = (testItem: TemplateResult) =>
-    html` <div style="background: #fff; padding: 2em">
+    html` <div style="padding: 2em">
         <style>
             li {
                 display: block;
@@ -45,13 +46,10 @@ const container = (testItem: TemplateResult) =>
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const displayMessage = (result: any) => {
     const doc = new DOMParser().parseFromString(
-        `<li><p><i>Event</i>: ${
-            "result" in result.detail ? result.detail.result.key : result.detail.error
-        }</p><p style="padding-left: 2.5rem">The key should also be in your clipboard</p></li>`,
+        `<li><p><i>Event</i>: ${"result" in result.detail ? result.detail.result.key : result.detail.error}</p><p style="padding-left: 2.5rem">The key should also be in your clipboard</p></li>`,
         "text/xml",
     );
     const target = document.querySelector("#action-button-message-pad");
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     target!.appendChild(doc.firstChild!);
 };
 

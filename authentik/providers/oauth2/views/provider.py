@@ -8,9 +8,7 @@ from django.views import View
 from guardian.shortcuts import get_anonymous_user
 from structlog.stdlib import get_logger
 
-from authentik.core.exceptions import PropertyMappingExpressionException
-from authentik.core.models import Application
-from authentik.providers.oauth2.constants import (
+from authentik.common.oauth.constants import (
     ACR_AUTHENTIK_DEFAULT,
     GRANT_TYPE_AUTHORIZATION_CODE,
     GRANT_TYPE_CLIENT_CREDENTIALS,
@@ -22,6 +20,9 @@ from authentik.providers.oauth2.constants import (
     PKCE_METHOD_S256,
     SCOPE_OPENID,
 )
+from authentik.core.expression.exceptions import PropertyMappingExpressionException
+from authentik.core.models import Application
+from authentik.providers.oauth2.dpop import DPOP_SUPPORTED_ALGS
 from authentik.providers.oauth2.models import (
     OAuth2Provider,
     ResponseMode,
@@ -46,7 +47,7 @@ class ProviderInfoView(View):
         if SCOPE_OPENID not in scopes:
             scopes.append(SCOPE_OPENID)
         _, supported_alg = provider.jwt_key
-        return {
+        config = {
             "issuer": provider.get_issuer(self.request),
             "authorization_endpoint": self.request.build_absolute_uri(
                 reverse("authentik_providers_oauth2:authorize")
@@ -72,6 +73,10 @@ class ProviderInfoView(View):
             "device_authorization_endpoint": self.request.build_absolute_uri(
                 reverse("authentik_providers_oauth2:device")
             ),
+            "backchannel_logout_supported": True,
+            "backchannel_logout_session_supported": True,
+            "frontchannel_logout_supported": True,
+            "frontchannel_logout_session_supported": True,
             "response_types_supported": [
                 ResponseTypes.CODE,
                 ResponseTypes.ID_TOKEN,
@@ -113,7 +118,12 @@ class ProviderInfoView(View):
             "claims_supported": self.get_claims(provider),
             "claims_parameter_supported": False,
             "code_challenge_methods_supported": [PKCE_METHOD_PLAIN, PKCE_METHOD_S256],
+            "dpop_signing_alg_values_supported": sorted(DPOP_SUPPORTED_ALGS),
         }
+        if provider.encryption_key:
+            config["id_token_encryption_alg_values_supported"] = ["RSA-OAEP-256"]
+            config["id_token_encryption_enc_values_supported"] = ["A256CBC-HS512"]
+        return config
 
     def get_claims(self, provider: OAuth2Provider) -> list[str]:
         """Get a list of supported claims based on configured scope mappings"""
@@ -158,5 +168,5 @@ class ProviderInfoView(View):
             OAuth2Provider, pk=application.provider_id
         )
         response = super().dispatch(request, *args, **kwargs)
-        cors_allow(request, response, *self.provider.redirect_uris.split("\n"))
+        cors_allow(request, response, *[x.url for x in self.provider.redirect_uris])
         return response

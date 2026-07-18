@@ -1,116 +1,119 @@
-import "@goauthentik/admin/common/ak-crypto-certificate-search";
-import "@goauthentik/admin/common/ak-flow-search/ak-source-flow-search";
-import { iconHelperText, placeholderHelperText } from "@goauthentik/admin/helperText";
-import { BaseSourceForm } from "@goauthentik/admin/sources/BaseSourceForm";
-import { UserMatchingModeToLabel } from "@goauthentik/admin/sources/oauth/utils";
-import { DEFAULT_CONFIG, config } from "@goauthentik/common/api/config";
-import { first } from "@goauthentik/common/utils";
-import {
-    CapabilitiesEnum,
-    WithCapabilitiesConfig,
-} from "@goauthentik/elements/Interface/capabilitiesProvider";
-import "@goauthentik/elements/forms/FormGroup";
-import "@goauthentik/elements/forms/HorizontalFormElement";
-import "@goauthentik/elements/forms/Radio";
-import "@goauthentik/elements/utils/TimeDeltaHelp";
+import "#admin/common/ak-crypto-certificate-search";
+import "#admin/common/ak-flow-search/ak-source-flow-search";
+import "#components/ak-file-search-input";
+import "#components/ak-slug-input";
+import "#components/ak-text-input";
+import "#components/ak-switch-input";
+import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
+import "#elements/forms/FormGroup";
+import "#elements/forms/HorizontalFormElement";
+import "#elements/forms/Radio";
+import "#elements/utils/TimeDeltaHelp";
 
-import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
-import { customElement, state } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
+import { propertyMappingsProvider, propertyMappingsSelector } from "./SAMLSourceFormHelpers.js";
+
+import { aki } from "#common/api/client";
+
+import { type AkCryptoCertificateSearch } from "#admin/common/ak-crypto-certificate-search";
+import { iconHelperText, placeholderHelperText } from "#admin/helperText";
+import { policyEngineModes } from "#admin/policies/PolicyEngineModes";
+import { BaseSourceForm } from "#admin/sources/BaseSourceForm";
+import { GroupMatchingModeToLabel, UserMatchingModeToLabel } from "#admin/sources/oauth/utils";
 
 import {
     BindingTypeEnum,
     DigestAlgorithmEnum,
-    FlowsInstancesListDesignationEnum,
-    NameIdPolicyEnum,
+    FlowDesignationEnum,
+    GroupMatchingModeEnum,
+    SAMLNameIDPolicyEnum,
     SAMLSource,
     SignatureAlgorithmEnum,
     SourcesApi,
+    UsageEnum,
     UserMatchingModeEnum,
 } from "@goauthentik/api";
 
+import { msg } from "@lit/localize";
+import { html, nothing, TemplateResult } from "lit";
+import { customElement, state } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
+
 @customElement("ak-source-saml-form")
-export class SAMLSourceForm extends WithCapabilitiesConfig(BaseSourceForm<SAMLSource>) {
+export class SAMLSourceForm extends BaseSourceForm<SAMLSource> {
+    protected endpoints = {
+        load: (slug: string) => aki(SourcesApi).sourcesSamlRetrieve({ slug }),
+        create: (sAMLSourceRequest: SAMLSource) =>
+            aki(SourcesApi).sourcesSamlCreate({ sAMLSourceRequest }),
+        update: (slug: string, sAMLSourceRequest: SAMLSource) =>
+            aki(SourcesApi).sourcesSamlUpdate({ slug, sAMLSourceRequest }),
+    };
+
     @state()
-    clearIcon = false;
+    protected hasSigningCert = false;
 
-    async loadInstance(pk: string): Promise<SAMLSource> {
-        const source = await new SourcesApi(DEFAULT_CONFIG).sourcesSamlRetrieve({
-            slug: pk,
-        });
-        this.clearIcon = false;
-        return source;
+    public override reset(): void {
+        super.reset();
+
+        this.hasSigningCert = false;
     }
 
-    async send(data: SAMLSource): Promise<SAMLSource> {
-        let source: SAMLSource;
-        if (this.instance) {
-            source = await new SourcesApi(DEFAULT_CONFIG).sourcesSamlUpdate({
-                slug: this.instance.slug,
-                sAMLSourceRequest: data,
-            });
-        } else {
-            source = await new SourcesApi(DEFAULT_CONFIG).sourcesSamlCreate({
-                sAMLSourceRequest: data,
-            });
-        }
-        const c = await config();
-        if (c.capabilities.includes(CapabilitiesEnum.CanSaveMedia)) {
-            const icon = this.getFormFiles()["icon"];
-            if (icon || this.clearIcon) {
-                await new SourcesApi(DEFAULT_CONFIG).sourcesAllSetIconCreate({
-                    slug: source.slug,
-                    file: icon,
-                    clear: this.clearIcon,
-                });
-            }
-        } else {
-            await new SourcesApi(DEFAULT_CONFIG).sourcesAllSetIconUrlCreate({
-                slug: source.slug,
-                filePathRequest: {
-                    url: data.icon || "",
-                },
-            });
-        }
-        return source;
+    setHasSigningCert(ev: InputEvent): void {
+        const target = ev.target as AkCryptoCertificateSearch;
+        if (!target) return;
+        this.hasSigningCert = !!target.selectedKeypair;
     }
 
-    renderForm(): TemplateResult {
-        return html` <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
-                <input
-                    type="text"
-                    value="${ifDefined(this.instance?.name)}"
-                    class="pf-c-form-control"
-                    required
-                />
-            </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("Slug")} ?required=${true} name="slug">
-                <input
-                    type="text"
-                    value="${ifDefined(this.instance?.slug)}"
-                    class="pf-c-form-control"
-                    required
-                />
-            </ak-form-element-horizontal>
-            <ak-form-element-horizontal name="enabled">
-                <label class="pf-c-switch">
-                    <input
-                        class="pf-c-switch__input"
-                        type="checkbox"
-                        ?checked=${first(this.instance?.enabled, true)}
-                    />
-                    <span class="pf-c-switch__toggle">
-                        <span class="pf-c-switch__toggle-icon">
-                            <i class="fas fa-check" aria-hidden="true"></i>
-                        </span>
-                    </span>
-                    <span class="pf-c-switch__label">${msg("Enabled")}</span>
-                </label>
-            </ak-form-element-horizontal>
+    renderHasSigningCert(): TemplateResult {
+        return html`<ak-switch-input
+                name="signedAssertion"
+                label=${msg("Verify Assertion Signature")}
+                ?checked=${this.instance?.signedAssertion ?? true}
+                help=${msg(
+                    "When enabled, authentik will look for a Signature inside of the Assertion element.",
+                )}
+            ></ak-switch-input>
+            <ak-switch-input
+                name="signedResponse"
+                label=${msg("Verify Response Signature")}
+                ?checked=${this.instance?.signedResponse ?? false}
+                help=${msg(
+                    "When enabled, authentik will look for a Signature inside of the Response element.",
+                )}
+            ></ak-switch-input>`;
+    }
+
+    protected override renderForm(): TemplateResult {
+        return html`<ak-text-input
+                label=${msg("Source Name")}
+                placeholder=${msg("Type a name for this source...")}
+                required
+                name="name"
+                value="${ifDefined(this.instance?.name)}"
+            ></ak-text-input>
+            <ak-slug-input
+                name="slug"
+                placeholder=${msg("e.g. my-saml-source")}
+                value=${ifDefined(this.instance?.slug)}
+                label=${msg("Slug")}
+                required
+                input-hint="code"
+            ></ak-slug-input>
+            <ak-switch-input
+                name="enabled"
+                label=${msg("Enabled")}
+                ?checked=${this.instance?.enabled ?? true}
+            ></ak-switch-input>
+            <ak-switch-input
+                name="promoted"
+                label=${msg("Promoted")}
+                ?checked=${this.instance?.promoted ?? false}
+                help=${msg(
+                    "When enabled, this source will be displayed as a prominent button on the login page, instead of a small icon.",
+                )}
+            ></ak-switch-input>
             <ak-form-element-horizontal
                 label=${msg("User matching mode")}
-                ?required=${true}
+                required
                 name="userMatchingMode"
             >
                 <select class="pf-c-form-control">
@@ -151,61 +154,47 @@ export class SAMLSourceForm extends WithCapabilitiesConfig(BaseSourceForm<SAMLSo
                     </option>
                 </select>
             </ak-form-element-horizontal>
-            ${this.can(CapabilitiesEnum.CanSaveMedia)
-                ? html`<ak-form-element-horizontal label=${msg("Icon")} name="icon">
-                          <input type="file" value="" class="pf-c-form-control" />
-                          ${this.instance?.icon
-                              ? html`
-                                    <p class="pf-c-form__helper-text">
-                                        ${msg("Currently set to:")} ${this.instance?.icon}
-                                    </p>
-                                `
-                              : html``}
-                      </ak-form-element-horizontal>
-                      ${this.instance?.icon
-                          ? html`
-                                <ak-form-element-horizontal>
-                                    <label class="pf-c-switch">
-                                        <input
-                                            class="pf-c-switch__input"
-                                            type="checkbox"
-                                            @change=${(ev: Event) => {
-                                                const target = ev.target as HTMLInputElement;
-                                                this.clearIcon = target.checked;
-                                            }}
-                                        />
-                                        <span class="pf-c-switch__toggle">
-                                            <span class="pf-c-switch__toggle-icon">
-                                                <i class="fas fa-check" aria-hidden="true"></i>
-                                            </span>
-                                        </span>
-                                        <span class="pf-c-switch__label">
-                                            ${msg("Clear icon")}
-                                        </span>
-                                    </label>
-                                    <p class="pf-c-form__helper-text">
-                                        ${msg("Delete currently set icon.")}
-                                    </p>
-                                </ak-form-element-horizontal>
-                            `
-                          : html``}`
-                : html`<ak-form-element-horizontal label=${msg("Icon")} name="icon">
-                      <input
-                          type="text"
-                          value="${first(this.instance?.icon, "")}"
-                          class="pf-c-form-control"
-                      />
-                      <p class="pf-c-form__helper-text">${iconHelperText}</p>
-                  </ak-form-element-horizontal>`}
-
-            <ak-form-group .expanded=${true}>
-                <span slot="header"> ${msg("Protocol settings")} </span>
-                <div slot="body" class="pf-c-form">
-                    <ak-form-element-horizontal
-                        label=${msg("SSO URL")}
-                        ?required=${true}
-                        name="ssoUrl"
+            <ak-form-element-horizontal
+                label=${msg("Group matching mode")}
+                required
+                name="groupMatchingMode"
+            >
+                <select class="pf-c-form-control">
+                    <option
+                        value=${GroupMatchingModeEnum.Identifier}
+                        ?selected=${this.instance?.groupMatchingMode ===
+                        GroupMatchingModeEnum.Identifier}
                     >
+                        ${UserMatchingModeToLabel(UserMatchingModeEnum.Identifier)}
+                    </option>
+                    <option
+                        value=${GroupMatchingModeEnum.NameLink}
+                        ?selected=${this.instance?.groupMatchingMode ===
+                        GroupMatchingModeEnum.NameLink}
+                    >
+                        ${GroupMatchingModeToLabel(GroupMatchingModeEnum.NameLink)}
+                    </option>
+                    <option
+                        value=${GroupMatchingModeEnum.NameDeny}
+                        ?selected=${this.instance?.groupMatchingMode ===
+                        GroupMatchingModeEnum.NameDeny}
+                    >
+                        ${GroupMatchingModeToLabel(GroupMatchingModeEnum.NameDeny)}
+                    </option>
+                </select>
+            </ak-form-element-horizontal>
+            <ak-file-search-input
+                name="icon"
+                label=${msg("Icon")}
+                .value=${this.instance?.icon}
+                .usage=${UsageEnum.Media}
+                blankable
+                help=${iconHelperText}
+            ></ak-file-search-input>
+
+            <ak-form-group open label="${msg("Protocol settings")}">
+                <div class="pf-c-form">
+                    <ak-form-element-horizontal label=${msg("SSO URL")} required name="ssoUrl">
                         <input
                             type="text"
                             value="${ifDefined(this.instance?.ssoUrl)}"
@@ -226,19 +215,9 @@ export class SAMLSourceForm extends WithCapabilitiesConfig(BaseSourceForm<SAMLSo
                             ${msg("Optional URL if the IDP supports Single-Logout.")}
                         </p>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal label=${msg("Issuer")} name="issuer">
-                        <input
-                            type="text"
-                            value="${ifDefined(this.instance?.issuer)}"
-                            class="pf-c-form-control"
-                        />
-                        <p class="pf-c-form__helper-text">
-                            ${msg("Also known as Entity ID. Defaults the Metadata URL.")}
-                        </p>
-                    </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Binding Type")}
-                        ?required=${true}
+                        required
                         name="bindingType"
                     >
                         <ak-radio
@@ -280,6 +259,7 @@ export class SAMLSourceForm extends WithCapabilitiesConfig(BaseSourceForm<SAMLSo
                     >
                         <ak-crypto-certificate-search
                             .certificate=${this.instance?.verificationKp}
+                            @input=${this.setHasSigningCert}
                             nokey
                         ></ak-crypto-certificate-search>
                         <p class="pf-c-form__helper-text">
@@ -288,71 +268,78 @@ export class SAMLSourceForm extends WithCapabilitiesConfig(BaseSourceForm<SAMLSo
                             )}
                         </p>
                     </ak-form-element-horizontal>
+                    ${this.hasSigningCert ? this.renderHasSigningCert() : nothing}
                 </div>
             </ak-form-group>
-            <ak-form-group>
-                <span slot="header"> ${msg("Advanced protocol settings")} </span>
-                <div slot="body" class="pf-c-form">
-                    <ak-form-element-horizontal name="allowIdpInitiated">
-                        <label class="pf-c-switch">
-                            <input
-                                class="pf-c-switch__input"
-                                type="checkbox"
-                                ?checked=${first(this.instance?.allowIdpInitiated, false)}
-                            />
-                            <span class="pf-c-switch__toggle">
-                                <span class="pf-c-switch__toggle-icon">
-                                    <i class="fas fa-check" aria-hidden="true"></i>
-                                </span>
-                            </span>
-                            <span class="pf-c-switch__label"
-                                >${msg(" Allow IDP-initiated logins")}</span
-                            >
-                        </label>
+            <ak-form-group label="${msg("Advanced protocol settings")}">
+                <div class="pf-c-form">
+                    <ak-switch-input
+                        name="allowIdpInitiated"
+                        label=${msg(" Allow IDP-initiated logins")}
+                        ?checked=${this.instance?.allowIdpInitiated ?? false}
+                        help=${msg(
+                            "Allows authentication flows initiated by the IdP. This can be a security risk, as no validation of the request ID is done.",
+                        )}
+                    ></ak-switch-input>
+                    <ak-switch-input
+                        name="forceAuthn"
+                        label=${msg("Force authentication")}
+                        ?checked=${!!this.instance?.forceAuthn}
+                        help=${msg(
+                            "When enabled, the IdP is requested to force re-authentication of the user, even if the user has an existing session.",
+                        )}
+                    ></ak-switch-input>
+                    <ak-form-element-horizontal
+                        label=${msg("Issuer override")}
+                        name="issuerOverride"
+                    >
+                        <input
+                            type="text"
+                            value="${ifDefined(this.instance?.issuerOverride)}"
+                            class="pf-c-form-control"
+                        />
                         <p class="pf-c-form__helper-text">
-                            ${msg(
-                                "Allows authentication flows initiated by the IdP. This can be a security risk, as no validation of the request ID is done.",
-                            )}
+                            ${msg("Also known as Entity ID. Defaults to the Metadata URL.")}
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("NameID Policy")}
-                        ?required=${true}
+                        required
                         name="nameIdPolicy"
                     >
                         <select class="pf-c-form-control">
                             <option
-                                value=${NameIdPolicyEnum._20nameidFormatpersistent}
+                                value=${SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml20NameidFormatPersistent}
                                 ?selected=${this.instance?.nameIdPolicy ===
-                                NameIdPolicyEnum._20nameidFormatpersistent}
+                                SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml20NameidFormatPersistent}
                             >
                                 ${msg("Persistent")}
                             </option>
                             <option
-                                value=${NameIdPolicyEnum._11nameidFormatemailAddress}
+                                value=${SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml11NameidFormatEmailAddress}
                                 ?selected=${this.instance?.nameIdPolicy ===
-                                NameIdPolicyEnum._11nameidFormatemailAddress}
+                                SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml11NameidFormatEmailAddress}
                             >
                                 ${msg("Email address")}
                             </option>
                             <option
-                                value=${NameIdPolicyEnum._20nameidFormatWindowsDomainQualifiedName}
+                                value=${SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml20NameidFormatWindowsDomainQualifiedName}
                                 ?selected=${this.instance?.nameIdPolicy ===
-                                NameIdPolicyEnum._20nameidFormatWindowsDomainQualifiedName}
+                                SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml20NameidFormatWindowsDomainQualifiedName}
                             >
                                 ${msg("Windows")}
                             </option>
                             <option
-                                value=${NameIdPolicyEnum._20nameidFormatX509SubjectName}
+                                value=${SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml11NameidFormatX509SubjectName}
                                 ?selected=${this.instance?.nameIdPolicy ===
-                                NameIdPolicyEnum._20nameidFormatX509SubjectName}
+                                SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml11NameidFormatX509SubjectName}
                             >
                                 ${msg("X509 Subject")}
                             </option>
                             <option
-                                value=${NameIdPolicyEnum._20nameidFormattransient}
+                                value=${SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml20NameidFormatTransient}
                                 ?selected=${this.instance?.nameIdPolicy ===
-                                NameIdPolicyEnum._20nameidFormattransient}
+                                SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml20NameidFormatTransient}
                             >
                                 ${msg("Transient")}
                             </option>
@@ -361,17 +348,15 @@ export class SAMLSourceForm extends WithCapabilitiesConfig(BaseSourceForm<SAMLSo
                     <ak-form-element-horizontal label=${msg("User path")} name="userPathTemplate">
                         <input
                             type="text"
-                            value="${first(
-                                this.instance?.userPathTemplate,
-                                "goauthentik.io/sources/%(slug)s",
-                            )}"
+                            value="${this.instance?.userPathTemplate ??
+                            "goauthentik.io/sources/%(slug)s"}"
                             class="pf-c-form-control"
                         />
                         <p class="pf-c-form__helper-text">${placeholderHelperText}</p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Delete temporary users after")}
-                        ?required=${true}
+                        required
                         name="temporaryUserDeleteAfter"
                     >
                         <input
@@ -389,27 +374,27 @@ export class SAMLSourceForm extends WithCapabilitiesConfig(BaseSourceForm<SAMLSo
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Digest algorithm")}
-                        ?required=${true}
+                        required
                         name="digestAlgorithm"
                     >
                         <ak-radio
                             .options=${[
                                 {
                                     label: "SHA1",
-                                    value: DigestAlgorithmEnum._200009Xmldsigsha1,
+                                    value: DigestAlgorithmEnum.HttpWwwW3Org200009Xmldsigsha1,
                                 },
                                 {
                                     label: "SHA256",
-                                    value: DigestAlgorithmEnum._200104Xmlencsha256,
+                                    value: DigestAlgorithmEnum.HttpWwwW3Org200104Xmlencsha256,
                                     default: true,
                                 },
                                 {
                                     label: "SHA384",
-                                    value: DigestAlgorithmEnum._200104XmldsigMoresha384,
+                                    value: DigestAlgorithmEnum.HttpWwwW3Org200104XmldsigMoresha384,
                                 },
                                 {
                                     label: "SHA512",
-                                    value: DigestAlgorithmEnum._200104Xmlencsha512,
+                                    value: DigestAlgorithmEnum.HttpWwwW3Org200104Xmlencsha512,
                                 },
                             ]}
                             .value=${this.instance?.digestAlgorithm}
@@ -418,49 +403,97 @@ export class SAMLSourceForm extends WithCapabilitiesConfig(BaseSourceForm<SAMLSo
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Signature algorithm")}
-                        ?required=${true}
+                        required
                         name="signatureAlgorithm"
                     >
                         <ak-radio
                             .options=${[
                                 {
                                     label: "RSA-SHA1",
-                                    value: SignatureAlgorithmEnum._200009XmldsigrsaSha1,
+                                    value: SignatureAlgorithmEnum.HttpWwwW3Org200009XmldsigrsaSha1,
                                 },
                                 {
                                     label: "RSA-SHA256",
-                                    value: SignatureAlgorithmEnum._200104XmldsigMorersaSha256,
+                                    value: SignatureAlgorithmEnum.HttpWwwW3Org200104XmldsigMorersaSha256,
                                     default: true,
                                 },
                                 {
                                     label: "RSA-SHA384",
-                                    value: SignatureAlgorithmEnum._200104XmldsigMorersaSha384,
+                                    value: SignatureAlgorithmEnum.HttpWwwW3Org200104XmldsigMorersaSha384,
                                 },
                                 {
                                     label: "RSA-SHA512",
-                                    value: SignatureAlgorithmEnum._200104XmldsigMorersaSha512,
+                                    value: SignatureAlgorithmEnum.HttpWwwW3Org200104XmldsigMorersaSha512,
                                 },
                                 {
                                     label: "DSA-SHA1",
-                                    value: SignatureAlgorithmEnum._200009XmldsigdsaSha1,
+                                    value: SignatureAlgorithmEnum.HttpWwwW3Org200009XmldsigdsaSha1,
                                 },
                             ]}
                             .value=${this.instance?.signatureAlgorithm}
                         >
                         </ak-radio>
                     </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
+                        label=${msg("Encryption Certificate")}
+                        name="encryptionKp"
+                    >
+                        <ak-crypto-certificate-search
+                            .certificate=${this.instance?.encryptionKp}
+                        ></ak-crypto-certificate-search>
+                        <p class="pf-c-form__helper-text">
+                            ${msg(
+                                "When selected, encrypted assertions will be decrypted using this keypair.",
+                            )}
+                        </p>
+                    </ak-form-element-horizontal>
                 </div>
             </ak-form-group>
-            <ak-form-group>
-                <span slot="header"> ${msg("Flow settings")} </span>
-                <div slot="body" class="pf-c-form">
+            <ak-form-group open label="${msg("SAML Attribute mapping")}">
+                <div class="pf-c-form">
+                    <ak-form-element-horizontal
+                        label=${msg("User Property Mappings")}
+                        name="userPropertyMappings"
+                    >
+                        <ak-dual-select-dynamic-selected
+                            .provider=${propertyMappingsProvider}
+                            .selector=${propertyMappingsSelector(
+                                this.instance?.userPropertyMappings,
+                            )}
+                            available-label="${msg("Available User Property Mappings")}"
+                            selected-label="${msg("Selected User Property Mappings")}"
+                        ></ak-dual-select-dynamic-selected>
+                        <p class="pf-c-form__helper-text">
+                            ${msg("Property mappings for user creation.")}
+                        </p>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
+                        label=${msg("Group Property Mappings")}
+                        name="groupPropertyMappings"
+                    >
+                        <ak-dual-select-dynamic-selected
+                            .provider=${propertyMappingsProvider}
+                            .selector=${propertyMappingsSelector(
+                                this.instance?.groupPropertyMappings,
+                            )}
+                            available-label="${msg("Available Group Property Mappings")}"
+                            selected-label="${msg("Selected Group Property Mappings")}"
+                        ></ak-dual-select-dynamic-selected>
+                        <p class="pf-c-form__helper-text">
+                            ${msg("Property mappings for group creation.")}
+                        </p>
+                    </ak-form-element-horizontal>
+                </div>
+            </ak-form-group>
+            <ak-form-group label="${msg("Flow settings")}">
+                <div class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${msg("Pre-authentication flow")}
-                        ?required=${true}
+                        required
                         name="preAuthenticationFlow"
                     >
                         <ak-source-flow-search
-                            flowType=${FlowsInstancesListDesignationEnum.StageConfiguration}
+                            flowType=${FlowDesignationEnum.StageConfiguration}
                             .currentFlow=${this.instance?.preAuthenticationFlow}
                             .instanceId=${this.instance?.pk}
                             fallback="default-source-pre-authentication"
@@ -470,12 +503,11 @@ export class SAMLSourceForm extends WithCapabilitiesConfig(BaseSourceForm<SAMLSo
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
-                        label=${msg("Authentication flow")}
-                        ?required=${true}
+                        label=${msg("Authentication Flow")}
                         name="authenticationFlow"
                     >
                         <ak-source-flow-search
-                            flowType=${FlowsInstancesListDesignationEnum.Authentication}
+                            flowType=${FlowDesignationEnum.Authentication}
                             .currentFlow=${this.instance?.authenticationFlow}
                             .instanceId=${this.instance?.pk}
                             fallback="default-source-authentication"
@@ -486,11 +518,10 @@ export class SAMLSourceForm extends WithCapabilitiesConfig(BaseSourceForm<SAMLSo
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Enrollment flow")}
-                        ?required=${true}
                         name="enrollmentFlow"
                     >
                         <ak-source-flow-search
-                            flowType=${FlowsInstancesListDesignationEnum.Enrollment}
+                            flowType=${FlowDesignationEnum.Enrollment}
                             .currentFlow=${this.instance?.enrollmentFlow}
                             .instanceId=${this.instance?.pk}
                             fallback="default-source-enrollment"
@@ -500,6 +531,27 @@ export class SAMLSourceForm extends WithCapabilitiesConfig(BaseSourceForm<SAMLSo
                         </p>
                     </ak-form-element-horizontal>
                 </div>
+            </ak-form-group>
+            <ak-form-group label=${msg("Advanced settings")}>
+                <div class="pf-c-form">
+                    <ak-form-element-horizontal
+                        label=${msg("Policy engine mode")}
+                        required
+                        name="policyEngineMode"
+                    >
+                        <ak-radio
+                            .options=${policyEngineModes}
+                            .value=${this.instance?.policyEngineMode}
+                        >
+                        </ak-radio>
+                    </ak-form-element-horizontal>
+                </div>
             </ak-form-group>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-source-saml-form": SAMLSourceForm;
     }
 }

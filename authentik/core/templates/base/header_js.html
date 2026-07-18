@@ -1,27 +1,29 @@
 {% load i18n %}
 {% get_current_language as LANGUAGE_CODE %}
 
-<script>
+<script data-id="authentik-config">
+    "use strict";
+
     window.authentik = {
         locale: "{{ LANGUAGE_CODE }}",
-        config: JSON.parse('{{ config_json|escapejs }}'),
-        brand: JSON.parse('{{ brand_json|escapejs }}'),
+        config: JSON.parse('{{ config_json|escapejs }}' || "{}"),
+        brand: JSON.parse('{{ brand_json|escapejs }}' || "{}"),
         versionFamily: "{{ version_family }}",
         versionSubdomain: "{{ version_subdomain }}",
         build: "{{ build }}",
+        api: {
+            base: "{{ base_url }}",
+            relBase: "{{ base_url_rel }}",
+        },
     };
-    window.addEventListener("DOMContentLoaded", () => {
-        {% for message in messages %}
-        window.dispatchEvent(
-            new CustomEvent("ak-message", {
-                bubbles: true,
-                composed: true,
-                detail: {
-                    level: "{{ message.tags|escapejs }}",
-                    message: "{{ message.message|escapejs }}",
-                },
-            }),
-        );
-        {% endfor %}
-    });
 </script>
+
+<script data-id="authentik-messages" type="application/json">
+  [{% for message in messages %}
+    {
+        "level": "{{ message.tags|escapejs }}",
+        "message": "{{ message.message|escapejs }}"
+    }{% if not forloop.last %},{% endif %}
+    {% endfor %}]
+</script>
+

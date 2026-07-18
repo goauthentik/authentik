@@ -5,21 +5,52 @@ from os.path import dirname, exists
 from shutil import rmtree
 from ssl import CERT_REQUIRED
 from tempfile import NamedTemporaryFile, mkdtemp
+from typing import Any
 
-from django.core.cache import cache
+import pglock
 from django.db import connection, models
+from django.templatetags.static import static
 from django.utils.translation import gettext_lazy as _
 from ldap3 import ALL, NONE, RANDOM, Connection, Server, ServerPool, Tls
-from ldap3.core.exceptions import LDAPException, LDAPInsufficientAccessRightsResult, LDAPSchemaError
-from redis.lock import Lock
+from ldap3.core.exceptions import (
+    LDAPAdminLimitExceededResult,
+    LDAPAttributeError,
+    LDAPException,
+    LDAPInsufficientAccessRightsResult,
+    LDAPSchemaError,
+)
 from rest_framework.serializers import Serializer
+from structlog.stdlib import get_logger
 
-from authentik.core.models import Group, PropertyMapping, Source
+from authentik.core.models import (
+    Group,
+    GroupSourceConnection,
+    PropertyMapping,
+    UserSourceConnection,
+)
 from authentik.crypto.models import CertificateKeyPair
-from authentik.lib.config import CONFIG
+from authentik.lib.config import CONFIG, advisory_lock_db_alias
 from authentik.lib.models import DomainlessURLValidator
+from authentik.lib.sync.incoming.models import IncomingSyncSource
+from authentik.lib.utils.time import fqdn_rand
+from authentik.tasks.schedules.common import ScheduleSpec
 
 LDAP_TIMEOUT = 15
+LDAP_UNIQUENESS = "ldap_uniq"
+"""Deprecated, don't use"""
+LDAP_DISTINGUISHED_NAME = "distinguishedName"
+LOGGER = get_logger()
+
+
+def flatten(value: Any) -> Any:
+    """Flatten `value` if its a list, set or tuple"""
+    if isinstance(value, list | set | tuple):
+        if len(value) < 1:
+            return None
+        if isinstance(value, set):
+            return value.pop()
+        return value[0]
+    return value
 
 
 class MultiURLValidator(DomainlessURLValidator):
@@ -33,7 +64,7 @@ class MultiURLValidator(DomainlessURLValidator):
             super().__call__(value)
 
 
-class LDAPSource(Source):
+class LDAPSource(IncomingSyncSource):
     """Federate LDAP Directory with authentik, or create new accounts in LDAP."""
 
     server_uri = models.TextField(
@@ -80,6 +111,10 @@ class LDAPSource(Source):
         default="(objectClass=person)",
         help_text=_("Consider Objects matching this filter to be Users."),
     )
+    user_membership_attribute = models.TextField(
+        default=LDAP_DISTINGUISHED_NAME,
+        help_text=_("Attribute which matches the value of `group_membership_field`."),
+    )
     group_membership_field = models.TextField(
         default="member", help_text=_("Field which contains members of a group.")
     )
@@ -89,13 +124,6 @@ class LDAPSource(Source):
     )
     object_uniqueness_field = models.TextField(
         default="objectSid", help_text=_("Field which contains a unique Identifier.")
-    )
-
-    property_mappings_group = models.ManyToManyField(
-        PropertyMapping,
-        default=None,
-        blank=True,
-        help_text=_("Property mappings used for group creation/updating."),
     )
 
     password_login_update_internal_password = models.BooleanField(
@@ -116,15 +144,82 @@ class LDAPSource(Source):
         Group, blank=True, null=True, default=None, on_delete=models.SET_DEFAULT
     )
 
+    lookup_groups_from_user = models.BooleanField(
+        default=False,
+        help_text=_(
+            "Lookup group membership based on a user attribute instead of a group attribute. "
+            "This allows nested group resolution on systems like FreeIPA and Active Directory"
+        ),
+    )
+
+    delete_not_found_objects = models.BooleanField(
+        default=False,
+        help_text=_(
+            "Delete authentik users and groups which were previously supplied by this source, "
+            "but are now missing from it."
+        ),
+    )
+
     @property
     def component(self) -> str:
         return "ak-source-ldap-form"
 
     @property
     def serializer(self) -> type[Serializer]:
-        from authentik.sources.ldap.api import LDAPSourceSerializer
+        from authentik.sources.ldap.api.sources import LDAPSourceSerializer
 
         return LDAPSourceSerializer
+
+    @property
+    def schedule_specs(self) -> list[ScheduleSpec]:
+        from authentik.sources.ldap.tasks import ldap_connectivity_check, ldap_sync
+
+        return [
+            ScheduleSpec(
+                actor=ldap_sync,
+                uid=self.slug,
+                args=(self.pk,),
+                crontab=f"{fqdn_rand('ldap_sync/' + str(self.pk))} */2 * * *",
+                send_on_save=True,
+            ),
+            ScheduleSpec(
+                actor=ldap_connectivity_check,
+                uid=self.slug,
+                args=(self.pk,),
+                crontab=f"{fqdn_rand('ldap_connectivity_check/' + str(self.pk))} * * * *",
+                send_on_save=True,
+            ),
+        ]
+
+    @property
+    def property_mapping_type(self) -> type[PropertyMapping]:
+        from authentik.sources.ldap.models import LDAPSourcePropertyMapping
+
+        return LDAPSourcePropertyMapping
+
+    def update_properties_with_uniqueness_field(self, properties, dn, ldap, **kwargs):
+        properties.setdefault("attributes", {})[LDAP_DISTINGUISHED_NAME] = dn
+        # TODO: Remove after 2026.5, still stored for legacy
+        if self.object_uniqueness_field in ldap:
+            properties["attributes"][LDAP_UNIQUENESS] = flatten(
+                ldap.get(self.object_uniqueness_field)
+            )
+        return properties
+
+    def get_base_user_properties(self, **kwargs):
+        return self.update_properties_with_uniqueness_field({}, **kwargs)
+
+    def get_base_group_properties(self, **kwargs):
+        return self.update_properties_with_uniqueness_field(
+            {
+                "parent": self.sync_parent_group,
+            },
+            **kwargs,
+        )
+
+    @property
+    def icon_url(self) -> str:
+        return static("authentik/sources/ldap.png")
 
     def server(self, **kwargs) -> ServerPool:
         """Get LDAP Server/ServerPool"""
@@ -147,19 +242,19 @@ class LDAPSource(Source):
             tls_kwargs["local_certificate_file"] = certificate_file
         if ciphers := CONFIG.get("ldap.tls.ciphers", None):
             tls_kwargs["ciphers"] = ciphers.strip()
-        if self.sni:
-            tls_kwargs["sni"] = self.server_uri.split(",", maxsplit=1)[0].strip()
         server_kwargs = {
             "get_info": ALL,
             "connect_timeout": LDAP_TIMEOUT,
-            "tls": Tls(**tls_kwargs),
         }
         server_kwargs.update(kwargs)
-        if "," in self.server_uri:
-            for server in self.server_uri.split(","):
-                servers.append(Server(server, **server_kwargs))
-        else:
-            servers = [Server(self.server_uri, **server_kwargs)]
+        for server_uri in self.server_uri.split(","):
+            server = Server(server_uri.strip(), **server_kwargs)
+            # The TLS SNI server name must be a bare hostname. ldap3 has already
+            # parsed the scheme and port out of the URI into `server.host`;
+            # passing the raw URI (e.g. `ldaps://host`) as the SNI name breaks
+            # the handshake against SNI-strict servers. See #7756.
+            server.tls = Tls(**tls_kwargs, sni=server.host if self.sni else None)
+            servers.append(server)
         return ServerPool(servers, RANDOM, active=5, exhaust=True)
 
     def connection(
@@ -183,17 +278,27 @@ class LDAPSource(Source):
         )
 
         if self.start_tls:
+            LOGGER.debug("Connection StartTLS", source=self)
             conn.start_tls(read_server_info=False)
         try:
             successful = conn.bind()
             if successful:
                 return conn
-        except (LDAPSchemaError, LDAPInsufficientAccessRightsResult) as exc:
-            # Schema error, so try connecting without schema info
+        except (
+            LDAPSchemaError,
+            LDAPInsufficientAccessRightsResult,
+            LDAPAdminLimitExceededResult,
+            LDAPAttributeError,
+        ) as exc:
+            # Schema error or rate limit during schema fetch, retry without schema info
             # See https://github.com/goauthentik/authentik/issues/4590
             # See also https://github.com/goauthentik/authentik/issues/3399
+            # LDAPAdminLimitExceededResult: Google Secure LDAP rate-limits schema queries
+            # LDAPAttributeError: Google Secure LDAP returns unsupported attrs in schema
             if server_kwargs.get("get_info", ALL) == NONE:
+                LOGGER.warning("Failed to connect after schema downgrade", source=self, exc=exc)
                 raise exc
+            LOGGER.warning("Downgrading connection to no schema info", source=self, exc=exc)
             server_kwargs["get_info"] = NONE
             return self.connection(server, server_kwargs, connection_kwargs)
         finally:
@@ -204,21 +309,27 @@ class LDAPSource(Source):
         return RuntimeError("Failed to bind")
 
     @property
-    def sync_lock(self) -> Lock:
-        """Redis lock for syncing LDAP to prevent multiple parallel syncs happening"""
-        return Lock(
-            cache.client.get_client(),
-            name=f"goauthentik.io/sources/ldap/sync/{connection.schema_name}-{self.slug}",
-            # Convert task timeout hours to seconds, and multiply times 3
-            # (see authentik/sources/ldap/tasks.py:54)
-            # multiply by 3 to add even more leeway
-            timeout=(60 * 60 * CONFIG.get_int("ldap.task_timeout_hours")) * 3,
+    def sync_lock(self) -> pglock.advisory:
+        """Postgres lock for syncing LDAP to prevent multiple parallel syncs happening"""
+        return pglock.advisory(
+            lock_id=f"goauthentik.io/{connection.schema_name}/sources/ldap/sync/{self.slug}",
+            timeout=0,
+            side_effect=pglock.Return,
+            using=advisory_lock_db_alias(),
         )
+
+    def get_ldap_server_info(self, srv: Server) -> dict[str, str]:
+        info = {
+            "vendor": _("N/A"),
+            "version": _("N/A"),
+        }
+        if srv.info:
+            info["vendor"] = str(flatten(srv.info.vendor_name))
+            info["version"] = str(flatten(srv.info.vendor_version))
+        return info
 
     def check_connection(self) -> dict[str, dict[str, str]]:
         """Check LDAP Connection"""
-        from authentik.sources.ldap.sync.base import flatten
-
         servers = self.server()
         server_info = {}
         # Check each individual server
@@ -227,9 +338,8 @@ class LDAPSource(Source):
             try:
                 conn = self.connection(server=server)
                 server_info[server.host] = {
-                    "vendor": str(flatten(conn.server.info.vendor_name)),
-                    "version": str(flatten(conn.server.info.vendor_version)),
                     "status": "ok",
+                    **self.get_ldap_server_info(conn.server),
                 }
             except LDAPException as exc:
                 server_info[server.host] = {
@@ -239,9 +349,8 @@ class LDAPSource(Source):
         try:
             conn = self.connection()
             server_info["__all__"] = {
-                "vendor": str(flatten(conn.server.info.vendor_name)),
-                "version": str(flatten(conn.server.info.vendor_version)),
                 "status": "ok",
+                **self.get_ldap_server_info(conn.server),
             }
         except LDAPException as exc:
             server_info["__all__"] = {
@@ -254,24 +363,68 @@ class LDAPSource(Source):
         verbose_name_plural = _("LDAP Sources")
 
 
-class LDAPPropertyMapping(PropertyMapping):
+class LDAPSourcePropertyMapping(PropertyMapping):
     """Map LDAP Property to User or Group object attribute"""
-
-    object_field = models.TextField()
 
     @property
     def component(self) -> str:
-        return "ak-property-mapping-ldap-form"
+        return "ak-property-mapping-source-ldap-form"
 
     @property
     def serializer(self) -> type[Serializer]:
-        from authentik.sources.ldap.api import LDAPPropertyMappingSerializer
+        from authentik.sources.ldap.api.property_mappings import LDAPSourcePropertyMappingSerializer
 
-        return LDAPPropertyMappingSerializer
+        return LDAPSourcePropertyMappingSerializer
 
     def __str__(self):
         return str(self.name)
 
     class Meta:
-        verbose_name = _("LDAP Property Mapping")
-        verbose_name_plural = _("LDAP Property Mappings")
+        verbose_name = _("LDAP Source Property Mapping")
+        verbose_name_plural = _("LDAP Source Property Mappings")
+
+
+class UserLDAPSourceConnection(UserSourceConnection):
+    validated_by = models.UUIDField(
+        null=True,
+        blank=True,
+        help_text=_("Unique ID used while checking if this object still exists in the directory."),
+    )
+
+    @property
+    def serializer(self) -> type[Serializer]:
+        from authentik.sources.ldap.api.connections import (
+            UserLDAPSourceConnectionSerializer,
+        )
+
+        return UserLDAPSourceConnectionSerializer
+
+    class Meta:
+        verbose_name = _("User LDAP Source Connection")
+        verbose_name_plural = _("User LDAP Source Connections")
+        indexes = [
+            models.Index(fields=["validated_by"]),
+        ]
+
+
+class GroupLDAPSourceConnection(GroupSourceConnection):
+    validated_by = models.UUIDField(
+        null=True,
+        blank=True,
+        help_text=_("Unique ID used while checking if this object still exists in the directory."),
+    )
+
+    @property
+    def serializer(self) -> type[Serializer]:
+        from authentik.sources.ldap.api.connections import (
+            GroupLDAPSourceConnectionSerializer,
+        )
+
+        return GroupLDAPSourceConnectionSerializer
+
+    class Meta:
+        verbose_name = _("Group LDAP Source Connection")
+        verbose_name_plural = _("Group LDAP Source Connections")
+        indexes = [
+            models.Index(fields=["validated_by"]),
+        ]

@@ -1,159 +1,143 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { first } from "@goauthentik/common/utils";
-import "@goauthentik/components/ak-radio-input";
-import "@goauthentik/elements/CodeMirror";
-import "@goauthentik/elements/forms/FormGroup";
-import "@goauthentik/elements/forms/HorizontalFormElement";
-import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
+import "#components/ak-radio-input";
+import "#components/ak-text-input";
+import "#components/ak-number-input";
+import "#elements/CodeMirror";
+import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
+import "#elements/forms/FormGroup";
+import "#elements/forms/HorizontalFormElement";
+
+import { propertyMappingsProvider, propertyMappingsSelector } from "./RACProviderFormHelpers.js";
+
+import { aki } from "#common/api/client";
+
+import { ModelForm } from "#elements/forms/ModelForm";
+import { SlottedTemplateResult } from "#elements/types";
+
+import { Endpoint, EndpointAuthModeEnum, ProtocolEnum, RacApi } from "@goauthentik/api";
+
 import YAML from "yaml";
 
 import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
+import { html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-import {
-    AuthModeEnum,
-    Endpoint,
-    PaginatedRACPropertyMappingList,
-    PropertymappingsApi,
-    ProtocolEnum,
-    RacApi,
-} from "@goauthentik/api";
-
 @customElement("ak-rac-endpoint-form")
 export class EndpointForm extends ModelForm<Endpoint, string> {
+    public static override verboseName = msg("RAC Endpoint");
+    public static override verboseNamePlural = msg("RAC Endpoints");
+
     @property({ type: Number })
-    providerID?: number;
+    public providerID: number | null = null;
 
-    propertyMappings?: PaginatedRACPropertyMappingList;
-
-    async load(): Promise<void> {
-        this.propertyMappings = await new PropertymappingsApi(
-            DEFAULT_CONFIG,
-        ).propertymappingsRacList({
-            ordering: "name",
-        });
-    }
-
-    loadInstance(pk: string): Promise<Endpoint> {
-        return new RacApi(DEFAULT_CONFIG).racEndpointsRetrieve({
+    protected override loadInstance(pk: string): Promise<Endpoint> {
+        return aki(RacApi).racEndpointsRetrieve({
             pbmUuid: pk,
         });
     }
 
-    getSuccessMessage(): string {
+    public override getSuccessMessage(): string {
         return this.instance
             ? msg("Successfully updated endpoint.")
             : msg("Successfully created endpoint.");
     }
 
-    async send(data: Endpoint): Promise<Endpoint> {
-        data.authMode = AuthModeEnum.Prompt;
+    public override async send(data: Endpoint): Promise<Endpoint> {
+        data.authMode = EndpointAuthModeEnum.Prompt;
         if (!this.instance) {
             data.provider = this.providerID || 0;
         } else {
             data.provider = this.instance.provider;
         }
         if (this.instance) {
-            return new RacApi(DEFAULT_CONFIG).racEndpointsPartialUpdate({
+            return aki(RacApi).racEndpointsPartialUpdate({
                 pbmUuid: this.instance.pk || "",
                 patchedEndpointRequest: data,
             });
-        } else {
-            return new RacApi(DEFAULT_CONFIG).racEndpointsCreate({
-                endpointRequest: data,
-            });
         }
+        return aki(RacApi).racEndpointsCreate({
+            endpointRequest: data,
+        });
     }
 
-    renderForm(): TemplateResult {
-        return html`
-            <ak-form-element-horizontal label=${msg("Name")} name="name" ?required=${true}>
-                <input
-                    type="text"
-                    value="${ifDefined(this.instance?.name)}"
-                    class="pf-c-form-control"
-                    required
-                />
-            </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("Protocol")} ?required=${true} name="protocol">
-                <ak-radio
-                    .options=${[
-                        {
-                            label: msg("RDP"),
-                            value: ProtocolEnum.Rdp,
-                        },
-                        {
-                            label: msg("SSH"),
-                            value: ProtocolEnum.Ssh,
-                        },
-                        {
-                            label: msg("VNC"),
-                            value: ProtocolEnum.Vnc,
-                        },
-                    ]}
-                    .value=${this.instance?.protocol}
-                >
-                </ak-radio>
-            </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("Host")} name="host" ?required=${true}>
-                <input
-                    type="text"
-                    value="${ifDefined(this.instance?.host)}"
-                    class="pf-c-form-control"
-                    required
-                />
-                <p class="pf-c-form__helper-text">${msg("Hostname/IP to connect to.")}</p>
-            </ak-form-element-horizontal>
-            <ak-form-element-horizontal
+    protected override renderForm(): SlottedTemplateResult {
+        return html`<ak-text-input
+                label=${msg("Endpoint Name")}
+                name="name"
+                required
+                value="${ifDefined(this.instance?.name)}"
+                placeholder=${msg("Type a name for this endpoint...")}
+                spellcheck="false"
+                ?autofocus=${!this.instance}
+            >
+            </ak-text-input>
+
+            <ak-radio-input
+                label=${msg("Protocol")}
+                name="protocol"
+                required
+                .options=${[
+                    {
+                        label: msg("RDP"),
+                        value: ProtocolEnum.Rdp,
+                    },
+                    {
+                        label: msg("SSH"),
+                        value: ProtocolEnum.Ssh,
+                    },
+                    {
+                        label: msg("VNC"),
+                        value: ProtocolEnum.Vnc,
+                    },
+                ]}
+                .value=${this.instance?.protocol}
+            >
+            </ak-radio-input>
+            <ak-text-input
+                label=${msg("Host")}
+                name="host"
+                required
+                value="${ifDefined(this.instance?.host)}"
+                input-hint="code"
+                help=${msg("Hostname/IP to connect to. Optionally specify the port.")}
+                placeholder=${msg("e.g. myserver.example.com, 10.0.0.1:22")}
+            >
+            </ak-text-input>
+            <ak-number-input
                 label=${msg("Maximum concurrent connections")}
                 name="maximumConnections"
-                ?required=${true}
+                required
+                value="${this.instance?.maximumConnections ?? 1}"
+                help=${msg(
+                    "Maximum concurrent allowed connections to this endpoint. Can be set to -1 to disable the limit.",
+                )}
             >
-                <input
-                    type="number"
-                    value="${first(this.instance?.maximumConnections, 1)}"
-                    class="pf-c-form-control"
-                    required
-                />
-                <p class="pf-c-form__helper-text">
-                    ${msg(
-                        "Maximum concurrent allowed connections to this endpoint. Can be set to -1 to disable the limit.",
-                    )}
-                </p>
-            </ak-form-element-horizontal>
+            </ak-number-input>
             <ak-form-element-horizontal label=${msg("Property mappings")} name="propertyMappings">
-                <select class="pf-c-form-control" multiple>
-                    ${this.propertyMappings?.results.map((mapping) => {
-                        let selected = false;
-                        if (this.instance?.propertyMappings) {
-                            selected = Array.from(this.instance?.propertyMappings).some((su) => {
-                                return su == mapping.pk;
-                            });
-                        }
-                        return html`<option value=${ifDefined(mapping.pk)} ?selected=${selected}>
-                            ${mapping.name}
-                        </option>`;
-                    })}
-                </select>
-                <p class="pf-c-form__helper-text">
-                    ${msg("Hold control/command to select multiple items.")}
-                </p>
+                <ak-dual-select-dynamic-selected
+                    .provider=${propertyMappingsProvider}
+                    .selector=${propertyMappingsSelector(this.instance?.propertyMappings)}
+                    available-label="${msg("Available User Property Mappings")}"
+                    selected-label="${msg("Selected User Property Mappings")}"
+                ></ak-dual-select-dynamic-selected>
             </ak-form-element-horizontal>
-            <ak-form-group>
-                <span slot="header"> ${msg("Advanced settings")} </span>
-                <div slot="body" class="pf-c-form">
+            <ak-form-group label="${msg("Advanced settings")}">
+                <div class="pf-c-form">
                     <ak-form-element-horizontal label=${msg("Settings")} name="settings">
                         <ak-codemirror
                             mode="yaml"
-                            value="${YAML.stringify(first(this.instance?.settings, {}))}"
+                            value="${YAML.stringify(this.instance?.settings ?? {})}"
                         >
                         </ak-codemirror>
                         <p class="pf-c-form__helper-text">${msg("Connection settings.")}</p>
                     </ak-form-element-horizontal>
                 </div>
-            </ak-form-group>
-        `;
+            </ak-form-group> `;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-rac-endpoint-form": EndpointForm;
     }
 }

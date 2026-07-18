@@ -5,13 +5,12 @@ from urllib.parse import quote
 from django.http import HttpRequest, HttpResponse
 from django.http.request import QueryDict
 from django.utils.translation import gettext_lazy as _
-from rest_framework.fields import CharField, IntegerField
+from rest_framework.fields import CharField
 from rest_framework.serializers import ValidationError
 
 from authentik.flows.challenge import (
     Challenge,
     ChallengeResponse,
-    ChallengeTypes,
     WithUserInfoChallenge,
 )
 from authentik.flows.stage import ChallengeStageView
@@ -33,10 +32,10 @@ class AuthenticatorTOTPChallengeResponse(ChallengeResponse):
 
     device: TOTPDevice
 
-    code = IntegerField()
+    code = CharField()
     component = CharField(default="ak-stage-authenticator-totp")
 
-    def validate_code(self, code: int) -> int:
+    def validate_code(self, code: str) -> str:
         """Validate totp code"""
         if not self.device:
             raise ValidationError(_("Code does not match"))
@@ -55,7 +54,6 @@ class AuthenticatorTOTPStageView(ChallengeStageView):
         device: TOTPDevice = self.request.session[SESSION_TOTP_DEVICE]
         return AuthenticatorTOTPChallenge(
             data={
-                "type": ChallengeTypes.NATIVE.value,
                 "config_url": device.config_url.replace(
                     OTP_TOTP_ISSUER, quote(self.request.brand.branding_title)
                 ),

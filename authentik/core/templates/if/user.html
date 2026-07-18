@@ -1,17 +1,16 @@
 {% extends "base/skeleton.html" %}
 
-{% load static %}
+{% load authentik_core %}
 
 {% block head %}
-<script src="{% static 'dist/user/UserInterface.js' %}?version={{ version }}" type="module"></script>
-<meta name="theme-color" content="#1c1e21" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#1c1e21" media="(prefers-color-scheme: dark)">
+<script src="{% versioned_script 'dist/user/UserInterface-%v.js' %}" type="module"></script>
 {% include "base/header_js.html" %}
 {% endblock %}
 
 {% block body %}
+<ak-skip-to-content></ak-skip-to-content>
 <ak-message-container></ak-message-container>
 <ak-interface-user>
-    <ak-loading></ak-loading>
+    {% include "base/placeholder.html" %}
 </ak-interface-user>
 {% endblock %}

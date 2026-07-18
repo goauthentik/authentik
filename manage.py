@@ -1,40 +1,29 @@
 #!/usr/bin/env python
 """Django manage.py"""
+
 import os
 import sys
-import warnings
 
-from defusedxml import defuse_stdlib
 from django.utils.autoreload import DJANGO_AUTORELOAD_ENV
 
+from authentik.root.setup import setup
 from lifecycle.migrate import run_migrations
 from lifecycle.wait_for_db import wait_for_db
 
-warnings.filterwarnings("ignore", "SelectableGroups dict interface")
-warnings.filterwarnings(
-    "ignore",
-    "defusedxml.lxml is no longer supported and will be removed in a future release.",
-)
-warnings.filterwarnings(
-    "ignore",
-    "defusedxml.cElementTree is deprecated, import from defusedxml.ElementTree instead.",
-)
-
-defuse_stdlib()
+setup()
 
 if __name__ == "__main__":
-    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "authentik.root.settings")
     wait_for_db()
     if (
         len(sys.argv) > 1
         # Explicitly only run migrate for server and worker
-        # `bootstrap_tasks` is a special case as that command might be triggered by the `ak`
-        # script to pre-run certain tasks for an automated install
-        and sys.argv[1] in ["dev_server", "worker", "bootstrap_tasks"]
+        and sys.argv[1] in ["dev_server"]
         # and don't run if this is the child process of a dev_server
         and os.environ.get(DJANGO_AUTORELOAD_ENV, None) is None
     ):
         run_migrations()
+    if len(sys.argv) > 1 and sys.argv[1] in ["worker"]:
+        raise RuntimeError(f"{sys.argv[1]} command not allowed.")
     try:
         from django.core.management import execute_from_command_line
     except ImportError as exc:

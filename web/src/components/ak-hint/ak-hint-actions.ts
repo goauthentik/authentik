@@ -1,4 +1,4 @@
-import { AKElement } from "@goauthentik/elements/Base";
+import { AKElement } from "#elements/Base";
 
 import { css, html } from "lit";
 import { customElement } from "lit/decorators.js";
@@ -20,9 +20,7 @@ const style = css`
 
 @customElement("ak-hint-actions")
 export class AkHintActions extends AKElement {
-    static get styles() {
-        return [style];
-    }
+    static styles = [style];
 
     render() {
         return html`<div part="ak-hint-actions"><slot></slot></div>`;
@@ -30,3 +28,9 @@ export class AkHintActions extends AKElement {
 }
 
 export default AkHintActions;
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-hint-actions": AkHintActions;
+    }
+}

@@ -2,9 +2,11 @@
 
 from collections.abc import Callable
 from hashlib import sha512
+from ipaddress import ip_address
 from time import perf_counter, time
 from typing import Any
 
+from channels.exceptions import DenyConnection
 from django.conf import settings
 from django.contrib.sessions.backends.base import UpdateError
 from django.contrib.sessions.exceptions import SessionInterrupted
@@ -16,10 +18,11 @@ from django.middleware.csrf import CsrfViewMiddleware as UpstreamCsrfViewMiddlew
 from django.utils.cache import patch_vary_headers
 from django.utils.http import http_date
 from jwt import PyJWTError, decode, encode
-from sentry_sdk.hub import Hub
+from sentry_sdk import Scope
 from structlog.stdlib import get_logger
 
 from authentik.core.models import Token, TokenIntents, User, UserTypes
+from authentik.lib.config import CONFIG
 
 LOGGER = get_logger("authentik.asgi")
 ACR_AUTHENTIK_SESSION = "goauthentik.io/core/default"
@@ -39,13 +42,15 @@ class SessionMiddleware(UpstreamSessionMiddleware):
             # Since go does not consider localhost with http a secure origin
             # we can't set the secure flag.
             user_agent = request.META.get("HTTP_USER_AGENT", "")
-            if user_agent.startswith("goauthentik.io/outpost/") or "safari" in user_agent.lower():
+            if user_agent.startswith("goauthentik.io/outpost/") or (
+                "safari" in user_agent.lower() and "chrome" not in user_agent.lower()
+            ):
                 return False
             return True
         return False
 
     @staticmethod
-    def decode_session_key(key: str) -> str:
+    def decode_session_key(key: str | None) -> str | None:
         """Decode raw session cookie, and parse JWT"""
         # We need to support the standard django format of just a session key
         # for testing setups, where the session is directly set
@@ -53,14 +58,34 @@ class SessionMiddleware(UpstreamSessionMiddleware):
         try:
             session_payload = decode(key, SIGNING_HASH, algorithms=["HS256"])
             session_key = session_payload["sid"]
-        except (KeyError, PyJWTError):
+        except KeyError, PyJWTError:
             pass
         return session_key
+
+    @staticmethod
+    def encode_session(session_key: str, user: User):
+        payload = {
+            "sid": session_key,
+            "iss": "authentik",
+            "sub": "anonymous",
+            "authenticated": user.is_authenticated,
+            "acr": ACR_AUTHENTIK_SESSION,
+        }
+        if user.is_authenticated:
+            payload["sub"] = user.uid
+        value = encode(payload=payload, key=SIGNING_HASH)
+        if settings.TEST:
+            value = session_key
+        return value
 
     def process_request(self, request: HttpRequest):
         raw_session = request.COOKIES.get(settings.SESSION_COOKIE_NAME)
         session_key = SessionMiddleware.decode_session_key(raw_session)
-        request.session = self.SessionStore(session_key)
+        request.session = self.SessionStore(
+            session_key,
+            last_ip=ClientIPMiddleware.get_client_ip(request),
+            last_user_agent=request.META.get("HTTP_USER_AGENT", ""),
+        )
 
     def process_response(self, request: HttpRequest, response: HttpResponse) -> HttpResponse:
         """
@@ -109,21 +134,9 @@ class SessionMiddleware(UpstreamSessionMiddleware):
                             "request completed. The user may have logged "
                             "out in a concurrent request, for example."
                         ) from None
-                    payload = {
-                        "sid": request.session.session_key,
-                        "iss": "authentik",
-                        "sub": "anonymous",
-                        "authenticated": request.user.is_authenticated,
-                        "acr": ACR_AUTHENTIK_SESSION,
-                    }
-                    if request.user.is_authenticated:
-                        payload["sub"] = request.user.uid
-                    value = encode(payload=payload, key=SIGNING_HASH)
-                    if settings.TEST:
-                        value = request.session.session_key
                     response.set_cookie(
                         settings.SESSION_COOKIE_NAME,
-                        value,
+                        SessionMiddleware.encode_session(request.session.session_key, request.user),
                         max_age=max_age,
                         expires=expires,
                         domain=settings.SESSION_COOKIE_DOMAIN,
@@ -173,6 +186,7 @@ class ClientIPMiddleware:
 
     def __init__(self, get_response: Callable[[HttpRequest], HttpResponse]):
         self.get_response = get_response
+        self.logger = get_logger().bind()
 
     def _get_client_ip_from_meta(self, meta: dict[str, Any]) -> str:
         """Attempt to get the client's IP by checking common HTTP Headers.
@@ -184,11 +198,16 @@ class ClientIPMiddleware:
             "HTTP_X_FORWARDED_FOR",
             "REMOTE_ADDR",
         )
-        for _header in headers:
-            if _header in meta:
-                ips: list[str] = meta.get(_header).split(",")
-                return ips[0].strip()
-        return self.default_ip
+        try:
+            for _header in headers:
+                if _header in meta:
+                    ips: list[str] = meta.get(_header).split(",")
+                    # Ensure the IP parses as a valid IP
+                    return str(ip_address(ips[0].strip()))
+            return self.default_ip
+        except ValueError as exc:
+            self.logger.debug("Invalid remote IP", exc=exc)
+            return self.default_ip
 
     # FIXME: this should probably not be in `root` but rather in a middleware in `outposts`
     # but for now it's fine
@@ -202,7 +221,7 @@ class ClientIPMiddleware:
             return None
         delegated_ip = request.META[self.outpost_remote_ip_header]
         token = (
-            Token.filter_not_expired(
+            Token.objects.filter(
                 key=request.META.get(self.outpost_token_header), intent=TokenIntents.INTENT_API
             )
             .select_related("user")
@@ -220,14 +239,16 @@ class ClientIPMiddleware:
             )
             return None
         # Update sentry scope to include correct IP
-        user = Hub.current.scope._user
-        if not user:
-            user = {}
-        user["ip_address"] = delegated_ip
-        Hub.current.scope.set_user(user)
+        sentry_user = Scope.get_isolation_scope()._user or {}
+        sentry_user["ip_address"] = delegated_ip
+        Scope.get_isolation_scope().set_user(sentry_user)
         # Set the outpost service account on the request
         setattr(request, self.request_attr_outpost_user, user)
-        return delegated_ip
+        try:
+            return str(ip_address(delegated_ip))
+        except ValueError as exc:
+            self.logger.debug("Invalid remote IP from Outpost", exc=exc)
+            return None
 
     def _get_client_ip(self, request: HttpRequest | None) -> str:
         """Attempt to get the client's IP by checking common HTTP Headers.
@@ -271,7 +292,15 @@ class ChannelsLoggingMiddleware:
 
     async def __call__(self, scope, receive, send):
         self.log(scope)
-        return await self.inner(scope, receive, send)
+        try:
+            return await self.inner(scope, receive, send)
+        except DenyConnection:
+            return await send({"type": "websocket.close"})
+        except Exception as exc:
+            if settings.DEBUG or settings.TEST:
+                raise exc
+            LOGGER.warning("Exception in ASGI application", exc=exc)
+            return await send({"type": "websocket.close"})
 
     def log(self, scope: dict, **kwargs):
         """Log request"""
@@ -292,6 +321,10 @@ class LoggingMiddleware:
 
     def __init__(self, get_response: Callable[[HttpRequest], HttpResponse]):
         self.get_response = get_response
+        headers = CONFIG.get("log.http_headers", [])
+        if isinstance(headers, str):
+            headers = headers.split(",")
+        self.headers_to_log = headers
 
     def __call__(self, request: HttpRequest) -> HttpResponse:
         start = perf_counter()
@@ -306,6 +339,11 @@ class LoggingMiddleware:
 
     def log(self, request: HttpRequest, status_code: int, runtime: int, **kwargs):
         """Log request"""
+        for header in self.headers_to_log:
+            header_value = request.headers.get(header)
+            if not header_value:
+                continue
+            kwargs[header.lower().replace("-", "_")] = header_value
         LOGGER.info(
             request.get_full_path(),
             remote=ClientIPMiddleware.get_client_ip(request),
@@ -313,6 +351,5 @@ class LoggingMiddleware:
             scheme=request.scheme,
             status=status_code,
             runtime=runtime,
-            user_agent=request.META.get("HTTP_USER_AGENT", ""),
             **kwargs,
         )

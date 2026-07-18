@@ -1,9 +1,14 @@
 ---
-name: authentik-backend-translate-extract-compile
+name: Translation - Extract and compile
+
 on:
   schedule:
     - cron: "0 0 * * *" # every day at midnight
   workflow_dispatch:
+  pull_request:
+    branches:
+      - main
+      - version-*
 
 env:
   POSTGRES_DB: authentik
@@ -15,24 +20,29 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - id: generate_token
-        uses: tibdex/github-app-token@v2
+        if: ${{ github.event_name != 'pull_request' }}
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v2
         with:
-          app_id: ${{ secrets.GH_APP_ID }}
-          private_key: ${{ secrets.GH_APP_PRIVATE_KEY }}
-      - uses: actions/checkout@v4
+          client-id: ${{ secrets.GH_APP_ID }}
+          private-key: ${{ secrets.GH_APP_PRIV_KEY }}
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v5
+        if: ${{ github.event_name != 'pull_request' }}
         with:
           token: ${{ steps.generate_token.outputs.token }}
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v5
+        if: ${{ github.event_name == 'pull_request' }}
       - name: Setup authentik env
         uses: ./.github/actions/setup
       - name: run extract
         run: |
-          poetry run make i18n-extract
+          uv run make i18n-extract
       - name: run compile
         run: |
-          poetry run ak compilemessages
+          uv run ak compilemessages
           make web-check-compile
       - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v6
+        if: ${{ github.event_name != 'pull_request' }}
+        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v7
         with:
           token: ${{ steps.generate_token.outputs.token }}
           branch: extract-compile-backend-translation
@@ -41,3 +51,6 @@ jobs:
           body: "core, web: update translations"
           delete-branch: true
           signoff: true
+          labels: dependencies
+          # ID from https://api.github.com/users/authentik-automation[bot]
+          author: authentik-automation[bot] <135050075+authentik-automation[bot]@users.noreply.github.com>

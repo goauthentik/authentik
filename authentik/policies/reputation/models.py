@@ -11,9 +11,8 @@ from django.utils.translation import gettext as _
 from rest_framework.serializers import BaseSerializer
 from structlog import get_logger
 
-from authentik.core.models import ExpiringModel
 from authentik.lib.config import CONFIG
-from authentik.lib.models import SerializerModel
+from authentik.lib.models import ExpiringModel, InternallyManagedMixin, SerializerModel
 from authentik.policies.models import Policy
 from authentik.policies.types import PolicyRequest, PolicyResult
 from authentik.root.middleware import ClientIPMiddleware
@@ -68,7 +67,7 @@ class ReputationPolicy(Policy):
         verbose_name_plural = _("Reputation Policies")
 
 
-class Reputation(ExpiringModel, SerializerModel):
+class Reputation(InternallyManagedMixin, ExpiringModel, SerializerModel):
     """Reputation for user and or IP."""
 
     reputation_uuid = models.UUIDField(primary_key=True, unique=True, default=uuid4)
@@ -81,7 +80,7 @@ class Reputation(ExpiringModel, SerializerModel):
 
     expires = models.DateTimeField(default=reputation_expiry)
 
-    updated = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
 
     @property
     def serializer(self) -> type[BaseSerializer]:
@@ -96,3 +95,8 @@ class Reputation(ExpiringModel, SerializerModel):
         verbose_name = _("Reputation Score")
         verbose_name_plural = _("Reputation Scores")
         unique_together = ("identifier", "ip")
+        indexes = ExpiringModel.Meta.indexes + [
+            models.Index(fields=["identifier"]),
+            models.Index(fields=["ip"]),
+            models.Index(fields=["ip", "identifier"]),
+        ]

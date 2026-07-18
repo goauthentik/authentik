@@ -1,18 +1,42 @@
+import { HorizontalLightComponent } from "./HorizontalLightComponent.js";
+
+import { ifPresent } from "#elements/utils/attributes";
+
 import { html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-import { HorizontalLightComponent } from "./HorizontalLightComponent";
-
 @customElement("ak-number-input")
-export class AkNumberInput extends HorizontalLightComponent {
+export class AkNumberInput extends HorizontalLightComponent<number> {
     @property({ type: Number, reflect: true })
-    value = 0;
+    value = NaN;
+
+    @property({ type: Number, reflect: true })
+    min = NaN;
+
+    @property({ type: Boolean, reflect: true })
+    allowFloat = false;
 
     renderControl() {
+        const setValue = (ev: InputEvent) => {
+            const value = (ev.target as HTMLInputElement).value.trim();
+
+            if (value === "") {
+                this.value = NaN;
+                return;
+            }
+
+            this.value = this.allowFloat === true ? parseFloat(value) : parseInt(value, 10);
+        };
+
         return html`<input
+            id=${this.fieldID}
+            aria-describedby=${this.helpID}
             type="number"
-            value=${ifDefined(this.value)}
+            @input=${setValue}
+            aria-label=${ifPresent(this.label)}
+            value=${ifPresent(this.value)}
+            min=${ifDefined(this.min)}
             class="pf-c-form-control"
             ?required=${this.required}
         />`;
@@ -20,3 +44,9 @@ export class AkNumberInput extends HorizontalLightComponent {
 }
 
 export default AkNumberInput;
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-number-input": AkNumberInput;
+    }
+}

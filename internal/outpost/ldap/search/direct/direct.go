@@ -11,14 +11,15 @@ import (
 	"beryju.io/ldap"
 	"github.com/getsentry/sentry-go"
 	"github.com/prometheus/client_golang/prometheus"
-	"goauthentik.io/api/v3"
+	"goauthentik.io/internal/config"
+	"goauthentik.io/internal/outpost/ak"
 	"goauthentik.io/internal/outpost/ldap/constants"
 	"goauthentik.io/internal/outpost/ldap/group"
 	"goauthentik.io/internal/outpost/ldap/metrics"
 	"goauthentik.io/internal/outpost/ldap/search"
 	"goauthentik.io/internal/outpost/ldap/server"
 	"goauthentik.io/internal/outpost/ldap/utils"
-	"goauthentik.io/internal/outpost/ldap/utils/paginator"
+	api "goauthentik.io/packages/client-go"
 )
 
 type DirectSearcher struct {
@@ -83,10 +84,6 @@ func (ds *DirectSearcher) Search(req *search.Request) (ldap.ServerSearchResult, 
 
 	entries := make([]*ldap.Entry, 0)
 
-	// Create a custom client to set additional headers
-	c := api.NewAPIClient(ds.si.GetAPIClient().GetConfig())
-	c.GetConfig().AddDefaultHeader("X-authentik-outpost-ldap-query", req.Filter)
-
 	scope := req.Scope
 	needUsers, needGroups := ds.si.GetNeededObjects(scope, req.BaseDN, req.FilterObjectClass)
 
@@ -113,21 +110,26 @@ func (ds *DirectSearcher) Search(req *search.Request) (ldap.ServerSearchResult, 
 		errs.Go(func() error {
 			if flags.CanSearch {
 				uapisp := sentry.StartSpan(errCtx, "authentik.providers.ldap.search.api_user")
-				searchReq, skip := utils.ParseFilterForUser(c.CoreApi.CoreUsersList(uapisp.Context()).IncludeGroups(true), parsedFilter, false)
+				searchReq, skip := utils.ParseFilterForUser(ds.si.GetAPIClient().CoreAPI.CoreUsersList(uapisp.Context()).IncludeGroups(true), parsedFilter, false)
 
 				if skip {
 					req.Log().Trace("Skip backend request")
 					return nil
 				}
 
-				u := paginator.FetchUsers(searchReq)
+				u, err := ak.Paginator(searchReq, ak.PaginatorOptions{
+					PageSize: config.Get().LDAP.PageSize,
+					Logger:   ds.log,
+				})
 				uapisp.Finish()
-
+				if err != nil {
+					return err
+				}
 				users = &u
 			} else {
 				if flags.UserInfo == nil {
 					uapisp := sentry.StartSpan(errCtx, "authentik.providers.ldap.search.api_user")
-					u, _, err := c.CoreApi.CoreUsersRetrieve(uapisp.Context(), flags.UserPk).Execute()
+					u, _, err := ds.si.GetAPIClient().CoreAPI.CoreUsersRetrieve(uapisp.Context(), flags.UserPk).Execute()
 					uapisp.Finish()
 
 					if err != nil {
@@ -150,7 +152,7 @@ func (ds *DirectSearcher) Search(req *search.Request) (ldap.ServerSearchResult, 
 	if needGroups {
 		errs.Go(func() error {
 			gapisp := sentry.StartSpan(errCtx, "authentik.providers.ldap.search.api_group")
-			searchReq, skip := utils.ParseFilterForGroup(c.CoreApi.CoreGroupsList(gapisp.Context()).IncludeUsers(true), parsedFilter, false)
+			searchReq, skip := utils.ParseFilterForGroup(ds.si.GetAPIClient().CoreAPI.CoreGroupsList(gapisp.Context()).IncludeUsers(true).IncludeChildren(true).IncludeParents(true), parsedFilter, false)
 			if skip {
 				req.Log().Trace("Skip backend request")
 				return nil
@@ -161,8 +163,14 @@ func (ds *DirectSearcher) Search(req *search.Request) (ldap.ServerSearchResult, 
 				searchReq = searchReq.MembersByPk([]int32{flags.UserPk})
 			}
 
-			g := paginator.FetchGroups(searchReq)
+			g, err := ak.Paginator(searchReq, ak.PaginatorOptions{
+				PageSize: config.Get().LDAP.PageSize,
+				Logger:   ds.log,
+			})
 			gapisp.Finish()
+			if err != nil {
+				return err
+			}
 			req.Log().WithField("count", len(g)).Trace("Got results from API")
 
 			if !flags.CanSearch {
@@ -171,20 +179,18 @@ func (ds *DirectSearcher) Search(req *search.Request) (ldap.ServerSearchResult, 
 					g[i].Users = []int32{flags.UserPk}
 					for _, u := range results.UsersObj {
 						if u.Pk == flags.UserPk {
-							g[i].UsersObj = []api.GroupMember{u}
+							g[i].UsersObj = []api.PartialUser{u}
 							break
 						}
 					}
 				}
 			}
-
 			groups = &g
 			return nil
 		})
 	}
 
 	err = errs.Wait()
-
 	if err != nil {
 		return ldap.ServerSearchResult{ResultCode: ldap.LDAPResultOperationsError}, err
 	}

@@ -6,6 +6,7 @@ from requests.exceptions import RequestException
 from structlog.stdlib import get_logger
 
 from authentik.sources.oauth.clients.oauth2 import OAuth2Client
+from authentik.sources.oauth.models import AuthorizationCodeAuthMethod
 from authentik.sources.oauth.types.registry import SourceType, registry
 from authentik.sources.oauth.views.callback import OAuthCallback
 from authentik.sources.oauth.views.redirect import OAuthRedirect
@@ -47,16 +48,6 @@ class MailcowOAuth2Callback(OAuthCallback):
 
     client_class = MailcowOAuth2Client
 
-    def get_user_enroll_context(
-        self,
-        info: dict[str, Any],
-    ) -> dict[str, Any]:
-        return {
-            "username": info.get("full_name"),
-            "email": info.get("email"),
-            "name": info.get("full_name"),
-        }
-
 
 @registry.register()
 class MailcowType(SourceType):
@@ -68,3 +59,12 @@ class MailcowType(SourceType):
     name = "mailcow"
 
     urls_customizable = True
+
+    authorization_code_auth_method = AuthorizationCodeAuthMethod.POST_BODY
+
+    def get_base_user_properties(self, info: dict[str, Any], **kwargs) -> dict[str, Any]:
+        return {
+            "username": info.get("full_name"),
+            "email": info.get("email"),
+            "name": info.get("full_name"),
+        }

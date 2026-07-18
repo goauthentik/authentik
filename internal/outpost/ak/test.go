@@ -10,7 +10,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/gorilla/securecookie"
 	log "github.com/sirupsen/logrus"
-	"goauthentik.io/api/v3"
+	api "goauthentik.io/packages/client-go"
 )
 
 func TestSecret() string {
@@ -21,7 +21,6 @@ func MockConfig() api.Config {
 	return *api.NewConfig(
 		*api.NewErrorReportingConfig(false, "https://foo.bar/9", "test", false, 0.0),
 		[]api.CapabilitiesEnum{},
-		100,
 		100,
 		100,
 		100,
@@ -55,11 +54,10 @@ func MockAK(outpost api.Outpost, globalConfig api.Config) *APIController {
 		token:  token,
 		logger: log,
 
-		reloadOffset:        time.Duration(rand.Intn(10)) * time.Second,
-		instanceUUID:        uuid.New(),
-		Outpost:             outpost,
-		wsBackoffMultiplier: 1,
-		refreshHandlers:     make([]func(), 0),
+		reloadOffset:    time.Duration(rand.Intn(10)) * time.Second,
+		instanceUUID:    uuid.New(),
+		Outpost:         outpost,
+		refreshHandlers: make([]func(), 0),
 	}
 	ac.logger.WithField("offset", ac.reloadOffset.String()).Debug("HA Reload offset")
 	return ac

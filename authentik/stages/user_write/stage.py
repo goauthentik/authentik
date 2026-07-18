@@ -6,17 +6,18 @@ from django.contrib.auth import update_session_auth_hash
 from django.db import transaction
 from django.db.utils import IntegrityError, InternalError
 from django.http import HttpRequest, HttpResponse
+from django.utils.functional import SimpleLazyObject
 from django.utils.translation import gettext as _
 from rest_framework.exceptions import ValidationError
 
 from authentik.core.middleware import SESSION_KEY_IMPERSONATE_USER
 from authentik.core.models import USER_ATTRIBUTE_SOURCES, User, UserSourceConnection, UserTypes
 from authentik.core.sources.stage import PLAN_CONTEXT_SOURCES_CONNECTION
-from authentik.events.utils import sanitize_item
+from authentik.events.utils import sanitize_dict, sanitize_item
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
 from authentik.flows.stage import StageView
 from authentik.flows.views.executor import FlowExecutorView
-from authentik.lib.config import set_path_in_dict
+from authentik.lib.utils.dict import set_path_in_dict
 from authentik.stages.password import BACKEND_INBUILT
 from authentik.stages.password.stage import PLAN_CONTEXT_AUTHENTICATION_BACKEND
 from authentik.stages.prompt.stage import PLAN_CONTEXT_PROMPT
@@ -29,19 +30,27 @@ PLAN_CONTEXT_USER_PATH = "user_path"
 
 
 class UserWriteStageView(StageView):
-    """Finalise Enrollment flow by creating a user object."""
+    """Finalize Enrollment flow by creating a user object."""
 
     def __init__(self, executor: FlowExecutorView, **kwargs):
         super().__init__(executor, **kwargs)
         self.disallowed_user_attributes = [
             "groups",
+            # Block attribute writes that would otherwise land on the model's
+            # primary key. An IdP that returns an `id` claim (mocksaml is one
+            # example) used to crash the enrollment flow with
+            # ValueError: Field 'id' expected a number but got '<hex>'
+            # because hasattr(user, "id") is true and setattr(user, "id", ...)
+            # was taken unchecked. See #21580.
+            "id",
+            "pk",
         ]
 
     @staticmethod
     def write_attribute(user: User, key: str, value: Any):
         """Allow use of attributes.foo.bar when writing to a user, with full
         recursion"""
-        parts = key.replace("_", ".").split(".")
+        parts = key.replace("attributes_", "attributes.", 1).split(".")
         if len(parts) < 1:  # pragma: no cover
             return
         # Function will always be called with a key like attributes.
@@ -103,7 +112,9 @@ class UserWriteStageView(StageView):
         for key, value in data.items():
             setter_name = f"set_{key}"
             # Check if user has a setter for this key, like set_password
-            if hasattr(user, setter_name):
+            if key == "password":
+                user.set_password(value, request=self.request)
+            elif hasattr(user, setter_name):
                 setter = getattr(user, setter_name)
                 if callable(setter):
                     setter(value)
@@ -112,12 +123,23 @@ class UserWriteStageView(StageView):
                 continue
             # For exact attributes match, update the dictionary in place
             elif key == "attributes":
-                user.attributes.update(value)
+                if isinstance(value, dict):
+                    user.attributes.update(sanitize_dict(value))
+                else:
+                    raise ValidationError("Attempt to overwrite complete attributes")
             # If using dot notation, use the correct helper to update the nested value
             elif key.startswith("attributes.") or key.startswith("attributes_"):
                 UserWriteStageView.write_attribute(user, key, value)
             # User has this key already
             elif hasattr(user, key):
+                if isinstance(user, SimpleLazyObject):
+                    user._setup()
+                    user = user._wrapped
+                attr = getattr(type(user), key)
+                if isinstance(attr, property):
+                    if not attr.fset:
+                        self.logger.info("discarding key", key=key)
+                        continue
                 setattr(user, key, value)
             # If none of the cases above matched, we have an attribute that the user doesn't have,
             # has no setter for, is not a nested attributes value and as such is invalid
@@ -172,9 +194,9 @@ class UserWriteStageView(StageView):
             with transaction.atomic():
                 user.save()
                 if self.executor.current_stage.create_users_group:
-                    user.ak_groups.add(self.executor.current_stage.create_users_group)
+                    user.groups.add(self.executor.current_stage.create_users_group)
                 if PLAN_CONTEXT_GROUPS in self.executor.plan.context:
-                    user.ak_groups.add(*self.executor.plan.context[PLAN_CONTEXT_GROUPS])
+                    user.groups.add(*self.executor.plan.context[PLAN_CONTEXT_GROUPS])
         except (IntegrityError, ValueError, TypeError, InternalError) as exc:
             self.logger.warning("Failed to save user", exc=exc)
             return self.executor.stage_invalid(_("Failed to update user. Please try again later."))

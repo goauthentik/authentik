@@ -8,12 +8,14 @@ from kubernetes.client import ApiextensionsV1Api, CustomObjectsApi
 
 from authentik.outposts.controllers.base import FIELD_MANAGER
 from authentik.outposts.controllers.k8s.base import KubernetesObjectReconciler
+from authentik.outposts.controllers.k8s.service import MetricsServiceReconciler
+from authentik.outposts.controllers.k8s.triggers import NeedsUpdate
 
 if TYPE_CHECKING:
     from authentik.outposts.controllers.kubernetes import KubernetesController
 
 
-@dataclass
+@dataclass(slots=True)
 class PrometheusServiceMonitorSpecEndpoint:
     """Prometheus ServiceMonitor endpoint spec"""
 
@@ -21,14 +23,14 @@ class PrometheusServiceMonitorSpecEndpoint:
     path: str = field(default="/metrics")
 
 
-@dataclass
+@dataclass(slots=True)
 class PrometheusServiceMonitorSpecSelector:
     """Prometheus ServiceMonitor selector spec"""
 
     matchLabels: dict
 
 
-@dataclass
+@dataclass(slots=True)
 class PrometheusServiceMonitorSpec:
     """Prometheus ServiceMonitor spec"""
 
@@ -37,7 +39,7 @@ class PrometheusServiceMonitorSpec:
     selector: PrometheusServiceMonitorSpecSelector
 
 
-@dataclass
+@dataclass(slots=True)
 class PrometheusServiceMonitorMetadata:
     """Prometheus ServiceMonitor metadata"""
 
@@ -46,7 +48,7 @@ class PrometheusServiceMonitorMetadata:
     labels: dict = field(default_factory=dict)
 
 
-@dataclass
+@dataclass(slots=True)
 class PrometheusServiceMonitor:
     """Prometheus ServiceMonitor"""
 
@@ -54,6 +56,10 @@ class PrometheusServiceMonitor:
     kind: str
     metadata: PrometheusServiceMonitorMetadata
     spec: PrometheusServiceMonitorSpec
+
+    def to_dict(self):
+        """`to_dict` to conform to how the kubernetes client converts objects to dicts"""
+        return asdict(self)
 
 
 CRD_NAME = "servicemonitors.monitoring.coreos.com"
@@ -65,7 +71,7 @@ CRD_PLURAL = "servicemonitors"
 class PrometheusServiceMonitorReconciler(KubernetesObjectReconciler[PrometheusServiceMonitor]):
     """Kubernetes Prometheus ServiceMonitor Reconciler"""
 
-    def __init__(self, controller: "KubernetesController") -> None:
+    def __init__(self, controller: KubernetesController) -> None:
         super().__init__(controller)
         self.api_ex = ApiextensionsV1Api(controller.client)
         self.api = CustomObjectsApi(controller.client)
@@ -73,6 +79,11 @@ class PrometheusServiceMonitorReconciler(KubernetesObjectReconciler[PrometheusSe
     @staticmethod
     def reconciler_name() -> str:
         return "prometheus servicemonitor"
+
+    def reconcile(self, current: PrometheusServiceMonitor, reference: PrometheusServiceMonitor):
+        if current.spec.selector.matchLabels != reference.spec.selector.matchLabels:
+            raise NeedsUpdate()
+        super().reconcile(current, reference)
 
     @property
     def noop(self) -> bool:
@@ -108,7 +119,9 @@ class PrometheusServiceMonitorReconciler(KubernetesObjectReconciler[PrometheusSe
                     )
                 ],
                 selector=PrometheusServiceMonitorSpecSelector(
-                    matchLabels=self.get_object_meta(name=self.name).labels,
+                    matchLabels=MetricsServiceReconciler(self.controller)
+                    .get_object_meta(name=self.name)
+                    .labels,
                 ),
             ),
         )

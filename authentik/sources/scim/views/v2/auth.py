@@ -8,6 +8,7 @@ from rest_framework.authentication import BaseAuthentication, get_authorization_
 from rest_framework.request import Request
 from rest_framework.views import APIView
 
+from authentik.core.middleware import CTX_AUTH_VIA
 from authentik.core.models import Token, TokenIntents, User
 from authentik.sources.scim.models import SCIMSource
 
@@ -26,12 +27,13 @@ class SCIMTokenAuth(BaseAuthentication):
         _username, _, password = b64decode(key.encode()).decode().partition(":")
         token = self.check_token(password, source_slug)
         if token:
+            CTX_AUTH_VIA.set("scim_basic")
             return (token.user, token)
         return None
 
     def check_token(self, key: str, source_slug: str) -> Token | None:
         """Check that a token exists, is not expired, and is assigned to the correct source"""
-        token = Token.filter_not_expired(key=key, intent=TokenIntents.INTENT_API).first()
+        token = Token.objects.filter(key=key, intent=TokenIntents.INTENT_API).first()
         if not token:
             return None
         source: SCIMSource = token.scimsource_set.first()
@@ -52,4 +54,5 @@ class SCIMTokenAuth(BaseAuthentication):
         token = self.check_token(key, source_slug)
         if not token:
             return None
+        CTX_AUTH_VIA.set("scim_token")
         return (token.user, token)

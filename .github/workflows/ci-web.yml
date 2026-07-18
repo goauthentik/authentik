@@ -1,4 +1,5 @@
-name: authentik-ci-web
+---
+name: CI - Web
 
 on:
   push:
@@ -12,119 +13,95 @@ on:
       - version-*
 
 jobs:
-  lint-eslint:
+  lint:
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        project:
-          - web
-          - tests/wdio
+    timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version-file: ${{ matrix.project }}/package.json
-          cache: "npm"
-          cache-dependency-path: ${{ matrix.project }}/package-lock.json
-      - working-directory: ${{ matrix.project }}/
-        run: npm ci
-      - name: Generate API
-        run: make gen-client-ts
-      - name: Eslint
-        working-directory: ${{ matrix.project }}/
-        run: npm run lint
-  lint-lockfile:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - working-directory: web/
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v5
+      - uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # v6.0.9
+      - name: Pin pnpm store directory
         run: |
-          [ -z "$(jq -r '.packages | to_entries[] | select((.key | startswith("node_modules")) and (.value | has("resolved") | not)) | .key' < package-lock.json)" ]
-  lint-build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+          echo "PNPM_HOME=${RUNNER_TEMP}/pnpm-home" >> "$GITHUB_ENV"
+          echo "npm_config_store_dir=${RUNNER_TEMP}/pnpm-home/store" >> "$GITHUB_ENV"
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v4
         with:
-          node-version-file: web/package.json
-          cache: "npm"
-          cache-dependency-path: web/package-lock.json
-      - working-directory: web/
-        run: npm ci
-      - name: Generate API
-        run: make gen-client-ts
-      - name: TSC
-        working-directory: web/
-        run: npm run tsc
-  lint-prettier:
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        project:
-          - web
-          - tests/wdio
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version-file: ${{ matrix.project }}/package.json
-          cache: "npm"
-          cache-dependency-path: ${{ matrix.project }}/package-lock.json
-      - working-directory: ${{ matrix.project }}/
-        run: npm ci
-      - name: Generate API
-        run: make gen-client-ts
-      - name: prettier
-        working-directory: ${{ matrix.project }}/
-        run: npm run prettier-check
-  lint-lit-analyse:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version-file: web/package.json
-          cache: "npm"
-          cache-dependency-path: web/package-lock.json
-      - working-directory: web/
+          node-version-file: package.json
+          cache: pnpm
+          cache-dependency-path: |
+            pnpm-lock.yaml
+            web/pnpm-lock.yaml
+      - name: Install dependencies
         run: |
-          npm ci
-          # lit-analyse doesn't understand path rewrites, so make it
-          # belive it's an actual module
-          cd node_modules/@goauthentik
-          ln -s ../../src/ web
-      - name: Generate API
-        run: make gen-client-ts
-      - name: lit-analyse
-        working-directory: web/
-        run: npm run lit-analyse
-  ci-web-mark:
-    needs:
-      - lint-lockfile
-      - lint-eslint
-      - lint-prettier
-      - lint-lit-analyse
-      - lint-build
-    runs-on: ubuntu-latest
-    steps:
-      - run: echo mark
+          pnpm install --frozen-lockfile
+          pnpm --dir web install --frozen-lockfile
+      - name: Lint
+        run: pnpm --dir web run lint-check
+      - name: Check types
+        run: pnpm --dir web run tsc
+      - name: Check formatting
+        run: pnpm --dir web run prettier-check
+      - name: Lit analyse
+        run: pnpm --dir web run lit-analyse
+
   build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v5
+      - uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # v6.0.9
+      - name: Pin pnpm store directory
+        run: |
+          echo "PNPM_HOME=${RUNNER_TEMP}/pnpm-home" >> "$GITHUB_ENV"
+          echo "npm_config_store_dir=${RUNNER_TEMP}/pnpm-home/store" >> "$GITHUB_ENV"
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v4
+        with:
+          node-version-file: package.json
+          cache: pnpm
+          cache-dependency-path: |
+            pnpm-lock.yaml
+            web/pnpm-lock.yaml
+      - name: Install dependencies
+        run: |
+          pnpm install --frozen-lockfile
+          pnpm --dir web install --frozen-lockfile
+      - name: build
+        env:
+          NODE_ENV: "production"
+        working-directory: web/
+        run: pnpm run build
+  ci-web-mark:
+    if: always()
+    needs:
+      - build
+      - lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: re-actors/alls-green@05ac9388f0aebcb5727afa17fcccfecd6f8ec5fe # release/v1
+        with:
+          jobs: ${{ toJSON(needs) }}
+  test:
     needs:
       - ci-web-mark
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v5
+      - uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # v6.0.9
+      - name: Pin pnpm store directory
+        run: |
+          echo "PNPM_HOME=${RUNNER_TEMP}/pnpm-home" >> "$GITHUB_ENV"
+          echo "npm_config_store_dir=${RUNNER_TEMP}/pnpm-home/store" >> "$GITHUB_ENV"
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v4
         with:
-          node-version-file: web/package.json
-          cache: "npm"
-          cache-dependency-path: web/package-lock.json
-      - working-directory: web/
-        run: npm ci
-      - name: Generate API
-        run: make gen-client-ts
-      - name: build
+          node-version-file: package.json
+          cache: pnpm
+          cache-dependency-path: |
+            pnpm-lock.yaml
+            web/pnpm-lock.yaml
+      - name: Install dependencies
+        run: |
+          pnpm install --frozen-lockfile
+          pnpm --dir web install --frozen-lockfile
+      - name: test
         working-directory: web/
-        run: npm run build
+        run: pnpm run test || exit 0

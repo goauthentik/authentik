@@ -1,90 +1,128 @@
-import { AKElement } from "@goauthentik/elements/Base";
+import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
-import { CSSResult, TemplateResult, css, html } from "lit";
+import { AKElement } from "#elements/Base";
+import Styles from "#elements/cards/AggregateCard.css";
+import { SlottedTemplateResult } from "#elements/types";
+
+import { CSSResult, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
 
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFFlex from "@patternfly/patternfly/layouts/Flex/flex.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
+export interface IAggregateCard {
+    icon?: string | null;
+    label?: string | null;
+    headerLink?: string | null;
+    subtext?: string | null;
+}
+
+/**
+ * class AggregateCard
+ * element ak-aggregate-card
+ *
+ * @slot - The main content of the card
+ *
+ * Card component with a specific layout for quick informational blurbs
+ */
 @customElement("ak-aggregate-card")
-export class AggregateCard extends AKElement {
-    @property()
-    icon?: string;
+export class AggregateCard extends AKElement implements IAggregateCard {
+    /**
+     * If this contains an `fa-` style string, the FontAwesome icon specified will be shown next to
+     * the header.
+     *
+     * @attr
+     */
+    @property({ type: String })
+    public icon: string | null = null;
 
-    @property()
-    header?: string;
+    /**
+     * The title of the card.
+     *
+     * @attr
+     */
+    @property({ type: String })
+    public label: string | null = null;
 
-    @property()
-    headerLink?: string;
+    /**
+     * The optional tooltip of the card.
+     *
+     * @attr
+     */
+    @property({ type: String })
+    public tooltip: string | null = null;
 
-    @property()
-    subtext?: string;
+    /**
+     * If this is non-empty, a link icon will be shown in the upper-right corner of the card.
+     *
+     * @attr
+     */
+    @property({ type: String })
+    public headerLink: string | null = null;
 
-    @property({ type: Boolean })
-    isCenter = true;
+    /**
+     * If this is non-empty, a small-text footer will be shown at the bottom of the card
+     *
+     * @attr
+     */
+    @property({ type: String })
+    public subtext: string | null = null;
 
-    static get styles(): CSSResult[] {
-        return [PFBase, PFCard, PFFlex].concat([
-            css`
-                .pf-c-card.pf-c-card-aggregate {
-                    height: 100%;
-                }
-                .pf-c-card__header {
-                    flex-wrap: nowrap;
-                }
-                .center-value {
-                    font-size: var(--pf-global--icon--FontSize--lg);
-                    text-align: center;
-                }
-                .subtext {
-                    font-size: var(--pf-global--FontSize--sm);
-                }
-                .pf-c-card__body {
-                    overflow-x: scroll;
-                    padding-left: calc(var(--pf-c-card--child--PaddingLeft) / 2);
-                    padding-right: calc(var(--pf-c-card--child--PaddingRight) / 2);
-                }
-                .pf-c-card__header,
-                .pf-c-card__title,
-                .pf-c-card__body,
-                .pf-c-card__footer {
-                    padding-bottom: 0;
-                }
-            `,
-        ]);
-    }
+    public static styles: CSSResult[] = [PFCard, PFFlex, Styles];
 
-    renderInner(): TemplateResult {
+    renderInner(): SlottedTemplateResult {
+        if (this.role === "status") {
+            return html`<div class="status-container">
+                <slot class="status-heading"></slot>
+            </div>`;
+        }
+
         return html`<slot></slot>`;
     }
 
-    renderHeaderLink(): TemplateResult {
-        return html`${this.headerLink
-            ? html`<a href="${this.headerLink}">
-                  <i class="fa fa-link"> </i>
-              </a>`
-            : ""}`;
+    renderHeaderLink(): SlottedTemplateResult {
+        if (!this.headerLink) {
+            return nothing;
+        }
+
+        return html`<a href="${this.headerLink}">
+            <i aria-hidden="true" class="fa fa-link"></i>
+        </a>`;
     }
 
-    renderHeader(): TemplateResult {
-        return html`${this.header ? this.header : ""}`;
-    }
-
-    render(): TemplateResult {
-        return html`<div class="pf-c-card pf-c-card-aggregate">
-            <div class="pf-c-card__header pf-l-flex pf-m-justify-content-space-between">
-                <div class="pf-c-card__title">
-                    <i class="${ifDefined(this.icon)}"></i>&nbsp;${this.renderHeader()}
-                </div>
-                ${this.renderHeaderLink()}
-            </div>
-            <div class="pf-c-card__body ${this.isCenter ? "center-value" : ""}">
+    render(): SlottedTemplateResult {
+        return html`<section
+            class="pf-c-card pf-c-card-aggregate"
+            aria-labelledby="card-title"
+            part="card"
+        >
+            <header
+                part="card-header"
+                class="pf-c-card__header pf-l-flex pf-m-justify-content-space-between"
+            >
+                <h1 part="card-title" class="pf-c-card__title" id="card-title">
+                    ${this.icon ? html`<i aria-hidden="true" class="${this.icon}"></i>` : nothing}
+                    ${this.tooltip
+                        ? html`<pf-tooltip position="top" content=${this.tooltip}
+                              ><span>${this.label || nothing}</span></pf-tooltip
+                          >`
+                        : html`<span>${this.label || nothing}</span>`}
+                    ${this.renderHeaderLink()}
+                </h1>
+            </header>
+            <div part="card-body" class="pf-c-card__body">
                 ${this.renderInner()}
-                ${this.subtext ? html`<p class="subtext">${this.subtext}</p>` : html``}
+                ${this.subtext
+                    ? html`<p part="card-subtext" class="subtext">${this.subtext}</p>`
+                    : nothing}
             </div>
-            <div class="pf-c-card__footer">&nbsp;</div>
-        </div>`;
+            <div class="pf-c-card__footer"></div>
+        </section>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-aggregate-card": AggregateCard;
     }
 }

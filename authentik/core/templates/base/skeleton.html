@@ -1,29 +1,53 @@
 {% load static %}
 {% load i18n %}
+{% load authentik_core %}
+{% get_current_language as LANGUAGE_CODE %}
 
 <!DOCTYPE html>
-
-<html lang="en">
+<html
+    lang="{{ LANGUAGE_CODE }}"
+    {% if safe_mode %}class="{% if ui_theme == "dark" %}pf-theme-dark{% endif %} ak-m-safe-mode"{% endif %}
+    data-theme="{% if ui_theme == "dark" %}dark{% else %}light{% endif %}"
+    data-theme-choice="{% if ui_theme == "dark" %}dark{% elif ui_theme == "light" %}light{% else %}auto{% endif %}"
+>
     <head>
         <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        {# Darkreader breaks the site regardless of theme as its not compatible with webcomponents, and we default to a dark theme based on preferred color-scheme #}
+        <meta name="darkreader-lock">
         <title>{% block title %}{% trans title|default:brand.branding_title %}{% endblock %}</title>
-        <link rel="icon" href="{{ brand.branding_favicon }}">
-        <link rel="shortcut icon" href="{{ brand.branding_favicon }}">
+        <link rel="icon" href="{{ brand.branding_favicon_url }}">
+        <link rel="shortcut icon" href="{{ brand.branding_favicon_url }}">
+
         {% block head_before %}
         {% endblock %}
-        <link rel="stylesheet" type="text/css" href="{% static 'dist/authentik.css' %}">
-        <link rel="stylesheet" type="text/css" href="{% static 'dist/custom.css' %}" data-inject>
-        <script src="{% static 'dist/poly.js' %}?version={{ version }}" type="module"></script>
-        <script src="{% static 'dist/standalone/loading/index.js' %}?version={{ version }}" type="module"></script>
+
+        {% block interface_stylesheet %}
+        <link rel="stylesheet" type="text/css" href="{% versioned_script 'dist/styles/interface-%v.css' %}" />
+        {% endblock %}
+
+        {% include "base/theme.html" %}
+
+        <style data-id="brand-css">{{ brand_css }}</style>
+        <script src="{% versioned_script 'dist/poly-%v.js' %}" type="module"></script>
         {% block head %}
         {% endblock %}
-        <meta name="sentry-trace" content="{{ sentry_trace }}" />
+        {% for key, value in html_meta.items %}
+        <meta name="{{key}}" content="{{ value }}" />
+        {% endfor %}
     </head>
     <body>
         {% block body %}
         {% endblock %}
         {% block scripts %}
         {% endblock %}
+        {% if safe_mode %}
+        <div class="pf-c-banner pf-m-warning ak-c-safe-mode">
+            <i class="fas fa-info-circle" aria-hidden="true"></i>
+            <p>
+            {% trans "Recovery session is active. Custom branding is disabled." %}
+            </p>
+        </div>
+        {% endif %}
     </body>
 </html>

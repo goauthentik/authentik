@@ -1,10 +1,11 @@
 """Prompt Stage Logic"""
 
-from collections.abc import Callable, Iterator
+from collections.abc import Callable
 from email.policy import Policy
 from types import MethodType
 from typing import Any
 
+from django.contrib.messages import INFO, add_message
 from django.db.models.query import QuerySet
 from django.http import HttpRequest, HttpResponse
 from django.http.request import QueryDict
@@ -21,7 +22,7 @@ from rest_framework.serializers import ValidationError
 
 from authentik.core.api.utils import PassiveSerializer
 from authentik.core.models import User
-from authentik.flows.challenge import Challenge, ChallengeResponse, ChallengeTypes
+from authentik.flows.challenge import Challenge, ChallengeResponse
 from authentik.flows.planner import FlowPlan
 from authentik.flows.stage import ChallengeStageView
 from authentik.policies.engine import PolicyEngine
@@ -30,6 +31,13 @@ from authentik.stages.prompt.models import FieldTypes, Prompt, PromptStage
 from authentik.stages.prompt.signals import password_validate
 
 PLAN_CONTEXT_PROMPT = "prompt_data"
+
+
+class PromptChoiceSerializer(PassiveSerializer):
+    """Serializer for a single Choice field"""
+
+    value = CharField(required=True)
+    label = CharField(required=True)
 
 
 class StagePromptSerializer(PassiveSerializer):
@@ -43,7 +51,7 @@ class StagePromptSerializer(PassiveSerializer):
     initial_value = CharField(allow_blank=True)
     order = IntegerField()
     sub_text = CharField(allow_blank=True)
-    choices = ListField(child=CharField(allow_blank=True), allow_empty=True, allow_null=True)
+    choices = ListField(child=PromptChoiceSerializer(), allow_empty=True, allow_null=True)
 
 
 class PromptChallenge(Challenge):
@@ -116,6 +124,9 @@ class PromptChallengeResponse(ChallengeResponse):
             type__in=[
                 FieldTypes.HIDDEN,
                 FieldTypes.STATIC,
+                FieldTypes.ALERT_INFO,
+                FieldTypes.ALERT_WARNING,
+                FieldTypes.ALERT_DANGER,
                 FieldTypes.TEXT_READ_ONLY,
                 FieldTypes.TEXT_AREA_READ_ONLY,
             ]
@@ -147,6 +158,9 @@ class PromptChallengeResponse(ChallengeResponse):
         result = engine.result
         if not result.passing:
             raise ValidationError(list(result.messages))
+        else:
+            for msg in result.messages:
+                add_message(self.request, INFO, msg)
         return attrs
 
 
@@ -167,7 +181,8 @@ def username_field_validator_factory() -> Callable[[PromptChallengeResponse, str
 
 
 def password_single_validator_factory() -> Callable[[PromptChallengeResponse, str], Any]:
-    """Return a `clean_` method for `field`. Clean method checks if username is taken already."""
+    """Return a `clean_` method for `field`. Clean method checks if the password meets configured
+    PasswordPolicy."""
 
     def password_single_clean(self: PromptChallengeResponse, value: str) -> Any:
         """Send password validation signals for e.g. LDAP Source"""
@@ -185,10 +200,11 @@ class ListPolicyEngine(PolicyEngine):
         self.__list = policies
         self.use_cache = False
 
-    def iterate_bindings(self) -> Iterator[PolicyBinding]:
-        for policy in self.__list:
+    def bindings(self):
+        for idx, policy in enumerate(self.__list):
             yield PolicyBinding(
                 policy=policy,
+                order=idx,
             )
 
 
@@ -204,12 +220,13 @@ class PromptStageView(ChallengeStageView):
         serializers = []
         for field in fields:
             data = StagePromptSerializer(field).data
-            # Ensure all choices, placeholders and initial values are str, as
+            # Ensure all placeholders and initial values are str, as
             # otherwise further in we can fail serializer validation if we return
             # some types such as bool
+            # choices can be a dict with value and label
             choices = field.get_choices(context, self.get_pending_user(), self.request, dry_run)
             if choices:
-                data["choices"] = [str(choice) for choice in choices]
+                data["choices"] = list(self.clean_choices(choices))
             else:
                 data["choices"] = None
             data["placeholder"] = str(
@@ -221,13 +238,20 @@ class PromptStageView(ChallengeStageView):
             serializers.append(data)
         return serializers
 
+    def clean_choices(self, choices):
+        for choice in choices:
+            label, value = choice, choice
+            if isinstance(choice, dict):
+                label = choice.get("label", "")
+                value = choice.get("value", "")
+            yield {"label": str(label), "value": str(value)}
+
     def get_challenge(self, *args, **kwargs) -> Challenge:
         fields: list[Prompt] = list(self.executor.current_stage.fields.all().order_by("order"))
         context_prompt = self.executor.plan.context.get(PLAN_CONTEXT_PROMPT, {})
         serializers = self.get_prompt_challenge_fields(fields, context_prompt)
         challenge = PromptChallenge(
             data={
-                "type": ChallengeTypes.NATIVE.value,
                 "fields": serializers,
             },
         )

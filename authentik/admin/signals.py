@@ -1,14 +1,9 @@
-"""admin signals"""
-
 from django.dispatch import receiver
 
-from authentik.admin.apps import GAUGE_WORKERS
-from authentik.root.celery import CELERY_APP
-from authentik.root.monitoring import monitoring_set
+from authentik.admin.tasks import _set_prom_info
+from authentik.root.signals import post_startup
 
 
-@receiver(monitoring_set)
-def monitoring_set_workers(sender, **kwargs):
-    """Set worker gauge"""
-    count = len(CELERY_APP.control.ping(timeout=0.5))
-    GAUGE_WORKERS.set(count)
+@receiver(post_startup)
+def post_startup_admin_metrics(sender, **_):
+    _set_prom_info()

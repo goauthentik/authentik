@@ -1,65 +1,52 @@
-import { EVENT_REFRESH, EVENT_THEME_CHANGE } from "@goauthentik/common/constants";
-import { getRelativeTime } from "@goauthentik/common/utils";
-import { AKElement } from "@goauthentik/elements/Base";
-import "@goauthentik/elements/EmptyState";
+import "#elements/EmptyState";
+import "chartjs-adapter-date-fns";
+
+import { EVENT_REFRESH } from "#common/constants";
+import { APIError, parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
+import { formatElapsedTime } from "#common/temporal";
+import { ThemeChangeEvent } from "#common/theme";
+
+import { AKElement } from "#elements/Base";
+
+import { UiThemeEnum } from "@goauthentik/api";
+
 import {
+    ArcElement,
+    BarController,
+    BarElement,
     Chart,
     ChartConfiguration,
     ChartData,
     ChartOptions,
+    DoughnutController,
     Filler,
+    Legend,
+    LinearScale,
+    LineController,
     LineElement,
     Plugin,
     PointElement,
     Tick,
+    TimeScale,
+    TimeSeriesScale,
+    Tooltip,
 } from "chart.js";
-import { Legend, Tooltip } from "chart.js";
-import { BarController, DoughnutController, LineController } from "chart.js";
-import { ArcElement, BarElement } from "chart.js";
-import { LinearScale, TimeScale } from "chart.js";
-import "chartjs-adapter-moment";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, css, html } from "lit";
+import { css, CSSResult, html, nothing, TemplateResult } from "lit";
 import { property, state } from "lit/decorators.js";
-
-import { ResponseError, UiThemeEnum } from "@goauthentik/api";
 
 Chart.register(Legend, Tooltip);
 Chart.register(LineController, BarController, DoughnutController);
 Chart.register(ArcElement, BarElement, PointElement, LineElement);
-Chart.register(TimeScale, LinearScale, Filler);
+Chart.register(TimeScale, TimeSeriesScale, LinearScale, Filler);
 
-export const FONT_COLOUR_DARK_MODE = "#fafafa";
-export const FONT_COLOUR_LIGHT_MODE = "#151515";
-
-export class RGBAColor {
-    constructor(
-        public r: number,
-        public g: number,
-        public b: number,
-        public a: number = 1,
-    ) {}
-    toString(): string {
-        return `rgba(${this.r}, ${this.g}, ${this.b}, ${this.a})`;
-    }
-}
-
-export function getColorFromString(stringInput: string): RGBAColor {
-    let hash = 0;
-    for (let i = 0; i < stringInput.length; i++) {
-        hash = stringInput.charCodeAt(i) + ((hash << 5) - hash);
-        hash = hash & hash;
-    }
-    const rgb = [0, 0, 0];
-    for (let i = 0; i < 3; i++) {
-        const value = (hash >> (i * 8)) & 255;
-        rgb[i] = value;
-    }
-    return new RGBAColor(rgb[0], rgb[1], rgb[2]);
-}
+export const FONT_COLOR_DARK_MODE = "#fafafa";
+export const FONT_COLOR_LIGHT_MODE = "#151515";
 
 export abstract class AKChart<T> extends AKElement {
+    public role = "figure";
+
     abstract apiRequest(): Promise<T>;
     abstract getChartData(data: T): ChartData;
 
@@ -67,45 +54,46 @@ export abstract class AKChart<T> extends AKElement {
     chart?: Chart;
 
     @state()
-    error?: ResponseError;
+    error?: APIError;
 
     @property()
     centerText?: string;
 
-    fontColour = FONT_COLOUR_LIGHT_MODE;
+    fontColor = FONT_COLOR_LIGHT_MODE;
 
-    static get styles(): CSSResult[] {
-        return [
-            css`
-                .container {
-                    height: 100%;
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
-                    position: relative;
-                }
-                .container > span {
-                    position: absolute;
-                    font-size: 2.5rem;
-                }
-                canvas {
-                    width: 100px;
-                    height: 100px;
-                    z-index: 1;
-                }
-            `,
-        ];
-    }
+    static styles: CSSResult[] = [
+        css`
+            .container {
+                height: 100%;
+                width: 100%;
+
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                position: relative;
+            }
+            .container > span {
+                position: absolute;
+                font-size: 2.5rem;
+            }
+            canvas {
+                width: 100px;
+                height: 100px;
+                z-index: 1;
+                cursor: crosshair;
+            }
+        `,
+    ];
 
     connectedCallback(): void {
         super.connectedCallback();
         window.addEventListener("resize", this.resizeHandler);
         this.addEventListener(EVENT_REFRESH, this.refreshHandler);
-        this.addEventListener(EVENT_THEME_CHANGE, ((ev: CustomEvent<UiThemeEnum>) => {
+        this.addEventListener(ThemeChangeEvent.eventName, ((ev: CustomEvent<UiThemeEnum>) => {
             if (ev.detail === UiThemeEnum.Light) {
-                this.fontColour = FONT_COLOUR_LIGHT_MODE;
+                this.fontColor = FONT_COLOR_LIGHT_MODE;
             } else {
-                this.fontColour = FONT_COLOUR_DARK_MODE;
+                this.fontColor = FONT_COLOR_DARK_MODE;
             }
             this.chart?.update();
         }) as EventListener);
@@ -136,19 +124,24 @@ export abstract class AKChart<T> extends AKElement {
         this.apiRequest()
             .then((r) => {
                 const canvas = this.shadowRoot?.querySelector<HTMLCanvasElement>("canvas");
+
                 if (!canvas) {
                     console.warn("Failed to get canvas element");
                     return;
                 }
+
                 const ctx = canvas.getContext("2d");
+
                 if (!ctx) {
                     console.warn("failed to get 2d context");
                     return;
                 }
+
                 this.chart = this.configureChart(r, ctx);
             })
-            .catch((exc: ResponseError) => {
-                this.error = exc;
+            .catch(async (error: unknown) => {
+                const parsedError = await parseAPIResponseError(error);
+                this.error = parsedError;
             });
     }
 
@@ -162,7 +155,7 @@ export abstract class AKChart<T> extends AKElement {
 
     timeTickCallback(tickValue: string | number, index: number, ticks: Tick[]): string {
         const valueStamp = ticks[index];
-        return getRelativeTime(new Date(valueStamp.value));
+        return formatElapsedTime(new Date(valueStamp.value));
     }
 
     getOptions(): ChartOptions {
@@ -171,7 +164,7 @@ export abstract class AKChart<T> extends AKElement {
             responsive: true,
             scales: {
                 x: {
-                    type: "time",
+                    type: "timeseries",
                     display: true,
                     ticks: {
                         callback: (tickValue: string | number, index: number, ticks: Tick[]) => {
@@ -213,15 +206,18 @@ export abstract class AKChart<T> extends AKElement {
             <div class="container">
                 ${this.error
                     ? html`
-                          <ak-empty-state header="${msg("Failed to fetch data.")}" icon="fa-times">
-                              <p slot="body">${this.error.response.statusText}</p>
+                          <ak-empty-state icon="fa-times"
+                              ><span>${msg("Failed to fetch data.")}</span>
+                              <p slot="body">${pluckErrorDetail(this.error)}</p>
                           </ak-empty-state>
                       `
-                    : html`${this.chart
-                          ? html``
-                          : html`<ak-empty-state ?loading="${true}"></ak-empty-state>`}`}
-                ${this.centerText ? html` <span>${this.centerText}</span> ` : html``}
-                <canvas style="${this.chart === undefined ? "display: none;" : ""}"></canvas>
+                    : html`${this.chart ? nothing : html`<ak-empty-state loading></ak-empty-state>`}`}
+                ${this.centerText ? html` <span>${this.centerText}</span> ` : nothing}
+                <canvas
+                    role="img"
+                    aria-label=${msg("Chart")}
+                    style="${!this.chart ? "display: none;" : ""}"
+                ></canvas>
             </div>
         `;
     }

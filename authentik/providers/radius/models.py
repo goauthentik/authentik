@@ -1,10 +1,14 @@
 """Radius Provider"""
 
+from collections.abc import Iterable
+
 from django.db import models
+from django.templatetags.static import static
 from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import Serializer
 
-from authentik.core.models import Provider
+from authentik.core.models import PropertyMapping, Provider
+from authentik.crypto.models import CertificateKeyPair
 from authentik.lib.generators import generate_id
 from authentik.outposts.models import OutpostModel
 
@@ -37,6 +41,10 @@ class RadiusProvider(OutpostModel, Provider):
         ),
     )
 
+    certificate = models.ForeignKey(
+        CertificateKeyPair, on_delete=models.CASCADE, default=None, null=True
+    )
+
     @property
     def launch_url(self) -> str | None:
         """Radius never has a launch URL"""
@@ -47,10 +55,24 @@ class RadiusProvider(OutpostModel, Provider):
         return "ak-provider-radius-form"
 
     @property
+    def icon_url(self) -> str | None:
+        return static("authentik/sources/radius.svg")
+
+    @property
     def serializer(self) -> type[Serializer]:
-        from authentik.providers.radius.api import RadiusProviderSerializer
+        from authentik.providers.radius.api.providers import RadiusProviderSerializer
 
         return RadiusProviderSerializer
+
+    def get_required_objects(self) -> Iterable[models.Model | str | tuple[str, models.Model]]:
+        required = [self, "authentik_stages_mtls.pass_outpost_certificate"]
+        if self.certificate is not None:
+            required.append(("authentik_crypto.view_certificatekeypair", self.certificate))
+            required.append(
+                ("authentik_crypto.view_certificatekeypair_certificate", self.certificate)
+            )
+            required.append(("authentik_crypto.view_certificatekeypair_key", self.certificate))
+        return required
 
     def __str__(self):
         return f"Radius Provider {self.name}"
@@ -58,3 +80,26 @@ class RadiusProvider(OutpostModel, Provider):
     class Meta:
         verbose_name = _("Radius Provider")
         verbose_name_plural = _("Radius Providers")
+
+
+class RadiusProviderPropertyMapping(PropertyMapping):
+    """Add additional attributes to Radius authentication responses."""
+
+    @property
+    def component(self) -> str:
+        return "ak-property-mapping-provider-radius-form"
+
+    @property
+    def serializer(self) -> type[Serializer]:
+        from authentik.providers.radius.api.property_mappings import (
+            RadiusProviderPropertyMappingSerializer,
+        )
+
+        return RadiusProviderPropertyMappingSerializer
+
+    def __str__(self):
+        return f"Radius Provider Property Mapping {self.name}"
+
+    class Meta:
+        verbose_name = _("Radius Provider Property Mapping")
+        verbose_name_plural = _("Radius Provider Property Mappings")

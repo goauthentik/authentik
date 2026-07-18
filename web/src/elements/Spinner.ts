@@ -1,8 +1,9 @@
-import { PFSize } from "@goauthentik/common/enums.js";
-import { AKElement } from "@goauthentik/elements/Base";
+import { PFSize } from "#common/enums";
+
+import { AKElement } from "#elements/Base";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, html } from "lit";
+import { CSSResult, html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFSpinner from "@patternfly/patternfly/components/Spinner/spinner.css";
@@ -12,9 +13,7 @@ export class Spinner extends AKElement {
     @property()
     size: PFSize = PFSize.Medium;
 
-    static get styles(): CSSResult[] {
-        return [PFSpinner];
-    }
+    static styles: CSSResult[] = [PFSpinner];
 
     render(): TemplateResult {
         return html`<span
@@ -25,6 +24,13 @@ export class Spinner extends AKElement {
             <span class="pf-c-spinner__clipper"></span>
             <span class="pf-c-spinner__lead-ball"></span>
             <span class="pf-c-spinner__tail-ball"></span>
+            <slot></slot>
         </span>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-spinner": Spinner;
     }
 }

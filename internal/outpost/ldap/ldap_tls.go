@@ -5,7 +5,6 @@ import (
 	"net"
 
 	"github.com/pires/go-proxyproto"
-	"goauthentik.io/internal/config"
 	"goauthentik.io/internal/utils"
 )
 
@@ -37,8 +36,7 @@ func (ls *LDAPServer) getCertificates(info *tls.ClientHelloInfo) (*tls.Certifica
 	return ls.defaultCert, nil
 }
 
-func (ls *LDAPServer) StartLDAPTLSServer() error {
-	listen := config.Get().Listen.LDAPS
+func (ls *LDAPServer) StartLDAPTLSServer(listen string) error {
 	tlsConfig := utils.GetTLSConfig()
 	tlsConfig.GetCertificate = ls.getCertificates
 
@@ -48,8 +46,13 @@ func (ls *LDAPServer) StartLDAPTLSServer() error {
 		return err
 	}
 
-	proxyListener := &proxyproto.Listener{Listener: ln}
-	defer proxyListener.Close()
+	proxyListener := &proxyproto.Listener{Listener: ln, ConnPolicy: utils.GetProxyConnectionPolicy()}
+	defer func() {
+		err := proxyListener.Close()
+		if err != nil {
+			ls.log.WithError(err).Warning("failed to close proxy listener")
+		}
+	}()
 
 	tln := tls.NewListener(proxyListener, tlsConfig)
 

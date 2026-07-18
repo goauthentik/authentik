@@ -1,54 +1,48 @@
-import { RenderFlowOption } from "@goauthentik/admin/flows/utils";
-import { BaseStageForm } from "@goauthentik/admin/stages/BaseStageForm";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { first } from "@goauthentik/common/utils";
-import "@goauthentik/elements/forms/HorizontalFormElement";
-import "@goauthentik/elements/forms/SearchSelect";
+import "#elements/forms/HorizontalFormElement";
+import "#elements/forms/SearchSelect/index";
 
-import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
-import { customElement } from "lit/decorators.js";
+import { aki } from "#common/api/client";
+
+import { RenderFlowOption } from "#admin/flows/utils";
+import { BaseStageForm } from "#admin/stages/BaseStageForm";
 
 import {
     AuthenticatorStaticStage,
     Flow,
+    FlowDesignationEnum,
     FlowsApi,
-    FlowsInstancesListDesignationEnum,
     FlowsInstancesListRequest,
     StagesApi,
 } from "@goauthentik/api";
 
+import { msg } from "@lit/localize";
+import { html, TemplateResult } from "lit";
+import { customElement } from "lit/decorators.js";
+
 @customElement("ak-stage-authenticator-static-form")
 export class AuthenticatorStaticStageForm extends BaseStageForm<AuthenticatorStaticStage> {
-    loadInstance(pk: string): Promise<AuthenticatorStaticStage> {
-        return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorStaticRetrieve({
-            stageUuid: pk,
-        });
-    }
+    protected endpoints = {
+        load: (stageUuid: string) =>
+            aki(StagesApi).stagesAuthenticatorStaticRetrieve({ stageUuid }),
+        create: (authenticatorStaticStageRequest: AuthenticatorStaticStage) =>
+            aki(StagesApi).stagesAuthenticatorStaticCreate({ authenticatorStaticStageRequest }),
+        update: (stageUuid: string, authenticatorStaticStageRequest: AuthenticatorStaticStage) =>
+            aki(StagesApi).stagesAuthenticatorStaticUpdate({
+                stageUuid,
+                authenticatorStaticStageRequest,
+            }),
+    };
 
-    async send(data: AuthenticatorStaticStage): Promise<AuthenticatorStaticStage> {
-        if (this.instance) {
-            return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorStaticUpdate({
-                stageUuid: this.instance.pk || "",
-                authenticatorStaticStageRequest: data,
-            });
-        } else {
-            return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorStaticCreate({
-                authenticatorStaticStageRequest: data,
-            });
-        }
-    }
-
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html` <span>
                 ${msg(
                     "Stage used to configure a static authenticator (i.e. static tokens). This stage should be used for configuration flows.",
                 )}
             </span>
-            <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
+            <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"
-                    value="${first(this.instance?.name, "")}"
+                    value="${this.instance?.name ?? ""}"
                     class="pf-c-form-control"
                     required
                 />
@@ -60,7 +54,7 @@ export class AuthenticatorStaticStageForm extends BaseStageForm<AuthenticatorSta
             >
                 <input
                     type="text"
-                    value="${first(this.instance?.friendlyName, "")}"
+                    value="${this.instance?.friendlyName ?? ""}"
                     class="pf-c-form-control"
                 />
                 <p class="pf-c-form__helper-text">
@@ -69,17 +63,16 @@ export class AuthenticatorStaticStageForm extends BaseStageForm<AuthenticatorSta
                     )}
                 </p>
             </ak-form-element-horizontal>
-            <ak-form-group .expanded=${true}>
-                <span slot="header"> ${msg("Stage-specific settings")} </span>
-                <div slot="body" class="pf-c-form">
+            <ak-form-group open label="${msg("Stage-specific settings")}">
+                <div class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${msg("Token count")}
-                        ?required=${true}
+                        required
                         name="tokenCount"
                     >
                         <input
                             type="text"
-                            value="${first(this.instance?.tokenCount, 6)}"
+                            value="${this.instance?.tokenCount ?? 6}"
                             class="pf-c-form-control"
                             required
                         />
@@ -91,18 +84,20 @@ export class AuthenticatorStaticStageForm extends BaseStageForm<AuthenticatorSta
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Token length")}
-                        ?required=${true}
+                        required
                         name="tokenLength"
                     >
                         <input
-                            type="text"
-                            value="${first(this.instance?.tokenLength, 12)}"
+                            type="number"
+                            value="${this.instance?.tokenLength ?? 12}"
+                            min="1"
+                            max="100"
                             class="pf-c-form-control"
                             required
                         />
                         <p class="pf-c-form__helper-text">
                             ${msg(
-                                "The length of the individual generated tokens. Can be increased to improve security.",
+                                "The length of the individual generated tokens. Can be set to a maximum of 100 characters.",
                             )}
                         </p>
                     </ak-form-element-horizontal>
@@ -114,15 +109,12 @@ export class AuthenticatorStaticStageForm extends BaseStageForm<AuthenticatorSta
                             .fetchObjects=${async (query?: string): Promise<Flow[]> => {
                                 const args: FlowsInstancesListRequest = {
                                     ordering: "slug",
-                                    designation:
-                                        FlowsInstancesListDesignationEnum.StageConfiguration,
+                                    designation: FlowDesignationEnum.StageConfiguration,
                                 };
                                 if (query !== undefined) {
                                     args.search = query;
                                 }
-                                const flows = await new FlowsApi(DEFAULT_CONFIG).flowsInstancesList(
-                                    args,
-                                );
+                                const flows = await aki(FlowsApi).flowsInstancesList(args);
                                 return flows.results;
                             }}
                             .renderElement=${(flow: Flow): string => {
@@ -137,7 +129,7 @@ export class AuthenticatorStaticStageForm extends BaseStageForm<AuthenticatorSta
                             .selected=${(flow: Flow): boolean => {
                                 return this.instance?.configureFlow === flow.pk;
                             }}
-                            ?blankable=${true}
+                            blankable
                         >
                         </ak-search-select>
                         <p class="pf-c-form__helper-text">
@@ -148,5 +140,11 @@ export class AuthenticatorStaticStageForm extends BaseStageForm<AuthenticatorSta
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-stage-authenticator-static-form": AuthenticatorStaticStageForm;
     }
 }

@@ -1,6 +1,8 @@
 """authentik webauthn app config"""
 
 from authentik.blueprints.apps import ManagedAppConfig
+from authentik.lib.utils.time import fqdn_rand
+from authentik.tasks.schedules.common import ScheduleSpec
 
 
 class AuthentikStageAuthenticatorWebAuthnConfig(ManagedAppConfig):
@@ -11,12 +13,13 @@ class AuthentikStageAuthenticatorWebAuthnConfig(ManagedAppConfig):
     verbose_name = "authentik Stages.Authenticator.WebAuthn"
     default = True
 
-    @ManagedAppConfig.reconcile_tenant
-    def webauthn_device_types(self):
-        from authentik.stages.authenticator_webauthn.tasks import (
-            webauthn_aaguid_import,
-            webauthn_mds_import,
-        )
+    @property
+    def tenant_schedule_specs(self) -> list[ScheduleSpec]:
+        from authentik.stages.authenticator_webauthn.tasks import webauthn_mds_import
 
-        webauthn_mds_import.delay()
-        webauthn_aaguid_import.delay()
+        return [
+            ScheduleSpec(
+                actor=webauthn_mds_import,
+                crontab=f"{fqdn_rand('webauthn_mds_import')} {fqdn_rand('webauthn_mds_import', 24)} * * {fqdn_rand('webauthn_mds_import', 7)}",  # noqa: E501
+            ),
+        ]

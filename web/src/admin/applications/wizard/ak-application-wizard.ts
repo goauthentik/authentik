@@ -1,111 +1,147 @@
-import { AkWizard } from "@goauthentik/components/ak-wizard-main/AkWizard";
-import { CustomListenerElement } from "@goauthentik/elements/utils/eventEmitter";
+import "#components/ak-wizard/ak-wizard-steps";
+import "#admin/applications/wizard/steps/ak-application-wizard-application-step";
+import "#admin/applications/wizard/steps/ak-application-wizard-bindings-step";
+import "#admin/applications/wizard/steps/ak-application-wizard-edit-binding-step";
+import "#admin/applications/wizard/steps/ak-application-wizard-provider-choice-step";
+import "#admin/applications/wizard/steps/ak-application-wizard-provider-step";
+import "#admin/applications/wizard/steps/ak-application-wizard-submit-step";
+
+import { aki } from "#common/api/client";
+import { assertEveryPresent } from "#common/utils";
+
+import { listen } from "#elements/decorators/listen";
+import { CreateWizard } from "#elements/wizard/CreateWizard";
+
+import { WizardUpdateEvent } from "#components/ak-wizard/events";
+
+import { applicationWizardProvidersContext } from "#admin/applications/wizard/ContextIdentity";
+import {
+    type ApplicationWizardContext,
+    type ApplicationWizardContextUpdate,
+} from "#admin/applications/wizard/steps/providers/shared";
+
+import type { TypeCreate } from "@goauthentik/api";
+import { ProviderModelEnum, ProvidersApi, ProxyMode } from "@goauthentik/api";
 
 import { ContextProvider } from "@lit/context";
 import { msg } from "@lit/localize";
+import { html } from "lit";
 import { customElement, state } from "lit/decorators.js";
 
-import { applicationWizardContext } from "./ContextIdentity";
-import { newSteps } from "./steps";
-import {
-    ApplicationStep,
-    ApplicationWizardState,
-    ApplicationWizardStateUpdate,
-    OneOfProvider,
-} from "./types";
-
-const freshWizardState = (): ApplicationWizardState => ({
+const createWizardContextValue = (): ApplicationWizardContext => ({
     providerModel: "",
+    currentBinding: -1,
     app: {},
     provider: {},
+    proxyMode: ProxyMode.Proxy,
+    bindings: [],
     errors: {},
 });
 
+type ExtractProviderName<T extends string> = T extends `${string}.${infer Name}` ? Name : never;
+
+type ProviderModelNameEnum = ExtractProviderName<ProviderModelEnum> | "samlproviderimportmodel";
+
+export const providerTypePriority: ProviderModelNameEnum[] = [
+    "oauth2provider",
+    "samlprovider",
+    "samlproviderimportmodel",
+    "racprovider",
+    "proxyprovider",
+    "radiusprovider",
+    "ldapprovider",
+    "scimprovider",
+    "wsfederationprovider",
+];
+
 @customElement("ak-application-wizard")
-export class ApplicationWizard extends CustomListenerElement(
-    AkWizard<ApplicationWizardStateUpdate, ApplicationStep>,
-) {
-    constructor() {
-        super(msg("Create With Wizard"), msg("New application"), msg("Create a new application"));
-        this.steps = newSteps();
+export class AKApplicationWizard extends CreateWizard {
+    #api = aki(ProvidersApi);
+
+    public static override verboseName = msg("Application");
+    public static override verboseNamePlural = msg("Applications");
+
+    protected createRenderRoot(): HTMLElement | DocumentFragment {
+        return this;
     }
 
-    /**
-     * We're going to be managing the content of the forms by percolating all of the data up to this
-     * class, which will ultimately transmit all of it to the server as a transaction. The
-     * WizardFramework doesn't know anything about the nature of the data itself; it just forwards
-     * valid updates to us. So here we maintain a state object *and* update it so all child
-     * components can access the wizard state.
-     *
-     */
     @state()
-    wizardState: ApplicationWizardState = freshWizardState();
+    protected context: ApplicationWizardContext = createWizardContextValue();
 
-    wizardStateProvider = new ContextProvider(this, {
-        context: applicationWizardContext,
-        initialValue: this.wizardState,
+    protected wizardProviderProvider = new ContextProvider(this, {
+        context: applicationWizardProvidersContext,
+        initialValue: [],
     });
 
+    public override refresh = (): Promise<void> => {
+        return this.#api.providersAllTypesList().then((providerTypes) => {
+            const providerNameToProviderMap = new Map(
+                providerTypes.map((providerType) => [providerType.modelName, providerType]),
+            );
+
+            const providersInOrder = providerTypePriority.map((name) =>
+                providerNameToProviderMap.get(name),
+            );
+
+            assertEveryPresent<TypeCreate>(
+                providersInOrder,
+                "Provider priority list includes name for which no provider model was returned.",
+            );
+
+            this.wizardProviderProvider.setValue(providersInOrder);
+        });
+    };
+
+    // This is the actual top of the Wizard; so this is where we accept the update information and
+    // incorporate it into the wizard.
     /**
-     * One of our steps has multiple display variants, one for each type of service provider. We
-     * want to *preserve* a customer's decisions about different providers; never make someone "go
-     * back and type it all back in," even if it's probably rare that someone will chose one
-     * provider, realize it's the wrong one, and go back to chose a different one, *and then go
-     * back*. Nonetheless, strive to *never* lose customer input.
-     *
+     * Handles updates to the wizard context, which are emitted by the individual steps when their data changes.
      */
-    providerCache: Map<string, OneOfProvider> = new Map();
+    @listen(WizardUpdateEvent)
+    handleUpdate(ev: WizardUpdateEvent<ApplicationWizardContextUpdate>) {
+        ev.stopPropagation();
+        const update = ev.content;
 
-    // And this is where all the special cases go...
-    handleUpdate(detail: ApplicationWizardStateUpdate) {
-        if (detail.status === "submitted") {
-            this.step.valid = true;
-            this.requestUpdate();
-            return;
-        }
-
-        this.step.valid = this.step.valid || detail.status === "valid";
-        const update = detail.update;
-
-        if (!update) {
-            return;
-        }
-
-        // When the providerModel enum changes, retrieve the customer's prior work for *this* wizard
-        // session (and only this wizard session) or provide an empty model with a default provider
-        // name.
-        if (update.providerModel && update.providerModel !== this.wizardState.providerModel) {
-            const requestedProvider = this.providerCache.get(update.providerModel) ?? {
-                name: `Provider for ${this.wizardState.app.name}`,
+        if (update) {
+            this.context = {
+                ...this.context,
+                ...update,
             };
-            if (this.wizardState.providerModel) {
-                this.providerCache.set(this.wizardState.providerModel, this.wizardState.provider);
-            }
-            update.provider = requestedProvider;
         }
-
-        this.wizardState = update as ApplicationWizardState;
-        this.wizardStateProvider.setValue(this.wizardState);
-        this.requestUpdate();
     }
 
-    close() {
-        this.steps = newSteps();
-        this.currentStep = 0;
-        this.wizardState = freshWizardState();
-        this.providerCache = new Map();
-        this.wizardStateProvider.setValue(this.wizardState);
-        this.frame.value!.open = false;
+    protected override render() {
+        return html`<ak-wizard-steps>
+            <ak-application-wizard-application-step
+                slot="application"
+                .wizard=${this.context}
+            ></ak-application-wizard-application-step>
+            <ak-application-wizard-provider-choice-step
+                slot="provider-choice"
+                .wizard=${this.context}
+            ></ak-application-wizard-provider-choice-step>
+            <ak-application-wizard-provider-step
+                slot="provider"
+                .wizard=${this.context}
+            ></ak-application-wizard-provider-step>
+            <ak-application-wizard-bindings-step
+                slot="bindings"
+                .wizard=${this.context}
+            ></ak-application-wizard-bindings-step>
+            <ak-application-wizard-edit-binding-step
+                slot="edit-binding"
+                .wizard=${this.context}
+            ></ak-application-wizard-edit-binding-step>
+            <ak-application-wizard-submit-step
+                slot="submit"
+                .wizard=${this.context}
+            ></ak-application-wizard-submit-step>
+        </ak-wizard-steps>`;
     }
+}
 
-    handleNav(stepId: number | undefined) {
-        if (stepId === undefined || this.steps[stepId] === undefined) {
-            throw new Error(`Attempt to navigate to undefined step: ${stepId}`);
-        }
-        if (stepId > this.currentStep && !this.step.valid) {
-            return;
-        }
-        this.currentStep = stepId;
-        this.requestUpdate();
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-application-wizard": AKApplicationWizard;
     }
 }

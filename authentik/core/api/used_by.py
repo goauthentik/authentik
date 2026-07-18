@@ -14,6 +14,7 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 
 from authentik.core.api.utils import PassiveSerializer
+from authentik.rbac.filters import ObjectFilter
 
 
 class DeleteAction(Enum):
@@ -23,6 +24,7 @@ class DeleteAction(Enum):
     CASCADE_MANY = "cascade_many"
     SET_NULL = "set_null"
     SET_DEFAULT = "set_default"
+    LEFT_DANGLING = "left_dangling"
 
 
 class UsedBySerializer(PassiveSerializer):
@@ -39,12 +41,12 @@ def get_delete_action(manager: Manager) -> str:
     """Get the delete action from the Foreign key, falls back to cascade"""
     if hasattr(manager, "field"):
         if manager.field.remote_field.on_delete.__name__ == SET_NULL.__name__:
-            return DeleteAction.SET_NULL.name
+            return DeleteAction.SET_NULL.value
         if manager.field.remote_field.on_delete.__name__ == SET_DEFAULT.__name__:
-            return DeleteAction.SET_DEFAULT.name
+            return DeleteAction.SET_DEFAULT.value
     if hasattr(manager, "source_field"):
-        return DeleteAction.CASCADE_MANY.name
-    return DeleteAction.CASCADE.name
+        return DeleteAction.CASCADE_MANY.value
+    return DeleteAction.CASCADE.value
 
 
 class UsedByMixin:
@@ -53,7 +55,7 @@ class UsedByMixin:
     @extend_schema(
         responses={200: UsedBySerializer(many=True)},
     )
-    @action(detail=True, pagination_class=None, filter_backends=[])
+    @action(detail=True, pagination_class=None, filter_backends=[ObjectFilter])
     def used_by(self, request: Request, *args, **kwargs) -> Response:
         """Get a list of all objects that use this object"""
         model: Model = self.get_object()
@@ -79,7 +81,7 @@ class UsedByMixin:
             # query and check if there is a difference between modes the user can see
             # and can't see and add a warning
             for obj in get_objects_for_user(
-                request.user, f"{app}.view_{model_name}", manager
+                request.user, f"{app}.view_{model_name}", manager.all()
             ).all():
                 # Only merge shadows on first object
                 if first_object:

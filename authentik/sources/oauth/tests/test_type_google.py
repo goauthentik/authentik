@@ -1,12 +1,13 @@
 """google Type tests"""
 
-from django.contrib.sessions.middleware import SessionMiddleware
 from django.test import TestCase
-from django.test.client import RequestFactory
 
-from authentik.lib.tests.utils import dummy_get_response
+from authentik.core.tests.utils import RequestFactory
 from authentik.sources.oauth.models import OAuthSource
-from authentik.sources.oauth.types.google import GoogleOAuth2Callback, GoogleOAuthRedirect
+from authentik.sources.oauth.types.google import (
+    GoogleOAuthRedirect,
+    GoogleType,
+)
 
 # https://developers.google.com/identity/protocols/oauth2/openid-connect?hl=en
 GOOGLE_USER = {
@@ -37,16 +38,13 @@ class TestTypeGoogle(TestCase):
 
     def test_enroll_context(self):
         """Test Google Enrollment context"""
-        ak_context = GoogleOAuth2Callback().get_user_enroll_context(GOOGLE_USER)
+        ak_context = GoogleType().get_base_user_properties(source=self.source, info=GOOGLE_USER)
         self.assertEqual(ak_context["email"], GOOGLE_USER["email"])
         self.assertEqual(ak_context["name"], GOOGLE_USER["name"])
 
     def test_authorize_url(self):
         """Test authorize URL"""
         request = self.request_factory.get("/")
-        middleware = SessionMiddleware(dummy_get_response)
-        middleware.process_request(request)
-        request.session.save()
         redirect = GoogleOAuthRedirect(request=request).get_redirect_url(
             source_slug=self.source.slug
         )
@@ -63,9 +61,6 @@ class TestTypeGoogle(TestCase):
     def test_authorize_url_additional(self):
         """Test authorize URL"""
         request = self.request_factory.get("/")
-        middleware = SessionMiddleware(dummy_get_response)
-        middleware.process_request(request)
-        request.session.save()
         self.source.additional_scopes = "foo"
         self.source.save()
         redirect = GoogleOAuthRedirect(request=request).get_redirect_url(
@@ -84,9 +79,6 @@ class TestTypeGoogle(TestCase):
     def test_authorize_url_additional_replace(self):
         """Test authorize URL"""
         request = self.request_factory.get("/")
-        middleware = SessionMiddleware(dummy_get_response)
-        middleware.process_request(request)
-        request.session.save()
         self.source.additional_scopes = "*foo"
         self.source.save()
         redirect = GoogleOAuthRedirect(request=request).get_redirect_url(

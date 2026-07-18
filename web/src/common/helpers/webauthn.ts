@@ -10,20 +10,42 @@ export function b64RawEnc(buf: Uint8Array): string {
     return base64js.fromByteArray(buf).replace(/\+/g, "-").replace(/\//g, "_");
 }
 
-export function u8arr(input: string): Uint8Array {
+export function u8arr(input: string): Uint8Array<ArrayBuffer> {
     return Uint8Array.from(atob(input.replace(/_/g, "/").replace(/-/g, "+")), (c) =>
         c.charCodeAt(0),
     );
 }
 
-export function checkWebAuthnSupport() {
-    if ("credentials" in navigator) {
+export function assertWebAuthnSupported(scope = window): void {
+    if ("credentials" in scope.navigator) {
         return;
     }
-    if (window.location.protocol === "http:" && window.location.hostname !== "localhost") {
+
+    if (scope.location.protocol === "http:" && scope.location.hostname !== "localhost") {
         throw new Error(msg("WebAuthn requires this page to be accessed via HTTPS."));
     }
+
     throw new Error(msg("WebAuthn not supported by browser."));
+}
+
+/**
+ * Predicate to determine if a given error originates from a user cancellation or timeout of a WebAuthn authentication ceremony.
+ */
+export function isWebAuthnNotAllowedError(error: unknown): error is DOMException {
+    return error instanceof DOMException && (error.name === "NotAllowedError" || error.code === 0);
+}
+
+/**
+ * Check if the browser supports WebAuthn conditional UI (passkey autofill)
+ */
+export async function isConditionalMediationAvailable(): Promise<boolean> {
+    if (
+        typeof window.PublicKeyCredential !== "undefined" &&
+        typeof window.PublicKeyCredential.isConditionalMediationAvailable === "function"
+    ) {
+        return await window.PublicKeyCredential.isConditionalMediationAvailable();
+    }
+    return false;
 }
 
 /**
@@ -42,12 +64,11 @@ export function transformCredentialCreateOptions(
     user.id = u8arr(b64enc(u8arr(stringId)));
     const challenge = u8arr(credentialCreateOptions.challenge.toString());
 
-    const transformedCredentialCreateOptions = Object.assign({}, credentialCreateOptions, {
+    return {
+        ...credentialCreateOptions,
         challenge,
         user,
-    });
-
-    return transformedCredentialCreateOptions;
+    };
 }
 
 export interface Assertion {
@@ -98,12 +119,11 @@ export function transformCredentialRequestOptions(
         },
     );
 
-    const transformedCredentialRequestOptions = Object.assign({}, credentialRequestOptions, {
+    return {
+        ...credentialRequestOptions,
         challenge,
         allowCredentials,
-    });
-
-    return transformedCredentialRequestOptions;
+    };
 }
 
 export interface AuthAssertion {

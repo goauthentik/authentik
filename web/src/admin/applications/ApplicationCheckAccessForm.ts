@@ -1,15 +1,15 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import "@goauthentik/components/ak-status-label";
-import "@goauthentik/elements/events/LogViewer";
-import { Form } from "@goauthentik/elements/forms/Form";
-import "@goauthentik/elements/forms/HorizontalFormElement";
-import "@goauthentik/elements/forms/SearchSelect";
+import "#components/ak-status-label";
+import "#elements/events/LogViewer";
+import "#elements/forms/HorizontalFormElement";
+import "#elements/forms/SearchSelect/index";
 
-import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { aki } from "#common/api/client";
+import { PFSize } from "#common/enums";
+import { APIMessage, MessageLevel } from "#common/messages";
 
-import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
+import { Form } from "#elements/forms/Form";
+import { SlottedTemplateResult } from "#elements/types";
+import { ifPresent } from "#elements/utils/attributes";
 
 import {
     Application,
@@ -19,46 +19,68 @@ import {
     User,
 } from "@goauthentik/api";
 
+import { msg } from "@lit/localize";
+import { CSSResult, html } from "lit";
+import { customElement, property } from "lit/decorators.js";
+
+import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
+
 @customElement("ak-application-check-access-form")
 export class ApplicationCheckAccessForm extends Form<{ forUser: number }> {
-    @property({ attribute: false })
-    application!: Application;
+    public static override verboseName = msg("Access");
+    public static override submitVerb = msg("Check");
+    public static override createLabel = msg("Check");
+    public static override submittingVerb = msg("Checking");
+
+    static styles: CSSResult[] = [...super.styles, PFDescriptionList];
+
+    #api = aki(CoreApi);
+
+    public override size = PFSize.XLarge;
 
     @property({ attribute: false })
-    result?: PolicyTestResult;
+    public application!: Application;
 
     @property({ attribute: false })
-    request?: number;
+    public result: PolicyTestResult | null = null;
 
-    getSuccessMessage(): string {
-        return msg("Successfully sent test-request.");
+    @property({ attribute: false })
+    public request: number | null = null;
+
+    public override formatAPISuccessMessage(): APIMessage {
+        return {
+            level: MessageLevel.success,
+            message: msg("Successfully sent test-request."),
+        };
     }
 
-    async send(data: { forUser: number }): Promise<PolicyTestResult> {
+    protected override send(data: { forUser: number }): Promise<PolicyTestResult> {
         this.request = data.forUser;
-        const result = await new CoreApi(DEFAULT_CONFIG).coreApplicationsCheckAccessRetrieve({
-            slug: this.application?.slug,
-            forUser: data.forUser,
-        });
-        return (this.result = result);
+
+        return this.#api
+            .coreApplicationsCheckAccessRetrieve({
+                slug: this.application?.slug,
+                forUser: data.forUser,
+            })
+            .then((result) => {
+                this.result = result;
+                return result;
+            });
     }
 
-    resetForm(): void {
-        super.resetForm();
-        this.result = undefined;
+    public override reset(): void {
+        super.reset();
+        this.result = null;
     }
 
-    static get styles(): CSSResult[] {
-        return super.styles.concat(PFDescriptionList);
-    }
+    protected renderResult(): SlottedTemplateResult {
+        const { passing, messages = [], logMessages = [] } = this.result || {};
 
-    renderResult(): TemplateResult {
-        return html`
-            <ak-form-element-horizontal label=${msg("Passing")}>
+        return html`<ak-form-element-horizontal label=${msg("Passing")}>
                 <div class="pf-c-form__group-label">
                     <div class="c-form__horizontal-group">
                         <span class="pf-c-form__label-text">
-                            <ak-status-label ?good=${this.result?.passing}></ak-status-label>
+                            <ak-status-label ?good=${ifPresent(passing)}></ak-status-label>
                         </span>
                     </div>
                 </div>
@@ -67,63 +89,61 @@ export class ApplicationCheckAccessForm extends Form<{ forUser: number }> {
                 <div class="pf-c-form__group-label">
                     <div class="c-form__horizontal-group">
                         <ul>
-                            ${(this.result?.messages || []).length > 0
-                                ? this.result?.messages?.map((m) => {
-                                      return html`<li>
-                                          <span class="pf-c-form__label-text">${m}</span>
-                                      </li>`;
-                                  })
-                                : html`<li>
-                                      <span class="pf-c-form__label-text">-</span>
-                                  </li>`}
+                            ${messages.map((m) => {
+                                return html`<li>
+                                    <span class="pf-c-form__label-text">${m}</span>
+                                </li>`;
+                            })}
                         </ul>
                     </div>
                 </div>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${msg("Log messages")}>
-                <div class="pf-c-form__group-label">
-                    <div class="c-form__horizontal-group">
-                        <dl class="pf-c-description-list pf-m-horizontal">
-                            <ak-log-viewer .logs=${this.result?.logMessages}></ak-log-viewer>
-                        </dl>
-                    </div>
-                </div>
-            </ak-form-element-horizontal>
-        `;
+                <ak-log-viewer .items=${logMessages}></ak-log-viewer>
+            </ak-form-element-horizontal>`;
     }
 
-    renderForm(): TemplateResult {
-        return html`<ak-form-element-horizontal
-                label=${msg("User")}
-                ?required=${true}
-                name="forUser"
-            >
+    protected override renderForm(): SlottedTemplateResult {
+        return html`<ak-form-element-horizontal label=${msg("User")} required name="forUser">
                 <ak-search-select
+                    placeholder=${msg("Select a user...")}
                     .fetchObjects=${async (query?: string): Promise<User[]> => {
                         const args: CoreUsersListRequest = {
                             ordering: "username",
                         };
-                        if (query !== undefined) {
+
+                        if (query) {
                             args.search = query;
                         }
-                        const users = await new CoreApi(DEFAULT_CONFIG).coreUsersList(args);
+
+                        const users = await this.#api.coreUsersList(args);
+
                         return users.results;
                     }}
                     .renderElement=${(user: User): string => {
                         return user.username;
                     }}
-                    .renderDescription=${(user: User): TemplateResult => {
+                    .renderDescription=${(user: User): SlottedTemplateResult => {
                         return html`${user.name}`;
                     }}
                     .value=${(user: User | undefined): number | undefined => {
                         return user?.pk;
                     }}
                     .selected=${(user: User): boolean => {
-                        return user.pk.toString() === this.request?.toString();
+                        return (
+                            typeof this.request === "number" &&
+                            user.pk.toString() === this.request.toString()
+                        );
                     }}
                 >
                 </ak-search-select>
             </ak-form-element-horizontal>
-            ${this.result ? this.renderResult() : html``}`;
+            ${this.renderResult()}`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-application-check-access-form": ApplicationCheckAccessForm;
     }
 }

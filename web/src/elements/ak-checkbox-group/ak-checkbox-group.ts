@@ -1,28 +1,28 @@
-import { AKElement } from "@goauthentik/elements/Base";
-import { CustomEmitterElement } from "@goauthentik/elements/utils/eventEmitter";
+import Styles from "#elements/ak-checkbox-group/ak-checkbox-group.css";
+import { AKControlElement } from "#elements/ControlElement";
+import { SlottedTemplateResult } from "#elements/types";
+import { CustomEmitterElement } from "#elements/utils/eventEmitter";
 
 import { msg } from "@lit/localize";
-import { TemplateResult, css, html } from "lit";
-import { customElement, property, queryAll } from "lit/decorators.js";
+import { PropertyValues } from "@lit/reactive-element";
+import { html, TemplateResult } from "lit";
+import { customElement, property, queryAll, state } from "lit/decorators.js";
 import { map } from "lit/directives/map.js";
 
 import PFCheck from "@patternfly/patternfly/components/Check/check.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 type CheckboxKv = { name: string; label: string | TemplateResult };
 type CheckboxPr = [string, string | TemplateResult];
 export type CheckboxPair = CheckboxKv | CheckboxPr;
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const isCheckboxPr = (t: any): t is CheckboxPr => Array.isArray(t);
-function* kvToPairs(items: CheckboxPair[]): Iterable<CheckboxPr> {
+function* kvToPairs(items: Iterable<CheckboxPair>): Iterable<CheckboxPr> {
     for (const item of items) {
-        yield isCheckboxPr(item) ? item : [item.name, item.label];
+        yield Array.isArray(item) ? item : [item.name, item.label];
     }
 }
 
-const AkElementWithCustomEvents = CustomEmitterElement(AKElement);
+const AkElementWithCustomEvents = CustomEmitterElement(AKControlElement);
 
 /**
  * @element ak-checkbox-group
@@ -75,75 +75,62 @@ const AkElementWithCustomEvents = CustomEmitterElement(AKElement);
  * protocol.
  *
  */
-
 @customElement("ak-checkbox-group")
 export class CheckboxGroup extends AkElementWithCustomEvents {
-    static get styles() {
-        return [
-            PFBase,
-            PFForm,
-            PFCheck,
-            css`
-                .pf-c-form__group-control {
-                    padding-top: calc(
-                        var(--pf-c-form--m-horizontal__group-label--md--PaddingTop) * 1.3
-                    );
-                }
-            `,
-        ];
-    }
+    static styles = [PFForm, PFCheck, Styles];
 
     static get formAssociated() {
         return true;
     }
 
     @property({ type: Array })
-    options: CheckboxPair[] = [];
+    public options: CheckboxPair[] = [];
 
     @property({ type: Array })
-    value: string[] = [];
+    public value: string[] = [];
 
     @property({ type: String })
-    name?: string;
+    public name: string | null = null;
 
     @property({ type: Boolean })
-    required = false;
+    public required = false;
 
     @queryAll('input[type="checkbox"]')
-    checkboxes!: NodeListOf<HTMLInputElement>;
+    protected checkboxes!: NodeListOf<HTMLInputElement>;
 
-    internals?: ElementInternals;
+    @state()
+    protected values: string[] = [];
 
-    get json() {
-        return this.value;
+    protected internals?: ElementInternals;
+    protected doneFirstUpdate = false;
+
+    public toJSON() {
+        return this.values;
     }
 
-    private get formValue() {
-        if (this.name === undefined) {
+    protected get formValue() {
+        if (typeof this.name !== "string") {
             throw new Error("This cannot be called without having the name set.");
         }
         const name = this.name;
         const entries = new FormData();
-        this.value.forEach((v) => entries.append(name, v));
+        this.values.forEach((v) => entries.append(name, v));
         return entries;
     }
 
-    constructor() {
-        super();
-        this.onClick = this.onClick.bind(this);
-        this.dataset.akControl = "true";
-    }
-
-    onClick(ev: Event) {
+    protected clickListener = (ev: Event) => {
         ev.stopPropagation();
-        this.value = Array.from(this.checkboxes)
+
+        this.values = Array.from(this.checkboxes)
             .filter((checkbox) => checkbox.checked)
             .map((checkbox) => checkbox.name);
-        this.dispatchCustomEvent("change", this.value);
-        this.dispatchCustomEvent("input", this.value);
+
+        this.dispatchCustomEvent("change", this.values);
+        this.dispatchCustomEvent("input", this.values);
+
         if (this.internals) {
             this.internals.setValidity({});
-            if (this.required && this.value.length === 0) {
+            if (this.required && this.values.length === 0) {
                 this.internals.setValidity(
                     {
                         valueMissing: true,
@@ -154,10 +141,22 @@ export class CheckboxGroup extends AkElementWithCustomEvents {
             }
             this.internals.setFormValue(this.formValue);
         }
+
+        // Doing a write-back so anyone examining the checkbox.value field will get something
+        // meaningful. Doesn't do anything for anyone, usually, but it's nice to have.
+        this.value = this.values;
+    };
+
+    protected override willUpdate(changed: PropertyValues<this>) {
+        if (changed.has("value") && !this.doneFirstUpdate) {
+            this.doneFirstUpdate = true;
+            this.values = this.value;
+        }
     }
 
-    connectedCallback() {
+    public override connectedCallback() {
         super.connectedCallback();
+        this.dataset.akControl = "true";
         if (this.name && !this.internals) {
             this.internals = this.attachInternals();
         }
@@ -181,32 +180,41 @@ export class CheckboxGroup extends AkElementWithCustomEvents {
         });
     }
 
-    render() {
-        const renderOne = ([name, label]: CheckboxPr) => {
-            const selected = this.value.includes(name);
-            const blockFwd = (e: Event) => {
-                e.stopImmediatePropagation();
-            };
-
-            return html` <div part="checkbox" class="pf-c-check" @click=${this.onClick}>
-                <input
-                    part="input"
-                    @change=${blockFwd}
-                    @input=${blockFwd}
-                    name="${name}"
-                    class="pf-c-check__input"
-                    type="checkbox"
-                    ?checked=${selected}
-                    id="ak-check-${name}"
-                />
-                <label part="label" class="pf-c-check__label" for="ak-check-${name}"
-                    >${label}</label
-                >
-            </div>`;
+    protected renderCheckbox = ([name, label]: CheckboxPr): SlottedTemplateResult => {
+        const selected = this.values.includes(name);
+        const blockFwd = (e: Event) => {
+            e.stopImmediatePropagation();
         };
 
+        return html`<label
+            part="label"
+            for="ak-check-${name}"
+            class="pf-c-check"
+            @click=${this.clickListener}
+        >
+            <input
+                part="input"
+                @change=${blockFwd}
+                @input=${blockFwd}
+                name=${name}
+                class="pf-c-check__input"
+                type="checkbox"
+                ?checked=${selected}
+                id="ak-check-${name}"
+            />
+            <div class="pf-c-check__label">${label}</div>
+        </label>`;
+    };
+
+    protected override render(): SlottedTemplateResult {
         return html`<div part="checkbox-group" class="pf-c-form__group-control pf-m-stack">
-            ${map(kvToPairs(this.options), renderOne)}
+            ${map(kvToPairs(this.options), this.renderCheckbox)}
         </div>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-checkbox-group": CheckboxGroup;
     }
 }

@@ -2,6 +2,12 @@
 # Created by https://www.gitignore.io/api/node
 # Edit at https://www.gitignore.io/?templates=node
 
+#region Locale
+
+src/locales/*.ts
+xliff/pseudo[_-]LOCALE.xlf
+xliff/en[_-]XA.xlf
+
 ### Node ###
 # Logs
 logs
@@ -25,6 +31,9 @@ lib-cov
 
 # Coverage directory used by tools like istanbul
 coverage
+playwright-report
+playwright-traces
+test-results
 *.lcov
 
 # nyc test coverage
@@ -109,3 +118,29 @@ temp/
 # End of https://www.gitignore.io/api/node
 api/**
 storybook-static/
+
+# Wireit's cache
+.wireit
+
+custom-elements.json
+
+### Agents ###
+
+AGENT.local.md
+AGENTS.local.md
+CLAUDE.local.md
+
+.agents/*.local.json
+.agents/scheduled_tasks.*
+.agents/worktree
+
+## Claude
+
+.claude/*.local.json
+.claude/scheduled_tasks.*
+.claude/worktree
+
+## Pi
+
+.pi
+.deps-stamp

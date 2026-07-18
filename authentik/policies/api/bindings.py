@@ -5,17 +5,16 @@ from collections import OrderedDict
 from django.core.exceptions import ObjectDoesNotExist
 from django_filters.filters import BooleanFilter, ModelMultipleChoiceFilter
 from django_filters.filterset import FilterSet
-from rest_framework.serializers import ModelSerializer, PrimaryKeyRelatedField, ValidationError
+from rest_framework.exceptions import ValidationError
+from rest_framework.serializers import PrimaryKeyRelatedField
 from rest_framework.viewsets import ModelViewSet
-from structlog.stdlib import get_logger
 
-from authentik.core.api.groups import GroupSerializer
+from authentik.core.api.groups import PartialUserSerializer
 from authentik.core.api.used_by import UsedByMixin
-from authentik.core.api.users import UserSerializer
+from authentik.core.api.users import PartialGroupSerializer
+from authentik.core.api.utils import ModelSerializer
 from authentik.policies.api.policies import PolicySerializer
 from authentik.policies.models import PolicyBinding, PolicyBindingModel
-
-LOGGER = get_logger()
 
 
 class PolicyBindingModelForeignKey(PrimaryKeyRelatedField):
@@ -40,7 +39,7 @@ class PolicyBindingModelForeignKey(PrimaryKeyRelatedField):
             return self.get_queryset().get_subclass(pk=data)
         except ObjectDoesNotExist:
             self.fail("does_not_exist", pk_value=data)
-        except (TypeError, ValueError):
+        except TypeError, ValueError:
             self.fail("incorrect_type", data_type=type(data).__name__)
 
     def to_representation(self, value):
@@ -58,9 +57,11 @@ class PolicyBindingSerializer(ModelSerializer):
         required=True,
     )
 
-    policy_obj = PolicySerializer(required=False, read_only=True, source="policy")
-    group_obj = GroupSerializer(required=False, read_only=True, source="group")
-    user_obj = UserSerializer(required=False, read_only=True, source="user")
+    policy_obj = PolicySerializer(required=False, allow_null=True, read_only=True, source="policy")
+    group_obj = PartialGroupSerializer(
+        required=False, allow_null=True, read_only=True, source="group"
+    )
+    user_obj = PartialUserSerializer(required=False, allow_null=True, read_only=True, source="user")
 
     class Meta:
         model = PolicyBinding
@@ -78,23 +79,27 @@ class PolicyBindingSerializer(ModelSerializer):
             "order",
             "timeout",
             "failure_result",
+            "expires",
+            "expiring",
         ]
+        extra_kwargs = {
+            "expires": {"read_only": True},
+            "expiring": {"read_only": True},
+        }
 
     def validate(self, attrs: OrderedDict) -> OrderedDict:
         """Check that either policy, group or user is set."""
-        count = sum(
-            [
-                bool(attrs.get("policy", None)),
-                bool(attrs.get("group", None)),
-                bool(attrs.get("user", None)),
-            ]
-        )
+        target: PolicyBindingModel = attrs.get("target")
+        supported = target.supported_policy_binding_targets()
+        supported.sort()
+        count = sum([bool(attrs.get(x, None)) for x in supported])
         invalid = count > 1
         empty = count < 1
+        warning = ", ".join(f"'{x}'" for x in supported)
         if invalid:
-            raise ValidationError("Only one of 'policy', 'group' or 'user' can be set.")
+            raise ValidationError(f"Only one of {warning} can be set.")
         if empty:
-            raise ValidationError("One of 'policy', 'group' or 'user' must be set.")
+            raise ValidationError(f"One of {warning} must be set.")
         return attrs
 
 
@@ -124,4 +129,5 @@ class PolicyBindingViewSet(UsedByMixin, ModelViewSet):
     serializer_class = PolicyBindingSerializer
     search_fields = ["policy__name"]
     filterset_class = PolicyBindingFilter
-    ordering = ["target", "order"]
+    ordering = ["order", "pk"]
+    ordering_fields = ["order", "target__uuid", "pk"]

@@ -1,0 +1,37 @@
+---
+title: Forward auth
+---
+
+Forward auth uses your existing reverse proxy for application traffic and relies on the authentik outpost only to check authentication and authorization.
+
+To use forward auth, select one of the forward auth modes on the proxy provider and configure your reverse proxy to send authentication checks to the outpost.
+
+## Forward auth modes
+
+### Single application
+
+Single-application mode works for one application hosted on its own domain or subdomain. Set **External host** to the application URL.
+
+In this mode, only `/outpost.goauthentik.io` on the application domain is routed to the authentik outpost. The application traffic itself continues to be routed to the upstream application by your reverse proxy.
+
+Use this mode when each application should have its own provider, policies, bindings, and authorization behavior.
+
+### Domain level
+
+Domain-level mode works for multiple applications under the same parent domain. Set **Authentication URL** to the URL used for authentication, and **Cookie domain** to the parent domain shared by the protected applications.
+
+This mode differs from _Forward auth (single application)_ mode in the following ways:
+
+- You do not need to configure an application and provider in authentik for each application domain.
+- Users do not need to authorize each application separately.
+- You cannot restrict individual applications to different users with separate application-level policies.
+
+Use single-application mode when each application needs separate access rules.
+
+## Configuration templates
+
+For reverse proxy configuration templates, refer to the following:
+
+import DocCardList from "@theme/DocCardList";
+
+<DocCardList />

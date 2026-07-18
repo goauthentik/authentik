@@ -1,5 +1,5 @@
 ---
-name: authentik-ci-outpost
+name: CI - Outpost
 
 on:
   push:
@@ -12,12 +12,17 @@ on:
       - main
       - version-*
 
+env:
+  POSTGRES_DB: authentik
+  POSTGRES_USER: authentik
+  POSTGRES_PASSWORD: "EK-5jnKfjrGRm<77"
+
 jobs:
   lint-golint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-go@v5
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v5
+      - uses: actions/setup-go@924ae3a1cded613372ab5595356fb5720e22ba16 # v6
         with:
           go-version-file: "go.mod"
       - name: Prepare and generate API
@@ -26,87 +31,37 @@ jobs:
           mkdir -p web/dist
           mkdir -p website/help
           touch web/dist/test website/help/test
-      - name: Generate API
-        run: make gen-client-go
       - name: golangci-lint
-        uses: golangci/golangci-lint-action@v5
+        uses: golangci/golangci-lint-action@ba0d7d2ec06a0ea1cb5fa41b2e4a3ab91d21278a # v8
         with:
-          version: v1.54.2
+          version: latest
           args: --timeout 5000s --verbose
           skip-cache: true
   test-unittest:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-go@v5
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v5
+      - uses: actions/setup-go@924ae3a1cded613372ab5595356fb5720e22ba16 # v6
         with:
           go-version-file: "go.mod"
       - name: Setup authentik env
         uses: ./.github/actions/setup
-      - name: Generate API
-        run: make gen-client-go
+      - name: prepare database
+        run: |
+          uv run make migrate
       - name: Go unittests
         run: |
           go test -timeout 0 -v -race -coverprofile=coverage.out -covermode=atomic -cover ./...
   ci-outpost-mark:
+    if: always()
     needs:
       - lint-golint
       - test-unittest
     runs-on: ubuntu-latest
     steps:
-      - run: echo mark
-  build-container:
-    timeout-minutes: 120
-    needs:
-      - ci-outpost-mark
-    strategy:
-      fail-fast: false
-      matrix:
-        type:
-          - proxy
-          - ldap
-          - radius
-          - rac
-    runs-on: ubuntu-latest
-    permissions:
-      # Needed to upload contianer images to ghcr.io
-      packages: write
-    steps:
-      - uses: actions/checkout@v4
+      - uses: re-actors/alls-green@05ac9388f0aebcb5727afa17fcccfecd6f8ec5fe # release/v1
         with:
-          ref: ${{ github.event.pull_request.head.sha }}
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3.0.0
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-      - name: prepare variables
-        uses: ./.github/actions/docker-push-variables
-        id: ev
-        env:
-          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-        with:
-          image-name: ghcr.io/goauthentik/dev-${{ matrix.type }}
-      - name: Login to Container Registry
-        if: ${{ steps.ev.outputs.shouldBuild == 'true' }}
-        uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.repository_owner }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Generate API
-        run: make gen-client-go
-      - name: Build Docker Image
-        uses: docker/build-push-action@v5
-        with:
-          tags: ${{ steps.ev.outputs.imageTags }}
-          file: ${{ matrix.type }}.Dockerfile
-          push: ${{ steps.ev.outputs.shouldBuild == 'true' }}
-          build-args: |
-            GIT_BUILD_HASH=${{ steps.ev.outputs.sha }}
-          platforms: linux/amd64,linux/arm64
-          context: .
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          jobs: ${{ toJSON(needs) }}
   build-binary:
     timeout-minutes: 120
     needs:
@@ -123,24 +78,30 @@ jobs:
         goos: [linux]
         goarch: [amd64, arm64]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v5
         with:
           ref: ${{ github.event.pull_request.head.sha }}
-      - uses: actions/setup-go@v5
+      - uses: actions/setup-go@924ae3a1cded613372ab5595356fb5720e22ba16 # v6
         with:
           go-version-file: "go.mod"
-      - uses: actions/setup-node@v4
-        with:
-          node-version-file: web/package.json
-          cache: "npm"
-          cache-dependency-path: web/package-lock.json
-      - name: Generate API
-        run: make gen-client-go
-      - name: Build web
-        working-directory: web/
+      - uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # v6.0.9
+      - name: Pin pnpm store directory
         run: |
-          npm ci
-          npm run build-proxy
+          echo "PNPM_HOME=${RUNNER_TEMP}/pnpm-home" >> "$GITHUB_ENV"
+          echo "npm_config_store_dir=${RUNNER_TEMP}/pnpm-home/store" >> "$GITHUB_ENV"
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v4
+        with:
+          node-version-file: package.json
+          cache: pnpm
+          cache-dependency-path: |
+            pnpm-lock.yaml
+            web/pnpm-lock.yaml
+      - name: Install dependencies
+        run: |
+          pnpm install --frozen-lockfile
+          pnpm --dir web install --frozen-lockfile
+      - name: Build web
+        run: pnpm --dir web run build-proxy
       - name: Build outpost
         run: |
           set -x

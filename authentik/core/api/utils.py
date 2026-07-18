@@ -2,12 +2,24 @@
 
 from typing import Any
 
+from django.db import models
 from django.db.models import Model
 from drf_spectacular.extensions import OpenApiSerializerFieldExtension
 from drf_spectacular.plumbing import build_basic_type
 from drf_spectacular.types import OpenApiTypes
-from rest_framework.fields import BooleanField, CharField, IntegerField, JSONField
-from rest_framework.serializers import Serializer, SerializerMethodField, ValidationError
+from rest_framework.fields import (
+    CharField,
+    IntegerField,
+    JSONField,
+    SerializerMethodField,
+)
+from rest_framework.serializers import ModelSerializer as BaseModelSerializer
+from rest_framework.serializers import (
+    Serializer,
+    ValidationError,
+    model_meta,
+    raise_errors_on_nested_writes,
+)
 
 
 def is_dict(value: Any):
@@ -30,6 +42,43 @@ class JSONExtension(OpenApiSerializerFieldExtension):
 
     def map_serializer_field(self, auto_schema, direction):
         return build_basic_type(OpenApiTypes.OBJECT)
+
+
+class ModelSerializer(BaseModelSerializer):
+
+    # By default, JSON fields we have are used to store dictionaries
+    serializer_field_mapping = BaseModelSerializer.serializer_field_mapping.copy()
+    serializer_field_mapping[models.JSONField] = JSONDictField
+
+    def update(self, instance: Model, validated_data):
+        raise_errors_on_nested_writes("update", self, validated_data)
+        info = model_meta.get_field_info(instance)
+
+        # Simply set each attribute on the instance, and then save it.
+        # Note that unlike `.create()` we don't need to treat many-to-many
+        # relationships as being a special case. During updates we already
+        # have an instance pk for the relationships to be associated with.
+        m2m_fields = []
+        for attr, value in validated_data.items():
+            if attr in info.relations and info.relations[attr].to_many:
+                m2m_fields.append((attr, value))
+            else:
+                setattr(instance, attr, value)
+
+        instance.save()
+
+        # Note that many-to-many fields are set after updating instance.
+        # Setting m2m fields triggers signals which could potentially change
+        # updated instance and we do not want it to collide with .update()
+        for attr, value in m2m_fields:
+            field = getattr(instance, attr)
+            # We can't check for inheritance here as m2m managers are generated dynamically
+            if field.__class__.__name__ == "RelatedManager":
+                field.set(value, bulk=False)
+            else:
+                field.set(value)
+
+        return instance
 
 
 class PassiveSerializer(Serializer):
@@ -68,16 +117,6 @@ class MetaNameSerializer(PassiveSerializer):
         return f"{obj._meta.app_label}.{obj._meta.model_name}"
 
 
-class TypeCreateSerializer(PassiveSerializer):
-    """Types of an object that can be created"""
-
-    name = CharField(required=True)
-    description = CharField(required=True)
-    component = CharField(required=True)
-    model_name = CharField(required=True)
-    requires_enterprise = BooleanField(default=False)
-
-
 class CacheSerializer(PassiveSerializer):
     """Generic cache stats for an object"""
 
@@ -88,3 +127,10 @@ class LinkSerializer(PassiveSerializer):
     """Returns a single link"""
 
     link = CharField()
+
+
+class ThemedUrlsSerializer(PassiveSerializer):
+    """Themed URLs - maps theme names to URLs for light and dark themes"""
+
+    light = CharField(required=False, allow_null=True)
+    dark = CharField(required=False, allow_null=True)

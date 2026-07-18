@@ -2,20 +2,31 @@
 
 from django.http import HttpResponse
 from django.utils.timezone import now
+from django.utils.translation import gettext as _
 from rest_framework.fields import CharField
 
 from authentik.events.models import Event, EventAction
 from authentik.flows.challenge import (
     Challenge,
     ChallengeResponse,
-    ChallengeTypes,
     WithUserInfoChallenge,
 )
 from authentik.flows.stage import ChallengeStageView
 from authentik.flows.views.executor import InvalidStageError
 from authentik.stages.authenticator_duo.models import AuthenticatorDuoStage, DuoDevice
 
-SESSION_KEY_DUO_ENROLL = "authentik/stages/authenticator_duo/enroll"
+PLAN_CONTEXT_DUO_ENROLL = "goauthentik.io/stages/authenticator_duo/enroll"
+DUO_USERNAME_EXISTS_ERROR = "username already exists"
+
+
+def duo_enrollment_error_message(exc: RuntimeError) -> str:
+    """Return a user-facing error message for Duo enrollment failures."""
+    if DUO_USERNAME_EXISTS_ERROR in str(exc).lower():
+        return _(
+            "A Duo user with this username already exists. Ask an administrator to import the "
+            "existing Duo authenticator or delete the Duo user before enrolling again."
+        )
+    return _("Failed to enroll with Duo. Please contact an administrator.")
 
 
 class AuthenticatorDuoChallenge(WithUserInfoChallenge):
@@ -50,18 +61,17 @@ class AuthenticatorDuoStageView(ChallengeStageView):
                 message=f"Failed to enroll user: {str(exc)}",
                 user=user,
             ).from_http(self.request, user)
-            raise InvalidStageError(str(exc)) from exc
-        self.request.session[SESSION_KEY_DUO_ENROLL] = enroll
+            raise InvalidStageError(duo_enrollment_error_message(exc)) from exc
+        self.executor.plan.context[PLAN_CONTEXT_DUO_ENROLL] = enroll
         return enroll
 
     def get_challenge(self, *args, **kwargs) -> Challenge:
         stage: AuthenticatorDuoStage = self.executor.current_stage
-        if SESSION_KEY_DUO_ENROLL not in self.request.session:
+        if PLAN_CONTEXT_DUO_ENROLL not in self.executor.plan.context:
             self.duo_enroll()
-        enroll = self.request.session[SESSION_KEY_DUO_ENROLL]
+        enroll = self.executor.plan.context[PLAN_CONTEXT_DUO_ENROLL]
         return AuthenticatorDuoChallenge(
             data={
-                "type": ChallengeTypes.NATIVE.value,
                 "activation_barcode": enroll["activation_barcode"],
                 "activation_code": enroll["activation_code"],
                 "stage_uuid": str(stage.stage_uuid),
@@ -71,14 +81,14 @@ class AuthenticatorDuoStageView(ChallengeStageView):
     def challenge_valid(self, response: ChallengeResponse) -> HttpResponse:
         # Duo Challenge has already been validated
         stage: AuthenticatorDuoStage = self.executor.current_stage
-        enroll = self.request.session.get(SESSION_KEY_DUO_ENROLL)
+        enroll = self.executor.plan.context.get(PLAN_CONTEXT_DUO_ENROLL)
         enroll_status = stage.auth_client().enroll_status(
             enroll["user_id"], enroll["activation_code"]
         )
         if enroll_status != "success":
             return self.executor.stage_invalid(f"Invalid enrollment status: {enroll_status}.")
         existing_device = DuoDevice.objects.filter(duo_user_id=enroll["user_id"]).first()
-        self.request.session.pop(SESSION_KEY_DUO_ENROLL)
+        self.executor.plan.context.pop(PLAN_CONTEXT_DUO_ENROLL)
         if not existing_device:
             DuoDevice.objects.create(
                 name="Duo Authenticator",
@@ -90,6 +100,3 @@ class AuthenticatorDuoStageView(ChallengeStageView):
         else:
             return self.executor.stage_invalid("Device with Credential ID already exists.")
         return self.executor.stage_ok()
-
-    def cleanup(self):
-        self.request.session.pop(SESSION_KEY_DUO_ENROLL, None)

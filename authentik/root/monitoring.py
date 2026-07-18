@@ -1,59 +1,43 @@
 """Metrics view"""
 
-from base64 import b64encode
-
-from django.conf import settings
 from django.db import connections
 from django.db.utils import OperationalError
 from django.dispatch import Signal
 from django.http import HttpRequest, HttpResponse
 from django.views import View
 from django_prometheus.exports import ExportToDjangoView
-from django_redis import get_redis_connection
-from redis.exceptions import RedisError
 
 monitoring_set = Signal()
 
 
 class MetricsView(View):
-    """Wrapper around ExportToDjangoView, using http-basic auth"""
+    """Wrapper around ExportToDjangoView with authentication, accessed by the authentik router"""
 
     def get(self, request: HttpRequest) -> HttpResponse:
         """Check for HTTP-Basic auth"""
-        auth_header = request.META.get("HTTP_AUTHORIZATION", "")
-        auth_type, _, given_credentials = auth_header.partition(" ")
-        credentials = f"monitor:{settings.SECRET_KEY}"
-        expected = b64encode(str.encode(credentials)).decode()
-        authed = auth_type == "Basic" and given_credentials == expected
-        if not authed and not settings.DEBUG:
-            response = HttpResponse(status=401)
-            response["WWW-Authenticate"] = 'Basic realm="authentik-monitoring"'
-            return response
-
         monitoring_set.send_robust(self)
-
         return ExportToDjangoView(request)
 
 
 class LiveView(View):
-    """View for liveness probe, always returns Http 204"""
+    """View for liveness probe, always returns Http 200"""
 
     def dispatch(self, request: HttpRequest) -> HttpResponse:
-        return HttpResponse(status=204)
+        return HttpResponse(status=200)
 
 
 class ReadyView(View):
-    """View for readiness probe, always returns Http 204, unless sql or redis is down"""
+    """View for readiness probe, always returns Http 200, unless sql is down"""
+
+    def check_db(self):
+        for db_conn in connections.all():
+            # Force connection reload
+            db_conn.connect()
+            _ = db_conn.cursor()
 
     def dispatch(self, request: HttpRequest) -> HttpResponse:
         try:
-            db_conn = connections["default"]
-            _ = db_conn.cursor()
+            self.check_db()
         except OperationalError:  # pragma: no cover
             return HttpResponse(status=503)
-        try:
-            redis_conn = get_redis_connection()
-            redis_conn.ping()
-        except RedisError:  # pragma: no cover
-            return HttpResponse(status=503)
-        return HttpResponse(status=204)
+        return HttpResponse(status=200)

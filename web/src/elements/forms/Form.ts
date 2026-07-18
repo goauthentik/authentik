@@ -1,14 +1,52 @@
-import { EVENT_REFRESH } from "@goauthentik/common/constants";
-import { MessageLevel } from "@goauthentik/common/messages";
-import { camelToSnake, convertToSlug, dateToUTC } from "@goauthentik/common/utils";
-import { AKElement } from "@goauthentik/elements/Base";
-import { HorizontalFormElement } from "@goauthentik/elements/forms/HorizontalFormElement";
-import { SearchSelect } from "@goauthentik/elements/forms/SearchSelect";
-import { PreventFormSubmit } from "@goauthentik/elements/forms/helpers";
-import { showMessage } from "@goauthentik/elements/messages/MessageContainer";
+import "#elements/LoadingOverlay";
 
-import { CSSResult, TemplateResult, css, html } from "lit";
+import { isFormField } from "./form-associated-element";
+
+import { EVENT_REFRESH } from "#common/constants";
+import { PFSize } from "#common/enums";
+import {
+    APIError,
+    parseAPIResponseError,
+    pluckErrorDetail,
+    pluckFallbackFieldErrors,
+} from "#common/errors/network";
+import { APIMessage, MessageLevel } from "#common/messages";
+
+import { AKElement } from "#elements/Base";
+import { intersectionObserver } from "#elements/decorators/intersection-observer";
+import {
+    DialogInit,
+    modalInvoker,
+    ModalInvokerDirectiveResult,
+    renderModal,
+} from "#elements/dialogs";
+import {
+    EntityDescriptorElement,
+    isTransclusionParentElement,
+    TransclusionChildElement,
+    TransclusionChildSymbol,
+} from "#elements/dialogs/shared";
+import { reportInvalidFields } from "#elements/forms/errors";
+import { AKFormSubmittedEvent } from "#elements/forms/events";
+import Styles from "#elements/forms/Form.css";
+import { reportValidityDeep } from "#elements/forms/FormGroup";
+import { PreventFormSubmit } from "#elements/forms/helpers";
+import { HorizontalFormElement } from "#elements/forms/HorizontalFormElement";
+import { serializeForm } from "#elements/forms/serialization";
+import { showMessage } from "#elements/messages/MessageContainer";
+import { LitPropertyRecord, SlottedTemplateResult } from "#elements/types";
+import { createFileMap } from "#elements/utils/inputs";
+
+import { ConsoleLogger } from "#logger/browser";
+
+import { instanceOfValidationError } from "@goauthentik/api";
+
+import { msg, str } from "@lit/localize";
+import { CSSResult, html, nothing, PropertyValues } from "lit";
+import { createRef, ref } from "lit-html/directives/ref.js";
 import { customElement, property, state } from "lit/decorators.js";
+import { guard } from "lit/directives/guard.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -17,125 +55,15 @@ import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-group.css";
 import PFSwitch from "@patternfly/patternfly/components/Switch/switch.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
+import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 
-import { ResponseError, ValidationError, ValidationErrorFromJSON } from "@goauthentik/api";
-
-export class APIError extends Error {
-    constructor(public response: ValidationError) {
-        super();
-    }
-}
-
-export interface KeyUnknown {
-    [key: string]: unknown;
-}
-
-// Literally the only field `assignValue()` cares about.
-type HTMLNamedElement = Pick<HTMLInputElement, "name">;
-
-type AkControlElement = HTMLInputElement & { json: () => string | string[] };
+//#region Form
 
 /**
- * Recursively assign `value` into `json` while interpreting the dot-path of `element.name`
+ * A helper type, used for typing the submit event of forms that extends this base class.
  */
-function assignValue(element: HTMLNamedElement, value: unknown, json: KeyUnknown): void {
-    let parent = json;
-    if (!element.name?.includes(".")) {
-        parent[element.name] = value;
-        return;
-    }
-    const nameElements = element.name.split(".");
-    for (let index = 0; index < nameElements.length - 1; index++) {
-        const nameEl = nameElements[index];
-        // Ensure all nested structures exist
-        if (!(nameEl in parent)) parent[nameEl] = {};
-        parent = parent[nameEl] as { [key: string]: unknown };
-    }
-    parent[nameElements[nameElements.length - 1]] = value;
-}
-
-/**
- * Convert the elements of the form to JSON.[4]
- *
- */
-export function serializeForm<T extends KeyUnknown>(
-    elements: NodeListOf<HorizontalFormElement>,
-): T | undefined {
-    const json: { [key: string]: unknown } = {};
-    elements.forEach((element) => {
-        element.requestUpdate();
-        if (element.hidden) {
-            return;
-        }
-
-        if ("akControl" in element.dataset) {
-            assignValue(element, (element as unknown as AkControlElement).json(), json);
-            return;
-        }
-
-        const inputElement = element.querySelector<HTMLInputElement>("[name]");
-        if (element.hidden || !inputElement) {
-            return;
-        }
-
-        if ("akControl" in inputElement.dataset) {
-            assignValue(element, inputElement.value, json);
-            return;
-        }
-
-        // Skip elements that are writeOnly where the user hasn't clicked on the value
-        if (element.writeOnly && !element.writeOnlyActivated) {
-            return;
-        }
-        if (
-            inputElement.tagName.toLowerCase() === "select" &&
-            "multiple" in inputElement.attributes
-        ) {
-            const selectElement = inputElement as unknown as HTMLSelectElement;
-            assignValue(
-                inputElement,
-                Array.from(selectElement.selectedOptions).map((v) => v.value),
-                json,
-            );
-        } else if (inputElement.tagName.toLowerCase() === "input" && inputElement.type === "date") {
-            assignValue(inputElement, inputElement.valueAsDate, json);
-        } else if (
-            inputElement.tagName.toLowerCase() === "input" &&
-            inputElement.type === "datetime-local"
-        ) {
-            assignValue(inputElement, dateToUTC(new Date(inputElement.valueAsNumber)), json);
-        } else if (
-            inputElement.tagName.toLowerCase() === "input" &&
-            "type" in inputElement.dataset &&
-            inputElement.dataset["type"] === "datetime-local"
-        ) {
-            // Workaround for Firefox <93, since 92 and older don't support
-            // datetime-local fields
-            assignValue(inputElement, dateToUTC(new Date(inputElement.value)), json);
-        } else if (
-            inputElement.tagName.toLowerCase() === "input" &&
-            inputElement.type === "checkbox"
-        ) {
-            assignValue(inputElement, inputElement.checked, json);
-        } else if ("selectedFlow" in inputElement) {
-            assignValue(inputElement, inputElement.value, json);
-        } else if (inputElement.tagName.toLowerCase() === "ak-search-select") {
-            const select = inputElement as unknown as SearchSelect<unknown>;
-            try {
-                const value = select.toForm();
-                assignValue(inputElement, value, json);
-            } catch (exc) {
-                if (exc instanceof PreventFormSubmit) {
-                    throw new PreventFormSubmit(exc.message, element);
-                }
-                throw exc;
-            }
-        } else {
-            assignValue(inputElement, inputElement.value, json);
-        }
-    });
-    return json as unknown as T;
+export interface AKFormSubmitEvent<T> extends SubmitEvent {
+    target: Form<T>;
 }
 
 /**
@@ -147,15 +75,20 @@ export function serializeForm<T extends KeyUnknown>(
  * produce the actual form, or include the form in-line as a slotted element. Bizarrely, this form
  * will not render at all if it's not actually in the viewport?[2]
  *
- * @element ak-form
+ * @class Form
  *
  * @slot - Where the form goes if `renderForm()` returns undefined.
- * @fires eventname - description
- *
+ * @fires ak-refresh - Dispatched when the form has been successfully submitted and data has changed.
+ * @fires ak-form-submitted - Dispatched after a successful submission, carrying the `send()` response.
+ * @fires submit - The native submit event, re-dispatched after a successful submission for parent components to listen for.
  * @csspart partname - description
- */
-
-/* TODO:
+ *
+ *
+ * @template T - The type of the form data to be sent. Must be serializable by `serializeForm()`.
+ * @template D - The type of the data returned by the `send()` method. Defaults to the same as `T`. *
+ *
+ * @remarks
+ * TODO:
  *
  * 1. Specialization: Separate this component into three different classes:
  *    - The base class
@@ -165,132 +98,442 @@ export function serializeForm<T extends KeyUnknown>(
  *    Consider refactoring serializeForm() so that the conversions are on
  *    the input types, rather than here. (i.e. "Polymorphism is better than
  *    switch.")
- *
- *
  */
-
 @customElement("ak-form")
-export abstract class Form<T> extends AKElement {
-    abstract send(data: T): Promise<unknown>;
+export class Form<T = Record<string, unknown>, D = T>
+    extends AKElement
+    implements TransclusionChildElement
+{
+    declare ["constructor"]: EntityDescriptorElement;
 
-    viewportCheck = true;
+    public static styles: CSSResult[] = [
+        PFCard,
+        PFButton,
+        PFForm,
+        PFAlert,
+        PFInputGroup,
+        PFFormControl,
+        PFSwitch,
+        PFTitle,
+        Styles,
+    ];
 
-    @property()
-    successMessage = "";
+    /**
+     * Optional singular label for the type of entity this form creates/edits.
+     */
+    public static verboseName: string | null = null;
 
-    @state()
-    nonFieldErrors?: string[];
+    /**
+     * Optional plural label for the type of entity this form creates/edits
+     */
+    public static verboseNamePlural: string | null = null;
 
-    static get styles(): CSSResult[] {
-        return [
-            PFBase,
-            PFCard,
-            PFButton,
-            PFForm,
-            PFAlert,
-            PFInputGroup,
-            PFFormControl,
-            PFSwitch,
-            css`
-                select[multiple] {
-                    height: 15em;
-                }
-            `,
-        ];
+    /**
+     * The modifier to use in the default headline, e.g. "New"
+     */
+    public static createLabel: string | null = msg("New", {
+        id: "form.new-entity",
+    });
+
+    /**
+     * The verb to use in the default submit button label, e.g. "Create" or "Update".
+     */
+    public static submitVerb: string = msg("Create", {
+        id: "form.submit.verb.create",
+    });
+
+    /**
+     * The gerund to use in the message key for the submission message, e.g. "Creating" or "Updating".
+     */
+    public static submittingVerb: string = msg("Creating", {
+        id: "form.submit.verb.creating",
+    });
+
+    /**
+     * The past-tense verb to use in the default success message, e.g. "Created" or "Updated".
+     */
+    public static submittedVerb: string = msg("Created", {
+        id: "form.submit.verb.created",
+    });
+
+    //#region Modal helpers
+
+    public [TransclusionChildSymbol] = true;
+
+    /**
+     * A helper method to create an invoker for a modal containing this form.
+     *
+     * @see {@linkcode modalInvoker} for the underlying implementation.
+     */
+    public static asModalInvoker(
+        props?: LitPropertyRecord<Form>,
+        init?: DialogInit,
+    ): ModalInvokerDirectiveResult {
+        return modalInvoker(this, props, init);
     }
 
     /**
-     * Called by the render function. Blocks rendering the form if the form is not within the
-     * viewport.
+     * Show a modal containing this form.
+     *
+     * @see {@linkcode renderModal} for the underlying implementation.
+     * @returns A promise that resolves when the modal is closed.
      */
-    get isInViewport(): boolean {
-        const rect = this.getBoundingClientRect();
-        return !(rect.x + rect.y + rect.width + rect.height === 0);
+    public static showModal(init?: DialogInit): Promise<void> {
+        return renderModal(new this(), init);
     }
 
-    getSuccessMessage(): string {
+    /**
+     * Show this form in a modal dialog.
+     *
+     * This is useful when working with a form instance directly, rather than
+     * in a Lit HTML template.
+     *
+     * @see {@linkcode Form.showModal} for the static version.
+     * @see {@linkcode renderModal} for the underlying implementation.
+     */
+    public showModal(init?: DialogInit): Promise<void> {
+        return renderModal(this, init);
+    }
+
+    //#endregion
+
+    protected logger = ConsoleLogger.prefix(`form/${this.localName}`);
+
+    /**
+     * Send the serialized form to its destination.
+     *
+     * @param data The serialized form data.
+     * @returns A promise that resolves when the data has been sent.
+     * @abstract
+     */
+    protected send?(data: NonNullable<D>): Promise<unknown>;
+
+    //#region Properties
+
+    /**
+     * Whether the table is visible in the viewport.
+     *
+     * @remarks
+     * We cache the visibility between frames to avoid the synchronous `getBoundingClientRect()`
+     * call within {@linkcode isInViewport}.
+     */
+    @intersectionObserver()
+    public visible = false;
+
+    @property({ type: String })
+    public successMessage?: string;
+
+    @property({ type: String })
+    public autocomplete?: Exclude<AutoFillBase, "">;
+
+    @property({ type: String, useDefault: true })
+    public headline?: string | null = null;
+
+    @property({ type: String, useDefault: true })
+    public size: PFSize | null = null;
+
+    /**
+     * The label for the submit button. If not provided,
+     * a default label will be generated based on `verboseName`,
+     * falling back to "Create".
+     */
+    @property({ type: String, attribute: "submit-label", useDefault: true })
+    public submitLabel: string | null = null;
+
+    /**
+     * The label for the submit button while the form is being submitted. If not provided,
+     * a default label will be generated based on `submittingVerb` and `verboseName`,
+     * falling back to "Submitting...".
+     */
+    @property({ type: String, attribute: "submitting-label", useDefault: true })
+    public submittingLabel: string | null = null;
+
+    /**
+     * The message shown after the form has been successfully submitted. If not provided,
+     * a default label will be generated based on `submittedVerb` and `verboseName`,
+     * falling back to "Created".
+     */
+    @property({ type: String, attribute: "submitted-label", useDefault: true })
+    public submittedLabel: string | null = null;
+
+    @property({ type: String, attribute: "cancel-label", useDefault: true })
+    public cancelButtonLabel: string | null = msg("Cancel");
+
+    @property({ type: Boolean, attribute: "cancelable", useDefault: true })
+    public cancelable = true;
+
+    @property({ type: Boolean, attribute: "submittable", useDefault: true })
+    public submittable = true;
+
+    //#endregion
+
+    /**
+     * A reference to the form element.
+     */
+    protected formRef = createRef<HTMLFormElement>();
+
+    /**
+     * A live reference to the form element, either rendered in-line or slotted.
+     */
+    public get form(): HTMLFormElement | null {
+        if (this.formRef.value) {
+            return this.formRef.value;
+        }
+
+        const slottedForm =
+            this.defaultSlot
+                .assignedElements({ flatten: true })
+                .find((element): element is HTMLFormElement => {
+                    return element instanceof HTMLFormElement;
+                }) || null;
+
+        return slottedForm || this.renderRoot.querySelector("form") || null;
+    }
+
+    @state()
+    protected submitting = false;
+
+    protected sendingOverlay = this.ownerDocument.createElement("ak-loading-overlay");
+
+    @state()
+    protected nonFieldErrors: readonly string[] | null = null;
+
+    #verboseName: string | null = null;
+
+    /**
+     * Optional singular label for the type of entity this form creates/edits.
+     *
+     * Overrides the static `verboseName` property for this instance.
+     */
+    @property({ type: String, attribute: "verbose-name" })
+    public set verboseName(value: string | null) {
+        this.#verboseName = value;
+
+        if (isTransclusionParentElement(this.parentElement)) {
+            this.parentElement.slottedElementUpdatedAt = new Date();
+        }
+    }
+
+    public get verboseName(): string | null {
+        return this.#verboseName || (this.constructor as typeof Form).verboseName;
+    }
+
+    #verboseNamePlural: string | null = null;
+
+    /**
+     * Optional plural label for the type of entity this form creates/edits.
+     *
+     * Overrides the static `verboseNamePlural` property for this instance.
+     */
+    @property({ type: String, attribute: "verbose-name-plural" })
+    public set verboseNamePlural(value: string | null) {
+        this.#verboseNamePlural = value;
+
+        if (isTransclusionParentElement(this.parentElement)) {
+            this.parentElement.slottedElementUpdatedAt = new Date();
+        }
+    }
+
+    public get verboseNamePlural(): string | null {
+        return this.#verboseNamePlural || (this.constructor as typeof Form).verboseNamePlural;
+    }
+
+    protected defaultSlot: HTMLSlotElement = this.ownerDocument.createElement("slot");
+
+    //#endregion
+
+    //#region Formatters
+
+    /**
+     * An overridable method for returning a success message after a successful submission.
+     *
+     * @deprecated Use `formatAPISuccessMessage` instead.
+     */
+    public getSuccessMessage(): string | undefined {
         return this.successMessage;
     }
 
     /**
-     * After rendering the form, if there is both a `name` and `slug` element within the form,
-     * events the `name` element so that the slug will always have a slugified version of the
-     * `name.`. This duplicates functionality within ak-form-element-horizontal.
+     * An overridable method for returning a formatted message after a successful submission.
      */
-    updated(): void {
-        this.shadowRoot
-            ?.querySelectorAll("ak-form-element-horizontal[name=name]")
-            .forEach((nameInput) => {
-                const input = nameInput.firstElementChild as HTMLInputElement;
-                const form = nameInput.closest("form");
-                if (form === null) {
-                    return;
-                }
-                const slugFieldWrapper = form.querySelector(
-                    "ak-form-element-horizontal[name=slug]",
-                );
-                if (!slugFieldWrapper) {
-                    return;
-                }
-                const slugField = slugFieldWrapper.firstElementChild as HTMLInputElement;
-                // Only attach handler if the slug is already equal to the name
-                // if not, they are probably completely different and shouldn't update
-                // each other
-                if (convertToSlug(input.value) !== slugField.value) {
-                    return;
-                }
-                nameInput.addEventListener("input", () => {
-                    slugField.value = convertToSlug(input.value);
-                });
-            });
-    }
+    protected formatAPISuccessMessage(_response: unknown): APIMessage | null {
+        const message = this.getSuccessMessage();
 
-    resetForm(): void {
-        const form = this.shadowRoot?.querySelector<HTMLFormElement>("form");
-        form?.reset();
+        if (!message) return null;
+
+        return {
+            level: MessageLevel.success,
+            message,
+        };
     }
 
     /**
-     * Return the form elements that may contain filenames. Not sure why this is quite so
-     * convoluted. There is exactly one case where this is used:
-     * `./flow/stages/prompt/PromptStage: 147: case PromptTypeEnum.File.`
-     * Consider moving this functionality to there.
+     * An overridable method for returning a formatted error message after a failed submission.
      */
-    getFormFiles(): { [key: string]: File } {
-        const files: { [key: string]: File } = {};
-        const elements =
-            this.shadowRoot?.querySelectorAll<HorizontalFormElement>(
-                "ak-form-element-horizontal",
-            ) || [];
-        for (let i = 0; i < elements.length; i++) {
-            const element = elements[i];
-            element.requestUpdate();
-            const inputElement = element.querySelector<HTMLInputElement>("[name]");
-            if (!inputElement) {
-                continue;
-            }
-            if (inputElement.tagName.toLowerCase() === "input" && inputElement.type === "file") {
-                if ((inputElement.files || []).length < 1) {
-                    continue;
-                }
-                files[element.name] = (inputElement.files || [])[0];
-            }
-        }
-        return files;
+    protected formatAPIErrorMessage(error: APIError): APIMessage | null {
+        const fallback = pluckFallbackFieldErrors(error);
+
+        return {
+            message: msg("There was an error submitting the form."),
+            description: pluckErrorDetail(error, fallback[0]),
+            level: MessageLevel.error,
+        };
     }
+
+    /**
+     * An overridable method for formatting the form headline.
+     */
+    protected formatHeadline(headline = this.headline, modifier?: string | null): string {
+        if (headline) {
+            return headline;
+        }
+
+        const noun = this.verboseName;
+
+        modifier ||= (this.constructor as typeof Form).createLabel;
+
+        if (!noun) {
+            return modifier || "";
+        }
+
+        return msg(str`${modifier} ${noun}`, {
+            id: "model-form.headline",
+            desc: "The headline for a form that creates or updates a model instance.",
+        });
+    }
+
+    /**
+     * An overridable method for formatting the submit button label.
+     */
+    protected formatSubmitLabel(submitLabel = this.submitLabel): string {
+        if (submitLabel) {
+            return submitLabel;
+        }
+
+        const noun = this.verboseName;
+        const verb = (this.constructor as typeof Form).submitVerb;
+
+        return noun
+            ? msg(str`${verb} ${noun}`, {
+                  id: "form.submit.verb-entity",
+              })
+            : verb;
+    }
+
+    /**
+     * An overridable method for formatting the message shown while the form is being submitted.
+     */
+    protected formatSubmittingLabel(submittingLabel = this.submittingLabel): string {
+        if (submittingLabel) {
+            return submittingLabel;
+        }
+
+        const { submittingVerb, verboseName } = this.constructor as typeof Form;
+
+        if (!verboseName) {
+            return msg(str`${submittingVerb}...`, {
+                id: "form.submitting.no-entity",
+                desc: "The message shown while a form is being submitted, when no entity name is provided.",
+            });
+        }
+
+        return msg(str`${submittingVerb} ${verboseName}...`, {
+            id: "form.submitting",
+            desc: "The message shown while a form is being submitted.",
+        });
+    }
+
+    /**
+     * An overridable method for formatting the message shown after the form has been
+     * successfully submitted.
+     */
+    protected formatSubmittedLabel(submittedLabel = this.submittedLabel): string {
+        if (submittedLabel) {
+            return submittedLabel;
+        }
+
+        const noun = this.verboseName;
+        const verb = (this.constructor as typeof Form).submittedVerb;
+
+        return noun
+            ? msg(str`${verb} ${noun}`, {
+                  id: "form.submitted.verb-entity",
+                  desc: "The message shown after a form is successfully submitted.",
+              })
+            : verb;
+    }
+
+    //#endregion
+
+    //#region Public methods
+
+    public reset(): void {
+        const form = this.shadowRoot?.querySelector("form");
+
+        return form?.reset();
+    }
+
+    /**
+     * Return the form elements that may contain filenames.
+     */
+    public files<T extends PropertyKey = PropertyKey>(): Map<T, File> {
+        return createFileMap<T>(this.shadowRoot?.querySelectorAll("ak-form-element-horizontal"));
+    }
+
+    //#region Validation
+
+    public checkValidity(): boolean {
+        return !!this.form?.checkValidity?.();
+    }
+
+    public reportValidity(): boolean {
+        const { form } = this;
+
+        if (!form) {
+            this.logger.warn("Unable to check validity, no form found", this);
+            return true;
+        }
+
+        return reportValidityDeep(form);
+    }
+
+    //#endregion
+
+    //#region Submission
 
     /**
      * Convert the elements of the form to JSON.[4]
-     *
      */
-    serializeForm(): T | undefined {
-        const elements = this.shadowRoot?.querySelectorAll<HorizontalFormElement>(
-            "ak-form-element-horizontal",
-        );
-        if (!elements) {
-            return {} as T;
+    public toJSON(): D {
+        const elements = this.renderRoot.querySelectorAll("ak-form-element-horizontal");
+
+        if (elements.length) {
+            return serializeForm<D>(elements);
         }
-        return serializeForm(elements) as T;
+
+        const assignedElements = this.defaultSlot.assignedElements({ flatten: true });
+
+        const formFields = assignedElements.filter(isFormField);
+
+        if (formFields.length) {
+            if (formFields.length === 1) {
+                return formFields[0].toJSON() as D;
+            }
+
+            throw new TypeError(
+                `Multiple form-associated elements found in the form, but no "ak-form-element-horizontal" elements found. Unable to determine which element(s) to serialize.`,
+            );
+        }
+
+        const namedElements = assignedElements.filter((element): element is AKElement => {
+            return element.hasAttribute("name");
+        });
+
+        if (namedElements.length) {
+            return serializeForm<D>(namedElements);
+        }
+
+        return {} as D;
     }
 
     /**
@@ -298,119 +541,294 @@ export abstract class Form<T> extends AKElement {
      * this to work. If processing the data results in an error, we catch the error, distribute
      * field-levels errors to the fields, and send the rest of them to the Notifications.
      *
+     * @returns A promise that resolves to the response from `send()`, or `false` if the form is invalid.
      */
-    async submit(ev: Event): Promise<unknown | undefined> {
-        ev.preventDefault();
+    public submit = <T = unknown>(submitEvent: SubmitEvent): Promise<T | false> => {
+        submitEvent.preventDefault();
+
+        if (!this.reportValidity()) {
+            return Promise.resolve(false);
+        }
+
+        const messageKey = `form-submission-${this.localName}-${Date.now()}`;
+        let data: D;
+
         try {
-            const data = this.serializeForm();
-            if (!data) {
-                return;
-            }
-            const response = await this.send(data);
+            data = this.toJSON();
+        } catch (error) {
+            this.logger.error("An error occurred while serializing the form.", error);
+
             showMessage({
-                level: MessageLevel.success,
-                message: this.getSuccessMessage(),
+                level: MessageLevel.error,
+                message: msg("An unknown error occurred while submitting the form."),
+                description: pluckErrorDetail(error),
+                key: messageKey,
             });
-            this.dispatchEvent(
-                new CustomEvent(EVENT_REFRESH, {
-                    bubbles: true,
-                    composed: true,
-                }),
-            );
-            return response;
-        } catch (ex) {
-            if (ex instanceof ResponseError) {
-                let msg = ex.response.statusText;
-                if (ex.response.status > 399 && ex.response.status < 500) {
-                    const errorMessage = ValidationErrorFromJSON(await ex.response.json());
-                    if (!errorMessage) return errorMessage;
-                    if (errorMessage instanceof Error) {
-                        throw errorMessage;
-                    }
-                    // assign all input-related errors to their elements
-                    const elements =
-                        this.shadowRoot?.querySelectorAll<HorizontalFormElement>(
-                            "ak-form-element-horizontal",
-                        ) || [];
-                    elements.forEach((element) => {
-                        element.requestUpdate();
-                        const elementName = element.name;
-                        if (!elementName) return;
-                        if (camelToSnake(elementName) in errorMessage) {
-                            element.errorMessages = errorMessage[camelToSnake(elementName)];
-                            element.invalid = true;
-                        } else {
-                            element.errorMessages = [];
-                            element.invalid = false;
-                        }
+
+            return Promise.resolve(false);
+        }
+
+        if (!data) return Promise.resolve(false);
+
+        if (!this.send) {
+            this.logger.info("No send() method implemented on form, dispatching submit event");
+            this.dispatchEvent(submitEvent);
+            return Promise.resolve(false);
+        }
+
+        showMessage({
+            level: MessageLevel.info,
+            icon: "fas fa-spinner fa-spin",
+            message: this.formatSubmittingLabel(),
+            key: messageKey,
+        });
+
+        return this.send(data)
+            .then((response) => {
+                const successMessage = this.formatAPISuccessMessage(response);
+
+                if (successMessage) {
+                    showMessage({
+                        ...successMessage,
+                        key: messageKey,
                     });
-                    if (errorMessage.nonFieldErrors) {
-                        this.nonFieldErrors = errorMessage.nonFieldErrors;
+                }
+
+                this.dispatchEvent(
+                    new CustomEvent(EVENT_REFRESH, {
+                        bubbles: true,
+                        composed: true,
+                    }),
+                );
+
+                this.dispatchEvent(new AKFormSubmittedEvent(response));
+
+                // Re-dispatch the submit event so that parent components can listen for it.
+                this.dispatchEvent(submitEvent);
+
+                return response as T;
+            })
+            .catch(async (error: unknown) => {
+                if (error instanceof PreventFormSubmit) {
+                    if (error.element instanceof HorizontalFormElement) {
+                        error.element.errorMessages = [error.message];
+                    } else {
+                        this.nonFieldErrors = [error.message];
                     }
-                    // Only change the message when we have `detail`.
-                    // Everything else is handled in the form.
-                    if ("detail" in errorMessage) {
-                        msg = errorMessage.detail;
+                } else {
+                    const parsedError = await parseAPIResponseError(error);
+
+                    if (instanceOfValidationError(parsedError)) {
+                        const invalidFields = reportInvalidFields(
+                            parsedError,
+                            this.renderRoot.querySelectorAll("ak-form-element-horizontal"),
+                        );
+
+                        const focusTarget = Iterator.from(invalidFields)
+                            .map(({ focusTarget }) => focusTarget)
+                            .find(Boolean);
+
+                        if (focusTarget) {
+                            requestAnimationFrame(() => focusTarget.focus?.());
+                        } else if (Array.isArray(parsedError.nonFieldErrors)) {
+                            this.nonFieldErrors = parsedError.nonFieldErrors;
+                        } else {
+                            this.nonFieldErrors = pluckFallbackFieldErrors(parsedError);
+
+                            this.logger.error(
+                                "API rejected the form submission due to an invalid field that doesn't appear to be in the form. This is likely a bug in authentik.",
+                                parsedError,
+                            );
+                        }
+                    }
+
+                    const errorMessage = this.formatAPIErrorMessage(parsedError);
+
+                    if (errorMessage) {
+                        showMessage({
+                            ...errorMessage,
+                            key: messageKey,
+                        });
                     }
                 }
-                // error is local or not from rest_framework
-                showMessage({
-                    message: msg,
-                    level: MessageLevel.error,
-                });
+
+                // Rethrow the error so the form doesn't close.
+                throw error;
+            });
+    };
+
+    protected doSubmit = (event: SubmitEvent): void => {
+        if (this.submitting) {
+            this.logger.info("Skipping submit. Already submitting!");
+            return;
+        }
+
+        this.submitting = true;
+
+        this.submit(event).finally(() => {
+            this.submitting = false;
+        });
+    };
+
+    protected dispatchSubmit = (): void => {
+        return this.doSubmit(
+            new SubmitEvent("submit", {
+                submitter: this,
+                cancelable: true,
+                bubbles: true,
+                composed: true,
+            }),
+        );
+    };
+
+    //#endregion
+
+    //#region Lifecycle
+    public updated(changedProperties: PropertyValues<this>): void {
+        super.updated(changedProperties);
+
+        if (changedProperties.has("size")) {
+            if (this.size) {
+                // eslint-disable-next-line wc/no-self-class
+                this.classList.add(this.size);
+            } else {
+                // eslint-disable-next-line wc/no-self-class
+                this.classList.remove(...Object.values(PFSize));
             }
-            if (ex instanceof PreventFormSubmit && ex.element) {
-                ex.element.errorMessages = [ex.message];
-                ex.element.invalid = true;
-            }
-            // rethrow the error so the form doesn't close
-            throw ex;
         }
     }
 
-    renderFormWrapper(): TemplateResult {
+    //#endregion
+
+    //#region Render
+
+    protected renderFormWrapper(): SlottedTemplateResult {
         const inline = this.renderForm();
-        if (inline) {
-            return html`<form
-                class="pf-c-form pf-m-horizontal"
-                @submit=${(ev: Event) => {
-                    ev.preventDefault();
-                }}
-            >
-                ${inline}
-            </form>`;
+
+        if (!inline) {
+            return this.defaultSlot;
         }
-        return html`<slot></slot>`;
+
+        return html`<form
+            id="form"
+            ${ref(this.formRef)}
+            class="pf-c-form pf-m-horizontal"
+            autocomplete=${ifDefined(this.autocomplete)}
+            method="dialog"
+            @submit=${this.doSubmit}
+        >
+            ${inline}
+        </form>`;
     }
 
-    renderForm(): TemplateResult | undefined {
-        return undefined;
+    /**
+     * An overridable method for rendering the form content.
+     */
+    protected renderForm(): SlottedTemplateResult | null {
+        return null;
     }
 
-    renderNonFieldErrors(): TemplateResult {
-        if (!this.nonFieldErrors) {
-            return html``;
+    /**
+     * Render errors that are not associated with a specific field.
+     */
+    protected renderNonFieldErrors(): SlottedTemplateResult {
+        return guard([this.nonFieldErrors], () => {
+            if (!this.nonFieldErrors) {
+                return nothing;
+            }
+
+            return html`<div class="pf-c-form__alert">
+                ${this.nonFieldErrors.map((err, idx) => {
+                    return html`<div
+                        class="pf-c-alert pf-m-inline pf-m-danger"
+                        role="alert"
+                        aria-labelledby="error-message-${idx}"
+                    >
+                        <div class="pf-c-alert__icon">
+                            <i aria-hidden="true" class="fas fa-exclamation-circle"></i>
+                        </div>
+                        <p id="error-message-${idx}" class="pf-c-alert__title">${err}</p>
+                    </div>`;
+                })}
+            </div>`;
+        });
+    }
+
+    /**
+     * An overridable method for rendering the form header.
+     *
+     * @remarks
+     * If this form is slotted, such as in a modal, this method will not render anything,
+     * allowing the slot parent to provide the header in a more visually appropriate manner.
+     */
+    public renderHeader(force?: boolean): SlottedTemplateResult {
+        const { headline, assignedSlot, verboseName } = this;
+
+        return guard([force, assignedSlot, verboseName, headline], () => {
+            if (
+                !force &&
+                assignedSlot &&
+                (assignedSlot.name === "form" || assignedSlot.name === "")
+            ) {
+                return null;
+            }
+
+            return html`<h1 part="form-header" class="pf-c-title pf-m-2xl">
+                ${this.formatHeadline()}
+            </h1>`;
+        });
+    }
+
+    public renderSubmitButton(submitLabel = this.submitLabel): SlottedTemplateResult {
+        return html`<button
+            type="button"
+            class="pf-c-button pf-m-primary"
+            @click=${this.dispatchSubmit}
+            part="submit-button"
+            aria-description=${msg("Submit action")}
+        >
+            ${this.formatSubmitLabel(submitLabel)}
+        </button>`;
+    }
+
+    /**
+     * An overridable method for rendering the form actions.
+     *
+     * @remarks
+     * If this form is slotted, such as in a modal, this method will not render anything,
+     * allowing the slot parent to provide the actions in a more visually appropriate manner.
+     */
+    public renderActions(force?: boolean): SlottedTemplateResult {
+        const { submitLabel, assignedSlot } = this;
+
+        return guard([force, assignedSlot, submitLabel], () => {
+            if (
+                !force &&
+                assignedSlot &&
+                (assignedSlot.name === "form" || assignedSlot.name === "")
+            ) {
+                return null;
+            }
+
+            return html`<div part="form-actions" class="pf-c-card__footer">
+                ${this.renderSubmitButton()}
+            </div>`;
+        });
+    }
+
+    protected override render(): SlottedTemplateResult {
+        if (!this.visible) {
+            return nothing;
         }
-        return html`<div class="pf-c-form__alert">
-            ${this.nonFieldErrors.map((err) => {
-                return html`<div class="pf-c-alert pf-m-inline pf-m-danger">
-                    <div class="pf-c-alert__icon">
-                        <i class="fas fa-exclamation-circle"></i>
-                    </div>
-                    <h4 class="pf-c-alert__title">${err}</h4>
-                </div>`;
-            })}
-        </div>`;
+
+        return [
+            this.submitting ? this.sendingOverlay : nothing,
+            this.renderHeader(),
+            this.renderNonFieldErrors(),
+            this.renderFormWrapper(),
+            this.renderActions?.() || null,
+        ];
     }
 
-    renderVisible(): TemplateResult {
-        return html` ${this.renderNonFieldErrors()} ${this.renderFormWrapper()}`;
-    }
-
-    render(): TemplateResult {
-        if (this.viewportCheck && !this.isInViewport) {
-            return html``;
-        }
-        return this.renderVisible();
-    }
+    //#endregion
 }

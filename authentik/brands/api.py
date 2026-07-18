@@ -3,29 +3,36 @@
 from typing import Any
 
 from django.db import models
-from drf_spectacular.utils import extend_schema
+from drf_spectacular.utils import extend_schema, extend_schema_field
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
-from rest_framework.fields import CharField, ChoiceField, ListField
+from rest_framework.fields import (
+    CharField,
+    ChoiceField,
+    ListField,
+    SerializerMethodField,
+)
 from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.permissions import AllowAny
 from rest_framework.request import Request
 from rest_framework.response import Response
-from rest_framework.serializers import ModelSerializer
 from rest_framework.validators import UniqueValidator
 from rest_framework.viewsets import ModelViewSet
 
-from authentik.api.authorization import SecretKeyFilter
 from authentik.brands.models import Brand
+from authentik.brands.utils import session_safe_mode
 from authentik.core.api.used_by import UsedByMixin
-from authentik.core.api.utils import PassiveSerializer
+from authentik.core.api.utils import ModelSerializer, PassiveSerializer, ThemedUrlsSerializer
+from authentik.rbac.filters import SecretKeyFilter
+from authentik.tenants.api.settings import FlagJSONField
+from authentik.tenants.flags import Flag
 from authentik.tenants.utils import get_current_tenant
 
 
 class FooterLinkSerializer(PassiveSerializer):
     """Links returned in Config API"""
 
-    href = CharField(read_only=True)
+    href = CharField(read_only=True, allow_null=True)
     name = CharField(read_only=True)
 
 
@@ -50,13 +57,18 @@ class BrandSerializer(ModelSerializer):
             "branding_title",
             "branding_logo",
             "branding_favicon",
+            "branding_custom_css",
+            "branding_default_flow_background",
             "flow_authentication",
             "flow_invalidation",
             "flow_recovery",
             "flow_unenrollment",
             "flow_user_settings",
             "flow_device_code",
+            "flow_lockdown",
+            "default_application",
             "web_certificate",
+            "client_certificates",
             "attributes",
         ]
         extra_kwargs = {
@@ -84,8 +96,11 @@ class CurrentBrandSerializer(PassiveSerializer):
 
     matched_domain = CharField(source="domain")
     branding_title = CharField()
-    branding_logo = CharField()
-    branding_favicon = CharField()
+    branding_logo = CharField(source="branding_logo_url")
+    branding_logo_themed_urls = ThemedUrlsSerializer(read_only=True, allow_null=True)
+    branding_favicon = CharField(source="branding_favicon_url")
+    branding_favicon_themed_urls = ThemedUrlsSerializer(read_only=True, allow_null=True)
+    branding_custom_css = CharField()
     ui_footer_links = ListField(
         child=FooterLinkSerializer(),
         read_only=True,
@@ -104,8 +119,26 @@ class CurrentBrandSerializer(PassiveSerializer):
     flow_unenrollment = CharField(source="flow_unenrollment.slug", required=False)
     flow_user_settings = CharField(source="flow_user_settings.slug", required=False)
     flow_device_code = CharField(source="flow_device_code.slug", required=False)
+    flow_lockdown = CharField(source="flow_lockdown.slug", required=False)
 
     default_locale = CharField(read_only=True)
+    flags = SerializerMethodField()
+
+    @extend_schema_field(field=FlagJSONField)
+    def get_flags(self, _):
+        values = {}
+        for flag in Flag.available(visibility="public"):
+            values[flag().key] = flag.get()
+        return values
+
+    def to_representation(self, instance: Brand) -> dict[str, Any]:
+        data = super().to_representation(instance)
+        # Suppress custom CSS for safe-mode sessions (e.g. recovery links) so that
+        # misconfigured branding cannot prevent a user from reaching the UI to fix it.
+        request = self.context.get("request")
+        if request is not None and session_safe_mode(request):
+            data["branding_custom_css"] = ""
+        return data
 
 
 class BrandViewSet(UsedByMixin, ModelViewSet):
@@ -117,6 +150,7 @@ class BrandViewSet(UsedByMixin, ModelViewSet):
         "domain",
         "branding_title",
         "web_certificate__name",
+        "client_certificates__name",
     ]
     filterset_fields = [
         "brand_uuid",
@@ -125,13 +159,16 @@ class BrandViewSet(UsedByMixin, ModelViewSet):
         "branding_title",
         "branding_logo",
         "branding_favicon",
+        "branding_default_flow_background",
         "flow_authentication",
         "flow_invalidation",
         "flow_recovery",
         "flow_unenrollment",
         "flow_user_settings",
         "flow_device_code",
+        "flow_lockdown",
         "web_certificate",
+        "client_certificates",
     ]
     ordering = ["domain"]
 
@@ -144,4 +181,4 @@ class BrandViewSet(UsedByMixin, ModelViewSet):
     def current(self, request: Request) -> Response:
         """Get current brand"""
         brand: Brand = request._request.brand
-        return Response(CurrentBrandSerializer(brand).data)
+        return Response(CurrentBrandSerializer(brand, context={"request": request}).data)

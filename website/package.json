@@ -1,62 +1,66 @@
 {
-    "name": "@goauthentik/website-docs",
+    "name": "@goauthentik/docs",
     "version": "0.0.0",
-    "private": true,
     "license": "MIT",
+    "private": true,
     "scripts": {
+        "build": "pnpm --filter \"./docs\" run build",
+        "build:api": "pnpm --filter \"./api\" run build",
+        "build:integrations": "pnpm --filter \"./integrations\" run build",
+        "check-types": "tsc -b",
         "docusaurus": "docusaurus",
-        "watch": "docusaurus start",
-        "build": "cp ../docker-compose.yml static/docker-compose.yml && cp ../schema.yml static/schema.yaml && docusaurus build",
-        "build-bundled": "cp ../schema.yml static/schema.yaml && docusaurus build",
-        "swizzle": "docusaurus swizzle",
-        "deploy": "docusaurus deploy",
-        "serve": "docusaurus serve",
-        "prettier-check": "prettier --check .",
+        "lint": "eslint --fix .",
+        "lint-check": "eslint --max-warnings 0 .",
         "prettier": "prettier --write .",
+        "prettier-check": "prettier --check .",
+        "start": "pnpm --filter \"./docs\" run start",
         "test": "node --test"
     },
     "dependencies": {
-        "@docusaurus/core": "^3.2.1",
-        "@docusaurus/plugin-client-redirects": "^3.2.1",
-        "@docusaurus/plugin-content-docs": "^3.2.1",
-        "@docusaurus/preset-classic": "^3.2.1",
-        "@docusaurus/theme-common": "^3.2.1",
-        "@docusaurus/theme-mermaid": "^3.2.1",
-        "@mdx-js/react": "^3.0.1",
-        "clsx": "^2.1.1",
-        "disqus-react": "^1.1.5",
-        "postcss": "^8.4.38",
-        "prism-react-renderer": "^2.3.1",
-        "react": "^18.3.1",
-        "react-before-after-slider-component": "^1.1.8",
-        "react-dom": "^18.3.1",
-        "react-feather": "^2.0.10",
-        "react-toggle": "^4.1.3",
-        "react-tooltip": "^5.26.4",
-        "redocusaurus": "^2.0.2",
-        "remark-github": "^12.0.0"
+        "@eslint/js": "catalog:",
+        "@goauthentik/brand-assets": "^2.0.0",
+        "@goauthentik/docusaurus-theme": "workspace:*",
+        "@goauthentik/eslint-config": "link:../packages/eslint-config",
+        "@goauthentik/prettier-config": "link:../packages/prettier-config",
+        "@goauthentik/tsconfig": "link:../packages/tsconfig",
+        "@types/node": "catalog:",
+        "deepmerge-ts": "^7.1.5",
+        "escape-string-regexp": "^5.0.0",
+        "eslint": "catalog:",
+        "netlify-plugin-cache": "^1.0.3",
+        "netlify-redirect-parser": "^14.4.0",
+        "npm-run-all": "^4.1.5",
+        "postman-code-generators": "2.1.1",
+        "prettier": "catalog:",
+        "prettier-plugin-packagejson": "catalog:",
+        "typescript": "catalog:",
+        "typescript-eslint": "^8.64.0"
     },
-    "browserslist": {
-        "production": [
-            ">0.2%",
-            "not dead",
-            "not op_mini all"
-        ],
-        "development": [
-            "last 1 chrome version",
-            "last 1 firefox version",
-            "last 1 safari version"
-        ]
-    },
-    "devDependencies": {
-        "@docusaurus/module-type-aliases": "3.2.1",
-        "@docusaurus/tsconfig": "3.2.1",
-        "@docusaurus/types": "3.2.1",
-        "@types/react": "^18.3.1",
-        "prettier": "3.2.5",
-        "typescript": "~5.4.5"
+    "optionalDependencies": {
+        "@rspack/binding-darwin-arm64": "2.1.3",
+        "@rspack/binding-linux-arm64-gnu": "2.1.3",
+        "@rspack/binding-linux-x64-gnu": "2.1.3",
+        "@swc/core-darwin-arm64": "1.15.43",
+        "@swc/core-linux-arm64-gnu": "1.15.43",
+        "@swc/core-linux-x64-gnu": "1.15.43",
+        "@swc/html-darwin-arm64": "1.15.43",
+        "@swc/html-linux-arm64-gnu": "1.15.43",
+        "@swc/html-linux-x64-gnu": "1.15.43",
+        "lightningcss-darwin-arm64": "1.32.0",
+        "lightningcss-linux-arm64-gnu": "1.32.0",
+        "lightningcss-linux-x64-gnu": "1.32.0"
     },
     "engines": {
-        "node": ">=20"
-    }
+        "node": ">=24",
+        "pnpm": ">=11.9.0"
+    },
+    "devEngines": {
+        "runtime": {
+            "name": "node",
+            "onFail": "error",
+            "version": ">=24"
+        }
+    },
+    "packageManager": "pnpm@11.9.0+sha512.bd682d5d03fe525ef7c9fd6780c6884d1e756ac4c9c9fe00c538782824310dcf90e3ddc4f53835f06dfaebd5085e41855e0bcbb3b60de2ac5bbab89e5036f03b",
+    "prettier": "@goauthentik/prettier-config"
 }

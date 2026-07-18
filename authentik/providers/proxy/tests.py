@@ -1,11 +1,15 @@
 """proxy provider tests"""
 
+from json import loads
+
 from django.urls import reverse
 from rest_framework.test import APITestCase
 
-from authentik.core.tests.utils import create_test_admin_user, create_test_flow
+from authentik.core.models import Application
+from authentik.core.tests.utils import create_test_admin_user, create_test_cert, create_test_flow
 from authentik.lib.generators import generate_id
-from authentik.providers.oauth2.models import ClientTypes
+from authentik.outposts.models import Outpost, OutpostType
+from authentik.providers.oauth2.models import ClientType
 from authentik.providers.proxy.models import ProxyMode, ProxyProvider
 
 
@@ -24,6 +28,7 @@ class ProxyProviderTests(APITestCase):
                 "name": generate_id(),
                 "mode": ProxyMode.PROXY,
                 "authorization_flow": create_test_flow().pk.hex,
+                "invalidation_flow": create_test_flow().pk.hex,
                 "external_host": "http://localhost",
                 "internal_host": "http://localhost",
                 "basic_auth_enabled": True,
@@ -41,6 +46,7 @@ class ProxyProviderTests(APITestCase):
                 "name": generate_id(),
                 "mode": ProxyMode.PROXY,
                 "authorization_flow": create_test_flow().pk.hex,
+                "invalidation_flow": create_test_flow().pk.hex,
                 "external_host": "http://localhost",
                 "internal_host": "http://localhost",
                 "basic_auth_enabled": True,
@@ -64,6 +70,7 @@ class ProxyProviderTests(APITestCase):
                 "name": generate_id(),
                 "mode": ProxyMode.PROXY,
                 "authorization_flow": create_test_flow().pk.hex,
+                "invalidation_flow": create_test_flow().pk.hex,
                 "external_host": "http://localhost",
             },
         )
@@ -82,13 +89,14 @@ class ProxyProviderTests(APITestCase):
                 "name": name,
                 "mode": ProxyMode.PROXY,
                 "authorization_flow": create_test_flow().pk.hex,
+                "invalidation_flow": create_test_flow().pk.hex,
                 "external_host": "http://localhost",
                 "internal_host": "http://localhost",
             },
         )
         self.assertEqual(response.status_code, 201)
         provider: ProxyProvider = ProxyProvider.objects.get(name=name)
-        self.assertEqual(provider.client_type, ClientTypes.CONFIDENTIAL)
+        self.assertEqual(provider.client_type, ClientType.CONFIDENTIAL)
 
     def test_update_defaults(self):
         """Test create"""
@@ -99,14 +107,15 @@ class ProxyProviderTests(APITestCase):
                 "name": name,
                 "mode": ProxyMode.PROXY,
                 "authorization_flow": create_test_flow().pk.hex,
+                "invalidation_flow": create_test_flow().pk.hex,
                 "external_host": "http://localhost",
                 "internal_host": "http://localhost",
             },
         )
         self.assertEqual(response.status_code, 201)
         provider: ProxyProvider = ProxyProvider.objects.get(name=name)
-        self.assertEqual(provider.client_type, ClientTypes.CONFIDENTIAL)
-        provider.client_type = ClientTypes.PUBLIC
+        self.assertEqual(provider.client_type, ClientType.CONFIDENTIAL)
+        provider.client_type = ClientType.PUBLIC
         provider.save()
         response = self.client.put(
             reverse("authentik_api:proxyprovider-detail", kwargs={"pk": provider.pk}),
@@ -114,10 +123,63 @@ class ProxyProviderTests(APITestCase):
                 "name": name,
                 "mode": ProxyMode.PROXY,
                 "authorization_flow": create_test_flow().pk.hex,
+                "invalidation_flow": create_test_flow().pk.hex,
                 "external_host": "http://localhost",
                 "internal_host": "http://localhost",
             },
         )
         self.assertEqual(response.status_code, 200)
         provider: ProxyProvider = ProxyProvider.objects.get(name=name)
-        self.assertEqual(provider.client_type, ClientTypes.CONFIDENTIAL)
+        self.assertEqual(provider.client_type, ClientType.CONFIDENTIAL)
+
+    def test_sa_fetch(self):
+        """Test fetching the outpost config as the service account"""
+        outpost = Outpost.objects.create(name=generate_id(), type=OutpostType.PROXY)
+        provider = ProxyProvider.objects.create(name=generate_id())
+        Application.objects.create(name=generate_id(), slug=generate_id(), provider=provider)
+        outpost.providers.add(provider)
+
+        res = self.client.get(
+            reverse("authentik_api:proxyprovideroutpost-list"),
+            HTTP_AUTHORIZATION=f"Bearer {outpost.token.key}",
+        )
+        body = loads(res.content)
+        self.assertEqual(body["pagination"]["count"], 1)
+
+    def test_sa_perms_cert(self):
+        """Test permissions to access a configured certificate"""
+        cert = create_test_cert()
+        outpost = Outpost.objects.create(name=generate_id(), type=OutpostType.PROXY)
+        provider = ProxyProvider.objects.create(name=generate_id(), certificate=cert)
+        Application.objects.create(name=generate_id(), slug=generate_id(), provider=provider)
+        outpost.providers.add(provider)
+
+        res = self.client.get(
+            reverse("authentik_api:proxyprovideroutpost-list"),
+            HTTP_AUTHORIZATION=f"Bearer {outpost.token.key}",
+        )
+        body = loads(res.content)
+        self.assertEqual(body["pagination"]["count"], 1)
+        cert_id = body["results"][0]["certificate"]
+        self.assertEqual(cert_id, str(cert.pk))
+
+        res = self.client.get(
+            reverse(
+                "authentik_api:certificatekeypair-view-certificate",
+                kwargs={
+                    "pk": cert_id,
+                },
+            ),
+            HTTP_AUTHORIZATION=f"Bearer {outpost.token.key}",
+        )
+        self.assertEqual(res.status_code, 200)
+        # res = self.client.get(
+        #     reverse(
+        #         "authentik_api:certificatekeypair-view-private-key",
+        #         kwargs={
+        #             "pk": cert_id,
+        #         },
+        #     ),
+        #     HTTP_AUTHORIZATION=f"Bearer {outpost.token.key}",
+        # )
+        # self.assertEqual(res.status_code, 200)

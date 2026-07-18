@@ -3,7 +3,6 @@
 from structlog.stdlib import get_logger
 
 from authentik.providers.scim.models import SCIMProvider
-from authentik.providers.scim.tasks import scim_task_wrapper
 from authentik.tenants.management import TenantCommand
 
 LOGGER = get_logger()
@@ -21,4 +20,5 @@ class Command(TenantCommand):
             if not provider:
                 LOGGER.warning("Provider does not exist", name=provider_name)
                 continue
-            scim_task_wrapper(provider.pk).get()
+            for schedule in provider.schedules.all():
+                schedule.send().get_result()

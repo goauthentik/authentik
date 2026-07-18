@@ -1,22 +1,42 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import "@goauthentik/elements/CodeMirror";
-import "@goauthentik/elements/forms/HorizontalFormElement";
-import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
+import "#components/ak-secret-textarea-input";
+import "#components/ak-text-input";
+import "#elements/CodeMirror";
+import "#elements/forms/HorizontalFormElement";
 
-import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
-import { customElement } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
+import { aki } from "#common/api/client";
+
+import { ModelForm } from "#elements/forms/ModelForm";
 
 import { CertificateKeyPair, CertificateKeyPairRequest, CryptoApi } from "@goauthentik/api";
 
+import { msg } from "@lit/localize";
+import { html, TemplateResult } from "lit";
+import { customElement } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
+
 @customElement("ak-crypto-certificate-form")
-export class CertificateKeyPairForm extends ModelForm<CertificateKeyPair, string> {
-    loadInstance(pk: string): Promise<CertificateKeyPair> {
-        return new CryptoApi(DEFAULT_CONFIG).cryptoCertificatekeypairsRetrieve({
-            kpUuid: pk,
-        });
-    }
+export class CryptoCertificateForm extends ModelForm<CertificateKeyPair, string> {
+    public static override verboseName = msg("Certificate-Key Pair");
+    public static override verboseNamePlural = msg("Certificate-Key Pairs");
+    public static override createLabel = msg("Import Existing");
+    public static override submitVerb = msg("Import");
+    public static override submittingVerb = msg("Importing");
+
+    protected endpoints = {
+        load: (kpUuid: string) =>
+            aki(CryptoApi).cryptoCertificatekeypairsRetrieve({
+                kpUuid,
+            }),
+        create: (data: CertificateKeyPair) =>
+            aki(CryptoApi).cryptoCertificatekeypairsCreate({
+                certificateKeyPairRequest: data as unknown as CertificateKeyPairRequest,
+            }),
+        update: (kpUuid: string, patchedCertificateKeyPairRequest: CertificateKeyPair) =>
+            aki(CryptoApi).cryptoCertificatekeypairsPartialUpdate({
+                kpUuid,
+                patchedCertificateKeyPairRequest,
+            }),
+    };
 
     getSuccessMessage(): string {
         return this.instance
@@ -24,48 +44,41 @@ export class CertificateKeyPairForm extends ModelForm<CertificateKeyPair, string
             : msg("Successfully created certificate-key pair.");
     }
 
-    async send(data: CertificateKeyPair): Promise<CertificateKeyPair> {
-        if (this.instance) {
-            return new CryptoApi(DEFAULT_CONFIG).cryptoCertificatekeypairsPartialUpdate({
-                kpUuid: this.instance.pk || "",
-                patchedCertificateKeyPairRequest: data,
-            });
-        } else {
-            return new CryptoApi(DEFAULT_CONFIG).cryptoCertificatekeypairsCreate({
-                certificateKeyPairRequest: data as unknown as CertificateKeyPairRequest,
-            });
-        }
-    }
-
-    renderForm(): TemplateResult {
-        return html` <ak-form-element-horizontal label=${msg("Name")} name="name" ?required=${true}>
-                <input
-                    type="text"
-                    value="${ifDefined(this.instance?.name)}"
-                    class="pf-c-form-control"
-                    required
-                />
-            </ak-form-element-horizontal>
-            <ak-form-element-horizontal
+    protected override renderForm(): TemplateResult {
+        return html`<ak-text-input
+                label=${msg("Certificate Name")}
+                name="name"
+                required
+                value="${ifDefined(this.instance?.name)}"
+                placeholder=${msg("Type a name for this certificate-key pair...")}
+                autofocus
+                autocomplete="off"
+                spellcheck="false"
+            ></ak-text-input>
+            <ak-secret-textarea-input
                 label=${msg("Certificate")}
                 name="certificateData"
-                ?writeOnly=${this.instance !== undefined}
-                ?required=${true}
-            >
-                <textarea class="pf-c-form-control" required></textarea>
-                <p class="pf-c-form__helper-text">${msg("PEM-encoded Certificate data.")}</p>
-            </ak-form-element-horizontal>
-            <ak-form-element-horizontal
-                name="keyData"
-                ?writeOnly=${this.instance !== undefined}
+                input-hint="code"
+                placeholder="-----BEGIN CERTIFICATE-----"
+                ?required=${!this.instance}
+                ?revealed=${!this.instance}
+                help=${msg("PEM-encoded Certificate data.")}
+            ></ak-secret-textarea-input>
+            <ak-secret-textarea-input
                 label=${msg("Private Key")}
-            >
-                <textarea class="pf-c-form-control"></textarea>
-                <p class="pf-c-form__helper-text">
-                    ${msg(
-                        "Optional Private Key. If this is set, you can use this keypair for encryption.",
-                    )}
-                </p>
-            </ak-form-element-horizontal>`;
+                placeholder="-----BEGIN PRIVATE KEY-----"
+                name="keyData"
+                input-hint="code"
+                ?revealed=${!this.instance}
+                help=${msg(
+                    "Optional Private Key. If this is set, you can use this keypair for encryption.",
+                )}
+            ></ak-secret-textarea-input>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-crypto-certificate-form": CryptoCertificateForm;
     }
 }

@@ -10,22 +10,26 @@ from structlog.stdlib import get_logger
 
 from authentik.core.models import Application
 from authentik.events.models import Event, EventAction
+from authentik.events.signals import get_login_event
+from authentik.flows.apps import ContinuousLogin
 from authentik.flows.exceptions import FlowNonApplicableException
 from authentik.flows.models import in_memory_stage
 from authentik.flows.planner import PLAN_CONTEXT_APPLICATION, PLAN_CONTEXT_SSO, FlowPlanner
-from authentik.flows.views.executor import SESSION_KEY_PLAN, SESSION_KEY_POST
-from authentik.lib.utils.urls import redirect_with_qs
+from authentik.flows.views.executor import SESSION_KEY_POST
 from authentik.lib.views import bad_request_message
 from authentik.policies.views import PolicyAccessView
 from authentik.providers.saml.exceptions import CannotHandleAssertion
-from authentik.providers.saml.models import SAMLProvider
-from authentik.providers.saml.processors.authn_request_parser import AuthNRequestParser
+from authentik.providers.saml.models import SAMLBindings, SAMLProvider
+from authentik.providers.saml.processors.authn_request_parser import (
+    AuthNRequest,
+    AuthNRequestParser,
+)
 from authentik.providers.saml.views.flows import (
+    PLAN_CONTEXT_SAML_AUTH_N_REQUEST,
     REQUEST_KEY_RELAY_STATE,
     REQUEST_KEY_SAML_REQUEST,
     REQUEST_KEY_SAML_SIG_ALG,
     REQUEST_KEY_SAML_SIGNATURE,
-    SESSION_KEY_AUTH_N_REQUEST,
     SAMLFlowFinalView,
 )
 from authentik.stages.consent.stage import (
@@ -35,10 +39,16 @@ from authentik.stages.consent.stage import (
 
 LOGGER = get_logger()
 
+SESSION_KEY_LAST_LOGIN_UID = "authentik/providers/saml/last_login_uid"
+
 
 class SAMLSSOView(PolicyAccessView):
     """SAML SSO Base View, which plans a flow and injects our final stage.
     Calls get/post handler."""
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.plan_context = {}
 
     def resolve_provider_application(self):
         self.application = get_object_or_404(Application, slug=self.kwargs["application_slug"])
@@ -50,6 +60,10 @@ class SAMLSSOView(PolicyAccessView):
         """Handler to verify the SAML Request. Must be implemented by a subclass"""
         raise NotImplementedError
 
+    def get_resume_url(self) -> str | None:
+        """URL to re-enter this SAML request after another tab authenticated."""
+        return None
+
     def get(self, request: HttpRequest, application_slug: str) -> HttpResponse:
         """Verify the SAML Request, and if valid initiate the FlowPlanner for the application"""
         # Call the method handler, which checks the SAML
@@ -57,6 +71,15 @@ class SAMLSSOView(PolicyAccessView):
         method_response = self.check_saml_request()
         if method_response:
             return method_response
+        # If the SP requested ForceAuthn, we must re-authenticate the user regardless of
+        # any existing session, mirroring the OIDC provider's prompt=login handling.
+        auth_n_request: AuthNRequest | None = self.plan_context.get(
+            PLAN_CONTEXT_SAML_AUTH_N_REQUEST
+        )
+        if auth_n_request and auth_n_request.force_authn:
+            reauth_response = self.check_force_authn(request)
+            if reauth_response:
+                return reauth_response
         # Regardless, we start the planner and return to it
         planner = FlowPlanner(self.provider.authorization_flow)
         planner.allow_empty_flows = True
@@ -69,16 +92,21 @@ class SAMLSSOView(PolicyAccessView):
                     PLAN_CONTEXT_CONSENT_HEADER: _("You're about to sign into %(application)s.")
                     % {"application": self.application.name},
                     PLAN_CONTEXT_CONSENT_PERMISSIONS: [],
+                    **self.plan_context,
                 },
             )
         except FlowNonApplicableException:
             raise Http404 from None
         plan.append_stage(in_memory_stage(SAMLFlowFinalView))
-        request.session[SESSION_KEY_PLAN] = plan
-        return redirect_with_qs(
-            "authentik_core:if-flow",
-            request.GET,
-            flow_slug=self.provider.authorization_flow.slug,
+        return plan.to_redirect(
+            request,
+            self.provider.authorization_flow,
+            next=self.get_resume_url(),
+            allowed_silent_types=(
+                [SAMLFlowFinalView]
+                if self.provider.sp_binding in [SAMLBindings.REDIRECT] and not ContinuousLogin.get()
+                else []
+            ),
         )
 
     def post(self, request: HttpRequest, application_slug: str) -> HttpResponse:
@@ -86,9 +114,30 @@ class SAMLSSOView(PolicyAccessView):
         override .dispatch easily because PolicyAccessView's dispatch"""
         return self.get(request, application_slug)
 
+    def check_force_authn(self, request: HttpRequest) -> HttpResponse | None:
+        """Trigger re-authentication when the AuthnRequest carries ForceAuthn. Returns a
+        redirect into the authentication flow if re-auth is still required, otherwise
+        None to let the SSO flow proceed."""
+        login_event = get_login_event(request)
+        login_uid = str(login_event.pk) if login_event else None
+        # Re-authenticate if it hasn't happened yet: either we have no record of a forced
+        # login for this session, or the session's login event still matches the one we
+        # saw before redirecting to the authentication flow. Once the user re-logs in, a
+        # new login event is created, the UID changes, and we stop forcing re-auth.
+        if (
+            SESSION_KEY_LAST_LOGIN_UID not in request.session
+            or login_uid == request.session[SESSION_KEY_LAST_LOGIN_UID]
+        ):
+            request.session[SESSION_KEY_LAST_LOGIN_UID] = login_uid
+            return self.handle_no_permission()
+        return None
+
 
 class SAMLSSOBindingRedirectView(SAMLSSOView):
     """SAML Handler for SSO/Redirect bindings, which are sent via GET"""
+
+    def get_resume_url(self) -> str | None:
+        return self.request.get_full_path()
 
     def check_saml_request(self) -> HttpRequest | None:
         """Handle REDIRECT bindings"""
@@ -103,7 +152,7 @@ class SAMLSSOBindingRedirectView(SAMLSSOView):
                 self.request.GET.get(REQUEST_KEY_SAML_SIGNATURE),
                 self.request.GET.get(REQUEST_KEY_SAML_SIG_ALG),
             )
-            self.request.session[SESSION_KEY_AUTH_N_REQUEST] = auth_n_request
+            self.plan_context[PLAN_CONTEXT_SAML_AUTH_N_REQUEST] = auth_n_request
         except CannotHandleAssertion as exc:
             Event.new(
                 EventAction.CONFIGURATION_ERROR,
@@ -137,7 +186,7 @@ class SAMLSSOBindingPOSTView(SAMLSSOView):
                 payload[REQUEST_KEY_SAML_REQUEST],
                 payload.get(REQUEST_KEY_RELAY_STATE),
             )
-            self.request.session[SESSION_KEY_AUTH_N_REQUEST] = auth_n_request
+            self.plan_context[PLAN_CONTEXT_SAML_AUTH_N_REQUEST] = auth_n_request
         except CannotHandleAssertion as exc:
             LOGGER.info(str(exc))
             return bad_request_message(self.request, str(exc))
@@ -151,4 +200,4 @@ class SAMLSSOBindingInitView(SAMLSSOView):
         """Create SAML Response from scratch"""
         LOGGER.debug("No SAML Request, using IdP-initiated flow.")
         auth_n_request = AuthNRequestParser(self.provider).idp_initiated()
-        self.request.session[SESSION_KEY_AUTH_N_REQUEST] = auth_n_request
+        self.plan_context[PLAN_CONTEXT_SAML_AUTH_N_REQUEST] = auth_n_request

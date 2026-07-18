@@ -30,7 +30,7 @@ class GeoIPBinding(models.TextChoices):
 
 
 class UserLoginStage(Stage):
-    """Attaches the currently pending user to the current session."""
+    """Attach the pending user to the current session."""
 
     session_duration = models.TextField(
         default="seconds=0",
@@ -60,6 +60,15 @@ class UserLoginStage(Stage):
         help_text=_(
             "Offset the session will be extended by when the user picks the remember me option. "
             "Default of 0 means that the remember me option will not be shown. "
+            "(Format: hours=-1;minutes=-2;seconds=-3)"
+        ),
+    )
+    remember_device = models.TextField(
+        default="days=30",
+        validators=[timedelta_string_validator],
+        help_text=_(
+            "When set to a non-zero value, authentik will save a cookie with a longer expiry,"
+            "to remember the device the user is logging in from. "
             "(Format: hours=-1;minutes=-2;seconds=-3)"
         ),
     )

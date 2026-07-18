@@ -13,16 +13,17 @@ import authentik.outposts.models
 
 
 def fix_missing_token_identifier(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
+    db_alias = schema_editor.connection.alias
     User = apps.get_model("authentik_core", "User")
     Token = apps.get_model("authentik_core", "Token")
     from authentik.outposts.models import Outpost
 
-    for outpost in Outpost.objects.using(schema_editor.connection.alias).all().only("pk"):
+    for outpost in Outpost.objects.using(db_alias).all().only("pk"):
         user_identifier = outpost.user_identifier
-        users = User.objects.filter(username=user_identifier)
+        users = User.objects.using(db_alias).filter(username=user_identifier)
         if not users.exists():
             continue
-        tokens = Token.objects.filter(user=users.first())
+        tokens = Token.objects.using(db_alias).filter(user=users.first())
         for token in tokens:
             if token.identifier != outpost.token_identifier:
                 token.identifier = outpost.token_identifier
@@ -37,8 +38,8 @@ def migrate_to_service_connection(apps: Apps, schema_editor: BaseDatabaseSchemaE
         "authentik_outposts", "KubernetesServiceConnection"
     )
 
-    docker = DockerServiceConnection.objects.filter(local=True).first()
-    k8s = KubernetesServiceConnection.objects.filter(local=True).first()
+    docker = DockerServiceConnection.objects.using(db_alias).filter(local=True).first()
+    k8s = KubernetesServiceConnection.objects.using(db_alias).filter(local=True).first()
 
     try:
         for outpost in Outpost.objects.using(db_alias).all().exclude(deployment_type="custom"):
@@ -54,21 +55,21 @@ def migrate_to_service_connection(apps: Apps, schema_editor: BaseDatabaseSchemaE
 
 
 def remove_pb_prefix_users(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
-    alias = schema_editor.connection.alias
+    db_alias = schema_editor.connection.alias
     User = apps.get_model("authentik_core", "User")
     Outpost = apps.get_model("authentik_outposts", "Outpost")
 
-    for outpost in Outpost.objects.using(alias).all():
-        matching = User.objects.using(alias).filter(username=f"pb-outpost-{outpost.uuid.hex}")
+    for outpost in Outpost.objects.using(db_alias).all():
+        matching = User.objects.using(db_alias).filter(username=f"pb-outpost-{outpost.uuid.hex}")
         if matching.exists():
             matching.delete()
 
 
 def update_config_prefix(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
-    alias = schema_editor.connection.alias
+    db_alias = schema_editor.connection.alias
     Outpost = apps.get_model("authentik_outposts", "Outpost")
 
-    for outpost in Outpost.objects.using(alias).all():
+    for outpost in Outpost.objects.using(db_alias).all():
         config = outpost._config
         for key in list(config):
             if "passbook" in key:

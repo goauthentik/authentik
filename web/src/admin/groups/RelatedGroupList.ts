@@ -1,41 +1,46 @@
-import "@goauthentik/admin/groups/GroupForm";
-import "@goauthentik/admin/groups/GroupForm";
-import "@goauthentik/admin/users/GroupSelectModal";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { uiConfig } from "@goauthentik/common/ui/config";
-import "@goauthentik/components/ak-status-label";
-import "@goauthentik/elements/buttons/SpinnerButton";
-import "@goauthentik/elements/forms/DeleteBulkForm";
-import { Form } from "@goauthentik/elements/forms/Form";
-import "@goauthentik/elements/forms/HorizontalFormElement";
-import "@goauthentik/elements/forms/ModalForm";
-import { PaginatedResponse } from "@goauthentik/elements/table/Table";
-import { Table, TableColumn } from "@goauthentik/elements/table/Table";
+import "#admin/users/ak-user-group-table";
+import "#components/ak-status-label";
+import "#elements/buttons/SpinnerButton/index";
+import "#elements/forms/DeleteBulkForm";
+import "#elements/forms/HorizontalFormElement";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
-import { msg, str } from "@lit/localize";
-import { TemplateResult, html } from "lit";
-import { customElement, property, state } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
+import { aki } from "#common/api/client";
+
+import { modalInvoker, renderModal } from "#elements/dialogs";
+import { AKFormSubmitEvent, Form } from "#elements/forms/Form";
+import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
+import { SlottedTemplateResult } from "#elements/types";
+
+import { GroupForm } from "#admin/groups/ak-group-form";
 
 import { CoreApi, Group, User } from "@goauthentik/api";
 
+import { msg, str } from "@lit/localize";
+import { html, nothing, TemplateResult } from "lit";
+import { customElement, property, state } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
+
 @customElement("ak-group-related-add")
 export class RelatedGroupAdd extends Form<{ groups: string[] }> {
+    public static override verboseName = msg("Group");
+    public static override submitVerb = msg("Add");
+    public static override createLabel = msg("Add");
+
     @property({ attribute: false })
-    user?: User;
+    public user?: User;
 
     @state()
-    groupsToAdd: Group[] = [];
+    public groupsToAdd: Group[] = [];
 
-    getSuccessMessage(): string {
+    public override getSuccessMessage(): string {
         return msg("Successfully added user to group(s).");
     }
 
-    async send(data: { groups: string[] }): Promise<unknown> {
+    protected async send(data: { groups: string[] }): Promise<unknown> {
         await Promise.all(
             data.groups.map((group) => {
-                return new CoreApi(DEFAULT_CONFIG).coreGroupsAddUserCreate({
+                return aki(CoreApi).coreGroupsAddUserCreate({
                     groupUuid: group,
                     userAccountRequest: {
                         pk: this.user?.pk || 0,
@@ -43,30 +48,43 @@ export class RelatedGroupAdd extends Form<{ groups: string[] }> {
                 });
             }),
         );
+
         return data;
     }
 
-    renderForm(): TemplateResult {
+    protected openUserGroupSelectModal = () => {
+        return renderModal(html`
+            <ak-form
+                headline=${msg("Select Groups")}
+                submit-label=${msg("Confirm")}
+                @submit=${(event: AKFormSubmitEvent<Group[]>) => {
+                    this.groupsToAdd = event.target.toJSON();
+                }}
+                ><ak-user-group-table></ak-user-group-table>
+            </ak-form>
+        `);
+    };
+
+    protected override renderForm(): TemplateResult {
         return html`<ak-form-element-horizontal label=${msg("Groups to add")} name="groups">
             <div class="pf-c-input-group">
-                <ak-user-group-select-table
-                    .confirm=${(items: Group[]) => {
-                        this.groupsToAdd = items;
-                        this.requestUpdate();
-                        return Promise.resolve();
-                    }}
+                <button
+                    class="pf-c-button pf-m-control"
+                    type="button"
+                    @click=${this.openUserGroupSelectModal}
                 >
-                    <button slot="trigger" class="pf-c-button pf-m-control" type="button">
-                        <pf-tooltip position="top" content=${msg("Add group")}>
-                            <i class="fas fa-plus" aria-hidden="true"></i>
-                        </pf-tooltip>
-                    </button>
-                </ak-user-group-select-table>
+                    <pf-tooltip position="top" content=${msg("Add group")}>
+                        <i class="fas fa-plus" aria-hidden="true"></i>
+                    </pf-tooltip>
+                </button>
                 <div class="pf-c-form-control">
-                    <ak-chip-group>
+                    <ak-chip-group
+                        @click=${this.openUserGroupSelectModal}
+                        placeholder=${msg("Select one or more groups...")}
+                    >
                         ${this.groupsToAdd.map((group) => {
                             return html`<ak-chip
-                                .removable=${true}
+                                removable
                                 value=${ifDefined(group.pk)}
                                 @remove=${() => {
                                     const idx = this.groupsToAdd.indexOf(group);
@@ -88,9 +106,7 @@ export class RelatedGroupAdd extends Form<{ groups: string[] }> {
 export class RelatedGroupList extends Table<Group> {
     checkbox = true;
     clearOnRefresh = true;
-    searchEnabled(): boolean {
-        return true;
-    }
+    protected override searchEnabled = true;
 
     @property()
     order = "name";
@@ -98,39 +114,33 @@ export class RelatedGroupList extends Table<Group> {
     @property({ attribute: false })
     targetUser?: User;
 
-    async apiEndpoint(page: number): Promise<PaginatedResponse<Group>> {
-        return new CoreApi(DEFAULT_CONFIG).coreGroupsList({
-            ordering: this.order,
-            page: page,
-            pageSize: (await uiConfig()).pagination.perPage,
-            search: this.search || "",
+    async apiEndpoint(): Promise<PaginatedResponse<Group>> {
+        return aki(CoreApi).coreGroupsList({
+            ...(await this.defaultEndpointConfig()),
             membersByPk: this.targetUser ? [this.targetUser.pk] : [],
             includeUsers: false,
         });
     }
 
-    columns(): TableColumn[] {
-        return [
-            new TableColumn(msg("Name"), "name"),
-            new TableColumn(msg("Parent"), "parent"),
-            new TableColumn(msg("Superuser privileges?")),
-            new TableColumn(msg("Actions")),
-        ];
-    }
+    protected columns: TableColumn[] = [
+        [msg("Name"), "name"],
+        [msg("Superuser privileges?")],
+        [msg("Actions"), null, msg("Row Actions")],
+    ];
 
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
-            objectLabel=${msg("Group(s)")}
-            actionLabel=${msg("Remove from Group(s)")}
-            actionSubtext=${msg(
+            object-label=${msg("Group(s)")}
+            submit-label=${msg("Remove from Group(s)")}
+            action-subtext=${msg(
                 str`Are you sure you want to remove user ${this.targetUser?.username} from the following groups?`,
             )}
-            buttonLabel=${msg("Remove")}
+            button-label=${msg("Remove")}
             .objects=${this.selectedElements}
             .delete=${(item: Group) => {
                 if (!this.targetUser) return;
-                return new CoreApi(DEFAULT_CONFIG).coreGroupsRemoveUserCreate({
+                return aki(CoreApi).coreGroupsRemoveUserCreate({
                     groupUuid: item.pk,
                     userAccountRequest: {
                         pk: this.targetUser?.pk || 0,
@@ -144,46 +154,42 @@ export class RelatedGroupList extends Table<Group> {
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: Group): TemplateResult[] {
+    row(item: Group): SlottedTemplateResult[] {
         return [
             html`<a href="#/identity/groups/${item.pk}">${item.name}</a>`,
-            html`${item.parentName || msg("-")}`,
-            html`<ak-label type="info" ?good=${item.isSuperuser}></ak-label>`,
-            html` <ak-forms-modal>
-                <span slot="submit"> ${msg("Update")} </span>
-                <span slot="header"> ${msg("Update Group")} </span>
-                <ak-group-form slot="form" .instancePk=${item.pk}> </ak-group-form>
-                <button slot="trigger" class="pf-c-button pf-m-plain">
-                    <pf-tooltip position="top" content=${msg("Edit")}>
-                        <i class="fas fa-edit"></i>
-                    </pf-tooltip>
-                </button>
-            </ak-forms-modal>`,
+            html`<ak-status-label type="neutral" ?good=${item.isSuperuser}></ak-status-label>`,
+            html`<button
+                class="pf-c-button pf-m-plain"
+                ${modalInvoker(GroupForm, { instancePk: item.pk })}
+            >
+                <pf-tooltip position="top" content=${msg("Edit")}>
+                    <i class="fas fa-edit" aria-hidden="true"></i>
+                </pf-tooltip>
+            </button>`,
         ];
     }
 
     renderToolbar(): TemplateResult {
         return html`
             ${this.targetUser
-                ? html`<ak-forms-modal>
-                      <span slot="submit"> ${msg("Add")} </span>
-                      <span slot="header"> ${msg("Add Group")} </span>
-                      <ak-group-related-add .user=${this.targetUser} slot="form">
-                      </ak-group-related-add>
-                      <button slot="trigger" class="pf-c-button pf-m-primary">
-                          ${msg("Add to existing group")}
-                      </button>
-                  </ak-forms-modal>`
-                : html``}
-            <ak-forms-modal>
-                <span slot="submit"> ${msg("Create")} </span>
-                <span slot="header"> ${msg("Create Group")} </span>
-                <ak-group-form slot="form"> </ak-group-form>
-                <button slot="trigger" class="pf-c-button pf-m-secondary">
-                    ${msg("Add new group")}
-                </button>
-            </ak-forms-modal>
+                ? html`<button
+                      class="pf-c-button pf-m-primary"
+                      ${modalInvoker(RelatedGroupAdd, { user: this.targetUser })}
+                  >
+                      ${msg("Add to existing group")}
+                  </button>`
+                : nothing}
+            <button class="pf-c-button pf-m-secondary" ${modalInvoker(GroupForm)}>
+                ${msg("Add new group")}
+            </button>
             ${super.renderToolbar()}
         `;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-group-related-list": RelatedGroupList;
+        "ak-group-related-add": RelatedGroupAdd;
     }
 }

@@ -1,0 +1,95 @@
+---
+title: Integrate with Zoho
+sidebar_label: Zoho
+support_level: community
+---
+
+## What is Zoho?
+
+> Zoho provides a suite of cloud applications for business operations, including email, collaboration, CRM, finance, HR, and analytics tools.
+>
+> -- https://www.zoho.com
+
+## Preparation
+
+The following placeholders are used in this guide:
+
+- `authentik.company` is the FQDN of the authentik installation.
+- `accounts.zoho.com` is the Zoho Accounts URL for your organization's data center.
+
+:::info
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
+
+Use the Zoho Accounts URL that matches your organization's data center:
+
+- United States: `https://accounts.zoho.com`
+- Australia: `https://accounts.zoho.com.au`
+- Europe: `https://accounts.zoho.eu`
+- India: `https://accounts.zoho.in`
+- China: `https://accounts.zoho.com.cn`
+- Japan: `https://accounts.zoho.jp`
+- Canada: `https://accounts.zohocloud.ca`
+- Saudi Arabia: `https://accounts.zoho.sa`
+
+## Download Zoho metadata file
+
+1. Log in to Zoho Accounts as an administrator at the Zoho Accounts URL for your data center.
+2. Navigate to **Organization** > **SAML Authentication**.
+3. Click **Download Metadata**. You will require this Zoho metadata file in the next section.
+
+## authentik configuration
+
+To support the integration of Zoho with authentik, you need to create an application/provider pair in authentik.
+
+### Create an application and provider
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
+    - **Choose a Provider type**: select **SAML Provider from Metadata** as the provider type.
+    - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization and invalidation flows to use for this provider, and the following required configuration:
+        - **Metadata**: select the Zoho metadata file that you downloaded in the previous section.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
+3. Click **Submit** to save the new application and provider.
+4. Navigate to **Applications** > **Providers** and click the **Edit** icon of the Zoho provider.
+5. Configure the following settings:
+    - Confirm that the **SLS URL** and **SLS Binding** were imported from the Zoho metadata file, then set **Logout Method** to `Front-channel (Iframe)`.
+    - Under **Advanced protocol settings**:
+        - Select an available **Signing Certificate**.
+        - Set **NameID Property Mapping** to `authentik default SAML Mapping: Email`.
+6. Click **Update**.
+
+### Download authentik metadata file
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Applications** > **Providers** and click on the name of the provider that you created for Zoho.
+3. Under **Related objects** > **Metadata**, click on **Download**. You will require this authentik metadata file in the next section.
+
+## Zoho configuration
+
+1. Log in to Zoho Accounts as an administrator using your Zoho Accounts URL.
+2. Navigate to **Organization** > **SAML Authentication**, and under **SAML Authentication** select **Set up Now**.
+3. Click **Upload Metadata** and upload your authentik metadata file.
+4. Ensure **Single Logout** is enabled so that signing out of authentik also signs users out of Zoho. Zoho uses the logout endpoint advertised in the authentik metadata that you uploaded.
+5. In **Zoho Service**, select the Zoho service that users should open after IdP-initiated sign-in from authentik.
+6. Click **Submit**.
+
+:::info User provisioning
+If you do not enable Zoho's Just-in-Time provisioning, users must already exist in your Zoho organization before they can sign in with authentik.
+
+If you enable Just-in-Time provisioning, Zoho validates the SAML response and the user's domain before adding the user. Domain verification and user-field mapping in Zoho are outside the scope of this guide.
+:::
+
+## Configuration verification
+
+To confirm that authentik is properly configured with Zoho, open the Zoho integration from the authentik Application Dashboard. You should be redirected to Zoho and signed in to the Zoho service you selected during the Zoho configuration.
+
+You can also test the SP-initiated flow by opening the Zoho sign-in page for your data center, entering the email address of an account that exists in both Zoho and authentik, and selecting the SAML sign-in option when prompted. You should be redirected to authentik to authenticate, then back to Zoho.
+
+## Resources
+
+- [Zoho Help - Configure SAML in Zoho Accounts](https://help.zoho.com/portal/en/kb/accounts/manage-your-organization/saml/articles/configure-saml-in-zoho-accounts#Configure_SAML_in_your_IdP_using_Zohos_Metadata)
+- [Zoho Help - SAML terminology](https://help.zoho.com/portal/en/kb/accounts/manage-your-organization/saml/articles/saml-terminologies)
+- [Zoho Help - Data center for Zoho Account](https://help.zoho.com/portal/en/kb/accounts/manage-your-zoho-account/articles/data-center-for-zoho-account)
+- [Zoho China Help - Configure SAML in Zoho Accounts](https://www.zoho.com.cn/accounts/help/saml/configure-zoho-accounts.html)

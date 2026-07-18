@@ -1,15 +1,15 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { MessageLevel } from "@goauthentik/common/messages";
-import { showMessage } from "@goauthentik/elements/messages/MessageContainer";
-import { writeToClipboard } from "@goauthentik/elements/utils/writeToClipboard";
+import { aki } from "#common/api/client";
+import { writeToClipboard } from "#common/clipboard";
+import { parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
+import { MessageLevel } from "#common/messages";
+
+import { BaseTaskButton } from "#elements/buttons/SpinnerButton/BaseTaskButton";
+import { showMessage } from "#elements/messages/MessageContainer";
+
+import { CoreApi } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { customElement, property } from "lit/decorators.js";
-
-import { CoreApi, ResponseError, TokenView } from "@goauthentik/api";
-
-import { APIMessage } from "../../messages/Message";
-import BaseTaskButton from "../SpinnerButton/BaseTaskButton";
 
 /**
  * A derivative of ak-action-button that is used only to request tokens from the back-end server.
@@ -26,67 +26,51 @@ import BaseTaskButton from "../SpinnerButton/BaseTaskButton";
  * @fires ak-button-reset - When the button is reset after the async process completes
  */
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const isTokenView = (v: any): v is TokenView => v && "key" in v && typeof v.key === "string";
-
 @customElement("ak-token-copy-button")
-export class TokenCopyButton extends BaseTaskButton {
+export class AKTokenCopyButton extends BaseTaskButton<null> {
     /**
      * The identifier key associated with this token.
      * @attr
      */
-    @property()
-    identifier?: string;
+    @property({ type: String })
+    public identifier: string | null = null;
 
-    constructor() {
-        super();
-        this.onSuccess = this.onSuccess.bind(this);
-        this.onError = this.onError.bind(this);
+    @property({ type: String, attribute: "entity-label" })
+    public entityLabel: string = msg("Token");
+
+    public override callAction() {
+        const { identifier } = this;
+
+        if (!identifier) {
+            throw new TypeError("No `identifier` set for `TokenCopyButton`");
+        }
+
+        // Safari permission hack.
+        const data = aki(CoreApi)
+            .coreTokensViewKeyRetrieve({ identifier })
+            .then((tokenView) => new Blob([tokenView.key], { type: "text/plain" }));
+
+        return writeToClipboard(data, this.entityLabel).then(() => null);
     }
 
-    callAction: () => Promise<unknown> = () => {
-        if (!this.identifier) {
-            return Promise.reject();
-        }
-        return new CoreApi(DEFAULT_CONFIG).coreTokensViewKeyRetrieve({
-            identifier: this.identifier,
-        });
-    };
-
-    async onSuccess(token: unknown) {
-        super.onSuccess(token);
-        if (!isTokenView(token)) {
-            throw new Error(`Unrecognized return from server: ${token}`);
-        }
-        const wroteToClipboard = await writeToClipboard(token.key as string);
-        const info: Pick<APIMessage, "message" | "description"> = wroteToClipboard
-            ? {
-                  message: msg("The token has been copied to your clipboard"),
-              }
-            : {
-                  message: token.key,
-                  description: msg(
-                      "The token was displayed because authentik does not have permission to write to the clipboard",
-                  ),
-              };
-        showMessage({
-            level: MessageLevel.info,
-            ...info,
-        });
-    }
-
-    async onError(error: unknown) {
+    protected async onError(error: unknown) {
         super.onError(error);
-        // prettier-ignore
-        const message = error instanceof ResponseError ? await error.response.text()
-            : error instanceof Error ? error.toString()
-            : `${error}`;
+        const parsedError = await parseAPIResponseError(error);
 
         showMessage({
             level: MessageLevel.error,
-            message,
+            message: pluckErrorDetail(
+                parsedError,
+                msg("An unknown error occurred while retrieving the token."),
+            ),
         });
     }
 }
 
-export default TokenCopyButton;
+export default AKTokenCopyButton;
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-token-copy-button": AKTokenCopyButton;
+    }
+}

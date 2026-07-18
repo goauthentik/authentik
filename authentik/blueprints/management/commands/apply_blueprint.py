@@ -1,5 +1,6 @@
 """Apply blueprint from commandline"""
 
+from argparse import ArgumentParser
 from sys import exit as sys_exit
 
 from django.core.management.base import BaseCommand, no_translations
@@ -23,11 +24,13 @@ class Command(BaseCommand):
                 for blueprint_path in options.get("blueprints", []):
                     content = BlueprintInstance(path=blueprint_path).retrieve()
                     importer = Importer.from_string(content)
-                    valid, _ = importer.validate()
+                    valid, logs = importer.validate()
                     if not valid:
-                        self.stderr.write("blueprint invalid")
+                        self.stderr.write("Blueprint invalid")
+                        for log in logs:
+                            self.stderr.write(f"\t{log.logger}: {log.event}: {log.attributes}")
                         sys_exit(1)
                     importer.apply()
 
-    def add_arguments(self, parser):
+    def add_arguments(self, parser: ArgumentParser):
         parser.add_argument("blueprints", nargs="+", type=str)

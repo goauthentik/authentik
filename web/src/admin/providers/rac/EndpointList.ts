@@ -1,71 +1,62 @@
-import "@goauthentik/admin/policies/BoundPoliciesList";
-import "@goauthentik/admin/providers/rac/EndpointForm";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { uiConfig } from "@goauthentik/common/ui/config";
-import "@goauthentik/elements/buttons/SpinnerButton";
-import "@goauthentik/elements/forms/DeleteBulkForm";
-import "@goauthentik/elements/forms/ModalForm";
-import "@goauthentik/elements/rbac/ObjectPermissionModal";
-import { PaginatedResponse, Table } from "@goauthentik/elements/table/Table";
-import { TableColumn } from "@goauthentik/elements/table/Table";
+import "#admin/policies/BoundPoliciesList";
+import "#admin/providers/rac/EndpointForm";
+import "#admin/rbac/ObjectPermissionModal";
+import "#elements/buttons/SpinnerButton/index";
+import "#elements/forms/DeleteBulkForm";
+import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
+import { aki } from "#common/api/client";
+
+import { IconEditButton, ModalInvokerButton } from "#elements/dialogs";
+import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
+import { SlottedTemplateResult } from "#elements/types";
+
+import { EndpointForm } from "#admin/providers/rac/EndpointForm";
+
+import { Endpoint, ModelEnum, RacApi, RACProvider } from "@goauthentik/api";
+
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, html } from "lit";
+import { CSSResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
-import {
-    Endpoint,
-    RACProvider,
-    RacApi,
-    RbacPermissionsAssignedByUsersListModelEnum,
-} from "@goauthentik/api";
-
 @customElement("ak-rac-endpoint-list")
 export class EndpointListPage extends Table<Endpoint> {
-    expandable = true;
-    checkbox = true;
-    clearOnRefresh = true;
+    public static styles: CSSResult[] = [...super.styles, PFDescriptionList];
 
-    searchEnabled(): boolean {
-        return true;
-    }
+    protected override searchEnabled = true;
+    protected override emptyStateMessage = msg("Create an endpoint to get started.");
 
-    @property()
-    order = "name";
+    public override expandable = true;
+    public override checkbox = true;
+    public override clearOnRefresh = true;
+
+    public override searchPlaceholder = msg("Search for an endpoint by name or host...");
+    public override order = "name";
 
     @property({ attribute: false })
-    provider?: RACProvider;
+    public provider: RACProvider | null = null;
 
-    static get styles(): CSSResult[] {
-        return super.styles.concat(PFDescriptionList);
-    }
-
-    async apiEndpoint(page: number): Promise<PaginatedResponse<Endpoint>> {
-        return new RacApi(DEFAULT_CONFIG).racEndpointsList({
-            ordering: this.order,
-            page: page,
-            pageSize: (await uiConfig()).pagination.perPage,
-            search: this.search || "",
+    protected override async apiEndpoint(): Promise<PaginatedResponse<Endpoint>> {
+        return aki(RacApi).racEndpointsList({
+            ...(await this.defaultEndpointConfig()),
             provider: this.provider?.pk,
             superuserFullList: true,
         });
     }
 
-    columns(): TableColumn[] {
-        return [
-            new TableColumn(msg("Name"), "name"),
-            new TableColumn(msg("Host"), "host"),
-            new TableColumn(msg("Actions")),
-        ];
-    }
+    protected override columns: TableColumn[] = [
+        [msg("Name"), "name"],
+        [msg("Host"), "host"],
+        [msg("Actions"), null, msg("Row Actions")],
+    ];
 
-    renderToolbarSelected(): TemplateResult {
+    protected override renderToolbarSelected(): SlottedTemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
-            objectLabel=${msg("Endpoint(s)")}
+            object-label=${msg("Endpoint(s)")}
             .objects=${this.selectedElements}
             .metadata=${(item: Endpoint) => {
                 return [
@@ -74,12 +65,12 @@ export class EndpointListPage extends Table<Endpoint> {
                 ];
             }}
             .usedBy=${(item: Endpoint) => {
-                return new RacApi(DEFAULT_CONFIG).racEndpointsUsedByList({
+                return aki(RacApi).racEndpointsUsedByList({
                     pbmUuid: item.pk,
                 });
             }}
             .delete=${(item: Endpoint) => {
-                return new RacApi(DEFAULT_CONFIG).racEndpointsDestroy({
+                return aki(RacApi).racEndpointsDestroy({
                     pbmUuid: item.pk,
                 });
             }}
@@ -90,54 +81,42 @@ export class EndpointListPage extends Table<Endpoint> {
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: Endpoint): TemplateResult[] {
+    protected override row(item: Endpoint): SlottedTemplateResult[] {
         return [
-            html`${item.name}`,
-            html`${item.host}`,
-            html`<ak-forms-modal>
-                    <span slot="submit"> ${msg("Update")} </span>
-                    <span slot="header"> ${msg("Update Endpoint")} </span>
-                    <ak-rac-endpoint-form slot="form" .instancePk=${item.pk}>
-                    </ak-rac-endpoint-form>
-                    <button slot="trigger" class="pf-c-button pf-m-plain">
-                        <pf-tooltip position="top" content=${msg("Edit")}>
-                            <i class="fas fa-edit"></i>
-                        </pf-tooltip>
-                    </button>
-                </ak-forms-modal>
+            item.name,
+            item.host,
+            html`<div class="ak-c-table__actions">
+                ${IconEditButton(EndpointForm, item.pk)}
+
                 <ak-rbac-object-permission-modal
-                    model=${RbacPermissionsAssignedByUsersListModelEnum.ProvidersRacEndpoint}
+                    model=${ModelEnum.AuthentikProvidersRacEndpoint}
                     objectPk=${item.pk}
                 >
-                </ak-rbac-object-permission-modal>`,
+                </ak-rbac-object-permission-modal>
+            </div>`,
         ];
     }
 
-    renderExpanded(item: Endpoint): TemplateResult {
-        return html` <td></td>
-            <td role="cell" colspan="4">
-                <div class="pf-c-table__expandable-row-content">
-                    <div class="pf-c-content">
-                        <p>
-                            ${msg(
-                                "These bindings control which users will have access to this endpoint. Users must also have access to the application.",
-                            )}
-                        </p>
-                        <ak-bound-policies-list .target=${item.pk}> </ak-bound-policies-list>
-                    </div>
-                </div>
-            </td>`;
+    protected override renderExpanded(item: Endpoint): SlottedTemplateResult {
+        return html`<div class="pf-c-content">
+            <p>
+                ${msg(
+                    "These bindings control which users will have access to this endpoint. Users must also have access to the application.",
+                )}
+            </p>
+            <ak-bound-policies-list .target=${item.pk}></ak-bound-policies-list>
+        </div>`;
     }
 
-    renderObjectCreate(): TemplateResult {
-        return html`
-            <ak-forms-modal>
-                <span slot="submit"> ${msg("Create")} </span>
-                <span slot="header"> ${msg("Create Endpoint")} </span>
-                <ak-rac-endpoint-form slot="form" .providerID=${this.provider?.pk}>
-                </ak-rac-endpoint-form>
-                <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Create")}</button>
-            </ak-forms-modal>
-        `;
+    protected override renderObjectCreate(): SlottedTemplateResult {
+        return ModalInvokerButton(EndpointForm, {
+            providerID: this.provider?.pk,
+        });
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-rac-endpoint-list": EndpointListPage;
     }
 }

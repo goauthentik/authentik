@@ -1,63 +1,101 @@
-import "@goauthentik/elements/Divider";
-import "@goauthentik/elements/EmptyState";
+import "#elements/Divider";
+import "#flow/components/ak-flow-card";
+
+import { WithCapabilitiesConfig } from "#elements/mixins/capabilities";
+import { SlottedTemplateResult } from "#elements/types";
+
+import { AKFormErrors } from "#components/ak-field-errors";
+import { AKLabel } from "#components/ak-label";
+
+import { BaseStage } from "#flow/stages/base";
+import { LocalePrompt } from "#flow/stages/prompt/components/locale";
+
 import {
     CapabilitiesEnum,
-    WithCapabilitiesConfig,
-} from "@goauthentik/elements/Interface/capabilitiesProvider";
-import { LOCALES } from "@goauthentik/elements/ak-locale-context/definitions";
-import "@goauthentik/elements/forms/FormElement";
-import { BaseStage } from "@goauthentik/flow/stages/base";
-
-import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, css, html } from "lit";
-import { customElement } from "lit/decorators.js";
-import { unsafeHTML } from "lit/directives/unsafe-html.js";
-
-import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFCheck from "@patternfly/patternfly/components/Check/check.css";
-import PFForm from "@patternfly/patternfly/components/Form/form.css";
-import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
-import PFLogin from "@patternfly/patternfly/components/Login/login.css";
-import PFTitle from "@patternfly/patternfly/components/Title/title.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
-
-import {
     PromptChallenge,
     PromptChallengeResponseRequest,
     PromptTypeEnum,
     StagePrompt,
 } from "@goauthentik/api";
 
+import { msg } from "@lit/localize";
+import { css, CSSResult, html } from "lit";
+import { customElement } from "lit/decorators.js";
+import { unsafeHTML } from "lit/directives/unsafe-html.js";
+
+import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFCheck from "@patternfly/patternfly/components/Check/check.css";
+import PFContent from "@patternfly/patternfly/components/Content/content.css";
+import PFForm from "@patternfly/patternfly/components/Form/form.css";
+import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
+import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-group.css";
+import PFLogin from "@patternfly/patternfly/components/Login/login.css";
+import PFTitle from "@patternfly/patternfly/components/Title/title.css";
+
+// Fixes horizontal rule <hr> warning in select dropdowns.
+
+/**
+ * @prop {PromptChallenge} challenge - The challenge provided to this stage.
+ * @prop {StageHost} host - The host managing this stage.
+ */
 @customElement("ak-stage-prompt")
 export class PromptStage extends WithCapabilitiesConfig(
     BaseStage<PromptChallenge, PromptChallengeResponseRequest>,
 ) {
-    static get styles(): CSSResult[] {
-        return [
-            PFBase,
-            PFLogin,
-            PFAlert,
-            PFForm,
-            PFFormControl,
-            PFTitle,
-            PFButton,
-            PFCheck,
-            css`
-                textarea {
-                    min-height: 4em;
-                    max-height: 15em;
-                    resize: vertical;
-                }
-            `,
-        ];
+    static shadowRootOptions: ShadowRootInit = BaseStage.shadowRootOptions;
+
+    static styles: CSSResult[] = [
+        PFLogin,
+        PFAlert,
+        PFContent,
+        PFForm,
+        PFFormControl,
+        PFInputGroup,
+        PFTitle,
+        PFButton,
+        PFCheck,
+        css`
+            textarea {
+                min-height: 4em;
+                max-height: 15em;
+                resize: vertical;
+            }
+        `,
+    ];
+
+    protected isAlertPromptType(prompt: StagePrompt): boolean {
+        return (
+            prompt.type === PromptTypeEnum.AlertInfo ||
+            prompt.type === PromptTypeEnum.AlertWarning ||
+            prompt.type === PromptTypeEnum.AlertDanger
+        );
     }
 
-    renderPromptInner(prompt: StagePrompt): TemplateResult {
+    protected renderPromptAlert(
+        prompt: StagePrompt,
+        level: "info" | "warning" | "danger",
+        icon: string,
+    ): SlottedTemplateResult {
+        return html`<div class="pf-c-alert pf-m-${level} pf-m-inline">
+            <div class="pf-c-alert__icon">
+                <i class="fas fa-fw ${icon}" aria-hidden="true"></i>
+            </div>
+            ${prompt.label ? html`<h4 class="pf-c-alert__title">${prompt.label}</h4>` : null}
+            <div class="pf-c-alert__description pf-c-content">
+                ${unsafeHTML(prompt.initialValue)}
+            </div>
+        </div>`;
+    }
+
+    protected renderPromptInner(prompt: StagePrompt): SlottedTemplateResult {
+        const fieldId = `field-${prompt.fieldKey}`;
+
         switch (prompt.type) {
             case PromptTypeEnum.Text:
                 return html`<input
                     type="text"
+                    id=${fieldId}
                     name="${prompt.fieldKey}"
                     placeholder="${prompt.placeholder}"
                     autocomplete="off"
@@ -67,6 +105,7 @@ export class PromptStage extends WithCapabilitiesConfig(
                 />`;
             case PromptTypeEnum.TextArea:
                 return html`<textarea
+                    id=${fieldId}
                     name="${prompt.fieldKey}"
                     placeholder="${prompt.placeholder}"
                     autocomplete="off"
@@ -78,14 +117,16 @@ ${prompt.initialValue}</textarea
             case PromptTypeEnum.TextReadOnly:
                 return html`<input
                     type="text"
+                    id=${fieldId}
                     name="${prompt.fieldKey}"
                     placeholder="${prompt.placeholder}"
                     class="pf-c-form-control"
-                    ?readonly=${true}
+                    readonly
                     value="${prompt.initialValue}"
                 />`;
             case PromptTypeEnum.TextAreaReadOnly:
                 return html`<textarea
+                    id=${fieldId}
                     name="${prompt.fieldKey}"
                     placeholder="${prompt.placeholder}"
                     class="pf-c-form-control"
@@ -96,9 +137,11 @@ ${prompt.initialValue}</textarea
             case PromptTypeEnum.Username:
                 return html`<input
                     type="text"
+                    id=${fieldId}
                     name="${prompt.fieldKey}"
                     placeholder="${prompt.placeholder}"
                     autocomplete="username"
+                    spellcheck="false"
                     class="pf-c-form-control"
                     ?required=${prompt.required}
                     value="${prompt.initialValue}"
@@ -106,6 +149,8 @@ ${prompt.initialValue}</textarea
             case PromptTypeEnum.Email:
                 return html`<input
                     type="email"
+                    id=${fieldId}
+                    autocomplete="email"
                     name="${prompt.fieldKey}"
                     placeholder="${prompt.placeholder}"
                     class="pf-c-form-control"
@@ -115,6 +160,7 @@ ${prompt.initialValue}</textarea
             case PromptTypeEnum.Password:
                 return html`<input
                     type="password"
+                    id=${fieldId}
                     name="${prompt.fieldKey}"
                     placeholder="${prompt.placeholder}"
                     autocomplete="new-password"
@@ -124,6 +170,7 @@ ${prompt.initialValue}</textarea
             case PromptTypeEnum.Number:
                 return html`<input
                     type="number"
+                    id=${fieldId}
                     name="${prompt.fieldKey}"
                     placeholder="${prompt.placeholder}"
                     class="pf-c-form-control"
@@ -133,6 +180,7 @@ ${prompt.initialValue}</textarea
             case PromptTypeEnum.Date:
                 return html`<input
                     type="date"
+                    id=${fieldId}
                     name="${prompt.fieldKey}"
                     placeholder="${prompt.placeholder}"
                     class="pf-c-form-control"
@@ -142,6 +190,7 @@ ${prompt.initialValue}</textarea
             case PromptTypeEnum.DateTime:
                 return html`<input
                     type="datetime"
+                    id=${fieldId}
                     name="${prompt.fieldKey}"
                     placeholder="${prompt.placeholder}"
                     class="pf-c-form-control"
@@ -151,6 +200,7 @@ ${prompt.initialValue}</textarea
             case PromptTypeEnum.File:
                 return html`<input
                     type="file"
+                    id=${fieldId}
                     name="${prompt.fieldKey}"
                     placeholder="${prompt.placeholder}"
                     class="pf-c-form-control"
@@ -162,6 +212,7 @@ ${prompt.initialValue}</textarea
             case PromptTypeEnum.Hidden:
                 return html`<input
                     type="hidden"
+                    id=${fieldId}
                     name="${prompt.fieldKey}"
                     value="${prompt.initialValue}"
                     class="pf-c-form-control"
@@ -169,79 +220,71 @@ ${prompt.initialValue}</textarea
                 />`;
             case PromptTypeEnum.Static:
                 return html`<p>${unsafeHTML(prompt.initialValue)}</p>`;
+            case PromptTypeEnum.AlertInfo:
+                return this.renderPromptAlert(prompt, "info", "fa-info-circle");
+            case PromptTypeEnum.AlertWarning:
+                return this.renderPromptAlert(prompt, "warning", "fa-exclamation-triangle");
+            case PromptTypeEnum.AlertDanger:
+                return this.renderPromptAlert(prompt, "danger", "fa-exclamation-circle");
             case PromptTypeEnum.Dropdown:
                 return html`<select class="pf-c-form-control" name="${prompt.fieldKey}">
                     ${prompt.choices?.map((choice) => {
                         return html`<option
-                            value="${choice}"
-                            ?selected=${prompt.initialValue === choice}
+                            value="${choice.value}"
+                            ?selected=${prompt.initialValue === choice.value}
                         >
-                            ${choice}
+                            ${choice.label}
                         </option>`;
                     })}
                 </select>`;
             case PromptTypeEnum.RadioButtonGroup:
                 return html`${(prompt.choices || []).map((choice) => {
-                    const id = `${prompt.fieldKey}-${choice}`;
+                    const id = `${prompt.fieldKey}-${choice.value}`;
                     return html`<div class="pf-c-check">
                         <input
                             type="radio"
                             class="pf-c-check__input"
                             name="${prompt.fieldKey}"
                             id="${id}"
-                            ?checked="${prompt.initialValue === choice}"
+                            ?checked="${prompt.initialValue === choice.value}"
                             ?required="${prompt.required}"
-                            value="${choice}"
+                            value="${choice.value}"
                         />
-                        <label class="pf-c-check__label" for=${id}>${choice}</label>
+                        <label class="pf-c-check__label" for=${id}>${choice.label}</label>
                     </div> `;
                 })}`;
             case PromptTypeEnum.AkLocale: {
-                const locales = this.can(CapabilitiesEnum.CanDebug)
-                    ? LOCALES
-                    : LOCALES.filter((locale) => locale.code !== "debug");
-                const options = locales.map(
-                    (locale) =>
-                        html`<option
-                            value=${locale.code}
-                            ?selected=${locale.code === prompt.initialValue}
-                        >
-                            ${locale.code.toUpperCase()} - ${locale.label()}
-                        </option> `,
-                );
-
-                return html`<select class="pf-c-form-control" name="${prompt.fieldKey}">
-                    <option value="" ?selected=${prompt.initialValue === ""}>
-                        ${msg("Auto-detect (based on your browser)")}
-                    </option>
-                    ${options}
-                </select>`;
+                return LocalePrompt({
+                    activeLanguageTag: this.activeLanguageTag,
+                    prompt,
+                    fieldId,
+                    debug: this.can(CapabilitiesEnum.CanDebug),
+                });
             }
             default:
                 return html`<p>invalid type '${prompt.type}'</p>`;
         }
     }
 
-    renderPromptHelpText(prompt: StagePrompt): TemplateResult {
-        if (prompt.subText === "") {
-            return html``;
+    protected renderPromptHelpText(prompt: StagePrompt): SlottedTemplateResult {
+        if (!prompt.subText) {
+            return null;
         }
+
         return html`<p class="pf-c-form__helper-text">${unsafeHTML(prompt.subText)}</p>`;
     }
 
-    shouldRenderInWrapper(prompt: StagePrompt): boolean {
+    protected shouldRenderInWrapper(prompt: StagePrompt): boolean {
         // Special types that aren't rendered in a wrapper
-        if (
+        return !(
             prompt.type === PromptTypeEnum.Static ||
             prompt.type === PromptTypeEnum.Hidden ||
-            prompt.type === PromptTypeEnum.Separator
-        ) {
-            return false;
-        }
-        return true;
+            prompt.type === PromptTypeEnum.Separator ||
+            this.isAlertPromptType(prompt)
+        );
     }
 
-    renderField(prompt: StagePrompt): TemplateResult {
+    protected renderField(prompt: StagePrompt): SlottedTemplateResult {
         // Checkbox is rendered differently
         if (prompt.type === PromptTypeEnum.Checkbox) {
             return html`<div class="pf-c-check">
@@ -256,59 +299,53 @@ ${prompt.initialValue}</textarea
                 <label class="pf-c-check__label" for="${prompt.fieldKey}">${prompt.label}</label>
                 ${prompt.required
                     ? html`<p class="pf-c-form__helper-text">${msg("Required.")}</p>`
-                    : html``}
+                    : null}
                 <p class="pf-c-form__helper-text">${unsafeHTML(prompt.subText)}</p>
             </div>`;
         }
         if (this.shouldRenderInWrapper(prompt)) {
-            return html`<ak-form-element
-                label="${prompt.label}"
-                ?required="${prompt.required}"
-                class="pf-c-form__group"
-                .errors=${(this.challenge?.responseErrors || {})[prompt.fieldKey]}
-            >
+            const errors = this.challenge?.responseErrors?.[prompt.fieldKey];
+
+            return html`<div class="pf-c-form__group">
+                ${AKLabel(
+                    {
+                        required: prompt.required,
+                        htmlFor: `field-${prompt.fieldKey}`,
+                    },
+                    prompt.label,
+                )}
                 ${this.renderPromptInner(prompt)} ${this.renderPromptHelpText(prompt)}
-            </ak-form-element>`;
+                ${AKFormErrors({ errors })}
+            </div>`;
         }
-        return html` ${this.renderPromptInner(prompt)} ${this.renderPromptHelpText(prompt)}`;
+        return html`${this.renderPromptInner(prompt)} ${this.renderPromptHelpText(prompt)}`;
     }
 
-    renderContinue(): TemplateResult {
-        return html` <div class="pf-c-form__group pf-m-action">
-            <button type="submit" class="pf-c-button pf-m-primary pf-m-block">
+    protected renderContinue(): SlottedTemplateResult {
+        return html`<fieldset class="ak-c-fieldset pf-c-form__group pf-m-action">
+            <legend class="sr-only">${msg("Form actions")}</legend>
+            <button name="continue" type="submit" class="pf-c-button pf-m-primary pf-m-block">
                 ${msg("Continue")}
             </button>
-        </div>`;
+        </fieldset>`;
     }
 
-    render(): TemplateResult {
-        if (!this.challenge) {
-            return html`<ak-empty-state ?loading="${true}" header=${msg("Loading")}>
-            </ak-empty-state>`;
-        }
-        return html`<header class="pf-c-login__main-header">
-                <h1 class="pf-c-title pf-m-3xl">${this.challenge.flowInfo?.title}</h1>
-            </header>
-            <div class="pf-c-login__main-body">
-                <form
-                    class="pf-c-form"
-                    @submit=${(e: Event) => {
-                        this.submitForm(e);
-                    }}
-                >
-                    ${this.challenge.fields.map((prompt) => {
-                        return this.renderField(prompt);
-                    })}
-                    ${"non_field_errors" in (this.challenge?.responseErrors || {})
-                        ? this.renderNonFieldErrors(
-                              this.challenge?.responseErrors?.non_field_errors || [],
-                          )
-                        : html``}
-                    ${this.renderContinue()}
-                </form>
-            </div>
-            <footer class="pf-c-login__main-footer">
-                <ul class="pf-c-login__main-footer-links"></ul>
-            </footer>`;
+    protected override render(): SlottedTemplateResult {
+        return html`<ak-flow-card .challenge=${this.challenge}>
+            <form class="pf-c-form" @submit=${this.submitForm}>
+                ${Array.from(this.challenge?.fields || [], (prompt) => {
+                    return this.renderField(prompt);
+                })}
+                ${this.renderNonFieldErrors()} ${this.renderContinue()}
+            </form>
+        </ak-flow-card>`;
+    }
+}
+
+export default PromptStage;
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-stage-prompt": PromptStage;
     }
 }

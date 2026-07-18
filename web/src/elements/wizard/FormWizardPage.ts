@@ -1,41 +1,72 @@
-import { Form } from "@goauthentik/elements/forms/Form";
-import { WizardPage } from "@goauthentik/elements/wizard/WizardPage";
+import { Form } from "#elements/forms/Form";
+import { WizardPage, WizardPageState } from "#elements/wizard/WizardPage";
 
-import { msg } from "@lit/localize";
 import { customElement } from "lit/decorators.js";
+
+export type FormWizardPageActiveCallback<S extends WizardPageState> = (
+    host: FormWizardPage<S>,
+) => void | Promise<void>;
 
 /**
  * This Wizard page is used for proxy forms with the older-style
  * wizards
  */
 @customElement("ak-wizard-page-form")
-export class FormWizardPage extends WizardPage {
-    activePageCallback: (context: FormWizardPage) => Promise<void> = async () => {
+export class FormWizardPage<S extends WizardPageState = WizardPageState> extends WizardPage<S> {
+    public activePageCallback: FormWizardPageActiveCallback<S> = async () => {
         return Promise.resolve();
     };
 
-    activeCallback = async () => {
-        this.host.isValid = true;
+    public override activeCallback = async () => {
+        this.host.valid = true;
+
         this.activePageCallback(this);
     };
 
-    nextCallback = async () => {
-        const form = this.querySelector<Form<unknown>>("*");
+    public override nextCallback = async (): Promise<boolean> => {
+        if (!this.children.length) {
+            throw new TypeError(`No child elements found in ${this.slot}.`);
+        }
+
+        const form = Iterator.from(this.children).find((childElement) => {
+            return childElement instanceof Form;
+        });
+
         if (!form) {
-            return Promise.reject(msg("No form found"));
+            throw new TypeError(`${this.slot} does not contain a Form element.`);
         }
-        const formPromise = form.submit(new Event("submit"));
-        if (!formPromise) {
-            return Promise.reject(msg("Form didn't return a promise for submitting"));
+
+        if (!form.reportValidity()) {
+            return false;
         }
-        return formPromise
-            .then((data) => {
-                this.host.state[this.slot] = data;
+
+        return form
+            .submit(new SubmitEvent("submit"))
+            .then((responseData) => {
+                const { slot, host } = this;
+
+                if (!slot) {
+                    this.logger.error(
+                        "Cannot assign form data to wizard state: slot is undefined.",
+                        {
+                            formData: responseData,
+                        },
+                    );
+                    throw new TypeError("Expected slot to be defined on WizardPage.");
+                }
+
+                Object.assign(host.state, { [this.slot]: responseData } as Partial<S>);
+
                 this.host.canBack = false;
+
                 return true;
             })
-            .catch(() => {
-                return false;
-            });
+            .catch(() => false);
     };
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-wizard-page-form": FormWizardPage;
+    }
 }

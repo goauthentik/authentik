@@ -13,13 +13,14 @@ from rest_framework.serializers import ValidationError
 from rest_framework.viewsets import ModelViewSet
 from structlog.stdlib import get_logger
 
+from authentik.api.validation import validate
 from authentik.core.api.sources import SourceSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import PassiveSerializer
 from authentik.flows.challenge import RedirectChallenge
 from authentik.flows.views.executor import to_stage_response
 from authentik.rbac.decorators import permission_required
-from authentik.sources.plex.models import PlexSource, PlexSourceConnection
+from authentik.sources.plex.models import PlexSource, UserPlexSourceConnection
 from authentik.sources.plex.plex import PlexAuth, PlexSourceFlowManager
 
 LOGGER = get_logger()
@@ -31,6 +32,7 @@ class PlexSourceSerializer(SourceSerializer):
     class Meta:
         model = PlexSource
         fields = SourceSerializer.Meta.fields + [
+            "group_matching_mode",
             "client_id",
             "allowed_servers",
             "allow_friends",
@@ -51,6 +53,7 @@ class PlexSourceViewSet(UsedByMixin, ModelViewSet):
     serializer_class = PlexSourceSerializer
     lookup_field = "slug"
     filterset_fields = [
+        "pbm_uuid",
         "name",
         "slug",
         "enabled",
@@ -58,6 +61,7 @@ class PlexSourceViewSet(UsedByMixin, ModelViewSet):
         "enrollment_flow",
         "policy_engine_mode",
         "user_matching_mode",
+        "group_matching_mode",
         "client_id",
         "allow_friends",
     ]
@@ -87,13 +91,14 @@ class PlexSourceViewSet(UsedByMixin, ModelViewSet):
         filter_backends=[],
         permission_classes=[AllowAny],
     )
-    def redeem_token(self, request: Request) -> Response:
+    @validate(PlexTokenRedeemSerializer)
+    def redeem_token(self, request: Request, body: PlexTokenRedeemSerializer) -> Response:
         """Redeem a plex token, check it's access to resources against what's allowed
         for the source, and redirect to an authentication/enrollment flow."""
         source: PlexSource = get_object_or_404(
             PlexSource, slug=request.query_params.get("slug", "")
         )
-        plex_token = request.data.get("plex_token", None)
+        plex_token = body.validated_data.get("plex_token", None)
         if not plex_token:
             raise ValidationError("No plex token given")
         auth_api = PlexAuth(source, plex_token)
@@ -109,7 +114,11 @@ class PlexSourceViewSet(UsedByMixin, ModelViewSet):
                 source=source,
                 request=request,
                 identifier=str(identifier),
-                enroll_info=user_info,
+                user_info={
+                    "info": user_info,
+                    "auth_api": auth_api,
+                },
+                policy_context={},
             )
             return to_stage_response(request, sfm.get_flow(plex_token=plex_token))
         LOGGER.warning(
@@ -140,12 +149,15 @@ class PlexSourceViewSet(UsedByMixin, ModelViewSet):
         filter_backends=[],
         permission_classes=[IsAuthenticated],
     )
-    def redeem_token_authenticated(self, request: Request) -> Response:
+    @validate(PlexTokenRedeemSerializer)
+    def redeem_token_authenticated(
+        self, request: Request, body: PlexTokenRedeemSerializer
+    ) -> Response:
         """Redeem a plex token for an authenticated user, creating a connection"""
         source: PlexSource = get_object_or_404(
             PlexSource, slug=request.query_params.get("slug", "")
         )
-        plex_token = request.data.get("plex_token", None)
+        plex_token = body.validated_data.get("plex_token", None)
         if not plex_token:
             raise ValidationError("No plex token given")
         auth_api = PlexAuth(source, plex_token)
@@ -157,7 +169,7 @@ class PlexSourceViewSet(UsedByMixin, ModelViewSet):
             friends_allowed = owner_api.check_friends_overlap(identifier)
         servers_allowed = auth_api.check_server_overlap()
         if any([friends_allowed, servers_allowed]):
-            PlexSourceConnection.objects.create(
+            UserPlexSourceConnection.objects.create(
                 plex_token=plex_token,
                 user=request.user,
                 identifier=identifier,

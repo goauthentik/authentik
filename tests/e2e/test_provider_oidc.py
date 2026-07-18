@@ -1,28 +1,34 @@
 """test OAuth2 OpenID Provider flow"""
 
-from json import loads
+from json import dumps
 from time import sleep
 
-from docker import DockerClient, from_env
-from docker.models.containers import Container
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 
 from authentik.blueprints.tests import apply_blueprint, reconcile_app
+from authentik.common.oauth.constants import (
+    SCOPE_OFFLINE_ACCESS,
+    SCOPE_OPENID,
+    SCOPE_OPENID_EMAIL,
+    SCOPE_OPENID_PROFILE,
+)
 from authentik.core.models import Application
 from authentik.core.tests.utils import create_test_cert
 from authentik.flows.models import Flow
 from authentik.lib.generators import generate_id, generate_key
 from authentik.policies.expression.models import ExpressionPolicy
 from authentik.policies.models import PolicyBinding
-from authentik.providers.oauth2.constants import (
-    SCOPE_OFFLINE_ACCESS,
-    SCOPE_OPENID,
-    SCOPE_OPENID_EMAIL,
-    SCOPE_OPENID_PROFILE,
+from authentik.providers.oauth2.models import (
+    ClientType,
+    GrantType,
+    OAuth2Provider,
+    RedirectURI,
+    RedirectURIMatchingMode,
+    ScopeMapping,
 )
-from authentik.providers.oauth2.models import ClientTypes, OAuth2Provider, ScopeMapping
-from tests.e2e.utils import SeleniumTestCase, retry
+from tests.decorators import retry
+from tests.selenium import SeleniumTestCase
 
 
 class TestProviderOAuth2OIDC(SeleniumTestCase):
@@ -34,13 +40,11 @@ class TestProviderOAuth2OIDC(SeleniumTestCase):
         self.application_slug = generate_id()
         super().setUp()
 
-    def setup_client(self) -> Container:
+    def setup_client(self):
         """Setup client oidc-test-client container which we test OIDC against"""
         sleep(1)
-        client: DockerClient = from_env()
-        container = client.containers.run(
+        self.run_container(
             image="ghcr.io/beryju/oidc-test-client:2.1",
-            detach=True,
             ports={
                 "9009": "9009",
             },
@@ -50,8 +54,6 @@ class TestProviderOAuth2OIDC(SeleniumTestCase):
                 "OIDC_PROVIDER": f"{self.live_server_url}/application/o/{self.application_slug}/",
             },
         )
-        self.wait_for_container(container)
-        return container
 
     @retry()
     @apply_blueprint(
@@ -69,12 +71,13 @@ class TestProviderOAuth2OIDC(SeleniumTestCase):
         )
         provider = OAuth2Provider.objects.create(
             name=self.application_slug,
-            client_type=ClientTypes.CONFIDENTIAL,
+            client_type=ClientType.CONFIDENTIAL,
             client_id=self.client_id,
             client_secret=self.client_secret,
             signing_key=create_test_cert(),
-            redirect_uris="http://localhost:9009/",
+            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://localhost:9009/")],
             authorization_flow=authorization_flow,
+            grant_types=[GrantType.AUTHORIZATION_CODE],
         )
         provider.property_mappings.set(
             ScopeMapping.objects.filter(
@@ -91,7 +94,7 @@ class TestProviderOAuth2OIDC(SeleniumTestCase):
             slug=self.application_slug,
             provider=provider,
         )
-        self.container = self.setup_client()
+        self.setup_client()
 
         self.driver.get("http://localhost:9009")
         sleep(2)
@@ -118,12 +121,15 @@ class TestProviderOAuth2OIDC(SeleniumTestCase):
         )
         provider = OAuth2Provider.objects.create(
             name=self.application_slug,
-            client_type=ClientTypes.CONFIDENTIAL,
+            client_type=ClientType.CONFIDENTIAL,
             client_id=self.client_id,
             client_secret=self.client_secret,
             signing_key=create_test_cert(),
-            redirect_uris="http://localhost:9009/auth/callback",
+            redirect_uris=[
+                RedirectURI(RedirectURIMatchingMode.STRICT, "http://localhost:9009/auth/callback")
+            ],
             authorization_flow=authorization_flow,
+            grant_types=[GrantType.AUTHORIZATION_CODE, GrantType.REFRESH_TOKEN],
         )
         provider.property_mappings.set(
             ScopeMapping.objects.filter(
@@ -140,10 +146,11 @@ class TestProviderOAuth2OIDC(SeleniumTestCase):
             slug=self.application_slug,
             provider=provider,
         )
-        self.container = self.setup_client()
+        self.setup_client()
 
         self.driver.get("http://localhost:9009")
         self.login()
+
         self.wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, "ak-flow-executor")))
 
         flow_executor = self.get_shadow_root("ak-flow-executor")
@@ -151,25 +158,63 @@ class TestProviderOAuth2OIDC(SeleniumTestCase):
 
         self.assertIn(
             app.name,
-            consent_stage.find_element(By.CSS_SELECTOR, "#header-text").text,
+            consent_stage.find_element(By.CSS_SELECTOR, "[data-test-id='stage-heading']").text,
         )
+
+        current_url = self.driver.current_url
+
         consent_stage.find_element(
             By.CSS_SELECTOR,
             "[type=submit]",
         ).click()
 
-        self.wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, "pre")))
-        self.wait.until(ec.text_to_be_present_in_element((By.CSS_SELECTOR, "pre"), "{"))
-        body = loads(self.driver.find_element(By.CSS_SELECTOR, "pre").text)
+        self.wait.until(ec.url_changes(current_url))
 
-        self.assertEqual(body["IDTokenClaims"]["nickname"], self.user.username)
-        self.assertEqual(body["UserInfo"]["nickname"], self.user.username)
+        body = self.parse_json_content()
+        snippet = dumps(body, indent=2)[:500].replace("\n", " ")
 
-        self.assertEqual(body["IDTokenClaims"]["name"], self.user.name)
-        self.assertEqual(body["UserInfo"]["name"], self.user.name)
+        self.assertEqual(
+            body.get("IDTokenClaims", {}).get("nickname"),
+            self.user.username,
+            f"IDTokenClaims.nickname mismatch at {self.driver.current_url}: {snippet}",
+        )
 
-        self.assertEqual(body["IDTokenClaims"]["email"], self.user.email)
-        self.assertEqual(body["UserInfo"]["email"], self.user.email)
+        self.assertEqual(
+            body.get("IDTokenClaims", {}).get("amr"),
+            ["pwd"],
+            f"IDTokenClaims.amr mismatch at {self.driver.current_url}: {snippet}",
+        )
+
+        self.assertEqual(
+            body.get("IDTokenClaims", {}).get("name"),
+            self.user.name,
+            f"IDTokenClaims.name mismatch at {self.driver.current_url}: {snippet}",
+        )
+
+        self.assertEqual(
+            body.get("IDTokenClaims", {}).get("email"),
+            self.user.email,
+            f"IDTokenClaims.email mismatch at {self.driver.current_url}: {snippet}",
+        )
+
+        # UserInfo assertions
+        self.assertEqual(
+            body.get("UserInfo", {}).get("nickname"),
+            self.user.username,
+            f"UserInfo.nickname mismatch at {self.driver.current_url}: {snippet}",
+        )
+
+        self.assertEqual(
+            body.get("UserInfo", {}).get("name"),
+            self.user.name,
+            f"UserInfo.name mismatch at {self.driver.current_url}: {snippet}",
+        )
+
+        self.assertEqual(
+            body.get("UserInfo", {}).get("email"),
+            self.user.email,
+            f"UserInfo.email mismatch at {self.driver.current_url}: {snippet}",
+        )
 
     @retry()
     @apply_blueprint(
@@ -189,11 +234,14 @@ class TestProviderOAuth2OIDC(SeleniumTestCase):
         provider = OAuth2Provider.objects.create(
             name=self.application_slug,
             authorization_flow=authorization_flow,
-            client_type=ClientTypes.CONFIDENTIAL,
+            client_type=ClientType.CONFIDENTIAL,
             client_id=self.client_id,
             client_secret=self.client_secret,
             signing_key=create_test_cert(),
-            redirect_uris="http://localhost:9009/auth/callback",
+            redirect_uris=[
+                RedirectURI(RedirectURIMatchingMode.STRICT, "http://localhost:9009/auth/callback")
+            ],
+            grant_types=[GrantType.AUTHORIZATION_CODE, GrantType.REFRESH_TOKEN],
         )
         provider.property_mappings.set(
             ScopeMapping.objects.filter(
@@ -210,7 +258,7 @@ class TestProviderOAuth2OIDC(SeleniumTestCase):
             slug=self.application_slug,
             provider=provider,
         )
-        self.container = self.setup_client()
+        self.setup_client()
 
         self.driver.get("http://localhost:9009")
         self.login()
@@ -222,25 +270,56 @@ class TestProviderOAuth2OIDC(SeleniumTestCase):
 
         self.assertIn(
             app.name,
-            consent_stage.find_element(By.CSS_SELECTOR, "#header-text").text,
+            consent_stage.find_element(By.CSS_SELECTOR, "[data-test-id='stage-heading']").text,
         )
+
+        current_url = self.driver.current_url
+
         consent_stage.find_element(
             By.CSS_SELECTOR,
             "[type=submit]",
         ).click()
 
-        self.wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, "pre")))
-        self.wait.until(ec.text_to_be_present_in_element((By.CSS_SELECTOR, "pre"), "{"))
-        body = loads(self.driver.find_element(By.CSS_SELECTOR, "pre").text)
+        self.wait.until(ec.url_changes(current_url))
 
-        self.assertEqual(body["IDTokenClaims"]["nickname"], self.user.username)
-        self.assertEqual(body["UserInfo"]["nickname"], self.user.username)
+        body = self.parse_json_content()
+        snippet = dumps(body, indent=2)[:500].replace("\n", " ")
 
-        self.assertEqual(body["IDTokenClaims"]["name"], self.user.name)
-        self.assertEqual(body["UserInfo"]["name"], self.user.name)
+        id_token_claims = body.get("IDTokenClaims", {})
+        user_info = body.get("UserInfo", {})
 
-        self.assertEqual(body["IDTokenClaims"]["email"], self.user.email)
-        self.assertEqual(body["UserInfo"]["email"], self.user.email)
+        self.assertEqual(
+            id_token_claims.get("nickname"),
+            self.user.username,
+            f"IDTokenClaims.nickname mismatch at {self.driver.current_url}: {snippet}",
+        )
+        self.assertEqual(
+            user_info.get("nickname"),
+            self.user.username,
+            f"UserInfo.nickname mismatch at {self.driver.current_url}: {snippet}",
+        )
+
+        self.assertEqual(
+            id_token_claims.get("name"),
+            self.user.name,
+            f"IDTokenClaims.name mismatch at {self.driver.current_url}: {snippet}",
+        )
+        self.assertEqual(
+            user_info.get("name"),
+            self.user.name,
+            f"UserInfo.name mismatch at {self.driver.current_url}: {snippet}",
+        )
+
+        self.assertEqual(
+            id_token_claims.get("email"),
+            self.user.email,
+            f"IDTokenClaims.email mismatch at {self.driver.current_url}: {snippet}",
+        )
+        self.assertEqual(
+            user_info.get("email"),
+            self.user.email,
+            f"UserInfo.email mismatch at {self.driver.current_url}: {snippet}",
+        )
 
     @retry()
     @apply_blueprint(
@@ -260,11 +339,14 @@ class TestProviderOAuth2OIDC(SeleniumTestCase):
         provider = OAuth2Provider.objects.create(
             name=self.application_slug,
             authorization_flow=authorization_flow,
-            client_type=ClientTypes.CONFIDENTIAL,
+            client_type=ClientType.CONFIDENTIAL,
             client_id=self.client_id,
             client_secret=self.client_secret,
             signing_key=create_test_cert(),
-            redirect_uris="http://localhost:9009/auth/callback",
+            redirect_uris=[
+                RedirectURI(RedirectURIMatchingMode.STRICT, "http://localhost:9009/auth/callback")
+            ],
+            grant_types=[GrantType.AUTHORIZATION_CODE],
         )
         provider.property_mappings.set(
             ScopeMapping.objects.filter(
@@ -283,15 +365,17 @@ class TestProviderOAuth2OIDC(SeleniumTestCase):
         )
 
         negative_policy = ExpressionPolicy.objects.create(
-            name="negative-static", expression="return False"
+            name=generate_id(), expression="return False"
         )
         PolicyBinding.objects.create(target=app, policy=negative_policy, order=0)
 
-        self.container = self.setup_client()
+        self.setup_client()
         self.driver.get("http://localhost:9009")
         self.login()
-        self.wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, "header > h1")))
+        self.wait.until(
+            ec.presence_of_element_located((By.CSS_SELECTOR, "[data-test-id='card-title']"))
+        )
         self.assertEqual(
-            self.driver.find_element(By.CSS_SELECTOR, "header > h1").text,
+            self.driver.find_element(By.CSS_SELECTOR, "[data-test-id='card-title']").text,
             "Permission denied",
         )

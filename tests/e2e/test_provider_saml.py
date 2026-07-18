@@ -1,32 +1,29 @@
 """test SAML Provider flow"""
 
-from json import loads
+from json import dumps
 from time import sleep
 
-from docker import DockerClient, from_env
-from docker.models.containers import Container
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 
 from authentik.blueprints.tests import apply_blueprint, reconcile_app
+from authentik.common.saml.constants import SAML_BINDING_POST
 from authentik.core.models import Application
 from authentik.core.tests.utils import create_test_cert
 from authentik.flows.models import Flow
+from authentik.lib.generators import generate_id
 from authentik.policies.expression.models import ExpressionPolicy
 from authentik.policies.models import PolicyBinding
 from authentik.providers.saml.models import SAMLBindings, SAMLPropertyMapping, SAMLProvider
-from authentik.sources.saml.processors.constants import SAML_BINDING_POST
-from tests.e2e.utils import SeleniumTestCase, retry
+from tests.decorators import retry
+from tests.selenium import SeleniumTestCase
 
 
 class TestProviderSAML(SeleniumTestCase):
     """test SAML Provider flow"""
 
-    container: Container
-
-    def setup_client(self, provider: SAMLProvider, force_post: bool = False) -> Container:
+    def setup_client(self, provider: SAMLProvider, force_post: bool = False, **kwargs):
         """Setup client saml-sp container which we test SAML against"""
-        client: DockerClient = from_env()
         metadata_url = (
             self.url(
                 "authentik_api:samlprovider-metadata",
@@ -36,20 +33,18 @@ class TestProviderSAML(SeleniumTestCase):
         )
         if force_post:
             metadata_url += f"&force_binding={SAML_BINDING_POST}"
-        container = client.containers.run(
+        self.run_container(
             image="ghcr.io/beryju/saml-test-sp:1.1",
-            detach=True,
             ports={
                 "9009": "9009",
             },
             environment={
-                "SP_ENTITY_ID": provider.issuer,
+                "SP_ENTITY_ID": provider.issuer_override,
                 "SP_SSO_BINDING": "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST",
                 "SP_METADATA_URL": metadata_url,
+                **kwargs,
             },
         )
-        self.wait_for_container(container)
-        return container
 
     @retry()
     @apply_blueprint(
@@ -70,10 +65,10 @@ class TestProviderSAML(SeleniumTestCase):
             slug="default-provider-authorization-implicit-consent"
         )
         provider: SAMLProvider = SAMLProvider.objects.create(
-            name="saml-test",
+            name=generate_id(),
             acs_url="http://localhost:9009/saml/acs",
             audience="authentik-e2e",
-            issuer="authentik-e2e",
+            issuer_override="authentik-e2e",
             sp_binding=SAMLBindings.POST,
             authorization_flow=authorization_flow,
             signing_kp=create_test_cert(),
@@ -82,41 +77,131 @@ class TestProviderSAML(SeleniumTestCase):
         provider.save()
         Application.objects.create(
             name="SAML",
-            slug="authentik-saml",
+            slug=generate_id(),
             provider=provider,
         )
-        self.container = self.setup_client(provider)
+        self.setup_client(provider)
         self.driver.get("http://localhost:9009")
         self.login()
         self.wait_for_url("http://localhost:9009/")
 
-        body = loads(self.driver.find_element(By.CSS_SELECTOR, "pre").text)
+        body = self.parse_json_content()
+        snippet = dumps(body, indent=2)[:500].replace("\n", " ")
+        attrs = body.get("attr", {})
 
         self.assertEqual(
-            body["attr"]["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"],
+            attrs.get("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"),
             [self.user.name],
+            f"Claim 'name' mismatch at {self.driver.current_url}: {snippet}",
         )
+
         self.assertEqual(
-            body["attr"][
-                "http://schemas.microsoft.com/ws/2008/06/identity/claims/windowsaccountname"
-            ],
+            attrs.get("http://schemas.microsoft.com/ws/2008/06/identity/claims/windowsaccountname"),
             [self.user.username],
+            f"Claim 'windowsaccountname' mismatch at {self.driver.current_url}: {snippet}",
         )
+
         self.assertEqual(
-            body["attr"]["http://schemas.goauthentik.io/2021/02/saml/username"],
+            attrs.get("http://schemas.goauthentik.io/2021/02/saml/username"),
             [self.user.username],
+            f"Claim 'saml/username' mismatch at {self.driver.current_url}: {snippet}",
         )
+
         self.assertEqual(
-            body["attr"]["http://schemas.goauthentik.io/2021/02/saml/uid"],
+            attrs.get("http://schemas.goauthentik.io/2021/02/saml/uid"),
             [str(self.user.pk)],
+            f"Claim 'saml/uid' mismatch at {self.driver.current_url}: {snippet}",
         )
+
         self.assertEqual(
-            body["attr"]["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress"],
+            attrs.get("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress"),
             [self.user.email],
+            f"Claim 'emailaddress' mismatch at {self.driver.current_url}: {snippet}",
         )
+
         self.assertEqual(
-            body["attr"]["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/upn"],
+            attrs.get("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/upn"),
             [self.user.email],
+            f"Claim 'upn' mismatch at {self.driver.current_url}: {snippet}",
+        )
+
+    @retry()
+    @apply_blueprint(
+        "default/flow-default-authentication-flow.yaml",
+        "default/flow-default-invalidation-flow.yaml",
+    )
+    @apply_blueprint(
+        "default/flow-default-provider-authorization-implicit-consent.yaml",
+    )
+    @apply_blueprint(
+        "system/providers-saml.yaml",
+    )
+    @reconcile_app("authentik_crypto")
+    def test_sp_initiated_implicit_post(self):
+        """test SAML Provider flow SP-initiated flow (implicit consent)"""
+        # Bootstrap all needed objects
+        authorization_flow = Flow.objects.get(
+            slug="default-provider-authorization-implicit-consent"
+        )
+        provider: SAMLProvider = SAMLProvider.objects.create(
+            name=generate_id(),
+            acs_url="http://localhost:9009/saml/acs",
+            audience="authentik-e2e",
+            issuer_override="authentik-e2e",
+            sp_binding=SAMLBindings.POST,
+            authorization_flow=authorization_flow,
+            signing_kp=create_test_cert(),
+        )
+        provider.property_mappings.set(SAMLPropertyMapping.objects.all())
+        provider.save()
+        Application.objects.create(
+            name="SAML",
+            slug=generate_id(),
+            provider=provider,
+        )
+        self.setup_client(provider, True)
+        self.driver.get("http://localhost:9009")
+        self.login()
+        self.wait_for_url("http://localhost:9009/")
+
+        body = self.parse_json_content()
+        snippet = dumps(body, indent=2)[:500].replace("\n", " ")
+        attrs = body.get("attr", {})
+
+        self.assertEqual(
+            attrs.get("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"),
+            [self.user.name],
+            f"Claim 'name' mismatch at {self.driver.current_url}: {snippet}",
+        )
+
+        self.assertEqual(
+            attrs.get("http://schemas.microsoft.com/ws/2008/06/identity/claims/windowsaccountname"),
+            [self.user.username],
+            f"Claim 'windowsaccountname' mismatch at {self.driver.current_url}: {snippet}",
+        )
+
+        self.assertEqual(
+            attrs.get("http://schemas.goauthentik.io/2021/02/saml/username"),
+            [self.user.username],
+            f"Claim 'saml/username' mismatch at {self.driver.current_url}: {snippet}",
+        )
+
+        self.assertEqual(
+            attrs.get("http://schemas.goauthentik.io/2021/02/saml/uid"),
+            [str(self.user.pk)],
+            f"Claim 'saml/uid' mismatch at {self.driver.current_url}: {snippet}",
+        )
+
+        self.assertEqual(
+            attrs.get("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress"),
+            [self.user.email],
+            f"Claim 'emailaddress' mismatch at {self.driver.current_url}: {snippet}",
+        )
+
+        self.assertEqual(
+            attrs.get("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/upn"),
+            [self.user.email],
+            f"Claim 'upn' mismatch at {self.driver.current_url}: {snippet}",
         )
 
     @retry()
@@ -138,10 +223,10 @@ class TestProviderSAML(SeleniumTestCase):
             slug="default-provider-authorization-explicit-consent"
         )
         provider: SAMLProvider = SAMLProvider.objects.create(
-            name="saml-test",
+            name=generate_id(),
             acs_url="http://localhost:9009/saml/acs",
             audience="authentik-e2e",
-            issuer="authentik-e2e",
+            issuer_override="authentik-e2e",
             sp_binding=SAMLBindings.POST,
             authorization_flow=authorization_flow,
             signing_kp=create_test_cert(),
@@ -150,10 +235,10 @@ class TestProviderSAML(SeleniumTestCase):
         provider.save()
         app = Application.objects.create(
             name="SAML",
-            slug="authentik-saml",
+            slug=generate_id(),
             provider=provider,
         )
-        self.container = self.setup_client(provider)
+        self.setup_client(provider)
         self.driver.get("http://localhost:9009")
         self.login()
 
@@ -164,7 +249,8 @@ class TestProviderSAML(SeleniumTestCase):
 
         self.assertIn(
             app.name,
-            consent_stage.find_element(By.CSS_SELECTOR, "#header-text").text,
+            consent_stage.find_element(By.CSS_SELECTOR, "[data-test-id='stage-heading']").text,
+            "Consent stage header mismatch",
         )
         consent_stage.find_element(
             By.CSS_SELECTOR,
@@ -173,33 +259,44 @@ class TestProviderSAML(SeleniumTestCase):
 
         self.wait_for_url("http://localhost:9009/")
 
-        body = loads(self.driver.find_element(By.CSS_SELECTOR, "pre").text)
+        body = self.parse_json_content()
+        snippet = dumps(body, indent=2)[:500].replace("\n", " ")
+        attrs = body.get("attr", {})
 
         self.assertEqual(
-            body["attr"]["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"],
+            attrs.get("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"),
             [self.user.name],
+            f"Claim 'name' mismatch at {self.driver.current_url}: {snippet}",
         )
+
         self.assertEqual(
-            body["attr"][
-                "http://schemas.microsoft.com/ws/2008/06/identity/claims/windowsaccountname"
-            ],
+            attrs.get("http://schemas.microsoft.com/ws/2008/06/identity/claims/windowsaccountname"),
             [self.user.username],
+            f"Claim 'windowsaccountname' mismatch at {self.driver.current_url}: {snippet}",
         )
+
         self.assertEqual(
-            body["attr"]["http://schemas.goauthentik.io/2021/02/saml/username"],
+            attrs.get("http://schemas.goauthentik.io/2021/02/saml/username"),
             [self.user.username],
+            f"Claim 'saml/username' mismatch at {self.driver.current_url}: {snippet}",
         )
+
         self.assertEqual(
-            body["attr"]["http://schemas.goauthentik.io/2021/02/saml/uid"],
+            attrs.get("http://schemas.goauthentik.io/2021/02/saml/uid"),
             [str(self.user.pk)],
+            f"Claim 'saml/uid' mismatch at {self.driver.current_url}: {snippet}",
         )
+
         self.assertEqual(
-            body["attr"]["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress"],
+            attrs.get("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress"),
             [self.user.email],
+            f"Claim 'emailaddress' mismatch at {self.driver.current_url}: {snippet}",
         )
+
         self.assertEqual(
-            body["attr"]["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/upn"],
+            attrs.get("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/upn"),
             [self.user.email],
+            f"Claim 'upn' mismatch at {self.driver.current_url}: {snippet}",
         )
 
     @retry()
@@ -221,10 +318,10 @@ class TestProviderSAML(SeleniumTestCase):
             slug="default-provider-authorization-explicit-consent"
         )
         provider: SAMLProvider = SAMLProvider.objects.create(
-            name="saml-test",
+            name=generate_id(),
             acs_url="http://localhost:9009/saml/acs",
             audience="authentik-e2e",
-            issuer="authentik-e2e",
+            issuer_override="authentik-e2e",
             sp_binding=SAMLBindings.POST,
             authorization_flow=authorization_flow,
             signing_kp=create_test_cert(),
@@ -233,10 +330,10 @@ class TestProviderSAML(SeleniumTestCase):
         provider.save()
         app = Application.objects.create(
             name="SAML",
-            slug="authentik-saml",
+            slug=generate_id(),
             provider=provider,
         )
-        self.container = self.setup_client(provider, True)
+        self.setup_client(provider, True)
         self.driver.get("http://localhost:9009")
         self.login()
 
@@ -247,7 +344,7 @@ class TestProviderSAML(SeleniumTestCase):
 
         self.assertIn(
             app.name,
-            consent_stage.find_element(By.CSS_SELECTOR, "#header-text").text,
+            consent_stage.find_element(By.CSS_SELECTOR, "[data-test-id='stage-heading']").text,
         )
         consent_stage.find_element(
             By.CSS_SELECTOR,
@@ -256,33 +353,44 @@ class TestProviderSAML(SeleniumTestCase):
 
         self.wait_for_url("http://localhost:9009/")
 
-        body = loads(self.driver.find_element(By.CSS_SELECTOR, "pre").text)
+        body = self.parse_json_content()
+        snippet = dumps(body, indent=2)[:500].replace("\n", " ")
+        attrs = body.get("attr", {})
 
         self.assertEqual(
-            body["attr"]["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"],
+            attrs.get("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"),
             [self.user.name],
+            f"Claim 'name' mismatch at {self.driver.current_url}: {snippet}",
         )
+
         self.assertEqual(
-            body["attr"][
-                "http://schemas.microsoft.com/ws/2008/06/identity/claims/windowsaccountname"
-            ],
+            attrs.get("http://schemas.microsoft.com/ws/2008/06/identity/claims/windowsaccountname"),
             [self.user.username],
+            f"Claim 'windowsaccountname' mismatch at {self.driver.current_url}: {snippet}",
         )
+
         self.assertEqual(
-            body["attr"]["http://schemas.goauthentik.io/2021/02/saml/username"],
+            attrs.get("http://schemas.goauthentik.io/2021/02/saml/username"),
             [self.user.username],
+            f"Claim 'username' mismatch at {self.driver.current_url}: {snippet}",
         )
+
         self.assertEqual(
-            body["attr"]["http://schemas.goauthentik.io/2021/02/saml/uid"],
+            attrs.get("http://schemas.goauthentik.io/2021/02/saml/uid"),
             [str(self.user.pk)],
+            f"Claim 'uid' mismatch at {self.driver.current_url}: {snippet}",
         )
+
         self.assertEqual(
-            body["attr"]["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress"],
+            attrs.get("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress"),
             [self.user.email],
+            f"Claim 'emailaddress' mismatch at {self.driver.current_url}: {snippet}",
         )
+
         self.assertEqual(
-            body["attr"]["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/upn"],
+            attrs.get("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/upn"),
             [self.user.email],
+            f"Claim 'upn' mismatch at {self.driver.current_url}: {snippet}",
         )
 
     @retry()
@@ -304,10 +412,10 @@ class TestProviderSAML(SeleniumTestCase):
             slug="default-provider-authorization-implicit-consent"
         )
         provider: SAMLProvider = SAMLProvider.objects.create(
-            name="saml-test",
+            name=generate_id(),
             acs_url="http://localhost:9009/saml/acs",
             audience="authentik-e2e",
-            issuer="authentik-e2e",
+            issuer_override="authentik-e2e",
             sp_binding=SAMLBindings.POST,
             authorization_flow=authorization_flow,
             signing_kp=create_test_cert(),
@@ -316,10 +424,10 @@ class TestProviderSAML(SeleniumTestCase):
         provider.save()
         Application.objects.create(
             name="SAML",
-            slug="authentik-saml",
+            slug=generate_id(),
             provider=provider,
         )
-        self.container = self.setup_client(provider)
+        self.setup_client(provider)
         self.driver.get(
             self.url(
                 "authentik_providers_saml:sso-init",
@@ -330,33 +438,44 @@ class TestProviderSAML(SeleniumTestCase):
         sleep(1)
         self.wait_for_url("http://localhost:9009/")
 
-        body = loads(self.driver.find_element(By.CSS_SELECTOR, "pre").text)
+        body = self.parse_json_content()
+        snippet = dumps(body, indent=2)[:500].replace("\n", " ")
+        attrs = body.get("attr", {})
 
         self.assertEqual(
-            body["attr"]["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"],
+            attrs.get("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"),
             [self.user.name],
+            f"Claim 'name' mismatch at {self.driver.current_url}: {snippet}",
         )
+
         self.assertEqual(
-            body["attr"][
-                "http://schemas.microsoft.com/ws/2008/06/identity/claims/windowsaccountname"
-            ],
+            attrs.get("http://schemas.microsoft.com/ws/2008/06/identity/claims/windowsaccountname"),
             [self.user.username],
+            f"Claim 'windowsaccountname' mismatch at {self.driver.current_url}: {snippet}",
         )
+
         self.assertEqual(
-            body["attr"]["http://schemas.goauthentik.io/2021/02/saml/username"],
+            attrs.get("http://schemas.goauthentik.io/2021/02/saml/username"),
             [self.user.username],
+            f"Claim 'username' mismatch at {self.driver.current_url}: {snippet}",
         )
+
         self.assertEqual(
-            body["attr"]["http://schemas.goauthentik.io/2021/02/saml/uid"],
+            attrs.get("http://schemas.goauthentik.io/2021/02/saml/uid"),
             [str(self.user.pk)],
+            f"Claim 'uid' mismatch at {self.driver.current_url}: {snippet}",
         )
+
         self.assertEqual(
-            body["attr"]["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress"],
+            attrs.get("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress"),
             [self.user.email],
+            f"Claim 'emailaddress' mismatch at {self.driver.current_url}: {snippet}",
         )
+
         self.assertEqual(
-            body["attr"]["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/upn"],
+            attrs.get("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/upn"),
             [self.user.email],
+            f"Claim 'upn' mismatch at {self.driver.current_url}: {snippet}",
         )
 
     @retry()
@@ -381,10 +500,10 @@ class TestProviderSAML(SeleniumTestCase):
             name="negative-static", expression="return False"
         )
         provider: SAMLProvider = SAMLProvider.objects.create(
-            name="saml-test",
+            name=generate_id(),
             acs_url="http://localhost:9009/saml/acs",
             audience="authentik-e2e",
-            issuer="authentik-e2e",
+            issuer_override="authentik-e2e",
             sp_binding=SAMLBindings.POST,
             authorization_flow=authorization_flow,
             signing_kp=create_test_cert(),
@@ -393,17 +512,20 @@ class TestProviderSAML(SeleniumTestCase):
         provider.save()
         app = Application.objects.create(
             name="SAML",
-            slug="authentik-saml",
+            slug=generate_id(),
             provider=provider,
         )
         PolicyBinding.objects.create(target=app, policy=negative_policy, order=0)
-        self.container = self.setup_client(provider)
+        self.setup_client(provider)
         self.driver.get("http://localhost:9009/")
         self.login()
 
-        self.wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, "header > h1")))
+        self.wait.until(
+            ec.presence_of_element_located((By.CSS_SELECTOR, "[data-test-id='card-title']"))
+        )
+
         self.assertEqual(
-            self.driver.find_element(By.CSS_SELECTOR, "header > h1").text,
+            self.driver.find_element(By.CSS_SELECTOR, "[data-test-id='card-title']").text,
             "Permission denied",
         )
 
@@ -414,6 +536,7 @@ class TestProviderSAML(SeleniumTestCase):
     )
     @apply_blueprint(
         "default/flow-default-provider-authorization-implicit-consent.yaml",
+        "default/flow-default-provider-invalidation.yaml",
     )
     @apply_blueprint(
         "system/providers-saml.yaml",
@@ -425,31 +548,35 @@ class TestProviderSAML(SeleniumTestCase):
         authorization_flow = Flow.objects.get(
             slug="default-provider-authorization-implicit-consent"
         )
+        invalidation_flow = Flow.objects.get(slug="default-provider-invalidation-flow")
         provider: SAMLProvider = SAMLProvider.objects.create(
-            name="saml-test",
+            name=generate_id(),
             acs_url="http://localhost:9009/saml/acs",
             audience="authentik-e2e",
-            issuer="authentik-e2e",
+            issuer_override="authentik-e2e",
             sp_binding=SAMLBindings.POST,
             authorization_flow=authorization_flow,
+            invalidation_flow=invalidation_flow,
             signing_kp=create_test_cert(),
         )
         provider.property_mappings.set(SAMLPropertyMapping.objects.all())
         provider.save()
-        app = Application.objects.create(
+        Application.objects.create(
             name="SAML",
-            slug="authentik-saml",
+            slug=generate_id(),
             provider=provider,
         )
-        self.container = self.setup_client(provider)
+        self.setup_client(provider)
         self.driver.get("http://localhost:9009")
         self.login()
         self.wait_for_url("http://localhost:9009/")
 
         self.driver.get("http://localhost:9009/saml/logout")
-        self.wait_for_url(
-            self.url(
-                "authentik_core:if-session-end",
-                application_slug=app.slug,
-            )
+        should_url = self.url(
+            "authentik_core:if-flow",
+            flow_slug=invalidation_flow.slug,
+        )
+        self.wait.until(
+            lambda driver: driver.current_url.startswith(should_url),
+            f"URL {self.driver.current_url} doesn't match expected URL {should_url}",
         )

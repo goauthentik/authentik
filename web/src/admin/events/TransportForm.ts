@@ -1,28 +1,38 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { first } from "@goauthentik/common/utils";
-import "@goauthentik/elements/forms/HorizontalFormElement";
-import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
-import "@goauthentik/elements/forms/Radio";
-import "@goauthentik/elements/forms/SearchSelect";
+import "#components/ak-hidden-text-input";
+import "#components/ak-switch-input";
+import "#components/ak-text-input";
+import "#elements/forms/HorizontalFormElement";
+import "#elements/forms/Radio";
+import "#elements/forms/SearchSelect/index";
+import "#admin/common/ak-crypto-certificate-search";
 
-import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
+import { aki } from "#common/api/client";
+
+import { ModelForm } from "#elements/forms/ModelForm";
 
 import {
     EventsApi,
     NotificationTransport,
-    NotificationTransportModeEnum,
     NotificationWebhookMapping,
     PropertymappingsApi,
     PropertymappingsNotificationListRequest,
+    StagesApi,
+    TransportModeEnum,
+    TypeCreate,
 } from "@goauthentik/api";
+
+import { msg } from "@lit/localize";
+import { html, TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-event-transport-form")
 export class TransportForm extends ModelForm<NotificationTransport, string> {
+    public static override verboseName = msg("Notification Transport");
+    public static override verboseNamePlural = msg("Notification Transports");
+
     loadInstance(pk: string): Promise<NotificationTransport> {
-        return new EventsApi(DEFAULT_CONFIG)
+        return aki(EventsApi)
             .eventsTransportsRetrieve({
                 uuid: pk,
             })
@@ -31,9 +41,17 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
                 return transport;
             });
     }
+    async load(): Promise<void> {
+        this.templates = await aki(StagesApi).stagesEmailTemplatesList();
+    }
+
+    templates?: TypeCreate[];
 
     @property({ type: Boolean })
     showWebhook = false;
+
+    @property({ type: Boolean })
+    showEmail = false;
 
     getSuccessMessage(): string {
         return this.instance
@@ -43,81 +61,111 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
 
     async send(data: NotificationTransport): Promise<NotificationTransport> {
         if (this.instance) {
-            return new EventsApi(DEFAULT_CONFIG).eventsTransportsUpdate({
+            return aki(EventsApi).eventsTransportsUpdate({
                 uuid: this.instance.pk || "",
                 notificationTransportRequest: data,
             });
-        } else {
-            return new EventsApi(DEFAULT_CONFIG).eventsTransportsCreate({
-                notificationTransportRequest: data,
-            });
         }
+        return aki(EventsApi).eventsTransportsCreate({
+            notificationTransportRequest: data,
+        });
     }
 
     onModeChange(mode: string | undefined): void {
-        if (
-            mode === NotificationTransportModeEnum.Webhook ||
-            mode === NotificationTransportModeEnum.WebhookSlack
-        ) {
-            this.showWebhook = true;
-        } else {
-            this.showWebhook = false;
+        // Reset all flags
+        this.showWebhook = false;
+        this.showEmail = false;
+
+        switch (mode) {
+            case TransportModeEnum.Webhook:
+            case TransportModeEnum.WebhookSlack:
+                this.showWebhook = true;
+                break;
+            case TransportModeEnum.Email:
+                this.showEmail = true;
+                break;
+            case TransportModeEnum.Local:
+            default:
+                // Both flags remain false
+                break;
         }
     }
 
-    renderForm(): TemplateResult {
-        return html` <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
-                <input
-                    type="text"
-                    value="${ifDefined(this.instance?.name)}"
-                    class="pf-c-form-control"
-                    required
-                />
-            </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("Mode")} ?required=${true} name="mode">
+    protected override renderForm(): TemplateResult {
+        return html`<ak-text-input
+                label=${msg("Transport Name")}
+                placeholder=${msg("Type a name for this transport...")}
+                autofocus
+                spellcheck="false"
+                autocomplete="off"
+                required
+                name="name"
+                value="${ifDefined(this.instance?.name)}"
+            ></ak-text-input>
+            <ak-switch-input
+                name="sendOnce"
+                label=${msg("Send once")}
+                ?checked=${this.instance?.sendOnce ?? false}
+                help=${msg(
+                    "Only send notification once, for example when sending a webhook into a chat channel.",
+                )}
+            >
+            </ak-switch-input>
+            <ak-form-element-horizontal label=${msg("Mode")} required name="mode">
                 <ak-radio
-                    @change=${(ev: CustomEvent<{ value: NotificationTransportModeEnum }>) => {
+                    @change=${(ev: CustomEvent<{ value: TransportModeEnum }>) => {
                         this.onModeChange(ev.detail.value);
                     }}
                     .options=${[
                         {
                             label: msg("Local (notifications will be created within authentik)"),
-                            value: NotificationTransportModeEnum.Local,
+                            value: TransportModeEnum.Local,
                             default: true,
                         },
                         {
                             label: msg("Email"),
-                            value: NotificationTransportModeEnum.Email,
+                            value: TransportModeEnum.Email,
                         },
                         {
                             label: msg("Webhook (generic)"),
-                            value: NotificationTransportModeEnum.Webhook,
+                            value: TransportModeEnum.Webhook,
                         },
                         {
                             label: msg("Webhook (Slack/Discord)"),
-                            value: NotificationTransportModeEnum.WebhookSlack,
+                            value: TransportModeEnum.WebhookSlack,
                         },
                     ]}
                     .value=${this.instance?.mode}
                 >
                 </ak-radio>
             </ak-form-element-horizontal>
+            <ak-hidden-text-input
+                name="webhookUrl"
+                label=${msg("Webhook URL")}
+                value="${this.instance?.webhookUrl || ""}"
+                input-hint="code"
+                ?hidden=${!this.showWebhook}
+                ?required=${this.showWebhook}
+            >
+            </ak-hidden-text-input>
             <ak-form-element-horizontal
                 ?hidden=${!this.showWebhook}
-                label=${msg("Webhook URL")}
-                name="webhookUrl"
-                ?required=${true}
+                label=${msg("Webhook Certificate Authority")}
+                name="webhookCa"
             >
-                <input
-                    type="text"
-                    value="${ifDefined(this.instance?.webhookUrl)}"
-                    class="pf-c-form-control"
-                />
+                <ak-crypto-certificate-search
+                    .certificate=${this.instance?.webhookCa}
+                ></ak-crypto-certificate-search>
+                <p class="pf-c-form__helper-text">
+                    ${msg(
+                        "Keypair used to validate the certificate of the webhook endpoint. When not configured, the standard CA bundle is used.",
+                    )}
+                </p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
                 ?hidden=${!this.showWebhook}
-                label=${msg("Webhook Mapping")}
-                name="webhookMapping"
+                label=${msg("Webhook Body Mapping")}
+                name="webhookMappingBody"
             >
                 <ak-search-select
                     .fetchObjects=${async (
@@ -129,43 +177,86 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
                         if (query !== undefined) {
                             args.search = query;
                         }
-                        const items = await new PropertymappingsApi(
-                            DEFAULT_CONFIG,
-                        ).propertymappingsNotificationList(args);
+                        const items =
+                            await aki(PropertymappingsApi).propertymappingsNotificationList(args);
+                        return items.results;
+                    }}
+                    .renderElement=${(item: NotificationWebhookMapping) => item.name}
+                    .value=${(item: NotificationWebhookMapping | null) => item?.pk}
+                    .selected=${(item: NotificationWebhookMapping): boolean => {
+                        return this.instance?.webhookMappingBody === item.pk;
+                    }}
+                    blankable
+                >
+                </ak-search-select>
+            </ak-form-element-horizontal>
+            <ak-form-element-horizontal
+                ?hidden=${!this.showWebhook}
+                label=${msg("Webhook Header Mapping")}
+                name="webhookMappingHeaders"
+            >
+                <ak-search-select
+                    .fetchObjects=${async (
+                        query?: string,
+                    ): Promise<NotificationWebhookMapping[]> => {
+                        const args: PropertymappingsNotificationListRequest = {
+                            ordering: "name",
+                        };
+                        if (query !== undefined) {
+                            args.search = query;
+                        }
+                        const items =
+                            await aki(PropertymappingsApi).propertymappingsNotificationList(args);
                         return items.results;
                     }}
                     .renderElement=${(item: NotificationWebhookMapping): string => {
                         return item.name;
                     }}
-                    .value=${(item: NotificationWebhookMapping | undefined): string | undefined => {
-                        return item?.pk;
-                    }}
+                    .value=${(item: NotificationWebhookMapping | null) => item?.pk}
                     .selected=${(item: NotificationWebhookMapping): boolean => {
-                        return this.instance?.webhookMapping === item.pk;
+                        return this.instance?.webhookMappingHeaders === item.pk;
                     }}
-                    ?blankable=${true}
+                    blankable
                 >
                 </ak-search-select>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal name="sendOnce">
-                <label class="pf-c-switch">
-                    <input
-                        class="pf-c-switch__input"
-                        type="checkbox"
-                        ?checked=${first(this.instance?.sendOnce, false)}
-                    />
-                    <span class="pf-c-switch__toggle">
-                        <span class="pf-c-switch__toggle-icon">
-                            <i class="fas fa-check" aria-hidden="true"></i>
-                        </span>
-                    </span>
-                    <span class="pf-c-switch__label">${msg("Send once")}</span>
-                </label>
-                <p class="pf-c-form__helper-text">
-                    ${msg(
-                        "Only send notification once, for example when sending a webhook into a chat channel.",
-                    )}
-                </p>
-            </ak-form-element-horizontal>`;
+            <ak-form-element-horizontal
+                ?hidden=${!this.showEmail}
+                ?required=${this.showEmail}
+                label=${msg("Email Subject Prefix")}
+                name="emailSubjectPrefix"
+            >
+                <input
+                    type="text"
+                    value="${this.instance?.emailSubjectPrefix || "authentik Notification: "}"
+                    class="pf-c-form-control"
+                    ?hidden=${!this.showEmail}
+                    ?required=${this.showEmail}
+                />
+            </ak-form-element-horizontal>
+            <ak-form-element-horizontal
+                ?hidden=${!this.showEmail}
+                ?required=${this.showEmail}
+                label=${msg("Email Template")}
+                name="emailTemplate"
+            >
+                <select name="users" class="pf-c-form-control">
+                    ${this.templates?.map((template) => {
+                        const selected =
+                            this.instance?.emailTemplate === template.name ||
+                            (!this.instance?.emailTemplate &&
+                                template.name === "email/event_notification.html");
+                        return html`<option value=${ifDefined(template.name)} ?selected=${selected}>
+                            ${template.description}
+                        </option>`;
+                    })}
+                </select>
+            </ak-form-element-horizontal> `;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-event-transport-form": TransportForm;
     }
 }

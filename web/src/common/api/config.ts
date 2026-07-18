@@ -1,20 +1,8 @@
-import {
-    CSRFMiddleware,
-    EventMiddleware,
-    LoggingMiddleware,
-} from "@goauthentik/common/api/middleware";
-import { EVENT_LOCALE_REQUEST, VERSION } from "@goauthentik/common/constants";
-import { globalAK } from "@goauthentik/common/global";
+/**
+ * @file brandSetFavicon() and AndNext(), which is used for redirects and flow steps
+ */
 
-import { Config, Configuration, CoreApi, CurrentBrand, RootApi } from "@goauthentik/api";
-
-let globalConfigPromise: Promise<Config> | undefined = Promise.resolve(globalAK().config);
-export function config(): Promise<Config> {
-    if (!globalConfigPromise) {
-        globalConfigPromise = new RootApi(DEFAULT_CONFIG).rootConfigRetrieve();
-    }
-    return globalConfigPromise;
-}
+import type { CurrentBrand } from "@goauthentik/api";
 
 export function brandSetFavicon(brand: CurrentBrand) {
     /**
@@ -33,57 +21,9 @@ export function brandSetFavicon(brand: CurrentBrand) {
     });
 }
 
-export function brandSetLocale(brand: CurrentBrand) {
-    if (brand.defaultLocale === "") {
-        return;
-    }
-    console.debug("authentik/locale: setting locale from brand default");
-    window.dispatchEvent(
-        new CustomEvent(EVENT_LOCALE_REQUEST, {
-            composed: true,
-            bubbles: true,
-            detail: { locale: brand.defaultLocale },
-        }),
-    );
-}
-
-let globalBrandPromise: Promise<CurrentBrand> | undefined = Promise.resolve(globalAK().brand);
-export function brand(): Promise<CurrentBrand> {
-    if (!globalBrandPromise) {
-        globalBrandPromise = new CoreApi(DEFAULT_CONFIG)
-            .coreBrandsCurrentRetrieve()
-            .then((brand) => {
-                brandSetFavicon(brand);
-                brandSetLocale(brand);
-                return brand;
-            });
-    }
-    return globalBrandPromise;
-}
-
-export function getMetaContent(key: string): string {
-    const metaEl = document.querySelector<HTMLMetaElement>(`meta[name=${key}]`);
-    if (!metaEl) return "";
-    return metaEl.content;
-}
-
-export const DEFAULT_CONFIG = new Configuration({
-    basePath: (process.env.AK_API_BASE_PATH || window.location.origin) + "/api/v3",
-    headers: {
-        "sentry-trace": getMetaContent("sentry-trace"),
-    },
-    middleware: [
-        new CSRFMiddleware(),
-        new EventMiddleware(),
-        new LoggingMiddleware(globalAK().brand),
-    ],
-});
-
 // This is just a function so eslint doesn't complain about
 // missing-whitespace-between-attributes or
 // unexpected-character-in-attribute-name
 export function AndNext(url: string): string {
     return `?next=${encodeURIComponent(url)}`;
 }
-
-console.debug(`authentik(early): version ${VERSION}, apiBase ${DEFAULT_CONFIG.basePath}`);

@@ -1,11 +1,11 @@
 """events GeoIP Reader"""
 
-from typing import TYPE_CHECKING, Optional, TypedDict
+from typing import TYPE_CHECKING, TypedDict
 
 from django.http import HttpRequest
 from geoip2.errors import GeoIP2Error
 from geoip2.models import City
-from sentry_sdk.hub import Hub
+from sentry_sdk import start_span
 
 from authentik.events.context_processors.mmdb import MMDBContextProcessor
 from authentik.lib.config import CONFIG
@@ -19,17 +19,17 @@ if TYPE_CHECKING:
 class GeoIPDict(TypedDict):
     """GeoIP Details"""
 
-    continent: str
-    country: str
-    lat: float
-    long: float
+    continent: str | None
+    country: str | None
+    lat: float | None
+    long: float | None
     city: str
 
 
 class GeoIPContextProcessor(MMDBContextProcessor):
     """Slim wrapper around GeoIP API"""
 
-    def capability(self) -> Optional["Capabilities"]:
+    def capability(self) -> Capabilities | None:
         from authentik.api.v3.config import Capabilities
 
         return Capabilities.CAN_GEO_IP
@@ -37,7 +37,7 @@ class GeoIPContextProcessor(MMDBContextProcessor):
     def path(self) -> str | None:
         return CONFIG.get("events.context_processors.geoip")
 
-    def enrich_event(self, event: "Event"):
+    def enrich_event(self, event: Event):
         city = self.city_dict(event.client_ip)
         if not city:
             return
@@ -45,23 +45,23 @@ class GeoIPContextProcessor(MMDBContextProcessor):
 
     def enrich_context(self, request: HttpRequest) -> dict:
         # Different key `geoip` vs `geo` for legacy reasons
-        return {"geoip": self.city(ClientIPMiddleware.get_client_ip(request))}
+        return {"geoip": self.city_dict(ClientIPMiddleware.get_client_ip(request))}
 
     def city(self, ip_address: str) -> City | None:
         """Wrapper for Reader.city"""
-        with Hub.current.start_span(
+        with start_span(
             op="authentik.events.geo.city",
-            description=ip_address,
+            name=ip_address,
         ):
             if not self.configured():
                 return None
             self.check_expired()
             try:
                 return self.reader.city(ip_address)
-            except (GeoIP2Error, ValueError):
+            except GeoIP2Error, ValueError:
                 return None
 
-    def city_to_dict(self, city: City | None) -> GeoIPDict:
+    def city_to_dict(self, city: City | None) -> GeoIPDict | dict:
         """Convert City to dict"""
         if not city:
             return {}

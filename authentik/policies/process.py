@@ -2,17 +2,16 @@
 
 from multiprocessing import get_context
 from multiprocessing.connection import Connection
+from time import perf_counter
 
 from django.core.cache import cache
-from sentry_sdk.hub import Hub
+from sentry_sdk import start_span
 from sentry_sdk.tracing import Span
 from structlog.stdlib import get_logger
 
 from authentik.events.models import Event, EventAction
 from authentik.lib.config import CONFIG
-from authentik.lib.utils.errors import exception_to_string
-from authentik.lib.utils.reflection import class_to_path
-from authentik.policies.apps import HIST_POLICIES_EXECUTION_TIME
+from authentik.lib.utils.errors import exception_to_dict
 from authentik.policies.exceptions import PolicyException
 from authentik.policies.models import PolicyBinding
 from authentik.policies.types import CACHE_PREFIX, PolicyRequest, PolicyResult
@@ -95,10 +94,13 @@ class PolicyProcess(PROCESS_CLASS):
         except PolicyException as exc:
             # Either use passed original exception or whatever we have
             src_exc = exc.src_exc if exc.src_exc else exc
-            error_string = exception_to_string(src_exc)
             # Create policy exception event, only when we're not debugging
             if not self.request.debug:
-                self.create_event(EventAction.POLICY_EXCEPTION, message=error_string)
+                self.create_event(
+                    EventAction.POLICY_EXCEPTION,
+                    message="Policy failed to execute",
+                    exception=exception_to_dict(src_exc),
+                )
             LOGGER.debug("P_ENG(proc): error, using failure result", exc=src_exc)
             policy_result = PolicyResult(self.binding.failure_result, str(src_exc))
         policy_result.source_binding = self.binding
@@ -120,19 +122,9 @@ class PolicyProcess(PROCESS_CLASS):
 
     def profiling_wrapper(self):
         """Run with profiling enabled"""
-        with (
-            Hub.current.start_span(
-                op="authentik.policy.process.execute",
-            ) as span,
-            HIST_POLICIES_EXECUTION_TIME.labels(
-                binding_order=self.binding.order,
-                binding_target_type=self.binding.target_type,
-                binding_target_name=self.binding.target_name,
-                object_pk=str(self.request.obj.pk),
-                object_type=class_to_path(self.request.obj.__class__),
-                mode="execute_process",
-            ).time(),
-        ):
+        with start_span(
+            op="authentik.policy.process.execute",
+        ) as span:
             span: Span
             span.set_data("policy", self.binding.policy)
             span.set_data("request", self.request)
@@ -140,8 +132,14 @@ class PolicyProcess(PROCESS_CLASS):
 
     def run(self):  # pragma: no cover
         """Task wrapper to run policy checking"""
+        result = None
         try:
-            self.connection.send(self.profiling_wrapper())
-        except Exception as exc:
-            LOGGER.warning("Policy failed to run", exc=exception_to_string(exc))
-            self.connection.send(PolicyResult(False, str(exc)))
+            start = perf_counter()
+            result = self.profiling_wrapper()
+            end = perf_counter()
+            result._exec_time = max((end - start), 0)
+        except Exception as exc:  # noqa
+            LOGGER.warning("Policy failed to run", exc=exc)
+            result = PolicyResult(False, str(exc))
+        finally:
+            self.connection.send(result)

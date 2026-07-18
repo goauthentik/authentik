@@ -1,10 +1,11 @@
-import "@goauthentik/elements/messages/MessageContainer";
+import "#elements/messages/MessageContainer";
+import "../ak-radio-input.js";
+
+import AkRadioInput from "../ak-radio-input.js";
+
 import { Meta } from "@storybook/web-components";
 
-import { TemplateResult, html } from "lit";
-
-import "../ak-radio-input";
-import AkRadioInput from "../ak-radio-input";
+import { html, TemplateResult } from "lit";
 
 const metadata: Meta<AkRadioInput<Record<string, number>>> = {
     title: "Components / Radio Input",
@@ -21,7 +22,7 @@ const metadata: Meta<AkRadioInput<Record<string, number>>> = {
 export default metadata;
 
 const container = (testItem: TemplateResult) =>
-    html` <div style="background: #fff; padding: 2em">
+    html` <div style="padding: 2em">
         <style>
             li {
                 display: block;
@@ -47,11 +48,8 @@ export const RadioInput = () => {
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const displayChange = (ev: any) => {
-        document.getElementById("radio-message-pad")!.innerText = `Value selected: ${JSON.stringify(
-            ev.target.value,
-            null,
-            2,
-        )}`;
+        document.getElementById("radio-message-pad")!.innerText =
+            `Value selected: ${JSON.stringify(ev.target.value, null, 2)}`;
     };
 
     return container(

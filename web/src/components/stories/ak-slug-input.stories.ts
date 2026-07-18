@@ -1,11 +1,12 @@
-import "@goauthentik/elements/messages/MessageContainer";
+import "#elements/messages/MessageContainer";
+import "../ak-slug-input.js";
+import "../ak-text-input.js";
+
+import AkSlugInput from "../ak-slug-input.js";
+
 import { Meta } from "@storybook/web-components";
 
-import { TemplateResult, html } from "lit";
-
-import "../ak-slug-input";
-import AkSlugInput from "../ak-slug-input";
-import "../ak-text-input";
+import { html, TemplateResult } from "lit";
 
 const metadata: Meta<AkSlugInput> = {
     title: "Components / Slug Input",
@@ -22,7 +23,7 @@ const metadata: Meta<AkSlugInput> = {
 export default metadata;
 
 const container = (testItem: TemplateResult) =>
-    html` <div style="background: #000; padding: 2em">
+    html` <div style="padding: 2em">
         <style>
             li {
                 display: block;
@@ -40,11 +41,8 @@ const container = (testItem: TemplateResult) =>
 export const SlugInput = () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const displayChange = (ev: any) => {
-        document.getElementById("text-message-pad")!.innerText = `Value selected: ${JSON.stringify(
-            ev.target.value,
-            null,
-            2,
-        )}`;
+        document.getElementById("text-message-pad")!.innerText =
+            `Value selected: ${JSON.stringify(ev.target.value, null, 2)}`;
     };
 
     return container(

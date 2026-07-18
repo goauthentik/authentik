@@ -6,10 +6,11 @@ import (
 	"sort"
 	"sync"
 
+	"beryju.io/radius-eap/protocol"
 	log "github.com/sirupsen/logrus"
 	"goauthentik.io/internal/config"
 	"goauthentik.io/internal/outpost/ak"
-	"goauthentik.io/internal/outpost/radius/metrics"
+	"golang.org/x/sync/errgroup"
 
 	"layeh.com/radius"
 )
@@ -19,30 +20,38 @@ type ProviderInstance struct {
 	SharedSecret   []byte
 	MFASupport     bool
 
-	appSlug  string
-	flowSlug string
-	s        *RadiusServer
-	log      *log.Entry
+	appSlug    string
+	flowSlug   string
+	providerId int32
+	certId     string
+	s          *RadiusServer
+	log        *log.Entry
+	eapState   map[string]*protocol.State
 }
 
 type RadiusServer struct {
-	s   radius.PacketServer
-	log *log.Entry
-	ac  *ak.APIController
+	s           []*radius.PacketServer
+	log         *log.Entry
+	ac          *ak.APIController
+	cryptoStore *ak.CryptoStore
 
-	providers []*ProviderInstance
+	providers map[int32]*ProviderInstance
 }
 
-func NewServer(ac *ak.APIController) *RadiusServer {
+func NewServer(ac *ak.APIController) ak.Outpost {
 	rs := &RadiusServer{
-		log:       log.WithField("logger", "authentik.outpost.radius"),
-		ac:        ac,
-		providers: []*ProviderInstance{},
+		log:         log.WithField("logger", "authentik.outpost.radius"),
+		ac:          ac,
+		providers:   map[int32]*ProviderInstance{},
+		cryptoStore: ak.NewCryptoStore(ac.Client.CryptoAPI),
 	}
-	rs.s = radius.PacketServer{
-		Handler:      rs,
-		SecretSource: rs,
-		Addr:         config.Get().Listen.Radius,
+	listenRadius := config.Get().Listen.Radius
+	for _, listen := range listenRadius {
+		rs.s = append(rs.s, &radius.PacketServer{
+			Handler:      rs,
+			SecretSource: rs,
+			Addr:         listen,
+		})
 	}
 	return rs
 }
@@ -84,33 +93,49 @@ func (rs *RadiusServer) RADIUSSecret(ctx context.Context, remoteAddr net.Addr) (
 		return bi < bj
 	})
 	candidate := matchedPrefixes[0]
-	rs.log.WithField("ip", ip.String()).WithField("cidr", candidate.c.String()).Debug("Matched CIDR")
+	rs.log.WithField("ip", ip.String()).WithField("cidr", candidate.c.String()).WithField("instance", candidate.p.appSlug).Debug("Matched CIDR")
 	return candidate.p.SharedSecret, nil
 }
 
 func (rs *RadiusServer) Start() error {
+	listenMetrics := config.Get().Listen.Metrics
+	metricsRouter := ak.MetricsRouter()
 	wg := sync.WaitGroup{}
-	wg.Add(2)
+	wg.Add(len(rs.s) + 1 + len(listenMetrics))
+	for _, s := range rs.s {
+		go func() {
+			defer wg.Done()
+			rs.log.WithField("listen", s.Addr).Info("Starting radius server")
+			err := s.ListenAndServe()
+			if err != nil {
+				panic(err)
+			}
+		}()
+	}
 	go func() {
 		defer wg.Done()
-		metrics.RunServer()
+		ak.RunMetricsUnix(metricsRouter)
 	}()
-	go func() {
-		defer wg.Done()
-		err := rs.StartRadiusServer()
-		if err != nil {
-			panic(err)
-		}
-	}()
+	for _, listen := range listenMetrics {
+		go func() {
+			defer wg.Done()
+			ak.RunMetricsServer(listen, metricsRouter)
+		}()
+	}
 	wg.Wait()
 	return nil
 }
 
 func (rs *RadiusServer) Stop() error {
 	ctx, cancel := context.WithCancel(context.Background())
-	err := rs.s.Shutdown(ctx)
+	errs := new(errgroup.Group)
+	for _, s := range rs.s {
+		errs.Go(func() error {
+			return s.Shutdown(ctx)
+		})
+	}
 	cancel()
-	return err
+	return errs.Wait()
 }
 
 func (rs *RadiusServer) TimerFlowCacheExpiry(context.Context) {}

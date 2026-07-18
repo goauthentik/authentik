@@ -1,95 +1,119 @@
-import { LayoutType } from "@goauthentik/common/ui/config";
-import { AKElement } from "@goauthentik/elements/Base";
+import { LibraryAppRow } from "./LibraryAppRow.js";
+import { type AppGroupEntry, ViewMode } from "./types.js";
 
-import { css, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
+import { LayoutType } from "#common/ui/config";
 
-import PFContent from "@patternfly/patternfly/components/Content/content.css";
-import PFEmptyState from "@patternfly/patternfly/components/EmptyState/empty-state.css";
-import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
+import { ApplicationRoute } from "#elements/router/builders";
+import { LitFC } from "#elements/types";
+import { ifPresent } from "#elements/utils/attributes";
 
-import type { Application } from "@goauthentik/api";
+import { AnchorPositionSupported } from "#user/LibraryApplication/CardMenu";
+import { AKLibraryApp } from "#user/LibraryApplication/index";
 
-import type { AppGroupEntry, AppGroupList } from "./types";
+import { Application } from "@goauthentik/api";
 
-type Pair = [string, string];
+import { spread } from "@open-wc/lit-helpers";
+import { kebabCase } from "change-case";
+import { HTMLAttributes } from "react";
 
-// prettier-ignore
-const LAYOUTS = new Map<string, [string, string]>([
-    [
-        "row",
-        ["pf-m-12-col", "pf-m-all-6-col-on-sm pf-m-all-4-col-on-md pf-m-all-5-col-on-lg pf-m-all-2-col-on-xl"]],
-    [
-        "2-column",
-        ["pf-m-6-col", "pf-m-all-12-col-on-sm pf-m-all-12-col-on-md pf-m-all-4-col-on-lg pf-m-all-4-col-on-xl"],
-    ],
-    [
-        "3-column",
-        ["pf-m-4-col", "pf-m-all-12-col-on-sm pf-m-all-12-col-on-md pf-m-all-6-col-on-lg pf-m-all-6-col-on-xl"],
-    ],
-]);
+import { msg } from "@lit/localize";
+import { html } from "lit";
+import { RefOrCallback } from "lit/directives/ref.js";
+import { repeat } from "lit/directives/repeat.js";
 
-@customElement("ak-library-application-list")
-export class LibraryPageApplicationList extends AKElement {
-    static get styles() {
-        return [
-            PFBase,
-            PFEmptyState,
-            PFContent,
-            PFGrid,
-            css`
-                .app-group-header {
-                    margin-bottom: 1em;
-                    margin-top: 1.2em;
-                }
-            `,
-        ];
-    }
+const LayoutColumnCount = {
+    [LayoutType.row]: 1,
+    [LayoutType.column_2]: 2,
+    [LayoutType.column_3]: 3,
+} as const satisfies Record<LayoutType, number>;
 
-    @property({ attribute: true })
-    layout = "row" as LayoutType;
-
-    @property({ attribute: true })
-    background: string | undefined = undefined;
-
-    @property({ attribute: true })
-    selected = "";
-
-    @property({ attribute: false })
-    apps: AppGroupList = [];
-
-    get currentLayout(): Pair {
-        const layout = LAYOUTS.get(this.layout);
-        if (!layout) {
-            console.warn(`Unrecognized layout: ${this.layout || "-undefined-"}`);
-            return LAYOUTS.get("row") as Pair;
-        }
-        return layout;
-    }
-
-    render() {
-        const [groupClass, groupGrid] = this.currentLayout;
-
-        return html`<div class="pf-l-grid pf-m-gutter">
-            ${this.apps.map(([group, apps]: AppGroupEntry) => {
-                return html`<div class="pf-l-grid__item ${groupClass}">
-                    <div class="pf-c-content app-group-header">
-                        <h2>${group}</h2>
-                    </div>
-                    <div class="pf-l-grid pf-m-gutter ${groupGrid}">
-                        ${apps.map((app: Application) => {
-                            return html`<ak-library-app
-                                class="pf-l-grid__item"
-                                .application=${app}
-                                background=${ifDefined(this.background)}
-                                ?selected=${app.slug === this.selected}
-                            ></ak-library-app>`;
-                        })}
-                    </div>
-                </div> `;
-            })}
-        </div>`;
-    }
+export interface AKLibraryApplicationListProps extends HTMLAttributes<HTMLDivElement> {
+    editable?: boolean;
+    groupedApps: AppGroupEntry[];
+    layout: LayoutType;
+    viewMode?: ViewMode;
+    background?: string | null;
+    selectedApp?: Application | null;
+    targetRef?: RefOrCallback | null;
 }
+
+/**
+ * Renders the current library list of a User's Applications.
+ */
+export const AKLibraryApplicationList: LitFC<AKLibraryApplicationListProps> = ({
+    editable,
+    groupedApps,
+    layout = LayoutType.row,
+    viewMode = ViewMode.Grid,
+    background,
+    selectedApp,
+    targetRef,
+    ...props
+}) => {
+    const columnCount = LayoutColumnCount[layout] ?? 1;
+    const isList = viewMode === ViewMode.List;
+
+    return html`<div
+        role="presentation"
+        part="app-list"
+        data-view-mode=${viewMode}
+        data-anchor-strategy=${AnchorPositionSupported ? "anchor-position" : "fallback"}
+        style="--app-list-column-count: ${columnCount}"
+        ${spread(props)}
+    >
+        ${repeat(
+            groupedApps,
+            ([groupLabel]) => groupLabel,
+            ([groupLabel, apps], groupIndex) => {
+                const groupID = kebabCase(groupLabel);
+                const inner = repeat(
+                    apps,
+                    (application) => application.pk,
+                    (application) => {
+                        const selected = selectedApp === application;
+
+                        const editURL = editable
+                            ? ApplicationRoute.EditURL(application.slug)
+                            : null;
+
+                        if (isList) {
+                            return LibraryAppRow({
+                                application,
+                                editURL,
+                                targetRef: selected ? targetRef : null,
+                            });
+                        }
+
+                        return AKLibraryApp({
+                            application,
+                            background,
+                            editURL,
+                            targetRef: selected ? targetRef : null,
+                        });
+                    },
+                );
+
+                return html`<fieldset
+                    class="ak-c-fieldset"
+                    data-group-id=${ifPresent(groupID)}
+                    part="app-group"
+                    data-group-index=${groupIndex}
+                    data-app-count=${apps.length}
+                >
+                    <legend
+                        class="pf-c-content ${!groupLabel ? "sr-only more-contrast-only" : ""}"
+                        part="app-group-header"
+                    >
+                        <h2 id=${`app-group-${groupID}`}>${groupLabel || msg("Ungrouped")}</h2>
+                    </legend>
+                    ${isList
+                        ? html`<ul part="app-group-rows" class="app-group-rows" role="list">
+                              ${inner}
+                          </ul>`
+                        : inner}
+                    <hr part="app-group-separator" aria-hidden="true" />
+                </fieldset>`;
+            },
+        )}
+    </div>`;
+};

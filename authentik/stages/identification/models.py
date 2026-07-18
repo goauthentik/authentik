@@ -8,6 +8,8 @@ from rest_framework.serializers import BaseSerializer
 
 from authentik.core.models import Source
 from authentik.flows.models import Flow, Stage
+from authentik.stages.authenticator_validate.models import AuthenticatorValidateStage
+from authentik.stages.captcha.models import CaptchaStage
 from authentik.stages.password.models import PasswordStage
 
 
@@ -20,7 +22,7 @@ class UserFields(models.TextChoices):
 
 
 class IdentificationStage(Stage):
-    """Allows the user to identify themselves for authentication."""
+    """Identify the user for authentication."""
 
     user_fields = ArrayField(
         models.CharField(max_length=100, choices=UserFields.choices),
@@ -38,10 +40,37 @@ class IdentificationStage(Stage):
         help_text=_(
             (
                 "When set, shows a password field, instead of showing the "
-                "password field as seaprate step."
+                "password field as separate step."
             ),
         ),
     )
+
+    captcha_stage = models.ForeignKey(
+        CaptchaStage,
+        null=True,
+        default=None,
+        on_delete=models.SET_NULL,
+        help_text=_(
+            (
+                "When set, adds functionality exactly like a Captcha stage, but baked into the "
+                "Identification stage."
+            ),
+        ),
+    )
+
+    webauthn_stage = models.ForeignKey(
+        AuthenticatorValidateStage,
+        null=True,
+        default=None,
+        on_delete=models.SET_NULL,
+        help_text=_(
+            (
+                "When set, and conditional WebAuthn is available, allow the user to use their "
+                "passkey as a first factor."
+            ),
+        ),
+    )
+
     case_insensitive_matching = models.BooleanField(
         default=True,
         help_text=_("When enabled, user fields are matched regardless of their casing."),
@@ -61,7 +90,13 @@ class IdentificationStage(Stage):
             "is entered."
         ),
     )
-
+    enable_remember_me = models.BooleanField(
+        default=False,
+        help_text=_(
+            "Show the user the 'Remember me on this device' toggle, allowing repeat "
+            "users to skip straight to entering their password."
+        ),
+    )
     enrollment_flow = models.ForeignKey(
         Flow,
         on_delete=models.SET_DEFAULT,

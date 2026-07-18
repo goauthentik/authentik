@@ -7,14 +7,16 @@ from django.db.backends.base.schema import BaseDatabaseSchemaEditor
 
 
 def backport_is_backchannel(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
-    from authentik.core.models import BackchannelProvider
+    db_alias = schema_editor.connection.alias
+    from authentik.providers.ldap.models import LDAPProvider
+    from authentik.providers.scim.models import SCIMProvider
 
-    for model in BackchannelProvider.__subclasses__():
+    for model in [LDAPProvider, SCIMProvider]:
         try:
-            for obj in model.objects.only("is_backchannel"):
+            for obj in model.objects.using(db_alias).only("is_backchannel"):
                 obj.is_backchannel = True
                 obj.save()
-        except (DatabaseError, InternalError, ProgrammingError):
+        except DatabaseError, InternalError, ProgrammingError:
             # The model might not have been migrated yet/doesn't exist yet
             # so we don't need to worry about backporting the data
             pass

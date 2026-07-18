@@ -8,7 +8,6 @@ from django.views import View
 from authentik.core.models import Application
 from authentik.flows.challenge import (
     ChallengeResponse,
-    ChallengeTypes,
     HttpChallengeResponse,
     RedirectChallenge,
 )
@@ -17,11 +16,8 @@ from authentik.flows.models import FlowDesignation, in_memory_stage
 from authentik.flows.planner import PLAN_CONTEXT_APPLICATION, FlowPlanner
 from authentik.flows.stage import ChallengeStageView
 from authentik.flows.views.executor import (
-    SESSION_KEY_APPLICATION_PRE,
-    SESSION_KEY_PLAN,
     ToDefaultFlow,
 )
-from authentik.lib.utils.urls import redirect_with_qs
 from authentik.stages.consent.stage import (
     PLAN_CONTEXT_CONSENT_HEADER,
     PLAN_CONTEXT_CONSENT_PERMISSIONS,
@@ -40,10 +36,14 @@ class RedirectToAppLaunch(View):
         # Check if we're authenticated already, saves us the flow run
         if request.user.is_authenticated:
             return HttpResponseRedirect(app.get_launch_url(request.user))
-        self.request.session[SESSION_KEY_APPLICATION_PRE] = app
         # otherwise, do a custom flow plan that includes the application that's
         # being accessed, to improve usability
-        flow = ToDefaultFlow(request=request, designation=FlowDesignation.AUTHENTICATION).get_flow()
+        if app and app.provider and app.provider.authentication_flow:
+            flow = app.provider.authentication_flow
+        else:
+            flow = ToDefaultFlow.get_flow(
+                request=request, designation=FlowDesignation.AUTHENTICATION
+            )
         planner = FlowPlanner(flow)
         planner.allow_empty_flows = True
         try:
@@ -58,9 +58,10 @@ class RedirectToAppLaunch(View):
             )
         except FlowNonApplicableException:
             raise Http404 from None
-        plan.insert_stage(in_memory_stage(RedirectToAppStage))
-        request.session[SESSION_KEY_PLAN] = plan
-        return redirect_with_qs("authentik_core:if-flow", request.GET, flow_slug=flow.slug)
+        # We redirect with an in_memory stage instead of `?next=...` as the launch URL
+        # might be formatted with the user, which hasn't logged in yet
+        plan.append_stage(in_memory_stage(RedirectToAppStage))
+        return plan.to_redirect(request, flow)
 
 
 class RedirectToAppStage(ChallengeStageView):
@@ -74,8 +75,8 @@ class RedirectToAppStage(ChallengeStageView):
             raise Http404
         return RedirectChallenge(
             instance={
-                "type": ChallengeTypes.REDIRECT.value,
                 "to": launch,
+                "final_redirect": True,
             }
         )
 

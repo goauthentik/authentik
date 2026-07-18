@@ -1,8 +1,9 @@
 """consent tests"""
 
-from time import sleep
+from datetime import timedelta
 
 from django.urls import reverse
+from freezegun import freeze_time
 
 from authentik.core.models import Application
 from authentik.core.tasks import clean_expired_models
@@ -16,8 +17,9 @@ from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.lib.generators import generate_id
 from authentik.stages.consent.models import ConsentMode, ConsentStage, UserConsent
 from authentik.stages.consent.stage import (
+    PLAN_CONTEXT_CONSENT_HEADER,
     PLAN_CONTEXT_CONSENT_PERMISSIONS,
-    SESSION_KEY_CONSENT_TOKEN,
+    PLAN_CONTEXT_CONSENT_TOKEN,
 )
 
 
@@ -32,8 +34,8 @@ class TestConsentStage(FlowTestCase):
             slug=generate_id(),
         )
 
-    def test_always_required(self):
-        """Test always required consent"""
+    def test_mismatched_token(self):
+        """Test incorrect token"""
         flow = create_test_flow(FlowDesignation.AUTHENTICATION)
         stage = ConsentStage.objects.create(name=generate_id(), mode=ConsentMode.ALWAYS_REQUIRE)
         binding = FlowStageBinding.objects.create(target=flow, stage=stage, order=2)
@@ -51,7 +53,40 @@ class TestConsentStage(FlowTestCase):
         response = self.client.post(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
             {
-                "token": session[SESSION_KEY_CONSENT_TOKEN],
+                "token": generate_id(),
+            },
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertStageResponse(
+            response,
+            flow,
+            component="ak-stage-consent",
+            response_errors={
+                "token": [{"string": "Invalid consent token, re-showing prompt", "code": "invalid"}]
+            },
+        )
+        self.assertFalse(UserConsent.objects.filter(user=self.user).exists())
+
+    def test_always_required(self):
+        """Test always required consent"""
+        flow = create_test_flow(FlowDesignation.AUTHENTICATION)
+        stage = ConsentStage.objects.create(name=generate_id(), mode=ConsentMode.ALWAYS_REQUIRE)
+        binding = FlowStageBinding.objects.create(target=flow, stage=stage, order=2)
+
+        plan = FlowPlan(flow_pk=flow.pk.hex, bindings=[binding], markers=[StageMarker()])
+        session = self.client.session
+        session[SESSION_KEY_PLAN] = plan
+        session.save()
+        response = self.client.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
+        )
+        self.assertEqual(response.status_code, 200)
+
+        response = self.client.post(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
+            {
+                "token": self.get_flow_plan().context[PLAN_CONTEXT_CONSENT_TOKEN],
             },
         )
 
@@ -86,7 +121,7 @@ class TestConsentStage(FlowTestCase):
         response = self.client.post(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
             {
-                "token": session[SESSION_KEY_CONSENT_TOKEN],
+                "token": self.get_flow_plan().context[PLAN_CONTEXT_CONSENT_TOKEN],
             },
         )
         self.assertEqual(response.status_code, 200)
@@ -136,11 +171,12 @@ class TestConsentStage(FlowTestCase):
         self.assertTrue(
             UserConsent.objects.filter(user=self.user, application=self.application).exists()
         )
-        sleep(1)
-        clean_expired_models.delay().get()
-        self.assertFalse(
-            UserConsent.objects.filter(user=self.user, application=self.application).exists()
-        )
+        with freeze_time() as frozen_time:
+            frozen_time.tick(timedelta(seconds=3))
+            clean_expired_models.send()
+            self.assertFalse(
+                UserConsent.objects.filter(user=self.user, application=self.application).exists()
+            )
 
     def test_permanent_more_perms(self):
         """Test permanent consent from user"""
@@ -156,6 +192,7 @@ class TestConsentStage(FlowTestCase):
             context={
                 PLAN_CONTEXT_APPLICATION: self.application,
                 PLAN_CONTEXT_CONSENT_PERMISSIONS: [PermissionDict(id="foo", name="foo-desc")],
+                PLAN_CONTEXT_CONSENT_HEADER: "test header",
             },
         )
         session = self.client.session

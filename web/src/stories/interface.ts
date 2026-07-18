@@ -1,15 +1,12 @@
-import { Interface } from "@goauthentik/elements/Interface";
+import { Interface } from "#elements/Interface";
 
-import { customElement, property } from "lit/decorators.js";
-
-import { UiThemeEnum } from "@goauthentik/api";
+import { customElement } from "lit/decorators.js";
 
 @customElement("ak-storybook-interface")
-export class StoryInterface extends Interface {
-    @property()
-    storyTheme: UiThemeEnum = UiThemeEnum.Dark;
+export class StoryInterface extends Interface {}
 
-    async getTheme(): Promise<UiThemeEnum> {
-        return this.storyTheme;
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-storybook-interface": StoryInterface;
     }
 }

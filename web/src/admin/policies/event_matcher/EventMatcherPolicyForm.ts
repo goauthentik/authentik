@@ -1,14 +1,12 @@
-import { BasePolicyForm } from "@goauthentik/admin/policies/BasePolicyForm";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { first } from "@goauthentik/common/utils";
-import "@goauthentik/elements/forms/FormGroup";
-import "@goauthentik/elements/forms/HorizontalFormElement";
-import "@goauthentik/elements/forms/SearchSelect";
+import "#components/ak-switch-input";
+import "#elements/forms/FormGroup";
+import "#elements/forms/HorizontalFormElement";
+import "#elements/forms/SearchSelect/index";
 
-import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
-import { customElement } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
+import { aki } from "#common/api/client";
+import { docLink } from "#common/global";
+
+import { BasePolicyForm } from "#admin/policies/BasePolicyForm";
 
 import {
     AdminApi,
@@ -19,38 +17,43 @@ import {
     TypeCreate,
 } from "@goauthentik/api";
 
+import { msg } from "@lit/localize";
+import { html, TemplateResult } from "lit";
+import { customElement } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
+
 @customElement("ak-policy-event-matcher-form")
 export class EventMatcherPolicyForm extends BasePolicyForm<EventMatcherPolicy> {
-    loadInstance(pk: string): Promise<EventMatcherPolicy> {
-        return new PoliciesApi(DEFAULT_CONFIG).policiesEventMatcherRetrieve({
+    override loadInstance(pk: string): Promise<EventMatcherPolicy> {
+        return aki(PoliciesApi).policiesEventMatcherRetrieve({
             policyUuid: pk,
         });
     }
 
     async send(data: EventMatcherPolicy): Promise<EventMatcherPolicy> {
+        if (data.query?.toString() === "") data.query = null;
         if (data.action?.toString() === "") data.action = null;
         if (data.clientIp?.toString() === "") data.clientIp = null;
         if (data.app?.toString() === "") data.app = null;
         if (data.model?.toString() === "") data.model = null;
         if (this.instance) {
-            return new PoliciesApi(DEFAULT_CONFIG).policiesEventMatcherUpdate({
+            return aki(PoliciesApi).policiesEventMatcherUpdate({
                 policyUuid: this.instance.pk || "",
                 eventMatcherPolicyRequest: data,
             });
-        } else {
-            return new PoliciesApi(DEFAULT_CONFIG).policiesEventMatcherCreate({
-                eventMatcherPolicyRequest: data,
-            });
         }
+        return aki(PoliciesApi).policiesEventMatcherCreate({
+            eventMatcherPolicyRequest: data,
+        });
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html` <span>
                 ${msg(
                     "Matches an event against a set of criteria. If any of the configured values match, the policy passes.",
                 )}
             </span>
-            <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
+            <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name || "")}"
@@ -58,37 +61,46 @@ export class EventMatcherPolicyForm extends BasePolicyForm<EventMatcherPolicy> {
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal name="executionLogging">
-                <label class="pf-c-switch">
-                    <input
-                        class="pf-c-switch__input"
-                        type="checkbox"
-                        ?checked=${first(this.instance?.executionLogging, false)}
-                    />
-                    <span class="pf-c-switch__toggle">
-                        <span class="pf-c-switch__toggle-icon">
-                            <i class="fas fa-check" aria-hidden="true"></i>
-                        </span>
-                    </span>
-                    <span class="pf-c-switch__label">${msg("Execution logging")}</span>
-                </label>
-                <p class="pf-c-form__helper-text">
-                    ${msg(
-                        "When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.",
-                    )}
-                </p>
-            </ak-form-element-horizontal>
-            <ak-form-group .expanded=${true}>
-                <span slot="header"> ${msg("Policy-specific settings")} </span>
-                <div slot="body" class="pf-c-form">
+            <ak-switch-input
+                name="executionLogging"
+                label=${msg("Execution logging")}
+                ?checked=${this.instance?.executionLogging ?? false}
+                help=${msg(
+                    "When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.",
+                )}
+            >
+            </ak-switch-input>
+            <ak-form-group open label="${msg("Policy-specific settings")}">
+                <div class="pf-c-form">
+                    <ak-form-element-horizontal label=${msg("Query")} name="query">
+                        <input
+                            type="text"
+                            value="${ifDefined(this.instance?.query || "")}"
+                            class="pf-c-form-control pf-m-monospace"
+                            autocomplete="off"
+                            spellcheck="false"
+                        />
+                        <p class="pf-c-form__helper-text">
+                            ${msg("Event query using the AKQL syntax.")}
+                            <a
+                                rel="noopener noreferrer"
+                                target="_blank"
+                                href=${docLink(
+                                    "/sys-mgmt/akql/#use-akql-in-an-event-matcher-policy",
+                                )}
+                            >
+                                ${msg("See documentation for examples.")}
+                            </a>
+                        </p>
+                    </ak-form-element-horizontal>
                     <ak-form-element-horizontal label=${msg("Action")} name="action">
                         <ak-search-select
                             .fetchObjects=${async (query?: string): Promise<TypeCreate[]> => {
-                                const items = await new EventsApi(
-                                    DEFAULT_CONFIG,
-                                ).eventsEventsActionsList();
+                                const items = await aki(EventsApi).eventsEventsActionsList();
                                 return items.filter((item) =>
-                                    query ? item.name.includes(query) : true,
+                                    query
+                                        ? item.name.toLowerCase().includes(query.toLowerCase())
+                                        : true,
                                 );
                             }}
                             .renderElement=${(item: TypeCreate): string => {
@@ -100,7 +112,7 @@ export class EventMatcherPolicyForm extends BasePolicyForm<EventMatcherPolicy> {
                             .selected=${(item: TypeCreate): boolean => {
                                 return this.instance?.action === item.component;
                             }}
-                            ?blankable=${true}
+                            blankable
                         >
                         </ak-search-select>
                         <p class="pf-c-form__helper-text">
@@ -113,18 +125,20 @@ export class EventMatcherPolicyForm extends BasePolicyForm<EventMatcherPolicy> {
                         <input
                             type="text"
                             value="${ifDefined(this.instance?.clientIp || "")}"
-                            class="pf-c-form-control"
+                            class="pf-c-form-control pf-m-monospace"
+                            autocomplete="off"
+                            spellcheck="false"
                         />
                         <p class="pf-c-form__helper-text">
                             ${msg(
-                                "Matches Event's Client IP (strict matching, for network matching use an Expression Policy.",
+                                "Matches Event's Client IP (strict matching, for network matching use an Expression Policy).",
                             )}
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal label=${msg("App")} name="app">
                         <ak-search-select
                             .fetchObjects=${async (query?: string): Promise<App[]> => {
-                                const items = await new AdminApi(DEFAULT_CONFIG).adminAppsList();
+                                const items = await aki(AdminApi).adminAppsList();
                                 return items.filter((item) =>
                                     query ? item.name.includes(query) : true,
                                 );
@@ -138,7 +152,7 @@ export class EventMatcherPolicyForm extends BasePolicyForm<EventMatcherPolicy> {
                             .selected=${(item: App): boolean => {
                                 return this.instance?.app === item.name;
                             }}
-                            ?blankable=${true}
+                            blankable
                         >
                         </ak-search-select>
                         <p class="pf-c-form__helper-text">
@@ -150,7 +164,7 @@ export class EventMatcherPolicyForm extends BasePolicyForm<EventMatcherPolicy> {
                     <ak-form-element-horizontal label=${msg("Model")} name="model">
                         <ak-search-select
                             .fetchObjects=${async (query?: string): Promise<App[]> => {
-                                const items = await new AdminApi(DEFAULT_CONFIG).adminModelsList();
+                                const items = await aki(AdminApi).adminModelsList();
                                 return items
                                     .filter((item) => (query ? item.name.includes(query) : true))
                                     .sort((a, b) => {
@@ -168,7 +182,7 @@ export class EventMatcherPolicyForm extends BasePolicyForm<EventMatcherPolicy> {
                             .selected=${(item: App): boolean => {
                                 return this.instance?.model === item.name;
                             }}
-                            ?blankable=${true}
+                            blankable
                         >
                         </ak-search-select>
                         <p class="pf-c-form__helper-text">
@@ -179,5 +193,11 @@ export class EventMatcherPolicyForm extends BasePolicyForm<EventMatcherPolicy> {
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-policy-event-matcher-form": EventMatcherPolicyForm;
     }
 }

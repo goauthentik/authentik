@@ -4,18 +4,47 @@ import string
 from collections.abc import Iterable
 from random import SystemRandom
 from urllib.parse import urljoin
+from uuid import uuid4
 
 from django.db import models
+from django.templatetags.static import static
 from django.utils.translation import gettext as _
 from rest_framework.serializers import Serializer
 
 from authentik.crypto.models import CertificateKeyPair
-from authentik.lib.models import DomainlessURLValidator
+from authentik.lib.models import DomainlessURLValidator, ExpiringModel, InternallyManagedMixin
 from authentik.outposts.models import OutpostModel
-from authentik.providers.oauth2.models import ClientTypes, OAuth2Provider, ScopeMapping
+from authentik.providers.oauth2.models import (
+    ClientType,
+    GrantType,
+    OAuth2Provider,
+    RedirectURI,
+    RedirectURIMatchingMode,
+    ScopeMapping,
+)
 
 SCOPE_AK_PROXY = "ak_proxy"
 OUTPOST_CALLBACK_SIGNATURE = "X-authentik-auth-callback"
+
+
+class ProxySession(InternallyManagedMixin, ExpiringModel):
+    """Session storage for proxyv2 outposts using PostgreSQL"""
+
+    uuid = models.UUIDField(default=uuid4, primary_key=True)
+    session_key = models.TextField(unique=True, db_index=True)
+    user_id = models.UUIDField(null=True, blank=True, db_index=True)
+
+    session_data = models.JSONField(default=dict, blank=True)
+
+    class Meta:
+        verbose_name = _("Proxy Session")
+        verbose_name_plural = _("Proxy Sessions")
+        indexes = [
+            models.Index(fields=["user_id"]),
+        ]
+
+    def __str__(self) -> str:
+        return f"Session {self.session_key[:8]}..."
 
 
 def get_cookie_secret():
@@ -23,14 +52,14 @@ def get_cookie_secret():
     return "".join(SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(32))
 
 
-def _get_callback_url(uri: str) -> str:
-    return "\n".join(
-        [
-            urljoin(uri, "outpost.goauthentik.io/callback")
-            + f"\\?{OUTPOST_CALLBACK_SIGNATURE}=true",
-            uri + f"\\?{OUTPOST_CALLBACK_SIGNATURE}=true",
-        ]
-    )
+def _get_callback_url(uri: str) -> list[RedirectURI]:
+    return [
+        RedirectURI(
+            RedirectURIMatchingMode.STRICT,
+            urljoin(uri, "outpost.goauthentik.io/callback") + f"?{OUTPOST_CALLBACK_SIGNATURE}=true",
+        ),
+        RedirectURI(RedirectURIMatchingMode.STRICT, uri + f"?{OUTPOST_CALLBACK_SIGNATURE}=true"),
+    ]
 
 
 class ProxyMode(models.TextChoices):
@@ -116,6 +145,10 @@ class ProxyProvider(OutpostModel, OAuth2Provider):
         return "ak-provider-proxy-form"
 
     @property
+    def icon_url(self) -> str | None:
+        return static("authentik/sources/proxy.svg")
+
+    @property
     def serializer(self) -> type[Serializer]:
         from authentik.providers.proxy.api import ProxyProviderSerializer
 
@@ -128,7 +161,12 @@ class ProxyProvider(OutpostModel, OAuth2Provider):
 
     def set_oauth_defaults(self):
         """Ensure all OAuth2-related settings are correct"""
-        self.client_type = ClientTypes.CONFIDENTIAL
+        self.grant_types = [
+            GrantType.AUTHORIZATION_CODE,
+            GrantType.CLIENT_CREDENTIALS,
+            GrantType.PASSWORD,
+        ]
+        self.client_type = ClientType.CONFIDENTIAL
         self.signing_key = None
         self.include_claims_in_id_token = True
         scopes = ScopeMapping.objects.filter(
@@ -136,6 +174,7 @@ class ProxyProvider(OutpostModel, OAuth2Provider):
                 "goauthentik.io/providers/oauth2/scope-openid",
                 "goauthentik.io/providers/oauth2/scope-profile",
                 "goauthentik.io/providers/oauth2/scope-email",
+                "goauthentik.io/providers/oauth2/scope-entitlements",
                 "goauthentik.io/providers/proxy/scope-proxy",
             ]
         )
@@ -145,11 +184,15 @@ class ProxyProvider(OutpostModel, OAuth2Provider):
     def __str__(self):
         return f"Proxy Provider {self.name}"
 
-    def get_required_objects(self) -> Iterable[models.Model | str]:
-        required_models = [self]
+    def get_required_objects(self) -> Iterable[models.Model | str | tuple[str, models.Model]]:
+        required = [self]
         if self.certificate is not None:
-            required_models.append(self.certificate)
-        return required_models
+            required.append(("authentik_crypto.view_certificatekeypair", self.certificate))
+            required.append(
+                ("authentik_crypto.view_certificatekeypair_certificate", self.certificate)
+            )
+            required.append(("authentik_crypto.view_certificatekeypair_key", self.certificate))
+        return required
 
     class Meta:
         verbose_name = _("Proxy Provider")

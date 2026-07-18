@@ -1,10 +1,9 @@
 """Test Groups API"""
 
 from django.urls.base import reverse
-from guardian.shortcuts import assign_perm
 from rest_framework.test import APITestCase
 
-from authentik.core.models import Group, User
+from authentik.core.models import Group
 from authentik.core.tests.utils import create_test_admin_user, create_test_user
 from authentik.lib.generators import generate_id
 
@@ -14,7 +13,7 @@ class TestGroupsAPI(APITestCase):
 
     def setUp(self) -> None:
         self.login_user = create_test_user()
-        self.user = User.objects.create(username="test-user")
+        self.user = create_test_user()
 
     def test_list_with_users(self):
         """Test listing with users"""
@@ -23,11 +22,22 @@ class TestGroupsAPI(APITestCase):
         response = self.client.get(reverse("authentik_api:group-list"), {"include_users": "true"})
         self.assertEqual(response.status_code, 200)
 
+    def test_retrieve_with_users(self):
+        """Test retrieve with users"""
+        admin = create_test_admin_user()
+        group = Group.objects.create(name=generate_id())
+        self.client.force_login(admin)
+        response = self.client.get(
+            reverse("authentik_api:group-detail", kwargs={"pk": group.pk}),
+            {"include_users": "true"},
+        )
+        self.assertEqual(response.status_code, 200)
+
     def test_add_user(self):
         """Test add_user"""
         group = Group.objects.create(name=generate_id())
-        assign_perm("authentik_core.add_user_to_group", self.login_user, group)
-        assign_perm("authentik_core.view_user", self.login_user)
+        self.login_user.assign_perms_to_managed_role("authentik_core.add_user_to_group", group)
+        self.login_user.assign_perms_to_managed_role("authentik_core.view_user")
         self.client.force_login(self.login_user)
         res = self.client.post(
             reverse("authentik_api:group-add-user", kwargs={"pk": group.pk}),
@@ -42,8 +52,8 @@ class TestGroupsAPI(APITestCase):
     def test_add_user_404(self):
         """Test add_user"""
         group = Group.objects.create(name=generate_id())
-        assign_perm("authentik_core.add_user_to_group", self.login_user, group)
-        assign_perm("authentik_core.view_user", self.login_user)
+        self.login_user.assign_perms_to_managed_role("authentik_core.add_user_to_group", group)
+        self.login_user.assign_perms_to_managed_role("authentik_core.view_user")
         self.client.force_login(self.login_user)
         res = self.client.post(
             reverse("authentik_api:group-add-user", kwargs={"pk": group.pk}),
@@ -56,8 +66,8 @@ class TestGroupsAPI(APITestCase):
     def test_remove_user(self):
         """Test remove_user"""
         group = Group.objects.create(name=generate_id())
-        assign_perm("authentik_core.remove_user_from_group", self.login_user, group)
-        assign_perm("authentik_core.view_user", self.login_user)
+        self.login_user.assign_perms_to_managed_role("authentik_core.remove_user_from_group", group)
+        self.login_user.assign_perms_to_managed_role("authentik_core.view_user")
         group.users.add(self.user)
         self.client.force_login(self.login_user)
         res = self.client.post(
@@ -73,8 +83,8 @@ class TestGroupsAPI(APITestCase):
     def test_remove_user_404(self):
         """Test remove_user"""
         group = Group.objects.create(name=generate_id())
-        assign_perm("authentik_core.remove_user_from_group", self.login_user, group)
-        assign_perm("authentik_core.view_user", self.login_user)
+        self.login_user.assign_perms_to_managed_role("authentik_core.remove_user_from_group", group)
+        self.login_user.assign_perms_to_managed_role("authentik_core.view_user")
         group.users.add(self.user)
         self.client.force_login(self.login_user)
         res = self.client.post(
@@ -85,16 +95,121 @@ class TestGroupsAPI(APITestCase):
         )
         self.assertEqual(res.status_code, 404)
 
-    def test_parent_self(self):
-        """Test parent"""
-        group = Group.objects.create(name=generate_id())
-        assign_perm("view_group", self.login_user, group)
-        assign_perm("change_group", self.login_user, group)
+    def test_superuser_no_perm(self):
+        """Test creating a superuser group without permission"""
+        self.login_user.assign_perms_to_managed_role("authentik_core.add_group")
+        self.client.force_login(self.login_user)
+        res = self.client.post(
+            reverse("authentik_api:group-list"),
+            data={"name": generate_id(), "is_superuser": True},
+        )
+        self.assertEqual(res.status_code, 400)
+        self.assertJSONEqual(
+            res.content,
+            {"is_superuser": ["User does not have permission to set superuser status to True."]},
+        )
+
+    def test_superuser_no_perm_no_superuser(self):
+        """Test creating a group without permission and without superuser flag"""
+        self.login_user.assign_perms_to_managed_role("authentik_core.add_group")
+        self.client.force_login(self.login_user)
+        res = self.client.post(
+            reverse("authentik_api:group-list"),
+            data={"name": generate_id(), "is_superuser": False},
+        )
+        self.assertEqual(res.status_code, 201)
+
+    def test_superuser_update_no_perm(self):
+        """Test updating a superuser group without permission"""
+        group = Group.objects.create(name=generate_id(), is_superuser=True)
+        self.login_user.assign_perms_to_managed_role("authentik_core.view_group", group)
+        self.login_user.assign_perms_to_managed_role("authentik_core.change_group", group)
         self.client.force_login(self.login_user)
         res = self.client.patch(
             reverse("authentik_api:group-detail", kwargs={"pk": group.pk}),
-            data={
-                "parent": group.pk,
-            },
+            data={"is_superuser": False},
         )
         self.assertEqual(res.status_code, 400)
+        self.assertJSONEqual(
+            res.content,
+            {"is_superuser": ["User does not have permission to set superuser status to False."]},
+        )
+
+    def test_superuser_update_no_change(self):
+        """Test updating a superuser group without permission
+        and without changing the superuser status"""
+        group = Group.objects.create(name=generate_id(), is_superuser=True)
+        self.login_user.assign_perms_to_managed_role("authentik_core.view_group", group)
+        self.login_user.assign_perms_to_managed_role("authentik_core.change_group", group)
+        self.client.force_login(self.login_user)
+        res = self.client.patch(
+            reverse("authentik_api:group-detail", kwargs={"pk": group.pk}),
+            data={"name": generate_id(), "is_superuser": True},
+        )
+        self.assertEqual(res.status_code, 200)
+
+    def test_superuser_create(self):
+        """Test creating a superuser group with permission"""
+        self.login_user.assign_perms_to_managed_role("authentik_core.add_group")
+        self.login_user.assign_perms_to_managed_role("authentik_core.enable_group_superuser")
+        self.client.force_login(self.login_user)
+        res = self.client.post(
+            reverse("authentik_api:group-list"),
+            data={"name": generate_id(), "is_superuser": True},
+        )
+        self.assertEqual(res.status_code, 201)
+
+    def test_patch_users_no_perm(self):
+        """PATCH group with new users without add_user_to_group must be rejected."""
+        group = Group.objects.create(name=generate_id())
+        self.login_user.assign_perms_to_managed_role("authentik_core.view_group", group)
+        self.login_user.assign_perms_to_managed_role("authentik_core.change_group", group)
+        self.client.force_login(self.login_user)
+        res = self.client.patch(
+            reverse("authentik_api:group-detail", kwargs={"pk": group.pk}),
+            data={"users": [self.user.pk]},
+            content_type="application/json",
+        )
+        self.assertEqual(res.status_code, 400)
+
+    def test_patch_users_with_global_perm(self):
+        """PATCH group with new users with global add_user_to_group must succeed."""
+        group = Group.objects.create(name=generate_id())
+        self.login_user.assign_perms_to_managed_role("authentik_core.view_group", group)
+        self.login_user.assign_perms_to_managed_role("authentik_core.change_group", group)
+        self.login_user.assign_perms_to_managed_role("authentik_core.add_user_to_group")
+        self.client.force_login(self.login_user)
+        res = self.client.patch(
+            reverse("authentik_api:group-detail", kwargs={"pk": group.pk}),
+            data={"users": [self.user.pk]},
+            content_type="application/json",
+        )
+        self.assertEqual(res.status_code, 200)
+
+    def test_patch_users_with_obj_perm(self):
+        """PATCH group with new users with object-level add_user_to_group must succeed."""
+        group = Group.objects.create(name=generate_id())
+        self.login_user.assign_perms_to_managed_role("authentik_core.view_group", group)
+        self.login_user.assign_perms_to_managed_role("authentik_core.change_group", group)
+        self.login_user.assign_perms_to_managed_role("authentik_core.add_user_to_group", group)
+        self.client.force_login(self.login_user)
+        res = self.client.patch(
+            reverse("authentik_api:group-detail", kwargs={"pk": group.pk}),
+            data={"users": [self.user.pk]},
+            content_type="application/json",
+        )
+        self.assertEqual(res.status_code, 200)
+
+    def test_patch_existing_users_no_perm(self):
+        """PATCH group keeping existing membership without add_user_to_group must succeed."""
+        group = Group.objects.create(name=generate_id())
+        group.users.add(self.user)
+        self.login_user.assign_perms_to_managed_role("authentik_core.view_group", group)
+        self.login_user.assign_perms_to_managed_role("authentik_core.change_group", group)
+        self.client.force_login(self.login_user)
+        res = self.client.patch(
+            reverse("authentik_api:group-detail", kwargs={"pk": group.pk}),
+            data={"users": [self.user.pk]},
+            content_type="application/json",
+        )
+        self.assertEqual(res.status_code, 200)

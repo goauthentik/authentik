@@ -12,8 +12,8 @@ import (
 	"goauthentik.io/internal/outpost/ldap/metrics"
 )
 
-func (ls *LDAPServer) Bind(bindDN string, bindPW string, conn net.Conn) (ldap.LDAPResultCode, error) {
-	req, span := bind.NewRequest(bindDN, bindPW, conn)
+func (ls *LDAPServer) Bind(r ldap.BindRequest, conn net.Conn) (ldap.LDAPResultCode, error) {
+	req, span := bind.NewRequest(r, conn)
 	selectedApp := ""
 	defer func() {
 		span.Finish()
@@ -35,10 +35,17 @@ func (ls *LDAPServer) Bind(bindDN string, bindPW string, conn net.Conn) (ldap.LD
 	}()
 
 	for _, instance := range ls.providers {
-		username, err := instance.binder.GetUsername(bindDN)
+		username, err := instance.binder.GetUsername(r.BindDN)
 		if err == nil {
 			selectedApp = instance.GetAppSlug()
-			return instance.binder.Bind(username, req)
+			c, err := instance.binder.Bind(username, req)
+			if c == ldap.LDAPResultSuccess {
+				f := instance.GetFlags(req.BindDN)
+				ls.connectionsSync.Lock()
+				ls.connections[f.SessionID()] = conn
+				ls.connectionsSync.Unlock()
+			}
+			return c, err
 		} else {
 			req.Log().WithError(err).Debug("Username not for instance")
 		}

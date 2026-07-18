@@ -1,27 +1,28 @@
-import {
-    AdminStatus,
-    AdminStatusCard,
-} from "@goauthentik/admin/admin-overview/cards/AdminStatusCard";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { aki } from "#common/api/client";
 
-import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
-import { customElement, state } from "lit/decorators.js";
+import { SlottedTemplateResult } from "#elements/types";
+
+import { AdminStatus, AdminStatusCard } from "#admin/admin-overview/cards/AdminStatusCard";
 
 import { AdminApi, OutpostsApi, SystemInfo } from "@goauthentik/api";
+
+import { msg } from "@lit/localize";
+import { html, nothing } from "lit";
+import { customElement, state } from "lit/decorators.js";
 
 @customElement("ak-admin-status-system")
 export class SystemStatusCard extends AdminStatusCard<SystemInfo> {
     now?: Date;
 
-    icon = "pf-icon pf-icon-server";
+    public override icon = "pf-icon pf-icon-server";
+    public override label = msg("System Status");
 
     @state()
     statusSummary?: string;
 
     async getPrimaryValue(): Promise<SystemInfo> {
         this.now = new Date();
-        let status = await new AdminApi(DEFAULT_CONFIG).adminSystemRetrieve();
+        let status = await aki(AdminApi).adminSystemRetrieve();
         if (
             !status.embeddedOutpostDisabled &&
             (status.embeddedOutpostHost === "" || !status.embeddedOutpostHost.includes("http"))
@@ -31,7 +32,7 @@ export class SystemStatusCard extends AdminStatusCard<SystemInfo> {
             // (yes it's called host and requires a URL, i know)
             // TODO: Improve this in OOB flow
             await this.setOutpostHost();
-            status = await new AdminApi(DEFAULT_CONFIG).adminSystemRetrieve();
+            status = await aki(AdminApi).adminSystemRetrieve();
         }
         return status;
     }
@@ -39,15 +40,15 @@ export class SystemStatusCard extends AdminStatusCard<SystemInfo> {
     // Called on fresh installations and whenever the embedded outpost is deleted
     // automatically send the login URL when the user first visits the admin dashboard.
     async setOutpostHost(): Promise<void> {
-        const outposts = await new OutpostsApi(DEFAULT_CONFIG).outpostsInstancesList({
+        const outposts = await aki(OutpostsApi).outpostsInstancesList({
             managedIexact: "goauthentik.io/outposts/embedded",
         });
         if (outposts.results.length < 1) {
             return;
         }
         const outpost = outposts.results[0];
-        outpost.config["authentik_host"] = window.location.origin;
-        await new OutpostsApi(DEFAULT_CONFIG).outpostsInstancesUpdate({
+        outpost.config.authentik_host = window.location.origin;
+        await aki(OutpostsApi).outpostsInstancesUpdate({
             uuid: outpost.pk,
             outpostRequest: outpost,
         });
@@ -84,11 +85,13 @@ export class SystemStatusCard extends AdminStatusCard<SystemInfo> {
         });
     }
 
-    renderHeader(): TemplateResult {
-        return html`${msg("System status")}`;
+    renderValue(): SlottedTemplateResult {
+        return this.statusSummary ? html`${this.statusSummary}` : nothing;
     }
+}
 
-    renderValue(): TemplateResult {
-        return html`${this.statusSummary}`;
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-admin-status-system": SystemStatusCard;
     }
 }

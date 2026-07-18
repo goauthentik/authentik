@@ -3,10 +3,6 @@
 from structlog.stdlib import get_logger
 
 from authentik.sources.ldap.models import LDAPSource
-from authentik.sources.ldap.sync.groups import GroupLDAPSynchronizer
-from authentik.sources.ldap.sync.membership import MembershipLDAPSynchronizer
-from authentik.sources.ldap.sync.users import UserLDAPSynchronizer
-from authentik.sources.ldap.tasks import ldap_sync_paginator
 from authentik.tenants.management import TenantCommand
 
 LOGGER = get_logger()
@@ -24,10 +20,5 @@ class Command(TenantCommand):
             if not source:
                 LOGGER.warning("Source does not exist", slug=source_slug)
                 continue
-            tasks = (
-                ldap_sync_paginator(source, UserLDAPSynchronizer)
-                + ldap_sync_paginator(source, GroupLDAPSynchronizer)
-                + ldap_sync_paginator(source, MembershipLDAPSynchronizer)
-            )
-            for task in tasks:
-                task()
+            for schedule in source.schedules.all():
+                schedule.send().get_result()

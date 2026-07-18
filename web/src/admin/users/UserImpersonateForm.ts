@@ -1,0 +1,80 @@
+import "#components/ak-text-input";
+
+import { aki } from "#common/api/client";
+import { APIMessage, MessageLevel } from "#common/messages";
+
+import { asInstanceInvoker } from "#elements/dialogs";
+import { Form } from "#elements/forms/Form";
+
+import { AdminApi, CoreApi, ImpersonationRequest } from "@goauthentik/api";
+
+import { msg, str } from "@lit/localize";
+import { html, TemplateResult } from "lit";
+import { customElement, property, state } from "lit/decorators.js";
+
+@customElement("ak-user-impersonate-form")
+export class UserImpersonateForm extends Form<ImpersonationRequest> {
+    public static asInstanceInvoker = asInstanceInvoker;
+    public override submitLabel = msg("Impersonate");
+    public override headline = msg("Impersonate User");
+
+    @property({ type: Number })
+    public instancePk?: number;
+
+    @state()
+    protected requireReason = false;
+
+    protected refreshReasonRequirement = async () => {
+        try {
+            const settings = await aki(AdminApi).adminSettingsRetrieve();
+            this.requireReason = settings.impersonationRequireReason ?? false;
+        } catch (error) {
+            console.error("Failed to fetch impersonation settings:", error);
+            // fallback to reason not required as the backend will still validate it
+            this.requireReason = false;
+        }
+    };
+
+    public override connectedCallback(): void {
+        super.connectedCallback();
+        this.refreshReasonRequirement();
+    }
+
+    protected override formatAPISuccessMessage(): APIMessage | null {
+        return {
+            level: MessageLevel.success,
+            message: msg(str`Impersonating user...`),
+            description: msg("This may take a few seconds."),
+        };
+    }
+
+    async send(data: ImpersonationRequest): Promise<void> {
+        return aki(CoreApi)
+            .coreUsersImpersonateCreate({
+                id: this.instancePk || 0,
+                impersonationRequest: data,
+            })
+            .then(() => {
+                window.location.reload();
+            });
+    }
+
+    protected override renderForm(): TemplateResult {
+        return html`<ak-text-input
+            name="reason"
+            label=${msg("Reason")}
+            autocomplete="off"
+            placeholder=${msg("Reason for impersonating the user")}
+            help=${msg(
+                "A brief explanation of why you are impersonating the user. This will be included in audit logs.",
+            )}
+            ?required=${this.requireReason}
+        ></ak-text-input>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-user-impersonate-form": UserImpersonateForm;
+    }
+}

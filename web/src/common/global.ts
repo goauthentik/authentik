@@ -1,16 +1,33 @@
-import { Config, ConfigFromJSON, CurrentBrand, CurrentBrandFromJSON } from "@goauthentik/api";
+import { TargetLanguageTag } from "#common/ui/locale/definitions";
+import { autoDetectLanguage } from "#common/ui/locale/utils";
+
+import {
+    Config,
+    ConfigFromJSON,
+    CurrentBrand,
+    CurrentBrandFromJSON,
+    FlowLayoutEnum,
+} from "@goauthentik/api";
+
+const convertedSymbol = Symbol("ak-converted");
 
 export interface GlobalAuthentik {
-    _converted?: boolean;
-    locale?: string;
+    [convertedSymbol]?: boolean;
+    locale: TargetLanguageTag;
     flow?: {
-        layout: string;
+        layout: FlowLayoutEnum;
+        title?: string;
+        background?: string;
     };
     config: Config;
     brand: CurrentBrand;
     versionFamily: string;
     versionSubdomain: string;
     build: string;
+    api: {
+        base: string;
+        relBase: string;
+    };
 }
 
 export interface AuthentikWindow {
@@ -19,13 +36,12 @@ export interface AuthentikWindow {
 
 export function globalAK(): GlobalAuthentik {
     const ak = (window as unknown as AuthentikWindow).authentik;
-    if (ak && !ak._converted) {
-        ak._converted = true;
-        ak.brand = CurrentBrandFromJSON(ak.brand);
-        ak.config = ConfigFromJSON(ak.config);
-    }
+
     if (!ak) {
+        const apiBase = new URL(import.meta.env.AK_API_BASE_PATH || window.location.origin);
+
         return {
+            locale: autoDetectLanguage(),
             config: ConfigFromJSON({
                 capabilities: [],
             }),
@@ -35,16 +51,28 @@ export function globalAK(): GlobalAuthentik {
             versionFamily: "",
             versionSubdomain: "",
             build: "",
+            api: {
+                base: apiBase.toString(),
+                relBase: apiBase.pathname,
+            },
         };
     }
+
+    if (!ak[convertedSymbol]) {
+        ak.locale = autoDetectLanguage(ak.locale);
+        ak.brand = CurrentBrandFromJSON(ak.brand);
+        ak.config = ConfigFromJSON(ak.config);
+
+        ak[convertedSymbol] = true;
+    }
+
     return ak;
 }
 
-export function docLink(path: string): string {
-    const ak = globalAK();
-    // Default case or beta build which should always point to latest
-    if (!ak || ak.build !== "") {
-        return `https://goauthentik.io${path}`;
-    }
-    return `https://${ak.versionSubdomain}.goauthentik.io${path}`;
+export function docLink(urlLike: string | URL, base = import.meta.env.AK_DOCS_URL): string {
+    const url = new URL(urlLike, base);
+
+    url.searchParams.append("utm_source", "authentik");
+
+    return url.href;
 }

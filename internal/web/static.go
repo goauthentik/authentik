@@ -1,10 +1,14 @@
 package web
 
 import (
+	"crypto/sha256"
+	"encoding/hex"
 	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/go-http-utils/etag"
+	"github.com/golang-jwt/jwt/v5"
 	"github.com/gorilla/mux"
 
 	"goauthentik.io/internal/config"
@@ -13,44 +17,157 @@ import (
 	staticWeb "goauthentik.io/web"
 )
 
+type StorageClaims struct {
+	jwt.RegisteredClaims
+	Path string `json:"path,omitempty"`
+}
+
+func storageTokenIsValid(usage string, r *http.Request) bool {
+	tokenString := r.URL.Query().Get("token")
+	if tokenString == "" {
+		return false
+	}
+	claims := &StorageClaims{}
+
+	token, err := jwt.ParseWithClaims(tokenString, claims, func(token *jwt.Token) (any, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, fmt.Errorf("unexpected signing method")
+		}
+		key := fmt.Appendf(nil, "%s:%s", config.Get().SecretKey, usage)
+		hash := sha256.Sum256(key)
+		hexDigest := hex.EncodeToString(hash[:])
+		return []byte(hexDigest), nil
+	})
+	if err != nil || !token.Valid {
+		return false
+	}
+
+	now := time.Now()
+
+	if claims.ExpiresAt != nil && claims.ExpiresAt.Before(now) {
+		return false
+	}
+	if claims.NotBefore != nil && claims.NotBefore.After(now) {
+		return false
+	}
+
+	if claims.Path != fmt.Sprintf("%s/%s", usage, r.URL.Path) {
+		return false
+	}
+
+	return true
+}
+
 func (ws *WebServer) configureStatic() {
-	staticRouter := ws.lh.NewRoute().Subrouter()
+	// Setup routers
+	staticRouter := ws.loggingRouter.NewRoute().Subrouter()
 	staticRouter.Use(ws.staticHeaderMiddleware)
 	staticRouter.Use(web.DisableIndex)
 
 	distFs := http.FileServer(http.Dir("./web/dist"))
-	authentikHandler := http.StripPrefix("/static/authentik/", http.FileServer(http.Dir("./web/authentik")))
 
-	// Root file paths, from which they should be accessed
-	staticRouter.PathPrefix("/static/dist/").Handler(http.StripPrefix("/static/dist/", distFs))
-	staticRouter.PathPrefix("/static/authentik/").Handler(authentikHandler)
-
-	// Also serve assets folder in specific interfaces since fonts in patternfly are imported
-	// with a relative path
-	staticRouter.PathPrefix("/if/flow/{flow_slug}/assets").HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
-		vars := mux.Vars(r)
-
-		web.DisableIndex(http.StripPrefix(fmt.Sprintf("/if/flow/%s", vars["flow_slug"]), distFs)).ServeHTTP(rw, r)
-	})
-	staticRouter.PathPrefix("/if/admin/assets").Handler(http.StripPrefix("/if/admin", distFs))
-	staticRouter.PathPrefix("/if/user/assets").Handler(http.StripPrefix("/if/user", distFs))
-	staticRouter.PathPrefix("/if/rac/{app_slug}/assets").HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
-		vars := mux.Vars(r)
-
-		web.DisableIndex(http.StripPrefix(fmt.Sprintf("/if/rac/%s", vars["app_slug"]), distFs)).ServeHTTP(rw, r)
-	})
-
-	// Media files, if backend is file
-	if config.Get().Storage.Media.Backend == "file" {
-		fsMedia := http.FileServer(http.Dir(config.Get().Storage.Media.File.Path))
-		staticRouter.PathPrefix("/media/").Handler(http.StripPrefix("/media", fsMedia))
+	pathStripper := func(handler http.Handler, paths ...string) http.Handler {
+		h := handler
+		for _, path := range paths {
+			h = http.StripPrefix(path, h)
+		}
+		return h
 	}
 
-	staticRouter.PathPrefix("/if/help/").Handler(http.StripPrefix("/if/help/", http.FileServer(http.Dir("./website/help/"))))
-	staticRouter.PathPrefix("/help").Handler(http.RedirectHandler("/if/help/", http.StatusMovedPermanently))
+	staticRouter.PathPrefix(config.Get().Web.Path).PathPrefix("/static/dist/").Handler(pathStripper(
+		distFs,
+		"static/dist/",
+		config.Get().Web.Path,
+	))
+	staticRouter.PathPrefix(config.Get().Web.Path).PathPrefix("/static/authentik/").Handler(pathStripper(
+		http.FileServer(http.Dir("./web/authentik")),
+		"static/authentik/",
+		config.Get().Web.Path,
+	))
 
-	// Static misc files
-	ws.lh.Path("/robots.txt").HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
+	staticRouter.PathPrefix(config.Get().Web.Path).PathPrefix("/if/flow/{flow_slug}/assets").HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
+		vars := mux.Vars(r)
+
+		pathStripper(
+			distFs,
+			"if/flow/"+vars["flow_slug"],
+			config.Get().Web.Path,
+		).ServeHTTP(rw, r)
+	})
+	staticRouter.PathPrefix(config.Get().Web.Path).PathPrefix("/if/admin/assets").Handler(http.StripPrefix(fmt.Sprintf("%sif/admin", config.Get().Web.Path), distFs))
+	staticRouter.PathPrefix(config.Get().Web.Path).PathPrefix("/if/user/assets").Handler(http.StripPrefix(fmt.Sprintf("%sif/user", config.Get().Web.Path), distFs))
+	staticRouter.PathPrefix(config.Get().Web.Path).PathPrefix("/if/rac/{app_slug}/assets").HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
+		vars := mux.Vars(r)
+
+		pathStripper(
+			distFs,
+			"if/rac/"+vars["app_slug"],
+			config.Get().Web.Path,
+		).ServeHTTP(rw, r)
+	})
+
+	// Files, if backend is file
+	defaultBackend := config.Get().Storage.Backend
+	if defaultBackend == "" {
+		defaultBackend = "file"
+	}
+	mediaBackend := config.Get().Storage.Media.Backend
+	if mediaBackend == "" {
+		mediaBackend = defaultBackend
+	}
+	reportsBackend := config.Get().Storage.Reports.Backend
+	if reportsBackend == "" {
+		reportsBackend = defaultBackend
+	}
+
+	defaultStoragePath := config.Get().Storage.File.Path
+	if defaultStoragePath == "" {
+		defaultStoragePath = "./data"
+	}
+
+	if mediaBackend == "file" {
+		mediaPath := config.Get().Storage.Media.File.Path
+		if mediaPath == "" {
+			mediaPath = defaultStoragePath
+		}
+		mediaPath = mediaPath + "/media"
+		fsMedia := http.FileServer(http.Dir(mediaPath))
+		staticRouter.PathPrefix(config.Get().Web.Path).PathPrefix("/files/media/").Handler(pathStripper(
+			http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				if !storageTokenIsValid("media", r) {
+					http.Error(w, "404 page not found", http.StatusNotFound)
+					return
+				}
+
+				w.Header().Set("Content-Security-Policy", "default-src 'none'; style-src 'unsafe-inline'; sandbox")
+				fsMedia.ServeHTTP(w, r)
+			}),
+			"files/media/",
+			config.Get().Web.Path,
+		))
+	}
+
+	if reportsBackend == "file" {
+		reportsPath := config.Get().Storage.Reports.File.Path
+		if reportsPath == "" {
+			reportsPath = defaultStoragePath
+		}
+		reportsPath = reportsPath + "/reports"
+		fsReports := http.FileServer(http.Dir(reportsPath))
+		staticRouter.PathPrefix(config.Get().Web.Path).PathPrefix("/files/reports/").Handler(pathStripper(
+			http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				if !storageTokenIsValid("reports", r) {
+					http.Error(w, "404 page not found", http.StatusNotFound)
+					return
+				}
+				fsReports.ServeHTTP(w, r)
+			}),
+			"files/reports/",
+			config.Get().Web.Path,
+		))
+	}
+
+	staticRouter.PathPrefix(config.Get().Web.Path).Path("/robots.txt").HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
 		rw.Header()["Content-Type"] = []string{"text/plain"}
 		rw.WriteHeader(200)
 		_, err := rw.Write(staticWeb.RobotsTxt)
@@ -58,7 +175,7 @@ func (ws *WebServer) configureStatic() {
 			ws.log.WithError(err).Warning("failed to write response")
 		}
 	})
-	ws.lh.Path("/.well-known/security.txt").HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
+	staticRouter.PathPrefix(config.Get().Web.Path).Path("/.well-known/security.txt").HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
 		rw.Header()["Content-Type"] = []string{"text/plain"}
 		rw.WriteHeader(200)
 		_, err := rw.Write(staticWeb.SecurityTxt)
@@ -72,7 +189,7 @@ func (ws *WebServer) staticHeaderMiddleware(h http.Handler) http.Handler {
 	etagHandler := etag.Handler(h, false)
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Cache-Control", "public, no-transform")
-		w.Header().Set("X-authentik-version", constants.VERSION)
+		w.Header().Set("X-authentik-version", constants.VERSION())
 		w.Header().Set("Vary", "X-authentik-version, Etag")
 		etagHandler.ServeHTTP(w, r)
 	})

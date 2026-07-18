@@ -3,49 +3,31 @@
 from pydantic import ValidationError
 from requests import Response
 
-from authentik.lib.sentry import SentryIgnoredException
+from authentik.lib.sync.outgoing.exceptions import TransientSyncException
 from authentik.providers.scim.clients.schema import SCIMError
 
 
-class StopSync(SentryIgnoredException):
-    """Exception raised when a configuration error should stop the sync process"""
-
-    def __init__(self, exc: Exception, obj: object, mapping: object | None = None) -> None:
-        self.exc = exc
-        self.obj = obj
-        self.mapping = mapping
-
-    def detail(self) -> str:
-        """Get human readable details of this error"""
-        msg = f"Error {str(self.exc)}, caused by {self.obj}"
-
-        if self.mapping:
-            msg += f" (mapping {self.mapping})"
-        return msg
-
-
-class SCIMRequestException(SentryIgnoredException):
+class SCIMRequestException(TransientSyncException):
     """Exception raised when an SCIM request fails"""
 
     _response: Response | None
     _message: str | None
 
     def __init__(self, response: Response | None = None, message: str | None = None) -> None:
+        super().__init__(response)
         self._response = response
-        self._message = message
+        self._message = message or self.error_default
 
     def detail(self) -> str:
         """Get human readable details of this error"""
         if not self._response:
             return self._message
         try:
-            error = SCIMError.parse_raw(self._response.text)
+            error = SCIMError.model_validate_json(self._response.text)
             return error.detail
         except ValidationError:
             pass
-        return self._message
+        return self._response.text
 
-
-class ResourceMissing(SCIMRequestException):
-    """Error raised when the provider raises a 404, meaning that we
-    should delete our internal ID and re-create the object"""
+    def __str__(self):
+        return self.detail()

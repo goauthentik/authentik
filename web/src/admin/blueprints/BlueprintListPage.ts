@@ -1,107 +1,113 @@
-import "@goauthentik/admin/blueprints/BlueprintForm";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { EVENT_REFRESH } from "@goauthentik/common/constants";
-import { uiConfig } from "@goauthentik/common/ui/config";
-import { getRelativeTime } from "@goauthentik/common/utils";
-import "@goauthentik/components/ak-status-label";
-import "@goauthentik/elements/buttons/ActionButton";
-import "@goauthentik/elements/buttons/SpinnerButton";
-import "@goauthentik/elements/forms/DeleteBulkForm";
-import "@goauthentik/elements/forms/ModalForm";
-import "@goauthentik/elements/rbac/ObjectPermissionModal";
-import { PaginatedResponse } from "@goauthentik/elements/table/Table";
-import { TableColumn } from "@goauthentik/elements/table/Table";
-import { TablePage } from "@goauthentik/elements/table/TablePage";
+/**
+ * @file Display the table of Blueprints, along with their status and tasks associated with each one
+ */
+
+import "#admin/blueprints/BlueprintForm";
+import "#admin/rbac/ObjectPermissionModal";
+import "#components/ak-status-label";
+import "#admin/blueprints/BlueprintImportForm";
+import "#elements/buttons/ActionButton/index";
+import "#elements/buttons/SpinnerButton/index";
+import "#elements/forms/DeleteBulkForm";
+import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
+import "#elements/ak-mdx/ak-mdx";
 
-import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { aki } from "#common/api/client";
+import { EVENT_REFRESH } from "#common/constants";
+import { docLink } from "#common/global";
 
-import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
+import { IconEditButton, modalInvoker, ModalInvokerButton } from "#elements/dialogs";
+import { IconPermissionButton } from "#elements/dialogs/components/IconPermissionButton";
+import { PaginatedResponse, TableColumn, Timestamp } from "#elements/table/Table";
+import { TablePage } from "#elements/table/TablePage";
+import { SlottedTemplateResult } from "#elements/types";
+
+import { taskCard } from "#components/tasks/taskCard";
+
+import { BlueprintForm } from "#admin/blueprints/BlueprintForm";
 
 import {
     BlueprintInstance,
     BlueprintInstanceStatusEnum,
     ManagedApi,
-    RbacPermissionsAssignedByUsersListModelEnum,
+    ModelEnum,
 } from "@goauthentik/api";
 
-export function BlueprintStatus(blueprint?: BlueprintInstance): string {
-    if (!blueprint) return "";
-    switch (blueprint.status) {
-        case BlueprintInstanceStatusEnum.Successful:
-            return msg("Successful");
-        case BlueprintInstanceStatusEnum.Orphaned:
-            return msg("Orphaned");
-        case BlueprintInstanceStatusEnum.Warning:
-            return msg("Warning");
-        case BlueprintInstanceStatusEnum.Error:
-            return msg("Error");
-    }
-    return msg("Unknown");
+import { match, P } from "ts-pattern";
+
+import { msg, str } from "@lit/localize";
+import { CSSResult, html, nothing } from "lit";
+import { guard } from "lit-html/directives/guard.js";
+import { customElement } from "lit/decorators.js";
+
+import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
+
+const Status = BlueprintInstanceStatusEnum;
+export const BlueprintStatus = (blueprint?: BlueprintInstance) =>
+    match<BlueprintInstance | undefined, string>(blueprint)
+        .with(P.nullish, () => "")
+        .with({ status: Status.Successful }, () => msg("Successful"))
+        .with({ status: Status.Orphaned }, () => msg("Orphaned"))
+        .with({ status: Status.Warning }, () => msg("Warning"))
+        .with({ status: Status.Error }, () => msg("Error"))
+        .otherwise(() => msg("Unknown"));
+
+const BlueprintDescriptionProperty = "blueprints.goauthentik.io/description";
+const BLUEPRINT_MODEL = ModelEnum.AuthentikBlueprintsBlueprintinstance;
+
+export function formatBlueprintDescription(item: BlueprintInstance): string | null {
+    const { labels = {} } = (item.metadata || {}) as {
+        labels?: Record<string, string | undefined>;
+    };
+
+    return labels[BlueprintDescriptionProperty] || null;
 }
 
 @customElement("ak-blueprint-list")
 export class BlueprintListPage extends TablePage<BlueprintInstance> {
-    searchEnabled(): boolean {
-        return true;
-    }
-    pageTitle(): string {
-        return msg("Blueprints");
-    }
-    pageDescription(): string {
-        return msg("Automate and template configuration within authentik.");
-    }
-    pageIcon(): string {
-        return "pf-icon pf-icon-blueprint";
+    static styles: CSSResult[] = [...super.styles, PFDescriptionList];
+
+    protected override searchEnabled = true;
+
+    public pageTitle = msg("Blueprints");
+    public pageDescription = msg("Automate and template configuration within authentik.");
+    public pageIcon = "pf-icon pf-icon-blueprint";
+
+    public override expandable = true;
+    public override checkbox = true;
+    public override clearOnRefresh = true;
+    public override searchPlaceholder = msg("Search for a blueprint by name or path...");
+
+    public override order = "name";
+
+    protected override async apiEndpoint(): Promise<PaginatedResponse<BlueprintInstance>> {
+        return aki(ManagedApi).managedBlueprintsList(await this.defaultEndpointConfig());
     }
 
-    expandable = true;
-    checkbox = true;
-    clearOnRefresh = true;
+    protected override columns: TableColumn[] = [
+        [msg("Name"), "name"],
+        [msg("Status"), "status"],
+        [msg("Last applied"), "last_applied"],
+        [msg("Enabled"), "enabled"],
+        [msg("Actions"), null, msg("Row Actions")],
+    ];
 
-    @property()
-    order = "name";
-
-    static get styles(): CSSResult[] {
-        return super.styles.concat(PFDescriptionList);
-    }
-
-    async apiEndpoint(page: number): Promise<PaginatedResponse<BlueprintInstance>> {
-        return new ManagedApi(DEFAULT_CONFIG).managedBlueprintsList({
-            ordering: this.order,
-            page: page,
-            pageSize: (await uiConfig()).pagination.perPage,
-            search: this.search || "",
-        });
-    }
-
-    columns(): TableColumn[] {
-        return [
-            new TableColumn(msg("Name"), "name"),
-            new TableColumn(msg("Status"), "status"),
-            new TableColumn(msg("Last applied"), "last_applied"),
-            new TableColumn(msg("Enabled"), "enabled"),
-            new TableColumn(msg("Actions")),
-        ];
-    }
-
-    renderToolbarSelected(): TemplateResult {
+    protected override renderToolbarSelected(): SlottedTemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
-            objectLabel=${msg("Blueprint(s)")}
+            object-label=${msg("Blueprint(s)")}
             .objects=${this.selectedElements}
             .metadata=${(item: BlueprintInstance) => {
                 return [{ key: msg("Name"), value: item.name }];
             }}
             .usedBy=${(item: BlueprintInstance) => {
-                return new ManagedApi(DEFAULT_CONFIG).managedBlueprintsUsedByList({
+                return aki(ManagedApi).managedBlueprintsUsedByList({
                     instanceUuid: item.pk,
                 });
             }}
             .delete=${(item: BlueprintInstance) => {
-                return new ManagedApi(DEFAULT_CONFIG).managedBlueprintsDestroy({
+                return aki(ManagedApi).managedBlueprintsDestroy({
                     instanceUuid: item.pk,
                 });
             }}
@@ -112,61 +118,45 @@ export class BlueprintListPage extends TablePage<BlueprintInstance> {
         </ak-forms-delete-bulk>`;
     }
 
-    renderExpanded(item: BlueprintInstance): TemplateResult {
-        return html`<td role="cell" colspan="4">
-            <div class="pf-c-table__expandable-row-content">
-                <dl class="pf-c-description-list pf-m-horizontal">
-                    <div class="pf-c-description-list__group">
-                        <dt class="pf-c-description-list__term">
-                            <span class="pf-c-description-list__text">${msg("Path")}</span>
-                        </dt>
-                        <dd class="pf-c-description-list__description">
-                            <div class="pf-c-description-list__text">
-                                <pre>${item.path}</pre>
-                            </div>
-                        </dd>
-                    </div>
-                </dl>
-            </div>
-        </td>`;
+    protected override renderExpanded(item: BlueprintInstance): SlottedTemplateResult {
+        return html`<dl class="pf-c-description-list pf-m-horizontal">
+                <div class="pf-c-description-list__group">
+                    <dt class="pf-c-description-list__term">
+                        <span class="pf-c-description-list__text">${msg("Path")}</span>
+                    </dt>
+                    <dd class="pf-c-description-list__description">
+                        <div class="pf-c-description-list__text">
+                            <pre>${item.path}</pre>
+                        </div>
+                    </dd>
+                </div>
+            </dl>
+            ${taskCard(BLUEPRINT_MODEL, item.pk)} `;
     }
 
-    row(item: BlueprintInstance): TemplateResult[] {
-        let description = undefined;
-        const descKey = "blueprints.goauthentik.io/description";
-        if (
-            item.metadata &&
-            item.metadata.labels &&
-            Object.hasOwn(item.metadata?.labels, descKey)
-        ) {
-            description = item.metadata?.labels[descKey];
-        }
+    protected override row(item: BlueprintInstance): SlottedTemplateResult[] {
+        const description = formatBlueprintDescription(item);
+
         return [
             html`<div>${item.name}</div>
-                ${description ? html`<small>${description}</small>` : html``}`,
-            html`${BlueprintStatus(item)}`,
-            html`<div>${getRelativeTime(item.lastApplied)}</div>
-                <small>${item.lastApplied.toLocaleString()}</small>`,
+                ${description
+                    ? html`<small><ak-mdx .content=${description}></ak-mdx></small>`
+                    : nothing}`,
+            BlueprintStatus(item),
+            Timestamp(item.lastApplied),
             html`<ak-status-label ?good=${item.enabled}></ak-status-label>`,
-            html`<ak-forms-modal>
-                    <span slot="submit"> ${msg("Update")} </span>
-                    <span slot="header"> ${msg("Update Blueprint")} </span>
-                    <ak-blueprint-form slot="form" .instancePk=${item.pk}> </ak-blueprint-form>
-                    <button slot="trigger" class="pf-c-button pf-m-plain">
-                        <pf-tooltip position="top" content=${msg("Edit")}>
-                            <i class="fas fa-edit"></i>
-                        </pf-tooltip>
-                    </button>
-                </ak-forms-modal>
-                <ak-rbac-object-permission-modal
-                    model=${RbacPermissionsAssignedByUsersListModelEnum.BlueprintsBlueprintinstance}
-                    objectPk=${item.pk}
-                >
-                </ak-rbac-object-permission-modal>
+            html`<div class="ak-c-table__actions">
+                ${IconEditButton(BlueprintForm, item.pk, item.name)}
+                ${IconPermissionButton(item.name, {
+                    model: ModelEnum.AuthentikBlueprintsBlueprintinstance,
+                    objectPk: item.pk,
+                })}
+
                 <ak-action-button
                     class="pf-m-plain"
+                    label=${msg(str`Apply "${item.name}" blueprint`)}
                     .apiRequest=${() => {
-                        return new ManagedApi(DEFAULT_CONFIG)
+                        return aki(ManagedApi)
                             .managedBlueprintsApplyCreate({
                                 instanceUuid: item.pk,
                             })
@@ -183,18 +173,46 @@ export class BlueprintListPage extends TablePage<BlueprintInstance> {
                     <pf-tooltip position="top" content=${msg("Apply")}>
                         <i class="fas fa-play" aria-hidden="true"></i>
                     </pf-tooltip>
-                </ak-action-button>`,
+                </ak-action-button>
+            </div>`,
         ];
     }
 
-    renderObjectCreate(): TemplateResult {
-        return html`
-            <ak-forms-modal>
-                <span slot="submit"> ${msg("Create")} </span>
-                <span slot="header"> ${msg("Create Blueprint Instance")} </span>
-                <ak-blueprint-form slot="form"> </ak-blueprint-form>
-                <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Create")}</button>
-            </ak-forms-modal>
-        `;
+    protected override renderObjectCreate(): SlottedTemplateResult {
+        return guard([], () => {
+            return [
+                ModalInvokerButton(BlueprintForm),
+                html`<button
+                    class="pf-c-button pf-m-primary"
+                    type="button"
+                    ${modalInvoker(() => {
+                        return html`<ak-blueprint-import-form>
+                            <a
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                href=${docLink("/customize/blueprints/working_with_blueprints/")}
+                                slot="read-more-link"
+                                >${msg("Flow Examples")}</a
+                            >
+                            <span slot="banner-warning">
+                                ${msg(
+                                    "Warning: Blueprint files may contain objects such as users, policies and expression.",
+                                )}<br />${msg(
+                                    "You should only import files from trusted sources and review blueprints before importing them.",
+                                )}
+                            </span>
+                        </ak-blueprint-import-form>`;
+                    })}
+                >
+                    ${msg("Import")}
+                </button>`,
+            ];
+        });
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-blueprint-list": BlueprintListPage;
     }
 }

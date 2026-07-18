@@ -3,6 +3,7 @@
 from django.urls import path
 
 from authentik.sources.scim.api.groups import SCIMSourceGroupViewSet
+from authentik.sources.scim.api.property_mappings import SCIMSourcePropertyMappingViewSet
 from authentik.sources.scim.api.sources import SCIMSourceViewSet
 from authentik.sources.scim.api.users import SCIMSourceUserViewSet
 from authentik.sources.scim.views.v2 import (
@@ -68,6 +69,7 @@ urlpatterns = [
 ]
 
 api_urlpatterns = [
+    ("propertymappings/source/scim", SCIMSourcePropertyMappingViewSet),
     ("sources/scim", SCIMSourceViewSet),
     ("sources/scim_users", SCIMSourceUserViewSet),
     ("sources/scim_groups", SCIMSourceGroupViewSet),
