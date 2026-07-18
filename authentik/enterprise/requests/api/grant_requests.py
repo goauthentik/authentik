@@ -32,7 +32,7 @@ from authentik.enterprise.requests.stage import (
 from authentik.flows.models import Flow, in_memory_stage
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlanner
 from authentik.policies.api.bindings import PolicyBindingModelForeignKey
-from authentik.policies.models import PolicyBindingModel, RequestableMixin
+from authentik.policies.models import PolicyBindingModel, RequestableModel
 
 
 class GrantRequestSerializer(ModelSerializer):
@@ -80,7 +80,7 @@ class GrantRequestViewSet(RetrieveModelMixin, DestroyModelMixin, ListModelMixin,
         def validate_pbms(self, pbms: list[PolicyBindingModel]) -> list[PolicyBindingModel]:
             request = self.context["request"]
             for pbm in pbms:
-                if not isinstance(pbm, RequestableMixin):
+                if not isinstance(pbm, RequestableModel):
                     raise ValidationError(f"'{pbm}' is not requestable")
                 if not user_can_request(pbm, request.user, request):
                     raise ValidationError(f"Cannot request access to '{pbm.requestable_label}'")

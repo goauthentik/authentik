@@ -48,7 +48,7 @@ class RequestableTargetSerializer(PassiveSerializer):
     parent = ApplicationSerializer(source="requestable_parent", read_only=True)
 
 
-class ApplicationsRequestableModel:
+class ApplicationsRequestableMixin:
     queryset: QuerySet[Application]
 
     @extend_schema(
@@ -65,7 +65,7 @@ class ApplicationsRequestableModel:
         return self.get_paginated_response(serializer.data)
 
 
-class ApplicationEntitlementsRequestableModel:
+class ApplicationEntitlementsRequestableMixin:
     queryset: QuerySet[ApplicationEntitlement]
 
     @extend_schema(

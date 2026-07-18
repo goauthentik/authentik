@@ -42,7 +42,7 @@ class ApplicationEntitlementSerializer(ModelSerializer):
 
 class ApplicationEntitlementViewSet(
     ConditionalInheritance(
-        "authentik.enterprise.pam.requests.apps.ApplicationEntitlementsRequestableMixin"
+        "authentik.enterprise.requests.api.apps.ApplicationEntitlementsRequestableMixin"
     ),
     UsedByMixin,
     ModelViewSet,

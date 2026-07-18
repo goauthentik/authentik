@@ -429,3 +429,17 @@ class FilterPolicyEngine(_PolicyEngineBase):
         if binding.negate:
             match = ~match
         return match
+
+
+class ListPolicyEngine[T: PolicyBindingModel]:
+    def __init__(self, objs: QuerySet[T]):
+        self.qs = objs
+        self.empty_result = True
+
+    def evaluate_for(self, user: User, request: HttpRequest | None = None):
+        for obj in self.qs:
+            engine = PolicyEngine(obj, request.user, request)
+            engine.empty_result = self.empty_result
+            engine.build()
+            if engine.passing:
+                yield obj

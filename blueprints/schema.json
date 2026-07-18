@@ -1224,6 +1224,46 @@
                     ],
                     "properties": {
                         "model": {
+                            "const": "authentik_requests.grantrequest"
+                        },
+                        "id": {
+                            "type": "string"
+                        },
+                        "state": {
+                            "type": "string",
+                            "enum": [
+                                "absent",
+                                "created",
+                                "must_created",
+                                "present"
+                            ],
+                            "default": "present"
+                        },
+                        "conditions": {
+                            "type": "array",
+                            "items": {
+                                "type": "boolean"
+                            }
+                        },
+                        "permissions": {
+                            "$ref": "#/$defs/model_authentik_requests.grantrequest_permissions"
+                        },
+                        "attrs": {
+                            "$ref": "#/$defs/model_authentik_requests.grantrequest"
+                        },
+                        "identifiers": {
+                            "$ref": "#/$defs/model_authentik_requests.grantrequest"
+                        }
+                    }
+                },
+                {
+                    "type": "object",
+                    "required": [
+                        "model",
+                        "identifiers"
+                    ],
+                    "properties": {
+                        "model": {
                             "const": "authentik_requests.requestrule"
                         },
                         "id": {
@@ -6147,15 +6187,27 @@
                             "authentik_reports.change_dataexport",
                             "authentik_reports.delete_dataexport",
                             "authentik_reports.view_dataexport",
+                            "authentik_requests.add_grantrequest",
+                            "authentik_requests.add_grantrequestapproval",
+                            "authentik_requests.add_grantrequesttarget",
                             "authentik_requests.add_requestrule",
                             "authentik_requests.add_requestrulebinding",
                             "authentik_requests.add_requestrulechildbinding",
+                            "authentik_requests.change_grantrequest",
+                            "authentik_requests.change_grantrequestapproval",
+                            "authentik_requests.change_grantrequesttarget",
                             "authentik_requests.change_requestrule",
                             "authentik_requests.change_requestrulebinding",
                             "authentik_requests.change_requestrulechildbinding",
+                            "authentik_requests.delete_grantrequest",
+                            "authentik_requests.delete_grantrequestapproval",
+                            "authentik_requests.delete_grantrequesttarget",
                             "authentik_requests.delete_requestrule",
                             "authentik_requests.delete_requestrulebinding",
                             "authentik_requests.delete_requestrulechildbinding",
+                            "authentik_requests.view_grantrequest",
+                            "authentik_requests.view_grantrequestapproval",
+                            "authentik_requests.view_grantrequesttarget",
                             "authentik_requests.view_requestrule",
                             "authentik_requests.view_requestrulebinding",
                             "authentik_requests.view_requestrulechildbinding",
@@ -7938,6 +7990,61 @@
                 }
             }
         },
+        "model_authentik_requests.grantrequest": {
+            "type": "object",
+            "properties": {
+                "requester_data": {
+                    "type": "object",
+                    "additionalProperties": true,
+                    "title": "Requester data"
+                },
+                "fulfiller_data": {
+                    "type": "object",
+                    "additionalProperties": true,
+                    "title": "Fulfiller data"
+                },
+                "expires": {
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "format": "date-time",
+                    "title": "Expires"
+                },
+                "uuid": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Uuid"
+                }
+            },
+            "required": []
+        },
+        "model_authentik_requests.grantrequest_permissions": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "permission"
+                ],
+                "properties": {
+                    "permission": {
+                        "type": "string",
+                        "enum": [
+                            "add_grantrequest",
+                            "change_grantrequest",
+                            "delete_grantrequest",
+                            "view_grantrequest"
+                        ]
+                    },
+                    "user": {
+                        "type": "integer"
+                    },
+                    "role": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
         "model_authentik_requests.requestrule": {
             "type": "object",
             "properties": {
@@ -9485,6 +9592,7 @@
                         "authentik_requests.requestrulechildbinding",
                         "authentik_requests.requestrulebinding",
                         "authentik_requests.requestrule",
+                        "authentik_requests.grantrequest",
                         "authentik_stages_account_lockdown.accountlockdownstage",
                         "authentik_stages_authenticator_endpoint_gdtc.authenticatorendpointgdtcstage",
                         "authentik_stages_mtls.mutualtlsstage",
@@ -12084,15 +12192,27 @@
                             "authentik_reports.change_dataexport",
                             "authentik_reports.delete_dataexport",
                             "authentik_reports.view_dataexport",
+                            "authentik_requests.add_grantrequest",
+                            "authentik_requests.add_grantrequestapproval",
+                            "authentik_requests.add_grantrequesttarget",
                             "authentik_requests.add_requestrule",
                             "authentik_requests.add_requestrulebinding",
                             "authentik_requests.add_requestrulechildbinding",
+                            "authentik_requests.change_grantrequest",
+                            "authentik_requests.change_grantrequestapproval",
+                            "authentik_requests.change_grantrequesttarget",
                             "authentik_requests.change_requestrule",
                             "authentik_requests.change_requestrulebinding",
                             "authentik_requests.change_requestrulechildbinding",
+                            "authentik_requests.delete_grantrequest",
+                            "authentik_requests.delete_grantrequestapproval",
+                            "authentik_requests.delete_grantrequesttarget",
                             "authentik_requests.delete_requestrule",
                             "authentik_requests.delete_requestrulebinding",
                             "authentik_requests.delete_requestrulechildbinding",
+                            "authentik_requests.view_grantrequest",
+                            "authentik_requests.view_grantrequestapproval",
+                            "authentik_requests.view_grantrequesttarget",
                             "authentik_requests.view_requestrule",
                             "authentik_requests.view_requestrulebinding",
                             "authentik_requests.view_requestrulechildbinding",
