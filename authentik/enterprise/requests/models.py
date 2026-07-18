@@ -6,7 +6,7 @@ from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import Serializer
 
-from authentik.core.models import User
+from authentik.core.models import Group, User
 from authentik.lib.models import (
     CreatedUpdatedModel,
     ExpiringModel,
@@ -109,6 +109,37 @@ class RequestRule(CreatedUpdatedModel, SerializerModel, PolicyBindingModel):
 
         return RequestRuleSerializer
 
+    @property
+    def reviewers(self) -> models.QuerySet[User]:
+        """Users individually configured as approvers for this rule, via a
+        PolicyBinding directly targeting this rule (this rule is itself a PBM)."""
+        return User.objects.filter(
+            pk__in=self.bindings.filter(enabled=True, user__isnull=False).values_list(
+                "user", flat=True
+            )
+        )
+
+    @property
+    def reviewer_groups(self) -> models.QuerySet[Group]:
+        """Groups configured as approvers for this rule, via a PolicyBinding
+        directly targeting this rule (this rule is itself a PBM)."""
+        return Group.objects.filter(
+            pk__in=self.bindings.filter(enabled=True, group__isnull=False).values_list(
+                "group", flat=True
+            )
+        )
+
+    def notification_recipients(self) -> models.QuerySet[User]:
+        """Who to notify when a request is created against this rule, per
+        `notification_mode`."""
+        direct = self.reviewers
+        if self.notification_mode == RequestNotificationMode.DIRECT:
+            return direct
+        all_reviewers = (direct | User.objects.filter(groups__in=self.reviewer_groups.all())).distinct()
+        if self.notification_mode == RequestNotificationMode.RANDOM_MIN_REVIEWERS:
+            return all_reviewers.order_by("?")[: self.min_reviewers]
+        return all_reviewers
+
     class Meta:
         verbose_name = _("Request Rule")
         verbose_name_plural = _("Request Rules")
@@ -186,7 +217,7 @@ class GrantRequest(SerializerModel, ExpiringModel, CreatedUpdatedModel):
         approving_users = GrantRequestApproval.objects.filter(
             request=self, status=RequestStatus.APPROVED
         ).values_list("reviewer", flat=True)
-        rules = RequestRule.objects.filter(pbms__in=self.targets.all()).distinct()
+        rules = RequestRule.objects.filter(targets__in=self.targets.all()).distinct()
         if not rules.exists():
             return approving_users.exists()
         return all(self._rule_satisfied(rule, approving_users) for rule in rules)

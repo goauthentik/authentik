@@ -131,7 +131,7 @@ class ApplicationSerializer(ModelSerializer):
 
 
 class ApplicationViewSet(
-    ConditionalInheritance("authentik.enterprise.pam.api.apps.ApplicationsRequestableMixin"),
+    ConditionalInheritance("authentik.enterprise.requests.api.apps.ApplicationsRequestableMixin"),
     UsedByMixin,
     ModelViewSet,
 ):

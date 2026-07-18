@@ -865,6 +865,10 @@ class ApplicationEntitlement(
         return f"Application Entitlement {self.name} for app {self.app_id}"
 
     @property
+    def requestable_parent(self) -> Application:
+        return self.app
+
+    @property
     def serializer(self) -> type[Serializer]:
         from authentik.core.api.application_entitlements import ApplicationEntitlementSerializer
 

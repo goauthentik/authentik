@@ -54,9 +54,9 @@ class GrantRequestFinalStageView(StageView):
         """Notify reviewers of each rule attached to any of the requested targets,
         per that rule's own notification_transports/notification_mode."""
         rules = (
-            RequestRule.objects.filter(pbms__in=pbms)
+            RequestRule.objects.filter(targets__in=pbms)
             .distinct()
-            .prefetch_related("notification_transports", "reviewers", "reviewer_groups")
+            .prefetch_related("notification_transports")
         )
         for rule in rules:
             transports = list(rule.notification_transports.all())

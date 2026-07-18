@@ -90,13 +90,12 @@ class GrantRequestViewSet(RetrieveModelMixin, DestroyModelMixin, ListModelMixin,
         status = ChoiceField(choices=RequestStatus.choices)
 
     def _assert_reviewer(self, request: Request, grant: GrantRequest):
-        unauthorized_rules = (
-            RequestRule.objects.filter(pbms__in=grant.targets.all())
-            .exclude(reviewers=request.user)
-            .exclude(reviewer_groups__users=request.user)
-            .distinct()
-        )
-        if unauthorized_rules.exists():
+        rules = RequestRule.objects.filter(targets__in=grant.targets.all()).distinct()
+        for rule in rules:
+            if rule.reviewers.filter(pk=request.user.pk).exists():
+                continue
+            if rule.reviewer_groups.filter(users=request.user).exists():
+                continue
             raise ValidationError("User does not have permissions to act on this object")
 
     @extend_schema(request=GrantRequestCreateSerializer, responses={200: LinkSerializer})

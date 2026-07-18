@@ -229,7 +229,23 @@ class RequestableModel:
     def requestable_child_model_types(self) -> list[type[RequestableChildModel]]:
         return []
 
+    @property
+    def requestable_label(self) -> str:
+        return str(self)
+
+    @property
+    def requestable_parent(self) -> "RequestableModel | None":
+        return None
+
 
 class RequestableChildModel:
     """Mixin for models which are related of models that access can be requested too
     and should be equally offered"""
+
+    @property
+    def requestable_label(self) -> str:
+        return str(self)
+
+    @property
+    def requestable_parent(self) -> RequestableModel:
+        raise NotImplementedError
