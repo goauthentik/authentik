@@ -30,7 +30,7 @@ from authentik.core.models import Application, User
 from authentik.events.logs import LogEventSerializer, capture_logs
 from authentik.lib.utils.reflection import ConditionalInheritance
 from authentik.policies.api.exec import PolicyTestResultSerializer
-from authentik.policies.engine import PolicyEngine
+from authentik.policies.engine import ListPolicyEngine, PolicyEngine
 from authentik.policies.types import CACHE_PREFIX, PolicyResult
 from authentik.rbac.filters import ObjectFilter
 
@@ -174,18 +174,22 @@ class ApplicationViewSet(
     def _get_allowed_applications(
         self, paginated_apps: Iterator[Application], user: User | None = None
     ) -> list[Application]:
-        applications = []
+        apps = list(paginated_apps)
+        if not apps:
+            return []
         request = self.request._request
         if user:
             request = copy(request)
             request.user = user
-        for application in paginated_apps:
-            engine = PolicyEngine(application, request.user, request)
-            engine.empty_result = AppAccessWithoutBindings.get()
-            engine.build()
-            if engine.passing:
-                applications.append(application)
-        return applications
+        engine = ListPolicyEngine(
+            Application.objects.filter(pk__in=[app.pk for app in apps]), request.user, request
+        )
+        engine.empty_result = AppAccessWithoutBindings.get()
+        engine.build()
+        passing_pks = set(engine.result.values_list("pk", flat=True))
+        # Filter (rather than re-fetch from engine.result) to preserve the original
+        # pagination order and the prefetching already applied by get_queryset().
+        return [app for app in apps if app.pk in passing_pks]
 
     def _expand_applications(self, applications: list[Application]) -> QuerySet[Application]:
         """

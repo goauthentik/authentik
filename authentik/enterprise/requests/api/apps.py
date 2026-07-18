@@ -24,9 +24,9 @@ def user_can_request(pbm: RequestableModel, user: User, request: Request) -> boo
     rules = pbm.request_rules.all()
     if not rules.exists():
         return False
-    engine = ListPolicyEngine(rules)
+    engine = ListPolicyEngine(rules, user, request)
     engine.empty_result = AppAccessWithoutBindings.get()
-    return len(list(engine.evaluate_for(user, request))) > 0
+    return engine.build().result.exists()
 
 
 def _requestable(view: GenericViewSet, request: Request) -> list[RequestableModel]:

@@ -1,6 +1,8 @@
 """authentik policy engine"""
 
+from collections import defaultdict
 from collections.abc import Iterable
+from copy import copy
 from multiprocessing import Pipe, current_process
 from multiprocessing.connection import Connection
 
@@ -172,12 +174,12 @@ class _PolicyEngineBase:
         return result
 
 
-class PolicyEngine(_PolicyEngineBase):
+class PolicyEngine[T: PolicyBindingModel](_PolicyEngineBase):
     """Orchestrate policy checking, launch tasks and return result"""
 
     request: PolicyRequest
 
-    def __init__(self, pbm: PolicyBindingModel, user: User, request: HttpRequest = None):
+    def __init__(self, pbm: T, user: User, request: HttpRequest = None):
         self._init_defaults(pbm)
         if not isinstance(pbm, PolicyBindingModel):  # pragma: no cover
             raise PolicyEngineException(f"{pbm} is not instance of PolicyBindingModel")
@@ -277,10 +279,10 @@ class PolicyEngine(_PolicyEngineBase):
         return self.result.passing
 
 
-class FilterPolicyEngine(_PolicyEngineBase):
+class FilterPolicyEngine[T: PolicyBindingModel](_PolicyEngineBase):
     """Check a QuerySet of users against a single PolicyBindingModel efficiently."""
 
-    def __init__(self, pbm: PolicyBindingModel, users: QuerySet[User], request: HttpRequest = None):
+    def __init__(self, pbm: T, users: QuerySet[User], request: HttpRequest = None):
         self._init_defaults(pbm)
         self.__pbm = pbm
         self.__users = users
@@ -431,15 +433,162 @@ class FilterPolicyEngine(_PolicyEngineBase):
         return match
 
 
-class ListPolicyEngine[T: PolicyBindingModel]:
-    def __init__(self, objs: QuerySet[T]):
-        self.qs = objs
-        self.empty_result = True
+class ListPolicyEngine[T: PolicyBindingModel](_PolicyEngineBase):
+    """Check a single user against a QuerySet of PolicyBindingModels efficiently."""
 
-    def evaluate_for(self, user: User, request: HttpRequest | None = None):
-        for obj in self.qs:
-            engine = PolicyEngine(obj, request.user, request)
-            engine.empty_result = self.empty_result
-            engine.build()
-            if engine.passing:
-                yield obj
+    def __init__(self, objs: QuerySet[T], user: User, request: HttpRequest = None):
+        self.logger = get_logger().bind()
+        self.empty_result = True
+        self.use_cache = True
+        self.__objs = objs
+        self.__user = user
+        self.__http_request = request
+        self.__result: QuerySet[T] | None = None
+
+    def build(self) -> ListPolicyEngine[T]:
+        """Evaluate the user against every object in the queryset"""
+        with (
+            start_span(
+                op="authentik.policy.engine_list.build",
+                name=class_to_path(self.__objs.model),
+            ),
+            HIST_POLICIES_ENGINE_TOTAL_TIME.labels(
+                obj_type=class_to_path(self.__objs.model),
+                obj_pk="bulk",
+            ).time(),
+        ):
+            objs = list(self.__objs)
+            if not objs:
+                self.__result = self.__objs
+                return self
+
+            obj_by_pk = {obj.pk: obj for obj in objs}
+            bindings_by_target = defaultdict(list)
+            bindings = list(
+                PolicyBinding.objects.filter(target__in=obj_by_pk.keys(), enabled=True)
+                .select_related("user", "group")
+                .order_by("target", "order")
+            )
+            # Single expensive query to lookup all policies needed in their respective
+            # type, used instead of dynamically fetching the concrete type
+            policy_ids = {b.policy_id for b in bindings if b.policy_id is not None}
+            policies_by_pk = (
+                {p.pk: p for p in Policy.objects.filter(pk__in=policy_ids).select_subclasses()}
+                if policy_ids
+                else {}
+            )
+            for binding in bindings:
+                binding.target = obj_by_pk[binding.target_id]
+                if binding.policy_id is not None:
+                    binding.policy = policies_by_pk[binding.policy_id]
+                self._check_policy_type(binding)
+                bindings_by_target[binding.target_id].append(binding)
+
+            # Objects with no bindings at all pass if empty_result, same convention
+            # as PolicyEngine/FilterPolicyEngine.
+            passing_pks = (
+                {pk for pk in obj_by_pk if pk not in bindings_by_target}
+                if self.empty_result
+                else set()
+            )
+            if not bindings_by_target:
+                self.__result = self.__objs.filter(pk__in=passing_pks)
+                return self
+
+            # The user is fixed here (unlike FilterPolicyEngine, which varies the
+            # user), so static bindings are resolved with one all_groups() lookup
+            user_group_pks = (
+                set(self.__user.all_groups().values_list("pk", flat=True))
+                if self.__user.pk
+                else set()
+            )
+
+            static_results: dict = {}
+            dynamic_by_target: dict = {}
+            for pk, obj_bindings in bindings_by_target.items():
+                mode = obj_by_pk[pk].policy_engine_mode
+                static_bindings = [
+                    binding
+                    for binding in obj_bindings
+                    if binding.policy_id is None and (binding.group_id or binding.user_id)
+                ]
+                dynamic_bindings = [
+                    binding for binding in obj_bindings if binding.policy_id is not None
+                ]
+                if static_bindings:
+                    static_results[pk] = self._combine_results(
+                        mode,
+                        self.empty_result,
+                        [
+                            self._static_binding_result(binding, user_group_pks)
+                            for binding in static_bindings
+                        ],
+                    )
+                # MODE_ALL: an object whose static verdict already failed can never
+                # pass overall -- skip its (expensive, process-forking) dynamic
+                # bindings entirely.
+                if dynamic_bindings and not (
+                    mode == PolicyEngineMode.MODE_ALL
+                    and pk in static_results
+                    and not static_results[pk].passing
+                ):
+                    dynamic_by_target[pk] = dynamic_bindings
+
+            all_dynamic_bindings = [
+                binding for bindings in dynamic_by_target.values() for binding in bindings
+            ]
+
+            request = PolicyRequest(self.__user)
+            if self.__http_request:
+                request.set_http_request(self.__http_request)
+            prefetched_cache = self._prefetch_cache(request, all_dynamic_bindings)
+
+            for pk in bindings_by_target:
+                mode = obj_by_pk[pk].policy_engine_mode
+                all_results = []
+                if pk in dynamic_by_target:
+                    request.obj = obj_by_pk[pk]
+                    all_results.extend(
+                        self._evaluate_dynamic_bindings(
+                            dynamic_by_target[pk], copy(request), prefetched_cache
+                        )
+                    )
+                if pk in static_results:
+                    all_results.append(static_results[pk])
+                if self._combine_results(mode, self.empty_result, all_results).passing:
+                    passing_pks.add(pk)
+
+            self.__result = self.__objs.filter(pk__in=passing_pks)
+            return self
+
+    def _static_binding_result(self, binding: PolicyBinding, user_group_pks: set) -> PolicyResult:
+        """Evaluate a single static (group/user) binding against the fixed user"""
+        if binding.user_id:
+            match = binding.user_id == self.__user.pk
+        else:
+            match = binding.group_id in user_group_pks
+        if binding.negate:
+            match = not match
+        return PolicyResult(match)
+
+    def _prefetch_cache(
+        self, request: PolicyRequest, dynamic_bindings: list[PolicyBinding]
+    ) -> dict[str, PolicyResult]:
+        """Bulk-fetch cached PolicyResults for every dynamic binding across every
+        object with a single cache.get_many() call."""
+        if not self.use_cache or not dynamic_bindings:
+            return {}
+        keys = [cache_key(binding, request) for binding in dynamic_bindings]
+        with HIST_POLICIES_EXECUTION_TIME.labels(
+            binding_order=-1,
+            binding_target_type="bulk",
+            binding_target_name="",
+            object_type=class_to_path(self.__objs.model),
+            mode="cache_retrieve_bulk",
+        ).time():
+            return cache.get_many(keys)
+
+    @property
+    def result(self) -> QuerySet[T]:
+        """Get the subset of the object queryset that the user passes"""
+        return self.__result
