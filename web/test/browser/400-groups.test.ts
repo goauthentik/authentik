@@ -299,7 +299,7 @@ test.describe("Groups", () => {
                 const selectGroupsDialog = page.getByRole("dialog", {
                     name: "Select Groups",
                 });
- 
+
                 await addGroupDialog
                     .getByRole("button", { name: "Add group", exact: true })
                     .click();
@@ -308,12 +308,10 @@ test.describe("Groups", () => {
                 const groupRow = await search(groupName, selectGroupsDialog);
 
                 await expect(groupRow, "Group is visible in selection").toBeVisible();
-                
+
                 await groupRow.getByRole("checkbox").check();
 
-                await selectGroupsDialog
-                    .getByRole("button", { name: "Confirm" })
-                    .click();
+                await selectGroupsDialog.getByRole("button", { name: "Confirm" }).click();
 
                 await expect(selectGroupsDialog, "Select groups dialog closes").toBeHidden();
 
@@ -326,12 +324,10 @@ test.describe("Groups", () => {
                     "Loader shows 'Adding Group...' not 'Creating Group...'",
                 ).toBeVisible({ timeout: 5_000 });
 
-
                 await expect(
                     page.getByRole("link", { name: groupName }).first(),
                     "Group appears in the user's related group list",
                 ).toBeVisible({ timeout: 10_000 });
-
             });
         });
     });
