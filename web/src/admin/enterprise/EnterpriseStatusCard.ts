@@ -8,6 +8,7 @@ import { LicenseForecast, LicenseSummary, LicenseSummaryStatusEnum } from "@goau
 import { msg } from "@lit/localize";
 import { css, CSSResult, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
@@ -73,7 +74,7 @@ export class EnterpriseStatusCard extends AKElement {
                 : undefined;
 
             return html`
-                <ak-progress severity=${severity} value=${percentage}>
+                <ak-progress severity=${ifDefined(severity)} value=${percentage}>
                     <span slot="label">${label} (${current} / ${allowed})</span>
                     <span slot="status"> ${percentage < Infinity ? `${percentage}` : "∞"}% </span>
                 </ak-progress>
@@ -103,12 +104,12 @@ export class EnterpriseStatusCard extends AKElement {
                             ${progressBar(
                                 msg("Internal user usage"),
                                 currentInternalUsers,
-                                licensedInternalUsers
+                                licensedInternalUsers,
                             )}
                             ${progressBar(
                                 msg("External user usage"),
                                 currentExternalUsers,
-                                licensedExternalUsers
+                                licensedExternalUsers,
                             )}
                         </div>
                     </div>

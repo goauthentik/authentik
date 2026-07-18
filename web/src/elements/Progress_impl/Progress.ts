@@ -31,8 +31,10 @@ export type ProgressSeverity = (typeof progressSeverity)[number];
  * @attr {number} max - Maximum value for progress range
  * @attr {number} value - Current progress value
  * @attr {boolean} one-way - Prevents progress value from decreasing
+ * @prop {function} displayValue - alternative status renderer
  *
  * @slot label - Label text (renders in grid row 1, spans columns 1-2 for outside variant)
+ * @slot status - Status text
  *
  * @remarks
  * The component uses CSS Grid with specific positioning. Do not override override grid-column or
