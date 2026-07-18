@@ -79,6 +79,20 @@ class SAMLNameIDPolicy(models.TextChoices):
     UNSPECIFIED = SAML_NAME_ID_FORMAT_UNSPECIFIED
 
 
+ATTRIBUTE_NAME_TRANSLATION_MAP = {
+    "urn:oid:0.9.2342.19200300.100.1.3": "email",
+    "urn:mace:dir:attribute-def:mail": "email",
+    "mail": "email",
+    "urn:oid:1.3.6.1.4.1.5923.1.1.1.6": "eppn",
+    "urn:mace:dir:attribute-def:eduPersonPrincipalName": "eppn",
+    "eduPersonPrincipalName": "eppn",
+    "urn:oid:1.3.6.1.4.1.5923.1.1.1.10": "eptid",
+    "eduPersonTargetedID": "eptid",
+    "urn:oid:0.9.2342.19200300.100.1.1": "uid",
+    "urn:mace:dir:attribute-def:uid": "uid",
+}
+
+
 class SAMLSource(Source):
     """Authenticate using an external SAML Identity Provider."""
 
@@ -224,16 +238,21 @@ class SAMLSource(Source):
     def property_mapping_type(self) -> type[PropertyMapping]:
         return SAMLSourcePropertyMapping
 
-    def get_base_user_properties(self, root: _Element, assertion: _Element, name_id: Any, **kwargs):
+    def extract_attributes(self, root: _Element, assertion: _Element | None = None) -> dict:
+        """Extract and normalize SAML attributes from an assertion."""
         attributes = {}
+        if assertion is None:
+            assertion = root.find(f"{{{NS_SAML_ASSERTION}}}Assertion")
         if assertion is None:
             raise ValueError("Assertion element not found")
         attribute_statement = assertion.find(f"{{{NS_SAML_ASSERTION}}}AttributeStatement")
         if attribute_statement is None:
-            raise ValueError("Attribute statement element not found")
+            return attributes
         # Get all attributes and their values into a dict
         for attribute in attribute_statement.iterchildren():
-            key = attribute.attrib["Name"]
+            key = ATTRIBUTE_NAME_TRANSLATION_MAP.get(
+                attribute.attrib["Name"], attribute.attrib["Name"]
+            )
             attributes.setdefault(key, [])
             for value in attribute.iterchildren():
                 attributes[key].append(get_element_text(value))
@@ -245,7 +264,19 @@ class SAMLSource(Source):
             if key == "groups":
                 continue
             attributes[key] = BaseEvaluator.expr_flatten(value)
-        attributes["username"] = get_element_text(name_id)
+        return attributes
+
+    def get_base_user_properties(
+        self,
+        root: _Element,
+        assertion: _Element,
+        name_id: Any,
+        saml_attributes: dict | None = None,
+        **kwargs,
+    ):
+        """Build base user properties from SAML attributes and NameID."""
+        attributes = dict(saml_attributes or self.extract_attributes(root, assertion))
+        attributes.setdefault("username", get_element_text(name_id))
 
         return attributes
 
