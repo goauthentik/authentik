@@ -1,6 +1,5 @@
 from datetime import timedelta
 
-# from authentik.enterprise.requests.tasks import pam_request_notification
 from django.db import transaction
 from django.http import HttpRequest, HttpResponse
 from django.urls import reverse
@@ -12,6 +11,7 @@ from authentik.enterprise.requests.models import (
     RequestRule,
     RequestStatus,
 )
+from authentik.enterprise.requests.tasks import requests_send_request_notification
 from authentik.events.middleware import audit_ignore
 from authentik.events.models import Event, EventAction
 from authentik.flows.stage import StageView
@@ -64,7 +64,7 @@ class GrantRequestFinalStageView(StageView):
                 continue
             for recipient in rule.notification_recipients():
                 for transport in transports:
-                    pam_request_notification.send_with_options(
+                    requests_send_request_notification.send_with_options(
                         args=(transport.pk, event.pk, recipient.pk),
                         rel_obj=transport,
                     )

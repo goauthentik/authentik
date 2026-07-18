@@ -40,11 +40,10 @@ class GrantRequestSerializer(ModelSerializer):
     revoked_by = PartialUserSerializer(read_only=True)
     is_active = BooleanField(read_only=True)
 
-    # TODO: Optimize this
-    target_apps = SerializerMethodField()
+    target_objs = SerializerMethodField()
 
     @extend_schema_field(RequestableTargetSerializer(many=True))
-    def get_target_apps(self, inst: GrantRequest) -> list[RequestableTargetSerializer]:
+    def get_target_objs(self, inst: GrantRequest) -> list[RequestableTargetSerializer]:
         return RequestableTargetSerializer(inst.targets.all().select_subclasses(), many=True).data
 
     class Meta:
@@ -59,7 +58,7 @@ class GrantRequestSerializer(ModelSerializer):
             "expires",
             "status",
             "targets",
-            "target_apps",
+            "target_objs",
             "uuid",
         ]
         extra_kwargs = {

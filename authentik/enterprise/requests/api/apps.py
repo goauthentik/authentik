@@ -38,7 +38,7 @@ def _requestable(view: GenericViewSet, request: Request) -> list[RequestableMode
 
 
 class RequestableTargetSerializer(PassiveSerializer):
-    """Generic representation of a single PAM request target: whatever was actually
+    """Generic representation of a single request target: whatever was actually
     requested (an Application, an Application Entitlement, ...), always paired with the
     parent it belongs to, so the UI/audit trail has that context even when the
     request itself was scoped narrower than the whole app."""

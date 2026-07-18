@@ -32,6 +32,12 @@ export interface Application {
      */
     readonly pk: string;
     /**
+     *
+     * @type {string}
+     * @memberof Application
+     */
+    readonly pbmUuid: string;
+    /**
      * Application's display Name.
      * @type {string}
      * @memberof Application
@@ -140,6 +146,7 @@ export interface Application {
  */
 export function instanceOfApplication(value: object): value is Application {
     if (!("pk" in value) || value["pk"] === undefined) return false;
+    if (!("pbmUuid" in value) || value["pbmUuid"] === undefined) return false;
     if (!("name" in value) || value["name"] === undefined) return false;
     if (!("slug" in value) || value["slug"] === undefined) return false;
     if (!("providerObj" in value) || value["providerObj"] === undefined) return false;
@@ -161,6 +168,7 @@ export function ApplicationFromJSONTyped(json: any, ignoreDiscriminator: boolean
     }
     return {
         pk: json["pk"],
+        pbmUuid: json["pbm_uuid"],
         name: json["name"],
         slug: json["slug"],
         provider: json["provider"] == null ? undefined : json["provider"],
@@ -195,6 +203,7 @@ export function ApplicationToJSONTyped(
     value?: Omit<
         Application,
         | "pk"
+        | "pbm_uuid"
         | "provider_obj"
         | "backchannel_providers_obj"
         | "launch_url"

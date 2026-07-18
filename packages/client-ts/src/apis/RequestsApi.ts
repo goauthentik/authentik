@@ -12,6 +12,16 @@
  * Do not edit the class manually.
  */
 
+import { type GrantRequest, GrantRequestFromJSON } from "../models/GrantRequest";
+import {
+    type GrantRequestCreateRequest,
+    GrantRequestCreateRequestToJSON,
+} from "../models/GrantRequestCreateRequest";
+import { type Link, LinkFromJSON } from "../models/Link";
+import {
+    type PaginatedGrantRequestList,
+    PaginatedGrantRequestListFromJSON,
+} from "../models/PaginatedGrantRequestList";
 import {
     type PaginatedRequestRuleBindingList,
     PaginatedRequestRuleBindingListFromJSON,
@@ -24,6 +34,10 @@ import {
     type PaginatedRequestRuleList,
     PaginatedRequestRuleListFromJSON,
 } from "../models/PaginatedRequestRuleList";
+import {
+    type PatchedGrantRequestFulfillRequest,
+    PatchedGrantRequestFulfillRequestToJSON,
+} from "../models/PatchedGrantRequestFulfillRequest";
 import {
     type PatchedRequestRuleBindingRequest,
     PatchedRequestRuleBindingRequestToJSON,
@@ -53,6 +67,34 @@ import {
 import { type RequestRuleRequest, RequestRuleRequestToJSON } from "../models/RequestRuleRequest";
 import { type UsedBy, UsedByFromJSON } from "../models/UsedBy";
 import * as runtime from "../runtime";
+
+export interface RequestsGrantRequestsCreateRequest {
+    grantRequestCreateRequest: GrantRequestCreateRequest;
+}
+
+export interface RequestsGrantRequestsDestroyRequest {
+    uuid: string;
+}
+
+export interface RequestsGrantRequestsFulfillPartialUpdateRequest {
+    uuid: string;
+    patchedGrantRequestFulfillRequest?: PatchedGrantRequestFulfillRequest;
+}
+
+export interface RequestsGrantRequestsListRequest {
+    ordering?: string;
+    page?: number;
+    pageSize?: number;
+    search?: string;
+}
+
+export interface RequestsGrantRequestsRetrieveRequest {
+    uuid: string;
+}
+
+export interface RequestsGrantRequestsRevokeCreateRequest {
+    uuid: string;
+}
 
 export interface RequestsRuleBindingsCreateRequest {
     requestRuleBindingRequest: RequestRuleBindingRequest;
@@ -161,6 +203,388 @@ export interface RequestsRulesUsedByListRequest {
  *
  */
 export class RequestsApi extends runtime.BaseAPI {
+    /**
+     * Creates request options for requestsGrantRequestsCreate without sending the request
+     */
+    async requestsGrantRequestsCreateRequestOpts(
+        requestParameters: RequestsGrantRequestsCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["grantRequestCreateRequest"] == null) {
+            throw new runtime.RequiredError(
+                "grantRequestCreateRequest",
+                'Required parameter "grantRequestCreateRequest" was null or undefined when calling requestsGrantRequestsCreate().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters["Content-Type"] = "application/json";
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/requests/grant-requests/`;
+
+        return {
+            path: urlPath,
+            method: "POST",
+            headers: headerParameters,
+            query: queryParameters,
+            body: GrantRequestCreateRequestToJSON(requestParameters["grantRequestCreateRequest"]),
+        };
+    }
+
+    /**
+     */
+    async requestsGrantRequestsCreateRaw(
+        requestParameters: RequestsGrantRequestsCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Link>> {
+        const requestOptions = await this.requestsGrantRequestsCreateRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => LinkFromJSON(jsonValue));
+    }
+
+    /**
+     */
+    async requestsGrantRequestsCreate(
+        requestParameters: RequestsGrantRequestsCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Link> {
+        const response = await this.requestsGrantRequestsCreateRaw(
+            requestParameters,
+            initOverrides,
+        );
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for requestsGrantRequestsDestroy without sending the request
+     */
+    async requestsGrantRequestsDestroyRequestOpts(
+        requestParameters: RequestsGrantRequestsDestroyRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["uuid"] == null) {
+            throw new runtime.RequiredError(
+                "uuid",
+                'Required parameter "uuid" was null or undefined when calling requestsGrantRequestsDestroy().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/requests/grant-requests/{uuid}/`;
+        urlPath = urlPath.replace("{uuid}", encodeURIComponent(String(requestParameters["uuid"])));
+
+        return {
+            path: urlPath,
+            method: "DELETE",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     */
+    async requestsGrantRequestsDestroyRaw(
+        requestParameters: RequestsGrantRequestsDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
+        const requestOptions =
+            await this.requestsGrantRequestsDestroyRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.VoidApiResponse(response);
+    }
+
+    /**
+     */
+    async requestsGrantRequestsDestroy(
+        requestParameters: RequestsGrantRequestsDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
+        await this.requestsGrantRequestsDestroyRaw(requestParameters, initOverrides);
+    }
+
+    /**
+     * Creates request options for requestsGrantRequestsFulfillPartialUpdate without sending the request
+     */
+    async requestsGrantRequestsFulfillPartialUpdateRequestOpts(
+        requestParameters: RequestsGrantRequestsFulfillPartialUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["uuid"] == null) {
+            throw new runtime.RequiredError(
+                "uuid",
+                'Required parameter "uuid" was null or undefined when calling requestsGrantRequestsFulfillPartialUpdate().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters["Content-Type"] = "application/json";
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/requests/grant-requests/{uuid}/fulfill/`;
+        urlPath = urlPath.replace("{uuid}", encodeURIComponent(String(requestParameters["uuid"])));
+
+        return {
+            path: urlPath,
+            method: "PATCH",
+            headers: headerParameters,
+            query: queryParameters,
+            body: PatchedGrantRequestFulfillRequestToJSON(
+                requestParameters["patchedGrantRequestFulfillRequest"],
+            ),
+        };
+    }
+
+    /**
+     */
+    async requestsGrantRequestsFulfillPartialUpdateRaw(
+        requestParameters: RequestsGrantRequestsFulfillPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
+        const requestOptions =
+            await this.requestsGrantRequestsFulfillPartialUpdateRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.VoidApiResponse(response);
+    }
+
+    /**
+     */
+    async requestsGrantRequestsFulfillPartialUpdate(
+        requestParameters: RequestsGrantRequestsFulfillPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
+        await this.requestsGrantRequestsFulfillPartialUpdateRaw(requestParameters, initOverrides);
+    }
+
+    /**
+     * Creates request options for requestsGrantRequestsList without sending the request
+     */
+    async requestsGrantRequestsListRequestOpts(
+        requestParameters: RequestsGrantRequestsListRequest,
+    ): Promise<runtime.RequestOpts> {
+        const queryParameters: any = {};
+
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
+        }
+
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
+        }
+
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
+        }
+
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/requests/grant-requests/`;
+
+        return {
+            path: urlPath,
+            method: "GET",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     */
+    async requestsGrantRequestsListRaw(
+        requestParameters: RequestsGrantRequestsListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PaginatedGrantRequestList>> {
+        const requestOptions = await this.requestsGrantRequestsListRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedGrantRequestListFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     */
+    async requestsGrantRequestsList(
+        requestParameters: RequestsGrantRequestsListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PaginatedGrantRequestList> {
+        const response = await this.requestsGrantRequestsListRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for requestsGrantRequestsRetrieve without sending the request
+     */
+    async requestsGrantRequestsRetrieveRequestOpts(
+        requestParameters: RequestsGrantRequestsRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["uuid"] == null) {
+            throw new runtime.RequiredError(
+                "uuid",
+                'Required parameter "uuid" was null or undefined when calling requestsGrantRequestsRetrieve().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/requests/grant-requests/{uuid}/`;
+        urlPath = urlPath.replace("{uuid}", encodeURIComponent(String(requestParameters["uuid"])));
+
+        return {
+            path: urlPath,
+            method: "GET",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     */
+    async requestsGrantRequestsRetrieveRaw(
+        requestParameters: RequestsGrantRequestsRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<GrantRequest>> {
+        const requestOptions =
+            await this.requestsGrantRequestsRetrieveRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            GrantRequestFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     */
+    async requestsGrantRequestsRetrieve(
+        requestParameters: RequestsGrantRequestsRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<GrantRequest> {
+        const response = await this.requestsGrantRequestsRetrieveRaw(
+            requestParameters,
+            initOverrides,
+        );
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for requestsGrantRequestsRevokeCreate without sending the request
+     */
+    async requestsGrantRequestsRevokeCreateRequestOpts(
+        requestParameters: RequestsGrantRequestsRevokeCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["uuid"] == null) {
+            throw new runtime.RequiredError(
+                "uuid",
+                'Required parameter "uuid" was null or undefined when calling requestsGrantRequestsRevokeCreate().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/requests/grant-requests/{uuid}/revoke/`;
+        urlPath = urlPath.replace("{uuid}", encodeURIComponent(String(requestParameters["uuid"])));
+
+        return {
+            path: urlPath,
+            method: "POST",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * Immediately end an active grant. Available to the same reviewers who could approve it in the first place.
+     */
+    async requestsGrantRequestsRevokeCreateRaw(
+        requestParameters: RequestsGrantRequestsRevokeCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
+        const requestOptions =
+            await this.requestsGrantRequestsRevokeCreateRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.VoidApiResponse(response);
+    }
+
+    /**
+     * Immediately end an active grant. Available to the same reviewers who could approve it in the first place.
+     */
+    async requestsGrantRequestsRevokeCreate(
+        requestParameters: RequestsGrantRequestsRevokeCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
+        await this.requestsGrantRequestsRevokeCreateRaw(requestParameters, initOverrides);
+    }
+
     /**
      * Creates request options for requestsRuleBindingsCreate without sending the request
      */
