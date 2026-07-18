@@ -12,7 +12,7 @@ If needed, use this syntax to add a note (info) or warning (warning) anywhere in
 
 Provide a few use cases, with examples/scenarios when possible.
 
-## About feature x
+## About `<feature>`
 
 Provide more conceptual details.
 
