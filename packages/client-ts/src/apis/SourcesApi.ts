@@ -127,6 +127,10 @@ import {
     PaginatedPlexSourceListFromJSON,
 } from "../models/PaginatedPlexSourceList";
 import {
+    type PaginatedSAMLIDPList,
+    PaginatedSAMLIDPListFromJSON,
+} from "../models/PaginatedSAMLIDPList";
+import {
     type PaginatedSAMLSourceList,
     PaginatedSAMLSourceListFromJSON,
 } from "../models/PaginatedSAMLSourceList";
@@ -223,6 +227,10 @@ import {
     PatchedPlexSourceRequestToJSON,
 } from "../models/PatchedPlexSourceRequest";
 import {
+    type PatchedSAMLIDPRequest,
+    PatchedSAMLIDPRequestToJSON,
+} from "../models/PatchedSAMLIDPRequest";
+import {
     type PatchedSAMLSourceRequest,
     PatchedSAMLSourceRequestToJSON,
 } from "../models/PatchedSAMLSourceRequest";
@@ -278,6 +286,20 @@ import {
 } from "../models/PlexTokenRedeemRequest";
 import { type PolicyEngineMode } from "../models/PolicyEngineMode";
 import { type RedirectChallenge, RedirectChallengeFromJSON } from "../models/RedirectChallenge";
+import { type SAMLIDP, SAMLIDPFromJSON } from "../models/SAMLIDP";
+import { type SAMLIDPApplyRequest, SAMLIDPApplyRequestToJSON } from "../models/SAMLIDPApplyRequest";
+import {
+    type SAMLIDPApplyResponse,
+    SAMLIDPApplyResponseFromJSON,
+} from "../models/SAMLIDPApplyResponse";
+import {
+    type SAMLIDPPreviewRequest,
+    SAMLIDPPreviewRequestToJSON,
+} from "../models/SAMLIDPPreviewRequest";
+import {
+    type SAMLIDPPreviewResponse,
+    SAMLIDPPreviewResponseFromJSON,
+} from "../models/SAMLIDPPreviewResponse";
 import { type SAMLMetadata, SAMLMetadataFromJSON } from "../models/SAMLMetadata";
 import { type SAMLNameIDPolicyEnum } from "../models/SAMLNameIDPolicyEnum";
 import { type SAMLSource, SAMLSourceFromJSON } from "../models/SAMLSource";
@@ -862,12 +884,86 @@ export interface SourcesSamlDestroyRequest {
     slug: string;
 }
 
+export interface SourcesSamlIdentityProvidersApplyCreateRequest {
+    slug: string;
+    sAMLIDPApplyRequest?: SAMLIDPApplyRequest;
+}
+
+export interface SourcesSamlIdentityProvidersDestroyRequest {
+    idpId: string;
+    slug: string;
+}
+
+export interface SourcesSamlIdentityProvidersListRequest {
+    slug: string;
+    allowIdpInitiated?: boolean;
+    authenticationFlow?: string;
+    bindingType?: BindingTypeEnum;
+    digestAlgorithm?: DigestAlgorithmEnum;
+    enabled?: boolean;
+    encryptionKp?: string;
+    encryptionKpRing?: string;
+    enrollmentFlow?: string;
+    entityId?: string;
+    forceAuthn?: boolean;
+    issuerOverride?: string;
+    managed?: string;
+    name?: string;
+    nameIdPolicy?: SAMLNameIDPolicyEnum;
+    ordering?: string;
+    page?: number;
+    pageSize?: number;
+    pbmUuid?: string;
+    policyEngineMode?: PolicyEngineMode;
+    preAuthenticationFlow?: string;
+    search?: string;
+    signatureAlgorithm?: SignatureAlgorithmEnum;
+    signedAssertion?: boolean;
+    signedResponse?: boolean;
+    signingKp?: string;
+    signingKpRing?: string;
+    sloUrl?: string;
+    slug2?: string;
+    ssoUrl?: string;
+    temporaryUserDeleteAfter?: string;
+    userMatchingMode?: UserMatchingModeEnum;
+    verificationKp?: string;
+    verificationKpRing?: string;
+}
+
+export interface SourcesSamlIdentityProvidersPartialUpdateRequest {
+    idpId: string;
+    slug: string;
+    patchedSAMLIDPRequest?: PatchedSAMLIDPRequest;
+}
+
+export interface SourcesSamlIdentityProvidersPreviewCreateRequest {
+    slug: string;
+    sAMLIDPPreviewRequest?: SAMLIDPPreviewRequest;
+}
+
+export interface SourcesSamlIdentityProvidersRetrieveRequest {
+    idpId: string;
+    slug: string;
+}
+
+export interface SourcesSamlImportMetadataCreateRequest {
+    name: string;
+    file: Blob;
+    source?: string | null;
+    preAuthenticationFlow?: string | null;
+    signingCertificate?: string | null;
+    createMissingRings?: boolean;
+}
+
 export interface SourcesSamlListRequest {
     allowIdpInitiated?: boolean;
     authenticationFlow?: string;
     bindingType?: BindingTypeEnum;
     digestAlgorithm?: DigestAlgorithmEnum;
     enabled?: boolean;
+    encryptionKp?: string;
+    encryptionKpRing?: string;
     enrollmentFlow?: string;
     forceAuthn?: boolean;
     issuerOverride?: string;
@@ -885,12 +981,14 @@ export interface SourcesSamlListRequest {
     signedAssertion?: boolean;
     signedResponse?: boolean;
     signingKp?: string;
+    signingKpRing?: string;
     sloUrl?: string;
     slug?: string;
     ssoUrl?: string;
     temporaryUserDeleteAfter?: string;
     userMatchingMode?: UserMatchingModeEnum;
     verificationKp?: string;
+    verificationKpRing?: string;
 }
 
 export interface SourcesSamlMetadataRetrieveRequest {
@@ -7706,6 +7804,691 @@ export class SourcesApi extends runtime.BaseAPI {
     }
 
     /**
+     * Creates request options for sourcesSamlIdentityProvidersApplyCreate without sending the request
+     */
+    async sourcesSamlIdentityProvidersApplyCreateRequestOpts(
+        requestParameters: SourcesSamlIdentityProvidersApplyCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["slug"] == null) {
+            throw new runtime.RequiredError(
+                "slug",
+                'Required parameter "slug" was null or undefined when calling sourcesSamlIdentityProvidersApplyCreate().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters["Content-Type"] = "application/json";
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/sources/saml/{slug}/identity-providers/apply/`;
+        urlPath = urlPath.replace("{slug}", encodeURIComponent(String(requestParameters["slug"])));
+
+        return {
+            path: urlPath,
+            method: "POST",
+            headers: headerParameters,
+            query: queryParameters,
+            body: SAMLIDPApplyRequestToJSON(requestParameters["sAMLIDPApplyRequest"]),
+        };
+    }
+
+    /**
+     * Apply IdP metadata reconciliation results.
+     */
+    async sourcesSamlIdentityProvidersApplyCreateRaw(
+        requestParameters: SourcesSamlIdentityProvidersApplyCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<SAMLIDPApplyResponse>> {
+        const requestOptions =
+            await this.sourcesSamlIdentityProvidersApplyCreateRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            SAMLIDPApplyResponseFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * Apply IdP metadata reconciliation results.
+     */
+    async sourcesSamlIdentityProvidersApplyCreate(
+        requestParameters: SourcesSamlIdentityProvidersApplyCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<SAMLIDPApplyResponse> {
+        const response = await this.sourcesSamlIdentityProvidersApplyCreateRaw(
+            requestParameters,
+            initOverrides,
+        );
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for sourcesSamlIdentityProvidersDestroy without sending the request
+     */
+    async sourcesSamlIdentityProvidersDestroyRequestOpts(
+        requestParameters: SourcesSamlIdentityProvidersDestroyRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["idpId"] == null) {
+            throw new runtime.RequiredError(
+                "idpId",
+                'Required parameter "idpId" was null or undefined when calling sourcesSamlIdentityProvidersDestroy().',
+            );
+        }
+
+        if (requestParameters["slug"] == null) {
+            throw new runtime.RequiredError(
+                "slug",
+                'Required parameter "slug" was null or undefined when calling sourcesSamlIdentityProvidersDestroy().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/sources/saml/{slug}/identity-providers/{idp_id}/`;
+        urlPath = urlPath.replace(
+            "{idp_id}",
+            encodeURIComponent(String(requestParameters["idpId"])),
+        );
+        urlPath = urlPath.replace("{slug}", encodeURIComponent(String(requestParameters["slug"])));
+
+        return {
+            path: urlPath,
+            method: "DELETE",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * Retrieve, update, or delete one nested identity provider.
+     */
+    async sourcesSamlIdentityProvidersDestroyRaw(
+        requestParameters: SourcesSamlIdentityProvidersDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
+        const requestOptions =
+            await this.sourcesSamlIdentityProvidersDestroyRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.VoidApiResponse(response);
+    }
+
+    /**
+     * Retrieve, update, or delete one nested identity provider.
+     */
+    async sourcesSamlIdentityProvidersDestroy(
+        requestParameters: SourcesSamlIdentityProvidersDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
+        await this.sourcesSamlIdentityProvidersDestroyRaw(requestParameters, initOverrides);
+    }
+
+    /**
+     * Creates request options for sourcesSamlIdentityProvidersList without sending the request
+     */
+    async sourcesSamlIdentityProvidersListRequestOpts(
+        requestParameters: SourcesSamlIdentityProvidersListRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["slug"] == null) {
+            throw new runtime.RequiredError(
+                "slug",
+                'Required parameter "slug" was null or undefined when calling sourcesSamlIdentityProvidersList().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        if (requestParameters["allowIdpInitiated"] != null) {
+            queryParameters["allow_idp_initiated"] = requestParameters["allowIdpInitiated"];
+        }
+
+        if (requestParameters["authenticationFlow"] != null) {
+            queryParameters["authentication_flow"] = requestParameters["authenticationFlow"];
+        }
+
+        if (requestParameters["bindingType"] != null) {
+            queryParameters["binding_type"] = requestParameters["bindingType"];
+        }
+
+        if (requestParameters["digestAlgorithm"] != null) {
+            queryParameters["digest_algorithm"] = requestParameters["digestAlgorithm"];
+        }
+
+        if (requestParameters["enabled"] != null) {
+            queryParameters["enabled"] = requestParameters["enabled"];
+        }
+
+        if (requestParameters["encryptionKp"] != null) {
+            queryParameters["encryption_kp"] = requestParameters["encryptionKp"];
+        }
+
+        if (requestParameters["encryptionKpRing"] != null) {
+            queryParameters["encryption_kp_ring"] = requestParameters["encryptionKpRing"];
+        }
+
+        if (requestParameters["enrollmentFlow"] != null) {
+            queryParameters["enrollment_flow"] = requestParameters["enrollmentFlow"];
+        }
+
+        if (requestParameters["entityId"] != null) {
+            queryParameters["entity_id"] = requestParameters["entityId"];
+        }
+
+        if (requestParameters["forceAuthn"] != null) {
+            queryParameters["force_authn"] = requestParameters["forceAuthn"];
+        }
+
+        if (requestParameters["issuerOverride"] != null) {
+            queryParameters["issuer_override"] = requestParameters["issuerOverride"];
+        }
+
+        if (requestParameters["managed"] != null) {
+            queryParameters["managed"] = requestParameters["managed"];
+        }
+
+        if (requestParameters["name"] != null) {
+            queryParameters["name"] = requestParameters["name"];
+        }
+
+        if (requestParameters["nameIdPolicy"] != null) {
+            queryParameters["name_id_policy"] = requestParameters["nameIdPolicy"];
+        }
+
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
+        }
+
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
+        }
+
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
+        }
+
+        if (requestParameters["pbmUuid"] != null) {
+            queryParameters["pbm_uuid"] = requestParameters["pbmUuid"];
+        }
+
+        if (requestParameters["policyEngineMode"] != null) {
+            queryParameters["policy_engine_mode"] = requestParameters["policyEngineMode"];
+        }
+
+        if (requestParameters["preAuthenticationFlow"] != null) {
+            queryParameters["pre_authentication_flow"] = requestParameters["preAuthenticationFlow"];
+        }
+
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
+        }
+
+        if (requestParameters["signatureAlgorithm"] != null) {
+            queryParameters["signature_algorithm"] = requestParameters["signatureAlgorithm"];
+        }
+
+        if (requestParameters["signedAssertion"] != null) {
+            queryParameters["signed_assertion"] = requestParameters["signedAssertion"];
+        }
+
+        if (requestParameters["signedResponse"] != null) {
+            queryParameters["signed_response"] = requestParameters["signedResponse"];
+        }
+
+        if (requestParameters["signingKp"] != null) {
+            queryParameters["signing_kp"] = requestParameters["signingKp"];
+        }
+
+        if (requestParameters["signingKpRing"] != null) {
+            queryParameters["signing_kp_ring"] = requestParameters["signingKpRing"];
+        }
+
+        if (requestParameters["sloUrl"] != null) {
+            queryParameters["slo_url"] = requestParameters["sloUrl"];
+        }
+
+        if (requestParameters["slug2"] != null) {
+            queryParameters["slug"] = requestParameters["slug2"];
+        }
+
+        if (requestParameters["ssoUrl"] != null) {
+            queryParameters["sso_url"] = requestParameters["ssoUrl"];
+        }
+
+        if (requestParameters["temporaryUserDeleteAfter"] != null) {
+            queryParameters["temporary_user_delete_after"] =
+                requestParameters["temporaryUserDeleteAfter"];
+        }
+
+        if (requestParameters["userMatchingMode"] != null) {
+            queryParameters["user_matching_mode"] = requestParameters["userMatchingMode"];
+        }
+
+        if (requestParameters["verificationKp"] != null) {
+            queryParameters["verification_kp"] = requestParameters["verificationKp"];
+        }
+
+        if (requestParameters["verificationKpRing"] != null) {
+            queryParameters["verification_kp_ring"] = requestParameters["verificationKpRing"];
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/sources/saml/{slug}/identity-providers/`;
+        urlPath = urlPath.replace("{slug}", encodeURIComponent(String(requestParameters["slug"])));
+
+        return {
+            path: urlPath,
+            method: "GET",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * List nested identity providers for this SAML source.
+     */
+    async sourcesSamlIdentityProvidersListRaw(
+        requestParameters: SourcesSamlIdentityProvidersListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PaginatedSAMLIDPList>> {
+        const requestOptions =
+            await this.sourcesSamlIdentityProvidersListRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedSAMLIDPListFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * List nested identity providers for this SAML source.
+     */
+    async sourcesSamlIdentityProvidersList(
+        requestParameters: SourcesSamlIdentityProvidersListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PaginatedSAMLIDPList> {
+        const response = await this.sourcesSamlIdentityProvidersListRaw(
+            requestParameters,
+            initOverrides,
+        );
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for sourcesSamlIdentityProvidersPartialUpdate without sending the request
+     */
+    async sourcesSamlIdentityProvidersPartialUpdateRequestOpts(
+        requestParameters: SourcesSamlIdentityProvidersPartialUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["idpId"] == null) {
+            throw new runtime.RequiredError(
+                "idpId",
+                'Required parameter "idpId" was null or undefined when calling sourcesSamlIdentityProvidersPartialUpdate().',
+            );
+        }
+
+        if (requestParameters["slug"] == null) {
+            throw new runtime.RequiredError(
+                "slug",
+                'Required parameter "slug" was null or undefined when calling sourcesSamlIdentityProvidersPartialUpdate().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters["Content-Type"] = "application/json";
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/sources/saml/{slug}/identity-providers/{idp_id}/`;
+        urlPath = urlPath.replace(
+            "{idp_id}",
+            encodeURIComponent(String(requestParameters["idpId"])),
+        );
+        urlPath = urlPath.replace("{slug}", encodeURIComponent(String(requestParameters["slug"])));
+
+        return {
+            path: urlPath,
+            method: "PATCH",
+            headers: headerParameters,
+            query: queryParameters,
+            body: PatchedSAMLIDPRequestToJSON(requestParameters["patchedSAMLIDPRequest"]),
+        };
+    }
+
+    /**
+     * Retrieve, update, or delete one nested identity provider.
+     */
+    async sourcesSamlIdentityProvidersPartialUpdateRaw(
+        requestParameters: SourcesSamlIdentityProvidersPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<SAMLIDP>> {
+        const requestOptions =
+            await this.sourcesSamlIdentityProvidersPartialUpdateRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => SAMLIDPFromJSON(jsonValue));
+    }
+
+    /**
+     * Retrieve, update, or delete one nested identity provider.
+     */
+    async sourcesSamlIdentityProvidersPartialUpdate(
+        requestParameters: SourcesSamlIdentityProvidersPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<SAMLIDP> {
+        const response = await this.sourcesSamlIdentityProvidersPartialUpdateRaw(
+            requestParameters,
+            initOverrides,
+        );
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for sourcesSamlIdentityProvidersPreviewCreate without sending the request
+     */
+    async sourcesSamlIdentityProvidersPreviewCreateRequestOpts(
+        requestParameters: SourcesSamlIdentityProvidersPreviewCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["slug"] == null) {
+            throw new runtime.RequiredError(
+                "slug",
+                'Required parameter "slug" was null or undefined when calling sourcesSamlIdentityProvidersPreviewCreate().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters["Content-Type"] = "application/json";
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/sources/saml/{slug}/identity-providers/preview/`;
+        urlPath = urlPath.replace("{slug}", encodeURIComponent(String(requestParameters["slug"])));
+
+        return {
+            path: urlPath,
+            method: "POST",
+            headers: headerParameters,
+            query: queryParameters,
+            body: SAMLIDPPreviewRequestToJSON(requestParameters["sAMLIDPPreviewRequest"]),
+        };
+    }
+
+    /**
+     * Preview IdP metadata reconciliation results.
+     */
+    async sourcesSamlIdentityProvidersPreviewCreateRaw(
+        requestParameters: SourcesSamlIdentityProvidersPreviewCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<SAMLIDPPreviewResponse>> {
+        const requestOptions =
+            await this.sourcesSamlIdentityProvidersPreviewCreateRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            SAMLIDPPreviewResponseFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * Preview IdP metadata reconciliation results.
+     */
+    async sourcesSamlIdentityProvidersPreviewCreate(
+        requestParameters: SourcesSamlIdentityProvidersPreviewCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<SAMLIDPPreviewResponse> {
+        const response = await this.sourcesSamlIdentityProvidersPreviewCreateRaw(
+            requestParameters,
+            initOverrides,
+        );
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for sourcesSamlIdentityProvidersRetrieve without sending the request
+     */
+    async sourcesSamlIdentityProvidersRetrieveRequestOpts(
+        requestParameters: SourcesSamlIdentityProvidersRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["idpId"] == null) {
+            throw new runtime.RequiredError(
+                "idpId",
+                'Required parameter "idpId" was null or undefined when calling sourcesSamlIdentityProvidersRetrieve().',
+            );
+        }
+
+        if (requestParameters["slug"] == null) {
+            throw new runtime.RequiredError(
+                "slug",
+                'Required parameter "slug" was null or undefined when calling sourcesSamlIdentityProvidersRetrieve().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/sources/saml/{slug}/identity-providers/{idp_id}/`;
+        urlPath = urlPath.replace(
+            "{idp_id}",
+            encodeURIComponent(String(requestParameters["idpId"])),
+        );
+        urlPath = urlPath.replace("{slug}", encodeURIComponent(String(requestParameters["slug"])));
+
+        return {
+            path: urlPath,
+            method: "GET",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * Retrieve, update, or delete one nested identity provider.
+     */
+    async sourcesSamlIdentityProvidersRetrieveRaw(
+        requestParameters: SourcesSamlIdentityProvidersRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<SAMLIDP>> {
+        const requestOptions =
+            await this.sourcesSamlIdentityProvidersRetrieveRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => SAMLIDPFromJSON(jsonValue));
+    }
+
+    /**
+     * Retrieve, update, or delete one nested identity provider.
+     */
+    async sourcesSamlIdentityProvidersRetrieve(
+        requestParameters: SourcesSamlIdentityProvidersRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<SAMLIDP> {
+        const response = await this.sourcesSamlIdentityProvidersRetrieveRaw(
+            requestParameters,
+            initOverrides,
+        );
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for sourcesSamlImportMetadataCreate without sending the request
+     */
+    async sourcesSamlImportMetadataCreateRequestOpts(
+        requestParameters: SourcesSamlImportMetadataCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["name"] == null) {
+            throw new runtime.RequiredError(
+                "name",
+                'Required parameter "name" was null or undefined when calling sourcesSamlImportMetadataCreate().',
+            );
+        }
+
+        if (requestParameters["file"] == null) {
+            throw new runtime.RequiredError(
+                "file",
+                'Required parameter "file" was null or undefined when calling sourcesSamlImportMetadataCreate().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+        const consumes: runtime.Consume[] = [{ contentType: "multipart/form-data" }];
+        // @ts-ignore: canConsumeForm may be unused
+        const canConsumeForm = runtime.canConsumeForm(consumes);
+
+        let formParams: { append(param: string, value: any): any };
+        let useForm = false;
+        // use FormData to transmit files using content-type "multipart/form-data"
+        useForm = canConsumeForm;
+        if (useForm) {
+            formParams = new FormData();
+        } else {
+            formParams = new URLSearchParams();
+        }
+
+        if (requestParameters["source"] != null) {
+            formParams.append("source", requestParameters["source"] as any);
+        }
+
+        if (requestParameters["name"] != null) {
+            formParams.append("name", requestParameters["name"] as any);
+        }
+
+        if (requestParameters["preAuthenticationFlow"] != null) {
+            formParams.append(
+                "pre_authentication_flow",
+                requestParameters["preAuthenticationFlow"] as any,
+            );
+        }
+
+        if (requestParameters["file"] != null) {
+            formParams.append("file", requestParameters["file"] as any);
+        }
+
+        if (requestParameters["signingCertificate"] != null) {
+            formParams.append(
+                "signing_certificate",
+                requestParameters["signingCertificate"] as any,
+            );
+        }
+
+        if (requestParameters["createMissingRings"] != null) {
+            formParams.append(
+                "create_missing_rings",
+                requestParameters["createMissingRings"] as any,
+            );
+        }
+
+        let urlPath = `/sources/saml/import_metadata/`;
+
+        return {
+            path: urlPath,
+            method: "POST",
+            headers: headerParameters,
+            query: queryParameters,
+            body: formParams,
+        };
+    }
+
+    /**
+     * Create source from IdP SAML metadata, or apply to an existing source.
+     */
+    async sourcesSamlImportMetadataCreateRaw(
+        requestParameters: SourcesSamlImportMetadataCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<SAMLSource>> {
+        const requestOptions =
+            await this.sourcesSamlImportMetadataCreateRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => SAMLSourceFromJSON(jsonValue));
+    }
+
+    /**
+     * Create source from IdP SAML metadata, or apply to an existing source.
+     */
+    async sourcesSamlImportMetadataCreate(
+        requestParameters: SourcesSamlImportMetadataCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<SAMLSource> {
+        const response = await this.sourcesSamlImportMetadataCreateRaw(
+            requestParameters,
+            initOverrides,
+        );
+        return await response.value();
+    }
+
+    /**
      * Creates request options for sourcesSamlList without sending the request
      */
     async sourcesSamlListRequestOpts(
@@ -7731,6 +8514,14 @@ export class SourcesApi extends runtime.BaseAPI {
 
         if (requestParameters["enabled"] != null) {
             queryParameters["enabled"] = requestParameters["enabled"];
+        }
+
+        if (requestParameters["encryptionKp"] != null) {
+            queryParameters["encryption_kp"] = requestParameters["encryptionKp"];
+        }
+
+        if (requestParameters["encryptionKpRing"] != null) {
+            queryParameters["encryption_kp_ring"] = requestParameters["encryptionKpRing"];
         }
 
         if (requestParameters["enrollmentFlow"] != null) {
@@ -7801,6 +8592,10 @@ export class SourcesApi extends runtime.BaseAPI {
             queryParameters["signing_kp"] = requestParameters["signingKp"];
         }
 
+        if (requestParameters["signingKpRing"] != null) {
+            queryParameters["signing_kp_ring"] = requestParameters["signingKpRing"];
+        }
+
         if (requestParameters["sloUrl"] != null) {
             queryParameters["slo_url"] = requestParameters["sloUrl"];
         }
@@ -7824,6 +8619,10 @@ export class SourcesApi extends runtime.BaseAPI {
 
         if (requestParameters["verificationKp"] != null) {
             queryParameters["verification_kp"] = requestParameters["verificationKp"];
+        }
+
+        if (requestParameters["verificationKpRing"] != null) {
+            queryParameters["verification_kp_ring"] = requestParameters["verificationKpRing"];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};

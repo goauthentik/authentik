@@ -22,17 +22,81 @@ import {
     type CertificateKeyPairRequest,
     CertificateKeyPairRequestToJSON,
 } from "../models/CertificateKeyPairRequest";
+import {
+    type CertificateKeyPairRing,
+    CertificateKeyPairRingFromJSON,
+} from "../models/CertificateKeyPairRing";
+import {
+    type CertificateKeyPairRingBindingsReplaceRequest,
+    CertificateKeyPairRingBindingsReplaceRequestToJSON,
+} from "../models/CertificateKeyPairRingBindingsReplaceRequest";
+import {
+    type CertificateKeyPairRingRequest,
+    CertificateKeyPairRingRequestToJSON,
+} from "../models/CertificateKeyPairRingRequest";
 import { type KeyTypeEnum } from "../models/KeyTypeEnum";
 import {
     type PaginatedCertificateKeyPairList,
     PaginatedCertificateKeyPairListFromJSON,
 } from "../models/PaginatedCertificateKeyPairList";
 import {
+    type PaginatedCertificateKeyPairRingList,
+    PaginatedCertificateKeyPairRingListFromJSON,
+} from "../models/PaginatedCertificateKeyPairRingList";
+import {
     type PatchedCertificateKeyPairRequest,
     PatchedCertificateKeyPairRequestToJSON,
 } from "../models/PatchedCertificateKeyPairRequest";
+import {
+    type PatchedCertificateKeyPairRingRequest,
+    PatchedCertificateKeyPairRingRequestToJSON,
+} from "../models/PatchedCertificateKeyPairRingRequest";
 import { type UsedBy, UsedByFromJSON } from "../models/UsedBy";
 import * as runtime from "../runtime";
+
+export interface CryptoCertificatekeypairringsCreateRequest {
+    certificateKeyPairRingRequest?: CertificateKeyPairRingRequest;
+}
+
+export interface CryptoCertificatekeypairringsDestroyRequest {
+    ringUuid: string;
+}
+
+export interface CryptoCertificatekeypairringsListRequest {
+    created?: Date;
+    keypairs?: Array<string>;
+    lastUpdated?: Date;
+    managed?: string;
+    name?: string;
+    ordering?: string;
+    page?: number;
+    pageSize?: number;
+    ringUuid?: string;
+    search?: string;
+}
+
+export interface CryptoCertificatekeypairringsPartialUpdateRequest {
+    ringUuid: string;
+    patchedCertificateKeyPairRingRequest?: PatchedCertificateKeyPairRingRequest;
+}
+
+export interface CryptoCertificatekeypairringsRetrieveRequest {
+    ringUuid: string;
+}
+
+export interface CryptoCertificatekeypairringsSetBindingsUpdateRequest {
+    ringUuid: string;
+    certificateKeyPairRingBindingsReplaceRequest: CertificateKeyPairRingBindingsReplaceRequest;
+}
+
+export interface CryptoCertificatekeypairringsUpdateRequest {
+    ringUuid: string;
+    certificateKeyPairRingRequest?: CertificateKeyPairRingRequest;
+}
+
+export interface CryptoCertificatekeypairringsUsedByListRequest {
+    ringUuid: string;
+}
 
 export interface CryptoCertificatekeypairsCreateRequest {
     certificateKeyPairRequest: CertificateKeyPairRequest;
@@ -89,6 +153,605 @@ export interface CryptoCertificatekeypairsViewPrivateKeyRetrieveRequest {
  *
  */
 export class CryptoApi extends runtime.BaseAPI {
+    /**
+     * Creates request options for cryptoCertificatekeypairringsCreate without sending the request
+     */
+    async cryptoCertificatekeypairringsCreateRequestOpts(
+        requestParameters: CryptoCertificatekeypairringsCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters["Content-Type"] = "application/json";
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/crypto/certificatekeypairrings/`;
+
+        return {
+            path: urlPath,
+            method: "POST",
+            headers: headerParameters,
+            query: queryParameters,
+            body: CertificateKeyPairRingRequestToJSON(
+                requestParameters["certificateKeyPairRingRequest"],
+            ),
+        };
+    }
+
+    /**
+     * CRUD for key rings + one action to replace membership list.
+     */
+    async cryptoCertificatekeypairringsCreateRaw(
+        requestParameters: CryptoCertificatekeypairringsCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<CertificateKeyPairRing>> {
+        const requestOptions =
+            await this.cryptoCertificatekeypairringsCreateRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            CertificateKeyPairRingFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * CRUD for key rings + one action to replace membership list.
+     */
+    async cryptoCertificatekeypairringsCreate(
+        requestParameters: CryptoCertificatekeypairringsCreateRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<CertificateKeyPairRing> {
+        const response = await this.cryptoCertificatekeypairringsCreateRaw(
+            requestParameters,
+            initOverrides,
+        );
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for cryptoCertificatekeypairringsDestroy without sending the request
+     */
+    async cryptoCertificatekeypairringsDestroyRequestOpts(
+        requestParameters: CryptoCertificatekeypairringsDestroyRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["ringUuid"] == null) {
+            throw new runtime.RequiredError(
+                "ringUuid",
+                'Required parameter "ringUuid" was null or undefined when calling cryptoCertificatekeypairringsDestroy().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/crypto/certificatekeypairrings/{ring_uuid}/`;
+        urlPath = urlPath.replace(
+            "{ring_uuid}",
+            encodeURIComponent(String(requestParameters["ringUuid"])),
+        );
+
+        return {
+            path: urlPath,
+            method: "DELETE",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * CRUD for key rings + one action to replace membership list.
+     */
+    async cryptoCertificatekeypairringsDestroyRaw(
+        requestParameters: CryptoCertificatekeypairringsDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
+        const requestOptions =
+            await this.cryptoCertificatekeypairringsDestroyRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.VoidApiResponse(response);
+    }
+
+    /**
+     * CRUD for key rings + one action to replace membership list.
+     */
+    async cryptoCertificatekeypairringsDestroy(
+        requestParameters: CryptoCertificatekeypairringsDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
+        await this.cryptoCertificatekeypairringsDestroyRaw(requestParameters, initOverrides);
+    }
+
+    /**
+     * Creates request options for cryptoCertificatekeypairringsList without sending the request
+     */
+    async cryptoCertificatekeypairringsListRequestOpts(
+        requestParameters: CryptoCertificatekeypairringsListRequest,
+    ): Promise<runtime.RequestOpts> {
+        const queryParameters: any = {};
+
+        if (requestParameters["created"] != null) {
+            queryParameters["created"] = (requestParameters["created"] as any).toISOString();
+        }
+
+        if (requestParameters["keypairs"] != null) {
+            queryParameters["keypairs"] = requestParameters["keypairs"];
+        }
+
+        if (requestParameters["lastUpdated"] != null) {
+            queryParameters["last_updated"] = (
+                requestParameters["lastUpdated"] as any
+            ).toISOString();
+        }
+
+        if (requestParameters["managed"] != null) {
+            queryParameters["managed"] = requestParameters["managed"];
+        }
+
+        if (requestParameters["name"] != null) {
+            queryParameters["name"] = requestParameters["name"];
+        }
+
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
+        }
+
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
+        }
+
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
+        }
+
+        if (requestParameters["ringUuid"] != null) {
+            queryParameters["ring_uuid"] = requestParameters["ringUuid"];
+        }
+
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/crypto/certificatekeypairrings/`;
+
+        return {
+            path: urlPath,
+            method: "GET",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * CRUD for key rings + one action to replace membership list.
+     */
+    async cryptoCertificatekeypairringsListRaw(
+        requestParameters: CryptoCertificatekeypairringsListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PaginatedCertificateKeyPairRingList>> {
+        const requestOptions =
+            await this.cryptoCertificatekeypairringsListRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedCertificateKeyPairRingListFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * CRUD for key rings + one action to replace membership list.
+     */
+    async cryptoCertificatekeypairringsList(
+        requestParameters: CryptoCertificatekeypairringsListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PaginatedCertificateKeyPairRingList> {
+        const response = await this.cryptoCertificatekeypairringsListRaw(
+            requestParameters,
+            initOverrides,
+        );
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for cryptoCertificatekeypairringsPartialUpdate without sending the request
+     */
+    async cryptoCertificatekeypairringsPartialUpdateRequestOpts(
+        requestParameters: CryptoCertificatekeypairringsPartialUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["ringUuid"] == null) {
+            throw new runtime.RequiredError(
+                "ringUuid",
+                'Required parameter "ringUuid" was null or undefined when calling cryptoCertificatekeypairringsPartialUpdate().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters["Content-Type"] = "application/json";
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/crypto/certificatekeypairrings/{ring_uuid}/`;
+        urlPath = urlPath.replace(
+            "{ring_uuid}",
+            encodeURIComponent(String(requestParameters["ringUuid"])),
+        );
+
+        return {
+            path: urlPath,
+            method: "PATCH",
+            headers: headerParameters,
+            query: queryParameters,
+            body: PatchedCertificateKeyPairRingRequestToJSON(
+                requestParameters["patchedCertificateKeyPairRingRequest"],
+            ),
+        };
+    }
+
+    /**
+     * CRUD for key rings + one action to replace membership list.
+     */
+    async cryptoCertificatekeypairringsPartialUpdateRaw(
+        requestParameters: CryptoCertificatekeypairringsPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<CertificateKeyPairRing>> {
+        const requestOptions =
+            await this.cryptoCertificatekeypairringsPartialUpdateRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            CertificateKeyPairRingFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * CRUD for key rings + one action to replace membership list.
+     */
+    async cryptoCertificatekeypairringsPartialUpdate(
+        requestParameters: CryptoCertificatekeypairringsPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<CertificateKeyPairRing> {
+        const response = await this.cryptoCertificatekeypairringsPartialUpdateRaw(
+            requestParameters,
+            initOverrides,
+        );
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for cryptoCertificatekeypairringsRetrieve without sending the request
+     */
+    async cryptoCertificatekeypairringsRetrieveRequestOpts(
+        requestParameters: CryptoCertificatekeypairringsRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["ringUuid"] == null) {
+            throw new runtime.RequiredError(
+                "ringUuid",
+                'Required parameter "ringUuid" was null or undefined when calling cryptoCertificatekeypairringsRetrieve().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/crypto/certificatekeypairrings/{ring_uuid}/`;
+        urlPath = urlPath.replace(
+            "{ring_uuid}",
+            encodeURIComponent(String(requestParameters["ringUuid"])),
+        );
+
+        return {
+            path: urlPath,
+            method: "GET",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * CRUD for key rings + one action to replace membership list.
+     */
+    async cryptoCertificatekeypairringsRetrieveRaw(
+        requestParameters: CryptoCertificatekeypairringsRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<CertificateKeyPairRing>> {
+        const requestOptions =
+            await this.cryptoCertificatekeypairringsRetrieveRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            CertificateKeyPairRingFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * CRUD for key rings + one action to replace membership list.
+     */
+    async cryptoCertificatekeypairringsRetrieve(
+        requestParameters: CryptoCertificatekeypairringsRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<CertificateKeyPairRing> {
+        const response = await this.cryptoCertificatekeypairringsRetrieveRaw(
+            requestParameters,
+            initOverrides,
+        );
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for cryptoCertificatekeypairringsSetBindingsUpdate without sending the request
+     */
+    async cryptoCertificatekeypairringsSetBindingsUpdateRequestOpts(
+        requestParameters: CryptoCertificatekeypairringsSetBindingsUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["ringUuid"] == null) {
+            throw new runtime.RequiredError(
+                "ringUuid",
+                'Required parameter "ringUuid" was null or undefined when calling cryptoCertificatekeypairringsSetBindingsUpdate().',
+            );
+        }
+
+        if (requestParameters["certificateKeyPairRingBindingsReplaceRequest"] == null) {
+            throw new runtime.RequiredError(
+                "certificateKeyPairRingBindingsReplaceRequest",
+                'Required parameter "certificateKeyPairRingBindingsReplaceRequest" was null or undefined when calling cryptoCertificatekeypairringsSetBindingsUpdate().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters["Content-Type"] = "application/json";
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/crypto/certificatekeypairrings/{ring_uuid}/set-bindings/`;
+        urlPath = urlPath.replace(
+            "{ring_uuid}",
+            encodeURIComponent(String(requestParameters["ringUuid"])),
+        );
+
+        return {
+            path: urlPath,
+            method: "PUT",
+            headers: headerParameters,
+            query: queryParameters,
+            body: CertificateKeyPairRingBindingsReplaceRequestToJSON(
+                requestParameters["certificateKeyPairRingBindingsReplaceRequest"],
+            ),
+        };
+    }
+
+    /**
+     * CRUD for key rings + one action to replace membership list.
+     */
+    async cryptoCertificatekeypairringsSetBindingsUpdateRaw(
+        requestParameters: CryptoCertificatekeypairringsSetBindingsUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<CertificateKeyPairRing>> {
+        const requestOptions =
+            await this.cryptoCertificatekeypairringsSetBindingsUpdateRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            CertificateKeyPairRingFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * CRUD for key rings + one action to replace membership list.
+     */
+    async cryptoCertificatekeypairringsSetBindingsUpdate(
+        requestParameters: CryptoCertificatekeypairringsSetBindingsUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<CertificateKeyPairRing> {
+        const response = await this.cryptoCertificatekeypairringsSetBindingsUpdateRaw(
+            requestParameters,
+            initOverrides,
+        );
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for cryptoCertificatekeypairringsUpdate without sending the request
+     */
+    async cryptoCertificatekeypairringsUpdateRequestOpts(
+        requestParameters: CryptoCertificatekeypairringsUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["ringUuid"] == null) {
+            throw new runtime.RequiredError(
+                "ringUuid",
+                'Required parameter "ringUuid" was null or undefined when calling cryptoCertificatekeypairringsUpdate().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters["Content-Type"] = "application/json";
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/crypto/certificatekeypairrings/{ring_uuid}/`;
+        urlPath = urlPath.replace(
+            "{ring_uuid}",
+            encodeURIComponent(String(requestParameters["ringUuid"])),
+        );
+
+        return {
+            path: urlPath,
+            method: "PUT",
+            headers: headerParameters,
+            query: queryParameters,
+            body: CertificateKeyPairRingRequestToJSON(
+                requestParameters["certificateKeyPairRingRequest"],
+            ),
+        };
+    }
+
+    /**
+     * CRUD for key rings + one action to replace membership list.
+     */
+    async cryptoCertificatekeypairringsUpdateRaw(
+        requestParameters: CryptoCertificatekeypairringsUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<CertificateKeyPairRing>> {
+        const requestOptions =
+            await this.cryptoCertificatekeypairringsUpdateRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            CertificateKeyPairRingFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * CRUD for key rings + one action to replace membership list.
+     */
+    async cryptoCertificatekeypairringsUpdate(
+        requestParameters: CryptoCertificatekeypairringsUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<CertificateKeyPairRing> {
+        const response = await this.cryptoCertificatekeypairringsUpdateRaw(
+            requestParameters,
+            initOverrides,
+        );
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for cryptoCertificatekeypairringsUsedByList without sending the request
+     */
+    async cryptoCertificatekeypairringsUsedByListRequestOpts(
+        requestParameters: CryptoCertificatekeypairringsUsedByListRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["ringUuid"] == null) {
+            throw new runtime.RequiredError(
+                "ringUuid",
+                'Required parameter "ringUuid" was null or undefined when calling cryptoCertificatekeypairringsUsedByList().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/crypto/certificatekeypairrings/{ring_uuid}/used_by/`;
+        urlPath = urlPath.replace(
+            "{ring_uuid}",
+            encodeURIComponent(String(requestParameters["ringUuid"])),
+        );
+
+        return {
+            path: urlPath,
+            method: "GET",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * Get a list of all objects that use this object
+     */
+    async cryptoCertificatekeypairringsUsedByListRaw(
+        requestParameters: CryptoCertificatekeypairringsUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+        const requestOptions =
+            await this.cryptoCertificatekeypairringsUsedByListRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
+    }
+
+    /**
+     * Get a list of all objects that use this object
+     */
+    async cryptoCertificatekeypairringsUsedByList(
+        requestParameters: CryptoCertificatekeypairringsUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Array<UsedBy>> {
+        const response = await this.cryptoCertificatekeypairringsUsedByListRaw(
+            requestParameters,
+            initOverrides,
+        );
+        return await response.value();
+    }
+
     /**
      * Creates request options for cryptoCertificatekeypairsCreate without sending the request
      */

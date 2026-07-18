@@ -179,6 +179,30 @@ export interface PatchedSAMLSourceRequest {
     signingKp?: string | null;
     /**
      *
+     * @type {string}
+     * @memberof PatchedSAMLSourceRequest
+     */
+    verificationKpRing?: string | null;
+    /**
+     *
+     * @type {string}
+     * @memberof PatchedSAMLSourceRequest
+     */
+    signingKpRing?: string | null;
+    /**
+     * When selected, incoming assertions are encrypted by the IdP using the public key of the encryption keypair. The assertion is decrypted by the SP using the the private key.
+     * @type {string}
+     * @memberof PatchedSAMLSourceRequest
+     */
+    encryptionKp?: string | null;
+    /**
+     *
+     * @type {string}
+     * @memberof PatchedSAMLSourceRequest
+     */
+    encryptionKpRing?: string | null;
+    /**
+     *
      * @type {DigestAlgorithmEnum}
      * @memberof PatchedSAMLSourceRequest
      */
@@ -195,12 +219,6 @@ export interface PatchedSAMLSourceRequest {
      * @memberof PatchedSAMLSourceRequest
      */
     temporaryUserDeleteAfter?: string;
-    /**
-     * When selected, incoming assertions are encrypted by the IdP using the public key of the encryption keypair. The assertion is decrypted by the SP using the the private key.
-     * @type {string}
-     * @memberof PatchedSAMLSourceRequest
-     */
-    encryptionKp?: string | null;
     /**
      *
      * @type {boolean}
@@ -280,6 +298,12 @@ export function PatchedSAMLSourceRequestFromJSONTyped(
                 : BindingTypeEnumFromJSON(json["binding_type"]),
         verificationKp: json["verification_kp"] == null ? undefined : json["verification_kp"],
         signingKp: json["signing_kp"] == null ? undefined : json["signing_kp"],
+        verificationKpRing:
+            json["verification_kp_ring"] == null ? undefined : json["verification_kp_ring"],
+        signingKpRing: json["signing_kp_ring"] == null ? undefined : json["signing_kp_ring"],
+        encryptionKp: json["encryption_kp"] == null ? undefined : json["encryption_kp"],
+        encryptionKpRing:
+            json["encryption_kp_ring"] == null ? undefined : json["encryption_kp_ring"],
         digestAlgorithm:
             json["digest_algorithm"] == null
                 ? undefined
@@ -292,7 +316,6 @@ export function PatchedSAMLSourceRequestFromJSONTyped(
             json["temporary_user_delete_after"] == null
                 ? undefined
                 : json["temporary_user_delete_after"],
-        encryptionKp: json["encryption_kp"] == null ? undefined : json["encryption_kp"],
         signedAssertion: json["signed_assertion"] == null ? undefined : json["signed_assertion"],
         signedResponse: json["signed_response"] == null ? undefined : json["signed_response"],
     };
@@ -334,10 +357,13 @@ export function PatchedSAMLSourceRequestToJSONTyped(
         binding_type: BindingTypeEnumToJSON(value["bindingType"]),
         verification_kp: value["verificationKp"],
         signing_kp: value["signingKp"],
+        verification_kp_ring: value["verificationKpRing"],
+        signing_kp_ring: value["signingKpRing"],
+        encryption_kp: value["encryptionKp"],
+        encryption_kp_ring: value["encryptionKpRing"],
         digest_algorithm: DigestAlgorithmEnumToJSON(value["digestAlgorithm"]),
         signature_algorithm: SignatureAlgorithmEnumToJSON(value["signatureAlgorithm"]),
         temporary_user_delete_after: value["temporaryUserDeleteAfter"],
-        encryption_kp: value["encryptionKp"],
         signed_assertion: value["signedAssertion"],
         signed_response: value["signedResponse"],
     };
