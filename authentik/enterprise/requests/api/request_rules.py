@@ -2,10 +2,11 @@ from rest_framework.viewsets import ModelViewSet
 
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import ModelSerializer
+from authentik.enterprise.api import EnterpriseRequiredMixin
 from authentik.enterprise.requests.models import RequestRule
 
 
-class RequestRuleSerializer(ModelSerializer):
+class RequestRuleSerializer(EnterpriseRequiredMixin, ModelSerializer):
 
     class Meta:
         model = RequestRule

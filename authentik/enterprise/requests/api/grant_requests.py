@@ -19,6 +19,7 @@ from authentik.core.api.utils import (
     ModelSerializer,
     PassiveSerializer,
 )
+from authentik.enterprise.api import EnterpriseRequiredMixin
 from authentik.enterprise.requests.api.apps import RequestableTargetSerializer, user_can_request
 from authentik.enterprise.requests.models import (
     GrantRequest,
@@ -35,7 +36,8 @@ from authentik.policies.api.bindings import PolicyBindingModelForeignKey
 from authentik.policies.models import PolicyBindingModel, RequestableModel
 
 
-class GrantRequestSerializer(ModelSerializer):
+class GrantRequestSerializer(EnterpriseRequiredMixin, ModelSerializer):
+
     created_by = PartialUserSerializer(read_only=True)
     revoked_by = PartialUserSerializer(read_only=True)
     is_active = BooleanField(read_only=True)
