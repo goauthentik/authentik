@@ -122,7 +122,7 @@ Compatibility modes adjust authentik behavior for vendor-specific SCIM implement
 Available compatibility modes are:
 
 - **Default**: Standard SCIM 2.0 implementation
-- **AWS**: Disables PATCH operations for AWS Identity Center compatibility
+- **AWS**: Uses AWS-specific SCIM implementation (pagination, API endpoint restrictions)
 - **Slack**: Enables filtering support for Slack's SCIM implementation
 - **Salesforce**: Uses the non-standard `/ServiceProviderConfigs` endpoint
 - **GitLab**: Skips the `ServiceProviderConfig` endpoint because GitLab's SCIM implementation does not expose it
