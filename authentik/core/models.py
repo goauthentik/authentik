@@ -839,6 +839,9 @@ class Application(RequestableModel, SerializerModel, PolicyBindingModel):
     def __str__(self):
         return str(self.name)
 
+    def requestable_child_model_types(self):
+        return [ApplicationEntitlement]
+
     class Meta:
         verbose_name = _("Application")
         verbose_name_plural = _("Applications")

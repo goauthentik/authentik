@@ -226,6 +226,9 @@ class Policy(SerializerModel, CreatedUpdatedModel):
 class RequestableModel:
     """Mixin for models which access can be requested to"""
 
+    def requestable_child_model_types(self) -> list[type[RequestableChildModel]]:
+        return []
+
 
 class RequestableChildModel:
     """Mixin for models which are related of models that access can be requested too

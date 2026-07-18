@@ -28,6 +28,7 @@ from authentik.core.api.utils import ModelSerializer, ThemedUrlsSerializer
 from authentik.core.apps import AppAccessWithoutBindings
 from authentik.core.models import Application, User
 from authentik.events.logs import LogEventSerializer, capture_logs
+from authentik.lib.utils.reflection import ConditionalInheritance
 from authentik.policies.api.exec import PolicyTestResultSerializer
 from authentik.policies.engine import PolicyEngine
 from authentik.policies.types import CACHE_PREFIX, PolicyResult
@@ -104,6 +105,7 @@ class ApplicationSerializer(ModelSerializer):
         model = Application
         fields = [
             "pk",
+            "pbm_uuid",
             "name",
             "slug",
             "provider",
@@ -123,11 +125,16 @@ class ApplicationSerializer(ModelSerializer):
             "meta_hide",
         ]
         extra_kwargs = {
+            "pbm_uuid": {"read_only": True},
             "backchannel_providers": {"required": False},
         }
 
 
-class ApplicationViewSet(UsedByMixin, ModelViewSet):
+class ApplicationViewSet(
+    ConditionalInheritance("authentik.enterprise.pam.api.apps.ApplicationsRequestableMixin"),
+    UsedByMixin,
+    ModelViewSet,
+):
     """Application Viewset"""
 
     queryset = (
