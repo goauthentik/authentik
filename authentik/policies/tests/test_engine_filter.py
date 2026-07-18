@@ -1,13 +1,11 @@
 """policy engine tests"""
 
-from datetime import timedelta
 from unittest.mock import patch
 
 from django.core.cache import cache
 from django.db import connections
 from django.test import TestCase
 from django.test.utils import CaptureQueriesContext
-from django.utils.timezone import now
 
 from authentik.core.models import Group, User
 from authentik.core.tests.utils import create_test_user
