@@ -1,10 +1,6 @@
 import "./EnterpriseStatusCard.js";
 
-import {
-    LicenseForecast,
-    LicenseSummary,
-    LicenseSummaryStatusEnum,
-} from "@goauthentik/api";
+import { LicenseForecast, LicenseSummary, LicenseSummaryStatusEnum } from "@goauthentik/api";
 
 import type { Meta, StoryObj } from "@storybook/web-components";
 
@@ -15,26 +11,28 @@ interface StatusCardArgs {
     summary?: LicenseSummary;
 }
 
-const metadata: Meta<StatusCardArgs> = {
-    title: "Admin/Enterprise/<ak-enterprise-status-card>",
+const meta: Meta<StatusCardArgs> = {
+    title: "Components / Enterprise Status Card",
     component: "ak-enterprise-status-card",
+    tags: ["autodocs"],
 };
 
-export default metadata;
+export default meta;
 
-const render = ({ forecast, summary }: StatusCardArgs) =>
-    html`<div style="background-color: #f0f0f0; padding: 1rem;">
-        <ak-enterprise-status-card
-            .forecast=${forecast}
-            .summary=${summary}
-        ></ak-enterprise-status-card>
-    </div>`;
+type Story = StoryObj<StatusCardArgs>;
 
-/**
- * A healthy, valid license with usage comfortably within the licensed seat
- * counts — both progress bars render in their default (neutral) color.
- */
-export const Valid: StoryObj<StatusCardArgs> = {
+const Template: Story = {
+    render: ({ forecast, summary }: StatusCardArgs) =>
+        html`<div style="background-color: #f0f0f0; padding: 1rem;">
+            <ak-enterprise-status-card
+                .forecast=${forecast}
+                .summary=${summary}
+            ></ak-enterprise-status-card>
+        </div>`,
+};
+
+export const Valid: Story = {
+    ...Template,
     args: {
         forecast: {
             internalUsers: 20,
@@ -50,14 +48,10 @@ export const Valid: StoryObj<StatusCardArgs> = {
             licenseFlags: [],
         },
     },
-    render,
 };
 
-/**
- * A valid license nearing expiry with internal usage past the 80% mark, which
- * escalates that bar to its warning color.
- */
-export const ExpiringSoon: StoryObj<StatusCardArgs> = {
+export const ExpiringSoon: Story = {
+    ...Template,
     args: {
         forecast: {
             internalUsers: 85,
@@ -73,15 +67,10 @@ export const ExpiringSoon: StoryObj<StatusCardArgs> = {
             licenseFlags: [],
         },
     },
-    render,
 };
 
-/**
- * Usage has exceeded the licensed seat counts. The internal bar goes past 100%
- * (danger), and the external count against zero licensed external seats yields
- * the "∞%" case handled by `calcUserPercentage`.
- */
-export const LimitExceeded: StoryObj<StatusCardArgs> = {
+export const LimitExceeded: Story = {
+    ...Template,
     args: {
         forecast: {
             internalUsers: 120,
@@ -92,19 +81,15 @@ export const LimitExceeded: StoryObj<StatusCardArgs> = {
         summary: {
             internalUsers: 100,
             externalUsers: 0,
-            status: LicenseSummaryStatusEnum.Expired,
+            status: LicenseSummaryStatusEnum.LimitExceededUser,
             latestValid: new Date("2026-01-01"),
             licenseFlags: [],
         },
     },
-    render,
 };
 
-/**
- * No license present. Both usage percentages are forced to 0 regardless of the
- * forecasted counts, and the badge reads "Unlicensed".
- */
-export const Unlicensed: StoryObj<StatusCardArgs> = {
+export const Unlicensed: Story = {
+    ...Template,
     args: {
         forecast: {
             internalUsers: 12,
@@ -120,13 +105,9 @@ export const Unlicensed: StoryObj<StatusCardArgs> = {
             licenseFlags: [],
         },
     },
-    render,
 };
 
-/**
- * Neither property is supplied, exercising the component's "Loading" fallback.
- */
-export const Loading: StoryObj<StatusCardArgs> = {
+export const Loading: Story = {
+    ...Template,
     args: {},
-    render,
 };

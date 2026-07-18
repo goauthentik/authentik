@@ -87,13 +87,15 @@ export class Progress extends LitElement {
     @property({ type: Object })
     public displayValue = (value: number) => `${value}%`;
 
-    protected get renderedValue() {
-        return this.displayValue(this.value);
-    }
-
     protected getSlotted(name: string) {
         const selector = `[slot="${name}"]`;
         return Array.from(this.children).find((e) => e.matches(selector));
+    }
+
+    protected get renderedValue() {
+        return this.getSlotted("status")
+            ? html`<slot name="status"></slot>`
+            : this.displayValue(this.value);
     }
 
     protected get percentage() {

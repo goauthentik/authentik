@@ -1,5 +1,5 @@
 :root {
-    --ak-c-progress--GridGap: var(--pf-global--spacer--sm);
+    --ak-c-progress--GridGap: var(--pf-global--spacer--xs);
     --ak-c-progress--m-danger__bar--BackgroundColor: var(--pf-global--danger-color--100);
     --ak-c-progress--m-indeterminate--GridGap: 0;
     --ak-c-progress--m-inside__indicator--MinWidth: var(--pf-global--spacer--xl);
