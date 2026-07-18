@@ -69,8 +69,8 @@ export class EnterpriseStatusCard extends AKElement {
             const percentage = isLicensed ? this.calcUserPercentage(licensed, current) : 0;
             const severity = classMap({
                 "pf-m-success": isLicensed && percentage <= 80,
-                "pf-m-danger": isLicensed && percentage > 100,
                 "pf-m-warning": isLicensed && percentage > 80 && percentage <= 100,
+                "pf-m-danger": isLicensed && percentage > 100,
             });
 
             return html`
@@ -103,12 +103,12 @@ export class EnterpriseStatusCard extends AKElement {
                         ${progressBar(
                             msg("Internal user usage"),
                             currentInternalUsers,
-                            licensedInternalUsers,
+                            licensedInternalUsers
                         )}
                         ${progressBar(
                             msg("External user usage"),
                             currentExternalUsers,
-                            licensedExternalUsers,
+                            licensedExternalUsers
                         )}
                     </div>
                 </div>
