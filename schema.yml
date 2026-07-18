@@ -44510,22 +44510,18 @@ components:
           nullable: true
           description: URL used to request the initial token. This URL is only required
             for OAuth 1.
-          maxLength: 255
         authorization_url:
           type: string
           nullable: true
           description: URL the user is redirect to to conest the flow.
-          maxLength: 255
         access_token_url:
           type: string
           nullable: true
           description: URL used by authentik to retrieve tokens.
-          maxLength: 255
         profile_url:
           type: string
           nullable: true
           description: URL used by authentik to get user information.
-          maxLength: 255
         pkce:
           $ref: '#/components/schemas/PKCEMethodEnum'
         consumer_key:
@@ -44697,22 +44693,18 @@ components:
           nullable: true
           description: URL used to request the initial token. This URL is only required
             for OAuth 1.
-          maxLength: 255
         authorization_url:
           type: string
           nullable: true
           description: URL the user is redirect to to conest the flow.
-          maxLength: 255
         access_token_url:
           type: string
           nullable: true
           description: URL used by authentik to retrieve tokens.
-          maxLength: 255
         profile_url:
           type: string
           nullable: true
           description: URL used by authentik to get user information.
-          maxLength: 255
         pkce:
           $ref: '#/components/schemas/PKCEMethodEnum'
         consumer_key:
@@ -50016,22 +50008,18 @@ components:
           nullable: true
           description: URL used to request the initial token. This URL is only required
             for OAuth 1.
-          maxLength: 255
         authorization_url:
           type: string
           nullable: true
           description: URL the user is redirect to to conest the flow.
-          maxLength: 255
         access_token_url:
           type: string
           nullable: true
           description: URL used by authentik to retrieve tokens.
-          maxLength: 255
         profile_url:
           type: string
           nullable: true
           description: URL used by authentik to get user information.
-          maxLength: 255
         pkce:
           $ref: '#/components/schemas/PKCEMethodEnum'
         consumer_key:
