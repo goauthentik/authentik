@@ -10,11 +10,9 @@ import Tabs from "@theme/Tabs";
 
 ## What is Gotify?
 
-> Gotify is a self-hosted server for sending and receiving push notifications in real time over WebSockets. It ships with a web UI, a REST API for delivering messages from scripts or applications, and mobile and desktop clients that subscribe to the message stream.
+> Gotify is a self-hosted server for sending and receiving messages in real time over WebSockets. It includes a web UI and REST API, with an Android app and command-line client.
 >
 > -- https://gotify.net/
-
-This guide was tested with Gotify 3.0 and authentik 2026.5.5.
 
 ## Preparation
 
@@ -33,7 +31,7 @@ This documentation lists only the settings that you need to change from their de
 
 To support the integration of Gotify with authentik, you need to create an application/provider pair in authentik.
 
-### Create an application and provider in authentik
+### Create an application and provider
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
@@ -42,6 +40,7 @@ To support the integration of Gotify with authentik, you need to create an appli
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
         - Note the **Client ID** and **Client Secret** values because they will be required later.
         - Add a **Redirect URI** of type `Strict` `Authorization` as `https://gotify.company/auth/oidc/callback`.
+        - If users will log in from the Gotify Android app, add another **Redirect URI** of type `Strict` `Authorization` as `gotify://oidc/callback`.
         - Select any available signing key.
     - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 
@@ -49,63 +48,61 @@ To support the integration of Gotify with authentik, you need to create an appli
 
 ## Gotify configuration
 
-Gotify reads its configuration from a `config.yml` file or from environment variables (any value set as an environment variable overrides the corresponding value from `config.yml`). Choose whichever variant fits your deployment.
+Choose the configuration method that matches your Gotify deployment.
 
 <Tabs
-defaultValue="yaml"
+defaultValue="environment-file"
 values={[
-{ label: "Configuration file", value: "yaml" },
-{ label: "Environment variables", value: "env" },
+{ label: "Environment file", value: "environment-file" },
+{ label: "Container or service", value: "container-service" },
 ]}>
-<TabItem value="yaml">
+<TabItem value="environment-file">
 
-Add the following `oidc` block to your Gotify `config.yml`:
+Add the following settings to the Gotify environment file:
 
-```yaml title="config.yml"
-oidc:
-    enabled: true
-    issuer: https://authentik.company/application/o/<application_slug>/
-    clientid: <client_id>
-    clientsecret: <client_secret>
-    redirecturl: https://gotify.company/auth/oidc/callback
-    usernameclaim: preferred_username
-    autoregister: true
-    linkbyusername: false
-    scopes:
-        - openid
-        - profile
-        - email
-```
-
-</TabItem>
-<TabItem value="env">
-
-Set the following environment variables on the Gotify container or service:
-
-```env title="Gotify environment variables"
+```env title="gotify-server.env"
 GOTIFY_OIDC_ENABLED=true
 GOTIFY_OIDC_ISSUER=https://authentik.company/application/o/<application_slug>/
-GOTIFY_OIDC_CLIENTID=<client_id>
-GOTIFY_OIDC_CLIENTSECRET=<client_secret>
+GOTIFY_OIDC_CLIENTID=<Client ID from authentik>
+GOTIFY_OIDC_CLIENTSECRET=<Client Secret from authentik>
 GOTIFY_OIDC_REDIRECTURL=https://gotify.company/auth/oidc/callback
-GOTIFY_OIDC_USERNAMECLAIM=preferred_username
-GOTIFY_OIDC_AUTOREGISTER=true
-GOTIFY_OIDC_LINK_BY_USERNAME=false
-GOTIFY_OIDC_SCOPES=openid,profile,email
 ```
+
+Restart Gotify to apply the changes.
+
+</TabItem>
+<TabItem value="container-service">
+
+Set the following environment variables for the Gotify container or service:
+
+```env title=".env"
+GOTIFY_OIDC_ENABLED=true
+GOTIFY_OIDC_ISSUER=https://authentik.company/application/o/<application_slug>/
+GOTIFY_OIDC_CLIENTID=<Client ID from authentik>
+GOTIFY_OIDC_CLIENTSECRET=<Client Secret from authentik>
+GOTIFY_OIDC_REDIRECTURL=https://gotify.company/auth/oidc/callback
+```
+
+Restart the Gotify container or service to apply the changes.
 
 </TabItem>
 </Tabs>
 
-Replace `<application_slug>` with the slug of the authentik application, and `<client_id>` and `<client_secret>` with the values from the authentik provider. Restart Gotify to apply the changes.
+Use the same callback URL for the authentik **Redirect URI** and `GOTIFY_OIDC_REDIRECTURL`. If Gotify is served from a subpath, include the subpath before `/auth/oidc/callback` in both values.
 
-:::info User provisioning
-The `autoregister` and `linkbyusername` settings control how Gotify handles incoming OIDC logins for users that do not yet have a matching Gotify account:
+### Link existing users _(optional)_
 
-- **`autoregister`** (default `true`): if `true`, Gotify creates a new local user account on the first successful OIDC login. If `false`, only users that already have a local Gotify account matching the OIDC identity are allowed to log in; unknown users are rejected.
-- **`linkbyusername`** (default `false`): if `true`, an incoming OIDC login is linked to an existing local Gotify user whose username matches the `usernameclaim` value from authentik, instead of creating a separate account. This is useful when migrating existing local users to SSO. Leave `false` if all users should always be created and managed through OIDC.
+Gotify creates a local user when a new user logs in with OIDC. If a Gotify user with the same username already exists, Gotify rejects the login until you enable existing-user linking:
 
+```env title="gotify-server.env"
+GOTIFY_OIDC_LINK_BY_USERNAME=true
+```
+
+:::warning Existing-account linking
+Enable existing-user linking only if usernames in authentik correspond to the same people as the matching Gotify usernames.
 :::
+
+To permit only existing Gotify users to log in, also set `GOTIFY_OIDC_AUTOREGISTER=false`.
 
 ## Configuration verification
 
@@ -113,4 +110,5 @@ To confirm that authentik is properly configured with Gotify, log out of Gotify 
 
 ## Resources
 
-- [Gotify OIDC configuration reference](https://github.com/gotify/server/blob/master/config/config.go)
+- [Gotify documentation - OpenID Connect](https://gotify.net/docs/oidc)
+- [Gotify documentation - Configuration](https://gotify.net/docs/config)
