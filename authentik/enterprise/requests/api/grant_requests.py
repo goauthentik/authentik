@@ -43,6 +43,7 @@ from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlanner
 from authentik.policies.api.bindings import PolicyBindingModelForeignKey
 from authentik.policies.engine import ListPolicyEngine
 from authentik.policies.models import PolicyBindingModel, RequestableModel
+from authentik.rbac.decorators import permission_required
 
 
 class GrantRequestSerializer(EnterpriseRequiredMixin, ModelSerializer):
@@ -83,6 +84,7 @@ class GrantRequestViewSet(RetrieveModelMixin, DestroyModelMixin, ListModelMixin,
     queryset = GrantRequest.objects.including_expired()
     serializer_class = GrantRequestSerializer
     filterset_fields = ["created_by", "status"]
+    rbac_allow_create_without_perm = True
 
     class GrantRequestCreateSerializer(PassiveSerializer):
 
@@ -178,8 +180,9 @@ class GrantRequestViewSet(RetrieveModelMixin, DestroyModelMixin, ListModelMixin,
             204: OpenApiResponse(description="Request fulfilled"),
         },
     )
-    @action([HTTPMethod.PATCH], detail=True)
+    @action([HTTPMethod.PATCH], detail=True, permission_classes=[])
     @validate(GrantRequestFulfillSerializer)
+    @permission_required("fulfill_grantrequest")
     def fulfill(self, request: Request, body: GrantRequestFulfillSerializer, *args, **kwargs):
         grant: GrantRequest = self.get_object()
         self._assert_reviewer(request, grant)
@@ -196,7 +199,8 @@ class GrantRequestViewSet(RetrieveModelMixin, DestroyModelMixin, ListModelMixin,
             204: OpenApiResponse(description="Grant revoked"),
         },
     )
-    @action([HTTPMethod.DELETE], detail=True)
+    @action([HTTPMethod.DELETE], detail=True, permission_classes=[])
+    @permission_required("revoke_grantrequest")
     def revoke(self, request: Request, *args, **kwargs):
         """Immediately end an active grant. Available to the same reviewers who could
         approve it in the first place."""
