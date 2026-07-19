@@ -75,7 +75,7 @@ export class AccessRequestListPage extends TablePage<GrantRequest> {
                 errorMessage=${msg("Failed to revoke grant")}
                 action=${msg("Revoke")}
                 .onConfirm=${() => {
-                    return aki(RequestsApi).requestsGrantRequestsRevokeCreate({
+                    return aki(RequestsApi).requestsGrantRequestsRevokeDestroy({
                         uuid: item.uuid || "",
                     });
                 }}
