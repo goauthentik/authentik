@@ -41,7 +41,11 @@ class TestOAuthSourceAPI(APITestCase):
         self.assertGreater(len(long_url), 255)
         res = self.client.patch(
             reverse("authentik_api:oauthsource-detail", kwargs={"slug": self.source.slug}),
-            {"authorization_url": long_url},
+            {
+                "authorization_url": long_url,
+                "profile_url": f"https://{generate_id()}",
+                "access_token_url": f"https://{generate_id()}",
+            },
             content_type="application/json",
         )
         self.assertEqual(res.status_code, 200)
