@@ -18600,6 +18600,170 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+  /providers/oauth2/dcr/:
+    get:
+      operationId: providers_oauth2_dcr_list
+      description: OAuth2 Dynamic Client Registration configuration ViewSet
+      parameters:
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - in: query
+        name: provider
+        schema:
+          type: integer
+      - $ref: '#/components/parameters/QuerySearch'
+      tags:
+      - providers
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedOAuth2DynamicClientRegistrationList'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    post:
+      operationId: providers_oauth2_dcr_create
+      description: OAuth2 Dynamic Client Registration configuration ViewSet
+      tags:
+      - providers
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OAuth2DynamicClientRegistrationRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OAuth2DynamicClientRegistration'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /providers/oauth2/dcr/{pbm_uuid}/:
+    get:
+      operationId: providers_oauth2_dcr_retrieve
+      description: OAuth2 Dynamic Client Registration configuration ViewSet
+      parameters:
+      - in: path
+        name: pbm_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this OAuth2 Dynamic Client Registration.
+        required: true
+      tags:
+      - providers
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OAuth2DynamicClientRegistration'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    put:
+      operationId: providers_oauth2_dcr_update
+      description: OAuth2 Dynamic Client Registration configuration ViewSet
+      parameters:
+      - in: path
+        name: pbm_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this OAuth2 Dynamic Client Registration.
+        required: true
+      tags:
+      - providers
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OAuth2DynamicClientRegistrationRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OAuth2DynamicClientRegistration'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    patch:
+      operationId: providers_oauth2_dcr_partial_update
+      description: OAuth2 Dynamic Client Registration configuration ViewSet
+      parameters:
+      - in: path
+        name: pbm_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this OAuth2 Dynamic Client Registration.
+        required: true
+      tags:
+      - providers
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedOAuth2DynamicClientRegistrationRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OAuth2DynamicClientRegistration'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    delete:
+      operationId: providers_oauth2_dcr_destroy
+      description: OAuth2 Dynamic Client Registration configuration ViewSet
+      parameters:
+      - in: path
+        name: pbm_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this OAuth2 Dynamic Client Registration.
+        required: true
+      tags:
+      - providers
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
   /providers/proxy/:
     get:
       operationId: providers_proxy_list
@@ -35452,6 +35616,7 @@ components:
       - authentik.enterprise.policies.unique_password
       - authentik.enterprise.providers.google_workspace
       - authentik.enterprise.providers.microsoft_entra
+      - authentik.enterprise.providers.oauth2
       - authentik.enterprise.providers.radius
       - authentik.enterprise.providers.scim
       - authentik.enterprise.providers.ssf
@@ -41638,7 +41803,7 @@ components:
             Clamped to the granting rule binding(s)' expiry_granted_max.
       required:
       - pbms
-    GrantTypesEnum:
+    GrantTypeEnum:
       enum:
       - authorization_code
       - implicit
@@ -44653,6 +44818,7 @@ components:
       - authentik_providers_ldap.ldapprovider
       - authentik_providers_oauth2.scopemapping
       - authentik_providers_oauth2.oauth2provider
+      - authentik_providers_oauth2.oauth2dynamicclientregistration
       - authentik_providers_proxy.proxyprovider
       - authentik_providers_rac.racprovider
       - authentik_providers_rac.endpoint
@@ -45220,6 +45386,107 @@ components:
       required:
       - expression
       - name
+    OAuth2DynamicClientRegistration:
+      type: object
+      description: Serializer for OAuth2DynamicClientRegistration
+      properties:
+        pbm_uuid:
+          type: string
+          format: uuid
+          readOnly: true
+        provider:
+          type: integer
+        create_application:
+          type: boolean
+          description: Automatically create an Application object for each registered
+            client.
+        default_application_group:
+          type: string
+          description: Group to assign to automatically created applications.
+        default_client_type:
+          $ref: '#/components/schemas/ClientTypeEnum'
+        default_authorization_flow:
+          type: string
+          format: uuid
+          nullable: true
+          description: Authorization flow applied to dynamically registered clients.
+        default_invalidation_flow:
+          type: string
+          format: uuid
+          nullable: true
+        default_property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: Scope mappings applied to dynamically registered clients.
+        access_token_validity:
+          type: string
+          description: 'Maximum access token validity for registered clients (Format:
+            hours=1;minutes=2;seconds=3).'
+        refresh_token_validity:
+          type: string
+          description: 'Maximum refresh token validity for registered clients (Format:
+            hours=1;minutes=2;seconds=3).'
+        allowed_grant_types:
+          type: array
+          items:
+            $ref: '#/components/schemas/GrantTypeEnum'
+          description: If empty, all grant types are allowed.
+        policy_engine_mode:
+          $ref: '#/components/schemas/PolicyEngineMode'
+      required:
+      - pbm_uuid
+      - provider
+    OAuth2DynamicClientRegistrationRequest:
+      type: object
+      description: Serializer for OAuth2DynamicClientRegistration
+      properties:
+        provider:
+          type: integer
+        create_application:
+          type: boolean
+          description: Automatically create an Application object for each registered
+            client.
+        default_application_group:
+          type: string
+          description: Group to assign to automatically created applications.
+        default_client_type:
+          $ref: '#/components/schemas/ClientTypeEnum'
+        default_authorization_flow:
+          type: string
+          format: uuid
+          nullable: true
+          description: Authorization flow applied to dynamically registered clients.
+        default_invalidation_flow:
+          type: string
+          format: uuid
+          nullable: true
+        default_property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: Scope mappings applied to dynamically registered clients.
+        access_token_validity:
+          type: string
+          minLength: 1
+          description: 'Maximum access token validity for registered clients (Format:
+            hours=1;minutes=2;seconds=3).'
+        refresh_token_validity:
+          type: string
+          minLength: 1
+          description: 'Maximum refresh token validity for registered clients (Format:
+            hours=1;minutes=2;seconds=3).'
+        allowed_grant_types:
+          type: array
+          items:
+            $ref: '#/components/schemas/GrantTypeEnum'
+          description: If empty, all grant types are allowed.
+        policy_engine_mode:
+          $ref: '#/components/schemas/PolicyEngineMode'
+      required:
+      - provider
     OAuth2Provider:
       type: object
       description: OAuth2Provider Serializer
@@ -45293,7 +45560,7 @@ components:
         grant_types:
           type: array
           items:
-            $ref: '#/components/schemas/GrantTypesEnum'
+            $ref: '#/components/schemas/GrantTypeEnum'
         client_id:
           type: string
           maxLength: 255
@@ -45418,7 +45685,7 @@ components:
         grant_types:
           type: array
           items:
-            $ref: '#/components/schemas/GrantTypesEnum'
+            $ref: '#/components/schemas/GrantTypeEnum'
         client_id:
           type: string
           minLength: 1
@@ -47522,6 +47789,21 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/NotificationWebhookMapping'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    PaginatedOAuth2DynamicClientRegistrationList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/OAuth2DynamicClientRegistration'
         autocomplete:
           $ref: '#/components/schemas/Autocomplete'
       required:
@@ -51192,6 +51474,53 @@ components:
         expression:
           type: string
           minLength: 1
+    PatchedOAuth2DynamicClientRegistrationRequest:
+      type: object
+      description: Serializer for OAuth2DynamicClientRegistration
+      properties:
+        provider:
+          type: integer
+        create_application:
+          type: boolean
+          description: Automatically create an Application object for each registered
+            client.
+        default_application_group:
+          type: string
+          description: Group to assign to automatically created applications.
+        default_client_type:
+          $ref: '#/components/schemas/ClientTypeEnum'
+        default_authorization_flow:
+          type: string
+          format: uuid
+          nullable: true
+          description: Authorization flow applied to dynamically registered clients.
+        default_invalidation_flow:
+          type: string
+          format: uuid
+          nullable: true
+        default_property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: Scope mappings applied to dynamically registered clients.
+        access_token_validity:
+          type: string
+          minLength: 1
+          description: 'Maximum access token validity for registered clients (Format:
+            hours=1;minutes=2;seconds=3).'
+        refresh_token_validity:
+          type: string
+          minLength: 1
+          description: 'Maximum refresh token validity for registered clients (Format:
+            hours=1;minutes=2;seconds=3).'
+        allowed_grant_types:
+          type: array
+          items:
+            $ref: '#/components/schemas/GrantTypeEnum'
+          description: If empty, all grant types are allowed.
+        policy_engine_mode:
+          $ref: '#/components/schemas/PolicyEngineMode'
     PatchedOAuth2ProviderRequest:
       type: object
       description: OAuth2Provider Serializer
@@ -51226,7 +51555,7 @@ components:
         grant_types:
           type: array
           items:
-            $ref: '#/components/schemas/GrantTypesEnum'
+            $ref: '#/components/schemas/GrantTypeEnum'
         client_id:
           type: string
           minLength: 1

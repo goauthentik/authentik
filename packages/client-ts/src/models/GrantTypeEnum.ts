@@ -16,7 +16,7 @@
  *
  * @export
  */
-export const GrantTypesEnum = {
+export const GrantTypeEnum = {
     AuthorizationCode: "authorization_code",
     Implicit: "implicit",
     Hybrid: "hybrid",
@@ -27,12 +27,12 @@ export const GrantTypesEnum = {
     UrnIetfParamsOauthGrantTypeTokenExchange: "urn:ietf:params:oauth:grant-type:token-exchange",
     UnknownDefaultOpenApi: "11184809",
 } as const;
-export type GrantTypesEnum = (typeof GrantTypesEnum)[keyof typeof GrantTypesEnum];
+export type GrantTypeEnum = (typeof GrantTypeEnum)[keyof typeof GrantTypeEnum];
 
-export function instanceOfGrantTypesEnum(value: any): boolean {
-    for (const key in GrantTypesEnum) {
-        if (Object.prototype.hasOwnProperty.call(GrantTypesEnum, key)) {
-            if (GrantTypesEnum[key as keyof typeof GrantTypesEnum] === value) {
+export function instanceOfGrantTypeEnum(value: any): boolean {
+    for (const key in GrantTypeEnum) {
+        if (Object.prototype.hasOwnProperty.call(GrantTypeEnum, key)) {
+            if (GrantTypeEnum[key as keyof typeof GrantTypeEnum] === value) {
                 return true;
             }
         }
@@ -40,24 +40,18 @@ export function instanceOfGrantTypesEnum(value: any): boolean {
     return false;
 }
 
-export function GrantTypesEnumFromJSON(json: any): GrantTypesEnum {
-    return GrantTypesEnumFromJSONTyped(json, false);
+export function GrantTypeEnumFromJSON(json: any): GrantTypeEnum {
+    return GrantTypeEnumFromJSONTyped(json, false);
 }
 
-export function GrantTypesEnumFromJSONTyped(
-    json: any,
-    ignoreDiscriminator: boolean,
-): GrantTypesEnum {
-    return json as GrantTypesEnum;
+export function GrantTypeEnumFromJSONTyped(json: any, ignoreDiscriminator: boolean): GrantTypeEnum {
+    return json as GrantTypeEnum;
 }
 
-export function GrantTypesEnumToJSON(value?: GrantTypesEnum | null): any {
+export function GrantTypeEnumToJSON(value?: GrantTypeEnum | null): any {
     return value as any;
 }
 
-export function GrantTypesEnumToJSONTyped(
-    value: any,
-    ignoreDiscriminator: boolean,
-): GrantTypesEnum {
-    return value as GrantTypesEnum;
+export function GrantTypeEnumToJSONTyped(value: any, ignoreDiscriminator: boolean): GrantTypeEnum {
+    return value as GrantTypeEnum;
 }

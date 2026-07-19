@@ -63,6 +63,7 @@ from authentik.lib.models import (
     SimpleThroughModel,
 )
 from authentik.lib.utils.time import timedelta_string_validator
+from authentik.policies.models import PolicyBindingModel
 from authentik.sources.oauth.models import OAuthSource
 
 if TYPE_CHECKING:
@@ -739,3 +740,97 @@ class DeviceToken(InternallyManagedMixin, ExpiringModel):
 
     def __str__(self):
         return f"Device Token for {self.provider_id}"
+
+
+class OAuth2DynamicClientRegistration(SerializerModel, PolicyBindingModel):
+    """Configuration for Dynamic Client Registration (RFC 7591) on an OAuth2Provider."""
+
+    provider = models.OneToOneField(
+        OAuth2Provider,
+        on_delete=models.CASCADE,
+        related_name="dcr_configuration",
+        verbose_name=_("Provider"),
+    )
+
+    create_application = models.BooleanField(
+        default=True,
+        verbose_name=_("Create application"),
+        help_text=_("Automatically create an Application object for each registered client."),
+    )
+    default_application_group = models.TextField(
+        blank=True,
+        default="",
+        verbose_name=_("Default application group"),
+        help_text=_("Group to assign to automatically created applications."),
+    )
+
+    default_client_type = models.TextField(
+        choices=ClientType.choices,
+        default=ClientType.CONFIDENTIAL,
+        verbose_name=_("Default client type"),
+    )
+    default_authorization_flow = models.ForeignKey(
+        "authentik_flows.Flow",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        verbose_name=_("Default authorization flow"),
+        help_text=_("Authorization flow applied to dynamically registered clients."),
+        related_name="dcr_default_authorization_flow",
+    )
+    default_invalidation_flow = models.ForeignKey(
+        "authentik_flows.Flow",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        verbose_name=_("Default invalidation flow"),
+        related_name="dcr_default_invalidation_flow",
+    )
+    default_property_mappings = models.ManyToManyField(
+        ScopeMapping,
+        blank=True,
+        verbose_name=_("Default property mappings"),
+        help_text=_("Scope mappings applied to dynamically registered clients."),
+    )
+
+    access_token_validity = models.TextField(
+        default="hours=1",
+        validators=[timedelta_string_validator],
+        verbose_name=_("Access token validity"),
+        help_text=_(
+            "Maximum access token validity for registered clients "
+            "(Format: hours=1;minutes=2;seconds=3)."
+        ),
+    )
+    refresh_token_validity = models.TextField(
+        default="days=30",
+        validators=[timedelta_string_validator],
+        verbose_name=_("Refresh token validity"),
+        help_text=_(
+            "Maximum refresh token validity for registered clients "
+            "(Format: hours=1;minutes=2;seconds=3)."
+        ),
+    )
+
+    allowed_grant_types = ArrayField(
+        models.TextField(choices=GrantType.choices),
+        default=list,
+        blank=True,
+        verbose_name=_("Allowed grant types"),
+        help_text=_("If empty, all grant types are allowed."),
+    )
+
+    @property
+    def serializer(self) -> type[Serializer]:
+        from authentik.enterprise.providers.oauth2.api import (
+            OAuth2DynamicClientRegistrationSerializer,
+        )
+
+        return OAuth2DynamicClientRegistrationSerializer
+
+    def __str__(self):
+        return f"DCR Configuration for {self.provider}"
+
+    class Meta:
+        verbose_name = _("OAuth2 Dynamic Client Registration")
+        verbose_name_plural = _("OAuth2 Dynamic Client Registrations")

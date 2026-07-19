@@ -2344,6 +2344,46 @@
                     ],
                     "properties": {
                         "model": {
+                            "const": "authentik_providers_oauth2.oauth2dynamicclientregistration"
+                        },
+                        "id": {
+                            "type": "string"
+                        },
+                        "state": {
+                            "type": "string",
+                            "enum": [
+                                "absent",
+                                "created",
+                                "must_created",
+                                "present"
+                            ],
+                            "default": "present"
+                        },
+                        "conditions": {
+                            "type": "array",
+                            "items": {
+                                "type": "boolean"
+                            }
+                        },
+                        "permissions": {
+                            "$ref": "#/$defs/model_authentik_providers_oauth2.oauth2dynamicclientregistration_permissions"
+                        },
+                        "attrs": {
+                            "$ref": "#/$defs/model_authentik_providers_oauth2.oauth2dynamicclientregistration"
+                        },
+                        "identifiers": {
+                            "$ref": "#/$defs/model_authentik_providers_oauth2.oauth2dynamicclientregistration"
+                        }
+                    }
+                },
+                {
+                    "type": "object",
+                    "required": [
+                        "model",
+                        "identifiers"
+                    ],
+                    "properties": {
+                        "model": {
                             "const": "authentik_providers_oauth2.oauth2provider"
                         },
                         "id": {
@@ -6264,6 +6304,7 @@
                             "authentik_providers_oauth2.add_accesstoken",
                             "authentik_providers_oauth2.add_authorizationcode",
                             "authentik_providers_oauth2.add_devicetoken",
+                            "authentik_providers_oauth2.add_oauth2dynamicclientregistration",
                             "authentik_providers_oauth2.add_oauth2provider",
                             "authentik_providers_oauth2.add_oauth2providerjwtfederationprovider",
                             "authentik_providers_oauth2.add_oauth2providerjwtfederationsource",
@@ -6272,6 +6313,7 @@
                             "authentik_providers_oauth2.change_accesstoken",
                             "authentik_providers_oauth2.change_authorizationcode",
                             "authentik_providers_oauth2.change_devicetoken",
+                            "authentik_providers_oauth2.change_oauth2dynamicclientregistration",
                             "authentik_providers_oauth2.change_oauth2provider",
                             "authentik_providers_oauth2.change_oauth2providerjwtfederationprovider",
                             "authentik_providers_oauth2.change_oauth2providerjwtfederationsource",
@@ -6280,6 +6322,7 @@
                             "authentik_providers_oauth2.delete_accesstoken",
                             "authentik_providers_oauth2.delete_authorizationcode",
                             "authentik_providers_oauth2.delete_devicetoken",
+                            "authentik_providers_oauth2.delete_oauth2dynamicclientregistration",
                             "authentik_providers_oauth2.delete_oauth2provider",
                             "authentik_providers_oauth2.delete_oauth2providerjwtfederationprovider",
                             "authentik_providers_oauth2.delete_oauth2providerjwtfederationsource",
@@ -6288,6 +6331,7 @@
                             "authentik_providers_oauth2.view_accesstoken",
                             "authentik_providers_oauth2.view_authorizationcode",
                             "authentik_providers_oauth2.view_devicetoken",
+                            "authentik_providers_oauth2.view_oauth2dynamicclientregistration",
                             "authentik_providers_oauth2.view_oauth2provider",
                             "authentik_providers_oauth2.view_oauth2providerjwtfederationprovider",
                             "authentik_providers_oauth2.view_oauth2providerjwtfederationsource",
@@ -9766,6 +9810,7 @@
                         "authentik.enterprise.policies.unique_password",
                         "authentik.enterprise.providers.google_workspace",
                         "authentik.enterprise.providers.microsoft_entra",
+                        "authentik.enterprise.providers.oauth2",
                         "authentik.enterprise.providers.radius",
                         "authentik.enterprise.providers.scim",
                         "authentik.enterprise.providers.ssf",
@@ -9823,6 +9868,7 @@
                         "authentik_providers_ldap.ldapprovider",
                         "authentik_providers_oauth2.scopemapping",
                         "authentik_providers_oauth2.oauth2provider",
+                        "authentik_providers_oauth2.oauth2dynamicclientregistration",
                         "authentik_providers_proxy.proxyprovider",
                         "authentik_providers_rac.racprovider",
                         "authentik_providers_rac.endpoint",
@@ -10748,6 +10794,120 @@
                             "delete_ldapprovider",
                             "search_full_directory",
                             "view_ldapprovider"
+                        ]
+                    },
+                    "user": {
+                        "type": "integer"
+                    },
+                    "role": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "model_authentik_providers_oauth2.oauth2dynamicclientregistration": {
+            "type": "object",
+            "properties": {
+                "provider": {
+                    "type": "integer",
+                    "title": "Provider"
+                },
+                "create_application": {
+                    "type": "boolean",
+                    "title": "Create application",
+                    "description": "Automatically create an Application object for each registered client."
+                },
+                "default_application_group": {
+                    "type": "string",
+                    "title": "Default application group",
+                    "description": "Group to assign to automatically created applications."
+                },
+                "default_client_type": {
+                    "type": "string",
+                    "enum": [
+                        "confidential",
+                        "public"
+                    ],
+                    "title": "Default client type"
+                },
+                "default_authorization_flow": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Default authorization flow",
+                    "description": "Authorization flow applied to dynamically registered clients."
+                },
+                "default_invalidation_flow": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Default invalidation flow"
+                },
+                "default_property_mappings": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "format": "uuid",
+                        "description": "Scope mappings applied to dynamically registered clients."
+                    },
+                    "title": "Default property mappings",
+                    "description": "Scope mappings applied to dynamically registered clients."
+                },
+                "access_token_validity": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Access token validity",
+                    "description": "Maximum access token validity for registered clients (Format: hours=1;minutes=2;seconds=3)."
+                },
+                "refresh_token_validity": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Refresh token validity",
+                    "description": "Maximum refresh token validity for registered clients (Format: hours=1;minutes=2;seconds=3)."
+                },
+                "allowed_grant_types": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "enum": [
+                            "authorization_code",
+                            "implicit",
+                            "hybrid",
+                            "refresh_token",
+                            "client_credentials",
+                            "password",
+                            "urn:ietf:params:oauth:grant-type:device_code",
+                            "urn:ietf:params:oauth:grant-type:token-exchange"
+                        ],
+                        "title": "Allowed grant types"
+                    },
+                    "title": "Allowed grant types",
+                    "description": "If empty, all grant types are allowed."
+                },
+                "policy_engine_mode": {
+                    "type": "string",
+                    "enum": [
+                        "all",
+                        "any"
+                    ],
+                    "title": "Policy engine mode"
+                }
+            },
+            "required": []
+        },
+        "model_authentik_providers_oauth2.oauth2dynamicclientregistration_permissions": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "permission"
+                ],
+                "properties": {
+                    "permission": {
+                        "type": "string",
+                        "enum": [
+                            "add_oauth2dynamicclientregistration",
+                            "change_oauth2dynamicclientregistration",
+                            "delete_oauth2dynamicclientregistration",
+                            "view_oauth2dynamicclientregistration"
                         ]
                     },
                     "user": {
@@ -12456,6 +12616,7 @@
                             "authentik_providers_oauth2.add_accesstoken",
                             "authentik_providers_oauth2.add_authorizationcode",
                             "authentik_providers_oauth2.add_devicetoken",
+                            "authentik_providers_oauth2.add_oauth2dynamicclientregistration",
                             "authentik_providers_oauth2.add_oauth2provider",
                             "authentik_providers_oauth2.add_oauth2providerjwtfederationprovider",
                             "authentik_providers_oauth2.add_oauth2providerjwtfederationsource",
@@ -12464,6 +12625,7 @@
                             "authentik_providers_oauth2.change_accesstoken",
                             "authentik_providers_oauth2.change_authorizationcode",
                             "authentik_providers_oauth2.change_devicetoken",
+                            "authentik_providers_oauth2.change_oauth2dynamicclientregistration",
                             "authentik_providers_oauth2.change_oauth2provider",
                             "authentik_providers_oauth2.change_oauth2providerjwtfederationprovider",
                             "authentik_providers_oauth2.change_oauth2providerjwtfederationsource",
@@ -12472,6 +12634,7 @@
                             "authentik_providers_oauth2.delete_accesstoken",
                             "authentik_providers_oauth2.delete_authorizationcode",
                             "authentik_providers_oauth2.delete_devicetoken",
+                            "authentik_providers_oauth2.delete_oauth2dynamicclientregistration",
                             "authentik_providers_oauth2.delete_oauth2provider",
                             "authentik_providers_oauth2.delete_oauth2providerjwtfederationprovider",
                             "authentik_providers_oauth2.delete_oauth2providerjwtfederationsource",
@@ -12480,6 +12643,7 @@
                             "authentik_providers_oauth2.view_accesstoken",
                             "authentik_providers_oauth2.view_authorizationcode",
                             "authentik_providers_oauth2.view_devicetoken",
+                            "authentik_providers_oauth2.view_oauth2dynamicclientregistration",
                             "authentik_providers_oauth2.view_oauth2provider",
                             "authentik_providers_oauth2.view_oauth2providerjwtfederationprovider",
                             "authentik_providers_oauth2.view_oauth2providerjwtfederationsource",
