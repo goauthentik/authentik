@@ -30,3 +30,4 @@ class RequestRuleBindingViewSet(UsedByMixin, ModelViewSet):
     serializer_class = RequestRuleBindingSerializer
     filterset_fields = ["rule", "target"]
     search_fields = ["rule__name"]
+    ordering = ["rule__name"]

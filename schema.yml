@@ -22334,9 +22334,19 @@ paths:
       description: Mixin to add a used_by endpoint to return a list of all objects
         using this object
       parameters:
+      - $ref: '#/components/parameters/QueryName'
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
       - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - in: query
+        name: pbm_uuid
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: request_flow__slug
+        schema:
+          type: string
       - $ref: '#/components/parameters/QuerySearch'
       tags:
       - requests

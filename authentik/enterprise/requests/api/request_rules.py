@@ -29,3 +29,5 @@ class RequestRuleViewSet(UsedByMixin, ModelViewSet):
     queryset = RequestRule.objects.all()
     serializer_class = RequestRuleSerializer
     search_fields = ["name"]
+    ordering = ["name"]
+    filterset_fields = ["name", "pbm_uuid", "request_flow__slug"]

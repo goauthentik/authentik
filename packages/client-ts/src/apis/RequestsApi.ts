@@ -187,9 +187,12 @@ export interface RequestsRulesDestroyRequest {
 }
 
 export interface RequestsRulesListRequest {
+    name?: string;
     ordering?: string;
     page?: number;
     pageSize?: number;
+    pbmUuid?: string;
+    requestFlowSlug?: string;
     search?: string;
 }
 
@@ -1798,6 +1801,10 @@ export class RequestsApi extends runtime.BaseAPI {
     ): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
+        if (requestParameters["name"] != null) {
+            queryParameters["name"] = requestParameters["name"];
+        }
+
         if (requestParameters["ordering"] != null) {
             queryParameters["ordering"] = requestParameters["ordering"];
         }
@@ -1808,6 +1815,14 @@ export class RequestsApi extends runtime.BaseAPI {
 
         if (requestParameters["pageSize"] != null) {
             queryParameters["page_size"] = requestParameters["pageSize"];
+        }
+
+        if (requestParameters["pbmUuid"] != null) {
+            queryParameters["pbm_uuid"] = requestParameters["pbmUuid"];
+        }
+
+        if (requestParameters["requestFlowSlug"] != null) {
+            queryParameters["request_flow__slug"] = requestParameters["requestFlowSlug"];
         }
 
         if (requestParameters["search"] != null) {
