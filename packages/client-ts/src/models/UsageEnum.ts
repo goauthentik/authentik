@@ -18,7 +18,6 @@
  */
 export const UsageEnum = {
     Media: "media",
-    SamlMetadata: "saml_metadata",
     UnknownDefaultOpenApi: "11184809",
 } as const;
 export type UsageEnum = (typeof UsageEnum)[keyof typeof UsageEnum];

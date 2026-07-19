@@ -7,10 +7,16 @@ from django.urls import reverse
 from structlog.stdlib import get_logger
 
 from authentik.core.models import AuthenticatedSession, User
+from authentik.crypto.models import CertificateKeyPairRing
 from authentik.flows.models import in_memory_stage
 from authentik.flows.views.executor import FlowExecutorView
 from authentik.providers.iframe_logout import IframeLogoutStageView
-from authentik.providers.saml.models import SAMLBindings, SAMLLogoutMethods, SAMLSession
+from authentik.providers.saml.models import (
+    SAMLBindings,
+    SAMLLogoutMethods,
+    SAMLProvider,
+    SAMLSession,
+)
 from authentik.providers.saml.native_logout import NativeLogoutStageView
 from authentik.providers.saml.processors.logout_request import LogoutRequestProcessor
 from authentik.providers.saml.tasks import send_saml_logout_request
@@ -262,3 +268,15 @@ def user_deactivated_saml_logout(sender, instance: User, **kwargs):
             session_index=saml_session.session_index,
             issuer=saml_session.issuer,
         )
+
+
+@receiver(pre_delete, sender=SAMLProvider)
+def delete_provider_keyrings(sender, instance: SAMLProvider, **kwargs):
+    ring_ids = [
+        instance.verification_kp_ring_id,
+        instance.signing_kp_ring_id,
+        instance.encryption_kp_ring_id,
+    ]
+    ring_ids = [rid for rid in ring_ids if rid]
+    if ring_ids:
+        CertificateKeyPairRing.objects.filter(ring_uuid__in=ring_ids).delete()

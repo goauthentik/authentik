@@ -25,6 +25,7 @@ from authentik.common.saml.constants import (
 from authentik.lib.xml import remove_xml_newlines
 from authentik.providers.saml.models import SAMLProvider
 from authentik.providers.saml.utils.encoding import strip_pem_header
+from authentik.providers.saml.utils.keyring import candidate_cert_pems, pick_private_key_pem
 
 
 class MetadataProcessor:
@@ -55,18 +56,21 @@ class MetadataProcessor:
 
     # Using type unions doesn't work with cython types (which is what lxml is)
     def get_signing_key_descriptor(self) -> Element | None:
-        """Get Signing KeyDescriptor, if enabled for the provider"""
-        if not self.provider.signing_kp:
-            return None
-        key_descriptor = Element(f"{{{NS_SAML_METADATA}}}KeyDescriptor")
-        key_descriptor.attrib["use"] = "signing"
-        key_info = SubElement(key_descriptor, f"{{{NS_SIGNATURE}}}KeyInfo")
-        x509_data = SubElement(key_info, f"{{{NS_SIGNATURE}}}X509Data")
-        x509_certificate = SubElement(x509_data, f"{{{NS_SIGNATURE}}}X509Certificate")
-        x509_certificate.text = strip_pem_header(
-            self.provider.signing_kp.certificate_data.replace("\r", "")
-        )
-        return key_descriptor
+        return next(self.iter_signing_key_descriptors(), None)
+
+    def iter_signing_key_descriptors(self) -> Iterator[Element]:
+        """Yield signing KeyDescriptor entries (single KP first, else ring order)."""
+        for pem in candidate_cert_pems(
+            kp=self.provider.signing_kp,
+            ring=getattr(self.provider, "signing_kp_ring", None),
+        ):
+            key_descriptor = Element(f"{{{NS_SAML_METADATA}}}KeyDescriptor")
+            key_descriptor.attrib["use"] = "signing"
+            key_info = SubElement(key_descriptor, f"{{{NS_SIGNATURE}}}KeyInfo")
+            x509_data = SubElement(key_info, f"{{{NS_SIGNATURE}}}X509Data")
+            x509_certificate = SubElement(x509_data, f"{{{NS_SIGNATURE}}}X509Certificate")
+            x509_certificate.text = strip_pem_header(pem.replace("\r", ""))
+            yield key_descriptor
 
     def get_name_id_formats(self) -> Iterator[Element]:
         """Get compatible NameID Formats"""
@@ -143,15 +147,12 @@ class MetadataProcessor:
 
         ctx = xmlsec.SignatureContext()
 
-        key = xmlsec.Key.from_memory(
-            self.provider.signing_kp.key_data,
-            xmlsec.constants.KeyDataFormatPem,
-            None,
+        key_pem, cert_pem = pick_private_key_pem(
+            kp=self.provider.signing_kp,
+            ring=getattr(self.provider, "signing_kp_ring", None),
         )
-        key.load_cert_from_memory(
-            self.provider.signing_kp.certificate_data,
-            xmlsec.constants.KeyDataFormatCertPem,
-        )
+        key = xmlsec.Key.from_memory(key_pem, xmlsec.constants.KeyDataFormatPem, None)
+        key.load_cert_from_memory(cert_pem, xmlsec.constants.KeyDataFormatCertPem)
         ctx.key = key
         ctx.sign(remove_xml_newlines(assertion, signature_node))
 
@@ -163,12 +164,11 @@ class MetadataProcessor:
             entity_descriptor, f"{{{NS_SAML_METADATA}}}IDPSSODescriptor"
         )
         idp_sso_descriptor.attrib["protocolSupportEnumeration"] = NS_SAML_PROTOCOL
-        if self.provider.verification_kp:
+        if self.provider.verification_kp or getattr(self.provider, "verification_kp_ring", None):
             idp_sso_descriptor.attrib["WantAuthnRequestsSigned"] = "true"
 
-        signing_descriptor = self.get_signing_key_descriptor()
-        if signing_descriptor is not None:
-            idp_sso_descriptor.append(signing_descriptor)
+        for kd in self.iter_signing_key_descriptors():
+            idp_sso_descriptor.append(kd)
 
         for binding in self.get_slo_bindings():
             idp_sso_descriptor.append(binding)
@@ -185,12 +185,15 @@ class MetadataProcessor:
         entity_descriptor.attrib["ID"] = self.xml_id
         entity_descriptor.attrib["entityID"] = self._get_issuer_value()
 
-        if self.provider.signing_kp:
+        signing = bool(self.provider.signing_kp) or bool(
+            getattr(self.provider, "signing_kp_ring", None)
+        )
+        if signing:
             self._prepare_signature(entity_descriptor)
 
         self.add_children(entity_descriptor)
 
-        if self.provider.signing_kp:
+        if signing:
             self._sign(entity_descriptor)
 
         return tostring(entity_descriptor).decode()

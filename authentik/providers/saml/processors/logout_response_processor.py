@@ -19,6 +19,7 @@ from authentik.providers.saml.models import SAMLProvider
 from authentik.providers.saml.processors.logout_request_parser import LogoutRequest
 from authentik.providers.saml.utils import get_random_id
 from authentik.providers.saml.utils.encoding import deflate_and_base64_encode
+from authentik.providers.saml.utils.keyring import pick_private_key_pem
 from authentik.providers.saml.utils.time import get_time_string
 
 
@@ -88,7 +89,8 @@ class LogoutResponseProcessor:
     def build_response(self, status: str = "Success") -> str:
         """Build and sign LogoutResponse, return as XML string (not encoded)"""
         response = self.build(status)
-        if self.provider.signing_kp and self.provider.sign_logout_response:
+        signing = bool(self.provider.signing_kp) or bool(self.provider.signing_kp_ring)
+        if signing and self.provider.sign_logout_response:
             self._add_signature(response)
             self._sign_response(response)
         return etree.tostring(response).decode()
@@ -96,7 +98,8 @@ class LogoutResponseProcessor:
     def encode_post(self, status: str = "Success") -> str:
         """Encode LogoutResponse for POST binding"""
         response = self.build(status)
-        if self.provider.signing_kp and self.provider.sign_logout_response:
+        signing = bool(self.provider.signing_kp) or bool(self.provider.signing_kp_ring)
+        if signing and self.provider.sign_logout_response:
             self._add_signature(response)
             self._sign_response(response)
         return base64.b64encode(etree.tostring(response)).decode()
@@ -118,7 +121,8 @@ class LogoutResponseProcessor:
         if self.relay_state:
             params["RelayState"] = self.relay_state
 
-        if self.provider.signing_kp and self.provider.sign_logout_response:
+        signing = bool(self.provider.signing_kp) or bool(self.provider.signing_kp_ring)
+        if signing and self.provider.sign_logout_response:
             sig_alg = self.provider.signature_algorithm
             params["SigAlg"] = sig_alg
 
@@ -168,13 +172,14 @@ class LogoutResponseProcessor:
         xmlsec.template.add_x509_data(key_info)
 
         ctx = xmlsec.SignatureContext()
+        key_pem, cert_pem = pick_private_key_pem(
+            kp=self.provider.signing_kp, ring=self.provider.signing_kp_ring
+        )
         ctx.key = xmlsec.Key.from_memory(
-            self.provider.signing_kp.key_data,  # Use key_data for the private key
+            key_pem,  # Use key_data for the private key
             xmlsec.constants.KeyDataFormatPem,
         )
-        ctx.key.load_cert_from_memory(
-            self.provider.signing_kp.certificate_data, xmlsec.constants.KeyDataFormatPem
-        )
+        ctx.key.load_cert_from_memory(cert_pem, xmlsec.constants.KeyDataFormatPem)
         ctx.sign(signature_node)
 
     def _build_signable_query_string(self, params: dict) -> str:
@@ -196,8 +201,11 @@ class LogoutResponseProcessor:
             self.provider.signature_algorithm, xmlsec.constants.TransformRsaSha256
         )
 
+        key_pem, _ = pick_private_key_pem(
+            kp=self.provider.signing_kp, ring=self.provider.signing_kp_ring
+        )
         key = xmlsec.Key.from_memory(
-            self.provider.signing_kp.key_data,
+            key_pem,
             xmlsec.constants.KeyDataFormatPem,
             None,
         )

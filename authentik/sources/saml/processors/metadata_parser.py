@@ -108,6 +108,7 @@ class IdentityProviderMetadata:
 
     want_authn_requests_signed: bool
     name_id_policy: SAMLNameIDPolicy
+    display_name: str | None = None
 
     """Keys extracted from metadata."""
     signing_cert_pems: list[str] | None = None
@@ -238,6 +239,11 @@ class IdentityProviderMetadataParser:
 
         snap = build_idp_snapshot(root)
         runtime = build_idp_runtime_from_snapshot(snap)
+        display_names = mx.extract_entity_display_names(root)
+        display_name = next(
+            (item["text"] for item in display_names if item.get("lang") == "en"),
+            display_names[0]["text"] if display_names else None,
+        )
 
         signing_pems = self.get_keydescriptor_cert_pems(root, use="signing")
         unspecified_pems = self.get_keydescriptor_cert_pems(root, use=None)
@@ -271,6 +277,7 @@ class IdentityProviderMetadataParser:
             sso_location=runtime.get("sso_url") or "",
             want_authn_requests_signed=bool(runtime.get("want_authn_requests_signed", False)),
             name_id_policy=runtime.get("name_id_policy") or SAMLNameIDPolicy.UNSPECIFIED,
+            display_name=display_name,
             slo_binding=runtime.get("slo_binding") or None,
             slo_location=runtime.get("slo_url") or None,
             signing_cert_pems=signing_pems,

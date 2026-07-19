@@ -4,6 +4,7 @@ from django.http.request import QueryDict
 from django.test import TestCase
 from guardian.utils import get_anonymous_user
 
+from authentik.core.models import Application
 from authentik.core.tests.utils import RequestFactory, create_test_cert, create_test_flow
 from authentik.crypto.models import (
     CertificateKeyPair,
@@ -43,11 +44,12 @@ class TestSourceProcessorMultiKeyEndToEnd(TestCase):
             signing_kp=self.kp_sign_good,
             verification_kp=self.kp_sign_good,  # used to verify AuthnRequest (not the main topic here)
         )
+        Application.objects.create(name="p1-app", slug="p1-app", provider=self.provider)
 
         # Source (SP side in request direction)
         self.source = SAMLSource.objects.create(
             slug="provider",
-            issuer="authentik",
+            issuer_override="authentik",
             pre_authentication_flow=create_test_flow(),
             signing_kp=create_test_cert(),  # request signing; not critical for these tests
             binding_type=SAMLBindingTypes.POST,

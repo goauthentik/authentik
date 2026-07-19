@@ -39,10 +39,6 @@ import {
     UserMatchingModeEnum,
 } from "@goauthentik/api";
 
-import { SAMLSupportedKeyTypes } from "../../providers/saml/SAMLProviderOptions.js";
-
-import { RadioOption } from "#elements/forms/Radio";
-
 import { msg } from "@lit/localize";
 import { html, nothing, TemplateResult } from "lit";
 import { customElement, state } from "lit/decorators.js";

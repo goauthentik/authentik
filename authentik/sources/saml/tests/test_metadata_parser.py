@@ -11,11 +11,7 @@ from authentik.core.tests.utils import create_test_cert, create_test_flow
 from authentik.crypto.builder import PrivateKeyAlg
 from authentik.lib.tests.utils import load_fixture
 from authentik.sources.saml.models import SAMLNameIDPolicy
-from authentik.sources.saml.processors.metadata_parser import (
-    APPLY_POLICY_FORCE,
-    APPLY_POLICY_IF_NOT_DEVIATED,
-    IdentityProviderMetadataParser,
-)
+from authentik.sources.saml.processors.metadata_parser import IdentityProviderMetadataParser
 
 
 def _pem_to_der_b64(pem: str) -> str:
