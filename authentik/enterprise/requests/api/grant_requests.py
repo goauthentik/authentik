@@ -1,3 +1,5 @@
+from http import HTTPMethod
+
 from django.http import Http404
 from drf_spectacular.utils import OpenApiResponse, extend_schema, extend_schema_field
 from rest_framework.decorators import action
@@ -22,7 +24,11 @@ from authentik.core.api.utils import (
     PassiveSerializer,
 )
 from authentik.enterprise.api import EnterpriseRequiredMixin
-from authentik.enterprise.requests.api.apps import RequestableTargetSerializer, user_can_request
+from authentik.enterprise.requests.api.apps import (
+    RequestableTargetSerializer,
+    granting_rules,
+    user_can_request,
+)
 from authentik.enterprise.requests.models import (
     GrantRequest,
     RequestRule,
@@ -32,7 +38,7 @@ from authentik.enterprise.requests.stage import (
     PLAN_CONTEXT_GRANT_REQUESTED_PBMS,
     GrantRequestFinalStageView,
 )
-from authentik.flows.models import in_memory_stage
+from authentik.flows.models import Flow, in_memory_stage
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlanner
 from authentik.policies.api.bindings import PolicyBindingModelForeignKey
 from authentik.policies.engine import ListPolicyEngine
@@ -115,7 +121,7 @@ class GrantRequestViewSet(RetrieveModelMixin, DestroyModelMixin, ListModelMixin,
         return super().destroy(request, *args, **kwargs)
 
     @extend_schema(responses={200: GrantRequestSerializer(many=True)})
-    @action(detail=False, methods=["GET"])
+    @action(detail=False, methods=[HTTPMethod.GET])
     def pending_review(self, request: Request) -> Response:
         """List pending grant requests the current user is eligible to review."""
         engine = ListPolicyEngine(RequestRule.objects.all(), request.user, request)
@@ -142,10 +148,16 @@ class GrantRequestViewSet(RetrieveModelMixin, DestroyModelMixin, ListModelMixin,
     @validate(GrantRequestCreateSerializer)
     def create(self, request: Request, body: GrantRequestCreateSerializer) -> Response:
         brand: Brand = request.brand
-        # TODO: this flow should only be used as fallback, if all rules that granted the user
-        # permissions to request each respective PBM share a request flow, use that flow,
-        # otherwise just fallback to brand
+        pbms = body.validated_data["pbms"]
+        rules = granting_rules(pbms, request.user, request)
+        # If every rule that granted access to one of the requested pbms agrees on a
+        # single request flow, prefer it over the brand's default.
         flow = brand.flow_request
+        shared_flows = set(rules.values_list("request_flow", flat=True))
+        if len(shared_flows) == 1:
+            (shared_flow_pk,) = shared_flows
+            if shared_flow_pk is not None:
+                flow = Flow.objects.get(pk=shared_flow_pk)
         if not flow:
             raise Http404
         planner = FlowPlanner(flow)
@@ -153,7 +165,7 @@ class GrantRequestViewSet(RetrieveModelMixin, DestroyModelMixin, ListModelMixin,
         plan = planner.plan(
             request,
             {
-                PLAN_CONTEXT_GRANT_REQUESTED_PBMS: body.validated_data["pbms"],
+                PLAN_CONTEXT_GRANT_REQUESTED_PBMS: pbms,
                 PLAN_CONTEXT_PENDING_USER: request.user,
             },
         )
@@ -166,7 +178,7 @@ class GrantRequestViewSet(RetrieveModelMixin, DestroyModelMixin, ListModelMixin,
             204: OpenApiResponse(description="Request fulfilled"),
         },
     )
-    @action(["PATCH"], detail=True)
+    @action([HTTPMethod.PATCH], detail=True)
     @validate(GrantRequestFulfillSerializer)
     def fulfill(self, request: Request, body: GrantRequestFulfillSerializer, *args, **kwargs):
         grant: GrantRequest = self.get_object()
@@ -184,7 +196,7 @@ class GrantRequestViewSet(RetrieveModelMixin, DestroyModelMixin, ListModelMixin,
             204: OpenApiResponse(description="Grant revoked"),
         },
     )
-    @action(["POST"], detail=True)
+    @action([HTTPMethod.DELETE], detail=True)
     def revoke(self, request: Request, *args, **kwargs):
         """Immediately end an active grant. Available to the same reviewers who could
         approve it in the first place."""

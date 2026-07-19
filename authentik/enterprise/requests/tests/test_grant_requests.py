@@ -1,6 +1,7 @@
 from django.urls import reverse
 from rest_framework.test import APITestCase
 
+from authentik.brands.models import Brand
 from authentik.core.models import Application, Group
 from authentik.core.tests.utils import create_test_user
 from authentik.enterprise.requests.models import (
@@ -11,17 +12,18 @@ from authentik.enterprise.requests.models import (
     RequestRuleBinding,
     RequestStatus,
 )
+from authentik.flows.models import Flow, FlowDesignation
 from authentik.lib.generators import generate_id
 from authentik.policies.models import PolicyBinding
 
 
 class GrantRequestsTests(APITestCase):
     def _grant_perms(self, user):
-        # `revoke` is a POST action, which DjangoObjectPermissions maps to the
-        # `add_` permission (not `change_`), so reviewers need all three.
-        user.assign_perms_to_managed_role("authentik_requests.add_grantrequest")
-        user.assign_perms_to_managed_role("authentik_requests.change_grantrequest")
+        # `fulfill` is PATCH (-> `change_`) and `revoke` is DELETE (-> `delete_`), so
+        # reviewers need all of these plus `view_` to retrieve the object at all.
         user.assign_perms_to_managed_role("authentik_requests.view_grantrequest")
+        user.assign_perms_to_managed_role("authentik_requests.change_grantrequest")
+        user.assign_perms_to_managed_role("authentik_requests.delete_grantrequest")
 
     def test_fulfill_access_user(self):
         reviewer = create_test_user()
@@ -275,7 +277,7 @@ class GrantRequestsTests(APITestCase):
         req.refresh_from_db()
         self.assertTrue(req.is_active)
 
-        res = self.client.post(
+        res = self.client.delete(
             reverse("authentik_api:grantrequest-revoke", kwargs={"pk": req.pk}),
         )
         self.assertEqual(res.status_code, 204, res.content)
@@ -313,7 +315,7 @@ class GrantRequestsTests(APITestCase):
         )
 
         self.client.force_login(outsider)
-        res = self.client.post(
+        res = self.client.delete(
             reverse("authentik_api:grantrequest-revoke", kwargs={"pk": req.pk}),
         )
         self.assertEqual(res.status_code, 400)
@@ -337,9 +339,142 @@ class GrantRequestsTests(APITestCase):
         GrantRequestTarget.objects.create(request=req, target=app)
 
         self.client.force_login(reviewer)
-        res = self.client.post(
+        res = self.client.delete(
             reverse("authentik_api:grantrequest-revoke", kwargs={"pk": req.pk}),
         )
         self.assertEqual(res.status_code, 204, res.content)
         req.refresh_from_db()
         self.assertEqual(req.status, RequestStatus.CREATED)
+
+
+class GrantRequestCreateFlowSelectionTests(APITestCase):
+    """`create()` should prefer a request flow shared by every rule that granted
+    access to the requested pbms, falling back to the brand's default otherwise."""
+
+    def _set_brand_flow(self, flow: Flow | None):
+        brand, _ = Brand.objects.get_or_create(default=True, defaults={"domain": generate_id()})
+        brand.flow_request = flow
+        brand.save()
+        return brand
+
+    def _make_flow(self) -> Flow:
+        return Flow.objects.create(
+            name=generate_id(),
+            slug=generate_id(),
+            designation=FlowDesignation.STAGE_CONFIGURATION,
+        )
+
+    def test_create_uses_shared_rule_flow_over_brand(self):
+        """When the (single) granting rule has its own request_flow, prefer it."""
+        requester = create_test_user()
+        self.client.force_login(requester)
+
+        app = Application.objects.create(name=generate_id(), slug=generate_id())
+        rule_flow = self._make_flow()
+        rule = RequestRule.objects.create(name=generate_id(), request_flow=rule_flow)
+        RequestRuleBinding.objects.create(rule=rule, target=app)
+        PolicyBinding.objects.create(target=rule, user=requester, order=0)
+
+        brand_flow = self._make_flow()
+        self._set_brand_flow(brand_flow)
+
+        res = self.client.post(
+            reverse("authentik_api:grantrequest-list"),
+            data={"pbms": [str(app.pk)]},
+        )
+        self.assertEqual(res.status_code, 200, res.content)
+        self.assertIn(rule_flow.slug, res.json()["link"])
+        self.assertNotIn(brand_flow.slug, res.json()["link"])
+
+    def test_create_falls_back_to_brand_when_rule_has_no_flow(self):
+        """When the granting rule has no request_flow set, fall back to the brand's."""
+        requester = create_test_user()
+        self.client.force_login(requester)
+
+        app = Application.objects.create(name=generate_id(), slug=generate_id())
+        rule = RequestRule.objects.create(name=generate_id())
+        RequestRuleBinding.objects.create(rule=rule, target=app)
+        PolicyBinding.objects.create(target=rule, user=requester, order=0)
+
+        brand_flow = self._make_flow()
+        self._set_brand_flow(brand_flow)
+
+        res = self.client.post(
+            reverse("authentik_api:grantrequest-list"),
+            data={"pbms": [str(app.pk)]},
+        )
+        self.assertEqual(res.status_code, 200, res.content)
+        self.assertIn(brand_flow.slug, res.json()["link"])
+
+    def test_create_falls_back_to_brand_when_rules_disagree(self):
+        """Two pbms granted by two rules with different request_flows must not agree
+        on a shared flow, so the brand's is used instead."""
+        requester = create_test_user()
+        self.client.force_login(requester)
+
+        app_a = Application.objects.create(name=generate_id(), slug=generate_id())
+        rule_a_flow = self._make_flow()
+        rule_a = RequestRule.objects.create(name=generate_id(), request_flow=rule_a_flow)
+        RequestRuleBinding.objects.create(rule=rule_a, target=app_a)
+        PolicyBinding.objects.create(target=rule_a, user=requester, order=0)
+
+        app_b = Application.objects.create(name=generate_id(), slug=generate_id())
+        rule_b_flow = self._make_flow()
+        rule_b = RequestRule.objects.create(name=generate_id(), request_flow=rule_b_flow)
+        RequestRuleBinding.objects.create(rule=rule_b, target=app_b)
+        PolicyBinding.objects.create(target=rule_b, user=requester, order=0)
+
+        brand_flow = self._make_flow()
+        self._set_brand_flow(brand_flow)
+
+        res = self.client.post(
+            reverse("authentik_api:grantrequest-list"),
+            data={"pbms": [str(app_a.pk), str(app_b.pk)]},
+        )
+        self.assertEqual(res.status_code, 200, res.content)
+        self.assertIn(brand_flow.slug, res.json()["link"])
+
+    def test_create_uses_shared_flow_across_multiple_pbms(self):
+        """Two pbms granted by rules that DO share the same request_flow should use it."""
+        requester = create_test_user()
+        self.client.force_login(requester)
+
+        shared_flow = self._make_flow()
+
+        app_a = Application.objects.create(name=generate_id(), slug=generate_id())
+        rule_a = RequestRule.objects.create(name=generate_id(), request_flow=shared_flow)
+        RequestRuleBinding.objects.create(rule=rule_a, target=app_a)
+        PolicyBinding.objects.create(target=rule_a, user=requester, order=0)
+
+        app_b = Application.objects.create(name=generate_id(), slug=generate_id())
+        rule_b = RequestRule.objects.create(name=generate_id(), request_flow=shared_flow)
+        RequestRuleBinding.objects.create(rule=rule_b, target=app_b)
+        PolicyBinding.objects.create(target=rule_b, user=requester, order=0)
+
+        brand_flow = self._make_flow()
+        self._set_brand_flow(brand_flow)
+
+        res = self.client.post(
+            reverse("authentik_api:grantrequest-list"),
+            data={"pbms": [str(app_a.pk), str(app_b.pk)]},
+        )
+        self.assertEqual(res.status_code, 200, res.content)
+        self.assertIn(shared_flow.slug, res.json()["link"])
+
+    def test_create_404_when_no_flow_available(self):
+        """No rule flow and no brand flow -> 404, not a crash."""
+        requester = create_test_user()
+        self.client.force_login(requester)
+
+        app = Application.objects.create(name=generate_id(), slug=generate_id())
+        rule = RequestRule.objects.create(name=generate_id())
+        RequestRuleBinding.objects.create(rule=rule, target=app)
+        PolicyBinding.objects.create(target=rule, user=requester, order=0)
+
+        self._set_brand_flow(None)
+
+        res = self.client.post(
+            reverse("authentik_api:grantrequest-list"),
+            data={"pbms": [str(app.pk)]},
+        )
+        self.assertEqual(res.status_code, 404)

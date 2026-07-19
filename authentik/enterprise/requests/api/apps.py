@@ -1,4 +1,5 @@
 from http import HTTPMethod
+from typing import TYPE_CHECKING
 
 from django.db.models import QuerySet
 from drf_spectacular.utils import extend_schema
@@ -14,19 +15,35 @@ from authentik.core.api.utils import PassiveSerializer
 from authentik.core.apps import AppAccessWithoutBindings
 from authentik.core.models import Application, ApplicationEntitlement, User
 from authentik.policies.engine import ListPolicyEngine
-from authentik.policies.models import RequestableModel
+from authentik.policies.models import PolicyBindingModel, RequestableModel
+
+if TYPE_CHECKING:
+    from authentik.enterprise.requests.models import RequestRule
+
+
+def granting_rules(
+    pbms: QuerySet[PolicyBindingModel] | list[PolicyBindingModel],
+    user: User,
+    request: Request,
+) -> QuerySet[RequestRule]:
+    """The RequestRule(s) that make any of `pbms` requestable by `user`, i.e. `user`
+    passes the rule's own PolicyBindings. A pbm with no rule attached at all
+    contributes nothing."""
+    from authentik.enterprise.requests.models import RequestRule
+
+    rules = RequestRule.objects.filter(targets__in=pbms).distinct()
+    if not rules.exists():
+        return rules
+    engine = ListPolicyEngine(rules, user, request)
+    engine.empty_result = AppAccessWithoutBindings.get()
+    return engine.build().result
 
 
 def user_can_request(pbm: RequestableModel, user: User, request: Request) -> bool:
     """Whether `user` is eligible to request access to `pbm`, per the
     RequestRule(s) attached to it. An object with no rule attached at all
     is never requestable"""
-    rules = pbm.request_rules.all()
-    if not rules.exists():
-        return False
-    engine = ListPolicyEngine(rules, user, request)
-    engine.empty_result = AppAccessWithoutBindings.get()
-    return engine.build().result.exists()
+    return granting_rules([pbm], user, request).exists()
 
 
 def _requestable(view: GenericViewSet, request: Request) -> list[RequestableModel]:
