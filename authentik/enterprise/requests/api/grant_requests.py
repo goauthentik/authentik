@@ -35,6 +35,7 @@ from authentik.enterprise.requests.stage import (
 from authentik.flows.models import in_memory_stage
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlanner
 from authentik.policies.api.bindings import PolicyBindingModelForeignKey
+from authentik.policies.engine import ListPolicyEngine
 from authentik.policies.models import PolicyBindingModel, RequestableModel
 
 
@@ -75,6 +76,7 @@ class GrantRequestViewSet(RetrieveModelMixin, DestroyModelMixin, ListModelMixin,
     # All requests are visible to users even if they're expired
     queryset = GrantRequest.objects.including_expired()
     serializer_class = GrantRequestSerializer
+    filterset_fields = ["created_by", "status"]
 
     class GrantRequestCreateSerializer(PassiveSerializer):
 
@@ -98,12 +100,43 @@ class GrantRequestViewSet(RetrieveModelMixin, DestroyModelMixin, ListModelMixin,
 
     def _assert_reviewer(self, request: Request, grant: GrantRequest):
         rules = RequestRule.objects.filter(targets__in=grant.targets.all()).distinct()
-        for rule in rules:
-            if rule.reviewers.filter(pk=request.user.pk).exists():
-                continue
-            if rule.reviewer_groups.filter(users=request.user).exists():
-                continue
+        engine = ListPolicyEngine(rules, request.user, request)
+        # A rule with no reviewer bindings at all has nobody configured to approve
+        # it -- unlike app access, absence of bindings must not mean "anyone passes".
+        engine.empty_result = False
+        passing_rules = engine.build().result
+        if rules.exclude(pk__in=passing_rules).exists():
             raise ValidationError("User does not have permissions to act on this object")
+
+    def destroy(self, request: Request, *args, **kwargs):
+        grant: GrantRequest = self.get_object()
+        if grant.status != RequestStatus.CREATED:
+            raise ValidationError("Only a pending request can be cancelled")
+        return super().destroy(request, *args, **kwargs)
+
+    @extend_schema(responses={200: GrantRequestSerializer(many=True)})
+    @action(detail=False, methods=["GET"])
+    def pending_review(self, request: Request) -> Response:
+        """List pending grant requests the current user is eligible to review."""
+        engine = ListPolicyEngine(RequestRule.objects.all(), request.user, request)
+        # A rule with no reviewer bindings at all has nobody configured to approve
+        # it -- unlike app access, absence of bindings must not mean "anyone passes".
+        engine.empty_result = False
+        reviewable_rules = engine.build().result
+        queryset = (
+            GrantRequest.objects.filter(
+                status=RequestStatus.CREATED,
+                targets__request_rules__in=reviewable_rules,
+            )
+            .distinct()
+            .order_by("-created")
+        )
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
 
     @extend_schema(request=GrantRequestCreateSerializer, responses={200: LinkSerializer})
     @validate(GrantRequestCreateSerializer)

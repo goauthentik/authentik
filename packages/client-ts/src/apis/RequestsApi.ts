@@ -65,6 +65,7 @@ import {
     RequestRuleChildBindingRequestToJSON,
 } from "../models/RequestRuleChildBindingRequest";
 import { type RequestRuleRequest, RequestRuleRequestToJSON } from "../models/RequestRuleRequest";
+import { type RequestStatus } from "../models/RequestStatus";
 import { type UsedBy, UsedByFromJSON } from "../models/UsedBy";
 import * as runtime from "../runtime";
 
@@ -82,10 +83,21 @@ export interface RequestsGrantRequestsFulfillPartialUpdateRequest {
 }
 
 export interface RequestsGrantRequestsListRequest {
+    createdBy?: number;
     ordering?: string;
     page?: number;
     pageSize?: number;
     search?: string;
+    status?: RequestStatus;
+}
+
+export interface RequestsGrantRequestsPendingReviewListRequest {
+    createdBy?: number;
+    ordering?: string;
+    page?: number;
+    pageSize?: number;
+    search?: string;
+    status?: RequestStatus;
 }
 
 export interface RequestsGrantRequestsRetrieveRequest {
@@ -398,6 +410,10 @@ export class RequestsApi extends runtime.BaseAPI {
     ): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
+        if (requestParameters["createdBy"] != null) {
+            queryParameters["created_by"] = requestParameters["createdBy"];
+        }
+
         if (requestParameters["ordering"] != null) {
             queryParameters["ordering"] = requestParameters["ordering"];
         }
@@ -412,6 +428,10 @@ export class RequestsApi extends runtime.BaseAPI {
 
         if (requestParameters["search"] != null) {
             queryParameters["search"] = requestParameters["search"];
+        }
+
+        if (requestParameters["status"] != null) {
+            queryParameters["status"] = requestParameters["status"];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -456,6 +476,89 @@ export class RequestsApi extends runtime.BaseAPI {
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<PaginatedGrantRequestList> {
         const response = await this.requestsGrantRequestsListRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for requestsGrantRequestsPendingReviewList without sending the request
+     */
+    async requestsGrantRequestsPendingReviewListRequestOpts(
+        requestParameters: RequestsGrantRequestsPendingReviewListRequest,
+    ): Promise<runtime.RequestOpts> {
+        const queryParameters: any = {};
+
+        if (requestParameters["createdBy"] != null) {
+            queryParameters["created_by"] = requestParameters["createdBy"];
+        }
+
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
+        }
+
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
+        }
+
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
+        }
+
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
+        }
+
+        if (requestParameters["status"] != null) {
+            queryParameters["status"] = requestParameters["status"];
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/requests/grant-requests/pending_review/`;
+
+        return {
+            path: urlPath,
+            method: "GET",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * List pending grant requests the current user is eligible to review.
+     */
+    async requestsGrantRequestsPendingReviewListRaw(
+        requestParameters: RequestsGrantRequestsPendingReviewListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PaginatedGrantRequestList>> {
+        const requestOptions =
+            await this.requestsGrantRequestsPendingReviewListRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedGrantRequestListFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * List pending grant requests the current user is eligible to review.
+     */
+    async requestsGrantRequestsPendingReviewList(
+        requestParameters: RequestsGrantRequestsPendingReviewListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PaginatedGrantRequestList> {
+        const response = await this.requestsGrantRequestsPendingReviewListRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 

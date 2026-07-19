@@ -5,6 +5,7 @@ from django.http import HttpRequest, HttpResponse
 from django.urls import reverse
 from django.utils.timezone import now
 
+from authentik.core.models import User
 from authentik.enterprise.requests.models import (
     GrantRequest,
     GrantRequestTarget,
@@ -40,6 +41,12 @@ class GrantRequestFinalStageView(StageView):
                     target=pbm,
                     binding=None,
                 )
+            rules = (
+                RequestRule.objects.filter(targets__in=pbms)
+                .distinct()
+                .prefetch_related("notification_transports")
+            )
+            self._assign_permissions(rules, req)
             event = Event.new(
                 EventAction.ACCESS_REQUEST_CREATED,
                 model=req,
@@ -48,17 +55,35 @@ class GrantRequestFinalStageView(StageView):
                 + f"#/requests/access-request/{req.uuid}/fulfill",
                 hyperlink_label="Fulfill",
             ).from_http(request, user)
-            self._notify_reviewers(pbms, event)
+            self._notify_reviewers(rules, event)
         return self.executor.stage_ok()
 
-    def _notify_reviewers(self, pbms: list, event: Event):
+    @staticmethod
+    def _assign_permissions(rules, req: GrantRequest):
+        """Grant the requester and every reviewer eligible for any of `rules`
+        object-level permission on `req`, so they can see and act on it without
+        needing a blanket, org-wide grant of those permissions."""
+        req.created_by.assign_perms_to_managed_role(
+            ["authentik_requests.view_grantrequest", "authentik_requests.delete_grantrequest"],
+            req,
+        )
+        reviewers: set[User] = set()
+        for rule in rules:
+            reviewers.update(rule.reviewers_among(User.objects.all()))
+        for reviewer in reviewers:
+            reviewer.assign_perms_to_managed_role(
+                [
+                    "authentik_requests.view_grantrequest",
+                    "authentik_requests.change_grantrequest",
+                    "authentik_requests.add_grantrequest",
+                ],
+                req,
+            )
+
+    @staticmethod
+    def _notify_reviewers(rules, event: Event):
         """Notify reviewers of each rule attached to any of the requested targets,
         per that rule's own notification_transports/notification_mode."""
-        rules = (
-            RequestRule.objects.filter(targets__in=pbms)
-            .distinct()
-            .prefetch_related("notification_transports")
-        )
         for rule in rules:
             transports = list(rule.notification_transports.all())
             if not transports:

@@ -6,7 +6,7 @@ from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import Serializer
 
-from authentik.core.models import Group, User
+from authentik.core.models import User
 from authentik.flows.models import Flow
 from authentik.lib.models import (
     CreatedUpdatedModel,
@@ -14,6 +14,7 @@ from authentik.lib.models import (
     InternallyManagedMixin,
     SerializerModel,
 )
+from authentik.policies.engine import FilterPolicyEngine
 from authentik.policies.models import PolicyBinding, PolicyBindingModel
 
 
@@ -112,35 +113,25 @@ class RequestRule(CreatedUpdatedModel, SerializerModel, PolicyBindingModel):
 
         return RequestRuleSerializer
 
-    @property
-    def reviewers(self) -> models.QuerySet[User]:
-        """Users individually configured as approvers for this rule, via a
-        PolicyBinding directly targeting this rule (this rule is itself a PBM)."""
-        return User.objects.filter(
-            pk__in=self.bindings.filter(enabled=True, user__isnull=False).values_list(
-                "user", flat=True
-            )
-        )
-
-    @property
-    def reviewer_groups(self) -> models.QuerySet[Group]:
-        """Groups configured as approvers for this rule, via a PolicyBinding
-        directly targeting this rule (this rule is itself a PBM)."""
-        return Group.objects.filter(
-            pk__in=self.bindings.filter(enabled=True, group__isnull=False).values_list(
-                "group", flat=True
-            )
-        )
+    def reviewers_among(self, users: models.QuerySet[User]) -> models.QuerySet[User]:
+        """Subset of `users` eligible to approve requests against this rule, per
+        this rule's own PolicyBindings (static user/group bindings, and any
+        dynamic Policy bound to it)."""
+        engine = FilterPolicyEngine(self, users)
+        # A rule with no reviewer bindings at all has nobody configured to approve
+        # it -- unlike app access, absence of bindings must not mean "anyone passes".
+        engine.empty_result = False
+        return engine.build().result
 
     def notification_recipients(self) -> models.QuerySet[User]:
         """Who to notify when a request is created against this rule, per
         `notification_mode`."""
-        direct = self.reviewers
+        all_reviewers = self.reviewers_among(User.objects.all())
         if self.notification_mode == RequestNotificationMode.DIRECT:
-            return direct
-        all_reviewers = (
-            direct | User.objects.filter(groups__in=self.reviewer_groups.all())
-        ).distinct()
+            direct_ids = self.bindings.filter(enabled=True, user__isnull=False).values_list(
+                "user", flat=True
+            )
+            return all_reviewers.filter(pk__in=direct_ids)
         if self.notification_mode == RequestNotificationMode.RANDOM_MIN_REVIEWERS:
             return all_reviewers.order_by("?")[: self.min_reviewers]
         return all_reviewers
@@ -196,23 +187,33 @@ class GrantRequest(SerializerModel, ExpiringModel, CreatedUpdatedModel):
 
     def _rule_satisfied(self, rule: RequestRule, approving_users) -> bool:
         """Whether `approving_users` (pks) satisfies a single rule's reviewer requirements.
-        An approval from any individually-named `reviewers` satisfies the rule outright;
+        An approval from any individually-named reviewer satisfies the rule outright;
         otherwise `min_reviewers` distinct approvers are needed from the reviewer groups,
         either in total or from *each* group when `min_reviewers_is_per_group` is set."""
-        if rule.reviewers.filter(pk__in=approving_users).exists():
-            return True
-        if not rule.min_reviewers_is_per_group:
-            return (
-                rule.reviewer_groups.filter(users__pk__in=approving_users)
-                .values_list("users", flat=True)
-                .distinct()
-                .count()
-                >= rule.min_reviewers
+        passing_approvers = set(
+            rule.reviewers_among(User.objects.filter(pk__in=approving_users)).values_list(
+                "pk", flat=True
             )
-        if not rule.reviewer_groups.exists():
+        )
+        if not passing_approvers:
             return False
-        for group in rule.reviewer_groups.all():
-            if group.users.filter(pk__in=approving_users).distinct().count() < rule.min_reviewers:
+        direct_reviewer_ids = set(
+            rule.bindings.filter(enabled=True, user__isnull=False).values_list("user", flat=True)
+        )
+        if passing_approvers & direct_reviewer_ids:
+            return True
+        group_ids = list(
+            rule.bindings.filter(enabled=True, group__isnull=False).values_list("group", flat=True)
+        )
+        if not group_ids:
+            return False
+        if not rule.min_reviewers_is_per_group:
+            return len(passing_approvers) >= rule.min_reviewers
+        for group_id in group_ids:
+            members_approving = User.objects.filter(
+                pk__in=passing_approvers, groups=group_id
+            ).count()
+            if members_approving < rule.min_reviewers:
                 return False
         return True
 

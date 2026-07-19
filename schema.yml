@@ -21737,10 +21737,18 @@ paths:
     get:
       operationId: requests_grant_requests_list
       parameters:
+      - in: query
+        name: created_by
+        schema:
+          type: integer
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
       - $ref: '#/components/parameters/QueryPaginationPageSize'
       - $ref: '#/components/parameters/QuerySearch'
+      - in: query
+        name: status
+        schema:
+          $ref: '#/components/schemas/RequestStatus'
       tags:
       - requests
       security:
@@ -21874,6 +21882,38 @@ paths:
       responses:
         '204':
           description: Grant revoked
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /requests/grant-requests/pending_review/:
+    get:
+      operationId: requests_grant_requests_pending_review_list
+      description: List pending grant requests the current user is eligible to review.
+      parameters:
+      - in: query
+        name: created_by
+        schema:
+          type: integer
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
+      - in: query
+        name: status
+        schema:
+          $ref: '#/components/schemas/RequestStatus'
+      tags:
+      - requests
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedGrantRequestList'
+          description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
