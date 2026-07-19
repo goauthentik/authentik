@@ -21862,8 +21862,8 @@ paths:
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
   /requests/grant-requests/{uuid}/revoke/:
-    post:
-      operationId: requests_grant_requests_revoke_create
+    delete:
+      operationId: requests_grant_requests_revoke_destroy
       description: |-
         Immediately end an active grant. Available to the same reviewers who could
         approve it in the first place.

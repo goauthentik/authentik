@@ -104,7 +104,7 @@ export interface RequestsGrantRequestsRetrieveRequest {
     uuid: string;
 }
 
-export interface RequestsGrantRequestsRevokeCreateRequest {
+export interface RequestsGrantRequestsRevokeDestroyRequest {
     uuid: string;
 }
 
@@ -631,15 +631,15 @@ export class RequestsApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for requestsGrantRequestsRevokeCreate without sending the request
+     * Creates request options for requestsGrantRequestsRevokeDestroy without sending the request
      */
-    async requestsGrantRequestsRevokeCreateRequestOpts(
-        requestParameters: RequestsGrantRequestsRevokeCreateRequest,
+    async requestsGrantRequestsRevokeDestroyRequestOpts(
+        requestParameters: RequestsGrantRequestsRevokeDestroyRequest,
     ): Promise<runtime.RequestOpts> {
         if (requestParameters["uuid"] == null) {
             throw new runtime.RequiredError(
                 "uuid",
-                'Required parameter "uuid" was null or undefined when calling requestsGrantRequestsRevokeCreate().',
+                'Required parameter "uuid" was null or undefined when calling requestsGrantRequestsRevokeDestroy().',
             );
         }
 
@@ -661,7 +661,7 @@ export class RequestsApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: "POST",
+            method: "DELETE",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -670,12 +670,12 @@ export class RequestsApi extends runtime.BaseAPI {
     /**
      * Immediately end an active grant. Available to the same reviewers who could approve it in the first place.
      */
-    async requestsGrantRequestsRevokeCreateRaw(
-        requestParameters: RequestsGrantRequestsRevokeCreateRequest,
+    async requestsGrantRequestsRevokeDestroyRaw(
+        requestParameters: RequestsGrantRequestsRevokeDestroyRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<runtime.ApiResponse<void>> {
         const requestOptions =
-            await this.requestsGrantRequestsRevokeCreateRequestOpts(requestParameters);
+            await this.requestsGrantRequestsRevokeDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.VoidApiResponse(response);
@@ -684,11 +684,11 @@ export class RequestsApi extends runtime.BaseAPI {
     /**
      * Immediately end an active grant. Available to the same reviewers who could approve it in the first place.
      */
-    async requestsGrantRequestsRevokeCreate(
-        requestParameters: RequestsGrantRequestsRevokeCreateRequest,
+    async requestsGrantRequestsRevokeDestroy(
+        requestParameters: RequestsGrantRequestsRevokeDestroyRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<void> {
-        await this.requestsGrantRequestsRevokeCreateRaw(requestParameters, initOverrides);
+        await this.requestsGrantRequestsRevokeDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
