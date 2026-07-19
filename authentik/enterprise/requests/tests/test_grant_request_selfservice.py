@@ -22,7 +22,7 @@ class GrantRequestsSelfServiceTests(APITestCase):
     requests without needing any explicitly, globally-assigned RBAC permission."""
 
     def test_create_without_explicit_permission(self):
-        """Any authenticated user can kick off a request, without add_grantrequest"""
+        """Any authenticated user can kick off a request, without request_grantrequest"""
         requester = create_test_user()
         self.client.force_login(requester)
 

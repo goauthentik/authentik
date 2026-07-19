@@ -293,6 +293,11 @@ class GrantRequest(SerializerModel, ExpiringModel, CreatedUpdatedModel):
     class Meta:
         verbose_name = _("Grant Request")
         verbose_name_plural = _("Grant Requests")
+        permissions = [
+            ("request_grantrequest", _("Can create a grant request")),
+            ("fulfill_grantrequest", _("Can fulfill (approve/deny) a grant request")),
+            ("revoke_grantrequest", _("Can revoke a grant request")),
+        ]
 
     def __str__(self):
         return f"Grant Request {self.uuid}"

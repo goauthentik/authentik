@@ -74,8 +74,8 @@ class GrantRequestFinalStageView(StageView):
             reviewer.assign_perms_to_managed_role(
                 [
                     "authentik_requests.view_grantrequest",
-                    "authentik_requests.change_grantrequest",
-                    "authentik_requests.add_grantrequest",
+                    "authentik_requests.fulfill_grantrequest",
+                    "authentik_requests.revoke_grantrequest",
                 ],
                 req,
             )

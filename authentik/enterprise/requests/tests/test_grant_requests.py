@@ -18,12 +18,11 @@ from authentik.policies.models import PolicyBinding
 
 
 class GrantRequestsTests(APITestCase):
+
     def _grant_perms(self, user):
-        # `fulfill` is PATCH (-> `change_`) and `revoke` is DELETE (-> `delete_`), so
-        # reviewers need all of these plus `view_` to retrieve the object at all.
         user.assign_perms_to_managed_role("authentik_requests.view_grantrequest")
-        user.assign_perms_to_managed_role("authentik_requests.change_grantrequest")
-        user.assign_perms_to_managed_role("authentik_requests.delete_grantrequest")
+        user.assign_perms_to_managed_role("authentik_requests.fulfill_grantrequest")
+        user.assign_perms_to_managed_role("authentik_requests.revoke_grantrequest")
 
     def test_fulfill_access_user(self):
         reviewer = create_test_user()
