@@ -29,7 +29,7 @@ jobs:
         run: |
           echo "PNPM_HOME=${RUNNER_TEMP}/pnpm-home" >> "$GITHUB_ENV"
           echo "npm_config_store_dir=${RUNNER_TEMP}/pnpm-home/store" >> "$GITHUB_ENV"
-      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v4
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v4
         with:
           node-version-file: package.json
           cache: pnpm
@@ -53,7 +53,7 @@ jobs:
         run: |
           echo "PNPM_HOME=${RUNNER_TEMP}/pnpm-home" >> "$GITHUB_ENV"
           echo "npm_config_store_dir=${RUNNER_TEMP}/pnpm-home/store" >> "$GITHUB_ENV"
-      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v4
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v4
         name: Setup Node.js
         with:
           node-version-file: package.json
@@ -78,7 +78,7 @@ jobs:
         run: |
           echo "PNPM_HOME=${RUNNER_TEMP}/pnpm-home" >> "$GITHUB_ENV"
           echo "npm_config_store_dir=${RUNNER_TEMP}/pnpm-home/store" >> "$GITHUB_ENV"
-      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v4
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v4
         with:
           node-version-file: package.json
           cache: pnpm
@@ -101,44 +101,35 @@ jobs:
       attestations: write
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v5
+      - id: compute-tags
+        uses: ./.github/actions/compute-container-tags
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v5
         with:
           ref: ${{ github.event.pull_request.head.sha }}
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@06116385d9baf250c9f4dcb4858b16962ea869c3 # v4.1.0
+        uses: docker/setup-qemu-action@96fe6ef7f33517b61c61be40b68a1882f3264fb8 # v4.2.0
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@d7f5e7f509e45cec5c76c4d5afdd7de93d0b3df5 # v4.1.0
-      - name: prepare variables
-        uses: ./.github/actions/docker-push-variables
-        id: ev
-        env:
-          DOCKER_USERNAME: ${{ secrets.DOCKER_CORP_USERNAME }}
-        with:
-          image-name: ghcr.io/goauthentik/dev-docs
+        uses: docker/setup-buildx-action@bb05f3f5519dd87d3ba754cc423b652a5edd6d2c # v4.2.0
       - name: Login to Container Registry
-        if: ${{ steps.ev.outputs.shouldPush == 'true' }}
-        uses: docker/login-action@650006c6eb7dba73a995cc03b0b2d7f5ca915bee # v4.2.0
+        if: "${{ github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository) }}"
+        uses: docker/login-action@af1e73f918a031802d376d3c8bbc3fe56130a9b0 # v4.4.0
         with:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Build Docker Image
-        id: push
-        uses: docker/build-push-action@f9f3042f7e2789586610d6e8b85c8f03e5195baf # v7.2.0
+        uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a # v7.3.0
         with:
-          tags: ${{ steps.ev.outputs.imageTags }}
           file: website/Dockerfile
-          push: ${{ steps.ev.outputs.shouldPush == 'true' }}
-          platforms: linux/amd64,linux/arm64
           context: .
+          platforms: linux/amd64,linux/arm64
           cache-from: type=registry,ref=ghcr.io/goauthentik/dev-docs:buildcache
-          cache-to: ${{ steps.ev.outputs.shouldPush == 'true' && 'type=registry,ref=ghcr.io/goauthentik/dev-docs:buildcache,mode=max' || '' }}
-      - uses: actions/attest-build-provenance@0f67c3f4856b2e3261c31976d6725780e5e4c373 # v3
-        id: attest
-        if: ${{ steps.ev.outputs.shouldPush == 'true' }}
-        with:
-          subject-name: ${{ steps.ev.outputs.attestImageNames }}
-          subject-digest: ${{ steps.push.outputs.digest }}
-          push-to-registry: true
+          cache-to: "${{ (github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository)) && 'type=registry,ref=ghcr.io/goauthentik/dev-docs:buildcache,mode=max' || '' }}"
+          push: "${{ github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository) }}"
+          tags: |
+            ghcr.io/goauthentik/dev-docs:gh-${{ steps.compute-tags.outputs.tag-full }}
+            ghcr.io/goauthentik/dev-docs:gh-${{ steps.compute-tags.outputs.tag-branch }}
+            ghcr.io/goauthentik/dev-docs:gh-${{ steps.compute-tags.outputs.tag-flux }}
   ci-website-mark:
     if: always()
     needs:

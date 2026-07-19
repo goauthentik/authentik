@@ -2,7 +2,7 @@
 
 # Tag must track the root package.json `packageManager` version. ${BUILDPLATFORM}
 # keeps the binary's arch aligned with the builder stage on cross-arch builds.
-FROM --platform=${BUILDPLATFORM} ghcr.io/pnpm/pnpm:11.5.1@sha256:3cbdefab0d887dee497ddc8dfe6d871257317d69520fe30f9ccec0a84bde6e89 AS pnpm
+FROM --platform=${BUILDPLATFORM} ghcr.io/pnpm/pnpm:11.13.0@sha256:cd8efe9bf47d8e4ea97c3fdc9a42650dc28619a11b486ade5d547fd2182eb98f AS pnpm
 
 # Stage 1: Build web
 FROM --platform=${BUILDPLATFORM} docker.io/library/node:26 AS web-builder
@@ -38,7 +38,7 @@ COPY web .
 RUN pnpm run build-proxy
 
 # Stage 2: Build
-FROM --platform=${BUILDPLATFORM} docker.io/library/golang:1.26.4-trixie@sha256:68b7145ec43d1820b9a56704554b53d1520aa2a15cb5233e374188a31b2a1bce AS builder
+FROM --platform=${BUILDPLATFORM} docker.io/library/golang:1.27rc2-trixie@sha256:3f1e064e53fea7620807c6b953b77b1c7fd0d99689b43ddafd5cd56d7838441c AS builder
 
 ARG TARGETOS
 ARG TARGETARCH

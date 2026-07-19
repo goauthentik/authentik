@@ -1,3 +1,7 @@
+/**
+ * @file Display details for a Microsoft Entra provider: Overview, changelog, provisioned users, provisioned groups, and permissions
+ */
+
 import "#admin/providers/microsoft_entra/MicrosoftEntraProviderForm";
 import "#admin/providers/microsoft_entra/MicrosoftEntraProviderGroupList";
 import "#admin/providers/microsoft_entra/MicrosoftEntraProviderUserList";
@@ -9,14 +13,15 @@ import "#elements/buttons/ActionButton/index";
 import "#elements/buttons/ModalButton";
 import "#elements/events/LogViewer";
 import "#components/sync/SyncStatusCard";
-import "#components/tasks/ScheduleList";
-import "#components/tasks/TaskList";
 
 import { aki } from "#common/api/client";
 import { EVENT_REFRESH } from "#common/constants";
 
 import { AKElement } from "#elements/Base";
 import { SlottedTemplateResult } from "#elements/types";
+
+import { scheduleCard } from "#components/tasks/scheduleCard";
+import { taskCard } from "#components/tasks/taskCard";
 
 import { MicrosoftEntraProvider, ModelEnum, ProvidersApi } from "@goauthentik/api";
 
@@ -34,6 +39,8 @@ import PFList from "@patternfly/patternfly/components/List/list.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFStack from "@patternfly/patternfly/layouts/Stack/stack.css";
+
+const PROVIDER_TYPE = ModelEnum.AuthentikProvidersMicrosoftEntraMicrosoftentraprovider;
 
 @customElement("ak-provider-microsoft-entra-view")
 export class MicrosoftEntraProviderViewPage extends AKElement {
@@ -152,8 +159,7 @@ export class MicrosoftEntraProviderViewPage extends AKElement {
         if (!this.provider) {
             return nothing;
         }
-        const [appLabel, modelName] =
-            ModelEnum.AuthentikProvidersMicrosoftEntraMicrosoftentraprovider.split(".");
+
         return html`${!this.provider?.assignedBackchannelApplicationName
                 ? html`<div slot="header" class="pf-c-banner pf-m-warning">
                       ${msg(
@@ -224,28 +230,10 @@ export class MicrosoftEntraProviderViewPage extends AKElement {
                 </div>
 
                 <div class="pf-l-grid__item pf-m-12-col pf-l-stack__item">
-                    <div class="pf-c-card">
-                        <div class="pf-c-card__header">
-                            <div class="pf-c-card__title">${msg("Schedules")}</div>
-                        </div>
-                        <ak-schedule-list
-                            .relObjAppLabel=${appLabel}
-                            .relObjModel=${modelName}
-                            .relObjId="${this.provider.pk}"
-                        ></ak-schedule-list>
-                    </div>
+                    ${scheduleCard(PROVIDER_TYPE, this.provider.pk)}
                 </div>
                 <div class="pf-l-grid__item pf-m-12-col pf-l-stack__item">
-                    <div class="pf-c-card">
-                        <div class="pf-c-card__header">
-                            <div class="pf-c-card__title">${msg("Tasks")}</div>
-                        </div>
-                        <ak-task-list
-                            .relObjAppLabel=${appLabel}
-                            .relObjModel=${modelName}
-                            .relObjId="${this.provider.pk}"
-                        ></ak-task-list>
-                    </div>
+                    ${taskCard(PROVIDER_TYPE, this.provider.pk)}
                 </div>
             </div>`;
     }

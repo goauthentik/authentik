@@ -70,6 +70,8 @@ class IDToken:
     sid: str | None = None
     # JWT ID, https://www.rfc-editor.org/rfc/rfc7519.html#section-4.1.7
     jti: str | None = None
+    # Confirmation JWK, https://datatracker.ietf.org/doc/html/rfc7800#section-3
+    cnf: dict | None = None
 
     claims: dict[str, Any] = field(default_factory=dict)
 
@@ -153,11 +155,13 @@ class IDToken:
     def to_access_token(self, provider: OAuth2Provider, token: BaseGrantModel) -> str:
         """Encode id_token for use as access token, adding fields"""
         final = self.to_dict()
+        # Access tokens remain bearer tokens not DPoP, should not have key-binding cnf
+        final.pop("cnf", None)
         final["azp"] = provider.client_id
         final["uid"] = generate_id()
         final.setdefault("scope", " ".join(token.scope))
         return provider.encode(final)
 
-    def to_jwt(self, provider: OAuth2Provider) -> str:
+    def to_jwt(self, provider: OAuth2Provider, jwt_type: str | None = None) -> str:
         """Shortcut to encode id_token to jwt, signed by self.provider"""
-        return provider.encode(self.to_dict())
+        return provider.encode(self.to_dict(), jwt_type=jwt_type)
