@@ -3,6 +3,7 @@ import "#elements/banner/EnterpriseStatusBanner";
 import "#components/notifications/APIDrawer";
 import "#components/notifications/NotificationDrawer";
 import "#elements/router/RouterOutlet";
+import "#user/nav-tabs";
 
 import { globalAK } from "#common/global";
 import { configureSentry } from "#common/sentry/index";
@@ -156,6 +157,13 @@ class UserInterface extends WithBrandConfig(WithSession(AuthenticatedInterface))
                             })}
                         </a>
                     </div>
+                    <ak-nav-tabs
+                        class="pf-c-page__header-nav"
+                        .items=${[
+                            { label: msg("Applications"), link: "/library" },
+                            { label: msg("Discover"), link: "/discover" },
+                        ]}
+                    ></ak-nav-tabs>
                     <ak-nav-buttons>${this.renderAdminInterfaceLink()}</ak-nav-buttons>
                 </header>
                 <div class="pf-c-page__drawer">

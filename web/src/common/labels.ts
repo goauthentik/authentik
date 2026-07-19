@@ -63,6 +63,8 @@ export const EventActionLabelRecord: Record<EventActions, MessageFormatter<strin
     [EventActions.ReviewOverdue]: () => msg("Review overdue"),
     [EventActions.ReviewAttested]: () => msg("Review attested"),
     [EventActions.ReviewCompleted]: () => msg("Review completed"),
+    [EventActions.AccessRequestCreated]: () => msg("Access request created"),
+    [EventActions.AccessRequestFulfilled]: () => msg("Access request fulfilled"),
     [EventActions.UnknownDefaultOpenApi]: () => msg("Unknown action"),
     [EventActions.Custom]: () => msg("Custom action"),
 };

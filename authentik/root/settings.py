@@ -201,6 +201,7 @@ SPECTACULAR_SETTINGS = {
         "TaskStatusEnum": "django_dramatiq_postgres.models.TaskState",
         "TransportModeEnum": "authentik.events.models.TransportMode",
         "UserTypeEnum": "authentik.core.models.UserTypes",
+        "RequestStatus": "authentik.enterprise.pam.models.RequestStatus",
         "UserVerificationEnum": "authentik.stages.authenticator_webauthn.models.UserVerification",
         "WebAuthnHintEnum": "authentik.stages.authenticator_webauthn.models.WebAuthnHint",
     },

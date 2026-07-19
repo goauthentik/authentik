@@ -18,6 +18,7 @@ TENANT_APPS = [
     "authentik.enterprise.stages.authenticator_endpoint_gdtc",
     "authentik.enterprise.stages.mtls",
     "authentik.enterprise.stages.source",
+    "authentik.enterprise.pam",
 ]
 
 MIDDLEWARE = ["authentik.enterprise.middleware.EnterpriseMiddleware"]

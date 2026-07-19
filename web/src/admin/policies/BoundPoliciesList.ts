@@ -13,7 +13,7 @@ import { PolicyBindingCheckTarget, PolicyBindingCheckTargetToLabel } from "#comm
 
 import { asInstanceInvokerByTagName, modalInvoker } from "#elements/dialogs";
 import { IconPermissionButton } from "#elements/dialogs/components/IconPermissionButton";
-import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
+import { PaginatedResponse, Table, TableColumn, Timestamp } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
 import { StrictUnsafe } from "#elements/utils/unsafe";
 
@@ -85,6 +85,7 @@ export class BoundPoliciesList<T extends PolicyBinding = PolicyBinding> extends 
     protected override columns: TableColumn[] = [
         [msg("Order"), "order"],
         [this.allowedTypesLabel],
+        [msg("Expiry"), "expiry"],
         [msg("Enabled"), "enabled"],
         [msg("Timeout"), "timeout"],
         [msg("Actions"), null, msg("Row Actions")],
@@ -210,6 +211,7 @@ export class BoundPoliciesList<T extends PolicyBinding = PolicyBinding> extends 
         return [
             html`<pre>${item.order}</pre>`,
             html`${this.getPolicyUserGroupRow(item)}`,
+            html`${item.expiring ? Timestamp(item.expires ?? new Date()) : msg("-")}`,
             html`<ak-status-label type="warning" ?good=${item.enabled}></ak-status-label>`,
             html`${item.timeout}`,
             html`<div class="ak-c-table__actions">

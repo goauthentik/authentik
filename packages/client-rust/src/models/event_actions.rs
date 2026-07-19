@@ -77,6 +77,10 @@ pub enum EventActions {
     ReviewAttested,
     #[serde(rename = "review_completed")]
     ReviewCompleted,
+    #[serde(rename = "access_request_created")]
+    AccessRequestCreated,
+    #[serde(rename = "access_request_fulfilled")]
+    AccessRequestFulfilled,
     #[serde(rename = "custom_")]
     Custom,
 }
@@ -116,6 +120,8 @@ impl std::fmt::Display for EventActions {
             Self::ReviewOverdue => write!(f, "review_overdue"),
             Self::ReviewAttested => write!(f, "review_attested"),
             Self::ReviewCompleted => write!(f, "review_completed"),
+            Self::AccessRequestCreated => write!(f, "access_request_created"),
+            Self::AccessRequestFulfilled => write!(f, "access_request_fulfilled"),
             Self::Custom => write!(f, "custom_"),
         }
     }

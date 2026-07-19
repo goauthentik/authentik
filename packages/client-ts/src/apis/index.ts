@@ -12,6 +12,7 @@ export * from "./LifecycleApi";
 export * from "./ManagedApi";
 export * from "./Oauth2Api";
 export * from "./OutpostsApi";
+export * from "./PamApi";
 export * from "./PoliciesApi";
 export * from "./PropertymappingsApi";
 export * from "./ProvidersApi";

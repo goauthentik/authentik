@@ -37,6 +37,14 @@ export const ROUTES: Route[] = [
         await import("#admin/applications/ApplicationViewPage");
         return html`<ak-application-view .applicationSlug=${args.slug}></ak-application-view>`;
     }),
+    new Route(new RegExp("^/pam/requests$"), async () => {
+        await import("#admin/access-requests/AccessRequestListPage");
+        return html`<ak-access-requests-list></ak-access-requests-list>`;
+    }),
+    new Route(new RegExp("^/pam/request_rules$"), async () => {
+        await import("#admin/access-requests/PolicyBindingModelRequestRuleListPage");
+        return html`<ak-pbm-request-rule-list></ak-pbm-request-rule-list>`;
+    }),
     new Route(new RegExp("^/endpoints/devices$"), async () => {
         await import("#admin/endpoints/devices/DeviceListPage");
         return html`<ak-endpoints-device-list></ak-endpoints-device-list>`;

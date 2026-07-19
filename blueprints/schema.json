@@ -904,6 +904,86 @@
                     ],
                     "properties": {
                         "model": {
+                            "const": "authentik_pam.grantrequest"
+                        },
+                        "id": {
+                            "type": "string"
+                        },
+                        "state": {
+                            "type": "string",
+                            "enum": [
+                                "absent",
+                                "created",
+                                "must_created",
+                                "present"
+                            ],
+                            "default": "present"
+                        },
+                        "conditions": {
+                            "type": "array",
+                            "items": {
+                                "type": "boolean"
+                            }
+                        },
+                        "permissions": {
+                            "$ref": "#/$defs/model_authentik_pam.grantrequest_permissions"
+                        },
+                        "attrs": {
+                            "$ref": "#/$defs/model_authentik_pam.grantrequest"
+                        },
+                        "identifiers": {
+                            "$ref": "#/$defs/model_authentik_pam.grantrequest"
+                        }
+                    }
+                },
+                {
+                    "type": "object",
+                    "required": [
+                        "model",
+                        "identifiers"
+                    ],
+                    "properties": {
+                        "model": {
+                            "const": "authentik_pam.policybindingmodelrequestrule"
+                        },
+                        "id": {
+                            "type": "string"
+                        },
+                        "state": {
+                            "type": "string",
+                            "enum": [
+                                "absent",
+                                "created",
+                                "must_created",
+                                "present"
+                            ],
+                            "default": "present"
+                        },
+                        "conditions": {
+                            "type": "array",
+                            "items": {
+                                "type": "boolean"
+                            }
+                        },
+                        "permissions": {
+                            "$ref": "#/$defs/model_authentik_pam.policybindingmodelrequestrule_permissions"
+                        },
+                        "attrs": {
+                            "$ref": "#/$defs/model_authentik_pam.policybindingmodelrequestrule"
+                        },
+                        "identifiers": {
+                            "$ref": "#/$defs/model_authentik_pam.policybindingmodelrequestrule"
+                        }
+                    }
+                },
+                {
+                    "type": "object",
+                    "required": [
+                        "model",
+                        "identifiers"
+                    ],
+                    "properties": {
+                        "model": {
                             "const": "authentik_policies_unique_password.uniquepasswordpolicy"
                         },
                         "id": {
@@ -5816,6 +5896,26 @@
                             "authentik_outposts.view_kubernetesserviceconnection",
                             "authentik_outposts.view_outpost",
                             "authentik_outposts.view_outpostserviceconnection",
+                            "authentik_pam.add_grantrequest",
+                            "authentik_pam.add_grantrequestapproval",
+                            "authentik_pam.add_grantrequesttarget",
+                            "authentik_pam.add_policybindingmodelrequestrule",
+                            "authentik_pam.add_policybindingmodelrequestruletarget",
+                            "authentik_pam.change_grantrequest",
+                            "authentik_pam.change_grantrequestapproval",
+                            "authentik_pam.change_grantrequesttarget",
+                            "authentik_pam.change_policybindingmodelrequestrule",
+                            "authentik_pam.change_policybindingmodelrequestruletarget",
+                            "authentik_pam.delete_grantrequest",
+                            "authentik_pam.delete_grantrequestapproval",
+                            "authentik_pam.delete_grantrequesttarget",
+                            "authentik_pam.delete_policybindingmodelrequestrule",
+                            "authentik_pam.delete_policybindingmodelrequestruletarget",
+                            "authentik_pam.view_grantrequest",
+                            "authentik_pam.view_grantrequestapproval",
+                            "authentik_pam.view_grantrequesttarget",
+                            "authentik_pam.view_policybindingmodelrequestrule",
+                            "authentik_pam.view_policybindingmodelrequestruletarget",
                             "authentik_policies.add_policy",
                             "authentik_policies.add_policybinding",
                             "authentik_policies.add_policybindingmodel",
@@ -7154,6 +7254,161 @@
                 }
             }
         },
+        "model_authentik_pam.grantrequest": {
+            "type": "object",
+            "properties": {
+                "requester_data": {
+                    "type": "object",
+                    "additionalProperties": true,
+                    "title": "Requester data"
+                },
+                "fulfiller_data": {
+                    "type": "object",
+                    "additionalProperties": true,
+                    "title": "Fulfiller data"
+                },
+                "expires": {
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "format": "date-time",
+                    "title": "Expires"
+                },
+                "uuid": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Uuid"
+                }
+            },
+            "required": []
+        },
+        "model_authentik_pam.grantrequest_permissions": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "permission"
+                ],
+                "properties": {
+                    "permission": {
+                        "type": "string",
+                        "enum": [
+                            "add_grantrequest",
+                            "change_grantrequest",
+                            "delete_grantrequest",
+                            "view_grantrequest"
+                        ]
+                    },
+                    "user": {
+                        "type": "integer"
+                    },
+                    "role": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "model_authentik_pam.policybindingmodelrequestrule": {
+            "type": "object",
+            "properties": {
+                "uuid": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Uuid"
+                },
+                "policy_engine_mode": {
+                    "type": "string",
+                    "enum": [
+                        "all",
+                        "any"
+                    ],
+                    "title": "Policy engine mode"
+                },
+                "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Name"
+                },
+                "min_reviewers": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 32767,
+                    "title": "Min reviewers"
+                },
+                "min_reviewers_is_per_group": {
+                    "type": "boolean",
+                    "title": "Min reviewers is per group"
+                },
+                "pbms": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "title": "Pbms"
+                },
+                "reviewer_groups": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "title": "Reviewer groups"
+                },
+                "reviewers": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    },
+                    "title": "Reviewers"
+                },
+                "notification_transports": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "title": "Notification transports"
+                },
+                "notification_mode": {
+                    "type": "string",
+                    "enum": [
+                        "all",
+                        "direct",
+                        "random_min_reviewers"
+                    ],
+                    "title": "Notification mode"
+                }
+            },
+            "required": []
+        },
+        "model_authentik_pam.policybindingmodelrequestrule_permissions": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "permission"
+                ],
+                "properties": {
+                    "permission": {
+                        "type": "string",
+                        "enum": [
+                            "add_policybindingmodelrequestrule",
+                            "change_policybindingmodelrequestrule",
+                            "delete_policybindingmodelrequestrule",
+                            "view_policybindingmodelrequestrule"
+                        ]
+                    },
+                    "user": {
+                        "type": "integer"
+                    },
+                    "role": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
         "model_authentik_policies_unique_password.uniquepasswordpolicy": {
             "type": "object",
             "properties": {
@@ -8085,6 +8340,8 @@
                         "review_overdue",
                         "review_attested",
                         "review_completed",
+                        "access_request_created",
+                        "access_request_fulfilled",
                         "custom_"
                     ],
                     "title": "Action"
@@ -8207,6 +8464,8 @@
                                 "review_overdue",
                                 "review_attested",
                                 "review_completed",
+                                "access_request_created",
+                                "access_request_fulfilled",
                                 "custom_"
                             ],
                             "title": "Action"
@@ -8967,6 +9226,8 @@
                         "review_overdue",
                         "review_attested",
                         "review_completed",
+                        "access_request_created",
+                        "access_request_fulfilled",
                         "custom_"
                     ],
                     "title": "Action",
@@ -9067,7 +9328,8 @@
                         "authentik.enterprise.stages.account_lockdown",
                         "authentik.enterprise.stages.authenticator_endpoint_gdtc",
                         "authentik.enterprise.stages.mtls",
-                        "authentik.enterprise.stages.source"
+                        "authentik.enterprise.stages.source",
+                        "authentik.enterprise.pam"
                     ],
                     "title": "App",
                     "description": "Match events created by selected application. When left empty, all applications are matched."
@@ -9200,7 +9462,9 @@
                         "authentik_stages_account_lockdown.accountlockdownstage",
                         "authentik_stages_authenticator_endpoint_gdtc.authenticatorendpointgdtcstage",
                         "authentik_stages_mtls.mutualtlsstage",
-                        "authentik_stages_source.sourcestage"
+                        "authentik_stages_source.sourcestage",
+                        "authentik_pam.grantrequest",
+                        "authentik_pam.policybindingmodelrequestrule"
                     ],
                     "title": "Model",
                     "description": "Match events created by selected model. When left empty, all models are matched. When an app is selected, all the application's models are matched."
@@ -11585,6 +11849,26 @@
                             "authentik_outposts.view_kubernetesserviceconnection",
                             "authentik_outposts.view_outpost",
                             "authentik_outposts.view_outpostserviceconnection",
+                            "authentik_pam.add_grantrequest",
+                            "authentik_pam.add_grantrequestapproval",
+                            "authentik_pam.add_grantrequesttarget",
+                            "authentik_pam.add_policybindingmodelrequestrule",
+                            "authentik_pam.add_policybindingmodelrequestruletarget",
+                            "authentik_pam.change_grantrequest",
+                            "authentik_pam.change_grantrequestapproval",
+                            "authentik_pam.change_grantrequesttarget",
+                            "authentik_pam.change_policybindingmodelrequestrule",
+                            "authentik_pam.change_policybindingmodelrequestruletarget",
+                            "authentik_pam.delete_grantrequest",
+                            "authentik_pam.delete_grantrequestapproval",
+                            "authentik_pam.delete_grantrequesttarget",
+                            "authentik_pam.delete_policybindingmodelrequestrule",
+                            "authentik_pam.delete_policybindingmodelrequestruletarget",
+                            "authentik_pam.view_grantrequest",
+                            "authentik_pam.view_grantrequestapproval",
+                            "authentik_pam.view_grantrequesttarget",
+                            "authentik_pam.view_policybindingmodelrequestrule",
+                            "authentik_pam.view_policybindingmodelrequestruletarget",
                             "authentik_policies.add_policy",
                             "authentik_policies.add_policybinding",
                             "authentik_policies.add_policybindingmodel",

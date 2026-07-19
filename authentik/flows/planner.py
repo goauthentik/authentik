@@ -11,7 +11,6 @@ from sentry_sdk.tracing import Span
 from structlog.stdlib import BoundLogger, get_logger
 
 from authentik.core.models import User
-from authentik.events.models import cleanse_dict
 from authentik.flows.apps import HIST_FLOWS_PLAN_TIME
 from authentik.flows.exceptions import EmptyFlowException, FlowNonApplicableException
 from authentik.flows.markers import ReevaluateMarker, StageMarker
@@ -279,7 +278,6 @@ class FlowPlanner:
             # to make sure the user even has access to the flow
             engine = PolicyEngine(self.flow, user, request)
             engine.use_cache = self.use_cache
-            span.set_data("context", cleanse_dict(context))
             engine.request.context.update(context)
             engine.build()
             result = engine.result

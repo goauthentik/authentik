@@ -99,6 +99,7 @@ export const AppEnum = {
         "authentik.enterprise.stages.authenticator_endpoint_gdtc",
     AuthentikEnterpriseStagesMtls: "authentik.enterprise.stages.mtls",
     AuthentikEnterpriseStagesSource: "authentik.enterprise.stages.source",
+    AuthentikEnterprisePam: "authentik.enterprise.pam",
     UnknownDefaultOpenApi: "11184809",
 } as const;
 export type AppEnum = (typeof AppEnum)[keyof typeof AppEnum];

@@ -47,7 +47,7 @@ from authentik.lib.models import (
 )
 from authentik.lib.utils.inheritance import get_deepest_child
 from authentik.lib.utils.time import timedelta_from_string
-from authentik.policies.models import PolicyBindingModel
+from authentik.policies.models import PolicyBindingModel, RequestableMixin
 from authentik.rbac.models import Role
 from authentik.tenants.models import DEFAULT_TOKEN_DURATION, DEFAULT_TOKEN_LENGTH
 from authentik.tenants.utils import get_current_tenant, get_unique_identifier
@@ -734,7 +734,7 @@ class ApplicationQuerySet(QuerySet):
         return qs
 
 
-class Application(SerializerModel, PolicyBindingModel):
+class Application(SerializerModel, PolicyBindingModel, RequestableMixin):
     """Every Application which uses authentik for authentication/identification/authorization
     needs an Application record. Other authentication types can subclass this Model to
     add custom fields and other properties"""
@@ -839,12 +839,22 @@ class Application(SerializerModel, PolicyBindingModel):
     def __str__(self):
         return str(self.name)
 
+    @property
+    def requestable_parent(self) -> Application:
+        return self
+
+    @property
+    def requestable_label(self) -> str:
+        return self.name
+
     class Meta:
         verbose_name = _("Application")
         verbose_name_plural = _("Applications")
 
 
-class ApplicationEntitlement(AttributesMixin, SerializerModel, PolicyBindingModel):
+class ApplicationEntitlement(
+    AttributesMixin, SerializerModel, PolicyBindingModel, RequestableMixin
+):
     """Application-scoped entitlement to control authorization in an application"""
 
     name = models.TextField()
@@ -864,6 +874,14 @@ class ApplicationEntitlement(AttributesMixin, SerializerModel, PolicyBindingMode
         from authentik.core.api.application_entitlements import ApplicationEntitlementSerializer
 
         return ApplicationEntitlementSerializer
+
+    @property
+    def requestable_parent(self) -> Application:
+        return self.app
+
+    @property
+    def requestable_label(self) -> str:
+        return self.name
 
     def supported_policy_binding_targets(self):
         return ["group", "user"]

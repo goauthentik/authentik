@@ -181,6 +181,8 @@ export const ModelEnum = {
         "authentik_stages_authenticator_endpoint_gdtc.authenticatorendpointgdtcstage",
     AuthentikStagesMtlsMutualtlsstage: "authentik_stages_mtls.mutualtlsstage",
     AuthentikStagesSourceSourcestage: "authentik_stages_source.sourcestage",
+    AuthentikPamGrantrequest: "authentik_pam.grantrequest",
+    AuthentikPamPolicybindingmodelrequestrule: "authentik_pam.policybindingmodelrequestrule",
     UnknownDefaultOpenApi: "11184809",
 } as const;
 export type ModelEnum = (typeof ModelEnum)[keyof typeof ModelEnum];

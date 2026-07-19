@@ -1,0 +1,9 @@
+- [ ] Fix query for expiring policybindings
+- [ ] Figure out branding for "Personas" / "Agent" / etc
+- [ ] Add support in notification system for responses to notification
+- [ ] UI for selecting apps' entitlements when requesting access
+- [ ] Figure out how to pierce through app cache once request is approved
+- [ ] Figure out how credentials for Personas work (API Key?)
+- [ ] Check if we need a new stage type for requesting access
+- [ ] Figure out how to configure which apps are "discoverable"
+- [ ] Figure out where to configure approvals
