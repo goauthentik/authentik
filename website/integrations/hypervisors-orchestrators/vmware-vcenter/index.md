@@ -48,7 +48,7 @@ To support the integration of VMware vCenter with authentik, you need to create 
 
 ## VMware vCenter configuration
 
-### Configure the Okta identity provider
+### Configure the identity provider
 
 1. Log in to the vSphere Client as an administrator.
 2. Navigate to **Administration** > **Single Sign On** > **Configuration**.
