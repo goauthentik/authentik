@@ -31,6 +31,7 @@ _BRAND_RELATED_FK_FIELDS = (
     "flow_user_settings",
     "flow_device_code",
     "flow_lockdown",
+    "flow_request",
     "default_application",
 )
 
