@@ -9,7 +9,7 @@ This guide only applies to standalone [outposts](../../add-secure-apps/outposts/
 
 Standalone outposts continually output logs that can be helpful when troubleshooting issues. Just like when capturing authentik logs, the log level can be adjusted.
 
-## Adjusting log levels
+## Adjust log levels
 
 Outpost containers support multiple log levels: `debug`, `info`, `warning`, and `error`. By default, the log level is set to `info`.
 
@@ -19,7 +19,7 @@ To modify the log level, follow the instructions below depending on your outpost
 groupId="outpost-type"
 defaultValue="admin"
 values={[
-{label: 'admin Interface', value: 'admin'},
+{label: 'Admin interface', value: 'admin'},
 {label: 'Manually Deployed Outposts', value: 'manual'},
 ]}>
 <TabItem value="admin">
@@ -53,7 +53,7 @@ Then, redeploy the outpost container for the change to take effect.
   </TabItem>
 </Tabs>
 
-## Enabling `trace` mode
+## Enable `trace` mode
 
 :::danger
 The trace log level provides deeper insights, but be aware that using trace logs can expose sensitive information, including session cookies. Handle these logs with extreme caution and avoid using trace unless absolutely necessary.
@@ -78,7 +78,7 @@ values={[
 The outpost will be redeployed with the `trace` log level.
 
 :::danger
-To avoid exposing sensitive information, remember to reduce the log level from `trace` once you finish troubleshooting.
+After troubleshooting, reduce the log level from `trace` to avoid exposing sensitive information.
 :::
 
   </TabItem>
@@ -101,13 +101,13 @@ env:
 Then redeploy the outpost container for the change to take effect.
 
 :::danger
-To avoid exposing sensitive information, remember to reduce the log level from `trace` once you finish troubleshooting.
+After troubleshooting, reduce the log level from `trace` to avoid exposing sensitive information.
 :::
 
   </TabItem>
 </Tabs>
 
-## Viewing past logs
+## View past logs
 
 To review historical logs, you can use the `--since` option with both `docker logs` and `kubectl logs`. This option allows you to specify either a duration (e.g., `1m30s`, `3h`) or a specific timestamp (e.g., `2006-01-02T07:00`, `2006-01-02`) to view logs generated after that point in time.
 
@@ -140,7 +140,7 @@ kubectl logs --since 5m <pod_name>
   </TabItem>
 </Tabs>
 
-## Streaming logs in real-time
+## Stream logs in real time
 
 To continuously monitor logs, use the `--follow` (`-f`) option. This will stream log output to your terminal until manually stopped (`Ctrl + C` or closing the terminal).
 

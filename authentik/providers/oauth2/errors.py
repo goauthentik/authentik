@@ -247,6 +247,26 @@ class TokenError(OAuth2Error):
         self.description = self.errors[error]
 
 
+class TokenExchangeError(TokenError):
+    """
+    Token exchange errors
+    See https://datatracker.ietf.org/doc/html/rfc8693#section-2.2.2
+    Can also use codes from TokenError
+    """
+
+    errors = TokenError.errors | {
+        "invalid_target": (
+            "The authorization server is unable to issue a token for the target service "
+            "indicated by the 'resource' or 'audience' parameter"
+        ),
+    }
+
+    def __init__(self, error: str):
+        super().__init__(error)
+        self.error = error
+        self.description = self.errors[error]
+
+
 class TokenRevocationError(OAuth2Error):
     """
     Specific to the revocation endpoint.
@@ -290,6 +310,15 @@ class DeviceCodeError(TokenError):
             'A variant of "authorization_pending", the authorization request is'
             "still pending and polling should continue, but the interval MUST"
             "be increased by 5 seconds for this and all subsequent requests."
+        ),
+        "invalid_dpop_jkt": (
+            'The "dpop_jkt" parameter is not a valid base64url-encoded SHA-256 JWK thumbprint'
+        ),
+        "dpop_jkt_required": (
+            'The "dpop_jkt" parameter is required when the "bound_key" scope is requested'
+        ),
+        "dpop_jkt_not_allowed": (
+            'The "dpop_jkt" parameter must not be set unless the "bound_key" scope is requested'
         ),
     }
 

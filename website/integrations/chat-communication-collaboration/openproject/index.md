@@ -78,6 +78,8 @@ OpenProject requires a first and last name for each user. By default, authentik 
             - **Scopes**:
                 - Remove `authentik default OAuth Mapping: OpenID 'profile'` from **Selected Scopes**.
                 - Add the scope that you created in the previous section (e.g. `OpenProject Profile Scope`) to **Selected Scopes**.
+            - **Logout URI**: `https://openproject.company/auth/oidc-authentik/backchannel-logout`
+            - **Logout Method**: `Back-channel`
     - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 
 3. Click **Submit** to save the new application and provider.

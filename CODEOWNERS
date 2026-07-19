@@ -38,8 +38,8 @@ packages/django-dramatiq-postgres       @goauthentik/backend
 tsconfig.json                           @goauthentik/frontend
 package.json                            @goauthentik/frontend
 package-lock.json                       @goauthentik/frontend
-packages/package.json                   @goauthentik/frontend
-packages/package-lock.json              @goauthentik/frontend
+pnpm-lock.yaml                          @goauthentik/frontend
+pnpm-workspace.yaml                     @goauthentik/frontend
 packages/client-ts                      @goauthentik/frontend
 packages/docusaurus-config              @goauthentik/frontend
 packages/esbuild-plugin-live-reload     @goauthentik/frontend
