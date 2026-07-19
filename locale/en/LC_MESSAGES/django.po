@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-03 00:30+0000\n"
+"POT-Creation-Date: 2026-07-17 00:27+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -253,11 +253,11 @@ msgid "No empty segments in user path allowed."
 msgstr ""
 
 #: authentik/core/api/users.py
-msgid "Can't change internal service account to other user type."
+msgid "Can't create internal service accounts"
 msgstr ""
 
 #: authentik/core/api/users.py
-msgid "Setting a user to internal service account is not allowed."
+msgid "Can't change internal service account to other user type."
 msgstr ""
 
 #: authentik/core/api/users.py
@@ -732,6 +732,14 @@ msgstr ""
 
 #: authentik/endpoints/connectors/agent/models.py
 msgid "Agent Connectors"
+msgstr ""
+
+#: authentik/endpoints/connectors/agent/models.py
+msgid "Agent Device User binding"
+msgstr ""
+
+#: authentik/endpoints/connectors/agent/models.py
+msgid "Agent Device User bindings"
 msgstr ""
 
 #: authentik/endpoints/connectors/agent/models.py
@@ -2210,6 +2218,10 @@ msgid "ES512 (Asymmetric Encryption)"
 msgstr ""
 
 #: authentik/providers/oauth2/models.py
+msgid "EdDSA (Asymmetric Encryption)"
+msgstr ""
+
+#: authentik/providers/oauth2/models.py
 msgid "Scope used by the client"
 msgstr ""
 
@@ -2347,6 +2359,10 @@ msgstr ""
 
 #: authentik/providers/oauth2/models.py
 msgid "Code Challenge Method"
+msgstr ""
+
+#: authentik/providers/oauth2/models.py
+msgid "DPoP JWK Thumbprint"
 msgstr ""
 
 #: authentik/providers/oauth2/models.py
@@ -3581,11 +3597,7 @@ msgid "Flow used before authentication."
 msgstr ""
 
 #: authentik/sources/saml/models.py
-msgid "Issuer"
-msgstr ""
-
-#: authentik/sources/saml/models.py
-msgid "Also known as Entity ID. Defaults the Metadata URL."
+msgid "Also known as Entity ID. Defaults to the Metadata URL."
 msgstr ""
 
 #: authentik/sources/saml/models.py

@@ -15,6 +15,10 @@ from django_dramatiq_postgres.models import ScheduleBase, TaskState
 class Scheduler:
     broker: Broker
     db_alias: str
+    # Alias used for the scheduler's session-scoped advisory lock; the lock
+    # and its release must hit the same backend, so this must point to a
+    # connection that bypasses any transaction pooler. Set by the broker.
+    direct_db_alias: str
 
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         super().__init__(*args, **kwargs)
@@ -40,6 +44,7 @@ class Scheduler:
             lock_id=f"{Conf().channel_prefix}.scheduler",
             side_effect=pglock.Return,
             timeout=0,
+            using=self.direct_db_alias,
         )
 
     def _run(self) -> int:
