@@ -1,3 +1,4 @@
+from django.http import Http404
 from drf_spectacular.utils import OpenApiResponse, extend_schema, extend_schema_field
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
@@ -12,6 +13,7 @@ from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
 from authentik.api.validation import validate
+from authentik.brands.models import Brand
 from authentik.core.api.groups import PartialUserSerializer
 from authentik.core.api.utils import (
     JSONDictField,
@@ -30,7 +32,7 @@ from authentik.enterprise.requests.stage import (
     PLAN_CONTEXT_GRANT_REQUESTED_PBMS,
     GrantRequestFinalStageView,
 )
-from authentik.flows.models import Flow, in_memory_stage
+from authentik.flows.models import in_memory_stage
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlanner
 from authentik.policies.api.bindings import PolicyBindingModelForeignKey
 from authentik.policies.models import PolicyBindingModel, RequestableModel
@@ -69,11 +71,13 @@ class GrantRequestSerializer(EnterpriseRequiredMixin, ModelSerializer):
 
 
 class GrantRequestViewSet(RetrieveModelMixin, DestroyModelMixin, ListModelMixin, GenericViewSet):
+
     # All requests are visible to users even if they're expired
     queryset = GrantRequest.objects.including_expired()
     serializer_class = GrantRequestSerializer
 
     class GrantRequestCreateSerializer(PassiveSerializer):
+
         pbms = PolicyBindingModelForeignKey(
             queryset=PolicyBindingModel.objects.select_subclasses(), many=True
         )
@@ -88,6 +92,7 @@ class GrantRequestViewSet(RetrieveModelMixin, DestroyModelMixin, ListModelMixin,
             return pbms
 
     class GrantRequestFulfillSerializer(PassiveSerializer):
+
         data = JSONDictField()
         status = ChoiceField(choices=RequestStatus.choices)
 
@@ -103,8 +108,13 @@ class GrantRequestViewSet(RetrieveModelMixin, DestroyModelMixin, ListModelMixin,
     @extend_schema(request=GrantRequestCreateSerializer, responses={200: LinkSerializer})
     @validate(GrantRequestCreateSerializer)
     def create(self, request: Request, body: GrantRequestCreateSerializer) -> Response:
-        # TODO: Select a flow somewhere
-        flow = Flow.objects.get(slug="request-access")
+        brand: Brand = request.brand
+        # TODO: this flow should only be used as fallback, if all rules that granted the user
+        # permissions to request each respective PBM share a request flow, use that flow,
+        # otherwise just fallback to brand
+        flow = brand.flow_request
+        if not flow:
+            raise Http404
         planner = FlowPlanner(flow)
         planner.allow_empty_flows = True
         plan = planner.plan(

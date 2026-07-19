@@ -7,6 +7,7 @@ from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import Serializer
 
 from authentik.core.models import Group, User
+from authentik.flows.models import Flow
 from authentik.lib.models import (
     CreatedUpdatedModel,
     ExpiringModel,
@@ -95,6 +96,8 @@ class RequestRule(CreatedUpdatedModel, SerializerModel, PolicyBindingModel):
 
     min_reviewers = models.PositiveSmallIntegerField(default=1)
     min_reviewers_is_per_group = models.BooleanField(default=False)
+
+    request_flow = models.ForeignKey(Flow, null=True, on_delete=models.SET_DEFAULT, default=None)
 
     notification_transports = models.ManyToManyField(
         "authentik_events.NotificationTransport", blank=True

@@ -17,10 +17,11 @@ from authentik.events.models import Event, EventAction
 from authentik.flows.stage import StageView
 from authentik.stages.prompt.stage import PLAN_CONTEXT_PROMPT
 
-PLAN_CONTEXT_GRANT_REQUESTED_PBMS = "goauthentik.io/pam/requested-pbms"
+PLAN_CONTEXT_GRANT_REQUESTED_PBMS = "goauthentik.io/requests/requested-pbms"
 
 
 class GrantRequestFinalStageView(StageView):
+
     def get(self, request: HttpRequest) -> HttpResponse:
         user = self.get_pending_user()
         pbms = self.executor.plan.context.get(PLAN_CONTEXT_GRANT_REQUESTED_PBMS)
@@ -43,8 +44,8 @@ class GrantRequestFinalStageView(StageView):
                 EventAction.ACCESS_REQUEST_CREATED,
                 model=req,
                 targets=pbms,
-                hyperlink=request.build_absolute_uri(reverse("authentik_core:if-admin"))
-                + f"#/pam/requests/{req.uuid}/fulfill",
+                hyperlink=request.build_absolute_uri(reverse("authentik_core:if-user"))
+                + f"#/requests/access-request/{req.uuid}/fulfill",
                 hyperlink_label="Fulfill",
             ).from_http(request, user)
             self._notify_reviewers(pbms, event)

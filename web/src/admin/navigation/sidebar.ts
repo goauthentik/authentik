@@ -63,7 +63,8 @@ export const createAdminSidebarEntries = (): readonly SidebarEntry[] => [
         ["/core/applications", msg("Applications"), [`^/core/applications/(?<slug>${SLUG_REGEX})$`]],
         ["/core/providers", msg("Providers"), [`^/core/providers/(?<id>${ID_REGEX})$`]],
         ["/outpost/outposts", msg("Outposts"), [`^/outpost/outposts/(?<id>${UUID_REGEX})$`]],
-        ["/requests/rules", msg("Request Rules"), {enterprise:true}],]
+        ["/requests/rules", msg("Request Rules"), {enterprise:true}],
+        ["/requests/access-requests", msg("Access Requests"), {enterprise:true}],]
     ],
     [null, msg("Endpoint Devices"), null, [
         ["/endpoints/devices", msg("Devices"), [`^/endpoints/devices/(?<uuid>${UUID_REGEX})$`]],

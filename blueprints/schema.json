@@ -5305,6 +5305,11 @@
                     "format": "uuid",
                     "title": "Flow lockdown"
                 },
+                "flow_request": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Flow request"
+                },
                 "default_application": {
                     "type": "string",
                     "format": "uuid",
@@ -8092,6 +8097,11 @@
                 "min_reviewers_is_per_group": {
                     "type": "boolean",
                     "title": "Min reviewers is per group"
+                },
+                "request_flow": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Request flow"
                 }
             },
             "required": []

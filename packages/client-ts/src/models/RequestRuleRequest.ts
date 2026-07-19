@@ -66,6 +66,12 @@ export interface RequestRuleRequest {
      * @memberof RequestRuleRequest
      */
     minReviewersIsPerGroup?: boolean;
+    /**
+     *
+     * @type {string}
+     * @memberof RequestRuleRequest
+     */
+    requestFlow?: string | null;
 }
 
 /**
@@ -105,6 +111,7 @@ export function RequestRuleRequestFromJSONTyped(
             json["min_reviewers_is_per_group"] == null
                 ? undefined
                 : json["min_reviewers_is_per_group"],
+        requestFlow: json["request_flow"] == null ? undefined : json["request_flow"],
     };
 }
 
@@ -128,5 +135,6 @@ export function RequestRuleRequestToJSONTyped(
         notification_mode: NotificationModeEnumToJSON(value["notificationMode"]),
         min_reviewers: value["minReviewers"],
         min_reviewers_is_per_group: value["minReviewersIsPerGroup"],
+        request_flow: value["requestFlow"],
     };
 }

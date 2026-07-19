@@ -20,6 +20,7 @@ class RequestRuleSerializer(EnterpriseRequiredMixin, ModelSerializer):
             "notification_mode",
             "min_reviewers",
             "min_reviewers_is_per_group",
+            "request_flow",
         ]
 
 

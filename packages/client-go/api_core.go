@@ -41,6 +41,7 @@ type ApiCoreBrandsListRequest struct {
 	flowInvalidation              *string
 	flowLockdown                  *string
 	flowRecovery                  *string
+	flowRequest                   *string
 	flowUnenrollment              *string
 	flowUserSettings              *string
 	ordering                      *string
@@ -112,6 +113,11 @@ func (r ApiCoreBrandsListRequest) FlowLockdown(flowLockdown string) ApiCoreBrand
 
 func (r ApiCoreBrandsListRequest) FlowRecovery(flowRecovery string) ApiCoreBrandsListRequest {
 	r.flowRecovery = &flowRecovery
+	return r
+}
+
+func (r ApiCoreBrandsListRequest) FlowRequest(flowRequest string) ApiCoreBrandsListRequest {
+	r.flowRequest = &flowRequest
 	return r
 }
 
@@ -241,6 +247,9 @@ func (a *CoreAPIService) CoreBrandsListExecute(r ApiCoreBrandsListRequest) (*Pag
 	}
 	if r.flowRecovery != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "flow_recovery", r.flowRecovery, "form", "")
+	}
+	if r.flowRequest != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "flow_request", r.flowRequest, "form", "")
 	}
 	if r.flowUnenrollment != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "flow_unenrollment", r.flowUnenrollment, "form", "")

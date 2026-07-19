@@ -3264,6 +3264,11 @@ paths:
           type: string
           format: uuid
       - in: query
+        name: flow_request
+        schema:
+          type: string
+          format: uuid
+      - in: query
         name: flow_unenrollment
         schema:
           type: string
@@ -37021,6 +37026,10 @@ components:
           type: string
           format: uuid
           nullable: true
+        flow_request:
+          type: string
+          format: uuid
+          nullable: true
         default_application:
           type: string
           format: uuid
@@ -37094,6 +37103,10 @@ components:
           format: uuid
           nullable: true
         flow_lockdown:
+          type: string
+          format: uuid
+          nullable: true
+        flow_request:
           type: string
           format: uuid
           nullable: true
@@ -38091,6 +38104,8 @@ components:
         flow_device_code:
           type: string
         flow_lockdown:
+          type: string
+        flow_request:
           type: string
         default_locale:
           type: string
@@ -49284,6 +49299,10 @@ components:
           type: string
           format: uuid
           nullable: true
+        flow_request:
+          type: string
+          format: uuid
+          nullable: true
         default_application:
           type: string
           format: uuid
@@ -51698,6 +51717,10 @@ components:
           minimum: 0
         min_reviewers_is_per_group:
           type: boolean
+        request_flow:
+          type: string
+          format: uuid
+          nullable: true
     PatchedRoleRequest:
       type: object
       description: Role serializer
@@ -54992,6 +55015,10 @@ components:
           minimum: 0
         min_reviewers_is_per_group:
           type: boolean
+        request_flow:
+          type: string
+          format: uuid
+          nullable: true
       required:
       - name
       - pbm_uuid
@@ -55110,6 +55137,10 @@ components:
           minimum: 0
         min_reviewers_is_per_group:
           type: boolean
+        request_flow:
+          type: string
+          format: uuid
+          nullable: true
       required:
       - name
     RequestStatus:
