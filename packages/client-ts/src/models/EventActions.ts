@@ -49,6 +49,7 @@ export const EventActions = {
     ReviewOverdue: "review_overdue",
     ReviewAttested: "review_attested",
     ReviewCompleted: "review_completed",
+    AccessRequestCreated: "access_request_created",
     Custom: "custom_",
     UnknownDefaultOpenApi: "11184809",
 } as const;

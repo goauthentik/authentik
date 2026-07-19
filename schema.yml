@@ -3011,6 +3011,51 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+  /core/applications/requestable/:
+    get:
+      operationId: core_applications_requestable_list
+      description: List applications which the current user can request access to
+      parameters:
+      - in: query
+        name: group
+        schema:
+          type: string
+      - in: query
+        name: meta_description
+        schema:
+          type: string
+      - in: query
+        name: meta_launch_url
+        schema:
+          type: string
+      - in: query
+        name: meta_publisher
+        schema:
+          type: string
+      - $ref: '#/components/parameters/QueryName'
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
+      - in: query
+        name: slug
+        schema:
+          type: string
+      tags:
+      - core
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedApplicationList'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
   /core/authenticated_sessions/:
     get:
       operationId: core_authenticated_sessions_list
@@ -39739,6 +39784,7 @@ components:
       - review_overdue
       - review_attested
       - review_completed
+      - access_request_created
       - custom_
       type: string
     EventMatcherPolicy:
@@ -41278,6 +41324,9 @@ components:
       - user
     GrantRequest:
       type: object
+      description: |-
+        Mixin to validate that a valid enterprise license
+        exists before allowing to save the object
       properties:
         created:
           type: string
@@ -44693,6 +44742,12 @@ components:
       - created
       - pk
       - severity
+    NotificationModeEnum:
+      enum:
+      - all
+      - direct
+      - random_min_reviewers
+      type: string
     NotificationRequest:
       type: object
       description: Notification Serializer
@@ -51589,6 +51644,9 @@ components:
           minimum: -2147483648
     PatchedRequestRuleBindingRequest:
       type: object
+      description: |-
+        Mixin to validate that a valid enterprise license
+        exists before allowing to save the object
       properties:
         uuid:
           type: string
@@ -51615,6 +51673,9 @@ components:
           format: uuid
     PatchedRequestRuleRequest:
       type: object
+      description: |-
+        Mixin to validate that a valid enterprise license
+        exists before allowing to save the object
       properties:
         uuid:
           type: string
@@ -51624,6 +51685,19 @@ components:
         name:
           type: string
           minLength: 1
+        notification_transports:
+          type: array
+          items:
+            type: string
+            format: uuid
+        notification_mode:
+          $ref: '#/components/schemas/NotificationModeEnum'
+        min_reviewers:
+          type: integer
+          maximum: 32767
+          minimum: 0
+        min_reviewers_is_per_group:
+          type: boolean
     PatchedRoleRequest:
       type: object
       description: Role serializer
@@ -54884,6 +54958,9 @@ components:
       type: string
     RequestRule:
       type: object
+      description: |-
+        Mixin to validate that a valid enterprise license
+        exists before allowing to save the object
       properties:
         uuid:
           type: string
@@ -54902,12 +54979,28 @@ components:
             type: string
             format: uuid
           readOnly: true
+        notification_transports:
+          type: array
+          items:
+            type: string
+            format: uuid
+        notification_mode:
+          $ref: '#/components/schemas/NotificationModeEnum'
+        min_reviewers:
+          type: integer
+          maximum: 32767
+          minimum: 0
+        min_reviewers_is_per_group:
+          type: boolean
       required:
       - name
       - pbm_uuid
       - targets
     RequestRuleBinding:
       type: object
+      description: |-
+        Mixin to validate that a valid enterprise license
+        exists before allowing to save the object
       properties:
         uuid:
           type: string
@@ -54942,6 +55035,9 @@ components:
       - target
     RequestRuleBindingRequest:
       type: object
+      description: |-
+        Mixin to validate that a valid enterprise license
+        exists before allowing to save the object
       properties:
         uuid:
           type: string
@@ -54989,6 +55085,9 @@ components:
       - target
     RequestRuleRequest:
       type: object
+      description: |-
+        Mixin to validate that a valid enterprise license
+        exists before allowing to save the object
       properties:
         uuid:
           type: string
@@ -54998,6 +55097,19 @@ components:
         name:
           type: string
           minLength: 1
+        notification_transports:
+          type: array
+          items:
+            type: string
+            format: uuid
+        notification_mode:
+          $ref: '#/components/schemas/NotificationModeEnum'
+        min_reviewers:
+          type: integer
+          maximum: 32767
+          minimum: 0
+        min_reviewers_is_per_group:
+          type: boolean
       required:
       - name
     RequestStatus:

@@ -16,7 +16,8 @@ import type { PolicyEngineMode } from "./PolicyEngineMode";
 import { PolicyEngineModeFromJSON, PolicyEngineModeToJSON } from "./PolicyEngineMode";
 
 /**
- *
+ * Mixin to validate that a valid enterprise license
+ * exists before allowing to save the object
  * @export
  * @interface PatchedRequestRuleBindingRequest
  */

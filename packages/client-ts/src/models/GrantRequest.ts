@@ -20,7 +20,8 @@ import type { RequestStatus } from "./RequestStatus";
 import { RequestStatusFromJSON } from "./RequestStatus";
 
 /**
- *
+ * Mixin to validate that a valid enterprise license
+ * exists before allowing to save the object
  * @export
  * @interface GrantRequest
  */

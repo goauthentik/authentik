@@ -18,7 +18,8 @@ import type { RequestRule } from "./RequestRule";
 import { RequestRuleFromJSON } from "./RequestRule";
 
 /**
- *
+ * Mixin to validate that a valid enterprise license
+ * exists before allowing to save the object
  * @export
  * @interface RequestRuleBinding
  */

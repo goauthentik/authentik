@@ -326,6 +326,7 @@ export * from "./NetworkInterfaceRequest";
 export * from "./NetworkRequest";
 export * from "./NotConfiguredActionEnum";
 export * from "./Notification";
+export * from "./NotificationModeEnum";
 export * from "./NotificationRequest";
 export * from "./NotificationRule";
 export * from "./NotificationRuleRequest";

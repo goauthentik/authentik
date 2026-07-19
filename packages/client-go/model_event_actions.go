@@ -53,6 +53,7 @@ const (
 	EVENTACTIONS_REVIEW_OVERDUE             EventActions = "review_overdue"
 	EVENTACTIONS_REVIEW_ATTESTED            EventActions = "review_attested"
 	EVENTACTIONS_REVIEW_COMPLETED           EventActions = "review_completed"
+	EVENTACTIONS_ACCESS_REQUEST_CREATED     EventActions = "access_request_created"
 	EVENTACTIONS_CUSTOM                     EventActions = "custom_"
 )
 
@@ -90,6 +91,7 @@ var AllowedEventActionsEnumValues = []EventActions{
 	"review_overdue",
 	"review_attested",
 	"review_completed",
+	"access_request_created",
 	"custom_",
 }
 

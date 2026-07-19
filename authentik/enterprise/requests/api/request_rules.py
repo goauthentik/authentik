@@ -16,6 +16,10 @@ class RequestRuleSerializer(EnterpriseRequiredMixin, ModelSerializer):
             "policy_engine_mode",
             "name",
             "targets",
+            "notification_transports",
+            "notification_mode",
+            "min_reviewers",
+            "min_reviewers_is_per_group",
         ]
 
 
