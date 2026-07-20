@@ -15,9 +15,9 @@ import type {
 export const HEXWORLD_ATTRIBUTION = "© OpenStreetMap (labels) · Natural Earth";
 
 export interface HexworldStyleOptions {
-    archiveUrl: string;
+    archiveURL: string;
     theme?: BasemapTheme;
-    glyphsUrl?: string;
+    glyphsURL?: string;
     attribution?: string;
     /**
      * Highest zoom at which the archive carries hex and border geometry.
@@ -64,11 +64,7 @@ const PALETTES: Record<BasemapTheme, Palette> = {
 };
 
 const DEFAULT_GLYPHS = "/static/dist/assets/maps/fonts/{fontstack}/{range}.pbf";
-const TEXT_FIELD: ExpressionSpecification = [
-    "coalesce",
-    ["get", "name:en"],
-    ["get", "name"],
-];
+const TEXT_FIELD: ExpressionSpecification = ["coalesce", ["get", "name:en"], ["get", "name"]];
 const FONT = ["Noto Sans Regular"];
 
 const LABEL_KINDS = ["country", "region", "locality"] as const;
@@ -104,32 +100,32 @@ export function buildHexworldStyle(options: HexworldStyleOptions): StyleSpecific
     };
 
     const hexFill: FillLayerSpecification = {
-        id: "hexworld-hex",
-        type: "fill",
-        source: "hexworld",
+        "id": "hexworld-hex",
+        "type": "fill",
+        "source": "hexworld",
         "source-layer": "hex",
-        paint: { "fill-color": eventPaint, "fill-opacity": 0.95 },
+        "paint": { "fill-color": eventPaint, "fill-opacity": 0.95 },
     };
 
     const hexOutline: LineLayerSpecification = {
-        id: "hexworld-hex-outline",
-        type: "line",
-        source: "hexworld",
+        "id": "hexworld-hex-outline",
+        "type": "line",
+        "source": "hexworld",
         "source-layer": "hex",
-        paint: { "line-color": palette.hexOutline, "line-width": 0.5 },
+        "paint": { "line-color": palette.hexOutline, "line-width": 0.5 },
     };
 
     const regionBorders: LineLayerSpecification = {
-        id: "hexworld-region-borders",
-        type: "line",
-        source: "hexworld",
+        "id": "hexworld-region-borders",
+        "type": "line",
+        "source": "hexworld",
         "source-layer": "borders",
         // Res 4 (~52 km cells) is the finest band we ship, so admin-1 borders
         // only carry useful signal from z4 onward — anything lower turns the
         // continents into a mesh.
-        minzoom: 4,
-        filter: ["==", ["get", "level"], 1],
-        paint: {
+        "minzoom": 4,
+        "filter": ["==", ["get", "level"], 1],
+        "paint": {
             "line-color": palette.regionBorder,
             "line-width": ["interpolate", ["linear"], ["zoom"], 4, 0.6, 8, 1.0],
             "line-opacity": 0.7,
@@ -137,15 +133,15 @@ export function buildHexworldStyle(options: HexworldStyleOptions): StyleSpecific
     };
 
     const borders: LineLayerSpecification = {
-        id: "hexworld-borders",
-        type: "line",
-        source: "hexworld",
+        "id": "hexworld-borders",
+        "type": "line",
+        "source": "hexworld",
         "source-layer": "borders",
-        filter: ["==", ["get", "level"], 0],
+        "filter": ["==", ["get", "level"], 0],
         // Scaled so borders remain visible at world zoom without turning into
         // slabs when zoomed in — heavier than the hex outline and the region
         // border layer at every stop.
-        paint: {
+        "paint": {
             "line-color": palette.border,
             "line-width": ["interpolate", ["linear"], ["zoom"], 0, 0.9, 4, 1.4, 8, 2.2],
             "line-opacity": 0.9,
@@ -153,18 +149,18 @@ export function buildHexworldStyle(options: HexworldStyleOptions): StyleSpecific
     };
 
     const labelLayers: SymbolLayerSpecification[] = LABEL_KINDS.map((kind) => ({
-        id: `hexworld-label-${kind}`,
-        type: "symbol",
-        source: "hexworld",
+        "id": `hexworld-label-${kind}`,
+        "type": "symbol",
+        "source": "hexworld",
         "source-layer": "places",
-        minzoom: LABEL_MIN_ZOOM[kind],
-        filter: ["==", ["get", "kind"], kind],
-        layout: {
+        "minzoom": LABEL_MIN_ZOOM[kind],
+        "filter": ["==", ["get", "kind"], kind],
+        "layout": {
             "text-field": TEXT_FIELD,
             "text-font": FONT,
             "text-size": LABEL_TEXT_SIZE[kind],
         },
-        paint: {
+        "paint": {
             "text-color": palette.text,
             "text-halo-color": palette.textHalo,
             "text-halo-width": 1.2,
@@ -175,11 +171,11 @@ export function buildHexworldStyle(options: HexworldStyleOptions): StyleSpecific
         version: 8,
         projection: { type: "globe" },
         sky: buildSky(options.theme ?? "light"),
-        glyphs: options.glyphsUrl ?? DEFAULT_GLYPHS,
+        glyphs: options.glyphsURL ?? DEFAULT_GLYPHS,
         sources: {
             hexworld: {
                 type: "vector",
-                url: `pmtiles://${options.archiveUrl}`,
+                url: `pmtiles://${options.archiveURL}`,
                 promoteId: { hex: "h3" },
                 attribution: options.attribution ?? HEXWORLD_ATTRIBUTION,
                 // Must match the highest zoom at which the shipped archive

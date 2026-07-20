@@ -11,15 +11,15 @@ export interface BuildStyleOptions {
      * URL of a single PMTiles archive (preferred). May be absolute or
      * root-relative; the `pmtiles://` protocol is added automatically.
      */
-    pmtilesUrl?: string;
+    pmtilesURL?: string;
     /**
      * Legacy XYZ tile template (e.g. served by a tile server). Used only when
-     * `pmtilesUrl` is not given.
+     * `pmtilesURL` is not given.
      */
-    tileUrl?: string;
+    tileURL?: string;
     theme?: BasemapTheme;
     /** A Protomaps `Flavor`, or one of the named flavors. Overrides `theme`. */
-    flavor?: Flavor | FlavorName;
+    flavor?: Flavor | FlavorName | null;
     glyphsUrl?: string;
     spriteUrl?: string;
     lang?: string;
@@ -35,7 +35,7 @@ const DEFAULT_GLYPHS = "https://protomaps.github.io/basemaps-assets/fonts/{fonts
 // public-domain Natural Earth. OSM attribution is required.
 const DEFAULT_ATTRIBUTION =
     '<a href="https://openstreetmap.org/copyright" target="_blank" rel="noopener">' +
-    "© OpenStreetMap</a>, <a href=\"https://www.naturalearthdata.com\" " +
+    '© OpenStreetMap</a>, <a href="https://www.naturalearthdata.com" ' +
     'target="_blank" rel="noopener">Natural Earth</a>';
 
 export function flavorForTheme(theme: BasemapTheme): Flavor {
@@ -70,7 +70,7 @@ function resolveFlavor(options: BuildStyleOptions): Flavor {
 }
 
 /** Resolve a possibly-relative URL against the current document origin. */
-export function resolveTileUrl(template: string): string {
+export function resolveTileURL(template: string): string {
     if (/^https?:\/\//i.test(template)) return template;
     if (typeof window !== "undefined" && window.location) {
         return new URL(template, window.location.href).toString();
@@ -85,23 +85,23 @@ export function buildBasemapStyle(options: BuildStyleOptions): StyleSpecificatio
 
     let source: StyleSpecification["sources"][string];
 
-    if (options.pmtilesUrl) {
+    if (options.pmtilesURL) {
         // A single PMTiles archive served as a static file. The pmtiles
         // protocol supplies the TileJSON (incl. the archive's max zoom).
         source = {
             type: "vector",
-            url: `pmtiles://${resolveTileUrl(options.pmtilesUrl)}`,
+            url: `pmtiles://${resolveTileURL(options.pmtilesURL)}`,
             attribution,
         };
-    } else if (options.tileUrl) {
+    } else if (options.tileURL) {
         source = {
             type: "vector",
-            tiles: [resolveTileUrl(options.tileUrl)],
+            tiles: [resolveTileURL(options.tileURL)],
             attribution,
             maxzoom: options.maxzoom ?? 7,
         };
     } else {
-        throw new Error("buildBasemapStyle requires either pmtilesUrl or tileUrl");
+        throw new Error("buildBasemapStyle requires either pmtilesURL or tileURL");
     }
 
     const style: StyleSpecification = {

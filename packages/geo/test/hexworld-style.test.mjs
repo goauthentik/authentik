@@ -1,9 +1,9 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 
-import { HEXWORLD_ATTRIBUTION, buildHexworldStyle } from "../out/hexworld/style.js";
+import { buildHexworldStyle, HEXWORLD_ATTRIBUTION } from "../out/hexworld/style.js";
 
-const style = buildHexworldStyle({ archiveUrl: "/static/dist/assets/maps/hexworld.pmtiles" });
+const style = buildHexworldStyle({ archiveURL: "/static/dist/assets/maps/hexworld.pmtiles" });
 
 test("style uses the pmtiles protocol with promoted h3 ids", () => {
     const source = style.sources.hexworld;
@@ -18,7 +18,7 @@ test("style uses the pmtiles protocol with promoted h3 ids", () => {
 });
 
 test("source maxzoom is overridable for a finer archive cut", () => {
-    const r5 = buildHexworldStyle({ archiveUrl: "/x.pmtiles", maxzoom: 8 });
+    const r5 = buildHexworldStyle({ archiveURL: "/x.pmtiles", maxzoom: 8 });
     assert.equal(r5.sources.hexworld.maxzoom, 8);
 });
 
@@ -63,7 +63,7 @@ test("airgap: default style references no absolute URLs", () => {
 });
 
 test("dark theme swaps palette", () => {
-    const dark = buildHexworldStyle({ archiveUrl: "/x.pmtiles", theme: "dark" });
+    const dark = buildHexworldStyle({ archiveURL: "/x.pmtiles", theme: "dark" });
     const bg = (id, s) => s.layers.find((l) => l.id === id).paint["background-color"];
     assert.notEqual(bg("hexworld-background", dark), bg("hexworld-background", style));
 });

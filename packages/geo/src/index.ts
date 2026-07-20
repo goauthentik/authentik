@@ -3,14 +3,14 @@ export {
     type BasemapTheme,
     buildBasemapStyle,
     type BuildStyleOptions,
-    type FlavorName,
     flavorForTheme,
-    resolveTileUrl,
+    type FlavorName,
+    resolveTileURL,
 } from "./style.js";
-export { HEX_BANDS, type HexBand, bandForZoom } from "./hexworld/bands.js";
-export { type GeoPoint, cellCounts } from "./hexworld/events.js";
+export { bandForZoom, HEX_BANDS, type HexBand } from "./hexworld/bands.js";
+export { cellCounts, type GeoPoint } from "./hexworld/events.js";
 export {
+    buildHexworldStyle,
     HEXWORLD_ATTRIBUTION,
     type HexworldStyleOptions,
-    buildHexworldStyle,
 } from "./hexworld/style.js";

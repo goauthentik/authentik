@@ -8,7 +8,7 @@ import { Protocol } from "pmtiles";
 import { css, html, LitElement, type PropertyValues, unsafeCSS } from "lit";
 import { customElement, property, query } from "lit/decorators.js";
 
-import maplibreCss from "maplibre-gl/dist/maplibre-gl.css";
+import MaplibreStyles from "maplibre-gl/dist/maplibre-gl.css";
 
 export interface MapMarker {
     id: string;
@@ -43,51 +43,55 @@ function ensurePmtilesProtocol(): void {
 export class AkMap extends LitElement {
     /**
      * URL of a conventional PMTiles basemap archive (Protomaps schema).
-     * Empty triggers hexworld mode with `hexworldUrl` — the zero-config default.
+     * Empty triggers hexworld mode with `hexworldURL` — the zero-config default.
      */
     @property({ type: String, attribute: "pmtiles-url" })
-    pmtilesUrl = "";
+    public pmtilesURL = "";
 
-    /** URL of the bundled hexworld PMTiles archive (used when `pmtilesUrl` is empty). */
+    /**
+     * URL of the bundled hexworld PMTiles archive (used when `pmtilesURL` is empty).
+     */
     @property({ type: String, attribute: "hexworld-url" })
-    hexworldUrl = "/static/dist/assets/maps/hexworld.pmtiles";
+    public hexworldURL = "/static/dist/assets/maps/hexworld.pmtiles";
 
     @property({ type: String })
-    theme: BasemapTheme = "light";
+    public theme: BasemapTheme = "light";
 
     /** Optional explicit flavor; overrides `theme` (light/dark/grayscale/black). */
     @property({ type: String })
-    flavor?: FlavorName;
+    public flavor: FlavorName | null = null;
 
     @property({ type: String, attribute: "lang" })
-    lang = "en";
+    public lang = "en";
 
     @property({ type: Number, attribute: "max-zoom" })
-    maxZoom = DEFAULT_MAX_ZOOM;
+    public maxZoom = DEFAULT_MAX_ZOOM;
 
     @property({ type: Number, attribute: "fit-padding" })
-    fitPadding = DEFAULT_FIT_PADDING;
+    public fitPadding = DEFAULT_FIT_PADDING;
 
     @property({ type: Number, attribute: "max-fit-zoom" })
-    maxFitZoom = MAX_FIT_ZOOM;
+    public maxFitZoom = MAX_FIT_ZOOM;
 
     @property({ attribute: false })
-    markers: MapMarker[] = [];
+    public markers: MapMarker[] = [];
 
     @query("#map")
     private mapContainer?: HTMLDivElement;
 
-    #map?: MapLibreMap;
+    protected map?: MapLibreMap;
+
+    #mapCreatedThisCycle = false;
     #mapReady = false;
     #markerInstances = new Map<string, maplibregl.Marker>();
     #litCells = new Set<string>();
 
     get #hexworldMode(): boolean {
-        return !this.pmtilesUrl.trim();
+        return !this.pmtilesURL.trim();
     }
 
     static styles = [
-        unsafeCSS(maplibreCss),
+        unsafeCSS(MaplibreStyles),
         css`
             :host {
                 display: block;
@@ -106,20 +110,29 @@ export class AkMap extends LitElement {
         `,
     ];
 
-    disconnectedCallback(): void {
+    public override disconnectedCallback(): void {
         super.disconnectedCallback();
         this.#destroyMap();
     }
 
-    firstUpdated(): void {
+    protected override firstUpdated(): void {
         this.#initialiseMap();
     }
 
-    updated(changed: PropertyValues<this>): void {
-        if (!this.#map) return;
+    protected override updated(changed: PropertyValues<this>): void {
+        if (!this.map) return;
+        // The first updated() call after firstUpdated() reports every
+        // initially-set property as changed, but the map was just constructed
+        // from those exact values. Re-applying the style here means calling
+        // setStyle() while the constructor's style is still parsing, which
+        // MapLibre (observed on 5.24) answers with a permanently empty style.
+        if (this.#mapCreatedThisCycle) {
+            this.#mapCreatedThisCycle = false;
+            return;
+        }
         if (
-            changed.has("pmtilesUrl") ||
-            changed.has("hexworldUrl") ||
+            changed.has("pmtilesURL") ||
+            changed.has("hexworldURL") ||
             changed.has("theme") ||
             changed.has("flavor") ||
             changed.has("lang")
@@ -127,7 +140,7 @@ export class AkMap extends LitElement {
             this.#applyStyle();
         }
         if (changed.has("maxZoom")) {
-            this.#map.setMaxZoom(this.maxZoom);
+            this.map.setMaxZoom(this.maxZoom);
         }
         if (changed.has("markers")) {
             this.#syncMarkers();
@@ -140,9 +153,10 @@ export class AkMap extends LitElement {
     }
 
     #initialiseMap() {
-        if (!this.mapContainer || this.#map) return;
+        if (!this.mapContainer || this.map) return;
         ensurePmtilesProtocol();
-        this.#map = new maplibregl.Map({
+        this.#mapCreatedThisCycle = true;
+        this.map = new maplibregl.Map({
             container: this.mapContainer,
             style: this.#styleSpec(),
             attributionControl: { compact: true },
@@ -151,12 +165,12 @@ export class AkMap extends LitElement {
             zoom: DEFAULT_ZOOM,
             maxZoom: this.maxZoom,
         });
-        this.#map.once("load", () => {
+        this.map.once("load", () => {
             this.#mapReady = true;
             this.#syncMarkers();
             this.#syncHexStates();
         });
-        this.#map.on("zoomend", () => this.#syncHexStates());
+        this.map.on("zoomend", () => this.#syncHexStates());
     }
 
     #destroyMap() {
@@ -165,17 +179,17 @@ export class AkMap extends LitElement {
         }
         this.#markerInstances.clear();
         this.#litCells.clear();
-        this.#map?.remove();
-        this.#map = undefined;
+        this.map?.remove();
+        this.map = undefined;
         this.#mapReady = false;
     }
 
     #styleSpec() {
         if (this.#hexworldMode) {
-            return buildHexworldStyle({ archiveUrl: this.hexworldUrl, theme: this.theme });
+            return buildHexworldStyle({ archiveURL: this.hexworldURL, theme: this.theme });
         }
         return buildBasemapStyle({
-            pmtilesUrl: this.pmtilesUrl,
+            pmtilesURL: this.pmtilesURL,
             theme: this.theme,
             flavor: this.flavor,
             lang: this.lang,
@@ -183,25 +197,25 @@ export class AkMap extends LitElement {
     }
 
     #syncHexStates() {
-        if (!this.#map || !this.#mapReady || !this.#hexworldMode) return;
+        if (!this.map || !this.#mapReady || !this.#hexworldMode) return;
         const target = { source: "hexworld", sourceLayer: "hex" } as const;
         for (const cell of this.#litCells) {
-            this.#map.removeFeatureState({ ...target, id: cell });
+            this.map.removeFeatureState({ ...target, id: cell });
         }
         this.#litCells.clear();
-        const counts = cellCounts(this.markers, this.#map.getZoom());
+        const counts = cellCounts(this.markers, this.map.getZoom());
         for (const [cell, events] of counts) {
-            this.#map.setFeatureState({ ...target, id: cell }, { events });
+            this.map.setFeatureState({ ...target, id: cell }, { events });
             this.#litCells.add(cell);
         }
     }
 
     #applyStyle() {
-        this.#map?.setStyle(this.#styleSpec(), { diff: false });
+        this.map?.setStyle(this.#styleSpec(), { diff: false });
     }
 
     #syncMarkers() {
-        if (!this.#map || !this.#mapReady) return;
+        if (!this.map || !this.#mapReady) return;
 
         const incoming = new Map(this.markers.map((m) => [m.id, m]));
 
@@ -219,7 +233,7 @@ export class AkMap extends LitElement {
                 continue;
             }
             const instance = this.#buildMarker(marker);
-            instance.addTo(this.#map);
+            instance.addTo(this.map);
             this.#markerInstances.set(marker.id, instance);
         }
 
@@ -255,14 +269,14 @@ export class AkMap extends LitElement {
     }
 
     #fitToMarkers() {
-        if (!this.#map || this.markers.length === 0) return;
+        if (!this.map || this.markers.length === 0) return;
         const lons = this.markers.map((m) => m.lon);
         const lats = this.markers.map((m) => m.lat);
         const bounds: LngLatBoundsLike = [
             [Math.min(...lons), Math.min(...lats)],
             [Math.max(...lons), Math.max(...lats)],
         ];
-        this.#map.fitBounds(bounds, {
+        this.map.fitBounds(bounds, {
             padding: this.fitPadding,
             duration: 500,
             maxZoom: this.maxFitZoom,
