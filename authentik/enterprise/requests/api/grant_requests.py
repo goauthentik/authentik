@@ -27,7 +27,7 @@ from authentik.core.api.utils import (
 from authentik.enterprise.api import EnterpriseRequiredMixin
 from authentik.enterprise.requests.api.apps import (
     RequestableTargetSerializer,
-    granting_rules,
+    granting_rule_bindings,
     user_can_request,
 )
 from authentik.enterprise.requests.models import (
@@ -152,11 +152,11 @@ class GrantRequestViewSet(RetrieveModelMixin, DestroyModelMixin, ListModelMixin,
     def create(self, request: Request, body: GrantRequestCreateSerializer) -> Response:
         brand: Brand = request.brand
         pbms = body.validated_data["pbms"]
-        rules = granting_rules(pbms, request.user, request)
+        rule_bindings = granting_rule_bindings(pbms, request.user, request).select_related("rule")
         # If every rule that granted access to one of the requested pbms agrees on a
         # single request flow, prefer it over the brand's default.
         flow = brand.flow_request
-        shared_flows = set(rules.values_list("request_flow", flat=True))
+        shared_flows = set(rule_bindings.values_list("rule__request_flow", flat=True))
         if len(shared_flows) == 1:
             (shared_flow_pk,) = shared_flows
             if shared_flow_pk is not None:
