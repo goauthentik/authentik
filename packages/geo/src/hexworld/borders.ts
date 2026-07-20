@@ -34,14 +34,18 @@ export interface BorderAssignments {
     land?: Set<string>;
 }
 
+interface BorderEdge {
+    cell: string;
+    neighbor: string;
+    level: 0 | 1;
+    aCode: string;
+    bCode: string;
+}
+
 function pushBorder(
     features: BorderFeature[],
     seen: Set<string>,
-    cell: string,
-    neighbor: string,
-    level: 0 | 1,
-    aCode: string,
-    bCode: string,
+    { cell, neighbor, level, aCode, bCode }: BorderEdge,
 ): void {
     const [first, second] = cell < neighbor ? [cell, neighbor] : [neighbor, cell];
     const key = `${first}|${second}`;
@@ -93,19 +97,37 @@ export function borderEdges(assignments: BorderAssignments): BorderFeature[] {
                 : country.has(neighbor);
             if (!neighborIsLand) {
                 if (land) {
-                    pushBorder(features, seen, cell, neighbor, 0, cellCountry, OCEAN_CODE);
+                    pushBorder(features, seen, {
+                        cell,
+                        neighbor,
+                        level: 0,
+                        aCode: cellCountry,
+                        bCode: OCEAN_CODE,
+                    });
                 }
                 continue;
             }
             const neighborCountry = country.get(neighbor) ?? OCEAN_CODE;
             if (neighborCountry !== cellCountry) {
-                pushBorder(features, seen, cell, neighbor, 0, cellCountry, neighborCountry);
+                pushBorder(features, seen, {
+                    cell,
+                    neighbor,
+                    level: 0,
+                    aCode: cellCountry,
+                    bCode: neighborCountry,
+                });
                 continue;
             }
             if (!region) continue;
             const neighborRegion = region.get(neighbor);
             if (!cellRegion || !neighborRegion || cellRegion === neighborRegion) continue;
-            pushBorder(features, seen, cell, neighbor, 1, cellRegion, neighborRegion);
+            pushBorder(features, seen, {
+                cell,
+                neighbor,
+                level: 1,
+                aCode: cellRegion,
+                bCode: neighborRegion,
+            });
         }
     }
     return features;

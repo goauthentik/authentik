@@ -1,3 +1,5 @@
+import { MAX_BAND_ZOOM } from "./bands.js";
+
 import { type BasemapTheme, buildSky } from "../style.js";
 
 import type {
@@ -21,7 +23,8 @@ export interface HexworldStyleOptions {
     attribution?: string;
     /**
      * Highest zoom at which the archive carries hex and border geometry.
-     * Defaults to the shipped res 3+4 cut. See the note on the source below.
+     * Defaults to the last entry in HEX_BANDS, which is what the shipped
+     * archive is built from.
      */
     maxzoom?: number;
 }
@@ -178,13 +181,14 @@ export function buildHexworldStyle(options: HexworldStyleOptions): StyleSpecific
                 url: `pmtiles://${options.archiveURL}`,
                 promoteId: { hex: "h3" },
                 attribution: options.attribution ?? HEXWORLD_ATTRIBUTION,
-                // Must match the highest zoom at which the shipped archive
-                // actually carries hex and border geometry. The bundled cut is
-                // res 3+4, so that is z6, and MapLibre overzooms past it.
-                // Declaring anything higher makes MapLibre fetch the real
-                // z7/z8 tiles, which hold only the places layer: land and
-                // borders disappear and labels float on empty ocean.
-                maxzoom: options.maxzoom ?? 6,
+                // Derived from HEX_BANDS so it cannot drift from what the
+                // archive actually carries. Declaring a higher value makes
+                // MapLibre fetch real tiles beyond the last band, which hold
+                // only the places layer: land and borders vanish and labels
+                // float on empty ocean. Declaring a lower one wastes the
+                // finest band entirely, since MapLibre overzooms instead of
+                // fetching it.
+                maxzoom: options.maxzoom ?? MAX_BAND_ZOOM,
             },
         },
         // Region borders sit under country borders so the country line wins

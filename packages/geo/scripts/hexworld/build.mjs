@@ -6,7 +6,7 @@ import { existsSync, mkdirSync, statSync, writeFileSync } from "node:fs";
 import { readFile, writeFile } from "node:fs/promises";
 import { parseArgs } from "node:util";
 
-import { HEX_BANDS } from "../../out/hexworld/bands.js";
+import { MAX_BAND_ZOOM } from "../../out/hexworld/bands.js";
 import { borderEdges } from "../../out/hexworld/borders.js";
 import {
     assignCountries,
@@ -28,6 +28,18 @@ const COUNTRIES_URL = `${NE_BASE}/ne_50m_admin_0_countries.geojson`;
 // Detail past the ~52 km res-4 cell gets collapsed to cell edges anyway, so
 // the higher-res source doesn't cost anything at render time.
 const REGIONS_URL = `${NE_BASE}/ne_10m_admin_1_states_provinces.geojson`;
+
+function withResProp(feature, res) {
+    return {
+        ...feature,
+        properties: { ...feature.properties, res },
+    };
+}
+
+function stripCellProps(edge) {
+    const { aCell: _aCell, bCell: _bCell, ...properties } = edge.properties;
+    return { ...edge, properties };
+}
 
 const TILE_FLAGS = [
     "--force",
@@ -51,8 +63,8 @@ function hexSlices() {
     return [
         { label: "hex-r3", res: 3, minzoom: 0, maxzoom: 2 },
         { label: "hex-r4", res: 4, minzoom: 3, maxzoom: 6 },
-        { label: "hex-r4-base", res: 4, minzoom: 7, maxzoom: 8 },
-        { label: "hex-r5", res: 5, minzoom: 7, maxzoom: 8 },
+        { label: "hex-r4-base", res: 4, minzoom: 7, maxzoom: 7 },
+        { label: "hex-r5", res: 5, minzoom: 7, maxzoom: 7 },
     ];
 }
 
@@ -60,8 +72,8 @@ function borderSlices() {
     return [
         { label: "borders-r3", res: 3, minzoom: 0, maxzoom: 2 },
         { label: "borders-r4", res: 4, minzoom: 3, maxzoom: 6 },
-        { label: "borders-r4-base", res: 4, minzoom: 7, maxzoom: 8 },
-        { label: "borders-r5", res: 5, minzoom: 7, maxzoom: 8 },
+        { label: "borders-r4-base", res: 4, minzoom: 7, maxzoom: 7 },
+        { label: "borders-r5", res: 5, minzoom: 7, maxzoom: 7 },
     ];
 }
 
@@ -101,27 +113,32 @@ export function buildPlan({ outDir, localities }) {
         "--no-tile-size-limit",
         "-r1",
         "-Z0",
-        "-z8",
+        "-z" + MAX_BAND_ZOOM,
         "-l",
         "places",
         "-o",
         `${outDir}/places.pmtiles`,
         `${outDir}/places-${localities}.geojsonl`,
     ]);
-    for (const cut of [4, 5]) {
-        const wantedRes = HEX_BANDS.filter((band) => band.res <= cut).map((b) => b.res);
+    // `detail` is the shipped archive: every slice, including the zoned res-5
+    // overlay and the res-4 base it sits on. `plain` drops the whole z7 detail
+    // band for anyone who wants the small archive. Filtering by `res <= cut`
+    // was wrong once the detail band existed — it silently dropped the res-5
+    // overlay AND left z7 with a base fill and no borders.
+    for (const cut of ["detail", "plain"]) {
+        const keep = (s) => cut === "detail" || s.minzoom < 7;
         const hexPieces = hexSlices()
-            .filter((s) => wantedRes.includes(s.res))
+            .filter(keep)
             .map((s) => `${outDir}/${s.label}.pmtiles`);
         const borderPieces = borderSlices()
-            .filter((s) => wantedRes.includes(s.res))
+            .filter(keep)
             .map((s) => `${outDir}/${s.label}.pmtiles`);
         plan.push([
             "tile-join",
             "--force",
             "--no-tile-size-limit",
             "-o",
-            `${outDir}/hexworld-r${cut}.pmtiles`,
+            `${outDir}/hexworld-${cut}.pmtiles`,
             ...hexPieces,
             ...borderPieces,
             `${outDir}/places.pmtiles`,
@@ -168,7 +185,7 @@ async function main() {
             out: { type: "string", default: "tiles" },
             localities: { type: "string", default: "50000" },
             "detail-ring": { type: "string", default: "1" },
-            "detail-min-pop": { type: "string", default: "0" },
+            "detail-min-pop": { type: "string", default: "50000" },
             "dry-run": { type: "boolean", default: false },
         },
     });
@@ -274,27 +291,17 @@ async function main() {
         if (result.status !== 0) throw new Error(`${cmd[0]} exited ${result.status}`);
     }
 
-    for (const cut of [4, 5]) {
-        const size = statSync(`${outDir}/hexworld-r${cut}.pmtiles`).size;
-        console.log(`hexworld-r${cut}.pmtiles  ${(size / 1024 / 1024).toFixed(1)} MB`);
+    for (const cut of ["detail", "plain"]) {
+        const size = statSync(`${outDir}/hexworld-${cut}.pmtiles`).size;
+        console.log(`hexworld-${cut}.pmtiles  ${(size / 1024 / 1024).toFixed(1)} MB`);
     }
 }
 
-function withResProp(feature, res) {
-    return {
-        ...feature,
-        properties: { ...feature.properties, res },
-    };
-}
 
 // The generator carries the H3 cell ids on border features so downstream
 // filtering (res-4 base zone skip, res-5 zone keep) can key off them. Strip
 // them before tippecanoe reads the geojsonl so the shipped archive stays
 // small — the runtime style doesn't use them.
-function stripCellProps(edge) {
-    const { aCell: _aCell, bCell: _bCell, ...properties } = edge.properties;
-    return { ...edge, properties };
-}
 
 const invokedDirectly = process.argv[1]?.endsWith("build.mjs");
 if (invokedDirectly) {

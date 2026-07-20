@@ -10,10 +10,10 @@ test("style uses the pmtiles protocol with promoted h3 ids", () => {
     assert.equal(source.type, "vector");
     assert.equal(source.url, "pmtiles:///static/dist/assets/maps/hexworld.pmtiles");
     assert.deepEqual(source.promoteId, { hex: "h3" });
-    // The shipped res 3+4 archive carries hex/border geometry only to z6.
-    // Declaring a higher source maxzoom makes MapLibre fetch real z7/z8 tiles
-    // that contain only the places layer, dropping land and borders.
-    assert.equal(source.maxzoom, 6);
+    // The shipped archive carries hex/border geometry through z7 (the zoned
+    // res-5 detail band). Declaring higher makes MapLibre fetch z8 tiles
+    // that hold only labels; declaring lower wastes the detail band.
+    assert.equal(source.maxzoom, 7);
     assert.equal(source.attribution, HEXWORLD_ATTRIBUTION);
 });
 
