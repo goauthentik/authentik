@@ -114,7 +114,7 @@ export class UserListPage extends WithLicenseSummary(
 
     @state()
     protected activeFilter: ActiveUserFilter = getURLParam<ActiveUserFilter>(
-        "activeUserFilter",
+        "activeFilter",
         "all",
     );
 
