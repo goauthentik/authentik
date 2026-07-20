@@ -33,7 +33,7 @@ function entitlementToRow(target: RequestableTarget): BrowseRow {
     return {
         pbmUuid: target.pbmUuid,
         label: target.label,
-        parentLabel: target.parent.name,
+        parentLabel: target.parent?.name,
     };
 }
 

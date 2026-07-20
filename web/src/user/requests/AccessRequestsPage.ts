@@ -14,15 +14,16 @@ import { customElement } from "lit/decorators.js";
 
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
+import Styles from "#user/user-settings/styles.css";
 
 @customElement("ak-access-requests-page")
 export class AccessRequestsPage extends AKElement {
-    static styles: CSSResult[] = [PFPage, PFContent];
+    static styles: CSSResult[] = [PFPage, PFContent, Styles];
 
     protected override render(): SlottedTemplateResult {
         return html`<div class="pf-c-page">
             <div class="pf-c-page__main">
-                <ak-tabs role="main" aria-label=${msg("Access requests")} ${AKSkipToContent.ref}>
+                <ak-tabs role="main" aria-label=${msg("Access requests")} ${AKSkipToContent.ref} vertical>
                     <div
                         id="page-browse"
                         role="tabpanel"

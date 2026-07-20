@@ -32,7 +32,7 @@ import { ROUTES } from "#user/Routes";
 import { ConsoleLogger } from "#logger/browser";
 
 import { msg } from "@lit/localize";
-import { html, nothing } from "lit";
+import { css, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { guard } from "lit/directives/guard.js";
 
@@ -59,6 +59,11 @@ class UserInterface extends WithLicenseSummary(
         PFDropdown,
         PFNotificationBadge,
         Styles,
+        css`
+            .pf-c-page__header-nav {
+                --pf-c-page__header-nav--BackgroundColor: transparent;
+            }
+        `,
     ];
 
     #logger = ConsoleLogger.prefix("user-interface");
