@@ -464,10 +464,10 @@ dev = [
     { name = "ruff", specifier = "==0.15.21" },
     { name = "selenium", specifier = "==4.45.0" },
     { name = "types-channels", specifier = "==4.3.0.20260518" },
-    { name = "types-docker", specifier = "==7.1.0.20260518" },
+    { name = "types-docker", specifier = "==7.1.0.20260712" },
     { name = "types-jwcrypto", specifier = "==1.5.7.20260518" },
     { name = "types-ldap3", specifier = "==2.9.13.20260518" },
-    { name = "types-requests", specifier = "==2.33.0.20260518" },
+    { name = "types-requests", specifier = "==2.33.0.20260712" },
     { name = "types-zxcvbn", specifier = "==4.5.0.20260518" },
 ]
 
@@ -3677,16 +3677,16 @@ wheels = [
 
 [[package]]
 name = "types-docker"
-version = "7.1.0.20260518"
+version = "7.1.0.20260712"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "types-paramiko" },
     { name = "types-requests" },
     { name = "urllib3" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/dc/71/ee4bd2b713f0b3b0cecc48fd13952b244f187c3b68cfa0408360f102fde8/types_docker-7.1.0.20260518.tar.gz", hash = "sha256:d194c4b82a4110fc58c84af05a5d9de6d3e54f94357ff745d01b5dca12c8eaaa", size = 33868, upload-time = "2026-05-18T06:08:19.78Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/b6/8b/f360f8d37368a24b815a841e1a0a2c82960bcd6ec88d3552838ef263e49f/types_docker-7.1.0.20260712.tar.gz", hash = "sha256:bb9e8ccb30941546beff5ac30b9b3bd0ffe1f676eb3e5f84d97fd8655234882a", size = 34246, upload-time = "2026-07-12T05:14:33.121Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/1f/1d/1d174b6f94afe0de50189de0a9dfd4531d2f8170e6dd9ef68ab616aa770b/types_docker-7.1.0.20260518-py3-none-any.whl", hash = "sha256:59893937816bfe40eb2915c84b31c3131107537500287c47d4a10dd7a9d59deb", size = 48183, upload-time = "2026-05-18T06:08:18.89Z" },
+    { url = "https://files.pythonhosted.org/packages/ec/b6/08e86105093595ded1ccaac79e415517379a7e17a1f607c8f5f0bf958352/types_docker-7.1.0.20260712-py3-none-any.whl", hash = "sha256:339dc9605151b035150688a56029fb0a53fb71c1710347828f9c3f0d0f39f3bd", size = 48278, upload-time = "2026-07-12T05:14:32.08Z" },
 ]
 
 [[package]]
@@ -3745,14 +3745,14 @@ wheels = [
 
 [[package]]
 name = "types-requests"
-version = "2.33.0.20260518"
+version = "2.33.0.20260712"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "urllib3" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/e0/01/c5a19253fe1ac159159ddf9a3a07cec8bb5e486ec4d9002ad2821da0e5d2/types_requests-2.33.0.20260518.tar.gz", hash = "sha256:df7bd3bfe0ca8402dfb841e7d9be714bb5578203283d66d7dc4ef69343449a5e", size = 24752, upload-time = "2026-05-18T06:07:37.966Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/db/51/703318f7b7be8bee126ec13bf615050f932d0179b8784420f3a0199cc769/types_requests-2.33.0.20260712.tar.gz", hash = "sha256:2141b67ab534a5c5cd2dac5034f2a35f42e699c5bf185eee608c5246a069d7fb", size = 25084, upload-time = "2026-07-12T05:14:20.455Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/1c/bc/b139710a3b6018f7fb2b9508b35c8af564e61bf2bf4fa619d088f3e16f85/types_requests-2.33.0.20260518-py3-none-any.whl", hash = "sha256:626d697d1adaaff76e2044dc8c5c051d8f21abc157bdfe204a75558076fe0bf0", size = 21391, upload-time = "2026-05-18T06:07:37.044Z" },
+    { url = "https://files.pythonhosted.org/packages/62/e7/010c87f559e216d83f9dc51e939633fd0d0ead3377340181ab0e223cd3b5/types_requests-2.33.0.20260712-py3-none-any.whl", hash = "sha256:de027e28c171d3da529689cbfa023b0b4eab188c8dfa22fd834eebd2cee6e7bb", size = 21392, upload-time = "2026-07-12T05:14:19.616Z" },
 ]
 
 [[package]]
