@@ -46,6 +46,18 @@ export interface PatchedRequestRuleBindingRequest {
      * @memberof PatchedRequestRuleBindingRequest
      */
     target?: string;
+    /**
+     * How long a request against this binding stays pending before it automatically lapses if not approved or denied.
+     * @type {string}
+     * @memberof PatchedRequestRuleBindingRequest
+     */
+    expiryPending?: string;
+    /**
+     * The maximum duration a grant approved against this binding can last.
+     * @type {string}
+     * @memberof PatchedRequestRuleBindingRequest
+     */
+    expiryGrantedMax?: string;
 }
 
 /**
@@ -78,6 +90,9 @@ export function PatchedRequestRuleBindingRequestFromJSONTyped(
                 : PolicyEngineModeFromJSON(json["policy_engine_mode"]),
         rule: json["rule"] == null ? undefined : json["rule"],
         target: json["target"] == null ? undefined : json["target"],
+        expiryPending: json["expiry_pending"] == null ? undefined : json["expiry_pending"],
+        expiryGrantedMax:
+            json["expiry_granted_max"] == null ? undefined : json["expiry_granted_max"],
     };
 }
 
@@ -100,5 +115,7 @@ export function PatchedRequestRuleBindingRequestToJSONTyped(
         policy_engine_mode: PolicyEngineModeToJSON(value["policyEngineMode"]),
         rule: value["rule"],
         target: value["target"],
+        expiry_pending: value["expiryPending"],
+        expiry_granted_max: value["expiryGrantedMax"],
     };
 }

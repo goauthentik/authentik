@@ -8283,6 +8283,18 @@
                     "type": "string",
                     "format": "uuid",
                     "title": "Target"
+                },
+                "expiry_pending": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Expiry pending",
+                    "description": "How long a request against this binding stays pending before it automatically lapses if not approved or denied."
+                },
+                "expiry_granted_max": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Expiry granted max",
+                    "description": "The maximum duration a grant approved against this binding can last."
                 }
             },
             "required": []

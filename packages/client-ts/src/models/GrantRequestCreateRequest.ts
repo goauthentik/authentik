@@ -24,6 +24,12 @@ export interface GrantRequestCreateRequest {
      * @memberof GrantRequestCreateRequest
      */
     pbms: Array<string>;
+    /**
+     * Optional override for how long the grant should last once approved. Clamped to the granting rule binding(s)' expiry_granted_max.
+     * @type {string}
+     * @memberof GrantRequestCreateRequest
+     */
+    expiry?: string;
 }
 
 /**
@@ -49,6 +55,7 @@ export function GrantRequestCreateRequestFromJSONTyped(
     }
     return {
         pbms: json["pbms"],
+        expiry: json["expiry"] == null ? undefined : json["expiry"],
     };
 }
 
@@ -66,5 +73,6 @@ export function GrantRequestCreateRequestToJSONTyped(
 
     return {
         pbms: value["pbms"],
+        expiry: value["expiry"],
     };
 }

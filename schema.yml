@@ -41453,6 +41453,10 @@ components:
           items:
             type: string
             format: uuid
+        expiry:
+          type: string
+          description: Optional override for how long the grant should last once approved.
+            Clamped to the granting rule binding(s)' expiry_granted_max.
       required:
       - pbms
     GrantTypesEnum:
@@ -51728,6 +51732,16 @@ components:
         target:
           type: string
           format: uuid
+        expiry_pending:
+          type: string
+          minLength: 1
+          description: How long a request against this binding stays pending before
+            it automatically lapses if not approved or denied.
+        expiry_granted_max:
+          type: string
+          minLength: 1
+          description: The maximum duration a grant approved against this binding
+            can last.
     PatchedRequestRuleChildBindingRequest:
       type: object
       properties:
@@ -55104,6 +55118,14 @@ components:
             type: string
             format: uuid
           readOnly: true
+        expiry_pending:
+          type: string
+          description: How long a request against this binding stays pending before
+            it automatically lapses if not approved or denied.
+        expiry_granted_max:
+          type: string
+          description: The maximum duration a grant approved against this binding
+            can last.
       required:
       - pbm_uuid
       - related
@@ -55127,6 +55149,16 @@ components:
         target:
           type: string
           format: uuid
+        expiry_pending:
+          type: string
+          minLength: 1
+          description: How long a request against this binding stays pending before
+            it automatically lapses if not approved or denied.
+        expiry_granted_max:
+          type: string
+          minLength: 1
+          description: The maximum duration a grant approved against this binding
+            can last.
       required:
       - rule
       - target

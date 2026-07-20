@@ -66,6 +66,18 @@ export interface RequestRuleBinding {
      * @memberof RequestRuleBinding
      */
     readonly related: Array<string>;
+    /**
+     * How long a request against this binding stays pending before it automatically lapses if not approved or denied.
+     * @type {string}
+     * @memberof RequestRuleBinding
+     */
+    expiryPending?: string;
+    /**
+     * The maximum duration a grant approved against this binding can last.
+     * @type {string}
+     * @memberof RequestRuleBinding
+     */
+    expiryGrantedMax?: string;
 }
 
 /**
@@ -102,6 +114,9 @@ export function RequestRuleBindingFromJSONTyped(
         ruleObj: RequestRuleFromJSON(json["rule_obj"]),
         target: json["target"],
         related: json["related"],
+        expiryPending: json["expiry_pending"] == null ? undefined : json["expiry_pending"],
+        expiryGrantedMax:
+            json["expiry_granted_max"] == null ? undefined : json["expiry_granted_max"],
     };
 }
 
@@ -122,5 +137,7 @@ export function RequestRuleBindingToJSONTyped(
         policy_engine_mode: PolicyEngineModeToJSON(value["policyEngineMode"]),
         rule: value["rule"],
         target: value["target"],
+        expiry_pending: value["expiryPending"],
+        expiry_granted_max: value["expiryGrantedMax"],
     };
 }

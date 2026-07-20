@@ -1,6 +1,8 @@
 import "#elements/ak-dual-select/ak-dual-select-provider";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/index";
+import "#elements/utils/TimeDeltaHelp";
+import "#components/ak-text-input";
 
 import { aki } from "#common/api/client";
 
@@ -21,6 +23,7 @@ import {
 import { msg } from "@lit/localize";
 import { html, nothing } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
+import { ifDefined } from "lit-html/directives/if-defined.js";
 
 function entitlementToPair(entitlement: ApplicationEntitlement): DualSelectPair {
     return [entitlement.pbmUuid, entitlement.name, entitlement.name];
@@ -160,6 +163,34 @@ export class RequestRuleBindingForm extends ModelForm<RequestRuleBinding, string
                 >
                 </ak-search-select>
             </ak-form-element-horizontal>
+            <ak-text-input
+                label=${msg("Pending expiry")}
+                name="expiryPending"
+                input-hint="code"
+                required
+                value="${ifDefined(this.instance?.expiryPending ?? "hours=1")}"
+                .bighelp=${html`<p class="pf-c-form__helper-text">
+                        ${msg(
+                            "How long a request against this binding stays pending before it automatically lapses if not approved or denied.",
+                        )}
+                    </p>
+                    <ak-utils-time-delta-help></ak-utils-time-delta-help>`}
+            >
+            </ak-text-input>
+            <ak-text-input
+                label=${msg("Maximum granted expiry")}
+                name="expiryGrantedMax"
+                input-hint="code"
+                required
+                value="${ifDefined(this.instance?.expiryGrantedMax ?? "hours=1")}"
+                .bighelp=${html`<p class="pf-c-form__helper-text">
+                        ${msg(
+                            "The maximum duration a grant approved against this binding can last. Requesters may ask for less, but never more.",
+                        )}
+                    </p>
+                    <ak-utils-time-delta-help></ak-utils-time-delta-help>`}
+            >
+            </ak-text-input>
             ${this.renderEntitlementsSelection()}`;
     }
 

@@ -15,6 +15,7 @@ from authentik.lib.models import (
     SerializerModel,
     SimpleThroughModel,
 )
+from authentik.lib.utils.time import timedelta_from_string, timedelta_string_validator
 from authentik.policies.engine import FilterPolicyEngine
 from authentik.policies.models import PolicyBinding, PolicyBindingModel
 
@@ -66,6 +67,20 @@ class RequestRuleBinding(SerializerModel, PolicyBindingModel):
         PolicyBindingModel,
         through=RequestRuleChildBinding,
         related_name="request_rule_child_bindings",
+    )
+
+    expiry_pending = models.TextField(
+        default="hours=1",
+        validators=[timedelta_string_validator],
+        help_text=_(
+            "How long a request against this binding stays pending before it "
+            "automatically lapses if not approved or denied."
+        ),
+    )
+    expiry_granted_max = models.TextField(
+        default="hours=1",
+        validators=[timedelta_string_validator],
+        help_text=_("The maximum duration a grant approved against this binding can last."),
     )
 
     @property
@@ -203,6 +218,11 @@ class GrantRequest(SerializerModel, ExpiringModel, CreatedUpdatedModel):
 
     status = models.TextField(choices=RequestStatus.choices, default=RequestStatus.CREATED)
 
+    # How long the grant should last once approved, resolved at request-creation time
+    # from the granting RequestRuleBinding(s)' expiry_granted_max, already clamped
+    # against any requester-provided override.
+    requested_expiry = models.TextField(default="hours=1", validators=[timedelta_string_validator])
+
     @property
     def serializer(self) -> type[Serializer]:
         from authentik.enterprise.requests.api.grant_requests import GrantRequestSerializer
@@ -278,12 +298,13 @@ class GrantRequest(SerializerModel, ExpiringModel, CreatedUpdatedModel):
         self.save()
         if status != RequestStatus.APPROVED:
             return
+        grant_expires = now() + timedelta_from_string(self.requested_expiry)
         for target in GrantRequestTarget.objects.filter(request=self).all():
             target_binding = PolicyBinding.objects.create(
                 user=self.created_by,
                 target=target.target,
-                expiring=self.expiring,
-                expires=self.expires,
+                expiring=True,
+                expires=grant_expires,
                 order=1000,
             )
             target.binding = target_binding

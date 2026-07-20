@@ -4,7 +4,7 @@ from django.http import Http404
 from drf_spectacular.utils import OpenApiResponse, extend_schema, extend_schema_field
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
-from rest_framework.fields import BooleanField, ChoiceField, SerializerMethodField
+from rest_framework.fields import BooleanField, CharField, ChoiceField, SerializerMethodField
 from rest_framework.mixins import (
     DestroyModelMixin,
     ListModelMixin,
@@ -36,11 +36,15 @@ from authentik.enterprise.requests.models import (
     RequestStatus,
 )
 from authentik.enterprise.requests.stage import (
+    PLAN_CONTEXT_GRANT_MAX_EXPIRY,
+    PLAN_CONTEXT_GRANT_PENDING_EXPIRY,
+    PLAN_CONTEXT_GRANT_REQUESTED_EXPIRY,
     PLAN_CONTEXT_GRANT_REQUESTED_PBMS,
     GrantRequestFinalStageView,
 )
 from authentik.flows.models import Flow, in_memory_stage
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlanner
+from authentik.lib.utils.time import timedelta_from_string, timedelta_string_validator
 from authentik.policies.api.bindings import PolicyBindingModelForeignKey
 from authentik.policies.engine import ListPolicyEngine
 from authentik.policies.models import PolicyBindingModel, RequestableModel
@@ -91,6 +95,15 @@ class GrantRequestViewSet(RetrieveModelMixin, DestroyModelMixin, ListModelMixin,
 
         pbms = PolicyBindingModelForeignKey(
             queryset=PolicyBindingModel.objects.select_subclasses(), many=True
+        )
+        expiry = CharField(
+            required=False,
+            allow_blank=True,
+            validators=[timedelta_string_validator],
+            help_text=(
+                "Optional override for how long the grant should last once approved. "
+                "Clamped to the granting rule binding(s)' expiry_granted_max."
+            ),
         )
 
         def validate_pbms(self, pbms: list[PolicyBindingModel]) -> list[PolicyBindingModel]:
@@ -152,11 +165,13 @@ class GrantRequestViewSet(RetrieveModelMixin, DestroyModelMixin, ListModelMixin,
     def create(self, request: Request, body: GrantRequestCreateSerializer) -> Response:
         brand: Brand = request.brand
         pbms = body.validated_data["pbms"]
-        rule_bindings = granting_rule_bindings(pbms, request.user, request).select_related("rule")
+        rule_bindings = list(
+            granting_rule_bindings(pbms, request.user, request).select_related("rule")
+        )
         # If every rule that granted access to one of the requested pbms agrees on a
         # single request flow, prefer it over the brand's default.
         flow = brand.flow_request
-        shared_flows = set(rule_bindings.values_list("rule__request_flow", flat=True))
+        shared_flows = {rb.rule.request_flow_id for rb in rule_bindings}
         if len(shared_flows) == 1:
             (shared_flow_pk,) = shared_flows
             if shared_flow_pk is not None:
@@ -165,11 +180,25 @@ class GrantRequestViewSet(RetrieveModelMixin, DestroyModelMixin, ListModelMixin,
             raise Http404
         planner = FlowPlanner(flow)
         planner.allow_empty_flows = True
+        # The strictest (shortest) pending/max expiry among the bindings that actually
+        # granted this request wins, so access can never outlive the tightest rule that
+        # applies. The requester's override is passed through as-is (not clamped here) --
+        # a stage in the flow may still change it, so GrantRequestFinalStageView enforces
+        # the maximum once the flow has actually run.
+        pending_binding = min(
+            rule_bindings, key=lambda rb: timedelta_from_string(rb.expiry_pending)
+        )
+        max_binding = min(
+            rule_bindings, key=lambda rb: timedelta_from_string(rb.expiry_granted_max)
+        )
         plan = planner.plan(
             request,
             {
                 PLAN_CONTEXT_GRANT_REQUESTED_PBMS: pbms,
                 PLAN_CONTEXT_PENDING_USER: request.user,
+                PLAN_CONTEXT_GRANT_PENDING_EXPIRY: pending_binding.expiry_pending,
+                PLAN_CONTEXT_GRANT_MAX_EXPIRY: max_binding.expiry_granted_max,
+                PLAN_CONTEXT_GRANT_REQUESTED_EXPIRY: body.validated_data.get("expiry") or None,
             },
         )
         plan.append_stage(in_memory_stage(GrantRequestFinalStageView))

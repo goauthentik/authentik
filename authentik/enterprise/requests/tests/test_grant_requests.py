@@ -1,4 +1,7 @@
+from datetime import timedelta
+
 from django.urls import reverse
+from django.utils.timezone import now
 from rest_framework.test import APITestCase
 
 from authentik.brands.models import Brand
@@ -279,6 +282,42 @@ class GrantRequestsTests(APITestCase):
         self.assertEqual(req.status, RequestStatus.CREATED)
         self.assertEqual(GrantRequestApproval.objects.filter(request=req).count(), 1)
 
+    def test_fulfill_grant_expiry_uses_requested_expiry(self):
+        """The granted PolicyBinding's expiry comes from requested_expiry (resolved at
+        request-creation time), not from the request's own (pending) expires"""
+        reviewer = create_test_user()
+        self._grant_perms(reviewer)
+
+        app = Application.objects.create(
+            name=generate_id(),
+            slug=generate_id(),
+        )
+        rule = RequestRule.objects.create(name=generate_id())
+        RequestRuleBinding.objects.create(rule=rule, target=app)
+        PolicyBinding.objects.create(target=rule, user=reviewer, order=0)
+
+        requester = create_test_user()
+        req = GrantRequest.objects.create(
+            created_by=requester,
+            expiring=True,
+            expires=now() + timedelta(hours=6),
+            requested_expiry="minutes=10",
+        )
+        GrantRequestTarget.objects.create(request=req, target=app)
+
+        before = now()
+        self.client.force_login(reviewer)
+        res = self.client.patch(
+            reverse("authentik_api:grantrequest-fulfill", kwargs={"pk": req.pk}),
+            data={"status": "approved", "data": {}},
+        )
+        self.assertEqual(res.status_code, 204, res.content)
+
+        binding = PolicyBinding.objects.get(user=requester, target=app)
+        self.assertTrue(binding.expiring)
+        self.assertGreater(binding.expires, before + timedelta(minutes=9))
+        self.assertLess(binding.expires, before + timedelta(minutes=11))
+
     def test_revoke_active_grant(self):
         """A reviewer can revoke an approved (active) grant, expiring its PolicyBinding"""
         reviewer = create_test_user()
@@ -505,3 +544,166 @@ class GrantRequestCreateFlowSelectionTests(APITestCase):
             data={"pbms": [str(app.pk)]},
         )
         self.assertEqual(res.status_code, 404)
+
+
+class GrantRequestCreateExpiryResolutionTests(APITestCase):
+    """`create()` should resolve the pending/max expiry from the granting
+    RequestRuleBinding(s), taking the strictest value when several apply."""
+
+    def _set_brand_flow(self, flow: Flow | None):
+        brand, _ = Brand.objects.get_or_create(default=True, defaults={"domain": generate_id()})
+        brand.flow_request = flow
+        brand.save()
+        return brand
+
+    def _make_flow(self) -> Flow:
+        return Flow.objects.create(
+            name=generate_id(),
+            slug=generate_id(),
+            designation=FlowDesignation.STAGE_CONFIGURATION,
+        )
+
+    def _run_flow(self, flow: Flow):
+        """Follow through to the flow executor, exactly as the frontend does when it
+        opens the `link` returned by `create()`, so the in-memory final stage runs."""
+        return self.client.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug})
+        )
+
+    def test_create_resolves_pending_and_max_expiry_from_binding(self):
+        """The created GrantRequest's pending expiry, and its resolved grant expiry
+        (absent any override), come from the granting RequestRuleBinding rather than
+        a fixed value."""
+        requester = create_test_user()
+        self.client.force_login(requester)
+
+        app = Application.objects.create(name=generate_id(), slug=generate_id())
+        rule = RequestRule.objects.create(name=generate_id())
+        rule_binding = RequestRuleBinding.objects.create(
+            rule=rule,
+            target=app,
+            expiry_pending="minutes=15",
+            expiry_granted_max="minutes=20",
+        )
+        PolicyBinding.objects.create(target=rule_binding, user=requester, order=0)
+        flow = self._make_flow()
+        self._set_brand_flow(flow)
+
+        before = now()
+        res = self.client.post(
+            reverse("authentik_api:grantrequest-list"),
+            data={"pbms": [str(app.pk)]},
+        )
+        self.assertEqual(res.status_code, 200, res.content)
+        self._run_flow(flow)
+
+        req = GrantRequest.objects.get(targets=app)
+        self.assertEqual(req.requested_expiry, "minutes=20")
+        self.assertGreater(req.expires, before + timedelta(minutes=14))
+        self.assertLess(req.expires, before + timedelta(minutes=16))
+
+    def test_create_takes_strictest_expiry_across_multiple_bindings(self):
+        """When two rules grant access to the two requested pbms with different
+        expiry configs, the stricter (shorter) value wins for both pending and max."""
+        requester = create_test_user()
+        self.client.force_login(requester)
+
+        app_a = Application.objects.create(name=generate_id(), slug=generate_id())
+        rule_a = RequestRule.objects.create(name=generate_id())
+        binding_a = RequestRuleBinding.objects.create(
+            rule=rule_a, target=app_a, expiry_pending="hours=2", expiry_granted_max="hours=2"
+        )
+        PolicyBinding.objects.create(target=binding_a, user=requester, order=0)
+
+        app_b = Application.objects.create(name=generate_id(), slug=generate_id())
+        rule_b = RequestRule.objects.create(name=generate_id())
+        binding_b = RequestRuleBinding.objects.create(
+            rule=rule_b,
+            target=app_b,
+            expiry_pending="minutes=10",
+            expiry_granted_max="minutes=5",
+        )
+        PolicyBinding.objects.create(target=binding_b, user=requester, order=0)
+
+        flow = self._make_flow()
+        self._set_brand_flow(flow)
+
+        before = now()
+        res = self.client.post(
+            reverse("authentik_api:grantrequest-list"),
+            data={"pbms": [str(app_a.pk), str(app_b.pk)]},
+        )
+        self.assertEqual(res.status_code, 200, res.content)
+        self._run_flow(flow)
+
+        req = GrantRequest.objects.filter(targets=app_a).filter(targets=app_b).get()
+        self.assertEqual(req.requested_expiry, "minutes=5")
+        self.assertGreater(req.expires, before + timedelta(minutes=9))
+        self.assertLess(req.expires, before + timedelta(minutes=11))
+
+    def test_create_accepts_expiry_override_within_max(self):
+        """A requester-supplied `expiry` override shorter than the binding's max is
+        honored, resolved once the flow's final stage runs."""
+        requester = create_test_user()
+        self.client.force_login(requester)
+
+        app = Application.objects.create(name=generate_id(), slug=generate_id())
+        rule = RequestRule.objects.create(name=generate_id())
+        rule_binding = RequestRuleBinding.objects.create(
+            rule=rule, target=app, expiry_granted_max="hours=1"
+        )
+        PolicyBinding.objects.create(target=rule_binding, user=requester, order=0)
+        flow = self._make_flow()
+        self._set_brand_flow(flow)
+
+        res = self.client.post(
+            reverse("authentik_api:grantrequest-list"),
+            data={"pbms": [str(app.pk)], "expiry": "minutes=5"},
+        )
+        self.assertEqual(res.status_code, 200, res.content)
+        self._run_flow(flow)
+
+        req = GrantRequest.objects.get(targets=app)
+        self.assertEqual(req.requested_expiry, "minutes=5")
+
+    def test_create_clamps_expiry_override_to_max(self):
+        """A requester-supplied `expiry` override longer than the binding's max is
+        clamped down, enforced by GrantRequestFinalStageView once the flow completes."""
+        requester = create_test_user()
+        self.client.force_login(requester)
+
+        app = Application.objects.create(name=generate_id(), slug=generate_id())
+        rule = RequestRule.objects.create(name=generate_id())
+        rule_binding = RequestRuleBinding.objects.create(
+            rule=rule, target=app, expiry_granted_max="minutes=10"
+        )
+        PolicyBinding.objects.create(target=rule_binding, user=requester, order=0)
+        flow = self._make_flow()
+        self._set_brand_flow(flow)
+
+        res = self.client.post(
+            reverse("authentik_api:grantrequest-list"),
+            data={"pbms": [str(app.pk)], "expiry": "hours=5"},
+        )
+        self.assertEqual(res.status_code, 200, res.content)
+        self._run_flow(flow)
+
+        req = GrantRequest.objects.get(targets=app)
+        self.assertEqual(req.requested_expiry, "minutes=10")
+
+    def test_create_rejects_malformed_expiry_override(self):
+        """An unparsable `expiry` override is rejected at request-creation time"""
+        requester = create_test_user()
+        self.client.force_login(requester)
+
+        app = Application.objects.create(name=generate_id(), slug=generate_id())
+        rule = RequestRule.objects.create(name=generate_id())
+        rule_binding = RequestRuleBinding.objects.create(rule=rule, target=app)
+        PolicyBinding.objects.create(target=rule_binding, user=requester, order=0)
+        self._set_brand_flow(self._make_flow())
+
+        res = self.client.post(
+            reverse("authentik_api:grantrequest-list"),
+            data={"pbms": [str(app.pk)], "expiry": "not-a-duration"},
+        )
+        self.assertEqual(res.status_code, 400)

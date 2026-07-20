@@ -21,6 +21,8 @@ class RequestRuleBindingSerializer(EnterpriseRequiredMixin, ModelSerializer):
             "rule_obj",
             "target",
             "related",
+            "expiry_pending",
+            "expiry_granted_max",
         ]
 
 
