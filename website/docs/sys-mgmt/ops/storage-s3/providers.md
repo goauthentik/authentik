@@ -8,7 +8,7 @@ Configure the shared settings in [S3-compatible storage](./index.md), then use t
 
 ## Amazon S3
 
-Use Amazon S3 when you want authentik to store files in a native AWS S3 bucket.
+Use Amazon S3 as the storage backend for authentik files without configuring a custom endpoint.
 
 Set the bucket's region and do not set `AUTHENTIK_STORAGE__S3__ENDPOINT`:
 
@@ -22,7 +22,7 @@ For details about creating a bucket and credentials, see the [Amazon S3 document
 
 ## Cloudflare R2
 
-Use Cloudflare R2 with authentik through R2's S3-compatible API.
+Use Cloudflare R2 as an S3 storage backend for authentik by connecting to R2's S3-compatible API.
 
 Set the endpoint for your Cloudflare account and use the `auto` region:
 
@@ -35,7 +35,7 @@ For details about API credentials and jurisdiction-specific endpoints, see the [
 
 ## Backblaze B2
 
-Use Backblaze B2 with authentik through the Backblaze S3-compatible API.
+Use Backblaze B2 as an S3 storage backend for authentik by connecting to the Backblaze S3-compatible API.
 
 Set the endpoint and region that Backblaze displays for your bucket:
 
@@ -50,7 +50,7 @@ For details about supported operations and credentials, see the [Backblaze B2 S3
 
 ## Wasabi
 
-Use Wasabi with authentik through Wasabi's S3-compatible API.
+Use Wasabi as an S3 storage backend for authentik by connecting to Wasabi's S3-compatible API.
 
 Set the endpoint and region that match the bucket's location:
 
@@ -63,7 +63,7 @@ For the current list of service URLs, see [Wasabi storage region endpoints](http
 
 ## Google Cloud Storage
 
-Use Google Cloud Storage with authentik through the Cloud Storage XML API interoperability layer.
+Use Google Cloud Storage as an S3 storage backend for authentik by connecting to its XML API interoperability layer.
 
 Create a hash-based message authentication code (HMAC) key for a service account, then configure the XML API endpoint:
 
@@ -77,7 +77,7 @@ For details about creating and managing keys, see the [Google Cloud Storage HMAC
 
 ## Garage
 
-Use Garage with authentik as a self-hosted S3-compatible object store.
+Use Garage as a self-hosted S3 storage backend for authentik by connecting to its S3-compatible API.
 
 Set the endpoint and region from the Garage `s3_api` configuration:
 
@@ -90,7 +90,7 @@ For details about creating a bucket and key, see the [Garage documentation](http
 
 ## SeaweedFS
 
-Use SeaweedFS with authentik through the SeaweedFS S3 API.
+Use SeaweedFS as a self-hosted S3 storage backend for authentik by connecting to the SeaweedFS S3 API.
 
 Set the public endpoint for your SeaweedFS S3 service:
 
