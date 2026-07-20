@@ -51,3 +51,43 @@ test("hexFeature carries the cell id as the correlation key", () => {
     assert.equal(feature.properties.h3, cell);
     assert.equal(feature.geometry.type, "Polygon");
 });
+
+// Antarctica-shaped polygon: full longitude span, southern latitudes below the
+// web-mercator floor. h3's polygonToCells throws E_FAILED on rings wider than
+// 180 deg (transmeridian ambiguity), and Natural Earth draws Antarctica down
+// to lat -89.9989 with a seam edge along the antimeridian.
+const antarcticaLike = () => ({
+    type: "FeatureCollection",
+    features: [
+        {
+            type: "Feature",
+            properties: {},
+            geometry: {
+                type: "Polygon",
+                coordinates: [
+                    [
+                        [-180, -65],
+                        [180, -65],
+                        [180, -89.9989],
+                        [-180, -89.9989],
+                        [-180, -65],
+                    ],
+                ],
+            },
+        },
+    ],
+});
+
+test("landCells polyfills a transmeridian polygon at every band", () => {
+    for (const res of [3, 4, 5]) {
+        const cells = landCells(antarcticaLike(), res);
+        assert.ok(cells.size > 0, `expected cells at res ${res}, got ${cells.size}`);
+    }
+});
+
+test("landCells is stable across runs for a split polygon (no seam dupes)", () => {
+    const a = landCells(antarcticaLike(), 4);
+    const b = landCells(antarcticaLike(), 4);
+    assert.equal(a.size, b.size);
+    for (const cell of a) assert.ok(b.has(cell), "cell drifted between runs");
+});
