@@ -7,3 +7,9 @@ export {
     flavorForTheme,
     resolveTileUrl,
 } from "./style.js";
+export { HEX_BANDS, type HexBand, bandForZoom } from "./hexworld/bands.js";
+export {
+    HEXWORLD_ATTRIBUTION,
+    type HexworldStyleOptions,
+    buildHexworldStyle,
+} from "./hexworld/style.js";
