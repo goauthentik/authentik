@@ -221,8 +221,15 @@ export class TaskList extends Table<Task> {
         return html`<div class="pf-c-content">
             <p class="pf-c-title pf-u-mb-md">${msg("Current execution logs")}</p>
             <ak-log-viewer display-box="contents" .items=${item.logs}></ak-log-viewer>
-            <p class="pf-c-title pf-u-mt-xl pf-u-mb-md">${msg("Previous executions logs")}</p>
-            <ak-log-viewer display-box="contents" .items=${item.previousLogs}></ak-log-viewer>
+            ${item.previousLogs.length > 0
+                ? html`<p class="pf-c-title pf-u-mt-xl pf-u-mb-md">
+                          ${msg("Previous executions logs")}
+                      </p>
+                      <ak-log-viewer
+                          display-box="contents"
+                          .items=${item.previousLogs}
+                      ></ak-log-viewer>`
+                : nothing}
         </div>`;
     }
 }

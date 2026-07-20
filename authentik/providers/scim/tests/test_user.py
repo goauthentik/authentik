@@ -680,10 +680,13 @@ class SCIMUserTests(TestCase):
         TransientSyncException"""
         with Mocker() as mock:
             mock.get("https://localhost/ServiceProviderConfig", json={})
-            with patch.object(
-                SCIMProvider,
-                "client_for_model",
-                side_effect=TransientSyncException("connection failed"),
+            with (
+                patch.object(
+                    SCIMProvider,
+                    "client_for_model",
+                    side_effect=TransientSyncException("connection failed"),
+                ),
+                patch.object(sync_tasks, "_discover"),
             ):
                 scim_sync.send(self.provider.pk).get_result()
 

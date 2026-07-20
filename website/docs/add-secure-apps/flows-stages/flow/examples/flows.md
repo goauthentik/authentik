@@ -48,7 +48,7 @@ Flow: right-click <DownloadLink to="/blueprints/example/flows-login-conditional-
 
 Login flow that conditionally shows users a CAPTCHA, based on the reputation of their IP and username.
 
-By default, the CAPTCHA test keys are used. You can get a proper key [here](https://www.google.com/recaptcha/intro/v3.html).
+By default, the CAPTCHA test keys are used. You can get a production key from the [Google reCAPTCHA website](https://www.google.com/recaptcha/intro/v3.html).
 
 ## Recovery with email and MFA verification
 

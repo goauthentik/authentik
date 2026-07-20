@@ -15,6 +15,8 @@ from cryptography.hazmat.primitives.asymmetric.ec import (
     SECP521R1,
     EllipticCurvePrivateKey,
 )
+from cryptography.hazmat.primitives.asymmetric.ed448 import Ed448PrivateKey
+from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey
 from cryptography.hazmat.primitives.asymmetric.rsa import RSAPrivateKey
 from cryptography.hazmat.primitives.asymmetric.types import PrivateKeyTypes
 from dacite import Config
@@ -47,14 +49,19 @@ from authentik.common.oauth.constants import (
 )
 from authentik.core.models import (
     AuthenticatedSession,
-    ExpiringModel,
     PropertyMapping,
     Provider,
     User,
 )
 from authentik.crypto.models import CertificateKeyPair
 from authentik.lib.generators import generate_code_fixed_length, generate_id, generate_key
-from authentik.lib.models import DomainlessURLValidator, InternallyManagedMixin, SerializerModel
+from authentik.lib.models import (
+    DomainlessURLValidator,
+    ExpiringModel,
+    InternallyManagedMixin,
+    SerializerModel,
+    SimpleThroughModel,
+)
 from authentik.lib.utils.time import timedelta_string_validator
 from authentik.sources.oauth.models import OAuthSource
 
@@ -159,6 +166,7 @@ class JWTAlgorithms(models.TextChoices):
     ES256 = "ES256", _("ES256 (Asymmetric Encryption)")
     ES384 = "ES384", _("ES384 (Asymmetric Encryption)")
     ES512 = "ES512", _("ES512 (Asymmetric Encryption)")
+    EDDSA = "EdDSA", _("EdDSA (Asymmetric Encryption)")
 
     @classmethod
     def from_private_key(cls, private_key: PrivateKeyTypes | None) -> str:
@@ -172,6 +180,8 @@ class JWTAlgorithms(models.TextChoices):
                 return cls.ES384
             if isinstance(curve, SECP521R1):
                 return cls.ES512
+        if isinstance(private_key, Ed25519PrivateKey | Ed448PrivateKey):
+            return cls.EDDSA
         raise ValueError(f"Invalid private key type: {type(private_key)}")
 
 
@@ -335,8 +345,11 @@ class OAuth2Provider(WebfingerProvider, Provider):
         related_name="oauth2_providers",
         default=None,
         blank=True,
+        through="OAuth2ProviderJWTFederationSource",
     )
-    jwt_federation_providers = models.ManyToManyField("OAuth2Provider", blank=True, default=None)
+    jwt_federation_providers = models.ManyToManyField(
+        "OAuth2Provider", blank=True, default=None, through="OAuth2ProviderJWTFederationProvider"
+    )
 
     @cached_property
     def jwt_key(self) -> tuple[str | PrivateKeyTypes, str]:
@@ -491,6 +504,54 @@ class OAuth2Provider(WebfingerProvider, Provider):
         verbose_name_plural = _("OAuth2/OpenID Providers")
 
 
+class OAuth2ProviderJWTFederationSource(SimpleThroughModel):
+    oauth2_provider = models.ForeignKey(
+        OAuth2Provider, on_delete=models.CASCADE, db_column="oauth2provider_id"
+    )
+    oauth_source = models.ForeignKey(
+        OAuthSource, on_delete=models.CASCADE, db_column="oauthsource_id"
+    )
+
+    class Meta:
+        db_table = "authentik_providers_oauth2_oauth2provider_jwt_federation_so2b48"
+        unique_together = (("oauth2_provider", "oauth_source"),)
+        verbose_name = _("OAuth2 Provider JWT Federation Source")
+        verbose_name_plural = _("OAuth2 Provider JWT Federation Sources")
+
+    def __str__(self):
+        return (
+            f"OAuth2ProviderJWTFederationSource for OAuth2Provider {self.oauth2_provider_id} "
+            f"and OauthSource {self.oauth_source_id}."
+        )
+
+
+class OAuth2ProviderJWTFederationProvider(SimpleThroughModel):
+    oauth2_provider = models.ForeignKey(
+        OAuth2Provider,
+        on_delete=models.CASCADE,
+        related_name="jwt_federation_provider_m2m_objects",
+        db_column="from_oauth2provider_id",
+    )
+    jwt_federation_provider = models.ForeignKey(
+        OAuth2Provider,
+        on_delete=models.CASCADE,
+        related_name="oauth2_provider_m2m_objects",
+        db_column="to_oauth2provider_id",
+    )
+
+    class Meta:
+        db_table = "authentik_providers_oauth2_oauth2provider_jwt_federation_pr9002"
+        unique_together = (("oauth2_provider", "jwt_federation_provider"),)
+        verbose_name = _("OAuth2 Provider JWT Federation Provider")
+        verbose_name_plural = _("OAuth2 Provider JWT Federation Providers")
+
+    def __str__(self):
+        return (
+            f"OAuth2ProviderJWTFederationProvider for OAuth2Provider {self.oauth2_provider_id} "
+            f"and JWTFederationProvider {self.jwt_federation_provider_id}."
+        )
+
+
 class BaseGrantModel(models.Model):
     """Base Model for all grants"""
 
@@ -524,6 +585,9 @@ class AuthorizationCode(InternallyManagedMixin, SerializerModel, ExpiringModel, 
     code_challenge = models.CharField(max_length=255, null=True, verbose_name=_("Code Challenge"))
     code_challenge_method = models.CharField(
         max_length=255, null=True, verbose_name=_("Code Challenge Method")
+    )
+    dpop_jkt = models.CharField(
+        max_length=255, null=True, default=None, verbose_name=_("DPoP JWK Thumbprint")
     )
 
     class Meta:
@@ -604,6 +668,9 @@ class RefreshToken(InternallyManagedMixin, SerializerModel, ExpiringModel, BaseG
 
     token = models.TextField(default=generate_client_secret)
     _id_token = models.TextField(verbose_name=_("ID Token"))
+    dpop_jkt = models.CharField(
+        max_length=255, null=True, default=None, verbose_name=_("DPoP JWK Thumbprint")
+    )
     # Shadow the `session` field from `BaseGrantModel` as we want refresh tokens to persist even
     # when the session is terminated.
     session = models.ForeignKey(
@@ -649,6 +716,9 @@ class DeviceToken(InternallyManagedMixin, ExpiringModel):
     device_code = models.TextField(default=generate_key)
     user_code = models.TextField(default=generate_code_fixed_length)
     _scope = models.TextField(default="", verbose_name=_("Scopes"))
+    dpop_jkt = models.CharField(
+        max_length=255, null=True, default=None, verbose_name=_("DPoP JWK Thumbprint")
+    )
     session = models.ForeignKey(
         AuthenticatedSession, null=True, on_delete=models.SET_DEFAULT, default=None
     )

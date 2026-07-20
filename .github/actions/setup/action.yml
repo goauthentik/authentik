@@ -64,7 +64,7 @@ runs:
         rustflags: ""
     - name: Setup rust dependencies
       if: ${{ contains(inputs.dependencies, 'rust') }}
-      uses: taiki-e/install-action@4684b8405694ae9dd42c9f39ba901a70ae83f4a3 # v2
+      uses: taiki-e/install-action@07b4745e0c39a41822af610387492e3e53aa222b # v2
       with:
         tool: cargo-deny cargo-machete cargo-llvm-cov nextest
     - name: Setup pnpm
@@ -78,7 +78,7 @@ runs:
         echo "npm_config_store_dir=${RUNNER_TEMP}/pnpm-home/store" >> "$GITHUB_ENV"
     - name: Setup node (root, web)
       if: ${{ contains(inputs.dependencies, 'node') }}
-      uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v4
+      uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v4
       with:
         node-version-file: package.json
         cache: pnpm
@@ -93,7 +93,7 @@ runs:
         pnpm --dir web install --frozen-lockfile
     - name: Setup go
       if: ${{ contains(inputs.dependencies, 'go') }}
-      uses: actions/setup-go@924ae3a1cded613372ab5595356fb5720e22ba16 # v5
+      uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v5
       with:
         go-version-file: "${{ inputs.working-directory }}go.mod"
     - name: Setup docker cache

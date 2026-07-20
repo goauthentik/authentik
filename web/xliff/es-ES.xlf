@@ -4460,10 +4460,6 @@ El valor de este campo se compara con el atributo de pertenencia del usuario.</t
   <source>Optional URL if the IDP supports Single-Logout.</source>
   <target>URL opcional si el IDP admite el cierre de sesión único.</target>
 </trans-unit>
-<trans-unit id="se7430794fa89005a">
-  <source>Also known as Entity ID. Defaults the Metadata URL.</source>
-  <target>También se conoce como ID de entidad. Default la URL de metadatos.</target>
-</trans-unit>
 <trans-unit id="s5615bb595ad6ded6">
   <source>Binding Type</source>
   <target>Tipo de Vínculo</target>
@@ -11288,6 +11284,12 @@ Las vinculaciones a grupos/usuarios se verifican en función del usuario del eve
 </trans-unit>
 <trans-unit id="sc30c9b42e2a1ebe7">
   <source>Token exchange</source>
+</trans-unit>
+<trans-unit id="s466fe1c428b4b61a">
+  <source>Issuer override</source>
+</trans-unit>
+<trans-unit id="s19ccfb86a879e6b9">
+  <source>Also known as Entity ID. Defaults to the Metadata URL.</source>
 </trans-unit>
 </body>
 </file>

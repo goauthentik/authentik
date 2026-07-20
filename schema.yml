@@ -5386,6 +5386,8 @@ paths:
         using this object
       tags:
       - endpoints
+      security:
+      - authentik_device_auth: []
       responses:
         '200':
           content:
@@ -5410,6 +5412,8 @@ paths:
         required: true
       tags:
       - endpoints
+      security:
+      - authentik_device_federation: []
       responses:
         '200':
           content:
@@ -5455,6 +5459,8 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/DeviceFactsRequest'
+      security:
+      - authentik_device_auth: []
       responses:
         '204':
           description: Successfully checked in
@@ -5475,6 +5481,8 @@ paths:
             schema:
               $ref: '#/components/schemas/EnrollRequest'
         required: true
+      security:
+      - authentik_device_enroll: []
       responses:
         '200':
           content:
@@ -24425,7 +24433,7 @@ paths:
         schema:
           type: boolean
       - in: query
-        name: issuer
+        name: issuer_override
         schema:
           type: string
       - in: query
@@ -37789,6 +37797,14 @@ components:
         failure_result:
           type: boolean
           description: Result if the Policy execution fails.
+        expires:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        expiring:
+          type: boolean
+          readOnly: true
         is_primary:
           type: boolean
         connector:
@@ -37803,6 +37819,8 @@ components:
       required:
       - connector
       - connector_obj
+      - expires
+      - expiring
       - group_obj
       - order
       - pk
@@ -50866,9 +50884,9 @@ components:
           type: string
           format: uuid
           description: Flow used before authentication.
-        issuer:
+        issuer_override:
           type: string
-          description: Also known as Entity ID. Defaults the Metadata URL.
+          description: Also known as Entity ID. Defaults to the Metadata URL.
         sso_url:
           type: string
           minLength: 1
@@ -52194,7 +52212,17 @@ components:
         failure_result:
           type: boolean
           description: Result if the Policy execution fails.
+        expires:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        expiring:
+          type: boolean
+          readOnly: true
       required:
+      - expires
+      - expiring
       - group_obj
       - order
       - pk
@@ -52722,9 +52750,9 @@ components:
       type: string
     ProviderTypeEnum:
       enum:
+      - openidconnect
       - apple
       - discord
-      - openidconnect
       - entraid
       - facebook
       - github
@@ -54605,9 +54633,14 @@ components:
           type: string
           format: uuid
           description: Flow used before authentication.
-        issuer:
+        issuer_override:
           type: string
-          description: Also known as Entity ID. Defaults the Metadata URL.
+          description: Also known as Entity ID. Defaults to the Metadata URL.
+        url_issuer:
+          type: string
+          description: Get the resolved Issuer, falling back to the metadata URL when
+            unset
+          readOnly: true
         sso_url:
           type: string
           description: URL that the initial Login request is sent to.
@@ -54679,6 +54712,7 @@ components:
       - pre_authentication_flow
       - slug
       - sso_url
+      - url_issuer
       - verbose_name
       - verbose_name_plural
     SAMLSourcePropertyMapping:
@@ -54808,9 +54842,9 @@ components:
           type: string
           format: uuid
           description: Flow used before authentication.
-        issuer:
+        issuer_override:
           type: string
-          description: Also known as Entity ID. Defaults the Metadata URL.
+          description: Also known as Entity ID. Defaults to the Metadata URL.
         sso_url:
           type: string
           minLength: 1
