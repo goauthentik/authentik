@@ -8,7 +8,7 @@ import RedirectURI20265Note from "../../_redirect-uri-2026-5-note.mdx";
 import TabItem from "@theme/TabItem";
 import Tabs from "@theme/Tabs";
 
-## What is Apache Guacamole™?
+## What is Apache Guacamole?
 
 > Apache Guacamole is a clientless remote desktop gateway. It supports standard protocols like VNC, RDP, and SSH.
 >
@@ -31,28 +31,27 @@ This documentation lists only the settings that you need to change from their de
 
 To support the integration of Apache Guacamole with authentik, you need to create an application/provider pair in authentik.
 
-### Create an application and provider in authentik
+### Create an application and provider
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **New Application** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
-
-- **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
-- **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
-- **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
-    - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
-    - Add a **Redirect URI** of type `Strict` `Authorization` as `https://guacamole.company/`. If you have configured [Apache Tomcat](https://tomcat.apache.org/) to run Apache Guacamole on a subpath, you will need to update this value accordingly.
-    - Select any available signing key.
-    - Note that Apache Guacamole does not support session tokens longer than 300 minutes (5 hours).
-- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Note the **Slug** value because it will be required later.
+    - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
+    - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+        - Note the **Client ID** value because it will be required later.
+        - Add a **Redirect URI** of type `Strict` `Authorization` as `https://guacamole.company/`. If users access Apache Guacamole on a subpath, use the full URL that users enter in their browser.
+        - Select any available signing key.
+        - If you customize token validity, keep the **Access Token validity** at 300 minutes or less.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 
 3. Click **Submit** to save the new application and provider.
 
 ## Apache Guacamole configuration
 
-It is recommended to create an admin account in Guacamole before configuring Single Sign-On to simplify the process. Create a user in Guacamole using the same username as in authentik and grant them admin permissions. This step is important to avoid losing access to the Guacamole admin settings, as you may need to revert your changes without it.
+Create an administrator account in Apache Guacamole before configuring single sign-on. Use the same username as the authentik user that will administer Apache Guacamole, and grant that user administrator permissions. This keeps the admin settings reachable if you need to revert the OpenID Connect configuration.
 
-:::warning
-You can configure Apache Guacamole to use either the `sub` or `preferred_username` as the UID field under `user-name-attribute`. When using `preferred_username` as the user identifier, ensure that the [**Allow users to change username** setting](https://docs.goauthentik.io/docs/sys-mgmt/settings#allow-users-to-change-username) is disabled to prevent authentication issues. The `sub` option uses a unique, stable identifier for the user, while `preferred_username` uses the username configured in authentik.
+:::warning User identifier
+This guide uses `preferred_username` as the Apache Guacamole user identifier. Ensure that the authentik [**Allow users to change username** setting](https://docs.goauthentik.io/docs/sys-mgmt/settings#allow-users-to-change-username) is disabled to prevent users from being mapped to a different Apache Guacamole account after a username change.
 :::
 
 <Tabs
@@ -62,131 +61,107 @@ You can configure Apache Guacamole to use either the `sub` or `preferred_usernam
     { label: 'Standalone', value: 'standalone' },
   ]}>
   <TabItem value="docker">
-Docker containers are typically configured using environment variables. To ensure proper integration, add the following variables to your `.env` file:
+Add the following variables to your Apache Guacamole environment file:
 
-    ```yaml showLineNumbers
+    ```env title=".env"
+    OPENID_ENABLED=true
     OPENID_AUTHORIZATION_ENDPOINT=https://authentik.company/application/o/authorize/
-    OPENID_CLIENT_ID=<Client ID from authentik>
-    OPENID_ISSUER=https://authentik.company/application/o/<application_slug>/
     OPENID_JWKS_ENDPOINT=https://authentik.company/application/o/<application_slug>/jwks/
+    OPENID_ISSUER=https://authentik.company/application/o/<application_slug>/
+    OPENID_CLIENT_ID=<Client ID from authentik>
     OPENID_REDIRECT_URI=https://guacamole.company/
     OPENID_USERNAME_CLAIM_TYPE=preferred_username
-    OPENID_ENABLED=true
     ```
 
-You must also add one of the following variables, depending on your desired behavior:
+To automatically redirect unauthenticated users to authentik, add the following variable:
 
-    - To automatically redirect all unauthenticated users, add the following:
+    ```env title=".env"
+    EXTENSION_PRIORITY=openid
+    ```
 
-        ```yaml
-        EXTENSION_PRIORITY=openid
-        ```
+To show the Apache Guacamole login screen with an OpenID Connect login option, add the following variable instead:
 
-    - Alternatively, to present unauthenticated users with a login screen, add the following:
+    ```env title=".env"
+    EXTENSION_PRIORITY=*,openid
+    ```
 
-        ```yaml
-        EXTENSION_PRIORITY=*,openid
-        ```
+If your deployment uses a custom `GUACAMOLE_HOME`, ensure that `guacamole.properties` includes the following setting so Apache Guacamole can read configuration from environment variables:
 
-:::tip Older versions of Apache Guacamole (pre v1.6)
-In older versions of Apache Guacamole, the `OPENID_ENABLED=true`, `EXTENSION_PRIORITY=openid` or `EXTENSION_PRIORITY=*,openid` are not required.
-:::
-
-Additionally, ensure your `guacamole.properties` file (typically located in `/etc/guacamole/`) includes the following line. This setting allows environment variables to be evaluated before static configuration files:
-
-    ```yaml
+    ```properties title="/etc/guacamole/guacamole.properties"
     enable-environment-properties: true
     ```
 
   </TabItem>
   <TabItem value="standalone">
-    To set up Apache Guacamole in a standalone environment, you'll need to adjust the settings in the `guacamole.properties` file, usually found in the `/etc/guacamole/` directory. Add the following settings:
+Install the Apache Guacamole OpenID Connect authentication extension, then add the following settings:
 
-    ```yaml showLineNumbers title="/etc/guacamole/guacamole.properties"
-    openid-authorization-endpoint=https://authentik.company/application/o/authorize/
-    openid-client-id=<Client ID from authentik>
-    openid-issuer=https://authentik.company/application/o/<application_slug>/
-    openid-jwks-endpoint=https://authentik.company/application/o/<application_slug>/jwks/
-    openid-redirect-uri=https://guacamole.company/
-    openid-username-claim-type=preferred_username
-    openid-enabled=true
+    ```properties title="/etc/guacamole/guacamole.properties"
+    openid-authorization-endpoint: https://authentik.company/application/o/authorize/
+    openid-jwks-endpoint: https://authentik.company/application/o/<application_slug>/jwks/
+    openid-issuer: https://authentik.company/application/o/<application_slug>/
+    openid-client-id: <Client ID from authentik>
+    openid-redirect-uri: https://guacamole.company/
+    openid-username-claim-type: preferred_username
     ```
 
-You must also add one of the following settings depending on your desired behavior:
+To automatically redirect unauthenticated users to authentik, add the following setting:
 
-    - To automatically redirect all unauthenticated users, add the following:
+    ```properties title="/etc/guacamole/guacamole.properties"
+    extension-priority: openid
+    ```
 
-        ```yaml
-        extension-priority=openid
-        ```
+To show the Apache Guacamole login screen with an OpenID Connect login option, add the following setting instead:
 
-    - Alternatively, to present unauthenticated users with a login screen, add the following:
-
-        ```yaml
-        extension-priority=*,openid
-        ```
-
-:::tip Older versions of Apache Guacamole (pre v1.6)
-In older versions of Apache Guacamole, the `openid-enabled=true`, `extension-priority=openid` or `extension-priority=*,openid` are not required.
-:::
+    ```properties title="/etc/guacamole/guacamole.properties"
+    extension-priority: *, openid
+    ```
 
   </TabItem>
 </Tabs>
 
-### Self-signed certificates
+Restart Apache Guacamole after changing the OpenID Connect configuration. For Docker Compose deployments, recreate the Apache Guacamole container with `docker compose up`.
 
-When using a self-signed certificate, it is necessary to incorporate the certificate of the corresponding Certificate Authority into both the `/etc/ssl/certs/ca-certificates.crt` file and the `/opt/java/openjdk/lib/security/cacerts` keystore on your Apache Guacamole host. This ensures that the self-signed certificate is trusted by both the system and the Java runtime environment used by Guacamole.
+### Trust self-signed certificates _(optional)_
 
-#### Add a certificate authority certificate as trusted in `/etc/ssl/certs/ca-certificates.crt`
+When authentik uses a certificate signed by a private certificate authority, add that certificate authority certificate to the operating system trust store and to the Java trust store on the Apache Guacamole host.
 
-:::info
-This section depends on the operating system hosting Apache Guacamole.
-:::
+#### Add the certificate authority certificate to the operating system trust store
 
-##### For _Debian_ based operating systems:
+On Debian-based operating systems, copy the certificate authority certificate to `/usr/local/share/ca-certificates/` with a `.crt` file extension, then run the following command:
 
-1. Copy the certificate of the Certificate Authority (e.g. `<CA_certificate>.crt`) to the `/usr/local/share/ca-certificates/` directory on the Apache Guacamole host. Ensure that the file extension is `.crt`.
-2. To add the certificate as trusted in `/etc/ssl/certs/ca-certificates.crt`, use the following command:
+```shell
+update-ca-certificates
+```
 
-    ```shell
-    update-ca-certificates
-    ```
+On Synology systems, copy the certificate authority certificate to `/usr/syno/etc/security-profile/ca-bundle-profile/ca-certificates/` with a `.crt` file extension, then run the following command:
 
-##### For _Synology_ systems:
+```shell
+update-ca-certificates.sh
+```
 
-1. Copy the certificate of the Certificate Authority (e.g. `<CA_certificate>.crt`) to the `/usr/syno/etc/security-profile/ca-bundle-profile/ca-certificates/` directory on the Synology host. Ensure that the file type is `.crt`.
-2. To add the certificate as trusted in `/etc/ssl/certs/ca-certificates.crt`, use the following command:
+#### Add the certificate authority certificate to the Java trust store
 
-    ```shell
-    update-ca-certificates.sh
-    ```
+Export the certificate authority certificate as a PKCS #12 file:
 
-#### Add a certificate authority certificate to `/opt/java/openjdk/lib/security/cacerts`
+```shell
+openssl pkcs12 -export -in <CA_certificate>.crt -inkey <CA_certificate>.key -out <CA_certificate>.p12 -passout pass:<password>
+```
 
-1. To export the certificate of the Certificate Authority, use the following command on the Certificate Authority host:
+Import the certificate authority certificate into the Java trust store on the Apache Guacamole host:
 
-    ```shell
-    openssl pkcs12 -export -in <CA_certificate>.crt -inkey <CA_certificate>.key -out <CA_certificate>.p12 -passout pass:<password>
-    ```
+```shell
+keytool -importkeystore -srckeystore <CA_certificate>.p12 -srcstoretype PKCS12 -keystore /opt/java/openjdk/lib/security/cacerts -deststorepass <destination_store_password> -noprompt -srcstorepass <password>
+```
 
-2. To import the certificate to the `/opt/java/openjdk/lib/security/cacerts` keystore on the Apache Guacamole host, use the following command:
-
-    ```shell
-    keytool -importkeystore -srckeystore <CA_certificate>.p12 -srcstoretype PKCS12 -keystore /opt/java/openjdk/lib/security/cacerts -deststorepass <destination_store_password> -noprompt -srcstorepass <password>
-    ```
-
-:::tip Older versions of Apache Guacamole (pre v1.6)
-In older versions of Apache Guacamole, the keystore was located at `/opt/java/openjdk/jre/lib/security/cacerts`. If using an older version, update the command accordingly.
-:::
-
-:::info
-More information on the keytool command can be found in the [Oracle documentation.](https://docs.oracle.com/en/java/javase/21/docs/specs/man/keytool.html)
+:::info Java trust store path
+Apache Guacamole versions earlier than 1.6 commonly used `/opt/java/openjdk/jre/lib/security/cacerts` for the Java trust store.
 :::
 
 ## Configuration verification
 
-To verify that authentik is correctly configured with Apache Guacamole, log out and log back in through authentik. You should notice a new button appearing at the bottom-left corner of the login page.
+To confirm that authentik is properly configured with Apache Guacamole, log out of Apache Guacamole and open it again. If you configured Apache Guacamole to show its login screen, click the OpenID Connect login option at the bottom-left corner of the login page and complete the authentik flow.
 
 ## Resources
 
-- [Apache Guacamole official documentation on OpenID Connect integrations](https://guacamole.apache.org/doc/gug/openid-auth.html#configuring-guacamole-for-single-sign-on-with-openid-connect)
+- [Apache Guacamole official documentation on OpenID Connect authentication](https://guacamole.apache.org/doc/gug/openid-auth.html)
+- [Apache Guacamole Docker image documentation](https://guacamole.apache.org/doc/gug/guacamole-docker.html)
