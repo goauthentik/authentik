@@ -1,3 +1,5 @@
+import { cellCounts } from "../hexworld/events.js";
+import { buildHexworldStyle } from "../hexworld/style.js";
 import { type BasemapTheme, buildBasemapStyle, type FlavorName } from "../style.js";
 
 import maplibregl, { type LngLatBoundsLike, type Map as MapLibreMap } from "maplibre-gl";
@@ -35,9 +37,16 @@ function ensurePmtilesProtocol(): void {
 
 @customElement("ak-map")
 export class AkMap extends LitElement {
-    /** URL of the static PMTiles basemap archive. */
+    /**
+     * URL of a conventional PMTiles basemap archive (Protomaps schema).
+     * Empty triggers hexworld mode with `hexworldUrl` — the zero-config default.
+     */
     @property({ type: String, attribute: "pmtiles-url" })
-    pmtilesUrl = "/tiles/basemap.pmtiles";
+    pmtilesUrl = "";
+
+    /** URL of the bundled hexworld PMTiles archive (used when `pmtilesUrl` is empty). */
+    @property({ type: String, attribute: "hexworld-url" })
+    hexworldUrl = "/static/dist/assets/maps/hexworld.pmtiles";
 
     @property({ type: String })
     theme: BasemapTheme = "light";
@@ -67,6 +76,11 @@ export class AkMap extends LitElement {
     #map?: MapLibreMap;
     #mapReady = false;
     #markerInstances = new Map<string, maplibregl.Marker>();
+    #litCells = new Set<string>();
+
+    get #hexworldMode(): boolean {
+        return !this.pmtilesUrl.trim();
+    }
 
     static styles = [
         unsafeCSS(maplibreCss),
@@ -99,7 +113,13 @@ export class AkMap extends LitElement {
 
     updated(changed: PropertyValues<this>): void {
         if (!this.#map) return;
-        if (changed.has("pmtilesUrl") || changed.has("theme") || changed.has("flavor") || changed.has("lang")) {
+        if (
+            changed.has("pmtilesUrl") ||
+            changed.has("hexworldUrl") ||
+            changed.has("theme") ||
+            changed.has("flavor") ||
+            changed.has("lang")
+        ) {
             this.#applyStyle();
         }
         if (changed.has("maxZoom")) {
@@ -107,6 +127,7 @@ export class AkMap extends LitElement {
         }
         if (changed.has("markers")) {
             this.#syncMarkers();
+            this.#syncHexStates();
         }
     }
 
@@ -129,7 +150,9 @@ export class AkMap extends LitElement {
         this.#map.once("load", () => {
             this.#mapReady = true;
             this.#syncMarkers();
+            this.#syncHexStates();
         });
+        this.#map.on("zoomend", () => this.#syncHexStates());
     }
 
     #destroyMap() {
@@ -137,18 +160,36 @@ export class AkMap extends LitElement {
             marker.remove();
         }
         this.#markerInstances.clear();
+        this.#litCells.clear();
         this.#map?.remove();
         this.#map = undefined;
         this.#mapReady = false;
     }
 
     #styleSpec() {
+        if (this.#hexworldMode) {
+            return buildHexworldStyle({ archiveUrl: this.hexworldUrl, theme: this.theme });
+        }
         return buildBasemapStyle({
             pmtilesUrl: this.pmtilesUrl,
             theme: this.theme,
             flavor: this.flavor,
             lang: this.lang,
         });
+    }
+
+    #syncHexStates() {
+        if (!this.#map || !this.#mapReady || !this.#hexworldMode) return;
+        const target = { source: "hexworld", sourceLayer: "hex" } as const;
+        for (const cell of this.#litCells) {
+            this.#map.removeFeatureState({ ...target, id: cell });
+        }
+        this.#litCells.clear();
+        const counts = cellCounts(this.markers, this.#map.getZoom());
+        for (const [cell, events] of counts) {
+            this.#map.setFeatureState({ ...target, id: cell }, { events });
+            this.#litCells.add(cell);
+        }
     }
 
     #applyStyle() {
