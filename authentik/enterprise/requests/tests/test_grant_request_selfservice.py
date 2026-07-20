@@ -28,8 +28,8 @@ class GrantRequestsSelfServiceTests(FlowTestCase):
 
         app = Application.objects.create(name=generate_id(), slug=generate_id())
         rule = RequestRule.objects.create(name=generate_id())
-        RequestRuleBinding.objects.create(rule=rule, target=app)
-        PolicyBinding.objects.create(target=rule, user=requester, order=0)
+        rule_binding = RequestRuleBinding.objects.create(rule=rule, target=app)
+        PolicyBinding.objects.create(target=rule_binding, user=requester, order=0)
 
         flow = Flow.objects.create(
             name=generate_id(),

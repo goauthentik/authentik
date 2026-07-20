@@ -371,8 +371,8 @@ class GrantRequestCreateFlowSelectionTests(APITestCase):
         app = Application.objects.create(name=generate_id(), slug=generate_id())
         rule_flow = self._make_flow()
         rule = RequestRule.objects.create(name=generate_id(), request_flow=rule_flow)
-        RequestRuleBinding.objects.create(rule=rule, target=app)
-        PolicyBinding.objects.create(target=rule, user=requester, order=0)
+        rule_binding = RequestRuleBinding.objects.create(rule=rule, target=app)
+        PolicyBinding.objects.create(target=rule_binding, user=requester, order=0)
 
         brand_flow = self._make_flow()
         self._set_brand_flow(brand_flow)
@@ -392,8 +392,8 @@ class GrantRequestCreateFlowSelectionTests(APITestCase):
 
         app = Application.objects.create(name=generate_id(), slug=generate_id())
         rule = RequestRule.objects.create(name=generate_id())
-        RequestRuleBinding.objects.create(rule=rule, target=app)
-        PolicyBinding.objects.create(target=rule, user=requester, order=0)
+        rule_binding = RequestRuleBinding.objects.create(rule=rule, target=app)
+        PolicyBinding.objects.create(target=rule_binding, user=requester, order=0)
 
         brand_flow = self._make_flow()
         self._set_brand_flow(brand_flow)
@@ -414,14 +414,14 @@ class GrantRequestCreateFlowSelectionTests(APITestCase):
         app_a = Application.objects.create(name=generate_id(), slug=generate_id())
         rule_a_flow = self._make_flow()
         rule_a = RequestRule.objects.create(name=generate_id(), request_flow=rule_a_flow)
-        RequestRuleBinding.objects.create(rule=rule_a, target=app_a)
-        PolicyBinding.objects.create(target=rule_a, user=requester, order=0)
+        rule_a_binding = RequestRuleBinding.objects.create(rule=rule_a, target=app_a)
+        PolicyBinding.objects.create(target=rule_a_binding, user=requester, order=0)
 
         app_b = Application.objects.create(name=generate_id(), slug=generate_id())
         rule_b_flow = self._make_flow()
         rule_b = RequestRule.objects.create(name=generate_id(), request_flow=rule_b_flow)
-        RequestRuleBinding.objects.create(rule=rule_b, target=app_b)
-        PolicyBinding.objects.create(target=rule_b, user=requester, order=0)
+        rule_b_binding = RequestRuleBinding.objects.create(rule=rule_b, target=app_b)
+        PolicyBinding.objects.create(target=rule_b_binding, user=requester, order=0)
 
         brand_flow = self._make_flow()
         self._set_brand_flow(brand_flow)
@@ -442,13 +442,13 @@ class GrantRequestCreateFlowSelectionTests(APITestCase):
 
         app_a = Application.objects.create(name=generate_id(), slug=generate_id())
         rule_a = RequestRule.objects.create(name=generate_id(), request_flow=shared_flow)
-        RequestRuleBinding.objects.create(rule=rule_a, target=app_a)
-        PolicyBinding.objects.create(target=rule_a, user=requester, order=0)
+        rule_a_binding = RequestRuleBinding.objects.create(rule=rule_a, target=app_a)
+        PolicyBinding.objects.create(target=rule_a_binding, user=requester, order=0)
 
         app_b = Application.objects.create(name=generate_id(), slug=generate_id())
         rule_b = RequestRule.objects.create(name=generate_id(), request_flow=shared_flow)
-        RequestRuleBinding.objects.create(rule=rule_b, target=app_b)
-        PolicyBinding.objects.create(target=rule_b, user=requester, order=0)
+        rule_b_binding = RequestRuleBinding.objects.create(rule=rule_b, target=app_b)
+        PolicyBinding.objects.create(target=rule_b_binding, user=requester, order=0)
 
         brand_flow = self._make_flow()
         self._set_brand_flow(brand_flow)
@@ -467,8 +467,8 @@ class GrantRequestCreateFlowSelectionTests(APITestCase):
 
         app = Application.objects.create(name=generate_id(), slug=generate_id())
         rule = RequestRule.objects.create(name=generate_id())
-        RequestRuleBinding.objects.create(rule=rule, target=app)
-        PolicyBinding.objects.create(target=rule, user=requester, order=0)
+        rule_binding = RequestRuleBinding.objects.create(rule=rule, target=app)
+        PolicyBinding.objects.create(target=rule_binding, user=requester, order=0)
 
         self._set_brand_flow(None)
 
