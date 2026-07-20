@@ -10,8 +10,16 @@ test("style uses the pmtiles protocol with promoted h3 ids", () => {
     assert.equal(source.type, "vector");
     assert.equal(source.url, "pmtiles:///static/dist/assets/maps/hexworld.pmtiles");
     assert.deepEqual(source.promoteId, { hex: "h3" });
-    assert.equal(source.maxzoom, 8);
+    // The shipped res 3+4 archive carries hex/border geometry only to z6.
+    // Declaring a higher source maxzoom makes MapLibre fetch real z7/z8 tiles
+    // that contain only the places layer, dropping land and borders.
+    assert.equal(source.maxzoom, 6);
     assert.equal(source.attribution, HEXWORLD_ATTRIBUTION);
+});
+
+test("source maxzoom is overridable for a finer archive cut", () => {
+    const r5 = buildHexworldStyle({ archiveUrl: "/x.pmtiles", maxzoom: 8 });
+    assert.equal(r5.sources.hexworld.maxzoom, 8);
 });
 
 test("style has hex fill + label layers with name:en fallback", () => {

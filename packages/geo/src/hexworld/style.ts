@@ -19,6 +19,11 @@ export interface HexworldStyleOptions {
     theme?: BasemapTheme;
     glyphsUrl?: string;
     attribution?: string;
+    /**
+     * Highest zoom at which the archive carries hex and border geometry.
+     * Defaults to the shipped res 3+4 cut. See the note on the source below.
+     */
+    maxzoom?: number;
 }
 
 interface Palette {
@@ -155,7 +160,13 @@ export function buildHexworldStyle(options: HexworldStyleOptions): StyleSpecific
                 url: `pmtiles://${options.archiveUrl}`,
                 promoteId: { hex: "h3" },
                 attribution: options.attribution ?? HEXWORLD_ATTRIBUTION,
-                maxzoom: 8,
+                // Must match the highest zoom at which the shipped archive
+                // actually carries hex and border geometry. The bundled cut is
+                // res 3+4, so that is z6, and MapLibre overzooms past it.
+                // Declaring anything higher makes MapLibre fetch the real
+                // z7/z8 tiles, which hold only the places layer: land and
+                // borders disappear and labels float on empty ocean.
+                maxzoom: options.maxzoom ?? 6,
             },
         },
         layers: [background, hexFill, hexOutline, borders, ...labelLayers],
