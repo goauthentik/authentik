@@ -12,7 +12,6 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ("authentik_events", "0019_alter_event_action"),
         ("authentik_flows", "0031_alter_flow_layout"),
         ("authentik_policies", "0012_alter_policybinding_managers_policybinding_expires_and_more"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
