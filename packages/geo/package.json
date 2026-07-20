@@ -34,7 +34,8 @@
         "lint-check": "eslint --max-warnings 0 .",
         "prettier": "prettier --write .",
         "prettier-check": "prettier --check .",
-        "test": "npm run build && node --test 'test/**/*.test.mjs'"
+        "test": "npm run build && node --test 'test/**/*.test.mjs'",
+        "hexworld:build": "npm run build && node scripts/hexworld/build.mjs"
     },
     "dependencies": {
         "@protomaps/basemaps": "^5.7.2",
@@ -48,9 +49,11 @@
         "@goauthentik/eslint-config": "link:../eslint-config",
         "@goauthentik/prettier-config": "link:../prettier-config",
         "@goauthentik/tsconfig": "link:../tsconfig",
+        "@mapbox/vector-tile": "^2.0.3",
         "@types/geojson": "^7946.0.16",
         "@types/node": "catalog:",
         "eslint": "catalog:",
+        "pbf": "^4.0.1",
         "typescript": "catalog:",
         "typescript-eslint": "catalog:"
     },
