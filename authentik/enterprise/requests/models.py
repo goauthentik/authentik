@@ -13,6 +13,7 @@ from authentik.lib.models import (
     ExpiringModel,
     InternallyManagedMixin,
     SerializerModel,
+    SimpleThroughModel,
 )
 from authentik.policies.engine import FilterPolicyEngine
 from authentik.policies.models import PolicyBinding, PolicyBindingModel
@@ -101,7 +102,7 @@ class RequestRule(CreatedUpdatedModel, SerializerModel, PolicyBindingModel):
     request_flow = models.ForeignKey(Flow, null=True, on_delete=models.SET_DEFAULT, default=None)
 
     notification_transports = models.ManyToManyField(
-        "authentik_events.NotificationTransport", blank=True
+        "authentik_events.NotificationTransport", blank=True, through="RequestRuleNotificationTransport"
     )
     notification_mode = models.TextField(
         choices=RequestNotificationMode.choices, default=RequestNotificationMode.ALL
@@ -139,6 +140,26 @@ class RequestRule(CreatedUpdatedModel, SerializerModel, PolicyBindingModel):
     class Meta:
         verbose_name = _("Request Rule")
         verbose_name_plural = _("Request Rules")
+
+
+class RequestRuleNotificationTransport(SimpleThroughModel):
+
+    rule = models.ForeignKey(RequestRule, on_delete=models.CASCADE)
+    notification_transport = models.ForeignKey(
+        "authentik_events.NotificationTransport",
+        on_delete=models.CASCADE,
+    )
+
+    class Meta:
+        unique_together = (("rule", "notification_transport"),)
+        verbose_name = _("Request Rule Notification Transport")
+        verbose_name_plural = _("Request Rule Notification Transports")
+
+    def __str__(self):
+        return (
+            f"RequestRuleNotificationTransport for Requeset Rule {self.rule_id} "
+            f"and Notification Transport {self.notification_transport_id}."
+        )
 
 
 class RequestStatus(models.TextChoices):
