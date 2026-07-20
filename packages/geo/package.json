@@ -36,7 +36,8 @@
         "prettier-check": "prettier --check .",
         "test": "npm run build && node --test 'test/**/*.test.mjs'",
         "hexworld:build": "npm run build && node scripts/hexworld/build.mjs",
-        "tiles:pull-hexworld": "node scripts/pull-hexworld.mjs"
+        "tiles:pull-hexworld": "node scripts/pull-hexworld.mjs",
+        "prepare": "pnpm run build"
     },
     "dependencies": {
         "@protomaps/basemaps": "^5.7.2",

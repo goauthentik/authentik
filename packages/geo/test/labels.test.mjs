@@ -36,6 +36,7 @@ test("normalizePlace accepts legacy pmap:-prefixed names", () => {
 });
 
 test("normalizePlace rejects unwanted kinds and nameless places", () => {
+    // spellchecker:disable-next-line
     assert.equal(normalizePlace({ kind: "neighbourhood", name: "Mitte" }, 0, 0), null);
     assert.equal(normalizePlace({ kind: "locality" }, 0, 0), null);
 });
