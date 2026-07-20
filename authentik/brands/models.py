@@ -61,8 +61,9 @@ class Brand(SerializerModel):
         blank=True,
         help_text=_(
             "URL template for the vector tile source used by the events map. "
-            "Supports the {z}, {x} and {y} placeholders. "
-            "When empty, the frontend falls back to the proxied default."
+            "Supports XYZ templates with {z}, {x} and {y} placeholders, or "
+            "pmtiles:// archive URLs. When empty, the frontend uses the "
+            "bundled hexworld basemap."
         ),
     )
 

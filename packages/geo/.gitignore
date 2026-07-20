@@ -1,5 +1,8 @@
 /tiles/*.pmtiles
 /tiles/*.mbtiles
+/tiles/fonts/
+/tiles/*.geojsonl
+/tiles/*.geojson
 /out/
 /node_modules/
 *.tsbuildinfo

@@ -11,7 +11,8 @@ export const DefaultBrand = {
     brandingFaviconThemedUrls: null,
     brandingTitle: "authentik",
     brandingCustomCss: "",
-    brandingMapTiles: "/tiles/world/{z}/{x}/{y}.mvt",
+    // Empty string selects the bundled hexworld basemap (no tile server needed).
+    brandingMapTiles: "",
     uiFooterLinks: [],
     uiTheme: UiThemeEnum.Automatic,
     matchedDomain: "",

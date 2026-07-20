@@ -1,11 +1,14 @@
 import "@goauthentik/core/environment/load/node";
 
+import { existsSync } from "node:fs";
 import * as fs from "node:fs/promises";
 import { createRequire } from "node:module";
 import * as path from "node:path";
 
 import { ConsoleLogger } from "#logger/node";
 import { DistDirectory, EntryPoint, PackageRoot } from "#paths/node";
+
+import { MonoRepoRoot } from "@goauthentik/core/paths/node";
 
 const require = createRequire(import.meta.url);
 const logger = ConsoleLogger.child({ name: "Assets" });
@@ -53,6 +56,31 @@ const assets = [
     ],
 ];
 
+// Bundled hexworld basemap. Populated by `pnpm --dir packages/geo run
+// tiles:pull-hexworld`; when absent the copy is skipped so dev builds without
+// tiles stay green — ak-map's fetch just 404s at runtime, which the map
+// tolerates.
+const HEXWORLD_SRC = path.resolve(MonoRepoRoot, "packages", "geo", "tiles");
+const HEXWORLD_DEST = path.resolve(DistDirectory, "assets", "maps");
+
+async function copyHexworld() {
+    const archive = path.resolve(HEXWORLD_SRC, "hexworld.pmtiles");
+    if (!existsSync(archive)) {
+        logger.info(
+            "hexworld.pmtiles not present in packages/geo/tiles; skipping copy. " +
+                "Run `pnpm --dir packages/geo run tiles:pull-hexworld` to bundle it.",
+        );
+        return;
+    }
+    await fs.mkdir(HEXWORLD_DEST, { recursive: true });
+    await fs.cp(archive, path.resolve(HEXWORLD_DEST, "hexworld.pmtiles"));
+    const fonts = path.resolve(HEXWORLD_SRC, "fonts");
+    if (existsSync(fonts)) {
+        await fs.cp(fonts, path.resolve(HEXWORLD_DEST, "fonts"), { recursive: true });
+    }
+    logger.debug("📋 Bundled hexworld basemap");
+}
+
 export async function copyAssets() {
     /**
      * @param {SourceDestinationPair} pair
@@ -71,5 +99,5 @@ export async function copyAssets() {
             });
     };
 
-    return await Promise.all(assets.map(copy));
+    return await Promise.all([...assets.map(copy), copyHexworld()]);
 }
