@@ -11,7 +11,7 @@ class Migration(migrations.Migration):
     dependencies = [
         (
             "authentik_lifecycle",
-            "0003_remove_lifecyclerule_uniq_lifecycle_rule_ct_null_object_and_more",
+            "0004_lifecyclerulenotificationtransport_and_more",
         ),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]

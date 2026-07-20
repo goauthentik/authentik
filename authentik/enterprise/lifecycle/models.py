@@ -12,6 +12,9 @@ models must be imported here.
 from authentik.enterprise.lifecycle.review.models import (
     LifecycleIteration,
     LifecycleRule,
+    LifecycleRuleNotificationTransport,
+    LifecycleRuleReviewer,
+    LifecycleRuleReviewerGroup,
     Review,
     ReviewState,
 )
@@ -26,6 +29,9 @@ from authentik.enterprise.lifecycle.offboarding.models import (
 __all__ = [
     "LifecycleIteration",
     "LifecycleRule",
+    "LifecycleRuleNotificationTransport",
+    "LifecycleRuleReviewer",
+    "LifecycleRuleReviewerGroup",
     "OffboardingAction",
     "OffboardingStatus",
     "Review",

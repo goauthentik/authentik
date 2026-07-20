@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("authentik_events", "0018_event_authentik_e_user_pk__idx"),
+        ("authentik_events", "0019_notificationrulenotificationtransport_and_more"),
     ]
 
     operations = [
