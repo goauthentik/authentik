@@ -6,6 +6,8 @@ sidebar_position: 2
 
 Configure the shared settings in [S3-compatible storage](./index.md), then use the section for your storage service to set its endpoint and authentication options.
 
+The authentik project does not test releases against every service listed on this page. S3 implementations differ, so verify uploads, downloads, deletes, and generated file URLs with your selected service before using it in production.
+
 ## Amazon S3
 
 Use Amazon S3 as the storage backend for authentik files without configuring a custom endpoint.
