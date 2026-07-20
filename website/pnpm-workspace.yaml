@@ -19,7 +19,7 @@ catalog:
   "@typescript-eslint/eslint-plugin": "^8.64.0"
   "@typescript-eslint/parser": "^8.64.0"
   "@typescript-eslint/utils": "^8.64.0"
-  "@types/node": "^26.1.1"
+  "@types/node": "^26.1.0"
   esbuild: "^0.28.1"
   eslint: "^9.39.5"
   prettier: "3.8.3"
