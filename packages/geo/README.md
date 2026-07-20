@@ -21,7 +21,19 @@ The hexworld archive baked at build time uses three H3 resolutions:
 
 MapLibre overzooms past z8. The bands are baked into every published archive — changing `HEX_BANDS` invalidates existing tiles.
 
-## Generating hexworld archives
+## The shipped archive
+
+`tiles/hexworld.pmtiles` is committed to the repo. The current file is the
+res 3 + 4 cut (`hexworld-r4`, ~8.8 MB) — smaller than the res-5 cut and still
+sharper than GeoIP-derived event locations warrant.
+
+The `web` build copies the archive into `web/dist/assets/maps/hexworld.pmtiles`.
+Glyphs (Noto Sans Latin ranges) are fetched from the Protomaps CDN on the
+first build and cached under `tiles/fonts/`; subsequent builds reuse the
+cache. Override the CDN via `AUTHENTIK_HEXWORLD_GLYPHS` for airgapped
+environments.
+
+## Regenerating the archive
 
 The generator lives at `scripts/hexworld/build.mjs`. It needs:
 
@@ -41,16 +53,13 @@ node scripts/hexworld/build.mjs --dump ./planet-z8.pmtiles --out tiles
 
 The generator downloads Natural Earth 50m land once, walks every tile of the dump's `places` layer through pmtiles + MVT decoders, and hands the results off to tippecanoe and tile-join. The cuts are always emitted together; the size decision is a manual gate — pick whichever fits the ship budget after inspecting both in the pmtiles viewer.
 
-## Bundling into a build
-
-Rename the chosen cut to `hexworld.pmtiles` and pull it (plus Latin glyphs for the label layer):
+To ship a regenerated archive, copy the chosen cut over the committed one:
 
 ```bash
-AUTHENTIK_HEXWORLD_SOURCE=/path/to/hexworld-r5.pmtiles \
+AUTHENTIK_HEXWORLD_SOURCE=/path/to/hexworld-r4.pmtiles \
   pnpm run tiles:pull-hexworld
+git add tiles/hexworld.pmtiles && git commit
 ```
-
-The next `web` build copies `packages/geo/tiles/hexworld.pmtiles` and `packages/geo/tiles/fonts/` into `web/dist/assets/maps/` where `<ak-map>` reads them.
 
 ## Runtime override
 

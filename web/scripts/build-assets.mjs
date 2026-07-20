@@ -56,28 +56,51 @@ const assets = [
     ],
 ];
 
-// Bundled hexworld basemap. Populated by `pnpm --dir packages/geo run
-// tiles:pull-hexworld`; when absent the copy is skipped so dev builds without
-// tiles stay green — ak-map's fetch just 404s at runtime, which the map
-// tolerates.
+// Bundled hexworld basemap. The archive is committed at
+// packages/geo/tiles/hexworld.pmtiles (see the geo package README); glyphs
+// are gitignored and fetched from the Protomaps CDN on first build, then
+// cached in tiles/fonts/ so subsequent builds reuse them.
 const HEXWORLD_SRC = path.resolve(MonoRepoRoot, "packages", "geo", "tiles");
 const HEXWORLD_DEST = path.resolve(DistDirectory, "assets", "maps");
+const GLYPH_BASE =
+    process.env.AUTHENTIK_HEXWORLD_GLYPHS ??
+    "https://raw.githubusercontent.com/protomaps/basemaps-assets/main/fonts";
+const GLYPH_FONTS = ["Noto Sans Regular", "Noto Sans Medium"];
+const GLYPH_RANGES = ["0-255", "256-511"];
+
+/**
+ * @param {string} fontsDir
+ */
+async function ensureGlyphs(fontsDir) {
+    for (const font of GLYPH_FONTS) {
+        const dir = path.resolve(fontsDir, font);
+        await fs.mkdir(dir, { recursive: true });
+        for (const range of GLYPH_RANGES) {
+            const dest = path.resolve(dir, `${range}.pbf`);
+            if (existsSync(dest)) continue;
+            const url = `${GLYPH_BASE}/${encodeURIComponent(font)}/${range}.pbf`;
+            const res = await fetch(url);
+            if (!res.ok) throw new Error(`glyph fetch failed: ${url} → HTTP ${res.status}`);
+            await fs.writeFile(dest, Buffer.from(await res.arrayBuffer()));
+            logger.info(`fetched glyph ${font}/${range}.pbf`);
+        }
+    }
+}
 
 async function copyHexworld() {
     const archive = path.resolve(HEXWORLD_SRC, "hexworld.pmtiles");
     if (!existsSync(archive)) {
-        logger.info(
-            "hexworld.pmtiles not present in packages/geo/tiles; skipping copy. " +
-                "Run `pnpm --dir packages/geo run tiles:pull-hexworld` to bundle it.",
+        throw new Error(
+            `hexworld.pmtiles missing at ${archive}. The archive is committed to git; ` +
+                "if it disappeared, restore from HEAD or regenerate via " +
+                "`pnpm --dir packages/geo run hexworld:build`.",
         );
-        return;
     }
+    const fonts = path.resolve(HEXWORLD_SRC, "fonts");
+    await ensureGlyphs(fonts);
     await fs.mkdir(HEXWORLD_DEST, { recursive: true });
     await fs.cp(archive, path.resolve(HEXWORLD_DEST, "hexworld.pmtiles"));
-    const fonts = path.resolve(HEXWORLD_SRC, "fonts");
-    if (existsSync(fonts)) {
-        await fs.cp(fonts, path.resolve(HEXWORLD_DEST, "fonts"), { recursive: true });
-    }
+    await fs.cp(fonts, path.resolve(HEXWORLD_DEST, "fonts"), { recursive: true });
     logger.debug("📋 Bundled hexworld basemap");
 }
 

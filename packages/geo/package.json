@@ -10,21 +10,21 @@
         "directory": "packages/geo"
     },
     "type": "module",
-    "main": "./out/index.js",
-    "types": "./out/index.d.ts",
+    "main": "./src/index.ts",
+    "types": "./src/index.ts",
     "exports": {
         "./package.json": "./package.json",
         ".": {
-            "types": "./out/index.d.ts",
-            "import": "./out/index.js"
+            "types": "./src/index.ts",
+            "import": "./src/index.ts"
         },
         "./style": {
-            "types": "./out/style.d.ts",
-            "import": "./out/style.js"
+            "types": "./src/style.ts",
+            "import": "./src/style.ts"
         },
         "./components/ak-map": {
-            "types": "./out/components/ak-map.d.ts",
-            "import": "./out/components/ak-map.js"
+            "types": "./src/components/ak-map.ts",
+            "import": "./src/components/ak-map.ts"
         }
     },
     "scripts": {
