@@ -15,8 +15,8 @@ export function renderTargetSummary(targets: RequestableTarget[]): SlottedTempla
     const target = targets[0];
     const overflow = targets.length - 1;
     const label =
-        target.label === target.parent.name
+        target.label === target.parent?.name
             ? target.label
-            : `${target.parent.name} / ${target.label}`;
+            : `${target.parent?.name} / ${target.label}`;
     return html`${label} ${overflow > 0 ? `+${overflow}` : ""}`;
 }

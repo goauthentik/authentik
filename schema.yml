@@ -55218,6 +55218,7 @@ components:
           allOf:
           - $ref: '#/components/schemas/Application'
           readOnly: true
+          nullable: true
       required:
       - label
       - parent

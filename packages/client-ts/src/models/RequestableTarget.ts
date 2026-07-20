@@ -41,7 +41,7 @@ export interface RequestableTarget {
      * @type {Application}
      * @memberof RequestableTarget
      */
-    readonly parent: Application;
+    readonly parent: Application | null;
 }
 
 /**

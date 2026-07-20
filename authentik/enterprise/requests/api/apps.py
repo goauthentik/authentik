@@ -62,7 +62,7 @@ class RequestableTargetSerializer(PassiveSerializer):
 
     pbm_uuid = CharField(source="pk", read_only=True)
     label = CharField(source="requestable_label", read_only=True)
-    parent = ApplicationSerializer(source="requestable_parent", read_only=True)
+    parent = ApplicationSerializer(source="requestable_parent", read_only=True, allow_null=True)
 
 
 class ApplicationsRequestableMixin:
