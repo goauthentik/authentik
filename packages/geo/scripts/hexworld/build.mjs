@@ -2,7 +2,7 @@
 import { extractLabels } from "./extract-labels.mjs";
 
 import { spawnSync } from "node:child_process";
-import { createWriteStream, existsSync, mkdirSync, statSync } from "node:fs";
+import { existsSync, mkdirSync, statSync, writeFileSync } from "node:fs";
 import { readFile, writeFile } from "node:fs/promises";
 import { parseArgs } from "node:util";
 
@@ -64,10 +64,12 @@ export function buildPlan({ outDir, localities }) {
     return plan;
 }
 
+// Deliberately synchronous. An earlier async createWriteStream + .end() version
+// looked fine but bit the places geojsonl step: the following spawnSync
+// blocks the event loop, so the write stream never got a chance to drain and
+// tippecanoe read an empty file. Fully-formed buffer, single syscall, no race.
 function writeLines(path, features) {
-    const stream = createWriteStream(path);
-    for (const feature of features) stream.write(JSON.stringify(feature) + "\n");
-    stream.end();
+    writeFileSync(path, features.map((feature) => JSON.stringify(feature)).join("\n") + "\n");
 }
 
 async function main() {
