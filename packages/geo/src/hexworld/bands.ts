@@ -9,8 +9,8 @@ export interface HexBand {
  * Changing a band invalidates published archives.
  */
 export const HEX_BANDS: readonly HexBand[] = [
-    { res: 3, minzoom: 0, maxzoom: 3 },
-    { res: 4, minzoom: 4, maxzoom: 6 },
+    { res: 3, minzoom: 0, maxzoom: 2 },
+    { res: 4, minzoom: 3, maxzoom: 6 },
     { res: 5, minzoom: 7, maxzoom: 8 },
 ];
 

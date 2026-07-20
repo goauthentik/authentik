@@ -53,8 +53,8 @@ test("style has country + region border layers filtered by level", () => {
     assert.deepEqual(region.filter, ["==", ["get", "level"], 1]);
     assert.deepEqual(country.filter, ["==", ["get", "level"], 0]);
     // Region borders are gated to res-4-and-finer zooms so world view stays
-    // readable.
-    assert.ok((region.minzoom ?? 0) >= 4);
+    // readable — res 4 starts at z3 with the current bands.
+    assert.ok((region.minzoom ?? 0) >= 3);
 });
 
 test("airgap: default style references no absolute URLs", () => {

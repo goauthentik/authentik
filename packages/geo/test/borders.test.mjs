@@ -104,3 +104,67 @@ test("region borders skip cells missing a region code even when country matches"
     const edges = borderEdges({ country, region });
     assert.equal(edges.length, 0);
 });
+
+test("coastal edges emit at level 0 for land cells whose neighbors are not land", () => {
+    // A single land cell in the middle of the ocean: every one of its six
+    // neighbors is ocean, and every shared edge should ship as a coastal
+    // segment at level 0.
+    const island = latLngToCell(0, 0, 4);
+    const land = new Set([island]);
+    const country = new Map([[island, "XX"]]);
+    const edges = borderEdges({ country, land });
+    assert.equal(edges.length, 6);
+    for (const feature of edges) {
+        assert.equal(feature.properties.level, 0);
+        // One side is the land country code, the other is the empty ocean
+        // marker — order depends on which cell id sorts first.
+        assert.deepEqual([feature.properties.a, feature.properties.b].sort(), ["", "XX"]);
+    }
+});
+
+test("coastal edges dedupe against country-vs-country borders", () => {
+    // Two adjacent land cells in different countries. Between them: one
+    // level-0 country border. Around them: coastal edges to ocean. The
+    // shared edge must not appear twice (once country, once coastal).
+    const cell = latLngToCell(0, 0, 4);
+    const [neighbor] = gridDisk(cell, 1).filter((c) => c !== cell);
+    const land = new Set([cell, neighbor]);
+    const country = new Map([
+        [cell, "AA"],
+        [neighbor, "BB"],
+    ]);
+    const edges = borderEdges({ country, land });
+    // Each cell has 6 neighbors; one is the other land cell, five are ocean.
+    // Total = 1 country border + 10 coastal = 11.
+    assert.equal(edges.length, 11);
+    const seen = new Set();
+    for (const feature of edges) {
+        const key = JSON.stringify(feature.geometry.coordinates);
+        assert.ok(!seen.has(key), "duplicate geometry emitted");
+        seen.add(key);
+    }
+    const countryBorders = edges.filter(
+        (e) => e.properties.a !== "" && e.properties.b !== "",
+    );
+    assert.equal(countryBorders.length, 1);
+    assert.deepEqual([countryBorders[0].properties.a, countryBorders[0].properties.b].sort(), [
+        "AA",
+        "BB",
+    ]);
+});
+
+test("land cells outside every country still get coastal edges", () => {
+    // A remote island the country point-in-polygon check might miss (no
+    // country entry). It should still ship its perimeter as level-0 ocean
+    // edges with an empty country code on both sides.
+    const island = latLngToCell(-70, 0, 4);
+    const land = new Set([island]);
+    const country = new Map();
+    const edges = borderEdges({ country, land });
+    assert.equal(edges.length, 6);
+    for (const feature of edges) {
+        assert.equal(feature.properties.level, 0);
+        assert.equal(feature.properties.a, "");
+        assert.equal(feature.properties.b, "");
+    }
+});

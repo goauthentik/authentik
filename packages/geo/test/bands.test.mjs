@@ -8,8 +8,8 @@ test("bands cover z0-8 contiguously", () => {
     assert.deepEqual(
         HEX_BANDS.map((b) => [b.res, b.minzoom, b.maxzoom]),
         [
-            [3, 0, 3],
-            [4, 4, 6],
+            [3, 0, 2],
+            [4, 3, 6],
             [5, 7, 8],
         ],
     );
@@ -17,8 +17,8 @@ test("bands cover z0-8 contiguously", () => {
 
 test("bandForZoom clamps and selects", () => {
     assert.equal(bandForZoom(0).res, 3);
-    assert.equal(bandForZoom(3.9).res, 3);
-    assert.equal(bandForZoom(4).res, 4);
+    assert.equal(bandForZoom(2.9).res, 3);
+    assert.equal(bandForZoom(3).res, 4);
     assert.equal(bandForZoom(6.5).res, 4);
     assert.equal(bandForZoom(7).res, 5);
     assert.equal(bandForZoom(12).res, 5);

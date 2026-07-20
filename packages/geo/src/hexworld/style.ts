@@ -120,10 +120,10 @@ export function buildHexworldStyle(options: HexworldStyleOptions): StyleSpecific
         "type": "line",
         "source": "hexworld",
         "source-layer": "borders",
-        // Res 4 (~52 km cells) is the finest band we ship, so admin-1 borders
-        // only carry useful signal from z4 onward — anything lower turns the
-        // continents into a mesh.
-        "minzoom": 4,
+        // Res 4 (~52 km cells) starts at z3 with the current bands, so admin-1
+        // borders start there too — anything lower turns the continents into
+        // a mesh at res 3's ~138 km cells.
+        "minzoom": 3,
         "filter": ["==", ["get", "level"], 1],
         "paint": {
             "line-color": palette.regionBorder,
