@@ -11,22 +11,13 @@ from django.utils.translation import gettext as _
 class Command(BaseCommand):
     """Hash a password using Django's password hashers"""
 
-    help = _("Hash a password for use with AUTHENTIK_BOOTSTRAP_PASSWORD_HASH")
-
-    def add_arguments(self, parser):
-        parser.add_argument(
-            "password",
-            type=str,
-            nargs="?",
-            help=_("Password to hash. If omitted, prompt for the password."),
-        )
+    help = _(
+        "Hash a password for use with AUTHENTIK_BOOTSTRAP_PASSWORD_HASH. Prompt when "
+        "interactive, or read the password from standard input."
+    )
 
     def handle(self, *args, **options):
-        password = options["password"]
-
-        if password is None:
-            if not sys.stdin.isatty():
-                raise CommandError(_("Password prompting requires an interactive terminal"))
+        if sys.stdin.isatty():
             try:
                 password = getpass(_("Password: "))
                 password_again = getpass(_("Password (again): "))
@@ -34,6 +25,8 @@ class Command(BaseCommand):
                 raise CommandError(_("Aborted")) from exc
             if password != password_again:
                 raise CommandError(_("Passwords do not match"))
+        else:
+            password = sys.stdin.readline().rstrip("\r\n")
 
         if not password:
             raise CommandError(_("Password cannot be empty"))

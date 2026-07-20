@@ -20,10 +20,10 @@ To generate a hash without exposing the password in your shell history, run this
 docker compose run --rm server hash_password
 ```
 
-Passing the password as a command argument remains supported, but exposes it in your shell history and the process list:
+For automation, pipe the password through standard input. The `-T` option disables pseudo-TTY allocation so that the command reads from standard input:
 
 ```bash
-docker compose run --rm server hash_password '<password>'
+printf '%s\n' "$PASSWORD" | docker compose run --rm -T server hash_password
 ```
 
 The generated hash includes a random salt, so running the command multiple times for the same password produces different output. Use the complete output as the value of `AUTHENTIK_BOOTSTRAP_PASSWORD_HASH`.

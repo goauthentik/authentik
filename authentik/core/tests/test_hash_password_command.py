@@ -26,10 +26,14 @@ class TestHashPasswordCommand(TestCase):
         ):
             call_command("hash_password", **options)
 
-    def test_hash_password(self):
-        """Test hashing a password."""
+    def test_hash_password_stdin(self):
+        """Test hashing a password read from standard input."""
         out = StringIO()
-        call_command("hash_password", "test123", stdout=out, stderr=out)
+        with patch(
+            "authentik.core.management.commands.hash_password.sys.stdin",
+            StringIO("test123\n"),
+        ):
+            call_command("hash_password", stdout=out)
         hashed = out.getvalue().strip()
 
         self.assertTrue(hashed.startswith("pbkdf2_sha256$"))
@@ -44,20 +48,25 @@ class TestHashPasswordCommand(TestCase):
         self.assertTrue(hashed.startswith("pbkdf2_sha256$"))
         self.assertTrue(check_password("test123", hashed))
 
-    def test_hash_password_empty_fails(self):
-        """Test that empty password raises error."""
+    def test_hash_password_argument_fails(self):
+        """Test that passwords cannot be supplied as command arguments."""
         with self.assertRaises(CommandError) as ctx:
-            call_command("hash_password", "")
+            call_command("hash_password", "test123")
 
-        self.assertIn("Password cannot be empty", str(ctx.exception))
+        self.assertIn("unrecognized arguments", str(ctx.exception))
 
-    @patch("authentik.core.management.commands.hash_password.sys.stdin.isatty", return_value=False)
-    def test_hash_password_prompt_without_tty_fails(self, _isatty_mock):
-        """Test that prompting requires an interactive terminal."""
-        with self.assertRaises(CommandError) as ctx:
+    def test_hash_password_empty_stdin_fails(self):
+        """Test that empty standard input raises an error."""
+        with (
+            patch(
+                "authentik.core.management.commands.hash_password.sys.stdin",
+                StringIO(),
+            ),
+            self.assertRaises(CommandError) as ctx,
+        ):
             call_command("hash_password")
 
-        self.assertIn("requires an interactive terminal", str(ctx.exception))
+        self.assertIn("Password cannot be empty", str(ctx.exception))
 
     def test_hash_password_prompt_errors(self):
         """Test errors raised while prompting for a password."""
