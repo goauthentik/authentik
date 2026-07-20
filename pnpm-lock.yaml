@@ -273,6 +273,9 @@ importers:
       '@protomaps/basemaps':
         specifier: ^5.7.2
         version: 5.7.2
+      h3-js:
+        specifier: ^4.2.1
+        version: 4.5.0
       lit:
         specifier: ^3.3.2
         version: 3.3.3
@@ -283,18 +286,33 @@ importers:
         specifier: ^4.4.1
         version: 4.4.1
     devDependencies:
+      '@eslint/js':
+        specifier: 'catalog:'
+        version: 9.39.5
+      '@goauthentik/eslint-config':
+        specifier: link:../eslint-config
+        version: link:../eslint-config
       '@goauthentik/prettier-config':
-        specifier: workspace:*
+        specifier: link:../prettier-config
         version: link:../prettier-config
       '@goauthentik/tsconfig':
-        specifier: workspace:*
+        specifier: link:../tsconfig
         version: link:../tsconfig
+      '@types/geojson':
+        specifier: ^7946.0.16
+        version: 7946.0.16
       '@types/node':
         specifier: 'catalog:'
         version: 26.1.1
+      eslint:
+        specifier: 'catalog:'
+        version: 9.39.5(jiti@1.21.7)
       typescript:
         specifier: 'catalog:'
         version: 6.0.3
+      typescript-eslint:
+        specifier: 'catalog:'
+        version: 8.64.0(eslint@9.39.5(jiti@1.21.7))(typescript@6.0.3)
 
   packages/logger-js:
     devDependencies:
@@ -4091,6 +4109,10 @@ packages:
   gzip-size@6.0.0:
     resolution: {integrity: sha512-ax7ZYomf6jqPTQ4+XCpUGyXKHk5WweS+e05MBO4/y3WJ5RkmPXNKvX+bx1behVILVwr6JSQvZAku021CHPXG3Q==}
     engines: {node: '>=10'}
+
+  h3-js@4.5.0:
+    resolution: {integrity: sha512-uKmdPc+DuarnR+XqZxEuWOMw7KzzKROrx3MLeJpFnMOs78S9M5eZ+X5RieS9UcSFQqbeXzbfWuX/W9Pyajinqw==}
+    engines: {node: '>=4', npm: '>=3', yarn: '>=1.3.0'}
 
   handle-thing@2.0.1:
     resolution: {integrity: sha512-9Qn4yBxelxoh2Ow62nP+Ka/kMnOXRi8BXnRaUwezLNhqelnN49xKz4F/dPP8OYLxLxq6JDtZb2i9XznUQbNPTg==}
@@ -12032,6 +12054,8 @@ snapshots:
   gzip-size@6.0.0:
     dependencies:
       duplexer: 0.1.2
+
+  h3-js@4.5.0: {}
 
   handle-thing@2.0.1: {}
 

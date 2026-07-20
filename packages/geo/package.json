@@ -33,19 +33,26 @@
         "lint": "eslint --fix .",
         "lint-check": "eslint --max-warnings 0 .",
         "prettier": "prettier --write .",
-        "prettier-check": "prettier --check ."
+        "prettier-check": "prettier --check .",
+        "test": "npm run build && node --test 'test/**/*.test.mjs'"
     },
     "dependencies": {
         "@protomaps/basemaps": "^5.7.2",
+        "h3-js": "^4.2.1",
         "lit": "^3.3.2",
         "maplibre-gl": "^5.10.0",
         "pmtiles": "^4.4.1"
     },
     "devDependencies": {
-        "@goauthentik/prettier-config": "workspace:*",
-        "@goauthentik/tsconfig": "workspace:*",
+        "@eslint/js": "catalog:",
+        "@goauthentik/eslint-config": "link:../eslint-config",
+        "@goauthentik/prettier-config": "link:../prettier-config",
+        "@goauthentik/tsconfig": "link:../tsconfig",
+        "@types/geojson": "^7946.0.16",
         "@types/node": "catalog:",
-        "typescript": "catalog:"
+        "eslint": "catalog:",
+        "typescript": "catalog:",
+        "typescript-eslint": "catalog:"
     },
     "peerDependencies": {
         "lit": "^3.3.2",
