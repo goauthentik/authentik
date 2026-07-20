@@ -92,8 +92,11 @@ falsey
 frie
 gcsp
 geoip
+geojson
+geojsonl
 glpi
 gosaml
+hexworld
 grecaptcha
 guac
 guacd
@@ -114,6 +117,7 @@ mcomplete
 mermaidjs
 microsoft
 mmdb
+maplibre
 noopener
 noreferrer
 oktadev
@@ -122,7 +126,9 @@ ouia
 ouid
 peap
 pkce
+pmtiles
 plex
+protomaps
 postgresstore
 proxyv
 psso
@@ -146,6 +152,7 @@ stringly
 sysd
 tdialector
 templatize
+tippecanoe
 tgcsp
 tguacd
 tgunicorn
