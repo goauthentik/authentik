@@ -91,6 +91,13 @@ impl AuthentikStackBuilder {
             Handle::current().runtime_flavor()
         );
 
+        let mut stack = AuthentikStack {
+            compose_profiles: vec![],
+            compose: None,
+            driver: None,
+            api_config: Configuration::default(),
+        };
+
         let tag = {
             let branch_name = if let Ok(env_pr_branch) = env::var("GITHUB_HEAD_REF")
                 && !env_pr_branch.is_empty()
@@ -107,9 +114,7 @@ impl AuthentikStackBuilder {
             format!("gh-{branch_name}")
         };
 
-        let mut compose_profiles = Vec::with_capacity(3);
-
-        let compose = {
+        stack.compose = Some({
             let mut compose = DockerCompose::with_local_client(&[
                 concat!(env!("CARGO_MANIFEST_DIR"), "/compose/compose.authentik.yml"),
                 concat!(env!("CARGO_MANIFEST_DIR"), "/compose/compose.utils.yml"),
@@ -131,45 +136,47 @@ impl AuthentikStackBuilder {
             );
 
             if self.selenium {
-                compose_profiles.push("selenium".to_owned());
+                stack.compose_profiles.push("selenium".to_owned());
             }
             if self.mailpit {
-                compose_profiles.push("mailpit".to_owned());
+                stack.compose_profiles.push("mailpit".to_owned());
             }
             if self.whoami {
-                compose_profiles.push("whoami".to_owned());
+                stack.compose_profiles.push("whoami".to_owned());
             }
             if self.caddy_single {
-                compose_profiles.push("caddy-single".to_owned());
+                stack.compose_profiles.push("caddy-single".to_owned());
             }
             if self.envoy_single {
-                compose_profiles.push("envoy-single".to_owned());
+                stack.compose_profiles.push("envoy-single".to_owned());
             }
             if self.nginx_single {
-                compose_profiles.push("nginx-single".to_owned());
+                stack.compose_profiles.push("nginx-single".to_owned());
             }
             if self.traefik_single {
-                compose_profiles.push("traefik-single".to_owned());
+                stack.compose_profiles.push("traefik-single".to_owned());
             }
 
-            compose = compose.with_env("COMPOSE_PROFILES", compose_profiles.join(","));
-
-            compose.up().await?;
+            compose = compose.with_env("COMPOSE_PROFILES", stack.compose_profiles.join(","));
 
             compose
-        };
+        });
 
-        let driver = if self.selenium {
+        stack.compose().up().await?;
+
+        stack.driver = if self.selenium {
             let mut caps = DesiredCapabilities::chrome();
             caps.set_browser_log_level(thirtyfour::LoggingPrefsLogLevel::All)?;
             let driver_url = format!(
                 "http://{}:{}",
-                compose
+                stack
+                    .compose()
                     .service("selenium")
                     .expect("a selenium to be started")
                     .get_host()
                     .await?,
-                compose
+                stack
+                    .compose()
                     .service("selenium")
                     .expect("a selenium to be started")
                     .get_host_port_ipv4(4444)
@@ -180,15 +187,17 @@ impl AuthentikStackBuilder {
             None
         };
 
-        let api_config = Configuration {
+        stack.api_config = Configuration {
             base_path: format!(
                 "http://{}:{}/api/v3",
-                compose
+                stack
+                    .compose()
                     .service("server")
                     .expect("a server to be started")
                     .get_host()
                     .await?,
-                compose
+                stack
+                    .compose()
                     .service("server")
                     .expect("a server to be started")
                     .get_host_port_ipv4(9000)
@@ -196,13 +205,6 @@ impl AuthentikStackBuilder {
             ),
             bearer_access_token: Some("akadmin".to_owned()),
             ..Default::default()
-        };
-
-        let mut stack = AuthentikStack {
-            compose_profiles,
-            compose: Some(compose),
-            driver,
-            api_config,
         };
 
         stack.apply_blueprints(self.blueprint_paths).await?;
