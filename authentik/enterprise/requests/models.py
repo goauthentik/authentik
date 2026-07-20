@@ -259,6 +259,8 @@ class GrantRequest(SerializerModel, ExpiringModel, CreatedUpdatedModel):
         `is_satisfied` is true across every rule attached to the request's targets."""
         if self.status != RequestStatus.CREATED:
             return
+        if user.pk == self.created_by_id:
+            return
         GrantRequestApproval.objects.update_or_create(
             request=self, reviewer=user, defaults={"status": status, "attributes": data}
         )

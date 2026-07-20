@@ -186,6 +186,8 @@ class GrantRequestViewSet(RetrieveModelMixin, DestroyModelMixin, ListModelMixin,
     @permission_required("fulfill_grantrequest")
     def fulfill(self, request: Request, body: GrantRequestFulfillSerializer, *args, **kwargs):
         grant: GrantRequest = self.get_object()
+        if request.user.pk == grant.created_by_id:
+            raise ValidationError("Cannot fulfill your own request")
         self._assert_reviewer(request, grant)
         grant.record_approval(
             request.user,

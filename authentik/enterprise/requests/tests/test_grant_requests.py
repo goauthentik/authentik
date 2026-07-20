@@ -133,6 +133,34 @@ class GrantRequestsTests(APITestCase):
         )
         self.assertEqual(res.status_code, 400)
 
+    def test_fulfill_rejects_self_approval(self):
+        """A requester who is also an eligible reviewer for the rule cannot fulfill
+        (approve or deny) their own request"""
+        requester = create_test_user()
+        self._grant_perms(requester)
+
+        app = Application.objects.create(
+            name=generate_id(),
+            slug=generate_id(),
+        )
+        rule = RequestRule.objects.create(name=generate_id())
+        RequestRuleBinding.objects.create(rule=rule, target=app)
+        PolicyBinding.objects.create(target=rule, user=requester, order=0)
+
+        req = GrantRequest.objects.create(created_by=requester)
+        GrantRequestTarget.objects.create(request=req, target=app)
+
+        self.client.force_login(requester)
+
+        res = self.client.patch(
+            reverse("authentik_api:grantrequest-fulfill", kwargs={"pk": req.pk}),
+            data={"status": "approved", "data": {}},
+        )
+        self.assertEqual(res.status_code, 400)
+        req.refresh_from_db()
+        self.assertEqual(req.status, RequestStatus.CREATED)
+        self.assertFalse(PolicyBinding.objects.filter(user=requester, target=app).exists())
+
     def test_fulfill_min_reviewers_requires_multiple_approvals(self):
         """A rule with min_reviewers=2 must not grant access after only one approval"""
         reviewer_a = create_test_user()
