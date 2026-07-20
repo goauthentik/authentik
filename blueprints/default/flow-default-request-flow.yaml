@@ -4,8 +4,8 @@ metadata:
 entries:
 - attrs:
     designation: stage_configuration
-    name: Request accecss
-    title: Request accecss
+    name: Request access
+    title: Request access
     authentication: require_authenticated
   identifiers:
     slug: default-request
