@@ -66,7 +66,7 @@ jobs:
           regctl image import "ghcr.io/goauthentik/${{ matrix.name }}:${{ needs.metadata.outputs.major-version }}" "${{ matrix.name }}.oci.tar"
           regctl image import "docker.io/authentik/${{ matrix.name }}:${{ needs.metadata.outputs.version }}" "${{ matrix.name }}.oci.tar"
           regctl image import "docker.io/authentik/${{ matrix.name }}:${{ needs.metadata.outputs.major-version }}" "${{ matrix.name }}.oci.tar"
-      - uses: actions/attest@a1948c3f048ba23858d222213b7c278aabede763
+      - uses: actions/attest@f7c74d28b9d84cb8768d0b8ca14a4bac6ef463e6
         with:
           subject-name: "ghcr.io/goauthentik/${{ matrix.name }}"
           subject-digest: "${{ steps.publish.outputs.digest }}"
