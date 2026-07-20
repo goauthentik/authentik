@@ -16,6 +16,7 @@ from rest_framework.serializers import (
     DateTimeField,
     IPAddressField,
     ListField,
+    PrimaryKeyRelatedField,
 )
 from rest_framework.viewsets import GenericViewSet
 from ua_parser import user_agent_parser
@@ -23,7 +24,7 @@ from ua_parser import user_agent_parser
 from authentik.api.validation import validate
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import ModelSerializer, PassiveSerializer
-from authentik.core.models import AuthenticatedSession
+from authentik.core.models import AuthenticatedSession, User
 from authentik.events.context_processors.asn import ASN_CONTEXT_PROCESSOR, ASNDict
 from authentik.events.context_processors.geoip import GEOIP_CONTEXT_PROCESSOR, GeoIPDict
 from authentik.rbac.decorators import permission_required
@@ -69,7 +70,7 @@ class BulkDeleteSessionSerializer(PassiveSerializer):
     """Serializer for bulk deleting authenticated sessions"""
 
     user_pks = ListField(
-        child=serializers.IntegerField(),
+        child=PrimaryKeyRelatedField(queryset=User.objects.all()),
         help_text="List of user IDs to revoke all sessions for, or empty to revoke all sessions.",
         required=False,
         default=[],
@@ -164,7 +165,7 @@ class AuthenticatedSessionViewSet(
         include_current_session = query.validated_data.get("include_current_session", False)
         sessions = AuthenticatedSession.objects.all()
         if len(user_pks) != 0:
-            sessions = sessions.filter(user_id__in=user_pks)
+            sessions = sessions.filter(user__in=user_pks)
         if not include_current_session:
             sessions = sessions.exclude(session__session_key=request.session.session_key)
         _, deleted = sessions.delete()
