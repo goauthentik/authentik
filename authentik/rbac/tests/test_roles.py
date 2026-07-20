@@ -156,3 +156,66 @@ class TestRoles(APITestCase):
             },
         )
         self.assertEqual(res.status_code, 404)
+
+    def test_add_group_api(self):
+        """Test add_group"""
+        role = Role.objects.create(name=generate_id())
+        group = Group.objects.create(name=generate_id())
+        self.login_user.assign_perms_to_managed_role("authentik_core.view_group")
+        self.login_user.assign_perms_to_managed_role("authentik_rbac.change_role", role)
+        self.client.force_login(self.login_user)
+        res = self.client.post(
+            reverse("authentik_api:roles-add-group", kwargs={"pk": role.pk}),
+            data={
+                "pk": group.pk,
+            },
+        )
+        self.assertEqual(res.status_code, 204)
+        role.refresh_from_db()
+        self.assertEqual(list(role.groups.all()), [group])
+
+    def test_add_group_api_404(self):
+        """Test add_group"""
+        role = Role.objects.create(name=generate_id())
+        self.login_user.assign_perms_to_managed_role("authentik_core.view_group")
+        self.login_user.assign_perms_to_managed_role("authentik_rbac.change_role", role)
+        self.client.force_login(self.login_user)
+        res = self.client.post(
+            reverse("authentik_api:roles-add-group", kwargs={"pk": role.pk}),
+            data={
+                "pk": "00000000-0000-4000-0000-000000000000",
+            },
+        )
+        self.assertEqual(res.status_code, 404)
+
+    def test_remove_group_api(self):
+        """Test remove_group"""
+        role = Role.objects.create(name=generate_id())
+        group = Group.objects.create(name=generate_id())
+        self.login_user.assign_perms_to_managed_role("authentik_core.view_group")
+        self.login_user.assign_perms_to_managed_role("authentik_rbac.change_role", role)
+        role.groups.add(group)
+        self.client.force_login(self.login_user)
+        res = self.client.post(
+            reverse("authentik_api:roles-remove-group", kwargs={"pk": role.pk}),
+            data={
+                "pk": group.pk,
+            },
+        )
+        self.assertEqual(res.status_code, 204)
+        role.refresh_from_db()
+        self.assertEqual(list(role.groups.all()), [])
+
+    def test_remove_group_404_api(self):
+        """Test remove_group"""
+        role = Role.objects.create(name=generate_id())
+        self.login_user.assign_perms_to_managed_role("authentik_core.view_group")
+        self.login_user.assign_perms_to_managed_role("authentik_rbac.change_role", role)
+        self.client.force_login(self.login_user)
+        res = self.client.post(
+            reverse("authentik_api:roles-remove-group", kwargs={"pk": role.pk}),
+            data={
+                "pk": "00000000-0000-4000-0000-000000000000",
+            },
+        )
+        self.assertEqual(res.status_code, 404)

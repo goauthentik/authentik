@@ -12,6 +12,10 @@
  * Do not edit the class manually.
  */
 
+import {
+    type GroupSerializerForRoleRequest,
+    GroupSerializerForRoleRequestToJSON,
+} from "../models/GroupSerializerForRoleRequest";
 import { type InitialPermissions, InitialPermissionsFromJSON } from "../models/InitialPermissions";
 import {
     type InitialPermissionsRequest,
@@ -137,6 +141,11 @@ export interface RbacPermissionsRolesListRequest {
     uuid?: string;
 }
 
+export interface RbacRolesAddGroupCreateRequest {
+    uuid: string;
+    groupSerializerForRoleRequest: GroupSerializerForRoleRequest;
+}
+
 export interface RbacRolesAddUserCreateRequest {
     uuid: string;
     userAccountSerializerForRoleRequest: UserAccountSerializerForRoleRequest;
@@ -166,6 +175,11 @@ export interface RbacRolesListRequest {
 export interface RbacRolesPartialUpdateRequest {
     uuid: string;
     patchedRoleRequest?: PatchedRoleRequest;
+}
+
+export interface RbacRolesRemoveGroupCreateRequest {
+    uuid: string;
+    groupSerializerForRoleRequest: GroupSerializerForRoleRequest;
 }
 
 export interface RbacRolesRemoveUserCreateRequest {
@@ -1138,6 +1152,78 @@ export class RbacApi extends runtime.BaseAPI {
     }
 
     /**
+     * Creates request options for rbacRolesAddGroupCreate without sending the request
+     */
+    async rbacRolesAddGroupCreateRequestOpts(
+        requestParameters: RbacRolesAddGroupCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["uuid"] == null) {
+            throw new runtime.RequiredError(
+                "uuid",
+                'Required parameter "uuid" was null or undefined when calling rbacRolesAddGroupCreate().',
+            );
+        }
+
+        if (requestParameters["groupSerializerForRoleRequest"] == null) {
+            throw new runtime.RequiredError(
+                "groupSerializerForRoleRequest",
+                'Required parameter "groupSerializerForRoleRequest" was null or undefined when calling rbacRolesAddGroupCreate().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters["Content-Type"] = "application/json";
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/rbac/roles/{uuid}/add_group/`;
+        urlPath = urlPath.replace("{uuid}", encodeURIComponent(String(requestParameters["uuid"])));
+
+        return {
+            path: urlPath,
+            method: "POST",
+            headers: headerParameters,
+            query: queryParameters,
+            body: GroupSerializerForRoleRequestToJSON(
+                requestParameters["groupSerializerForRoleRequest"],
+            ),
+        };
+    }
+
+    /**
+     * Add group to role
+     */
+    async rbacRolesAddGroupCreateRaw(
+        requestParameters: RbacRolesAddGroupCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
+        const requestOptions = await this.rbacRolesAddGroupCreateRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.VoidApiResponse(response);
+    }
+
+    /**
+     * Add group to role
+     */
+    async rbacRolesAddGroupCreate(
+        requestParameters: RbacRolesAddGroupCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
+        await this.rbacRolesAddGroupCreateRaw(requestParameters, initOverrides);
+    }
+
+    /**
      * Creates request options for rbacRolesAddUserCreate without sending the request
      */
     async rbacRolesAddUserCreateRequestOpts(
@@ -1489,6 +1575,78 @@ export class RbacApi extends runtime.BaseAPI {
     ): Promise<Role> {
         const response = await this.rbacRolesPartialUpdateRaw(requestParameters, initOverrides);
         return await response.value();
+    }
+
+    /**
+     * Creates request options for rbacRolesRemoveGroupCreate without sending the request
+     */
+    async rbacRolesRemoveGroupCreateRequestOpts(
+        requestParameters: RbacRolesRemoveGroupCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["uuid"] == null) {
+            throw new runtime.RequiredError(
+                "uuid",
+                'Required parameter "uuid" was null or undefined when calling rbacRolesRemoveGroupCreate().',
+            );
+        }
+
+        if (requestParameters["groupSerializerForRoleRequest"] == null) {
+            throw new runtime.RequiredError(
+                "groupSerializerForRoleRequest",
+                'Required parameter "groupSerializerForRoleRequest" was null or undefined when calling rbacRolesRemoveGroupCreate().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters["Content-Type"] = "application/json";
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/rbac/roles/{uuid}/remove_group/`;
+        urlPath = urlPath.replace("{uuid}", encodeURIComponent(String(requestParameters["uuid"])));
+
+        return {
+            path: urlPath,
+            method: "POST",
+            headers: headerParameters,
+            query: queryParameters,
+            body: GroupSerializerForRoleRequestToJSON(
+                requestParameters["groupSerializerForRoleRequest"],
+            ),
+        };
+    }
+
+    /**
+     * Remove group from role
+     */
+    async rbacRolesRemoveGroupCreateRaw(
+        requestParameters: RbacRolesRemoveGroupCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
+        const requestOptions = await this.rbacRolesRemoveGroupCreateRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.VoidApiResponse(response);
+    }
+
+    /**
+     * Remove group from role
+     */
+    async rbacRolesRemoveGroupCreate(
+        requestParameters: RbacRolesRemoveGroupCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
+        await this.rbacRolesRemoveGroupCreateRaw(requestParameters, initOverrides);
     }
 
     /**
