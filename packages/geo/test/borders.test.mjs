@@ -7,41 +7,74 @@ import { borderEdges } from "../out/hexworld/borders.js";
 test("cells inside the same country produce no border edges", () => {
     const berlin = latLngToCell(52.52, 13.405, 4);
     const cells = gridDisk(berlin, 1);
-    const cellCountry = new Map(cells.map((c) => [c, "DE"]));
-    const edges = borderEdges(cellCountry);
+    const country = new Map(cells.map((c) => [c, "DE"]));
+    const edges = borderEdges({ country });
     assert.equal(edges.length, 0);
 });
 
-test("a pair of adjacent cells with different countries produces exactly one segment", () => {
+test("a cross-country neighbor pair emits exactly one level-0 segment", () => {
     const berlin = latLngToCell(52.52, 13.405, 4);
     const [neighbor] = gridDisk(berlin, 1).filter((c) => c !== berlin);
-    const cellCountry = new Map([
+    const country = new Map([
         [berlin, "DE"],
         [neighbor, "PL"],
     ]);
-    const edges = borderEdges(cellCountry);
+    const edges = borderEdges({ country });
     assert.equal(edges.length, 1);
     const [line] = edges;
     assert.equal(line.type, "Feature");
     assert.equal(line.geometry.type, "LineString");
     assert.equal(line.geometry.coordinates.length, 2);
+    assert.equal(line.properties.level, 0);
     assert.deepEqual([line.properties.a, line.properties.b].sort(), ["DE", "PL"]);
 });
 
-test("borderEdges dedupes reciprocal neighbor pairs", () => {
+test("cross-region neighbors within the same country emit level-1 segments", () => {
+    const denver = latLngToCell(39.74, -104.99, 4);
+    const [neighbor] = gridDisk(denver, 1).filter((c) => c !== denver);
+    const country = new Map([
+        [denver, "US"],
+        [neighbor, "US"],
+    ]);
+    const region = new Map([
+        [denver, "US-CO"],
+        [neighbor, "US-NE"],
+    ]);
+    const edges = borderEdges({ country, region });
+    assert.equal(edges.length, 1);
+    const [line] = edges;
+    assert.equal(line.properties.level, 1);
+    assert.deepEqual([line.properties.a, line.properties.b].sort(), ["US-CO", "US-NE"]);
+});
+
+test("country borders take precedence over region borders when both differ", () => {
+    const cell = latLngToCell(52.52, 13.405, 4);
+    const [neighbor] = gridDisk(cell, 1).filter((c) => c !== cell);
+    const country = new Map([
+        [cell, "DE"],
+        [neighbor, "PL"],
+    ]);
+    // Region codes also differ, but the coincident country border wins.
+    const region = new Map([
+        [cell, "DE-BE"],
+        [neighbor, "PL-14"],
+    ]);
+    const edges = borderEdges({ country, region });
+    assert.equal(edges.length, 1);
+    assert.equal(edges[0].properties.level, 0);
+    assert.deepEqual([edges[0].properties.a, edges[0].properties.b].sort(), ["DE", "PL"]);
+});
+
+test("borderEdges dedupes reciprocal neighbor pairs at either level", () => {
     const center = latLngToCell(52.52, 13.405, 4);
     const disk = gridDisk(center, 1);
-    // Every 6 neighbors gets a different country. Each cell has all 6 neighbors
-    // in its own gridDisk; naive iteration would emit each edge twice (once
-    // from each side).
-    const cellCountry = new Map();
+    const country = new Map();
+    const region = new Map();
     for (let i = 0; i < disk.length; i++) {
-        cellCountry.set(disk[i], String.fromCharCode(65 + i, 65 + i));
+        country.set(disk[i], "US");
+        region.set(disk[i], String.fromCharCode(65 + i, 65 + i));
     }
-    const edges = borderEdges(cellCountry);
-    // Every unordered adjacent pair in the disk contributes at most one edge.
-    // The exact count depends on the disk's neighbor graph, but if any dupes
-    // existed the count would double.
+    const edges = borderEdges({ country, region });
     const seen = new Set();
     for (const feature of edges) {
         const { a, b } = feature.properties;
@@ -51,10 +84,23 @@ test("borderEdges dedupes reciprocal neighbor pairs", () => {
     }
 });
 
-test("ocean neighbors (undefined country) do not produce border segments", () => {
+test("neighbors with unassigned country skip border emission", () => {
     const berlin = latLngToCell(52.52, 13.405, 4);
-    const cellCountry = new Map([[berlin, "DE"]]);
-    // No entry for the surrounding cells — they're ocean/unassigned.
-    const edges = borderEdges(cellCountry);
+    const country = new Map([[berlin, "DE"]]);
+    // No entries for surrounding cells — treated as ocean.
+    const edges = borderEdges({ country });
+    assert.equal(edges.length, 0);
+});
+
+test("region borders skip cells missing a region code even when country matches", () => {
+    const denver = latLngToCell(39.74, -104.99, 4);
+    const [neighbor] = gridDisk(denver, 1).filter((c) => c !== denver);
+    const country = new Map([
+        [denver, "US"],
+        [neighbor, "US"],
+    ]);
+    // Only one cell has a region code — the other should not trigger a border.
+    const region = new Map([[denver, "US-CO"]]);
+    const edges = borderEdges({ country, region });
     assert.equal(edges.length, 0);
 });

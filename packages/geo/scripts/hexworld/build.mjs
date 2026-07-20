@@ -8,7 +8,12 @@ import { parseArgs } from "node:util";
 
 import { HEX_BANDS } from "../../out/hexworld/bands.js";
 import { borderEdges } from "../../out/hexworld/borders.js";
-import { assignCountries, buildCountryIndex } from "../../out/hexworld/countries.js";
+import {
+    assignCountries,
+    assignRegions,
+    buildCountryIndex,
+    buildRegionIndex,
+} from "../../out/hexworld/countries.js";
 import { capLocalities, placeFeature } from "../../out/hexworld/labels.js";
 import { hexFeature, landCells } from "../../out/hexworld/land.js";
 
@@ -18,6 +23,10 @@ const NE_TAG = "v5.1.2";
 const NE_BASE = `https://raw.githubusercontent.com/nvkelso/natural-earth-vector/${NE_TAG}/geojson`;
 const LAND_URL = `${NE_BASE}/ne_50m_land.geojson`;
 const COUNTRIES_URL = `${NE_BASE}/ne_50m_admin_0_countries.geojson`;
+// 10m — the 50m admin-1 dataset only covers nine countries. 10m gives all 241.
+// Detail past the ~52 km res-4 cell gets collapsed to cell edges anyway, so
+// the higher-res source doesn't cost anything at render time.
+const REGIONS_URL = `${NE_BASE}/ne_10m_admin_1_states_provinces.geojson`;
 
 const TILE_FLAGS = [
     "--force",
@@ -130,18 +139,27 @@ async function main() {
     const countryIndex = buildCountryIndex(countries);
     console.log(`countries: indexed ${countryIndex.entries.length} entries`);
 
+    const regionsPath = `${outDir}/ne_10m_admin_1_states_provinces.geojson`;
+    await fetchIfMissing(REGIONS_URL, regionsPath);
+    const regions = JSON.parse(await readFile(regionsPath, "utf8"));
+    const regionIndex = buildRegionIndex(regions);
+    console.log(`regions: indexed ${regionIndex.entries.length} entries`);
+
     for (const band of HEX_BANDS) {
         const cells = landCells(land, band.res);
         const cellCountry = assignCountries(cells, countryIndex);
+        const cellRegion = assignRegions(cells, regionIndex);
         console.log(
-            `res ${band.res}: ${cells.size} land cells, ${cellCountry.size} country-tagged`,
+            `res ${band.res}: ${cells.size} land cells, ${cellCountry.size} country-tagged, ${cellRegion.size} region-tagged`,
         );
         writeLines(
             `${outDir}/hex-r${band.res}.geojsonl`,
             [...cells].map((cell) => hexFeature(cell, cellCountry.get(cell))),
         );
-        const edges = borderEdges(cellCountry);
-        console.log(`  ${edges.length} border edges`);
+        const edges = borderEdges({ country: cellCountry, region: cellRegion });
+        const level0 = edges.filter((e) => e.properties.level === 0).length;
+        const level1 = edges.length - level0;
+        console.log(`  borders: ${level0} country + ${level1} region`);
         writeLines(`${outDir}/borders-r${band.res}.geojsonl`, edges);
     }
 

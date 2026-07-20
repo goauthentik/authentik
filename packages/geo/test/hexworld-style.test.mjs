@@ -37,15 +37,24 @@ test("style has hex fill + label layers with name:en fallback", () => {
     }
 });
 
-test("style has a borders line layer sourced from the borders source-layer", () => {
+test("style has country + region border layers filtered by level", () => {
     const ids = style.layers.map((layer) => layer.id);
     const outlineIdx = ids.indexOf("hexworld-hex-outline");
+    const regionIdx = ids.indexOf("hexworld-region-borders");
     const bordersIdx = ids.indexOf("hexworld-borders");
+    assert.notEqual(regionIdx, -1, "expected a hexworld-region-borders layer");
     assert.notEqual(bordersIdx, -1, "expected a hexworld-borders layer");
-    assert.ok(bordersIdx > outlineIdx, "borders must render above hex outlines");
-    const borders = style.layers[bordersIdx];
-    assert.equal(borders.type, "line");
-    assert.equal(borders["source-layer"], "borders");
+    assert.ok(regionIdx > outlineIdx, "region borders must render above hex outlines");
+    assert.ok(bordersIdx > regionIdx, "country borders must render above region borders");
+    const region = style.layers[regionIdx];
+    const country = style.layers[bordersIdx];
+    assert.equal(region["source-layer"], "borders");
+    assert.equal(country["source-layer"], "borders");
+    assert.deepEqual(region.filter, ["==", ["get", "level"], 1]);
+    assert.deepEqual(country.filter, ["==", ["get", "level"], 0]);
+    // Region borders are gated to res-4-and-finer zooms so world view stays
+    // readable.
+    assert.ok((region.minzoom ?? 0) >= 4);
 });
 
 test("airgap: default style references no absolute URLs", () => {

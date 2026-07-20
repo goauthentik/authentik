@@ -5,19 +5,21 @@ Map component and basemap tooling for authentik's events overview.
 The package ships a Lit `<ak-map>` element wrapping [MapLibre GL](https://maplibre.org/) and two style builders that back it:
 
 - `buildBasemapStyle(options)` — conventional [Protomaps](https://protomaps.com/) vector basemap loaded from a `pmtiles://` archive or an XYZ template. Used when a brand configures a tile URL under **System > Brands > Map tiles**.
-- `buildHexworldStyle(options)` — the zero-config default. Renders land as an H3 hexagonal grid with country borders drawn along hex edges plus country / region / locality labels, from a small bundled PMTiles archive. Enters when `pmtiles-url` on `<ak-map>` is empty.
+- `buildHexworldStyle(options)` — the zero-config default. Renders land as an H3 hexagonal grid with country and region borders drawn along hex edges plus country / region / locality labels, from a small bundled PMTiles archive. Enters when `pmtiles-url` on `<ak-map>` is empty.
 
 `<ak-map>` also aggregates its `markers` prop into cells and paints them via MapLibre feature-state, so event counts light up hexes without any per-marker DOM overhead.
 
 ## Zoom bands
 
-The hexworld archive baked at build time uses three H3 resolutions:
+The hexworld archive baked at build time uses three H3 resolutions. Measured
+via h3's `getHexagonEdgeLengthAvg` and `getHexagonAreaAvg` — cell "width"
+here means vertex-to-opposite-vertex, roughly 2× the edge:
 
-| Zoom range | H3 resolution | Rough cell width |
-| ---------- | ------------- | ---------------- |
-| z0–z3      | 3             | ~1000 km         |
-| z4–z6      | 4             | ~400 km          |
-| z7–z8      | 5             | ~130 km          |
+| Zoom range | H3 resolution | Edge length | Cell width | Cell area   |
+| ---------- | ------------- | ----------- | ---------- | ----------- |
+| z0–z3      | 3             | ~69 km      | ~138 km    | ~12,393 km² |
+| z4–z6      | 4             | ~26 km      | ~52 km     | ~1,770 km²  |
+| z7–z8      | 5             | ~10 km      | ~20 km     | ~253 km²    |
 
 MapLibre overzooms past z8. The bands are baked into every published archive — changing `HEX_BANDS` invalidates existing tiles.
 
@@ -56,10 +58,10 @@ node scripts/hexworld/build.mjs --dump ./planet-z8.pmtiles --out tiles
 
 Inputs the generator downloads on first run are pinned to specific releases so a re-run a year from now produces the same tiles:
 
-- Natural Earth vector data: `nvkelso/natural-earth-vector@v5.1.2` (`ne_50m_land.geojson` for the land polygons, `ne_50m_admin_0_countries.geojson` for country assignment and hex-aligned borders).
+- Natural Earth vector data: `nvkelso/natural-earth-vector@v5.1.2`. `ne_50m_land.geojson` supplies the land polygons and `ne_50m_admin_0_countries.geojson` the country assignment; state and province borders come from `ne_10m_admin_1_states_provinces.geojson` since the 50m admin-1 dataset only covers nine countries.
 - Protomaps planet build: `20260521` — the source of the labels layer. The shipped archive was cut from that build; regenerate against a newer build to pick up new places.
 
-The generator walks land + country data into H3 cells, extracts labels from the dump's `places` layer via pmtiles + MVT decoders, computes border segments along shared cell edges wherever two adjacent cells belong to different countries, then hands everything to tippecanoe and tile-join. Cuts are always emitted together; size is a manual gate — pick whichever fits the ship budget after inspecting both in the pmtiles viewer.
+The generator walks land, country, and region data into H3 cells, extracts labels from the dump's `places` layer via pmtiles + MVT decoders, computes border segments along shared cell edges wherever two adjacent cells differ (country borders take precedence over region borders at the same edge), then hands everything to tippecanoe and tile-join. Border features carry a `level` property so the runtime style can render country and region borders with different weights from the same source-layer. Cuts are always emitted together; size is a manual gate — pick whichever fits the ship budget after inspecting both in the pmtiles viewer.
 
 To ship a regenerated archive, copy the chosen cut over the committed one:
 

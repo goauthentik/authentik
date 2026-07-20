@@ -96,8 +96,9 @@ geojson
 geojsonl
 glpi
 gosaml
-hexworld
 grecaptcha
+hasc
+hexworld
 guac
 guacd
 gunicorn

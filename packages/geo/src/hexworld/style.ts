@@ -33,6 +33,7 @@ interface Palette {
     hexLit: string;
     hexHot: string;
     border: string;
+    regionBorder: string;
     text: string;
     textHalo: string;
 }
@@ -45,6 +46,7 @@ const PALETTES: Record<BasemapTheme, Palette> = {
         hexLit: "#f0ab00",
         hexHot: "#c9190b",
         border: "#6a7684",
+        regionBorder: "#95a1ad",
         text: "#3c4852",
         textHalo: "#f4f7f9",
     },
@@ -55,6 +57,7 @@ const PALETTES: Record<BasemapTheme, Palette> = {
         hexLit: "#f0ab00",
         hexHot: "#fe5142",
         border: "#8b98a8",
+        regionBorder: "#5c6772",
         text: "#aab7c4",
         textHalo: "#10141a",
     },
@@ -116,17 +119,36 @@ export function buildHexworldStyle(options: HexworldStyleOptions): StyleSpecific
         paint: { "line-color": palette.hexOutline, "line-width": 0.5 },
     };
 
+    const regionBorders: LineLayerSpecification = {
+        id: "hexworld-region-borders",
+        type: "line",
+        source: "hexworld",
+        "source-layer": "borders",
+        // Res 4 (~52 km cells) is the finest band we ship, so admin-1 borders
+        // only carry useful signal from z4 onward — anything lower turns the
+        // continents into a mesh.
+        minzoom: 4,
+        filter: ["==", ["get", "level"], 1],
+        paint: {
+            "line-color": palette.regionBorder,
+            "line-width": ["interpolate", ["linear"], ["zoom"], 4, 0.6, 8, 1.0],
+            "line-opacity": 0.7,
+        },
+    };
+
     const borders: LineLayerSpecification = {
         id: "hexworld-borders",
         type: "line",
         source: "hexworld",
         "source-layer": "borders",
+        filter: ["==", ["get", "level"], 0],
         // Scaled so borders remain visible at world zoom without turning into
-        // slabs when zoomed in — heavier than the hex outline at every stop.
+        // slabs when zoomed in — heavier than the hex outline and the region
+        // border layer at every stop.
         paint: {
             "line-color": palette.border,
-            "line-width": ["interpolate", ["linear"], ["zoom"], 0, 0.9, 4, 1.2, 8, 1.8],
-            "line-opacity": 0.85,
+            "line-width": ["interpolate", ["linear"], ["zoom"], 0, 0.9, 4, 1.4, 8, 2.2],
+            "line-opacity": 0.9,
         },
     };
 
@@ -169,6 +191,8 @@ export function buildHexworldStyle(options: HexworldStyleOptions): StyleSpecific
                 maxzoom: options.maxzoom ?? 6,
             },
         },
-        layers: [background, hexFill, hexOutline, borders, ...labelLayers],
+        // Region borders sit under country borders so the country line wins
+        // any pixel overlap; both sit above the hex outline and under the labels.
+        layers: [background, hexFill, hexOutline, regionBorders, borders, ...labelLayers],
     };
 }
