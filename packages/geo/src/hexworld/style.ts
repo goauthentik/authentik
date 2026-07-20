@@ -1,4 +1,4 @@
-import type { BasemapTheme } from "../style.js";
+import { type BasemapTheme, buildSky } from "../style.js";
 
 import type {
     BackgroundLayerSpecification,
@@ -129,6 +129,8 @@ export function buildHexworldStyle(options: HexworldStyleOptions): StyleSpecific
 
     return {
         version: 8,
+        projection: { type: "globe" },
+        sky: buildSky(options.theme ?? "light"),
         glyphs: options.glyphsUrl ?? DEFAULT_GLYPHS,
         sources: {
             hexworld: {

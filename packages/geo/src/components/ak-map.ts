@@ -23,6 +23,10 @@ export interface MarkerSelectDetail {
 
 const DEFAULT_FIT_PADDING = 64;
 const MAX_FIT_ZOOM = 4.5;
+// Initial view when no markers dictate one: central Europe, close enough that
+// the globe fills the panel rather than floating in it.
+const DEFAULT_CENTER: [number, number] = [12, 50];
+const DEFAULT_ZOOM = 2;
 // The bundled archive tops out at z7; allow a little overzoom (the simplified
 // coast stays smooth) but cap it so labels/roads don't thin out into nothing.
 const DEFAULT_MAX_ZOOM = 10;
@@ -143,8 +147,8 @@ export class AkMap extends LitElement {
             style: this.#styleSpec(),
             attributionControl: { compact: true },
             cooperativeGestures: false,
-            center: [0, 20],
-            zoom: 1,
+            center: DEFAULT_CENTER,
+            zoom: DEFAULT_ZOOM,
             maxZoom: this.maxZoom,
         });
         this.#map.once("load", () => {

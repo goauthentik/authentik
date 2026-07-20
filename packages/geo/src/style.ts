@@ -1,5 +1,5 @@
 import { DARK, type Flavor, layers, LIGHT, namedFlavor } from "@protomaps/basemaps";
-import type { StyleSpecification } from "maplibre-gl";
+import type { SkySpecification, StyleSpecification } from "maplibre-gl";
 
 export type BasemapTheme = "light" | "dark";
 
@@ -40,6 +40,27 @@ const DEFAULT_ATTRIBUTION =
 
 export function flavorForTheme(theme: BasemapTheme): Flavor {
     return theme === "dark" ? DARK : LIGHT;
+}
+
+/**
+ * Atmosphere for the globe projection: a soft halo where the sphere meets the
+ * backdrop, fading out entirely once the view is close enough that the horizon
+ * leaves the frame.
+ */
+export function buildSky(theme: BasemapTheme): SkySpecification {
+    const colors =
+        theme === "dark"
+            ? { sky: "#0b1017", horizon: "#3d5878", fog: "#161b22" }
+            : { sky: "#a9c6db", horizon: "#e9f2f7", fog: "#dfe7ec" };
+    return {
+        "sky-color": colors.sky,
+        "horizon-color": colors.horizon,
+        "fog-color": colors.fog,
+        "sky-horizon-blend": 0.6,
+        "horizon-fog-blend": 0.6,
+        "fog-ground-blend": 0.8,
+        "atmosphere-blend": ["interpolate", ["linear"], ["zoom"], 0, 1, 5, 1, 7, 0],
+    };
 }
 
 function resolveFlavor(options: BuildStyleOptions): Flavor {
@@ -85,6 +106,8 @@ export function buildBasemapStyle(options: BuildStyleOptions): StyleSpecificatio
 
     const style: StyleSpecification = {
         version: 8,
+        projection: { type: "globe" },
+        sky: buildSky(options.theme ?? "light"),
         glyphs: options.glyphsUrl ?? DEFAULT_GLYPHS,
         sources: { [sourceName]: source },
         layers: layers(sourceName, flavor, { lang: options.lang ?? "en" }),
