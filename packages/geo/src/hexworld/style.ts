@@ -27,6 +27,7 @@ interface Palette {
     hexOutline: string;
     hexLit: string;
     hexHot: string;
+    border: string;
     text: string;
     textHalo: string;
 }
@@ -38,6 +39,7 @@ const PALETTES: Record<BasemapTheme, Palette> = {
         hexOutline: "#b3bfc9",
         hexLit: "#f0ab00",
         hexHot: "#c9190b",
+        border: "#6a7684",
         text: "#3c4852",
         textHalo: "#f4f7f9",
     },
@@ -47,6 +49,7 @@ const PALETTES: Record<BasemapTheme, Palette> = {
         hexOutline: "#39434f",
         hexLit: "#f0ab00",
         hexHot: "#fe5142",
+        border: "#8b98a8",
         text: "#aab7c4",
         textHalo: "#10141a",
     },
@@ -108,6 +111,20 @@ export function buildHexworldStyle(options: HexworldStyleOptions): StyleSpecific
         paint: { "line-color": palette.hexOutline, "line-width": 0.5 },
     };
 
+    const borders: LineLayerSpecification = {
+        id: "hexworld-borders",
+        type: "line",
+        source: "hexworld",
+        "source-layer": "borders",
+        // Scaled so borders remain visible at world zoom without turning into
+        // slabs when zoomed in — heavier than the hex outline at every stop.
+        paint: {
+            "line-color": palette.border,
+            "line-width": ["interpolate", ["linear"], ["zoom"], 0, 0.9, 4, 1.2, 8, 1.8],
+            "line-opacity": 0.85,
+        },
+    };
+
     const labelLayers: SymbolLayerSpecification[] = LABEL_KINDS.map((kind) => ({
         id: `hexworld-label-${kind}`,
         type: "symbol",
@@ -141,6 +158,6 @@ export function buildHexworldStyle(options: HexworldStyleOptions): StyleSpecific
                 maxzoom: 8,
             },
         },
-        layers: [background, hexFill, hexOutline, ...labelLayers],
+        layers: [background, hexFill, hexOutline, borders, ...labelLayers],
     };
 }

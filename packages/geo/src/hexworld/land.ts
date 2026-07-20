@@ -137,10 +137,12 @@ export function landCells(land: FeatureCollection, res: number): Set<string> {
     return cells;
 }
 
-export function hexFeature(cell: string): Feature {
+export function hexFeature(cell: string, country?: string | null): Feature {
+    const properties: Record<string, string> = { h3: cell };
+    if (country) properties.country = country;
     return {
         type: "Feature",
-        properties: { h3: cell },
+        properties,
         geometry: cellPolygon(cell),
     };
 }

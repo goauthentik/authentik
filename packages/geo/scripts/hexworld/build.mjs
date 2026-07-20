@@ -7,11 +7,17 @@ import { readFile, writeFile } from "node:fs/promises";
 import { parseArgs } from "node:util";
 
 import { HEX_BANDS } from "../../out/hexworld/bands.js";
+import { borderEdges } from "../../out/hexworld/borders.js";
+import { assignCountries, buildCountryIndex } from "../../out/hexworld/countries.js";
 import { capLocalities, placeFeature } from "../../out/hexworld/labels.js";
 import { hexFeature, landCells } from "../../out/hexworld/land.js";
 
-const LAND_URL =
-    "https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/ne_50m_land.geojson";
+// Pinned Natural Earth release. Bump deliberately — every archive on the wire
+// should be reproducible from a specific vector-data commit.
+const NE_TAG = "v5.1.2";
+const NE_BASE = `https://raw.githubusercontent.com/nvkelso/natural-earth-vector/${NE_TAG}/geojson`;
+const LAND_URL = `${NE_BASE}/ne_50m_land.geojson`;
+const COUNTRIES_URL = `${NE_BASE}/ne_50m_admin_0_countries.geojson`;
 
 const TILE_FLAGS = [
     "--force",
@@ -20,6 +26,8 @@ const TILE_FLAGS = [
     "--no-tiny-polygon-reduction",
     "--detect-shared-borders",
 ];
+
+const BORDER_TILE_FLAGS = ["--force", "--no-feature-limit", "--no-tile-size-limit"];
 
 /** Ordered shell commands for the tiling stage. Pure — unit tested. */
 export function buildPlan({ outDir, localities }) {
@@ -34,6 +42,19 @@ export function buildPlan({ outDir, localities }) {
         `${outDir}/hex-r${band.res}.pmtiles`,
         `${outDir}/hex-r${band.res}.geojsonl`,
     ]);
+    for (const band of HEX_BANDS) {
+        plan.push([
+            "tippecanoe",
+            ...BORDER_TILE_FLAGS,
+            "-Z" + band.minzoom,
+            "-z" + band.maxzoom,
+            "-l",
+            "borders",
+            "-o",
+            `${outDir}/borders-r${band.res}.pmtiles`,
+            `${outDir}/borders-r${band.res}.geojsonl`,
+        ]);
+    }
     plan.push([
         "tippecanoe",
         "--force",
@@ -49,15 +70,15 @@ export function buildPlan({ outDir, localities }) {
         `${outDir}/places-${localities}.geojsonl`,
     ]);
     for (const cut of [4, 5]) {
+        const bands = HEX_BANDS.filter((band) => band.res <= cut);
         plan.push([
             "tile-join",
             "--force",
             "--no-tile-size-limit",
             "-o",
             `${outDir}/hexworld-r${cut}.pmtiles`,
-            ...HEX_BANDS.filter((band) => band.res <= cut).map(
-                (band) => `${outDir}/hex-r${band.res}.pmtiles`,
-            ),
+            ...bands.map((band) => `${outDir}/hex-r${band.res}.pmtiles`),
+            ...bands.map((band) => `${outDir}/borders-r${band.res}.pmtiles`),
             `${outDir}/places.pmtiles`,
         ]);
     }
@@ -70,6 +91,14 @@ export function buildPlan({ outDir, localities }) {
 // tippecanoe read an empty file. Fully-formed buffer, single syscall, no race.
 function writeLines(path, features) {
     writeFileSync(path, features.map((feature) => JSON.stringify(feature)).join("\n") + "\n");
+}
+
+async function fetchIfMissing(url, dest) {
+    if (existsSync(dest)) return;
+    console.log(`Fetching ${url} → ${dest}`);
+    const res = await fetch(url);
+    if (!res.ok) throw new Error(`fetch failed: ${url} → HTTP ${res.status}`);
+    await writeFile(dest, Buffer.from(await res.arrayBuffer()));
 }
 
 async function main() {
@@ -92,21 +121,28 @@ async function main() {
     if (!values.dump) throw new Error("--dump <planet-z8.pmtiles> is required");
 
     const landPath = `${outDir}/ne_50m_land.geojson`;
-    if (!existsSync(landPath)) {
-        console.log(`Fetching Natural Earth land → ${landPath}`);
-        const res = await fetch(LAND_URL);
-        if (!res.ok) throw new Error(`NE fetch failed: ${res.status}`);
-        await writeFile(landPath, Buffer.from(await res.arrayBuffer()));
-    }
+    await fetchIfMissing(LAND_URL, landPath);
     const land = JSON.parse(await readFile(landPath, "utf8"));
+
+    const countriesPath = `${outDir}/ne_50m_admin_0_countries.geojson`;
+    await fetchIfMissing(COUNTRIES_URL, countriesPath);
+    const countries = JSON.parse(await readFile(countriesPath, "utf8"));
+    const countryIndex = buildCountryIndex(countries);
+    console.log(`countries: indexed ${countryIndex.entries.length} entries`);
 
     for (const band of HEX_BANDS) {
         const cells = landCells(land, band.res);
-        console.log(`res ${band.res}: ${cells.size} land cells`);
+        const cellCountry = assignCountries(cells, countryIndex);
+        console.log(
+            `res ${band.res}: ${cells.size} land cells, ${cellCountry.size} country-tagged`,
+        );
         writeLines(
             `${outDir}/hex-r${band.res}.geojsonl`,
-            [...cells].map((cell) => hexFeature(cell)),
+            [...cells].map((cell) => hexFeature(cell, cellCountry.get(cell))),
         );
+        const edges = borderEdges(cellCountry);
+        console.log(`  ${edges.length} border edges`);
+        writeLines(`${outDir}/borders-r${band.res}.geojsonl`, edges);
     }
 
     console.log(`Extracting labels from ${values.dump} …`);

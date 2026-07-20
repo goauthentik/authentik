@@ -9,13 +9,16 @@ test("buildPlan emits per-band tippecanoe runs and both tile-join cuts", () => {
     assert.match(joined, /tippecanoe .*-Z0 -z3 .*hex-r3/);
     assert.match(joined, /tippecanoe .*-Z4 -z6 .*hex-r4/);
     assert.match(joined, /tippecanoe .*-Z7 -z8 .*hex-r5/);
+    assert.match(joined, /tippecanoe .*-Z0 -z3 .*-l borders .*borders-r3/);
+    assert.match(joined, /tippecanoe .*-Z4 -z6 .*-l borders .*borders-r4/);
+    assert.match(joined, /tippecanoe .*-Z7 -z8 .*-l borders .*borders-r5/);
     assert.match(joined, /tippecanoe .*-Z0 -z8 .*-l places/);
     assert.match(
         joined,
-        /tile-join .*hexworld-r4\.pmtiles .*hex-r3\.pmtiles .*hex-r4\.pmtiles .*places\.pmtiles/,
+        /tile-join .*hexworld-r4\.pmtiles .*hex-r3\.pmtiles .*hex-r4\.pmtiles .*borders-r3\.pmtiles .*borders-r4\.pmtiles .*places\.pmtiles/,
     );
     assert.match(
         joined,
-        /tile-join .*hexworld-r5\.pmtiles .*hex-r3\.pmtiles .*hex-r4\.pmtiles .*hex-r5\.pmtiles .*places\.pmtiles/,
+        /tile-join .*hexworld-r5\.pmtiles .*hex-r3\.pmtiles .*hex-r4\.pmtiles .*hex-r5\.pmtiles .*borders-r3\.pmtiles .*borders-r4\.pmtiles .*borders-r5\.pmtiles .*places\.pmtiles/,
     );
 });

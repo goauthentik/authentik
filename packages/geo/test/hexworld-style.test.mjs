@@ -29,6 +29,17 @@ test("style has hex fill + label layers with name:en fallback", () => {
     }
 });
 
+test("style has a borders line layer sourced from the borders source-layer", () => {
+    const ids = style.layers.map((layer) => layer.id);
+    const outlineIdx = ids.indexOf("hexworld-hex-outline");
+    const bordersIdx = ids.indexOf("hexworld-borders");
+    assert.notEqual(bordersIdx, -1, "expected a hexworld-borders layer");
+    assert.ok(bordersIdx > outlineIdx, "borders must render above hex outlines");
+    const borders = style.layers[bordersIdx];
+    assert.equal(borders.type, "line");
+    assert.equal(borders["source-layer"], "borders");
+});
+
 test("airgap: default style references no absolute URLs", () => {
     const json = JSON.stringify(style);
     assert.ok(!/https?:\/\//.test(json), "style must not reach external hosts");
