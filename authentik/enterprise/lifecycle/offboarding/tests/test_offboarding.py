@@ -20,14 +20,14 @@ from authentik.core.models import (
     UserTypes,
 )
 from authentik.core.tests.utils import create_test_admin_user, create_test_user
-from authentik.enterprise.lifecycle.api.offboarding import UserOffboardingSerializer
-from authentik.enterprise.lifecycle.models import (
+from authentik.enterprise.lifecycle.offboarding.actions import offboard_user
+from authentik.enterprise.lifecycle.offboarding.api import UserOffboardingSerializer
+from authentik.enterprise.lifecycle.offboarding.models import (
     OffboardingAction,
     OffboardingStatus,
     UserOffboarding,
 )
-from authentik.enterprise.lifecycle.offboarding import offboard_user
-from authentik.enterprise.lifecycle.tasks import (
+from authentik.enterprise.lifecycle.offboarding.tasks import (
     MAX_OFFBOARDING_ATTEMPTS,
     execute_due_offboardings,
     execute_offboarding,
@@ -122,7 +122,7 @@ class TestOffboardingSweeper(APITestCase):
             action=OffboardingAction.DEACTIVATE,
         )
         with patch(
-            "authentik.enterprise.lifecycle.tasks.execute_offboarding.send_with_options"
+            "authentik.enterprise.lifecycle.offboarding.tasks.execute_offboarding.send_with_options"
         ) as send:
             execute_due_offboardings()
         send.assert_called_once()
@@ -167,7 +167,7 @@ class TestOffboardingSweeper(APITestCase):
         # Sessions/tokens are revoked before the audit event is built; make the
         # event raise so the failure lands mid-offboarding.
         with patch(
-            "authentik.enterprise.lifecycle.offboarding.Event.new",
+            "authentik.enterprise.lifecycle.offboarding.actions.Event.new",
             side_effect=RuntimeError("boom"),
         ):
             with self.assertRaises(RuntimeError):
@@ -191,7 +191,7 @@ class TestOffboardingSweeper(APITestCase):
             action=OffboardingAction.DEACTIVATE,
         )
         with patch(
-            "authentik.enterprise.lifecycle.offboarding.Event.new",
+            "authentik.enterprise.lifecycle.offboarding.actions.Event.new",
             side_effect=RuntimeError("boom"),
         ):
             for _ in range(MAX_OFFBOARDING_ATTEMPTS):
@@ -268,7 +268,8 @@ class TestOffboardingConcurrency(TransactionTestCase):
                     connection.close()
 
         with patch(
-            "authentik.enterprise.lifecycle.offboarding.offboard_user", side_effect=slow_offboard
+            "authentik.enterprise.lifecycle.offboarding.actions.offboard_user",
+            side_effect=slow_offboard,
         ):
             first = Worker()
             first.start()
@@ -334,7 +335,8 @@ class TestOffboardingConcurrency(TransactionTestCase):
                     connection.close()
 
         with patch(
-            "authentik.enterprise.lifecycle.offboarding.offboard_user", side_effect=slow_offboard
+            "authentik.enterprise.lifecycle.offboarding.actions.offboard_user",
+            side_effect=slow_offboard,
         ):
             worker = Worker()
             worker.start()

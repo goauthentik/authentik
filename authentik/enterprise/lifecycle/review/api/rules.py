@@ -9,8 +9,8 @@ from authentik.core.api.users import PartialGroupSerializer
 from authentik.core.api.utils import ModelSerializer
 from authentik.core.models import User
 from authentik.enterprise.api import EnterpriseRequiredMixin
-from authentik.enterprise.lifecycle.models import LifecycleRule
-from authentik.enterprise.lifecycle.utils import (
+from authentik.enterprise.lifecycle.review.models import LifecycleRule
+from authentik.enterprise.lifecycle.review.utils import (
     ContentTypeField,
 )
 from authentik.lib.utils.time import timedelta_from_string

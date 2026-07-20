@@ -11,7 +11,7 @@ from structlog.stdlib import get_logger
 
 from authentik.core.models import User
 from authentik.enterprise.core.revocation import revoke_user_access
-from authentik.enterprise.lifecycle.models import OffboardingAction
+from authentik.enterprise.lifecycle.offboarding.models import OffboardingAction
 from authentik.events.models import Event, EventAction
 
 LOGGER = get_logger()

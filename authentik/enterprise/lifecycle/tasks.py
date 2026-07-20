@@ -1,108 +1,23 @@
-from django.db import transaction
-from django.db.models import F
-from django.utils import timezone
-from django.utils.translation import gettext_lazy as _
-from dramatiq import actor
+"""Task registry for the lifecycle app.
 
-from authentik.core.models import User
-from authentik.enterprise.lifecycle.models import (
-    LifecycleRule,
-    OffboardingStatus,
-    UserOffboarding,
+Actors live in each feature package; importing them here registers them, as the
+app framework auto-imports `<app>.tasks`.
+"""
+
+from authentik.enterprise.lifecycle.offboarding.tasks import (
+    execute_due_offboardings,
+    execute_offboarding,
 )
-from authentik.events.models import Event, Notification, NotificationTransport
-from authentik.tasks.schedules.models import Schedule
+from authentik.enterprise.lifecycle.review.tasks import (
+    apply_lifecycle_rule,
+    apply_lifecycle_rules,
+    send_notification,
+)
 
-# Retry budget: a due offboarding is retried by dramatiq and the sweeper this
-# many times before it is marked FAILED.
-MAX_OFFBOARDING_ATTEMPTS = 5
-
-
-@actor(description=_("Dispatch tasks to apply lifecycle rules."))
-def apply_lifecycle_rules():
-    for rule in LifecycleRule.objects.all():
-        apply_lifecycle_rule.send_with_options(
-            args=(rule.id,),
-            rel_obj=Schedule.objects.get(
-                actor_name="authentik.enterprise.lifecycle.tasks.apply_lifecycle_rules"
-            ),
-        )
-
-
-@actor(description=_("Apply lifecycle rule."))
-def apply_lifecycle_rule(rule_id: str):
-    rule = LifecycleRule.objects.filter(pk=rule_id).first()
-    if rule:
-        rule.apply()
-
-
-@actor(description=_("Execute due user offboardings."))
-def execute_due_offboardings():
-    # Only the pk is dispatched, so fetch pks alone rather than whole rows.
-    due_pks = UserOffboarding.objects.filter(
-        status=OffboardingStatus.PENDING,
-        scheduled_for__lte=timezone.now(),
-    ).values_list("pk", flat=True)
-    if not due_pks:
-        return
-    schedule = Schedule.objects.get(
-        actor_name="authentik.enterprise.lifecycle.tasks.execute_due_offboardings"
-    )
-    for pk in due_pks:
-        # rel_obj groups each execution under the sweeper's schedule in the UI.
-        execute_offboarding.send_with_options(args=(str(pk),), rel_obj=schedule)
-
-
-@actor(description=_("Execute a single user offboarding."))
-def execute_offboarding(offboarding_pk: str):
-    try:
-        with transaction.atomic():
-            # Lock the row so two workers can't offboard the same user concurrently.
-            # The status filter is re-evaluated once the lock is held, so a row
-            # another worker already handled is skipped instead of run twice.
-            offboarding = (
-                UserOffboarding.objects.select_for_update()
-                .filter(pk=offboarding_pk, status=OffboardingStatus.PENDING)
-                .select_related("user")
-                .first()
-            )
-            if offboarding is None:
-                return
-            offboarding.execute()
-    except Exception:
-        # execute() rolled back, so bump the counter out-of-band and keep the row
-        # PENDING for retry; give up only once the budget is spent.
-        UserOffboarding.objects.filter(pk=offboarding_pk).update(attempts=F("attempts") + 1)
-        attempts = (
-            UserOffboarding.objects.filter(pk=offboarding_pk)
-            .values_list("attempts", flat=True)
-            .first()
-        )
-        if attempts is not None and attempts >= MAX_OFFBOARDING_ATTEMPTS:
-            UserOffboarding.objects.filter(
-                pk=offboarding_pk, status=OffboardingStatus.PENDING
-            ).update(status=OffboardingStatus.FAILED, executed_on=timezone.now())
-        raise
-
-
-@actor(description=_("Send lifecycle rule notification."))
-def send_notification(transport_pk: int, event_pk: str, user_pk: int, severity: str):
-    event = Event.objects.filter(pk=event_pk).first()
-    if not event:
-        return
-    user = User.objects.filter(pk=user_pk).first()
-    if not user:
-        return
-
-    notification = Notification(
-        severity=severity,
-        body=event.summary,
-        event=event,
-        user=user,
-        hyperlink=event.hyperlink,
-        hyperlink_label=event.hyperlink_label,
-    )
-    transport = NotificationTransport.objects.filter(pk=transport_pk).first()
-    if not transport:
-        return
-    transport.send(notification)
+__all__ = [
+    "apply_lifecycle_rule",
+    "apply_lifecycle_rules",
+    "execute_due_offboardings",
+    "execute_offboarding",
+    "send_notification",
+]

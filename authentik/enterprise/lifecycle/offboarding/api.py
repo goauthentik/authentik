@@ -16,7 +16,7 @@ from authentik.core.api.groups import PartialUserSerializer
 from authentik.core.api.utils import ModelSerializer
 from authentik.core.models import User, UserTypes
 from authentik.enterprise.api import EnterpriseRequiredMixin
-from authentik.enterprise.lifecycle.models import OffboardingStatus, UserOffboarding
+from authentik.enterprise.lifecycle.offboarding.models import OffboardingStatus, UserOffboarding
 
 DUPLICATE_PENDING_ERROR = _("This user already has a pending offboarding scheduled.")
 

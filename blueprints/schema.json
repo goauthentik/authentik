@@ -744,6 +744,46 @@
                     ],
                     "properties": {
                         "model": {
+                            "const": "authentik_lifecycle.useroffboarding"
+                        },
+                        "id": {
+                            "type": "string"
+                        },
+                        "state": {
+                            "type": "string",
+                            "enum": [
+                                "absent",
+                                "created",
+                                "must_created",
+                                "present"
+                            ],
+                            "default": "present"
+                        },
+                        "conditions": {
+                            "type": "array",
+                            "items": {
+                                "type": "boolean"
+                            }
+                        },
+                        "permissions": {
+                            "$ref": "#/$defs/model_authentik_lifecycle.useroffboarding_permissions"
+                        },
+                        "attrs": {
+                            "$ref": "#/$defs/model_authentik_lifecycle.useroffboarding"
+                        },
+                        "identifiers": {
+                            "$ref": "#/$defs/model_authentik_lifecycle.useroffboarding"
+                        }
+                    }
+                },
+                {
+                    "type": "object",
+                    "required": [
+                        "model",
+                        "identifiers"
+                    ],
+                    "properties": {
+                        "model": {
                             "const": "authentik_lifecycle.lifecycleiteration"
                         },
                         "id": {
@@ -853,46 +893,6 @@
                         },
                         "identifiers": {
                             "$ref": "#/$defs/model_authentik_lifecycle.review"
-                        }
-                    }
-                },
-                {
-                    "type": "object",
-                    "required": [
-                        "model",
-                        "identifiers"
-                    ],
-                    "properties": {
-                        "model": {
-                            "const": "authentik_lifecycle.useroffboarding"
-                        },
-                        "id": {
-                            "type": "string"
-                        },
-                        "state": {
-                            "type": "string",
-                            "enum": [
-                                "absent",
-                                "created",
-                                "must_created",
-                                "present"
-                            ],
-                            "default": "present"
-                        },
-                        "conditions": {
-                            "type": "array",
-                            "items": {
-                                "type": "boolean"
-                            }
-                        },
-                        "permissions": {
-                            "$ref": "#/$defs/model_authentik_lifecycle.useroffboarding_permissions"
-                        },
-                        "attrs": {
-                            "$ref": "#/$defs/model_authentik_lifecycle.useroffboarding"
-                        },
-                        "identifiers": {
-                            "$ref": "#/$defs/model_authentik_lifecycle.useroffboarding"
                         }
                     }
                 },
@@ -6975,6 +6975,66 @@
                 }
             }
         },
+        "model_authentik_lifecycle.useroffboarding": {
+            "type": "object",
+            "properties": {
+                "user": {
+                    "type": "integer",
+                    "title": "User"
+                },
+                "scheduled_for": {
+                    "type": "string",
+                    "format": "date-time",
+                    "title": "Scheduled for",
+                    "description": "Absolute time at which the offboarding action is executed."
+                },
+                "action": {
+                    "type": "string",
+                    "enum": [
+                        "deactivate",
+                        "delete"
+                    ],
+                    "title": "Action"
+                },
+                "revoke_sessions": {
+                    "type": "boolean",
+                    "title": "Revoke sessions",
+                    "description": "Revoke all of the user's sessions when offboarding."
+                },
+                "revoke_tokens": {
+                    "type": "boolean",
+                    "title": "Revoke tokens",
+                    "description": "Revoke all of the user's tokens when offboarding."
+                }
+            },
+            "required": []
+        },
+        "model_authentik_lifecycle.useroffboarding_permissions": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "permission"
+                ],
+                "properties": {
+                    "permission": {
+                        "type": "string",
+                        "enum": [
+                            "add_useroffboarding",
+                            "change_useroffboarding",
+                            "delete_useroffboarding",
+                            "view_useroffboarding"
+                        ]
+                    },
+                    "user": {
+                        "type": "integer"
+                    },
+                    "role": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
         "model_authentik_lifecycle.lifecycleiteration": {
             "type": "object",
             "properties": {
@@ -7150,66 +7210,6 @@
                             "change_review",
                             "delete_review",
                             "view_review"
-                        ]
-                    },
-                    "user": {
-                        "type": "integer"
-                    },
-                    "role": {
-                        "type": "string"
-                    }
-                }
-            }
-        },
-        "model_authentik_lifecycle.useroffboarding": {
-            "type": "object",
-            "properties": {
-                "user": {
-                    "type": "integer",
-                    "title": "User"
-                },
-                "scheduled_for": {
-                    "type": "string",
-                    "format": "date-time",
-                    "title": "Scheduled for",
-                    "description": "Absolute time at which the offboarding action is executed."
-                },
-                "action": {
-                    "type": "string",
-                    "enum": [
-                        "deactivate",
-                        "delete"
-                    ],
-                    "title": "Action"
-                },
-                "revoke_sessions": {
-                    "type": "boolean",
-                    "title": "Revoke sessions",
-                    "description": "Revoke all of the user's sessions when offboarding."
-                },
-                "revoke_tokens": {
-                    "type": "boolean",
-                    "title": "Revoke tokens",
-                    "description": "Revoke all of the user's tokens when offboarding."
-                }
-            },
-            "required": []
-        },
-        "model_authentik_lifecycle.useroffboarding_permissions": {
-            "type": "array",
-            "items": {
-                "type": "object",
-                "required": [
-                    "permission"
-                ],
-                "properties": {
-                    "permission": {
-                        "type": "string",
-                        "enum": [
-                            "add_useroffboarding",
-                            "change_useroffboarding",
-                            "delete_useroffboarding",
-                            "view_useroffboarding"
                         ]
                     },
                     "user": {
