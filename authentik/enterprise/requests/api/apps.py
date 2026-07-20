@@ -11,7 +11,7 @@ from rest_framework.viewsets import GenericViewSet
 
 from authentik.api.pagination import Pagination
 from authentik.core.api.applications import ApplicationSerializer
-from authentik.core.api.utils import PassiveSerializer
+from authentik.core.api.utils import MetaNameSerializer, PassiveSerializer
 from authentik.core.apps import AppAccessWithoutBindings
 from authentik.core.models import Application, ApplicationEntitlement, User
 from authentik.policies.engine import ListPolicyEngine
@@ -54,7 +54,7 @@ def _requestable(view: GenericViewSet, request: Request) -> list[RequestableMode
     return [obj for obj in all_objects if user_can_request(obj, request.user, request)]
 
 
-class RequestableTargetSerializer(PassiveSerializer):
+class RequestableTargetSerializer(MetaNameSerializer, PassiveSerializer):
     """Generic representation of a single request target: whatever was actually
     requested (an Application, an Application Entitlement, ...), always paired with the
     parent it belongs to, so the UI/audit trail has that context even when the

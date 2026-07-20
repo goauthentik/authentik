@@ -25,6 +25,24 @@ import { ApplicationFromJSON } from "./Application";
  */
 export interface RequestableTarget {
     /**
+     * Return object's verbose_name
+     * @type {string}
+     * @memberof RequestableTarget
+     */
+    readonly verboseName: string;
+    /**
+     * Return object's plural verbose_name
+     * @type {string}
+     * @memberof RequestableTarget
+     */
+    readonly verboseNamePlural: string;
+    /**
+     * Return internal model name
+     * @type {string}
+     * @memberof RequestableTarget
+     */
+    readonly metaModelName: string;
+    /**
      *
      * @type {string}
      * @memberof RequestableTarget
@@ -48,6 +66,9 @@ export interface RequestableTarget {
  * Check if a given object implements the RequestableTarget interface.
  */
 export function instanceOfRequestableTarget(value: object): value is RequestableTarget {
+    if (!("verboseName" in value) || value["verboseName"] === undefined) return false;
+    if (!("verboseNamePlural" in value) || value["verboseNamePlural"] === undefined) return false;
+    if (!("metaModelName" in value) || value["metaModelName"] === undefined) return false;
     if (!("pbmUuid" in value) || value["pbmUuid"] === undefined) return false;
     if (!("label" in value) || value["label"] === undefined) return false;
     if (!("parent" in value) || value["parent"] === undefined) return false;
@@ -66,6 +87,9 @@ export function RequestableTargetFromJSONTyped(
         return json;
     }
     return {
+        verboseName: json["verbose_name"],
+        verboseNamePlural: json["verbose_name_plural"],
+        metaModelName: json["meta_model_name"],
         pbmUuid: json["pbm_uuid"],
         label: json["label"],
         parent: ApplicationFromJSON(json["parent"]),
@@ -77,7 +101,10 @@ export function RequestableTargetToJSON(json: any): RequestableTarget {
 }
 
 export function RequestableTargetToJSONTyped(
-    value?: Omit<RequestableTarget, "pbm_uuid" | "label" | "parent"> | null,
+    value?: Omit<
+        RequestableTarget,
+        "verbose_name" | "verbose_name_plural" | "meta_model_name" | "pbm_uuid" | "label" | "parent"
+    > | null,
     ignoreDiscriminator: boolean = false,
 ): any {
     if (value == null) {

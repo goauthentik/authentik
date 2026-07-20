@@ -55240,6 +55240,18 @@ components:
         parent it belongs to, so the UI/audit trail has that context even when the
         request itself was scoped narrower than the whole app.
       properties:
+        verbose_name:
+          type: string
+          description: Return object's verbose_name
+          readOnly: true
+        verbose_name_plural:
+          type: string
+          description: Return object's plural verbose_name
+          readOnly: true
+        meta_model_name:
+          type: string
+          description: Return internal model name
+          readOnly: true
         pbm_uuid:
           type: string
           readOnly: true
@@ -55253,8 +55265,11 @@ components:
           nullable: true
       required:
       - label
+      - meta_model_name
       - parent
       - pbm_uuid
+      - verbose_name
+      - verbose_name_plural
     Review:
       type: object
       description: |-
