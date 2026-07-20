@@ -1,5 +1,4 @@
 from django.urls import reverse
-from rest_framework.test import APITestCase
 
 from authentik.brands.models import Brand
 from authentik.core.models import Application
@@ -13,11 +12,12 @@ from authentik.enterprise.requests.models import (
 )
 from authentik.enterprise.requests.stage import GrantRequestFinalStageView
 from authentik.flows.models import Flow, FlowDesignation
+from authentik.flows.tests import FlowTestCase
 from authentik.lib.generators import generate_id
 from authentik.policies.models import PolicyBinding
 
 
-class GrantRequestsSelfServiceTests(APITestCase):
+class GrantRequestsSelfServiceTests(FlowTestCase):
     """Requesters and reviewers should be able to use the API against their own
     requests without needing any explicitly, globally-assigned RBAC permission."""
 
@@ -46,6 +46,16 @@ class GrantRequestsSelfServiceTests(APITestCase):
         )
         self.assertEqual(res.status_code, 200, res.content)
         self.assertIn("link", res.json())
+
+        # Follow through to the flow executor, exactly as the frontend does when it
+        # opens the returned link, and check the final stage actually completes.
+        res = self.client.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug})
+        )
+        self.assertStageResponse(res, component="xak-flow-redirect")
+
+        target = GrantRequestTarget.objects.get(target=app)
+        self.assertEqual(target.request.created_by, requester)
 
     def test_list_only_shows_own_requests(self):
         """A requester only sees requests they created (and were granted
