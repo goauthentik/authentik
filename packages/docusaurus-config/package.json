@@ -45,7 +45,7 @@
         "prettier": "catalog:",
         "prettier-plugin-packagejson": "catalog:",
         "typescript": "catalog:",
-        "typescript-eslint": "^8.62.1"
+        "typescript-eslint": "^8.63.0"
     },
     "peerDependencies": {
         "@docusaurus/theme-common": "^3.10.1",
