@@ -241,8 +241,7 @@ class SCIMMembershipTests(TestCase):
                     "Operations": [
                         {
                             "op": "remove",
-                            "path": "members",
-                            "value": [{"value": user_scim_id}],
+                            "path": f'members[value eq "{user_scim_id}"]',
                         }
                     ],
                 },
