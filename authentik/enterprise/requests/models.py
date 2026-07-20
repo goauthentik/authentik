@@ -2,11 +2,13 @@ from typing import Any
 from uuid import uuid4
 
 from django.db import models, transaction
+from django.http import HttpRequest
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import Serializer
 
 from authentik.core.models import AttributesMixin, User
+from authentik.events.models import Event, EventAction
 from authentik.flows.models import Flow
 from authentik.lib.models import (
     CreatedUpdatedModel,
@@ -273,7 +275,9 @@ class GrantRequest(SerializerModel, ExpiringModel, CreatedUpdatedModel):
         return all(self._rule_satisfied(rule, approving_users) for rule in rules)
 
     @transaction.atomic
-    def record_approval(self, user: User, status: RequestStatus, data: dict[str, Any]):
+    def record_approval(
+        self, request: HttpRequest, user: User, status: RequestStatus, data: dict[str, Any]
+    ):
         """Record a single reviewer's approval/denial. A denial immediately finalizes the
         request as denied; an approval only finalizes it (and grants access) once
         `is_satisfied` is true across every rule attached to the request's targets."""
@@ -285,17 +289,25 @@ class GrantRequest(SerializerModel, ExpiringModel, CreatedUpdatedModel):
             request=self, reviewer=user, defaults={"status": status, "attributes": data}
         )
         if status == RequestStatus.DENIED:
-            self._finalize(RequestStatus.DENIED, user, data)
+            self._finalize(RequestStatus.DENIED, user, data, request)
             return
         if not self.is_satisfied():
             return
-        self._finalize(RequestStatus.APPROVED, user, data)
+        self._finalize(RequestStatus.APPROVED, user, data, request)
 
-    def _finalize(self, status: RequestStatus, user: User, data: dict[str, Any]):
+    def _finalize(
+        self, status: RequestStatus, user: User, data: dict[str, Any], request: HttpRequest
+    ):
         self.fulfilled_by = user
         self.fulfiller_data = data
         self.status = status
         self.save()
+        action = (
+            EventAction.ACCESS_REQUEST_APPROVED
+            if status == RequestStatus.APPROVED
+            else EventAction.ACCESS_REQUEST_DENIED
+        )
+        Event.new(action, model=self, targets=list(self.targets.all())).from_http(request, user)
         if status != RequestStatus.APPROVED:
             return
         grant_expires = now() + timedelta_from_string(self.requested_expiry)
@@ -321,7 +333,7 @@ class GrantRequest(SerializerModel, ExpiringModel, CreatedUpdatedModel):
         return True
 
     @transaction.atomic
-    def revoke(self, user: User):
+    def revoke(self, request: HttpRequest, user: User):
         """End an active grant immediately, and mark the request revoked. A no-op unless the
         request is currently approved."""
         if self.status != RequestStatus.APPROVED:
@@ -336,6 +348,9 @@ class GrantRequest(SerializerModel, ExpiringModel, CreatedUpdatedModel):
         self.revoked_by = user
         self.status = RequestStatus.REVOKED
         self.save()
+        Event.new(
+            EventAction.ACCESS_REQUEST_REVOKED, model=self, targets=list(self.targets.all())
+        ).from_http(request, user)
 
     class Meta:
         verbose_name = _("Grant Request")

@@ -15,6 +15,7 @@ from authentik.enterprise.requests.models import (
     RequestRuleBinding,
     RequestStatus,
 )
+from authentik.events.models import Event, EventAction
 from authentik.flows.models import Flow, FlowDesignation
 from authentik.lib.generators import generate_id
 from authentik.policies.models import PolicyBinding
@@ -63,6 +64,35 @@ class GrantRequestsTests(APITestCase):
         req.refresh_from_db()
         self.assertEqual(req.status, RequestStatus.APPROVED)
         self.assertTrue(PolicyBinding.objects.filter(user=requester, target=app).exists())
+
+    def test_fulfill_approval_fires_event(self):
+        """Approving a request emits an ACCESS_REQUEST_APPROVED event"""
+        reviewer = create_test_user()
+        self._grant_perms(reviewer)
+
+        app = Application.objects.create(
+            name=generate_id(),
+            slug=generate_id(),
+        )
+        rule = RequestRule.objects.create(name=generate_id())
+        RequestRuleBinding.objects.create(rule=rule, target=app)
+        PolicyBinding.objects.create(target=rule, user=reviewer, order=0)
+
+        req = GrantRequest.objects.create(created_by=create_test_user())
+        GrantRequestTarget.objects.create(request=req, target=app)
+
+        self.client.force_login(reviewer)
+        res = self.client.patch(
+            reverse("authentik_api:grantrequest-fulfill", kwargs={"pk": req.pk}),
+            data={"status": "approved", "data": {}},
+        )
+        self.assertEqual(res.status_code, 204, res.content)
+        self.assertTrue(
+            Event.objects.filter(
+                action=EventAction.ACCESS_REQUEST_APPROVED,
+                context__model__pk=req.pk.hex,
+            ).exists()
+        )
 
     def test_fulfill_access_group(self):
         reviewer = create_test_user()
@@ -247,6 +277,12 @@ class GrantRequestsTests(APITestCase):
         req.refresh_from_db()
         self.assertEqual(req.status, RequestStatus.DENIED)
         self.assertFalse(PolicyBinding.objects.filter(user=requester, target=app).exists())
+        self.assertTrue(
+            Event.objects.filter(
+                action=EventAction.ACCESS_REQUEST_DENIED,
+                context__model__pk=req.pk.hex,
+            ).exists()
+        )
 
     def test_fulfill_repeated_approval_is_idempotent(self):
         """Approving twice as the same reviewer must not create duplicate approval rows"""
@@ -354,6 +390,12 @@ class GrantRequestsTests(APITestCase):
 
         binding = PolicyBinding.objects.including_expired().get(user=requester, target=app)
         self.assertTrue(binding.is_expired)
+        self.assertTrue(
+            Event.objects.filter(
+                action=EventAction.ACCESS_REQUEST_REVOKED,
+                context__model__pk=req.pk.hex,
+            ).exists()
+        )
 
     def test_revoke_requires_reviewer_permission(self):
         """A user who isn't an eligible reviewer for the rule cannot revoke"""

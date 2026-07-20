@@ -22,8 +22,8 @@ import {
 
 import { msg } from "@lit/localize";
 import { html, nothing } from "lit";
-import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit-html/directives/if-defined.js";
+import { customElement, property, state } from "lit/decorators.js";
 
 function entitlementToPair(entitlement: ApplicationEntitlement): DualSelectPair {
     return [entitlement.pbmUuid, entitlement.name, entitlement.name];

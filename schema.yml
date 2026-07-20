@@ -39850,6 +39850,9 @@ components:
       - review_attested
       - review_completed
       - access_request_created
+      - access_request_approved
+      - access_request_denied
+      - access_request_revoked
       - custom_
       type: string
     EventMatcherPolicy:

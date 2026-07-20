@@ -219,6 +219,7 @@ class GrantRequestViewSet(RetrieveModelMixin, DestroyModelMixin, ListModelMixin,
             raise ValidationError("Cannot fulfill your own request")
         self._assert_reviewer(request, grant)
         grant.record_approval(
+            request,
             request.user,
             body.validated_data.get("status"),
             data=body.validated_data.get("data"),
@@ -238,5 +239,5 @@ class GrantRequestViewSet(RetrieveModelMixin, DestroyModelMixin, ListModelMixin,
         approve it in the first place."""
         grant: GrantRequest = self.get_object()
         self._assert_reviewer(request, grant)
-        grant.revoke(request.user)
+        grant.revoke(request, request.user)
         return Response(status=204)
