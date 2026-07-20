@@ -36,6 +36,11 @@ pub struct Brand {
         skip_serializing_if = "Option::is_none"
     )]
     pub branding_default_flow_background: Option<String>,
+    /// URL template for the vector tile source used by the events map. Supports XYZ templates with
+    /// {z}, {x} and {y} placeholders, or pmtiles:// archive URLs. When empty, the frontend uses
+    /// the bundled hexworld basemap.
+    #[serde(rename = "branding_map_tiles", skip_serializing_if = "Option::is_none")]
+    pub branding_map_tiles: Option<String>,
     #[serde(
         rename = "flow_authentication",
         default,
@@ -123,6 +128,7 @@ impl Brand {
             branding_favicon: None,
             branding_custom_css: None,
             branding_default_flow_background: None,
+            branding_map_tiles: None,
             flow_authentication: None,
             flow_invalidation: None,
             flow_recovery: None,

@@ -67,6 +67,12 @@ export interface Brand {
      */
     brandingDefaultFlowBackground?: string;
     /**
+     * URL template for the vector tile source used by the events map. Supports XYZ templates with {z}, {x} and {y} placeholders, or pmtiles:// archive URLs. When empty, the frontend uses the bundled hexworld basemap.
+     * @type {string}
+     * @memberof Brand
+     */
+    brandingMapTiles?: string;
+    /**
      *
      * @type {string}
      * @memberof Brand
@@ -164,6 +170,8 @@ export function BrandFromJSONTyped(json: any, ignoreDiscriminator: boolean): Bra
             json["branding_default_flow_background"] == null
                 ? undefined
                 : json["branding_default_flow_background"],
+        brandingMapTiles:
+            json["branding_map_tiles"] == null ? undefined : json["branding_map_tiles"],
         flowAuthentication:
             json["flow_authentication"] == null ? undefined : json["flow_authentication"],
         flowInvalidation: json["flow_invalidation"] == null ? undefined : json["flow_invalidation"],
@@ -202,6 +210,7 @@ export function BrandToJSONTyped(
         branding_favicon: value["brandingFavicon"],
         branding_custom_css: value["brandingCustomCss"],
         branding_default_flow_background: value["brandingDefaultFlowBackground"],
+        branding_map_tiles: value["brandingMapTiles"],
         flow_authentication: value["flowAuthentication"],
         flow_invalidation: value["flowInvalidation"],
         flow_recovery: value["flowRecovery"],
