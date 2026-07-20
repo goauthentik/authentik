@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-06-19 00:49+0000\n"
+"POT-Creation-Date: 2026-07-17 00:27+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -253,11 +253,11 @@ msgid "No empty segments in user path allowed."
 msgstr ""
 
 #: authentik/core/api/users.py
-msgid "Can't change internal service account to other user type."
+msgid "Can't create internal service accounts"
 msgstr ""
 
 #: authentik/core/api/users.py
-msgid "Setting a user to internal service account is not allowed."
+msgid "Can't change internal service account to other user type."
 msgstr ""
 
 #: authentik/core/api/users.py
@@ -589,6 +589,10 @@ msgstr ""
 msgid "Remove temporary users created by SAML Sources."
 msgstr ""
 
+#: authentik/core/templates/base/skeleton.html
+msgid "Recovery session is active. Custom branding is disabled."
+msgstr ""
+
 #: authentik/core/templates/if/error.html
 #: authentik/policies/templates/policies/denied.html
 msgid "Go home"
@@ -728,6 +732,14 @@ msgstr ""
 
 #: authentik/endpoints/connectors/agent/models.py
 msgid "Agent Connectors"
+msgstr ""
+
+#: authentik/endpoints/connectors/agent/models.py
+msgid "Agent Device User binding"
+msgstr ""
+
+#: authentik/endpoints/connectors/agent/models.py
+msgid "Agent Device User bindings"
 msgstr ""
 
 #: authentik/endpoints/connectors/agent/models.py
@@ -2206,6 +2218,10 @@ msgid "ES512 (Asymmetric Encryption)"
 msgstr ""
 
 #: authentik/providers/oauth2/models.py
+msgid "EdDSA (Asymmetric Encryption)"
+msgstr ""
+
+#: authentik/providers/oauth2/models.py
 msgid "Scope used by the client"
 msgstr ""
 
@@ -2346,6 +2362,10 @@ msgid "Code Challenge Method"
 msgstr ""
 
 #: authentik/providers/oauth2/models.py
+msgid "DPoP JWK Thumbprint"
+msgstr ""
+
+#: authentik/providers/oauth2/models.py
 msgid "Authorization Code"
 msgstr ""
 
@@ -2379,6 +2399,20 @@ msgstr ""
 
 #: authentik/providers/oauth2/tasks.py
 msgid "Handle backchannel logout notifications dispatched via signal"
+msgstr ""
+
+#: authentik/providers/oauth2/templates/if/oauth_form_post.html
+msgid "Redirecting..."
+msgstr ""
+
+#: authentik/providers/oauth2/templates/if/oauth_form_post.html
+msgid ""
+"Your browser does not support JavaScript, please click below to continue."
+msgstr ""
+
+#: authentik/providers/oauth2/templates/if/oauth_form_post.html
+#: authentik/stages/identification/stage.py
+msgid "Continue"
 msgstr ""
 
 #: authentik/providers/oauth2/views/device_init.py
@@ -3563,11 +3597,7 @@ msgid "Flow used before authentication."
 msgstr ""
 
 #: authentik/sources/saml/models.py
-msgid "Issuer"
-msgstr ""
-
-#: authentik/sources/saml/models.py
-msgid "Also known as Entity ID. Defaults the Metadata URL."
+msgid "Also known as Entity ID. Defaults to the Metadata URL."
 msgstr ""
 
 #: authentik/sources/saml/models.py
@@ -3740,6 +3770,16 @@ msgstr ""
 
 #: authentik/stages/authenticator_duo/models.py
 msgid "Duo Devices"
+msgstr ""
+
+#: authentik/stages/authenticator_duo/stage.py
+msgid ""
+"A Duo user with this username already exists. Ask an administrator to import "
+"the existing Duo authenticator or delete the Duo user before enrolling again."
+msgstr ""
+
+#: authentik/stages/authenticator_duo/stage.py
+msgid "Failed to enroll with Duo. Please contact an administrator."
 msgstr ""
 
 #: authentik/stages/authenticator_email/models.py
@@ -4410,10 +4450,6 @@ msgstr ""
 
 #: authentik/stages/identification/stage.py
 msgid "Log in"
-msgstr ""
-
-#: authentik/stages/identification/stage.py
-msgid "Continue"
 msgstr ""
 
 #: authentik/stages/invitation/models.py

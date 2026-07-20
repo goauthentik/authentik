@@ -19,7 +19,7 @@ Here is a non-exhaustive list of what background tasks are used for:
     - [SSF Provider](../add-secure-apps/providers/ssf/index.md)
     - [Kerberos Source](../users-sources/sources/protocols/kerberos/index.md)
     - [LDAP Source](../users-sources/sources/protocols/ldap/index.md)
-- Enterprise [license management](../enterprise/manage-enterprise.mdx#license-management)
+- Enterprise [license management](../enterprise/manage-enterprise.md#license-management)
 - Event Notifications: send [Notifications](./events/notifications.md) when events are created
 - Emails: send emails when triggered by one of the email stages or otherwise
 
@@ -81,7 +81,7 @@ When a task fails, i.e. when the code throws an exception, the task will be retr
 
 Failed tasks will be displayed like any other tasks. Each task can be expanded to show its logs. The logs are split into two parts: "Current execution logs" for the current execution, and "Previous execution logs" for logs from previous executions that happened before a retry was initiated. The information contained in the logs indicates either a transient error (a network connection failed for example), a misconfiguration (wrong password set in the LDAP source for example), or a bug in authentik.
 
-#### Restarting tasks
+#### Restart tasks
 
 To restart a task, click the retry arrow next to the task. It will be queued again and picked up by a worker.
 

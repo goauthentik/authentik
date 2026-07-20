@@ -1,13 +1,13 @@
 """SCIM Client tests"""
 
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
 
 from django.core.cache import cache
 from django.test import TestCase
 from requests_mock import Mocker
 
 from authentik.blueprints.tests import apply_blueprint
-from authentik.core.models import Application
+from authentik.core.models import Application, Group, User
 from authentik.lib.generators import generate_id
 from authentik.providers.scim.clients.base import SCIMClient
 from authentik.providers.scim.models import SCIMMapping, SCIMProvider
@@ -106,6 +106,29 @@ class SCIMClientTests(TestCase):
     def test_scim_sync(self):
         """test scim_sync task"""
         scim_sync.send(self.provider.pk).get_result()
+
+    def test_full_sync_discovers_once_per_object_type(self):
+        """Full sync runs discovery once, not once per object page."""
+        SCIMProvider.objects.filter(pk=self.provider.pk).update(sync_page_size=1)
+        User.objects.bulk_create([User(username=generate_id()), User(username=generate_id())])
+        Group.objects.bulk_create([Group(name=generate_id()), Group(name=generate_id())])
+        user_client = MagicMock(can_discover=True)
+        group_client = MagicMock(can_discover=True)
+
+        def client_for_model(_provider, model):
+            if model is User:
+                return user_client
+            self.assertIs(model, Group)
+            return group_client
+
+        with patch.object(SCIMProvider, "client_for_model", autospec=True) as client_factory:
+            client_factory.side_effect = client_for_model
+            scim_sync.send(self.provider.pk).get_result()
+
+        self.assertGreater(user_client.write.call_count, 1)
+        self.assertGreater(group_client.write.call_count, 1)
+        user_client.discover.assert_called_once_with()
+        group_client.discover.assert_called_once_with()
 
     def test_config_caching(self):
         """Test that ServiceProviderConfig is cached after first successful fetch"""

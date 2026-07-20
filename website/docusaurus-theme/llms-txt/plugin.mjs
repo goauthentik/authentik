@@ -1,4 +1,3 @@
-// docusaurus-theme/llms-txt/plugin.mjs
 /* eslint-disable no-console */
 /**
  * @file Docusaurus llms.txt plugin (postBuild).
@@ -10,7 +9,12 @@
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 
-import { LLMS_FULL_FILENAME, LLMS_TXT_FILENAME, normalizeOptions } from "./common.mjs";
+import {
+    LLMS_FULL_FILENAME,
+    LLMS_TXT_FILENAME,
+    normalizeOptions,
+    trimTrailingSlashes,
+} from "./common.mjs";
 import {
     applyMdExtension,
     generateFullText,
@@ -67,6 +71,9 @@ export async function buildLLMSOutputs(ctx) {
     const docs = [];
     let skippedNoRoute = 0;
     let mdxFallbacks = 0;
+    const countMdxFallback = () => {
+        mdxFallbacks += 1;
+    };
 
     for (const section of options.sections) {
         const absDir = path.resolve(ctx.siteDir, section.path);
@@ -85,7 +92,7 @@ export async function buildLLMSOutputs(ctx) {
             parsed.url = new URL(route, ctx.siteUrl).toString();
             parsed.group = assignGroup(parsed, options);
             parsed.groupLabel = groupLabel(parsed.group, options);
-            parsed.content = await cleanMdxToMarkdown(parsed.content, file, () => mdxFallbacks++);
+            parsed.content = await cleanMdxToMarkdown(parsed.content, file, countMdxFallback);
             docs.push(parsed);
         }
     }
@@ -130,7 +137,7 @@ export async function buildLLMSOutputs(ctx) {
 
     for (const doc of docs) {
         // applyMdExtension(url) gives the absolute .md URL; derive the build path.
-        const rel = applyMdExtension(doc.url).slice(ctx.siteUrl.replace(/\/+$/, "").length + 1);
+        const rel = applyMdExtension(doc.url).slice(trimTrailingSlashes(ctx.siteUrl).length + 1);
         outputs.set(rel, renderPagePayload(doc));
     }
 

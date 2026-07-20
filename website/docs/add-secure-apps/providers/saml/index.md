@@ -1,5 +1,7 @@
 ---
 title: SAML Provider
+sidebar_position: 10
+sidebar_label: "SAML Provider"
 ---
 
 The SAML provider allows you to integrate with Service Providers using the SAML2 protocol. It supports [importing and exporting SAML metadata](#saml-metadata), [signed requests](#certificates) and uses [property mappings](../property-mappings/index.md#saml-property-mappings) to align, or "map", Service Provider and authentik attributes.
@@ -28,11 +30,11 @@ The previous binding-specific endpoints (`/sso/binding/redirect/`, `/sso/binding
 
 SAML Metadata ensures that SAML single sign-on works reliably by exchanging and maintaining identity and connection information. SAML metadata is an XML document that defines how IdPs and SPs securely interact for authentication. It includes information such as endpoints, bindings, certificates, and unique identifiers.
 
-### Importing SP SAML metadata
+### Import SP SAML metadata
 
 You can [import SP SAML metadata](./create-saml-provider.md#create-a-saml-provider-from-sp-metadata-import-sp-metadata) to automatically configure a SAML provider based on the requirements of an SP.
 
-### Exporting authentik SAML metadata
+### Export authentik SAML metadata
 
 You can [export SAML metadata from an authentik SAML provider](./create-saml-provider.md#export-authentik-saml-provider-metadata) to an SP to automatically provide important endpoint and certificate information to the SP.
 

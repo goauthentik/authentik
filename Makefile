@@ -5,7 +5,7 @@ SHELL := /usr/bin/env bash
 PWD = $(shell pwd)
 UID = $(shell id -u)
 GID = $(shell id -g)
-PY_SOURCES = authentik packages tests scripts lifecycle .github
+PY_SOURCES = authentik packages tests scripts lifecycle
 DOCKER_IMAGE ?= "authentik:test"
 
 UNAME_S := $(shell uname -s)
@@ -88,6 +88,9 @@ lint-fix: lint-fix-rust  ## Lint and automatically fix errors in the python sour
 lint-spellcheck:  ## Reports spelling errors.
 	npm run lint:spellcheck
 
+lint-catalogs:  ## Reports pnpm catalog pins that drifted between the root, web, and website workspaces.
+	node ./scripts/node/lint-catalogs.ts
+
 lint: ci-lint-bandit ci-lint-mypy ci-lint-cargo-deny ci-lint-cargo-machete  ## Lint the python and golang sources
 	golangci-lint run -v
 
@@ -107,8 +110,8 @@ migrate: ## Run the Authentik Django server's migrations
 i18n-extract: core-i18n-extract web-i18n-extract  ## Extract strings that require translation into files to send to a translation service
 
 aws-cfn: node-install
-	corepack npm install --prefix lifecycle/aws
-	$(UV) run corepack npm run aws-cfn --prefix lifecycle/aws
+	pnpm --dir lifecycle/aws install
+	$(UV) run pnpm --dir lifecycle/aws run aws-cfn
 
 run:  ## Run the main authentik server and worker processes
 	$(UV) run ak allinone
@@ -163,7 +166,7 @@ endif
 	$(SED_INPLACE) 's/^VERSION = ".*"/VERSION = "$(version)"/' ${PWD}/authentik/__init__.py
 	$(SED_INPLACE) "s/version = \"${current_version}\"/version = \"$(version)\"/" ${PWD}/Cargo.toml ${PWD}/Cargo.lock
 	$(MAKE) gen-build gen-compose aws-cfn
-	$(SED_INPLACE) "s/\"${current_version}\"/\"$(version)\"/" ${PWD}/package.json ${PWD}/package-lock.json ${PWD}/web/package.json ${PWD}/web/package-lock.json
+	$(SED_INPLACE) "s/\"${current_version}\"/\"$(version)\"/" ${PWD}/package.json ${PWD}/web/package.json
 	echo -n $(version) > ${PWD}/internal/constants/VERSION
 
 #########################
@@ -214,7 +217,7 @@ gen-client-rust:  ## Build and install the authentik API for Rust
 
 gen-client-ts:  ## Build and install the authentik API for Typescript into the authentik UI Application
 	make -C "${PWD}/packages/client-ts" build
-	npm --prefix web install
+	pnpm --dir web install
 
 _gen-clients: gen-client-go gen-client-rust gen-client-ts
 gen-clients:  ## Build and install API clients used by authentik
@@ -229,55 +232,48 @@ gen-dev-config:  ## Generate a local development config file
 ## Node.js
 #########################
 
-# Packages whose install/postinstall scripts are required for correct
-# operation (binary downloads, native bindings). The root .npmrc sets
-# `ignore-scripts=true` to block dependency lifecycle scripts by default;
-# this list is rebuilt explicitly with scripts re-enabled. Audit any
-# additions: each entry runs arbitrary code at install time.
-TRUSTED_INSTALL_SCRIPTS := esbuild chromedriver tree-sitter tree-sitter-json
+# Lifecycle scripts are blocked by default in pnpm 10+ via
+# `pnpm-workspace.yaml#onlyBuiltDependencies`. Adding a package to that list
+# grants it arbitrary code execution at install — audit at review time.
 
-node-preinstall: ## Install corepack and lint the runtime to ensure the correct Node.js version is being used before installing dependencies.
-	node ./scripts/node/setup-corepack.mjs
+node-preinstall:  ## Verify the active Node.js and pnpm versions match what's in package.json.
 	node ./scripts/node/lint-runtime.mjs
 
-node-install: node-preinstall ## Install the necessary libraries to build Node.js packages
-	corepack npm ci
+node-install: node-preinstall  ## Install the necessary libraries to build Node.js packages
+	pnpm install --frozen-lockfile
 
 #########################
 ## Web
 #########################
 
-web-install: ## Install the necessary libraries to build the Authentik UI
-	corepack npm ci --prefix web
-
-web-postinstall:  ## Trigger postinstall scripts for packages with native bindings or binary downloads, which are blocked by default for security reasons.
-	corepack npm rebuild --prefix web --ignore-scripts=false --foreground-scripts $(TRUSTED_INSTALL_SCRIPTS)
+web-install:  ## Install the necessary libraries to build the Authentik UI
+	pnpm --dir web install --frozen-lockfile
 
 web-build: node-install  ## Build the Authentik UI
-	corepack npm run --prefix web build
+	pnpm --dir web run build
 
 web: web-lint-fix web-lint web-check-compile  ## Automatically fix formatting issues in the Authentik UI source code, lint the code, and compile it
 
-web-test: ## Run tests for the Authentik UI
-	corepack npm run --prefix web test
+web-test:  ## Run tests for the Authentik UI
+	pnpm --dir web run test
 
 web-watch:  ## Build and watch the Authentik UI for changes, updating automatically
-	corepack npm run --prefix web watch
+	pnpm --dir web run watch
 web-storybook-watch:  ## Build and run the storybook documentation server
-	corepack npm run --prefix web storybook
+	pnpm --dir web run storybook
 
 web-lint-fix:
-	corepack npm run --prefix web prettier
+	pnpm --dir web run prettier
 
 web-lint:
-	corepack npm run --prefix web lint
-	corepack npm run --prefix web lit-analyse
+	pnpm --dir web run lint
+	pnpm --dir web run lit-analyse
 
 web-check-compile:
-	corepack npm run --prefix web tsc
+	pnpm --dir web run tsc
 
 web-i18n-extract:
-	corepack npm run --prefix web extract-locales
+	pnpm --dir web run extract-locales
 
 #########################
 ## Docs
@@ -286,35 +282,35 @@ web-i18n-extract:
 docs: docs-lint-fix docs-build  ## Automatically fix formatting issues in the Authentik docs source code, lint the code, and compile it
 
 docs-install: node-install  ## Install the necessary libraries to build the Authentik documentation
-	corepack npm ci --prefix website
+	pnpm --dir website install --frozen-lockfile
 
 docs-lint-fix: lint-spellcheck
-	corepack npm run --prefix website prettier
+	pnpm --dir website run prettier
 
 docs-build:
 	node ./scripts/node/lint-runtime.mjs website
-	corepack npm run --prefix website build
+	pnpm --dir website run build
 
 docs-watch:  ## Build and watch the topics documentation
-	corepack npm run --prefix website start
+	pnpm --dir website run start
 
-integrations: docs-lint-fix integrations-build ## Fix formatting issues in the integrations source code, lint the code, and compile it
+integrations: docs-lint-fix integrations-build  ## Fix formatting issues in the integrations source code, lint the code, and compile it
 
 integrations-build:
-	corepack npm run --prefix website -w integrations build
+	pnpm --dir website run build:integrations
 
 integrations-watch:  ## Build and watch the Integrations documentation
-	corepack npm run --prefix website -w integrations start
+	pnpm --dir website/integrations run start
 
 docs-api-build:
-	corepack npm run --prefix website -w api build
+	pnpm --dir website run build:api
 
 docs-api-watch:  ## Build and watch the API documentation
-	corepack npm run --prefix website -w api generate
-	corepack npm run --prefix website -w api start
+	pnpm --dir website/api run generate
+	pnpm --dir website/api run start
 
-docs-api-clean: ## Clean generated API documentation
-	corepack npm run --prefix website -w api build:api:clean
+docs-api-clean:  ## Clean generated API documentation
+	pnpm --dir website/api run clean
 
 #########################
 ## Docker
@@ -356,7 +352,7 @@ ci-lint-pending-migrations: ci--meta-debug
 	$(UV) run ak makemigrations --check
 
 ci-lint-cargo-deny: ci--meta-debug
-	$(CARGO) deny --locked --workspace check --config "${PWD}/.cargo/deny.toml"
+	$(CARGO) deny --config "${PWD}/.cargo/deny.toml" --locked --workspace check
 
 ci-lint-cargo-machete: ci--meta-debug
 	$(CARGO) machete
@@ -366,6 +362,9 @@ ci-lint-rustfmt: ci--meta-debug
 
 ci-lint-clippy: ci--meta-debug
 	$(CARGO) clippy --workspace -- -D warnings
+
+ci-lint-catalogs: ci--meta-debug
+	node ./scripts/node/lint-catalogs.ts
 
 ci-test: ci--meta-debug
 	$(UV) run coverage run manage.py test --keepdb --parallel auto authentik

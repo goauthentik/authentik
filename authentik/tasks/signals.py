@@ -3,6 +3,7 @@
 from datetime import timedelta
 
 from django.db.models import Count
+from django.db.models.signals import pre_delete
 from django.dispatch import receiver
 from django.utils.timezone import now
 from django_dramatiq_postgres.models import TaskState
@@ -11,8 +12,9 @@ from packaging.version import parse
 from prometheus_client import Gauge
 
 from authentik import authentik_full_version
+from authentik.lib.utils.db import chunked_queryset
 from authentik.root.monitoring import monitoring_set
-from authentik.tasks.models import Task, WorkerStatus
+from authentik.tasks.models import Task, TasksModel, WorkerStatus
 
 OLD_GAUGE_WORKERS = Gauge(
     "authentik_admin_workers",
@@ -64,3 +66,12 @@ def monitoring_set_queued_tasks(sender, **kwargs):
         .annotate(count=Count("pk"))
     ):
         GAUGE_TASKS_QUEUED.labels(stats["queue_name"], stats["actor_name"]).set(stats["count"])
+
+
+@receiver(pre_delete)
+def remove_tasks_on_rel_obj_deletion(sender, instance, **_):
+    if not isinstance(instance, TasksModel):
+        return
+
+    for task in chunked_queryset(instance.tasks):
+        task.delete()

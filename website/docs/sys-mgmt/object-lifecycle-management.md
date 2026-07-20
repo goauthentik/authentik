@@ -85,7 +85,7 @@ If multiple rules apply to the same object, each rule runs its own review cycle 
 
 To review and approve an object for a lifecycle rule, follow the steps below. A reviewer can be either a user set as an explicit reviewer or a member of a configured reviewer group.
 
-1. Once a new review cycle starts, you receive a notification that a review is due (via the configured notification transports).
+1. After a new review cycle starts, you receive a notification that a review is due through the configured notification transports.
 2. Click on the link in the notification to navigate to the object's detail page.
 
     Alternatively, you can navigate to the **Events** > **Reviews** page and enable "Only show reviews where I am a reviewer" filter to see reviews awaiting your action.
@@ -96,7 +96,7 @@ To review and approve an object for a lifecycle rule, follow the steps below. A 
 3. Review the object's current configuration.
 4. Go back to the **Lifecycle** tab.
 5. Find the review for the relevant rule and click **Review** to submit your review, optionally including a note.
-6. Once all of the rule's reviewer requirements are met, that review automatically transitions to the **Reviewed** state.
+6. After all of the rule's reviewer requirements are met, that review automatically transitions to the **Reviewed** state.
 
 ### Submit a review
 
