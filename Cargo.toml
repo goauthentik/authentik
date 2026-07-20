@@ -51,7 +51,7 @@ notify = "= 8.2.0"
 pin-project-lite = "= 0.2.17"
 pyo3 = "= 0.29.0"
 pyo3-build-config = "= 0.29.0"
-regex = "= 1.13.0"
+regex = "= 1.13.1"
 reqwest = { version = "= 0.13.4", features = [
   "form",
   "json",
