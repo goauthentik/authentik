@@ -191,6 +191,14 @@ func (ws *WebServer) staticHeaderMiddleware(h http.Handler) http.Handler {
 		w.Header().Set("Cache-Control", "public, no-transform")
 		w.Header().Set("X-authentik-version", constants.VERSION())
 		w.Header().Set("Vary", "X-authentik-version, Etag")
+		// The etag middleware hashes the bytes it writes, so a 206 would get
+		// a per-chunk ETag instead of one identifying the whole file. Range
+		// consumers (e.g. PMTiles) treat differing ETags as the file changing
+		// mid-read, so serve ranged responses without one.
+		if r.Header.Get("Range") != "" {
+			h.ServeHTTP(w, r)
+			return
+		}
 		etagHandler.ServeHTTP(w, r)
 	})
 }
