@@ -488,7 +488,7 @@ jobs:
     steps:
       - uses: regclient/actions/regctl-installer@39bf30ced4be9d147faaabbde2682e9725fb8bd1
       # logs in to ghcr.io by default
-      - uses: regclient/actions/regctl-login@39bf30ced4be9d147faaabbde2682e9725fb8bd1
+      - uses: regclient/actions/regctl-login@c48159175b58fb90cccd0f98410927a81e04a166
       # Docker login is required for attestations
       - uses: docker/login-action@af1e73f918a031802d376d3c8bbc3fe56130a9b0
         with:
