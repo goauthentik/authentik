@@ -50,8 +50,8 @@ class AppRequestTests(APITestCase):
             slug=generate_id(),
         )
         rule = RequestRule.objects.create(name=generate_id())
-        RequestRuleBinding.objects.create(rule=rule, target=app)
-        PolicyBinding.objects.create(target=rule, user=other_user, order=0)
+        rule_binding = RequestRuleBinding.objects.create(rule=rule, target=app)
+        PolicyBinding.objects.create(target=rule_binding, user=other_user, order=0)
 
         res = self.client.get(reverse("authentik_api:application-requestable"))
         content = loads(res.content.decode())
