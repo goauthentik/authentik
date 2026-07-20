@@ -1,3 +1,7 @@
+/**
+ * @file Display details for an OAuth2 provider: Overview, Preview, Changelog, Permissions
+ */
+
 import "#admin/providers/RelatedApplicationButton";
 import "#admin/events/ObjectChangelog";
 import "#admin/rbac/ak-rbac-object-permission-page";
@@ -5,7 +9,6 @@ import "#admin/rbac/ObjectPermissionModal";
 import "#elements/CodeMirror";
 import "#elements/EmptyState";
 import "#elements/Tabs";
-import "#components/tasks/TaskList";
 import "#elements/ak-mdx/index";
 import "#elements/buttons/ModalButton";
 import "#elements/buttons/SpinnerButton/index";
@@ -18,6 +21,7 @@ import { modalInvoker } from "#elements/dialogs";
 import { SlottedTemplateResult } from "#elements/types";
 
 import renderDescriptionList from "#components/DescriptionList";
+import { taskCard } from "#components/tasks/taskCard";
 
 import { OAuth2ProviderFormPage } from "#admin/providers/oauth2/OAuth2ProviderForm";
 
@@ -35,6 +39,7 @@ import {
 } from "@goauthentik/api";
 import { IDGenerator } from "@goauthentik/core/id";
 
+import { match, P } from "ts-pattern";
 import MDProviderOAuth2 from "~docs/add-secure-apps/providers/oauth2/index.mdx";
 
 import { msg } from "@lit/localize";
@@ -52,29 +57,24 @@ import PFFormControl from "@patternfly/patternfly/components/FormControl/form-co
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 
-export function TypeToLabel(type?: ClientTypeEnum): string {
-    if (!type) return "";
-    switch (type) {
-        case ClientTypeEnum.Confidential:
-            return msg("Confidential");
-        case ClientTypeEnum.Public:
-            return msg("Public");
-        case ClientTypeEnum.UnknownDefaultOpenApi:
-            return msg("Unknown type");
-    }
-}
+export const TypeToLabel = (clientType?: ClientTypeEnum) =>
+    match(clientType)
+        .with(P.nullish, () => "")
+        .with(ClientTypeEnum.Confidential, () => msg("Confidential"))
+        .with(ClientTypeEnum.Public, () => msg("Public"))
+        .with(ClientTypeEnum.UnknownDefaultOpenApi, () => msg("Unknown type"))
+        .exhaustive();
 
-export function LogoutMethodToLabel(method?: OAuth2ProviderLogoutMethodEnum): string {
-    if (!method) return "";
-    switch (method) {
-        case OAuth2ProviderLogoutMethodEnum.Backchannel:
-            return msg("Back-channel");
-        case OAuth2ProviderLogoutMethodEnum.Frontchannel:
-            return msg("Front-channel");
-        case OAuth2ProviderLogoutMethodEnum.UnknownDefaultOpenApi:
-            return msg("Unknown");
-    }
-}
+const LogoutMethod = OAuth2ProviderLogoutMethodEnum;
+const LogoutMethodToLabel = (method?: OAuth2ProviderLogoutMethodEnum) =>
+    match(method)
+        .with(P.nullish, () => "")
+        .with(LogoutMethod.Backchannel, () => msg("Back-channel"))
+        .with(LogoutMethod.Frontchannel, () => msg("Front-channel"))
+        .with(LogoutMethod.UnknownDefaultOpenApi, () => msg("Unknown"))
+        .exhaustive();
+
+const PROVIDER_MODEL = ModelEnum.AuthentikProvidersOauth2Oauth2provider;
 
 @customElement("ak-provider-oauth2-view")
 export class OAuth2ProviderViewPage extends AKElement {
@@ -153,7 +153,7 @@ export class OAuth2ProviderViewPage extends AKElement {
                             });
                     }}
                 >
-                    ${this.renderTabOverview()}
+                    ${this.renderTabOverview(this.provider)}
                 </div>
                 <div
                     role="tabpanel"
@@ -196,9 +196,8 @@ export class OAuth2ProviderViewPage extends AKElement {
         </main>`;
     }
 
-    renderTabOverview(): SlottedTemplateResult {
-        const [appLabel, modelName] = ModelEnum.AuthentikProvidersOauth2Oauth2provider.split(".");
-        return html`${this.provider?.assignedApplicationName
+    renderTabOverview(provider: OAuth2Provider): SlottedTemplateResult {
+        return html`${provider.assignedApplicationName
                 ? nothing
                 : html`<div slot="header" class="pf-c-banner pf-m-warning">
                       ${msg("Warning: Provider is not used by an Application.")}
@@ -210,19 +209,19 @@ export class OAuth2ProviderViewPage extends AKElement {
                     <div class="pf-c-card__title">${msg("Info")}</div>
                     <div class="pf-c-card__body">
                         ${renderDescriptionList([
-                            [msg("Name"), html`${this.provider?.name}`],
+                            [msg("Name"), html`${provider.name}`],
                             [
                                 msg("Assigned to application"),
                                 html`<ak-provider-related-application .provider=${this.provider}>
                                 </ak-provider-related-application>`,
                             ],
-                            [msg("Client Type"), html`${TypeToLabel(this.provider?.clientType)}`],
-                            [msg("Client ID"), html`${this.provider?.clientId}`],
+                            [msg("Client Type"), html`${TypeToLabel(provider.clientType)}`],
+                            [msg("Client ID"), html`${provider.clientId}`],
                             [
                                 msg("Redirect URIs"),
-                                (this.provider?.redirectUris || []).length > 0
+                                (provider.redirectUris || []).length > 0
                                     ? html`<ul>
-                                          ${this.provider?.redirectUris.map((ru) => {
+                                          ${provider.redirectUris.map((ru) => {
                                               return html`<li class="pf-m-monospace">
                                                   ${ru.matchingMode}: ${ru.url}
                                               </li>`;
@@ -232,18 +231,18 @@ export class OAuth2ProviderViewPage extends AKElement {
                             ],
                             [
                                 msg("Logout URI"),
-                                this.provider?.logoutUri !== "" ? this.provider?.logoutUri : "-",
+                                provider.logoutUri !== "" ? provider.logoutUri : "-",
                             ],
                             [
                                 msg("Logout Method"),
-                                html`${LogoutMethodToLabel(this.provider?.logoutMethod)}`,
+                                html`${LogoutMethodToLabel(provider.logoutMethod)}`,
                             ],
                             [
                                 msg("Related actions"),
                                 html`<button
                                     class="pf-c-button pf-m-primary pf-m-block"
                                     ${modalInvoker(OAuth2ProviderFormPage, {
-                                        instancePk: this.provider?.pk || 0,
+                                        instancePk: provider.pk || 0,
                                     })}
                                 >
                                     ${msg("Edit")}
@@ -379,14 +378,7 @@ export class OAuth2ProviderViewPage extends AKElement {
                 <div
                     class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-12-col-on-xl pf-m-12-col-on-2xl"
                 >
-                    <div class="pf-c-card pf-l-grid__item pf-m-12-col-on-2xl">
-                        <div class="pf-c-card__title">${msg("Tasks")}</div>
-                        <ak-task-list
-                            .relObjAppLabel=${appLabel}
-                            .relObjModel=${modelName}
-                            .relObjId="${this.provider?.pk}"
-                        ></ak-task-list>
-                    </div>
+                    ${taskCard(PROVIDER_MODEL, provider.pk)}
                 </div>
                 <div
                     class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-12-col-on-xl pf-m-12-col-on-2xl"
@@ -401,8 +393,7 @@ export class OAuth2ProviderViewPage extends AKElement {
                                     }
                                     return input.replaceAll(
                                         "<application slug>",
-                                        this.provider.assignedApplicationSlug ??
-                                            "<application slug>",
+                                        provider.assignedApplicationSlug ?? "<application slug>",
                                     );
                                 },
                             ]}

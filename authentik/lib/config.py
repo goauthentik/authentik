@@ -19,6 +19,7 @@ from urllib.parse import urlparse
 
 import yaml
 from django.conf import ImproperlyConfigured
+from django.db.utils import DEFAULT_DB_ALIAS
 
 from authentik.lib.utils.dict import delete_path_in_dict, get_path_from_dict, set_path_in_dict
 
@@ -322,6 +323,115 @@ class ConfigLoader:
 CONFIG = ConfigLoader()
 
 
+# Reserved alias for the direct (un-pooled or session-mode-pooled) database
+# connection. Used by code that needs a stable PG backend across calls:
+# LISTEN/NOTIFY and session-scoped advisory locks. See ``django_db_config``.
+DIRECT_DB_ALIAS = "direct"
+
+
+def postgresql_direct_db_enabled(config: ConfigLoader | None = None) -> bool:
+    """Whether a dedicated direct PostgreSQL endpoint has been configured.
+
+    Returns True if any ``postgresql.direct.*`` key is set. When True, a Django
+    connection at alias ``direct`` is added; subsystems that hold server-side
+    state (LISTEN/NOTIFY, advisory locks) route through it so an operator can
+    put a transaction-pooling pooler in front of ``postgresql.host`` without
+    breaking them.
+    """
+    if not config:
+        config = CONFIG
+    return any(
+        config.get(f"postgresql.direct.{key}", default=UNSET) is not UNSET
+        for key in (
+            "host",
+            "port",
+            "name",
+            "user",
+            "password",
+            "sslmode",
+            "sslrootcert",
+            "sslcert",
+            "sslkey",
+            "conn_options",
+        )
+    )
+
+
+def advisory_lock_db_alias(config: ConfigLoader | None = None) -> str:
+    """Return the DB alias to use for session-scoped advisory locks.
+
+    Routes through the direct endpoint when configured so the locks survive
+    a transaction-mode pooler in front of ``postgresql.host`` (the lock and
+    its release must run on the same backend connection).
+    """
+    return DIRECT_DB_ALIAS if postgresql_direct_db_enabled(config) else DEFAULT_DB_ALIAS
+
+
+def postgresql_direct_connection_kwargs(config: ConfigLoader | None = None) -> dict:
+    """Return kwargs suitable for ``psycopg.connect()`` for the direct endpoint.
+
+    Reads ``postgresql.direct.*`` overrides, falling back to ``postgresql.*``
+    for unset keys. Used by ``lifecycle/migrate.py`` for the startup advisory
+    lock.
+    """
+    if not config:
+        config = CONFIG
+
+    def _override(field: str, default):
+        return config.get(f"postgresql.direct.{field}", default=default)
+
+    kwargs = {
+        "host": _override("host", config.get("postgresql.host")),
+        "port": _override("port", config.get_int("postgresql.port", 5432)),
+        "dbname": _override("name", config.get("postgresql.name")),
+        "user": _override("user", config.get("postgresql.user")),
+        "password": _override("password", config.get("postgresql.password")),
+        "sslmode": _override("sslmode", config.get("postgresql.sslmode")),
+        "sslrootcert": _override("sslrootcert", config.get("postgresql.sslrootcert")),
+        "sslcert": _override("sslcert", config.get("postgresql.sslcert")),
+        "sslkey": _override("sslkey", config.get("postgresql.sslkey")),
+    }
+    # direct.conn_options wins over the main conn_options when both are set.
+    conn_opts = config.get_dict_from_b64_json("postgresql.conn_options", default={})
+    direct_conn_opts = config.get_dict_from_b64_json("postgresql.direct.conn_options", default={})
+    kwargs.update(conn_opts)
+    kwargs.update(direct_conn_opts)
+    return {k: v for k, v in kwargs.items() if v is not None}
+
+
+def _build_direct_db_alias(default_db: dict, config: ConfigLoader) -> dict:
+    """Build the ``direct`` Django DB alias dict from a copy of the default
+    alias plus ``postgresql.direct.*`` overrides."""
+    direct_db = deepcopy(default_db)
+    direct_kwargs = postgresql_direct_connection_kwargs(config)
+    direct_db["HOST"] = direct_kwargs.get("host")
+    direct_db["PORT"] = direct_kwargs.get("port")
+    direct_db["NAME"] = direct_kwargs.get("dbname")
+    direct_db["USER"] = direct_kwargs.get("user")
+    direct_db["PASSWORD"] = direct_kwargs.get("password")
+    direct_db["OPTIONS"] = {
+        "sslmode": direct_kwargs.get("sslmode"),
+        "sslrootcert": direct_kwargs.get("sslrootcert"),
+        "sslcert": direct_kwargs.get("sslcert"),
+        "sslkey": direct_kwargs.get("sslkey"),
+        "pool": False,
+    }
+    # Carry over extra option keys (e.g. application_name) from direct.conn_options.
+    for key, value in direct_kwargs.items():
+        if key in ("host", "port", "dbname", "user", "password"):
+            continue
+        if key in direct_db["OPTIONS"]:
+            continue
+        direct_db["OPTIONS"][key] = value
+    # Persistent connections: managed by the broker / channel layer, not
+    # subject to per-request close_old_connections().
+    direct_db["CONN_MAX_AGE"] = None
+    direct_db["CONN_HEALTH_CHECKS"] = False
+    direct_db["DISABLE_SERVER_SIDE_CURSORS"] = True
+    direct_db["OPTIONS"] = {k: v for k, v in direct_db["OPTIONS"].items() if v is not None}
+    return direct_db
+
+
 def django_db_config(config: ConfigLoader | None = None) -> dict:
     if not config:
         config = CONFIG
@@ -416,6 +526,13 @@ def django_db_config(config: ConfigLoader | None = None) -> dict:
         _database["OPTIONS"].update(replica_conn_options)
 
         db[f"replica_{replica}"] = _database
+
+    # Optional direct endpoint for LISTEN/NOTIFY and advisory-lock connections.
+    # Only added when operator sets ``postgresql.direct.*``; excluded from
+    # replica routing and migrations by ``authentik.tenants.db.FailoverRouter``.
+    if postgresql_direct_db_enabled(config):
+        db[DIRECT_DB_ALIAS] = _build_direct_db_alias(db["default"], config)
+
     return db
 
 

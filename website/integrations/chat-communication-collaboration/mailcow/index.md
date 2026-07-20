@@ -35,7 +35,7 @@ mailcow requires users to have an email address. The custom email scope mapping 
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Customization** > **Property Mappings** and click **New Property Mapping**.
-3. Select **Scope Mapping** as the property mapping type. Use `email` as the scope name, and copy the user attribute expression from [Email scope verification](/docs/add-secure-apps/providers/oauth2/index.mdx#email-scope-verification).
+3. Select **Scope Mapping** as the property mapping type. Use `email` as the scope name, and copy the user attribute expression from [Email scope verification](/docs/add-secure-apps/providers/oauth2/#email-scope-verification).
 4. Click **Create**.
 5. Create another **Scope Mapping** using the following values:
     - **Name**: `mailcow_template`

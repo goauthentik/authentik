@@ -47,7 +47,7 @@ import {
 import { spread } from "@open-wc/lit-helpers";
 import { match, P } from "ts-pattern";
 
-import { LOCALE_STATUS_EVENT, LocaleStatusEventDetail, msg } from "@lit/localize";
+import { msg } from "@lit/localize";
 import { CSSResult, html, nothing, PropertyValues } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { guard } from "lit/directives/guard.js";
@@ -202,13 +202,6 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
 
         console.debug("authentik/ws: Reloading after session authenticated event");
         window.location.reload();
-    };
-
-    @listen(LOCALE_STATUS_EVENT, { target: window })
-    protected localeStatusListener = (event: CustomEvent<LocaleStatusEventDetail>) => {
-        if (event.detail.status === "ready") {
-            this.refresh();
-        }
     };
 
     private setFlowErrorChallenge(error: APIError) {
@@ -431,7 +424,8 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
     protected override render(): SlottedTemplateResult {
         const { challenge, loading } = this;
 
-        return html`<ak-locale-select
+        return html`<div class="pf-c-login" data-layout=${this.layout} part="login">
+            <ak-locale-select
                 part="locale-select"
                 exportparts="label:locale-select-label,select:locale-select-select"
                 class="pf-m-dark"
@@ -462,7 +456,8 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
                         : this.renderLoading();
                 })}
             </main>
-            ${this.renderFooter()}`;
+            ${this.renderFooter()}
+        </div>`;
     }
 
     //#endregion

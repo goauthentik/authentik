@@ -52,6 +52,7 @@ ownCloud Server stores one OIDC provider URL in its configuration, but the ownCl
         - **Redirect URIs**: add the redirect URI values from the table above.
         - **Signing Key**: select the same signing key for all ownCloud providers.
         - **Advanced protocol settings** > **Scopes**: select `openid`, `profile`, `email`, and `offline_access`.
+        - For the **Web UI** provider, under **Advanced protocol settings**, set **Logout URI** to `https://owncloud.company/index.php/apps/openidconnect/logout` and **Logout Method** to `Front-channel`.
     - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 3. Click **Submit** to save the new application and provider.
 

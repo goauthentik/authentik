@@ -14,20 +14,26 @@ packages:
 # npm's behavior.
 nodeLinker: hoisted
 
-# Shared version references for the `catalog:` protocol. Keep these in sync with
-# web/package.json so overrides pin transitive deps to the versions we use.
+# Shared version references for the `catalog:` protocol. Workspace members reference
+# these via `catalog:`, and overrides pin transitive deps to the same versions.
+# `scripts/node/lint-catalogs.ts` keeps them in sync with the other workspace roots.
 catalog:
+    "@eslint/js": "^9.39.5"
+    "@typescript-eslint/eslint-plugin": "^8.64.0"
+    "@typescript-eslint/parser": "^8.64.0"
+    "@typescript-eslint/utils": "^8.64.0"
+    "@types/node": "^26.1.1"
     esbuild: "^0.28.1"
-    eslint: "^9.39.4"
-    prettier: "^3.8.3"
+    eslint: "^9.39.5"
+    prettier: "3.8.3"
     prettier-plugin-packagejson: "^3.0.2"
     typescript: "^6.0.3"
+    typescript-eslint: "^8.64.0"
 
 overrides:
     "@goauthentik/esbuild-plugin-live-reload>esbuild": "catalog:"
     "@goauthentik/esbuild-plugin-live-reload>typescript": "catalog:"
     "@goauthentik/eslint-config>typescript": "catalog:"
-    "@goauthentik/prettier-config>prettier": "catalog:"
     "@goauthentik/prettier-config>prettier-plugin-packagejson": "catalog:"
     "@goauthentik/prettier-config>typescript": "catalog:"
     "@mrmarble/djangoql-completion>lex": "workspace:*"
@@ -40,7 +46,6 @@ overrides:
     "node-fetch-commonjs>node-domexception": "workspace:*"
     "rapidoc>@apitools/openapi-parser": "0.0.37"
     "typescript-eslint>typescript": "catalog:"
-    "wireit>brace-expansion": "^1.1.14"
 
 # Allow-list of dependencies whose install/postinstall scripts may run.
 # Everything else is blocked, replacing the prior `ignore-scripts=true` +
