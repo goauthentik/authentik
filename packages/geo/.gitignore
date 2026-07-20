@@ -1,10 +1,9 @@
-# The shipped hexworld.pmtiles archive is checked in (see README). Everything
-# else generated under tiles/ — intermediate cuts, glyphs pulled from the
-# public CDN, generator scratch — stays local.
+# The shipped hexworld.pmtiles archive and the Noto Sans glyph ranges are
+# checked in (see README + tiles/fonts/OFL.txt). Everything else generated
+# under tiles/ — intermediate cuts, generator scratch — stays local.
 /tiles/*.pmtiles
 !/tiles/hexworld.pmtiles
 /tiles/*.mbtiles
-/tiles/fonts/
 /tiles/*.geojsonl
 /tiles/*.geojson
 /out/

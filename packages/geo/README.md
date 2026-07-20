@@ -27,11 +27,14 @@ MapLibre overzooms past z8. The bands are baked into every published archive —
 res 3 + 4 cut (`hexworld-r4`, ~8.8 MB) — smaller than the res-5 cut and still
 sharper than GeoIP-derived event locations warrant.
 
-The `web` build copies the archive into `web/dist/assets/maps/hexworld.pmtiles`.
-Glyphs (Noto Sans Latin ranges) are fetched from the Protomaps CDN on the
-first build and cached under `tiles/fonts/`; subsequent builds reuse the
-cache. Override the CDN via `AUTHENTIK_HEXWORLD_GLYPHS` for airgapped
-environments.
+`tiles/fonts/` ships the Latin Noto Sans glyph ranges (Regular + Medium, 0-255
+and 256-511) alongside the archive, under SIL Open Font License 1.1 (see
+`tiles/fonts/OFL.txt`). Both the archive and the glyphs are committed so the
+web build stays hermetic — no network required after clone.
+
+The `web` build copies `tiles/hexworld.pmtiles` and `tiles/fonts/` into
+`web/dist/assets/maps/`. If either is missing at build time the build fails
+loudly instead of silently shipping a broken map.
 
 ## Regenerating the archive
 

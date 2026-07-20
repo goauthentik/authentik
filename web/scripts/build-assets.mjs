@@ -56,36 +56,12 @@ const assets = [
     ],
 ];
 
-// Bundled hexworld basemap. The archive is committed at
-// packages/geo/tiles/hexworld.pmtiles (see the geo package README); glyphs
-// are gitignored and fetched from the Protomaps CDN on first build, then
-// cached in tiles/fonts/ so subsequent builds reuse them.
+// Bundled hexworld basemap. Both the archive and the Latin Noto Sans glyph
+// ranges (SIL OFL, see packages/geo/tiles/fonts/OFL.txt) are committed to git,
+// so the copy is a pure filesystem step — the build never reaches the
+// network for basemap assets.
 const HEXWORLD_SRC = path.resolve(MonoRepoRoot, "packages", "geo", "tiles");
 const HEXWORLD_DEST = path.resolve(DistDirectory, "assets", "maps");
-const GLYPH_BASE =
-    process.env.AUTHENTIK_HEXWORLD_GLYPHS ??
-    "https://raw.githubusercontent.com/protomaps/basemaps-assets/main/fonts";
-const GLYPH_FONTS = ["Noto Sans Regular", "Noto Sans Medium"];
-const GLYPH_RANGES = ["0-255", "256-511"];
-
-/**
- * @param {string} fontsDir
- */
-async function ensureGlyphs(fontsDir) {
-    for (const font of GLYPH_FONTS) {
-        const dir = path.resolve(fontsDir, font);
-        await fs.mkdir(dir, { recursive: true });
-        for (const range of GLYPH_RANGES) {
-            const dest = path.resolve(dir, `${range}.pbf`);
-            if (existsSync(dest)) continue;
-            const url = `${GLYPH_BASE}/${encodeURIComponent(font)}/${range}.pbf`;
-            const res = await fetch(url);
-            if (!res.ok) throw new Error(`glyph fetch failed: ${url} → HTTP ${res.status}`);
-            await fs.writeFile(dest, Buffer.from(await res.arrayBuffer()));
-            logger.info(`fetched glyph ${font}/${range}.pbf`);
-        }
-    }
-}
 
 async function copyHexworld() {
     const archive = path.resolve(HEXWORLD_SRC, "hexworld.pmtiles");
@@ -97,7 +73,12 @@ async function copyHexworld() {
         );
     }
     const fonts = path.resolve(HEXWORLD_SRC, "fonts");
-    await ensureGlyphs(fonts);
+    if (!existsSync(fonts)) {
+        throw new Error(
+            `hexworld fonts missing at ${fonts}. The glyph ranges are committed to git; ` +
+                "restore from HEAD.",
+        );
+    }
     await fs.mkdir(HEXWORLD_DEST, { recursive: true });
     await fs.cp(archive, path.resolve(HEXWORLD_DEST, "hexworld.pmtiles"));
     await fs.cp(fonts, path.resolve(HEXWORLD_DEST, "fonts"), { recursive: true });
