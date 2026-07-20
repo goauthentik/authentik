@@ -10,7 +10,7 @@ from rest_framework.mixins import (
     ListModelMixin,
     RetrieveModelMixin,
 )
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
@@ -181,7 +181,7 @@ class GrantRequestViewSet(RetrieveModelMixin, DestroyModelMixin, ListModelMixin,
             204: OpenApiResponse(description="Request fulfilled"),
         },
     )
-    @action([HTTPMethod.PATCH], detail=True, permission_classes=[AllowAny])
+    @action([HTTPMethod.PATCH], detail=True, permission_classes=[IsAuthenticated])
     @validate(GrantRequestFulfillSerializer)
     @permission_required("fulfill_grantrequest")
     def fulfill(self, request: Request, body: GrantRequestFulfillSerializer, *args, **kwargs):
@@ -200,7 +200,7 @@ class GrantRequestViewSet(RetrieveModelMixin, DestroyModelMixin, ListModelMixin,
             204: OpenApiResponse(description="Grant revoked"),
         },
     )
-    @action([HTTPMethod.DELETE], detail=True, permission_classes=[AllowAny])
+    @action([HTTPMethod.DELETE], detail=True, permission_classes=[IsAuthenticated])
     @permission_required("revoke_grantrequest")
     def revoke(self, request: Request, *args, **kwargs):
         """Immediately end an active grant. Available to the same reviewers who could
