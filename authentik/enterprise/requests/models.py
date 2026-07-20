@@ -102,7 +102,9 @@ class RequestRule(CreatedUpdatedModel, SerializerModel, PolicyBindingModel):
     request_flow = models.ForeignKey(Flow, null=True, on_delete=models.SET_DEFAULT, default=None)
 
     notification_transports = models.ManyToManyField(
-        "authentik_events.NotificationTransport", blank=True, through="RequestRuleNotificationTransport"
+        "authentik_events.NotificationTransport",
+        blank=True,
+        through="RequestRuleNotificationTransport",
     )
     notification_mode = models.TextField(
         choices=RequestNotificationMode.choices, default=RequestNotificationMode.ALL
