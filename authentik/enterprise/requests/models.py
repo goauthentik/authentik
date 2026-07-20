@@ -6,7 +6,7 @@ from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import Serializer
 
-from authentik.core.models import User
+from authentik.core.models import AttributesMixin, User
 from authentik.flows.models import Flow
 from authentik.lib.models import (
     CreatedUpdatedModel,
@@ -165,6 +165,7 @@ class RequestRuleNotificationTransport(SimpleThroughModel):
 
 
 class RequestStatus(models.TextChoices):
+
     CREATED = "created"
     APPROVED = "approved"
     DENIED = "denied"
@@ -259,7 +260,7 @@ class GrantRequest(SerializerModel, ExpiringModel, CreatedUpdatedModel):
         if self.status != RequestStatus.CREATED:
             return
         GrantRequestApproval.objects.update_or_create(
-            request=self, reviewer=user, defaults={"status": status, "data": data}
+            request=self, reviewer=user, defaults={"status": status, "attributes": data}
         )
         if status == RequestStatus.DENIED:
             self._finalize(RequestStatus.DENIED, user, data)
@@ -341,7 +342,7 @@ class GrantRequestTarget(InternallyManagedMixin, models.Model):
         return f"Grant Request-target {self.request_id} to {self.target_id}"
 
 
-class GrantRequestApproval(CreatedUpdatedModel):
+class GrantRequestApproval(AttributesMixin, CreatedUpdatedModel):
     """A single reviewer's approval or denial of a GrantRequest. A request needs enough of
     these, per RequestRule attached to its targets, before it is actually
     fulfilled."""
@@ -351,7 +352,6 @@ class GrantRequestApproval(CreatedUpdatedModel):
     request = models.ForeignKey(GrantRequest, on_delete=models.CASCADE, related_name="approvals")
     reviewer = models.ForeignKey(User, on_delete=models.CASCADE)
     status = models.TextField(choices=RequestStatus.choices)
-    data = models.JSONField(default=dict)
 
     class Meta:
         unique_together = ("request", "reviewer")

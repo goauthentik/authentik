@@ -305,7 +305,7 @@ class Migration(migrations.Migration):
                         ]
                     ),
                 ),
-                ("data", models.JSONField(default=dict)),
+                ("attributes", models.JSONField(blank=True, default=dict)),
                 (
                     "request",
                     models.ForeignKey(
