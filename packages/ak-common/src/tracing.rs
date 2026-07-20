@@ -29,10 +29,13 @@ pub fn install() -> Result<()> {
         filter_layer = filter_layer.add_directive(format!("{k}={v}").parse()?);
     }
 
+    let console_layer = config.listen.debug_tokio.map(|listen| {
+        console_subscriber::ConsoleLayer::builder()
+            .server_addr(listen)
+            .spawn()
+    });
+
     if config.debug {
-        let console_layer = console_subscriber::ConsoleLayer::builder()
-            .server_addr(config.listen.debug_tokio)
-            .spawn();
         tracing_subscriber::registry()
             .with(ErrorLayer::default())
             .with(console_layer)
@@ -55,6 +58,7 @@ pub fn install() -> Result<()> {
     } else {
         tracing_subscriber::registry()
             .with(ErrorLayer::default())
+            .with(console_layer)
             .with(json::layer().with_filter(filter_layer))
             .with(::sentry::integrations::tracing::layer())
             .init();

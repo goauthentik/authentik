@@ -48,7 +48,7 @@ listen:
     - "[::]:9300"
   debug: 0.0.0.0:9900
   debug_py: 0.0.0.0:9901
-  debug_tokio: "[::]:6669"
+  # debug_tokio: "[::]:6669"
   trusted_proxy_cidrs:
     - 127.0.0.0/8
     - 10.0.0.0/8
