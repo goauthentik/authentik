@@ -47,7 +47,7 @@ For example:
 
 ### `password_hash`
 
-In blueprints, a user's password can also be set using the `password_hash` field. The value must be a valid Django password hash, such as one generated with the `hash_password` management command.
+In blueprints, a user's password can also be set using the `password_hash` field. The value must follow the [supported password-hash policy](../../../install-config/automated-install.mdx#authentik_bootstrap_password_hash), such as a hash generated with the `hash_password` management command.
 
 Use `password_hash` when you need to import or bootstrap an existing hash without exposing the raw password to authentik. Enter the password when prompted to generate the hash:
 
@@ -76,7 +76,7 @@ For example:
 
 `password` and `password_hash` are mutually exclusive; setting both on the same user causes blueprint validation to fail.
 
-`password_hash` follows the [hashed-password import behavior](../../../install-config/automated-install.mdx#authentik_bootstrap_password_hash): it updates only authentik's local password verifier and does not propagate to LDAP or Kerberos integrations.
+`password_hash` updates only authentik's local password verifier and does not propagate to LDAP or Kerberos integrations.
 
 ### `permissions`
 
