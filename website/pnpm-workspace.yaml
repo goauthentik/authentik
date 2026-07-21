@@ -30,7 +30,7 @@ catalog:
 overrides:
   "@goauthentik/docusaurus-config>react": "^19.2.6"
   "@goauthentik/docusaurus-config>react-dom": "^19.2.6"
-  "@goauthentik/docusaurus-config>@docusaurus/theme-common": "^3.10.1"
+  "@goauthentik/docusaurus-config>@docusaurus/theme-common": "^3.10.2"
   "@goauthentik/eslint-config>typescript": "catalog:"
   "@goauthentik/prettier-config>prettier-plugin-packagejson": "catalog:"
   "@typescript-eslint/parser>typescript": "catalog:"
