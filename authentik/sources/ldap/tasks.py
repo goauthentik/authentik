@@ -10,6 +10,7 @@ from dramatiq.message import Message
 from ldap3.core.exceptions import LDAPException
 from structlog.stdlib import get_logger
 
+from authentik.events.middleware import event_origin
 from authentik.lib.config import CONFIG
 from authentik.lib.sync.incoming.models import SyncOutgoingTriggerMode
 from authentik.lib.sync.outgoing.exceptions import StopSync
@@ -155,11 +156,12 @@ def ldap_sync_page(source_pk: str, sync_class: str, page_cache_key: str):
             self.error(error_message)
             return
         cache.touch(page_cache_key)
-        if source.sync_outgoing_trigger_mode == SyncOutgoingTriggerMode.IMMEDIATE:
-            count = sync_inst.sync(page)
-        else:
-            with sync_outgoing_inhibit_dispatch():
+        with event_origin("source_sync"):
+            if source.sync_outgoing_trigger_mode == SyncOutgoingTriggerMode.IMMEDIATE:
                 count = sync_inst.sync(page)
+            else:
+                with sync_outgoing_inhibit_dispatch():
+                    count = sync_inst.sync(page)
         self.info(f"Synced {count} objects.")
         cache.delete(page_cache_key)
     except (LDAPException, StopSync) as exc:

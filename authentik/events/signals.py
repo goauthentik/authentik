@@ -12,6 +12,7 @@ from rest_framework.request import Request
 
 from authentik.core.models import AuthenticatedSession, Source, User
 from authentik.core.signals import login_failed, password_changed, password_hash_changed
+from authentik.events.middleware import get_event_origin
 from authentik.events.models import Event, EventAction
 from authentik.flows.models import Stage
 from authentik.flows.planner import (
@@ -88,9 +89,9 @@ def on_user_write(sender, request: HttpRequest, user: User, data: dict[str, Any]
 
 @receiver(post_save, sender=User)
 def on_user_created(sender, instance: User, created: bool, raw: bool, **_):
-    """Emit a dedicated event when a user account is created. Only emitted in request
-    contexts (Admin interface, API, enrollment flows) - bulk creations such as source
-    syncs and blueprints are excluded."""
+    """Emit a dedicated event when a user account is created, labelled with the
+    channel that created it ("http" for admin interface/API/enrollment flows,
+    "blueprint", "source_sync", ...) so notification rules can match on it."""
     if raw or not created:
         return
     Event.new(
@@ -98,7 +99,8 @@ def on_user_created(sender, instance: User, created: bool, raw: bool, **_):
         subject_uuid=instance.uuid,
         username=instance.username,
         user_type=instance.type,
-    ).from_ctx_request(require_request=True)
+        origin=get_event_origin(),
+    ).from_ctx_request()
 
 
 @receiver(login_failed)

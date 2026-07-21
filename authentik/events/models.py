@@ -268,7 +268,7 @@ class Event(SerializerModel, ExpiringModel):
         self.save()
         return self
 
-    def from_ctx_request(self, require_request=False):
+    def from_ctx_request(self):
         from authentik.events.middleware import _CTX_IGNORE, _CTX_REQUEST
 
         if _CTX_IGNORE.get():
@@ -276,7 +276,7 @@ class Event(SerializerModel, ExpiringModel):
         request = _CTX_REQUEST.get()
         if request:
             self.from_http(request, request.user)
-        elif not require_request:
+        else:
             self.save()
 
     @staticmethod

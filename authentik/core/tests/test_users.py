@@ -10,7 +10,7 @@ from authentik.blueprints.v1.importer import SERIALIZER_CONTEXT_BLUEPRINT
 from authentik.core.api.users import UserSerializer
 from authentik.core.models import User
 from authentik.core.signals import password_changed, password_hash_changed
-from authentik.events.models import Event
+from authentik.events.models import Event, EventAction
 from authentik.lib.generators import generate_id
 
 
@@ -35,11 +35,12 @@ class TestUsers(TestCase):
     def test_user_ak_groups_event(self):
         """Test user.ak_groups creates exactly one event"""
         user = User.objects.create(username=generate_id())
-        self.assertEqual(Event.objects.count(), 0)
+        deprecations = Event.objects.filter(action=EventAction.CONFIGURATION_WARNING)
+        self.assertEqual(deprecations.count(), 0)
         user.ak_groups.all()
-        self.assertEqual(Event.objects.count(), 1)
+        self.assertEqual(deprecations.count(), 1)
         user.ak_groups.all()
-        self.assertEqual(Event.objects.count(), 1)
+        self.assertEqual(deprecations.count(), 1)
 
     def test_set_password_from_hash_signal_skips_source_sync_receivers(self):
         """Test hash password updates do not expose a raw password to sync receivers."""

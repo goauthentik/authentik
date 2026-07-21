@@ -1,5 +1,6 @@
 """event tests"""
 
+from textwrap import dedent
 from unittest.mock import patch
 from urllib.parse import urlencode
 
@@ -10,9 +11,11 @@ from django.urls import reverse
 from django.views.debug import SafeExceptionReporterFilter
 from guardian.shortcuts import get_anonymous_user
 
+from authentik.blueprints.v1.importer import Importer
 from authentik.brands.models import Brand
 from authentik.core.models import Group, Source, User
 from authentik.core.tests.utils import create_test_admin_user, create_test_user
+from authentik.events.middleware import event_origin
 from authentik.events.models import Event, EventAction
 from authentik.events.tasks import gdpr_cleanup
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
@@ -280,16 +283,47 @@ class TestEvents(TestCase):
         self.assertIsNotNone(event)
         self.assertEqual(event.context["username"], username)
         self.assertEqual(event.context["user_type"], "internal")
+        self.assertEqual(event.context["origin"], "http")
         self.assertEqual(event.user["pk"], admin.pk)
 
-    def test_user_created_event_requires_request(self):
-        """Creating a user outside a request context should not emit user_created"""
+    def test_user_created_event_no_request(self):
+        """Creating a user outside a request context should emit user_created
+        with an unknown origin"""
         user = create_test_user()
-        self.assertFalse(
-            Event.objects.filter(
-                action=EventAction.USER_CREATED, context__subject_uuid=user.uuid.hex
-            ).exists()
-        )
+        event = Event.objects.filter(
+            action=EventAction.USER_CREATED, context__subject_uuid=user.uuid.hex
+        ).first()
+        self.assertIsNotNone(event)
+        self.assertEqual(event.context["origin"], "unknown")
+
+    def test_user_created_event_origin_stamp(self):
+        """Users created inside an event_origin block should carry that origin"""
+        with event_origin("source_sync"):
+            user = create_test_user()
+        event = Event.objects.filter(
+            action=EventAction.USER_CREATED, context__subject_uuid=user.uuid.hex
+        ).first()
+        self.assertEqual(event.context["origin"], "source_sync")
+
+    def test_user_created_event_origin_blueprint(self):
+        """Users created by a blueprint apply should carry origin "blueprint" """
+        username = generate_id()
+        importer = Importer.from_string(dedent(f"""
+                version: 1
+                entries:
+                  - model: authentik_core.user
+                    identifiers:
+                      username: {username}
+                    attrs:
+                      name: {username}
+                """))
+        self.assertTrue(importer.apply())
+        user = User.objects.get(username=username)
+        event = Event.objects.filter(
+            action=EventAction.USER_CREATED, context__subject_uuid=user.uuid.hex
+        ).first()
+        self.assertIsNotNone(event)
+        self.assertEqual(event.context["origin"], "blueprint")
 
     def test_gdpr_cleanup_subject_events(self):
         """GDPR cleanup should remove events about the user, not only events by them"""

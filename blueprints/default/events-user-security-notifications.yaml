@@ -125,8 +125,10 @@ entries:
   id: default-match-user-created
   attrs:
     action: user_created
-    # Only welcome people - not service accounts
-    query: 'context.user_type in ("internal", "external")'
+    # Only welcome people (not service accounts), and only accounts someone deliberately
+    # created for them - via the admin interface, API, an enrollment flow or a blueprint.
+    # Accounts bulk-imported by a source sync (or an unrecognized channel) stay silent
+    query: 'context.user_type in ("internal", "external") and context.origin in ("http", "blueprint")'
   identifiers:
     name: default-match-user-created
 - model: authentik_events.notificationrule
