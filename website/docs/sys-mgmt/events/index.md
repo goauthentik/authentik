@@ -26,12 +26,22 @@ If you want to forward authentik events to another system, see [Log forwarding](
 
 ## Event map
 
-The events overview renders login and audit event locations on a built-in map. By default authentik uses a bundled "hexworld" basemap: land drawn as a hexagonal grid at three zoom bands, with country, region, and locality labels layered on top. The archive ships as part of the web bundle, so the map draws with no tile server, no external service, and no online request, and it works in air-gapped deployments.
+The events overview renders login and audit event locations on an integrated map. By default, authentik uses the bundled "hexworld" basemap: land is rendered as a hexagonal grid across three zoom levels, with country, region, and locality labels overlaid. Because the map archive is included in authentik, it requires no external services or network requests, and therefore also works in air-gapped deployments.
 
-Event locations come from GeoIP and are city-accurate at best. The hex bands are sized to match: about 1000 km at world view, 400 km mid-range, and 130 km at closest zoom. Events raise their hex cell into a column — the fuller a cell, the taller the column — on a tilted globe. When a cell contains more than one kind of event, the column splits into pie wedges colored by kind: logins (green), failed logins (red), logouts (blue), application authorizations (purple), and everything else (gray). Clicking a column filters the event list below to that cell's events. Custom basemaps configured under **System > Brands** show the same event columns over the configured tiles.
+Event locations are derived from GeoIP data and are accurate to city level at best. The hex-grid sizes reflect that limitation: approximately 1,000 km at the world view, 400 km at mid-range, and 130 km at the closest zoom level. Events appear as raised columns on a tilted globe: the more events a cell contains, the taller its column.
+
+If a cell contains multiple event types, its column is divided into colored pie segments:
+
+- **Logins**: green
+- **Failed logins**: red
+- **Logouts**: blue
+- **Application authorizations**: purple
+- **All other events**: grey
+
+Select a column to filter the event list below to events from that cell. Custom basemaps configured under **System** > **Brands** display the same event columns over the configured tiles.
 
 Label data is derived from [OpenStreetMap](https://openstreetmap.org/copyright) (© OpenStreetMap contributors, ODbL). Land shapes are from Natural Earth (public domain).
 
 ### Using a conventional basemap instead
 
-To replace the hexworld default with a conventional vector basemap, set a tile URL template on the brand under **System > Brands** — the **Map tiles** field takes either a `pmtiles://` archive URL or an XYZ endpoint like `/tiles/{z}/{x}/{y}.mvt`. Any non-empty value overrides the bundled default; leave it blank to keep hexworld.
+To replace the default hexworld basemap with a conventional vector basemap, set the **Map tiles** field for the brand under **System > Brands**. This field takes either a `pmtiles://` archive URL or an XYZ endpoint like `/tiles/{z}/{x}/{y}.mvt`. Any non-empty value overrides the bundled default; leave it blank to keep the hexworld basemap.
