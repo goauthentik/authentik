@@ -9,7 +9,7 @@ use ak_client::{
     models::Outpost,
 };
 use eyre::{Result, eyre};
-use futures_util::StreamExt;
+use futures_util::StreamExt as _;
 use regex::Regex;
 use reqwest::{Method, StatusCode};
 use serde_json::Value;
@@ -20,7 +20,7 @@ use testcontainers::{
 use thirtyfour::prelude::*;
 use tokio::{
     fs::File,
-    io::AsyncWriteExt,
+    io::AsyncWriteExt as _,
     runtime::{Handle, RuntimeFlavor},
     task::block_in_place,
     time::{Instant, sleep},
@@ -497,7 +497,9 @@ impl AuthentikStack {
             eprintln!("::group::Browser logs");
             match driver.browser_log().await {
                 Ok(logs) => {
-                    logs.iter().for_each(|log| eprintln!("{:?}", log));
+                    for log in logs.iter() {
+                        eprintln!("{log:?}");
+                    }
                 }
                 Err(err) => {
                     eprintln!("Failed to get browser logs: {err}");
