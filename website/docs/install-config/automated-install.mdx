@@ -14,13 +14,13 @@ Configure the default password for the `akadmin` user using a pre-hashed Django 
 
 This stores the hash directly as authentik's local password verifier. Because authentik never sees the raw password, hashed-password imports do not propagate the password to LDAP or Kerberos integrations, even when password writeback is enabled.
 
-To generate a hash without exposing the password in your shell history, run this command before your initial deployment and enter the password when prompted:
+To generate a hash, run this command before your initial deployment and enter the password when prompted:
 
 ```bash
 docker compose run --rm server hash_password
 ```
 
-For automation, pipe the password through standard input. The `-T` option disables pseudo-TTY allocation so that the command reads from standard input:
+For automation, pass the password in the `PASSWORD` environment variable and pipe it through standard input to prevent exposing the password in your shell history. The `-T` option disables pseudo-TTY allocation so that the command reads from standard input:
 
 ```bash
 printf '%s\n' "$PASSWORD" | docker compose run --rm -T server hash_password
