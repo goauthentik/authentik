@@ -120,18 +120,27 @@ export class ApplicationViewPage extends WithLicenseSummary(AKElement) {
                 ) {
                     this.fetchIsMissingOutpost([app.provider || 0]);
                 }
+<<<<<<< HEAD
                 return new EventsApi(DEFAULT_CONFIG)
+=======
+            })
+            .catch(async (error) => {
+                this.error = await parseAPIResponseError(error);
+            })
+            .finally(() => {
+                return aki(EventsApi)
+>>>>>>> 72f7a84a6 (web/admin: fix app view failing when no events permissions (#24131))
                     .eventsEventsStatsRetrieve({
                         action: EventActions.AuthorizeApplication,
-                        contextAuthorizedApp: app.pk.replaceAll("-", ""),
+                        contextAuthorizedApp: this.application?.pk.replaceAll("-", ""),
                         countSteps: ["hours=24", "days=7", "days=30"],
                     })
                     .then((stats) => {
                         this.stats = stats;
+                    })
+                    .catch(() => {
+                        console.warn("Failed to fetch events");
                     });
-            })
-            .catch(async (error) => {
-                this.error = await parseAPIResponseError(error);
             });
     }
 
