@@ -97,7 +97,7 @@ from authentik.flows.views.executor import QS_KEY_TOKEN
 from authentik.lib.avatars import get_avatar
 from authentik.lib.utils.reflection import ConditionalInheritance
 from authentik.lib.utils.time import timedelta_from_string, timedelta_string_validator
-from authentik.lib.validators import validate_password_hash
+from authentik.lib.validators import PasswordHashRequiresOverride, validate_password_hash
 from authentik.rbac.api.roles import RoleSerializer
 from authentik.rbac.decorators import permission_required
 from authentik.rbac.models import Role, get_permission_choices
@@ -107,6 +107,13 @@ from authentik.stages.email.tasks import send_mails
 from authentik.stages.email.utils import TemplateEmailMessage
 
 LOGGER = get_logger()
+
+PASSWORD_HASH_REQUIRES_OVERRIDE_MESSAGE = _(
+    "This password hash does not use one of authentik's supported algorithms "
+    "(pbkdf2_sha256, bcrypt_sha256, scrypt, or argon2) with its current work factor "
+    "and sufficient salt entropy. Importing it can weaken password security or enable "
+    'timing-based user enumeration. Set "override" to true to import it anyway.'
+)
 
 
 class ParamUserSerializer(PassiveSerializer):
@@ -464,6 +471,23 @@ class UserPasswordHashSetSerializer(PassiveSerializer):
     """Payload to set a users' password hash directly"""
 
     password = CharField(required=True, validators=[validate_password_hash])
+    override = BooleanField(
+        default=False,
+        help_text=_(
+            "Import a valid Django password hash even when its algorithm or parameters "
+            "do not match authentik's current password hashing policy."
+        ),
+    )
+
+    def validate(self, attrs: dict[str, Any]) -> dict[str, Any]:
+        """Enforce the default password hash import policy."""
+        if attrs["override"]:
+            return attrs
+        try:
+            validate_password_hash(attrs["password"], require_current=True)
+        except PasswordHashRequiresOverride as exc:
+            raise ValidationError({"password": PASSWORD_HASH_REQUIRES_OVERRIDE_MESSAGE}) from exc
+        return attrs
 
 
 class UserServiceAccountSerializer(PassiveSerializer):
