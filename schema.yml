@@ -134,6 +134,12 @@ paths:
     get:
       operationId: admin_models_list
       description: Read-only view list all installed models
+      parameters:
+      - in: query
+        name: filter_has_attributes
+        schema:
+          type: boolean
+          nullable: true
       tags:
       - admin
       security:
@@ -3720,6 +3726,172 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+  /core/object_attributes/:
+    get:
+      operationId: core_object_attributes_list
+      parameters:
+      - in: query
+        name: enabled
+        schema:
+          type: boolean
+      - in: query
+        name: object_type__app_label
+        schema:
+          type: string
+      - in: query
+        name: object_type__model
+        schema:
+          type: string
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
+      tags:
+      - core
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedObjectAttributeList'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    post:
+      operationId: core_object_attributes_create
+      tags:
+      - core
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ObjectAttributeRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ObjectAttribute'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /core/object_attributes/{attribute_id}/:
+    get:
+      operationId: core_object_attributes_retrieve
+      parameters:
+      - in: path
+        name: attribute_id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Object Attribute.
+        required: true
+      tags:
+      - core
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ObjectAttribute'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    put:
+      operationId: core_object_attributes_update
+      parameters:
+      - in: path
+        name: attribute_id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Object Attribute.
+        required: true
+      tags:
+      - core
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ObjectAttributeRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ObjectAttribute'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    patch:
+      operationId: core_object_attributes_partial_update
+      parameters:
+      - in: path
+        name: attribute_id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Object Attribute.
+        required: true
+      tags:
+      - core
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedObjectAttributeRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ObjectAttribute'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    delete:
+      operationId: core_object_attributes_destroy
+      parameters:
+      - in: path
+        name: attribute_id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Object Attribute.
+        required: true
+      tags:
+      - core
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
   /core/tokens/:
     get:
       operationId: core_tokens_list
@@ -5386,6 +5558,8 @@ paths:
         using this object
       tags:
       - endpoints
+      security:
+      - authentik_device_auth: []
       responses:
         '200':
           content:
@@ -5410,6 +5584,8 @@ paths:
         required: true
       tags:
       - endpoints
+      security:
+      - authentik_device_federation: []
       responses:
         '200':
           content:
@@ -5455,6 +5631,8 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/DeviceFactsRequest'
+      security:
+      - authentik_device_auth: []
       responses:
         '204':
           description: Successfully checked in
@@ -5475,6 +5653,8 @@ paths:
             schema:
               $ref: '#/components/schemas/EnrollRequest'
         required: true
+      security:
+      - authentik_device_enroll: []
       responses:
         '200':
           content:
@@ -24425,7 +24605,7 @@ paths:
         schema:
           type: boolean
       - in: query
-        name: issuer
+        name: issuer_override
         schema:
           type: string
       - in: query
@@ -36907,8 +37087,12 @@ components:
         verbose_name_plural:
           type: string
           readOnly: true
+        fully_qualified_model:
+          type: string
+          readOnly: true
       required:
       - app_label
+      - fully_qualified_model
       - id
       - model
       - verbose_name_plural
@@ -37789,6 +37973,14 @@ components:
         failure_result:
           type: boolean
           description: Result if the Policy execution fails.
+        expires:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        expiring:
+          type: boolean
+          readOnly: true
         is_primary:
           type: boolean
         connector:
@@ -37803,6 +37995,8 @@ components:
       required:
       - connector
       - connector_obj
+      - expires
+      - expiring
       - group_obj
       - order
       - pk
@@ -40475,6 +40669,7 @@ components:
       - client_credentials
       - password
       - urn:ietf:params:oauth:grant-type:device_code
+      - urn:ietf:params:oauth:grant-type:token-exchange
       type: string
     Group:
       type: object
@@ -43450,6 +43645,7 @@ components:
       - authentik_core.application
       - authentik_core.applicationentitlement
       - authentik_core.token
+      - authentik_core.objectattribute
       - authentik_crypto.certificatekeypair
       - authentik_endpoints.deviceuserbinding
       - authentik_endpoints.deviceaccessgroup
@@ -44499,22 +44695,18 @@ components:
           nullable: true
           description: URL used to request the initial token. This URL is only required
             for OAuth 1.
-          maxLength: 255
         authorization_url:
           type: string
           nullable: true
           description: URL the user is redirect to to conest the flow.
-          maxLength: 255
         access_token_url:
           type: string
           nullable: true
           description: URL used by authentik to retrieve tokens.
-          maxLength: 255
         profile_url:
           type: string
           nullable: true
           description: URL used by authentik to get user information.
-          maxLength: 255
         pkce:
           $ref: '#/components/schemas/PKCEMethodEnum'
         consumer_key:
@@ -44686,22 +44878,18 @@ components:
           nullable: true
           description: URL used to request the initial token. This URL is only required
             for OAuth 1.
-          maxLength: 255
         authorization_url:
           type: string
           nullable: true
           description: URL the user is redirect to to conest the flow.
-          maxLength: 255
         access_token_url:
           type: string
           nullable: true
           description: URL used by authentik to retrieve tokens.
-          maxLength: 255
         profile_url:
           type: string
           nullable: true
           description: URL used by authentik to get user information.
-          maxLength: 255
         pkce:
           $ref: '#/components/schemas/PKCEMethodEnum'
         consumer_key:
@@ -44731,6 +44919,107 @@ components:
       - name
       - provider_type
       - slug
+    ObjectAttribute:
+      type: object
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Attribute id
+        object_type:
+          type: string
+        object_type_obj:
+          allOf:
+          - $ref: '#/components/schemas/ContentType'
+          readOnly: true
+        enabled:
+          type: boolean
+          default: true
+        created:
+          type: string
+          format: date-time
+          readOnly: true
+        key:
+          type: string
+        label:
+          type: string
+        last_updated:
+          type: string
+          format: date-time
+          readOnly: true
+        regex:
+          type: string
+        type:
+          $ref: '#/components/schemas/ObjectAttributeTypeEnum'
+        group:
+          type: string
+        managed:
+          type: string
+          nullable: true
+          title: Managed by authentik
+          description: Objects that are managed by authentik. These objects are created
+            and updated automatically. This flag only indicates that an object can
+            be overwritten by migrations. You can still modify the objects via the
+            API, but expect changes to be overwritten in a later update.
+        is_unique:
+          type: boolean
+        is_required:
+          type: boolean
+      required:
+      - created
+      - key
+      - label
+      - last_updated
+      - object_type
+      - object_type_obj
+      - pk
+      - type
+    ObjectAttributeRequest:
+      type: object
+      properties:
+        object_type:
+          type: string
+          minLength: 1
+        enabled:
+          type: boolean
+          default: true
+        key:
+          type: string
+          minLength: 1
+        label:
+          type: string
+          minLength: 1
+        regex:
+          type: string
+        type:
+          $ref: '#/components/schemas/ObjectAttributeTypeEnum'
+        group:
+          type: string
+        managed:
+          type: string
+          nullable: true
+          minLength: 1
+          title: Managed by authentik
+          description: Objects that are managed by authentik. These objects are created
+            and updated automatically. This flag only indicates that an object can
+            be overwritten by migrations. You can still modify the objects via the
+            API, but expect changes to be overwritten in a later update.
+        is_unique:
+          type: boolean
+        is_required:
+          type: boolean
+      required:
+      - key
+      - label
+      - object_type
+      - type
+    ObjectAttributeTypeEnum:
+      enum:
+      - text
+      - number
+      - boolean
+      type: string
     OpenIDConnectConfiguration:
       type: object
       description: rest_framework Serializer for OIDC Configuration
@@ -46275,6 +46564,21 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/OAuthSourcePropertyMapping'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    PaginatedObjectAttributeList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ObjectAttribute'
         autocomplete:
           $ref: '#/components/schemas/Autocomplete'
       required:
@@ -50005,22 +50309,18 @@ components:
           nullable: true
           description: URL used to request the initial token. This URL is only required
             for OAuth 1.
-          maxLength: 255
         authorization_url:
           type: string
           nullable: true
           description: URL the user is redirect to to conest the flow.
-          maxLength: 255
         access_token_url:
           type: string
           nullable: true
           description: URL used by authentik to retrieve tokens.
-          maxLength: 255
         profile_url:
           type: string
           nullable: true
           description: URL used by authentik to get user information.
-          maxLength: 255
         pkce:
           $ref: '#/components/schemas/PKCEMethodEnum'
         consumer_key:
@@ -50044,6 +50344,40 @@ components:
           - $ref: '#/components/schemas/AuthorizationCodeAuthMethodEnum'
           description: How to perform authentication during an authorization_code
             token request flow
+    PatchedObjectAttributeRequest:
+      type: object
+      properties:
+        object_type:
+          type: string
+          minLength: 1
+        enabled:
+          type: boolean
+          default: true
+        key:
+          type: string
+          minLength: 1
+        label:
+          type: string
+          minLength: 1
+        regex:
+          type: string
+        type:
+          $ref: '#/components/schemas/ObjectAttributeTypeEnum'
+        group:
+          type: string
+        managed:
+          type: string
+          nullable: true
+          minLength: 1
+          title: Managed by authentik
+          description: Objects that are managed by authentik. These objects are created
+            and updated automatically. This flag only indicates that an object can
+            be overwritten by migrations. You can still modify the objects via the
+            API, but expect changes to be overwritten in a later update.
+        is_unique:
+          type: boolean
+        is_required:
+          type: boolean
     PatchedOutpostRequest:
       type: object
       description: Outpost Serializer
@@ -50865,9 +51199,9 @@ components:
           type: string
           format: uuid
           description: Flow used before authentication.
-        issuer:
+        issuer_override:
           type: string
-          description: Also known as Entity ID. Defaults the Metadata URL.
+          description: Also known as Entity ID. Defaults to the Metadata URL.
         sso_url:
           type: string
           minLength: 1
@@ -52193,7 +52527,17 @@ components:
         failure_result:
           type: boolean
           description: Result if the Policy execution fails.
+        expires:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        expiring:
+          type: boolean
+          readOnly: true
       required:
+      - expires
+      - expiring
       - group_obj
       - order
       - pk
@@ -52721,9 +53065,9 @@ components:
       type: string
     ProviderTypeEnum:
       enum:
+      - openidconnect
       - apple
       - discord
-      - openidconnect
       - entraid
       - facebook
       - github
@@ -54604,9 +54948,14 @@ components:
           type: string
           format: uuid
           description: Flow used before authentication.
-        issuer:
+        issuer_override:
           type: string
-          description: Also known as Entity ID. Defaults the Metadata URL.
+          description: Also known as Entity ID. Defaults to the Metadata URL.
+        url_issuer:
+          type: string
+          description: Get the resolved Issuer, falling back to the metadata URL when
+            unset
+          readOnly: true
         sso_url:
           type: string
           description: URL that the initial Login request is sent to.
@@ -54678,6 +55027,7 @@ components:
       - pre_authentication_flow
       - slug
       - sso_url
+      - url_issuer
       - verbose_name
       - verbose_name_plural
     SAMLSourcePropertyMapping:
@@ -54807,9 +55157,9 @@ components:
           type: string
           format: uuid
           description: Flow used before authentication.
-        issuer:
+        issuer_override:
           type: string
-          description: Also known as Entity ID. Defaults the Metadata URL.
+          description: Also known as Entity ID. Defaults to the Metadata URL.
         sso_url:
           type: string
           minLength: 1

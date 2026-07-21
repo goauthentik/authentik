@@ -60,7 +60,7 @@ jobs:
       - build-amd64
       - build-arm64
     steps:
-      - uses: regclient/actions/regctl-installer@4b4db1dcc7dad75ad67a788a380f75a20cc8a040
+      - uses: regclient/actions/regctl-installer@c48159175b58fb90cccd0f98410927a81e04a166
       - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v5
         with:
           artifact-ids: "${{ needs.build-amd64.outputs.artifact-id }},${{ needs.build-arm64.outputs.artifact-id }}"
