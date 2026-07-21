@@ -241,8 +241,7 @@ class SCIMMembershipTests(TestCase):
                     "Operations": [
                         {
                             "op": "remove",
-                            "path": "members",
-                            "value": [{"value": user_scim_id}],
+                            "path": f'members[value eq "{user_scim_id}"]',
                         }
                     ],
                 },
@@ -348,7 +347,6 @@ class SCIMMembershipTests(TestCase):
                         {
                             "op": "replace",
                             "value": {
-                                "id": group_scim_id,
                                 "displayName": group.name,
                                 "schemas": ["urn:ietf:params:scim:schemas:core:2.0:Group"],
                                 "externalId": str(group.pk),
@@ -458,7 +456,6 @@ class SCIMMembershipTests(TestCase):
                         {
                             "op": "replace",
                             "value": {
-                                "id": group_scim_id,
                                 "displayName": group.name,
                                 "schemas": ["urn:ietf:params:scim:schemas:core:2.0:Group"],
                                 "externalId": str(group.pk),

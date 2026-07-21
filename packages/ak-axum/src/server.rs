@@ -59,6 +59,7 @@ pub fn start_plain(
 
 struct UnixSocketGuard(PathBuf);
 
+#[expect(clippy::missing_trait_methods, reason = "We don't use pin drop")]
 impl Drop for UnixSocketGuard {
     fn drop(&mut self) {
         trace!(path = ?self.0, "removing socket");

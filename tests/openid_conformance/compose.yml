@@ -1,29 +1,30 @@
 services:
   mongodb:
-    image: mongo:6.0.13
+    image: docker.io/library/mongo:6.0.13
   nginx:
-    image: ghcr.io/beryju/oidc-conformance-suite-nginx:v5.1.43
+    image: registry.gitlab.com/openid/conformance-suite/nginx:release-v5.2.1
+    healthcheck:
+      test: ["CMD", "curl", "-fk", "https://localhost:8443"]
     ports:
       - "8443:8443"
-      - "8444:8444"
     depends_on:
       - server
   server:
-    image: ghcr.io/beryju/oidc-conformance-suite-server:v5.1.43
-    ports:
-      - "9999:9999"
+    image: registry.gitlab.com/openid/conformance-suite:release-v5.2.1
     extra_hosts:
       - "host.docker.internal:host-gateway"
-    command: >
-      java
-      -Xdebug -Xrunjdwp:transport=dt_socket,address=*:9999,server=y,suspend=n
-      -jar /server/fapi-test-suite.jar
-      -Djdk.tls.maxHandshakeMessageSize=65536
-      --fintechlabs.base_url=https://localhost:8443
-      --fintechlabs.base_mtls_url=https://localhost:8444
-      --fintechlabs.devmode=true
-      --fintechlabs.startredir=true
-    links:
-      - mongodb:mongodb
+    healthcheck:
+      test: ["CMD", "curl", "-f", "--header", "X-Forwarded-Proto: https", "http://localhost:8080/api/ui/spec_links?public=true"]
+      start_period: 30s
+      interval: 30s
+      timeout: 15s
+    environment:
+      BASE_URL: https://localhost:8443
+      MONGODB_HOST: mongodb
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-dev}
+      OIDC_GOOGLE_CLIENTID: ${OIDC_GOOGLE_CLIENTID:-google-client}
+      OIDC_GOOGLE_SECRET: ${OIDC_GOOGLE_SECRET:-google-secret}
+      OIDC_GITLAB_CLIENTID: ${OIDC_GITLAB_CLIENTID:-gitlab-client}
+      OIDC_GITLAB_SECRET: ${OIDC_GITLAB_SECRET:-gitlab-secret}
     depends_on:
       - mongodb
