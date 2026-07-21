@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: authentik
-  version: 2026.5.4
+  version: 2026.5.5
   description: Making authentication simple.
   contact:
     email: hello@goauthentik.io
@@ -5386,6 +5386,8 @@ paths:
         using this object
       tags:
       - endpoints
+      security:
+      - authentik_device_auth: []
       responses:
         '200':
           content:
@@ -5410,6 +5412,8 @@ paths:
         required: true
       tags:
       - endpoints
+      security:
+      - authentik_device_federation: []
       responses:
         '200':
           content:
@@ -5455,6 +5459,8 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/DeviceFactsRequest'
+      security:
+      - authentik_device_auth: []
       responses:
         '204':
           description: Successfully checked in
@@ -5475,6 +5481,8 @@ paths:
             schema:
               $ref: '#/components/schemas/EnrollRequest'
         required: true
+      security:
+      - authentik_device_enroll: []
       responses:
         '200':
           content:
@@ -52663,8 +52671,8 @@ components:
       type: string
     ProviderTypeEnum:
       enum:
-      - apple
       - openidconnect
+      - apple
       - entraid
       - azuread
       - discord

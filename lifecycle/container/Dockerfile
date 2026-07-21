@@ -230,8 +230,7 @@ RUN apt-get update && \
     libpq5 libmaxminddb0 ca-certificates \
     libkadm5clnt-mit12 libkadm5clnt7t64-heimdal \
     libltdl7 libxslt1.1 && \
-    # Required for bootstrap & healtcheck
-    apt-get install -y --no-install-recommends runit && \
+    apt-get purge -y curl libcurl4t64 && \
     pip3 install --no-cache-dir --upgrade pip && \
     apt-get clean && \
     rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/ && \

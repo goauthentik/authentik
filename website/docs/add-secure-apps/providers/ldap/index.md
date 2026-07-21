@@ -3,7 +3,7 @@ title: LDAP Provider
 toc_max_heading_level: 5
 ---
 
-The LDAP provider allows you to integrate with Service Providers using LDAP. It supports secure connections via LDAPS, code-based MFA authentication, basic LDAP schema compatibility, and can also be integrated with [SSSD](/integrations/services/sssd/) for authentication on Linux-based systems.
+The LDAP provider allows you to integrate with Service Providers using LDAP. It supports secure connections via LDAPS, code-based MFA authentication, basic LDAP schema compatibility, and can also be integrated with [SSSD](/integrations/infrastructure/sssd/) for authentication on Linux-based systems.
 
 Refer to our documentation to learn how to [create an LDAP provider](./create-ldap-provider.mdx).
 

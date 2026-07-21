@@ -1,7 +1,6 @@
 ---
 title: Mutual TLS stage
 authentik_version: "2025.6"
-authentik_preview: true
 authentik_enterprise: true
 toc_max_heading_level: 5
 ---

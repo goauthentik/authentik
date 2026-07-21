@@ -200,8 +200,8 @@ gen-diff:  ## (Release) generate the changelog diff between the current schema a
 		/local/schema-old.yml \
 		/local/schema.yml
 	rm schema-old.yml
-	$(SED_INPLACE) 's/{/&#123;/g' diff.md
-	$(SED_INPLACE) 's/}/&#125;/g' diff.md
+	$(SED_INPLACE) 's/{/\&#123;/g' diff.md
+	$(SED_INPLACE) 's/}/\&#125;/g' diff.md
 	npx prettier --write diff.md
 
 gen-client-go:  ## Build and install the authentik API for Golang

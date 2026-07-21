@@ -69,7 +69,7 @@ type StorageConfig struct {
 }
 
 type StorageFileConfig struct {
-	Path string `yaml:"path" env:"AUTHENTIK_STORAGE__FILE__PATH"`
+	Path string `yaml:"path" env:"AUTHENTIK_STORAGE__FILE__PATH, overwrite"`
 }
 
 type StorageMediaConfig struct {
@@ -78,7 +78,7 @@ type StorageMediaConfig struct {
 }
 
 type StorageMediaFileConfig struct {
-	Path string `yaml:"path" env:"AUTHENTIK_STORAGE__MEDIA__FILE__PATH"`
+	Path string `yaml:"path" env:"AUTHENTIK_STORAGE__MEDIA__FILE__PATH, overwrite"`
 }
 
 type StorageReportsConfig struct {
@@ -87,7 +87,7 @@ type StorageReportsConfig struct {
 }
 
 type StorageReportsFileConfig struct {
-	Path string `yaml:"path" env:"AUTHENTIK_STORAGE__REPORTS__FILE__PATH"`
+	Path string `yaml:"path" env:"AUTHENTIK_STORAGE__REPORTS__FILE__PATH, overwrite"`
 }
 
 type ErrorReportingConfig struct {
