@@ -39,6 +39,7 @@ IGNORED_MODELS = tuple(
 _CTX_OVERWRITE_USER = ContextVar[User | None]("authentik_events_log_overwrite_user", default=None)
 _CTX_IGNORE = ContextVar[bool]("authentik_events_log_ignore", default=False)
 _CTX_REQUEST = ContextVar[HttpRequest | None]("authentik_events_log_request", default=None)
+_CTX_ORIGIN = ContextVar[str | None]("authentik_events_log_origin", default=None)
 
 
 def should_log_model(model: Model) -> bool:
@@ -73,6 +74,27 @@ def audit_ignore():
         yield
     finally:
         _CTX_IGNORE.set(False)
+
+
+@contextmanager
+def event_origin(origin: str):
+    """Label events emitted in the block with the channel that created them,
+    e.g. a blueprint apply or a source sync. Read via get_event_origin()."""
+    token = _CTX_ORIGIN.set(origin)
+    try:
+        yield
+    finally:
+        _CTX_ORIGIN.reset(token)
+
+
+def get_event_origin() -> str:
+    """Origin of the current execution context: an origin explicitly declared
+    with event_origin(), "http" when handling a request, "unknown" otherwise."""
+    if origin := _CTX_ORIGIN.get():
+        return origin
+    if _CTX_REQUEST.get():
+        return "http"
+    return "unknown"
 
 
 class EventNewThread(Thread):

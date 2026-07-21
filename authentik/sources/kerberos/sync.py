@@ -14,6 +14,7 @@ from authentik.core.expression.exceptions import (
 from authentik.core.models import Group, User, UserTypes
 from authentik.core.sources.mapper import SourceMapper
 from authentik.core.sources.matcher import Action, SourceMatcher
+from authentik.events.middleware import event_origin
 from authentik.events.models import Event, EventAction
 from authentik.lib.sync.mapper import PropertyMappingManager
 from authentik.lib.sync.outgoing.exceptions import StopSync
@@ -156,7 +157,7 @@ class KerberosSync:
             return -1
 
         user_count = 0
-        with Krb5ConfContext(self._source):
+        with event_origin("source_sync"), Krb5ConfContext(self._source):
             for principal in self._connection.list_principals(None):
                 if self._handle_principal(principal):
                     user_count += 1
