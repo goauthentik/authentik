@@ -1,6 +1,7 @@
 """Blueprint exporter"""
 
 from collections.abc import Iterable
+from typing import Any
 from uuid import UUID
 
 from django.apps import apps
@@ -15,13 +16,14 @@ from authentik.blueprints.v1.common import (
     BlueprintDumper,
     BlueprintEntry,
     BlueprintMetadata,
+    ReferenceIndex,
 )
 from authentik.blueprints.v1.importer import is_model_allowed
 from authentik.blueprints.v1.labels import LABEL_AUTHENTIK_GENERATED
 from authentik.events.models import Event
 from authentik.flows.models import Flow, FlowStageBinding, Stage
 from authentik.policies.models import Policy, PolicyBinding
-from authentik.stages.prompt.models import PromptStage
+from authentik.stages.prompt.models import Prompt, PromptStage
 
 
 class Exporter:
@@ -36,13 +38,21 @@ class Exporter:
 
     def get_entries(self) -> Iterable[BlueprintEntry]:
         """Get blueprint entries"""
+        reference_index = ReferenceIndex()
+        instances: list[Model] = []
         for model in apps.get_models():
             if not is_model_allowed(model):
                 continue
             if model in self.excluded_models:
                 continue
             for obj in self.get_model_instances(model):
-                yield BlueprintEntry.from_model(obj)
+                instances.append(obj)
+                reference_index.register(obj)
+        entries = [
+            BlueprintEntry.from_model(obj, reference_index=reference_index) for obj in instances
+        ]
+        reference_index.clear_unused_ids(entries, instances)
+        return entries
 
     def get_model_instances(self, model: type[Model]) -> QuerySet:
         """Return a queryset for `model`. Can be used to filter some
@@ -96,54 +106,78 @@ class FlowExporter(Exporter):
             "pbm_uuid", flat=True
         )
 
-    def walk_stages(self) -> Iterable[BlueprintEntry]:
-        """Convert all stages attached to self.flow into BlueprintEntry objects"""
-        stages = Stage.objects.filter(flow=self.flow).select_related().select_subclasses()
-        for stage in stages:
-            if isinstance(stage, PromptStage):
-                pass
-            yield BlueprintEntry.from_model(stage, "name")
+    def _stages(self) -> Iterable[Stage]:
+        """Get all stages attached to self.flow"""
+        return Stage.objects.filter(flow=self.flow).select_related().select_subclasses()
 
-    def walk_stage_bindings(self) -> Iterable[BlueprintEntry]:
-        """Convert all bindings attached to self.flow into BlueprintEntry objects"""
-        bindings = FlowStageBinding.objects.filter(target=self.flow).select_related()
-        for binding in bindings:
-            yield BlueprintEntry.from_model(binding, "target", "stage", "order")
+    def _stage_bindings(self) -> Iterable[FlowStageBinding]:
+        """Get all bindings attached to self.flow"""
+        return FlowStageBinding.objects.filter(target=self.flow).select_related()
 
-    def walk_policies(self) -> Iterable[BlueprintEntry]:
-        """Walk over all policies. This is done at the beginning of the export for stages that have
+    def _policies(self) -> Iterable[Policy]:
+        """Get all policies. This is done at the beginning of the export for stages that have
         a direct foreign key to a policy."""
         # Special case for PromptStage as that has a direct M2M to policy, we have to ensure
         # all policies referenced in there we also include here
         prompt_stages = PromptStage.objects.filter(flow=self.flow).values_list("pk", flat=True)
         query = Q(bindings__in=self.pbm_uuids) | Q(promptstage__in=prompt_stages)
-        policies = Policy.objects.filter(query).select_related()
-        for policy in policies:
-            yield BlueprintEntry.from_model(policy)
+        return Policy.objects.filter(query).select_related()
 
-    def walk_policy_bindings(self) -> Iterable[BlueprintEntry]:
-        """Walk over all policybindings relative to us. This is run at the end of the export, as
+    def _policy_bindings(self) -> Iterable[PolicyBinding]:
+        """Get all policybindings relative to us. This is run at the end of the export, as
         we are sure all objects exist now."""
-        bindings = PolicyBinding.objects.filter(target__in=self.pbm_uuids).select_related()
-        for binding in bindings:
-            yield BlueprintEntry.from_model(binding, "policy", "target", "order")
+        return PolicyBinding.objects.filter(target__in=self.pbm_uuids).select_related()
 
-    def walk_stage_prompts(self) -> Iterable[BlueprintEntry]:
-        """Walk over all prompts associated with any PromptStages"""
+    def _stage_prompts(self) -> Iterable[Prompt]:
+        """Get all prompts associated with any PromptStages, deduplicated as multiple stages
+        may share the same prompt"""
         prompt_stages = PromptStage.objects.filter(flow=self.flow)
+        prompts: dict[Any, Prompt] = {}
         for stage in prompt_stages:
             for prompt in stage.fields.all():
-                yield BlueprintEntry.from_model(prompt)
+                prompts[prompt.pk] = prompt
+        return prompts.values()
 
     def get_entries(self) -> Iterable[BlueprintEntry]:
-        entries = []
-        entries.append(BlueprintEntry.from_model(self.flow, "slug"))
-        if self.with_stage_prompts:
-            entries.extend(self.walk_stage_prompts())
-        if self.with_policies:
-            entries.extend(self.walk_policies())
-        entries.extend(self.walk_stages())
-        entries.extend(self.walk_stage_bindings())
-        if self.with_policies:
-            entries.extend(self.walk_policy_bindings())
+        reference_index = ReferenceIndex()
+        reference_index.register(self.flow)
+
+        prompts = list(self._stage_prompts()) if self.with_stage_prompts else []
+        policies = list(self._policies()) if self.with_policies else []
+        stages = list(self._stages())
+        stage_bindings = list(self._stage_bindings())
+        policy_bindings = list(self._policy_bindings()) if self.with_policies else []
+
+        for obj in (*prompts, *policies, *stages, *stage_bindings, *policy_bindings):
+            reference_index.register(obj)
+
+        objects = [self.flow, *prompts, *policies, *stages, *stage_bindings, *policy_bindings]
+        entries = [
+            BlueprintEntry.from_model(self.flow, "slug", reference_index=reference_index),
+            *(
+                BlueprintEntry.from_model(prompt, reference_index=reference_index)
+                for prompt in prompts
+            ),
+            *(
+                BlueprintEntry.from_model(policy, reference_index=reference_index)
+                for policy in policies
+            ),
+            *(
+                BlueprintEntry.from_model(stage, "name", reference_index=reference_index)
+                for stage in stages
+            ),
+            *(
+                BlueprintEntry.from_model(
+                    binding, "target", "stage", "order", reference_index=reference_index
+                )
+                for binding in stage_bindings
+            ),
+            *(
+                BlueprintEntry.from_model(
+                    binding, "policy", "target", "order", reference_index=reference_index
+                )
+                for binding in policy_bindings
+            ),
+        ]
+        reference_index.clear_unused_ids(entries, objects)
         return entries

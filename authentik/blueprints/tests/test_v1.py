@@ -7,7 +7,7 @@ from django.test import TransactionTestCase
 from yaml import load
 
 from authentik.blueprints.tests import apply_blueprint
-from authentik.blueprints.v1.common import BlueprintLoader
+from authentik.blueprints.v1.common import BlueprintLoader, KeyOf
 from authentik.blueprints.v1.exporter import FlowExporter
 from authentik.blueprints.v1.importer import Importer, transaction_rollback
 from authentik.core.models import Group
@@ -327,6 +327,64 @@ class TestBlueprintsV1(TransactionTestCase):
         self.assertTrue(importer.validate()[0])
         self.assertTrue(importer.apply())
         self.assertTrue(UserLoginStage.objects.filter(name=stage_name).exists())
+        self.assertTrue(Flow.objects.filter(slug=flow_slug).exists())
+
+    def test_export_uses_keyof_references(self):
+        """Test that exporting a flow rewrites references between exported objects
+        as !KeyOf tags instead of raw primary keys"""
+        flow_slug = generate_id()
+        stage_name = generate_id()
+        with transaction_rollback():
+            flow_policy = ExpressionPolicy.objects.create(
+                name=generate_id(),
+                expression="return True",
+            )
+            flow = Flow.objects.create(
+                slug=flow_slug,
+                designation=FlowDesignation.AUTHENTICATION,
+                name=generate_id(),
+                title=generate_id(),
+            )
+            PolicyBinding.objects.create(policy=flow_policy, target=flow, order=0)
+
+            user_login = UserLoginStage.objects.create(name=stage_name)
+            fsb = FlowStageBinding.objects.create(target=flow, stage=user_login, order=0)
+            PolicyBinding.objects.create(policy=flow_policy, target=fsb, order=0)
+
+            exporter = FlowExporter(flow)
+            export = exporter.export()
+            export_yaml = exporter.export_to_string()
+
+        entries_by_model = {}
+        for entry in export.entries:
+            entries_by_model.setdefault(entry.model, []).append(entry)
+
+        flow_entry = entries_by_model["authentik_flows.flow"][0]
+        stage_entry = entries_by_model["authentik_stages_user_login.userloginstage"][0]
+        stage_binding_entry = entries_by_model["authentik_flows.flowstagebinding"][0]
+        policy_entry = entries_by_model["authentik_policies_expression.expressionpolicy"][0]
+        policy_binding_entries = entries_by_model["authentik_policies.policybinding"]
+
+        self.assertIsNotNone(flow_entry.id)
+        self.assertIsNotNone(stage_entry.id)
+
+        self.assertIsInstance(stage_binding_entry.identifiers["target"], KeyOf)
+        self.assertEqual(stage_binding_entry.identifiers["target"].id_from, flow_entry.id)
+        self.assertIsInstance(stage_binding_entry.identifiers["stage"], KeyOf)
+        self.assertEqual(stage_binding_entry.identifiers["stage"].id_from, stage_entry.id)
+
+        binding_targets = {pb.identifiers["target"].id_from for pb in policy_binding_entries}
+        self.assertIn(flow_entry.id, binding_targets)
+        self.assertIn(stage_binding_entry.id, binding_targets)
+        for policy_binding_entry in policy_binding_entries:
+            self.assertIsInstance(policy_binding_entry.identifiers["policy"], KeyOf)
+            self.assertEqual(policy_binding_entry.identifiers["policy"].id_from, policy_entry.id)
+
+        self.assertIn("!KeyOf", export_yaml)
+
+        importer = Importer.from_string(export_yaml)
+        self.assertTrue(importer.validate()[0])
+        self.assertTrue(importer.apply())
         self.assertTrue(Flow.objects.filter(slug=flow_slug).exists())
 
     def test_export_validate_import_prompt(self):
