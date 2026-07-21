@@ -572,11 +572,29 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
     def set_password_from_hash(self, password_hash: str, signal=True, sender=None, request=None):
         """Set password directly from a pre-hashed value.
 
-        Unlike set_password(), this does not hash the input again. The provided value
-        must already be validated by the caller, and it is stored directly on the user.
+        Unlike set_password(), this does not hash the input again. The provided value is
+        validated as a recognized Django password hash before it is stored.
 
         Because no raw password is available, downstream password sync integrations
         such as LDAP and Kerberos cannot be updated from this code path.
+        """
+        from authentik.lib.validators import validate_password_hash
+
+        validate_password_hash(password_hash)
+        self.set_password_from_hash_unchecked(
+            password_hash,
+            signal=signal,
+            sender=sender,
+            request=request,
+        )
+
+    def set_password_from_hash_unchecked(
+        self, password_hash: str, signal=True, sender=None, request=None
+    ):
+        """Store a pre-hashed value without validating its format.
+
+        This compatibility path is reserved for blueprint imports, which intentionally
+        support password hash formats that are not configured in this authentik instance.
         """
         if self.pk and signal:
             from authentik.core.signals import password_hash_changed
