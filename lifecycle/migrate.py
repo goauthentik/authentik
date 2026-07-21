@@ -112,8 +112,12 @@ def ensure_allowed_version(cursor: Cursor) -> None:
     ):
         return
 
-    message = "Major version skips are not allowed. Please upgrade one major version at a time."
-    LOGGER.error(message, upgrading_from=db_version, upgrading_to=current_code_version)
+    message = f"Major version skips are not allowed. See: https://docs.goauthentik.io/install-config/upgrade/?from={db_version}&to={current_code_version}"
+    LOGGER.error(
+        message,
+        from_version=db_version,
+        to_version=current_code_version,
+    )
     raise RuntimeError(message)
 
 
