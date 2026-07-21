@@ -53,7 +53,7 @@ brew install node@24
 </TabItem>
 <TabItem value="Linux">
 
-[Download NodeJS version 24](https://nodejs.org/en/download/current) for your Linux distribution.
+[Download Node.js version 24](https://nodejs.org/en/download/current) for your Linux distribution.
 
 </TabItem>
 <TabItem value="Windows">
