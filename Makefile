@@ -184,13 +184,8 @@ gen-changelog:  ## (Release) generate the changelog based from the commits since
 	$(eval current_commit := $(shell git rev-parse HEAD))
 	git log --pretty=format:"- %s" $(shell git merge-base ${last_version} ${current_commit})...${current_commit} > merged_to_current
 	git log --pretty=format:"- %s" $(shell git merge-base ${last_version} ${current_commit})...${last_version} > merged_to_last
-<<<<<<< HEAD
-	grep -Eo 'cherry-pick (#\d+)' merged_to_last | cut -d ' ' -f 2 | sed 's/.*/(&)$$/' > cherry_picked_to_last
-	grep -vf cherry_picked_to_last merged_to_current | sort > changelog.md
-=======
 	{ grep -Eo 'cherry-pick (#[0-9]+)' merged_to_last || true; } | cut -d ' ' -f 2 | sed 's/.*/(&)$$/' > cherry_picked_to_last
 	grep -vf cherry_picked_to_last merged_to_current | grep -vE '^- (ci:|website)' | sort > changelog.md
->>>>>>> f5d89a0da (root: fix make gen-changelog (#24122))
 	rm merged_to_current
 	rm merged_to_last
 	rm cherry_picked_to_last
