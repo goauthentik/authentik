@@ -15,16 +15,16 @@ You can view all permissions that are assigned to a user, group, role, flow, sta
 
 To view permissions assigned for a specific role:
 
-1. Go to the Admin interface and navigate to **Directory > Roles**
+1. In the Admin interface, navigate to **Directory** > **Roles**.
 2. Select a specific role by clicking on the name (this opens the details page).
-3. Click the **Permissions** tab at the top of the page
+3. Click the **Permissions** tab at the top of the page.
 4. Select the **Assigned global permissions** sub-tab to see global permissions and the **Assigned object permissions** sub-tab to see the object permissions.
 
 ### View permissions on objects with a detail page
 
 Here we'll use flows as an example for objects with a detail page.
 
-1. Go to the Admin interface and navigate to **Flows and Stages > Flows**.
+1. In the Admin interface, navigate to **Flows and Stages** > **Flows**.
 2. Click the name of the flow (this opens the details page).
 3. View the assigned permissions by clicking the **Permissions** tab at the top of the page.
 4. (Optionally) Hover over any checkmark to see whether that permission is granted by a global permission or an object permission.
@@ -33,9 +33,9 @@ Here we'll use flows as an example for objects with a detail page.
 
 Here we'll use stages as an example for objects without a detail page.
 
-1. Go to the Admin interface and navigate to **Flows and Stages > Stages**.
+1. In the Admin interface, navigate to **Flows and Stages** > **Stages**.
 2. On the row for the specific stage whose permissions you want to view, click the **lock icon**.
-3. View the assigned permissions on the **Update Permissions** window
+3. View the assigned permissions in the **Update Permissions** window.
 4. (Optionally) Hover over any checkmark to see whether that permission is granted by a global permission or an object permission.
 
 ## Manage permissions
@@ -46,9 +46,9 @@ You can assign or remove permissions to a user, role, group, flow, stage, or oth
 
 To assign or remove _object_ permissions for a specific role:
 
-1. Go to the Admin interface and navigate to **Directory > Roles**.
+1. In the Admin interface, navigate to **Directory** > **Roles**.
 2. Select a specific role by clicking on the role's name.
-3. Click the **Permissions** tab at the top of the page, then click the **Permissions on this object** tab
+3. Click the **Permissions** tab, and then click **Permissions on this object**.
 4. To assign permissions that another _role_ has on this specific role:
     1. Click **Assign Object Permission**.
     2. In the **Role** drop-down, select the role object.
@@ -60,11 +60,14 @@ To assign or remove _object_ permissions for a specific role:
 
 To assign or remove _global_ permissions for a role:
 
-1. Go to the Admin interface and navigate to **Directory > Roles**.
+1. In the Admin interface, navigate to **Directory** > **Roles**.
 2. Select a specific role by clicking on the role's name.
 3. Click the **Permissions** tab at the top of the page.
 4. Click **Assigned Global Permissions** to the left.
-5. To assign permissions that another _role_ has on this specific role: 2. In the **Assign permissions** area, click **Assign Permission**. 3. In the **Assign permission to role** box, click the plus sign (**+**) and then click the checkbox beside each permission that you want to assign to the user. 4. Click **Add**, and then click **Assign** to save your changes and close the box.
+5. To assign a permission:
+    1. In the **Assign permissions** area, click **Assign Permission**.
+    2. In the **Assign permission to role** dialog, click the plus sign (**+**), and then select each permission that you want to assign.
+    3. Click **Add**, and then click **Assign**.
 6. To remove permissions that another _role_ has on this specific role:
     1. Select the permission(s) you'd like to remove.
     2. Click **Delete Object Permission**.
@@ -73,9 +76,9 @@ To assign or remove _global_ permissions for a role:
 
 You can use a role to grant regular users, who are not superusers nor Admins, the right to view the Admin interface. This can be useful in scenarios where you have a team who needs to be able to create certain objects (flows, other users, etc) but who should not have _full_ access to the Admin interface.
 
-To assign the `Can access Admin interface` permission to a role:
+To assign the `Can access admin interface` permission to a role:
 
-1. Go to the Admin interface and navigate to **Directory > Role**.
+1. In the Admin interface, navigate to **Directory** > **Roles**.
 2. Select a specific role by clicking on the role's name.
 3. Click the **Permissions** tab at the top of the page.
 4. Click **Assigned Global Permissions** to the left.

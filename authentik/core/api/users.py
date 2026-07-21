@@ -65,6 +65,7 @@ from authentik.api.search.fields import (
 from authentik.api.validation import validate
 from authentik.blueprints.v1.importer import SERIALIZER_CONTEXT_BLUEPRINT
 from authentik.brands.models import Brand
+from authentik.core.api.object_attributes import AttributesMixinSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import (
     JSONDictField,
@@ -134,7 +135,7 @@ class PartialGroupSerializer(ModelSerializer):
         ]
 
 
-class UserSerializer(ModelSerializer):
+class UserSerializer(AttributesMixinSerializer, ModelSerializer):
     """User Serializer"""
 
     is_superuser = SerializerMethodField()
@@ -287,14 +288,19 @@ class UserSerializer(ModelSerializer):
 
     def validate_type(self, user_type: str) -> str:
         """Validate user type, internal_service_account is an internal value"""
-        if (
-            self.instance
-            and self.instance.type == UserTypes.INTERNAL_SERVICE_ACCOUNT
-            and user_type != UserTypes.INTERNAL_SERVICE_ACCOUNT.value
-        ):
-            raise ValidationError(_("Can't change internal service account to other user type."))
-        if not self.instance and user_type == UserTypes.INTERNAL_SERVICE_ACCOUNT.value:
-            raise ValidationError(_("Setting a user to internal service account is not allowed."))
+        if not self.instance and user_type == UserTypes.INTERNAL_SERVICE_ACCOUNT:
+            raise ValidationError(_("Can't create internal service accounts"))
+        if self.instance:
+            if (
+                self.instance.type == UserTypes.INTERNAL_SERVICE_ACCOUNT
+                and user_type != UserTypes.INTERNAL_SERVICE_ACCOUNT.value
+            ) or (
+                self.instance.type != UserTypes.INTERNAL_SERVICE_ACCOUNT
+                and user_type == UserTypes.INTERNAL_SERVICE_ACCOUNT.value
+            ):
+                raise ValidationError(
+                    _("Can't change internal service account to other user type.")
+                )
         return user_type
 
     def validate_groups(self, groups: list) -> list:

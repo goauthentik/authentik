@@ -5,7 +5,7 @@ SHELL := /usr/bin/env bash
 PWD = $(shell pwd)
 UID = $(shell id -u)
 GID = $(shell id -g)
-PY_SOURCES = authentik packages tests scripts lifecycle .github
+PY_SOURCES = authentik packages tests scripts lifecycle
 DOCKER_IMAGE ?= "authentik:test"
 
 UNAME_S := $(shell uname -s)
@@ -87,6 +87,9 @@ lint-fix: lint-fix-rust  ## Lint and automatically fix errors in the python sour
 
 lint-spellcheck:  ## Reports spelling errors.
 	npm run lint:spellcheck
+
+lint-catalogs:  ## Reports pnpm catalog pins that drifted between the root, web, and website workspaces.
+	node ./scripts/node/lint-catalogs.ts
 
 lint: ci-lint-bandit ci-lint-mypy ci-lint-cargo-deny ci-lint-cargo-machete  ## Lint the python and golang sources
 	golangci-lint run -v
@@ -181,11 +184,11 @@ gen-compose:
 
 gen-changelog:  ## (Release) generate the changelog based from the commits since the last version
 # These are best-effort guesses based on commit messages
-	$(eval last_version := $(shell git tag --list 'version/*' --sort 'version:refname' | grep -vE 'rc\d+$$' | tail -1))
+	$(eval last_version := $(shell git tag --list 'version/*' --sort 'version:refname' | grep -vE 'rc[0-9]+$$' | tail -1))
 	$(eval current_commit := $(shell git rev-parse HEAD))
 	git log --pretty=format:"- %s" $(shell git merge-base ${last_version} ${current_commit})...${current_commit} > merged_to_current
 	git log --pretty=format:"- %s" $(shell git merge-base ${last_version} ${current_commit})...${last_version} > merged_to_last
-	grep -Eo 'cherry-pick (#\d+)' merged_to_last | cut -d ' ' -f 2 | sed 's/.*/(&)$$/' > cherry_picked_to_last
+	{ grep -Eo 'cherry-pick (#[0-9]+)' merged_to_last || true; } | cut -d ' ' -f 2 | sed 's/.*/(&)$$/' > cherry_picked_to_last
 	grep -vf cherry_picked_to_last merged_to_current | grep -vE '^- (ci:|website)' | sort > changelog.md
 	rm merged_to_current
 	rm merged_to_last
@@ -193,7 +196,7 @@ gen-changelog:  ## (Release) generate the changelog based from the commits since
 	npx prettier --write changelog.md
 
 gen-diff:  ## (Release) generate the changelog diff between the current schema and the last version
-	$(eval last_version := $(shell git tag --list 'version/*' --sort 'version:refname' | grep -vE 'rc\d+$$' | tail -1))
+	$(eval last_version := $(shell git tag --list 'version/*' --sort 'version:refname' | grep -vE 'rc[0-9]+$$' | tail -1))
 	git show ${last_version}:schema.yml > schema-old.yml
 	docker compose -f scripts/compose.yml run --rm --user "${UID}:${GID}" diff \
 		--markdown \
@@ -297,17 +300,17 @@ integrations-build:
 	pnpm --dir website run build:integrations
 
 integrations-watch:  ## Build and watch the Integrations documentation
-	pnpm --filter "./website/integrations" run start
+	pnpm --dir website/integrations run start
 
 docs-api-build:
 	pnpm --dir website run build:api
 
 docs-api-watch:  ## Build and watch the API documentation
-	pnpm --filter "./website/api" run generate
-	pnpm --filter "./website/api" run start
+	pnpm --dir website/api run generate
+	pnpm --dir website/api run start
 
 docs-api-clean:  ## Clean generated API documentation
-	pnpm --filter "./website/api" run clean
+	pnpm --dir website/api run clean
 
 #########################
 ## Docker
@@ -349,7 +352,7 @@ ci-lint-pending-migrations: ci--meta-debug
 	$(UV) run ak makemigrations --check
 
 ci-lint-cargo-deny: ci--meta-debug
-	$(CARGO) deny --locked --workspace check --config "${PWD}/.cargo/deny.toml"
+	$(CARGO) deny --config "${PWD}/.cargo/deny.toml" --locked --workspace check
 
 ci-lint-cargo-machete: ci--meta-debug
 	$(CARGO) machete
@@ -359,6 +362,9 @@ ci-lint-rustfmt: ci--meta-debug
 
 ci-lint-clippy: ci--meta-debug
 	$(CARGO) clippy --workspace -- -D warnings
+
+ci-lint-catalogs: ci--meta-debug
+	node ./scripts/node/lint-catalogs.ts
 
 ci-test: ci--meta-debug
 	$(UV) run coverage run manage.py test --keepdb --parallel auto authentik

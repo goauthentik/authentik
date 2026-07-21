@@ -30,6 +30,7 @@ from authentik.api.search.fields import (
     JSONSearchField,
 )
 from authentik.api.validation import validate
+from authentik.core.api.object_attributes import AttributesMixinSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import JSONDictField, ModelSerializer, PassiveSerializer
 from authentik.core.models import Group, User
@@ -146,7 +147,7 @@ class RelatedGroupSerializer(ModelSerializer):
         ]
 
 
-class GroupSerializer(ModelSerializer):
+class GroupSerializer(AttributesMixinSerializer, ModelSerializer):
     """Group Serializer"""
 
     attributes = JSONDictField(required=False)
