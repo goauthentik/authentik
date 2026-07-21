@@ -67,6 +67,10 @@ You can provide custom email templates.
 You can also add a matching `.txt` file next to the `.html` file to send multipart text and HTML emails.
 :::
 
+:::info
+When a template is used by an email [notification transport](../../../../sys-mgmt/events/transports.md#email), an optional `my-template_subject.txt` file next to it provides the email's subject line. The Email stage does not use subject templates; it uses the stage's **Subject** field.
+:::
+
 import TabItem from "@theme/TabItem";
 import Tabs from "@theme/Tabs";
 

@@ -94,6 +94,12 @@ A failed login attempt.
 
 </details>
 
+### `login_blocked`:ak-version[2026.8] {#login_blocked}
+
+A login was blocked by a policy. authentik creates this event when a policy bound to the flow's [User Login stage](../../add-secure-apps/flows-stages/stages/user_login/index.md) (with re-evaluation enabled) denies the login — for example, a [GeoIP policy](../../customize/policies/types/geoip.md) detecting impossible travel.
+
+The event context contains the policy's messages (`message`), the UUID of the user whose login was blocked (`subject_uuid`), and machine-readable failure reasons (`reasons`) that notification rules can match on. The GeoIP policy sets the reasons `impossible_travel`, `history_distance`, `forbidden_country`, `forbidden_asn`, and `no_geoip_data`.
+
 ### `logout`
 
 A user logs out.
@@ -133,6 +139,14 @@ A user logs out.
 ```
 
 </details>
+
+### `user_created`:ak-version[2026.8] {#user_created}
+
+A user account was created. In addition to the acting user (for example, the administrator who created the account), the event context contains:
+
+- `subject_uuid`: the UUID of the newly created user.
+- `username` and `user_type`: the new user's username and type (`internal`, `external`, `service_account`, or `internal_service_account`).
+- `origin`: the channel through which the account was created — `http` (the Admin interface, the API, or an enrollment flow), `blueprint`, `source_sync`, or `unknown`.
 
 ### `user_write`
 
@@ -189,7 +203,13 @@ A suspicious request has been received (for example, a revoked token was used).
 
 ### `password_set`
 
-A user sets their password.
+A user's password is set. This includes users changing their own password, administrators changing it for them, and password hashes cached from an external source login.
+
+Starting with authentik 2026.8, the event context contains the UUID of the user whose password was changed (`subject_uuid`), the `origin` of the change (the same values as for [`user_created`](#user_created)), and `synced_from_source`, which is `true` when the password hash was cached from an external source login (for example, LDAP or Kerberos) rather than changed in authentik.
+
+### `mfa_device_added` / `mfa_device_removed`:ak-version[2026.8] {#mfa_device_added--mfa_device_removed}
+
+An MFA device (such as a TOTP, WebAuthn, static, email, or SMS authenticator) was registered or removed. The event context contains the UUID of the user the device belongs to (`subject_uuid`) and an `mfa_device` object with the device's type, name, and primary key.
 
 ### `secret_view`
 
