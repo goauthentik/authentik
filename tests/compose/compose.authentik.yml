@@ -18,11 +18,24 @@ services:
     image: docker.io/library/postgres:18-alpine
     restart: unless-stopped
   server:
-    command: server
+    entrypoint:
+      - bash
+      - -c
+    command:
+      - |
+        function combine {
+          coverage combine
+          mv .coverage "/coverage/.coverage.$$RANDOM.server"
+        }
+
+        ak server
     depends_on:
       postgresql:
         condition: service_healthy
     environment:
+      AUTHENTIK_DEBUGGER: "true"
+      AUTHENTIK_COVERAGE: "true"
+      AUTHENTIK_WEB__WORKERS: "1"
       AUTHENTIK_POSTGRESQL__HOST: postgresql
       AUTHENTIK_POSTGRESQL__NAME: authentik
       AUTHENTIK_POSTGRESQL__USER: authentik
@@ -39,12 +52,25 @@ services:
       - "9300"
     restart: unless-stopped
     shm_size: 512mb
+    user: root
+    volumes:
+      - ../../coverage:/coverage
   worker:
-    command: worker
+    command:
+      - |
+        function combine {
+          coverage combine
+          mv .coverage "/coverage/.coverage.$$RANDOM.server"
+        }
+
+        ak server
     depends_on:
       postgresql:
         condition: service_healthy
     environment:
+      AUTHENTIK_DEBUGGER: "true"
+      AUTHENTIK_COVERAGE: "true"
+      AUTHENTIK_WORKER__PROCESSES: "1"
       AUTHENTIK_POSTGRESQL__HOST: postgresql
       AUTHENTIK_POSTGRESQL__NAME: authentik
       AUTHENTIK_POSTGRESQL__USER: authentik
@@ -60,3 +86,5 @@ services:
     user: root
     ports:
       - "9300"
+    volumes:
+      - ../../coverage:/coverage

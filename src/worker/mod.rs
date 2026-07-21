@@ -1,5 +1,5 @@
 use std::{
-    env::temp_dir,
+    env::{self, temp_dir},
     os::unix,
     path::PathBuf,
     process::Stdio,
@@ -64,7 +64,13 @@ impl Worker {
     fn new(worker_id: usize, socket_path: PathBuf) -> Result<Self> {
         info!(worker_id, "starting worker");
 
-        let mut cmd = Command::new("python");
+        let mut cmd = if env::var("AUTHENTIK_COVERAGE").is_ok() {
+            let mut cmd = Command::new("coverage");
+            cmd.arg("run");
+            cmd
+        } else {
+            Command::new("python")
+        };
         cmd.arg("-m");
         cmd.arg("lifecycle.worker_process");
         cmd.arg(worker_id.to_string());

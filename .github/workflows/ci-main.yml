@@ -392,7 +392,7 @@ jobs:
       - name: Setup authentik env
         uses: ./.github/actions/setup
         with:
-          dependencies: rust
+          dependencies: python,rust
       - name: Pull dependencies
         run: |
           COMPOSE_PROFILES="$(docker compose -f tests/compose/compose.utils.yml -f tests/compose/compose.proxies.yml config --profiles | paste -sd, -)" \
@@ -412,6 +412,15 @@ jobs:
             --jobs 2 \
             --no-fail-fast \
             --filterset 'kind(test) & binary_id(#authentik-tests::e2e_${{ matrix.name }}*)'
+      - name: Merge coverage files
+        run: |
+          uv run coverage combine ./coverage/*
+          uv run coverage report
+          uv run coverage xml
+      - uses: ./.github/actions/test-results
+        if: ${{ always() }}
+        with:
+          flags: e2e-container
   test-openid-conformance:
     name: test-openid-conformance (${{ matrix.job.name }})
     runs-on: ubuntu-latest
