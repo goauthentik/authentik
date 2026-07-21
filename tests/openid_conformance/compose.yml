@@ -10,7 +10,7 @@ services:
     depends_on:
       - server
   server:
-    image: registry.gitlab.com/openid/conformance-suite:release-v5.2.0
+    image: registry.gitlab.com/openid/conformance-suite:release-v5.2.1
     extra_hosts:
       - "host.docker.internal:host-gateway"
     healthcheck:
