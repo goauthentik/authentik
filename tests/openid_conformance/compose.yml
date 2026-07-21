@@ -2,7 +2,7 @@ services:
   mongodb:
     image: docker.io/library/mongo:6.0.13
   nginx:
-    image: registry.gitlab.com/openid/conformance-suite/nginx:release-v5.2.0
+    image: registry.gitlab.com/openid/conformance-suite/nginx:release-v5.2.1
     healthcheck:
       test: ["CMD", "curl", "-fk", "https://localhost:8443"]
     ports:
