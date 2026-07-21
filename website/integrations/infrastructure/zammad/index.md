@@ -34,7 +34,7 @@ values={[
 ]}>
 <TabItem value="saml">
 
-## authentik configuration
+## authentik configuration SAML
 
 To support the integration of Zammad with authentik using SAML, you need to create SAML property mappings and an application/provider pair in authentik.
 
@@ -109,7 +109,7 @@ Zammad requests SAML attributes named `email`, `name`, `first_name`, and `last_n
 2. Navigate to **Applications** > **Providers** and click on the name of the provider that you created in the previous section (e.g. `Provider for zammad`).
 3. Under **Related objects** > **Download signing certificate**, click on **Download**. This downloaded file is your certificate file and it will be required in the next section.
 
-## Zammad configuration
+## Zammad configuration SAML
 
 To configure Zammad's SAML integration with authentik, log in to Zammad as an administrator. Go to **Settings** (the gear icon) and select **Security** > **Third-party Applications**.
 
@@ -135,7 +135,7 @@ To verify that authentik is correctly integrated with Zammad, log out of Zammad,
 </TabItem>
 <TabItem value="oidc">
 
-## authentik configuration
+## authentik configuration OIDC
 
 <RedirectURI20265Note />
 
@@ -158,7 +158,7 @@ To support the integration of Zammad with authentik using OIDC, you need to crea
 
 3. Click **Submit** to save the new application and provider.
 
-## Zammad configuration
+## Zammad configuration OIDC
 
 To configure Zammad's OIDC integration with authentik, log in to Zammad as an administrator. Go to **Settings** (the gear icon) and select **Security** > **Third-party Applications**.
 
