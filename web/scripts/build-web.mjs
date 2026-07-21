@@ -97,10 +97,18 @@ const BASE_ESBUILD_OPTIONS = {
      * @see https://esbuild.github.io/api/#conditions
      * @see https://nodejs.org/api/packages.html#packages_conditional_exports
      */
-    conditions: NodeEnvironment === "production" ? ["production"] : ["development", "production"],
+    conditions: [
+        "bundler",
+        ...(NodeEnvironment === "production" ? ["production"] : ["development", "production"]),
+    ],
     plugins: BASE_ESBUILD_PLUGINS,
     define: bundleDefinitions,
     format: "esm",
+    // The geo package lives at the repo's top-level packages/ and is symlinked
+    // into web/packages/. Without this, esbuild walks to the realpath when
+    // resolving its imports and fails to locate hoisted runtime deps like
+    // `lit` and `maplibre-gl` that only exist in web/node_modules.
+    preserveSymlinks: true,
 };
 
 /**
