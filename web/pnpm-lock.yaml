@@ -36,6 +36,9 @@ catalogs:
     typescript:
       specifier: ^6.0.3
       version: 6.0.3
+    typescript-eslint:
+      specifier: ^8.64.0
+      version: 8.64.0
 
 overrides:
   '@goauthentik/esbuild-plugin-live-reload>esbuild': ^0.28.1
@@ -386,8 +389,8 @@ importers:
         specifier: ^4.1.10
         version: 4.1.10(@types/node@26.1.1)(@vitest/browser-playwright@4.1.10)(vite@8.1.4(@types/node@26.1.1)(esbuild@0.28.1)(jiti@2.7.0)(yaml@2.9.0))
       webcomponent-qr-code:
-        specifier: ^1.3.0
-        version: 1.3.0
+        specifier: ^2.0.0
+        version: 2.0.0
       wireit:
         specifier: ^0.14.13
         version: 0.14.13
@@ -440,6 +443,37 @@ importers:
   packages/lex: {}
 
   packages/node-domexception: {}
+
+  packages/prettier-config:
+    dependencies:
+      format-imports:
+        specifier: ^4.0.8
+        version: 4.0.8(jiti@2.7.0)
+    devDependencies:
+      '@eslint/js':
+        specifier: 'catalog:'
+        version: 9.39.5
+      '@goauthentik/tsconfig':
+        specifier: link:../tsconfig
+        version: link:../tsconfig
+      '@types/node':
+        specifier: 'catalog:'
+        version: 26.1.1
+      eslint:
+        specifier: 'catalog:'
+        version: 9.39.5(jiti@2.7.0)
+      prettier:
+        specifier: 'catalog:'
+        version: 3.8.3
+      prettier-plugin-packagejson:
+        specifier: ^3.0.2
+        version: 3.0.2(prettier@3.8.3)
+      typescript:
+        specifier: ^6.0.3
+        version: 6.0.3
+      typescript-eslint:
+        specifier: 'catalog:'
+        version: 8.64.0(eslint@9.39.5(jiti@2.7.0))(typescript@6.0.3)
 
   packages/sfe:
     dependencies:
@@ -522,6 +556,8 @@ importers:
       '@swc/core-win32-x64-msvc':
         specifier: ^1.15.40
         version: 1.15.43
+
+  packages/tsconfig: {}
 
 packages:
 
@@ -5086,6 +5122,11 @@ packages:
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
     hasBin: true
 
+  nanoid@3.3.16:
+    resolution: {integrity: sha512-bzlKTyNJ7+LdGIIwy8ijFpIqEQIvafahV7eYykJ8Cvh42EdJeODoJ6gUJXpQJvej1BddH8OqTXZNE/KfbWAu8Q==}
+    engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
+    hasBin: true
+
   natural-compare@1.4.0:
     resolution: {integrity: sha512-OWND8ei3VtNC9h7V60qff3SVobHr996CTwgxubgyQYEpg290h9J0buyECNNJexkFm5sOajh5G116RYA1c8ZMSw==}
 
@@ -5410,6 +5451,10 @@ packages:
 
   postcss@8.5.16:
     resolution: {integrity: sha512-vuwillviilfKZsg0VGj5R/YwwcHx4SLsIOI/7K6mQkWx+l5cUHTjj5g0AasTBcyXsbfTgrwsUNmVUb5xVwyPwg==}
+    engines: {node: ^10 || ^12 || >=14}
+
+  postcss@8.5.19:
+    resolution: {integrity: sha512-Mz8SaolMd8nB+G13WkORcxQKHZ/NE4xXevtkJHVuG+guo9/wYKlIMTKAqGdEmYOXR2ijPjTYNHssizdaVSUNdQ==}
     engines: {node: ^10 || ^12 || >=14}
 
   prelude-ls@1.2.1:
@@ -6487,8 +6532,8 @@ packages:
   web-worker@1.5.0:
     resolution: {integrity: sha512-RiMReJrTAiA+mBjGONMnjVDP2u3p9R1vkcGz6gDIrOMT3oGuYwX2WRMYI9ipkphSuE5XKEhydbhNEJh4NY9mlw==}
 
-  webcomponent-qr-code@1.3.0:
-    resolution: {integrity: sha512-XXYqe712D4OWXx8ALQEYwMc3Qm5C0Ej15CQZt5lQmBEwt5Q4J+/O3FQQTb1HzFv0NPkgx0H4YNwoN4LlqEaaVA==}
+  webcomponent-qr-code@2.0.0:
+    resolution: {integrity: sha512-dudCXsSfrCJXia65TJ2rUaRM0xP6xqr70yBoDj4a6GxWI0w1H97yKQjueEjC8vv5x0LjPsM0bGX6qL4yMyOg6g==}
 
   webpack-virtual-modules@0.6.2:
     resolution: {integrity: sha512-66/V2i5hQanC51vBQKPH4aI8NMAcBW59FVBs+rC7eGHupMyfn34q7rZIE+ETlJ+XTevqfUhVVBgSUNSW2flEUQ==}
@@ -9071,7 +9116,7 @@ snapshots:
       '@vue/shared': 3.3.11
       estree-walker: 2.0.2
       magic-string: 0.30.21
-      postcss: 8.5.16
+      postcss: 8.5.19
       source-map-js: 1.2.1
 
   '@vue/compiler-ssr@3.3.11':
@@ -11905,6 +11950,8 @@ snapshots:
 
   nanoid@3.3.15: {}
 
+  nanoid@3.3.16: {}
+
   natural-compare@1.4.0: {}
 
   neotraverse@0.6.18: {}
@@ -12333,6 +12380,12 @@ snapshots:
   postcss@8.5.16:
     dependencies:
       nanoid: 3.3.15
+      picocolors: 1.1.1
+      source-map-js: 1.2.1
+
+  postcss@8.5.19:
+    dependencies:
+      nanoid: 3.3.16
       picocolors: 1.1.1
       source-map-js: 1.2.1
 
@@ -13606,7 +13659,7 @@ snapshots:
 
   web-worker@1.5.0: {}
 
-  webcomponent-qr-code@1.3.0:
+  webcomponent-qr-code@2.0.0:
     dependencies:
       qrjs: 0.2.0
 
