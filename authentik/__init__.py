@@ -4,7 +4,7 @@ from functools import lru_cache
 from os import environ
 
 VERSION = "2026.8.0-rc1"
-VERSION_PREVIOUS_MAJOR = "2026.5.0-rc1"
+VERSION_FAMILY_PREVIOUS = "2026.5"
 ENV_GIT_HASH_KEY = "GIT_BUILD_HASH"
 
 
@@ -14,8 +14,8 @@ def authentik_version() -> str:
 
 
 @lru_cache
-def authentik_version_previous_major() -> str:
-    return VERSION_PREVIOUS_MAJOR
+def authentik_version_family_previous() -> str:
+    return VERSION_FAMILY_PREVIOUS
 
 
 @lru_cache

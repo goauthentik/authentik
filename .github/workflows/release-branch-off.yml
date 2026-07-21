@@ -74,9 +74,9 @@ jobs:
         run: make migrate
       - name: Update previous version
         run: |
-          VERSION="$(<"${PWD}/internal/constants/VERSION")"
+          VERSION_FAMILY_PREVIOUS="$(grep -oE "^[0-9]{4}\.[0-9]{1,2}" ${PWD}/internal/constants/VERSION)"
           sed -i -E \
-            "s/^VERSION_PREVIOUS_MAJOR = .*/VERSION_PREVIOUS_MAJOR = \"${VERSION}\"/" \
+            "s/^VERSION_FAMILY_PREVIOUS = .*/VERSION_FAMILY_PREVIOUS = \"${VERSION_FAMILY_PREVIOUS}\"/" \
             "${PWD}/authentik/__init__.py"
       - name: Bump version
         run: "make bump version=${{ inputs.next_version }}.0-rc1"

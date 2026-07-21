@@ -11,7 +11,7 @@ from packaging.version import Version
 from psycopg import Connection, Cursor, connect
 from structlog.stdlib import get_logger
 
-from authentik import authentik_version, authentik_version_previous_major
+from authentik import authentik_version, authentik_version_family_previous
 from authentik.lib.config import CONFIG, django_db_config, postgresql_direct_connection_kwargs
 
 LOGGER = get_logger()
@@ -91,7 +91,8 @@ def ensure_allowed_version(cursor: Cursor) -> None:
         return
 
     db_version = Version(cursor.fetchone()[0])
-    previous_code_version = Version(authentik_version_previous_major())
+    previous_code_version_family = authentik_version_family_previous()
+    lowest_acceptable_version = Version(f"{previous_code_version_family}.0")
     current_code_version = Version(authentik_version())
 
     # Downgrades are not supported, but we don't stop them (for now)
@@ -103,8 +104,8 @@ def ensure_allowed_version(cursor: Cursor) -> None:
         )
 
     if (
-        db_version.major == previous_code_version.major
-        and db_version.minor == previous_code_version.minor
+        db_version.major == lowest_acceptable_version.major
+        and db_version.minor == lowest_acceptable_version.minor
     ) or (
         db_version.major == current_code_version.major
         and db_version.minor == current_code_version.minor
