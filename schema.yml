@@ -36156,6 +36156,11 @@ components:
           type: string
         branding_default_flow_background:
           type: string
+        branding_map_tiles:
+          type: string
+          description: URL template for the vector tile source used by the events
+            map. Supports XYZ templates with {z}, {x} and {y} placeholders, or pmtiles://
+            archive URLs. When empty, the frontend uses the bundled hexworld basemap.
         flow_authentication:
           type: string
           format: uuid
@@ -36232,6 +36237,11 @@ components:
         branding_default_flow_background:
           type: string
           minLength: 1
+        branding_map_tiles:
+          type: string
+          description: URL template for the vector tile source used by the events
+            map. Supports XYZ templates with {z}, {x} and {y} placeholders, or pmtiles://
+            archive URLs. When empty, the frontend uses the bundled hexworld basemap.
         flow_authentication:
           type: string
           format: uuid
@@ -37231,6 +37241,8 @@ components:
           nullable: true
         branding_custom_css:
           type: string
+        branding_map_tiles:
+          type: string
         ui_footer_links:
           type: array
           items:
@@ -37289,6 +37301,7 @@ components:
       - branding_favicon_themed_urls
       - branding_logo
       - branding_logo_themed_urls
+      - branding_map_tiles
       - branding_title
       - default_locale
       - flags
@@ -48265,6 +48278,11 @@ components:
         branding_default_flow_background:
           type: string
           minLength: 1
+        branding_map_tiles:
+          type: string
+          description: URL template for the vector tile source used by the events
+            map. Supports XYZ templates with {z}, {x} and {y} placeholders, or pmtiles://
+            archive URLs. When empty, the frontend uses the bundled hexworld basemap.
         flow_authentication:
           type: string
           format: uuid

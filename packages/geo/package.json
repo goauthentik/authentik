@@ -1,0 +1,86 @@
+{
+    "name": "@goauthentik/geo",
+    "version": "1.0.0",
+    "description": "MapLibre-based map component and Protomaps tooling for authentik",
+    "license": "MIT",
+    "private": true,
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/goauthentik/authentik.git",
+        "directory": "packages/geo"
+    },
+    "type": "module",
+    "main": "./src/index.ts",
+    "types": "./src/index.ts",
+    "exports": {
+        "./package.json": "./package.json",
+        ".": {
+            "types": "./src/index.ts",
+            "import": "./src/index.ts"
+        },
+        "./style": {
+            "types": "./src/style.ts",
+            "import": "./src/style.ts"
+        },
+        "./components/ak-map": {
+            "types": "./src/components/ak-map.ts",
+            "import": "./src/components/ak-map.ts"
+        }
+    },
+    "scripts": {
+        "build": "tsc -p .",
+        "watch": "tsc -p . --watch",
+        "lint": "eslint --fix .",
+        "lint-check": "eslint --max-warnings 0 .",
+        "prettier": "prettier --write .",
+        "prettier-check": "prettier --check .",
+        "test": "npm run build && node --test 'test/**/*.test.mjs'",
+        "hexworld:build": "npm run build && node scripts/hexworld/build.mjs",
+        "tiles:pull-hexworld": "node scripts/pull-hexworld.mjs",
+        "prepare": "pnpm run build"
+    },
+    "dependencies": {
+        "@protomaps/basemaps": "^5.7.2",
+        "h3-js": "^4.2.1",
+        "lit": "^3.3.2",
+        "maplibre-gl": "^5.10.0",
+        "pmtiles": "^4.4.1"
+    },
+    "devDependencies": {
+        "@eslint/js": "catalog:",
+        "@goauthentik/eslint-config": "link:../eslint-config",
+        "@goauthentik/prettier-config": "link:../prettier-config",
+        "@goauthentik/tsconfig": "link:../tsconfig",
+        "@mapbox/vector-tile": "^2.0.3",
+        "@types/geojson": "^7946.0.16",
+        "@types/node": "catalog:",
+        "eslint": "catalog:",
+        "pbf": "^4.0.1",
+        "typescript": "catalog:",
+        "typescript-eslint": "catalog:"
+    },
+    "peerDependencies": {
+        "lit": "^3.3.2",
+        "maplibre-gl": "^5.10.0"
+    },
+    "files": [
+        "out/**/*",
+        "src/**/*"
+    ],
+    "engines": {
+        "node": ">=24"
+    },
+    "devEngines": {
+        "runtime": {
+            "name": "node",
+            "version": ">=24",
+            "onFail": "warn"
+        },
+        "packageManager": {
+            "name": "pnpm",
+            "version": ">=11.5.1",
+            "onFail": "warn"
+        }
+    },
+    "prettier": "@goauthentik/prettier-config"
+}
