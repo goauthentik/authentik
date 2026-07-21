@@ -2,9 +2,8 @@ from http import HTTPStatus
 from os import environ
 from unittest.mock import patch
 
-from django.contrib.auth.hashers import make_password
+from django.contrib.auth.hashers import PBKDF2PasswordHasher, make_password
 from django.urls import reverse
-from rest_framework.exceptions import ValidationError
 
 from authentik.blueprints.tests import apply_blueprint
 from authentik.core.apps import Setup
@@ -12,6 +11,7 @@ from authentik.core.models import Token, TokenIntents, User
 from authentik.flows.models import Flow
 from authentik.flows.tests import FlowTestCase
 from authentik.lib.generators import generate_id
+from authentik.lib.validators import PasswordHashRequiresOverride
 from authentik.root.signals import post_startup, pre_startup
 from authentik.tenants.flags import patch_flag
 from authentik.tenants.utils import get_current_tenant
@@ -215,15 +215,17 @@ class TestSetup(FlowTestCase):
         self.assertEqual(user.password, password_hash)
         self.assertTrue(user.check_password(password))
 
-    def test_setup_bootstrap_env_malformed_password_hash(self):
-        """Test setup rejects a malformed password hash from the environment."""
+    def test_setup_bootstrap_env_noncurrent_password_hash(self):
+        """Test setup rejects a noncurrent password hash from the environment."""
         User.objects.filter(username="akadmin").delete()
         Setup.set(False)
 
         environ.pop("AUTHENTIK_BOOTSTRAP_PASSWORD", None)
-        environ["AUTHENTIK_BOOTSTRAP_PASSWORD_HASH"] = "pbkdf2_sha256$1000000/K4wGpWYKfJPSCcNM="
+        hasher = PBKDF2PasswordHasher()
+        hasher.iterations -= 1
+        environ["AUTHENTIK_BOOTSTRAP_PASSWORD_HASH"] = hasher.encode(generate_id(), hasher.salt())
         pre_startup.send(sender=self)
-        with self.assertRaises(ValidationError):
+        with self.assertRaises(PasswordHashRequiresOverride):
             post_startup.send(sender=self)
 
         self.assertFalse(Setup.get())
