@@ -1,7 +1,7 @@
 import "#elements/EmptyState";
 import "#components/ak-radio-input";
 import "#components/ak-slug-input";
-import "#components/ak-status-label";
+import "#elements/StatusLabel";
 import "#components/ak-switch-input";
 import "#components/ak-text-input";
 import "#elements/ak-table/ak-select-table";

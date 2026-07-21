@@ -1,6 +1,6 @@
 import "#admin/rbac/ObjectPermissionModal";
 import "#admin/tokens/TokenForm";
-import "#components/ak-status-label";
+import "#elements/StatusLabel";
 import "#elements/buttons/Dropdown";
 import "#elements/buttons/TokenCopyButton/index";
 import "#elements/forms/DeleteBulkForm";

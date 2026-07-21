@@ -1,4 +1,4 @@
-import "#components/ak-status-label";
+import "#elements/StatusLabel";
 import "#elements/buttons/Dropdown";
 import "#elements/buttons/ModalButton";
 import "#elements/buttons/TokenCopyButton/index";

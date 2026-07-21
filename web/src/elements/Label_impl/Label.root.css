@@ -347,4 +347,15 @@ html[theme="dark"],
     --ak-c-label--m-outline--m-gold__content--link--focus--before--BorderColor: var(
         --pf-global--palette--gold-100
     );
+
+    --ak-c-label--m-gray--BackgroundColor: var(--pf-global--palette--black-100);
+    --ak-c-label--m-gray__icon--Color: var(--pf-global--primary-color--100);
+    --ak-c-label--m-gray__content--Color: var(--pf-global--info-color--200);
+    --ak-c-label--m-gray__content--before--BorderColor: var(--pf-global--palette--black-400);
+    --ak-c-label--m-gray__content--link--hover--before--BorderColor: var(
+        --pf-global--primary-color--100
+    );
+    --ak-c-label--m-gray__content--link--focus--before--BorderColor: var(
+        --pf-global--primary-color--100
+    );
 }

@@ -1,5 +1,5 @@
 import "#components/ak-object-attributes-card";
-import "#components/ak-status-label";
+import "#elements/StatusLabel";
 import "#admin/endpoints/devices/BoundDeviceUsersList";
 import "#admin/endpoints/devices/facts/DeviceProcessTable";
 import "#admin/endpoints/devices/facts/DeviceUserTable";

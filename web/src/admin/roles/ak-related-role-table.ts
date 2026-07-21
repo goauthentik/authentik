@@ -1,6 +1,6 @@
 import "#admin/roles/ak-role-form";
 import "#admin/users/ak-user-role-table";
-import "#components/ak-status-label";
+import "#elements/StatusLabel";
 import "#elements/buttons/SpinnerButton/index";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/HorizontalFormElement";

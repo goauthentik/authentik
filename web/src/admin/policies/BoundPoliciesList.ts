@@ -3,7 +3,7 @@ import "#admin/policies/PolicyBindingForm";
 import "#admin/policies/ak-policy-wizard";
 import "#admin/rbac/ObjectPermissionModal";
 import "#admin/users/UserForm";
-import "#components/ak-status-label";
+import "#elements/StatusLabel";
 import "#elements/Tabs";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";

@@ -1,4 +1,4 @@
-import "#components/ak-status-label";
+import "#elements/StatusLabel";
 import "#elements/events/LogViewer";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/index";

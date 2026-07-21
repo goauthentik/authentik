@@ -1,7 +1,7 @@
 import "#admin/providers/RelatedApplicationButton";
 import "#admin/providers/proxy/ProxyProviderForm";
 import "#admin/rbac/ak-rbac-object-permission-page";
-import "#components/ak-status-label";
+import "#elements/StatusLabel";
 import "#admin/events/ObjectChangelog";
 import "#elements/CodeMirror";
 import "#elements/Tabs";

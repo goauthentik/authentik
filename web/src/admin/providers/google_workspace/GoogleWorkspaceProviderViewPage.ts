@@ -7,7 +7,7 @@ import "#admin/providers/google_workspace/GoogleWorkspaceProviderGroupList";
 import "#admin/providers/google_workspace/GoogleWorkspaceProviderUserList";
 import "#admin/rbac/ak-rbac-object-permission-page";
 import "#admin/rbac/ObjectPermissionModal";
-import "#components/ak-status-label";
+import "#elements/StatusLabel";
 import "#admin/events/ObjectChangelog";
 import "#elements/Tabs";
 import "#elements/buttons/ActionButton/index";

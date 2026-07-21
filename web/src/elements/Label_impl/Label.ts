@@ -13,7 +13,17 @@ import { spread } from "@open-wc/lit-helpers";
 import { html, LitElement, nothing } from "lit";
 import { property, state } from "lit/decorators.js";
 
-const labelColors = ["blue", "green", "orange", "red", "purple", "cyan", "gold", "gray"] as const;
+export const labelColors = [
+    "blue",
+    "green",
+    "orange",
+    "red",
+    "purple",
+    "cyan",
+    "gold",
+    "gray",
+] as const;
+
 export type LabelColor = (typeof labelColors)[number];
 
 export const statusNames = [

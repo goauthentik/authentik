@@ -4,7 +4,7 @@ import "#admin/providers/rac/EndpointForm";
 import "#admin/providers/rac/EndpointList";
 import "#admin/providers/rac/RACProviderForm";
 import "#admin/rbac/ak-rbac-object-permission-page";
-import "#components/ak-status-label";
+import "#elements/StatusLabel";
 import "#admin/events/ObjectChangelog";
 import "#elements/CodeMirror";
 import "#elements/Tabs";

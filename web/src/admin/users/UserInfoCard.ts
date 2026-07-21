@@ -2,7 +2,7 @@ import "#admin/users/UserActiveForm";
 import "#admin/users/UserForm";
 import "#admin/users/UserImpersonateForm";
 import "#admin/users/UserPasswordForm";
-import "#components/ak-status-label";
+import "#elements/StatusLabel";
 
 import { userTypeToLabel } from "#common/labels";
 import { formatUserDisplayName, startAccountLockdown } from "#common/users";
