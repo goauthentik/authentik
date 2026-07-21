@@ -23,3 +23,25 @@ The event retention setting is configured in the **System > Settings** area of t
 If you want to forward these events to another application, forward the log output of all authentik containers. Every event creation is logged with the log level "info". For this configuration, it is also recommended to set the internal retention time period to a short time frame (for example, `days=1`).
 
 If you want to forward authentik events to another system, see [Log forwarding](./log-forwarding.mdx).
+
+## Event map :ak-enterprise {#event-map}
+
+The event map groups events into areas based on [GeoIP data](../ops/geoip.mdx). Each area appears as a column. Taller columns contain more events, and segments within a column represent different event types. Select a column to filter the event list to events in that area.
+
+Event types are indicated by the colors of the column segments:
+
+| Event type                | Color  |
+| ------------------------- | ------ |
+| Login                     | Green  |
+| Failed login              | Red    |
+| Logout                    | Blue   |
+| Application authorization | Purple |
+| Other                     | Gray   |
+
+GeoIP locations are accurate to city level at best. By default, authentik uses a bundled hexagonal basemap with country, region, and locality labels. The bundled basemap does not require an external tile service, so it works in [air-gapped environments](../../install-config/air-gapped.mdx).
+
+### Configure a custom basemap
+
+To replace the bundled basemap, navigate to **System** > **Brands**, edit the applicable brand, and configure **Map tiles**. The field accepts either a PMTiles archive URL that uses the `pmtiles://` protocol or an XYZ vector tile URL template with `{z}`, `{x}`, and `{y}` placeholders. Leave the field empty to use the bundled basemap.
+
+Users' browsers must be able to access the configured tile source.
