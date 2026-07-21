@@ -45402,6 +45402,9 @@ components:
           title: Pbm uuid
         name:
           type: string
+        enabled:
+          type: boolean
+          description: When disabled, this rule will not create any notifications.
         transports:
           type: array
           items:
@@ -45446,6 +45449,9 @@ components:
         name:
           type: string
           minLength: 1
+        enabled:
+          type: boolean
+          description: When disabled, this rule will not create any notifications.
         transports:
           type: array
           items:
@@ -51648,6 +51654,9 @@ components:
         name:
           type: string
           minLength: 1
+        enabled:
+          type: boolean
+          description: When disabled, this rule will not create any notifications.
         transports:
           type: array
           items:
