@@ -5,13 +5,12 @@ from getpass import getpass
 
 from django.contrib.auth.hashers import make_password
 from django.core.management.base import BaseCommand, CommandError
-from django.utils.translation import gettext as _
 
 
 class Command(BaseCommand):
     """Hash a password using Django's password hashers"""
 
-    help = _(
+    help = (
         "Hash a password for use with AUTHENTIK_BOOTSTRAP_PASSWORD_HASH. Prompt when "
         "interactive, or read the password from standard input."
     )
@@ -19,19 +18,22 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         if sys.stdin.isatty():
             try:
-                password = getpass(_("Password: "))
-                password_again = getpass(_("Password (again): "))
+                password = getpass("Password: ")
+                password_again = getpass("Password (again): ")
             except (EOFError, KeyboardInterrupt) as exc:
-                raise CommandError(_("Aborted")) from exc
+                raise CommandError("Aborted") from exc
             if password != password_again:
-                raise CommandError(_("Passwords do not match"))
+                raise CommandError("Passwords do not match")
         else:
-            password = sys.stdin.readline().rstrip("\r\n")
+            try:
+                password = input()
+            except EOFError as exc:
+                raise CommandError("Password cannot be empty") from exc
 
         if not password:
-            raise CommandError(_("Password cannot be empty"))
+            raise CommandError("Password cannot be empty")
         try:
             hashed = make_password(password)
             self.stdout.write(hashed)
         except ValueError as exc:
-            raise CommandError(f"{_('Error hashing password')}: {exc}") from exc
+            raise CommandError(f"Error hashing password: {exc}") from exc

@@ -20,10 +20,16 @@ To generate a hash, run this command before your initial deployment and enter th
 docker compose run --rm server hash_password
 ```
 
-For automation, pass the password in the `PASSWORD` environment variable and pipe it through standard input to prevent exposing the password in your shell history. The `-T` option disables pseudo-TTY allocation so that the command reads from standard input:
+For automation, pass the password in the `PASSWORD` environment variable and pipe it through standard input to prevent exposing the password in your shell history:
 
 ```bash
-printf '%s\n' "$PASSWORD" | docker compose run --rm -T server hash_password
+echo "$PASSWORD" | docker compose run --rm server hash_password
+```
+
+Alternatively, redirect a file that contains the password into the command:
+
+```bash
+docker compose run --rm server hash_password < password.txt
 ```
 
 The generated hash includes a random salt, so running the command multiple times for the same password produces different output. Use the complete output as the value of `AUTHENTIK_BOOTSTRAP_PASSWORD_HASH`.

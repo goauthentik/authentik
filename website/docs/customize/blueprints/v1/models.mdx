@@ -55,10 +55,10 @@ Use `password_hash` when you need to import or bootstrap an existing hash withou
 docker compose run --rm server hash_password
 ```
 
-For automation, pass the password in the `PASSWORD` environment variable and pipe it through standard input to prevent exposing the password in your shell history. The `-T` option disables pseudo-TTY allocation so that the command reads from standard input:
+For automation, pass the password in the `PASSWORD` environment variable and pipe it through standard input to prevent exposing the password in your shell history:
 
 ```bash
-printf '%s\n' "$PASSWORD" | docker compose run --rm -T server hash_password
+echo "$PASSWORD" | docker compose run --rm server hash_password
 ```
 
 For example:
