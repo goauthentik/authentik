@@ -1,21 +1,90 @@
 """Serializer validators"""
 
-from django.contrib.auth.hashers import identify_hasher
+from base64 import b64decode
+from typing import Any
+
+from django.contrib.auth.hashers import (
+    Argon2PasswordHasher,
+    BasePasswordHasher,
+    BCryptSHA256PasswordHasher,
+    PBKDF2PasswordHasher,
+    PBKDF2SHA1PasswordHasher,
+    ScryptPasswordHasher,
+    identify_hasher,
+    must_update_salt,
+)
 from django.utils.translation import gettext_lazy as _
 from rest_framework.exceptions import ValidationError
 from rest_framework.serializers import Serializer
 from rest_framework.utils.representation import smart_repr
 
+INVALID_PASSWORD_HASH_MESSAGE = _("Invalid password hash encoding.")
 
-def validate_password_hash(password_hash: str) -> None:
-    """Validate the format of an encoded Django password."""
+# Keep this allowlist in sync with the non-legacy hashers in settings.PASSWORD_HASHERS.
+SUPPORTED_PASSWORD_HASHERS = (
+    PBKDF2PasswordHasher,
+    BCryptSHA256PasswordHasher,
+    ScryptPasswordHasher,
+    Argon2PasswordHasher,
+)
+BCRYPT_ALPHABET = frozenset("./ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789")
+BCRYPT_SALT_LENGTH = 22
+BCRYPT_CHECKSUM_LENGTH = 31
+
+
+class PasswordHashRequiresOverride(ValueError):
+    """An imported password hash does not match the default security policy."""
+
+
+def _decode_base64(value: str, expected_length: int) -> None:
+    """Decode a base64 value and verify its expected byte length."""
+    decoded = b64decode(value + "=" * (-len(value) % 4), validate=True)
+    if len(decoded) != expected_length:
+        raise ValueError
+
+
+def _decode_password_hash(
+    password_hash: str,
+) -> tuple[BasePasswordHasher, dict[str, Any]]:
+    """Decode a password hash and validate the encoded digest structure."""
+    hasher = identify_hasher(password_hash)
+    decoded = hasher.decode(password_hash)
+
+    if type(hasher) is PBKDF2PasswordHasher:
+        _decode_base64(decoded["hash"], 32)
+    elif type(hasher) is PBKDF2SHA1PasswordHasher:
+        _decode_base64(decoded["hash"], 20)
+    elif type(hasher) is ScryptPasswordHasher:
+        _decode_base64(decoded["hash"], 64)
+    elif type(hasher) is Argon2PasswordHasher:
+        _, _, _, _, salt, digest = password_hash.split("$")
+        _decode_base64(salt, len(decoded["salt"]))
+        _decode_base64(digest, decoded["params"].hash_len)
+    elif type(hasher) is BCryptSHA256PasswordHasher:
+        if (
+            decoded["algostr"] != "2b"
+            or len(decoded["salt"]) != BCRYPT_SALT_LENGTH
+            or len(decoded["checksum"]) != BCRYPT_CHECKSUM_LENGTH
+            or not set(decoded["salt"] + decoded["checksum"]).issubset(BCRYPT_ALPHABET)
+        ):
+            raise ValueError
+
+    return hasher, decoded
+
+
+def validate_password_hash(password_hash: str, *, require_current: bool = False) -> None:
+    """Validate an encoded Django password and, optionally, its security parameters."""
     try:
-        hasher = identify_hasher(password_hash)
-        hasher.decode(password_hash)
+        hasher, decoded = _decode_password_hash(password_hash)
     except (AssertionError, TypeError, ValueError) as exc:
-        raise ValidationError(
-            _("Invalid password hash format. Must be a valid Django password hash.")
-        ) from exc
+        raise ValidationError(INVALID_PASSWORD_HASH_MESSAGE) from exc
+
+    if require_current and (
+        type(hasher) not in SUPPORTED_PASSWORD_HASHERS
+        or hasher.must_update(password_hash)
+        or must_update_salt(decoded["salt"], hasher.salt_entropy)
+    ):
+        raise PasswordHashRequiresOverride
 
 
 class RequiredTogetherValidator:

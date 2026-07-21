@@ -3,7 +3,14 @@
 from datetime import datetime, timedelta
 from json import loads
 
-from django.contrib.auth.hashers import make_password
+from django.contrib.auth.hashers import (
+    Argon2PasswordHasher,
+    BCryptSHA256PasswordHasher,
+    PBKDF2PasswordHasher,
+    PBKDF2SHA1PasswordHasher,
+    ScryptPasswordHasher,
+    make_password,
+)
 from django.urls.base import reverse
 from django.utils.timezone import now
 from rest_framework.test import APITestCase
@@ -30,7 +37,13 @@ from authentik.rbac.models import Role
 from authentik.stages.email.models import EmailStage
 
 INVALID_PASSWORD_HASH = "not-a-valid-hash"
-INVALID_PASSWORD_HASH_ERROR = "Invalid password hash format. Must be a valid Django password hash."
+INVALID_PASSWORD_HASH_ERROR = "Invalid password hash encoding."
+PASSWORD_HASH_REQUIRES_OVERRIDE_ERROR = (
+    "This password hash does not use one of authentik's supported algorithms "
+    "(pbkdf2_sha256, bcrypt_sha256, scrypt, or argon2) with its current work factor "
+    "and sufficient salt entropy. Importing it can weaken password security or enable "
+    'timing-based user enumeration. Set "override" to true to import it anyway.'
+)
 
 
 class TestUsersAPI(APITestCase):
@@ -40,10 +53,15 @@ class TestUsersAPI(APITestCase):
         self.admin = create_test_admin_user()
         self.user = create_test_user()
 
-    def _set_password_hash(self, user: User, password_hash: str, client=None):
+    def _set_password_hash(
+        self, user: User, password_hash: str, client=None, override: bool | None = None
+    ):
+        data: dict[str, str | bool] = {"password": password_hash}
+        if override is not None:
+            data["override"] = override
         return (client or self.client).post(
             reverse("authentik_api:user-set-password-hash", kwargs={"pk": user.pk}),
-            data={"password": password_hash},
+            data=data,
         )
 
     def _assert_password_hash_set(
@@ -55,12 +73,16 @@ class TestUsersAPI(APITestCase):
         self.assertTrue(user.check_password(password))
 
     def _assert_password_hash_rejected(
-        self, user: User, original_password_hash: str, response
+        self,
+        user: User,
+        original_password_hash: str,
+        response,
+        error: str = INVALID_PASSWORD_HASH_ERROR,
     ) -> None:
         self.assertEqual(response.status_code, 400)
         self.assertJSONEqual(
             response.content,
-            {"password": [INVALID_PASSWORD_HASH_ERROR]},
+            {"password": [error]},
         )
         user.refresh_from_db()
         self.assertEqual(user.password, original_password_hash)
@@ -158,13 +180,20 @@ class TestUsersAPI(APITestCase):
         self.assertJSONEqual(response.content, {"password": ["This field may not be blank."]})
 
     def test_set_password_hash(self):
-        """Test setting a user's password from a hash."""
+        """Test setting a user's password with each supported hasher."""
         self.client.force_login(self.admin)
         password = generate_key()
-        password_hash = make_password(password)
-        response = self._set_password_hash(self.user, password_hash)
+        for hasher in (
+            PBKDF2PasswordHasher(),
+            BCryptSHA256PasswordHasher(),
+            ScryptPasswordHasher(),
+            Argon2PasswordHasher(),
+        ):
+            with self.subTest(algorithm=hasher.algorithm):
+                password_hash = hasher.encode(password, hasher.salt())
+                response = self._set_password_hash(self.user, password_hash)
 
-        self._assert_password_hash_set(self.user, password, password_hash, response)
+                self._assert_password_hash_set(self.user, password, password_hash, response)
 
     def test_set_password_hash_invalid(self):
         """Test invalid password hashes are rejected."""
@@ -178,6 +207,119 @@ class TestUsersAPI(APITestCase):
                 response = self._set_password_hash(self.user, password_hash)
 
                 self._assert_password_hash_rejected(self.user, original_password, response)
+
+    def test_set_password_hash_unsupported_hasher(self):
+        """Test password hashes using unsupported hashers are rejected."""
+        self.client.force_login(self.admin)
+        original_password = self.user.password
+        password = generate_key()
+        hasher = PBKDF2SHA1PasswordHasher()
+
+        response = self._set_password_hash(
+            self.user,
+            hasher.encode(password, hasher.salt()),
+        )
+
+        self._assert_password_hash_rejected(
+            self.user,
+            original_password,
+            response,
+            PASSWORD_HASH_REQUIRES_OVERRIDE_ERROR,
+        )
+
+    def test_set_password_hash_override_unsupported_hasher(self):
+        """Test the explicit override accepts a valid legacy password hash."""
+        self.client.force_login(self.admin)
+        password = generate_key()
+        hasher = PBKDF2SHA1PasswordHasher()
+        password_hash = hasher.encode(password, hasher.salt())
+
+        response = self._set_password_hash(self.user, password_hash, override=True)
+
+        self._assert_password_hash_set(self.user, password, password_hash, response)
+
+    def test_set_password_hash_malformed_digest(self):
+        """Test structurally valid hashes with malformed digests are rejected."""
+        self.client.force_login(self.admin)
+        original_password = self.user.password
+        password = generate_key()
+        for hasher in (
+            PBKDF2PasswordHasher(),
+            BCryptSHA256PasswordHasher(),
+            ScryptPasswordHasher(),
+            Argon2PasswordHasher(),
+        ):
+            with self.subTest(algorithm=hasher.algorithm):
+                password_hash = hasher.encode(password, hasher.salt())
+                response = self._set_password_hash(self.user, password_hash[:-1] + "!")
+
+                self._assert_password_hash_rejected(self.user, original_password, response)
+
+    def test_set_password_hash_override_noncurrent_parameters(self):
+        """Test the explicit override accepts noncurrent work parameters."""
+        self.client.force_login(self.admin)
+        password = generate_key()
+        hasher = PBKDF2PasswordHasher()
+        hasher.iterations -= 1
+        password_hash = hasher.encode(password, hasher.salt())
+
+        response = self._set_password_hash(self.user, password_hash, override=True)
+
+        self._assert_password_hash_set(self.user, password, password_hash, response)
+
+    def test_set_password_hash_override_rejects_malformed_hash(self):
+        """Test the override cannot bypass hash structure validation."""
+        self.client.force_login(self.admin)
+        original_password = self.user.password
+        hasher = PBKDF2SHA1PasswordHasher()
+        password_hash = hasher.encode(generate_key(), hasher.salt())
+
+        response = self._set_password_hash(self.user, password_hash[:-1] + "!", override=True)
+
+        self._assert_password_hash_rejected(self.user, original_password, response)
+
+    def test_set_password_hash_stronger_parameters(self):
+        """Test stronger work parameters require an explicit override."""
+        self.client.force_login(self.admin)
+        original_password = self.user.password
+        hasher = PBKDF2PasswordHasher()
+        hasher.iterations += 1
+
+        response = self._set_password_hash(self.user, hasher.encode(generate_key(), hasher.salt()))
+
+        self._assert_password_hash_rejected(
+            self.user,
+            original_password,
+            response,
+            PASSWORD_HASH_REQUIRES_OVERRIDE_ERROR,
+        )
+
+    def test_set_password_hash_noncurrent_parameters(self):
+        """Test hashes using noncurrent work parameters are rejected."""
+        self.client.force_login(self.admin)
+        original_password = self.user.password
+        password = generate_key()
+
+        pbkdf2 = PBKDF2PasswordHasher()
+        pbkdf2.iterations -= 1
+        bcrypt = BCryptSHA256PasswordHasher()
+        bcrypt.rounds -= 1
+        scrypt = ScryptPasswordHasher()
+        scrypt.work_factor //= 2
+        argon2 = Argon2PasswordHasher()
+        argon2.time_cost -= 1
+
+        for hasher in (pbkdf2, bcrypt, scrypt, argon2):
+            with self.subTest(algorithm=hasher.algorithm):
+                password_hash = hasher.encode(password, hasher.salt())
+                response = self._set_password_hash(self.user, password_hash)
+
+                self._assert_password_hash_rejected(
+                    self.user,
+                    original_password,
+                    response,
+                    PASSWORD_HASH_REQUIRES_OVERRIDE_ERROR,
+                )
 
     def test_recovery(self):
         """Test user recovery link"""
