@@ -1,7 +1,7 @@
 from django.db import IntegrityError, transaction
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
-from rest_framework.exceptions import ValidationError
+from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.mixins import (
     CreateModelMixin,
     DestroyModelMixin,
@@ -109,8 +109,11 @@ class UserOffboardingViewSet(
 
         The row is retained (as `CANCELED`) so the offboarding stays visible in
         the audit history; deletion would erase who scheduled and cancelled it.
+        You cannot cancel an offboarding that targets you.
         """
         offboarding: UserOffboarding = self.get_object()
+        if offboarding.user_id == request.user.pk:
+            raise PermissionDenied(_("You cannot cancel your own offboarding."))
         if not offboarding.cancel():
             raise ValidationError(_("Only a pending offboarding can be cancelled."))
         return Response(status=204)

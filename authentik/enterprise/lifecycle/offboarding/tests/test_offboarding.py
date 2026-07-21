@@ -515,6 +515,20 @@ class TestOffboardingAPI(APITestCase):
         offboarding.refresh_from_db()
         self.assertEqual(offboarding.status, OffboardingStatus.COMPLETED)
 
+    def test_cancel_own_offboarding_rejected(self):
+        """Separation of duties: you cannot cancel an offboarding that targets you."""
+        offboarding = UserOffboarding.objects.create(
+            user=self.admin,
+            scheduled_for=now() + timedelta(days=1),
+            action=OffboardingAction.DEACTIVATE,
+        )
+        response = self.client.delete(
+            reverse("authentik_api:useroffboarding-detail", kwargs={"pk": offboarding.pk})
+        )
+        self.assertEqual(response.status_code, 403)
+        offboarding.refresh_from_db()
+        self.assertEqual(offboarding.status, OffboardingStatus.PENDING)
+
     def test_update_not_allowed(self):
         """Records are immutable: PUT/PATCH must not rewrite an offboarding."""
         offboarding = UserOffboarding.objects.create(
