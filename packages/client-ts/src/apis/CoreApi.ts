@@ -209,7 +209,8 @@ export interface CoreApplicationsUsedByListRequest {
 }
 
 export interface CoreAuthenticatedSessionsBulkDeleteDestroyRequest {
-    userPks: Array<number>;
+    includeCurrentSession?: boolean;
+    userPks?: Array<number>;
 }
 
 export interface CoreAuthenticatedSessionsDestroyRequest {
@@ -1627,14 +1628,11 @@ export class CoreApi extends runtime.BaseAPI {
     async coreAuthenticatedSessionsBulkDeleteDestroyRequestOpts(
         requestParameters: CoreAuthenticatedSessionsBulkDeleteDestroyRequest,
     ): Promise<runtime.RequestOpts> {
-        if (requestParameters["userPks"] == null) {
-            throw new runtime.RequiredError(
-                "userPks",
-                'Required parameter "userPks" was null or undefined when calling coreAuthenticatedSessionsBulkDeleteDestroy().',
-            );
-        }
-
         const queryParameters: any = {};
+
+        if (requestParameters["includeCurrentSession"] != null) {
+            queryParameters["include_current_session"] = requestParameters["includeCurrentSession"];
+        }
 
         if (requestParameters["userPks"] != null) {
             queryParameters["user_pks"] = requestParameters["userPks"];
@@ -1681,7 +1679,7 @@ export class CoreApi extends runtime.BaseAPI {
      * Bulk revoke all sessions for multiple users
      */
     async coreAuthenticatedSessionsBulkDeleteDestroy(
-        requestParameters: CoreAuthenticatedSessionsBulkDeleteDestroyRequest,
+        requestParameters: CoreAuthenticatedSessionsBulkDeleteDestroyRequest = {},
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<BulkDeleteSessionResponse> {
         const response = await this.coreAuthenticatedSessionsBulkDeleteDestroyRaw(
