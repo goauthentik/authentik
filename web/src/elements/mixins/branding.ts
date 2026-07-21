@@ -63,6 +63,13 @@ export interface BrandingMixin {
      * Footer links provided by the brand configuration.
      */
     readonly brandingFooterLinks: FooterLink[];
+
+    /**
+     * URL template for the vector tile source used by the events map.
+     *
+     * @see {@linkcode DefaultBrand.brandingMapTiles}
+     */
+    readonly brandingMapTiles: string;
 }
 
 /**
@@ -105,6 +112,10 @@ export const WithBrandConfig = createMixin<BrandingMixin>(
 
             public get brandingFooterLinks(): FooterLink[] {
                 return this.brand.uiFooterLinks ?? DefaultBrand.uiFooterLinks;
+            }
+
+            public get brandingMapTiles(): string {
+                return this.brand.brandingMapTiles || DefaultBrand.brandingMapTiles;
             }
         }
 

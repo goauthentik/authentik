@@ -130,6 +130,7 @@ ouia
 ouid
 peap
 pkce
+pmtiles
 plex
 postgresstore
 proxyv

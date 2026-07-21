@@ -71,6 +71,12 @@ export interface CurrentBrand {
     brandingCustomCss: string;
     /**
      *
+     * @type {string}
+     * @memberof CurrentBrand
+     */
+    brandingMapTiles: string;
+    /**
+     *
      * @type {Array<FooterLink>}
      * @memberof CurrentBrand
      */
@@ -203,6 +209,13 @@ export function instanceOfCurrentBrand(value: object): value is CurrentBrand {
     )
         return false;
     if (
+        (!("brandingMapTiles" in (value as Record<string, any>)) &&
+            !("branding_map_tiles" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["brandingMapTiles"] === undefined &&
+            (value as Record<string, any>)["branding_map_tiles"] === undefined)
+    )
+        return false;
+    if (
         (!("uiFooterLinks" in (value as Record<string, any>)) &&
             !("ui_footer_links" in (value as Record<string, any>))) ||
         ((value as Record<string, any>)["uiFooterLinks"] === undefined &&
@@ -243,6 +256,7 @@ export function CurrentBrandFromJSONTyped(json: any, ignoreDiscriminator: boolea
         brandingFavicon: json["branding_favicon"],
         brandingFaviconThemedUrls: ThemedUrlsFromJSON(json["branding_favicon_themed_urls"]),
         brandingCustomCss: json["branding_custom_css"],
+        brandingMapTiles: json["branding_map_tiles"],
         uiFooterLinks: (json["ui_footer_links"] as Array<any>).map(FooterLinkFromJSON),
         uiTheme: UiThemeEnumFromJSON(json["ui_theme"]),
         flowAuthentication:
@@ -286,6 +300,7 @@ export function CurrentBrandToJSONTyped(
         branding_logo: value["brandingLogo"],
         branding_favicon: value["brandingFavicon"],
         branding_custom_css: value["brandingCustomCss"],
+        branding_map_tiles: value["brandingMapTiles"],
         flow_authentication: value["flowAuthentication"],
         flow_user_switch: value["flowUserSwitch"],
         flow_invalidation: value["flowInvalidation"],
