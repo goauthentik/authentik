@@ -143,6 +143,7 @@ def on_password_changed(
         EventAction.PASSWORD_SET,
         subject_uuid=user.uuid,
         synced_from_source=isinstance(sender, Source),
+        origin=get_event_origin(),
     ).from_http(request, user=user)
 
 
