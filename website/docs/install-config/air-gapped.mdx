@@ -13,7 +13,8 @@ By default, authentik creates outbound connections to the following URLs:
 - https://goauthentik.io: Anonymous analytics on startup
 - https://secure.gravatar.com: Avatars for users
 - https://authentik.error-reporting.a7k.io: Error reporting
-- https://tile.openstreetmap.org: Map tiles for event logs :ak-enterprise
+
+The [events map](../sys-mgmt/events/index.md#event-map) ships with a bundled basemap and makes no outbound connections. If a custom basemap is configured under **System** > **Brands** (**Map tiles**), the browser loads tiles from the configured URL — in an air-gapped environment, point it at an internally reachable tile source or leave it empty to keep the bundled default.
 
 ## Configuration
 
