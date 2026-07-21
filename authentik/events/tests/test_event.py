@@ -234,7 +234,7 @@ class TestEvents(TestCase):
         self.assertEqual(new_count, old_count + 1)
 
     def test_password_set_event(self):
-        """Password changes should carry subject_uuid and synced_from_source"""
+        """Password changes should carry subject_uuid, synced_from_source and origin"""
         user = create_test_user()
 
         user.set_password(generate_id())
@@ -247,6 +247,51 @@ class TestEvents(TestCase):
         )
         self.assertFalse(event.context["synced_from_source"])
         self.assertEqual(event.context["subject_uuid"], user.uuid.hex)
+        self.assertEqual(event.context["origin"], "unknown")
+
+    def test_password_set_event_http(self):
+        """Password changes made through the API should have origin set to "http" """
+        admin = create_test_admin_user()
+        self.client.force_login(admin)
+        user = create_test_user()
+
+        response = self.client.post(
+            reverse("authentik_api:user-set-password", kwargs={"pk": user.pk}),
+            data={"password": generate_id()},
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 204)
+
+        event = (
+            Event.objects.filter(action=EventAction.PASSWORD_SET, user__pk=user.pk)
+            .order_by("-created")
+            .first()
+        )
+        self.assertEqual(event.context["origin"], "http")
+        self.assertFalse(event.context["synced_from_source"])
+
+    def test_password_set_blueprint(self):
+        """Password writes from a blueprint apply should carry origin "blueprint",
+        which the default notification policy excludes"""
+        username = generate_id()
+
+        self.assertTrue(Importer.from_string(dedent(f"""
+                version: 1
+                entries:
+                  - model: authentik_core.user
+                    identifiers:
+                      username: {username}
+                    attrs:
+                      name: {username}
+                      password: {generate_id()}
+                """)).apply())
+        user = User.objects.get(username=username)
+        event = Event.objects.filter(
+            action=EventAction.PASSWORD_SET, context__subject_uuid=user.uuid.hex
+        ).first()
+        self.assertIsNotNone(event)
+        self.assertEqual(event.context["origin"], "blueprint")
+        self.assertFalse(event.context["synced_from_source"])
 
     def test_password_set_synced_from_source(self):
         """Passwords cached from a source login should be flagged as synced_from_source"""
