@@ -48,7 +48,7 @@ authentik resolves `%(theme)s` to:
 
 This resolution happens on the backend, which means it also works with storage backends that need signed URLs, such as S3.
 
-The `%(theme)s` placeholder is supported in all current Admin UI fields that use the shared file picker:
+The `%(theme)s` placeholder is supported in all current Admin interface fields that use the shared file picker:
 
 - Brand **Logo**
 - Brand **Favicon**

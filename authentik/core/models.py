@@ -13,10 +13,11 @@ from deepmerge import always_merger
 from django.contrib.auth.hashers import check_password, identify_hasher
 from django.contrib.auth.models import AbstractUser, Permission
 from django.contrib.auth.models import UserManager as DjangoUserManager
+from django.contrib.contenttypes.models import ContentType
 from django.contrib.sessions.base_session import AbstractBaseSession
 from django.core.validators import validate_slug
 from django.db import models
-from django.db.models import Manager, Q, QuerySet, options
+from django.db.models import Q, QuerySet, options
 from django.http import HttpRequest
 from django.utils.functional import cached_property
 from django.utils.timezone import now
@@ -26,6 +27,8 @@ from guardian.models import RoleModelPermission, RoleObjectPermission
 from model_utils.managers import InheritanceManager
 from psqlextra.indexes import UniqueIndex
 from psqlextra.models import PostgresMaterializedViewModel
+from rest_framework.exceptions import ValidationError
+from rest_framework.fields import BooleanField, CharField, IntegerField, ListField
 from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
 
@@ -42,10 +45,11 @@ from authentik.lib.merge import MERGE_LIST_UNIQUE
 from authentik.lib.models import (
     CreatedUpdatedModel,
     DomainlessFormattedURLValidator,
+    ExpiringModel,
     SerializerModel,
+    SimpleThroughModel,
 )
 from authentik.lib.utils.inheritance import get_deepest_child
-from authentik.lib.utils.reflection import class_to_path
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.policies.models import PolicyBindingModel
 from authentik.rbac.models import Role
@@ -187,7 +191,9 @@ class Group(SerializerModel, AttributesMixin):
         default=False, help_text=_("Users added to this group will be superusers.")
     )
 
-    roles = models.ManyToManyField("authentik_rbac.Role", related_name="groups", blank=True)
+    roles = models.ManyToManyField(
+        "authentik_rbac.Role", related_name="groups", blank=True, through="GroupRole"
+    )
 
     parents = models.ManyToManyField(
         "Group",
@@ -369,8 +375,10 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
     type = models.TextField(choices=UserTypes.choices, default=UserTypes.INTERNAL)
 
     sources = models.ManyToManyField("Source", through="UserSourceConnection")
-    groups = models.ManyToManyField("Group", related_name="users")
-    roles = models.ManyToManyField("authentik_rbac.Role", related_name="users", blank=True)
+    groups = models.ManyToManyField("Group", related_name="users", through="UserGroup")
+    roles = models.ManyToManyField(
+        "authentik_rbac.Role", related_name="users", blank=True, through="UserRole"
+    )
     password_change_date = models.DateTimeField(auto_now_add=True)
 
     last_updated = models.DateTimeField(auto_now=True)
@@ -660,7 +668,9 @@ class Provider(SerializerModel):
         related_name="provider_invalidation",
     )
 
-    property_mappings = models.ManyToManyField("PropertyMapping", default=None, blank=True)
+    property_mappings = models.ManyToManyField(
+        "PropertyMapping", default=None, blank=True, through="ProviderPropertyMapping"
+    )
 
     backchannel_application = models.ForeignKey(
         "Application",
@@ -940,10 +950,18 @@ class Source(ManagedModel, SerializerModel, PolicyBindingModel):
         ),
     )
     user_property_mappings = models.ManyToManyField(
-        "PropertyMapping", default=None, blank=True, related_name="source_userpropertymappings_set"
+        "PropertyMapping",
+        default=None,
+        blank=True,
+        related_name="source_userpropertymappings_set",
+        through="SourceUserPropertyMapping",
     )
     group_property_mappings = models.ManyToManyField(
-        "PropertyMapping", default=None, blank=True, related_name="source_grouppropertymappings_set"
+        "PropertyMapping",
+        default=None,
+        blank=True,
+        related_name="source_grouppropertymappings_set",
+        through="SourceGroupPropertyMapping",
     )
 
     icon = FileField(blank=True, default="")
@@ -1132,75 +1150,6 @@ class GroupSourceConnection(SerializerModel, CreatedUpdatedModel):
         unique_together = (("group", "source"),)
 
 
-class ExpiringManager(Manager):
-    """Manager for expiring objects which filters out expired objects by default"""
-
-    def get_queryset(self):
-        return QuerySet(self.model, using=self._db).exclude(expires__lt=now(), expiring=True)
-
-    def including_expired(self):
-        return QuerySet(self.model, using=self._db)
-
-
-class ExpiringModel(models.Model):
-    """Base Model which can expire, and is automatically cleaned up."""
-
-    expires = models.DateTimeField(default=None, null=True)
-    expiring = models.BooleanField(default=True)
-
-    objects = ExpiringManager()
-
-    class Meta:
-        abstract = True
-        indexes = [
-            models.Index(fields=["expires"]),
-            models.Index(fields=["expiring"]),
-            models.Index(fields=["expiring", "expires"]),
-        ]
-
-    def expire_action(self, *args, **kwargs):
-        """Handler which is called when this object is expired. By
-        default the object is deleted. This is less efficient compared
-        to bulk deleting objects, but classes like Token() need to change
-        values instead of being deleted."""
-        try:
-            return self.delete(*args, **kwargs)
-        except self.DoesNotExist:
-            # Object has already been deleted, so this should be fine
-            return None
-
-    @classmethod
-    def filter_not_expired(cls, **kwargs) -> QuerySet[Self]:
-        """Filer for tokens which are not expired yet or are not expiring,
-        and match filters in `kwargs`"""
-        from authentik.events.models import Event
-
-        deprecation_id = f"{class_to_path(cls)}.filter_not_expired"
-
-        Event.log_deprecation(
-            deprecation_id,
-            message=(
-                ".filter_not_expired() is deprecated as the default lookup now excludes "
-                "expired objects."
-            ),
-        )
-
-        for obj in (
-            cls.objects.including_expired()
-            .filter(**kwargs)
-            .filter(Q(expires__lt=now(), expiring=True))
-        ):
-            obj.delete()
-        return cls.objects.filter(**kwargs)
-
-    @property
-    def is_expired(self) -> bool:
-        """Check if token is expired yet."""
-        if not self.expiring:
-            return False
-        return now() > self.expires
-
-
 class TokenIntents(models.TextChoices):
     """Intents a Token can be created for."""
 
@@ -1314,6 +1263,105 @@ class PropertyMapping(SerializerModel, ManagedModel):
         verbose_name_plural = _("Property Mappings")
 
 
+class SourceUserPropertyMapping(SimpleThroughModel):
+    property_mapping = models.ForeignKey(
+        PropertyMapping, on_delete=models.CASCADE, db_column="propertymapping_id"
+    )
+    source = models.ForeignKey(Source, on_delete=models.CASCADE)
+
+    class Meta:
+        db_table = "authentik_core_source_user_property_mappings"
+        unique_together = (("property_mapping", "source"),)
+        verbose_name = _("Source User Property Mapping")
+        verbose_name_plural = _("Source User Property Mappings")
+
+    def __str__(self):
+        return (
+            f"SourceUserPropertyMapping for Source {self.source_id} "
+            f"and PropertyMapping {self.property_mapping_id}."
+        )
+
+
+class SourceGroupPropertyMapping(SimpleThroughModel):
+    property_mapping = models.ForeignKey(
+        PropertyMapping, on_delete=models.CASCADE, db_column="propertymapping_id"
+    )
+    source = models.ForeignKey(Source, on_delete=models.CASCADE)
+
+    class Meta:
+        db_table = "authentik_core_source_group_property_mappings"
+        unique_together = (("property_mapping", "source"),)
+        verbose_name = _("Source Group Property Mapping")
+        verbose_name_plural = _("Source Group Property Mappings")
+
+    def __str__(self):
+        return (
+            f"SourceGroupPropertyMapping for Source {self.source_id} "
+            f"and PropertyMapping {self.property_mapping_id}."
+        )
+
+
+class ProviderPropertyMapping(SimpleThroughModel):
+    property_mapping = models.ForeignKey(
+        PropertyMapping, on_delete=models.CASCADE, db_column="propertymapping_id"
+    )
+    provider = models.ForeignKey(Provider, on_delete=models.CASCADE)
+
+    class Meta:
+        db_table = "authentik_core_provider_property_mappings"
+        unique_together = (("property_mapping", "provider"),)
+        verbose_name = _("Provider Property Mapping")
+        verbose_name_plural = _("Provider Property Mappings")
+
+    def __str__(self):
+        return (
+            f"ProviderPropertyMapping for Provider {self.provider_id} "
+            f"and PropertyMapping {self.property_mapping_id}."
+        )
+
+
+class UserRole(SimpleThroughModel):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    role = models.ForeignKey(Role, on_delete=models.CASCADE)
+
+    class Meta:
+        db_table = "authentik_core_user_roles"
+        unique_together = (("user", "role"),)
+        verbose_name = _("User Role")
+        verbose_name_plural = _("User Roles")
+
+    def __str__(self):
+        return f"UserRole for User {self.user_id} and Role {self.role_id}."
+
+
+class GroupRole(SimpleThroughModel):
+    group = models.ForeignKey(Group, on_delete=models.CASCADE)
+    role = models.ForeignKey(Role, on_delete=models.CASCADE)
+
+    class Meta:
+        db_table = "authentik_core_group_roles"
+        unique_together = (("group", "role"),)
+        verbose_name = _("Group Role")
+        verbose_name_plural = _("Group Roles")
+
+    def __str__(self):
+        return f"GroupRole for Group {self.group_id} and Role {self.role_id}."
+
+
+class UserGroup(SimpleThroughModel):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    group = models.ForeignKey(Group, on_delete=models.CASCADE)
+
+    class Meta:
+        db_table = "authentik_core_user_groups"
+        unique_together = (("user", "group"),)
+        verbose_name = _("User Group")
+        verbose_name_plural = _("User Groups")
+
+    def __str__(self):
+        return f"UserGroup for User {self.user_id} and Group {self.group_id}."
+
+
 class Session(ExpiringModel, AbstractBaseSession):
     """User session with extra fields for fast access"""
 
@@ -1392,3 +1440,86 @@ class AuthenticatedSession(SerializerModel):
             session=Session.objects.filter(session_key=request.session.session_key).first(),
             user=user,
         )
+
+
+class ObjectAttribute(SerializerModel, ManagedModel, CreatedUpdatedModel):
+    """User-defined schema for models' `attributes` JSON field."""
+
+    class AttributeType(models.TextChoices):
+        TEXT = "text"
+        NUMBER = "number"
+        BOOLEAN = "boolean"
+
+    attribute_id = models.UUIDField(default=uuid4, primary_key=True)
+
+    enabled = models.BooleanField(default=True)
+
+    object_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    label = models.TextField()
+    group = models.TextField(blank=True)
+    key = models.TextField()
+
+    type = models.TextField(choices=AttributeType.choices)
+    is_unique = models.BooleanField(default=False)
+    is_required = models.BooleanField(default=False)
+    regex = models.TextField(blank=True)
+    # Currently not accessible via API/UI, as there are some challenges UI-wise
+    # with regards to merging data
+    # https://github.com/goauthentik/authentik/issues/24250
+    is_array = models.BooleanField(default=False)
+
+    def run_validation(self, value: Any) -> None:
+        err_key = f"attributes_{self.key}"
+
+        if self.is_required and value is None:
+            raise ValidationError({err_key: _("This field is required")})
+        if value is None:
+            return
+
+        match (self.type):
+            case self.AttributeType.TEXT:
+                field_cls = CharField
+            case self.AttributeType.NUMBER:
+                field_cls = IntegerField
+            case self.AttributeType.BOOLEAN:
+                field_cls = BooleanField
+            case _:
+                raise ValidationError("Invalid field type")
+
+        field = field_cls(required=False)
+        if self.is_array:
+            field = ListField(
+                child=field,
+                required=False,
+                error_messages={"not_a_list": _("Value must be an array.")},
+            )
+
+        try:
+            field.run_validation(value)
+        except ValidationError as exc:
+            raise ValidationError({err_key: exc.detail}) from exc
+
+        if self.regex != "":
+            values = value if self.is_array else [value]
+            if not all(re.fullmatch(self.regex, str(v)) for v in values):
+                raise ValidationError({err_key: _("Value does not match configured pattern.")})
+
+        if not self.is_array and self.is_unique:
+            model: type[models.Model] = self.object_type.model_class()
+            lookup_key = f"attributes__{self.key.replace('.', '__')}"
+            if model.objects.filter(**{lookup_key: value}).exists():
+                raise ValidationError({err_key: _("Value is not unique.")})
+
+    @property
+    def serializer(self) -> type[Serializer]:
+        from authentik.core.api.object_attributes import ObjectAttributeSerializer
+
+        return ObjectAttributeSerializer
+
+    def __str__(self):
+        return f"Object attribute '{self.key}' for content type {self.object_type_id}"
+
+    class Meta:
+        verbose_name = _("Object Attribute")
+        verbose_name_plural = _("Object Attributes")
+        unique_together = (("object_type", "key", "enabled"),)

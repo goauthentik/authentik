@@ -13,7 +13,7 @@ from webauthn.helpers.structs import PublicKeyCredentialDescriptor
 
 from authentik.core.types import UserSettingSerializer
 from authentik.flows.models import ConfigurableStage, FriendlyNamedStage, Stage
-from authentik.lib.models import InternallyManagedMixin, SerializerModel
+from authentik.lib.models import InternallyManagedMixin, SerializerModel, SimpleThroughModel
 from authentik.stages.authenticator.models import Device
 
 UNKNOWN_DEVICE_TYPE_AAGUID = "00000000-0000-0000-0000-000000000000"
@@ -103,7 +103,7 @@ class AuthenticatorWebAuthnStage(ConfigurableStage, FriendlyNamedStage, Stage):
     )
 
     prevent_duplicate_devices = models.BooleanField(
-        default=True, help_text=_("When enabled, a given device can only be registered once.")
+        default=False, help_text=_("When enabled, a given device can only be registered once.")
     )
     hints = ArrayField(
         models.TextField(choices=WebAuthnHint.choices),
@@ -111,7 +111,9 @@ class AuthenticatorWebAuthnStage(ConfigurableStage, FriendlyNamedStage, Stage):
         blank=True,
     )
 
-    device_type_restrictions = models.ManyToManyField("WebAuthnDeviceType", blank=True)
+    device_type_restrictions = models.ManyToManyField(
+        "WebAuthnDeviceType", blank=True, through="AuthenticatorWebAuthnStageDeviceTypeRestriction"
+    )
 
     max_attempts = models.PositiveIntegerField(default=0)
 
@@ -223,3 +225,29 @@ class WebAuthnDeviceType(InternallyManagedMixin, SerializerModel):
 
     def __str__(self) -> str:
         return f"WebAuthn device type {self.description} ({self.aaguid})"
+
+
+class AuthenticatorWebAuthnStageDeviceTypeRestriction(SimpleThroughModel):
+    authenticator_webauthn_stage = models.ForeignKey(
+        AuthenticatorWebAuthnStage,
+        on_delete=models.CASCADE,
+        db_column="authenticatorwebauthnstage_id",
+    )
+    device_type_restriction = models.ForeignKey(
+        WebAuthnDeviceType,
+        on_delete=models.CASCADE,
+        db_column="webauthndevicetype_id",
+    )
+
+    class Meta:
+        db_table = "authentik_stages_authenticator_webauthn_authenticatorwebaute3a7"
+        unique_together = (("authenticator_webauthn_stage", "device_type_restriction"),)
+        verbose_name = _("Authenticator WebAuthn Stage Device Type Restriction")
+        verbose_name_plural = _("Authenticator WebAuthn Stage Device Type Restrictions")
+
+    def __str__(self):
+        return (
+            "AuthenticatorWebAuthnStageDeviceTypeRestriction for AuthenticatorWebAuthnStage "
+            f"{self.authenticator_webauthn_stage_id} "
+            f"and WebAuthnDeviceType {self.device_type_restriction_id}."
+        )

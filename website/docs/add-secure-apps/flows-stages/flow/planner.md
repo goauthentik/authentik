@@ -29,7 +29,7 @@ Both options can be enabled for the same stage binding. Use planning-time evalua
 
 For example, a password stage usually depends on the user identified by an earlier identification stage. If a policy for a later stage depends on `pending_user`, evaluate that policy when the stage is run, or ensure `pending_user` is already present when the plan is created.
 
-## Inspecting a plan
+## Inspect a plan
 
 Use the [Flow Inspector](./inspector.md) to execute a flow and, while it executes, view the current stage, the next planned stage, the plan history, and the current plan context.
 
