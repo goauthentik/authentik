@@ -1,0 +1,11 @@
+# The shipped hexworld.pmtiles archive and the Noto Sans glyph ranges are
+# checked in (see README + tiles/fonts/OFL.txt). Everything else generated
+# under tiles/ — intermediate cuts, generator scratch — stays local.
+/tiles/*.pmtiles
+!/tiles/hexworld.pmtiles
+/tiles/*.mbtiles
+/tiles/*.geojsonl
+/tiles/*.geojson
+/out/
+/node_modules/
+*.tsbuildinfo
