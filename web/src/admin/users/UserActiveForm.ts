@@ -9,7 +9,7 @@ import { DestructiveModelForm } from "#elements/forms/DestructiveModelForm";
 import { WithLocale } from "#elements/mixins/locale";
 import { SlottedTemplateResult } from "#elements/types";
 
-import { CoreApi, UsedBy, User } from "@goauthentik/api";
+import { CoreApi, User } from "@goauthentik/api";
 
 import { str } from "@lit/localize";
 import { msg } from "@lit/localize/init/install";
@@ -68,13 +68,11 @@ export class UserActivationToggleForm extends WithLocale(DestructiveModelForm<Us
             : msg(str`Review ${this.verboseName} Activation`, { id: "form.headline.activation" });
     }
 
-    public override usedBy = (): Promise<UsedBy[]> => {
-        if (!this.instance) {
-            return Promise.resolve([]);
-        }
-
-        return this.coreAPI.coreUsersUsedByList({ id: this.instance.pk });
-    };
+    // Toggling active state never deletes associated objects, so we skip the used-by
+    // consequence list the destructive form would otherwise render (#23778).
+    protected override renderForm(): SlottedTemplateResult {
+        return html``;
+    }
 }
 
 declare global {
