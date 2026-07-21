@@ -17,17 +17,17 @@ You schedule an offboarding from a user's detail page, and you view and cancel s
 
 An offboarding runs one of the following actions when its scheduled time is reached:
 
-| Action         | Description                                                                            |
-| -------------- | -------------------------------------------------------------------------------------- |
+| Action         | Description                                                                                     |
+| -------------- | ----------------------------------------------------------------------------------------------- |
 | **Deactivate** | Marks the user as inactive so they can no longer log in. The account and its data are retained. |
-| **Delete**     | Permanently removes the user account.                                                  |
+| **Delete**     | Permanently removes the user account.                                                           |
 
 Independently of the action, each offboarding has two revocation options:
 
-| Option              | Description                                                                    |
-| ------------------- | ----------------------------------------------------------------------------- |
-| **Revoke sessions** | Ends all of the user's active sessions, signing them out everywhere.          |
-| **Revoke tokens**   | Revokes all of the user's API tokens.                                         |
+| Option              | Description                                                          |
+| ------------------- | -------------------------------------------------------------------- |
+| **Revoke sessions** | Ends all of the user's active sessions, signing them out everywhere. |
+| **Revoke tokens**   | Revokes all of the user's API tokens.                                |
 
 Both options are enabled by default. Revoking sessions and tokens ensures the user loses access immediately when the offboarding runs, rather than remaining signed in until their existing sessions expire.
 
@@ -35,12 +35,12 @@ Both options are enabled by default. Revoking sessions and tokens ensures the us
 
 You can view every offboarding and its current state on the **Events** > **Offboardings** page. By default the page shows only pending offboardings; disable **Only show pending offboardings** to also see completed, failed, and canceled records.
 
-| State         | Description                                                                       |
-| ------------- | --------------------------------------------------------------------------------- |
-| **Pending**   | The offboarding is scheduled and waiting for its execution time.                  |
-| **Completed** | The action ran successfully.                                                       |
-| **Failed**    | The action could not be completed after the maximum number of retry attempts.     |
-| **Canceled**  | The offboarding was canceled before it ran.                                        |
+| State         | Description                                                                   |
+| ------------- | ----------------------------------------------------------------------------- |
+| **Pending**   | The offboarding is scheduled and waiting for its execution time.              |
+| **Completed** | The action ran successfully.                                                  |
+| **Failed**    | The action could not be completed after the maximum number of retry attempts. |
+| **Canceled**  | The offboarding was canceled before it ran.                                   |
 
 ## Schedule an offboarding
 
