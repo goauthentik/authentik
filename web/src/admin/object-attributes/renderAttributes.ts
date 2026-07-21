@@ -1,4 +1,3 @@
-import "#elements/ak-array-input";
 import "#components/ak-text-input";
 import "#components/ak-switch-input";
 import "#components/ak-number-input";
@@ -80,29 +79,6 @@ function renderSingleAttribute(
         });
 }
 
-function renderArrayAttribute(
-    values: Record<string, unknown>,
-    def: ObjectAttribute,
-): SlottedTemplateResult {
-    const initialItems = values[def.key];
-    const items: unknown[] = Array.isArray(initialItems) ? initialItems : [];
-
-    return html`<ak-form-element-horizontal label=${def.label} name="attributes.${def.key}">
-        <ak-array-input
-            .items=${items}
-            .newItem=${() => {
-                return def.type === ObjectAttributeTypeEnum.Number ? 0 : "";
-            }}
-            .row=${(item: string, idx: number): SlottedTemplateResult => {
-                const key = `${def.key}.${idx}`;
-                const { isRequired, type } = def;
-
-                return renderSingleAttribute({ [key]: item }, { key, isRequired, type, label: "" });
-            }}
-        ></ak-array-input>
-    </ak-form-element-horizontal>`;
-}
-
 export abstract class ObjectAttributeModelForm<
     T extends object = object,
     PKT extends string | number = string | number,
@@ -136,10 +112,6 @@ export abstract class ObjectAttributeModelForm<
         const values = obj?.attributes || {};
 
         const renderAttributeValue = (groupedAttrDef: ObjectAttribute) => {
-            if (groupedAttrDef.isArray) {
-                return renderArrayAttribute(values, groupedAttrDef);
-            }
-
             return renderSingleAttribute(values, groupedAttrDef);
         };
 
