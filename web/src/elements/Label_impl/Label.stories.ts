@@ -115,14 +115,14 @@ const renderLabel = ({ status, color, icon, compact, outline, message }: LabelSt
 // neutral, informational default.
 export const Default: Story = {
     parameters: describe(
-        "Interactive label. Use the controls to explore status, color, icon, compact and outline."
+        "Interactive label. Use the controls to explore status, color, icon, compact and outline.",
     ),
     render: renderLabel,
 };
 
 export const StatusCodes: Story = {
     parameters: describe(
-        "Every `status` token. Each selects a color and a matching icon in one step. Takes priority over the `color` attribute.  Prefer using this to the `color` attribute."
+        "Every `status` token. Each selects a color and a matching icon in one step. Takes priority over the `color` attribute.  Prefer using this to the `color` attribute.",
     ),
     render: () => html`
         <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center;">
@@ -133,7 +133,7 @@ export const StatusCodes: Story = {
 
 export const InvalidStatusCode: Story = {
     parameters: describe(
-        "Bad status tokens (here set to 'whatever') will cause a warning to the console."
+        "Bad status tokens (here set to 'whatever') will cause a warning to the console.",
     ),
     render: () => html`
         <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center;">
@@ -144,7 +144,7 @@ export const InvalidStatusCode: Story = {
 
 export const Colors: Story = {
     parameters: describe(
-        "Our colorful alternative, if a `status` doesn't match your needs.  Maybe you'll need that pastel purple someday."
+        "Our colorful alternative, if a `status` doesn't match your needs.  Maybe you'll need that pastel purple someday.",
     ),
     render: () => html`
         <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center;">
@@ -176,7 +176,7 @@ export const IconFromProperty: Story = {
 
 export const IconFromSlot: Story = {
     parameters: describe(
-        'Custom icon markup via slot="icon". The leading gap only appears when icon content is present.'
+        'Custom icon markup via slot="icon". The leading gap only appears when icon content is present.',
     ),
     render: () => html`
         <ak-label color="purple">
@@ -200,7 +200,7 @@ export const IconFromSlot: Story = {
 
 export const Overflow: Story = {
     parameters: describe(
-        'Long content is truncated with an ellipsis. Constrain the label\'s width (here via `max-width`) and the `[part="text"]` clip.'
+        'Long content is truncated with an ellipsis. Constrain the label\'s width (here via `max-width`) and the `[part="text"]` clip.',
     ),
     render: () => html`
         <ak-label status="info" style="max-width: 16rem;">
