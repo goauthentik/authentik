@@ -4,7 +4,7 @@ title: User logout stage
 
 The User Logout stage ends the user's authentik session and, if configured, initiates [Single Logout](../../../providers/single-logout/index.md).
 
-## Overview
+## About the user logout stage
 
 This stage removes the current authentik session. When Single Logout is enabled for SAML or OIDC providers, authentik can also inject additional logout handling for those provider sessions.
 

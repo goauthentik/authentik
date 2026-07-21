@@ -4,7 +4,7 @@ title: Password stage
 
 The Password stage prompts the current `pending_user` for a password and validates it against one or more configured backends.
 
-## Overview
+## About the password stage
 
 Use this stage in authentication or password-change flows when a user should prove possession of a password.
 
