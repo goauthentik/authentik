@@ -17,7 +17,7 @@ With this setup in place, you can set Breakpoints in VS Code. To connect to the 
 ![](./debug_vscode.png)
 
 :::info
-Note that due to the Python debugger for VS Code, when a Python file in authentik is saved and the Django process restarts, you must manually reconnect the Debug session. Automatic re-connection is not supported for the Python debugger (see [here](https://github.com/microsoft/vscode-python/issues/19998) and [here](https://github.com/microsoft/vscode-python/issues/1182)).
+Note that due to the Python debugger for VS Code, when a Python file in authentik is saved and the Django process restarts, you must manually reconnect the Debug session. Automatic re-connection is not supported for the Python debugger (see VS Code Python issues [#19998](https://github.com/microsoft/vscode-python/issues/19998) and [#1182](https://github.com/microsoft/vscode-python/issues/1182)).
 :::
 
 #### Debug the server or the worker
