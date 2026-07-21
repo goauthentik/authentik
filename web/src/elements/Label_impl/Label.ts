@@ -68,12 +68,17 @@ export class Label extends LitElement {
         this.hasSlottedIcon = nodes.some(
             (n) =>
                 n.nodeType === Node.ELEMENT_NODE ||
-                (n.nodeType === Node.TEXT_NODE && (n.textContent ?? "").trim().length > 0),
+                (n.nodeType === Node.TEXT_NODE && (n.textContent ?? "").trim().length > 0)
         );
     };
 
     get statusDetails(): StatusDetail | [null, null] {
         const status = this.status ? chromeList.get(this.status) : null;
+        if (this.status && !status) {
+            console.warn(
+                `${this.tagName.toLowerCase()}: '${this.status}' is not a valid status token.`
+            );
+        }
         return status ? status : [null, null];
     }
 
