@@ -77,6 +77,10 @@ def release_lock(conn: Connection, cursor: Cursor):
 
 def ensure_allowed_version(cursor: Cursor) -> None:
     """During an upgrade, ensure that major (i.e. semver-minor) versions were not skipped."""
+    if CONFIG.get_bool("migrations.dangerously_allow_multiple_major_version_upgrades"):
+        LOGGER.warning("Omitting version check before migrations")
+        return
+
     cursor.execute(
         "SELECT * FROM information_schema.tables WHERE table_name = 'authentik_version_history';"
     )
