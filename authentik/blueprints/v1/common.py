@@ -86,22 +86,37 @@ def resolve_references(
     return attrs
 
 
+def _stable_identifier_fields(model_class: type[Model]) -> list[str]:
+    """List the names of unique, non-relational text fields on a model (other than its
+    primary key) that could serve as stable identifiers, portable across authentik instances"""
+    return [
+        model_field.attname
+        for model_field in model_class._meta.fields
+        if not model_field.primary_key
+        and isinstance(model_field, CharField | TextField)
+        and model_field.unique
+    ]
+
+
+def _is_stable_value(value: Any) -> bool:
+    """A value is considered stable (portable across instances) if it's a non-empty
+    string that isn't a UUID, which is almost always instance-local (e.g. a random default)"""
+    if not value or not isinstance(value, str):
+        return False
+    try:
+        UUID(value)
+        return False
+    except ValueError:
+        return True
+
+
 def _readable_key(obj: Model) -> str | None:
     """Find a unique, human-readable text field on `obj` (not a UUID) to make
     a !KeyOf id easier to read than a bare counter, e.g. a slug or name."""
-    for model_field in obj._meta.fields:
-        if not isinstance(model_field, CharField | TextField):
+    for field_name in _stable_identifier_fields(type(obj)):
+        value = getattr(obj, field_name, None)
+        if not _is_stable_value(value):
             continue
-        if not model_field.unique:
-            continue
-        value = getattr(obj, model_field.attname, None)
-        if not value or not isinstance(value, str):
-            continue
-        try:
-            UUID(value)
-            continue
-        except ValueError:
-            pass
         slug = slugify(value)
         if slug:
             return slug
@@ -199,15 +214,24 @@ class BlueprintEntry:
         reference_index: ReferenceIndex | None = None,
     ) -> BlueprintEntry:
         """Convert a SerializerModel instance to a blueprint Entry"""
-        identifiers = {
-            "pk": model.pk,
-        }
         all_attrs, fields = get_attrs(model)
         if reference_index is not None:
             all_attrs = resolve_references(all_attrs, fields, reference_index)
 
-        for extra_identifier_name in extra_identifier_names:
-            identifiers[extra_identifier_name] = all_attrs.pop(extra_identifier_name, None)
+        identifier_names = list(extra_identifier_names)
+        for field_name in _stable_identifier_fields(type(model)):
+            if field_name in identifier_names or field_name not in all_attrs:
+                continue
+            if _is_stable_value(all_attrs[field_name]):
+                identifier_names.append(field_name)
+
+        identifiers = {}
+        for identifier_name in identifier_names:
+            identifiers[identifier_name] = all_attrs.pop(identifier_name, None)
+        # Only fall back to the (instance-local, non-portable) primary key when no other
+        # stable identifier could be found
+        if not identifiers:
+            identifiers["pk"] = model.pk
         entry = BlueprintEntry(
             identifiers=identifiers,
             model=f"{model._meta.app_label}.{model._meta.model_name}",

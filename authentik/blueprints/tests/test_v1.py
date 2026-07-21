@@ -335,9 +335,10 @@ class TestBlueprintsV1(TransactionTestCase):
         as !KeyOf tags instead of raw primary keys"""
         flow_slug = generate_id()
         stage_name = generate_id()
+        policy_name = generate_id()
         with transaction_rollback():
             flow_policy = ExpressionPolicy.objects.create(
-                name=generate_id(),
+                name=policy_name,
                 expression="return True",
             )
             flow = Flow.objects.create(
@@ -372,6 +373,14 @@ class TestBlueprintsV1(TransactionTestCase):
         # rather than an opaque counter
         self.assertEqual(flow_entry.id, f"flow-{slugify(flow_slug)}")
         self.assertEqual(stage_entry.id, f"userloginstage-{slugify(stage_name)}")
+
+        # Policy is exported without any explicit extra identifiers, but its unique,
+        # non-UUID `name` field is still picked up automatically as a stable identifier
+        self.assertEqual(policy_entry.identifiers.get("name"), policy_name)
+        # The primary key is instance-local and not portable, so it must not be used as
+        # an identifier whenever a stable identifier could be found instead
+        for entry in (flow_entry, stage_entry, policy_entry):
+            self.assertNotIn("pk", entry.identifiers)
 
         self.assertIsInstance(stage_binding_entry.identifiers["target"], KeyOf)
         self.assertEqual(stage_binding_entry.identifiers["target"].id_from, flow_entry.id)
