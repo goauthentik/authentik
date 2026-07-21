@@ -54,7 +54,8 @@ After you create the policies to match the relevant events, create a notificatio
 
 3. Define the rule configuration, and then click **Create Notification Rule** or **Update** to save the settings.
 
-- Policies are executed regardless of whether a destination is selected. Notifications are only created when a destination group is selected or **Send notification to event user** is enabled.
+- Use the **Enabled** toggle to turn a rule off without removing its configuration. Disabled rules never create notifications.
+- Policies are executed regardless of whether a destination is selected. Notifications are only created when a destination group is selected, or **Send notification to event user** or **Send notification to affected user** is enabled.
 - Select which [notification transport](./transports.md) authentik uses to send the notification. Two notification transports are created by default:
     - `default-email-transport`: Delivers notifications via email using the [global email configuration](../../install-config/install/docker-compose.mdx#email-configuration-optional-but-recommended).
     - `default-local-transport`: Delivers notifications within the authentik UI.

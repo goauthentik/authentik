@@ -5,6 +5,8 @@ from unittest.mock import MagicMock, patch
 from django.urls import reverse
 from rest_framework.test import APITestCase
 
+from authentik.blueprints.models import BlueprintInstance
+from authentik.blueprints.v1.importer import Importer
 from authentik.core.models import Group, User
 from authentik.core.tests.utils import create_test_user
 from authentik.events.models import (
@@ -59,6 +61,23 @@ class TestEventsNotifications(APITestCase):
         with patch("authentik.events.models.NotificationTransport.send", execute_mock):
             Event.new(EventAction.CUSTOM_PREFIX).save()
         self.assertEqual(execute_mock.call_count, 1)
+
+    def test_trigger_disabled(self):
+        """Test that a disabled rule does not trigger even when its policies match"""
+        transport = NotificationTransport.objects.create(name=generate_id())
+        trigger = NotificationRule.objects.create(
+            name=generate_id(), destination_group=self.group, enabled=False
+        )
+        trigger.transports.add(transport)
+        matcher = EventMatcherPolicy.objects.create(
+            name="matcher", action=EventAction.CUSTOM_PREFIX
+        )
+        PolicyBinding.objects.create(target=trigger, policy=matcher, order=0)
+
+        execute_mock = MagicMock()
+        with patch("authentik.events.models.NotificationTransport.send", execute_mock):
+            Event.new(EventAction.CUSTOM_PREFIX).save()
+        self.assertEqual(execute_mock.call_count, 0)
 
     def test_trigger_event_user(self):
         """Test trigger with event user"""
@@ -187,3 +206,39 @@ class TestEventsNotifications(APITestCase):
         response = self.client.post(reverse("authentik_api:notification-mark-all-seen"))
         self.assertEqual(response.status_code, 204)
         self.assertFalse(Notification.objects.filter(body="foo", seen=False).exists())
+
+
+class TestUserSecurityNotificationRules(APITestCase):
+    """Test the default user security notification rules blueprint"""
+
+    BLUEPRINT = "default/events-user-security-notifications.yaml"
+    RULE_NAMES = [
+        "default-notify-user-password-change",
+        "default-notify-user-mfa-device-change",
+        "default-notify-user-impossible-travel",
+        "default-notify-user-account-lockdown",
+        "default-notify-user-welcome",
+    ]
+
+    def apply(self):
+        content = BlueprintInstance(path=self.BLUEPRINT).retrieve()
+        self.assertTrue(Importer.from_string(content).apply())
+
+    def test_rules_disabled_by_default(self):
+        """All user notification rules ship disabled"""
+        NotificationRule.objects.filter(name__in=self.RULE_NAMES).delete()
+        self.apply()
+        for name in self.RULE_NAMES:
+            with self.subTest(rule=name):
+                self.assertFalse(NotificationRule.objects.get(name=name).enabled)
+
+    def test_reapply_keeps_admin_changes(self):
+        """Re-applying the blueprint must not revert a rule the admin enabled"""
+        NotificationRule.objects.filter(name__in=self.RULE_NAMES).delete()
+        self.apply()
+        rule = NotificationRule.objects.get(name=self.RULE_NAMES[0])
+        rule.enabled = True
+        rule.save()
+        self.apply()
+        rule.refresh_from_db()
+        self.assertTrue(rule.enabled)

@@ -715,6 +715,10 @@ class NotificationRule(TasksModel, SerializerModel, PolicyBindingModel):
     """Decide when to create a Notification based on policies attached to this object."""
 
     name = models.TextField(unique=True)
+    enabled = models.BooleanField(
+        default=True,
+        help_text=_("When disabled, this rule will not create any notifications."),
+    )
     transports = models.ManyToManyField(
         NotificationTransport,
         help_text=_(

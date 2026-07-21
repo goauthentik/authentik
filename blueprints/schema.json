@@ -8540,6 +8540,11 @@
                     "minLength": 1,
                     "title": "Name"
                 },
+                "enabled": {
+                    "type": "boolean",
+                    "title": "Enabled",
+                    "description": "When disabled, this rule will not create any notifications."
+                },
                 "transports": {
                     "type": "array",
                     "items": {

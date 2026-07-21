@@ -25,9 +25,11 @@ entries:
     name: default-match-password-set
 - model: authentik_events.notificationrule
   id: default-notify-user-password-change
+  state: created
   identifiers:
     name: default-notify-user-password-change
   attrs:
+    enabled: false
     severity: notice
     destination_event_subject: true
     transports:
@@ -52,9 +54,11 @@ entries:
     name: default-match-mfa-device-removed
 - model: authentik_events.notificationrule
   id: default-notify-user-mfa-device-change
+  state: created
   identifiers:
     name: default-notify-user-mfa-device-change
   attrs:
+    enabled: false
     severity: notice
     destination_event_subject: true
     transports:
@@ -79,9 +83,11 @@ entries:
     name: default-match-impossible-travel
 - model: authentik_events.notificationrule
   id: default-notify-user-impossible-travel
+  state: created
   identifiers:
     name: default-notify-user-impossible-travel
   attrs:
+    enabled: false
     severity: alert
     destination_event_subject: true
     transports:
@@ -101,9 +107,11 @@ entries:
     name: default-match-account-lockdown
 - model: authentik_events.notificationrule
   id: default-notify-user-account-lockdown
+  state: created
   identifiers:
     name: default-notify-user-account-lockdown
   attrs:
+    enabled: false
     severity: alert
     destination_event_subject: true
     transports:
@@ -135,9 +143,11 @@ entries:
     name: default-match-user-created
 - model: authentik_events.notificationrule
   id: default-notify-user-welcome
+  state: created
   identifiers:
     name: default-notify-user-welcome
   attrs:
+    enabled: false
     severity: notice
     destination_event_subject: true
     transports:

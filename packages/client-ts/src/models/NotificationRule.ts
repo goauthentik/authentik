@@ -36,6 +36,12 @@ export interface NotificationRule {
      */
     name: string;
     /**
+     * When disabled, this rule will not create any notifications.
+     * @type {boolean}
+     * @memberof NotificationRule
+     */
+    enabled?: boolean;
+    /**
      * Select which transports should be used to notify the user. If none are selected, the notification will only be shown in the authentik UI.
      * @type {Array<string>}
      * @memberof NotificationRule
@@ -98,6 +104,7 @@ export function NotificationRuleFromJSONTyped(
     return {
         pk: json["pk"],
         name: json["name"],
+        enabled: json["enabled"] == null ? undefined : json["enabled"],
         transports: json["transports"] == null ? undefined : json["transports"],
         severity: json["severity"] == null ? undefined : SeverityEnumFromJSON(json["severity"]),
         destinationGroup: json["destination_group"] == null ? undefined : json["destination_group"],
@@ -125,6 +132,7 @@ export function NotificationRuleToJSONTyped(
 
     return {
         name: value["name"],
+        enabled: value["enabled"],
         transports: value["transports"],
         severity: SeverityEnumToJSON(value["severity"]),
         destination_group: value["destinationGroup"],
