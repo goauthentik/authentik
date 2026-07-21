@@ -30,7 +30,11 @@ catalog:
 overrides:
   "@goauthentik/docusaurus-config>react": "^19.2.6"
   "@goauthentik/docusaurus-config>react-dom": "^19.2.6"
-  "@goauthentik/docusaurus-config>@docusaurus/theme-common": "^3.10.2"
+  # theme-common owns ColorModeContext. A second copy anywhere in the tree hands
+  # the OpenAPI theme a different context object than the one theme-classic
+  # rendered its provider into, and every useColorMode call throws. Unscoped so
+  # no workspace member or transitive peer can pull its own copy.
+  "@docusaurus/theme-common": "^3.10.2"
   "@goauthentik/eslint-config>typescript": "catalog:"
   "@goauthentik/prettier-config>prettier-plugin-packagejson": "catalog:"
   "@typescript-eslint/parser>typescript": "catalog:"

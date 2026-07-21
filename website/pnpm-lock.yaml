@@ -28,7 +28,7 @@ catalogs:
 overrides:
   '@goauthentik/docusaurus-config>react': ^19.2.6
   '@goauthentik/docusaurus-config>react-dom': ^19.2.6
-  '@goauthentik/docusaurus-config>@docusaurus/theme-common': ^3.10.2
+  '@docusaurus/theme-common': ^3.10.2
   '@goauthentik/eslint-config>typescript': ^6.0.3
   '@goauthentik/prettier-config>prettier-plugin-packagejson': ^3.0.2
   '@typescript-eslint/parser>typescript': ^6.0.3
@@ -329,6 +329,9 @@ importers:
       '@docusaurus/preset-classic':
         specifier: ^3.10.2
         version: 3.10.2(@algolia/client-search@5.55.2)(@docusaurus/faster@3.10.2(@docusaurus/types@3.10.2(react-dom@19.2.7(react@19.2.7))(react@19.2.7)))(@mdx-js/react@3.1.1(@types/react@19.2.17)(react@19.2.7))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(search-insights@2.17.3)(typescript@6.0.3)
+      '@docusaurus/theme-common':
+        specifier: ^3.10.2
+        version: 3.10.2(@docusaurus/plugin-content-docs@3.10.2(@docusaurus/faster@3.10.2(@docusaurus/types@3.10.2(react-dom@19.2.7(react@19.2.7))(react@19.2.7)))(@mdx-js/react@3.1.1(@types/react@19.2.17)(react@19.2.7))(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(typescript@6.0.3))(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@docusaurus/utils':
         specifier: ^3.10.2
         version: 3.10.2(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
@@ -3876,7 +3879,7 @@ packages:
     resolution: {integrity: sha512-uJx+a4qHmpOnl+e7YzsPJSga6d6TLGEVZZPtI7KkzC/PgG7bS8E4P8hknvWqmAEahxhLWEb8izIA3up/0g9RwA==}
     engines: {node: '>=14'}
     peerDependencies:
-      '@docusaurus/theme-common': ^3.10.0
+      '@docusaurus/theme-common': ^3.10.2
       docusaurus-plugin-openapi-docs: ^5.0.0
       docusaurus-plugin-sass: ^0.2.3
       react: ^16.8.4 || ^17.0.0 || ^18.0.0 || ^19.0.0

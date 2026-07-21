@@ -31,6 +31,7 @@
     },
     "dependencies": {
         "@docusaurus/preset-classic": "^3.10.2",
+        "@docusaurus/theme-common": "^3.10.2",
         "@docusaurus/utils": "^3.10.2",
         "@goauthentik/docusaurus-config": "link:../../packages/docusaurus-config",
         "@types/semver": "^7.7.1",
