@@ -24,24 +24,14 @@ If you want to forward these events to another application, forward the log outp
 
 If you want to forward authentik events to another system, see [Log forwarding](./log-forwarding.mdx).
 
-## Event map
+## Event map :ak-enterprise {#event-map}
 
-The events overview renders login and audit event locations on an integrated map. By default, authentik uses the bundled "hexworld" basemap: land is rendered as a hexagonal grid across three zoom levels, with country, region, and locality labels overlaid. Because the map archive is included in authentik, it requires no external services or network requests, and therefore also works in air-gapped deployments.
+The event map groups events into areas based on [GeoIP data](../ops/geoip.mdx). Each area appears as a column. Taller columns contain more events, and segments within a column represent different event types. Select a column to filter the event list to events in that area.
 
-Event locations are derived from GeoIP data and are accurate to city level at best. The hex-grid sizes reflect that limitation: approximately 1,000 km at the world view, 400 km at mid-range, and 130 km at the closest zoom level. Events appear as raised columns on a tilted globe: the more events a cell contains, the taller its column.
+GeoIP locations are accurate to city level at best. By default, authentik uses a bundled hexagonal basemap with country, region, and locality labels. The bundled basemap does not require an external tile service, so it works in [air-gapped environments](../../install-config/air-gapped.mdx).
 
-If a cell contains multiple event types, its column is divided into colored pie segments:
+### Configure a custom basemap
 
-- **Logins**: green
-- **Failed logins**: red
-- **Logouts**: blue
-- **Application authorizations**: purple
-- **All other events**: grey
+To replace the bundled basemap, navigate to **System** > **Brands**, edit the applicable brand, and configure **Map tiles**. The field accepts either a PMTiles archive URL that uses the `pmtiles://` protocol or an XYZ vector tile URL template with `{z}`, `{x}`, and `{y}` placeholders. Leave the field empty to use the bundled basemap.
 
-Select a column to filter the event list below to events from that cell. Custom basemaps configured under **System** > **Brands** display the same event columns over the configured tiles.
-
-Label data is derived from [OpenStreetMap](https://openstreetmap.org/copyright) (© OpenStreetMap contributors, ODbL). Land shapes are from Natural Earth (public domain).
-
-### Using a conventional basemap instead
-
-To replace the default hexworld basemap with a conventional vector basemap, set the **Map tiles** field for the brand under **System > Brands**. This field takes either a `pmtiles://` archive URL or an XYZ endpoint like `/tiles/{z}/{x}/{y}.mvt`. Any non-empty value overrides the bundled default; leave it blank to keep the hexworld basemap.
+Users' browsers must be able to access the configured tile source.
