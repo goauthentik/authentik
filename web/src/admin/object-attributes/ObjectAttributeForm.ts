@@ -25,6 +25,9 @@ import { customElement } from "lit/decorators.js";
 
 @customElement("ak-object-attribute-form")
 export class ObjectAttributeForm extends ModelForm<ObjectAttribute, string> {
+    public static verboseName = msg("Object Attribute");
+    public static verboseNamePlural = msg("Object Attributes");
+
     async loadInstance(pk: string): Promise<ObjectAttribute> {
         return aki(CoreApi).coreObjectAttributesRetrieve({
             attributeId: pk,

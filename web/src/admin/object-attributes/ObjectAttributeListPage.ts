@@ -1,5 +1,4 @@
 import "#admin/rbac/ObjectPermissionModal";
-import "#admin/object-attributes/ObjectAttributeForm";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
@@ -7,9 +6,12 @@ import "#components/ak-status-label";
 
 import { aki } from "#common/api/client";
 
+import { IconEditButton } from "#elements/dialogs";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
+
+import { ObjectAttributeForm } from "#admin/object-attributes/ObjectAttributeForm";
 
 import { CoreApi, ObjectAttribute, ObjectAttributeTypeEnum } from "@goauthentik/api";
 
@@ -105,19 +107,9 @@ export class ObjectAttributeListPage extends TablePage<ObjectAttribute> {
             html`${formatObjectAttributeType(item.type)}`,
             html`<ak-status-label ?good=${item.enabled} type="info"></ak-status-label>`,
             html`${item.objectTypeObj.verboseNamePlural}`,
-            html`<ak-forms-modal>
-                <span slot="submit">${msg("Save Changes")}</span>
-                <span slot="header">${msg("Update Attribute")}</span>
-                <ak-object-attribute-form
-                    slot="form"
-                    .instancePk=${item.pk}
-                ></ak-object-attribute-form>
-                <button slot="trigger" class="pf-c-button pf-m-plain">
-                    <pf-tooltip position="top" content=${msg("Edit")}>
-                        <i class="fas fa-edit" aria-hidden="true"></i>
-                    </pf-tooltip>
-                </button>
-            </ak-forms-modal>`,
+            html`<div class="ak-c-table__actions">
+                ${IconEditButton(ObjectAttributeForm, item.pk, item.label)}
+            </div>`,
         ];
     }
 }
