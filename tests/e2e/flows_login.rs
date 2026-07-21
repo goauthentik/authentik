@@ -1,6 +1,6 @@
 #![expect(clippy::tests_outside_test_module, reason = "we don't care here")]
 use ak_client::{apis::flows_api::flows_instances_partial_update, models::PatchedFlowRequest};
-use authentik_tests::{AuthentikStack, Dom, LoginOptions};
+use authentik_tests::{AuthentikStack, ComposeProfile, Dom, LoginOptions};
 use eyre::Result;
 
 #[tokio::test(flavor = "multi_thread")]
@@ -8,7 +8,7 @@ async fn login() -> Result<()> {
     let mut stack = AuthentikStack::builder()
         .with_blueprint("default/flow-default-authentication-flow.yaml")
         .with_blueprint("default/flow-default-invalidation-flow.yaml")
-        .with_selenium(true)
+        .with_profile(ComposeProfile::Selenium)?
         .run()
         .await?;
 
@@ -38,7 +38,7 @@ async fn login_compatibility_mode() -> Result<()> {
     let mut stack = AuthentikStack::builder()
         .with_blueprint("default/flow-default-authentication-flow.yaml")
         .with_blueprint("default/flow-default-invalidation-flow.yaml")
-        .with_selenium(true)
+        .with_profile(ComposeProfile::Selenium)?
         .run()
         .await?;
 

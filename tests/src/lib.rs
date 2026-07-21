@@ -1,12 +1,14 @@
 use std::{
+    collections::HashSet,
     env::{self, temp_dir},
+    fmt,
     path::PathBuf,
     time::Duration,
 };
 
 use ak_client::{
     apis::{configuration::Configuration, core_api::core_tokens_view_key_retrieve},
-    models::Outpost,
+    models::{Outpost, OutpostTypeEnum},
 };
 use eyre::{Result, eyre};
 use futures_util::StreamExt as _;
@@ -46,17 +48,61 @@ async fn get_chrome_extension() -> Result<PathBuf> {
     Ok(extension_path)
 }
 
-#[expect(clippy::struct_excessive_bools, reason = "It's a builder, it's ok.")]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
+pub enum ComposeProfile {
+    Selenium,
+    Mailpit,
+    Whoami,
+    CaddySingle,
+    EnvoySingle,
+    NginxSingle,
+    TraefikSingle,
+    Proxy,
+    Ldap,
+    Radius,
+    Rac,
+}
+
+impl ComposeProfile {
+    fn is_outpost(self) -> bool {
+        matches!(self, Self::Proxy | Self::Ldap | Self::Radius | Self::Rac)
+    }
+}
+
+impl From<OutpostTypeEnum> for ComposeProfile {
+    fn from(value: OutpostTypeEnum) -> Self {
+        match value {
+            OutpostTypeEnum::Proxy => Self::Proxy,
+            OutpostTypeEnum::Ldap => Self::Ldap,
+            OutpostTypeEnum::Radius => Self::Radius,
+            OutpostTypeEnum::Rac => Self::Rac,
+        }
+    }
+}
+
+impl fmt::Display for ComposeProfile {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let d = match self {
+            Self::Selenium => "selenium",
+            Self::Mailpit => "mailpit",
+            Self::Whoami => "whoami",
+            Self::CaddySingle => "caddy-single",
+            Self::EnvoySingle => "envoy-single",
+            Self::NginxSingle => "nginx-single",
+            Self::TraefikSingle => "traefik-single",
+            Self::Proxy => "proxy",
+            Self::Ldap => "ldap",
+            Self::Radius => "radius",
+            Self::Rac => "rac",
+        };
+        write!(f, "{d}")
+    }
+}
+
 #[derive(Default)]
 pub struct AuthentikStackBuilder {
     blueprint_paths: Vec<String>,
-    selenium: bool,
-    mailpit: bool,
-    whoami: bool,
-    caddy_single: bool,
-    envoy_single: bool,
-    nginx_single: bool,
-    traefik_single: bool,
+    compose_profiles: HashSet<ComposeProfile>,
 }
 
 impl AuthentikStackBuilder {
@@ -66,46 +112,14 @@ impl AuthentikStackBuilder {
         self
     }
 
-    #[must_use]
-    pub fn with_selenium(mut self, selenium: bool) -> Self {
-        self.selenium = selenium;
-        self
-    }
-
-    #[must_use]
-    pub fn with_mailpit(mut self, mailpit: bool) -> Self {
-        self.mailpit = mailpit;
-        self
-    }
-
-    #[must_use]
-    pub fn with_whoami(mut self, whoami: bool) -> Self {
-        self.whoami = whoami;
-        self
-    }
-
-    #[must_use]
-    pub fn with_caddy_single(mut self, caddy_single: bool) -> Self {
-        self.caddy_single = caddy_single;
-        self
-    }
-
-    #[must_use]
-    pub fn with_envoy_single(mut self, envoy_single: bool) -> Self {
-        self.envoy_single = envoy_single;
-        self
-    }
-
-    #[must_use]
-    pub fn with_nginx_single(mut self, nginx_single: bool) -> Self {
-        self.nginx_single = nginx_single;
-        self
-    }
-
-    #[must_use]
-    pub fn with_traefik_single(mut self, traefik_single: bool) -> Self {
-        self.traefik_single = traefik_single;
-        self
+    pub fn with_profile(mut self, profile: ComposeProfile) -> Result<Self> {
+        if profile.is_outpost() {
+            return Err(eyre!(
+                "Cannot add outpost profile before starting the stack."
+            ));
+        }
+        self.compose_profiles.insert(profile);
+        Ok(self)
     }
 
     #[expect(
@@ -119,7 +133,7 @@ impl AuthentikStackBuilder {
         );
 
         let mut stack = AuthentikStack {
-            compose_profiles: vec![],
+            compose_profiles: self.compose_profiles.clone(),
             compose: None,
             driver: None,
             api_config: Configuration::default(),
@@ -169,36 +183,22 @@ impl AuthentikStackBuilder {
                 ),
             );
 
-            if self.selenium {
-                stack.compose_profiles.push("selenium".to_owned());
-            }
-            if self.mailpit {
-                stack.compose_profiles.push("mailpit".to_owned());
-            }
-            if self.whoami {
-                stack.compose_profiles.push("whoami".to_owned());
-            }
-            if self.caddy_single {
-                stack.compose_profiles.push("caddy-single".to_owned());
-            }
-            if self.envoy_single {
-                stack.compose_profiles.push("envoy-single".to_owned());
-            }
-            if self.nginx_single {
-                stack.compose_profiles.push("nginx-single".to_owned());
-            }
-            if self.traefik_single {
-                stack.compose_profiles.push("traefik-single".to_owned());
-            }
-
-            compose = compose.with_env("COMPOSE_PROFILES", stack.compose_profiles.join(","));
+            compose = compose.with_env(
+                "COMPOSE_PROFILES",
+                stack
+                    .compose_profiles
+                    .iter()
+                    .map(|p| p.to_string())
+                    .collect::<Vec<String>>()
+                    .join(","),
+            );
 
             compose
         });
 
         stack.compose().up().await?;
 
-        stack.driver = if self.selenium {
+        stack.driver = if self.compose_profiles.contains(&ComposeProfile::Selenium) {
             let mut caps = DesiredCapabilities::chrome();
             caps.set_browser_log_level(thirtyfour::LoggingPrefsLogLevel::All)?;
             caps.add_arg("--disable-search-engine-choice-screen")?;
@@ -271,7 +271,7 @@ pub struct LoginOptions {
 }
 
 pub struct AuthentikStack {
-    compose_profiles: Vec<String>,
+    compose_profiles: HashSet<ComposeProfile>,
     compose: Option<DockerCompose>,
     driver: Option<WebDriver>,
     api_config: Configuration,
@@ -318,7 +318,7 @@ impl AuthentikStack {
     }
 
     pub async fn start_outpost(&mut self, outpost: &Outpost) -> Result<()> {
-        self.compose_profiles.push(outpost.r#type.to_string());
+        self.compose_profiles.insert(outpost.r#type.into());
 
         sleep(Duration::from_secs(3)).await;
         let token =
@@ -335,7 +335,14 @@ impl AuthentikStack {
                     ),
                     token.key,
                 )
-                .with_env("COMPOSE_PROFILES", self.compose_profiles.join(","))
+                .with_env(
+                    "COMPOSE_PROFILES",
+                    self.compose_profiles
+                        .iter()
+                        .map(|p| p.to_string())
+                        .collect::<Vec<String>>()
+                        .join(","),
+                )
                 .with_wait_for_service(outpost.r#type.to_string(), WaitFor::healthcheck()),
         );
 

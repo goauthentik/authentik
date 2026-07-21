@@ -10,7 +10,7 @@ use ak_client::{
         DeviceClassesEnum, NotConfiguredActionEnum, PatchedAuthenticatorValidateStageRequest,
     },
 };
-use authentik_tests::AuthentikStack;
+use authentik_tests::{AuthentikStack, ComposeProfile};
 use eyre::Result;
 use thirtyfour::prelude::*;
 use tokio::time::sleep;
@@ -54,7 +54,7 @@ async fn login_sfe() -> Result<()> {
     let mut stack = AuthentikStack::builder()
         .with_blueprint("default/flow-default-authentication-flow.yaml")
         .with_blueprint("default/flow-default-invalidation-flow.yaml")
-        .with_selenium(true)
+        .with_profile(ComposeProfile::Selenium)?
         .run()
         .await?;
 
@@ -84,7 +84,7 @@ async fn login_sfe_mfa_static_deny() -> Result<()> {
     let mut stack = AuthentikStack::builder()
         .with_blueprint("default/flow-default-authentication-flow.yaml")
         .with_blueprint("default/flow-default-invalidation-flow.yaml")
-        .with_selenium(true)
+        .with_profile(ComposeProfile::Selenium)?
         .run()
         .await?;
 

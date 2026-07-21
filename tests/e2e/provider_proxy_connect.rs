@@ -14,7 +14,7 @@ use ak_client::{
     },
     models::{ApplicationRequest, OutpostRequest, OutpostTypeEnum, ProxyProviderRequest},
 };
-use authentik_tests::AuthentikStack;
+use authentik_tests::{AuthentikStack, ComposeProfile};
 use eyre::{Result, eyre};
 use tokio::time::sleep;
 
@@ -23,7 +23,7 @@ async fn proxy_connectivity() -> Result<()> {
     let mut stack = AuthentikStack::builder()
         .with_blueprint("default/flow-default-provider-authorization-implicit-consent.yaml")
         .with_blueprint("default/flow-default-provider-invalidation.yaml")
-        .with_whoami(true)
+        .with_profile(ComposeProfile::Whoami)?
         .run()
         .await?;
 

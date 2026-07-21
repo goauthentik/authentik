@@ -15,7 +15,7 @@ use ak_client::{
         ProxyProviderRequest,
     },
 };
-use authentik_tests::{AuthentikStack, LoginOptions};
+use authentik_tests::{AuthentikStack, ComposeProfile, LoginOptions};
 use base64::prelude::*;
 use eyre::Result;
 use jsonwebtoken::dangerous::insecure_decode;
@@ -189,8 +189,8 @@ async fn proxy_simple() -> Result<()> {
         .with_blueprint("default/flow-default-provider-invalidation.yaml")
         .with_blueprint("system/providers-oauth2.yaml")
         .with_blueprint("system/providers-proxy.yaml")
-        .with_selenium(true)
-        .with_whoami(true)
+        .with_profile(ComposeProfile::Selenium)?
+        .with_profile(ComposeProfile::Whoami)?
         .run()
         .await?;
 
@@ -263,8 +263,8 @@ async fn proxy_basic_auth() -> Result<()> {
         .with_blueprint("default/flow-default-provider-invalidation.yaml")
         .with_blueprint("system/providers-oauth2.yaml")
         .with_blueprint("system/providers-proxy.yaml")
-        .with_selenium(true)
-        .with_whoami(true)
+        .with_profile(ComposeProfile::Selenium)?
+        .with_profile(ComposeProfile::Whoami)?
         .run()
         .await?;
 

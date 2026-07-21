@@ -13,7 +13,7 @@ use ak_client::{
         ApplicationRequest, OutpostRequest, OutpostTypeEnum, ProxyMode, ProxyProviderRequest,
     },
 };
-use authentik_tests::{AuthentikStack, LoginOptions};
+use authentik_tests::{AuthentikStack, ComposeProfile, LoginOptions};
 use eyre::Result;
 use thirtyfour::prelude::*;
 use tokio::time::sleep;
@@ -156,9 +156,9 @@ async fn caddy_single() -> Result<()> {
         .with_blueprint("default/flow-default-provider-invalidation.yaml")
         .with_blueprint("system/providers-oauth2.yaml")
         .with_blueprint("system/providers-proxy.yaml")
-        .with_selenium(true)
-        .with_whoami(true)
-        .with_caddy_single(true)
+        .with_profile(ComposeProfile::Selenium)?
+        .with_profile(ComposeProfile::Whoami)?
+        .with_profile(ComposeProfile::CaddySingle)?
         .run()
         .await?;
 
@@ -180,9 +180,9 @@ async fn envoy_single() -> Result<()> {
         .with_blueprint("default/flow-default-provider-invalidation.yaml")
         .with_blueprint("system/providers-oauth2.yaml")
         .with_blueprint("system/providers-proxy.yaml")
-        .with_selenium(true)
-        .with_whoami(true)
-        .with_envoy_single(true)
+        .with_profile(ComposeProfile::Selenium)?
+        .with_profile(ComposeProfile::Whoami)?
+        .with_profile(ComposeProfile::EnvoySingle)?
         .run()
         .await?;
 
@@ -204,9 +204,9 @@ async fn nginx_single() -> Result<()> {
         .with_blueprint("default/flow-default-provider-invalidation.yaml")
         .with_blueprint("system/providers-oauth2.yaml")
         .with_blueprint("system/providers-proxy.yaml")
-        .with_selenium(true)
-        .with_whoami(true)
-        .with_nginx_single(true)
+        .with_profile(ComposeProfile::Selenium)?
+        .with_profile(ComposeProfile::Whoami)?
+        .with_profile(ComposeProfile::NginxSingle)?
         .run()
         .await?;
 
@@ -228,9 +228,9 @@ async fn traefik_single() -> Result<()> {
         .with_blueprint("default/flow-default-provider-invalidation.yaml")
         .with_blueprint("system/providers-oauth2.yaml")
         .with_blueprint("system/providers-proxy.yaml")
-        .with_selenium(true)
-        .with_whoami(true)
-        .with_traefik_single(true)
+        .with_profile(ComposeProfile::Selenium)?
+        .with_profile(ComposeProfile::Whoami)?
+        .with_profile(ComposeProfile::TraefikSingle)?
         .run()
         .await?;
 
