@@ -6,6 +6,36 @@ settings:
 
 catalogs:
   default:
+    '@docusaurus/core':
+      specifier: ^3.10.2
+      version: 3.10.2
+    '@docusaurus/faster':
+      specifier: ^3.10.2
+      version: 3.10.2
+    '@docusaurus/module-type-aliases':
+      specifier: ^3.10.2
+      version: 3.10.2
+    '@docusaurus/plugin-client-redirects':
+      specifier: ^3.10.2
+      version: 3.10.2
+    '@docusaurus/plugin-content-docs':
+      specifier: ^3.10.2
+      version: 3.10.2
+    '@docusaurus/preset-classic':
+      specifier: ^3.10.2
+      version: 3.10.2
+    '@docusaurus/theme-mermaid':
+      specifier: ^3.10.2
+      version: 3.10.2
+    '@docusaurus/tsconfig':
+      specifier: ^3.10.2
+      version: 3.10.2
+    '@docusaurus/types':
+      specifier: ^3.10.2
+      version: 3.10.2
+    '@docusaurus/utils':
+      specifier: ^3.10.2
+      version: 3.10.2
     '@eslint/js':
       specifier: ^9.39.5
       version: 9.39.5
@@ -143,31 +173,31 @@ importers:
   api:
     dependencies:
       '@docusaurus/core':
-        specifier: ^3.10.2
+        specifier: 'catalog:'
         version: 3.10.2(@docusaurus/faster@3.10.2(@docusaurus/types@3.10.2(@swc/core@1.15.43)(postcss@8.5.18)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(postcss@8.5.18))(@mdx-js/react@3.1.1(@types/react@19.2.17)(react@19.2.7))(@rspack/core@1.7.12)(@swc/core@1.15.43)(postcss@8.5.18)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(typescript@6.0.3)
       '@docusaurus/faster':
-        specifier: ^3.10.2
+        specifier: 'catalog:'
         version: 3.10.2(@docusaurus/types@3.10.2(@swc/core@1.15.43)(postcss@8.5.18)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(postcss@8.5.18)
       '@docusaurus/module-type-aliases':
-        specifier: ^3.10.2
+        specifier: 'catalog:'
         version: 3.10.2(@swc/core@1.15.43)(postcss@8.5.18)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@docusaurus/plugin-client-redirects':
-        specifier: ^3.10.2
+        specifier: 'catalog:'
         version: 3.10.2(@docusaurus/faster@3.10.2(@docusaurus/types@3.10.2(@swc/core@1.15.43)(postcss@8.5.18)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(postcss@8.5.18))(@mdx-js/react@3.1.1(@types/react@19.2.17)(react@19.2.7))(@rspack/core@1.7.12)(@swc/core@1.15.43)(postcss@8.5.18)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(typescript@6.0.3)
       '@docusaurus/plugin-content-docs':
-        specifier: ^3.10.2
+        specifier: 'catalog:'
         version: 3.10.2(@docusaurus/faster@3.10.2(@docusaurus/types@3.10.2(@swc/core@1.15.43)(postcss@8.5.18)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(postcss@8.5.18))(@mdx-js/react@3.1.1(@types/react@19.2.17)(react@19.2.7))(@rspack/core@1.7.12)(@swc/core@1.15.43)(postcss@8.5.18)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(typescript@6.0.3)
       '@docusaurus/preset-classic':
-        specifier: ^3.10.2
+        specifier: 'catalog:'
         version: 3.10.2(@algolia/client-search@5.55.2)(@docusaurus/faster@3.10.2(@docusaurus/types@3.10.2(@swc/core@1.15.43)(postcss@8.5.18)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(postcss@8.5.18))(@mdx-js/react@3.1.1(@types/react@19.2.17)(react@19.2.7))(@rspack/core@1.7.12)(@swc/core@1.15.43)(@types/react@19.2.17)(postcss@8.5.18)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(search-insights@2.17.3)(typescript@6.0.3)
       '@docusaurus/theme-common':
         specifier: ^3.10.2
         version: 3.10.2(@docusaurus/plugin-content-docs@3.10.2(@docusaurus/faster@3.10.2(@docusaurus/types@3.10.2(@swc/core@1.15.43)(postcss@8.5.18)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(postcss@8.5.18))(@mdx-js/react@3.1.1(@types/react@19.2.17)(react@19.2.7))(@rspack/core@1.7.12)(@swc/core@1.15.43)(postcss@8.5.18)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(typescript@6.0.3))(@swc/core@1.15.43)(postcss@8.5.18)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@docusaurus/tsconfig':
-        specifier: ^3.10.2
+        specifier: 'catalog:'
         version: 3.10.2
       '@docusaurus/types':
-        specifier: ^3.10.2
+        specifier: 'catalog:'
         version: 3.10.2(@swc/core@1.15.43)(postcss@8.5.18)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@goauthentik/docusaurus-config':
         specifier: link:../../packages/docusaurus-config
@@ -261,22 +291,22 @@ importers:
   docs:
     dependencies:
       '@docusaurus/core':
-        specifier: ^3.10.2
+        specifier: 'catalog:'
         version: 3.10.2(@docusaurus/faster@3.10.2(@docusaurus/types@3.10.2(react-dom@19.2.7(react@19.2.7))(react@19.2.7)))(@mdx-js/react@3.1.1(@types/react@19.2.17)(react@19.2.7))(@rspack/core@1.7.12)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(typescript@6.0.3)
       '@docusaurus/module-type-aliases':
-        specifier: ^3.10.2
+        specifier: 'catalog:'
         version: 3.10.2(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@docusaurus/preset-classic':
-        specifier: ^3.10.2
+        specifier: 'catalog:'
         version: 3.10.2(@algolia/client-search@5.55.2)(@docusaurus/faster@3.10.2(@docusaurus/types@3.10.2(react-dom@19.2.7(react@19.2.7))(react@19.2.7)))(@mdx-js/react@3.1.1(@types/react@19.2.17)(react@19.2.7))(@rspack/core@1.7.12)(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(search-insights@2.17.3)(typescript@6.0.3)
       '@docusaurus/theme-mermaid':
-        specifier: ^3.10.2
+        specifier: 'catalog:'
         version: 3.10.2(@docusaurus/faster@3.10.2(@docusaurus/types@3.10.2(react-dom@19.2.7(react@19.2.7))(react@19.2.7)))(@docusaurus/plugin-content-docs@3.10.2(@docusaurus/faster@3.10.2(@docusaurus/types@3.10.2(react-dom@19.2.7(react@19.2.7))(react@19.2.7)))(@mdx-js/react@3.1.1(@types/react@19.2.17)(react@19.2.7))(@rspack/core@1.7.12)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(typescript@6.0.3))(@mdx-js/react@3.1.1(@types/react@19.2.17)(react@19.2.7))(@rspack/core@1.7.12)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(typescript@6.0.3)
       '@docusaurus/tsconfig':
-        specifier: ^3.10.2
+        specifier: 'catalog:'
         version: 3.10.2
       '@docusaurus/types':
-        specifier: ^3.10.2
+        specifier: 'catalog:'
         version: 3.10.2(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@goauthentik/docusaurus-config':
         specifier: link:../../packages/docusaurus-config
@@ -327,13 +357,13 @@ importers:
   docusaurus-theme:
     dependencies:
       '@docusaurus/preset-classic':
-        specifier: ^3.10.2
+        specifier: 'catalog:'
         version: 3.10.2(@algolia/client-search@5.55.2)(@docusaurus/faster@3.10.2(@docusaurus/types@3.10.2(react-dom@19.2.7(react@19.2.7))(react@19.2.7)))(@mdx-js/react@3.1.1(@types/react@19.2.17)(react@19.2.7))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(search-insights@2.17.3)(typescript@6.0.3)
       '@docusaurus/theme-common':
         specifier: ^3.10.2
         version: 3.10.2(@docusaurus/plugin-content-docs@3.10.2(@docusaurus/faster@3.10.2(@docusaurus/types@3.10.2(react-dom@19.2.7(react@19.2.7))(react@19.2.7)))(@mdx-js/react@3.1.1(@types/react@19.2.17)(react@19.2.7))(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(typescript@6.0.3))(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@docusaurus/utils':
-        specifier: ^3.10.2
+        specifier: 'catalog:'
         version: 3.10.2(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@goauthentik/docusaurus-config':
         specifier: link:../../packages/docusaurus-config
@@ -381,25 +411,25 @@ importers:
   integrations:
     dependencies:
       '@docusaurus/core':
-        specifier: ^3.10.2
+        specifier: 'catalog:'
         version: 3.10.2(@docusaurus/faster@3.10.2(@docusaurus/types@3.10.2(react-dom@19.2.7(react@19.2.7))(react@19.2.7)))(@mdx-js/react@3.1.1(@types/react@19.2.17)(react@19.2.7))(@rspack/core@1.7.12)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(typescript@6.0.3)
       '@docusaurus/module-type-aliases':
-        specifier: ^3.10.2
+        specifier: 'catalog:'
         version: 3.10.2(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@docusaurus/plugin-client-redirects':
-        specifier: ^3.10.2
+        specifier: 'catalog:'
         version: 3.10.2(@docusaurus/faster@3.10.2(@docusaurus/types@3.10.2(react-dom@19.2.7(react@19.2.7))(react@19.2.7)))(@mdx-js/react@3.1.1(@types/react@19.2.17)(react@19.2.7))(@rspack/core@1.7.12)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(typescript@6.0.3)
       '@docusaurus/preset-classic':
-        specifier: ^3.10.2
+        specifier: 'catalog:'
         version: 3.10.2(@algolia/client-search@5.55.2)(@docusaurus/faster@3.10.2(@docusaurus/types@3.10.2(react-dom@19.2.7(react@19.2.7))(react@19.2.7)))(@mdx-js/react@3.1.1(@types/react@19.2.17)(react@19.2.7))(@rspack/core@1.7.12)(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(search-insights@2.17.3)(typescript@6.0.3)
       '@docusaurus/theme-mermaid':
-        specifier: ^3.10.2
+        specifier: 'catalog:'
         version: 3.10.2(@docusaurus/faster@3.10.2(@docusaurus/types@3.10.2(react-dom@19.2.7(react@19.2.7))(react@19.2.7)))(@docusaurus/plugin-content-docs@3.10.2(@docusaurus/faster@3.10.2(@docusaurus/types@3.10.2(react-dom@19.2.7(react@19.2.7))(react@19.2.7)))(@mdx-js/react@3.1.1(@types/react@19.2.17)(react@19.2.7))(@rspack/core@1.7.12)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(typescript@6.0.3))(@mdx-js/react@3.1.1(@types/react@19.2.17)(react@19.2.7))(@rspack/core@1.7.12)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(typescript@6.0.3)
       '@docusaurus/tsconfig':
-        specifier: ^3.10.2
+        specifier: 'catalog:'
         version: 3.10.2
       '@docusaurus/types':
-        specifier: ^3.10.2
+        specifier: 'catalog:'
         version: 3.10.2(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@goauthentik/docusaurus-config':
         specifier: link:../../packages/docusaurus-config
@@ -3197,9 +3227,6 @@ packages:
 
   caniuse-api@3.0.0:
     resolution: {integrity: sha512-bsTwuIg/BZZK/vreVTYYbSWoe2F+71P7K5QGEX+pT250DZbfU1MQ5prOKpPR+LL6uWKK3KMwMCAS74QB3Um1uw==}
-
-  caniuse-lite@1.0.30001805:
-    resolution: {integrity: sha512-52noaS3DubycKSXaU30TwPGIp+POyQSUVa5jBEq3vkRkY0kjyb3LQgvhU6WGyCcyXqVLWO0Cw0Q6BSdD0kUfVA==}
 
   caniuse-lite@1.0.30001806:
     resolution: {integrity: sha512-72Cuvd95zbSYPKq6Fhg8eDJRlzgWDf7/mtoZv6Qe/DYNCEBdNxoA3+rZAU2ZhGCpZlns3EssFavaZomckT5Uuw==}
@@ -13993,7 +14020,7 @@ snapshots:
   autoprefixer@10.5.2(postcss@8.5.18):
     dependencies:
       browserslist: 4.28.6
-      caniuse-lite: 1.0.30001805
+      caniuse-lite: 1.0.30001806
       fraction.js: 5.3.4
       picocolors: 1.1.1
       postcss: 8.5.18
@@ -14198,11 +14225,9 @@ snapshots:
   caniuse-api@3.0.0:
     dependencies:
       browserslist: 4.28.6
-      caniuse-lite: 1.0.30001805
+      caniuse-lite: 1.0.30001806
       lodash.memoize: 4.1.2
       lodash.uniq: 4.5.0
-
-  caniuse-lite@1.0.30001805: {}
 
   caniuse-lite@1.0.30001806: {}
 

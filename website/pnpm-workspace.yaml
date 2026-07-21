@@ -15,6 +15,23 @@ nodeLinker: hoisted
 # these via `catalog:`, and overrides pin transitive deps to the same versions.
 # `scripts/node/lint-catalogs.ts` keeps them in sync with the other workspace roots.
 catalog:
+  # The Docusaurus packages ship as one lockstep release and several are declared
+  # by three or four workspace members, so a group bump that reaches some
+  # manifests and misses others leaves two copies of a package in the tree. When
+  # the package owns a React context, as `theme-common` owns ColorModeContext,
+  # the second copy is a site-wide runtime crash (#24026). One entry per package
+  # here means a bump either lands everywhere or nowhere.
+  "@docusaurus/core": "^3.10.2"
+  "@docusaurus/faster": "^3.10.2"
+  "@docusaurus/module-type-aliases": "^3.10.2"
+  "@docusaurus/plugin-client-redirects": "^3.10.2"
+  "@docusaurus/plugin-content-docs": "^3.10.2"
+  "@docusaurus/preset-classic": "^3.10.2"
+  "@docusaurus/theme-common": "^3.10.2"
+  "@docusaurus/theme-mermaid": "^3.10.2"
+  "@docusaurus/tsconfig": "^3.10.2"
+  "@docusaurus/types": "^3.10.2"
+  "@docusaurus/utils": "^3.10.2"
   "@eslint/js": "^9.39.5"
   "@typescript-eslint/eslint-plugin": "^8.64.0"
   "@typescript-eslint/parser": "^8.64.0"
@@ -34,7 +51,7 @@ overrides:
   # the OpenAPI theme a different context object than the one theme-classic
   # rendered its provider into, and every useColorMode call throws. Unscoped so
   # no workspace member or transitive peer can pull its own copy.
-  "@docusaurus/theme-common": "^3.10.2"
+  "@docusaurus/theme-common": "catalog:"
   "@goauthentik/eslint-config>typescript": "catalog:"
   "@goauthentik/prettier-config>prettier-plugin-packagejson": "catalog:"
   "@typescript-eslint/parser>typescript": "catalog:"
