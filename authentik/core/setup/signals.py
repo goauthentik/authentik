@@ -38,5 +38,8 @@ def post_startup_setup_bootstrap(sender, **_):
                 LOGGER.warning("Blueprint invalid", tenant=tenant.schema_name)
                 for log in logs:
                     log.log()
-            importer.apply()
+                continue
+            if not importer.apply():
+                LOGGER.warning("Failed to apply bootstrap blueprint", tenant=tenant.schema_name)
+                continue
             Setup.set(True, tenant=tenant)

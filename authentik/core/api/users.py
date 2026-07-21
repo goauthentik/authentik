@@ -5,6 +5,7 @@ from json import loads
 from typing import Any
 
 from django.contrib.auth import update_session_auth_hash
+from django.contrib.auth.hashers import identify_hasher
 from django.contrib.auth.models import AnonymousUser, Permission
 from django.db.models import Exists, OuterRef, Prefetch, Q
 from django.db.transaction import atomic
@@ -14,7 +15,6 @@ from django.utils.http import urlencode
 from django.utils.text import slugify
 from django.utils.timezone import now
 from django.utils.translation import gettext as _
-from django.utils.translation import gettext_lazy
 from django_filters.filters import (
     BooleanFilter,
     CharFilter,
@@ -108,9 +108,19 @@ from authentik.stages.email.utils import TemplateEmailMessage
 
 LOGGER = get_logger()
 
-INVALID_PASSWORD_HASH_MESSAGE = gettext_lazy(
+INVALID_PASSWORD_HASH_MESSAGE = _(
     "Invalid password hash format. Must be a valid Django password hash."
 )
+
+
+def validate_imported_password_hash(password_hash: str) -> str:
+    """Validate the format of a password hash imported through the API."""
+    try:
+        hasher = identify_hasher(password_hash)
+        hasher.decode(password_hash)
+    except (AssertionError, TypeError, ValueError) as exc:
+        raise ValidationError(INVALID_PASSWORD_HASH_MESSAGE) from exc
+    return password_hash
 
 
 class ParamUserSerializer(PassiveSerializer):
@@ -213,7 +223,6 @@ class UserSerializer(AttributesMixinSerializer, ModelSerializer):
             password = validated_data.pop("password", None)
             password_hash = validated_data.pop("password_hash", None)
             permissions = validated_data.pop("permissions", [])
-            self._validate_password_inputs(password, password_hash)
 
         instance: User = super().create(validated_data)
         if is_blueprint:
@@ -233,7 +242,6 @@ class UserSerializer(AttributesMixinSerializer, ModelSerializer):
             password = validated_data.pop("password", None)
             password_hash = validated_data.pop("password_hash", None)
             permissions = validated_data.pop("permissions", [])
-            self._validate_password_inputs(password, password_hash)
 
         instance = super().update(instance, validated_data)
         if is_blueprint:
@@ -250,13 +258,6 @@ class UserSerializer(AttributesMixinSerializer, ModelSerializer):
         """Validate mutually-exclusive password inputs before any model mutation."""
         if password is not None and password_hash is not None:
             raise ValidationError(_("Cannot set both password and password_hash. Use only one."))
-        if password_hash is None:
-            return
-        try:
-            User.validate_password_hash(password_hash)
-        except ValueError as exc:
-            LOGGER.warning("Failed to identify password hash format", exc_info=exc)
-            raise ValidationError(INVALID_PASSWORD_HASH_MESSAGE) from exc
 
     def _set_password(self, instance: User, password: str | None, password_hash: str | None = None):
         """Set password from plain text or hash."""
@@ -285,6 +286,12 @@ class UserSerializer(AttributesMixinSerializer, ModelSerializer):
             if segment == "":
                 raise ValidationError(_("No empty segments in user path allowed."))
         return path
+
+    def validate_password_hash(self, password_hash: str | None) -> str | None:
+        """Validate a password hash supplied by a blueprint."""
+        if password_hash is None:
+            return None
+        return validate_imported_password_hash(password_hash)
 
     def validate_type(self, user_type: str) -> str:
         """Validate user type, internal_service_account is an internal value"""
@@ -334,6 +341,8 @@ class UserSerializer(AttributesMixinSerializer, ModelSerializer):
         return roles
 
     def validate(self, attrs: dict) -> dict:
+        if SERIALIZER_CONTEXT_BLUEPRINT in self.context:
+            self._validate_password_inputs(attrs.get("password"), attrs.get("password_hash"))
         if self.instance and self.instance.type == UserTypes.INTERNAL_SERVICE_ACCOUNT:
             raise ValidationError(_("Can't modify internal service account users"))
         return super().validate(attrs)
@@ -476,6 +485,10 @@ class UserPasswordHashSetSerializer(PassiveSerializer):
     """Payload to set a users' password hash directly"""
 
     password = CharField(required=True)
+
+    def validate_password(self, password_hash: str) -> str:
+        """Validate a password hash supplied through the API."""
+        return validate_imported_password_hash(password_hash)
 
 
 class UserServiceAccountSerializer(PassiveSerializer):
@@ -884,9 +897,6 @@ class UserViewSet(
         try:
             user.set_password_from_hash(body.validated_data["password"], request=request)
             user.save()
-        except ValueError as exc:
-            LOGGER.debug("Failed to set password hash", exc=exc)
-            return Response(data={"password": [INVALID_PASSWORD_HASH_MESSAGE]}, status=400)
         except (ValidationError, IntegrityError) as exc:
             LOGGER.debug("Failed to set password hash", exc=exc)
             return Response(status=400)

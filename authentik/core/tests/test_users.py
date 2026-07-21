@@ -4,7 +4,6 @@ from unittest.mock import patch
 
 from django.contrib.auth.hashers import make_password
 from django.test.testcases import TestCase
-from rest_framework.exceptions import ValidationError
 
 from authentik.blueprints.v1.importer import SERIALIZER_CONTEXT_BLUEPRINT
 from authentik.core.api.users import UserSerializer
@@ -113,16 +112,13 @@ class TestUserSerializerPasswordHash(TestCase):
             data={
                 "username": generate_id(),
                 "name": "Test User",
-                "password_hash": "not-a-valid-hash",
+                "password_hash": "pbkdf2_sha256$1000000/K4wGpWYKfJPSCcNM=",
             },
             context={SERIALIZER_CONTEXT_BLUEPRINT: True},
         )
 
-        self.assertTrue(serializer.is_valid(), serializer.errors)
-        with self.assertRaises(ValidationError) as ctx:
-            serializer.save()
-
-        self.assertIn("Invalid password hash format", str(ctx.exception))
+        self.assertFalse(serializer.is_valid())
+        self.assertIn("Invalid password hash", str(serializer.errors))
 
     def test_password_hash_ignored_outside_blueprint_context(self):
         """Test password_hash is not accepted by the regular serializer."""
