@@ -110,12 +110,6 @@ export interface ObjectAttribute {
      * @memberof ObjectAttribute
      */
     isRequired?: boolean;
-    /**
-     *
-     * @type {boolean}
-     * @memberof ObjectAttribute
-     */
-    isArray?: boolean;
 }
 
 /**
@@ -159,7 +153,6 @@ export function ObjectAttributeFromJSONTyped(
         managed: json["managed"] == null ? undefined : json["managed"],
         isUnique: json["is_unique"] == null ? undefined : json["is_unique"],
         isRequired: json["is_required"] == null ? undefined : json["is_required"],
-        isArray: json["is_array"] == null ? undefined : json["is_array"],
     };
 }
 
@@ -186,6 +179,5 @@ export function ObjectAttributeToJSONTyped(
         managed: value["managed"],
         is_unique: value["isUnique"],
         is_required: value["isRequired"],
-        is_array: value["isArray"],
     };
 }

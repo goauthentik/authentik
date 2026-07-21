@@ -44956,8 +44956,6 @@ components:
           type: boolean
         is_required:
           type: boolean
-        is_array:
-          type: boolean
       required:
       - created
       - key
@@ -45000,8 +44998,6 @@ components:
         is_unique:
           type: boolean
         is_required:
-          type: boolean
-        is_array:
           type: boolean
       required:
       - key
@@ -50375,8 +50371,6 @@ components:
         is_unique:
           type: boolean
         is_required:
-          type: boolean
-        is_array:
           type: boolean
     PatchedOutpostRequest:
       type: object

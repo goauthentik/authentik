@@ -53,26 +53,6 @@ class TestObjectAttributes(APITestCase):
         self.assertEqual(res.status_code, 400)
         self.assertJSONEqual(res.content, {"object_type": ["Invalid object type"]})
 
-    def test_create_invalid_array_unique(self):
-        res = self.client.post(
-            reverse("authentik_api:objectattribute-list"),
-            data={
-                "object_type": "authentik_core.user",
-                "enabled": False,
-                "key": "employeeNumber",
-                "label": "Employee Number",
-                "type": "text",
-                "group": "Employee",
-                "is_unique": True,
-                "is_required": False,
-                "is_array": True,
-            },
-        )
-        self.assertEqual(res.status_code, 400)
-        self.assertJSONEqual(
-            res.content, {"non_field_errors": ["Unique cannot be enabled for arrays."]}
-        )
-
     def test_update(self):
         attr = ObjectAttribute.objects.create(
             object_type=ContentType.objects.get_for_model(User),

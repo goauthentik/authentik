@@ -5515,10 +5515,6 @@
                 "is_required": {
                     "type": "boolean",
                     "title": "Is required"
-                },
-                "is_array": {
-                    "type": "boolean",
-                    "title": "Is array"
                 }
             },
             "required": []

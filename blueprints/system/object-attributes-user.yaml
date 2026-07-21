@@ -106,7 +106,6 @@ entries:
         is_required: false
         is_unique: false
         type: text
-        is_array: true
   unix:
     - model: authentik_core.objectattribute
       identifiers:

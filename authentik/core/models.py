@@ -1418,6 +1418,9 @@ class ObjectAttribute(SerializerModel, ManagedModel, CreatedUpdatedModel):
     is_unique = models.BooleanField(default=False)
     is_required = models.BooleanField(default=False)
     regex = models.TextField(blank=True)
+    # Currently not accessible via API/UI, as there are some challenges UI-wise
+    # with regards to merging data
+    # https://github.com/goauthentik/authentik/issues/24250
     is_array = models.BooleanField(default=False)
 
     def run_validation(self, value: Any) -> None:

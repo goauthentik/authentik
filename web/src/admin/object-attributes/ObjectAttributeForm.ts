@@ -145,12 +145,6 @@ export class ObjectAttributeForm extends ModelForm<ObjectAttribute, string> {
                             "Value of the attribute must be unique across all instances of the selected object type.",
                         )}
                     ></ak-switch-input>
-                    <ak-switch-input
-                        name="isArray"
-                        label=${msg("Attribute is an array")}
-                        ?checked=${this.instance?.isArray}
-                        help=${msg("Value can have multiple entries.")}
-                    ></ak-switch-input>
                     <ak-text-input
                         name="regex"
                         value="${this.instance?.regex ?? ""}"

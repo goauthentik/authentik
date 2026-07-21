@@ -77,7 +77,6 @@ class ObjectAttributeSerializer(ModelSerializer):
             "managed",
             "is_unique",
             "is_required",
-            "is_array",
         ]
         extra_kwargs = {
             "last_updated": {"read_only": True},
