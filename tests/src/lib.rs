@@ -124,6 +124,8 @@ impl AuthentikStackBuilder {
             .with_env("PG_PASS", "password")
             .with_env("AUTHENTIK_SECRET_KEY", "secret_key")
             .with_env("AUTHENTIK_TAG", &tag)
+            .with_wait(false)
+            .with_wait_for_service("postgresql", WaitFor::healthcheck())
             .with_wait_for_service("worker", WaitFor::healthcheck())
             .with_wait_for_service(
                 "server",

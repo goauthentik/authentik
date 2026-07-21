@@ -409,7 +409,7 @@ jobs:
             --failure-output final \
             --no-output-indent \
             --retries 3 \
-            --jobs 1 \
+            --jobs 2 \
             --no-fail-fast \
             --filterset 'kind(test) & binary_id(#authentik-tests::e2e_${{ matrix.name }}*)'
   test-openid-conformance:
