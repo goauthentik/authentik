@@ -171,7 +171,7 @@ checksum = "1505bd5d3d116872e7271a6d4e16d81d0c8570876c8de68093a09ac269d8aac0"
 
 [[package]]
 name = "authentik"
-version = "2026.8.0-rc1"
+version = "0.0.0-rc1"
 dependencies = [
  "arc-swap",
  "argh",
@@ -197,7 +197,7 @@ dependencies = [
 
 [[package]]
 name = "authentik-axum"
-version = "2026.8.0-rc1"
+version = "0.0.0-rc1"
 dependencies = [
  "authentik-common",
  "axum",
@@ -217,7 +217,7 @@ dependencies = [
 
 [[package]]
 name = "authentik-client"
-version = "2026.8.0-rc1"
+version = "0.0.0-rc1"
 dependencies = [
  "aws-lc-rs",
  "chrono",
@@ -234,7 +234,7 @@ dependencies = [
 
 [[package]]
 name = "authentik-common"
-version = "2026.8.0-rc1"
+version = "0.0.0-rc1"
 dependencies = [
  "arc-swap",
  "authentik-client",
