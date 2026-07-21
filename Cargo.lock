@@ -313,6 +313,7 @@ dependencies = [
  "authentik-client",
  "base64 0.22.1",
  "eyre",
+ "futures-util",
  "jsonwebtoken",
  "rand 0.10.2",
  "regex",

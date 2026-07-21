@@ -1,10 +1,15 @@
-use std::{env, time::Duration};
+use std::{
+    env::{self, temp_dir},
+    path::PathBuf,
+    time::Duration,
+};
 
 use ak_client::{
     apis::{configuration::Configuration, core_api::core_tokens_view_key_retrieve},
     models::Outpost,
 };
 use eyre::{Result, eyre};
+use futures_util::StreamExt;
 use regex::Regex;
 use reqwest::{Method, StatusCode};
 use serde_json::Value;
@@ -14,10 +19,28 @@ use testcontainers::{
 };
 use thirtyfour::prelude::*;
 use tokio::{
+    fs::File,
+    io::AsyncWriteExt,
     runtime::{Handle, RuntimeFlavor},
     task::block_in_place,
     time::{Instant, sleep},
 };
+
+async fn get_chrome_extension() -> Result<PathBuf> {
+    let extension_path = temp_dir().join("ak-chrome.ctx");
+    let response = reqwest::get(
+        "https://pkg.goauthentik.io/packages/authentik_browser-ext/browser-ext/authentik_chrome.zip"
+    ).await?.error_for_status()?;
+    let mut file = File::create(&extension_path).await?;
+    let mut stream = response.bytes_stream();
+
+    while let Some(chunk) = stream.next().await {
+        file.write_all(&chunk?).await?;
+    }
+    file.flush().await?;
+
+    Ok(extension_path)
+}
 
 #[expect(clippy::struct_excessive_bools, reason = "It's a builder, it's ok.")]
 #[derive(Default)]
@@ -169,6 +192,14 @@ impl AuthentikStackBuilder {
         stack.driver = if self.selenium {
             let mut caps = DesiredCapabilities::chrome();
             caps.set_browser_log_level(thirtyfour::LoggingPrefsLogLevel::All)?;
+            caps.add_arg("--disable-search-engine-choice-screen")?;
+            caps.add_extension(&get_chrome_extension().await?)?;
+            caps.add_experimental_option(
+                "prefs",
+                serde_json::json!({
+                    "profile.password_manager_leak_detection": true
+                }),
+            )?;
             let driver_url = format!(
                 "http://{}:{}",
                 stack
@@ -463,6 +494,17 @@ impl AuthentikStack {
 
     pub async fn quit(&mut self) -> Result<()> {
         let driver = if let Some(driver) = self.driver.take() {
+            eprintln!("::group::Browser logs");
+            match driver.browser_log().await {
+                Ok(logs) => {
+                    logs.iter().for_each(|log| eprintln!("{:?}", log));
+                }
+                Err(err) => {
+                    eprintln!("Failed to get browser logs: {err}");
+                }
+            }
+            eprintln!("::endgroup::");
+
             driver.quit().await
         } else {
             Ok(())

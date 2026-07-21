@@ -12,6 +12,7 @@ publish = false
 [dependencies]
 ak-client.workspace = true
 eyre.workspace = true
+futures-util.workspace = true
 tokio.workspace = true
 regex.workspace = true
 reqwest.workspace = true
