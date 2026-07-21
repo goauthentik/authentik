@@ -2,7 +2,7 @@
 
 # Tag must track the root package.json `packageManager` version. ${BUILDPLATFORM}
 # keeps the binary's arch aligned with the builder stage on cross-arch builds.
-FROM --platform=${BUILDPLATFORM} ghcr.io/pnpm/pnpm:11.13.0@sha256:cd8efe9bf47d8e4ea97c3fdc9a42650dc28619a11b486ade5d547fd2182eb98f AS pnpm
+FROM --platform=${BUILDPLATFORM} ghcr.io/pnpm/pnpm:11.14.0@sha256:17453ee56556de13ea580d010a7914a8a8f1281c7be27e397d956cfdc0d176e3 AS pnpm
 
 # Stage: Build webui
 FROM --platform=${BUILDPLATFORM} docker.io/library/node:26-trixie-slim@sha256:715e55e4b84e4bb0ff48e49b398a848f08e55daed8eb6a0ea1839ae53bc57583 AS node-builder
@@ -47,7 +47,7 @@ RUN pnpm run build && \
     pnpm run build:sfe
 
 # Stage: Build go proxy
-FROM --platform=${BUILDPLATFORM} docker.io/library/golang:1.27rc2-trixie@sha256:3f1e064e53fea7620807c6b953b77b1c7fd0d99689b43ddafd5cd56d7838441c AS go-builder
+FROM --platform=${BUILDPLATFORM} docker.io/library/golang:1.27rc2-trixie@sha256:c048f885615f96feb36c94ec97648dd8cb752e0a5158cf9affcb95d326a0214d AS go-builder
 
 ARG TARGETOS
 ARG TARGETARCH
@@ -122,9 +122,9 @@ RUN --mount=type=bind,target=rust-toolchain.toml,src=rust-toolchain.toml \
 RUN cat /root/.rustup/settings.toml
 
 # Stage: Download uv
-FROM ghcr.io/astral-sh/uv:0.11.28@sha256:0f36cb9361a3346885ca3677e3767016687b5a170c1a6b88465ec14aefec90aa AS uv
+FROM ghcr.io/astral-sh/uv:0.11.29@sha256:eb2843a1e56fd9e30c7276ce1a52cba86e64c7b385f5e3279a0e08e02dd058fc AS uv
 # Stage: Base python image
-FROM ghcr.io/goauthentik/fips-python:3.14.6-slim-trixie-fips@sha256:7f2f511b7dfa9c13f697d3b24dddfcdb499dce0db4be34f2fd3124bb3cd5039b AS python-base
+FROM ghcr.io/goauthentik/fips-python:3.14.6-slim-trixie-fips@sha256:c9329b5962a858a55c8de7f35dd86d6f2046148a6cf03a8d92a215641dbdf6db AS python-base
 
 ENV VENV_PATH="/ak-root/.venv" \
     PATH="/lifecycle:/ak-root/.venv/bin:$PATH" \
