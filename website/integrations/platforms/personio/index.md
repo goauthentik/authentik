@@ -39,7 +39,7 @@ To support the integration of Personio with authentik, you need to create an app
 3. From the list of login methods, go to **Open ID Connect (OIDC)** and click **Configure**.
 4. Under **Provider settings**, copy the **Callback URLs/Redirect URIs** value.
 
-### Create an application and provider in authentik
+### Create an application and provider
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
