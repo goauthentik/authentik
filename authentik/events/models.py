@@ -138,12 +138,17 @@ class EventAction(models.TextChoices):
     CUSTOM_PREFIX = "custom_"
 
 
+def event_actions():
+    # Wrapper used in models to prevent migrations constantly changing when actions are added
+    return EventAction.choices
+
+
 class Event(SerializerModel, ExpiringModel):
     """An individual Audit/Metrics/Notification/Error Event"""
 
     event_uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
     user = models.JSONField(default=dict)
-    action = models.TextField(choices=EventAction.choices)
+    action = models.TextField(choices=event_actions)
     app = models.TextField()
     context = models.JSONField(default=dict, blank=True)
     client_ip = models.GenericIPAddressField(null=True)
