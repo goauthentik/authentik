@@ -4,6 +4,7 @@ from os import chmod, environ, unlink, write
 from tempfile import mkstemp
 
 from django.test import TransactionTestCase
+from django.utils.text import slugify
 from yaml import load
 
 from authentik.blueprints.tests import apply_blueprint
@@ -367,6 +368,10 @@ class TestBlueprintsV1(TransactionTestCase):
 
         self.assertIsNotNone(flow_entry.id)
         self.assertIsNotNone(stage_entry.id)
+        # ids are derived from a readable, unique, non-UUID field (slug/name) when available,
+        # rather than an opaque counter
+        self.assertEqual(flow_entry.id, f"flow-{slugify(flow_slug)}")
+        self.assertEqual(stage_entry.id, f"userloginstage-{slugify(stage_name)}")
 
         self.assertIsInstance(stage_binding_entry.identifiers["target"], KeyOf)
         self.assertEqual(stage_binding_entry.identifiers["target"].id_from, flow_entry.id)

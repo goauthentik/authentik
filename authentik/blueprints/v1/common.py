@@ -15,7 +15,8 @@ from uuid import UUID
 
 from deepmerge import always_merger
 from django.apps import apps
-from django.db.models import Model, Q
+from django.db.models import CharField, Model, Q, TextField
+from django.utils.text import slugify
 from rest_framework.exceptions import ValidationError
 from rest_framework.fields import Field
 from rest_framework.relations import ManyRelatedField, PrimaryKeyRelatedField
@@ -85,6 +86,28 @@ def resolve_references(
     return attrs
 
 
+def _readable_key(obj: Model) -> str | None:
+    """Find a unique, human-readable text field on `obj` (not a UUID) to make
+    a !KeyOf id easier to read than a bare counter, e.g. a slug or name."""
+    for model_field in obj._meta.fields:
+        if not isinstance(model_field, CharField | TextField):
+            continue
+        if not model_field.unique:
+            continue
+        value = getattr(obj, model_field.attname, None)
+        if not value or not isinstance(value, str):
+            continue
+        try:
+            UUID(value)
+            continue
+        except ValueError:
+            pass
+        slug = slugify(value)
+        if slug:
+            return slug
+    return None
+
+
 class ReferenceIndex:
     """Tracks exported model instances so relations between them can be
     rewritten as !KeyOf references instead of raw primary keys."""
@@ -92,11 +115,16 @@ class ReferenceIndex:
     def __init__(self):
         self._entries: dict[Any, tuple[type[Model], str]] = {}
         self._used: set[str] = set()
+        self._seen_ids: set[str] = set()
         self._counter = count(1)
 
     def register(self, obj: Model) -> str:
         """Register an exported model instance, returning the id assigned to it"""
-        entry_id = f"{obj._meta.model_name}-{next(self._counter)}"
+        readable_key = _readable_key(obj)
+        entry_id = f"{obj._meta.model_name}-{readable_key or next(self._counter)}"
+        if entry_id in self._seen_ids:
+            entry_id = f"{entry_id}-{next(self._counter)}"
+        self._seen_ids.add(entry_id)
         self._entries[obj.pk] = (type(obj), entry_id)
         return entry_id
 
