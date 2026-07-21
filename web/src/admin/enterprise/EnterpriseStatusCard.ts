@@ -1,7 +1,6 @@
 import "#elements/ak-progress-bar";
 
 import { AKElement } from "#elements/Base";
-import { PFColor } from "#elements/Label";
 
 import { LicenseForecast, LicenseSummary, LicenseSummaryStatusEnum } from "@goauthentik/api";
 
@@ -27,15 +26,15 @@ export class EnterpriseStatusCard extends AKElement {
     renderSummaryBadge() {
         switch (this.summary?.status) {
             case LicenseSummaryStatusEnum.Expired:
-                return html`<ak-label color=${PFColor.Red}>${msg("Expired")}</ak-label>`;
+                return html`<ak-label color="red">${msg("Expired")}</ak-label>`;
             case LicenseSummaryStatusEnum.ExpirySoon:
-                return html`<ak-label color=${PFColor.Orange}>${msg("Expiring soon")}</ak-label>`;
+                return html`<ak-label color="orange">${msg("Expiring soon")}</ak-label>`;
             case LicenseSummaryStatusEnum.Unlicensed:
-                return html`<ak-label color=${PFColor.Gray}>${msg("Unlicensed")}</ak-label>`;
+                return html`<ak-label color="gray">${msg("Unlicensed")}</ak-label>`;
             case LicenseSummaryStatusEnum.ReadOnly:
-                return html`<ak-label color=${PFColor.Red}>${msg("Read Only")}</ak-label>`;
+                return html`<ak-label color="red">${msg("Read Only")}</ak-label>`;
             case LicenseSummaryStatusEnum.Valid:
-                return html`<ak-label color=${PFColor.Green}>${msg("Valid")}</ak-label>`;
+                return html`<ak-label color="green">${msg("Valid")}</ak-label>`;
             default:
                 return nothing;
         }
