@@ -497,7 +497,7 @@ impl AuthentikStack {
             eprintln!("::group::Browser logs");
             match driver.browser_log().await {
                 Ok(logs) => {
-                    for log in logs.iter() {
+                    for log in logs {
                         eprintln!("{log:?}");
                     }
                 }
