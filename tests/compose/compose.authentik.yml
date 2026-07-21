@@ -30,8 +30,8 @@ services:
       AUTHENTIK_SECRET_KEY: ${AUTHENTIK_SECRET_KEY:?secret key required}
       AUTHENTIK_LOG_LEVEL: debug
       AUTHENTIK_BOOTSTRAP_EMAIL: root@example.com
-      AUTHENTIK_BOOTSTRAP_PASSWORD: akadmin
-      AUTHENTIK_BOOTSTRAP_TOKEN: akadmin
+      AUTHENTIK_BOOTSTRAP_PASSWORD: ${AUTHENTIK_BOOTSTRAP_PASSWORD:?password}
+      AUTHENTIK_BOOTSTRAP_TOKEN: ${AUTHENTIK_BOOTSTRAP_TOKEN:?token required}
     image: authentik.invalid/goauthentik/dev-server:${AUTHENTIK_TAG:?tag}
     ports:
       - "9000"
@@ -52,8 +52,8 @@ services:
       AUTHENTIK_LOG_LEVEL: debug
       AUTHENTIK_SECRET_KEY: ${AUTHENTIK_SECRET_KEY:?secret key required}
       AUTHENTIK_BOOTSTRAP_EMAIL: root@example.com
-      AUTHENTIK_BOOTSTRAP_PASSWORD: akadmin
-      AUTHENTIK_BOOTSTRAP_TOKEN: akadmin
+      AUTHENTIK_BOOTSTRAP_PASSWORD: ${AUTHENTIK_BOOTSTRAP_PASSWORD:?password}
+      AUTHENTIK_BOOTSTRAP_TOKEN: ${AUTHENTIK_BOOTSTRAP_TOKEN:?token required}
     image: authentik.invalid/goauthentik/dev-server:${AUTHENTIK_TAG:?tag}
     restart: unless-stopped
     shm_size: 512mb

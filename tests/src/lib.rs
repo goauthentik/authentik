@@ -10,6 +10,10 @@ use ak_client::{
 };
 use eyre::{Result, eyre};
 use futures_util::StreamExt as _;
+use rand::{
+    distr::{Alphanumeric, SampleString as _},
+    rng,
+};
 use regex::Regex;
 use reqwest::{Method, StatusCode};
 use serde_json::Value;
@@ -119,6 +123,9 @@ impl AuthentikStackBuilder {
             compose: None,
             driver: None,
             api_config: Configuration::default(),
+            secret_key: Alphanumeric.sample_string(&mut rng(), 32),
+            akadmin_password: Alphanumeric.sample_string(&mut rng(), 32),
+            akadmin_token: Alphanumeric.sample_string(&mut rng(), 32),
         };
 
         let tag = {
@@ -144,8 +151,10 @@ impl AuthentikStackBuilder {
                 concat!(env!("CARGO_MANIFEST_DIR"), "/compose/compose.outposts.yml"),
                 concat!(env!("CARGO_MANIFEST_DIR"), "/compose/compose.proxies.yml"),
             ])
-            .with_env("PG_PASS", "password")
-            .with_env("AUTHENTIK_SECRET_KEY", "secret_key")
+            .with_env("PG_PASS", Alphanumeric.sample_string(&mut rng(), 32))
+            .with_env("AUTHENTIK_SECRET_KEY", stack.secret_key())
+            .with_env("AUTHENTIK_BOOTSTRAP_PASSWORD", stack.akadmin_password())
+            .with_env("AUTHENTIK_BOOTSTRAP_TOKEN", stack.akadmin_token())
             .with_env("AUTHENTIK_TAG", &tag)
             .with_wait(false)
             .with_wait_for_service("postgresql", WaitFor::healthcheck())
@@ -236,7 +245,7 @@ impl AuthentikStackBuilder {
                     .get_host_port_ipv4(9000)
                     .await?,
             ),
-            bearer_access_token: Some("akadmin".to_owned()),
+            bearer_access_token: Some(stack.akadmin_token().to_owned()),
             ..Default::default()
         };
 
@@ -266,11 +275,30 @@ pub struct AuthentikStack {
     compose: Option<DockerCompose>,
     driver: Option<WebDriver>,
     api_config: Configuration,
+    secret_key: String,
+    akadmin_password: String,
+    akadmin_token: String,
 }
 
 impl AuthentikStack {
     pub fn builder() -> AuthentikStackBuilder {
         AuthentikStackBuilder::default()
+    }
+
+    pub fn secret_key(&self) -> &str {
+        &self.secret_key
+    }
+
+    pub fn akadmin_username(&self) -> &'static str {
+        "akadmin"
+    }
+
+    pub fn akadmin_password(&self) -> &str {
+        &self.akadmin_password
+    }
+
+    pub fn akadmin_token(&self) -> &str {
+        &self.akadmin_token
     }
 
     pub fn api_config(&self) -> &Configuration {
@@ -436,7 +464,7 @@ impl AuthentikStack {
             };
 
             username_field.click().await?;
-            username_field.send_keys("akadmin").await?;
+            username_field.send_keys(self.akadmin_username()).await?;
             username_field.send_keys(Key::Enter).await?;
         }
 
@@ -456,7 +484,7 @@ impl AuthentikStack {
             };
 
             password_field.click().await?;
-            password_field.send_keys("akadmin").await?;
+            password_field.send_keys(self.akadmin_password()).await?;
             password_field.send_keys(Key::Enter).await?;
         }
 

@@ -19,6 +19,10 @@ use authentik_tests::{AuthentikStack, LoginOptions};
 use base64::prelude::*;
 use eyre::Result;
 use jsonwebtoken::dangerous::insecure_decode;
+use rand::{
+    distr::{Alphanumeric, SampleString as _},
+    rng,
+};
 use serde::Deserialize;
 use thirtyfour::prelude::*;
 use tokio::time::sleep;
@@ -66,7 +70,7 @@ async fn prepare(
         None,
         None,
         None,
-        Some("akadmin"),
+        Some(stack.akadmin_username()),
         None,
     )
     .await?;
@@ -211,7 +215,7 @@ async fn proxy_simple() -> Result<()> {
 
     assert_eq!(
         headers["X-Authentik-Username"],
-        serde_json::Value::Array(vec!["akadmin".into()])
+        serde_json::Value::Array(vec![stack.akadmin_username().into()])
     );
     assert_eq!(
         headers["X-Foo"],
@@ -264,16 +268,20 @@ async fn proxy_basic_auth() -> Result<()> {
         .run()
         .await?;
 
+    let basic_username = Alphanumeric.sample_string(&mut rng(), 32);
+    let basic_password = Alphanumeric.sample_string(&mut rng(), 32);
+
     let mut user_attributes = serde_json::Map::new();
     user_attributes.insert(
         "basic-username".to_owned(),
-        serde_json::Value::String("akadmin-cred".to_owned()),
+        serde_json::Value::String(basic_username.clone()),
     );
     user_attributes.insert(
         "basic-password".to_owned(),
-        serde_json::Value::String("akadmin-password".to_owned()),
+        serde_json::Value::String(basic_password.clone()),
     );
-    let expected_base64_header = BASE64_STANDARD.encode("akadmin-cred:akadmin-password");
+    let expected_base64_header =
+        BASE64_STANDARD.encode(format!("{basic_username}:{basic_password}"));
 
     prepare(
         &mut stack,
@@ -293,7 +301,7 @@ async fn proxy_basic_auth() -> Result<()> {
 
     assert_eq!(
         headers["X-Authentik-Username"],
-        serde_json::Value::Array(vec!["akadmin".into()])
+        serde_json::Value::Array(vec![stack.akadmin_username().into()])
     );
     assert_eq!(
         headers["Authorization"],

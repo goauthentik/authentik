@@ -29,7 +29,7 @@ async fn do_login_sfe(stack: &AuthentikStack) -> Result<()> {
         .single()
         .await?;
     username_field.click().await?;
-    username_field.send_keys("akadmin").await?;
+    username_field.send_keys(stack.akadmin_username()).await?;
     username_field.send_keys(Key::Enter).await?;
 
     let password_stage = flow_executor
@@ -41,7 +41,7 @@ async fn do_login_sfe(stack: &AuthentikStack) -> Result<()> {
         .single()
         .await?;
     password_field.click().await?;
-    password_field.send_keys("akadmin").await?;
+    password_field.send_keys(stack.akadmin_password()).await?;
     password_field.send_keys(Key::Enter).await?;
 
     sleep(Duration::from_secs(1)).await;
@@ -69,7 +69,11 @@ async fn login_sfe() -> Result<()> {
         .await?;
 
     stack
-        .assert_user("akadmin", "authentik Default Admin", "root@example.com")
+        .assert_user(
+            stack.akadmin_username(),
+            "authentik Default Admin",
+            "root@example.com",
+        )
         .await?;
 
     stack.quit().await

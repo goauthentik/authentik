@@ -118,7 +118,7 @@ async fn test_single(stack: &AuthentikStack, external_host: &str) -> Result<()> 
 
     assert_eq!(
         headers["X-Authentik-Username"],
-        serde_json::Value::Array(vec!["akadmin".into()])
+        serde_json::Value::Array(vec![stack.akadmin_username().into()])
     );
 
     stack

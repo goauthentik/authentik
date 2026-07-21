@@ -23,7 +23,11 @@ async fn login() -> Result<()> {
         .await?;
 
     stack
-        .assert_user("akadmin", "authentik Default Admin", "root@example.com")
+        .assert_user(
+            stack.akadmin_username(),
+            "authentik Default Admin",
+            "root@example.com",
+        )
         .await?;
 
     stack.quit().await
@@ -64,7 +68,11 @@ async fn login_compatibility_mode() -> Result<()> {
         .await?;
 
     stack
-        .assert_user("akadmin", "authentik Default Admin", "root@example.com")
+        .assert_user(
+            stack.akadmin_username(),
+            "authentik Default Admin",
+            "root@example.com",
+        )
         .await?;
 
     stack.quit().await
