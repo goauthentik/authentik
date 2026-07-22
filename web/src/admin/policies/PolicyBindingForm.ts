@@ -39,7 +39,7 @@ export type PolicyBindingNotice = { type: PolicyBindingCheckTarget; notice: stri
 
 export const pickPolicyGroupUser = (
     binding: Partial<PolicyBinding> | null | undefined,
-    current: PolicyBindingCheckTarget
+    current: PolicyBindingCheckTarget,
 ): PolicyBindingCheckTarget =>
     match(binding)
         .with({ policyObj: P.nonNullable }, () => PolicyBindingCheckTarget.Policy)
@@ -49,7 +49,7 @@ export const pickPolicyGroupUser = (
 
 export function cleanBindingForSend(
     data: PolicyBinding,
-    type: PolicyBindingCheckTarget
+    type: PolicyBindingCheckTarget,
 ): PolicyBinding {
     switch (type) {
         case PolicyBindingCheckTarget.Policy:
