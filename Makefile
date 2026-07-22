@@ -109,6 +109,9 @@ migrate: ## Run the Authentik Django server's migrations
 
 i18n-extract: core-i18n-extract web-i18n-extract  ## Extract strings that require translation into files to send to a translation service
 
+i18n-profanity-check:  ## Scan translated PO + XLIFF strings against per-language profanity dictionaries
+	python3 scripts/translation_profanity_check.py --root .
+
 aws-cfn: node-install
 	pnpm --dir lifecycle/aws install
 	$(UV) run pnpm --dir lifecycle/aws run aws-cfn
