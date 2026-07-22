@@ -31,7 +31,7 @@
     },
     "devDependencies": {
         "@docusaurus/theme-common": "^3.10.1",
-        "@docusaurus/theme-search-algolia": "^3.10.1",
+        "@docusaurus/theme-search-algolia": "^3.10.2",
         "@docusaurus/types": "^3.10.1",
         "@eslint/js": "catalog:",
         "@goauthentik/eslint-config": "link:../eslint-config",
@@ -49,7 +49,7 @@
     },
     "peerDependencies": {
         "@docusaurus/theme-common": "^3.10.1",
-        "@docusaurus/theme-search-algolia": "^3.10.1",
+        "@docusaurus/theme-search-algolia": "^3.10.2",
         "@docusaurus/types": "^3.10.1",
         "react": ">=19",
         "react-dom": ">=19"
