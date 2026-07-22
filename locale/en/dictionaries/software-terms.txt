@@ -133,6 +133,7 @@ recws
 retag
 rnds
 rsa
+runit
 RSTR
 sbdocs
 schedulable
