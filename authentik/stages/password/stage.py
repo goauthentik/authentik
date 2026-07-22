@@ -35,6 +35,7 @@ PLAN_CONTEXT_AUTHENTICATION_BACKEND = "user_backend"
 PLAN_CONTEXT_METHOD = "auth_method"
 PLAN_CONTEXT_METHOD_ARGS = "auth_method_args"
 PLAN_CONTEXT_INITIAL_SCORE = "goauthentik.io/stages/password/initial_score"
+PLAN_CONTEXT_USER_LOCKED = "goauthentik.io/stages/password/user_locked"
 
 
 def record_failed_password_attempt(user: User, stage: PasswordStage) -> bool:
@@ -70,6 +71,16 @@ def reset_failed_password_attempts(user: User) -> bool:
             User.objects.filter(pk=user.pk).update(password_login_failed_attempts=0)
     user.password_login_failed_attempts = 0
     return True
+
+
+def get_lockout_message(stage: PasswordStage, fallback: str) -> str:
+    """Return the configured lockout message or a generic authentication error."""
+    if not stage.show_lockout_message:
+        return fallback
+    return stage.lockout_message or _(
+        "Your account has been locked out due to too many failed attempts. "
+        "Please contact your administrator."
+    )
 
 
 def authenticate(
@@ -161,7 +172,8 @@ class PasswordChallengeResponse(ChallengeResponse):
         if not user:
             # No user was found -> invalid credentials
             self.stage.logger.info("Invalid credentials")
-            record_failed_password_attempt(pending_user, executor.current_stage)
+            if record_failed_password_attempt(pending_user, executor.current_stage):
+                executor.plan.context[PLAN_CONTEXT_USER_LOCKED] = True
             raise ValidationError(_("Invalid password"), "invalid")
         if not reset_failed_password_attempts(user):
             self.stage.logger.info("User is inactive")
@@ -204,6 +216,10 @@ class PasswordStageView(ChallengeStageView):
 
     def challenge_invalid(self, response: PasswordChallengeResponse) -> HttpResponse:
         current_stage: PasswordStage = self.executor.current_stage
+        if self.executor.plan.context.pop(PLAN_CONTEXT_USER_LOCKED, False):
+            return self.executor.stage_invalid(
+                get_lockout_message(current_stage, _("Invalid password"))
+            )
         initial_score = self.executor.plan.context.get(PLAN_CONTEXT_INITIAL_SCORE)
         if initial_score is None:
             initial_score = self.get_reputation_score()

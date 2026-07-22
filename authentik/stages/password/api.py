@@ -17,6 +17,8 @@ class PasswordStageSerializer(StageSerializer):
             "configure_flow",
             "failed_attempts_before_cancel",
             "failed_attempts_before_lockout",
+            "show_lockout_message",
+            "lockout_message",
             "allow_show_password",
         ]
 
@@ -31,6 +33,8 @@ class PasswordStageViewSet(UsedByMixin, ModelViewSet):
         "configure_flow",
         "failed_attempts_before_cancel",
         "failed_attempts_before_lockout",
+        "show_lockout_message",
+        "lockout_message",
         "allow_show_password",
     ]
     search_fields = ["name"]

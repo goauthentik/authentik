@@ -52,7 +52,9 @@ from authentik.stages.identification.signals import identification_failed
 from authentik.stages.password.stage import (
     PLAN_CONTEXT_METHOD,
     PLAN_CONTEXT_METHOD_ARGS,
+    PLAN_CONTEXT_USER_LOCKED,
     authenticate,
+    get_lockout_message,
     record_failed_password_attempt,
     reset_failed_password_attempts,
 )
@@ -233,7 +235,8 @@ class IdentificationChallengeResponse(ChallengeResponse):
                     password=password,
                 )
             if not user:
-                record_failed_password_attempt(self.pre_user, current_stage.password_stage)
+                if record_failed_password_attempt(self.pre_user, current_stage.password_stage):
+                    self.stage.executor.plan.context[PLAN_CONTEXT_USER_LOCKED] = True
                 raise ValidationError(_("Failed to authenticate."))
             if not reset_failed_password_attempts(user):
                 raise ValidationError(_("Failed to authenticate."))
@@ -247,6 +250,18 @@ class IdentificationStageView(ChallengeStageView):
     """Form to identify the user"""
 
     response_class = IdentificationChallengeResponse
+
+    def challenge_invalid(self, response: IdentificationChallengeResponse) -> HttpResponse:
+        """Stop the flow when embedded password validation locks the user out."""
+        current_stage: IdentificationStage = self.executor.current_stage
+        if self.executor.plan.context.pop(PLAN_CONTEXT_USER_LOCKED, False):
+            return self.executor.stage_invalid(
+                get_lockout_message(
+                    current_stage.password_stage,
+                    _("Failed to authenticate."),
+                )
+            )
+        return super().challenge_invalid(response)
 
     def get_user(self, uid_value: str) -> User | None:
         """Find user instance. Returns None if no user was found."""

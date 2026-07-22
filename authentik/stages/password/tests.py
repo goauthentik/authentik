@@ -18,7 +18,7 @@ from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.lib.generators import generate_id
 from authentik.stages.password import BACKEND_INBUILT
 from authentik.stages.password.models import PasswordStage
-from authentik.stages.password.stage import record_failed_password_attempt
+from authentik.stages.password.stage import get_lockout_message, record_failed_password_attempt
 
 MOCK_BACKEND_AUTHENTICATE = MagicMock(side_effect=PermissionDenied("test"))
 
@@ -141,7 +141,8 @@ class TestPasswordStage(FlowTestCase):
     def test_invalid_password_account_lockout(self):
         """Test that consecutive invalid passwords deactivate the user."""
         self.stage.failed_attempts_before_lockout = 2
-        self.stage.save(update_fields=("failed_attempts_before_lockout",))
+        self.stage.show_lockout_message = True
+        self.stage.save(update_fields=("failed_attempts_before_lockout", "show_lockout_message"))
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
         plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
         session = self.client.session
@@ -155,10 +156,26 @@ class TestPasswordStage(FlowTestCase):
         self.assertTrue(self.user.is_active)
         self.assertEqual(self.user.password_login_failed_attempts, 1)
 
-        self.client.post(url, {"password": self.user.username + "test"})
+        response = self.client.post(url, {"password": self.user.username + "test"})
         self.user.refresh_from_db()
         self.assertFalse(self.user.is_active)
         self.assertEqual(self.user.password_login_failed_attempts, 0)
+        self.assertStageResponse(
+            response,
+            self.flow,
+            component="ak-stage-access-denied",
+            error_message=(
+                "Your account has been locked out due to too many failed attempts. "
+                "Please contact your administrator."
+            ),
+        )
+
+    def test_lockout_message_customization(self):
+        """The configured message overrides the default lockout message."""
+        self.stage.show_lockout_message = True
+        self.assertIn("contact your administrator", get_lockout_message(self.stage, "generic"))
+        self.stage.lockout_message = "Contact the help desk."
+        self.assertEqual(get_lockout_message(self.stage, "generic"), "Contact the help desk.")
 
     def test_invalid_password_lockout(self):
         """Test with a valid pending user and invalid password (trigger logout counter)"""

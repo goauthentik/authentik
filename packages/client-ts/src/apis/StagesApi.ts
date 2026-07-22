@@ -1227,11 +1227,13 @@ export interface StagesPasswordListRequest {
     configureFlow?: string;
     failedAttemptsBeforeCancel?: number;
     failedAttemptsBeforeLockout?: number;
+    lockoutMessage?: string;
     name?: string;
     ordering?: string;
     page?: number;
     pageSize?: number;
     search?: string;
+    showLockoutMessage?: boolean;
 }
 
 export interface StagesPasswordPartialUpdateRequest {
@@ -12337,6 +12339,10 @@ export class StagesApi extends runtime.BaseAPI {
                 requestParameters["failedAttemptsBeforeLockout"];
         }
 
+        if (requestParameters["lockoutMessage"] != null) {
+            queryParameters["lockout_message"] = requestParameters["lockoutMessage"];
+        }
+
         if (requestParameters["name"] != null) {
             queryParameters["name"] = requestParameters["name"];
         }
@@ -12355,6 +12361,10 @@ export class StagesApi extends runtime.BaseAPI {
 
         if (requestParameters["search"] != null) {
             queryParameters["search"] = requestParameters["search"];
+        }
+
+        if (requestParameters["showLockoutMessage"] != null) {
+            queryParameters["show_lockout_message"] = requestParameters["showLockoutMessage"];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};

@@ -188,6 +188,25 @@ export class PasswordStageForm extends BaseStageForm<PasswordStage> {
                         </p>
                     </ak-form-element-horizontal>
                     <ak-switch-input
+                        name="showLockoutMessage"
+                        label=${msg("Show lockout message")}
+                        ?checked=${this.instance?.showLockoutMessage ?? false}
+                        help=${msg("Show a message to the user when their account is locked out.")}
+                    ></ak-switch-input>
+                    <ak-form-element-horizontal
+                        label=${msg("Lockout message")}
+                        name="lockoutMessage"
+                    >
+                        <input
+                            type="text"
+                            value="${this.instance?.lockoutMessage ?? ""}"
+                            class="pf-c-form-control"
+                        />
+                        <p class="pf-c-form__helper-text">
+                            ${msg("Leave blank to use the default lockout message.")}
+                        </p>
+                    </ak-form-element-horizontal>
+                    <ak-switch-input
                         name="allowShowPassword"
                         label="Allow Show Password"
                         ?checked=${this.instance?.allowShowPassword ?? false}

@@ -59,6 +59,15 @@ class PasswordStage(ConfigurableStage, Stage):
             "Set to 0 to disable lockout."
         ),
     )
+    show_lockout_message = models.BooleanField(
+        default=False,
+        help_text=_("Show a message to the user when their account is locked out."),
+    )
+    lockout_message = models.TextField(
+        blank=True,
+        default="",
+        help_text=_("Optional custom lockout message. Leave blank to use the default message."),
+    )
     allow_show_password = models.BooleanField(
         default=False,
         help_text=_(

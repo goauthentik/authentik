@@ -226,7 +226,7 @@ class TestIdentificationStage(FlowTestCase):
         self.stage.password_stage = pw_stage
         self.stage.save(update_fields=("password_stage",))
 
-        self.client.post(
+        response = self.client.post(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
             {"uid_field": self.user.email, "password": self.user.username + "test"},
         )
@@ -234,6 +234,12 @@ class TestIdentificationStage(FlowTestCase):
         self.user.refresh_from_db()
         self.assertFalse(self.user.is_active)
         self.assertEqual(self.user.password_login_failed_attempts, 0)
+        self.assertStageResponse(
+            response,
+            self.flow,
+            component="ak-stage-access-denied",
+            error_message="Failed to authenticate.",
+        )
 
     def test_invalid_with_password_pretend(self):
         """Test with invalid email and invalid password in single step (with pretend_user_exists)"""

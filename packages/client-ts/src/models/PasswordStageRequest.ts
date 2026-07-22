@@ -52,6 +52,18 @@ export interface PasswordStageRequest {
      */
     failedAttemptsBeforeLockout?: number;
     /**
+     * Show a message to the user when their account is locked out.
+     * @type {boolean}
+     * @memberof PasswordStageRequest
+     */
+    showLockoutMessage?: boolean;
+    /**
+     * Optional custom lockout message. Leave blank to use the default message.
+     * @type {string}
+     * @memberof PasswordStageRequest
+     */
+    lockoutMessage?: string;
+    /**
      * When enabled, provides a 'show password' button with the password input field.
      * @type {boolean}
      * @memberof PasswordStageRequest
@@ -91,6 +103,9 @@ export function PasswordStageRequestFromJSONTyped(
             json["failed_attempts_before_lockout"] == null
                 ? undefined
                 : json["failed_attempts_before_lockout"],
+        showLockoutMessage:
+            json["show_lockout_message"] == null ? undefined : json["show_lockout_message"],
+        lockoutMessage: json["lockout_message"] == null ? undefined : json["lockout_message"],
         allowShowPassword:
             json["allow_show_password"] == null ? undefined : json["allow_show_password"],
     };
@@ -114,6 +129,8 @@ export function PasswordStageRequestToJSONTyped(
         configure_flow: value["configureFlow"],
         failed_attempts_before_cancel: value["failedAttemptsBeforeCancel"],
         failed_attempts_before_lockout: value["failedAttemptsBeforeLockout"],
+        show_lockout_message: value["showLockoutMessage"],
+        lockout_message: value["lockoutMessage"],
         allow_show_password: value["allowShowPassword"],
     };
 }
