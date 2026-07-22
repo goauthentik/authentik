@@ -104,6 +104,12 @@ def pre_fork(server: "Arbiter", worker: DjangoUvicornWorker):  # noqa: UP037
 
 def post_worker_init(worker: DjangoUvicornWorker):
     """Notify ASGI app that its started up"""
+    if (coverage_path := CONFIG.get("coverage", None)) is not None:
+        from coverage import Coverage
+
+        worker._cov = Coverage(data_file=coverage_path)
+        worker._cov.start()
+
     # Only trigger startup DB logic on first worker
     # Startup code that imports code or is otherwise needed in every worker
     # does not use this signal, so we can skip this safely

@@ -403,7 +403,7 @@ jobs:
       - name: Run tests
         run: |
           # Currently runs only two jobs concurrently since our runners are a bit small for more
-          cargo nextest run \
+          cargo llvm-cov --no-report nextest run \
             --package authentik-tests \
             --success-output final \
             --failure-output final \
@@ -412,6 +412,7 @@ jobs:
             --jobs 2 \
             --no-fail-fast \
             --filterset 'kind(test) & binary_id(#authentik-tests::e2e_${{ matrix.name }}*)'
+          cargo llvm-cov report --codecov --output-path target/llvm-cov-target/rust.json
       - name: Merge coverage files
         run: |
           uv run coverage combine ./coverage/*
@@ -421,6 +422,11 @@ jobs:
         if: ${{ always() }}
         with:
           flags: e2e-container
+      - uses: ./.github/actions/test-results
+        if: ${{ always() }}
+        with:
+          files: target/llvm-cov-target/rust.json
+          flags: e2e-container-rust
   test-openid-conformance:
     name: test-openid-conformance (${{ matrix.job.name }})
     runs-on: ubuntu-latest
@@ -501,11 +507,6 @@ jobs:
         with:
           files: target/llvm-cov-target/rust.json
           flags: rust
-      - if: ${{ !cancelled() }}
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
-        with:
-          name: test-rust
-          path: target/llvm-cov-target/rust.json
   ci-core-mark:
     if: always()
     needs:
