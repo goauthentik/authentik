@@ -47,7 +47,7 @@ from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlanner
 from authentik.lib.utils.time import timedelta_from_string, timedelta_string_validator
 from authentik.policies.api.bindings import PolicyBindingModelForeignKey
 from authentik.policies.engine import ListPolicyEngine
-from authentik.policies.models import PolicyBindingModel, RequestableModel
+from authentik.policies.models import PolicyBindingModel, RequestableChildModel, RequestableModel
 from authentik.rbac.decorators import permission_required
 
 
@@ -109,7 +109,7 @@ class GrantRequestViewSet(RetrieveModelMixin, DestroyModelMixin, ListModelMixin,
         def validate_pbms(self, pbms: list[PolicyBindingModel]) -> list[PolicyBindingModel]:
             request = self.context["request"]
             for pbm in pbms:
-                if not isinstance(pbm, RequestableModel):
+                if not isinstance(pbm, RequestableModel | RequestableChildModel):
                     raise ValidationError(f"'{pbm}' is not requestable")
                 if not user_can_request(pbm, request.user, request):
                     raise ValidationError(f"Cannot request access to '{pbm.requestable_label}'")
