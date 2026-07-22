@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-21 00:26+0000\n"
+"POT-Creation-Date: 2026-07-22 00:27+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -236,6 +236,10 @@ msgstr ""
 
 #: authentik/core/api/groups.py
 msgid "User does not have permission to add members to this group."
+msgstr ""
+
+#: authentik/core/api/object_attributes.py
+msgid "Unique cannot be enabled for arrays."
 msgstr ""
 
 #: authentik/core/api/providers.py
@@ -610,6 +614,30 @@ msgstr ""
 
 #: authentik/core/models.py
 msgid "Authenticated Sessions"
+msgstr ""
+
+#: authentik/core/models.py
+msgid "This field is required"
+msgstr ""
+
+#: authentik/core/models.py
+msgid "Value must be an array."
+msgstr ""
+
+#: authentik/core/models.py
+msgid "Value does not match configured pattern."
+msgstr ""
+
+#: authentik/core/models.py
+msgid "Value is not unique."
+msgstr ""
+
+#: authentik/core/models.py
+msgid "Object Attribute"
+msgstr ""
+
+#: authentik/core/models.py
+msgid "Object Attributes"
 msgstr ""
 
 #: authentik/core/sources/flow_manager.py
