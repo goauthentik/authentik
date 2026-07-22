@@ -1,6 +1,7 @@
 import "#admin/policies/BoundPoliciesList";
 import "#admin/rbac/ak-rbac-object-permission-page";
 import "#admin/sources/saml/SAMLSourceForm";
+import "#admin/sources/saml/SAMLSourceApplyForm";
 import "#admin/events/ObjectChangelog";
 import "#elements/CodeMirror";
 import "#elements/Tabs";
@@ -136,6 +137,21 @@ export class SAMLSourceViewPage extends AKElement {
                                     </ak-source-saml-form>
                                     <button slot="trigger" class="pf-c-button pf-m-primary">
                                         ${msg("Edit")}
+                                    </button>
+                                </ak-forms-modal>
+                                <ak-forms-modal>
+                                    <span slot="submit">${msg("Apply")}</span>
+                                    <span slot="header"
+                                        >${msg("Apply metadata to this source")}</span
+                                    >
+                                    <ak-source-saml-apply-metadata-form
+                                        slot="form"
+                                        .sourceId=${this.source.pk || 0}
+                                        .sourceName=${this.source.name || ""}
+                                    >
+                                    </ak-source-saml-apply-metadata-form>
+                                    <button slot="trigger" class="pf-c-button pf-m-secondary">
+                                        ${msg("Apply latest IdP metadata")}
                                     </button>
                                 </ak-forms-modal>
                             </div>

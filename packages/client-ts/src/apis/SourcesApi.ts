@@ -862,12 +862,23 @@ export interface SourcesSamlDestroyRequest {
     slug: string;
 }
 
+export interface SourcesSamlImportMetadataCreateRequest {
+    name: string;
+    file: Blob;
+    source?: string | null;
+    preAuthenticationFlow?: string | null;
+    signingCertificate?: string | null;
+    createMissingRings?: boolean;
+}
+
 export interface SourcesSamlListRequest {
     allowIdpInitiated?: boolean;
     authenticationFlow?: string;
     bindingType?: BindingTypeEnum;
     digestAlgorithm?: DigestAlgorithmEnum;
     enabled?: boolean;
+    encryptionKp?: string;
+    encryptionKpRing?: string;
     enrollmentFlow?: string;
     forceAuthn?: boolean;
     issuerOverride?: string;
@@ -885,12 +896,14 @@ export interface SourcesSamlListRequest {
     signedAssertion?: boolean;
     signedResponse?: boolean;
     signingKp?: string;
+    signingKpRing?: string;
     sloUrl?: string;
     slug?: string;
     ssoUrl?: string;
     temporaryUserDeleteAfter?: string;
     userMatchingMode?: UserMatchingModeEnum;
     verificationKp?: string;
+    verificationKpRing?: string;
 }
 
 export interface SourcesSamlMetadataRetrieveRequest {
@@ -7706,6 +7719,124 @@ export class SourcesApi extends runtime.BaseAPI {
     }
 
     /**
+     * Creates request options for sourcesSamlImportMetadataCreate without sending the request
+     */
+    async sourcesSamlImportMetadataCreateRequestOpts(
+        requestParameters: SourcesSamlImportMetadataCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["name"] == null) {
+            throw new runtime.RequiredError(
+                "name",
+                'Required parameter "name" was null or undefined when calling sourcesSamlImportMetadataCreate().',
+            );
+        }
+
+        if (requestParameters["file"] == null) {
+            throw new runtime.RequiredError(
+                "file",
+                'Required parameter "file" was null or undefined when calling sourcesSamlImportMetadataCreate().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+        const consumes: runtime.Consume[] = [{ contentType: "multipart/form-data" }];
+        // @ts-ignore: canConsumeForm may be unused
+        const canConsumeForm = runtime.canConsumeForm(consumes);
+
+        let formParams: { append(param: string, value: any): any };
+        let useForm = false;
+        // use FormData to transmit files using content-type "multipart/form-data"
+        useForm = canConsumeForm;
+        if (useForm) {
+            formParams = new FormData();
+        } else {
+            formParams = new URLSearchParams();
+        }
+
+        if (requestParameters["source"] != null) {
+            formParams.append("source", requestParameters["source"] as any);
+        }
+
+        if (requestParameters["name"] != null) {
+            formParams.append("name", requestParameters["name"] as any);
+        }
+
+        if (requestParameters["preAuthenticationFlow"] != null) {
+            formParams.append(
+                "pre_authentication_flow",
+                requestParameters["preAuthenticationFlow"] as any,
+            );
+        }
+
+        if (requestParameters["file"] != null) {
+            formParams.append("file", requestParameters["file"] as any);
+        }
+
+        if (requestParameters["signingCertificate"] != null) {
+            formParams.append(
+                "signing_certificate",
+                requestParameters["signingCertificate"] as any,
+            );
+        }
+
+        if (requestParameters["createMissingRings"] != null) {
+            formParams.append(
+                "create_missing_rings",
+                requestParameters["createMissingRings"] as any,
+            );
+        }
+
+        let urlPath = `/sources/saml/import_metadata/`;
+
+        return {
+            path: urlPath,
+            method: "POST",
+            headers: headerParameters,
+            query: queryParameters,
+            body: formParams,
+        };
+    }
+
+    /**
+     * Create source from IdP SAML metadata, or apply to an existing source.
+     */
+    async sourcesSamlImportMetadataCreateRaw(
+        requestParameters: SourcesSamlImportMetadataCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<SAMLSource>> {
+        const requestOptions =
+            await this.sourcesSamlImportMetadataCreateRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => SAMLSourceFromJSON(jsonValue));
+    }
+
+    /**
+     * Create source from IdP SAML metadata, or apply to an existing source.
+     */
+    async sourcesSamlImportMetadataCreate(
+        requestParameters: SourcesSamlImportMetadataCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<SAMLSource> {
+        const response = await this.sourcesSamlImportMetadataCreateRaw(
+            requestParameters,
+            initOverrides,
+        );
+        return await response.value();
+    }
+
+    /**
      * Creates request options for sourcesSamlList without sending the request
      */
     async sourcesSamlListRequestOpts(
@@ -7731,6 +7862,14 @@ export class SourcesApi extends runtime.BaseAPI {
 
         if (requestParameters["enabled"] != null) {
             queryParameters["enabled"] = requestParameters["enabled"];
+        }
+
+        if (requestParameters["encryptionKp"] != null) {
+            queryParameters["encryption_kp"] = requestParameters["encryptionKp"];
+        }
+
+        if (requestParameters["encryptionKpRing"] != null) {
+            queryParameters["encryption_kp_ring"] = requestParameters["encryptionKpRing"];
         }
 
         if (requestParameters["enrollmentFlow"] != null) {
@@ -7801,6 +7940,10 @@ export class SourcesApi extends runtime.BaseAPI {
             queryParameters["signing_kp"] = requestParameters["signingKp"];
         }
 
+        if (requestParameters["signingKpRing"] != null) {
+            queryParameters["signing_kp_ring"] = requestParameters["signingKpRing"];
+        }
+
         if (requestParameters["sloUrl"] != null) {
             queryParameters["slo_url"] = requestParameters["sloUrl"];
         }
@@ -7824,6 +7967,10 @@ export class SourcesApi extends runtime.BaseAPI {
 
         if (requestParameters["verificationKp"] != null) {
             queryParameters["verification_kp"] = requestParameters["verificationKp"];
+        }
+
+        if (requestParameters["verificationKpRing"] != null) {
+            queryParameters["verification_kp_ring"] = requestParameters["verificationKpRing"];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};

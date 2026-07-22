@@ -261,6 +261,7 @@ dependencies = [
     { name = "argon2-cffi" },
     { name = "cachetools" },
     { name = "channels" },
+    { name = "coverage" },
     { name = "cryptography" },
     { name = "dacite" },
     { name = "deepmerge" },
@@ -369,6 +370,7 @@ requires-dist = [
     { name = "argon2-cffi", specifier = "==25.1.0" },
     { name = "cachetools", specifier = "==7.1.4" },
     { name = "channels", specifier = "==4.3.2" },
+    { name = "coverage", specifier = ">=7.13.5" },
     { name = "cryptography", specifier = "==49.0.0" },
     { name = "dacite", specifier = "==1.9.2" },
     { name = "deepmerge", specifier = "==2.1.0" },
@@ -479,14 +481,14 @@ resolution-markers = [
     "platform_python_implementation == 'PyPy' and sys_platform == 'win32'",
 ]
 dependencies = [
-    { name = "cbor2", marker = "platform_python_implementation == 'PyPy' and sys_platform == 'win32'" },
-    { name = "cffi", marker = "platform_python_implementation == 'PyPy' and sys_platform == 'win32'" },
-    { name = "cryptography", marker = "platform_python_implementation == 'PyPy' and sys_platform == 'win32'" },
-    { name = "hyperlink", marker = "platform_python_implementation == 'PyPy' and sys_platform == 'win32'" },
-    { name = "py-ubjson", marker = "platform_python_implementation == 'PyPy' and sys_platform == 'win32'" },
-    { name = "txaio", marker = "platform_python_implementation == 'PyPy' and sys_platform == 'win32'" },
-    { name = "u-msgpack-python", marker = "platform_python_implementation == 'PyPy' and sys_platform == 'win32'" },
-    { name = "ujson", marker = "platform_python_implementation == 'PyPy' and sys_platform == 'win32'" },
+    { name = "cbor2" },
+    { name = "cffi" },
+    { name = "cryptography" },
+    { name = "hyperlink" },
+    { name = "py-ubjson" },
+    { name = "txaio" },
+    { name = "u-msgpack-python" },
+    { name = "ujson" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/54/d5/9adf0f5b9eb244e58e898e9f3db4b00c09835ef4b6c37d491886e0376b4f/autobahn-25.12.2.tar.gz", hash = "sha256:754c06a54753aeb7e8d10c5cbf03249ad9e2a1a32bca8be02865c6f00628a98c", size = 13893652, upload-time = "2025-12-15T11:13:19.086Z" }
 wheels = [
@@ -501,14 +503,14 @@ resolution-markers = [
     "platform_python_implementation != 'PyPy' or sys_platform != 'win32'",
 ]
 dependencies = [
-    { name = "cbor2", marker = "platform_python_implementation != 'PyPy' or sys_platform != 'win32'" },
-    { name = "cffi", marker = "platform_python_implementation != 'PyPy' or sys_platform != 'win32'" },
-    { name = "cryptography", marker = "platform_python_implementation != 'PyPy' or sys_platform != 'win32'" },
-    { name = "hyperlink", marker = "platform_python_implementation != 'PyPy' or sys_platform != 'win32'" },
+    { name = "cbor2" },
+    { name = "cffi" },
+    { name = "cryptography" },
+    { name = "hyperlink" },
     { name = "msgpack", marker = "platform_python_implementation == 'CPython'" },
-    { name = "txaio", marker = "platform_python_implementation != 'PyPy' or sys_platform != 'win32'" },
-    { name = "u-msgpack-python", marker = "(platform_python_implementation != 'CPython' and platform_python_implementation != 'PyPy') or (platform_python_implementation != 'CPython' and sys_platform != 'win32')" },
-    { name = "ujson", marker = "platform_python_implementation != 'PyPy' or sys_platform != 'win32'" },
+    { name = "txaio" },
+    { name = "u-msgpack-python", marker = "platform_python_implementation != 'CPython'" },
+    { name = "ujson" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/16/47/f0321f2465025fe6b2e4ebcbe2a46838e701f0865894838fe13f4128d131/autobahn-26.6.2.tar.gz", hash = "sha256:51c96b778c739f0a3e78aaea4beba4df05db9092267c7813a7d13c643cbc28f7", size = 14041630, upload-time = "2026-06-19T15:11:41.215Z" }
 wheels = [

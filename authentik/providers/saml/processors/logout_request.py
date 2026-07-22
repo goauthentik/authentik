@@ -21,6 +21,7 @@ from authentik.lib.xml import remove_xml_newlines
 from authentik.providers.saml.models import SAMLProvider
 from authentik.providers.saml.utils import get_random_id
 from authentik.providers.saml.utils.encoding import deflate_and_base64_encode
+from authentik.providers.saml.utils.keyring import pick_private_key_pem
 from authentik.providers.saml.utils.time import get_time_string
 
 
@@ -104,7 +105,8 @@ class LogoutRequestProcessor:
     def encode_post(self) -> str:
         """Encode LogoutRequest for POST binding"""
         logout_request = self.build()
-        if self.provider.signing_kp and self.provider.sign_logout_request:
+        signing = bool(self.provider.signing_kp) or bool(self.provider.signing_kp_ring)
+        if signing and self.provider.sign_logout_request:
             self._sign_logout_request(logout_request)
         return base64.b64encode(etree.tostring(logout_request)).decode()
 
@@ -125,8 +127,9 @@ class LogoutRequestProcessor:
 
         if self.relay_state:
             params["RelayState"] = self.relay_state
+        signing = bool(self.provider.signing_kp) or bool(self.provider.signing_kp_ring)
 
-        if self.provider.signing_kp and self.provider.sign_logout_request:
+        if signing and self.provider.sign_logout_request:
             sig_alg = self.provider.signature_algorithm
             params["SigAlg"] = sig_alg
 
@@ -186,13 +189,16 @@ class LogoutRequestProcessor:
 
         ctx = xmlsec.SignatureContext()
 
+        key_pem, cert_pem = pick_private_key_pem(
+            kp=self.provider.signing_kp, ring=self.provider.signing_kp_ring
+        )
         key = xmlsec.Key.from_memory(
-            self.provider.signing_kp.key_data,
+            key_pem,
             xmlsec.constants.KeyDataFormatPem,
             None,
         )
         key.load_cert_from_memory(
-            self.provider.signing_kp.certificate_data,
+            cert_pem,
             xmlsec.constants.KeyDataFormatCertPem,
         )
         ctx.key = key
@@ -217,8 +223,11 @@ class LogoutRequestProcessor:
             self.provider.signature_algorithm, xmlsec.constants.TransformRsaSha256
         )
 
+        key_pem, _ = pick_private_key_pem(
+            kp=self.provider.signing_kp, ring=self.provider.signing_kp_ring
+        )
         key = xmlsec.Key.from_memory(
-            self.provider.signing_kp.key_data,
+            key_pem,
             xmlsec.constants.KeyDataFormatPem,
             None,
         )

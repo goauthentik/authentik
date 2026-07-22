@@ -148,6 +148,24 @@ export interface PatchedSAMLProviderRequest {
     encryptionKp?: string | null;
     /**
      *
+     * @type {string}
+     * @memberof PatchedSAMLProviderRequest
+     */
+    signingKpRing?: string | null;
+    /**
+     *
+     * @type {string}
+     * @memberof PatchedSAMLProviderRequest
+     */
+    verificationKpRing?: string | null;
+    /**
+     *
+     * @type {string}
+     * @memberof PatchedSAMLProviderRequest
+     */
+    encryptionKpRing?: string | null;
+    /**
+     *
      * @type {boolean}
      * @memberof PatchedSAMLProviderRequest
      */
@@ -262,6 +280,11 @@ export function PatchedSAMLProviderRequestFromJSONTyped(
         signingKp: json["signing_kp"] == null ? undefined : json["signing_kp"],
         verificationKp: json["verification_kp"] == null ? undefined : json["verification_kp"],
         encryptionKp: json["encryption_kp"] == null ? undefined : json["encryption_kp"],
+        signingKpRing: json["signing_kp_ring"] == null ? undefined : json["signing_kp_ring"],
+        verificationKpRing:
+            json["verification_kp_ring"] == null ? undefined : json["verification_kp_ring"],
+        encryptionKpRing:
+            json["encryption_kp_ring"] == null ? undefined : json["encryption_kp_ring"],
         signAssertion: json["sign_assertion"] == null ? undefined : json["sign_assertion"],
         signResponse: json["sign_response"] == null ? undefined : json["sign_response"],
         signLogoutRequest:
@@ -317,6 +340,9 @@ export function PatchedSAMLProviderRequestToJSONTyped(
         signing_kp: value["signingKp"],
         verification_kp: value["verificationKp"],
         encryption_kp: value["encryptionKp"],
+        signing_kp_ring: value["signingKpRing"],
+        verification_kp_ring: value["verificationKpRing"],
+        encryption_kp_ring: value["encryptionKpRing"],
         sign_assertion: value["signAssertion"],
         sign_response: value["signResponse"],
         sign_logout_request: value["signLogoutRequest"],

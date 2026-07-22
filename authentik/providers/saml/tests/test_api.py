@@ -193,6 +193,53 @@ class TestSAMLProviderAPI(APITestCase):
         self.assertEqual(body["authorization_flow"], str(authorization_flow.pk))
         self.assertEqual(body["invalidation_flow"], str(invalidation_flow.pk))
 
+    def test_import_existing_provider_refreshes_metadata(self):
+        """Test refreshing an existing provider from newer metadata."""
+        authorization_flow = create_test_flow(FlowDesignation.AUTHORIZATION)
+        invalidation_flow = create_test_flow(FlowDesignation.INVALIDATION)
+        with TemporaryFile() as metadata:
+            metadata.write(load_fixture("fixtures/simple.xml").encode())
+            metadata.seek(0)
+            response = self.client.post(
+                reverse("authentik_api:samlprovider-import-metadata"),
+                {
+                    "file": metadata,
+                    "name": "Initial provider",
+                    "authorization_flow": authorization_flow.pk,
+                    "invalidation_flow": invalidation_flow.pk,
+                },
+                format="multipart",
+            )
+        self.assertEqual(response.status_code, 201)
+        provider = SAMLProvider.objects.get(pk=response.json()["pk"])
+
+        with TemporaryFile() as metadata:
+            metadata.write(load_fixture("fixtures/multi-bindings.xml").encode())
+            metadata.seek(0)
+            response = self.client.post(
+                reverse("authentik_api:samlprovider-import-metadata"),
+                {
+                    "file": metadata,
+                    "provider": provider.pk,
+                    "name": "Refreshed provider",
+                },
+                format="multipart",
+            )
+
+        self.assertEqual(response.status_code, 200)
+        provider.refresh_from_db()
+        self.assertEqual(response.json()["pk"], provider.pk)
+        self.assertEqual(provider.name, "Refreshed provider")
+        self.assertEqual(
+            provider.acs_url,
+            "https://sp-b.example.org:10446/Shibboleth.sso/SAML2/POST",
+        )
+        self.assertEqual(provider.audience, "https://sp-b.example.org/shibboleth")
+        self.assertIsNotNone(provider.verification_kp_ring)
+        self.assertIsNotNone(provider.encryption_kp_ring)
+        self.assertEqual(provider.verification_kp_ring.bindings.count(), 1)
+        self.assertEqual(provider.encryption_kp_ring.bindings.count(), 1)
+
     def test_import_failed(self):
         """Test metadata import (invalid xml)"""
         with TemporaryFile() as metadata:

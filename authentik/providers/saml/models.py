@@ -227,6 +227,27 @@ class SAMLProvider(Provider):
         verbose_name=_("Encryption Keypair"),
         related_name="+",
     )
+    verification_kp_ring = models.OneToOneField(
+        "authentik_crypto.CertificateKeyPairRing",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="+",
+    )
+    signing_kp_ring = models.OneToOneField(
+        "authentik_crypto.CertificateKeyPairRing",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="+",
+    )
+    encryption_kp_ring = models.OneToOneField(
+        "authentik_crypto.CertificateKeyPairRing",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="+",
+    )
 
     default_relay_state = models.TextField(
         default="", blank=True, help_text=_("Default relay_state value for IDP-initiated logins")

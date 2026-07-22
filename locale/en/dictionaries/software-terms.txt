@@ -50,6 +50,7 @@ NGFW
 OCAK
 OCNS
 PEAP
+PEMS
 PKCE
 PSSO
 Pooler
@@ -87,6 +88,7 @@ cloudflarestorage
 copylefted
 cves
 describedby
+dedup
 dialector
 docsmg
 doseq

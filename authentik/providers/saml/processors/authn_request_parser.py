@@ -23,6 +23,7 @@ from authentik.lib.xml import lxml_from_string
 from authentik.providers.saml.exceptions import CannotHandleAssertion
 from authentik.providers.saml.models import SAMLProvider
 from authentik.providers.saml.utils.encoding import decode_base64_and_inflate
+from authentik.providers.saml.utils.keyring import candidate_cert_pems
 from authentik.sources.saml.models import SAMLNameIDPolicy
 
 ERROR_CANNOT_DECODE_REQUEST = "Cannot decode SAML request."
@@ -99,8 +100,11 @@ class AuthNRequestParser:
         except UnicodeDecodeError:
             raise CannotHandleAssertion(ERROR_CANNOT_DECODE_REQUEST) from None
 
-        verifier = self.provider.verification_kp
-        if not verifier:
+        verifier_pems = candidate_cert_pems(
+            kp=self.provider.verification_kp,
+            ring=getattr(self.provider, "verification_kp_ring", None),
+        )
+        if not verifier_pems:
             return self._parse_xml(decoded_xml, relay_state)
 
         root = lxml_from_string(decoded_xml)
@@ -113,18 +117,23 @@ class AuthNRequestParser:
         signature_node = signature_nodes[0]
 
         if signature_node is not None:
-            try:
-                ctx = xmlsec.SignatureContext()
-                key = xmlsec.Key.from_memory(
-                    verifier.certificate_data,
-                    xmlsec.constants.KeyDataFormatCertPem,
-                    None,
-                )
-                ctx.key = key
-                ctx.verify(signature_node)
-            except xmlsec.Error as exc:
-                raise CannotHandleAssertion(ERROR_FAILED_TO_VERIFY) from exc
-
+            for pem in verifier_pems:
+                try:
+                    ctx = xmlsec.SignatureContext()
+                    key = xmlsec.Key.from_memory(
+                        pem,
+                        xmlsec.constants.KeyDataFormatCertPem,
+                        None,
+                    )
+                    ctx.key = key
+                    ctx.verify(signature_node)
+                    break
+                except xmlsec.Error as exc:
+                    last_exc = exc
+                    continue
+            else:
+                self.logger.warning("Failed to verify AuthnRequest signature", exc=last_exc)
+                raise CannotHandleAssertion(ERROR_FAILED_TO_VERIFY)
         return self._parse_xml(decoded_xml, relay_state)
 
     def parse_detached(
@@ -140,11 +149,14 @@ class AuthNRequestParser:
         except UnicodeDecodeError:
             raise CannotHandleAssertion(ERROR_CANNOT_DECODE_REQUEST) from None
 
-        verifier = self.provider.verification_kp
-        if not verifier:
+        verifier_pems = candidate_cert_pems(
+            kp=self.provider.verification_kp,
+            ring=getattr(self.provider, "verification_kp_ring", None),
+        )
+        if not verifier_pems:
             return self._parse_xml(decoded_xml, relay_state)
 
-        if verifier and not (signature and sig_alg):
+        if verifier_pems and not (signature and sig_alg):
             raise CannotHandleAssertion(ERROR_SIGNATURE_REQUIRED_BUT_ABSENT)
 
         if signature and sig_alg:
@@ -152,12 +164,6 @@ class AuthNRequestParser:
             if relay_state is not None:
                 querystring += f"RelayState={quote_plus(relay_state)}&"
             querystring += f"SigAlg={quote_plus(sig_alg)}"
-
-            dsig_ctx = xmlsec.SignatureContext()
-            key = xmlsec.Key.from_memory(
-                verifier.certificate_data, xmlsec.constants.KeyDataFormatCertPem, None
-            )
-            dsig_ctx.key = key
 
             sign_algorithm_transform_map = {
                 DSA_SHA1: xmlsec.constants.TransformDsaSha1,
@@ -169,15 +175,23 @@ class AuthNRequestParser:
             sign_algorithm_transform = sign_algorithm_transform_map.get(
                 sig_alg, xmlsec.constants.TransformRsaSha1
             )
-
-            try:
-                dsig_ctx.verify_binary(
-                    querystring.encode("utf-8"),
-                    sign_algorithm_transform,
-                    b64decode(signature),
-                )
-            except xmlsec.Error as exc:
-                raise CannotHandleAssertion(ERROR_FAILED_TO_VERIFY) from exc
+            dsig_ctx = xmlsec.SignatureContext()
+            for pem in verifier_pems:
+                key = xmlsec.Key.from_memory(pem, xmlsec.constants.KeyDataFormatCertPem, None)
+                dsig_ctx.key = key
+                try:
+                    dsig_ctx.verify_binary(
+                        querystring.encode("utf-8"),
+                        sign_algorithm_transform,
+                        b64decode(signature),
+                    )
+                    break
+                except xmlsec.Error as exc:
+                    last_exc = exc
+                    continue
+            else:
+                self.logger.warning("Failed to verify AuthnRequest signature", exc=last_exc)
+                raise CannotHandleAssertion(ERROR_FAILED_TO_VERIFY)
         try:
             return self._parse_xml(decoded_xml, relay_state)
         except ParseError as exc:

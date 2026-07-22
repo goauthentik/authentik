@@ -464,6 +464,46 @@
                     ],
                     "properties": {
                         "model": {
+                            "const": "authentik_crypto.certificatekeypairring"
+                        },
+                        "id": {
+                            "type": "string"
+                        },
+                        "state": {
+                            "type": "string",
+                            "enum": [
+                                "absent",
+                                "created",
+                                "must_created",
+                                "present"
+                            ],
+                            "default": "present"
+                        },
+                        "conditions": {
+                            "type": "array",
+                            "items": {
+                                "type": "boolean"
+                            }
+                        },
+                        "permissions": {
+                            "$ref": "#/$defs/model_authentik_crypto.certificatekeypairring_permissions"
+                        },
+                        "attrs": {
+                            "$ref": "#/$defs/model_authentik_crypto.certificatekeypairring"
+                        },
+                        "identifiers": {
+                            "$ref": "#/$defs/model_authentik_crypto.certificatekeypairring"
+                        }
+                    }
+                },
+                {
+                    "type": "object",
+                    "required": [
+                        "model",
+                        "identifiers"
+                    ],
+                    "properties": {
+                        "model": {
                             "const": "authentik_endpoints_connectors_agent.agentconnector"
                         },
                         "id": {
@@ -5823,11 +5863,19 @@
                             "authentik_core.view_userrole",
                             "authentik_core.view_usersourceconnection",
                             "authentik_crypto.add_certificatekeypair",
+                            "authentik_crypto.add_certificatekeypairring",
+                            "authentik_crypto.add_certificatekeypairringbinding",
                             "authentik_crypto.change_certificatekeypair",
+                            "authentik_crypto.change_certificatekeypairring",
+                            "authentik_crypto.change_certificatekeypairringbinding",
                             "authentik_crypto.delete_certificatekeypair",
+                            "authentik_crypto.delete_certificatekeypairring",
+                            "authentik_crypto.delete_certificatekeypairringbinding",
                             "authentik_crypto.view_certificatekeypair",
                             "authentik_crypto.view_certificatekeypair_certificate",
                             "authentik_crypto.view_certificatekeypair_key",
+                            "authentik_crypto.view_certificatekeypairring",
+                            "authentik_crypto.view_certificatekeypairringbinding",
                             "authentik_endpoints.add_connector",
                             "authentik_endpoints.add_device",
                             "authentik_endpoints.add_deviceaccessgroup",
@@ -6626,6 +6674,42 @@
                             "view_certificatekeypair",
                             "view_certificatekeypair_certificate",
                             "view_certificatekeypair_key"
+                        ]
+                    },
+                    "user": {
+                        "type": "integer"
+                    },
+                    "role": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "model_authentik_crypto.certificatekeypairring": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "title": "Name"
+                }
+            },
+            "required": []
+        },
+        "model_authentik_crypto.certificatekeypairring_permissions": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "permission"
+                ],
+                "properties": {
+                    "permission": {
+                        "type": "string",
+                        "enum": [
+                            "add_certificatekeypairring",
+                            "change_certificatekeypairring",
+                            "delete_certificatekeypairring",
+                            "view_certificatekeypairring"
                         ]
                     },
                     "user": {
@@ -9332,6 +9416,7 @@
                         "authentik_core.token",
                         "authentik_core.objectattribute",
                         "authentik_crypto.certificatekeypair",
+                        "authentik_crypto.certificatekeypairring",
                         "authentik_endpoints.deviceuserbinding",
                         "authentik_endpoints.deviceaccessgroup",
                         "authentik_endpoints.endpointstage",
@@ -11264,6 +11349,21 @@
                     "title": "Encryption Keypair",
                     "description": "When selected, incoming assertions are encrypted by the IdP using the public key of the encryption keypair. The assertion is decrypted by the SP using the the private key."
                 },
+                "signing_kp_ring": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Signing kp ring"
+                },
+                "verification_kp_ring": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Verification kp ring"
+                },
+                "encryption_kp_ring": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Encryption kp ring"
+                },
                 "sign_assertion": {
                     "type": "boolean",
                     "title": "Sign assertion"
@@ -11713,11 +11813,19 @@
                             "authentik_core.view_userrole",
                             "authentik_core.view_usersourceconnection",
                             "authentik_crypto.add_certificatekeypair",
+                            "authentik_crypto.add_certificatekeypairring",
+                            "authentik_crypto.add_certificatekeypairringbinding",
                             "authentik_crypto.change_certificatekeypair",
+                            "authentik_crypto.change_certificatekeypairring",
+                            "authentik_crypto.change_certificatekeypairringbinding",
                             "authentik_crypto.delete_certificatekeypair",
+                            "authentik_crypto.delete_certificatekeypairring",
+                            "authentik_crypto.delete_certificatekeypairringbinding",
                             "authentik_crypto.view_certificatekeypair",
                             "authentik_crypto.view_certificatekeypair_certificate",
                             "authentik_crypto.view_certificatekeypair_key",
+                            "authentik_crypto.view_certificatekeypairring",
+                            "authentik_crypto.view_certificatekeypairringbinding",
                             "authentik_endpoints.add_connector",
                             "authentik_endpoints.add_device",
                             "authentik_endpoints.add_deviceaccessgroup",
@@ -14031,6 +14139,27 @@
                     "title": "Signing Keypair",
                     "description": "Keypair used to sign outgoing Responses going to the Identity Provider."
                 },
+                "verification_kp_ring": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Verification kp ring"
+                },
+                "signing_kp_ring": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Signing kp ring"
+                },
+                "encryption_kp": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Encryption Keypair",
+                    "description": "When selected, incoming assertions are encrypted by the IdP using the public key of the encryption keypair. The assertion is decrypted by the SP using the the private key."
+                },
+                "encryption_kp_ring": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Encryption kp ring"
+                },
                 "digest_algorithm": {
                     "type": "string",
                     "enum": [
@@ -14061,12 +14190,6 @@
                     "minLength": 1,
                     "title": "Delete temporary users after",
                     "description": "Time offset when temporary users should be deleted. This only applies if your IDP uses the NameID Format 'transient', and the user doesn't log out manually. (Format: hours=1;minutes=2;seconds=3)."
-                },
-                "encryption_kp": {
-                    "type": "string",
-                    "format": "uuid",
-                    "title": "Encryption Keypair",
-                    "description": "When selected, incoming assertions are encrypted by the IdP using the public key of the encryption keypair. The assertion is decrypted by the SP using the the private key."
                 },
                 "signed_assertion": {
                     "type": "boolean",
