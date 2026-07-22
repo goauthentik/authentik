@@ -39,7 +39,7 @@ export type PolicyBindingNotice = { type: PolicyBindingCheckTarget; notice: stri
 
 export const pickPolicyGroupUser = (
     binding: Partial<PolicyBinding> | null | undefined,
-    current: PolicyBindingCheckTarget,
+    current: PolicyBindingCheckTarget
 ): PolicyBindingCheckTarget =>
     match(binding)
         .with({ policyObj: P.nonNullable }, () => PolicyBindingCheckTarget.Policy)
@@ -49,7 +49,7 @@ export const pickPolicyGroupUser = (
 
 export function cleanBindingForSend(
     data: PolicyBinding,
-    type: PolicyBindingCheckTarget,
+    type: PolicyBindingCheckTarget
 ): PolicyBinding {
     switch (type) {
         case PolicyBindingCheckTarget.Policy:
@@ -111,7 +111,7 @@ export class PolicyBindingForm<T extends PolicyBinding = PolicyBinding> extends 
         this.defaultOrder = 0;
     }
 
-    getSuccessMessagef(): string {
+    getSuccessMessage(): string {
         if (this.instance?.pk) {
             return msg("Successfully updated binding.");
         }
