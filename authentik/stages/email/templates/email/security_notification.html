@@ -3,92 +3,102 @@
 {% load i18n %}
 
 {% block content %}
-<tr>
-  <td align="center">
-    <h1>
-      {% if event_action == "password_set" %}
-      {% trans "Your password was changed" %}
-      {% elif event_action == "mfa_device_created" %}
-      {% trans "A new MFA device was added" %}
-      {% elif event_action == "mfa_device_deleted" %}
-      {% trans "An MFA device was removed" %}
-      {% elif event_action == "login_blocked" %}
-      {% if "impossible_travel" in event_context.reasons %}
-      {% trans "A sign-in from an unusual location was blocked" %}
-      {% else %}
-      {% trans "A sign-in to your account was blocked" %}
-      {% endif %}
-      {% elif event_action == "user_write" and event_context.action_id == "account_lockdown" %}
-      {% trans "Your account has been locked" %}
-      {% else %}
-      {% trans "Security notification" %}
-      {% endif %}
-    </h1>
-  </td>
-</tr>
-<tr>
-  <td align="center">
-    <table border="0">
-      <tr>
-        <td align="center" style="max-width: 300px; padding: 20px 0; color: #212124;">
-          {% if event_action == "password_set" %}
-          {% blocktrans %}
-          The password for your account was just changed. If you made this change, you can safely ignore this email.
-          {% endblocktrans %}
-          {% elif event_action == "mfa_device_created" %}
-          {% blocktrans %}
-          A new multi-factor authentication (MFA) device was just added to your account. If you set this up, you can safely ignore this email.
-          {% endblocktrans %}
-          {% elif event_action == "mfa_device_deleted" %}
-          {% blocktrans %}
-          A multi-factor authentication (MFA) device was just removed from your account. If you made this change, you can safely ignore this email.
-          {% endblocktrans %}
-          {% elif event_action == "login_blocked" %}
+  <tr>
+    <td align="center">
+      <h1>
+        {% if event_action == "password_set" %}
+          {% trans "Your password was changed" %}
+        {% elif event_action == "mfa_device_created" %}
+          {% trans "A new MFA device was added" %}
+        {% elif event_action == "mfa_device_deleted" %}
+          {% trans "An MFA device was removed" %}
+        {% elif event_action == "login_blocked" %}
           {% if "impossible_travel" in event_context.reasons %}
-          {% blocktrans %}
-          We blocked a sign-in to your account because it came from a location too far from your previous sign-in to be possible. If this wasn't you, your password may be compromised.
-          {% endblocktrans %}
+            {% trans "A sign-in from an unusual location was blocked" %}
           {% else %}
-          {% blocktrans %}
-          A sign-in to your account was blocked by a security policy. If this was you, try again from a recognized network, or contact your administrator.
-          {% endblocktrans %}
+            {% trans "A sign-in to your account was blocked" %}
           {% endif %}
-          {% elif event_action == "user_write" and event_context.action_id == "account_lockdown" %}
-          {% blocktrans %}
-          Your account was just locked as an emergency security measure. If you did this yourself, no further action is needed. To regain access to your account, please contact your administrator or security team.
-          {% endblocktrans %}
-          {% else %}
-          {{ body }}
-          {% endif %}
-        </td>
-      </tr>
-      {% if link %}
-      <tr>
-        <td align="center" class="btn btn-primary">
-          <a id="confirm" href="{{ link.target }}" rel="noopener noreferrer" target="_blank">{{ link.label }}</a>
-        </td>
-      </tr>
-      {% endif %}
-    </table>
-  </td>
-</tr>
+        {% elif event_action == "user_write" and event_context.action_id == "account_lockdown" %}
+          {% trans "Your account has been locked" %}
+        {% else %}
+          {% trans "Security notification" %}
+        {% endif %}
+      </h1>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <table border="0">
+        <tr>
+          <td align="center" style="max-width: 300px; padding: 20px 0; color: #212124;">
+            {% if event_action == "password_set" %}
+              {% blocktrans %}
+                The password for your account was just changed. If you made this change, you can
+                safely ignore this email.
+              {% endblocktrans %}
+            {% elif event_action == "mfa_device_created" %}
+              {% blocktrans %}
+                A new multi-factor authentication (MFA) device was just added to your account. If
+                you set this up, you can safely ignore this email.
+              {% endblocktrans %}
+            {% elif event_action == "mfa_device_deleted" %}
+              {% blocktrans %}
+                A multi-factor authentication (MFA) device was just removed from your account. If
+                you made this change, you can safely ignore this email.
+              {% endblocktrans %}
+            {% elif event_action == "login_blocked" %}
+              {% if "impossible_travel" in event_context.reasons %}
+                {% blocktrans %}
+                  We blocked a sign-in to your account because it came from a location too far from
+                  your previous sign-in to be possible. If this wasn't you, your password may be
+                  compromised.
+                {% endblocktrans %}
+              {% else %}
+                {% blocktrans %}
+                  A sign-in to your account was blocked by a security policy. If this was you, try
+                  again from a recognized network, or contact your administrator.
+                {% endblocktrans %}
+              {% endif %}
+            {% elif event_action == "user_write" and event_context.action_id == "account_lockdown" %}
+              {% blocktrans %}
+                Your account was just locked as an emergency security measure. If you did this
+                yourself, no further action is needed. To regain access to your account, please
+                contact your administrator or security team.
+              {% endblocktrans %}
+            {% else %}
+              {{ body }}
+            {% endif %}
+          </td>
+        </tr>
+        {% if link %}
+          <tr>
+            <td align="center" class="btn btn-primary">
+              <a id="confirm" href="{{ link.target }}" rel="noopener noreferrer"
+                 target="_blank">{{ link.label }}</a>
+            </td>
+          </tr>
+        {% endif %}
+      </table>
+    </td>
+  </tr>
 {% endblock %}
 
 {% block sub_content %}
-<tr>
-  <td style="padding: 20px; font-size: 12px; color: #212124;" align="center">
-    {% blocktrans %}
-    If you did not perform this action, your account may be at risk. Please review your account security and contact your administrator immediately.
-    {% endblocktrans %}
-  </td>
-</tr>
-{% if source %}
-<tr>
-  <td style="padding: 20px; font-size: 12px; color: #212124;" align="center">
-    {% blocktranslate with name=source.from %}
-    This email was sent from the notification transport <code>{{ name }}</code>.
-    {% endblocktranslate %}
-  </td>
-</tr>
-{% endif %}
+  <tr>
+    <td style="padding: 20px; font-size: 12px; color: #212124;" align="center">
+      {% blocktrans %}
+        If you did not perform this action, your account may be at risk. Please review your account
+        security and contact your administrator immediately.
+      {% endblocktrans %}
+    </td>
+  </tr>
+  {% if source %}
+    <tr>
+      <td style="padding: 20px; font-size: 12px; color: #212124;" align="center">
+        {% blocktranslate with name=source.from %}
+          This email was sent from the notification transport <code>{{ name }}</code>.
+        {% endblocktranslate %}
+      </td>
+    </tr>
+  {% endif %}
 {% endblock %}
