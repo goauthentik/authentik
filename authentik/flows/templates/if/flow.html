@@ -32,6 +32,21 @@
 {% endblock %}
 
 {% block interface_stylesheet %}
+<script data-id="flow-prefetch">
+    "use strict";
+    // Start the flow executor API call immediately while JS bundles are still downloading.
+    // FlowExecutor.ts will consume this promise instead of making its own fetch,
+    // overlapping the ~500ms API wait with JS bundle download time.
+    window.authentik.flowPrefetch = fetch(
+        "{{ base_url_rel }}api/v3/flows/executor/{{ flow.slug }}/" +
+        "?query=" + encodeURIComponent(window.location.search.substring(1)),
+        { credentials: "same-origin", headers: { "Accept": "application/json" } }
+    ).then(function (r) {
+        if (!r.ok) throw new Error(r.status);
+        return r.json();
+    }).catch(function () { return null; });
+</script>
+
 <link rel="stylesheet" type="text/css" href="{% versioned_script 'dist/styles/flow-%v.css' %}" />
 {% endblock %}
 
