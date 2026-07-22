@@ -70,9 +70,11 @@ const BASE_ESBUILD_PLUGINS = [
             });
             build.onEnd((r) => {
                 const end = new Date();
-                const dur = (end.getTime() - start.getTime());
-                logger.info(`Build finished (took ${dur} ms, ${r.errors.length} error(s), ${r.warnings.length} warning(s))`);
-            })
+                const dur = end.getTime() - start.getTime();
+                logger.info(
+                    `Build finished (took ${dur} ms, ${r.errors.length} error(s), ${r.warnings.length} warning(s))`,
+                );
+            });
         },
     },
 
