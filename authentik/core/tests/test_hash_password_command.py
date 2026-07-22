@@ -45,11 +45,11 @@ class TestHashPasswordCommand(TestCase):
         self.assertTrue(check_password("test123", hashed))
 
     def test_hash_password_empty_stdin_fails(self):
-        """Test that empty standard input raises an error."""
+        """Test that an empty password read from standard input raises an error."""
         with (
             patch(
                 "authentik.core.management.commands.hash_password.sys.stdin",
-                StringIO(),
+                StringIO("\n"),
             ),
             self.assertRaises(CommandError) as ctx,
         ):
