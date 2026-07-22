@@ -37,12 +37,7 @@ import { UserImpersonateForm } from "#admin/users/UserImpersonateForm";
 import { ToggleUserPasswordLoginLockButton } from "#admin/users/UserPasswordLoginLockForm";
 import { renderUserStatus } from "#admin/users/UserStatus";
 
-import {
-    CoreApi,
-    CoreUsersExportCreateRequest,
-    User,
-    UserPath,
-} from "@goauthentik/api";
+import { CoreApi, CoreUsersExportCreateRequest, User, UserPath } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
 import { css, CSSResult, html, nothing, TemplateResult } from "lit";
@@ -369,7 +364,7 @@ export class UserListPage extends WithLicenseSummary(
                     <div class="pf-c-description-list__text">
                         ${ToggleUserActivationButton(item)}
                         ${ToggleUserPasswordLoginLockButton(item, {
-                            currentUserPk: currentUser?.pk,
+                            currentUserPk: this.currentUser?.pk,
                         })}
                     </div>
                 </dd>
