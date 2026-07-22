@@ -34,7 +34,7 @@ def post_startup_setup_bootstrap(sender, **_):
             continue
         with tenant:
             if password_hash := getenv("AUTHENTIK_BOOTSTRAP_PASSWORD_HASH"):
-                validate_password_hash(password_hash)
+                validate_password_hash(password_hash, require_current=True)
             importer = Importer.from_string(content)
             valid, logs = importer.validate()
             if not valid:

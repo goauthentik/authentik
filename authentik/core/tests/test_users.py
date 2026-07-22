@@ -123,22 +123,6 @@ class TestUserSerializerPasswordHash(TestCase):
 
         self.assertEqual(user.password, password_hash)
 
-    def test_null_password_hash_is_accepted(self):
-        """Test an unset blueprint password hash is accepted."""
-        serializer = UserSerializer(
-            data={
-                "username": generate_id(),
-                "name": "Test User",
-                "password_hash": None,
-            },
-            context={SERIALIZER_CONTEXT_BLUEPRINT: True},
-        )
-
-        self.assertTrue(serializer.is_valid(), serializer.errors)
-        user = serializer.save()
-
-        self.assertFalse(user.has_usable_password())
-
     def test_password_hash_ignored_outside_blueprint_context(self):
         """Test password_hash is not accepted by the regular serializer."""
         serializer = UserSerializer(

@@ -84,7 +84,9 @@ def validate_password_hash(password_hash: str, *, require_current: bool = False)
         or hasher.must_update(password_hash)
         or must_update_salt(decoded["salt"], hasher.salt_entropy)
     ):
-        raise PasswordHashRequiresOverride
+        raise PasswordHashRequiresOverride(
+            _("Password hash does not meet authentik's current password hashing policy.")
+        )
 
 
 class RequiredTogetherValidator:
