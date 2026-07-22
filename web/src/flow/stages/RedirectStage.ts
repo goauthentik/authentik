@@ -38,7 +38,7 @@ export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeRes
      * Revealed when the automatic redirect appears to have been blocked by the
      * environment. Some embedded WebViews (notably Google's account-setup
      * "MinuteMaid" WebView, gh#23660) veto script-initiated, gesture-less
-     * top-level navigations, so `window.location.assign` silently does nothing
+     * top-level navigation, so `window.location.assign` silently does nothing
      * and the flow hangs on the spinner. Exposing an anchor the user activates
      * makes the navigation carry  user gesture, which such WebViews honor.
      */
