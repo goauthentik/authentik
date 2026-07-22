@@ -31,7 +31,7 @@ class SignOutRequest:
         )
 
     def __post_init__(self, request: HttpRequest):
-        if self.action != WS_FED_ACTION_SIGN_OUT:
+        if self.wa != WS_FED_ACTION_SIGN_OUT:
             raise ValueError("Invalid action")
         self.__post_init_resolve_realm(request)
         _, provider = self.get_app_provider()
