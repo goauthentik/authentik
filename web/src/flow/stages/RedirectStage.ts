@@ -12,7 +12,7 @@ import {
 import { FlowChallengeResponseRequest, RedirectChallenge } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { css, CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
+import { css, CSSResult, html, nothing, PropertyValues } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -21,14 +21,6 @@ import PFFormControl from "@patternfly/patternfly/components/FormControl/form-co
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 
-/**
- * How long to wait after starting the automatic redirect before revealing the
- * manual fallback. In a normal browser the navigation commits and this component
- * is torn down long before this fires; if we're still alive afterwards the
- * automatic navigation was most likely blocked.
- */
-const MANUAL_FALLBACK_DELAY_MS = 2000;
-
 @customElement("ak-stage-redirect")
 export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeResponseRequest> {
     @property({ type: Boolean })
@@ -36,24 +28,6 @@ export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeRes
 
     @state()
     startedRedirect = false;
-
-    /**
-     * Revealed when the automatic redirect appears to have been blocked by the
-     * environment. Some embedded WebViews (notably Google's account-setup
-     * "MinuteMaid" WebView, gh#23660) veto script-initiated, gesture-less
-     * top-level navigation, so `window.location.assign` silently does nothing
-     * and the flow hangs on the spinner. Exposing an anchor the user activates
-     * makes the navigation carry  user gesture, which such WebViews honor.
-     */
-    @state()
-    showManualFallback = false;
-
-    #fallbackTimer?: ReturnType<typeof setTimeout>;
-
-    disconnectedCallback(): void {
-        super.disconnectedCallback();
-        clearTimeout(this.#fallbackTimer);
-    }
 
     static styles: CSSResult[] = [
         PFLogin,
@@ -115,19 +89,13 @@ export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeRes
 
         window.location.assign(this.challenge!.to);
         this.startedRedirect = true;
-
-        // If the automatic navigation was silently blocked, this component is still
-        // alive after the delay -> reveal the manual fallback so the user can complete
-        // the redirect with a gesture-carrying activation
-        // Custom-scheme targets keep their own "you may close this" message.
-        if (url.protocol.startsWith("http")) {
-            this.#fallbackTimer = setTimeout(() => {
-                this.showManualFallback = true;
-            }, MANUAL_FALLBACK_DELAY_MS);
-        }
     }
 
-    renderLoading(): TemplateResult {
+    protected render(): SlottedTemplateResult {
+        if (!this.challenge) {
+            return nothing;
+        }
+
         const url = new URL(this.getURL());
         // If the protocol isn't http or https assume a custom protocol, that has an OS-level
         // handler, which the browser will show a popup for.
@@ -140,26 +108,14 @@ export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeRes
                 </ak-empty-state>
             </ak-flow-card>`;
         }
-        return html`<ak-flow-card .challenge=${this.challenge} loading></ak-flow-card>`;
-    }
 
-    protected render(): SlottedTemplateResult {
-        if (!this.challenge) {
-            return nothing;
-        }
+        const redirecting = !this.promptUser || this.startedRedirect;
 
-        // Show the manual "Follow redirect" when the flow inspector is open
-        // (promptUser) or when the automatic redirect appears to have been blocked
-        // (showManualFallback). Otherwise keep showing the loading spinner while the
-        // automatic redirect proceeds.
-        const showManual = (this.promptUser && !this.startedRedirect) || this.showManualFallback;
-        if (!showManual) {
-            return this.renderLoading();
-        }
-
+        // The manual "Follow redirect" anchor is ALWAYS rendered for http(s) targets
         return html`<ak-flow-card .challenge=${this.challenge}>
             <span slot="title">${msg("Redirect")}</span>
             <form class="pf-c-form">
+                ${redirecting ? html`<ak-empty-state loading></ak-empty-state>` : nothing}
                 <div class="pf-c-form__group">
                     <p>${msg("You're about to be redirect to the following URL.")}</p>
                     <code>${this.getURL()}</code>
