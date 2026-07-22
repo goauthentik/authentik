@@ -909,10 +909,7 @@ class UserViewSet(
     @permission_required("authentik_core.change_user")
     @extend_schema(
         request=None,
-        responses={
-            204: OpenApiResponse(description="Password login locked"),
-            400: OpenApiResponse(description="Cannot lock the current user's password login"),
-        },
+        responses={204: OpenApiResponse(description="Password login locked")},
     )
     @action(detail=True, methods=["POST"])
     def password_login_lock(self, request: Request, pk: int) -> Response:
