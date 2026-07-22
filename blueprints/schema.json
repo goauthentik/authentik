@@ -16034,7 +16034,7 @@
                     "minimum": -2147483648,
                     "maximum": 2147483647,
                     "title": "Failed attempts before cancel",
-                    "description": "How many attempts a user has before the flow is canceled. To lock the user out, use a reputation policy and a user_write stage."
+                    "description": "How many failed password attempts are allowed before the flow is canceled. This setting does not deactivate the user."
                 },
                 "failed_attempts_before_lockout": {
                     "type": "integer",

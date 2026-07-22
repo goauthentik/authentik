@@ -48,8 +48,8 @@ class PasswordStage(ConfigurableStage, Stage):
     failed_attempts_before_cancel = models.IntegerField(
         default=5,
         help_text=_(
-            "How many attempts a user has before the flow is canceled. "
-            "To lock the user out, use a reputation policy and a user_write stage."
+            "How many failed password attempts are allowed before the flow is canceled. "
+            "This setting does not deactivate the user."
         ),
     )
     failed_attempts_before_lockout = models.PositiveIntegerField(

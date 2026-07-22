@@ -48051,8 +48051,8 @@ components:
           type: integer
           maximum: 2147483647
           minimum: -2147483648
-          description: How many attempts a user has before the flow is canceled. To
-            lock the user out, use a reputation policy and a user_write stage.
+          description: How many failed password attempts are allowed before the flow
+            is canceled. This setting does not deactivate the user.
         failed_attempts_before_lockout:
           type: integer
           maximum: 2147483647
@@ -48094,8 +48094,8 @@ components:
           type: integer
           maximum: 2147483647
           minimum: -2147483648
-          description: How many attempts a user has before the flow is canceled. To
-            lock the user out, use a reputation policy and a user_write stage.
+          description: How many failed password attempts are allowed before the flow
+            is canceled. This setting does not deactivate the user.
         failed_attempts_before_lockout:
           type: integer
           maximum: 2147483647
@@ -50522,8 +50522,8 @@ components:
           type: integer
           maximum: 2147483647
           minimum: -2147483648
-          description: How many attempts a user has before the flow is canceled. To
-            lock the user out, use a reputation policy and a user_write stage.
+          description: How many failed password attempts are allowed before the flow
+            is canceled. This setting does not deactivate the user.
         failed_attempts_before_lockout:
           type: integer
           maximum: 2147483647

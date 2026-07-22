@@ -160,7 +160,7 @@ export class PasswordStageForm extends BaseStageForm<PasswordStage> {
                         />
                         <p class="pf-c-form__helper-text">
                             ${msg(
-                                "How many attempts a user has before the flow is canceled. To lock the user out, use a reputation policy and a user_write stage.",
+                                "How many failed password attempts are allowed before the flow is canceled. This setting does not deactivate the user.",
                             )}
                         </p>
                     </ak-form-element-horizontal>
