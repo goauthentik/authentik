@@ -13,7 +13,7 @@ from authentik.flows.planner import (
     FlowPlanner,
 )
 from authentik.flows.stage import ChallengeStageView
-from authentik.flows.views.executor import NEXT_ARG_NAME, SESSION_KEY_GET
+from authentik.flows.views.executor import NEXT_ARG_NAME, SESSION_KEY_GET, SESSION_KEY_PLAN
 from authentik.sources.telegram.models import (
     GroupTelegramSourceConnection,
     TelegramSource,
@@ -86,6 +86,14 @@ class TelegramLoginView(ChallengeStageView):
         raw_info.pop("hash")
         raw_info.pop("auth_date")
         source = self.source
+        # The pre_authentication_flow executor overwrites SESSION_KEY_GET with an empty
+        # dict (its redirect URL carries no query string), losing the original next= param.
+        # Restore it from PLAN_CONTEXT_REDIRECT, which was saved before that overwrite.
+        # Mirrors the same fix in authentik/sources/saml/views.py:174-178.
+        if SESSION_KEY_PLAN in self.request.session:
+            plan_redirect = self.executor.plan.context.get(PLAN_CONTEXT_REDIRECT)
+            if plan_redirect:
+                self.request.session[SESSION_KEY_GET] = {NEXT_ARG_NAME: plan_redirect}
         sfm = TelegramSourceFlowManager(
             source=source,
             request=self.request,
