@@ -240,11 +240,6 @@ class UserSerializer(AttributesMixinSerializer, ModelSerializer):
         self._ensure_password_not_empty(instance)
         return instance
 
-    def _validate_password_inputs(self, password: str | None, password_hash: str | None):
-        """Validate mutually-exclusive password inputs before any model mutation."""
-        if password is not None and password_hash is not None:
-            raise ValidationError(_("Cannot set both password and password_hash. Use only one."))
-
     def _set_password(self, instance: User, password: str | None, password_hash: str | None = None):
         """Set password from plain text or hash."""
         if password_hash is not None:
@@ -321,8 +316,12 @@ class UserSerializer(AttributesMixinSerializer, ModelSerializer):
         return roles
 
     def validate(self, attrs: dict) -> dict:
-        if SERIALIZER_CONTEXT_BLUEPRINT in self.context:
-            self._validate_password_inputs(attrs.get("password"), attrs.get("password_hash"))
+        if (
+            SERIALIZER_CONTEXT_BLUEPRINT in self.context
+            and attrs.get("password") is not None
+            and attrs.get("password_hash") is not None
+        ):
+            raise ValidationError(_("Cannot set both password and password_hash. Use only one."))
         if self.instance and self.instance.type == UserTypes.INTERNAL_SERVICE_ACCOUNT:
             raise ValidationError(_("Can't modify internal service account users"))
         return super().validate(attrs)

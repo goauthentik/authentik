@@ -4,6 +4,7 @@ from unittest.mock import patch
 
 from django.contrib.auth.hashers import make_password
 from django.urls import reverse
+from rest_framework.exceptions import ValidationError
 
 from authentik.blueprints.tests import apply_blueprint
 from authentik.core.apps import Setup
@@ -222,12 +223,11 @@ class TestSetup(FlowTestCase):
         environ.pop("AUTHENTIK_BOOTSTRAP_PASSWORD", None)
         environ["AUTHENTIK_BOOTSTRAP_PASSWORD_HASH"] = "pbkdf2_sha256$1000000/K4wGpWYKfJPSCcNM="
         pre_startup.send(sender=self)
-        with patch("authentik.core.setup.signals.LOGGER.warning") as warning:
+        with self.assertRaises(ValidationError):
             post_startup.send(sender=self)
 
         self.assertFalse(Setup.get())
         self.assertFalse(User.objects.filter(username="akadmin").exists())
-        warning.assert_any_call("Blueprint invalid", tenant="public")
 
     def test_setup_bootstrap_env_apply_failure(self):
         """Test setup remains incomplete when the bootstrap blueprint fails to apply."""
