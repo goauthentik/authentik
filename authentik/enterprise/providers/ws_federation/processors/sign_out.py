@@ -30,10 +30,10 @@ class SignOutRequest:
             request=request,
         )
 
-    def __post_init__(self):
+    def __post_init__(self, request: HttpRequest):
         if self.action != WS_FED_ACTION_SIGN_OUT:
             raise ValueError("Invalid action")
-        self.__post_init_resolve_realm()
+        self.__post_init_resolve_realm(request)
         _, provider = self.get_app_provider()
         if not self.wreply:
             self.wreply = provider.acs_url
@@ -44,8 +44,8 @@ class SignOutRequest:
         if not (reply[:2] == configured[:2] and reply.path.startswith(configured.path)):
             raise ValueError("Invalid wreply")
 
-    def __post_init_resolve_realm(self):
-        slug = self.request.resolver_match.kwargs.get("application_slug")
+    def __post_init_resolve_realm(self, request: HttpRequest):
+        slug = request.resolver_match.kwargs.get("application_slug")
         if not slug:
             return
         app = get_object_or_404(Application, slug=slug)
