@@ -1,10 +1,12 @@
 import "#elements/EmptyState";
+import "#user/requests/RequestEntitlementModal";
 
 import { aki } from "#common/api/client";
 import { LayoutType } from "#common/ui/config";
 import { groupBy } from "#common/utils";
 
 import { AKElement } from "#elements/Base";
+import { renderModal } from "#elements/dialogs";
 import { showAPIErrorMessage } from "#elements/messages/MessageContainer";
 import { SlottedTemplateResult } from "#elements/types";
 
@@ -19,22 +21,16 @@ import { msg } from "@lit/localize";
 import { CSSResult, html } from "lit";
 import { customElement, state } from "lit/decorators.js";
 
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
-import PFCheck from "@patternfly/patternfly/components/Check/check.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
-import PFList from "@patternfly/patternfly/components/List/list.css";
-import PFStack from "@patternfly/patternfly/layouts/Stack/stack.css";
+import PFPage from "@patternfly/patternfly/components/Page/page.css";
 
 @customElement("ak-browse-requestable")
 export class BrowseRequestable extends AKElement {
     static styles: CSSResult[] = [
-        PFButton,
         PFCard,
-        PFCheck,
         PFContent,
-        PFList,
-        PFStack,
+        PFPage,
         AKLibraryApplicationListStyles,
         Styles,
     ];
@@ -67,6 +63,39 @@ export class BrowseRequestable extends AKElement {
         }
     }
 
+    #requestAccess = async (pbms: string[]): Promise<void> => {
+        const { link } = await this.#requestsApi.requestsGrantRequestsCreate({
+            grantRequestCreateRequest: { pbms },
+        });
+        window.location.assign(link);
+    };
+
+    #onAppClick = async (app: Application): Promise<void> => {
+        try {
+            const entitlements = await this.#coreApi.coreApplicationEntitlementsRequestableList({
+                app: app.pk,
+                pageSize: 100,
+            });
+            debugger;
+            if (entitlements.results.length === 1) {
+                await this.#requestAccess([entitlements.results[0].pbmUuid]);
+                return;
+            }
+
+            if (entitlements.results.length > 1) {
+                await renderModal(
+                    html`<ak-request-entitlement-modal .app=${app}></ak-request-entitlement-modal>`,
+                    { invokerElement: this },
+                );
+                return;
+            }
+
+            await this.#requestAccess([app.pbmUuid]);
+        } catch (error) {
+            showAPIErrorMessage(error);
+        }
+    };
+
     protected override render(): SlottedTemplateResult {
         if (this.loading) {
             return html`<ak-empty-state loading></ak-empty-state>`;
@@ -79,24 +108,18 @@ export class BrowseRequestable extends AKElement {
                 </div>
             </ak-empty-state>`;
         }
-        return AKLibraryApplicationList({
-            editable: false,
-            layout: LayoutType.row,
-            viewMode: ViewMode.Grid,
-            background: null,
-            selectedApp: undefined,
-            groupedApps: groupBy(this.applications, (app) => app.group || ""),
-            onAppClick: async (app) => {
-                try {
-                    const { link } = await this.#requestsApi.requestsGrantRequestsCreate({
-                        grantRequestCreateRequest: { pbms: [app.pbmUuid] },
-                    });
-                    window.location.assign(link);
-                } catch (error) {
-                    showAPIErrorMessage(error);
-                }
-            },
-        });
+        return html`<div class="pf-c-page__header pf-c-content">
+                <h1 class="pf-c-page__title">${msg("Requestable applications")}</h1>
+            </div>
+            ${AKLibraryApplicationList({
+                editable: false,
+                layout: LayoutType.row,
+                viewMode: ViewMode.Grid,
+                background: null,
+                selectedApp: undefined,
+                groupedApps: groupBy(this.applications, (app) => app.group || ""),
+                onAppClick: this.#onAppClick,
+            })}`;
     }
 }
 

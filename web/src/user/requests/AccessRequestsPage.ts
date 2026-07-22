@@ -68,7 +68,7 @@ export class AccessRequestsPage extends AKElement {
                         tabindex="0"
                         slot="page-browse"
                         aria-label=${msg("Browse")}
-                        class="pf-c-page__main-section pf-m-no-padding-mobile"
+                        class="pf-c-page__main-section pf-m-no-padding"
                     >
                         <ak-browse-requestable></ak-browse-requestable>
                     </div>
