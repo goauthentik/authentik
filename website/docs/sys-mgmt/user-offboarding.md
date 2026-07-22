@@ -1,79 +1,67 @@
 ---
-title: User Offboarding
-description: "Schedule automated deactivation or deletion of a user at a future time, with optional session and token revocation."
-sidebar_label: User Offboarding
+title: User offboarding
+description: "Schedule the deactivation or deletion of a user, with optional session and token revocation."
+sidebar_label: User offboarding
 authentik_enterprise: true
 authentik_version: "2026.8.0"
 authentik_preview: true
 ---
 
-User offboarding lets you schedule an automated action against a user — deactivating or deleting the account — to run at a specific future time. As part of the action, you can optionally revoke the user's active sessions and API tokens.
+User offboarding lets you schedule the deactivation or deletion of a user account for a future date and time. You can also revoke the user's sessions and tokens when the offboarding runs.
 
-This is useful for planned departures: when an employee's last day is known in advance, you can schedule the offboarding ahead of time and let authentik carry it out at the right moment, without anyone needing to remember to act on the day.
+For example, you can schedule an offboarding as soon as you know an employee's last day instead of relying on an administrator to update the account that day.
 
-You schedule an offboarding from a user's detail page, and you view and cancel scheduled offboardings from the **Events** > **Offboardings** page.
+## Choose an offboarding action
 
-## Offboarding actions
+Each offboarding performs one of the following actions:
 
-An offboarding runs one of the following actions when its scheduled time is reached:
+- **Deactivate**: Marks the user as inactive so that they can no longer log in. The user account and its data remain in authentik.
+- **Delete**: Permanently deletes the user account.
 
-| Action         | Description                                                                                     |
-| -------------- | ----------------------------------------------------------------------------------------------- |
-| **Deactivate** | Marks the user as inactive so they can no longer log in. The account and its data are retained. |
-| **Delete**     | Permanently removes the user account.                                                           |
+You can apply either action with the following options:
 
-Independently of the action, each offboarding has two revocation options:
+- **Revoke sessions**: Ends the user's active sessions.
+- **Revoke tokens**: Revokes the user's tokens and related credentials.
 
-| Option              | Description                                                          |
-| ------------------- | -------------------------------------------------------------------- |
-| **Revoke sessions** | Ends all of the user's active sessions, signing them out everywhere. |
-| **Revoke tokens**   | Revokes all of the user's API tokens.                                |
+Both options are enabled by default. Leave them enabled to prevent existing sessions or credentials from retaining access after the offboarding runs.
 
-Both options are enabled by default. Revoking sessions and tokens ensures the user loses access immediately when the offboarding runs, rather than remaining signed in until their existing sessions expire.
+## Schedule a user offboarding
 
-## Offboarding states
+You cannot schedule an offboarding for your own account or for an internal service account. Each user can have only one pending offboarding.
 
-You can view every offboarding and its current state on the **Events** > **Offboardings** page. By default the page shows only pending offboardings; disable **Only show pending offboardings** to also see completed, failed, and canceled records.
+1. In the Admin interface, navigate to **Directory** > **Users**.
+2. Select the user, and then click **Schedule Offboarding** in the **Actions** section.
+3. Select **Deactivate** or **Delete** for the **Action**.
+4. In **Scheduled for**, enter a future date and time.
+5. Configure **Revoke sessions** and **Revoke tokens**.
+6. Click **Schedule**.
 
-| State         | Description                                                                   |
-| ------------- | ----------------------------------------------------------------------------- |
-| **Pending**   | The offboarding is scheduled and waiting for its execution time.              |
-| **Completed** | The action ran successfully.                                                  |
-| **Failed**    | The action could not be completed after the maximum number of retry attempts. |
-| **Canceled**  | The offboarding was canceled before it ran.                                   |
+The **Schedule Offboarding** button changes to **Cancel Offboarding**. You can also find the scheduled offboarding under **Events** > **Offboardings**.
 
-## Schedule an offboarding
+## Monitor user offboardings
 
-1. Navigate to **Directory** > **Users** and click the user you want to offboard.
-2. On the user's detail page, in the user information card, click **Schedule Offboarding**.
-3. Set the date and time to run the offboarding. It must be in the future.
-4. Choose the **Action** (Deactivate or Delete), and enable or disable **Revoke sessions** and **Revoke tokens**.
-5. Click **Schedule**.
+The **Events** > **Offboardings** page shows pending offboardings by default. Disable **Only show pending offboardings** to include available completed, failed, and canceled records.
 
-The user's card now shows the scheduled time. A user can have only one pending offboarding at a time.
+| State         | Description                                                                                         |
+| ------------- | --------------------------------------------------------------------------------------------------- |
+| **Pending**   | The offboarding is waiting for its scheduled date and time.                                         |
+| **Completed** | The offboarding completed successfully.                                                             |
+| **Failed**    | The offboarding did not complete after five attempts. Changes from failed attempts are rolled back. |
+| **Canceled**  | An administrator canceled the offboarding before it ran. The canceled record remains in the list.   |
 
-## How offboardings run
+authentik checks for due offboardings every five minutes. The action normally starts within five minutes after the scheduled time, but a task backlog can delay it further. If an attempt fails, authentik retries the complete offboarding action. After five failed attempts, the offboarding is marked **Failed** and is not retried again.
 
-A background task periodically checks for pending offboardings whose scheduled time has passed and executes them. Because execution is time-based, the action runs shortly after the scheduled time rather than exactly at it.
+After an offboarding completes, authentik writes a **User Offboarded** event to the [events log](./events/index.md). The event identifies the administrator who scheduled the offboarding, the selected action, and whether session and token revocation were enabled.
 
-If an execution fails — for example, because of a transient error — authentik automatically retries it. After the maximum number of attempts, the offboarding is marked **Failed** and is no longer retried.
+:::note
+A successful **Delete** action removes the offboarding record with the user account. The **User Offboarded** event remains in the audit log.
+:::
 
-When an offboarding completes, authentik writes a **User Offboarded** event to the [audit log](./events/index.md), attributed to the user who scheduled it and recording the action taken and which artifacts were revoked.
+## Cancel a user offboarding
 
-## Cancel an offboarding
+To cancel a pending offboarding, use either of these methods:
 
-While an offboarding is **Pending**, you can cancel it in either place:
+- On the user's details page, click **Cancel Offboarding**, review the scheduled action, and confirm the cancellation.
+- On the **Events** > **Offboardings** page, select the offboarding, click **Cancel**, and confirm the cancellation.
 
-- On the **Events** > **Offboardings** page, select the offboarding and click **Cancel**.
-- On the user's detail page, click **Cancel offboarding** on the user information card.
-
-Canceling does not remove the record. The offboarding is retained with a **Canceled** state so the audit trail — who scheduled it and who canceled it — remains intact. Only pending offboardings can be canceled.
-
-## Restrictions
-
-The following restrictions apply when scheduling or canceling offboardings:
-
-- Each user can have only one pending offboarding at a time. Cancel the existing one before scheduling a new one.
-- You cannot schedule an offboarding for your own account.
-- You cannot cancel an offboarding that targets your own account. This is a separation-of-duties safeguard, so a user cannot rescue their own account from an offboarding scheduled by another administrator.
-- Internal service accounts cannot be offboarded.
+Canceling changes the offboarding to **Canceled** and allows you to schedule another offboarding for the user. You cannot cancel an offboarding that targets your own account.
