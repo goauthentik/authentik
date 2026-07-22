@@ -68,6 +68,9 @@ export class UserActivationToggleForm extends WithLocale(DestructiveModelForm<Us
             : msg(str`Review ${this.verboseName} Activation`, { id: "form.headline.activation" });
     }
 
+    // Toggling active state deletes nothing (#23778).
+    protected override showConsequences = false;
+
     public override usedBy = (): Promise<UsedBy[]> => {
         if (!this.instance) {
             return Promise.resolve([]);

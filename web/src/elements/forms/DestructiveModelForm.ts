@@ -43,6 +43,9 @@ export class DestructiveModelForm<T extends object = object> extends ModelForm<T
     @state()
     protected usedByList: UsedBy[] = [];
 
+    /** Render the "Consequence" column (e.g. "will be deleted"). */
+    protected showConsequences = true;
+
     /**
      * Get the display name for the object being deleted/updated.
      */
@@ -75,7 +78,7 @@ export class DestructiveModelForm<T extends object = object> extends ModelForm<T
     protected renderUsedBySection(): SlottedTemplateResult {
         const { usedByList, verboseName } = this;
 
-        return guard([usedByList, verboseName], () => {
+        return guard([usedByList, verboseName, this.showConsequences], () => {
             const displayName = this.formatDisplayName();
 
             const objectUsageMessage = plural(usedByList.length, {
@@ -110,13 +113,16 @@ export class DestructiveModelForm<T extends object = object> extends ModelForm<T
                     ${displayName}
                 </div>
                 <ak-simple-table
-                    .columns=${[msg("Object Name"), msg("Consequence"), msg("ID")]}
+                    .columns=${this.showConsequences
+                        ? [msg("Object Name"), msg("Consequence"), msg("ID")]
+                        : [msg("Object Name"), msg("ID")]}
                     .content=${usedByList.map((ub): RawContent[] => {
-                        return [
-                            pluckEntityName(ub) || msg("Unnamed"),
-                            formatUsedByConsequence(ub),
-                            html`<code>${ub.pk}</code>`,
-                        ];
+                        const name = pluckEntityName(ub) || msg("Unnamed");
+                        const id = html`<code>${ub.pk}</code>`;
+
+                        return this.showConsequences
+                            ? [name, formatUsedByConsequence(ub), id]
+                            : [name, id];
                     })}
                 ></ak-simple-table>
             </ak-form-group>`;
