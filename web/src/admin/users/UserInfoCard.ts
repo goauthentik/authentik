@@ -198,7 +198,7 @@ export class UserInfoCard extends AKElement {
                             ${msg("Scheduled for", {
                                 id: "offboarding.field.scheduled-for.label",
                             })}:
-                            <strong>${offboarding.scheduledFor.toLocaleString()}</strong>
+                            <strong>${offboarding.scheduledAt.toLocaleString()}</strong>
                         </li>
                         <li>
                             ${msg("Action", { id: "offboarding.field.action.label" })}:
@@ -222,7 +222,7 @@ export class UserInfoCard extends AKElement {
                     <pf-tooltip
                         position="top"
                         content=${msg(
-                            str`Offboarding scheduled for ${offboarding.scheduledFor.toLocaleString()}`,
+                            str`Offboarding scheduled for ${offboarding.scheduledAt.toLocaleString()}`,
                             { id: "offboarding.cancel.tooltip" },
                         )}
                     >

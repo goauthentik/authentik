@@ -58617,7 +58617,7 @@ components:
           allOf:
           - $ref: '#/components/schemas/PartialUser'
           readOnly: true
-        scheduled_for:
+        scheduled_at:
           type: string
           format: date-time
           description: Absolute time at which the offboarding action is executed.
@@ -58641,7 +58641,7 @@ components:
           type: string
           format: date-time
           readOnly: true
-        executed_on:
+        executed_at:
           type: string
           format: date-time
           readOnly: true
@@ -58649,9 +58649,9 @@ components:
       required:
       - created_at
       - created_by_obj
-      - executed_on
+      - executed_at
       - id
-      - scheduled_for
+      - scheduled_at
       - status
       - user
       - user_obj
@@ -58663,7 +58663,7 @@ components:
       properties:
         user:
           type: integer
-        scheduled_for:
+        scheduled_at:
           type: string
           format: date-time
           description: Absolute time at which the offboarding action is executed.
@@ -58676,7 +58676,7 @@ components:
           type: boolean
           description: Revoke all of the user's tokens when offboarding.
       required:
-      - scheduled_for
+      - scheduled_at
       - user
     UserPasswordHashSetRequest:
       type: object

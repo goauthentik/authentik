@@ -118,7 +118,7 @@ class TestOffboardingSweeper(APITestCase):
         """The sweeper dispatches each due offboarding (and its schedule resolves)."""
         UserOffboarding.objects.create(
             user=self.user,
-            scheduled_for=now() - timedelta(minutes=1),
+            scheduled_at=now() - timedelta(minutes=1),
             action=OffboardingAction.DEACTIVATE,
         )
         with patch(
@@ -130,14 +130,14 @@ class TestOffboardingSweeper(APITestCase):
     def test_due_offboarding_executed(self):
         offboarding = UserOffboarding.objects.create(
             user=self.user,
-            scheduled_for=now() - timedelta(minutes=1),
+            scheduled_at=now() - timedelta(minutes=1),
             action=OffboardingAction.DEACTIVATE,
         )
         execute_offboarding(str(offboarding.pk))
         offboarding.refresh_from_db()
         self.user.refresh_from_db()
         self.assertEqual(offboarding.status, OffboardingStatus.COMPLETED)
-        self.assertIsNotNone(offboarding.executed_on)
+        self.assertIsNotNone(offboarding.executed_at)
         self.assertFalse(self.user.is_active)
 
     def test_audit_event_attributed_to_initiator(self):
@@ -145,7 +145,7 @@ class TestOffboardingSweeper(APITestCase):
         admin = create_test_admin_user()
         offboarding = UserOffboarding.objects.create(
             user=self.user,
-            scheduled_for=now() - timedelta(minutes=1),
+            scheduled_at=now() - timedelta(minutes=1),
             action=OffboardingAction.DEACTIVATE,
             created_by=admin,
         )
@@ -161,7 +161,7 @@ class TestOffboardingSweeper(APITestCase):
         _add_token(self.user)
         offboarding = UserOffboarding.objects.create(
             user=self.user,
-            scheduled_for=now() - timedelta(minutes=1),
+            scheduled_at=now() - timedelta(minutes=1),
             action=OffboardingAction.DEACTIVATE,
         )
         # Sessions/tokens are revoked before the audit event is built; make the
@@ -187,7 +187,7 @@ class TestOffboardingSweeper(APITestCase):
         """A persistently failing offboarding goes terminal without touching the user."""
         offboarding = UserOffboarding.objects.create(
             user=self.user,
-            scheduled_for=now() - timedelta(minutes=1),
+            scheduled_at=now() - timedelta(minutes=1),
             action=OffboardingAction.DEACTIVATE,
         )
         with patch(
@@ -208,7 +208,7 @@ class TestOffboardingSweeper(APITestCase):
         """Re-dispatching an already-executed offboarding does not run it again."""
         offboarding = UserOffboarding.objects.create(
             user=self.user,
-            scheduled_for=now() - timedelta(minutes=1),
+            scheduled_at=now() - timedelta(minutes=1),
             action=OffboardingAction.DEACTIVATE,
         )
         execute_offboarding(str(offboarding.pk))
@@ -220,7 +220,7 @@ class TestOffboardingSweeper(APITestCase):
     def test_future_offboarding_not_picked_up(self):
         offboarding = UserOffboarding.objects.create(
             user=self.user,
-            scheduled_for=now() + timedelta(days=1),
+            scheduled_at=now() + timedelta(days=1),
             action=OffboardingAction.DEACTIVATE,
         )
         execute_due_offboardings()
@@ -239,7 +239,7 @@ class TestOffboardingConcurrency(TransactionTestCase):
     def test_concurrent_dispatch_executes_once(self):
         offboarding = UserOffboarding.objects.create(
             user=self.user,
-            scheduled_for=now() - timedelta(minutes=1),
+            scheduled_at=now() - timedelta(minutes=1),
             action=OffboardingAction.DEACTIVATE,
         )
         pk = str(offboarding.pk)
@@ -296,7 +296,7 @@ class TestOffboardingConcurrency(TransactionTestCase):
         """A cancel that loses the race to a running execution must not overwrite it."""
         offboarding = UserOffboarding.objects.create(
             user=self.user,
-            scheduled_for=now() - timedelta(minutes=1),
+            scheduled_at=now() - timedelta(minutes=1),
             action=OffboardingAction.DEACTIVATE,
         )
         pk = str(offboarding.pk)
@@ -375,7 +375,7 @@ class TestOffboardingAPI(APITestCase):
             reverse("authentik_api:useroffboarding-list"),
             {
                 "user": self.user.pk,
-                "scheduled_for": (now() + timedelta(days=1)).isoformat(),
+                "scheduled_at": (now() + timedelta(days=1)).isoformat(),
                 "action": OffboardingAction.DELETE,
             },
         )
@@ -389,24 +389,24 @@ class TestOffboardingAPI(APITestCase):
             reverse("authentik_api:useroffboarding-list"),
             {
                 "user": self.user.pk,
-                "scheduled_for": (now() - timedelta(days=1)).isoformat(),
+                "scheduled_at": (now() - timedelta(days=1)).isoformat(),
                 "action": OffboardingAction.DEACTIVATE,
             },
         )
         self.assertEqual(response.status_code, 400)
-        self.assertIn("scheduled_for", response.data)
+        self.assertIn("scheduled_at", response.data)
 
     def test_duplicate_pending_rejected(self):
         UserOffboarding.objects.create(
             user=self.user,
-            scheduled_for=now() + timedelta(days=1),
+            scheduled_at=now() + timedelta(days=1),
             action=OffboardingAction.DEACTIVATE,
         )
         response = self.client.post(
             reverse("authentik_api:useroffboarding-list"),
             {
                 "user": self.user.pk,
-                "scheduled_for": (now() + timedelta(days=2)).isoformat(),
+                "scheduled_at": (now() + timedelta(days=2)).isoformat(),
                 "action": OffboardingAction.DEACTIVATE,
             },
         )
@@ -417,7 +417,7 @@ class TestOffboardingAPI(APITestCase):
         """If two requests race past validation, the DB constraint yields a 400, not a 500."""
         UserOffboarding.objects.create(
             user=self.user,
-            scheduled_for=now() + timedelta(days=1),
+            scheduled_at=now() + timedelta(days=1),
             action=OffboardingAction.DEACTIVATE,
         )
         # Simulate the Time-of-Check to Time-of-Use: bypass the duplicate pre-check so the
@@ -427,7 +427,7 @@ class TestOffboardingAPI(APITestCase):
                 reverse("authentik_api:useroffboarding-list"),
                 {
                     "user": self.user.pk,
-                    "scheduled_for": (now() + timedelta(days=2)).isoformat(),
+                    "scheduled_at": (now() + timedelta(days=2)).isoformat(),
                     "action": OffboardingAction.DEACTIVATE,
                 },
             )
@@ -446,7 +446,7 @@ class TestOffboardingAPI(APITestCase):
             reverse("authentik_api:useroffboarding-list"),
             {
                 "user": self.admin.pk,
-                "scheduled_for": (now() + timedelta(days=1)).isoformat(),
+                "scheduled_at": (now() + timedelta(days=1)).isoformat(),
                 "action": OffboardingAction.DEACTIVATE,
             },
         )
@@ -461,7 +461,7 @@ class TestOffboardingAPI(APITestCase):
             reverse("authentik_api:useroffboarding-list"),
             {
                 "user": service_account.pk,
-                "scheduled_for": (now() + timedelta(days=1)).isoformat(),
+                "scheduled_at": (now() + timedelta(days=1)).isoformat(),
                 "action": OffboardingAction.DEACTIVATE,
             },
         )
@@ -471,7 +471,7 @@ class TestOffboardingAPI(APITestCase):
     def test_cancel(self):
         offboarding = UserOffboarding.objects.create(
             user=self.user,
-            scheduled_for=now() + timedelta(days=1),
+            scheduled_at=now() + timedelta(days=1),
             action=OffboardingAction.DEACTIVATE,
         )
         response = self.client.delete(
@@ -481,13 +481,13 @@ class TestOffboardingAPI(APITestCase):
         # The row is retained as an audit record, transitioned to CANCELED.
         offboarding.refresh_from_db()
         self.assertEqual(offboarding.status, OffboardingStatus.CANCELED)
-        self.assertIsNotNone(offboarding.executed_on)
+        self.assertIsNotNone(offboarding.executed_at)
 
     def test_cancel_frees_user_for_rescheduling(self):
         """A cancelled offboarding no longer blocks the unique-pending constraint."""
         offboarding = UserOffboarding.objects.create(
             user=self.user,
-            scheduled_for=now() + timedelta(days=1),
+            scheduled_at=now() + timedelta(days=1),
             action=OffboardingAction.DEACTIVATE,
         )
         offboarding.cancel()
@@ -495,7 +495,7 @@ class TestOffboardingAPI(APITestCase):
             reverse("authentik_api:useroffboarding-list"),
             {
                 "user": self.user.pk,
-                "scheduled_for": (now() + timedelta(days=2)).isoformat(),
+                "scheduled_at": (now() + timedelta(days=2)).isoformat(),
                 "action": OffboardingAction.DEACTIVATE,
             },
         )
@@ -504,7 +504,7 @@ class TestOffboardingAPI(APITestCase):
     def test_cancel_non_pending_rejected(self):
         offboarding = UserOffboarding.objects.create(
             user=self.user,
-            scheduled_for=now() + timedelta(days=1),
+            scheduled_at=now() + timedelta(days=1),
             action=OffboardingAction.DEACTIVATE,
             status=OffboardingStatus.COMPLETED,
         )
@@ -519,7 +519,7 @@ class TestOffboardingAPI(APITestCase):
         """Separation of duties: you cannot cancel an offboarding that targets you."""
         offboarding = UserOffboarding.objects.create(
             user=self.admin,
-            scheduled_for=now() + timedelta(days=1),
+            scheduled_at=now() + timedelta(days=1),
             action=OffboardingAction.DEACTIVATE,
         )
         response = self.client.delete(
@@ -533,7 +533,7 @@ class TestOffboardingAPI(APITestCase):
         """Records are immutable: PUT/PATCH must not rewrite an offboarding."""
         offboarding = UserOffboarding.objects.create(
             user=self.user,
-            scheduled_for=now() + timedelta(days=1),
+            scheduled_at=now() + timedelta(days=1),
             action=OffboardingAction.DEACTIVATE,
         )
         url = reverse("authentik_api:useroffboarding-detail", kwargs={"pk": offboarding.pk})

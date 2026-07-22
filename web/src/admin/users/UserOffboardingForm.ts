@@ -43,7 +43,7 @@ export class UserOffboardingForm extends ModelForm<UserOffboarding, string> {
     public userId?: number;
 
     @state()
-    protected scheduledFor: Date = new Date(Date.now() + DEFAULT_OFFSET);
+    protected scheduledAt: Date = new Date(Date.now() + DEFAULT_OFFSET);
 
     protected scheduledMinimumDate = new Date();
 
@@ -91,7 +91,7 @@ export class UserOffboardingForm extends ModelForm<UserOffboarding, string> {
                 ]}
             ></ak-radio-input>
 
-            <ak-form-element-horizontal name="scheduledFor" required>
+            <ak-form-element-horizontal name="scheduledAt" required>
                 ${AKLabel(
                     {
                         slot: "label",
@@ -104,7 +104,7 @@ export class UserOffboardingForm extends ModelForm<UserOffboarding, string> {
                     id="offboarding-date-input"
                     type="datetime-local"
                     data-type="datetime-local"
-                    value=${dateTimeLocal(this.scheduledFor)}
+                    value=${dateTimeLocal(this.scheduledAt)}
                     min=${dateTimeLocal(this.scheduledMinimumDate)}
                     class="pf-c-form-control"
                 />

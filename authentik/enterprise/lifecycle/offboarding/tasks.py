@@ -17,7 +17,7 @@ def execute_due_offboardings():
     # Only the pk is dispatched, so fetch pks alone rather than whole rows.
     due_pks = UserOffboarding.objects.filter(
         status=OffboardingStatus.PENDING,
-        scheduled_for__lte=timezone.now(),
+        scheduled_at__lte=timezone.now(),
     ).values_list("pk", flat=True)
     if not due_pks:
         return
@@ -55,5 +55,5 @@ def execute_offboarding(offboarding_pk: str):
         if attempts is not None and attempts >= MAX_OFFBOARDING_ATTEMPTS:
             UserOffboarding.objects.filter(
                 pk=offboarding_pk, status=OffboardingStatus.PENDING
-            ).update(status=OffboardingStatus.FAILED, executed_on=timezone.now())
+            ).update(status=OffboardingStatus.FAILED, executed_at=timezone.now())
         raise
