@@ -16,6 +16,8 @@ import { ascii_letters, digits, randomString } from "#common/utils";
 
 import { ifPresent } from "#elements/utils/attributes";
 
+import { AKLabel } from "#components/ak-label";
+
 import {
     CurrentBrand,
     FlowDesignationEnum,
@@ -65,12 +67,21 @@ export function renderForm({ provider, errors, brand }: RADIUSProviderFormProps)
         </ak-text-input>
 
         <ak-form-element-horizontal
-            label=${msg("Authentication Flow")}
             required
             name="authorizationFlow"
             .errorMessages=${errors.authorizationFlow}
         >
+            ${AKLabel(
+                {
+                    slot: "label",
+                    className: "pf-c-form__group-label",
+                    htmlFor: "authorizationFlow",
+                    required: true,
+                },
+                msg("Authentication Flow"),
+            )}
             <ak-branded-flow-search
+                id="authorizationFlow"
                 label=${msg("Authentication Flow")}
                 placeholder=${msg("Select an authentication flow...")}
                 flowType=${FlowDesignationEnum.Authentication}
@@ -108,8 +119,17 @@ export function renderForm({ provider, errors, brand }: RADIUSProviderFormProps)
                     help=${clientNetworksHelp}
                     input-hint="code"
                 ></ak-text-input>
-                <ak-form-element-horizontal label=${msg("Certificate")} name="certificate">
+                <ak-form-element-horizontal name="certificate">
+                    ${AKLabel(
+                        {
+                            slot: "label",
+                            className: "pf-c-form__group-label",
+                            htmlFor: "certificate",
+                        },
+                        msg("Certificate"),
+                    )}
                     <ak-crypto-certificate-search
+                        id="certificate"
                         certificate=${ifPresent(provider?.certificate)}
                     ></ak-crypto-certificate-search>
                     <p class="pf-c-form__helper-text">
@@ -119,11 +139,17 @@ export function renderForm({ provider, errors, brand }: RADIUSProviderFormProps)
                     </p>
                     <ak-license-notice></ak-license-notice>
                 </ak-form-element-horizontal>
-                <ak-form-element-horizontal
-                    label=${msg("Property mappings")}
-                    name="propertyMappings"
-                >
+                <ak-form-element-horizontal name="propertyMappings">
+                    ${AKLabel(
+                        {
+                            slot: "label",
+                            className: "pf-c-form__group-label",
+                            htmlFor: "propertyMappings",
+                        },
+                        msg("Property mappings"),
+                    )}
                     <ak-dual-select-dynamic-selected
+                        id="propertyMappings"
                         .provider=${propertyMappingsProvider}
                         .selector=${propertyMappingsSelector(provider.propertyMappings)}
                         available-label=${msg("Available Property Mappings")}
@@ -134,12 +160,18 @@ export function renderForm({ provider, errors, brand }: RADIUSProviderFormProps)
         </ak-form-group>
         <ak-form-group label="${msg("Advanced flow settings")}">
             <div class="pf-c-form">
-                <ak-form-element-horizontal
-                    label=${msg("Invalidation Flow")}
-                    name="invalidationFlow"
-                    required
-                >
+                <ak-form-element-horizontal name="invalidationFlow" required>
+                    ${AKLabel(
+                        {
+                            slot: "label",
+                            className: "pf-c-form__group-label",
+                            htmlFor: "invalidationFlow",
+                            required: true,
+                        },
+                        msg("Invalidation Flow"),
+                    )}
                     <ak-flow-search
+                        id="invalidationFlow"
                         label=${msg("Invalidation Flow")}
                         placeholder=${msg("Select an invalidation flow...")}
                         flowType=${FlowDesignationEnum.Invalidation}

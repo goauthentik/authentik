@@ -242,8 +242,18 @@ export function renderForm({
                     ?hidden=${!showClientSecret}
                 >
                 </ak-hidden-text-input>
-                <ak-form-element-horizontal label=${msg("Grant Types")} required name="grantTypes">
+                <ak-form-element-horizontal required name="grantTypes">
+                    ${AKLabel(
+                        {
+                            slot: "label",
+                            className: "pf-c-form__group-label",
+                            htmlFor: "grantTypes",
+                            required: true,
+                        },
+                        msg("Grant Types"),
+                    )}
                     <ak-checkbox-group
+                        id="grantTypes"
                         name="users"
                         class="user-field-select"
                         .options=${grantTypes}
@@ -262,11 +272,17 @@ export function renderForm({
                         ${msg("Grant types this provider may use.")}
                     </p>
                 </ak-form-element-horizontal>
-                <ak-form-element-horizontal
-                    label=${msg("Redirect URIs/Origins (RegEx)")}
-                    name="redirectUris"
-                >
+                <ak-form-element-horizontal name="redirectUris">
+                    ${AKLabel(
+                        {
+                            slot: "label",
+                            className: "pf-c-form__group-label",
+                            htmlFor: "redirectUris",
+                        },
+                        msg("Redirect URIs/Origins (RegEx)"),
+                    )}
                     <ak-array-input
+                        id="redirectUris"
                         .items=${provider.redirectUris ?? []}
                         .newItem=${() => ({
                             matchingMode: MatchingModeEnum.Strict,
@@ -318,9 +334,18 @@ export function renderForm({
                       ></ak-radio-input>`
                     : html``}
 
-                <ak-form-element-horizontal label=${msg("Signing Key")} name="signingKey">
+                <ak-form-element-horizontal name="signingKey">
+                    ${AKLabel(
+                        {
+                            slot: "label",
+                            className: "pf-c-form__group-label",
+                            htmlFor: "signingKey",
+                        },
+                        msg("Signing Key"),
+                    )}
                     <!-- NOTE: 'null' cast to 'undefined' on signingKey to satisfy Lit requirements -->
                     <ak-crypto-certificate-search
+                        id="signingKey"
                         label=${msg("Signing Key")}
                         placeholder=${msg("Select a signing key...")}
                         certificate=${ifPresent(provider.signingKey)}
@@ -333,11 +358,17 @@ export function renderForm({
 
         <ak-form-group label=${msg("Advanced flow settings")}>
             <div class="pf-c-form">
-                <ak-form-element-horizontal
-                    name="authenticationFlow"
-                    label=${msg("Authentication Flow")}
-                >
+                <ak-form-element-horizontal name="authenticationFlow">
+                    ${AKLabel(
+                        {
+                            slot: "label",
+                            className: "pf-c-form__group-label",
+                            htmlFor: "authenticationFlow",
+                        },
+                        msg("Authentication Flow"),
+                    )}
                     <ak-flow-search
+                        id="authenticationFlow"
                         label=${msg("Authentication Flow")}
                         placeholder=${msg("Select an authentication flow...")}
                         flowType=${FlowDesignationEnum.Authentication}
@@ -349,12 +380,18 @@ export function renderForm({
                         )}
                     </p>
                 </ak-form-element-horizontal>
-                <ak-form-element-horizontal
-                    label=${msg("Invalidation Flow")}
-                    name="invalidationFlow"
-                    required
-                >
+                <ak-form-element-horizontal name="invalidationFlow" required>
+                    ${AKLabel(
+                        {
+                            slot: "label",
+                            className: "pf-c-form__group-label",
+                            htmlFor: "invalidationFlow",
+                            required: true,
+                        },
+                        msg("Invalidation Flow"),
+                    )}
                     <ak-flow-search
+                        id="invalidationFlow"
                         label=${msg("Invalidation Flow")}
                         placeholder=${msg("Select an invalidation flow...")}
                         flowType=${FlowDesignationEnum.Invalidation}
@@ -422,8 +459,17 @@ export function renderForm({
                         <ak-utils-time-delta-help></ak-utils-time-delta-help>`}
                 >
                 </ak-text-input>
-                <ak-form-element-horizontal label=${msg("Scopes")} name="propertyMappings">
+                <ak-form-element-horizontal name="propertyMappings">
+                    ${AKLabel(
+                        {
+                            slot: "label",
+                            className: "pf-c-form__group-label",
+                            htmlFor: "propertyMappings",
+                        },
+                        msg("Scopes"),
+                    )}
                     <ak-dual-select-dynamic-selected
+                        id="propertyMappings"
                         .provider=${propertyMappingsProvider}
                         .selector=${propertyMappingsSelector(provider.propertyMappings)}
                         available-label=${msg("Available Scopes")}
@@ -436,9 +482,18 @@ export function renderForm({
                         )}
                     </p>
                 </ak-form-element-horizontal>
-                <ak-form-element-horizontal label=${msg("Encryption Key")} name="encryptionKey">
+                <ak-form-element-horizontal name="encryptionKey">
+                    ${AKLabel(
+                        {
+                            slot: "label",
+                            className: "pf-c-form__group-label",
+                            htmlFor: "encryptionKey",
+                        },
+                        msg("Encryption Key"),
+                    )}
                     <!-- NOTE: 'null' cast to 'undefined' on encryptionKey to satisfy Lit requirements -->
                     <ak-crypto-certificate-search
+                        id="encryptionKey"
                         label=${msg("Encryption Key")}
                         placeholder=${msg("Select an encryption key...")}
                         certificate=${ifPresent(provider.encryptionKey)}
@@ -486,11 +541,17 @@ export function renderForm({
 
         <ak-form-group label="${msg("Machine-to-Machine authentication settings")}">
             <div class="pf-c-form">
-                <ak-form-element-horizontal
-                    label=${msg("Federated OIDC Sources")}
-                    name="jwtFederationSources"
-                >
+                <ak-form-element-horizontal name="jwtFederationSources">
+                    ${AKLabel(
+                        {
+                            slot: "label",
+                            className: "pf-c-form__group-label",
+                            htmlFor: "jwtFederationSources",
+                        },
+                        msg("Federated OIDC Sources"),
+                    )}
                     <ak-dual-select-dynamic-selected
+                        id="jwtFederationSources"
                         .provider=${oauth2SourcesProvider}
                         .selector=${oauth2SourcesSelector(provider.jwtFederationSources)}
                         available-label=${msg("Available Sources")}
@@ -502,11 +563,17 @@ export function renderForm({
                         )}
                     </p>
                 </ak-form-element-horizontal>
-                <ak-form-element-horizontal
-                    label=${msg("Federated OAuth2/OpenID Providers")}
-                    name="jwtFederationProviders"
-                >
+                <ak-form-element-horizontal name="jwtFederationProviders">
+                    ${AKLabel(
+                        {
+                            slot: "label",
+                            className: "pf-c-form__group-label",
+                            htmlFor: "jwtFederationProviders",
+                        },
+                        msg("Federated OAuth2/OpenID Providers"),
+                    )}
                     <ak-dual-select-dynamic-selected
+                        id="jwtFederationProviders"
                         .provider=${oauth2ProvidersProvider}
                         .selector=${oauth2ProvidersSelector(provider.jwtFederationProviders)}
                         available-label=${msg("Available Providers")}

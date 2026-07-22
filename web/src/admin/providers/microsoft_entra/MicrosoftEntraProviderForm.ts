@@ -13,6 +13,8 @@ import "#elements/forms/SearchSelect/index";
 
 import { aki } from "#common/api/client";
 
+import { AKLabel } from "#components/ak-label";
+
 import { BaseProviderForm } from "#admin/providers/BaseProviderForm";
 import {
     propertyMappingsProvider,
@@ -47,8 +49,18 @@ export class MicrosoftEntraProviderFormPage extends BaseProviderForm<MicrosoftEn
     };
 
     protected override renderForm(): TemplateResult {
-        return html` <ak-form-element-horizontal label=${msg("Provider Name")} required name="name">
+        return html` <ak-form-element-horizontal required name="name">
+                ${AKLabel(
+                    {
+                        slot: "label",
+                        className: "pf-c-form__group-label",
+                        htmlFor: "name",
+                        required: true,
+                    },
+                    msg("Provider Name"),
+                )}
                 <input
+                    id="name"
                     type="text"
                     value="${ifDefined(this.instance?.name)}"
                     class="pf-c-form-control"
@@ -59,8 +71,18 @@ export class MicrosoftEntraProviderFormPage extends BaseProviderForm<MicrosoftEn
             </ak-form-element-horizontal>
             <ak-form-group open label="${msg("Protocol settings")}">
                 <div class="pf-c-form">
-                    <ak-form-element-horizontal label=${msg("Client ID")} required name="clientId">
+                    <ak-form-element-horizontal required name="clientId">
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "clientId",
+                                required: true,
+                            },
+                            msg("Client ID"),
+                        )}
                         <input
+                            id="clientId"
                             type="text"
                             value="${this.instance?.clientId ?? ""}"
                             class="pf-c-form-control pf-m-monospace"
@@ -80,8 +102,18 @@ export class MicrosoftEntraProviderFormPage extends BaseProviderForm<MicrosoftEn
                         .help=${msg("Client secret for the app registration.")}
                     >
                     </ak-hidden-text-input>
-                    <ak-form-element-horizontal label=${msg("Tenant ID")} required name="tenantId">
+                    <ak-form-element-horizontal required name="tenantId">
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "tenantId",
+                                required: true,
+                            },
+                            msg("Tenant ID"),
+                        )}
                         <input
+                            id="tenantId"
                             type="text"
                             value="${this.instance?.tenantId ?? ""}"
                             class="pf-c-form-control pf-m-monospace"
@@ -154,8 +186,17 @@ export class MicrosoftEntraProviderFormPage extends BaseProviderForm<MicrosoftEn
                         label=${msg("Exclude service accounts")}
                         ?checked=${this.instance?.excludeUsersServiceAccount ?? true}
                     ></ak-switch-input>
-                    <ak-form-element-horizontal label=${msg("Group")} name="filterGroup">
+                    <ak-form-element-horizontal name="filterGroup">
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "filterGroup",
+                            },
+                            msg("Group"),
+                        )}
                         <ak-search-select
+                            id="filterGroup"
                             .fetchObjects=${async (query?: string): Promise<Group[]> => {
                                 const args: CoreGroupsListRequest = {
                                     ordering: "name",
@@ -187,11 +228,17 @@ export class MicrosoftEntraProviderFormPage extends BaseProviderForm<MicrosoftEn
             </ak-form-group>
             <ak-form-group open label="${msg("Attribute mapping")}">
                 <div class="pf-c-form">
-                    <ak-form-element-horizontal
-                        label=${msg("User Property Mappings")}
-                        name="propertyMappings"
-                    >
+                    <ak-form-element-horizontal name="propertyMappings">
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "propertyMappings",
+                            },
+                            msg("User Property Mappings"),
+                        )}
                         <ak-dual-select-dynamic-selected
+                            id="propertyMappings"
                             .provider=${propertyMappingsProvider}
                             .selector=${propertyMappingsSelector(
                                 this.instance?.propertyMappings,
@@ -204,11 +251,17 @@ export class MicrosoftEntraProviderFormPage extends BaseProviderForm<MicrosoftEn
                             ${msg("Property mappings used to user mapping.")}
                         </p>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${msg("Group Property Mappings")}
-                        name="propertyMappingsGroup"
-                    >
+                    <ak-form-element-horizontal name="propertyMappingsGroup">
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "propertyMappingsGroup",
+                            },
+                            msg("Group Property Mappings"),
+                        )}
                         <ak-dual-select-dynamic-selected
+                            id="propertyMappingsGroup"
                             .provider=${propertyMappingsProvider}
                             .selector=${propertyMappingsSelector(
                                 this.instance?.propertyMappingsGroup,

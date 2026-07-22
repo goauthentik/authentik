@@ -26,6 +26,8 @@ import {
 
 import { ifPresent } from "#elements/utils/attributes";
 
+import { AKLabel } from "#components/ak-label";
+
 import { CurrentBrand, FlowDesignationEnum, LDAPProvider, ValidationError } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
@@ -86,12 +88,21 @@ export function renderForm({ provider, errors = {}, brand }: LDAPProviderFormPro
         <ak-form-group open label="${msg("Flow settings")}">
             <div class="pf-c-form">
                 <ak-form-element-horizontal
-                    label=${msg("Bind Flow")}
                     required
                     name="authorizationFlow"
                     .errorMessages=${errors.authorizationFlow}
                 >
+                    ${AKLabel(
+                        {
+                            slot: "label",
+                            className: "pf-c-form__group-label",
+                            htmlFor: "authorizationFlow",
+                            required: true,
+                        },
+                        msg("Bind Flow"),
+                    )}
                     <ak-branded-flow-search
+                        id="authorizationFlow"
                         label=${msg("Bind Flow")}
                         flowType=${FlowDesignationEnum.Authentication}
                         .currentFlow=${provider.authorizationFlow}
@@ -103,12 +114,18 @@ export function renderForm({ provider, errors = {}, brand }: LDAPProviderFormPro
                     </p>
                 </ak-form-element-horizontal>
 
-                <ak-form-element-horizontal
-                    label=${msg("Unbind Flow")}
-                    name="invalidationFlow"
-                    required
-                >
+                <ak-form-element-horizontal name="invalidationFlow" required>
+                    ${AKLabel(
+                        {
+                            slot: "label",
+                            className: "pf-c-form__group-label",
+                            htmlFor: "invalidationFlow",
+                            required: true,
+                        },
+                        msg("Unbind Flow"),
+                    )}
                     <ak-branded-flow-search
+                        id="invalidationFlow"
                         flowType=${FlowDesignationEnum.Invalidation}
                         .currentFlow=${provider.invalidationFlow}
                         .brandFlow=${brand?.flowInvalidation}
@@ -136,12 +153,17 @@ export function renderForm({ provider, errors = {}, brand }: LDAPProviderFormPro
                 >
                 </ak-text-input>
 
-                <ak-form-element-horizontal
-                    label=${msg("Certificate")}
-                    name="certificate"
-                    .errorMessages=${errors.certificate}
-                >
+                <ak-form-element-horizontal name="certificate" .errorMessages=${errors.certificate}>
+                    ${AKLabel(
+                        {
+                            slot: "label",
+                            className: "pf-c-form__group-label",
+                            htmlFor: "certificate",
+                        },
+                        msg("Certificate"),
+                    )}
                     <ak-crypto-certificate-search
+                        id="certificate"
                         label=${msg("Certificate")}
                         placeholder=${msg("Select a certificate...")}
                         certificate=${ifPresent(provider.certificate)}
