@@ -16,6 +16,7 @@ from authentik.core.models import (
     Session,
     Token,
     User,
+    UserStatus,
     UserTypes,
 )
 from authentik.core.tests.utils import (
@@ -24,6 +25,7 @@ from authentik.core.tests.utils import (
     create_test_flow,
     create_test_user,
 )
+from authentik.events.models import Event, EventAction
 from authentik.flows.models import FlowAuthenticationRequirement, FlowDesignation
 from authentik.lib.generators import generate_id, generate_key
 from authentik.rbac.models import Role
@@ -127,6 +129,7 @@ class TestUsersAPI(APITestCase):
     def test_set_password(self):
         """Test Direct password set"""
         self.client.force_login(self.admin)
+        User.objects.filter(pk=self.admin.pk).update(password_login_locked_at=now())
         new_pw = generate_key()
         response = self.client.post(
             reverse("authentik_api:user-set-password", kwargs={"pk": self.admin.pk}),
@@ -135,6 +138,48 @@ class TestUsersAPI(APITestCase):
         self.assertEqual(response.status_code, 204)
         self.admin.refresh_from_db()
         self.assertTrue(self.admin.check_password(new_pw))
+        self.assertIsNone(self.admin.password_login_locked_at)
+
+    def test_password_login_lock(self):
+        """Password login lock actions update the visible status and audit log."""
+        self.client.force_login(self.admin)
+
+        response = self.client.post(
+            reverse("authentik_api:user-password-login-lock", kwargs={"pk": self.user.pk})
+        )
+        self.assertEqual(response.status_code, 204)
+        self.user.refresh_from_db()
+        self.assertIsNotNone(self.user.password_login_locked_at)
+        self.assertEqual(self.user.composite_status, UserStatus.LOCKED)
+        self.assertTrue(
+            Event.objects.filter(
+                action=EventAction.PASSWORD_LOGIN_LOCKED,
+                user__pk=self.user.pk,
+            ).exists()
+        )
+
+        self.user.is_active = False
+        self.assertEqual(self.user.composite_status, UserStatus.DEACTIVATED)
+        self.user.is_active = True
+
+        self.user.password_login_locked_at = None
+        self.user.attributes["reset_password"] = True
+        self.assertEqual(self.user.composite_status, UserStatus.PASSWORD_RESET_PENDING)
+        self.user.attributes = {}
+
+        response = self.client.post(
+            reverse("authentik_api:user-password-login-unlock", kwargs={"pk": self.user.pk})
+        )
+        self.assertEqual(response.status_code, 204)
+        self.user.refresh_from_db()
+        self.assertIsNone(self.user.password_login_locked_at)
+        self.assertEqual(self.user.composite_status, UserStatus.ACTIVE)
+        self.assertTrue(
+            Event.objects.filter(
+                action=EventAction.PASSWORD_LOGIN_UNLOCKED,
+                user__pk=self.user.pk,
+            ).exists()
+        )
 
     def test_set_password_blank(self):
         """Test Direct password set"""

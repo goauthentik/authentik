@@ -180,7 +180,7 @@ export class PasswordStageForm extends BaseStageForm<PasswordStage> {
                         />
                         <p class="pf-c-form__helper-text">
                             ${msg(
-                                "Deactivate the user after this many consecutive failed password attempts. Set to 0 to disable lockout.",
+                                "Lock password login after this many consecutive failed attempts. Set to 0 to disable lockout.",
                                 {
                                     id: "password-stage.lockout-threshold.description",
                                 },

@@ -34,6 +34,8 @@ import { RecoveryButtons } from "#admin/users/recovery";
 import { ToggleUserActivationButton } from "#admin/users/UserActiveForm";
 import { UserForm } from "#admin/users/UserForm";
 import { UserImpersonateForm } from "#admin/users/UserImpersonateForm";
+import { ToggleUserPasswordLoginLockButton } from "#admin/users/UserPasswordLoginLockForm";
+import { renderUserStatus } from "#admin/users/UserStatus";
 
 import { CoreApi, CoreUsersExportCreateRequest, User, UserPath } from "@goauthentik/api";
 
@@ -196,7 +198,7 @@ export class UserListPage extends WithLicenseSummary(
     protected columns: TableColumn[] = [
         ["", null, msg("Avatar")],
         [msg("Name"), "username"],
-        [msg("Active"), "is_active"],
+        [msg("Status", { id: "user.field.status" }), null],
         [msg("Last login"), "last_login"],
         [msg("Type"), "type"],
         [msg("Actions"), null, msg("Row Actions")],
@@ -316,7 +318,7 @@ export class UserListPage extends WithLicenseSummary(
                     >${displayName ? item.name : html`&lt;${msg("No name set")}&gt;`}</small
                 >
             </a>`,
-            html`<ak-status-label ?good=${item.isActive}></ak-status-label>`,
+            renderUserStatus(item.compositeStatus),
             Timestamp(item.lastLogin),
             html`${userTypeToLabel(item.type)}`,
             html`<div class="ak-c-table__actions">
@@ -347,7 +349,7 @@ export class UserListPage extends WithLicenseSummary(
                 </dt>
                 <dd class="pf-c-description-list__description">
                     <div class="pf-c-description-list__text">
-                        ${item.isActive ? msg("Active") : msg("Inactive")}
+                        ${renderUserStatus(item.compositeStatus)}
                     </div>
                     <div class="pf-c-description-list__text">
                         ${item.isSuperuser ? msg("Superuser") : msg("Regular user")}
@@ -361,6 +363,9 @@ export class UserListPage extends WithLicenseSummary(
                 <dd class="pf-c-description-list__description">
                     <div class="pf-c-description-list__text">
                         ${ToggleUserActivationButton(item)}
+                        ${item.isActive || item.passwordLoginLockedAt
+                            ? ToggleUserPasswordLoginLockButton(item)
+                            : nothing}
                     </div>
                 </dd>
             </div>

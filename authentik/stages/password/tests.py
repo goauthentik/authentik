@@ -9,6 +9,7 @@ from django.test import TransactionTestCase
 from django.urls import reverse
 
 from authentik.core.tests.utils import create_test_admin_user, create_test_brand, create_test_flow
+from authentik.events.models import Event, EventAction
 from authentik.flows.markers import StageMarker
 from authentik.flows.models import FlowDesignation, FlowStageBinding
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
@@ -124,6 +125,27 @@ class TestPasswordStage(FlowTestCase):
             response_errors={"password": [{"string": "Invalid password", "code": "invalid"}]},
         )
 
+    def test_valid_password_locked(self):
+        """A correct password cannot authenticate while password login is locked."""
+        self.user.set_password_login_locked(True)
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
+        plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
+        session = self.client.session
+        session[SESSION_KEY_PLAN] = plan
+        session.save()
+
+        response = self.client.post(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
+            {"password": self.user.username},
+        )
+
+        self.assertStageResponse(
+            response,
+            self.flow,
+            component="ak-stage-access-denied",
+            error_message="Invalid password",
+        )
+
     def test_invalid_password(self):
         """Test with a valid pending user and invalid password"""
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
@@ -143,7 +165,7 @@ class TestPasswordStage(FlowTestCase):
         self.assertEqual(self.user.password_login_failed_attempts, 0)
 
     def test_invalid_password_account_lockout(self):
-        """Test that consecutive invalid passwords deactivate the user."""
+        """Test that consecutive invalid passwords lock password login."""
         self.stage.failed_attempts_before_lockout = 2
         self.stage.show_last_attempt_warning = True
         self.stage.show_lockout_message = True
@@ -164,7 +186,6 @@ class TestPasswordStage(FlowTestCase):
         self.client.get(url)
         response = self.client.post(url, {"password": self.user.username + "test"})
         self.user.refresh_from_db()
-        self.assertTrue(self.user.is_active)
         self.assertEqual(self.user.password_login_failed_attempts, 1)
         self.assertStageResponse(
             response,
@@ -185,8 +206,14 @@ class TestPasswordStage(FlowTestCase):
 
         response = self.client.post(url, {"password": self.user.username + "test"})
         self.user.refresh_from_db()
-        self.assertFalse(self.user.is_active)
+        self.assertIsNotNone(self.user.password_login_locked_at)
         self.assertEqual(self.user.password_login_failed_attempts, 0)
+        self.assertTrue(
+            Event.objects.filter(
+                action=EventAction.PASSWORD_LOGIN_LOCKED,
+                user__pk=self.user.pk,
+            ).exists()
+        )
         self.assertStageResponse(
             response,
             self.flow,
@@ -311,5 +338,12 @@ class TestPasswordLockoutConcurrency(TransactionTestCase):
             thread.join()
 
         user.refresh_from_db()
-        self.assertFalse(user.is_active)
+        self.assertIsNotNone(user.password_login_locked_at)
         self.assertCountEqual([thread.remaining_attempts for thread in threads], [0, 1, 2])
+        self.assertEqual(
+            Event.objects.filter(
+                action=EventAction.PASSWORD_LOGIN_LOCKED,
+                user__pk=user.pk,
+            ).count(),
+            1,
+        )

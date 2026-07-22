@@ -200,6 +200,8 @@ class UserWriteStageView(StageView):
         except (IntegrityError, ValueError, TypeError, InternalError) as exc:
             self.logger.warning("Failed to save user", exc=exc)
             return self.executor.stage_invalid(_("Failed to update user. Please try again later."))
+        if "password" in data:
+            user.set_password_login_locked(False, request=request, reason="password_changed")
         user_write.send(sender=self, request=request, user=user, data=data, created=user_created)
         # Check if the password has been updated, and update the session auth hash
         if should_update_session:

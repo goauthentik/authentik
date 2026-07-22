@@ -38,7 +38,26 @@ PLAN_CONTEXT_INITIAL_SCORE = "goauthentik.io/stages/password/initial_score"
 PLAN_CONTEXT_USER_LOCKED = "goauthentik.io/stages/password/user_locked"
 
 
-def record_failed_password_attempt(user: User, stage: PasswordStage) -> int | None:
+def is_password_login_locked(user: User) -> bool:
+    """Return whether password login is currently locked for a stored user."""
+    if user.pk is None:
+        return False
+    return User.objects.filter(pk=user.pk, password_login_locked_at__isnull=False).exists()
+
+
+def ensure_password_login_unlocked(user: User, context: dict[str, Any], error: str) -> None:
+    """Reject password authentication when the stored user is locked."""
+    if not is_password_login_locked(user):
+        return
+    context[PLAN_CONTEXT_USER_LOCKED] = True
+    raise ValidationError(error)
+
+
+def record_failed_password_attempt(
+    user: User,
+    stage: PasswordStage,
+    request: HttpRequest | None = None,
+) -> int | None:
     """Record a failed password attempt and return how many attempts remain."""
     if stage.failed_attempts_before_lockout == 0 or user.pk is None:
         return None
@@ -46,15 +65,20 @@ def record_failed_password_attempt(user: User, stage: PasswordStage) -> int | No
         user = User.objects.exclude_anonymous().select_for_update().filter(pk=user.pk).first()
         if user is None or not user.is_active or user.type == UserTypes.INTERNAL_SERVICE_ACCOUNT:
             return None
+        if user.password_login_locked_at is not None:
+            return 0
         user.password_login_failed_attempts += 1
         remaining_attempts = max(
             stage.failed_attempts_before_lockout - user.password_login_failed_attempts, 0
         )
         locked = remaining_attempts == 0
         if locked:
-            user.is_active = False
-            user.password_login_failed_attempts = 0
-            user.save(update_fields=("is_active", "last_updated", "password_login_failed_attempts"))
+            user.set_password_login_locked(
+                True,
+                request=request,
+                reason="failed_attempts",
+                stage=stage,
+            )
         else:
             User.objects.filter(pk=user.pk).update(
                 password_login_failed_attempts=user.password_login_failed_attempts
@@ -63,12 +87,12 @@ def record_failed_password_attempt(user: User, stage: PasswordStage) -> int | No
 
 
 def reset_failed_password_attempts(user: User) -> bool:
-    """Reset failed password attempts, returning whether the user is still active."""
+    """Reset failed attempts if the user can still authenticate with a password."""
     if user.pk is None:
         return False
     with transaction.atomic():
         stored_user = User.objects.select_for_update().get(pk=user.pk)
-        if not stored_user.is_active:
+        if not stored_user.is_active or stored_user.password_login_locked_at is not None:
             return False
         if stored_user.password_login_failed_attempts:
             User.objects.filter(pk=user.pk).update(password_login_failed_attempts=0)
@@ -156,6 +180,7 @@ class PasswordChallengeResponse(ChallengeResponse):
         # Get the pending user's username, which is used as
         # an Identifier by most authentication backends
         pending_user: User = executor.plan.context[PLAN_CONTEXT_PENDING_USER]
+        ensure_password_login_unlocked(pending_user, executor.plan.context, _("Invalid password"))
         auth_kwargs = {
             "password": password,
             "username": pending_user.username,
@@ -186,7 +211,7 @@ class PasswordChallengeResponse(ChallengeResponse):
             # No user was found -> invalid credentials
             self.stage.logger.info("Invalid credentials")
             remaining_attempts = record_failed_password_attempt(
-                pending_user, executor.current_stage
+                pending_user, executor.current_stage, self.stage.request
             )
             if remaining_attempts == 0:
                 executor.plan.context[PLAN_CONTEXT_USER_LOCKED] = True

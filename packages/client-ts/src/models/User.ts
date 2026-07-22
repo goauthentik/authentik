@@ -12,6 +12,8 @@
  * Do not edit the class manually.
  */
 
+import type { CompositeStatusEnum } from "./CompositeStatusEnum";
+import { CompositeStatusEnumFromJSON } from "./CompositeStatusEnum";
 import type { PartialGroup } from "./PartialGroup";
 import { PartialGroupFromJSON } from "./PartialGroup";
 import type { Role } from "./Role";
@@ -49,6 +51,18 @@ export interface User {
      * @memberof User
      */
     isActive?: boolean;
+    /**
+     *
+     * @type {CompositeStatusEnum}
+     * @memberof User
+     */
+    readonly compositeStatus: CompositeStatusEnum;
+    /**
+     *
+     * @type {Date}
+     * @memberof User
+     */
+    readonly passwordLoginLockedAt: Date | null;
     /**
      *
      * @type {Date}
@@ -154,6 +168,9 @@ export function instanceOfUser(value: object): value is User {
     if (!("pk" in value) || value["pk"] === undefined) return false;
     if (!("username" in value) || value["username"] === undefined) return false;
     if (!("name" in value) || value["name"] === undefined) return false;
+    if (!("compositeStatus" in value) || value["compositeStatus"] === undefined) return false;
+    if (!("passwordLoginLockedAt" in value) || value["passwordLoginLockedAt"] === undefined)
+        return false;
     if (!("dateJoined" in value) || value["dateJoined"] === undefined) return false;
     if (!("isSuperuser" in value) || value["isSuperuser"] === undefined) return false;
     if (!("groupsObj" in value) || value["groupsObj"] === undefined) return false;
@@ -179,6 +196,11 @@ export function UserFromJSONTyped(json: any, ignoreDiscriminator: boolean): User
         username: json["username"],
         name: json["name"],
         isActive: json["is_active"] == null ? undefined : json["is_active"],
+        compositeStatus: CompositeStatusEnumFromJSON(json["composite_status"]),
+        passwordLoginLockedAt:
+            json["password_login_locked_at"] == null
+                ? null
+                : new Date(json["password_login_locked_at"]),
         lastLogin: json["last_login"] == null ? undefined : new Date(json["last_login"]),
         dateJoined: new Date(json["date_joined"]),
         isSuperuser: json["is_superuser"],
@@ -210,6 +232,8 @@ export function UserToJSONTyped(
     value?: Omit<
         User,
         | "pk"
+        | "composite_status"
+        | "password_login_locked_at"
         | "date_joined"
         | "is_superuser"
         | "groups_obj"

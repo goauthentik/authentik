@@ -86,6 +86,7 @@ from authentik.core.models import (
     Token,
     TokenIntents,
     User,
+    UserStatus,
     UserTypes,
     default_token_duration,
 )
@@ -156,6 +157,7 @@ class UserSerializer(AttributesMixinSerializer, ModelSerializer):
     )
     roles_obj = SerializerMethodField(allow_null=True)
     uid = CharField(read_only=True)
+    composite_status = ChoiceField(choices=UserStatus.choices, read_only=True)
     username = CharField(
         max_length=USERNAME_MAX_LENGTH,
         validators=[UniqueValidator(queryset=User.objects.all().order_by("username"))],
@@ -263,9 +265,11 @@ class UserSerializer(AttributesMixinSerializer, ModelSerializer):
         if password_hash is not None:
             instance.set_password_from_hash(password_hash)
             instance.save()
+            instance.set_password_login_locked(False, reason="password_changed")
         elif password:
             instance.set_password(password)
             instance.save()
+            instance.set_password_login_locked(False, reason="password_changed")
 
     def _ensure_password_not_empty(self, instance: User):
         """Store an explicit unusable password instead of an empty password field."""
@@ -345,6 +349,8 @@ class UserSerializer(AttributesMixinSerializer, ModelSerializer):
             "username",
             "name",
             "is_active",
+            "composite_status",
+            "password_login_locked_at",
             "last_login",
             "date_joined",
             "is_superuser",
@@ -366,6 +372,7 @@ class UserSerializer(AttributesMixinSerializer, ModelSerializer):
             "name": {"allow_blank": True},
             "date_joined": {"read_only": True},
             "password_change_date": {"read_only": True},
+            "password_login_locked_at": {"read_only": True},
         }
 
 
@@ -849,6 +856,7 @@ class UserViewSet(
         try:
             user.set_password(body.validated_data["password"], request=request)
             user.save()
+            user.set_password_login_locked(False, request._request, reason="password_changed")
         except (ValidationError, IntegrityError) as exc:
             LOGGER.debug("Failed to set password", exc=exc)
             return Response(status=400)
@@ -884,6 +892,7 @@ class UserViewSet(
         try:
             user.set_password_from_hash(body.validated_data["password"], request=request)
             user.save()
+            user.set_password_login_locked(False, request._request, reason="password_changed")
         except ValueError as exc:
             LOGGER.debug("Failed to set password hash", exc=exc)
             return Response(data={"password": [INVALID_PASSWORD_HASH_MESSAGE]}, status=400)
@@ -891,6 +900,30 @@ class UserViewSet(
             LOGGER.debug("Failed to set password hash", exc=exc)
             return Response(status=400)
         self._update_session_hash_after_password_change(request, user)
+        return Response(status=204)
+
+    @permission_required("authentik_core.change_user")
+    @extend_schema(
+        request=None,
+        responses={204: OpenApiResponse(description="Password login locked")},
+    )
+    @action(detail=True, methods=["POST"])
+    def password_login_lock(self, request: Request, pk: int) -> Response:
+        """Lock password login for a user."""
+        user: User = self.get_object()
+        user.set_password_login_locked(True, request._request, reason="administrator")
+        return Response(status=204)
+
+    @permission_required("authentik_core.change_user")
+    @extend_schema(
+        request=None,
+        responses={204: OpenApiResponse(description="Password login unlocked")},
+    )
+    @action(detail=True, methods=["POST"])
+    def password_login_unlock(self, request: Request, pk: int) -> Response:
+        """Unlock password login for a user."""
+        user: User = self.get_object()
+        user.set_password_login_locked(False, request._request, reason="administrator")
         return Response(status=204)
 
     @permission_required("authentik_core.reset_user_password")

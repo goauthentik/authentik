@@ -55,7 +55,7 @@ class PasswordStage(ConfigurableStage, Stage):
     failed_attempts_before_lockout = models.PositiveIntegerField(
         default=0,
         help_text=_(
-            "How many consecutive failed password attempts occur before the user is deactivated. "
+            "How many consecutive failed password attempts occur before password login is locked. "
             "Set to 0 to disable lockout."
         ),
     )

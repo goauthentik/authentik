@@ -131,6 +131,15 @@ class UserTypes(models.TextChoices):
     INTERNAL_SERVICE_ACCOUNT = "internal_service_account"
 
 
+class UserStatus(models.TextChoices):
+    """Combined user status shown to administrators."""
+
+    ACTIVE = "active", _("Active")
+    LOCKED = "locked", _("Locked")
+    PASSWORD_RESET_PENDING = "password_reset_pending", _("Password reset pending")
+    DEACTIVATED = "deactivated", _("Deactivated")
+
+
 class AttributesMixin(models.Model):
     """Adds an attributes property to a model"""
 
@@ -381,6 +390,7 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
     )
     password_change_date = models.DateTimeField(auto_now_add=True)
     password_login_failed_attempts = models.PositiveIntegerField(default=0, editable=False)
+    password_login_locked_at = models.DateTimeField(null=True, editable=False)
 
     last_updated = models.DateTimeField(auto_now=True)
 
@@ -420,6 +430,54 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
     def all_roles(self) -> QuerySet[Role]:
         """Get all roles of this user and all of its groups (recursively)."""
         return Role.objects.filter(Q(users=self) | Q(groups__in=self.all_groups())).distinct()
+
+    @property
+    def composite_status(self) -> UserStatus:
+        """Return the user status shown to administrators."""
+        if not self.is_active:
+            return UserStatus.DEACTIVATED
+        if self.password_login_locked_at is not None:
+            return UserStatus.LOCKED
+        # TODO: Use a dedicated user state when reset-on-next-login is built in.
+        if self.attributes.get("reset_password") is True:
+            return UserStatus.PASSWORD_RESET_PENDING
+        return UserStatus.ACTIVE
+
+    def set_password_login_locked(
+        self,
+        locked: bool,
+        request: HttpRequest | None = None,
+        **event_context: Any,
+    ) -> bool:
+        """Set password login lock state and emit an event when it changes."""
+        if self.pk is None:
+            return False
+        users = User.objects.filter(pk=self.pk)
+        if locked:
+            users = users.filter(password_login_locked_at__isnull=True)
+        else:
+            users = users.filter(password_login_locked_at__isnull=False)
+        locked_at = now() if locked else None
+        updated = users.update(
+            password_login_locked_at=locked_at,
+            password_login_failed_attempts=0,
+        )
+        if not updated:
+            return False
+        self.password_login_locked_at = locked_at
+        self.password_login_failed_attempts = 0
+
+        from authentik.events.models import Event, EventAction
+
+        action = (
+            EventAction.PASSWORD_LOGIN_LOCKED if locked else EventAction.PASSWORD_LOGIN_UNLOCKED
+        )
+        event = Event.new(action, **event_context)
+        if request:
+            event.from_http(request, user=self)
+        else:
+            event.set_user(self).save()
+        return True
 
     def get_managed_role(self, create=False):
         if create:

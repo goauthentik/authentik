@@ -54,6 +54,7 @@ from authentik.stages.password.stage import (
     PLAN_CONTEXT_METHOD_ARGS,
     PLAN_CONTEXT_USER_LOCKED,
     authenticate,
+    ensure_password_login_unlocked,
     get_last_attempt_warning,
     get_lockout_message,
     record_failed_password_attempt,
@@ -143,6 +144,13 @@ class IdentificationChallengeResponse(ChallengeResponse):
             passkey, self.stage, self.stage.get_pending_user(), current_stage.webauthn_stage
         )
 
+    def _get_password(self, attrs: dict[str, Any]) -> str | None:
+        """Get the submitted password and log when it is missing."""
+        password = attrs.get("password")
+        if not password:
+            self.stage.logger.warning("Password not set for ident+auth attempt")
+        return password
+
     def validate(self, attrs: dict[str, Any]) -> dict[str, Any]:
         """Validate that user exists, and optionally their password, captcha token, or passkey"""
         current_stage: IdentificationStage = self.stage.executor.current_stage
@@ -220,9 +228,12 @@ class IdentificationChallengeResponse(ChallengeResponse):
             # No password stage select, don't validate the password
             return attrs
 
-        password = attrs.get("password", None)
-        if not password:
-            self.stage.logger.warning("Password not set for ident+auth attempt")
+        password = self._get_password(attrs)
+        ensure_password_login_unlocked(
+            self.pre_user,
+            self.stage.executor.plan.context,
+            _("Failed to authenticate."),
+        )
         try:
             with start_span(
                 op="authentik.stages.identification.authenticate",
@@ -237,7 +248,9 @@ class IdentificationChallengeResponse(ChallengeResponse):
                 )
             if not user:
                 remaining_attempts = record_failed_password_attempt(
-                    self.pre_user, current_stage.password_stage
+                    self.pre_user,
+                    current_stage.password_stage,
+                    self.stage.request,
                 )
                 if remaining_attempts == 0:
                     self.stage.executor.plan.context[PLAN_CONTEXT_USER_LOCKED] = True

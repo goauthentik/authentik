@@ -255,7 +255,7 @@ class TestIdentificationStage(FlowTestCase):
         )
 
         self.user.refresh_from_db()
-        self.assertFalse(self.user.is_active)
+        self.assertIsNotNone(self.user.password_login_locked_at)
         self.assertEqual(self.user.password_login_failed_attempts, 0)
         self.assertStageResponse(
             response,

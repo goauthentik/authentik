@@ -2,7 +2,6 @@ import "#admin/users/UserActiveForm";
 import "#admin/users/UserForm";
 import "#admin/users/UserImpersonateForm";
 import "#admin/users/UserPasswordForm";
-import "#components/ak-status-label";
 
 import { userTypeToLabel } from "#common/labels";
 import { formatUserDisplayName, startAccountLockdown } from "#common/users";
@@ -18,6 +17,8 @@ import { ToggleUserActivationButton } from "#admin/users/UserActiveForm";
 import { UserForm } from "#admin/users/UserForm";
 import { UserImpersonateForm } from "#admin/users/UserImpersonateForm";
 import Styles from "#admin/users/UserInfoCard.css";
+import { ToggleUserPasswordLoginLockButton } from "#admin/users/UserPasswordLoginLockForm";
+import { renderUserStatus } from "#admin/users/UserStatus";
 
 import { User, UserTypeEnum } from "@goauthentik/api";
 
@@ -74,6 +75,9 @@ export class UserInfoCard extends AKElement {
             </button>
 
             ${ToggleUserActivationButton(user, { className: "pf-m-block" })}
+            ${user.isActive || user.passwordLoginLockedAt
+                ? ToggleUserPasswordLoginLockButton(user, { className: "pf-m-block" })
+                : nothing}
             ${showLockdown
                 ? html`<button
                       class="pf-c-button pf-m-danger pf-m-block"
@@ -136,8 +140,8 @@ export class UserInfoCard extends AKElement {
                     [msg("Last login"), this.renderDate(user.lastLogin)],
                     [msg("Last password change"), this.renderDate(user.passwordChangeDate)],
                     [
-                        msg("Active"),
-                        html`<ak-status-label .good=${user.isActive}></ak-status-label>`,
+                        msg("Status", { id: "user.field.status" }),
+                        renderUserStatus(user.compositeStatus),
                     ],
                     [msg("Type"), userTypeToLabel(user.type)],
                     [

@@ -542,6 +542,14 @@ export interface CoreUsersPartialUpdateRequest {
     patchedUserRequest?: PatchedUserRequest;
 }
 
+export interface CoreUsersPasswordLoginLockCreateRequest {
+    id: number;
+}
+
+export interface CoreUsersPasswordLoginUnlockCreateRequest {
+    id: number;
+}
+
 export interface CoreUsersPathsRetrieveRequest {
     search?: string;
 }
@@ -5417,6 +5425,128 @@ export class CoreApi extends runtime.BaseAPI {
     ): Promise<User> {
         const response = await this.coreUsersPartialUpdateRaw(requestParameters, initOverrides);
         return await response.value();
+    }
+
+    /**
+     * Creates request options for coreUsersPasswordLoginLockCreate without sending the request
+     */
+    async coreUsersPasswordLoginLockCreateRequestOpts(
+        requestParameters: CoreUsersPasswordLoginLockCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
+            throw new runtime.RequiredError(
+                "id",
+                'Required parameter "id" was null or undefined when calling coreUsersPasswordLoginLockCreate().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/core/users/{id}/password_login_lock/`;
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
+
+        return {
+            path: urlPath,
+            method: "POST",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * Lock password login for a user.
+     */
+    async coreUsersPasswordLoginLockCreateRaw(
+        requestParameters: CoreUsersPasswordLoginLockCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
+        const requestOptions =
+            await this.coreUsersPasswordLoginLockCreateRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.VoidApiResponse(response);
+    }
+
+    /**
+     * Lock password login for a user.
+     */
+    async coreUsersPasswordLoginLockCreate(
+        requestParameters: CoreUsersPasswordLoginLockCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
+        await this.coreUsersPasswordLoginLockCreateRaw(requestParameters, initOverrides);
+    }
+
+    /**
+     * Creates request options for coreUsersPasswordLoginUnlockCreate without sending the request
+     */
+    async coreUsersPasswordLoginUnlockCreateRequestOpts(
+        requestParameters: CoreUsersPasswordLoginUnlockCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
+            throw new runtime.RequiredError(
+                "id",
+                'Required parameter "id" was null or undefined when calling coreUsersPasswordLoginUnlockCreate().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/core/users/{id}/password_login_unlock/`;
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
+
+        return {
+            path: urlPath,
+            method: "POST",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * Unlock password login for a user.
+     */
+    async coreUsersPasswordLoginUnlockCreateRaw(
+        requestParameters: CoreUsersPasswordLoginUnlockCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
+        const requestOptions =
+            await this.coreUsersPasswordLoginUnlockCreateRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.VoidApiResponse(response);
+    }
+
+    /**
+     * Unlock password login for a user.
+     */
+    async coreUsersPasswordLoginUnlockCreate(
+        requestParameters: CoreUsersPasswordLoginUnlockCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
+        await this.coreUsersPasswordLoginUnlockCreateRaw(requestParameters, initOverrides);
     }
 
     /**

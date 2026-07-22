@@ -18,7 +18,7 @@ The stage supports authentik's built-in password database, app passwords, LDAP-b
     - **User database + LDAP password**
     - **User database + Kerberos password**
 - **Failed attempts before cancel**: how many failed password submissions are allowed before the flow is canceled.
-- **Failed attempts before lockout**: deactivate the user after this many consecutive failed password attempts. Set this option to `0` to disable account lockout.
+- **Failed attempts before lockout**: lock password login after this many consecutive failed password attempts. Set this option to `0` to disable password lockout.
 - **Show last-attempt warning**: show a warning after a failed attempt leaves the user with one attempt remaining.
 - **Last-attempt warning message**: an optional custom warning. Leave this blank to use the default: "You have one password attempt remaining before your account is locked out. If you have forgotten your password, please contact your administrator."
 - **Show lockout message**: show a specific message and stop the flow when an attempt locks the account. When disabled, authentik stops the flow with a generic authentication error.
@@ -32,7 +32,9 @@ This stage is typically bound after an [Identification](../identification/index.
 
 If the [Identification stage](../identification/index.md) has its **Password stage** option set, the password prompt is rendered as part of the identification step and the Password stage should not also be bound separately in the same flow.
 
-Account lockout counts failures across flows and sessions, including password validation embedded in an Identification stage. A successful password validation resets the counter. After lockout, an administrator must reactivate the user. Lockout is independent of reputation scores; reputation policies continue to operate separately.
+Password login lockout counts failures across flows and sessions, including password validation embedded in an Identification stage. A successful password validation resets the counter. After lockout, an administrator must unlock password login or reset the user's password. Lockout is independent of reputation scores; reputation policies continue to operate separately.
+
+Password login lockout does not deactivate the user, revoke sessions, or prevent authentication with other methods. For a comparison of the available controls, see [Control user access](../../../../users-sources/user/access-control.md).
 
 ## Notes
 

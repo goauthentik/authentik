@@ -46,7 +46,7 @@ export interface PasswordStageRequest {
      */
     failedAttemptsBeforeCancel?: number;
     /**
-     * How many consecutive failed password attempts occur before the user is deactivated. Set to 0 to disable lockout.
+     * How many consecutive failed password attempts occur before password login is locked. Set to 0 to disable lockout.
      * @type {number}
      * @memberof PasswordStageRequest
      */

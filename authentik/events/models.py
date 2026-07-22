@@ -97,6 +97,8 @@ class EventAction(models.TextChoices):
     USER_WRITE = "user_write"
     SUSPICIOUS_REQUEST = "suspicious_request"
     PASSWORD_SET = "password_set"  # noqa # nosec
+    PASSWORD_LOGIN_LOCKED = "password_login_locked"
+    PASSWORD_LOGIN_UNLOCKED = "password_login_unlocked"
 
     SECRET_VIEW = "secret_view"  # noqa # nosec
     SECRET_ROTATE = "secret_rotate"  # noqa # nosec

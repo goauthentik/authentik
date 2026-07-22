@@ -99,9 +99,9 @@ class TestUserWriteStage(FlowTestCase):
         """Test update of existing user"""
         new_password = generate_key()
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
-        plan.context[PLAN_CONTEXT_PENDING_USER] = User.objects.create(
-            username="unittest", email="test@goauthentik.io"
-        )
+        user = User.objects.create(username="unittest", email="test@goauthentik.io")
+        user.set_password_login_locked(True)
+        plan.context[PLAN_CONTEXT_PENDING_USER] = user
         plan.context[PLAN_CONTEXT_PROMPT] = {
             "username": "test-user-new",
             "password": new_password,
@@ -125,6 +125,7 @@ class TestUserWriteStage(FlowTestCase):
         user_qs = User.objects.filter(username=plan.context[PLAN_CONTEXT_PROMPT]["username"])
         self.assertTrue(user_qs.exists())
         self.assertTrue(user_qs.first().check_password(new_password))
+        self.assertIsNone(user_qs.first().password_login_locked_at)
         self.assertEqual(user_qs.first().attributes["some"]["custom-attribute"], "test")
         self.assertEqual(user_qs.first().attributes["foo"], "bar")
         self.assertEqual(user_qs.first().attributes["some_custom_attribute"], "test")

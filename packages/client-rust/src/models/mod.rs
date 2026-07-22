@@ -52,6 +52,8 @@ pub mod certificate_key_pair_key_type_enum;
 pub use self::certificate_key_pair_key_type_enum::CertificateKeyPairKeyTypeEnum;
 pub mod challenge_types;
 pub use self::challenge_types::ChallengeTypes;
+pub mod composite_status_enum;
+pub use self::composite_status_enum::CompositeStatusEnum;
 pub mod config;
 pub use self::config::Config;
 pub mod consent_challenge;

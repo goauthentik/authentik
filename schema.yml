@@ -4611,6 +4611,50 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+  /core/users/{id}/password_login_lock/:
+    post:
+      operationId: core_users_password_login_lock_create
+      description: Lock password login for a user.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this User.
+        required: true
+      tags:
+      - core
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: Password login locked
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /core/users/{id}/password_login_unlock/:
+    post:
+      operationId: core_users_password_login_unlock_create
+      description: Unlock password login for a user.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this User.
+        required: true
+      tags:
+      - core
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: Password login unlocked
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
   /core/users/{id}/recovery/:
     post:
       operationId: core_users_recovery_create
@@ -36862,6 +36906,13 @@ components:
       - webex
       - vcenter
       type: string
+    CompositeStatusEnum:
+      enum:
+      - active
+      - locked
+      - password_reset_pending
+      - deactivated
+      type: string
     Config:
       type: object
       description: Serialize authentik Config into DRF Object
@@ -39117,6 +39168,8 @@ components:
       - user_write
       - suspicious_request
       - password_set
+      - password_login_locked
+      - password_login_unlocked
       - secret_view
       - secret_rotate
       - invitation_used
@@ -48074,7 +48127,7 @@ components:
           maximum: 2147483647
           minimum: 0
           description: How many consecutive failed password attempts occur before
-            the user is deactivated. Set to 0 to disable lockout.
+            password login is locked. Set to 0 to disable lockout.
         show_last_attempt_warning:
           type: boolean
           description: Show a warning when the user has one password attempt remaining.
@@ -48130,7 +48183,7 @@ components:
           maximum: 2147483647
           minimum: 0
           description: How many consecutive failed password attempts occur before
-            the user is deactivated. Set to 0 to disable lockout.
+            password login is locked. Set to 0 to disable lockout.
         show_last_attempt_warning:
           type: boolean
           description: Show a warning when the user has one password attempt remaining.
@@ -50571,7 +50624,7 @@ components:
           maximum: 2147483647
           minimum: 0
           description: How many consecutive failed password attempts occur before
-            the user is deactivated. Set to 0 to disable lockout.
+            password login is locked. Set to 0 to disable lockout.
         show_last_attempt_warning:
           type: boolean
           description: Show a warning when the user has one password attempt remaining.
@@ -57988,6 +58041,15 @@ components:
           title: Active
           description: Designates whether this user should be treated as active. Unselect
             this instead of deleting accounts.
+        composite_status:
+          allOf:
+          - $ref: '#/components/schemas/CompositeStatusEnum'
+          readOnly: true
+        password_login_locked_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
         last_login:
           type: string
           format: date-time
@@ -58054,12 +58116,14 @@ components:
           readOnly: true
       required:
       - avatar
+      - composite_status
       - date_joined
       - groups_obj
       - is_superuser
       - last_updated
       - name
       - password_change_date
+      - password_login_locked_at
       - pk
       - roles_obj
       - uid

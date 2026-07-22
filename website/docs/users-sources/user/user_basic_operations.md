@@ -149,6 +149,17 @@ If a [Recovery flow](#configure-a-recovery-flow) has been applied to the brand, 
 
 ## Deactivate or delete a user
 
+Password login can also be locked without deactivating the user. See [Control user access](./access-control.md) for the differences between password login lock, deactivation, Account Lockdown, and reputation policies.
+
+### Lock or unlock password login
+
+Locking password login blocks authentication through Password stages without deactivating the user, revoking existing sessions, or changing their state in connected systems.
+
+1. Go into the user list or detail page.
+2. Click **Lock password login** or **Unlock password login**.
+
+Resetting the user's password also unlocks password login. authentik records automatic and administrative lock and unlock actions in the user's **Events** tab.
+
 ### Deactivate a user
 
 1. Go into the user list or detail, and click **Deactivate**.
