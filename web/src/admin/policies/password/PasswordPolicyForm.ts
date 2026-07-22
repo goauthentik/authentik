@@ -4,6 +4,8 @@ import "#elements/forms/HorizontalFormElement";
 
 import { aki } from "#common/api/client";
 
+import { AKLabel } from "#components/ak-label";
+
 import { BasePolicyForm } from "#admin/policies/BasePolicyForm";
 
 import { PasswordPolicy, PoliciesApi } from "@goauthentik/api";
@@ -57,84 +59,126 @@ export class PasswordPolicyForm extends BasePolicyForm<PasswordPolicy> {
     renderStaticRules(): TemplateResult {
         return html` <ak-form-group label="${msg("Static rules")}">
             <div class="pf-c-form">
-                <ak-form-element-horizontal
-                    label=${msg("Minimum length")}
-                    required
-                    name="lengthMin"
-                >
+                <ak-form-element-horizontal required name="lengthMin">
+                    ${AKLabel(
+                        {
+                            slot: "label",
+                            className: "pf-c-form__group-label",
+                            htmlFor: "lengthMin",
+                            required: true,
+                        },
+                        msg("Minimum length"),
+                    )}
                     <input
+                        id="lengthMin"
                         type="number"
                         value="${this.instance?.lengthMin ?? 10}"
                         class="pf-c-form-control"
                         required
                     />
                 </ak-form-element-horizontal>
-                <ak-form-element-horizontal
-                    label=${msg("Minimum amount of Uppercase Characters")}
-                    required
-                    name="amountUppercase"
-                >
+                <ak-form-element-horizontal required name="amountUppercase">
+                    ${AKLabel(
+                        {
+                            slot: "label",
+                            className: "pf-c-form__group-label",
+                            htmlFor: "amountUppercase",
+                            required: true,
+                        },
+                        msg("Minimum amount of Uppercase Characters"),
+                    )}
                     <input
+                        id="amountUppercase"
                         type="number"
                         value="${this.instance?.amountUppercase ?? 2}"
                         class="pf-c-form-control"
                         required
                     />
                 </ak-form-element-horizontal>
-                <ak-form-element-horizontal
-                    label=${msg("Minimum amount of Lowercase Characters")}
-                    required
-                    name="amountLowercase"
-                >
+                <ak-form-element-horizontal required name="amountLowercase">
+                    ${AKLabel(
+                        {
+                            slot: "label",
+                            className: "pf-c-form__group-label",
+                            htmlFor: "amountLowercase",
+                            required: true,
+                        },
+                        msg("Minimum amount of Lowercase Characters"),
+                    )}
                     <input
+                        id="amountLowercase"
                         type="number"
                         value="${this.instance?.amountLowercase ?? 2}"
                         class="pf-c-form-control"
                         required
                     />
                 </ak-form-element-horizontal>
-                <ak-form-element-horizontal
-                    label=${msg("Minimum amount of Digits")}
-                    required
-                    name="amountDigits"
-                >
+                <ak-form-element-horizontal required name="amountDigits">
+                    ${AKLabel(
+                        {
+                            slot: "label",
+                            className: "pf-c-form__group-label",
+                            htmlFor: "amountDigits",
+                            required: true,
+                        },
+                        msg("Minimum amount of Digits"),
+                    )}
                     <input
+                        id="amountDigits"
                         type="number"
                         value="${this.instance?.amountDigits ?? 2}"
                         class="pf-c-form-control"
                         required
                     />
                 </ak-form-element-horizontal>
-                <ak-form-element-horizontal
-                    label=${msg("Minimum amount of Symbols Characters")}
-                    required
-                    name="amountSymbols"
-                >
+                <ak-form-element-horizontal required name="amountSymbols">
+                    ${AKLabel(
+                        {
+                            slot: "label",
+                            className: "pf-c-form__group-label",
+                            htmlFor: "amountSymbols",
+                            required: true,
+                        },
+                        msg("Minimum amount of Symbols Characters"),
+                    )}
                     <input
+                        id="amountSymbols"
                         type="number"
                         value="${this.instance?.amountSymbols ?? 2}"
                         class="pf-c-form-control"
                         required
                     />
                 </ak-form-element-horizontal>
-                <ak-form-element-horizontal
-                    label=${msg("Error message")}
-                    required
-                    name="errorMessage"
-                >
+                <ak-form-element-horizontal required name="errorMessage">
+                    ${AKLabel(
+                        {
+                            slot: "label",
+                            className: "pf-c-form__group-label",
+                            htmlFor: "errorMessage",
+                            required: true,
+                        },
+                        msg("Error message"),
+                    )}
                     <input
+                        id="errorMessage"
                         type="text"
                         value="${ifDefined(this.instance?.errorMessage)}"
                         class="pf-c-form-control"
                         required
                     />
                 </ak-form-element-horizontal>
-                <ak-form-element-horizontal
-                    label=${msg("Symbol charset")}
-                    required
-                    name="symbolCharset"
-                >
+                <ak-form-element-horizontal required name="symbolCharset">
+                    ${AKLabel(
+                        {
+                            slot: "label",
+                            className: "pf-c-form__group-label",
+                            htmlFor: "symbolCharset",
+                            required: true,
+                        },
+                        msg("Symbol charset"),
+                    )}
                     <input
+                        id="symbolCharset"
                         type="text"
                         value="${ifDefined(
                             this.instance?.symbolCharset || "!\\\"#$%&'()*+,-./:;<=>?@[]^_`{|}~ ",
@@ -154,12 +198,18 @@ export class PasswordPolicyForm extends BasePolicyForm<PasswordPolicy> {
         return html`
             <ak-form-group open label="${msg("HaveIBeenPwned settings")}">
                 <div class="pf-c-form">
-                    <ak-form-element-horizontal
-                        label=${msg("Allowed count")}
-                        required
-                        name="hibpAllowedCount"
-                    >
+                    <ak-form-element-horizontal required name="hibpAllowedCount">
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "hibpAllowedCount",
+                                required: true,
+                            },
+                            msg("Allowed count"),
+                        )}
                         <input
+                            id="hibpAllowedCount"
                             type="number"
                             value="${this.instance?.hibpAllowedCount ?? 0}"
                             class="pf-c-form-control"
@@ -178,12 +228,18 @@ export class PasswordPolicyForm extends BasePolicyForm<PasswordPolicy> {
         return html`
             <ak-form-group open label="${msg("zxcvbn settings")}">
                 <div class="pf-c-form">
-                    <ak-form-element-horizontal
-                        label=${msg("Score threshold")}
-                        required
-                        name="zxcvbnScoreThreshold"
-                    >
+                    <ak-form-element-horizontal required name="zxcvbnScoreThreshold">
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "zxcvbnScoreThreshold",
+                                required: true,
+                            },
+                            msg("Score threshold"),
+                        )}
                         <input
+                            id="zxcvbnScoreThreshold"
                             type="number"
                             value="${this.instance?.zxcvbnScoreThreshold ?? 0}"
                             class="pf-c-form-control"
@@ -243,8 +299,18 @@ export class PasswordPolicyForm extends BasePolicyForm<PasswordPolicy> {
                     "Checks the value from the policy request against several rules, mostly used to ensure password strength.",
                 )}
             </span>
-            <ak-form-element-horizontal label=${msg("Name")} required name="name">
+            <ak-form-element-horizontal required name="name">
+                ${AKLabel(
+                    {
+                        slot: "label",
+                        className: "pf-c-form__group-label",
+                        htmlFor: "name",
+                        required: true,
+                    },
+                    msg("Name"),
+                )}
                 <input
+                    id="name"
                     type="text"
                     value="${ifDefined(this.instance?.name || "")}"
                     class="pf-c-form-control"
@@ -259,12 +325,18 @@ export class PasswordPolicyForm extends BasePolicyForm<PasswordPolicy> {
                     "When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.",
                 )}
             ></ak-switch-input>
-            <ak-form-element-horizontal
-                label=${msg("Password field")}
-                required
-                name="passwordField"
-            >
+            <ak-form-element-horizontal required name="passwordField">
+                ${AKLabel(
+                    {
+                        slot: "label",
+                        className: "pf-c-form__group-label",
+                        htmlFor: "passwordField",
+                        required: true,
+                    },
+                    msg("Password field"),
+                )}
                 <input
+                    id="passwordField"
                     type="text"
                     value="${ifDefined(this.instance?.passwordField || "password")}"
                     class="pf-c-form-control"

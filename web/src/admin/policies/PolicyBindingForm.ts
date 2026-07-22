@@ -14,6 +14,8 @@ import { groupBy } from "#common/utils";
 
 import { ModelForm } from "#elements/forms/ModelForm";
 
+import { AKLabel } from "#components/ak-label";
+
 import {
     CoreApi,
     CoreGroupsListRequest,
@@ -176,11 +178,19 @@ export class PolicyBindingForm<T extends PolicyBinding = PolicyBinding> extends 
 
     protected renderTarget() {
         return html`<ak-form-element-horizontal
-                label=${msg("Policy")}
                 name="policy"
                 ?hidden=${this.policyGroupUser !== PolicyBindingCheckTarget.Policy}
             >
+                ${AKLabel(
+                    {
+                        slot: "label",
+                        className: "pf-c-form__group-label",
+                        htmlFor: "policy",
+                    },
+                    msg("Policy"),
+                )}
                 <ak-search-select
+                    id="policy"
                     .groupBy=${(items: Policy[]) => {
                         return groupBy(items, (policy) => policy.verboseNamePlural);
                     }}
@@ -207,11 +217,19 @@ export class PolicyBindingForm<T extends PolicyBinding = PolicyBinding> extends 
                     })}
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
-                label=${msg("Group")}
                 name="group"
                 ?hidden=${this.policyGroupUser !== PolicyBindingCheckTarget.Group}
             >
+                ${AKLabel(
+                    {
+                        slot: "label",
+                        className: "pf-c-form__group-label",
+                        htmlFor: "group",
+                    },
+                    msg("Group"),
+                )}
                 <ak-search-select
+                    id="group"
                     .fetchObjects=${async (query?: string): Promise<Group[]> => {
                         const args: CoreGroupsListRequest = {
                             ordering: "name",
@@ -238,11 +256,19 @@ export class PolicyBindingForm<T extends PolicyBinding = PolicyBinding> extends 
                     })}
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
-                label=${msg("User")}
                 name="user"
                 ?hidden=${this.policyGroupUser !== PolicyBindingCheckTarget.User}
             >
+                ${AKLabel(
+                    {
+                        slot: "label",
+                        className: "pf-c-form__group-label",
+                        htmlFor: "user",
+                    },
+                    msg("User"),
+                )}
                 <ak-search-select
+                    id="user"
                     .fetchObjects=${async (query?: string): Promise<User[]> => {
                         const args: CoreUsersListRequest = {
                             ordering: "username",
@@ -288,28 +314,57 @@ export class PolicyBindingForm<T extends PolicyBinding = PolicyBinding> extends 
                 help=${msg("Negates the outcome of the binding. Messages are unaffected.")}
             >
             </ak-switch-input>
-            <ak-form-element-horizontal label=${msg("Order")} required name="order">
+            <ak-form-element-horizontal required name="order">
+                ${AKLabel(
+                    {
+                        slot: "label",
+                        className: "pf-c-form__group-label",
+                        htmlFor: "order",
+                        required: true,
+                    },
+                    msg("Order"),
+                )}
                 <input
+                    id="order"
                     type="number"
                     value="${this.instance?.order ?? this.defaultOrder}"
                     class="pf-c-form-control"
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("Timeout")} required name="timeout">
+            <ak-form-element-horizontal required name="timeout">
+                ${AKLabel(
+                    {
+                        slot: "label",
+                        className: "pf-c-form__group-label",
+                        htmlFor: "timeout",
+                        required: true,
+                    },
+                    msg("Timeout"),
+                )}
                 <input
+                    id="timeout"
                     type="number"
                     value="${this.instance?.timeout ?? 30}"
                     class="pf-c-form-control"
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal
-                name="failureResult"
-                label=${msg("Failure Result")}
-                required
-            >
-                <ak-radio .options=${createPassFailOptions} .value=${this.instance?.failureResult}>
+            <ak-form-element-horizontal name="failureResult" required>
+                ${AKLabel(
+                    {
+                        slot: "label",
+                        className: "pf-c-form__group-label",
+                        htmlFor: "failureResult",
+                        required: true,
+                    },
+                    msg("Failure Result"),
+                )}
+                <ak-radio
+                    id="failureResult"
+                    .options=${createPassFailOptions}
+                    .value=${this.instance?.failureResult}
+                >
                 </ak-radio>
                 <p class="pf-c-form__helper-text">
                     ${msg("Result used when policy execution fails.")}

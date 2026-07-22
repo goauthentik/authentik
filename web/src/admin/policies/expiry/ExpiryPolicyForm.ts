@@ -4,6 +4,8 @@ import "#elements/forms/HorizontalFormElement";
 
 import { aki } from "#common/api/client";
 
+import { AKLabel } from "#components/ak-label";
+
 import { BasePolicyForm } from "#admin/policies/BasePolicyForm";
 
 import { PasswordExpiryPolicy, PoliciesApi } from "@goauthentik/api";
@@ -37,8 +39,18 @@ export class PasswordExpiryPolicyForm extends BasePolicyForm<PasswordExpiryPolic
                     "Checks if the request's user's password has been changed in the last x days, and denys based on settings.",
                 )}
             </span>
-            <ak-form-element-horizontal label=${msg("Name")} required name="name">
+            <ak-form-element-horizontal required name="name">
+                ${AKLabel(
+                    {
+                        slot: "label",
+                        className: "pf-c-form__group-label",
+                        htmlFor: "name",
+                        required: true,
+                    },
+                    msg("Name"),
+                )}
                 <input
+                    id="name"
                     type="text"
                     value="${ifDefined(this.instance?.name || "")}"
                     class="pf-c-form-control"
@@ -56,12 +68,18 @@ export class PasswordExpiryPolicyForm extends BasePolicyForm<PasswordExpiryPolic
             </ak-switch-input>
             <ak-form-group open label="${msg("Policy-specific settings")}">
                 <div class="pf-c-form">
-                    <ak-form-element-horizontal
-                        label=${msg("Maximum age (in days)")}
-                        required
-                        name="days"
-                    >
+                    <ak-form-element-horizontal required name="days">
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "days",
+                                required: true,
+                            },
+                            msg("Maximum age (in days)"),
+                        )}
                         <input
+                            id="days"
                             type="number"
                             value="${ifDefined(this.instance?.days || "")}"
                             class="pf-c-form-control"
