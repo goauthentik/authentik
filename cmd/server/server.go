@@ -68,7 +68,7 @@ var rootCmd = &cobra.Command{
 		ws.Start()
 		<-ex
 		l.Info("shutting down webserver")
-		go ws.Shutdown()
+		ws.Shutdown()
 	},
 }
 
