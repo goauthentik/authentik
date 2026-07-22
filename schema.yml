@@ -55253,6 +55253,34 @@ components:
       - name
       - reviewer_groups
       - reviewers
+    RelatedTarget:
+      type: object
+      description: Simplified related target object
+      properties:
+        verbose_name:
+          type: string
+          description: Return object's verbose_name
+          readOnly: true
+        verbose_name_plural:
+          type: string
+          description: Return object's plural verbose_name
+          readOnly: true
+        meta_model_name:
+          type: string
+          description: Return internal model name
+          readOnly: true
+        pbm_uuid:
+          type: string
+          readOnly: true
+        label:
+          type: string
+          readOnly: true
+      required:
+      - label
+      - meta_model_name
+      - pbm_uuid
+      - verbose_name
+      - verbose_name_plural
     Reputation:
       type: object
       description: Reputation Serializer
@@ -55436,6 +55464,11 @@ components:
             type: string
             format: uuid
           readOnly: true
+        related_obj:
+          type: array
+          items:
+            $ref: '#/components/schemas/RelatedTarget'
+          readOnly: true
         expiry_pending:
           type: string
           description: How long a request against this binding stays pending before
@@ -55447,6 +55480,7 @@ components:
       required:
       - pbm_uuid
       - related
+      - related_obj
       - rule
       - rule_obj
       - target

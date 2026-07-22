@@ -879,6 +879,10 @@ class ApplicationEntitlement(
         return self.app
 
     @property
+    def requestable_label(self):
+        return self.name
+
+    @property
     def serializer(self) -> type[Serializer]:
         from authentik.core.api.application_entitlements import ApplicationEntitlementSerializer
 

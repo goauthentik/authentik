@@ -76,7 +76,7 @@ export class BrowseRequestable extends AKElement {
                 app: app.pk,
                 pageSize: 100,
             });
-            debugger;
+
             if (entitlements.results.length === 1) {
                 await this.#requestAccess([entitlements.results[0].pbmUuid]);
                 return;

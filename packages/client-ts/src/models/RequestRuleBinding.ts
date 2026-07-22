@@ -14,6 +14,8 @@
 
 import type { PolicyEngineMode } from "./PolicyEngineMode";
 import { PolicyEngineModeFromJSON, PolicyEngineModeToJSON } from "./PolicyEngineMode";
+import type { RelatedTarget } from "./RelatedTarget";
+import { RelatedTargetFromJSON } from "./RelatedTarget";
 import type { RequestRule } from "./RequestRule";
 import { RequestRuleFromJSON } from "./RequestRule";
 
@@ -67,6 +69,12 @@ export interface RequestRuleBinding {
      */
     readonly related: Array<string>;
     /**
+     *
+     * @type {Array<RelatedTarget>}
+     * @memberof RequestRuleBinding
+     */
+    readonly relatedObj: Array<RelatedTarget>;
+    /**
      * How long a request against this binding stays pending before it automatically lapses if not approved or denied.
      * @type {string}
      * @memberof RequestRuleBinding
@@ -89,6 +97,7 @@ export function instanceOfRequestRuleBinding(value: object): value is RequestRul
     if (!("ruleObj" in value) || value["ruleObj"] === undefined) return false;
     if (!("target" in value) || value["target"] === undefined) return false;
     if (!("related" in value) || value["related"] === undefined) return false;
+    if (!("relatedObj" in value) || value["relatedObj"] === undefined) return false;
     return true;
 }
 
@@ -114,6 +123,7 @@ export function RequestRuleBindingFromJSONTyped(
         ruleObj: RequestRuleFromJSON(json["rule_obj"]),
         target: json["target"],
         related: json["related"],
+        relatedObj: (json["related_obj"] as Array<any>).map(RelatedTargetFromJSON),
         expiryPending: json["expiry_pending"] == null ? undefined : json["expiry_pending"],
         expiryGrantedMax:
             json["expiry_granted_max"] == null ? undefined : json["expiry_granted_max"],
@@ -125,7 +135,7 @@ export function RequestRuleBindingToJSON(json: any): RequestRuleBinding {
 }
 
 export function RequestRuleBindingToJSONTyped(
-    value?: Omit<RequestRuleBinding, "pbm_uuid" | "rule_obj" | "related"> | null,
+    value?: Omit<RequestRuleBinding, "pbm_uuid" | "rule_obj" | "related" | "related_obj"> | null,
     ignoreDiscriminator: boolean = false,
 ): any {
     if (value == null) {

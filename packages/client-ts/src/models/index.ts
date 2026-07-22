@@ -727,6 +727,7 @@ export * from "./RedirectURIRequest";
 export * from "./RedirectURITypeEnum";
 export * from "./RelatedGroup";
 export * from "./RelatedRule";
+export * from "./RelatedTarget";
 export * from "./Reputation";
 export * from "./ReputationPolicy";
 export * from "./ReputationPolicyRequest";

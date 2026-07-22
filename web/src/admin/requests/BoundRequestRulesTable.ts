@@ -18,8 +18,12 @@ import { msg } from "@lit/localize";
 import { html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
+import PFList from "@patternfly/patternfly/components/List/list.css";
+
 @customElement("ak-bound-request-rules-table")
 export class BoundRequestRulesTable extends Table<RequestRuleBinding> {
+    static styles = [PFList, ...super.styles];
+
     @property({ type: String })
     public target: string | null = null;
 
@@ -39,6 +43,7 @@ export class BoundRequestRulesTable extends Table<RequestRuleBinding> {
 
     protected override columns: TableColumn[] = [
         [msg("Rule")],
+        [msg("Entitlement(s)")],
         [msg("Actions"), null, msg("Row Actions")],
     ];
 
@@ -99,6 +104,9 @@ export class BoundRequestRulesTable extends Table<RequestRuleBinding> {
     protected override row(item: RequestRuleBinding): SlottedTemplateResult[] {
         return [
             html`${item.ruleObj?.name ?? "-"}`,
+            html`<ul class="pf-c-list">
+                ${item.relatedObj.map((obj) => html`<li>${obj.label}</li>`)}
+            </ul>`,
             html`<div class="ak-c-table__actions">
                 ${IconEditButton(RequestRuleBindingForm, item.uuid, null, {
                     targetPk: this.target || "",
