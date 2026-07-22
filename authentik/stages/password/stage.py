@@ -19,8 +19,7 @@ from authentik.flows.models import Flow
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
 from authentik.flows.stage import ChallengeStageView
 from authentik.policies.reputation.models import Reputation
-from authentik.stages.password.auth import authenticate_password
-from authentik.stages.password.lockout import PasswordAuthenticationStatus
+from authentik.stages.password.auth import PasswordAuthenticationStatus, authenticate_password
 from authentik.stages.password.models import PasswordStage
 
 PLAN_CONTEXT_AUTHENTICATION_BACKEND = "user_backend"

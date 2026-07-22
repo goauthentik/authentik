@@ -1,23 +1,28 @@
 """Persistent password-login failure and lockout state."""
 
-from enum import Enum, auto
+from datetime import datetime
 from typing import Any
 
 from django.db import transaction
 from django.http import HttpRequest
 from django.utils.timezone import now
 
-from authentik.core.models import User, UserPasswordLoginState, UserTypes
+from authentik.core.models import User, UserTypes
+from authentik.enterprise.license import LicenseKey
+from authentik.enterprise.stages.password.models import UserPasswordLoginState
 from authentik.events.models import Event, EventAction
+from authentik.flows.models import Stage
+from authentik.stages.password.auth import (
+    PasswordAuthenticationResult,
+    PasswordAuthenticationStatus,
+    authenticate,
+)
+from authentik.stages.password.models import PasswordStage
 
 
-class PasswordAuthenticationStatus(Enum):
-    """Outcome of password authentication after applying the lockout policy."""
-
-    AUTHENTICATED = auto()
-    INVALID = auto()
-    LAST_ATTEMPT = auto()
-    LOCKED = auto()
+def is_password_lockout_enabled() -> bool:
+    """Return whether password login lockout can currently be enforced."""
+    return LicenseKey.cached_summary().status.is_valid
 
 
 def _user_for_update(user: User) -> User | None:
@@ -41,9 +46,17 @@ def _record_transition(
         event.set_user(user).save()
 
 
+def password_login_locked_at(user: User) -> datetime | None:
+    """Return the active password login lock timestamp for a user."""
+    if not is_password_lockout_enabled() or user.pk is None:
+        return None
+    state = getattr(user, "password_login_state", None)
+    return state.locked_at if state else None
+
+
 def is_password_login_locked(user: User) -> bool:
     """Return whether an active user currently has an enforceable password-login lock."""
-    if user.pk is None:
+    if not is_password_lockout_enabled() or user.pk is None:
         return False
     return UserPasswordLoginState.objects.filter(
         user_id=user.pk,
@@ -58,6 +71,8 @@ def lock_password_login(
     **event_context: Any,
 ) -> None:
     """Lock password login and record the transition exactly once."""
+    if not is_password_lockout_enabled():
+        return
     with transaction.atomic():
         stored_user = _user_for_update(user)
         if (
@@ -113,7 +128,7 @@ def record_failed_password_attempt(
     **event_context: Any,
 ) -> PasswordAuthenticationStatus:
     """Record one failure and return the resulting authentication status."""
-    if threshold == 0:
+    if not is_password_lockout_enabled() or threshold == 0:
         return PasswordAuthenticationStatus.INVALID
 
     with transaction.atomic():
@@ -161,3 +176,54 @@ def complete_successful_password_attempt(user: User) -> PasswordAuthenticationSt
         if state:
             state.delete()
         return PasswordAuthenticationStatus.AUTHENTICATED
+
+
+def authenticate_password(
+    request: HttpRequest,
+    password_stage: PasswordStage,
+    pending_user: User,
+    password: str | None,
+    event_stage: Stage,
+) -> PasswordAuthenticationResult:
+    """Authenticate a password and atomically apply the enterprise lockout policy."""
+    if not is_password_lockout_enabled():
+        user = authenticate(
+            request,
+            password_stage.backends,
+            event_stage,
+            username=pending_user.username,
+            password=password,
+        )
+        return PasswordAuthenticationResult(
+            (
+                PasswordAuthenticationStatus.AUTHENTICATED
+                if user
+                else PasswordAuthenticationStatus.INVALID
+            ),
+            user,
+        )
+
+    if is_password_login_locked(pending_user):
+        return PasswordAuthenticationResult(PasswordAuthenticationStatus.LOCKED)
+
+    user = authenticate(
+        request,
+        password_stage.backends,
+        event_stage,
+        username=pending_user.username,
+        password=password,
+    )
+    if user is None:
+        status = record_failed_password_attempt(
+            pending_user,
+            password_stage.failed_attempts_before_lockout,
+            request,
+            reason="failed_attempts",
+            stage=password_stage,
+        )
+        return PasswordAuthenticationResult(status)
+
+    status = complete_successful_password_attempt(user)
+    if status is not PasswordAuthenticationStatus.AUTHENTICATED:
+        return PasswordAuthenticationResult(status)
+    return PasswordAuthenticationResult(status, user)

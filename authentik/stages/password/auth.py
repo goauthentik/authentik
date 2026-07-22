@@ -1,6 +1,7 @@
 """Password-stage authentication orchestration."""
 
 from dataclasses import dataclass
+from enum import Enum, auto
 from typing import Any
 
 from django.contrib.auth import _clean_credentials
@@ -13,15 +14,18 @@ from authentik.core.models import User
 from authentik.core.signals import login_failed
 from authentik.flows.models import Stage
 from authentik.lib.utils.reflection import path_to_class
-from authentik.stages.password.lockout import (
-    PasswordAuthenticationStatus,
-    complete_successful_password_attempt,
-    is_password_login_locked,
-    record_failed_password_attempt,
-)
 from authentik.stages.password.models import PasswordStage
 
 LOGGER = get_logger()
+
+
+class PasswordAuthenticationStatus(Enum):
+    """Outcome of password authentication after applying optional policy extensions."""
+
+    AUTHENTICATED = auto()
+    INVALID = auto()
+    LAST_ATTEMPT = auto()
+    LOCKED = auto()
 
 
 @dataclass(frozen=True)
@@ -74,10 +78,21 @@ def authenticate_password(
     password: str | None,
     event_stage: Stage,
 ) -> PasswordAuthenticationResult:
-    """Authenticate a password and atomically apply the stage's lockout policy."""
-    if is_password_login_locked(pending_user):
-        return PasswordAuthenticationResult(PasswordAuthenticationStatus.LOCKED)
+    """Authenticate a password, applying the Enterprise lockout policy when available."""
+    try:
+        from authentik.enterprise.stages.password.lockout import (
+            authenticate_password as authenticate_password_with_lockout,
+        )
 
+        return authenticate_password_with_lockout(
+            request,
+            password_stage,
+            pending_user,
+            password,
+            event_stage,
+        )
+    except ModuleNotFoundError:
+        pass
     user = authenticate(
         request,
         password_stage.backends,
@@ -85,17 +100,11 @@ def authenticate_password(
         username=pending_user.username,
         password=password,
     )
-    if user is None:
-        status = record_failed_password_attempt(
-            pending_user,
-            password_stage.failed_attempts_before_lockout,
-            request,
-            reason="failed_attempts",
-            stage=password_stage,
-        )
-        return PasswordAuthenticationResult(status)
-
-    status = complete_successful_password_attempt(user)
-    if status is not PasswordAuthenticationStatus.AUTHENTICATED:
-        return PasswordAuthenticationResult(status)
-    return PasswordAuthenticationResult(status, user)
+    return PasswordAuthenticationResult(
+        (
+            PasswordAuthenticationStatus.AUTHENTICATED
+            if user
+            else PasswordAuthenticationStatus.INVALID
+        ),
+        user,
+    )

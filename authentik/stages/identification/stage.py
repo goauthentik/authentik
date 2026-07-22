@@ -49,8 +49,7 @@ from authentik.stages.captcha.stage import (
 )
 from authentik.stages.identification.models import IdentificationStage
 from authentik.stages.identification.signals import identification_failed
-from authentik.stages.password.auth import authenticate_password
-from authentik.stages.password.lockout import PasswordAuthenticationStatus
+from authentik.stages.password.auth import PasswordAuthenticationStatus, authenticate_password
 from authentik.stages.password.models import PasswordStage
 from authentik.stages.password.stage import (
     PLAN_CONTEXT_METHOD,

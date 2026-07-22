@@ -106,7 +106,6 @@ from authentik.stages.email.flow import pickle_flow_token_for_email
 from authentik.stages.email.models import EmailStage
 from authentik.stages.email.tasks import send_mails
 from authentik.stages.email.utils import TemplateEmailMessage
-from authentik.stages.password.lockout import lock_password_login, unlock_password_login
 
 LOGGER = get_logger()
 
@@ -264,15 +263,12 @@ class UserSerializer(AttributesMixinSerializer, ModelSerializer):
 
     def _set_password(self, instance: User, password: str | None, password_hash: str | None = None):
         """Set password from plain text or hash."""
-        with atomic():
-            if password_hash is not None:
-                instance.set_password_from_hash(password_hash)
-            elif password:
-                instance.set_password(password)
-            else:
-                return
+        if password_hash is not None:
+            instance.set_password_from_hash(password_hash)
             instance.save()
-            unlock_password_login(instance, reason="password_changed")
+        elif password:
+            instance.set_password(password)
+            instance.save()
 
     def _ensure_password_not_empty(self, instance: User):
         """Store an explicit unusable password instead of an empty password field."""
@@ -608,6 +604,7 @@ class UsersFilter(FilterSet):
 
 
 class UserViewSet(
+    ConditionalInheritance("authentik.enterprise.stages.password.api.UserPasswordLoginMixin"),
     ConditionalInheritance(
         "authentik.enterprise.stages.account_lockdown.api.UserAccountLockdownMixin"
     ),
@@ -640,7 +637,11 @@ class UserViewSet(
         ]
 
     def get_queryset(self):
-        base_qs = User.objects.all().exclude_anonymous().select_related("password_login_state")
+        base_qs = (
+            User.objects.all()
+            .exclude_anonymous()
+            .select_related(*getattr(self, "conditional_select_related", ()))
+        )
         # Always prefetch groups since group PKs are always serialized.
         # Use full prefetch when include_groups=true (for groups_obj), ID-only otherwise.
         if self.serializer_class(context={"request": self.request})._should_include_groups:
@@ -856,10 +857,8 @@ class UserViewSet(
         """Set password for user"""
         user: User = self.get_object()
         try:
-            with atomic():
-                user.set_password(body.validated_data["password"], request=request)
-                user.save()
-                unlock_password_login(user, request._request, reason="password_changed")
+            user.set_password(body.validated_data["password"], request=request)
+            user.save()
         except (ValidationError, IntegrityError) as exc:
             LOGGER.debug("Failed to set password", exc=exc)
             return Response(status=400)
@@ -893,10 +892,8 @@ class UserViewSet(
         """
         user: User = self.get_object()
         try:
-            with atomic():
-                user.set_password_from_hash(body.validated_data["password"], request=request)
-                user.save()
-                unlock_password_login(user, request._request, reason="password_changed")
+            user.set_password_from_hash(body.validated_data["password"], request=request)
+            user.save()
         except ValueError as exc:
             LOGGER.debug("Failed to set password hash", exc=exc)
             return Response(data={"password": [INVALID_PASSWORD_HASH_MESSAGE]}, status=400)
@@ -904,46 +901,6 @@ class UserViewSet(
             LOGGER.debug("Failed to set password hash", exc=exc)
             return Response(status=400)
         self._update_session_hash_after_password_change(request, user)
-        return Response(status=204)
-
-    @permission_required("authentik_core.change_user")
-    @extend_schema(
-        request=None,
-        responses={204: OpenApiResponse(description="Password login locked")},
-    )
-    @action(detail=True, methods=["POST"])
-    def password_login_lock(self, request: Request, pk: int) -> Response:
-        """Lock password login for a user."""
-        user: User = self.get_object()
-        if user.pk == request.user.pk:
-            raise ValidationError(
-                {"non_field_errors": _("You cannot lock password login for your own account.")}
-            )
-        if not user.is_active:
-            raise ValidationError(
-                {"non_field_errors": _("Password login cannot be locked for a deactivated user.")}
-            )
-        if user.type == UserTypes.INTERNAL_SERVICE_ACCOUNT:
-            raise ValidationError(
-                {
-                    "non_field_errors": _(
-                        "Password login cannot be locked for an internal service account."
-                    )
-                }
-            )
-        lock_password_login(user, request._request, reason="administrator")
-        return Response(status=204)
-
-    @permission_required("authentik_core.change_user")
-    @extend_schema(
-        request=None,
-        responses={204: OpenApiResponse(description="Password login unlocked")},
-    )
-    @action(detail=True, methods=["POST"])
-    def password_login_unlock(self, request: Request, pk: int) -> Response:
-        """Unlock password login for a user."""
-        user: User = self.get_object()
-        unlock_password_login(user, request._request, reason="administrator")
         return Response(status=204)
 
     @permission_required("authentik_core.reset_user_password")

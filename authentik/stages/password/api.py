@@ -4,10 +4,14 @@ from rest_framework.viewsets import ModelViewSet
 
 from authentik.core.api.used_by import UsedByMixin
 from authentik.flows.api.stages import StageSerializer
+from authentik.lib.utils.reflection import ConditionalInheritance
 from authentik.stages.password.models import PasswordStage
 
 
-class PasswordStageSerializer(StageSerializer):
+class PasswordStageSerializer(
+    ConditionalInheritance("authentik.enterprise.stages.password.api.PasswordStageSerializerMixin"),
+    StageSerializer,
+):
     """PasswordStage Serializer"""
 
     class Meta:

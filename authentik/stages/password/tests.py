@@ -8,8 +8,14 @@ from django.db import connection
 from django.test import TransactionTestCase
 from django.urls import reverse
 
-from authentik.core.models import User, UserPasswordLoginState, UserTypes
+from authentik.core.models import User, UserTypes
 from authentik.core.tests.utils import create_test_admin_user, create_test_brand, create_test_flow
+from authentik.enterprise.stages.password.lockout import (
+    lock_password_login,
+    record_failed_password_attempt,
+)
+from authentik.enterprise.stages.password.models import UserPasswordLoginState
+from authentik.enterprise.tests import enterprise_test
 from authentik.events.models import Event, EventAction
 from authentik.flows.markers import StageMarker
 from authentik.flows.models import FlowDesignation, FlowStageBinding
@@ -19,16 +25,13 @@ from authentik.flows.tests.test_executor import TO_STAGE_RESPONSE_MOCK
 from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.lib.generators import generate_id
 from authentik.stages.password import BACKEND_INBUILT
-from authentik.stages.password.lockout import (
-    PasswordAuthenticationStatus,
-    lock_password_login,
-    record_failed_password_attempt,
-)
+from authentik.stages.password.auth import PasswordAuthenticationStatus
 from authentik.stages.password.models import PasswordStage
 
 MOCK_BACKEND_AUTHENTICATE = MagicMock(side_effect=PermissionDenied("test"))
 
 
+@enterprise_test()
 class TestPasswordStage(FlowTestCase):
     """Password tests"""
 
@@ -330,6 +333,7 @@ class TestPasswordStage(FlowTestCase):
         )
 
 
+@enterprise_test()
 class TestPasswordLockoutConcurrency(TransactionTestCase):
     """Password lockout concurrency tests."""
 

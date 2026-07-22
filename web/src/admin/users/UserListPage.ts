@@ -363,9 +363,11 @@ export class UserListPage extends WithLicenseSummary(
                 <dd class="pf-c-description-list__description">
                     <div class="pf-c-description-list__text">
                         ${ToggleUserActivationButton(item)}
-                        ${ToggleUserPasswordLoginLockButton(item, {
-                            currentUserPk: this.currentUser?.pk,
-                        })}
+                        ${this.hasEnterpriseLicense
+                            ? ToggleUserPasswordLoginLockButton(item, {
+                                  currentUserPk: this.currentUser?.pk,
+                              })
+                            : null}
                     </div>
                 </dd>
             </div>

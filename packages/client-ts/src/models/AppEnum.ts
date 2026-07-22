@@ -98,6 +98,7 @@ export const AppEnum = {
     AuthentikEnterpriseStagesAuthenticatorEndpointGdtc:
         "authentik.enterprise.stages.authenticator_endpoint_gdtc",
     AuthentikEnterpriseStagesMtls: "authentik.enterprise.stages.mtls",
+    AuthentikEnterpriseStagesPassword: "authentik.enterprise.stages.password",
     AuthentikEnterpriseStagesSource: "authentik.enterprise.stages.source",
     UnknownDefaultOpenApi: "11184809",
 } as const;

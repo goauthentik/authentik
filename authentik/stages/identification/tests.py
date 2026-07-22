@@ -4,8 +4,9 @@ from django.urls import reverse
 from requests_mock import Mocker
 from rest_framework.exceptions import ValidationError
 
-from authentik.core.models import UserPasswordLoginState
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
+from authentik.enterprise.stages.password.models import UserPasswordLoginState
+from authentik.enterprise.tests import enterprise_test
 from authentik.flows.models import FlowDesignation, FlowStageBinding
 from authentik.flows.stage import PLAN_CONTEXT_PENDING_USER_IDENTIFIER
 from authentik.flows.tests import FlowTestCase
@@ -217,6 +218,7 @@ class TestIdentificationStage(FlowTestCase):
             user_fields=["email"],
         )
 
+    @enterprise_test()
     def test_invalid_with_password_account_lockout(self):
         """Test account lockout with password validation in the identification stage."""
         pw_stage = PasswordStage.objects.create(

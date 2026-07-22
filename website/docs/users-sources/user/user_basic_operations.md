@@ -147,7 +147,7 @@ As an administrator, you can reset a user's password.
 
 If a [Recovery flow](#configure-a-recovery-flow) has been applied to the brand, users can reset their own passwords in the [User interface](../user/user-interface.mdx).
 
-## Lock or unlock password login
+## Lock or unlock password login :ak-enterprise
 
 Locking password login blocks authentication through Password stages without deactivating the user, revoking existing sessions, or changing their state in connected systems. See [Control user access](./access-control.md) for the differences between password login lock, deactivation, Account Lockdown, and reputation policies.
 

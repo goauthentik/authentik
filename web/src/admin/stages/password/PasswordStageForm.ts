@@ -6,6 +6,8 @@ import "#elements/forms/SearchSelect/index";
 
 import { aki } from "#common/api/client";
 
+import { WithLicenseSummary } from "#elements/mixins/license";
+
 import { AKLabel } from "#components/ak-label";
 
 import { RenderFlowOption } from "#admin/flows/utils";
@@ -26,7 +28,7 @@ import { html, TemplateResult } from "lit";
 import { customElement } from "lit/decorators.js";
 
 @customElement("ak-stage-password-form")
-export class PasswordStageForm extends BaseStageForm<PasswordStage> {
+export class PasswordStageForm extends WithLicenseSummary(BaseStageForm<PasswordStage>) {
     protected endpoints = {
         load: (stageUuid: string) => aki(StagesApi).stagesPasswordRetrieve({ stageUuid }),
         create: (passwordStageRequest: PasswordStage) =>
@@ -47,6 +49,9 @@ export class PasswordStageForm extends BaseStageForm<PasswordStage> {
     }
 
     protected renderLockoutSettings(): TemplateResult {
+        if (!this.hasEnterpriseLicense) {
+            return html``;
+        }
         return html`
             <ak-form-element-horizontal
                 label=${msg("Failed attempts before lockout", {
