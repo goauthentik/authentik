@@ -47,11 +47,11 @@ def user_can_request(pbm: RequestableModel, user: User, request: Request) -> boo
 
 
 def _requestable(view: GenericViewSet, request: Request) -> list[RequestableModel]:
-    """every object of the viewset's own model which the current user is eligible to request"""
+    """every unique object of the viewset's own model which the current user is eligible to request"""
     all_objects = view.queryset.filter(request_rules__isnull=False).prefetch_related(
         "request_rules"
     )
-    return [obj for obj in all_objects if user_can_request(obj, request.user, request)]
+    return list(set([obj for obj in all_objects if user_can_request(obj, request.user, request)]))
 
 
 class RequestableTargetSerializer(MetaNameSerializer, PassiveSerializer):
