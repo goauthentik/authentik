@@ -78,7 +78,13 @@ class EntraIDType(SourceType):
     authorization_code_auth_method = AuthorizationCodeAuthMethod.POST_BODY
 
     def get_base_user_properties(self, info: dict[str, Any], **kwargs) -> dict[str, Any]:
-        mail = info.get("mail", None) or info.get("otherMails", [None])[0]
+        # Fall back to userPrincipalName when no mailbox is provisioned (e.g. license-less
+        # admin accounts), so the resulting authentik user is not created with a blank email.
+        mail = (
+            info.get("mail")
+            or (info.get("otherMails") or [None])[0]
+            or info.get("userPrincipalName")
+        )
         # Format group info
         groups = []
         group_id_dict = {}
