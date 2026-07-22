@@ -47,9 +47,9 @@ For example:
 
 ### `password_hash`
 
-In blueprints, a user's password can also be set using the `password_hash` field. The value must follow the [supported password-hash policy](../../../install-config/automated-install.mdx#authentik_bootstrap_password_hash), such as a hash generated with the `hash_password` management command.
+In blueprints, a user's password can also be set using the `password_hash` field. authentik stores this value without validating its format, algorithm, or work factors. Blueprint authors are responsible for supplying a secure hash that is compatible with their authentik deployment and maintaining it as requirements change.
 
-Use `password_hash` when you need to import or bootstrap an existing hash without exposing the raw password to authentik. Enter the password when prompted to generate the hash:
+Use `password_hash` when you need to import or bootstrap an existing hash without exposing the raw password to authentik. You can generate a hash with the `hash_password` management command. Enter the password when prompted:
 
 ```bash
 docker compose run --rm server hash_password
