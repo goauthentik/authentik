@@ -63,7 +63,7 @@ class TestWSFedSignIn(TestCase):
             request,
             SignInRequest(
                 wa=WS_FED_ACTION_SIGN_IN,
-                wtrealm="",
+                wtrealm=self.provider.audience,
                 wreply="",
                 wctx=None,
             ),
@@ -84,7 +84,7 @@ class TestWSFedSignIn(TestCase):
             request,
             SignInRequest(
                 wa=WS_FED_ACTION_SIGN_IN,
-                wtrealm="",
+                wtrealm=self.provider.audience,
                 wreply="",
                 wctx=None,
             ),
@@ -133,7 +133,7 @@ class TestWSFedSignInSAML11(TestCase):
             request,
             SignInRequest(
                 wa=WS_FED_ACTION_SIGN_IN,
-                wtrealm="",
+                wtrealm=self.provider.audience,
                 wreply="",
                 wctx=None,
             ),

@@ -57,9 +57,9 @@ class SignInRequest:
         return req
 
     def __post_init__(self):
-        if self.action != WS_FED_ACTION_SIGN_IN:
+        if self.wa != WS_FED_ACTION_SIGN_IN:
             raise ValueError("Invalid action")
-        if not self.realm:
+        if not self.wtrealm:
             raise ValueError("Missing Realm")
         _, provider = self.get_app_provider()
         if not self.wreply:
