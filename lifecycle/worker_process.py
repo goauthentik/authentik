@@ -83,9 +83,19 @@ def main(worker_id: int, socket_path: str):
         pass
     srv = UnixSocketServer(socket_path, HttpHandler)
 
+    cov = None
+    if (coverage_path := CONFIG.get("coverage", None)) is not None:
+        from coverage import Coverage
+
+        cov = Coverage(data_file=coverage_path)
+        cov.start()
+
     def immediate_shutdown(signum, frame):
-        nonlocal srv
+        nonlocal srv, cov
         srv.shutdown()
+        if cov is not None:
+            cov.stop()
+            cov.save()
         sys.exit(0)
 
     def graceful_shutdown(signum, frame):
@@ -125,6 +135,9 @@ def main(worker_id: int, socket_path: str):
     worker.stop(timeout=5_000 if CONFIG.get_bool("debug") else 600_000)
 
     srv.shutdown()
+    if cov is not None:
+        cov.stop()
+        cov.save()
 
     broker.close()
     logger.info("Worker shut down.")

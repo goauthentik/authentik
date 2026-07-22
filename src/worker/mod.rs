@@ -64,15 +64,7 @@ impl Worker {
     fn new(worker_id: usize, socket_path: PathBuf) -> Result<Self> {
         info!(worker_id, "starting worker");
 
-        let mut cmd = if let Ok(coverage_path) = env::var("AUTHENTIK_COVERAGE") {
-            let mut cmd = Command::new("coverage");
-            cmd.arg("run");
-            cmd.arg("--data-file");
-            cmd.arg(coverage_path);
-            cmd
-        } else {
-            Command::new("python")
-        };
+        let mut cmd = Command::new("python")
         cmd.arg("-m");
         cmd.arg("lifecycle.worker_process");
         cmd.arg(worker_id.to_string());
