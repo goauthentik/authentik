@@ -49,7 +49,15 @@ class WSFederationProviderSerializer(EnterpriseRequiredMixin, SAMLProviderSerial
         if "request" not in self._context:
             return ""
         request: HttpRequest = self._context["request"]._request
-        return request.build_absolute_uri(reverse("authentik_providers_ws_federation:wsfed"))
+        try:
+            return request.build_absolute_uri(
+                reverse(
+                    "authentik_providers_ws_federation:wsfed-app-specific",
+                    kwargs={"application_slug": instance.application.slug},
+                )
+            )
+        except Provider.application.RelatedObjectDoesNotExist:
+            return ""
 
     def get_url_issuer(self, instance: WSFederationProvider) -> str:
         """Get Issuer/EntityID URL"""

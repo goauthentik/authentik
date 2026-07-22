@@ -14,6 +14,7 @@ class SignOutRequest:
     wa: str
     wtrealm: str
     wreply: str
+    request: HttpRequest
 
     @staticmethod
     def parse(request: HttpRequest) -> SignOutRequest:
@@ -21,18 +22,19 @@ class SignOutRequest:
         if action != WS_FED_ACTION_SIGN_OUT:
             raise ValueError("Invalid action")
         realm = request.GET.get("wtrealm")
-        if not realm:
-            raise ValueError("Missing Realm")
 
         req = SignOutRequest(
             wa=action,
             wtrealm=realm,
             wreply=request.GET.get("wreply"),
+            request=request,
         )
 
         _, provider = req.get_app_provider()
         if not req.wreply:
             req.wreply = provider.acs_url
+        if not req.wtrealm:
+            raise ValueError("Missing Realm")
         reply = urlparse(req.wreply)
         configured = urlparse(provider.acs_url)
         if not (reply[:2] == configured[:2] and reply.path.startswith(configured.path)):
@@ -40,6 +42,12 @@ class SignOutRequest:
         return req
 
     def get_app_provider(self):
+        if not self.wtrealm:
+            slug = self.request.resolver_match.kwargs.get("application_slug")
+            app = get_object_or_404(Application, slug=slug)
+            provider = get_object_or_404(WSFederationProvider, pk=app.provider_id)
+            self.wtrealm = provider.audience
+            return app, provider
         provider: WSFederationProvider = get_object_or_404(
             WSFederationProvider, audience=self.wtrealm
         )
