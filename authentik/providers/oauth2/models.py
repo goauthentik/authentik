@@ -60,6 +60,7 @@ from authentik.lib.models import (
     ExpiringModel,
     InternallyManagedMixin,
     SerializerModel,
+    SimpleThroughModel,
 )
 from authentik.lib.utils.time import timedelta_string_validator
 from authentik.sources.oauth.models import OAuthSource
@@ -344,8 +345,11 @@ class OAuth2Provider(WebfingerProvider, Provider):
         related_name="oauth2_providers",
         default=None,
         blank=True,
+        through="OAuth2ProviderJWTFederationSource",
     )
-    jwt_federation_providers = models.ManyToManyField("OAuth2Provider", blank=True, default=None)
+    jwt_federation_providers = models.ManyToManyField(
+        "OAuth2Provider", blank=True, default=None, through="OAuth2ProviderJWTFederationProvider"
+    )
 
     @cached_property
     def jwt_key(self) -> tuple[str | PrivateKeyTypes, str]:
@@ -498,6 +502,54 @@ class OAuth2Provider(WebfingerProvider, Provider):
     class Meta:
         verbose_name = _("OAuth2/OpenID Provider")
         verbose_name_plural = _("OAuth2/OpenID Providers")
+
+
+class OAuth2ProviderJWTFederationSource(SimpleThroughModel):
+    oauth2_provider = models.ForeignKey(
+        OAuth2Provider, on_delete=models.CASCADE, db_column="oauth2provider_id"
+    )
+    oauth_source = models.ForeignKey(
+        OAuthSource, on_delete=models.CASCADE, db_column="oauthsource_id"
+    )
+
+    class Meta:
+        db_table = "authentik_providers_oauth2_oauth2provider_jwt_federation_so2b48"
+        unique_together = (("oauth2_provider", "oauth_source"),)
+        verbose_name = _("OAuth2 Provider JWT Federation Source")
+        verbose_name_plural = _("OAuth2 Provider JWT Federation Sources")
+
+    def __str__(self):
+        return (
+            f"OAuth2ProviderJWTFederationSource for OAuth2Provider {self.oauth2_provider_id} "
+            f"and OauthSource {self.oauth_source_id}."
+        )
+
+
+class OAuth2ProviderJWTFederationProvider(SimpleThroughModel):
+    oauth2_provider = models.ForeignKey(
+        OAuth2Provider,
+        on_delete=models.CASCADE,
+        related_name="jwt_federation_provider_m2m_objects",
+        db_column="from_oauth2provider_id",
+    )
+    jwt_federation_provider = models.ForeignKey(
+        OAuth2Provider,
+        on_delete=models.CASCADE,
+        related_name="oauth2_provider_m2m_objects",
+        db_column="to_oauth2provider_id",
+    )
+
+    class Meta:
+        db_table = "authentik_providers_oauth2_oauth2provider_jwt_federation_pr9002"
+        unique_together = (("oauth2_provider", "jwt_federation_provider"),)
+        verbose_name = _("OAuth2 Provider JWT Federation Provider")
+        verbose_name_plural = _("OAuth2 Provider JWT Federation Providers")
+
+    def __str__(self):
+        return (
+            f"OAuth2ProviderJWTFederationProvider for OAuth2Provider {self.oauth2_provider_id} "
+            f"and JWTFederationProvider {self.jwt_federation_provider_id}."
+        )
 
 
 class BaseGrantModel(models.Model):

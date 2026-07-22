@@ -16,7 +16,7 @@ from authentik.blueprints.models import ManagedModel
 from authentik.core.models import Group, User
 from authentik.enterprise.lifecycle.utils import link_for_model, start_of_day
 from authentik.events.models import Event, EventAction, NotificationSeverity, NotificationTransport
-from authentik.lib.models import SerializerModel
+from authentik.lib.models import SerializerModel, SimpleThroughModel
 from authentik.lib.utils.time import timedelta_from_string, timedelta_string_validator
 
 
@@ -41,10 +41,14 @@ class LifecycleRule(SerializerModel):
     # The review has to be conducted by `min_reviewers` members of `reviewer_groups`
     # (total or per group depending on `min_reviewers_is_per_group` flag) as well
     # as all of `reviewers`
-    reviewer_groups = models.ManyToManyField("authentik_core.Group", blank=True)
+    reviewer_groups = models.ManyToManyField(
+        "authentik_core.Group", blank=True, through="LifecycleRuleReviewerGroup"
+    )
     min_reviewers = models.PositiveSmallIntegerField(default=1)
     min_reviewers_is_per_group = models.BooleanField(default=False)
-    reviewers = models.ManyToManyField("authentik_core.User", blank=True)
+    reviewers = models.ManyToManyField(
+        "authentik_core.User", blank=True, through="LifecycleRuleReviewer"
+    )
 
     notification_transports = models.ManyToManyField(
         NotificationTransport,
@@ -53,6 +57,7 @@ class LifecycleRule(SerializerModel):
             "selected, the notification will only be shown in the authentik UI."
         ),
         blank=True,
+        through="LifecycleRuleNotificationTransport",
     )
 
     class Meta:
@@ -159,6 +164,74 @@ class LifecycleRule(SerializerModel):
                 )
                 if transport.send_once:
                     break
+
+
+class LifecycleRuleReviewerGroup(SimpleThroughModel):
+    lifecycle_rule = models.ForeignKey(
+        LifecycleRule,
+        on_delete=models.CASCADE,
+        db_column="lifecyclerule_id",
+    )
+    group = models.ForeignKey("authentik_core.Group", on_delete=models.CASCADE)
+
+    class Meta:
+        db_table = "authentik_lifecycle_lifecyclerule_reviewer_groups"
+        unique_together = (("lifecycle_rule", "group"),)
+        verbose_name = _("Lifecycle Rule Reviewer Group")
+        verbose_name_plural = _("Lifecycle Rule Reviewer Groups")
+
+    def __str__(self):
+        return (
+            "LifecycleRuleReviewerGroup for LifecycleRule "
+            f"{self.lifecycle_rule_id} "
+            f"and Group {self.group_id}."
+        )
+
+
+class LifecycleRuleReviewer(SimpleThroughModel):
+    lifecycle_rule = models.ForeignKey(
+        LifecycleRule,
+        on_delete=models.CASCADE,
+        db_column="lifecyclerule_id",
+    )
+    user = models.ForeignKey("authentik_core.User", on_delete=models.CASCADE)
+
+    class Meta:
+        db_table = "authentik_lifecycle_lifecyclerule_reviewers"
+        unique_together = (("lifecycle_rule", "user"),)
+        verbose_name = _("Lifecycle Rule Reviewer")
+        verbose_name_plural = _("Lifecycle Rule Reviewers")
+
+    def __str__(self):
+        return (
+            "LifecycleRuleReviewer for LifecycleRule "
+            f"{self.lifecycle_rule_id} "
+            f"and User {self.user_id}."
+        )
+
+
+class LifecycleRuleNotificationTransport(SimpleThroughModel):
+    lifecycle_rule = models.ForeignKey(
+        LifecycleRule,
+        on_delete=models.CASCADE,
+        db_column="lifecyclerule_id",
+    )
+    notification_transport = models.ForeignKey(
+        NotificationTransport, on_delete=models.CASCADE, db_column="notificationtransport_id"
+    )
+
+    class Meta:
+        db_table = "authentik_lifecycle_lifecyclerule_notification_transports"
+        unique_together = (("lifecycle_rule", "notification_transport"),)
+        verbose_name = _("Lifecycle Rule Notification Transport")
+        verbose_name_plural = _("Lifecycle Rule Notification Transports")
+
+    def __str__(self):
+        return (
+            "LifecycleRuleNotificationTransport for LifecycleRule "
+            f"{self.lifecycle_rule_id} "
+            f"and NotificationTransport {self.notification_transport_id}."
+        )
 
 
 class ReviewState(models.TextChoices):
