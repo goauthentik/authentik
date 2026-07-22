@@ -63,7 +63,26 @@ export const ExpiringSoon: Story = {
             internalUsers: 100,
             externalUsers: 50,
             status: LicenseSummaryStatusEnum.ExpirySoon,
-            latestValid: new Date("2026-08-01"),
+            latestValid: new Date(new Date().getTime() + 86400 * 1000 * 14),
+            licenseFlags: [],
+        },
+    },
+};
+
+export const ExpiringToday: Story = {
+    ...Template,
+    args: {
+        forecast: {
+            internalUsers: 85,
+            externalUsers: 40,
+            forecastedInternalUsers: 95,
+            forecastedExternalUsers: 48,
+        },
+        summary: {
+            internalUsers: 100,
+            externalUsers: 50,
+            status: LicenseSummaryStatusEnum.ExpirySoon,
+            latestValid: new Date(new Date().getTime() + 86400 * 1000 * 0.5),
             licenseFlags: [],
         },
     },

@@ -9,7 +9,10 @@ import { PFColor } from "#elements/Label";
 
 import { LicenseForecast, LicenseSummary, LicenseSummaryStatusEnum } from "@goauthentik/api";
 
-import { msg } from "@lit/localize";
+import { differenceInSeconds, formatDistanceStrict } from "date-fns";
+import { match } from "ts-pattern";
+
+import { msg, str } from "@lit/localize";
 import { css, CSSResult, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
@@ -18,6 +21,8 @@ import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 import PFProgress from "@patternfly/patternfly/components/Progress/progress.css";
 import PFSplit from "@patternfly/patternfly/layouts/Split/split.css";
+
+const DAY_IN_SECONDS = 86400;
 
 const badgeDetails = new Map<LicenseSummaryStatusEnum, [PFColor, string]>([
     [LicenseSummaryStatusEnum.Expired, [PFColor.Red, msg("Expired")]],
@@ -51,6 +56,18 @@ export class EnterpriseStatusCard extends AKElement {
 
         const status = badgeDetails.get(summary);
         if (!status) return nothing;
+
+        const valid = this.summary?.latestValid;
+        const today = new Date();
+        if (summary === LicenseSummaryStatusEnum.ExpirySoon && valid) {
+            const gap = differenceInSeconds(valid, today);
+            // prettier-ignore
+            status[1] = match(gap)
+                .when((g) => g < 0, () => status[1])
+                .when((g) => g > 0 && g < DAY_IN_SECONDS, () => msg("Expiring today"))
+                .otherwise(() => msg(
+                    str`Expiring in ${formatDistanceStrict(new Date(), valid, { unit: "day" })}`))
+        }
 
         return html`<ak-label color=${status[0]}>${status[1]}</ak-label>`;
     }
