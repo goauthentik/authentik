@@ -17,23 +17,14 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         if sys.stdin.isatty():
-            try:
-                password = getpass("Password: ")
-                password_again = getpass("Password (again): ")
-            except (EOFError, KeyboardInterrupt) as exc:
-                raise CommandError("Aborted") from exc
+            password = getpass("Password: ")
+            password_again = getpass("Password (again): ")
             if password != password_again:
                 raise CommandError("Passwords do not match")
         else:
-            try:
-                password = input()
-            except EOFError as exc:
-                raise CommandError("Password cannot be empty") from exc
+            password = input()
 
         if not password:
             raise CommandError("Password cannot be empty")
-        try:
-            hashed = make_password(password)
-            self.stdout.write(hashed)
-        except ValueError as exc:
-            raise CommandError(f"Error hashing password: {exc}") from exc
+        hashed = make_password(password)
+        self.stdout.write(hashed)
