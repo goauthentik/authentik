@@ -111,7 +111,7 @@ export class PolicyBindingForm<T extends PolicyBinding = PolicyBinding> extends 
         this.defaultOrder = 0;
     }
 
-    getSuccessMessagef(): string {
+    getSuccessMessage(): string {
         if (this.instance?.pk) {
             return msg("Successfully updated binding.");
         }
