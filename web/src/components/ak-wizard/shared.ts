@@ -17,6 +17,18 @@ export type NavigableButton = Extract<WizardButton, { destination: string }>;
 
 export type ButtonKind = Extract<WizardButton["kind"], PropertyKey>;
 
+declare const labelFactoryBrand: unique symbol;
+
+// Branded so a forgotten `()` at a call site — e.g. `return record.close;` in a
+// `SlottedTemplateResult`-returning method — is rejected by `tsc` instead of
+// rendering as visible noise in the live UI (see goauthentik/authentik#22222).
+export type LabelFactory = ((verboseName?: string) => SlottedTemplateResult) & {
+    readonly [labelFactoryBrand]: true;
+};
+
+const labelFactory = (fn: (verboseName?: string) => SlottedTemplateResult): LabelFactory =>
+    fn as LabelFactory;
+
 export interface WizardStepLabel {
     label: string;
     id: string;
@@ -41,13 +53,13 @@ export const ButtonKindClassnameRecord = {
 } as const satisfies Record<ButtonKind, string>;
 
 export const ButtonKindLabelRecord = {
-    next: () => {
+    next: labelFactory(() => {
         return html`${msg("Next")}
             <span class="pf-c-button__icon pf-m-end">
                 <i class="fas fa-arrow-right" aria-hidden="true"></i>
             </span>`;
-    },
-    create: (verboseName?: string) => {
+    }),
+    create: labelFactory((verboseName?: string) => {
         const label = verboseName
             ? msg(str`Create ${verboseName}`, {
                   id: "form.create-submit",
@@ -60,20 +72,20 @@ export const ButtonKindLabelRecord = {
             <span class="pf-c-button__icon pf-m-end">
                 <i class="fas fa-check" aria-hidden="true"></i>
             </span>`;
-    },
-    finish: () => {
+    }),
+    finish: labelFactory(() => {
         return html`${msg("Finish")}
             <span class="pf-c-button__icon pf-m-end">
                 <i class="fas fa-check" aria-hidden="true"></i>
             </span>`;
-    },
-    back: () => {
+    }),
+    back: labelFactory(() => {
         return html`<span class="pf-c-button__icon pf-m-start">
                 <i class="fas fa-arrow-left" aria-hidden="true"></i>
             </span>
             ${msg("Back")}`;
-    },
+    }),
 
-    cancel: () => msg("Cancel"),
-    close: () => msg("Close"),
-} as const satisfies Record<ButtonKind, (verboseName?: string) => SlottedTemplateResult>;
+    cancel: labelFactory(() => msg("Cancel")),
+    close: labelFactory(() => msg("Close")),
+} as const satisfies Record<ButtonKind, LabelFactory>;
