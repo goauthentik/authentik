@@ -9,14 +9,14 @@ import "#components/ak-switch-input";
 import { aki } from "#common/api/client";
 import { DefaultUIConfig } from "#common/ui/config";
 
-import { ModelForm } from "#elements/forms/ModelForm";
 import { RadioOption } from "#elements/forms/Radio";
 import { SlottedTemplateResult } from "#elements/types";
 
-import { CoreApi, Group, RbacApi, Role, User, UserTypeEnum } from "@goauthentik/api";
+import { ObjectAttributeModelForm } from "#admin/object-attributes/renderAttributes";
+
+import { CoreApi, Group, ModelEnum, RbacApi, Role, User, UserTypeEnum } from "@goauthentik/api";
 
 import { match } from "ts-pattern";
-import YAML from "yaml";
 
 import { msg, str } from "@lit/localize";
 import { css, CSSResult, html } from "lit";
@@ -45,8 +45,11 @@ const UserTypeOptions: readonly RadioOption<UserTypeEnum>[] = [
         description: html`${msg("Machine-to-machine authentication or other automations.")}`,
     },
 ];
+
 @customElement("ak-user-form")
-export class UserForm extends ModelForm<User, number> {
+export class UserForm extends ObjectAttributeModelForm<User, number> {
+    public model = ModelEnum.AuthentikCoreUser;
+
     #coreAPI = aki(CoreApi);
     #rbacAPI = aki(RbacApi);
 
@@ -243,7 +246,6 @@ export class UserForm extends ModelForm<User, number> {
                 )}
             >
             </ak-switch-input>
-
             <ak-text-input
                 name="path"
                 label=${msg("Path")}
@@ -264,18 +266,7 @@ export class UserForm extends ModelForm<User, number> {
                     </p>`}
             ></ak-text-input>
 
-            <ak-form-element-horizontal label=${msg("Attributes")} name="attributes">
-                <ak-codemirror
-                    mode="yaml"
-                    value="${YAML.stringify(
-                        this.instance?.attributes ?? UserForm.defaultUserAttributes,
-                    )}"
-                >
-                </ak-codemirror>
-                <p class="pf-c-form__helper-text">
-                    ${msg("Set custom attributes using YAML or JSON.")}
-                </p>
-            </ak-form-element-horizontal>`;
+            ${this.renderObjectAttributes(this.objAttributes, this.instance)}`;
     }
 }
 
