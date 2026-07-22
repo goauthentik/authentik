@@ -15,7 +15,7 @@ from authentik.core.api.utils import MetaNameSerializer, PassiveSerializer
 from authentik.core.apps import AppAccessWithoutBindings
 from authentik.core.models import Application, ApplicationEntitlement, User
 from authentik.policies.engine import ListPolicyEngine
-from authentik.policies.models import PolicyBindingModel, RequestableModel
+from authentik.policies.models import PolicyBindingModel, RequestableChildModel, RequestableModel
 
 if TYPE_CHECKING:
     from authentik.enterprise.requests.models import RequestRule
@@ -46,11 +46,11 @@ def user_can_request(pbm: RequestableModel, user: User, request: Request) -> boo
     return granting_rule_bindings([pbm], user, request).exists()
 
 
-def _requestable(view: GenericViewSet, request: Request) -> list[RequestableModel]:
+def _requestable(
+    base: QuerySet[RequestableModel | RequestableChildModel], request: Request
+) -> list[RequestableModel]:
     """every unique object of the viewset's own model which the current user is eligible to request"""
-    all_objects = view.queryset.filter(request_rules__isnull=False).prefetch_related(
-        "request_rules"
-    )
+    all_objects = base.filter(request_rules__isnull=False).prefetch_related("request_rules")
     return list(set([obj for obj in all_objects if user_can_request(obj, request.user, request)]))
 
 
@@ -77,7 +77,9 @@ class ApplicationsRequestableMixin:
     def requestable(self, request: Request) -> Response:
         """List applications which the current user can request access to"""
         paginator: Pagination = self.paginator
-        paginated = paginator.paginate_queryset(_requestable(self, request), request)
+        paginated = paginator.paginate_queryset(
+            _requestable(self.filter_queryset(self.get_queryset()), request), request
+        )
         serializer = self.get_serializer(paginated, many=True)
         return self.get_paginated_response(serializer.data)
 
@@ -94,6 +96,8 @@ class ApplicationEntitlementsRequestableMixin:
     def requestable(self, request: Request) -> Response:
         """List application entitlements which the current user can request access to"""
         paginator: Pagination = self.paginator
-        paginated = paginator.paginate_queryset(_requestable(self, request), request)
+        paginated = paginator.paginate_queryset(
+            _requestable(self.filter_queryset(self.get_queryset()), request), request
+        )
         serializer = RequestableTargetSerializer(paginated, many=True)
         return self.get_paginated_response(serializer.data)
