@@ -30,4 +30,4 @@ class UserPasswordLoginState(models.Model):
         ]
 
     def __str__(self) -> str:
-        return str(self.user)
+        return str(self.user_id)
