@@ -357,12 +357,13 @@ export type AriaRecord = {
  * This may be overkill.
  */
 
-export type ElementRest = DataRecord &
-    AriaRecord & {
-        id?: string;
-        class?: string;
-        style?: string;
-        slot?: string;
-        title?: string;
-        part?: string;
-    };
+type _ElementRestBase = DataRecord & AriaRecord;
+
+export interface ElementRest extends _ElementRestBase {
+    id?: string;
+    class?: string;
+    style?: string;
+    slot?: string;
+    title?: string;
+    part?: string;
+}
