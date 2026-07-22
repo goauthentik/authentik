@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-15 00:23+0000\n"
+"POT-Creation-Date: 2026-07-22 00:27+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -191,6 +191,14 @@ msgstr ""
 msgid "Brands"
 msgstr ""
 
+#: authentik/brands/models.py
+msgid "Brand Client Certificate"
+msgstr ""
+
+#: authentik/brands/models.py
+msgid "Brand Client Certificates"
+msgstr ""
+
 #: authentik/common/oauth/constants.py
 msgid "Based on the Hashed User ID"
 msgstr ""
@@ -228,6 +236,10 @@ msgstr ""
 
 #: authentik/core/api/groups.py
 msgid "User does not have permission to add members to this group."
+msgstr ""
+
+#: authentik/core/api/object_attributes.py
+msgid "Unique cannot be enabled for arrays."
 msgstr ""
 
 #: authentik/core/api/providers.py
@@ -537,6 +549,54 @@ msgid "Property Mappings"
 msgstr ""
 
 #: authentik/core/models.py
+msgid "Source User Property Mapping"
+msgstr ""
+
+#: authentik/core/models.py
+msgid "Source User Property Mappings"
+msgstr ""
+
+#: authentik/core/models.py
+msgid "Source Group Property Mapping"
+msgstr ""
+
+#: authentik/core/models.py
+msgid "Source Group Property Mappings"
+msgstr ""
+
+#: authentik/core/models.py
+msgid "Provider Property Mapping"
+msgstr ""
+
+#: authentik/core/models.py
+msgid "Provider Property Mappings"
+msgstr ""
+
+#: authentik/core/models.py
+msgid "User Role"
+msgstr ""
+
+#: authentik/core/models.py
+msgid "User Roles"
+msgstr ""
+
+#: authentik/core/models.py
+msgid "Group Role"
+msgstr ""
+
+#: authentik/core/models.py
+msgid "Group Roles"
+msgstr ""
+
+#: authentik/core/models.py
+msgid "User Group"
+msgstr ""
+
+#: authentik/core/models.py
+msgid "User Groups"
+msgstr ""
+
+#: authentik/core/models.py
 msgid "session data"
 msgstr ""
 
@@ -554,6 +614,30 @@ msgstr ""
 
 #: authentik/core/models.py
 msgid "Authenticated Sessions"
+msgstr ""
+
+#: authentik/core/models.py
+msgid "This field is required"
+msgstr ""
+
+#: authentik/core/models.py
+msgid "Value must be an array."
+msgstr ""
+
+#: authentik/core/models.py
+msgid "Value does not match configured pattern."
+msgstr ""
+
+#: authentik/core/models.py
+msgid "Value is not unique."
+msgstr ""
+
+#: authentik/core/models.py
+msgid "Object Attribute"
+msgstr ""
+
+#: authentik/core/models.py
+msgid "Object Attributes"
 msgstr ""
 
 #: authentik/core/sources/flow_manager.py
@@ -735,6 +819,22 @@ msgid "Agent Connectors"
 msgstr ""
 
 #: authentik/endpoints/connectors/agent/models.py
+msgid "Agent Connector JWT Federation Provider"
+msgstr ""
+
+#: authentik/endpoints/connectors/agent/models.py
+msgid "Agent Connector JWT Federation Providers"
+msgstr ""
+
+#: authentik/endpoints/connectors/agent/models.py
+msgid "Agent Device User binding"
+msgstr ""
+
+#: authentik/endpoints/connectors/agent/models.py
+msgid "Agent Device User bindings"
+msgstr ""
+
+#: authentik/endpoints/connectors/agent/models.py
 #: authentik/providers/oauth2/models.py
 msgid "Device Token"
 msgstr ""
@@ -903,6 +1003,30 @@ msgid ""
 msgstr ""
 
 #: authentik/enterprise/lifecycle/models.py
+msgid "Lifecycle Rule Reviewer Group"
+msgstr ""
+
+#: authentik/enterprise/lifecycle/models.py
+msgid "Lifecycle Rule Reviewer Groups"
+msgstr ""
+
+#: authentik/enterprise/lifecycle/models.py
+msgid "Lifecycle Rule Reviewer"
+msgstr ""
+
+#: authentik/enterprise/lifecycle/models.py
+msgid "Lifecycle Rule Reviewers"
+msgstr ""
+
+#: authentik/enterprise/lifecycle/models.py
+msgid "Lifecycle Rule Notification Transport"
+msgstr ""
+
+#: authentik/enterprise/lifecycle/models.py
+msgid "Lifecycle Rule Notification Transports"
+msgstr ""
+
+#: authentik/enterprise/lifecycle/models.py
 msgid "Reviewed"
 msgstr ""
 
@@ -1043,6 +1167,14 @@ msgid "Google Workspace Providers"
 msgstr ""
 
 #: authentik/enterprise/providers/google_workspace/models.py
+msgid "Google Workspace Provider Property Mappings Group"
+msgstr ""
+
+#: authentik/enterprise/providers/google_workspace/models.py
+msgid "Google Workspace Provider Property Mappings Groups"
+msgstr ""
+
+#: authentik/enterprise/providers/google_workspace/models.py
 msgid "Google Workspace Provider Mapping"
 msgstr ""
 
@@ -1106,6 +1238,14 @@ msgstr ""
 
 #: authentik/enterprise/providers/microsoft_entra/models.py
 msgid "Microsoft Entra Providers"
+msgstr ""
+
+#: authentik/enterprise/providers/microsoft_entra/models.py
+msgid "Microsoft Entra Provider Property Mappings Group"
+msgstr ""
+
+#: authentik/enterprise/providers/microsoft_entra/models.py
+msgid "Microsoft Entra Provider Property Mappings Groups"
 msgstr ""
 
 #: authentik/enterprise/providers/microsoft_entra/models.py
@@ -1188,6 +1328,14 @@ msgstr ""
 
 #: authentik/enterprise/providers/ssf/models.py
 msgid "Add stream to SSF provider"
+msgstr ""
+
+#: authentik/enterprise/providers/ssf/models.py
+msgid "SSF Provider OIDC Auth Provider"
+msgstr ""
+
+#: authentik/enterprise/providers/ssf/models.py
+msgid "SSF Provider OIDC Auth Providers"
 msgstr ""
 
 #: authentik/enterprise/providers/ssf/models.py
@@ -1356,6 +1504,14 @@ msgstr ""
 msgid "Permissions to pass Certificates for outposts."
 msgstr ""
 
+#: authentik/enterprise/stages/mtls/models.py
+msgid "Mutual TLS Stage Certificate Authority"
+msgstr ""
+
+#: authentik/enterprise/stages/mtls/models.py
+msgid "Mutual TLS Stage Certificate Authoritys"
+msgstr ""
+
 #: authentik/enterprise/stages/mtls/stage.py
 msgid "Certificate required but no certificate was given."
 msgstr ""
@@ -1492,6 +1648,14 @@ msgstr ""
 
 #: authentik/events/models.py
 msgid "Notification Rules"
+msgstr ""
+
+#: authentik/events/models.py
+msgid "Notification Rule Notification Transport"
+msgstr ""
+
+#: authentik/events/models.py
+msgid "Notification Rule Notification Transports"
 msgstr ""
 
 #: authentik/events/models.py
@@ -1799,6 +1963,14 @@ msgstr ""
 
 #: authentik/outposts/models.py
 msgid "Outposts"
+msgstr ""
+
+#: authentik/outposts/models.py
+msgid "Outpost Provider"
+msgstr ""
+
+#: authentik/outposts/models.py
+msgid "Outpost Providers"
 msgstr ""
 
 #: authentik/outposts/tasks.py
@@ -2334,6 +2506,22 @@ msgid "OAuth2/OpenID Providers"
 msgstr ""
 
 #: authentik/providers/oauth2/models.py
+msgid "OAuth2 Provider JWT Federation Source"
+msgstr ""
+
+#: authentik/providers/oauth2/models.py
+msgid "OAuth2 Provider JWT Federation Sources"
+msgstr ""
+
+#: authentik/providers/oauth2/models.py
+msgid "OAuth2 Provider JWT Federation Provider"
+msgstr ""
+
+#: authentik/providers/oauth2/models.py
+msgid "OAuth2 Provider JWT Federation Providers"
+msgstr ""
+
+#: authentik/providers/oauth2/models.py
 msgid "Scopes"
 msgstr ""
 
@@ -2351,6 +2539,10 @@ msgstr ""
 
 #: authentik/providers/oauth2/models.py
 msgid "Code Challenge Method"
+msgstr ""
+
+#: authentik/providers/oauth2/models.py
+msgid "DPoP JWK Thumbprint"
 msgstr ""
 
 #: authentik/providers/oauth2/models.py
@@ -2521,6 +2713,14 @@ msgstr ""
 
 #: authentik/providers/rac/models.py
 msgid "RAC Endpoints"
+msgstr ""
+
+#: authentik/providers/rac/models.py
+msgid "Endpoint Property Mapping"
+msgstr ""
+
+#: authentik/providers/rac/models.py
+msgid "Endpoint Property Mappings"
 msgstr ""
 
 #: authentik/providers/rac/models.py
@@ -2900,6 +3100,22 @@ msgid "SCIM Providers"
 msgstr ""
 
 #: authentik/providers/scim/models.py
+msgid "SCIM Provider Group Filter"
+msgstr ""
+
+#: authentik/providers/scim/models.py
+msgid "SCIM Provider Group Filters"
+msgstr ""
+
+#: authentik/providers/scim/models.py
+msgid "SCIMProvider Group Property Mapping"
+msgstr ""
+
+#: authentik/providers/scim/models.py
+msgid "SCIMProvider Group Property Mappings"
+msgstr ""
+
+#: authentik/providers/scim/models.py
 msgid "SCIM Provider Mapping"
 msgstr ""
 
@@ -2957,6 +3173,14 @@ msgstr ""
 
 #: authentik/rbac/models.py
 msgid "Initial Permissions"
+msgstr ""
+
+#: authentik/rbac/models.py
+msgid "Initial Permissions Permission"
+msgstr ""
+
+#: authentik/rbac/models.py
+msgid "Initial Permissions Permissions"
 msgstr ""
 
 #: authentik/rbac/models.py
@@ -4008,6 +4232,22 @@ msgstr ""
 msgid "Authenticator Validation Stages"
 msgstr ""
 
+#: authentik/stages/authenticator_validate/models.py
+msgid "Authenticator Validate Stage Configuration Stage"
+msgstr ""
+
+#: authentik/stages/authenticator_validate/models.py
+msgid "Authenticator Validate Stage Configuration Stages"
+msgstr ""
+
+#: authentik/stages/authenticator_validate/models.py
+msgid "Authenticator Validate Stage WebAuthn Allowed Device Type"
+msgstr ""
+
+#: authentik/stages/authenticator_validate/models.py
+msgid "Authenticator Validate Stage WebAuthn Allowed Device Types"
+msgstr ""
+
 #: authentik/stages/authenticator_validate/stage.py
 msgid "No (allowed) MFA authenticator configured."
 msgstr ""
@@ -4038,6 +4278,14 @@ msgstr ""
 
 #: authentik/stages/authenticator_webauthn/models.py
 msgid "WebAuthn Device types"
+msgstr ""
+
+#: authentik/stages/authenticator_webauthn/models.py
+msgid "Authenticator WebAuthn Stage Device Type Restriction"
+msgstr ""
+
+#: authentik/stages/authenticator_webauthn/models.py
+msgid "Authenticator WebAuthn Stage Device Type Restrictions"
 msgstr ""
 
 #: authentik/stages/authenticator_webauthn/tasks.py
@@ -4428,6 +4676,14 @@ msgstr ""
 msgid "Identification Stages"
 msgstr ""
 
+#: authentik/stages/identification/models.py
+msgid "Identification Stage Source"
+msgstr ""
+
+#: authentik/stages/identification/models.py
+msgid "Identification Stage Sources"
+msgstr ""
+
 #: authentik/stages/identification/stage.py
 msgid "No identification data provided."
 msgstr ""
@@ -4625,6 +4881,22 @@ msgstr ""
 
 #: authentik/stages/prompt/models.py
 msgid "Prompt Stages"
+msgstr ""
+
+#: authentik/stages/prompt/models.py
+msgid "Prompt Stage Field"
+msgstr ""
+
+#: authentik/stages/prompt/models.py
+msgid "Prompt Stage Fields"
+msgstr ""
+
+#: authentik/stages/prompt/models.py
+msgid "Prompt Stage Validation Policy"
+msgstr ""
+
+#: authentik/stages/prompt/models.py
+msgid "Prompt Stage Validation Policys"
 msgstr ""
 
 #: authentik/stages/prompt/stage.py
