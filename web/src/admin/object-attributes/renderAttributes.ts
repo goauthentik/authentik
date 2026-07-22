@@ -29,20 +29,21 @@ export type AttributesMixin = {
     attributes?: Record<string, unknown>;
 };
 
-export function getPath(
-    root: Record<string, unknown>,
+/**
+ * Given a path of tokens with a separator, walk through a nested object to return whatever is at that path, or a default value if the path doesn't exist
+ */
+export function getValueAtPath(
     path: string,
-    defaultValue: unknown = null,
-    sep = ".",
+    from: Record<string, unknown>,
+    failure: unknown = null,
+    separator = ".",
 ): unknown {
-    // Recursively walk through `root`, checking each part of `path` separated by `sep`.
-    // If at any point a dict does not exist, return default
-    let walk: unknown = root;
-    for (const comp of path.split(sep)) {
+    let walk: unknown = from;
+    for (const comp of path.split(separator)) {
         if (typeof walk === "object" && walk !== null && comp in walk) {
             walk = (walk as Record<string, unknown>)[comp];
         } else {
-            return defaultValue;
+            return failure;
         }
     }
     return walk;
@@ -63,7 +64,7 @@ function renderSingleAttribute(
         .with(ObjectAttributeTypeEnum.Number, () => 0)
         .with(ObjectAttributeTypeEnum.Boolean, () => false)
         .otherwise(() => "");
-    const value = getPath(values, def.key, defaultValue);
+    const value = getValueAtPath(def.key, values, defaultValue);
     const name = def.key ? `attributes.${def.key}` : "";
     const { label, isRequired, type } = def;
 
