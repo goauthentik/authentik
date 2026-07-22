@@ -1,5 +1,5 @@
 use std::{
-    env::{self, temp_dir},
+    env::temp_dir,
     os::unix,
     path::PathBuf,
     process::Stdio,
@@ -64,7 +64,7 @@ impl Worker {
     fn new(worker_id: usize, socket_path: PathBuf) -> Result<Self> {
         info!(worker_id, "starting worker");
 
-        let mut cmd = Command::new("python")
+        let mut cmd = Command::new("python");
         cmd.arg("-m");
         cmd.arg("lifecycle.worker_process");
         cmd.arg(worker_id.to_string());
