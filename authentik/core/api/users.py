@@ -5,7 +5,6 @@ from json import loads
 from typing import Any
 
 from django.contrib.auth import update_session_auth_hash
-from django.contrib.auth.hashers import identify_hasher
 from django.contrib.auth.models import AnonymousUser, Permission
 from django.db.models import Exists, OuterRef, Prefetch, Q
 from django.db.transaction import atomic
@@ -98,6 +97,7 @@ from authentik.flows.views.executor import QS_KEY_TOKEN
 from authentik.lib.avatars import get_avatar
 from authentik.lib.utils.reflection import ConditionalInheritance
 from authentik.lib.utils.time import timedelta_from_string, timedelta_string_validator
+from authentik.lib.validators import validate_password_hash
 from authentik.rbac.api.roles import RoleSerializer
 from authentik.rbac.decorators import permission_required
 from authentik.rbac.models import Role, get_permission_choices
@@ -107,20 +107,6 @@ from authentik.stages.email.tasks import send_mails
 from authentik.stages.email.utils import TemplateEmailMessage
 
 LOGGER = get_logger()
-
-INVALID_PASSWORD_HASH_MESSAGE = _(
-    "Invalid password hash format. Must be a valid Django password hash."
-)
-
-
-def validate_imported_password_hash(password_hash: str) -> str:
-    """Validate the format of a password hash imported through the API."""
-    try:
-        hasher = identify_hasher(password_hash)
-        hasher.decode(password_hash)
-    except (AssertionError, TypeError, ValueError) as exc:
-        raise ValidationError(INVALID_PASSWORD_HASH_MESSAGE) from exc
-    return password_hash
 
 
 class ParamUserSerializer(PassiveSerializer):
@@ -478,11 +464,7 @@ class UserPasswordSetSerializer(PassiveSerializer):
 class UserPasswordHashSetSerializer(PassiveSerializer):
     """Payload to set a users' password hash directly"""
 
-    password = CharField(required=True)
-
-    def validate_password(self, password_hash: str) -> str:
-        """Validate a password hash supplied through the API."""
-        return validate_imported_password_hash(password_hash)
+    password = CharField(required=True, validators=[validate_password_hash])
 
 
 class UserServiceAccountSerializer(PassiveSerializer):
