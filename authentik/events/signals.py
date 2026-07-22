@@ -96,7 +96,7 @@ def on_user_created(sender, instance: User, created: bool, raw: bool, **_):
         return
     Event.new(
         EventAction.USER_CREATED,
-        subject_uuid=instance.uuid,
+        subject=instance,
         username=instance.username,
         user_type=instance.type,
         origin=get_event_origin(),
@@ -141,7 +141,7 @@ def on_password_changed(
     """Log password change"""
     Event.new(
         EventAction.PASSWORD_SET,
-        subject_uuid=user.uuid,
+        subject=user,
         synced_from_source=isinstance(sender, Source),
         origin=get_event_origin(),
     ).from_http(request, user=user)
@@ -161,4 +161,4 @@ def event_user_pre_delete_cleanup(sender, instance: User, **_):
     from authentik.events.tasks import gdpr_cleanup
 
     if get_current_tenant().gdpr_compliance:
-        gdpr_cleanup.send(instance.pk, instance.uuid.hex)
+        gdpr_cleanup.send(instance.pk)

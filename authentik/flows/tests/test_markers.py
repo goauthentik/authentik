@@ -60,7 +60,7 @@ class TestReevaluateMarkerLoginBlocked(TestCase):
 
         self.assertIsNone(returned)
         event = self._blocked_events().get()
-        self.assertEqual(event.context["subject_uuid"], self.user.uuid.hex)
+        self.assertEqual(event.context["subject"]["pk"], self.user.pk)
         self.assertEqual(event.context["reasons"], ["impossible_travel"])
         self.assertEqual(event.context["message"], "too far")
         self.assertEqual(event.user["pk"], self.user.pk)
@@ -109,4 +109,4 @@ class TestReevaluateMarkerLoginBlocked(TestCase):
 
         self.assertIsNone(returned)
         event = self._blocked_events().get()
-        self.assertIsNone(event.context["subject_uuid"])
+        self.assertIsNone(event.context["subject"])

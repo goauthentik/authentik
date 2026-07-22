@@ -117,7 +117,7 @@ class TestEventsNotifications(APITestCase):
 
         execute_mock = MagicMock()
         with patch("authentik.events.models.NotificationTransport.send", execute_mock):
-            Event.new(EventAction.CUSTOM_PREFIX, subject_uuid=subject.uuid).set_user(actor).save()
+            Event.new(EventAction.CUSTOM_PREFIX, subject=subject).set_user(actor).save()
         self.assertEqual(execute_mock.call_count, 1)
         notification: Notification = execute_mock.call_args[0][0]
         self.assertEqual(notification.user, subject)
@@ -332,7 +332,7 @@ class TestUserSecurityNotificationsDelivery(APITestCase):
                 EventAction.LOGIN_BLOCKED,
                 message="Distance is further than possible.",
                 reasons=["impossible_travel"],
-                subject_uuid=user.uuid,
+                subject=user,
             ).set_user(user).save()
 
         self.assertEqual(len(mail.outbox), 1)
@@ -354,7 +354,7 @@ class TestUserSecurityNotificationsDelivery(APITestCase):
                 EventAction.LOGIN_BLOCKED,
                 message="Client IP is not in an allowed country.",
                 reasons=["forbidden_country"],
-                subject_uuid=user.uuid,
+                subject=user,
             ).set_user(user).save()
 
         self.assertEqual(len(mail.outbox), 0)

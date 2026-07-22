@@ -81,6 +81,6 @@ class ReevaluateMarker(StageMarker):
                 message="; ".join(str(message) for message in result.messages)
                 or "Login blocked by policy.",
                 reasons=sorted(result.reasons),
-                subject_uuid=user.uuid if user.is_authenticated else None,
+                subject=user if user.is_authenticated else None,
             ).from_http(http_request, user)
         return None
