@@ -21,6 +21,8 @@ from rest_framework.serializers import (
     raise_errors_on_nested_writes,
 )
 
+from authentik.lib.models import SimpleThroughModel
+
 
 def is_dict(value: Any):
     """Ensure a value is a dictionary, useful for JSONFields"""
@@ -79,6 +81,19 @@ class ModelSerializer(BaseModelSerializer):
                 field.set(value)
 
         return instance
+
+    # To be safe, DRF handles explicit through models differently than implicit ones, for example,
+    # it marks them as `read_only`. However, for "simple" through models, consisting of only the ids
+    # of the related objects, we'd like DRF to handle them as if they were automatically created.
+    def build_relational_field(self, field_name, relation_info):
+        if (
+            relation_info.model_field is not None
+            and relation_info.model_field.many_to_many
+            and issubclass(relation_info.model_field.remote_field.through, SimpleThroughModel)
+        ):
+            relation_info = relation_info._replace(has_through_model=False)
+
+        return super().build_relational_field(field_name, relation_info)
 
 
 class PassiveSerializer(Serializer):

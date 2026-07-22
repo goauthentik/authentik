@@ -11364,6 +11364,75 @@ Bindings zu Gruppen/Benutzern werden mit dem Benutzer des Ereignisses abgegliche
 <trans-unit id="s19ccfb86a879e6b9">
   <source>Also known as Entity ID. Defaults to the Metadata URL.</source>
 </trans-unit>
+<trans-unit id="sedf57cb30482d9da">
+  <source>Object Attribute</source>
+</trans-unit>
+<trans-unit id="sdafc8d30aa57da2b">
+  <source>Object Attributes</source>
+</trans-unit>
+<trans-unit id="s894c49aaafdba91f">
+  <source>Successfully updated attribute.</source>
+</trans-unit>
+<trans-unit id="s845c2967bcd46316">
+  <source>Successfully created attribute.</source>
+</trans-unit>
+<trans-unit id="s908b5be2d8f0db21">
+  <source>Type a human-readable name...</source>
+</trans-unit>
+<trans-unit id="s7d311363234d73fb">
+  <source>Human-readable name of this attribute.</source>
+</trans-unit>
+<trans-unit id="s5d78a1c414da5e44">
+  <source>Unique identifier per object type, which is used as a key in the attributes field.</source>
+</trans-unit>
+<trans-unit id="s657dc9ce441c7700">
+  <source>Type an optional group identifier...</source>
+</trans-unit>
+<trans-unit id="s43c8d24ef6f60d2d">
+  <source>Optional grouping for this attribute in forms.</source>
+</trans-unit>
+<trans-unit id="sb06ff586521714ae">
+  <source>When checked, attribute will be shown in forms for the selected object type.</source>
+</trans-unit>
+<trans-unit id="s2492f5fb1b05b45e">
+  <source>Text</source>
+</trans-unit>
+<trans-unit id="s0b946f226c5700df">
+  <source>Boolean</source>
+</trans-unit>
+<trans-unit id="sd61653ebe961b17a">
+  <source>Validation</source>
+</trans-unit>
+<trans-unit id="s0e777c63f8b66f42">
+  <source>Attribute is required</source>
+</trans-unit>
+<trans-unit id="sf045a55e8aaa66c1">
+  <source>Value of the attribute cannot be empty.</source>
+</trans-unit>
+<trans-unit id="s10a69c9ec42f1344">
+  <source>Attribute is unique</source>
+</trans-unit>
+<trans-unit id="s5e545b0cdccce0f7">
+  <source>Value of the attribute must be unique across all instances of the selected object type.</source>
+</trans-unit>
+<trans-unit id="sd20d8f54ac490098">
+  <source>RegEx</source>
+</trans-unit>
+<trans-unit id="s801c8da3397d5e8a">
+  <source>Enter an optional Regular Expression for validation...</source>
+</trans-unit>
+<trans-unit id="s279bfeba4a09f52b">
+  <source>Optional RegEx to validate any value against. Uses the Python RegEx engine.</source>
+</trans-unit>
+<trans-unit id="s0b9470a6fac5a80b">
+  <source>Object attributes</source>
+</trans-unit>
+<trans-unit id="s25fb1e88492eba62">
+  <source>Object Attribute(s)</source>
+</trans-unit>
+<trans-unit id="sc8d9d9b824e7e8e9">
+  <source>New Attribute</source>
+</trans-unit>
 </body>
 </file>
 </xliff>
