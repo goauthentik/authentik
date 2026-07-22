@@ -403,7 +403,7 @@ jobs:
       - name: Run tests
         run: |
           # Currently runs only two jobs concurrently since our runners are a bit small for more
-          cargo llvm-cov --no-report nextest run \
+          cargo llvm-cov --no-report nextest \
             --package authentik-tests \
             --success-output final \
             --failure-output final \
