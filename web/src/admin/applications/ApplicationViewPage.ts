@@ -398,7 +398,7 @@ export class ApplicationViewPage extends WithLicenseSummary(AKElement) {
                               <div class="pf-c-card">
                                   <div class="pf-c-card__title">
                                       ${msg(
-                                          "These policies control which users can access this application.",
+                                          "Configure rules which grant users the ability to request access to this app.",
                                       )}
                                   </div>
                                   <ak-bound-request-rules-table .target=${this.application.pk}>

@@ -5,7 +5,7 @@ import "#admin/policies/BoundPoliciesList";
 
 import { aki } from "#common/api/client";
 
-import { modalInvoker } from "#elements/dialogs";
+import { IconEditButton, modalInvoker } from "#elements/dialogs";
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
 import { StrictUnsafe } from "#elements/utils/unsafe";
@@ -26,6 +26,7 @@ export class BoundRequestRulesTable extends Table<RequestRuleBinding> {
     public override checkbox = true;
     public override clearOnRefresh = true;
     public override expandable = true;
+    public override searchEnabled = true;
 
     protected bindingEditForm = "ak-request-rule-binding-form";
 
@@ -99,18 +100,9 @@ export class BoundRequestRulesTable extends Table<RequestRuleBinding> {
         return [
             html`${item.ruleObj?.name ?? "-"}`,
             html`<div class="ak-c-table__actions">
-                <button
-                    type="button"
-                    class="pf-c-button pf-m-secondary"
-                    ${modalInvoker(() => {
-                        return StrictUnsafe<RequestRuleBindingForm>(this.bindingEditForm, {
-                            instancePk: item.uuid,
-                            targetPk: this.target || "",
-                        });
-                    })}
-                >
-                    ${msg("Edit Binding")}
-                </button>
+                ${IconEditButton(RequestRuleBindingForm, item.uuid, null, {
+                    targetPk: this.target || "",
+                })}
             </div>`,
         ];
     }
@@ -131,7 +123,7 @@ export class BoundRequestRulesTable extends Table<RequestRuleBinding> {
     }
 
     renderToolbar(): SlottedTemplateResult {
-        return this.renderNewBindingButton();
+        return html`${this.renderNewBindingButton()}${super.renderToolbar()}`;
     }
 }
 
