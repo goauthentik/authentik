@@ -26,6 +26,9 @@ from authentik.enterprise.providers.ws_federation.processors.constants import (
     WS_FED_POST_KEY_ACTION,
     WS_FED_POST_KEY_CONTEXT,
     WS_FED_POST_KEY_RESULT,
+    WS_FED_QS_ACTION,
+    WS_FED_QS_REALM,
+    WS_FED_QS_REPLY,
     WSS_KEY_IDENTIFIER_SAML_ID,
     WSS_TOKEN_TYPE_BY_VERSION,
 )
@@ -45,28 +48,26 @@ class SignInRequest:
 
     @staticmethod
     def parse(request: HttpRequest) -> SignInRequest:
-        action = request.GET.get("wa")
-        if action != WS_FED_ACTION_SIGN_IN:
-            raise ValueError("Invalid action")
-        realm = request.GET.get("wtrealm")
-        if not realm:
-            raise ValueError("Missing Realm")
-
         req = SignInRequest(
-            wa=action,
-            wtrealm=realm,
-            wreply=request.GET.get("wreply"),
-            wctx=request.GET.get("wctx", ""),
+            wa=request.GET.get(WS_FED_QS_ACTION),
+            wtrealm=request.GET.get(WS_FED_QS_REALM),
+            wreply=request.GET.get(WS_FED_QS_REPLY),
+            wctx=request.GET.get(WS_FED_POST_KEY_CONTEXT, ""),
         )
+        return req
 
-        _, provider = req.get_app_provider()
-        if not req.wreply:
-            req.wreply = provider.acs_url
-        reply = urlparse(req.wreply)
+    def __post_init__(self):
+        if self.action != WS_FED_ACTION_SIGN_IN:
+            raise ValueError("Invalid action")
+        if not self.realm:
+            raise ValueError("Missing Realm")
+        _, provider = self.get_app_provider()
+        if not self.wreply:
+            self.wreply = provider.acs_url
+        reply = urlparse(self.wreply)
         configured = urlparse(provider.acs_url)
         if not (reply[:2] == configured[:2] and reply.path.startswith(configured.path)):
             raise ValueError("Invalid wreply")
-        return req
 
     def get_app_provider(self):
         provider: WSFederationProvider = get_object_or_404(

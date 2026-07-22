@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import InitVar, dataclass
 from urllib.parse import urlparse
 
 from django.http import HttpRequest
@@ -6,7 +6,12 @@ from django.shortcuts import get_object_or_404
 
 from authentik.core.models import Application
 from authentik.enterprise.providers.ws_federation.models import WSFederationProvider
-from authentik.enterprise.providers.ws_federation.processors.constants import WS_FED_ACTION_SIGN_OUT
+from authentik.enterprise.providers.ws_federation.processors.constants import (
+    WS_FED_ACTION_SIGN_OUT,
+    WS_FED_QS_ACTION,
+    WS_FED_QS_REALM,
+    WS_FED_QS_REPLY,
+)
 
 
 @dataclass()
@@ -14,40 +19,40 @@ class SignOutRequest:
     wa: str
     wtrealm: str
     wreply: str
-    request: HttpRequest
+    request: InitVar[HttpRequest]
 
     @staticmethod
     def parse(request: HttpRequest) -> SignOutRequest:
-        action = request.GET.get("wa")
-        if action != WS_FED_ACTION_SIGN_OUT:
-            raise ValueError("Invalid action")
-        realm = request.GET.get("wtrealm")
-
-        req = SignOutRequest(
-            wa=action,
-            wtrealm=realm,
-            wreply=request.GET.get("wreply"),
+        return SignOutRequest(
+            wa=request.GET.get(WS_FED_QS_ACTION),
+            wtrealm=request.GET.get(WS_FED_QS_REALM),
+            wreply=request.GET.get(WS_FED_QS_REPLY),
             request=request,
         )
 
-        _, provider = req.get_app_provider()
-        if not req.wreply:
-            req.wreply = provider.acs_url
-        if not req.wtrealm:
+    def __post_init__(self):
+        if self.action != WS_FED_ACTION_SIGN_OUT:
+            raise ValueError("Invalid action")
+        self.__post_init_resolve_realm()
+        _, provider = self.get_app_provider()
+        if not self.wreply:
+            self.wreply = provider.acs_url
+        if not self.wtrealm:
             raise ValueError("Missing Realm")
-        reply = urlparse(req.wreply)
+        reply = urlparse(self.wreply)
         configured = urlparse(provider.acs_url)
         if not (reply[:2] == configured[:2] and reply.path.startswith(configured.path)):
             raise ValueError("Invalid wreply")
-        return req
+
+    def __post_init_resolve_realm(self):
+        slug = self.request.resolver_match.kwargs.get("application_slug")
+        if not slug:
+            return
+        app = get_object_or_404(Application, slug=slug)
+        provider = get_object_or_404(WSFederationProvider, pk=app.provider_id)
+        self.wtrealm = provider.audience
 
     def get_app_provider(self):
-        if not self.wtrealm:
-            slug = self.request.resolver_match.kwargs.get("application_slug")
-            app = get_object_or_404(Application, slug=slug)
-            provider = get_object_or_404(WSFederationProvider, pk=app.provider_id)
-            self.wtrealm = provider.audience
-            return app, provider
         provider: WSFederationProvider = get_object_or_404(
             WSFederationProvider, audience=self.wtrealm
         )
