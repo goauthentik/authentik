@@ -29,6 +29,25 @@ export type AttributesMixin = {
     attributes?: Record<string, unknown>;
 };
 
+export function getPath(
+    root: Record<string, unknown>,
+    path: string,
+    defaultValue: unknown = null,
+    sep = ".",
+): unknown {
+    // Recursively walk through `root`, checking each part of `path` separated by `sep`.
+    // If at any point a dict does not exist, return default
+    let walk: unknown = root;
+    for (const comp of path.split(sep)) {
+        if (typeof walk === "object" && walk !== null && comp in walk) {
+            walk = (walk as Record<string, unknown>)[comp];
+        } else {
+            return defaultValue;
+        }
+    }
+    return walk;
+}
+
 /**
  * Renders a single attribute based on its definition and the provided values.
  *
@@ -44,7 +63,7 @@ function renderSingleAttribute(
         .with(ObjectAttributeTypeEnum.Number, () => 0)
         .with(ObjectAttributeTypeEnum.Boolean, () => false)
         .otherwise(() => "");
-    const value = values[def.key] || defaultValue;
+    const value = getPath(values, def.key, defaultValue);
     const name = def.key ? `attributes.${def.key}` : "";
     const { label, isRequired, type } = def;
 
