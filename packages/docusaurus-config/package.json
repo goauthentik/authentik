@@ -30,7 +30,7 @@
         "prism-react-renderer": "^2.4.1"
     },
     "devDependencies": {
-        "@docusaurus/theme-common": "^3.10.1",
+        "@docusaurus/theme-common": "^3.10.2",
         "@docusaurus/theme-search-algolia": "^3.10.1",
         "@docusaurus/types": "^3.10.1",
         "@eslint/js": "catalog:",
@@ -48,7 +48,7 @@
         "typescript-eslint": "^8.62.1"
     },
     "peerDependencies": {
-        "@docusaurus/theme-common": "^3.10.1",
+        "@docusaurus/theme-common": "^3.10.2",
         "@docusaurus/theme-search-algolia": "^3.10.1",
         "@docusaurus/types": "^3.10.1",
         "react": ">=19",
