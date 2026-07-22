@@ -30,8 +30,8 @@ const (
 	EVENTACTIONS_USER_OFFBOARDED            EventActions = "user_offboarded"
 	EVENTACTIONS_SUSPICIOUS_REQUEST         EventActions = "suspicious_request"
 	EVENTACTIONS_PASSWORD_SET               EventActions = "password_set"
-	EVENTACTIONS_MFA_DEVICE_ADDED           EventActions = "mfa_device_added"
-	EVENTACTIONS_MFA_DEVICE_REMOVED         EventActions = "mfa_device_removed"
+	EVENTACTIONS_MFA_DEVICE_CREATED         EventActions = "mfa_device_created"
+	EVENTACTIONS_MFA_DEVICE_DELETED         EventActions = "mfa_device_deleted"
 	EVENTACTIONS_SECRET_VIEW                EventActions = "secret_view"
 	EVENTACTIONS_SECRET_ROTATE              EventActions = "secret_rotate"
 	EVENTACTIONS_INVITATION_USED            EventActions = "invitation_used"
@@ -76,8 +76,8 @@ var AllowedEventActionsEnumValues = []EventActions{
 	"user_offboarded",
 	"suspicious_request",
 	"password_set",
-	"mfa_device_added",
-	"mfa_device_removed",
+	"mfa_device_created",
+	"mfa_device_deleted",
 	"secret_view",
 	"secret_rotate",
 	"invitation_used",

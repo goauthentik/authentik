@@ -43,13 +43,13 @@ entries:
 - model: authentik_policies_event_matcher.eventmatcherpolicy
   id: default-match-mfa-device-added
   attrs:
-    action: mfa_device_added
+    action: mfa_device_created
   identifiers:
     name: default-match-mfa-device-added
 - model: authentik_policies_event_matcher.eventmatcherpolicy
   id: default-match-mfa-device-removed
   attrs:
-    action: mfa_device_removed
+    action: mfa_device_deleted
   identifiers:
     name: default-match-mfa-device-removed
 - model: authentik_events.notificationrule

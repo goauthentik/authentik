@@ -207,7 +207,7 @@ A user's password is set. This includes users changing their own password, admin
 
 Starting with authentik 2026.8, the event context contains the user whose password was changed (`subject`), the `origin` of the change (the same values as for [`user_created`](#user_created)), and `synced_from_source`, which is `true` when the password hash was cached from an external source login (for example, LDAP or Kerberos) rather than changed in authentik.
 
-### `mfa_device_added` / `mfa_device_removed`:ak-version[2026.8] {#mfa_device_added--mfa_device_removed}
+### `mfa_device_created` / `mfa_device_deleted`:ak-version[2026.8] {#mfa_device_created--mfa_device_deleted}
 
 An MFA device (such as a TOTP, WebAuthn, static, email, or SMS authenticator) was registered or removed. The event context contains the user the device belongs to (`subject`) and an `mfa_device` object with the device's type, name, and primary key.
 
