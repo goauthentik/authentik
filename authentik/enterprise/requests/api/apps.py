@@ -1,24 +1,29 @@
 from http import HTTPMethod
 from typing import TYPE_CHECKING
 
-from django.db.models import QuerySet
+from django.db.models import Q, QuerySet
+from django_filters.rest_framework import DjangoFilterBackend
 from drf_spectacular.utils import extend_schema
 from rest_framework.decorators import action
 from rest_framework.fields import CharField
 from rest_framework.request import Request
 from rest_framework.response import Response
-from rest_framework.viewsets import GenericViewSet
 
+from authentik.api.ordering import NullsAwareOrderingFilter
 from authentik.api.pagination import Pagination
+from authentik.api.search.ql import QLSearch
 from authentik.core.api.applications import ApplicationSerializer
 from authentik.core.api.utils import MetaNameSerializer, PassiveSerializer
 from authentik.core.apps import AppAccessWithoutBindings
 from authentik.core.models import Application, ApplicationEntitlement, User
+from authentik.enterprise.requests.models import RequestRuleBinding
 from authentik.policies.engine import ListPolicyEngine
 from authentik.policies.models import PolicyBindingModel, RequestableChildModel, RequestableModel
 
 if TYPE_CHECKING:
     from authentik.enterprise.requests.models import RequestRule
+
+REQUESTABLE_FILTER_BACKENDS = [QLSearch, DjangoFilterBackend, NullsAwareOrderingFilter]
 
 
 def granting_rule_bindings(
@@ -27,11 +32,10 @@ def granting_rule_bindings(
     request: Request,
 ) -> QuerySet[RequestRule]:
     """The RequestRule(s) that make any of `pbms` requestable by `user`, i.e. `user`
-    passes the rule's own PolicyBindings. A pbm with no rule attached at all
-    contributes nothing."""
-    from authentik.enterprise.requests.models import RequestRuleBinding
-
-    rule_bindings = RequestRuleBinding.objects.filter(target__in=pbms)
+    passes the rule's own PolicyBindings."""
+    rule_bindings = RequestRuleBinding.objects.filter(
+        Q(target__in=pbms) | Q(related__in=pbms)
+    ).distinct()
     if not rule_bindings.exists():
         return rule_bindings
     engine = ListPolicyEngine(rule_bindings, user, request)
@@ -41,17 +45,21 @@ def granting_rule_bindings(
 
 def user_can_request(pbm: RequestableModel, user: User, request: Request) -> bool:
     """Whether `user` is eligible to request access to `pbm`, per the
-    RequestRule(s) attached to it. An object with no rule attached at all
-    is never requestable"""
+    RequestRule(s) attached to it."""
     return granting_rule_bindings([pbm], user, request).exists()
 
 
 def _requestable(
     base: QuerySet[RequestableModel | RequestableChildModel], request: Request
 ) -> list[RequestableModel]:
-    """every unique object of the viewset's own model which the current user is eligible to request"""
-    all_objects = base.filter(request_rules__isnull=False).prefetch_related("request_rules")
-    return list(set([obj for obj in all_objects if user_can_request(obj, request.user, request)]))
+    """every unique object of the viewset's own model which the current user is eligible to
+    request, direct or child related."""
+    all_objects = (
+        base.filter(Q(request_rules__isnull=False) | Q(request_rule_child_bindings__isnull=False))
+        .distinct()
+        .prefetch_related("request_rules", "request_rule_child_bindings")
+    )
+    return [obj for obj in all_objects if user_can_request(obj, request.user, request)]
 
 
 class RequestableTargetSerializer(MetaNameSerializer, PassiveSerializer):
@@ -73,7 +81,7 @@ class ApplicationsRequestableMixin:
             200: ApplicationSerializer(many=True),
         },
     )
-    @action(methods=[HTTPMethod.GET], detail=False)
+    @action(methods=[HTTPMethod.GET], detail=False, filter_backends=REQUESTABLE_FILTER_BACKENDS)
     def requestable(self, request: Request) -> Response:
         """List applications which the current user can request access to"""
         paginator: Pagination = self.paginator
@@ -92,7 +100,7 @@ class ApplicationEntitlementsRequestableMixin:
             200: RequestableTargetSerializer(many=True),
         },
     )
-    @action(methods=[HTTPMethod.GET], detail=False)
+    @action(methods=[HTTPMethod.GET], detail=False, filter_backends=REQUESTABLE_FILTER_BACKENDS)
     def requestable(self, request: Request) -> Response:
         """List application entitlements which the current user can request access to"""
         paginator: Pagination = self.paginator
