@@ -287,12 +287,6 @@ class UserSerializer(AttributesMixinSerializer, ModelSerializer):
                 raise ValidationError(_("No empty segments in user path allowed."))
         return path
 
-    def validate_password_hash(self, password_hash: str | None) -> str | None:
-        """Validate a password hash supplied by a blueprint."""
-        if password_hash is None:
-            return None
-        return validate_imported_password_hash(password_hash)
-
     def validate_type(self, user_type: str) -> str:
         """Validate user type, internal_service_account is an internal value"""
         if not self.instance and user_type == UserTypes.INTERNAL_SERVICE_ACCOUNT:

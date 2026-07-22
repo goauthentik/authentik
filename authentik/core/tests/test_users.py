@@ -106,19 +106,22 @@ class TestUserSerializerPasswordHash(TestCase):
         self.assertTrue(user.check_password(password))
         self.assertIsNotNone(user.password_change_date)
 
-    def test_password_hash_rejects_invalid_format(self):
-        """Test invalid password hash values are rejected."""
+    def test_unrecognized_password_hash_is_stored_unchanged(self):
+        """Test blueprint password hashes are stored without validation."""
+        password_hash = "custom$password$hash"
         serializer = UserSerializer(
             data={
                 "username": generate_id(),
                 "name": "Test User",
-                "password_hash": "pbkdf2_sha256$1000000/K4wGpWYKfJPSCcNM=",
+                "password_hash": password_hash,
             },
             context={SERIALIZER_CONTEXT_BLUEPRINT: True},
         )
 
-        self.assertFalse(serializer.is_valid())
-        self.assertIn("Invalid password hash", str(serializer.errors))
+        self.assertTrue(serializer.is_valid(), serializer.errors)
+        user = serializer.save()
+
+        self.assertEqual(user.password, password_hash)
 
     def test_password_hash_ignored_outside_blueprint_context(self):
         """Test password_hash is not accepted by the regular serializer."""
