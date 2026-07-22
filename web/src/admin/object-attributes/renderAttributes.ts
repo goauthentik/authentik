@@ -30,6 +30,26 @@ export type AttributesMixin = {
 };
 
 /**
+ * Given a path of tokens with a separator, walk through a nested object to return whatever is at that path, or a default value if the path doesn't exist
+ */
+export function getValueAtPath(
+    path: string,
+    from: Record<string, unknown>,
+    failure: unknown = null,
+    separator = ".",
+): unknown {
+    let walk: unknown = from;
+    for (const comp of path.split(separator)) {
+        if (typeof walk === "object" && walk !== null && comp in walk) {
+            walk = (walk as Record<string, unknown>)[comp];
+        } else {
+            return failure;
+        }
+    }
+    return walk;
+}
+
+/**
  * Renders a single attribute based on its definition and the provided values.
  *
  * @param values the current values of the attributes.
@@ -44,7 +64,7 @@ function renderSingleAttribute(
         .with(ObjectAttributeTypeEnum.Number, () => 0)
         .with(ObjectAttributeTypeEnum.Boolean, () => false)
         .otherwise(() => "");
-    const value = values[def.key] || defaultValue;
+    const value = getValueAtPath(def.key, values, defaultValue);
     const name = def.key ? `attributes.${def.key}` : "";
     const { label, isRequired, type } = def;
 
