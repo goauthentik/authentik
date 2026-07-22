@@ -60,6 +60,21 @@ const BASE_ESBUILD_PLUGINS = [
             });
         },
     },
+    {
+        name: "log",
+        setup(build) {
+            let start = new Date(0);
+            build.onStart(() => {
+                start = new Date();
+                logger.info("Build started");
+            });
+            build.onEnd((r) => {
+                const end = new Date();
+                const dur = (end.getTime() - start.getTime());
+                logger.info(`Build finished (took ${dur} ms, ${r.errors.length} error(s), ${r.warnings.length} warning(s))`);
+            })
+        },
+    },
 
     mdxPlugin({
         root: MonoRepoRoot,
