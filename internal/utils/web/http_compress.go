@@ -24,7 +24,17 @@ func NewCompressHandler(handler http.Handler) http.Handler {
 	h := &compressHandler{
 		handler: handler,
 	}
-	return handlers.CompressHandler(h)
+	compressed := handlers.CompressHandler(h)
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// On-the-fly compression of a ranged response re-encodes the selected
+		// bytes and drops Content-Length, breaking HTTP byte-serving
+		// consumers (e.g. PMTiles fetching the bundled basemap).
+		if r.Header.Get("Range") != "" {
+			h.ServeHTTP(w, r)
+			return
+		}
+		compressed.ServeHTTP(w, r)
+	})
 }
 
 func (h *compressHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
