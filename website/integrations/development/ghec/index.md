@@ -8,15 +8,11 @@ import SAMLProvider20265Warning from "../../\_saml-provider-2026-5-warning.mdx";
 
 ## What is GitHub Enterprise Cloud?
 
-> GitHub Enterprise Cloud is a plan for large businesses or teams who collaborate on GitHub.com.
+> GitHub Enterprise Cloud is the cloud-based solution of GitHub Enterprise, hosted on GitHub's servers.
 >
-> -- https://docs.github.com/en/enterprise-cloud@latest/get-started/learning-about-github/githubs-plans
+> -- https://github.com/enterprise
 
-This guide configures SAML SSO for a GitHub Enterprise Cloud organization.
-
-:::info
-For GitHub Enterprise Cloud with Enterprise Managed Users, see the [GitHub Enterprise EMU](../ghec-emu/) integration guide.
-:::
+This guide configures SAML SSO for an organization on GitHub Enterprise Cloud. For GitHub Enterprise Cloud with Enterprise Managed Users, see the [GitHub Enterprise EMU](../ghec-emu/) integration guide.
 
 ## Preparation
 
@@ -33,23 +29,25 @@ This documentation lists only the settings that you need to change from their de
 
 To support the integration of GitHub Enterprise Cloud with authentik, you need to create an application/provider pair in authentik.
 
-### Create an application and provider in authentik
+### Create an application and provider
 
 <SAMLProvider20265Warning />
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Applications** > **Applications** and click **New Application** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
-    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
+2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Note the **Slug** value because it is required later.
     - **Choose a Provider type**: select **SAML Provider** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
-        - Set **ACS URL** to `https://github.com/orgs/foo/saml/consume`.
-        - Set **Audience** to `https://github.com/orgs/foo`.
-        - Under **Advanced protocol settings**, select an available **Signing certificate**. Download this certificate because it is required later.
+        - Set the **ACS URL** to `https://github.com/orgs/foo/saml/consume`.
+        - Set the **Audience** to `https://github.com/orgs/foo`.
+        - Under **Advanced protocol settings**:
+            - Select an available **Signing certificate**. Download this certificate because it is required later.
+            - Set **NameID Property Mapping** to `authentik default SAML Mapping: Username`.
     - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 
 3. Click **Submit** to save the new application and provider.
 
-## GitHub configuration
+## GitHub Enterprise Cloud configuration
 
 1. Log in to GitHub as an organization owner.
 2. Navigate to your organization at `https://github.com/foo`.
@@ -63,10 +61,13 @@ To support the integration of GitHub Enterprise Cloud with authentik, you need t
     - **Signature method** and **Digest method**: select the methods that match the authentik SAML provider settings.
 7. Click **Test SAML configuration**.
 8. After the test succeeds, click **Save**.
+9. Download and store the SAML recovery codes.
 
-![Screenshot showing populated GitHub organization SAML settings](ghorg_saml_settings.png)
+This enables SAML as an authentication option. To require SAML for all organization members, authenticate with SAML at least once, prepare the organization for enforcement, then return to **Authentication security** and select **Require SAML SSO authentication for all members of the foo organization**.
 
-This enables SAML as an authentication option. To require SAML for all organization members, visit `https://github.com/orgs/foo/sso`, sign in with SAML, then return to **Authentication security** and select **Require SAML SSO authentication for all members of the foo organization**.
+:::warning SAML enforcement
+When you enforce SAML SSO, GitHub removes organization members and administrators who have not authenticated through the IdP.
+:::
 
 ## Configuration verification
 
@@ -74,4 +75,6 @@ To confirm that authentik is properly configured with GitHub Enterprise Cloud, l
 
 ## Resources
 
-- [GitHub Enterprise Cloud: managing SAML single sign-on for your organization](https://docs.github.com/en/enterprise-cloud@latest/organizations/managing-saml-single-sign-on-for-your-organization)
+- [GitHub Enterprise Cloud: enabling and testing SAML single sign-on for your organization](https://docs.github.com/en/enterprise-cloud@latest/organizations/managing-saml-single-sign-on-for-your-organization/enabling-and-testing-saml-single-sign-on-for-your-organization)
+- [GitHub Enterprise Cloud: SAML configuration reference](https://docs.github.com/en/enterprise-cloud@latest/admin/managing-iam/iam-configuration-reference/saml-configuration-reference)
+- [GitHub Enterprise Cloud: enforcing SAML single sign-on for your organization](https://docs.github.com/en/enterprise-cloud@latest/organizations/managing-saml-single-sign-on-for-your-organization/enforcing-saml-single-sign-on-for-your-organization)
