@@ -103,8 +103,8 @@ class EventAction(models.TextChoices):
     SUSPICIOUS_REQUEST = "suspicious_request"
     PASSWORD_SET = "password_set"  # noqa # nosec
 
-    MFA_DEVICE_ADDED = "mfa_device_added"
-    MFA_DEVICE_REMOVED = "mfa_device_removed"
+    MFA_DEVICE_CREATED = "mfa_device_created"
+    MFA_DEVICE_DELETED = "mfa_device_deleted"
 
     SECRET_VIEW = "secret_view"  # noqa # nosec
     SECRET_ROTATE = "secret_rotate"  # noqa # nosec

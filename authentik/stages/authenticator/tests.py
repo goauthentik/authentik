@@ -250,12 +250,12 @@ class TestDeviceEvents(TestCase):
 
     def _added(self):
         return Event.objects.filter(
-            action=EventAction.MFA_DEVICE_ADDED, context__subject__pk=self.user.pk
+            action=EventAction.MFA_DEVICE_CREATED, context__subject__pk=self.user.pk
         )
 
     def _removed(self):
         return Event.objects.filter(
-            action=EventAction.MFA_DEVICE_REMOVED, context__subject__pk=self.user.pk
+            action=EventAction.MFA_DEVICE_DELETED, context__subject__pk=self.user.pk
         )
 
     def test_added_on_confirmed_create(self):
@@ -306,7 +306,7 @@ class TestDeviceEvents(TestCase):
         self.user.delete()
         self.assertFalse(
             Event.objects.filter(
-                action=EventAction.MFA_DEVICE_REMOVED, context__subject__pk=subject_pk
+                action=EventAction.MFA_DEVICE_DELETED, context__subject__pk=subject_pk
             ).exists()
         )
 

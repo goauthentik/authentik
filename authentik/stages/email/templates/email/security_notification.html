@@ -8,9 +8,9 @@
     <h1>
       {% if event_action == "password_set" %}
       {% trans "Your password was changed" %}
-      {% elif event_action == "mfa_device_added" %}
+      {% elif event_action == "mfa_device_created" %}
       {% trans "A new MFA device was added" %}
-      {% elif event_action == "mfa_device_removed" %}
+      {% elif event_action == "mfa_device_deleted" %}
       {% trans "An MFA device was removed" %}
       {% elif event_action == "login_blocked" %}
       {% if "impossible_travel" in event_context.reasons %}
@@ -35,11 +35,11 @@
           {% blocktrans %}
           The password for your account was just changed. If you made this change, you can safely ignore this email.
           {% endblocktrans %}
-          {% elif event_action == "mfa_device_added" %}
+          {% elif event_action == "mfa_device_created" %}
           {% blocktrans %}
           A new multi-factor authentication (MFA) device was just added to your account. If you set this up, you can safely ignore this email.
           {% endblocktrans %}
-          {% elif event_action == "mfa_device_removed" %}
+          {% elif event_action == "mfa_device_deleted" %}
           {% blocktrans %}
           A multi-factor authentication (MFA) device was just removed from your account. If you made this change, you can safely ignore this email.
           {% endblocktrans %}

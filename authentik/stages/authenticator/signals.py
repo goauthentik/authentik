@@ -12,7 +12,7 @@ def device_post_save_event(sender, instance: Device, created: bool, raw: bool, *
         return
 
     Event.new(
-        EventAction.MFA_DEVICE_ADDED,
+        EventAction.MFA_DEVICE_CREATED,
         subject=instance.user,
         mfa_device={"type": instance._meta.model_name, "name": instance.name, "pk": instance.pk},
     ).from_ctx_request()
@@ -25,7 +25,7 @@ def device_pre_delete_event(sender, instance: Device, origin, **_):
     if instance != origin:
         return
     Event.new(
-        EventAction.MFA_DEVICE_REMOVED,
+        EventAction.MFA_DEVICE_DELETED,
         subject=instance.user,
         mfa_device={"type": instance._meta.model_name, "name": instance.name, "pk": instance.pk},
     ).from_ctx_request()
