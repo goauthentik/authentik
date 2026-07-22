@@ -164,6 +164,29 @@ export class PasswordStageForm extends BaseStageForm<PasswordStage> {
                             )}
                         </p>
                     </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
+                        label=${msg("Failed attempts before lockout", {
+                            id: "password-stage.lockout-threshold.label",
+                        })}
+                        required
+                        name="failedAttemptsBeforeLockout"
+                    >
+                        <input
+                            type="number"
+                            min="0"
+                            value="${this.instance?.failedAttemptsBeforeLockout ?? 0}"
+                            class="pf-c-form-control"
+                            required
+                        />
+                        <p class="pf-c-form__helper-text">
+                            ${msg(
+                                "Deactivate the user after this many consecutive failed password attempts. Set to 0 to disable lockout.",
+                                {
+                                    id: "password-stage.lockout-threshold.description",
+                                },
+                            )}
+                        </p>
+                    </ak-form-element-horizontal>
                     <ak-switch-input
                         name="allowShowPassword"
                         label="Allow Show Password"

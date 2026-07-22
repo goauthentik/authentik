@@ -18,6 +18,7 @@ The stage supports authentik's built-in password database, app passwords, LDAP-b
     - **User database + LDAP password**
     - **User database + Kerberos password**
 - **Failed attempts before cancel**: how many failed password submissions are allowed before the flow is canceled.
+- **Failed attempts before lockout**: deactivate the user after this many consecutive failed password attempts. Set this option to `0` to disable account lockout.
 - **Allow show password**: show a button that reveals the entered password.
 - **Configuration flow**: optional authenticated flow that lets users configure or change their password from user settings.
 
@@ -26,6 +27,8 @@ The stage supports authentik's built-in password database, app passwords, LDAP-b
 This stage is typically bound after an [Identification](../identification/index.md) stage and before an [Authenticator Validation](../authenticator_validate/index.md) or [User Login](../user_login/index.md) stage.
 
 If the [Identification stage](../identification/index.md) has its **Password stage** option set, the password prompt is rendered as part of the identification step and the Password stage should not also be bound separately in the same flow.
+
+Account lockout counts failures across flows and sessions, including password validation embedded in an Identification stage. A successful password validation resets the counter. After lockout, an administrator must reactivate the user. Lockout is independent of reputation scores; reputation policies continue to operate separately.
 
 ## Notes
 

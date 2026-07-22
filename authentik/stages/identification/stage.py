@@ -53,6 +53,8 @@ from authentik.stages.password.stage import (
     PLAN_CONTEXT_METHOD,
     PLAN_CONTEXT_METHOD_ARGS,
     authenticate,
+    record_failed_password_attempt,
+    reset_failed_password_attempts,
 )
 
 
@@ -231,6 +233,9 @@ class IdentificationChallengeResponse(ChallengeResponse):
                     password=password,
                 )
             if not user:
+                record_failed_password_attempt(self.pre_user, current_stage.password_stage)
+                raise ValidationError(_("Failed to authenticate."))
+            if not reset_failed_password_attempts(user):
                 raise ValidationError(_("Failed to authenticate."))
             self.pre_user = user
         except PermissionDenied as exc:

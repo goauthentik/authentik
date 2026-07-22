@@ -52,6 +52,13 @@ class PasswordStage(ConfigurableStage, Stage):
             "To lock the user out, use a reputation policy and a user_write stage."
         ),
     )
+    failed_attempts_before_lockout = models.PositiveIntegerField(
+        default=0,
+        help_text=_(
+            "How many consecutive failed password attempts occur before the user is deactivated. "
+            "Set to 0 to disable lockout."
+        ),
+    )
     allow_show_password = models.BooleanField(
         default=False,
         help_text=_(

@@ -380,6 +380,7 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
         "authentik_rbac.Role", related_name="users", blank=True, through="UserRole"
     )
     password_change_date = models.DateTimeField(auto_now_add=True)
+    password_login_failed_attempts = models.PositiveIntegerField(default=0, editable=False)
 
     last_updated = models.DateTimeField(auto_now=True)
 

@@ -5,6 +5,7 @@ from typing import Any
 from django.contrib.auth import _clean_credentials
 from django.contrib.auth.backends import BaseBackend
 from django.core.exceptions import PermissionDenied
+from django.db import transaction
 from django.db.models import Sum
 from django.http import HttpRequest, HttpResponse
 from django.urls import reverse
@@ -14,7 +15,7 @@ from rest_framework.fields import BooleanField, CharField
 from sentry_sdk import start_span
 from structlog.stdlib import get_logger
 
-from authentik.core.models import User
+from authentik.core.models import User, UserTypes
 from authentik.core.signals import login_failed
 from authentik.flows.challenge import (
     Challenge,
@@ -34,6 +35,41 @@ PLAN_CONTEXT_AUTHENTICATION_BACKEND = "user_backend"
 PLAN_CONTEXT_METHOD = "auth_method"
 PLAN_CONTEXT_METHOD_ARGS = "auth_method_args"
 PLAN_CONTEXT_INITIAL_SCORE = "goauthentik.io/stages/password/initial_score"
+
+
+def record_failed_password_attempt(user: User, stage: PasswordStage) -> bool:
+    """Record a failed password attempt and deactivate the user at the configured limit."""
+    if stage.failed_attempts_before_lockout == 0 or user.pk is None:
+        return False
+    with transaction.atomic():
+        user = User.objects.exclude_anonymous().select_for_update().filter(pk=user.pk).first()
+        if user is None or not user.is_active or user.type == UserTypes.INTERNAL_SERVICE_ACCOUNT:
+            return False
+        user.password_login_failed_attempts += 1
+        locked = user.password_login_failed_attempts >= stage.failed_attempts_before_lockout
+        if locked:
+            user.is_active = False
+            user.password_login_failed_attempts = 0
+            user.save(update_fields=("is_active", "last_updated", "password_login_failed_attempts"))
+        else:
+            User.objects.filter(pk=user.pk).update(
+                password_login_failed_attempts=user.password_login_failed_attempts
+            )
+    return locked
+
+
+def reset_failed_password_attempts(user: User) -> bool:
+    """Reset failed password attempts, returning whether the user is still active."""
+    if user.pk is None:
+        return False
+    with transaction.atomic():
+        stored_user = User.objects.select_for_update().get(pk=user.pk)
+        if not stored_user.is_active:
+            return False
+        if stored_user.password_login_failed_attempts:
+            User.objects.filter(pk=user.pk).update(password_login_failed_attempts=0)
+    user.password_login_failed_attempts = 0
+    return True
 
 
 def authenticate(
@@ -125,6 +161,10 @@ class PasswordChallengeResponse(ChallengeResponse):
         if not user:
             # No user was found -> invalid credentials
             self.stage.logger.info("Invalid credentials")
+            record_failed_password_attempt(pending_user, executor.current_stage)
+            raise ValidationError(_("Invalid password"), "invalid")
+        if not reset_failed_password_attempts(user):
+            self.stage.logger.info("User is inactive")
             raise ValidationError(_("Invalid password"), "invalid")
         # User instance returned from authenticate() has .backend property set
         executor.plan.context[PLAN_CONTEXT_PENDING_USER] = user

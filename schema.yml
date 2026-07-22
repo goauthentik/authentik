@@ -31553,6 +31553,10 @@ paths:
         name: failed_attempts_before_cancel
         schema:
           type: integer
+      - in: query
+        name: failed_attempts_before_lockout
+        schema:
+          type: integer
       - $ref: '#/components/parameters/QueryName'
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
@@ -48049,6 +48053,12 @@ components:
           minimum: -2147483648
           description: How many attempts a user has before the flow is canceled. To
             lock the user out, use a reputation policy and a user_write stage.
+        failed_attempts_before_lockout:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: How many consecutive failed password attempts occur before
+            the user is deactivated. Set to 0 to disable lockout.
         allow_show_password:
           type: boolean
           description: When enabled, provides a 'show password' button with the password
@@ -48086,6 +48096,12 @@ components:
           minimum: -2147483648
           description: How many attempts a user has before the flow is canceled. To
             lock the user out, use a reputation policy and a user_write stage.
+        failed_attempts_before_lockout:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: How many consecutive failed password attempts occur before
+            the user is deactivated. Set to 0 to disable lockout.
         allow_show_password:
           type: boolean
           description: When enabled, provides a 'show password' button with the password
@@ -50508,6 +50524,12 @@ components:
           minimum: -2147483648
           description: How many attempts a user has before the flow is canceled. To
             lock the user out, use a reputation policy and a user_write stage.
+        failed_attempts_before_lockout:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: How many consecutive failed password attempts occur before
+            the user is deactivated. Set to 0 to disable lockout.
         allow_show_password:
           type: boolean
           description: When enabled, provides a 'show password' button with the password

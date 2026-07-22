@@ -84,6 +84,12 @@ export interface PasswordStage {
      */
     failedAttemptsBeforeCancel?: number;
     /**
+     * How many consecutive failed password attempts occur before the user is deactivated. Set to 0 to disable lockout.
+     * @type {number}
+     * @memberof PasswordStage
+     */
+    failedAttemptsBeforeLockout?: number;
+    /**
      * When enabled, provides a 'show password' button with the password input field.
      * @type {boolean}
      * @memberof PasswordStage
@@ -128,6 +134,10 @@ export function PasswordStageFromJSONTyped(json: any, ignoreDiscriminator: boole
             json["failed_attempts_before_cancel"] == null
                 ? undefined
                 : json["failed_attempts_before_cancel"],
+        failedAttemptsBeforeLockout:
+            json["failed_attempts_before_lockout"] == null
+                ? undefined
+                : json["failed_attempts_before_lockout"],
         allowShowPassword:
             json["allow_show_password"] == null ? undefined : json["allow_show_password"],
     };
@@ -153,6 +163,7 @@ export function PasswordStageToJSONTyped(
         backends: (value["backends"] as Array<any>).map(BackendsEnumToJSON),
         configure_flow: value["configureFlow"],
         failed_attempts_before_cancel: value["failedAttemptsBeforeCancel"],
+        failed_attempts_before_lockout: value["failedAttemptsBeforeLockout"],
         allow_show_password: value["allowShowPassword"],
     };
 }

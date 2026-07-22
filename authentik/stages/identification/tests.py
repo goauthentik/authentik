@@ -216,6 +216,25 @@ class TestIdentificationStage(FlowTestCase):
             user_fields=["email"],
         )
 
+    def test_invalid_with_password_account_lockout(self):
+        """Test account lockout with password validation in the identification stage."""
+        pw_stage = PasswordStage.objects.create(
+            name="password-lockout",
+            backends=[BACKEND_INBUILT],
+            failed_attempts_before_lockout=1,
+        )
+        self.stage.password_stage = pw_stage
+        self.stage.save(update_fields=("password_stage",))
+
+        self.client.post(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
+            {"uid_field": self.user.email, "password": self.user.username + "test"},
+        )
+
+        self.user.refresh_from_db()
+        self.assertFalse(self.user.is_active)
+        self.assertEqual(self.user.password_login_failed_attempts, 0)
+
     def test_invalid_with_password_pretend(self):
         """Test with invalid email and invalid password in single step (with pretend_user_exists)"""
         self.stage.pretend_user_exists = True
