@@ -9,6 +9,7 @@ from authentik.core.tests.utils import create_test_admin_user, create_test_flow
 from authentik.flows.models import FlowStageBinding, NotConfiguredAction
 from authentik.flows.tests import FlowTestCase
 from authentik.lib.generators import generate_id
+from authentik.lib.utils.sms import mask_phone_number
 from authentik.stages.authenticator_sms.models import AuthenticatorSMSStage, SMSDevice, SMSProviders
 from authentik.stages.authenticator_validate.models import AuthenticatorValidateStage, DeviceClasses
 from authentik.stages.authenticator_validate.stage import COOKIE_NAME_MFA
@@ -153,3 +154,49 @@ class AuthenticatorValidateStageSMSTests(FlowTestCase):
         )
         self.assertEqual(response.status_code, 200)
         self.assertStageResponse(response, flow, self.user, component="ak-stage-access-denied")
+
+    def test_device_challenge_hints(self):
+        """Test that the device challenge surfaces the masked phone number and delivery method"""
+        self.stage.friendly_name = "WhatsApp"
+        self.stage.save()
+        ident_stage = IdentificationStage.objects.create(
+            name=generate_id(),
+            user_fields=[
+                UserFields.USERNAME,
+            ],
+        )
+        device: SMSDevice = SMSDevice.objects.create(
+            user=self.user,
+            confirmed=True,
+            stage=self.stage,
+            phone_number="+12025550173",
+        )
+
+        stage = AuthenticatorValidateStage.objects.create(
+            name=generate_id(),
+            not_configured_action=NotConfiguredAction.CONFIGURE,
+            device_classes=[DeviceClasses.SMS],
+        )
+        stage.configuration_stages.set([ident_stage])
+        flow = create_test_flow()
+        FlowStageBinding.objects.create(target=flow, stage=ident_stage, order=0)
+        FlowStageBinding.objects.create(target=flow, stage=stage, order=1)
+
+        response = self.client.post(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
+            {"uid_field": self.user.username},
+            follow=True,
+        )
+        response_data = self.assertStageResponse(
+            response, flow, self.user, component="ak-stage-authenticator-validate"
+        )
+        device_challenge = response_data["device_challenges"][0]
+        self.assertEqual(device_challenge["device_class"], "sms")
+        self.assertEqual(device_challenge["device_uid"], str(device.pk))
+        self.assertEqual(
+            device_challenge["challenge"],
+            {
+                "phone_number": mask_phone_number(device.phone_number),
+                "delivery_method": "WhatsApp",
+            },
+        )
