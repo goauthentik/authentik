@@ -199,6 +199,7 @@ class TestPasswordStage(FlowTestCase):
 
     def test_lockout_message_customization(self):
         """Configured messages override the default warning and lockout messages."""
+        self.assertEqual(get_last_attempt_warning(self.stage, "generic"), "generic")
         self.stage.show_last_attempt_warning = True
         self.assertIn("one password attempt", get_last_attempt_warning(self.stage, "generic"))
         self.stage.last_attempt_warning_message = "This is your final attempt."
