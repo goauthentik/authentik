@@ -83,7 +83,9 @@ def authenticate_password(
         from authentik.enterprise.stages.password.lockout import (
             authenticate_password as authenticate_password_with_lockout,
         )
-
+    except ModuleNotFoundError:
+        authenticate_password_with_lockout = None
+    if authenticate_password_with_lockout is not None:
         return authenticate_password_with_lockout(
             request,
             password_stage,
@@ -91,8 +93,6 @@ def authenticate_password(
             password,
             event_stage,
         )
-    except ModuleNotFoundError:
-        pass
     user = authenticate(
         request,
         password_stage.backends,

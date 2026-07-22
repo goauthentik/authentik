@@ -31,11 +31,8 @@ class PasswordStageSerializerMixin:
     """Require Enterprise when password lockout settings are enabled."""
 
     def validate(self, attrs: dict[str, Any]) -> dict[str, Any]:
-        values = {
-            field: attrs.get(field, getattr(self.instance, field, None))
-            for field in ENTERPRISE_FIELDS
-        }
-        if any(values.values()) and not LicenseKey.cached_summary().status.is_valid:
+        values = (attrs[field] for field in ENTERPRISE_FIELDS if field in attrs)
+        if any(values) and not LicenseKey.cached_summary().status.is_valid:
             raise ValidationError(_("Enterprise is required to configure password lockout."))
         return super().validate(attrs)
 

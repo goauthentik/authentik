@@ -3,6 +3,7 @@
 from datetime import datetime
 from typing import Any
 
+from django.contrib.auth.hashers import make_password
 from django.db import transaction
 from django.http import HttpRequest
 from django.utils.timezone import now
@@ -204,6 +205,7 @@ def authenticate_password(
         )
 
     if is_password_login_locked(pending_user):
+        make_password(make_password(None))
         return PasswordAuthenticationResult(PasswordAuthenticationStatus.LOCKED)
 
     user = authenticate(
