@@ -30,8 +30,19 @@ const badgeDetails = new Map<LicenseSummaryStatusEnum, [string, string]>([
 ]);
 
 const Styles = css`
+    .pf-c-card {
+        container-type: inline-size;
+        container-name: enterprise-status-card;
+    }
+
     .pf-l-split {
-        --pf-l-split--m-gutter--MarginRight: 3rem;
+        --pf-l-split--m-gutter--MarginRight: 1.5rem;
+    }
+
+    @container enterprise-status-card (width >= 480px) {
+        .pf-l-split {
+            --pf-l-split--m-gutter--MarginRight: 3rem;
+        }
     }
 `;
 
@@ -107,16 +118,17 @@ export class EnterpriseStatusCard extends AKElement {
                             </dd>
                         </div>
                     </dl>
+                    <div class="pf-l-split__item pf-m-fill">
                         <div class="pf-l-stack pf-m-gutter">
                             ${progressBar(
                                 msg("Internal user usage"),
                                 currentInternalUsers,
-                                licensedInternalUsers
+                                licensedInternalUsers,
                             )}
                             ${progressBar(
                                 msg("External user usage"),
                                 currentExternalUsers,
-                                licensedExternalUsers
+                                licensedExternalUsers,
                             )}
                         </div>
                     </div>
