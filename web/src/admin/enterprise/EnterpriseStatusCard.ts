@@ -1,3 +1,7 @@
+/**
+ * @file Display the current usage and license status of Enterprise licenses.
+ */
+
 import "#elements/ak-progress-bar";
 
 import { AKElement } from "#elements/Base";
@@ -15,7 +19,7 @@ import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList
 import PFProgress from "@patternfly/patternfly/components/Progress/progress.css";
 import PFSplit from "@patternfly/patternfly/layouts/Split/split.css";
 
-const badgeDetails = new Map<LicenseSummaryStatusEnum | undefined, [PFColor, string]>([
+const badgeDetails = new Map<LicenseSummaryStatusEnum, [PFColor, string]>([
     [LicenseSummaryStatusEnum.Expired, [PFColor.Red, msg("Expired")]],
     [LicenseSummaryStatusEnum.ExpirySoon, [PFColor.Orange, msg("Expiring soon")]],
     [LicenseSummaryStatusEnum.Unlicensed, [PFColor.Gray, msg("Unlicensed")]],
@@ -25,7 +29,7 @@ const badgeDetails = new Map<LicenseSummaryStatusEnum | undefined, [PFColor, str
     [LicenseSummaryStatusEnum.Valid, [PFColor.Green, msg("Valid")]],
 ]);
 
-const Style = css`
+const Styles = css`
     .pf-l-split {
         --pf-l-split--m-gutter--MarginRight: 3rem;
     }
@@ -33,27 +37,31 @@ const Style = css`
 
 @customElement("ak-enterprise-status-card")
 export class EnterpriseStatusCard extends AKElement {
-    @property({ attribute: false })
-    forecast?: LicenseForecast;
+    static readonly styles: CSSResult[] = [PFDescriptionList, PFCard, PFSplit, PFProgress, Styles];
 
     @property({ attribute: false })
-    summary?: LicenseSummary;
+    public forecast?: LicenseForecast;
 
-    static styles: CSSResult[] = [PFDescriptionList, PFCard, PFSplit, PFProgress, Style];
+    @property({ attribute: false })
+    public summary?: LicenseSummary;
 
-    renderSummaryBadge() {
-        const status = badgeDetails.get(this.summary?.status);
+    protected renderSummaryBadge() {
+        const summary = this.summary?.status;
+        if (!summary) return nothing;
+
+        const status = badgeDetails.get(summary);
         if (!status) return nothing;
+
         return html`<ak-label color=${status[0]}>${status[1]}</ak-label>`;
     }
 
-    calcUserPercentage(licensed: number, current: number) {
+    protected calcUserPercentage(licensed: number, current: number) {
         const percentage = licensed > 0 ? Math.ceil(current / (licensed / 100)) : 0;
         if (current > 0 && licensed === 0) return Infinity;
         return percentage;
     }
 
-    render() {
+    public override render() {
         if (!this.forecast || !this.summary) {
             return html`${msg("Loading")}`;
         }
