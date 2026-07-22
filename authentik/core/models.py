@@ -1537,9 +1537,12 @@ class ObjectAttribute(SerializerModel, ManagedModel, CreatedUpdatedModel):
         if value is None:
             return
 
+        field_kwargs = {}
+
         match (self.type):
             case self.AttributeType.TEXT:
                 field_cls = CharField
+                field_kwargs["allow_blank"] = True
             case self.AttributeType.NUMBER:
                 field_cls = IntegerField
             case self.AttributeType.BOOLEAN:
@@ -1547,7 +1550,7 @@ class ObjectAttribute(SerializerModel, ManagedModel, CreatedUpdatedModel):
             case _:
                 raise ValidationError("Invalid field type")
 
-        field = field_cls(required=False)
+        field = field_cls(required=False, **field_kwargs)
         if self.is_array:
             field = ListField(
                 child=field,

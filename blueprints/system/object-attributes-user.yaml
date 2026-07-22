@@ -50,7 +50,7 @@ entries:
         key: address_street
         managed: goauthentik.io/object-attrs/user/address/street
       attrs:
-        group: address/street_address
+        group: Address
         object_type: authentik_core.user
         label: Street
         enabled: false
