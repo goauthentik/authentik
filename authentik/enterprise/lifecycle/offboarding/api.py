@@ -31,14 +31,14 @@ class UserOffboardingSerializer(EnterpriseRequiredMixin, ModelSerializer):
             "id",
             "user",
             "user_obj",
-            "scheduled_for",
+            "scheduled_at",
             "action",
             "revoke_sessions",
             "revoke_tokens",
             "status",
             "created_by_obj",
             "created_at",
-            "executed_on",
+            "executed_at",
         ]
         read_only_fields = [
             "id",
@@ -46,10 +46,10 @@ class UserOffboardingSerializer(EnterpriseRequiredMixin, ModelSerializer):
             "status",
             "created_by_obj",
             "created_at",
-            "executed_on",
+            "executed_at",
         ]
 
-    def validate_scheduled_for(self, value):
+    def validate_scheduled_at(self, value):
         if value <= now():
             raise ValidationError(_("Offboarding must be scheduled in the future."))
         return value
@@ -90,8 +90,8 @@ class UserOffboardingViewSet(
     queryset = UserOffboarding.objects.select_related("user", "created_by").all()
     serializer_class = UserOffboardingSerializer
     search_fields = ["user__username"]
-    ordering = ["scheduled_for"]
-    ordering_fields = ["scheduled_for", "created_at", "status"]
+    ordering = ["scheduled_at"]
+    ordering_fields = ["scheduled_at", "created_at", "status"]
     filterset_fields = ["user__uuid", "status", "action"]
 
     def perform_create(self, serializer: UserOffboardingSerializer) -> None:

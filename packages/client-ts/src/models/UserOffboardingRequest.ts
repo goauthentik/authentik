@@ -36,7 +36,7 @@ export interface UserOffboardingRequest {
      * @type {Date}
      * @memberof UserOffboardingRequest
      */
-    scheduledFor: Date;
+    scheduledAt: Date;
     /**
      *
      * @type {OffboardingActionEnum}
@@ -62,7 +62,7 @@ export interface UserOffboardingRequest {
  */
 export function instanceOfUserOffboardingRequest(value: object): value is UserOffboardingRequest {
     if (!("user" in value) || value["user"] === undefined) return false;
-    if (!("scheduledFor" in value) || value["scheduledFor"] === undefined) return false;
+    if (!("scheduledAt" in value) || value["scheduledAt"] === undefined) return false;
     return true;
 }
 
@@ -79,7 +79,7 @@ export function UserOffboardingRequestFromJSONTyped(
     }
     return {
         user: json["user"],
-        scheduledFor: new Date(json["scheduled_for"]),
+        scheduledAt: new Date(json["scheduled_at"]),
         action: json["action"] == null ? undefined : OffboardingActionEnumFromJSON(json["action"]),
         revokeSessions: json["revoke_sessions"] == null ? undefined : json["revoke_sessions"],
         revokeTokens: json["revoke_tokens"] == null ? undefined : json["revoke_tokens"],
@@ -100,7 +100,7 @@ export function UserOffboardingRequestToJSONTyped(
 
     return {
         user: value["user"],
-        scheduled_for: value["scheduledFor"].toISOString(),
+        scheduled_at: value["scheduledAt"].toISOString(),
         action: OffboardingActionEnumToJSON(value["action"]),
         revoke_sessions: value["revokeSessions"],
         revoke_tokens: value["revokeTokens"],

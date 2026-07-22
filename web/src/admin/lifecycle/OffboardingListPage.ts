@@ -32,7 +32,7 @@ export class OffboardingListPage extends TablePage<UserOffboarding> {
     public override pageIcon = "pf-icon pf-icon-user";
 
     @property()
-    public override order = "scheduled_for";
+    public override order = "scheduled_at";
 
     protected override searchEnabled = true;
 
@@ -70,7 +70,7 @@ export class OffboardingListPage extends TablePage<UserOffboarding> {
     protected override columns: TableColumn[] = [
         [msg("User"), "user__username"],
         [msg("Action"), "action"],
-        [msg("Scheduled for"), "scheduled_for"],
+        [msg("Scheduled for"), "scheduled_at"],
         [msg("Status"), "status"],
         [msg("Scheduled by")],
         [msg("Actions"), null, msg("Row Actions")],
@@ -100,7 +100,7 @@ export class OffboardingListPage extends TablePage<UserOffboarding> {
         return [
             html`<a href="#/identity/users/${item.user}">${item.userObj.username}</a>`,
             offboardingActionLabel(item.action),
-            html`<ak-timestamp .timestamp=${item.scheduledFor} datetime></ak-timestamp>`,
+            html`<ak-timestamp .timestamp=${item.scheduledAt} datetime></ak-timestamp>`,
             OffboardingStatus({ status: item.status }),
             item.createdByObj?.username ?? msg("-"),
             html`<ak-rbac-object-permission-modal

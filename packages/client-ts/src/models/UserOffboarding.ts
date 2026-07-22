@@ -52,7 +52,7 @@ export interface UserOffboarding {
      * @type {Date}
      * @memberof UserOffboarding
      */
-    scheduledFor: Date;
+    scheduledAt: Date;
     /**
      *
      * @type {OffboardingActionEnum}
@@ -94,7 +94,7 @@ export interface UserOffboarding {
      * @type {Date}
      * @memberof UserOffboarding
      */
-    readonly executedOn: Date | null;
+    readonly executedAt: Date | null;
 }
 
 /**
@@ -104,11 +104,11 @@ export function instanceOfUserOffboarding(value: object): value is UserOffboardi
     if (!("id" in value) || value["id"] === undefined) return false;
     if (!("user" in value) || value["user"] === undefined) return false;
     if (!("userObj" in value) || value["userObj"] === undefined) return false;
-    if (!("scheduledFor" in value) || value["scheduledFor"] === undefined) return false;
+    if (!("scheduledAt" in value) || value["scheduledAt"] === undefined) return false;
     if (!("status" in value) || value["status"] === undefined) return false;
     if (!("createdByObj" in value) || value["createdByObj"] === undefined) return false;
     if (!("createdAt" in value) || value["createdAt"] === undefined) return false;
-    if (!("executedOn" in value) || value["executedOn"] === undefined) return false;
+    if (!("executedAt" in value) || value["executedAt"] === undefined) return false;
     return true;
 }
 
@@ -127,14 +127,14 @@ export function UserOffboardingFromJSONTyped(
         id: json["id"],
         user: json["user"],
         userObj: PartialUserFromJSON(json["user_obj"]),
-        scheduledFor: new Date(json["scheduled_for"]),
+        scheduledAt: new Date(json["scheduled_at"]),
         action: json["action"] == null ? undefined : OffboardingActionEnumFromJSON(json["action"]),
         revokeSessions: json["revoke_sessions"] == null ? undefined : json["revoke_sessions"],
         revokeTokens: json["revoke_tokens"] == null ? undefined : json["revoke_tokens"],
         status: OffboardingStatusEnumFromJSON(json["status"]),
         createdByObj: PartialUserFromJSON(json["created_by_obj"]),
         createdAt: new Date(json["created_at"]),
-        executedOn: json["executed_on"] == null ? null : new Date(json["executed_on"]),
+        executedAt: json["executed_at"] == null ? null : new Date(json["executed_at"]),
     };
 }
 
@@ -145,7 +145,7 @@ export function UserOffboardingToJSON(json: any): UserOffboarding {
 export function UserOffboardingToJSONTyped(
     value?: Omit<
         UserOffboarding,
-        "id" | "user_obj" | "status" | "created_by_obj" | "created_at" | "executed_on"
+        "id" | "user_obj" | "status" | "created_by_obj" | "created_at" | "executed_at"
     > | null,
     ignoreDiscriminator: boolean = false,
 ): any {
@@ -155,7 +155,7 @@ export function UserOffboardingToJSONTyped(
 
     return {
         user: value["user"],
-        scheduled_for: value["scheduledFor"].toISOString(),
+        scheduled_at: value["scheduledAt"].toISOString(),
         action: OffboardingActionEnumToJSON(value["action"]),
         revoke_sessions: value["revokeSessions"],
         revoke_tokens: value["revokeTokens"],
