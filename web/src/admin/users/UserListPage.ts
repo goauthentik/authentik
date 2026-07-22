@@ -42,7 +42,6 @@ import {
     CoreUsersExportCreateRequest,
     User,
     UserPath,
-    UserTypeEnum,
 } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
@@ -204,7 +203,7 @@ export class UserListPage extends WithLicenseSummary(
     protected columns: TableColumn[] = [
         ["", null, msg("Avatar")],
         [msg("Name"), "username"],
-        [msg("Status", { id: "user.field.status" }), "is_active"],
+        [msg("Status", { id: "user.field.status" }), null],
         [msg("Last login"), "last_login"],
         [msg("Type"), "type"],
         [msg("Actions"), null, msg("Row Actions")],
@@ -369,10 +368,9 @@ export class UserListPage extends WithLicenseSummary(
                 <dd class="pf-c-description-list__description">
                     <div class="pf-c-description-list__text">
                         ${ToggleUserActivationButton(item)}
-                        ${(item.isActive && item.type !== UserTypeEnum.InternalServiceAccount) ||
-                        item.passwordLoginLockedAt
-                            ? ToggleUserPasswordLoginLockButton(item)
-                            : nothing}
+                        ${ToggleUserPasswordLoginLockButton(item, {
+                            currentUserPk: currentUser?.pk,
+                        })}
                     </div>
                 </dd>
             </div>

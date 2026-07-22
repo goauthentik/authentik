@@ -16,6 +16,7 @@ from authentik.core.models import (
     Session,
     Token,
     User,
+    UserPasswordLoginState,
     UserStatus,
     UserTypes,
 )
@@ -30,6 +31,7 @@ from authentik.flows.models import FlowAuthenticationRequirement, FlowDesignatio
 from authentik.lib.generators import generate_id, generate_key
 from authentik.rbac.models import Role
 from authentik.stages.email.models import EmailStage
+from authentik.stages.password.lockout import lock_password_login
 
 INVALID_PASSWORD_HASH = "not-a-valid-hash"
 INVALID_PASSWORD_HASH_ERROR = "Invalid password hash format. Must be a valid Django password hash."
@@ -129,7 +131,7 @@ class TestUsersAPI(APITestCase):
     def test_set_password(self):
         """Test Direct password set"""
         self.client.force_login(self.admin)
-        User.objects.filter(pk=self.admin.pk).update(password_login_locked_at=now())
+        lock_password_login(self.admin)
         new_pw = generate_key()
         response = self.client.post(
             reverse("authentik_api:user-set-password", kwargs={"pk": self.admin.pk}),
@@ -139,6 +141,19 @@ class TestUsersAPI(APITestCase):
         self.admin.refresh_from_db()
         self.assertTrue(self.admin.check_password(new_pw))
         self.assertIsNone(self.admin.password_login_locked_at)
+
+    def test_set_password_resets_failed_attempts(self):
+        """Changing a password clears failures before the lockout threshold."""
+        self.client.force_login(self.admin)
+        UserPasswordLoginState.objects.create(user=self.admin, failed_attempts=1)
+
+        response = self.client.post(
+            reverse("authentik_api:user-set-password", kwargs={"pk": self.admin.pk}),
+            data={"password": generate_key()},
+        )
+
+        self.assertEqual(response.status_code, 204)
+        self.assertFalse(UserPasswordLoginState.objects.filter(user=self.admin).exists())
 
     def test_password_login_lock_actions(self):
         """Password login lock actions are idempotent and emit transition events."""
@@ -172,6 +187,21 @@ class TestUsersAPI(APITestCase):
             1,
         )
 
+    def test_password_login_lock_rejects_current_user(self):
+        """An administrator cannot lock password login for their own account."""
+        self.client.force_login(self.admin)
+
+        response = self.client.post(
+            reverse("authentik_api:user-password-login-lock", kwargs={"pk": self.admin.pk})
+        )
+
+        self.assertEqual(response.status_code, 400)
+        self.assertJSONEqual(
+            response.content,
+            {"non_field_errors": "You cannot lock password login for your own account."},
+        )
+        self.assertFalse(UserPasswordLoginState.objects.filter(user=self.admin).exists())
+
     def test_password_login_lock_internal_service_account(self):
         """Internal service accounts cannot have password login locked."""
         self.client.force_login(self.admin)
@@ -181,7 +211,15 @@ class TestUsersAPI(APITestCase):
             reverse("authentik_api:user-password-login-lock", kwargs={"pk": user.pk})
         )
 
-        self.assertEqual(response.status_code, 204)
+        self.assertEqual(response.status_code, 400)
+        self.assertJSONEqual(
+            response.content,
+            {
+                "non_field_errors": (
+                    "Password login cannot be locked for an internal service account."
+                )
+            },
+        )
         user.refresh_from_db()
         self.assertIsNone(user.password_login_locked_at)
         self.assertFalse(
@@ -191,6 +229,23 @@ class TestUsersAPI(APITestCase):
             ).exists()
         )
 
+    def test_password_login_lock_deactivated_user(self):
+        """Deactivated users cannot receive a new password-login lock."""
+        self.client.force_login(self.admin)
+        self.user.is_active = False
+        self.user.save(update_fields=("is_active",))
+
+        response = self.client.post(
+            reverse("authentik_api:user-password-login-lock", kwargs={"pk": self.user.pk})
+        )
+
+        self.assertEqual(response.status_code, 400)
+        self.assertJSONEqual(
+            response.content,
+            {"non_field_errors": "Password login cannot be locked for a deactivated user."},
+        )
+        self.assertFalse(UserPasswordLoginState.objects.filter(user=self.user).exists())
+
     def test_composite_status(self):
         """User status reports the highest-priority active restriction."""
         self.assertEqual(self.user.composite_status, UserStatus.ACTIVE)
@@ -198,7 +253,8 @@ class TestUsersAPI(APITestCase):
         self.user.attributes["reset_password"] = True
         self.assertEqual(self.user.composite_status, UserStatus.PASSWORD_RESET_PENDING)
 
-        self.user.password_login_locked_at = now()
+        lock_password_login(self.user)
+        self.user.refresh_from_db()
         self.assertEqual(self.user.composite_status, UserStatus.LOCKED)
 
         self.user.is_active = False
@@ -217,11 +273,13 @@ class TestUsersAPI(APITestCase):
     def test_set_password_hash(self):
         """Test setting a user's password from a hash."""
         self.client.force_login(self.admin)
+        lock_password_login(self.user)
         password = generate_key()
         password_hash = make_password(password)
         response = self._set_password_hash(self.user, password_hash)
 
         self._assert_password_hash_set(self.user, password, password_hash, response)
+        self.assertIsNone(self.user.password_login_locked_at)
 
     def test_set_password_hash_invalid(self):
         """Test invalid password hashes are rejected."""

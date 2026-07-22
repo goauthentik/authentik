@@ -243,6 +243,9 @@ export class PasswordStageForm extends BaseStageForm<PasswordStage> {
                         <p class="pf-c-form__helper-text">
                             ${msg(
                                 "How many failed password attempts are allowed before the flow is canceled. This setting does not deactivate the user.",
+                                {
+                                    id: "password-stage.failed-attempts-before-cancel.description",
+                                },
                             )}
                         </p>
                     </ak-form-element-horizontal>

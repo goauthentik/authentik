@@ -106,6 +106,7 @@ from authentik.stages.email.flow import pickle_flow_token_for_email
 from authentik.stages.email.models import EmailStage
 from authentik.stages.email.tasks import send_mails
 from authentik.stages.email.utils import TemplateEmailMessage
+from authentik.stages.password.lockout import lock_password_login, unlock_password_login
 
 LOGGER = get_logger()
 
@@ -158,6 +159,7 @@ class UserSerializer(AttributesMixinSerializer, ModelSerializer):
     roles_obj = SerializerMethodField(allow_null=True)
     uid = CharField(read_only=True)
     composite_status = ChoiceField(choices=UserStatus.choices, read_only=True)
+    password_login_locked_at = DateTimeField(read_only=True, allow_null=True)
     username = CharField(
         max_length=USERNAME_MAX_LENGTH,
         validators=[UniqueValidator(queryset=User.objects.all().order_by("username"))],
@@ -270,7 +272,7 @@ class UserSerializer(AttributesMixinSerializer, ModelSerializer):
             else:
                 return
             instance.save()
-            instance.unlock_password_login(reason="password_changed")
+            unlock_password_login(instance, reason="password_changed")
 
     def _ensure_password_not_empty(self, instance: User):
         """Store an explicit unusable password instead of an empty password field."""
@@ -373,7 +375,6 @@ class UserSerializer(AttributesMixinSerializer, ModelSerializer):
             "name": {"allow_blank": True},
             "date_joined": {"read_only": True},
             "password_change_date": {"read_only": True},
-            "password_login_locked_at": {"read_only": True},
         }
 
 
@@ -639,7 +640,7 @@ class UserViewSet(
         ]
 
     def get_queryset(self):
-        base_qs = User.objects.all().exclude_anonymous()
+        base_qs = User.objects.all().exclude_anonymous().select_related("password_login_state")
         # Always prefetch groups since group PKs are always serialized.
         # Use full prefetch when include_groups=true (for groups_obj), ID-only otherwise.
         if self.serializer_class(context={"request": self.request})._should_include_groups:
@@ -858,7 +859,7 @@ class UserViewSet(
             with atomic():
                 user.set_password(body.validated_data["password"], request=request)
                 user.save()
-                user.unlock_password_login(request._request, reason="password_changed")
+                unlock_password_login(user, request._request, reason="password_changed")
         except (ValidationError, IntegrityError) as exc:
             LOGGER.debug("Failed to set password", exc=exc)
             return Response(status=400)
@@ -895,7 +896,7 @@ class UserViewSet(
             with atomic():
                 user.set_password_from_hash(body.validated_data["password"], request=request)
                 user.save()
-                user.unlock_password_login(request._request, reason="password_changed")
+                unlock_password_login(user, request._request, reason="password_changed")
         except ValueError as exc:
             LOGGER.debug("Failed to set password hash", exc=exc)
             return Response(data={"password": [INVALID_PASSWORD_HASH_MESSAGE]}, status=400)
@@ -908,13 +909,32 @@ class UserViewSet(
     @permission_required("authentik_core.change_user")
     @extend_schema(
         request=None,
-        responses={204: OpenApiResponse(description="Password login locked")},
+        responses={
+            204: OpenApiResponse(description="Password login locked"),
+            400: OpenApiResponse(description="Cannot lock the current user's password login"),
+        },
     )
     @action(detail=True, methods=["POST"])
     def password_login_lock(self, request: Request, pk: int) -> Response:
         """Lock password login for a user."""
         user: User = self.get_object()
-        user.lock_password_login(request._request, reason="administrator")
+        if user.pk == request.user.pk:
+            raise ValidationError(
+                {"non_field_errors": _("You cannot lock password login for your own account.")}
+            )
+        if not user.is_active:
+            raise ValidationError(
+                {"non_field_errors": _("Password login cannot be locked for a deactivated user.")}
+            )
+        if user.type == UserTypes.INTERNAL_SERVICE_ACCOUNT:
+            raise ValidationError(
+                {
+                    "non_field_errors": _(
+                        "Password login cannot be locked for an internal service account."
+                    )
+                }
+            )
+        lock_password_login(user, request._request, reason="administrator")
         return Response(status=204)
 
     @permission_required("authentik_core.change_user")
@@ -926,7 +946,7 @@ class UserViewSet(
     def password_login_unlock(self, request: Request, pk: int) -> Response:
         """Unlock password login for a user."""
         user: User = self.get_object()
-        user.unlock_password_login(request._request, reason="administrator")
+        unlock_password_login(user, request._request, reason="administrator")
         return Response(status=204)
 
     @permission_required("authentik_core.reset_user_password")

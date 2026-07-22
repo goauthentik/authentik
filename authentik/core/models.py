@@ -389,8 +389,6 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
         "authentik_rbac.Role", related_name="users", blank=True, through="UserRole"
     )
     password_change_date = models.DateTimeField(auto_now_add=True)
-    password_login_failed_attempts = models.PositiveIntegerField(default=0, editable=False)
-    password_login_locked_at = models.DateTimeField(null=True, editable=False)
 
     last_updated = models.DateTimeField(auto_now=True)
 
@@ -443,59 +441,11 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
             return UserStatus.PASSWORD_RESET_PENDING
         return UserStatus.ACTIVE
 
-    def _set_password_login_lock(
-        self,
-        locked: bool,
-        request: HttpRequest | None = None,
-        **event_context: Any,
-    ) -> bool:
-        """Set password login lock state and emit an event when it changes."""
-        if self.pk is None:
-            return False
-        users = User.objects.filter(pk=self.pk)
-        if locked:
-            users = users.filter(password_login_locked_at__isnull=True)
-        else:
-            users = users.filter(password_login_locked_at__isnull=False)
-        locked_at = now() if locked else None
-        updated = users.update(
-            password_login_locked_at=locked_at,
-            password_login_failed_attempts=0,
-        )
-        if not updated:
-            return False
-        self.password_login_locked_at = locked_at
-        self.password_login_failed_attempts = 0
-
-        from authentik.events.models import Event, EventAction
-
-        action = (
-            EventAction.PASSWORD_LOGIN_LOCKED if locked else EventAction.PASSWORD_LOGIN_UNLOCKED
-        )
-        event = Event.new(action, **event_context)
-        if request:
-            event.from_http(request, user=self)
-        else:
-            event.set_user(self).save()
-        return True
-
-    def lock_password_login(
-        self,
-        request: HttpRequest | None = None,
-        **event_context: Any,
-    ) -> bool:
-        """Lock password authentication and reset the failed-attempt counter."""
-        if self.type == UserTypes.INTERNAL_SERVICE_ACCOUNT:
-            return False
-        return self._set_password_login_lock(True, request, **event_context)
-
-    def unlock_password_login(
-        self,
-        request: HttpRequest | None = None,
-        **event_context: Any,
-    ) -> bool:
-        """Unlock password authentication and reset the failed-attempt counter."""
-        return self._set_password_login_lock(False, request, **event_context)
+    @property
+    def password_login_locked_at(self) -> datetime | None:
+        """Return when password login was locked, if a lockout state exists."""
+        state = getattr(self, "password_login_state", None)
+        return state.locked_at if state else None
 
     def get_managed_role(self, create=False):
         if create:
@@ -710,6 +660,33 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
     def avatar(self) -> str:
         """Get avatar, depending on authentik.avatar setting"""
         return get_avatar(self)
+
+
+class UserPasswordLoginState(models.Model):
+    """Persistent password-login failures and lock state for a user."""
+
+    user = models.OneToOneField(
+        User,
+        on_delete=models.CASCADE,
+        primary_key=True,
+        related_name="password_login_state",
+    )
+    failed_attempts = models.PositiveIntegerField(default=0, editable=False)
+    locked_at = models.DateTimeField(null=True, editable=False)
+
+    class Meta:
+        verbose_name = _("User password login state")
+        verbose_name_plural = _("User password login states")
+        default_permissions = []
+        constraints = [
+            models.CheckConstraint(
+                condition=Q(locked_at__isnull=True) | Q(failed_attempts=0),
+                name="password_login_lock_resets_failures",
+            )
+        ]
+
+    def __str__(self) -> str:
+        return str(self.user)
 
 
 class Provider(SerializerModel):

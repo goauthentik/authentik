@@ -19,6 +19,7 @@ from authentik.flows.stage import StageView
 from authentik.flows.views.executor import FlowExecutorView
 from authentik.lib.utils.dict import set_path_in_dict
 from authentik.stages.password import BACKEND_INBUILT
+from authentik.stages.password.lockout import unlock_password_login
 from authentik.stages.password.stage import PLAN_CONTEXT_AUTHENTICATION_BACKEND
 from authentik.stages.prompt.stage import PLAN_CONTEXT_PROMPT
 from authentik.stages.user_write.models import UserCreationMode
@@ -198,7 +199,7 @@ class UserWriteStageView(StageView):
                 if PLAN_CONTEXT_GROUPS in self.executor.plan.context:
                     user.groups.add(*self.executor.plan.context[PLAN_CONTEXT_GROUPS])
                 if "password" in data:
-                    user.unlock_password_login(request=request, reason="password_changed")
+                    unlock_password_login(user, request=request, reason="password_changed")
         except (IntegrityError, ValueError, TypeError, InternalError) as exc:
             self.logger.warning("Failed to save user", exc=exc)
             return self.executor.stage_invalid(_("Failed to update user. Please try again later."))

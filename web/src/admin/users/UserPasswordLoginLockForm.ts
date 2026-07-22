@@ -3,16 +3,17 @@ import { formatDisambiguatedUserDisplayName } from "#common/users";
 
 import { modalInvoker } from "#elements/dialogs";
 import { DestructiveModelForm } from "#elements/forms/DestructiveModelForm";
+import { WithLocale } from "#elements/mixins/locale";
 import { SlottedTemplateResult } from "#elements/types";
 
-import { CoreApi, User } from "@goauthentik/api";
+import { CoreApi, User, UserTypeEnum } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
-import { html } from "lit";
+import { html, nothing } from "lit";
 import { customElement } from "lit/decorators.js";
 
 @customElement("ak-user-password-login-lock-toggle-form")
-export class UserPasswordLoginLockToggleForm extends DestructiveModelForm<User> {
+export class UserPasswordLoginLockToggleForm extends WithLocale(DestructiveModelForm<User>) {
     protected coreAPI = aki(CoreApi);
 
     protected get isLocked(): boolean {
@@ -53,7 +54,10 @@ export class UserPasswordLoginLockToggleForm extends DestructiveModelForm<User> 
     }
 
     protected override renderForm(): SlottedTemplateResult {
-        const displayName = formatDisambiguatedUserDisplayName(this.instance);
+        const displayName = formatDisambiguatedUserDisplayName(
+            this.instance,
+            this.activeLanguageTag,
+        );
         return this.isLocked
             ? html`<p>
                   ${msg(str`Allow ${displayName} to authenticate with a password again?`, {
@@ -77,13 +81,22 @@ declare global {
 
 export interface ToggleUserPasswordLoginLockButtonProps {
     className?: string;
+    currentUserPk?: number;
 }
 
 export function ToggleUserPasswordLoginLockButton(
     user: User,
-    { className = "" }: ToggleUserPasswordLoginLockButtonProps = {},
+    { className = "", currentUserPk }: ToggleUserPasswordLoginLockButtonProps = {},
 ): SlottedTemplateResult {
     const locked = Boolean(user.passwordLoginLockedAt);
+    if (
+        (!user.isActive ||
+            user.type === UserTypeEnum.InternalServiceAccount ||
+            user.pk === currentUserPk) &&
+        !locked
+    ) {
+        return nothing;
+    }
     const label = locked
         ? msg("Unlock password login", { id: "user.action.password-login-unlock" })
         : msg("Lock password login", { id: "user.action.password-login-lock" });

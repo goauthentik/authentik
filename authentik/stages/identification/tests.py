@@ -4,6 +4,7 @@ from django.urls import reverse
 from requests_mock import Mocker
 from rest_framework.exceptions import ValidationError
 
+from authentik.core.models import UserPasswordLoginState
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
 from authentik.flows.models import FlowDesignation, FlowStageBinding
 from authentik.flows.stage import PLAN_CONTEXT_PENDING_USER_IDENTIFIER
@@ -256,7 +257,10 @@ class TestIdentificationStage(FlowTestCase):
 
         self.user.refresh_from_db()
         self.assertIsNotNone(self.user.password_login_locked_at)
-        self.assertEqual(self.user.password_login_failed_attempts, 0)
+        self.assertEqual(
+            UserPasswordLoginState.objects.get(user=self.user).failed_attempts,
+            0,
+        )
         self.assertStageResponse(
             response,
             self.flow,

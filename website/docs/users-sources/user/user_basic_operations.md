@@ -155,6 +155,8 @@ Locking password login blocks authentication through Password stages without dea
 2. Open the user details or expand the user's row.
 3. Click **Lock password login** or **Unlock password login**.
 
+You cannot lock password login for your own account.
+
 Resetting the user's password also unlocks password login. authentik records automatic and administrative lock and unlock actions in the user's **Events** tab.
 
 ## Deactivate or delete a user

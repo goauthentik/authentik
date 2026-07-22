@@ -75,10 +75,10 @@ export class UserInfoCard extends AKElement {
             </button>
 
             ${ToggleUserActivationButton(user, { className: "pf-m-block" })}
-            ${(user.isActive && user.type !== UserTypeEnum.InternalServiceAccount) ||
-            user.passwordLoginLockedAt
-                ? ToggleUserPasswordLoginLockButton(user, { className: "pf-m-block" })
-                : nothing}
+            ${ToggleUserPasswordLoginLockButton(user, {
+                className: "pf-m-block",
+                currentUserPk: this.currentUserPk,
+            })}
             ${showLockdown
                 ? html`<button
                       class="pf-c-button pf-m-danger pf-m-block"

@@ -8,7 +8,7 @@ from django.db import connection
 from django.test import TransactionTestCase
 from django.urls import reverse
 
-from authentik.core.models import UserTypes
+from authentik.core.models import User, UserPasswordLoginState, UserTypes
 from authentik.core.tests.utils import create_test_admin_user, create_test_brand, create_test_flow
 from authentik.events.models import Event, EventAction
 from authentik.flows.markers import StageMarker
@@ -20,7 +20,8 @@ from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.lib.generators import generate_id
 from authentik.stages.password import BACKEND_INBUILT
 from authentik.stages.password.lockout import (
-    PasswordAttemptResult,
+    PasswordAuthenticationStatus,
+    lock_password_login,
     record_failed_password_attempt,
 )
 from authentik.stages.password.models import PasswordStage
@@ -83,8 +84,7 @@ class TestPasswordStage(FlowTestCase):
 
     def test_valid_password(self):
         """Test with a valid pending user and valid password"""
-        self.user.password_login_failed_attempts = 1
-        self.user.save(update_fields=("password_login_failed_attempts",))
+        UserPasswordLoginState.objects.create(user=self.user, failed_attempts=1)
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
         plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
         session = self.client.session
@@ -99,11 +99,11 @@ class TestPasswordStage(FlowTestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertStageRedirects(response, reverse("authentik_core:root-redirect"))
-        self.user.refresh_from_db()
-        self.assertEqual(self.user.password_login_failed_attempts, 0)
+        self.assertFalse(UserPasswordLoginState.objects.filter(user=self.user).exists())
 
     def test_valid_password_inactive(self):
         """Test with a valid pending user and valid password"""
+        lock_password_login(self.user)
         self.user.is_active = False
         self.user.save()
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
@@ -124,10 +124,11 @@ class TestPasswordStage(FlowTestCase):
             self.flow,
             response_errors={"password": [{"string": "Invalid password", "code": "invalid"}]},
         )
+        self.assertIsNotNone(UserPasswordLoginState.objects.get(user=self.user).locked_at)
 
     def test_valid_password_locked(self):
         """A correct password cannot authenticate while password login is locked."""
-        self.user.lock_password_login()
+        lock_password_login(self.user)
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
         plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
         session = self.client.session
@@ -162,7 +163,7 @@ class TestPasswordStage(FlowTestCase):
         self.assertEqual(response.status_code, 200)
         self.user.refresh_from_db()
         self.assertTrue(self.user.is_active)
-        self.assertEqual(self.user.password_login_failed_attempts, 0)
+        self.assertFalse(UserPasswordLoginState.objects.filter(user=self.user).exists())
 
     def test_invalid_password_account_lockout(self):
         """Test that consecutive invalid passwords lock password login."""
@@ -185,8 +186,8 @@ class TestPasswordStage(FlowTestCase):
         url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
         self.client.get(url)
         response = self.client.post(url, {"password": self.user.username + "test"})
-        self.user.refresh_from_db()
-        self.assertEqual(self.user.password_login_failed_attempts, 1)
+        state = UserPasswordLoginState.objects.get(user=self.user)
+        self.assertEqual(state.failed_attempts, 1)
         self.assertStageResponse(
             response,
             self.flow,
@@ -207,7 +208,10 @@ class TestPasswordStage(FlowTestCase):
         response = self.client.post(url, {"password": self.user.username + "test"})
         self.user.refresh_from_db()
         self.assertIsNotNone(self.user.password_login_locked_at)
-        self.assertEqual(self.user.password_login_failed_attempts, 0)
+        self.assertEqual(
+            UserPasswordLoginState.objects.get(user=self.user).failed_attempts,
+            0,
+        )
         self.assertTrue(
             Event.objects.filter(
                 action=EventAction.PASSWORD_LOGIN_LOCKED,
@@ -244,11 +248,15 @@ class TestPasswordStage(FlowTestCase):
         self.user.save(update_fields=("type",))
         self.stage.failed_attempts_before_lockout = 1
 
-        result = record_failed_password_attempt(self.user, self.stage)
+        result = record_failed_password_attempt(
+            self.user,
+            self.stage.failed_attempts_before_lockout,
+        )
 
-        self.assertIs(result, PasswordAttemptResult.NOT_RECORDED)
+        self.assertIs(result, PasswordAuthenticationStatus.INVALID)
         self.user.refresh_from_db()
         self.assertIsNone(self.user.password_login_locked_at)
+        self.assertFalse(UserPasswordLoginState.objects.filter(user=self.user).exists())
 
     def test_invalid_password_cancels_flow(self):
         """Test with a valid pending user and invalid password (trigger logout counter)"""
@@ -325,6 +333,30 @@ class TestPasswordStage(FlowTestCase):
 class TestPasswordLockoutConcurrency(TransactionTestCase):
     """Password lockout concurrency tests."""
 
+    def test_user_save_does_not_overwrite_lockout_state(self):
+        """Saving a stale user cannot erase failures or a password-login lock."""
+        user = create_test_admin_user()
+        stale_user = User.objects.get(pk=user.pk)
+
+        self.assertIs(
+            record_failed_password_attempt(user, 2),
+            PasswordAuthenticationStatus.LAST_ATTEMPT,
+        )
+        stale_user.name = generate_id()
+        stale_user.save()
+        self.assertEqual(
+            UserPasswordLoginState.objects.get(user=user).failed_attempts,
+            1,
+        )
+
+        self.assertIs(
+            record_failed_password_attempt(user, 2),
+            PasswordAuthenticationStatus.LOCKED,
+        )
+        stale_user.email = "updated@example.com"
+        stale_user.save()
+        self.assertIsNotNone(UserPasswordLoginState.objects.get(user=user).locked_at)
+
     def test_concurrent_failures(self):
         """Concurrent failures update one serialized counter."""
         user = create_test_admin_user()
@@ -334,11 +366,14 @@ class TestPasswordLockoutConcurrency(TransactionTestCase):
 
         class FailureThread(Thread):
             __test__ = False
-            result = PasswordAttemptResult.NOT_RECORDED
+            result = PasswordAuthenticationStatus.INVALID
 
             def run(self):
                 try:
-                    self.result = record_failed_password_attempt(user, stage)
+                    self.result = record_failed_password_attempt(
+                        user,
+                        stage.failed_attempts_before_lockout,
+                    )
                 finally:
                     connection.close()
 
@@ -354,9 +389,9 @@ class TestPasswordLockoutConcurrency(TransactionTestCase):
         self.assertCountEqual(
             [thread.result for thread in threads],
             [
-                PasswordAttemptResult.RECORDED,
-                PasswordAttemptResult.LAST_ATTEMPT,
-                PasswordAttemptResult.LOCKED,
+                PasswordAuthenticationStatus.INVALID,
+                PasswordAuthenticationStatus.LAST_ATTEMPT,
+                PasswordAuthenticationStatus.LOCKED,
             ],
         )
         self.assertEqual(
