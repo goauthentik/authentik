@@ -29,7 +29,7 @@ Both options are enabled by default. Leave them enabled to prevent existing sess
 
 You cannot schedule an offboarding for your own account or for an internal service account. Each user can have only one pending offboarding.
 
-1. In the Admin interface, go to **Directory** > **Users**.
+1. In the Admin interface, navigate to **Directory** > **Users**.
 2. Select the user, and then click **Schedule Offboarding** in the **Actions** section.
 3. Select **Deactivate** or **Delete** for the **Action**.
 4. In **Scheduled for**, enter a future date and time.
@@ -51,7 +51,7 @@ The **Events** > **Offboardings** page shows pending offboardings by default. Di
 
 authentik checks for due offboardings every five minutes. The action normally starts within five minutes after the scheduled time, but a task backlog can delay it further. If an attempt fails, authentik retries the complete offboarding action. After five failed attempts, the offboarding is marked **Failed** and is not retried again.
 
-After an offboarding completes, authentik writes a **User Offboarded** event to the [audit log](./events/index.md). The event identifies the administrator who scheduled the offboarding, the selected action, and whether session and token revocation were enabled.
+After an offboarding completes, authentik writes a **User Offboarded** event to the [events log](./events/index.md). The event identifies the administrator who scheduled the offboarding, the selected action, and whether session and token revocation were enabled.
 
 :::note
 A successful **Delete** action removes the offboarding record with the user account. The **User Offboarded** event remains in the audit log.
@@ -59,7 +59,7 @@ A successful **Delete** action removes the offboarding record with the user acco
 
 ## Cancel a user offboarding
 
-You can cancel only a pending offboarding. Use either of the following methods:
+To cancel a pending offboarding, use either of these methods:
 
 - On the user's details page, click **Cancel Offboarding**, review the scheduled action, and confirm the cancellation.
 - On the **Events** > **Offboardings** page, select the offboarding, click **Cancel**, and confirm the cancellation.
