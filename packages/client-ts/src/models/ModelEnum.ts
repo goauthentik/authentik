@@ -23,6 +23,7 @@ export const ModelEnum = {
     AuthentikCoreApplication: "authentik_core.application",
     AuthentikCoreApplicationentitlement: "authentik_core.applicationentitlement",
     AuthentikCoreToken: "authentik_core.token",
+    AuthentikCoreObjectattribute: "authentik_core.objectattribute",
     AuthentikCryptoCertificatekeypair: "authentik_crypto.certificatekeypair",
     AuthentikEndpointsDeviceuserbinding: "authentik_endpoints.deviceuserbinding",
     AuthentikEndpointsDeviceaccessgroup: "authentik_endpoints.deviceaccessgroup",

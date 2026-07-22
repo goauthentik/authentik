@@ -95,6 +95,10 @@ export const ROUTES: Route[] = [
         await import("#admin/requests/AccessRequestListPage");
         return html`<ak-access-requests-list></ak-access-requests-list>`;
     }),
+    new Route(new RegExp("^/identity/object-attributes$"), async () => {
+        await import("#admin/object-attributes/ObjectAttributeListPage");
+        return html`<ak-object-attribute-list></ak-object-attribute-list>`;
+    }),
     new Route(new RegExp("^/identity/groups$"), async () => {
         await import("#admin/groups/GroupListPage");
         return html`<ak-group-list></ak-group-list>`;
