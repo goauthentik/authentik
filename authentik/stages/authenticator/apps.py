@@ -15,7 +15,10 @@ class AuthentikStageAuthenticatorConfig(ManagedAppConfig):
     default = True
 
     def ready(self):
-        from .signals import device_post_save_event, device_pre_delete_event
+        from authentik.stages.authenticator.signals import (
+            device_post_save_event,
+            device_pre_delete_event,
+        )
 
         for model in device_classes():
             post_save.connect(
