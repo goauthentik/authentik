@@ -5,6 +5,8 @@ sidebar_position: 8
 
 authentik provides several controls that can restrict a user's access. Choose a control based on the access that must be stopped and how the restriction should be cleared.
 
+Controls can overlap. The user status shows the highest-priority restriction in this order: deactivated, password login locked, password reset pending, and active. Clearing one restriction does not clear the others, except that resetting the user's password also clears a password login lock.
+
 | Control                                                                 | Effect                                                                                                                                                                        | User status                                                 | Restore access                                                            |
 | ----------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------- | ------------------------------------------------------------------------- |
 | **Lock password login**                                                 | Blocks authentication through Password stages. Existing sessions, tokens, and other authentication methods remain available.                                                  | **Locked**                                                  | Click **Unlock password login**, or reset the user's password.            |

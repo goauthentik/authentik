@@ -42,7 +42,7 @@ def _record_transition(
 
 
 def is_password_login_locked(user: User) -> bool:
-    """Return whether password login is currently locked."""
+    """Return whether an active user currently has an enforceable password-login lock."""
     if user.pk is None:
         return False
     return UserPasswordLoginState.objects.filter(
