@@ -22,7 +22,7 @@ class Migration(migrations.Migration):
             fields=[
                 ("id", models.UUIDField(default=uuid.uuid4, primary_key=True, serialize=False)),
                 (
-                    "scheduled_for",
+                    "scheduled_at",
                     models.DateTimeField(
                         help_text="Absolute time at which the offboarding action is executed."
                     ),
@@ -67,7 +67,7 @@ class Migration(migrations.Migration):
                     ),
                 ),
                 ("created_at", models.DateTimeField(auto_now_add=True)),
-                ("executed_on", models.DateTimeField(default=None, null=True)),
+                ("executed_at", models.DateTimeField(default=None, null=True)),
                 (
                     "created_by",
                     models.ForeignKey(
@@ -92,7 +92,7 @@ class Migration(migrations.Migration):
                 "indexes": [
                     models.Index(
                         condition=models.Q(("status", "pending")),
-                        fields=["scheduled_for"],
+                        fields=["scheduled_at"],
                         name="pending_offboarding_idx",
                     )
                 ],

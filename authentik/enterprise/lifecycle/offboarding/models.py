@@ -33,7 +33,7 @@ class UserOffboarding(SerializerModel):
     user = models.ForeignKey(
         "authentik_core.User", on_delete=models.CASCADE, related_name="offboardings"
     )
-    scheduled_for = models.DateTimeField(
+    scheduled_at = models.DateTimeField(
         help_text=_("Absolute time at which the offboarding action is executed.")
     )
     action = models.TextField(
@@ -51,7 +51,7 @@ class UserOffboarding(SerializerModel):
         "authentik_core.User", on_delete=models.SET_NULL, null=True, related_name="+"
     )
     created_at = models.DateTimeField(auto_now_add=True)
-    executed_on = models.DateTimeField(null=True, default=None)
+    executed_at = models.DateTimeField(null=True, default=None)
     attempts = models.PositiveSmallIntegerField(
         default=0, help_text=_("Number of times execution has been attempted and failed.")
     )
@@ -67,11 +67,11 @@ class UserOffboarding(SerializerModel):
             )
         ]
         indexes = [
-            # The sweeper only scans pending rows by scheduled_for; a partial
+            # The sweeper only scans pending rows by scheduled_at; a partial
             # index keeps this small as terminal (completed/failed/cancelled)
             # rows accumulate as audit records.
             models.Index(
-                fields=["scheduled_for"],
+                fields=["scheduled_at"],
                 condition=Q(status=OffboardingStatus.PENDING),
                 name="pending_offboarding_idx",
             )
@@ -84,7 +84,7 @@ class UserOffboarding(SerializerModel):
         return UserOffboardingSerializer
 
     def __str__(self):
-        return f"User offboarding for user {self.user_id} ({self.action}) at {self.scheduled_for}"
+        return f"User offboarding for user {self.user_id} ({self.action}) at {self.scheduled_at}"
 
     def cancel(self) -> bool:
         """Cancel iff still pending; returns whether it was cancelled.
@@ -101,10 +101,10 @@ class UserOffboarding(SerializerModel):
             if locked is None:
                 return False
             locked.status = OffboardingStatus.CANCELED
-            locked.executed_on = timezone.now()
-            locked.save(update_fields=["status", "executed_on"])
+            locked.executed_at = timezone.now()
+            locked.save(update_fields=["status", "executed_at"])
         self.status = locked.status
-        self.executed_on = locked.executed_on
+        self.executed_at = locked.executed_at
         return True
 
     def execute(self, request: HttpRequest | None = None):
@@ -130,5 +130,5 @@ class UserOffboarding(SerializerModel):
             if is_delete:
                 return
             self.status = OffboardingStatus.COMPLETED
-            self.executed_on = timezone.now()
-            self.save(update_fields=["status", "executed_on"])
+            self.executed_at = timezone.now()
+            self.save(update_fields=["status", "executed_at"])

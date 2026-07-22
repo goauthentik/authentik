@@ -7227,10 +7227,10 @@
                     "type": "integer",
                     "title": "User"
                 },
-                "scheduled_for": {
+                "scheduled_at": {
                     "type": "string",
                     "format": "date-time",
-                    "title": "Scheduled for",
+                    "title": "Scheduled at",
                     "description": "Absolute time at which the offboarding action is executed."
                 },
                 "action": {
