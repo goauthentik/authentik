@@ -54,6 +54,7 @@ from authentik.stages.password.stage import (
     PLAN_CONTEXT_METHOD_ARGS,
     PLAN_CONTEXT_USER_LOCKED,
     authenticate,
+    get_last_attempt_warning,
     get_lockout_message,
     record_failed_password_attempt,
     reset_failed_password_attempts,
@@ -235,9 +236,18 @@ class IdentificationChallengeResponse(ChallengeResponse):
                     password=password,
                 )
             if not user:
-                if record_failed_password_attempt(self.pre_user, current_stage.password_stage):
+                remaining_attempts = record_failed_password_attempt(
+                    self.pre_user, current_stage.password_stage
+                )
+                if remaining_attempts == 0:
                     self.stage.executor.plan.context[PLAN_CONTEXT_USER_LOCKED] = True
-                raise ValidationError(_("Failed to authenticate."))
+                raise ValidationError(
+                    get_last_attempt_warning(
+                        current_stage.password_stage, _("Failed to authenticate.")
+                    )
+                    if remaining_attempts == 1
+                    else _("Failed to authenticate.")
+                )
             if not reset_failed_password_attempts(user):
                 raise ValidationError(_("Failed to authenticate."))
             self.pre_user = user

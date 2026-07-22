@@ -19,6 +19,8 @@ The stage supports authentik's built-in password database, app passwords, LDAP-b
     - **User database + Kerberos password**
 - **Failed attempts before cancel**: how many failed password submissions are allowed before the flow is canceled.
 - **Failed attempts before lockout**: deactivate the user after this many consecutive failed password attempts. Set this option to `0` to disable account lockout.
+- **Show last-attempt warning**: show a warning after a failed attempt leaves the user with one attempt remaining.
+- **Last-attempt warning message**: an optional custom warning. Leave this blank to use the default: "You have one password attempt remaining before your account is locked out. If you have forgotten your password, please contact your administrator."
 - **Show lockout message**: show a specific message and stop the flow when an attempt locks the account. When disabled, authentik stops the flow with a generic authentication error.
 - **Lockout message**: an optional custom message shown when **Show lockout message** is enabled. Leave this blank to use the default: "Your account has been locked out due to too many failed attempts. Please contact your administrator."
 - **Allow show password**: show a button that reveals the entered password.

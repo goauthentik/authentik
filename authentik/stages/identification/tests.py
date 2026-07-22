@@ -221,13 +221,36 @@ class TestIdentificationStage(FlowTestCase):
         pw_stage = PasswordStage.objects.create(
             name="password-lockout",
             backends=[BACKEND_INBUILT],
-            failed_attempts_before_lockout=1,
+            failed_attempts_before_lockout=2,
+            show_last_attempt_warning=True,
         )
         self.stage.password_stage = pw_stage
         self.stage.save(update_fields=("password_stage",))
 
+        url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
         response = self.client.post(
-            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
+            url,
+            {"uid_field": self.user.email, "password": self.user.username + "test"},
+        )
+        self.assertStageResponse(
+            response,
+            self.flow,
+            response_errors={
+                "non_field_errors": [
+                    {
+                        "string": (
+                            "You have one password attempt remaining before your account is "
+                            "locked out. If you have forgotten your password, please contact "
+                            "your administrator."
+                        ),
+                        "code": "invalid",
+                    }
+                ]
+            },
+        )
+
+        response = self.client.post(
+            url,
             {"uid_field": self.user.email, "password": self.user.username + "test"},
         )
 

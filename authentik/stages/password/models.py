@@ -59,6 +59,15 @@ class PasswordStage(ConfigurableStage, Stage):
             "Set to 0 to disable lockout."
         ),
     )
+    show_last_attempt_warning = models.BooleanField(
+        default=False,
+        help_text=_("Show a warning when the user has one password attempt remaining."),
+    )
+    last_attempt_warning_message = models.TextField(
+        blank=True,
+        default="",
+        help_text=_("Optional custom warning. Leave blank to use the default message."),
+    )
     show_lockout_message = models.BooleanField(
         default=False,
         help_text=_("Show a message to the user when their account is locked out."),

@@ -18,7 +18,11 @@ from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.lib.generators import generate_id
 from authentik.stages.password import BACKEND_INBUILT
 from authentik.stages.password.models import PasswordStage
-from authentik.stages.password.stage import get_lockout_message, record_failed_password_attempt
+from authentik.stages.password.stage import (
+    get_last_attempt_warning,
+    get_lockout_message,
+    record_failed_password_attempt,
+)
 
 MOCK_BACKEND_AUTHENTICATE = MagicMock(side_effect=PermissionDenied("test"))
 
@@ -141,8 +145,15 @@ class TestPasswordStage(FlowTestCase):
     def test_invalid_password_account_lockout(self):
         """Test that consecutive invalid passwords deactivate the user."""
         self.stage.failed_attempts_before_lockout = 2
+        self.stage.show_last_attempt_warning = True
         self.stage.show_lockout_message = True
-        self.stage.save(update_fields=("failed_attempts_before_lockout", "show_lockout_message"))
+        self.stage.save(
+            update_fields=(
+                "failed_attempts_before_lockout",
+                "show_last_attempt_warning",
+                "show_lockout_message",
+            )
+        )
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
         plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
         session = self.client.session
@@ -151,10 +162,26 @@ class TestPasswordStage(FlowTestCase):
 
         url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
         self.client.get(url)
-        self.client.post(url, {"password": self.user.username + "test"})
+        response = self.client.post(url, {"password": self.user.username + "test"})
         self.user.refresh_from_db()
         self.assertTrue(self.user.is_active)
         self.assertEqual(self.user.password_login_failed_attempts, 1)
+        self.assertStageResponse(
+            response,
+            self.flow,
+            response_errors={
+                "password": [
+                    {
+                        "string": (
+                            "You have one password attempt remaining before your account is "
+                            "locked out. If you have forgotten your password, please contact "
+                            "your administrator."
+                        ),
+                        "code": "invalid",
+                    }
+                ]
+            },
+        )
 
         response = self.client.post(url, {"password": self.user.username + "test"})
         self.user.refresh_from_db()
@@ -171,7 +198,13 @@ class TestPasswordStage(FlowTestCase):
         )
 
     def test_lockout_message_customization(self):
-        """The configured message overrides the default lockout message."""
+        """Configured messages override the default warning and lockout messages."""
+        self.stage.show_last_attempt_warning = True
+        self.assertIn("one password attempt", get_last_attempt_warning(self.stage, "generic"))
+        self.stage.last_attempt_warning_message = "This is your final attempt."
+        self.assertEqual(
+            get_last_attempt_warning(self.stage, "generic"), "This is your final attempt."
+        )
         self.stage.show_lockout_message = True
         self.assertIn("contact your administrator", get_lockout_message(self.stage, "generic"))
         self.stage.lockout_message = "Contact the help desk."
@@ -261,11 +294,11 @@ class TestPasswordLockoutConcurrency(TransactionTestCase):
 
         class FailureThread(Thread):
             __test__ = False
-            locked = False
+            remaining_attempts: int | None = None
 
             def run(self):
                 try:
-                    self.locked = record_failed_password_attempt(user, stage)
+                    self.remaining_attempts = record_failed_password_attempt(user, stage)
                 finally:
                     connection.close()
 
@@ -278,4 +311,4 @@ class TestPasswordLockoutConcurrency(TransactionTestCase):
 
         user.refresh_from_db()
         self.assertFalse(user.is_active)
-        self.assertEqual(sum(thread.locked for thread in threads), 1)
+        self.assertCountEqual([thread.remaining_attempts for thread in threads], [0, 1, 2])

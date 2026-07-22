@@ -188,6 +188,27 @@ export class PasswordStageForm extends BaseStageForm<PasswordStage> {
                         </p>
                     </ak-form-element-horizontal>
                     <ak-switch-input
+                        name="showLastAttemptWarning"
+                        label=${msg("Show last-attempt warning")}
+                        ?checked=${this.instance?.showLastAttemptWarning ?? false}
+                        help=${msg(
+                            "Show a warning when the user has one password attempt remaining.",
+                        )}
+                    ></ak-switch-input>
+                    <ak-form-element-horizontal
+                        label=${msg("Last-attempt warning message")}
+                        name="lastAttemptWarningMessage"
+                    >
+                        <input
+                            type="text"
+                            value="${this.instance?.lastAttemptWarningMessage ?? ""}"
+                            class="pf-c-form-control"
+                        />
+                        <p class="pf-c-form__helper-text">
+                            ${msg("Leave blank to use the default last-attempt warning.")}
+                        </p>
+                    </ak-form-element-horizontal>
+                    <ak-switch-input
                         name="showLockoutMessage"
                         label=${msg("Show lockout message")}
                         ?checked=${this.instance?.showLockoutMessage ?? false}

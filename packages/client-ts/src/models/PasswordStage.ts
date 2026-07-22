@@ -90,6 +90,18 @@ export interface PasswordStage {
      */
     failedAttemptsBeforeLockout?: number;
     /**
+     * Show a warning when the user has one password attempt remaining.
+     * @type {boolean}
+     * @memberof PasswordStage
+     */
+    showLastAttemptWarning?: boolean;
+    /**
+     * Optional custom warning. Leave blank to use the default message.
+     * @type {string}
+     * @memberof PasswordStage
+     */
+    lastAttemptWarningMessage?: string;
+    /**
      * Show a message to the user when their account is locked out.
      * @type {boolean}
      * @memberof PasswordStage
@@ -150,6 +162,14 @@ export function PasswordStageFromJSONTyped(json: any, ignoreDiscriminator: boole
             json["failed_attempts_before_lockout"] == null
                 ? undefined
                 : json["failed_attempts_before_lockout"],
+        showLastAttemptWarning:
+            json["show_last_attempt_warning"] == null
+                ? undefined
+                : json["show_last_attempt_warning"],
+        lastAttemptWarningMessage:
+            json["last_attempt_warning_message"] == null
+                ? undefined
+                : json["last_attempt_warning_message"],
         showLockoutMessage:
             json["show_lockout_message"] == null ? undefined : json["show_lockout_message"],
         lockoutMessage: json["lockout_message"] == null ? undefined : json["lockout_message"],
@@ -179,6 +199,8 @@ export function PasswordStageToJSONTyped(
         configure_flow: value["configureFlow"],
         failed_attempts_before_cancel: value["failedAttemptsBeforeCancel"],
         failed_attempts_before_lockout: value["failedAttemptsBeforeLockout"],
+        show_last_attempt_warning: value["showLastAttemptWarning"],
+        last_attempt_warning_message: value["lastAttemptWarningMessage"],
         show_lockout_message: value["showLockoutMessage"],
         lockout_message: value["lockoutMessage"],
         allow_show_password: value["allowShowPassword"],

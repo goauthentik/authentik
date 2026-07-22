@@ -31558,6 +31558,10 @@ paths:
         schema:
           type: integer
       - in: query
+        name: last_attempt_warning_message
+        schema:
+          type: string
+      - in: query
         name: lockout_message
         schema:
           type: string
@@ -31566,6 +31570,10 @@ paths:
       - $ref: '#/components/parameters/QueryPaginationPage'
       - $ref: '#/components/parameters/QueryPaginationPageSize'
       - $ref: '#/components/parameters/QuerySearch'
+      - in: query
+        name: show_last_attempt_warning
+        schema:
+          type: boolean
       - in: query
         name: show_lockout_message
         schema:
@@ -48067,6 +48075,12 @@ components:
           minimum: 0
           description: How many consecutive failed password attempts occur before
             the user is deactivated. Set to 0 to disable lockout.
+        show_last_attempt_warning:
+          type: boolean
+          description: Show a warning when the user has one password attempt remaining.
+        last_attempt_warning_message:
+          type: string
+          description: Optional custom warning. Leave blank to use the default message.
         show_lockout_message:
           type: boolean
           description: Show a message to the user when their account is locked out.
@@ -48117,6 +48131,12 @@ components:
           minimum: 0
           description: How many consecutive failed password attempts occur before
             the user is deactivated. Set to 0 to disable lockout.
+        show_last_attempt_warning:
+          type: boolean
+          description: Show a warning when the user has one password attempt remaining.
+        last_attempt_warning_message:
+          type: string
+          description: Optional custom warning. Leave blank to use the default message.
         show_lockout_message:
           type: boolean
           description: Show a message to the user when their account is locked out.
@@ -50552,6 +50572,12 @@ components:
           minimum: 0
           description: How many consecutive failed password attempts occur before
             the user is deactivated. Set to 0 to disable lockout.
+        show_last_attempt_warning:
+          type: boolean
+          description: Show a warning when the user has one password attempt remaining.
+        last_attempt_warning_message:
+          type: string
+          description: Optional custom warning. Leave blank to use the default message.
         show_lockout_message:
           type: boolean
           description: Show a message to the user when their account is locked out.

@@ -38,16 +38,19 @@ PLAN_CONTEXT_INITIAL_SCORE = "goauthentik.io/stages/password/initial_score"
 PLAN_CONTEXT_USER_LOCKED = "goauthentik.io/stages/password/user_locked"
 
 
-def record_failed_password_attempt(user: User, stage: PasswordStage) -> bool:
-    """Record a failed password attempt and deactivate the user at the configured limit."""
+def record_failed_password_attempt(user: User, stage: PasswordStage) -> int | None:
+    """Record a failed password attempt and return how many attempts remain."""
     if stage.failed_attempts_before_lockout == 0 or user.pk is None:
-        return False
+        return None
     with transaction.atomic():
         user = User.objects.exclude_anonymous().select_for_update().filter(pk=user.pk).first()
         if user is None or not user.is_active or user.type == UserTypes.INTERNAL_SERVICE_ACCOUNT:
-            return False
+            return None
         user.password_login_failed_attempts += 1
-        locked = user.password_login_failed_attempts >= stage.failed_attempts_before_lockout
+        remaining_attempts = max(
+            stage.failed_attempts_before_lockout - user.password_login_failed_attempts, 0
+        )
+        locked = remaining_attempts == 0
         if locked:
             user.is_active = False
             user.password_login_failed_attempts = 0
@@ -56,7 +59,7 @@ def record_failed_password_attempt(user: User, stage: PasswordStage) -> bool:
             User.objects.filter(pk=user.pk).update(
                 password_login_failed_attempts=user.password_login_failed_attempts
             )
-    return locked
+    return remaining_attempts
 
 
 def reset_failed_password_attempts(user: User) -> bool:
@@ -80,6 +83,16 @@ def get_lockout_message(stage: PasswordStage, fallback: str) -> str:
     return stage.lockout_message or _(
         "Your account has been locked out due to too many failed attempts. "
         "Please contact your administrator."
+    )
+
+
+def get_last_attempt_warning(stage: PasswordStage, fallback: str) -> str:
+    """Return the configured last-attempt warning or a generic authentication error."""
+    if not stage.show_last_attempt_warning:
+        return fallback
+    return stage.last_attempt_warning_message or _(
+        "You have one password attempt remaining before your account is locked out. "
+        "If you have forgotten your password, please contact your administrator."
     )
 
 
@@ -172,9 +185,15 @@ class PasswordChallengeResponse(ChallengeResponse):
         if not user:
             # No user was found -> invalid credentials
             self.stage.logger.info("Invalid credentials")
-            if record_failed_password_attempt(pending_user, executor.current_stage):
+            remaining_attempts = record_failed_password_attempt(
+                pending_user, executor.current_stage
+            )
+            if remaining_attempts == 0:
                 executor.plan.context[PLAN_CONTEXT_USER_LOCKED] = True
-            raise ValidationError(_("Invalid password"), "invalid")
+            error = _("Invalid password")
+            if remaining_attempts == 1:
+                error = get_last_attempt_warning(executor.current_stage, error)
+            raise ValidationError(error, "invalid")
         if not reset_failed_password_attempts(user):
             self.stage.logger.info("User is inactive")
             raise ValidationError(_("Invalid password"), "invalid")
