@@ -262,14 +262,15 @@ class UserSerializer(AttributesMixinSerializer, ModelSerializer):
 
     def _set_password(self, instance: User, password: str | None, password_hash: str | None = None):
         """Set password from plain text or hash."""
-        if password_hash is not None:
-            instance.set_password_from_hash(password_hash)
+        with atomic():
+            if password_hash is not None:
+                instance.set_password_from_hash(password_hash)
+            elif password:
+                instance.set_password(password)
+            else:
+                return
             instance.save()
-            instance.set_password_login_locked(False, reason="password_changed")
-        elif password:
-            instance.set_password(password)
-            instance.save()
-            instance.set_password_login_locked(False, reason="password_changed")
+            instance.unlock_password_login(reason="password_changed")
 
     def _ensure_password_not_empty(self, instance: User):
         """Store an explicit unusable password instead of an empty password field."""
@@ -854,9 +855,10 @@ class UserViewSet(
         """Set password for user"""
         user: User = self.get_object()
         try:
-            user.set_password(body.validated_data["password"], request=request)
-            user.save()
-            user.set_password_login_locked(False, request._request, reason="password_changed")
+            with atomic():
+                user.set_password(body.validated_data["password"], request=request)
+                user.save()
+                user.unlock_password_login(request._request, reason="password_changed")
         except (ValidationError, IntegrityError) as exc:
             LOGGER.debug("Failed to set password", exc=exc)
             return Response(status=400)
@@ -890,9 +892,10 @@ class UserViewSet(
         """
         user: User = self.get_object()
         try:
-            user.set_password_from_hash(body.validated_data["password"], request=request)
-            user.save()
-            user.set_password_login_locked(False, request._request, reason="password_changed")
+            with atomic():
+                user.set_password_from_hash(body.validated_data["password"], request=request)
+                user.save()
+                user.unlock_password_login(request._request, reason="password_changed")
         except ValueError as exc:
             LOGGER.debug("Failed to set password hash", exc=exc)
             return Response(data={"password": [INVALID_PASSWORD_HASH_MESSAGE]}, status=400)
@@ -911,7 +914,7 @@ class UserViewSet(
     def password_login_lock(self, request: Request, pk: int) -> Response:
         """Lock password login for a user."""
         user: User = self.get_object()
-        user.set_password_login_locked(True, request._request, reason="administrator")
+        user.lock_password_login(request._request, reason="administrator")
         return Response(status=204)
 
     @permission_required("authentik_core.change_user")
@@ -923,7 +926,7 @@ class UserViewSet(
     def password_login_unlock(self, request: Request, pk: int) -> Response:
         """Unlock password login for a user."""
         user: User = self.get_object()
-        user.set_password_login_locked(False, request._request, reason="administrator")
+        user.unlock_password_login(request._request, reason="administrator")
         return Response(status=204)
 
     @permission_required("authentik_core.reset_user_password")

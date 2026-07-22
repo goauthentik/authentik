@@ -197,11 +197,11 @@ class UserWriteStageView(StageView):
                     user.groups.add(self.executor.current_stage.create_users_group)
                 if PLAN_CONTEXT_GROUPS in self.executor.plan.context:
                     user.groups.add(*self.executor.plan.context[PLAN_CONTEXT_GROUPS])
+                if "password" in data:
+                    user.unlock_password_login(request=request, reason="password_changed")
         except (IntegrityError, ValueError, TypeError, InternalError) as exc:
             self.logger.warning("Failed to save user", exc=exc)
             return self.executor.stage_invalid(_("Failed to update user. Please try again later."))
-        if "password" in data:
-            user.set_password_login_locked(False, request=request, reason="password_changed")
         user_write.send(sender=self, request=request, user=user, data=data, created=user_created)
         # Check if the password has been updated, and update the session auth hash
         if should_update_session:

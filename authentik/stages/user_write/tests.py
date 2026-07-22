@@ -100,7 +100,7 @@ class TestUserWriteStage(FlowTestCase):
         new_password = generate_key()
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
         user = User.objects.create(username="unittest", email="test@goauthentik.io")
-        user.set_password_login_locked(True)
+        user.lock_password_login()
         plan.context[PLAN_CONTEXT_PENDING_USER] = user
         plan.context[PLAN_CONTEXT_PROMPT] = {
             "username": "test-user-new",

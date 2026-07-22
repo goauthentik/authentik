@@ -49,16 +49,17 @@ from authentik.stages.captcha.stage import (
 )
 from authentik.stages.identification.models import IdentificationStage
 from authentik.stages.identification.signals import identification_failed
+from authentik.stages.password.lockout import (
+    PasswordAttemptResult,
+    is_password_login_locked,
+    record_failed_password_attempt,
+    reset_failed_password_attempts,
+)
+from authentik.stages.password.models import PasswordStage
 from authentik.stages.password.stage import (
     PLAN_CONTEXT_METHOD,
     PLAN_CONTEXT_METHOD_ARGS,
-    PLAN_CONTEXT_USER_LOCKED,
     authenticate,
-    ensure_password_login_unlocked,
-    get_last_attempt_warning,
-    get_lockout_message,
-    record_failed_password_attempt,
-    reset_failed_password_attempts,
 )
 
 
@@ -133,6 +134,7 @@ class IdentificationChallengeResponse(ChallengeResponse):
 
     pre_user: User | None = None
     passkey_device: WebAuthnDevice | None = None
+    password_attempt_result: PasswordAttemptResult = PasswordAttemptResult.NOT_RECORDED
 
     def _validate_passkey_response(self, passkey: dict) -> WebAuthnDevice:
         """Validate passkey/WebAuthn response for passwordless authentication"""
@@ -144,12 +146,43 @@ class IdentificationChallengeResponse(ChallengeResponse):
             passkey, self.stage, self.stage.get_pending_user(), current_stage.webauthn_stage
         )
 
-    def _get_password(self, attrs: dict[str, Any]) -> str | None:
-        """Get the submitted password and log when it is missing."""
-        password = attrs.get("password")
+    def _validate_password(self, password_stage: PasswordStage, password: str | None) -> None:
+        """Validate an embedded password-stage submission."""
         if not password:
             self.stage.logger.warning("Password not set for ident+auth attempt")
-        return password
+        if self.pre_user is None:
+            raise ValidationError(_("Failed to authenticate."))
+        if is_password_login_locked(self.pre_user):
+            self.password_attempt_result = PasswordAttemptResult.LOCKED
+            raise ValidationError(_("Failed to authenticate."))
+
+        try:
+            with start_span(
+                op="authentik.stages.identification.authenticate",
+                name="User authenticate call (combo stage)",
+            ):
+                user = authenticate(
+                    self.stage.request,
+                    password_stage.backends,
+                    self.stage.executor.current_stage,
+                    username=self.pre_user.username,
+                    password=password,
+                )
+            if not user:
+                self.password_attempt_result = record_failed_password_attempt(
+                    self.pre_user,
+                    password_stage,
+                    self.stage.request,
+                )
+                error = _("Failed to authenticate.")
+                if self.password_attempt_result is PasswordAttemptResult.LAST_ATTEMPT:
+                    error = password_stage.get_last_attempt_message(error)
+                raise ValidationError(error)
+            if not reset_failed_password_attempts(user):
+                raise ValidationError(_("Failed to authenticate."))
+            self.pre_user = user
+        except PermissionDenied as exc:
+            raise ValidationError(str(exc)) from exc
 
     def validate(self, attrs: dict[str, Any]) -> dict[str, Any]:
         """Validate that user exists, and optionally their password, captcha token, or passkey"""
@@ -228,44 +261,7 @@ class IdentificationChallengeResponse(ChallengeResponse):
             # No password stage select, don't validate the password
             return attrs
 
-        password = self._get_password(attrs)
-        ensure_password_login_unlocked(
-            self.pre_user,
-            self.stage.executor.plan.context,
-            _("Failed to authenticate."),
-        )
-        try:
-            with start_span(
-                op="authentik.stages.identification.authenticate",
-                name="User authenticate call (combo stage)",
-            ):
-                user = authenticate(
-                    self.stage.request,
-                    current_stage.password_stage.backends,
-                    current_stage,
-                    username=self.pre_user.username,
-                    password=password,
-                )
-            if not user:
-                remaining_attempts = record_failed_password_attempt(
-                    self.pre_user,
-                    current_stage.password_stage,
-                    self.stage.request,
-                )
-                if remaining_attempts == 0:
-                    self.stage.executor.plan.context[PLAN_CONTEXT_USER_LOCKED] = True
-                raise ValidationError(
-                    get_last_attempt_warning(
-                        current_stage.password_stage, _("Failed to authenticate.")
-                    )
-                    if remaining_attempts == 1
-                    else _("Failed to authenticate.")
-                )
-            if not reset_failed_password_attempts(user):
-                raise ValidationError(_("Failed to authenticate."))
-            self.pre_user = user
-        except PermissionDenied as exc:
-            raise ValidationError(str(exc)) from exc
+        self._validate_password(current_stage.password_stage, attrs.get("password"))
         return attrs
 
 
@@ -277,12 +273,12 @@ class IdentificationStageView(ChallengeStageView):
     def challenge_invalid(self, response: IdentificationChallengeResponse) -> HttpResponse:
         """Stop the flow when embedded password validation locks the user out."""
         current_stage: IdentificationStage = self.executor.current_stage
-        if self.executor.plan.context.pop(PLAN_CONTEXT_USER_LOCKED, False):
+        if (
+            response.password_attempt_result is PasswordAttemptResult.LOCKED
+            and current_stage.password_stage
+        ):
             return self.executor.stage_invalid(
-                get_lockout_message(
-                    current_stage.password_stage,
-                    _("Failed to authenticate."),
-                )
+                current_stage.password_stage.get_lockout_message(_("Failed to authenticate."))
             )
         return super().challenge_invalid(response)
 

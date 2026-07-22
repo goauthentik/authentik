@@ -23,7 +23,7 @@ export function renderUserStatus(status: CompositeStatusEnum): SlottedTemplateRe
             return html`<ak-status-label
                 type="warning"
                 .badLabel=${msg("Password reset pending", {
-                    id: "user.status.passwordResetPending",
+                    id: "user.status.password-reset-pending",
                 })}
             ></ak-status-label>`;
         case CompositeStatusEnum.Deactivated:

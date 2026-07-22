@@ -8,6 +8,7 @@ from django.db import connection
 from django.test import TransactionTestCase
 from django.urls import reverse
 
+from authentik.core.models import UserTypes
 from authentik.core.tests.utils import create_test_admin_user, create_test_brand, create_test_flow
 from authentik.events.models import Event, EventAction
 from authentik.flows.markers import StageMarker
@@ -18,12 +19,11 @@ from authentik.flows.tests.test_executor import TO_STAGE_RESPONSE_MOCK
 from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.lib.generators import generate_id
 from authentik.stages.password import BACKEND_INBUILT
-from authentik.stages.password.models import PasswordStage
-from authentik.stages.password.stage import (
-    get_last_attempt_warning,
-    get_lockout_message,
+from authentik.stages.password.lockout import (
+    PasswordAttemptResult,
     record_failed_password_attempt,
 )
+from authentik.stages.password.models import PasswordStage
 
 MOCK_BACKEND_AUTHENTICATE = MagicMock(side_effect=PermissionDenied("test"))
 
@@ -127,7 +127,7 @@ class TestPasswordStage(FlowTestCase):
 
     def test_valid_password_locked(self):
         """A correct password cannot authenticate while password login is locked."""
-        self.user.set_password_login_locked(True)
+        self.user.lock_password_login()
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
         plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
         session = self.client.session
@@ -226,19 +226,31 @@ class TestPasswordStage(FlowTestCase):
 
     def test_lockout_message_customization(self):
         """Configured messages override the default warning and lockout messages."""
-        self.assertEqual(get_last_attempt_warning(self.stage, "generic"), "generic")
+        self.assertEqual(self.stage.get_last_attempt_message("generic"), "generic")
         self.stage.show_last_attempt_warning = True
-        self.assertIn("one password attempt", get_last_attempt_warning(self.stage, "generic"))
+        self.assertIn("one password attempt", self.stage.get_last_attempt_message("generic"))
         self.stage.last_attempt_warning_message = "This is your final attempt."
         self.assertEqual(
-            get_last_attempt_warning(self.stage, "generic"), "This is your final attempt."
+            self.stage.get_last_attempt_message("generic"), "This is your final attempt."
         )
         self.stage.show_lockout_message = True
-        self.assertIn("contact your administrator", get_lockout_message(self.stage, "generic"))
+        self.assertIn("contact your administrator", self.stage.get_lockout_message("generic"))
         self.stage.lockout_message = "Contact the help desk."
-        self.assertEqual(get_lockout_message(self.stage, "generic"), "Contact the help desk.")
+        self.assertEqual(self.stage.get_lockout_message("generic"), "Contact the help desk.")
 
-    def test_invalid_password_lockout(self):
+    def test_internal_service_account_not_locked_out(self):
+        """Failed attempts do not lock authentik's internal service accounts."""
+        self.user.type = UserTypes.INTERNAL_SERVICE_ACCOUNT
+        self.user.save(update_fields=("type",))
+        self.stage.failed_attempts_before_lockout = 1
+
+        result = record_failed_password_attempt(self.user, self.stage)
+
+        self.assertIs(result, PasswordAttemptResult.NOT_RECORDED)
+        self.user.refresh_from_db()
+        self.assertIsNone(self.user.password_login_locked_at)
+
+    def test_invalid_password_cancels_flow(self):
         """Test with a valid pending user and invalid password (trigger logout counter)"""
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
         plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
@@ -322,11 +334,11 @@ class TestPasswordLockoutConcurrency(TransactionTestCase):
 
         class FailureThread(Thread):
             __test__ = False
-            remaining_attempts: int | None = None
+            result = PasswordAttemptResult.NOT_RECORDED
 
             def run(self):
                 try:
-                    self.remaining_attempts = record_failed_password_attempt(user, stage)
+                    self.result = record_failed_password_attempt(user, stage)
                 finally:
                     connection.close()
 
@@ -339,7 +351,14 @@ class TestPasswordLockoutConcurrency(TransactionTestCase):
 
         user.refresh_from_db()
         self.assertIsNotNone(user.password_login_locked_at)
-        self.assertCountEqual([thread.remaining_attempts for thread in threads], [0, 1, 2])
+        self.assertCountEqual(
+            [thread.result for thread in threads],
+            [
+                PasswordAttemptResult.RECORDED,
+                PasswordAttemptResult.LAST_ATTEMPT,
+                PasswordAttemptResult.LOCKED,
+            ],
+        )
         self.assertEqual(
             Event.objects.filter(
                 action=EventAction.PASSWORD_LOGIN_LOCKED,

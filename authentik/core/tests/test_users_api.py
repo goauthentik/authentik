@@ -140,46 +140,69 @@ class TestUsersAPI(APITestCase):
         self.assertTrue(self.admin.check_password(new_pw))
         self.assertIsNone(self.admin.password_login_locked_at)
 
-    def test_password_login_lock(self):
-        """Password login lock actions update the visible status and audit log."""
+    def test_password_login_lock_actions(self):
+        """Password login lock actions are idempotent and emit transition events."""
         self.client.force_login(self.admin)
 
-        response = self.client.post(
-            reverse("authentik_api:user-password-login-lock", kwargs={"pk": self.user.pk})
-        )
-        self.assertEqual(response.status_code, 204)
+        lock_url = reverse("authentik_api:user-password-login-lock", kwargs={"pk": self.user.pk})
+        self.assertEqual(self.client.post(lock_url).status_code, 204)
+        self.assertEqual(self.client.post(lock_url).status_code, 204)
         self.user.refresh_from_db()
         self.assertIsNotNone(self.user.password_login_locked_at)
-        self.assertEqual(self.user.composite_status, UserStatus.LOCKED)
-        self.assertTrue(
+        self.assertEqual(
             Event.objects.filter(
                 action=EventAction.PASSWORD_LOGIN_LOCKED,
                 user__pk=self.user.pk,
-            ).exists()
+            ).count(),
+            1,
         )
 
-        self.user.is_active = False
-        self.assertEqual(self.user.composite_status, UserStatus.DEACTIVATED)
-        self.user.is_active = True
-
-        self.user.password_login_locked_at = None
-        self.user.attributes["reset_password"] = True
-        self.assertEqual(self.user.composite_status, UserStatus.PASSWORD_RESET_PENDING)
-        self.user.attributes = {}
-
-        response = self.client.post(
-            reverse("authentik_api:user-password-login-unlock", kwargs={"pk": self.user.pk})
+        unlock_url = reverse(
+            "authentik_api:user-password-login-unlock", kwargs={"pk": self.user.pk}
         )
-        self.assertEqual(response.status_code, 204)
+        self.assertEqual(self.client.post(unlock_url).status_code, 204)
+        self.assertEqual(self.client.post(unlock_url).status_code, 204)
         self.user.refresh_from_db()
         self.assertIsNone(self.user.password_login_locked_at)
-        self.assertEqual(self.user.composite_status, UserStatus.ACTIVE)
-        self.assertTrue(
+        self.assertEqual(
             Event.objects.filter(
                 action=EventAction.PASSWORD_LOGIN_UNLOCKED,
                 user__pk=self.user.pk,
+            ).count(),
+            1,
+        )
+
+    def test_password_login_lock_internal_service_account(self):
+        """Internal service accounts cannot have password login locked."""
+        self.client.force_login(self.admin)
+        user = create_test_admin_user(type=UserTypes.INTERNAL_SERVICE_ACCOUNT)
+
+        response = self.client.post(
+            reverse("authentik_api:user-password-login-lock", kwargs={"pk": user.pk})
+        )
+
+        self.assertEqual(response.status_code, 204)
+        user.refresh_from_db()
+        self.assertIsNone(user.password_login_locked_at)
+        self.assertFalse(
+            Event.objects.filter(
+                action=EventAction.PASSWORD_LOGIN_LOCKED,
+                user__pk=user.pk,
             ).exists()
         )
+
+    def test_composite_status(self):
+        """User status reports the highest-priority active restriction."""
+        self.assertEqual(self.user.composite_status, UserStatus.ACTIVE)
+
+        self.user.attributes["reset_password"] = True
+        self.assertEqual(self.user.composite_status, UserStatus.PASSWORD_RESET_PENDING)
+
+        self.user.password_login_locked_at = now()
+        self.assertEqual(self.user.composite_status, UserStatus.LOCKED)
+
+        self.user.is_active = False
+        self.assertEqual(self.user.composite_status, UserStatus.DEACTIVATED)
 
     def test_set_password_blank(self):
         """Test Direct password set"""

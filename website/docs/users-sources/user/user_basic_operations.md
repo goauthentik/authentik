@@ -147,18 +147,17 @@ As an administrator, you can reset a user's password.
 
 If a [Recovery flow](#configure-a-recovery-flow) has been applied to the brand, users can reset their own passwords in the [User interface](../user/user-interface.mdx).
 
-## Deactivate or delete a user
+## Lock or unlock password login
 
-Password login can also be locked without deactivating the user. See [Control user access](./access-control.md) for the differences between password login lock, deactivation, Account Lockdown, and reputation policies.
+Locking password login blocks authentication through Password stages without deactivating the user, revoking existing sessions, or changing their state in connected systems. See [Control user access](./access-control.md) for the differences between password login lock, deactivation, Account Lockdown, and reputation policies.
 
-### Lock or unlock password login
-
-Locking password login blocks authentication through Password stages without deactivating the user, revoking existing sessions, or changing their state in connected systems.
-
-1. Go into the user list or detail page.
-2. Click **Lock password login** or **Unlock password login**.
+1. In the Admin interface, navigate to **Directory** > **Users**.
+2. Open the user details or expand the user's row.
+3. Click **Lock password login** or **Unlock password login**.
 
 Resetting the user's password also unlocks password login. authentik records automatic and administrative lock and unlock actions in the user's **Events** tab.
+
+## Deactivate or delete a user
 
 ### Deactivate a user
 

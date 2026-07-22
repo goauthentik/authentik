@@ -443,7 +443,7 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
             return UserStatus.PASSWORD_RESET_PENDING
         return UserStatus.ACTIVE
 
-    def set_password_login_locked(
+    def _set_password_login_lock(
         self,
         locked: bool,
         request: HttpRequest | None = None,
@@ -478,6 +478,24 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
         else:
             event.set_user(self).save()
         return True
+
+    def lock_password_login(
+        self,
+        request: HttpRequest | None = None,
+        **event_context: Any,
+    ) -> bool:
+        """Lock password authentication and reset the failed-attempt counter."""
+        if self.type == UserTypes.INTERNAL_SERVICE_ACCOUNT:
+            return False
+        return self._set_password_login_lock(True, request, **event_context)
+
+    def unlock_password_login(
+        self,
+        request: HttpRequest | None = None,
+        **event_context: Any,
+    ) -> bool:
+        """Unlock password authentication and reset the failed-attempt counter."""
+        return self._set_password_login_lock(False, request, **event_context)
 
     def get_managed_role(self, create=False):
         if create:

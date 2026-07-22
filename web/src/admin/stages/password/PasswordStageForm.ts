@@ -46,6 +46,88 @@ export class PasswordStageForm extends BaseStageForm<PasswordStage> {
         );
     }
 
+    protected renderLockoutSettings(): TemplateResult {
+        return html`
+            <ak-form-element-horizontal
+                label=${msg("Failed attempts before lockout", {
+                    id: "password-stage.lockout-threshold.label",
+                })}
+                required
+                name="failedAttemptsBeforeLockout"
+            >
+                <input
+                    type="number"
+                    min="0"
+                    value="${this.instance?.failedAttemptsBeforeLockout ?? 0}"
+                    class="pf-c-form-control"
+                    required
+                />
+                <p class="pf-c-form__helper-text">
+                    ${msg(
+                        "Lock password login after this many consecutive failed attempts. Set to 0 to disable lockout.",
+                        {
+                            id: "password-stage.lockout-threshold.description",
+                        },
+                    )}
+                </p>
+            </ak-form-element-horizontal>
+            <ak-switch-input
+                name="showLastAttemptWarning"
+                label=${msg("Show last-attempt warning", {
+                    id: "password-stage.last-attempt-warning.label",
+                })}
+                ?checked=${this.instance?.showLastAttemptWarning ?? false}
+                help=${msg("Show a warning when the user has one password attempt remaining.", {
+                    id: "password-stage.last-attempt-warning.description",
+                })}
+            ></ak-switch-input>
+            <ak-form-element-horizontal
+                label=${msg("Last-attempt warning message", {
+                    id: "password-stage.last-attempt-warning-message.label",
+                })}
+                name="lastAttemptWarningMessage"
+            >
+                <input
+                    type="text"
+                    value="${this.instance?.lastAttemptWarningMessage ?? ""}"
+                    class="pf-c-form-control"
+                />
+                <p class="pf-c-form__helper-text">
+                    ${msg("Leave blank to use the default last-attempt warning.", {
+                        id: "password-stage.last-attempt-warning-message.description",
+                    })}
+                </p>
+            </ak-form-element-horizontal>
+            <ak-switch-input
+                name="showLockoutMessage"
+                label=${msg("Show lockout message", {
+                    id: "password-stage.lockout-message-toggle.label",
+                })}
+                ?checked=${this.instance?.showLockoutMessage ?? false}
+                help=${msg("Show a message to the user when their account is locked out.", {
+                    id: "password-stage.lockout-message-toggle.description",
+                })}
+            ></ak-switch-input>
+            <ak-form-element-horizontal
+                label=${msg("Lockout message", {
+                    id: "password-stage.lockout-message.label",
+                })}
+                name="lockoutMessage"
+            >
+                <input
+                    type="text"
+                    value="${this.instance?.lockoutMessage ?? ""}"
+                    class="pf-c-form-control"
+                />
+                <p class="pf-c-form__helper-text">
+                    ${msg("Leave blank to use the default lockout message.", {
+                        id: "password-stage.lockout-message.description",
+                    })}
+                </p>
+            </ak-form-element-horizontal>
+        `;
+    }
+
     protected override renderForm(): TemplateResult {
         const backends = [
             {
@@ -164,78 +246,7 @@ export class PasswordStageForm extends BaseStageForm<PasswordStage> {
                             )}
                         </p>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${msg("Failed attempts before lockout", {
-                            id: "password-stage.lockout-threshold.label",
-                        })}
-                        required
-                        name="failedAttemptsBeforeLockout"
-                    >
-                        <input
-                            type="number"
-                            min="0"
-                            value="${this.instance?.failedAttemptsBeforeLockout ?? 0}"
-                            class="pf-c-form-control"
-                            required
-                        />
-                        <p class="pf-c-form__helper-text">
-                            ${msg(
-                                "Lock password login after this many consecutive failed attempts. Set to 0 to disable lockout.",
-                                {
-                                    id: "password-stage.lockout-threshold.description",
-                                },
-                            )}
-                        </p>
-                    </ak-form-element-horizontal>
-                    <ak-switch-input
-                        name="showLastAttemptWarning"
-                        label=${msg("Show last-attempt warning", {
-                            id: "password-stage.last-attempt-warning.label",
-                        })}
-                        ?checked=${this.instance?.showLastAttemptWarning ?? false}
-                        help=${msg(
-                            "Show a warning when the user has one password attempt remaining.",
-                            {
-                                id: "password-stage.last-attempt-warning.description",
-                            },
-                        )}
-                    ></ak-switch-input>
-                    <ak-form-element-horizontal
-                        label=${msg("Last-attempt warning message", {
-                            id: "password-stage.last-attempt-warning-message.label",
-                        })}
-                        name="lastAttemptWarningMessage"
-                    >
-                        <input
-                            type="text"
-                            value="${this.instance?.lastAttemptWarningMessage ?? ""}"
-                            class="pf-c-form-control"
-                        />
-                        <p class="pf-c-form__helper-text">
-                            ${msg("Leave blank to use the default last-attempt warning.", {
-                                id: "password-stage.last-attempt-warning-message.description",
-                            })}
-                        </p>
-                    </ak-form-element-horizontal>
-                    <ak-switch-input
-                        name="showLockoutMessage"
-                        label=${msg("Show lockout message")}
-                        ?checked=${this.instance?.showLockoutMessage ?? false}
-                        help=${msg("Show a message to the user when their account is locked out.")}
-                    ></ak-switch-input>
-                    <ak-form-element-horizontal
-                        label=${msg("Lockout message")}
-                        name="lockoutMessage"
-                    >
-                        <input
-                            type="text"
-                            value="${this.instance?.lockoutMessage ?? ""}"
-                            class="pf-c-form-control"
-                        />
-                        <p class="pf-c-form__helper-text">
-                            ${msg("Leave blank to use the default lockout message.")}
-                        </p>
-                    </ak-form-element-horizontal>
+                    ${this.renderLockoutSettings()}
                     <ak-switch-input
                         name="allowShowPassword"
                         label="Allow Show Password"

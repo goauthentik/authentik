@@ -2,6 +2,7 @@
 
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
+from django.utils.translation import gettext
 from django.utils.translation import gettext_lazy as _
 from django.views import View
 from rest_framework.serializers import BaseSerializer
@@ -108,6 +109,24 @@ class PasswordStage(ConfigurableStage, Stage):
                 "title": str(self._meta.verbose_name),
                 "component": "ak-user-settings-password",
             }
+        )
+
+    def get_last_attempt_message(self, fallback: str) -> str:
+        """Return the configured last-attempt warning or the existing authentication error."""
+        if not self.show_last_attempt_warning:
+            return fallback
+        return self.last_attempt_warning_message or gettext(
+            "You have one password attempt remaining before your account is locked out. "
+            "If you have forgotten your password, please contact your administrator."
+        )
+
+    def get_lockout_message(self, fallback: str) -> str:
+        """Return the configured lockout message or the existing authentication error."""
+        if not self.show_lockout_message:
+            return fallback
+        return self.lockout_message or gettext(
+            "Your account has been locked out due to too many failed attempts. "
+            "Please contact your administrator."
         )
 
     class Meta:

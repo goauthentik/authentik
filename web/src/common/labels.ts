@@ -36,9 +36,9 @@ export const EventActionLabelRecord: Record<EventActions, MessageFormatter<strin
     [EventActions.SuspiciousRequest]: () => msg("Suspicious request"),
     [EventActions.PasswordSet]: () => msg("Password set"),
     [EventActions.PasswordLoginLocked]: () =>
-        msg("Password login locked", { id: "event.action.passwordLoginLocked" }),
+        msg("Password login locked", { id: "event.action.password-login-locked" }),
     [EventActions.PasswordLoginUnlocked]: () =>
-        msg("Password login unlocked", { id: "event.action.passwordLoginUnlocked" }),
+        msg("Password login unlocked", { id: "event.action.password-login-unlocked" }),
     [EventActions.SecretView]: () => msg("Secret was viewed"),
     [EventActions.SecretRotate]: () => msg("Secret was rotated"),
     [EventActions.InvitationUsed]: () => msg("Invitation used"),

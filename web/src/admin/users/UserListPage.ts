@@ -37,7 +37,13 @@ import { UserImpersonateForm } from "#admin/users/UserImpersonateForm";
 import { ToggleUserPasswordLoginLockButton } from "#admin/users/UserPasswordLoginLockForm";
 import { renderUserStatus } from "#admin/users/UserStatus";
 
-import { CoreApi, CoreUsersExportCreateRequest, User, UserPath } from "@goauthentik/api";
+import {
+    CoreApi,
+    CoreUsersExportCreateRequest,
+    User,
+    UserPath,
+    UserTypeEnum,
+} from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
 import { css, CSSResult, html, nothing, TemplateResult } from "lit";
@@ -198,7 +204,7 @@ export class UserListPage extends WithLicenseSummary(
     protected columns: TableColumn[] = [
         ["", null, msg("Avatar")],
         [msg("Name"), "username"],
-        [msg("Status", { id: "user.field.status" }), null],
+        [msg("Status", { id: "user.field.status" }), "is_active"],
         [msg("Last login"), "last_login"],
         [msg("Type"), "type"],
         [msg("Actions"), null, msg("Row Actions")],
@@ -363,7 +369,8 @@ export class UserListPage extends WithLicenseSummary(
                 <dd class="pf-c-description-list__description">
                     <div class="pf-c-description-list__text">
                         ${ToggleUserActivationButton(item)}
-                        ${item.isActive || item.passwordLoginLockedAt
+                        ${(item.isActive && item.type !== UserTypeEnum.InternalServiceAccount) ||
+                        item.passwordLoginLockedAt
                             ? ToggleUserPasswordLoginLockButton(item)
                             : nothing}
                     </div>
