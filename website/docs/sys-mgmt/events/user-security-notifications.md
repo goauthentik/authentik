@@ -31,7 +31,7 @@ To deliver these notifications, authentik must first be configured to [send emai
 
 ## How it works
 
-Each notification rule has [**Send notification to affected user**](./notifications.md#3-create-a-notification-rule-and-bind-it-to-the-policy) enabled, so the email is sent to the user recorded in the triggering event's `subject_uuid` context field — not to the user that caused the event. For example, when an administrator resets a user's password, the email goes to the user whose password was changed.
+Each notification rule has [**Send notification to affected user**](./notifications.md#3-create-a-notification-rule-and-bind-it-to-the-policy) enabled, so the email is sent to the user recorded in the triggering event's `subject` context field — not to the user that caused the event. For example, when an administrator resets a user's password, the email goes to the user whose password was changed.
 
 Events are matched by [Event Matcher policies](../../customize/policies/types/event-matcher.md) bound to each rule. The more specific conditions, such as excluding accounts imported by a source sync, are expressed as [AKQL](../akql.mdx#use-akql-in-an-event-matcher-policy) queries on the event context.
 

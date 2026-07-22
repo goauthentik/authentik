@@ -124,12 +124,9 @@ def notification_transport(transport_pk: int, event_pk: str, user_pk: int, trigg
 
 
 @actor(description=_("Cleanup events for GDPR compliance."))
-def gdpr_cleanup(user_pk: int, user_uuid: str | None = None):
+def gdpr_cleanup(user_pk: int):
     """cleanup events from gdpr_compliance"""
-    query = Q(user__pk=user_pk)
-    if user_uuid:
-        query |= Q(context__subject_uuid=user_uuid)
-    events = Event.objects.filter(query)
+    events = Event.objects.filter(Q(user__pk=user_pk) | Q(context__subject__pk=user_pk))
     LOGGER.debug("GDPR cleanup, removing events from user", events=events.count())
     for event in chunked_queryset(events):
         event.delete()

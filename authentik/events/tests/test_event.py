@@ -234,7 +234,7 @@ class TestEvents(TestCase):
         self.assertEqual(new_count, old_count + 1)
 
     def test_password_set_event(self):
-        """Password changes should carry subject_uuid, synced_from_source and origin"""
+        """Password changes should carry the subject user, synced_from_source and origin"""
         user = create_test_user()
 
         user.set_password(generate_id())
@@ -246,7 +246,7 @@ class TestEvents(TestCase):
             .first()
         )
         self.assertFalse(event.context["synced_from_source"])
-        self.assertEqual(event.context["subject_uuid"], user.uuid.hex)
+        self.assertEqual(event.context["subject"]["pk"], user.pk)
         self.assertEqual(event.context["origin"], "unknown")
 
     def test_password_set_event_http(self):
@@ -287,7 +287,7 @@ class TestEvents(TestCase):
                 """)).apply())
         user = User.objects.get(username=username)
         event = Event.objects.filter(
-            action=EventAction.PASSWORD_SET, context__subject_uuid=user.uuid.hex
+            action=EventAction.PASSWORD_SET, context__subject__pk=user.pk
         ).first()
         self.assertIsNotNone(event)
         self.assertEqual(event.context["origin"], "blueprint")
@@ -323,7 +323,7 @@ class TestEvents(TestCase):
 
         user = User.objects.get(username=username)
         event = Event.objects.filter(
-            action=EventAction.USER_CREATED, context__subject_uuid=user.uuid.hex
+            action=EventAction.USER_CREATED, context__subject__pk=user.pk
         ).first()
         self.assertIsNotNone(event)
         self.assertEqual(event.context["username"], username)
@@ -336,7 +336,7 @@ class TestEvents(TestCase):
         with an unknown origin"""
         user = create_test_user()
         event = Event.objects.filter(
-            action=EventAction.USER_CREATED, context__subject_uuid=user.uuid.hex
+            action=EventAction.USER_CREATED, context__subject__pk=user.pk
         ).first()
         self.assertIsNotNone(event)
         self.assertEqual(event.context["origin"], "unknown")
@@ -346,7 +346,7 @@ class TestEvents(TestCase):
         with event_origin("source_sync"):
             user = create_test_user()
         event = Event.objects.filter(
-            action=EventAction.USER_CREATED, context__subject_uuid=user.uuid.hex
+            action=EventAction.USER_CREATED, context__subject__pk=user.pk
         ).first()
         self.assertEqual(event.context["origin"], "source_sync")
 
@@ -365,7 +365,7 @@ class TestEvents(TestCase):
         self.assertTrue(importer.apply())
         user = User.objects.get(username=username)
         event = Event.objects.filter(
-            action=EventAction.USER_CREATED, context__subject_uuid=user.uuid.hex
+            action=EventAction.USER_CREATED, context__subject__pk=user.pk
         ).first()
         self.assertIsNotNone(event)
         self.assertEqual(event.context["origin"], "blueprint")
@@ -376,29 +376,28 @@ class TestEvents(TestCase):
         user = create_test_user()
         actored_by_user = Event.new("some_action").set_user(user)
         actored_by_user.save()
-        about_user = Event.new(EventAction.USER_CREATED, subject_uuid=user.uuid).set_user(admin)
+        about_user = Event.new(EventAction.USER_CREATED, subject=user).set_user(admin)
         about_user.save()
         unrelated = Event.new("some_action").set_user(admin)
         unrelated.save()
 
-        gdpr_cleanup(user.pk, user.uuid.hex)
+        gdpr_cleanup(user.pk)
 
         self.assertFalse(Event.objects.filter(pk=actored_by_user.pk).exists())
         self.assertFalse(Event.objects.filter(pk=about_user.pk).exists())
         self.assertTrue(Event.objects.filter(pk=unrelated.pk).exists())
 
-    def test_gdpr_cleanup_dispatched_with_uuid(self):
-        """Deleting a user with gdpr_compliance should dispatch cleanup with pk and uuid"""
+    def test_gdpr_cleanup_dispatched(self):
+        """Deleting a user with gdpr_compliance should dispatch cleanup for that user"""
         user = create_test_user()
         user_pk = user.pk
-        user_uuid = user.uuid.hex
         tenant = get_current_tenant()
         tenant.gdpr_compliance = True
         tenant.save()
         try:
             with patch("authentik.events.tasks.gdpr_cleanup.send") as send_mock:
                 user.delete()
-            send_mock.assert_called_once_with(user_pk, user_uuid)
+            send_mock.assert_called_once_with(user_pk)
         finally:
             tenant.gdpr_compliance = False
             tenant.save()

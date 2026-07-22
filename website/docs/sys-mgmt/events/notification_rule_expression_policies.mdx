@@ -49,7 +49,8 @@ if event.context.get("origin") not in ("http", "blueprint"):
     ak_logger.info("origin does not match")
     return False
 
-user = User.objects.filter(uuid=event.context.get("subject_uuid")).first()
+subject = event.context.get("subject") or {}
+user = User.objects.filter(pk=subject.get("pk")).first()
 
 if not user:
     ak_logger.info("user not found")
