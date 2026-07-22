@@ -1,14 +1,16 @@
 """Notification tests"""
 
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock, PropertyMock, patch
 
+from django.core import mail
+from django.core.mail.backends.locmem import EmailBackend
 from django.urls import reverse
 from rest_framework.test import APITestCase
 
 from authentik.blueprints.models import BlueprintInstance
 from authentik.blueprints.v1.importer import Importer
 from authentik.core.models import Group, User
-from authentik.core.tests.utils import create_test_user
+from authentik.core.tests.utils import create_test_admin_user, create_test_user
 from authentik.events.models import (
     Event,
     EventAction,
@@ -242,3 +244,141 @@ class TestUserSecurityNotificationRules(APITestCase):
         self.apply()
         rule.refresh_from_db()
         self.assertTrue(rule.enabled)
+
+
+class TestUserSecurityNotificationsDelivery(APITestCase):
+    """End-to-end tests for the default user security notification rules: from the
+    client request (or, for login blocks, the event the flow executor emits) all the
+    way to the email in the affected user's inbox"""
+
+    BLUEPRINT = "default/events-user-security-notifications.yaml"
+
+    def setUp(self):
+        content = BlueprintInstance(path=self.BLUEPRINT).retrieve()
+        self.assertTrue(Importer.from_string(content).apply())
+
+    def enable_rule(self, name: str):
+        NotificationRule.objects.filter(name=name).update(enabled=True)
+
+    def email_backend(self):
+        return patch(
+            "authentik.stages.email.models.EmailStage.backend_class",
+            PropertyMock(return_value=EmailBackend),
+        )
+
+    def test_password_change_email(self):
+        """Changing a user's password through the API must email that user"""
+        admin = create_test_admin_user()
+        user = create_test_user()
+        self.client.force_login(admin)
+        self.enable_rule("default-notify-user-password-change")
+
+        with self.email_backend():
+            response = self.client.post(
+                reverse("authentik_api:user-set-password", kwargs={"pk": user.pk}),
+                data={"password": generate_id()},
+            )
+
+        self.assertEqual(response.status_code, 204)
+        self.assertEqual(len(mail.outbox), 1)
+        message = mail.outbox[0]
+        self.assertIn(user.email, message.to[0])
+        self.assertEqual(message.subject, "authentik Notification: your password was changed")
+        self.assertIn("The password for your account was just changed", message.body)
+
+    def test_password_change_email_non_http_not_sent(self):
+        """A password change outside a request (shell, bootstrap) must not email"""
+        user = create_test_user()
+        self.enable_rule("default-notify-user-password-change")
+
+        with self.email_backend():
+            user.set_password(generate_id())
+            user.save()
+
+        self.assertEqual(len(mail.outbox), 0)
+
+    def test_mfa_device_change_emails(self):
+        """Adding an MFA device and removing it through the API must email its owner"""
+        user = create_test_user()
+        self.client.force_login(user)
+        self.enable_rule("default-notify-user-mfa-device-change")
+
+        with self.email_backend():
+            device = user.staticdevice_set.create()
+            response = self.client.delete(
+                reverse("authentik_api:staticdevice-detail", kwargs={"pk": device.pk})
+            )
+
+        self.assertEqual(response.status_code, 204)
+        self.assertEqual(len(mail.outbox), 2)
+        added, removed = mail.outbox
+        self.assertEqual(added.subject, "authentik Notification: a new MFA device was added")
+        self.assertIn("was just added to your account", added.body)
+        self.assertEqual(removed.subject, "authentik Notification: an MFA device was removed")
+        self.assertIn("was just removed from your account", removed.body)
+        for message in mail.outbox:
+            self.assertIn(user.email, message.to[0])
+
+    def test_impossible_travel_email(self):
+        """A login blocked for impossible travel must email the affected user.
+
+        The flow executor emitting this event is covered by
+        authentik/flows/tests/test_markers.py; this test starts from the event."""
+        user = create_test_user()
+        self.enable_rule("default-notify-user-impossible-travel")
+
+        with self.email_backend():
+            Event.new(
+                EventAction.LOGIN_BLOCKED,
+                message="Distance is further than possible.",
+                reasons=["impossible_travel"],
+                subject_uuid=user.uuid,
+            ).set_user(user).save()
+
+        self.assertEqual(len(mail.outbox), 1)
+        message = mail.outbox[0]
+        self.assertIn(user.email, message.to[0])
+        self.assertEqual(
+            message.subject,
+            "authentik Notification: a sign-in from an unusual location was blocked",
+        )
+        self.assertIn("too far from your previous sign-in", message.body)
+
+    def test_impossible_travel_email_other_reasons_not_sent(self):
+        """A login blocked for other reasons must not trigger the impossible travel rule"""
+        user = create_test_user()
+        self.enable_rule("default-notify-user-impossible-travel")
+
+        with self.email_backend():
+            Event.new(
+                EventAction.LOGIN_BLOCKED,
+                message="Client IP is not in an allowed country.",
+                reasons=["forbidden_country"],
+                subject_uuid=user.uuid,
+            ).set_user(user).save()
+
+        self.assertEqual(len(mail.outbox), 0)
+
+    def test_welcome_email(self):
+        """Creating a user through the API must send them the welcome email"""
+        admin = create_test_admin_user()
+        self.client.force_login(admin)
+        self.enable_rule("default-notify-user-welcome")
+        username = generate_id()
+
+        with self.email_backend():
+            response = self.client.post(
+                reverse("authentik_api:user-list"),
+                data={
+                    "username": username,
+                    "name": username,
+                    "email": f"{username}@goauthentik.io",
+                },
+            )
+
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(len(mail.outbox), 1)
+        message = mail.outbox[0]
+        self.assertIn(f"{username}@goauthentik.io", message.to[0])
+        self.assertEqual(message.subject, "Welcome to authentik")
+        self.assertIn(username, message.alternatives[0][0])
