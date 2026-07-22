@@ -2,31 +2,31 @@
  * @file Display the current usage and license status of Enterprise licenses.
  */
 
-import "#elements/ak-progress-bar";
+import "#elements/Progress";
+import "#elements/Label";
 
 import { AKElement } from "#elements/Base";
-import { PFColor } from "#elements/Label";
 
 import { LicenseForecast, LicenseSummary, LicenseSummaryStatusEnum } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { css, CSSResult, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
-import { classMap } from "lit/directives/class-map.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
-import PFProgress from "@patternfly/patternfly/components/Progress/progress.css";
 import PFSplit from "@patternfly/patternfly/layouts/Split/split.css";
+import PFStack from "@patternfly/patternfly/layouts/Stack/stack.css";
 
-const badgeDetails = new Map<LicenseSummaryStatusEnum, [PFColor, string]>([
-    [LicenseSummaryStatusEnum.Expired, [PFColor.Red, msg("Expired")]],
-    [LicenseSummaryStatusEnum.ExpirySoon, [PFColor.Orange, msg("Expiring soon")]],
-    [LicenseSummaryStatusEnum.Unlicensed, [PFColor.Gray, msg("Unlicensed")]],
-    [LicenseSummaryStatusEnum.ReadOnly, [PFColor.Red, msg("Read Only")]],
-    [LicenseSummaryStatusEnum.LimitExceededAdmin, [PFColor.Orange, msg("User Count Exceeded")]],
-    [LicenseSummaryStatusEnum.LimitExceededUser, [PFColor.Red, msg("User Count Exceeded")]],
-    [LicenseSummaryStatusEnum.Valid, [PFColor.Green, msg("Valid")]],
+const badgeDetails = new Map<LicenseSummaryStatusEnum, [string, string]>([
+    [LicenseSummaryStatusEnum.Expired, ["red", msg("Expired")]],
+    [LicenseSummaryStatusEnum.ExpirySoon, ["orange", msg("Expiring soon")]],
+    [LicenseSummaryStatusEnum.Unlicensed, ["gray", msg("Unlicensed")]],
+    [LicenseSummaryStatusEnum.ReadOnly, ["red", msg("Read Only")]],
+    [LicenseSummaryStatusEnum.LimitExceededAdmin, ["orange", msg("User Count Exceeded")]],
+    [LicenseSummaryStatusEnum.LimitExceededUser, ["red", msg("User Count Exceeded")]],
+    [LicenseSummaryStatusEnum.Valid, ["green", msg("Valid")]],
 ]);
 
 const Styles = css`
@@ -37,13 +37,13 @@ const Styles = css`
 
 @customElement("ak-enterprise-status-card")
 export class EnterpriseStatusCard extends AKElement {
-    static readonly styles: CSSResult[] = [PFDescriptionList, PFCard, PFSplit, PFProgress, Styles];
+    static readonly styles: CSSResult[] = [PFDescriptionList, PFCard, PFSplit, PFStack, Styles];
 
     @property({ attribute: false })
-    public forecast?: LicenseForecast;
+    forecast?: LicenseForecast;
 
     @property({ attribute: false })
-    public summary?: LicenseSummary;
+    summary?: LicenseSummary;
 
     protected renderSummaryBadge() {
         const summary = this.summary?.status;
@@ -52,7 +52,7 @@ export class EnterpriseStatusCard extends AKElement {
         const status = badgeDetails.get(summary);
         if (!status) return nothing;
 
-        return html`<ak-label color=${status[0]}>${status[1]}</ak-label>`;
+        return html`<ak-label color="pf-m-${status[0]}">${status[1]}</ak-label>`;
     }
 
     protected calcUserPercentage(licensed: number, current: number) {
@@ -75,17 +75,17 @@ export class EnterpriseStatusCard extends AKElement {
 
         const progressBar = (label: string, current: number, allowed: number) => {
             const percentage = licensed ? this.calcUserPercentage(allowed, current) : 0;
-            const severity = classMap({
-                "pf-m-success": licensed && percentage <= 80,
-                "pf-m-warning": licensed && percentage > 80 && percentage <= 100,
-                "pf-m-danger": licensed && percentage > 100,
-            });
+            const severity = licensed
+                ? (percentage <= 80 && "success") ||
+                  (percentage > 80 && percentage <= 100 && "warning") ||
+                  (percentage > 100 && "danger")
+                : undefined;
 
             return html`
-                <ak-progress-bar class="${severity}" value=${percentage}>
-                    <span slot="description">${label} (${current} / ${allowed})</span>
+                <ak-progress severity=${ifDefined(severity)} value=${percentage}>
+                    <span slot="label">${label} (${current} / ${allowed})</span>
                     <span slot="status"> ${percentage < Infinity ? `${percentage}` : "∞"}% </span>
-                </ak-progress-bar>
+                </ak-progress>
             `;
         };
 
@@ -107,17 +107,18 @@ export class EnterpriseStatusCard extends AKElement {
                             </dd>
                         </div>
                     </dl>
-                    <div class="pf-l-split__item pf-m-fill">
-                        ${progressBar(
-                            msg("Internal user usage"),
-                            currentInternalUsers,
-                            licensedInternalUsers,
-                        )}
-                        ${progressBar(
-                            msg("External user usage"),
-                            currentExternalUsers,
-                            licensedExternalUsers,
-                        )}
+                        <div class="pf-l-stack pf-m-gutter">
+                            ${progressBar(
+                                msg("Internal user usage"),
+                                currentInternalUsers,
+                                licensedInternalUsers
+                            )}
+                            ${progressBar(
+                                msg("External user usage"),
+                                currentExternalUsers,
+                                licensedExternalUsers
+                            )}
+                        </div>
                     </div>
                 </div>
             </div>

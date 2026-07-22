@@ -119,6 +119,10 @@ export const styles = css`
         pointer-events: none;
     }
 
+    [part="label"] {
+        user-select: none;
+    }
+
     [part="icon"] + [part="label"],
     [part="label"] + [part="icon"] {
         margin-left: var(--pf-c-toggle-group__icon--text--MarginLeft);
