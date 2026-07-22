@@ -143,6 +143,8 @@ export class OAuth2ProviderViewPage extends AKElement {
             })
             .then((response) => {
                 this.dcrConfig = response.results[0] ?? null;
+            }).catch(() => {
+                this.dcrConfig = null;
             });
     }
 
