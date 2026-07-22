@@ -32,7 +32,7 @@
     "devDependencies": {
         "@docusaurus/theme-common": "^3.10.1",
         "@docusaurus/theme-search-algolia": "^3.10.1",
-        "@docusaurus/types": "^3.10.1",
+        "@docusaurus/types": "^3.10.2",
         "@eslint/js": "catalog:",
         "@goauthentik/eslint-config": "link:../eslint-config",
         "@goauthentik/prettier-config": "link:../prettier-config",
@@ -50,7 +50,7 @@
     "peerDependencies": {
         "@docusaurus/theme-common": "^3.10.1",
         "@docusaurus/theme-search-algolia": "^3.10.1",
-        "@docusaurus/types": "^3.10.1",
+        "@docusaurus/types": "^3.10.2",
         "react": ">=19",
         "react-dom": ">=19"
     },
