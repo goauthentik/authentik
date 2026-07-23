@@ -10,6 +10,7 @@ import "#elements/Progress";
 import "#elements/Label";
 
 import { AKElement } from "#elements/Base";
+import { ifPresent } from "#elements/utils/attributes";
 
 import { LicenseForecast, LicenseSummary, LicenseSummaryStatusEnum } from "@goauthentik/api";
 
@@ -19,7 +20,6 @@ import { match } from "ts-pattern";
 import { msg, str } from "@lit/localize";
 import { css, CSSResult, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
 
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
@@ -116,7 +116,7 @@ export class EnterpriseStatusCard extends AKElement {
                 : null;
 
             return html`
-                <ak-progress severity="${ifDefined(severity)}" value=${percentage}>
+                <ak-progress value=${percentage} severity=${ifPresent(severity)}>
                     <span slot="label">${label} (${current} / ${allowed})</span>
                     <span slot="status"> ${percentage < Infinity ? `${percentage}` : "∞"}% </span>
                 </ak-progress>
