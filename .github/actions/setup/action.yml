@@ -52,17 +52,46 @@ runs:
       run: uv sync --all-extras --dev --frozen
     - name: Setup node
       if: ${{ contains(inputs.dependencies, 'node') }}
+<<<<<<< HEAD
       uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v4
       with:
         node-version-file: ${{ inputs.working-directory }}web/package.json
         cache: "npm"
         cache-dependency-path: ${{ inputs.working-directory }}web/package-lock.json
         registry-url: 'https://registry.npmjs.org'
+=======
+      uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # v6.0.9
+      with:
+        package_json_file: ${{ inputs.working-directory }}package.json
+    - name: Pin pnpm store directory
+      if: ${{ contains(inputs.dependencies, 'node') }}
+      shell: bash
+      run: |
+        echo "PNPM_HOME=${RUNNER_TEMP}/pnpm-home" >> "$GITHUB_ENV"
+        echo "npm_config_store_dir=${RUNNER_TEMP}/pnpm-home/store" >> "$GITHUB_ENV"
+    - name: Setup node (root, web)
+      if: ${{ contains(inputs.dependencies, 'node') }}
+      uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v4
+      with:
+        node-version-file: ${{ inputs.working-directory }}package.json
+        cache: pnpm
+        cache-dependency-path: |
+          ${{ inputs.working-directory }}pnpm-lock.yaml
+          ${{ inputs.working-directory }}web/pnpm-lock.yaml
+    - name: Install node dependencies (root, web)
+      if: ${{ contains(inputs.dependencies, 'node') }}
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      run: |
+        pnpm install --frozen-lockfile
+        pnpm --dir web install --frozen-lockfile
+>>>>>>> 3d54bd41e (ci: add working dir prefix to file paths (#24319))
     - name: Setup go
       if: ${{ contains(inputs.dependencies, 'go') }}
       uses: actions/setup-go@7a3fe6cf4cb3a834922a1244abfce67bcef6a0c5 # v5
       with:
         go-version-file: "${{ inputs.working-directory }}go.mod"
+        cache-dependency-path: "${{ inputs.working-directory }}go.mod"
     - name: Setup docker cache
       if: ${{ contains(inputs.dependencies, 'runtime') }}
       uses: AndreKurait/docker-cache@0fe76702a40db986d9663c24954fc14c6a6031b7
