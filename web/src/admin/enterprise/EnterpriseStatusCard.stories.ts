@@ -1,4 +1,4 @@
-import "./EnterpriseStatusCard.js";
+import "./EnterpriseStatusCard";
 
 import { LicenseForecast, LicenseSummary, LicenseSummaryStatusEnum } from "@goauthentik/api";
 
