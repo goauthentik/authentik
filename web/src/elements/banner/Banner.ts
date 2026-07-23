@@ -1,21 +1,20 @@
 import { AKElement } from "#elements/Base";
+import { SlottedTemplateResult } from "#elements/types";
+
+import {
+    P4BannerDispositionClassName,
+    P4BannerDispositionIconClassName,
+    P4Disposition,
+} from "#styles/patternfly/constants";
 
 import { msg } from "@lit/localize";
-import { css, html, nothing } from "lit";
+import { css, html } from "lit";
+import { guard } from "lit-html/directives/guard.js";
 import { customElement, property, state } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 
 import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
-
-/**
- * PatternFly banner color modifiers, named by severity. Maps onto the blue/gold/red
- * scheme used for update/expiry/security notices.
- */
-export enum BannerLevel {
-    Info = "pf-m-blue",
-    Warning = "pf-m-gold",
-    Danger = "pf-m-red",
-}
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
 
 /**
  * @class Banner
@@ -33,13 +32,30 @@ export enum BannerLevel {
  */
 @customElement("ak-banner")
 export class Banner extends AKElement {
+    static styles = [
+        PFBanner,
+        PFButton,
+        css`
+            .pf-c-banner {
+                align-items: center;
+                position: relative;
+                display: flex;
+                gap: var(--pf-global--spacer--sm);
+            }
+
+            [part="content"] {
+                flex: 1 1 auto;
+                display: block;
+            }
+        `,
+    ];
     /**
      * Severity of the banner, controlling its color.
      *
      * @attr
      */
-    @property()
-    level: BannerLevel = BannerLevel.Warning;
+    @property({ type: String })
+    public level: P4Disposition = P4Disposition.Warning;
 
     /**
      * Whether the banner sticks to the top of the viewport.
@@ -47,7 +63,7 @@ export class Banner extends AKElement {
      * @attr
      */
     @property({ type: Boolean })
-    sticky = true;
+    public sticky = true;
 
     /**
      * Optional call-to-action link, rendered after the message. Provided as
@@ -59,10 +75,15 @@ export class Banner extends AKElement {
      * @attr
      */
     @property({ attribute: "action-href" })
-    actionHref?: string;
+    public actionHref: string | null = null;
 
+    /**
+     * Label for the call-to-action link. Omit to render no link.
+     *
+     * @attr
+     */
     @property({ attribute: "action-label" })
-    actionLabel?: string;
+    public actionLabel: string | null = null;
 
     /**
      * When set, renders a dismiss button and remembers the dismissal under this
@@ -71,38 +92,16 @@ export class Banner extends AKElement {
      * @attr
      */
     @property({ attribute: "dismiss-key" })
-    dismissKey?: string;
+    public dismissKey: string | null = null;
 
     @state()
     protected dismissed = false;
 
-    static styles = [
-        PFBanner,
-        css`
-            .pf-c-banner {
-                position: relative;
-            }
-            .pf-c-banner a {
-                margin-inline-start: 0.25rem;
-            }
-            button {
-                position: absolute;
-                top: 50%;
-                right: var(--pf-global--spacer--md, 1rem);
-                transform: translateY(-50%);
-                padding: 0;
-                background: transparent;
-                border: 0;
-                color: inherit;
-                cursor: pointer;
-            }
-        `,
-    ];
-
-    connectedCallback(): void {
+    public override connectedCallback(): void {
         super.connectedCallback();
+
         if (this.dismissKey) {
-            this.dismissed = localStorage.getItem(this.storageKey) === "1";
+            this.dismissed = localStorage.getItem(this.storageKey) !== null;
         }
     }
 
@@ -110,36 +109,52 @@ export class Banner extends AKElement {
         return `ak-banner-dismissed:${this.dismissKey}`;
     }
 
-    private dismiss(): void {
+    private dismiss = (): void => {
         this.dismissed = true;
+
         if (this.dismissKey) {
-            localStorage.setItem(this.storageKey, "1");
+            localStorage.setItem(this.storageKey, Date.now().toString());
         }
-    }
+    };
 
-    render() {
-        if (this.dismissed) return nothing;
+    protected override render(): SlottedTemplateResult {
+        const { dismissed, dismissKey, level, sticky, actionHref, actionLabel } = this;
 
-        return html`<div
-            class=${classMap({
-                "pf-c-banner": true,
-                "pf-m-sticky": this.sticky,
-                [this.level]: true,
-            })}
-        >
-            <slot></slot>${this.actionHref && this.actionLabel
-                ? html`<a href=${this.actionHref}>${this.actionLabel}</a>`
-                : nothing}
-            ${this.dismissKey
-                ? html`<button
-                      part="dismiss"
-                      @click=${() => this.dismiss()}
-                      aria-label=${msg("Dismiss", { id: "banner.dismiss.aria-label" })}
-                  >
-                      <i class="fas fa-times" aria-hidden="true"></i>
-                  </button>`
-                : nothing}
-        </div>`;
+        return guard([dismissed, level, sticky, actionHref, actionLabel], () => {
+            if (dismissed) return null;
+
+            const dispositionClass = P4BannerDispositionClassName[level];
+            const iconClass = P4BannerDispositionIconClassName[level];
+
+            return html`<div
+                class=${classMap({
+                    "pf-c-banner": true,
+                    "pf-m-sticky": sticky,
+                    [dispositionClass]: true,
+                })}
+            >
+                <span class="pf-c-banner__icon" part="icon">
+                    <i class=${iconClass} aria-hidden="true"></i>
+                </span>
+                <div class="pf-c-banner__content" part="content">
+                    <slot></slot>
+                    ${actionHref && actionLabel
+                        ? html`<a part="action-link" href=${actionHref}>${actionLabel}</a>`
+                        : null}
+                </div>
+                ${dismissKey
+                    ? html`<button
+                          part="dismiss-button"
+                          class="pf-c-button ${dispositionClass}"
+                          type="button"
+                          aria-label=${msg("Dismiss banner", { id: "banner.dismiss.aria-label" })}
+                          @click=${this.dismiss}
+                      >
+                          <i class="fas fa-times" aria-hidden="true"></i>
+                      </button>`
+                    : null}
+            </div>`;
+        });
     }
 }
 
