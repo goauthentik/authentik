@@ -238,7 +238,7 @@ impl Workers {
     }
 
     #[instrument(skip_all)]
-    async fn are_alive(&self) -> bool {
+    pub(crate) async fn are_alive(&self) -> bool {
         for worker in self.0.lock().await.iter_mut() {
             if !worker.is_alive() {
                 return false;

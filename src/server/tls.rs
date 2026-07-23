@@ -66,7 +66,7 @@ pub(super) async fn watch_tls_config(arbiter: Arbiter, config: RustlsConfig) -> 
 
 #[derive(Debug)]
 struct CertResolver {
-    core_resolver: brands::tls::CertResolver,
+    core_resolver: brands::tls::BrandCertResolver,
     proxy_resolver: Option<ProxyOutpost>,
     fallback: Arc<CertifiedKey>,
 }

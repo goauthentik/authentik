@@ -22,11 +22,11 @@ struct Brand {
 }
 
 #[derive(Debug)]
-pub(crate) struct CertResolver {
+pub(crate) struct BrandCertResolver {
     brands: Vec<Brand>,
 }
 
-impl CertResolver {
+impl BrandCertResolver {
     pub(crate) fn resolve(&self, client_hello: &ClientHello<'_>) -> Option<Arc<CertifiedKey>> {
         let server_name = client_hello.server_name()?;
         let mut best = None;
@@ -44,7 +44,7 @@ impl CertResolver {
     }
 }
 
-pub(crate) async fn make_cert_managers() -> Result<(CertResolver, RootCertStore)> {
+pub(crate) async fn make_cert_managers() -> Result<(BrandCertResolver, RootCertStore)> {
     #[derive(sqlx::FromRow)]
     struct BrandRow {
         brand_uuid: uuid::Uuid,
@@ -126,7 +126,7 @@ pub(crate) async fn make_cert_managers() -> Result<(CertResolver, RootCertStore)
     .await??;
 
     Ok((
-        CertResolver {
+        BrandCertResolver {
             brands: brands.into_values().collect(),
         },
         roots,
