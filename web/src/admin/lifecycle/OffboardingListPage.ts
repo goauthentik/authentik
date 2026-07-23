@@ -1,5 +1,4 @@
 import "#admin/lifecycle/LifecyclePreviewBanner";
-import "#admin/rbac/ObjectPermissionModal";
 import "#components/ak-status-label";
 import "#components/ak-switch-input";
 import "#elements/buttons/SpinnerButton/index";
@@ -7,6 +6,7 @@ import "#elements/forms/DeleteBulkForm";
 import "#elements/timestamp/ak-timestamp";
 
 import { aki } from "#common/api/client";
+import { me } from "#common/users";
 
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
@@ -14,7 +14,7 @@ import { SlottedTemplateResult } from "#elements/types";
 
 import { offboardingActionLabel, OffboardingStatus } from "#admin/lifecycle/utils";
 
-import { LifecycleApi, ModelEnum, OffboardingStatusEnum, UserOffboarding } from "@goauthentik/api";
+import { LifecycleApi, OffboardingStatusEnum, UserOffboarding } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html, TemplateResult } from "lit";
@@ -38,6 +38,25 @@ export class OffboardingListPage extends TablePage<UserOffboarding> {
 
     @state()
     showOnlyPending = true;
+
+    @state()
+    protected currentUserPk?: number;
+
+    public connectedCallback(): void {
+        super.connectedCallback();
+        me().then((session) => {
+            this.currentUserPk = session.user.pk;
+        });
+    }
+
+    // Shared by the bulk and per-row cancel paths so they stay in sync.
+    #cancelOffboarding = (item: UserOffboarding) =>
+        aki(LifecycleApi).lifecycleUserOffboardingDestroy({ id: item.id });
+
+    #cancelMetadata = (item: UserOffboarding) => [
+        { key: msg("User"), value: item.userObj.username },
+        { key: msg("Action"), value: offboardingActionLabel(item.action) },
+    ];
 
     protected async apiEndpoint(): Promise<PaginatedResponse<UserOffboarding>> {
         return aki(LifecycleApi).lifecycleUserOffboardingList({
@@ -81,18 +100,34 @@ export class OffboardingListPage extends TablePage<UserOffboarding> {
         return html`<ak-forms-delete-bulk
             object-label=${msg("Offboarding(s)")}
             action=${msg("canceled")}
-            button-label=${msg("Cancel")}
+            button-label=${msg("Cancel Offboardings")}
             .objects=${this.selectedElements}
-            .delete=${(item: UserOffboarding) =>
-                aki(LifecycleApi).lifecycleUserOffboardingDestroy({ id: item.id })}
-            .metadata=${(item: UserOffboarding) => [
-                { key: msg("User"), value: item.userObj.username },
-                { key: msg("Action"), value: offboardingActionLabel(item.action) },
-            ]}
+            .delete=${this.#cancelOffboarding}
+            .metadata=${this.#cancelMetadata}
         >
             <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-danger">
-                ${msg("Cancel")}
+                ${msg("Cancel Offboardings")}
             </button>
+        </ak-forms-delete-bulk>`;
+    }
+
+    protected renderRowActions(item: UserOffboarding): SlottedTemplateResult {
+        // Only a pending offboarding can be cancelled, and never your own — the
+        // backend enforces both, so hide the control rather than offer a dead 403.
+        const cancelable =
+            item.status === OffboardingStatusEnum.Pending && item.user !== this.currentUserPk;
+        if (!cancelable) {
+            return html`${msg("-")}`;
+        }
+        return html`<ak-forms-delete-bulk
+            object-label=${msg("Offboarding(s)")}
+            action=${msg("canceled")}
+            button-label=${msg("Cancel Offboarding")}
+            .objects=${[item]}
+            .delete=${this.#cancelOffboarding}
+            .metadata=${this.#cancelMetadata}
+        >
+            <button slot="trigger" class="pf-c-button pf-m-secondary">${msg("Cancel")}</button>
         </ak-forms-delete-bulk>`;
     }
 
@@ -103,11 +138,7 @@ export class OffboardingListPage extends TablePage<UserOffboarding> {
             html`<ak-timestamp .timestamp=${item.scheduledAt} datetime></ak-timestamp>`,
             OffboardingStatus({ status: item.status }),
             item.createdByObj?.username ?? msg("-"),
-            html`<ak-rbac-object-permission-modal
-                model=${ModelEnum.AuthentikLifecycleUseroffboarding}
-                objectPk=${item.id}
-            >
-            </ak-rbac-object-permission-modal>`,
+            this.renderRowActions(item),
         ];
     }
 }
