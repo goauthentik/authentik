@@ -4,13 +4,22 @@ sidebar_label: Microsoft 365 (WS-Federation)
 support_level: community
 toc_max_heading_level: 5
 authentik_version: "2026.8"
+authentik_enterprise: true
 ---
 
-## What is Microsoft365?
+## What is Microsoft 365?
 
-> Microsoft 365 is the cloud productivity platform that delivers Office applications, Teams collaboration, and identity services from Microsoft's global infrastructure.
+> Microsoft 365 is a cloud-based productivity platform that includes applications and services such as Word, Excel, Outlook, OneDrive, and Teams.
 >
-> -- https://microsoft365.com/
+> -- https://www.microsoft.com/microsoft-365
+
+Microsoft Entra ID supports federated domain sign-in with either WS-Federation or SAML 2.0. This guide uses WS-Federation with SAML 1.1 assertions, similar to an AD FS federation. To use SAML 2.0 instead, follow the [Microsoft 365 SAML integration guide](../microsoft-saml/).
+
+:::warning Passive authentication only
+
+The authentik WS-Federation provider supports browser-based passive authentication. It does not provide WS-Trust active authentication or Metadata Exchange (MEX) endpoints. Clients must support browser-based authentication.
+
+:::
 
 ## Preparation
 
@@ -23,44 +32,47 @@ The following placeholders are used in this guide:
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
+This integration requires an authentik Enterprise license. You also need:
+
+- An administrator account in authentik.
+- A Microsoft Entra administrator account that can update users and configure domain federation.
+- A custom domain that is added to and verified in Microsoft Entra ID. The default `onmicrosoft.com` domain cannot be federated.
+- A signing certificate in authentik.
+- A known immutable identifier for every user who signs in through the federated domain.
+
+:::warning Domain-wide sign-in change
+
+Federating a domain changes authentication for every user in that domain. Keep a cloud-only administrator account on the tenant's `onmicrosoft.com` domain so that you can access Microsoft Entra ID if federation is unavailable.
+
+:::
+
 ## authentik configuration
 
-To support the integration of Microsoft 365 with authentik via WS-Federation, you need to:
+To support the integration of Microsoft 365 with authentik via WS-Federation, create the required property mappings and an application/provider pair.
 
-1. Create a property mapping for users' immutable identifier in authentik.
-2. Create a property mapping for the `IDPEmail` claim in authentik.
-3. Create a property mapping for MFA. (_optional_)
-4. Create an application/provider pair in authentik.
-5. Download a certificate file.
+### Create the immutable ID mapping
 
-### 1. Property mapping for users' immutable identifier
+Microsoft Entra ID uses an immutable identifier, also called the source anchor, to match the user in a SAML assertion to the corresponding Microsoft Entra user.
 
-Microsoft Entra ID requires a unique and [immutable identifier (called `ImmutableId` or `sourceAnchor`)](https://learn.microsoft.com/en-us/entra/identity/hybrid/connect/plan-connect-design-concepts#sourceanchor) for each user during WS-Federation-based federation. This identifier is sent as the SAML1.1 `NameID` attribute and must match the `ImmutableId` value configured in Entra for each user.
+For users synchronized by Microsoft Entra Connect, use the same source anchor that Entra Connect uses. Newer deployments commonly use `mS-DS-ConsistencyGuid`, while older deployments can use `objectGUID`. Store its base64-encoded value in an authentik user attribute such as `entra_immutable_id` during directory synchronization.
 
-#### For users synchronized from Active Directory
-
-If you are using an [Active Directory source](/docs/users-sources/sources/directory-sync/active-directory/) in authentik, the immutable identifier is typically the base64-encoded `objectGUID` from Active Directory. You will need to create a property mapping on your Active Directory source in authentik that stores this value in a custom user attribute, for example: `entra_immutable_id`.
-
-#### For cloud-only users
-
-If your users aren't synchronized from Active Directory and only exist in authentik, you can use any unique and stable identifier such as the user's UUID or user principal name (UPN). The simplest option is to use the user's email address as long as it matches the user's Microsoft Entra UPN. You will also need to configure the `ImmutableId` in Entra ID to match the identifier that authentik sends.
-
-#### Create a property mapping in authentik for `ImmutableId`
+For cloud-only users whose authentik email address matches their Microsoft Entra user principal name (UPN), you can use their email address if it will not change.
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Customization** > **Property Mappings** and click **Create**.
     - **Select type**: select **SAML Provider Property Mapping**.
-    - **Configure the SAML Provider Property Mapping**: provide a descriptive name (e.g. `Microsoft Entra Immutable ID`), and, optionally a friendly name.
+    - **Configure the SAML Provider Property Mapping**: provide a descriptive name, such as `Microsoft Entra Immutable ID`.
         - **SAML Attribute Name**: `ImmutableID`
-        - **Expression for users synchronized from Active Directory**:
+        - **Expression**: use the expression that matches your user source.
+
+        For users synchronized from Active Directory with the source anchor stored in `entra_immutable_id`:
 
         ```python showLineNumbers
-        # For users synchronized from Active Directory with the 'entra_immutable_id' attribute.
-        # Replace 'entra_immutable_id' with whatever you set this attribute's name to.
+        # Replace entra_immutable_id if your directory source uses a different attribute.
         return user.attributes.get("entra_immutable_id", "")
         ```
 
-        - **Expression for cloud-only users whose authentik email address matches their Entra UPN**:
+        For cloud-only users whose authentik email address matches their Microsoft Entra UPN:
 
         ```python showLineNumbers
         return user.email
@@ -68,43 +80,40 @@ If your users aren't synchronized from Active Directory and only exist in authen
 
 3. Click **Finish** to save the property mapping.
 
-This mapping is used as the provider's **NameID Property Mapping**, so the `NameID` sent to Microsoft Entra ID matches the user's `ImmutableId`.
+The provider uses this mapping as its **NameID Property Mapping**. In a SAML 1.1 assertion, authentik places the resulting value in the `NameIdentifier` element.
 
-### 2. Property mapping for `IDPEmail`
+### Create the `IDPEmail` mapping
 
-Microsoft Entra ID also expects an `IDPEmail` attribute in the SAML assertion. This value must match the user's Microsoft Entra `UserPrincipalName` (UPN).
+Microsoft Entra ID uses the `IDPEmail` claim to identify the user's UPN.
 
-#### Create a property mapping in authentik for `IDPEmail`
-
-1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Customization** > **Property Mappings** and click **Create**.
+1. In the authentik Admin interface, navigate to **Customization** > **Property Mappings** and click **Create**.
+2. Configure the mapping:
     - **Select type**: select **SAML Provider Property Mapping**.
-    - **Configure the SAML Provider Property Mapping**: provide a descriptive name (e.g. `Microsoft Entra IDPEmail`), and, optionally a friendly name.
+    - **Configure the SAML Provider Property Mapping**: provide a descriptive name, such as `Microsoft Entra IDPEmail`.
         - **SAML Attribute Name**: `IDPEmail`
         - **Expression**:
 
         ```python showLineNumbers
-        # For users synchronized from Active Directory, prefer the stored UPN.
+        # Prefer the synchronized UPN, then fall back to the authentik email address.
         return user.attributes.get("upn", user.email)
         ```
 
 3. Click **Finish** to save the property mapping.
 
-### 3. Property mapping for MFA
+### Configure the federated MFA claim _(optional)_
 
-If MFA is configured in Microsoft 365, you also need to create a property mapping for `AuthnContextClassRef` to ensure Entra ID recognizes that MFA was already performed. Without this mapping, users may be prompted to authenticate twice or register an MFA device in Entra ID.
+Microsoft Entra ID can accept MFA performed by authentik when the SAML 1.1 authentication statement contains the `multipleauthn` authentication method.
 
-Whether Entra ID accepts the federated MFA claim depends on your tenant's security configuration:
+:::warning MFA assertion
 
-- If **Security defaults** are enabled, Entra ID will ignore federated MFA claims and require users to register an Entra ID MFA device regardless. You must disable Security defaults for federated MFA to work.
-- If you're using **Conditional Access policies**, ensure they're configured to trust external MFA. Otherwise, users will still be prompted to set up an Entra ID MFA device even when authenticating through the federated identity provider.
+The mapping in this section unconditionally tells Microsoft Entra ID that authentik performed MFA. Only use it when the authorization flow assigned to this provider requires MFA for every user.
 
-#### Create a property mapping in authentik for `AuthnContextClassRef`
+:::
 
-1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Customization** > **Property Mappings** and click **Create**.
+1. In the authentik Admin interface, navigate to **Customization** > **Property Mappings** and click **Create**.
+2. Configure the mapping:
     - **Select type**: select **SAML Provider Property Mapping**.
-    - **Configure the SAML Provider Property Mapping**: provide a descriptive name (e.g. `Microsoft Entra AuthnContextClassRef`), and, optionally a friendly name.
+    - **Configure the SAML Provider Property Mapping**: provide a descriptive name, such as `Microsoft Entra MFA authentication method`.
         - **SAML Attribute Name**: `AuthnContextClassRef`
         - **Expression**:
 
@@ -114,56 +123,52 @@ Whether Entra ID accepts the federated MFA claim depends on your tenant's securi
 
 3. Click **Finish** to save the property mapping.
 
-### 4. Create an application and provider in authentik
+### Create an application and provider
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
-    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Take note of the **Slug** as it will be required later.
-    - **Choose a Provider type**: select **WS-Federation Provider** as the provider type.
-    - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
-        - Set the **Reply URL** to `https://login.microsoftonline.com/login.srf`.
-        - Set the **Realm** to `urn:federation:MicrosoftOnline`.
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Note the **Slug** value because it is required later.
+    - **Choose a Provider type**: select **WS-Federation Provider**.
+    - **Configure the Provider**: provide a name, select an authorization flow, and configure the following settings:
+        - **Reply URL**: `https://login.microsoftonline.com/login.srf`
+        - **Realm**: `urn:federation:MicrosoftOnline`
         - Under **Advanced protocol settings**:
-            - Set **Signing Certificate** to use an available certificate.
-            - Under **Property Mappings**, remove all the default **Selected User Property Mappings** and add the `IDPEmail`, `Immutable ID`, and `AuthnContextClassRef` property mappings created in the previous section.
-            - Set **NameID Property Mapping** to the `Microsoft Entra Immutable ID` property mapping created in the previous section.
-            - If you created the MFA property mapping, set **AuthnContextClassRef Property Mapping** to the `AuthnContextClassRef` property mapping created in the previous section.
-            - Set **SAML assertion version** to `SAML 1.1`.
+            - **Signing Certificate**: select an available certificate.
+            - **Property mappings**: remove the default selected mappings, then add the `Microsoft Entra Immutable ID` and `Microsoft Entra IDPEmail` mappings.
+            - **NameID Property Mapping**: select `Microsoft Entra Immutable ID`.
+            - **AuthnContextClassRef Property Mapping**: if you created the optional MFA mapping, select `Microsoft Entra MFA authentication method`.
+            - **SAML assertion version**: select **SAML 1.1**.
     - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 
-3. Click **Create Application** to save the new application and provider.
+3. Click **Create Application** to save the application and provider.
 
-### 5. Download certificate file
+### Download the signing certificate
 
-1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Applications** > **Providers** and click on the name of the WS-Federation provider that you created in the previous section.
-3. Under **Related objects** > **Download signing certificate**, click **Download**. This downloaded `.pem` file is your certificate file and is required in the next section.
+1. In the authentik Admin interface, navigate to **Applications** > **Providers** and open the WS-Federation provider that you created.
+2. Under **Related objects** > **Download signing certificate**, click **Download**.
+3. Save the downloaded PEM file. You need its path when configuring Microsoft Entra ID.
 
 ## Microsoft 365 configuration
 
-You must use the [Microsoft Graph PowerShell](https://learn.microsoft.com/en-us/powershell/microsoftgraph/) module to federate your Microsoft Entra domain with authentik. The module can be installed by running the following PowerShell command:
+Use Microsoft Graph PowerShell to set each user's immutable ID and federate the Microsoft Entra domain with authentik.
+
+Install the Microsoft Graph PowerShell SDK:
 
 ```powershell
 Install-Module Microsoft.Graph -Scope CurrentUser
 ```
 
-### Set user `ImmutableId` values
+### Set user immutable IDs
 
-Before configuring federation, you need to set the `ImmutableId` for each user in Entra ID to match the identifier that authentik will send.
+The immutable ID stored in Microsoft Entra ID must exactly match the value returned by the authentik **NameID Property Mapping**.
 
-#### For users synchronized from Active Directory
+For users synchronized by Microsoft Entra Connect, the `OnPremisesImmutableId` value is managed by Entra Connect. Verify that your authentik mapping returns the same source anchor and do not update these users with the commands below.
 
-If you're synchronizing users from Active Directory to authentik, the `ImmutableId` should already be set by Microsoft Entra Connect (typically from the `objectGUID`). Verify this is configured correctly before proceeding with federation.
-
-#### For cloud-only users
-
-If your users aren't synchronized from Active Directory and only exist in authentik, run the following PowerShell commands:
+For cloud-only users whose UPN is the identifier returned by authentik, run the following commands:
 
 ```powershell showLineNumbers
-# 1. Connect to Microsoft Graph
 Connect-MgGraph -Scopes "User.ReadWrite.All"
 
-# 2. Set ImmutableId for all users in the domain
 $users = Get-MgUser `
     -All `
     -Filter "endsWith(userPrincipalName,'@domain.company')" `
@@ -174,68 +179,55 @@ $users = Get-MgUser `
 foreach ($user in $users) {
     if ($user.UserPrincipalName -and $user.OnPremisesSyncEnabled -ne $true) {
         Update-MgUser -UserId $user.Id -OnPremisesImmutableId $user.UserPrincipalName
-        Write-Host "Set ImmutableId for $($user.UserPrincipalName)"
+        Write-Host "Set immutable ID for $($user.UserPrincipalName)"
     } else {
-        Write-Host "Skipped $($user.UserPrincipalName) because the user is still synced from on-prem"
+        Write-Host "Skipped $($user.UserPrincipalName) because the user is synchronized from on-premises"
     }
 }
 
-# 3. Verify a user's ImmutableId
 Get-MgUser -UserId "user@domain.company" -Property UserPrincipalName,OnPremisesImmutableId |
     Format-List UserPrincipalName,OnPremisesImmutableId
 ```
 
-The `endsWith(...)` filter requires Microsoft Graph advanced query parameters. In Graph PowerShell, that means using both `-ConsistencyLevel eventual` and `-CountVariable` on `Get-MgUser`.
+The `endsWith(...)` filter requires Microsoft Graph advanced query parameters. The `-ConsistencyLevel eventual` and `-CountVariable` arguments enable those parameters.
 
-If you chose a different cloud-only identifier in authentik, replace `$user.UserPrincipalName` in the update command with the same stable value that your **NameID Property Mapping** returns.
+If the authentik **NameID Property Mapping** returns a different identifier, replace `$user.UserPrincipalName` in the update command with that value.
 
 ### Configure domain federation
 
-Run the following PowerShell commands to configure the federation between Microsoft Entra ID and authentik.
+Domain creation and DNS verification are outside the scope of this guide. Confirm that `domain.company` is already added and verified in Microsoft Entra ID before continuing.
 
-:::info Domain Verification
-Domain creation and DNS verification are outside the scope of this guide. Ensure your custom domain is already added and verified in Microsoft Entra ID before proceeding with this guide.
-:::
+Set the path in `$SigningCertificate` to the PEM file that you downloaded from authentik, then run the following commands:
 
 ```powershell showLineNumbers
-# 1. Connect to Microsoft Graph
-Connect-MgGraph -Scopes "Domain.ReadWrite.All", "Directory.AccessAsUser.All"
+Connect-MgGraph -Scopes "Domain-InternalFederation.ReadWrite.All"
 
-# 2. Define all variables
 $domain = "domain.company"
-$PassiveLogOnUri = "https://authentik.company/application/wsfed/"
-$LogOffUri = "https://authentik.company/application/wsfed/<application_slug>/"
-$IssuerUri = "https://authentik.company/application/saml/<application_slug>/metadata/"
-$MetadataExchangeUri = "https://authentik.company/application/wsfed/<application_slug>/metadata/"
-$ActiveSignInUri = "https://authentik.company/application/wsfed/"
-$SigningCert = (Get-Content "C:\path\to\authentik_certificate.pem" -Raw) `
-  -replace "-----BEGIN CERTIFICATE-----", "" `
-  -replace "-----END CERTIFICATE-----", "" `
-  -replace "\s", ""
-$DisplayName = $domain
-$FederatedIdpMfaBehavior = "acceptIfMfaDoneByFederatedIdp"
+$passiveSignInUri = "https://authentik.company/application/wsfed/<application_slug>/"
+$signOutUri = "https://authentik.company/application/wsfed/<application_slug>/"
+$issuerUri = "https://authentik.company/application/saml/<application_slug>/metadata/"
+$signingCertificate = (Get-Content "C:\path\to\authentik_certificate.pem" -Raw) `
+    -replace "-----BEGIN CERTIFICATE-----", "" `
+    -replace "-----END CERTIFICATE-----", "" `
+    -replace "\s", ""
 
-# 3. Configure the federation
-# Note: The backtick (`) at the end of each line is PowerShell's line continuation character. Make sure to not remove this character when copying the command below.
 New-MgDomainFederationConfiguration `
-  -DomainId $domain `
-  -PassiveSignInUri $PassiveLogOnUri `
-  -SignOutUri $LogOffUri `
-  -IssuerUri $IssuerUri `
-  -MetadataExchangeUri $MetadataExchangeUri `
-  -SigningCertificate $SigningCert `
-  -DisplayName $DisplayName `
-  -FederatedIdpMfaBehavior $FederatedIdpMfaBehavior `
-  -PreferredAuthenticationProtocol "wsFed" `
-  -ActiveSignInUri $ActiveSignInUri
+    -DomainId $domain `
+    -DisplayName $domain `
+    -IssuerUri $issuerUri `
+    -PassiveSignInUri $passiveSignInUri `
+    -PreferredAuthenticationProtocol "wsFed" `
+    -SignOutUri $signOutUri `
+    -SigningCertificate $signingCertificate
 ```
 
 ## Configuration verification
 
-To confirm that authentik is properly configured with Microsoft 365, log out of your Microsoft account, then attempt to log back in by visiting [Microsoft 365 Portal](https://m365.cloud.microsoft/) and clicking **Sign In**. Enter an email address in your federated domain, then click **Next**. You should be redirected to authentik and, once authenticated, redirected back to Microsoft and logged in.
+To confirm that authentik is properly configured with Microsoft 365, open Microsoft 365 and sign in with a user in the federated domain. Microsoft should redirect you to authentik and return you to Microsoft 365 after authentication.
 
 ## Resources
 
-- [Microsoft Learn - Add federation with SAML/WS-Fed identity providers](https://learn.microsoft.com/en-us/entra/external-id/direct-federation)
-- [Microsoft Learn - Satisfy Microsoft Entra ID multifactor authentication controls with MFA claims from a federated IdP](https://learn.microsoft.com/en-us/entra/identity/authentication/how-to-mfa-expected-inbound-assertions)
-- [Microsoft Graph PowerShell - Domain Federation Configuration](https://learn.microsoft.com/en-us/powershell/module/microsoft.graph.identity.directorymanagement/new-mgdomainfederationconfiguration)
+- [Microsoft Learn - Create an internal domain federation](https://learn.microsoft.com/en-us/graph/api/domain-post-federationconfiguration)
+- [Microsoft Learn - Design concepts for the Microsoft Entra source anchor](https://learn.microsoft.com/en-us/entra/identity/hybrid/connect/plan-connect-design-concepts#sourceanchor)
+- [Microsoft Learn - Satisfy Microsoft Entra MFA controls with claims from a federated IdP](https://learn.microsoft.com/en-us/entra/identity/authentication/how-to-mfa-expected-inbound-assertions)
+- [Microsoft Graph PowerShell - New-MgDomainFederationConfiguration](https://learn.microsoft.com/en-us/powershell/module/microsoft.graph.identity.directorymanagement/new-mgdomainfederationconfiguration)
