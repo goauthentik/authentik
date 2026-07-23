@@ -157,7 +157,7 @@ Locking password login blocks authentication through Password stages without dea
 
 You cannot lock password login for your own account.
 
-Resetting the user's password also unlocks password login. authentik records automatic and administrative lock and unlock actions in the user's **Events** tab.
+Changing or resetting the user's password does not unlock password login. authentik records automatic and administrative lock and unlock actions in the user's **Events** tab.
 
 ## Deactivate or delete a user
 

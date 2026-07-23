@@ -14,8 +14,6 @@ from authentik.core.models import (
 )
 from authentik.core.sources.stage import PLAN_CONTEXT_SOURCES_CONNECTION
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
-from authentik.enterprise.stages.password.lockout import lock_password_login
-from authentik.enterprise.tests import enterprise_test
 from authentik.events.models import Event, EventAction
 from authentik.flows.markers import StageMarker
 from authentik.flows.models import FlowStageBinding
@@ -97,13 +95,11 @@ class TestUserWriteStage(FlowTestCase):
             )
         )
 
-    @enterprise_test()
     def test_user_update(self):
         """Test update of existing user"""
         new_password = generate_key()
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
         user = User.objects.create(username="unittest", email="test@goauthentik.io")
-        lock_password_login(user)
         plan.context[PLAN_CONTEXT_PENDING_USER] = user
         plan.context[PLAN_CONTEXT_PROMPT] = {
             "username": "test-user-new",
@@ -128,7 +124,6 @@ class TestUserWriteStage(FlowTestCase):
         user_qs = User.objects.filter(username=plan.context[PLAN_CONTEXT_PROMPT]["username"])
         self.assertTrue(user_qs.exists())
         self.assertTrue(user_qs.first().check_password(new_password))
-        self.assertIsNone(user_qs.first().password_login_locked_at)
         self.assertEqual(user_qs.first().attributes["some"]["custom-attribute"], "test")
         self.assertEqual(user_qs.first().attributes["foo"], "bar")
         self.assertEqual(user_qs.first().attributes["some_custom_attribute"], "test")

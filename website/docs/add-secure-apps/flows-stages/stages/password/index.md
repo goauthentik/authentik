@@ -32,7 +32,7 @@ This stage is typically bound after an [Identification](../identification/index.
 
 If the [Identification stage](../identification/index.md) has its **Password stage** option set, the password prompt is rendered as part of the identification step and the Password stage should not also be bound separately in the same flow.
 
-With an Enterprise license, Password stages with a nonzero lockout threshold share one failure counter per user across flows and sessions, including password validation embedded in an Identification stage. Each failure is evaluated against the threshold of the Password stage handling that attempt. A successful password validation resets the counter. After lockout, an administrator must unlock password login or reset the user's password. Lockout is independent of reputation scores; reputation policies continue to operate separately.
+With an Enterprise license, Password stages with a nonzero lockout threshold share one failure counter per user across flows and sessions, including password validation embedded in an Identification stage. Each failure is evaluated against the threshold of the Password stage handling that attempt. A successful password validation resets the counter. After lockout, an administrator must unlock password login. Changing or resetting the user's password does not remove the lock. Lockout is independent of reputation scores; reputation policies continue to operate separately.
 
 Password login lockout does not deactivate the user, revoke sessions, or prevent authentication with other methods. For a comparison of the available controls, see [Control user access](../../../../users-sources/user/access-control.md).
 

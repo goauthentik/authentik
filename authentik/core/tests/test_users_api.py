@@ -129,11 +129,9 @@ class TestUsersAPI(APITestCase):
             {"type": ["Can't change internal service account to other user type."]},
         )
 
-    @enterprise_test()
     def test_set_password(self):
         """Test Direct password set"""
         self.client.force_login(self.admin)
-        lock_password_login(self.admin)
         new_pw = generate_key()
         response = self.client.post(
             reverse("authentik_api:user-set-password", kwargs={"pk": self.admin.pk}),
@@ -142,21 +140,6 @@ class TestUsersAPI(APITestCase):
         self.assertEqual(response.status_code, 204)
         self.admin.refresh_from_db()
         self.assertTrue(self.admin.check_password(new_pw))
-        self.assertIsNone(self.admin.password_login_locked_at)
-
-    @enterprise_test()
-    def test_set_password_resets_failed_attempts(self):
-        """Changing a password clears failures before the lockout threshold."""
-        self.client.force_login(self.admin)
-        UserPasswordLoginState.objects.create(user=self.admin, failed_attempts=1)
-
-        response = self.client.post(
-            reverse("authentik_api:user-set-password", kwargs={"pk": self.admin.pk}),
-            data={"password": generate_key()},
-        )
-
-        self.assertEqual(response.status_code, 204)
-        self.assertFalse(UserPasswordLoginState.objects.filter(user=self.admin).exists())
 
     @enterprise_test()
     def test_password_login_lock_actions(self):
@@ -278,17 +261,14 @@ class TestUsersAPI(APITestCase):
         self.assertEqual(response.status_code, 400)
         self.assertJSONEqual(response.content, {"password": ["This field may not be blank."]})
 
-    @enterprise_test()
     def test_set_password_hash(self):
         """Test setting a user's password from a hash."""
         self.client.force_login(self.admin)
-        lock_password_login(self.user)
         password = generate_key()
         password_hash = make_password(password)
         response = self._set_password_hash(self.user, password_hash)
 
         self._assert_password_hash_set(self.user, password, password_hash, response)
-        self.assertIsNone(self.user.password_login_locked_at)
 
     def test_set_password_hash_invalid(self):
         """Test invalid password hashes are rejected."""
