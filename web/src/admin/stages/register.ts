@@ -29,3 +29,4 @@ import "#admin/stages/user_logout/UserLogoutStageForm";
 import "#admin/stages/user_write/UserWriteStageForm";
 import "#admin/stages/authenticator_duo/DuoDeviceImportForm";
 import "#admin/stages/authenticator_endpoint_gdtc/AuthenticatorEndpointGDTCStageForm";
+import "#admin/stages/message/MessageStageForm";

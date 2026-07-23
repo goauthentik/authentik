@@ -31327,6 +31327,213 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+  /stages/message/:
+    get:
+      operationId: stages_message_list
+      description: MessageStage Viewset
+      parameters:
+      - in: query
+        name: button_text
+        schema:
+          type: string
+      - in: query
+        name: message
+        schema:
+          type: string
+      - $ref: '#/components/parameters/QueryName'
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
+      - in: query
+        name: stage_uuid
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: title
+        schema:
+          type: string
+      tags:
+      - stages
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedMessageStageList'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    post:
+      operationId: stages_message_create
+      description: MessageStage Viewset
+      tags:
+      - stages
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MessageStageRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageStage'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /stages/message/{stage_uuid}/:
+    get:
+      operationId: stages_message_retrieve
+      description: MessageStage Viewset
+      parameters:
+      - in: path
+        name: stage_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Message Stage.
+        required: true
+      tags:
+      - stages
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageStage'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    put:
+      operationId: stages_message_update
+      description: MessageStage Viewset
+      parameters:
+      - in: path
+        name: stage_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Message Stage.
+        required: true
+      tags:
+      - stages
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MessageStageRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageStage'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    patch:
+      operationId: stages_message_partial_update
+      description: MessageStage Viewset
+      parameters:
+      - in: path
+        name: stage_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Message Stage.
+        required: true
+      tags:
+      - stages
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedMessageStageRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageStage'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    delete:
+      operationId: stages_message_destroy
+      description: MessageStage Viewset
+      parameters:
+      - in: path
+        name: stage_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Message Stage.
+        required: true
+      tags:
+      - stages
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /stages/message/{stage_uuid}/used_by/:
+    get:
+      operationId: stages_message_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: stage_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Message Stage.
+        required: true
+      tags:
+      - stages
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
   /stages/mtls/:
     get:
       operationId: stages_mtls_list
@@ -34554,6 +34761,7 @@ components:
       - authentik.stages.deny
       - authentik.stages.dummy
       - authentik.stages.email
+      - authentik.stages.message
       - authentik.stages.identification
       - authentik.stages.invitation
       - authentik.stages.password
@@ -36791,6 +36999,7 @@ components:
       - $ref: '#/components/schemas/FrameChallenge'
       - $ref: '#/components/schemas/IdentificationChallenge'
       - $ref: '#/components/schemas/IframeLogoutChallenge'
+      - $ref: '#/components/schemas/MessageChallenge'
       - $ref: '#/components/schemas/NativeLogoutChallenge'
       - $ref: '#/components/schemas/OAuthDeviceCodeChallenge'
       - $ref: '#/components/schemas/OAuthDeviceCodeFinishChallenge'
@@ -36824,6 +37033,7 @@ components:
           xak-flow-frame: '#/components/schemas/FrameChallenge'
           ak-stage-identification: '#/components/schemas/IdentificationChallenge'
           ak-provider-iframe-logout: '#/components/schemas/IframeLogoutChallenge'
+          ak-stage-message: '#/components/schemas/MessageChallenge'
           ak-provider-saml-native-logout: '#/components/schemas/NativeLogoutChallenge'
           ak-provider-oauth2-device-code: '#/components/schemas/OAuthDeviceCodeChallenge'
           ak-provider-oauth2-device-code-finish: '#/components/schemas/OAuthDeviceCodeFinishChallenge'
@@ -39694,6 +39904,7 @@ components:
       - $ref: '#/components/schemas/FrameChallengeResponseRequest'
       - $ref: '#/components/schemas/IdentificationChallengeResponseRequest'
       - $ref: '#/components/schemas/IframeLogoutChallengeResponseRequest'
+      - $ref: '#/components/schemas/MessageChallengeResponseRequest'
       - $ref: '#/components/schemas/NativeLogoutChallengeResponseRequest'
       - $ref: '#/components/schemas/OAuthDeviceCodeChallengeResponseRequest'
       - $ref: '#/components/schemas/OAuthDeviceCodeFinishChallengeResponseRequest'
@@ -39723,6 +39934,7 @@ components:
           xak-flow-frame: '#/components/schemas/FrameChallengeResponseRequest'
           ak-stage-identification: '#/components/schemas/IdentificationChallengeResponseRequest'
           ak-provider-iframe-logout: '#/components/schemas/IframeLogoutChallengeResponseRequest'
+          ak-stage-message: '#/components/schemas/MessageChallengeResponseRequest'
           ak-provider-saml-native-logout: '#/components/schemas/NativeLogoutChallengeResponseRequest'
           ak-provider-oauth2-device-code: '#/components/schemas/OAuthDeviceCodeChallengeResponseRequest'
           ak-provider-oauth2-device-code-finish: '#/components/schemas/OAuthDeviceCodeFinishChallengeResponseRequest'
@@ -43334,6 +43546,106 @@ components:
       - strict
       - regex
       type: string
+    MessageChallenge:
+      type: object
+      description: Message challenge
+      properties:
+        flow_info:
+          $ref: '#/components/schemas/ContextualFlowInfo'
+        component:
+          type: string
+          default: ak-stage-message
+        response_errors:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              $ref: '#/components/schemas/ErrorDetail'
+        name:
+          type: string
+        title:
+          type: string
+          default: ''
+        message:
+          type: string
+        button_text:
+          type: string
+          default: ''
+      required:
+      - message
+      - name
+    MessageChallengeResponseRequest:
+      type: object
+      description: Message challenge response
+      properties:
+        component:
+          type: string
+          minLength: 1
+          default: ak-stage-message
+    MessageStage:
+      type: object
+      description: MessageStage Serializer
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Stage uuid
+        name:
+          type: string
+        component:
+          type: string
+          description: Get object type so that we know how to edit the object
+          readOnly: true
+        verbose_name:
+          type: string
+          description: Return object's verbose_name
+          readOnly: true
+        verbose_name_plural:
+          type: string
+          description: Return object's plural verbose_name
+          readOnly: true
+        meta_model_name:
+          type: string
+          description: Return internal model name
+          readOnly: true
+        flow_set:
+          type: array
+          items:
+            $ref: '#/components/schemas/FlowSet'
+          readOnly: true
+        title:
+          type: string
+        message:
+          type: string
+        button_text:
+          type: string
+      required:
+      - component
+      - flow_set
+      - message
+      - meta_model_name
+      - name
+      - pk
+      - verbose_name
+      - verbose_name_plural
+    MessageStageRequest:
+      type: object
+      description: MessageStage Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        title:
+          type: string
+        message:
+          type: string
+          minLength: 1
+        button_text:
+          type: string
+      required:
+      - message
+      - name
     Metadata:
       type: object
       description: Serializer for blueprint metadata
@@ -43739,6 +44051,7 @@ components:
       - authentik_stages_deny.denystage
       - authentik_stages_dummy.dummystage
       - authentik_stages_email.emailstage
+      - authentik_stages_message.messagestage
       - authentik_stages_identification.identificationstage
       - authentik_stages_invitation.invitationstage
       - authentik_stages_invitation.invitation
@@ -46392,6 +46705,21 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/LifecycleRule'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    PaginatedMessageStageList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/MessageStage'
         autocomplete:
           $ref: '#/components/schemas/Autocomplete'
       required:
@@ -49939,6 +50267,20 @@ components:
           description: Select which transports should be used to notify the reviewers.
             If none are selected, the notification will only be shown in the authentik
             UI.
+    PatchedMessageStageRequest:
+      type: object
+      description: MessageStage Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        title:
+          type: string
+        message:
+          type: string
+          minLength: 1
+        button_text:
+          type: string
     PatchedMicrosoftEntraProviderMappingRequest:
       type: object
       description: MicrosoftEntraProviderMapping Serializer
