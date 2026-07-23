@@ -436,7 +436,8 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
             return UserStatus.DEACTIVATED
         if self.password_login_locked_at is not None:
             return UserStatus.LOCKED
-        # TODO: Use a dedicated user state when reset-on-next-login is built in.
+        # TODO: Replace this documented attribute convention with dedicated state.
+        # https://github.com/goauthentik/authentik/issues/19681
         if self.attributes.get("reset_password") is True:
             return UserStatus.PASSWORD_RESET_PENDING
         return UserStatus.ACTIVE
