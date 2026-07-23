@@ -762,6 +762,7 @@ export * from "./SSFProvider";
 export * from "./SSFProviderRequest";
 export * from "./SSFStream";
 export * from "./SSFStreamStatusEnum";
+export * from "./SamlVersionEnum";
 export * from "./Schedule";
 export * from "./ScheduleRequest";
 export * from "./ScopeMapping";
