@@ -13,6 +13,7 @@ import "#elements/buttons/ActionButton/index";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
+import "#components/ak-toggle-group";
 
 import { aki } from "#common/api/client";
 import { userTypeToLabel } from "#common/labels";
@@ -55,6 +56,13 @@ const recoveryButtonStyles = css`
         gap: 0.375rem;
     }
 `;
+
+type ActiveUserFilter = "all" | "active" | "inactive";
+const ActiveUserFilterStateMap = {
+    all: undefined,
+    active: true,
+    inactive: false,
+} as const satisfies Record<ActiveUserFilter, boolean | undefined>;
 
 @customElement("ak-user-list")
 export class UserListPage extends WithLicenseSummary(
@@ -105,7 +113,10 @@ export class UserListPage extends WithLicenseSummary(
     public defaultActivePath: string = DefaultUIConfig.defaults.userPath;
 
     @state()
-    protected hideDeactivated = getURLParam<boolean>("hideDeactivated", false);
+    protected activeFilter: ActiveUserFilter = getURLParam<ActiveUserFilter>(
+        "activeFilter",
+        "all",
+    );
 
     @state()
     protected userPaths: UserPath | null = null;
@@ -151,7 +162,7 @@ export class UserListPage extends WithLicenseSummary(
         const users = await this.#api.coreUsersList({
             ...(await this.defaultEndpointConfig()),
             pathStartswith: this.activePath,
-            isActive: this.hideDeactivated ? true : undefined,
+            isActive: ActiveUserFilterStateMap[this.activeFilter],
             includeGroups: false,
         });
 
@@ -177,7 +188,7 @@ export class UserListPage extends WithLicenseSummary(
         return {
             ...(await this.defaultEndpointConfig()),
             pathStartswith: this.activePath,
-            isActive: this.hideDeactivated ? true : undefined,
+            isActive: ActiveUserFilterStateMap[this.activeFilter],
         };
     };
 
@@ -260,36 +271,21 @@ export class UserListPage extends WithLicenseSummary(
     protected override renderToolbarAfter(): TemplateResult {
         return html`<div class="pf-c-toolbar__group pf-m-filter-group">
             <div class="pf-c-toolbar__item pf-m-search-filter">
-                <div class="pf-c-input-group">
-                    <label
-                        class="pf-c-switch"
-                        for="hide-deactivated-users"
-                        aria-labelledby="hide-deactivated-users-label"
-                    >
-                        <input
-                            id="hide-deactivated-users"
-                            class="pf-c-switch__input"
-                            type="checkbox"
-                            ?checked=${!this.hideDeactivated}
-                            @change=${() => {
-                                this.hideDeactivated = !this.hideDeactivated;
-                                this.page = 1;
-                                this.fetch();
-                                updateURLParams({
-                                    hideDeactivated: this.hideDeactivated,
-                                });
-                            }}
-                        />
-                        <span class="pf-c-switch__toggle">
-                            <span class="pf-c-switch__toggle-icon">
-                                <i class="fas fa-check" aria-hidden="true"></i>
-                            </span>
-                        </span>
-                        <span class="pf-c-switch__label" id="hide-deactivated-users-label">
-                            ${msg("Show deactivated users")}
-                        </span>
-                    </label>
-                </div>
+                <ak-toggle-group
+                    value=${this.activeFilter}
+                    @ak-toggle=${(ev: CustomEvent<{ value: ActiveUserFilter }>) => {
+                        this.activeFilter = ev.detail.value;
+                        this.page = 1;
+                        this.fetch();
+                        updateURLParams({
+                            activeFilter: this.activeFilter,
+                        });
+                    }}
+                >
+                    <option value="all">${msg("All users")}</option>
+                    <option value="active">${msg("Active only")}</option>
+                    <option value="inactive">${msg("Inactive only")}</option>
+                </ak-toggle-group>
             </div>
         </div>`;
     }
