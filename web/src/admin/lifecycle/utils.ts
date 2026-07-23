@@ -1,4 +1,3 @@
-import { PFColor } from "#elements/Label";
 import { LitFC } from "#elements/types";
 
 import { LifecycleIterationStateEnum } from "@goauthentik/api";
@@ -16,19 +15,19 @@ export const LifecycleIterationStatus: LitFC<LifecycleIterationStatusProps> = ({
     return match(status)
         .with(
             LifecycleIterationStateEnum.Pending,
-            () => html`<ak-label color=${PFColor.Orange}>${msg("Pending review")}</ak-label>`,
+            () => html`<ak-label status="warning">${msg("Pending review")}</ak-label>`,
         )
         .with(
             LifecycleIterationStateEnum.Reviewed,
-            () => html`<ak-label color=${PFColor.Green}>${msg("Reviewed")}</ak-label>`,
+            () => html`<ak-label status="success">${msg("Reviewed")}</ak-label>`,
         )
         .with(
             LifecycleIterationStateEnum.Overdue,
-            () => html`<ak-label color=${PFColor.Red}>${msg("Overdue")}</ak-label>`,
+            () => html`<ak-label status="danger">${msg("Overdue")}</ak-label>`,
         )
         .with(
             LifecycleIterationStateEnum.Canceled,
-            () => html`<ak-label color=${PFColor.Gray}>${msg("Canceled")}</ak-label>`,
+            () => html`<ak-label>${msg("Canceled")}</ak-label>`,
         )
-        .otherwise(() => html`<ak-label color=${PFColor.Gray}>${msg("Unknown")}</ak-label>`);
+        .otherwise(() => html`<ak-label>${msg("Unknown")}</ak-label>`);
 };

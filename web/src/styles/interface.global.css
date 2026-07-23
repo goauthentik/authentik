@@ -19,6 +19,7 @@
 
 @import "#styles/global/vendor/patternfly.css" layer(vendor);
 @import "#fonts/RedHat/faces.css" layer(vendor);
+@import "#fonts/FontAwesome/faces.css" layer(vendor);
 
 @import "#styles/global/theme/variables.css" layer(theme);
 @import "#styles/global/reset/scrollbars.css" layer(reset);
@@ -31,6 +32,7 @@
 @import "#styles/authentik/components/Placeholder/placeholder.css" layer(components);
 @import "#elements/ToggleGroup_impl/ToggleGroup.root.css" layer(components);
 @import "#elements/Divider_impl/Divider.root.css" layer(components);
+@import "#elements/Label_impl/Label.root.css" layer(components);
 @import "#elements/Progress_impl/Progress.root.css" layer(components);
 @import "#elements/EmptyState_impl/EmptyState.root.css" layer(components);
 @import "#styles/global/locales/ja/globals.css" layer(components);
