@@ -35,7 +35,7 @@ To support the integration of Microsoft 365 with authentik via WS-Federation, yo
 
 ### 1. Property mapping for users' immutable identifier
 
-Microsoft Entra ID requires a unique and [immutable identifier (called `ImmutableId` or `sourceAnchor`)](https://learn.microsoft.com/en-us/entra/identity/hybrid/connect/plan-connect-design-concepts#sourceanchor) for each user during SAML federation. This identifier is sent as the SAML `NameID` attribute and must match the `ImmutableId` value configured in Entra for each user.
+Microsoft Entra ID requires a unique and [immutable identifier (called `ImmutableId` or `sourceAnchor`)](https://learn.microsoft.com/en-us/entra/identity/hybrid/connect/plan-connect-design-concepts#sourceanchor) for each user during WS-Federation-based federation. This identifier is sent as the SAML1.1 `NameID` attribute and must match the `ImmutableId` value configured in Entra for each user.
 
 #### For users synchronized from Active Directory
 
@@ -136,7 +136,7 @@ Whether Entra ID accepts the federated MFA claim depends on your tenant's securi
 ### 5. Download certificate file
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Applications** > **Providers** and click on the name of the SAML provider that you created in the previous section.
+2. Navigate to **Applications** > **Providers** and click on the name of the WS-Federation provider that you created in the previous section.
 3. Under **Related objects** > **Download signing certificate**, click **Download**. This downloaded `.pem` file is your certificate file and is required in the next section.
 
 ## Microsoft 365 configuration
@@ -206,7 +206,7 @@ $domain = "domain.company"
 $PassiveLogOnUri = "https://authentik.company/application/wsfed/"
 $LogOffUri = "https://authentik.company/application/wsfed/<application_slug>/"
 $IssuerUri = "https://authentik.company/application/saml/<application_slug>/metadata/"
-$MetadataExchangeUri = $IssuerUri
+$MetadataExchangeUri = "https://authentik.company/application/wsfed/<application_slug>/metadata/"
 $ActiveSignInUri = "https://authentik.company/application/wsfed/"
 $SigningCert = (Get-Content "C:\path\to\authentik_certificate.pem" -Raw) `
   -replace "-----BEGIN CERTIFICATE-----", "" `
