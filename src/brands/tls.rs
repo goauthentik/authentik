@@ -3,6 +3,7 @@ use std::{
     sync::Arc,
 };
 
+use ak_common::db;
 use eyre::{Report, Result};
 use rustls::{
     RootCertStore,
@@ -11,8 +12,6 @@ use rustls::{
     server::ClientHello,
     sign::CertifiedKey,
 };
-
-use ak_common::db;
 
 #[derive(Debug)]
 struct Brand {

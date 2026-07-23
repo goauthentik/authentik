@@ -1,5 +1,12 @@
 use std::sync::{Arc, LazyLock, atomic::Ordering};
 
+use ak_axum::{
+    accept::tls::TlsState,
+    error::Result,
+    extract::{client_ip::ClientIp, host::Host, scheme::Scheme, trusted_proxy::TrustedProxy},
+    router::wrap_router,
+};
+use ak_common::{config, db};
 use axum::{
     Extension, Router,
     body::Body,
@@ -19,13 +26,6 @@ use crate::server::{
     GUNICORN_READY, Server,
     core::websockets::{handle_websocket_upgrade, is_websocket_upgrade},
 };
-use ak_axum::{
-    accept::tls::TlsState,
-    error::Result,
-    extract::{client_ip::ClientIp, host::Host, scheme::Scheme, trusted_proxy::TrustedProxy},
-    router::wrap_router,
-};
-use ak_common::{config, db};
 
 static STARTUP_RESPONSE_JSON: LazyLock<Response<String>> = LazyLock::new(|| {
     Response::builder()
@@ -253,6 +253,7 @@ pub(super) fn build_router(server: Arc<Server>) -> Router {
 mod websockets {
     use std::sync::Arc;
 
+    use ak_axum::error::{AppError, Result};
     use axum::{
         body::Body,
         extract::Request,
@@ -273,7 +274,6 @@ mod websockets {
     };
     use tracing::{debug, trace, warn};
 
-    use ak_axum::error::{AppError, Result};
     use crate::server::Server;
 
     pub(super) fn is_websocket_upgrade(headers: &HeaderMap<HeaderValue>) -> bool {
