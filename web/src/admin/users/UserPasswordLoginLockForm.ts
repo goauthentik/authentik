@@ -109,7 +109,7 @@ export function ToggleUserPasswordLoginLockButton(
             user.pk === currentUserPk) &&
         !locked;
 
-    return guard([shouldRender], () => {
+    return guard([locked, shouldRender], () => {
         if (shouldRender) {
             return null;
         }
