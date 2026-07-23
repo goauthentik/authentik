@@ -10,7 +10,8 @@ import { SlottedTemplateResult } from "#elements/types";
 import { CoreApi, User, UserTypeEnum } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
-import { html, nothing } from "lit";
+import { html } from "lit";
+import { guard } from "lit-html/directives/guard.js";
 import { customElement } from "lit/decorators.js";
 
 @customElement("ak-user-password-login-lock-toggle-form")
@@ -98,23 +99,29 @@ export function ToggleUserPasswordLoginLockButton(
     user: User,
     { className = "", currentUserPk }: ToggleUserPasswordLoginLockButtonProps = {},
 ): SlottedTemplateResult {
-    const locked = Boolean(user.passwordLoginLockedAt);
-    if (
+    const locked = !!user.passwordLoginLockedAt;
+
+    const shouldRender =
         (!user.isActive ||
             user.type === UserTypeEnum.InternalServiceAccount ||
             user.pk === currentUserPk) &&
-        !locked
-    ) {
-        return nothing;
-    }
-    const label = locked
-        ? msg("Unlock password login", { id: "user.action.password-login-unlock" })
-        : msg("Lock password login", { id: "user.action.password-login-lock" });
-    return html`<button
-        class="pf-c-button pf-m-warning ${className}"
-        type="button"
-        ${modalInvoker(UserPasswordLoginLockToggleForm, { instance: user })}
-    >
-        ${label}
-    </button>`;
+        !locked;
+
+    return guard([shouldRender], () => {
+        if (shouldRender) {
+            return null;
+        }
+
+        const label = locked
+            ? msg("Unlock password login", { id: "user.action.password-login-unlock" })
+            : msg("Lock password login", { id: "user.action.password-login-lock" });
+
+        return html`<button
+            class="pf-c-button pf-m-warning ${className}"
+            type="button"
+            ${modalInvoker(UserPasswordLoginLockToggleForm, { instance: user })}
+        >
+            ${label}
+        </button>`;
+    });
 }
