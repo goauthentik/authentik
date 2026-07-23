@@ -7,6 +7,7 @@ import "#elements/forms/SearchSelect/index";
 import { aki } from "#common/api/client";
 
 import { WithLicenseSummary } from "#elements/mixins/license";
+import { SlottedTemplateResult } from "#elements/types";
 
 import { AKLabel } from "#components/ak-label";
 
@@ -24,7 +25,7 @@ import {
 } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { html, TemplateResult } from "lit";
+import { html } from "lit";
 import { customElement } from "lit/decorators.js";
 
 @customElement("ak-stage-password-form")
@@ -48,12 +49,12 @@ export class PasswordStageForm extends WithLicenseSummary(BaseStageForm<Password
         );
     }
 
-    protected renderLockoutSettings(): TemplateResult {
+    protected renderLockoutSettings(): SlottedTemplateResult {
         if (!this.hasEnterpriseLicense) {
-            return html``;
+            return null;
         }
-        return html`
-            <ak-form-element-horizontal
+
+        return html`<ak-form-element-horizontal
                 label=${msg("Failed attempts before lockout", {
                     id: "password-stage.lockout-threshold.label",
                 })}
@@ -129,11 +130,10 @@ export class PasswordStageForm extends WithLicenseSummary(BaseStageForm<Password
                         id: "password-stage.lockout-message.description",
                     })}
                 </p>
-            </ak-form-element-horizontal>
-        `;
+            </ak-form-element-horizontal> `;
     }
 
-    protected override renderForm(): TemplateResult {
+    protected override renderForm(): SlottedTemplateResult {
         const backends = [
             {
                 name: BackendsEnum.AuthentikCoreAuthInbuiltBackend,
@@ -208,12 +208,10 @@ export class PasswordStageForm extends WithLicenseSummary(BaseStageForm<Password
                             .renderElement=${(flow: Flow): string => {
                                 return RenderFlowOption(flow);
                             }}
-                            .renderDescription=${(flow: Flow): TemplateResult => {
+                            .renderDescription=${(flow: Flow): SlottedTemplateResult => {
                                 return html`${flow.name}`;
                             }}
-                            .value=${(flow: Flow | undefined): string | undefined => {
-                                return flow?.pk;
-                            }}
+                            .value=${(flow?: Flow) => flow?.pk}
                             .selected=${(flow: Flow): boolean => {
                                 let selected = this.instance?.configureFlow === flow.pk;
                                 if (
