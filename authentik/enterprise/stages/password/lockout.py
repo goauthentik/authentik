@@ -3,7 +3,6 @@
 from datetime import datetime
 from typing import Any
 
-from django.contrib.auth.hashers import make_password
 from django.db import transaction
 from django.http import HttpRequest
 from django.utils.timezone import now
@@ -15,12 +14,7 @@ from authentik.events.models import Event, EventAction
 from authentik.flows.models import Stage
 from authentik.sources.kerberos.models import UserKerberosSourceConnection
 from authentik.sources.ldap.models import LDAP_DISTINGUISHED_NAME
-from authentik.stages.password import (
-    BACKEND_APP_PASSWORD,
-    BACKEND_INBUILT,
-    BACKEND_KERBEROS,
-    BACKEND_LDAP,
-)
+from authentik.stages.password import BACKEND_KERBEROS, BACKEND_LDAP
 from authentik.stages.password.auth import (
     PasswordAuthenticationResult,
     PasswordAuthenticationStatus,
@@ -212,10 +206,6 @@ def authenticate_password(
             user,
         )
 
-    if is_password_login_locked(pending_user):
-        make_password(make_password(None))
-        return PasswordAuthenticationResult(PasswordAuthenticationStatus.LOCKED)
-
     user = authenticate(
         request,
         password_stage.backends,
@@ -224,22 +214,15 @@ def authenticate_password(
         password=password,
     )
     if user is None:
+        if is_password_login_locked(pending_user):
+            return PasswordAuthenticationResult(PasswordAuthenticationStatus.LOCKED)
         backends = set(password_stage.backends)
-        known_backends = {
-            BACKEND_INBUILT,
-            BACKEND_APP_PASSWORD,
-            BACKEND_LDAP,
-            BACKEND_KERBEROS,
-        }
-        uses_ldap = (
-            BACKEND_LDAP in backends
-            and LDAP_DISTINGUISHED_NAME in pending_user.attributes
-        )
+        uses_ldap = BACKEND_LDAP in backends and LDAP_DISTINGUISHED_NAME in pending_user.attributes
         uses_kerberos = (
             BACKEND_KERBEROS in backends
             and UserKerberosSourceConnection.objects.filter(user=pending_user).exists()
         )
-        if not backends or backends - known_backends or uses_ldap or uses_kerberos:
+        if uses_ldap or uses_kerberos:
             return PasswordAuthenticationResult(PasswordAuthenticationStatus.INVALID)
         status = record_failed_password_attempt(
             pending_user,

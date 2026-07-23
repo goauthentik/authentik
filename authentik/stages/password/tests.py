@@ -132,7 +132,7 @@ class TestPasswordStage(FlowTestCase):
         self.assertIsNotNone(UserPasswordLoginState.objects.get(user=self.user).locked_at)
 
     def test_valid_password_locked(self):
-        """A correct password cannot authenticate while password login is locked."""
+        """Locked users cannot authenticate and invalid attempts remain audited."""
         self.stage.failed_attempts_before_lockout = 2
         self.stage.show_lockout_message = True
         self.stage.save(update_fields=("failed_attempts_before_lockout", "show_lockout_message"))
@@ -144,12 +144,18 @@ class TestPasswordStage(FlowTestCase):
         session.save()
 
         url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
-        response = self.client.post(url, {"password": self.user.username})
+        response = self.client.post(url, {"password": self.user.username + "test"})
 
         self.assertStageResponse(
             response,
             self.flow,
             response_errors={"password": [{"string": "Invalid password", "code": "invalid"}]},
+        )
+        self.assertTrue(
+            Event.objects.filter(
+                action=EventAction.LOGIN_FAILED,
+                user__pk=self.user.pk,
+            ).exists()
         )
 
         response = self.client.post(url, {"password": self.user.username})
