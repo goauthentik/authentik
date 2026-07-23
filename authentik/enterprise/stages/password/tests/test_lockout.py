@@ -19,8 +19,8 @@ class TestPasswordLockoutLicense(TestCase):
     """Test runtime behavior without an Enterprise license."""
 
     @enterprise_test()
-    def test_mutations_clear_cached_password_login_state(self) -> None:
-        """Mutations remain visible on the User instance passed to the helper."""
+    def test_lock_transitions_clear_cached_password_login_state(self) -> None:
+        """Lock transitions remain visible on the User instance passed to the helper."""
         user = create_test_user()
         self.assertIsNone(user.password_login_locked_at)
 

@@ -36,7 +36,7 @@ def _user_for_update(user: User) -> User | None:
 
 
 def _clear_password_login_state_cache(user: User) -> None:
-    """Clear lockout state cached on the instance passed to a mutation helper."""
+    """Clear state cached on the User instance after its password-lock status changes."""
     relation = User._meta.get_field("password_login_state")
     if relation.is_cached(user):
         relation.delete_cached_value(user)
