@@ -2,10 +2,6 @@
  * @file Display the current usage and license status of Enterprise licenses.
  */
 
-/**
- * @file Display the current usage and license status of Enterprise licenses.
- */
-
 import "#elements/Progress";
 import "#elements/Label";
 
