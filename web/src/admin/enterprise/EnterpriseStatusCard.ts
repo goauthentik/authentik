@@ -1,7 +1,11 @@
+/**
+ * @file Display the current usage and license status of Enterprise licenses.
+ */
+
 import "#elements/Progress";
+import "#elements/Label";
 
 import { AKElement } from "#elements/Base";
-import { PFColor } from "#elements/Label";
 
 import { LicenseForecast, LicenseSummary, LicenseSummaryStatusEnum } from "@goauthentik/api";
 
@@ -15,45 +19,60 @@ import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList
 import PFSplit from "@patternfly/patternfly/layouts/Split/split.css";
 import PFStack from "@patternfly/patternfly/layouts/Stack/stack.css";
 
-const badgeDetails = new Map<LicenseSummaryStatusEnum | undefined, [PFColor, string]>([
-    [LicenseSummaryStatusEnum.Expired, [PFColor.Red, msg("Expired")]],
-    [LicenseSummaryStatusEnum.ExpirySoon, [PFColor.Orange, msg("Expiring soon")]],
-    [LicenseSummaryStatusEnum.Unlicensed, [PFColor.Gray, msg("Unlicensed")]],
-    [LicenseSummaryStatusEnum.ReadOnly, [PFColor.Red, msg("Read Only")]],
-    [LicenseSummaryStatusEnum.LimitExceededAdmin, [PFColor.Orange, msg("User Count Exceeded")]],
-    [LicenseSummaryStatusEnum.LimitExceededUser, [PFColor.Red, msg("User Count Exceeded")]],
-    [LicenseSummaryStatusEnum.Valid, [PFColor.Green, msg("Valid")]],
+const badgeDetails = new Map<LicenseSummaryStatusEnum, [string, string]>([
+    [LicenseSummaryStatusEnum.Expired, ["red", msg("Expired")]],
+    [LicenseSummaryStatusEnum.ExpirySoon, ["orange", msg("Expiring soon")]],
+    [LicenseSummaryStatusEnum.Unlicensed, ["gray", msg("Unlicensed")]],
+    [LicenseSummaryStatusEnum.ReadOnly, ["red", msg("Read Only")]],
+    [LicenseSummaryStatusEnum.LimitExceededAdmin, ["orange", msg("User Count Exceeded")]],
+    [LicenseSummaryStatusEnum.LimitExceededUser, ["red", msg("User Count Exceeded")]],
+    [LicenseSummaryStatusEnum.Valid, ["green", msg("Valid")]],
 ]);
 
-const Style = css`
+const Styles = css`
+    .pf-c-card {
+        container-type: inline-size;
+        container-name: enterprise-status-card;
+    }
+
     .pf-l-split {
-        --pf-l-split--m-gutter--MarginRight: 3rem;
+        --pf-l-split--m-gutter--MarginRight: 1.5rem;
+    }
+
+    @container enterprise-status-card (width >= 480px) {
+        .pf-l-split {
+            --pf-l-split--m-gutter--MarginRight: 3rem;
+        }
     }
 `;
 
 @customElement("ak-enterprise-status-card")
 export class EnterpriseStatusCard extends AKElement {
+    static readonly styles: CSSResult[] = [PFDescriptionList, PFCard, PFSplit, PFStack, Styles];
+
     @property({ attribute: false })
     forecast?: LicenseForecast;
 
     @property({ attribute: false })
     summary?: LicenseSummary;
 
-    static styles: CSSResult[] = [PFDescriptionList, PFCard, PFSplit, PFStack, Style];
+    protected renderSummaryBadge() {
+        const summary = this.summary?.status;
+        if (!summary) return nothing;
 
-    renderSummaryBadge() {
-        const status = badgeDetails.get(this.summary?.status);
+        const status = badgeDetails.get(summary);
         if (!status) return nothing;
-        return html`<ak-label color=${status[0]}>${status[1]}</ak-label>`;
+
+        return html`<ak-label color="pf-m-${status[0]}">${status[1]}</ak-label>`;
     }
 
-    calcUserPercentage(licensed: number, current: number) {
+    protected calcUserPercentage(licensed: number, current: number) {
         const percentage = licensed > 0 ? Math.ceil(current / (licensed / 100)) : 0;
         if (current > 0 && licensed === 0) return Infinity;
         return percentage;
     }
 
-    render() {
+    public override render() {
         if (!this.forecast || !this.summary) {
             return html`${msg("Loading")}`;
         }
