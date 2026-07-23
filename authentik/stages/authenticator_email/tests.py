@@ -4,6 +4,7 @@ from datetime import timedelta
 from unittest.mock import PropertyMock, patch
 
 from django.core import mail
+from django.core.cache import cache
 from django.core.mail.backends.locmem import EmailBackend
 from django.core.mail.backends.smtp import EmailBackend as SMTPEmailBackend
 from django.db.utils import IntegrityError
@@ -23,7 +24,13 @@ from authentik.stages.authenticator_email.api import (
     EmailDeviceSerializer,
 )
 from authentik.stages.authenticator_email.models import AuthenticatorEmailStage, EmailDevice
-from authentik.stages.authenticator_email.stage import PLAN_CONTEXT_EMAIL_DEVICE
+from authentik.stages.authenticator_email.stage import (
+    PLAN_CONTEXT_EMAIL_DEVICE,
+    RESEND_THROTTLE_SECONDS,
+    release_send,
+    resend_cooldown_remaining,
+    reserve_send,
+)
 from authentik.stages.email.utils import TemplateEmailMessage
 
 
@@ -356,3 +363,58 @@ class TestEmailDeviceThrottling(ThrottlingTestMixin, TestCase):
 
     def invalid_token(self):
         return "000000" if self.device.token != "000000" else "111111"
+
+
+class TestAuthenticatorEmailResendThrottle(TestCase):
+    """Test the server-side resend cooldown"""
+
+    def setUp(self):
+        super().setUp()
+        cache.clear()
+        self.addCleanup(cache.clear)
+
+    def test_first_send_allowed(self):
+        """A first send opens the window and is not throttled"""
+        self.assertEqual(resend_cooldown_remaining("user@authentik.local"), 0)
+        self.assertEqual(reserve_send("user@authentik.local"), 0)
+
+    def test_resend_within_window_refused(self):
+        """A second send during the window is refused and reports the remaining seconds"""
+        self.assertEqual(reserve_send("user@authentik.local"), 0)
+        remaining = reserve_send("user@authentik.local")
+        self.assertGreater(remaining, 0)
+        self.assertLessEqual(remaining, RESEND_THROTTLE_SECONDS)
+
+    def test_remaining_counts_down(self):
+        """The remaining seconds shrink as the window elapses"""
+        with patch("authentik.stages.authenticator_email.stage.time", return_value=1000.0):
+            self.assertEqual(reserve_send("user@authentik.local"), 0)
+        with patch(
+            "authentik.stages.authenticator_email.stage.time",
+            return_value=1000.0 + RESEND_THROTTLE_SECONDS - 10,
+        ):
+            self.assertEqual(resend_cooldown_remaining("user@authentik.local"), 10)
+
+    def test_release_reopens_window(self):
+        """Releasing a reserved window lets the next send through, e.g. when delivery failed"""
+        self.assertEqual(reserve_send("user@authentik.local"), 0)
+        release_send("user@authentik.local")
+        self.assertEqual(resend_cooldown_remaining("user@authentik.local"), 0)
+        self.assertEqual(reserve_send("user@authentik.local"), 0)
+
+    def test_addresses_are_independent(self):
+        """Throttling one address does not throttle another"""
+        self.assertEqual(reserve_send("one@authentik.local"), 0)
+        self.assertEqual(reserve_send("two@authentik.local"), 0)
+
+    def test_address_is_case_insensitive(self):
+        """The same address in different case shares one window"""
+        self.assertEqual(reserve_send("User@authentik.local"), 0)
+        self.assertGreater(reserve_send("user@authentik.local"), 0)
+
+    def test_empty_address_is_never_throttled(self):
+        """An empty address has no window to reserve"""
+        self.assertEqual(reserve_send(""), 0)
+        self.assertEqual(reserve_send(""), 0)
+        self.assertEqual(resend_cooldown_remaining(""), 0)
+        release_send("")

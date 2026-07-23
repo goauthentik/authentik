@@ -181,6 +181,26 @@ export class AuthenticatorValidateStage
         this.selectedDeviceChallenge = null;
     }
 
+    public resendSelectedChallenge(): Promise<unknown> {
+        const value = this.#selectedDeviceChallenge;
+        const component = this.challenge?.component;
+        if (!value || !component) {
+            // Nothing selected yet, or the challenge is momentarily undefined — sending an empty
+            // component would just be rejected, so treat it as a no-op the caller can await.
+            return Promise.reject(new Error("no challenge selected"));
+        }
+        // Re-submit the current device selection. The backend re-runs select_challenge, which
+        // for an email device regenerates the token and re-sends the code — i.e. a resend.
+        return this.#api.flowsExecutorSolve({
+            flowSlug: this.host?.flowSlug || "",
+            query: window.location.search.substring(1),
+            flowChallengeResponseRequest: {
+                component: component as unknown as "ak-stage-authenticator-validate",
+                selectedChallenge: value,
+            },
+        });
+    }
+
     protected override willUpdate(changed: PropertyValues<this>) {
         // When moving between multiple authenticator-validate stages in one flow, the element
         // instance is reused. Reset selection if it is no longer valid in the new challenge.
