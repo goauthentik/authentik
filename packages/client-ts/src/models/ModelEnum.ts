@@ -176,6 +176,10 @@ export const ModelEnum = {
     AuthentikProvidersWsFederationWsfederationprovider:
         "authentik_providers_ws_federation.wsfederationprovider",
     AuthentikReportsDataexport: "authentik_reports.dataexport",
+    AuthentikRequestsRequestrulechildbinding: "authentik_requests.requestrulechildbinding",
+    AuthentikRequestsRequestrulebinding: "authentik_requests.requestrulebinding",
+    AuthentikRequestsRequestrule: "authentik_requests.requestrule",
+    AuthentikRequestsGrantrequest: "authentik_requests.grantrequest",
     AuthentikStagesAccountLockdownAccountlockdownstage:
         "authentik_stages_account_lockdown.accountlockdownstage",
     AuthentikStagesAuthenticatorEndpointGdtcAuthenticatorendpointgdtcstage:

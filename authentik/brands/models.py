@@ -31,6 +31,7 @@ _BRAND_RELATED_FK_FIELDS = (
     "flow_user_settings",
     "flow_device_code",
     "flow_lockdown",
+    "flow_request",
     "default_application",
 )
 
@@ -77,6 +78,9 @@ class Brand(SerializerModel):
     )
     flow_lockdown = models.ForeignKey(
         Flow, null=True, on_delete=models.SET_NULL, related_name="brand_lockdown"
+    )
+    flow_request = models.ForeignKey(
+        Flow, null=True, on_delete=models.SET_NULL, related_name="brand_request"
     )
 
     default_application = models.ForeignKey(

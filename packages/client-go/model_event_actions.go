@@ -53,6 +53,10 @@ const (
 	EVENTACTIONS_REVIEW_OVERDUE             EventActions = "review_overdue"
 	EVENTACTIONS_REVIEW_ATTESTED            EventActions = "review_attested"
 	EVENTACTIONS_REVIEW_COMPLETED           EventActions = "review_completed"
+	EVENTACTIONS_ACCESS_REQUEST_CREATED     EventActions = "access_request_created"
+	EVENTACTIONS_ACCESS_REQUEST_APPROVED    EventActions = "access_request_approved"
+	EVENTACTIONS_ACCESS_REQUEST_DENIED      EventActions = "access_request_denied"
+	EVENTACTIONS_ACCESS_REQUEST_REVOKED     EventActions = "access_request_revoked"
 	EVENTACTIONS_CUSTOM                     EventActions = "custom_"
 )
 
@@ -90,6 +94,10 @@ var AllowedEventActionsEnumValues = []EventActions{
 	"review_overdue",
 	"review_attested",
 	"review_completed",
+	"access_request_created",
+	"access_request_approved",
+	"access_request_denied",
+	"access_request_revoked",
 	"custom_",
 }
 

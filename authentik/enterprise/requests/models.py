@@ -1,0 +1,400 @@
+from typing import Any
+from uuid import uuid4
+
+from django.db import models, transaction
+from django.http import HttpRequest
+from django.utils.timezone import now
+from django.utils.translation import gettext_lazy as _
+from rest_framework.serializers import Serializer
+
+from authentik.core.models import AttributesMixin, User
+from authentik.events.models import Event, EventAction
+from authentik.flows.models import Flow
+from authentik.lib.models import (
+    CreatedUpdatedModel,
+    ExpiringModel,
+    InternallyManagedMixin,
+    SerializerModel,
+    SimpleThroughModel,
+)
+from authentik.lib.utils.time import timedelta_from_string, timedelta_string_validator
+from authentik.policies.engine import FilterPolicyEngine
+from authentik.policies.models import PolicyBinding, PolicyBindingModel
+
+
+class RequestNotificationMode(models.TextChoices):
+    """Who to notify when a request is created against a rule."""
+
+    ALL = "all", _("Everyone who can approve")
+    DIRECT = "direct", _("Only individually-selected reviewers")
+    RANDOM_MIN_REVIEWERS = (
+        "random_min_reviewers",
+        _("A random subset of size min_reviewers, from everyone who can approve"),
+    )
+
+
+class RequestRuleChildBinding(SerializerModel):
+    """Binding between request rule binding and a child/related model"""
+
+    uuid = models.UUIDField(default=uuid4, primary_key=True)
+    binding = models.ForeignKey("RequestRuleBinding", on_delete=models.CASCADE)
+    target = models.ForeignKey(PolicyBindingModel, on_delete=models.CASCADE, related_name="+")
+
+    @property
+    def serializer(self):
+        from authentik.enterprise.requests.api.request_rule_child_bindings import (
+            RequestRuleChildBindingSerializer,
+        )
+
+        return RequestRuleChildBindingSerializer
+
+    class Meta:
+        verbose_name = _("Request Rule Child Binding")
+        verbose_name_plural = _("Request Rule Child Bindings")
+        unique_together = ("binding", "target")
+
+
+# PBM here configures who can request access
+class RequestRuleBinding(SerializerModel, PolicyBindingModel):
+    """Binding between a request rule and a requestable model, optionally also
+    carrying n RequestableChildModel"""
+
+    uuid = models.UUIDField(default=uuid4, primary_key=True)
+
+    rule = models.ForeignKey("RequestRule", on_delete=models.CASCADE)
+    target = models.ForeignKey(
+        PolicyBindingModel, on_delete=models.CASCADE, related_name="request_rule_bindings"
+    )
+    related = models.ManyToManyField(
+        PolicyBindingModel,
+        through=RequestRuleChildBinding,
+        related_name="request_rule_child_bindings",
+    )
+
+    expiry_pending = models.TextField(
+        default="hours=1",
+        validators=[timedelta_string_validator],
+        help_text=_(
+            "How long a request against this binding stays pending before it "
+            "automatically lapses if not approved or denied."
+        ),
+    )
+    expiry_granted_max = models.TextField(
+        default="hours=1",
+        validators=[timedelta_string_validator],
+        help_text=_("The maximum duration a grant approved against this binding can last."),
+    )
+
+    @property
+    def serializer(self):
+        from authentik.enterprise.requests.api.request_rule_bindings import (
+            RequestRuleBindingSerializer,
+        )
+
+        return RequestRuleBindingSerializer
+
+    class Meta:
+        verbose_name = _("Request Rule Binding")
+        verbose_name_plural = _("Request Rule Bindings")
+
+
+# PBM here configures who can approve
+class RequestRule(CreatedUpdatedModel, SerializerModel, PolicyBindingModel):
+    """A rule defining who can request access and who can approve access to any of the
+    requestable models this rule is bound to."""
+
+    uuid = models.UUIDField(default=uuid4, primary_key=True)
+
+    name = models.TextField()
+    targets = models.ManyToManyField(
+        PolicyBindingModel,
+        through=RequestRuleBinding,
+        related_name="request_rules",
+        through_fields=("rule", "target"),
+    )
+
+    min_reviewers = models.PositiveSmallIntegerField(default=1)
+    min_reviewers_is_per_group = models.BooleanField(default=False)
+
+    request_flow = models.ForeignKey(Flow, null=True, on_delete=models.SET_DEFAULT, default=None)
+
+    notification_transports = models.ManyToManyField(
+        "authentik_events.NotificationTransport",
+        blank=True,
+        through="RequestRuleNotificationTransport",
+    )
+    notification_mode = models.TextField(
+        choices=RequestNotificationMode.choices, default=RequestNotificationMode.ALL
+    )
+
+    @property
+    def serializer(self):
+        from authentik.enterprise.requests.api.request_rules import RequestRuleSerializer
+
+        return RequestRuleSerializer
+
+    def reviewers_among(self, users: models.QuerySet[User]) -> models.QuerySet[User]:
+        """Subset of `users` eligible to approve requests against this rule, per
+        this rule's own PolicyBindings (static user/group bindings, and any
+        dynamic Policy bound to it)."""
+        engine = FilterPolicyEngine(self, users)
+        # A rule with no reviewer bindings at all has nobody configured to approve
+        # it -- unlike app access, absence of bindings must not mean "anyone passes".
+        engine.empty_result = False
+        return engine.build().result
+
+    def notification_recipients(self) -> models.QuerySet[User]:
+        """Who to notify when a request is created against this rule, per
+        `notification_mode`."""
+        all_reviewers = self.reviewers_among(User.objects.all())
+        if self.notification_mode == RequestNotificationMode.DIRECT:
+            direct_ids = self.bindings.filter(enabled=True, user__isnull=False).values_list(
+                "user", flat=True
+            )
+            return all_reviewers.filter(pk__in=direct_ids)
+        if self.notification_mode == RequestNotificationMode.RANDOM_MIN_REVIEWERS:
+            return all_reviewers.order_by("?")[: self.min_reviewers]
+        return all_reviewers
+
+    class Meta:
+        verbose_name = _("Request Rule")
+        verbose_name_plural = _("Request Rules")
+
+
+class RequestRuleNotificationTransport(SimpleThroughModel):
+
+    rule = models.ForeignKey(RequestRule, on_delete=models.CASCADE)
+    notification_transport = models.ForeignKey(
+        "authentik_events.NotificationTransport",
+        on_delete=models.CASCADE,
+    )
+
+    class Meta:
+        unique_together = (("rule", "notification_transport"),)
+        verbose_name = _("Request Rule Notification Transport")
+        verbose_name_plural = _("Request Rule Notification Transports")
+
+    def __str__(self):
+        return (
+            f"RequestRuleNotificationTransport for Requeset Rule {self.rule_id} "
+            f"and Notification Transport {self.notification_transport_id}."
+        )
+
+
+class RequestStatus(models.TextChoices):
+
+    CREATED = "created"
+    APPROVED = "approved"
+    DENIED = "denied"
+    REVOKED = "revoked"
+
+
+class GrantRequest(SerializerModel, ExpiringModel, CreatedUpdatedModel):
+    """Request of a user to access target(s)"""
+
+    uuid = models.UUIDField(default=uuid4, primary_key=True)
+
+    created_by = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="grant_requests_created"
+    )
+    fulfilled_by = models.ForeignKey(
+        User,
+        on_delete=models.SET_DEFAULT,
+        related_name="grant_requests_fulfilled",
+        null=True,
+        default=None,
+    )
+    revoked_by = models.ForeignKey(
+        User,
+        on_delete=models.SET_DEFAULT,
+        related_name="grant_requests_revoked",
+        null=True,
+        default=None,
+    )
+
+    # Targets access was requested to
+    targets = models.ManyToManyField(PolicyBindingModel, through="GrantRequestTarget")
+    # Justification data, inputted by the `created_by` user via a flow, used for approve/deny
+    requester_data = models.JSONField(default=dict)
+    fulfiller_data = models.JSONField(default=dict)
+
+    status = models.TextField(choices=RequestStatus.choices, default=RequestStatus.CREATED)
+
+    # How long the grant should last once approved, resolved at request-creation time
+    # from the granting RequestRuleBinding(s)' expiry_granted_max, already clamped
+    # against any requester-provided override.
+    requested_expiry = models.TextField(default="hours=1", validators=[timedelta_string_validator])
+
+    @property
+    def serializer(self) -> type[Serializer]:
+        from authentik.enterprise.requests.api.grant_requests import GrantRequestSerializer
+
+        return GrantRequestSerializer
+
+    def _rule_satisfied(self, rule: RequestRule, approving_users) -> bool:
+        """Whether `approving_users` (pks) satisfies a single rule's reviewer requirements.
+        An approval from any individually-named reviewer satisfies the rule outright;
+        otherwise `min_reviewers` distinct approvers are needed from the reviewer groups,
+        either in total or from *each* group when `min_reviewers_is_per_group` is set."""
+        passing_approvers = set(
+            rule.reviewers_among(User.objects.filter(pk__in=approving_users)).values_list(
+                "pk", flat=True
+            )
+        )
+        if not passing_approvers:
+            return False
+        direct_reviewer_ids = set(
+            rule.bindings.filter(enabled=True, user__isnull=False).values_list("user", flat=True)
+        )
+        if passing_approvers & direct_reviewer_ids:
+            return True
+        group_ids = list(
+            rule.bindings.filter(enabled=True, group__isnull=False).values_list("group", flat=True)
+        )
+        if not group_ids:
+            return False
+        if not rule.min_reviewers_is_per_group:
+            return len(passing_approvers) >= rule.min_reviewers
+        for group_id in group_ids:
+            members_approving = User.objects.filter(
+                pk__in=passing_approvers, groups=group_id
+            ).count()
+            if members_approving < rule.min_reviewers:
+                return False
+        return True
+
+    def is_satisfied(self) -> bool:
+        """Whether enough reviewers have approved to fulfill every rule attached to this
+        request's targets. A target with no rule attached needs no more than one approval."""
+        approving_users = GrantRequestApproval.objects.filter(
+            request=self, status=RequestStatus.APPROVED
+        ).values_list("reviewer", flat=True)
+        rules = RequestRule.objects.filter(targets__in=self.targets.all()).distinct()
+        if not rules.exists():
+            return approving_users.exists()
+        return all(self._rule_satisfied(rule, approving_users) for rule in rules)
+
+    @transaction.atomic
+    def record_approval(
+        self, request: HttpRequest, user: User, status: RequestStatus, data: dict[str, Any]
+    ):
+        """Record a single reviewer's approval/denial. A denial immediately finalizes the
+        request as denied; an approval only finalizes it (and grants access) once
+        `is_satisfied` is true across every rule attached to the request's targets."""
+        if self.status != RequestStatus.CREATED:
+            return
+        if user.pk == self.created_by_id:
+            return
+        GrantRequestApproval.objects.update_or_create(
+            request=self, reviewer=user, defaults={"status": status, "attributes": data}
+        )
+        if status == RequestStatus.DENIED:
+            self._finalize(RequestStatus.DENIED, user, data, request)
+            return
+        if not self.is_satisfied():
+            return
+        self._finalize(RequestStatus.APPROVED, user, data, request)
+
+    def _finalize(
+        self, status: RequestStatus, user: User, data: dict[str, Any], request: HttpRequest
+    ):
+        self.fulfilled_by = user
+        self.fulfiller_data = data
+        self.status = status
+        self.save()
+        action = (
+            EventAction.ACCESS_REQUEST_APPROVED
+            if status == RequestStatus.APPROVED
+            else EventAction.ACCESS_REQUEST_DENIED
+        )
+        Event.new(action, model=self, targets=list(self.targets.all())).from_http(request, user)
+        if status != RequestStatus.APPROVED:
+            return
+        grant_expires = now() + timedelta_from_string(self.requested_expiry)
+        for target in GrantRequestTarget.objects.filter(request=self).all():
+            target_binding = PolicyBinding.objects.create(
+                user=self.created_by,
+                target=target.target,
+                expiring=True,
+                expires=grant_expires,
+                order=1000,
+            )
+            target.binding = target_binding
+            target.save()
+
+    @property
+    def is_active(self) -> bool:
+        """Whether this request currently grants live access: approved, and neither
+        revoked nor naturally expired yet."""
+        if self.status != RequestStatus.APPROVED:
+            return False
+        if self.expiring and self.expires and self.expires < now():
+            return False
+        return True
+
+    @transaction.atomic
+    def revoke(self, request: HttpRequest, user: User):
+        """End an active grant immediately, and mark the request revoked. A no-op unless the
+        request is currently approved."""
+        if self.status != RequestStatus.APPROVED:
+            return
+        for target in GrantRequestTarget.objects.filter(request=self, binding__isnull=False):
+            # Expire the PolicyBindings created (rather than deleting them,
+            # since GrantRequestTarget.binding cascades on delete and would
+            # take the audit trail with it)
+            target.binding.expiring = True
+            target.binding.expires = now()
+            target.binding.save()
+        self.revoked_by = user
+        self.status = RequestStatus.REVOKED
+        self.save()
+        Event.new(
+            EventAction.ACCESS_REQUEST_REVOKED, model=self, targets=list(self.targets.all())
+        ).from_http(request, user)
+
+    class Meta:
+        verbose_name = _("Grant Request")
+        verbose_name_plural = _("Grant Requests")
+        permissions = [
+            ("request_grantrequest", _("Can create a grant request")),
+            ("fulfill_grantrequest", _("Can fulfill (approve/deny) a grant request")),
+            ("revoke_grantrequest", _("Can revoke a grant request")),
+        ]
+
+    def __str__(self):
+        return f"Grant Request {self.uuid}"
+
+
+class GrantRequestTarget(InternallyManagedMixin, models.Model):
+    uuid = models.UUIDField(default=uuid4, primary_key=True)
+
+    request = models.ForeignKey(GrantRequest, on_delete=models.CASCADE)
+    binding = models.ForeignKey(PolicyBinding, on_delete=models.CASCADE, null=True)
+    target = models.ForeignKey(PolicyBindingModel, on_delete=models.CASCADE)
+
+    class Meta:
+        verbose_name = _("Grant Request Target")
+        verbose_name_plural = _("Grant Request Targets")
+
+    def __str__(self):
+        return f"Grant Request-target {self.request_id} to {self.target_id}"
+
+
+class GrantRequestApproval(AttributesMixin, CreatedUpdatedModel):
+    """A single reviewer's approval or denial of a GrantRequest. A request needs enough of
+    these, per RequestRule attached to its targets, before it is actually
+    fulfilled."""
+
+    uuid = models.UUIDField(default=uuid4, primary_key=True)
+
+    request = models.ForeignKey(GrantRequest, on_delete=models.CASCADE, related_name="approvals")
+    reviewer = models.ForeignKey(User, on_delete=models.CASCADE)
+    status = models.TextField(choices=RequestStatus.choices)
+
+    class Meta:
+        unique_together = ("request", "reviewer")
+        verbose_name = _("Grant Request Approval")
+        verbose_name_plural = _("Grant Request Approvals")
+
+    def __str__(self):
+        return f"Grant Request Approval {self.uuid}"

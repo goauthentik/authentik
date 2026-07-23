@@ -3,6 +3,7 @@ import "#elements/banner/EnterpriseStatusBanner";
 import "#components/notifications/APIDrawer";
 import "#components/notifications/NotificationDrawer";
 import "#elements/router/RouterOutlet";
+import "#components/ak-nav-tabs";
 
 import { globalAK } from "#common/global";
 import { configureSentry } from "#common/sentry/index";
@@ -12,6 +13,7 @@ import { WebsocketClient } from "#common/ws/WebSocketClient";
 import { AuthenticatedInterface } from "#elements/AuthenticatedInterface";
 import { listen } from "#elements/decorators/listen";
 import { WithBrandConfig } from "#elements/mixins/branding";
+import { WithLicenseSummary } from "#elements/mixins/license";
 import { canAccessAdmin, WithSession } from "#elements/mixins/session";
 import { ifPresent } from "#elements/utils/attributes";
 import { ThemedImage } from "#elements/utils/images";
@@ -30,7 +32,7 @@ import { ROUTES } from "#user/Routes";
 import { ConsoleLogger } from "#logger/browser";
 
 import { msg } from "@lit/localize";
-import { html, nothing } from "lit";
+import { css, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { guard } from "lit/directives/guard.js";
 
@@ -44,7 +46,9 @@ import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
 
 @customElement("ak-interface-user")
-class UserInterface extends WithBrandConfig(WithSession(AuthenticatedInterface)) {
+class UserInterface extends WithLicenseSummary(
+    WithBrandConfig(WithSession(AuthenticatedInterface)),
+) {
     public static readonly styles = [
         PFDisplay,
         PFBrand,
@@ -55,6 +59,11 @@ class UserInterface extends WithBrandConfig(WithSession(AuthenticatedInterface))
         PFDropdown,
         PFNotificationBadge,
         Styles,
+        css`
+            .pf-c-page__header-nav {
+                --pf-c-page__header-nav--BackgroundColor: transparent;
+            }
+        `,
     ];
 
     #logger = ConsoleLogger.prefix("user-interface");
@@ -156,6 +165,13 @@ class UserInterface extends WithBrandConfig(WithSession(AuthenticatedInterface))
                             })}
                         </a>
                     </div>
+                    <ak-nav-tabs
+                        class="pf-c-page__header-nav"
+                        .items=${[
+                            { label: msg("Applications"), link: "/library" },
+                            { label: msg("Discover"), link: "/requests" },
+                        ]}
+                    ></ak-nav-tabs>
                     <ak-nav-buttons>${this.renderAdminInterfaceLink()}</ak-nav-buttons>
                 </header>
                 <div class="pf-c-page__drawer">

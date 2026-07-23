@@ -463,9 +463,15 @@ class ListPolicyEngine[T: PolicyBindingModel](_PolicyEngineBase):
                 return self
 
             obj_by_pk = {obj.pk: obj for obj in objs}
+            # PolicyBinding.target is a FK to the PolicyBindingModel base table's own
+            # pk (pbm_uuid), which can diverge from a subclass's own `.pk` if that
+            # subclass declares its own primary key.
+            target_field = PolicyBinding._meta.get_field("target").target_field.attname
+            pk_by_target_key = {getattr(obj, target_field): obj.pk for obj in objs}
+
             bindings_by_target = defaultdict(list)
             bindings = list(
-                PolicyBinding.objects.filter(target__in=obj_by_pk.keys(), enabled=True)
+                PolicyBinding.objects.filter(target__in=pk_by_target_key.keys(), enabled=True)
                 .select_related("user", "group")
                 .order_by("target", "order")
             )
@@ -478,11 +484,12 @@ class ListPolicyEngine[T: PolicyBindingModel](_PolicyEngineBase):
                 else {}
             )
             for binding in bindings:
-                binding.target = obj_by_pk[binding.target_id]
+                pk = pk_by_target_key[binding.target_id]
+                binding.target = obj_by_pk[pk]
                 if binding.policy_id is not None:
                     binding.policy = policies_by_pk[binding.policy_id]
                 self._check_policy_type(binding)
-                bindings_by_target[binding.target_id].append(binding)
+                bindings_by_target[pk].append(binding)
 
             # Objects with no bindings at all pass if empty_result, same convention
             # as PolicyEngine/FilterPolicyEngine.

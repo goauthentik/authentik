@@ -103,6 +103,12 @@ export interface PatchedBrandRequest {
      */
     flowLockdown?: string | null;
     /**
+     *
+     * @type {string}
+     * @memberof PatchedBrandRequest
+     */
+    flowRequest?: string | null;
+    /**
      * When set, external users will be redirected to this application after authenticating.
      * @type {string}
      * @memberof PatchedBrandRequest
@@ -167,6 +173,7 @@ export function PatchedBrandRequestFromJSONTyped(
             json["flow_user_settings"] == null ? undefined : json["flow_user_settings"],
         flowDeviceCode: json["flow_device_code"] == null ? undefined : json["flow_device_code"],
         flowLockdown: json["flow_lockdown"] == null ? undefined : json["flow_lockdown"],
+        flowRequest: json["flow_request"] == null ? undefined : json["flow_request"],
         defaultApplication:
             json["default_application"] == null ? undefined : json["default_application"],
         webCertificate: json["web_certificate"] == null ? undefined : json["web_certificate"],
@@ -203,6 +210,7 @@ export function PatchedBrandRequestToJSONTyped(
         flow_user_settings: value["flowUserSettings"],
         flow_device_code: value["flowDeviceCode"],
         flow_lockdown: value["flowLockdown"],
+        flow_request: value["flowRequest"],
         default_application: value["defaultApplication"],
         web_certificate: value["webCertificate"],
         client_certificates: value["clientCertificates"],
