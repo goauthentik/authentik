@@ -7,10 +7,12 @@ use argh::FromArgs;
 use eyre::{Result, eyre};
 use tracing::{error, info, trace};
 
+#[cfg(feature = "core")]
+pub(crate) mod brands;
 mod healthcheck;
 mod metrics;
 #[cfg(feature = "proxy")]
-mod outpost;
+pub(crate) mod outpost;
 #[cfg(feature = "core")]
 mod server;
 #[cfg(feature = "core")]

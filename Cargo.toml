@@ -338,6 +338,7 @@ moka = { workspace = true, optional = true }
 nix.workspace = true
 pyo3 = { workspace = true, optional = true }
 rand.workspace = true
+rcgen.workspace = true
 regex = { workspace = true, optional = true }
 reqwest-middleware = { workspace = true, optional = true }
 reqwest.workspace = true
