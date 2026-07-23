@@ -49,10 +49,16 @@ For example:
 
 In blueprints, a user's password can also be set using the `password_hash` field. The value must be a valid Django password hash, such as one generated with the `hash_password` management command.
 
-Use `password_hash` when you need to import or bootstrap an existing hash without exposing the raw password to authentik:
+Use `password_hash` when you need to import or bootstrap an existing hash without exposing the raw password to authentik. Enter the password when prompted to generate the hash:
 
 ```bash
-docker compose run --rm server hash_password 'your-password'
+docker compose run --rm server hash_password
+```
+
+For automation, pass the password in the `PASSWORD` environment variable and pipe it through standard input to prevent exposing the password in your shell history:
+
+```bash
+echo "$PASSWORD" | docker compose run --rm server hash_password
 ```
 
 For example:
