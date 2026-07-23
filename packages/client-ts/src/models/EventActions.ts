@@ -23,6 +23,8 @@ export const EventActions = {
     UserWrite: "user_write",
     SuspiciousRequest: "suspicious_request",
     PasswordSet: "password_set",
+    PasswordLoginLocked: "password_login_locked",
+    PasswordLoginUnlocked: "password_login_unlocked",
     SecretView: "secret_view",
     SecretRotate: "secret_rotate",
     InvitationUsed: "invitation_used",

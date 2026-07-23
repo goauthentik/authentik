@@ -16,6 +16,7 @@ from authentik.core.models import (
     Session,
     Token,
     User,
+    UserStatus,
     UserTypes,
 )
 from authentik.core.tests.utils import (
@@ -24,6 +25,10 @@ from authentik.core.tests.utils import (
     create_test_flow,
     create_test_user,
 )
+from authentik.enterprise.stages.password.lockout import lock_password_login
+from authentik.enterprise.stages.password.models import UserPasswordLoginState
+from authentik.enterprise.tests import enterprise_test
+from authentik.events.models import Event, EventAction
 from authentik.flows.models import FlowAuthenticationRequirement, FlowDesignation
 from authentik.lib.generators import generate_id, generate_key
 from authentik.rbac.models import Role
@@ -135,6 +140,112 @@ class TestUsersAPI(APITestCase):
         self.assertEqual(response.status_code, 204)
         self.admin.refresh_from_db()
         self.assertTrue(self.admin.check_password(new_pw))
+
+    @enterprise_test()
+    def test_password_login_lock_actions(self):
+        """Password login lock actions are idempotent and emit transition events."""
+        self.client.force_login(self.admin)
+
+        lock_url = reverse("authentik_api:user-password-login-lock", kwargs={"pk": self.user.pk})
+        self.assertEqual(self.client.post(lock_url).status_code, 204)
+        self.assertEqual(self.client.post(lock_url).status_code, 204)
+        self.user.refresh_from_db()
+        self.assertIsNotNone(self.user.password_login_locked_at)
+        lock_event = Event.objects.get(
+            action=EventAction.PASSWORD_LOGIN_LOCKED,
+            context__affected_user__pk=self.user.pk,
+        )
+        self.assertEqual(lock_event.user["pk"], self.admin.pk)
+
+        unlock_url = reverse(
+            "authentik_api:user-password-login-unlock", kwargs={"pk": self.user.pk}
+        )
+        self.assertEqual(self.client.post(unlock_url).status_code, 204)
+        self.assertEqual(self.client.post(unlock_url).status_code, 204)
+        self.user.refresh_from_db()
+        self.assertIsNone(self.user.password_login_locked_at)
+        unlock_event = Event.objects.get(
+            action=EventAction.PASSWORD_LOGIN_UNLOCKED,
+            context__affected_user__pk=self.user.pk,
+        )
+        self.assertEqual(unlock_event.user["pk"], self.admin.pk)
+
+    @enterprise_test()
+    def test_password_login_lock_rejects_current_user(self):
+        """An administrator cannot lock password login for their own account."""
+        self.client.force_login(self.admin)
+
+        response = self.client.post(
+            reverse("authentik_api:user-password-login-lock", kwargs={"pk": self.admin.pk})
+        )
+
+        self.assertEqual(response.status_code, 400)
+        self.assertJSONEqual(
+            response.content,
+            {"non_field_errors": "You cannot lock password login for your own account."},
+        )
+        self.assertFalse(UserPasswordLoginState.objects.filter(user=self.admin).exists())
+
+    @enterprise_test()
+    def test_password_login_lock_internal_service_account(self):
+        """Internal service accounts cannot have password login locked."""
+        self.client.force_login(self.admin)
+        user = create_test_admin_user(type=UserTypes.INTERNAL_SERVICE_ACCOUNT)
+
+        response = self.client.post(
+            reverse("authentik_api:user-password-login-lock", kwargs={"pk": user.pk})
+        )
+
+        self.assertEqual(response.status_code, 400)
+        self.assertJSONEqual(
+            response.content,
+            {
+                "non_field_errors": (
+                    "Password login cannot be locked for an internal service account."
+                )
+            },
+        )
+        user.refresh_from_db()
+        self.assertIsNone(user.password_login_locked_at)
+        self.assertFalse(
+            Event.objects.filter(
+                action=EventAction.PASSWORD_LOGIN_LOCKED,
+                user__pk=user.pk,
+            ).exists()
+        )
+
+    @enterprise_test()
+    def test_password_login_lock_deactivated_user(self):
+        """Deactivated users cannot receive a new password-login lock."""
+        self.client.force_login(self.admin)
+        self.user.is_active = False
+        self.user.save(update_fields=("is_active",))
+
+        response = self.client.post(
+            reverse("authentik_api:user-password-login-lock", kwargs={"pk": self.user.pk})
+        )
+
+        self.assertEqual(response.status_code, 400)
+        self.assertJSONEqual(
+            response.content,
+            {"non_field_errors": "Password login cannot be locked for a deactivated user."},
+        )
+        self.assertFalse(UserPasswordLoginState.objects.filter(user=self.user).exists())
+
+    @enterprise_test()
+    def test_composite_status(self):
+        """User status reports the highest-priority active restriction."""
+        self.assertEqual(self.user.composite_status, UserStatus.ACTIVE)
+
+        self.user.attributes["reset_password"] = True
+        self.assertEqual(self.user.composite_status, UserStatus.PASSWORD_RESET_PENDING)
+
+        lock_password_login(self.user)
+        self.user.refresh_from_db()
+        self.assertEqual(self.user.composite_status, UserStatus.LOCKED)
+
+        self.user.is_active = False
+        self.assertEqual(self.user.composite_status, UserStatus.DEACTIVATED)
 
     def test_set_password_blank(self):
         """Test Direct password set"""

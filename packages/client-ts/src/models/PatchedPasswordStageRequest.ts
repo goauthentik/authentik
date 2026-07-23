@@ -40,11 +40,41 @@ export interface PatchedPasswordStageRequest {
      */
     configureFlow?: string | null;
     /**
-     * How many attempts a user has before the flow is canceled. To lock the user out, use a reputation policy and a user_write stage.
+     * How many failed password attempts are allowed before the flow is canceled. This setting does not deactivate the user.
      * @type {number}
      * @memberof PatchedPasswordStageRequest
      */
     failedAttemptsBeforeCancel?: number;
+    /**
+     * How many consecutive failed password attempts occur before password login is locked. Set to 0 to disable lockout.
+     * @type {number}
+     * @memberof PatchedPasswordStageRequest
+     */
+    failedAttemptsBeforeLockout?: number;
+    /**
+     * Show a warning when the user has one password attempt remaining.
+     * @type {boolean}
+     * @memberof PatchedPasswordStageRequest
+     */
+    showLastAttemptWarning?: boolean;
+    /**
+     * Optional custom warning. Leave blank to use the default message.
+     * @type {string}
+     * @memberof PatchedPasswordStageRequest
+     */
+    lastAttemptWarningMessage?: string;
+    /**
+     * Show a message to the user when their account is locked out.
+     * @type {boolean}
+     * @memberof PatchedPasswordStageRequest
+     */
+    showLockoutMessage?: boolean;
+    /**
+     * Optional custom lockout message. Leave blank to use the default message.
+     * @type {string}
+     * @memberof PatchedPasswordStageRequest
+     */
+    lockoutMessage?: string;
     /**
      * When enabled, provides a 'show password' button with the password input field.
      * @type {boolean}
@@ -84,6 +114,21 @@ export function PatchedPasswordStageRequestFromJSONTyped(
             json["failed_attempts_before_cancel"] == null
                 ? undefined
                 : json["failed_attempts_before_cancel"],
+        failedAttemptsBeforeLockout:
+            json["failed_attempts_before_lockout"] == null
+                ? undefined
+                : json["failed_attempts_before_lockout"],
+        showLastAttemptWarning:
+            json["show_last_attempt_warning"] == null
+                ? undefined
+                : json["show_last_attempt_warning"],
+        lastAttemptWarningMessage:
+            json["last_attempt_warning_message"] == null
+                ? undefined
+                : json["last_attempt_warning_message"],
+        showLockoutMessage:
+            json["show_lockout_message"] == null ? undefined : json["show_lockout_message"],
+        lockoutMessage: json["lockout_message"] == null ? undefined : json["lockout_message"],
         allowShowPassword:
             json["allow_show_password"] == null ? undefined : json["allow_show_password"],
     };
@@ -109,6 +154,11 @@ export function PatchedPasswordStageRequestToJSONTyped(
                 : (value["backends"] as Array<any>).map(BackendsEnumToJSON),
         configure_flow: value["configureFlow"],
         failed_attempts_before_cancel: value["failedAttemptsBeforeCancel"],
+        failed_attempts_before_lockout: value["failedAttemptsBeforeLockout"],
+        show_last_attempt_warning: value["showLastAttemptWarning"],
+        last_attempt_warning_message: value["lastAttemptWarningMessage"],
+        show_lockout_message: value["showLockoutMessage"],
+        lockout_message: value["lockoutMessage"],
         allow_show_password: value["allowShowPassword"],
     };
 }

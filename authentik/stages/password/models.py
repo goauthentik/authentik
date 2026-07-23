@@ -2,6 +2,7 @@
 
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
+from django.utils.translation import gettext
 from django.utils.translation import gettext_lazy as _
 from django.views import View
 from rest_framework.serializers import BaseSerializer
@@ -48,9 +49,34 @@ class PasswordStage(ConfigurableStage, Stage):
     failed_attempts_before_cancel = models.IntegerField(
         default=5,
         help_text=_(
-            "How many attempts a user has before the flow is canceled. "
-            "To lock the user out, use a reputation policy and a user_write stage."
+            "How many failed password attempts are allowed before the flow is canceled. "
+            "This setting does not deactivate the user."
         ),
+    )
+    failed_attempts_before_lockout = models.PositiveIntegerField(
+        default=0,
+        help_text=_(
+            "How many consecutive failed password attempts occur before password login is locked. "
+            "Set to 0 to disable lockout."
+        ),
+    )
+    show_last_attempt_warning = models.BooleanField(
+        default=False,
+        help_text=_("Show a warning when the user has one password attempt remaining."),
+    )
+    last_attempt_warning_message = models.TextField(
+        blank=True,
+        default="",
+        help_text=_("Optional custom warning. Leave blank to use the default message."),
+    )
+    show_lockout_message = models.BooleanField(
+        default=False,
+        help_text=_("Show a message to the user when their account is locked out."),
+    )
+    lockout_message = models.TextField(
+        blank=True,
+        default="",
+        help_text=_("Optional custom lockout message. Leave blank to use the default message."),
     )
     allow_show_password = models.BooleanField(
         default=False,
@@ -83,6 +109,24 @@ class PasswordStage(ConfigurableStage, Stage):
                 "title": str(self._meta.verbose_name),
                 "component": "ak-user-settings-password",
             }
+        )
+
+    def get_last_attempt_message(self, fallback: str) -> str:
+        """Return the configured last-attempt warning or the existing authentication error."""
+        if not self.show_last_attempt_warning:
+            return fallback
+        return self.last_attempt_warning_message or gettext(
+            "You have one password attempt remaining before your account is locked out. "
+            "If you have forgotten your password, please contact your administrator."
+        )
+
+    def get_lockout_message(self, fallback: str) -> str:
+        """Return the configured lockout message or the existing authentication error."""
+        if not self.show_lockout_message:
+            return fallback
+        return self.lockout_message or gettext(
+            "Your account has been locked out due to too many failed attempts. "
+            "Please contact your administrator."
         )
 
     class Meta:

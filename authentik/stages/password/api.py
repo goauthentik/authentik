@@ -4,10 +4,14 @@ from rest_framework.viewsets import ModelViewSet
 
 from authentik.core.api.used_by import UsedByMixin
 from authentik.flows.api.stages import StageSerializer
+from authentik.lib.utils.reflection import ConditionalInheritance
 from authentik.stages.password.models import PasswordStage
 
 
-class PasswordStageSerializer(StageSerializer):
+class PasswordStageSerializer(
+    ConditionalInheritance("authentik.enterprise.stages.password.api.PasswordStageSerializerMixin"),
+    StageSerializer,
+):
     """PasswordStage Serializer"""
 
     class Meta:
@@ -16,6 +20,11 @@ class PasswordStageSerializer(StageSerializer):
             "backends",
             "configure_flow",
             "failed_attempts_before_cancel",
+            "failed_attempts_before_lockout",
+            "show_last_attempt_warning",
+            "last_attempt_warning_message",
+            "show_lockout_message",
+            "lockout_message",
             "allow_show_password",
         ]
 
@@ -29,6 +38,11 @@ class PasswordStageViewSet(UsedByMixin, ModelViewSet):
         "name",
         "configure_flow",
         "failed_attempts_before_cancel",
+        "failed_attempts_before_lockout",
+        "show_last_attempt_warning",
+        "last_attempt_warning_message",
+        "show_lockout_message",
+        "lockout_message",
         "allow_show_password",
     ]
     search_fields = ["name"]

@@ -92,6 +92,7 @@ export * from "./CertificateKeyPairRequest";
 export * from "./ChallengeTypes";
 export * from "./ClientTypeEnum";
 export * from "./CompatibilityModeEnum";
+export * from "./CompositeStatusEnum";
 export * from "./Config";
 export * from "./ConnectionToken";
 export * from "./ConnectionTokenRequest";

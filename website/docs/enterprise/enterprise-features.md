@@ -35,6 +35,7 @@ See the [pricing page](https://goauthentik.io/pricing/) for current plan details
 ### Authentication and network access
 
 - [Password history compliance](../customize/policies/types/password-uniqueness.md) prevents users from reusing previous passwords.
+- [Password login lockout](../add-secure-apps/flows-stages/stages/password/index.md) blocks password authentication after a configured number of consecutive failed attempts without disabling other authentication methods.
 - [Client certificate authentication](../add-secure-apps/flows-stages/stages/mtls/index.md) authenticates or enrolls users with client certificates from devices, smart cards, PIV cards, or hardware tokens.
 - [RADIUS EAP-TLS](../add-secure-apps/providers/radius/index.mdx#eap) authenticates network clients with EAP-TLS and client certificates.
 - [Account Lockdown](../security/account-lockdown.md) immediately secures a compromised account by disabling it, revoking its tokens, ending its sessions, and recording the action in the audit log.

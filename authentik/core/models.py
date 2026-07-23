@@ -131,6 +131,15 @@ class UserTypes(models.TextChoices):
     INTERNAL_SERVICE_ACCOUNT = "internal_service_account"
 
 
+class UserStatus(models.TextChoices):
+    """Combined user status shown to administrators."""
+
+    ACTIVE = "active", _("Active")
+    LOCKED = "locked", _("Locked")
+    PASSWORD_RESET_PENDING = "password_reset_pending", _("Password reset pending")
+    DEACTIVATED = "deactivated", _("Deactivated")
+
+
 class AttributesMixin(models.Model):
     """Adds an attributes property to a model"""
 
@@ -419,6 +428,29 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
     def all_roles(self) -> QuerySet[Role]:
         """Get all roles of this user and all of its groups (recursively)."""
         return Role.objects.filter(Q(users=self) | Q(groups__in=self.all_groups())).distinct()
+
+    @property
+    def composite_status(self) -> UserStatus:
+        """Return the user status shown to administrators."""
+        if not self.is_active:
+            return UserStatus.DEACTIVATED
+        if self.password_login_locked_at is not None:
+            return UserStatus.LOCKED
+        # TODO: Replace this documented attribute convention with dedicated state.
+        # https://github.com/goauthentik/authentik/issues/19681
+        if self.attributes.get("reset_password") is True:
+            return UserStatus.PASSWORD_RESET_PENDING
+        return UserStatus.ACTIVE
+
+    @property
+    def password_login_locked_at(self) -> datetime | None:
+        """Return when password login was locked, if a lockout state exists."""
+        try:
+            from authentik.enterprise.stages.password.lockout import password_login_locked_at
+
+            return password_login_locked_at(self)
+        except ModuleNotFoundError:
+            return None
 
     def get_managed_role(self, create=False):
         if create:

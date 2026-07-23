@@ -4611,6 +4611,50 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+  /core/users/{id}/password_login_lock/:
+    post:
+      operationId: core_users_password_login_lock_create
+      description: Lock password login for a user.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this User.
+        required: true
+      tags:
+      - core
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: Password login locked
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /core/users/{id}/password_login_unlock/:
+    post:
+      operationId: core_users_password_login_unlock_create
+      description: Unlock password login for a user.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this User.
+        required: true
+      tags:
+      - core
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: Password login unlocked
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
   /core/users/{id}/recovery/:
     post:
       operationId: core_users_recovery_create
@@ -31561,11 +31605,31 @@ paths:
         name: failed_attempts_before_cancel
         schema:
           type: integer
+      - in: query
+        name: failed_attempts_before_lockout
+        schema:
+          type: integer
+      - in: query
+        name: last_attempt_warning_message
+        schema:
+          type: string
+      - in: query
+        name: lockout_message
+        schema:
+          type: string
       - $ref: '#/components/parameters/QueryName'
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
       - $ref: '#/components/parameters/QueryPaginationPageSize'
       - $ref: '#/components/parameters/QuerySearch'
+      - in: query
+        name: show_last_attempt_warning
+        schema:
+          type: boolean
+      - in: query
+        name: show_lockout_message
+        schema:
+          type: boolean
       tags:
       - stages
       security:
@@ -34582,6 +34646,7 @@ components:
       - authentik.enterprise.stages.account_lockdown
       - authentik.enterprise.stages.authenticator_endpoint_gdtc
       - authentik.enterprise.stages.mtls
+      - authentik.enterprise.stages.password
       - authentik.enterprise.stages.source
       type: string
     AppleChallengeResponseRequest:
@@ -36850,6 +36915,13 @@ components:
       - webex
       - vcenter
       type: string
+    CompositeStatusEnum:
+      enum:
+      - active
+      - locked
+      - password_reset_pending
+      - deactivated
+      type: string
     Config:
       type: object
       description: Serialize authentik Config into DRF Object
@@ -39105,6 +39177,8 @@ components:
       - user_write
       - suspicious_request
       - password_set
+      - password_login_locked
+      - password_login_unlocked
       - secret_view
       - secret_rotate
       - invitation_used
@@ -48055,8 +48129,27 @@ components:
           type: integer
           maximum: 2147483647
           minimum: -2147483648
-          description: How many attempts a user has before the flow is canceled. To
-            lock the user out, use a reputation policy and a user_write stage.
+          description: How many failed password attempts are allowed before the flow
+            is canceled. This setting does not deactivate the user.
+        failed_attempts_before_lockout:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: How many consecutive failed password attempts occur before
+            password login is locked. Set to 0 to disable lockout.
+        show_last_attempt_warning:
+          type: boolean
+          description: Show a warning when the user has one password attempt remaining.
+        last_attempt_warning_message:
+          type: string
+          description: Optional custom warning. Leave blank to use the default message.
+        show_lockout_message:
+          type: boolean
+          description: Show a message to the user when their account is locked out.
+        lockout_message:
+          type: string
+          description: Optional custom lockout message. Leave blank to use the default
+            message.
         allow_show_password:
           type: boolean
           description: When enabled, provides a 'show password' button with the password
@@ -48092,8 +48185,27 @@ components:
           type: integer
           maximum: 2147483647
           minimum: -2147483648
-          description: How many attempts a user has before the flow is canceled. To
-            lock the user out, use a reputation policy and a user_write stage.
+          description: How many failed password attempts are allowed before the flow
+            is canceled. This setting does not deactivate the user.
+        failed_attempts_before_lockout:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: How many consecutive failed password attempts occur before
+            password login is locked. Set to 0 to disable lockout.
+        show_last_attempt_warning:
+          type: boolean
+          description: Show a warning when the user has one password attempt remaining.
+        last_attempt_warning_message:
+          type: string
+          description: Optional custom warning. Leave blank to use the default message.
+        show_lockout_message:
+          type: boolean
+          description: Show a message to the user when their account is locked out.
+        lockout_message:
+          type: string
+          description: Optional custom lockout message. Leave blank to use the default
+            message.
         allow_show_password:
           type: boolean
           description: When enabled, provides a 'show password' button with the password
@@ -50514,8 +50626,27 @@ components:
           type: integer
           maximum: 2147483647
           minimum: -2147483648
-          description: How many attempts a user has before the flow is canceled. To
-            lock the user out, use a reputation policy and a user_write stage.
+          description: How many failed password attempts are allowed before the flow
+            is canceled. This setting does not deactivate the user.
+        failed_attempts_before_lockout:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: How many consecutive failed password attempts occur before
+            password login is locked. Set to 0 to disable lockout.
+        show_last_attempt_warning:
+          type: boolean
+          description: Show a warning when the user has one password attempt remaining.
+        last_attempt_warning_message:
+          type: string
+          description: Optional custom warning. Leave blank to use the default message.
+        show_lockout_message:
+          type: boolean
+          description: Show a message to the user when their account is locked out.
+        lockout_message:
+          type: string
+          description: Optional custom lockout message. Leave blank to use the default
+            message.
         allow_show_password:
           type: boolean
           description: When enabled, provides a 'show password' button with the password
@@ -57930,6 +58061,15 @@ components:
           title: Active
           description: Designates whether this user should be treated as active. Unselect
             this instead of deleting accounts.
+        composite_status:
+          allOf:
+          - $ref: '#/components/schemas/CompositeStatusEnum'
+          readOnly: true
+        password_login_locked_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
         last_login:
           type: string
           format: date-time
@@ -57996,12 +58136,14 @@ components:
           readOnly: true
       required:
       - avatar
+      - composite_status
       - date_joined
       - groups_obj
       - is_superuser
       - last_updated
       - name
       - password_change_date
+      - password_login_locked_at
       - pk
       - roles_obj
       - uid

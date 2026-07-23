@@ -5,6 +5,8 @@ from requests_mock import Mocker
 from rest_framework.exceptions import ValidationError
 
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
+from authentik.enterprise.stages.password.models import UserPasswordLoginState
+from authentik.enterprise.tests import enterprise_test
 from authentik.flows.models import FlowDesignation, FlowStageBinding
 from authentik.flows.stage import PLAN_CONTEXT_PENDING_USER_IDENTIFIER
 from authentik.flows.tests import FlowTestCase
@@ -214,6 +216,86 @@ class TestIdentificationStage(FlowTestCase):
             ],
             show_source_labels=False,
             user_fields=["email"],
+        )
+
+    @enterprise_test()
+    def test_invalid_with_password_account_lockout(self):
+        """Test account lockout with password validation in the identification stage."""
+        pw_stage = PasswordStage.objects.create(
+            name="password-lockout",
+            backends=[BACKEND_INBUILT],
+            failed_attempts_before_lockout=2,
+            show_last_attempt_warning=True,
+        )
+        self.stage.password_stage = pw_stage
+        self.stage.save(update_fields=("password_stage",))
+
+        url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
+        response = self.client.post(
+            url,
+            {"uid_field": self.user.email, "password": self.user.username + "test"},
+        )
+        self.assertStageResponse(
+            response,
+            self.flow,
+            response_errors={
+                "non_field_errors": [
+                    {
+                        "string": (
+                            "You have one password attempt remaining before your account is "
+                            "locked out. If you have forgotten your password, please contact "
+                            "your administrator."
+                        ),
+                        "code": "invalid",
+                    }
+                ]
+            },
+        )
+
+        response = self.client.post(
+            url,
+            {"uid_field": self.user.email, "password": self.user.username + "test"},
+        )
+
+        self.user.refresh_from_db()
+        self.assertIsNotNone(self.user.password_login_locked_at)
+        self.assertEqual(
+            UserPasswordLoginState.objects.get(user=self.user).failed_attempts,
+            0,
+        )
+        self.assertStageResponse(
+            response,
+            self.flow,
+            component="ak-stage-access-denied",
+            error_message="Failed to authenticate.",
+        )
+
+        response = self.client.post(
+            url,
+            {"uid_field": self.user.email, "password": self.user.username + "test"},
+        )
+        self.assertStageResponse(
+            response,
+            self.flow,
+            response_errors={
+                "non_field_errors": [
+                    {
+                        "string": "Failed to authenticate.",
+                        "code": "invalid",
+                    }
+                ]
+            },
+        )
+
+        response = self.client.post(
+            url,
+            {"uid_field": self.user.email, "password": self.user.username + "test"},
+        )
+        self.assertStageResponse(
+            response,
+            self.flow,
+            component="ak-stage-access-denied",
+            error_message="Failed to authenticate.",
         )
 
     def test_invalid_with_password_pretend(self):

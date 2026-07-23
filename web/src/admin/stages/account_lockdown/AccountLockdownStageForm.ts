@@ -4,6 +4,7 @@ import "#components/ak-switch-input";
 import "#components/ak-text-input";
 
 import { aki } from "#common/api/client";
+import { docLink } from "#common/global";
 
 import { SlottedTemplateResult } from "#elements/types";
 import { ifPresent } from "#elements/utils/attributes";
@@ -32,6 +33,15 @@ export class AccountLockdownStageForm extends BaseStageForm<AccountLockdownStage
                     "This stage executes account lockdown actions on a target user. Configure which actions to perform when this stage runs.",
                 )}
             </span>
+            <a
+                href=${docLink("/users-sources/user/access-control/")}
+                target="_blank"
+                rel="noopener noreferrer"
+            >
+                ${msg("Compare user access controls.", {
+                    id: "account-lockdown-stage.access-control-documentation.link",
+                })}
+            </a>
             <ak-text-input
                 label=${msg("Stage Name")}
                 placeholder=${msg("Type a name for this stage...")}

@@ -7,6 +7,8 @@ sidebar_position: 3
 
 Account Lockdown is a security feature that allows administrators to quickly secure a user account during emergencies, such as suspected compromise or unauthorized access. Users can also lock down their own account if they believe it has been compromised.
 
+Account Lockdown is broader than locking password login or deactivating a user directly. For a comparison, see [Control user access](../users-sources/user/access-control.md).
+
 ## What Account Lockdown does
 
 When triggered, Account Lockdown performs the following actions (all configurable):

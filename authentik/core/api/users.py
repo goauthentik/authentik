@@ -86,6 +86,7 @@ from authentik.core.models import (
     Token,
     TokenIntents,
     User,
+    UserStatus,
     UserTypes,
     default_token_duration,
 )
@@ -156,6 +157,8 @@ class UserSerializer(AttributesMixinSerializer, ModelSerializer):
     )
     roles_obj = SerializerMethodField(allow_null=True)
     uid = CharField(read_only=True)
+    composite_status = ChoiceField(choices=UserStatus.choices, read_only=True)
+    password_login_locked_at = DateTimeField(read_only=True, allow_null=True)
     username = CharField(
         max_length=USERNAME_MAX_LENGTH,
         validators=[UniqueValidator(queryset=User.objects.all().order_by("username"))],
@@ -345,6 +348,8 @@ class UserSerializer(AttributesMixinSerializer, ModelSerializer):
             "username",
             "name",
             "is_active",
+            "composite_status",
+            "password_login_locked_at",
             "last_login",
             "date_joined",
             "is_superuser",
@@ -599,6 +604,7 @@ class UsersFilter(FilterSet):
 
 
 class UserViewSet(
+    ConditionalInheritance("authentik.enterprise.stages.password.api.UserPasswordLoginMixin"),
     ConditionalInheritance(
         "authentik.enterprise.stages.account_lockdown.api.UserAccountLockdownMixin"
     ),
@@ -631,7 +637,11 @@ class UserViewSet(
         ]
 
     def get_queryset(self):
-        base_qs = User.objects.all().exclude_anonymous()
+        base_qs = (
+            User.objects.all()
+            .exclude_anonymous()
+            .select_related(*getattr(self, "conditional_select_related", ()))
+        )
         # Always prefetch groups since group PKs are always serialized.
         # Use full prefetch when include_groups=true (for groups_obj), ID-only otherwise.
         if self.serializer_class(context={"request": self.request})._should_include_groups:

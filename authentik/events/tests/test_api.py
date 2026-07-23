@@ -70,6 +70,24 @@ class TestEventsAPI(APITestCase):
         )
         self.assertEqual(response.status_code, 200)
 
+    def test_filter_username_matches_affected_user(self):
+        """User event filters include events performed on the user by another actor."""
+        affected_user = create_test_admin_user()
+        Event.new(EventAction.PASSWORD_LOGIN_LOCKED, affected_user=affected_user).set_user(
+            self.user
+        ).save()
+
+        response = self.client.get(
+            reverse("authentik_api:event-list"),
+            data={
+                "action": EventAction.PASSWORD_LOGIN_LOCKED,
+                "username": affected_user.username,
+            },
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(loads(response.content)["pagination"]["count"], 1)
+
     def test_notifications(self):
         """Test notifications"""
         notification = Notification.objects.create(

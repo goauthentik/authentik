@@ -24,6 +24,13 @@ pub struct User {
     /// accounts.
     #[serde(rename = "is_active", skip_serializing_if = "Option::is_none")]
     pub is_active: Option<bool>,
+    #[serde(rename = "composite_status")]
+    pub composite_status: models::CompositeStatusEnum,
+    #[serde(
+        rename = "password_login_locked_at",
+        deserialize_with = "Option::deserialize"
+    )]
+    pub password_login_locked_at: Option<chrono::DateTime<chrono::FixedOffset>>,
     #[serde(
         rename = "last_login",
         default,
@@ -70,6 +77,8 @@ impl User {
         pk: i32,
         username: String,
         name: String,
+        composite_status: models::CompositeStatusEnum,
+        password_login_locked_at: Option<chrono::DateTime<chrono::FixedOffset>>,
         date_joined: chrono::DateTime<chrono::FixedOffset>,
         is_superuser: bool,
         groups_obj: Option<Vec<models::PartialGroup>>,
@@ -85,6 +94,8 @@ impl User {
             username,
             name,
             is_active: None,
+            composite_status,
+            password_login_locked_at,
             last_login: None,
             date_joined,
             is_superuser,

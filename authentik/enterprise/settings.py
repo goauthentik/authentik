@@ -17,6 +17,7 @@ TENANT_APPS = [
     "authentik.enterprise.stages.account_lockdown",
     "authentik.enterprise.stages.authenticator_endpoint_gdtc",
     "authentik.enterprise.stages.mtls",
+    "authentik.enterprise.stages.password",
     "authentik.enterprise.stages.source",
 ]
 

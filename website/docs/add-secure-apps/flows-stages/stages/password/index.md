@@ -18,6 +18,11 @@ The stage supports authentik's built-in password database, app passwords, LDAP-b
     - **User database + LDAP password**
     - **User database + Kerberos password**
 - **Failed attempts before cancel**: how many failed password submissions are allowed before the flow is canceled.
+- **Failed attempts before lockout** :ak-enterprise Lock password login after this many consecutive failed password attempts. Failed attempts against LDAP and Kerberos backends are not counted. Set this option to `0` to disable password lockout.
+- **Show last-attempt warning** :ak-enterprise Show a warning after a failed attempt leaves the user with one attempt remaining.
+- **Last-attempt warning message** :ak-enterprise An optional custom warning. Leave this blank to use the default: "You have one password attempt remaining before your account is locked out. If you have forgotten your password, please contact your administrator."
+- **Show lockout message** :ak-enterprise Show a specific message and stop the flow when an attempt locks the account. When disabled, authentik stops the flow with a generic authentication error.
+- **Lockout message** :ak-enterprise An optional custom message shown when **Show lockout message** is enabled. Leave this blank to use the default: "Your account has been locked out due to too many failed attempts. Please contact your administrator."
 - **Allow show password**: show a button that reveals the entered password.
 - **Configuration flow**: optional authenticated flow that lets users configure or change their password from user settings.
 
@@ -26,6 +31,10 @@ The stage supports authentik's built-in password database, app passwords, LDAP-b
 This stage is typically bound after an [Identification](../identification/index.md) stage and before an [Authenticator Validation](../authenticator_validate/index.md) or [User Login](../user_login/index.md) stage.
 
 If the [Identification stage](../identification/index.md) has its **Password stage** option set, the password prompt is rendered as part of the identification step and the Password stage should not also be bound separately in the same flow.
+
+With an Enterprise license, Password stages with a nonzero lockout threshold share one failure counter per user across flows and sessions, including password validation embedded in an Identification stage. Each failure is evaluated against the threshold of the Password stage handling that attempt. A successful password validation resets the counter. After lockout, an administrator must unlock password login. Changing or resetting the user's password does not remove the lock. Lockout is independent of reputation scores; reputation policies continue to operate separately.
+
+Password login lockout does not deactivate the user, revoke sessions, or prevent authentication with other methods. For a comparison of the available controls, see [Control user access](../../../../users-sources/user/access-control.md).
 
 ## Notes
 

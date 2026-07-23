@@ -1226,11 +1226,16 @@ export interface StagesPasswordListRequest {
     allowShowPassword?: boolean;
     configureFlow?: string;
     failedAttemptsBeforeCancel?: number;
+    failedAttemptsBeforeLockout?: number;
+    lastAttemptWarningMessage?: string;
+    lockoutMessage?: string;
     name?: string;
     ordering?: string;
     page?: number;
     pageSize?: number;
     search?: string;
+    showLastAttemptWarning?: boolean;
+    showLockoutMessage?: boolean;
 }
 
 export interface StagesPasswordPartialUpdateRequest {
@@ -12331,6 +12336,20 @@ export class StagesApi extends runtime.BaseAPI {
                 requestParameters["failedAttemptsBeforeCancel"];
         }
 
+        if (requestParameters["failedAttemptsBeforeLockout"] != null) {
+            queryParameters["failed_attempts_before_lockout"] =
+                requestParameters["failedAttemptsBeforeLockout"];
+        }
+
+        if (requestParameters["lastAttemptWarningMessage"] != null) {
+            queryParameters["last_attempt_warning_message"] =
+                requestParameters["lastAttemptWarningMessage"];
+        }
+
+        if (requestParameters["lockoutMessage"] != null) {
+            queryParameters["lockout_message"] = requestParameters["lockoutMessage"];
+        }
+
         if (requestParameters["name"] != null) {
             queryParameters["name"] = requestParameters["name"];
         }
@@ -12349,6 +12368,15 @@ export class StagesApi extends runtime.BaseAPI {
 
         if (requestParameters["search"] != null) {
             queryParameters["search"] = requestParameters["search"];
+        }
+
+        if (requestParameters["showLastAttemptWarning"] != null) {
+            queryParameters["show_last_attempt_warning"] =
+                requestParameters["showLastAttemptWarning"];
+        }
+
+        if (requestParameters["showLockoutMessage"] != null) {
+            queryParameters["show_lockout_message"] = requestParameters["showLockoutMessage"];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};

@@ -9,7 +9,7 @@ from authentik.policies.reputation.models import Reputation, ReputationPolicy
 from authentik.policies.reputation.signals import update_score
 from authentik.policies.types import PolicyRequest
 from authentik.stages.password import BACKEND_INBUILT
-from authentik.stages.password.stage import authenticate
+from authentik.stages.password.auth import authenticate
 from authentik.tenants.models import DEFAULT_REPUTATION_LOWER_LIMIT, DEFAULT_REPUTATION_UPPER_LIMIT
 
 

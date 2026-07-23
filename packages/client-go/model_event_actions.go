@@ -27,6 +27,8 @@ const (
 	EVENTACTIONS_USER_WRITE                 EventActions = "user_write"
 	EVENTACTIONS_SUSPICIOUS_REQUEST         EventActions = "suspicious_request"
 	EVENTACTIONS_PASSWORD_SET               EventActions = "password_set"
+	EVENTACTIONS_PASSWORD_LOGIN_LOCKED      EventActions = "password_login_locked"
+	EVENTACTIONS_PASSWORD_LOGIN_UNLOCKED    EventActions = "password_login_unlocked"
 	EVENTACTIONS_SECRET_VIEW                EventActions = "secret_view"
 	EVENTACTIONS_SECRET_ROTATE              EventActions = "secret_rotate"
 	EVENTACTIONS_INVITATION_USED            EventActions = "invitation_used"
@@ -64,6 +66,8 @@ var AllowedEventActionsEnumValues = []EventActions{
 	"user_write",
 	"suspicious_request",
 	"password_set",
+	"password_login_locked",
+	"password_login_unlocked",
 	"secret_view",
 	"secret_rotate",
 	"invitation_used",

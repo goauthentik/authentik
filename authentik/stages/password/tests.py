@@ -1,11 +1,23 @@
 """password tests"""
 
+from threading import Thread
 from unittest.mock import MagicMock, patch
 
 from django.core.exceptions import PermissionDenied
+from django.db import connection
+from django.test import RequestFactory, TransactionTestCase
 from django.urls import reverse
 
+from authentik.core.models import User, UserTypes
 from authentik.core.tests.utils import create_test_admin_user, create_test_brand, create_test_flow
+from authentik.enterprise.stages.password.lockout import (
+    authenticate_password,
+    lock_password_login,
+    record_failed_password_attempt,
+)
+from authentik.enterprise.stages.password.models import UserPasswordLoginState
+from authentik.enterprise.tests import enterprise_test
+from authentik.events.models import Event, EventAction
 from authentik.flows.markers import StageMarker
 from authentik.flows.models import FlowDesignation, FlowStageBinding
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
@@ -13,12 +25,15 @@ from authentik.flows.tests import FlowTestCase
 from authentik.flows.tests.test_executor import TO_STAGE_RESPONSE_MOCK
 from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.lib.generators import generate_id
-from authentik.stages.password import BACKEND_INBUILT
+from authentik.sources.ldap.models import LDAP_DISTINGUISHED_NAME
+from authentik.stages.password import BACKEND_INBUILT, BACKEND_LDAP
+from authentik.stages.password.auth import PasswordAuthenticationStatus
 from authentik.stages.password.models import PasswordStage
 
 MOCK_BACKEND_AUTHENTICATE = MagicMock(side_effect=PermissionDenied("test"))
 
 
+@enterprise_test()
 class TestPasswordStage(FlowTestCase):
     """Password tests"""
 
@@ -74,6 +89,7 @@ class TestPasswordStage(FlowTestCase):
 
     def test_valid_password(self):
         """Test with a valid pending user and valid password"""
+        UserPasswordLoginState.objects.create(user=self.user, failed_attempts=1)
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
         plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
         session = self.client.session
@@ -88,9 +104,11 @@ class TestPasswordStage(FlowTestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertStageRedirects(response, reverse("authentik_core:root-redirect"))
+        self.assertFalse(UserPasswordLoginState.objects.filter(user=self.user).exists())
 
     def test_valid_password_inactive(self):
         """Test with a valid pending user and valid password"""
+        lock_password_login(self.user)
         self.user.is_active = False
         self.user.save()
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
@@ -111,6 +129,45 @@ class TestPasswordStage(FlowTestCase):
             self.flow,
             response_errors={"password": [{"string": "Invalid password", "code": "invalid"}]},
         )
+        self.assertIsNotNone(UserPasswordLoginState.objects.get(user=self.user).locked_at)
+
+    def test_valid_password_locked(self):
+        """Locked users cannot authenticate and invalid attempts remain audited."""
+        self.stage.failed_attempts_before_lockout = 2
+        self.stage.show_lockout_message = True
+        self.stage.save(update_fields=("failed_attempts_before_lockout", "show_lockout_message"))
+        lock_password_login(self.user)
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
+        plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
+        session = self.client.session
+        session[SESSION_KEY_PLAN] = plan
+        session.save()
+
+        url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
+        response = self.client.post(url, {"password": self.user.username + "test"})
+
+        self.assertStageResponse(
+            response,
+            self.flow,
+            response_errors={"password": [{"string": "Invalid password", "code": "invalid"}]},
+        )
+        self.assertTrue(
+            Event.objects.filter(
+                action=EventAction.LOGIN_FAILED,
+                user__pk=self.user.pk,
+            ).exists()
+        )
+
+        response = self.client.post(url, {"password": self.user.username})
+        self.assertStageResponse(
+            response,
+            self.flow,
+            component="ak-stage-access-denied",
+            error_message=(
+                "Your account has been locked out due to too many failed attempts. "
+                "Please contact your administrator."
+            ),
+        )
 
     def test_invalid_password(self):
         """Test with a valid pending user and invalid password"""
@@ -126,9 +183,129 @@ class TestPasswordStage(FlowTestCase):
             {"password": self.user.username + "test"},
         )
         self.assertEqual(response.status_code, 200)
+        self.user.refresh_from_db()
+        self.assertTrue(self.user.is_active)
+        self.assertFalse(UserPasswordLoginState.objects.filter(user=self.user).exists())
 
-    def test_invalid_password_lockout(self):
-        """Test with a valid pending user and invalid password (trigger logout counter)"""
+    def test_invalid_password_account_lockout(self):
+        """Test that consecutive invalid passwords lock password login."""
+        self.stage.failed_attempts_before_lockout = 2
+        self.stage.show_last_attempt_warning = True
+        self.stage.show_lockout_message = True
+        self.stage.save(
+            update_fields=(
+                "failed_attempts_before_lockout",
+                "show_last_attempt_warning",
+                "show_lockout_message",
+            )
+        )
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
+        plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
+        session = self.client.session
+        session[SESSION_KEY_PLAN] = plan
+        session.save()
+
+        url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
+        self.client.get(url)
+        response = self.client.post(url, {"password": self.user.username + "test"})
+        state = UserPasswordLoginState.objects.get(user=self.user)
+        self.assertEqual(state.failed_attempts, 1)
+        self.assertStageResponse(
+            response,
+            self.flow,
+            response_errors={
+                "password": [
+                    {
+                        "string": (
+                            "You have one password attempt remaining before your account is "
+                            "locked out. If you have forgotten your password, please contact "
+                            "your administrator."
+                        ),
+                        "code": "invalid",
+                    }
+                ]
+            },
+        )
+
+        response = self.client.post(url, {"password": self.user.username + "test"})
+        self.user.refresh_from_db()
+        self.assertIsNotNone(self.user.password_login_locked_at)
+        self.assertEqual(
+            UserPasswordLoginState.objects.get(user=self.user).failed_attempts,
+            0,
+        )
+        self.assertTrue(
+            Event.objects.filter(
+                action=EventAction.PASSWORD_LOGIN_LOCKED,
+                user__pk=self.user.pk,
+            ).exists()
+        )
+        self.assertStageResponse(
+            response,
+            self.flow,
+            component="ak-stage-access-denied",
+            error_message=(
+                "Your account has been locked out due to too many failed attempts. "
+                "Please contact your administrator."
+            ),
+        )
+
+    @patch("authentik.enterprise.stages.password.lockout.authenticate", return_value=None)
+    def test_external_password_failure_is_not_counted(self, _authenticate):
+        """Do not lock users when an external backend failure looks like a bad password."""
+        self.user.attributes[LDAP_DISTINGUISHED_NAME] = "cn=user,dc=example,dc=com"
+        self.user.save(update_fields=("attributes",))
+        self.stage.backends = [BACKEND_LDAP]
+        self.stage.failed_attempts_before_lockout = 1
+
+        result = authenticate_password(
+            RequestFactory().post("/"),
+            self.stage,
+            self.user,
+            "password",
+            self.stage,
+        )
+
+        self.assertIs(result.status, PasswordAuthenticationStatus.INVALID)
+        self.assertFalse(UserPasswordLoginState.objects.filter(user=self.user).exists())
+
+    def test_lockout_message_customization(self):
+        """Configured messages override the default warning and lockout messages."""
+        self.assertEqual(self.stage.get_last_attempt_message("generic"), "generic")
+        self.stage.show_last_attempt_warning = True
+        self.assertIn("one password attempt", self.stage.get_last_attempt_message("generic"))
+        self.stage.last_attempt_warning_message = "This is your final attempt."
+        self.assertEqual(
+            self.stage.get_last_attempt_message("generic"), "This is your final attempt."
+        )
+        self.stage.show_lockout_message = True
+        self.assertIn("contact your administrator", self.stage.get_lockout_message("generic"))
+        self.stage.lockout_message = "Contact the help desk."
+        self.assertEqual(self.stage.get_lockout_message("generic"), "Contact the help desk.")
+
+    def test_internal_service_account_not_locked_out(self):
+        """Failed attempts do not lock authentik's internal service accounts."""
+        self.user.type = UserTypes.INTERNAL_SERVICE_ACCOUNT
+        self.user.save(update_fields=("type",))
+        self.stage.failed_attempts_before_lockout = 1
+
+        result = record_failed_password_attempt(
+            self.user,
+            self.stage.failed_attempts_before_lockout,
+        )
+
+        self.assertIs(result, PasswordAuthenticationStatus.INVALID)
+        self.user.refresh_from_db()
+        self.assertIsNone(self.user.password_login_locked_at)
+        self.assertFalse(UserPasswordLoginState.objects.filter(user=self.user).exists())
+
+    def test_invalid_password_cancels_flow(self):
+        """Flow cancellation preserves a simultaneous last-attempt warning."""
+        self.stage.failed_attempts_before_lockout = self.stage.failed_attempts_before_cancel + 1
+        self.stage.show_last_attempt_warning = True
+        self.stage.save(
+            update_fields=("failed_attempts_before_lockout", "show_last_attempt_warning")
+        )
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
         plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
         session = self.client.session
@@ -166,7 +343,14 @@ class TestPasswordStage(FlowTestCase):
         self.assertEqual(response.status_code, 200)
         # To ensure the plan has been cancelled, check SESSION_KEY_PLAN
         self.assertNotIn(SESSION_KEY_PLAN, self.client.session)
-        self.assertStageResponse(response, flow=self.flow, error_message="Invalid password")
+        self.assertStageResponse(
+            response,
+            flow=self.flow,
+            error_message=(
+                "You have one password attempt remaining before your account is locked out. "
+                "If you have forgotten your password, please contact your administrator."
+            ),
+        )
 
     @patch(
         "authentik.flows.views.executor.to_stage_response",
@@ -196,4 +380,78 @@ class TestPasswordStage(FlowTestCase):
             self.flow,
             component="ak-stage-access-denied",
             error_message="Unknown error",
+        )
+
+
+@enterprise_test()
+class TestPasswordLockoutConcurrency(TransactionTestCase):
+    """Password lockout concurrency tests."""
+
+    def test_user_save_does_not_overwrite_lockout_state(self):
+        """Saving a stale user cannot erase failures or a password-login lock."""
+        user = create_test_admin_user()
+        stale_user = User.objects.get(pk=user.pk)
+
+        self.assertIs(
+            record_failed_password_attempt(user, 2),
+            PasswordAuthenticationStatus.LAST_ATTEMPT,
+        )
+        stale_user.name = generate_id()
+        stale_user.save()
+        self.assertEqual(
+            UserPasswordLoginState.objects.get(user=user).failed_attempts,
+            1,
+        )
+
+        self.assertIs(
+            record_failed_password_attempt(user, 2),
+            PasswordAuthenticationStatus.NEWLY_LOCKED,
+        )
+        stale_user.email = "updated@example.com"
+        stale_user.save()
+        self.assertIsNotNone(UserPasswordLoginState.objects.get(user=user).locked_at)
+
+    def test_concurrent_failures(self):
+        """Concurrent failures update one serialized counter."""
+        user = create_test_admin_user()
+        stage = PasswordStage.objects.create(
+            name=generate_id(), backends=[BACKEND_INBUILT], failed_attempts_before_lockout=3
+        )
+
+        class FailureThread(Thread):
+            __test__ = False
+            result = PasswordAuthenticationStatus.INVALID
+
+            def run(self):
+                try:
+                    self.result = record_failed_password_attempt(
+                        user,
+                        stage.failed_attempts_before_lockout,
+                    )
+                finally:
+                    connection.close()
+
+        connection.close()
+        threads = [FailureThread() for _ in range(3)]
+        for thread in threads:
+            thread.start()
+        for thread in threads:
+            thread.join()
+
+        user.refresh_from_db()
+        self.assertIsNotNone(user.password_login_locked_at)
+        self.assertCountEqual(
+            [thread.result for thread in threads],
+            [
+                PasswordAuthenticationStatus.INVALID,
+                PasswordAuthenticationStatus.LAST_ATTEMPT,
+                PasswordAuthenticationStatus.NEWLY_LOCKED,
+            ],
+        )
+        self.assertEqual(
+            Event.objects.filter(
+                action=EventAction.PASSWORD_LOGIN_LOCKED,
+                user__pk=user.pk,
+            ).count(),
+            1,
         )

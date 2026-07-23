@@ -1,15 +1,21 @@
 import "#elements/ak-checkbox-group/ak-checkbox-group";
 import "#components/ak-switch-input";
+import "#components/ak-number-input";
+import "#components/ak-text-input";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/index";
 
 import { aki } from "#common/api/client";
 
+import { WithLicenseSummary } from "#elements/mixins/license";
+import { SlottedTemplateResult } from "#elements/types";
+
 import { AKLabel } from "#components/ak-label";
 
 import { RenderFlowOption } from "#admin/flows/utils";
 import { BaseStageForm } from "#admin/stages/BaseStageForm";
+import { BackendCheckboxItems } from "#admin/stages/password/labels";
 
 import {
     BackendsEnum,
@@ -22,11 +28,11 @@ import {
 } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { html, TemplateResult } from "lit";
+import { html } from "lit";
 import { customElement } from "lit/decorators.js";
 
 @customElement("ak-stage-password-form")
-export class PasswordStageForm extends BaseStageForm<PasswordStage> {
+export class PasswordStageForm extends WithLicenseSummary(BaseStageForm<PasswordStage>) {
     protected endpoints = {
         load: (stageUuid: string) => aki(StagesApi).stagesPasswordRetrieve({ stageUuid }),
         create: (passwordStageRequest: PasswordStage) =>
@@ -46,37 +52,89 @@ export class PasswordStageForm extends BaseStageForm<PasswordStage> {
         );
     }
 
-    protected override renderForm(): TemplateResult {
-        const backends = [
-            {
-                name: BackendsEnum.AuthentikCoreAuthInbuiltBackend,
-                label: msg("User database + standard password"),
-            },
-            {
-                name: BackendsEnum.AuthentikCoreAuthTokenBackend,
-                label: msg("User database + app passwords"),
-            },
-            {
-                name: BackendsEnum.AuthentikSourcesLdapAuthLdapBackend,
-                label: msg("User database + LDAP password"),
-            },
-            {
-                name: BackendsEnum.AuthentikSourcesKerberosAuthKerberosBackend,
-                label: msg("User database + Kerberos password"),
-            },
-        ];
+    protected renderLockoutSettings(): SlottedTemplateResult {
+        if (!this.hasEnterpriseLicense) {
+            return null;
+        }
 
-        return html` <span>
+        return html`<ak-number-input
+                label=${msg("Failed attempts before lockout", {
+                    id: "password-stage.lockout-threshold.label",
+                })}
+                required
+                name="failedAttemptsBeforeLockout"
+                min=${0}
+                value="${this.instance?.failedAttemptsBeforeLockout ?? 0}"
+                help=${msg(
+                    "Lock password login after this many consecutive failed attempts. Failed attempts against LDAP and Kerberos backends are not counted. Set to 0 to disable lockout.",
+                    {
+                        id: "password-stage.lockout-threshold.description",
+                    },
+                )}
+            ></ak-number-input>
+            <ak-switch-input
+                name="showLastAttemptWarning"
+                label=${msg("Show last-attempt warning", {
+                    id: "password-stage.last-attempt-warning.label",
+                })}
+                ?checked=${this.instance?.showLastAttemptWarning ?? false}
+                help=${msg("Show a warning when the user has one password attempt remaining.", {
+                    id: "password-stage.last-attempt-warning.description",
+                })}
+            ></ak-switch-input>
+            <ak-text-input
+                label=${msg("Last-attempt warning message", {
+                    id: "password-stage.last-attempt-warning-message.label",
+                })}
+                name="lastAttemptWarningMessage"
+                value=${this.instance?.lastAttemptWarningMessage ?? ""}
+                placeholder=${msg(
+                    "You have one password attempt remaining before your account is locked out. If you have forgotten your password, please contact your administrator.",
+                    {
+                        id: "password-stage.last-attempt-warning-message.placeholder",
+                    },
+                )}
+                help=${msg("Leave blank to use the default last-attempt warning.", {
+                    id: "password-stage.last-attempt-warning-message.description",
+                })}
+            ></ak-text-input>
+            <ak-switch-input
+                name="showLockoutMessage"
+                label=${msg("Show lockout message", {
+                    id: "password-stage.lockout-message-toggle.label",
+                })}
+                ?checked=${this.instance?.showLockoutMessage ?? false}
+                help=${msg("Show a message to the user when their account is locked out.", {
+                    id: "password-stage.lockout-message-toggle.description",
+                })}
+            ></ak-switch-input>
+            <ak-text-input
+                label=${msg("Lockout message", {
+                    id: "password-stage.lockout-message.label",
+                })}
+                name="lockoutMessage"
+                placeholder=${msg(
+                    "Your account has been locked out due to too many failed attempts. Please contact your administrator.",
+                    { id: "password-stage.lockout-message.placeholder" },
+                )}
+                value="${this.instance?.lockoutMessage ?? ""}"
+                help=${msg("Leave blank to use the default lockout message.", {
+                    id: "password-stage.lockout-message.description",
+                })}
+            ></ak-text-input>`;
+    }
+
+    protected override renderForm(): SlottedTemplateResult {
+        return html`<span>
                 ${msg("Validate the user's password against the selected backend(s).")}
             </span>
-            <ak-form-element-horizontal label=${msg("Name")} required name="name">
-                <input
-                    type="text"
-                    value="${this.instance?.name || ""}"
-                    class="pf-c-form-control"
-                    required
-                />
-            </ak-form-element-horizontal>
+            <ak-text-input
+                label=${msg("Stage Name")}
+                required
+                name="name"
+                value="${this.instance?.name || ""}"
+                placeholder=${msg("Type a name for this stage...")}
+            ></ak-text-input>
             <ak-form-group open label="${msg("Stage-specific settings")}">
                 <div class="pf-c-form">
                     <ak-form-element-horizontal required name="backends">
@@ -95,14 +153,14 @@ export class PasswordStageForm extends BaseStageForm<PasswordStage> {
 
                         <ak-checkbox-group
                             class="user-field-select"
-                            .options=${backends}
-                            .value=${backends
-                                .map(({ name }) => name)
-                                .filter((name) => this.isBackendSelected(name))}
+                            .options=${BackendCheckboxItems}
+                            .value=${BackendCheckboxItems.map(({ name }) => name).filter((name) =>
+                                this.isBackendSelected(name),
+                            )}
                         ></ak-checkbox-group>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
-                        label=${msg("Configuration flow")}
+                        label=${msg("Configuration Flow")}
                         required
                         name="configureFlow"
                     >
@@ -121,14 +179,11 @@ export class PasswordStageForm extends BaseStageForm<PasswordStage> {
                             .renderElement=${(flow: Flow): string => {
                                 return RenderFlowOption(flow);
                             }}
-                            .renderDescription=${(flow: Flow): TemplateResult => {
-                                return html`${flow.name}`;
-                            }}
-                            .value=${(flow: Flow | undefined): string | undefined => {
-                                return flow?.pk;
-                            }}
+                            .renderDescription=${(flow: Flow) => flow.name}
+                            .value=${(flow?: Flow) => flow?.pk}
                             .selected=${(flow: Flow): boolean => {
                                 let selected = this.instance?.configureFlow === flow.pk;
+
                                 if (
                                     !this.instance?.pk &&
                                     !this.instance?.configureFlow &&
@@ -136,11 +191,11 @@ export class PasswordStageForm extends BaseStageForm<PasswordStage> {
                                 ) {
                                     selected = true;
                                 }
+
                                 return selected;
                             }}
                             blankable
-                        >
-                        </ak-search-select>
+                        ></ak-search-select>
                         <p class="pf-c-form__helper-text">
                             ${msg(
                                 "Flow used by an authenticated user to configure their password. If empty, user will not be able to change their password.",
@@ -160,15 +215,24 @@ export class PasswordStageForm extends BaseStageForm<PasswordStage> {
                         />
                         <p class="pf-c-form__helper-text">
                             ${msg(
-                                "How many attempts a user has before the flow is canceled. To lock the user out, use a reputation policy and a user_write stage.",
+                                "How many failed password attempts are allowed before the flow is canceled. This setting does not deactivate the user.",
+                                {
+                                    id: "password-stage.failed-attempts-before-cancel.description",
+                                },
                             )}
                         </p>
                     </ak-form-element-horizontal>
+                    ${this.renderLockoutSettings()}
                     <ak-switch-input
                         name="allowShowPassword"
-                        label="Allow Show Password"
+                        label="Show Password Visibility Toggle Button"
                         ?checked=${this.instance?.allowShowPassword ?? false}
-                        help=${msg("Provide users with a 'show password' button.")}
+                        help=${msg(
+                            "Whether to allow users to toggle password visibility in the password input field.",
+                            {
+                                id: "password-stage.allow-show-password.description",
+                            },
+                        )}
                     ></ak-switch-input>
                 </div>
             </ak-form-group>`;
