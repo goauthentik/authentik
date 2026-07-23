@@ -182,6 +182,16 @@ impl Outpost for ProxyOutpost {
 
 impl ResolvesServerCert for ProxyOutpost {
     fn resolve(&self, client_hello: ClientHello<'_>) -> Option<Arc<CertifiedKey>> {
+        self.resolve_cert(&client_hello)
+    }
+
+    fn only_raw_public_keys(&self) -> bool {
+        false
+    }
+}
+
+impl ProxyOutpost {
+    pub(crate) fn resolve_cert(&self, client_hello: &ClientHello<'_>) -> Option<Arc<CertifiedKey>> {
         if let Some(server_name) = client_hello.server_name()
             && let Some(app) = self.apps.load().get(server_name)
             && let Some(cert) = &app.cert
@@ -191,12 +201,6 @@ impl ResolvesServerCert for ProxyOutpost {
         Some(Arc::clone(&self.default_cert))
     }
 
-    fn only_raw_public_keys(&self) -> bool {
-        false
-    }
-}
-
-impl ProxyOutpost {
     #[instrument(skip(self))]
     fn lookup_app(&self, host: &str) -> Option<Arc<Application>> {
         let apps = self.apps.load();
