@@ -153,7 +153,6 @@ tracing-subscriber = { version = "= 0.3.23", features = [
 ] }
 url = "= 2.5.8"
 uuid = { version = "= 1.24.0", features = ["serde", "v4"] }
-which = "= 8.0.5"
 
 ak-axum = { package = "authentik-axum", version = "2026.8.0-rc1", path = "./packages/ak-axum" }
 ak-client = { package = "authentik-client", version = "2026.8.0-rc1", path = "./packages/client-rust" }
@@ -348,7 +347,6 @@ pem.workspace = true
 percent-encoding.workspace = true
 pyo3 = { workspace = true, optional = true }
 rand.workspace = true
-rcgen.workspace = true
 regex = { workspace = true, optional = true }
 reqwest-middleware = { workspace = true, optional = true }
 reqwest.workspace = true
@@ -366,7 +364,6 @@ tower.workspace = true
 tracing.workspace = true
 url.workspace = true
 uuid.workspace = true
-which.workspace = true
 
 [dev-dependencies]
 tempfile.workspace = true

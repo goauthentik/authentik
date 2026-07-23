@@ -332,7 +332,6 @@ dependencies = [
  "pyo3",
  "pyo3-build-config",
  "rand 0.10.2",
- "rcgen",
  "regex",
  "reqwest",
  "reqwest-middleware",
@@ -351,7 +350,6 @@ dependencies = [
  "tracing",
  "url",
  "uuid",
- "which",
 ]
 
 [[package]]
@@ -4962,15 +4960,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "22cfaf3c063993ff62e73cb4311efde4db1efb31ab78a3e5c457939ad5cc0bed"
 dependencies = [
  "rustls-pki-types",
-]
-
-[[package]]
-name = "which"
-version = "8.0.5"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8f3ef584124b911bcc3875c2f1472e80f24361ceb789bd1c62b3e9a3df9ff43c"
-dependencies = [
- "libc",
 ]
 
 [[package]]
