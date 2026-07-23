@@ -12,7 +12,7 @@ import {
 import { FlowChallengeResponseRequest, RedirectChallenge } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { css, CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
+import { css, CSSResult, html, nothing, PropertyValues } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -91,7 +91,22 @@ export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeRes
         this.startedRedirect = true;
     }
 
-    renderLoading(): TemplateResult {
+    // Let the native <a href> navigate
+    followRedirect(): void {
+        const finalRedirect = this.challenge?.finalRedirect ?? false;
+        const url = new URL(this.challenge!.to, window.location.origin);
+
+        // Foreign final redirect: let pagehide broadcast the exit; else suppress it.
+        if (!(finalRedirect && url.origin !== window.location.origin)) {
+            suppressNextExitForSameOriginNavigation();
+        }
+    }
+
+    protected render(): SlottedTemplateResult {
+        if (!this.challenge) {
+            return nothing;
+        }
+
         const url = new URL(this.getURL());
         // If the protocol isn't http or https assume a custom protocol, that has an OS-level
         // handler, which the browser will show a popup for.
@@ -104,21 +119,14 @@ export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeRes
                 </ak-empty-state>
             </ak-flow-card>`;
         }
-        return html`<ak-flow-card .challenge=${this.challenge} loading></ak-flow-card>`;
-    }
 
-    protected render(): SlottedTemplateResult {
-        if (this.startedRedirect || !this.promptUser) {
-            return this.renderLoading();
-        }
+        const redirecting = !this.promptUser || this.startedRedirect;
 
-        if (!this.challenge) {
-            return nothing;
-        }
-
+        // The manual "Follow redirect" anchor is ALWAYS rendered for http(s) targets
         return html`<ak-flow-card .challenge=${this.challenge}>
             <span slot="title">${msg("Redirect")}</span>
             <form class="pf-c-form">
+                ${redirecting ? html`<ak-empty-state loading></ak-empty-state>` : nothing}
                 <div class="pf-c-form__group">
                     <p>${msg("You're about to be redirect to the following URL.")}</p>
                     <code>${this.getURL()}</code>
@@ -126,13 +134,9 @@ export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeRes
                 <fieldset class="pf-c-form__group pf-m-action">
                     <legend class="sr-only">${msg("Form actions")}</legend>
                     <a
-                        type="submit"
                         class="pf-c-button pf-m-primary pf-m-block"
                         href=${this.challenge.to}
-                        @click=${(ev: Event) => {
-                            ev.preventDefault();
-                            this.redirect();
-                        }}
+                        @click=${() => this.followRedirect()}
                     >
                         ${msg("Follow redirect")}
                     </a>
