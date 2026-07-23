@@ -93,7 +93,7 @@ class EndpointDevice(InternallyManagedMixin, SerializerModel, Device):
 
 class EndpointDeviceConnection(InternallyManagedMixin, models.Model):
     device = models.ForeignKey(EndpointDevice, on_delete=models.CASCADE)
-    stage = models.ForeignKey(AuthenticatorEndpointGDTCStage, on_delete=models.CASCADE)
+    stage = models.ForeignKey(AuthenticatorEndpointGDTCStage, on_delete=models.PROTECT)
 
     attributes = models.JSONField()
 

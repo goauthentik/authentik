@@ -1,8 +1,11 @@
+from django.db.models.deletion import ProtectedError
 from django.urls import reverse
 
-from authentik.core.tests.utils import create_test_flow
+from authentik.core.tests.utils import create_test_admin_user, create_test_flow
 from authentik.enterprise.stages.authenticator_endpoint_gdtc.models import (
     AuthenticatorEndpointGDTCStage,
+    EndpointDevice,
+    EndpointDeviceConnection,
 )
 from authentik.enterprise.stages.authenticator_endpoint_gdtc.views.dtc import (
     PLAN_CONTEXT_METHOD_ARGS_ENDPOINTS,
@@ -15,6 +18,7 @@ from authentik.stages.password.stage import PLAN_CONTEXT_METHOD_ARGS
 
 class TestAuthenticatorEndpointGDTCStage(FlowTestCase):
     def setUp(self):
+        self.user = create_test_admin_user()
         self.flow = create_test_flow()
         self.stage = AuthenticatorEndpointGDTCStage.objects.create(
             name=generate_id(),
@@ -22,6 +26,27 @@ class TestAuthenticatorEndpointGDTCStage(FlowTestCase):
         )
         FlowStageBinding.objects.create(target=self.flow, stage=self.stage, order=0)
         self.url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
+
+    def test_stage_deletion_is_protected(self):
+        """A setup stage with an endpoint connection cannot be deleted."""
+        device = EndpointDevice.objects.create(
+            name=generate_id(),
+            host_identifier=generate_id(),
+            user=self.user,
+            data={},
+        )
+        connection = EndpointDeviceConnection.objects.create(
+            device=device,
+            stage=self.stage,
+            attributes={},
+        )
+
+        with self.assertRaises(ProtectedError):
+            self.stage.delete()
+
+        self.assertTrue(AuthenticatorEndpointGDTCStage.objects.filter(pk=self.stage.pk).exists())
+        self.assertTrue(EndpointDeviceConnection.objects.filter(pk=connection.pk).exists())
+        self.assertTrue(EndpointDevice.objects.filter(pk=device.pk).exists())
 
     def test_bypass_blocked(self):
         """A POST that skips the Verified-Access iframe must not advance the flow."""
