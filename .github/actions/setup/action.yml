@@ -70,6 +70,8 @@ runs:
     - name: Setup pnpm
       if: ${{ contains(inputs.dependencies, 'node') }}
       uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # v6.0.9
+      with:
+        package_json_file: ${{ inputs.working-directory }}package.json
     - name: Pin pnpm store directory
       if: ${{ contains(inputs.dependencies, 'node') }}
       shell: bash
@@ -83,11 +85,12 @@ runs:
         node-version-file: ${{ inputs.working-directory }}package.json
         cache: pnpm
         cache-dependency-path: |
-          pnpm-lock.yaml
-          web/pnpm-lock.yaml
+          ${{ inputs.working-directory }}pnpm-lock.yaml
+          ${{ inputs.working-directory }}web/pnpm-lock.yaml
     - name: Install node dependencies (root, web)
       if: ${{ contains(inputs.dependencies, 'node') }}
       shell: bash
+      working-directory: ${{ inputs.working-directory }}
       run: |
         pnpm install --frozen-lockfile
         pnpm --dir web install --frozen-lockfile
@@ -96,6 +99,7 @@ runs:
       uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v5
       with:
         go-version-file: "${{ inputs.working-directory }}go.mod"
+        cache-dependency-path: "${{ inputs.working-directory }}go.mod"
     - name: Setup docker cache
       if: ${{ contains(inputs.dependencies, 'runtime') }}
       uses: AndreKurait/docker-cache@7a3887908bdb97935395833df69b060cfcca0f7f
