@@ -9,6 +9,7 @@ from django.contrib.auth.hashers import (
     BasePasswordHasher,
     BCryptSHA256PasswordHasher,
     PBKDF2PasswordHasher,
+    PBKDF2SHA1PasswordHasher,
     ScryptPasswordHasher,
     identify_hasher,
     must_update_salt,
@@ -49,6 +50,8 @@ def _decode_password_hash(
 
     if type(hasher) is PBKDF2PasswordHasher:
         _decode_base64(decoded["hash"], 32)
+    elif type(hasher) is PBKDF2SHA1PasswordHasher:
+        _decode_base64(decoded["hash"], 20)
     elif type(hasher) is ScryptPasswordHasher:
         _decode_base64(decoded["hash"], 64)
     elif type(hasher) is Argon2PasswordHasher:

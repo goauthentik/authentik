@@ -7,7 +7,6 @@ from django.contrib.auth.hashers import (
     Argon2PasswordHasher,
     BCryptSHA256PasswordHasher,
     PBKDF2PasswordHasher,
-    PBKDF2SHA1PasswordHasher,
     ScryptPasswordHasher,
     get_hashers,
     make_password,
@@ -202,35 +201,6 @@ class TestUsersAPI(APITestCase):
                 response = self._set_password_hash(self.user, password_hash)
 
                 self._assert_password_hash_rejected(self.user, original_password, response)
-
-    def test_set_password_hash_unsupported_hasher(self):
-        """Test password hashes using unsupported hashers are rejected."""
-        self.client.force_login(self.admin)
-        original_password = self.user.password
-        password = generate_key()
-        hasher = PBKDF2SHA1PasswordHasher()
-
-        response = self._set_password_hash(
-            self.user,
-            hasher.encode(password, hasher.salt()),
-        )
-
-        self._assert_password_hash_rejected(
-            self.user,
-            original_password,
-            response,
-        )
-
-    def test_set_password_hash_override_rejects_unsupported_hasher(self):
-        """Test the explicit override cannot enable an unconfigured hasher."""
-        self.client.force_login(self.admin)
-        original_password = self.user.password
-        hasher = PBKDF2SHA1PasswordHasher()
-        password_hash = hasher.encode(generate_key(), hasher.salt())
-
-        response = self._set_password_hash(self.user, password_hash, override=True)
-
-        self._assert_password_hash_rejected(self.user, original_password, response)
 
     def test_set_password_hash_malformed_digest(self):
         """Test structurally valid hashes with malformed digests are rejected."""
