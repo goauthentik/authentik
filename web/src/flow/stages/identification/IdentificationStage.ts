@@ -371,13 +371,13 @@ export class IdentificationStage extends BaseStage<
         return html`<p>${msg(str`Log in to continue to ${prelude}.`)}</p>`;
     }
 
-    protected renderPasswordlessUrl(url: string) {
+    protected renderPasswordlessUrl(url: string, label?: string) {
         return html`<a
             href=${url}
             class="pf-c-button pf-m-secondary pf-m-block"
             data-ouia-component-id="passwordless"
         >
-            ${msg("Use a security key")}
+            ${label || msg("Use a security key")}
         </a> `;
     }
 
@@ -437,13 +437,19 @@ export class IdentificationStage extends BaseStage<
     }
 
     protected renderIdentificationStage(challenge: IdentificationChallenge) {
-        const { applicationPre, passwordlessUrl, showSourceLabels, sources = [] } = challenge;
+        const {
+            applicationPre,
+            passwordlessUrl,
+            passwordlessLabel,
+            showSourceLabels,
+            sources = [],
+        } = challenge;
 
         return html`
             <form class="pf-c-form" @submit=${this.submitForm}>
                 ${applicationPre ? this.renderPrelude(applicationPre) : nothing}
                 ${this.renderInput(challenge)}
-                ${passwordlessUrl ? this.renderPasswordlessUrl(passwordlessUrl) : nothing}
+                ${passwordlessUrl ? this.renderPasswordlessUrl(passwordlessUrl, passwordlessLabel) : nothing}
             </form>
             ${sources.length ? this.renderLoginSources(sources, showSourceLabels) : nothing}
         `;

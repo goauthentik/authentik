@@ -537,6 +537,103 @@ class TestIdentificationStage(FlowTestCase):
             ],
         )
 
+    def test_passwordless_label_included(self):
+        """Test that passwordless label is included in challenge when configured"""
+        flow = create_test_flow(FlowDesignation.AUTHENTICATION)
+        self.stage.passwordless_flow = flow
+        self.stage.passwordless_label = "Log in with magic link"
+        self.stage.save()
+
+        response = self.client.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
+        )
+        self.assertStageResponse(
+            response,
+            self.flow,
+            component="ak-stage-identification",
+            user_fields=["email"],
+            password_fields=False,
+            passwordless_url=reverse(
+                "authentik_core:if-flow",
+                kwargs={"flow_slug": flow.slug},
+            ),
+            passwordless_label="Log in with magic link",
+            show_source_labels=False,
+            primary_action="Log in",
+            sources=[
+                {
+                    "challenge": {
+                        "component": "xak-flow-redirect",
+                        "to": f"/source/oauth/login/{self.source.slug}/",
+                    },
+                    "icon_url": "/static/authentik/sources/default.svg",
+                    "name": self.source.name,
+                    "promoted": False,
+                }
+            ],
+        )
+
+    def test_passwordless_label_omitted_when_blank(self):
+        """Test that passwordless label is not included when blank"""
+        flow = create_test_flow(FlowDesignation.AUTHENTICATION)
+        self.stage.passwordless_flow = flow
+        self.stage.passwordless_label = ""
+        self.stage.save()
+
+        response = self.client.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
+        )
+        self.assertStageResponse(
+            response,
+            self.flow,
+            component="ak-stage-identification",
+            user_fields=["email"],
+            password_fields=False,
+            passwordless_url=reverse(
+                "authentik_core:if-flow",
+                kwargs={"flow_slug": flow.slug},
+            ),
+            show_source_labels=False,
+            primary_action="Log in",
+            sources=[
+                {
+                    "challenge": {
+                        "component": "xak-flow-redirect",
+                        "to": f"/source/oauth/login/{self.source.slug}/",
+                    },
+                    "icon_url": "/static/authentik/sources/default.svg",
+                    "name": self.source.name,
+                    "promoted": False,
+                }
+            ],
+        )
+
+    def test_passwordless_flow_integration(self):
+        """Test full passwordless flow navigation works end-to-end"""
+        passwordless_flow = create_test_flow(FlowDesignation.AUTHENTICATION)
+        FlowStageBinding.objects.create(
+            target=passwordless_flow,
+            stage=self.stage,
+            order=0,
+        )
+        self.stage.passwordless_flow = passwordless_flow
+        self.stage.passwordless_label = "Log in with magic link"
+        self.stage.save()
+
+        # Get main flow challenge
+        response = self.client.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
+        )
+        data = response.json()
+
+        # Verify passwordless URL and label are present
+        self.assertIsNotNone(data.get("passwordless_url"))
+        self.assertEqual(data["passwordless_label"], "Log in with magic link")
+
+        # Navigate to the passwordless flow and verify it responds
+        passwordless_response = self.client.get(data["passwordless_url"])
+        self.assertEqual(passwordless_response.status_code, 200)
+
     def test_recovery_flow_invalid_user(self):
         """Test that an invalid user can proceed in a recovery flow"""
         self.flow.designation = FlowDesignation.RECOVERY
