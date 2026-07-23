@@ -18,27 +18,28 @@ import { customElement } from "lit/decorators.js";
 export class UserPasswordLoginLockToggleForm extends WithLocale(DestructiveModelForm<User>) {
     protected coreAPI = aki(CoreApi);
 
-    protected get isLocked(): boolean {
-        return Boolean(this.instance?.passwordLoginLockedAt);
+    protected get locked(): boolean {
+        return !!this.instance?.passwordLoginLockedAt;
     }
 
     protected override send(): Promise<unknown> {
         if (!this.instance) {
             return Promise.reject(new Error("No user instance provided"));
         }
-        return this.isLocked
+
+        return this.locked
             ? this.coreAPI.coreUsersPasswordLoginUnlockCreate({ id: this.instance.pk })
             : this.coreAPI.coreUsersPasswordLoginLockCreate({ id: this.instance.pk });
     }
 
     public override formatSubmitLabel(): string {
-        return this.isLocked
+        return this.locked
             ? msg("Unlock password login", { id: "user.action.password-login-unlock" })
             : msg("Lock password login", { id: "user.action.password-login-lock" });
     }
 
     public override formatSubmittingLabel(): string {
-        return this.isLocked
+        return this.locked
             ? msg("Unlocking password login...", {
                   id: "user.action.password-login-unlocking",
               })
@@ -46,7 +47,7 @@ export class UserPasswordLoginLockToggleForm extends WithLocale(DestructiveModel
     }
 
     protected override formatHeadline(): string {
-        return this.isLocked
+        return this.locked
             ? msg("Review password login unlock", {
                   id: "user.action.password-login-unlock-review",
               })
@@ -60,7 +61,8 @@ export class UserPasswordLoginLockToggleForm extends WithLocale(DestructiveModel
             this.instance,
             this.activeLanguageTag,
         );
-        return this.isLocked
+
+        return this.locked
             ? html`<p>
                   ${msg(str`Allow ${displayName} to authenticate with a password again?`, {
                       id: "user.action.password-login-unlock-confirm",
