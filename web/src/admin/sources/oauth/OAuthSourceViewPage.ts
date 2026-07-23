@@ -49,6 +49,8 @@ export function ProviderToLabel(provider?: ProviderTypeEnum): string {
             return "GitLab";
         case ProviderTypeEnum.Google:
             return "Google";
+        case ProviderTypeEnum.Instagram:
+            return "Instagram";
         case ProviderTypeEnum.Mailcow:
             return "Mailcow";
         case ProviderTypeEnum.Openidconnect:
