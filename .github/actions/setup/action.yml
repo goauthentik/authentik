@@ -93,6 +93,7 @@ runs:
       uses: actions/setup-go@4a3601121dd01d1626a1e23e37211e3254c1c06c # v5
       with:
         go-version-file: "${{ inputs.working-directory }}go.mod"
+        cache-dependency-path: "${{ inputs.working-directory }}go.mod"
     - name: Setup docker cache
       if: ${{ contains(inputs.dependencies, 'runtime') }}
       uses: AndreKurait/docker-cache@0fe76702a40db986d9663c24954fc14c6a6031b7
