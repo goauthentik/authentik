@@ -60,8 +60,11 @@ def password_login_locked_at(user: User) -> datetime | None:
     """Return the active password login lock timestamp for a user."""
     if not is_password_lockout_enabled() or user.pk is None:
         return None
-    state = getattr(user, "password_login_state", None)
-    return state.locked_at if state else None
+    try:
+        state = user.password_login_state
+    except UserPasswordLoginState.DoesNotExist:
+        return None
+    return state.locked_at
 
 
 def is_password_login_locked(user: User) -> bool:
