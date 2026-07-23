@@ -10,7 +10,7 @@ import RedirectURI20265Note from "../../\_redirect-uri-2026-5-note.mdx";
 
 > DigitalOcean is a cloud infrastructure provider that offers developers simple, scalable virtual servers (droplets), managed databases, and other cloud services to deploy and manage applications efficiently.
 >
-> -- https://digitalocean.com
+> -- https://www.digitalocean.com/
 
 ## Preparation
 
@@ -18,22 +18,24 @@ The following placeholders are used in this guide:
 
 - `authentik.company` is the FQDN of the authentik installation.
 
+You need access to a DigitalOcean team where you can configure SSO, and you need to know which DigitalOcean team role each user should receive.
+
 :::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
 ## authentik configuration
 
-<RedirectURI20265Note />
-
 To support the integration of DigitalOcean with authentik, you need to create a scope mapping, an application/provider pair, and application entitlements for the DigitalOcean roles that users should receive.
 
 ### Create a scope mapping
 
+DigitalOcean expects the `team_role` claim to be sent as an array. This scope mapping reads the user's application entitlements and returns one DigitalOcean role in the format DigitalOcean expects.
+
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Customization** > **Property Mappings** and click **Create**.
 3. Click **Scope Mapping**, **Next**, and fill the following required information:
-    - **Name**: Set an appropriate name
+    - **Name**: `DigitalOcean team role`
     - **Scope name**: `profile`
     - **Expression**:
 
@@ -68,19 +70,20 @@ To support the integration of DigitalOcean with authentik, you need to create a 
 
 4. Click **Finish**.
 
-### Create an application and provider in authentik
+### Create an application and provider
+
+<RedirectURI20265Note />
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
-    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Note the application **Slug** value because it will be required later.
     - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
-        - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
+        - Note the **Client ID** and **Client Secret** values because they will be required later.
         - Add a **Redirect URI** of type `Strict` `Authorization` as `https://cloud.digitalocean.com/sessions/sso/callback`.
         - Select any available signing key.
         - Under **Advanced protocol settings**:
             - Add the `profile` scope created in the previous section. Do not remove authentik’s `authentik default OAuth Mapping: OpenID 'profile'`, as claims such as `name` are required by DigitalOcean.
-            - Under **Advanced protocol settings** > **Selected Scopes**, add `authentik default OAuth Mapping: OpenID 'entitlements'`.
     - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 
 3. Click **Submit** to save the new application and provider.
@@ -105,26 +108,31 @@ The sample scope mapping returns a single `team_role` value. In most deployments
 ## DigitalOcean configuration
 
 1. Log in to the [DigitalOcean control panel](https://cloud.digitalocean.com/) as an administrator.
-2. Navigate to **Settings** (bottom left) > **Single sign-on (OIDC)**, then click **Create**.
-3. Configure the following required settings:
+2. Click the profile icon in the top right, click **Switch Teams**, and then select the team where you want to configure SSO.
+3. Navigate to **Settings** > **Single sign-on (OIDC)**, then click **Enable**.
+4. Configure the following required settings:
     - **OpenID provider URL**: `https://authentik.company/application/o/<application_slug>/`
-    - **OpenID client ID**: Set the client ID from authentik.
-    - **OpenID client secret**: Set the client secret from authentik.
-4. Click **Test SSO config to continue**.
-5. Optionally toggle **Require sign-in via SSO only**, then click **Continue**.
-6. Take note of the **SSO sign-in URL**, then click **Save SSO**.
+    - **OpenID client ID**: Set this to the **Client ID** from authentik.
+    - **OpenID client secret**: Set this to the **Client Secret** from authentik.
+5. Click **Test SSO config to continue**.
+6. Leave **Require sign-in via SSO only** disabled while testing, then click **Continue**.
+7. Take note of the **SSO sign-in URL**, then click **Enable SSO**.
 
-## Set the Start URL in authentik
+After saving the DigitalOcean SSO configuration, update the authentik application launch URL:
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications**, then select your DigitalOcean application.
 3. Click **Edit**, expand **UI Settings**, and set **Launch URL** to the **SSO sign-in URL** copied from the DigitalOcean control panel.
 4. Click **Update**.
 
+## Configuration verification
+
+To verify the integration of authentik with DigitalOcean, open the DigitalOcean application from the authentik User interface. Upon successful login, you should be redirected to the DigitalOcean dashboard and have the appropriate permissions set by your application entitlements.
+
+After successfully testing SSO, you can return to DigitalOcean's **Single sign-on (OIDC)** settings and enable **Require sign-in via SSO only**.
+
 ## Resources
 
 - [DigitalOcean Documentation - How to Configure Single Sign-On for Teams](https://docs.digitalocean.com/platform/teams/how-to/configure-sso/)
-
-## Configuration verification
-
-To verify the integration of authentik with DigitalOcean, navigate to the authentik User interface and click the DigitalOcean application to initiate a Single Sign-On login. Upon successful login, you should be redirected to the DigitalOcean dashboard and have the appropriate permissions set by your application entitlements.
+- [DigitalOcean Documentation - Teams Predefined Roles](https://docs.digitalocean.com/platform/teams/roles/predefined/)
+- [DigitalOcean Documentation - Teams Custom Roles](https://docs.digitalocean.com/platform/teams/roles/custom/)
