@@ -78,9 +78,16 @@ pub(crate) fn start(tasks: &mut Tasks) -> Result<Arc<Metrics>> {
         .name(&format!("{}::run_upkeep", module_path!()))
         .spawn(run_upkeep(arbiter, Arc::clone(&metrics)))?;
 
-    // Only run HTTP server in worker mode, in server or allinone mode, they're handled by the
-    // server.
-    if Mode::get() == Mode::Worker {
+    // Serve the metrics endpoint for the worker and the standalone proxy outpost.
+    // In server and allinone mode, the server handles it.
+    let serve_metrics = match Mode::get() {
+        #[cfg(feature = "core")]
+        Mode::Worker => true,
+        #[cfg(feature = "proxy")]
+        Mode::Proxy => true,
+        _ => false,
+    };
+    if serve_metrics {
         for addr in config::get().listen.metrics.iter().copied() {
             server::start_plain(tasks, "metrics", router.clone(), addr)?;
         }
