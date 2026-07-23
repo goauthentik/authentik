@@ -13,6 +13,7 @@ import { AKLabel } from "#components/ak-label";
 
 import { RenderFlowOption } from "#admin/flows/utils";
 import { BaseStageForm } from "#admin/stages/BaseStageForm";
+import { BackendCheckboxItems } from "#admin/stages/password/labels";
 
 import {
     BackendsEnum,
@@ -134,26 +135,7 @@ export class PasswordStageForm extends WithLicenseSummary(BaseStageForm<Password
     }
 
     protected override renderForm(): SlottedTemplateResult {
-        const backends = [
-            {
-                name: BackendsEnum.AuthentikCoreAuthInbuiltBackend,
-                label: msg("User database + standard password"),
-            },
-            {
-                name: BackendsEnum.AuthentikCoreAuthTokenBackend,
-                label: msg("User database + app passwords"),
-            },
-            {
-                name: BackendsEnum.AuthentikSourcesLdapAuthLdapBackend,
-                label: msg("User database + LDAP password"),
-            },
-            {
-                name: BackendsEnum.AuthentikSourcesKerberosAuthKerberosBackend,
-                label: msg("User database + Kerberos password"),
-            },
-        ];
-
-        return html` <span>
+        return html`<span>
                 ${msg("Validate the user's password against the selected backend(s).")}
             </span>
             <ak-form-element-horizontal label=${msg("Name")} required name="name">
@@ -182,10 +164,10 @@ export class PasswordStageForm extends WithLicenseSummary(BaseStageForm<Password
 
                         <ak-checkbox-group
                             class="user-field-select"
-                            .options=${backends}
-                            .value=${backends
-                                .map(({ name }) => name)
-                                .filter((name) => this.isBackendSelected(name))}
+                            .options=${BackendCheckboxItems}
+                            .value=${BackendCheckboxItems.map(({ name }) => name).filter((name) =>
+                                this.isBackendSelected(name),
+                            )}
                         ></ak-checkbox-group>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal

@@ -12,11 +12,12 @@ import { map } from "lit/directives/map.js";
 import PFCheck from "@patternfly/patternfly/components/Check/check.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 
-type CheckboxKv = { name: string; label: string | TemplateResult };
-type CheckboxPr = [string, string | TemplateResult];
-export type CheckboxPair = CheckboxKv | CheckboxPr;
+export type CheckboxItem<T extends string = string> = { name: T; label: string | TemplateResult };
+export type CheckboxPair<T extends string = string> = [name: T, label: string | TemplateResult];
 
-function* kvToPairs(items: Iterable<CheckboxPair>): Iterable<CheckboxPr> {
+export type CheckboxItemInit<T extends string = string> = CheckboxItem<T> | CheckboxPair<T>;
+
+function* generateCheckboxKeyValuePairs(items: Iterable<CheckboxItemInit>): Iterable<CheckboxPair> {
     for (const item of items) {
         yield Array.isArray(item) ? item : [item.name, item.label];
     }
@@ -84,7 +85,7 @@ export class CheckboxGroup extends AkElementWithCustomEvents {
     }
 
     @property({ type: Array })
-    public options: CheckboxPair[] = [];
+    public options: CheckboxItemInit[] = [];
 
     @property({ type: Array })
     public value: string[] = [];
@@ -180,7 +181,7 @@ export class CheckboxGroup extends AkElementWithCustomEvents {
         });
     }
 
-    protected renderCheckbox = ([name, label]: CheckboxPr): SlottedTemplateResult => {
+    protected renderCheckbox = ([name, label]: CheckboxPair): SlottedTemplateResult => {
         const selected = this.values.includes(name);
         const blockFwd = (e: Event) => {
             e.stopImmediatePropagation();
@@ -208,7 +209,7 @@ export class CheckboxGroup extends AkElementWithCustomEvents {
 
     protected override render(): SlottedTemplateResult {
         return html`<div part="checkbox-group" class="pf-c-form__group-control pf-m-stack">
-            ${map(kvToPairs(this.options), this.renderCheckbox)}
+            ${map(generateCheckboxKeyValuePairs(this.options), this.renderCheckbox)}
         </div>`;
     }
 }
