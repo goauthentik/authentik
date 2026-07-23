@@ -200,25 +200,36 @@ Domain creation and DNS verification are outside the scope of this guide. Confir
 Set the path in `$SigningCertificate` to the PEM file that you downloaded from authentik, then run the following commands:
 
 ```powershell showLineNumbers
-Connect-MgGraph -Scopes "Domain-InternalFederation.ReadWrite.All"
+# 1. Connect to Microsoft Graph
+Connect-MgGraph -Scopes "Domain.ReadWrite.All", "Directory.AccessAsUser.All"
 
+# 2. Define all variables
 $domain = "domain.company"
-$passiveSignInUri = "https://authentik.company/application/wsfed/<application_slug>/"
+$passiveSignInUri = "https://authentik.company/application/wsfed/"
 $signOutUri = "https://authentik.company/application/wsfed/<application_slug>/"
 $issuerUri = "https://authentik.company/application/saml/<application_slug>/metadata/"
-$signingCertificate = (Get-Content "C:\path\to\authentik_certificate.pem" -Raw) `
-    -replace "-----BEGIN CERTIFICATE-----", "" `
-    -replace "-----END CERTIFICATE-----", "" `
-    -replace "\s", ""
+$metadataExchangeUri = "https://authentik.company/application/wsfed/<application_slug>/metadata/"
+$activeSignInUri = "https://authentik.company/application/wsfed/"
+$signingCert = (Get-Content "C:\path\to\authentik_certificate.pem" -Raw) `
+  -replace "-----BEGIN CERTIFICATE-----", "" `
+  -replace "-----END CERTIFICATE-----", "" `
+  -replace "\s", ""
+$displayName = $domain
+$federatedIdpMfaBehavior = "acceptIfMfaDoneByFederatedIdp"
 
+# 3. Configure the federation
+# Note: The backtick (`) at the end of each line is PowerShell's line continuation character. Make sure to not remove this character when copying the command below.
 New-MgDomainFederationConfiguration `
-    -DomainId $domain `
-    -DisplayName $domain `
-    -IssuerUri $issuerUri `
-    -PassiveSignInUri $passiveSignInUri `
-    -PreferredAuthenticationProtocol "wsFed" `
-    -SignOutUri $signOutUri `
-    -SigningCertificate $signingCertificate
+  -DomainId $domain `
+  -PassiveSignInUri $passiveSignInUri `
+  -SignOutUri $signOutUri `
+  -IssuerUri $issuerUri `
+  -MetadataExchangeUri $metadataExchangeUri `
+  -SigningCertificate $signingCert `
+  -DisplayName $displayName `
+  -FederatedIdpMfaBehavior $federatedIdpMfaBehavior `
+  -PreferredAuthenticationProtocol "wsFed" `
+  -ActiveSignInUri $activeSignInUri
 ```
 
 ## Configuration verification
