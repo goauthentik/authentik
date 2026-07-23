@@ -24,6 +24,7 @@ import { SlottedTemplateResult } from "#elements/types";
 import renderDescriptionList from "#components/DescriptionList";
 import { taskCard } from "#components/tasks/taskCard";
 
+import { OAuth2DCRForm } from "#admin/providers/oauth2/OAuth2DCRForm";
 import { OAuth2ProviderFormPage } from "#admin/providers/oauth2/OAuth2ProviderForm";
 
 import {
@@ -31,6 +32,7 @@ import {
     CoreApi,
     CoreUsersListRequest,
     ModelEnum,
+    OAuth2DynamicClientRegistration,
     OAuth2Provider,
     OAuth2ProviderLogoutMethodEnum,
     OAuth2ProviderSetupURLs,
@@ -101,6 +103,9 @@ export class OAuth2ProviderViewPage extends AKElement {
     @state()
     previewUser?: User;
 
+    @state()
+    dcrConfig?: OAuth2DynamicClientRegistration | null;
+
     static styles: CSSResult[] = [
         PFButton,
         PFPage,
@@ -128,6 +133,18 @@ export class OAuth2ProviderViewPage extends AKElement {
                 forUser: this.previewUser?.pk,
             })
             .then((preview) => (this.preview = preview));
+    }
+
+    fetchDCRConfig(): void {
+        aki(ProvidersApi)
+            .providersOauth2DcrList({
+                provider: this.provider?.pk,
+            })
+            .then((response) => {
+                this.dcrConfig = response.results[0] ?? null;
+            }).catch(() => {
+                this.dcrConfig = null;
+            });
     }
 
     render(): SlottedTemplateResult {
@@ -165,6 +182,18 @@ export class OAuth2ProviderViewPage extends AKElement {
                     }}
                 >
                     ${this.renderTabPreview()}
+                </div>
+                <div
+                    role="tabpanel"
+                    tabindex="0"
+                    slot="page-dcr"
+                    id="page-dcr"
+                    aria-label="${msg("Dynamic Client Registration")}"
+                    @activate=${() => {
+                        this.fetchDCRConfig();
+                    }}
+                >
+                    ${this.renderTabDCR()}
                 </div>
                 <div
                     role="tabpanel"
@@ -460,6 +489,72 @@ export class OAuth2ProviderViewPage extends AKElement {
                     ${this.preview
                         ? html`<pre>${JSON.stringify(this.preview?.preview, null, 4)}</pre>`
                         : html` <ak-empty-state loading></ak-empty-state> `}
+                </div>
+            </div>
+        </div>`;
+    }
+
+    renderTabDCR(): SlottedTemplateResult {
+        if (this.dcrConfig === undefined) {
+            return html`<ak-empty-state loading></ak-empty-state>`;
+        }
+        if (this.dcrConfig === null) {
+            return html`<div class="pf-c-page__main-section pf-m-no-padding-mobile">
+                <div class="pf-c-card">
+                    <div class="pf-c-card__body">
+                        <ak-empty-state icon="fa-plug">
+                            <span>${msg("Dynamic Client Registration is not enabled.")}</span>
+                            <p slot="body">
+                                ${msg(
+                                    "Allow OAuth2/OIDC clients to register themselves against this provider (RFC 7591).",
+                                )}
+                            </p>
+                            <div slot="primary">
+                                <button
+                                    class="pf-c-button pf-m-primary"
+                                    ${modalInvoker(OAuth2DCRForm, {
+                                        providerID: this.provider?.pk || 0,
+                                    })}
+                                >
+                                    ${msg("Enable Dynamic Client Registration")}
+                                </button>
+                            </div>
+                        </ak-empty-state>
+                    </div>
+                </div>
+            </div>`;
+        }
+        const dcr = this.dcrConfig;
+        return html`<div
+            class="pf-c-page__main-section pf-m-no-padding-mobile pf-l-grid pf-m-gutter"
+        >
+            <div class="pf-c-card pf-l-grid__item pf-m-12-col">
+                <div class="pf-c-card__title">${msg("Dynamic Client Registration")}</div>
+                <div class="pf-c-card__body">
+                    ${renderDescriptionList([
+                        [
+                            msg("Create application"),
+                            html`${dcr.createApplication ? msg("Yes") : msg("No")}`,
+                        ],
+                        [msg("Default client type"), html`${TypeToLabel(dcr.defaultClientType)}`],
+                        [
+                            msg("Allowed grant types"),
+                            html`${(dcr.allowedGrantTypes || []).length > 0
+                                ? dcr.allowedGrantTypes?.join(", ")
+                                : msg("All")}`,
+                        ],
+                        [
+                            msg("Related actions"),
+                            html`<button
+                                class="pf-c-button pf-m-primary pf-m-block"
+                                ${modalInvoker(OAuth2DCRForm, {
+                                    instancePk: dcr.pbmUuid,
+                                })}
+                            >
+                                ${msg("Edit")}
+                            </button>`,
+                        ],
+                    ])}
                 </div>
             </div>
         </div>`;

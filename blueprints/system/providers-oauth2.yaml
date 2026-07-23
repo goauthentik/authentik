@@ -79,6 +79,17 @@ entries:
         # on behalf of the authorizing user
         return {}
   - identifiers:
+      managed: goauthentik.io/providers/oauth2/scope-dcr
+    model: authentik_providers_oauth2.scopemapping
+    attrs:
+      name: "authentik default OAuth Mapping: authentik Dynamic Client Registration"
+      scope_name: goauthentik.io/oidc/dcr
+      description: "authentik Dynamic Client Registration (RFC 7591)"
+      expression: |
+        # This scope grants the application the ability to register new
+        # OAuth2 clients via Dynamic Client Registration (RFC 7591)
+        return {}
+  - identifiers:
       managed: goauthentik.io/providers/oauth2/scope-bound_key
     model: authentik_providers_oauth2.scopemapping
     attrs:

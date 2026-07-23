@@ -66,6 +66,14 @@ import {
     type MicrosoftEntraProviderUserRequest,
     MicrosoftEntraProviderUserRequestToJSON,
 } from "../models/MicrosoftEntraProviderUserRequest";
+import {
+    type OAuth2DynamicClientRegistration,
+    OAuth2DynamicClientRegistrationFromJSON,
+} from "../models/OAuth2DynamicClientRegistration";
+import {
+    type OAuth2DynamicClientRegistrationRequest,
+    OAuth2DynamicClientRegistrationRequestToJSON,
+} from "../models/OAuth2DynamicClientRegistrationRequest";
 import { type OAuth2Provider, OAuth2ProviderFromJSON } from "../models/OAuth2Provider";
 import {
     type OAuth2ProviderRequest,
@@ -103,6 +111,10 @@ import {
     type PaginatedMicrosoftEntraProviderUserList,
     PaginatedMicrosoftEntraProviderUserListFromJSON,
 } from "../models/PaginatedMicrosoftEntraProviderUserList";
+import {
+    type PaginatedOAuth2DynamicClientRegistrationList,
+    PaginatedOAuth2DynamicClientRegistrationListFromJSON,
+} from "../models/PaginatedOAuth2DynamicClientRegistrationList";
 import {
     type PaginatedOAuth2ProviderList,
     PaginatedOAuth2ProviderListFromJSON,
@@ -159,6 +171,10 @@ import {
     type PatchedMicrosoftEntraProviderRequest,
     PatchedMicrosoftEntraProviderRequestToJSON,
 } from "../models/PatchedMicrosoftEntraProviderRequest";
+import {
+    type PatchedOAuth2DynamicClientRegistrationRequest,
+    PatchedOAuth2DynamicClientRegistrationRequestToJSON,
+} from "../models/PatchedOAuth2DynamicClientRegistrationRequest";
 import {
     type PatchedOAuth2ProviderRequest,
     PatchedOAuth2ProviderRequestToJSON,
@@ -506,6 +522,36 @@ export interface ProvidersMicrosoftEntraUsersUsedByListRequest {
 
 export interface ProvidersOauth2CreateRequest {
     oAuth2ProviderRequest: OAuth2ProviderRequest;
+}
+
+export interface ProvidersOauth2DcrCreateRequest {
+    oAuth2DynamicClientRegistrationRequest: OAuth2DynamicClientRegistrationRequest;
+}
+
+export interface ProvidersOauth2DcrDestroyRequest {
+    pbmUuid: string;
+}
+
+export interface ProvidersOauth2DcrListRequest {
+    ordering?: string;
+    page?: number;
+    pageSize?: number;
+    provider?: number;
+    search?: string;
+}
+
+export interface ProvidersOauth2DcrPartialUpdateRequest {
+    pbmUuid: string;
+    patchedOAuth2DynamicClientRegistrationRequest?: PatchedOAuth2DynamicClientRegistrationRequest;
+}
+
+export interface ProvidersOauth2DcrRetrieveRequest {
+    pbmUuid: string;
+}
+
+export interface ProvidersOauth2DcrUpdateRequest {
+    pbmUuid: string;
+    oAuth2DynamicClientRegistrationRequest: OAuth2DynamicClientRegistrationRequest;
 }
 
 export interface ProvidersOauth2DestroyRequest {
@@ -4541,6 +4587,430 @@ export class ProvidersApi extends runtime.BaseAPI {
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<OAuth2Provider> {
         const response = await this.providersOauth2CreateRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for providersOauth2DcrCreate without sending the request
+     */
+    async providersOauth2DcrCreateRequestOpts(
+        requestParameters: ProvidersOauth2DcrCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["oAuth2DynamicClientRegistrationRequest"] == null) {
+            throw new runtime.RequiredError(
+                "oAuth2DynamicClientRegistrationRequest",
+                'Required parameter "oAuth2DynamicClientRegistrationRequest" was null or undefined when calling providersOauth2DcrCreate().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters["Content-Type"] = "application/json";
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/providers/oauth2/dcr/`;
+
+        return {
+            path: urlPath,
+            method: "POST",
+            headers: headerParameters,
+            query: queryParameters,
+            body: OAuth2DynamicClientRegistrationRequestToJSON(
+                requestParameters["oAuth2DynamicClientRegistrationRequest"],
+            ),
+        };
+    }
+
+    /**
+     * OAuth2 Dynamic Client Registration configuration ViewSet
+     */
+    async providersOauth2DcrCreateRaw(
+        requestParameters: ProvidersOauth2DcrCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<OAuth2DynamicClientRegistration>> {
+        const requestOptions = await this.providersOauth2DcrCreateRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            OAuth2DynamicClientRegistrationFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * OAuth2 Dynamic Client Registration configuration ViewSet
+     */
+    async providersOauth2DcrCreate(
+        requestParameters: ProvidersOauth2DcrCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<OAuth2DynamicClientRegistration> {
+        const response = await this.providersOauth2DcrCreateRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for providersOauth2DcrDestroy without sending the request
+     */
+    async providersOauth2DcrDestroyRequestOpts(
+        requestParameters: ProvidersOauth2DcrDestroyRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["pbmUuid"] == null) {
+            throw new runtime.RequiredError(
+                "pbmUuid",
+                'Required parameter "pbmUuid" was null or undefined when calling providersOauth2DcrDestroy().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/providers/oauth2/dcr/{pbm_uuid}/`;
+        urlPath = urlPath.replace(
+            "{pbm_uuid}",
+            encodeURIComponent(String(requestParameters["pbmUuid"])),
+        );
+
+        return {
+            path: urlPath,
+            method: "DELETE",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * OAuth2 Dynamic Client Registration configuration ViewSet
+     */
+    async providersOauth2DcrDestroyRaw(
+        requestParameters: ProvidersOauth2DcrDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
+        const requestOptions = await this.providersOauth2DcrDestroyRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.VoidApiResponse(response);
+    }
+
+    /**
+     * OAuth2 Dynamic Client Registration configuration ViewSet
+     */
+    async providersOauth2DcrDestroy(
+        requestParameters: ProvidersOauth2DcrDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
+        await this.providersOauth2DcrDestroyRaw(requestParameters, initOverrides);
+    }
+
+    /**
+     * Creates request options for providersOauth2DcrList without sending the request
+     */
+    async providersOauth2DcrListRequestOpts(
+        requestParameters: ProvidersOauth2DcrListRequest,
+    ): Promise<runtime.RequestOpts> {
+        const queryParameters: any = {};
+
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
+        }
+
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
+        }
+
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
+        }
+
+        if (requestParameters["provider"] != null) {
+            queryParameters["provider"] = requestParameters["provider"];
+        }
+
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/providers/oauth2/dcr/`;
+
+        return {
+            path: urlPath,
+            method: "GET",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * OAuth2 Dynamic Client Registration configuration ViewSet
+     */
+    async providersOauth2DcrListRaw(
+        requestParameters: ProvidersOauth2DcrListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PaginatedOAuth2DynamicClientRegistrationList>> {
+        const requestOptions = await this.providersOauth2DcrListRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedOAuth2DynamicClientRegistrationListFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * OAuth2 Dynamic Client Registration configuration ViewSet
+     */
+    async providersOauth2DcrList(
+        requestParameters: ProvidersOauth2DcrListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PaginatedOAuth2DynamicClientRegistrationList> {
+        const response = await this.providersOauth2DcrListRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for providersOauth2DcrPartialUpdate without sending the request
+     */
+    async providersOauth2DcrPartialUpdateRequestOpts(
+        requestParameters: ProvidersOauth2DcrPartialUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["pbmUuid"] == null) {
+            throw new runtime.RequiredError(
+                "pbmUuid",
+                'Required parameter "pbmUuid" was null or undefined when calling providersOauth2DcrPartialUpdate().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters["Content-Type"] = "application/json";
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/providers/oauth2/dcr/{pbm_uuid}/`;
+        urlPath = urlPath.replace(
+            "{pbm_uuid}",
+            encodeURIComponent(String(requestParameters["pbmUuid"])),
+        );
+
+        return {
+            path: urlPath,
+            method: "PATCH",
+            headers: headerParameters,
+            query: queryParameters,
+            body: PatchedOAuth2DynamicClientRegistrationRequestToJSON(
+                requestParameters["patchedOAuth2DynamicClientRegistrationRequest"],
+            ),
+        };
+    }
+
+    /**
+     * OAuth2 Dynamic Client Registration configuration ViewSet
+     */
+    async providersOauth2DcrPartialUpdateRaw(
+        requestParameters: ProvidersOauth2DcrPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<OAuth2DynamicClientRegistration>> {
+        const requestOptions =
+            await this.providersOauth2DcrPartialUpdateRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            OAuth2DynamicClientRegistrationFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * OAuth2 Dynamic Client Registration configuration ViewSet
+     */
+    async providersOauth2DcrPartialUpdate(
+        requestParameters: ProvidersOauth2DcrPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<OAuth2DynamicClientRegistration> {
+        const response = await this.providersOauth2DcrPartialUpdateRaw(
+            requestParameters,
+            initOverrides,
+        );
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for providersOauth2DcrRetrieve without sending the request
+     */
+    async providersOauth2DcrRetrieveRequestOpts(
+        requestParameters: ProvidersOauth2DcrRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["pbmUuid"] == null) {
+            throw new runtime.RequiredError(
+                "pbmUuid",
+                'Required parameter "pbmUuid" was null or undefined when calling providersOauth2DcrRetrieve().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/providers/oauth2/dcr/{pbm_uuid}/`;
+        urlPath = urlPath.replace(
+            "{pbm_uuid}",
+            encodeURIComponent(String(requestParameters["pbmUuid"])),
+        );
+
+        return {
+            path: urlPath,
+            method: "GET",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * OAuth2 Dynamic Client Registration configuration ViewSet
+     */
+    async providersOauth2DcrRetrieveRaw(
+        requestParameters: ProvidersOauth2DcrRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<OAuth2DynamicClientRegistration>> {
+        const requestOptions = await this.providersOauth2DcrRetrieveRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            OAuth2DynamicClientRegistrationFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * OAuth2 Dynamic Client Registration configuration ViewSet
+     */
+    async providersOauth2DcrRetrieve(
+        requestParameters: ProvidersOauth2DcrRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<OAuth2DynamicClientRegistration> {
+        const response = await this.providersOauth2DcrRetrieveRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for providersOauth2DcrUpdate without sending the request
+     */
+    async providersOauth2DcrUpdateRequestOpts(
+        requestParameters: ProvidersOauth2DcrUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["pbmUuid"] == null) {
+            throw new runtime.RequiredError(
+                "pbmUuid",
+                'Required parameter "pbmUuid" was null or undefined when calling providersOauth2DcrUpdate().',
+            );
+        }
+
+        if (requestParameters["oAuth2DynamicClientRegistrationRequest"] == null) {
+            throw new runtime.RequiredError(
+                "oAuth2DynamicClientRegistrationRequest",
+                'Required parameter "oAuth2DynamicClientRegistrationRequest" was null or undefined when calling providersOauth2DcrUpdate().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters["Content-Type"] = "application/json";
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/providers/oauth2/dcr/{pbm_uuid}/`;
+        urlPath = urlPath.replace(
+            "{pbm_uuid}",
+            encodeURIComponent(String(requestParameters["pbmUuid"])),
+        );
+
+        return {
+            path: urlPath,
+            method: "PUT",
+            headers: headerParameters,
+            query: queryParameters,
+            body: OAuth2DynamicClientRegistrationRequestToJSON(
+                requestParameters["oAuth2DynamicClientRegistrationRequest"],
+            ),
+        };
+    }
+
+    /**
+     * OAuth2 Dynamic Client Registration configuration ViewSet
+     */
+    async providersOauth2DcrUpdateRaw(
+        requestParameters: ProvidersOauth2DcrUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<OAuth2DynamicClientRegistration>> {
+        const requestOptions = await this.providersOauth2DcrUpdateRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            OAuth2DynamicClientRegistrationFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * OAuth2 Dynamic Client Registration configuration ViewSet
+     */
+    async providersOauth2DcrUpdate(
+        requestParameters: ProvidersOauth2DcrUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<OAuth2DynamicClientRegistration> {
+        const response = await this.providersOauth2DcrUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
