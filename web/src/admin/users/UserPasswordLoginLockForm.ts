@@ -1,4 +1,5 @@
 import { aki } from "#common/api/client";
+import { docLink } from "#common/global";
 import { formatDisambiguatedUserDisplayName } from "#common/users";
 
 import { modalInvoker } from "#elements/dialogs";
@@ -65,11 +66,20 @@ export class UserPasswordLoginLockToggleForm extends WithLocale(DestructiveModel
                   })}
               </p>`
             : html`<p>
-                  ${msg(
-                      str`Prevent ${displayName} from authenticating with a password? Existing sessions and other authentication methods are not affected.`,
-                      { id: "user.action.password-login-lock-confirm" },
-                  )}
-              </p>`;
+                      ${msg(
+                          str`Prevent ${displayName} from authenticating with a password? Existing sessions and other authentication methods are not affected.`,
+                          { id: "user.action.password-login-lock-confirm" },
+                      )}
+                  </p>
+                  <a
+                      href=${docLink("/users-sources/user/access-control/")}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                  >
+                      ${msg("Compare user access controls.", {
+                          id: "user.action.password-login-lock-documentation",
+                      })}
+                  </a>`;
     }
 }
 

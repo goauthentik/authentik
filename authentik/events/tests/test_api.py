@@ -79,7 +79,10 @@ class TestEventsAPI(APITestCase):
 
         response = self.client.get(
             reverse("authentik_api:event-list"),
-            data={"username": affected_user.username},
+            data={
+                "action": EventAction.PASSWORD_LOGIN_LOCKED,
+                "username": affected_user.username,
+            },
         )
 
         self.assertEqual(response.status_code, 200)

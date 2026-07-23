@@ -2,6 +2,7 @@ import "#elements/buttons/SpinnerButton/index";
 import "#elements/forms/FormGroup";
 
 import { aki } from "#common/api/client";
+import { docLink } from "#common/global";
 import { formatDisambiguatedUserDisplayName } from "#common/users";
 
 import { modalInvoker } from "#elements/dialogs";
@@ -66,6 +67,19 @@ export class UserActivationToggleForm extends WithLocale(DestructiveModelForm<Us
                   id: "form.headline.deactivation",
               })
             : msg(str`Review ${this.verboseName} Activation`, { id: "form.headline.activation" });
+    }
+
+    protected override renderForm(): SlottedTemplateResult {
+        return html`${super.renderForm()}
+            <a
+                href=${docLink("/users-sources/user/access-control/")}
+                target="_blank"
+                rel="noopener noreferrer"
+            >
+                ${msg("Compare user access controls.", {
+                    id: "user.action.activation-documentation",
+                })}
+            </a>`;
     }
 
     public override usedBy = (): Promise<UsedBy[]> => {
