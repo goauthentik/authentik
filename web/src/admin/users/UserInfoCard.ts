@@ -245,7 +245,7 @@ export class UserInfoCard extends AKElement {
                 >${msg("Schedule Offboarding", { id: "offboarding.schedule.header" })}</span
             >
             <ak-user-offboarding-form slot="form" user-id=${user.pk}></ak-user-offboarding-form>
-            <button slot="trigger" class="pf-c-button pf-m-danger pf-m-block" type="button">
+            <button slot="trigger" class="pf-c-button pf-m-warning pf-m-block" type="button">
                 ${msg("Schedule Offboarding", { id: "offboarding.schedule.trigger.label" })}
             </button>
         </ak-forms-modal>`;
