@@ -1,5 +1,7 @@
 import "#elements/ak-checkbox-group/ak-checkbox-group";
 import "#components/ak-switch-input";
+import "#components/ak-number-input";
+import "#components/ak-text-input";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/index";
@@ -55,29 +57,21 @@ export class PasswordStageForm extends WithLicenseSummary(BaseStageForm<Password
             return null;
         }
 
-        return html`<ak-form-element-horizontal
+        return html`<ak-number-input
                 label=${msg("Failed attempts before lockout", {
                     id: "password-stage.lockout-threshold.label",
                 })}
                 required
                 name="failedAttemptsBeforeLockout"
-            >
-                <input
-                    type="number"
-                    min="0"
-                    value="${this.instance?.failedAttemptsBeforeLockout ?? 0}"
-                    class="pf-c-form-control"
-                    required
-                />
-                <p class="pf-c-form__helper-text">
-                    ${msg(
-                        "Lock password login after this many consecutive failed attempts. Failed attempts against LDAP and Kerberos backends are not counted. Set to 0 to disable lockout.",
-                        {
-                            id: "password-stage.lockout-threshold.description",
-                        },
-                    )}
-                </p>
-            </ak-form-element-horizontal>
+                min=${0}
+                value="${this.instance?.failedAttemptsBeforeLockout ?? 0}"
+                help=${msg(
+                    "Lock password login after this many consecutive failed attempts. Failed attempts against LDAP and Kerberos backends are not counted. Set to 0 to disable lockout.",
+                    {
+                        id: "password-stage.lockout-threshold.description",
+                    },
+                )}
+            ></ak-number-input>
             <ak-switch-input
                 name="showLastAttemptWarning"
                 label=${msg("Show last-attempt warning", {
@@ -88,23 +82,22 @@ export class PasswordStageForm extends WithLicenseSummary(BaseStageForm<Password
                     id: "password-stage.last-attempt-warning.description",
                 })}
             ></ak-switch-input>
-            <ak-form-element-horizontal
+            <ak-text-input
                 label=${msg("Last-attempt warning message", {
                     id: "password-stage.last-attempt-warning-message.label",
                 })}
                 name="lastAttemptWarningMessage"
-            >
-                <input
-                    type="text"
-                    value="${this.instance?.lastAttemptWarningMessage ?? ""}"
-                    class="pf-c-form-control"
-                />
-                <p class="pf-c-form__helper-text">
-                    ${msg("Leave blank to use the default last-attempt warning.", {
-                        id: "password-stage.last-attempt-warning-message.description",
-                    })}
-                </p>
-            </ak-form-element-horizontal>
+                value=${this.instance?.lastAttemptWarningMessage ?? ""}
+                placeholder=${msg(
+                    "You have one password attempt remaining before your account is locked out. If you have forgotten your password, please contact your administrator.",
+                    {
+                        id: "password-stage.last-attempt-warning-message.placeholder",
+                    },
+                )}
+                help=${msg("Leave blank to use the default last-attempt warning.", {
+                    id: "password-stage.last-attempt-warning-message.description",
+                })}
+            ></ak-text-input>
             <ak-switch-input
                 name="showLockoutMessage"
                 label=${msg("Show lockout message", {
@@ -115,37 +108,33 @@ export class PasswordStageForm extends WithLicenseSummary(BaseStageForm<Password
                     id: "password-stage.lockout-message-toggle.description",
                 })}
             ></ak-switch-input>
-            <ak-form-element-horizontal
+            <ak-text-input
                 label=${msg("Lockout message", {
                     id: "password-stage.lockout-message.label",
                 })}
                 name="lockoutMessage"
-            >
-                <input
-                    type="text"
-                    value="${this.instance?.lockoutMessage ?? ""}"
-                    class="pf-c-form-control"
-                />
-                <p class="pf-c-form__helper-text">
-                    ${msg("Leave blank to use the default lockout message.", {
-                        id: "password-stage.lockout-message.description",
-                    })}
-                </p>
-            </ak-form-element-horizontal> `;
+                placeholder=${msg(
+                    "Your account has been locked out due to too many failed attempts. Please contact your administrator.",
+                    { id: "password-stage.lockout-message.placeholder" },
+                )}
+                value="${this.instance?.lockoutMessage ?? ""}"
+                help=${msg("Leave blank to use the default lockout message.", {
+                    id: "password-stage.lockout-message.description",
+                })}
+            ></ak-text-input>`;
     }
 
     protected override renderForm(): SlottedTemplateResult {
         return html`<span>
                 ${msg("Validate the user's password against the selected backend(s).")}
             </span>
-            <ak-form-element-horizontal label=${msg("Name")} required name="name">
-                <input
-                    type="text"
-                    value="${this.instance?.name || ""}"
-                    class="pf-c-form-control"
-                    required
-                />
-            </ak-form-element-horizontal>
+            <ak-text-input
+                label=${msg("Stage Name")}
+                required
+                name="name"
+                value="${this.instance?.name || ""}"
+                placeholder=${msg("Type a name for this stage...")}
+            ></ak-text-input>
             <ak-form-group open label="${msg("Stage-specific settings")}">
                 <div class="pf-c-form">
                     <ak-form-element-horizontal required name="backends">
@@ -171,7 +160,7 @@ export class PasswordStageForm extends WithLicenseSummary(BaseStageForm<Password
                         ></ak-checkbox-group>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
-                        label=${msg("Configuration flow")}
+                        label=${msg("Configuration Flow")}
                         required
                         name="configureFlow"
                     >
@@ -190,12 +179,11 @@ export class PasswordStageForm extends WithLicenseSummary(BaseStageForm<Password
                             .renderElement=${(flow: Flow): string => {
                                 return RenderFlowOption(flow);
                             }}
-                            .renderDescription=${(flow: Flow): SlottedTemplateResult => {
-                                return html`${flow.name}`;
-                            }}
+                            .renderDescription=${(flow: Flow) => flow.name}
                             .value=${(flow?: Flow) => flow?.pk}
                             .selected=${(flow: Flow): boolean => {
                                 let selected = this.instance?.configureFlow === flow.pk;
+
                                 if (
                                     !this.instance?.pk &&
                                     !this.instance?.configureFlow &&
@@ -203,11 +191,11 @@ export class PasswordStageForm extends WithLicenseSummary(BaseStageForm<Password
                                 ) {
                                     selected = true;
                                 }
+
                                 return selected;
                             }}
                             blankable
-                        >
-                        </ak-search-select>
+                        ></ak-search-select>
                         <p class="pf-c-form__helper-text">
                             ${msg(
                                 "Flow used by an authenticated user to configure their password. If empty, user will not be able to change their password.",
