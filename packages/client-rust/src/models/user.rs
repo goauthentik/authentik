@@ -58,8 +58,8 @@ pub struct User {
     pub r#type: Option<models::UserTypeEnum>,
     #[serde(rename = "uuid")]
     pub uuid: uuid::Uuid,
-    #[serde(rename = "password_change_date")]
-    pub password_change_date: chrono::DateTime<chrono::FixedOffset>,
+    #[serde(rename = "password_device", deserialize_with = "Option::deserialize")]
+    pub password_device: Option<models::PasswordDevice>,
     #[serde(rename = "last_updated")]
     pub last_updated: chrono::DateTime<chrono::FixedOffset>,
 }
@@ -77,7 +77,7 @@ impl User {
         avatar: String,
         uid: String,
         uuid: uuid::Uuid,
-        password_change_date: chrono::DateTime<chrono::FixedOffset>,
+        password_device: Option<models::PasswordDevice>,
         last_updated: chrono::DateTime<chrono::FixedOffset>,
     ) -> User {
         User {
@@ -99,7 +99,7 @@ impl User {
             path: None,
             r#type: None,
             uuid,
-            password_change_date,
+            password_device,
             last_updated,
         }
     }

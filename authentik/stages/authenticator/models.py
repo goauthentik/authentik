@@ -90,6 +90,8 @@ class Device(CreatedUpdatedModel):
 
     objects = DeviceManager()
 
+    is_mfa = True
+
     class Meta:
         abstract = True
 
@@ -138,7 +140,7 @@ class Device(CreatedUpdatedModel):
             app_label, model_name = model_label.split(".")
 
             device_cls = apps.get_model(app_label, model_name)
-            if issubclass(device_cls, Device):
+            if issubclass(device_cls, Device) and device_cls.is_mfa:
                 device_set = device_cls.objects.filter(id=int(device_id))
                 if for_verify:
                     device_set = device_set.select_for_update()

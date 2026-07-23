@@ -170,5 +170,5 @@ class TestSetup(FlowTestCase):
 
         self.assertTrue(Setup.get())
         user = User.objects.get(username="akadmin")
-        self.assertEqual(user.password, password_hash)
+        self.assertEqual(user.password_device.password, password_hash)
         self.assertTrue(user.check_password(password))

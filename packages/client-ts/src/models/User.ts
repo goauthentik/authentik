@@ -14,6 +14,8 @@
 
 import type { PartialGroup } from "./PartialGroup";
 import { PartialGroupFromJSON } from "./PartialGroup";
+import type { PasswordDevice } from "./PasswordDevice";
+import { PasswordDeviceFromJSON } from "./PasswordDevice";
 import type { Role } from "./Role";
 import { RoleFromJSON } from "./Role";
 import type { UserTypeEnum } from "./UserTypeEnum";
@@ -135,10 +137,10 @@ export interface User {
     readonly uuid: string;
     /**
      *
-     * @type {Date}
+     * @type {PasswordDevice}
      * @memberof User
      */
-    readonly passwordChangeDate: Date;
+    readonly passwordDevice: PasswordDevice | null;
     /**
      *
      * @type {Date}
@@ -161,7 +163,7 @@ export function instanceOfUser(value: object): value is User {
     if (!("avatar" in value) || value["avatar"] === undefined) return false;
     if (!("uid" in value) || value["uid"] === undefined) return false;
     if (!("uuid" in value) || value["uuid"] === undefined) return false;
-    if (!("passwordChangeDate" in value) || value["passwordChangeDate"] === undefined) return false;
+    if (!("passwordDevice" in value) || value["passwordDevice"] === undefined) return false;
     if (!("lastUpdated" in value) || value["lastUpdated"] === undefined) return false;
     return true;
 }
@@ -197,7 +199,7 @@ export function UserFromJSONTyped(json: any, ignoreDiscriminator: boolean): User
         path: json["path"] == null ? undefined : json["path"],
         type: json["type"] == null ? undefined : UserTypeEnumFromJSON(json["type"]),
         uuid: json["uuid"],
-        passwordChangeDate: new Date(json["password_change_date"]),
+        passwordDevice: PasswordDeviceFromJSON(json["password_device"]),
         lastUpdated: new Date(json["last_updated"]),
     };
 }
@@ -217,7 +219,7 @@ export function UserToJSONTyped(
         | "avatar"
         | "uid"
         | "uuid"
-        | "password_change_date"
+        | "password_device"
         | "last_updated"
     > | null,
     ignoreDiscriminator: boolean = false,

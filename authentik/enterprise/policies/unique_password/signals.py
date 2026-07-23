@@ -8,6 +8,7 @@ from authentik.enterprise.policies.unique_password.models import (
     UniquePasswordPolicy,
     UserPasswordHistory,
 )
+from authentik.stages.password.models import PasswordDevice
 
 
 @receiver(password_changed)
@@ -20,4 +21,8 @@ def copy_password_to_password_history(sender, user: User, *args, **kwargs):
         """NOTE: Because we run this in a signal after saving the user,
         we are not atomically guaranteed to save password history.
         """
-        UserPasswordHistory.create_for_user(user, user.password)
+        try:
+            password = user.password_device.password
+        except PasswordDevice.DoesNotExist:
+            return
+        UserPasswordHistory.create_for_user(user, password)

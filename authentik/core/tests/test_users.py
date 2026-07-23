@@ -103,9 +103,9 @@ class TestUserSerializerPasswordHash(TestCase):
         self.assertTrue(serializer.is_valid(), serializer.errors)
         user = serializer.save()
 
-        self.assertEqual(user.password, password_hash)
+        self.assertEqual(user.password_device.password, password_hash)
         self.assertTrue(user.check_password(password))
-        self.assertIsNotNone(user.password_change_date)
+        self.assertIsNotNone(user.password_device.password_change_date)
 
     def test_password_hash_rejects_invalid_format(self):
         """Test invalid password hash values are rejected."""

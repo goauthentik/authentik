@@ -519,6 +519,7 @@ export * from "./PartialGroup";
 export * from "./PartialUser";
 export * from "./PasswordChallenge";
 export * from "./PasswordChallengeResponseRequest";
+export * from "./PasswordDevice";
 export * from "./PasswordExpiryPolicy";
 export * from "./PasswordExpiryPolicyRequest";
 export * from "./PasswordPolicy";

@@ -31,7 +31,8 @@ entries:
             "suspended": not request.user.is_active,
         }
         if not connection:
-            user["password"] = request.user.password
+            password_device = getattr(request.user, "password_device", None)
+            user["password"] = password_device.password if password_device else ""
         return user
   - identifiers:
       managed: goauthentik.io/providers/google_workspace/group

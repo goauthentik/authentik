@@ -172,6 +172,8 @@ pub mod password_challenge;
 pub use self::password_challenge::PasswordChallenge;
 pub mod password_challenge_response_request;
 pub use self::password_challenge_response_request::PasswordChallengeResponseRequest;
+pub mod password_device;
+pub use self::password_device::PasswordDevice;
 pub mod plex_authentication_challenge;
 pub use self::plex_authentication_challenge::PlexAuthenticationChallenge;
 pub mod plex_authentication_challenge_response_request;

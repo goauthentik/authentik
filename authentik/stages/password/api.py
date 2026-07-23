@@ -3,8 +3,27 @@
 from rest_framework.viewsets import ModelViewSet
 
 from authentik.core.api.used_by import UsedByMixin
+from authentik.core.api.utils import ModelSerializer
 from authentik.flows.api.stages import StageSerializer
-from authentik.stages.password.models import PasswordStage
+from authentik.stages.password.models import PasswordDevice, PasswordStage
+
+
+class PasswordDeviceSerializer(ModelSerializer):
+    """Safe metadata for a user's password device."""
+
+    class Meta:
+        model = PasswordDevice
+        fields = [
+            "pk",
+            "name",
+            "stage",
+            "confirmed",
+            "created",
+            "last_updated",
+            "last_used",
+            "password_change_date",
+        ]
+        read_only_fields = fields
 
 
 class PasswordStageSerializer(StageSerializer):

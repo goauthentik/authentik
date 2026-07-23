@@ -257,7 +257,9 @@ class TestProviderLDAP(ChannelsE2ETestCase):
                     "homeDirectory": f"/home/{o_user.username}",
                     "ak-active": True,
                     "ak-superuser": False,
-                    "pwdChangedTime": o_user.password_change_date.replace(microsecond=0),
+                    "pwdChangedTime": o_user.password_device.password_change_date.replace(
+                        microsecond=0
+                    ),
                     "createTimestamp": o_user.date_joined.replace(microsecond=0),
                     "modifyTimestamp": o_user.last_updated.replace(microsecond=0),
                 },
@@ -287,7 +289,9 @@ class TestProviderLDAP(ChannelsE2ETestCase):
                     "homeDirectory": f"/home/{embedded_account.username}",
                     "ak-active": True,
                     "ak-superuser": False,
-                    "pwdChangedTime": embedded_account.password_change_date.replace(microsecond=0),
+                    "pwdChangedTime": embedded_account.password_device.password_change_date.replace(
+                        microsecond=0
+                    ),
                     "createTimestamp": embedded_account.date_joined.replace(microsecond=0),
                     "modifyTimestamp": embedded_account.last_updated.replace(microsecond=0),
                 },
@@ -321,7 +325,9 @@ class TestProviderLDAP(ChannelsE2ETestCase):
                     "ak-active": True,
                     "ak-superuser": True,
                     "extraAttribute": ["bar"],
-                    "pwdChangedTime": self.user.password_change_date.replace(microsecond=0),
+                    "pwdChangedTime": self.user.password_device.password_change_date.replace(
+                        microsecond=0
+                    ),
                     "createTimestamp": self.user.date_joined.replace(microsecond=0),
                     "modifyTimestamp": self.user.last_updated.replace(microsecond=0),
                 },
@@ -395,7 +401,9 @@ class TestProviderLDAP(ChannelsE2ETestCase):
                     "homeDirectory": f"/home/{user.username}",
                     "ak-active": True,
                     "ak-superuser": False,
-                    "pwdChangedTime": user.password_change_date.replace(microsecond=0),
+                    "pwdChangedTime": user.password_device.password_change_date.replace(
+                        microsecond=0
+                    ),
                     "createTimestamp": user.date_joined.replace(microsecond=0),
                     "modifyTimestamp": user.last_updated.replace(microsecond=0),
                 },

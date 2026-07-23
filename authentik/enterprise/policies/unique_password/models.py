@@ -118,7 +118,7 @@ class UniquePasswordPolicy(Policy):
 
 class UserPasswordHistory(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="old_passwords")
-    # Mimic's column type of AbstractBaseUser.password
+    # Match PasswordDevice.password's column type.
     old_password = models.CharField(max_length=128)
     created_at = models.DateTimeField(auto_now_add=True)
 

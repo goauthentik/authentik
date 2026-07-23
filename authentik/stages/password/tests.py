@@ -3,8 +3,11 @@
 from unittest.mock import MagicMock, patch
 
 from django.core.exceptions import PermissionDenied
+from django.db.models.deletion import ProtectedError
+from django.test import TestCase
 from django.urls import reverse
 
+from authentik.core.models import User
 from authentik.core.tests.utils import create_test_admin_user, create_test_brand, create_test_flow
 from authentik.flows.markers import StageMarker
 from authentik.flows.models import FlowDesignation, FlowStageBinding
@@ -13,10 +16,74 @@ from authentik.flows.tests import FlowTestCase
 from authentik.flows.tests.test_executor import TO_STAGE_RESPONSE_MOCK
 from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.lib.generators import generate_id
+from authentik.stages.authenticator import device_classes, devices_for_user
+from authentik.stages.authenticator.models import Device
 from authentik.stages.password import BACKEND_INBUILT
-from authentik.stages.password.models import PasswordStage
+from authentik.stages.password.models import PasswordDevice, PasswordStage
 
 MOCK_BACKEND_AUTHENTICATE = MagicMock(side_effect=PermissionDenied("test"))
+
+
+class TestPasswordDevice(TestCase):
+    """Password authenticator device tests."""
+
+    def test_user_manager_prefetches_password_device(self):
+        """The default user manager always prefetches the password device."""
+        user = create_test_admin_user()
+
+        with self.assertNumQueries(2):
+            fetched = User.objects.only("username").get(pk=user.pk)
+            self.assertEqual(fetched.password_device.user_id, user.pk)
+
+    def test_password_device_is_not_mfa(self):
+        """Password devices are not exposed to generic MFA selection or lookup."""
+        user = create_test_admin_user()
+        device = user.password_device
+
+        self.assertNotIn(PasswordDevice, device_classes())
+        self.assertNotIn(device, devices_for_user(user))
+        self.assertIsNone(Device.from_persistent_id(device.persistent_id))
+
+    def test_unusable_password_retains_device(self):
+        """An unusable password remains represented by a password device."""
+        user = User.objects.create(username=generate_id(), name=generate_id())
+        self.assertFalse(PasswordDevice.objects.filter(user=user).exists())
+
+        user.set_unusable_password()
+
+        self.assertTrue(PasswordDevice.objects.filter(user=user).exists())
+        self.assertFalse(user.has_usable_password())
+        self.assertFalse(user.check_password(generate_id()))
+
+    def test_password_set_before_initial_save(self):
+        """Django's standard set-password-then-save pattern creates the device."""
+        password = generate_id()
+        user = User(username=generate_id(), name=generate_id())
+
+        user.set_password(password)
+        self.assertTrue(user.check_password(password))
+        user.save()
+
+        user.refresh_from_db()
+        self.assertTrue(user.check_password(password))
+
+    async def test_async_user_manager_creates_password_device(self):
+        """Django's asynchronous manager path stores the password on a device."""
+        password = generate_id()
+        user = await User.objects.acreate_user(
+            username=generate_id(),
+            name=generate_id(),
+            password=password,
+        )
+
+        self.assertTrue(await user.acheck_password(password))
+
+    def test_stage_deletion_is_protected(self):
+        """Deleting a password stage cannot cascade-delete password devices."""
+        user = create_test_admin_user()
+
+        with self.assertRaises(ProtectedError):
+            user.password_device.stage.delete()
 
 
 class TestPasswordStage(FlowTestCase):
