@@ -83,7 +83,6 @@ def lock_password_login(
     """Lock password login and record the transition exactly once."""
     if not is_password_lockout_enabled():
         return
-    _clear_password_login_state_cache(user)
     with transaction.atomic():
         stored_user = _user_for_update(user)
         if (
@@ -99,6 +98,7 @@ def lock_password_login(
         state.failed_attempts = 0
         state.locked_at = now()
         state.save(update_fields=("failed_attempts", "locked_at"))
+        _clear_password_login_state_cache(user)
         _record_transition(
             stored_user,
             EventAction.PASSWORD_LOGIN_LOCKED,
@@ -113,7 +113,6 @@ def unlock_password_login(
     **event_context: Any,
 ) -> None:
     """Clear password-login failures and record an unlock transition when locked."""
-    _clear_password_login_state_cache(user)
     with transaction.atomic():
         stored_user = _user_for_update(user)
         if stored_user is None:
@@ -125,6 +124,7 @@ def unlock_password_login(
         was_locked = state.locked_at is not None
         state.delete()
         if was_locked:
+            _clear_password_login_state_cache(user)
             _record_transition(
                 stored_user,
                 EventAction.PASSWORD_LOGIN_UNLOCKED,
@@ -143,7 +143,6 @@ def record_failed_password_attempt(
     if not is_password_lockout_enabled() or threshold == 0:
         return PasswordAuthenticationStatus.INVALID
 
-    _clear_password_login_state_cache(user)
     with transaction.atomic():
         stored_user = _user_for_update(user)
         if (
@@ -162,6 +161,7 @@ def record_failed_password_attempt(
             state.failed_attempts = 0
             state.locked_at = now()
             state.save(update_fields=("failed_attempts", "locked_at"))
+            _clear_password_login_state_cache(user)
             _record_transition(
                 stored_user,
                 EventAction.PASSWORD_LOGIN_LOCKED,
@@ -178,7 +178,6 @@ def record_failed_password_attempt(
 
 def complete_successful_password_attempt(user: User) -> PasswordAuthenticationStatus:
     """Clear failures if password authentication is still allowed."""
-    _clear_password_login_state_cache(user)
     with transaction.atomic():
         stored_user = _user_for_update(user)
         if stored_user is None or not stored_user.is_active:
