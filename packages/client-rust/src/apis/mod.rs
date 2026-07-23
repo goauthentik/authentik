@@ -126,6 +126,8 @@ pub mod crypto_api;
 pub mod events_api;
 pub mod flows_api;
 pub mod outposts_api;
+pub mod providers_api;
 pub mod root_api;
+pub mod stages_api;
 
 pub mod configuration;

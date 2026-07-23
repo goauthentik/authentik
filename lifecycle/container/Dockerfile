@@ -167,6 +167,7 @@ RUN --mount=type=bind,target=rust-toolchain.toml,src=rust-toolchain.toml \
     --mount=type=bind,target=.cargo/,src=.cargo/ \
     --mount=type=bind,target=build.rs,src=build.rs \
     --mount=type=bind,target=src/,src=src/ \
+    --mount=type=bind,target=tests/,src=tests/ \
     --mount=type=bind,target=packages/ak-axum,src=packages/ak-axum \
     --mount=type=bind,target=packages/ak-common,src=packages/ak-common \
     --mount=type=bind,target=packages/client-rust,src=packages/client-rust \

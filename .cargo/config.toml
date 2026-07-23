@@ -1,5 +1,13 @@
 [alias]
-t = ["nextest", "run", "--workspace"]
+t = [
+  "nextest",
+  "run",
+  "--workspace",
+  "--filterset",
+  "kind(lib) | kind(proc-macro) | kind(bin) | kind(example)",
+]
+tl = ["nextest", "list", "--workspace"]
+e2e = ["nextest", "run", "--workspace", "--filterset", "kind(test)"]
 
 [build]
 rustflags = ["--cfg", "tokio_unstable"]

@@ -12,6 +12,33 @@ use serde::{Deserialize, Serialize, de::Error as _};
 use super::{ContentType, Error, configuration};
 use crate::{apis::ResponseContent, models};
 
+/// struct for typed errors of method [`outposts_instances_create`]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum OutpostsInstancesCreateError {
+    Status400(models::ValidationError),
+    Status403(models::GenericError),
+    UnknownValue(serde_json::Value),
+}
+
+/// struct for typed errors of method [`outposts_instances_default_settings_retrieve`]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum OutpostsInstancesDefaultSettingsRetrieveError {
+    Status400(models::ValidationError),
+    Status403(models::GenericError),
+    UnknownValue(serde_json::Value),
+}
+
+/// struct for typed errors of method [`outposts_instances_health_list`]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum OutpostsInstancesHealthListError {
+    Status400(models::ValidationError),
+    Status403(models::GenericError),
+    UnknownValue(serde_json::Value),
+}
+
 /// struct for typed errors of method [`outposts_instances_list`]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(untagged)]
@@ -64,6 +91,254 @@ pub enum OutpostsRadiusListError {
     Status400(models::ValidationError),
     Status403(models::GenericError),
     UnknownValue(serde_json::Value),
+}
+
+/// Outpost Viewset
+pub async fn outposts_instances_create(
+    configuration: &configuration::Configuration,
+    outpost_request: models::OutpostRequest,
+) -> Result<models::Outpost, Error<OutpostsInstancesCreateError>> {
+    // add a prefix to parameters to efficiently prevent name collisions
+    let p_body_outpost_request = outpost_request;
+
+    let uri_str = format!("{}/outposts/instances/", configuration.base_path);
+    let mut req_builder = configuration
+        .client
+        .request(reqwest::Method::POST, &uri_str);
+
+    if let Some(ref user_agent) = configuration.user_agent {
+        req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
+    }
+    if let Some(ref token) = configuration.bearer_access_token {
+        req_builder = req_builder.bearer_auth(token.to_owned());
+    };
+    req_builder = req_builder.json(&p_body_outpost_request);
+
+    let req = req_builder.build()?;
+    let resp = configuration.client.execute(req).await?;
+
+    let status = resp.status();
+    let content_type = resp
+        .headers()
+        .get("content-type")
+        .and_then(|v| v.to_str().ok())
+        .unwrap_or("application/octet-stream");
+    let content_type = super::ContentType::from(content_type);
+
+    if !status.is_client_error() && !status.is_server_error() {
+        let content = resp.text().await?;
+        match content_type {
+            ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
+            ContentType::Text => {
+                return Err(Error::from(serde_json::Error::custom(
+                    "Received `text/plain` content type response that cannot be converted to \
+                     `models::Outpost`",
+                )));
+            }
+            ContentType::Unsupported(unknown_type) => {
+                return Err(Error::from(serde_json::Error::custom(format!(
+                    "Received `{unknown_type}` content type response that cannot be converted to \
+                     `models::Outpost`"
+                ))));
+            }
+        }
+    } else {
+        let content = resp.text().await?;
+        let entity: Option<OutpostsInstancesCreateError> = serde_json::from_str(&content).ok();
+        Err(Error::ResponseError(ResponseContent {
+            status,
+            content,
+            entity,
+        }))
+    }
+}
+
+/// Global default outpost config
+pub async fn outposts_instances_default_settings_retrieve(
+    configuration: &configuration::Configuration,
+) -> Result<models::OutpostDefaultConfig, Error<OutpostsInstancesDefaultSettingsRetrieveError>> {
+    let uri_str = format!(
+        "{}/outposts/instances/default_settings/",
+        configuration.base_path
+    );
+    let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
+
+    if let Some(ref user_agent) = configuration.user_agent {
+        req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
+    }
+    if let Some(ref token) = configuration.bearer_access_token {
+        req_builder = req_builder.bearer_auth(token.to_owned());
+    };
+
+    let req = req_builder.build()?;
+    let resp = configuration.client.execute(req).await?;
+
+    let status = resp.status();
+    let content_type = resp
+        .headers()
+        .get("content-type")
+        .and_then(|v| v.to_str().ok())
+        .unwrap_or("application/octet-stream");
+    let content_type = super::ContentType::from(content_type);
+
+    if !status.is_client_error() && !status.is_server_error() {
+        let content = resp.text().await?;
+        match content_type {
+            ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
+            ContentType::Text => {
+                return Err(Error::from(serde_json::Error::custom(
+                    "Received `text/plain` content type response that cannot be converted to \
+                     `models::OutpostDefaultConfig`",
+                )));
+            }
+            ContentType::Unsupported(unknown_type) => {
+                return Err(Error::from(serde_json::Error::custom(format!(
+                    "Received `{unknown_type}` content type response that cannot be converted to \
+                     `models::OutpostDefaultConfig`"
+                ))));
+            }
+        }
+    } else {
+        let content = resp.text().await?;
+        let entity: Option<OutpostsInstancesDefaultSettingsRetrieveError> =
+            serde_json::from_str(&content).ok();
+        Err(Error::ResponseError(ResponseContent {
+            status,
+            content,
+            entity,
+        }))
+    }
+}
+
+/// Get outposts current health
+pub async fn outposts_instances_health_list(
+    configuration: &configuration::Configuration,
+    uuid: &str,
+    managed__icontains: Option<&str>,
+    managed__iexact: Option<&str>,
+    name__icontains: Option<&str>,
+    name__iexact: Option<&str>,
+    ordering: Option<&str>,
+    providers__isnull: Option<bool>,
+    providers_by_pk: Option<Vec<i32>>,
+    search: Option<&str>,
+    service_connection__name__icontains: Option<&str>,
+    service_connection__name__iexact: Option<&str>,
+) -> Result<Vec<models::OutpostHealth>, Error<OutpostsInstancesHealthListError>> {
+    // add a prefix to parameters to efficiently prevent name collisions
+    let p_path_uuid = uuid;
+    let p_query_managed__icontains = managed__icontains;
+    let p_query_managed__iexact = managed__iexact;
+    let p_query_name__icontains = name__icontains;
+    let p_query_name__iexact = name__iexact;
+    let p_query_ordering = ordering;
+    let p_query_providers__isnull = providers__isnull;
+    let p_query_providers_by_pk = providers_by_pk;
+    let p_query_search = search;
+    let p_query_service_connection__name__icontains = service_connection__name__icontains;
+    let p_query_service_connection__name__iexact = service_connection__name__iexact;
+
+    let uri_str = format!(
+        "{}/outposts/instances/{uuid}/health/",
+        configuration.base_path,
+        uuid = crate::apis::urlencode(p_path_uuid)
+    );
+    let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
+
+    if let Some(ref param_value) = p_query_managed__icontains {
+        req_builder = req_builder.query(&[("managed__icontains", &param_value.to_string())]);
+    }
+    if let Some(ref param_value) = p_query_managed__iexact {
+        req_builder = req_builder.query(&[("managed__iexact", &param_value.to_string())]);
+    }
+    if let Some(ref param_value) = p_query_name__icontains {
+        req_builder = req_builder.query(&[("name__icontains", &param_value.to_string())]);
+    }
+    if let Some(ref param_value) = p_query_name__iexact {
+        req_builder = req_builder.query(&[("name__iexact", &param_value.to_string())]);
+    }
+    if let Some(ref param_value) = p_query_ordering {
+        req_builder = req_builder.query(&[("ordering", &param_value.to_string())]);
+    }
+    if let Some(ref param_value) = p_query_providers__isnull {
+        req_builder = req_builder.query(&[("providers__isnull", &param_value.to_string())]);
+    }
+    if let Some(ref param_value) = p_query_providers_by_pk {
+        req_builder = match "multi" {
+            "multi" => req_builder.query(
+                &param_value
+                    .into_iter()
+                    .map(|p| ("providers_by_pk".to_owned(), p.to_string()))
+                    .collect::<Vec<(std::string::String, std::string::String)>>(),
+            ),
+            _ => req_builder.query(&[(
+                "providers_by_pk",
+                &param_value
+                    .into_iter()
+                    .map(|p| p.to_string())
+                    .collect::<Vec<String>>()
+                    .join(",")
+                    .to_string(),
+            )]),
+        };
+    }
+    if let Some(ref param_value) = p_query_search {
+        req_builder = req_builder.query(&[("search", &param_value.to_string())]);
+    }
+    if let Some(ref param_value) = p_query_service_connection__name__icontains {
+        req_builder = req_builder.query(&[(
+            "service_connection__name__icontains",
+            &param_value.to_string(),
+        )]);
+    }
+    if let Some(ref param_value) = p_query_service_connection__name__iexact {
+        req_builder =
+            req_builder.query(&[("service_connection__name__iexact", &param_value.to_string())]);
+    }
+    if let Some(ref user_agent) = configuration.user_agent {
+        req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
+    }
+    if let Some(ref token) = configuration.bearer_access_token {
+        req_builder = req_builder.bearer_auth(token.to_owned());
+    };
+
+    let req = req_builder.build()?;
+    let resp = configuration.client.execute(req).await?;
+
+    let status = resp.status();
+    let content_type = resp
+        .headers()
+        .get("content-type")
+        .and_then(|v| v.to_str().ok())
+        .unwrap_or("application/octet-stream");
+    let content_type = super::ContentType::from(content_type);
+
+    if !status.is_client_error() && !status.is_server_error() {
+        let content = resp.text().await?;
+        match content_type {
+            ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
+            ContentType::Text => {
+                return Err(Error::from(serde_json::Error::custom(
+                    "Received `text/plain` content type response that cannot be converted to \
+                     `Vec&lt;models::OutpostHealth&gt;`",
+                )));
+            }
+            ContentType::Unsupported(unknown_type) => {
+                return Err(Error::from(serde_json::Error::custom(format!(
+                    "Received `{unknown_type}` content type response that cannot be converted to \
+                     `Vec&lt;models::OutpostHealth&gt;`"
+                ))));
+            }
+        }
+    } else {
+        let content = resp.text().await?;
+        let entity: Option<OutpostsInstancesHealthListError> = serde_json::from_str(&content).ok();
+        Err(Error::ResponseError(ResponseContent {
+            status,
+            content,
+            entity,
+        }))
+    }
 }
 
 /// Outpost Viewset

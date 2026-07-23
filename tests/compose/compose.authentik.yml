@@ -1,0 +1,73 @@
+---
+services:
+  postgresql:
+    environment:
+      POSTGRES_DB: authentik
+      POSTGRES_USER: authentik
+      POSTGRES_PASSWORD: ${PG_PASS:?database password required}
+    ports:
+      - "5432"
+    healthcheck:
+      interval: 30s
+      retries: 5
+      start_period: 20s
+      test:
+        - CMD-SHELL
+        - pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}
+      timeout: 5s
+    image: docker.io/library/postgres:18-alpine
+    restart: unless-stopped
+  server:
+    command: server
+    depends_on:
+      postgresql:
+        condition: service_healthy
+    environment:
+      AUTHENTIK_DEBUGGER: "true"
+      AUTHENTIK_COVERAGE: "/coverage/coverage.${NEXTEST_BINARY_ID}-${NEXTEST_TEST_NAME}.server"
+      AUTHENTIK_WEB__WORKERS: "1"
+      AUTHENTIK_POSTGRESQL__HOST: postgresql
+      AUTHENTIK_POSTGRESQL__NAME: authentik
+      AUTHENTIK_POSTGRESQL__USER: authentik
+      AUTHENTIK_POSTGRESQL__PASSWORD: ${PG_PASS}
+      AUTHENTIK_SECRET_KEY: ${AUTHENTIK_SECRET_KEY:?secret key required}
+      AUTHENTIK_LOG_LEVEL: debug
+      AUTHENTIK_BOOTSTRAP_EMAIL: root@example.com
+      AUTHENTIK_BOOTSTRAP_PASSWORD: ${AUTHENTIK_BOOTSTRAP_PASSWORD:?password}
+      AUTHENTIK_BOOTSTRAP_TOKEN: ${AUTHENTIK_BOOTSTRAP_TOKEN:?token required}
+    image: authentik.invalid/goauthentik/dev-server:${AUTHENTIK_TAG:?tag}
+    ports:
+      - "9000"
+      - "9443"
+      - "9300"
+    restart: unless-stopped
+    shm_size: 512mb
+    user: root
+    volumes:
+      - ../../coverage:/coverage
+  worker:
+    command: worker
+    depends_on:
+      postgresql:
+        condition: service_healthy
+    environment:
+      AUTHENTIK_DEBUGGER: "true"
+      AUTHENTIK_COVERAGE: "/coverage/coverage.${NEXTEST_BINARY_ID}-${NEXTEST_TEST_NAME}.worker"
+      AUTHENTIK_WORKER__PROCESSES: "1"
+      AUTHENTIK_POSTGRESQL__HOST: postgresql
+      AUTHENTIK_POSTGRESQL__NAME: authentik
+      AUTHENTIK_POSTGRESQL__USER: authentik
+      AUTHENTIK_POSTGRESQL__PASSWORD: ${PG_PASS}
+      AUTHENTIK_LOG_LEVEL: debug
+      AUTHENTIK_SECRET_KEY: ${AUTHENTIK_SECRET_KEY:?secret key required}
+      AUTHENTIK_BOOTSTRAP_EMAIL: root@example.com
+      AUTHENTIK_BOOTSTRAP_PASSWORD: ${AUTHENTIK_BOOTSTRAP_PASSWORD:?password}
+      AUTHENTIK_BOOTSTRAP_TOKEN: ${AUTHENTIK_BOOTSTRAP_TOKEN:?token required}
+    image: authentik.invalid/goauthentik/dev-server:${AUTHENTIK_TAG:?tag}
+    restart: unless-stopped
+    shm_size: 512mb
+    user: root
+    ports:
+      - "9300"
+    volumes:
+      - ../../coverage:/coverage

@@ -21,7 +21,7 @@ http:
   middlewares:
     authentik:
       forwardAuth:
-        address: http://ak-test-outpost:9000/outpost.goauthentik.io/auth/traefik
+        address: http://proxy:9000/outpost.goauthentik.io/auth/traefik
         trustForwardHeader: true
         authResponseHeaders:
           - X-authentik-username
@@ -38,21 +38,21 @@ http:
           - X-authentik-meta-version
   routers:
     default-router:
-      rule: "Host(`localhost`)"
+      rule: "Host(`traefik-single`)"
       middlewares:
         - authentik
       priority: 10
       service: app
     default-router-auth:
-      rule: "Host(`localhost`) && PathPrefix(`/outpost.goauthentik.io/`)"
+      rule: "Host(`traefik-single`) && PathPrefix(`/outpost.goauthentik.io/`)"
       priority: 15
       service: authentik
   services:
     app:
       loadBalancer:
         servers:
-          - url: http://ak-whoami
+          - url: http://whoami
     authentik:
       loadBalancer:
         servers:
-          - url: http://ak-test-outpost:9000/outpost.goauthentik.io
+          - url: http://proxy:9000/outpost.goauthentik.io

@@ -3,6 +3,7 @@ members = [
   "packages/ak-axum",
   "packages/ak-common",
   "packages/client-rust",
+  "tests",
   "website/scripts/docsmg",
 ]
 resolver = "3"
@@ -24,6 +25,7 @@ argh = "= 0.1.19"
 axum-server = { version = "= 0.8.0", features = ["tls-rustls-no-provider"] }
 aws-lc-rs = { version = "= 1.17.3", features = ["fips"] }
 axum = { version = "= 0.8.9", features = ["http2", "macros", "ws"] }
+base64 = "= 0.22.1"
 clap = { version = "= 4.6.2", features = ["derive", "env"] }
 client-ip = { version = "0.2.1", features = ["forwarded-header"] }
 chrono = { version = "0.4.45", features = ["serde"] }
@@ -39,11 +41,13 @@ durstr = "= 0.5.1"
 eyre = "= 0.6.12"
 forwarded-header-value = "= 0.1.1"
 futures = "= 0.3.33"
+futures-util = "= 0.3.33"
 glob = "= 0.3.3"
 hyper-unix-socket = "= 0.6.1"
 hyper-util = "= 0.1.20"
 ipnet = { version = "= 2.12.0", features = ["serde"] }
 json-subscriber = "= 0.3.0"
+jsonwebtoken = { version = "= 10.4.0", features = ["aws_lc_rs"] }
 metrics = "= 0.24.6"
 metrics-exporter-prometheus = { version = "= 0.18.3", default-features = false }
 nix = { version = "= 0.31.3", features = ["hostname", "signal"] }
@@ -51,6 +55,7 @@ notify = "= 8.2.0"
 pin-project-lite = "= 0.2.17"
 pyo3 = "= 0.29.0"
 pyo3-build-config = "= 0.29.0"
+rand = "= 0.10.2"
 regex = "= 1.13.1"
 reqwest = { version = "= 0.13.4", features = [
   "form",
@@ -96,6 +101,12 @@ sqlx = { version = "= 0.9.0", default-features = false, features = [
   "json",
 ] }
 tempfile = "= 3.27.0"
+testcontainers = { version = "0.27.3", default-features = false, features = [
+  "aws-lc-rs",
+  "docker-compose",
+  "http_wait_plain",
+] }
+thirtyfour = "0.37.1"
 thiserror = "= 2.0.19"
 time = { version = "= 0.3.53", features = ["macros"] }
 tokio = { version = "= 1.52.4", features = ["full", "tracing"] }
@@ -236,9 +247,6 @@ verbose_file_reads = "warn"
 
 [profile.dev.package.backtrace]
 opt-level = 3
-
-[profile.dev]
-panic = "abort"
 
 [profile.release]
 debug = 2

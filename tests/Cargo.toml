@@ -1,0 +1,51 @@
+[package]
+name = "authentik-tests"
+version.workspace = true
+authors.workspace = true
+edition.workspace = true
+readme.workspace = true
+homepage.workspace = true
+repository.workspace = true
+license-file.workspace = true
+publish = false
+
+[dependencies]
+ak-client.workspace = true
+eyre.workspace = true
+futures-util.workspace = true
+tokio.workspace = true
+rand.workspace = true
+regex.workspace = true
+reqwest.workspace = true
+serde_json.workspace = true
+testcontainers.workspace = true
+thirtyfour.workspace = true
+
+[dev-dependencies]
+base64.workspace = true
+jsonwebtoken.workspace = true
+rand.workspace = true
+serde.workspace = true
+
+[lints]
+workspace = true
+
+[[test]]
+name = "e2e_flows_login"
+path = "e2e/flows_login.rs"
+
+[[test]]
+name = "e2e_flows_login_sfe"
+path = "e2e/flows_login_sfe.rs"
+
+[[test]]
+name = "e2e_provider_proxy"
+path = "e2e/provider_proxy.rs"
+
+[[test]]
+name = "e2e_provider_proxy_forward"
+path = "e2e/provider_proxy_forward.rs"
+
+[[test]]
+name = "e2e_provider_proxy_connect"
+path = "e2e/provider_proxy_connect.rs"

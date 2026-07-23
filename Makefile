@@ -70,13 +70,20 @@ go-test:  ## Run the golang tests
 	go test -timeout 0 -v -race -cover ./...
 
 rust-test:  ## Run the Rust tests
-	$(CARGO) nextest run --workspace
+	$(CARGO) nextest run --workspace --filterset 'kind(lib) | kind(proc-macro) | kind(bin) | kind(example)'
 
 test: ## Run the server tests and produce a coverage report (locally)
 	$(UV) run coverage run manage.py test --keepdb $(or $(filter-out $@ all,$(MAKECMDGOALS)),authentik)
 	$(UV) run coverage combine
 	$(UV) run coverage html
 	$(UV) run coverage report
+
+test-e2e-build-containers:  ## Build containers for the e2e tests
+	DOCKER_BUILDKIT=1 docker build . -f lifecycle/container/Dockerfile --progress plain --tag authentik.invalid/goauthentik/dev-server:gh-main --load
+	DOCKER_BUILDKIT=1 docker build . -f lifecycle/container/proxy.Dockerfile --progress plain --tag authentik.invalid/goauthentik/dev-proxy:gh-main --load
+
+test-e2e:  ## Run the e2e tests
+	$(CARGO) nextest run --workspace --filterset 'kind(test)'
 
 lint-fix-rust:
 	$(CARGO) +nightly fmt --all -- --config-path "${PWD}/.cargo/rustfmt.toml"

@@ -202,4 +202,13 @@ func (g *GoUnicorn) Kill() {
 		}
 	}
 	g.killed = true
+
+	// Block until gunicorn has fully exited so its workers can finish shutting
+	// down gracefully (e.g. flushing coverage data) before we return and let the
+	// process tree be torn down. Signal 0 only probes whether the pid is alive.
+	for range time.NewTicker(100 * time.Millisecond).C {
+		if syscall.Kill(g.p.Process.Pid, syscall.Signal(0)) != nil {
+			break
+		}
+	}
 }

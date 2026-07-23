@@ -30,6 +30,24 @@ pub enum FlowsExecutorSolveError {
     UnknownValue(serde_json::Value),
 }
 
+/// struct for typed errors of method [`flows_instances_list`]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum FlowsInstancesListError {
+    Status400(models::ValidationError),
+    Status403(models::GenericError),
+    UnknownValue(serde_json::Value),
+}
+
+/// struct for typed errors of method [`flows_instances_partial_update`]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum FlowsInstancesPartialUpdateError {
+    Status400(models::ValidationError),
+    Status403(models::GenericError),
+    UnknownValue(serde_json::Value),
+}
+
 /// Get the next pending challenge from the currently active flow.
 pub async fn flows_executor_get(
     configuration: &configuration::Configuration,
@@ -155,6 +173,172 @@ pub async fn flows_executor_solve(
     } else {
         let content = resp.text().await?;
         let entity: Option<FlowsExecutorSolveError> = serde_json::from_str(&content).ok();
+        Err(Error::ResponseError(ResponseContent {
+            status,
+            content,
+            entity,
+        }))
+    }
+}
+
+/// Flow Viewset
+pub async fn flows_instances_list(
+    configuration: &configuration::Configuration,
+    denied_action: Option<models::DeniedActionEnum>,
+    designation: Option<models::FlowDesignationEnum>,
+    flow_uuid: Option<&str>,
+    name: Option<&str>,
+    ordering: Option<&str>,
+    page: Option<i32>,
+    page_size: Option<i32>,
+    search: Option<&str>,
+    slug: Option<&str>,
+) -> Result<models::PaginatedFlowList, Error<FlowsInstancesListError>> {
+    // add a prefix to parameters to efficiently prevent name collisions
+    let p_query_denied_action = denied_action;
+    let p_query_designation = designation;
+    let p_query_flow_uuid = flow_uuid;
+    let p_query_name = name;
+    let p_query_ordering = ordering;
+    let p_query_page = page;
+    let p_query_page_size = page_size;
+    let p_query_search = search;
+    let p_query_slug = slug;
+
+    let uri_str = format!("{}/flows/instances/", configuration.base_path);
+    let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
+
+    if let Some(ref param_value) = p_query_denied_action {
+        req_builder = req_builder.query(&[("denied_action", &param_value.to_string())]);
+    }
+    if let Some(ref param_value) = p_query_designation {
+        req_builder = req_builder.query(&[("designation", &param_value.to_string())]);
+    }
+    if let Some(ref param_value) = p_query_flow_uuid {
+        req_builder = req_builder.query(&[("flow_uuid", &param_value.to_string())]);
+    }
+    if let Some(ref param_value) = p_query_name {
+        req_builder = req_builder.query(&[("name", &param_value.to_string())]);
+    }
+    if let Some(ref param_value) = p_query_ordering {
+        req_builder = req_builder.query(&[("ordering", &param_value.to_string())]);
+    }
+    if let Some(ref param_value) = p_query_page {
+        req_builder = req_builder.query(&[("page", &param_value.to_string())]);
+    }
+    if let Some(ref param_value) = p_query_page_size {
+        req_builder = req_builder.query(&[("page_size", &param_value.to_string())]);
+    }
+    if let Some(ref param_value) = p_query_search {
+        req_builder = req_builder.query(&[("search", &param_value.to_string())]);
+    }
+    if let Some(ref param_value) = p_query_slug {
+        req_builder = req_builder.query(&[("slug", &param_value.to_string())]);
+    }
+    if let Some(ref user_agent) = configuration.user_agent {
+        req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
+    }
+    if let Some(ref token) = configuration.bearer_access_token {
+        req_builder = req_builder.bearer_auth(token.to_owned());
+    };
+
+    let req = req_builder.build()?;
+    let resp = configuration.client.execute(req).await?;
+
+    let status = resp.status();
+    let content_type = resp
+        .headers()
+        .get("content-type")
+        .and_then(|v| v.to_str().ok())
+        .unwrap_or("application/octet-stream");
+    let content_type = super::ContentType::from(content_type);
+
+    if !status.is_client_error() && !status.is_server_error() {
+        let content = resp.text().await?;
+        match content_type {
+            ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
+            ContentType::Text => {
+                return Err(Error::from(serde_json::Error::custom(
+                    "Received `text/plain` content type response that cannot be converted to \
+                     `models::PaginatedFlowList`",
+                )));
+            }
+            ContentType::Unsupported(unknown_type) => {
+                return Err(Error::from(serde_json::Error::custom(format!(
+                    "Received `{unknown_type}` content type response that cannot be converted to \
+                     `models::PaginatedFlowList`"
+                ))));
+            }
+        }
+    } else {
+        let content = resp.text().await?;
+        let entity: Option<FlowsInstancesListError> = serde_json::from_str(&content).ok();
+        Err(Error::ResponseError(ResponseContent {
+            status,
+            content,
+            entity,
+        }))
+    }
+}
+
+/// Flow Viewset
+pub async fn flows_instances_partial_update(
+    configuration: &configuration::Configuration,
+    slug: &str,
+    patched_flow_request: Option<models::PatchedFlowRequest>,
+) -> Result<models::Flow, Error<FlowsInstancesPartialUpdateError>> {
+    // add a prefix to parameters to efficiently prevent name collisions
+    let p_path_slug = slug;
+    let p_body_patched_flow_request = patched_flow_request;
+
+    let uri_str = format!(
+        "{}/flows/instances/{slug}/",
+        configuration.base_path,
+        slug = crate::apis::urlencode(p_path_slug)
+    );
+    let mut req_builder = configuration
+        .client
+        .request(reqwest::Method::PATCH, &uri_str);
+
+    if let Some(ref user_agent) = configuration.user_agent {
+        req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
+    }
+    if let Some(ref token) = configuration.bearer_access_token {
+        req_builder = req_builder.bearer_auth(token.to_owned());
+    };
+    req_builder = req_builder.json(&p_body_patched_flow_request);
+
+    let req = req_builder.build()?;
+    let resp = configuration.client.execute(req).await?;
+
+    let status = resp.status();
+    let content_type = resp
+        .headers()
+        .get("content-type")
+        .and_then(|v| v.to_str().ok())
+        .unwrap_or("application/octet-stream");
+    let content_type = super::ContentType::from(content_type);
+
+    if !status.is_client_error() && !status.is_server_error() {
+        let content = resp.text().await?;
+        match content_type {
+            ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
+            ContentType::Text => {
+                return Err(Error::from(serde_json::Error::custom(
+                    "Received `text/plain` content type response that cannot be converted to \
+                     `models::Flow`",
+                )));
+            }
+            ContentType::Unsupported(unknown_type) => {
+                return Err(Error::from(serde_json::Error::custom(format!(
+                    "Received `{unknown_type}` content type response that cannot be converted to \
+                     `models::Flow`"
+                ))));
+            }
+        }
+    } else {
+        let content = resp.text().await?;
+        let entity: Option<FlowsInstancesPartialUpdateError> = serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
             content,

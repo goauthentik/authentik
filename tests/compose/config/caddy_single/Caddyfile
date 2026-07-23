@@ -1,11 +1,11 @@
-http://localhost {
+http://caddy-single {
     # directive execution order is only as stated if enclosed with route.
     route {
         # always forward outpost path to actual outpost
-        reverse_proxy /outpost.goauthentik.io/* http://ak-test-outpost:9000
+        reverse_proxy /outpost.goauthentik.io/* http://proxy:9000
 
         # forward authentication to outpost
-        forward_auth http://ak-test-outpost:9000 {
+        forward_auth http://proxy:9000 {
             uri /outpost.goauthentik.io/auth/caddy
 
             # capitalization of the headers is important, otherwise they will be empty
@@ -16,6 +16,6 @@ http://localhost {
         }
 
         # actual site configuration below, for example
-        reverse_proxy ak-whoami
+        reverse_proxy whoami
     }
 }

@@ -2,13 +2,17 @@
 
 from time import sleep
 
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.virtual_authenticator import (
     Protocol,
     Transport,
     VirtualAuthenticatorOptions,
 )
+from selenium.webdriver.remote.webdriver import WebDriver
 
 from authentik.blueprints.tests import apply_blueprint
+from authentik.core.models import User
 from authentik.stages.authenticator_validate.models import AuthenticatorValidateStage
 from authentik.stages.authenticator_webauthn.models import (
     AuthenticatorWebAuthnStage,
@@ -16,8 +20,26 @@ from authentik.stages.authenticator_webauthn.models import (
 )
 from authentik.stages.identification.models import IdentificationStage
 from tests.decorators import retry
-from tests.e2e.test_flows_login_sfe import login_sfe
 from tests.selenium import SeleniumTestCase
+
+
+def login_sfe(driver: WebDriver, user: User):
+    """Do entire login flow adjusted for SFE"""
+    flow_executor = driver.find_element(By.ID, "flow-sfe-container")
+    identification_stage = flow_executor.find_element(By.ID, "ident-form")
+
+    identification_stage.find_element(By.CSS_SELECTOR, "input[name=uid_field]").click()
+    identification_stage.find_element(By.CSS_SELECTOR, "input[name=uid_field]").send_keys(
+        user.username
+    )
+    identification_stage.find_element(By.CSS_SELECTOR, "input[name=uid_field]").send_keys(
+        Keys.ENTER
+    )
+
+    password_stage = flow_executor.find_element(By.ID, "password-form")
+    password_stage.find_element(By.CSS_SELECTOR, "input[name=password]").send_keys(user.username)
+    password_stage.find_element(By.CSS_SELECTOR, "input[name=password]").send_keys(Keys.ENTER)
+    sleep(1)
 
 
 class TestFlowsAuthenticatorWebAuthn(SeleniumTestCase):

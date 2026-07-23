@@ -65,7 +65,9 @@ jobs:
       image-dockerfile: "lifecycle/container/${{ matrix.dockerfile }}"
       image-build-args: |
         GIT_BUILD_HASH=${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha }}
-      should-cache: "${{ github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository) }}"
+      should-cache: "${{ github.event_name == 'push' || (github.event_name ==
+        'pull_request' && github.event.pull_request.head.repo.full_name ==
+        github.repository) }}"
       cache-suffix: "-${{ needs.build-compute-tags.outputs.safe-branch-name }}"
   lint:
     strategy:
@@ -118,7 +120,8 @@ jobs:
       - name: generate API clients
         run: make gen-clients
       - name: ensure schema is up-to-date
-        run: git diff --exit-code -- schema.yml blueprints/schema.json packages/client-go packages/client-rust packages/client-ts
+        run: git diff --exit-code -- schema.yml blueprints/schema.json
+          packages/client-go packages/client-rust packages/client-ts
   test-migrations:
     runs-on: ubuntu-latest
     steps:
@@ -136,7 +139,8 @@ jobs:
     outputs:
       seed: ${{ steps.seed.outputs.seed }}
   test-migrations-from-stable:
-    name: test-migrations-from-stable - PostgreSQL ${{ matrix.psql }} - Run ${{ matrix.run_id }}/5
+    name: test-migrations-from-stable - PostgreSQL ${{ matrix.psql }} - Run ${{
+      matrix.run_id }}/5
     runs-on: ubuntu-latest
     timeout-minutes: 30
     needs: test-make-seed
@@ -274,9 +278,6 @@ jobs:
       fail-fast: false
       matrix:
         job:
-          - name: proxy
-            glob: tests/e2e/test_provider_proxy*
-            profiles: selenium
           - name: oauth
             glob: tests/e2e/test_provider_oauth2* tests/e2e/test_source_oauth*
             profiles: selenium
@@ -341,9 +342,11 @@ jobs:
         if: contains(matrix.job.profiles, 'selenium')
         with:
           path: web/dist
-          key: ${{ runner.os }}-web-${{ hashFiles('web/pnpm-lock.yaml', 'pnpm-lock.yaml', 'web/src/**', 'web/packages/sfe/src/**') }}-b
+          key: ${{ runner.os }}-web-${{ hashFiles('web/pnpm-lock.yaml', 'pnpm-lock.yaml',
+            'web/src/**', 'web/packages/sfe/src/**') }}-b
       - name: prepare web ui
-        if: steps.cache-web.outputs.cache-hit != 'true' && contains(matrix.job.profiles, 'selenium')
+        if: steps.cache-web.outputs.cache-hit != 'true' && contains(matrix.job.profiles,
+          'selenium')
         working-directory: web
         env:
           NODE_ENV: "production"
@@ -360,6 +363,70 @@ jobs:
         if: ${{ always() }}
         with:
           flags: e2e
+  test-e2e-container:
+    name: test-e2e-container (${{ matrix.name }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    needs:
+      - build-compute-tags
+      - build
+    strategy:
+      fail-fast: false
+      matrix:
+        name:
+          - provider_proxy
+          - flows
+    steps:
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v5
+        with:
+          pattern: container-build-*-amd64
+          merge-multiple: true
+      - name: Load Docker images
+        run: |
+          for image in server proxy ldap radius rac; do
+            skopeo copy "oci-archive:container/${image}-amd64.oci.tar" "docker-daemon:authentik.invalid/goauthentik/dev-${image}:${{ needs.build-compute-tags.outputs.tag-full }}"
+            skopeo copy "oci-archive:container/${image}-amd64.oci.tar" "docker-daemon:authentik.invalid/goauthentik/dev-${image}:${{ needs.build-compute-tags.outputs.tag-branch }}"
+          done
+          rm -rf container/
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v5
+      - name: Setup authentik env
+        uses: ./.github/actions/setup
+        with:
+          dependencies: python,rust
+      - name: Pull dependencies
+        run: |
+          COMPOSE_PROFILES="$(docker compose -f tests/compose/compose.utils.yml -f tests/compose/compose.proxies.yml config --profiles | paste -sd, -)" \
+            docker compose \
+              -f tests/compose/compose.utils.yml \
+              -f tests/compose/compose.proxies.yml \
+              pull
+      - name: Run tests
+        run: |
+          # Currently runs only two jobs concurrently since our runners are a bit small for more
+          cargo llvm-cov --no-report nextest \
+            --package authentik-tests \
+            --success-output final \
+            --failure-output final \
+            --no-output-indent \
+            --retries 3 \
+            --jobs 2 \
+            --no-fail-fast \
+            --filterset 'kind(test) & binary_id(#authentik-tests::e2e_${{ matrix.name }}*)'
+          cargo llvm-cov report --codecov --output-path target/llvm-cov-target/rust.json
+      - name: Merge coverage files
+        run: |
+          uv run coverage combine ./coverage/*
+          uv run coverage report
+          uv run coverage xml
+      - uses: ./.github/actions/test-results
+        if: ${{ always() }}
+        with:
+          flags: e2e-container
+      - uses: ./.github/actions/test-results
+        if: ${{ always() }}
+        with:
+          files: target/llvm-cov-target/rust.json
+          flags: e2e-container-rust
   test-openid-conformance:
     name: test-openid-conformance (${{ matrix.job.name }})
     runs-on: ubuntu-latest
@@ -398,7 +465,8 @@ jobs:
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v4
         with:
           path: web/dist
-          key: ${{ runner.os }}-web-${{ hashFiles('web/pnpm-lock.yaml', 'web/src/**', 'web/packages/sfe/src/**') }}-b
+          key: ${{ runner.os }}-web-${{ hashFiles('web/pnpm-lock.yaml', 'web/src/**',
+            'web/packages/sfe/src/**') }}-b
       - name: prepare web ui
         if: steps.cache-web.outputs.cache-hit != 'true'
         env:
@@ -432,18 +500,13 @@ jobs:
           dependencies: rust,runtime
       - name: run tests
         run: |
-          cargo llvm-cov --no-report nextest --workspace
+          cargo llvm-cov --no-report nextest --workspace --no-fail-fast --filterset 'kind(lib) | kind(proc-macro) | kind(bin) | kind(example)'
           cargo llvm-cov report --codecov --output-path target/llvm-cov-target/rust.json
       - uses: ./.github/actions/test-results
         if: ${{ always() }}
         with:
           files: target/llvm-cov-target/rust.json
           flags: rust
-      - if: ${{ !cancelled() }}
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
-        with:
-          name: test-rust
-          path: target/llvm-cov-target/rust.json
   ci-core-mark:
     if: always()
     needs:
@@ -454,14 +517,17 @@ jobs:
       - test-migrations-from-stable
       - test-unittest
       - test-integration
+      - test-rust
       - test-e2e
+      - test-e2e-container
     runs-on: ubuntu-latest
     steps:
       - uses: re-actors/alls-green@05ac9388f0aebcb5727afa17fcccfecd6f8ec5fe # release/v1
         with:
           jobs: ${{ toJSON(needs) }}
   publish:
-    if: "${{ github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository) }}"
+    if: "${{ github.event_name == 'push' || (github.event_name == 'pull_request' &&
+      github.event.pull_request.head.repo.full_name == github.repository) }}"
     needs:
       - build-compute-tags
       - build
@@ -512,7 +578,8 @@ jobs:
           subject-digest: "${{ steps.publish.outputs.digest }}"
           push-to-registry: true
   pr-comment:
-    if: "${{ github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository) }}"
+    if: "${{ github.event_name == 'push' || (github.event_name == 'pull_request' &&
+      github.event.pull_request.head.repo.full_name == github.repository) }}"
     needs:
       - build-compute-tags
       - publish
