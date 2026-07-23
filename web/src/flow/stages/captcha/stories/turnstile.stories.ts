@@ -7,6 +7,7 @@ import { Meta } from "@storybook/web-components";
 
 export default {
     title: "Flow / Stages / <ak-stage-captcha> / Turnstile",
+    tags: ["no-snapshot"],
 } satisfies Meta<typeof import("../CaptchaStage.js").CaptchaStage>;
 
 // https://developers.cloudflare.com/turnstile/troubleshooting/testing/

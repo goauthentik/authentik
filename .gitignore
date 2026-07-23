@@ -14,6 +14,7 @@ media
 # Node
 
 node_modules
+web/snapshots/
 
 .cspellcache
 cspell-report.*

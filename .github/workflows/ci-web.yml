@@ -105,3 +105,46 @@ jobs:
       - name: test
         working-directory: web/
         run: pnpm run test || exit 0
+  snapshots:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v5
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # v6.0.9
+      - name: Pin pnpm store directory
+        run: |
+          echo "PNPM_HOME=${RUNNER_TEMP}/pnpm-home" >> "$GITHUB_ENV"
+          echo "npm_config_store_dir=${RUNNER_TEMP}/pnpm-home/store" >> "$GITHUB_ENV"
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v4
+        with:
+          node-version-file: package.json
+          cache: pnpm
+          cache-dependency-path: |
+            pnpm-lock.yaml
+            web/pnpm-lock.yaml
+      - name: Install dependencies
+        run: |
+          pnpm install --frozen-lockfile
+          pnpm --dir web install --frozen-lockfile
+      - name: Install Playwright browsers
+        working-directory: web/
+        run: npx playwright install --with-deps chromium
+      - name: Build Storybook
+        working-directory: web/
+        run: |
+          pnpm run build-locales
+          pnpm run storybook:build
+      - name: Capture snapshots
+        working-directory: web/
+        run: pnpm run snapshots:capture
+      - name: Upload snapshots to Sentry
+        working-directory: web/
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SENTRY_ORG: authentik-security-inc
+          SENTRY_PROJECT: authentik
+        # Non-blocking while baselines stabilize.
+        continue-on-error: true
+        run: pnpm sentry-cli snapshots upload ./snapshots --app-id web --project authentik

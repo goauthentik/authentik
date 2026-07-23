@@ -23,6 +23,7 @@ function flowFrameFactory(challenge: FrameChallenge): StoryObj {
             theme: "automatic",
             challenge: challenge,
         },
+        tags: ["no-snapshot"],
         argTypes: {
             theme: {
                 options: [UiThemeEnum.Automatic, UiThemeEnum.Light, UiThemeEnum.Dark],
