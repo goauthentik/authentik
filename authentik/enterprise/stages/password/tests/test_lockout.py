@@ -8,13 +8,27 @@ from authentik.core.tests.utils import create_test_user
 from authentik.enterprise.stages.password.lockout import (
     lock_password_login,
     record_failed_password_attempt,
+    unlock_password_login,
 )
 from authentik.enterprise.stages.password.models import UserPasswordLoginState
+from authentik.enterprise.tests import enterprise_test
 from authentik.stages.password.auth import PasswordAuthenticationStatus
 
 
 class TestPasswordLockoutLicense(TestCase):
     """Test runtime behavior without an Enterprise license."""
+
+    @enterprise_test()
+    def test_mutations_clear_cached_password_login_state(self) -> None:
+        """Mutations remain visible on the User instance passed to the helper."""
+        user = create_test_user()
+        self.assertIsNone(user.password_login_locked_at)
+
+        lock_password_login(user)
+        self.assertIsNotNone(user.password_login_locked_at)
+
+        unlock_password_login(user)
+        self.assertIsNone(user.password_login_locked_at)
 
     @patch(
         "authentik.enterprise.models.LicenseUsageStatus.is_valid",

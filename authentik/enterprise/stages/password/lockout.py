@@ -35,6 +35,13 @@ def _user_for_update(user: User) -> User | None:
     return User.objects.exclude_anonymous().select_for_update().filter(pk=user.pk).first()
 
 
+def _clear_password_login_state_cache(user: User) -> None:
+    """Clear lockout state cached on the instance passed to a mutation helper."""
+    relation = User._meta.get_field("password_login_state")
+    if relation.is_cached(user):
+        relation.delete_cached_value(user)
+
+
 def _record_transition(
     user: User,
     action: EventAction,
@@ -76,6 +83,7 @@ def lock_password_login(
     """Lock password login and record the transition exactly once."""
     if not is_password_lockout_enabled():
         return
+    _clear_password_login_state_cache(user)
     with transaction.atomic():
         stored_user = _user_for_update(user)
         if (
@@ -105,6 +113,7 @@ def unlock_password_login(
     **event_context: Any,
 ) -> None:
     """Clear password-login failures and record an unlock transition when locked."""
+    _clear_password_login_state_cache(user)
     with transaction.atomic():
         stored_user = _user_for_update(user)
         if stored_user is None:
@@ -134,6 +143,7 @@ def record_failed_password_attempt(
     if not is_password_lockout_enabled() or threshold == 0:
         return PasswordAuthenticationStatus.INVALID
 
+    _clear_password_login_state_cache(user)
     with transaction.atomic():
         stored_user = _user_for_update(user)
         if (
@@ -168,6 +178,7 @@ def record_failed_password_attempt(
 
 def complete_successful_password_attempt(user: User) -> PasswordAuthenticationStatus:
     """Clear failures if password authentication is still allowed."""
+    _clear_password_login_state_cache(user)
     with transaction.atomic():
         stored_user = _user_for_update(user)
         if stored_user is None or not stored_user.is_active:
