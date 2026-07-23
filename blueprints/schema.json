@@ -5150,6 +5150,11 @@
                     "minLength": 1,
                     "title": "Branding default flow background"
                 },
+                "branding_map_tiles": {
+                    "type": "string",
+                    "title": "Branding map tiles",
+                    "description": "URL template for the vector tile source used by the events map. Supports XYZ templates with {z}, {x} and {y} placeholders, or pmtiles:// archive URLs. When empty, the frontend uses the bundled hexworld basemap."
+                },
                 "flow_authentication": {
                     "type": "string",
                     "format": "uuid",
