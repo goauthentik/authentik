@@ -1,6 +1,6 @@
 use std::{sync::Arc, time::Duration};
 
-use ak_common::{Arbiter, tls::self_signed};
+use ak_common::{Arbiter, Event, tls::self_signed};
 use axum_server::tls_rustls::RustlsConfig;
 use eyre::Result;
 use rustls::{
@@ -39,8 +39,10 @@ async fn make_tls_config(fallback: Arc<CertifiedKey>) -> Result<ServerConfig> {
 }
 
 pub(super) async fn watch_tls_config(arbiter: Arbiter, config: RustlsConfig) -> Result<()> {
+    let mut events_rx = arbiter.events_subscribe();
+
     tokio::select! {
-        // () = arbiter.gunicorn_ready() => {},
+        Ok(Event::GunicornIsReady) = events_rx.recv() => {},
         () = arbiter.shutdown() => return Ok(()),
     }
 
@@ -71,10 +73,6 @@ struct CertResolver {
     fallback: Arc<CertifiedKey>,
 }
 
-#[expect(
-    clippy::missing_trait_methods,
-    reason = "the provided methods are sensible enough"
-)]
 impl ResolvesServerCert for CertResolver {
     fn resolve(&self, client_hello: ClientHello<'_>) -> Option<Arc<CertifiedKey>> {
         if client_hello.server_name().is_none() {
@@ -88,5 +86,9 @@ impl ResolvesServerCert for CertResolver {
         } else {
             Some(Arc::clone(&self.fallback))
         }
+    }
+
+    fn only_raw_public_keys(&self) -> bool {
+        false
     }
 }

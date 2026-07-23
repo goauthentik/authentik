@@ -31,7 +31,7 @@ mod cookie;
 mod endpoint;
 mod error_page;
 mod events;
-mod handlers;
+pub(crate) mod handlers;
 mod headers;
 mod oauth;
 mod oauth_state;
@@ -75,27 +75,27 @@ impl Outpost for ProxyOutpost {
     fn start(self: Arc<Self>, tasks: &mut Tasks) -> Result<()> {
         let router = build_router(Arc::clone(&self));
 
-        for addr in config::get().listen.http.iter().copied() {
-            ak_axum::server::start_plain(tasks, "proxy-outpost", router.clone(), addr)?;
-        }
-
-        for addr in config::get().listen.https.iter().copied() {
-            let resolver = Arc::clone(&self);
-            let server_config = ServerConfig::builder()
-                .with_no_client_auth()
-                .with_cert_resolver(resolver);
-            let rustls_config = RustlsConfig::from_config(Arc::new(server_config));
-            ak_axum::server::start_tls(
-                tasks,
-                "proxy-outpost",
-                router.clone(),
-                addr,
-                rustls_config,
-            )?;
-        }
-
-        // Non-embedded outposts use the filesystem session store; sweep expired files.
+        // In non-embedded mode, we need to start http(s) listeners and filesystem cleanup.
         if !self.controller.is_embedded() {
+            for addr in config::get().listen.http.iter().copied() {
+                ak_axum::server::start_plain(tasks, "proxy-outpost", router.clone(), addr)?;
+            }
+
+            for addr in config::get().listen.https.iter().copied() {
+                let resolver = Arc::clone(&self);
+                let server_config = ServerConfig::builder()
+                    .with_no_client_auth()
+                    .with_cert_resolver(resolver);
+                let rustls_config = RustlsConfig::from_config(Arc::new(server_config));
+                ak_axum::server::start_tls(
+                    tasks,
+                    "proxy-outpost",
+                    router.clone(),
+                    addr,
+                    rustls_config,
+                )?;
+            }
+
             let arbiter = tasks.arbiter();
             tasks
                 .build_task()

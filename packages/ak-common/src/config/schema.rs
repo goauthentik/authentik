@@ -148,6 +148,8 @@ pub struct Config {
 
     pub storage: StorageConfig,
 
+    pub outposts: OutpostConfig,
+
     // Outpost specific fields
     pub host: Option<String>,
     pub host_browser: Option<String>,
@@ -253,4 +255,9 @@ pub struct StorageOverrideConfig {
 #[derive(Debug, Default, Clone, Serialize, Deserialize)]
 pub struct StorageFileOverrideConfig {
     pub path: Option<PathBuf>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct OutpostConfig {
+    pub disable_embedded_outpost: bool,
 }

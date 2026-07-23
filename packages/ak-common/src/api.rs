@@ -1,5 +1,7 @@
 //! Utilities for working with the authentik API client.
 
+use std::path::PathBuf;
+
 use ak_client::{apis::configuration::Configuration, models::Pagination};
 use eyre::{Result, eyre};
 use url::Url;
@@ -55,6 +57,23 @@ pub fn make_config() -> Result<Configuration> {
         base_path,
         client,
         bearer_access_token: Some(server_config.token),
+        user_agent: Some(user_agent_outpost()),
+        ..Default::default()
+    })
+}
+
+pub fn make_config_embedded(socket_path: PathBuf) -> Result<Configuration> {
+    let base_path = "http://localhost/api/v3".into();
+
+    let client = reqwest::ClientBuilder::new()
+        .unix_socket(socket_path)
+        .build()?;
+    let client = reqwest_middleware::ClientBuilder::new(client).build();
+
+    Ok(Configuration {
+        base_path,
+        client,
+        bearer_access_token: Some(config::get().secret_key.clone()),
         user_agent: Some(user_agent_outpost()),
         ..Default::default()
     })
