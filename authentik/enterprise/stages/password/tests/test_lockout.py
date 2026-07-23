@@ -17,6 +17,7 @@ from authentik.stages.password.auth import PasswordAuthenticationStatus
 
 class TestPasswordLockoutLicense(TestCase):
     """Test licensing behavior for password login lockout."""
+
     @enterprise_test()
     def test_lock_transitions_clear_cached_password_login_state(self) -> None:
         """Lock transitions remain visible on the User instance passed to the helper."""
