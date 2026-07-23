@@ -1,0 +1,159 @@
+version: 1
+metadata:
+  name: Default - User security event notifications
+entries:
+- model: authentik_events.notificationtransport
+  id: default-security-email-transport
+  attrs:
+    mode: email
+    email_template: email/security_notification.html
+    # The subject comes from email/security_notification_subject.txt
+    email_subject_prefix: "authentik Notification:"
+  identifiers:
+    name: default-security-email-transport
+
+- model: authentik_policies_event_matcher.eventmatcherpolicy
+  id: default-match-password-set
+  attrs:
+    action: password_set
+    # Only notify about interactive password changes. Passwords cached from a
+    # source login (LDAP/Kerberos) are excluded: those change in the directory,
+    # not in authentik. Blueprint-provisioned passwords are administrative and
+    # excluded too, as are unrecognized channels (shell, bootstrap)
+    query: 'context.origin = "http" and context.synced_from_source = False'
+  identifiers:
+    name: default-match-password-set
+- model: authentik_events.notificationrule
+  id: default-notify-user-password-change
+  state: created
+  identifiers:
+    name: default-notify-user-password-change
+  attrs:
+    enabled: false
+    severity: notice
+    destination_event_subject: true
+    transports:
+      - !KeyOf default-security-email-transport
+- model: authentik_policies.policybinding
+  identifiers:
+    order: 0
+    policy: !KeyOf default-match-password-set
+    target: !KeyOf default-notify-user-password-change
+
+- model: authentik_policies_event_matcher.eventmatcherpolicy
+  id: default-match-mfa-device-added
+  attrs:
+    action: mfa_device_created
+  identifiers:
+    name: default-match-mfa-device-added
+- model: authentik_policies_event_matcher.eventmatcherpolicy
+  id: default-match-mfa-device-removed
+  attrs:
+    action: mfa_device_deleted
+  identifiers:
+    name: default-match-mfa-device-removed
+- model: authentik_events.notificationrule
+  id: default-notify-user-mfa-device-change
+  state: created
+  identifiers:
+    name: default-notify-user-mfa-device-change
+  attrs:
+    enabled: false
+    severity: notice
+    destination_event_subject: true
+    transports:
+      - !KeyOf default-security-email-transport
+- model: authentik_policies.policybinding
+  identifiers:
+    order: 0
+    policy: !KeyOf default-match-mfa-device-added
+    target: !KeyOf default-notify-user-mfa-device-change
+- model: authentik_policies.policybinding
+  identifiers:
+    order: 1
+    policy: !KeyOf default-match-mfa-device-removed
+    target: !KeyOf default-notify-user-mfa-device-change
+
+- model: authentik_policies_event_matcher.eventmatcherpolicy
+  id: default-match-impossible-travel
+  attrs:
+    action: login_blocked
+    query: 'context.reasons ~ "impossible_travel"'
+  identifiers:
+    name: default-match-impossible-travel
+- model: authentik_events.notificationrule
+  id: default-notify-user-impossible-travel
+  state: created
+  identifiers:
+    name: default-notify-user-impossible-travel
+  attrs:
+    enabled: false
+    severity: alert
+    destination_event_subject: true
+    transports:
+      - !KeyOf default-security-email-transport
+- model: authentik_policies.policybinding
+  identifiers:
+    order: 0
+    policy: !KeyOf default-match-impossible-travel
+    target: !KeyOf default-notify-user-impossible-travel
+
+- model: authentik_policies_event_matcher.eventmatcherpolicy
+  id: default-match-account-lockdown
+  attrs:
+    action: user_write
+    query: 'context.action_id = "account_lockdown"'
+  identifiers:
+    name: default-match-account-lockdown
+- model: authentik_events.notificationrule
+  id: default-notify-user-account-lockdown
+  state: created
+  identifiers:
+    name: default-notify-user-account-lockdown
+  attrs:
+    enabled: false
+    severity: alert
+    destination_event_subject: true
+    transports:
+      - !KeyOf default-security-email-transport
+- model: authentik_policies.policybinding
+  identifiers:
+    order: 0
+    policy: !KeyOf default-match-account-lockdown
+    target: !KeyOf default-notify-user-account-lockdown
+
+- model: authentik_events.notificationtransport
+  id: default-welcome-email-transport
+  attrs:
+    mode: email
+    email_template: email/account_welcome.html
+    # The subject comes from email/account_welcome_subject.txt
+    email_subject_prefix: ""
+  identifiers:
+    name: default-welcome-email-transport
+- model: authentik_policies_event_matcher.eventmatcherpolicy
+  id: default-match-user-created
+  attrs:
+    action: user_created
+    # Only welcome people (not service accounts), and only accounts someone deliberately
+    # created for them - via the admin interface, API, an enrollment flow or a blueprint.
+    # Accounts bulk-imported by a source sync (or an unrecognized channel) stay silent
+    query: 'context.user_type in ("internal", "external") and context.origin in ("http", "blueprint")'
+  identifiers:
+    name: default-match-user-created
+- model: authentik_events.notificationrule
+  id: default-notify-user-welcome
+  state: created
+  identifiers:
+    name: default-notify-user-welcome
+  attrs:
+    enabled: false
+    severity: notice
+    destination_event_subject: true
+    transports:
+      - !KeyOf default-welcome-email-transport
+- model: authentik_policies.policybinding
+  identifiers:
+    order: 0
+    policy: !KeyOf default-match-user-created
+    target: !KeyOf default-notify-user-welcome

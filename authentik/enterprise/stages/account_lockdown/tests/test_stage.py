@@ -5,8 +5,10 @@ from dataclasses import asdict
 from threading import Event as ThreadEvent
 from threading import Thread
 from types import SimpleNamespace
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock, PropertyMock, patch
 
+from django.core import mail
+from django.core.mail.backends.locmem import EmailBackend
 from django.db import connection
 from django.http import HttpResponse
 from django.test import TransactionTestCase
@@ -14,6 +16,8 @@ from django.urls import reverse
 from django.utils import timezone
 from dramatiq.results.errors import ResultTimeout
 
+from authentik.blueprints.models import BlueprintInstance
+from authentik.blueprints.v1.importer import Importer
 from authentik.core.models import AuthenticatedSession, Session, Token, TokenIntents
 from authentik.core.tests.utils import (
     RequestFactory,
@@ -29,11 +33,12 @@ from authentik.enterprise.stages.account_lockdown.stage import (
     AccountLockdownStageView,
     can_lock_user,
 )
-from authentik.events.models import Event, EventAction
+from authentik.events.models import Event, EventAction, NotificationRule
 from authentik.flows.markers import StageMarker
 from authentik.flows.models import FlowDesignation, FlowStageBinding
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
 from authentik.flows.tests import FlowTestCase
+from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.lib.generators import generate_id
 from authentik.lib.utils.reflection import class_to_path
 from authentik.providers.oauth2.id_token import IDToken
@@ -152,6 +157,7 @@ class TestAccountLockdownStage(AccountLockdownStageTestMixin, FlowTestCase):
         self.assertEqual(event.context["action_id"], LOCKDOWN_EVENT_ACTION_ID)
         self.assertEqual(event.context["reason"], "Security incident")
         self.assertEqual(event.context["affected_user"], self.target_user.username)
+        self.assertEqual(event.context["subject"]["pk"], self.target_user.pk)
 
     def test_lockdown_with_pending_user_reason(self):
         """Test lockdown stage with a pending target and explicit reason."""
@@ -625,3 +631,54 @@ class TestAccountLockdownStageConcurrency(AccountLockdownStageTestMixin, Transac
 
         self.assertEqual(thread_errors, [])
         self.assertEqual(Token.objects.filter(user=self.target_user).count(), 0)
+
+
+class TestAccountLockdownNotificationEmail(FlowTestCase):
+    """End-to-end: a lockdown flow run through the executor delivers the account-locked
+    email to the target user via the default notification blueprint.
+    """
+
+    def setUp(self):
+        super().setUp()
+        content = BlueprintInstance(
+            path="default/events-user-security-notifications.yaml"
+        ).retrieve()
+        self.assertTrue(Importer.from_string(content).apply())
+        NotificationRule.objects.filter(name="default-notify-user-account-lockdown").update(
+            enabled=True
+        )
+        self.actor = create_test_admin_user()
+        self.target_user = create_test_user()
+        self.flow = create_test_flow(FlowDesignation.STAGE_CONFIGURATION)
+        self.stage = AccountLockdownStage.objects.create(name=generate_id())
+        self.binding = FlowStageBinding.objects.create(target=self.flow, stage=self.stage, order=0)
+
+    def test_lockdown_emails_target_user(self):
+        """Locking a user through the flow executor must email that user"""
+        self.client.force_login(self.actor)
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
+        plan.context[PLAN_CONTEXT_PENDING_USER] = self.target_user
+        plan.context[PLAN_CONTEXT_LOCKDOWN_REASON] = "Security incident"
+        session = self.client.session
+        session[SESSION_KEY_PLAN] = plan
+        session.save()
+
+        with (
+            patch_enterprise_enabled,
+            patch(
+                "authentik.stages.email.models.EmailStage.backend_class",
+                PropertyMock(return_value=EmailBackend),
+            ),
+        ):
+            response = self.client.post(
+                reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
+            )
+
+        self.assertEqual(response.status_code, 200)
+        self.target_user.refresh_from_db()
+        self.assertFalse(self.target_user.is_active)
+        self.assertEqual(len(mail.outbox), 1)
+        message = mail.outbox[0]
+        self.assertIn(self.target_user.email, message.to[0])
+        self.assertEqual(message.subject, "authentik Notification: your account has been locked")
+        self.assertIn("locked as an emergency security measure", message.body)

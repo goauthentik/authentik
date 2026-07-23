@@ -8300,10 +8300,14 @@
                     "enum": [
                         "login",
                         "login_failed",
+                        "login_blocked",
                         "logout",
+                        "user_created",
                         "user_write",
                         "suspicious_request",
                         "password_set",
+                        "mfa_device_created",
+                        "mfa_device_deleted",
                         "secret_view",
                         "secret_rotate",
                         "invitation_used",
@@ -8422,10 +8426,14 @@
                             "enum": [
                                 "login",
                                 "login_failed",
+                                "login_blocked",
                                 "logout",
+                                "user_created",
                                 "user_write",
                                 "suspicious_request",
                                 "password_set",
+                                "mfa_device_created",
+                                "mfa_device_deleted",
                                 "secret_view",
                                 "secret_rotate",
                                 "invitation_used",
@@ -8532,6 +8540,11 @@
                     "minLength": 1,
                     "title": "Name"
                 },
+                "enabled": {
+                    "type": "boolean",
+                    "title": "Enabled",
+                    "description": "When disabled, this rule will not create any notifications."
+                },
                 "transports": {
                     "type": "array",
                     "items": {
@@ -8561,7 +8574,12 @@
                 "destination_event_user": {
                     "type": "boolean",
                     "title": "Destination event user",
-                    "description": "When enabled, notification will be sent to user the user that triggered the event.When destination_group is configured, notification is sent to both."
+                    "description": "When enabled, notification will be sent to the user that triggered the event.When destination_group is configured, notification is sent to both."
+                },
+                "destination_event_subject": {
+                    "type": "boolean",
+                    "title": "Destination event subject",
+                    "description": "When enabled, notification will be sent to the user affected by the event."
                 }
             },
             "required": []
@@ -9182,10 +9200,14 @@
                         null,
                         "login",
                         "login_failed",
+                        "login_blocked",
                         "logout",
+                        "user_created",
                         "user_write",
                         "suspicious_request",
                         "password_set",
+                        "mfa_device_created",
+                        "mfa_device_deleted",
                         "secret_view",
                         "secret_rotate",
                         "invitation_used",

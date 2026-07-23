@@ -25,7 +25,7 @@ LOGGER = get_logger()
 
 @actor(description=_("Dispatch new event notifications."))
 def event_trigger_dispatch(event_uuid: UUID):
-    for trigger in NotificationRule.objects.all():
+    for trigger in NotificationRule.objects.filter(enabled=True):
         event_trigger_handler.send_with_options(args=(event_uuid, trigger.name), rel_obj=trigger)
 
 
@@ -45,7 +45,7 @@ def event_trigger_handler(event_uuid: UUID, trigger_name: str):
         return
 
     trigger: NotificationRule | None = NotificationRule.objects.filter(name=trigger_name).first()
-    if not trigger:
+    if not trigger or not trigger.enabled:
         return
 
     if "policy_uuid" in event.context:
@@ -126,7 +126,7 @@ def notification_transport(transport_pk: int, event_pk: str, user_pk: int, trigg
 @actor(description=_("Cleanup events for GDPR compliance."))
 def gdpr_cleanup(user_pk: int):
     """cleanup events from gdpr_compliance"""
-    events = Event.objects.filter(user__pk=user_pk)
+    events = Event.objects.filter(Q(user__pk=user_pk) | Q(context__subject__pk=user_pk))
     LOGGER.debug("GDPR cleanup, removing events from user", events=events.count())
     for event in chunked_queryset(events):
         event.delete()

@@ -23,10 +23,14 @@ type EventActions string
 const (
 	EVENTACTIONS_LOGIN                      EventActions = "login"
 	EVENTACTIONS_LOGIN_FAILED               EventActions = "login_failed"
+	EVENTACTIONS_LOGIN_BLOCKED              EventActions = "login_blocked"
 	EVENTACTIONS_LOGOUT                     EventActions = "logout"
+	EVENTACTIONS_USER_CREATED               EventActions = "user_created"
 	EVENTACTIONS_USER_WRITE                 EventActions = "user_write"
 	EVENTACTIONS_SUSPICIOUS_REQUEST         EventActions = "suspicious_request"
 	EVENTACTIONS_PASSWORD_SET               EventActions = "password_set"
+	EVENTACTIONS_MFA_DEVICE_CREATED         EventActions = "mfa_device_created"
+	EVENTACTIONS_MFA_DEVICE_DELETED         EventActions = "mfa_device_deleted"
 	EVENTACTIONS_SECRET_VIEW                EventActions = "secret_view"
 	EVENTACTIONS_SECRET_ROTATE              EventActions = "secret_rotate"
 	EVENTACTIONS_INVITATION_USED            EventActions = "invitation_used"
@@ -60,10 +64,14 @@ const (
 var AllowedEventActionsEnumValues = []EventActions{
 	"login",
 	"login_failed",
+	"login_blocked",
 	"logout",
+	"user_created",
 	"user_write",
 	"suspicious_request",
 	"password_set",
+	"mfa_device_created",
+	"mfa_device_deleted",
 	"secret_view",
 	"secret_rotate",
 	"invitation_used",

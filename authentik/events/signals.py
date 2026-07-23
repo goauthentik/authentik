@@ -10,8 +10,9 @@ from django.dispatch import receiver
 from django.http import HttpRequest
 from rest_framework.request import Request
 
-from authentik.core.models import AuthenticatedSession, User
+from authentik.core.models import AuthenticatedSession, Source, User
 from authentik.core.signals import login_failed, password_changed, password_hash_changed
+from authentik.events.middleware import get_event_origin
 from authentik.events.models import Event, EventAction
 from authentik.flows.models import Stage
 from authentik.flows.planner import (
@@ -86,6 +87,22 @@ def on_user_write(sender, request: HttpRequest, user: User, data: dict[str, Any]
     Event.new(EventAction.USER_WRITE, **data).from_http(request, user=user)
 
 
+@receiver(post_save, sender=User)
+def on_user_created(sender, instance: User, created: bool, raw: bool, **_):
+    """Emit a dedicated event when a user account is created, labelled with the
+    channel that created it ("http" for admin interface/API/enrollment flows,
+    "blueprint", "source_sync", ...) so notification rules can match on it."""
+    if raw or not created:
+        return
+    Event.new(
+        EventAction.USER_CREATED,
+        subject=instance,
+        username=instance.username,
+        user_type=instance.type,
+        origin=get_event_origin(),
+    ).from_ctx_request()
+
+
 @receiver(login_failed)
 def on_login_failed(
     signal,
@@ -122,7 +139,12 @@ def on_password_changed(
     **_,
 ):
     """Log password change"""
-    Event.new(EventAction.PASSWORD_SET).from_http(request, user=user)
+    Event.new(
+        EventAction.PASSWORD_SET,
+        subject=user,
+        synced_from_source=isinstance(sender, Source),
+        origin=get_event_origin(),
+    ).from_http(request, user=user)
 
 
 @receiver(post_save, sender=Event)

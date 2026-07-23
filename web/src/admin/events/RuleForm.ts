@@ -72,6 +72,15 @@ export class RuleForm extends ModelForm<NotificationRule, string> {
                 placeholder=${msg("Type a name for this rule...")}
                 value="${ifDefined(this.instance?.name)}"
             ></ak-text-input>
+            <ak-switch-input
+                name="enabled"
+                label=${msg("Enabled")}
+                ?checked=${this.instance?.enabled ?? true}
+                help=${msg("When disabled, this rule will not create any notifications.", {
+                    id: "notification-rule.enabled.description",
+                })}
+            >
+            </ak-switch-input>
             <ak-form-element-horizontal label=${msg("Group")} name="destinationGroup">
                 <ak-search-select
                     placeholder=${msg("Select a group...")}
@@ -102,7 +111,8 @@ export class RuleForm extends ModelForm<NotificationRule, string> {
                 </p>
                 <p class="pf-c-form__helper-text">
                     ${msg(
-                        "If no group is selected and 'Send notification to event user' is disabled, the rule is disabled.",
+                        "If no group is selected and neither of the options below is enabled, no notifications will be created.",
+                        { id: "notification-rule.no-recipients.description" },
                     )}
                 </p>
             </ak-form-element-horizontal>
@@ -112,6 +122,15 @@ export class RuleForm extends ModelForm<NotificationRule, string> {
                 ?checked=${this.instance?.destinationEventUser ?? false}
                 help=${msg(
                     "When enabled, notification will be sent to the user that triggered the event in addition to any users in the group above. The event user will always be the first user, to send a notification only to the event user enabled 'Send once' in the notification transport.",
+                )}
+            >
+            </ak-switch-input>
+            <ak-switch-input
+                name="destinationEventSubject"
+                label=${msg("Send notification to affected user")}
+                ?checked=${this.instance?.destinationEventSubject ?? false}
+                help=${msg(
+                    "When enabled, notification will be sent to the user affected by the event in addition to any users matched by the above settings.",
                 )}
             >
             </ak-switch-input>

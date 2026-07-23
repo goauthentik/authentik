@@ -14,6 +14,9 @@ from django.db import models
 from django.db.models import Q
 from django.http import HttpRequest
 from django.http.request import QueryDict
+from django.template.exceptions import TemplateDoesNotExist
+from django.template.loader import render_to_string
+from django.utils import translation
 from django.utils.timezone import now
 from django.utils.translation import gettext as _
 from requests import RequestException
@@ -92,11 +95,16 @@ class EventAction(models.TextChoices):
 
     LOGIN = "login"
     LOGIN_FAILED = "login_failed"
+    LOGIN_BLOCKED = "login_blocked"
     LOGOUT = "logout"
 
+    USER_CREATED = "user_created"
     USER_WRITE = "user_write"
     SUSPICIOUS_REQUEST = "suspicious_request"
     PASSWORD_SET = "password_set"  # noqa # nosec
+
+    MFA_DEVICE_CREATED = "mfa_device_created"
+    MFA_DEVICE_DELETED = "mfa_device_deleted"
 
     SECRET_VIEW = "secret_view"  # noqa # nosec
     SECRET_ROTATE = "secret_rotate"  # noqa # nosec
@@ -259,6 +267,17 @@ class Event(SerializerModel, ExpiringModel):
             self.app = Event._get_app_from_request(request)
         self.save()
         return self
+
+    def from_ctx_request(self):
+        from authentik.events.middleware import _CTX_IGNORE, _CTX_REQUEST
+
+        if _CTX_IGNORE.get():
+            return
+        request = _CTX_REQUEST.get()
+        if request:
+            self.from_http(request, request.user)
+        else:
+            self.save()
 
     @staticmethod
     def log_deprecation(
@@ -562,6 +581,21 @@ class NotificationTransport(TasksModel, SerializerModel):
             response.text,
         ]
 
+    def render_email_subject(self, context: dict[str, Any], language: str) -> str:
+        """Render the subject for an email notification. Templates can provide a
+        human-readable subject by shipping a `<template>_subject.txt` next to the body
+        template; without one, context["title"] is used."""
+        if self.email_template.endswith(".html"):
+            subject_template = self.email_template.removesuffix(".html") + "_subject.txt"
+            try:
+                with translation.override(language):
+                    rendered = render_to_string(subject_template, context)
+                if rendered.strip():
+                    return " ".join(rendered.split())
+            except TemplateDoesNotExist:
+                pass
+        return context["title"]
+
     def send_email(self, notification: Notification) -> list[str]:
         """Send notification via global email configuration"""
         from authentik.stages.email.tasks import send_mail
@@ -593,6 +627,8 @@ class NotificationTransport(TasksModel, SerializerModel):
             }
         if notification.event:
             context["title"] += notification.event.action
+            context["event_action"] = notification.event.action
+            context["event_context"] = notification.event.context
             for key, value in notification.event.context.items():
                 if not isinstance(value, str):
                     continue
@@ -604,10 +640,15 @@ class NotificationTransport(TasksModel, SerializerModel):
             context["source"] = {
                 "from": self.name,
             }
+        language = notification.user.locale()
+        subject = self.render_email_subject(context, language)
+        subject_prefix = self.email_subject_prefix.strip()
+        if subject_prefix:
+            subject = " ".join((subject_prefix, subject))
         mail = TemplateEmailMessage(
-            subject=self.email_subject_prefix + context["title"],
+            subject=subject,
             to=[(notification.user.name, notification.user.email)],
-            language=notification.user.locale(),
+            language=language,
             template_name=self.email_template,
             template_context=context,
         )
@@ -674,6 +715,10 @@ class NotificationRule(TasksModel, SerializerModel, PolicyBindingModel):
     """Decide when to create a Notification based on policies attached to this object."""
 
     name = models.TextField(unique=True)
+    enabled = models.BooleanField(
+        default=True,
+        help_text=_("When disabled, this rule will not create any notifications."),
+    )
     transports = models.ManyToManyField(
         NotificationTransport,
         help_text=_(
@@ -701,14 +746,21 @@ class NotificationRule(TasksModel, SerializerModel, PolicyBindingModel):
     destination_event_user = models.BooleanField(
         default=False,
         help_text=_(
-            "When enabled, notification will be sent to user the user that triggered the event."
+            "When enabled, notification will be sent to the user that triggered the event."
             "When destination_group is configured, notification is sent to both."
         ),
+    )
+    destination_event_subject = models.BooleanField(
+        default=False,
+        help_text=_("When enabled, notification will be sent to the user affected by the event."),
     )
 
     def destination_users(self, event: Event) -> Generator[User, Any]:
         if self.destination_event_user and event.user.get("pk"):
             yield User(pk=event.user.get("pk"))
+        subject = event.context.get("subject") or {}
+        if self.destination_event_subject and subject.get("pk"):
+            yield User(pk=subject.get("pk"))
         if self.destination_group:
             yield from self.destination_group.users.all()
 

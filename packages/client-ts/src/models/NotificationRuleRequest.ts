@@ -28,6 +28,12 @@ export interface NotificationRuleRequest {
      */
     name: string;
     /**
+     * When disabled, this rule will not create any notifications.
+     * @type {boolean}
+     * @memberof NotificationRuleRequest
+     */
+    enabled?: boolean;
+    /**
      * Select which transports should be used to notify the user. If none are selected, the notification will only be shown in the authentik UI.
      * @type {Array<string>}
      * @memberof NotificationRuleRequest
@@ -46,11 +52,17 @@ export interface NotificationRuleRequest {
      */
     destinationGroup?: string | null;
     /**
-     * When enabled, notification will be sent to user the user that triggered the event.When destination_group is configured, notification is sent to both.
+     * When enabled, notification will be sent to the user that triggered the event.When destination_group is configured, notification is sent to both.
      * @type {boolean}
      * @memberof NotificationRuleRequest
      */
     destinationEventUser?: boolean;
+    /**
+     * When enabled, notification will be sent to the user affected by the event.
+     * @type {boolean}
+     * @memberof NotificationRuleRequest
+     */
+    destinationEventSubject?: boolean;
 }
 
 /**
@@ -74,11 +86,16 @@ export function NotificationRuleRequestFromJSONTyped(
     }
     return {
         name: json["name"],
+        enabled: json["enabled"] == null ? undefined : json["enabled"],
         transports: json["transports"] == null ? undefined : json["transports"],
         severity: json["severity"] == null ? undefined : SeverityEnumFromJSON(json["severity"]),
         destinationGroup: json["destination_group"] == null ? undefined : json["destination_group"],
         destinationEventUser:
             json["destination_event_user"] == null ? undefined : json["destination_event_user"],
+        destinationEventSubject:
+            json["destination_event_subject"] == null
+                ? undefined
+                : json["destination_event_subject"],
     };
 }
 
@@ -96,9 +113,11 @@ export function NotificationRuleRequestToJSONTyped(
 
     return {
         name: value["name"],
+        enabled: value["enabled"],
         transports: value["transports"],
         severity: SeverityEnumToJSON(value["severity"]),
         destination_group: value["destinationGroup"],
         destination_event_user: value["destinationEventUser"],
+        destination_event_subject: value["destinationEventSubject"],
     };
 }

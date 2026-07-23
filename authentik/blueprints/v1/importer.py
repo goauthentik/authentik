@@ -372,8 +372,10 @@ class Importer:
 
     def apply(self) -> bool:
         """Apply (create/update) models yaml, in database transaction"""
+        from authentik.events.middleware import event_origin
+
         try:
-            with atomic():
+            with atomic(), event_origin("blueprint"):
                 if not self._apply_models():
                     self.logger.debug("Reverting changes due to error")
                     raise IntegrityError
@@ -454,8 +456,11 @@ class Importer:
         if self._import.version != 1:
             self.logger.warning("Invalid blueprint version")
             return False, [LogEvent("Invalid blueprint version", log_level="warning", logger=None)]
+        from authentik.events.middleware import event_origin
+
         with (
             transaction_rollback(),
+            event_origin("blueprint"),
             capture_logs() as logs,
         ):
             successful = self._apply_models(raise_errors=raise_validation_errors)
